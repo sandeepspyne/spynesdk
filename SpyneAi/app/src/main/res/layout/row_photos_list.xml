@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.cardview.widget.CardView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="horizontal"
+    android:layout_width="@dimen/dp_100"
+    app:cardCornerRadius="@dimen/dp_10"
+    android:layout_marginEnd="@dimen/dp_20"
+    android:layout_height="@dimen/dp_100">
+    <ImageView
+        android:id="@+id/imgPhotos"
+        android:layout_width="@dimen/dp_100"
+        android:layout_height="@dimen/dp_100"
+        android:scaleType="fitXY"
+        android:src="@mipmap/defaults"
+        android:contentDescription="@string/app_name">
+    </ImageView>
+</androidx.cardview.widget.CardView>

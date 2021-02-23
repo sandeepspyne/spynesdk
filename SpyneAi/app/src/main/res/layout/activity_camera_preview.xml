@@ -1,0 +1,245 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context=".activity.CameraActivity">
+    <androidx.appcompat.widget.Toolbar
+        android:id="@+id/my_toolbar"
+        android:layout_width="match_parent"
+        android:background="@color/black"
+        android:layout_height="?attr/actionBarSize"
+        android:elevation="@dimen/dp_5">
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="horizontal">
+            <ImageView
+                android:id="@+id/imgBackPreview"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:src="@drawable/back"
+                android:paddingStart="@dimen/dp_10"
+                android:paddingEnd="@dimen/dp_10" />
+            <TextView
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:layout_height="match_parent"
+                android:text="@string/categories_selection"
+                android:fontFamily="@font/bold"
+                android:gravity="center"
+                android:textStyle="bold"
+                android:visibility="invisible"
+                android:textSize="@dimen/sp_16"/>
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:src="@drawable/back"
+                android:visibility="invisible"
+                app:tint="@color/black" />
+
+        </LinearLayout>
+
+    </androidx.appcompat.widget.Toolbar>
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1.2"
+        android:gravity="center"
+        android:elevation="@dimen/dp_5"
+        android:background="@color/black">
+        <ImageView
+            android:id="@+id/imgPreview"
+            android:layout_width="@dimen/dp_400"
+            android:layout_height="@dimen/dp_400"
+            android:src="@mipmap/defaults"
+            android:layout_gravity="center" />
+
+        <ImageView
+            android:id="@+id/ivLogoPlace1"
+            android:layout_width="@dimen/dp_50"
+            android:layout_height="@dimen/dp_50"
+            android:src="@mipmap/defaults"
+            android:visibility="gone"
+            android:layout_margin="@dimen/dp_10"/>
+        <ImageView
+            android:id="@+id/ivLogoPlace2"
+            android:layout_width="@dimen/dp_50"
+            android:layout_height="@dimen/dp_50"
+            android:visibility="gone"
+            android:src="@mipmap/defaults"
+            android:layout_gravity="end"
+            android:layout_margin="@dimen/dp_10"/>
+        <ImageView
+            android:id="@+id/ivLogoPlace3"
+            android:layout_width="@dimen/dp_50"
+            android:layout_height="@dimen/dp_50"
+            android:src="@mipmap/defaults"
+            android:visibility="gone"
+            android:layout_gravity="end|bottom"
+            android:layout_margin="@dimen/dp_20"/>
+        <ImageView
+            android:id="@+id/ivLogoPlace4"
+            android:layout_width="@dimen/dp_50"
+            android:layout_height="@dimen/dp_50"
+            android:src="@mipmap/defaults"
+            android:layout_gravity="bottom"
+            android:visibility="gone"
+            android:layout_margin="@dimen/dp_20"/>
+
+
+    </FrameLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:orientation="vertical">
+        <LinearLayout
+            android:orientation="vertical"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+            <View
+                android:layout_width="@dimen/dp_50"
+                android:layout_height="@dimen/dp_5"
+                android:layout_gravity="center"
+                android:layout_margin="@dimen/dp_5"
+                android:background="@color/grey"/>
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/continue_with_this_shoot"
+                android:fontFamily="@font/medium"
+                android:gravity="center"
+                android:layout_margin="@dimen/dp_10"
+                android:textColor="@color/black"
+                android:textSize="@dimen/sp_15" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:layout_marginBottom="@dimen/dp_5"
+                android:gravity="center">
+                <TextView
+                    android:id="@+id/btnCancel"
+                    android:layout_width="0dp"
+                    android:layout_weight="1"
+                    android:layout_height="wrap_content"
+                    android:text="@string/no_reshoot"
+                    android:padding="@dimen/dp_5"
+                    android:gravity="center"
+                    android:layout_marginStart="@dimen/dp_20"
+                    android:layout_marginEnd="@dimen/dp_20"
+                    android:textColor="@color/primary"
+                    android:fontFamily="@font/medium"
+                    android:textSize="@dimen/sp_15"
+                    android:background="@drawable/bg_selected"
+                    android:textAllCaps="false"/>
+
+                <com.facebook.shimmer.ShimmerFrameLayout
+                    android:id="@+id/btnBlurOk"
+                    android:layout_width="0dp"
+                    android:layout_weight="1"
+                    android:layout_marginStart="@dimen/dp_20"
+                    android:layout_marginEnd="@dimen/dp_20"
+                    android:layout_height="wrap_content">
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="@string/confirm"
+                        android:padding="@dimen/dp_5"
+                        android:gravity="center"
+                        android:textColor="@color/white"
+                        android:fontFamily="@font/medium"
+                        android:textSize="@dimen/sp_15"
+                        android:visibility="visible"
+                        android:background="@drawable/bg_edit_black_bf"
+                        android:textAllCaps="false"/>
+                </com.facebook.shimmer.ShimmerFrameLayout>
+                <TextView
+                    android:id="@+id/btnOk"
+                    android:layout_width="0dp"
+                    android:layout_weight="1"
+                    android:layout_height="wrap_content"
+                    android:text="@string/confirm"
+                    android:layout_marginStart="@dimen/dp_20"
+                    android:layout_marginEnd="@dimen/dp_20"
+                    android:padding="@dimen/dp_5"
+                    android:gravity="center"
+                    android:textColor="@color/white"
+                    android:fontFamily="@font/medium"
+                    android:textSize="@dimen/sp_15"
+                    android:visibility="gone"
+                    android:background="@drawable/bg_edit_button"
+                    android:textAllCaps="false"/>
+            </LinearLayout>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="0.2dp"
+                android:background="@color/grey"
+                android:layout_marginTop="@dimen/sp_5"
+                android:layout_marginBottom="@dimen/sp_5"/>
+        </LinearLayout>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:gravity="center">
+
+            <com.google.android.material.tabs.TabLayout
+                android:id="@+id/tabLayout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@color/white"
+                app:tabTextColor="@color/black"
+                app:tabIndicator="@color/black"
+                app:tabTextAppearance="@style/tab_text"
+                app:tabSelectedTextColor="@color/black" />
+
+            <androidx.viewpager.widget.ViewPager
+                android:id="@+id/viewpager"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/dp_80"
+                android:layout_marginTop="@dimen/dp_10"
+                android:layout_gravity="center"/>
+
+
+        </LinearLayout>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_marginStart="@dimen/dp_10"
+            android:layout_marginEnd="@dimen/dp_10">
+
+            <TextView
+                android:id="@+id/tvshoots"
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:fontFamily="@font/bold"
+                android:textColor="@color/black"
+                android:gravity="center"
+                android:textSize="@dimen/sp_15" />
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/rvProgresss"
+                android:layout_width="0dp"
+                android:layout_weight="3"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:orientation="horizontal" />
+        </LinearLayout>
+
+
+    </LinearLayout>
+
+
+</LinearLayout>

@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.cardview.widget.CardView
+    android:id="@+id/cardBackground"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:elevation="@dimen/dp_5"
+    android:layout_margin="@dimen/dp_10"
+    app:cardCornerRadius="@dimen/dp_7"
+    android:background="@drawable/bg_channel"
+    tools:context=".activity.CameraActivity"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <LinearLayout
+        android:id="@+id/llChannel"
+        android:layout_width="@dimen/dp_40"
+        android:layout_height="@dimen/dp_40"
+        android:visibility="invisible"
+        android:layout_margin="@dimen/dp_5"
+        android:orientation="horizontal" />
+
+</androidx.cardview.widget.CardView>
