@@ -16,6 +16,7 @@ import com.spyneai.adapter.BeforeAfterAdapter
 import com.spyneai.interfaces.APiService
 import com.spyneai.interfaces.RetrofitClient
 import com.spyneai.interfaces.RetrofitClients
+import com.spyneai.model.ai.GifResponse
 import com.spyneai.model.beforeafter.BeforeAfterResponse
 import com.spyneai.model.beforeafter.Data
 import com.spyneai.model.carreplace.CarBackgroundsResponse
@@ -41,7 +42,7 @@ class BeforeAfterActivity : AppCompatActivity() {
     private lateinit var beforeAfterResponse: BeforeAfterResponse
     private lateinit var beforeAfterList: ArrayList<Data>
     private lateinit var beforeAfterAdapter: BeforeAfterAdapter
-
+    lateinit var gifList : ArrayList<String>
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -74,8 +75,14 @@ class BeforeAfterActivity : AppCompatActivity() {
             false
         ))
         rvBeforeAfter.setAdapter(beforeAfterAdapter)
-
-        fetchBeforeAfter()
+        if (Utilities.isNetworkAvailable(this))
+            fetchBeforeAfter()
+        else
+            Toast.makeText(
+                    this,
+                    "Please check your internet connection",
+                    Toast.LENGTH_SHORT
+            ).show()
     }
 
     private fun setData() {
@@ -104,6 +111,7 @@ class BeforeAfterActivity : AppCompatActivity() {
             val intent = Intent(this, CameraActivity::class.java)
             intent.putExtra(AppConstants.CATEGORY_ID, catId)
             intent.putExtra(AppConstants.CATEGORY_NAME, catName)
+            intent.putExtra(AppConstants.GIF_LIST, gifList)
             Utilities.savePrefrence(this, AppConstants.FROM, "BA")
             startActivity(intent)
         })
@@ -137,7 +145,10 @@ class BeforeAfterActivity : AppCompatActivity() {
                 }
                 beforeAfterAdapter.notifyDataSetChanged()
 
+                fetchBackgroundCars()
 
+
+/*
                 if (catName.equals("Automobiles")) {
                     if ( Utilities.getList(this@BeforeAfterActivity,AppConstants.BACKGROUND_LIST_CARS)!!.size == 0) {
                         fetchBackgroundCars()
@@ -158,6 +169,7 @@ class BeforeAfterActivity : AppCompatActivity() {
                     else{
                         Utilities.hideProgressDialog()
                     }
+*/
             }
 
             override fun onFailure(call: Call<BeforeAfterResponse>, t: Throwable) {
@@ -263,13 +275,14 @@ class BeforeAfterActivity : AppCompatActivity() {
                 call: Call<List<CarBackgroundsResponse>>,
                 response: Response<List<CarBackgroundsResponse>>
             ) {
-                Utilities.hideProgressDialog()
                 if (response.isSuccessful) {
                     if (!response.body().isNullOrEmpty() && response.body()?.size!! > 0) {
                         Utilities.setList(
                             this@BeforeAfterActivity, AppConstants.BACKGROUND_LIST_CARS,
                             response.body() as ArrayList
                         )
+
+                        fetchGifsList()
                     } else {
                         Toast.makeText(
                             this@BeforeAfterActivity,
@@ -290,6 +303,39 @@ class BeforeAfterActivity : AppCompatActivity() {
             }
         })
     }
+
+    private fun fetchGifsList() {
+        gifList = ArrayList<String>()
+
+        val request = RetrofitClients.buildService(APiService::class.java)
+
+        val call = request.getGifsList()
+
+        call?.enqueue(object : Callback<List<GifResponse>> {
+            override fun onResponse(call: Call<List<GifResponse>>,
+                                    response: Response<List<GifResponse>>) {
+                Utilities.hideProgressDialog()
+                if (response.isSuccessful){
+                    gifList = ArrayList<String>()
+                    for (i in 0..response.body()!!.size-1)
+                        gifList.add(response.body()!![i].url)
+                    Utilities.hideProgressDialog()
+
+                    Utilities.setList(
+                        this@BeforeAfterActivity, AppConstants.GIF_LIST,
+                        response.body() as ArrayList
+                    )
+
+                }
+            }
+            override fun onFailure(call: Call<List<GifResponse>>, t: Throwable) {
+                Utilities.hideProgressDialog()
+                Toast.makeText(this@BeforeAfterActivity,
+                    "Server not responding!!!", Toast.LENGTH_SHORT).show()
+            }
+        })
+    }
+
 
     override fun onBackPressed() {
         super.onBackPressed()

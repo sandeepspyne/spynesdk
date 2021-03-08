@@ -12,5 +12,5 @@ For support, please feel free to contact me at https://www.linkedin.com/in/syeda
 
 data class Payload (
 
-	val data : Data
+	val data : String//Data
 )

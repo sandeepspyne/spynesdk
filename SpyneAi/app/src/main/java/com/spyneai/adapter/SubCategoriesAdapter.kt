@@ -83,4 +83,5 @@ public class SubCategoriesAdapter(val context: Context,
     open interface BtnClickListener {
         fun onBtnClick(position: Int)
     }
+
 }

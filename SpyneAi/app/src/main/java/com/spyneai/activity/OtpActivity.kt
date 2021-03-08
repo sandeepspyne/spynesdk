@@ -15,6 +15,7 @@ import com.spyneai.OnboardTwoActivity
 import com.spyneai.R
 import com.spyneai.interfaces.APiService
 import com.spyneai.interfaces.RetrofitClient
+import com.spyneai.interfaces.RetrofitClientSpyneAi
 import com.spyneai.model.login.LoginRequest
 import com.spyneai.model.login.LoginResponse
 import com.spyneai.model.otp.OtpRequest
@@ -54,8 +55,8 @@ public class OtpActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_otp)
 
-        val strNumber = intent.getStringExtra(AppConstants.phone)!!
-        val newString =  StringBuilder(strNumber)
+//        val strNumber = intent.getStringExtra(AppConstants.phone)!!
+      /*  val newString =  StringBuilder(strNumber)
 
         newString.setCharAt(2,'X')
         newString.setCharAt(3,'X')
@@ -64,7 +65,9 @@ public class OtpActivity : AppCompatActivity() {
         newString.setCharAt(6,'X')
         newString.setCharAt(7,'X')
 
-        tvNumber.setText("+91" + newString)
+        tvNumber.setText("+91" + newString)*/
+
+        tvNumber.setText(Utilities.getPreference(this,AppConstants.EMAIL_ID))
 
         findIds()
         textListeners()
@@ -371,14 +374,17 @@ public class OtpActivity : AppCompatActivity() {
         Utilities.showProgressDialog(this)
         val otpRequest : OtpRequest = OtpRequest(otpEntered);
 
-        val request = RetrofitClient.buildService(APiService::class.java)
-        val call = request.postOtp(Utilities.getPreference(this, AppConstants.tokenId), otpRequest)
+        val request = RetrofitClientSpyneAi.buildService(APiService::class.java)
+        val call = request.postOtp(Utilities.getPreference(this, AppConstants.EMAIL_ID), otpEntered)
 
         call?.enqueue(object : Callback<OtpResponse> {
             override fun onResponse(call: Call<OtpResponse>, response: Response<OtpResponse>) {
                 Utilities.hideProgressDialog()
                 if (response.isSuccessful ) {
-                    if (response.body()!!.msgInfo.msgCode.equals("200")) {
+                    if (response.body()!!.id.equals("200")) {
+                        Toast.makeText(this@OtpActivity, response.body()!!.message, Toast.LENGTH_SHORT).show()
+                        Utilities.savePrefrence(this@OtpActivity,AppConstants.tokenId,
+                            intent.getStringExtra(AppConstants.tokenId))
                         val intent = Intent(applicationContext, DashboardActivity::class.java)
                         startActivity(intent)
                         finish()
@@ -394,6 +400,10 @@ public class OtpActivity : AppCompatActivity() {
                         tvError.visibility = View.VISIBLE
                     }
                 }
+                else{
+                    Toast.makeText(this@OtpActivity, "Server not responding!!!", Toast.LENGTH_SHORT).show()
+                }
+
             }
 
             override fun onFailure(call: Call<OtpResponse>, t: Throwable) {
@@ -405,38 +415,39 @@ public class OtpActivity : AppCompatActivity() {
         })
     }
     private fun resendOtp(phoneNumber: String) {
-        //val todoPostCall: Call<com.spyneai.model.login.LoginResponse> = apiInterface.postContactNum(userRegistrationRequest)
-
         Utilities.showProgressDialog(this)
-        val loginRequest : LoginRequest = LoginRequest(phoneNumber);
+        val loginRequest = LoginRequest(Utilities.getPreference(this, AppConstants.EMAIL_ID).toString());
 
         val request = RetrofitClient.buildService(APiService::class.java)
-        val call = request.loginApp(loginRequest)
+        val call = request.loginEmailApp(loginRequest)
 
-        call?.enqueue(object : Callback<LoginResponse> {
+        call?.enqueue(object : Callback<LoginResponse>{
             override fun onResponse(call: Call<LoginResponse>, response: Response<LoginResponse>) {
                 Utilities.hideProgressDialog()
-                if (response.isSuccessful) {
-                    if (response.body()?.payload?.data?.token != null) {
-                        Utilities.savePrefrence(
-                                this@OtpActivity,
-                                AppConstants.tokenId,
-                                response.body()?.payload?.data?.token)
-                        Log.e("ok", response.body()!!.payload.data.token)
-                        Log.e("otp--->", response.body()!!.payload.data.otp)
+
+                if (response.isSuccessful){
+                    if (response.body()?.header?.tokenId != null)
+                    {
+                        Toast.makeText(
+                            this@OtpActivity,
+                            response.body()!!.msgInfo.msgDescription,
+                            Toast.LENGTH_SHORT
+                        ).show()
+                        Log.e("ok", response.body()!!.header.tokenId )
+                        val intent = Intent(applicationContext, OtpActivity::class.java)
+                        intent.putExtra(AppConstants.tokenId,response.body()!!.header.tokenId)
+                        startActivity(intent)
                     }
                 }
             }
-
             override fun onFailure(call: Call<LoginResponse>, t: Throwable) {
                 Log.e("ok", "no way")
                 Utilities.hideProgressDialog()
                 Toast.makeText(
                     this@OtpActivity,
-                    "Server not responding",
+                    "Server not responding!!!",
                     Toast.LENGTH_SHORT
                 ).show()
-                //Toast.makeText(this@MainActivity, "${t.message}", Toast.LENGTH_SHORT).show()
             }
         })
     }
@@ -454,10 +465,10 @@ public class OtpActivity : AppCompatActivity() {
 
     override fun onDestroy() {
         super.onDestroy()
-       /* Utilities.savePrefrence(
-                this,
-                AppConstants.tokenId,
-                "")*/
+        /* Utilities.savePrefrence(
+                 this,
+                 AppConstants.tokenId,
+                 "")*/
     }
 
     /*

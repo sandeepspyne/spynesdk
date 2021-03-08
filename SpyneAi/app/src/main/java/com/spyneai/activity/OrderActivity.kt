@@ -185,8 +185,8 @@ class OrderActivity : AppCompatActivity() {
                             (channelList as ArrayList).clear()
                             (skuList as ArrayList).addAll(response.body()?.payload!!.data.skus as ArrayList)
                             (channelList as ArrayList).addAll(response.body()?.payload!!.data.marketPlace as ArrayList)
+                            skuName = response.body()?.payload!!.data.skus[response.body()?.payload!!.data.skus.size - 1].displayName
                         }
-                        skuName = response.body()?.payload!!.data.skus[response.body()?.payload!!.data.skus.size - 1].displayName
                     }
                     if (skuList.size > 0)
                         skuAdapter.notifyDataSetChanged()

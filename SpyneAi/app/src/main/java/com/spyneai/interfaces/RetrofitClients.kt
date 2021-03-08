@@ -6,14 +6,13 @@ import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import java.util.concurrent.TimeUnit
 
-
 object RetrofitClients {
 
     private const val BASE_URL = "https://www.clippr.ai/api/"
     private val client = OkHttpClient.Builder()
-            .readTimeout(2, TimeUnit.MINUTES)
-            .writeTimeout(2, TimeUnit.MINUTES)
-            .connectTimeout(2, TimeUnit.MINUTES)
+            .readTimeout(10, TimeUnit.MINUTES)
+            .writeTimeout(10, TimeUnit.MINUTES)
+            .connectTimeout(10, TimeUnit.MINUTES)
             .build()
 
 

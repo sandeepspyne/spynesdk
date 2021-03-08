@@ -4,7 +4,6 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
-    android:elevation="@dimen/dp_5"
     tools:context=".activity.CameraActivity"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
@@ -20,19 +19,20 @@
             android:layout_height="wrap_content"
             android:elevation="@dimen/dp_5"
             android:background="@drawable/bg_channel"
-            tools:context=".activity.CameraActivity"
             android:padding="0.1dp"
+            tools:context=".activity.CameraActivity"
             android:orientation="vertical">
 
             <androidx.cardview.widget.CardView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                app:cardCornerRadius="@dimen/dp_8">
+                app:cardCornerRadius="@dimen/dp_10">
                 <ImageView
                     android:id="@+id/ivMarketPlace"
-                    android:layout_width="@dimen/dp_50"
-                    android:layout_height="@dimen/dp_50"
+                    android:layout_width="@dimen/dp_70"
+                    android:layout_height="@dimen/dp_70"
                     android:src="@mipmap/defaults"
+                    android:scaleType="fitXY"
                     android:background="@drawable/click_backgrounds"
                     android:contentDescription="@string/app_name" />
             </androidx.cardview.widget.CardView>

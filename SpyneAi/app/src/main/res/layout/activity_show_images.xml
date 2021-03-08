@@ -1,0 +1,120 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    tools:context=".activity.ShowGifActivity"
+    android:orientation="vertical">
+
+    <androidx.appcompat.widget.Toolbar
+        android:id="@+id/my_toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        android:background="?attr/colorPrimary"
+        android:elevation="@dimen/dp_5"
+        android:backgroundTint="@color/white"
+        android:theme="@style/ThemeOverlay.AppCompat.Light" >
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+            <ImageView
+                android:id="@+id/ivBackShowImages"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:padding="@dimen/dp_10"
+                android:src="@drawable/back"
+                app:tint="@color/black" />
+            <TextView
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:layout_height="match_parent"
+                android:text="@string/your_images"
+                android:fontFamily="@font/bold"
+                android:textColor="@color/black"
+                android:gravity="center"
+                android:textStyle="bold"
+                android:textSize="@dimen/sp_16"/>
+            <ImageView
+                android:id="@+id/ivHomeShowImages"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:src="@mipmap/home"
+                android:padding="@dimen/dp_10"
+                app:tint="@color/black" />
+
+        </LinearLayout>
+
+    </androidx.appcompat.widget.Toolbar>
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/your_photos"
+        android:textColor="@color/black"
+        android:fontFamily="@font/bold"
+        android:gravity="center"
+        android:layout_margin="@dimen/dp_10"
+        android:textSize="@dimen/sp_16" />
+    <TextView
+        android:id="@+id/tvYourEmailId"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/email"
+        android:textColor="@color/primary"
+        android:fontFamily="@font/medium"
+        android:gravity="center"
+        android:textSize="@dimen/sp_13" />
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/rvImagesBackgroundRemoved"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:layout_margin="@dimen/dp_20"/>
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/reach_out"
+        android:textColor="@color/black"
+        android:fontFamily="@font/medium"
+        android:padding="@dimen/dp_10"
+        android:gravity="center"
+        android:textSize="@dimen/sp_20" />
+
+    <LinearLayout
+        android:id="@+id/tvRequestWappImages"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="@dimen/dp_30"
+        android:layout_gravity="center"
+        android:padding="@dimen/dp_10"
+        android:background="@drawable/bg_wapp"
+        android:gravity="center">
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:src="@mipmap/wapp"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:text="@string/whatsapp"
+            android:textColor="@color/white"
+            android:fontFamily="@font/medium"
+            android:textSize="@dimen/sp_16"
+            android:layout_gravity="center"
+            android:layout_marginStart="@dimen/dp_30"
+            android:layout_marginEnd="@dimen/dp_30"
+            android:textAllCaps="false"
+            android:padding="@dimen/dp_5" />
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:visibility="invisible"
+            android:src="@mipmap/wapp"/>
+
+
+    </LinearLayout>
+</LinearLayout>

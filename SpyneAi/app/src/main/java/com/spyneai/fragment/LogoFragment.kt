@@ -13,6 +13,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
@@ -45,6 +46,7 @@ class LogoFragment(
 
     lateinit var ivLogo : ImageView
     lateinit var ivCorners : ImageView
+    lateinit var ivCross : ImageView
     var rotat : Int = 0;
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -65,6 +67,7 @@ class LogoFragment(
         val btnUploadLogo = view.findViewById<TextView>(R.id.btnUploadLogo)
         ivLogo = view.findViewById<ImageView>(R.id.ivLogos)
         ivCorners = view.findViewById<ImageView>(R.id.ivCorner)
+        ivCross = view.findViewById<ImageView>(R.id.ivCross)
 
         btnUploadLogo.setOnClickListener(View.OnClickListener {
             val checkSelfPermission = ContextCompat.checkSelfPermission(
@@ -80,6 +83,17 @@ class LogoFragment(
             } else {
                 defaultSet()
             }
+        })
+
+        ivCross.setOnClickListener(View.OnClickListener {
+            cardLogos.visibility = View.GONE
+            ivCorner.visibility = View.GONE
+
+            Utilities.savePrefrence(
+                    contexts,
+                    AppConstants.LOGO_FILE,
+                    photoFile.toString()
+            )
         })
 
         ivCorners.setOnClickListener(View.OnClickListener {
@@ -109,15 +123,25 @@ class LogoFragment(
     }
 
     private fun defaultSet() {
-        val intent = Intent()
-        intent.type = "image/*"
-        intent.action = Intent.ACTION_GET_CONTENT
-        startActivityForResult(
-            Intent.createChooser(
-                intent,
-                "Select Picture"
-            ), SELECT_PICTURE
-        )
+        if (!Utilities.getPreference(contexts,AppConstants.REPLACED_IMAGE).isNullOrEmpty()) {
+            val intent = Intent()
+            intent.type = "image/*"
+            intent.action = Intent.ACTION_GET_CONTENT
+            startActivityForResult(
+                    Intent.createChooser(
+                            intent,
+                            "Select Picture"
+                    ), SELECT_PICTURE
+            )
+        }
+        else{
+            Toast.makeText(
+                    contexts,
+                    "Please choose your car background first",
+                    Toast.LENGTH_SHORT
+            ).show()
+
+        }
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -125,24 +149,32 @@ class LogoFragment(
         if (resultCode == AppCompatActivity.RESULT_OK) {
             if (requestCode == SELECT_PICTURE) {
                 val selectedImageUri: Uri = data!!.getData()!!
-                selectedImagePath = ImageFilePath.getPath(context!!, data.getData()!!);
+                selectedImagePath = ImageFilePath.getPath(contexts!!, data.getData()!!);
                 photoFile = File(selectedImagePath)
                 savedUri = Uri.fromFile(photoFile)
+                if (photoFile.toString().contains(".png")) {
 
-                //  photoFilePath = compressFileFromBitmap()
+                    //  photoFilePath = compressFileFromBitmap()
 
-                val myBitmapLogo = BitmapFactory.decodeFile(photoFile.absolutePath)
-                ivLogos.setImageBitmap(myBitmapLogo)
+                    val myBitmapLogo = BitmapFactory.decodeFile(photoFile.absolutePath)
+                    ivLogos.setImageBitmap(myBitmapLogo)
 
-                cardLogos.visibility = View.VISIBLE
-                ivCorner.visibility = View.VISIBLE
+                    cardLogos.visibility = View.VISIBLE
+                    ivCorner.visibility = View.VISIBLE
 
-                Utilities.savePrefrence(
-                    contexts,
-                    AppConstants.LOGO_FILE,
-                    photoFile.toString()
-                )
-                ivCorners.performClick()
+                    Utilities.savePrefrence(
+                            contexts,
+                            AppConstants.LOGO_FILE,
+                            photoFile.toString()
+                    )
+                }
+                else{
+                    Toast.makeText(
+                            contexts!!,
+                            "Please choose image in png format",
+                            Toast.LENGTH_SHORT
+                    ).show()
+                }
             }
         }
     }

@@ -1,11 +1,16 @@
 package com.spyneai.activity
 
+import android.app.Activity
+import android.app.Dialog
 import android.content.Intent
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
 import android.view.View
+import android.view.Window
+import android.widget.Button
+import android.widget.TextView
 import android.widget.Toast
+import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -13,8 +18,6 @@ import com.spyneai.R
 import com.spyneai.adapter.*
 import com.spyneai.interfaces.APiService
 import com.spyneai.interfaces.RetrofitClient
-import com.spyneai.interfaces.RetrofitClients
-import com.spyneai.model.channel.ChannelsResponse
 import com.spyneai.model.order.MarketPlace
 import com.spyneai.model.order.PlaceOrderResponse
 import com.spyneai.model.order.Sku
@@ -30,6 +33,7 @@ import kotlinx.android.synthetic.main.fragment_channel.view.*
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
+
 
 class PreviewActivity : AppCompatActivity() {
 
@@ -76,6 +80,7 @@ class PreviewActivity : AppCompatActivity() {
                 object : SkusAdapter.BtnClickListener {
                     override fun onBtnClick(position: Int) {
                         Log.e("position preview MAin", position.toString())
+                        showDialogDelete(skuList[position].skuId)
                     }
                 })
         val layoutManager: RecyclerView.LayoutManager =
@@ -88,16 +93,15 @@ class PreviewActivity : AppCompatActivity() {
     private fun fetchSkus() {
         val request = RetrofitClient.buildService(APiService::class.java)
         val call = request.getOrderList(
-                Utilities.getPreference(this,AppConstants.tokenId),
-                Utilities.getPreference(this,AppConstants.SHOOT_ID),
-                Utilities.getPreference(this,AppConstants.SKU_ID))
+                Utilities.getPreference(this, AppConstants.tokenId),
+                Utilities.getPreference(this, AppConstants.SHOOT_ID),
+                Utilities.getPreference(this, AppConstants.SKU_ID))
 
         call?.enqueue(object : Callback<PlaceOrderResponse> {
             override fun onResponse(call: Call<PlaceOrderResponse>,
                                     response: Response<PlaceOrderResponse>) {
-                if (response.isSuccessful){
-                    if (response.body()?.payload!!.data.numberOfSkus > 0)
-                    {
+                if (response.isSuccessful) {
+                    if (response.body()?.payload!!.data.numberOfSkus > 0) {
                         (skuList as ArrayList).clear()
                         (channelList as ArrayList).clear()
                         (skuList as ArrayList).addAll(response.body()?.payload!!.data.skus as ArrayList)
@@ -112,6 +116,30 @@ class PreviewActivity : AppCompatActivity() {
                     amount = response.body()!!.payload.data.marketPlace.size.toString()
                 }
             }
+
+            override fun onFailure(call: Call<PlaceOrderResponse>, t: Throwable) {
+                Toast.makeText(this@PreviewActivity,
+                        "Server not responding!!!", Toast.LENGTH_SHORT).show()
+            }
+        })
+    }
+
+
+    private fun deleteSkus() {
+        val request = RetrofitClient.buildService(APiService::class.java)
+        val call = request.deleteSku(
+                Utilities.getPreference(this, AppConstants.tokenId),
+                Utilities.getPreference(this, AppConstants.SHOOT_ID),
+                Utilities.getPreference(this, AppConstants.SKU_ID))
+
+        call?.enqueue(object : Callback<PlaceOrderResponse> {
+            override fun onResponse(call: Call<PlaceOrderResponse>,
+                                    response: Response<PlaceOrderResponse>) {
+                if (response.isSuccessful) {
+                    fetchSkus()
+                }
+            }
+
             override fun onFailure(call: Call<PlaceOrderResponse>, t: Throwable) {
                 Toast.makeText(this@PreviewActivity,
                         "Server not responding!!!", Toast.LENGTH_SHORT).show()
@@ -121,16 +149,32 @@ class PreviewActivity : AppCompatActivity() {
 
     private fun listeners() {
         tvOrder.setOnClickListener(View.OnClickListener {
-            val intent = Intent(this, PaymentActivity::class.java)
-            intent.putExtra(AppConstants.AMOUNT,amount)
-            intent.putExtra(AppConstants.CHANNEL_COUNT,channelCount)
-            intent.putExtra(AppConstants.SKU_COUNT,skuCount)
+            val intent = Intent(this, OrderSummaryActivity::class.java)
+            intent.putExtra(AppConstants.AMOUNT, amount)
+            intent.putExtra(AppConstants.CHANNEL_COUNT, channelCount)
+            intent.putExtra(AppConstants.SKU_COUNT, skuCount)
             startActivity(intent)
         })
         ivBackPreview.setOnClickListener(View.OnClickListener {
             onBackPressed()
         })
 
+    }
+
+    fun showDialogDelete( msg: String?) {
+        val dialog = Dialog(this)
+        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE)
+        dialog.setCancelable(false)
+        dialog.setContentView(R.layout.dialog_delete)
+        val text = dialog.findViewById(R.id.tvSkuNameDialog) as TextView
+        text.text = msg
+
+        val dialogButtonYes: TextView = dialog.findViewById(R.id.btnYes)
+        val dialogButtonNo: TextView = dialog.findViewById(R.id.btnNo)
+
+        dialogButtonYes.setOnClickListener(View.OnClickListener { deleteSkus() })
+        dialogButtonNo.setOnClickListener(View.OnClickListener { dialog.dismiss() })
+        dialog.show()
     }
 
     override fun onBackPressed() {

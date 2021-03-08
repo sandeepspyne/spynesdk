@@ -74,7 +74,13 @@ class SkusAdapter(val context: Context,
                 skuList[position].photos.size )
 
         mClickListener = btnlistener
+/*
         viewHolder.llSkuList.setOnClickListener(View.OnClickListener {
+            if (mClickListener != null)
+                mClickListener?.onBtnClick(position)
+        })
+*/
+        viewHolder.ivDeleteSku.setOnClickListener(View.OnClickListener {
             if (mClickListener != null)
                 mClickListener?.onBtnClick(position)
         })

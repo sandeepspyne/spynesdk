@@ -230,6 +230,7 @@ public class CameraPreviewActivity : AppCompatActivity() {
 
     //Preview Set for clicked camera image
     fun setPreview() {
+        Utilities.savePrefrence(this,AppConstants.REPLACED_IMAGE,"")
         //  Utilities.showProgressDialog(this)
         setImageRaw()
 
@@ -328,6 +329,7 @@ public class CameraPreviewActivity : AppCompatActivity() {
 
         val bg_replacement_backgound_id = RequestBody.create(MultipartBody.FORM, Utilities.getPreference(this,AppConstants.IMAGE_ID)!!)
 
+        Log.e("bg ID ",Utilities.getPreference(this,AppConstants.IMAGE_ID)!!.toString())
         var front : String = "front"
         val car_bg_replacement_angle = RequestBody.create(MultipartBody.FORM, front  )
 
@@ -443,6 +445,7 @@ public class CameraPreviewActivity : AppCompatActivity() {
                     if (response.isSuccessful) {
                         if (response.body()?.payload!!.data.currentFrame <=
                             response.body()?.payload!!.data.totalFrames) {
+
                             val intent = Intent(this@CameraPreviewActivity, CameraActivity::class.java)
                             intent.putExtra(AppConstants.FRAME, response.body()?.payload!!.data.currentFrame)
                             intent.putExtra(AppConstants.TOTAL_FRAME, response.body()?.payload!!.data.totalFrames)

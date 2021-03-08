@@ -10,12 +10,12 @@ object RetrofitClient {
 
     private val AUTH = "Basic "+ Base64.encodeToString("belalkhan:123456".toByteArray(), Base64.NO_WRAP)
 
-    private const val BASE_URL = "http://cliqservice.ap-south-1.elasticbeanstalk.com/"
+    private const val BASE_URL = "https://api.spyne.ai/"
 
     private val client = OkHttpClient.Builder()
-            .readTimeout(2, TimeUnit.MINUTES)
-            .writeTimeout(2, TimeUnit.MINUTES)
-            .connectTimeout(2, TimeUnit.MINUTES)
+            .readTimeout(10, TimeUnit.MINUTES)
+            .writeTimeout(10, TimeUnit.MINUTES)
+            .connectTimeout(10, TimeUnit.MINUTES)
             .build()
 
     private val retrofit = Retrofit.Builder()

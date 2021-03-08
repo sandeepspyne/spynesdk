@@ -19,7 +19,7 @@ class OnboardOneActivity : AppCompatActivity() {
         setContentView(R.layout.activity_onboard_one)
         AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
 
-        startAnim()
+       // startAnim()
 
         tv_get_started.setOnClickListener(View.OnClickListener {
             val intent = Intent(this, OnboardTwoActivity::class.java)

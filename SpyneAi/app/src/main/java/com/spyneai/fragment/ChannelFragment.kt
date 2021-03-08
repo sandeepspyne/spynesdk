@@ -54,7 +54,7 @@ class ChannelFragment(context: Context,categoryId: String,
 
     private fun setRecycler(view: View) {
         channelList = ArrayList<ChannelsResponse>()
-        channelAdapter = ChannelAdapter(context!!, channelList as ArrayList<ChannelsResponse>,
+        channelAdapter = ChannelAdapter(contexts, channelList as ArrayList<ChannelsResponse>,
                 object : ChannelAdapter.BtnClickListener {
             override fun onBtnClick(position: Int) {
                 Log.e("position preview", position.toString())

@@ -14,14 +14,29 @@
         android:layout_height="wrap_content"
         android:visibility="invisible"
         app:cardCornerRadius="@dimen/dp_5">
-        <ImageView
-            android:id="@+id/ivLogos"
-            android:layout_width="@dimen/dp_50"
-            android:layout_height="@dimen/dp_50"
-            android:src="@mipmap/defaults"
-            android:scaleType="fitXY"
-            android:background="@drawable/bg_channel"
-            android:contentDescription="@string/app_name" />
+
+        <FrameLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content">
+            <ImageView
+                android:id="@+id/ivLogos"
+                android:layout_width="@dimen/dp_50"
+                android:layout_height="@dimen/dp_50"
+                android:src="@mipmap/defaults"
+                android:scaleType="fitXY"
+                android:background="@drawable/bg_channel"
+                android:contentDescription="@string/app_name" />
+            <ImageView
+                android:id="@+id/ivCross"
+                android:layout_width="@dimen/dp_15"
+                android:layout_height="@dimen/dp_15"
+                android:src="@mipmap/plus_orange"
+                android:rotation="45"
+                android:layout_gravity="right"
+                android:contentDescription="@string/app_name" />
+
+        </FrameLayout>
+
     </androidx.cardview.widget.CardView>
     <LinearLayout
         android:layout_width="wrap_content"

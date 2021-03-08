@@ -11,20 +11,19 @@ import androidx.cardview.widget.CardView
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.spyneai.R
-import com.spyneai.model.channels.Data
-import com.spyneai.needs.AppConstants
+import com.spyneai.model.channel.ChannelsResponse
 import java.util.*
 
 class MarketAdapter(
-    val context: Context,
-    val photoList: List<Data>,
-    val btnlistener: BtnClickListener?)
+        val context: Context,
+        val channelList : ArrayList<ChannelsResponse>,
+        val btnlistener: BtnClickListener?)
     : RecyclerView.Adapter<MarketAdapter.ViewHolder>() {
 
     // true if the user in selection mode, false otherwise
     private var multiSelect = true
     // Keeps track of all the selected images
-    private val selectedItems = ArrayList<Data>()
+    private val selectedItems = ArrayList<ChannelsResponse>()
 
      companion object {
          var mClickListener: BtnClickListener? = null
@@ -57,7 +56,7 @@ class MarketAdapter(
         // contents of the view with that element
 
         //MultiSelect Android
-        val currentItem = photoList[position]
+        val currentItem = channelList[position]
         if (selectedItems.contains(currentItem)) {
             // if the item is selected, let the user know by adding a dark layer above it
             viewHolder.cardMarket.setBackgroundResource(R.drawable.bg_selected);
@@ -69,12 +68,10 @@ class MarketAdapter(
         //Set multiselect
 
 
-        Glide.with(context).load(
-            AppConstants.BASE_IMAGE_URL +
-                    photoList[position].displayThumbnail)
+        Glide.with(context).load(channelList[position].image_url)
             .into(viewHolder.imgPhotos)
 
-        viewHolder.tvMarketPlace.setText(photoList[position].displayName)
+        viewHolder.tvMarketPlace.setText(channelList[position].category)
         mClickListener = btnlistener
 
         viewHolder.cardMarket.setOnClickListener(View.OnClickListener {
@@ -89,7 +86,7 @@ class MarketAdapter(
 
 
     // helper function that adds/removes an item to the list depending on the app's state
-    private fun selectItem(viewHolder : ViewHolder, currentItem : Data) {
+    private fun selectItem(viewHolder: ViewHolder, currentItem: ChannelsResponse) {
         // If the "selectedItems" list contains the item, remove it and set it's state to normal
         if (selectedItems.contains(currentItem)) {
             selectedItems.remove(currentItem)
@@ -102,8 +99,8 @@ class MarketAdapter(
     }
 
     // Return the size of your dataset (invoked by the layout manager)
-    override fun getItemCount() = photoList.size
+    override fun getItemCount() = channelList.size
      open interface BtnClickListener {
-         fun onBtnClick(position: Int, selectedItems: ArrayList<Data>)
+         fun onBtnClick(position: Int, selectedItems: ArrayList<ChannelsResponse>)
      }
 }

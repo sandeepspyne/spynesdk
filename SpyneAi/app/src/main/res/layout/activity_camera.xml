@@ -8,7 +8,6 @@
     android:orientation="vertical"
     tools:context=".activity.CameraActivity">
 
-
     <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -19,7 +18,6 @@
             android:orientation="vertical">
 
             <androidx.camera.view.PreviewView
-                android:id="@+id/viewFinder"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent" />
             <ImageView
@@ -57,9 +55,9 @@
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
                         android:gravity="center"
-                        android:orientation="vertical">
+                        android:orientation="horizontal">
 
-                        <TextView
+                        <EditText
                             android:id="@+id/etSkuName"
                             android:layout_width="wrap_content"
                             android:layout_height="match_parent"
@@ -67,31 +65,50 @@
                             android:background="@drawable/bg_edit"
                             android:fontFamily="@font/medium"
                             android:gravity="center"
-                            android:hint="Sku-000"
+                            android:hint="@string/sku_names"
+                            android:maxLines="1"
+                            android:maxLength="20"
                             android:padding="@dimen/dp_5"
                             android:textColor="@color/white"
                             android:textColorHint="@color/white"
                             android:textSize="@dimen/sp_13" />
+                        <ImageView
+                            android:id="@+id/imgNext"
+                            android:layout_width="wrap_content"
+                            android:layout_height="match_parent"
+                            android:padding="@dimen/dp_5"
+                            android:src="@drawable/right"
+                            android:visibility="gone"
+                            app:tint="@color/white" />
+
                     </LinearLayout>
 
                     <ImageView
-                        android:id="@+id/imgNext"
                         android:layout_width="wrap_content"
                         android:layout_height="match_parent"
                         android:padding="@dimen/dp_5"
                         android:visibility="invisible"
-                        android:src="@drawable/next" />
+                        android:src="@drawable/right" />
 
                 </LinearLayout>
 
             </androidx.appcompat.widget.Toolbar>
-            <ImageView
-                android:id="@+id/imgOverlay"
+            <FrameLayout
                 android:layout_width="match_parent"
-                android:layout_height="0dp"
                 android:layout_weight="1.5"
-                android:src="@mipmap/defaults"
-                android:contentDescription="@string/app_name" />
+                android:layout_height="0dp">
+                <androidx.camera.view.PreviewView
+                    android:id="@+id/viewFinder"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent" />
+
+                <ImageView
+                    android:id="@+id/imgOverlay"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:src="@mipmap/defaults"
+                    android:contentDescription="@string/app_name" />
+            </FrameLayout>
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -158,6 +175,7 @@
                                 android:fontFamily="@font/bold"
                                 android:gravity="center"
                                 android:elevation="@dimen/dp_5"
+                                android:padding="@dimen/sp_5"
                                 android:background="@drawable/bg_round" />
                         </androidx.cardview.widget.CardView>
                     </LinearLayout>
@@ -194,12 +212,14 @@
                 </LinearLayout>
             </LinearLayout>
         </LinearLayout>
+        <View
+            android:id="@+id/camera_overlay"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:visibility="gone"
+            android:background="@color/black" />
+
     </FrameLayout>
 
-    <View
-        android:id="@+id/camera_overlay"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:background="@color/black" />
 
 </LinearLayout>

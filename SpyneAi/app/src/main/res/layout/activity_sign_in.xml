@@ -5,7 +5,6 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".activity.SignInActivity"
-    android:gravity="center"
     android:orientation="vertical">
     <LinearLayout
         android:layout_width="match_parent"
@@ -38,6 +37,7 @@
             android:orientation="horizontal"
             android:background="@drawable/bg_edit"
             android:padding="@dimen/dp_7"
+            android:visibility="gone"
             android:layout_marginLeft="20dp"
             android:layout_marginTop="10dp"
             android:layout_marginRight="20dp">
@@ -70,17 +70,6 @@
                 android:hint="Your Mobile Number"
                 android:padding="10dp"/>
         </LinearLayout>
-        <TextView
-            android:id="@+id/tvErrorEmail"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="@string/please_enter_mobile"
-            android:fontFamily="@font/light"
-            android:gravity="center"
-            android:visibility="invisible"
-            android:layout_margin="@dimen/dp_10"
-            android:textColor="@color/errorcolor"
-            android:textSize="@dimen/sp_13"/>
 
         <LinearLayout
             android:id="@+id/ll_email"
@@ -88,23 +77,33 @@
             android:layout_height="wrap_content"
             android:orientation="horizontal"
             android:background="@drawable/bg_edit"
-            android:padding="@dimen/dp_7"
-            android:layout_marginLeft="20dp"
+            android:padding="@dimen/dp_10"
+            android:layout_marginLeft="25dp"
             android:layout_marginTop="10dp"
-            android:visibility="gone"
-            android:layout_marginRight="20dp">
+            android:layout_marginRight="25dp">
             <EditText
                 android:id="@+id/et_email"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="match_parent"
                 android:background="@null"
                 android:inputType="text"
                 android:maxLines="1"
                 android:textSize="15sp"
+                android:maxLength="30"
                 android:fontFamily="@font/light"
-                android:hint="Your Email Id"
-                android:layout_margin="10dp"/>
+                android:hint="Your Email Id" />
         </LinearLayout>
+        <TextView
+            android:id="@+id/tvErrorEmail"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/please_enter_email"
+            android:fontFamily="@font/light"
+            android:gravity="center"
+            android:visibility="invisible"
+            android:layout_margin="@dimen/dp_10"
+            android:textColor="@color/errorcolor"
+            android:textSize="@dimen/sp_13"/>
 
         <TextView
             android:id="@+id/tv_email_instead"
@@ -145,7 +144,8 @@
             android:padding="@dimen/dp_10"
             android:elevation="@dimen/dp_5"
             android:fontFamily="@font/bold"
-            android:layout_margin="@dimen/dp_25"
+            android:layout_marginStart="@dimen/dp_25"
+            android:layout_marginEnd="@dimen/dp_25"
             android:background="@drawable/bg_edit_button_round"
             android:textSize="@dimen/sp_16"/>
 
@@ -155,6 +155,7 @@
             android:layout_height="wrap_content"
             android:orientation="horizontal"
             android:layout_margin="20dp"
+            android:visibility="gone"
             android:gravity="center">
             <View
                 android:layout_width="0dp"
@@ -187,6 +188,7 @@
             android:gravity="center"
             android:scaleType="fitXY"
             android:layout_marginStart="@dimen/dp_20"
+            android:visibility="gone"
             android:layout_marginEnd="@dimen/dp_20"
             android:layout_marginTop="@dimen/dp_10"
             android:src="@mipmap/google_logo"
@@ -208,6 +210,7 @@
             android:gravity="center|bottom"
             android:textSize="12sp"/>
         <TextView
+            android:id="@+id/tvTerms"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:layout_gravity="bottom"

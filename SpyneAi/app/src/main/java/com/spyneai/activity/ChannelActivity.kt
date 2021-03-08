@@ -11,11 +11,13 @@ import androidx.appcompat.app.AppCompatDelegate
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.spyneai.R
+import com.spyneai.adapter.ChannelAdapter
 import com.spyneai.adapter.MarketAdapter
 import com.spyneai.interfaces.APiService
 import com.spyneai.interfaces.RetrofitClient
+import com.spyneai.model.channel.ChannelUpdateRequest
+import com.spyneai.model.channel.ChannelsResponse
 import com.spyneai.model.channels.Data
-import com.spyneai.model.channels.MarketplaceResponse
 import com.spyneai.model.marketupdate.MarketPlace
 import com.spyneai.model.marketupdate.ShootMarketUpdateRequest
 import com.spyneai.needs.AppConstants
@@ -32,8 +34,10 @@ class ChannelActivity : AppCompatActivity() {
     private lateinit var photoList: List<Data>
     var pos : Int = 0
 
-    lateinit var marketPlaceList : List<Data>
-    lateinit var marketPlace: ArrayList<MarketPlace>
+    lateinit var channelList : List<ChannelsResponse>
+    lateinit var channelLists : List<ChannelsResponse>
+    lateinit var channelAdapter: ChannelAdapter
+    lateinit var marketPlaceList: ArrayList<ChannelUpdateRequest>
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -42,23 +46,21 @@ class ChannelActivity : AppCompatActivity() {
         AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
         setMarkets()
         listeners()
-
     }
 
-
     private fun setMarkets() {
-        photoList = ArrayList<Data>()
-        marketPlaceList = ArrayList<Data>()
-        marketPlace = ArrayList<MarketPlace>()
+        channelList = ArrayList<ChannelsResponse>()
+        channelLists = ArrayList<ChannelsResponse>()
+        marketPlaceList = ArrayList<ChannelUpdateRequest>()
 
-        marketAdapter = MarketAdapter(this, photoList,
+        marketAdapter = MarketAdapter(this, channelList as ArrayList<ChannelsResponse>,
                 object : MarketAdapter.BtnClickListener {
-                    override fun onBtnClick(position: Int, selectedItems: ArrayList<Data>) {
+                    override fun onBtnClick(position: Int, selectedItems: java.util.ArrayList<ChannelsResponse>) {
                         Log.e("position preview", position.toString())
                         marketAdapter.notifyDataSetChanged()
                         pos = position
-                        (marketPlaceList as ArrayList).clear()
-                        (marketPlaceList as ArrayList).addAll(selectedItems)
+                        (channelLists as ArrayList).clear()
+                        (channelLists as ArrayList).addAll(selectedItems)
                     }
                 })
         val layoutManager: RecyclerView.LayoutManager =
@@ -66,50 +68,27 @@ class ChannelActivity : AppCompatActivity() {
         rvChannels.setLayoutManager(layoutManager)
         rvChannels.setAdapter(marketAdapter)
 
-        fetchMarkets()
+        (channelList as ArrayList).clear()
+        (channelList as ArrayList).addAll(Utilities.getList(this,AppConstants.CHANNEL_LIST)!!)
+        marketAdapter.notifyDataSetChanged()
     }
 
-    private fun fetchMarkets() {
-        Utilities.showProgressDialog(this)
-        val request = RetrofitClient.buildService(APiService::class.java)
-        val call = request.getMarketList(
-                Utilities.getPreference(this, AppConstants.tokenId),
-                Utilities.getPreference(this, AppConstants.CATEGORY_ID),
-                Utilities.getPreference(this, AppConstants.PRODUCT_ID))
-
-        call?.enqueue(object : Callback<MarketplaceResponse> {
-            override fun onResponse(call: Call<MarketplaceResponse>,
-                                    response: Response<MarketplaceResponse>) {
-                Utilities.hideProgressDialog()
-                if (response.isSuccessful){
-                    if (response.body()?.payload!!.data.isNotEmpty())
-                    {
-                        (photoList as ArrayList).clear()
-                        (photoList as ArrayList).addAll(response.body()?.payload!!.data as ArrayList)
-                    }
-                    marketAdapter.notifyDataSetChanged()
-                }
-            }
-            override fun onFailure(call: Call<MarketplaceResponse>, t: Throwable) {
-                Utilities.hideProgressDialog()
-                Toast.makeText(this@ChannelActivity,
-                        "Server not responding!!!", Toast.LENGTH_SHORT).show()
-            }
-        })
-    }
-
-
-    private fun updateMarket(marketPlaceList : ArrayList<Data>) {
+    private fun updateMarket(channelLists : ArrayList<ChannelsResponse>) {
         Utilities.showProgressDialog(this)
 
-        for (i in 0..marketPlaceList.size-1) {
-            val marketplaces = MarketPlace(marketPlaceList[i].markId, marketPlaceList[i].displayName)
-            marketPlace.add(marketplaces)
+        for (i in 0..channelLists.size-1) {
+            val marketplaces = ChannelUpdateRequest(
+                    channelLists[i].market_id,
+                    channelLists[i].image_url,
+                    channelLists[i].category)
+            marketPlaceList.add(marketplaces)
         }
 
+        val shootId = Utilities.getPreference(this, AppConstants.SHOOT_ID).toString()
+
         val shootMarketUpdateRequest = ShootMarketUpdateRequest(
-            Utilities.getPreference(this, AppConstants.SHOOT_ID).toString(),
-            marketPlace
+                shootId,
+            marketPlaceList
         )
 
         val request = RetrofitClient.buildService(APiService::class.java)
@@ -137,7 +116,7 @@ class ChannelActivity : AppCompatActivity() {
 
     private fun listeners() {
         tvAddMarketplaces.setOnClickListener(View.OnClickListener {
-            updateMarket(marketPlaceList as ArrayList<Data>)
+            updateMarket(channelLists as ArrayList<ChannelsResponse>)
         })
     }
 

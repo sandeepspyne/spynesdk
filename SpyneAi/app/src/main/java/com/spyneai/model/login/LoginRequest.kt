@@ -11,5 +11,6 @@ For support, please feel free to contact me at https://www.linkedin.com/in/syeda
 
 
 data class LoginRequest (
-	val phone : String,
+	val emailId : String
+	//val phone : String
 )

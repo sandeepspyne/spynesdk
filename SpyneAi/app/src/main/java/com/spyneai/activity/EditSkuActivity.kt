@@ -1,9 +1,12 @@
 package com.spyneai.activity
 
+import android.app.Dialog
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
 import android.view.View
+import android.view.Window
+import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.recyclerview.widget.GridLayoutManager
@@ -41,6 +44,10 @@ class EditSkuActivity : AppCompatActivity() {
         setSkuImages()
         imgBacks.setOnClickListener(View.OnClickListener {
             onBackPressed()
+        })
+
+        ivDeleteSkus.setOnClickListener(View.OnClickListener {
+            showDialogDelete(tvSkuName.text.toString())
         })
     }
 
@@ -92,4 +99,44 @@ class EditSkuActivity : AppCompatActivity() {
         super.onBackPressed()
         finish()
     }
+
+    private fun deleteSkus() {
+        val request = RetrofitClient.buildService(APiService::class.java)
+        val call = request.deleteSku(
+                Utilities.getPreference(this, AppConstants.tokenId),
+                Utilities.getPreference(this, AppConstants.SHOOT_ID),
+                Utilities.getPreference(this, AppConstants.SKU_ID))
+
+        call?.enqueue(object : Callback<PlaceOrderResponse> {
+            override fun onResponse(call: Call<PlaceOrderResponse>,
+                                    response: Response<PlaceOrderResponse>) {
+                if (response.isSuccessful) {
+                    onBackPressed()
+                }
+            }
+
+            override fun onFailure(call: Call<PlaceOrderResponse>, t: Throwable) {
+                Toast.makeText(this@EditSkuActivity,
+                        "Server not responding!!!", Toast.LENGTH_SHORT).show()
+            }
+        })
+    }
+
+    fun showDialogDelete( msg: String?) {
+        val dialog = Dialog(this)
+        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE)
+        dialog.setCancelable(false)
+        dialog.setContentView(R.layout.dialog_delete)
+        val text = dialog.findViewById(R.id.tvSkuNameDialog) as TextView
+        text.text = msg
+
+        val dialogButtonYes: TextView = dialog.findViewById(R.id.btnYes)
+        val dialogButtonNo: TextView = dialog.findViewById(R.id.btnNo)
+
+        dialogButtonYes.setOnClickListener(View.OnClickListener { deleteSkus() })
+        dialogButtonNo.setOnClickListener(View.OnClickListener { dialog.dismiss() })
+        dialog.show()
+    }
+
+
 }

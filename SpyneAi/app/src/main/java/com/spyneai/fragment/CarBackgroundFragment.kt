@@ -50,12 +50,14 @@ class CarBackgroundFragment(context: Context,categoryId: String,
 
     private fun setRecycler(view: View) {
         carBackgroundsResponseList = ArrayList<CarBackgroundsResponse>()
-        carBackgroundAdapter = CarBackgroundAdapter(context!!,
+        carBackgroundAdapter = CarBackgroundAdapter(contexts!!,
                 carBackgroundsResponseList as ArrayList<CarBackgroundsResponse>,
                 pos,
                 object : CarBackgroundAdapter.BtnClickListener {
                     override fun onBtnClick(position: Int) {
                         Log.e("position preview", position.toString())
+                        Utilities.savePrefrence(contexts, AppConstants.IMAGE_ID,
+                                carBackgroundsResponseList[position].imageId.toString())
                         if (position == 0)
                         {
                             (activity as CameraPreviewActivity?)!!.setImageRaw()
@@ -63,8 +65,7 @@ class CarBackgroundFragment(context: Context,categoryId: String,
                         else {
                             (activity as CameraPreviewActivity?)!!.showPreviewCar()
                         }
-                        Utilities.savePrefrence(contexts, AppConstants.IMAGE_ID,
-                                carBackgroundsResponseList[position].imageId.toString())
+
                         carBackgroundAdapter.notifyDataSetChanged()
                     }
                 })

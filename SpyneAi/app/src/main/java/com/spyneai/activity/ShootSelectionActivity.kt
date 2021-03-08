@@ -33,7 +33,6 @@ import kotlinx.android.synthetic.main.activity_camera_preview.*
 import kotlinx.android.synthetic.main.activity_edit_sku.*
 import kotlinx.android.synthetic.main.activity_edit_sku.tvSkuName
 import kotlinx.android.synthetic.main.activity_preview.*
-import kotlinx.android.synthetic.main.activity_shoot_selection.rvChannels
 import kotlinx.android.synthetic.main.activity_shoot_selection.*
 import kotlinx.android.synthetic.main.fragment_channel.view.*
 import okhttp3.MultipartBody
@@ -232,7 +231,7 @@ class ShootSelectionActivity : AppCompatActivity() {
         })
 
         tvOrderNow.setOnClickListener(View.OnClickListener {
-            val intent = Intent(this, PaymentActivity::class.java)
+            val intent = Intent(this, OrderSummaryActivity::class.java)
             //intent.putExtra(AppConstants.POSITION,position)
             //intent.putExtra(AppConstants.SKU_ID,skuList[position].skuId)
             startActivity(intent)
@@ -280,7 +279,7 @@ class ShootSelectionActivity : AppCompatActivity() {
 
         val bg_replacement_backgound_id = RequestBody.create(MultipartBody.FORM, Utilities.getPreference(this,AppConstants.IMAGE_ID)!!)
 
-        var front : String = "front"
+        val front : String = "front"
         val car_bg_replacement_angle = RequestBody.create(MultipartBody.FORM, front  )
 
         val request = RetrofitClients.buildService(APiService::class.java)

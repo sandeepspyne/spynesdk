@@ -18,6 +18,7 @@ import com.spyneai.R
 import com.spyneai.model.carreplace.CarBackgroundsResponse
 import com.spyneai.model.channel.BackgroundsResponse
 import com.spyneai.model.channel.ChannelsResponse
+import com.spyneai.model.skumap.UpdateSkuResponse
 import kotlinx.android.synthetic.main.dialog_progress.*
 import kotlinx.android.synthetic.main.dialog_progress_preview.*
 import java.lang.reflect.Type
@@ -189,6 +190,41 @@ object Utilities {
             val gson = Gson()
             val type: Type = object : TypeToken<List<CarBackgroundsResponse?>?>() {}.type
             arrayItems = gson.fromJson<ArrayList<CarBackgroundsResponse>>(serializedObject, type)
+        }
+
+        return arrayItems
+    }
+
+    fun getGifsList(context: Context, key: String): List<String>? {
+        sharedPreferences = context!!.getSharedPreferences(
+            AppConstants.MY_LIST,
+            Context.MODE_PRIVATE
+        )
+
+        var arrayItems = ArrayList<String>()
+        val serializedObject: String? = sharedPreferences.getString(key, null)
+        if (serializedObject != null) {
+            val gson = Gson()
+            val type: Type = object : TypeToken<List<String?>?>() {}.type
+            arrayItems = gson.fromJson<ArrayList<String>>(serializedObject, type)
+        }
+
+        return arrayItems
+    }
+
+
+    fun getFrameLists(context: Context, key: String): List<UpdateSkuResponse>? {
+        sharedPreferences = context!!.getSharedPreferences(
+            AppConstants.MY_LISTS,
+            Context.MODE_PRIVATE
+        )
+
+        var arrayItems = ArrayList<UpdateSkuResponse>()
+        val serializedObject: String? = sharedPreferences.getString(key, null)
+        if (serializedObject != null) {
+            val gson = Gson()
+            val type: Type = object : TypeToken<List<UpdateSkuResponse?>?>() {}.type
+            arrayItems = gson.fromJson<ArrayList<UpdateSkuResponse>>(serializedObject, type)
         }
 
         return arrayItems

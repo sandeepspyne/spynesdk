@@ -1,8 +1,7 @@
 package com.spyneai.activity
 
-import com.spyneai.model.login.LoginRequest
-import com.spyneai.model.login.LoginResponse
 import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
@@ -15,10 +14,12 @@ import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AppCompatDelegate
 import com.spyneai.R
-import com.spyneai.needs.Utilities
 import com.spyneai.interfaces.APiService
 import com.spyneai.interfaces.RetrofitClient
+import com.spyneai.model.login.LoginRequest
+import com.spyneai.model.login.LoginResponse
 import com.spyneai.needs.AppConstants
+import com.spyneai.needs.Utilities
 import kotlinx.android.synthetic.main.activity_sign_in.*
 import retrofit2.Call
 import retrofit2.Callback
@@ -78,16 +79,22 @@ class SignInActivity : AppCompatActivity() {
         })
 
         tvSignIn.setOnClickListener(View.OnClickListener {
-            if (!etNumber.text.toString().trim().isEmpty() && etNumber.text.toString().trim().length == 10) {
+            if (!et_email.text.toString().trim().isEmpty()
+                    && Utilities.isValidEmail(et_email.text.toString().trim())) {
                 makeSignIn()
                 tvErrorEmail.visibility = View.INVISIBLE
-            }
-            else
+            } else
                 tvErrorEmail.visibility = View.VISIBLE
 
         })
 
-        etNumber.addTextChangedListener(object : TextWatcher {
+        tvTerms.setOnClickListener(View.OnClickListener {
+            val browserIntent = Intent(Intent.ACTION_VIEW,
+                    Uri.parse("https://www.spyne.ai/terms-service"))
+            startActivity(browserIntent)
+        })
+
+        etEmail.addTextChangedListener(object : TextWatcher {
             override fun afterTextChanged(s: Editable) {
             }
 
@@ -97,7 +104,7 @@ class SignInActivity : AppCompatActivity() {
 
             override fun onTextChanged(s: CharSequence, start: Int, before: Int,
                                        count: Int) {
-                tvErrorEmail.visibility = View.GONE
+                tvErrorEmail.visibility = View.INVISIBLE
             }
         })
 
@@ -117,40 +124,42 @@ class SignInActivity : AppCompatActivity() {
         //val todoPostCall: Call<com.spyneai.model.login.LoginResponse> = apiInterface.postContactNum(userRegistrationRequest)
 
         Utilities.showProgressDialog(this)
-        val loginRequest = LoginRequest(etNumber.text.toString());
+        val loginRequest = LoginRequest(etEmail.text.toString());
 
         val request = RetrofitClient.buildService(APiService::class.java)
-        val call = request.loginApp(loginRequest)
+        val call = request.loginEmailApp(loginRequest)
 
-        call?.enqueue(object : Callback<LoginResponse>{
+        call?.enqueue(object : Callback<LoginResponse> {
             override fun onResponse(call: Call<LoginResponse>, response: Response<LoginResponse>) {
                 Utilities.hideProgressDialog()
 
-                if (response.isSuccessful){
-                    if (response.body()?.payload?.data?.token != null)
-                    {
-                        Utilities.savePrefrence(
+                if (response.isSuccessful) {
+                    if (response.body()?.header?.tokenId != null) {
+                        Toast.makeText(
                                 this@SignInActivity,
-                                AppConstants.tokenId,
-                                response.body()?.payload?.data?.token )
-                        Log.e("ok", response.body()!!.payload.data.token)
-                        Log.e("otp--->", response.body()!!.payload.data.otp)
+                                response.body()!!.msgInfo.msgDescription,
+                                Toast.LENGTH_SHORT
+                        ).show()
+
+                        Log.e("ok", response.body()!!.header.tokenId)
+                        Utilities.savePrefrence(this@SignInActivity,
+                                AppConstants.EMAIL_ID, etEmail.text.toString())
                         val intent = Intent(applicationContext, OtpActivity::class.java)
-                        intent.putExtra(AppConstants.otp,response.body()!!.payload.data.otp)
-                        intent.putExtra(AppConstants.phone,etNumber.text.toString())
-                        intent.putExtra(AppConstants.otp,response.body()!!.payload.data.otp)
+                        intent.putExtra(AppConstants.tokenId, response.body()!!.header.tokenId)
                         startActivity(intent)
                     }
                 }
             }
+
             override fun onFailure(call: Call<LoginResponse>, t: Throwable) {
                 Log.e("ok", "no way")
                 Utilities.hideProgressDialog()
                 Toast.makeText(
-                    applicationContext,
-                    "Server not responding!!!",
-                    Toast.LENGTH_SHORT
-                ).show()            }
+                        applicationContext,
+                        "Server not responding!!!",
+                        Toast.LENGTH_SHORT
+                ).show()
+            }
         })
     }
 
@@ -158,22 +167,22 @@ class SignInActivity : AppCompatActivity() {
         super.onBackPressed()
         Utilities.savePrefrence(
                 this@SignInActivity,
-                AppConstants.tokenId, "" )
+                AppConstants.tokenId, "")
     }
 
     override fun onPause() {
         super.onPause()
-       /* Utilities.savePrefrence(
-                this,
-                AppConstants.tokenId,
-                "")*/
+        /* Utilities.savePrefrence(
+                 this,
+                 AppConstants.tokenId,
+                 "")*/
     }
 
     override fun onDestroy() {
         super.onDestroy()
-       /* Utilities.savePrefrence(
-                this,
-                AppConstants.tokenId,
-                "")*/
+        /* Utilities.savePrefrence(
+                 this,
+                 AppConstants.tokenId,
+                 "")*/
     }
 }

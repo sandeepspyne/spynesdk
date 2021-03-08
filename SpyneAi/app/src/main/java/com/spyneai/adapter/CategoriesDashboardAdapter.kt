@@ -21,7 +21,7 @@ import com.spyneai.needs.AppConstants
 public class CategoriesDashboardAdapter(
         val context: Context,
         val categoriesResponseList: ArrayList<Data>,
-        val btnlistener: BtnClickListener,
+        val btnlistener: BtnClickListener
 )
     : RecyclerView.Adapter<CategoriesDashboardAdapter.ViewHolder>() {
 
@@ -47,7 +47,6 @@ public class CategoriesDashboardAdapter(
         // Create a new view, which defines the UI of the list item
         val view = LayoutInflater.from(viewGroup.context)
                 .inflate(R.layout.row_categories_dashboard, viewGroup, false)
-
 
 /*
         return ViewHolder(view).listen { pos, type ->
@@ -77,6 +76,8 @@ public class CategoriesDashboardAdapter(
 
         viewHolder.imgCategory.setBackgroundColor(Color.parseColor(categoriesResponseList[position].colorCode))
 
+        if (position > 0)
+            viewHolder.llCategories.alpha = 0.5F
         mClickListener = btnlistener
         viewHolder.llCategories.setOnClickListener(View.OnClickListener {
             Log.e("ok", "Ok way" + position)

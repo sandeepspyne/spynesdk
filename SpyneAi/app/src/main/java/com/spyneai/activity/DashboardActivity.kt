@@ -32,15 +32,30 @@ class DashboardActivity : AppCompatActivity() {
 
         AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
 
+        showCoachMarks()
+        Utilities.savePrefrence(
+                this,
+                AppConstants.FRAME_SHOOOTS,
+                ""
+        )
+        Utilities.savePrefrence(this,
+                AppConstants.SKU_ID,
+                "")
+/*
         Utilities.savePrefrence(
             this,
             AppConstants.tokenId,
             "C1i19DFuH"
         )
+*/
 
         finishAllBacks()
         listeners()
         tvHome.performClick()
+    }
+
+    private fun showCoachMarks() {
+
     }
 
     //var viewListener = ViewListener { layoutInflater.inflate(R.layout.view_custom, null) }
@@ -65,32 +80,38 @@ class DashboardActivity : AppCompatActivity() {
             fragmentTransaction!!.replace(R.id.fragment_container_view, fragment!!)
             fragmentTransaction!!.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
             fragmentTransaction!!.commit()
-
             setFooters(0)
         })
 
         tvNotifications.setOnClickListener(View.OnClickListener {
             Toast.makeText(
                 this,
-                "Coming Soon !!!",
+                "Coming Soon!",
                 Toast.LENGTH_SHORT
             ).show()
         })
 
         tvOrders.setOnClickListener(View.OnClickListener {
-            fragment = OrdersFragment(this)
+           /* fragment = OrdersFragment(this)
             fragmentManager = supportFragmentManager
             fragmentTransaction = fragmentManager!!.beginTransaction()
             fragmentTransaction!!.replace(R.id.fragment_container_view, fragment!!)
             fragmentTransaction!!.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
             fragmentTransaction!!.commit()
-            setFooters(2)
+            setFooters(2)*/
+         //   setFooters(2)
+
+            Toast.makeText(
+                    this,
+                    "Coming Soon !",
+                    Toast.LENGTH_SHORT
+            ).show()
         })
 
         tvProfile.setOnClickListener(View.OnClickListener {
             Toast.makeText(
                 this,
-                "Coming Soon !!!",
+                "Coming Soon !",
                 Toast.LENGTH_SHORT
             ).show()
         })

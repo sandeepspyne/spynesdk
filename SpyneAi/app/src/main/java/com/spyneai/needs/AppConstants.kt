@@ -1,6 +1,16 @@
 package com.spyneai.needs
 
 object AppConstants {
+    val BG_ID: String = "bg_id"
+    val EMAIL_ID: String = "email_id"
+    val GIF_LIST: String = "gif_list"
+    val ALL_FRAME_LIST: String = "all_frame_list"
+    val ALL_IMAGE_LIST: String = "all_image_list"
+    val GIF: String = "gif"
+    val FRAME_LIST: String = "frame_list"
+    val FRAME_SHOOOTS: String = "frame_shoots"
+    val sku_incomplete: String = "sku-incomplete"
+    val completed: String = "completed"
     val FROM_ACTIVITY: String = "from_activity"
     val REPLACED_IMAGE: String = "replaced_image"
     val IMAGE_ID: String = "image_id"
@@ -11,6 +21,7 @@ object AppConstants {
     val BACKGROUND_LIST: String = "background_lits"
     val CHANNEL_LIST: String = "channel_list"
     val MY_LIST: String = "my_list"
+    val MY_LISTS: String = "my_lists"
     val FROM: String ="from"
     val LANGUAGE: String = "language"
     val COLOR: String = "color"
@@ -28,7 +39,8 @@ object AppConstants {
     val IMAGE_URL: String = "image_url"
     val SHOOT_ID: String = "shopot_id"
     val CATEGORY_NAME: String =  "category_name"
-    const val BASE_IMAGE_URL = "https://spyne-cliq.s3.ap-south-1.amazonaws.com/"
+    //const val BASE_IMAGE_URL = "https://spyne-cliq.s3.ap-south-1.amazonaws.com/"
+    const val BASE_IMAGE_URL = "https://storage.googleapis.com/spyne-cliq/"
 
     val CATEGORY_ID = "category_id"
     val SUB_CAT_ID = "sub_cat_id"

@@ -3,6 +3,7 @@ package com.spyneai.activity
 import android.content.Intent
 import android.os.Bundle
 import android.os.Handler
+import android.util.Log
 import android.view.View
 import android.view.WindowManager
 import android.widget.Toast
@@ -10,9 +11,15 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AppCompatDelegate
 import com.google.firebase.installations.Utils
 import com.spyneai.R
+import com.spyneai.interfaces.APiService
+import com.spyneai.interfaces.RetrofitClientSpyneAi
+import com.spyneai.model.otp.OtpResponse
 import com.spyneai.needs.AppConstants
 import com.spyneai.needs.Utilities
 import kotlinx.android.synthetic.main.activity_splash.*
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
 
 class SplashActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -23,9 +30,9 @@ class SplashActivity : AppCompatActivity() {
 
         AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
 
-        if (Utilities.getPreference(this,AppConstants.LANGUAGE).equals("English"))
+       /* if (Utilities.getPreference(this,AppConstants.LANGUAGE).equals("English"))
         {
-            llLanguage.visibility= View.GONE
+        //    llLanguage.visibility= View.GONE
 
             Handler().postDelayed({
                 if (Utilities.getPreference(this, AppConstants.tokenId).isNullOrEmpty())
@@ -41,15 +48,14 @@ class SplashActivity : AppCompatActivity() {
                 }
             }, 3000) // 3000 is the delayed time in milliseconds.
         }
-        else {
+        else {*/
             setSplash();
-            llLanguage.visibility= View.VISIBLE
-        }
+           // llLanguage.visibility= View.VISIBLE
+      //  }
     }
 
     //Start splash
     private fun setSplash() {
-        llEnglish.setOnClickListener(View.OnClickListener {
             if (Utilities.getPreference(this, AppConstants.tokenId).isNullOrEmpty())
             {
                 val intent = Intent(this, OnboardOneActivity::class.java)
@@ -62,11 +68,9 @@ class SplashActivity : AppCompatActivity() {
                 startActivity(intent)
                 finish()
             }
-        })
-        llHindi.setOnClickListener(View.OnClickListener {
-            Toast.makeText(this,
-                "Coming soon...",
-                Toast.LENGTH_SHORT).show()
-        })
+
     }
+
+
+
 }

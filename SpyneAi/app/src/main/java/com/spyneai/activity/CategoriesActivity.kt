@@ -78,11 +78,11 @@ class CategoriesActivity : AppCompatActivity(),CategoriesAdapter.BtnClickListene
                 object : CategoriesAdapter.BtnClickListener {
                     override fun onBtnClick(position: Int) {
                         Log.e("position cat", position.toString())
-                        if (position <= 1)
+                        if (position == 0)
                           setShoot(categoriesResponseList,position)
                         else
                             Toast.makeText(this@CategoriesActivity,
-                                    "Coming Soon !!!",
+                                    "Coming Soon !",
                                     Toast.LENGTH_SHORT).show()
                     }
                 },before,after)
@@ -152,7 +152,6 @@ class CategoriesActivity : AppCompatActivity(),CategoriesAdapter.BtnClickListene
             }
             override fun onFailure(call: Call<CreateCollectionResponse>, t: Throwable) {
                 Log.e("ok", "no way")
-
             }
         })
     }

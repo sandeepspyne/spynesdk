@@ -15,6 +15,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.spyneai.BeforeAfterActivity
 import com.spyneai.R
 import com.spyneai.activity.CompletedActivity
+import com.spyneai.activity.CompletedProjectsActivity
 import com.spyneai.activity.OngoingActivity
 import com.spyneai.interfaces.APiService
 import com.spyneai.interfaces.RetrofitClient
@@ -31,7 +32,6 @@ import kotlinx.android.synthetic.main.view_custom.view.*
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
-
 
 class HomeFragment(context: Context) : Fragment() {
     val contexts = context
@@ -78,13 +78,19 @@ class HomeFragment(context: Context) : Fragment() {
 
     private fun setCarosels(view: View) {
         view.tvCompleted.setOnClickListener(View.OnClickListener {
-            val intent = Intent(contexts, CompletedActivity::class.java)
-            startActivity(intent)
+            val intent = Intent(contexts, CompletedProjectsActivity::class.java)
+            contexts.startActivity(intent)
         })
 
         view.tvOngoing.setOnClickListener(View.OnClickListener {
-            val intent = Intent(contexts, OngoingActivity::class.java)
-            startActivity(intent)
+           /* val intent = Intent(contexts, OngoingActivity::class.java)
+            startActivity(intent)*/
+            Toast.makeText(
+                    contexts,
+                    "Coming Soon !",
+                    Toast.LENGTH_SHORT
+            ).show()
+
         })
 
         view.carouselView!!.setPageCount(sampleImages.size);
@@ -106,13 +112,12 @@ class HomeFragment(context: Context) : Fragment() {
             object : CategoriesDashboardAdapter.BtnClickListener {
                 override fun onBtnClick(position: Int) {
                     Log.e("position cat", position.toString())
-                    // if (position <= 1)
-                    setShoot(categoriesResponseList, position)
-                    /* else
+                    if (position == 0)
+                        setShoot(categoriesResponseList,position)
+                    else
                         Toast.makeText(contexts,
-                            "Coming Soon !!!",
-                            Toast.LENGTH_SHORT).show()
-               */
+                                "Coming Soon !",
+                                Toast.LENGTH_SHORT).show()
                 }
             })
 
