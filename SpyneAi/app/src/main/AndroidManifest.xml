@@ -118,6 +118,27 @@
         <activity
             android:name=".activity.TimerActivity"
             android:screenOrientation="portrait" />
+
+        <activity
+            android:name=".spyneaidemo.activity.CameraDemoActivity"
+            android:screenOrientation="portrait" />
+
+        <activity
+            android:name=".spyneaidemo.activity.GenerateGifDemoActivity"
+            android:screenOrientation="portrait" />
+
+        <activity
+            android:name=".spyneaidemo.activity.TimerDemoActivity"
+            android:screenOrientation="portrait" />
+
+        <activity
+            android:name=".spyneaidemo.activity.ShowImagesDemoActivity"
+            android:screenOrientation="portrait" />
+
+        <activity
+            android:name=".spyneaidemo.activity.ShowGifDemoActivity"
+            android:screenOrientation="portrait" />
+
         <activity
             android:name=".activity.SplashActivity"
             android:screenOrientation="portrait">

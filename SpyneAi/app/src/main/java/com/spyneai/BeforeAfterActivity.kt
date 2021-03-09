@@ -10,6 +10,7 @@ import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.spyneai.spyneaidemo.activity.CameraDemoActivity
 import com.bumptech.glide.Glide
 import com.spyneai.activity.CameraActivity
 import com.spyneai.adapter.BeforeAfterAdapter
@@ -51,6 +52,18 @@ class BeforeAfterActivity : AppCompatActivity() {
         setRecycler()
         setData()
         listeners()
+        demo()
+    }
+
+    private fun demo(){
+        tvDemo.setOnClickListener(View.OnClickListener {
+            val intent = Intent(this, CameraDemoActivity::class.java)
+            intent.putExtra(AppConstants.CATEGORY_ID, catId)
+            intent.putExtra(AppConstants.CATEGORY_NAME, catName)
+            intent.putExtra(AppConstants.GIF_LIST, gifList)
+            Utilities.savePrefrence(this, AppConstants.FROM, "BA")
+            startActivity(intent)
+        })
     }
 
     private fun setRecycler() {

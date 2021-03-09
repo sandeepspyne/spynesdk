@@ -116,6 +116,10 @@
     <string name="your_images">Your Images</string>
     <string name="processing">Processing</string>
     <string name="your_photos">Your photos were sent at</string>
+    <string name="demo">Demo</string>
+    <string name="sedan">Sedan</string>
+    <string name="hatchbacks">Hatchbacks</string>
+    <string name="suv">SUV</string>
 
     <string-array name="planets_array">
         <item>4 Shoots</item>
