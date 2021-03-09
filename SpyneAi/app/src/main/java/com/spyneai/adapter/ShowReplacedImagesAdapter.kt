@@ -21,9 +21,10 @@ import kotlinx.android.synthetic.main.activity_show_gif.*
 
 
 public class ShowReplacedImagesAdapter(
-    val context: Context,
-    val imageList: ArrayList<String>,
-    val btnlistener: BtnClickListener,
+        val context: Context,
+        val imageList: ArrayList<String>,
+        val imageListAfter: ArrayList<String>,
+        val btnlistener: BtnClickListener,
 )
     : RecyclerView.Adapter<ShowReplacedImagesAdapter.ViewHolder>() {
 
@@ -39,14 +40,16 @@ public class ShowReplacedImagesAdapter(
      * (custom ViewHolder).
      */
     class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
-        val imgReplaced: ImageView = view.findViewById(R.id.imgReplaced)
+        val imgBeforeReplaced: ImageView = view.findViewById(R.id.imgBeforeReplaced)
+        val imgAfterReplaced: ImageView = view.findViewById(R.id.imgAfterReplaced)
+        val llBeforeAfterReplaced: LinearLayout = view.findViewById(R.id.llBeforeAfterReplaced)
     }
 
     // Create new views (invoked by the layout manager)
     override fun onCreateViewHolder(viewGroup: ViewGroup, viewType: Int): ViewHolder {
         // Create a new view, which defines the UI of the list item
         val view = LayoutInflater.from(viewGroup.context)
-            .inflate(R.layout.row_replaced_images, viewGroup, false)
+                .inflate(R.layout.row_replaced_images, viewGroup, false)
         return ViewHolder(view)
     }
 
@@ -56,16 +59,23 @@ public class ShowReplacedImagesAdapter(
         // Get element from your dataset at this position and replace the
         // contents of the view with that element
 
-        Glide.with(context).load(imageList[position]).into(viewHolder.imgReplaced)
+        //Glide.with(context).load(imageList[position]).into(viewHolder.imgReplaced)
 
         Glide.with(context) // replace with 'this' if it's in activity
                 .load(imageList[position])
                 .diskCacheStrategy(DiskCacheStrategy.RESOURCE)
                 .error(R.mipmap.defaults) // show error drawable if the image is not a gif
-                .into(viewHolder.imgReplaced)
+                .into(viewHolder.imgBeforeReplaced)
+
+        Glide.with(context) // replace with 'this' if it's in activity
+                .load(imageListAfter[position])
+                .diskCacheStrategy(DiskCacheStrategy.RESOURCE)
+                .error(R.mipmap.defaults) // show error drawable if the image is not a gif
+                .into(viewHolder.imgAfterReplaced)
 
         mClickListener = btnlistener
-        viewHolder.imgReplaced.setOnClickListener(View.OnClickListener {
+
+        viewHolder.llBeforeAfterReplaced.setOnClickListener(View.OnClickListener {
             Log.e("ok", "Ok way" + position)
             if (mClickListener != null)
                 mClickListener?.onBtnClick(position)

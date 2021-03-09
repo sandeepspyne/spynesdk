@@ -14,13 +14,18 @@ import com.bumptech.glide.Glide
 import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.bumptech.glide.request.RequestOptions
 import com.spyneai.R
+import com.spyneai.aipack.FetchBulkResponse
 import com.spyneai.interfaces.APiService
 import com.spyneai.interfaces.RetrofitClientSpyneAi
+import com.spyneai.interfaces.RetrofitClients
+import com.spyneai.model.ai.GifFetchResponse
 import com.spyneai.model.otp.OtpResponse
 import com.spyneai.model.skumap.UpdateSkuResponse
 import com.spyneai.needs.AppConstants
 import com.spyneai.needs.Utilities
 import kotlinx.android.synthetic.main.activity_show_gif.*
+import okhttp3.MultipartBody
+import okhttp3.RequestBody
 import okhttp3.internal.Util
 import retrofit2.Call
 import retrofit2.Callback
@@ -31,9 +36,9 @@ class ShowGifActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_show_gif)
-        showGif()
+        fetchGif()
+
         listeners()
-        //sendEmail()
     }
 
     private fun listeners() {
@@ -84,23 +89,53 @@ class ShowGifActivity : AppCompatActivity() {
 
     }
 
-    private fun showGif() {
-        Glide.with(this) // replace with 'this' if it's in activity
-                .load(intent.getStringExtra(AppConstants.GIF)!!)
-                .diskCacheStrategy(DiskCacheStrategy.RESOURCE)
-                .error(R.mipmap.defaults) // show error drawable if the image is not a gif
-                .into(imageView)
-
-        Log.e("Gif to play",intent.getStringExtra(AppConstants.GIF).toString())
-        // webView.loadUrl(intent.getStringExtra(AppConstants.GIF)!!);
-    }
-
     override fun onBackPressed() {
         super.onBackPressed()
-        val intent = Intent(this,
-                DashboardActivity::class.java)
-        startActivity(intent)
         finish()
     }
+
+
+    //Fetch Gif
+    fun fetchGif() {
+        Utilities.showProgressDialog(this)
+        val request = RetrofitClients.buildService(APiService::class.java)
+
+        val userId = RequestBody.create(
+                MultipartBody.FORM,
+                Utilities.getPreference(this, AppConstants.tokenId)!!)
+
+        val skuId = RequestBody.create(
+                MultipartBody.FORM,
+                Utilities.getPreference(this, AppConstants.SKU_ID)!!)
+
+        val call = request.fetchUserGif(userId, skuId)
+
+        call?.enqueue(object : Callback<List<GifFetchResponse>> {
+            override fun onResponse(call: Call<List<GifFetchResponse>>,
+                                    response: Response<List<GifFetchResponse>>
+            ) {
+                Utilities.hideProgressDialog()
+                if (response.isSuccessful) {
+                    if (response.body() != null) {
+                        Glide.with(this@ShowGifActivity) // replace with 'this' if it's in activity
+                                .load(response.body()!![0].gif_url)
+                                .diskCacheStrategy(DiskCacheStrategy.RESOURCE)
+                                .error(R.mipmap.defaults) // show error drawable if the image is not a gif
+                                .into(imageView)
+                    } else {
+                        Toast.makeText(this@ShowGifActivity,
+                                "Unable to fetch project details currently. Please try again later !", Toast.LENGTH_SHORT).show()
+                    }
+                }
+            }
+
+            override fun onFailure(call: Call<List<GifFetchResponse>>, t: Throwable) {
+                Utilities.hideProgressDialog()
+                Toast.makeText(this@ShowGifActivity,
+                        "No details found for this project. Please try again later !", Toast.LENGTH_SHORT).show()
+            }
+        })
+    }
+
 
 }

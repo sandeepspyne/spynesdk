@@ -8,6 +8,7 @@ import android.util.Log
 import android.view.View
 import android.widget.Toast
 import androidx.recyclerview.widget.GridLayoutManager
+import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.spyneai.R
 import com.spyneai.adapter.PhotosAdapter
@@ -18,7 +19,9 @@ import com.spyneai.interfaces.RetrofitClients
 import com.spyneai.model.sku.Photos
 import com.spyneai.model.skumap.UpdateSkuResponse
 import com.spyneai.needs.AppConstants
+import com.spyneai.needs.ScrollingLinearLayoutManager
 import com.spyneai.needs.Utilities
+import kotlinx.android.synthetic.main.activity_before_after.*
 import kotlinx.android.synthetic.main.activity_show_gif.*
 import kotlinx.android.synthetic.main.activity_show_gif.ivHomeGif
 import kotlinx.android.synthetic.main.activity_show_gif.tvRequestWapp
@@ -34,6 +37,7 @@ import java.net.URLEncoder
 
 class ShowImagesActivity : AppCompatActivity() {
     lateinit var imageList : List<String>
+    lateinit var imageListAfter : List<String>
 
     private lateinit var showReplacedImagesAdapter: ShowReplacedImagesAdapter
 
@@ -45,6 +49,15 @@ class ShowImagesActivity : AppCompatActivity() {
     }
 
     private fun setListeners() {
+        tvYourEmailIdReplaced.setText(Utilities.getPreference(this, AppConstants.EMAIL_ID))
+
+        tvViewGif.setOnClickListener(View.OnClickListener {
+            val intent = Intent(this,
+                    ShowGifActivity::class.java)
+            startActivity(intent)
+        })
+
+
         ivBackShowImages.setOnClickListener(View.OnClickListener {
             onBackPressed()
         })
@@ -86,18 +99,23 @@ class ShowImagesActivity : AppCompatActivity() {
 
     private fun setBulkImages() {
         imageList = ArrayList<String>()
+        imageListAfter = ArrayList<String>()
 
         showReplacedImagesAdapter = ShowReplacedImagesAdapter(this,
             imageList as ArrayList<String>,
+                imageListAfter as ArrayList<String>,
             object : ShowReplacedImagesAdapter.BtnClickListener {
                 override fun onBtnClick(position: Int) {
                     Log.e("position preview", position.toString())
                 }
             })
 
-        val layoutManager: RecyclerView.LayoutManager =
-            GridLayoutManager(this,2)
-        rvImagesBackgroundRemoved.setLayoutManager(layoutManager)
+        rvImagesBackgroundRemoved.setLayoutManager(ScrollingLinearLayoutManager(
+                this,
+                LinearLayoutManager.VERTICAL,
+                false
+        ))
+
         rvImagesBackgroundRemoved.setAdapter(showReplacedImagesAdapter)
         fetchBulkUpload()
     }
@@ -121,8 +139,10 @@ class ShowImagesActivity : AppCompatActivity() {
             ) {
                 Utilities.hideProgressDialog()
                 if (response.isSuccessful){
-                    for (i in 0..response.body()!!.size-1)
-                        (imageList as ArrayList).add(response.body()!![i].output_image_url)
+                    for (i in 0..response.body()!!.size-1) {
+                        (imageList as ArrayList).add(response.body()!![i].input_image_url)
+                        (imageListAfter as ArrayList).add(response.body()!![i].output_image_url)
+                    }
                 }
                 showReplacedImagesAdapter.notifyDataSetChanged()
             }

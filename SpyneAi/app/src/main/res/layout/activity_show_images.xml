@@ -52,12 +52,12 @@
         android:layout_height="wrap_content"
         android:text="@string/your_photos"
         android:textColor="@color/black"
+        android:layout_marginTop="@dimen/dp_20"
         android:fontFamily="@font/bold"
         android:gravity="center"
-        android:layout_margin="@dimen/dp_10"
         android:textSize="@dimen/sp_16" />
     <TextView
-        android:id="@+id/tvYourEmailId"
+        android:id="@+id/tvYourEmailIdReplaced"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="@string/email"
@@ -72,6 +72,18 @@
         android:layout_height="0dp"
         android:layout_weight="1"
         android:layout_margin="@dimen/dp_20"/>
+
+    <TextView
+        android:id="@+id/tvViewGif"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/view_spin"
+        android:textColor="@color/primary"
+        android:fontFamily="@font/medium"
+        android:layout_gravity="center"
+        android:textSize="@dimen/sp_15"
+        android:drawablePadding="@dimen/dp_10"
+        app:drawableRightCompat="@mipmap/move" />
 
     <TextView
         android:layout_width="match_parent"

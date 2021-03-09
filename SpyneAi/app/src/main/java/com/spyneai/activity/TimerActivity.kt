@@ -109,7 +109,7 @@ class TimerActivity : AppCompatActivity() {
                     "Please check your internet connection",
                     Toast.LENGTH_SHORT).show()
         }
-     //   listeners()
+        //   listeners()
 
         //  checkFetchAPIs()
     }
@@ -281,11 +281,11 @@ class TimerActivity : AppCompatActivity() {
         var imageFile: File? = null
         if (applicationContext != null) {
             val filesDir: File = applicationContext.getFilesDir()
-            imageFile = File(filesDir, "photo" + ".jpg")
+            imageFile = File(filesDir, "photo" + ".png")
             val os: OutputStream
             try {
                 os = FileOutputStream(imageFile)
-                bitmap.compress(Bitmap.CompressFormat.JPEG, 100, os)
+                bitmap.compress(Bitmap.CompressFormat.PNG, 100, os)
                 os.flush()
                 os.close()
             } catch (e: Exception) {
@@ -432,8 +432,8 @@ class TimerActivity : AppCompatActivity() {
         val request = RetrofitClients.buildService(APiService::class.java)
         Log.e("Upload bulk", "started......")
 
-     /*   val background : ArrayList<String> = ArrayList<String>()
-        background.addAll(listOf(backgroundSelect))*/
+        /*   val background : ArrayList<String> = ArrayList<String>()
+           background.addAll(listOf(backgroundSelect))*/
 
 //        image_url.add(photoList[countsGif].displayThumbnail)
 
@@ -606,23 +606,11 @@ class TimerActivity : AppCompatActivity() {
                 Utilities.hideProgressDialog()
                 if (response.isSuccessful) {
                     if (response.body()!!.id.equals("200")) {
-
-                        if (Utilities.getPreference(this@TimerActivity,
-                                        AppConstants.FRAME_SHOOOTS).equals("4")
-                                || Utilities.getPreference(this@TimerActivity,
-                                        AppConstants.FRAME_SHOOOTS).equals("8")) {
-                            val intent = Intent(this@TimerActivity,
-                                    ShowImagesActivity::class.java)
-                            intent.putExtra(AppConstants.GIF, gifLink)
-                            startActivity(intent)
-                            finish()
-                        } else {
-                            val intent = Intent(this@TimerActivity,
-                                    ShowGifActivity::class.java)
-                            intent.putExtra(AppConstants.GIF, gifLink)
-                            startActivity(intent)
-                            finish()
-                        }
+                        val intent = Intent(this@TimerActivity,
+                                ShowImagesActivity::class.java)
+                        intent.putExtra(AppConstants.GIF, gifLink)
+                        startActivity(intent)
+                        finish()
                         Toast.makeText(this@TimerActivity, response.body()!!.message, Toast.LENGTH_SHORT).show()
                     }
                 }
@@ -661,7 +649,7 @@ class TimerActivity : AppCompatActivity() {
 
 
     override fun onBackPressed() {
-      //  super.onBackPressed()
+        //  super.onBackPressed()
         //onDestroy()
 
         showExitDialog()

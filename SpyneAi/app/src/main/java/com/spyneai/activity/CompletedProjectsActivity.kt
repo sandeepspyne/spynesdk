@@ -51,22 +51,12 @@ class CompletedProjectsActivity : AppCompatActivity() {
                 completedProjectList, object : CompletedProjectAdapter.BtnClickListener {
             override fun onBtnClick(position: Int) {
                 Log.e("position cat", position.toString())
-
-                if (Utilities.getPreference(this@CompletedProjectsActivity,
-                                AppConstants.FRAME_SHOOOTS).equals("4")
-                        || Utilities.getPreference(this@CompletedProjectsActivity,
-                                AppConstants.FRAME_SHOOOTS).equals("8"))
-                {
-                    Utilities.savePrefrence(this@CompletedProjectsActivity,
-                            AppConstants.SKU_ID,
-                            completedProjectList[position].sku_id)
-                    val intent = Intent(this@CompletedProjectsActivity,
-                            ShowImagesActivity::class.java)
-                    startActivity(intent)
-                }
-                else{
-                    fetchGif(completedProjectList[position].sku_id)
-                }
+                Utilities.savePrefrence(this@CompletedProjectsActivity,
+                        AppConstants.SKU_ID,
+                        completedProjectList[position].sku_id)
+                val intent = Intent(this@CompletedProjectsActivity,
+                        ShowImagesActivity::class.java)
+                startActivity(intent)
 
             }
         })
@@ -82,8 +72,8 @@ class CompletedProjectsActivity : AppCompatActivity() {
         Utilities.savePrefrence(this,AppConstants.tokenId,
                 Utilities.getPreference(this,AppConstants.tokenId))
         val userId = RequestBody.create(
-            MultipartBody.FORM,
-            Utilities.getPreference(this, AppConstants.tokenId)!!)
+                MultipartBody.FORM,
+                Utilities.getPreference(this, AppConstants.tokenId)!!)
         val call = request.getCompletedProjects(userId)
 
         call?.enqueue(object : Callback<List<CompletedProjectResponse>> {
@@ -118,16 +108,21 @@ class CompletedProjectsActivity : AppCompatActivity() {
         finish()
     }
 
+
+
+/*
     fun fetchGif(skuIds: String)
     {
         Utilities.savePrefrence(this,AppConstants.SKU_ID,skuIds)
         Utilities.showProgressDialog(this)
 
         val request = RetrofitClients.buildService(APiService::class.java)
+*/
 /*
         Utilities.savePrefrence(this,AppConstants.tokenId,
                 Utilities.getPreference(this,AppConstants.tokenId))
-*/
+*//*
+
 
         val userId = RequestBody.create(
                 MultipartBody.FORM,
@@ -166,4 +161,5 @@ class CompletedProjectsActivity : AppCompatActivity() {
             }
         })
     }
+*/
 }
