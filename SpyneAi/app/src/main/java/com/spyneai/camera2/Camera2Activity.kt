@@ -18,6 +18,7 @@ import android.graphics.Matrix
 import android.graphics.Paint
 import android.media.AudioManager
 import android.media.ExifInterface
+import android.media.Image
 import android.media.MediaActionSound
 import android.net.Uri
 import android.os.*
@@ -205,7 +206,7 @@ class Camera2Activity : AppCompatActivity() , SubCategoriesAdapter.BtnClickListe
             frameImage = intent.getStringExtra(AppConstants.FRAME_IMAGE)!!
 */
         if (!etSkuName.text.toString().isEmpty()) {
-            rvSubcategories.visibility = View.INVISIBLE
+            rvSubcategories.visibility = View.GONE
             //etSkuName.visibility = View.GONE
         }
 
@@ -316,7 +317,7 @@ class Camera2Activity : AppCompatActivity() , SubCategoriesAdapter.BtnClickListe
     }
 
     @RequiresApi(Build.VERSION_CODES.M)
-    private fun showProgressFrames(frameNumberTemp: Int) {
+    public fun showProgressFrames(frameNumberTemp: Int) {
         if (frameNumberTemp == 0)
         {
             tvshoot.setOnClickListener(View.OnClickListener {
@@ -328,7 +329,7 @@ class Camera2Activity : AppCompatActivity() , SubCategoriesAdapter.BtnClickListe
         else{
             tvshoot.isEnabled = false
             tvshoot.isFocusable = false
-            rvSubcategories.visibility = View.INVISIBLE
+            rvSubcategories.visibility = View.GONE
         }
         frameNumber = frameImageListSelections[frameNumberTemp] +1
         totalFrames = frameImageListSelections.size
@@ -524,13 +525,13 @@ class Camera2Activity : AppCompatActivity() , SubCategoriesAdapter.BtnClickListe
             if (frameNumber == 1) {
                 if (imgOverlay.visibility == View.INVISIBLE) {
                     imgOverlay.visibility = View.VISIBLE
-                    rvSubcategories.visibility = View.INVISIBLE
+                    rvSubcategories.visibility = View.GONE
                 } else {
                     imgOverlay.visibility = View.INVISIBLE
                     rvSubcategories.visibility = View.VISIBLE
                 }
             } else {
-                rvSubcategories.visibility = View.INVISIBLE
+                rvSubcategories.visibility = View.GONE
                 if (imgOverlay.visibility == View.INVISIBLE) {
                     imgOverlay.visibility = View.VISIBLE
                 } else {
@@ -836,6 +837,7 @@ class Camera2Activity : AppCompatActivity() , SubCategoriesAdapter.BtnClickListe
     }
 
 
+    @RequiresApi(Build.VERSION_CODES.M)
     fun setImageRaw()
     {
         val myBitmap = BitmapFactory.decodeFile(photoFile.getAbsolutePath())
@@ -859,7 +861,63 @@ class Camera2Activity : AppCompatActivity() , SubCategoriesAdapter.BtnClickListe
             else -> rotatedBitmap = myBitmap
         }
 
-      //  imageFile = persistImage(rotatedBitmap!!)
+        showSuggestionDialog(rotatedBitmap)
+
+        //  imageFile = persistImage(rotatedBitmap!!)
+    }
+
+    @RequiresApi(Build.VERSION_CODES.M)
+    private fun showSuggestionDialog(rotatedBitmap: Bitmap?) {
+        val dialog = Dialog(this)
+        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE)
+        dialog.setCancelable(false)
+        dialog.setContentView(R.layout.dialog_suggestion)
+
+        val window: Window = dialog.getWindow()!!
+        window.setLayout(WindowManager.LayoutParams.WRAP_CONTENT,
+                WindowManager.LayoutParams.WRAP_CONTENT)
+
+        val ivClickedImage : ImageView = dialog.findViewById(R.id.ivClickedImage)
+        val tvReshoot : TextView = dialog.findViewById(R.id.tvReshoot)
+        val tvConfirm : TextView = dialog.findViewById(R.id.tvConfirm)
+
+        ivClickedImage.setImageBitmap(rotatedBitmap)
+
+        tvReshoot.setOnClickListener(View.OnClickListener {
+            dialog.dismiss()
+            camera_capture_button.isEnabled = true
+            camera_capture_button.isFocusable = true
+        })
+        tvConfirm.setOnClickListener(View.OnClickListener {
+            dialog.dismiss()
+            imageFileList.add(photoFile!!)
+            imageFileListFrames.add(frameImageList[frameImageListSelections[frameNumberTemp]].frameNumber)
+            if (frameNumberTemp < frameImageListSelections.size - 1) {
+                showProgressFrames(++frameNumberTemp)
+
+                camera_capture_button.isEnabled = true
+                camera_capture_button.isFocusable = true
+
+            } else {
+                val intent = Intent(
+                        this,
+                        GenerateGifActivity::class.java
+                )
+
+                intent.putExtra(AppConstants.ALL_IMAGE_LIST, imageFileList)
+                intent.putExtra(AppConstants.ALL_FRAME_LIST, imageFileListFrames)
+                intent.putExtra(AppConstants.ALL_FRAME_LIST, imageFileListFrames)
+                intent.putExtra(AppConstants.GIF_LIST, gifList)
+
+                Utilities.savePrefrence(this, AppConstants.SKU_NAME, skuName)
+                Log.e("Camera  SKU",
+                        Utilities.getPreference(this,
+                                AppConstants.SKU_NAME)!!)
+                startActivity(intent)
+                finish()
+            }
+        })
+        dialog.show()
     }
 
     override fun onRequestPermissionsResult(
@@ -1015,7 +1073,7 @@ class Camera2Activity : AppCompatActivity() , SubCategoriesAdapter.BtnClickListe
                     ) {
                         rvSubcategories.visibility = View.VISIBLE
                     } else
-                        rvSubcategories.visibility = View.INVISIBLE
+                        rvSubcategories.visibility = View.GONE
 
                     if (Utilities.getPreference(this@Camera2Activity,
                                     AppConstants.FRAME_SHOOOTS).isNullOrEmpty()) {
@@ -1386,37 +1444,6 @@ class Camera2Activity : AppCompatActivity() , SubCategoriesAdapter.BtnClickListe
         )
         setImageRaw()
 
-        imageFileList.add(photoFile!!)
-        imageFileListFrames.add(frameImageList[frameImageListSelections[frameNumberTemp]].frameNumber)
-        if (frameNumberTemp < frameImageListSelections.size - 1) {
-            showProgressFrames(++frameNumberTemp)
-
-            camera_capture_button.isEnabled = true
-            camera_capture_button.isFocusable = true
-
-        } else {
-            val intent = Intent(
-                    this,
-                    GenerateGifActivity::class.java
-            )
-
-            //
-            /*  val args = Bundle()
-              args.putParcelable(AppConstants.ALL_IMAGE_LIST, imageFileList as Parcelable)
-              args.putParcelable(AppConstants.ALL_FRAME_LIST, imageFileListFrames as Parcelable)
-  */
-            intent.putExtra(AppConstants.ALL_IMAGE_LIST, imageFileList)
-            intent.putExtra(AppConstants.ALL_FRAME_LIST, imageFileListFrames)
-            intent.putExtra(AppConstants.ALL_FRAME_LIST, imageFileListFrames)
-            intent.putExtra(AppConstants.GIF_LIST, gifList)
-
-            Utilities.savePrefrence(this, AppConstants.SKU_NAME, skuName)
-            Log.e("Camera  SKU",
-                    Utilities.getPreference(this,
-                            AppConstants.SKU_NAME)!!)
-            startActivity(intent)
-            finish()
-        }
     }
 
 
