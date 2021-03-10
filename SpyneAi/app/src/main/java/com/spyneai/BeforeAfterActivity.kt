@@ -27,6 +27,7 @@ import com.spyneai.model.channel.ChannelsResponse
 import com.spyneai.needs.AppConstants
 import com.spyneai.needs.ScrollingLinearLayoutManager
 import com.spyneai.needs.Utilities
+import com.spyneai.spyneaidemo.activity.camera2.Camera2DemoActivity
 import kotlinx.android.synthetic.main.activity_before_after.*
 import kotlinx.android.synthetic.main.fragment_background.*
 import kotlinx.android.synthetic.main.fragment_channel.*
@@ -58,7 +59,7 @@ class BeforeAfterActivity : AppCompatActivity() {
 
     private fun demo(){
         tvDemo.setOnClickListener(View.OnClickListener {
-            val intent = Intent(this, CameraDemoActivity::class.java)
+            val intent = Intent(this, Camera2DemoActivity::class.java)
             intent.putExtra(AppConstants.CATEGORY_ID, catId)
             intent.putExtra(AppConstants.CATEGORY_NAME, catName)
             intent.putExtra(AppConstants.GIF_LIST, gifList)

@@ -155,7 +155,6 @@ class TimerDemoActivity : AppCompatActivity() {
 //            intent.putExtra(AppConstants.GIF, gifLink)
             startActivity(intent)
         }
-        Toast.makeText(this@TimerDemoActivity, "GIF send to your email!", Toast.LENGTH_SHORT).show()
     }
 
 }

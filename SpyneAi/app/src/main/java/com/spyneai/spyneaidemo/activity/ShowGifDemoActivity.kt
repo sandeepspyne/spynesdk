@@ -87,7 +87,7 @@ class ShowGifDemoActivity : AppCompatActivity() {
 
     private fun showGif() {
         Glide.with(this) // replace with 'this' if it's in activity
-                .load(intent.getStringExtra(AppConstants.GIF)!!)
+                .load(R.mipmap.defaults)
                 .diskCacheStrategy(DiskCacheStrategy.RESOURCE)
                 .error(R.mipmap.defaults) // show error drawable if the image is not a gif
                 .into(imageView)
