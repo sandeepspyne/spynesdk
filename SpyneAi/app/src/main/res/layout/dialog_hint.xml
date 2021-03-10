@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:padding="@dimen/dp_5"
+    android:gravity="center">
+
+    <TextView
+        android:id="@+id/tvHint"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:fontFamily="@font/medium"
+        android:textSize="@dimen/sp_13"
+        android:textColor="@color/black"
+        android:layout_margin="@dimen/dp_5" />
+
+    <ImageView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:src="@mipmap/carhint"/>
+    <TextView
+        android:id="@+id/tvHintMove"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:fontFamily="@font/medium"
+        android:textSize="@dimen/sp_13"
+        android:textColor="@color/black"
+        android:layout_margin="@dimen/dp_5" />
+
+    <ImageView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:src="@mipmap/leftflow"/>
+
+    <TextView
+        android:id="@+id/tvContinue"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/continues"
+        android:padding="@dimen/dp_5"
+        android:gravity="center"
+        android:layout_margin="@dimen/dp_5"
+        android:textColor="@color/white"
+        android:fontFamily="@font/medium"
+        android:textSize="@dimen/sp_13"
+        android:background="@drawable/bg_edit_button"
+        android:textAllCaps="false"/>
+
+
+</LinearLayout>

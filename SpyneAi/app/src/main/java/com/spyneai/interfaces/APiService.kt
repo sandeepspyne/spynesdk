@@ -5,6 +5,7 @@ import UploadPhotoResponse
 import com.spyneai.aipack.*
 import com.spyneai.model.ai.GifFetchResponse
 import com.spyneai.model.ai.GifResponse
+import com.spyneai.model.ai.SendEmailRequest
 import com.spyneai.model.ai.UploadGifResponse
 import com.spyneai.model.beforeafter.BeforeAfterResponse
 import com.spyneai.model.carreplace.AddCarLogoResponse
@@ -60,6 +61,11 @@ interface APiService {
     @GET("credit-user/send-download-mail")
     fun sendEmail(@Query("emailId") emailId: String?,
                 @Query("gifLink") otp: String?):
+           Call<OtpResponse>?
+
+    @GET("credit-user/send-shoot-results")
+    fun sendEmailAll(@Query("emailId") emailId: String?,
+                @Body sendEmailRequest: SendEmailRequest?):
            Call<OtpResponse>?
 
     @GET("categories/default")
@@ -269,7 +275,8 @@ interface APiService {
             @Part("user_id") user_id: RequestBody?,
             @Part("sku_id") sku_id: RequestBody?,
             @Part("image_url") image_url: RequestBody?,
-            @Part("sku_name") sku_name: RequestBody?
+            @Part("sku_name") sku_name: RequestBody?,
+            @Part("window_status") window_status: RequestBody?
     ): Call<BulkUploadResponse>?
 
     @Multipart

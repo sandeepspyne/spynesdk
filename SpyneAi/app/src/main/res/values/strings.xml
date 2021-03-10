@@ -107,6 +107,7 @@
     <string name="select_backgrounds">Select Background</string>
     <string name="select_output">Sample 360° Output</string>
     <string name="create_shoot">Create 360° Shoot</string>
+    <string name="create_shoots">Generate Output</string>
     <string name="your_sent">Your 360° Shot was sent at</string>
     <string name="view_all_images">View all images</string>
     <string name="reach_out">Reach out to us !</string>
@@ -117,6 +118,8 @@
     <string name="processing">Processing</string>
     <string name="your_photos">Your photos were sent at</string>
     <string name="view_spin">View 360° Spin Shot</string>
+    <string name="shoot_outdoors">Shoot Outdoors</string>
+    <string name="continues">Continue</string>
 
     <string-array name="planets_array">
         <item>4 Shoots</item>

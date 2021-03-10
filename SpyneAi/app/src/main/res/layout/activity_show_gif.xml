@@ -97,6 +97,7 @@
                 android:text="@string/view_all_images"
                 android:textColor="@color/primary"
                 android:fontFamily="@font/medium"
+                android:visibility="gone"
                 android:layout_gravity="center"
                 android:textSize="@dimen/sp_15"
                 android:drawablePadding="@dimen/dp_10"

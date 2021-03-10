@@ -10,7 +10,7 @@ object RetrofitClientSpyneAi {
 
     private val AUTH = "Basic "+ Base64.encodeToString("belalkhan:123456".toByteArray(), Base64.NO_WRAP)
 
-    private const val BASE_URL = "https://spyne.ai/"
+    private const val BASE_URL = "https://www.spyne.ai/"
 
     private val client = OkHttpClient.Builder()
             .readTimeout(2, TimeUnit.MINUTES)
