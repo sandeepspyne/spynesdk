@@ -1,35 +1,41 @@
 package com.spyneai.activity
 
+import android.app.Dialog
 import android.content.Intent
 import android.net.Uri
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.os.Handler
 import android.util.Log
 import android.view.View
+import android.view.Window
+import android.view.WindowManager
+import android.widget.ImageView
+import android.widget.TextView
 import android.widget.Toast
-import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
+import com.bumptech.glide.Glide
+import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.spyneai.R
-import com.spyneai.adapter.PhotosAdapter
 import com.spyneai.adapter.ShowReplacedImagesAdapter
 import com.spyneai.aipack.FetchBulkResponse
 import com.spyneai.interfaces.APiService
 import com.spyneai.interfaces.RetrofitClients
-import com.spyneai.model.sku.Photos
 import com.spyneai.model.skumap.UpdateSkuResponse
 import com.spyneai.needs.AppConstants
 import com.spyneai.needs.ScrollingLinearLayoutManager
 import com.spyneai.needs.Utilities
+import com.synnapps.carouselview.CarouselView
+import com.synnapps.carouselview.ViewListener
 import kotlinx.android.synthetic.main.activity_before_after.*
 import kotlinx.android.synthetic.main.activity_show_gif.*
-import kotlinx.android.synthetic.main.activity_show_gif.ivHomeGif
-import kotlinx.android.synthetic.main.activity_show_gif.tvRequestWapp
 import kotlinx.android.synthetic.main.activity_show_images.*
 import kotlinx.android.synthetic.main.activity_timer.*
+import kotlinx.android.synthetic.main.fragment_home.view.*
+import kotlinx.android.synthetic.main.view_custom.view.*
+import kotlinx.android.synthetic.main.view_images.view.*
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
-import okhttp3.internal.Util
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -106,6 +112,7 @@ class ShowImagesActivity : AppCompatActivity() {
                 imageListAfter as ArrayList<String>,
             object : ShowReplacedImagesAdapter.BtnClickListener {
                 override fun onBtnClick(position: Int) {
+                    showImagesDialog(position)
                     Log.e("position preview", position.toString())
                 }
             })
@@ -158,6 +165,56 @@ class ShowImagesActivity : AppCompatActivity() {
     override fun onBackPressed() {
         super.onBackPressed()
         finish()
+    }
+
+    fun showImagesDialog(position: Int)
+    {
+        Utilities.showProgressDialog(this)
+        Handler().postDelayed({
+            Utilities.hideProgressDialog()
+        }, 3000)
+
+        val dialog = Dialog(this)
+        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE)
+        dialog.setCancelable(true)
+        dialog.setContentView(R.layout.dialog_show_images)
+
+        val window: Window = dialog.getWindow()!!
+        window.setLayout(WindowManager.LayoutParams.MATCH_PARENT,
+                WindowManager.LayoutParams.WRAP_CONTENT)
+
+        val carouselViewImages: CarouselView = dialog.findViewById(R.id.carouselViewImages)
+        val ivCrossImages: ImageView = dialog.findViewById(R.id.ivCrossImages)
+
+        ivCrossImages.setOnClickListener(View.OnClickListener {
+            dialog.dismiss()
+        })
+
+        carouselViewImages.setPageCount(imageList.size);
+        carouselViewImages.setViewListener(viewListener);
+        carouselViewImages.setCurrentItem(position)
+
+        dialog.show()
+    }
+
+
+    var viewListener = object : ViewListener {
+        override fun setViewForPosition(position: Int): View? {
+            val customView: View = layoutInflater.inflate(R.layout.view_images, null)
+
+            Glide.with(this@ShowImagesActivity) // replace with 'this' if it's in activity
+                    .load(imageList[position])
+                    .diskCacheStrategy(DiskCacheStrategy.RESOURCE)
+                    .error(R.mipmap.defaults) // show error drawable if the image is not a gif
+                    .into(customView.ivBefore)
+            Glide.with(this@ShowImagesActivity) // replace with 'this' if it's in activity
+                    .load(imageListAfter[position])
+                    .diskCacheStrategy(DiskCacheStrategy.RESOURCE)
+                    .error(R.mipmap.defaults) // show error drawable if the image is not a gif
+                    .into(customView.ivAfter)
+
+            return customView
+        }
     }
 
 }

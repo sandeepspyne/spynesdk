@@ -56,10 +56,10 @@ class SplashActivity : AppCompatActivity() {
 
     //Start splash
     private fun setSplash() {
+        Handler().postDelayed({
             if (Utilities.getPreference(this, AppConstants.tokenId).isNullOrEmpty())
             {
                 val intent = Intent(this, OnboardOneActivity::class.java)
-                Utilities.savePrefrence(this,AppConstants.LANGUAGE,"English")
                 startActivity(intent)
                 finish()
             }
@@ -68,7 +68,7 @@ class SplashActivity : AppCompatActivity() {
                 startActivity(intent)
                 finish()
             }
-
+        }, 3000)
     }
 
 
