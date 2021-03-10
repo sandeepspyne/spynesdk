@@ -21,7 +21,10 @@ import android.net.Uri
 import android.os.*
 import android.provider.MediaStore
 import android.text.Editable
+import android.text.SpannableString
+import android.text.SpannableStringBuilder
 import android.text.TextWatcher
+import android.text.style.ForegroundColorSpan
 import android.util.Log
 import android.util.Rational
 import android.view.View
@@ -31,6 +34,7 @@ import android.view.animation.AlphaAnimation
 import android.view.animation.Animation
 import android.widget.*
 import android.widget.NumberPicker.OnValueChangeListener
+import android.widget.TextView.BufferType
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AppCompatDelegate
@@ -141,6 +145,7 @@ class Camera2Activity : AppCompatActivity() , SubCategoriesAdapter.BtnClickListe
                 WindowManager.LayoutParams.FLAG_FULLSCREEN)
         AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
 
+        showHint()
         setSubCategories()
         fetchSubCategories()
         setPermissions()
@@ -875,16 +880,24 @@ class Camera2Activity : AppCompatActivity() , SubCategoriesAdapter.BtnClickListe
                 WindowManager.LayoutParams.WRAP_CONTENT)
 
         val ivClickedImage : ImageView = dialog.findViewById(R.id.ivClickedImage)
+        val ivClickedImageover : ImageView = dialog.findViewById(R.id.ivClickedImageover)
+        val ivClickedImageoverlay : ImageView = dialog.findViewById(R.id.ivClickedImageoverlay)
         val tvReshoot : TextView = dialog.findViewById(R.id.tvReshoot)
         val tvConfirm : TextView = dialog.findViewById(R.id.tvConfirm)
 
         ivClickedImage.setImageBitmap(rotatedBitmap)
+        ivClickedImageover.setImageBitmap(rotatedBitmap)
+        Glide.with(this@Camera2Activity).load(
+                AppConstants.BASE_IMAGE_URL + frameImageList[frameNumber - 1].displayImage
+        ).into(ivClickedImageoverlay)
+
 
         tvReshoot.setOnClickListener(View.OnClickListener {
             dialog.dismiss()
             camera_capture_button.isEnabled = true
             camera_capture_button.isFocusable = true
         })
+
         tvConfirm.setOnClickListener(View.OnClickListener {
             dialog.dismiss()
             imageFileList.add(photoFile!!)
@@ -914,6 +927,68 @@ class Camera2Activity : AppCompatActivity() , SubCategoriesAdapter.BtnClickListe
                 finish()
             }
         })
+        dialog.show()
+    }
+
+
+    @RequiresApi(Build.VERSION_CODES.M)
+    private fun showHint() {
+        val dialog = Dialog(this)
+        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE)
+        dialog.setCancelable(true)
+        dialog.setContentView(R.layout.dialog_hint)
+
+        val window: Window = dialog.getWindow()!!
+        window.setLayout(WindowManager.LayoutParams.WRAP_CONTENT,
+                WindowManager.LayoutParams.WRAP_CONTENT)
+
+        val tvHint : TextView = dialog.findViewById(R.id.tvHint)
+        val tvHintMove : TextView = dialog.findViewById(R.id.tvHintMove)
+        val tvContinue : TextView = dialog.findViewById(R.id.tvContinue)
+        val builder = SpannableStringBuilder()
+        val builders = SpannableStringBuilder()
+
+        //First text
+        val black = "Shoot "
+        val blackSpannable = SpannableString(black)
+        blackSpannable.setSpan(ForegroundColorSpan(getColor(R.color.black)), 0, black.length, 0)
+        builder.append(blackSpannable)
+
+        val red = "Outdoors"
+        val redSpannable = SpannableString(red)
+        redSpannable.setSpan(ForegroundColorSpan(getColor(R.color.primary)), 0, red.length, 0)
+        builder.append(redSpannable)
+
+        val blue = " to void irregular reflections"
+        val blueSpannable = SpannableString(blue)
+        blueSpannable.setSpan(ForegroundColorSpan(getColor(R.color.black)), 0, blue.length, 0)
+        builder.append(blueSpannable)
+
+        tvHint.setText(builder, BufferType.SPANNABLE)
+
+
+        //Second text
+        val blacks = "Move "
+        val blacksSpannable = SpannableString(blacks)
+        blacksSpannable.setSpan(ForegroundColorSpan(getColor(R.color.black)), 0, blacks.length, 0)
+        builders.append(blacksSpannable)
+
+        val reds = "Left"
+        val redsSpannable = SpannableString(reds)
+        redsSpannable.setSpan(ForegroundColorSpan(getColor(R.color.primary)), 0, reds.length, 0)
+        builders.append(redsSpannable)
+
+        val blues = " after each shot"
+        val bluesSpannable = SpannableString(blues)
+        bluesSpannable.setSpan(ForegroundColorSpan(getColor(R.color.black)), 0, blues.length, 0)
+        builders.append(bluesSpannable)
+
+        tvHintMove.setText(builders, BufferType.SPANNABLE)
+
+        tvContinue.setOnClickListener(View.OnClickListener {
+            dialog.dismiss()
+        })
+
         dialog.show()
     }
 

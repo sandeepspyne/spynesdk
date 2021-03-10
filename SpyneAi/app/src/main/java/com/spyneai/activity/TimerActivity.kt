@@ -24,6 +24,7 @@ import com.spyneai.adapter.CarBackgroundAdapter
 import com.spyneai.adapter.PhotosAdapter
 import com.spyneai.aipack.*
 import com.spyneai.interfaces.*
+import com.spyneai.model.ai.SendEmailRequest
 import com.spyneai.model.ai.UploadGifResponse
 import com.spyneai.model.carreplace.CarBackgroundsResponse
 import com.spyneai.model.otp.OtpResponse
@@ -61,7 +62,8 @@ class TimerActivity : AppCompatActivity() {
     private lateinit var photsAdapter: PhotosAdapter
     private lateinit var photoList: List<Photos>
 
-    lateinit var imageList : List<String>
+    lateinit var imageList : ArrayList<String>
+    lateinit var imageListAfter : ArrayList<String>
     public lateinit var imageFileList : ArrayList<File>
     public lateinit var imageFileListFrames : ArrayList<Int>
 
@@ -454,7 +456,11 @@ class TimerActivity : AppCompatActivity() {
                 MultipartBody.FORM,
                 Utilities.getPreference(this, AppConstants.SKU_NAME)!!)
 
-        val call = request.bulkUPload(background, userId, skuId, imageUrl, skuName)
+        val windowStatus = RequestBody.create(
+                MultipartBody.FORM,
+                "inner")
+
+        val call = request.bulkUPload(background, userId, skuId, imageUrl, skuName,windowStatus)
 
         call?.enqueue(object : Callback<BulkUploadResponse> {
             override fun onResponse(call: Call<BulkUploadResponse>,
@@ -508,8 +514,16 @@ class TimerActivity : AppCompatActivity() {
                 if (response.isSuccessful) {
                     Log.e("Upload Replace", "bulk Fetch")
                     imageList = ArrayList<String>()
-                    for (i in 0..response.body()!!.size - 1)
-                        (imageList as ArrayList).add(response.body()!![i].output_image_url)
+                    imageListAfter = ArrayList<String>()
+
+                    imageList.clear()
+                    imageListAfter.clear()
+
+
+                    for (i in 0..response.body()!!.size - 1) {
+                        imageList.add(response.body()!![i].input_image_url)
+                        imageListAfter.add(response.body()!![i].output_image_url)
+                    }
                     fetchGif()
                 } else {
                     fetchBulkUpload()
@@ -596,8 +610,9 @@ class TimerActivity : AppCompatActivity() {
         //   Utilities.showProgressDialog(this)
 
         val request = RetrofitClientSpyneAi.buildService(APiService::class.java)
-        val call = request.sendEmail(Utilities.getPreference(this, AppConstants.EMAIL_ID),
-                gifLink)
+
+        val sendEmailRequest = SendEmailRequest(imageList,imageListAfter,gifLink)
+        val call = request.sendEmail(Utilities.getPreference(this, AppConstants.EMAIL_ID),gifLink/*, sendEmailRequest*/)
 
         call?.enqueue(object : Callback<OtpResponse> {
             override fun onResponse(call: Call<OtpResponse>, response: Response<OtpResponse>) {
