@@ -129,6 +129,11 @@ class Camera2DemoActivity : AppCompatActivity() , SubCategoriesAdapter.BtnClickL
         AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
 
         setProgressFrame(4)
+        Utilities.savePrefrence(
+            this@Camera2DemoActivity,
+            AppConstants.FRAME_SHOOOTS,
+            "4"
+        );
 
 //        setSubCategories()
 //        fetchSubCategories()
@@ -1378,6 +1383,7 @@ class Camera2DemoActivity : AppCompatActivity() , SubCategoriesAdapter.BtnClickL
                 );
                 //   setNumberPickerTextColor(npShoots, getColor(R.color.primary))
                 setProgressFrame(4)
+
             } else if (valuesShoots[newVal].equals("8 Angles")) {
                 Utilities.savePrefrence(
                         this@Camera2DemoActivity,

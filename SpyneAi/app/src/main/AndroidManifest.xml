@@ -135,7 +135,7 @@
             android:screenOrientation="portrait" />
 
         <activity
-            android:name=".spyneaidemo.activity.ShowImagesDemoActivity"
+            android:name=".spyneaidemo.activity.ShowImagesDemActivity"
             android:screenOrientation="portrait" />
 
         <activity

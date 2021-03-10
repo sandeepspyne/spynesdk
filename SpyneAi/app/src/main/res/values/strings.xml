@@ -88,7 +88,9 @@
     <string name="are_you">Are you sure you want to delete this SKU?</string>
     <string name="no">No</string>
     <string name="yes">Yes</string>
+    <string name="exit_demo_button">Exit Demo Mode</string>
     <string name="exits">Are you sure you want to exit this shoot?</string>
+    <string name="exits_demo">Demo mode is available for the first two backgrounds only. To unlock this background please exit demo mode.</string>
     <string name="email">Your Email Id</string>
     <string name="order_summary">Order Summary</string>
     <string name="category">Category - </string>

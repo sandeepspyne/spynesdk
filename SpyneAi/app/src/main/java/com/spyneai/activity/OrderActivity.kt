@@ -1,7 +1,6 @@
 package com.spyneai.activity
 
 import UploadPhotoResponse
-import android.app.Activity
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.graphics.BitmapFactory
@@ -14,20 +13,14 @@ import android.widget.Toast
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
-import androidx.recyclerview.selection.SelectionPredicates
 import androidx.recyclerview.selection.SelectionTracker
-import androidx.recyclerview.selection.StableIdKeyProvider
-import androidx.recyclerview.selection.StorageStrategy
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.spyneai.R
 import com.spyneai.adapter.*
 import com.spyneai.interfaces.APiService
-import com.spyneai.interfaces.MyLookup
 import com.spyneai.interfaces.RetrofitClient
-import com.spyneai.interfaces.RetrofitClients
 import com.spyneai.model.carreplace.CarBackgroundsResponse
-import com.spyneai.model.channel.ChannelsResponse
 import com.spyneai.model.nextsku.SkuRequest
 import com.spyneai.model.order.MarketPlace
 import com.spyneai.model.order.PlaceOrderResponse
@@ -38,7 +31,6 @@ import com.spyneai.needs.Utilities
 import kotlinx.android.synthetic.main.activity_order.*
 import kotlinx.android.synthetic.main.fragment_background.view.*
 import kotlinx.android.synthetic.main.fragment_channel.view.*
-import kotlinx.android.synthetic.main.fragment_channel.view.rvChannel
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response

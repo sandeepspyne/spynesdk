@@ -14,9 +14,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.spyneai.BeforeAfterActivity
 import com.spyneai.R
-import com.spyneai.activity.CompletedActivity
 import com.spyneai.activity.CompletedProjectsActivity
-import com.spyneai.activity.OngoingActivity
 import com.spyneai.interfaces.APiService
 import com.spyneai.interfaces.RetrofitClient
 import com.spyneai.model.categories.CategoriesResponse

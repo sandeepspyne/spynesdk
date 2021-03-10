@@ -1,31 +1,19 @@
 package com.spyneai.spyneaidemo.activity
 
 import android.content.Intent
-import android.media.AudioRecord.MetricsConstants.SOURCE
 import android.net.Uri
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.os.Handler
 import android.util.Log
 import android.view.View
-import android.webkit.WebView
-import android.widget.Toast
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.engine.DiskCacheStrategy
-import com.bumptech.glide.request.RequestOptions
 import com.spyneai.R
 import com.spyneai.activity.DashboardActivity
-import com.spyneai.interfaces.APiService
-import com.spyneai.interfaces.RetrofitClientSpyneAi
-import com.spyneai.model.otp.OtpResponse
 import com.spyneai.model.skumap.UpdateSkuResponse
 import com.spyneai.needs.AppConstants
 import com.spyneai.needs.Utilities
 import kotlinx.android.synthetic.main.activity_show_gif.*
-import okhttp3.internal.Util
-import retrofit2.Call
-import retrofit2.Callback
-import retrofit2.Response
 import java.net.URLEncoder
 
 class ShowGifDemoActivity : AppCompatActivity() {
@@ -42,7 +30,7 @@ class ShowGifDemoActivity : AppCompatActivity() {
 
         tvViewAllImages.setOnClickListener(View.OnClickListener {
             val intent = Intent(this,
-                    ShowImagesDemoActivity::class.java)
+                    ShowImagesDemActivity::class.java)
             startActivity(intent)
         })
 
@@ -86,22 +74,54 @@ class ShowGifDemoActivity : AppCompatActivity() {
     }
 
     private fun showGif() {
-        Glide.with(this) // replace with 'this' if it's in activity
-                .load(R.mipmap.defaults)
+
+        if (Utilities.getPreference(this, AppConstants.FRAME_SHOOOTS).equals("4") && Utilities.getPreference(this, AppConstants.backgroundNumber).equals("0"))
+        {
+            Glide.with(this) // replace with 'this' if it's in activity
+                .load(R.raw.radiantslate4)
                 .diskCacheStrategy(DiskCacheStrategy.RESOURCE)
                 .error(R.mipmap.defaults) // show error drawable if the image is not a gif
                 .into(imageView)
+
+        }else if (Utilities.getPreference(this, AppConstants.FRAME_SHOOOTS).equals("4") && Utilities.getPreference(this, AppConstants.backgroundNumber).equals("1"))
+        {
+            Glide.with(this) // replace with 'this' if it's in activity
+                .load(R.raw.radiantsilver4)
+                .diskCacheStrategy(DiskCacheStrategy.RESOURCE)
+                .error(R.mipmap.defaults) // show error drawable if the image is not a gif
+                .into(imageView)
+
+        }
+
+        else if (Utilities.getPreference(this, AppConstants.FRAME_SHOOOTS).equals("8") && Utilities.getPreference(this, AppConstants.backgroundNumber).equals("0"))
+        {
+            Glide.with(this) // replace with 'this' if it's in activity
+                .load(R.raw.radiantslate8)
+                .diskCacheStrategy(DiskCacheStrategy.RESOURCE)
+                .error(R.mipmap.defaults) // show error drawable if the image is not a gif
+                .into(imageView)
+
+        }else if (Utilities.getPreference(this, AppConstants.FRAME_SHOOOTS).equals("8") && Utilities.getPreference(this, AppConstants.backgroundNumber).equals("1"))
+        {
+            Glide.with(this) // replace with 'this' if it's in activity
+                .load(R.raw.radiantsilver8)
+                .diskCacheStrategy(DiskCacheStrategy.RESOURCE)
+                .error(R.mipmap.defaults) // show error drawable if the image is not a gif
+                .into(imageView)
+
+        }
+
 
         Log.e("Gif to play",intent.getStringExtra(AppConstants.GIF).toString())
         // webView.loadUrl(intent.getStringExtra(AppConstants.GIF)!!);
     }
 
-    override fun onBackPressed() {
-        super.onBackPressed()
-        val intent = Intent(this,
-                DashboardActivity::class.java)
-        startActivity(intent)
-        finish()
-    }
+//    override fun onBackPressed() {
+//        super.onBackPressed()
+//        val intent = Intent(this,
+//                DashboardActivity::class.java)
+//        startActivity(intent)
+//        finish()
+//    }
 
 }

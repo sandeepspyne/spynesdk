@@ -3,8 +3,6 @@ package com.spyneai.camera2
 import FrameImages
 import SubcategoriesResponse
 import android.Manifest
-import android.animation.Animator
-import android.animation.AnimatorListenerAdapter
 import android.annotation.SuppressLint
 import android.app.Dialog
 import android.content.ContentValues
@@ -18,7 +16,6 @@ import android.graphics.Matrix
 import android.graphics.Paint
 import android.media.AudioManager
 import android.media.ExifInterface
-import android.media.Image
 import android.media.MediaActionSound
 import android.net.Uri
 import android.os.*

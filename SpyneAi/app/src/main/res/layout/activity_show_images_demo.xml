@@ -52,12 +52,12 @@
         android:layout_height="wrap_content"
         android:text="@string/your_photos"
         android:textColor="@color/black"
+        android:layout_marginTop="@dimen/dp_20"
         android:fontFamily="@font/bold"
         android:gravity="center"
-        android:layout_margin="@dimen/dp_10"
         android:textSize="@dimen/sp_16" />
     <TextView
-        android:id="@+id/tvYourEmailId"
+        android:id="@+id/tvYourEmailIdReplaced"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="@string/email"
@@ -65,6 +65,53 @@
         android:fontFamily="@font/medium"
         android:gravity="center"
         android:textSize="@dimen/sp_13" />
+    <LinearLayout
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:id="@+id/llBeforeAfters"
+        android:layout_marginTop="@dimen/dp_10"
+        android:layout_height="wrap_content">
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:layout_marginStart="@dimen/dp_5"
+            android:layout_marginEnd="@dimen/dp_5"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:maxLines="1"
+                android:text="@string/before"
+                android:textSize="@dimen/sp_13"
+                android:textColor="@color/primary"
+                android:fontFamily="@font/medium"/>
+
+        </LinearLayout>
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:layout_marginStart="@dimen/dp_5"
+            android:layout_marginEnd="@dimen/dp_5"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:maxLines="1"
+                android:text="@string/after"
+                android:textColor="@color/primary"
+                android:textSize="@dimen/sp_13"
+                android:fontFamily="@font/medium"/>
+
+        </LinearLayout>
+
+    </LinearLayout>
+
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rvImagesBackgroundRemoved"
@@ -72,6 +119,18 @@
         android:layout_height="0dp"
         android:layout_weight="1"
         android:layout_margin="@dimen/dp_20"/>
+
+    <TextView
+        android:id="@+id/tvViewGif"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/view_spin"
+        android:textColor="@color/primary"
+        android:fontFamily="@font/medium"
+        android:layout_gravity="center"
+        android:textSize="@dimen/sp_15"
+        android:drawablePadding="@dimen/dp_10"
+        app:drawableRightCompat="@mipmap/move" />
 
     <TextView
         android:layout_width="match_parent"

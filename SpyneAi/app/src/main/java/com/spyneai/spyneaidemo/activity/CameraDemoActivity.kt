@@ -4,7 +4,6 @@ import FrameImages
 import SubcategoriesResponse
 import android.Manifest
 import android.annotation.SuppressLint
-import android.app.Activity
 import android.app.Dialog
 import android.content.ContentValues
 import android.content.Context
@@ -46,7 +45,6 @@ import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.spyneai.R
 import com.spyneai.activity.DashboardActivity
-import com.spyneai.activity.GenerateGifActivity
 import com.spyneai.adapter.ProgressAdapter
 import com.spyneai.adapter.SubCategoriesAdapter
 import com.spyneai.interfaces.APiService
@@ -69,7 +67,6 @@ import kotlinx.android.synthetic.main.activity_camera.imgOverlay
 import kotlinx.android.synthetic.main.activity_camera.ivGallery
 import kotlinx.android.synthetic.main.activity_camera.ivPreview
 import kotlinx.android.synthetic.main.activity_camera.rvProgress
-import kotlinx.android.synthetic.main.activity_camera.rvSubcategories
 import kotlinx.android.synthetic.main.activity_camera.tvshoot
 import kotlinx.android.synthetic.main.activity_camera.viewFinder
 import kotlinx.android.synthetic.main.activity_camera_demo.*

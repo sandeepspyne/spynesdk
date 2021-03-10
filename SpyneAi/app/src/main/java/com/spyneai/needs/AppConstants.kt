@@ -50,4 +50,7 @@ object AppConstants {
     val phone: String = "number"
     val tokenId : String = "tokenId"
     val otp : String = "otp"
+
+    val backgroundNumber = "backgroundNumber"
+
 }

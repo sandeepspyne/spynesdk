@@ -1,12 +1,7 @@
 package com.spyneai.spyneaidemo.activity
 
-import UploadPhotoResponse
 import android.app.Dialog
 import android.content.Intent
-import android.graphics.Bitmap
-import android.graphics.BitmapFactory
-import android.graphics.Matrix
-import android.media.ExifInterface
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
@@ -14,31 +9,17 @@ import android.view.View
 import android.view.Window
 import android.widget.TextView
 import android.widget.Toast
-import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
-import com.google.gson.Gson
 import com.spyneai.R
 import com.spyneai.activity.DashboardActivity
-import com.spyneai.activity.TimerActivity
 import com.spyneai.adapter.CarBackgroundAdapter
 import com.spyneai.adapter.PhotosAdapter
 import com.spyneai.aipack.*
-import com.spyneai.interfaces.APiService
-import com.spyneai.interfaces.RetrofitClient
-import com.spyneai.interfaces.RetrofitClients
-import com.spyneai.interfaces.RetrofitClientsBulk
-import com.spyneai.model.ai.GifResponse
 import com.spyneai.model.carreplace.CarBackgroundsResponse
 import com.spyneai.model.sku.Photos
-import com.spyneai.model.sku.SkuResponse
 import com.spyneai.model.skumap.UpdateSkuResponse
-import com.spyneai.model.skustatus.UpdateSkuStatusRequest
-import com.spyneai.model.skustatus.UpdateSkuStatusResponse
-import com.spyneai.model.upload.PreviewResponse
-import com.spyneai.model.upload.UploadResponse
-import com.spyneai.model.uploadRough.UploadPhotoRequest
 import com.spyneai.needs.AppConstants
 import com.spyneai.needs.Utilities
 import kotlinx.android.synthetic.main.activity_edit_sku.*
@@ -46,18 +27,9 @@ import kotlinx.android.synthetic.main.activity_generate_gif.*
 import kotlinx.android.synthetic.main.activity_order.*
 import kotlinx.android.synthetic.main.activity_shoot_selection.*
 import kotlinx.android.synthetic.main.activity_show_gif.*
-import okhttp3.MediaType
-import okhttp3.MultipartBody
-import okhttp3.RequestBody
-import retrofit2.Call
-import retrofit2.Callback
-import retrofit2.Response
 import java.io.File
-import java.io.FileOutputStream
-import java.io.IOException
-import java.io.OutputStream
 
-class GenerateGifDemoActivity : AppCompatActivity() {
+class GenerateGifDemoActivity : AppCompatActivity(), CarBackgroundAdapter.BtnClickListener {
     private lateinit var photsAdapter: PhotosAdapter
     private lateinit var photoList: List<Photos>
 
@@ -69,6 +41,7 @@ class GenerateGifDemoActivity : AppCompatActivity() {
     lateinit var carBackgroundList : ArrayList<CarBackgroundsResponse>
     lateinit var carbackgroundsAdapter: CarBackgroundAdapter
     var backgroundSelect : String = ""
+    var backgroundNumber : Int = 0
 
     var totalImagesToUPload : Int = 0
     var totalImagesToUPloadIndex : Int = 0
@@ -77,6 +50,7 @@ class GenerateGifDemoActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_generate_gif_demo)
+
 
         setBackgroundsCar()
         listeners()
@@ -89,6 +63,46 @@ class GenerateGifDemoActivity : AppCompatActivity() {
         imageFileList.addAll(intent.getParcelableArrayListExtra(AppConstants.ALL_IMAGE_LIST)!!)
         imageFileListFrames.addAll(intent.getIntegerArrayListExtra(AppConstants.ALL_FRAME_LIST)!!)
         totalImagesToUPload = imageFileList.size
+
+
+
+
+    }
+
+    private fun showBackgroundDialog(){
+
+        val dialog = Dialog(this)
+        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE)
+        dialog.setCancelable(false)
+        dialog.setContentView(R.layout.dialog_demo_exit)
+        val dialogButtonYes: TextView = dialog.findViewById(R.id.btnExitDemo)
+        val dialogButtonNo: TextView = dialog.findViewById(R.id.btnNo)
+
+        dialogButtonYes.setOnClickListener(View.OnClickListener {
+            Utilities.savePrefrence(this@GenerateGifDemoActivity, AppConstants.SHOOT_ID, "")
+            Utilities.savePrefrence(this@GenerateGifDemoActivity, AppConstants.CATEGORY_ID, "")
+            Utilities.savePrefrence(this@GenerateGifDemoActivity, AppConstants.PRODUCT_ID, "")
+            Utilities.savePrefrence(this@GenerateGifDemoActivity, AppConstants.SKU_NAME, "")
+            Utilities.savePrefrence(this@GenerateGifDemoActivity, AppConstants.SKU_ID, "")
+
+
+            val updateSkuResponseList = ArrayList<UpdateSkuResponse>()
+            updateSkuResponseList.clear()
+
+            Utilities.setList(
+                this@GenerateGifDemoActivity,
+                AppConstants.FRAME_LIST, updateSkuResponseList
+            )
+            val intent = Intent(this, DashboardActivity::class.java)
+            startActivity(intent)
+            finish()
+            dialog.dismiss()
+
+        })
+        dialogButtonNo.setOnClickListener(View.OnClickListener { dialog.dismiss() })
+        dialog.show()
+
+
     }
 
     private fun setBackgroundsCar() {
@@ -101,6 +115,11 @@ class GenerateGifDemoActivity : AppCompatActivity() {
                 object : CarBackgroundAdapter.BtnClickListener {
                     override fun onBtnClick(position: Int) {
                         Log.e("position preview", position.toString())
+
+                        if(position>=2){
+                            showBackgroundDialog()
+                        }
+
                         //if (position<carBackgroundList.size)
                         backgroundSelect  = carBackgroundList[position].imageId.toString()
                         carbackgroundsAdapter.notifyDataSetChanged()
@@ -206,6 +225,10 @@ class GenerateGifDemoActivity : AppCompatActivity() {
         })
         dialogButtonNo.setOnClickListener(View.OnClickListener { dialog.dismiss() })
         dialog.show()
+    }
+
+    override fun onBtnClick(position: Int) {
+        TODO("Not yet implemented")
     }
 
 }

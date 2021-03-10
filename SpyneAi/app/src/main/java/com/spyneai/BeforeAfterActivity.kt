@@ -10,9 +10,7 @@ import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.spyneai.spyneaidemo.activity.CameraDemoActivity
 import com.bumptech.glide.Glide
-import com.spyneai.activity.CameraActivity
 import com.spyneai.adapter.BeforeAfterAdapter
 import com.spyneai.camera2.Camera2Activity
 import com.spyneai.interfaces.APiService

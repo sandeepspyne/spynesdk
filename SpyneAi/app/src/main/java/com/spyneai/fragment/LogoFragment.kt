@@ -22,8 +22,6 @@ import com.spyneai.activity.CameraPreviewActivity
 import com.spyneai.needs.AppConstants
 import com.spyneai.needs.ImageFilePath
 import com.spyneai.needs.Utilities
-import kotlinx.android.synthetic.main.activity_camera_preview.*
-import kotlinx.android.synthetic.main.activity_order.*
 import kotlinx.android.synthetic.main.fragment_logo.*
 import java.io.File
 

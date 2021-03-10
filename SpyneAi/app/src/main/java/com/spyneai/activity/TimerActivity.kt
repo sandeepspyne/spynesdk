@@ -13,8 +13,6 @@ import android.util.Log
 import android.view.View
 import android.view.Window
 import android.view.animation.LinearInterpolator
-import android.widget.CompoundButton
-import android.widget.RadioGroup
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity

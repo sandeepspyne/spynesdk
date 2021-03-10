@@ -1,8 +1,6 @@
 package com.spyneai.adapter
 
 import android.content.Context
-import android.content.Intent
-import android.opengl.Visibility
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -12,11 +10,9 @@ import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.spyneai.R
-import com.spyneai.activity.CameraActivity
-import com.spyneai.activity.CameraPreviewActivity
 import com.spyneai.model.carreplace.CarBackgroundsResponse
-import com.spyneai.model.channel.Data
 import com.spyneai.needs.AppConstants
+import com.spyneai.needs.Utilities
 
 class CarBackgroundAdapter(val context: Context,
                            val channelList : ArrayList<CarBackgroundsResponse>,
@@ -26,7 +22,12 @@ class CarBackgroundAdapter(val context: Context,
 
     companion object {
         var mClickListener: BtnClickListener? = null
+        var backgroundNumber : String = ""
     }
+
+
+
+
     /**
      * Provide a reference to the type of views that you are using
      * (custom ViewHolder).
@@ -67,6 +68,14 @@ class CarBackgroundAdapter(val context: Context,
             viewHolder.llChannel.setBackgroundResource(R.drawable.bg_selected)
         })
 */
+
+
+
+        Utilities.savePrefrence(context, AppConstants.backgroundNumber, "0")
+
+
+
+
         if (position == pos)
             viewHolder.llChannel.setBackgroundResource(R.drawable.bg_selected)
         else
@@ -76,6 +85,11 @@ class CarBackgroundAdapter(val context: Context,
             if (mClickListener != null)
                 mClickListener?.onBtnClick(position)
             pos = position
+
+            if (mClickListener != null)
+                mClickListener?.onBtnClick(position)
+
+            Utilities.savePrefrence(context, AppConstants.backgroundNumber, position.toString())
 
             viewHolder.llChannel.setBackgroundResource(R.drawable.bg_selected)
         })
