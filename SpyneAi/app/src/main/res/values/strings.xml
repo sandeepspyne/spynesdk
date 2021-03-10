@@ -108,13 +108,13 @@
     <string name="generate_gif">Generate gif</string>
     <string name="select_backgrounds">Select Background</string>
     <string name="select_output">Sample 360° Output</string>
-    <string name="create_shoot">Create 360° Shoot</string>
+    <string name="create_shoot">Generate Output</string>
     <string name="create_shoots">Generate Output</string>
     <string name="your_sent">Your 360° Shot was sent at</string>
     <string name="view_all_images">View all images</string>
     <string name="reach_out">Reach out to us !</string>
     <string name="whatsapp">WhatsApp</string>
-    <string name="your_360_shot">Your 360° Shot \nis almost ready</string>
+    <string name="your_360_shot">Your images are \n almost ready</string>
     <string name="completed_projects">Completed Projects</string>
     <string name="your_images">Your Images</string>
     <string name="processing">Processing</string>

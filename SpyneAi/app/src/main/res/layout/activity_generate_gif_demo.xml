@@ -102,6 +102,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="@string/select_output"
+                android:gravity="center"
                 android:fontFamily="@font/bold"
                 android:textColor="@color/black"
                 android:padding="@dimen/dp_10"
@@ -109,12 +110,21 @@
                 android:layout_marginEnd="@dimen/dp_10"
                 android:textSize="@dimen/sp_16"/>
 
-            <ImageView
-                android:id="@+id/imageViewGif"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_margin="@dimen/dp_20"
-                android:src="@mipmap/defaults"/>
+            <FrameLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content">
+
+                <ImageView
+                    android:id="@+id/imageViewGif"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="@dimen/dp_20"
+                    android:src="@mipmap/defaults"/>
+
+
+            </FrameLayout>
+
+
 
         </LinearLayout>
 

@@ -14,6 +14,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.spyneai.R
 import com.spyneai.activity.DashboardActivity
+import com.spyneai.activity.TimerActivity
 import com.spyneai.adapter.CarBackgroundAdapter
 import com.spyneai.adapter.PhotosAdapter
 import com.spyneai.aipack.*
@@ -29,7 +30,7 @@ import kotlinx.android.synthetic.main.activity_shoot_selection.*
 import kotlinx.android.synthetic.main.activity_show_gif.*
 import java.io.File
 
-class GenerateGifDemoActivity : AppCompatActivity(), CarBackgroundAdapter.BtnClickListener {
+class GenerateGifDemoActivity : AppCompatActivity() {
     private lateinit var photsAdapter: PhotosAdapter
     private lateinit var photoList: List<Photos>
 
@@ -41,7 +42,6 @@ class GenerateGifDemoActivity : AppCompatActivity(), CarBackgroundAdapter.BtnCli
     lateinit var carBackgroundList : ArrayList<CarBackgroundsResponse>
     lateinit var carbackgroundsAdapter: CarBackgroundAdapter
     var backgroundSelect : String = ""
-    var backgroundNumber : Int = 0
 
     var totalImagesToUPload : Int = 0
     var totalImagesToUPloadIndex : Int = 0
@@ -49,8 +49,7 @@ class GenerateGifDemoActivity : AppCompatActivity(), CarBackgroundAdapter.BtnCli
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_generate_gif_demo)
-
+        setContentView(R.layout.activity_generate_gif)
 
         setBackgroundsCar()
         listeners()
@@ -63,10 +62,94 @@ class GenerateGifDemoActivity : AppCompatActivity(), CarBackgroundAdapter.BtnCli
         imageFileList.addAll(intent.getParcelableArrayListExtra(AppConstants.ALL_IMAGE_LIST)!!)
         imageFileListFrames.addAll(intent.getIntegerArrayListExtra(AppConstants.ALL_FRAME_LIST)!!)
         totalImagesToUPload = imageFileList.size
+    }
+
+    private fun setBackgroundsCar() {
+        carBackgroundList = ArrayList<CarBackgroundsResponse>()
+        gifList = ArrayList<String>()
+        gifList.addAll(intent.getParcelableArrayListExtra(AppConstants.GIF_LIST)!!)
+
+        carbackgroundsAdapter = CarBackgroundAdapter(this,
+            carBackgroundList as ArrayList<CarBackgroundsResponse>, 0,
+            object : CarBackgroundAdapter.BtnClickListener {
+                override fun onBtnClick(position: Int) {
+                    Log.e("position preview", position.toString())
+                    //if (position<carBackgroundList.size)
+                    backgroundSelect  = carBackgroundList[position].imageId.toString()
+                    carbackgroundsAdapter.notifyDataSetChanged()
+
+                    if (position>=2){
+                        showBackgroundDialog()
+                    }
+
+                    Glide.with(this@GenerateGifDemoActivity) // replace with 'this' if it's in activity
+                        .load(gifList[position])
+                        .error(R.mipmap.defaults) // show error drawable if the image is not a gif
+                        .into(imageViewGif)
+
+                    //showPreviewCar()
+                }
+            })
+        val layoutManager: RecyclerView.LayoutManager =
+            LinearLayoutManager(this,
+                LinearLayoutManager.HORIZONTAL, false)
+        rvBackgroundsCars.setLayoutManager(layoutManager)
+        rvBackgroundsCars.setAdapter(carbackgroundsAdapter)
+
+        fetchBackgrounds()
+    }
 
 
+    private fun fetchBackgrounds() {
+        (carBackgroundList as ArrayList).clear()
+        (carBackgroundList as ArrayList).addAll(
+            Utilities.getListBackgroundsCar(
+                this,AppConstants.BACKGROUND_LIST_CARS)!!)
+
+        carbackgroundsAdapter.notifyDataSetChanged()
+
+        backgroundSelect  = carBackgroundList[0].imageId.toString()
+
+        Glide.with(this@GenerateGifDemoActivity) // replace with 'this' if it's in activity
+            .load(gifList[0])
+            .error(R.mipmap.defaults) // show error drawable if the image is not a gif
+            .into(imageViewGif)
+
+    }
+
+    private fun listeners() {
+        Log.e("Generate  SKU",
+            Utilities.getPreference(this,
+                AppConstants.SKU_NAME)!!)
+        tvGenerateGif.setOnClickListener(View.OnClickListener {
+            if (Utilities.isNetworkAvailable(this))
+            {
+                val intent = Intent(this@GenerateGifDemoActivity,
+                    TimerDemoActivity::class.java)
+                intent.putExtra(AppConstants.BG_ID,backgroundSelect)
+                intent.putExtra(AppConstants.ALL_IMAGE_LIST, imageFileList)
+                intent.putExtra(AppConstants.ALL_FRAME_LIST, imageFileListFrames)
+                intent.putExtra(AppConstants.GIF_LIST, gifList)
+                startActivity(intent)
+                finish()
+            }
+            else{
+                Toast.makeText(this,
+                    "No internet Connection , Please Try Again! ",
+                    Toast.LENGTH_LONG).show()
+            }
+        })
+
+        ivBackGif.setOnClickListener(View.OnClickListener {
+            onBackPressed()
+        })
+
+    }
 
 
+    override fun onBackPressed() {
+        //  super.onBackPressed()
+        showExitDialog()
     }
 
     private fun showBackgroundDialog(){
@@ -105,95 +188,6 @@ class GenerateGifDemoActivity : AppCompatActivity(), CarBackgroundAdapter.BtnCli
 
     }
 
-    private fun setBackgroundsCar() {
-        carBackgroundList = ArrayList<CarBackgroundsResponse>()
-        gifList = ArrayList<String>()
-        gifList.addAll(intent.getParcelableArrayListExtra(AppConstants.GIF_LIST)!!)
-
-        carbackgroundsAdapter = CarBackgroundAdapter(this,
-                carBackgroundList as ArrayList<CarBackgroundsResponse>, 0,
-                object : CarBackgroundAdapter.BtnClickListener {
-                    override fun onBtnClick(position: Int) {
-                        Log.e("position preview", position.toString())
-
-                        if(position>=2){
-                            showBackgroundDialog()
-                        }
-
-                        //if (position<carBackgroundList.size)
-                        backgroundSelect  = carBackgroundList[position].imageId.toString()
-                        carbackgroundsAdapter.notifyDataSetChanged()
-
-                        Glide.with(this@GenerateGifDemoActivity) // replace with 'this' if it's in activity
-                            .load(gifList[position])
-                            .error(R.mipmap.defaults) // show error drawable if the image is not a gif
-                            .into(imageViewGif)
-
-                        //showPreviewCar()
-                    }
-                })
-        val layoutManager: RecyclerView.LayoutManager =
-                LinearLayoutManager(this,
-                        LinearLayoutManager.HORIZONTAL, false)
-        rvBackgroundsCars.setLayoutManager(layoutManager)
-        rvBackgroundsCars.setAdapter(carbackgroundsAdapter)
-
-        fetchBackgrounds()
-    }
-
-
-    private fun fetchBackgrounds() {
-        (carBackgroundList as ArrayList).clear()
-        (carBackgroundList as ArrayList).addAll(
-                Utilities.getListBackgroundsCar(
-                        this,AppConstants.BACKGROUND_LIST_CARS)!!)
-
-        carbackgroundsAdapter.notifyDataSetChanged()
-
-        backgroundSelect  = carBackgroundList[0].imageId.toString()
-
-        Glide.with(this@GenerateGifDemoActivity) // replace with 'this' if it's in activity
-            .load(gifList[0])
-            .error(R.mipmap.defaults) // show error drawable if the image is not a gif
-            .into(imageViewGif)
-
-    }
-
-    private fun listeners() {
-        Log.e("Generate  SKU",
-                Utilities.getPreference(this,
-                        AppConstants.SKU_NAME)!!)
-        tvGenerateGif.setOnClickListener(View.OnClickListener {
-            if (Utilities.isNetworkAvailable(this))
-            {
-                val intent = Intent(this@GenerateGifDemoActivity,
-                        TimerDemoActivity::class.java)
-                intent.putExtra(AppConstants.BG_ID,backgroundSelect)
-                intent.putExtra(AppConstants.ALL_IMAGE_LIST, imageFileList)
-                intent.putExtra(AppConstants.ALL_FRAME_LIST, imageFileListFrames)
-                intent.putExtra(AppConstants.GIF_LIST, gifList)
-                startActivity(intent)
-                finish()
-            }
-            else{
-                Toast.makeText(this,
-                        "No internet Connection , Please Try Again! ",
-                        Toast.LENGTH_LONG).show()
-            }
-        })
-
-        ivBackGif.setOnClickListener(View.OnClickListener {
-            onBackPressed()
-        })
-
-    }
-
-
-    override fun onBackPressed() {
-      //  super.onBackPressed()
-        showExitDialog()
-    }
-
     fun showExitDialog( ) {
         val dialog = Dialog(this)
         dialog.requestWindowFeature(Window.FEATURE_NO_TITLE)
@@ -214,8 +208,8 @@ class GenerateGifDemoActivity : AppCompatActivity(), CarBackgroundAdapter.BtnCli
             updateSkuResponseList.clear()
 
             Utilities.setList(
-                    this@GenerateGifDemoActivity,
-                    AppConstants.FRAME_LIST, updateSkuResponseList
+                this@GenerateGifDemoActivity,
+                AppConstants.FRAME_LIST, updateSkuResponseList
             )
             val intent = Intent(this, DashboardActivity::class.java)
             startActivity(intent)
@@ -225,10 +219,6 @@ class GenerateGifDemoActivity : AppCompatActivity(), CarBackgroundAdapter.BtnCli
         })
         dialogButtonNo.setOnClickListener(View.OnClickListener { dialog.dismiss() })
         dialog.show()
-    }
-
-    override fun onBtnClick(position: Int) {
-        TODO("Not yet implemented")
     }
 
 }
