@@ -79,9 +79,7 @@ class ShowGifActivity : AppCompatActivity() {
                         URLEncoder.encode("Hey! The Spyne 360° Shot looks impressive; I liked the user experience and would like to learn more about the commercial application and how I can best access this technology. I look forward to connecting!", "UTF-8")
                 i.setPackage("com.whatsapp")
                 i.setData(Uri.parse(url))
-                if (i.resolveActivity(packageManager) != null) {
                     startActivity(i)
-                }
             } catch (e: Exception) {
                 e.printStackTrace()
             }

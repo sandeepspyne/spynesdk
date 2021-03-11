@@ -54,6 +54,7 @@ class DashboardActivity : AppCompatActivity() {
 
     }
 
+
     //var viewListener = ViewListener { layoutInflater.inflate(R.layout.view_custom, null) }
     private fun finishAllBacks() {
         SplashActivity().finish()

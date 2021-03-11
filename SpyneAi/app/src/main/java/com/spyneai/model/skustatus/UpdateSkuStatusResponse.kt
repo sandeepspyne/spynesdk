@@ -8,4 +8,4 @@ data class UpdateSkuStatusResponse (
         val header: Header,
         val msgInfo: MsgInfo,
         val payload: Payload
-        )
+)

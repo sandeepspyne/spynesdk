@@ -150,7 +150,7 @@ class GenerateGifActivity : AppCompatActivity() {
                 intent.putExtra(AppConstants.BG_ID,backgroundSelect)
                 intent.putExtra(AppConstants.ALL_IMAGE_LIST, imageFileList)
                 intent.putExtra(AppConstants.ALL_FRAME_LIST, imageFileListFrames)
-                intent.putExtra(AppConstants.GIF_LIST, gifList)
+//                intent.putExtra(AppConstants.GIF_LIST, gifList)
                 startActivity(intent)
                 finish()
             }

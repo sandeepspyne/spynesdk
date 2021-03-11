@@ -112,9 +112,7 @@ class ShowImagesActivity : AppCompatActivity() {
                         )
                 i.setPackage("com.whatsapp")
                 i.setData(Uri.parse(url))
-                if (i.resolveActivity(packageManager) != null) {
-                    startActivity(i)
-                }
+                startActivity(i)
             } catch (e: Exception) {
                 e.printStackTrace()
             }
@@ -189,39 +187,23 @@ class ShowImagesActivity : AppCompatActivity() {
     }
 
     override fun onBackPressed() {
-        showExitDialog()
-    }
+        super.onBackPressed()
+        Utilities.savePrefrence(this@ShowImagesActivity, AppConstants.SHOOT_ID, "")
+        Utilities.savePrefrence(this@ShowImagesActivity, AppConstants.CATEGORY_ID, "")
+        Utilities.savePrefrence(this@ShowImagesActivity, AppConstants.PRODUCT_ID, "")
+        Utilities.savePrefrence(this@ShowImagesActivity, AppConstants.SKU_NAME, "")
+        Utilities.savePrefrence(this@ShowImagesActivity, AppConstants.SKU_ID, "")
+        val intent = Intent(this, DashboardActivity::class.java)
 
-    fun showExitDialog( ) {
-        val dialog = Dialog(this)
-        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE)
-        dialog.setCancelable(false)
-        dialog.setContentView(R.layout.dialog_exit)
-        val dialogButtonYes: TextView = dialog.findViewById(R.id.btnYes)
-        val dialogButtonNo: TextView = dialog.findViewById(R.id.btnNo)
+        val updateSkuResponseList = ArrayList<UpdateSkuResponse>()
+        updateSkuResponseList.clear()
 
-        dialogButtonYes.setOnClickListener(View.OnClickListener {
-            Utilities.savePrefrence(this@ShowImagesActivity, AppConstants.SHOOT_ID, "")
-            Utilities.savePrefrence(this@ShowImagesActivity, AppConstants.CATEGORY_ID, "")
-            Utilities.savePrefrence(this@ShowImagesActivity, AppConstants.PRODUCT_ID, "")
-            Utilities.savePrefrence(this@ShowImagesActivity, AppConstants.SKU_NAME, "")
-            Utilities.savePrefrence(this@ShowImagesActivity, AppConstants.SKU_ID, "")
-            val intent = Intent(this, DashboardActivity::class.java)
-
-            val updateSkuResponseList = ArrayList<UpdateSkuResponse>()
-            updateSkuResponseList.clear()
-
-            Utilities.setList(
-                this@ShowImagesActivity,
-                AppConstants.FRAME_LIST, updateSkuResponseList
-            )
-            startActivity(intent)
-            finish()
-            dialog.dismiss()
-
-        })
-        dialogButtonNo.setOnClickListener(View.OnClickListener { dialog.dismiss() })
-        dialog.show()
+        Utilities.setList(
+            this@ShowImagesActivity,
+            AppConstants.FRAME_LIST, updateSkuResponseList
+        )
+        startActivity(intent)
+        finish()
     }
 
     fun showImagesDialog(position: Int) {
@@ -272,46 +254,6 @@ class ShowImagesActivity : AppCompatActivity() {
 
             return customView
         }
-    }
-
-    //Download
-    fun downLoad()
-    {
-        PRDownloader.initialize(getApplicationContext());
-        // Enabling database for resume support even after the application is killed:
-        // Enabling database for resume support even after the application is killed:
-        val config = PRDownloaderConfig.newBuilder()
-            .setDatabaseEnabled(true)
-            .build()
-        PRDownloader.initialize(applicationContext, config)
-
-
-        val FILENAME_FORMAT = "yyyy-MM-dd-HH-mm-ss-SSS"
-
-        val downloadId = PRDownloader.download(
-            "https://storage.googleapis.com/spyne-cliq/spyne-cliq/product/cars/demo/8angles/1.jpg",
-            getOutputDirectory(),
-            "Spyne" + SimpleDateFormat(
-                FILENAME_FORMAT, Locale.US
-            ).format(System.currentTimeMillis()))
-            .build()
-            .setOnStartOrResumeListener { }
-            .setOnPauseListener { }
-            .setOnCancelListener(object : OnCancelListener {
-                override fun onCancel() {}
-            })
-            .setOnProgressListener { }
-            .start(object : OnDownloadListener {
-                override fun onDownloadComplete() {
-
-                }
-
-                override fun onError(error: com.downloader.Error?) {
-                    TODO("Not yet implemented")
-                }
-
-                fun onError(error: Error?) {}
-            })
     }
 
     private fun getOutputDirectory(): String? {
