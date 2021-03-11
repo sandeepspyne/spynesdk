@@ -78,7 +78,7 @@ class ShowGifDemoActivity : AppCompatActivity() {
         if (Utilities.getPreference(this, AppConstants.FRAME_SHOOOTS).equals("4") && Utilities.getPreference(this, AppConstants.backgroundNumber).equals("0"))
         {
             Glide.with(this) // replace with 'this' if it's in activity
-                .load(R.raw.radiantslate4)
+                .load("https://storage.googleapis.com/spyne-cliq/spyne-cliq/product/cars/demo/4angles/radiant%20grey/radiant%20grey%20gif.gif")
                 .diskCacheStrategy(DiskCacheStrategy.RESOURCE)
                 .error(R.mipmap.defaults) // show error drawable if the image is not a gif
                 .into(imageView)
@@ -86,7 +86,7 @@ class ShowGifDemoActivity : AppCompatActivity() {
         }else if (Utilities.getPreference(this, AppConstants.FRAME_SHOOOTS).equals("4") && Utilities.getPreference(this, AppConstants.backgroundNumber).equals("1"))
         {
             Glide.with(this) // replace with 'this' if it's in activity
-                .load(R.raw.radiantsilver4)
+                .load("https://storage.googleapis.com/spyne-cliq/spyne-cliq/product/cars/demo/4angles/radiant%20slate/radiant%20slate%20gif.gif")
                 .diskCacheStrategy(DiskCacheStrategy.RESOURCE)
                 .error(R.mipmap.defaults) // show error drawable if the image is not a gif
                 .into(imageView)
@@ -96,7 +96,7 @@ class ShowGifDemoActivity : AppCompatActivity() {
         else if (Utilities.getPreference(this, AppConstants.FRAME_SHOOOTS).equals("8") && Utilities.getPreference(this, AppConstants.backgroundNumber).equals("0"))
         {
             Glide.with(this) // replace with 'this' if it's in activity
-                .load(R.raw.radiantslate8)
+                .load("https://storage.googleapis.com/spyne-cliq/spyne-cliq/product/cars/demo/radiant%20grey/radiant%20grey%20gif.gif")
                 .diskCacheStrategy(DiskCacheStrategy.RESOURCE)
                 .error(R.mipmap.defaults) // show error drawable if the image is not a gif
                 .into(imageView)
@@ -104,7 +104,7 @@ class ShowGifDemoActivity : AppCompatActivity() {
         }else if (Utilities.getPreference(this, AppConstants.FRAME_SHOOOTS).equals("8") && Utilities.getPreference(this, AppConstants.backgroundNumber).equals("1"))
         {
             Glide.with(this) // replace with 'this' if it's in activity
-                .load(R.raw.radiantsilver8)
+                .load("https://storage.googleapis.com/spyne-cliq/spyne-cliq/product/cars/demo/radiant%20slate/radiant%20slate%20gif.gif")
                 .diskCacheStrategy(DiskCacheStrategy.RESOURCE)
                 .error(R.mipmap.defaults) // show error drawable if the image is not a gif
                 .into(imageView)

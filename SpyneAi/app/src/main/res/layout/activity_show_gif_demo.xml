@@ -99,6 +99,7 @@
                 android:fontFamily="@font/medium"
                 android:layout_gravity="center"
                 android:textSize="@dimen/sp_15"
+                android:visibility="gone"
                 android:drawablePadding="@dimen/dp_10"
                 app:drawableRightCompat="@mipmap/move" />
             <TextView

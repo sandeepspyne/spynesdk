@@ -17,6 +17,8 @@ import com.spyneai.activity.CameraPreviewActivity
 import com.spyneai.model.carreplace.CarBackgroundsResponse
 import com.spyneai.model.channel.Data
 import com.spyneai.needs.AppConstants
+import com.spyneai.needs.AppConstants.backgroundNumber
+import com.spyneai.needs.Utilities
 
 class CarBackgroundAdapter(val context: Context,
                            val channelList : ArrayList<CarBackgroundsResponse>,
@@ -67,6 +69,8 @@ class CarBackgroundAdapter(val context: Context,
             viewHolder.llChannel.setBackgroundResource(R.drawable.bg_selected)
         })
 */
+        Utilities.savePrefrence(context, backgroundNumber, "0")
+
         if (position == pos)
             viewHolder.llChannel.setBackgroundResource(R.drawable.bg_selected)
         else
@@ -75,6 +79,7 @@ class CarBackgroundAdapter(val context: Context,
         viewHolder.llChannel.setOnClickListener(View.OnClickListener {
             if (mClickListener != null)
                 mClickListener?.onBtnClick(position)
+            Utilities.savePrefrence(context, backgroundNumber, position.toString())
             pos = position
 
             viewHolder.llChannel.setBackgroundResource(R.drawable.bg_selected)

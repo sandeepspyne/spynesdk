@@ -1,5 +1,6 @@
 package com.spyneai
 
+import android.content.ContentValues.TAG
 import android.content.Intent
 import android.graphics.Color
 import android.graphics.drawable.GradientDrawable
@@ -40,6 +41,8 @@ class BeforeAfterActivity : AppCompatActivity() {
     var catName = ""
     var catId = ""
 
+
+
     private lateinit var beforeAfterResponse: BeforeAfterResponse
     private lateinit var beforeAfterList: ArrayList<Data>
     private lateinit var beforeAfterAdapter: BeforeAfterAdapter
@@ -62,11 +65,13 @@ class BeforeAfterActivity : AppCompatActivity() {
             intent.putExtra(AppConstants.CATEGORY_NAME, catName)
             intent.putExtra(AppConstants.GIF_LIST, gifList)
             Utilities.savePrefrence(this, AppConstants.FROM, "BA")
+            Log.e( "gifList", gifList.toString() )
             startActivity(intent)
         })
     }
 
     private fun setRecycler() {
+        gifList = ArrayList<String>()
         Log.e("Token Mine", Utilities.getPreference(this, AppConstants.tokenId).toString())
         beforeAfterList = ArrayList<Data>()
         beforeAfterAdapter = BeforeAfterAdapter(this, beforeAfterList,
@@ -162,8 +167,8 @@ class BeforeAfterActivity : AppCompatActivity() {
                 fetchBackgroundCars()
 
 
-/*
-                if (catName.equals("Automobiles")) {
+
+              /*  if (catName.equals("Automobiles")) {
                     if ( Utilities.getList(this@BeforeAfterActivity,AppConstants.BACKGROUND_LIST_CARS)!!.size == 0) {
                         fetchBackgroundCars()
                     }
@@ -182,8 +187,8 @@ class BeforeAfterActivity : AppCompatActivity() {
                     }
                     else{
                         Utilities.hideProgressDialog()
-                    }
-*/
+                    }*/
+
             }
 
             override fun onFailure(call: Call<BeforeAfterResponse>, t: Throwable) {
