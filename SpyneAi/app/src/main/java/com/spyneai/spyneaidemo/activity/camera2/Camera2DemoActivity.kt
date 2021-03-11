@@ -178,6 +178,22 @@ class Camera2DemoActivity : AppCompatActivity(), SubCategoriesAdapter.BtnClickLi
             finish()
         })
 
+        cv1.setOnClickListener(View.OnClickListener {
+            cv1.setBackgroundResource(R.drawable.bg_selected)
+            cv2.setBackgroundResource(R.drawable.bg_channel)
+            cv3.setBackgroundResource(R.drawable.bg_channel)
+        })
+        cv2.setOnClickListener(View.OnClickListener {
+            cv2.setBackgroundResource(R.drawable.bg_selected)
+            cv1.setBackgroundResource(R.drawable.bg_channel)
+            cv3.setBackgroundResource(R.drawable.bg_channel)
+        })
+        cv3.setOnClickListener(View.OnClickListener {
+            cv3.setBackgroundResource(R.drawable.bg_selected)
+            cv1.setBackgroundResource(R.drawable.bg_channel)
+            cv2.setBackgroundResource(R.drawable.bg_channel)
+        })
+
     }
 
     @RequiresApi(Build.VERSION_CODES.M)
