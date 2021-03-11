@@ -65,7 +65,7 @@
                             android:layout_width="@dimen/dp_65"
                             android:layout_height="match_parent"
                             android:layout_gravity="center"
-                            android:padding="@dimen/dp_1"
+                            android:layout_margin="@dimen/dp_1"
                             android:src="@drawable/sedan" />
 
                     </androidx.cardview.widget.CardView>
