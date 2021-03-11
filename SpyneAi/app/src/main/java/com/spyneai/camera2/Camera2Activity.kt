@@ -1154,7 +1154,7 @@ class Camera2Activity : AppCompatActivity() , SubCategoriesAdapter.BtnClickListe
                                 AppConstants.FRAME_SHOOOTS,
                                 "4"
                         );
-                        setProgressFrame(4)
+                        setProgressFrame(8)
                     }
                     // etSkuName.visibility = View.GONE
 
@@ -1383,6 +1383,7 @@ class Camera2Activity : AppCompatActivity() , SubCategoriesAdapter.BtnClickListe
 
         //Specify the NumberPicker data source as array elements
         npShoots.setDisplayedValues(valuesShoots);
+
         //Set a value change listener for NumberPicker
         //Set a value change listener for NumberPicker
         npShoots.setOnValueChangedListener(OnValueChangeListener { picker, oldVal, newVal -> //Display the newly selected value from picker

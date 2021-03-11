@@ -131,6 +131,8 @@
 
 
     <string name="your_360_shots">Your Images are almost ready</string>
+    <string name="no_internet">No Internet \nPlease try again later</string>
+    <string name="retry">Retry</string>
     <string-array name="planets_array">
         <item>4 Shoots</item>
         <item>8 Shoots</item>

@@ -39,5 +39,6 @@
     <dimen name="dp_400">400dp</dimen>
     <dimen name="sp_5">5sp</dimen>
     <dimen name="sp_7">7sp</dimen>
+    <dimen name="sp_25">25sp</dimen>
 
 </resources>

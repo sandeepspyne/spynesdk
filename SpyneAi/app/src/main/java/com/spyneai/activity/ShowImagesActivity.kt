@@ -108,9 +108,7 @@ class ShowImagesActivity : AppCompatActivity() {
                         )
                 i.setPackage("com.whatsapp")
                 i.setData(Uri.parse(url))
-                if (i.resolveActivity(packageManager) != null) {
-                    startActivity(i)
-                }
+                startActivity(i)
             } catch (e: Exception) {
                 e.printStackTrace()
             }
@@ -185,39 +183,23 @@ class ShowImagesActivity : AppCompatActivity() {
     }
 
     override fun onBackPressed() {
-        showExitDialog()
-    }
+        super.onBackPressed()
+        Utilities.savePrefrence(this@ShowImagesActivity, AppConstants.SHOOT_ID, "")
+        Utilities.savePrefrence(this@ShowImagesActivity, AppConstants.CATEGORY_ID, "")
+        Utilities.savePrefrence(this@ShowImagesActivity, AppConstants.PRODUCT_ID, "")
+        Utilities.savePrefrence(this@ShowImagesActivity, AppConstants.SKU_NAME, "")
+        Utilities.savePrefrence(this@ShowImagesActivity, AppConstants.SKU_ID, "")
+        val intent = Intent(this, DashboardActivity::class.java)
 
-    fun showExitDialog( ) {
-        val dialog = Dialog(this)
-        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE)
-        dialog.setCancelable(false)
-        dialog.setContentView(R.layout.dialog_exit)
-        val dialogButtonYes: TextView = dialog.findViewById(R.id.btnYes)
-        val dialogButtonNo: TextView = dialog.findViewById(R.id.btnNo)
+        val updateSkuResponseList = ArrayList<UpdateSkuResponse>()
+        updateSkuResponseList.clear()
 
-        dialogButtonYes.setOnClickListener(View.OnClickListener {
-            Utilities.savePrefrence(this@ShowImagesActivity, AppConstants.SHOOT_ID, "")
-            Utilities.savePrefrence(this@ShowImagesActivity, AppConstants.CATEGORY_ID, "")
-            Utilities.savePrefrence(this@ShowImagesActivity, AppConstants.PRODUCT_ID, "")
-            Utilities.savePrefrence(this@ShowImagesActivity, AppConstants.SKU_NAME, "")
-            Utilities.savePrefrence(this@ShowImagesActivity, AppConstants.SKU_ID, "")
-            val intent = Intent(this, DashboardActivity::class.java)
-
-            val updateSkuResponseList = ArrayList<UpdateSkuResponse>()
-            updateSkuResponseList.clear()
-
-            Utilities.setList(
-                this@ShowImagesActivity,
-                AppConstants.FRAME_LIST, updateSkuResponseList
-            )
-            startActivity(intent)
-            finish()
-            dialog.dismiss()
-
-        })
-        dialogButtonNo.setOnClickListener(View.OnClickListener { dialog.dismiss() })
-        dialog.show()
+        Utilities.setList(
+            this@ShowImagesActivity,
+            AppConstants.FRAME_LIST, updateSkuResponseList
+        )
+        startActivity(intent)
+        finish()
     }
 
     fun showImagesDialog(position: Int) {
@@ -270,6 +252,7 @@ class ShowImagesActivity : AppCompatActivity() {
         }
     }
 
+
     //Download
     /*
     fun downLoad()
@@ -311,6 +294,7 @@ class ShowImagesActivity : AppCompatActivity() {
             })
     }
     */
+
 
     private fun getOutputDirectory(): String? {
         val mediaDir = if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP) {

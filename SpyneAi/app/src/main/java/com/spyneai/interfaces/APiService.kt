@@ -63,9 +63,8 @@ interface APiService {
                 @Query("gifLink") otp: String?):
            Call<OtpResponse>?
 
-    @GET("credit-user/send-shoot-results")
-    fun sendEmailAll(@Query("emailId") emailId: String?,
-                @Body sendEmailRequest: SendEmailRequest?):
+    @POST("v2/app/send-shoot-results")
+    fun sendEmailAll(@Body sendEmailRequest: SendEmailRequest?):
            Call<OtpResponse>?
 
     @GET("categories/default")
