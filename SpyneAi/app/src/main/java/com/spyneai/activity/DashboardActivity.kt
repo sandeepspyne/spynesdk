@@ -53,8 +53,6 @@ class DashboardActivity : AppCompatActivity() {
     private fun showCoachMarks() {
 
     }
-
-
     //var viewListener = ViewListener { layoutInflater.inflate(R.layout.view_custom, null) }
     private fun finishAllBacks() {
         SplashActivity().finish()
