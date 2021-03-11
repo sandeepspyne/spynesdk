@@ -2,9 +2,10 @@ package com.spyneai.activity
 
 import android.app.Dialog
 import android.content.Intent
+import android.graphics.Bitmap
 import android.net.Uri
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.os.Environment
 import android.os.Handler
 import android.util.Log
 import android.view.View
@@ -13,12 +14,18 @@ import android.view.WindowManager
 import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toast
+import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.engine.DiskCacheStrategy
+import com.downloader.OnCancelListener
+import com.downloader.OnDownloadListener
+import com.downloader.PRDownloader
+import com.downloader.PRDownloaderConfig
 import com.spyneai.R
 import com.spyneai.adapter.ShowReplacedImagesAdapter
 import com.spyneai.aipack.FetchBulkResponse
+import com.spyneai.camera2.Camera2Activity
 import com.spyneai.interfaces.APiService
 import com.spyneai.interfaces.RetrofitClients
 import com.spyneai.model.skumap.UpdateSkuResponse
@@ -39,7 +46,13 @@ import okhttp3.RequestBody
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
+import java.io.File
+import java.io.FileOutputStream
 import java.net.URLEncoder
+import java.text.SimpleDateFormat
+import java.util.*
+import kotlin.collections.ArrayList
+
 
 class ShowImagesActivity : AppCompatActivity() {
     lateinit var imageList : List<String>
@@ -58,8 +71,10 @@ class ShowImagesActivity : AppCompatActivity() {
         tvYourEmailIdReplaced.setText(Utilities.getPreference(this, AppConstants.EMAIL_ID))
 
         tvViewGif.setOnClickListener(View.OnClickListener {
-            val intent = Intent(this,
-                    ShowGifActivity::class.java)
+            val intent = Intent(
+                this,
+                ShowGifActivity::class.java
+            )
             startActivity(intent)
         })
 
@@ -82,8 +97,8 @@ class ShowImagesActivity : AppCompatActivity() {
             updateSkuResponseList.clear()
 
             Utilities.setList(
-                    this,
-                    AppConstants.FRAME_LIST, updateSkuResponseList
+                this,
+                AppConstants.FRAME_LIST, updateSkuResponseList
             )
         })
 
@@ -91,7 +106,10 @@ class ShowImagesActivity : AppCompatActivity() {
             try {
                 val i = Intent(Intent.ACTION_VIEW)
                 val url = "https://api.whatsapp.com/send?phone=" + "+919953325165" + "&text=" +
-                        URLEncoder.encode("Hey! The Spyne 360° Shot looks impressive; I liked the user experience and would like to learn more about the commercial application and how I can best access this technology. I look forward to connecting!", "UTF-8")
+                        URLEncoder.encode(
+                            "Hey! The Spyne 360° Shot looks impressive; I liked the user experience and would like to learn more about the commercial application and how I can best access this technology. I look forward to connecting!",
+                            "UTF-8"
+                        )
                 i.setPackage("com.whatsapp")
                 i.setData(Uri.parse(url))
                 if (i.resolveActivity(packageManager) != null) {
@@ -109,7 +127,7 @@ class ShowImagesActivity : AppCompatActivity() {
 
         showReplacedImagesAdapter = ShowReplacedImagesAdapter(this,
             imageList as ArrayList<String>,
-                imageListAfter as ArrayList<String>,
+            imageListAfter as ArrayList<String>,
             object : ShowReplacedImagesAdapter.BtnClickListener {
                 override fun onBtnClick(position: Int) {
                     showImagesDialog(position)
@@ -117,11 +135,13 @@ class ShowImagesActivity : AppCompatActivity() {
                 }
             })
 
-        rvImagesBackgroundRemoved.setLayoutManager(ScrollingLinearLayoutManager(
+        rvImagesBackgroundRemoved.setLayoutManager(
+            ScrollingLinearLayoutManager(
                 this,
                 LinearLayoutManager.VERTICAL,
                 false
-        ))
+            )
+        )
 
         rvImagesBackgroundRemoved.setAdapter(showReplacedImagesAdapter)
         fetchBulkUpload()
@@ -133,42 +153,78 @@ class ShowImagesActivity : AppCompatActivity() {
         val request = RetrofitClients.buildService(APiService::class.java)
         val userId = RequestBody.create(
             MultipartBody.FORM,
-            Utilities.getPreference(this, AppConstants.tokenId)!!)
+            Utilities.getPreference(this, AppConstants.tokenId)!!
+        )
         val skuId = RequestBody.create(
             MultipartBody.FORM,
-            Utilities.getPreference(this, AppConstants.SKU_ID)!!)
+            Utilities.getPreference(this, AppConstants.SKU_ID)!!
+        )
 
-        val call = request.fetchBulkImage(userId,skuId)
+        val call = request.fetchBulkImage(userId, skuId)
 
         call?.enqueue(object : Callback<List<FetchBulkResponse>> {
-            override fun onResponse(call: Call<List<FetchBulkResponse>>,
-                                    response: Response<List<FetchBulkResponse>>
+            override fun onResponse(
+                call: Call<List<FetchBulkResponse>>,
+                response: Response<List<FetchBulkResponse>>
             ) {
                 Utilities.hideProgressDialog()
-                if (response.isSuccessful){
-                    for (i in 0..response.body()!!.size-1) {
+                if (response.isSuccessful) {
+                    for (i in 0..response.body()!!.size - 1) {
                         (imageList as ArrayList).add(response.body()!![i].input_image_url)
                         (imageListAfter as ArrayList).add(response.body()!![i].output_image_url)
                     }
                 }
                 showReplacedImagesAdapter.notifyDataSetChanged()
             }
+
             override fun onFailure(call: Call<List<FetchBulkResponse>>, t: Throwable) {
                 Utilities.hideProgressDialog()
-                Toast.makeText(this@ShowImagesActivity,
-                    "Server not responding!!!", Toast.LENGTH_SHORT).show()
+                Toast.makeText(
+                    this@ShowImagesActivity,
+                    "Server not responding!!!", Toast.LENGTH_SHORT
+                ).show()
 
             }
         })
     }
 
     override fun onBackPressed() {
-        super.onBackPressed()
-        finish()
+        showExitDialog()
     }
 
-    fun showImagesDialog(position: Int)
-    {
+    fun showExitDialog( ) {
+        val dialog = Dialog(this)
+        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE)
+        dialog.setCancelable(false)
+        dialog.setContentView(R.layout.dialog_exit)
+        val dialogButtonYes: TextView = dialog.findViewById(R.id.btnYes)
+        val dialogButtonNo: TextView = dialog.findViewById(R.id.btnNo)
+
+        dialogButtonYes.setOnClickListener(View.OnClickListener {
+            Utilities.savePrefrence(this@ShowImagesActivity, AppConstants.SHOOT_ID, "")
+            Utilities.savePrefrence(this@ShowImagesActivity, AppConstants.CATEGORY_ID, "")
+            Utilities.savePrefrence(this@ShowImagesActivity, AppConstants.PRODUCT_ID, "")
+            Utilities.savePrefrence(this@ShowImagesActivity, AppConstants.SKU_NAME, "")
+            Utilities.savePrefrence(this@ShowImagesActivity, AppConstants.SKU_ID, "")
+            val intent = Intent(this, DashboardActivity::class.java)
+
+            val updateSkuResponseList = ArrayList<UpdateSkuResponse>()
+            updateSkuResponseList.clear()
+
+            Utilities.setList(
+                this@ShowImagesActivity,
+                AppConstants.FRAME_LIST, updateSkuResponseList
+            )
+            startActivity(intent)
+            finish()
+            dialog.dismiss()
+
+        })
+        dialogButtonNo.setOnClickListener(View.OnClickListener { dialog.dismiss() })
+        dialog.show()
+    }
+
+    fun showImagesDialog(position: Int) {
         Utilities.showProgressDialog(this)
         Handler().postDelayed({
             Utilities.hideProgressDialog()
@@ -180,8 +236,10 @@ class ShowImagesActivity : AppCompatActivity() {
         dialog.setContentView(R.layout.dialog_show_images)
 
         val window: Window = dialog.getWindow()!!
-        window.setLayout(WindowManager.LayoutParams.MATCH_PARENT,
-                WindowManager.LayoutParams.WRAP_CONTENT)
+        window.setLayout(
+            WindowManager.LayoutParams.MATCH_PARENT,
+            WindowManager.LayoutParams.WRAP_CONTENT
+        )
 
         val carouselViewImages: CarouselView = dialog.findViewById(R.id.carouselViewImages)
         val ivCrossImages: ImageView = dialog.findViewById(R.id.ivCrossImages)
@@ -197,24 +255,75 @@ class ShowImagesActivity : AppCompatActivity() {
         dialog.show()
     }
 
-
     var viewListener = object : ViewListener {
         override fun setViewForPosition(position: Int): View? {
             val customView: View = layoutInflater.inflate(R.layout.view_images, null)
 
             Glide.with(this@ShowImagesActivity) // replace with 'this' if it's in activity
-                    .load(imageList[position])
-                    .diskCacheStrategy(DiskCacheStrategy.RESOURCE)
-                    .error(R.mipmap.defaults) // show error drawable if the image is not a gif
-                    .into(customView.ivBefore)
+                .load(imageList[position])
+                .diskCacheStrategy(DiskCacheStrategy.RESOURCE)
+                .error(R.mipmap.defaults) // show error drawable if the image is not a gif
+                .into(customView.ivBefore)
             Glide.with(this@ShowImagesActivity) // replace with 'this' if it's in activity
-                    .load(imageListAfter[position])
-                    .diskCacheStrategy(DiskCacheStrategy.RESOURCE)
-                    .error(R.mipmap.defaults) // show error drawable if the image is not a gif
-                    .into(customView.ivAfter)
+                .load(imageListAfter[position])
+                .diskCacheStrategy(DiskCacheStrategy.RESOURCE)
+                .error(R.mipmap.defaults) // show error drawable if the image is not a gif
+                .into(customView.ivAfter)
 
             return customView
         }
     }
+
+    //Download
+    fun downLoad()
+    {
+        PRDownloader.initialize(getApplicationContext());
+        // Enabling database for resume support even after the application is killed:
+        // Enabling database for resume support even after the application is killed:
+        val config = PRDownloaderConfig.newBuilder()
+            .setDatabaseEnabled(true)
+            .build()
+        PRDownloader.initialize(applicationContext, config)
+
+
+        val FILENAME_FORMAT = "yyyy-MM-dd-HH-mm-ss-SSS"
+
+        val downloadId = PRDownloader.download(
+            "https://storage.googleapis.com/spyne-cliq/spyne-cliq/product/cars/demo/8angles/1.jpg",
+            getOutputDirectory(),
+            "Spyne" + SimpleDateFormat(
+                FILENAME_FORMAT, Locale.US
+            ).format(System.currentTimeMillis()))
+            .build()
+            .setOnStartOrResumeListener { }
+            .setOnPauseListener { }
+            .setOnCancelListener(object : OnCancelListener {
+                override fun onCancel() {}
+            })
+            .setOnProgressListener { }
+            .start(object : OnDownloadListener {
+                override fun onDownloadComplete() {
+
+                }
+
+                override fun onError(error: com.downloader.Error?) {
+                    TODO("Not yet implemented")
+                }
+
+                fun onError(error: Error?) {}
+            })
+    }
+
+    private fun getOutputDirectory(): String? {
+        val mediaDir = if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP) {
+            externalMediaDirs.firstOrNull()?.let {
+                File(it, resources.getString(R.string.app_name)).apply { mkdirs() } }
+        } else {
+            TODO("VERSION.SDK_INT < LOLLIPOP")
+        }
+        return if (mediaDir != null && mediaDir.exists())
+            mediaDir.toString() else filesDir.toString()
+    }
+
 
 }

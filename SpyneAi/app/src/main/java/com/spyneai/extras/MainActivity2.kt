@@ -1,7 +1,8 @@
-package com.spyneai
+package com.spyneai.extras
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import com.spyneai.R
 
 class MainActivity2 : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {

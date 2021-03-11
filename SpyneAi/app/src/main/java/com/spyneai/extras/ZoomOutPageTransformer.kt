@@ -1,4 +1,4 @@
-package com.spyneai
+package com.spyneai.extras
 
 import android.view.View
 import androidx.viewpager.widget.ViewPager

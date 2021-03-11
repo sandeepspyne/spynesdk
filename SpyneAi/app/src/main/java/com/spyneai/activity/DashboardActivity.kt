@@ -1,21 +1,17 @@
 package com.spyneai.activity
 
 import android.content.Intent
-import android.graphics.PorterDuff
-import android.graphics.PorterDuffColorFilter
 import android.os.Bundle
 import android.view.View
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AppCompatDelegate
-import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.FragmentTransaction
-import com.spyneai.OnboardTwoActivity
+import com.spyneai.extras.OnboardTwoActivity
 import com.spyneai.R
 import com.spyneai.adapter.HomeFragment
-import com.spyneai.fragment.OrdersFragment
 import com.spyneai.needs.AppConstants
 import com.spyneai.needs.Utilities
 import kotlinx.android.synthetic.main.activity_dashboard.*

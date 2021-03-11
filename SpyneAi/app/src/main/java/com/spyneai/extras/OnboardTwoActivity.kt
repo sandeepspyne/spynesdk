@@ -1,13 +1,12 @@
-package com.spyneai
+package com.spyneai.extras
 
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.View
+import com.spyneai.R
 import com.spyneai.activity.OnboardThreeActivity
-import kotlinx.android.synthetic.main.activity_onboard_one.*
 import kotlinx.android.synthetic.main.activity_onboard_one.tv_get_started
-import kotlinx.android.synthetic.main.activity_onboard_two.*
 
 class OnboardTwoActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {

@@ -3,12 +3,10 @@ package com.spyneai.activity
 import android.content.Intent
 import android.os.Bundle
 import android.view.View
-import android.view.animation.Animation
 import android.view.animation.AnimationUtils
-import android.widget.ImageView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AppCompatDelegate
-import com.spyneai.OnboardTwoActivity
+import com.spyneai.extras.OnboardTwoActivity
 import com.spyneai.R
 import kotlinx.android.synthetic.main.activity_onboard_one.*
 
