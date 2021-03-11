@@ -11,7 +11,7 @@ import android.view.KeyEvent
 import android.view.View
 import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
-import com.spyneai.OnboardTwoActivity
+import com.spyneai.extras.OnboardTwoActivity
 import com.spyneai.R
 import com.spyneai.interfaces.APiService
 import com.spyneai.interfaces.RetrofitClient
@@ -23,11 +23,9 @@ import com.spyneai.model.otp.OtpResponse
 import com.spyneai.needs.AppConstants
 import com.spyneai.needs.Utilities
 import kotlinx.android.synthetic.main.activity_otp.*
-import okhttp3.internal.Util
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
-import java.lang.StringBuilder
 
 public class OtpActivity : AppCompatActivity() {
     public var resendOtp: TextView? = null

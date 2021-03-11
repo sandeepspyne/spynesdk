@@ -51,7 +51,7 @@
         <activity android:name=".activity.CompletedActivity"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".BeforeAfterActivity"
+            android:name=".extras.BeforeAfterActivity"
             android:screenOrientation="portrait" />
         <activity
             android:name=".activity.OnboardOneActivity"
@@ -60,7 +60,7 @@
             android:name=".activity.OnboardThreeActivity"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".OnboardTwoActivity"
+            android:name=".extras.OnboardTwoActivity"
             android:screenOrientation="portrait" />
         <activity
             android:name=".activity.DashboardActivity"
@@ -91,7 +91,7 @@
             android:name=".activity.OrderActivity"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".MainActivity2"
+            android:name=".extras.MainActivity2"
             android:screenOrientation="portrait" />
         <activity
             android:name=".activity.CameraPreviewActivity"

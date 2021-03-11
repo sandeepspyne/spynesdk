@@ -178,6 +178,8 @@ class Camera2DemoActivity : AppCompatActivity(), SubCategoriesAdapter.BtnClickLi
             finish()
         })
 
+        cv1.setBackgroundResource(R.drawable.bg_selected)
+
         cv1.setOnClickListener(View.OnClickListener {
             cv1.setBackgroundResource(R.drawable.bg_selected)
             cv2.setBackgroundResource(R.drawable.bg_channel)
@@ -224,7 +226,7 @@ class Camera2DemoActivity : AppCompatActivity(), SubCategoriesAdapter.BtnClickLi
         redSpannable.setSpan(ForegroundColorSpan(getColor(R.color.primary)), 0, red.length, 0)
         builder.append(redSpannable)
 
-        val blue = " to void irregular reflections"
+        val blue = " to avoid irregular reflections"
         val blueSpannable = SpannableString(blue)
         blueSpannable.setSpan(ForegroundColorSpan(getColor(R.color.black)), 0, blue.length, 0)
         builder.append(blueSpannable)

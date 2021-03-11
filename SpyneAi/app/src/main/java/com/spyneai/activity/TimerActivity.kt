@@ -686,6 +686,8 @@ class TimerActivity : AppCompatActivity() {
             Utilities.savePrefrence(this@TimerActivity, AppConstants.SKU_ID, "")
             val intent = Intent(this, DashboardActivity::class.java)
 
+
+            
             val updateSkuResponseList = ArrayList<UpdateSkuResponse>()
             updateSkuResponseList.clear()
 

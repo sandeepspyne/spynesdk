@@ -9,7 +9,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.spyneai.BeforeAfterActivity
+import com.spyneai.extras.BeforeAfterActivity
 import com.spyneai.R
 import com.spyneai.adapter.CategoriesAdapter
 import com.spyneai.interfaces.APiService
