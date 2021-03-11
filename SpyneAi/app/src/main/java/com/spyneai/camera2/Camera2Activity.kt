@@ -1152,7 +1152,7 @@ class Camera2Activity : AppCompatActivity() , SubCategoriesAdapter.BtnClickListe
                         Utilities.savePrefrence(
                                 this@Camera2Activity,
                                 AppConstants.FRAME_SHOOOTS,
-                                "4"
+                                "8"
                         );
                         setProgressFrame(8)
                     }
