@@ -31,12 +31,16 @@ import com.spyneai.model.upload.PreviewResponse
 import com.spyneai.model.upload.UploadResponse
 import com.spyneai.model.uploadRough.UploadPhotoRequest
 import com.spyneai.needs.AppConstants
+import com.spyneai.needs.ScalingUtilities
 import com.spyneai.needs.Utilities
+import id.zelory.compressor.Compressor
+import id.zelory.compressor.Compressor.compress
 import kotlinx.android.synthetic.main.activity_camera.*
 import kotlinx.android.synthetic.main.activity_camera_preview.*
 import okhttp3.MediaType
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
+import okhttp3.internal.Util
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response

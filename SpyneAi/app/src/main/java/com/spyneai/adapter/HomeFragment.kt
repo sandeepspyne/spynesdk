@@ -8,13 +8,18 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.animation.Animation
+import android.view.animation.AnimationUtils.loadAnimation
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.google.android.material.animation.AnimationUtils
 import com.spyneai.BeforeAfterActivity
 import com.spyneai.R
+import com.spyneai.activity.CompletedActivity
 import com.spyneai.activity.CompletedProjectsActivity
+import com.spyneai.activity.OngoingActivity
 import com.spyneai.interfaces.APiService
 import com.spyneai.interfaces.RetrofitClient
 import com.spyneai.model.categories.CategoriesResponse
@@ -25,6 +30,7 @@ import com.spyneai.model.shoot.UpdateShootCategoryRequest
 import com.spyneai.needs.AppConstants
 import com.spyneai.needs.Utilities
 import com.synnapps.carouselview.ViewListener
+import kotlinx.android.synthetic.main.activity_categories.view.*
 import kotlinx.android.synthetic.main.fragment_home.view.*
 import kotlinx.android.synthetic.main.view_custom.view.*
 import retrofit2.Call
@@ -126,6 +132,7 @@ class HomeFragment(context: Context) : Fragment() {
         )
         view.rvCategoriesDashboard.setLayoutManager(layoutManager)
         view.rvCategoriesDashboard.setAdapter(categoriesAdapter)
+
     }
 
     private fun fetchCategories(view: View) {
@@ -145,6 +152,7 @@ class HomeFragment(context: Context) : Fragment() {
                     if (response.body()?.payload?.data?.size!! > 0) {
                         categoriesResponseList.addAll(response.body()?.payload?.data!!)
                     }
+
                     categoriesAdapter.notifyDataSetChanged()
                 }
             }

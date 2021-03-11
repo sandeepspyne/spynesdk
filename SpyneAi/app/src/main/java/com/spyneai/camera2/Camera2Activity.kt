@@ -959,7 +959,7 @@ class Camera2Activity : AppCompatActivity() , SubCategoriesAdapter.BtnClickListe
         redSpannable.setSpan(ForegroundColorSpan(getColor(R.color.primary)), 0, red.length, 0)
         builder.append(redSpannable)
 
-        val blue = " to void irregular reflections"
+        val blue = " to avoid irregular reflections"
         val blueSpannable = SpannableString(blue)
         blueSpannable.setSpan(ForegroundColorSpan(getColor(R.color.black)), 0, blue.length, 0)
         builder.append(blueSpannable)
@@ -1369,7 +1369,8 @@ class Camera2Activity : AppCompatActivity() , SubCategoriesAdapter.BtnClickListe
         dialog.setCancelable(true)
         dialog.setContentView(R.layout.dialog_spinner)
         val window: Window = dialog.getWindow()!!
-        window.setLayout(WindowManager.LayoutParams.MATCH_PARENT, WindowManager.LayoutParams.WRAP_CONTENT)
+        window.setLayout(WindowManager.LayoutParams.WRAP_CONTENT,
+                WindowManager.LayoutParams.WRAP_CONTENT)
 
         val tvProceed : TextView = dialog.findViewById(R.id.tvProceed)
         val npShoots : NumberPicker = dialog.findViewById(R.id.npShoots)

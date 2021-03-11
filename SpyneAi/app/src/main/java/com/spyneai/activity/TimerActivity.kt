@@ -13,6 +13,8 @@ import android.util.Log
 import android.view.View
 import android.view.Window
 import android.view.animation.LinearInterpolator
+import android.widget.CompoundButton
+import android.widget.RadioGroup
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
@@ -542,7 +544,7 @@ class TimerActivity : AppCompatActivity() {
 
     private fun fetchGif() {
         val request = RetrofitClientsBulk.buildService(APiService::class.java)
-        val fetchGifRequest = FetchGifRequest(imageList)
+        val fetchGifRequest = FetchGifRequest(imageListAfter)
 
         val call = request.fetchGif(fetchGifRequest)
 
@@ -612,7 +614,7 @@ class TimerActivity : AppCompatActivity() {
         val request = RetrofitClientSpyneAi.buildService(APiService::class.java)
 
         val sendEmailRequest = SendEmailRequest(imageList,imageListAfter,gifLink)
-        val call = request.sendEmail(Utilities.getPreference(this, AppConstants.EMAIL_ID),gifLink/*, sendEmailRequest*/)
+        val call = request.sendEmail(Utilities.getPreference(this, AppConstants.EMAIL_ID), gifLink)
 
         call?.enqueue(object : Callback<OtpResponse> {
             override fun onResponse(call: Call<OtpResponse>, response: Response<OtpResponse>) {

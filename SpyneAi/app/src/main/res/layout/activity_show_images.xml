@@ -86,7 +86,7 @@
                 android:layout_height="wrap_content"
                 android:maxLines="1"
                 android:text="@string/before"
-                android:textSize="@dimen/sp_13"
+                android:textSize="@dimen/sp_20"
                 android:textColor="@color/primary"
                 android:fontFamily="@font/medium"/>
 
@@ -105,7 +105,7 @@
                 android:maxLines="1"
                 android:text="@string/after"
                 android:textColor="@color/primary"
-                android:textSize="@dimen/sp_13"
+                android:textSize="@dimen/sp_20"
                 android:fontFamily="@font/medium"/>
 
         </LinearLayout>

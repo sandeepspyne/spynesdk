@@ -9,7 +9,7 @@ import java.util.concurrent.TimeUnit
 
 object RetrofitClientsBulk {
 
-    private const val BASE_URL = "https://www.clippr.ai/models/"
+    private const val BASE_URL = "https://www.spyne.ai/models/"
     private val client = OkHttpClient.Builder()
             .readTimeout(2, TimeUnit.MINUTES)
             .writeTimeout(2, TimeUnit.MINUTES)

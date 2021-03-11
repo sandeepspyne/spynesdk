@@ -106,12 +106,10 @@
                     android:id="@+id/carouselView"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginStart="@dimen/dp_10"
-                    android:layout_marginEnd="@dimen/dp_10"
                     android:background="@drawable/bg_channel"
                     app:pageColor="#00000000"
                     app:slideInterval="2000"
-                    app:pageTransformer="depth"
+                    app:pageTransformer="flow"
                     android:animateLayoutChanges="true"
                     app:indicatorVisibility="gone" />
             </LinearLayout>

@@ -2,6 +2,9 @@ package com.spyneai.activity
 
 import android.annotation.SuppressLint
 import android.content.Intent
+import android.graphics.Bitmap
+import android.graphics.BitmapFactory
+import android.media.ExifInterface
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
@@ -17,6 +20,7 @@ import com.spyneai.adapter.ChannelsAdapter
 import com.spyneai.adapter.PhotosAdapter
 import com.spyneai.interfaces.APiService
 import com.spyneai.interfaces.RetrofitClient
+import com.spyneai.activity.CameraPreviewActivity
 import com.spyneai.interfaces.RetrofitClients
 import com.spyneai.model.carreplace.CarBackgroundsResponse
 import com.spyneai.model.channel.ChannelsResponse
@@ -27,6 +31,7 @@ import com.spyneai.needs.AppConstants
 import com.spyneai.needs.Utilities
 import kotlinx.android.synthetic.main.activity_camera_preview.*
 import kotlinx.android.synthetic.main.activity_edit_sku.*
+import kotlinx.android.synthetic.main.activity_edit_sku.tvSkuName
 import kotlinx.android.synthetic.main.activity_preview.*
 import kotlinx.android.synthetic.main.activity_shoot_selection.*
 import kotlinx.android.synthetic.main.fragment_channel.view.*
@@ -35,6 +40,7 @@ import okhttp3.RequestBody
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
+import java.io.IOException
 
 class ShootSelectionActivity : AppCompatActivity() {
     private lateinit var photsAdapter: PhotosAdapter

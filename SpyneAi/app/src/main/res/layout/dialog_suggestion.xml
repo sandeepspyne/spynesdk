@@ -38,7 +38,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:gravity="center"
-                android:padding="@dimen/dp_40"
+                android:padding="@dimen/dp_20"
                 android:src="@mipmap/defaults" />
         </FrameLayout>
 

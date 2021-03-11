@@ -294,6 +294,7 @@ interface APiService {
     @GET("fetch-gif")
     fun getGifsList()
             : Call<List<GifResponse>>?
+
     @Multipart
     @POST("fetch-sku-name")
     fun getCompletedProjects(@Part("user_id") user_id: RequestBody?)

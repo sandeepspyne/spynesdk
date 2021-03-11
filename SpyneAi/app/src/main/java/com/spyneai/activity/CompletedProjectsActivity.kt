@@ -12,6 +12,7 @@ import com.spyneai.R
 import com.spyneai.adapter.CompletedProjectAdapter
 import com.spyneai.interfaces.APiService
 import com.spyneai.interfaces.RetrofitClients
+import com.spyneai.model.ai.GifFetchResponse
 import com.spyneai.model.projects.CompletedProjectResponse
 import com.spyneai.needs.AppConstants
 import com.spyneai.needs.Utilities
