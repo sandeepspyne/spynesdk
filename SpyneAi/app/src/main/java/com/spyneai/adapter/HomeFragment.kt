@@ -110,7 +110,7 @@ class HomeFragment(context: Context) : Fragment() {
             object : CategoriesDashboardAdapter.BtnClickListener {
                 override fun onBtnClick(position: Int) {
                     Log.e("position cat", position.toString())
-                    if (position == 0)
+                    if (position < 2)
                         setShoot(categoriesResponseList,position)
                     else
                         Toast.makeText(contexts,
