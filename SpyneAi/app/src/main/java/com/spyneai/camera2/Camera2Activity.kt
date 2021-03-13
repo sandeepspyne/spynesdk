@@ -130,6 +130,7 @@ class Camera2Activity : AppCompatActivity() , SubCategoriesAdapter.BtnClickListe
     var frameImage: String = ""
     lateinit var frameImageList: ArrayList<FrameImages>
     lateinit var frameImageListSelections : ArrayList<Int>
+    lateinit var frameINteriorImageListSelections : ArrayList<Int>
 
     public var imageFile: File? = null
 
@@ -155,6 +156,7 @@ class Camera2Activity : AppCompatActivity() , SubCategoriesAdapter.BtnClickListe
         imageFileList = ArrayList<File>()
         imageFileListFrames = ArrayList<Int>()
         gifList = ArrayList<String>()
+        frameImageListSelections = ArrayList<Int>()
 
         //Get Intents
         gifList.addAll(intent.getParcelableArrayListExtra(AppConstants.GIF_LIST)!!)
@@ -258,62 +260,13 @@ class Camera2Activity : AppCompatActivity() , SubCategoriesAdapter.BtnClickListe
 
     @RequiresApi(Build.VERSION_CODES.M)
     private fun setProgressFrame(num: Int) {
-        frameImageListSelections = ArrayList<Int>()
+
+        frameImageListSelections.clear()
         if (num == 4) {
             frameImageListSelections .add(0)
             frameImageListSelections .add(9)
             frameImageListSelections .add(18)
             frameImageListSelections .add(27)
-        }
-        else if(num == 8){
-            frameImageListSelections .add(0)
-            frameImageListSelections .add(4)
-            frameImageListSelections .add(9)
-            frameImageListSelections .add(15)
-            frameImageListSelections .add(18)
-            frameImageListSelections .add(21)
-            frameImageListSelections .add(27)
-            frameImageListSelections .add(32)
-        }
-        else if(num == 12){
-            frameImageListSelections .add(0)
-            frameImageListSelections .add(2)
-            frameImageListSelections .add(4)
-            frameImageListSelections .add(9)
-            frameImageListSelections .add(15)
-            frameImageListSelections .add(16)
-            frameImageListSelections .add(18)
-            frameImageListSelections .add(20)
-            frameImageListSelections .add(21)
-            frameImageListSelections .add(27)
-            frameImageListSelections .add(32)
-            frameImageListSelections .add(34)
-        }
-        else if(num == 24){
-            frameImageListSelections .add(0)
-            frameImageListSelections .add(2)
-            frameImageListSelections .add(3)
-            frameImageListSelections .add(4)
-            frameImageListSelections .add(5)
-            frameImageListSelections .add(7)
-            frameImageListSelections .add(9)
-            frameImageListSelections .add(11)
-            frameImageListSelections .add(12)
-            frameImageListSelections .add(14)
-            frameImageListSelections .add(15)
-            frameImageListSelections .add(16)
-            frameImageListSelections .add(18)
-            frameImageListSelections .add(20)
-            frameImageListSelections .add(21)
-            frameImageListSelections .add(22)
-            frameImageListSelections .add(23)
-            frameImageListSelections .add(25)
-            frameImageListSelections .add(27)
-            frameImageListSelections .add(30)
-            frameImageListSelections .add(32)
-            frameImageListSelections .add(33)
-            frameImageListSelections .add(34)
-            frameImageListSelections .add(35)
         }
         showProgressFrames(frameNumberTemp)
     }
@@ -1134,6 +1087,16 @@ class Camera2Activity : AppCompatActivity() , SubCategoriesAdapter.BtnClickListe
                     frameImageList.clear()
                     frameImageList.addAll(response.body()?.payload!!.data.frames.frameImages)
 
+                    Glide.with(this@Camera2Activity).load(
+                        AppConstants.BASE_IMAGE_URL +
+                                frameImageList[frameNumber - 1].displayImage
+                    ).into(ivPreview)
+
+                    Glide.with(this@Camera2Activity).load(
+                        AppConstants.BASE_IMAGE_URL +
+                                frameImageList[frameNumber - 1].displayImage
+                    ).into(imgOverlay)
+
                     Utilities.savePrefrence(this@Camera2Activity, AppConstants.SHOOT_ID, shootIds)
                     Utilities.savePrefrence(this@Camera2Activity, AppConstants.CATEGORY_ID, catIds)
                     Utilities.savePrefrence(this@Camera2Activity, AppConstants.PRODUCT_ID, prodIds)
@@ -1152,10 +1115,11 @@ class Camera2Activity : AppCompatActivity() , SubCategoriesAdapter.BtnClickListe
                         Utilities.savePrefrence(
                                 this@Camera2Activity,
                                 AppConstants.FRAME_SHOOOTS,
-                                "8"
+                                "4"
                         );
-                        setProgressFrame(8)
                     }
+                    setProgressFrame(4)
+
                     // etSkuName.visibility = View.GONE
 
                 } else {
@@ -1375,7 +1339,7 @@ class Camera2Activity : AppCompatActivity() , SubCategoriesAdapter.BtnClickListe
         val tvProceed : TextView = dialog.findViewById(R.id.tvProceed)
         val npShoots : NumberPicker = dialog.findViewById(R.id.npShoots)
 
-        val valuesShoots = arrayOf("4 Angles", "8 Angles", "12 Angles", "24 Angles")
+        val valuesShoots = arrayOf("4 Angles"/*, "8 Angles", "12 Angles", "24 Angles"*/)
 
         npShoots.setMinValue(0); //from array first value
         //Specify the maximum value/number of NumberPicker
@@ -1395,7 +1359,7 @@ class Camera2Activity : AppCompatActivity() , SubCategoriesAdapter.BtnClickListe
                 );
                 //   setNumberPickerTextColor(npShoots, getColor(R.color.primary))
                 setProgressFrame(4)
-            } else if (valuesShoots[newVal].equals("8 Angles")) {
+            } /*else if (valuesShoots[newVal].equals("8 Angles")) {
                 Utilities.savePrefrence(
                         this@Camera2Activity,
                         AppConstants.FRAME_SHOOOTS,
@@ -1419,7 +1383,7 @@ class Camera2Activity : AppCompatActivity() , SubCategoriesAdapter.BtnClickListe
                 );
 //                setNumberPickerTextColor(npShoots, getColor(R.color.primary))
 
-            } /*else if (valuesShoots[newVal].equals("36 Angles")) {
+            }*/ /*else if (valuesShoots[newVal].equals("36 Angles")) {
                 Utilities.savePrefrence(
                         this@Camera2Activity,
                         AppConstants.FRAME_SHOOOTS,

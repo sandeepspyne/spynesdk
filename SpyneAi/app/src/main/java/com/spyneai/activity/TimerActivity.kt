@@ -7,14 +7,14 @@ import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.graphics.Matrix
 import android.media.ExifInterface
+import android.os.Build
 import android.os.Bundle
 import android.os.CountDownTimer
+import android.os.StrictMode
 import android.util.Log
 import android.view.View
 import android.view.Window
 import android.view.animation.LinearInterpolator
-import android.widget.CompoundButton
-import android.widget.RadioGroup
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
@@ -97,23 +97,31 @@ class TimerActivity : AppCompatActivity() {
 
         totalImagesToUPload = imageFileList.size
 
-        Log.e("Timer  SKU",
-            Utilities.getPreference(this,
-                AppConstants.SKU_NAME)!!)
+        Log.e(
+            "Timer  SKU",
+            Utilities.getPreference(
+                this,
+                AppConstants.SKU_NAME
+            )!!
+        )
 
+        if (Build.VERSION.SDK_INT > 9) {
+            val policy = StrictMode.ThreadPolicy.Builder().permitAll().build()
+            StrictMode.setThreadPolicy(policy)
+        }
         setCustomTimer()
         try {
             llTimer.visibility = View.VISIBLE
             llNoInternet.visibility = View.GONE
             uploadImageToBucket()
         }
-        catch ( e : Exception)
+        catch (e: Exception)
         {
             llTimer.visibility = View.GONE
             llNoInternet.visibility = View.VISIBLE
             countDownTimer.cancel()
             e.printStackTrace()
-            Log.e("Catched ",e.printStackTrace().toString())
+            Log.e("Catched ", e.printStackTrace().toString())
         }
 
         tvRetry.setOnClickListener(View.OnClickListener {
@@ -122,14 +130,12 @@ class TimerActivity : AppCompatActivity() {
                 llTimer.visibility = View.VISIBLE
                 llNoInternet.visibility = View.GONE
                 uploadImageToBucket()
-            }
-            catch ( e : Exception)
-            {
+            } catch (e: Exception) {
                 llTimer.visibility = View.GONE
                 llNoInternet.visibility = View.VISIBLE
                 countDownTimer.cancel()
                 e.printStackTrace()
-                Log.e("Catched ",e.printStackTrace().toString())
+                Log.e("Catched ", e.printStackTrace().toString())
             }
         })
     }
@@ -187,8 +193,7 @@ class TimerActivity : AppCompatActivity() {
                             response.body()?.image.toString()
                         )
                         uploadImageURLs()
-                    }
-                    else{
+                    } else {
                         llTimer.visibility = View.GONE
                         llNoInternet.visibility = View.VISIBLE
                         countDownTimer.cancel()
@@ -257,27 +262,26 @@ class TimerActivity : AppCompatActivity() {
                     if (response.isSuccessful) {
                         try {
                             if (totalImagesToUPloadIndex < totalImagesToUPload - 1) {
+                                Log.e("uploadImageURLs", totalImagesToUPloadIndex.toString())
+
+                                Log.e("IMage uploaded ", response.body()?.msgInfo.toString())
+                                Log.e("Frame 1", response.body()?.payload!!.data.currentFrame.toString())
+                                Log.e("Frame 2", response.body()?.payload!!.data.totalFrames.toString())
+                                Log.e(
+                                    "SKU ID", Utilities.getPreference(
+                                        this@TimerActivity,
+                                        AppConstants.SKU_ID
+                                    ).toString()
+                                )
                                 totalImagesToUPloadIndex = totalImagesToUPloadIndex + 1
                                 uploadImageToBucket()
                             } else {
                                 markSkuComplete()
                             }
-                        }catch (e: Exception)
-                        {
-                            Log.e("Except",e.printStackTrace().toString())
+                        } catch (e: Exception) {
+                            Log.e("Except", e.printStackTrace().toString())
                         }
 
-                        Log.e("uploadImageURLs", totalImagesToUPloadIndex.toString())
-
-                        Log.e("IMage uploaded ", response.body()?.msgInfo.toString())
-                        Log.e("Frame 1", response.body()?.payload!!.data.currentFrame.toString())
-                        Log.e("Frame 2", response.body()?.payload!!.data.totalFrames.toString())
-                        Log.e(
-                            "SKU ID", Utilities.getPreference(
-                                this@TimerActivity,
-                                AppConstants.SKU_ID
-                            ).toString()
-                        )
                     } else {
                         llTimer.visibility = View.GONE
                         llNoInternet.visibility = View.VISIBLE
@@ -438,7 +442,10 @@ class TimerActivity : AppCompatActivity() {
                 circular_progress.setCurrentProgress((i * 100 / (maxProgress / progress)).toDouble())
 
                 tvMinSec.setText(
-                    "" + String.format("%02d:%02d", TimeUnit.MILLISECONDS.toMinutes(millisUntilFinished),
+                    "" + String.format(
+                        "%02d:%02d", TimeUnit.MILLISECONDS.toMinutes(
+                            millisUntilFinished
+                        ),
                         TimeUnit.MILLISECONDS.toSeconds(millisUntilFinished) -
                                 TimeUnit.MINUTES.toSeconds(
                                     TimeUnit.MILLISECONDS.toMinutes(
@@ -499,8 +506,7 @@ class TimerActivity : AppCompatActivity() {
                         if (countGif < photoList.size - 1) {
                             bulkUpload(countGif)
                         }
-                    }
-                    else{
+                    } else {
                         Toast.makeText(
                             this@TimerActivity,
                             "Server not responding!!!", Toast.LENGTH_SHORT
@@ -641,16 +647,19 @@ class TimerActivity : AppCompatActivity() {
             val request = RetrofitClients.buildService(APiService::class.java)
             val userId = RequestBody.create(
                 MultipartBody.FORM,
-                Utilities.getPreference(this, AppConstants.tokenId)!!)
+                Utilities.getPreference(this, AppConstants.tokenId)!!
+            )
             val skuId = RequestBody.create(
                 MultipartBody.FORM,
-                Utilities.getPreference(this, AppConstants.SKU_ID)!!)
+                Utilities.getPreference(this, AppConstants.SKU_ID)!!
+            )
 
             val call = request.fetchBulkImage(userId, skuId)
 
             call?.enqueue(object : Callback<List<FetchBulkResponse>> {
-                override fun onResponse(call: Call<List<FetchBulkResponse>>,
-                                        response: Response<List<FetchBulkResponse>>
+                override fun onResponse(
+                    call: Call<List<FetchBulkResponse>>,
+                    response: Response<List<FetchBulkResponse>>
                 ) {
                     if (response.isSuccessful) {
                         Log.e("Upload Replace", "bulk Fetch")
@@ -674,8 +683,10 @@ class TimerActivity : AppCompatActivity() {
                 override fun onFailure(call: Call<List<FetchBulkResponse>>, t: Throwable) {
                     Utilities.hideProgressDialog()
 
-                    Toast.makeText(this@TimerActivity,
-                        "Server not responding!!!", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(
+                        this@TimerActivity,
+                        "Server not responding!!!", Toast.LENGTH_SHORT
+                    ).show()
 
                 }
             })
@@ -698,8 +709,9 @@ class TimerActivity : AppCompatActivity() {
             val call = request.fetchGif(fetchGifRequest)
 
             call?.enqueue(object : Callback<FetchGifResponse> {
-                override fun onResponse(call: Call<FetchGifResponse>,
-                                        response: Response<FetchGifResponse>
+                override fun onResponse(
+                    call: Call<FetchGifResponse>,
+                    response: Response<FetchGifResponse>
                 ) {
                     Utilities.hideProgressDialog()
                     if (response.isSuccessful) {
@@ -716,8 +728,10 @@ class TimerActivity : AppCompatActivity() {
 
                 override fun onFailure(call: Call<FetchGifResponse>, t: Throwable) {
                     Utilities.hideProgressDialog()
-                    Toast.makeText(this@TimerActivity,
-                        "Server not responding!!!", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(
+                        this@TimerActivity,
+                        "Server not responding!!!", Toast.LENGTH_SHORT
+                    ).show()
                 }
             })
         }
@@ -737,20 +751,24 @@ class TimerActivity : AppCompatActivity() {
 
             val userId = RequestBody.create(
                 MultipartBody.FORM,
-                Utilities.getPreference(this, AppConstants.tokenId)!!)
+                Utilities.getPreference(this, AppConstants.tokenId)!!
+            )
 
             val skuId = RequestBody.create(
                 MultipartBody.FORM,
-                Utilities.getPreference(this, AppConstants.SKU_ID)!!)
+                Utilities.getPreference(this, AppConstants.SKU_ID)!!
+            )
             val gifUrl = RequestBody.create(
                 MultipartBody.FORM,
-                gifLink)
+                gifLink
+            )
 
             val call = request.uploadUserGif(userId, skuId, gifUrl)
 
             call?.enqueue(object : Callback<UploadGifResponse> {
-                override fun onResponse(call: Call<UploadGifResponse>,
-                                        response: Response<UploadGifResponse>
+                override fun onResponse(
+                    call: Call<UploadGifResponse>,
+                    response: Response<UploadGifResponse>
                 ) {
                     Utilities.hideProgressDialog()
                     if (response.isSuccessful) {
@@ -760,8 +778,10 @@ class TimerActivity : AppCompatActivity() {
 
                 override fun onFailure(call: Call<UploadGifResponse>, t: Throwable) {
                     Utilities.hideProgressDialog()
-                    Toast.makeText(this@TimerActivity,
-                        "Server not responding!!!", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(
+                        this@TimerActivity,
+                        "Server not responding!!!", Toast.LENGTH_SHORT
+                    ).show()
                 }
             })
         }
@@ -781,8 +801,9 @@ class TimerActivity : AppCompatActivity() {
 
             val request = RetrofitClientSpyneAi.buildService(APiService::class.java)
 
-            val sendEmailRequest = SendEmailRequest(imageList,imageListAfter,gifLink,
-                Utilities.getPreference(this,AppConstants.EMAIL_ID).toString()
+            val sendEmailRequest = SendEmailRequest(
+                imageList, imageListAfter, gifLink,
+                Utilities.getPreference(this, AppConstants.EMAIL_ID).toString()
             )
             val call = request.sendEmailAll(sendEmailRequest)
 
@@ -791,12 +812,18 @@ class TimerActivity : AppCompatActivity() {
                     Utilities.hideProgressDialog()
                     if (response.isSuccessful) {
                         if (response.body()!!.id.equals("200")) {
-                            val intent = Intent(this@TimerActivity,
-                                ShowImagesActivity::class.java)
+                            val intent = Intent(
+                                this@TimerActivity,
+                                ShowImagesActivity::class.java
+                            )
                             intent.putExtra(AppConstants.GIF, gifLink)
                             startActivity(intent)
                             finish()
-                            Toast.makeText(this@TimerActivity, response.body()!!.message, Toast.LENGTH_SHORT).show()
+                            Toast.makeText(
+                                this@TimerActivity,
+                                response.body()!!.message,
+                                Toast.LENGTH_SHORT
+                            ).show()
                         }
                     }
                 }
@@ -804,7 +831,11 @@ class TimerActivity : AppCompatActivity() {
                 override fun onFailure(call: Call<OtpResponse>, t: Throwable) {
                     Log.e("ok", "no way")
                     Utilities.hideProgressDialog()
-                    Toast.makeText(this@TimerActivity, "Server not responding!!!", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(
+                        this@TimerActivity,
+                        "Server not responding!!!",
+                        Toast.LENGTH_SHORT
+                    ).show()
                     //  Utilities.hideProgressDialog()
                     //Toast.makeText(this@MainActivity, "${t.message}", Toast.LENGTH_SHORT).show()
                 }
@@ -821,18 +852,26 @@ class TimerActivity : AppCompatActivity() {
 
 
     private fun moveNext() {
-        if (Utilities.getPreference(this@TimerActivity,
-                AppConstants.FRAME_SHOOOTS).equals("4")
-            || Utilities.getPreference(this@TimerActivity,
-                AppConstants.FRAME_SHOOOTS).equals("8")) {
-            val intent = Intent(this@TimerActivity,
-                ShowImagesActivity::class.java)
+        if (Utilities.getPreference(
+                this@TimerActivity,
+                AppConstants.FRAME_SHOOOTS
+            ).equals("4")
+            || Utilities.getPreference(
+                this@TimerActivity,
+                AppConstants.FRAME_SHOOOTS
+            ).equals("8")) {
+            val intent = Intent(
+                this@TimerActivity,
+                ShowImagesActivity::class.java
+            )
             intent.putExtra(AppConstants.GIF, gifLink)
             startActivity(intent)
             finish()
         } else {
-            val intent = Intent(this@TimerActivity,
-                ShowGifActivity::class.java)
+            val intent = Intent(
+                this@TimerActivity,
+                ShowGifActivity::class.java
+            )
             intent.putExtra(AppConstants.GIF, gifLink)
             startActivity(intent)
             finish()

@@ -1509,7 +1509,7 @@ class Camera2DemoActivity : AppCompatActivity(), SubCategoriesAdapter.BtnClickLi
         val npShoots: NumberPicker = dialog.findViewById(R.id.npShoots)
 
 //        val valuesShoots = arrayOf("4 Angles", "8 Angles", "12 Angles", "24 Angles")
-        val valuesShoots = arrayOf("4 Angles", "8 Angles")
+        val valuesShoots = arrayOf("4 Angles")
 
         npShoots.setMinValue(0); //from array first value
         //Specify the maximum value/number of NumberPicker
@@ -1530,7 +1530,7 @@ class Camera2DemoActivity : AppCompatActivity(), SubCategoriesAdapter.BtnClickLi
                 //   setNumberPickerTextColor(npShoots, getColor(R.color.primary))
                 setProgressFrame(4)
 
-            } else if (valuesShoots[newVal].equals("8 Angles")) {
+            } /*else if (valuesShoots[newVal].equals("8 Angles")) {
                 setNumberPickerTextColor(npShoots, getColor(R.color.primary))
                 Utilities.savePrefrence(
                     this@Camera2DemoActivity,
@@ -1546,7 +1546,7 @@ class Camera2DemoActivity : AppCompatActivity(), SubCategoriesAdapter.BtnClickLi
 
 
 
-            }
+            }*/
             /*else if (valuesShoots[newVal].equals("36 Angles")) {
                 Utilities.savePrefrence(
                         this@Camera2Activity,
