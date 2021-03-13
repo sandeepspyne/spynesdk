@@ -133,6 +133,10 @@
     <string name="your_360_shots">Your Images are almost ready</string>
     <string name="no_internet">No Internet \nPlease try again later</string>
     <string name="retry">Retry</string>
+    <string name="more_angles">(More angles coming soon)</string>
+    <string name="we_recommend">We recommend you to shoot the \ninterior view of your car.</string>
+    <string name="skip">Skip</string>
+
     <string-array name="planets_array">
         <item>4 Shoots</item>
         <item>8 Shoots</item>

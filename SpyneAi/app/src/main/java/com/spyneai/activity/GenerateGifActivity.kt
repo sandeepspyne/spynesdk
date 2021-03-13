@@ -135,7 +135,6 @@ class GenerateGifActivity : AppCompatActivity() {
             .load(gifList[0])
             .error(R.mipmap.defaults) // show error drawable if the image is not a gif
             .into(imageViewGif)
-
     }
 
     private fun listeners() {
@@ -197,9 +196,10 @@ class GenerateGifActivity : AppCompatActivity() {
                     AppConstants.FRAME_LIST, updateSkuResponseList
             )
             val intent = Intent(this, DashboardActivity::class.java)
+            dialog.dismiss()
+
             startActivity(intent)
             finish()
-            dialog.dismiss()
 
         })
         dialogButtonNo.setOnClickListener(View.OnClickListener { dialog.dismiss() })

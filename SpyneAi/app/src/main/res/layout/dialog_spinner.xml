@@ -23,7 +23,8 @@
             android:orientation="vertical">
             <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="1"
                 android:gravity="center"
                 android:orientation="vertical"
                 android:background="@drawable/bg_channel">
@@ -35,6 +36,13 @@
                     android:fontFamily="@font/medium"
                     android:textColor="@color/black"
                     android:text="@string/choose_shoots" />
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textSize="@dimen/sp_13"
+                    android:fontFamily="@font/medium"
+                    android:textColor="@color/black"
+                    android:text="@string/more_angles" />
                 <NumberPicker
                     android:id="@+id/npShoots"
                     android:layout_width="match_parent"

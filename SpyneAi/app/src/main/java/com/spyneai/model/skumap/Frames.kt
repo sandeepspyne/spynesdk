@@ -16,6 +16,7 @@ data class Frames (
 	val prodId : String,
 	val frameId : String,
 	val totalFrames : Int,
-	val frameImages : List<FrameImages>
+	val frameImages : List<FrameImages>,
+	val interiorImages : List<FrameImages>
 
 )
