@@ -53,7 +53,7 @@
 
 
                     <androidx.cardview.widget.CardView
-                        android:id="@+id/llSubCategoriesImage"
+                        android:id="@+id/cv1"
                         android:layout_width="@dimen/dp_65"
                         android:layout_height="@dimen/dp_65"
                         android:gravity="center"
@@ -91,6 +91,7 @@
 
 
                     <androidx.cardview.widget.CardView
+                        android:id="@+id/cv2"
                         android:layout_width="@dimen/dp_65"
                         android:layout_height="@dimen/dp_65"
                         android:gravity="center"
@@ -126,6 +127,7 @@
 
 
                     <androidx.cardview.widget.CardView
+                        android:id="@+id/cv3"
                         android:layout_width="@dimen/dp_65"
                         android:layout_height="@dimen/dp_65"
                         android:gravity="center"
@@ -172,10 +174,11 @@
                     android:layout_height="match_parent" />
                 <ImageView
                     android:id="@+id/imgOverlay"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
+                    android:layout_width="500dp"
+                    android:layout_height="500dp"
+                    android:layout_gravity="center"
                     android:src="@mipmap/defaults"
-                    android:padding="@dimen/dp_5"
+
                     android:contentDescription="@string/app_name" />
 
                 <RelativeLayout

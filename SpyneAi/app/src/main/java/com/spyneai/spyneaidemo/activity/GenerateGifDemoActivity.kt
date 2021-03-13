@@ -57,6 +57,8 @@ class GenerateGifDemoActivity : AppCompatActivity() {
         imageFileList = ArrayList<File>()
         imageFileListFrames = ArrayList<Int>()
 
+        Utilities.savePrefrence(this@GenerateGifDemoActivity, AppConstants.backgroundNumber, "0")
+
         //Get Intents
 
         imageFileList.addAll(intent.getParcelableArrayListExtra(AppConstants.ALL_IMAGE_LIST)!!)
@@ -77,6 +79,8 @@ class GenerateGifDemoActivity : AppCompatActivity() {
                     //if (position<carBackgroundList.size)
                     backgroundSelect  = carBackgroundList[position].imageId.toString()
                     carbackgroundsAdapter.notifyDataSetChanged()
+
+                    Utilities.savePrefrence(this@GenerateGifDemoActivity, AppConstants.backgroundNumber, position.toString())
 
                     if (position>=2){
                         showBackgroundDialog()

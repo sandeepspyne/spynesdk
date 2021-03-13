@@ -255,12 +255,18 @@ class TimerActivity : AppCompatActivity() {
                     response: Response<UploadPhotoResponse>
                 ) {
                     if (response.isSuccessful) {
-                        if (totalImagesToUPloadIndex < totalImagesToUPload - 1) {
-                            totalImagesToUPloadIndex = totalImagesToUPloadIndex + 1
-                            uploadImageToBucket()
-                        } else {
-                            markSkuComplete()
+                        try {
+                            if (totalImagesToUPloadIndex < totalImagesToUPload - 1) {
+                                totalImagesToUPloadIndex = totalImagesToUPloadIndex + 1
+                                uploadImageToBucket()
+                            } else {
+                                markSkuComplete()
+                            }
+                        }catch (e: Exception)
+                        {
+                            Log.e("Except",e.printStackTrace().toString())
                         }
+
                         Log.e("uploadImageURLs", totalImagesToUPloadIndex.toString())
 
                         Log.e("IMage uploaded ", response.body()?.msgInfo.toString())

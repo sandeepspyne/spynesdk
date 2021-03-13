@@ -18,10 +18,6 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.engine.DiskCacheStrategy
-import com.downloader.OnCancelListener
-import com.downloader.OnDownloadListener
-import com.downloader.PRDownloader
-import com.downloader.PRDownloaderConfig
 import com.spyneai.R
 import com.spyneai.adapter.ShowReplacedImagesAdapter
 import com.spyneai.aipack.FetchBulkResponse
@@ -255,6 +251,50 @@ class ShowImagesActivity : AppCompatActivity() {
             return customView
         }
     }
+
+
+    //Download
+    /*
+    fun downLoad()
+    {
+        PRDownloader.initialize(getApplicationContext());
+        // Enabling database for resume support even after the application is killed:
+        // Enabling database for resume support even after the application is killed:
+        val config = PRDownloaderConfig.newBuilder()
+            .setDatabaseEnabled(true)
+            .build()
+        PRDownloader.initialize(applicationContext, config)
+
+
+        val FILENAME_FORMAT = "yyyy-MM-dd-HH-mm-ss-SSS"
+
+        val downloadId = PRDownloader.download(
+            "https://storage.googleapis.com/spyne-cliq/spyne-cliq/product/cars/demo/8angles/1.jpg",
+            getOutputDirectory(),
+            "Spyne" + SimpleDateFormat(
+                FILENAME_FORMAT, Locale.US
+            ).format(System.currentTimeMillis()))
+            .build()
+            .setOnStartOrResumeListener { }
+            .setOnPauseListener { }
+            .setOnCancelListener(object : OnCancelListener {
+                override fun onCancel() {}
+            })
+            .setOnProgressListener { }
+            .start(object : OnDownloadListener {
+                override fun onDownloadComplete() {
+
+                }
+
+                override fun onError(error: com.downloader.Error?) {
+                    TODO("Not yet implemented")
+                }
+
+                fun onError(error: Error?) {}
+            })
+    }
+    */
+
 
     private fun getOutputDirectory(): String? {
         val mediaDir = if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP) {

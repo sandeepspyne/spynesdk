@@ -33,6 +33,7 @@
     <dimen name="dp_3">3dp</dimen>
     <dimen name="sp_20">20sp</dimen>
     <dimen name="dp_65">65dp</dimen>
+    <dimen name="dp_55">55dp</dimen>
     <dimen name="sp_15">15sp</dimen>
     <dimen name="dp_300">300dp</dimen>
     <dimen name="dp_400">400dp</dimen>

@@ -162,15 +162,15 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
-                android:text="@string/whatsapp"
-                android:textColor="@color/white"
-                android:fontFamily="@font/medium"
-                android:textSize="@dimen/sp_16"
                 android:layout_gravity="center"
                 android:layout_marginStart="@dimen/dp_30"
                 android:layout_marginEnd="@dimen/dp_30"
+                android:fontFamily="@font/medium"
+                android:padding="@dimen/dp_5"
+                android:text="@string/whatsapp"
                 android:textAllCaps="false"
-                android:padding="@dimen/dp_5" />
+                android:textColor="@color/white"
+                android:textSize="@dimen/sp_16" />
             <ImageView
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
@@ -181,4 +181,12 @@
         </LinearLayout>
 
     </LinearLayout>
+
+<!--    <com.google.android.material.floatingactionbutton.FloatingActionButton-->
+<!--        android:layout_width="wrap_content"-->
+<!--        android:layout_height="wrap_content"-->
+<!--        android:layout_margin="@dimen/dp_20"-->
+
+
 </LinearLayout>
+

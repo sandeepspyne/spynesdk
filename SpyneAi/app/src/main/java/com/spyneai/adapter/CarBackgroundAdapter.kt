@@ -69,7 +69,7 @@ class CarBackgroundAdapter(val context: Context,
             viewHolder.llChannel.setBackgroundResource(R.drawable.bg_selected)
         })
 */
-        Utilities.savePrefrence(context, backgroundNumber, "0")
+
 
         if (position == pos)
             viewHolder.llChannel.setBackgroundResource(R.drawable.bg_selected)
@@ -79,7 +79,7 @@ class CarBackgroundAdapter(val context: Context,
         viewHolder.llChannel.setOnClickListener(View.OnClickListener {
             if (mClickListener != null)
                 mClickListener?.onBtnClick(position)
-            Utilities.savePrefrence(context, backgroundNumber, position.toString())
+
             pos = position
 
             viewHolder.llChannel.setBackgroundResource(R.drawable.bg_selected)
