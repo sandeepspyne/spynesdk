@@ -34,21 +34,30 @@
         android:theme="@style/Theme.SpyneAi"
         android:usesCleartextTraffic="true"
         tools:targetApi="m">
-        <activity android:name=".activity.ShowImagesActivity"
+        <activity android:name=".activity.GenrateMarketplaceActivity"></activity>
+        <activity
+            android:name=".activity.ShowImagesActivity"
             android:screenOrientation="portrait" />
-        <activity android:name=".activity.ShowGifActivity"
+        <activity
+            android:name=".activity.ShowGifActivity"
             android:screenOrientation="portrait" />
-        <activity android:name=".activity.GenerateGifActivity"
+        <activity
+            android:name=".activity.GenerateGifActivity"
             android:screenOrientation="portrait" />
-        <activity android:name=".activity.OrderSummaryActivity"
+        <activity
+            android:name=".activity.OrderSummaryActivity"
             android:screenOrientation="portrait" />
-        <activity android:name=".razorpay.MyMerchantActivity"
+        <activity
+            android:name=".razorpay.MyMerchantActivity"
             android:screenOrientation="portrait" />
-        <activity android:name=".activity.BackgroundAddActivity"
+        <activity
+            android:name=".activity.BackgroundAddActivity"
             android:screenOrientation="portrait" />
-        <activity android:name=".activity.OngoingActivity"
+        <activity
+            android:name=".activity.OngoingActivity"
             android:screenOrientation="portrait" />
-        <activity android:name=".activity.CompletedActivity"
+        <activity
+            android:name=".activity.CompletedActivity"
             android:screenOrientation="portrait" />
         <activity
             android:name=".extras.BeforeAfterActivity"
@@ -77,7 +86,6 @@
         <activity
             android:name=".activity.PreviewActivity"
             android:screenOrientation="portrait" />
-
         <activity
             android:name=".activity.CompletedProjectsActivity"
             android:screenOrientation="portrait" />
@@ -117,35 +125,27 @@
         <activity
             android:name=".activity.SignInActivity"
             android:screenOrientation="portrait" />
-
         <activity
             android:name=".activity.TimerActivity"
             android:screenOrientation="portrait" />
-
         <activity
             android:name=".spyneaidemo.activity.CameraDemoActivity"
             android:screenOrientation="portrait" />
-
         <activity
             android:name=".spyneaidemo.activity.GenerateGifDemoActivity"
             android:screenOrientation="portrait" />
-
         <activity
             android:name=".spyneaidemo.activity.TimerDemoActivity"
             android:screenOrientation="portrait" />
-
         <activity
             android:name=".spyneaidemo.activity.ShowImagesDemActivity"
             android:screenOrientation="portrait" />
-
         <activity
             android:name=".spyneaidemo.activity.ShowGifDemoActivity"
             android:screenOrientation="portrait" />
-
         <activity
             android:name=".spyneaidemo.activity.camera2.Camera2DemoActivity"
             android:screenOrientation="landscape" />
-
         <activity
             android:name=".activity.SplashActivity"
             android:screenOrientation="portrait">

@@ -23,7 +23,6 @@ import com.spyneai.model.nextsku.SkuRequest
 import com.spyneai.model.order.PlaceOrderResponse
 import com.spyneai.model.orders.MyOrdersResponse
 import com.spyneai.model.ordersummary.OrderSummaryResponse
-import com.spyneai.model.otp.OtpRequest
 import com.spyneai.model.otp.OtpResponse
 import com.spyneai.model.projects.CompletedProjectResponse
 import com.spyneai.model.shoot.*
@@ -214,8 +213,6 @@ interface APiService {
                         @Query("shootId") shootId: String?,
                         @Query("skuId") skuId: String?)
             : Call<OrderSummaryResponse>?
-
-
 
 
     //-- AI APIs --ok

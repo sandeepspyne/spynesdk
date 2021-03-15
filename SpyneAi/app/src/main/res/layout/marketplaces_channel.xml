@@ -15,8 +15,8 @@
 
         <LinearLayout
             android:id="@+id/llChannel"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="@dimen/dp_70"
+            android:layout_height="@dimen/dp_70"
             android:elevation="@dimen/dp_5"
             android:background="@drawable/bg_channel"
             android:padding="0.1dp"
@@ -28,17 +28,16 @@
                 android:layout_height="wrap_content"
                 app:cardCornerRadius="@dimen/dp_10">
                 <ImageView
-                    android:id="@+id/ivCarBackground"
+                    android:id="@+id/ivMarketPlace"
                     android:layout_width="@dimen/dp_70"
                     android:layout_height="@dimen/dp_70"
                     android:src="@mipmap/defaults"
-                    android:scaleType="fitXY"
                     android:background="@drawable/click_backgrounds"
                     android:contentDescription="@string/app_name" />
             </androidx.cardview.widget.CardView>
         </LinearLayout>
         <TextView
-            android:id="@+id/tvCarBgName"
+            android:id="@+id/tvMarketplacesName"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="@string/dealership"

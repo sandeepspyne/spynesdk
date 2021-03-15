@@ -22,7 +22,7 @@ import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.gson.Gson
 import com.spyneai.R
-import com.spyneai.adapter.CarBackgroundAdapter
+import com.spyneai.adapter.MarketplacesAdapter
 import com.spyneai.adapter.PhotosAdapter
 import com.spyneai.aipack.*
 import com.spyneai.interfaces.*
@@ -71,7 +71,7 @@ class TimerActivity : AppCompatActivity() {
 
     private var currentPOsition : Int = 0
     lateinit var carBackgroundList : ArrayList<CarBackgroundsResponse>
-    lateinit var carbackgroundsAdapter: CarBackgroundAdapter
+    lateinit var carbackgroundsAdapter: MarketplacesAdapter
     var backgroundSelect : String = ""
 
     var totalImagesToUPload : Int = 0

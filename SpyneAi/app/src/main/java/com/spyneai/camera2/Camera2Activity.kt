@@ -49,6 +49,7 @@ import com.bumptech.glide.Glide
 import com.spyneai.R
 import com.spyneai.activity.DashboardActivity
 import com.spyneai.activity.GenerateGifActivity
+import com.spyneai.activity.GenrateMarketplaceActivity
 import com.spyneai.adapter.ProgressAdapter
 import com.spyneai.adapter.SubCategoriesAdapter
 import com.spyneai.interfaces.APiService
@@ -267,6 +268,12 @@ class Camera2Activity : AppCompatActivity() , SubCategoriesAdapter.BtnClickListe
             frameImageListSelections .add(9)
             frameImageListSelections .add(18)
             frameImageListSelections .add(27)
+        } else if (num == 5){
+            frameImageListSelections .add(0)
+            frameImageListSelections .add(1)
+            frameImageListSelections .add(2)
+            frameImageListSelections .add(3)
+            frameImageListSelections .add(4)
         }
         showProgressFrames(frameNumberTemp)
     }
@@ -276,7 +283,11 @@ class Camera2Activity : AppCompatActivity() , SubCategoriesAdapter.BtnClickListe
         if (frameNumberTemp == 0)
         {
             tvshoot.setOnClickListener(View.OnClickListener {
-                showCustomSelectionDialog()
+                if (catName.equals("Automobiles")) {
+                    showCustomSelectionDialog()
+                } else if (catName.equals("Footwear")) {
+                    showFootwearCustomSelectionDialog()
+                }
                 tvshoot.isEnabled = true
                 tvshoot.isFocusable = true
             })
@@ -861,7 +872,7 @@ class Camera2Activity : AppCompatActivity() , SubCategoriesAdapter.BtnClickListe
                 camera_capture_button.isEnabled = true
                 camera_capture_button.isFocusable = true
 
-            } else {
+            } else if (catName.equals("Automobiles")) {
                 val intent = Intent(
                         this,
                         GenerateGifActivity::class.java
@@ -878,6 +889,24 @@ class Camera2Activity : AppCompatActivity() , SubCategoriesAdapter.BtnClickListe
                                 AppConstants.SKU_NAME)!!)
                 startActivity(intent)
                 finish()
+            } else if (catName.equals("Footwear")){
+                val intent = Intent(
+                    this,
+                    GenrateMarketplaceActivity::class.java
+                )
+
+                intent.putExtra(AppConstants.ALL_IMAGE_LIST, imageFileList)
+                intent.putExtra(AppConstants.ALL_FRAME_LIST, imageFileListFrames)
+                intent.putExtra(AppConstants.ALL_FRAME_LIST, imageFileListFrames)
+                intent.putExtra(AppConstants.GIF_LIST, gifList)
+
+                Utilities.savePrefrence(this, AppConstants.SKU_NAME, skuName)
+                Log.e("Camera  SKU",
+                    Utilities.getPreference(this,
+                        AppConstants.SKU_NAME)!!)
+                startActivity(intent)
+                finish()
+
             }
         })
         dialog.show()
@@ -1070,13 +1099,9 @@ class Camera2Activity : AppCompatActivity() , SubCategoriesAdapter.BtnClickListe
                     prodIds = prodId
                     catIds = catId
 
-                    Utilities.savePrefrence(
-                            this@Camera2Activity,
-                            AppConstants.SHOOT_ID, shootIds
+                    Utilities.savePrefrence(this@Camera2Activity, AppConstants.SHOOT_ID, shootIds
                     )
-                    Utilities.savePrefrence(
-                            this@Camera2Activity,
-                            AppConstants.SKU_ID, skuId
+                    Utilities.savePrefrence(this@Camera2Activity, AppConstants.SKU_ID, skuId
                     )
 
 
@@ -1118,7 +1143,12 @@ class Camera2Activity : AppCompatActivity() , SubCategoriesAdapter.BtnClickListe
                                 "4"
                         );
                     }
-                    setProgressFrame(4)
+                    if (catName.equals("Automobiles")) {
+                        setProgressFrame(4)
+                    } else if (catName.equals("Footwear")) {
+                        setProgressFrame(5)
+                    }
+
 
                     // etSkuName.visibility = View.GONE
 
@@ -1350,6 +1380,13 @@ class Camera2Activity : AppCompatActivity() , SubCategoriesAdapter.BtnClickListe
 
         //Set a value change listener for NumberPicker
         //Set a value change listener for NumberPicker
+
+//        if (catName.equals("Automobiles")) {
+//            setProgressFrame(4)
+//        } else if (catName.equals("Footwear")) {
+//            setProgressFrame(5)
+//        }
+
         npShoots.setOnValueChangedListener(OnValueChangeListener { picker, oldVal, newVal -> //Display the newly selected value from picker
             if (valuesShoots[newVal].equals("4 Angles")) {
                 Utilities.savePrefrence(
@@ -1406,6 +1443,52 @@ class Camera2Activity : AppCompatActivity() , SubCategoriesAdapter.BtnClickListe
         })
         dialog.show()
     }
+
+    @RequiresApi(Build.VERSION_CODES.M)
+    @SuppressLint("SetTextI18n")
+    fun showFootwearCustomSelectionDialog() {
+        val dialog = Dialog(this)
+        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE)
+        dialog.setCancelable(true)
+        dialog.setContentView(R.layout.dialog_spinner)
+        val window: Window = dialog.getWindow()!!
+        window.setLayout(WindowManager.LayoutParams.WRAP_CONTENT,
+            WindowManager.LayoutParams.WRAP_CONTENT)
+
+        val tvProceed : TextView = dialog.findViewById(R.id.tvProceed)
+        val npShoots : NumberPicker = dialog.findViewById(R.id.npShoots)
+
+        val valuesShoots = arrayOf("5 Angles"/*, "8 Angles", "12 Angles", "24 Angles"*/)
+
+        npShoots.setMinValue(0); //from array first value
+        //Specify the maximum value/number of NumberPicker
+        npShoots.setMaxValue(valuesShoots.size - 1); //to array last value
+
+        //Specify the NumberPicker data source as array elements
+        npShoots.setDisplayedValues(valuesShoots);
+
+        npShoots.setOnValueChangedListener(OnValueChangeListener { picker, oldVal, newVal -> //Display the newly selected value from picker
+            if (valuesShoots[newVal].equals("5 Angles")) {
+                Utilities.savePrefrence(
+                    this@Camera2Activity,
+                    AppConstants.FRAME_SHOOOTS,
+                    "5"
+                );
+                setProgressFrame(5)
+            }
+        })
+
+        Log.e(
+            "VAlue selected  ",
+            Utilities.getPreference(this, AppConstants.FRAME_SHOOOTS).toString()
+        )
+
+        tvProceed.setOnClickListener(View.OnClickListener {
+            dialog.dismiss()
+        })
+        dialog.show()
+    }
+
     fun setNumberPickerTextColor(numberPicker: NumberPicker, color: Int) {
         try {
             val selectorWheelPaintField: Field = numberPicker.javaClass

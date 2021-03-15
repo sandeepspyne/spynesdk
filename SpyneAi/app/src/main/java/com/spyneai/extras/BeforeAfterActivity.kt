@@ -166,8 +166,8 @@ class BeforeAfterActivity : AppCompatActivity() {
                 fetchBackgroundCars()
 
 
-/*
-                if (catName.equals("Automobiles")) {
+
+              /*  if (catName.equals("Automobiles")) {
                     if ( Utilities.getList(this@BeforeAfterActivity,AppConstants.BACKGROUND_LIST_CARS)!!.size == 0) {
                         fetchBackgroundCars()
                     }
@@ -186,8 +186,8 @@ class BeforeAfterActivity : AppCompatActivity() {
                     }
                     else{
                         Utilities.hideProgressDialog()
-                    }
-*/
+                    }*/
+
             }
 
             override fun onFailure(call: Call<BeforeAfterResponse>, t: Throwable) {
@@ -219,7 +219,6 @@ class BeforeAfterActivity : AppCompatActivity() {
                             this@BeforeAfterActivity, AppConstants.CHANNEL_LIST,
                             response.body() as ArrayList
                         )
-                        fetchBackgrounds()
                     } else {
                         Utilities.hideProgressDialog()
                         Toast.makeText(

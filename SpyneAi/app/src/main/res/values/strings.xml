@@ -137,6 +137,10 @@
     <string name="we_recommend">We recommend you to shoot the \ninterior view of your car.</string>
     <string name="skip">Skip</string>
 
+    <string name="choose_marketplace">Choose Marketplace</string>
+    <string name="choose_background_colour">Choose background colour</string>
+    <string name="sample_output_image">Sample  Output Image</string>
+
     <string-array name="planets_array">
         <item>4 Shoots</item>
         <item>8 Shoots</item>

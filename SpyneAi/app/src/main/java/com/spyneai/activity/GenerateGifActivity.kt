@@ -1,12 +1,7 @@
 package com.spyneai.activity
 
-import UploadPhotoResponse
 import android.app.Dialog
 import android.content.Intent
-import android.graphics.Bitmap
-import android.graphics.BitmapFactory
-import android.graphics.Matrix
-import android.media.ExifInterface
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
@@ -14,29 +9,17 @@ import android.view.View
 import android.view.Window
 import android.widget.TextView
 import android.widget.Toast
-import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
-import com.google.gson.Gson
 import com.spyneai.R
 import com.spyneai.adapter.CarBackgroundAdapter
+import com.spyneai.adapter.MarketplacesAdapter
 import com.spyneai.adapter.PhotosAdapter
 import com.spyneai.aipack.*
-import com.spyneai.interfaces.APiService
-import com.spyneai.interfaces.RetrofitClient
-import com.spyneai.interfaces.RetrofitClients
-import com.spyneai.interfaces.RetrofitClientsBulk
-import com.spyneai.model.ai.GifResponse
 import com.spyneai.model.carreplace.CarBackgroundsResponse
 import com.spyneai.model.sku.Photos
-import com.spyneai.model.sku.SkuResponse
 import com.spyneai.model.skumap.UpdateSkuResponse
-import com.spyneai.model.skustatus.UpdateSkuStatusRequest
-import com.spyneai.model.skustatus.UpdateSkuStatusResponse
-import com.spyneai.model.upload.PreviewResponse
-import com.spyneai.model.upload.UploadResponse
-import com.spyneai.model.uploadRough.UploadPhotoRequest
 import com.spyneai.needs.AppConstants
 import com.spyneai.needs.Utilities
 import kotlinx.android.synthetic.main.activity_edit_sku.*
@@ -44,16 +27,7 @@ import kotlinx.android.synthetic.main.activity_generate_gif.*
 import kotlinx.android.synthetic.main.activity_order.*
 import kotlinx.android.synthetic.main.activity_shoot_selection.*
 import kotlinx.android.synthetic.main.activity_show_gif.*
-import okhttp3.MediaType
-import okhttp3.MultipartBody
-import okhttp3.RequestBody
-import retrofit2.Call
-import retrofit2.Callback
-import retrofit2.Response
 import java.io.File
-import java.io.FileOutputStream
-import java.io.IOException
-import java.io.OutputStream
 
 class GenerateGifActivity : AppCompatActivity() {
     private lateinit var photsAdapter: PhotosAdapter

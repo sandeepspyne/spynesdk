@@ -11,12 +11,13 @@ import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.spyneai.R
 import com.spyneai.model.carreplace.CarBackgroundsResponse
+import com.spyneai.model.marketplace.FootwearMarketplaceResponse
 
-class CarBackgroundAdapter (val context: Context,
-                            val channelList : ArrayList<CarBackgroundsResponse>,
-                            var pos : Int,
-                            val btnlistener: BtnClickListener?)
-    : RecyclerView.Adapter<CarBackgroundAdapter.ViewHolder>() {
+class MarketplacesAdapter(val context: Context,
+                          val channelList : ArrayList<FootwearMarketplaceResponse>,
+                          var pos : Int,
+                          val btnlistener: BtnClickListener?)
+    : RecyclerView.Adapter<MarketplacesAdapter.ViewHolder>() {
 
     companion object {
         var mClickListener: BtnClickListener? = null
@@ -28,15 +29,15 @@ class CarBackgroundAdapter (val context: Context,
 
     class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
         val llChannel: LinearLayout = view.findViewById(R.id.llChannel)
-        val ivCarBackground: ImageView = view.findViewById(R.id.ivCarBackground)
-        val tvCarBgName: TextView = view.findViewById(R.id.tvCarBgName)
+        val ivMarketPlace: ImageView = view.findViewById(R.id.ivMarketPlace)
+        val tvMarketplacesName: TextView = view.findViewById(R.id.tvMarketplacesName)
     }
 
     // Create new views (invoked by the layout manager)
     override fun onCreateViewHolder(viewGroup: ViewGroup, viewType: Int): ViewHolder {
         // Create a new view, which defines the UI of the list item
         val view = LayoutInflater.from(viewGroup.context)
-            .inflate(R.layout.car_channel, viewGroup, false)
+                .inflate(R.layout.marketplaces_channel, viewGroup, false)
 
         return ViewHolder(view)
     }
@@ -46,10 +47,10 @@ class CarBackgroundAdapter (val context: Context,
 
         // Get element from your dataset at this position and replace the
         // contents of the view with that element
-        Glide.with(context).load(channelList[position].imageUrl)
-            .into(viewHolder.ivCarBackground)
+        Glide.with(context).load(channelList[position].image_url)
+                .into(viewHolder.ivMarketPlace)
 
-        viewHolder.tvCarBgName.setText(channelList[position].bgName)
+        viewHolder.tvMarketplacesName.setText(channelList[position].marketplace_name)
 
         mClickListener = btnlistener
 /*

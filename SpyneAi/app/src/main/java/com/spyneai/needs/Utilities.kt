@@ -18,6 +18,7 @@ import com.spyneai.R
 import com.spyneai.model.carreplace.CarBackgroundsResponse
 import com.spyneai.model.channel.BackgroundsResponse
 import com.spyneai.model.channel.ChannelsResponse
+import com.spyneai.model.marketplace.FootwearMarketplaceResponse
 import com.spyneai.model.skumap.UpdateSkuResponse
 import kotlinx.android.synthetic.main.dialog_progress.*
 import kotlinx.android.synthetic.main.dialog_progress_preview.*
@@ -173,6 +174,23 @@ object Utilities {
             val gson = Gson()
             val type: Type = object : TypeToken<List<BackgroundsResponse?>?>() {}.type
             arrayItems = gson.fromJson<ArrayList<BackgroundsResponse>>(serializedObject, type)
+        }
+
+        return arrayItems
+    }
+
+    fun getListMarketplaces(context: Context, key: String): List<FootwearMarketplaceResponse>? {
+        sharedPreferences = context!!.getSharedPreferences(
+            AppConstants.MY_LIST,
+            Context.MODE_PRIVATE
+        )
+
+        var arrayItems = ArrayList<FootwearMarketplaceResponse>()
+        val serializedObject: String? = sharedPreferences.getString(key, null)
+        if (serializedObject != null) {
+            val gson = Gson()
+            val type: Type = object : TypeToken<List<FootwearMarketplaceResponse?>?>() {}.type
+            arrayItems = gson.fromJson<ArrayList<FootwearMarketplaceResponse>>(serializedObject, type)
         }
 
         return arrayItems

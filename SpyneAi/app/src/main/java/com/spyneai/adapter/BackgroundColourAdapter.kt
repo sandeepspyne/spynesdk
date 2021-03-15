@@ -6,17 +6,17 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.LinearLayout
-import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.spyneai.R
-import com.spyneai.model.carreplace.CarBackgroundsResponse
+import com.spyneai.model.channels.MarketplaceResponse
+import com.spyneai.model.marketplace.FootwearMarketplaceResponse
 
-class CarBackgroundAdapter (val context: Context,
-                            val channelList : ArrayList<CarBackgroundsResponse>,
-                            var pos : Int,
-                            val btnlistener: BtnClickListener?)
-    : RecyclerView.Adapter<CarBackgroundAdapter.ViewHolder>() {
+class BackgroundColourAdapter (val context: Context,
+                               val backgroundColourList : ArrayList<FootwearMarketplaceResponse >,
+                               var pos : Int,
+                               val btnlistener: BtnClickListener?)
+    : RecyclerView.Adapter<BackgroundColourAdapter.ViewHolder>() {
 
     companion object {
         var mClickListener: BtnClickListener? = null
@@ -27,16 +27,15 @@ class CarBackgroundAdapter (val context: Context,
      */
 
     class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
-        val llChannel: LinearLayout = view.findViewById(R.id.llChannel)
-        val ivCarBackground: ImageView = view.findViewById(R.id.ivCarBackground)
-        val tvCarBgName: TextView = view.findViewById(R.id.tvCarBgName)
+        val llBackgroundChannel: LinearLayout = view.findViewById(R.id.llBackgroundChannel)
+        val ivBackground: ImageView = view.findViewById(R.id.ivBackground)
     }
 
     // Create new views (invoked by the layout manager)
     override fun onCreateViewHolder(viewGroup: ViewGroup, viewType: Int): ViewHolder {
         // Create a new view, which defines the UI of the list item
         val view = LayoutInflater.from(viewGroup.context)
-            .inflate(R.layout.car_channel, viewGroup, false)
+            .inflate(R.layout.background_colour, viewGroup, false)
 
         return ViewHolder(view)
     }
@@ -46,10 +45,13 @@ class CarBackgroundAdapter (val context: Context,
 
         // Get element from your dataset at this position and replace the
         // contents of the view with that element
-        Glide.with(context).load(channelList[position].imageUrl)
-            .into(viewHolder.ivCarBackground)
+        if (position == 0){
+            Glide.with(context).load(backgroundColourList[position].custom_bg_url_1).into(viewHolder.ivBackground)
+        }else if (position == 1){
+            Glide.with(context).load(backgroundColourList[position].custom_bg_url_2).into(viewHolder.ivBackground)
+        }
 
-        viewHolder.tvCarBgName.setText(channelList[position].bgName)
+
 
         mClickListener = btnlistener
 /*
@@ -64,17 +66,17 @@ class CarBackgroundAdapter (val context: Context,
 
 
         if (position == pos)
-            viewHolder.llChannel.setBackgroundResource(R.drawable.bg_selected)
+            viewHolder.llBackgroundChannel.setBackgroundResource(R.drawable.circle_image)
         else
-            viewHolder.llChannel.setBackgroundResource(R.drawable.bg_channel)
+            viewHolder.llBackgroundChannel.setBackgroundResource(R.drawable.circle_image_selected)
 
-        viewHolder.llChannel.setOnClickListener(View.OnClickListener {
+        viewHolder.llBackgroundChannel.setOnClickListener(View.OnClickListener {
             if (mClickListener != null)
                 mClickListener?.onBtnClick(position)
 
             pos = position
 
-            viewHolder.llChannel.setBackgroundResource(R.drawable.bg_selected)
+            viewHolder.llBackgroundChannel.setBackgroundResource(R.drawable.bg_selected)
         })
 
 /*
@@ -88,7 +90,7 @@ class CarBackgroundAdapter (val context: Context,
     }
 
     // Return the size of your dataset (invoked by the layout manager)
-    override fun getItemCount() = channelList.size
+    override fun getItemCount() = backgroundColourList.size
     open interface BtnClickListener {
         fun onBtnClick(position: Int)
     }

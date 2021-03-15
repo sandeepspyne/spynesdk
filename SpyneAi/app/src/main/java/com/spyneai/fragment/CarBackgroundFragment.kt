@@ -12,6 +12,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.spyneai.R
 import com.spyneai.activity.CameraPreviewActivity
 import com.spyneai.adapter.CarBackgroundAdapter
+import com.spyneai.adapter.MarketplacesAdapter
 import com.spyneai.model.carreplace.CarBackgroundsResponse
 import com.spyneai.needs.AppConstants
 import com.spyneai.needs.Utilities
