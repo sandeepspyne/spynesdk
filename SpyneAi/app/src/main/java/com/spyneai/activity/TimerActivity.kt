@@ -29,6 +29,7 @@ import com.spyneai.interfaces.*
 import com.spyneai.model.ai.SendEmailRequest
 import com.spyneai.model.ai.UploadGifResponse
 import com.spyneai.model.carreplace.CarBackgroundsResponse
+import com.spyneai.model.marketplace.FootwearBulkResponse
 import com.spyneai.model.otp.OtpResponse
 import com.spyneai.model.sku.Photos
 import com.spyneai.model.sku.SkuResponse
@@ -73,6 +74,8 @@ class TimerActivity : AppCompatActivity() {
     lateinit var carBackgroundList : ArrayList<CarBackgroundsResponse>
     lateinit var carbackgroundsAdapter: MarketplacesAdapter
     var backgroundSelect : String = ""
+    var marketplaceId : String = ""
+    var backgroundColour : String = ""
 
     var totalImagesToUPload : Int = 0
     var totalImagesToUPloadIndex : Int = 0
@@ -80,12 +83,24 @@ class TimerActivity : AppCompatActivity() {
     lateinit var gifLink : String
     lateinit var image_url : ArrayList<String>
     var countGif : Int = 0
+    var catName : String = ""
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_timer)
         backgroundSelect = intent.getStringExtra(AppConstants.BG_ID)!!
         circular_progress.setInterpolator(LinearInterpolator())
+
+        if (intent.getStringExtra(AppConstants.CATEGORY_NAME) != null)
+            catName = intent.getStringExtra(AppConstants.CATEGORY_NAME)!!
+        else
+            catName = Utilities.getPreference(this, AppConstants.CATEGORY_NAME)!!
+
+        if (intent.getStringExtra(AppConstants.MARKETPLACE_ID) != null)
+        marketplaceId = intent.getStringExtra(AppConstants.MARKETPLACE_ID)!!
+
+        if (intent.getStringExtra(AppConstants.BACKGROUND_COLOUR) != null)
+        backgroundColour = intent.getStringExtra(AppConstants.BACKGROUND_COLOUR)!!
 
         imageFileList = ArrayList<File>()
         imageFileListFrames = ArrayList<Int>()
@@ -242,7 +257,7 @@ class TimerActivity : AppCompatActivity() {
                 imageFileListFrames[totalImagesToUPloadIndex],
                 Utilities.getPreference(this, AppConstants.SHOOT_ID)!!,
                 Utilities.getPreference(this, AppConstants.MAIN_IMAGE).toString(),
-                uploadPhotoName
+                uploadPhotoName, "EXTERIOR"
             )
 
             Log.e("Frame Number", intent.getIntExtra(AppConstants.FRAME, 1).toString())
@@ -504,7 +519,12 @@ class TimerActivity : AppCompatActivity() {
                         photsAdapter.notifyDataSetChanged()
                         // Utilities.showProgressDialog(this@TimerActivity)
                         if (countGif < photoList.size - 1) {
-                            bulkUpload(countGif)
+                            if (catName.equals("Automobiles")) {
+                                bulkUpload(countGif)
+                            }else if (catName.equals("Footwear")){
+                                bulkUploadFootwear(countGif)
+                            }
+
                         }
                     } else {
                         Toast.makeText(
@@ -617,6 +637,116 @@ class TimerActivity : AppCompatActivity() {
                 }
 
                 override fun onFailure(call: Call<BulkUploadResponse>, t: Throwable) {
+                    Utilities.hideProgressDialog()
+                    llTimer.visibility = View.GONE
+                    llNoInternet.visibility = View.VISIBLE
+                    countDownTimer.cancel()
+                    Toast.makeText(
+                        this@TimerActivity,
+                        "Server not responding!!!", Toast.LENGTH_SHORT
+                    ).show()
+                }
+            })
+        }
+        else{
+            Utilities.hideProgressDialog()
+
+            llTimer.visibility = View.GONE
+            llNoInternet.visibility = View.VISIBLE
+            countDownTimer.cancel()
+        }
+    }
+
+    private fun bulkUploadFootwear(countsGif: Int) {
+        if (Utilities.isNetworkAvailable(this)) {
+            llTimer.visibility = View.VISIBLE
+            llNoInternet.visibility = View.GONE
+
+            val request = RetrofitClients.buildService(APiService::class.java)
+            Log.e("Upload bulk footwear", "started......")
+
+            /*   val background : ArrayList<String> = ArrayList<String>()
+           background.addAll(listOf(backgroundSelect))*/
+
+//        image_url.add(photoList[countsGif].displayThumbnail)
+
+//            val background = RequestBody.create(
+//                MultipartBody.FORM,
+//                backgroundSelect
+//            )
+
+            val marketplace_id = RequestBody.create(
+                MultipartBody.FORM,
+                marketplaceId
+            )
+
+            val bg_color = RequestBody.create(
+                MultipartBody.FORM,
+                backgroundColour
+            )
+
+            val userId = RequestBody.create(
+                MultipartBody.FORM,
+                Utilities.getPreference(this, AppConstants.tokenId)!!
+            )
+            val skuId = RequestBody.create(
+                MultipartBody.FORM,
+                Utilities.getPreference(this, AppConstants.SKU_ID)!!
+            )
+            val imageUrl = RequestBody.create(
+                MultipartBody.FORM,
+                photoList[countsGif].displayThumbnail
+            )
+            Log.e(
+                "Sku NAme Upload",
+                Utilities.getPreference(this, AppConstants.SKU_NAME)!!
+            )
+            val skuName = RequestBody.create(
+                MultipartBody.FORM,
+                Utilities.getPreference(this, AppConstants.SKU_NAME)!!
+            )
+
+            val windowStatus = RequestBody.create(
+                MultipartBody.FORM,
+                "inner"
+            )
+
+            val call =
+                request.bulkUPloadFootwear( userId, skuId, imageUrl, skuName, marketplace_id, bg_color)
+
+            call?.enqueue(object : Callback<FootwearBulkResponse> {
+                override fun onResponse(
+                    call: Call<FootwearBulkResponse>,
+                    response: Response<FootwearBulkResponse>
+                ) {
+                    if (response.isSuccessful && response.body()!!.status == 200) {
+                        ++countGif
+                        if (countGif < photoList.size) {
+                            Log.e("countGif", countGif.toString())
+                            bulkUploadFootwear(countGif)
+                        } else
+                            fetchBulkUpload()
+                        Log.e("Upload Replace", "bulk")
+                        Log.e(
+                            "Upload Replace SKU",
+                            Utilities.getPreference(
+                                this@TimerActivity,
+                                AppConstants.SKU_NAME
+                            )!!
+                        )
+                    } else {
+                        llTimer.visibility = View.GONE
+                        llNoInternet.visibility = View.VISIBLE
+                        countDownTimer.cancel()
+                        Utilities.hideProgressDialog()
+                        Toast.makeText(
+                            this@TimerActivity,
+                            "Server not responding!!!", Toast.LENGTH_SHORT
+                        ).show()
+                    }
+                }
+
+                override fun onFailure(call: Call<FootwearBulkResponse>, t: Throwable) {
                     Utilities.hideProgressDialog()
                     llTimer.visibility = View.GONE
                     llNoInternet.visibility = View.VISIBLE
@@ -817,6 +947,7 @@ class TimerActivity : AppCompatActivity() {
                                 ShowImagesActivity::class.java
                             )
                             intent.putExtra(AppConstants.GIF, gifLink)
+                            intent.putExtra(AppConstants.CATEGORY_NAME,catName)
                             startActivity(intent)
                             finish()
                             Toast.makeText(

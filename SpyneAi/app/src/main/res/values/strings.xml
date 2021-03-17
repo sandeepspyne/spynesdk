@@ -140,6 +140,9 @@
     <string name="choose_marketplace">Choose Marketplace</string>
     <string name="choose_background_colour">Choose background colour</string>
     <string name="sample_output_image">Sample  Output Image</string>
+    <string name="choose_background">Then choose the background color</string>
+
+
 
     <string-array name="planets_array">
         <item>4 Shoots</item>

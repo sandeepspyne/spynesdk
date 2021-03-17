@@ -53,6 +53,7 @@ import kotlin.collections.ArrayList
 class ShowImagesActivity : AppCompatActivity() {
     lateinit var imageList : List<String>
     lateinit var imageListAfter : List<String>
+    var catName : String = ""
 
     private lateinit var showReplacedImagesAdapter: ShowReplacedImagesAdapter
 
@@ -61,7 +62,19 @@ class ShowImagesActivity : AppCompatActivity() {
         setContentView(R.layout.activity_show_images)
         setBulkImages()
         setListeners()
+
+        if (intent.getStringExtra(AppConstants.CATEGORY_NAME) != null)
+            catName = intent.getStringExtra(AppConstants.CATEGORY_NAME)!!
+        else
+            catName = Utilities.getPreference(this, AppConstants.CATEGORY_NAME)!!
+
+        if (catName.equals("Footwear")){
+            tvViewGif.visibility = View.GONE
+        }
+
+
     }
+
 
     private fun setListeners() {
         tvYourEmailIdReplaced.setText(Utilities.getPreference(this, AppConstants.EMAIL_ID))

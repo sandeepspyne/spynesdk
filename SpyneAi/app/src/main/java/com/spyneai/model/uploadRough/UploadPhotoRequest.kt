@@ -7,5 +7,6 @@ data class UploadPhotoRequest (
         val indexNumber : Int,
         val shootId : String,
         val photoUrl : String,
+        val photoType : String,
         val photoName : String
 )

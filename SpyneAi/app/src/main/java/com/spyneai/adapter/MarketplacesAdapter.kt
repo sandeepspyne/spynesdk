@@ -28,7 +28,7 @@ class MarketplacesAdapter(val context: Context,
      */
 
     class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
-        val llChannel: LinearLayout = view.findViewById(R.id.llChannel)
+        val llMarketplacesChannel: LinearLayout = view.findViewById(R.id.llMarketplacesChannel)
         val ivMarketPlace: ImageView = view.findViewById(R.id.ivMarketPlace)
         val tvMarketplacesName: TextView = view.findViewById(R.id.tvMarketplacesName)
     }
@@ -65,17 +65,17 @@ class MarketplacesAdapter(val context: Context,
 
 
         if (position == pos)
-            viewHolder.llChannel.setBackgroundResource(R.drawable.bg_selected)
+            viewHolder.llMarketplacesChannel.setBackgroundResource(R.drawable.bg_selected)
         else
-            viewHolder.llChannel.setBackgroundResource(R.drawable.bg_channel)
+            viewHolder.llMarketplacesChannel.setBackgroundResource(R.drawable.bg_channel)
 
-        viewHolder.llChannel.setOnClickListener(View.OnClickListener {
+        viewHolder.llMarketplacesChannel.setOnClickListener(View.OnClickListener {
             if (mClickListener != null)
                 mClickListener?.onBtnClick(position)
 
             pos = position
 
-            viewHolder.llChannel.setBackgroundResource(R.drawable.bg_selected)
+            viewHolder.llMarketplacesChannel.setBackgroundResource(R.drawable.bg_selected)
         })
 
 /*

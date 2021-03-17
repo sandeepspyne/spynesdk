@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:padding="@dimen/dp_5"
+    android:layout_margin="@dimen/dp_5"
+    android:gravity="center"
+    android:background="@android:color/transparent">
+
+    <LinearLayout
+        android:id="@+id/lldialog"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:padding="@dimen/dp_10"
+        android:layout_margin="@dimen/dp_10"
+        android:background="@drawable/bg_channel"
+        android:elevation="@dimen/dp_10"
+        android:orientation="vertical">
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/choose_marketplace"
+        android:gravity="center"
+        android:fontFamily="@font/medium"
+        android:textSize="@dimen/sp_16"
+        android:textColor="@color/black"
+        android:layout_margin="@dimen/dp_30" />
+
+    <ImageView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/amazon_icon"></ImageView>
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/choose_background"
+        android:layout_marginTop="@dimen/dp_30"
+        android:gravity="center"
+        android:fontFamily="@font/medium"
+        android:textSize="@dimen/sp_16"
+        android:textColor="@color/black"
+        android:id="@+id/tvSkuNameDialog"/>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:orientation="horizontal"
+        android:layout_marginBottom="@dimen/dp_30">
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/selected_background"
+            android:layout_marginRight="@dimen/dp_5"></ImageView>
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/gray_background"
+            android:layout_marginLeft="@dimen/dp_5"/>
+
+    </LinearLayout>
+
+    </LinearLayout>
+
+    <ImageView
+        android:id="@+id/ivClose"
+        android:layout_below="@+id/lldialog"
+        android:layout_centerInParent="true"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="@dimen/dp_10"
+        android:src="@drawable/close_dialog"></ImageView>
+
+
+
+</RelativeLayout>
+
+

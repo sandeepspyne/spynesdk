@@ -13,5 +13,6 @@ data class Photos(
     val indexNumber : Int,
     val accepted : Boolean,
     val status : String,
+    val photoType : String,
     val comment : String
 )

@@ -45,10 +45,16 @@ class GenerateGifActivity : AppCompatActivity() {
     var totalImagesToUPload : Int = 0
     var totalImagesToUPloadIndex : Int = 0
     lateinit var gifList : ArrayList<String>
+    var catName = ""
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_generate_gif)
+
+        if (intent.getStringExtra(AppConstants.CATEGORY_NAME) != null)
+            catName = intent.getStringExtra(AppConstants.CATEGORY_NAME)!!
+        else
+            catName = Utilities.getPreference(this, AppConstants.CATEGORY_NAME)!!
 
         setBackgroundsCar()
         listeners()
@@ -123,6 +129,7 @@ class GenerateGifActivity : AppCompatActivity() {
                 intent.putExtra(AppConstants.BG_ID,backgroundSelect)
                 intent.putExtra(AppConstants.ALL_IMAGE_LIST, imageFileList)
                 intent.putExtra(AppConstants.ALL_FRAME_LIST, imageFileListFrames)
+                intent.putExtra(AppConstants.CATEGORY_NAME, catName)
 //                intent.putExtra(AppConstants.GIF_LIST, gifList)
                 startActivity(intent)
                 finish()

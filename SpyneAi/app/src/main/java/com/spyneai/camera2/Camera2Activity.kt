@@ -138,6 +138,8 @@ class Camera2Activity : AppCompatActivity() , SubCategoriesAdapter.BtnClickListe
     public lateinit var imageFileList : ArrayList<File>
     public lateinit var imageFileListFrames : ArrayList<Int>
 
+    var catId = ""
+
 
     @RequiresApi(Build.VERSION_CODES.M)
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -363,6 +365,8 @@ class Camera2Activity : AppCompatActivity() , SubCategoriesAdapter.BtnClickListe
                 if (response.isSuccessful) {
                     if (response.body()?.payload?.data?.size!! > 0) {
                         subCategoriesList.addAll(response.body()?.payload?.data!!)
+                        Log.e("subCategoriesList..", subCategoriesList.toString())
+
                     }
                     subCategoriesAdapter.notifyDataSetChanged()
 
@@ -882,6 +886,7 @@ class Camera2Activity : AppCompatActivity() , SubCategoriesAdapter.BtnClickListe
                 intent.putExtra(AppConstants.ALL_FRAME_LIST, imageFileListFrames)
                 intent.putExtra(AppConstants.ALL_FRAME_LIST, imageFileListFrames)
                 intent.putExtra(AppConstants.GIF_LIST, gifList)
+                intent.putExtra(AppConstants.CATEGORY_NAME, catName)
 
                 Utilities.savePrefrence(this, AppConstants.SKU_NAME, skuName)
                 Log.e("Camera  SKU",
@@ -896,9 +901,11 @@ class Camera2Activity : AppCompatActivity() , SubCategoriesAdapter.BtnClickListe
                 )
 
                 intent.putExtra(AppConstants.ALL_IMAGE_LIST, imageFileList)
+                intent.putExtra(AppConstants.CATEGORY_NAME, catName)
                 intent.putExtra(AppConstants.ALL_FRAME_LIST, imageFileListFrames)
                 intent.putExtra(AppConstants.ALL_FRAME_LIST, imageFileListFrames)
                 intent.putExtra(AppConstants.GIF_LIST, gifList)
+                intent.putExtra(AppConstants.CATEGORY_NAME, catName)
 
                 Utilities.savePrefrence(this, AppConstants.SKU_NAME, skuName)
                 Log.e("Camera  SKU",
@@ -1108,10 +1115,11 @@ class Camera2Activity : AppCompatActivity() , SubCategoriesAdapter.BtnClickListe
                     /*   if (response.body()!!.payload.data.frames != null)
                            totalFrames = response.body()!!.payload.data.frames.totalFrames
    */
-                    frameImageList = ArrayList<FrameImages>()
-                    frameImageList.clear()
-                    frameImageList.addAll(response.body()?.payload!!.data.frames.frameImages)
-
+                    if (response.body()?.payload!!.data.frames != null && response.body()?.payload!!.data.frames.frameImages.size > 0) {
+                        frameImageList = ArrayList<FrameImages>()
+                        frameImageList.clear()
+                        frameImageList.addAll(response.body()?.payload!!.data.frames.frameImages)
+                    }
                     Glide.with(this@Camera2Activity).load(
                         AppConstants.BASE_IMAGE_URL +
                                 frameImageList[frameNumber - 1].displayImage

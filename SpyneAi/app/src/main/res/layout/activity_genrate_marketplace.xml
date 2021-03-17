@@ -59,7 +59,7 @@
         android:orientation="vertical">
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
             tools:context=".activity.OrderActivity"
             android:orientation="vertical">
             <LinearLayout
@@ -68,7 +68,7 @@
                 android:orientation="vertical"
                 android:gravity="center">
                 <TextView
-                    android:id="@+id/tvMarketPlace"
+                    android:id="@+id/tvMarket"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:text="@string/choose_marketplace"
@@ -143,23 +143,30 @@
                 android:layout_marginBottom="@dimen/dp_20"
                 android:src="@mipmap/defaults"/>
 
+            <TextView
+                android:id="@+id/tvGenerateGif"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/create_shoots"
+                android:textColor="@color/white"
+                android:gravity="center"
+                android:layout_gravity="center"
+                android:padding="@dimen/dp_20"
+                android:fontFamily="@font/medium"
+                android:background="@drawable/bg_edit_button"
+                android:textSize="@dimen/sp_20"
+                android:layout_marginBottom="@dimen/dp_20"/>
+
         </LinearLayout>
 
-        <TextView
-            android:id="@+id/tvGenerateGif"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/create_shoots"
-            android:textColor="@color/white"
-            android:gravity="center"
-            android:layout_gravity="center"
-            android:padding="@dimen/dp_20"
-            android:layout_margin="@dimen/dp_20"
-            android:fontFamily="@font/medium"
-            android:background="@drawable/bg_edit_button"
-            android:textSize="@dimen/sp_20" />
+
+
+
 
     </androidx.core.widget.NestedScrollView>
+
+
+
 
 
 </LinearLayout>
