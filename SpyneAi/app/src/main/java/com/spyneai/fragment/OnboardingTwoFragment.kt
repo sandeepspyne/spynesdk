@@ -24,14 +24,7 @@ class OnboardingTwoFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        val view: View = inflater!!.inflate(R.layout.fragment_onboarding_two, container, false)
-
-        tvGetStarted = view.findViewById(R.id.tv_get_started);
-        tvGetStarted.setOnClickListener(View.OnClickListener {
-            val intent = Intent(context, OnboardingsActivity::class.java)
-            intent.putExtra(AppConstants.ONBOARD,3)
-            startActivity(intent)
-        })
+        val view: View = inflater!!.inflate(R.layout.activity_onboard_two, container, false)
 
         // Return the fragment view/layout
         return view

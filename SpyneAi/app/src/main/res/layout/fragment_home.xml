@@ -92,15 +92,34 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical">
-                <TextView
+
+                <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="@string/our_work"
-                    android:fontFamily="@font/bold"
-                    android:textStyle="bold"
-                    android:layout_margin="@dimen/dp_10"
-                    android:textSize="@dimen/sp_16"/>
+                    android:orientation="horizontal">
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_weight="1"
+                        android:layout_height="wrap_content"
+                        android:text="@string/our_work"
+                        android:fontFamily="@font/bold"
+                        android:textStyle="bold"
+                        android:layout_margin="@dimen/dp_10"
+                        android:textSize="@dimen/sp_16"/>
 
+                    <TextView
+                        android:id="@+id/tvHaveLook"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/have_look"
+                        android:fontFamily="@font/bold"
+                        android:textStyle="bold"
+                        android:gravity="center"
+                        android:textColor="@color/light"
+                        android:layout_margin="@dimen/dp_10"
+                        android:textSize="@dimen/sp_16"/>
+
+                </LinearLayout>
 
                 <com.synnapps.carouselview.CarouselView
                     android:id="@+id/carouselView"
@@ -112,6 +131,7 @@
                     app:pageTransformer="flow"
                     android:animateLayoutChanges="true"
                     app:indicatorVisibility="gone" />
+
             </LinearLayout>
         </LinearLayout>
     </ScrollView>

@@ -136,6 +136,13 @@
     <string name="more_angles">(More angles coming soon)</string>
     <string name="we_recommend">We recommend you to shoot the \ninterior view of your car.</string>
     <string name="skip">Skip</string>
+    <string name="apply_reflection">Apply auto exposure</string>
+    <string name="window_reflection">Window reflection style</string>
+    <string name="transparent">Transparent</string>
+    <string name="original">Original</string>
+    <string name="exterior">Exterior</string>
+    <string name="interior">Interior</string>
+    <string name="have_look"><u>Have a look</u></string>
 
     <string-array name="planets_array">
         <item>4 Shoots</item>

@@ -3,6 +3,7 @@ package com.spyneai.activity
 import android.content.Intent
 import android.os.Bundle
 import android.text.Html
+import android.view.View
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AppCompatDelegate
@@ -12,10 +13,12 @@ import androidx.fragment.app.FragmentStatePagerAdapter
 import androidx.viewpager.widget.ViewPager
 import com.google.android.material.tabs.TabLayout
 import com.spyneai.R
+import com.spyneai.extras.ZoomOutPageTransformer
 import com.spyneai.fragment.OnboardingOneFragment
 import com.spyneai.fragment.OnboardingThreeFragment
 import com.spyneai.fragment.OnboardingTwoFragment
 import com.spyneai.needs.AppConstants
+import kotlinx.android.synthetic.main.activity_onboardings.*
 
 
 class OnboardingsActivity : AppCompatActivity() {
@@ -23,6 +26,8 @@ class OnboardingsActivity : AppCompatActivity() {
     private val NUM_PAGES = 3
     private lateinit var mPager: ViewPager
     private lateinit var tabLayout: TabLayout
+
+    private var counts: Int = 0
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -39,40 +44,38 @@ class OnboardingsActivity : AppCompatActivity() {
         // The pager adapter, which provides the pages to the view pager widget.
         val pagerAdapter = ScreenSlidePagerAdapter(supportFragmentManager)
         mPager.adapter = pagerAdapter
-      //  mPager.setPageTransformer(true, ZoomOutPageTransformer())
+        mPager.setPageTransformer(true, ZoomOutPageTransformer())
 
         tabLayout.setupWithViewPager(mPager, true)
-
         mPager.setCurrentItem(0)
-        if (intent.getIntExtra(AppConstants.ONBOARD,0) == 2)
-            mPager.setCurrentItem(1)
-        else if (intent.getIntExtra(AppConstants.ONBOARD,0) == 3)
-            mPager.setCurrentItem(2)
-       /* else if (intent.getIntExtra(AppConstants.ONBOARD,0) == 1)
-            mPager.setCurrentItem(0)*/
 
+        tvGet.setOnClickListener(View.OnClickListener {
+            when (counts) {
+                0 -> {
+                    mPager.setCurrentItem(1)
+                    counts = 1
+                    //tvGet.setText(getString(R.string.get_started))
+                }
+                1 -> {
+                    mPager.setCurrentItem(2)
+                    counts = 2
+                    tvGet.setText(getString(R.string.start_shooting))
+                    //tvGet.setText(getString(R.string.get_started))
+                }
+                2 -> {
+                    val intent = Intent(this, SignInActivity::class.java)
+                    startActivity(intent)
+                }
+            }
+
+        })
     }
 
     override fun onBackPressed() {
         if (mPager.currentItem == 0) {
-            // If the user is currently looking at the first step, allow the system to handle the
-            // Back button. This calls finish() on this activity and pops the back stack.
             super.onBackPressed()
         } else  {
             mPager.setCurrentItem(0)
-           /* if (intent.getIntExtra(AppConstants.ONBOARD,0) == 2)
-            {
-                mPager.setCurrentItem(1)
-            }//mPager.setCurrentItem(0)
-            else if (intent.getIntExtra(AppConstants.ONBOARD,0) == 3)
-            {
-                val intent = Intent(this, OnboardingsActivity::class.java)
-                intent.putExtra(AppConstants.ONBOARD,2)
-                startActivity(intent)
-            }*/
-                //mPager.setCurrentItem(1)
-            // Otherwise, select the previous step.
-           // mPager.currentItem = mPager.currentItem - 1
         }
     }
 
@@ -82,9 +85,19 @@ class OnboardingsActivity : AppCompatActivity() {
 
         override fun getItem(position: Int) : Fragment {
             when (position) {
-                0 -> return OnboardingOneFragment()
-                1 -> return OnboardingTwoFragment()
-                2 -> return OnboardingThreeFragment()
+                0 -> {
+                    counts = 1
+                    tvGet.setText(getString(R.string.get_started))
+                    return OnboardingOneFragment()
+                }
+                1 ->{
+                    tvGet.setText(getString(R.string.get_started))
+                    return OnboardingTwoFragment()
+                }
+                2 -> {
+                    counts = 1
+                    return OnboardingThreeFragment()
+                }
             }
             throw IllegalStateException("position $position is invalid for this viewpager")
         }

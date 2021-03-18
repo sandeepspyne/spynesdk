@@ -3,6 +3,7 @@ package com.spyneai.adapter
 import android.annotation.SuppressLint
 import android.content.Context
 import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -12,9 +13,9 @@ import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.spyneai.extras.BeforeAfterActivity
 import com.spyneai.R
 import com.spyneai.activity.CompletedProjectsActivity
+import com.spyneai.extras.BeforeAfterActivity
 import com.spyneai.interfaces.APiService
 import com.spyneai.interfaces.RetrofitClient
 import com.spyneai.model.categories.CategoriesResponse
@@ -25,6 +26,7 @@ import com.spyneai.model.shoot.UpdateShootCategoryRequest
 import com.spyneai.needs.AppConstants
 import com.spyneai.needs.Utilities
 import com.synnapps.carouselview.ViewListener
+import kotlinx.android.synthetic.main.fragment_home.*
 import kotlinx.android.synthetic.main.fragment_home.view.*
 import kotlinx.android.synthetic.main.view_custom.view.*
 import retrofit2.Call
@@ -81,18 +83,28 @@ class HomeFragment(context: Context) : Fragment() {
         })
 
         view.tvOngoing.setOnClickListener(View.OnClickListener {
-           /* val intent = Intent(contexts, OngoingActivity::class.java)
+            /* val intent = Intent(contexts, OngoingActivity::class.java)
             startActivity(intent)*/
             Toast.makeText(
-                    contexts,
-                    "Coming Soon !",
-                    Toast.LENGTH_SHORT
+                contexts,
+                "Coming Soon !",
+                Toast.LENGTH_SHORT
             ).show()
 
         })
 
         view.carouselView!!.setPageCount(sampleImages.size);
         view.carouselView.setViewListener(viewListener);
+
+        view.tvHaveLook.setOnClickListener(View.OnClickListener {
+            startActivity(
+                Intent(
+                    Intent.ACTION_VIEW,
+                    Uri.parse("https://www.youtube.com/watch?v=LV9sgTxsIgI")
+                )
+            )
+            Log.i("Video", "Video Playing....")
+        })
     }
 
     var viewListener = object : ViewListener {
@@ -111,11 +123,13 @@ class HomeFragment(context: Context) : Fragment() {
                 override fun onBtnClick(position: Int) {
                     Log.e("position cat", position.toString())
                     if (position == 0)
-                        setShoot(categoriesResponseList,position)
+                        setShoot(categoriesResponseList, position)
                     else
-                        Toast.makeText(contexts,
-                                "Coming Soon !",
-                                Toast.LENGTH_SHORT).show()
+                        Toast.makeText(
+                            contexts,
+                            "Coming Soon !",
+                            Toast.LENGTH_SHORT
+                        ).show()
                 }
             })
 

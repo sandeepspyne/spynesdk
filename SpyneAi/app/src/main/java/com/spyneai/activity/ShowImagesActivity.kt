@@ -15,11 +15,13 @@ import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.spyneai.R
 import com.spyneai.adapter.ShowReplacedImagesAdapter
+import com.spyneai.adapter.ShowReplacedImagesInteriorAdapter
 import com.spyneai.aipack.FetchBulkResponse
 import com.spyneai.camera2.Camera2Activity
 import com.spyneai.interfaces.APiService
@@ -49,12 +51,13 @@ import java.text.SimpleDateFormat
 import java.util.*
 import kotlin.collections.ArrayList
 
-
 class ShowImagesActivity : AppCompatActivity() {
     lateinit var imageList : List<String>
     lateinit var imageListAfter : List<String>
+    lateinit var imageListInterior : List<String>
 
     private lateinit var showReplacedImagesAdapter: ShowReplacedImagesAdapter
+    private lateinit var ShowReplacedImagesInteriorAdapter: ShowReplacedImagesInteriorAdapter
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -64,8 +67,6 @@ class ShowImagesActivity : AppCompatActivity() {
     }
 
     private fun setListeners() {
-        tvYourEmailIdReplaced.setText(Utilities.getPreference(this, AppConstants.EMAIL_ID))
-
         tvViewGif.setOnClickListener(View.OnClickListener {
             val intent = Intent(
                 this,
@@ -118,6 +119,7 @@ class ShowImagesActivity : AppCompatActivity() {
     private fun setBulkImages() {
         imageList = ArrayList<String>()
         imageListAfter = ArrayList<String>()
+        imageListInterior = ArrayList<String>()
 
         showReplacedImagesAdapter = ShowReplacedImagesAdapter(this,
             imageList as ArrayList<String>,
@@ -125,6 +127,15 @@ class ShowImagesActivity : AppCompatActivity() {
             object : ShowReplacedImagesAdapter.BtnClickListener {
                 override fun onBtnClick(position: Int) {
                     showImagesDialog(position)
+                    Log.e("position preview", position.toString())
+                }
+            })
+
+        ShowReplacedImagesInteriorAdapter = ShowReplacedImagesInteriorAdapter(this,
+            imageListInterior as ArrayList<String>,
+            object : ShowReplacedImagesInteriorAdapter.BtnClickListener {
+                override fun onBtnClick(position: Int) {
+                 //   showImagesDialog(position)
                     Log.e("position preview", position.toString())
                 }
             })
@@ -137,7 +148,15 @@ class ShowImagesActivity : AppCompatActivity() {
             )
         )
 
+        rvInteriors.setLayoutManager(
+            GridLayoutManager(
+                this,
+                2
+            )
+        )
+
         rvImagesBackgroundRemoved.setAdapter(showReplacedImagesAdapter)
+        rvInteriors.setAdapter(ShowReplacedImagesInteriorAdapter)
         fetchBulkUpload()
     }
 
@@ -164,11 +183,17 @@ class ShowImagesActivity : AppCompatActivity() {
                 Utilities.hideProgressDialog()
                 if (response.isSuccessful) {
                     for (i in 0..response.body()!!.size - 1) {
-                        (imageList as ArrayList).add(response.body()!![i].input_image_url)
-                        (imageListAfter as ArrayList).add(response.body()!![i].output_image_url)
+                        if (response.body()!![i].category.equals("Exterior")) {
+                            (imageList as ArrayList).add(response.body()!![i].input_image_url)
+                            (imageListAfter as ArrayList).add(response.body()!![i].output_image_url)
+                        }
+                        else{
+                            (imageListInterior as ArrayList).add(response.body()!![i].output_image_url)
+                        }
                     }
                 }
                 showReplacedImagesAdapter.notifyDataSetChanged()
+                ShowReplacedImagesInteriorAdapter.notifyDataSetChanged()
             }
 
             override fun onFailure(call: Call<List<FetchBulkResponse>>, t: Throwable) {

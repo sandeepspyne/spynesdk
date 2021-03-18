@@ -39,7 +39,7 @@ class SplashActivity : AppCompatActivity() {
         Handler().postDelayed({
             if (Utilities.getPreference(this, AppConstants.tokenId).isNullOrEmpty())
             {
-                val intent = Intent(this, OnboardOneActivity::class.java)
+                val intent = Intent(this, OnboardingsActivity::class.java)
                 startActivity(intent)
                 finish()
             }
@@ -50,7 +50,4 @@ class SplashActivity : AppCompatActivity() {
             }
         }, 3000)
     }
-
-
-
 }

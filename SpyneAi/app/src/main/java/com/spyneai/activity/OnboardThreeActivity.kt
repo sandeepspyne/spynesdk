@@ -7,7 +7,6 @@ import android.view.View
 import androidx.appcompat.app.AppCompatDelegate
 import com.spyneai.R
 import kotlinx.android.synthetic.main.activity_onboard_one.*
-import kotlinx.android.synthetic.main.activity_onboard_one.tv_get_started
 import kotlinx.android.synthetic.main.activity_onboard_three.*
 
 class OnboardThreeActivity : AppCompatActivity() {
@@ -17,11 +16,13 @@ class OnboardThreeActivity : AppCompatActivity() {
 
         AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
 
+/*
         tv_get_started.setOnClickListener(View.OnClickListener {
             val intent = Intent(this, SignInActivity::class.java)
             startActivity(intent)
             overridePendingTransition(0, 0);
         })
+*/
 
     }
 

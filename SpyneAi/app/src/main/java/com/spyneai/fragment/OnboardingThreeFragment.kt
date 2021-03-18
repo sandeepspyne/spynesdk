@@ -30,14 +30,7 @@ class OnboardingThreeFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         // Inflate the layout for this fragment
-        val view: View = inflater!!.inflate(R.layout.fragment_onboarding_three, container, false)
-
-        tvGetStarted = view.findViewById(R.id.tv_get_started);
-        tvGetStarted.setOnClickListener(View.OnClickListener {
-            val intent = Intent(context, SignInActivity::class.java)
-            startActivity(intent)
-        })
-
+        val view: View = inflater!!.inflate(R.layout.activity_onboard_three, container, false)
         // Return the fragment view/layout
         return view
 

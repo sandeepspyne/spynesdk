@@ -1,11 +1,16 @@
 package com.spyneai.needs
 
 object AppConstants {
+    val EXPOSURES: String = "exposures"
+    val WINDOWS : String = "windows"
     val BG_ID: String = "bg_id"
     val EMAIL_ID: String = "email_id"
     val GIF_LIST: String = "gif_list"
     val ALL_FRAME_LIST: String = "all_frame_list"
     val ALL_IMAGE_LIST: String = "all_image_list"
+    val ALL_INTERIOR_IMAGE_LIST: String = "all_interior_image_list"
+    val ALL_INTERIOR_FRAME_LIST: String = "all_interior_frame_list"
+
     val GIF: String = "gif"
     val FRAME_LIST: String = "frame_list"
     val FRAME_SHOOOTS: String = "frame_shoots"
@@ -52,5 +57,4 @@ object AppConstants {
     val otp : String = "otp"
 
     val backgroundNumber = "backgroundNumber"
-
 }

@@ -9,6 +9,7 @@ data class Photos(
     val editedPhotoDisplayThumbnail : String,
     val category : String,
     val photoName : String,
+    val photoType : String,
     val folderPath : String,
     val indexNumber : Int,
     val accepted : Boolean,

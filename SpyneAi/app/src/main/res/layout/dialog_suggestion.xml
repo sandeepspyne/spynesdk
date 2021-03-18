@@ -23,6 +23,7 @@
             android:src="@mipmap/defaults" />
 
         <FrameLayout
+            android:id="@+id/flAfter"
             android:layout_width="0dp"
             android:layout_weight="1"
             android:layout_gravity="center"

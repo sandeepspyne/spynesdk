@@ -6,19 +6,20 @@ import android.os.Bundle
 import android.view.View
 import com.spyneai.R
 import com.spyneai.activity.OnboardThreeActivity
-import kotlinx.android.synthetic.main.activity_onboard_one.tv_get_started
 
 class OnboardTwoActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_onboard_two)
 
+/*
         tv_get_started.setOnClickListener(View.OnClickListener {
             val intent = Intent(this, OnboardThreeActivity::class.java)
             startActivity(intent)
             overridePendingTransition(0, 0);
 
         })
+*/
     }
 
     override fun onBackPressed() {

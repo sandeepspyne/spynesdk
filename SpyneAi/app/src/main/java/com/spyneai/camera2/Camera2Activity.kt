@@ -39,6 +39,7 @@ import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.camera.core.*
+import androidx.camera.extensions.HdrImageCaptureExtender
 import androidx.camera.lifecycle.ProcessCameraProvider
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
@@ -49,6 +50,7 @@ import com.bumptech.glide.Glide
 import com.spyneai.R
 import com.spyneai.activity.DashboardActivity
 import com.spyneai.activity.GenerateGifActivity
+import com.spyneai.adapter.InteriorFramesAdapter
 import com.spyneai.adapter.ProgressAdapter
 import com.spyneai.adapter.SubCategoriesAdapter
 import com.spyneai.interfaces.APiService
@@ -61,19 +63,19 @@ import com.spyneai.model.subcategories.Data
 import com.spyneai.needs.AppConstants
 import com.spyneai.needs.ImageFilePath
 import com.spyneai.needs.Utilities
-import kotlinx.android.synthetic.main.activity_camera.*
-import kotlinx.android.synthetic.main.activity_camera.camera_capture_button
-import kotlinx.android.synthetic.main.activity_camera.camera_overlay
-import kotlinx.android.synthetic.main.activity_camera.etSkuName
-import kotlinx.android.synthetic.main.activity_camera.imgBack
-import kotlinx.android.synthetic.main.activity_camera.imgNext
-import kotlinx.android.synthetic.main.activity_camera.imgOverlay
-import kotlinx.android.synthetic.main.activity_camera.ivGallery
-import kotlinx.android.synthetic.main.activity_camera.ivPreview
-import kotlinx.android.synthetic.main.activity_camera.rvProgress
-import kotlinx.android.synthetic.main.activity_camera.rvSubcategories
-import kotlinx.android.synthetic.main.activity_camera.tvshoot
-import kotlinx.android.synthetic.main.activity_camera.viewFinder
+import kotlinx.android.synthetic.main.activity_camera2.*
+import kotlinx.android.synthetic.main.activity_camera2.camera_capture_button
+import kotlinx.android.synthetic.main.activity_camera2.camera_overlay
+import kotlinx.android.synthetic.main.activity_camera2.etSkuName
+import kotlinx.android.synthetic.main.activity_camera2.imgBack
+import kotlinx.android.synthetic.main.activity_camera2.imgNext
+import kotlinx.android.synthetic.main.activity_camera2.imgOverlay
+import kotlinx.android.synthetic.main.activity_camera2.ivGallery
+import kotlinx.android.synthetic.main.activity_camera2.ivPreview
+import kotlinx.android.synthetic.main.activity_camera2.rvProgress
+import kotlinx.android.synthetic.main.activity_camera2.rvSubcategories
+import kotlinx.android.synthetic.main.activity_camera2.tvshoot
+import kotlinx.android.synthetic.main.activity_camera2.viewFinder
 import kotlinx.android.synthetic.main.activity_camera2.*
 import kotlinx.android.synthetic.main.activity_camera_preview.*
 import kotlinx.android.synthetic.main.dialog_spinner.*
@@ -116,6 +118,9 @@ class Camera2Activity : AppCompatActivity() , SubCategoriesAdapter.BtnClickListe
 
     lateinit var subCategoriesList : ArrayList<Data>
     lateinit var subCategoriesAdapter: SubCategoriesAdapter
+
+    lateinit var interiorFrameList : ArrayList<FrameImages>
+    lateinit var interiorFramesAdapter: InteriorFramesAdapter
     var catName : String = "Category"
 
     lateinit var skuId : String
@@ -129,6 +134,7 @@ class Camera2Activity : AppCompatActivity() , SubCategoriesAdapter.BtnClickListe
 
     var frameImage: String = ""
     lateinit var frameImageList: ArrayList<FrameImages>
+    lateinit var frameInteriorImageList: ArrayList<FrameImages>
     lateinit var frameImageListSelections : ArrayList<Int>
     lateinit var frameINteriorImageListSelections : ArrayList<Int>
 
@@ -136,6 +142,11 @@ class Camera2Activity : AppCompatActivity() , SubCategoriesAdapter.BtnClickListe
 
     public lateinit var imageFileList : ArrayList<File>
     public lateinit var imageFileListFrames : ArrayList<Int>
+
+    public lateinit var imageInteriorFileList : ArrayList<File>
+    public lateinit var imageInteriorFileListFrames : ArrayList<Int>
+
+    var interiorEnabled : Boolean = false
 
 
     @RequiresApi(Build.VERSION_CODES.M)
@@ -148,13 +159,16 @@ class Camera2Activity : AppCompatActivity() , SubCategoriesAdapter.BtnClickListe
 
         showHint()
         setSubCategories()
-        fetchSubCategories()
         setPermissions()
         setCameraActions()
         setSku()
 
         imageFileList = ArrayList<File>()
         imageFileListFrames = ArrayList<Int>()
+
+        imageInteriorFileList = ArrayList<File>()
+        imageInteriorFileListFrames = ArrayList<Int>()
+
         gifList = ArrayList<String>()
         frameImageListSelections = ArrayList<Int>()
 
@@ -256,6 +270,30 @@ class Camera2Activity : AppCompatActivity() , SubCategoriesAdapter.BtnClickListe
         )
         rvSubcategories.setLayoutManager(layoutManager)
         rvSubcategories.setAdapter(subCategoriesAdapter)
+        setInteriorFrames()
+    }
+
+    private fun setInteriorFrames() {
+        frameInteriorImageList = ArrayList<FrameImages>()
+        interiorFramesAdapter = InteriorFramesAdapter(
+                this,
+            frameInteriorImageList, pos,
+                object : InteriorFramesAdapter.BtnClickListener {
+                    override fun onBtnClick(position: Int) {
+                        Log.d("Position click", position.toString())
+                        // pos = position
+                        interiorFramesAdapter.notifyDataSetChanged()
+                    }
+                })
+        val layoutManager: RecyclerView.LayoutManager = LinearLayoutManager(
+                this,
+                LinearLayoutManager.VERTICAL,
+                false
+        )
+        rvInteriorFrames.setLayoutManager(layoutManager)
+        rvInteriorFrames.setAdapter(interiorFramesAdapter)
+
+        fetchSubCategories()
     }
 
     @RequiresApi(Build.VERSION_CODES.M)
@@ -264,44 +302,84 @@ class Camera2Activity : AppCompatActivity() , SubCategoriesAdapter.BtnClickListe
         frameImageListSelections.clear()
         if (num == 4) {
             frameImageListSelections .add(0)
-            frameImageListSelections .add(9)
+          /*  frameImageListSelections .add(9)
             frameImageListSelections .add(18)
-            frameImageListSelections .add(27)
+            frameImageListSelections .add(27)*/
+        }
+        else if(num == 8)
+        {
+            frameImageListSelections .add(0)
+            frameImageListSelections .add(5)
+            frameImageListSelections .add(8)
+            frameImageListSelections .add(14)
+            frameImageListSelections .add(18)
+            frameImageListSelections .add(22)
+            frameImageListSelections .add(26)
+            frameImageListSelections .add(32)
+        }
+        else if(num == 9)
+        {
+            frameImageListSelections .add(0)
+            frameImageListSelections .add(1)
+            frameImageListSelections .add(2)
+            frameImageListSelections .add(3)
+            frameImageListSelections .add(4)
+            frameImageListSelections .add(5)
+            frameImageListSelections .add(6)
+            frameImageListSelections .add(7)
         }
         showProgressFrames(frameNumberTemp)
     }
 
     @RequiresApi(Build.VERSION_CODES.M)
     public fun showProgressFrames(frameNumberTemp: Int) {
-        if (frameNumberTemp == 0)
-        {
-            tvshoot.setOnClickListener(View.OnClickListener {
-                showCustomSelectionDialog()
-                tvshoot.isEnabled = true
-                tvshoot.isFocusable = true
-            })
+        if (!interiorEnabled) {
+            if (frameNumberTemp == 0) {
+                tvshoot.setOnClickListener(View.OnClickListener {
+                    showCustomSelectionDialog()
+                    tvshoot.isEnabled = true
+                    tvshoot.isFocusable = true
+                })
+            } else {
+                tvshoot.isEnabled = false
+                tvshoot.isFocusable = false
+                rvSubcategories.visibility = View.GONE
+                rvInteriorFrames.visibility = View.GONE
+            }
         }
         else{
+            rvSubcategories.visibility = View.GONE
+            rvInteriorFrames.visibility = View.VISIBLE
+
             tvshoot.isEnabled = false
             tvshoot.isFocusable = false
-            rvSubcategories.visibility = View.GONE
         }
+
         frameNumber = frameImageListSelections[frameNumberTemp] +1
         totalFrames = frameImageListSelections.size
 
-        if (frameImageList.size > 0) {
-            Glide.with(this@Camera2Activity).load(
+        if (!interiorEnabled) {
+            if (frameImageList.size > 0) {
+                Glide.with(this@Camera2Activity).load(
                     AppConstants.BASE_IMAGE_URL +
                             frameImageList[frameNumber - 1].displayImage
-            ).into(ivPreview)
+                ).into(ivPreview)
 
-            Glide.with(this@Camera2Activity).load(
+                Glide.with(this@Camera2Activity).load(
                     AppConstants.BASE_IMAGE_URL +
                             frameImageList[frameNumber - 1].displayImage
-            ).into(imgOverlay)
+                ).into(imgOverlay)
 
-            ivPreview.visibility = View.VISIBLE
-            imgOverlay.visibility = View.VISIBLE
+
+                ivPreview.visibility = View.VISIBLE
+                imgOverlay.visibility = View.VISIBLE
+            }
+        }
+        else{
+            if (frameInteriorImageList.size > 0) {
+                ivPreview.visibility = View.GONE
+                imgOverlay.visibility = View.GONE
+            }
         }
 
         progressList = ArrayList<Data>()
@@ -356,16 +434,13 @@ class Camera2Activity : AppCompatActivity() , SubCategoriesAdapter.BtnClickListe
                     subCategoriesAdapter.notifyDataSetChanged()
 
                     if (Utilities.getPreference(this@Camera2Activity, AppConstants.FROM)
-                                    .equals("BA")
-                    )
+                                    .equals("BA"))
                         setProductMap(
                                 Utilities.getPreference(
                                         this@Camera2Activity,
                                         AppConstants.SHOOT_ID
                                 ).toString(), 0
                         )
-
-
                 }
             }
 
@@ -394,69 +469,6 @@ class Camera2Activity : AppCompatActivity() , SubCategoriesAdapter.BtnClickListe
 
     @RequiresApi(Build.VERSION_CODES.M)
     private fun setCameraActions() {
-
-/*
-        llCam.setOnClickListener(View.OnClickListener {
-            if (!my_toolbar2.isVisible) {
-                my_toolbar2.visibility = View.VISIBLE
-                rvSubcategories.visibility = View.VISIBLE
-                llProgress2.visibility = View.VISIBLE
-
-            */
-/*    my_toolbar2.setAlpha(0.0f)
-                rvSubcategories.setAlpha(0.0f)
-                llProgress2.setAlpha(0.0f)
-
-                my_toolbar2.animate()
-                        .translationY(my_toolbar2.getHeight().toFloat())
-                        .alpha(0.5f)
-                        .setListener(null)
-                rvSubcategories.animate()
-                        .translationY(my_toolbar2.getHeight().toFloat())
-                        .alpha(0.5f)
-                        .setListener(null)
-                llProgress2.animate()
-                        .translationY(my_toolbar2.getHeight().toFloat())
-                        .alpha(0.5f)
-                        .setListener(null)*//*
-
-            } else {
-                my_toolbar2.visibility = View.GONE
-                rvSubcategories.visibility = View.GONE
-                llProgress2.visibility = View.GONE
-               */
-/* my_toolbar2.animate()
-                        .translationY(0F)
-                        .alpha(0.0f)
-                        .setListener(object : AnimatorListenerAdapter() {
-                            override fun onAnimationEnd(animation: Animator?) {
-                                super.onAnimationEnd(animation)
-                                my_toolbar2.setVisibility(View.GONE)
-                            }
-                        })
-                rvSubcategories.animate()
-                        .translationY(0F)
-                        .alpha(0.0f)
-                        .setListener(object : AnimatorListenerAdapter() {
-                            override fun onAnimationEnd(animation: Animator?) {
-                                super.onAnimationEnd(animation)
-                                rvSubcategories.setVisibility(View.GONE)
-                            }
-                        })
-                llProgress2.animate()
-                        .translationY(0F)
-                        .alpha(0.0f)
-                        .setListener(object : AnimatorListenerAdapter() {
-                            override fun onAnimationEnd(animation: Animator?) {
-                                super.onAnimationEnd(animation)
-                                llProgress2.setVisibility(View.GONE)
-                            }
-                        })*//*
-
-            }
-        })
-*/
-
         imgNext.setOnClickListener(View.OnClickListener {
             if (frameNumber == 1) {
                 if (Utilities.isNetworkAvailable(this)) {
@@ -568,26 +580,13 @@ class Camera2Activity : AppCompatActivity() , SubCategoriesAdapter.BtnClickListe
                 ).show()
         })
 
+
         ivGallery.setOnClickListener(View.OnClickListener {
             Toast.makeText(
                     applicationContext,
                     "Coming Soon...",
                     Toast.LENGTH_SHORT
             ).show()
-
-            /* val checkSelfPermission = ContextCompat.checkSelfPermission(
-                 this,
-                 android.Manifest.permission.WRITE_EXTERNAL_STORAGE
-             )
-             if (checkSelfPermission != PackageManager.PERMISSION_GRANTED) {
-                 //Requests permissions to be granted to this application at runtime
-                 ActivityCompat.requestPermissions(
-                     this,
-                     arrayOf(android.Manifest.permission.WRITE_EXTERNAL_STORAGE), 1
-                 )
-             } else {
-                 defaultSet()
-             }*/
         })
 
 
@@ -696,6 +695,7 @@ class Camera2Activity : AppCompatActivity() , SubCategoriesAdapter.BtnClickListe
                     display!!.rotation
             ).build()
 
+
             val preview = Preview.Builder()
                     //.setTargetResolution(Size(1280, 720))
                     .build()
@@ -731,7 +731,6 @@ class Camera2Activity : AppCompatActivity() , SubCategoriesAdapter.BtnClickListe
             }
 
         }, ContextCompat.getMainExecutor(this))
-
 
     }
 
@@ -832,18 +831,25 @@ class Camera2Activity : AppCompatActivity() , SubCategoriesAdapter.BtnClickListe
         window.setLayout(WindowManager.LayoutParams.WRAP_CONTENT,
                 WindowManager.LayoutParams.WRAP_CONTENT)
 
+        val flAfter : FrameLayout = dialog.findViewById(R.id.flAfter)
         val ivClickedImage : ImageView = dialog.findViewById(R.id.ivClickedImage)
         val ivClickedImageover : ImageView = dialog.findViewById(R.id.ivClickedImageover)
         val ivClickedImageoverlay : ImageView = dialog.findViewById(R.id.ivClickedImageoverlay)
         val tvReshoot : TextView = dialog.findViewById(R.id.tvReshoot)
         val tvConfirm : TextView = dialog.findViewById(R.id.tvConfirm)
 
-        ivClickedImage.setImageBitmap(rotatedBitmap)
-        ivClickedImageover.setImageBitmap(rotatedBitmap)
-        Glide.with(this@Camera2Activity).load(
+        if (!interiorEnabled) {
+            ivClickedImage.setImageBitmap(rotatedBitmap)
+            ivClickedImageover.setImageBitmap(rotatedBitmap)
+            Glide.with(this@Camera2Activity).load(
                 AppConstants.BASE_IMAGE_URL + frameImageList[frameNumber - 1].displayImage
-        ).into(ivClickedImageoverlay)
-
+            ).into(ivClickedImageoverlay)
+        }
+        else{
+            ivClickedImage.setImageBitmap(rotatedBitmap)
+            ivClickedImageover.visibility = View.GONE
+            flAfter.visibility = View.GONE
+        }
 
         tvReshoot.setOnClickListener(View.OnClickListener {
             dialog.dismiss()
@@ -853,31 +859,52 @@ class Camera2Activity : AppCompatActivity() , SubCategoriesAdapter.BtnClickListe
 
         tvConfirm.setOnClickListener(View.OnClickListener {
             dialog.dismiss()
-            imageFileList.add(photoFile!!)
-            imageFileListFrames.add(frameImageList[frameImageListSelections[frameNumberTemp]].frameNumber)
-            if (frameNumberTemp < frameImageListSelections.size - 1) {
-                showProgressFrames(++frameNumberTemp)
+            if (!interiorEnabled) {
+                rvSubcategories.visibility = View.VISIBLE
 
-                camera_capture_button.isEnabled = true
-                camera_capture_button.isFocusable = true
+                imageFileList.add(photoFile!!)
+                imageFileListFrames.add(frameImageList[frameImageListSelections[frameNumberTemp]].frameNumber)
+                if (frameNumberTemp < frameImageListSelections.size - 1) {
+                    showProgressFrames(++frameNumberTemp)
 
-            } else {
-                val intent = Intent(
+                    camera_capture_button.isEnabled = true
+                    camera_capture_button.isFocusable = true
+
+                } else {
+                    showInteriorDialog()
+                }
+            }
+
+            else{
+                rvSubcategories.visibility = View.GONE
+
+                imageInteriorFileList.add(photoFile!!)
+                imageInteriorFileListFrames.add(frameInteriorImageList[frameImageListSelections[frameNumberTemp]].frameNumber)
+                if (frameNumberTemp < frameImageListSelections.size - 1) {
+                    showProgressFrames(++frameNumberTemp)
+                    camera_capture_button.isEnabled = true
+                    camera_capture_button.isFocusable = true
+                }
+                else{
+                    val intent = Intent(
                         this,
                         GenerateGifActivity::class.java
-                )
+                    )
 
-                intent.putExtra(AppConstants.ALL_IMAGE_LIST, imageFileList)
-                intent.putExtra(AppConstants.ALL_FRAME_LIST, imageFileListFrames)
-                intent.putExtra(AppConstants.ALL_FRAME_LIST, imageFileListFrames)
-                intent.putExtra(AppConstants.GIF_LIST, gifList)
+                    intent.putExtra(AppConstants.ALL_IMAGE_LIST, imageFileList)
+                    intent.putExtra(AppConstants.ALL_FRAME_LIST, imageFileListFrames)
 
-                Utilities.savePrefrence(this, AppConstants.SKU_NAME, skuName)
-                Log.e("Camera  SKU",
+                    intent.putExtra(AppConstants.ALL_INTERIOR_IMAGE_LIST, imageInteriorFileList)
+                    intent.putExtra(AppConstants.ALL_INTERIOR_FRAME_LIST, imageInteriorFileListFrames)
+                    intent.putExtra(AppConstants.GIF_LIST, gifList)
+
+                    Utilities.savePrefrence(this, AppConstants.SKU_NAME, skuName)
+                    Log.e("Camera  SKU",
                         Utilities.getPreference(this,
-                                AppConstants.SKU_NAME)!!)
-                startActivity(intent)
-                finish()
+                            AppConstants.SKU_NAME)!!)
+                    startActivity(intent)
+                    finish()
+                }
             }
         })
         dialog.show()
@@ -1084,8 +1111,37 @@ class Camera2Activity : AppCompatActivity() , SubCategoriesAdapter.BtnClickListe
                            totalFrames = response.body()!!.payload.data.frames.totalFrames
    */
                     frameImageList = ArrayList<FrameImages>()
+                    frameInteriorImageList = ArrayList<FrameImages>()
+                    interiorFrameList = ArrayList<FrameImages>()
+
                     frameImageList.clear()
+                    frameInteriorImageList.clear()
+
                     frameImageList.addAll(response.body()?.payload!!.data.frames.frameImages)
+                    frameInteriorImageList.addAll(response.body()?.payload!!.data.frames.interiorImages)
+                    interiorFrameList.addAll(response.body()?.payload!!.data.frames.interiorImages)
+
+                    interiorFramesAdapter = InteriorFramesAdapter(
+                        this@Camera2Activity,
+                        frameInteriorImageList, pos,
+                        object : InteriorFramesAdapter.BtnClickListener {
+                            override fun onBtnClick(position: Int) {
+                                Log.d("Position click", position.toString())
+                                // pos = position
+                                interiorFramesAdapter.notifyDataSetChanged()
+                            }
+                        })
+                    val layoutManager: RecyclerView.LayoutManager = LinearLayoutManager(
+                        this@Camera2Activity,
+                        LinearLayoutManager.VERTICAL,
+                        false
+                    )
+                    rvInteriorFrames.setLayoutManager(layoutManager)
+                    rvInteriorFrames.setAdapter(interiorFramesAdapter)
+
+
+                    Log.e("Interior List ",frameInteriorImageList.toString())
+                    interiorFramesAdapter.notifyDataSetChanged()
 
                     Glide.with(this@Camera2Activity).load(
                         AppConstants.BASE_IMAGE_URL +
@@ -1339,7 +1395,7 @@ class Camera2Activity : AppCompatActivity() , SubCategoriesAdapter.BtnClickListe
         val tvProceed : TextView = dialog.findViewById(R.id.tvProceed)
         val npShoots : NumberPicker = dialog.findViewById(R.id.npShoots)
 
-        val valuesShoots = arrayOf("4 Angles"/*, "8 Angles", "12 Angles", "24 Angles"*/)
+        val valuesShoots = arrayOf("4 Angles","8 Angles"/*, "8 Angles", "12 Angles", "24 Angles"*/)
 
         npShoots.setMinValue(0); //from array first value
         //Specify the maximum value/number of NumberPicker
@@ -1359,41 +1415,16 @@ class Camera2Activity : AppCompatActivity() , SubCategoriesAdapter.BtnClickListe
                 );
                 //   setNumberPickerTextColor(npShoots, getColor(R.color.primary))
                 setProgressFrame(4)
-            } /*else if (valuesShoots[newVal].equals("8 Angles")) {
+            }
+            else if (valuesShoots[newVal].equals("8 Angles")) {
                 Utilities.savePrefrence(
-                        this@Camera2Activity,
-                        AppConstants.FRAME_SHOOOTS,
-                        "8"
+                    this@Camera2Activity,
+                    AppConstants.FRAME_SHOOOTS,
+                    "8"
                 );
-                //setNumberPickerTextColor(npShoots, getColor(R.color.primary))
+                //   setNumberPickerTextColor(npShoots, getColor(R.color.primary))
                 setProgressFrame(8)
-            } else if (valuesShoots[newVal].equals("12 Angles")) {
-                setProgressFrame(12)
-                Utilities.savePrefrence(
-                        this@Camera2Activity,
-                        AppConstants.FRAME_SHOOOTS,
-                        "12"
-                );
-            } else if (valuesShoots[newVal].equals("24 Angles")) {
-                setProgressFrame(24)
-                Utilities.savePrefrence(
-                        this@Camera2Activity,
-                        AppConstants.FRAME_SHOOOTS,
-                        "24"
-                );
-//                setNumberPickerTextColor(npShoots, getColor(R.color.primary))
-
-            }*/ /*else if (valuesShoots[newVal].equals("36 Angles")) {
-                Utilities.savePrefrence(
-                        this@Camera2Activity,
-                        AppConstants.FRAME_SHOOOTS,
-                        "36"
-                );
-                setNumberPickerTextColor(npShoots, getColor(R.color.primary))
-
-                setProgressFrame(36)
-            }*/
-
+            }
         })
 
         Log.e(
@@ -1406,6 +1437,7 @@ class Camera2Activity : AppCompatActivity() , SubCategoriesAdapter.BtnClickListe
         })
         dialog.show()
     }
+
     fun setNumberPickerTextColor(numberPicker: NumberPicker, color: Int) {
         try {
             val selectorWheelPaintField: Field = numberPicker.javaClass
@@ -1428,6 +1460,55 @@ class Camera2Activity : AppCompatActivity() , SubCategoriesAdapter.BtnClickListe
         }
         numberPicker.invalidate()
     }
+
+    @RequiresApi(Build.VERSION_CODES.M)
+    fun showInteriorDialog() {
+        val dialog = Dialog(this)
+        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE)
+        dialog.setCancelable(false)
+        dialog.setContentView(R.layout.dialog_interior_hint)
+        val window: Window = dialog.getWindow()!!
+        window.setLayout(WindowManager.LayoutParams.WRAP_CONTENT,
+            WindowManager.LayoutParams.WRAP_CONTENT)
+
+        val tvSkip : TextView = dialog.findViewById(R.id.tvSkip)
+        val tvShootNowInterior : TextView = dialog.findViewById(R.id.tvShootNowInterior)
+
+        tvSkip.setOnClickListener(View.OnClickListener {
+            val intent = Intent(
+                this,
+                GenerateGifActivity::class.java
+            )
+
+            intent.putExtra(AppConstants.ALL_IMAGE_LIST, imageFileList)
+            intent.putExtra(AppConstants.ALL_FRAME_LIST, imageFileListFrames)
+            intent.putExtra(AppConstants.ALL_INTERIOR_IMAGE_LIST, imageInteriorFileList)
+            intent.putExtra(AppConstants.ALL_INTERIOR_FRAME_LIST, imageInteriorFileListFrames)
+            intent.putExtra(AppConstants.GIF_LIST, gifList)
+
+            Utilities.savePrefrence(this, AppConstants.SKU_NAME, skuName)
+            Log.e("Camera  SKU",
+                Utilities.getPreference(this,
+                    AppConstants.SKU_NAME)!!)
+            startActivity(intent)
+            finish()
+            dialog.dismiss()
+        })
+
+        tvShootNowInterior.setOnClickListener(View.OnClickListener {
+            camera_capture_button.isEnabled = true
+            camera_capture_button.isFocusable = true
+            interiorEnabled = true
+            frameNumberTemp = 0
+            setProgressFrame(9)
+            rvSubcategories.visibility = View.GONE
+            rvInteriorFrames.visibility = View.VISIBLE
+            dialog.dismiss()
+        })
+
+        dialog.show()
+    }
+
 
     fun showExitDialog( ) {
         val dialog = Dialog(this)

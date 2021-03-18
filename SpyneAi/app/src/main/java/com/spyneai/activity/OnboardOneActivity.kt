@@ -19,11 +19,13 @@ class OnboardOneActivity : AppCompatActivity() {
 
        // startAnim()
 
+/*
         tv_get_started.setOnClickListener(View.OnClickListener {
             val intent = Intent(this, OnboardTwoActivity::class.java)
             startActivity(intent)
             overridePendingTransition(0, 0);
         })
+*/
 
     }
 
