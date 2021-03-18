@@ -36,7 +36,8 @@ android {
             shrinkResources false
 //            minifyEnabled true
 //            ext.enableCrashlytics = false
-            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+//            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
             versionNameSuffix ".debug"
             applicationIdSuffix ".debug"
         }

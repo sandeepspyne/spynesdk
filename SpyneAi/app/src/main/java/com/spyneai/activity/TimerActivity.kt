@@ -429,19 +429,19 @@ class TimerActivity : AppCompatActivity() {
         {
             if (Utilities.getPreference(this, AppConstants.FRAME_SHOOOTS).equals("4"))
             {
-                CountDownTimer(420000)
+                CountDownTimer(480000)
             }
             else if (Utilities.getPreference(this, AppConstants.FRAME_SHOOOTS).equals("8"))
             {
-                CountDownTimer(420000 * 2)
+                CountDownTimer(480000 * 2)
             }
             else if (Utilities.getPreference(this, AppConstants.FRAME_SHOOOTS).equals("12"))
             {
-                CountDownTimer(420000 * 3)
+                CountDownTimer(480000 * 3)
             }
             else if (Utilities.getPreference(this, AppConstants.FRAME_SHOOOTS).equals("24"))
             {
-                CountDownTimer(420000 * 4)
+                CountDownTimer(480000 * 4)
 
             }   else if (Utilities.getPreference(this, AppConstants.FRAME_SHOOOTS).equals("36"))
             {

@@ -879,11 +879,9 @@ class Camera2Activity : AppCompatActivity() , SubCategoriesAdapter.BtnClickListe
             } else if (catName.equals("Automobiles")) {
                 val intent = Intent(
                         this,
-                        GenerateGifActivity::class.java
-                )
+                        GenerateGifActivity::class.java)
 
                 intent.putExtra(AppConstants.ALL_IMAGE_LIST, imageFileList)
-                intent.putExtra(AppConstants.ALL_FRAME_LIST, imageFileListFrames)
                 intent.putExtra(AppConstants.ALL_FRAME_LIST, imageFileListFrames)
                 intent.putExtra(AppConstants.GIF_LIST, gifList)
                 intent.putExtra(AppConstants.CATEGORY_NAME, catName)
@@ -902,7 +900,6 @@ class Camera2Activity : AppCompatActivity() , SubCategoriesAdapter.BtnClickListe
 
                 intent.putExtra(AppConstants.ALL_IMAGE_LIST, imageFileList)
                 intent.putExtra(AppConstants.CATEGORY_NAME, catName)
-                intent.putExtra(AppConstants.ALL_FRAME_LIST, imageFileListFrames)
                 intent.putExtra(AppConstants.ALL_FRAME_LIST, imageFileListFrames)
                 intent.putExtra(AppConstants.GIF_LIST, gifList)
                 intent.putExtra(AppConstants.CATEGORY_NAME, catName)
