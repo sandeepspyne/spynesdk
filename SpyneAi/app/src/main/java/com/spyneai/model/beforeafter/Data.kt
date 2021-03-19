@@ -11,13 +11,21 @@ For support, please feel free to contact me at https://www.linkedin.com/in/syeda
 
 package com.spyneai.model.beforeafter
 
-data class Data (
+import com.google.gson.annotations.SerializedName
 
+data class Data (
+	@SerializedName("id")
 	val id : Int,
+	@SerializedName("createdAt")
 	val createdAt : String,
+	@SerializedName("updatedAt")
 	val updatedAt : String,
+	@SerializedName("catId")
 	val catId : String,
+	@SerializedName("beforeThumb")
 	val beforeThumb : String,
+	@SerializedName("afterThumb")
 	val afterThumb : String,
+	@SerializedName("active")
 	val active : Boolean
 )

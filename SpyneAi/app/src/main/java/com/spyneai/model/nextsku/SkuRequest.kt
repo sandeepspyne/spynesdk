@@ -4,7 +4,10 @@ import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
 
 data class SkuRequest(
-         val displayName: String,
-         val shootId: String,
-         val skuId: String
+    @SerializedName("displayName")
+    val displayName: String,
+    @SerializedName("shootId")
+    val shootId: String,
+    @SerializedName("skuId")
+    val skuId: String
 )

@@ -44,6 +44,12 @@ interface APiService {
     @POST("user/registeration")
     fun loginEmailApp(@Body loginRequest: LoginRequest?): Call<LoginResponse>?
 
+    @GET("user/registeration")
+    fun loginEmailApp(
+        @Query("emailId") emailId: String?,
+        @Query("type") type: String?
+    ): Call<LoginResponse>?
+
     @POST("user/phone")
     fun loginApp(@Body loginRequest: LoginRequest?): Call<LoginResponse>?
 

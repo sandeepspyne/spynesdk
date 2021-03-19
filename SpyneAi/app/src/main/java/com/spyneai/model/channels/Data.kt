@@ -11,12 +11,19 @@ For support, please feel free to contact me at https://www.linkedin.com/in/syeda
 
 package com.spyneai.model.channels
 
-data class Data (
+import com.google.gson.annotations.SerializedName
 
+data class Data (
+	@SerializedName("prodId")
 	val prodId : String,
+	@SerializedName("markId")
 	val markId : String,
+	@SerializedName("displayName")
 	val displayName : String,
+	@SerializedName("displayThumbnail")
 	val displayThumbnail : String,
+	@SerializedName("def")
 	val def : Boolean,
+	@SerializedName("description")
 	val description : String
 )

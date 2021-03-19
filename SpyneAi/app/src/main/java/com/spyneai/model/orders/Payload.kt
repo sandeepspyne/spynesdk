@@ -11,8 +11,10 @@ For support, please feel free to contact me at https://www.linkedin.com/in/syeda
 
 package com.spyneai.model.orders
 
+import com.google.gson.annotations.SerializedName
+
 
 data class Payload (
-
+	@SerializedName("data")
 	val data : Data
 )

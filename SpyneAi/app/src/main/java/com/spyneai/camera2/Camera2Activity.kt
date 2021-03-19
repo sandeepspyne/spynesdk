@@ -283,6 +283,7 @@ class Camera2Activity : AppCompatActivity() , SubCategoriesAdapter.BtnClickListe
                         Log.d("Position click", position.toString())
                         // pos = position
                         interiorFramesAdapter.notifyDataSetChanged()
+                        rvInteriorFrames.scrollToPosition(position)
                     }
                 })
         val layoutManager: RecyclerView.LayoutManager = LinearLayoutManager(
@@ -302,9 +303,9 @@ class Camera2Activity : AppCompatActivity() , SubCategoriesAdapter.BtnClickListe
         frameImageListSelections.clear()
         if (num == 4) {
             frameImageListSelections .add(0)
-          /*  frameImageListSelections .add(9)
+            frameImageListSelections .add(9)
             frameImageListSelections .add(18)
-            frameImageListSelections .add(27)*/
+            frameImageListSelections .add(27)
         }
         else if(num == 8)
         {
@@ -353,6 +354,31 @@ class Camera2Activity : AppCompatActivity() , SubCategoriesAdapter.BtnClickListe
 
             tvshoot.isEnabled = false
             tvshoot.isFocusable = false
+
+            //start
+            interiorFramesAdapter = InteriorFramesAdapter(
+                this,
+                frameInteriorImageList, frameNumberTemp,
+                object : InteriorFramesAdapter.BtnClickListener {
+                    override fun onBtnClick(position: Int) {
+                        Log.d("Position click", position.toString())
+                        // pos = position
+                        interiorFramesAdapter.notifyDataSetChanged()
+                    }
+                })
+            val layoutManager: RecyclerView.LayoutManager = LinearLayoutManager(
+                this,
+                LinearLayoutManager.VERTICAL,
+                false
+            )
+            rvInteriorFrames.setLayoutManager(layoutManager)
+            rvInteriorFrames.setAdapter(interiorFramesAdapter)
+            rvInteriorFrames.scrollToPosition(frameNumberTemp)
+
+            interiorFramesAdapter.notifyDataSetChanged()
+
+
+            //end
         }
 
         frameNumber = frameImageListSelections[frameNumberTemp] +1
@@ -1128,7 +1154,10 @@ class Camera2Activity : AppCompatActivity() , SubCategoriesAdapter.BtnClickListe
                             override fun onBtnClick(position: Int) {
                                 Log.d("Position click", position.toString())
                                 // pos = position
+
                                 interiorFramesAdapter.notifyDataSetChanged()
+                                rvInteriorFrames.scrollToPosition(position)
+
                             }
                         })
                     val layoutManager: RecyclerView.LayoutManager = LinearLayoutManager(

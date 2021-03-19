@@ -127,7 +127,8 @@ class SignInActivity : AppCompatActivity() {
         val loginRequest = LoginRequest(etEmail.text.toString());
 
         val request = RetrofitClient.buildService(APiService::class.java)
-        val call = request.loginEmailApp(loginRequest)
+        val call = request.loginEmailApp(etEmail.text.toString(),"value")
+
 
         call?.enqueue(object : Callback<LoginResponse> {
             override fun onResponse(call: Call<LoginResponse>, response: Response<LoginResponse>) {
@@ -148,6 +149,20 @@ class SignInActivity : AppCompatActivity() {
                         intent.putExtra(AppConstants.tokenId, response.body()!!.header.tokenId)
                         startActivity(intent)
                     }
+                    else{
+                        Toast.makeText(
+                            applicationContext,
+                            "Unable to send OTP, Please try again later.",
+                            Toast.LENGTH_SHORT
+                        ).show()
+                    }
+                }
+                else{
+                    Toast.makeText(
+                        applicationContext,
+                        "Server not responding!, Please try again later",
+                        Toast.LENGTH_SHORT
+                    ).show()
                 }
             }
 

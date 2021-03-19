@@ -12,9 +12,10 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 
 For support, please feel free to contact me at https://www.linkedin.com/in/syedabsar */
 
+import com.google.gson.annotations.SerializedName
 import com.spyneai.model.categories.Data
 
 data class Payload (
-
+	@SerializedName("data")
 	val data : List<Data>
 )

@@ -11,7 +11,9 @@ For support, please feel free to contact me at https://www.linkedin.com/in/syeda
 
 package com.spyneai.model.beforeafter
 
-data class Payload (
+import com.google.gson.annotations.SerializedName
 
+data class Payload (
+	@SerializedName("data")
 	val data : List<Data>
 )
