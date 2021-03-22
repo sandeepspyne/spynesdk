@@ -26,6 +26,19 @@ android {
         release {
             minifyEnabled true
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+            firebaseCrashlytics {
+                // If you don't need crash reporting for your debug build,
+                // you can speed up your build by disabling mapping file uploading.
+                mappingFileUploadEnabled false
+            }
+        }
+        debug {
+            shrinkResources false
+//            minifyEnabled true
+//            ext.enableCrashlytics = false
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+            versionNameSuffix ".debug"
+            applicationIdSuffix ".debug"
         }
     }
     compileOptions {

@@ -18,7 +18,6 @@ import com.spyneai.interfaces.RetrofitClient
 import com.spyneai.model.channel.ChannelUpdateRequest
 import com.spyneai.model.channel.ChannelsResponse
 import com.spyneai.model.channels.Data
-import com.spyneai.model.marketupdate.MarketPlace
 import com.spyneai.model.marketupdate.ShootMarketUpdateRequest
 import com.spyneai.needs.AppConstants
 import com.spyneai.needs.Utilities

@@ -3,25 +3,13 @@ package com.spyneai.activity
 import android.content.Intent
 import android.os.Bundle
 import android.os.Handler
-import android.util.Log
-import android.view.View
-import android.view.ViewGroup
 import android.view.WindowManager
-import android.widget.Button
-import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AppCompatDelegate
-import com.google.firebase.installations.Utils
+import com.google.firebase.crashlytics.FirebaseCrashlytics
 import com.spyneai.R
-import com.spyneai.interfaces.APiService
-import com.spyneai.interfaces.RetrofitClientSpyneAi
-import com.spyneai.model.otp.OtpResponse
 import com.spyneai.needs.AppConstants
 import com.spyneai.needs.Utilities
-import kotlinx.android.synthetic.main.activity_splash.*
-import retrofit2.Call
-import retrofit2.Callback
-import retrofit2.Response
 
 class SplashActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -31,6 +19,9 @@ class SplashActivity : AppCompatActivity() {
 
         setContentView(R.layout.activity_splash)
         AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
+
+        FirebaseCrashlytics.getInstance().setCrashlyticsCollectionEnabled(true);
+
         setSplash();
     }
 

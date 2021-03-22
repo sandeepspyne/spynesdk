@@ -16,7 +16,6 @@ import android.widget.Toast
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.engine.DiskCacheStrategy
-import com.spyneai.BuildConfig
 import com.spyneai.R
 import com.spyneai.activity.DashboardActivity
 import com.spyneai.adapter.ShowReplacedImagesAdapter

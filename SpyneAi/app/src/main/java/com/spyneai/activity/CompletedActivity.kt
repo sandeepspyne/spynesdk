@@ -2,17 +2,14 @@ package com.spyneai.activity
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.util.Log
 import android.view.View
 import android.widget.Toast
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.spyneai.R
-import com.spyneai.adapter.CategoriesDashboardAdapter
 import com.spyneai.adapter.DashboardResponseAdapter
 import com.spyneai.interfaces.APiService
 import com.spyneai.interfaces.RetrofitClient
-import com.spyneai.model.categories.CategoriesResponse
 import com.spyneai.model.dashboard.DashboardResponse
 import com.spyneai.model.dashboard.Data
 import com.spyneai.needs.AppConstants

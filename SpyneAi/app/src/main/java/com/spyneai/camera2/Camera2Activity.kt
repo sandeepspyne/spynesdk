@@ -39,7 +39,6 @@ import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.camera.core.*
-import androidx.camera.extensions.HdrImageCaptureExtender
 import androidx.camera.lifecycle.ProcessCameraProvider
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
@@ -76,7 +75,6 @@ import kotlinx.android.synthetic.main.activity_camera2.rvProgress
 import kotlinx.android.synthetic.main.activity_camera2.rvSubcategories
 import kotlinx.android.synthetic.main.activity_camera2.tvshoot
 import kotlinx.android.synthetic.main.activity_camera2.viewFinder
-import kotlinx.android.synthetic.main.activity_camera2.*
 import kotlinx.android.synthetic.main.activity_camera_preview.*
 import kotlinx.android.synthetic.main.dialog_spinner.*
 import retrofit2.Call
@@ -302,9 +300,9 @@ class Camera2Activity : AppCompatActivity() , SubCategoriesAdapter.BtnClickListe
         frameImageListSelections.clear()
         if (num == 4) {
             frameImageListSelections .add(0)
-          /*  frameImageListSelections .add(9)
+            frameImageListSelections .add(9)
             frameImageListSelections .add(18)
-            frameImageListSelections .add(27)*/
+            frameImageListSelections .add(27)
         }
         else if(num == 8)
         {

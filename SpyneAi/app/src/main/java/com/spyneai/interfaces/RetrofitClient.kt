@@ -9,6 +9,7 @@ import java.util.concurrent.TimeUnit
 object RetrofitClient {
 
     private const val BASE_URL = "https://api.spyne.ai/"
+    private const val STAGING_URL = "http://35.240.189.131/api/"
 
     private val client = OkHttpClient.Builder()
             .readTimeout(10, TimeUnit.MINUTES)
@@ -17,7 +18,7 @@ object RetrofitClient {
             .build()
 
     private val retrofit = Retrofit.Builder()
-            .baseUrl(BASE_URL)
+            .baseUrl(STAGING_URL)
             .client(client)
             .addConverterFactory(GsonConverterFactory.create())
             .build()

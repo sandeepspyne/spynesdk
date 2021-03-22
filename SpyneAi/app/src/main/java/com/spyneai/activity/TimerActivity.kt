@@ -780,6 +780,8 @@ class TimerActivity : AppCompatActivity() {
                         if (countGif < photoList.size ) {
                             Log.e("countGif", countGif.toString())
                             bulkUpload(countGif)
+//                            (imageListWaterMark as ArrayList).add(response.body()!!.watermark_image)
+
                         } else if (photoListInteriors.size > 0)
                         {
                             countGif = 0
@@ -1086,7 +1088,7 @@ class TimerActivity : AppCompatActivity() {
             val request = RetrofitClientSpyneAi.buildService(APiService::class.java)
 
             val sendEmailRequest = SendEmailRequest(
-                imageList, imageListAfter,image gifLink,
+                imageList, imageListAfter, gifLink,
                 Utilities.getPreference(this, AppConstants.EMAIL_ID).toString()
             )
             val call = request.sendEmailAll(sendEmailRequest)

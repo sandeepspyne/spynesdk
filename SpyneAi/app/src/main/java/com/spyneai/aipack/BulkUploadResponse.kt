@@ -5,4 +5,5 @@ data class BulkUploadResponse(
     val output_image : String,
     val status : Int,
     val time_taken : Double,
+    val watermark_image : String
 )

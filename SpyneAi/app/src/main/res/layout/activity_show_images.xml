@@ -164,6 +164,11 @@
             android:textSize="@dimen/sp_20" />
 
         <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:orientation="vertical">
+        <LinearLayout
             android:id="@+id/tvRequestWappImages"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -195,6 +200,69 @@
                 android:visibility="invisible"
                 android:src="@mipmap/wapp"/>
 
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/llDownloadHighQuality"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:padding="@dimen/dp_10"
+            android:layout_marginBottom="@dimen/dp_30"
+            android:background="@drawable/bg_downloadall"
+            android:gravity="center">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_gravity="center"
+                android:fontFamily="@font/medium"
+                android:padding="@dimen/dp_5"
+                android:text="@string/download_high_quality"
+                android:textAllCaps="false"
+                android:textColor="@color/white"
+                android:textSize="@dimen/sp_10" />
+
+            <TextView
+                android:id="@+id/tvHighQualityCount"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_gravity="center"
+                android:layout_marginLeft="@dimen/dp_5"
+                android:fontFamily="@font/medium"
+                android:padding="@dimen/dp_5"
+                android:hint="5"
+                android:textColor="@color/white"
+                android:textSize="@dimen/sp_10" />
+
+
+        </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/llDownloadWithWatermark"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:padding="@dimen/dp_10"
+                android:orientation="horizontal"
+                android:layout_marginBottom="@dimen/dp_30"
+                android:background="@drawable/bg_downloadall"
+                android:gravity="center">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:layout_gravity="center"
+                    android:fontFamily="@font/medium"
+                    android:padding="@dimen/dp_5"
+                    android:text="@string/download_with_watermark"
+                    android:textAllCaps="false"
+                    android:textColor="@color/white"
+                    android:textSize="@dimen/sp_10" />
+
+
+            </LinearLayout>
 
         </LinearLayout>
 

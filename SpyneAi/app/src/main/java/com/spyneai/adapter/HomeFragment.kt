@@ -26,7 +26,6 @@ import com.spyneai.model.shoot.UpdateShootCategoryRequest
 import com.spyneai.needs.AppConstants
 import com.spyneai.needs.Utilities
 import com.synnapps.carouselview.ViewListener
-import kotlinx.android.synthetic.main.fragment_home.*
 import kotlinx.android.synthetic.main.fragment_home.view.*
 import kotlinx.android.synthetic.main.view_custom.view.*
 import retrofit2.Call
