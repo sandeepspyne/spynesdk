@@ -31,7 +31,6 @@ public class InteriorFramesAdapter(val context: Context,
 
 
     class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
-        val llIFrameImages: LinearLayout = view.findViewById(R.id.llIFrameImages)
         val cardIFrameImages: CardView = view.findViewById(R.id.cardIFrameImages)
         val ivIFrameImages: ImageView = view.findViewById(R.id.ivIFrameImages)
         val tvIFrameImages: TextView = view.findViewById(R.id.tvIFrameImages)
@@ -70,10 +69,11 @@ public class InteriorFramesAdapter(val context: Context,
 
         mClickListener = btnlistener
         if (position == pos)
-            viewHolder.llIFrameImages.setBackgroundResource(R.drawable.bg_selected)
+            viewHolder.cardIFrameImages.setBackgroundResource(R.drawable.bg_selected)
         else
-            viewHolder.llIFrameImages.setBackgroundResource(R.drawable.bg_channel)
+            viewHolder.cardIFrameImages.setBackgroundResource(R.drawable.bg_channel)
 
+/*
         viewHolder.llIFrameImages.setOnClickListener(View.OnClickListener {
             if (mClickListener != null)
                 mClickListener?.onBtnClick(position)
@@ -81,6 +81,7 @@ public class InteriorFramesAdapter(val context: Context,
 
             viewHolder.llIFrameImages.setBackgroundResource(R.drawable.bg_selected)
         })
+*/
 
     }
 

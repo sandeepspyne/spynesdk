@@ -1,6 +1,8 @@
 package com.spyneai.model.shoot
 
-data class Payload (
+import com.google.gson.annotations.SerializedName
 
+data class Payload (
+	@SerializedName("data")
 	val data : Data
 )

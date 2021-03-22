@@ -11,9 +11,14 @@ For support, please feel free to contact me at https://www.linkedin.com/in/syeda
 
 
 package com.spyneai.model.orders
-data class MarketPlace (
 
+import com.google.gson.annotations.SerializedName
+
+data class MarketPlace (
+	@SerializedName("markId")
 	val markId : String,
+	@SerializedName("displayName")
 	val displayName : String,
+	@SerializedName("displayThumbnail")
 	val displayThumbnail : String
 )

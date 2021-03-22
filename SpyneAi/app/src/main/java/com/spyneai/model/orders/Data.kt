@@ -12,10 +12,15 @@ For support, please feel free to contact me at https://www.linkedin.com/in/syeda
 
 package com.spyneai.model.orders
 
-data class Data (
+import com.google.gson.annotations.SerializedName
 
+data class Data (
+	@SerializedName("ongoing")
 	val ongoing : List<Ongoing>,
+	@SerializedName("submitted")
 	val submitted : List<Submitted>,
+	@SerializedName("review")
 	val review : List<Review>,
+	@SerializedName("delivered")
 	val delivered : List<Delivered>
 )

@@ -12,12 +12,17 @@ For support, please feel free to contact me at https://www.linkedin.com/in/syeda
 package com.spyneai.model.skumap
 
 import Frames
+import com.google.gson.annotations.SerializedName
 
 data class Data (
-
+	@SerializedName("shootId")
 	val shootId : String,
+	@SerializedName("skuId")
 	val skuId : String,
+	@SerializedName("skuName")
 	val skuName : String,
+	@SerializedName("frames")
 	val frames : Frames,
+	@SerializedName("extraFrames")
 	val extraFrames : Int
 )

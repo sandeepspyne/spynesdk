@@ -36,9 +36,9 @@
         tools:targetApi="m">
         <activity android:name=".activity.OnboardingsActivity"
             android:screenOrientation="portrait" />
-<!--        <activity-->
-<!--            android:name=".activity.ShowImagesActivity"-->
-<!--            android:screenOrientation="portrait" />-->
+        <activity
+            android:name=".activity.ShowImagesActivity"
+            android:screenOrientation="portrait" />
         <activity
             android:name=".activity.ShowGifActivity"
             android:screenOrientation="portrait" />
@@ -148,7 +148,7 @@
             android:name=".spyneaidemo.activity.camera2.Camera2DemoActivity"
             android:screenOrientation="landscape" />
         <activity
-            android:name=".activity.ShowImagesActivity"
+            android:name=".activity.SplashActivity"
             android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

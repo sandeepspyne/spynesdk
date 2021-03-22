@@ -119,20 +119,6 @@
             android:layout_marginLeft="@dimen/dp_10"
             android:layout_marginRight="@dimen/dp_20"
             android:textSize="12sp"/>
-        <TextView
-            android:id="@+id/tv_number_instead"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:visibility="gone"
-            android:text="@string/use_phone_instead"
-            android:fontFamily="@font/light"
-            android:gravity="center|right"
-            android:textColor="@color/black"
-            android:layout_marginTop="@dimen/dp_10"
-            android:layout_marginBottom="@dimen/dp_10"
-            android:layout_marginStart="@dimen/dp_10"
-            android:layout_marginEnd="@dimen/dp_20"
-            android:textSize="12sp"/>
 
         <TextView
             android:id="@+id/tv_sign_in"

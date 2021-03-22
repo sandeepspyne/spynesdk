@@ -68,6 +68,8 @@ class TimerActivity : AppCompatActivity() {
 
     lateinit var imageList : ArrayList<String>
     lateinit var imageListAfter : ArrayList<String>
+    lateinit var interiorList : ArrayList<String>
+
     public lateinit var imageFileList : ArrayList<File>
     public lateinit var imageFileListFrames : ArrayList<Int>
 
@@ -85,28 +87,13 @@ class TimerActivity : AppCompatActivity() {
     lateinit var gifLink : String
     lateinit var image_url : ArrayList<String>
     var countGif : Int = 0
+    lateinit var t: Thread
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_timer)
-        backgroundSelect = intent.getStringExtra(AppConstants.BG_ID)!!
-        circular_progress.setInterpolator(LinearInterpolator())
 
-        imageFileList = ArrayList<File>()
-        imageFileListFrames = ArrayList<Int>()
-        image_url = ArrayList<String>()
-
-        imageInteriorFileList = ArrayList<File>()
-        imageInteriorFileListFrames = ArrayList<Int>()
-
-        //Get Intents
-        imageFileList.addAll(intent.getParcelableArrayListExtra(AppConstants.ALL_IMAGE_LIST)!!)
-        imageInteriorFileList.addAll(intent.getParcelableArrayListExtra(AppConstants.ALL_INTERIOR_IMAGE_LIST)!!)
-
-        imageFileListFrames.addAll(intent.getIntegerArrayListExtra(AppConstants.ALL_FRAME_LIST)!!)
-        imageInteriorFileListFrames.addAll(intent.getIntegerArrayListExtra(AppConstants.ALL_INTERIOR_FRAME_LIST)!!)
-
-        totalImagesToUPload = imageFileList.size
+        setIntents()
 
         Log.e(
             "Timer  SKU",
@@ -120,6 +107,7 @@ class TimerActivity : AppCompatActivity() {
             val policy = StrictMode.ThreadPolicy.Builder().permitAll().build()
             StrictMode.setThreadPolicy(policy)
         }
+
         setCustomTimer()
         try {
             llTimer.visibility = View.VISIBLE
@@ -149,6 +137,27 @@ class TimerActivity : AppCompatActivity() {
                 Log.e("Catched ", e.printStackTrace().toString())
             }
         })
+    }
+
+    private fun setIntents() {
+        backgroundSelect = intent.getStringExtra(AppConstants.BG_ID)!!
+        circular_progress.setInterpolator(LinearInterpolator())
+
+        imageFileList = ArrayList<File>()
+        imageFileListFrames = ArrayList<Int>()
+        image_url = ArrayList<String>()
+
+        imageInteriorFileList = ArrayList<File>()
+        imageInteriorFileListFrames = ArrayList<Int>()
+
+        //Get Intents
+        imageFileList.addAll(intent.getParcelableArrayListExtra(AppConstants.ALL_IMAGE_LIST)!!)
+        imageInteriorFileList.addAll(intent.getParcelableArrayListExtra(AppConstants.ALL_INTERIOR_IMAGE_LIST)!!)
+
+        imageFileListFrames.addAll(intent.getIntegerArrayListExtra(AppConstants.ALL_FRAME_LIST)!!)
+        imageInteriorFileListFrames.addAll(intent.getIntegerArrayListExtra(AppConstants.ALL_INTERIOR_FRAME_LIST)!!)
+
+        totalImagesToUPload = imageFileList.size
     }
 
 /*
@@ -272,26 +281,35 @@ class TimerActivity : AppCompatActivity() {
                 ) {
                     if (response.isSuccessful) {
                         try {
-                            if (totalImagesToUPloadIndex < totalImagesToUPload-1) {
+                            if (totalImagesToUPloadIndex < totalImagesToUPload - 1) {
                                 Log.e("uploadImageURLs", totalImagesToUPloadIndex.toString())
 
                                 Log.e("IMage uploaded ", response.body()?.msgInfo.toString())
-                                Log.e("Frame 1", response.body()?.payload!!.data.currentFrame.toString())
-                                Log.e("Frame 2", response.body()?.payload!!.data.totalFrames.toString())
+                                Log.e(
+                                    "Frame 1",
+                                    response.body()?.payload!!.data.currentFrame.toString()
+                                )
+                                Log.e(
+                                    "Frame 2",
+                                    response.body()?.payload!!.data.totalFrames.toString()
+                                )
                                 Log.e(
                                     "SKU ID", Utilities.getPreference(
                                         this@TimerActivity,
                                         AppConstants.SKU_ID
                                     ).toString()
                                 )
-                                totalImagesToUPloadIndex = totalImagesToUPloadIndex + 1
+                                //  totalImagesToUPloadIndex = totalImagesToUPloadIndex + 1
+                                ++totalImagesToUPloadIndex
                                 uploadImageToBucket()
                             } else {
                                 totalImagesToUPloadIndex = 0
                                 totalImagesToUPload = imageInteriorFileList.size
 
-                                if(imageInteriorFileList != null && imageInteriorFileList.size > 0 )
+
+                                if (imageInteriorFileList != null && imageInteriorFileList.size > 0) {
                                     uploadImageToBucketInterior()
+                                }
                                 else
                                     markSkuComplete()
                             }
@@ -438,14 +456,20 @@ class TimerActivity : AppCompatActivity() {
                 ) {
                     if (response.isSuccessful) {
                         try {
-                            if (totalImagesToUPloadIndex < totalImagesToUPload - 1 ) {
+                            if (totalImagesToUPloadIndex < totalImagesToUPload - 1) {
                                 Log.e("uploadURLsInterior", totalImagesToUPloadIndex.toString())
 
                                 Log.e("IMageInterioruploaded ", response.body()?.msgInfo.toString())
-                                Log.e("Frame 1i", response.body()?.payload!!.data.currentFrame.toString())
-                                Log.e("Frame 2i", response.body()?.payload!!.data.totalFrames.toString())
+                                Log.e(
+                                    "Frame 1i",
+                                    response.body()?.payload!!.data.currentFrame.toString()
+                                )
+                                Log.e(
+                                    "Frame 2i",
+                                    response.body()?.payload!!.data.totalFrames.toString()
+                                )
 
-                                totalImagesToUPloadIndex = totalImagesToUPloadIndex + 1
+                                ++totalImagesToUPloadIndex
                                 uploadImageToBucketInterior()
                             } else {
                                 markSkuComplete()
@@ -530,7 +554,7 @@ class TimerActivity : AppCompatActivity() {
             val os: OutputStream
             try {
                 os = FileOutputStream(imageFile)
-                bitmap.compress(Bitmap.CompressFormat.PNG, 100, os)
+                bitmap.compress(Bitmap.CompressFormat.PNG, 70, os)
                 os.flush()
                 os.close()
             } catch (e: Exception) {
@@ -673,7 +697,7 @@ class TimerActivity : AppCompatActivity() {
                                 (photoList as ArrayList).clear()
                                 (photoListInteriors as ArrayList).clear()
 
-                                for(i in 0..response.body()?.payload!!.data.photos.size-1) {
+                                for (i in 0..response.body()?.payload!!.data.photos.size - 1) {
                                     if (response.body()?.payload!!.data.photos[i].photoType.equals("EXTERIOR"))
                                         (photoList as ArrayList).add(response.body()?.payload!!.data.photos[i])
                                     else
@@ -682,10 +706,11 @@ class TimerActivity : AppCompatActivity() {
                             }
                         }
                         photsAdapter.notifyDataSetChanged()
-                        // Utilities.showProgressDialog(this@TimerActivity)
+
                         if (countGif < photoList.size) {
                             bulkUpload(countGif)
                         }
+                        // Utilities.showProgressDialog(this@TimerActivity)
                     } else {
                         Toast.makeText(
                             this@TimerActivity,
@@ -758,17 +783,19 @@ class TimerActivity : AppCompatActivity() {
 
             val windowStatus = RequestBody.create(
                 MultipartBody.FORM,
-                Utilities.getPreference(this,AppConstants.WINDOWS)!!
+                Utilities.getPreference(this, AppConstants.WINDOWS)!!
             )
 
             val contrast = RequestBody.create(
                 MultipartBody.FORM,
-                Utilities.getPreference(this,AppConstants.EXPOSURES)!!
+                Utilities.getPreference(this, AppConstants.EXPOSURES)!!
             )
 
             val call =
-                request.bulkUPload(background, userId, skuId,
-                    imageUrl, skuName, windowStatus,contrast)
+                request.bulkUPload(
+                    background, userId, skuId,
+                    imageUrl, skuName, windowStatus, contrast
+                )
 
             call?.enqueue(object : Callback<BulkUploadResponse> {
                 override fun onResponse(
@@ -777,19 +804,19 @@ class TimerActivity : AppCompatActivity() {
                 ) {
                     if (response.isSuccessful && response.body()!!.status == 200) {
                         ++countGif
-                        if (countGif < photoList.size ) {
+                        if (countGif < photoList.size) {
                             Log.e("countGif", countGif.toString())
                             bulkUpload(countGif)
 //                            (imageListWaterMark as ArrayList).add(response.body()!!.watermark_image)
 
                         } else if (photoListInteriors.size > 0)
                         {
+                        } else if (photoListInteriors.size > 0) {
                             countGif = 0
                             if (countGif < photoListInteriors.size) {
-                                    addWatermark(countGif)
+                                addWatermark(countGif)
                             }
-                        }
-                        else
+                        } else
                             fetchBulkUpload()
 
                         Log.e("Upload Replace", "bulk")
@@ -866,8 +893,10 @@ class TimerActivity : AppCompatActivity() {
             )
 
             val call =
-                request.addWaterMark(background, userId, skuId,
-                    imageUrl, skuName )
+                request.addWaterMark(
+                    background, userId, skuId,
+                    imageUrl, skuName
+                )
 
             call?.enqueue(object : Callback<WaterMarkResponse> {
                 override fun onResponse(
@@ -876,9 +905,9 @@ class TimerActivity : AppCompatActivity() {
                 ) {
                     if (response.isSuccessful && response.body()!!.status == 200) {
                         ++countGif
-                        if (countGif < photoListInteriors.size ) {
+                        if (countGif < photoListInteriors.size) {
                             Log.e("countGif", countGif.toString())
-                                addWatermark(countGif)
+                            addWatermark(countGif)
                         } else
                             fetchBulkUpload()
                         Log.e("Upload Replace", "bulk")
@@ -950,14 +979,18 @@ class TimerActivity : AppCompatActivity() {
                         Log.e("Upload Replace", "bulk Fetch")
                         imageList = ArrayList<String>()
                         imageListAfter = ArrayList<String>()
+                        interiorList = ArrayList<String>()
 
                         imageList.clear()
                         imageListAfter.clear()
+                        interiorList.clear()
 
                         for (i in 0..response.body()!!.size - 1) {
                             if (response.body()!![i].category.equals("Exterior")) {
                                 imageList.add(response.body()!![i].input_image_url)
                                 imageListAfter.add(response.body()!![i].output_image_url)
+                            } else {
+                                interiorList.add(response.body()!![i].output_image_url)
                             }
                         }
                         fetchGif()
@@ -1006,7 +1039,6 @@ class TimerActivity : AppCompatActivity() {
                         countDownTimer.cancel()
                         gifLink = response.body()!!.url
                         uploadGif()
-
                     } else {
                         fetchBulkUpload()
                     }
@@ -1088,9 +1120,8 @@ class TimerActivity : AppCompatActivity() {
             val request = RetrofitClientSpyneAi.buildService(APiService::class.java)
 
             val sendEmailRequest = SendEmailRequest(
-                imageList, imageListAfter, gifLink,
-                Utilities.getPreference(this, AppConstants.EMAIL_ID).toString()
-            )
+                imageList, imageListAfter, interiorList, gifLink,
+                Utilities.getPreference(this, AppConstants.EMAIL_ID).toString())
             val call = request.sendEmailAll(sendEmailRequest)
 
             call?.enqueue(object : Callback<OtpResponse> {
@@ -1168,10 +1199,10 @@ class TimerActivity : AppCompatActivity() {
 
     override fun onBackPressed() {
         super.onBackPressed()
-       // finish()
+        // finish()
         //onDestroy()
 
-         showExitDialog()
+        showExitDialog()
     }
 
     //Exit dialog

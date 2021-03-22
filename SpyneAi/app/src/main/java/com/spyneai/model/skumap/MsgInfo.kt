@@ -10,10 +10,14 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 For support, please feel free to contact me at https://www.linkedin.com/in/syedabsar */
 package com.spyneai.model.skumap
 
+import com.google.gson.annotations.SerializedName
+
 
 data class MsgInfo (
-
+	@SerializedName("msgCode")
 	val msgCode : Int,
+	@SerializedName("msg")
 	val msg : String,
+	@SerializedName("msgDescription")
 	val msgDescription : String
 )

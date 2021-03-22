@@ -10,6 +10,9 @@ data class FetchBulkResponse (
         val sku_name : String,
         val created_at : String,
         val category : String,
+
         val product_category : String,
         val watermark_image : String
+
+
 )

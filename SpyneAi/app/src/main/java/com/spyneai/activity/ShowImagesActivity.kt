@@ -346,10 +346,10 @@ class ShowImagesActivity : AppCompatActivity() {
     }
 
     fun downloadHighQuality() {
-        if (downloadList.size > 0 && downloadList != null) {
-            for (i in 0 until downloadList.size) {
-                if (downloadList[i] != null)
-                    downloadWithHighQuality(downloadList[i].toString())
+        if (listHdQuality.size > 0 && listHdQuality != null) {
+            for (i in 0 until listHdQuality.size) {
+                if (listHdQuality[i] != null)
+                    downloadWithHighQuality(listHdQuality[i].toString())
             }
         }
     }

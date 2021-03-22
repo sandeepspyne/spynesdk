@@ -1,6 +1,8 @@
 package com.spyneai.interfaces
 
 import android.util.Base64
+import com.facebook.stetho.Stetho
+import com.facebook.stetho.okhttp3.StethoInterceptor
 import okhttp3.OkHttpClient
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
@@ -15,7 +17,9 @@ object RetrofitClient {
             .readTimeout(10, TimeUnit.MINUTES)
             .writeTimeout(10, TimeUnit.MINUTES)
             .connectTimeout(10, TimeUnit.MINUTES)
+            .addNetworkInterceptor(StethoInterceptor())
             .build()
+
 
     private val retrofit = Retrofit.Builder()
             .baseUrl(STAGING_URL)

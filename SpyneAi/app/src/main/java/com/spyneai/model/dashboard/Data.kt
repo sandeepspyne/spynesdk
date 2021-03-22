@@ -11,24 +11,40 @@ For support, please feel free to contact me at https://www.linkedin.com/in/syeda
 
 package com.spyneai.model.dashboard
 
+import com.google.gson.annotations.SerializedName
 import com.spyneai.model.order.MarketPlace
 
 data class Data (
-
+	@SerializedName("shootName")
 	val shootName : String,
+	@SerializedName("productName")
 	val productName : String,
+	@SerializedName("categoryName")
 	val categoryName : String,
+	@SerializedName("shootId")
 	val shootId : String,
+	@SerializedName("skuId")
 	val skuId : String,
+	@SerializedName("skuName")
 	val skuName : String,
+	@SerializedName("status")
 	val status : String,
+	@SerializedName("skuOneDisplayThumnail")
 	val skuOneDisplayThumnail : String,
+	@SerializedName("skuTwoDisplayThumnail")
 	val skuTwoDisplayThumnail : String,
+	@SerializedName("catId")
 	val catId : String,
+	@SerializedName("prodId")
 	val prodId : String,
+	@SerializedName("marketPlace")
 	val marketPlace : List<MarketPlace>,
+	@SerializedName("numberOfSkus")
 	val numberOfSkus : Int,
+	@SerializedName("incompleteSkus")
 	val incompleteSkus : Int,
+	@SerializedName("stageInCompleted")
 	val stageInCompleted : String,
+	@SerializedName("creationDate")
 	val creationDate : String
 )
