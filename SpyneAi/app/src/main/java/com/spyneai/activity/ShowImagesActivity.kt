@@ -52,10 +52,10 @@ import java.util.*
 import kotlin.collections.ArrayList
 
 class ShowImagesActivity : AppCompatActivity() {
-    lateinit var imageList : List<String>
-    lateinit var imageListAfter : List<String>
-    lateinit var imageListInterior : List<String>
-    lateinit var downloadList : List<String>
+    lateinit var imageList: List<String>
+    lateinit var imageListAfter: List<String>
+    lateinit var imageListInterior: List<String>
+    lateinit var downloadList: List<String>
     lateinit var imageListWaterMark: ArrayList<String>
     lateinit var listHdQuality: ArrayList<String>
 
@@ -65,7 +65,7 @@ class ShowImagesActivity : AppCompatActivity() {
     var downloadCount: Int = 0
     lateinit var Category: String
 
-    var downloadHighQualityCount : Int = 5
+    var downloadHighQualityCount: Int = 5
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -83,19 +83,19 @@ class ShowImagesActivity : AppCompatActivity() {
         if (Utilities.getPreference(this, AppConstants.highQualityCount).equals("0")) {
             downloadHighQualityCount = 0
             tvHighQualityCount.setText(downloadHighQualityCount.toString())
-        }else if (Utilities.getPreference(this, AppConstants.highQualityCount).equals("1")) {
+        } else if (Utilities.getPreference(this, AppConstants.highQualityCount).equals("1")) {
             downloadHighQualityCount = 1
             tvHighQualityCount.setText(downloadHighQualityCount.toString())
-        }else if (Utilities.getPreference(this, AppConstants.highQualityCount).equals("2")) {
+        } else if (Utilities.getPreference(this, AppConstants.highQualityCount).equals("2")) {
             downloadHighQualityCount = 2
             tvHighQualityCount.setText(downloadHighQualityCount.toString())
-        }else if (Utilities.getPreference(this, AppConstants.highQualityCount).equals("3")) {
-                downloadHighQualityCount = 3
+        } else if (Utilities.getPreference(this, AppConstants.highQualityCount).equals("3")) {
+            downloadHighQualityCount = 3
             tvHighQualityCount.setText(downloadHighQualityCount.toString())
-            }else if (Utilities.getPreference(this, AppConstants.highQualityCount).equals("4")) {
-                    downloadHighQualityCount = 4
+        } else if (Utilities.getPreference(this, AppConstants.highQualityCount).equals("4")) {
+            downloadHighQualityCount = 4
             tvHighQualityCount.setText(downloadHighQualityCount.toString())
-                }else if (Utilities.getPreference(this, AppConstants.highQualityCount).equals("5")) {
+        } else if (Utilities.getPreference(this, AppConstants.highQualityCount).equals("5")) {
             downloadHighQualityCount = 5
             tvHighQualityCount.setText(downloadHighQualityCount.toString())
         }
@@ -160,9 +160,12 @@ class ShowImagesActivity : AppCompatActivity() {
 
         llDownloadHighQuality.setOnClickListener(View.OnClickListener {
             if (Utilities.getPreference(this, AppConstants.highQualityCount).equals("0"))
-                Toast.makeText(this@ShowImagesActivity ,
-                    "you have reached your high-quality download limit!! Please contact us on WhatsApp for more credits.", Toast.LENGTH_LONG).show()
-                else{
+                Toast.makeText(
+                    this@ShowImagesActivity,
+                    "you have reached your high-quality download limit!! Please contact us on WhatsApp for more credits.",
+                    Toast.LENGTH_LONG
+                ).show()
+            else {
                 llDownloadHighQuality.isEnabled = false
                 llDownloadHighQuality.isFocusable = false
                 downloadHighQuality()
@@ -195,7 +198,7 @@ class ShowImagesActivity : AppCompatActivity() {
             imageListInterior as ArrayList<String>,
             object : ShowReplacedImagesInteriorAdapter.BtnClickListener {
                 override fun onBtnClick(position: Int) {
-                 //   showImagesDialog(position)
+                    //   showImagesDialog(position)
                     Log.e("position preview", position.toString())
                 }
             })
@@ -250,8 +253,7 @@ class ShowImagesActivity : AppCompatActivity() {
                             (imageListWaterMark as ArrayList).add(response.body()!![i].watermark_image)
                             (listHdQuality as ArrayList).add(response.body()!![i].output_image_url)
 
-                        }
-                        else{
+                        } else {
                             Category = response.body()!![i].category
                             (imageListInterior as ArrayList).add(response.body()!![i].output_image_url)
                             (imageListWaterMark as ArrayList).add(response.body()!![i].output_image_url)
@@ -262,6 +264,7 @@ class ShowImagesActivity : AppCompatActivity() {
                 showReplacedImagesAdapter.notifyDataSetChanged()
                 ShowReplacedImagesInteriorAdapter.notifyDataSetChanged()
             }
+
             override fun onFailure(call: Call<List<FetchBulkResponse>>, t: Throwable) {
                 Utilities.hideProgressDialog()
                 Toast.makeText(
@@ -341,25 +344,27 @@ class ShowImagesActivity : AppCompatActivity() {
             return customView
         }
     }
+
     fun downloadHighQuality() {
-            if (downloadList.size>0 && downloadList!=null) {
-                for (i in 0 until downloadList.size) {
-                    if (downloadList[i]!=null)
+        if (downloadList.size > 0 && downloadList != null) {
+            for (i in 0 until downloadList.size) {
+                if (downloadList[i] != null)
                     downloadWithHighQuality(downloadList[i].toString())
-                }
             }
+        }
     }
+
     fun downloadWatermark() {
-            if (imageListWaterMark.size > 0 && imageListWaterMark != null) {
-                for (i in 0 until imageListWaterMark.size) {
-                    if (imageListWaterMark[i]!=null)
+        if (imageListWaterMark.size > 0 && imageListWaterMark != null) {
+            for (i in 0 until imageListWaterMark.size) {
+                if (imageListWaterMark[i] != null)
                     downloadWithWatermark(imageListWaterMark[i].toString())
-                }
             }
+        }
     }
+
     //Download
-    fun downloadWithHighQuality(imageFile: String?)
-    {
+    fun downloadWithHighQuality(imageFile: String?) {
         downloadCount++
 
         val FILENAME_FORMAT = "yyyy-MM-dd-HH-mm-ss-SSS"
@@ -369,7 +374,8 @@ class ShowImagesActivity : AppCompatActivity() {
             getOutputDirectory(),
             "Spyne" + SimpleDateFormat(
                 FILENAME_FORMAT, Locale.US
-            ).format(System.currentTimeMillis())+".png")
+            ).format(System.currentTimeMillis()) + ".png"
+        )
             .build()
             .setOnStartOrResumeListener {
             }
@@ -382,12 +388,18 @@ class ShowImagesActivity : AppCompatActivity() {
             .setOnProgressListener { }
             .start(object : OnDownloadListener {
                 override fun onDownloadComplete() {
-                    if (downloadCount == downloadList.size){
+                    if (downloadCount == downloadList.size) {
                         downloadHighQualityCount--
                         tvHighQualityCount.setText(downloadHighQualityCount.toString())
-                        Utilities.savePrefrence(this@ShowImagesActivity,AppConstants.highQualityCount, downloadHighQualityCount.toString())
-                        Toast.makeText(this@ShowImagesActivity ,
-                            "Download Completed", Toast.LENGTH_SHORT).show()
+                        Utilities.savePrefrence(
+                            this@ShowImagesActivity,
+                            AppConstants.highQualityCount,
+                            downloadHighQualityCount.toString()
+                        )
+                        Toast.makeText(
+                            this@ShowImagesActivity,
+                            "Download Completed", Toast.LENGTH_SHORT
+                        ).show()
                         downloadCount = 0
                         llDownloadHighQuality.isEnabled = true
                         llDownloadHighQuality.isFocusable = true
@@ -395,16 +407,17 @@ class ShowImagesActivity : AppCompatActivity() {
                 }
 
                 override fun onError(error: com.downloader.Error?) {
-                    Toast.makeText(this@ShowImagesActivity ,
-                        "Download Failed", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(
+                        this@ShowImagesActivity,
+                        "Download Failed", Toast.LENGTH_SHORT
+                    ).show()
                 }
 
                 fun onError(error: Error?) {}
             })
     }
 
-    fun downloadWithWatermark(imageFile: String?)
-    {
+    fun downloadWithWatermark(imageFile: String?) {
         downloadCount++
         val FILENAME_FORMAT = "yyyy-MM-dd-HH-mm-ss-SSS"
 
@@ -413,7 +426,8 @@ class ShowImagesActivity : AppCompatActivity() {
             getOutputDirectory(),
             "Spyne" + SimpleDateFormat(
                 FILENAME_FORMAT, Locale.US
-            ).format(System.currentTimeMillis())+".png")
+            ).format(System.currentTimeMillis()) + ".png"
+        )
             .build()
             .setOnStartOrResumeListener {
             }
@@ -427,14 +441,18 @@ class ShowImagesActivity : AppCompatActivity() {
             .start(object : OnDownloadListener {
                 override fun onDownloadComplete() {
                     if (downloadCount == imageListWaterMark.size)
-                        Toast.makeText(this@ShowImagesActivity ,
-                            "Download Completed", Toast.LENGTH_SHORT).show()
+                        Toast.makeText(
+                            this@ShowImagesActivity,
+                            "Download Completed", Toast.LENGTH_SHORT
+                        ).show()
                 }
 
                 override fun onError(error: com.downloader.Error?) {
                     TODO("Not yet implemented")
-                    Toast.makeText(this@ShowImagesActivity ,
-                        "Download Failed.", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(
+                        this@ShowImagesActivity,
+                        "Download Failed.", Toast.LENGTH_SHORT
+                    ).show()
                 }
 
                 fun onError(error: Error?) {}
@@ -442,19 +460,19 @@ class ShowImagesActivity : AppCompatActivity() {
     }
 
 
-
-
     private fun getOutputDirectory(): String? {
-        val mediaDir = if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP) {
-            externalMediaDirs.firstOrNull()?.let {
-                File(it, resources.getString(R.string.app_name)).apply { mkdirs() } }
-        } else {
-            TODO("VERSION.SDK_INT < LOLLIPOP")
-        }
+        val mediaDir =
+            if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP) {
+                externalMediaDirs.firstOrNull()?.let {
+                    File(it, resources.getString(R.string.app_name)).apply { mkdirs() }
+                }
+            } else {
+                TODO("VERSION.SDK_INT < LOLLIPOP")
+            }
         return if (mediaDir != null && mediaDir.exists())
-            mediaDir.toString()+File.separator
+            mediaDir.toString() + File.separator
         else
-            filesDir.toString()+File.separator
+            filesDir.toString() + File.separator
     }
 
 
