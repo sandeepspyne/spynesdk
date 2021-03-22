@@ -54,16 +54,16 @@ public class OtpActivity : AppCompatActivity() {
         setContentView(R.layout.activity_otp)
 
 //        val strNumber = intent.getStringExtra(AppConstants.phone)!!
-      /*  val newString =  StringBuilder(strNumber)
+        /*  val newString =  StringBuilder(strNumber)
 
-        newString.setCharAt(2,'X')
-        newString.setCharAt(3,'X')
-        newString.setCharAt(4,'X')
-        newString.setCharAt(5,'X')
-        newString.setCharAt(6,'X')
-        newString.setCharAt(7,'X')
+          newString.setCharAt(2,'X')
+          newString.setCharAt(3,'X')
+          newString.setCharAt(4,'X')
+          newString.setCharAt(5,'X')
+          newString.setCharAt(6,'X')
+          newString.setCharAt(7,'X')
 
-        tvNumber.setText("+91" + newString)*/
+          tvNumber.setText("+91" + newString)*/
 
         tvNumber.setText(Utilities.getPreference(this,AppConstants.EMAIL_ID))
 
@@ -86,10 +86,10 @@ public class OtpActivity : AppCompatActivity() {
                 countDownTime = txtView_count_down_timer!!.text.toString()
 
                 countDownTime =
-                        if (millisUntilFinished / 1000 < 10)
-                            "00 : 0" + millisUntilFinished / 1000 + ""
-                        else
-                            "00 : " + (millisUntilFinished / 1000).toString() + ""
+                    if (millisUntilFinished / 1000 < 10)
+                        "00 : 0" + millisUntilFinished / 1000 + ""
+                    else
+                        "00 : " + (millisUntilFinished / 1000).toString() + ""
 
                 //txtView_count_down_timer.setText((millisUntilFinished / 1000) + "");
 
@@ -381,8 +381,9 @@ public class OtpActivity : AppCompatActivity() {
                 if (response.isSuccessful ) {
                     if (response.body()!!.id.equals("200")) {
                         Toast.makeText(this@OtpActivity, response.body()!!.message, Toast.LENGTH_SHORT).show()
-                        Utilities.savePrefrence(this@OtpActivity,AppConstants.tokenId,
-                            intent.getStringExtra(AppConstants.tokenId))
+                        if (intent.getStringExtra(AppConstants.tokenId) != null)
+                            Utilities.savePrefrence(this@OtpActivity,AppConstants.tokenId,
+                                intent.getStringExtra(AppConstants.tokenId))
                         val intent = Intent(applicationContext, DashboardActivity::class.java)
                         startActivity(intent)
                         finish()
@@ -417,7 +418,8 @@ public class OtpActivity : AppCompatActivity() {
         val loginRequest = LoginRequest(Utilities.getPreference(this, AppConstants.EMAIL_ID).toString());
 
         val request = RetrofitClient.buildService(APiService::class.java)
-        val call = request.loginEmailApp(Utilities.getPreference(this, AppConstants.EMAIL_ID).toString(),"value")
+        val call = request.loginEmailApp(loginRequest)
+//        val call = request.loginEmailApp(Utilities.getPreference(this, AppConstants.EMAIL_ID).toString(),"value")
 
         call?.enqueue(object : Callback<LoginResponse>{
             override fun onResponse(call: Call<LoginResponse>, response: Response<LoginResponse>) {
@@ -432,7 +434,7 @@ public class OtpActivity : AppCompatActivity() {
                             Toast.LENGTH_SHORT
                         ).show()
                         Log.e("ok", response.body()!!.header.tokenId )
-                        val intent = Intent(applicationContext, OtpActivity::class.java)
+                        val intent = Intent(this@OtpActivity, OtpActivity::class.java)
                         intent.putExtra(AppConstants.tokenId,response.body()!!.header.tokenId)
                         startActivity(intent)
                     }
@@ -475,8 +477,8 @@ public class OtpActivity : AppCompatActivity() {
     override fun onBackPressed() {
         super.onBackPressed()
         Utilities.savePrefrence(
-                this,
-                AppConstants.tokenId,
-                "")
+            this,
+            AppConstants.tokenId,
+            "")
     }
 }

@@ -4,41 +4,37 @@ import android.content.Intent
 import android.os.Bundle
 import android.os.Handler
 import android.util.Log
-import android.view.View
-import android.view.ViewGroup
 import android.view.WindowManager
-import android.widget.Button
-import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AppCompatDelegate
 import com.facebook.stetho.Stetho
+import com.facebook.stetho.okhttp3.StethoInterceptor
 import com.google.android.play.core.appupdate.AppUpdateManagerFactory
 import com.google.android.play.core.install.model.AppUpdateType
 import com.google.android.play.core.install.model.UpdateAvailability
-import com.google.firebase.installations.Utils
 import com.spyneai.R
-import com.spyneai.interfaces.APiService
-import com.spyneai.interfaces.RetrofitClientSpyneAi
-import com.spyneai.model.otp.OtpResponse
 import com.spyneai.needs.AppConstants
 import com.spyneai.needs.Utilities
-import kotlinx.android.synthetic.main.activity_splash.*
-import retrofit2.Call
-import retrofit2.Callback
-import retrofit2.Response
+import okhttp3.OkHttpClient
+
 
 class SplashActivity : AppCompatActivity() {
     private val MY_REQUEST_CODE: Int = 1
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        window.setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
-            WindowManager.LayoutParams.FLAG_FULLSCREEN)
+        window.setFlags(
+            WindowManager.LayoutParams.FLAG_FULLSCREEN,
+            WindowManager.LayoutParams.FLAG_FULLSCREEN
+        )
 
         setContentView(R.layout.activity_splash)
         AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
 
         Stetho.initializeWithDefaults(this);
+        OkHttpClient.Builder()
+            .addNetworkInterceptor(StethoInterceptor())
+            .build()
 
         setSplash();
         autoUpdates()
@@ -61,7 +57,8 @@ class SplashActivity : AppCompatActivity() {
                     // The current activity making the update request.
                     this,
                     // Include a request code to later monitor this update request.
-                    MY_REQUEST_CODE)
+                    MY_REQUEST_CODE
+                )
             }
             else{
                 setSplash();
@@ -73,13 +70,11 @@ class SplashActivity : AppCompatActivity() {
     //Start splash
     private fun setSplash() {
         Handler().postDelayed({
-            if (Utilities.getPreference(this, AppConstants.tokenId).isNullOrEmpty())
-            {
+            if (Utilities.getPreference(this, AppConstants.tokenId).isNullOrEmpty()) {
                 val intent = Intent(this, OnboardingsActivity::class.java)
                 startActivity(intent)
                 finish()
-            }
-            else {
+            } else {
                 val intent = Intent(this, DashboardActivity::class.java)
                 startActivity(intent)
                 finish()
@@ -91,7 +86,7 @@ class SplashActivity : AppCompatActivity() {
         super.onActivityResult(requestCode, resultCode, data)
         if (requestCode == MY_REQUEST_CODE) {
             if (resultCode != RESULT_OK) {
-                Log.e("UPdate","Update flow failed! Result code: $resultCode")
+                Log.e("UPdate", "Update flow failed! Result code: $resultCode")
                 // If the update is cancelled or fails,
                 // you can request to start the update again.
             }

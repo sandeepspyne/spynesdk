@@ -34,7 +34,6 @@ class SignInActivity : AppCompatActivity() {
     private lateinit var llEmail : LinearLayout
 
     private lateinit var tvEmailInstead : TextView
-    private lateinit var tvNumberInstead : TextView
 
     private lateinit var tvSignIn: TextView
 
@@ -57,8 +56,6 @@ class SignInActivity : AppCompatActivity() {
         llEmail = findViewById(R.id.ll_email)
 
         tvEmailInstead = findViewById(R.id.tv_email_instead)
-        tvNumberInstead = findViewById(R.id.tv_number_instead)
-
         tvSignIn = findViewById(R.id.tv_sign_in)
 
     }
@@ -68,19 +65,11 @@ class SignInActivity : AppCompatActivity() {
             llEmail.visibility = View.VISIBLE
             tvEmailInstead.visibility = View.GONE
             llNumber.visibility = View.GONE
-            tvNumberInstead.visibility = View.VISIBLE
-        })
-
-        tvNumberInstead.setOnClickListener(View.OnClickListener {
-            llEmail.visibility = View.GONE
-            tvEmailInstead.visibility = View.VISIBLE
-            llNumber.visibility = View.VISIBLE
-            tvNumberInstead.visibility = View.GONE
         })
 
         tvSignIn.setOnClickListener(View.OnClickListener {
             if (!et_email.text.toString().trim().isEmpty()
-                    && Utilities.isValidEmail(et_email.text.toString().trim())) {
+                && Utilities.isValidEmail(et_email.text.toString().trim())) {
                 makeSignIn()
                 tvErrorEmail.visibility = View.INVISIBLE
             } else
@@ -90,7 +79,7 @@ class SignInActivity : AppCompatActivity() {
 
         tvTerms.setOnClickListener(View.OnClickListener {
             val browserIntent = Intent(Intent.ACTION_VIEW,
-                    Uri.parse("https://www.spyne.ai/terms-service"))
+                Uri.parse("https://www.spyne.ai/terms-service"))
             startActivity(browserIntent)
         })
 
@@ -110,9 +99,9 @@ class SignInActivity : AppCompatActivity() {
 
         ivgoogle.setOnClickListener(View.OnClickListener {
             Toast.makeText(
-                    applicationContext,
-                    "Coming Soon!!!",
-                    Toast.LENGTH_SHORT
+                applicationContext,
+                "Coming Soon!!!",
+                Toast.LENGTH_SHORT
             ).show()
         })
 
@@ -127,7 +116,8 @@ class SignInActivity : AppCompatActivity() {
         val loginRequest = LoginRequest(etEmail.text.toString());
 
         val request = RetrofitClient.buildService(APiService::class.java)
-        val call = request.loginEmailApp(etEmail.text.toString(),"value")
+        val call = request.loginEmailApp(loginRequest)
+//        val call = request.loginEmailApp(etEmail.text.toString(),"value")
 
 
         call?.enqueue(object : Callback<LoginResponse> {
@@ -135,26 +125,36 @@ class SignInActivity : AppCompatActivity() {
                 Utilities.hideProgressDialog()
 
                 if (response.isSuccessful) {
-                    if (response.body()?.header?.tokenId != null) {
+                    if (response.body()!!.header.tokenId != null) {
                         Toast.makeText(
-                                this@SignInActivity,
-                                response.body()!!.msgInfo.msgDescription,
-                                Toast.LENGTH_SHORT
+                            this@SignInActivity,
+                            response.body()!!.msgInfo.msgDescription,
+                            Toast.LENGTH_SHORT
                         ).show()
 
-                        Log.e("ok", response.body()!!.header.tokenId)
+                        //  Log.e("ok", response.body()!!.header.tokenId)
                         Utilities.savePrefrence(this@SignInActivity,
-                                AppConstants.EMAIL_ID, etEmail.text.toString())
-                        val intent = Intent(applicationContext, OtpActivity::class.java)
-                        intent.putExtra(AppConstants.tokenId, response.body()!!.header.tokenId)
+                            AppConstants.EMAIL_ID, etEmail.text.toString())
+                        val intent = Intent(this@SignInActivity, OtpActivity::class.java)
+                        if (response.body()!!.header.tokenId != null)
+                            intent.putExtra(AppConstants.tokenId, response.body()!!.header.tokenId)
                         startActivity(intent)
                     }
                     else{
+                        val intent = Intent(this@SignInActivity, OtpActivity::class.java)
+                        if (response.body()!!.header.tokenId != null)
+                            intent.putExtra(AppConstants.tokenId, response.body()!!.header.tokenId)
+                        startActivity(intent)
                         Toast.makeText(
+                            this@SignInActivity,
+                            "Otp Sent",
+                            Toast.LENGTH_SHORT
+                        ).show()
+                       /* Toast.makeText(
                             applicationContext,
                             "Unable to send OTP, Please try again later.",
                             Toast.LENGTH_SHORT
-                        ).show()
+                        ).show()*/
                     }
                 }
                 else{
@@ -170,9 +170,9 @@ class SignInActivity : AppCompatActivity() {
                 Log.e("ok", "no way")
                 Utilities.hideProgressDialog()
                 Toast.makeText(
-                        applicationContext,
-                        "Server not responding!!!",
-                        Toast.LENGTH_SHORT
+                    applicationContext,
+                    "Server not responding!!!",
+                    Toast.LENGTH_SHORT
                 ).show()
             }
         })
@@ -181,8 +181,8 @@ class SignInActivity : AppCompatActivity() {
     override fun onBackPressed() {
         super.onBackPressed()
         Utilities.savePrefrence(
-                this@SignInActivity,
-                AppConstants.tokenId, "")
+            this@SignInActivity,
+            AppConstants.tokenId, "")
     }
 
     override fun onPause() {

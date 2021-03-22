@@ -39,7 +39,6 @@ import retrofit2.http.*
 
 
 interface APiService {
-
     //-- Cliq APIs --
     @POST("user/registeration")
     fun loginEmailApp(@Body loginRequest: LoginRequest?): Call<LoginResponse>?
