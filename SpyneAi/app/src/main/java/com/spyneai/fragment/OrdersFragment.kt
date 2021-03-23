@@ -17,14 +17,12 @@ import com.spyneai.R
 import com.spyneai.adapter.MyOrdersOngoingAdapter
 import com.spyneai.interfaces.APiService
 import com.spyneai.interfaces.RetrofitClient
-import com.spyneai.model.dashboard.DashboardResponse
 import com.spyneai.model.orders.Data
 import com.spyneai.model.orders.MyOrdersResponse
 import com.spyneai.model.orders.Ongoing
 import com.spyneai.model.orders.Submitted
 import com.spyneai.needs.AppConstants
 import com.spyneai.needs.Utilities
-import kotlinx.android.synthetic.main.activity_completed.*
 import kotlinx.android.synthetic.main.fragment_orders.view.*
 import retrofit2.Call
 import retrofit2.Callback

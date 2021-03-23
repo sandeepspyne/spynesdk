@@ -807,6 +807,10 @@ class TimerActivity : AppCompatActivity() {
                         if (countGif < photoList.size) {
                             Log.e("countGif", countGif.toString())
                             bulkUpload(countGif)
+//                            (imageListWaterMark as ArrayList).add(response.body()!!.watermark_image)
+
+                        } else if (photoListInteriors.size > 0)
+                        {
                         } else if (photoListInteriors.size > 0) {
                             countGif = 0
                             if (countGif < photoListInteriors.size) {
@@ -1117,8 +1121,7 @@ class TimerActivity : AppCompatActivity() {
 
             val sendEmailRequest = SendEmailRequest(
                 imageList, imageListAfter, interiorList, gifLink,
-                Utilities.getPreference(this, AppConstants.EMAIL_ID).toString()
-            )
+                Utilities.getPreference(this, AppConstants.EMAIL_ID).toString())
             val call = request.sendEmailAll(sendEmailRequest)
 
             call?.enqueue(object : Callback<OtpResponse> {

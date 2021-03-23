@@ -11,6 +11,8 @@ object AppConstants {
     val ALL_INTERIOR_IMAGE_LIST: String = "all_interior_image_list"
     val ALL_INTERIOR_FRAME_LIST: String = "all_interior_frame_list"
 
+    val WATER_MARK_LIST: String = "water_mark_list"
+
     val GIF: String = "gif"
     val FRAME_LIST: String = "frame_list"
     val FRAME_SHOOOTS: String = "frame_shoots"
@@ -55,6 +57,8 @@ object AppConstants {
     val phone: String = "number"
     val tokenId : String = "tokenId"
     val otp : String = "otp"
+
+    val highQualityCount : String = "highQualityCount"
 
     val backgroundNumber = "backgroundNumber"
 }

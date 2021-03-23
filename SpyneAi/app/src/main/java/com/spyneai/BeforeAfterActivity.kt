@@ -1,6 +1,5 @@
 package com.spyneai
 
-import android.content.ContentValues.TAG
 import android.content.Intent
 import android.graphics.Color
 import android.graphics.drawable.GradientDrawable

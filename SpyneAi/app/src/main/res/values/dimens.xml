@@ -12,6 +12,7 @@
     <dimen name="dp_150">150dp</dimen>
     <dimen name="dp_50">50dp</dimen>
     <dimen name="sp_10">10sp</dimen>
+    <dimen name="sp_8">8sp</dimen>
 
     <dimen name="dots_height">30dp</dimen>
     <dimen name="dots_margin_bottom">20dp</dimen>

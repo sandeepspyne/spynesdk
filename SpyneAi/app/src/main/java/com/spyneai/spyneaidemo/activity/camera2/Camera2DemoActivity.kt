@@ -45,7 +45,6 @@ import androidx.core.view.isVisible
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
-import com.spyneai.BuildConfig
 import com.spyneai.R
 import com.spyneai.activity.DashboardActivity
 import com.spyneai.activity.GenerateGifActivity

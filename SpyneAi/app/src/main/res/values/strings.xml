@@ -145,6 +145,9 @@
     <string name="have_look"><u>Have a look</u></string>
     <string name="publis">Upload the best quality images directly to your desirable e-commerce website.</string>
 
+    <string name="download_high_quality"><u>High quality</u></string>
+    <string name="download_with_watermark"><u>With watermark (free)</u></string>
+
     <string-array name="planets_array">
         <item>4 Shoots</item>
         <item>8 Shoots</item>

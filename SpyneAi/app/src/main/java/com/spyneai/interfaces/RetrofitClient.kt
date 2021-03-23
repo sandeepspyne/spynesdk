@@ -11,6 +11,7 @@ import java.util.concurrent.TimeUnit
 object RetrofitClient {
 
     private const val BASE_URL = "https://api.spyne.ai/"
+    private const val STAGING_URL = "http://35.240.189.131/api/"
 
     private val client = OkHttpClient.Builder()
             .readTimeout(10, TimeUnit.MINUTES)
