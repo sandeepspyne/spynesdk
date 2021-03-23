@@ -160,7 +160,7 @@ class GenrateMarketplaceActivity : AppCompatActivity() {
 
 
     private fun setBackgroundColour(){
-        backgroundColour = "white"
+        backgroundColour = "https://storage.googleapis.com/spyne/AI/raw/e904fad2-727e-467a-aef5-89b3e1f06c99.jpg"
 
         backgroundColourAdapter = BackgroundColourAdapter(this,
             marketplacesList as ArrayList<FootwearMarketplaceResponse>, 0,
@@ -176,13 +176,13 @@ class GenrateMarketplaceActivity : AppCompatActivity() {
                             .load(marketplacesList[marketplacePosition].sample_image_1)
                             .error(R.mipmap.defaults) // show error drawable if the image is not a gif
                             .into(ivSampleOutput)
-                        backgroundColour = "white"
+                        backgroundColour = "https://storage.googleapis.com/spyne/AI/raw/e904fad2-727e-467a-aef5-89b3e1f06c99.jpg"
                     }else{
                         Glide.with(this@GenrateMarketplaceActivity) // replace with 'this' if it's in activity
                             .load(marketplacesList[marketplacePosition].sample_image_2)
                             .error(R.mipmap.defaults) // show error drawable if the image is not a gif
                             .into(ivSampleOutput)
-                        backgroundColour = "grey"
+                        backgroundColour = "https://storage.googleapis.com/spyne/AI/raw/4efd2c9d-7723-428e-8b97-ab6ee1cb32b1.jpg"
                     }
 
 
