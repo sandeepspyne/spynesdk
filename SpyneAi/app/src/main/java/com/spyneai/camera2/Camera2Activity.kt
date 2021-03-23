@@ -713,7 +713,14 @@ class Camera2Activity : AppCompatActivity() , SubCategoriesAdapter.BtnClickListe
 
         cameraProviderFuture.addListener(Runnable {
             // Used to bind the lifecycle of cameras to the lifecycle owner
-            cameraProvider = cameraProviderFuture.get()
+
+            try {
+                cameraProvider = cameraProviderFuture.get()
+            }
+            catch(e : Exception)
+            {
+                e.printStackTrace()
+            }
 
             // Preview
             val viewPort = ViewPort.Builder(

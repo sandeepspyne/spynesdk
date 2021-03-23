@@ -32,12 +32,152 @@
 
     </androidx.appcompat.widget.Toolbar>
 
+<!--
     <androidx.fragment.app.FragmentContainerView
         android:id="@+id/fragment_container_view"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="1"/>
+-->
 
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        tools:context=".adapter.HomeFragment">
+
+        <ScrollView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:fillViewport="true"
+            android:orientation="vertical">
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:padding="@dimen/dp_10">
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="@string/projects"
+                        android:fontFamily="@font/bold"
+                        android:textStyle="bold"
+                        android:layout_marginStart="@dimen/dp_10"
+                        android:layout_marginEnd="@dimen/dp_10"
+                        android:textSize="@dimen/sp_16"/>
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:gravity="center">
+                        <TextView
+                            android:id="@+id/tvCompleted"
+                            android:layout_width="0dp"
+                            android:layout_weight="1"
+                            android:layout_height="wrap_content"
+                            android:padding="@dimen/dp_10"
+                            android:gravity="center"
+                            android:textColor="@color/white"
+                            android:textStyle="bold"
+                            android:fontFamily="@font/medium"
+                            android:textSize="@dimen/sp_13"
+                            android:layout_margin="@dimen/dp_10"
+                            android:drawablePadding="@dimen/dp_10"
+                            android:background="@drawable/bg_edit_button"
+                            android:text="@string/completed"
+                            app:drawableTopCompat="@mipmap/compl" />
+                        <TextView
+                            android:id="@+id/tvOngoing"
+                            android:layout_width="0dp"
+                            android:layout_weight="1"
+                            android:layout_height="wrap_content"
+                            android:padding="@dimen/dp_10"
+                            android:textColor="@color/white"
+                            android:textStyle="bold"
+                            android:gravity="center"
+                            android:fontFamily="@font/medium"
+                            android:textSize="@dimen/sp_13"
+                            android:layout_margin="@dimen/dp_10"
+                            android:drawablePadding="@dimen/dp_10"
+                            android:background="@drawable/bg_edit_button"
+                            android:text="@string/ongoing"
+                            app:drawableTopCompat="@mipmap/ongo" />
+
+
+                    </LinearLayout>
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="@string/categories"
+                        android:fontFamily="@font/bold"
+                        android:textStyle="bold"
+                        android:layout_margin="@dimen/dp_10"
+                        android:textSize="@dimen/sp_16"/>
+
+                    <androidx.recyclerview.widget.RecyclerView
+                        android:id="@+id/rvCategoriesDashboard"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="@dimen/dp_10"
+                        android:layout_marginEnd="@dimen/dp_10"/>
+
+
+                </LinearLayout>
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal">
+                        <TextView
+                            android:layout_width="0dp"
+                            android:layout_weight="1"
+                            android:layout_height="wrap_content"
+                            android:text="@string/our_work"
+                            android:fontFamily="@font/bold"
+                            android:textStyle="bold"
+                            android:layout_margin="@dimen/dp_10"
+                            android:textSize="@dimen/sp_16"/>
+
+                        <TextView
+                            android:id="@+id/tvHaveLook"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@string/have_look"
+                            android:fontFamily="@font/bold"
+                            android:textStyle="bold"
+                            android:gravity="center"
+                            android:textColor="@color/light"
+                            android:layout_margin="@dimen/dp_10"
+                            android:textSize="@dimen/sp_16"/>
+
+                    </LinearLayout>
+
+                    <com.synnapps.carouselview.CarouselView
+                        android:id="@+id/carouselView"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:background="@drawable/bg_channel"
+                        app:pageColor="#00000000"
+                        app:slideInterval="2000"
+                        app:pageTransformer="flow"
+                        android:animateLayoutChanges="true"
+                        app:indicatorVisibility="gone" />
+
+                </LinearLayout>
+            </LinearLayout>
+        </ScrollView>
+
+
+    </LinearLayout>
     <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content">

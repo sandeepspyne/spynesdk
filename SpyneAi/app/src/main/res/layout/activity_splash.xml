@@ -8,6 +8,7 @@
     tools:context=".activity.SplashActivity">
 
     <ImageView
+        android:id="@+id/ivLogoSpyne"
         android:src="@mipmap/logo"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content" />

@@ -5,6 +5,7 @@ import android.os.Bundle
 import android.os.Handler
 import android.util.Log
 import android.view.WindowManager
+import android.view.animation.AnimationUtils
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AppCompatDelegate
 import com.facebook.stetho.Stetho
@@ -15,6 +16,7 @@ import com.google.android.play.core.install.model.UpdateAvailability
 import com.spyneai.R
 import com.spyneai.needs.AppConstants
 import com.spyneai.needs.Utilities
+import kotlinx.android.synthetic.main.activity_splash.*
 import okhttp3.OkHttpClient
 
 
@@ -36,8 +38,14 @@ class SplashActivity : AppCompatActivity() {
             .addNetworkInterceptor(StethoInterceptor())
             .build()
 
+       // setAnimation()
         setSplash();
         autoUpdates()
+    }
+
+    private fun setAnimation() {
+        val animTogether = AnimationUtils.loadAnimation(this, R.anim.together);
+        ivLogoSpyne.startAnimation(animTogether)
     }
 
     private fun autoUpdates() {
@@ -61,7 +69,7 @@ class SplashActivity : AppCompatActivity() {
                 )
             }
             else{
-                setSplash();
+               // setSplash();
             }
         }
 
@@ -91,7 +99,7 @@ class SplashActivity : AppCompatActivity() {
                 // you can request to start the update again.
             }
             else{
-                setSplash()
+               // setSplash()
             }
 
         }

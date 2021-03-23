@@ -6,7 +6,7 @@
 
     <string name="next">Next</string>
     <string name="shoot">Shoot</string>
-    <string name="snap_edit">Snap edit and sell your goods \nthrough Store Camera </string>
+    <string name="snap_edit">camera that helps you to click product images accepted worldwide.</string>
     <string name="access_to">You have access to everything \nyou need for taking fantastic \nproduct photos.</string>
     <string name="snap">"Lorem ipsum Lorem ipsum Lorem ipsum Lorem ipsum Lorem ipsum Lorem ipsum Lorem ipsum Lorem ipsum"</string>
     <string name="please">Please login to continue</string>
@@ -16,7 +16,7 @@
     <string name="by"><![CDATA[By continuing you agree to our ]]></string>
     <string name="terms">Terms &amp; Policies</string>
     <string name="edit">Edit</string>
-    <string name="you_have_access">You have access to everything\n you need for taking fantastic  product photos</string>
+    <string name="you_have_access">Our AI solves your daily editing hurdle.  One single tap saving your manual effort.</string>
     <string name="publish">Publish</string>
     <string name="edit_and">Snap edit and sell your goods\n through Store Camera</string>
     <string name="get_started">Let\'s get started</string>
@@ -143,6 +143,7 @@
     <string name="exterior">Exterior</string>
     <string name="interior">Interior</string>
     <string name="have_look"><u>Have a look</u></string>
+    <string name="publis">Upload the best quality images directly to your desirable e-commerce website.</string>
 
     <string-array name="planets_array">
         <item>4 Shoots</item>
