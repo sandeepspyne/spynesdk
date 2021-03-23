@@ -61,6 +61,7 @@ class ShowImagesActivity : AppCompatActivity() {
     lateinit var downloadList: List<String>
     lateinit var imageListWaterMark: ArrayList<String>
     lateinit var listHdQuality: ArrayList<String>
+    var catName : String = ""
 
     private lateinit var showReplacedImagesAdapter: ShowReplacedImagesAdapter
     private lateinit var ShowReplacedImagesInteriorAdapter: ShowReplacedImagesInteriorAdapter
@@ -79,6 +80,7 @@ class ShowImagesActivity : AppCompatActivity() {
             .build()
         PRDownloader.initialize(applicationContext, config)
 
+        hideData()
 
         downloadList = ArrayList<String>()
         imageListWaterMark = ArrayList<String>()
@@ -105,6 +107,31 @@ class ShowImagesActivity : AppCompatActivity() {
 
         setBulkImages()
         setListeners()
+
+        if (intent.getStringExtra(AppConstants.CATEGORY_NAME) != null)
+            catName = intent.getStringExtra(AppConstants.CATEGORY_NAME)!!
+        else
+            catName = Utilities.getPreference(this, AppConstants.CATEGORY_NAME)!!
+
+        if (catName.equals("Footwear")){
+            tvViewGif.visibility = View.GONE
+        }
+    }
+
+    private fun hideData() {
+
+        if (Utilities.getPreference(this,AppConstants.CATEGORY_NAME).equals("Automobiles")) {
+            tvYourEmailIdReplaced.visibility = View.VISIBLE
+            tvViewGif.visibility = View.VISIBLE
+            tvInterior.visibility = View.VISIBLE
+            llDownloads.visibility = View.VISIBLE
+        }
+        else{
+            tvYourEmailIdReplaced.visibility = View.GONE
+            tvViewGif.visibility = View.GONE
+            tvInterior.visibility = View.GONE
+            llDownloads.visibility = View.GONE
+        }
     }
 
     private fun setListeners() {
@@ -253,12 +280,18 @@ class ShowImagesActivity : AppCompatActivity() {
                             (imageListWaterMark as ArrayList).add(response.body()!![i].watermark_image)
                             (listHdQuality as ArrayList).add(response.body()!![i].output_image_url)
 
-                        } else {
+                        } else if (response.body()!![i].category.equals("Interior")) {
                             Category = response.body()!![i].category
                             (imageListInterior as ArrayList).add(response.body()!![i].output_image_url)
                             (imageListWaterMark as ArrayList).add(response.body()!![i].output_image_url)
                             (listHdQuality as ArrayList).add(response.body()!![i].input_image_url)
                         }
+                        else{
+                            Category = response.body()!![i].category
+                            (imageList as ArrayList).add(response.body()!![i].input_image_url)
+                            (imageListAfter as ArrayList).add(response.body()!![i].output_image_url)
+                        }
+
                     }
                 }
                 showReplacedImagesAdapter.notifyDataSetChanged()

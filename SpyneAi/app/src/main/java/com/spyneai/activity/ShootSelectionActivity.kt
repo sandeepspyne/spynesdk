@@ -13,6 +13,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.spyneai.R
 import com.spyneai.adapter.CarBackgroundAdapter
+import com.spyneai.adapter.MarketplacesAdapter
 import com.spyneai.adapter.ChannelsAdapter
 import com.spyneai.adapter.PhotosAdapter
 import com.spyneai.interfaces.APiService

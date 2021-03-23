@@ -22,7 +22,7 @@ import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.gson.Gson
 import com.spyneai.R
-import com.spyneai.adapter.CarBackgroundAdapter
+import com.spyneai.adapter.MarketplacesAdapter
 import com.spyneai.adapter.PhotosAdapter
 import com.spyneai.aipack.*
 import com.spyneai.interfaces.*
@@ -30,6 +30,7 @@ import com.spyneai.model.ai.SendEmailRequest
 import com.spyneai.model.ai.UploadGifResponse
 import com.spyneai.model.ai.WaterMarkResponse
 import com.spyneai.model.carreplace.CarBackgroundsResponse
+import com.spyneai.model.marketplace.FootwearBulkResponse
 import com.spyneai.model.otp.OtpResponse
 import com.spyneai.model.sku.Photos
 import com.spyneai.model.sku.SkuResponse
@@ -78,20 +79,44 @@ class TimerActivity : AppCompatActivity() {
 
     private var currentPOsition : Int = 0
     lateinit var carBackgroundList : ArrayList<CarBackgroundsResponse>
-    lateinit var carbackgroundsAdapter: CarBackgroundAdapter
+    lateinit var carbackgroundsAdapter: MarketplacesAdapter
     var backgroundSelect : String = ""
+    var marketplaceId : String = ""
+    var backgroundColour : String = ""
 
     var totalImagesToUPload : Int = 0
     var totalImagesToUPloadIndex : Int = 0
     lateinit var gifList : ArrayList<String>
-    lateinit var gifLink : String
+    var gifLink : String = ""
     lateinit var image_url : ArrayList<String>
     var countGif : Int = 0
     lateinit var t: Thread
+    var catName : String = ""
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_timer)
+        backgroundSelect = intent.getStringExtra(AppConstants.BG_ID)!!
+        circular_progress.setInterpolator(LinearInterpolator())
+
+        if (intent.getStringExtra(AppConstants.CATEGORY_NAME) != null)
+            catName = intent.getStringExtra(AppConstants.CATEGORY_NAME)!!
+        else
+            catName = Utilities.getPreference(this, AppConstants.CATEGORY_NAME)!!
+
+        if (intent.getStringExtra(AppConstants.MARKETPLACE_ID) != null)
+        marketplaceId = intent.getStringExtra(AppConstants.MARKETPLACE_ID)!!
+
+        if (intent.getStringExtra(AppConstants.BACKGROUND_COLOUR) != null)
+        backgroundColour = intent.getStringExtra(AppConstants.BACKGROUND_COLOUR)!!
+
+        imageFileList = ArrayList<File>()
+        imageFileListFrames = ArrayList<Int>()
+        image_url = ArrayList<String>()
+
+        //Get Intents
+        imageFileList.addAll(intent.getParcelableArrayListExtra(AppConstants.ALL_IMAGE_LIST)!!)
+        imageFileListFrames.addAll(intent.getIntegerArrayListExtra(AppConstants.ALL_FRAME_LIST)!!)
 
         setIntents()
 
@@ -152,11 +177,12 @@ class TimerActivity : AppCompatActivity() {
 
         //Get Intents
         imageFileList.addAll(intent.getParcelableArrayListExtra(AppConstants.ALL_IMAGE_LIST)!!)
-        imageInteriorFileList.addAll(intent.getParcelableArrayListExtra(AppConstants.ALL_INTERIOR_IMAGE_LIST)!!)
-
         imageFileListFrames.addAll(intent.getIntegerArrayListExtra(AppConstants.ALL_FRAME_LIST)!!)
-        imageInteriorFileListFrames.addAll(intent.getIntegerArrayListExtra(AppConstants.ALL_INTERIOR_FRAME_LIST)!!)
 
+        if(Utilities.getPreference(this,AppConstants.CATEGORY_NAME).equals("Automobiles")) {
+            imageInteriorFileList.addAll(intent.getParcelableArrayListExtra(AppConstants.ALL_INTERIOR_IMAGE_LIST)!!)
+            imageInteriorFileListFrames.addAll(intent.getIntegerArrayListExtra(AppConstants.ALL_INTERIOR_FRAME_LIST)!!)
+        }
         totalImagesToUPload = imageFileList.size
     }
 
@@ -262,8 +288,7 @@ class TimerActivity : AppCompatActivity() {
                 Utilities.getPreference(this, AppConstants.SHOOT_ID)!!,
                 Utilities.getPreference(this, AppConstants.MAIN_IMAGE).toString(),
                 uploadPhotoName,
-                "EXTERIOR"
-            )
+                "EXTERIOR")
 
             Log.e("Frame Number", intent.getIntExtra(AppConstants.FRAME, 1).toString())
             val gson = Gson()
@@ -624,9 +649,9 @@ class TimerActivity : AppCompatActivity() {
             {
                 CountDownTimer(480000 * 4)
 
-            }   else if (Utilities.getPreference(this, AppConstants.FRAME_SHOOOTS).equals("36"))
+            }   else if (Utilities.getPreference(this, AppConstants.FRAME_SHOOOTS).equals("5"))
             {
-                CountDownTimer(390000 * 3)
+                CountDownTimer(480000)
             }
         }
     }
@@ -707,8 +732,13 @@ class TimerActivity : AppCompatActivity() {
                         }
                         photsAdapter.notifyDataSetChanged()
 
-                        if (countGif < photoList.size) {
-                            bulkUpload(countGif)
+                        // Utilities.showProgressDialog(this@TimerActivity)
+                        if (countGif < photoList.size ) {
+                            if (catName.equals("Automobiles")) {
+                                bulkUpload(countGif)
+                            }else if (catName.equals("Footwear")){
+                                bulkUploadFootwear(countGif)
+                            }
                         }
                         // Utilities.showProgressDialog(this@TimerActivity)
                     } else {
@@ -860,6 +890,189 @@ class TimerActivity : AppCompatActivity() {
         }
     }
 
+    //Fetch bulk data
+    private fun fetchBulkUpload() {
+        if (Utilities.isNetworkAvailable(this)) {
+            llTimer.visibility = View.VISIBLE
+            llNoInternet.visibility = View.GONE
+            Log.e("Fetchbulkupload", "started......")
+
+            val request = RetrofitClients.buildService(APiService::class.java)
+            val userId = RequestBody.create(
+                MultipartBody.FORM,
+                Utilities.getPreference(this, AppConstants.tokenId)!!
+            )
+            val skuId = RequestBody.create(
+                MultipartBody.FORM,
+                Utilities.getPreference(this, AppConstants.SKU_ID)!!
+            )
+
+            val call = request.fetchBulkImage(userId, skuId)
+
+            call?.enqueue(object : Callback<List<FetchBulkResponse>> {
+                override fun onResponse(
+                    call: Call<List<FetchBulkResponse>>,
+                    response: Response<List<FetchBulkResponse>>
+                ) {
+                    if (response.isSuccessful) {
+                        Log.e("Upload Replace", "bulk Fetch")
+                        imageList = ArrayList<String>()
+                        imageListAfter = ArrayList<String>()
+                        interiorList = ArrayList<String>()
+
+                        imageList.clear()
+                        imageListAfter.clear()
+                        interiorList.clear()
+
+                        for (i in 0..response.body()!!.size - 1) {
+                            if (response.body()!![i].category.equals("Exterior")) {
+                                imageList.add(response.body()!![i].input_image_url)
+                                imageListAfter.add(response.body()!![i].output_image_url)
+                            } else {
+                                interiorList.add(response.body()!![i].output_image_url)
+                            }
+                        }
+                        if (Utilities.getPreference(this@TimerActivity,AppConstants.CATEGORY_NAME).equals("Automobiles"))
+                        {
+                            fetchGif()
+                        }
+                        else {
+                            sendEmail()
+                        }
+
+                    } else {
+                        fetchBulkUpload()
+                    }
+                }
+
+                override fun onFailure(call: Call<List<FetchBulkResponse>>, t: Throwable) {
+                    Utilities.hideProgressDialog()
+
+                    Toast.makeText(
+                        this@TimerActivity,
+                        "Server not responding!!!", Toast.LENGTH_SHORT
+                    ).show()
+
+                }
+            })
+        }
+        else{
+            Utilities.hideProgressDialog()
+            llTimer.visibility = View.GONE
+            llNoInternet.visibility = View.VISIBLE
+            countDownTimer.cancel()
+        }
+    }
+
+    private fun bulkUploadFootwear(countsGif: Int) {
+        if (Utilities.isNetworkAvailable(this)) {
+            llTimer.visibility = View.VISIBLE
+            llNoInternet.visibility = View.GONE
+
+            val request = RetrofitClients.buildService(APiService::class.java)
+            Log.e("Upload bulk footwear", "started......")
+
+            /*   val background : ArrayList<String> = ArrayList<String>()
+           background.addAll(listOf(backgroundSelect))*/
+
+//        image_url.add(photoList[countsGif].displayThumbnail)
+
+//            val background = RequestBody.create(
+//                MultipartBody.FORM,
+//                backgroundSelect
+//            )
+
+            val marketplace_id = RequestBody.create(
+                MultipartBody.FORM,
+                marketplaceId
+            )
+
+            val bg_color = RequestBody.create(
+                MultipartBody.FORM,
+                backgroundColour
+            )
+
+            val userId = RequestBody.create(
+                MultipartBody.FORM,
+                Utilities.getPreference(this, AppConstants.tokenId)!!
+            )
+            val skuId = RequestBody.create(
+                MultipartBody.FORM,
+                Utilities.getPreference(this, AppConstants.SKU_ID)!!
+            )
+            val imageUrl = RequestBody.create(
+                MultipartBody.FORM,
+                photoList[countsGif].displayThumbnail
+            )
+            Log.e(
+                "Sku NAme Upload",
+                Utilities.getPreference(this, AppConstants.SKU_NAME)!!
+            )
+            val skuName = RequestBody.create(
+                MultipartBody.FORM,
+                Utilities.getPreference(this, AppConstants.SKU_NAME)!!
+            )
+
+            val windowStatus = RequestBody.create(
+                MultipartBody.FORM,
+                "inner"
+            )
+
+            val call =
+                request.bulkUPloadFootwear( userId, skuId, imageUrl, skuName, marketplace_id, bg_color)
+
+            call?.enqueue(object : Callback<FootwearBulkResponse> {
+                override fun onResponse(
+                    call: Call<FootwearBulkResponse>,
+                    response: Response<FootwearBulkResponse>
+                ) {
+                    if (response.isSuccessful && response.body()!!.status == 200) {
+                        ++countGif
+                        if (countGif < photoList.size) {
+                            Log.e("countGif", countGif.toString())
+                            bulkUploadFootwear(countGif)
+                        } else
+                            fetchBulkUpload()
+                        Log.e("Upload Replace", "bulk")
+                        Log.e(
+                            "Upload Replace SKU",
+                            Utilities.getPreference(
+                                this@TimerActivity,
+                                AppConstants.SKU_NAME
+                            )!!
+                        )
+                    } else {
+                        llTimer.visibility = View.GONE
+                        llNoInternet.visibility = View.VISIBLE
+                        countDownTimer.cancel()
+                        Utilities.hideProgressDialog()
+                        Toast.makeText(
+                            this@TimerActivity,
+                            "Server not responding!!!", Toast.LENGTH_SHORT
+                        ).show()
+                    }
+                }
+
+                override fun onFailure(call: Call<FootwearBulkResponse>, t: Throwable) {
+                    Utilities.hideProgressDialog()
+                    llTimer.visibility = View.GONE
+                    llNoInternet.visibility = View.VISIBLE
+                    countDownTimer.cancel()
+                    Toast.makeText(
+                        this@TimerActivity,
+                        "Server not responding!!!", Toast.LENGTH_SHORT
+                    ).show()
+                }
+            })
+        }
+        else{
+            Utilities.hideProgressDialog()
+
+            llTimer.visibility = View.GONE
+            llNoInternet.visibility = View.VISIBLE
+            countDownTimer.cancel()
+        }
+    }
 
     private fun addWatermark(countsGif: Int) {
         if (Utilities.isNetworkAvailable(this)) {
@@ -945,73 +1158,6 @@ class TimerActivity : AppCompatActivity() {
         else{
             Utilities.hideProgressDialog()
 
-            llTimer.visibility = View.GONE
-            llNoInternet.visibility = View.VISIBLE
-            countDownTimer.cancel()
-        }
-    }
-
-    //Fetch bulk data
-    private fun fetchBulkUpload() {
-        if (Utilities.isNetworkAvailable(this)) {
-            llTimer.visibility = View.VISIBLE
-            llNoInternet.visibility = View.GONE
-            Log.e("Fetchbulkupload", "started......")
-
-            val request = RetrofitClients.buildService(APiService::class.java)
-            val userId = RequestBody.create(
-                MultipartBody.FORM,
-                Utilities.getPreference(this, AppConstants.tokenId)!!
-            )
-            val skuId = RequestBody.create(
-                MultipartBody.FORM,
-                Utilities.getPreference(this, AppConstants.SKU_ID)!!
-            )
-
-            val call = request.fetchBulkImage(userId, skuId)
-
-            call?.enqueue(object : Callback<List<FetchBulkResponse>> {
-                override fun onResponse(
-                    call: Call<List<FetchBulkResponse>>,
-                    response: Response<List<FetchBulkResponse>>
-                ) {
-                    if (response.isSuccessful) {
-                        Log.e("Upload Replace", "bulk Fetch")
-                        imageList = ArrayList<String>()
-                        imageListAfter = ArrayList<String>()
-                        interiorList = ArrayList<String>()
-
-                        imageList.clear()
-                        imageListAfter.clear()
-                        interiorList.clear()
-
-                        for (i in 0..response.body()!!.size - 1) {
-                            if (response.body()!![i].category.equals("Exterior")) {
-                                imageList.add(response.body()!![i].input_image_url)
-                                imageListAfter.add(response.body()!![i].output_image_url)
-                            } else {
-                                interiorList.add(response.body()!![i].output_image_url)
-                            }
-                        }
-                        fetchGif()
-                    } else {
-                        fetchBulkUpload()
-                    }
-                }
-
-                override fun onFailure(call: Call<List<FetchBulkResponse>>, t: Throwable) {
-                    Utilities.hideProgressDialog()
-
-                    Toast.makeText(
-                        this@TimerActivity,
-                        "Server not responding!!!", Toast.LENGTH_SHORT
-                    ).show()
-
-                }
-            })
-        }
-        else{
-            Utilities.hideProgressDialog()
             llTimer.visibility = View.GONE
             llNoInternet.visibility = View.VISIBLE
             countDownTimer.cancel()
@@ -1134,6 +1280,7 @@ class TimerActivity : AppCompatActivity() {
                                 ShowImagesActivity::class.java
                             )
                             intent.putExtra(AppConstants.GIF, gifLink)
+                            intent.putExtra(AppConstants.CATEGORY_NAME,catName)
                             startActivity(intent)
                             finish()
                             Toast.makeText(

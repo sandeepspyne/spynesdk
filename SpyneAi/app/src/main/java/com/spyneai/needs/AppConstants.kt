@@ -59,6 +59,8 @@ object AppConstants {
     val otp : String = "otp"
 
     val highQualityCount : String = "highQualityCount"
-
     val backgroundNumber = "backgroundNumber"
+    val MARKETPLACE_ID = "marketplace_id"
+    val BACKGROUND_COLOUR = "background_colour"
+
 }

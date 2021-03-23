@@ -15,12 +15,14 @@ import com.spyneai.model.channels.MarketplaceResponse
 import com.spyneai.model.dashboard.DashboardResponse
 import com.spyneai.model.login.LoginRequest
 import com.spyneai.model.login.LoginResponse
+import com.spyneai.model.marketplace.FootwearBulkResponse
+import com.spyneai.model.marketplace.FootwearMarketplaceResponse
+import com.spyneai.model.marketplace.MarketplaceBackgroundResponse
 import com.spyneai.model.marketupdate.ShootMarketUpdateRequest
 import com.spyneai.model.nextsku.SkuRequest
 import com.spyneai.model.order.PlaceOrderResponse
 import com.spyneai.model.orders.MyOrdersResponse
 import com.spyneai.model.ordersummary.OrderSummaryResponse
-import com.spyneai.model.otp.OtpRequest
 import com.spyneai.model.otp.OtpResponse
 import com.spyneai.model.projects.CompletedProjectResponse
 import com.spyneai.model.shoot.*
@@ -218,12 +220,16 @@ interface APiService {
             : Call<OrderSummaryResponse>?
 
 
-
-
     //-- AI APIs --ok
     @GET("fetch-marketplace?api_key=fde46c58-5735-4fcf-8b38-980c95001dc3")
     fun getChannelsList(@Header("category") category: String?)
-            : Call<List<ChannelsResponse>>?
+            : Call<List<FootwearMarketplaceResponse>>?
+
+//    @GET("categories/sub/{categoryId}")
+//    fun getBeforeAfter(
+//        @Header("tokenId") tokenId: String?,
+//        @Path("categoryId") categoryId: String?
+//    ): Call<BeforeAfterResponse>?
 
     @GET("fetch-backgrounds?api_key=fde46c58-5735-4fcf-8b38-980c95001dc3")
     fun getBackgroundsList(@Header("category") category: String?)
@@ -280,6 +286,17 @@ interface APiService {
             @Part("window_status") window_status: RequestBody?,
             @Part("contrast") contrast: RequestBody?,
     ): Call<BulkUploadResponse>?
+
+    @Multipart
+    @POST("footwear-background-replacement")
+    fun bulkUPloadFootwear(
+        @Part("user_id") user_id: RequestBody?,
+        @Part("sku_id") sku_id: RequestBody?,
+        @Part("image_url") image_url: RequestBody?,
+        @Part("sku_name") sku_name: RequestBody?,
+        @Part("marketplace_id") marketplace_id: RequestBody?,
+        @Part("bg_color") bg_color: RequestBody?,
+    ): Call<FootwearBulkResponse>?
 
     @Multipart
     @POST("fetch-user-bulk-image")

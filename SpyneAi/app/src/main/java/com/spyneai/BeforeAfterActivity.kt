@@ -23,6 +23,8 @@ import com.spyneai.model.beforeafter.Data
 import com.spyneai.model.carreplace.CarBackgroundsResponse
 import com.spyneai.model.channel.BackgroundsResponse
 import com.spyneai.model.channel.ChannelsResponse
+import com.spyneai.model.marketplace.FootwearMarketplaceResponse
+import com.spyneai.model.marketplace.MarketplaceBackgroundResponse
 import com.spyneai.needs.AppConstants
 import com.spyneai.needs.ScrollingLinearLayoutManager
 import com.spyneai.needs.Utilities
@@ -80,6 +82,7 @@ class BeforeAfterActivity : AppCompatActivity() {
             object : BeforeAfterAdapter.BtnClickListener {
                 override fun onBtnClick(position: Int) {
                     Log.e("position cat", position.toString())
+
                 }
             })
 
@@ -150,6 +153,9 @@ class BeforeAfterActivity : AppCompatActivity() {
             intent.getStringExtra(AppConstants.CATEGORY_ID)!!
         )
 
+       
+        Log.e("tokenId", intent.getStringExtra(AppConstants.CATEGORY_ID)!!)
+
         call?.enqueue(object : Callback<BeforeAfterResponse> {
             override fun onResponse(
                 call: Call<BeforeAfterResponse>,
@@ -160,6 +166,10 @@ class BeforeAfterActivity : AppCompatActivity() {
                     (beforeAfterList as ArrayList).clear()
                     (beforeAfterList as ArrayList).addAll(response.body()!!.payload.data)
                     llBeforeAfters.visibility = View.VISIBLE
+
+                    Log.e("beforeafterlist", beforeAfterList.toString())
+
+
                 }
                 else{
                     llBeforeAfters.visibility = View.GONE
@@ -170,7 +180,7 @@ class BeforeAfterActivity : AppCompatActivity() {
 
 
 
-              /*  if (catName.equals("Automobiles")) {
+            /*   if (catName.equals("Automobiles")) {
                     if ( Utilities.getList(this@BeforeAfterActivity,AppConstants.BACKGROUND_LIST_CARS)!!.size == 0) {
                         fetchBackgroundCars()
                     }
@@ -204,16 +214,16 @@ class BeforeAfterActivity : AppCompatActivity() {
         })
     }
 
-    private fun fetchChannels()
+  /*  private fun fetchChannels()
     {
         // Utilities.showProgressDialog(this)
         val request = RetrofitClients.buildService(APiService::class.java)
         val call = request.getChannelsList(catName)
 
-        call?.enqueue(object : Callback<List<ChannelsResponse>> {
+        call?.enqueue(object : Callback<List<MarketplaceBackgroundResponse>> {
             override fun onResponse(
-                call: Call<List<ChannelsResponse>>,
-                response: Response<List<ChannelsResponse>>
+                call: Call<List<MarketplaceBackgroundResponse>>,
+                response: Response<List<MarketplaceBackgroundResponse>>
             ) {
                 // Utilities.hideProgressDialog()
                 if (response.isSuccessful) {
@@ -234,7 +244,7 @@ class BeforeAfterActivity : AppCompatActivity() {
                 }
             }
 
-            override fun onFailure(call: Call<List<ChannelsResponse>>, t: Throwable) {
+            override fun onFailure(call: Call<List<MarketplaceBackgroundResponse>>, t: Throwable) {
                 Utilities.hideProgressDialog()
                 Toast.makeText(
                     this@BeforeAfterActivity,
@@ -243,7 +253,7 @@ class BeforeAfterActivity : AppCompatActivity() {
                 ).show()
             }
         })
-    }
+    }*/
 
     private fun fetchBackgrounds() {
         val request = RetrofitClients.buildService(APiService::class.java)

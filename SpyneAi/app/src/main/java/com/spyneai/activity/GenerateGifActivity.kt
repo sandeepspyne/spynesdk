@@ -15,6 +15,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.spyneai.R
 import com.spyneai.adapter.CarBackgroundAdapter
+import com.spyneai.adapter.MarketplacesAdapter
 import com.spyneai.adapter.PhotosAdapter
 import com.spyneai.aipack.*
 import com.spyneai.model.carreplace.CarBackgroundsResponse
@@ -48,6 +49,7 @@ class GenerateGifActivity : AppCompatActivity() {
     var totalImagesToUPload : Int = 0
     var totalImagesToUPloadIndex : Int = 0
     lateinit var gifList : ArrayList<String>
+    var catName = ""
 
     lateinit var exposures : String
     lateinit var windows : String
@@ -57,6 +59,11 @@ class GenerateGifActivity : AppCompatActivity() {
         setContentView(R.layout.activity_generate_gif)
 
         setBasics()
+        if (intent.getStringExtra(AppConstants.CATEGORY_NAME) != null)
+            catName = intent.getStringExtra(AppConstants.CATEGORY_NAME)!!
+        else
+            catName = Utilities.getPreference(this, AppConstants.CATEGORY_NAME)!!
+
         setBackgroundsCar()
         listeners()
     }
@@ -71,10 +78,13 @@ class GenerateGifActivity : AppCompatActivity() {
         //Get Intents
 
         imageFileList.addAll(intent.getParcelableArrayListExtra(AppConstants.ALL_IMAGE_LIST)!!)
-        imageInteriorFileList.addAll(intent.getParcelableArrayListExtra(AppConstants.ALL_INTERIOR_IMAGE_LIST)!!)
-
         imageFileListFrames.addAll(intent.getIntegerArrayListExtra(AppConstants.ALL_FRAME_LIST)!!)
-        imageInteriorFileListFrames.addAll(intent.getIntegerArrayListExtra(AppConstants.ALL_INTERIOR_FRAME_LIST)!!)
+
+        if (Utilities.getPreference(this,AppConstants.CATEGORY_NAME).equals("Automobiles"))
+        {
+            imageInteriorFileList.addAll(intent.getParcelableArrayListExtra(AppConstants.ALL_INTERIOR_IMAGE_LIST)!!)
+            imageInteriorFileListFrames.addAll(intent.getIntegerArrayListExtra(AppConstants.ALL_INTERIOR_FRAME_LIST)!!)
+        }
 
         totalImagesToUPload = imageFileList.size
         windows = "inner"
@@ -152,6 +162,8 @@ class GenerateGifActivity : AppCompatActivity() {
                 intent.putExtra(AppConstants.ALL_FRAME_LIST, imageFileListFrames)
                 intent.putExtra(AppConstants.ALL_INTERIOR_IMAGE_LIST, imageInteriorFileList)
                 intent.putExtra(AppConstants.ALL_INTERIOR_FRAME_LIST, imageInteriorFileListFrames)
+                intent.putExtra(AppConstants.CATEGORY_NAME, catName)
+//                intent.putExtra(AppConstants.GIF_LIST, gifList)
                 startActivity(intent)
                 finish()
             } else {

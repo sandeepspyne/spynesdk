@@ -28,7 +28,7 @@
                 android:layout_height="wrap_content"
                 app:cardCornerRadius="@dimen/dp_10">
                 <ImageView
-                    android:id="@+id/ivMarketPlace"
+                    android:id="@+id/ivCarBackground"
                     android:layout_width="@dimen/dp_70"
                     android:layout_height="@dimen/dp_70"
                     android:src="@mipmap/defaults"

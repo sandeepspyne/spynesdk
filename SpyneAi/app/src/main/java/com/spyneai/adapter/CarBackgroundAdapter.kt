@@ -1,8 +1,6 @@
 package com.spyneai.adapter
 
 import android.content.Context
-import android.content.Intent
-import android.opengl.Visibility
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -12,18 +10,12 @@ import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.spyneai.R
-import com.spyneai.activity.CameraActivity
-import com.spyneai.activity.CameraPreviewActivity
 import com.spyneai.model.carreplace.CarBackgroundsResponse
-import com.spyneai.model.channel.Data
-import com.spyneai.needs.AppConstants
-import com.spyneai.needs.AppConstants.backgroundNumber
-import com.spyneai.needs.Utilities
 
-class CarBackgroundAdapter(val context: Context,
-                           val channelList : ArrayList<CarBackgroundsResponse>,
-                           var pos : Int,
-                           val btnlistener: BtnClickListener?)
+class CarBackgroundAdapter (val context: Context,
+                            val channelList : ArrayList<CarBackgroundsResponse>,
+                            var pos : Int,
+                            val btnlistener: BtnClickListener?)
     : RecyclerView.Adapter<CarBackgroundAdapter.ViewHolder>() {
 
     companion object {
@@ -36,7 +28,7 @@ class CarBackgroundAdapter(val context: Context,
 
     class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
         val llChannel: LinearLayout = view.findViewById(R.id.llChannel)
-        val ivMarketPlace: ImageView = view.findViewById(R.id.ivMarketPlace)
+        val ivCarBackground: ImageView = view.findViewById(R.id.ivCarBackground)
         val tvCarBgName: TextView = view.findViewById(R.id.tvCarBgName)
     }
 
@@ -44,7 +36,7 @@ class CarBackgroundAdapter(val context: Context,
     override fun onCreateViewHolder(viewGroup: ViewGroup, viewType: Int): ViewHolder {
         // Create a new view, which defines the UI of the list item
         val view = LayoutInflater.from(viewGroup.context)
-                .inflate(R.layout.car_channel, viewGroup, false)
+            .inflate(R.layout.car_channel, viewGroup, false)
 
         return ViewHolder(view)
     }
@@ -55,7 +47,7 @@ class CarBackgroundAdapter(val context: Context,
         // Get element from your dataset at this position and replace the
         // contents of the view with that element
         Glide.with(context).load(channelList[position].imageUrl)
-                .into(viewHolder.ivMarketPlace)
+            .into(viewHolder.ivCarBackground)
 
         viewHolder.tvCarBgName.setText(channelList[position].bgName)
 

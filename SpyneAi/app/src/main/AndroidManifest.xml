@@ -54,6 +54,8 @@
         <activity
             android:name=".activity.BackgroundAddActivity"
             android:screenOrientation="portrait" />
+        <activity android:name=".activity.GenrateMarketplaceActivity"
+            android:screenOrientation="portrait"/>
         <activity
             android:name=".activity.OngoingActivity"
             android:screenOrientation="portrait" />

@@ -422,8 +422,7 @@ public class CameraPreviewActivity : AppCompatActivity() {
                 intent.getIntExtra(AppConstants.FRAME, 1),
                 Utilities.getPreference(this, AppConstants.SHOOT_ID)!!,
                 Utilities.getPreference(this@CameraPreviewActivity, AppConstants.MAIN_IMAGE).toString(),
-                uploadPhotoName,"")
-
+                uploadPhotoName, "EXTERIOR")
 
             Log.e("Frame Number", intent.getIntExtra(AppConstants.FRAME, 1).toString())
             val gson = Gson()

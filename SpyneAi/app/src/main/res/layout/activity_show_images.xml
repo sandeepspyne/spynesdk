@@ -79,7 +79,7 @@
                 <LinearLayout
                     android:orientation="horizontal"
                     android:layout_width="match_parent"
-                    android:id="@+id/llBeforeAfters"
+                    android:id="@+id/llBeforeAfterImages"
                     android:layout_marginTop="@dimen/dp_10"
                     android:layout_height="wrap_content">
 
@@ -140,6 +140,7 @@
                     android:drawablePadding="@dimen/dp_10"
                     app:drawableRightCompat="@mipmap/move" />
                 <TextView
+                    android:id="@+id/tvInterior"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:text="@string/interior"
@@ -204,6 +205,7 @@
 
             </LinearLayout>
             <LinearLayout
+                android:id="@+id/llDownloads"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal">

@@ -23,7 +23,6 @@ android {
 
     buildTypes {
         release {
-
             minifyEnabled false
           //  proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
             firebaseCrashlytics {
@@ -36,9 +35,7 @@ android {
             shrinkResources false
             versionNameSuffix ".debug"
             applicationIdSuffix ".debug"
-
             minifyEnabled false
-         //   proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
     }
     compileOptions {
@@ -126,4 +123,8 @@ dependencies {
     testImplementation 'junit:junit:4.13.2'
     androidTestImplementation 'androidx.test.ext:junit:1.1.2'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.3.0'
+
+    //circle image view
+    implementation 'com.mikhaellopez:circularimageview:4.2.0'
+
 }
