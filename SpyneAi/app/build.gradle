@@ -31,12 +31,12 @@ android {
                 mappingFileUploadEnabled false
             }
         }
-        debug {
+       /* debug {
             shrinkResources false
             versionNameSuffix ".debug"
             applicationIdSuffix ".debug"
             minifyEnabled false
-        }
+        }*/
     }
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_1_8
@@ -54,6 +54,9 @@ android {
 }
 
 dependencies {
+    //noinspection GradleCompatible
+    implementation "com.android.support:support-compat:28.0.0"
+
     implementation 'com.facebook.stetho:stetho:1.5.1'
     implementation 'com.facebook.stetho:stetho-okhttp3:1.5.1'
 

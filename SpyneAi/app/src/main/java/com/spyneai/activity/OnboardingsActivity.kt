@@ -95,7 +95,7 @@ class OnboardingsActivity : AppCompatActivity() {
                     return OnboardingTwoFragment()
                 }
                 2 -> {
-                    counts = 1
+                    counts = 2
                     return OnboardingThreeFragment()
                 }
             }

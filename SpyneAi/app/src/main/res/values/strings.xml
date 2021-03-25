@@ -152,7 +152,8 @@
     <string name="choose_background_colour">Choose background colour</string>
     <string name="sample_output_image">Sample  Output Image</string>
     <string name="choose_background">Then choose the background color</string>
-
+    <string name="channel_name">spyne_channel</string>
+    <string name="channel_description">spyne</string>
 
 
     <string-array name="planets_array">

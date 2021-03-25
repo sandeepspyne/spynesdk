@@ -226,11 +226,8 @@ class TimerActivity : AppCompatActivity() {
                 ) {
                     //  Utilities.hideProgressDialog()
                     if (response.isSuccessful) {
-                        Log.e("Fisrt execution", "UploadImage Bucket")
-
-
-                        Log.e("uploadImageToBucket", response.body()?.image.toString())
-                        Log.e("uploadImageToBucket", totalImagesToUPloadIndex.toString())
+                        Log.e("uploadImageToBucket", totalImagesToUPloadIndex.toString() +
+                                " " + response.body()?.image.toString())
 
                         //  if (Utilities.getPreference(this@CameraActivity, AppConstants.MAIN_IMAGE).equals(""))
                         Utilities.savePrefrence(
@@ -311,14 +308,6 @@ class TimerActivity : AppCompatActivity() {
 
                                 Log.e("IMage uploaded ", response.body()?.msgInfo.toString())
                                 Log.e(
-                                    "Frame 1",
-                                    response.body()?.payload!!.data.currentFrame.toString()
-                                )
-                                Log.e(
-                                    "Frame 2",
-                                    response.body()?.payload!!.data.totalFrames.toString()
-                                )
-                                Log.e(
                                     "SKU ID", Utilities.getPreference(
                                         this@TimerActivity,
                                         AppConstants.SKU_ID
@@ -330,7 +319,6 @@ class TimerActivity : AppCompatActivity() {
                             } else {
                                 totalImagesToUPloadIndex = 0
                                 totalImagesToUPload = imageInteriorFileList.size
-
 
                                 if (imageInteriorFileList != null && imageInteriorFileList.size > 0) {
                                     uploadImageToBucketInterior()
@@ -839,9 +827,8 @@ class TimerActivity : AppCompatActivity() {
                             bulkUpload(countGif)
 //                            (imageListWaterMark as ArrayList).add(response.body()!!.watermark_image)
 
-                        } else if (photoListInteriors.size > 0)
-                        {
-                        } else if (photoListInteriors.size > 0) {
+                        }
+                        else if (photoListInteriors.size > 0) {
                             countGif = 0
                             if (countGif < photoListInteriors.size) {
                                 addWatermark(countGif)
@@ -1345,7 +1332,7 @@ class TimerActivity : AppCompatActivity() {
 
 
     override fun onBackPressed() {
-        super.onBackPressed()
+       // super.onBackPressed()
         // finish()
         //onDestroy()
 

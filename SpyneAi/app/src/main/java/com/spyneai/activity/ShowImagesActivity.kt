@@ -1,13 +1,12 @@
 package com.spyneai.activity
 
-import android.app.Dialog
-import android.app.Notification
-import android.app.NotificationManager
+import android.app.*
 import android.content.Context
 import android.content.Intent
 import android.net.Uri
+import android.os.Build
 import android.os.Bundle
-import android.os.CountDownTimer
+import android.os.Environment
 import android.os.Handler
 import android.util.Log
 import android.view.View
@@ -17,6 +16,7 @@ import android.widget.ImageView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.NotificationCompat
+import androidx.core.app.NotificationManagerCompat
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.bumptech.glide.Glide
@@ -51,10 +51,10 @@ import java.io.File
 import java.net.URLEncoder
 import java.text.SimpleDateFormat
 import java.util.*
-import kotlin.Error
 import kotlin.collections.ArrayList
 
 class ShowImagesActivity : AppCompatActivity() {
+    lateinit var builder: NotificationCompat.Builder
     lateinit var imageList: List<String>
     lateinit var imageListAfter: List<String>
     lateinit var imageListInterior: List<String>
@@ -71,6 +71,7 @@ class ShowImagesActivity : AppCompatActivity() {
 
     var downloadHighQualityCount: Int = 5
 
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_show_images)
@@ -80,7 +81,6 @@ class ShowImagesActivity : AppCompatActivity() {
             .build()
         PRDownloader.initialize(applicationContext, config)
 
-        hideData()
 
         downloadList = ArrayList<String>()
         imageListWaterMark = ArrayList<String>()
@@ -118,9 +118,9 @@ class ShowImagesActivity : AppCompatActivity() {
         }
     }
 
-    private fun hideData() {
+    private fun hideData(i: Int) {
 
-        if (Utilities.getPreference(this,AppConstants.CATEGORY_NAME).equals("Automobiles")) {
+        if (i == 0) {
             tvYourEmailIdReplaced.visibility = View.VISIBLE
             tvViewGif.visibility = View.VISIBLE
             tvInterior.visibility = View.VISIBLE
@@ -142,7 +142,6 @@ class ShowImagesActivity : AppCompatActivity() {
             )
             startActivity(intent)
         })
-
 
         ivBackShowImages.setOnClickListener(View.OnClickListener {
             onBackPressed()
@@ -203,6 +202,7 @@ class ShowImagesActivity : AppCompatActivity() {
             llDownloadWithWatermark.isFocusable = false
         })
     }
+
 
     private fun setBulkImages() {
         imageList = ArrayList<String>()
@@ -279,17 +279,18 @@ class ShowImagesActivity : AppCompatActivity() {
                             (imageListAfter as ArrayList).add(response.body()!![i].output_image_url)
                             (imageListWaterMark as ArrayList).add(response.body()!![i].watermark_image)
                             (listHdQuality as ArrayList).add(response.body()!![i].output_image_url)
-
+                            hideData(0)
                         } else if (response.body()!![i].category.equals("Interior")) {
                             Category = response.body()!![i].category
                             (imageListInterior as ArrayList).add(response.body()!![i].output_image_url)
                             (imageListWaterMark as ArrayList).add(response.body()!![i].output_image_url)
                             (listHdQuality as ArrayList).add(response.body()!![i].input_image_url)
-                        }
-                        else{
+                            hideData(0)
+                        } else {
                             Category = response.body()!![i].category
                             (imageList as ArrayList).add(response.body()!![i].input_image_url)
                             (imageListAfter as ArrayList).add(response.body()!![i].output_image_url)
+                            hideData(1)
                         }
 
                     }
@@ -386,6 +387,8 @@ class ShowImagesActivity : AppCompatActivity() {
 
         if (listHdQuality.size > 0 && listHdQuality != null) {
             for (i in 0 until listHdQuality.size) {
+                seekbarDownload.setProgress(i)
+
                 if (listHdQuality[i] != null)
                     downloadWithHighQuality(listHdQuality[i].toString())
             }
@@ -394,7 +397,9 @@ class ShowImagesActivity : AppCompatActivity() {
 
     fun downloadWatermark() {
         if (imageListWaterMark.size > 0 && imageListWaterMark != null) {
-            for (i in 0 until imageListWaterMark.size) {
+            for (i in 0 until 3/*imageListWaterMark.size*/) {
+                seekbarDownload.setProgress(i)
+                tvProgress.setText(i.toString() + "/" + listHdQuality.size)
                 if (imageListWaterMark[i] != null)
                     downloadWithWatermark(imageListWaterMark[i].toString())
             }
@@ -407,14 +412,15 @@ class ShowImagesActivity : AppCompatActivity() {
 
         val FILENAME_FORMAT = "yyyy-MM-dd-HH-mm-ss-SSS"
 
-        seekbarDownload.visibility = View.VISIBLE
+        showNotifications()
+
+        val imageName : String = "Spyne" + SimpleDateFormat(
+            FILENAME_FORMAT, Locale.US).format(System.currentTimeMillis()) + ".png"
+
         val downloadId = PRDownloader.download(
             imageFile,
-            getOutputDirectory(),
-            "Spyne" + SimpleDateFormat(
-                FILENAME_FORMAT, Locale.US
-            ).format(System.currentTimeMillis()) + ".png"
-        )
+            Environment.getExternalStorageDirectory().toString() + "/Spyne",
+            imageName)
             .build()
             .setOnStartOrResumeListener {
             }
@@ -425,11 +431,32 @@ class ShowImagesActivity : AppCompatActivity() {
                 override fun onCancel() {}
             })
             .setOnProgressListener(object : OnProgressListener {
-                override fun onProgress( progress : Progress) {
-                    seekbarDownload.setProgress(((progress.totalBytes / 100) * progress.currentBytes).toInt())
-                    tvProgress.setText(((progress.totalBytes / 100) * progress.currentBytes).toInt().toString() + "/" + "100")
+                override fun onProgress(progress: Progress) {
+                    //showNotifications(((progress.totalBytes / 100) * progress.currentBytes).toInt())
 
-                    Log.e("Progress HD",imageFile + " " + progress.toString())
+                    builder.setContentTitle(imageName)
+                        .setContentText(
+                            ((100 - (progress.currentBytes%100)).toInt())
+                                .toString() + "/" + "100"+ "%")
+                        .setProgress(100, (100 - (progress.currentBytes%100)).toInt(),
+                            false);
+
+                    with(NotificationManagerCompat.from(this@ShowImagesActivity)) {
+                        // notificationId is a unique int for each notification that you must define
+                        notify(1, builder.build())
+                    }
+
+                    llDownloadProgress.visibility = View.VISIBLE
+
+                    tvProgress.setText(imageName)
+                    tvProgressvalue.setText(((100 - (progress.currentBytes%100)).toInt())
+                        .toString() + "/" + "100" + "%")
+
+                    seekbarDownload.setProgress((100 - (progress.currentBytes%100)).toInt())
+
+                    Log.e("Progress HD", imageFile + " " +
+                            ((100 - (progress.currentBytes%100)).toInt())
+                                .toString() + "/" + "100")
                 }
             })
             .start(object : OnDownloadListener {
@@ -448,6 +475,7 @@ class ShowImagesActivity : AppCompatActivity() {
                             downloadHighQualityCount.toString()
                         )
                         downloadCount = 0
+                        llDownloadProgress.visibility = View.GONE
                         llDownloadHighQuality.isEnabled = true
                         llDownloadHighQuality.isFocusable = true
                     }
@@ -462,7 +490,6 @@ class ShowImagesActivity : AppCompatActivity() {
                     ).show()
                 }
 
-                fun onError(error: Error?) {}
             })
     }
 
@@ -471,13 +498,16 @@ class ShowImagesActivity : AppCompatActivity() {
         val FILENAME_FORMAT = "yyyy-MM-dd-HH-mm-ss-SSS"
 
         seekbarDownload.visibility = View.VISIBLE
+
+        showNotifications()
+
+        val imageName : String = "Spyne" + SimpleDateFormat(
+            FILENAME_FORMAT, Locale.US).format(System.currentTimeMillis()) + ".png"
+
         val downloadId = PRDownloader.download(
             imageFile,
-            getOutputDirectory(),
-            "Spyne" + SimpleDateFormat(
-                FILENAME_FORMAT, Locale.US
-            ).format(System.currentTimeMillis()) + ".png"
-        )
+            Environment.getExternalStorageDirectory().toString() + "/Spyne",
+            imageName)
             .build()
             .setOnStartOrResumeListener {
             }
@@ -488,10 +518,27 @@ class ShowImagesActivity : AppCompatActivity() {
                 override fun onCancel() {}
             })
             .setOnProgressListener(object : OnProgressListener {
-                override fun onProgress( progress : Progress) {
-                    Log.e("Progress",progress.toString())
-                    seekbarDownload.setProgress(((progress.totalBytes / 100) * progress.currentBytes).toInt())
-                    tvProgress.setText(((progress.totalBytes / 100) * progress.currentBytes).toInt().toString() + "/" + "100")
+                override fun onProgress(progress: Progress) {
+                    builder.setContentTitle(imageName)
+                        .setContentText(
+                            ((100 - (progress.currentBytes%100)).toInt())
+                                .toString() + "/" + "100"+ "%")
+                        .setProgress(100, (100 - (progress.currentBytes%100)).toInt(),
+                            false);
+
+                    with(NotificationManagerCompat.from(this@ShowImagesActivity)) {
+                        // notificationId is a unique int for each notification that you must define
+                        notify(1, builder.build())
+                    }
+
+                    Log.e("Progress HD", imageFile + " " +
+                            ((100 - (progress.currentBytes%100)).toInt())
+                                .toString() + "/" + "100"+ "%")
+                    tvProgress.setText(imageName)
+                    tvProgressvalue.setText(((100 - (progress.currentBytes%100)).toInt())
+                        .toString() + "/" + "100")
+                    llDownloadProgress.visibility = View.VISIBLE
+                    seekbarDownload.setProgress((100 - (progress.currentBytes%100)).toInt())
                 }
             })
             .start(object : OnDownloadListener {
@@ -505,7 +552,7 @@ class ShowImagesActivity : AppCompatActivity() {
 
                     llDownloadWithWatermark.isEnabled = true
                     llDownloadWithWatermark.isFocusable = true
-                    seekbarDownload.visibility = View.GONE
+                    llDownloadProgress.visibility = View.GONE
                 }
 
                 override fun onError(error: com.downloader.Error?) {
@@ -515,8 +562,6 @@ class ShowImagesActivity : AppCompatActivity() {
                         "Download Failed.", Toast.LENGTH_SHORT
                     ).show()
                 }
-
-                fun onError(error: Error?) {}
             })
     }
 
@@ -534,6 +579,42 @@ class ShowImagesActivity : AppCompatActivity() {
             mediaDir.toString() + File.separator
         else
             filesDir.toString() + File.separator
+    }
+
+    fun showNotifications()
+    {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            val name = getString(R.string.channel_name)
+            val descriptionText = getString(R.string.channel_description)
+            val importance = NotificationManager.IMPORTANCE_DEFAULT
+            val channel = NotificationChannel("CHANNEL_ID", name, importance).apply {
+                description = descriptionText
+            }
+            // Register the channel with the system
+            val notificationManager: NotificationManager =
+                getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+            notificationManager.createNotificationChannel(channel)
+
+            val intent = Intent(this, SplashActivity::class.java).apply {
+                flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+            }
+            val pendingIntent: PendingIntent = PendingIntent.getActivity(this, 0, intent, 0)
+            builder = NotificationCompat.Builder(this, "CHANNEL_ID")
+                .setSmallIcon(R.mipmap.home)
+                .setContentTitle("MAin")
+                .setContentText("Sub")
+                .setPriority(NotificationCompat.PRIORITY_DEFAULT)
+                .setContentIntent(pendingIntent)
+                .setAutoCancel(true)
+
+            builder.setProgress(100, 0, false);
+
+            with(NotificationManagerCompat.from(this)) {
+                // notificationId is a unique int for each notification that you must define
+                notify(1, builder.build())
+            }
+
+        }
     }
 
 /*
