@@ -11,6 +11,9 @@ object AppConstants {
     val ALL_INTERIOR_IMAGE_LIST: String = "all_interior_image_list"
     val ALL_INTERIOR_FRAME_LIST: String = "all_interior_frame_list"
 
+    val LIST_HD_QUALITY: String = "list_hd_quality"
+    val LIST_WATERMARK: String = "list_watermark"
+
     val WATER_MARK_LIST: String = "water_mark_list"
 
     val GIF: String = "gif"
@@ -62,5 +65,9 @@ object AppConstants {
     val backgroundNumber = "backgroundNumber"
     val MARKETPLACE_ID = "marketplace_id"
     val BACKGROUND_COLOUR = "background_colour"
+
+    val NO_OF_IMAGES: String = "no_of_images"
+
+    val DOWNLOAD_TYPE: String = "download_type"
 
 }

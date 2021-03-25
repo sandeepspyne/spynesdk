@@ -148,6 +148,28 @@
     <string name="download_high_quality"><u>High quality</u></string>
     <string name="download_with_watermark"><u>With watermark (free)</u></string>
 
+    <string name="download_hd_images"><u>Download HD Images</u></string>
+    <string name="download_free"><u>Download Free (Watermarked)</u></string>
+
+    <string name="downloading...."><u>Downloading....</u></string>
+    <string name="download_completed"><u> Download Completed</u></string>
+
+    <string name="go_to_home"><u>Go to Home</u></string>
+
+    <string name="total_images_clicked"><u>Total Images Clicked</u></string>
+    <string name="credits_available"><u>Credits Available</u></string>
+    <string name="top_up_2"><u>(Top Up)</u></string>
+
+    <string name="sku_id"><u>SKU ID</u></string>
+
+    <string name="images"><u>Images</u></string>
+
+    <string name="credits"><u>Credits</u></string>
+
+    <string name="increase_online_sale"><u>Increase Online Sales for your products by<br />uploading visually stunning images on<br />Marketplaces
+
+</u></string>
+
     <string name="choose_marketplace">Choose Marketplace</string>
     <string name="choose_background_colour">Choose background colour</string>
     <string name="sample_output_image">Sample  Output Image</string>

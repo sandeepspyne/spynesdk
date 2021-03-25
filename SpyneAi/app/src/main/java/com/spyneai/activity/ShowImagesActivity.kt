@@ -15,6 +15,7 @@ import android.view.WindowManager
 import android.widget.ImageView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.app.AppCompatDelegate
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
 import androidx.recyclerview.widget.GridLayoutManager
@@ -75,6 +76,9 @@ class ShowImagesActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_show_images)
+
+        AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
+
         PRDownloader.initialize(getApplicationContext());
         val config = PRDownloaderConfig.newBuilder()
             .setDatabaseEnabled(true)
@@ -85,25 +89,25 @@ class ShowImagesActivity : AppCompatActivity() {
         downloadList = ArrayList<String>()
         imageListWaterMark = ArrayList<String>()
 
-        if (Utilities.getPreference(this, AppConstants.highQualityCount).equals("0")) {
-            downloadHighQualityCount = 0
-            tvHighQualityCount.setText(downloadHighQualityCount.toString())
-        } else if (Utilities.getPreference(this, AppConstants.highQualityCount).equals("1")) {
-            downloadHighQualityCount = 1
-            tvHighQualityCount.setText(downloadHighQualityCount.toString())
-        } else if (Utilities.getPreference(this, AppConstants.highQualityCount).equals("2")) {
-            downloadHighQualityCount = 2
-            tvHighQualityCount.setText(downloadHighQualityCount.toString())
-        } else if (Utilities.getPreference(this, AppConstants.highQualityCount).equals("3")) {
-            downloadHighQualityCount = 3
-            tvHighQualityCount.setText(downloadHighQualityCount.toString())
-        } else if (Utilities.getPreference(this, AppConstants.highQualityCount).equals("4")) {
-            downloadHighQualityCount = 4
-            tvHighQualityCount.setText(downloadHighQualityCount.toString())
-        } else if (Utilities.getPreference(this, AppConstants.highQualityCount).equals("5")) {
-            downloadHighQualityCount = 5
-            tvHighQualityCount.setText(downloadHighQualityCount.toString())
-        }
+//        if (Utilities.getPreference(this, AppConstants.highQualityCount).equals("0")) {
+//            downloadHighQualityCount = 0
+//            tvHighQualityCount.setText(downloadHighQualityCount.toString())
+//        } else if (Utilities.getPreference(this, AppConstants.highQualityCount).equals("1")) {
+//            downloadHighQualityCount = 1
+//            tvHighQualityCount.setText(downloadHighQualityCount.toString())
+//        } else if (Utilities.getPreference(this, AppConstants.highQualityCount).equals("2")) {
+//            downloadHighQualityCount = 2
+//            tvHighQualityCount.setText(downloadHighQualityCount.toString())
+//        } else if (Utilities.getPreference(this, AppConstants.highQualityCount).equals("3")) {
+//            downloadHighQualityCount = 3
+//            tvHighQualityCount.setText(downloadHighQualityCount.toString())
+//        } else if (Utilities.getPreference(this, AppConstants.highQualityCount).equals("4")) {
+//            downloadHighQualityCount = 4
+//            tvHighQualityCount.setText(downloadHighQualityCount.toString())
+//        } else if (Utilities.getPreference(this, AppConstants.highQualityCount).equals("5")) {
+//            downloadHighQualityCount = 5
+//            tvHighQualityCount.setText(downloadHighQualityCount.toString())
+//        }
 
         setBulkImages()
         setListeners()
@@ -124,13 +128,13 @@ class ShowImagesActivity : AppCompatActivity() {
             tvYourEmailIdReplaced.visibility = View.VISIBLE
             tvViewGif.visibility = View.VISIBLE
             tvInterior.visibility = View.VISIBLE
-            llDownloads.visibility = View.VISIBLE
+//            llDownloads.visibility = View.VISIBLE
         }
         else{
             tvYourEmailIdReplaced.visibility = View.GONE
             tvViewGif.visibility = View.GONE
             tvInterior.visibility = View.GONE
-            llDownloads.visibility = View.GONE
+//            llDownloads.visibility = View.GONE
         }
     }
 
@@ -166,7 +170,21 @@ class ShowImagesActivity : AppCompatActivity() {
             )
         })
 
-        tvRequestWappImages.setOnClickListener(View.OnClickListener {
+        tvDownloadFree.setOnClickListener {
+            Utilities.savePrefrence(this, AppConstants.DOWNLOAD_TYPE, "watermark")
+            val intent = Intent(this, DownloadingActivity::class.java)
+            intent.putExtra(AppConstants.LIST_WATERMARK, imageListWaterMark)
+            startActivity(intent)
+        }
+
+        llDownloadHdImages.setOnClickListener {
+            Utilities.savePrefrence(this, AppConstants.DOWNLOAD_TYPE, "hd")
+            val intent = Intent(this, OrderSummary2Activity::class.java)
+            intent.putExtra(AppConstants.LIST_HD_QUALITY, listHdQuality)
+            startActivity(intent)
+        }
+
+      /*  tvRequestWappImages.setOnClickListener(View.OnClickListener {
             try {
                 val i = Intent(Intent.ACTION_VIEW)
                 val url = "https://api.whatsapp.com/send?phone=" + "+919953325165" + "&text=" +
@@ -200,7 +218,7 @@ class ShowImagesActivity : AppCompatActivity() {
             downloadWatermark()
             llDownloadWithWatermark.isEnabled = false
             llDownloadWithWatermark.isFocusable = false
-        })
+        })*/
     }
 
 
@@ -379,191 +397,193 @@ class ShowImagesActivity : AppCompatActivity() {
         }
     }
 
-    fun downloadHighQuality() {
-        Toast.makeText(
-            this@ShowImagesActivity,
-            "Download started", Toast.LENGTH_SHORT
-        ).show()
+    /*  fun downloadHighQuality() {
+         Toast.makeText(
+             this@ShowImagesActivity,
+             "Download started", Toast.LENGTH_SHORT
+         ).show()
 
-        if (listHdQuality.size > 0 && listHdQuality != null) {
-            for (i in 0 until listHdQuality.size) {
-                seekbarDownload.setProgress(i)
+         if (listHdQuality.size > 0 && listHdQuality != null) {
+             for (i in 0 until listHdQuality.size) {
+                 seekbarDownload.setProgress(i)
 
-                if (listHdQuality[i] != null)
-                    downloadWithHighQuality(listHdQuality[i].toString())
-            }
-        }
-    }
+                 if (listHdQuality[i] != null)
+                     downloadWithHighQuality(listHdQuality[i].toString())
+             }
+         }
+     }
 
-    fun downloadWatermark() {
-        if (imageListWaterMark.size > 0 && imageListWaterMark != null) {
-            for (i in 0 until 3/*imageListWaterMark.size*/) {
-                seekbarDownload.setProgress(i)
-                tvProgress.setText(i.toString() + "/" + listHdQuality.size)
-                if (imageListWaterMark[i] != null)
-                    downloadWithWatermark(imageListWaterMark[i].toString())
-            }
-        }
-    }
+     fun downloadWatermark() {
+         if (imageListWaterMark.size > 0 && imageListWaterMark != null) {
+             for (i in 0 until 3/*imageListWaterMark.size*/) {
+                 seekbarDownload.setProgress(i)
+                 tvProgress.setText(i.toString() + "/" + listHdQuality.size)
+                 if (imageListWaterMark[i] != null)
+                     downloadWithWatermark(imageListWaterMark[i].toString())
+             }
+         }
+     }
 
-    //Download
+     //Download
     fun downloadWithHighQuality(imageFile: String?) {
-        downloadCount++
+         downloadCount++
 
-        val FILENAME_FORMAT = "yyyy-MM-dd-HH-mm-ss-SSS"
+         val FILENAME_FORMAT = "yyyy-MM-dd-HH-mm-ss-SSS"
 
-        showNotifications()
+         showNotifications()
 
-        val imageName : String = "Spyne" + SimpleDateFormat(
-            FILENAME_FORMAT, Locale.US).format(System.currentTimeMillis()) + ".png"
+         val imageName : String = "Spyne" + SimpleDateFormat(
+             FILENAME_FORMAT, Locale.US).format(System.currentTimeMillis()) + ".png"
 
-        val downloadId = PRDownloader.download(
-            imageFile,
-            Environment.getExternalStorageDirectory().toString() + "/Spyne",
-            imageName)
-            .build()
-            .setOnStartOrResumeListener {
-            }
-            .setOnPauseListener {
+         val downloadId = PRDownloader.download(
+             imageFile,
+             Environment.getExternalStorageDirectory().toString() + "/Spyne",
+             imageName)
+             .build()
+             .setOnStartOrResumeListener {
+             }
+             .setOnPauseListener {
 
-            }
-            .setOnCancelListener(object : OnCancelListener {
-                override fun onCancel() {}
-            })
-            .setOnProgressListener(object : OnProgressListener {
-                override fun onProgress(progress: Progress) {
-                    //showNotifications(((progress.totalBytes / 100) * progress.currentBytes).toInt())
+             }
+             .setOnCancelListener(object : OnCancelListener {
+                 override fun onCancel() {}
+             })
+             .setOnProgressListener(object : OnProgressListener {
+                 override fun onProgress(progress: Progress) {
+                     //showNotifications(((progress.totalBytes / 100) * progress.currentBytes).toInt())
 
-                    builder.setContentTitle(imageName)
-                        .setContentText(
-                            ((100 - (progress.currentBytes%100)).toInt())
-                                .toString() + "/" + "100"+ "%")
-                        .setProgress(100, (100 - (progress.currentBytes%100)).toInt(),
-                            false);
+                     builder.setContentTitle(imageName)
+                         .setContentText(
+                             ((100 - (progress.currentBytes%100)).toInt())
+                                 .toString() + "/" + "100"+ "%")
+                         .setProgress(100, (100 - (progress.currentBytes%100)).toInt(),
+                             false);
 
-                    with(NotificationManagerCompat.from(this@ShowImagesActivity)) {
-                        // notificationId is a unique int for each notification that you must define
-                        notify(1, builder.build())
-                    }
+                     with(NotificationManagerCompat.from(this@ShowImagesActivity)) {
+                         // notificationId is a unique int for each notification that you must define
+                         notify(1, builder.build())
+                     }
 
-                    llDownloadProgress.visibility = View.VISIBLE
+                     llDownloadProgress.visibility = View.VISIBLE
 
-                    tvProgress.setText(imageName)
-                    tvProgressvalue.setText(((100 - (progress.currentBytes%100)).toInt())
-                        .toString() + "/" + "100" + "%")
+                     tvProgress.setText(imageName)
+                     tvProgressvalue.setText(((100 - (progress.currentBytes%100)).toInt())
+                         .toString() + "/" + "100" + "%")
 
-                    seekbarDownload.setProgress((100 - (progress.currentBytes%100)).toInt())
+                     seekbarDownload.setProgress((100 - (progress.currentBytes%100)).toInt())
 
-                    Log.e("Progress HD", imageFile + " " +
-                            ((100 - (progress.currentBytes%100)).toInt())
-                                .toString() + "/" + "100")
-                }
-            })
-            .start(object : OnDownloadListener {
-                override fun onDownloadComplete() {
-                    if (downloadCount == listHdQuality.size) {
-                        Toast.makeText(
-                            this@ShowImagesActivity,
-                            "Download Completed", Toast.LENGTH_SHORT
-                        ).show()
+                     Log.e("Progress HD", imageFile + " " +
+                             ((100 - (progress.currentBytes%100)).toInt())
+                                 .toString() + "/" + "100")
+                 }
+             })
+             .start(object : OnDownloadListener {
+                 override fun onDownloadComplete() {
+                     if (downloadCount == listHdQuality.size) {
+                         Toast.makeText(
+                             this@ShowImagesActivity,
+                             "Download Completed", Toast.LENGTH_SHORT
+                         ).show()
 
-                        downloadHighQualityCount--
-                        tvHighQualityCount.setText(downloadHighQualityCount.toString())
-                        Utilities.savePrefrence(
-                            this@ShowImagesActivity,
-                            AppConstants.highQualityCount,
-                            downloadHighQualityCount.toString()
-                        )
-                        downloadCount = 0
-                        llDownloadProgress.visibility = View.GONE
-                        llDownloadHighQuality.isEnabled = true
-                        llDownloadHighQuality.isFocusable = true
-                    }
+                         downloadHighQualityCount--
+                         tvHighQualityCount.setText(downloadHighQualityCount.toString())
+                         Utilities.savePrefrence(
+                             this@ShowImagesActivity,
+                             AppConstants.highQualityCount,
+                             downloadHighQualityCount.toString()
+                         )
+                         downloadCount = 0
+                         llDownloadProgress.visibility = View.GONE
+                         llDownloadHighQuality.isEnabled = true
+                         llDownloadHighQuality.isFocusable = true
+                     }
 
-                    seekbarDownload.visibility = View.GONE
-                }
+                     seekbarDownload.visibility = View.GONE
+                 }
 
-                override fun onError(error: com.downloader.Error?) {
-                    Toast.makeText(
-                        this@ShowImagesActivity,
-                        "Download Failed", Toast.LENGTH_SHORT
-                    ).show()
-                }
+                 override fun onError(error: com.downloader.Error?) {
+                     Toast.makeText(
+                         this@ShowImagesActivity,
+                         "Download Failed", Toast.LENGTH_SHORT
+                     ).show()
+                 }
 
-            })
-    }
+             })
+     }
 
-    fun downloadWithWatermark(imageFile: String?) {
-        downloadCount++
-        val FILENAME_FORMAT = "yyyy-MM-dd-HH-mm-ss-SSS"
+     fun downloadWithWatermark(imageFile: String?) {
+         downloadCount++
+         val FILENAME_FORMAT = "yyyy-MM-dd-HH-mm-ss-SSS"
 
-        seekbarDownload.visibility = View.VISIBLE
+         seekbarDownload.visibility = View.VISIBLE
 
-        showNotifications()
+         showNotifications()
 
-        val imageName : String = "Spyne" + SimpleDateFormat(
-            FILENAME_FORMAT, Locale.US).format(System.currentTimeMillis()) + ".png"
+         val imageName : String = "Spyne" + SimpleDateFormat(
+             FILENAME_FORMAT, Locale.US).format(System.currentTimeMillis()) + ".png"
 
-        val downloadId = PRDownloader.download(
-            imageFile,
-            Environment.getExternalStorageDirectory().toString() + "/Spyne",
-            imageName)
-            .build()
-            .setOnStartOrResumeListener {
-            }
-            .setOnPauseListener {
+         val downloadId = PRDownloader.download(
+             imageFile,
+             Environment.getExternalStorageDirectory().toString() + "/Spyne",
+             imageName)
+             .build()
+             .setOnStartOrResumeListener {
+             }
+             .setOnPauseListener {
 
-            }
-            .setOnCancelListener(object : OnCancelListener {
-                override fun onCancel() {}
-            })
-            .setOnProgressListener(object : OnProgressListener {
-                override fun onProgress(progress: Progress) {
-                    builder.setContentTitle(imageName)
-                        .setContentText(
-                            ((100 - (progress.currentBytes%100)).toInt())
-                                .toString() + "/" + "100"+ "%")
-                        .setProgress(100, (100 - (progress.currentBytes%100)).toInt(),
-                            false);
+             }
+             .setOnCancelListener(object : OnCancelListener {
+                 override fun onCancel() {}
+             })
+             .setOnProgressListener(object : OnProgressListener {
+                 override fun onProgress(progress: Progress) {
+                     builder.setContentTitle(imageName)
+                         .setContentText(
+                             ((100 - (progress.currentBytes%100)).toInt())
+                                 .toString() + "/" + "100"+ "%")
+                         .setProgress(100, (100 - (progress.currentBytes%100)).toInt(),
+                             false);
 
-                    with(NotificationManagerCompat.from(this@ShowImagesActivity)) {
-                        // notificationId is a unique int for each notification that you must define
-                        notify(1, builder.build())
-                    }
+                     with(NotificationManagerCompat.from(this@ShowImagesActivity)) {
+                         // notificationId is a unique int for each notification that you must define
+                         notify(1, builder.build())
+                     }
 
-                    Log.e("Progress HD", imageFile + " " +
-                            ((100 - (progress.currentBytes%100)).toInt())
-                                .toString() + "/" + "100"+ "%")
-                    tvProgress.setText(imageName)
-                    tvProgressvalue.setText(((100 - (progress.currentBytes%100)).toInt())
-                        .toString() + "/" + "100" + "%")
-                    llDownloadProgress.visibility = View.VISIBLE
-                    seekbarDownload.setProgress((100 - (progress.currentBytes%100)).toInt())
-                }
-            })
-            .start(object : OnDownloadListener {
-                override fun onDownloadComplete() {
+                     Log.e("Progress HD", imageFile + " " +
+                             ((100 - (progress.currentBytes%100)).toInt())
+                                 .toString() + "/" + "100"+ "%")
+                     tvProgress.setText(imageName)
+                     tvProgressvalue.setText(((100 - (progress.currentBytes%100)).toInt())
+                         .toString() + "/" + "100" + "%")
+                     llDownloadProgress.visibility = View.VISIBLE
+                     seekbarDownload.setProgress((100 - (progress.currentBytes%100)).toInt())
+                 }
+             })
+             .start(object : OnDownloadListener {
+                 override fun onDownloadComplete() {
 
-                    if (downloadCount == imageListWaterMark.size)
-                        Toast.makeText(
-                            this@ShowImagesActivity,
-                            "Download Completed", Toast.LENGTH_SHORT
-                        ).show()
+                     if (downloadCount == imageListWaterMark.size)
+                         Toast.makeText(
+                             this@ShowImagesActivity,
+                             "Download Completed", Toast.LENGTH_SHORT
+                         ).show()
 
-                    llDownloadWithWatermark.isEnabled = true
-                    llDownloadWithWatermark.isFocusable = true
-                    llDownloadProgress.visibility = View.GONE
-                }
+                     llDownloadWithWatermark.isEnabled = true
+                     llDownloadWithWatermark.isFocusable = true
+                     llDownloadProgress.visibility = View.GONE
+                 }
 
-                override fun onError(error: com.downloader.Error?) {
-                    TODO("Not yet implemented")
-                    Toast.makeText(
-                        this@ShowImagesActivity,
-                        "Download Failed.", Toast.LENGTH_SHORT
-                    ).show()
-                }
-            })
-    }
+                 override fun onError(error: com.downloader.Error?) {
+                     TODO("Not yet implemented")
+                     Toast.makeText(
+                         this@ShowImagesActivity,
+                         "Download Failed.", Toast.LENGTH_SHORT
+                     ).show()
+                 }
+             })
+     }
+
+    */
 
 
     private fun getOutputDirectory(): String? {

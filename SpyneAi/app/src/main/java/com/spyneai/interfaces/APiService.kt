@@ -12,6 +12,9 @@ import com.spyneai.model.channel.BackgroundsResponse
 import com.spyneai.model.channel.ChannelResponse
 import com.spyneai.model.channel.ChannelsResponse
 import com.spyneai.model.channels.MarketplaceResponse
+import com.spyneai.model.credit.CreditDetailsResponse
+import com.spyneai.model.credit.CreditEligiblityRequest
+import com.spyneai.model.credit.FreeCreditEligblityResponse
 import com.spyneai.model.dashboard.DashboardResponse
 import com.spyneai.model.login.LoginRequest
 import com.spyneai.model.login.LoginResponse
@@ -343,4 +346,14 @@ interface APiService {
             @Part("user_id") user_id: RequestBody?,
             @Part("sku_id") sku_id: RequestBody?)
     : Call<List<GifFetchResponse>>?
+
+    @POST("insert-user")
+    fun UserFreeCreditEligiblityCheck(
+        @Body creditEligiblityRequest: CreditEligiblityRequest?)
+            : Call<FreeCreditEligblityResponse>?
+
+    @GET("credit/user-total-credit")
+    fun userCreditsDetails(
+        @Query("userId") userId: String?,
+    ): Call<CreditDetailsResponse>?
 }

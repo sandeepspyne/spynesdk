@@ -306,12 +306,14 @@ class Camera2Activity : AppCompatActivity() , SubCategoriesAdapter.BtnClickListe
             frameImageListSelections .add(9)
             frameImageListSelections .add(18)
             frameImageListSelections .add(27)
+            Utilities.savePrefrence(this@Camera2Activity, AppConstants.NO_OF_IMAGES, "4")
         } else if (num == 5){
             frameImageListSelections .add(0)
             frameImageListSelections .add(1)
             frameImageListSelections .add(2)
             frameImageListSelections .add(3)
             frameImageListSelections .add(4)
+            Utilities.savePrefrence(this@Camera2Activity, AppConstants.NO_OF_IMAGES, "5")
         }
         else if(num == 8)
         {
@@ -323,6 +325,7 @@ class Camera2Activity : AppCompatActivity() , SubCategoriesAdapter.BtnClickListe
             frameImageListSelections .add(22)
             frameImageListSelections .add(26)
             frameImageListSelections .add(32)
+            Utilities.savePrefrence(this@Camera2Activity, AppConstants.NO_OF_IMAGES, "8")
         }
         else if(num == 9)
         {
@@ -334,6 +337,7 @@ class Camera2Activity : AppCompatActivity() , SubCategoriesAdapter.BtnClickListe
             frameImageListSelections .add(5)
             frameImageListSelections .add(6)
             frameImageListSelections .add(7)
+            Utilities.savePrefrence(this@Camera2Activity, AppConstants.NO_OF_IMAGES, "9")
         }
         showProgressFrames(frameNumberTemp)
     }

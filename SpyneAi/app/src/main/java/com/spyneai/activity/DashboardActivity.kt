@@ -20,8 +20,12 @@ import com.spyneai.adapter.HomeFragment
 import com.spyneai.extras.BeforeAfterActivity
 import com.spyneai.interfaces.APiService
 import com.spyneai.interfaces.RetrofitClient
+import com.spyneai.interfaces.RetrofitClientSpyneAi
+import com.spyneai.interfaces.RetrofitClients
 import com.spyneai.model.categories.CategoriesResponse
 import com.spyneai.model.categories.Data
+import com.spyneai.model.credit.CreditEligiblityRequest
+import com.spyneai.model.credit.FreeCreditEligblityResponse
 import com.spyneai.model.shoot.CreateCollectionRequest
 import com.spyneai.model.shoot.CreateCollectionResponse
 import com.spyneai.model.shoot.UpdateShootCategoryRequest
@@ -76,6 +80,8 @@ class DashboardActivity : AppCompatActivity() {
                 "Please check your internet connection",
                 Toast.LENGTH_SHORT
             ).show()
+
+        freeCreditEligiblityCheck()
 
         setCarosels()
         setFooters(0)
@@ -388,6 +394,32 @@ class DashboardActivity : AppCompatActivity() {
             }
         }
     }
+
+    private fun freeCreditEligiblityCheck(){
+
+        val creditEligiblityRequest = CreditEligiblityRequest(Utilities.getPreference(this, AppConstants.tokenId).toString(), Utilities.getPreference(this, AppConstants.EMAIL_ID).toString());
+
+        val request = RetrofitClients.buildService(APiService::class.java)
+        val call = request.UserFreeCreditEligiblityCheck(creditEligiblityRequest)
+
+        call?.enqueue(object : Callback<FreeCreditEligblityResponse> {
+            override fun onResponse(call: Call<FreeCreditEligblityResponse>, response: Response<FreeCreditEligblityResponse>) {
+                Utilities.hideProgressDialog()
+                if (response.isSuccessful ) {
+                    Toast.makeText(this@DashboardActivity, response.message().toString(), Toast.LENGTH_SHORT).show()
+                }
+                else{
+                    Toast.makeText(this@DashboardActivity, "Server not responding!!!", Toast.LENGTH_SHORT).show()
+                }
+
+            }
+
+            override fun onFailure(call: Call<FreeCreditEligblityResponse>, t: Throwable) {
+                Toast.makeText(this@DashboardActivity, "Server not responding!!!", Toast.LENGTH_SHORT).show()
+            }
+        })
+    }
+
     override fun onBackPressed() {
         super.onBackPressed()
         moveTaskToBack(true);
