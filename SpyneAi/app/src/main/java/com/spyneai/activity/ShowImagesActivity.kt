@@ -536,7 +536,7 @@ class ShowImagesActivity : AppCompatActivity() {
                                 .toString() + "/" + "100"+ "%")
                     tvProgress.setText(imageName)
                     tvProgressvalue.setText(((100 - (progress.currentBytes%100)).toInt())
-                        .toString() + "/" + "100")
+                        .toString() + "/" + "100" + "%")
                     llDownloadProgress.visibility = View.VISIBLE
                     seekbarDownload.setProgress((100 - (progress.currentBytes%100)).toInt())
                 }
