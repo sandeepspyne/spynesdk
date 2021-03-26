@@ -281,7 +281,7 @@ class CameraActivity : AppCompatActivity() , SubCategoriesAdapter.BtnClickListen
                     Log.d("Position click", position.toString())
                     // pos = position
                     interiorFramesAdapter.notifyDataSetChanged()
-                    rvInteriorFrames.scrollToPosition(position)
+                    rvInteriorFrames2.scrollToPosition(position)
                 }
             })
         val layoutManager: RecyclerView.LayoutManager = LinearLayoutManager(
@@ -289,8 +289,8 @@ class CameraActivity : AppCompatActivity() , SubCategoriesAdapter.BtnClickListen
             LinearLayoutManager.VERTICAL,
             false
         )
-        rvInteriorFrames.setLayoutManager(layoutManager)
-        rvInteriorFrames.setAdapter(interiorFramesAdapter)
+        rvInteriorFrames2.setLayoutManager(layoutManager)
+        rvInteriorFrames2.setAdapter(interiorFramesAdapter)
 
         fetchSubCategories()
     }
@@ -354,12 +354,12 @@ class CameraActivity : AppCompatActivity() , SubCategoriesAdapter.BtnClickListen
                 tvshoot.isEnabled = false
                 tvshoot.isFocusable = false
                 rvSubcategories.visibility = View.GONE
-                rvInteriorFrames.visibility = View.GONE
+                rvInteriorFrames2.visibility = View.GONE
             }
         }
         else{
             rvSubcategories.visibility = View.GONE
-            rvInteriorFrames.visibility = View.VISIBLE
+            rvInteriorFrames2.visibility = View.VISIBLE
 
             tvshoot.isEnabled = false
             tvshoot.isFocusable = false
@@ -380,9 +380,9 @@ class CameraActivity : AppCompatActivity() , SubCategoriesAdapter.BtnClickListen
                 LinearLayoutManager.VERTICAL,
                 false
             )
-            rvInteriorFrames.setLayoutManager(layoutManager)
-            rvInteriorFrames.setAdapter(interiorFramesAdapter)
-            rvInteriorFrames.scrollToPosition(frameNumberTemp)
+            rvInteriorFrames2.setLayoutManager(layoutManager)
+            rvInteriorFrames2.setAdapter(interiorFramesAdapter)
+            rvInteriorFrames2.scrollToPosition(frameNumberTemp)
 
             interiorFramesAdapter.notifyDataSetChanged()
 
@@ -1211,7 +1211,7 @@ class CameraActivity : AppCompatActivity() , SubCategoriesAdapter.BtnClickListen
                                 // pos = position
 
                                 interiorFramesAdapter.notifyDataSetChanged()
-                                rvInteriorFrames.scrollToPosition(position)
+                                rvInteriorFrames2.scrollToPosition(position)
 
                             }
                         })
@@ -1220,8 +1220,8 @@ class CameraActivity : AppCompatActivity() , SubCategoriesAdapter.BtnClickListen
                         LinearLayoutManager.VERTICAL,
                         false
                     )
-                    rvInteriorFrames.setLayoutManager(layoutManager)
-                    rvInteriorFrames.setAdapter(interiorFramesAdapter)
+                    rvInteriorFrames2.setLayoutManager(layoutManager)
+                    rvInteriorFrames2.setAdapter(interiorFramesAdapter)
 
 
                     Log.e("Interior List ",frameInteriorImageList.toString())
@@ -1658,7 +1658,7 @@ class CameraActivity : AppCompatActivity() , SubCategoriesAdapter.BtnClickListen
             frameNumberTemp = 0
             setProgressFrame(9)
             rvSubcategories.visibility = View.GONE
-            rvInteriorFrames.visibility = View.VISIBLE
+            rvInteriorFrames2.visibility = View.VISIBLE
             dialog.dismiss()
         })
 
