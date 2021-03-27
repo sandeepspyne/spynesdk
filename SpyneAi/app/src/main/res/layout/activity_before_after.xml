@@ -151,7 +151,30 @@
         android:layout_marginStart="@dimen/dp_10"
         android:layout_marginEnd="@dimen/dp_10"/>
 
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <TextView
+            android:visibility="gone"
+            android:id="@+id/tvShootFootwear"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:background="@drawable/bg_edit_button"
+            android:text="@string/shoot_now"
+            android:textColor="@color/white"
+            android:textSize="@dimen/sp_13"
+            android:foregroundGravity="center_vertical"
+            android:padding="@dimen/dp_8"
+            android:gravity="center_vertical"
+            android:layout_margin="@dimen/dp_15"
+            android:drawablePadding="@dimen/dp_10"
+            app:drawableStartCompat="@mipmap/shoot" />
+
     <LinearLayout
+        android:visibility="gone"
+        android:id="@+id/llShootNow"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginLeft="@dimen/dp_20"
@@ -192,5 +215,7 @@
             app:drawableStartCompat="@mipmap/demo" />
 
     </LinearLayout>
+
+    </RelativeLayout>
 
 </LinearLayout>

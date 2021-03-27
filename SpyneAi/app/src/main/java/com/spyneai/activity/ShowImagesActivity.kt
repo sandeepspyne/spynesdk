@@ -35,7 +35,7 @@ import com.spyneai.needs.Utilities
 import com.synnapps.carouselview.CarouselView
 import com.synnapps.carouselview.ViewListener
 import kotlinx.android.synthetic.main.activity_before_after.*
-import kotlinx.android.synthetic.main.activity_camera2.*
+import kotlinx.android.synthetic.main.activity_camera.*
 import kotlinx.android.synthetic.main.activity_show_gif.*
 import kotlinx.android.synthetic.main.activity_show_images.*
 import kotlinx.android.synthetic.main.activity_timer.*
@@ -115,6 +115,9 @@ class ShowImagesActivity : AppCompatActivity() {
 
         if (catName.equals("Footwear")){
             tvViewGif.visibility = View.GONE
+            llDownloads.visibility = View.GONE
+            llDownloadProgress.visibility = View.GONE
+
         }
     }
 
@@ -166,21 +169,55 @@ class ShowImagesActivity : AppCompatActivity() {
             )
         })
 
-        tvRequestWappImages.setOnClickListener(View.OnClickListener {
-            try {
-                val i = Intent(Intent.ACTION_VIEW)
-                val url = "https://api.whatsapp.com/send?phone=" + "+919953325165" + "&text=" +
-                        URLEncoder.encode(
-                            "Hey! The Spyne 360° Shot looks impressive; I liked the user experience and would like to learn more about the commercial application and how I can best access this technology. I look forward to connecting!",
-                            "UTF-8"
-                        )
-                i.setPackage("com.whatsapp")
-                i.setData(Uri.parse(url))
-                startActivity(i)
-            } catch (e: Exception) {
-                e.printStackTrace()
-            }
-        })
+        if (Utilities.getPreference(this, AppConstants.CATEGORY_NAME).equals("Automobiles")){
+            tvRequestWappImages.setOnClickListener(View.OnClickListener {
+                try {
+                    val i = Intent(Intent.ACTION_VIEW)
+                    val url = "https://api.whatsapp.com/send?phone=" + "+919953325165" + "&text=" +
+                            URLEncoder.encode(
+                                "Hey! The Spyne 360° Shot looks impressive; I liked the user experience and would like to learn more about the commercial application and how I can best access this technology. I look forward to connecting!",
+                                "UTF-8"
+                            )
+                    i.setPackage("com.whatsapp")
+                    i.setData(Uri.parse(url))
+                    startActivity(i)
+                } catch (e: Exception) {
+                    e.printStackTrace()
+                }
+            })
+        }else{
+            tvRequestWappImages.setOnClickListener(View.OnClickListener {
+                try {
+                    val i = Intent(Intent.ACTION_VIEW)
+                    val url = "https://api.whatsapp.com/send?phone=" + "+919953325165" + "&text=" +
+                            URLEncoder.encode(
+                                "Hey! The Spyne footwear Shots looks impressive; The user experience is impressive and would like to learn more about the commercial applicationa and how I can best access this technology. I look forward to connecting!",
+                                "UTF-8"
+                            )
+                    i.setPackage("com.whatsapp")
+                    i.setData(Uri.parse(url))
+                    startActivity(i)
+                } catch (e: Exception) {
+                    e.printStackTrace()
+                }
+            })
+        }
+
+//        tvRequestWappImages.setOnClickListener(View.OnClickListener {
+//            try {
+//                val i = Intent(Intent.ACTION_VIEW)
+//                val url = "https://api.whatsapp.com/send?phone=" + "+919953325165" + "&text=" +
+//                        URLEncoder.encode(
+//                            "Hey! The Spyne 360° Shot looks impressive; I liked the user experience and would like to learn more about the commercial application and how I can best access this technology. I look forward to connecting!",
+//                            "UTF-8"
+//                        )
+//                i.setPackage("com.whatsapp")
+//                i.setData(Uri.parse(url))
+//                startActivity(i)
+//            } catch (e: Exception) {
+//                e.printStackTrace()
+//            }
+//        })
 
         llDownloadHighQuality.setOnClickListener(View.OnClickListener {
             if (Utilities.getPreference(this, AppConstants.highQualityCount).equals("0"))

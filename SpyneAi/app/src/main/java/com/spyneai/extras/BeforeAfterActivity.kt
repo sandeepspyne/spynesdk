@@ -65,7 +65,13 @@ class BeforeAfterActivity : AppCompatActivity() {
             catName = Utilities.getPreference(this, AppConstants.CATEGORY_NAME)!!
 
         if (catName.equals("Footwear")){
-            tvDemo.visibility = View.GONE
+            tvShootFootwear.visibility = View.VISIBLE
+            llShootNow.visibility = View.GONE
+        }else{
+            tvShootFootwear.visibility = View.GONE
+            llShootNow.visibility = View.VISIBLE
+
+
         }
     }
 
@@ -147,8 +153,8 @@ class BeforeAfterActivity : AppCompatActivity() {
                 Utilities.savePrefrence(this, AppConstants.FROM, "BA")
                 startActivity(intent)
             })
-        }else{
-            tvShootNow.setOnClickListener(View.OnClickListener {
+        }else if (Utilities.getPreference(this, AppConstants.CATEGORY_NAME).equals("Footwear")){
+            tvShootFootwear.setOnClickListener(View.OnClickListener {
                 val intent = Intent(this, CameraActivity::class.java)
                 intent.putExtra(AppConstants.CATEGORY_ID, catId)
                 intent.putExtra(AppConstants.CATEGORY_NAME, catName)
@@ -177,7 +183,7 @@ class BeforeAfterActivity : AppCompatActivity() {
                 call: Call<BeforeAfterResponse>,
                 response: Response<BeforeAfterResponse>
             ) {
-                //   Utilities.hideProgressDialog()
+                   Utilities.hideProgressDialog()
                 if (response.isSuccessful && response.body()!!.payload.data.size > 0) {
                     (beforeAfterList as ArrayList).clear()
                     (beforeAfterList as ArrayList).addAll(response.body()!!.payload.data)

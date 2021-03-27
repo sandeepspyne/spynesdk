@@ -160,7 +160,7 @@ class DashboardActivity : AppCompatActivity() {
     }
 
     private fun fetchCategories() {
-//        Utilities.showProgressDialog(this)
+        Utilities.showProgressDialog(this)
         categoriesResponseList.clear()
 
         val request = RetrofitClient.buildService(APiService::class.java)
