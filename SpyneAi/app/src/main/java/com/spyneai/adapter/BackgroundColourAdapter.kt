@@ -82,7 +82,7 @@ class BackgroundColourAdapter (val context: Context,
             }
         else
             viewHolder.ivBackground.apply {
-                ivBackground.borderColor = Color.WHITE
+                ivBackground.borderColor = Color.LTGRAY
             }
 
         viewHolder.ivBackground.setOnClickListener(View.OnClickListener {
