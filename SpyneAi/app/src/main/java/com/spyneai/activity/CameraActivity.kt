@@ -309,17 +309,15 @@ class CameraActivity : AppCompatActivity(), SubCategoriesAdapter.BtnClickListene
     private fun setProgressFrame(num: Int) {
 
         frameImageListSelections.clear()
-        if (num == 4) {
+        if (Utilities.getPreference(this, AppConstants.CATEGORY_NAME).equals("Footwear")){
+            for (i in 0..num-1)
+                frameImageListSelections .add(i)
+        }else{
+            if (num == 4) {
             frameImageListSelections.add(0)
             frameImageListSelections.add(9)
             frameImageListSelections.add(18)
             frameImageListSelections.add(27)
-        } else if (num == 5) {
-            frameImageListSelections.add(0)
-            frameImageListSelections.add(1)
-            frameImageListSelections.add(2)
-            frameImageListSelections.add(3)
-            frameImageListSelections.add(4)
         } else if (num == 8) {
             frameImageListSelections.add(0)
             frameImageListSelections.add(5)
@@ -339,6 +337,8 @@ class CameraActivity : AppCompatActivity(), SubCategoriesAdapter.BtnClickListene
             frameImageListSelections.add(6)
             frameImageListSelections.add(7)
         }
+        }
+
         showProgressFrames(frameNumberTemp)
     }
 
@@ -351,7 +351,7 @@ class CameraActivity : AppCompatActivity(), SubCategoriesAdapter.BtnClickListene
                         showCustomSelectionDialog()
                     } else
                         if (catName.equals("Footwear")) {
-                            showFootwearCustomSelectionDialog()
+//                            showFootwearCustomSelectionDialog()
                         }
                     tvshoot.isEnabled = true
                     tvshoot.isFocusable = true
@@ -1290,12 +1290,15 @@ class CameraActivity : AppCompatActivity(), SubCategoriesAdapter.BtnClickListene
                         );
                         setProgressFrame(4)
                     } else if (catName.equals("Footwear")) {
-                        Utilities.savePrefrence(
-                            this@CameraActivity,
-                            AppConstants.FRAME_SHOOOTS,
-                            "5"
-                        );
-                        setProgressFrame(5)
+                        if (frameImageList.size>0){
+                            Utilities.savePrefrence(
+                                this@CameraActivity,
+                                AppConstants.FRAME_SHOOOTS,
+                                frameImageList.size.toString()
+                            );
+                            setProgressFrame(frameImageList.size)
+                        }
+
                     }
 
 
