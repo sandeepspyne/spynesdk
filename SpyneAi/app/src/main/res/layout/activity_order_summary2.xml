@@ -113,7 +113,7 @@
 
                             <ImageView
                                 android:id="@+id/ivProductImage"
-                                android:layout_width="wrap_content"
+                                android:layout_width="match_parent"
                                 android:layout_height="@dimen/dp_200"
                                 android:layout_gravity="center"
                                 android:scaleType="fitXY"

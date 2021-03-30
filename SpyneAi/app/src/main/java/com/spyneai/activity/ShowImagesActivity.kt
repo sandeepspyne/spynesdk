@@ -59,7 +59,8 @@ class ShowImagesActivity : AppCompatActivity() {
     lateinit var imageList: List<String>
     lateinit var imageListAfter: List<String>
     lateinit var imageListInterior: List<String>
-    lateinit var downloadList: List<String>
+    lateinit var downloadList1: ArrayList<String>
+    lateinit var downloadList2: ArrayList<String>
     lateinit var imageListWaterMark: ArrayList<String>
     lateinit var listHdQuality: ArrayList<String>
     var catName : String = ""
@@ -85,8 +86,14 @@ class ShowImagesActivity : AppCompatActivity() {
             .build()
         PRDownloader.initialize(applicationContext, config)
 
+        downloadList1 = ArrayList<String>()
+        downloadList1.add("https://watermarkly.com/images/index/text-watermark-sample4.jpg")
+        downloadList1.add("https://watermarkly.com/images/index/text-watermark-sample4.jpg")
+        downloadList2 = ArrayList<String>()
+        downloadList2.add("https://res-3.cloudinary.com/crunchbase-production/image/upload/c_lpad,h_256,w_256,f_auto,q_auto:eco/khr5sfcxphjiw3wizhsb")
+        downloadList2.add("https://res-3.cloudinary.com/crunchbase-production/image/upload/c_lpad,h_256,w_256,f_auto,q_auto:eco/khr5sfcxphjiw3wizhsb")
 
-        downloadList = ArrayList<String>()
+
         imageListWaterMark = ArrayList<String>()
 
 //        if (Utilities.getPreference(this, AppConstants.highQualityCount).equals("0")) {
@@ -110,6 +117,7 @@ class ShowImagesActivity : AppCompatActivity() {
 //        }
 
         setBulkImages()
+
         setListeners()
 
         if (intent.getStringExtra(AppConstants.CATEGORY_NAME) != null)
@@ -173,14 +181,16 @@ class ShowImagesActivity : AppCompatActivity() {
         tvDownloadFree.setOnClickListener {
             Utilities.savePrefrence(this, AppConstants.DOWNLOAD_TYPE, "watermark")
             val intent = Intent(this, DownloadingActivity::class.java)
-            intent.putExtra(AppConstants.LIST_WATERMARK, imageListWaterMark)
+            intent.putExtra(AppConstants.LIST_WATERMARK, downloadList1)
+            intent.putExtra(AppConstants.LIST_HD_QUALITY, downloadList2)
             startActivity(intent)
         }
 
         llDownloadHdImages.setOnClickListener {
+
             Utilities.savePrefrence(this, AppConstants.DOWNLOAD_TYPE, "hd")
             val intent = Intent(this, OrderSummary2Activity::class.java)
-            intent.putExtra(AppConstants.LIST_HD_QUALITY, listHdQuality)
+            intent.putExtra(AppConstants.LIST_HD_QUALITY, downloadList2)
             startActivity(intent)
         }
 

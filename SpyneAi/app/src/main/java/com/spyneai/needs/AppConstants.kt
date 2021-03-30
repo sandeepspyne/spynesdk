@@ -70,4 +70,14 @@ object AppConstants {
 
     val DOWNLOAD_TYPE: String = "download_type"
 
+    val CREDIT_AVAILABLE: String = "credit_available"
+    val CREDIT_USED: String = "credit_used"
+    val CREDIT_ALLOTED: String = "credit_alloted"
+    val PRICE: String = "price"
+
+    val UPDATED_CREDIT: String = "updated_credit"
+
+
+
+
 }

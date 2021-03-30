@@ -166,7 +166,7 @@
 
     <string name="credits"><u>Credits</u></string>
 
-    <string name="increase_online_sale"><u>Increase Online Sales for your products by<br />uploading visually stunning images on<br />Marketplaces
+    <string name="increase_online_sale"><u>Increase Online Sales for your products by <br/>uploading visually stunning images on <br/>Marketplaces
 
 </u></string>
 
@@ -176,6 +176,11 @@
     <string name="choose_background">Then choose the background color</string>
     <string name="channel_name">spyne_channel</string>
     <string name="channel_description">spyne</string>
+
+
+    <string name="free_credits">10 Credits has been added to<br/>your account</string>
+
+
 
 
     <string-array name="planets_array">

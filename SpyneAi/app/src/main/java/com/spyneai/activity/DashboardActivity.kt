@@ -1,10 +1,16 @@
 package com.spyneai.activity
 
+import android.app.Dialog
 import android.content.Intent
+import android.graphics.Color
+import android.graphics.drawable.ColorDrawable
 import android.net.Uri
 import android.os.Bundle
 import android.util.Log
 import android.view.View
+import android.view.Window
+import android.widget.ImageView
+import android.widget.LinearLayout
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AppCompatDelegate
@@ -35,6 +41,8 @@ import com.synnapps.carouselview.ViewListener
 import kotlinx.android.synthetic.main.activity_dashboard.*
 import kotlinx.android.synthetic.main.fragment_home.view.*
 import kotlinx.android.synthetic.main.view_custom.view.*
+import okhttp3.MultipartBody
+import okhttp3.RequestBody
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -81,7 +89,12 @@ class DashboardActivity : AppCompatActivity() {
                 Toast.LENGTH_SHORT
             ).show()
 
-        freeCreditEligiblityCheck()
+
+
+        ivAppLogo.setOnClickListener {
+            freeCreditEligiblityCheck()
+        }
+
 
         setCarosels()
         setFooters(0)
@@ -399,14 +412,25 @@ class DashboardActivity : AppCompatActivity() {
 
         val creditEligiblityRequest = CreditEligiblityRequest(Utilities.getPreference(this, AppConstants.tokenId).toString(), Utilities.getPreference(this, AppConstants.EMAIL_ID).toString());
 
+        val userId = RequestBody.create(
+            MultipartBody.FORM,
+            Utilities.getPreference(this, AppConstants.tokenId)!!
+        )
+
+            val emaiId = RequestBody.create(
+                MultipartBody.FORM,
+        Utilities.getPreference(this, AppConstants.EMAIL_ID)!!
+        )
+
         val request = RetrofitClients.buildService(APiService::class.java)
-        val call = request.UserFreeCreditEligiblityCheck(creditEligiblityRequest)
+        val call = request.UserFreeCreditEligiblityCheck(userId, emaiId)
 
         call?.enqueue(object : Callback<FreeCreditEligblityResponse> {
             override fun onResponse(call: Call<FreeCreditEligblityResponse>, response: Response<FreeCreditEligblityResponse>) {
                 Utilities.hideProgressDialog()
                 if (response.isSuccessful ) {
-                    Toast.makeText(this@DashboardActivity, response.message().toString(), Toast.LENGTH_SHORT).show()
+                    if (response.body()?.message != "User is not eligible for Free credits")
+                    showFreeCreditDialog()
                 }
                 else{
                     Toast.makeText(this@DashboardActivity, "Server not responding!!!", Toast.LENGTH_SHORT).show()
@@ -418,6 +442,25 @@ class DashboardActivity : AppCompatActivity() {
                 Toast.makeText(this@DashboardActivity, "Server not responding!!!", Toast.LENGTH_SHORT).show()
             }
         })
+    }
+
+    private fun showFreeCreditDialog(){
+
+        val dialog = Dialog(this)
+        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE)
+        dialog.setCancelable(true)
+        dialog.setContentView(R.layout.free_credit_dialog)
+        dialog.getWindow()?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT));
+        val llOk: LinearLayout = dialog.findViewById(R.id.llOk)
+
+
+        llOk.setOnClickListener(View.OnClickListener {
+
+            dialog.dismiss()
+
+        })
+        dialog.show()
+
     }
 
     override fun onBackPressed() {

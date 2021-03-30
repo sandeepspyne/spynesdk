@@ -15,6 +15,7 @@ import com.spyneai.model.channels.MarketplaceResponse
 import com.spyneai.model.credit.CreditDetailsResponse
 import com.spyneai.model.credit.CreditEligiblityRequest
 import com.spyneai.model.credit.FreeCreditEligblityResponse
+import com.spyneai.model.credit.UpdateCreditResponse
 import com.spyneai.model.dashboard.DashboardResponse
 import com.spyneai.model.login.LoginRequest
 import com.spyneai.model.login.LoginResponse
@@ -347,13 +348,27 @@ interface APiService {
             @Part("sku_id") sku_id: RequestBody?)
     : Call<List<GifFetchResponse>>?
 
+//    @POST("insert-user")
+//    fun UserFreeCreditEligiblityCheck(
+//        @Body creditEligiblityRequest: CreditEligiblityRequest?)
+//            : Call<FreeCreditEligblityResponse>?
+
+    @Multipart
     @POST("insert-user")
     fun UserFreeCreditEligiblityCheck(
-        @Body creditEligiblityRequest: CreditEligiblityRequest?)
-            : Call<FreeCreditEligblityResponse>?
+        @Part("user_id") user_id: RequestBody?,
+        @Part("email_id") email_id: RequestBody?
+    ): Call<FreeCreditEligblityResponse>?
 
     @GET("credit/user-total-credit")
     fun userCreditsDetails(
         @Query("userId") userId: String?,
     ): Call<CreditDetailsResponse>?
+
+    @PUT("")
+    fun userUpdateCredit(
+        @Part("user_id") user_id: RequestBody?,
+        @Part("credit_available") credit_available: RequestBody?,
+        @Part("credit_used") credit_used: RequestBody?
+    ): Call<UpdateCreditResponse>?
 }

@@ -353,7 +353,7 @@ class GenrateMarketplaceActivity : AppCompatActivity() {
         dialog.setCancelable(true)
         dialog.setContentView(R.layout.marketplace_dialog)
         dialog.getWindow()?.setBackgroundDrawable(ColorDrawable(android.graphics.Color.TRANSPARENT));
-        val ivClose: ImageView = dialog.findViewById(R.id.ivClose)
+        val ivClose: ImageView = dialog.findViewById(R.id.ivExit)
 
 
         ivClose.setOnClickListener(View.OnClickListener {

@@ -22,7 +22,7 @@
             android:orientation="horizontal"
             android:gravity="center">
             <ImageView
-                android:id="@+id/imgBack"
+                android:id="@+id/ivAppLogo"
                 android:layout_gravity="center"
                 android:layout_width="@dimen/dp_50"
                 android:layout_height="@dimen/dp_50"
