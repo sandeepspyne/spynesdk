@@ -1,6 +1,7 @@
 package com.spyneai.activity
 
 import android.content.Intent
+import android.media.MediaScannerConnection
 import android.os.Bundle
 import android.os.Environment
 import android.util.Log
@@ -11,13 +12,10 @@ import androidx.appcompat.app.AppCompatDelegate
 import com.downloader.*
 import com.spyneai.R
 import com.spyneai.interfaces.APiService
-import com.spyneai.interfaces.RetrofitClientSpyneAi
 import com.spyneai.interfaces.RetrofitClients
-import com.spyneai.model.credit.CreditDetailsResponse
-import com.spyneai.model.credit.CreditEligiblityRequest
-import com.spyneai.model.credit.FreeCreditEligblityResponse
 import com.spyneai.model.credit.UpdateCreditResponse
 import com.spyneai.needs.AppConstants
+import com.spyneai.needs.SingleMediaScanner
 import com.spyneai.needs.Utilities
 import kotlinx.android.synthetic.main.activity_downloading.*
 import kotlinx.android.synthetic.main.activity_order_summary2.*
@@ -37,16 +35,19 @@ class DownloadingActivity : AppCompatActivity() {
     private lateinit var listWatermark : ArrayList<String>
     private lateinit var listHdQuality : ArrayList<String>
     var downloadCount: Int = 0
+    var avaliableCredit: Int = 0
+    var remaningCredit: Int = 0
+    var price : Int = 0
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_downloading)
 
-        PRDownloader.initialize(this@DownloadingActivity);
+        PRDownloader.initialize(getApplicationContext());
         val config = PRDownloaderConfig.newBuilder()
             .setDatabaseEnabled(true)
             .build()
-        PRDownloader.initialize(this@DownloadingActivity, config)
+        PRDownloader.initialize(getApplicationContext(), config)
 
         AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
 
@@ -68,16 +69,25 @@ class DownloadingActivity : AppCompatActivity() {
       }else if (Utilities.getPreference(this, AppConstants.NO_OF_IMAGES).equals("7")){
           Utilities.savePrefrence(this, AppConstants.PRICE, "5")
       }
+        Utilities.savePrefrence(this, AppConstants.PRICE, "5")
 
         if (Utilities.getPreference(this, AppConstants.DOWNLOAD_TYPE).equals("watermark")) {
             tvIncreaseSale.visibility = View.VISIBLE
             llButton.visibility = View.VISIBLE
             tvButtonText.setText("Download HD Images")
             downloadWatermark()
-        }else {
+        }else if (Utilities.getPreference(this, AppConstants.DOWNLOAD_TYPE).equals("hd")) {
+            ivBack.visibility = View.INVISIBLE
             llButton.visibility = View.VISIBLE
+            tvIncreaseSale.visibility = View.INVISIBLE
             tvButtonText.setText("Go to Home")
-            if (Utilities.getPreference(this, AppConstants.CREDIT_AVAILABLE).toString() >= Utilities.getPreference(this, AppConstants.PRICE).toString()){
+            if (Utilities.getPreference(this, AppConstants.CREDIT_AVAILABLE)!!.toInt() >= Utilities.getPreference(
+                    this,
+                    AppConstants.PRICE
+                )!!.toInt()){
+                avaliableCredit = Utilities.getPreference(this, AppConstants.CREDIT_AVAILABLE)!!.toInt()
+                price = Utilities.getPreference(this, AppConstants.PRICE)!!.toInt()
+                remaningCredit = avaliableCredit - price
                 downloadHighQuality()
             }else{
                 Toast.makeText(this, "You are out of credits", Toast.LENGTH_SHORT)
@@ -89,12 +99,18 @@ class DownloadingActivity : AppCompatActivity() {
             if (Utilities.getPreference(this, AppConstants.DOWNLOAD_TYPE).equals("watermark")){
                 val intent = Intent(this, OrderSummary2Activity::class.java)
                 intent.putExtra(AppConstants.LIST_HD_QUALITY, listHdQuality)
+                intent.putExtra(AppConstants.LIST_WATERMARK, listWatermark)
                 startActivity(intent)
             }else{
                 val intent = Intent(this, DashboardActivity::class.java)
                 startActivity(intent)
             }
         }
+
+            ivBack.setOnClickListener {
+                onBackPressed()
+            }
+
 
 
 
@@ -135,6 +151,13 @@ class DownloadingActivity : AppCompatActivity() {
         val imageName : String = "Spyne" + SimpleDateFormat(
             FILENAME_FORMAT, Locale.US
         ).format(System.currentTimeMillis()) + ".png"
+
+        var file = File(Environment.getExternalStorageDirectory().toString() + "/Spyne")
+
+        scanFile(file.getAbsolutePath());
+
+//        SingleMediaScanner(this, file)
+
 
         val downloadId = PRDownloader.download(
             imageFile,
@@ -207,6 +230,10 @@ class DownloadingActivity : AppCompatActivity() {
         val imageName : String = "Spyne" + SimpleDateFormat(
             FILENAME_FORMAT, Locale.US
         ).format(System.currentTimeMillis()) + ".png"
+
+        var file = File(Environment.getExternalStorageDirectory().toString() + "/Spyne")
+
+        scanFile(file.getAbsolutePath());
 
         val downloadId = PRDownloader.download(
             imageFile,
@@ -290,12 +317,12 @@ class DownloadingActivity : AppCompatActivity() {
 
         val creditAvailable = RequestBody.create(
             MultipartBody.FORM,
-            "7"
+            remaningCredit.toString()
         )
 
         val creditUsed = RequestBody.create(
             MultipartBody.FORM,
-            "3"
+            Utilities.getPreference(this, AppConstants.PRICE)
         )
 
 
@@ -303,21 +330,44 @@ class DownloadingActivity : AppCompatActivity() {
         val call = request.userUpdateCredit(userId, creditAvailable, creditUsed)
 
         call?.enqueue(object : Callback<UpdateCreditResponse> {
-            override fun onResponse(call: Call<UpdateCreditResponse>, response: Response<UpdateCreditResponse>) {
+            override fun onResponse(
+                call: Call<UpdateCreditResponse>,
+                response: Response<UpdateCreditResponse>
+            ) {
                 Utilities.hideProgressDialog()
-                if (response.isSuccessful ) {
+                if (response.isSuccessful) {
 
-                }
-                else{
-                    Toast.makeText(this@DownloadingActivity, "Server not responding!!!", Toast.LENGTH_SHORT).show()
+                } else {
+                    Toast.makeText(
+                        this@DownloadingActivity,
+                        "Server not responding!!!",
+                        Toast.LENGTH_SHORT
+                    ).show()
                 }
 
             }
 
             override fun onFailure(call: Call<UpdateCreditResponse>, t: Throwable) {
-                Toast.makeText(this@DownloadingActivity, "Server not responding!!!", Toast.LENGTH_SHORT).show()
+                Toast.makeText(
+                    this@DownloadingActivity,
+                    "Server not responding!!!",
+                    Toast.LENGTH_SHORT
+                ).show()
             }
         })
+    }
+
+    override fun onBackPressed() {
+        if (Utilities.getPreference(this, AppConstants.DOWNLOAD_TYPE).equals("watermark")){
+            super.onBackPressed()
+            finish()
+        }
+    }
+
+    private fun scanFile(path: String) {
+        MediaScannerConnection.scanFile(
+            this@DownloadingActivity, arrayOf(path), null
+        ) { path, uri -> Log.i("TAG", "Finished scanning $path") }
     }
 
 

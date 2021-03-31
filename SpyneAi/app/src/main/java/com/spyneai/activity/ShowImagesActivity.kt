@@ -120,6 +120,8 @@ class ShowImagesActivity : AppCompatActivity() {
 
         setListeners()
 
+
+
         if (intent.getStringExtra(AppConstants.CATEGORY_NAME) != null)
             catName = intent.getStringExtra(AppConstants.CATEGORY_NAME)!!
         else
@@ -181,8 +183,8 @@ class ShowImagesActivity : AppCompatActivity() {
         tvDownloadFree.setOnClickListener {
             Utilities.savePrefrence(this, AppConstants.DOWNLOAD_TYPE, "watermark")
             val intent = Intent(this, DownloadingActivity::class.java)
-            intent.putExtra(AppConstants.LIST_WATERMARK, downloadList1)
-            intent.putExtra(AppConstants.LIST_HD_QUALITY, downloadList2)
+            intent.putExtra(AppConstants.LIST_WATERMARK, imageListWaterMark)
+            intent.putExtra(AppConstants.LIST_HD_QUALITY, listHdQuality)
             startActivity(intent)
         }
 
@@ -190,7 +192,8 @@ class ShowImagesActivity : AppCompatActivity() {
 
             Utilities.savePrefrence(this, AppConstants.DOWNLOAD_TYPE, "hd")
             val intent = Intent(this, OrderSummary2Activity::class.java)
-            intent.putExtra(AppConstants.LIST_HD_QUALITY, downloadList2)
+            intent.putExtra(AppConstants.LIST_WATERMARK, imageListWaterMark)
+            intent.putExtra(AppConstants.LIST_HD_QUALITY, listHdQuality)
             startActivity(intent)
         }
 
@@ -233,6 +236,7 @@ class ShowImagesActivity : AppCompatActivity() {
 
 
     private fun setBulkImages() {
+        Utilities.showProgressDialog(this)
         imageList = ArrayList<String>()
         imageListAfter = ArrayList<String>()
         imageListWaterMark = ArrayList<String>()
@@ -280,7 +284,6 @@ class ShowImagesActivity : AppCompatActivity() {
 
     //Fetch bulk data
     private fun fetchBulkUpload() {
-        Utilities.showProgressDialog(this)
         val request = RetrofitClients.buildService(APiService::class.java)
         val userId = RequestBody.create(
             MultipartBody.FORM,

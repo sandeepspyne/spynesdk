@@ -92,8 +92,10 @@ class DashboardActivity : AppCompatActivity() {
 
 
         ivAppLogo.setOnClickListener {
-            freeCreditEligiblityCheck()
+
         }
+
+        freeCreditEligiblityCheck()
 
 
         setCarosels()
@@ -429,7 +431,7 @@ class DashboardActivity : AppCompatActivity() {
             override fun onResponse(call: Call<FreeCreditEligblityResponse>, response: Response<FreeCreditEligblityResponse>) {
                 Utilities.hideProgressDialog()
                 if (response.isSuccessful ) {
-                    if (response.body()?.message != "User is not eligible for Free credits")
+                    if (response.body()?.message.equals("Free credit added to user"))
                     showFreeCreditDialog()
                 }
                 else{

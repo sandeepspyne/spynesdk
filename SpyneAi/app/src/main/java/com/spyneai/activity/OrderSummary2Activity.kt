@@ -32,6 +32,7 @@ class OrderSummary2Activity : AppCompatActivity() {
 
     private lateinit var listHdQuality : ArrayList<String>
     lateinit var productImage : String
+    private lateinit var listWatermark : ArrayList<String>
 
     @RequiresApi(Build.VERSION_CODES.M)
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -61,8 +62,11 @@ class OrderSummary2Activity : AppCompatActivity() {
         fetchUserCreditDetails()
 
         listHdQuality = ArrayList<String>()
+        listWatermark = ArrayList<String>()
 
         listHdQuality.addAll(intent.getStringArrayListExtra(AppConstants.LIST_HD_QUALITY)!!)
+
+        listWatermark.addAll(intent.getStringArrayListExtra(AppConstants.LIST_WATERMARK)!!)
 
         productImage = listHdQuality[0].toString()
 
@@ -70,29 +74,38 @@ class OrderSummary2Activity : AppCompatActivity() {
             productImage!!
         ).into(ivProductImage)
 
-        tvCategoryName.setText(Utilities.getPreference(this, AppConstants.CATEGORY_NAME))
-        tvNoOfImages.setText(Utilities.getPreference(this, AppConstants.NO_OF_IMAGES).toString())
-        tvSkuId.setText(Utilities.getPreference(this, AppConstants.SKU_ID).toString())
+        tvCategoryName.setText(Utilities.getPreference(this@OrderSummary2Activity, AppConstants.CATEGORY_NAME))
+        tvNoOfImages.setText(Utilities.getPreference(this@OrderSummary2Activity, AppConstants.NO_OF_IMAGES).toString())
+        tvSkuId.setText(Utilities.getPreference(this@OrderSummary2Activity, AppConstants.SKU_ID).toString())
         tvTotalImagesClicked.setText(
-            Utilities.getPreference(this, AppConstants.NO_OF_IMAGES).toString()
+            Utilities.getPreference(this@OrderSummary2Activity, AppConstants.NO_OF_IMAGES).toString()
         )
 
         tvDownloadHdImages.setOnClickListener {
-            if (Utilities.getPreference(this, AppConstants.CREDIT_AVAILABLE).toString() >= Utilities.getPreference(
+            if (Utilities.getPreference(this, AppConstants.CREDIT_AVAILABLE)!!.toInt() >= Utilities.getPreference(
                     this,
                     AppConstants.PRICE
-                ).toString()){
-                val intent = Intent(this, DownloadingActivity::class.java)
+                )!!.toInt()){
+                val intent = Intent(this@OrderSummary2Activity, DownloadingActivity::class.java)
                 Utilities.savePrefrence(this, AppConstants.DOWNLOAD_TYPE, "hd")
                 intent.putExtra(AppConstants.LIST_HD_QUALITY, listHdQuality)
+                intent.putExtra(AppConstants.LIST_WATERMARK, listWatermark)
                 startActivity(intent)
             }else{
-                tvCreditAvailable.startAnimation(AnimationUtils.loadAnimation(this, R.anim.move));
+                Toast.makeText(this@OrderSummary2Activity, "You are out of credits", Toast.LENGTH_SHORT).show()
+                tvTopUp.startAnimation(AnimationUtils.loadAnimation(this, R.anim.move));
                 val vibe = getSystemService(Context.VIBRATOR_SERVICE) as Vibrator
                     vibe.vibrate(100)
-                Toast.makeText(this, "You are out of credits", Toast.LENGTH_SHORT)
             }
 
+        }
+
+        tvTopUp.setOnClickListener {
+            Toast.makeText(this, "Please contact us on WhatsApp for more credits", Toast.LENGTH_SHORT).show()
+        }
+
+        imgBack.setOnClickListener {
+            onBackPressed()
         }
     }
 
@@ -147,5 +160,10 @@ class OrderSummary2Activity : AppCompatActivity() {
             }
         })
 
+    }
+
+    override fun onBackPressed() {
+        super.onBackPressed()
+        finish()
     }
 }

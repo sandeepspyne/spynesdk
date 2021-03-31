@@ -365,10 +365,12 @@ interface APiService {
         @Query("userId") userId: String?,
     ): Call<CreditDetailsResponse>?
 
-    @PUT("")
+    @Multipart
+    @PUT("update-user-credit")
     fun userUpdateCredit(
         @Part("user_id") user_id: RequestBody?,
         @Part("credit_available") credit_available: RequestBody?,
         @Part("credit_used") credit_used: RequestBody?
     ): Call<UpdateCreditResponse>?
+
 }

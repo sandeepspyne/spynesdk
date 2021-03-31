@@ -16,13 +16,15 @@
         android:theme="@style/ThemeOverlay.AppCompat.Light" >
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
             android:orientation="horizontal">
             <ImageView
-                android:id="@+id/ivBackCompleted"
+                android:id="@+id/ivBack"
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
                 android:src="@drawable/back"
+                android:paddingStart="@dimen/dp_10"
+                android:paddingEnd="@dimen/dp_10"
                 app:tint="@color/black" />
             <TextView
                 android:layout_width="0dp"
@@ -70,7 +72,7 @@
             android:layout_height="wrap_content"
             android:text="@string/downloading...."
             android:textSize="@dimen/sp_18"
-            android:textStyle="bold"
+            android:fontFamily="@font/bold"
             android:textColor="@color/primary"
             ></TextView>
 
@@ -99,7 +101,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:gravity="center"
-            android:visibility="gone"
+            android:fontFamily="@font/medium"
             android:textSize="@dimen/sp_16"
             android:textColor="@color/dark_blue"
             android:text="@string/increase_online_sale"></TextView>
@@ -113,12 +115,12 @@
 
         <LinearLayout
             android:id="@+id/llButton"
-            android:visibility="gone"
+
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:padding="@dimen/dp_10"
-            android:layout_marginTop="@dimen/dp_30"
+            android:layout_marginTop="@dimen/dp_40"
             android:background="@drawable/bg_downloadall"
             android:gravity="center">
 
@@ -127,13 +129,13 @@
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
                 android:layout_gravity="center"
+                android:gravity="center"
                 android:layout_marginStart="@dimen/dp_30"
                 android:layout_marginEnd="@dimen/dp_30"
-                android:fontFamily="@font/medium"
+                android:fontFamily="@font/bold"
                 android:padding="@dimen/dp_5"
                 android:hint="@string/download_hd_images"
                 android:textAllCaps="false"
-                android:textStyle="bold"
                 android:textColor="@color/white"
                 android:textSize="@dimen/sp_16" />
 
