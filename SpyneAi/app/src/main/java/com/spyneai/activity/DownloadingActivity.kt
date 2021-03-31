@@ -42,11 +42,11 @@ class DownloadingActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_downloading)
 
-        PRDownloader.initialize(getApplicationContext());
+        PRDownloader.initialize(this@DownloadingActivity);
         val config = PRDownloaderConfig.newBuilder()
             .setDatabaseEnabled(true)
             .build()
-        PRDownloader.initialize(applicationContext, config)
+        PRDownloader.initialize(this@DownloadingActivity, config)
 
         AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
 
@@ -62,6 +62,10 @@ class DownloadingActivity : AppCompatActivity() {
       }else if (Utilities.getPreference(this, AppConstants.NO_OF_IMAGES).equals("4")){
           Utilities.savePrefrence(this, AppConstants.PRICE, "3")
       }else if (Utilities.getPreference(this, AppConstants.NO_OF_IMAGES).equals("5")){
+          Utilities.savePrefrence(this, AppConstants.PRICE, "5")
+      }else if (Utilities.getPreference(this, AppConstants.NO_OF_IMAGES).equals("6")){
+          Utilities.savePrefrence(this, AppConstants.PRICE, "5")
+      }else if (Utilities.getPreference(this, AppConstants.NO_OF_IMAGES).equals("7")){
           Utilities.savePrefrence(this, AppConstants.PRICE, "5")
       }
 

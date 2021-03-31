@@ -31,12 +31,12 @@ android {
                 mappingFileUploadEnabled false
             }
         }
-       /* debug {
+        debug {
             shrinkResources false
             versionNameSuffix ".debug"
             applicationIdSuffix ".debug"
             minifyEnabled false
-        }*/
+        }
     }
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_1_8

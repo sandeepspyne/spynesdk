@@ -80,18 +80,18 @@ class ShowImagesActivity : AppCompatActivity() {
 
         AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
 
-        PRDownloader.initialize(getApplicationContext());
-        val config = PRDownloaderConfig.newBuilder()
-            .setDatabaseEnabled(true)
-            .build()
-        PRDownloader.initialize(applicationContext, config)
+//        PRDownloader.initialize(getApplicationContext());
+//        val config = PRDownloaderConfig.newBuilder()
+//            .setDatabaseEnabled(true)
+//            .build()
+//        PRDownloader.initialize(applicationContext, config)
 
         downloadList1 = ArrayList<String>()
-        downloadList1.add("https://watermarkly.com/images/index/text-watermark-sample4.jpg")
-        downloadList1.add("https://watermarkly.com/images/index/text-watermark-sample4.jpg")
+        downloadList1.add("https://storage.googleapis.com/spyne/AI/raw/f2517017-b3f0-468c-ae3a-05d9c92797ec.jpg")
+        downloadList1.add("https://storage.googleapis.com/spyne/AI/raw/f2517017-b3f0-468c-ae3a-05d9c92797ec.jpg")
         downloadList2 = ArrayList<String>()
-        downloadList2.add("https://res-3.cloudinary.com/crunchbase-production/image/upload/c_lpad,h_256,w_256,f_auto,q_auto:eco/khr5sfcxphjiw3wizhsb")
-        downloadList2.add("https://res-3.cloudinary.com/crunchbase-production/image/upload/c_lpad,h_256,w_256,f_auto,q_auto:eco/khr5sfcxphjiw3wizhsb")
+        downloadList2.add("https://storage.googleapis.com/spyne/AI/raw/f2517017-b3f0-468c-ae3a-05d9c92797ec.jpg")
+        downloadList2.add("https://storage.googleapis.com/spyne/AI/raw/f2517017-b3f0-468c-ae3a-05d9c92797ec.jpg")
 
 
         imageListWaterMark = ArrayList<String>()
