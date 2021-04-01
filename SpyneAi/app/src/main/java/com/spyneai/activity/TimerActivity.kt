@@ -61,37 +61,37 @@ class TimerActivity : AppCompatActivity() {
     val progress = 1000
     var maxProgress = 120000
     var i = 0
-    lateinit var countDownTimer : CountDownTimer
+    lateinit var countDownTimer: CountDownTimer
 
     private lateinit var photsAdapter: PhotosAdapter
     private lateinit var photoList: List<Photos>
     private lateinit var photoListInteriors: List<Photos>
 
-    lateinit var imageList : ArrayList<String>
-    lateinit var imageListAfter : ArrayList<String>
-    lateinit var interiorList : ArrayList<String>
+    lateinit var imageList: ArrayList<String>
+    lateinit var imageListAfter: ArrayList<String>
+    lateinit var interiorList: ArrayList<String>
 
-    public lateinit var imageFileList : ArrayList<File>
-    public lateinit var imageFileListFrames : ArrayList<Int>
+    public lateinit var imageFileList: ArrayList<File>
+    public lateinit var imageFileListFrames: ArrayList<Int>
 
-    public lateinit var imageInteriorFileList : ArrayList<File>
-    public lateinit var imageInteriorFileListFrames : ArrayList<Int>
+    public lateinit var imageInteriorFileList: ArrayList<File>
+    public lateinit var imageInteriorFileListFrames: ArrayList<Int>
 
-    private var currentPOsition : Int = 0
-    lateinit var carBackgroundList : ArrayList<CarBackgroundsResponse>
+    private var currentPOsition: Int = 0
+    lateinit var carBackgroundList: ArrayList<CarBackgroundsResponse>
     lateinit var carbackgroundsAdapter: MarketplacesAdapter
-    var backgroundSelect : String = ""
-    var marketplaceId : String = ""
-    var backgroundColour : String = ""
+    var backgroundSelect: String = ""
+    var marketplaceId: String = ""
+    var backgroundColour: String = ""
 
-    var totalImagesToUPload : Int = 0
-    var totalImagesToUPloadIndex : Int = 0
-    lateinit var gifList : ArrayList<String>
-    var gifLink : String = ""
-    lateinit var image_url : ArrayList<String>
-    var countGif : Int = 0
+    var totalImagesToUPload: Int = 0
+    var totalImagesToUPloadIndex: Int = 0
+    lateinit var gifList: ArrayList<String>
+    var gifLink: String = ""
+    lateinit var image_url: ArrayList<String>
+    var countGif: Int = 0
     lateinit var t: Thread
-    var catName : String = ""
+    var catName: String = ""
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -105,10 +105,10 @@ class TimerActivity : AppCompatActivity() {
             catName = Utilities.getPreference(this, AppConstants.CATEGORY_NAME)!!
 
         if (intent.getStringExtra(AppConstants.MARKETPLACE_ID) != null)
-        marketplaceId = intent.getStringExtra(AppConstants.MARKETPLACE_ID)!!
+            marketplaceId = intent.getStringExtra(AppConstants.MARKETPLACE_ID)!!
 
         if (intent.getStringExtra(AppConstants.BACKGROUND_COLOUR) != null)
-        backgroundColour = intent.getStringExtra(AppConstants.BACKGROUND_COLOUR)!!
+            backgroundColour = intent.getStringExtra(AppConstants.BACKGROUND_COLOUR)!!
 
         imageFileList = ArrayList<File>()
         imageFileListFrames = ArrayList<Int>()
@@ -138,9 +138,7 @@ class TimerActivity : AppCompatActivity() {
             llTimer.visibility = View.VISIBLE
             llNoInternet.visibility = View.GONE
             uploadImageToBucket()
-        }
-        catch (e: Exception)
-        {
+        } catch (e: Exception) {
             llTimer.visibility = View.GONE
             llNoInternet.visibility = View.VISIBLE
             countDownTimer.cancel()
@@ -179,7 +177,7 @@ class TimerActivity : AppCompatActivity() {
         imageFileList.addAll(intent.getParcelableArrayListExtra(AppConstants.ALL_IMAGE_LIST)!!)
         imageFileListFrames.addAll(intent.getIntegerArrayListExtra(AppConstants.ALL_FRAME_LIST)!!)
 
-        if(Utilities.getPreference(this,AppConstants.CATEGORY_NAME).equals("Automobiles")) {
+        if (Utilities.getPreference(this, AppConstants.CATEGORY_NAME).equals("Automobiles")) {
             imageInteriorFileList.addAll(intent.getParcelableArrayListExtra(AppConstants.ALL_INTERIOR_IMAGE_LIST)!!)
             imageInteriorFileListFrames.addAll(intent.getIntegerArrayListExtra(AppConstants.ALL_INTERIOR_FRAME_LIST)!!)
         }
@@ -226,8 +224,10 @@ class TimerActivity : AppCompatActivity() {
                 ) {
                     //  Utilities.hideProgressDialog()
                     if (response.isSuccessful) {
-                        Log.e("uploadImageToBucket", totalImagesToUPloadIndex.toString() +
-                                " " + response.body()?.image.toString())
+                        Log.e(
+                            "uploadImageToBucket", totalImagesToUPloadIndex.toString() +
+                                    " " + response.body()?.image.toString()
+                        )
 
                         //  if (Utilities.getPreference(this@CameraActivity, AppConstants.MAIN_IMAGE).equals(""))
                         Utilities.savePrefrence(
@@ -256,8 +256,7 @@ class TimerActivity : AppCompatActivity() {
                     countDownTimer.cancel()
                 }
             })
-        }
-        else{
+        } else {
             Utilities.hideProgressDialog()
             llTimer.visibility = View.GONE
             llNoInternet.visibility = View.VISIBLE
@@ -270,7 +269,7 @@ class TimerActivity : AppCompatActivity() {
             llTimer.visibility = View.VISIBLE
             llNoInternet.visibility = View.GONE
             val request = RetrofitClient.buildService(APiService::class.java)
-            val uploadPhotoName : String =
+            val uploadPhotoName: String =
                 Utilities.getPreference(this, AppConstants.MAIN_IMAGE)
                     .toString().split("/")[Utilities.getPreference(
                     this,
@@ -285,7 +284,8 @@ class TimerActivity : AppCompatActivity() {
                 Utilities.getPreference(this, AppConstants.SHOOT_ID)!!,
                 Utilities.getPreference(this, AppConstants.MAIN_IMAGE).toString(),
                 uploadPhotoName,
-                "EXTERIOR")
+                "EXTERIOR"
+            )
 
             Log.e("Frame Number", intent.getIntExtra(AppConstants.FRAME, 1).toString())
             val gson = Gson()
@@ -322,8 +322,7 @@ class TimerActivity : AppCompatActivity() {
 
                                 if (imageInteriorFileList != null && imageInteriorFileList.size > 0) {
                                     uploadImageToBucketInterior()
-                                }
-                                else
+                                } else
                                     markSkuComplete()
                             }
                         } catch (e: Exception) {
@@ -355,8 +354,7 @@ class TimerActivity : AppCompatActivity() {
                     Log.e("Respo Image ", "Image error")
                 }
             })
-        }
-        else{
+        } else {
             Utilities.hideProgressDialog()
             llTimer.visibility = View.GONE
             llNoInternet.visibility = View.VISIBLE
@@ -422,8 +420,7 @@ class TimerActivity : AppCompatActivity() {
                     countDownTimer.cancel()
                 }
             })
-        }
-        else{
+        } else {
             Utilities.hideProgressDialog()
             llTimer.visibility = View.GONE
             llNoInternet.visibility = View.VISIBLE
@@ -431,13 +428,12 @@ class TimerActivity : AppCompatActivity() {
         }
     }
 
-    fun uploadImageURLsInterior()
-    {
+    fun uploadImageURLsInterior() {
         if (Utilities.isNetworkAvailable(this)) {
             llTimer.visibility = View.VISIBLE
             llNoInternet.visibility = View.GONE
             val request = RetrofitClient.buildService(APiService::class.java)
-            val uploadPhotoName : String =
+            val uploadPhotoName: String =
                 Utilities.getPreference(this, AppConstants.MAIN_IMAGE)
                     .toString().split("/")[Utilities.getPreference(
                     this,
@@ -516,8 +512,7 @@ class TimerActivity : AppCompatActivity() {
                     Log.e("Respo Image ", "Image error")
                 }
             })
-        }
-        else{
+        } else {
             Utilities.hideProgressDialog()
             llTimer.visibility = View.GONE
             llNoInternet.visibility = View.VISIBLE
@@ -609,8 +604,7 @@ class TimerActivity : AppCompatActivity() {
                     Utilities.hideProgressDialog()
                 }
             })
-        }
-        else{
+        } else {
             Utilities.hideProgressDialog()
             llTimer.visibility = View.GONE
             llNoInternet.visibility = View.VISIBLE
@@ -619,32 +613,26 @@ class TimerActivity : AppCompatActivity() {
     }
 
     private fun setCustomTimer() {
-        if (Utilities.getPreference(this, AppConstants.FRAME_SHOOOTS) != null)
-        {
-            if (Utilities.getPreference(this, AppConstants.FRAME_SHOOOTS).equals("4"))
-            {
+        if (Utilities.getPreference(this, AppConstants.FRAME_SHOOOTS) != null) {
+            if (Utilities.getPreference(this, AppConstants.FRAME_SHOOOTS).equals("4")) {
                 CountDownTimer(480000)
-            }
-            else if (Utilities.getPreference(this, AppConstants.FRAME_SHOOOTS).equals("8"))
-            {
+            } else if (Utilities.getPreference(this, AppConstants.FRAME_SHOOOTS).equals("8")) {
                 CountDownTimer(480000 * 2)
-            }
-            else if (Utilities.getPreference(this, AppConstants.FRAME_SHOOOTS).equals("12"))
-            {
+            } else if (Utilities.getPreference(this, AppConstants.FRAME_SHOOOTS).equals("12")) {
                 CountDownTimer(480000 * 3)
-            }
-            else if (Utilities.getPreference(this, AppConstants.FRAME_SHOOOTS).equals("24"))
-            {
+            } else if (Utilities.getPreference(this, AppConstants.FRAME_SHOOOTS).equals("24")) {
                 CountDownTimer(480000 * 4)
-
-            }   else if (Utilities.getPreference(this, AppConstants.FRAME_SHOOOTS).equals("5"))
-            {
+            } else if (Utilities.getPreference(this, AppConstants.FRAME_SHOOOTS).equals("5")) {
+                CountDownTimer(480000)
+            } else if (Utilities.getPreference(this, AppConstants.FRAME_SHOOOTS).equals("6")) {
+                CountDownTimer(480000)
+            } else if (Utilities.getPreference(this, AppConstants.FRAME_SHOOOTS).equals("7")) {
                 CountDownTimer(480000)
             }
         }
     }
 
-    private fun CountDownTimer(maxProgress: Long){
+    private fun CountDownTimer(maxProgress: Long) {
         countDownTimer = object : CountDownTimer(maxProgress.toLong(), progress.toLong()) {
             override fun onTick(millisUntilFinished: Long) {
                 i++
@@ -664,6 +652,7 @@ class TimerActivity : AppCompatActivity() {
                     )
                 );
             }
+
             override fun onFinish() {
                 tvMinSec.setText("00:00")
             }
@@ -721,10 +710,10 @@ class TimerActivity : AppCompatActivity() {
                         photsAdapter.notifyDataSetChanged()
 
                         // Utilities.showProgressDialog(this@TimerActivity)
-                        if (countGif < photoList.size ) {
+                        if (countGif < photoList.size) {
                             if (catName.equals("Automobiles")) {
                                 bulkUpload(countGif)
-                            }else if (catName.equals("Footwear")){
+                            } else if (catName.equals("Footwear")) {
                                 bulkUploadFootwear(countGif)
                             }
                         }
@@ -749,8 +738,7 @@ class TimerActivity : AppCompatActivity() {
                     ).show()
                 }
             })
-        }
-        else{
+        } else {
             Utilities.hideProgressDialog()
 
             llTimer.visibility = View.GONE
@@ -827,8 +815,7 @@ class TimerActivity : AppCompatActivity() {
                             bulkUpload(countGif)
 //                            (imageListWaterMark as ArrayList).add(response.body()!!.watermark_image)
 
-                        }
-                        else if (photoListInteriors.size > 0) {
+                        } else if (photoListInteriors.size > 0) {
                             countGif = 0
                             if (countGif < photoListInteriors.size) {
                                 addWatermark(countGif)
@@ -867,8 +854,7 @@ class TimerActivity : AppCompatActivity() {
                     ).show()
                 }
             })
-        }
-        else{
+        } else {
             Utilities.hideProgressDialog()
 
             llTimer.visibility = View.GONE
@@ -919,11 +905,11 @@ class TimerActivity : AppCompatActivity() {
                                 interiorList.add(response.body()!![i].output_image_url)
                             }
                         }
-                        if (Utilities.getPreference(this@TimerActivity,AppConstants.CATEGORY_NAME).equals("Automobiles"))
-                        {
+                        if (Utilities.getPreference(this@TimerActivity, AppConstants.CATEGORY_NAME)
+                                .equals("Automobiles")
+                        ) {
                             fetchGif()
-                        }
-                        else {
+                        } else {
                             sendEmail()
                         }
 
@@ -942,8 +928,7 @@ class TimerActivity : AppCompatActivity() {
 
                 }
             })
-        }
-        else{
+        } else {
             Utilities.hideProgressDialog()
             llTimer.visibility = View.GONE
             llNoInternet.visibility = View.VISIBLE
@@ -1006,7 +991,14 @@ class TimerActivity : AppCompatActivity() {
             )
 
             val call =
-                request.bulkUPloadFootwear( userId, skuId, imageUrl, skuName, marketplace_id, bg_color)
+                request.bulkUPloadFootwear(
+                    userId,
+                    skuId,
+                    imageUrl,
+                    skuName,
+                    marketplace_id,
+                    bg_color
+                )
 
             call?.enqueue(object : Callback<FootwearBulkResponse> {
                 override fun onResponse(
@@ -1051,8 +1043,7 @@ class TimerActivity : AppCompatActivity() {
                     ).show()
                 }
             })
-        }
-        else{
+        } else {
             Utilities.hideProgressDialog()
 
             llTimer.visibility = View.GONE
@@ -1141,8 +1132,7 @@ class TimerActivity : AppCompatActivity() {
                     ).show()
                 }
             })
-        }
-        else{
+        } else {
             Utilities.hideProgressDialog()
 
             llTimer.visibility = View.GONE
@@ -1185,8 +1175,7 @@ class TimerActivity : AppCompatActivity() {
                     ).show()
                 }
             })
-        }
-        else{
+        } else {
             llTimer.visibility = View.GONE
             llNoInternet.visibility = View.VISIBLE
             countDownTimer.cancel()
@@ -1235,8 +1224,7 @@ class TimerActivity : AppCompatActivity() {
                     ).show()
                 }
             })
-        }
-        else{
+        } else {
             Utilities.hideProgressDialog()
             llTimer.visibility = View.GONE
             llNoInternet.visibility = View.VISIBLE
@@ -1254,7 +1242,8 @@ class TimerActivity : AppCompatActivity() {
 
             val sendEmailRequest = SendEmailRequest(
                 imageList, imageListAfter, interiorList, gifLink,
-                Utilities.getPreference(this, AppConstants.EMAIL_ID).toString())
+                Utilities.getPreference(this, AppConstants.EMAIL_ID).toString()
+            )
             val call = request.sendEmailAll(sendEmailRequest)
 
             call?.enqueue(object : Callback<OtpResponse> {
@@ -1267,7 +1256,7 @@ class TimerActivity : AppCompatActivity() {
                                 ShowImagesActivity::class.java
                             )
                             intent.putExtra(AppConstants.GIF, gifLink)
-                            intent.putExtra(AppConstants.CATEGORY_NAME,catName)
+                            intent.putExtra(AppConstants.CATEGORY_NAME, catName)
                             startActivity(intent)
                             finish()
                             Toast.makeText(
@@ -1291,8 +1280,7 @@ class TimerActivity : AppCompatActivity() {
                     //Toast.makeText(this@MainActivity, "${t.message}", Toast.LENGTH_SHORT).show()
                 }
             })
-        }
-        else{
+        } else {
             Utilities.hideProgressDialog()
 
             llTimer.visibility = View.GONE
@@ -1310,7 +1298,8 @@ class TimerActivity : AppCompatActivity() {
             || Utilities.getPreference(
                 this@TimerActivity,
                 AppConstants.FRAME_SHOOOTS
-            ).equals("8")) {
+            ).equals("8")
+        ) {
             val intent = Intent(
                 this@TimerActivity,
                 ShowImagesActivity::class.java
@@ -1332,7 +1321,7 @@ class TimerActivity : AppCompatActivity() {
 
 
     override fun onBackPressed() {
-       // super.onBackPressed()
+        // super.onBackPressed()
         // finish()
         //onDestroy()
 
@@ -1340,7 +1329,7 @@ class TimerActivity : AppCompatActivity() {
     }
 
     //Exit dialog
-    fun showExitDialog( ) {
+    fun showExitDialog() {
         val dialog = Dialog(this)
         dialog.requestWindowFeature(Window.FEATURE_NO_TITLE)
         dialog.setCancelable(false)

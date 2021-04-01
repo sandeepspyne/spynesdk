@@ -75,7 +75,7 @@ class GenrateMarketplaceActivity : AppCompatActivity() {
         else
             catName = Utilities.getPreference(this, AppConstants.CATEGORY_NAME)!!
 
-        showMarketplacesDialog()
+//        showMarketplacesDialog()
         fetchMarketplaces()
 
 
@@ -300,9 +300,6 @@ class GenrateMarketplaceActivity : AppCompatActivity() {
             onBackPressed()
         })
 
-        tvMarket.setOnClickListener(View.OnClickListener {
-            showMarketplacesDialog()
-        })
 
     }
 

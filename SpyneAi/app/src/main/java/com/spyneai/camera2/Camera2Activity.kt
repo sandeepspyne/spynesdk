@@ -8,6 +8,7 @@ import android.app.Dialog
 import android.content.ContentValues
 import android.content.Context
 import android.content.Intent
+import android.content.pm.ActivityInfo
 import android.content.pm.PackageManager
 import android.database.Cursor
 import android.graphics.Bitmap
@@ -63,19 +64,7 @@ import com.spyneai.model.subcategories.Data
 import com.spyneai.needs.AppConstants
 import com.spyneai.needs.ImageFilePath
 import com.spyneai.needs.Utilities
-import kotlinx.android.synthetic.main.activity_camera2.*
-import kotlinx.android.synthetic.main.activity_camera2.camera_capture_button
-import kotlinx.android.synthetic.main.activity_camera2.camera_overlay
-import kotlinx.android.synthetic.main.activity_camera2.etSkuName
-import kotlinx.android.synthetic.main.activity_camera2.imgBack
-import kotlinx.android.synthetic.main.activity_camera2.imgNext
-import kotlinx.android.synthetic.main.activity_camera2.imgOverlay
-import kotlinx.android.synthetic.main.activity_camera2.ivGallery
-import kotlinx.android.synthetic.main.activity_camera2.ivPreview
-import kotlinx.android.synthetic.main.activity_camera2.rvProgress
-import kotlinx.android.synthetic.main.activity_camera2.rvSubcategories
-import kotlinx.android.synthetic.main.activity_camera2.tvshoot
-import kotlinx.android.synthetic.main.activity_camera2.viewFinder
+import kotlinx.android.synthetic.main.activity_camera.*
 import kotlinx.android.synthetic.main.activity_camera_preview.*
 import kotlinx.android.synthetic.main.dialog_spinner.*
 import retrofit2.Call
@@ -92,7 +81,7 @@ import kotlin.collections.ArrayList
 
 typealias LumaListener = (luma: Double) -> Unit
 
-class Camera2Activity : AppCompatActivity() , SubCategoriesAdapter.BtnClickListener {
+class Camera2Activity : AppCompatActivity(), SubCategoriesAdapter.BtnClickListener {
     private lateinit var gifList: ArrayList<String>
     private lateinit var photoFilePath: File
     private var savedUri: Uri? = null
@@ -106,47 +95,48 @@ class Camera2Activity : AppCompatActivity() , SubCategoriesAdapter.BtnClickListe
 
     private val SELECT_PICTURE = 1
     private var selectedImagePath: String? = null
-    private lateinit var selectedItemFrame : String
+    private lateinit var selectedItemFrame: String
 
     //   private var btnlistener: SubCategoriesAdapter.BtnClickListener? = null
     private var imageCapture: ImageCapture? = null
 
     private lateinit var outputDirectory: File
     private lateinit var cameraExecutor: ExecutorService
-    lateinit var cameraProvider : ProcessCameraProvider
+    lateinit var cameraProvider: ProcessCameraProvider
 
-    lateinit var subCategoriesList : ArrayList<Data>
+    lateinit var subCategoriesList: ArrayList<Data>
     lateinit var subCategoriesAdapter: SubCategoriesAdapter
 
-    lateinit var interiorFrameList : ArrayList<FrameImages>
+    lateinit var interiorFrameList: ArrayList<FrameImages>
     lateinit var interiorFramesAdapter: InteriorFramesAdapter
-    var catName : String = "Category"
+    var catName: String = "Category"
 
-    lateinit var skuId : String
-    var skuName : String = "SKU"
-    lateinit var shootIds : String
-    lateinit var catIds : String
-    lateinit var prodIds : String
-    var frameNumber : Int = 1
+    lateinit var skuId: String
+    var skuName: String = "SKU"
+    lateinit var shootIds: String
+    lateinit var catIds: String
+    lateinit var prodIds: String
+    var frameNumber: Int = 1
     var totalFrames: Int = 0
     var frameNumberTemp: Int = 0
 
     var frameImage: String = ""
     lateinit var frameImageList: ArrayList<FrameImages>
     lateinit var frameInteriorImageList: ArrayList<FrameImages>
-    lateinit var frameImageListSelections : ArrayList<Int>
-    lateinit var frameINteriorImageListSelections : ArrayList<Int>
+    lateinit var frameImageListSelections: ArrayList<Int>
+    lateinit var frameINteriorImageListSelections: ArrayList<Int>
 
     public var imageFile: File? = null
 
-    public lateinit var imageFileList : ArrayList<File>
-    public lateinit var imageFileListFrames : ArrayList<Int>
+    public lateinit var imageFileList: ArrayList<File>
+    public lateinit var imageFileListFrames: ArrayList<Int>
 
-    public lateinit var imageInteriorFileList : ArrayList<File>
-    public lateinit var imageInteriorFileListFrames : ArrayList<Int>
+    public lateinit var imageInteriorFileList: ArrayList<File>
+    public lateinit var imageInteriorFileListFrames: ArrayList<Int>
 
-    var interiorEnabled : Boolean = false
+    var interiorEnabled: Boolean = false
     var catId = ""
+
 
     @RequiresApi(Build.VERSION_CODES.M)
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -238,8 +228,7 @@ class Camera2Activity : AppCompatActivity() , SubCategoriesAdapter.BtnClickListe
             Glide.with(this@Camera2Activity).load(
                 AppConstants.BASE_IMAGE_URL + frameImage
             ).into(imgOverlay)
-        }
-        else{
+        } else {
             ivPreview.visibility = View.GONE
             imgOverlay.visibility = View.INVISIBLE
         }
@@ -362,8 +351,7 @@ class Camera2Activity : AppCompatActivity() , SubCategoriesAdapter.BtnClickListe
                 rvSubcategories.visibility = View.GONE
                 rvInteriorFrames.visibility = View.GONE
             }
-        }
-        else{
+        } else {
             rvSubcategories.visibility = View.GONE
             rvInteriorFrames.visibility = View.VISIBLE
 
@@ -394,7 +382,7 @@ class Camera2Activity : AppCompatActivity() , SubCategoriesAdapter.BtnClickListe
 
         }
 
-        frameNumber = frameImageListSelections[frameNumberTemp] +1
+        frameNumber = frameImageListSelections[frameNumberTemp] + 1
         totalFrames = frameImageListSelections.size
 
         if (!interiorEnabled) {
@@ -413,8 +401,7 @@ class Camera2Activity : AppCompatActivity() , SubCategoriesAdapter.BtnClickListe
                 ivPreview.visibility = View.VISIBLE
                 imgOverlay.visibility = View.VISIBLE
             }
-        }
-        else{
+        } else {
             if (frameInteriorImageList.size > 0) {
                 ivPreview.visibility = View.GONE
                 imgOverlay.visibility = View.GONE
@@ -424,7 +411,7 @@ class Camera2Activity : AppCompatActivity() , SubCategoriesAdapter.BtnClickListe
         progressList = ArrayList<Data>()
 
         tvshoot.setText("Shots " + (frameNumberTemp + 1) + "/" + totalFrames)
-        val framesList : List<Int> = ArrayList(totalFrames)
+        val framesList: List<Int> = ArrayList(totalFrames)
 
         progressAdapter = ProgressAdapter(this, framesList as ArrayList<Int>)
         val layoutManager: RecyclerView.LayoutManager = LinearLayoutManager(
@@ -437,7 +424,7 @@ class Camera2Activity : AppCompatActivity() , SubCategoriesAdapter.BtnClickListe
 
         for (i in 0..frameNumberTemp)
             (framesList as ArrayList).add(0)
-        for (i in frameNumberTemp+1..totalFrames-1)
+        for (i in frameNumberTemp + 1..totalFrames - 1)
             (framesList as ArrayList).add(1)
 
         progressAdapter.notifyDataSetChanged()
@@ -475,7 +462,8 @@ class Camera2Activity : AppCompatActivity() , SubCategoriesAdapter.BtnClickListe
                     subCategoriesAdapter.notifyDataSetChanged()
 
                     if (Utilities.getPreference(this@Camera2Activity, AppConstants.FROM)
-                            .equals("BA"))
+                            .equals("BA")
+                    )
                         setProductMap(
                             Utilities.getPreference(
                                 this@Camera2Activity,
@@ -731,9 +719,7 @@ class Camera2Activity : AppCompatActivity() , SubCategoriesAdapter.BtnClickListe
 
             try {
                 cameraProvider = cameraProviderFuture.get()
-            }
-            catch(e : Exception)
-            {
+            } catch (e: Exception) {
                 e.printStackTrace()
             }
 
@@ -840,8 +826,7 @@ class Camera2Activity : AppCompatActivity() , SubCategoriesAdapter.BtnClickListe
 
 
     @RequiresApi(Build.VERSION_CODES.M)
-    fun setImageRaw()
-    {
+    fun setImageRaw() {
         val myBitmap = BitmapFactory.decodeFile(photoFile.getAbsolutePath())
         var ei: ExifInterface? = null
         try {
@@ -873,18 +858,23 @@ class Camera2Activity : AppCompatActivity() , SubCategoriesAdapter.BtnClickListe
         val dialog = Dialog(this)
         dialog.requestWindowFeature(Window.FEATURE_NO_TITLE)
         dialog.setCancelable(false)
-        dialog.setContentView(R.layout.dialog_suggestion)
+        if (Utilities.getPreference(this, AppConstants.CATEGORY_NAME).equals("Automobiles"))
+            dialog.setContentView(R.layout.dialog_suggestion)
+        else
+            dialog.setContentView(R.layout.footwear_dialog_suggestion)
 
         val window: Window = dialog.getWindow()!!
-        window.setLayout(WindowManager.LayoutParams.WRAP_CONTENT,
-            WindowManager.LayoutParams.WRAP_CONTENT)
+        window.setLayout(
+            WindowManager.LayoutParams.WRAP_CONTENT,
+            WindowManager.LayoutParams.WRAP_CONTENT
+        )
 
-        val flAfter : FrameLayout = dialog.findViewById(R.id.flAfter)
-        val ivClickedImage : ImageView = dialog.findViewById(R.id.ivClickedImage)
-        val ivClickedImageover : ImageView = dialog.findViewById(R.id.ivClickedImageover)
-        val ivClickedImageoverlay : ImageView = dialog.findViewById(R.id.ivClickedImageoverlay)
-        val tvReshoot : TextView = dialog.findViewById(R.id.tvReshoot)
-        val tvConfirm : TextView = dialog.findViewById(R.id.tvConfirm)
+        val flAfter: FrameLayout = dialog.findViewById(R.id.flAfter)
+        val ivClickedImage: ImageView = dialog.findViewById(R.id.ivClickedImage)
+        val ivClickedImageover: ImageView = dialog.findViewById(R.id.ivClickedImageover)
+        val ivClickedImageoverlay: ImageView = dialog.findViewById(R.id.ivClickedImageoverlay)
+        val tvReshoot: TextView = dialog.findViewById(R.id.tvReshoot)
+        val tvConfirm: TextView = dialog.findViewById(R.id.tvConfirm)
 
         if (!interiorEnabled) {
             ivClickedImage.setImageBitmap(rotatedBitmap)
@@ -892,8 +882,7 @@ class Camera2Activity : AppCompatActivity() , SubCategoriesAdapter.BtnClickListe
             Glide.with(this@Camera2Activity).load(
                 AppConstants.BASE_IMAGE_URL + frameImageList[frameNumber - 1].displayImage
             ).into(ivClickedImageoverlay)
-        }
-        else{
+        } else {
             ivClickedImage.setImageBitmap(rotatedBitmap)
             ivClickedImageover.visibility = View.GONE
             flAfter.visibility = View.GONE
@@ -938,9 +927,8 @@ class Camera2Activity : AppCompatActivity() , SubCategoriesAdapter.BtnClickListe
                         )
                         startActivity(intent)
                         finish()
-                    }
-                    else
-                    showInteriorDialog()
+                    } else
+                        showInteriorDialog()
                 }
             } else {
                 rvSubcategories.visibility = View.GONE
@@ -1010,12 +998,14 @@ class Camera2Activity : AppCompatActivity() , SubCategoriesAdapter.BtnClickListe
         dialog.setContentView(R.layout.dialog_hint)
 
         val window: Window = dialog.getWindow()!!
-        window.setLayout(WindowManager.LayoutParams.WRAP_CONTENT,
-            WindowManager.LayoutParams.WRAP_CONTENT)
+        window.setLayout(
+            WindowManager.LayoutParams.WRAP_CONTENT,
+            WindowManager.LayoutParams.WRAP_CONTENT
+        )
 
-        val tvHint : TextView = dialog.findViewById(R.id.tvHint)
-        val tvHintMove : TextView = dialog.findViewById(R.id.tvHintMove)
-        val tvContinue : TextView = dialog.findViewById(R.id.tvContinue)
+        val tvHint: TextView = dialog.findViewById(R.id.tvHint)
+        val tvHintMove: TextView = dialog.findViewById(R.id.tvHintMove)
+        val tvContinue: TextView = dialog.findViewById(R.id.tvContinue)
         val builder = SpannableStringBuilder()
         val builders = SpannableStringBuilder()
 
@@ -1188,9 +1178,11 @@ class Camera2Activity : AppCompatActivity() , SubCategoriesAdapter.BtnClickListe
                     prodIds = prodId
                     catIds = catId
 
-                    Utilities.savePrefrence(this@Camera2Activity, AppConstants.SHOOT_ID, shootIds
+                    Utilities.savePrefrence(
+                        this@Camera2Activity, AppConstants.SHOOT_ID, shootIds
                     )
-                    Utilities.savePrefrence(this@Camera2Activity, AppConstants.SKU_ID, skuId
+                    Utilities.savePrefrence(
+                        this@Camera2Activity, AppConstants.SKU_ID, skuId
                     )
 
 
@@ -1230,7 +1222,7 @@ class Camera2Activity : AppCompatActivity() , SubCategoriesAdapter.BtnClickListe
                     rvInteriorFrames.setAdapter(interiorFramesAdapter)
 
 
-                    Log.e("Interior List ",frameInteriorImageList.toString())
+                    Log.e("Interior List ", frameInteriorImageList.toString())
                     interiorFramesAdapter.notifyDataSetChanged()
 
                     if (response.body()?.payload!!.data.frames != null && response.body()?.payload!!.data.frames.frameImages.size > 0) {
@@ -1532,8 +1524,7 @@ class Camera2Activity : AppCompatActivity() , SubCategoriesAdapter.BtnClickListe
                 );
                 //   setNumberPickerTextColor(npShoots, getColor(R.color.primary))
                 setProgressFrame(4)
-            }
-            else if (valuesShoots[newVal].equals("8 Angles")) {
+            } else if (valuesShoots[newVal].equals("8 Angles")) {
                 Utilities.savePrefrence(
                     this@Camera2Activity,
                     AppConstants.FRAME_SHOOOTS,
@@ -1566,8 +1557,8 @@ class Camera2Activity : AppCompatActivity() , SubCategoriesAdapter.BtnClickListe
         window.setLayout(WindowManager.LayoutParams.WRAP_CONTENT,
             WindowManager.LayoutParams.WRAP_CONTENT)
 
-        val tvProceed : TextView = dialog.findViewById(R.id.tvProceed)
-        val npShoots : NumberPicker = dialog.findViewById(R.id.npShoots)
+        val tvProceed: TextView = dialog.findViewById(R.id.tvProceed)
+        val npShoots: NumberPicker = dialog.findViewById(R.id.npShoots)
 
         val valuesShoots = arrayOf("5 Angles"/*, "8 Angles", "12 Angles", "24 Angles"*/)
 
@@ -1617,8 +1608,7 @@ class Camera2Activity : AppCompatActivity() , SubCategoriesAdapter.BtnClickListe
         val count = numberPicker.childCount
         for (i in 0 until count) {
             val child = numberPicker.getChildAt(i)
-            if (child is EditText) child.
-            setTextColor(ContextCompat.getColor(this, R.color.black))
+            if (child is EditText) child.setTextColor(ContextCompat.getColor(this, R.color.black))
         }
         numberPicker.invalidate()
     }
@@ -1630,11 +1620,13 @@ class Camera2Activity : AppCompatActivity() , SubCategoriesAdapter.BtnClickListe
         dialog.setCancelable(false)
         dialog.setContentView(R.layout.dialog_interior_hint)
         val window: Window = dialog.getWindow()!!
-        window.setLayout(WindowManager.LayoutParams.WRAP_CONTENT,
-            WindowManager.LayoutParams.WRAP_CONTENT)
+        window.setLayout(
+            WindowManager.LayoutParams.WRAP_CONTENT,
+            WindowManager.LayoutParams.WRAP_CONTENT
+        )
 
-        val tvSkip : TextView = dialog.findViewById(R.id.tvSkip)
-        val tvShootNowInterior : TextView = dialog.findViewById(R.id.tvShootNowInterior)
+        val tvSkip: TextView = dialog.findViewById(R.id.tvSkip)
+        val tvShootNowInterior: TextView = dialog.findViewById(R.id.tvShootNowInterior)
 
         tvSkip.setOnClickListener(View.OnClickListener {
             val intent = Intent(
@@ -1672,7 +1664,7 @@ class Camera2Activity : AppCompatActivity() , SubCategoriesAdapter.BtnClickListe
     }
 
 
-    fun showExitDialog( ) {
+    fun showExitDialog() {
         val dialog = Dialog(this)
         dialog.requestWindowFeature(Window.FEATURE_NO_TITLE)
         dialog.setCancelable(false)
@@ -1704,8 +1696,7 @@ class Camera2Activity : AppCompatActivity() , SubCategoriesAdapter.BtnClickListe
         dialog.show()
     }
 
-    fun showSpinner()
-    {
+    fun showSpinner() {
         /*val spinner = findViewById<View>(R.id.pioedittxt5) as Spinner
         val adapter = ArrayAdapter.createFromResource(this,
                 R.array.travelreasons, R.layout.simple_spinner_item)

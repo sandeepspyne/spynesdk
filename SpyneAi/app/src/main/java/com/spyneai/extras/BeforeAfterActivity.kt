@@ -12,6 +12,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.spyneai.R
+import com.spyneai.activity.CameraActivity
 import com.spyneai.adapter.BeforeAfterAdapter
 import com.spyneai.camera2.Camera2Activity
 import com.spyneai.interfaces.APiService
@@ -64,7 +65,13 @@ class BeforeAfterActivity : AppCompatActivity() {
             catName = Utilities.getPreference(this, AppConstants.CATEGORY_NAME)!!
 
         if (catName.equals("Footwear")){
-            tvDemo.visibility = View.GONE
+            tvShootFootwear.visibility = View.VISIBLE
+            llShootNow.visibility = View.GONE
+        }else{
+            tvShootFootwear.visibility = View.GONE
+            llShootNow.visibility = View.VISIBLE
+
+
         }
     }
 
@@ -137,14 +144,26 @@ class BeforeAfterActivity : AppCompatActivity() {
     }
 
     private fun listeners() {
-        tvShootNow.setOnClickListener(View.OnClickListener {
-            val intent = Intent(this, Camera2Activity::class.java)
-            intent.putExtra(AppConstants.CATEGORY_ID, catId)
-            intent.putExtra(AppConstants.CATEGORY_NAME, catName)
-            intent.putExtra(AppConstants.GIF_LIST, gifList)
-            Utilities.savePrefrence(this, AppConstants.FROM, "BA")
-            startActivity(intent)
-        })
+        if (Utilities.getPreference(this, AppConstants.CATEGORY_NAME).equals("Automobiles")){
+            tvShootNow.setOnClickListener(View.OnClickListener {
+                val intent = Intent(this, Camera2Activity::class.java)
+                intent.putExtra(AppConstants.CATEGORY_ID, catId)
+                intent.putExtra(AppConstants.CATEGORY_NAME, catName)
+                intent.putExtra(AppConstants.GIF_LIST, gifList)
+                Utilities.savePrefrence(this, AppConstants.FROM, "BA")
+                startActivity(intent)
+            })
+        }else if (Utilities.getPreference(this, AppConstants.CATEGORY_NAME).equals("Footwear")){
+            tvShootFootwear.setOnClickListener(View.OnClickListener {
+                val intent = Intent(this, CameraActivity::class.java)
+                intent.putExtra(AppConstants.CATEGORY_ID, catId)
+                intent.putExtra(AppConstants.CATEGORY_NAME, catName)
+                intent.putExtra(AppConstants.GIF_LIST, gifList)
+                Utilities.savePrefrence(this, AppConstants.FROM, "BA")
+                startActivity(intent)
+            })
+        }
+
 
         imgBackBF.setOnClickListener(View.OnClickListener {
             onBackPressed()
@@ -164,7 +183,7 @@ class BeforeAfterActivity : AppCompatActivity() {
                 call: Call<BeforeAfterResponse>,
                 response: Response<BeforeAfterResponse>
             ) {
-                //   Utilities.hideProgressDialog()
+                   Utilities.hideProgressDialog()
                 if (response.isSuccessful && response.body()!!.payload.data.size > 0) {
                     (beforeAfterList as ArrayList).clear()
                     (beforeAfterList as ArrayList).addAll(response.body()!!.payload.data)

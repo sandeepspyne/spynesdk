@@ -16,6 +16,7 @@ import com.bumptech.glide.Glide
 import com.spyneai.R
 import com.spyneai.model.categories.Data
 import com.spyneai.needs.AppConstants
+import com.spyneai.needs.Utilities
 
 
 public class CategoriesDashboardAdapter(
@@ -82,6 +83,7 @@ public class CategoriesDashboardAdapter(
         viewHolder.llCategories.setOnClickListener(View.OnClickListener {
             Log.e("ok", "Ok way" + position)
             if (mClickListener != null)
+                Utilities.savePrefrence(context, AppConstants.CATEGORY_NAME, categoriesResponseList[position].displayName)
                 mClickListener?.onBtnClick(position)
         })
     }

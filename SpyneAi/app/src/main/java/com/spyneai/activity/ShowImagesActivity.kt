@@ -36,7 +36,7 @@ import com.spyneai.needs.Utilities
 import com.synnapps.carouselview.CarouselView
 import com.synnapps.carouselview.ViewListener
 import kotlinx.android.synthetic.main.activity_before_after.*
-import kotlinx.android.synthetic.main.activity_camera2.*
+import kotlinx.android.synthetic.main.activity_camera.*
 import kotlinx.android.synthetic.main.activity_show_gif.*
 import kotlinx.android.synthetic.main.activity_show_images.*
 import kotlinx.android.synthetic.main.activity_timer.*
@@ -117,10 +117,7 @@ class ShowImagesActivity : AppCompatActivity() {
 //        }
 
         setBulkImages()
-
         setListeners()
-
-
 
         if (intent.getStringExtra(AppConstants.CATEGORY_NAME) != null)
             catName = intent.getStringExtra(AppConstants.CATEGORY_NAME)!!
