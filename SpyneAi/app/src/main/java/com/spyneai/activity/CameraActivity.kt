@@ -233,7 +233,7 @@ class CameraActivity : AppCompatActivity(), SubCategoriesAdapter.BtnClickListene
             frameImage = intent.getStringExtra(AppConstants.FRAME_IMAGE)!!
 */
         if (!etSkuName.text.toString().isEmpty()) {
-            rvSubcategories.visibility = View.GONE
+            rvSubcategories.visibility = View.INVISIBLE
             //etSkuName.visibility = View.GONE
         }
 
@@ -310,14 +310,17 @@ class CameraActivity : AppCompatActivity(), SubCategoriesAdapter.BtnClickListene
 
         frameImageListSelections.clear()
         if (Utilities.getPreference(this, AppConstants.CATEGORY_NAME).equals("Footwear")){
-            for (i in 0..num-1)
+            for (i in 0..num-1){
                 frameImageListSelections .add(i)
+            }
+            Utilities.savePrefrence(this@CameraActivity, AppConstants.NO_OF_IMAGES, frameImageListSelections.size.toString())
         }else{
             if (num == 4) {
             frameImageListSelections.add(0)
             frameImageListSelections.add(9)
             frameImageListSelections.add(18)
             frameImageListSelections.add(27)
+                Utilities.savePrefrence(this@CameraActivity, AppConstants.NO_OF_IMAGES, "4")
         } else if (num == 8) {
             frameImageListSelections.add(0)
             frameImageListSelections.add(5)
@@ -327,6 +330,7 @@ class CameraActivity : AppCompatActivity(), SubCategoriesAdapter.BtnClickListene
             frameImageListSelections.add(22)
             frameImageListSelections.add(26)
             frameImageListSelections.add(32)
+                Utilities.savePrefrence(this@CameraActivity, AppConstants.NO_OF_IMAGES, "8")
         } else if (num == 9) {
             frameImageListSelections.add(0)
             frameImageListSelections.add(1)
@@ -336,6 +340,7 @@ class CameraActivity : AppCompatActivity(), SubCategoriesAdapter.BtnClickListene
             frameImageListSelections.add(5)
             frameImageListSelections.add(6)
             frameImageListSelections.add(7)
+                Utilities.savePrefrence(this@CameraActivity, AppConstants.NO_OF_IMAGES, "9")
         }
         }
 
@@ -359,11 +364,11 @@ class CameraActivity : AppCompatActivity(), SubCategoriesAdapter.BtnClickListene
             } else {
                 tvshoot.isEnabled = false
                 tvshoot.isFocusable = false
-                rvSubcategories.visibility = View.GONE
+                rvSubcategories.visibility = View.INVISIBLE
                 rvInteriorFrames.visibility = View.GONE
             }
         } else {
-            rvSubcategories.visibility = View.GONE
+            rvSubcategories.visibility = View.INVISIBLE
             rvInteriorFrames.visibility = View.VISIBLE
 
             tvshoot.isEnabled = false
@@ -532,13 +537,13 @@ class CameraActivity : AppCompatActivity(), SubCategoriesAdapter.BtnClickListene
             if (frameNumber == 1) {
                 if (imgOverlay.visibility == View.INVISIBLE) {
                     imgOverlay.visibility = View.VISIBLE
-                    rvSubcategories.visibility = View.GONE
+                    rvSubcategories.visibility = View.INVISIBLE
                 } else {
                     imgOverlay.visibility = View.INVISIBLE
                     rvSubcategories.visibility = View.VISIBLE
                 }
             } else {
-                rvSubcategories.visibility = View.GONE
+                rvSubcategories.visibility = View.INVISIBLE
                 if (imgOverlay.visibility == View.INVISIBLE) {
                     imgOverlay.visibility = View.VISIBLE
                 } else {
@@ -946,7 +951,7 @@ class CameraActivity : AppCompatActivity(), SubCategoriesAdapter.BtnClickListene
                         showInteriorDialog()
                 }
             } else {
-                rvSubcategories.visibility = View.GONE
+                rvSubcategories.visibility = View.INVISIBLE
 
                 imageInteriorFileList.add(photoFile!!)
                 imageInteriorFileListFrames.add(frameInteriorImageList[frameImageListSelections[frameNumberTemp]].frameNumber)
@@ -1269,7 +1274,7 @@ class CameraActivity : AppCompatActivity(), SubCategoriesAdapter.BtnClickListene
                     ) {
                         rvSubcategories.visibility = View.VISIBLE
                     } else
-                        rvSubcategories.visibility = View.GONE
+                        rvSubcategories.visibility = View.INVISIBLE
 
                     if (Utilities.getPreference(
                             this@CameraActivity,
@@ -1687,7 +1692,7 @@ class CameraActivity : AppCompatActivity(), SubCategoriesAdapter.BtnClickListene
             interiorEnabled = true
             frameNumberTemp = 0
             setProgressFrame(9)
-            rvSubcategories.visibility = View.GONE
+            rvSubcategories.visibility = View.INVISIBLE
             rvInteriorFrames.visibility = View.VISIBLE
             dialog.dismiss()
         })

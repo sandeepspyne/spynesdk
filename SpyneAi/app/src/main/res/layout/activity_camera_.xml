@@ -38,6 +38,7 @@
 <!--                android:background="@color/transparents"-->
 <!--                android:layout_height="wrap_content">-->
                 <LinearLayout
+                    android:id="@+id/llToolBar"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_margin="@dimen/dp_15"

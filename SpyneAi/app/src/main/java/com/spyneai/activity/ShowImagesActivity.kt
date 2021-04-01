@@ -64,6 +64,7 @@ class ShowImagesActivity : AppCompatActivity() {
     lateinit var imageListWaterMark: ArrayList<String>
     lateinit var listHdQuality: ArrayList<String>
     var catName : String = ""
+    var numberOfImages: Int = 0
 
     private lateinit var showReplacedImagesAdapter: ShowReplacedImagesAdapter
     private lateinit var ShowReplacedImagesInteriorAdapter: ShowReplacedImagesInteriorAdapter
@@ -307,21 +308,33 @@ class ShowImagesActivity : AppCompatActivity() {
                             (imageListAfter as ArrayList).add(response.body()!![i].output_image_url)
                             (imageListWaterMark as ArrayList).add(response.body()!![i].watermark_image)
                             (listHdQuality as ArrayList).add(response.body()!![i].output_image_url)
+                            Utilities.savePrefrence(this@ShowImagesActivity, AppConstants.CATEGORY_NAME, response.body()!![0].product_category)
+                            numberOfImages = response.body()!!.size/2
+                            Utilities.savePrefrence(this@ShowImagesActivity, AppConstants.NO_OF_IMAGES, numberOfImages.toString())
                             hideData(0)
                         } else if (response.body()!![i].category.equals("Interior")) {
                             Category = response.body()!![i].category
                             (imageListInterior as ArrayList).add(response.body()!![i].output_image_url)
                             (imageListWaterMark as ArrayList).add(response.body()!![i].output_image_url)
                             (listHdQuality as ArrayList).add(response.body()!![i].input_image_url)
+                            Utilities.savePrefrence(this@ShowImagesActivity, AppConstants.CATEGORY_NAME, response.body()!![0].product_category)
+                            numberOfImages = response.body()!!.size/2
+                            Utilities.savePrefrence(this@ShowImagesActivity, AppConstants.NO_OF_IMAGES, numberOfImages.toString())
                             hideData(0)
                         } else {
                             Category = response.body()!![i].category
                             (imageList as ArrayList).add(response.body()!![i].input_image_url)
                             (imageListAfter as ArrayList).add(response.body()!![i].output_image_url)
+                            (listHdQuality as ArrayList).add(response.body()!![i].output_image_url)
+                            (imageListWaterMark as ArrayList).add(response.body()!![i].watermark_image)
+                            Utilities.savePrefrence(this@ShowImagesActivity, AppConstants.CATEGORY_NAME, response.body()!![0].product_category)
+                            numberOfImages = response.body()!!.size
+                            Utilities.savePrefrence(this@ShowImagesActivity, AppConstants.NO_OF_IMAGES, numberOfImages.toString())
                             hideData(1)
                         }
 
                     }
+
                 }
                 showReplacedImagesAdapter.notifyDataSetChanged()
                 ShowReplacedImagesInteriorAdapter.notifyDataSetChanged()

@@ -69,7 +69,6 @@ class DownloadingActivity : AppCompatActivity() {
       }else if (Utilities.getPreference(this, AppConstants.NO_OF_IMAGES).equals("7")){
           Utilities.savePrefrence(this, AppConstants.PRICE, "5")
       }
-        Utilities.savePrefrence(this, AppConstants.PRICE, "5")
 
         if (Utilities.getPreference(this, AppConstants.DOWNLOAD_TYPE).equals("watermark")) {
             tvIncreaseSale.visibility = View.VISIBLE

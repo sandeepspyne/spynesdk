@@ -1,12 +1,20 @@
 package com.spyneai.activity
 
+import android.app.Dialog
 import android.content.Context
 import android.content.Intent
 import android.graphics.Color
+import android.graphics.drawable.ColorDrawable
+import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import android.os.Vibrator
+import android.view.View
+import android.view.Window
 import android.view.animation.AnimationUtils
+import android.view.animation.RotateAnimation
+import android.widget.ImageView
+import android.widget.LinearLayout
 import android.widget.Toast
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
@@ -26,6 +34,7 @@ import kotlinx.android.synthetic.main.activity_order_summary2.tvCategoryName
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
+import java.net.URLEncoder
 
 
 class OrderSummary2Activity : AppCompatActivity() {
@@ -53,6 +62,12 @@ class OrderSummary2Activity : AppCompatActivity() {
             Utilities.savePrefrence(this, AppConstants.PRICE, "3")
         }else if (Utilities.getPreference(this, AppConstants.NO_OF_IMAGES).equals("5")){
             Utilities.savePrefrence(this, AppConstants.PRICE, "5")
+        }else if (Utilities.getPreference(this, AppConstants.NO_OF_IMAGES).equals("6")){
+            Utilities.savePrefrence(this, AppConstants.PRICE, "5")
+        }else if (Utilities.getPreference(this, AppConstants.NO_OF_IMAGES).equals("7")){
+            Utilities.savePrefrence(this, AppConstants.PRICE, "5")
+        }else{
+            Utilities.savePrefrence(this, AppConstants.PRICE, "5")
         }
 
         tvTotalCost.setText(Utilities.getPreference(this, AppConstants.PRICE).toString())
@@ -68,17 +83,33 @@ class OrderSummary2Activity : AppCompatActivity() {
 
         listWatermark.addAll(intent.getStringArrayListExtra(AppConstants.LIST_WATERMARK)!!)
 
-        productImage = listHdQuality[0].toString()
+//        productImage = listHdQuality[0].toString()
 
-        Glide.with(this).load(
-            productImage!!
-        ).into(ivProductImage)
+        if (listHdQuality.size>0){
+            Glide.with(this).load(
+                listHdQuality[0].toString()
+            ).into(ivProductImage)
+        }
 
-        tvCategoryName.setText(Utilities.getPreference(this@OrderSummary2Activity, AppConstants.CATEGORY_NAME))
-        tvNoOfImages.setText(Utilities.getPreference(this@OrderSummary2Activity, AppConstants.NO_OF_IMAGES).toString())
-        tvSkuId.setText(Utilities.getPreference(this@OrderSummary2Activity, AppConstants.SKU_ID).toString())
+
+        tvCategoryName.setText(
+            Utilities.getPreference(
+                this@OrderSummary2Activity,
+                AppConstants.CATEGORY_NAME
+            )
+        )
+        tvNoOfImages.setText(
+            Utilities.getPreference(
+                this@OrderSummary2Activity,
+                AppConstants.NO_OF_IMAGES
+            ).toString()
+        )
+        tvSkuId.setText(
+            Utilities.getPreference(this@OrderSummary2Activity, AppConstants.SKU_ID).toString()
+        )
         tvTotalImagesClicked.setText(
-            Utilities.getPreference(this@OrderSummary2Activity, AppConstants.NO_OF_IMAGES).toString()
+            Utilities.getPreference(this@OrderSummary2Activity, AppConstants.NO_OF_IMAGES)
+                .toString()
         )
 
         tvDownloadHdImages.setOnClickListener {
@@ -92,7 +123,11 @@ class OrderSummary2Activity : AppCompatActivity() {
                 intent.putExtra(AppConstants.LIST_WATERMARK, listWatermark)
                 startActivity(intent)
             }else{
-                Toast.makeText(this@OrderSummary2Activity, "You are out of credits", Toast.LENGTH_SHORT).show()
+                Toast.makeText(
+                    this@OrderSummary2Activity,
+                    "You are out of credits",
+                    Toast.LENGTH_SHORT
+                ).show()
                 tvTopUp.startAnimation(AnimationUtils.loadAnimation(this, R.anim.move));
                 val vibe = getSystemService(Context.VIBRATOR_SERVICE) as Vibrator
                     vibe.vibrate(100)
@@ -101,7 +136,7 @@ class OrderSummary2Activity : AppCompatActivity() {
         }
 
         tvTopUp.setOnClickListener {
-            Toast.makeText(this, "Please contact us on WhatsApp for more credits", Toast.LENGTH_SHORT).show()
+            showWhatsappCreditDialog()
         }
 
         imgBack.setOnClickListener {
@@ -162,8 +197,42 @@ class OrderSummary2Activity : AppCompatActivity() {
 
     }
 
+    private fun showWhatsappCreditDialog(){
+
+        val dialog = Dialog(this)
+        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE)
+        dialog.setCancelable(true)
+        dialog.setContentView(R.layout.whatsapp_credit_dialog)
+        dialog.getWindow()?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT));
+        val ivClose: ImageView = dialog.findViewById(R.id.ivClose)
+        val llRequestWappCredit: LinearLayout = dialog.findViewById(R.id.llRequestWappCredit)
+
+
+        ivClose.setOnClickListener(View.OnClickListener {
+            dialog.dismiss()
+        })
+        llRequestWappCredit.setOnClickListener {
+            try {
+                val i = Intent(Intent.ACTION_VIEW)
+                val url = "https://api.whatsapp.com/send?phone=" + "+919625429526" + "&text=" +
+                        URLEncoder.encode(
+                            "Hey! The Spyne 360° Shot looks impressive; I liked the user experience and would like to learn more about the commercial application and how I can best access this technology. I look forward to connecting!",
+                            "UTF-8"
+                        )
+                i.setPackage("com.whatsapp")
+                i.setData(Uri.parse(url))
+                startActivity(i)
+            } catch (e: Exception) {
+                e.printStackTrace()
+            }
+        }
+        dialog.show()
+
+    }
+
     override fun onBackPressed() {
         super.onBackPressed()
         finish()
     }
 }
+
