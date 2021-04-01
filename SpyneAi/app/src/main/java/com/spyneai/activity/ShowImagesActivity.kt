@@ -302,6 +302,15 @@ class ShowImagesActivity : AppCompatActivity() {
                 Utilities.hideProgressDialog()
                 if (response.isSuccessful) {
                     for (i in 0..response.body()!!.size - 1) {
+                        if (response.body()!![i].category.equals("Interior")) {
+                            numberOfImages = response.body()!!.size/2
+                            Utilities.savePrefrence(this@ShowImagesActivity, AppConstants.NO_OF_IMAGES, numberOfImages.toString())
+
+                        }else{
+                            numberOfImages = response.body()!!.size
+                            Utilities.savePrefrence(this@ShowImagesActivity, AppConstants.NO_OF_IMAGES, numberOfImages.toString())
+
+                        }
                         if (response.body()!![i].category.equals("Exterior")) {
                             Category = response.body()!![i].category
                             (imageList as ArrayList).add(response.body()!![i].input_image_url)
@@ -309,8 +318,8 @@ class ShowImagesActivity : AppCompatActivity() {
                             (imageListWaterMark as ArrayList).add(response.body()!![i].watermark_image)
                             (listHdQuality as ArrayList).add(response.body()!![i].output_image_url)
                             Utilities.savePrefrence(this@ShowImagesActivity, AppConstants.CATEGORY_NAME, response.body()!![0].product_category)
-                            numberOfImages = response.body()!!.size/2
-                            Utilities.savePrefrence(this@ShowImagesActivity, AppConstants.NO_OF_IMAGES, numberOfImages.toString())
+//                            numberOfImages = response.body()!!.size/2
+//                            Utilities.savePrefrence(this@ShowImagesActivity, AppConstants.NO_OF_IMAGES, numberOfImages.toString())
                             hideData(0)
                         } else if (response.body()!![i].category.equals("Interior")) {
                             Category = response.body()!![i].category
@@ -318,8 +327,8 @@ class ShowImagesActivity : AppCompatActivity() {
                             (imageListWaterMark as ArrayList).add(response.body()!![i].output_image_url)
                             (listHdQuality as ArrayList).add(response.body()!![i].input_image_url)
                             Utilities.savePrefrence(this@ShowImagesActivity, AppConstants.CATEGORY_NAME, response.body()!![0].product_category)
-                            numberOfImages = response.body()!!.size/2
-                            Utilities.savePrefrence(this@ShowImagesActivity, AppConstants.NO_OF_IMAGES, numberOfImages.toString())
+//                            numberOfImages = response.body()!!.size/2
+//                            Utilities.savePrefrence(this@ShowImagesActivity, AppConstants.NO_OF_IMAGES, numberOfImages.toString())
                             hideData(0)
                         } else {
                             Category = response.body()!![i].category
