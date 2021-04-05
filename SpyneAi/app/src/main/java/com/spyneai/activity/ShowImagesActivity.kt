@@ -332,8 +332,6 @@ class ShowImagesActivity : AppCompatActivity() {
                             (listHdQuality as ArrayList).add(response.body()!![i].output_image_url)
                             (imageListWaterMark as ArrayList).add(response.body()!![i].watermark_image)
                             Utilities.savePrefrence(this@ShowImagesActivity, AppConstants.CATEGORY_NAME, response.body()!![0].product_category)
-//                            numberOfImages = response.body()!!.size
-//                            Utilities.savePrefrence(this@ShowImagesActivity, AppConstants.NO_OF_IMAGES, numberOfImages.toString())
                             Utilities.savePrefrence(this@ShowImagesActivity, AppConstants.NO_OF_IMAGES, imageListAfter.size.toString())
                             hideData(1)
                         }
