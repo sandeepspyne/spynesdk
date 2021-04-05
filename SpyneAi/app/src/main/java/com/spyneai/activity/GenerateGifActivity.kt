@@ -51,7 +51,7 @@ class GenerateGifActivity : AppCompatActivity() {
     lateinit var gifList : ArrayList<String>
     var catName = ""
 
-    lateinit var exposures : String
+    var exposures : String = "false"
     lateinit var windows : String
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -105,19 +105,21 @@ class GenerateGifActivity : AppCompatActivity() {
                     backgroundSelect = carBackgroundList[position].imageId.toString()
                     carbackgroundsAdapter.notifyDataSetChanged()
 
-                    Glide.with(this@GenerateGifActivity) // replace with 'this' if it's in activity
-                        .load(gifList[position])
-                        .error(R.mipmap.defaults) // show error drawable if the image is not a gif
-                        .into(imageViewGif)
+                    if (gifList[position]!=null){
+                        Glide.with(this@GenerateGifActivity) // replace with 'this' if it's in activity
+                            .load(gifList[position])
+                            .error(R.mipmap.defaults) // show error drawable if the image is not a gif
+                            .into(imageViewGif)
+                    }
 
                     //showPreviewCar()
                 }
             })
         val layoutManager: RecyclerView.LayoutManager =
-                LinearLayoutManager(
-                    this,
-                    LinearLayoutManager.HORIZONTAL, false
-                )
+            LinearLayoutManager(
+                this,
+                LinearLayoutManager.HORIZONTAL, false
+            )
         rvBackgroundsCars.setLayoutManager(layoutManager)
         rvBackgroundsCars.setAdapter(carbackgroundsAdapter)
 
@@ -137,10 +139,13 @@ class GenerateGifActivity : AppCompatActivity() {
 
         backgroundSelect  = carBackgroundList[0].imageId.toString()
 
-        Glide.with(this@GenerateGifActivity) // replace with 'this' if it's in activity
-            .load(gifList[0])
-            .error(R.mipmap.defaults) // show error drawable if the image is not a gif
-            .into(imageViewGif)
+        if (gifList[0]!=null){
+            Glide.with(this@GenerateGifActivity) // replace with 'this' if it's in activity
+                .load(gifList[0])
+                .error(R.mipmap.defaults) // show error drawable if the image is not a gif
+                .into(imageViewGif)
+        }
+
     }
 
     private fun listeners() {
@@ -192,28 +197,32 @@ class GenerateGifActivity : AppCompatActivity() {
             // true if the switch is in the On position
         })
 
+        windows = "outer"
+        Utilities.savePrefrence(this,AppConstants.WINDOWS,windows)
 
-        llTransparent.setOnClickListener(View.OnClickListener {
-            llTransparent.setBackgroundResource(R.drawable.bg_selected)
-            llOriginal.setBackgroundResource(R.drawable.bg_channel)
-            windows = "inner"
-            Utilities.savePrefrence(this,AppConstants.WINDOWS,windows)
 
-        })
 
-        llOriginal.setOnClickListener(View.OnClickListener {
-            llOriginal.setBackgroundResource(R.drawable.bg_selected)
-            llTransparent.setBackgroundResource(R.drawable.bg_channel)
-            windows = "outer"
-            Utilities.savePrefrence(this,AppConstants.WINDOWS,windows)
+        /*  llTransparent.setOnClickListener(View.OnClickListener {
+              llTransparent.setBackgroundResource(R.drawable.bg_selected)
+              llOriginal.setBackgroundResource(R.drawable.bg_channel)
+              windows = "inner"
+              Utilities.savePrefrence(this,AppConstants.WINDOWS,windows)
 
-        })
+          })
+
+          llOriginal.setOnClickListener(View.OnClickListener {
+              llOriginal.setBackgroundResource(R.drawable.bg_selected)
+              llTransparent.setBackgroundResource(R.drawable.bg_channel)
+              windows = "outer"
+              Utilities.savePrefrence(this,AppConstants.WINDOWS,windows)
+
+          })*/
 
     }
 
 
     override fun onBackPressed() {
-      //  super.onBackPressed()
+        //  super.onBackPressed()
         showExitDialog()
     }
 

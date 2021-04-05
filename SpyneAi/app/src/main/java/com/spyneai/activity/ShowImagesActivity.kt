@@ -93,8 +93,6 @@ class ShowImagesActivity : AppCompatActivity() {
         downloadList2 = ArrayList<String>()
         downloadList2.add("https://storage.googleapis.com/spyne/AI/raw/f2517017-b3f0-468c-ae3a-05d9c92797ec.jpg")
         downloadList2.add("https://storage.googleapis.com/spyne/AI/raw/f2517017-b3f0-468c-ae3a-05d9c92797ec.jpg")
-
-
         imageListWaterMark = ArrayList<String>()
 
 //        if (Utilities.getPreference(this, AppConstants.highQualityCount).equals("0")) {
@@ -187,7 +185,6 @@ class ShowImagesActivity : AppCompatActivity() {
         }
 
         llDownloadHdImages.setOnClickListener {
-
             Utilities.savePrefrence(this, AppConstants.DOWNLOAD_TYPE, "hd")
             val intent = Intent(this, OrderSummary2Activity::class.java)
             intent.putExtra(AppConstants.LIST_WATERMARK, imageListWaterMark)
@@ -302,15 +299,15 @@ class ShowImagesActivity : AppCompatActivity() {
                 Utilities.hideProgressDialog()
                 if (response.isSuccessful) {
                     for (i in 0..response.body()!!.size - 1) {
-                        if (response.body()!![i].category.equals("Interior")) {
-                            numberOfImages = response.body()!!.size/2
-                            Utilities.savePrefrence(this@ShowImagesActivity, AppConstants.NO_OF_IMAGES, numberOfImages.toString())
-
-                        }else{
-                            numberOfImages = response.body()!!.size
-                            Utilities.savePrefrence(this@ShowImagesActivity, AppConstants.NO_OF_IMAGES, numberOfImages.toString())
-
-                        }
+//                        if (response.body()!![i].category.equals("Interior")) {
+//                            numberOfImages = response.body()!!.size/2
+//                            Utilities.savePrefrence(this@ShowImagesActivity, AppConstants.NO_OF_IMAGES, numberOfImages.toString())
+//
+//                        }else{
+//                            numberOfImages = response.body()!!.size
+//                            Utilities.savePrefrence(this@ShowImagesActivity, AppConstants.NO_OF_IMAGES, numberOfImages.toString())
+//
+//                        }
                         if (response.body()!![i].category.equals("Exterior")) {
                             Category = response.body()!![i].category
                             (imageList as ArrayList).add(response.body()!![i].input_image_url)
@@ -318,8 +315,7 @@ class ShowImagesActivity : AppCompatActivity() {
                             (imageListWaterMark as ArrayList).add(response.body()!![i].watermark_image)
                             (listHdQuality as ArrayList).add(response.body()!![i].output_image_url)
                             Utilities.savePrefrence(this@ShowImagesActivity, AppConstants.CATEGORY_NAME, response.body()!![0].product_category)
-//                            numberOfImages = response.body()!!.size/2
-//                            Utilities.savePrefrence(this@ShowImagesActivity, AppConstants.NO_OF_IMAGES, numberOfImages.toString())
+                            Utilities.savePrefrence(this@ShowImagesActivity, AppConstants.NO_OF_IMAGES, imageListAfter.size.toString())
                             hideData(0)
                         } else if (response.body()!![i].category.equals("Interior")) {
                             Category = response.body()!![i].category
@@ -327,8 +323,7 @@ class ShowImagesActivity : AppCompatActivity() {
                             (imageListWaterMark as ArrayList).add(response.body()!![i].output_image_url)
                             (listHdQuality as ArrayList).add(response.body()!![i].input_image_url)
                             Utilities.savePrefrence(this@ShowImagesActivity, AppConstants.CATEGORY_NAME, response.body()!![0].product_category)
-//                            numberOfImages = response.body()!!.size/2
-//                            Utilities.savePrefrence(this@ShowImagesActivity, AppConstants.NO_OF_IMAGES, numberOfImages.toString())
+                            Utilities.savePrefrence(this@ShowImagesActivity, AppConstants.NO_OF_IMAGES, imageListAfter.size.toString())
                             hideData(0)
                         } else {
                             Category = response.body()!![i].category
@@ -337,10 +332,12 @@ class ShowImagesActivity : AppCompatActivity() {
                             (listHdQuality as ArrayList).add(response.body()!![i].output_image_url)
                             (imageListWaterMark as ArrayList).add(response.body()!![i].watermark_image)
                             Utilities.savePrefrence(this@ShowImagesActivity, AppConstants.CATEGORY_NAME, response.body()!![0].product_category)
-                            numberOfImages = response.body()!!.size
-                            Utilities.savePrefrence(this@ShowImagesActivity, AppConstants.NO_OF_IMAGES, numberOfImages.toString())
+//                            numberOfImages = response.body()!!.size
+//                            Utilities.savePrefrence(this@ShowImagesActivity, AppConstants.NO_OF_IMAGES, numberOfImages.toString())
+                            Utilities.savePrefrence(this@ShowImagesActivity, AppConstants.NO_OF_IMAGES, imageListAfter.size.toString())
                             hideData(1)
                         }
+
 
                     }
 

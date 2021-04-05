@@ -622,12 +622,13 @@ class TimerActivity : AppCompatActivity() {
                 CountDownTimer(480000 * 3)
             } else if (Utilities.getPreference(this, AppConstants.FRAME_SHOOOTS).equals("24")) {
                 CountDownTimer(480000 * 4)
+
             } else if (Utilities.getPreference(this, AppConstants.FRAME_SHOOOTS).equals("5")) {
                 CountDownTimer(480000)
             } else if (Utilities.getPreference(this, AppConstants.FRAME_SHOOOTS).equals("6")) {
                 CountDownTimer(480000)
             } else if (Utilities.getPreference(this, AppConstants.FRAME_SHOOOTS).equals("7")) {
-                CountDownTimer(480000)
+                CountDownTimer(580000)
             }
         }
     }
@@ -813,7 +814,7 @@ class TimerActivity : AppCompatActivity() {
                         if (countGif < photoList.size) {
                             Log.e("countGif", countGif.toString())
                             bulkUpload(countGif)
-//                            (imageListWaterMark as ArrayList).add(response.body()!!.watermark_image)
+//                           (imageListWaterMark as ArrayList).add(response.body()!!.watermark_image)
 
                         } else if (photoListInteriors.size > 0) {
                             countGif = 0
