@@ -216,7 +216,8 @@ class OrderSummary2Activity : AppCompatActivity() {
                 val i = Intent(Intent.ACTION_VIEW)
                 val url = "https://api.whatsapp.com/send?phone=" + "+919625429526" + "&text=" +
                         URLEncoder.encode(
-                            "Hey! The Spyne 360° Shot looks impressive; I liked the user experience and would like to learn more about the commercial application and how I can best access this technology. I look forward to connecting!",
+                            "Spyne App is awesome!, I already used all my free credits. \n" +
+                                    "Can you please help me get more credits.",
                             "UTF-8"
                         )
                 i.setPackage("com.whatsapp")
