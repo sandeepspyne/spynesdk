@@ -64,7 +64,7 @@
                 android:layout_margin="@dimen/dp_10"
                 android:layout_marginStart="@dimen/dp_20"
                 android:layout_marginEnd="@dimen/dp_20"
-                android:background="@drawable/bg_edit_button"
+                android:background="@drawable/bg_rectangle_button_ripple"
                 android:textSize="16sp" />
         </LinearLayout>
     </androidx.cardview.widget.CardView>

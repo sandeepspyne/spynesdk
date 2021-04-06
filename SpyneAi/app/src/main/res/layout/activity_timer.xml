@@ -107,20 +107,20 @@
                     android:layout_centerInParent="true"
                     android:orientation="vertical">
 
-                    <TextView
-                        android:id="@+id/tvMinSec"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="00:00"
-                        android:textColor="@color/primary"
-                        android:textSize="72sp"
-                        android:fontFamily="@font/medium"
-                        android:textStyle="bold" />
-
                     <LinearLayout
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_gravity="center">
+                        android:orientation="vertical">
+
+                        <TextView
+                            android:id="@+id/tvMinSec"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="00:00"
+                            android:textColor="@color/primary"
+                            android:textSize="72sp"
+                            android:fontFamily="@font/medium"
+                            android:textStyle="bold" />
 
                         <TextView
                             android:layout_width="wrap_content"
@@ -129,15 +129,33 @@
                             android:textSize="14sp"
                             android:textStyle="bold"
                             android:textColor="@color/primary" />
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical">
+
+                        <TextView
+                            android:id="@+id/tvMinSec"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="00:00"
+                            android:textColor="@color/primary"
+                            android:textSize="72sp"
+                            android:fontFamily="@font/medium"
+                            android:textStyle="bold" />
+
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="Seconds"
-                            android:layout_marginStart="@dimen/dp_50"
+                            android:text="Mins"
                             android:textSize="14sp"
                             android:textStyle="bold"
                             android:textColor="@color/primary" />
                     </LinearLayout>
+
+
 
                 </LinearLayout>
 
