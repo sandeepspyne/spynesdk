@@ -638,24 +638,34 @@ class TimerActivity : AppCompatActivity() {
             override fun onTick(millisUntilFinished: Long) {
                 i++
                 circular_progress.setCurrentProgress((i * 100 / (maxProgress / progress)).toDouble())
-
-                tvMinSec.setText(
-                    "" + String.format(
-                        "%02d:%02d", TimeUnit.MILLISECONDS.toMinutes(
-                            millisUntilFinished
-                        ),
-                        TimeUnit.MILLISECONDS.toSeconds(millisUntilFinished) -
-                                TimeUnit.MINUTES.toSeconds(
-                                    TimeUnit.MILLISECONDS.toMinutes(
-                                        millisUntilFinished
-                                    )
-                                )
-                    )
-                );
+//
+//                tvMinSec.setText(
+//                    "" + String.format(
+//                        "%02d:%02d", TimeUnit.MILLISECONDS.toMinutes(
+//                            millisUntilFinished
+//                        ),
+//                        TimeUnit.MILLISECONDS.toSeconds(millisUntilFinished) -
+//                                TimeUnit.MINUTES.toSeconds(
+//                                    TimeUnit.MILLISECONDS.toMinutes(
+//                                        millisUntilFinished
+//                                    )
+//                                )
+//                    )
+//                );
+//
+                tvMin.setText(""+ String.format("%02d",TimeUnit.MILLISECONDS.toMinutes(millisUntilFinished)));
+                tvSec.setText(""+ String.format("%02d",TimeUnit.MILLISECONDS.toSeconds(millisUntilFinished) -
+                        TimeUnit.MINUTES.toSeconds(
+                            TimeUnit.MILLISECONDS.toMinutes(
+                                millisUntilFinished
+                            )
+                        )));
             }
 
             override fun onFinish() {
-                tvMinSec.setText("00:00")
+                //tvMinSec.setText("00:00")
+                tvMin.setText("00")
+                tvSec.setText("00");
             }
         }.start()
     }

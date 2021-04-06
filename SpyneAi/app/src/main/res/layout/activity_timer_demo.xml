@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
@@ -8,7 +9,6 @@
     android:orientation="vertical"
     android:background="@color/white"
     tools:context=".activity.OrderActivity">
-
     <androidx.appcompat.widget.Toolbar
         android:id="@+id/my_toolbar"
         android:layout_width="match_parent"
@@ -54,147 +54,229 @@
     </androidx.appcompat.widget.Toolbar>
 
     <LinearLayout
+        android:id="@+id/llTimer"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:fillViewport="true"
         android:orientation="vertical"
-        android:gravity="center"
+        android:background="@color/white"
         tools:context=".activity.OrderActivity">
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:fontFamily="@font/bold"
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical"
             android:gravity="center"
-            android:text="@string/your_360_shot"
-            android:textColor="@color/black"
-            android:textSize="@dimen/sp_20" />
+            tools:context=".activity.OrderActivity">
 
-        <RelativeLayout
-            android:layout_width="300dp"
-            android:layout_height="300dp"
-            android:layout_gravity="center_horizontal"
-            android:layout_marginTop="@dimen/dp_50">
-
-            <antonkozyriatskyi.circularprogressindicator.CircularProgressIndicator
-                android:id="@+id/circular_progress"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_gravity="center"
-                android:layout_marginBottom="8dp"
-                android:layout_marginTop="8dp"
-                app:textColor="#fff"
-                app:textSize="0sp"
-                app:progressStrokeWidth="15dp"
-                app:progressColor="?colorPrimary"
-                app:progressBackgroundColor="#EFF3FE"
-                app:direction="clockwise"
-                android:elevation="@dimen/dp_20"/>
-
-            <LinearLayout
+            <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_centerInParent="true"
-                android:orientation="vertical">
+                android:layout_gravity="center"
+                android:fontFamily="@font/bold"
+                android:gravity="center"
+                android:text="@string/your_360_shots"
+                android:textColor="@color/black"
+                android:textSize="@dimen/sp_20" />
 
-                <TextView
-                    android:id="@+id/tvMinSec"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="00:00"
-                    android:textColor="@color/primary"
-                    android:textSize="72sp"
-                    android:fontFamily="@font/medium"
-                    android:textStyle="bold" />
+            <RelativeLayout
+                android:layout_width="300dp"
+                android:layout_height="300dp"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginTop="@dimen/dp_50">
+
+                <antonkozyriatskyi.circularprogressindicator.CircularProgressIndicator
+                    android:id="@+id/circular_progress"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_gravity="center"
+                    android:layout_marginBottom="8dp"
+                    android:layout_marginTop="8dp"
+                    app:textColor="#fff"
+                    app:textSize="0sp"
+                    app:progressStrokeWidth="15dp"
+                    app:progressColor="?colorPrimary"
+                    app:progressBackgroundColor="#EFF3FE"
+                    app:direction="clockwise"
+                    android:elevation="@dimen/dp_20"/>
 
                 <LinearLayout
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_gravity="center">
+                    android:layout_centerInParent="true"
+                    android:orientation="horizontal">
+
+                    <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical">
+
+                        <TextView
+                            android:id="@+id/tvMin"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="00"
+                            android:textColor="@color/primary"
+                            android:textSize="72sp"
+                            android:fontFamily="@font/medium"
+                            android:textStyle="bold" />
+
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:text="Mins"
+                            android:textSize="14sp"
+                            android:gravity="center"
+                            android:textStyle="bold"
+                            android:layout_gravity="center"
+                            android:textColor="@color/primary" />
+                    </LinearLayout>
 
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Mins"
-                        android:textSize="14sp"
-                        android:textStyle="bold"
-                        android:textColor="@color/primary" />
-                    <TextView
+                        android:text=":"
+                        android:textColor="@color/primary"
+                        android:textSize="72sp"
+                        android:fontFamily="@font/medium"
+                        android:textStyle="bold" />
+
+                    <LinearLayout
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Seconds"
-                        android:layout_marginStart="@dimen/dp_50"
-                        android:textSize="14sp"
-                        android:textStyle="bold"
-                        android:textColor="@color/primary" />
+                        android:orientation="vertical">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="00"
+                            android:id="@+id/tvSec"
+                            android:textColor="@color/primary"
+                            android:textSize="72sp"
+                            android:fontFamily="@font/medium"
+                            android:textStyle="bold" />
+
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:text="Seconds"
+                            android:layout_gravity="center"
+                            android:textSize="14sp"
+                            android:gravity="center"
+                            android:textStyle="bold"
+                            android:textColor="@color/primary" />
+                    </LinearLayout>
+
+
+
                 </LinearLayout>
 
+
+            </RelativeLayout>
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:visibility="gone"
+                android:layout_marginTop="@dimen/dp_70">
+
+                <!--
+                            <CheckBox
+                                android:id="@+id/cbSend"
+                                android:layout_width="@dimen/dp_30"
+                                android:layout_height="match_parent"
+                                android:adjustViewBounds="true"
+                                android:button="@drawable/check_selector" />
+
+
+                -->
+
+                <ImageView
+                    android:id="@+id/cbSend"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:layout_marginEnd="@dimen/dp_10"
+                    android:src="@mipmap/checked" />
+
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:text="Send the 360°"
+                    android:textColor="@color/primary"
+                    android:gravity="center"
+                    android:textSize="@dimen/sp_16"
+                    android:textStyle="bold" />
+
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:adjustViewBounds="true"
+                    android:layout_marginStart="@dimen/dp_10"
+                    android:layout_marginEnd="@dimen/dp_10"
+                    android:fontFamily="@font/medium"
+                    android:src="@mipmap/gif" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:text="to my Email"
+                    android:textColor="@color/primary"
+                    android:gravity="center"
+                    android:textSize="@dimen/sp_16"
+                    android:fontFamily="@font/medium"
+                    android:textStyle="bold" />
             </LinearLayout>
 
 
-        </RelativeLayout>
-
-<!--        <LinearLayout-->
-<!--            android:layout_width="wrap_content"-->
-<!--            android:layout_height="wrap_content"-->
-<!--            android:layout_gravity="center"-->
-<!--            android:layout_marginTop="@dimen/dp_70">-->
-
-<!--&lt;!&ndash;-->
-<!--            <CheckBox-->
-<!--                android:id="@+id/cbSend"-->
-<!--                android:layout_width="@dimen/dp_30"-->
-<!--                android:layout_height="match_parent"-->
-<!--                android:adjustViewBounds="true"-->
-<!--                android:button="@drawable/check_selector" />-->
-
-
-<!--&ndash;&gt;-->
-
-<!--            <ImageView-->
-<!--                android:id="@+id/cbSend"-->
-<!--                android:layout_width="wrap_content"-->
-<!--                android:layout_height="match_parent"-->
-<!--                android:layout_marginEnd="@dimen/dp_10"-->
-<!--                android:src="@mipmap/checked" />-->
-
-
-<!--            <TextView-->
-<!--                android:layout_width="wrap_content"-->
-<!--                android:layout_height="match_parent"-->
-<!--                android:text="Send the 360°"-->
-<!--                android:textColor="@color/primary"-->
-<!--                android:gravity="center"-->
-<!--                android:textSize="@dimen/sp_16"-->
-<!--                android:textStyle="bold" />-->
-
-<!--            <ImageView-->
-<!--                android:layout_width="wrap_content"-->
-<!--                android:layout_height="match_parent"-->
-<!--                android:adjustViewBounds="true"-->
-<!--                android:layout_marginStart="@dimen/dp_10"-->
-<!--                android:layout_marginEnd="@dimen/dp_10"-->
-<!--                android:fontFamily="@font/medium"-->
-<!--                android:src="@mipmap/gif" />-->
-
-<!--            <TextView-->
-<!--                android:layout_width="wrap_content"-->
-<!--                android:layout_height="match_parent"-->
-<!--                android:text="to my Email"-->
-<!--                android:textColor="@color/primary"-->
-<!--                android:gravity="center"-->
-<!--                android:textSize="@dimen/sp_16"-->
-<!--                android:fontFamily="@font/medium"-->
-<!--                android:textStyle="bold" />-->
-<!--        </LinearLayout>-->
-
+        </LinearLayout>
+        <androidx.recyclerview.widget.RecyclerView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/rvSkuDemo"
+            android:visibility="gone"/>
 
     </LinearLayout>
 
-    <androidx.recyclerview.widget.RecyclerView
+    <LinearLayout
+        android:id="@+id/llNoInternet"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:id="@+id/rvSkuDemo"
-        android:visibility="gone"/>
+        android:layout_height="match_parent"
+        android:gravity="center"
+        android:visibility="gone"
+        android:orientation="vertical">
 
+        <ImageView
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/dp_100"
+            android:src="@drawable/ic_action_name"/>
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textStyle="bold"
+            android:fontFamily="@font/bold"
+            android:gravity="center"
+            android:textSize="@dimen/sp_25"
+            android:textColor="@color/primary"
+            android:layout_gravity="center"
+            android:text="@string/no_internet"/>
+
+        <TextView
+            android:id="@+id/tvRetry"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/bg_edit_button"
+            android:text="@string/retry"
+            android:textColor="@color/white"
+            android:textSize="@dimen/sp_20"
+            android:paddingStart="@dimen/dp_20"
+            android:paddingEnd="@dimen/dp_20"
+            android:paddingTop="@dimen/dp_15"
+            android:paddingBottom="@dimen/dp_15"
+            android:gravity="center"
+            android:layout_margin="@dimen/dp_15" />
+
+    </LinearLayout>
 </LinearLayout>
