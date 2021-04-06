@@ -166,7 +166,7 @@
 
     <string name="credits"><u>Credits</u></string>
 
-    <string name="increase_online_sale"><u>Increase Online Sales for your products by <br/>uploading visually stunning images on <br/>Marketplaces
+    <string name="increase_online_sale"><u>Increase Online Sales for your products by <br />uploading visually stunning images on <br />Marketplaces
 
 </u></string>
 
@@ -178,12 +178,16 @@
     <string name="channel_description">spyne</string>
 
 
-    <string name="free_credits">10 Credits has been added to <br/>your account</string>
+    <string name="free_credits">10 Credits has been added to <br />your account</string>
 
 
-    <string name="request_credits">Request credits on <br/>Whatsapp</string>
+    <string name="request_credits">Request credits on <br />Whatsapp</string>
 
+    <string name="start_new_shoot">Start a new shoot</string>
 
+    <string name="ongoing_projects">Ongoing projects</string>
+
+    <string name="your_orders">Your Orders</string>
 
 
     <string-array name="planets_array">
