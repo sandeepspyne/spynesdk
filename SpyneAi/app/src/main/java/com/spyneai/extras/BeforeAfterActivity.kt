@@ -144,25 +144,29 @@ class BeforeAfterActivity : AppCompatActivity() {
     }
 
     private fun listeners() {
-        if (Utilities.getPreference(this, AppConstants.CATEGORY_NAME).equals("Automobiles")){
-            tvShootNow.setOnClickListener(View.OnClickListener {
-                val intent = Intent(this, Camera2Activity::class.java)
-                intent.putExtra(AppConstants.CATEGORY_ID, catId)
-                intent.putExtra(AppConstants.CATEGORY_NAME, catName)
-                intent.putExtra(AppConstants.GIF_LIST, gifList)
-                Utilities.savePrefrence(this, AppConstants.FROM, "BA")
-                startActivity(intent)
-            })
-        }else if (Utilities.getPreference(this, AppConstants.CATEGORY_NAME).equals("Footwear")){
-            tvShootFootwear.setOnClickListener(View.OnClickListener {
-                val intent = Intent(this, CameraActivity::class.java)
-                intent.putExtra(AppConstants.CATEGORY_ID, catId)
-                intent.putExtra(AppConstants.CATEGORY_NAME, catName)
-                intent.putExtra(AppConstants.GIF_LIST, gifList)
-                Utilities.savePrefrence(this, AppConstants.FROM, "BA")
-                startActivity(intent)
-            })
-        }
+        tvShootNow.setOnClickListener(View.OnClickListener {
+            val intent = Intent(this, Camera2Activity::class.java)
+            intent.putExtra(AppConstants.CATEGORY_ID, catId)
+            intent.putExtra(AppConstants.CATEGORY_NAME, catName)
+            intent.putExtra(AppConstants.GIF_LIST, gifList)
+            Utilities.savePrefrence(this, AppConstants.FROM, "BA")
+            startActivity(intent)
+        });
+
+        tvShootFootwear.setOnClickListener(View.OnClickListener {
+            val intent = Intent(this, CameraActivity::class.java)
+            intent.putExtra(AppConstants.CATEGORY_ID, catId)
+            intent.putExtra(AppConstants.CATEGORY_NAME, catName)
+            intent.putExtra(AppConstants.GIF_LIST, gifList)
+            Utilities.savePrefrence(this, AppConstants.FROM, "BA")
+            startActivity(intent)
+        })
+        
+//        if (Utilities.getPreference(this, AppConstants.CATEGORY_NAME).equals("Automobiles")){
+//
+//        }else if (Utilities.getPreference(this, AppConstants.CATEGORY_NAME).equals("Footwear")){
+//
+//        }
 
 
         imgBackBF.setOnClickListener(View.OnClickListener {

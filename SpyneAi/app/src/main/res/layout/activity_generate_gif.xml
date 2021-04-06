@@ -255,7 +255,7 @@
                 android:padding="@dimen/dp_20"
                 android:layout_margin="@dimen/dp_20"
                 android:fontFamily="@font/medium"
-                android:background="@drawable/bg_edit_button"
+                android:background="@drawable/bg_rectangle_button_ripple"
                 android:textSize="@dimen/sp_20" />
 
         </LinearLayout>

@@ -96,7 +96,6 @@ class OnboardingsActivity : AppCompatActivity() {
                 }
                 2 -> {
                     counts = 2
-                    tvGet.setText(getString(R.string.start_shooting))
                     return OnboardingThreeFragment()
                 }
             }
