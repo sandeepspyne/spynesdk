@@ -11,6 +11,10 @@
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.VIBRATE" />
 
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE"></uses-permission>
+    <uses-permission android:name="android.permission.WAKE_LOCK" />
+    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED"/>
+
     <uses-feature android:name="android.hardware.camera" />
 
     <uses-permission
@@ -32,6 +36,20 @@
         android:theme="@style/Theme.SpyneAi"
         android:usesCleartextTraffic="true"
         tools:targetApi="m">
+
+        <service
+            android:name=".service.ProcessImagesService"
+            android:enabled="true"
+            android:exported="false"
+            android:stopWithTask="false">
+        </service>
+
+        <receiver android:enabled="true" android:name=".service.StartReceiver">
+            <intent-filter>
+                <action android:name="android.intent.action.BOOT_COMPLETED"/>
+            </intent-filter>
+        </receiver>
+
         <activity android:name=".activity.YourOrdersActivity"></activity>
         <activity
             android:name=".activity.OrderSummary2Activity"

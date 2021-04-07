@@ -2,6 +2,7 @@ package com.spyneai.activity
 
 import UploadPhotoResponse
 import android.app.Dialog
+import android.content.ComponentName
 import android.content.Intent
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
@@ -41,6 +42,10 @@ import com.spyneai.model.upload.UploadResponse
 import com.spyneai.model.uploadRough.UploadPhotoRequest
 import com.spyneai.needs.AppConstants
 import com.spyneai.needs.Utilities
+import com.spyneai.service.Actions
+import com.spyneai.service.ProcessImagesService
+import com.spyneai.service.getServiceState
+import com.spyneai.service.log
 import kotlinx.android.synthetic.main.activity_generate_gif.*
 import kotlinx.android.synthetic.main.activity_otp.*
 import kotlinx.android.synthetic.main.activity_timer.*
@@ -96,6 +101,27 @@ class TimerActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_timer)
+
+
+        val manufacturer = "xiaomi"
+        if (manufacturer.equals(Build.MANUFACTURER, ignoreCase = true)) {
+            //this will open auto start screen where user can enable permission for your app
+            val intent1 = Intent()
+            intent1.component = ComponentName(
+                "com.miui.securitycenter",
+                "com.miui.permcenter.autostart.AutoStartManagementActivity"
+            )
+            startActivity(intent1)
+        }
+
+
+        title = "Process Images Service"
+
+        actionOnService(Actions.START)
+
+
+
+
         backgroundSelect = intent.getStringExtra(AppConstants.BG_ID)!!
         circular_progress.setInterpolator(LinearInterpolator())
 
@@ -160,6 +186,20 @@ class TimerActivity : AppCompatActivity() {
                 Log.e("Catched ", e.printStackTrace().toString())
             }
         })
+    }
+
+    private fun actionOnService(action: Actions) {
+        if (getServiceState(this) == com.spyneai.service.ServiceState.STOPPED && action == Actions.STOP) return
+        Intent(this, ProcessImagesService::class.java).also {
+            it.action = action.name
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                log("Starting the service in >=26 Mode")
+                startForegroundService(it)
+                return
+            }
+            log("Starting the service in < 26 Mode")
+            startService(it)
+        }
     }
 
     private fun setIntents() {
