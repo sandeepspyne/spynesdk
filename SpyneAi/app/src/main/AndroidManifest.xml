@@ -34,7 +34,12 @@
         android:theme="@style/Theme.SpyneAi"
         android:usesCleartextTraffic="true"
         tools:targetApi="m">
-        <activity android:name=".videorecording.PlayVideoActivity"></activity>
+        <activity android:name=".videorecording.TrimVideoActivity">
+
+        </activity>
+        <activity android:name=".videorecording.PlayVideoActivity">
+
+        </activity>
         <activity
             android:name=".videorecording.RecordVideoTestActivity"
             android:screenOrientation="landscape">
@@ -44,7 +49,7 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".videorecording.RecordVideoActivity"></activity>
+        <activity android:name=".videorecording.RecordVideoActivity" />
         <activity
             android:name=".activity.OrderSummary2Activity"
             android:screenOrientation="portrait" />

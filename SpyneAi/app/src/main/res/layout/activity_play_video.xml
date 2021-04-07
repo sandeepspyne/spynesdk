@@ -17,4 +17,23 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"/>
 
+    <com.crystal.crystalrangeseekbar.widgets.CrystalRangeSeekbar
+        android:id="@+id/rangeSeekbar3"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:corner_radius="10"
+        app:min_value="50"
+        app:max_value="100"
+        app:gap="20"
+        app:bar_color="#8990C4"
+        app:bar_highlight_color="#2434AD"
+        app:left_thumb_color="#1A246D"
+        app:right_thumb_color="#1A246D"
+        app:left_thumb_color_pressed="#030B47"
+        app:right_thumb_color_pressed="#030B47"
+        app:data_type="_integer"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="parent"
+        android:layout_margin="30dp"/>
+
 </androidx.constraintlayout.widget.ConstraintLayout>

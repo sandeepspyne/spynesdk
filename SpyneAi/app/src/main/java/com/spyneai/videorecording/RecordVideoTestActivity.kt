@@ -64,6 +64,7 @@ class RecordVideoTestActivity : AppCompatActivity() {
 
     private val permissionRequest = registerForActivityResult(ActivityResultContracts.RequestMultiplePermissions()) { permissions ->
         if (permissions.all { it.value }) {
+            btnRecordVideo.visibility = View.VISIBLE;
             startCamera();
         } else {
             Toast.makeText(this,"Permissions not granted",Toast.LENGTH_LONG);
@@ -243,6 +244,7 @@ class RecordVideoTestActivity : AppCompatActivity() {
                         outputFileResults.savedUri
                             ?.let { uri ->
                                 //setGalleryThumbnail(uri)
+
                                 val intent = Intent(this@RecordVideoTestActivity, PlayVideoActivity::class.java);
                                 intent.setData(uri);
                                 startActivity(intent);
