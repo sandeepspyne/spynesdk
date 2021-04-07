@@ -58,6 +58,8 @@ class GenerateGifActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_generate_gif)
 
+        Utilities.savePrefrence(this,AppConstants.EXPOSURES,exposures)
+
         setBasics()
         if (intent.getStringExtra(AppConstants.CATEGORY_NAME) != null)
             catName = intent.getStringExtra(AppConstants.CATEGORY_NAME)!!
@@ -190,17 +192,17 @@ class GenerateGifActivity : AppCompatActivity() {
         })
 
 
-        toggle.setOnCheckedChangeListener(CompoundButton.OnCheckedChangeListener { buttonView, isChecked ->
-            if (isChecked)
-                exposures = "true"
-            else
-                exposures = "false"
-
-            Log.e("Exposure",exposures)
-            Utilities.savePrefrence(this,AppConstants.EXPOSURES,exposures)
-            // do something, the isChecked will be
-            // true if the switch is in the On position
-        })
+//        toggle.setOnCheckedChangeListener(CompoundButton.OnCheckedChangeListener { buttonView, isChecked ->
+//            if (isChecked)
+//                exposures = "true"
+//            else
+//                exposures = "false"
+//
+//            Log.e("Exposure",exposures)
+//            Utilities.savePrefrence(this,AppConstants.EXPOSURES,exposures)
+//            // do something, the isChecked will be
+//            // true if the switch is in the On position
+//        })
 
         windows = "outer"
         Utilities.savePrefrence(this,AppConstants.WINDOWS,windows)
