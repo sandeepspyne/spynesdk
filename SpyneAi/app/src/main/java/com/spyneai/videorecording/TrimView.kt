@@ -57,12 +57,13 @@ class TrimView : ConstraintLayout, View.OnTouchListener {
         layout.ivEndSeekHandle.setOnTouchListener(this)
     }
 
-    fun init(videoUri: String, listener: SeekListener) {
+    fun init(videoUri: String, duration: Long,listener: SeekListener) {
         this.videoUri = videoUri
-        this.duration = getVideoDuration(videoUri)
+        this.duration = duration * 1000
 
 
         Log.d(TAG, "init: end: " + end)
+        Log.d(TAG, "init: "+duration)
 
         this.listener = listener
 
@@ -70,10 +71,12 @@ class TrimView : ConstraintLayout, View.OnTouchListener {
         initDisplayThumbnails()
     }
 
+
+
     fun getVideoDuration(videoPath: String): Long {
+        Log.d(TAG, "getVideoDuration: "+videoPath)
         var duration = 0L
         try {
-
 
             getMediaRetriever(videoPath).run {
                 duration =
@@ -81,7 +84,7 @@ class TrimView : ConstraintLayout, View.OnTouchListener {
                 release()
             }
         } catch (e: java.lang.Exception) {
-
+            e.printStackTrace()
         }
         return duration
 

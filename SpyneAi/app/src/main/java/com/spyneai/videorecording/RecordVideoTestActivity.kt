@@ -166,7 +166,7 @@ class RecordVideoTestActivity : AppCompatActivity() {
 
             // The Configuration of camera preview
             preview = Preview.Builder()
-                .setTargetResolution(Size(viewFinder.width,viewFinder.height))
+               // .setTargetResolution(Size(viewFinder.width,viewFinder.height))
                 .setTargetAspectRatio(aspectRatio) // set the camera aspect ratio
                 .setTargetRotation(rotation) // set the camera rotation
                 .build()

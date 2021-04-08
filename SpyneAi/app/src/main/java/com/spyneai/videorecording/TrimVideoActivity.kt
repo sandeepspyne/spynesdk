@@ -38,13 +38,14 @@ import com.google.android.exoplayer2.upstream.DataSource
 import com.google.android.exoplayer2.upstream.DefaultDataSourceFactory
 import com.spyneai.R
 import kotlinx.android.synthetic.main.activity_trim_video.*
+import kotlinx.android.synthetic.main.layout_video_controls.*
 import java.io.File
 import java.io.IOException
 import java.nio.ByteBuffer
 import java.util.*
 
 
-class TrimVideoActivity : AppCompatActivity() {
+class TrimVideoActivity : AppCompatActivity() ,SeekListener{
 
     private val TAG : String? = "TrimVideo"
 
@@ -109,7 +110,7 @@ class TrimVideoActivity : AppCompatActivity() {
         seekbar = findViewById<CrystalRangeSeekbar>(R.id.range_seek_bar)
         txtStartDuration = findViewById<TextView>(R.id.txt_start_duration)
         txtEndDuration = findViewById<TextView>(R.id.txt_end_duration)
-        seekbarController = findViewById<CrystalSeekbar>(R.id.seekbar_controller)
+        //seekbarController = findViewById<CrystalSeekbar>(R.id.seekbar_controller)
         val imageOne = findViewById<ImageView>(R.id.image_one)
         val imageTwo = findViewById<ImageView>(R.id.image_two)
         val imageThree = findViewById<ImageView>(R.id.image_three)
@@ -168,9 +169,12 @@ class TrimVideoActivity : AppCompatActivity() {
             Objects.requireNonNull(playerView!!.videoSurfaceView)!!
                 .setOnClickListener { v: View? -> onVideoClicked() }
            // initTrimData()
+
+            //loadThumbnails()
+            //setUpSeekBar()
+
+            trim_view.init(uri.toString(),totalDuration,this)
             buildMediaSource()
-            loadThumbnails()
-            setUpSeekBar()
         } catch (e: java.lang.Exception) {
             e.printStackTrace()
         }
@@ -265,6 +269,7 @@ class TrimVideoActivity : AppCompatActivity() {
         }
     }
 
+
     private fun setUpSeekBar() {
         seekbar!!.visibility = View.VISIBLE
         txtStartDuration!!.visibility = View.VISIBLE
@@ -325,7 +330,7 @@ class TrimVideoActivity : AppCompatActivity() {
     }
 
     private fun seekTo(sec: Long) {
-        if (videoPlayer != null) videoPlayer!!.seekTo(sec * 1000)
+        if (videoPlayer != null) videoPlayer!!.seekTo(sec )
     }
 
     private fun setDoneColor(minVal: Long, maxVal: Long) {
@@ -468,12 +473,13 @@ class TrimVideoActivity : AppCompatActivity() {
     var updateSeekbar: Runnable = object : Runnable {
         override fun run() {
             try {
-                currentDuration = videoPlayer!!.currentPosition / 1000
-                if (!videoPlayer!!.playWhenReady) return
-                if (currentDuration <= lastMaxValue)
-                    seekbarController?.setMinStartValue(currentDuration.toFloat())?.apply()
-                else
-                    videoPlayer!!.playWhenReady = false;
+                trim_view.onVideoCurrentPositionUpdated(videoPlayer!!.currentPosition)
+//                currentDuration = videoPlayer!!.currentPosition / 1000
+//                if (!videoPlayer!!.playWhenReady) return
+//                if (currentDuration <= lastMaxValue)
+//                    seekbarController?.setMinStartValue(currentDuration.toFloat())?.apply()
+//                else
+//                    videoPlayer!!.playWhenReady = false;
 
             } finally {
                 seekHandler!!.postDelayed(this, 1000)
@@ -585,6 +591,19 @@ class TrimVideoActivity : AppCompatActivity() {
             muxer.release()
         }
         return
+    }
+
+    override fun onSeekStarted() {
+
+    }
+
+    override fun onSeekEnd(start: Long, end: Long) {
+        Log.d(TAG, "onSeekEnd: "+start+":"+end)
+            seekTo(start);
+    }
+
+    override fun onSeek(type: SeekListener.Type, start: Long, end: Long) {
+
     }
 
 }
