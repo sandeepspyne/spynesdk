@@ -612,7 +612,7 @@ class TimerActivity : AppCompatActivity() {
         }
     }
 
-    private fun setCustomTimer() {
+    private fun     setCustomTimer() {
         if (Utilities.getPreference(this, AppConstants.FRAME_SHOOOTS) != null) {
             if (Utilities.getPreference(this, AppConstants.FRAME_SHOOOTS).equals("4")) {
                 CountDownTimer(480000)

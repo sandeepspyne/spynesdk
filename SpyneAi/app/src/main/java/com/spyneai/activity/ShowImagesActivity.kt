@@ -29,6 +29,7 @@ import com.spyneai.adapter.ShowReplacedImagesInteriorAdapter
 import com.spyneai.aipack.FetchBulkResponse
 import com.spyneai.interfaces.APiService
 import com.spyneai.interfaces.RetrofitClients
+import com.spyneai.interfaces.RetrofitClientsStaging
 import com.spyneai.model.skumap.UpdateSkuResponse
 import com.spyneai.needs.AppConstants
 import com.spyneai.needs.ScrollingLinearLayoutManager
@@ -299,21 +300,12 @@ class ShowImagesActivity : AppCompatActivity() {
                 Utilities.hideProgressDialog()
                 if (response.isSuccessful) {
                     for (i in 0..response.body()!!.size - 1) {
-//                        if (response.body()!![i].category.equals("Interior")) {
-//                            numberOfImages = response.body()!!.size/2
-//                            Utilities.savePrefrence(this@ShowImagesActivity, AppConstants.NO_OF_IMAGES, numberOfImages.toString())
-//
-//                        }else{
-//                            numberOfImages = response.body()!!.size
-//                            Utilities.savePrefrence(this@ShowImagesActivity, AppConstants.NO_OF_IMAGES, numberOfImages.toString())
-//
-//                        }
                         if (response.body()!![i].category.equals("Exterior")) {
                             Category = response.body()!![i].category
                             (imageList as ArrayList).add(response.body()!![i].input_image_url)
                             (imageListAfter as ArrayList).add(response.body()!![i].output_image_url)
                             (imageListWaterMark as ArrayList).add(response.body()!![i].watermark_image)
-                            (listHdQuality as ArrayList).add(response.body()!![i].output_image_url)
+                            (listHdQuality as ArrayList).add(response.body()!![i].original_image)
                             Utilities.savePrefrence(this@ShowImagesActivity, AppConstants.CATEGORY_NAME, response.body()!![0].product_category)
                             Utilities.savePrefrence(this@ShowImagesActivity, AppConstants.NO_OF_IMAGES, imageListAfter.size.toString())
                             hideData(0)
@@ -329,7 +321,7 @@ class ShowImagesActivity : AppCompatActivity() {
                             Category = response.body()!![i].category
                             (imageList as ArrayList).add(response.body()!![i].input_image_url)
                             (imageListAfter as ArrayList).add(response.body()!![i].output_image_url)
-                            (listHdQuality as ArrayList).add(response.body()!![i].output_image_url)
+                            (listHdQuality as ArrayList).add(response.body()!![i].original_image)
                             (imageListWaterMark as ArrayList).add(response.body()!![i].watermark_image)
                             Utilities.savePrefrence(this@ShowImagesActivity, AppConstants.CATEGORY_NAME, response.body()!![0].product_category)
                             Utilities.savePrefrence(this@ShowImagesActivity, AppConstants.NO_OF_IMAGES, imageListAfter.size.toString())
