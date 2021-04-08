@@ -48,8 +48,6 @@ class PlayVideoActivity : AppCompatActivity() {
         videoviewtrimmed.setVideoURI(uri)
         videoviewtrimmed.start()
 
-        var data : String? = "saa";
-
     }
 
     override fun onPause() {

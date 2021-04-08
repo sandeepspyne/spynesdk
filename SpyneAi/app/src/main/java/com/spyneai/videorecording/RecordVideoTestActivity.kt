@@ -15,6 +15,7 @@ import androidx.appcompat.app.AppCompatActivity
 import android.provider.MediaStore
 import android.util.DisplayMetrics
 import android.util.Log
+import android.util.Size
 import android.view.*
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
@@ -165,6 +166,7 @@ class RecordVideoTestActivity : AppCompatActivity() {
 
             // The Configuration of camera preview
             preview = Preview.Builder()
+                .setTargetResolution(Size(viewFinder.width,viewFinder.height))
                 .setTargetAspectRatio(aspectRatio) // set the camera aspect ratio
                 .setTargetRotation(rotation) // set the camera rotation
                 .build()
