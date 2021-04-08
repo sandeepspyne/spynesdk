@@ -66,7 +66,7 @@ import java.io.IOException
 import java.io.OutputStream
 import java.util.concurrent.TimeUnit
 
-class ProcessImagesService(val intent: Intent) : Service() {
+class ProcessImagesService() : Service() {
 
     private var wakeLock: PowerManager.WakeLock? = null
     private var isServiceStarted = false
@@ -105,6 +105,9 @@ class ProcessImagesService(val intent: Intent) : Service() {
     lateinit var t: Thread
     var catName: String = ""
 
+    var intent: Intent? = null
+
+
     override fun onBind(intent: Intent): IBinder? {
         log("Some component want to bind with the service")
         // We don't provide binding, so return null
@@ -113,12 +116,21 @@ class ProcessImagesService(val intent: Intent) : Service() {
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
         log("onStartCommand executed with startId: $startId")
+        log("cat name"+ intent?.getStringExtra(AppConstants.CATEGORY_NAME)!!)
+        this.intent = intent
+        setIntents()
+
         if (intent != null) {
-            val action = intent.action
+            val action = intent!!.action
             log("using an intent with action $action")
             when (action) {
-                Actions.START.name -> startService()
-                Actions.STOP.name -> stopService()
+                Actions.START.name -> {
+                    val notification = createNotification()
+                    startForeground(1, notification)
+                    startService()
+                }
+                Actions.STOP.name ->
+                    stopService()
                 else -> log("This should never happen. No action in the received intent")
             }
         } else {
@@ -133,11 +145,8 @@ class ProcessImagesService(val intent: Intent) : Service() {
     override fun onCreate() {
         super.onCreate()
         log("The service has been created".toUpperCase())
-
-        setIntents()
-
-        val notification = createNotification()
-        startForeground(1, notification)
+//        val notification = createNotification()
+//        startForeground(1, notification)
     }
 
     override fun onDestroy() {
@@ -147,12 +156,12 @@ class ProcessImagesService(val intent: Intent) : Service() {
     }
 
     override fun onTaskRemoved(rootIntent: Intent) {
-        val restartServiceIntent =
+        val restartintent =
             Intent(applicationContext, ProcessImagesService::class.java).also {
                 it.setPackage(packageName)
             };
         val restartServicePendingIntent: PendingIntent =
-            PendingIntent.getService(this, 1, restartServiceIntent, PendingIntent.FLAG_ONE_SHOT);
+            PendingIntent.getService(this, 1, restartintent, PendingIntent.FLAG_ONE_SHOT);
         applicationContext.getSystemService(Context.ALARM_SERVICE);
         val alarmService: AlarmManager =
             applicationContext.getSystemService(Context.ALARM_SERVICE) as AlarmManager;
@@ -164,7 +173,8 @@ class ProcessImagesService(val intent: Intent) : Service() {
     }
 
     private fun startService() {
-        if (isServiceStarted) return
+        if (isServiceStarted)
+            return
         log("Starting the foreground service task")
         Toast.makeText(this, "Service starting its task", Toast.LENGTH_SHORT).show()
         isServiceStarted = true
@@ -173,7 +183,7 @@ class ProcessImagesService(val intent: Intent) : Service() {
         // we need this lock so our service gets not affected by Doze Mode
         wakeLock =
             (getSystemService(Context.POWER_SERVICE) as PowerManager).run {
-                newWakeLock(PowerManager.PARTIAL_WAKE_LOCK, "EndlessService::lock").apply {
+                newWakeLock(PowerManager.PARTIAL_WAKE_LOCK, "ProcessService::lock").apply {
                     acquire()
                 }
             }
@@ -273,11 +283,12 @@ class ProcessImagesService(val intent: Intent) : Service() {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) Notification.Builder(
                 this,
                 notificationChannelId
-            ) else Notification.Builder(this)
+            ) else
+                Notification.Builder(this)
 
         return builder
-            .setContentTitle("Process Images Service")
-            .setContentText("processing...")
+            .setContentTitle("Spyne")
+            .setContentText("Image processing...")
             .setContentIntent(pendingIntent)
             .setSmallIcon(R.mipmap.ic_launcher)
             .setTicker("Ticker text")
@@ -287,18 +298,20 @@ class ProcessImagesService(val intent: Intent) : Service() {
 
     private fun setIntents() {
 
-        if (intent.getStringExtra(AppConstants.CATEGORY_NAME) != null)
-            catName = intent.getStringExtra(AppConstants.CATEGORY_NAME)!!
+        if (intent?.getStringExtra(AppConstants.CATEGORY_NAME) != null)
+            catName = intent?.getStringExtra(AppConstants.CATEGORY_NAME)!!
         else
             catName = Utilities.getPreference(this, AppConstants.CATEGORY_NAME)!!
 
-        if (intent.getStringExtra(AppConstants.MARKETPLACE_ID) != null)
-            marketplaceId = intent.getStringExtra(AppConstants.MARKETPLACE_ID)!!
+        if (intent?.getStringExtra(AppConstants.MARKETPLACE_ID) != null)
+            marketplaceId = intent?.getStringExtra(AppConstants.MARKETPLACE_ID)!!
 
-        if (intent.getStringExtra(AppConstants.BACKGROUND_COLOUR) != null)
-            backgroundColour = intent.getStringExtra(AppConstants.BACKGROUND_COLOUR)!!
+        if (intent?.getStringExtra(AppConstants.BACKGROUND_COLOUR) != null)
+            backgroundColour = intent?.getStringExtra(AppConstants.BACKGROUND_COLOUR)!!
 
-        backgroundSelect = intent.getStringExtra(AppConstants.BG_ID)!!
+        backgroundSelect = intent?.getStringExtra(AppConstants.BG_ID)!!
+
+        log("CATEGORY_NAME"+ catName)
 
         imageFileList = ArrayList<File>()
         imageFileListFrames = ArrayList<Int>()
@@ -308,12 +321,12 @@ class ProcessImagesService(val intent: Intent) : Service() {
         imageInteriorFileListFrames = ArrayList<Int>()
 
         //Get Intents
-        imageFileList.addAll(intent.getParcelableArrayListExtra(AppConstants.ALL_IMAGE_LIST)!!)
-        imageFileListFrames.addAll(intent.getIntegerArrayListExtra(AppConstants.ALL_FRAME_LIST)!!)
+        imageFileList.addAll(intent?.getParcelableArrayListExtra(AppConstants.ALL_IMAGE_LIST)!!)
+        imageFileListFrames.addAll(intent?.getIntegerArrayListExtra(AppConstants.ALL_FRAME_LIST)!!)
 
         if (Utilities.getPreference(this, AppConstants.CATEGORY_NAME).equals("Automobiles")) {
-            imageInteriorFileList.addAll(intent.getParcelableArrayListExtra(AppConstants.ALL_INTERIOR_IMAGE_LIST)!!)
-            imageInteriorFileListFrames.addAll(intent.getIntegerArrayListExtra(AppConstants.ALL_INTERIOR_FRAME_LIST)!!)
+            imageInteriorFileList.addAll(intent?.getParcelableArrayListExtra(AppConstants.ALL_INTERIOR_IMAGE_LIST)!!)
+            imageInteriorFileListFrames.addAll(intent?.getIntegerArrayListExtra(AppConstants.ALL_INTERIOR_FRAME_LIST)!!)
         }
         totalImagesToUPload = imageFileList.size
     }
@@ -363,6 +376,7 @@ class ProcessImagesService(val intent: Intent) : Service() {
                             "Error in uploading image to bucket",
                             Toast.LENGTH_SHORT
                         ).show()
+                        log("Error in uploading image to bucket")
                     }
                 }
 
@@ -374,12 +388,14 @@ class ProcessImagesService(val intent: Intent) : Service() {
                         "Server not responding",
                         Toast.LENGTH_SHORT
                     ).show()
+                    log("Server not responding(uploadImageToBucket)")
                 }
             })
         } else {
 
             Toast.makeText(this@ProcessImagesService, "No Internet Connection", Toast.LENGTH_SHORT)
                 .show()
+            log("No Internet Connection")
         }
     }
 
@@ -405,8 +421,8 @@ class ProcessImagesService(val intent: Intent) : Service() {
                 "EXTERIOR"
             )
 
-            Log.e("Frame Number", intent.getIntExtra(AppConstants.FRAME, 1).toString())
-            log("Frame Number: " + intent.getIntExtra(AppConstants.FRAME, 1).toString())
+            Log.e("Frame Number", intent?.getIntExtra(AppConstants.FRAME, 1).toString())
+            log("Frame Number: " + intent?.getIntExtra(AppConstants.FRAME, 1).toString())
             val gson = Gson()
             //    val personString = gson.toJson(uploadPhotoRequest)
             //  val skuName = RequestBody.create(MediaType.parse("application/json"), personString)
@@ -454,6 +470,7 @@ class ProcessImagesService(val intent: Intent) : Service() {
                             "Error in uploading image url. Please try again",
                             Toast.LENGTH_SHORT
                         ).show()
+                        log("Error in uploading image url. Please try again")
                     }
                 }
 
@@ -464,12 +481,14 @@ class ProcessImagesService(val intent: Intent) : Service() {
                         "Server not responding",
                         Toast.LENGTH_SHORT
                     ).show()
+                    log("Server not responding(uploadImageURLs)")
                     Log.e("Respo Image ", "Image error")
                 }
             })
         } else {
 
             Toast.makeText(this, "No Internet Connection", Toast.LENGTH_SHORT).show()
+            log("No Internet Connection")
         }
     }
 
@@ -518,6 +537,7 @@ class ProcessImagesService(val intent: Intent) : Service() {
                             "Error in uploading interior images.",
                             Toast.LENGTH_SHORT
                         ).show()
+                        log("Error in uploading interior images.")
                     }
                 }
 
@@ -529,11 +549,13 @@ class ProcessImagesService(val intent: Intent) : Service() {
                         "Server not responding",
                         Toast.LENGTH_SHORT
                     ).show()
+                    log("Server not responding(uploadImageToBucketInterior)")
                 }
             })
         } else {
 
             Toast.makeText(this, "No Internet Connection", Toast.LENGTH_SHORT).show()
+            log("No Internet Connection")
         }
     }
 
@@ -606,6 +628,7 @@ class ProcessImagesService(val intent: Intent) : Service() {
                             "Error in uploading image url(INTERIOR)",
                             Toast.LENGTH_SHORT
                         ).show()
+                        log("Error in uploading image url(INTERIOR)")
                     }
                 }
 
@@ -616,12 +639,14 @@ class ProcessImagesService(val intent: Intent) : Service() {
                         "Server not responding",
                         Toast.LENGTH_SHORT
                     ).show()
+                    log("Server not responding(uploadImageURLsInterior)")
                     Log.e("Respo Image ", "Image error")
                 }
             })
         } else {
 
             Toast.makeText(this, "No Internet Connection", Toast.LENGTH_SHORT).show()
+            log("No Internet Connection")
         }
     }
 
@@ -707,12 +732,14 @@ class ProcessImagesService(val intent: Intent) : Service() {
 
                 override fun onFailure(call: Call<UpdateSkuStatusResponse>, t: Throwable) {
                     setSkuImages()
+                    log("Server not responding(markSkuComplete)")
 
                 }
             })
         } else {
 
             Toast.makeText(this, "No Internet Connection", Toast.LENGTH_SHORT).show()
+            log("No Internet Connection")
         }
     }
 
@@ -775,6 +802,7 @@ class ProcessImagesService(val intent: Intent) : Service() {
                             this@ProcessImagesService,
                             "Error in fetch sku data", Toast.LENGTH_SHORT
                         ).show()
+                        log("Error in fetch sku data")
                     }
                 }
 
@@ -783,11 +811,13 @@ class ProcessImagesService(val intent: Intent) : Service() {
                         this@ProcessImagesService,
                         "Server not responding!!!", Toast.LENGTH_SHORT
                     ).show()
+                    log("Server not responding(fetchSkuData)")
                 }
             })
         } else {
 
             Toast.makeText(this, "No Internet Connection", Toast.LENGTH_SHORT).show()
+            log("No Internet Connection")
         }
     }
 
@@ -879,6 +909,7 @@ class ProcessImagesService(val intent: Intent) : Service() {
                             this@ProcessImagesService,
                             "Error in bulk upload", Toast.LENGTH_SHORT
                         ).show()
+                        log("Error in bulk upload")
                     }
                 }
 
@@ -887,10 +918,12 @@ class ProcessImagesService(val intent: Intent) : Service() {
                         this@ProcessImagesService,
                         "Server not responding!!!", Toast.LENGTH_SHORT
                     ).show()
+                    log("Server not responding(bulkUpload)")
                 }
             })
         } else {
             Toast.makeText(this, "No Internet Connection", Toast.LENGTH_SHORT).show()
+            log("No Internet Connection")
         }
     }
 
@@ -957,11 +990,13 @@ class ProcessImagesService(val intent: Intent) : Service() {
                         this@ProcessImagesService,
                         "Server not responding!!!", Toast.LENGTH_SHORT
                     ).show()
+                    log("Server not responding(fetchBulkUpload)")
 
                 }
             })
         } else {
             Toast.makeText(this, "No Internet Connection", Toast.LENGTH_SHORT).show()
+            log("No Internet Connection")
         }
     }
 
@@ -1054,6 +1089,7 @@ class ProcessImagesService(val intent: Intent) : Service() {
                             this@ProcessImagesService,
                             "Error in bulk upload footwear", Toast.LENGTH_SHORT
                         ).show()
+                        log("Error in bulk upload footwear")
                     }
                 }
 
@@ -1064,11 +1100,13 @@ class ProcessImagesService(val intent: Intent) : Service() {
                         this@ProcessImagesService,
                         "Server not responding!!!", Toast.LENGTH_SHORT
                     ).show()
+                    log("Server not responding(bulkUploadFootwear)")
                 }
             })
         } else {
 
             Toast.makeText(this, "No Internet Connection", Toast.LENGTH_SHORT).show()
+            log("No Internet Connection")
         }
     }
 
@@ -1134,6 +1172,7 @@ class ProcessImagesService(val intent: Intent) : Service() {
                             this@ProcessImagesService,
                             "Error in add watermark", Toast.LENGTH_SHORT
                         ).show()
+                        log("Error in add watermark")
                     }
                 }
 
@@ -1142,11 +1181,13 @@ class ProcessImagesService(val intent: Intent) : Service() {
                         this@ProcessImagesService,
                         "Server not responding!!!", Toast.LENGTH_SHORT
                     ).show()
+                    log("Server not responding(addWatermark)")
                 }
             })
         } else {
 
             Toast.makeText(this, "No Internet Connection", Toast.LENGTH_SHORT).show()
+            log("No Internet Connection")
         }
     }
 
@@ -1179,10 +1220,12 @@ class ProcessImagesService(val intent: Intent) : Service() {
                         this@ProcessImagesService,
                         "Server not responding!!!", Toast.LENGTH_SHORT
                     ).show()
+                    log("Server not responding(fetchGif)")
                 }
             })
         } else {
             Toast.makeText(this, "No Internet Connection", Toast.LENGTH_SHORT).show()
+            log("No Internet Connection")
         }
     }
 
@@ -1223,10 +1266,12 @@ class ProcessImagesService(val intent: Intent) : Service() {
                         this@ProcessImagesService,
                         "Server not responding!!!", Toast.LENGTH_SHORT
                     ).show()
+                    log("Server not responding(uploadGif)")
                 }
             })
         } else {
             Toast.makeText(this, "No Internet Connection", Toast.LENGTH_SHORT).show()
+            log("No Internet Connection")
         }
     }
 
@@ -1245,19 +1290,14 @@ class ProcessImagesService(val intent: Intent) : Service() {
                 override fun onResponse(call: Call<OtpResponse>, response: Response<OtpResponse>) {
                     if (response.isSuccessful) {
                         if (response.body()!!.id.equals("200")) {
-//                            val intent = Intent(
-//                                this@ProcessImagesService,
-//                                ShowImagesActivity::class.java
-//                            )
-//                            intent.putExtra(AppConstants.GIF, gifLink)
-//                            intent.putExtra(AppConstants.CATEGORY_NAME, catName)
-//                            startActivity(intent)
-//                            finish()
                             Toast.makeText(
                                 this@ProcessImagesService,
                                 response.body()!!.message,
                                 Toast.LENGTH_SHORT
                             ).show()
+                            log(""+response.body()!!.message)
+                            stopService()
+
                         }
                     }
                 }
@@ -1269,10 +1309,13 @@ class ProcessImagesService(val intent: Intent) : Service() {
                         "Server not responding!!!",
                         Toast.LENGTH_SHORT
                     ).show()
+                    log("Server not responding(sendEmail)")
                 }
             })
         } else {
             Toast.makeText(this, "No Internet Connection", Toast.LENGTH_SHORT).show()
+            log("No Internet Connection")
+
         }
     }
 

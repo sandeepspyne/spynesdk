@@ -19,6 +19,7 @@ import android.view.animation.LinearInterpolator
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.gson.Gson
@@ -26,6 +27,7 @@ import com.spyneai.R
 import com.spyneai.adapter.MarketplacesAdapter
 import com.spyneai.adapter.PhotosAdapter
 import com.spyneai.aipack.*
+import com.spyneai.camera2.Camera2Activity
 import com.spyneai.interfaces.*
 import com.spyneai.model.ai.SendEmailRequest
 import com.spyneai.model.ai.UploadGifResponse
@@ -106,12 +108,12 @@ class TimerActivity : AppCompatActivity() {
         val manufacturer = "xiaomi"
         if (manufacturer.equals(Build.MANUFACTURER, ignoreCase = true)) {
             //this will open auto start screen where user can enable permission for your app
-            val intent1 = Intent()
-            intent1.component = ComponentName(
+            val intent = Intent()
+            intent.component = ComponentName(
                 "com.miui.securitycenter",
                 "com.miui.permcenter.autostart.AutoStartManagementActivity"
             )
-            startActivity(intent1)
+            startActivity(intent)
         }
 
         backgroundSelect = intent.getStringExtra(AppConstants.BG_ID)!!
@@ -138,6 +140,8 @@ class TimerActivity : AppCompatActivity() {
 
         setIntents()
 
+
+
         Log.e(
             "Timer  SKU",
             Utilities.getPreference(
@@ -150,8 +154,10 @@ class TimerActivity : AppCompatActivity() {
             val policy = StrictMode.ThreadPolicy.Builder().permitAll().build()
             StrictMode.setThreadPolicy(policy)
         }
-
         setCustomTimer()
+
+        setListener()
+
 //        try {
 //            llTimer.visibility = View.VISIBLE
 //            llNoInternet.visibility = View.GONE
@@ -179,6 +185,14 @@ class TimerActivity : AppCompatActivity() {
 //            }
 //        })
     }
+
+    private fun setListener(){
+        llStartNewShoot.setOnClickListener {
+            val intent = Intent(this, DashboardActivity::class.java)
+            startActivity(intent)
+        }
+    }
+
     private fun setIntents() {
         backgroundSelect = intent.getStringExtra(AppConstants.BG_ID)!!
         circular_progress.setInterpolator(LinearInterpolator())
@@ -206,25 +220,36 @@ class TimerActivity : AppCompatActivity() {
     }
 
     private fun actionOnService(action: Actions) {
-        if (getServiceState(this) == com.spyneai.service.ServiceState.STOPPED && action == Actions.STOP) return
-        Intent(this, ProcessImagesService::class.java).also {
+        if (getServiceState(this) == com.spyneai.service.ServiceState.STOPPED && action == Actions.STOP)
+            return
+//        Intent(this, ProcessImagesService::class.java).also {
+//
+//            intent.putExtra(AppConstants.BG_ID, backgroundSelect)
+//            intent.putExtra(AppConstants.ALL_IMAGE_LIST, imageFileList)
+//            intent.putExtra(AppConstants.ALL_FRAME_LIST, imageFileListFrames)
+//            intent.putExtra(AppConstants.ALL_INTERIOR_IMAGE_LIST, imageInteriorFileList)
+//            intent.putExtra(AppConstants.ALL_INTERIOR_FRAME_LIST, imageInteriorFileListFrames)
+//            intent.putExtra(AppConstants.CATEGORY_NAME, catName)
 
-            intent.putExtra(AppConstants.BG_ID, backgroundSelect)
-            intent.putExtra(AppConstants.ALL_IMAGE_LIST, imageFileList)
-            intent.putExtra(AppConstants.ALL_FRAME_LIST, imageFileListFrames)
-            intent.putExtra(AppConstants.ALL_INTERIOR_IMAGE_LIST, imageInteriorFileList)
-            intent.putExtra(AppConstants.ALL_INTERIOR_FRAME_LIST, imageInteriorFileListFrames)
-            intent.putExtra(AppConstants.CATEGORY_NAME, catName)
+//            intent.action = action.name
 
-            it.action = action.name
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                log("Starting the service in >=26 Mode")
-                startForegroundService(it)
-                return
-            }
-            log("Starting the service in < 26 Mode")
-            startService(it)
+        val serviceIntent = Intent(this, ProcessImagesService::class.java)
+        serviceIntent.putExtra(AppConstants.BG_ID, backgroundSelect)
+        serviceIntent.putExtra(AppConstants.ALL_IMAGE_LIST, imageFileList)
+        serviceIntent.putExtra(AppConstants.ALL_FRAME_LIST, imageFileListFrames)
+        serviceIntent.putExtra(AppConstants.ALL_INTERIOR_IMAGE_LIST, imageInteriorFileList)
+        serviceIntent.putExtra(AppConstants.ALL_INTERIOR_FRAME_LIST, imageInteriorFileListFrames)
+        serviceIntent.putExtra(AppConstants.CATEGORY_NAME, catName)
+        serviceIntent.action = action.name
+//        ContextCompat.startForegroundService(this, serviceIntent)
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            log("Starting the service in >=26 Mode")
+            ContextCompat.startForegroundService(this, serviceIntent)
+            return
         }
+        log("Starting the service in < 26 Mode")
+        startService(serviceIntent)
     }
 
 
