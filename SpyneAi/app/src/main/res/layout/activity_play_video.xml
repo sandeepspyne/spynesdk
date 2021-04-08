@@ -8,32 +8,69 @@
 
     <VideoView
         android:id="@+id/videoview"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
+        android:layout_width="match_parent"
+        android:layout_height="250dp"
         android:layout_margin="8dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintDimensionRatio="4:3"
-        app:layout_constraintEnd_toEndOf="parent"
+        android:visibility="gone"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"/>
 
-    <com.crystal.crystalrangeseekbar.widgets.CrystalRangeSeekbar
-        android:id="@+id/rangeSeekbar3"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        app:corner_radius="10"
-        app:min_value="50"
-        app:max_value="100"
-        app:gap="20"
-        app:bar_color="#8990C4"
-        app:bar_highlight_color="#2434AD"
-        app:left_thumb_color="#1A246D"
-        app:right_thumb_color="#1A246D"
-        app:left_thumb_color_pressed="#030B47"
-        app:right_thumb_color_pressed="#030B47"
-        app:data_type="_integer"
+    <ImageView
+        android:layout_width="70dp"
+        android:layout_height="70dp"
+        android:src="@drawable/play"
+        android:padding="18dp"
         android:visibility="gone"
-        app:layout_constraintBottom_toBottomOf="parent"
-        android:layout_margin="30dp"/>
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="@id/videoview"
+        app:layout_constraintBottom_toBottomOf="@id/videoview"
+        android:background="@drawable/shape_circle_lib"
+        android:id="@+id/image_play_original"
+        app:tint="@color/white" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Original"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/videoview"
+        android:textColor="@color/primary"
+        android:textSize="20sp"
+        android:visibility="gone"
+        android:id="@+id/tv_original"/>
+
+    <VideoView
+        android:id="@+id/videoviewtrimmed"
+        android:layout_width="match_parent"
+        android:layout_height="250dp"
+        android:layout_margin="8dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/tv_original"/>
+
+    <ImageView
+        android:layout_width="70dp"
+        android:layout_height="70dp"
+        android:src="@drawable/play"
+        android:padding="18dp"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="@id/videoviewtrimmed"
+        app:layout_constraintBottom_toBottomOf="@id/videoviewtrimmed"
+        android:background="@drawable/shape_circle_lib"
+        android:id="@+id/image_play_trimmed"
+        app:tint="@color/white"
+        android:visibility="gone"/>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Trimmed"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/videoviewtrimmed"
+        android:textColor="@color/primary"
+        android:textSize="20sp" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

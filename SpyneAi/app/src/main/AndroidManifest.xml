@@ -6,12 +6,16 @@
     <uses-feature android:name="android.hardware.camera.any" />
 
     <uses-permission android:name="android.permission.CAMERA" />
-    <uses-permission android:name="android.permission.RECORD_AUDIO" />
-    <uses-permission android:name="android.permission.ACCESS_MEDIA_LOCATION" />
+    <uses-permission android:name="android.permission.RECORD_AUDIO"/>
+    <uses-permission android:name="android.permission.ACCESS_MEDIA_LOCATION"/>
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.VIBRATE" />
+
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE"></uses-permission>
+    <uses-permission android:name="android.permission.WAKE_LOCK" />
+    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED"/>
 
     <uses-feature android:name="android.hardware.camera" />
 
@@ -19,8 +23,8 @@
         android:name="android.permission.WRITE_EXTERNAL_STORAGE"
         tools:ignore="ScopedStorage" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" /> <!-- <uses-permission -->
-    <!-- android:name="android.permission.MANAGE_EXTERNAL_STORAGE" -->
-    <!-- tools:ignore="ScopedStorage" /> -->
+     android:name="android.permission.MANAGE_EXTERNAL_STORAGE"
+     tools:ignore="ScopedStorage" />
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" /> <!-- Needed only if your app targets Android 5.0 (API level 21) or higher. -->
     <uses-feature android:name="android.hardware.location.gps" />
 
@@ -34,22 +38,16 @@
         android:theme="@style/Theme.SpyneAi"
         android:usesCleartextTraffic="true"
         tools:targetApi="m">
-        <activity android:name=".videorecording.TrimVideoActivity">
 
-        </activity>
-        <activity android:name=".videorecording.PlayVideoActivity">
 
-        </activity>
-        <activity
-            android:name=".videorecording.RecordVideoTestActivity"
-            android:screenOrientation="landscape">
+
+        <receiver android:enabled="true" android:name=".service.StartReceiver">
             <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-
-                <category android:name="android.intent.category.LAUNCHER" />
+                <action android:name="android.intent.action.BOOT_COMPLETED"/>
             </intent-filter>
-        </activity>
-        <activity android:name=".videorecording.RecordVideoActivity" />
+        </receiver>
+
+        <activity android:name=".activity.YourOrdersActivity"></activity>
         <activity
             android:name=".activity.OrderSummary2Activity"
             android:screenOrientation="portrait" />
@@ -175,7 +173,23 @@
             android:screenOrientation="landscape" />
         <activity
             android:name=".activity.SplashActivity"
-            android:screenOrientation="portrait" />
+            android:screenOrientation="portrait">
+
+        </activity>
+
+        <activity android:name=".videorecording.RecordVideoTestActivity"
+            android:screenOrientation="landscape">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+
+        <activity android:name=".videorecording.PlayVideoActivity"></activity>
+        <activity android:name=".videorecording.TrimVideoActivity">
+
+        </activity>
 
         <meta-data
             android:name="com.razorpay.ApiKey"

@@ -66,6 +66,7 @@ class GenrateMarketplaceActivity : AppCompatActivity() {
     var totalImagesToUPloadIndex : Int = 0
     lateinit var gifList : ArrayList<String>
 
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_genrate_marketplace)

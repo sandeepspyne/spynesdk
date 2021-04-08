@@ -48,6 +48,7 @@ class RecordVideoTestActivity : AppCompatActivity() {
         private const val RATIO_16_9_VALUE = 16.0 / 9.0 // aspect ratio 16x9
 
         private const val REQUEST_CODE_PERMISSIONS = 100
+        var intent : Intent? = null;
 
         // The permissions we need for the app to work properly
         private val permissions = mutableListOf(
@@ -113,6 +114,7 @@ class RecordVideoTestActivity : AppCompatActivity() {
         }
 
         setContentView(R.layout.activity_record_video_test)
+        Log.d(TAG, "onCreate: ")
 
         Handler(Looper.getMainLooper()).postDelayed(object : Runnable {
             override fun run() {
@@ -245,7 +247,7 @@ class RecordVideoTestActivity : AppCompatActivity() {
                             ?.let { uri ->
                                 //setGalleryThumbnail(uri)
 
-                                val intent = Intent(this@RecordVideoTestActivity, PlayVideoActivity::class.java);
+                                val intent = Intent(this@RecordVideoTestActivity, TrimVideoActivity::class.java);
                                 intent.setData(uri);
                                 startActivity(intent);
                                 Log.d(TAG, "Video saved in $uri")

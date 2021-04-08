@@ -1,6 +1,7 @@
 package com.spyneai.videorecording
 
 
+import android.net.Uri
 import android.os.Build
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
@@ -18,6 +19,12 @@ class PlayVideoActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_play_video)
+
+        image_play_original.setOnClickListener{
+
+        }
+
+        image_play_trimmed.setOnClickListener { }
     }
 
     override fun onStart() {
@@ -29,15 +36,27 @@ class PlayVideoActivity : AppCompatActivity() {
         var mediaController : MediaController? = MediaController(this);
         mediaController?.setAnchorView(videoview);
 
-        videoview.setMediaController(mediaController);
-        videoview.setVideoURI(intent.data);
-        videoview.start();
+        //videoview.setMediaController(mediaController);
+        videoview.setVideoURI(intent.data)
+        //videoview.start()
+
+        var mediaControllertrimmed : MediaController? = MediaController(this);
+        mediaControllertrimmed?.setAnchorView(videoviewtrimmed);
+
+        videoviewtrimmed.setMediaController(mediaControllertrimmed);
+        var uri : Uri? = Uri.parse(intent?.getStringExtra("uri"))
+        videoviewtrimmed.setVideoURI(uri)
+        videoviewtrimmed.start()
+
+        var data : String? = "saa";
+
     }
 
     override fun onPause() {
         super.onPause()
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.N) {
             videoview.pause();
+            videoviewtrimmed.pause()
         }
     }
 
@@ -48,5 +67,6 @@ class PlayVideoActivity : AppCompatActivity() {
 
     private fun releasePlayer(){
         videoview.stopPlayback();
+        videoviewtrimmed.stopPlayback()
     }
 }
