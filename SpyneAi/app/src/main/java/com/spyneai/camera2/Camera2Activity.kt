@@ -1537,7 +1537,7 @@ class Camera2Activity : AppCompatActivity(), SubCategoriesAdapter.BtnClickListen
         val tvProceed : TextView = dialog.findViewById(R.id.tvProceed)
         val npShoots : NumberPicker = dialog.findViewById(R.id.npShoots)
 
-        val valuesShoots = arrayOf("4 Angles","8 Angles"/*, "12 Angles", "24 Angles"*/)
+        val valuesShoots = arrayOf("4 Angles","8 Angles", "12 Angles"/*, "24 Angles"*/)
 
         npShoots.setMinValue(0); //from array first value
         //Specify the maximum value/number of NumberPicker
