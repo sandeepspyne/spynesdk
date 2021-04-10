@@ -1,66 +1,33 @@
 package com.spyneai.activity
 
-import UploadPhotoResponse
-import android.app.Dialog
 import android.content.ComponentName
 import android.content.Intent
-import android.graphics.Bitmap
-import android.graphics.BitmapFactory
-import android.graphics.Matrix
-import android.media.ExifInterface
 import android.os.Build
 import android.os.Bundle
 import android.os.CountDownTimer
 import android.os.StrictMode
 import android.util.Log
-import android.view.View
-import android.view.Window
 import android.view.animation.LinearInterpolator
-import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
-import androidx.recyclerview.widget.GridLayoutManager
-import androidx.recyclerview.widget.RecyclerView
-import com.google.gson.Gson
 import com.spyneai.R
 import com.spyneai.adapter.MarketplacesAdapter
 import com.spyneai.adapter.PhotosAdapter
-import com.spyneai.aipack.*
-import com.spyneai.camera2.Camera2Activity
-import com.spyneai.interfaces.*
-import com.spyneai.model.ai.SendEmailRequest
-import com.spyneai.model.ai.UploadGifResponse
-import com.spyneai.model.ai.WaterMarkResponse
+import com.spyneai.extras.events.ProcessingImagesEvent
 import com.spyneai.model.carreplace.CarBackgroundsResponse
-import com.spyneai.model.marketplace.FootwearBulkResponse
-import com.spyneai.model.otp.OtpResponse
 import com.spyneai.model.sku.Photos
-import com.spyneai.model.sku.SkuResponse
-import com.spyneai.model.skumap.UpdateSkuResponse
-import com.spyneai.model.skustatus.UpdateSkuStatusRequest
-import com.spyneai.model.skustatus.UpdateSkuStatusResponse
-import com.spyneai.model.upload.UploadResponse
-import com.spyneai.model.uploadRough.UploadPhotoRequest
 import com.spyneai.needs.AppConstants
 import com.spyneai.needs.Utilities
 import com.spyneai.service.Actions
 import com.spyneai.service.ProcessImagesService
 import com.spyneai.service.getServiceState
 import com.spyneai.service.log
-import kotlinx.android.synthetic.main.activity_generate_gif.*
-import kotlinx.android.synthetic.main.activity_otp.*
 import kotlinx.android.synthetic.main.activity_timer.*
-import okhttp3.MediaType
-import okhttp3.MultipartBody
-import okhttp3.RequestBody
-import retrofit2.Call
-import retrofit2.Callback
-import retrofit2.Response
+import org.greenrobot.eventbus.EventBus
+import org.greenrobot.eventbus.Subscribe
+import org.greenrobot.eventbus.ThreadMode
 import java.io.File
-import java.io.FileOutputStream
-import java.io.IOException
-import java.io.OutputStream
 import java.util.concurrent.TimeUnit
 
 
@@ -233,23 +200,29 @@ class TimerActivity : AppCompatActivity() {
 
 //            intent.action = action.name
 
-        val serviceIntent = Intent(this, ProcessImagesService::class.java)
-        serviceIntent.putExtra(AppConstants.BG_ID, backgroundSelect)
-        serviceIntent.putExtra(AppConstants.ALL_IMAGE_LIST, imageFileList)
-        serviceIntent.putExtra(AppConstants.ALL_FRAME_LIST, imageFileListFrames)
-        serviceIntent.putExtra(AppConstants.ALL_INTERIOR_IMAGE_LIST, imageInteriorFileList)
-        serviceIntent.putExtra(AppConstants.ALL_INTERIOR_FRAME_LIST, imageInteriorFileListFrames)
-        serviceIntent.putExtra(AppConstants.CATEGORY_NAME, catName)
-        serviceIntent.action = action.name
+        val thread: Thread = object : Thread() {
+            override fun run() {
+
+                val serviceIntent = Intent(this@TimerActivity, ProcessImagesService::class.java)
+                serviceIntent.putExtra(AppConstants.BG_ID, backgroundSelect)
+                serviceIntent.putExtra(AppConstants.ALL_IMAGE_LIST, imageFileList)
+                serviceIntent.putExtra(AppConstants.ALL_FRAME_LIST, imageFileListFrames)
+                serviceIntent.putExtra(AppConstants.ALL_INTERIOR_IMAGE_LIST, imageInteriorFileList)
+                serviceIntent.putExtra(AppConstants.ALL_INTERIOR_FRAME_LIST, imageInteriorFileListFrames)
+                serviceIntent.putExtra(AppConstants.CATEGORY_NAME, catName)
+                serviceIntent.action = action.name
 //        ContextCompat.startForegroundService(this, serviceIntent)
 
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            log("Starting the service in >=26 Mode")
-            ContextCompat.startForegroundService(this, serviceIntent)
-            return
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                    log("Starting the service in >=26 Mode")
+                    ContextCompat.startForegroundService(this@TimerActivity, serviceIntent)
+                    return
+                }
+                log("Starting the service in < 26 Mode")
+                startService(serviceIntent)
+            }
         }
-        log("Starting the service in < 26 Mode")
-        startService(serviceIntent)
+        thread.start()
     }
 
 
@@ -301,4 +274,21 @@ class TimerActivity : AppCompatActivity() {
             }
         }.start()
     }
+
+    override fun onStart() {
+        super.onStart()
+        EventBus.getDefault().register(this)
+    }
+
+    override fun onStop() {
+        super.onStop()
+        EventBus.getDefault().unregister(this)
+    }
+
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    fun onMessageEvent(event: ProcessingImagesEvent?) {
+        event?.getNotificationID()?.let { Toast.makeText(this, it, Toast.LENGTH_LONG).show() }
+    }
+
 }

@@ -12,31 +12,20 @@ import android.media.ExifInterface
 import android.os.*
 import android.provider.Settings
 import android.util.Log
-import android.view.View
-import android.view.Window
-import android.widget.TextView
 import android.widget.Toast
-import androidx.recyclerview.widget.GridLayoutManager
-import androidx.recyclerview.widget.RecyclerView
-import com.spyneai.R
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
-import java.text.SimpleDateFormat
-import java.util.*
 import com.github.kittinunf.fuel.Fuel
 import com.github.kittinunf.fuel.core.extensions.jsonBody
 import com.google.gson.Gson
+import com.spyneai.R
+import com.spyneai.activity.CompletedProjectsActivity
 import com.spyneai.activity.DashboardActivity
-import com.spyneai.activity.ShowGifActivity
-import com.spyneai.activity.ShowImagesActivity
 import com.spyneai.adapter.MarketplacesAdapter
 import com.spyneai.adapter.PhotosAdapter
 import com.spyneai.aipack.BulkUploadResponse
 import com.spyneai.aipack.FetchBulkResponse
 import com.spyneai.aipack.FetchGifRequest
 import com.spyneai.aipack.FetchGifResponse
+import com.spyneai.extras.events.ProcessingImagesEvent
 import com.spyneai.interfaces.*
 import com.spyneai.model.ai.SendEmailRequest
 import com.spyneai.model.ai.UploadGifResponse
@@ -46,7 +35,6 @@ import com.spyneai.model.marketplace.FootwearBulkResponse
 import com.spyneai.model.otp.OtpResponse
 import com.spyneai.model.sku.Photos
 import com.spyneai.model.sku.SkuResponse
-import com.spyneai.model.skumap.UpdateSkuResponse
 import com.spyneai.model.skustatus.UpdateSkuStatusRequest
 import com.spyneai.model.skustatus.UpdateSkuStatusResponse
 import com.spyneai.model.upload.UploadResponse
@@ -54,9 +42,14 @@ import com.spyneai.model.uploadRough.UploadPhotoRequest
 import com.spyneai.needs.AppConstants
 import com.spyneai.needs.Utilities
 import kotlinx.android.synthetic.main.activity_timer.*
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 import okhttp3.MediaType
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
+import org.greenrobot.eventbus.EventBus
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -64,7 +57,9 @@ import java.io.File
 import java.io.FileOutputStream
 import java.io.IOException
 import java.io.OutputStream
-import java.util.concurrent.TimeUnit
+import java.text.SimpleDateFormat
+import java.util.*
+
 
 class ProcessImagesService() : Service() {
 
@@ -106,7 +101,19 @@ class ProcessImagesService() : Service() {
     var catName: String = ""
 
     var intent: Intent? = null
+    var notificationContentText: String = "Image processing service started..."
 
+    private var notificationID = (0..999999).random()
+
+    lateinit var notificationManager: NotificationManager
+    lateinit var channel: NotificationChannel
+    lateinit var builder: Notification.Builder
+
+    var PROGRESS_MAX = 1
+    var PROGRESS_CURRENT = 0
+
+//    private var serviceLooper : Looper ? = null
+//    private var serviceHandler : ServiceHandler ? = null
 
     override fun onBind(intent: Intent): IBinder? {
         log("Some component want to bind with the service")
@@ -116,7 +123,7 @@ class ProcessImagesService() : Service() {
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
         log("onStartCommand executed with startId: $startId")
-        log("cat name"+ intent?.getStringExtra(AppConstants.CATEGORY_NAME)!!)
+        log("cat name" + intent?.getStringExtra(AppConstants.CATEGORY_NAME)!!)
         this.intent = intent
         setIntents()
 
@@ -125,8 +132,13 @@ class ProcessImagesService() : Service() {
             log("using an intent with action $action")
             when (action) {
                 Actions.START.name -> {
-                    val notification = createNotification()
-                    startForeground(1, notification)
+
+                    var processingImageEvent = ProcessingImagesEvent();
+                    processingImageEvent.setNotificationID(notificationID);
+                    EventBus.getDefault().post(processingImageEvent)
+
+                    val notification = createNotification(notificationContentText)
+                    startForeground(notificationID, notification)
                     startService()
                 }
                 Actions.STOP.name ->
@@ -194,6 +206,7 @@ class ProcessImagesService() : Service() {
                 launch(Dispatchers.IO) {
 //                    pingFakeServer()
                     uploadImageToBucket()
+                    PROGRESS_CURRENT = 0
                 }
                 delay(1 * 60 * 1000)
             }
@@ -210,8 +223,9 @@ class ProcessImagesService() : Service() {
                     it.release()
                 }
             }
-            stopForeground(true)
-            stopSelf()
+            val notification = outputNotification("Image processing completed.")
+            startForeground(notificationID, notification)
+//            stopSelf()
         } catch (e: Exception) {
             log("Service stopped without being started: ${e.message}")
         }
@@ -251,15 +265,14 @@ class ProcessImagesService() : Service() {
         }
     }
 
-    private fun createNotification(): Notification {
+    private fun createNotification(notificationContentText: String): Notification {
         val notificationChannelId = "PROCESSING SERVICE CHANNEL"
-
         // depending on the Android API that we're dealing with we will have
         // to use a specific method to create the notification
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            val notificationManager =
+            notificationManager =
                 getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
-            val channel = NotificationChannel(
+            channel = NotificationChannel(
                 notificationChannelId,
                 "Process Images Service notifications channel",
                 NotificationManager.IMPORTANCE_HIGH
@@ -279,7 +292,8 @@ class ProcessImagesService() : Service() {
                 PendingIntent.getActivity(this, 0, notificationIntent, 0)
             }
 
-        val builder: Notification.Builder =
+
+        builder =
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) Notification.Builder(
                 this,
                 notificationChannelId
@@ -288,13 +302,42 @@ class ProcessImagesService() : Service() {
 
         return builder
             .setContentTitle("Spyne")
-            .setContentText("Image processing...")
+            .setContentText(notificationContentText)
             .setContentIntent(pendingIntent)
-            .setSmallIcon(R.mipmap.ic_launcher)
+            .setSmallIcon(R.mipmap.app_logo)
             .setTicker("Ticker text")
+            .setOnlyAlertOnce(true)
             .setPriority(Notification.PRIORITY_HIGH) // for under android 26 compatibility
             .build()
+
+
     }
+
+    private fun updateNotification(notificationContentText: String): Notification {
+        return builder
+            .setContentText(notificationContentText)
+            .setProgress(PROGRESS_MAX, PROGRESS_CURRENT, false)
+            .build()
+        notificationManager.notify(notificationID, builder.build())
+    }
+
+    private fun outputNotification(notificationContentText: String): Notification {
+
+        val pendingIntent: PendingIntent =
+            Intent(this, CompletedProjectsActivity::class.java).let { notificationIntent ->
+                PendingIntent.getActivity(this, 0, notificationIntent, 0)
+            }
+
+        return builder
+            .setContentText(notificationContentText)
+            .setProgress(0, 0, false)
+            .addAction(R.drawable.check, getString(R.string.output),
+                pendingIntent)
+            .build()
+        notificationManager.notify(notificationID, builder.build())
+    }
+
+
 
     private fun setIntents() {
 
@@ -311,7 +354,7 @@ class ProcessImagesService() : Service() {
 
         backgroundSelect = intent?.getStringExtra(AppConstants.BG_ID)!!
 
-        log("CATEGORY_NAME"+ catName)
+        log("CATEGORY_NAME" + catName)
 
         imageFileList = ArrayList<File>()
         imageFileListFrames = ArrayList<Int>()
@@ -332,6 +375,7 @@ class ProcessImagesService() : Service() {
     }
 
     fun uploadImageToBucket() {
+        PROGRESS_MAX = imageFileList.size
         if (Utilities.isNetworkAvailable(this)) {
             Log.e("Fisrt execution", "UploadImage Bucket")
             log("Start uploading images to bucket")
@@ -363,6 +407,10 @@ class ProcessImagesService() : Service() {
                                     " " + response.body()?.image.toString()
                         )
 
+                        PROGRESS_CURRENT++
+                        val notification = updateNotification("Exterior image uploading started...")
+                        startForeground(notificationID, notification)
+
                         //  if (Utilities.getPreference(this@CameraActivity, AppConstants.MAIN_IMAGE).equals(""))
                         Utilities.savePrefrence(
                             this@ProcessImagesService,
@@ -371,24 +419,29 @@ class ProcessImagesService() : Service() {
                         )
                         uploadImageURLs()
                     } else {
+//                        uploadImageToBucket()
                         Toast.makeText(
                             this@ProcessImagesService,
                             "Error in uploading image to bucket",
                             Toast.LENGTH_SHORT
                         ).show()
                         log("Error in uploading image to bucket")
+                        log("Error Body: "+response.errorBody())
+                        log("Response: "+response.body())
                     }
                 }
 
                 override fun onFailure(call: Call<UploadResponse>, t: Throwable) {
                     //
                     Log.e("Respo Image ", "Image error")
+//                    uploadImageToBucket()
                     Toast.makeText(
                         this@ProcessImagesService,
                         "Server not responding",
                         Toast.LENGTH_SHORT
                     ).show()
                     log("Server not responding(uploadImageToBucket)")
+                    log("onFailure: " +t.localizedMessage)
                 }
             })
         } else {
@@ -457,6 +510,7 @@ class ProcessImagesService() : Service() {
 
                                 if (imageInteriorFileList != null && imageInteriorFileList.size > 0) {
                                     uploadImageToBucketInterior()
+                                    PROGRESS_CURRENT = 0
                                 } else
                                     markSkuComplete()
                             }
@@ -471,6 +525,7 @@ class ProcessImagesService() : Service() {
                             Toast.LENGTH_SHORT
                         ).show()
                         log("Error in uploading image url. Please try again")
+                        log("Error: "+response.errorBody())
                     }
                 }
 
@@ -483,6 +538,7 @@ class ProcessImagesService() : Service() {
                     ).show()
                     log("Server not responding(uploadImageURLs)")
                     Log.e("Respo Image ", "Image error")
+                    log("onFailure: "+t.localizedMessage)
                 }
             })
         } else {
@@ -493,6 +549,8 @@ class ProcessImagesService() : Service() {
     }
 
     fun uploadImageToBucketInterior() {
+        PROGRESS_MAX = imageInteriorFileList.size
+        PROGRESS_CURRENT = 0
         if (Utilities.isNetworkAvailable(this)) {
 
             Log.e("Fisrt execution", "UploadImage Bucket")
@@ -516,7 +574,14 @@ class ProcessImagesService() : Service() {
                 ) {
                     //
                     if (response.isSuccessful) {
+
+                        PROGRESS_CURRENT++
+
+                        val notification = updateNotification("Interior image uploading started...")
+                        startForeground(notificationID, notification)
+
                         Log.e("Fisrt execution", "UploadImage Bucket")
+
 
 
                         Log.e("uploadImageToBucket", response.body()?.image.toString())
@@ -538,6 +603,7 @@ class ProcessImagesService() : Service() {
                             Toast.LENGTH_SHORT
                         ).show()
                         log("Error in uploading interior images.")
+                        log("Error: "+response.errorBody())
                     }
                 }
 
@@ -550,6 +616,7 @@ class ProcessImagesService() : Service() {
                         Toast.LENGTH_SHORT
                     ).show()
                     log("Server not responding(uploadImageToBucketInterior)")
+                    log("onFailure: "+t.localizedMessage)
                 }
             })
         } else {
@@ -629,6 +696,7 @@ class ProcessImagesService() : Service() {
                             Toast.LENGTH_SHORT
                         ).show()
                         log("Error in uploading image url(INTERIOR)")
+                        log("Error: "+response.errorBody())
                     }
                 }
 
@@ -641,6 +709,7 @@ class ProcessImagesService() : Service() {
                     ).show()
                     log("Server not responding(uploadImageURLsInterior)")
                     Log.e("Respo Image ", "Image error")
+                    log("onFailure: "+t.localizedMessage)
                 }
             })
         } else {
@@ -704,6 +773,8 @@ class ProcessImagesService() : Service() {
 
     //MArk the SKu as complete
     private fun markSkuComplete() {
+        PROGRESS_CURRENT = 0
+        PROGRESS_CURRENT = 0
         if (Utilities.isNetworkAvailable(this)) {
             log("start markSkuComplete")
             val request = RetrofitClient.buildService(APiService::class.java)
@@ -724,6 +795,9 @@ class ProcessImagesService() : Service() {
                     response: Response<UpdateSkuStatusResponse>
                 ) {
 
+                    val notification = updateNotification("Mark SKU started...")
+                    startForeground(notificationID, notification)
+
                     if (response.isSuccessful) {
                         Log.e("Sku completed", "MArked Complete")
                         setSkuImages()
@@ -733,6 +807,7 @@ class ProcessImagesService() : Service() {
                 override fun onFailure(call: Call<UpdateSkuStatusResponse>, t: Throwable) {
                     setSkuImages()
                     log("Server not responding(markSkuComplete)")
+                    log("onFailure: "+t.localizedMessage)
 
                 }
             })
@@ -792,6 +867,7 @@ class ProcessImagesService() : Service() {
                         if (countGif < photoList.size) {
                             if (catName.equals("Automobiles")) {
                                 bulkUpload(countGif)
+                                PROGRESS_CURRENT = 0
                             } else if (catName.equals("Footwear")) {
                                 bulkUploadFootwear(countGif)
                             }
@@ -803,6 +879,7 @@ class ProcessImagesService() : Service() {
                             "Error in fetch sku data", Toast.LENGTH_SHORT
                         ).show()
                         log("Error in fetch sku data")
+                        log("Error: "+response.errorBody())
                     }
                 }
 
@@ -812,6 +889,7 @@ class ProcessImagesService() : Service() {
                         "Server not responding!!!", Toast.LENGTH_SHORT
                     ).show()
                     log("Server not responding(fetchSkuData)")
+                    log("onFailure: "+t.localizedMessage)
                 }
             })
         } else {
@@ -823,6 +901,7 @@ class ProcessImagesService() : Service() {
 
     //Upload bulk data
     private fun bulkUpload(countsGif: Int) {
+        PROGRESS_MAX = photoList.size
         if (Utilities.isNetworkAvailable(this)) {
 
             log("start bulk upload")
@@ -882,7 +961,13 @@ class ProcessImagesService() : Service() {
                     response: Response<BulkUploadResponse>
                 ) {
                     if (response.isSuccessful && response.body()!!.status == 200) {
+
                         ++countGif
+                        PROGRESS_CURRENT++
+
+                        val notification = updateNotification("AI for Image Processing started...")
+                        startForeground(notificationID, notification)
+
                         if (countGif < photoList.size) {
                             Log.e("countGif", countGif.toString())
                             bulkUpload(countGif)
@@ -905,20 +990,49 @@ class ProcessImagesService() : Service() {
                             )!!
                         )
                     } else {
+                        if (countGif < photoList.size) {
+                            Log.e("countGif", countGif.toString())
+                            bulkUpload(countGif)
+//                           (imageListWaterMark as ArrayList).add(response.body()!!.watermark_image)
+
+                        } else if (photoListInteriors.size > 0) {
+                            countGif = 0
+                            if (countGif < photoListInteriors.size) {
+                                addWatermark(countGif)
+                            }
+                        } else{
+
+                        }
+                            fetchBulkUpload()
                         Toast.makeText(
                             this@ProcessImagesService,
                             "Error in bulk upload", Toast.LENGTH_SHORT
                         ).show()
                         log("Error in bulk upload")
+                        log("Error: "+response.errorBody())
+                        log("Response: "+response.body())
                     }
                 }
 
                 override fun onFailure(call: Call<BulkUploadResponse>, t: Throwable) {
+                    if (countGif < photoList.size) {
+                        Log.e("countGif", countGif.toString())
+                        bulkUpload(countGif)
+//                           (imageListWaterMark as ArrayList).add(response.body()!!.watermark_image)
+
+                    } else if (photoListInteriors.size > 0) {
+                        countGif = 0
+                        if (countGif < photoListInteriors.size) {
+                            addWatermark(countGif)
+                        }
+                    } else
+                        fetchBulkUpload()
                     Toast.makeText(
                         this@ProcessImagesService,
                         "Server not responding!!!", Toast.LENGTH_SHORT
                     ).show()
                     log("Server not responding(bulkUpload)")
+                    log("onFailure: "+t.localizedMessage)
                 }
             })
         } else {
@@ -952,6 +1066,11 @@ class ProcessImagesService() : Service() {
                     response: Response<List<FetchBulkResponse>>
                 ) {
                     if (response.isSuccessful) {
+                        PROGRESS_MAX = response.body()!!.size
+
+                        val notification = updateNotification("Fetching your images...")
+                        startForeground(notificationID, notification)
+
                         Log.e("Upload Replace", "bulk Fetch")
                         imageList = ArrayList<String>()
                         imageListAfter = ArrayList<String>()
@@ -962,6 +1081,7 @@ class ProcessImagesService() : Service() {
                         interiorList.clear()
 
                         for (i in 0..response.body()!!.size - 1) {
+                            PROGRESS_CURRENT++
                             if (response.body()!![i].category.equals("Exterior")) {
                                 imageList.add(response.body()!![i].input_image_url)
                                 imageListAfter.add(response.body()!![i].output_image_url)
@@ -991,6 +1111,7 @@ class ProcessImagesService() : Service() {
                         "Server not responding!!!", Toast.LENGTH_SHORT
                     ).show()
                     log("Server not responding(fetchBulkUpload)")
+                    log("onFailure: "+t.localizedMessage)
 
                 }
             })
@@ -1070,6 +1191,10 @@ class ProcessImagesService() : Service() {
                     response: Response<FootwearBulkResponse>
                 ) {
                     if (response.isSuccessful && response.body()!!.status == 200) {
+
+                        val notification = updateNotification("AI for Image Processing started...")
+                        startForeground(notificationID, notification)
+
                         ++countGif
                         if (countGif < photoList.size) {
                             Log.e("countGif", countGif.toString())
@@ -1090,6 +1215,7 @@ class ProcessImagesService() : Service() {
                             "Error in bulk upload footwear", Toast.LENGTH_SHORT
                         ).show()
                         log("Error in bulk upload footwear")
+                        log("Error: "+response.errorBody())
                     }
                 }
 
@@ -1101,6 +1227,7 @@ class ProcessImagesService() : Service() {
                         "Server not responding!!!", Toast.LENGTH_SHORT
                     ).show()
                     log("Server not responding(bulkUploadFootwear)")
+                    log("onFailure: "+t.localizedMessage)
                 }
             })
         } else {
@@ -1153,6 +1280,7 @@ class ProcessImagesService() : Service() {
                     response: Response<WaterMarkResponse>
                 ) {
                     if (response.isSuccessful && response.body()!!.status == 200) {
+
                         ++countGif
                         if (countGif < photoListInteriors.size) {
                             Log.e("countGif", countGif.toString())
@@ -1173,6 +1301,7 @@ class ProcessImagesService() : Service() {
                             "Error in add watermark", Toast.LENGTH_SHORT
                         ).show()
                         log("Error in add watermark")
+                        log("Error: "+response.errorBody())
                     }
                 }
 
@@ -1182,6 +1311,7 @@ class ProcessImagesService() : Service() {
                         "Server not responding!!!", Toast.LENGTH_SHORT
                     ).show()
                     log("Server not responding(addWatermark)")
+                    log("onFailure: "+t.localizedMessage)
                 }
             })
         } else {
@@ -1221,6 +1351,7 @@ class ProcessImagesService() : Service() {
                         "Server not responding!!!", Toast.LENGTH_SHORT
                     ).show()
                     log("Server not responding(fetchGif)")
+                    log("onFailure: "+t.localizedMessage)
                 }
             })
         } else {
@@ -1267,6 +1398,7 @@ class ProcessImagesService() : Service() {
                         "Server not responding!!!", Toast.LENGTH_SHORT
                     ).show()
                     log("Server not responding(uploadGif)")
+                    log("onFailure: "+t.localizedMessage)
                 }
             })
         } else {
@@ -1276,6 +1408,7 @@ class ProcessImagesService() : Service() {
     }
 
     private fun sendEmail() {
+        PROGRESS_MAX = 1
         if (Utilities.isNetworkAvailable(this)) {
             log("start send email")
             val request = RetrofitClientSpyneAi.buildService(APiService::class.java)
@@ -1295,7 +1428,9 @@ class ProcessImagesService() : Service() {
                                 response.body()!!.message,
                                 Toast.LENGTH_SHORT
                             ).show()
-                            log(""+response.body()!!.message)
+                            log("" + response.body()!!.message)
+                            val notification = updateNotification("Output email sent...")
+                            startForeground(notificationID, notification)
                             stopService()
 
                         }
@@ -1310,6 +1445,7 @@ class ProcessImagesService() : Service() {
                         Toast.LENGTH_SHORT
                     ).show()
                     log("Server not responding(sendEmail)")
+                    log("onFailure"+ t.localizedMessage)
                 }
             })
         } else {

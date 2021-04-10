@@ -189,6 +189,9 @@
 
     <string name="your_orders">Your Orders</string>
 
+    <string name="output">Tap here to see your output.</string>
+
+
 
     <string-array name="planets_array">
         <item>4 Shoots</item>
