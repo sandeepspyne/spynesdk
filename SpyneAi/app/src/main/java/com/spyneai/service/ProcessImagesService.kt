@@ -13,13 +13,14 @@ import android.os.*
 import android.provider.Settings
 import android.util.Log
 import android.widget.Toast
+import androidx.recyclerview.widget.GridLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.github.kittinunf.fuel.Fuel
 import com.github.kittinunf.fuel.core.extensions.jsonBody
 import com.google.gson.Gson
 import com.spyneai.R
 import com.spyneai.activity.CompletedProjectsActivity
 import com.spyneai.activity.DashboardActivity
-import com.spyneai.adapter.MarketplacesAdapter
 import com.spyneai.adapter.PhotosAdapter
 import com.spyneai.aipack.BulkUploadResponse
 import com.spyneai.aipack.FetchBulkResponse
@@ -30,7 +31,6 @@ import com.spyneai.interfaces.*
 import com.spyneai.model.ai.SendEmailRequest
 import com.spyneai.model.ai.UploadGifResponse
 import com.spyneai.model.ai.WaterMarkResponse
-import com.spyneai.model.carreplace.CarBackgroundsResponse
 import com.spyneai.model.marketplace.FootwearBulkResponse
 import com.spyneai.model.otp.OtpResponse
 import com.spyneai.model.sku.Photos
@@ -59,58 +59,63 @@ import java.io.IOException
 import java.io.OutputStream
 import java.text.SimpleDateFormat
 import java.util.*
+import kotlin.collections.ArrayList
 
 
 class ProcessImagesService() : Service() {
 
     private var wakeLock: PowerManager.WakeLock? = null
-    private var isServiceStarted = false
 
-    val progress = 1000
-    var maxProgress = 120000
-    var i = 0
+//        private var isServiceStarted = false
+//
+//    val progress = 1000
+//    var maxProgress = 120000
+//    var i = 0
+//
+//    private lateinit var photsAdapter: PhotosAdapter
+//    private lateinit var photoList: List<Photos>
+//    private lateinit var photoListInteriors: List<Photos>
+//
+//    lateinit var imageList: ArrayList<String>
+//    lateinit var imageListAfter: ArrayList<String>
+//    lateinit var interiorList: ArrayList<String>
+//
+//    public lateinit var imageFileList: ArrayList<File>
+//    public lateinit var imageFileListFrames: ArrayList<Int>
+//
+//    public lateinit var imageInteriorFileList: ArrayList<File>
+//    public lateinit var imageInteriorFileListFrames: ArrayList<Int>
+//
+//    private var currentPOsition: Int = 0
+//    lateinit var carBackgroundList: ArrayList<CarBackgroundsResponse>
+//    lateinit var carbackgroundsAdapter: MarketplacesAdapter
+//    var backgroundSelect: String = ""
+//    var marketplaceId: String = ""
+//    var backgroundColour: String = ""
+//
+//    var totalImagesToUPload: Int = 0
+//    var totalImagesToUPloadIndex: Int = 0
+//    lateinit var gifList: ArrayList<String>
+//    var gifLink: String = ""
+//    lateinit var image_url: ArrayList<String>
+//    var countGif: Int = 0
+//    lateinit var t: Thread
+//    var catName: String = ""
+//
+//    var intent: Intent? = null
+//    var notificationContentText: String = "Image processing service started..."
 
-    private lateinit var photsAdapter: PhotosAdapter
-    private lateinit var photoList: List<Photos>
-    private lateinit var photoListInteriors: List<Photos>
 
-    lateinit var imageList: ArrayList<String>
-    lateinit var imageListAfter: ArrayList<String>
-    lateinit var interiorList: ArrayList<String>
-
-    public lateinit var imageFileList: ArrayList<File>
-    public lateinit var imageFileListFrames: ArrayList<Int>
-
-    public lateinit var imageInteriorFileList: ArrayList<File>
-    public lateinit var imageInteriorFileListFrames: ArrayList<Int>
-
-    private var currentPOsition: Int = 0
-    lateinit var carBackgroundList: ArrayList<CarBackgroundsResponse>
-    lateinit var carbackgroundsAdapter: MarketplacesAdapter
-    var backgroundSelect: String = ""
-    var marketplaceId: String = ""
-    var backgroundColour: String = ""
-
-    var totalImagesToUPload: Int = 0
-    var totalImagesToUPloadIndex: Int = 0
-    lateinit var gifList: ArrayList<String>
-    var gifLink: String = ""
-    lateinit var image_url: ArrayList<String>
-    var countGif: Int = 0
-    lateinit var t: Thread
-    var catName: String = ""
-
-    var intent: Intent? = null
-    var notificationContentText: String = "Image processing service started..."
 
     private var notificationID = (0..999999).random()
 
+    //
     lateinit var notificationManager: NotificationManager
     lateinit var channel: NotificationChannel
     lateinit var builder: Notification.Builder
-
-    var PROGRESS_MAX = 1
-    var PROGRESS_CURRENT = 0
+//
+//    var PROGRESS_MAX = 1
+//    var PROGRESS_CURRENT = 0
 
 //    private var serviceLooper : Looper ? = null
 //    private var serviceHandler : ServiceHandler ? = null
@@ -124,8 +129,6 @@ class ProcessImagesService() : Service() {
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
         log("onStartCommand executed with startId: $startId")
         log("cat name" + intent?.getStringExtra(AppConstants.CATEGORY_NAME)!!)
-        this.intent = intent
-        setIntents()
 
         if (intent != null) {
             val action = intent!!.action
@@ -133,13 +136,7 @@ class ProcessImagesService() : Service() {
             when (action) {
                 Actions.START.name -> {
 
-                    var processingImageEvent = ProcessingImagesEvent();
-                    processingImageEvent.setNotificationID(notificationID);
-                    EventBus.getDefault().post(processingImageEvent)
-
-                    val notification = createNotification(notificationContentText)
-                    startForeground(notificationID, notification)
-                    startService()
+                    fetchDataAndStartService(intent)
                 }
                 Actions.STOP.name ->
                     stopService()
@@ -184,12 +181,82 @@ class ProcessImagesService() : Service() {
         );
     }
 
-    private fun startService() {
-        if (isServiceStarted)
-            return
+
+    private fun fetchDataAndStartService(intent: Intent) {
+        var catName: String = "";
+        var marketplaceId: String = ""
+        var backgroundColour: String = ""
+        if (intent?.getStringExtra(AppConstants.CATEGORY_NAME) != null)
+            catName = intent?.getStringExtra(AppConstants.CATEGORY_NAME)!!
+        else
+            catName = Utilities.getPreference(this, AppConstants.CATEGORY_NAME)!!
+
+        if (intent?.getStringExtra(AppConstants.MARKETPLACE_ID) != null)
+            marketplaceId = intent?.getStringExtra(AppConstants.MARKETPLACE_ID)!!
+
+        if (intent?.getStringExtra(AppConstants.BACKGROUND_COLOUR) != null)
+            backgroundColour = intent?.getStringExtra(AppConstants.BACKGROUND_COLOUR)!!
+
+        var backgroundSelect = intent?.getStringExtra(AppConstants.BG_ID)!!
+
+        log("CATEGORY_NAME" + catName)
+
+        var imageFileList = ArrayList<File>()
+        var imageFileListFrames = ArrayList<Int>()
+        var image_url = ArrayList<String>()
+
+        var imageInteriorFileList = ArrayList<File>()
+        var imageInteriorFileListFrames = ArrayList<Int>()
+
+        //Get Intents
+        imageFileList.addAll(intent?.getParcelableArrayListExtra(AppConstants.ALL_IMAGE_LIST)!!)
+        imageFileListFrames.addAll(intent?.getIntegerArrayListExtra(AppConstants.ALL_FRAME_LIST)!!)
+
+        if (Utilities.getPreference(this, AppConstants.CATEGORY_NAME).equals("Automobiles")) {
+            imageInteriorFileList.addAll(intent?.getParcelableArrayListExtra(AppConstants.ALL_INTERIOR_IMAGE_LIST)!!)
+            imageInteriorFileListFrames.addAll(intent?.getIntegerArrayListExtra(AppConstants.ALL_INTERIOR_FRAME_LIST)!!)
+        }
+        var totalImagesToUPload = imageFileList.size
+        var totalImagesToUPloadIndex = 0
+
+        var notificationContentText: String = "Image processing service started..."
+//        var notificationID = (0..999999).random()
+        val notification = createNotification(notificationContentText)
+        startForeground(notificationID, notification)
+        startService(
+            intent,
+            catName,
+            marketplaceId,
+            backgroundColour,
+            backgroundSelect,
+            imageFileList,
+            imageFileListFrames,
+            imageInteriorFileList,
+            imageInteriorFileListFrames,
+            totalImagesToUPload,
+            totalImagesToUPloadIndex
+        )
+    }
+
+
+    private fun startService(
+        intent: Intent,
+        catName: String,
+        marketplaceId: String,
+        backgroundColour: String,
+        backgroundSelect: String,
+        imageFileList: java.util.ArrayList<File>,
+        imageFileListFrames: java.util.ArrayList<Int>,
+        imageInteriorFileList: java.util.ArrayList<File>,
+        imageInteriorFileListFrames: java.util.ArrayList<Int>,
+        totalImagesToUPload: Int,
+        totalImagesToUPloadIndex: Int
+    ) {
+//        if (isServiceStarted)
+//            return
         log("Starting the foreground service task")
         Toast.makeText(this, "Service starting its task", Toast.LENGTH_SHORT).show()
-        isServiceStarted = true
+//        isServiceStarted = true
         setServiceState(this, com.spyneai.service.ServiceState.STARTED)
 
         // we need this lock so our service gets not affected by Doze Mode
@@ -202,14 +269,25 @@ class ProcessImagesService() : Service() {
 
         // we're starting a loop in a coroutine
         GlobalScope.launch(Dispatchers.IO) {
-            while (isServiceStarted) {
-                launch(Dispatchers.IO) {
+//            while (isServiceStarted) {
+            launch(Dispatchers.IO) {
 //                    pingFakeServer()
-                    uploadImageToBucket()
-                    PROGRESS_CURRENT = 0
-                }
-                delay(1 * 60 * 1000)
+                uploadImageToBucket(
+                    intent,
+                    catName,
+                    marketplaceId,
+                    backgroundColour,
+                    backgroundSelect,
+                    imageFileList,
+                    imageFileListFrames,
+                    imageInteriorFileList,
+                    imageInteriorFileListFrames,
+                    totalImagesToUPload,
+                    totalImagesToUPloadIndex
+                )
             }
+            delay(1 * 60 * 1000)
+//            }
             log("End of the loop for the service")
         }
     }
@@ -223,13 +301,18 @@ class ProcessImagesService() : Service() {
                     it.release()
                 }
             }
+
+            var processingImageEvent = ProcessingImagesEvent();
+            processingImageEvent.setNotificationID(notificationID);
+            EventBus.getDefault().post(processingImageEvent)
             val notification = outputNotification("Image processing completed.")
             startForeground(notificationID, notification)
-//            stopSelf()
+            stopForeground(false)
+            stopSelf()
         } catch (e: Exception) {
             log("Service stopped without being started: ${e.message}")
         }
-        isServiceStarted = false
+//        isServiceStarted = false
         setServiceState(this, com.spyneai.service.ServiceState.STOPPED)
     }
 
@@ -313,13 +396,13 @@ class ProcessImagesService() : Service() {
 
     }
 
-    private fun updateNotification(notificationContentText: String): Notification {
-        return builder
-            .setContentText(notificationContentText)
-            .setProgress(PROGRESS_MAX, PROGRESS_CURRENT, false)
-            .build()
-        notificationManager.notify(notificationID, builder.build())
-    }
+//    private fun updateNotification(notificationContentText: String): Notification {
+//        return builder
+//            .setContentText(notificationContentText)
+//            .setProgress(PROGRESS_MAX, PROGRESS_CURRENT, false)
+//            .build()
+//        notificationManager.notify(notificationID, builder.build())
+//    }
 
     private fun outputNotification(notificationContentText: String): Notification {
 
@@ -331,56 +414,34 @@ class ProcessImagesService() : Service() {
         return builder
             .setContentText(notificationContentText)
             .setProgress(0, 0, false)
-            .addAction(R.drawable.check, getString(R.string.output),
-                pendingIntent)
+            .addAction(
+                R.drawable.check, getString(R.string.output),
+                pendingIntent
+            )
             .build()
         notificationManager.notify(notificationID, builder.build())
     }
 
 
-
-    private fun setIntents() {
-
-        if (intent?.getStringExtra(AppConstants.CATEGORY_NAME) != null)
-            catName = intent?.getStringExtra(AppConstants.CATEGORY_NAME)!!
-        else
-            catName = Utilities.getPreference(this, AppConstants.CATEGORY_NAME)!!
-
-        if (intent?.getStringExtra(AppConstants.MARKETPLACE_ID) != null)
-            marketplaceId = intent?.getStringExtra(AppConstants.MARKETPLACE_ID)!!
-
-        if (intent?.getStringExtra(AppConstants.BACKGROUND_COLOUR) != null)
-            backgroundColour = intent?.getStringExtra(AppConstants.BACKGROUND_COLOUR)!!
-
-        backgroundSelect = intent?.getStringExtra(AppConstants.BG_ID)!!
-
-        log("CATEGORY_NAME" + catName)
-
-        imageFileList = ArrayList<File>()
-        imageFileListFrames = ArrayList<Int>()
-        image_url = ArrayList<String>()
-
-        imageInteriorFileList = ArrayList<File>()
-        imageInteriorFileListFrames = ArrayList<Int>()
-
-        //Get Intents
-        imageFileList.addAll(intent?.getParcelableArrayListExtra(AppConstants.ALL_IMAGE_LIST)!!)
-        imageFileListFrames.addAll(intent?.getIntegerArrayListExtra(AppConstants.ALL_FRAME_LIST)!!)
-
-        if (Utilities.getPreference(this, AppConstants.CATEGORY_NAME).equals("Automobiles")) {
-            imageInteriorFileList.addAll(intent?.getParcelableArrayListExtra(AppConstants.ALL_INTERIOR_IMAGE_LIST)!!)
-            imageInteriorFileListFrames.addAll(intent?.getIntegerArrayListExtra(AppConstants.ALL_INTERIOR_FRAME_LIST)!!)
-        }
-        totalImagesToUPload = imageFileList.size
-    }
-
-    fun uploadImageToBucket() {
-        PROGRESS_MAX = imageFileList.size
+    fun uploadImageToBucket(
+        intent: Intent,
+        catName: String,
+        marketplaceId: String,
+        backgroundColour: String,
+        backgroundSelect: String,
+        imageFileList: java.util.ArrayList<File>,
+        imageFileListFrames: java.util.ArrayList<Int>,
+        imageInteriorFileList: java.util.ArrayList<File>,
+        imageInteriorFileListFrames: java.util.ArrayList<Int>,
+        totalImagesToUPload: Int,
+        totalImagesToUPloadIndex: Int
+    ) {
+        var PROGRESS_CURRENT = 0
+        var PROGRESS_MAX = imageFileList.size
         if (Utilities.isNetworkAvailable(this)) {
             Log.e("Fisrt execution", "UploadImage Bucket")
             log("Start uploading images to bucket")
             //Get All Data to be uploaded
-
             val imageFile = setImageRaw(imageFileList[totalImagesToUPloadIndex])
 
             val request = RetrofitClients.buildService(APiService::class.java)
@@ -407,41 +468,50 @@ class ProcessImagesService() : Service() {
                                     " " + response.body()?.image.toString()
                         )
 
-                        PROGRESS_CURRENT++
-                        val notification = updateNotification("Exterior image uploading started...")
-                        startForeground(notificationID, notification)
+//                        PROGRESS_CURRENT++
+//                        val notification = updateNotification("Exterior image uploading started...")
+//                        startForeground(notificationID, notification)
 
-                        //  if (Utilities.getPreference(this@CameraActivity, AppConstants.MAIN_IMAGE).equals(""))
                         Utilities.savePrefrence(
                             this@ProcessImagesService,
                             AppConstants.MAIN_IMAGE,
                             response.body()?.image.toString()
                         )
-                        uploadImageURLs()
+                        uploadImageURLs(
+                            intent,
+                            catName,
+                            marketplaceId,
+                            backgroundColour,
+                            backgroundSelect,
+                            imageFileList,
+                            imageFileListFrames,
+                            imageInteriorFileList,
+                            imageInteriorFileListFrames,
+                            totalImagesToUPload,
+                            totalImagesToUPloadIndex
+                        )
                     } else {
-//                        uploadImageToBucket()
                         Toast.makeText(
                             this@ProcessImagesService,
                             "Error in uploading image to bucket",
                             Toast.LENGTH_SHORT
                         ).show()
                         log("Error in uploading image to bucket")
-                        log("Error Body: "+response.errorBody())
-                        log("Response: "+response.body())
+                        log("Error Body: " + response.errorBody())
+                        log("Response: " + response.body())
                     }
                 }
 
                 override fun onFailure(call: Call<UploadResponse>, t: Throwable) {
                     //
                     Log.e("Respo Image ", "Image error")
-//                    uploadImageToBucket()
                     Toast.makeText(
                         this@ProcessImagesService,
                         "Server not responding",
                         Toast.LENGTH_SHORT
                     ).show()
                     log("Server not responding(uploadImageToBucket)")
-                    log("onFailure: " +t.localizedMessage)
+                    log("onFailure: " + t.localizedMessage)
                 }
             })
         } else {
@@ -452,7 +522,19 @@ class ProcessImagesService() : Service() {
         }
     }
 
-    fun uploadImageURLs() {
+    fun uploadImageURLs(
+        intent: Intent,
+        catName: String,
+        marketplaceId: String,
+        backgroundColour: String,
+        backgroundSelect: String,
+        imageFileList: java.util.ArrayList<File>,
+        imageFileListFrames: java.util.ArrayList<Int>,
+        imageInteriorFileList: java.util.ArrayList<File>,
+        imageInteriorFileListFrames: java.util.ArrayList<Int>,
+        totalImagesToUPload: Int,
+        totalImagesToUPloadIndex: Int
+    ) {
         if (Utilities.isNetworkAvailable(this)) {
             log("start upload image url")
             val request = RetrofitClient.buildService(APiService::class.java)
@@ -503,16 +585,52 @@ class ProcessImagesService() : Service() {
                                 )
                                 //  totalImagesToUPloadIndex = totalImagesToUPloadIndex + 1
                                 ++totalImagesToUPloadIndex
-                                uploadImageToBucket()
+                                uploadImageToBucket(
+                                    intent,
+                                    catName,
+                                    marketplaceId,
+                                    backgroundColour,
+                                    backgroundSelect,
+                                    imageFileList,
+                                    imageFileListFrames,
+                                    imageInteriorFileList,
+                                    imageInteriorFileListFrames,
+                                    totalImagesToUPload,
+                                    totalImagesToUPloadIndex
+                                )
                             } else {
                                 totalImagesToUPloadIndex = 0
                                 totalImagesToUPload = imageInteriorFileList.size
 
                                 if (imageInteriorFileList != null && imageInteriorFileList.size > 0) {
-                                    uploadImageToBucketInterior()
-                                    PROGRESS_CURRENT = 0
+                                    var PROGRESS_CURRENT = 0
+                                    uploadImageToBucketInterior(
+                                        intent,
+                                        catName,
+                                        marketplaceId,
+                                        backgroundColour,
+                                        backgroundSelect,
+                                        imageFileList,
+                                        imageFileListFrames,
+                                        imageInteriorFileList,
+                                        imageInteriorFileListFrames,
+                                        totalImagesToUPload,
+                                        totalImagesToUPloadIndex
+                                    )
+
                                 } else
-                                    markSkuComplete()
+                                    markSkuComplete(
+                                        intent,
+                                        catName,
+                                        marketplaceId,
+                                        backgroundColour,
+                                        backgroundSelect,
+                                        imageFileList,
+                                        imageFileListFrames,
+                                        imageInteriorFileList,
+                                        imageInteriorFileListFrames,
+                                        totalImagesToUPload
+                                    )
                             }
                         } catch (e: Exception) {
                             Log.e("Except", e.printStackTrace().toString())
@@ -525,7 +643,7 @@ class ProcessImagesService() : Service() {
                             Toast.LENGTH_SHORT
                         ).show()
                         log("Error in uploading image url. Please try again")
-                        log("Error: "+response.errorBody())
+                        log("Error: " + response.errorBody())
                     }
                 }
 
@@ -538,7 +656,7 @@ class ProcessImagesService() : Service() {
                     ).show()
                     log("Server not responding(uploadImageURLs)")
                     Log.e("Respo Image ", "Image error")
-                    log("onFailure: "+t.localizedMessage)
+                    log("onFailure: " + t.localizedMessage)
                 }
             })
         } else {
@@ -548,9 +666,21 @@ class ProcessImagesService() : Service() {
         }
     }
 
-    fun uploadImageToBucketInterior() {
-        PROGRESS_MAX = imageInteriorFileList.size
-        PROGRESS_CURRENT = 0
+    fun uploadImageToBucketInterior(
+        intent: Intent,
+        catName: String,
+        marketplaceId: String,
+        backgroundColour: String,
+        backgroundSelect: String,
+        imageFileList: java.util.ArrayList<File>,
+        imageFileListFrames: java.util.ArrayList<Int>,
+        imageInteriorFileList: java.util.ArrayList<File>,
+        imageInteriorFileListFrames: java.util.ArrayList<Int>,
+        totalImagesToUPload: Int,
+        totalImagesToUPloadIndex: Int
+    ) {
+        var PROGRESS_MAX = imageInteriorFileList.size
+        var PROGRESS_CURRENT = 0
         if (Utilities.isNetworkAvailable(this)) {
 
             Log.e("Fisrt execution", "UploadImage Bucket")
@@ -575,10 +705,10 @@ class ProcessImagesService() : Service() {
                     //
                     if (response.isSuccessful) {
 
-                        PROGRESS_CURRENT++
+//                        PROGRESS_CURRENT++
 
-                        val notification = updateNotification("Interior image uploading started...")
-                        startForeground(notificationID, notification)
+//                        val notification = updateNotification("Interior image uploading started...")
+//                        startForeground(notificationID, notification)
 
                         Log.e("Fisrt execution", "UploadImage Bucket")
 
@@ -595,7 +725,19 @@ class ProcessImagesService() : Service() {
                             AppConstants.MAIN_IMAGE,
                             response.body()?.image.toString()
                         )
-                        uploadImageURLsInterior()
+                        uploadImageURLsInterior(
+                            intent,
+                            catName,
+                            marketplaceId,
+                            backgroundColour,
+                            backgroundSelect,
+                            imageFileList,
+                            imageFileListFrames,
+                            imageInteriorFileList,
+                            imageInteriorFileListFrames,
+                            totalImagesToUPload,
+                            totalImagesToUPloadIndex
+                        )
                     } else {
                         Toast.makeText(
                             this@ProcessImagesService,
@@ -603,7 +745,7 @@ class ProcessImagesService() : Service() {
                             Toast.LENGTH_SHORT
                         ).show()
                         log("Error in uploading interior images.")
-                        log("Error: "+response.errorBody())
+                        log("Error: " + response.errorBody())
                     }
                 }
 
@@ -616,7 +758,7 @@ class ProcessImagesService() : Service() {
                         Toast.LENGTH_SHORT
                     ).show()
                     log("Server not responding(uploadImageToBucketInterior)")
-                    log("onFailure: "+t.localizedMessage)
+                    log("onFailure: " + t.localizedMessage)
                 }
             })
         } else {
@@ -626,7 +768,21 @@ class ProcessImagesService() : Service() {
         }
     }
 
-    fun uploadImageURLsInterior() {
+    fun uploadImageURLsInterior(
+        intent: Intent,
+        catName: String,
+        marketplaceId: String,
+        backgroundColour: String,
+        backgroundSelect: String,
+        imageFileList: java.util.ArrayList<File>,
+        imageFileListFrames: java.util.ArrayList<Int>,
+        imageInteriorFileList: java.util.ArrayList<File>,
+        imageInteriorFileListFrames: java.util.ArrayList<Int>,
+        totalImagesToUPload: Int,
+        totalImagesToUPloadIndex: Int
+    ) {
+
+        var totalImagesToUPloadIndex = totalImagesToUPloadIndex;
         if (Utilities.isNetworkAvailable(this)) {
             log("start Uploading images url interior")
             val request = RetrofitClient.buildService(APiService::class.java)
@@ -681,9 +837,32 @@ class ProcessImagesService() : Service() {
 
 
                                 ++totalImagesToUPloadIndex
-                                uploadImageToBucketInterior()
+                                uploadImageToBucketInterior(
+                                    intent,
+                                    catName,
+                                    marketplaceId,
+                                    backgroundColour,
+                                    backgroundSelect,
+                                    imageFileList,
+                                    imageFileListFrames,
+                                    imageInteriorFileList,
+                                    imageInteriorFileListFrames,
+                                    totalImagesToUPload,
+                                    totalImagesToUPloadIndex
+                                )
                             } else {
-                                markSkuComplete()
+                                markSkuComplete(
+                                    intent,
+                                    catName,
+                                    marketplaceId,
+                                    backgroundColour,
+                                    backgroundSelect,
+                                    imageFileList,
+                                    imageFileListFrames,
+                                    imageInteriorFileList,
+                                    imageInteriorFileListFrames,
+                                    totalImagesToUPload
+                                )
                             }
                         } catch (e: Exception) {
                             Log.e("Except", e.printStackTrace().toString())
@@ -696,7 +875,7 @@ class ProcessImagesService() : Service() {
                             Toast.LENGTH_SHORT
                         ).show()
                         log("Error in uploading image url(INTERIOR)")
-                        log("Error: "+response.errorBody())
+                        log("Error: " + response.errorBody())
                     }
                 }
 
@@ -709,7 +888,7 @@ class ProcessImagesService() : Service() {
                     ).show()
                     log("Server not responding(uploadImageURLsInterior)")
                     Log.e("Respo Image ", "Image error")
-                    log("onFailure: "+t.localizedMessage)
+                    log("onFailure: " + t.localizedMessage)
                 }
             })
         } else {
@@ -772,9 +951,19 @@ class ProcessImagesService() : Service() {
     }
 
     //MArk the SKu as complete
-    private fun markSkuComplete() {
-        PROGRESS_CURRENT = 0
-        PROGRESS_CURRENT = 0
+    private fun markSkuComplete(
+        intent: Intent,
+        catName: String,
+        marketplaceId: String,
+        backgroundColour: String,
+        backgroundSelect: String,
+        imageFileList: java.util.ArrayList<File>,
+        imageFileListFrames: java.util.ArrayList<Int>,
+        imageInteriorFileList: java.util.ArrayList<File>,
+        imageInteriorFileListFrames: java.util.ArrayList<Int>,
+        totalImagesToUPload: Int
+    ) {
+        var PROGRESS_CURRENT = 0
         if (Utilities.isNetworkAvailable(this)) {
             log("start markSkuComplete")
             val request = RetrofitClient.buildService(APiService::class.java)
@@ -795,19 +984,41 @@ class ProcessImagesService() : Service() {
                     response: Response<UpdateSkuStatusResponse>
                 ) {
 
-                    val notification = updateNotification("Mark SKU started...")
-                    startForeground(notificationID, notification)
+//                    val notification = updateNotification("Mark SKU started...")
+//                    startForeground(notificationID, notification)
 
                     if (response.isSuccessful) {
                         Log.e("Sku completed", "MArked Complete")
-                        setSkuImages()
+                        setSkuImages(
+                            intent,
+                            catName,
+                            marketplaceId,
+                            backgroundColour,
+                            backgroundSelect,
+                            imageFileList,
+                            imageFileListFrames,
+                            imageInteriorFileList,
+                            imageInteriorFileListFrames,
+                            totalImagesToUPload
+                        )
                     }
                 }
 
                 override fun onFailure(call: Call<UpdateSkuStatusResponse>, t: Throwable) {
-                    setSkuImages()
+                    setSkuImages(
+                        intent,
+                        catName,
+                        marketplaceId,
+                        backgroundColour,
+                        backgroundSelect,
+                        imageFileList,
+                        imageFileListFrames,
+                        imageInteriorFileList,
+                        imageInteriorFileListFrames,
+                        totalImagesToUPload
+                    )
                     log("Server not responding(markSkuComplete)")
-                    log("onFailure: "+t.localizedMessage)
+                    log("onFailure: " + t.localizedMessage)
 
                 }
             })
@@ -818,7 +1029,22 @@ class ProcessImagesService() : Service() {
         }
     }
 
-    private fun setSkuImages() {
+    private fun setSkuImages(
+        intent: Intent,
+        catName: String,
+        marketplaceId: String,
+        backgroundColour: String,
+        backgroundSelect: String,
+        imageFileList: java.util.ArrayList<File>,
+        imageFileListFrames: java.util.ArrayList<Int>,
+        imageInteriorFileList: java.util.ArrayList<File>,
+        imageInteriorFileListFrames: java.util.ArrayList<Int>,
+        totalImagesToUPload: Int
+    ) {
+         var photoList: ArrayList<Photos>
+         var photoListInteriors: ArrayList<Photos>
+         var photsAdapter: PhotosAdapter
+
         photoList = ArrayList<Photos>()
         photoListInteriors = ArrayList<Photos>()
         photsAdapter = PhotosAdapter(this, photoList,
@@ -827,11 +1053,44 @@ class ProcessImagesService() : Service() {
                     Log.e("position preview", position.toString())
                 }
             })
+        val layoutManager: RecyclerView.LayoutManager =
+            GridLayoutManager(this, 2)
+//        rvSkuDemo.setLayoutManager(layoutManager)
+//        rvSkuDemo.setAdapter(photsAdapter)
 
-        fetchSkuData()
+        fetchSkuData(
+            intent,
+            catName,
+            marketplaceId,
+            backgroundColour,
+            backgroundSelect,
+            imageFileList,
+            imageFileListFrames,
+            imageInteriorFileList,
+            imageInteriorFileListFrames,
+            totalImagesToUPload,
+            photoList,
+            photoListInteriors
+        )
     }
 
-    private fun fetchSkuData() {
+    private fun fetchSkuData(
+        intent: Intent,
+        catName: String,
+        marketplaceId: String,
+        backgroundColour: String,
+        backgroundSelect: String,
+        imageFileList: java.util.ArrayList<File>,
+        imageFileListFrames: java.util.ArrayList<Int>,
+        imageInteriorFileList: java.util.ArrayList<File>,
+        imageInteriorFileListFrames: java.util.ArrayList<Int>,
+        totalImagesToUPload: Int,
+        photoList: ArrayList<Photos>,
+        photoListInteriors: ArrayList<Photos>
+    ) {
+
+        var countGif: Int = 0
+
         if (Utilities.isNetworkAvailable(this)) {
             log("start fetchSkuData")
             val request = RetrofitClient.buildService(APiService::class.java)
@@ -861,15 +1120,43 @@ class ProcessImagesService() : Service() {
                                 }
                             }
                         }
-                        photsAdapter.notifyDataSetChanged()
+//                        photsAdapter.notifyDataSetChanged()
 
                         // Utilities.showProgressDialog(this@ProcessImagesService)
                         if (countGif < photoList.size) {
                             if (catName.equals("Automobiles")) {
-                                bulkUpload(countGif)
-                                PROGRESS_CURRENT = 0
+                                bulkUpload(
+                                    intent,
+                                    catName,
+                                    marketplaceId,
+                                    backgroundColour,
+                                    backgroundSelect,
+                                    imageFileList,
+                                    imageFileListFrames,
+                                    imageInteriorFileList,
+                                    imageInteriorFileListFrames,
+                                    totalImagesToUPload,
+                                    countGif,
+                                    photoList,
+                                    photoListInteriors
+                                )
+                                var PROGRESS_CURRENT = 0
                             } else if (catName.equals("Footwear")) {
-                                bulkUploadFootwear(countGif)
+                                bulkUploadFootwear(
+                                    intent,
+                                    catName,
+                                    marketplaceId,
+                                    backgroundColour,
+                                    backgroundSelect,
+                                    imageFileList,
+                                    imageFileListFrames,
+                                    imageInteriorFileList,
+                                    imageInteriorFileListFrames,
+                                    totalImagesToUPload,
+                                    countGif,
+                                    photoList,
+                                    photoListInteriors
+                                )
                             }
                         }
                         // Utilities.showProgressDialog(this@ProcessImagesService)
@@ -879,7 +1166,7 @@ class ProcessImagesService() : Service() {
                             "Error in fetch sku data", Toast.LENGTH_SHORT
                         ).show()
                         log("Error in fetch sku data")
-                        log("Error: "+response.errorBody())
+                        log("Error: " + response.errorBody())
                     }
                 }
 
@@ -889,7 +1176,7 @@ class ProcessImagesService() : Service() {
                         "Server not responding!!!", Toast.LENGTH_SHORT
                     ).show()
                     log("Server not responding(fetchSkuData)")
-                    log("onFailure: "+t.localizedMessage)
+                    log("onFailure: " + t.localizedMessage)
                 }
             })
         } else {
@@ -900,8 +1187,22 @@ class ProcessImagesService() : Service() {
     }
 
     //Upload bulk data
-    private fun bulkUpload(countsGif: Int) {
-        PROGRESS_MAX = photoList.size
+    private fun bulkUpload(
+        intent: Intent,
+        catName: String,
+        marketplaceId: String,
+        backgroundColour: String,
+        backgroundSelect: String,
+        imageFileList: java.util.ArrayList<File>,
+        imageFileListFrames: java.util.ArrayList<Int>,
+        imageInteriorFileList: java.util.ArrayList<File>,
+        imageInteriorFileListFrames: java.util.ArrayList<Int>,
+        totalImagesToUPload: Int,
+        countGif: Int,
+        photoList: ArrayList<Photos>,
+        photoListInteriors: ArrayList<Photos>
+    ) {
+//        PROGRESS_MAX = photoList.size
         if (Utilities.isNetworkAvailable(this)) {
 
             log("start bulk upload")
@@ -928,7 +1229,7 @@ class ProcessImagesService() : Service() {
             )
             val imageUrl = RequestBody.create(
                 MultipartBody.FORM,
-                photoList[countsGif].displayThumbnail
+                photoList[countGif].displayThumbnail
             )
             Log.e(
                 "Sku NAme Upload done",
@@ -962,24 +1263,63 @@ class ProcessImagesService() : Service() {
                 ) {
                     if (response.isSuccessful && response.body()!!.status == 200) {
 
-                        ++countGif
-                        PROGRESS_CURRENT++
+                        countGif++
+//                        PROGRESS_CURRENT++
 
-                        val notification = updateNotification("AI for Image Processing started...")
-                        startForeground(notificationID, notification)
+//                        val notification = updateNotification("AI for Image Processing started...")
+//                        startForeground(notificationID, notification)
 
                         if (countGif < photoList.size) {
                             Log.e("countGif", countGif.toString())
-                            bulkUpload(countGif)
+                            bulkUpload(
+                                intent,
+                                catName,
+                                marketplaceId,
+                                backgroundColour,
+                                backgroundSelect,
+                                imageFileList,
+                                imageFileListFrames,
+                                imageInteriorFileList,
+                                imageInteriorFileListFrames,
+                                totalImagesToUPload,
+                                countGif,
+                                photoList,
+                                photoListInteriors
+                            )
 //                           (imageListWaterMark as ArrayList).add(response.body()!!.watermark_image)
 
                         } else if (photoListInteriors.size > 0) {
                             countGif = 0
                             if (countGif < photoListInteriors.size) {
-                                addWatermark(countGif)
+                                addWatermark(
+                                    intent,
+                                    catName,
+                                    marketplaceId,
+                                    backgroundColour,
+                                    backgroundSelect,
+                                    imageFileList,
+                                    imageFileListFrames,
+                                    imageInteriorFileList,
+                                    imageInteriorFileListFrames,
+                                    totalImagesToUPload,
+                                    countGif,
+                                    photoList,
+                                    photoListInteriors
+                                )
                             }
                         } else
-                            fetchBulkUpload()
+                            fetchBulkUpload(
+                                intent,
+                                catName,
+                                marketplaceId,
+                                backgroundColour,
+                                backgroundSelect,
+                                imageFileList,
+                                imageFileListFrames,
+                                imageInteriorFileList,
+                                imageInteriorFileListFrames,
+                                totalImagesToUPload
+                            )
 
                         Log.e("Upload Replace", "bulk")
                         Log.e(
@@ -992,47 +1332,125 @@ class ProcessImagesService() : Service() {
                     } else {
                         if (countGif < photoList.size) {
                             Log.e("countGif", countGif.toString())
-                            bulkUpload(countGif)
+                            bulkUpload(
+                                intent,
+                                catName,
+                                marketplaceId,
+                                backgroundColour,
+                                backgroundSelect,
+                                imageFileList,
+                                imageFileListFrames,
+                                imageInteriorFileList,
+                                imageInteriorFileListFrames,
+                                totalImagesToUPload,
+                                countGif,
+                                photoList,
+                                photoListInteriors
+                            )
 //                           (imageListWaterMark as ArrayList).add(response.body()!!.watermark_image)
 
                         } else if (photoListInteriors.size > 0) {
                             countGif = 0
                             if (countGif < photoListInteriors.size) {
-                                addWatermark(countGif)
+                                addWatermark(
+                                    intent,
+                                    catName,
+                                    marketplaceId,
+                                    backgroundColour,
+                                    backgroundSelect,
+                                    imageFileList,
+                                    imageFileListFrames,
+                                    imageInteriorFileList,
+                                    imageInteriorFileListFrames,
+                                    totalImagesToUPload,
+                                    countGif,
+                                    photoList,
+                                    photoListInteriors
+                                )
                             }
-                        } else{
+                        } else {
 
                         }
-                            fetchBulkUpload()
+                        fetchBulkUpload(
+                            intent,
+                            catName,
+                            marketplaceId,
+                            backgroundColour,
+                            backgroundSelect,
+                            imageFileList,
+                            imageFileListFrames,
+                            imageInteriorFileList,
+                            imageInteriorFileListFrames,
+                            totalImagesToUPload
+                        )
                         Toast.makeText(
                             this@ProcessImagesService,
                             "Error in bulk upload", Toast.LENGTH_SHORT
                         ).show()
                         log("Error in bulk upload")
-                        log("Error: "+response.errorBody())
-                        log("Response: "+response.body())
+                        log("Error: " + response.errorBody())
+                        log("Response: " + response.body())
                     }
                 }
 
                 override fun onFailure(call: Call<BulkUploadResponse>, t: Throwable) {
                     if (countGif < photoList.size) {
                         Log.e("countGif", countGif.toString())
-                        bulkUpload(countGif)
+                        bulkUpload(
+                            intent,
+                            catName,
+                            marketplaceId,
+                            backgroundColour,
+                            backgroundSelect,
+                            imageFileList,
+                            imageFileListFrames,
+                            imageInteriorFileList,
+                            imageInteriorFileListFrames,
+                            totalImagesToUPload,
+                            countGif,
+                            photoList,
+                            photoListInteriors
+                        )
 //                           (imageListWaterMark as ArrayList).add(response.body()!!.watermark_image)
 
                     } else if (photoListInteriors.size > 0) {
                         countGif = 0
                         if (countGif < photoListInteriors.size) {
-                            addWatermark(countGif)
+                            addWatermark(
+                                intent,
+                                catName,
+                                marketplaceId,
+                                backgroundColour,
+                                backgroundSelect,
+                                imageFileList,
+                                imageFileListFrames,
+                                imageInteriorFileList,
+                                imageInteriorFileListFrames,
+                                totalImagesToUPload,
+                                countGif,
+                                photoList,
+                                photoListInteriors
+                            )
                         }
                     } else
-                        fetchBulkUpload()
+                        fetchBulkUpload(
+                            intent,
+                            catName,
+                            marketplaceId,
+                            backgroundColour,
+                            backgroundSelect,
+                            imageFileList,
+                            imageFileListFrames,
+                            imageInteriorFileList,
+                            imageInteriorFileListFrames,
+                            totalImagesToUPload
+                        )
                     Toast.makeText(
                         this@ProcessImagesService,
                         "Server not responding!!!", Toast.LENGTH_SHORT
                     ).show()
                     log("Server not responding(bulkUpload)")
-                    log("onFailure: "+t.localizedMessage)
+                    log("onFailure: " + t.localizedMessage)
                 }
             })
         } else {
@@ -1042,7 +1460,18 @@ class ProcessImagesService() : Service() {
     }
 
     //Fetch bulk data
-    private fun fetchBulkUpload() {
+    private fun fetchBulkUpload(
+        intent: Intent,
+        catName: String,
+        marketplaceId: String,
+        backgroundColour: String,
+        backgroundSelect: String,
+        imageFileList: java.util.ArrayList<File>,
+        imageFileListFrames: java.util.ArrayList<Int>,
+        imageInteriorFileList: java.util.ArrayList<File>,
+        imageInteriorFileListFrames: java.util.ArrayList<Int>,
+        totalImagesToUPload: Int
+    ) {
         if (Utilities.isNetworkAvailable(this)) {
 
             Log.e("Fetchbulkupload", "started......")
@@ -1066,12 +1495,15 @@ class ProcessImagesService() : Service() {
                     response: Response<List<FetchBulkResponse>>
                 ) {
                     if (response.isSuccessful) {
-                        PROGRESS_MAX = response.body()!!.size
+//                        PROGRESS_MAX = response.body()!!.size
 
-                        val notification = updateNotification("Fetching your images...")
-                        startForeground(notificationID, notification)
+//                        val notification = updateNotification("Fetching your images...")
+//                        startForeground(notificationID, notification)
 
                         Log.e("Upload Replace", "bulk Fetch")
+                        lateinit var imageList: ArrayList<String>
+                        lateinit var imageListAfter: ArrayList<String>
+                        lateinit var interiorList: ArrayList<String>
                         imageList = ArrayList<String>()
                         imageListAfter = ArrayList<String>()
                         interiorList = ArrayList<String>()
@@ -1081,7 +1513,7 @@ class ProcessImagesService() : Service() {
                         interiorList.clear()
 
                         for (i in 0..response.body()!!.size - 1) {
-                            PROGRESS_CURRENT++
+//                            PROGRESS_CURRENT++
                             if (response.body()!![i].category.equals("Exterior")) {
                                 imageList.add(response.body()!![i].input_image_url)
                                 imageListAfter.add(response.body()!![i].output_image_url)
@@ -1095,13 +1527,55 @@ class ProcessImagesService() : Service() {
                             )
                                 .equals("Automobiles")
                         ) {
-                            fetchGif()
+                            fetchGif(
+                                intent,
+                                catName,
+                                marketplaceId,
+                                backgroundColour,
+                                backgroundSelect,
+                                imageFileList,
+                                imageFileListFrames,
+                                imageInteriorFileList,
+                                imageInteriorFileListFrames,
+                                totalImagesToUPload,
+                                imageListAfter,
+                                imageList,
+                                interiorList
+                            )
                         } else {
-                            sendEmail()
+                            var gifLink: String = ""
+
+                            sendEmail(
+                                intent,
+                                catName,
+                                marketplaceId,
+                                backgroundColour,
+                                backgroundSelect,
+                                imageFileList,
+                                imageFileListFrames,
+                                imageInteriorFileList,
+                                imageInteriorFileListFrames,
+                                totalImagesToUPload,
+                                gifLink,
+                                imageList,
+                                imageListAfter,
+                                interiorList
+                            )
                         }
 
                     } else {
-                        fetchBulkUpload()
+                        fetchBulkUpload(
+                            intent,
+                            catName,
+                            marketplaceId,
+                            backgroundColour,
+                            backgroundSelect,
+                            imageFileList,
+                            imageFileListFrames,
+                            imageInteriorFileList,
+                            imageInteriorFileListFrames,
+                            totalImagesToUPload
+                        )
                     }
                 }
 
@@ -1111,7 +1585,7 @@ class ProcessImagesService() : Service() {
                         "Server not responding!!!", Toast.LENGTH_SHORT
                     ).show()
                     log("Server not responding(fetchBulkUpload)")
-                    log("onFailure: "+t.localizedMessage)
+                    log("onFailure: " + t.localizedMessage)
 
                 }
             })
@@ -1121,7 +1595,21 @@ class ProcessImagesService() : Service() {
         }
     }
 
-    private fun bulkUploadFootwear(countsGif: Int) {
+    private fun bulkUploadFootwear(
+        intent: Intent,
+        catName: String,
+        marketplaceId: String,
+        backgroundColour: String,
+        backgroundSelect: String,
+        imageFileList: java.util.ArrayList<File>,
+        imageFileListFrames: java.util.ArrayList<Int>,
+        imageInteriorFileList: java.util.ArrayList<File>,
+        imageInteriorFileListFrames: java.util.ArrayList<Int>,
+        totalImagesToUPload: Int,
+        countGif: Int,
+        photoList: List<Photos>,
+        photoListInteriors: List<Photos>
+    ) {
         if (Utilities.isNetworkAvailable(this)) {
 
 
@@ -1159,7 +1647,7 @@ class ProcessImagesService() : Service() {
             )
             val imageUrl = RequestBody.create(
                 MultipartBody.FORM,
-                photoList[countsGif].displayThumbnail
+                photoList[countGif].displayThumbnail
             )
             Log.e(
                 "Sku NAme Upload",
@@ -1192,15 +1680,40 @@ class ProcessImagesService() : Service() {
                 ) {
                     if (response.isSuccessful && response.body()!!.status == 200) {
 
-                        val notification = updateNotification("AI for Image Processing started...")
-                        startForeground(notificationID, notification)
+//                        val notification = updateNotification("AI for Image Processing started...")
+//                        startForeground(notificationID, notification)
 
                         ++countGif
                         if (countGif < photoList.size) {
                             Log.e("countGif", countGif.toString())
-                            bulkUploadFootwear(countGif)
+                            bulkUploadFootwear(
+                                intent,
+                                catName,
+                                marketplaceId,
+                                backgroundColour,
+                                backgroundSelect,
+                                imageFileList,
+                                imageFileListFrames,
+                                imageInteriorFileList,
+                                imageInteriorFileListFrames,
+                                totalImagesToUPload,
+                                countGif,
+                                photoList,
+                                photoListInteriors
+                            )
                         } else
-                            fetchBulkUpload()
+                            fetchBulkUpload(
+                                intent,
+                                catName,
+                                marketplaceId,
+                                backgroundColour,
+                                backgroundSelect,
+                                imageFileList,
+                                imageFileListFrames,
+                                imageInteriorFileList,
+                                imageInteriorFileListFrames,
+                                totalImagesToUPload
+                            )
                         Log.e("Upload Replace", "bulk")
                         Log.e(
                             "Upload Replace SKU",
@@ -1215,7 +1728,7 @@ class ProcessImagesService() : Service() {
                             "Error in bulk upload footwear", Toast.LENGTH_SHORT
                         ).show()
                         log("Error in bulk upload footwear")
-                        log("Error: "+response.errorBody())
+                        log("Error: " + response.errorBody())
                     }
                 }
 
@@ -1227,7 +1740,7 @@ class ProcessImagesService() : Service() {
                         "Server not responding!!!", Toast.LENGTH_SHORT
                     ).show()
                     log("Server not responding(bulkUploadFootwear)")
-                    log("onFailure: "+t.localizedMessage)
+                    log("onFailure: " + t.localizedMessage)
                 }
             })
         } else {
@@ -1237,7 +1750,21 @@ class ProcessImagesService() : Service() {
         }
     }
 
-    private fun addWatermark(countsGif: Int) {
+    private fun addWatermark(
+        intent: Intent,
+        catName: String,
+        marketplaceId: String,
+        backgroundColour: String,
+        backgroundSelect: String,
+        imageFileList: java.util.ArrayList<File>,
+        imageFileListFrames: java.util.ArrayList<Int>,
+        imageInteriorFileList: java.util.ArrayList<File>,
+        imageInteriorFileListFrames: java.util.ArrayList<Int>,
+        totalImagesToUPload: Int,
+        countGif: Int,
+        photoList: List<Photos>,
+        photoListInteriors: List<Photos>
+    ) {
         if (Utilities.isNetworkAvailable(this)) {
 
 
@@ -1260,7 +1787,7 @@ class ProcessImagesService() : Service() {
             )
             val imageUrl = RequestBody.create(
                 MultipartBody.FORM,
-                photoListInteriors[countsGif].displayThumbnail
+                photoListInteriors[countGif].displayThumbnail
             )
 
             val skuName = RequestBody.create(
@@ -1284,9 +1811,34 @@ class ProcessImagesService() : Service() {
                         ++countGif
                         if (countGif < photoListInteriors.size) {
                             Log.e("countGif", countGif.toString())
-                            addWatermark(countGif)
+                            addWatermark(
+                                intent,
+                                catName,
+                                marketplaceId,
+                                backgroundColour,
+                                backgroundSelect,
+                                imageFileList,
+                                imageFileListFrames,
+                                imageInteriorFileList,
+                                imageInteriorFileListFrames,
+                                totalImagesToUPload,
+                                countGif,
+                                photoList,
+                                photoListInteriors
+                            )
                         } else
-                            fetchBulkUpload()
+                            fetchBulkUpload(
+                                intent,
+                                catName,
+                                marketplaceId,
+                                backgroundColour,
+                                backgroundSelect,
+                                imageFileList,
+                                imageFileListFrames,
+                                imageInteriorFileList,
+                                imageInteriorFileListFrames,
+                                totalImagesToUPload
+                            )
                         Log.e("Upload Replace", "bulk")
                         Log.e(
                             "Upload Replace SKU",
@@ -1301,7 +1853,7 @@ class ProcessImagesService() : Service() {
                             "Error in add watermark", Toast.LENGTH_SHORT
                         ).show()
                         log("Error in add watermark")
-                        log("Error: "+response.errorBody())
+                        log("Error: " + response.errorBody())
                     }
                 }
 
@@ -1311,7 +1863,7 @@ class ProcessImagesService() : Service() {
                         "Server not responding!!!", Toast.LENGTH_SHORT
                     ).show()
                     log("Server not responding(addWatermark)")
-                    log("onFailure: "+t.localizedMessage)
+                    log("onFailure: " + t.localizedMessage)
                 }
             })
         } else {
@@ -1321,7 +1873,21 @@ class ProcessImagesService() : Service() {
         }
     }
 
-    private fun fetchGif() {
+    private fun fetchGif(
+        intent: Intent,
+        catName: String,
+        marketplaceId: String,
+        backgroundColour: String,
+        backgroundSelect: String,
+        imageFileList: java.util.ArrayList<File>,
+        imageFileListFrames: java.util.ArrayList<Int>,
+        imageInteriorFileList: java.util.ArrayList<File>,
+        imageInteriorFileListFrames: java.util.ArrayList<Int>,
+        totalImagesToUPload: Int,
+        imageListAfter: ArrayList<String>,
+        imageList: ArrayList<String>,
+        interiorList: ArrayList<String>
+    ) {
         if (Utilities.isNetworkAvailable(this)) {
             log("start fetch gif")
             val request = RetrofitClientsBulk.buildService(APiService::class.java)
@@ -1336,12 +1902,38 @@ class ProcessImagesService() : Service() {
                 ) {
                     if (response.isSuccessful) {
                         Log.e("Upload Replace", "bulk gif fetched")
-
+                        var gifLink: String = ""
 
                         gifLink = response.body()!!.url
-                        uploadGif()
+                        uploadGif(
+                            intent,
+                            catName,
+                            marketplaceId,
+                            backgroundColour,
+                            backgroundSelect,
+                            imageFileList,
+                            imageFileListFrames,
+                            imageInteriorFileList,
+                            imageInteriorFileListFrames,
+                            totalImagesToUPload,
+                            gifLink,
+                            imageList,
+                            imageListAfter,
+                            interiorList
+                        )
                     } else {
-                        fetchBulkUpload()
+                        fetchBulkUpload(
+                            intent,
+                            catName,
+                            marketplaceId,
+                            backgroundColour,
+                            backgroundSelect,
+                            imageFileList,
+                            imageFileListFrames,
+                            imageInteriorFileList,
+                            imageInteriorFileListFrames,
+                            totalImagesToUPload
+                        )
                     }
                 }
 
@@ -1351,7 +1943,7 @@ class ProcessImagesService() : Service() {
                         "Server not responding!!!", Toast.LENGTH_SHORT
                     ).show()
                     log("Server not responding(fetchGif)")
-                    log("onFailure: "+t.localizedMessage)
+                    log("onFailure: " + t.localizedMessage)
                 }
             })
         } else {
@@ -1361,7 +1953,22 @@ class ProcessImagesService() : Service() {
     }
 
 
-    private fun uploadGif() {
+    private fun uploadGif(
+        intent: Intent,
+        catName: String,
+        marketplaceId: String,
+        backgroundColour: String,
+        backgroundSelect: String,
+        imageFileList: java.util.ArrayList<File>,
+        imageFileListFrames: java.util.ArrayList<Int>,
+        imageInteriorFileList: java.util.ArrayList<File>,
+        imageInteriorFileListFrames: java.util.ArrayList<Int>,
+        totalImagesToUPload: Int,
+        gifLink: String,
+        imageList: ArrayList<String>,
+        imageListAfter: ArrayList<String>,
+        interiorList: ArrayList<String>
+    ) {
         if (Utilities.isNetworkAvailable(this)) {
             log("start upload gif")
             val request = RetrofitClients.buildService(APiService::class.java)
@@ -1388,7 +1995,21 @@ class ProcessImagesService() : Service() {
                     response: Response<UploadGifResponse>
                 ) {
                     if (response.isSuccessful) {
-                        sendEmail()
+                        sendEmail(
+                            intent,
+                            catName,
+                            marketplaceId,
+                            backgroundColour,
+                            backgroundSelect,
+                            imageFileList,
+                            imageFileListFrames,
+                            imageInteriorFileList,
+                            imageInteriorFileListFrames,
+                            totalImagesToUPload, gifLink,
+                            imageList,
+                            imageListAfter,
+                            interiorList
+                        )
                     }
                 }
 
@@ -1398,7 +2019,7 @@ class ProcessImagesService() : Service() {
                         "Server not responding!!!", Toast.LENGTH_SHORT
                     ).show()
                     log("Server not responding(uploadGif)")
-                    log("onFailure: "+t.localizedMessage)
+                    log("onFailure: " + t.localizedMessage)
                 }
             })
         } else {
@@ -1407,8 +2028,23 @@ class ProcessImagesService() : Service() {
         }
     }
 
-    private fun sendEmail() {
-        PROGRESS_MAX = 1
+    private fun sendEmail(
+        intent: Intent,
+        catName: String,
+        marketplaceId: String,
+        backgroundColour: String,
+        backgroundSelect: String,
+        imageFileList: java.util.ArrayList<File>,
+        imageFileListFrames: java.util.ArrayList<Int>,
+        imageInteriorFileList: java.util.ArrayList<File>,
+        imageInteriorFileListFrames: java.util.ArrayList<Int>,
+        totalImagesToUPload: Int,
+        gifLink: String,
+        imageList: ArrayList<String>,
+        imageListAfter: ArrayList<String>,
+        interiorList: ArrayList<String>
+    ) {
+//        PROGRESS_MAX = 1
         if (Utilities.isNetworkAvailable(this)) {
             log("start send email")
             val request = RetrofitClientSpyneAi.buildService(APiService::class.java)
@@ -1429,8 +2065,8 @@ class ProcessImagesService() : Service() {
                                 Toast.LENGTH_SHORT
                             ).show()
                             log("" + response.body()!!.message)
-                            val notification = updateNotification("Output email sent...")
-                            startForeground(notificationID, notification)
+//                            val notification = updateNotification("Output email sent...")
+//                            startForeground(notificationID, notification)
                             stopService()
 
                         }
@@ -1445,7 +2081,7 @@ class ProcessImagesService() : Service() {
                         Toast.LENGTH_SHORT
                     ).show()
                     log("Server not responding(sendEmail)")
-                    log("onFailure"+ t.localizedMessage)
+                    log("onFailure" + t.localizedMessage)
                 }
             })
         } else {

@@ -189,19 +189,8 @@ class TimerActivity : AppCompatActivity() {
     private fun actionOnService(action: Actions) {
         if (getServiceState(this) == com.spyneai.service.ServiceState.STOPPED && action == Actions.STOP)
             return
-//        Intent(this, ProcessImagesService::class.java).also {
-//
-//            intent.putExtra(AppConstants.BG_ID, backgroundSelect)
-//            intent.putExtra(AppConstants.ALL_IMAGE_LIST, imageFileList)
-//            intent.putExtra(AppConstants.ALL_FRAME_LIST, imageFileListFrames)
-//            intent.putExtra(AppConstants.ALL_INTERIOR_IMAGE_LIST, imageInteriorFileList)
-//            intent.putExtra(AppConstants.ALL_INTERIOR_FRAME_LIST, imageInteriorFileListFrames)
-//            intent.putExtra(AppConstants.CATEGORY_NAME, catName)
 
-//            intent.action = action.name
 
-        val thread: Thread = object : Thread() {
-            override fun run() {
 
                 val serviceIntent = Intent(this@TimerActivity, ProcessImagesService::class.java)
                 serviceIntent.putExtra(AppConstants.BG_ID, backgroundSelect)
@@ -220,9 +209,7 @@ class TimerActivity : AppCompatActivity() {
                 }
                 log("Starting the service in < 26 Mode")
                 startService(serviceIntent)
-            }
-        }
-        thread.start()
+
     }
 
 
@@ -288,7 +275,11 @@ class TimerActivity : AppCompatActivity() {
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     fun onMessageEvent(event: ProcessingImagesEvent?) {
-        event?.getNotificationID()?.let { Toast.makeText(this, it, Toast.LENGTH_LONG).show() }
+        event?.getNotificationID()?.let {
+            Toast.makeText(this, it, Toast.LENGTH_LONG).show()
+            var intent = Intent(this@TimerActivity, DashboardActivity::class.java)
+            startActivity(intent)
+        }
     }
 
 }
