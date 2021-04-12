@@ -42,7 +42,7 @@ import kotlin.properties.Delegates
 
 class RecordVideoTestActivity : AppCompatActivity() {
     companion object {
-        private const val TAG = "CameraXTest"
+        const val TAG = "CameraXTest"
 
 
         private const val RATIO_4_3_VALUE = 4.0 / 3.0 // aspect ratio 4x3
@@ -249,7 +249,7 @@ class RecordVideoTestActivity : AppCompatActivity() {
                             ?.let { uri ->
                                 //setGalleryThumbnail(uri)
 
-                                val intent = Intent(this@RecordVideoTestActivity, TrimVideoActivity::class.java);
+                                val intent = Intent(this@RecordVideoTestActivity, TrimVideoActivity::class.java)
                                 intent.setData(uri);
                                 startActivity(intent);
                                 Log.d(TAG, "Video saved in $uri")

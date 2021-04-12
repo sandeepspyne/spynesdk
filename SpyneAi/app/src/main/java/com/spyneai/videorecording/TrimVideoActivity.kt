@@ -168,13 +168,13 @@ class TrimVideoActivity : AppCompatActivity() ,SeekListener{
             imagePlayPause!!.setOnClickListener { v: View? -> onVideoClicked() }
             Objects.requireNonNull(playerView!!.videoSurfaceView)!!
                 .setOnClickListener { v: View? -> onVideoClicked() }
-           // initTrimData()
-
-            //loadThumbnails()
-            //setUpSeekBar()
-
-            trim_view.init(uri.toString(),totalDuration,this)
+            //initTrimData()
             buildMediaSource()
+            loadThumbnails()
+            setUpSeekBar()
+
+            //trim_view.init(uri.toString(),totalDuration,this)
+//            buildMediaSource()
         } catch (e: java.lang.Exception) {
             e.printStackTrace()
         }
@@ -330,7 +330,7 @@ class TrimVideoActivity : AppCompatActivity() ,SeekListener{
     }
 
     private fun seekTo(sec: Long) {
-        if (videoPlayer != null) videoPlayer!!.seekTo(sec )
+        if (videoPlayer != null) videoPlayer!!.seekTo(sec * 1000 )
     }
 
     private fun setDoneColor(minVal: Long, maxVal: Long) {
@@ -473,13 +473,13 @@ class TrimVideoActivity : AppCompatActivity() ,SeekListener{
     var updateSeekbar: Runnable = object : Runnable {
         override fun run() {
             try {
-                trim_view.onVideoCurrentPositionUpdated(videoPlayer!!.currentPosition)
-//                currentDuration = videoPlayer!!.currentPosition / 1000
-//                if (!videoPlayer!!.playWhenReady) return
-//                if (currentDuration <= lastMaxValue)
-//                    seekbarController?.setMinStartValue(currentDuration.toFloat())?.apply()
-//                else
-//                    videoPlayer!!.playWhenReady = false;
+                //trim_view.onVideoCurrentPositionUpdated(videoPlayer!!.currentPosition)
+                currentDuration = videoPlayer!!.currentPosition / 1000
+                if (!videoPlayer!!.playWhenReady) return
+                if (currentDuration <= lastMaxValue)
+                    seekbarController?.setMinStartValue(currentDuration.toFloat())?.apply()
+                else
+                    videoPlayer!!.playWhenReady = false;
 
             } finally {
                 seekHandler!!.postDelayed(this, 1000)

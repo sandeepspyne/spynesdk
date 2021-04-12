@@ -1,200 +1,198 @@
 package com.spyneai.videorecording
 
 import android.Manifest
+import android.animation.ObjectAnimator
 import android.annotation.SuppressLint
 import android.content.ContentValues
+import android.content.Intent
 import android.content.pm.PackageManager
-import android.net.Uri
-import android.os.Build
-import androidx.appcompat.app.AppCompatActivity
-import android.os.Bundle
+import android.os.*
 import android.provider.MediaStore
 import android.util.DisplayMetrics
+import androidx.appcompat.app.AppCompatActivity
 import android.util.Log
+import android.view.View
+import android.view.WindowInsets
+import android.view.WindowManager
 import android.widget.Toast
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.camera.core.*
-import androidx.camera.core.impl.VideoCaptureConfig
-
-
 import androidx.camera.lifecycle.ProcessCameraProvider
-import androidx.core.app.ActivityCompat
+import androidx.core.animation.doOnCancel
 import androidx.core.content.ContextCompat
+import androidx.databinding.DataBindingUtil
+import com.google.android.material.tabs.TabLayout
+import com.google.android.material.tabs.TabLayoutMediator
 import com.spyneai.R
-import kotlinx.android.synthetic.main.activity_record_video.*
+import com.spyneai.databinding.ActivityRecordVideoBinding
+import com.spyneai.extras.ZoomOutPageTransformer
 import java.io.File
-import java.lang.Math.*
-import java.text.SimpleDateFormat
-import java.util.*
-import java.util.concurrent.ExecutorService
-import java.util.concurrent.Executors
-
+import kotlin.math.abs
+import kotlin.math.max
+import kotlin.math.min
 
 class RecordVideoActivity : AppCompatActivity() {
+
+    companion object {
+        private const val TAG = "CameraXTest"
+
+
+        private const val RATIO_4_3_VALUE = 4.0 / 3.0 // aspect ratio 4x3
+        private const val RATIO_16_9_VALUE = 16.0 / 9.0 // aspect ratio 16x9
+
+        private const val REQUEST_CODE_PERMISSIONS = 100
+        var intent : Intent? = null;
+
+        // The permissions we need for the app to work properly
+        private val permissions = mutableListOf(
+            Manifest.permission.CAMERA,
+            Manifest.permission.RECORD_AUDIO,
+            Manifest.permission.READ_EXTERNAL_STORAGE,
+        ).apply {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+                add(Manifest.permission.ACCESS_MEDIA_LOCATION)
+            }
+        }
+
+    }
+
+    private lateinit var binding : ActivityRecordVideoBinding
+
+    private val permissionRequest = registerForActivityResult(ActivityResultContracts.RequestMultiplePermissions()) { permissions ->
+        if (permissions.all { it.value }) {
+            binding.btnRecordVideo.visibility = View.VISIBLE
+
+            binding.llSelectThreeSixtyMode.visibility = View.VISIBLE
+            //startCamera();
+        } else {
+            Toast.makeText(this,"Permissions not granted", Toast.LENGTH_LONG)
+        }
+    }
+
     private var camera: Camera? = null
-    private var imageCapture: ImageCapture? = null
-    private lateinit var videoCapture: VideoCapture
-    private var lensFacing: Int = CameraSelector.LENS_FACING_FRONT
+    private var cameraProvider: ProcessCameraProvider? = null
+    private var preview: Preview? = null
+    private var videoCapture: VideoCapture? = null
 
-    private lateinit var outputDirectory: File
-    private lateinit var cameraExecutor: ExecutorService
 
-    @SuppressLint("RestrictedApi")
+    // Selector showing which camera is selected (front or back)
+    private var lensFacing = CameraSelector.DEFAULT_BACK_CAMERA
+
+    // Selector showing is recording currently active
+    private var isRecording = false
+    private val animateRecord by lazy {
+        ObjectAnimator.ofFloat(binding.btnRecordVideo, View.ALPHA, 1f, 0.5f).apply {
+            repeatMode = ObjectAnimator.REVERSE
+            repeatCount = ObjectAnimator.INFINITE
+            doOnCancel { binding.btnRecordVideo.alpha = 1f }
+        }
+    }
+
+
+    // The Folder location where all the files will be stored
+    private val outputDirectory: String by lazy {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+            "${Environment.DIRECTORY_DCIM}/CameraXTest/"
+        } else {
+            "${getExternalFilesDir(Environment.DIRECTORY_DCIM)?.path}/CameraXTest/"
+        }
+    }
+
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_record_video)
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+            window.insetsController?.hide(WindowInsets.Type.statusBars())
+        } else {
+            window.setFlags(
+                WindowManager.LayoutParams.FLAG_FULLSCREEN,
+                WindowManager.LayoutParams.FLAG_FULLSCREEN
+            )
+        }
 
+        binding = DataBindingUtil.setContentView(this,R.layout.activity_record_video)
+
+        binding.llInterior.setOnClickListener{
+            setupDemo()
+        }
+
+        binding.tvNext.setOnClickListener {
+            if (binding.tvNext.text.toString() == "Next") {
+                binding.tabLayout.getTabAt(1)?.select()
+            } else {
+                binding.clShootDemo.visibility = View.GONE
+
+                startCamera()
+            }
+        }
+
+        Handler(Looper.getMainLooper()).postDelayed(object : Runnable {
+            override fun run() {
+                setPermissions()
+
+                binding.btnRecordVideo.setOnClickListener { recordVideo() }
+            }
+        },300)
+    }
+
+    private fun setPermissions() {
         // Request camera permissions
         if (allPermissionsGranted()) {
-            startCamera()
+            binding.btnRecordVideo.visibility = View.VISIBLE;
+
+            binding.llSelectThreeSixtyMode.visibility = View.VISIBLE;
+
         } else {
-            ActivityCompat.requestPermissions(
-                this, REQUIRED_PERMISSIONS, REQUEST_CODE_PERMISSIONS)
-        }
-
-        // Set up the listener for take photo button
-        camera_capture_button.setOnClickListener { RecordVideo() }
-
-        camera_stop_button.setOnClickListener({
-            videoCapture.stopRecording();
-        })
-
-        outputDirectory = getOutputDirectory()
-
-        cameraExecutor = Executors.newSingleThreadExecutor()
-    }
-
-    override fun onRequestPermissionsResult(
-        requestCode: Int, permissions: Array<String>, grantResults:
-        IntArray) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
-        if (requestCode == REQUEST_CODE_PERMISSIONS) {
-            if (allPermissionsGranted()) {
-                startCamera()
-            } else {
-                Toast.makeText(this,
-                    "Permissions not granted by the user.",
-                    Toast.LENGTH_SHORT).show()
-                finish()
-            }
+            permissionRequest.launch(RecordVideoActivity.permissions.toTypedArray())
         }
     }
 
-    @SuppressLint("RestrictedApi")
-    private fun RecordVideo() {
-        val file = createFile(
-            outputDirectory,
-            FILENAME,
-            VIDEO_EXTENSION
-        )
+    private fun setupDemo() {
+        binding.llSelectThreeSixtyMode.visibility = View.GONE
+        binding.clShootDemo.visibility = View.VISIBLE;
 
+        var demoCollectionAdapter = ThreeSixtyShootDemoAdapter(this)
 
-        var outputOption: VideoCapture.OutputFileOptions = VideoCapture.OutputFileOptions.Builder(file).build();
+        binding.viewPager.adapter = demoCollectionAdapter
 
-        videoCapture.startRecording(outputOption,ContextCompat.getMainExecutor(this),object : VideoCapture.OnVideoSavedCallback{
-            override fun onVideoSaved(outputFileResults: VideoCapture.OutputFileResults) {
-                val savedUri = Uri.fromFile(file)
-                val msg = "Photo capture succeeded: $savedUri"
-                Toast.makeText(baseContext, msg, Toast.LENGTH_SHORT).show()
-                Log.d(TAG, msg)
-                // Create small preview
-//                outputFileResults.savedUri
-//                    ?.let { uri ->
-//                        setGalleryThumbnail(uri)
-//                        Log.d(TAG, "Video saved in $uri")
-//                    }
-//                    ?: setLastPictureThumbnail()
+        TabLayoutMediator(binding.tabLayout, binding.viewPager) { tab, position ->
+        }.attach()
+
+        binding.tabLayout.addOnTabSelectedListener(object : TabLayout.OnTabSelectedListener {
+            override fun onTabSelected(tab: TabLayout.Tab?) {
+                if (tab!!.position == 0){
+                    binding.tvHint.text = "Shoot the front side of the car"
+                    binding.tvNext.text = "Next"
+                }else{
+                    binding.tvHint.text = "Sit on the middle of the back seat, Place the phone in the centre & start moving your wrist"
+                    binding.tvNext.text = "Begin Shoot"
+                }
             }
 
-            override fun onError(videoCaptureError: Int, message: String, cause: Throwable?) {
-                Toast.makeText(baseContext, message, Toast.LENGTH_SHORT).show()
+            override fun onTabUnselected(tab: TabLayout.Tab?) {
+            }
 
-
-                // This function is called if there is an error during recording process
-//                animateRecord.cancel()
-//                val msg = "Video capture failed: $message"
-//                Toast.makeText(requireContext(), msg, Toast.LENGTH_SHORT).show()
-//                Log.e(TAG, msg)
-//                cause?.printStackTrace()
+            override fun onTabReselected(tab: TabLayout.Tab?) {
             }
         })
-
-//        videoCapture.startRecording(
-//            file,
-//            executor,
-//            object : VideoCapture.OnVideoSavedCallback {
-//                override fun onVideoSaved(file: File) {
-//                    Handler(Looper.getMainLooper()).post {
-//                        showMessage(file.name + " is saved")
-//                    }
-//                }
-//
-//                override fun onError(videoCaptureError: Int, message: String, cause: Throwable?) {
-//                    Handler(Looper.getMainLooper()).post {
-//                        showMessage(videoCaptureError.toString() + " " + message)
-//                    }
-//                }
-//            }
-//        )
-
-//        val localVideoCapture = videoCapture ?: throw IllegalStateException("Camera initialization failed.")
-//
-//        // Options fot the output video file
-//        val outputOptions = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-//            val contentValues = ContentValues().apply {
-//                put(MediaStore.MediaColumns.DISPLAY_NAME, System.currentTimeMillis())
-//                put(MediaStore.MediaColumns.MIME_TYPE, "video/mp4")
-//                put(MediaStore.MediaColumns.RELATIVE_PATH, outputDirectory)
-//            }
-//
-//            contentResolver.run {
-//                val contentUri = MediaStore.Video.Media.EXTERNAL_CONTENT_URI
-//
-//                VideoCapture.OutputFileOptions.Builder(this, contentUri, contentValues)
-//            }
-//        } else {
-//
-//            val file = File("$outputDirectory/${System.currentTimeMillis()}.mp4")
-//
-//            VideoCapture.OutputFileOptions.Builder(file)
-//        }.build()
     }
 
-    private fun takePhoto() {
-        val imageCapture = imageCapture ?: return
-
-        // Create time-stamped output file to hold the image
-        val photoFile = File(
-            outputDirectory,
-            SimpleDateFormat(FILENAME_FORMAT, Locale.US
-            ).format(System.currentTimeMillis()) + ".jpg")
-
-        // Create output options object which contains file + metadata
-        val outputOptions = ImageCapture.OutputFileOptions.Builder(photoFile).build()
-
-        // Set up image capture listener, which is triggered after photo has
-        // been taken
-        imageCapture.takePicture(
-            outputOptions, ContextCompat.getMainExecutor(this), object : ImageCapture.OnImageSavedCallback {
-                override fun onError(exc: ImageCaptureException) {
-                    Log.e(TAG, "Photo capture failed: ${exc.message}", exc)
-                }
-
-                override fun onImageSaved(output: ImageCapture.OutputFileResults) {
-                    val savedUri = Uri.fromFile(photoFile)
-                    val msg = "Photo capture succeeded: $savedUri"
-                    Toast.makeText(baseContext, msg, Toast.LENGTH_SHORT).show()
-                    Log.d(TAG, msg)
-                }
-            })
+    protected fun allPermissionsGranted() = RecordVideoActivity.permissions.all {
+        ContextCompat.checkSelfPermission(this, it) == PackageManager.PERMISSION_GRANTED
     }
 
+
+    /**
+     * Unbinds all the lifecycles from CameraX, then creates new with new parameters
+     * */
     @SuppressLint("RestrictedApi")
     private fun startCamera() {
-        val cameraProviderFuture = ProcessCameraProvider.getInstance(this)
+        // This is the Texture View where the camera will be rendered
+        val viewFinder = binding.viewFinder
 
-        cameraProviderFuture.addListener(Runnable {
-            // Used to bind the lifecycle of cameras to the lifecycle owner
-            val cameraProvider: ProcessCameraProvider = cameraProviderFuture.get()
+        val cameraProviderFuture = ProcessCameraProvider.getInstance(this)
+        cameraProviderFuture.addListener({
+            cameraProvider = cameraProviderFuture.get()
 
             // The display information
             val metrics = DisplayMetrics().also { viewFinder.display.getRealMetrics(it) }
@@ -206,15 +204,9 @@ class RecordVideoActivity : AppCompatActivity() {
             val localCameraProvider = cameraProvider
                 ?: throw IllegalStateException("Camera initialization failed.")
 
-//            // Preview
-//            val preview = Preview.Builder()
-//                .build()
-//                .also {
-//                    it.setSurfaceProvider(viewFinder.surfaceProvider)
-//                }
-
             // The Configuration of camera preview
-            val preview = Preview.Builder()
+            preview = Preview.Builder()
+                // .setTargetResolution(Size(viewFinder.width,viewFinder.height))
                 .setTargetAspectRatio(aspectRatio) // set the camera aspect ratio
                 .setTargetRotation(rotation) // set the camera rotation
                 .build()
@@ -225,75 +217,106 @@ class RecordVideoActivity : AppCompatActivity() {
                 .fromConfig(videoCaptureConfig)
                 .build()
 
-
-
-            // Select back camera as a default
-            val cameraSelector = CameraSelector.DEFAULT_BACK_CAMERA
-
             localCameraProvider.unbindAll() // unbind the use-cases before rebinding them
-
 
             try {
                 // Bind all use cases to the camera with lifecycle
                 camera = localCameraProvider.bindToLifecycle(
-                    this, cameraSelector, preview)
+                    this, // current lifecycle owner
+                    lensFacing, // either front or back facing
+                    preview, // camera preview use case
+                    videoCapture, // video capture use case
+                )
 
                 // Attach the viewfinder's surface provider to preview use case
-                preview?.setSurfaceProvider(viewFinder.surfaceProvider);
-
-
-//                // Bind use cases to camera
-//                cameraProvider.bindToLifecycle(
-//                    this, cameraSelector, preview)
-
-            } catch(exc: Exception) {
-                Log.e(TAG, "Use case binding failed", exc)
+                preview?.setSurfaceProvider(viewFinder.surfaceProvider)
+            } catch (e: Exception) {
+                Log.e(RecordVideoTestActivity.TAG, "Failed to bind use cases", e)
             }
-
         }, ContextCompat.getMainExecutor(this))
     }
 
+    /**
+     *  Detecting the most suitable aspect ratio for current dimensions
+     *
+     *  @param width - preview width
+     *  @param height - preview height
+     *  @return suitable aspect ratio
+     */
     private fun aspectRatio(width: Int, height: Int): Int {
         val previewRatio = max(width, height).toDouble() / min(width, height)
-        if (abs(previewRatio - RATIO_4_3_VALUE) <= abs(previewRatio - RATIO_16_9_VALUE)) {
+        if (abs(previewRatio - RecordVideoActivity.RATIO_4_3_VALUE) <= abs(previewRatio - RecordVideoActivity.RATIO_16_9_VALUE)) {
             return AspectRatio.RATIO_4_3
         }
         return AspectRatio.RATIO_16_9
     }
 
-    private fun allPermissionsGranted() = REQUIRED_PERMISSIONS.all {
-        ContextCompat.checkSelfPermission(
-            baseContext, it) == PackageManager.PERMISSION_GRANTED
+
+
+    @SuppressLint("RestrictedApi")
+    private fun recordVideo() {
+        val localVideoCapture = videoCapture ?: throw IllegalStateException("Camera initialization failed.")
+
+        // Options fot the output video file
+        val outputOptions = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+            val contentValues = ContentValues().apply {
+                put(MediaStore.MediaColumns.DISPLAY_NAME, System.currentTimeMillis())
+                put(MediaStore.MediaColumns.MIME_TYPE, "video/mp4")
+                put(MediaStore.MediaColumns.RELATIVE_PATH, outputDirectory)
+            }
+
+            this.contentResolver.run {
+                val contentUri = MediaStore.Video.Media.EXTERNAL_CONTENT_URI
+
+                VideoCapture.OutputFileOptions.Builder(this, contentUri, contentValues)
+            }
+        } else {
+            File(outputDirectory).mkdirs()
+            val file = File("$outputDirectory/${System.currentTimeMillis()}.mp4")
+
+            VideoCapture.OutputFileOptions.Builder(file)
+        }.build()
+
+        if (!isRecording) {
+            animateRecord.start()
+            localVideoCapture.startRecording(
+                outputOptions, // the options needed for the final video
+                ContextCompat.getMainExecutor(this), // the executor, on which the task will run
+                object : VideoCapture.OnVideoSavedCallback { // the callback after recording a video
+                    override fun onVideoSaved(outputFileResults: VideoCapture.OutputFileResults) {
+                        // Create small preview
+                        outputFileResults.savedUri
+                            ?.let { uri ->
+                                //setGalleryThumbnail(uri)
+
+                                val intent = Intent(this@RecordVideoActivity, TrimVideoActivity::class.java);
+                                intent.setData(uri);
+                                startActivity(intent);
+                                Log.d(RecordVideoTestActivity.TAG, "Video saved in $uri")
+                            }
+
+                    }
+
+                    override fun onError(videoCaptureError: Int, message: String, cause: Throwable?) {
+                        // This function is called if there is an error during recording process
+                        animateRecord.cancel()
+                        val msg = "Video capture failed: $message"
+                        Toast.makeText(this@RecordVideoActivity, msg, Toast.LENGTH_SHORT).show()
+                        Log.e(RecordVideoTestActivity.TAG, msg)
+                        cause?.printStackTrace()
+                    }
+                })
+        } else {
+            animateRecord.cancel()
+            localVideoCapture.stopRecording()
+        }
+        isRecording = !isRecording
     }
 
-    private fun getOutputDirectory(): File {
-        val mediaDir = externalMediaDirs.firstOrNull()?.let {
-            File(it, resources.getString(R.string.app_name)).apply { mkdirs() } }
-        return if (mediaDir != null && mediaDir.exists())
-            mediaDir else filesDir
+    override fun onBackPressed() = finish()
+
+    override fun onStop() {
+        super.onStop()
+        camera?.cameraControl?.enableTorch(false)
     }
-
-    override fun onDestroy() {
-        super.onDestroy()
-        cameraExecutor.shutdown()
-    }
-
-    companion object {
-        private const val TAG = "CameraXBasic"
-        private const val FILENAME_FORMAT = "yyyy-MM-dd-HH-mm-ss-SSS"
-        private const val REQUEST_CODE_PERMISSIONS = 10
-        private val REQUIRED_PERMISSIONS = arrayOf(Manifest.permission.CAMERA)
-
-        private const val RATIO_4_3_VALUE = 4.0 / 3.0 // aspect ratio 4x3
-        private const val RATIO_16_9_VALUE = 16.0 / 9.0 // aspect ratio 16x9
-
-        fun createFile(baseFolder: File, format: String, extension: String) =
-            File(baseFolder, SimpleDateFormat(format, Locale.US)
-                .format(System.currentTimeMillis()) + extension)
-
-        private const val FILENAME = "yyyy_MM_dd_HH_mm_ss"
-        private const val VIDEO_EXTENSION = ".mp4"
-    }
-
-
 }

@@ -35,9 +35,11 @@
         android:theme="@style/Theme.SpyneAi"
         android:usesCleartextTraffic="true"
         tools:targetApi="m">
-        <activity android:name=".videorecording.SeekBarTestActivity">
+        <activity android:name=".videorecording.RecordVideoActivity"
+            android:screenOrientation="landscape">
 
         </activity>
+        <activity android:name=".videorecording.SeekBarTestActivity"></activity>
 
         <receiver
             android:name=".service.StartReceiver"
@@ -173,18 +175,19 @@
             android:screenOrientation="landscape" />
         <activity
             android:name=".activity.SplashActivity"
-            android:screenOrientation="portrait"></activity>
-        <activity
-            android:name=".videorecording.RecordVideoTestActivity"
-            android:screenOrientation="landscape">
+            android:screenOrientation="portrait" />
+        <activity android:name=".videorecording.ThreeSixtyViewActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <activity
+            android:name=".videorecording.RecordVideoTestActivity"
+            android:screenOrientation="landscape"></activity>
         <activity android:name=".videorecording.PlayVideoActivity" />
-        <activity android:name=".videorecording.TrimVideoActivity"></activity>
+        <activity android:name=".videorecording.TrimVideoActivity" />
 
         <meta-data
             android:name="com.razorpay.ApiKey"
