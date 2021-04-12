@@ -218,6 +218,7 @@
                 app:layout_constraintRight_toRightOf="parent"
                 android:layout_marginTop="20dp"
                 android:id="@+id/tv_hint"
+                android:gravity="center"
                 android:layout_marginLeft="10dp"
                 android:layout_marginRight="10dp"
                 android:textColor="@color/black"
