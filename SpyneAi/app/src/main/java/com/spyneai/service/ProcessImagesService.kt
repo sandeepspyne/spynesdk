@@ -183,13 +183,32 @@ class ProcessImagesService() : Service() {
 
 
     private fun fetchDataAndStartService(intent: Intent) {
+
+        var skuName: String = "";
+        var skuId: String = "";
+        var shootId: String = "";
+        var tokenId: String = "";
+        var windows: String = "";
+        var exposures: String = "";
+
+        if (intent?.getStringExtra(AppConstants.SKU_NAME) != null)
+            skuName = intent?.getStringExtra(AppConstants.SKU_NAME)!!
+        if (intent?.getStringExtra(AppConstants.SKU_ID) != null)
+            skuId = intent?.getStringExtra(AppConstants.SKU_ID)!!
+        if (intent?.getStringExtra(AppConstants.SHOOT_ID) != null)
+            shootId = intent?.getStringExtra(AppConstants.SHOOT_ID)!!
+        if (intent?.getStringExtra(AppConstants.tokenId) != null)
+            tokenId = intent?.getStringExtra(AppConstants.tokenId)!!
+        if (intent?.getStringExtra(AppConstants.WINDOWS) != null)
+            windows = intent?.getStringExtra(AppConstants.WINDOWS)!!
+        if (intent?.getStringExtra(AppConstants.EXPOSURES) != null)
+            exposures = intent?.getStringExtra(AppConstants.EXPOSURES)!!
+
         var catName: String = "";
         var marketplaceId: String = ""
         var backgroundColour: String = ""
         if (intent?.getStringExtra(AppConstants.CATEGORY_NAME) != null)
             catName = intent?.getStringExtra(AppConstants.CATEGORY_NAME)!!
-        else
-            catName = Utilities.getPreference(this, AppConstants.CATEGORY_NAME)!!
 
         if (intent?.getStringExtra(AppConstants.MARKETPLACE_ID) != null)
             marketplaceId = intent?.getStringExtra(AppConstants.MARKETPLACE_ID)!!
@@ -212,7 +231,7 @@ class ProcessImagesService() : Service() {
         imageFileList.addAll(intent?.getParcelableArrayListExtra(AppConstants.ALL_IMAGE_LIST)!!)
         imageFileListFrames.addAll(intent?.getIntegerArrayListExtra(AppConstants.ALL_FRAME_LIST)!!)
 
-        if (Utilities.getPreference(this, AppConstants.CATEGORY_NAME).equals("Automobiles")) {
+        if (catName.equals("Automobiles")) {
             imageInteriorFileList.addAll(intent?.getParcelableArrayListExtra(AppConstants.ALL_INTERIOR_IMAGE_LIST)!!)
             imageInteriorFileListFrames.addAll(intent?.getIntegerArrayListExtra(AppConstants.ALL_INTERIOR_FRAME_LIST)!!)
         }
@@ -223,6 +242,7 @@ class ProcessImagesService() : Service() {
 //        var notificationID = (0..999999).random()
         val notification = createNotification(notificationContentText)
         startForeground(notificationID, notification)
+
         startService(
             intent,
             catName,
@@ -234,7 +254,13 @@ class ProcessImagesService() : Service() {
             imageInteriorFileList,
             imageInteriorFileListFrames,
             totalImagesToUPload,
-            totalImagesToUPloadIndex
+            totalImagesToUPloadIndex,
+            skuName,
+            skuId,
+            shootId,
+            tokenId,
+            windows,
+            exposures
         )
     }
 
@@ -250,7 +276,13 @@ class ProcessImagesService() : Service() {
         imageInteriorFileList: java.util.ArrayList<File>,
         imageInteriorFileListFrames: java.util.ArrayList<Int>,
         totalImagesToUPload: Int,
-        totalImagesToUPloadIndex: Int
+        totalImagesToUPloadIndex: Int,
+        skuName: String,
+        skuId: String,
+        shootId: String ,
+        tokenId: String,
+        windows: String,
+        exposures: String
     ) {
 //        if (isServiceStarted)
 //            return
@@ -283,7 +315,13 @@ class ProcessImagesService() : Service() {
                     imageInteriorFileList,
                     imageInteriorFileListFrames,
                     totalImagesToUPload,
-                    totalImagesToUPloadIndex
+                    totalImagesToUPloadIndex,
+                    skuName,
+                    skuId,
+                    shootId,
+                    tokenId,
+                    windows,
+                    exposures
                 )
             }
             delay(1 * 60 * 1000)
@@ -434,7 +472,13 @@ class ProcessImagesService() : Service() {
         imageInteriorFileList: java.util.ArrayList<File>,
         imageInteriorFileListFrames: java.util.ArrayList<Int>,
         totalImagesToUPload: Int,
-        totalImagesToUPloadIndex: Int
+        totalImagesToUPloadIndex: Int,
+        skuName: String,
+        skuId: String,
+        shootId: String ,
+        tokenId: String,
+        windows: String,
+        exposures: String
     ) {
         var PROGRESS_CURRENT = 0
         var PROGRESS_MAX = imageFileList.size
@@ -472,11 +516,13 @@ class ProcessImagesService() : Service() {
 //                        val notification = updateNotification("Exterior image uploading started...")
 //                        startForeground(notificationID, notification)
 
-                        Utilities.savePrefrence(
-                            this@ProcessImagesService,
-                            AppConstants.MAIN_IMAGE,
-                            response.body()?.image.toString()
-                        )
+                        val mainImage: String = response.body()?.image.toString()
+
+//                        Utilities.savePrefrence(
+//                            this@ProcessImagesService,
+//                            AppConstants.MAIN_IMAGE,
+//                            response.body()?.image.toString()
+//                        )
                         uploadImageURLs(
                             intent,
                             catName,
@@ -488,7 +534,14 @@ class ProcessImagesService() : Service() {
                             imageInteriorFileList,
                             imageInteriorFileListFrames,
                             totalImagesToUPload,
-                            totalImagesToUPloadIndex
+                            totalImagesToUPloadIndex,
+                            mainImage,
+                            skuName,
+                            skuId,
+                            shootId,
+                            tokenId,
+                            windows,
+                            exposures
                         )
                     } else {
                         Toast.makeText(
@@ -533,25 +586,35 @@ class ProcessImagesService() : Service() {
         imageInteriorFileList: java.util.ArrayList<File>,
         imageInteriorFileListFrames: java.util.ArrayList<Int>,
         totalImagesToUPload: Int,
-        totalImagesToUPloadIndex: Int
+        totalImagesToUPloadIndex: Int,
+        mainImage: String,
+        skuName: String,
+        skuId: String,
+        shootId: String ,
+        tokenId: String,
+        windows: String,
+        exposures: String
+
     ) {
         if (Utilities.isNetworkAvailable(this)) {
             log("start upload image url")
             val request = RetrofitClient.buildService(APiService::class.java)
-            val uploadPhotoName: String =
-                Utilities.getPreference(this, AppConstants.MAIN_IMAGE)
-                    .toString().split("/")[Utilities.getPreference(
-                    this,
-                    AppConstants.MAIN_IMAGE
-                ).toString().split("/").size - 1]
+//            val uploadPhotoName: String =
+//                Utilities.getPreference(this, AppConstants.MAIN_IMAGE)
+//                    .toString().split("/")[Utilities.getPreference(
+//                    this,
+//                    AppConstants.MAIN_IMAGE
+//                ).toString().split("/").size - 1]
+            val uploadPhotoName: String =   mainImage
+                    .toString().split("/")[mainImage.split("/").size - 1]
 
             val uploadPhotoRequest = UploadPhotoRequest(
-                Utilities.getPreference(this, AppConstants.SKU_NAME)!!,
-                Utilities.getPreference(this, AppConstants.SKU_ID)!!,
+                skuName!!,
+                skuId!!,
                 "raw",
                 imageFileListFrames[totalImagesToUPloadIndex],
-                Utilities.getPreference(this, AppConstants.SHOOT_ID)!!,
-                Utilities.getPreference(this, AppConstants.MAIN_IMAGE).toString(),
+                skuId!!,
+                mainImage,
                 uploadPhotoName,
                 "EXTERIOR"
             )
@@ -563,7 +626,7 @@ class ProcessImagesService() : Service() {
             //  val skuName = RequestBody.create(MediaType.parse("application/json"), personString)
 
             val call = request.uploadPhotoRough(
-                Utilities.getPreference(this, AppConstants.tokenId), uploadPhotoRequest
+                tokenId, uploadPhotoRequest
             )
 
             call?.enqueue(object : Callback<UploadPhotoResponse> {
@@ -578,13 +641,11 @@ class ProcessImagesService() : Service() {
 
                                 Log.e("IMage uploaded ", response.body()?.msgInfo.toString())
                                 Log.e(
-                                    "SKU ID", Utilities.getPreference(
-                                        this@ProcessImagesService,
-                                        AppConstants.SKU_ID
-                                    ).toString()
+                                    "SKU ID", skuId
                                 )
                                 //  totalImagesToUPloadIndex = totalImagesToUPloadIndex + 1
                                 ++totalImagesToUPloadIndex
+
                                 uploadImageToBucket(
                                     intent,
                                     catName,
@@ -596,7 +657,13 @@ class ProcessImagesService() : Service() {
                                     imageInteriorFileList,
                                     imageInteriorFileListFrames,
                                     totalImagesToUPload,
-                                    totalImagesToUPloadIndex
+                                    totalImagesToUPloadIndex,
+                                    skuName,
+                                    skuId,
+                                    shootId,
+                                    tokenId,
+                                    windows,
+                                    exposures
                                 )
                             } else {
                                 totalImagesToUPloadIndex = 0
@@ -615,7 +682,13 @@ class ProcessImagesService() : Service() {
                                         imageInteriorFileList,
                                         imageInteriorFileListFrames,
                                         totalImagesToUPload,
-                                        totalImagesToUPloadIndex
+                                        totalImagesToUPloadIndex,
+                                        skuName,
+                                        skuId,
+                                        shootId,
+                                        tokenId,
+                                        windows,
+                                        exposures
                                     )
 
                                 } else
@@ -629,7 +702,13 @@ class ProcessImagesService() : Service() {
                                         imageFileListFrames,
                                         imageInteriorFileList,
                                         imageInteriorFileListFrames,
-                                        totalImagesToUPload
+                                        totalImagesToUPload,
+                                        skuName,
+                                        skuId,
+                                        shootId,
+                                        tokenId,
+                                        windows,
+                                        exposures
                                     )
                             }
                         } catch (e: Exception) {
@@ -677,7 +756,13 @@ class ProcessImagesService() : Service() {
         imageInteriorFileList: java.util.ArrayList<File>,
         imageInteriorFileListFrames: java.util.ArrayList<Int>,
         totalImagesToUPload: Int,
-        totalImagesToUPloadIndex: Int
+        totalImagesToUPloadIndex: Int,
+        skuName: String,
+        skuId: String,
+        shootId: String ,
+        tokenId: String,
+        windows: String,
+        exposures: String
     ) {
         var PROGRESS_MAX = imageInteriorFileList.size
         var PROGRESS_CURRENT = 0
@@ -720,11 +805,12 @@ class ProcessImagesService() : Service() {
                         log("uploadImageToBucketInterior" + response.body()?.image.toString())
 
                         //  if (Utilities.getPreference(this@CameraActivity, AppConstants.MAIN_IMAGE).equals(""))
-                        Utilities.savePrefrence(
-                            this@ProcessImagesService,
-                            AppConstants.MAIN_IMAGE,
-                            response.body()?.image.toString()
-                        )
+                        val mainImageInterior: String = response.body()?.image.toString()
+//                        Utilities.savePrefrence(
+//                            this@ProcessImagesService,
+//                            AppConstants.MAIN_IMAGE,
+//                            response.body()?.image.toString()
+//                        )
                         uploadImageURLsInterior(
                             intent,
                             catName,
@@ -736,7 +822,14 @@ class ProcessImagesService() : Service() {
                             imageInteriorFileList,
                             imageInteriorFileListFrames,
                             totalImagesToUPload,
-                            totalImagesToUPloadIndex
+                            totalImagesToUPloadIndex,
+                            mainImageInterior,
+                            skuName,
+                            skuId,
+                            shootId,
+                            tokenId,
+                            windows,
+                            exposures
                         )
                     } else {
                         Toast.makeText(
@@ -779,26 +872,36 @@ class ProcessImagesService() : Service() {
         imageInteriorFileList: java.util.ArrayList<File>,
         imageInteriorFileListFrames: java.util.ArrayList<Int>,
         totalImagesToUPload: Int,
-        totalImagesToUPloadIndex: Int
+        totalImagesToUPloadIndex: Int,
+        mainImageInterior: String,
+        skuName: String,
+        skuId: String,
+        shootId: String ,
+        tokenId: String,
+        windows: String,
+        exposures: String
     ) {
 
         var totalImagesToUPloadIndex = totalImagesToUPloadIndex;
         if (Utilities.isNetworkAvailable(this)) {
             log("start Uploading images url interior")
             val request = RetrofitClient.buildService(APiService::class.java)
+//            val uploadPhotoName: String =
+//                Utilities.getPreference(this, AppConstants.MAIN_IMAGE)
+//                    .toString().split("/")[Utilities.getPreference(
+//                    this,
+//                    AppConstants.MAIN_IMAGE
+//                ).toString().split("/").size - 1]
+
             val uploadPhotoName: String =
-                Utilities.getPreference(this, AppConstants.MAIN_IMAGE)
-                    .toString().split("/")[Utilities.getPreference(
-                    this,
-                    AppConstants.MAIN_IMAGE
-                ).toString().split("/").size - 1]
+                mainImageInterior.split("/")[mainImageInterior.toString().split("/").size - 1]
 
             val uploadPhotoRequest = UploadPhotoRequest(
-                Utilities.getPreference(this, AppConstants.SKU_NAME)!!,
-                Utilities.getPreference(this, AppConstants.SKU_ID)!!,
+                skuName!!,
+                skuId!!,
                 "raw",
                 imageInteriorFileListFrames[totalImagesToUPloadIndex],
-                Utilities.getPreference(this, AppConstants.SHOOT_ID)!!,
+                skuId!!,
                 Utilities.getPreference(this, AppConstants.MAIN_IMAGE).toString(),
                 uploadPhotoName,
                 "INTERIOR"
@@ -808,7 +911,7 @@ class ProcessImagesService() : Service() {
             //  val skuName = RequestBody.create(MediaType.parse("application/json"), personString)
 
             val call = request.uploadPhotoRough(
-                Utilities.getPreference(this, AppConstants.tokenId), uploadPhotoRequest
+                mainImageInterior, uploadPhotoRequest
             )
 
             call?.enqueue(object : Callback<UploadPhotoResponse> {
@@ -848,7 +951,13 @@ class ProcessImagesService() : Service() {
                                     imageInteriorFileList,
                                     imageInteriorFileListFrames,
                                     totalImagesToUPload,
-                                    totalImagesToUPloadIndex
+                                    totalImagesToUPloadIndex,
+                                    skuName,
+                                    skuId,
+                                    shootId,
+                                    tokenId,
+                                    windows,
+                                    exposures
                                 )
                             } else {
                                 markSkuComplete(
@@ -861,7 +970,13 @@ class ProcessImagesService() : Service() {
                                     imageFileListFrames,
                                     imageInteriorFileList,
                                     imageInteriorFileListFrames,
-                                    totalImagesToUPload
+                                    totalImagesToUPload,
+                                    skuName,
+                                    skuId,
+                                    shootId,
+                                    tokenId,
+                                    windows,
+                                    exposures
                                 )
                             }
                         } catch (e: Exception) {
@@ -961,7 +1076,13 @@ class ProcessImagesService() : Service() {
         imageFileListFrames: java.util.ArrayList<Int>,
         imageInteriorFileList: java.util.ArrayList<File>,
         imageInteriorFileListFrames: java.util.ArrayList<Int>,
-        totalImagesToUPload: Int
+        totalImagesToUPload: Int,
+        skuName: String,
+        skuId: String,
+        shootId: String ,
+        tokenId: String,
+        windows: String,
+        exposures: String
     ) {
         var PROGRESS_CURRENT = 0
         if (Utilities.isNetworkAvailable(this)) {
@@ -969,12 +1090,12 @@ class ProcessImagesService() : Service() {
             val request = RetrofitClient.buildService(APiService::class.java)
 
             val updateSkuStatusRequest = UpdateSkuStatusRequest(
-                Utilities.getPreference(this, AppConstants.SKU_ID)!!,
-                Utilities.getPreference(this, AppConstants.SHOOT_ID)!!,
+                skuId!!,
+                shootId!!,
                 true
             )
             val call = request.updateSkuStauts(
-                Utilities.getPreference(this, AppConstants.tokenId),
+                tokenId,
                 updateSkuStatusRequest
             )
 
@@ -999,7 +1120,13 @@ class ProcessImagesService() : Service() {
                             imageFileListFrames,
                             imageInteriorFileList,
                             imageInteriorFileListFrames,
-                            totalImagesToUPload
+                            totalImagesToUPload,
+                            skuName,
+                            skuId,
+                            shootId,
+                            tokenId,
+                            windows,
+                            exposures
                         )
                     }
                 }
@@ -1015,7 +1142,13 @@ class ProcessImagesService() : Service() {
                         imageFileListFrames,
                         imageInteriorFileList,
                         imageInteriorFileListFrames,
-                        totalImagesToUPload
+                        totalImagesToUPload,
+                        skuName,
+                        skuId,
+                        shootId,
+                        tokenId,
+                        windows,
+                        exposures
                     )
                     log("Server not responding(markSkuComplete)")
                     log("onFailure: " + t.localizedMessage)
@@ -1039,7 +1172,13 @@ class ProcessImagesService() : Service() {
         imageFileListFrames: java.util.ArrayList<Int>,
         imageInteriorFileList: java.util.ArrayList<File>,
         imageInteriorFileListFrames: java.util.ArrayList<Int>,
-        totalImagesToUPload: Int
+        totalImagesToUPload: Int,
+        skuName: String,
+        skuId: String,
+        shootId: String ,
+        tokenId: String,
+        windows: String,
+        exposures: String
     ) {
          var photoList: ArrayList<Photos>
          var photoListInteriors: ArrayList<Photos>
@@ -1070,7 +1209,13 @@ class ProcessImagesService() : Service() {
             imageInteriorFileListFrames,
             totalImagesToUPload,
             photoList,
-            photoListInteriors
+            photoListInteriors,
+            skuName,
+            skuId,
+            shootId,
+            tokenId,
+            windows,
+            exposures
         )
     }
 
@@ -1086,7 +1231,13 @@ class ProcessImagesService() : Service() {
         imageInteriorFileListFrames: java.util.ArrayList<Int>,
         totalImagesToUPload: Int,
         photoList: ArrayList<Photos>,
-        photoListInteriors: ArrayList<Photos>
+        photoListInteriors: ArrayList<Photos>,
+        skuName: String,
+        skuId: String,
+        shootId: String ,
+        tokenId: String,
+        windows: String,
+        exposures: String
     ) {
 
         var countGif: Int = 0
@@ -1096,8 +1247,8 @@ class ProcessImagesService() : Service() {
             val request = RetrofitClient.buildService(APiService::class.java)
 
             val call = request.getSkuDetails(
-                Utilities.getPreference(this, AppConstants.tokenId),
-                Utilities.getPreference(this, AppConstants.SKU_ID).toString()
+               tokenId,
+                skuId
             )
 
             call?.enqueue(object : Callback<SkuResponse> {
@@ -1138,7 +1289,13 @@ class ProcessImagesService() : Service() {
                                     totalImagesToUPload,
                                     countGif,
                                     photoList,
-                                    photoListInteriors
+                                    photoListInteriors,
+                                    skuName,
+                                    skuId,
+                                    shootId,
+                                    tokenId,
+                                    windows,
+                                    exposures
                                 )
                                 var PROGRESS_CURRENT = 0
                             } else if (catName.equals("Footwear")) {
@@ -1155,7 +1312,13 @@ class ProcessImagesService() : Service() {
                                     totalImagesToUPload,
                                     countGif,
                                     photoList,
-                                    photoListInteriors
+                                    photoListInteriors,
+                                    skuName,
+                                    skuId,
+                                    shootId,
+                                    tokenId,
+                                    windows,
+                                    exposures
                                 )
                             }
                         }
@@ -1200,7 +1363,13 @@ class ProcessImagesService() : Service() {
         totalImagesToUPload: Int,
         countGif: Int,
         photoList: ArrayList<Photos>,
-        photoListInteriors: ArrayList<Photos>
+        photoListInteriors: ArrayList<Photos>,
+        skuName: String,
+        skuId: String,
+        shootId: String ,
+        tokenId: String,
+        windows: String,
+        exposures: String
     ) {
 //        PROGRESS_MAX = photoList.size
         if (Utilities.isNetworkAvailable(this)) {
@@ -1214,46 +1383,46 @@ class ProcessImagesService() : Service() {
 
 //        image_url.add(photoList[countsGif].displayThumbnail)
 
-            val background = RequestBody.create(
+            val Background = RequestBody.create(
                 MultipartBody.FORM,
                 backgroundSelect
             )
 
-            val userId = RequestBody.create(
+            val UserId = RequestBody.create(
                 MultipartBody.FORM,
-                Utilities.getPreference(this, AppConstants.tokenId)!!
+                tokenId!!
             )
-            val skuId = RequestBody.create(
+            val SkuId = RequestBody.create(
                 MultipartBody.FORM,
-                Utilities.getPreference(this, AppConstants.SKU_ID)!!
+                skuId!!
             )
-            val imageUrl = RequestBody.create(
+            val ImageUrl = RequestBody.create(
                 MultipartBody.FORM,
                 photoList[countGif].displayThumbnail
             )
             Log.e(
                 "Sku NAme Upload done",
-                Utilities.getPreference(this, AppConstants.SKU_NAME)!!
+                skuName!!
             )
-            val skuName = RequestBody.create(
+            val SkuName = RequestBody.create(
                 MultipartBody.FORM,
-                Utilities.getPreference(this, AppConstants.SKU_NAME)!!
+                skuName!!
             )
 
-            val windowStatus = RequestBody.create(
+            val WindowStatus = RequestBody.create(
                 MultipartBody.FORM,
-                Utilities.getPreference(this, AppConstants.WINDOWS)!!
+                windows!!
             )
 
             val contrast = RequestBody.create(
                 MultipartBody.FORM,
-                Utilities.getPreference(this, AppConstants.EXPOSURES)!!
+                exposures!!
             )
 
             val call =
                 request.bulkUPload(
-                    background, userId, skuId,
-                    imageUrl, skuName, windowStatus, contrast
+                    Background, UserId, SkuId,
+                    ImageUrl, SkuName, WindowStatus, contrast
                 )
 
             call?.enqueue(object : Callback<BulkUploadResponse> {
@@ -1284,7 +1453,13 @@ class ProcessImagesService() : Service() {
                                 totalImagesToUPload,
                                 countGif,
                                 photoList,
-                                photoListInteriors
+                                photoListInteriors,
+                                skuName,
+                                skuId,
+                                shootId,
+                                tokenId,
+                                windows,
+                                exposures
                             )
 //                           (imageListWaterMark as ArrayList).add(response.body()!!.watermark_image)
 
@@ -1304,7 +1479,13 @@ class ProcessImagesService() : Service() {
                                     totalImagesToUPload,
                                     countGif,
                                     photoList,
-                                    photoListInteriors
+                                    photoListInteriors,
+                                    skuName,
+                                    skuId,
+                                    shootId,
+                                    tokenId,
+                                    windows,
+                                    exposures
                                 )
                             }
                         } else
@@ -1318,16 +1499,19 @@ class ProcessImagesService() : Service() {
                                 imageFileListFrames,
                                 imageInteriorFileList,
                                 imageInteriorFileListFrames,
-                                totalImagesToUPload
+                                totalImagesToUPload,
+                                skuName,
+                                skuId,
+                                shootId,
+                                tokenId,
+                                windows,
+                                exposures
                             )
 
                         Log.e("Upload Replace", "bulk")
                         Log.e(
                             "Upload Replace SKU",
-                            Utilities.getPreference(
-                                this@ProcessImagesService,
-                                AppConstants.SKU_NAME
-                            )!!
+                            skuName!!
                         )
                     } else {
                         if (countGif < photoList.size) {
@@ -1345,7 +1529,13 @@ class ProcessImagesService() : Service() {
                                 totalImagesToUPload,
                                 countGif,
                                 photoList,
-                                photoListInteriors
+                                photoListInteriors,
+                                skuName,
+                                skuId,
+                                shootId,
+                                tokenId,
+                                windows,
+                                exposures
                             )
 //                           (imageListWaterMark as ArrayList).add(response.body()!!.watermark_image)
 
@@ -1365,7 +1555,13 @@ class ProcessImagesService() : Service() {
                                     totalImagesToUPload,
                                     countGif,
                                     photoList,
-                                    photoListInteriors
+                                    photoListInteriors,
+                                    skuName,
+                                    skuId,
+                                    shootId,
+                                    tokenId,
+                                    windows,
+                                    exposures
                                 )
                             }
                         } else {
@@ -1381,7 +1577,13 @@ class ProcessImagesService() : Service() {
                             imageFileListFrames,
                             imageInteriorFileList,
                             imageInteriorFileListFrames,
-                            totalImagesToUPload
+                            totalImagesToUPload,
+                            skuName,
+                            skuId,
+                            shootId,
+                            tokenId,
+                            windows,
+                            exposures
                         )
                         Toast.makeText(
                             this@ProcessImagesService,
@@ -1409,7 +1611,13 @@ class ProcessImagesService() : Service() {
                             totalImagesToUPload,
                             countGif,
                             photoList,
-                            photoListInteriors
+                            photoListInteriors,
+                            skuName,
+                            skuId,
+                            shootId,
+                            tokenId,
+                            windows,
+                            exposures
                         )
 //                           (imageListWaterMark as ArrayList).add(response.body()!!.watermark_image)
 
@@ -1429,7 +1637,13 @@ class ProcessImagesService() : Service() {
                                 totalImagesToUPload,
                                 countGif,
                                 photoList,
-                                photoListInteriors
+                                photoListInteriors,
+                                skuName,
+                                skuId,
+                                shootId,
+                                tokenId,
+                                windows,
+                                exposures
                             )
                         }
                     } else
@@ -1443,7 +1657,13 @@ class ProcessImagesService() : Service() {
                             imageFileListFrames,
                             imageInteriorFileList,
                             imageInteriorFileListFrames,
-                            totalImagesToUPload
+                            totalImagesToUPload,
+                            skuName,
+                            skuId,
+                            shootId,
+                            tokenId,
+                            windows,
+                            exposures
                         )
                     Toast.makeText(
                         this@ProcessImagesService,
@@ -1470,7 +1690,13 @@ class ProcessImagesService() : Service() {
         imageFileListFrames: java.util.ArrayList<Int>,
         imageInteriorFileList: java.util.ArrayList<File>,
         imageInteriorFileListFrames: java.util.ArrayList<Int>,
-        totalImagesToUPload: Int
+        totalImagesToUPload: Int,
+        skuName: String,
+        skuId: String,
+        shootId: String ,
+        tokenId: String,
+        windows: String,
+        exposures: String
     ) {
         if (Utilities.isNetworkAvailable(this)) {
 
@@ -1478,16 +1704,16 @@ class ProcessImagesService() : Service() {
             log("start featch bulk upload")
 
             val request = RetrofitClients.buildService(APiService::class.java)
-            val userId = RequestBody.create(
+            val UserId = RequestBody.create(
                 MultipartBody.FORM,
-                Utilities.getPreference(this, AppConstants.tokenId)!!
+                tokenId!!
             )
-            val skuId = RequestBody.create(
+            val SkuId = RequestBody.create(
                 MultipartBody.FORM,
-                Utilities.getPreference(this, AppConstants.SKU_ID)!!
+                skuId!!
             )
 
-            val call = request.fetchBulkImage(userId, skuId)
+            val call = request.fetchBulkImage(UserId, SkuId)
 
             call?.enqueue(object : Callback<List<FetchBulkResponse>> {
                 override fun onResponse(
@@ -1521,10 +1747,7 @@ class ProcessImagesService() : Service() {
                                 interiorList.add(response.body()!![i].output_image_url)
                             }
                         }
-                        if (Utilities.getPreference(
-                                this@ProcessImagesService,
-                                AppConstants.CATEGORY_NAME
-                            )
+                        if (catName
                                 .equals("Automobiles")
                         ) {
                             fetchGif(
@@ -1540,7 +1763,13 @@ class ProcessImagesService() : Service() {
                                 totalImagesToUPload,
                                 imageListAfter,
                                 imageList,
-                                interiorList
+                                interiorList,
+                                skuName,
+                                skuId,
+                                shootId,
+                                tokenId,
+                                windows,
+                                exposures
                             )
                         } else {
                             var gifLink: String = ""
@@ -1559,7 +1788,13 @@ class ProcessImagesService() : Service() {
                                 gifLink,
                                 imageList,
                                 imageListAfter,
-                                interiorList
+                                interiorList,
+                                skuName,
+                                skuId,
+                                shootId,
+                                tokenId,
+                                windows,
+                                exposures
                             )
                         }
 
@@ -1574,7 +1809,13 @@ class ProcessImagesService() : Service() {
                             imageFileListFrames,
                             imageInteriorFileList,
                             imageInteriorFileListFrames,
-                            totalImagesToUPload
+                            totalImagesToUPload,
+                            skuName,
+                            skuId,
+                            shootId,
+                            tokenId,
+                            windows,
+                            exposures
                         )
                     }
                 }
@@ -1608,7 +1849,13 @@ class ProcessImagesService() : Service() {
         totalImagesToUPload: Int,
         countGif: Int,
         photoList: List<Photos>,
-        photoListInteriors: List<Photos>
+        photoListInteriors: List<Photos>,
+        skuName: String,
+        skuId: String,
+        shootId: String ,
+        tokenId: String,
+        windows: String,
+        exposures: String
     ) {
         if (Utilities.isNetworkAvailable(this)) {
 
@@ -1637,13 +1884,13 @@ class ProcessImagesService() : Service() {
                 backgroundColour
             )
 
-            val userId = RequestBody.create(
+            val UserId = RequestBody.create(
                 MultipartBody.FORM,
-                Utilities.getPreference(this, AppConstants.tokenId)!!
+                tokenId!!
             )
-            val skuId = RequestBody.create(
+            val SkuId = RequestBody.create(
                 MultipartBody.FORM,
-                Utilities.getPreference(this, AppConstants.SKU_ID)!!
+                skuId!!
             )
             val imageUrl = RequestBody.create(
                 MultipartBody.FORM,
@@ -1651,11 +1898,11 @@ class ProcessImagesService() : Service() {
             )
             Log.e(
                 "Sku NAme Upload",
-                Utilities.getPreference(this, AppConstants.SKU_NAME)!!
+                skuName!!
             )
-            val skuName = RequestBody.create(
+            val SkuName = RequestBody.create(
                 MultipartBody.FORM,
-                Utilities.getPreference(this, AppConstants.SKU_NAME)!!
+                skuName!!
             )
 
             val windowStatus = RequestBody.create(
@@ -1665,10 +1912,10 @@ class ProcessImagesService() : Service() {
 
             val call =
                 request.bulkUPloadFootwear(
-                    userId,
-                    skuId,
+                    UserId,
+                    SkuId,
                     imageUrl,
-                    skuName,
+                    SkuName,
                     marketplace_id,
                     bg_color
                 )
@@ -1699,7 +1946,13 @@ class ProcessImagesService() : Service() {
                                 totalImagesToUPload,
                                 countGif,
                                 photoList,
-                                photoListInteriors
+                                photoListInteriors,
+                                skuName,
+                                skuId,
+                                shootId,
+                                tokenId,
+                                windows,
+                                exposures
                             )
                         } else
                             fetchBulkUpload(
@@ -1712,15 +1965,18 @@ class ProcessImagesService() : Service() {
                                 imageFileListFrames,
                                 imageInteriorFileList,
                                 imageInteriorFileListFrames,
-                                totalImagesToUPload
+                                totalImagesToUPload,
+                                skuName,
+                                skuId,
+                                shootId,
+                                tokenId,
+                                windows,
+                                exposures
                             )
                         Log.e("Upload Replace", "bulk")
                         Log.e(
                             "Upload Replace SKU",
-                            Utilities.getPreference(
-                                this@ProcessImagesService,
-                                AppConstants.SKU_NAME
-                            )!!
+                            skuName!!
                         )
                     } else {
                         Toast.makeText(
@@ -1763,7 +2019,13 @@ class ProcessImagesService() : Service() {
         totalImagesToUPload: Int,
         countGif: Int,
         photoList: List<Photos>,
-        photoListInteriors: List<Photos>
+        photoListInteriors: List<Photos>,
+        skuName: String,
+        skuId: String,
+        shootId: String ,
+        tokenId: String,
+        windows: String,
+        exposures: String
     ) {
         if (Utilities.isNetworkAvailable(this)) {
 
@@ -1777,28 +2039,28 @@ class ProcessImagesService() : Service() {
                 backgroundSelect
             )
 
-            val userId = RequestBody.create(
+            val UserId = RequestBody.create(
                 MultipartBody.FORM,
-                Utilities.getPreference(this, AppConstants.tokenId)!!
+                tokenId!!
             )
-            val skuId = RequestBody.create(
+            val SkuId = RequestBody.create(
                 MultipartBody.FORM,
-                Utilities.getPreference(this, AppConstants.SKU_ID)!!
+                skuId!!
             )
             val imageUrl = RequestBody.create(
                 MultipartBody.FORM,
                 photoListInteriors[countGif].displayThumbnail
             )
 
-            val skuName = RequestBody.create(
+            val SkuName = RequestBody.create(
                 MultipartBody.FORM,
-                Utilities.getPreference(this, AppConstants.SKU_NAME)!!
+                skuName!!
             )
 
             val call =
                 request.addWaterMark(
-                    background, userId, skuId,
-                    imageUrl, skuName
+                    background, UserId, SkuId,
+                    imageUrl, SkuName
                 )
 
             call?.enqueue(object : Callback<WaterMarkResponse> {
@@ -1824,7 +2086,13 @@ class ProcessImagesService() : Service() {
                                 totalImagesToUPload,
                                 countGif,
                                 photoList,
-                                photoListInteriors
+                                photoListInteriors,
+                                skuName,
+                                skuId,
+                                shootId,
+                                tokenId,
+                                windows,
+                                exposures
                             )
                         } else
                             fetchBulkUpload(
@@ -1837,15 +2105,18 @@ class ProcessImagesService() : Service() {
                                 imageFileListFrames,
                                 imageInteriorFileList,
                                 imageInteriorFileListFrames,
-                                totalImagesToUPload
+                                totalImagesToUPload,
+                                skuName,
+                                skuId,
+                                shootId,
+                                tokenId,
+                                windows,
+                                exposures
                             )
                         Log.e("Upload Replace", "bulk")
                         Log.e(
                             "Upload Replace SKU",
-                            Utilities.getPreference(
-                                this@ProcessImagesService,
-                                AppConstants.SKU_NAME
-                            )!!
+                            skuName!!
                         )
                     } else {
                         Toast.makeText(
@@ -1886,7 +2157,13 @@ class ProcessImagesService() : Service() {
         totalImagesToUPload: Int,
         imageListAfter: ArrayList<String>,
         imageList: ArrayList<String>,
-        interiorList: ArrayList<String>
+        interiorList: ArrayList<String>,
+        skuName: String,
+        skuId: String,
+        shootId: String ,
+        tokenId: String,
+        windows: String,
+        exposures: String
     ) {
         if (Utilities.isNetworkAvailable(this)) {
             log("start fetch gif")
@@ -1919,7 +2196,13 @@ class ProcessImagesService() : Service() {
                             gifLink,
                             imageList,
                             imageListAfter,
-                            interiorList
+                            interiorList,
+                            skuName,
+                            skuId,
+                            shootId,
+                            tokenId,
+                            windows,
+                            exposures
                         )
                     } else {
                         fetchBulkUpload(
@@ -1932,7 +2215,13 @@ class ProcessImagesService() : Service() {
                             imageFileListFrames,
                             imageInteriorFileList,
                             imageInteriorFileListFrames,
-                            totalImagesToUPload
+                            totalImagesToUPload,
+                            skuName,
+                            skuId,
+                            shootId,
+                            tokenId,
+                            windows,
+                            exposures
                         )
                     }
                 }
@@ -1967,27 +2256,33 @@ class ProcessImagesService() : Service() {
         gifLink: String,
         imageList: ArrayList<String>,
         imageListAfter: ArrayList<String>,
-        interiorList: ArrayList<String>
+        interiorList: ArrayList<String>,
+        skuName: String,
+        skuId: String,
+        shootId: String ,
+        tokenId: String,
+        windows: String,
+        exposures: String
     ) {
         if (Utilities.isNetworkAvailable(this)) {
             log("start upload gif")
             val request = RetrofitClients.buildService(APiService::class.java)
 
-            val userId = RequestBody.create(
+            val UserId = RequestBody.create(
                 MultipartBody.FORM,
-                Utilities.getPreference(this, AppConstants.tokenId)!!
+                tokenId!!
             )
 
-            val skuId = RequestBody.create(
+            val SkuId = RequestBody.create(
                 MultipartBody.FORM,
-                Utilities.getPreference(this, AppConstants.SKU_ID)!!
+                skuId!!
             )
             val gifUrl = RequestBody.create(
                 MultipartBody.FORM,
                 gifLink
             )
 
-            val call = request.uploadUserGif(userId, skuId, gifUrl)
+            val call = request.uploadUserGif(UserId, SkuId, gifUrl)
 
             call?.enqueue(object : Callback<UploadGifResponse> {
                 override fun onResponse(
@@ -2008,7 +2303,13 @@ class ProcessImagesService() : Service() {
                             totalImagesToUPload, gifLink,
                             imageList,
                             imageListAfter,
-                            interiorList
+                            interiorList,
+                            skuName,
+                            skuId,
+                            shootId,
+                            tokenId,
+                            windows,
+                            exposures
                         )
                     }
                 }
@@ -2042,7 +2343,13 @@ class ProcessImagesService() : Service() {
         gifLink: String,
         imageList: ArrayList<String>,
         imageListAfter: ArrayList<String>,
-        interiorList: ArrayList<String>
+        interiorList: ArrayList<String>,
+        skuName: String,
+        skuId: String,
+        shootId: String ,
+        tokenId: String,
+        windows: String,
+        exposures: String
     ) {
 //        PROGRESS_MAX = 1
         if (Utilities.isNetworkAvailable(this)) {

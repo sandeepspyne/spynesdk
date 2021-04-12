@@ -199,6 +199,13 @@ class TimerActivity : AppCompatActivity() {
                 serviceIntent.putExtra(AppConstants.ALL_INTERIOR_IMAGE_LIST, imageInteriorFileList)
                 serviceIntent.putExtra(AppConstants.ALL_INTERIOR_FRAME_LIST, imageInteriorFileListFrames)
                 serviceIntent.putExtra(AppConstants.CATEGORY_NAME, catName)
+                serviceIntent.putExtra(AppConstants.SKU_NAME, Utilities.getPreference(this, AppConstants.SKU_NAME))
+                serviceIntent.putExtra(AppConstants.SKU_ID, Utilities.getPreference(this, AppConstants.SKU_ID))
+                serviceIntent.putExtra(AppConstants.SHOOT_ID, Utilities.getPreference(this, AppConstants.SHOOT_ID))
+                serviceIntent.putExtra(AppConstants.tokenId, Utilities.getPreference(this, AppConstants.tokenId))
+                serviceIntent.putExtra(AppConstants.WINDOWS, Utilities.getPreference(this, AppConstants.WINDOWS))
+                serviceIntent.putExtra(AppConstants.EXPOSURES, Utilities.getPreference(this, AppConstants.EXPOSURES))
+
                 serviceIntent.action = action.name
 //        ContextCompat.startForegroundService(this, serviceIntent)
 
