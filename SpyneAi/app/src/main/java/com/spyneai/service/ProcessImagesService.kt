@@ -596,6 +596,8 @@ class ProcessImagesService() : Service() {
         exposures: String
 
     ) {
+        var totalImagesToUPloadIndex = totalImagesToUPloadIndex;
+        var totalImagesToUPload = totalImagesToUPload;
         if (Utilities.isNetworkAvailable(this)) {
             log("start upload image url")
             val request = RetrofitClient.buildService(APiService::class.java)
@@ -605,15 +607,14 @@ class ProcessImagesService() : Service() {
 //                    this,
 //                    AppConstants.MAIN_IMAGE
 //                ).toString().split("/").size - 1]
-            val uploadPhotoName: String =   mainImage
-                    .toString().split("/")[mainImage.split("/").size - 1]
+            val uploadPhotoName: String =   mainImage.split("/")[mainImage.split("/").size - 1]
 
             val uploadPhotoRequest = UploadPhotoRequest(
                 skuName!!,
                 skuId!!,
                 "raw",
                 imageFileListFrames[totalImagesToUPloadIndex],
-                skuId!!,
+                shootId!!,
                 mainImage,
                 uploadPhotoName,
                 "EXTERIOR"
@@ -901,8 +902,8 @@ class ProcessImagesService() : Service() {
                 skuId!!,
                 "raw",
                 imageInteriorFileListFrames[totalImagesToUPloadIndex],
-                skuId!!,
-                Utilities.getPreference(this, AppConstants.MAIN_IMAGE).toString(),
+                shootId!!,
+                mainImageInterior,
                 uploadPhotoName,
                 "INTERIOR"
             )
@@ -1371,6 +1372,7 @@ class ProcessImagesService() : Service() {
         windows: String,
         exposures: String
     ) {
+        var countGif = countGif;
 //        PROGRESS_MAX = photoList.size
         if (Utilities.isNetworkAvailable(this)) {
 
@@ -1514,77 +1516,7 @@ class ProcessImagesService() : Service() {
                             skuName!!
                         )
                     } else {
-                        if (countGif < photoList.size) {
-                            Log.e("countGif", countGif.toString())
-                            bulkUpload(
-                                intent,
-                                catName,
-                                marketplaceId,
-                                backgroundColour,
-                                backgroundSelect,
-                                imageFileList,
-                                imageFileListFrames,
-                                imageInteriorFileList,
-                                imageInteriorFileListFrames,
-                                totalImagesToUPload,
-                                countGif,
-                                photoList,
-                                photoListInteriors,
-                                skuName,
-                                skuId,
-                                shootId,
-                                tokenId,
-                                windows,
-                                exposures
-                            )
-//                           (imageListWaterMark as ArrayList).add(response.body()!!.watermark_image)
 
-                        } else if (photoListInteriors.size > 0) {
-                            countGif = 0
-                            if (countGif < photoListInteriors.size) {
-                                addWatermark(
-                                    intent,
-                                    catName,
-                                    marketplaceId,
-                                    backgroundColour,
-                                    backgroundSelect,
-                                    imageFileList,
-                                    imageFileListFrames,
-                                    imageInteriorFileList,
-                                    imageInteriorFileListFrames,
-                                    totalImagesToUPload,
-                                    countGif,
-                                    photoList,
-                                    photoListInteriors,
-                                    skuName,
-                                    skuId,
-                                    shootId,
-                                    tokenId,
-                                    windows,
-                                    exposures
-                                )
-                            }
-                        } else {
-
-                        }
-                        fetchBulkUpload(
-                            intent,
-                            catName,
-                            marketplaceId,
-                            backgroundColour,
-                            backgroundSelect,
-                            imageFileList,
-                            imageFileListFrames,
-                            imageInteriorFileList,
-                            imageInteriorFileListFrames,
-                            totalImagesToUPload,
-                            skuName,
-                            skuId,
-                            shootId,
-                            tokenId,
-                            windows,
-                            exposures
-                        )
                         Toast.makeText(
                             this@ProcessImagesService,
                             "Error in bulk upload", Toast.LENGTH_SHORT
@@ -1596,75 +1528,7 @@ class ProcessImagesService() : Service() {
                 }
 
                 override fun onFailure(call: Call<BulkUploadResponse>, t: Throwable) {
-                    if (countGif < photoList.size) {
-                        Log.e("countGif", countGif.toString())
-                        bulkUpload(
-                            intent,
-                            catName,
-                            marketplaceId,
-                            backgroundColour,
-                            backgroundSelect,
-                            imageFileList,
-                            imageFileListFrames,
-                            imageInteriorFileList,
-                            imageInteriorFileListFrames,
-                            totalImagesToUPload,
-                            countGif,
-                            photoList,
-                            photoListInteriors,
-                            skuName,
-                            skuId,
-                            shootId,
-                            tokenId,
-                            windows,
-                            exposures
-                        )
-//                           (imageListWaterMark as ArrayList).add(response.body()!!.watermark_image)
 
-                    } else if (photoListInteriors.size > 0) {
-                        countGif = 0
-                        if (countGif < photoListInteriors.size) {
-                            addWatermark(
-                                intent,
-                                catName,
-                                marketplaceId,
-                                backgroundColour,
-                                backgroundSelect,
-                                imageFileList,
-                                imageFileListFrames,
-                                imageInteriorFileList,
-                                imageInteriorFileListFrames,
-                                totalImagesToUPload,
-                                countGif,
-                                photoList,
-                                photoListInteriors,
-                                skuName,
-                                skuId,
-                                shootId,
-                                tokenId,
-                                windows,
-                                exposures
-                            )
-                        }
-                    } else
-                        fetchBulkUpload(
-                            intent,
-                            catName,
-                            marketplaceId,
-                            backgroundColour,
-                            backgroundSelect,
-                            imageFileList,
-                            imageFileListFrames,
-                            imageInteriorFileList,
-                            imageInteriorFileListFrames,
-                            totalImagesToUPload,
-                            skuName,
-                            skuId,
-                            shootId,
-                            tokenId,
-                            windows,
-                            exposures
-                        )
                     Toast.makeText(
                         this@ProcessImagesService,
                         "Server not responding!!!", Toast.LENGTH_SHORT
@@ -1857,6 +1721,7 @@ class ProcessImagesService() : Service() {
         windows: String,
         exposures: String
     ) {
+        var countGif=  countGif;
         if (Utilities.isNetworkAvailable(this)) {
 
 
@@ -2027,6 +1892,8 @@ class ProcessImagesService() : Service() {
         windows: String,
         exposures: String
     ) {
+
+        var countGif = countGif;
         if (Utilities.isNetworkAvailable(this)) {
 
 

@@ -283,7 +283,7 @@ class TimerActivity : AppCompatActivity() {
     @Subscribe(threadMode = ThreadMode.MAIN)
     fun onMessageEvent(event: ProcessingImagesEvent?) {
         event?.getNotificationID()?.let {
-            Toast.makeText(this, it, Toast.LENGTH_LONG).show()
+//            Toast.makeText(this, it, Toast.LENGTH_LONG).show()
             var intent = Intent(this@TimerActivity, DashboardActivity::class.java)
             startActivity(intent)
         }
