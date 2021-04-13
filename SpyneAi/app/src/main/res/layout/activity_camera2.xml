@@ -78,6 +78,7 @@
                     android:layout_margin="@dimen/dp_50"
                     android:contentDescription="@string/app_name" />
 
+
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -110,6 +111,7 @@
                         app:tint="@color/white" />
 
                 </LinearLayout>
+
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -138,6 +140,7 @@
                         android:layout_gravity="center"
                         android:orientation="horizontal"
                         android:layout_margin="@dimen/dp_10"/>
+
                 </LinearLayout>
 
 
@@ -180,7 +183,9 @@
                 android:gravity="center"
                 android:padding="@dimen/dp_5"
                 android:layout_height="0dp">
+
                 <androidx.cardview.widget.CardView
+                    android:id="@+id/cardOverlay"
                     android:layout_width="@dimen/dp_50"
                     android:layout_height="@dimen/dp_50"
                     app:cardCornerRadius="@dimen/dp_50">
@@ -194,6 +199,21 @@
                         android:padding="@dimen/sp_5"
                         android:background="@drawable/bg_round" />
                 </androidx.cardview.widget.CardView>
+                <TextView
+                    android:id="@+id/tvSkipShoot"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
+                    android:layout_gravity="center"
+                    android:visibility="gone"
+
+                    android:drawablePadding="@dimen/dp_5"
+                    android:fontFamily="@font/bold"
+                    android:text="@string/skip"
+                    android:textColor="@color/primary"
+                    android:textSize="@dimen/sp_16"
+                    app:drawableEndCompat="@mipmap/skip" />
+
             </LinearLayout>
         </LinearLayout>
 

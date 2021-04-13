@@ -399,11 +399,6 @@ class ShowImagesActivity : AppCompatActivity() {
     }
 
     fun showImagesDialog(position: Int) {
-        Utilities.showProgressDialog(this)
-        Handler().postDelayed({
-            Utilities.hideProgressDialog()
-        }, 3000)
-
         val dialog = Dialog(this)
         dialog.requestWindowFeature(Window.FEATURE_NO_TITLE)
         dialog.setCancelable(true)

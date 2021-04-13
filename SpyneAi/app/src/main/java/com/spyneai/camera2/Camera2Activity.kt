@@ -789,8 +789,73 @@ class Camera2Activity : AppCompatActivity(), SubCategoriesAdapter.BtnClickListen
             ).show()
         })
 
-
         cameraExecutor = Executors.newSingleThreadExecutor()
+
+        tvSkipShoot.setOnClickListener(View.OnClickListener {
+            if (!interiorEnabled) {
+                if (!focusedEnabled) {
+                    rvSubcategories.visibility = View.VISIBLE
+
+                 //   imageFileList.add(photoFile!!)
+                   // imageFileListFrames.add(frameImageList[frameImageListSelections[frameNumberTemp]].frameNumber)
+                    if (frameNumberTemp < frameImageListSelections.size - 1) {
+                        showProgressFrames(++frameNumberTemp)
+                        camera_capture_button.isEnabled = true
+                        camera_capture_button.isFocusable = true
+                    } else {
+                        showInteriorDialog()
+                    }
+                }else{
+                    rvSubcategories.visibility = View.GONE
+                    //imageFocusedFileList.add(photoFile!!)
+                    //imageFocusedFileListFrames.add(frameFocusedImageList[frameImageListSelections[frameNumberTemp]].frameNumber)
+                    if (frameNumberTemp < frameImageListSelections.size - 1) {
+                        showProgressFrames(++frameNumberTemp)
+                        camera_capture_button.isEnabled = true
+                        camera_capture_button.isFocusable = true
+                    }
+                    else{
+                        val intent = Intent(
+                            this,
+                            GenerateGifActivity::class.java
+                        )
+
+                        intent.putExtra(AppConstants.ALL_IMAGE_LIST, imageFileList)
+                        intent.putExtra(AppConstants.ALL_FRAME_LIST, imageFileListFrames)
+                        intent.putExtra(AppConstants.ALL_INTERIOR_IMAGE_LIST, imageInteriorFileList)
+                        intent.putExtra(AppConstants.ALL_INTERIOR_FRAME_LIST, imageInteriorFileListFrames)
+                        intent.putExtra(AppConstants.ALL_FOCUSED_IMAGE_LIST, imageFocusedFileList)
+                        intent.putExtra(AppConstants.ALL_FOCUSED_FRAME_LIST, imageFocusedFileListFrames)
+                        intent.putExtra(AppConstants.GIF_LIST, gifList)
+
+                        Log.e("All focused Image",imageFocusedFileList.toString() )
+                        Log.e("All focused Frames",imageFocusedFileListFrames.toString())
+
+                        Utilities.savePrefrence(this, AppConstants.SKU_NAME, skuName)
+                        Log.e("Camera  SKU",
+                            Utilities.getPreference(this,
+                                AppConstants.SKU_NAME)!!)
+                        startActivity(intent)
+                        finish()
+                    }
+                }
+            }
+            else if (interiorEnabled)
+            {
+                rvSubcategories.visibility = View.GONE
+               // imageInteriorFileList.add(photoFile!!)
+                //imageInteriorFileListFrames.add(frameInteriorImageList[frameImageListSelections[frameNumberTemp]].frameNumber)
+                if (frameNumberTemp < frameImageListSelections.size - 1) {
+                    showProgressFrames(++frameNumberTemp)
+                    camera_capture_button.isEnabled = true
+                    camera_capture_button.isFocusable = true
+                }
+
+                else {
+                    showFocusedDialog()
+                }
+            }
+        })
     }
 
     //Edit and update skus
@@ -1879,6 +1944,8 @@ class Camera2Activity : AppCompatActivity(), SubCategoriesAdapter.BtnClickListen
         })
 
         tvShootNowInterior.setOnClickListener(View.OnClickListener {
+            tvSkipShoot.visibility = View.VISIBLE
+            cardOverlay.visibility = View.GONE
             camera_capture_button.isEnabled = true
             camera_capture_button.isFocusable = true
             interiorEnabled = true

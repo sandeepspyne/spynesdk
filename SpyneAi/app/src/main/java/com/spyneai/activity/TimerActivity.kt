@@ -21,6 +21,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.gson.Gson
+import com.spyneai.BuildConfig
 import com.spyneai.R
 import com.spyneai.adapter.MarketplacesAdapter
 import com.spyneai.adapter.PhotosAdapter
@@ -696,7 +697,9 @@ class TimerActivity : AppCompatActivity() {
         } catch (e: IOException) {
             e.printStackTrace()
         }
-        assert(ei != null)
+        if (BuildConfig.DEBUG && ei == null) {
+            error("Assertion failed")
+        }
         val orientation = ei!!.getAttributeInt(
             ExifInterface.TAG_ORIENTATION,
             ExifInterface.ORIENTATION_UNDEFINED
