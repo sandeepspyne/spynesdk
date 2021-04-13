@@ -45,6 +45,16 @@
                 android:orientation="horizontal"
                 android:padding="@dimen/dp_10" />
 
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/rvFocusedFrames"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_gravity="start|center"
+                android:visibility="gone"
+                android:orientation="horizontal"
+                android:padding="@dimen/dp_10" />
+
+
         </LinearLayout>
         <LinearLayout
             android:layout_width="0dp"

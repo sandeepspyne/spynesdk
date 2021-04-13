@@ -10,6 +10,8 @@ object AppConstants {
     val ALL_IMAGE_LIST: String = "all_image_list"
     val ALL_INTERIOR_IMAGE_LIST: String = "all_interior_image_list"
     val ALL_INTERIOR_FRAME_LIST: String = "all_interior_frame_list"
+    val ALL_FOCUSED_IMAGE_LIST: String = "all_focused_image_list"
+    val ALL_FOCUSED_FRAME_LIST: String = "all_focused_frame_list"
 
     val LIST_HD_QUALITY: String = "list_hd_quality"
     val LIST_WATERMARK: String = "list_watermark"

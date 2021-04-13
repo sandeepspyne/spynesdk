@@ -25,6 +25,7 @@ import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.downloader.*
 import com.spyneai.R
 import com.spyneai.adapter.ShowReplacedImagesAdapter
+import com.spyneai.adapter.ShowReplacedImagesFocusedAdapter
 import com.spyneai.adapter.ShowReplacedImagesInteriorAdapter
 import com.spyneai.aipack.FetchBulkResponse
 import com.spyneai.interfaces.APiService
@@ -60,6 +61,8 @@ class ShowImagesActivity : AppCompatActivity() {
     lateinit var imageList: List<String>
     lateinit var imageListAfter: List<String>
     lateinit var imageListInterior: List<String>
+    lateinit var imageListFocused: List<String>
+
     lateinit var downloadList1: ArrayList<String>
     lateinit var downloadList2: ArrayList<String>
     lateinit var imageListWaterMark: ArrayList<String>
@@ -69,6 +72,7 @@ class ShowImagesActivity : AppCompatActivity() {
 
     private lateinit var showReplacedImagesAdapter: ShowReplacedImagesAdapter
     private lateinit var ShowReplacedImagesInteriorAdapter: ShowReplacedImagesInteriorAdapter
+    private lateinit var ShowReplacedImagesFocusedAdapter: ShowReplacedImagesFocusedAdapter
 
     var downloadCount: Int = 0
     lateinit var Category: String
@@ -237,6 +241,7 @@ class ShowImagesActivity : AppCompatActivity() {
         imageListAfter = ArrayList<String>()
         imageListWaterMark = ArrayList<String>()
         imageListInterior = ArrayList<String>()
+        imageListFocused = ArrayList<String>()
         listHdQuality = ArrayList<String>()
 
         showReplacedImagesAdapter = ShowReplacedImagesAdapter(this,
@@ -258,6 +263,16 @@ class ShowImagesActivity : AppCompatActivity() {
                 }
             })
 
+
+        ShowReplacedImagesFocusedAdapter = ShowReplacedImagesFocusedAdapter(this,
+            imageListFocused as ArrayList<String>,
+            object : ShowReplacedImagesFocusedAdapter.BtnClickListener {
+                override fun onBtnClick(position: Int) {
+                    //   showImagesDialog(position)
+                    Log.e("position preview", position.toString())
+                }
+            })
+
         rvImagesBackgroundRemoved.setLayoutManager(
             ScrollingLinearLayoutManager(
                 this,
@@ -273,8 +288,16 @@ class ShowImagesActivity : AppCompatActivity() {
             )
         )
 
+        rvFocused.setLayoutManager(
+            GridLayoutManager(
+                this,
+                2
+            )
+        )
+
         rvImagesBackgroundRemoved.setAdapter(showReplacedImagesAdapter)
         rvInteriors.setAdapter(ShowReplacedImagesInteriorAdapter)
+        rvFocused.setAdapter(ShowReplacedImagesFocusedAdapter)
         fetchBulkUpload()
     }
 
@@ -317,7 +340,15 @@ class ShowImagesActivity : AppCompatActivity() {
                             Utilities.savePrefrence(this@ShowImagesActivity, AppConstants.CATEGORY_NAME, response.body()!![0].product_category)
                             Utilities.savePrefrence(this@ShowImagesActivity, AppConstants.NO_OF_IMAGES, imageListAfter.size.toString())
                             hideData(0)
-                        } else {
+                        }else if (response.body()!![i].category.equals("Focus Shoot")) {
+                            Category = response.body()!![i].category
+                            (imageListFocused as ArrayList).add(response.body()!![i].output_image_url)
+                            (imageListWaterMark as ArrayList).add(response.body()!![i].output_image_url)
+                            (listHdQuality as ArrayList).add(response.body()!![i].input_image_url)
+                            Utilities.savePrefrence(this@ShowImagesActivity, AppConstants.CATEGORY_NAME, response.body()!![0].product_category)
+                            Utilities.savePrefrence(this@ShowImagesActivity, AppConstants.NO_OF_IMAGES, imageListAfter.size.toString())
+                            hideData(0)
+                        } else{
                             Category = response.body()!![i].category
                             (imageList as ArrayList).add(response.body()!![i].input_image_url)
                             (imageListAfter as ArrayList).add(response.body()!![i].output_image_url)
@@ -334,6 +365,7 @@ class ShowImagesActivity : AppCompatActivity() {
                 }
                 showReplacedImagesAdapter.notifyDataSetChanged()
                 ShowReplacedImagesInteriorAdapter.notifyDataSetChanged()
+                ShowReplacedImagesFocusedAdapter.notifyDataSetChanged()
             }
 
             override fun onFailure(call: Call<List<FetchBulkResponse>>, t: Throwable) {

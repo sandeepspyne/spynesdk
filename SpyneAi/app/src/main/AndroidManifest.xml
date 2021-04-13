@@ -33,6 +33,7 @@
         android:roundIcon="@mipmap/app_logo"
         android:supportsRtl="true"
         android:theme="@style/Theme.SpyneAi"
+        android:extractNativeLibs="false"
         android:usesCleartextTraffic="true"
         tools:targetApi="m">
         <activity android:name=".activity.OrderSummary2Activity"

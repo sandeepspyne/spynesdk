@@ -41,6 +41,9 @@ class GenerateGifActivity : AppCompatActivity() {
     public lateinit var imageInteriorFileList : ArrayList<File>
     public lateinit var imageInteriorFileListFrames : ArrayList<Int>
 
+    public lateinit var imageFocusedFileList: ArrayList<File>
+    public lateinit var imageFocusedFileListFrames: ArrayList<Int>
+
     private var currentPOsition : Int = 0
     lateinit var carBackgroundList : ArrayList<CarBackgroundsResponse>
     lateinit var carbackgroundsAdapter: CarBackgroundAdapter
@@ -77,6 +80,9 @@ class GenerateGifActivity : AppCompatActivity() {
         imageInteriorFileList = ArrayList<File>()
         imageInteriorFileListFrames = ArrayList<Int>()
 
+        imageFocusedFileList = ArrayList<File>()
+        imageFocusedFileListFrames = ArrayList<Int>()
+
         //Get Intents
 
         imageFileList.addAll(intent.getParcelableArrayListExtra(AppConstants.ALL_IMAGE_LIST)!!)
@@ -86,6 +92,9 @@ class GenerateGifActivity : AppCompatActivity() {
         {
             imageInteriorFileList.addAll(intent.getParcelableArrayListExtra(AppConstants.ALL_INTERIOR_IMAGE_LIST)!!)
             imageInteriorFileListFrames.addAll(intent.getIntegerArrayListExtra(AppConstants.ALL_INTERIOR_FRAME_LIST)!!)
+
+            imageFocusedFileList.addAll(intent.getParcelableArrayListExtra(AppConstants.ALL_FOCUSED_IMAGE_LIST)!!)
+            imageFocusedFileListFrames.addAll(intent.getIntegerArrayListExtra(AppConstants.ALL_FOCUSED_FRAME_LIST)!!)
         }
 
         totalImagesToUPload = imageFileList.size
@@ -146,11 +155,13 @@ class GenerateGifActivity : AppCompatActivity() {
 
         backgroundSelect  = carBackgroundList[0].imageId.toString()
 
-        if (gifList[0]!=null){
-            Glide.with(this@GenerateGifActivity) // replace with 'this' if it's in activity
-                .load(gifList[0])
-                .error(R.mipmap.defaults) // show error drawable if the image is not a gif
-                .into(imageViewGif)
+        if (gifList != null && gifList.size > 0) {
+            if (gifList[0] != null) {
+                Glide.with(this@GenerateGifActivity) // replace with 'this' if it's in activity
+                    .load(gifList[0])
+                    .error(R.mipmap.defaults) // show error drawable if the image is not a gif
+                    .into(imageViewGif)
+            }
         }
 
     }
@@ -174,6 +185,8 @@ class GenerateGifActivity : AppCompatActivity() {
                 intent.putExtra(AppConstants.ALL_FRAME_LIST, imageFileListFrames)
                 intent.putExtra(AppConstants.ALL_INTERIOR_IMAGE_LIST, imageInteriorFileList)
                 intent.putExtra(AppConstants.ALL_INTERIOR_FRAME_LIST, imageInteriorFileListFrames)
+                intent.putExtra(AppConstants.ALL_FOCUSED_IMAGE_LIST, imageFocusedFileList)
+                intent.putExtra(AppConstants.ALL_FOCUSED_FRAME_LIST, imageFocusedFileListFrames)
                 intent.putExtra(AppConstants.CATEGORY_NAME, catName)
 //                intent.putExtra(AppConstants.GIF_LIST, gifList)
                 startActivity(intent)

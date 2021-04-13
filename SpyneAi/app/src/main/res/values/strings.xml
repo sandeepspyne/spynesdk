@@ -134,7 +134,7 @@
     <string name="no_internet">Server Not Responding</string>
     <string name="retry">Retry</string>
     <string name="more_angles">(More angles coming soon)</string>
-    <string name="we_recommend">We recommend you to shoot the \ninterior view of your car.</string>
+    <string name="we_recommend">(1/2) Interior Shots</string>
     <string name="skip">Skip</string>
     <string name="apply_reflection">Apply auto exposure</string>
     <string name="window_reflection">Window reflection style</string>
@@ -182,8 +182,8 @@
 
 
     <string name="request_credits">Request credits on <br/>Whatsapp</string>
-
-
+    <string name="we_recommend_focused">(2/2) Miscellaneous Shots</string>
+    <string name="focused">Miscellaneous</string>
 
 
     <string-array name="planets_array">

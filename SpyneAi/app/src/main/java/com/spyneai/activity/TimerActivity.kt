@@ -66,6 +66,7 @@ class TimerActivity : AppCompatActivity() {
     private lateinit var photsAdapter: PhotosAdapter
     private lateinit var photoList: List<Photos>
     private lateinit var photoListInteriors: List<Photos>
+    private lateinit var photoListFocused: List<Photos>
 
     lateinit var imageList: ArrayList<String>
     lateinit var imageListAfter: ArrayList<String>
@@ -76,6 +77,9 @@ class TimerActivity : AppCompatActivity() {
 
     public lateinit var imageInteriorFileList: ArrayList<File>
     public lateinit var imageInteriorFileListFrames: ArrayList<Int>
+
+    public lateinit var imageFocusedFileList: ArrayList<File>
+    public lateinit var imageFocusedFileListFrames: ArrayList<Int>
 
     private var currentPOsition: Int = 0
     lateinit var carBackgroundList: ArrayList<CarBackgroundsResponse>
@@ -173,6 +177,9 @@ class TimerActivity : AppCompatActivity() {
         imageInteriorFileList = ArrayList<File>()
         imageInteriorFileListFrames = ArrayList<Int>()
 
+        imageFocusedFileList = ArrayList<File>()
+        imageFocusedFileListFrames = ArrayList<Int>()
+
         //Get Intents
         imageFileList.addAll(intent.getParcelableArrayListExtra(AppConstants.ALL_IMAGE_LIST)!!)
         imageFileListFrames.addAll(intent.getIntegerArrayListExtra(AppConstants.ALL_FRAME_LIST)!!)
@@ -180,6 +187,9 @@ class TimerActivity : AppCompatActivity() {
         if (Utilities.getPreference(this, AppConstants.CATEGORY_NAME).equals("Automobiles")) {
             imageInteriorFileList.addAll(intent.getParcelableArrayListExtra(AppConstants.ALL_INTERIOR_IMAGE_LIST)!!)
             imageInteriorFileListFrames.addAll(intent.getIntegerArrayListExtra(AppConstants.ALL_INTERIOR_FRAME_LIST)!!)
+
+            imageFocusedFileList.addAll(intent.getParcelableArrayListExtra(AppConstants.ALL_FOCUSED_IMAGE_LIST)!!)
+            imageFocusedFileListFrames.addAll(intent.getIntegerArrayListExtra(AppConstants.ALL_FOCUSED_FRAME_LIST)!!)
         }
         totalImagesToUPload = imageFileList.size
     }
@@ -225,7 +235,7 @@ class TimerActivity : AppCompatActivity() {
                     //  Utilities.hideProgressDialog()
                     if (response.isSuccessful) {
                         Log.e(
-                            "uploadImageToBucket", totalImagesToUPloadIndex.toString() +
+                            "Exterior ----", totalImagesToUPloadIndex.toString() +
                                     " " + response.body()?.image.toString()
                         )
 
@@ -304,26 +314,28 @@ class TimerActivity : AppCompatActivity() {
                     if (response.isSuccessful) {
                         try {
                             if (totalImagesToUPloadIndex < totalImagesToUPload - 1) {
-                                Log.e("uploadImageURLs", totalImagesToUPloadIndex.toString())
+                                Log.e("Exteriors ----", totalImagesToUPloadIndex.toString())
 
-                                Log.e("IMage uploaded ", response.body()?.msgInfo.toString())
-                                Log.e(
-                                    "SKU ID", Utilities.getPreference(
-                                        this@TimerActivity,
-                                        AppConstants.SKU_ID
-                                    ).toString()
-                                )
+                                Log.e("Exteriors uploaded ", response.body()?.msgInfo.toString())
+
                                 //  totalImagesToUPloadIndex = totalImagesToUPloadIndex + 1
                                 ++totalImagesToUPloadIndex
                                 uploadImageToBucket()
                             } else {
                                 totalImagesToUPloadIndex = 0
-                                totalImagesToUPload = imageInteriorFileList.size
 
                                 if (imageInteriorFileList != null && imageInteriorFileList.size > 0) {
+                                    totalImagesToUPload = imageInteriorFileList.size
                                     uploadImageToBucketInterior()
-                                } else
+                                }
+                                else if (imageFocusedFileList != null && imageFocusedFileList.size > 0) {
+                                    totalImagesToUPload = imageFocusedFileList.size
+
+                                    uploadImageToBucketFocused()
+                                }
+                                else {
                                     markSkuComplete()
+                                }
                             }
                         } catch (e: Exception) {
                             Log.e("Except", e.printStackTrace().toString())
@@ -367,7 +379,6 @@ class TimerActivity : AppCompatActivity() {
             llTimer.visibility = View.VISIBLE
             llNoInternet.visibility = View.GONE
 
-            Log.e("Fisrt execution", "UploadImage Bucket")
             //Get All Data to be uploaded
 
             val imageFile = setImageRaw(imageInteriorFileList[totalImagesToUPloadIndex])
@@ -387,11 +398,8 @@ class TimerActivity : AppCompatActivity() {
                 ) {
                     //  Utilities.hideProgressDialog()
                     if (response.isSuccessful) {
-                        Log.e("Fisrt execution", "UploadImage Bucket")
 
-
-                        Log.e("uploadImageToBucket", response.body()?.image.toString())
-                        Log.e("uploadImageToBucket", totalImagesToUPloadIndex.toString())
+                        Log.e("Interior -----", response.body()?.image.toString())
 
                         //  if (Utilities.getPreference(this@CameraActivity, AppConstants.MAIN_IMAGE).equals(""))
                         Utilities.savePrefrence(
@@ -466,20 +474,178 @@ class TimerActivity : AppCompatActivity() {
                     if (response.isSuccessful) {
                         try {
                             if (totalImagesToUPloadIndex < totalImagesToUPload - 1) {
-                                Log.e("uploadURLsInterior", totalImagesToUPloadIndex.toString())
+                                Log.e("Interiors ----", totalImagesToUPloadIndex.toString())
 
-                                Log.e("IMageInterioruploaded ", response.body()?.msgInfo.toString())
                                 Log.e(
-                                    "Frame 1i",
+                                    "Interios Frame",
                                     response.body()?.payload!!.data.currentFrame.toString()
-                                )
-                                Log.e(
-                                    "Frame 2i",
-                                    response.body()?.payload!!.data.totalFrames.toString()
                                 )
 
                                 ++totalImagesToUPloadIndex
                                 uploadImageToBucketInterior()
+                            } else {
+
+                                totalImagesToUPloadIndex = 0
+                                totalImagesToUPload = imageFocusedFileList.size
+
+                                if (imageFocusedFileList != null && imageFocusedFileList.size > 0) {
+                                    uploadImageToBucketFocused()
+                                }
+                                else {
+                                    markSkuComplete()
+                                }
+
+                                //markSkuComplete()
+                            }
+                        } catch (e: Exception) {
+                            Log.e("Except", e.printStackTrace().toString())
+                        }
+
+                    } else {
+                        llTimer.visibility = View.GONE
+                        llNoInternet.visibility = View.VISIBLE
+                        countDownTimer.cancel()
+                        Toast.makeText(
+                            this@TimerActivity,
+                            "Server not responding",
+                            Toast.LENGTH_SHORT
+                        ).show()
+                    }
+                }
+
+                override fun onFailure(call: Call<UploadPhotoResponse>, t: Throwable) {
+                    Utilities.hideProgressDialog()
+                    Toast.makeText(
+                        this@TimerActivity,
+                        "Server not responding",
+                        Toast.LENGTH_SHORT
+                    ).show()
+                    llTimer.visibility = View.GONE
+                    llNoInternet.visibility = View.VISIBLE
+                    countDownTimer.cancel()
+                    Log.e("Respo Image ", "Image error")
+                }
+            })
+        } else {
+            Utilities.hideProgressDialog()
+            llTimer.visibility = View.GONE
+            llNoInternet.visibility = View.VISIBLE
+            countDownTimer.cancel()
+        }
+    }
+
+
+    //Focused Start
+    fun uploadImageToBucketFocused() {
+        if (Utilities.isNetworkAvailable(this)) {
+            llTimer.visibility = View.VISIBLE
+            llNoInternet.visibility = View.GONE
+
+             //Get All Data to be uploaded
+
+            val imageFile = setImageRaw(imageFocusedFileList[totalImagesToUPloadIndex])
+
+            val request = RetrofitClients.buildService(APiService::class.java)
+            val requestFile = RequestBody.create(MediaType.parse("multipart/form-data"), imageFile)
+            val body = MultipartBody.Part.createFormData("image", imageFile!!.name, requestFile)
+            val descriptionString = "false"
+
+            val optimization = RequestBody.create(MultipartBody.FORM, descriptionString)
+            val call = request.uploadPhoto(body, optimization)
+
+            call?.enqueue(object : Callback<UploadResponse> {
+                override fun onResponse(
+                    call: Call<UploadResponse>,
+                    response: Response<UploadResponse>
+                ) {
+                    //  Utilities.hideProgressDialog()
+                    if (response.isSuccessful) {
+
+
+                        Log.e("Focused ----", response.body()?.image.toString())
+
+                        //  if (Utilities.getPreference(this@CameraActivity, AppConstants.MAIN_IMAGE).equals(""))
+                        Utilities.savePrefrence(
+                            this@TimerActivity,
+                            AppConstants.MAIN_IMAGE,
+                            response.body()?.image.toString()
+                        )
+                        uploadImageURLsFocused()
+                    } else {
+                        llTimer.visibility = View.GONE
+                        llNoInternet.visibility = View.VISIBLE
+                        countDownTimer.cancel()
+                    }
+                }
+
+                override fun onFailure(call: Call<UploadResponse>, t: Throwable) {
+                    //   Utilities.hideProgressDialog()
+                    Log.e("Respo Image ", "Image error")
+                    Toast.makeText(
+                        this@TimerActivity,
+                        "Server not responding",
+                        Toast.LENGTH_SHORT
+                    ).show()
+                    llTimer.visibility = View.GONE
+                    llNoInternet.visibility = View.VISIBLE
+                    countDownTimer.cancel()
+                }
+            })
+        } else {
+            Utilities.hideProgressDialog()
+            llTimer.visibility = View.GONE
+            llNoInternet.visibility = View.VISIBLE
+            countDownTimer.cancel()
+        }
+    }
+
+    fun uploadImageURLsFocused() {
+        if (Utilities.isNetworkAvailable(this)) {
+            llTimer.visibility = View.VISIBLE
+            llNoInternet.visibility = View.GONE
+            val request = RetrofitClient.buildService(APiService::class.java)
+            val uploadPhotoName: String =
+                Utilities.getPreference(this, AppConstants.MAIN_IMAGE)
+                    .toString().split("/")[Utilities.getPreference(
+                    this,
+                    AppConstants.MAIN_IMAGE
+                ).toString().split("/").size - 1]
+
+            val uploadPhotoRequest = UploadPhotoRequest(
+                Utilities.getPreference(this, AppConstants.SKU_NAME)!!,
+                Utilities.getPreference(this, AppConstants.SKU_ID)!!,
+                "raw",
+                imageFocusedFileListFrames[totalImagesToUPloadIndex],
+                Utilities.getPreference(this, AppConstants.SHOOT_ID)!!,
+                Utilities.getPreference(this, AppConstants.MAIN_IMAGE).toString(),
+                uploadPhotoName,
+                "Focused"
+            )
+
+            //    val personString = gson.toJson(uploadPhotoRequest)
+            //  val skuName = RequestBody.create(MediaType.parse("application/json"), personString)
+
+            val call = request.uploadPhotoRough(
+                Utilities.getPreference(this, AppConstants.tokenId), uploadPhotoRequest
+            )
+
+            call?.enqueue(object : Callback<UploadPhotoResponse> {
+                override fun onResponse(
+                    call: Call<UploadPhotoResponse>,
+                    response: Response<UploadPhotoResponse>
+                ) {
+                    if (response.isSuccessful) {
+                        try {
+                            if (totalImagesToUPloadIndex < totalImagesToUPload - 1) {
+                                Log.e("Focuseds -----", totalImagesToUPloadIndex.toString())
+
+                                Log.e(
+                                    "Focused Frame",
+                                    response.body()?.payload!!.data.currentFrame.toString()
+                                )
+
+                                ++totalImagesToUPloadIndex
+                                uploadImageToBucketFocused()
                             } else {
                                 markSkuComplete()
                             }
@@ -519,6 +685,8 @@ class TimerActivity : AppCompatActivity() {
             countDownTimer.cancel()
         }
     }
+
+    //Focused End
 
     fun setImageRaw(photoFile: File): File? {
         val myBitmap = BitmapFactory.decodeFile(photoFile.getAbsolutePath())
@@ -612,17 +780,16 @@ class TimerActivity : AppCompatActivity() {
         }
     }
 
-    private fun     setCustomTimer() {
+    private fun setCustomTimer() {
         if (Utilities.getPreference(this, AppConstants.FRAME_SHOOOTS) != null) {
             if (Utilities.getPreference(this, AppConstants.FRAME_SHOOOTS).equals("4")) {
-                CountDownTimer(480000)
+                CountDownTimer(720000)
             } else if (Utilities.getPreference(this, AppConstants.FRAME_SHOOOTS).equals("8")) {
                 CountDownTimer(480000 * 2)
             } else if (Utilities.getPreference(this, AppConstants.FRAME_SHOOOTS).equals("12")) {
                 CountDownTimer(480000 * 3)
             } else if (Utilities.getPreference(this, AppConstants.FRAME_SHOOOTS).equals("24")) {
                 CountDownTimer(480000 * 4)
-
             } else if (Utilities.getPreference(this, AppConstants.FRAME_SHOOOTS).equals("5")) {
                 CountDownTimer(480000)
             } else if (Utilities.getPreference(this, AppConstants.FRAME_SHOOOTS).equals("6")) {
@@ -663,6 +830,7 @@ class TimerActivity : AppCompatActivity() {
     private fun setSkuImages() {
         photoList = ArrayList<Photos>()
         photoListInteriors = ArrayList<Photos>()
+        photoListFocused = ArrayList<Photos>()
         photsAdapter = PhotosAdapter(this, photoList,
             object : PhotosAdapter.BtnClickListener {
                 override fun onBtnClick(position: Int) {
@@ -699,12 +867,15 @@ class TimerActivity : AppCompatActivity() {
                             if (response.body()?.payload!!.data.photos.size > 0) {
                                 (photoList as ArrayList).clear()
                                 (photoListInteriors as ArrayList).clear()
+                                (photoListFocused as ArrayList).clear()
 
                                 for (i in 0..response.body()?.payload!!.data.photos.size - 1) {
                                     if (response.body()?.payload!!.data.photos[i].photoType.equals("EXTERIOR"))
                                         (photoList as ArrayList).add(response.body()?.payload!!.data.photos[i])
-                                    else
+                                    else if(response.body()?.payload!!.data.photos[i].photoType.equals("INTERIOR"))
                                         (photoListInteriors as ArrayList).add(response.body()?.payload!!.data.photos[i])
+                                    else
+                                        (photoListFocused as ArrayList).add(response.body()?.payload!!.data.photos[i])
                                 }
                             }
                         }
@@ -821,8 +992,15 @@ class TimerActivity : AppCompatActivity() {
                             if (countGif < photoListInteriors.size) {
                                 addWatermark(countGif)
                             }
-                        } else
+                        } else if (photoListFocused.size > 0) {
+                            countGif = 0
+                            if (countGif < photoListFocused.size) {
+                                addWatermarkFocused(countGif)
+                            }
+                        }
+                        else{
                             fetchBulkUpload()
+                        }
 
                         Log.e("Upload Replace", "bulk")
                         Log.e(
@@ -1100,6 +1278,109 @@ class TimerActivity : AppCompatActivity() {
                         if (countGif < photoListInteriors.size) {
                             Log.e("countGif", countGif.toString())
                             addWatermark(countGif)
+                        } else
+                        {
+                            countGif = 0
+                            if (countGif < photoListFocused.size) {
+                                addWatermarkFocused(countGif)
+                            }
+                            else{
+                                fetchBulkUpload()
+                            }
+                        }
+                        Log.e("Upload Replace", "bulk")
+                        Log.e(
+                            "Upload Replace SKU",
+                            Utilities.getPreference(
+                                this@TimerActivity,
+                                AppConstants.SKU_NAME
+                            )!!
+                        )
+                    } else {
+                        llTimer.visibility = View.GONE
+                        llNoInternet.visibility = View.VISIBLE
+                        countDownTimer.cancel()
+                        Utilities.hideProgressDialog()
+                        Toast.makeText(
+                            this@TimerActivity,
+                            "Server not responding!!!", Toast.LENGTH_SHORT
+                        ).show()
+                    }
+                }
+
+                override fun onFailure(call: Call<WaterMarkResponse>, t: Throwable) {
+                    Utilities.hideProgressDialog()
+                    llTimer.visibility = View.GONE
+                    llNoInternet.visibility = View.VISIBLE
+                    countDownTimer.cancel()
+                    Toast.makeText(
+                        this@TimerActivity,
+                        "Server not responding!!!", Toast.LENGTH_SHORT
+                    ).show()
+                }
+            })
+        } else {
+            Utilities.hideProgressDialog()
+
+            llTimer.visibility = View.GONE
+            llNoInternet.visibility = View.VISIBLE
+            countDownTimer.cancel()
+        }
+    }
+
+
+    private fun addWatermarkFocused(countsGif: Int) {
+        if (Utilities.isNetworkAvailable(this)) {
+            llTimer.visibility = View.VISIBLE
+            llNoInternet.visibility = View.GONE
+
+            val request = RetrofitClients.buildService(APiService::class.java)
+            Log.e("Watermark bulk", "started......")
+
+            val background = RequestBody.create(
+                MultipartBody.FORM,
+                backgroundSelect
+            )
+
+            val userId = RequestBody.create(
+                MultipartBody.FORM,
+                Utilities.getPreference(this, AppConstants.tokenId)!!
+            )
+            val skuId = RequestBody.create(
+                MultipartBody.FORM,
+                Utilities.getPreference(this, AppConstants.SKU_ID)!!
+            )
+            val imageUrl = RequestBody.create(
+                MultipartBody.FORM,
+                photoListFocused[countsGif].displayThumbnail
+            )
+
+            val skuName = RequestBody.create(
+                MultipartBody.FORM,
+                Utilities.getPreference(this, AppConstants.SKU_NAME)!!
+            )
+
+            val category = RequestBody.create(
+                MultipartBody.FORM,
+                "Focus Shoot"
+            )
+
+            val call =
+                request.addWaterMarkFocused(
+                    background, userId, skuId,
+                    imageUrl, skuName,category
+                )
+
+            call?.enqueue(object : Callback<WaterMarkResponse> {
+                override fun onResponse(
+                    call: Call<WaterMarkResponse>,
+                    response: Response<WaterMarkResponse>
+                ) {
+                    if (response.isSuccessful && response.body()!!.status == 200) {
+                        ++countGif
+                        if (countGif < photoListFocused.size) {
+                            Log.e("countGif", countGif.toString())
+                            addWatermarkFocused(countGif)
                         } else
                             fetchBulkUpload()
                         Log.e("Upload Replace", "bulk")
