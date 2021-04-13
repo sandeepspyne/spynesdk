@@ -189,9 +189,6 @@ class TimerActivity : AppCompatActivity() {
     private fun actionOnService(action: Actions) {
         if (getServiceState(this) == com.spyneai.service.ServiceState.STOPPED && action == Actions.STOP)
             return
-
-
-
                 val serviceIntent = Intent(this@TimerActivity, ProcessImagesService::class.java)
                 serviceIntent.putExtra(AppConstants.BG_ID, backgroundSelect)
                 serviceIntent.putExtra(AppConstants.ALL_IMAGE_LIST, imageFileList)
@@ -207,15 +204,16 @@ class TimerActivity : AppCompatActivity() {
                 serviceIntent.putExtra(AppConstants.EXPOSURES, Utilities.getPreference(this, AppConstants.EXPOSURES))
 
                 serviceIntent.action = action.name
-//        ContextCompat.startForegroundService(this, serviceIntent)
 
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
                     log("Starting the service in >=26 Mode")
                     ContextCompat.startForegroundService(this@TimerActivity, serviceIntent)
                     return
+                }else{
+                    log("Starting the service in < 26 Mode")
+                    startService(serviceIntent)
                 }
-                log("Starting the service in < 26 Mode")
-                startService(serviceIntent)
+
 
     }
 
