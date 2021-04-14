@@ -293,8 +293,8 @@ class Camera2Activity : AppCompatActivity(), SubCategoriesAdapter.BtnClickListen
         if (num == 4) {
             frameImageListSelections .add(0)
             frameImageListSelections .add(9)
-//            frameImageListSelections .add(18)
-//            frameImageListSelections .add(27)
+            frameImageListSelections .add(18)
+            frameImageListSelections .add(27)
             Utilities.savePrefrence(this@Camera2Activity, AppConstants.NO_OF_IMAGES, "4")
         } else if (num == 5){
             frameImageListSelections .add(0)
