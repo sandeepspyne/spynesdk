@@ -47,7 +47,6 @@ class RecordVideoActivity : AppCompatActivity() {
     companion object {
         private const val TAG = "CameraXTest"
 
-
         private const val RATIO_4_3_VALUE = 4.0 / 3.0 // aspect ratio 4x3
         private const val RATIO_16_9_VALUE = 16.0 / 9.0 // aspect ratio 16x9
 
@@ -223,8 +222,8 @@ class RecordVideoActivity : AppCompatActivity() {
 
     private fun setupDemo(shootMode : Int) {
         binding.llSelectThreeSixtyMode.visibility = View.GONE
-        binding.clShootDemo.visibility = View.VISIBLE;
 
+        binding.clShootDemo.visibility = View.VISIBLE;
 
         fragmentList = ArrayList<Fragment>()
 

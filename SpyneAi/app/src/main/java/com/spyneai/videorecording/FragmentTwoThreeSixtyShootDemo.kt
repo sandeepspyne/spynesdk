@@ -78,7 +78,8 @@ class FragmentTwoThreeSixtyShootDemo : Fragment() {
                 videoPlayer!!.setAudioAttributes(audioAttributes, true)
             }
 
-            if(requireArguments().getInt("shoot_mode",0) == 1){
+
+            if(requireArguments()?.getInt("shoot_mode",0) == 1){
                  uri = RawResourceDataSource.buildRawResourceUri(R.raw.how_to_shoot_interior_back)
             }else{
                  uri = RawResourceDataSource.buildRawResourceUri(R.raw.how_to_shoot_interior_front)
@@ -104,6 +105,8 @@ class FragmentTwoThreeSixtyShootDemo : Fragment() {
          videoPlayer!!.setPlayWhenReady(false);
         videoPlayer?.release()
         videoPlayer = null
+
+         playerView?.visibility = View.GONE
     }
 
 
