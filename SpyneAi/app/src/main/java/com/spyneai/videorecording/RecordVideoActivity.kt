@@ -1,6 +1,8 @@
 package com.spyneai.videorecording
 
 import android.Manifest
+import android.animation.Animator
+import android.animation.AnimatorListenerAdapter
 import android.animation.ObjectAnimator
 import android.annotation.SuppressLint
 import android.content.ContentValues
@@ -14,8 +16,10 @@ import android.util.Log
 import android.view.View
 import android.view.WindowInsets
 import android.view.WindowManager
+import android.widget.ImageButton
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.annotation.DrawableRes
 import androidx.appcompat.app.AppCompatActivity
 import androidx.camera.core.*
 import androidx.camera.lifecycle.ProcessCameraProvider
@@ -36,11 +40,16 @@ import com.spyneai.databinding.ActivityRecordVideoBinding
 import com.spyneai.model.beforeafter.Data
 import kotlinx.android.synthetic.main.activity_otp.*
 import kotlinx.android.synthetic.main.activity_record_video.*
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 import java.io.File
 import java.util.concurrent.TimeUnit
 import kotlin.math.abs
 import kotlin.math.max
 import kotlin.math.min
+import kotlin.properties.Delegates
 
 
 class RecordVideoActivity : AppCompatActivity() {
@@ -93,6 +102,20 @@ class RecordVideoActivity : AppCompatActivity() {
     // Selector showing which camera is selected (front or back)
     private var lensFacing = CameraSelector.DEFAULT_BACK_CAMERA
 
+    // Selector showing which flash mode is selected (on, off or auto)
+    private var flashMode by Delegates.observable(ImageCapture.FLASH_MODE_OFF) { _, _, new ->
+        binding.btnFlash.setImageResource(
+            when (new) {
+                ImageCapture.FLASH_MODE_ON -> R.drawable.ic_flash_on
+                ImageCapture.FLASH_MODE_AUTO -> R.drawable.ic_flash_auto
+                else -> R.drawable.ic_flash_off
+            }
+        )
+    }
+
+    // Selector showing is flash enabled or not
+    private var isTorchOn = false
+
     // Selector showing is recording currently active
     private var isRecording = false
     private val animateRecord by lazy {
@@ -136,6 +159,8 @@ class RecordVideoActivity : AppCompatActivity() {
         binding.llInterior.setOnClickListener{
             setupDemo(0)
         }
+
+        binding.btnFlash.setOnClickListener { toggleFlash() }
 
         binding.tvNext.setOnClickListener {
             if (binding.tvNext.text.toString() == "Next") {
@@ -407,12 +432,13 @@ class RecordVideoActivity : AppCompatActivity() {
         if (!isRecording) {
             //animateRecord.start()
 
-                //start record timer && enable button click
+                //start record timer && enable button click && flash button
                     stopTimer = false
             binding.tvTimer.visibility = View.VISIBLE
                     startRecordTime(0)
             binding.btnRecordVideo.setImageDrawable(ContextCompat.getDrawable(this,R.drawable.bg_record_button_enabled))
             binding.btnRecordVideo.setOnClickListener { recordVideo() }
+            binding.btnFlash.visibility = View.VISIBLE
 
 
 
@@ -461,20 +487,58 @@ class RecordVideoActivity : AppCompatActivity() {
         isRecording = !isRecording
     }
 
-    private fun handleRecordButtonClick(enable: Boolean) {
-        if (enable){
-            binding.btnRecordVideo.background = ContextCompat.getDrawable(this,R.drawable.bg_record_button_enabled)
-            binding.btnRecordVideo.setOnClickListener { recordVideo() }
-        }else{
-            binding.btnRecordVideo.background = ContextCompat.getDrawable(this,R.drawable.bg_record_button_enabled)
-            binding.btnRecordVideo.setOnClickListener(null)
-        }
+    private fun toggleFlash() = binding.btnFlash.toggleButton(
+        flag = flashMode == ImageCapture.FLASH_MODE_ON,
+        rotationAngle = 360f,
+        firstIcon = R.drawable.ic_flash_off,
+        secondIcon = R.drawable.ic_flash_on
+    ) { flag ->
+        isTorchOn = flag
+        flashMode = if (flag) ImageCapture.FLASH_MODE_ON else ImageCapture.FLASH_MODE_OFF
+        camera?.cameraControl?.enableTorch(flag)
     }
+
+
 
     override fun onBackPressed() = finish()
 
     override fun onStop() {
         super.onStop()
         camera?.cameraControl?.enableTorch(false)
+    }
+
+    fun ImageButton.toggleButton(
+        flag: Boolean, rotationAngle: Float, @DrawableRes firstIcon: Int, @DrawableRes secondIcon: Int,
+        action: (Boolean) -> Unit
+    ) {
+        if (flag) {
+            if (rotationY == 0f) rotationY = rotationAngle
+            animate().rotationY(0f).apply {
+                setListener(object : AnimatorListenerAdapter() {
+                    override fun onAnimationEnd(animation: Animator?) {
+                        super.onAnimationEnd(animation)
+                        action(!flag)
+                    }
+                })
+            }.duration = 200
+            GlobalScope.launch(Dispatchers.Main) {
+                delay(100)
+                setImageResource(firstIcon)
+            }
+        } else {
+            if (rotationY == rotationAngle) rotationY = 0f
+            animate().rotationY(rotationAngle).apply {
+                setListener(object : AnimatorListenerAdapter() {
+                    override fun onAnimationEnd(animation: Animator?) {
+                        super.onAnimationEnd(animation)
+                        action(!flag)
+                    }
+                })
+            }.duration = 200
+            GlobalScope.launch(Dispatchers.Main) {
+                delay(100)
+                setImageResource(secondIcon)
+            }
+        }
     }
 }
