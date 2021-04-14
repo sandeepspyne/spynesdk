@@ -8,6 +8,7 @@
         android:layout_width="match_parent"
         android:layout_height="150dp"
         android:scaleType="fitXY"
+        android:id="@+id/iv"
         android:src="@drawable/interior_demo_one"
         android:adjustViewBounds="true"
         app:layout_constraintTop_toTopOf="parent"/>

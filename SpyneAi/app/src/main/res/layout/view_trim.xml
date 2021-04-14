@@ -36,8 +36,8 @@
             <View
                 android:id="@+id/vTopHelperHandle"
                 android:layout_width="0dp"
-                android:layout_height="5dp"
-                android:background="#5D67C9"
+                android:layout_height="2dp"
+                android:background="@color/primary"
                 app:layout_constraintEnd_toStartOf="@id/ivEndSeekHandle"
                 app:layout_constraintStart_toEndOf="@id/ivStartSeekHandle"
                 app:layout_constraintTop_toTopOf="parent" />
@@ -45,8 +45,8 @@
             <View
                 android:id="@+id/vBottomHelperHandle"
                 android:layout_width="0dp"
-                android:layout_height="5dp"
-                android:background="#5D67C9"
+                android:layout_height="2dp"
+                android:background="@color/primary"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toStartOf="@id/ivEndSeekHandle"
                 app:layout_constraintStart_toEndOf="@id/ivStartSeekHandle" />
@@ -55,7 +55,7 @@
                 android:layout_width="0dp"
                 android:layout_height="0dp"
                 android:alpha="0.6"
-                android:background="#5D67C9"
+                android:background="@android:color/transparent"
                 app:layout_constraintBottom_toTopOf="@id/vBottomHelperHandle"
                 app:layout_constraintEnd_toStartOf="@id/ivEndSeekHandle"
                 app:layout_constraintStart_toEndOf="@id/ivStartSeekHandle"
@@ -81,6 +81,7 @@
                 app:layout_constraintTop_toTopOf="parent" />
 
 
+
             <ImageView
                 android:id="@+id/ivEndSeekHandle"
                 android:layout_width="15dp"
@@ -90,6 +91,7 @@
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
+
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 

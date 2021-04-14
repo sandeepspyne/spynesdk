@@ -6,30 +6,41 @@ import android.annotation.SuppressLint
 import android.content.ContentValues
 import android.content.Intent
 import android.content.pm.PackageManager
+import android.graphics.drawable.Drawable
 import android.os.*
 import android.provider.MediaStore
 import android.util.DisplayMetrics
-import androidx.appcompat.app.AppCompatActivity
 import android.util.Log
 import android.view.View
 import android.view.WindowInsets
 import android.view.WindowManager
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.appcompat.app.AppCompatActivity
 import androidx.camera.core.*
 import androidx.camera.lifecycle.ProcessCameraProvider
 import androidx.core.animation.doOnCancel
 import androidx.core.content.ContextCompat
 import androidx.databinding.DataBindingUtil
+import androidx.fragment.app.Fragment
+import androidx.vectordrawable.graphics.drawable.Animatable2Compat
+import com.bumptech.glide.Glide
+import com.bumptech.glide.load.DataSource
+import com.bumptech.glide.load.engine.GlideException
+import com.bumptech.glide.load.resource.gif.GifDrawable
+import com.bumptech.glide.request.RequestListener
 import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayoutMediator
 import com.spyneai.R
 import com.spyneai.databinding.ActivityRecordVideoBinding
-import com.spyneai.extras.ZoomOutPageTransformer
+import com.spyneai.model.beforeafter.Data
+import kotlinx.android.synthetic.main.activity_otp.*
+import kotlinx.android.synthetic.main.activity_record_video.*
 import java.io.File
 import kotlin.math.abs
 import kotlin.math.max
 import kotlin.math.min
+
 
 class RecordVideoActivity : AppCompatActivity() {
 
@@ -54,8 +65,11 @@ class RecordVideoActivity : AppCompatActivity() {
             }
         }
 
+        private lateinit var fragmentList: ArrayList<Fragment>
+
     }
 
+    private lateinit var demoCollectionAdapter: ThreeSixtyShootDemoAdapter
     private lateinit var binding : ActivityRecordVideoBinding
 
     private val permissionRequest = registerForActivityResult(ActivityResultContracts.RequestMultiplePermissions()) { permissions ->
@@ -65,7 +79,7 @@ class RecordVideoActivity : AppCompatActivity() {
             binding.llSelectThreeSixtyMode.visibility = View.VISIBLE
             //startCamera();
         } else {
-            Toast.makeText(this,"Permissions not granted", Toast.LENGTH_LONG)
+            Toast.makeText(this, "Permissions not granted", Toast.LENGTH_LONG)
         }
     }
 
@@ -110,10 +124,16 @@ class RecordVideoActivity : AppCompatActivity() {
             )
         }
 
-        binding = DataBindingUtil.setContentView(this,R.layout.activity_record_video)
+        binding = DataBindingUtil.setContentView(this, R.layout.activity_record_video)
+
+        if (intent.getIntExtra("shoot_mode",0) == 1){
+            binding.llSelectThreeSixtyMode.visibility = View.GONE
+
+            setupDemo(1)
+        }
 
         binding.llInterior.setOnClickListener{
-            setupDemo()
+            setupDemo(0)
         }
 
         binding.tvNext.setOnClickListener {
@@ -121,8 +141,11 @@ class RecordVideoActivity : AppCompatActivity() {
                 binding.tabLayout.getTabAt(1)?.select()
             } else {
                 binding.clShootDemo.visibility = View.GONE
+                //disable video player
+                var fragment : FragmentTwoThreeSixtyShootDemo = fragmentList.get(1) as FragmentTwoThreeSixtyShootDemo
+                fragment.releasePlayer()
 
-                startCamera()
+                startTimer()
             }
         }
 
@@ -132,7 +155,51 @@ class RecordVideoActivity : AppCompatActivity() {
 
                 binding.btnRecordVideo.setOnClickListener { recordVideo() }
             }
-        },300)
+        }, 300)
+    }
+
+    private fun startTimer() {
+        view_pager.visibility = View.GONE
+        iv_timer.visibility = View.VISIBLE
+
+        Glide.with(this).asGif().load(R.raw.timer_gif)
+            .listener(object : RequestListener<GifDrawable> {
+                override fun onLoadFailed(
+                    e: GlideException?,
+                    model: Any?,
+                    target: com.bumptech.glide.request.target.Target<GifDrawable>?,
+                    isFirstResource: Boolean
+                ): Boolean {
+                    iv_timer.visibility = View.GONE
+
+                    startCamera()
+                    return false
+                }
+
+                override fun onResourceReady(
+                    resource: GifDrawable?,
+                    model: Any?,
+                    target: com.bumptech.glide.request.target.Target<GifDrawable>?,
+                    dataSource: DataSource?,
+                    isFirstResource: Boolean
+                ): Boolean {
+                    Log.d(TAG, "onResourceReady: first")
+                    resource?.setLoopCount(1);
+                    resource?.registerAnimationCallback(object :
+                        Animatable2Compat.AnimationCallback() {
+                        override fun onAnimationEnd(drawable: Drawable) {
+                            // Animation is done. update the UI or whatever you want
+                            Log.d(TAG, "onResourceReady: end")
+                            iv_timer.visibility = View.GONE
+                            startCamera()
+                        }
+                    })
+
+                    return false
+                }
+
+            })
+            .into(iv_timer);
     }
 
     private fun setPermissions() {
@@ -140,18 +207,44 @@ class RecordVideoActivity : AppCompatActivity() {
         if (allPermissionsGranted()) {
             binding.btnRecordVideo.visibility = View.VISIBLE;
 
-            binding.llSelectThreeSixtyMode.visibility = View.VISIBLE;
+            if (intent.getIntExtra("shoot_mode",0) == 1){
+                binding.llSelectThreeSixtyMode.visibility = View.GONE
+
+                setupDemo(1)
+            }else{
+                binding.llSelectThreeSixtyMode.visibility = View.VISIBLE
+            }
+
 
         } else {
             permissionRequest.launch(RecordVideoActivity.permissions.toTypedArray())
         }
     }
 
-    private fun setupDemo() {
+    private fun setupDemo(shootMode : Int) {
         binding.llSelectThreeSixtyMode.visibility = View.GONE
         binding.clShootDemo.visibility = View.VISIBLE;
 
-        var demoCollectionAdapter = ThreeSixtyShootDemoAdapter(this)
+
+        fragmentList = ArrayList<Fragment>()
+
+        var args = Bundle()
+        args.putInt("shoot_mode",shootMode)
+
+        if (shootMode == 1){
+            binding.tvHint.text = "Shoot the back side of the car"
+        }
+
+        var fragmentOne =  FragmentOneThreeSixtyShootDemo()
+        fragmentOne.arguments = args
+        fragmentList.add(fragmentOne)
+
+        var fragmentTwo =  FragmentTwoThreeSixtyShootDemo()
+        fragmentTwo.arguments = args
+
+        fragmentList.add(fragmentTwo)
+
+        demoCollectionAdapter = ThreeSixtyShootDemoAdapter(this,fragmentList)
 
         binding.viewPager.adapter = demoCollectionAdapter
 
@@ -160,11 +253,17 @@ class RecordVideoActivity : AppCompatActivity() {
 
         binding.tabLayout.addOnTabSelectedListener(object : TabLayout.OnTabSelectedListener {
             override fun onTabSelected(tab: TabLayout.Tab?) {
-                if (tab!!.position == 0){
-                    binding.tvHint.text = "Shoot the front side of the car"
+                if (tab!!.position == 0) {
+                    if (shootMode == 1){
+                        binding.tvHint.text = "Shoot the back side of the car"
+                    }else{
+                        binding.tvHint.text = "Shoot the front side of the car"
+                    }
+
                     binding.tvNext.text = "Next"
-                }else{
-                    binding.tvHint.text = "Sit on the middle of the back seat, Place the phone in the centre & start moving your wrist"
+                } else {
+                    binding.tvHint.text =
+                        "Sit on the middle of the back seat, Place the phone in the centre & start moving your wrist"
                     binding.tvNext.text = "Begin Shoot"
                 }
             }
@@ -211,7 +310,8 @@ class RecordVideoActivity : AppCompatActivity() {
                 .setTargetRotation(rotation) // set the camera rotation
                 .build()
 
-            val videoCaptureConfig = VideoCapture.DEFAULT_CONFIG.config // default config for video capture
+            val videoCaptureConfig =
+                VideoCapture.DEFAULT_CONFIG.config // default config for video capture
             // The Configuration of video capture
             videoCapture = VideoCapture.Builder
                 .fromConfig(videoCaptureConfig)
@@ -230,6 +330,9 @@ class RecordVideoActivity : AppCompatActivity() {
 
                 // Attach the viewfinder's surface provider to preview use case
                 preview?.setSurfaceProvider(viewFinder.surfaceProvider)
+
+                //start video recording
+                recordVideo()
             } catch (e: Exception) {
                 Log.e(RecordVideoTestActivity.TAG, "Failed to bind use cases", e)
             }
@@ -289,7 +392,10 @@ class RecordVideoActivity : AppCompatActivity() {
                             ?.let { uri ->
                                 //setGalleryThumbnail(uri)
 
-                                val intent = Intent(this@RecordVideoActivity, TrimVideoActivity::class.java);
+                                val intent = Intent(
+                                    this@RecordVideoActivity,
+                                    TrimVideoActivity::class.java
+                                );
                                 intent.setData(uri);
                                 startActivity(intent);
                                 Log.d(RecordVideoTestActivity.TAG, "Video saved in $uri")
@@ -297,7 +403,11 @@ class RecordVideoActivity : AppCompatActivity() {
 
                     }
 
-                    override fun onError(videoCaptureError: Int, message: String, cause: Throwable?) {
+                    override fun onError(
+                        videoCaptureError: Int,
+                        message: String,
+                        cause: Throwable?
+                    ) {
                         // This function is called if there is an error during recording process
                         animateRecord.cancel()
                         val msg = "Video capture failed: $message"

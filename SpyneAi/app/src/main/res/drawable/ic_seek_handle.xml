@@ -6,8 +6,8 @@
     <path
         android:pathData="M2,2h10v52h-10z"
         android:strokeWidth="4"
-        android:fillColor="#5D67C9"
-        android:strokeColor="#5D67C9"
+        android:fillColor="#FF7700"
+        android:strokeColor="#FF7700"
         android:fillType="evenOdd"/>
     <path
         android:pathData="M5.5,19.5L5.5,37.5"

@@ -10,6 +10,7 @@ import android.view.View
 import android.view.ViewTreeObserver
 import android.widget.ImageView
 import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.core.content.ContextCompat
 import androidx.core.view.marginEnd
 import androidx.core.view.marginRight
 import androidx.core.view.marginStart
@@ -40,6 +41,10 @@ class TrimView : ConstraintLayout, View.OnTouchListener {
 
     var maxDistanceBetweenBars = Long.MAX_VALUE
 
+    public lateinit var startSeekHandle : View
+    public lateinit var endSeekHandle : View
+
+
     constructor(context: Context) : this(context, null)
     constructor(context: Context, attrs: AttributeSet?) : this(context, attrs, 0)
     constructor(context: Context, attrs: AttributeSet?, defStyleAttr: Int) : super(
@@ -52,6 +57,9 @@ class TrimView : ConstraintLayout, View.OnTouchListener {
         )
 
         Log.d(TAG, "view created")
+
+        startSeekHandle = layout.ivStartSeekHandle
+        endSeekHandle = layout.ivEndSeekHandle
 
         layout.ivStartSeekHandle.setOnTouchListener(this)
         layout.ivEndSeekHandle.setOnTouchListener(this)
@@ -69,6 +77,14 @@ class TrimView : ConstraintLayout, View.OnTouchListener {
 
         layout.llTrimFrameThumbnails.removeAllViews()
         initDisplayThumbnails()
+    }
+
+    fun disableTouch(context: Context) {
+        layout.ivStartSeekHandle.setOnTouchListener(null)
+        layout.ivEndSeekHandle.setOnTouchListener(null)
+
+        layout.ivStartSeekHandle.setImageDrawable(ContextCompat.getDrawable(context,R.drawable.ic_left_saved_handle))
+        layout.ivEndSeekHandle.setImageDrawable(ContextCompat.getDrawable(context,R.drawable.ic_right_saved_handle))
     }
 
 

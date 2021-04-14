@@ -35,11 +35,11 @@
         android:theme="@style/Theme.SpyneAi"
         android:usesCleartextTraffic="true"
         tools:targetApi="m">
-        <activity android:name=".videorecording.RecordVideoActivity"
-            android:screenOrientation="landscape">
-
-        </activity>
-        <activity android:name=".videorecording.SeekBarTestActivity"></activity>
+        <activity android:name=".videorecording.SaveTrimmedVideoActivity"></activity>
+        <activity
+            android:name=".videorecording.RecordVideoActivity"
+            android:screenOrientation="landscape"></activity>
+        <activity android:name=".videorecording.SeekBarTestActivity" />
 
         <receiver
             android:name=".service.StartReceiver"
@@ -185,7 +185,7 @@
         </activity>
         <activity
             android:name=".videorecording.RecordVideoTestActivity"
-            android:screenOrientation="landscape"></activity>
+            android:screenOrientation="landscape" />
         <activity android:name=".videorecording.PlayVideoActivity" />
         <activity android:name=".videorecording.TrimVideoActivity" />
 

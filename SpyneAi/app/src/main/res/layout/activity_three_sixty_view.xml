@@ -48,7 +48,7 @@
                     android:layout_height="wrap_content"
                     app:layout_constraintTop_toBottomOf="@id/fl_tool_bar"
                     android:id="@+id/rl_automobiles"
-                    android:visibility="gone"
+                    android:visibility="visible"
                     android:background="@drawable/bg_automobile_gradient">
 
 
@@ -78,6 +78,7 @@
                         android:text="Suv, Luxury, Sedan"
                         android:layout_below="@id/tv_automobiles"
                         android:layout_marginTop="5dp"
+                        android:textSize="12sp"
                         android:layout_marginLeft="20dp" />
 
 
