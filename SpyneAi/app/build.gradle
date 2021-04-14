@@ -144,4 +144,6 @@ dependencies {
     //EventBus
     implementation 'org.greenrobot:eventbus:3.2.0'
 
+    implementation 'com.facebook.stetho:stetho-okhttp3:1.5.1'
+
 }

@@ -144,7 +144,7 @@ class GenerateGifActivity : AppCompatActivity() {
 
         backgroundSelect  = carBackgroundList[0].imageId.toString()
 
-        if (gifList[0]!=null && gifList.size>0){
+        if (gifList.size>0){
             Glide.with(this@GenerateGifActivity) // replace with 'this' if it's in activity
                 .load(gifList[0])
                 .error(R.mipmap.defaults) // show error drawable if the image is not a gif

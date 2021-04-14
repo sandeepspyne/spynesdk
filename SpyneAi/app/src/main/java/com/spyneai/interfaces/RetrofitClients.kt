@@ -1,5 +1,6 @@
 package com.spyneai.interfaces
 
+import com.facebook.stetho.okhttp3.StethoInterceptor
 import com.google.gson.GsonBuilder
 import okhttp3.OkHttpClient
 import retrofit2.Retrofit
@@ -10,26 +11,30 @@ object RetrofitClients {
 
     private const val BASE_URL = "https://www.clippr.ai/api/"
     private val client = OkHttpClient.Builder()
-            .readTimeout(10, TimeUnit.MINUTES)
-            .writeTimeout(10, TimeUnit.MINUTES)
-            .connectTimeout(10, TimeUnit.MINUTES)
-            .build()
+        .addNetworkInterceptor(StethoInterceptor())
+        .readTimeout(10, TimeUnit.MINUTES)
+        .writeTimeout(10, TimeUnit.MINUTES)
+        .connectTimeout(10, TimeUnit.MINUTES)
+        .retryOnConnectionFailure(true)
+        .build()
 
 
     private val retrofit = Retrofit.Builder()
-            .baseUrl(BASE_URL)
-            .client(client)
-            .addConverterFactory(
-                GsonConverterFactory.create(
-                    GsonBuilder()
-                        .setLenient()
-                        .create()
-                )
+        .baseUrl(BASE_URL)
+        .client(client)
+        .addConverterFactory(
+            GsonConverterFactory.create(
+                GsonBuilder()
+                    .setLenient()
+                    .create()
             )
-            .build()
+        )
+        .build()
 
-    fun <T> buildService(service: Class<T>): T{
+    fun <T> buildService(service: Class<T>): T {
         return retrofit.create(service)
     }
 
 }
+
+

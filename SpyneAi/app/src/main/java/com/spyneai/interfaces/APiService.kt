@@ -254,7 +254,7 @@ interface APiService {
     @POST("upload?api_key=fde46c58-5735-4fcf-8b38-980c95001dc3")
     fun uploadPhoto(
         @Part file: MultipartBody.Part,
-        @Part("optimization") optimization: RequestBody?
+        @Part("optimization") optimization: RequestBody?,
     ): Call<UploadResponse>?
 
     @Multipart

@@ -71,6 +71,7 @@ class TimerActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_timer)
 
+        setCustomTimer()
 
         val manufacturer = "xiaomi"
         if (manufacturer.equals(Build.MANUFACTURER, ignoreCase = true)) {
@@ -121,7 +122,6 @@ class TimerActivity : AppCompatActivity() {
             val policy = StrictMode.ThreadPolicy.Builder().permitAll().build()
             StrictMode.setThreadPolicy(policy)
         }
-        setCustomTimer()
 
         setListener()
 
@@ -157,6 +157,12 @@ class TimerActivity : AppCompatActivity() {
         llStartNewShoot.setOnClickListener {
             val intent = Intent(this, DashboardActivity::class.java)
             startActivity(intent)
+        }
+        llHome.setOnClickListener {
+            finish()
+            val intent = Intent(this, DashboardActivity::class.java)
+            startActivity(intent)
+
         }
     }
 
@@ -278,13 +284,19 @@ class TimerActivity : AppCompatActivity() {
     }
 
 
+
     @Subscribe(threadMode = ThreadMode.MAIN)
     fun onMessageEvent(event: ProcessingImagesEvent?) {
         event?.getNotificationID()?.let {
 //            Toast.makeText(this, it, Toast.LENGTH_LONG).show()
-            var intent = Intent(this@TimerActivity, DashboardActivity::class.java)
+            finish()
+            var intent = Intent(this@TimerActivity, ShowImagesActivity::class.java)
             startActivity(intent)
         }
     }
 
+    override fun onBackPressed() {
+
+
+    }
 }

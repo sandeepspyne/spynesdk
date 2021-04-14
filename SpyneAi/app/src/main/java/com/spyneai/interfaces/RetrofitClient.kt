@@ -18,6 +18,7 @@ object RetrofitClient {
             .writeTimeout(10, TimeUnit.MINUTES)
             .connectTimeout(10, TimeUnit.MINUTES)
             .addNetworkInterceptor(StethoInterceptor())
+        .retryOnConnectionFailure(true)
             .build()
 
 

@@ -16,6 +16,7 @@ object RetrofitClientSpyneAi {
             .readTimeout(2, TimeUnit.MINUTES)
             .writeTimeout(2, TimeUnit.MINUTES)
             .connectTimeout(2, TimeUnit.MINUTES)
+        .retryOnConnectionFailure(true)
             .build()
 
     private val retrofit = Retrofit.Builder()

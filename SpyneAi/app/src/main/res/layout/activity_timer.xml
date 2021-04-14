@@ -164,6 +164,7 @@
                 android:orientation="vertical">
 
             <LinearLayout
+                android:visibility="gone"
                 android:id="@+id/llStartNewShoot"
                 android:layout_width="match_parent"
                 android:layout_weight="1"
@@ -191,7 +192,7 @@
             </LinearLayout>
 
             <LinearLayout
-                android:id="@+id/llOngoingProjects"
+                android:id="@+id/llHome"
                 android:layout_below="@+id/llStartNewShoot"
                 android:layout_weight="1"
                 android:layout_width="match_parent"
@@ -221,7 +222,7 @@
                     android:layout_marginEnd="@dimen/dp_30"
                     android:fontFamily="@font/medium"
                     android:padding="@dimen/dp_5"
-                    android:text="@string/ongoing_projects"
+                    android:text="@string/home"
                     android:textAllCaps="false"
                     android:textColor="@color/primary"
                     android:textSize="@dimen/sp_16" />

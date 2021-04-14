@@ -1692,7 +1692,8 @@ class Camera2Activity : AppCompatActivity(), SubCategoriesAdapter.BtnClickListen
             dialog.dismiss()
 
         })
-        dialogButtonNo.setOnClickListener(View.OnClickListener { dialog.dismiss() })
+        dialogButtonNo.setOnClickListener(View.OnClickListener {
+            dialog.dismiss() })
         dialog.show()
     }
 
