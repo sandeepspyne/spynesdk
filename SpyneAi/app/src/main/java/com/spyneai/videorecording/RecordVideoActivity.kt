@@ -175,6 +175,8 @@ class RecordVideoActivity : AppCompatActivity() {
             }
         }
 
+        binding.ivBack.setOnClickListener { finish() }
+
         Handler(Looper.getMainLooper()).postDelayed(object : Runnable {
             override fun run() {
                 setPermissions()
