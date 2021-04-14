@@ -26,25 +26,31 @@
             android:layout_height="70dp"
             android:background="@android:color/transparent"
             android:padding="@dimen/double_margin"
-            android:tint="@color/primary"
-            android:src="@drawable/record"
-            android:visibility="gone"
+            android:src="@drawable/bg_record_button_disbaled"
+            android:visibility="visible"
+            android:clickable="false"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            />
+            android:layout_marginRight="10dp"/>
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="00:00"
-            android:textSize="20sp"
+            android:textSize="14sp"
             android:id="@+id/tv_timer"
             android:visibility="gone"
-            android:textColor="@color/primary"
+            android:textColor="@color/white"
+            android:background="@drawable/bg_record_timer"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintLeft_toLeftOf="parent"
-            android:layout_marginLeft="15dp"/>
+            app:layout_constraintRight_toRightOf="parent"
+            android:layout_marginTop="10dp"
+            android:paddingLeft="12dp"
+            android:paddingRight="12dp"
+            android:paddingTop="5dp"
+            android:paddingBottom="5dp"/>
 
         <ImageView
             android:layout_width="56dp"
@@ -53,6 +59,7 @@
             android:textSize="20sp"
             android:src="@drawable/back"
             android:padding="15dp"
+            android:id="@+id/iv_back"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintLeft_toLeftOf="parent"
             app:tint="@color/white" />

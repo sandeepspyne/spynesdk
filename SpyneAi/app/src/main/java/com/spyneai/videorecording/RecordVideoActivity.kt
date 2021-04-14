@@ -37,6 +37,7 @@ import com.spyneai.model.beforeafter.Data
 import kotlinx.android.synthetic.main.activity_otp.*
 import kotlinx.android.synthetic.main.activity_record_video.*
 import java.io.File
+import java.util.concurrent.TimeUnit
 import kotlin.math.abs
 import kotlin.math.max
 import kotlin.math.min
@@ -64,6 +65,7 @@ class RecordVideoActivity : AppCompatActivity() {
             }
         }
 
+        private var stopTimer = false
         private lateinit var fragmentList: ArrayList<Fragment>
 
     }
@@ -151,10 +153,33 @@ class RecordVideoActivity : AppCompatActivity() {
         Handler(Looper.getMainLooper()).postDelayed(object : Runnable {
             override fun run() {
                 setPermissions()
-
-                binding.btnRecordVideo.setOnClickListener { recordVideo() }
             }
         }, 300)
+
+    }
+
+    private fun startRecordTime(millisUntilFinished: Long) {
+        tv_timer.setText(
+                    "" + String.format(
+                        "%02d:%02d", TimeUnit.MILLISECONDS.toMinutes(
+                            millisUntilFinished
+                        ),
+                        TimeUnit.MILLISECONDS.toSeconds(millisUntilFinished) -
+                                TimeUnit.MINUTES.toSeconds(
+                                    TimeUnit.MILLISECONDS.toMinutes(
+                                        millisUntilFinished
+                                    )
+                                )
+                    )
+                );
+
+        Handler(Looper.getMainLooper()).postDelayed(object : Runnable {
+            override fun run() {
+                if (!stopTimer)
+                    startRecordTime(millisUntilFinished + 1000)
+            }
+        }, 1000)
+
     }
 
     private fun startTimer() {
@@ -380,7 +405,17 @@ class RecordVideoActivity : AppCompatActivity() {
         }.build()
 
         if (!isRecording) {
-            animateRecord.start()
+            //animateRecord.start()
+
+                //start record timer && enable button click
+                    stopTimer = false
+            binding.tvTimer.visibility = View.VISIBLE
+                    startRecordTime(0)
+            binding.btnRecordVideo.setImageDrawable(ContextCompat.getDrawable(this,R.drawable.bg_record_button_enabled))
+            binding.btnRecordVideo.setOnClickListener { recordVideo() }
+
+
+
             localVideoCapture.startRecording(
                 outputOptions, // the options needed for the final video
                 ContextCompat.getMainExecutor(this), // the executor, on which the task will run
@@ -416,10 +451,24 @@ class RecordVideoActivity : AppCompatActivity() {
                     }
                 })
         } else {
-            animateRecord.cancel()
+            //animateRecord.cancel()
+                //stop recording timer
+                    stopTimer = true
+            binding.tvTimer.visibility = View.GONE
+            binding.tvTimer.text = "00:00"
             localVideoCapture.stopRecording()
         }
         isRecording = !isRecording
+    }
+
+    private fun handleRecordButtonClick(enable: Boolean) {
+        if (enable){
+            binding.btnRecordVideo.background = ContextCompat.getDrawable(this,R.drawable.bg_record_button_enabled)
+            binding.btnRecordVideo.setOnClickListener { recordVideo() }
+        }else{
+            binding.btnRecordVideo.background = ContextCompat.getDrawable(this,R.drawable.bg_record_button_enabled)
+            binding.btnRecordVideo.setOnClickListener(null)
+        }
     }
 
     override fun onBackPressed() = finish()
