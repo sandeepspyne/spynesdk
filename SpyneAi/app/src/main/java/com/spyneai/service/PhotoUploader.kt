@@ -689,13 +689,13 @@ class PhotoUploader(var task: Task, var listener: Listener) {
                         fetchBulkUpload(
 
                         )
-                    Log.e("Upload Replace", "bulk")
-                    Log.e(
-                        "Upload Replace SKU",
+                    log("Upload Replace: "+ "bulk")
+                    log(
+                        "Upload Replace SKU: "+
                         task.skuName
                     )
                 } else {
-
+                    listener.onFailure(task)
                     log("Error in bulk upload footwear")
                     log("Error: " + response.errorBody())
                 }
@@ -771,7 +771,7 @@ class PhotoUploader(var task: Task, var listener: Listener) {
                         task.skuName
                     )
                 } else {
-
+                    listener.onFailure(task)
                     log("Error in add watermark")
                     log("Error: " + response.errorBody())
                 }
