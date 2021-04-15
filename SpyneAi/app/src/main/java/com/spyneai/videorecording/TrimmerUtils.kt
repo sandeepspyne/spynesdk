@@ -11,6 +11,9 @@ import androidx.core.content.ContextCompat
 import java.io.File
 
 class TrimmerUtils {
+
+
+
     companion object {
         fun formatCSeconds(timeInSeconds: Long): String? {
             val hours = timeInSeconds / 3600

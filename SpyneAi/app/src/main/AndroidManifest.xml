@@ -35,10 +35,17 @@
         android:theme="@style/Theme.SpyneAi"
         android:usesCleartextTraffic="true"
         tools:targetApi="m">
-        <activity android:name=".videorecording.SaveTrimmedVideoActivity"></activity>
+        <activity android:name=".videorecording.SpinViewActivity">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+        <activity android:name=".videorecording.SaveTrimmedVideoActivity" />
         <activity
             android:name=".videorecording.RecordVideoActivity"
-            android:screenOrientation="landscape"></activity>
+            android:screenOrientation="landscape" />
         <activity android:name=".videorecording.SeekBarTestActivity" />
 
         <receiver
@@ -177,11 +184,7 @@
             android:name=".activity.SplashActivity"
             android:screenOrientation="portrait" />
         <activity android:name=".videorecording.ThreeSixtyViewActivity">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
 
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
         </activity>
         <activity
             android:name=".videorecording.RecordVideoTestActivity"

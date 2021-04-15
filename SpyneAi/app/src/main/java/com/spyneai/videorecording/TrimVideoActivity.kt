@@ -354,8 +354,8 @@ class TrimVideoActivity : AppCompatActivity() ,SeekListener{
             try {
                 currentDuration = videoPlayer!!.currentPosition
                 trim_view.onVideoCurrentPositionUpdated(currentDuration)
-                if (currentDuration >= lastMaxValue)
-                    videoPlayer!!.playWhenReady = false;
+//                if (currentDuration >= lastMaxValue)
+//                    videoPlayer!!.playWhenReady = false;
 
 //                if (!videoPlayer!!.playWhenReady) return
 //                if (currentDuration <= lastMaxValue)
