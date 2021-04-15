@@ -43,6 +43,7 @@ class PhotoUploader(var task: Task, var listener: Listener) {
 
     fun start() {
         uploadImageToBucket()
+        task.retry = 0
     }
 
     fun uploadImageToBucket() {
@@ -682,29 +683,46 @@ class PhotoUploader(var task: Task, var listener: Listener) {
                     ++task.countGif
                     if (task.countGif < task.photoList.size) {
                         Log.e("countGif", task.countGif.toString())
-                        bulkUploadFootwear(
-
-                        )
+                        log("countGif"+task.countGif.toString())
+                        bulkUploadFootwear()
                     } else
-                        fetchBulkUpload(
-
-                        )
-                    log("Upload Replace: "+ "bulk")
+                        fetchBulkUpload()
+                    log("Upload Replace: " + "bulk")
                     log(
-                        "Upload Replace SKU: "+
-                        task.skuName
+                        "Upload Replace SKU: " +
+                                task.skuName
                     )
                 } else {
-                    listener.onFailure(task)
-                    log("Error in bulk upload footwear")
-                    log("Error: " + response.errorBody())
+                    if (task.retry <= task.retryCount) {
+                        task.retry++
+                        log("retry: "+task.retry)
+                        if (task.countGif < task.photoList.size) {
+                            Log.e("countGif", task.countGif.toString())
+                            bulkUploadFootwear()
+                        } else
+                            fetchBulkUpload()
+                    } else {
+                        listener.onFailure(task)
+                        log("Error in bulk upload footwear")
+                        log("Error: " + response.errorBody())
+                    }
                 }
             }
 
             override fun onFailure(call: Call<FootwearBulkResponse>, t: Throwable) {
-                listener.onFailure(task)
-                log("Server not responding(bulkUploadFootwear)")
-                log("onFailure: " + t.localizedMessage)
+                if (task.retry <= task.retryCount) {
+                    task.retry++
+                    log("retry: "+task.retry)
+                    if (task.countGif < task.photoList.size) {
+                        Log.e("countGif", task.countGif.toString())
+                        bulkUploadFootwear()
+                    } else
+                        fetchBulkUpload()
+                } else {
+                    listener.onFailure(task)
+                    log("Server not responding(bulkUploadFootwear)")
+                    log("onFailure: " + t.localizedMessage)
+                }
             }
         })
 

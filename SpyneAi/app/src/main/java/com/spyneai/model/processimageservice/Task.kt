@@ -43,6 +43,10 @@ class Task {
 
     var gifLink: String = ""
 
-    var retry: Int = 3
+    var retry: Int = 0
+
+    var retryCount: Int = 3
+
+
 
 }
