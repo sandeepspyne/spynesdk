@@ -27,11 +27,12 @@ import com.bumptech.glide.request.transition.DrawableCrossFadeFactory
 import com.bumptech.glide.request.transition.Transition
 import com.spyneai.R
 import kotlinx.android.synthetic.main.activity_spin_view.*
+
 import java.io.File
 import java.io.FileOutputStream
 
 
-class SpinViewActivity : AppCompatActivity(),View.OnTouchListener {
+class SpinViewActivity : AppCompatActivity(),View.OnTouchListener,PreLoadListener {
     private var array: Array<String> = emptyArray()
     private var mImageIndex: Int = 0
     private var mEndY: Int = 0
@@ -48,6 +49,8 @@ class SpinViewActivity : AppCompatActivity(),View.OnTouchListener {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_spin_view)
+
+
 
          array = arrayOf(
              "https://storage.googleapis.com/spyne-website/landing-page/static/360/Interior/front/ezgif-frame-001.jpg",
@@ -167,8 +170,6 @@ class SpinViewActivity : AppCompatActivity(),View.OnTouchListener {
              "https://storage.googleapis.com/spyne-website/landing-page/static/360/Interior/front/ezgif-frame-115.jpg"
          )
 
-        File(outputDirectory).mkdirs()
-
         iv.setOnTouchListener(this)
 
         levelList = LevelListDrawable()
@@ -183,7 +184,7 @@ class SpinViewActivity : AppCompatActivity(),View.OnTouchListener {
         requestOptions.diskCacheStrategy(DiskCacheStrategy.ALL)
 
 
-
+//
 //        for ((index, url) in array.withIndex()) {
 //           // loadFromGlide(url, index)
 //            Glide.with(this)
@@ -219,6 +220,7 @@ class SpinViewActivity : AppCompatActivity(),View.OnTouchListener {
 //                .preload()
 //        }
 
+        //three_sixty_view.init(array,this)
 
 
 
@@ -253,6 +255,7 @@ class SpinViewActivity : AppCompatActivity(),View.OnTouchListener {
                             placeholder = resource!!
 
                         if (index == array.size - 1) {
+                            progress_bar.visibility = View.GONE
                             iv.visibility = View.VISIBLE
                             loadImage(mImageIndex)
                         }
@@ -267,9 +270,7 @@ class SpinViewActivity : AppCompatActivity(),View.OnTouchListener {
                 //.into(iv)
                 .preload()
 
-
-
-        }
+     }
 
 
     }
@@ -290,14 +291,14 @@ class SpinViewActivity : AppCompatActivity(),View.OnTouchListener {
 
                 if (mEndX - mStartX > 3) {
                     mImageIndex++
-                    if (mImageIndex >= array.size) mImageIndex = 0
+                    if (mImageIndex >= array.size) mImageIndex = array.size - 1
 
                     //iv.setImageLevel(mImageIndex)
                     loadImage(mImageIndex)
                 }
                 if (mEndX - mStartX < -3) {
                     mImageIndex--
-                    if (mImageIndex < 0) mImageIndex = array.size - 1
+                    if (mImageIndex < 0) mImageIndex = 0
                     loadImage(mImageIndex)
                     //iv.setImageLevel(mImageIndex)
                 }
@@ -321,81 +322,16 @@ class SpinViewActivity : AppCompatActivity(),View.OnTouchListener {
         return super.onTouchEvent(event)
     }
 
-    fun loadFromGlide(url: String, index: Int) {
 
-        var s = ""
-
-        Glide.with(this)
-            .asBitmap()
-            .load(url)
-            .into(object : SimpleTarget<Bitmap?>() {
-
-                override fun onResourceReady(
-                    resource: Bitmap,
-                    transition: Transition<in Bitmap?>?
-                ) {
-                    write(
-                        File("$outputDirectory/${System.currentTimeMillis()}.jpg"),
-                        resource,
-                        index
-                    )
-                }
-            })
-    }
-
-    // The Folder location where all the files will be stored
-    private val outputDirectory: String by lazy {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-            "${Environment.DIRECTORY_DCIM}/360Test/"
-        } else {
-            "${getExternalFilesDir(Environment.DIRECTORY_DCIM)?.path}/360Test/"
-        }
-    }
-
-    fun write(file: File?, bitmap: Bitmap, index: Int) {
-        val outputStream: FileOutputStream
-        try {
-            outputStream = FileOutputStream(file)
-            bitmap.compress(Bitmap.CompressFormat.JPEG, 100, outputStream)
-            outputStream.close()
-
-            list.add(file?.toUri()!!)
-
-//            Glide.with(this)
-//                .load(list.get(index))
-//                .preload()
-            //levelList.addLevel(index,index, Drawable.createFromPath(file?.path))
-
-            Log.d(TAG, "write: pending" + index)
-            if (index == array.size - 1){
-                //download completed
-                Log.d(TAG, "write: done" + index)
-                //iv.setImageLevel(0)
-                loadImage(mImageIndex)
-            }
-        } catch (error: Exception) {
-            Log.d(TAG, "write: error" + error.localizedMessage)
-            error.printStackTrace()
-        }
-    }
 
     fun loadImage(index: Int){
-
-//        Log.d(TAG, "loadImage: " + list.get(index))
-
-
-//        val requestOptions: RequestOptions? = RequestOptions
-//            .diskCacheStrategy(DiskCacheStrategy.ALL)
 
         handler.removeCallbacksAndMessages(null)
 
         handler.postDelayed({
             Log.d(TAG, "loadImage: " + index)
 
-            var requestOptions = RequestOptions()
-            requestOptions.diskCacheStrategy(DiskCacheStrategy.ALL)
 
-            val factory = DrawableCrossFadeFactory.Builder().setCrossFadeEnabled(true).build()
 
             Glide.with(this)
                 .load(array.get(index))
@@ -426,9 +362,13 @@ class SpinViewActivity : AppCompatActivity(),View.OnTouchListener {
                 })
                 .override(250, 250)
                 .dontAnimate()
-                .apply(requestOptions)
+                .diskCacheStrategy(DiskCacheStrategy.ALL)
                 .into(iv)
         }, 10)
 
+    }
+
+    override fun onPreLoaded() {
+        progress_bar.visibility = View.GONE
     }
 }

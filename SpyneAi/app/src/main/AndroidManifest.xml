@@ -35,6 +35,8 @@
         android:theme="@style/Theme.SpyneAi"
         android:usesCleartextTraffic="true"
         tools:targetApi="m">
+        <activity android:name=".videorecording.SpinTestActivity"></activity>
+        <activity android:name=".videorecording.SpinViewTestActivity" />
         <activity android:name=".videorecording.SpinViewActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -183,9 +185,7 @@
         <activity
             android:name=".activity.SplashActivity"
             android:screenOrientation="portrait" />
-        <activity android:name=".videorecording.ThreeSixtyViewActivity">
-
-        </activity>
+        <activity android:name=".videorecording.ThreeSixtyViewActivity" />
         <activity
             android:name=".videorecording.RecordVideoTestActivity"
             android:screenOrientation="landscape" />
