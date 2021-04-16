@@ -78,7 +78,7 @@ class CategoriesActivity : AppCompatActivity(),CategoriesAdapter.BtnClickListene
                 object : CategoriesAdapter.BtnClickListener {
                     override fun onBtnClick(position: Int) {
                         Log.e("position cat", position.toString())
-                        if (position < 2)
+                        if (position < 3)
                           setShoot(categoriesResponseList,position)
                         else
                             Toast.makeText(this@CategoriesActivity,

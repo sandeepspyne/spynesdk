@@ -33,6 +33,7 @@ import android.view.Window
 import android.view.WindowManager
 import android.view.animation.AlphaAnimation
 import android.view.animation.Animation
+import android.view.animation.AnimationUtils
 import android.widget.*
 import android.widget.NumberPicker.OnValueChangeListener
 import androidx.annotation.RequiresApi
@@ -62,23 +63,26 @@ import com.spyneai.model.subcategories.Data
 import com.spyneai.needs.AppConstants
 import com.spyneai.needs.ImageFilePath
 import com.spyneai.needs.Utilities
-import kotlinx.android.synthetic.main.activity_camera.*
-import kotlinx.android.synthetic.main.activity_camera.camera_capture_button
-import kotlinx.android.synthetic.main.activity_camera.camera_overlay
-import kotlinx.android.synthetic.main.activity_camera.etSkuName
-import kotlinx.android.synthetic.main.activity_camera.imgBack
-import kotlinx.android.synthetic.main.activity_camera.imgNext
-import kotlinx.android.synthetic.main.activity_camera.imgOverlay
-import kotlinx.android.synthetic.main.activity_camera.ivGallery
-import kotlinx.android.synthetic.main.activity_camera.ivPreview
-import kotlinx.android.synthetic.main.activity_camera.rvInteriorFrames
-import kotlinx.android.synthetic.main.activity_camera.rvProgress
-import kotlinx.android.synthetic.main.activity_camera.rvSubcategories
-import kotlinx.android.synthetic.main.activity_camera.tvshoot
-import kotlinx.android.synthetic.main.activity_camera.viewFinder
 import kotlinx.android.synthetic.main.activity_camera_.*
+import kotlinx.android.synthetic.main.activity_camera_.camera_capture_button
+import kotlinx.android.synthetic.main.activity_camera_.camera_overlay
+import kotlinx.android.synthetic.main.activity_camera_.cardOverlay
+import kotlinx.android.synthetic.main.activity_camera_.etSkuName
+import kotlinx.android.synthetic.main.activity_camera_.imgBack
+import kotlinx.android.synthetic.main.activity_camera_.imgNext
+import kotlinx.android.synthetic.main.activity_camera_.imgOverlay
+import kotlinx.android.synthetic.main.activity_camera_.ivGallery
+import kotlinx.android.synthetic.main.activity_camera_.ivPreview
+import kotlinx.android.synthetic.main.activity_camera_.llProgress
+import kotlinx.android.synthetic.main.activity_camera_.rvInteriorFrames
+import kotlinx.android.synthetic.main.activity_camera_.rvProgress
+import kotlinx.android.synthetic.main.activity_camera_.rvSubcategories
+import kotlinx.android.synthetic.main.activity_camera_.tvshoot
+import kotlinx.android.synthetic.main.activity_camera_.viewFinder
+import kotlinx.android.synthetic.main.activity_camera_grocery.*
 import kotlinx.android.synthetic.main.activity_camera_preview.*
 import kotlinx.android.synthetic.main.dialog_spinner.*
+import kotlinx.android.synthetic.main.footwear_dialog_suggestion.*
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -153,38 +157,59 @@ class CameraActivity : AppCompatActivity(), SubCategoriesAdapter.BtnClickListene
     @RequiresApi(Build.VERSION_CODES.M)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_camera_)
+        if (Utilities.getPreference(this,AppConstants.CATEGORY_NAME).equals("Footwear"))
+            setContentView(R.layout.activity_camera_)
+        else
+            setContentView(R.layout.activity_camera_grocery)
+
 //        if (Utilities.getPreference(this, AppConstants.CATEGORY_NAME).equals("Automobiles")) {
 //            setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
 
+
         hideStatusBar()
 
+        AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
 
-            AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
+
+        if (Utilities.getPreference(this, AppConstants.CATEGORY_NAME).equals("Automobiles"))
+            showHint()
+
+        setSubCategories()
+        setPermissions()
+        setCameraActions()
+        setSku()
+
+        imageFileList = ArrayList<File>()
+        imageFileListFrames = ArrayList<Int>()
+
+        imageInteriorFileList = ArrayList<File>()
+        imageInteriorFileListFrames = ArrayList<Int>()
+
+        gifList = ArrayList<String>()
+        frameImageListSelections = ArrayList<Int>()
+
+        //Get Intents
+        gifList.addAll(intent.getParcelableArrayListExtra(AppConstants.GIF_LIST)!!)
+
+        fetchIntents()
 
 
-            if (Utilities.getPreference(this, AppConstants.CATEGORY_NAME).equals("Automobiles"))
-                showHint()
-            setSubCategories()
-            setPermissions()
-            setCameraActions()
-            setSku()
-
-            imageFileList = ArrayList<File>()
-            imageFileListFrames = ArrayList<Int>()
-
-            imageInteriorFileList = ArrayList<File>()
-            imageInteriorFileListFrames = ArrayList<Int>()
-
-            gifList = ArrayList<String>()
-            frameImageListSelections = ArrayList<Int>()
-
-            //Get Intents
-            gifList.addAll(intent.getParcelableArrayListExtra(AppConstants.GIF_LIST)!!)
-
-            fetchIntents()
+        showHideCategories()
 //        }
 
+    }
+
+    fun showHideCategories()
+    {
+        if (Utilities.getPreference(this, AppConstants.CATEGORY_NAME).equals("Grocery"))
+        {
+            rvSubcategories.visibility = View.GONE
+            llProgress.visibility = View.GONE
+            cardOverlay.visibility = View.GONE
+            tvEndShoot.setOnClickListener(View.OnClickListener {
+                showEndShootDialog()
+            })
+        }
     }
 
     private fun fetchIntents() {
@@ -233,13 +258,20 @@ class CameraActivity : AppCompatActivity(), SubCategoriesAdapter.BtnClickListene
             frameImage = intent.getStringExtra(AppConstants.FRAME_IMAGE)!!
 */
         if (!etSkuName.text.toString().isEmpty()) {
-            rvSubcategories.visibility = View.INVISIBLE
+
+            if (catName.equals("Gorcery"))
+                rvSubcategories.visibility = View.GONE
+            else
+                rvSubcategories.visibility = View.INVISIBLE
             //etSkuName.visibility = View.GONE
         }
 
         if (!frameImage.isEmpty()) {
             ivPreview.visibility = View.VISIBLE
-            imgOverlay.visibility = View.VISIBLE
+            if (catName.equals("Grocery"))
+                imgOverlay.visibility = View.GONE
+            else
+                imgOverlay.visibility = View.VISIBLE
             Glide.with(this@CameraActivity).load(
                 AppConstants.BASE_IMAGE_URL + frameImage
             ).into(ivPreview)
@@ -249,8 +281,14 @@ class CameraActivity : AppCompatActivity(), SubCategoriesAdapter.BtnClickListene
             ).into(imgOverlay)
         } else {
             ivPreview.visibility = View.GONE
-            imgOverlay.visibility = View.INVISIBLE
+            if (catName.equals("Grocery"))
+                imgOverlay.visibility = View.GONE
+            else
+                imgOverlay.visibility = View.INVISIBLE
         }
+
+        if (catName.equals("Grocery"))
+            imgOverlay.visibility= View.GONE
     }
 
     private fun setSubCategories() {
@@ -309,39 +347,40 @@ class CameraActivity : AppCompatActivity(), SubCategoriesAdapter.BtnClickListene
     private fun setProgressFrame(num: Int) {
 
         frameImageListSelections.clear()
-        if (Utilities.getPreference(this, AppConstants.CATEGORY_NAME).equals("Footwear")){
+        if (Utilities.getPreference(this, AppConstants.CATEGORY_NAME).equals("Footwear")
+            || Utilities.getPreference(this, AppConstants.CATEGORY_NAME).equals("Grocery")){
             for (i in 0..num-1){
                 frameImageListSelections .add(i)
             }
             Utilities.savePrefrence(this@CameraActivity, AppConstants.NO_OF_IMAGES, frameImageListSelections.size.toString())
         }else{
             if (num == 4) {
-            frameImageListSelections.add(0)
-            frameImageListSelections.add(9)
-            frameImageListSelections.add(18)
-            frameImageListSelections.add(27)
+                frameImageListSelections.add(0)
+                frameImageListSelections.add(9)
+                frameImageListSelections.add(18)
+                frameImageListSelections.add(27)
                 Utilities.savePrefrence(this@CameraActivity, AppConstants.NO_OF_IMAGES, "4")
-        } else if (num == 8) {
-            frameImageListSelections.add(0)
-            frameImageListSelections.add(5)
-            frameImageListSelections.add(8)
-            frameImageListSelections.add(14)
-            frameImageListSelections.add(18)
-            frameImageListSelections.add(22)
-            frameImageListSelections.add(26)
-            frameImageListSelections.add(32)
+            } else if (num == 8) {
+                frameImageListSelections.add(0)
+                frameImageListSelections.add(5)
+                frameImageListSelections.add(8)
+                frameImageListSelections.add(14)
+                frameImageListSelections.add(18)
+                frameImageListSelections.add(22)
+                frameImageListSelections.add(26)
+                frameImageListSelections.add(32)
                 Utilities.savePrefrence(this@CameraActivity, AppConstants.NO_OF_IMAGES, "8")
-        } else if (num == 9) {
-            frameImageListSelections.add(0)
-            frameImageListSelections.add(1)
-            frameImageListSelections.add(2)
-            frameImageListSelections.add(3)
-            frameImageListSelections.add(4)
-            frameImageListSelections.add(5)
-            frameImageListSelections.add(6)
-            frameImageListSelections.add(7)
+            } else if (num == 9) {
+                frameImageListSelections.add(0)
+                frameImageListSelections.add(1)
+                frameImageListSelections.add(2)
+                frameImageListSelections.add(3)
+                frameImageListSelections.add(4)
+                frameImageListSelections.add(5)
+                frameImageListSelections.add(6)
+                frameImageListSelections.add(7)
                 Utilities.savePrefrence(this@CameraActivity, AppConstants.NO_OF_IMAGES, "9")
-        }
+            }
         }
 
         showProgressFrames(frameNumberTemp)
@@ -364,11 +403,17 @@ class CameraActivity : AppCompatActivity(), SubCategoriesAdapter.BtnClickListene
             } else {
                 tvshoot.isEnabled = false
                 tvshoot.isFocusable = false
-                rvSubcategories.visibility = View.INVISIBLE
+                if (catName.equals("Gorcery"))
+                    rvSubcategories.visibility = View.GONE
+                else
+                    rvSubcategories.visibility = View.INVISIBLE
                 rvInteriorFrames.visibility = View.GONE
             }
         } else {
-            rvSubcategories.visibility = View.INVISIBLE
+            if (catName.equals("Gorcery"))
+                rvSubcategories.visibility = View.GONE
+            else
+                rvSubcategories.visibility = View.INVISIBLE
             rvInteriorFrames.visibility = View.VISIBLE
 
             tvshoot.isEnabled = false
@@ -414,8 +459,14 @@ class CameraActivity : AppCompatActivity(), SubCategoriesAdapter.BtnClickListene
                 ).into(imgOverlay)
 
 
-                ivPreview.visibility = View.VISIBLE
-                imgOverlay.visibility = View.VISIBLE
+                if (catName.equals("Grocery"))
+                    ivPreview.visibility = View.GONE
+                else
+                    ivPreview.visibility = View.VISIBLE
+                if (catName.equals("Grocery"))
+                    imgOverlay.visibility = View.GONE
+                else
+                    imgOverlay.visibility = View.VISIBLE
             }
         } else {
             if (frameInteriorImageList.size > 0) {
@@ -537,13 +588,23 @@ class CameraActivity : AppCompatActivity(), SubCategoriesAdapter.BtnClickListene
             if (frameNumber == 1) {
                 if (imgOverlay.visibility == View.INVISIBLE) {
                     imgOverlay.visibility = View.VISIBLE
-                    rvSubcategories.visibility = View.INVISIBLE
+                    if(catName.equals("Grocery"))
+                        rvSubcategories.visibility = View.GONE
+                    else
+                        rvSubcategories.visibility = View.INVISIBLE
                 } else {
                     imgOverlay.visibility = View.INVISIBLE
-                    rvSubcategories.visibility = View.VISIBLE
+                    if(catName.equals("Grocery"))
+                        rvSubcategories.visibility = View.GONE
+                    else
+                        rvSubcategories.visibility = View.VISIBLE
+
                 }
             } else {
-                rvSubcategories.visibility = View.INVISIBLE
+                if(catName.equals("Grocery"))
+                    rvSubcategories.visibility = View.GONE
+                else
+                    rvSubcategories.visibility = View.INVISIBLE
                 if (imgOverlay.visibility == View.INVISIBLE) {
                     imgOverlay.visibility = View.VISIBLE
                 } else {
@@ -889,13 +950,15 @@ class CameraActivity : AppCompatActivity(), SubCategoriesAdapter.BtnClickListene
             WindowManager.LayoutParams.WRAP_CONTENT
         )
 
+
         val flAfter: FrameLayout = dialog.findViewById(R.id.flAfter)
         val ivClickedImage: ImageView = dialog.findViewById(R.id.ivClickedImage)
         val ivClickedImageover: ImageView = dialog.findViewById(R.id.ivClickedImageover)
         val ivClickedImageoverlay: ImageView = dialog.findViewById(R.id.ivClickedImageoverlay)
         val tvReshoot: TextView = dialog.findViewById(R.id.tvReshoot)
         val tvConfirm: TextView = dialog.findViewById(R.id.tvConfirm)
-
+        if (catName.equals("Grocery"))
+            flAfter.visibility = View.GONE
         if (!interiorEnabled) {
             ivClickedImage.setImageBitmap(rotatedBitmap)
             ivClickedImageover.setImageBitmap(rotatedBitmap)
@@ -915,9 +978,13 @@ class CameraActivity : AppCompatActivity(), SubCategoriesAdapter.BtnClickListene
         })
 
         tvConfirm.setOnClickListener(View.OnClickListener {
+
             dialog.dismiss()
             if (!interiorEnabled) {
-                rvSubcategories.visibility = View.VISIBLE
+                if(catName.equals("Grocery"))
+                    rvSubcategories.visibility = View.GONE
+                else
+                    rvSubcategories.visibility = View.VISIBLE
 
                 imageFileList.add(photoFile!!)
                 imageFileListFrames.add(frameImageList[frameImageListSelections[frameNumberTemp]].frameNumber)
@@ -950,8 +1017,12 @@ class CameraActivity : AppCompatActivity(), SubCategoriesAdapter.BtnClickListene
                     } else
                         showInteriorDialog()
                 }
-            } else {
-                rvSubcategories.visibility = View.INVISIBLE
+            }
+            else {
+                if(catName.equals("Grocery"))
+                    rvSubcategories.visibility = View.GONE
+                else
+                    rvSubcategories.visibility = View.INVISIBLE
 
                 imageInteriorFileList.add(photoFile!!)
                 imageInteriorFileListFrames.add(frameInteriorImageList[frameImageListSelections[frameNumberTemp]].frameNumber)
@@ -985,7 +1056,7 @@ class CameraActivity : AppCompatActivity(), SubCategoriesAdapter.BtnClickListene
                     )
                     startActivity(intent)
                     finish()
-                } else if (catName.equals("Footwear")) {
+                } else if (catName.equals("Footwear") || catName.equals("Grocery")) {
                     val intent = Intent(
                         this,
                         GenrateMarketplaceActivity::class.java
@@ -1007,6 +1078,13 @@ class CameraActivity : AppCompatActivity(), SubCategoriesAdapter.BtnClickListene
                     startActivity(intent)
                     finish()
                 }
+            }
+            if (catName.equals("Grocery")) {
+                ivPreviewClicked.setImageBitmap(rotatedBitmap)
+                tvCount.setText((frameNumber - 1).toString())
+                val animation : Animation  = AnimationUtils.loadAnimation(this,R.anim.bounce);
+                ivPreviewClicked.startAnimation(animation);
+                rvSubcategories.visibility = View.GONE
             }
         })
         dialog.show()
@@ -1272,9 +1350,13 @@ class CameraActivity : AppCompatActivity(), SubCategoriesAdapter.BtnClickListene
                     if (Utilities.getPreference(this@CameraActivity, AppConstants.FROM)
                             .equals("BA")
                     ) {
-                        rvSubcategories.visibility = View.VISIBLE
+                        if(catName.equals("Grocery"))
+                            rvSubcategories.visibility = View.GONE
+                        else
+                            rvSubcategories.visibility = View.VISIBLE
                     } else
                         rvSubcategories.visibility = View.INVISIBLE
+
 
                     if (Utilities.getPreference(
                             this@CameraActivity,
@@ -1294,7 +1376,7 @@ class CameraActivity : AppCompatActivity(), SubCategoriesAdapter.BtnClickListene
                             "4"
                         );
                         setProgressFrame(4)
-                    } else if (catName.equals("Footwear")) {
+                    } else if (catName.equals("Footwear") || catName.equals("Grocery") ) {
                         if (frameImageList.size>0){
                             Utilities.savePrefrence(
                                 this@CameraActivity,
@@ -1692,7 +1774,10 @@ class CameraActivity : AppCompatActivity(), SubCategoriesAdapter.BtnClickListene
             interiorEnabled = true
             frameNumberTemp = 0
             setProgressFrame(9)
-            rvSubcategories.visibility = View.INVISIBLE
+            if (catName.equals("Gorcery"))
+                rvSubcategories.visibility = View.GONE
+            else
+                rvSubcategories.visibility = View.INVISIBLE
             rvInteriorFrames.visibility = View.VISIBLE
             dialog.dismiss()
         })
@@ -1727,6 +1812,56 @@ class CameraActivity : AppCompatActivity(), SubCategoriesAdapter.BtnClickListene
                 AppConstants.FRAME_LIST, updateSkuResponseList
             )
             dialog.dismiss()
+
+        })
+        dialogButtonNo.setOnClickListener(View.OnClickListener { dialog.dismiss() })
+        dialog.show()
+    }
+
+
+    fun showEndShootDialog() {
+        val dialog = Dialog(this)
+        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE)
+        dialog.setCancelable(false)
+        dialog.setContentView(R.layout.dialog_end_shoot)
+        val dialogButtonYes: TextView = dialog.findViewById(R.id.btnYes)
+        val dialogButtonNo: TextView = dialog.findViewById(R.id.btnNo)
+
+        dialogButtonYes.setOnClickListener(View.OnClickListener {
+            /*val intent = Intent(
+                this,
+                GenrateMarketplaceActivity::class.java
+            )
+
+            intent.putExtra(AppConstants.ALL_IMAGE_LIST, imageFileList)
+            intent.putExtra(AppConstants.CATEGORY_NAME, catName)
+            intent.putExtra(AppConstants.ALL_FRAME_LIST, imageFileListFrames)
+            intent.putExtra(AppConstants.GIF_LIST, gifList)
+
+            Utilities.savePrefrence(this, AppConstants.SKU_NAME, skuName)
+            startActivity(intent)
+            finish()
+            dialog.dismiss()*/
+            if (Utilities.isNetworkAvailable(this))
+            {
+                val intent = Intent(this, TimerActivity::class.java)
+                intent.putExtra(AppConstants.BG_ID,"")
+                intent.putExtra(AppConstants.MARKETPLACE_ID,"mark_0Q32nR")
+                intent.putExtra(AppConstants.CATEGORY_NAME,catName)
+                intent.putExtra(AppConstants.BACKGROUND_COLOUR,
+                    "https://storage.googleapis.com/spyne/AI/raw/e904fad2-727e-467a-aef5-89b3e1f06c99.jpg")
+                intent.putExtra(AppConstants.ALL_IMAGE_LIST, imageFileList)
+                intent.putExtra(AppConstants.ALL_FRAME_LIST, imageFileListFrames)
+//                intent.putExtra(AppConstants.GIF_LIST, gifList)
+                startActivity(intent)
+                finish()
+                dialog.dismiss()
+            }
+            else{
+                Toast.makeText(this,
+                    "No internet Connection , Please Try Again! ",
+                    Toast.LENGTH_LONG).show()
+            }
 
         })
         dialogButtonNo.setOnClickListener(View.OnClickListener { dialog.dismiss() })

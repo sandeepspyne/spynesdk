@@ -140,8 +140,6 @@ class TimerActivity : AppCompatActivity() {
 
         setIntents()
 
-
-
         Log.e(
             "Timer  SKU",
             Utilities.getPreference(
@@ -235,6 +233,8 @@ class TimerActivity : AppCompatActivity() {
 
         val serviceIntent = Intent(this, ProcessImagesService::class.java)
         serviceIntent.putExtra(AppConstants.BG_ID, backgroundSelect)
+        serviceIntent.putExtra(AppConstants.MARKETPLACE_ID,marketplaceId)
+        serviceIntent.putExtra(AppConstants.BACKGROUND_COLOUR,backgroundColour)
         serviceIntent.putExtra(AppConstants.ALL_IMAGE_LIST, imageFileList)
         serviceIntent.putExtra(AppConstants.ALL_FRAME_LIST, imageFileListFrames)
         serviceIntent.putExtra(AppConstants.ALL_INTERIOR_IMAGE_LIST, imageInteriorFileList)
@@ -271,6 +271,9 @@ class TimerActivity : AppCompatActivity() {
                 CountDownTimer(480000)
             } else if (Utilities.getPreference(this, AppConstants.FRAME_SHOOOTS).equals("7")) {
                 CountDownTimer(580000)
+            }
+            else{
+                CountDownTimer(720000)
             }
         }
     }
