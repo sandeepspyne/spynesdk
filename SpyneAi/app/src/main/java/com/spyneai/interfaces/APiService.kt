@@ -38,6 +38,7 @@ import com.spyneai.model.skustatus.UpdateSkuStatusResponse
 import com.spyneai.model.upload.PreviewResponse
 import com.spyneai.model.upload.UploadResponse
 import com.spyneai.model.uploadRough.UploadPhotoRequest
+import com.spyneai.videorecording.UploadVideoResponse
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
 import retrofit2.Call
@@ -372,5 +373,16 @@ interface APiService {
         @Part("credit_available") credit_available: RequestBody?,
         @Part("credit_used") credit_used: RequestBody?
     ): Call<UpdateCreditResponse>?
+
+    @Multipart
+    @POST("upload-video")
+    fun uploadVideo(
+        @Part file: MultipartBody.Part,
+        @Part("user_id") user_id: RequestBody?,
+        @Part("sku_name") sku_name: RequestBody?,
+        @Part("sku_id") sku_id: RequestBody?,
+    @Part("type") type: RequestBody?,
+    @Part("category") category: RequestBody?
+    ): Call<UploadVideoResponse>?
 
 }

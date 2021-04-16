@@ -13,6 +13,8 @@ import android.view.MenuItem
 import android.view.View
 import android.widget.ImageView
 import android.widget.TextView
+import androidx.core.content.ContextCompat
+import androidx.core.net.toFile
 import com.crystal.crystalrangeseekbar.widgets.CrystalRangeSeekbar
 import com.crystal.crystalrangeseekbar.widgets.CrystalSeekbar
 import com.google.android.exoplayer2.C
@@ -28,6 +30,7 @@ import com.google.android.exoplayer2.upstream.DataSource
 import com.google.android.exoplayer2.upstream.DefaultDataSourceFactory
 import com.spyneai.R
 import kotlinx.android.synthetic.main.activity_save_trimmed_video.*
+import java.io.File
 
 import java.util.*
 
@@ -109,10 +112,17 @@ class SaveTrimmedVideoActivity : AppCompatActivity(),SeekListener {
     }
 
     private fun startBackShoot() {
-        var intent = Intent(this,RecordVideoActivity::class.java)
-        intent.putExtra("shoot_mode",1)
-        intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
-        startActivity(intent)
+        //start uploading video
+        val myServiceIntent = Intent(this, UploadVideoService::class.java)
+        myServiceIntent.action = "START"
+        myServiceIntent.putExtra("file_path", intent.data?.toFile()?.path)
+        ContextCompat.startForegroundService(this, myServiceIntent)
+
+
+//        var intent = Intent(this,RecordVideoActivity::class.java)
+//        intent.putExtra("shoot_mode",1)
+//        intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+//        startActivity(intent)
     }
 
     /**

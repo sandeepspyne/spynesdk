@@ -13,6 +13,7 @@ import android.os.*
 import android.provider.MediaStore
 import android.util.DisplayMetrics
 import android.util.Log
+import android.util.Size
 import android.view.View
 import android.view.WindowInsets
 import android.view.WindowManager
@@ -266,7 +267,6 @@ class RecordVideoActivity : AppCompatActivity() {
                 binding.llSelectThreeSixtyMode.visibility = View.VISIBLE
             }
 
-
         } else {
             permissionRequest.launch(RecordVideoActivity.permissions.toTypedArray())
         }
@@ -356,7 +356,7 @@ class RecordVideoActivity : AppCompatActivity() {
 
             // The Configuration of camera preview
             preview = Preview.Builder()
-                // .setTargetResolution(Size(viewFinder.width,viewFinder.height))
+               // .setTargetResolution(Size(640,480))
                 .setTargetAspectRatio(aspectRatio) // set the camera aspect ratio
                 .setTargetRotation(rotation) // set the camera rotation
                 .build()
@@ -364,8 +364,9 @@ class RecordVideoActivity : AppCompatActivity() {
             val videoCaptureConfig =
                 VideoCapture.DEFAULT_CONFIG.config // default config for video capture
             // The Configuration of video capture
-            videoCapture = VideoCapture.Builder
-                .fromConfig(videoCaptureConfig)
+            videoCapture = VideoCapture.Builder()
+                //.fromConfig(videoCaptureConfig)
+                .setTargetResolution(Size(640,480))
                 .build()
 
             localCameraProvider.unbindAll() // unbind the use-cases before rebinding them
