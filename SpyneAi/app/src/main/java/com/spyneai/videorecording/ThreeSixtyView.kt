@@ -2,27 +2,22 @@ package com.spyneai.videorecording
 
 import android.content.Context
 import android.graphics.drawable.Drawable
-import android.graphics.drawable.LevelListDrawable
 import android.net.Uri
 import android.os.Handler
 import android.util.AttributeSet
 import android.util.Log
-import android.view.LayoutInflater
 import android.view.MotionEvent
-import android.view.View
-import android.widget.ImageView
 import androidx.core.view.MotionEventCompat
-import androidx.databinding.DataBindingUtil
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.DataSource
 import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.bumptech.glide.load.engine.GlideException
 import com.bumptech.glide.request.RequestListener
-import com.bumptech.glide.request.RequestOptions
 import com.bumptech.glide.request.target.Target
-import com.bumptech.glide.request.transition.DrawableCrossFadeFactory
-import com.spyneai.R
-import kotlinx.android.synthetic.main.activity_spin_view.*
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers.Default
+import kotlinx.coroutines.Dispatchers.Main
+import kotlinx.coroutines.launch
 
 class ThreeSixtyView : androidx.appcompat.widget.AppCompatImageView {
 
@@ -40,7 +35,8 @@ class ThreeSixtyView : androidx.appcompat.widget.AppCompatImageView {
     lateinit var listener : PreLoadListener
     var notifyPreLoad = true
     val preLoadMap : HashMap<Int,Boolean> = HashMap<Int,Boolean>()
-    var preLoad = 5
+    var preLoadImages = 20
+    var loadingPeding = true
 
 
     constructor(context: Context) : this(context, null){
@@ -63,12 +59,85 @@ class ThreeSixtyView : androidx.appcompat.widget.AppCompatImageView {
 
          mImageIndex = array.size / 2
 
-         startPreload(mImageIndex)
+         var noOfLoadingInOneIteration = array.size / 3
+
+         startPreLoadInCoroutine(mImageIndex - noOfLoadingInOneIteration/2,mImageIndex + noOfLoadingInOneIteration/2)
+
      }
 
-    private fun startPreload(index : Int) {
-        val start = if (index - preLoad >= 0) index - preLoad else 0
-        val end = if (index + preLoad <= array.size - 1) index + preLoad else array.size - 1
+    private fun startPreLoadInCoroutine(start : Int, end : Int) {
+        CoroutineScope((Default)).launch {
+            load(start,end)
+        }
+       // CoroutineScope(Default).launch { startPreload(mImageIndex) }
+        //preLoadImages = 5
+    }
+
+
+    private suspend fun load(start : Int, end : Int){
+        for (i in start..end){
+
+            if (preLoadMap.get(i) == null || !preLoadMap.get(i)!!){
+                Glide.with(context)
+                    .load(array.get(i))
+                    .listener(object : RequestListener<Drawable> {
+                        override fun onLoadFailed(
+                            e: GlideException?,
+                            model: Any?,
+                            target: Target<Drawable>?,
+                            isFirstResource: Boolean
+                        ): Boolean {
+                            preLoadMap.put(i,false)
+                            return true
+                        }
+
+                        override fun onResourceReady(
+                            resource: Drawable?,
+                            model: Any?,
+                            target: Target<Drawable>?,
+                            dataSource: DataSource?,
+                            isFirstResource: Boolean
+                        ): Boolean {
+                            preLoadMap.put(i,true)
+
+                            if (notifyPreLoad && i == mImageIndex)
+                                placeholder = resource!!
+
+                            if (notifyPreLoad && i == end) {
+                                CoroutineScope(Main).launch {
+                                    loadImage(mImageIndex)
+                                    //notify
+                                    listener.onPreLoaded() }
+                                //load remaining
+
+                                if (loadingPeding){
+                                    startPreLoadInCoroutine(0,start)
+                                    startPreLoadInCoroutine(end,array.size - 1)
+                                    loadingPeding = false
+                                }
+
+                                notifyPreLoad = false
+                            }
+
+                            return true
+                        }
+
+                    })
+                    .dontAnimate()
+                    .diskCacheStrategy(DiskCacheStrategy.ALL)
+                    .preload()
+            }
+        }
+    }
+
+    private fun logThread(methodName : String) {
+        Log.d(TAG, "logThread: "+methodName+" "+Thread.currentThread().name)
+    }
+
+    private suspend fun startPreload(index : Int) {
+        logThread("startPreload")
+        val start = if (index - preLoadImages >= 0) index - preLoadImages else 0
+        val end = if (index + preLoadImages <= array.size - 1) index + preLoadImages else array.size - 1
 
         for (i in start..end){
 
@@ -99,9 +168,10 @@ class ThreeSixtyView : androidx.appcompat.widget.AppCompatImageView {
                                 placeholder = resource!!
 
                             if (notifyPreLoad && i == end) {
-                                loadImage(index)
-                                //notify
-                                listener.onPreLoaded()
+                                CoroutineScope(Main).launch {
+                                    loadImage(index)
+                                    //notify
+                                    listener.onPreLoaded() }
                                 notifyPreLoad = false
                             }
 
@@ -134,18 +204,11 @@ class ThreeSixtyView : androidx.appcompat.widget.AppCompatImageView {
                 if (mEndX - mStartX > 3) {
                     mImageIndex++
                     if (mImageIndex >= array.size) mImageIndex = 0
-
-                    //pre load
-                    startPreload(mImageIndex)
-
                     loadImage(mImageIndex)
                 }
                 if (mEndX - mStartX < -3) {
                     mImageIndex--
                     if (mImageIndex < 0) mImageIndex = array.size - 1
-
-                    //pre load
-                    startPreload(mImageIndex)
 
                     loadImage(mImageIndex)
 
@@ -171,6 +234,8 @@ class ThreeSixtyView : androidx.appcompat.widget.AppCompatImageView {
     }
 
     fun loadImage(index: Int){
+
+        logThread("loadImage")
 
         myHandler.removeCallbacksAndMessages(null)
 
@@ -207,7 +272,7 @@ class ThreeSixtyView : androidx.appcompat.widget.AppCompatImageView {
                 .dontAnimate()
                 .diskCacheStrategy(DiskCacheStrategy.ALL)
                 .into(this)
-        }, 10)
+        }, 0)
 
     }
 }

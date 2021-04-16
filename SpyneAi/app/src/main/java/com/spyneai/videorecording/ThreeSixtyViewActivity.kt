@@ -22,9 +22,6 @@ import java.util.*
 class ThreeSixtyViewActivity : AppCompatActivity() {
 
     private lateinit var binding : ActivityThreeSixtyViewBinding
-
-
-
     private lateinit var beforeAfterAdapter: BeforeAfterTestAdapter
 
 

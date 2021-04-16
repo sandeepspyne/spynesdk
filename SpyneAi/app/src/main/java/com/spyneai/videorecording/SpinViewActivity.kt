@@ -183,10 +183,15 @@ class SpinViewActivity : AppCompatActivity(),View.OnTouchListener,PreLoadListene
         var requestOptions =  RequestOptions();
         requestOptions.diskCacheStrategy(DiskCacheStrategy.ALL)
 
+        three_sixty_view.init(array,this)
 
-//
+
+
+
+        iv.visibility = View.GONE
+
 //        for ((index, url) in array.withIndex()) {
-//           // loadFromGlide(url, index)
+//            // loadFromGlide(url, index)
 //            Glide.with(this)
 //                .load(url)
 //                .listener(object : RequestListener<Drawable> {
@@ -207,8 +212,14 @@ class SpinViewActivity : AppCompatActivity(),View.OnTouchListener,PreLoadListene
 //                        dataSource: DataSource?,
 //                        isFirstResource: Boolean
 //                    ): Boolean {
-//                        Log.d(TAG, "onResourceReady: paseed "+index)
-//                        if(index == array.size - 1){
+//                        Log.d(TAG, "onResourceReady: paseed " + index)
+//
+//                        if (index == mImageIndex)
+//                            placeholder = resource!!
+//
+//                        if (index == array.size - 1) {
+//                            progress_bar.visibility = View.GONE
+//                            iv.visibility = View.VISIBLE
 //                            loadImage(mImageIndex)
 //                        }
 //
@@ -216,61 +227,13 @@ class SpinViewActivity : AppCompatActivity(),View.OnTouchListener,PreLoadListene
 //                    }
 //
 //                })
+//                //.override(300, 300)
+//                .dontAnimate()
 //                .apply(requestOptions)
+//                //.into(iv)
 //                .preload()
-//        }
-
-        //three_sixty_view.init(array,this)
-
-
-
-
-        iv.visibility = View.GONE
-
-        for ((index, url) in array.withIndex()) {
-            // loadFromGlide(url, index)
-            Glide.with(this)
-                .load(url)
-                .listener(object : RequestListener<Drawable> {
-                    override fun onLoadFailed(
-                        e: GlideException?,
-                        model: Any?,
-                        target: Target<Drawable>?,
-                        isFirstResource: Boolean
-                    ): Boolean {
-                        Log.d(TAG, "onResourceReady: failed")
-                        return true
-                    }
-
-                    override fun onResourceReady(
-                        resource: Drawable?,
-                        model: Any?,
-                        target: Target<Drawable>?,
-                        dataSource: DataSource?,
-                        isFirstResource: Boolean
-                    ): Boolean {
-                        Log.d(TAG, "onResourceReady: paseed " + index)
-
-                        if (index == mImageIndex)
-                            placeholder = resource!!
-
-                        if (index == array.size - 1) {
-                            progress_bar.visibility = View.GONE
-                            iv.visibility = View.VISIBLE
-                            loadImage(mImageIndex)
-                        }
-
-                        return true
-                    }
-
-                })
-                //.override(300, 300)
-                .dontAnimate()
-                .apply(requestOptions)
-                //.into(iv)
-                .preload()
-
-     }
+//
+//     }
 
 
     }
