@@ -115,7 +115,7 @@ interface APiService {
     ):Call<CreateCollectionResponse>?
 
 
-    @POST("shoot/sku-v2")
+    @POST("shoot/sku-v3")
     fun updateSku(
         @Header("tokenId") tokenId: String?,
         @Body updateSkuRequest: UpdateSkuRequest?
@@ -317,6 +317,18 @@ interface APiService {
         @Part("sku_id") sku_id: RequestBody?,
         @Part("image_url") image_url: RequestBody?,
         @Part("sku_name") sku_name: RequestBody?
+    ): Call<WaterMarkResponse>?
+
+
+    @Multipart
+    @POST("images-processing-v2")
+    fun addWaterMarkFocused(
+        @Part("background") background: RequestBody?,
+        @Part("user_id") user_id: RequestBody?,
+        @Part("sku_id") sku_id: RequestBody?,
+        @Part("image_url") image_url: RequestBody?,
+        @Part("sku_name") sku_name: RequestBody?,
+        @Part("category") category: RequestBody?
     ): Call<WaterMarkResponse>?
 
     @POST("create_gif/")

@@ -41,6 +41,9 @@ class GenerateGifActivity : AppCompatActivity() {
     public lateinit var imageInteriorFileList : ArrayList<File>
     public lateinit var imageInteriorFileListFrames : ArrayList<Int>
 
+    public lateinit var imageFocusedFileList: ArrayList<File>
+    public lateinit var imageFocusedFileListFrames: ArrayList<Int>
+
     private var currentPOsition : Int = 0
     lateinit var carBackgroundList : ArrayList<CarBackgroundsResponse>
     lateinit var carbackgroundsAdapter: CarBackgroundAdapter
@@ -57,6 +60,8 @@ class GenerateGifActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_generate_gif)
+
+        Utilities.savePrefrence(this,AppConstants.EXPOSURES,exposures)
 
         setBasics()
         if (intent.getStringExtra(AppConstants.CATEGORY_NAME) != null)
@@ -75,6 +80,9 @@ class GenerateGifActivity : AppCompatActivity() {
         imageInteriorFileList = ArrayList<File>()
         imageInteriorFileListFrames = ArrayList<Int>()
 
+        imageFocusedFileList = ArrayList<File>()
+        imageFocusedFileListFrames = ArrayList<Int>()
+
         //Get Intents
 
         imageFileList.addAll(intent.getParcelableArrayListExtra(AppConstants.ALL_IMAGE_LIST)!!)
@@ -84,6 +92,9 @@ class GenerateGifActivity : AppCompatActivity() {
         {
             imageInteriorFileList.addAll(intent.getParcelableArrayListExtra(AppConstants.ALL_INTERIOR_IMAGE_LIST)!!)
             imageInteriorFileListFrames.addAll(intent.getIntegerArrayListExtra(AppConstants.ALL_INTERIOR_FRAME_LIST)!!)
+
+            imageFocusedFileList.addAll(intent.getParcelableArrayListExtra(AppConstants.ALL_FOCUSED_IMAGE_LIST)!!)
+            imageFocusedFileListFrames.addAll(intent.getIntegerArrayListExtra(AppConstants.ALL_FOCUSED_FRAME_LIST)!!)
         }
 
         totalImagesToUPload = imageFileList.size
@@ -144,12 +155,16 @@ class GenerateGifActivity : AppCompatActivity() {
 
         backgroundSelect  = carBackgroundList[0].imageId.toString()
 
-        if (gifList.size>0){
-            Glide.with(this@GenerateGifActivity) // replace with 'this' if it's in activity
-                .load(gifList[0])
-                .error(R.mipmap.defaults) // show error drawable if the image is not a gif
-                .into(imageViewGif)
+
+        if (gifList != null && gifList.size > 0) {
+            if (gifList[0] != null) {
+                Glide.with(this@GenerateGifActivity) // replace with 'this' if it's in activity
+                    .load(gifList[0])
+                    .error(R.mipmap.defaults) // show error drawable if the image is not a gif
+                    .into(imageViewGif)
+            }
         }
+
     }
 
     private fun listeners() {
@@ -171,6 +186,8 @@ class GenerateGifActivity : AppCompatActivity() {
                 intent.putExtra(AppConstants.ALL_FRAME_LIST, imageFileListFrames)
                 intent.putExtra(AppConstants.ALL_INTERIOR_IMAGE_LIST, imageInteriorFileList)
                 intent.putExtra(AppConstants.ALL_INTERIOR_FRAME_LIST, imageInteriorFileListFrames)
+                intent.putExtra(AppConstants.ALL_FOCUSED_IMAGE_LIST, imageFocusedFileList)
+                intent.putExtra(AppConstants.ALL_FOCUSED_FRAME_LIST, imageFocusedFileListFrames)
                 intent.putExtra(AppConstants.CATEGORY_NAME, catName)
 //                intent.putExtra(AppConstants.GIF_LIST, gifList)
                 startActivity(intent)
@@ -189,17 +206,17 @@ class GenerateGifActivity : AppCompatActivity() {
         })
 
 
-        toggle.setOnCheckedChangeListener(CompoundButton.OnCheckedChangeListener { buttonView, isChecked ->
-            if (isChecked)
-                exposures = "true"
-            else
-                exposures = "false"
-
-            Log.e("Exposure",exposures)
-            Utilities.savePrefrence(this,AppConstants.EXPOSURES,exposures)
-            // do something, the isChecked will be
-            // true if the switch is in the On position
-        })
+//        toggle.setOnCheckedChangeListener(CompoundButton.OnCheckedChangeListener { buttonView, isChecked ->
+//            if (isChecked)
+//                exposures = "true"
+//            else
+//                exposures = "false"
+//
+//            Log.e("Exposure",exposures)
+//            Utilities.savePrefrence(this,AppConstants.EXPOSURES,exposures)
+//            // do something, the isChecked will be
+//            // true if the switch is in the On position
+//        })
 
         windows = "outer"
         Utilities.savePrefrence(this,AppConstants.WINDOWS,windows)

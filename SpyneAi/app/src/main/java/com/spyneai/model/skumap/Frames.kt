@@ -24,6 +24,7 @@ data class Frames (
 	@SerializedName("frameImages")
 	val frameImages : List<FrameImages>,
 	@SerializedName("interiorImages")
-	val interiorImages : List<FrameImages>
-
+	val interiorImages : List<FrameImages>,
+	@SerializedName("focusImages")
+	val focusImages : List<FrameImages>
 )
