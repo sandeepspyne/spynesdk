@@ -29,6 +29,8 @@ class Task {
 
     var isCompleted = false
 
+    var onFailure = false
+
     var mainImage: String = ""
     var mainImageInterior: String = ""
 

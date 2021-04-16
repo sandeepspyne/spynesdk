@@ -73,7 +73,7 @@ class PhotoUploader(var task: Task, var listener: Listener) {
                     if (response.isSuccessful) {
 
                         task.mainImage = response.body()?.image.toString()
-                        log("onResponse: image upload success:\n" + task.mainImage)
+                        log("onResponse: image upload success:\n" + task.mainImage+"\nnumber: " + task.totalImagesToUploadIndex)
 
                         uploadImageURLs()
                     } else {
@@ -127,8 +127,9 @@ class PhotoUploader(var task: Task, var listener: Listener) {
                     try {
                         if (task.totalImagesToUploadIndex < task.totalImagesToUpload - 1) {
                             Log.e("uploadImageURLs", task.totalImagesToUploadIndex.toString())
-
-                            Log.e("IMage uploaded ", response.body()?.msgInfo.toString())
+                            log("uploadImageURLs: "+task.totalImagesToUploadIndex.toString())
+                            Log.e("Image uploaded ", response.body()?.msgInfo.toString())
+                            log("IMage uploaded: "+response.body()?.msgInfo.toString())
                             task.totalImagesToUploadIndex++
 
                             uploadImageToBucket()
@@ -201,7 +202,6 @@ class PhotoUploader(var task: Task, var listener: Listener) {
                         Log.e("uploadImageToBucket", response.body()?.image.toString())
                         Log.e("uploadImageToBucket", task.totalImagesToUploadIndex.toString())
                         log("uploadImageToBucketInterior" + response.body()?.image.toString())
-                        log("uploadImageToBucketInterior" + response.body()?.image.toString())
 
                         task.mainImageInterior = response.body()?.image.toString()
                         uploadImageURLsInterior()
@@ -255,18 +255,9 @@ class PhotoUploader(var task: Task, var listener: Listener) {
                     try {
                         if (task.totalImagesToUploadIndex < task.totalImagesToUpload - 1) {
 
-                            Log.e("IMageInterioruploaded ", response.body()?.msgInfo.toString())
-                            log("IMageInterioruploaded: " + response.body()?.msgInfo.toString())
-                            Log.e(
-                                "Frame 1i",
-                                response.body()?.payload!!.data.currentFrame.toString()
-                            )
-                            log("Frame 1i: " + response.body()?.payload!!.data.currentFrame.toString())
-                            Log.e(
-                                "Frame 2i",
-                                response.body()?.payload!!.data.totalFrames.toString()
-                            )
-                            log("Frame 2i: " + response.body()?.payload!!.data.totalFrames.toString())
+                            log("ImageInterioruploaded: " + response.body()?.msgInfo.toString())
+                            log("Frame 1i(currentFrame): " + response.body()?.payload!!.data.currentFrame.toString())
+                            log("Frame 2i(totalFrames): " + response.body()?.payload!!.data.totalFrames.toString())
 
 
                             task.totalImagesToUploadIndex++
@@ -279,6 +270,7 @@ class PhotoUploader(var task: Task, var listener: Listener) {
                         }
                     } catch (e: Exception) {
                         Log.e("Except", e.printStackTrace().toString())
+                        log("Exception: "+e.printStackTrace().toString())
                     }
 
                 } else {
@@ -346,6 +338,7 @@ class PhotoUploader(var task: Task, var listener: Listener) {
                 os.close()
             } catch (e: Exception) {
                 Log.e(javaClass.simpleName, "Error writing bitmap", e)
+                log("Error writing bitmap")
             }
         }
         return imageFile
@@ -516,6 +509,7 @@ class PhotoUploader(var task: Task, var listener: Listener) {
 
                     if (task.countGif < task.photoList.size) {
                         Log.e("countGif", task.countGif.toString())
+                        log("countGIF: "+task.countGif.toString())
                         bulkUpload()
                     } else if (task.photoListInteriors.size > 0) {
                         task.countGif = 0

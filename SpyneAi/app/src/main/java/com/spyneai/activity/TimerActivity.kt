@@ -73,16 +73,16 @@ class TimerActivity : AppCompatActivity() {
 
         setCustomTimer()
 
-        val manufacturer = "xiaomi"
-        if (manufacturer.equals(Build.MANUFACTURER, ignoreCase = true)) {
-            //this will open auto start screen where user can enable permission for your app
-            val intent = Intent()
-            intent.component = ComponentName(
-                "com.miui.securitycenter",
-                "com.miui.permcenter.autostart.AutoStartManagementActivity"
-            )
-            startActivity(intent)
-        }
+//        val manufacturer = "xiaomi"
+//        if (manufacturer.equals(Build.MANUFACTURER, ignoreCase = true)) {
+//            //this will open auto start screen where user can enable permission for your app
+//            val intent = Intent()
+//            intent.component = ComponentName(
+//                "com.miui.securitycenter",
+//                "com.miui.permcenter.autostart.AutoStartManagementActivity"
+//            )
+//            startActivity(intent)
+//        }
 
         backgroundSelect = intent.getStringExtra(AppConstants.BG_ID)!!
         circular_progress.setInterpolator(LinearInterpolator())
