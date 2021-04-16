@@ -2,7 +2,6 @@ package com.spyneai.activity
 
 import android.app.Dialog
 import android.content.Intent
-import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
@@ -21,12 +20,8 @@ import com.spyneai.adapter.MarketplacesAdapter
 import com.spyneai.adapter.PhotosAdapter
 import com.spyneai.interfaces.APiService
 import com.spyneai.interfaces.RetrofitClients
-import com.spyneai.model.carreplace.CarBackgroundsResponse
-import com.spyneai.model.channel.BackgroundsResponse
-import com.spyneai.model.channel.ChannelsResponse
-import com.spyneai.model.marketplace.Data
+import com.spyneai.model.marketplace.Backgrounds
 import com.spyneai.model.marketplace.FootwearMarketplaceResponse
-import com.spyneai.model.marketplace.MarketplaceBackgroundResponse
 import com.spyneai.model.sku.Photos
 import com.spyneai.model.skumap.UpdateSkuResponse
 import com.spyneai.needs.AppConstants
@@ -79,8 +74,6 @@ class GenrateMarketplaceActivity : AppCompatActivity() {
         fetchMarketplaces()
 
 
-
-
         listeners()
 
         imageFileList = ArrayList<File>()
@@ -88,9 +81,9 @@ class GenrateMarketplaceActivity : AppCompatActivity() {
 
         //Get Intents
 
-        imageFileList.addAll(intent.getParcelableArrayListExtra(AppConstants.ALL_IMAGE_LIST)!!)
+/*        imageFileList.addAll(intent.getParcelableArrayListExtra(AppConstants.ALL_IMAGE_LIST)!!)
         imageFileListFrames.addAll(intent.getIntegerArrayListExtra(AppConstants.ALL_FRAME_LIST)!!)
-        totalImagesToUPload = imageFileList.size
+        totalImagesToUPload = imageFileList.size*/
     }
 
 
@@ -99,136 +92,62 @@ class GenrateMarketplaceActivity : AppCompatActivity() {
 
 
         // Utilities.showProgressDialog(this)
-            val request = RetrofitClients.buildService(APiService::class.java)
-            val call = request.getChannelsList(catName)
+        val request = RetrofitClients.buildService(APiService::class.java)
+        val call = request.getChannelsList(catName)
 
-            call?.enqueue(object : Callback<List<FootwearMarketplaceResponse>> {
-                override fun onResponse(
-                    call: Call<List<FootwearMarketplaceResponse>>,
-                    response: Response<List<FootwearMarketplaceResponse>>
-                ) {
-                    // Utilities.hideProgressDialog()
-                    if (response.isSuccessful) {
+        call?.enqueue(object : Callback<List<FootwearMarketplaceResponse>> {
+            override fun onResponse(
+                call: Call<List<FootwearMarketplaceResponse>>,
+                response: Response<List<FootwearMarketplaceResponse>>
+            ) {
+                // Utilities.hideProgressDialog()
+                if (response.isSuccessful) {
 
-                        if (!response.body().isNullOrEmpty() && response.body()?.size!! > 0) {
-                            Utilities.setList(
-                                this@GenrateMarketplaceActivity, AppConstants.CHANNEL_LIST,
-                                response.body() as ArrayList
-                            )
+                    if (!response.body().isNullOrEmpty() && response.body()?.size!! > 0) {
+                        Utilities.setList(
+                            this@GenrateMarketplaceActivity, AppConstants.CHANNEL_LIST,
+                            response.body() as ArrayList
+                        )
 
+                        (marketplacesList as ArrayList).addAll(Utilities.getListMarketplaces(
+                            this@GenrateMarketplaceActivity, AppConstants.CHANNEL_LIST)!!)
 
-                            (marketplacesList as ArrayList).addAll(
-                                Utilities.getListMarketplaces(
-                                    this@GenrateMarketplaceActivity, AppConstants.CHANNEL_LIST)!!)
+                        setMarketplaces()
 
-
-
-//                            addMarketplacesList()
-                            setBackgroundColour()
-                            setMarketplaces()
-
-                            if (marketplacesList.size>0){
-                                Glide.with(this@GenrateMarketplaceActivity) // replace with 'this' if it's in activity
-                                    .load(marketplacesList[0].sample_image_1)
-                                    .error(R.mipmap.defaults) // show error drawable if the image is not a gif
-                                    .into(ivSampleOutput)
-                            }
-                            marketplaceId = marketplacesList[0].market_id
-
-
-                        } else {
-                            Utilities.hideProgressDialog()
-                            Toast.makeText(
-                                this@GenrateMarketplaceActivity,
-                                "Server not responding!!!",
-                                Toast.LENGTH_SHORT
-                            ).show()
-                        }
+                    } else {
+                        Utilities.hideProgressDialog()
+                        Toast.makeText(
+                            this@GenrateMarketplaceActivity,
+                            "Server not responding!!!",
+                            Toast.LENGTH_SHORT
+                        ).show()
                     }
                 }
+            }
 
-                override fun onFailure(call: Call<List<FootwearMarketplaceResponse>>, t: Throwable) {
-                    Utilities.hideProgressDialog()
-                    Toast.makeText(
-                        this@GenrateMarketplaceActivity,
-                        "Server not responding!!!",
-                        Toast.LENGTH_SHORT
-                    ).show()
-                }
-            })
-        }
-
-
-    private fun setBackgroundColour(){
-        backgroundColour = "https://storage.googleapis.com/spyne/AI/raw/e904fad2-727e-467a-aef5-89b3e1f06c99.jpg"
-
-        backgroundColourAdapter = BackgroundColourAdapter(this,
-            marketplacesList as ArrayList<FootwearMarketplaceResponse>, 0,
-            object : BackgroundColourAdapter.BtnClickListener {
-                override fun onBtnClick(position: Int) {
-                    Log.e("position preview", position.toString())
-
-                    backgroundColourAdapter.notifyDataSetChanged()
-
-                    backgroundPosition = position
-                    if (backgroundPosition==0){
-                        Glide.with(this@GenrateMarketplaceActivity) // replace with 'this' if it's in activity
-                            .load(marketplacesList[marketplacePosition].sample_image_1)
-                            .error(R.mipmap.defaults) // show error drawable if the image is not a gif
-                            .into(ivSampleOutput)
-                        backgroundColour = "https://storage.googleapis.com/spyne/AI/raw/e904fad2-727e-467a-aef5-89b3e1f06c99.jpg"
-                    }else{
-                        Glide.with(this@GenrateMarketplaceActivity) // replace with 'this' if it's in activity
-                            .load(marketplacesList[marketplacePosition].sample_image_2)
-                            .error(R.mipmap.defaults) // show error drawable if the image is not a gif
-                            .into(ivSampleOutput)
-                        backgroundColour = "https://storage.googleapis.com/spyne/AI/raw/4efd2c9d-7723-428e-8b97-ab6ee1cb32b1.jpg"
-                    }
-
-
-                    //showPreviewCar()
-                }
-            })
-        val layoutManager: RecyclerView.LayoutManager =
-            LinearLayoutManager(this,
-                LinearLayoutManager.HORIZONTAL, false)
-        rvBackgroundsColour.setLayoutManager(layoutManager)
-        rvBackgroundsColour.setAdapter(backgroundColourAdapter)
-
-
-
+            override fun onFailure(call: Call<List<FootwearMarketplaceResponse>>, t: Throwable) {
+                Utilities.hideProgressDialog()
+                Toast.makeText(
+                    this@GenrateMarketplaceActivity,
+                    "Server not responding!!!",
+                    Toast.LENGTH_SHORT
+                ).show()
+            }
+        })
     }
 
     private fun setMarketplaces() {
-//        gifList = ArrayList<String>()
-//        gifList.addAll(intent.getParcelableArrayListExtra(AppConstants.BACKGROUND_LIST)!!)
-
         marketplacesAdapter = MarketplacesAdapter(this,
-            marketplacesList as ArrayList<FootwearMarketplaceResponse>, 0,
+            marketplacesList , 0,
             object : MarketplacesAdapter.BtnClickListener {
                 override fun onBtnClick(position: Int) {
                     Log.e("position preview", position.toString())
-                    //if (position<carBackgroundList.size)
-//                    backgroundSelect  = marketplacesList[position].market_id.toString()
                     marketplacesAdapter.notifyDataSetChanged()
                     marketplacePosition = position
 
                     marketplaceId = marketplacesList[position].market_id
 
-                    if (backgroundPosition==0){
-                        Glide.with(this@GenrateMarketplaceActivity) // replace with 'this' if it's in activity
-                            .load(marketplacesList[position].sample_image_1)
-                            .error(R.mipmap.defaults) // show error drawable if the image is not a gif
-                            .into(ivSampleOutput)
-                    }else{
-                        Glide.with(this@GenrateMarketplaceActivity) // replace with 'this' if it's in activity
-                            .load(marketplacesList[position].sample_image_2)
-                            .error(R.mipmap.defaults) // show error drawable if the image is not a gif
-                            .into(ivSampleOutput)
-                    }
-
-
-                    //showPreviewCar()
+                    setBackgroundColour(marketplacesList[position].backgrounds as ArrayList<Backgrounds>)
                 }
             })
         val layoutManager: RecyclerView.LayoutManager =
@@ -236,9 +155,44 @@ class GenrateMarketplaceActivity : AppCompatActivity() {
                 LinearLayoutManager.HORIZONTAL, false)
         rvBackgroundsCars.setLayoutManager(layoutManager)
         rvBackgroundsCars.setAdapter(marketplacesAdapter)
-
-
+        marketplacesAdapter.notifyDataSetChanged()
+        marketplaceId = marketplacesList[0].market_id
+        setBackgroundColour(marketplacesList[0].backgrounds as ArrayList<Backgrounds>)
     }
+
+    private fun setBackgroundColour(backgrounds: ArrayList<Backgrounds>) {
+        backgroundColour = ""
+        backgroundColourAdapter = BackgroundColourAdapter(this,
+            backgrounds , 0,
+            object : BackgroundColourAdapter.BtnClickListener {
+                override fun onBtnClick(position: Int) {
+                    Log.e("position preview", position.toString())
+
+                    backgroundColourAdapter.notifyDataSetChanged()
+                    backgroundPosition = position
+                    backgroundColour = backgrounds[position].custom_bg_url
+
+                    Glide.with(this@GenrateMarketplaceActivity) // replace with 'this' if it's in activity
+                        .load(backgrounds[position].sample_image)
+                        .error(R.mipmap.defaults) // show error drawable if the image is not a gif
+                        .into(ivSampleOutput)
+                }
+            })
+        val layoutManager: RecyclerView.LayoutManager =
+            LinearLayoutManager(this,
+                LinearLayoutManager.HORIZONTAL, false)
+        rvBackgroundsColour.setLayoutManager(layoutManager)
+        rvBackgroundsColour.setAdapter(backgroundColourAdapter)
+        backgroundColourAdapter.notifyDataSetChanged()
+
+        backgroundColour = backgrounds[0].custom_bg_url
+
+        Glide.with(this@GenrateMarketplaceActivity) // replace with 'this' if it's in activity
+            .load(backgrounds[0].sample_image)
+            .error(R.mipmap.defaults) // show error drawable if the image is not a gif
+            .into(ivSampleOutput)
+    }
+
 
 
     private fun addMarketplacesList() {
@@ -253,12 +207,14 @@ class GenrateMarketplaceActivity : AppCompatActivity() {
 //        marketplacesAdapter.notifyDataSetChanged()
 //        backgroundColourAdapter.notifyDataSetChanged()
 
+/*
         if (marketplacesList.size>0){
             Glide.with(this@GenrateMarketplaceActivity) // replace with 'this' if it's in activity
                 .load(marketplacesList[0].sample_image_1)
                 .error(R.mipmap.defaults) // show error drawable if the image is not a gif
                 .into(ivSampleOutput)
         }
+*/
 
 
 

@@ -108,8 +108,6 @@ class TimerActivity : AppCompatActivity() {
 
         setIntents()
 
-
-
         Log.e(
             "Timer  SKU",
             Utilities.getPreference(
@@ -222,7 +220,6 @@ class TimerActivity : AppCompatActivity() {
                     startService(serviceIntent)
                 }
 
-
     }
 
 
@@ -244,6 +241,9 @@ class TimerActivity : AppCompatActivity() {
                 CountDownTimer(480000)
             } else if (Utilities.getPreference(this, AppConstants.FRAME_SHOOOTS).equals("7")) {
                 CountDownTimer(580000)
+            }
+            else{
+                CountDownTimer(720000)
             }
         }
     }

@@ -61,7 +61,6 @@ import com.spyneai.needs.AppConstants
 import com.spyneai.needs.ImageFilePath
 import com.spyneai.needs.Utilities
 import com.spyneai.spyneaidemo.activity.GenerateGifDemoActivity
-import kotlinx.android.synthetic.main.activity_camera.*
 import kotlinx.android.synthetic.main.activity_camera2_demo.*
 import kotlinx.android.synthetic.main.activity_camera2_demo.camera_capture_button
 import kotlinx.android.synthetic.main.activity_camera2_demo.camera_overlay

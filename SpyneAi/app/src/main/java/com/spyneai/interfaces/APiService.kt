@@ -225,7 +225,12 @@ interface APiService {
 
 
     //-- AI APIs --ok
-    @GET("fetch-marketplace?api_key=fde46c58-5735-4fcf-8b38-980c95001dc3")
+   /* @GET("fetch-marketplace?api_key=fde46c58-5735-4fcf-8b38-980c95001dc3")
+    fun getChannelsList(@Header("category") category: String?)
+            : Call<List<FootwearMarketplaceResponse>>?*/
+
+
+    @GET("v2/fetch-marketplace?api_key=fde46c58-5735-4fcf-8b38-980c95001dc3")
     fun getChannelsList(@Header("category") category: String?)
             : Call<List<FootwearMarketplaceResponse>>?
 

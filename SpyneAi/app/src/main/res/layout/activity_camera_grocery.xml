@@ -32,71 +32,82 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:orientation="vertical">
-            <androidx.appcompat.widget.Toolbar
-                android:id="@+id/my_toolbar"
+            <!--            <androidx.appcompat.widget.Toolbar-->
+            <!--                android:id="@+id/my_toolbar"-->
+            <!--                android:layout_width="match_parent"-->
+            <!--                android:background="@color/transparents"-->
+            <!--                android:layout_height="wrap_content">-->
+            <LinearLayout
+                android:id="@+id/llToolBar"
                 android:layout_width="match_parent"
-                android:background="@color/transparents"
-                android:layout_height="?attr/actionBarSize">
-                <LinearLayout
-                    android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:padding="@dimen/dp_10"
+                android:gravity="center"
+                android:layout_weight="0.1"
+                android:orientation="horizontal">
+
+                <ImageView
+                    android:id="@+id/imgBack"
+                    android:layout_width="0dp"
+                    android:layout_weight="0.5"
                     android:layout_height="wrap_content"
+                    android:src="@drawable/back"
+                    android:paddingStart="@dimen/dp_10"
+                    android:paddingEnd="@dimen/dp_10"
+                    app:tint="@color/white" />
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="2"
+                    android:gravity="center"
                     android:orientation="horizontal">
 
-                    <ImageView
-                        android:id="@+id/imgBack"
+                    <EditText
+                        android:id="@+id/etSkuName"
                         android:layout_width="wrap_content"
                         android:layout_height="match_parent"
-                        android:src="@drawable/back"
-                        android:paddingStart="@dimen/dp_10"
-                        android:paddingEnd="@dimen/dp_10"
-                        app:tint="@color/white" />
-
-                    <LinearLayout
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
+                        android:layout_gravity="center_horizontal"
+                        android:background="@drawable/bg_edit"
+                        android:fontFamily="@font/medium"
                         android:gravity="center"
-                        android:orientation="horizontal">
-
-                        <EditText
-                            android:id="@+id/etSkuName"
-                            android:layout_width="wrap_content"
-                            android:layout_height="match_parent"
-                            android:layout_gravity="center_horizontal"
-                            android:background="@drawable/bg_edit"
-                            android:fontFamily="@font/medium"
-                            android:gravity="center"
-                            android:hint="@string/sku_names"
-                            android:maxLines="1"
-                            android:maxLength="20"
-                            android:padding="@dimen/dp_5"
-                            android:textColor="@color/white"
-                            android:textColorHint="@color/white"
-                            android:textSize="@dimen/sp_13" />
-                        <ImageView
-                            android:id="@+id/imgNext"
-                            android:layout_width="wrap_content"
-                            android:layout_height="match_parent"
-                            android:padding="@dimen/dp_5"
-                            android:src="@drawable/right"
-                            android:visibility="gone"
-                            app:tint="@color/white" />
-
-                    </LinearLayout>
-
+                        android:hint="@string/sku_names"
+                        android:maxLines="1"
+                        android:maxLength="20"
+                        android:padding="@dimen/dp_5"
+                        android:textColor="@color/white"
+                        android:textColorHint="@color/white"
+                        android:textSize="@dimen/sp_13" />
                     <ImageView
+                        android:id="@+id/imgNext"
                         android:layout_width="wrap_content"
                         android:layout_height="match_parent"
                         android:padding="@dimen/dp_5"
-                        android:visibility="invisible"
-                        android:src="@drawable/right" />
+                        android:src="@drawable/right"
+                        android:visibility="gone"
+                        app:tint="@color/white" />
 
                 </LinearLayout>
 
-            </androidx.appcompat.widget.Toolbar>
+                <TextView
+                    android:id="@+id/tvEndShoot"
+                    android:layout_width="0dp"
+                    android:layout_weight="0.5"
+                    android:layout_height="match_parent"
+                    android:padding="@dimen/dp_5"
+                    android:text="@string/end_shoot"
+                    android:gravity="center"
+                    android:fontFamily="@font/bold"
+                    android:textSize="@dimen/sp_10"
+                    android:textColor="@color/primary"
+                    android:src="@drawable/right" />
+
+            </LinearLayout>
+
+            <!--            </androidx.appcompat.widget.Toolbar>-->
             <FrameLayout
                 android:layout_width="match_parent"
-                android:layout_weight="1.5"
+                android:layout_weight="1"
                 android:layout_gravity="center"
                 android:layout_height="0dp">
                 <androidx.camera.view.PreviewView
@@ -109,24 +120,25 @@
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:src="@mipmap/defaults"
+                    android:visibility="gone"
                     android:contentDescription="@string/app_name" />
             </FrameLayout>
 
             <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="0dp"
-                android:layout_weight="1"
-                android:layout_gravity="bottom"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:padding="@dimen/dp_10"
                 android:background="@color/transparents"
                 android:orientation="vertical">
 
-
                 <androidx.recyclerview.widget.RecyclerView
                     android:id="@+id/rvSubcategories"
-app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+                    app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_gravity="bottom|center"
+                    android:visibility="gone"
                     android:orientation="horizontal"
                     android:layout_marginStart="@dimen/dp_10"
                     android:layout_marginTop="@dimen/dp_10"
@@ -143,9 +155,7 @@ app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
 
                 <LinearLayout
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="bottom"
-                    android:layout_margin="@dimen/dp_15"
+                    android:layout_height="match_parent"
                     android:orientation="horizontal"
                     android:gravity="center">
                     <LinearLayout
@@ -174,10 +184,11 @@ app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
                         android:layout_width="0dp"
                         android:layout_weight="1"
                         android:gravity="center"
-                        android:padding="@dimen/dp_5"
                         android:layout_height="match_parent">
                         <androidx.cardview.widget.CardView
+                            android:id="@+id/cardOverlay"
                             android:layout_width="@dimen/dp_50"
+                            android:visibility="gone"
                             android:layout_height="@dimen/dp_50"
                             app:cardCornerRadius="@dimen/dp_50">
                             <ImageView
@@ -190,6 +201,43 @@ app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
                                 android:padding="@dimen/sp_5"
                                 android:background="@drawable/bg_round" />
                         </androidx.cardview.widget.CardView>
+
+                        <FrameLayout
+                            android:id="@+id/flClicked"
+                            android:layout_width="@dimen/dp_70"
+                            android:layout_height="@dimen/dp_70">
+                            <androidx.cardview.widget.CardView
+                                android:id="@+id/cardOverlayClicked"
+                                android:layout_width="@dimen/dp_50"
+                                android:layout_height="@dimen/dp_50"
+                                android:layout_gravity="center"
+                                app:cardCornerRadius="@dimen/dp_10">
+
+                                <ImageView
+                                    android:id="@+id/ivPreviewClicked"
+                                    android:layout_width="@dimen/dp_50"
+                                    android:layout_height="@dimen/dp_50"
+                                    android:fontFamily="@font/bold"
+                                    android:gravity="center"
+                                    android:scaleType="fitXY"
+                                    android:layout_gravity="center"
+                                    android:elevation="@dimen/dp_5"
+                                    android:src="@mipmap/defaults" />
+                            </androidx.cardview.widget.CardView>
+
+                            <TextView
+                                android:id="@+id/tvCount"
+                                android:layout_width="@dimen/dp_20"
+                                android:layout_height="@dimen/dp_20"
+                                android:layout_gravity="end"
+                                android:gravity="center"
+                                android:textSize="@dimen/sp_10"
+                                android:text="0"
+                                android:textColor="@color/white"
+                                android:background="@drawable/bg_round_orange"/>
+
+                        </FrameLayout>
+
                     </LinearLayout>
 
                 </LinearLayout>
@@ -198,6 +246,7 @@ app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
                     android:layout_height="match_parent"
                     android:gravity="bottom"
                     android:layout_gravity="bottom"
+                    android:visibility="gone"
                     android:id="@+id/llProgress"
                     android:orientation="horizontal">
 

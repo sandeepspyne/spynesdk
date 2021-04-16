@@ -47,7 +47,7 @@ class MarketplacesAdapter(val context: Context,
 
         // Get element from your dataset at this position and replace the
         // contents of the view with that element
-        Glide.with(context).load(channelList[position].image_url)
+        Glide.with(context).load(channelList[position].backgrounds[0].image_url)
                 .into(viewHolder.ivMarketPlace)
 
         viewHolder.tvMarketplacesName.setText(channelList[position].marketplace_name)

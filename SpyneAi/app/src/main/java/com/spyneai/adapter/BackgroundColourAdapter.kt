@@ -6,18 +6,17 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
-import android.widget.LinearLayout
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.spyneai.R
-import com.spyneai.model.channels.MarketplaceResponse
-import com.spyneai.model.marketplace.FootwearMarketplaceResponse
+import com.spyneai.model.marketplace.Backgrounds
 import kotlinx.android.synthetic.main.background_colour.view.*
 
-class BackgroundColourAdapter (val context: Context,
-                               val backgroundColourList : ArrayList<FootwearMarketplaceResponse >,
-                               var pos : Int,
-                               val btnlistener: BtnClickListener?)
+class BackgroundColourAdapter(
+    val context: Context,
+    val backgroundColourList: ArrayList<Backgrounds>,
+    var pos: Int,
+    val btnlistener: BtnClickListener?)
     : RecyclerView.Adapter<BackgroundColourAdapter.ViewHolder>() {
 
     companion object {
@@ -53,28 +52,9 @@ class BackgroundColourAdapter (val context: Context,
         // Get element from your dataset at this position and replace the
         // contents of the view with that element
 
-
-
-        if (position == 0){
-            Glide.with(context).load(backgroundColourList[position].custom_bg_url_1).into(viewHolder.ivBackground)
-        }else if (position == 1){
-            Glide.with(context).load(backgroundColourList[position].custom_bg_url_2).into(viewHolder.ivBackground)
-        }
-
+        Glide.with(context).load(backgroundColourList[position].custom_bg_url)
+            .into(viewHolder.ivBackground)
         mClickListener = btnlistener
-
-
-
-/*
-        viewHolder.llNoBg.setOnClickListener(View.OnClickListener {
-            if (mClickListener != null)
-                mClickListener?.onBtnClick(-1)
-            pos = -1
-
-            viewHolder.llChannel.setBackgroundResource(R.drawable.bg_selected)
-        })
-*/
-
 
         if (position == pos)
             viewHolder.ivBackground.apply {
@@ -90,7 +70,6 @@ class BackgroundColourAdapter (val context: Context,
                 mClickListener?.onBtnClick(position)
 
             pos = position
-
 
 
             viewHolder.ivBackground.apply {

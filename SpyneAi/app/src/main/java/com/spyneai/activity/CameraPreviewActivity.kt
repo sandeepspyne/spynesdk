@@ -32,7 +32,6 @@ import com.spyneai.model.upload.UploadResponse
 import com.spyneai.model.uploadRough.UploadPhotoRequest
 import com.spyneai.needs.AppConstants
 import com.spyneai.needs.Utilities
-import kotlinx.android.synthetic.main.activity_camera.*
 import kotlinx.android.synthetic.main.activity_camera_preview.*
 import okhttp3.MediaType
 import okhttp3.MultipartBody

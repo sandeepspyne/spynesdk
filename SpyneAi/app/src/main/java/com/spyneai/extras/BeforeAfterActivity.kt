@@ -64,14 +64,12 @@ class BeforeAfterActivity : AppCompatActivity() {
         else
             catName = Utilities.getPreference(this, AppConstants.CATEGORY_NAME)!!
 
-        if (catName.equals("Footwear")){
+        if (catName.equals("Footwear") || catName.equals("Grocery")){
             tvShootFootwear.visibility = View.VISIBLE
             llShootNow.visibility = View.GONE
         }else{
             tvShootFootwear.visibility = View.GONE
             llShootNow.visibility = View.VISIBLE
-
-
         }
     }
 
@@ -154,6 +152,15 @@ class BeforeAfterActivity : AppCompatActivity() {
                 startActivity(intent)
             })
         }else if (Utilities.getPreference(this, AppConstants.CATEGORY_NAME).equals("Footwear")){
+            tvShootFootwear.setOnClickListener(View.OnClickListener {
+                val intent = Intent(this, CameraActivity::class.java)
+                intent.putExtra(AppConstants.CATEGORY_ID, catId)
+                intent.putExtra(AppConstants.CATEGORY_NAME, catName)
+                intent.putExtra(AppConstants.GIF_LIST, gifList)
+                Utilities.savePrefrence(this, AppConstants.FROM, "BA")
+                startActivity(intent)
+            })
+        }else if (Utilities.getPreference(this, AppConstants.CATEGORY_NAME).equals("Grocery")){
             tvShootFootwear.setOnClickListener(View.OnClickListener {
                 val intent = Intent(this, CameraActivity::class.java)
                 intent.putExtra(AppConstants.CATEGORY_ID, catId)
