@@ -49,7 +49,7 @@
                 <ImageView
                     android:id="@+id/imgBack"
                     android:layout_width="0dp"
-                    android:layout_weight="0.5"
+                    android:layout_weight="1"
                     android:layout_height="wrap_content"
                     android:src="@drawable/back"
                     android:paddingStart="@dimen/dp_10"
@@ -92,14 +92,14 @@
                 <TextView
                     android:id="@+id/tvEndShoot"
                     android:layout_width="0dp"
-                    android:layout_weight="0.5"
+                    android:layout_weight="1"
                     android:layout_height="match_parent"
                     android:padding="@dimen/dp_5"
                     android:text="@string/end_shoot"
                     android:gravity="center"
                     android:fontFamily="@font/bold"
-                    android:textSize="@dimen/sp_10"
-                    android:textColor="@color/primary"
+                    android:textSize="@dimen/sp_15"
+                    android:textColor="@color/white"
                     android:src="@drawable/right" />
 
             </LinearLayout>
@@ -120,6 +120,14 @@
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:src="@mipmap/defaults"
+                    android:visibility="gone"
+                    android:contentDescription="@string/app_name" />
+                <ImageView
+                    android:id="@+id/imgGridLine"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:src="@mipmap/camlines"
+                    android:scaleType="fitXY"
                     android:visibility="gone"
                     android:contentDescription="@string/app_name" />
             </FrameLayout>
@@ -150,8 +158,10 @@
                     android:layout_height="match_parent"
                     android:layout_gravity="start|center"
                     android:visibility="gone"
+                    app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
                     android:orientation="horizontal"
                     android:padding="@dimen/dp_10" />
+
 
                 <LinearLayout
                     android:layout_width="match_parent"
@@ -229,6 +239,7 @@
                                 android:id="@+id/tvCount"
                                 android:layout_width="@dimen/dp_20"
                                 android:layout_height="@dimen/dp_20"
+                                android:elevation="@dimen/dp_5"
                                 android:layout_gravity="end"
                                 android:gravity="center"
                                 android:textSize="@dimen/sp_10"

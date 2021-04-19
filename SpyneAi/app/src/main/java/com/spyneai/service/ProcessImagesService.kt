@@ -87,12 +87,12 @@ class ProcessImagesService() : Service(), Listener {
 
 
         tasksInProgress.add(task)
-        checkAndFinishService(task)
+        checkAndFinishService()
         PhotoUploader(task, this).start()
 
     }
 
-    private fun checkAndFinishService(task: Task) {
+    private fun checkAndFinishService() {
         //clear all notifications
 
         notificationManager.cancelAll()
@@ -100,19 +100,19 @@ class ProcessImagesService() : Service(), Listener {
         tasksInProgress.forEach {
 
             if (it.isCompleted) {
-                createCompletedNotification(task)
+                createCompletedNotification()
 
             } else if (it.isFailure) {
-                createFailureNotification(task)
+                createFailureNotification()
             } else
-                createOngoingNotificaiton(task)
+                createOngoingNotificaiton()
         }
         if (tasksInProgress.filter { !it.isCompleted || !it.isFailure }.isEmpty()) {
             stopService()
         }
     }
 
-    private fun createOngoingNotificaiton(task: Task) {
+    private fun createOngoingNotificaiton() {
         var notificationId = (0..999999).random()
         val text: String = "Image processing in progress..."
         var notification = createNotification(text, true)
@@ -122,12 +122,12 @@ class ProcessImagesService() : Service(), Listener {
 
     }
 
-    private fun createCompletedNotification(task: Task) {
+    private fun createCompletedNotification() {
         var notification = createNotification("Image processing completed", false)
         notificationManager.notify((0..999999).random(), notification)
     }
 
-    private fun createFailureNotification(task: Task) {
+    private fun createFailureNotification() {
         var notification = createNotification("Image processing Failed", false)
         notificationManager.notify((0..999999).random(), notification)
     }
@@ -231,14 +231,14 @@ class ProcessImagesService() : Service(), Listener {
     override fun onSuccess(task: Task) {
         task.isCompleted = true
         stopService()
-        checkAndFinishService(task)
+        checkAndFinishService()
     }
 
     override fun onFailure(task: Task) {
         task.isFailure = true
         stopService()
         //retry funcnality
-        checkAndFinishService(task)
+        checkAndFinishService()
     }
 
 

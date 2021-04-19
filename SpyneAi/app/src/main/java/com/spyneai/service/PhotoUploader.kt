@@ -322,7 +322,12 @@ class PhotoUploader(var task: Task, var listener: Listener) {
             else -> rotatedBitmap = myBitmap
         }
 
-        return persistImage(rotatedBitmap!!)
+        if (task.catName.equals("Automobiles"))
+            return persistImageAutomobiles(rotatedBitmap!!)
+        else if (task.catName.equals("Footwear"))
+            return persistImageFootwear(rotatedBitmap!!)
+        else
+            return persistImageGrocery(rotatedBitmap!!)
     }
 
     suspend fun rotateImage(source: Bitmap, angle: Float): Bitmap? {
@@ -334,11 +339,47 @@ class PhotoUploader(var task: Task, var listener: Listener) {
         )
     }
 
-    suspend fun persistImage(bitmap: Bitmap): File? {
+    suspend fun persistImageFootwear(bitmap: Bitmap): File? {
         var imageFile: File? = null
         if (BaseApplication.getContext() != null) {
             val filesDir: File = BaseApplication.getContext().filesDir
-            imageFile = File(filesDir, "photo" + System.currentTimeMillis() + ".png")
+            imageFile = File(filesDir, "photo" + "footwear" + System.currentTimeMillis() + ".png")
+            val os: OutputStream
+            try {
+                os = FileOutputStream(imageFile)
+                bitmap.compress(Bitmap.CompressFormat.PNG, 70, os)
+                os.flush()
+                os.close()
+            } catch (e: Exception) {
+                log("Error writing bitmap: " + e.localizedMessage)
+            }
+        }
+        return imageFile
+    }
+
+    suspend fun persistImageAutomobiles(bitmap: Bitmap): File? {
+        var imageFile: File? = null
+        if (BaseApplication.getContext() != null) {
+            val filesDir: File = BaseApplication.getContext().filesDir
+            imageFile = File(filesDir, "photo" + "automobiles" + System.currentTimeMillis() + ".png")
+            val os: OutputStream
+            try {
+                os = FileOutputStream(imageFile)
+                bitmap.compress(Bitmap.CompressFormat.PNG, 70, os)
+                os.flush()
+                os.close()
+            } catch (e: Exception) {
+                log("Error writing bitmap: " + e.localizedMessage)
+            }
+        }
+        return imageFile
+    }
+
+    suspend fun persistImageGrocery(bitmap: Bitmap): File? {
+        var imageFile: File? = null
+        if (BaseApplication.getContext() != null) {
+            val filesDir: File = BaseApplication.getContext().filesDir
+            imageFile = File(filesDir, "photo" + "grocery" + System.currentTimeMillis() + ".png")
             val os: OutputStream
             try {
                 os = FileOutputStream(imageFile)
@@ -430,6 +471,7 @@ class PhotoUploader(var task: Task, var listener: Listener) {
                         when (task.catName) {
                             "Automobiles" -> bulkUpload()
                             "Footwear" -> bulkUploadFootwear()
+                            "Grocery" -> bulkUploadFootwear()
                         }
 
                     }
