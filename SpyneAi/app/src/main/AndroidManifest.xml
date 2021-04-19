@@ -10,11 +10,12 @@
     <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.VIBRATE" />
-
-    <uses-permission android:name="android.permission.FOREGROUND_SERVICE"></uses-permission>
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
     <uses-permission android:name="android.permission.WAKE_LOCK" />
-    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED"/>
-    <uses-permission android:name="android.permission.READ_PRIVILEGED_PHONE_STATE" tools:ignore="ProtectedPermissions" />
+    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
+    <uses-permission
+        android:name="android.permission.READ_PRIVILEGED_PHONE_STATE"
+        tools:ignore="ProtectedPermissions" />
 
     <uses-feature android:name="android.hardware.camera" />
 
@@ -22,38 +23,40 @@
         android:name="android.permission.WRITE_EXTERNAL_STORAGE"
         tools:ignore="ScopedStorage" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" /> <!-- <uses-permission -->
-<!--     android:name="android.permission.MANAGE_EXTERNAL_STORAGE"-->
-<!--     tools:ignore="ScopedStorage" />-->
+    <!-- android:name="android.permission.MANAGE_EXTERNAL_STORAGE" -->
+    <!-- tools:ignore="ScopedStorage" /> -->
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" /> <!-- Needed only if your app targets Android 5.0 (API level 21) or higher. -->
     <uses-feature android:name="android.hardware.location.gps" />
 
     <application
+        android:name=".BaseApplication"
         android:allowBackup="true"
+        android:extractNativeLibs="false"
         android:icon="@mipmap/app_logo"
         android:label="@string/app_name"
-        android:name=".BaseApplication"
         android:requestLegacyExternalStorage="true"
         android:roundIcon="@mipmap/app_logo"
         android:supportsRtl="true"
         android:theme="@style/Theme.SpyneAi"
-        android:extractNativeLibs="false"
         android:usesCleartextTraffic="true"
         tools:targetApi="m">
+        <activity android:name=".activity.PreviewOrderActivity"></activity>
 
         <service
             android:name=".service.ProcessImagesService"
             android:enabled="true"
             android:exported="true"
-            android:stopWithTask="false">
-        </service>
+            android:stopWithTask="false"></service>
 
-        <receiver android:enabled="true" android:name=".service.StartReceiver">
+        <receiver
+            android:name=".service.StartReceiver"
+            android:enabled="true">
             <intent-filter>
-                <action android:name="android.intent.action.BOOT_COMPLETED"/>
+                <action android:name="android.intent.action.BOOT_COMPLETED" />
             </intent-filter>
         </receiver>
 
-        <activity android:name=".activity.YourOrdersActivity"></activity>
+        <activity android:name=".activity.YourOrdersActivity" />
         <activity
             android:name=".activity.OrderSummary2Activity"
             android:screenOrientation="portrait" />

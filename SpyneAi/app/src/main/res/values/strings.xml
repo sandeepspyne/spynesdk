@@ -181,7 +181,7 @@
     <string name="free_credits">10 Credits has been added to <br />your account</string>
 
 
-    <string name="request_credits">Request credits on <br/>Whatsapp</string>
+    <string name="request_credits">Request credits on <br />Whatsapp</string>
     <string name="we_recommend_focused">(2/2) Miscellaneous Shots</string>
     <string name="focused">Miscellaneous</string>
 
@@ -194,7 +194,10 @@
     <string name="end_shoots">Are you sure you really want to end shoot now?</string>
 
     <string name="output">Tap here to see your output.</string>
-
+    <string name="previeworder">Preview</string>
+    <string name="preview">Preview</string>
+    <string name="place_order">Start Processing</string>
+    <string name="images_will_be_lost">Your Images will be lost. Are you sure you want to leave this page?</string>
 
 
     <string-array name="planets_array">

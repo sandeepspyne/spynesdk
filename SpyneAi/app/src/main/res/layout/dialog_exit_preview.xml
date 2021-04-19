@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_margin="@dimen/dp_10"
+    android:padding="@dimen/dp_10"
+    android:gravity="center">
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/images_will_be_lost"
+        android:gravity="center"
+        android:fontFamily="@font/medium"
+        android:textSize="@dimen/sp_16"
+        android:textColor="@color/primary"
+        android:layout_margin="@dimen/dp_10"
+        android:id="@+id/tvSkuNameDialog"/>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center">
+        <TextView
+            android:id="@+id/btnNo"
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="wrap_content"
+            android:text="@string/no"
+            android:padding="@dimen/dp_5"
+            android:gravity="center"
+            android:textColor="@color/primary"
+            android:fontFamily="@font/medium"
+            android:textSize="@dimen/sp_15"
+            android:background="@drawable/bg_selected"
+            android:textAllCaps="false"/>
+
+        <TextView
+            android:id="@+id/btnYes"
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="wrap_content"
+            android:text="@string/yes"
+            android:padding="@dimen/dp_5"
+            android:gravity="center"
+            android:layout_margin="@dimen/dp_10"
+            android:textColor="@color/white"
+            android:fontFamily="@font/medium"
+            android:textSize="@dimen/sp_15"
+            android:background="@drawable/bg_edit_button"
+            android:textAllCaps="false"/>
+    </LinearLayout>
+
+
+
+
+</LinearLayout>

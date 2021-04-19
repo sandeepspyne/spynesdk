@@ -208,6 +208,7 @@ class CameraActivity : AppCompatActivity(), SubCategoriesAdapter.BtnClickListene
             tvEndShoot.setOnClickListener(View.OnClickListener {
                 showEndShootDialog()
             })
+            imgGridLine.visibility = View.VISIBLE
         }
     }
 
@@ -944,15 +945,16 @@ class CameraActivity : AppCompatActivity(), SubCategoriesAdapter.BtnClickListene
         dialog.setCancelable(false)
         if (Utilities.getPreference(this, AppConstants.CATEGORY_NAME).equals("Automobiles"))
             dialog.setContentView(R.layout.dialog_suggestion)
-        else
+        else if(Utilities.getPreference(this, AppConstants.CATEGORY_NAME).equals("Footwear"))
             dialog.setContentView(R.layout.footwear_dialog_suggestion)
+        else
+            dialog.setContentView(R.layout.grocery_dialog_suggestion)
 
         val window: Window = dialog.getWindow()!!
         window.setLayout(
             WindowManager.LayoutParams.WRAP_CONTENT,
             WindowManager.LayoutParams.WRAP_CONTENT
         )
-
 
         val flAfter: FrameLayout = dialog.findViewById(R.id.flAfter)
         val ivClickedImage: ImageView = dialog.findViewById(R.id.ivClickedImage)
@@ -1830,22 +1832,9 @@ class CameraActivity : AppCompatActivity(), SubCategoriesAdapter.BtnClickListene
         val dialogButtonNo: TextView = dialog.findViewById(R.id.btnNo)
 
         dialogButtonYes.setOnClickListener(View.OnClickListener {
-            /*val intent = Intent(
-                this,
-                GenrateMarketplaceActivity::class.java
-            )
 
-            intent.putExtra(AppConstants.ALL_IMAGE_LIST, imageFileList)
-            intent.putExtra(AppConstants.CATEGORY_NAME, catName)
-            intent.putExtra(AppConstants.ALL_FRAME_LIST, imageFileListFrames)
-            intent.putExtra(AppConstants.GIF_LIST, gifList)
-
-            Utilities.savePrefrence(this, AppConstants.SKU_NAME, skuName)
-            startActivity(intent)
-            finish()
-            dialog.dismiss()*/
-            if (Utilities.isNetworkAvailable(this)) {
-                val intent = Intent(this, TimerActivity::class.java)
+            if (imageFileList.size > 0) {
+                val intent = Intent(this, PreviewOrderActivity::class.java)
                 intent.putExtra(AppConstants.BG_ID, "")
                 intent.putExtra(AppConstants.MARKETPLACE_ID, "mark_0Q32nR")
                 intent.putExtra(AppConstants.CATEGORY_NAME, catName)
@@ -1855,18 +1844,18 @@ class CameraActivity : AppCompatActivity(), SubCategoriesAdapter.BtnClickListene
                 )
                 intent.putExtra(AppConstants.ALL_IMAGE_LIST, imageFileList)
                 intent.putExtra(AppConstants.ALL_FRAME_LIST, imageFileListFrames)
-//                intent.putExtra(AppConstants.GIF_LIST, gifList)
                 startActivity(intent)
                 finish()
                 dialog.dismiss()
-            } else {
+            }
+            else{
                 Toast.makeText(
                     this,
-                    "No internet Connection , Please Try Again! ",
-                    Toast.LENGTH_LONG
+                    "Please capture at least one image to proceed",
+                    Toast.LENGTH_SHORT
                 ).show()
-            }
 
+            }
         })
         dialogButtonNo.setOnClickListener(View.OnClickListener { dialog.dismiss() })
         dialog.show()
