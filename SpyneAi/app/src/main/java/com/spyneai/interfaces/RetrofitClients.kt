@@ -10,6 +10,8 @@ import java.util.concurrent.TimeUnit
 object RetrofitClients {
 
     private const val BASE_URL = "https://www.clippr.ai/api/"
+    private const val STAGING_URL = "http://34.87.119.10/api/"
+
     private val client = OkHttpClient.Builder()
         .addNetworkInterceptor(StethoInterceptor())
         .readTimeout(10, TimeUnit.MINUTES)

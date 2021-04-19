@@ -8,7 +8,6 @@ import android.app.Dialog
 import android.content.ContentValues
 import android.content.Context
 import android.content.Intent
-import android.content.pm.ActivityInfo
 import android.content.pm.PackageManager
 import android.database.Cursor
 import android.graphics.Bitmap
@@ -26,6 +25,7 @@ import android.text.SpannableString
 import android.text.SpannableStringBuilder
 import android.text.TextWatcher
 import android.text.style.ForegroundColorSpan
+import android.util.DisplayMetrics
 import android.util.Log
 import android.util.Rational
 import android.view.View
@@ -52,7 +52,6 @@ import com.spyneai.R
 import com.spyneai.adapter.InteriorFramesAdapter
 import com.spyneai.adapter.ProgressAdapter
 import com.spyneai.adapter.SubCategoriesAdapter
-import com.spyneai.camera2.Camera2Activity
 import com.spyneai.interfaces.APiService
 import com.spyneai.interfaces.RetrofitClient
 import com.spyneai.model.shoot.*
@@ -157,7 +156,7 @@ class CameraActivity : AppCompatActivity(), SubCategoriesAdapter.BtnClickListene
     @RequiresApi(Build.VERSION_CODES.M)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        if (Utilities.getPreference(this,AppConstants.CATEGORY_NAME).equals("Footwear"))
+        if (Utilities.getPreference(this, AppConstants.CATEGORY_NAME).equals("Footwear"))
             setContentView(R.layout.activity_camera_)
         else
             setContentView(R.layout.activity_camera_grocery)
@@ -352,7 +351,11 @@ class CameraActivity : AppCompatActivity(), SubCategoriesAdapter.BtnClickListene
             for (i in 0..num-1){
                 frameImageListSelections .add(i)
             }
-            Utilities.savePrefrence(this@CameraActivity, AppConstants.NO_OF_IMAGES, frameImageListSelections.size.toString())
+            Utilities.savePrefrence(
+                this@CameraActivity,
+                AppConstants.NO_OF_IMAGES,
+                frameImageListSelections.size.toString()
+            )
         }else{
             if (num == 4) {
                 frameImageListSelections.add(0)
@@ -588,20 +591,20 @@ class CameraActivity : AppCompatActivity(), SubCategoriesAdapter.BtnClickListene
             if (frameNumber == 1) {
                 if (imgOverlay.visibility == View.INVISIBLE) {
                     imgOverlay.visibility = View.VISIBLE
-                    if(catName.equals("Grocery"))
+                    if (catName.equals("Grocery"))
                         rvSubcategories.visibility = View.GONE
                     else
                         rvSubcategories.visibility = View.INVISIBLE
                 } else {
                     imgOverlay.visibility = View.INVISIBLE
-                    if(catName.equals("Grocery"))
+                    if (catName.equals("Grocery"))
                         rvSubcategories.visibility = View.GONE
                     else
                         rvSubcategories.visibility = View.VISIBLE
 
                 }
             } else {
-                if(catName.equals("Grocery"))
+                if (catName.equals("Grocery"))
                     rvSubcategories.visibility = View.GONE
                 else
                     rvSubcategories.visibility = View.INVISIBLE
@@ -981,7 +984,7 @@ class CameraActivity : AppCompatActivity(), SubCategoriesAdapter.BtnClickListene
 
             dialog.dismiss()
             if (!interiorEnabled) {
-                if(catName.equals("Grocery"))
+                if (catName.equals("Grocery"))
                     rvSubcategories.visibility = View.GONE
                 else
                     rvSubcategories.visibility = View.VISIBLE
@@ -1017,9 +1020,8 @@ class CameraActivity : AppCompatActivity(), SubCategoriesAdapter.BtnClickListene
                     } else
                         showInteriorDialog()
                 }
-            }
-            else {
-                if(catName.equals("Grocery"))
+            } else {
+                if (catName.equals("Grocery"))
                     rvSubcategories.visibility = View.GONE
                 else
                     rvSubcategories.visibility = View.INVISIBLE
@@ -1082,7 +1084,7 @@ class CameraActivity : AppCompatActivity(), SubCategoriesAdapter.BtnClickListene
             if (catName.equals("Grocery")) {
                 ivPreviewClicked.setImageBitmap(rotatedBitmap)
                 tvCount.setText((frameNumber - 1).toString())
-                val animation : Animation  = AnimationUtils.loadAnimation(this,R.anim.bounce);
+                val animation: Animation = AnimationUtils.loadAnimation(this, R.anim.bounce);
                 ivPreviewClicked.startAnimation(animation);
                 rvSubcategories.visibility = View.GONE
             }
@@ -1350,7 +1352,7 @@ class CameraActivity : AppCompatActivity(), SubCategoriesAdapter.BtnClickListene
                     if (Utilities.getPreference(this@CameraActivity, AppConstants.FROM)
                             .equals("BA")
                     ) {
-                        if(catName.equals("Grocery"))
+                        if (catName.equals("Grocery"))
                             rvSubcategories.visibility = View.GONE
                         else
                             rvSubcategories.visibility = View.VISIBLE
@@ -1376,8 +1378,8 @@ class CameraActivity : AppCompatActivity(), SubCategoriesAdapter.BtnClickListene
                             "4"
                         );
                         setProgressFrame(4)
-                    } else if (catName.equals("Footwear") || catName.equals("Grocery") ) {
-                        if (frameImageList.size>0){
+                    } else if (catName.equals("Footwear") || catName.equals("Grocery")) {
+                        if (frameImageList.size > 0) {
                             Utilities.savePrefrence(
                                 this@CameraActivity,
                                 AppConstants.FRAME_SHOOOTS,
@@ -1842,25 +1844,27 @@ class CameraActivity : AppCompatActivity(), SubCategoriesAdapter.BtnClickListene
             startActivity(intent)
             finish()
             dialog.dismiss()*/
-            if (Utilities.isNetworkAvailable(this))
-            {
+            if (Utilities.isNetworkAvailable(this)) {
                 val intent = Intent(this, TimerActivity::class.java)
-                intent.putExtra(AppConstants.BG_ID,"")
-                intent.putExtra(AppConstants.MARKETPLACE_ID,"mark_0Q32nR")
-                intent.putExtra(AppConstants.CATEGORY_NAME,catName)
-                intent.putExtra(AppConstants.BACKGROUND_COLOUR,
-                    "https://storage.googleapis.com/spyne/AI/raw/e904fad2-727e-467a-aef5-89b3e1f06c99.jpg")
+                intent.putExtra(AppConstants.BG_ID, "")
+                intent.putExtra(AppConstants.MARKETPLACE_ID, "mark_0Q32nR")
+                intent.putExtra(AppConstants.CATEGORY_NAME, catName)
+                intent.putExtra(
+                    AppConstants.BACKGROUND_COLOUR,
+                    "https://storage.googleapis.com/spyne/AI/raw/e904fad2-727e-467a-aef5-89b3e1f06c99.jpg"
+                )
                 intent.putExtra(AppConstants.ALL_IMAGE_LIST, imageFileList)
                 intent.putExtra(AppConstants.ALL_FRAME_LIST, imageFileListFrames)
 //                intent.putExtra(AppConstants.GIF_LIST, gifList)
                 startActivity(intent)
                 finish()
                 dialog.dismiss()
-            }
-            else{
-                Toast.makeText(this,
+            } else {
+                Toast.makeText(
+                    this,
                     "No internet Connection , Please Try Again! ",
-                    Toast.LENGTH_LONG).show()
+                    Toast.LENGTH_LONG
+                ).show()
             }
 
         })
@@ -1892,11 +1896,17 @@ class CameraActivity : AppCompatActivity(), SubCategoriesAdapter.BtnClickListene
 
     private fun hideStatusBar(){
         if (Build.VERSION.SDK_INT >= 16) {
-            getWindow().setFlags(AccessibilityNodeInfoCompat.ACTION_NEXT_HTML_ELEMENT, AccessibilityNodeInfoCompat.ACTION_NEXT_HTML_ELEMENT);
+            getWindow().setFlags(
+                AccessibilityNodeInfoCompat.ACTION_NEXT_HTML_ELEMENT,
+                AccessibilityNodeInfoCompat.ACTION_NEXT_HTML_ELEMENT
+            );
             getWindow().getDecorView().setSystemUiVisibility(3328);
         }else{
             requestWindowFeature(Window.FEATURE_NO_TITLE);
-            this.getWindow().setFlags(WindowManager.LayoutParams.FLAG_LAYOUT_IN_SCREEN,WindowManager.LayoutParams.FLAG_FULLSCREEN);
+            this.getWindow().setFlags(
+                WindowManager.LayoutParams.FLAG_LAYOUT_IN_SCREEN,
+                WindowManager.LayoutParams.FLAG_FULLSCREEN
+            );
         }
     }
 

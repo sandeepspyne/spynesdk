@@ -81,9 +81,9 @@ class GenrateMarketplaceActivity : AppCompatActivity() {
 
         //Get Intents
 
-/*        imageFileList.addAll(intent.getParcelableArrayListExtra(AppConstants.ALL_IMAGE_LIST)!!)
+        imageFileList.addAll(intent.getParcelableArrayListExtra(AppConstants.ALL_IMAGE_LIST)!!)
         imageFileListFrames.addAll(intent.getIntegerArrayListExtra(AppConstants.ALL_FRAME_LIST)!!)
-        totalImagesToUPload = imageFileList.size*/
+      //  totalImagesToUPload = imageFileList.size
     }
 
 

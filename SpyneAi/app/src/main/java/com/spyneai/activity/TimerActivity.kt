@@ -11,6 +11,10 @@ import android.view.animation.LinearInterpolator
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
+import androidx.recyclerview.widget.GridLayoutManager
+import androidx.recyclerview.widget.RecyclerView
+import com.google.gson.Gson
+import com.spyneai.BuildConfig
 import com.spyneai.R
 import com.spyneai.adapter.MarketplacesAdapter
 import com.spyneai.adapter.PhotosAdapter
@@ -40,6 +44,7 @@ class TimerActivity : AppCompatActivity() {
     private lateinit var photsAdapter: PhotosAdapter
     private lateinit var photoList: List<Photos>
     private lateinit var photoListInteriors: List<Photos>
+    private lateinit var photoListFocused: List<Photos>
 
     lateinit var imageList: ArrayList<String>
     lateinit var imageListAfter: ArrayList<String>
@@ -50,6 +55,9 @@ class TimerActivity : AppCompatActivity() {
 
     public lateinit var imageInteriorFileList: ArrayList<File>
     public lateinit var imageInteriorFileListFrames: ArrayList<Int>
+
+    public lateinit var imageFocusedFileList: ArrayList<File>
+    public lateinit var imageFocusedFileListFrames: ArrayList<Int>
 
     private var currentPOsition: Int = 0
     lateinit var carBackgroundList: ArrayList<CarBackgroundsResponse>
@@ -73,16 +81,16 @@ class TimerActivity : AppCompatActivity() {
 
         setCustomTimer()
 
-        val manufacturer = "xiaomi"
-        if (manufacturer.equals(Build.MANUFACTURER, ignoreCase = true)) {
-            //this will open auto start screen where user can enable permission for your app
-            val intent = Intent()
-            intent.component = ComponentName(
-                "com.miui.securitycenter",
-                "com.miui.permcenter.autostart.AutoStartManagementActivity"
-            )
-            startActivity(intent)
-        }
+//        val manufacturer = "xiaomi"
+//        if (manufacturer.equals(Build.MANUFACTURER, ignoreCase = true)) {
+//            //this will open auto start screen where user can enable permission for your app
+//            val intent = Intent()
+//            intent.component = ComponentName(
+//                "com.miui.securitycenter",
+//                "com.miui.permcenter.autostart.AutoStartManagementActivity"
+//            )
+//            startActivity(intent)
+//        }
 
         backgroundSelect = intent.getStringExtra(AppConstants.BG_ID)!!
         circular_progress.setInterpolator(LinearInterpolator())
@@ -175,6 +183,9 @@ class TimerActivity : AppCompatActivity() {
         imageInteriorFileList = ArrayList<File>()
         imageInteriorFileListFrames = ArrayList<Int>()
 
+        imageFocusedFileList = ArrayList<File>()
+        imageFocusedFileListFrames = ArrayList<Int>()
+
         //Get Intents
         imageFileList.addAll(intent.getParcelableArrayListExtra(AppConstants.ALL_IMAGE_LIST)!!)
         imageFileListFrames.addAll(intent.getIntegerArrayListExtra(AppConstants.ALL_FRAME_LIST)!!)
@@ -182,6 +193,9 @@ class TimerActivity : AppCompatActivity() {
         if (Utilities.getPreference(this, AppConstants.CATEGORY_NAME).equals("Automobiles")) {
             imageInteriorFileList.addAll(intent.getParcelableArrayListExtra(AppConstants.ALL_INTERIOR_IMAGE_LIST)!!)
             imageInteriorFileListFrames.addAll(intent.getIntegerArrayListExtra(AppConstants.ALL_INTERIOR_FRAME_LIST)!!)
+
+            imageFocusedFileList.addAll(intent.getParcelableArrayListExtra(AppConstants.ALL_FOCUSED_IMAGE_LIST)!!)
+            imageFocusedFileListFrames.addAll(intent.getIntegerArrayListExtra(AppConstants.ALL_FOCUSED_FRAME_LIST)!!)
         }
         totalImagesToUPload = imageFileList.size
 

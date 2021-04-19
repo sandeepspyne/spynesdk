@@ -102,9 +102,10 @@ class ProcessImagesService() : Service(), Listener {
 
             if (it.isCompleted) {
                 createCompletedNotification()
-            } else {
+            } else if (it.onFailure) {
+                createFailureNotification()
+            } else
                 createOngoingNotificaiton()
-            }
 
         }
 
@@ -126,6 +127,11 @@ class ProcessImagesService() : Service(), Listener {
 
     private fun createCompletedNotification() {
         var notification = createNotification("Image processing completed", false)
+        notificationManager.notify((0..999999).random(), notification)
+    }
+
+    private fun createFailureNotification() {
+        var notification = createNotification("Image processing failed.", false)
         notificationManager.notify((0..999999).random(), notification)
     }
 
@@ -232,7 +238,7 @@ class ProcessImagesService() : Service(), Listener {
     }
 
     override fun onFailure(task: Task) {
-        task.isCompleted = true
+        task.onFailure = true
 
         //retry funcnality
         checkAndFinishService()

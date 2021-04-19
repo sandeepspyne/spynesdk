@@ -73,14 +73,13 @@
                     android:text="@string/exterior"
                     android:textColor="@color/primary"
                     android:fontFamily="@font/medium"
-                    android:layout_margin="@dimen/sp_10"
+                    android:layout_margin="@dimen/dp_10"
                     android:gravity="center"
                     android:textSize="@dimen/sp_16" />
                 <LinearLayout
                     android:orientation="horizontal"
                     android:layout_width="match_parent"
                     android:id="@+id/llBeforeAfterImages"
-                    android:layout_marginTop="@dimen/dp_10"
                     android:layout_height="wrap_content">
 
                     <LinearLayout
@@ -126,7 +125,7 @@
                     android:id="@+id/rvImagesBackgroundRemoved"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_margin="@dimen/dp_20"/>
+                    android:layout_margin="@dimen/dp_10"/>
                 <TextView
                     android:id="@+id/tvViewGif"
                     android:layout_width="wrap_content"
@@ -152,7 +151,22 @@
                     android:id="@+id/rvInteriors"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_margin="@dimen/dp_20"/>
+                    android:layout_margin="@dimen/dp_10"/>
+
+                <TextView
+                    android:id="@+id/tvFocused"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/focused"
+                    android:textColor="@color/primary"
+                    android:fontFamily="@font/medium"
+                    android:gravity="center"
+                    android:textSize="@dimen/sp_16" />
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/rvFocused"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="@dimen/dp_10"/>
             </LinearLayout>
         </androidx.core.widget.NestedScrollView>
 <!--        <TextView-->
