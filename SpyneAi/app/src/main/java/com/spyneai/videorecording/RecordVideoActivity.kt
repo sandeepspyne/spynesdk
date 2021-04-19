@@ -366,7 +366,7 @@ class RecordVideoActivity : AppCompatActivity() {
             // The Configuration of video capture
             videoCapture = VideoCapture.Builder()
                 //.fromConfig(videoCaptureConfig)
-                .setTargetResolution(Size(640,480))
+                .setTargetResolution(Size(480,360))
                 .build()
 
             localCameraProvider.unbindAll() // unbind the use-cases before rebinding them
