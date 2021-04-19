@@ -142,11 +142,13 @@ class Camera2Activity : AppCompatActivity(), SubCategoriesAdapter.BtnClickListen
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_camera2)
-        window.setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
-            WindowManager.LayoutParams.FLAG_FULLSCREEN)
+        window.setFlags(
+            WindowManager.LayoutParams.FLAG_FULLSCREEN,
+            WindowManager.LayoutParams.FLAG_FULLSCREEN
+        )
         AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
 
-        if (Utilities.getPreference(this,AppConstants.CATEGORY_NAME).equals("Automobiles"))
+        if (Utilities.getPreference(this, AppConstants.CATEGORY_NAME).equals("Automobiles"))
             showHint()
         setSubCategories()
         setPermissions()
@@ -181,8 +183,8 @@ class Camera2Activity : AppCompatActivity(), SubCategoriesAdapter.BtnClickListen
 
         etSkuName.setText(skuName)
 
-        if(frameNumber == 1){
-            imgNext.visibility= View.GONE
+        if (frameNumber == 1) {
+            imgNext.visibility = View.GONE
             etSkuName!!.addTextChangedListener(object : TextWatcher {
                 override fun afterTextChanged(s: Editable) {
 
@@ -291,42 +293,52 @@ class Camera2Activity : AppCompatActivity(), SubCategoriesAdapter.BtnClickListen
 
         frameImageListSelections.clear()
         if (num == 4) {
-            frameImageListSelections .add(0)
-            frameImageListSelections .add(9)
-            frameImageListSelections .add(18)
-            frameImageListSelections .add(27)
+            frameImageListSelections.add(0)
+            frameImageListSelections.add(9)
+            frameImageListSelections.add(18)
+            frameImageListSelections.add(27)
             Utilities.savePrefrence(this@Camera2Activity, AppConstants.NO_OF_IMAGES, "4")
-        } else if (num == 5){
-            frameImageListSelections .add(0)
-            frameImageListSelections .add(1)
-            frameImageListSelections .add(2)
-            frameImageListSelections .add(3)
-            frameImageListSelections .add(4)
+        } else if (num == 5) {
+            frameImageListSelections.add(0)
+            frameImageListSelections.add(1)
+            frameImageListSelections.add(2)
+            frameImageListSelections.add(3)
+            frameImageListSelections.add(4)
             Utilities.savePrefrence(this@Camera2Activity, AppConstants.NO_OF_IMAGES, "5")
-        }
-        else if(num == 8)
-        {
-            frameImageListSelections .add(0)
-            frameImageListSelections .add(5)
-            frameImageListSelections .add(8)
-            frameImageListSelections .add(14)
-            frameImageListSelections .add(18)
-            frameImageListSelections .add(22)
-            frameImageListSelections .add(26)
-            frameImageListSelections .add(32)
+        } else if (num == 8) {
+            frameImageListSelections.add(0)
+            frameImageListSelections.add(5)
+            frameImageListSelections.add(8)
+            frameImageListSelections.add(14)
+            frameImageListSelections.add(18)
+            frameImageListSelections.add(22)
+            frameImageListSelections.add(26)
+            frameImageListSelections.add(32)
             Utilities.savePrefrence(this@Camera2Activity, AppConstants.NO_OF_IMAGES, "8")
-        }
-        else if(num == 9)
-        {
-            frameImageListSelections .add(0)
-            frameImageListSelections .add(1)
-            frameImageListSelections .add(2)
-            frameImageListSelections .add(3)
-            frameImageListSelections .add(4)
-            frameImageListSelections .add(5)
-            frameImageListSelections .add(6)
-            frameImageListSelections .add(7)
+        } else if (num == 9) {
+            frameImageListSelections.add(0)
+            frameImageListSelections.add(1)
+            frameImageListSelections.add(2)
+            frameImageListSelections.add(3)
+            frameImageListSelections.add(4)
+            frameImageListSelections.add(5)
+            frameImageListSelections.add(6)
+            frameImageListSelections.add(7)
             Utilities.savePrefrence(this@Camera2Activity, AppConstants.NO_OF_IMAGES, "9")
+        } else if (num == 12) {
+            frameImageListSelections.add(0)
+            frameImageListSelections.add(2)
+            frameImageListSelections.add(4)
+            frameImageListSelections.add(9)
+            frameImageListSelections.add(15)
+            frameImageListSelections.add(16)
+            frameImageListSelections.add(18)
+            frameImageListSelections.add(20)
+            frameImageListSelections.add(21)
+            frameImageListSelections.add(27)
+            frameImageListSelections.add(32)
+            frameImageListSelections.add(34)
+            Utilities.savePrefrence(this@Camera2Activity, AppConstants.NO_OF_IMAGES, "12")
         }
         showProgressFrames(frameNumberTemp)
     }
@@ -645,9 +657,11 @@ class Camera2Activity : AppCompatActivity(), SubCategoriesAdapter.BtnClickListen
                     if (response.body()?.payload?.data != null) {
                         etSkuName.setText(etSkuName.text.toString().trim())
                         skuName = etSkuName.text.toString().trim()
-                        Utilities.savePrefrence(this@Camera2Activity,
+                        Utilities.savePrefrence(
+                            this@Camera2Activity,
                             AppConstants.SKU_NAME,
-                            skuName)
+                            skuName
+                        )
                         imgNext.visibility = View.GONE
                         Toast.makeText(
                             applicationContext,
@@ -684,12 +698,14 @@ class Camera2Activity : AppCompatActivity(), SubCategoriesAdapter.BtnClickListen
     }
 
     private fun getOutputDirectory(): File {
-        val mediaDir = if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP) {
-            externalMediaDirs.firstOrNull()?.let {
-                File(it, resources.getString(R.string.app_name)).apply { mkdirs() } }
-        } else {
-            TODO("VERSION.SDK_INT < LOLLIPOP")
-        }
+        val mediaDir =
+            if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP) {
+                externalMediaDirs.firstOrNull()?.let {
+                    File(it, resources.getString(R.string.app_name)).apply { mkdirs() }
+                }
+            } else {
+                TODO("VERSION.SDK_INT < LOLLIPOP")
+            }
         return if (mediaDir != null && mediaDir.exists())
             mediaDir else filesDir
     }
@@ -950,7 +966,10 @@ class Camera2Activity : AppCompatActivity(), SubCategoriesAdapter.BtnClickListen
                     intent.putExtra(AppConstants.GIF_LIST, gifList)
                     intent.putExtra(AppConstants.CATEGORY_NAME, catName)
                     intent.putExtra(AppConstants.ALL_INTERIOR_IMAGE_LIST, imageInteriorFileList)
-                    intent.putExtra(AppConstants.ALL_INTERIOR_FRAME_LIST, imageInteriorFileListFrames)
+                    intent.putExtra(
+                        AppConstants.ALL_INTERIOR_FRAME_LIST,
+                        imageInteriorFileListFrames
+                    )
 
                     Utilities.savePrefrence(this, AppConstants.SKU_NAME, skuName)
                     Log.e(
@@ -1253,8 +1272,11 @@ class Camera2Activity : AppCompatActivity(), SubCategoriesAdapter.BtnClickListen
                     } else
                         rvSubcategories.visibility = View.GONE
 
-                    if (Utilities.getPreference(this@Camera2Activity,
-                            AppConstants.FRAME_SHOOOTS).isNullOrEmpty()) {
+                    if (Utilities.getPreference(
+                            this@Camera2Activity,
+                            AppConstants.FRAME_SHOOOTS
+                        ).isNullOrEmpty()
+                    ) {
                         Utilities.savePrefrence(
                             this@Camera2Activity,
                             AppConstants.FRAME_SHOOOTS,
@@ -1491,13 +1513,15 @@ class Camera2Activity : AppCompatActivity(), SubCategoriesAdapter.BtnClickListen
         dialog.setCancelable(true)
         dialog.setContentView(R.layout.dialog_spinner)
         val window: Window = dialog.getWindow()!!
-        window.setLayout(WindowManager.LayoutParams.WRAP_CONTENT,
-            WindowManager.LayoutParams.WRAP_CONTENT)
+        window.setLayout(
+            WindowManager.LayoutParams.WRAP_CONTENT,
+            WindowManager.LayoutParams.WRAP_CONTENT
+        )
 
-        val tvProceed : TextView = dialog.findViewById(R.id.tvProceed)
-        val npShoots : NumberPicker = dialog.findViewById(R.id.npShoots)
+        val tvProceed: TextView = dialog.findViewById(R.id.tvProceed)
+        val npShoots: NumberPicker = dialog.findViewById(R.id.npShoots)
 
-        val valuesShoots = arrayOf("4 Angles","8 Angles"/*, "8 Angles", "12 Angles", "24 Angles"*/)
+        val valuesShoots = arrayOf("4 Angles", "8 Angles", "12 Angles"/*, "24 Angles"*/)
 
         npShoots.setMinValue(0); //from array first value
         //Specify the maximum value/number of NumberPicker
@@ -1532,6 +1556,13 @@ class Camera2Activity : AppCompatActivity(), SubCategoriesAdapter.BtnClickListen
                 );
                 //   setNumberPickerTextColor(npShoots, getColor(R.color.primary))
                 setProgressFrame(8)
+            } else if (valuesShoots[newVal].equals("12 Angles")) {
+                Utilities.savePrefrence(
+                    this@Camera2Activity,
+                    AppConstants.FRAME_SHOOOTS,
+                    "12"
+                );
+                setProgressFrame(12)
             }
         })
 
@@ -1554,8 +1585,10 @@ class Camera2Activity : AppCompatActivity(), SubCategoriesAdapter.BtnClickListen
         dialog.setCancelable(true)
         dialog.setContentView(R.layout.dialog_spinner)
         val window: Window = dialog.getWindow()!!
-        window.setLayout(WindowManager.LayoutParams.WRAP_CONTENT,
-            WindowManager.LayoutParams.WRAP_CONTENT)
+        window.setLayout(
+            WindowManager.LayoutParams.WRAP_CONTENT,
+            WindowManager.LayoutParams.WRAP_CONTENT
+        )
 
         val tvProceed: TextView = dialog.findViewById(R.id.tvProceed)
         val npShoots: NumberPicker = dialog.findViewById(R.id.npShoots)
@@ -1641,9 +1674,13 @@ class Camera2Activity : AppCompatActivity(), SubCategoriesAdapter.BtnClickListen
             intent.putExtra(AppConstants.GIF_LIST, gifList)
 
             Utilities.savePrefrence(this, AppConstants.SKU_NAME, skuName)
-            Log.e("Camera  SKU",
-                Utilities.getPreference(this,
-                    AppConstants.SKU_NAME)!!)
+            Log.e(
+                "Camera  SKU",
+                Utilities.getPreference(
+                    this,
+                    AppConstants.SKU_NAME
+                )!!
+            )
             startActivity(intent)
             finish()
             dialog.dismiss()
@@ -1693,7 +1730,8 @@ class Camera2Activity : AppCompatActivity(), SubCategoriesAdapter.BtnClickListen
 
         })
         dialogButtonNo.setOnClickListener(View.OnClickListener {
-            dialog.dismiss() })
+            dialog.dismiss()
+        })
         dialog.show()
     }
 

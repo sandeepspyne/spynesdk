@@ -10,7 +10,6 @@ import android.os.PowerManager
 import android.widget.Toast
 import com.spyneai.R
 import com.spyneai.activity.CompletedProjectsActivity
-import com.spyneai.activity.DashboardActivity
 import com.spyneai.extras.events.ProcessingImagesEvent
 import com.spyneai.model.processImageService.Task
 import com.spyneai.needs.AppConstants
@@ -88,12 +87,12 @@ class ProcessImagesService() : Service(), Listener {
 
 
         tasksInProgress.add(task)
-        checkAndFinishService()
+        checkAndFinishService(task)
         PhotoUploader(task, this).start()
 
     }
 
-    private fun checkAndFinishService() {
+    private fun checkAndFinishService(task: Task) {
         //clear all notifications
 
         notificationManager.cancelAll()
@@ -101,31 +100,35 @@ class ProcessImagesService() : Service(), Listener {
         tasksInProgress.forEach {
 
             if (it.isCompleted) {
-                createCompletedNotification()
-            } else {
-                createOngoingNotificaiton()
-            }
+                createCompletedNotification(task)
 
+            } else if (it.isFailure) {
+                createFailureNotification(task)
+            } else
+                createOngoingNotificaiton(task)
         }
-
-        if (tasksInProgress.filter { !it.isCompleted }.isEmpty()) {
-            stopForeground(true)
-            stopSelf()
+        if (tasksInProgress.filter { !it.isCompleted || !it.isFailure }.isEmpty()) {
+            stopService()
         }
     }
 
-    private fun createOngoingNotificaiton() {
+    private fun createOngoingNotificaiton(task: Task) {
         var notificationId = (0..999999).random()
         val text: String = "Image processing in progress..."
-        var notification = createNotification(text , true)
+        var notification = createNotification(text, true)
 
         notificationManager.notify(notificationId, notification)
         startForeground(notificationId, notification)
 
     }
 
-    private fun createCompletedNotification() {
+    private fun createCompletedNotification(task: Task) {
         var notification = createNotification("Image processing completed", false)
+        notificationManager.notify((0..999999).random(), notification)
+    }
+
+    private fun createFailureNotification(task: Task) {
+        var notification = createNotification("Image processing Failed", false)
         notificationManager.notify((0..999999).random(), notification)
     }
 
@@ -155,8 +158,8 @@ class ProcessImagesService() : Service(), Listener {
                     it.release()
                 }
             }
-
             var processingImageEvent = ProcessingImagesEvent();
+            processingImageEvent.setShootStatus("fail")
             EventBus.getDefault().post(processingImageEvent)
 
             stopForeground(true)
@@ -227,15 +230,15 @@ class ProcessImagesService() : Service(), Listener {
 
     override fun onSuccess(task: Task) {
         task.isCompleted = true
-
-        checkAndFinishService()
+        stopService()
+        checkAndFinishService(task)
     }
 
     override fun onFailure(task: Task) {
-        task.isCompleted = true
-
+        task.isFailure = true
+        stopService()
         //retry funcnality
-        checkAndFinishService()
+        checkAndFinishService(task)
     }
 
 

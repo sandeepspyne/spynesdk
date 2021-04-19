@@ -122,33 +122,6 @@ class TimerActivity : AppCompatActivity() {
         }
 
         setListener()
-
-//        try {
-//            llTimer.visibility = View.VISIBLE
-//            llNoInternet.visibility = View.GONE
-//            uploadImageToBucket()
-//        } catch (e: Exception) {
-//            llTimer.visibility = View.GONE
-//            llNoInternet.visibility = View.VISIBLE
-//            countDownTimer.cancel()
-//            e.printStackTrace()
-//            Log.e("Catched ", e.printStackTrace().toString())
-//        }
-
-//        tvRetry.setOnClickListener(View.OnClickListener {
-//            setCustomTimer()
-//            try {
-//                llTimer.visibility = View.VISIBLE
-//                llNoInternet.visibility = View.GONE
-//                uploadImageToBucket()
-//            } catch (e: Exception) {
-//                llTimer.visibility = View.GONE
-//                llNoInternet.visibility = View.VISIBLE
-//                countDownTimer.cancel()
-//                e.printStackTrace()
-//                Log.e("Catched ", e.printStackTrace().toString())
-//            }
-//        })
     }
 
     private fun setListener(){
@@ -289,14 +262,12 @@ class TimerActivity : AppCompatActivity() {
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     fun onMessageEvent(event: ProcessingImagesEvent?) {
-        event?.getNotificationID()?.let {
-//            Toast.makeText(this, it, Toast.LENGTH_LONG).show()
-            finish()
-            var intent = Intent(this@TimerActivity, ShowImagesActivity::class.java)
-            startActivity(intent)
+        event?.getShootStatus()?.let {
+                var intent = Intent(this@TimerActivity, DashboardActivity::class.java)
+                startActivity(intent)
+                finish()
         }
     }
-
     override fun onBackPressed() {
 
 

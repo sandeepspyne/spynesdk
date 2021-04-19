@@ -4,6 +4,9 @@ import com.spyneai.model.sku.Photos
 import java.io.File
 
 class Task {
+
+
+
     var skuName: String = ""
     var skuId: String = ""
     var shootId: String = ""
@@ -29,6 +32,8 @@ class Task {
 
     var isCompleted = false
 
+    var isFailure = false
+
     var mainImage: String = ""
     var mainImageInterior: String = ""
 
@@ -43,9 +48,12 @@ class Task {
 
     var gifLink: String = ""
 
-    var retry: Int = 0
+    var processingRetry: Int = 0
+
+    var uploadingRetry: Int = 0
 
     var retryCount: Int = 3
+
 
 
 

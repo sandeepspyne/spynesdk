@@ -42,15 +42,14 @@ import java.io.OutputStream
 class PhotoUploader(var task: Task, var listener: Listener) {
 
     fun start() {
+        task.processingRetry = 0
+        task.uploadingRetry = 0
         uploadImageToBucket()
-        task.retry = 0
     }
 
     fun uploadImageToBucket() {
-        Log.e("First execution", "UploadImage Bucket")
         log("Start uploading images to bucket")
         //Get All Data to be uploaded
-
 
         GlobalScope.launch(Dispatchers.Default) {
 
@@ -73,23 +72,32 @@ class PhotoUploader(var task: Task, var listener: Listener) {
                     if (response.isSuccessful) {
 
                         task.mainImage = response.body()?.image.toString()
-                        log("onResponse: image upload success:\n" + task.mainImage)
+                        log("image upload count" + task.totalImagesToUploadIndex)
+                        log("image upload success:\n" + task.mainImage)
 
                         uploadImageURLs()
                     } else {
-
-                        log("Error in uploading image to bucket")
-                        log("Error Body: " + response.errorBody())
-                        log("Response: " + response.body())
+                        if (task.uploadingRetry <= task.retryCount) {
+                            task.uploadingRetry++
+                            uploadImageToBucket()
+                        } else {
+                            listener.onFailure(task)
+                            log("Error in uploading image to bucket")
+                            log("Error Body: " + response.errorBody())
+                            log("Response: " + response.body())
+                        }
                     }
                 }
 
                 override fun onFailure(call: Call<UploadResponse>, t: Throwable) {
-                    listener.onFailure(task)
-                    Log.e("Respo Image ", "Image error")
-
-                    log("Server not responding(uploadImageToBucket)")
-                    log("onFailure: " + t.localizedMessage)
+                    if (task.uploadingRetry <= task.retryCount) {
+                        task.uploadingRetry++
+                        uploadImageToBucket()
+                    } else {
+                        listener.onFailure(task)
+                        log("Server not responding(uploadImageToBucket)")
+                        log("onFailure: " + t.localizedMessage)
+                    }
                 }
             })
 
@@ -143,22 +151,19 @@ class PhotoUploader(var task: Task, var listener: Listener) {
                                 markSkuComplete()
                         }
                     } catch (e: Exception) {
-                        Log.e("Except", e.printStackTrace().toString())
+                        log("Except" + e.printStackTrace().toString())
                     }
 
                 } else {
-
+                    listener.onFailure(task)
                     log("Error in uploading image url. Please try again")
                     log("Error: " + response.errorBody())
                 }
             }
 
             override fun onFailure(call: Call<UploadPhotoResponse>, t: Throwable) {
-
                 listener.onFailure(task)
-
                 log("Server not responding(uploadImageURLs)")
-                Log.e("Respo Image ", "Image error")
                 log("onFailure: " + t.localizedMessage)
             }
         })
@@ -166,7 +171,6 @@ class PhotoUploader(var task: Task, var listener: Listener) {
     }
 
     fun uploadImageToBucketInterior() {
-
         Log.e("First execution", "UploadImage Bucket")
         log("start uploading interior to bucket")
         //Get All Data to be uploaded
@@ -188,16 +192,7 @@ class PhotoUploader(var task: Task, var listener: Listener) {
                 ) {
                     //
                     if (response.isSuccessful) {
-
-//                        PROGRESS_CURRENT++
-
-//                        val notification = updateNotification("Interior image uploading started...")
-//                        startForeground(notificationID, notification)
-
                         Log.e("First execution", "UploadImage Bucket")
-
-
-
                         Log.e("uploadImageToBucket", response.body()?.image.toString())
                         Log.e("uploadImageToBucket", task.totalImagesToUploadIndex.toString())
                         log("uploadImageToBucketInterior" + response.body()?.image.toString())
@@ -206,26 +201,33 @@ class PhotoUploader(var task: Task, var listener: Listener) {
                         task.mainImageInterior = response.body()?.image.toString()
                         uploadImageURLsInterior()
                     } else {
-
-                        log("Error in uploading interior images.")
-                        log("Error: " + response.errorBody())
+                        if (task.uploadingRetry <= task.retryCount) {
+                            task.uploadingRetry++
+                            uploadImageToBucketInterior()
+                        } else {
+                            listener.onFailure(task)
+                            log("Error in uploading interior images.")
+                            log("Error: " + response.errorBody())
+                        }
                     }
                 }
 
                 override fun onFailure(call: Call<UploadResponse>, t: Throwable) {
-                    listener.onFailure(task)
-                    Log.e("Respo Image ", "Image error")
-
-                    log("Server not responding(uploadImageToBucketInterior): ")
-                    log("onFailure: " + t.localizedMessage)
+                    if (task.uploadingRetry <= task.retryCount) {
+                        task.uploadingRetry++
+                        uploadImageToBucketInterior()
+                    } else {
+                        listener.onFailure(task)
+                        Log.e("Respo Image ", "Image error")
+                        log("Server not responding(uploadImageToBucketInterior): ")
+                        log("onFailure: " + t.localizedMessage)
+                    }
                 }
             })
         }
     }
 
     fun uploadImageURLsInterior() {
-
-
         log("start Uploading images url interior")
         val request = RetrofitClient.buildService(APiService::class.java)
 
@@ -278,11 +280,11 @@ class PhotoUploader(var task: Task, var listener: Listener) {
                             )
                         }
                     } catch (e: Exception) {
-                        Log.e("Except", e.printStackTrace().toString())
+                        log("Except" + e.printStackTrace().toString())
                     }
 
                 } else {
-
+                    listener.onFailure(task)
                     log("Error in uploading image url(INTERIOR)")
                     log("Error: " + response.errorBody())
                 }
@@ -290,7 +292,6 @@ class PhotoUploader(var task: Task, var listener: Listener) {
 
             override fun onFailure(call: Call<UploadPhotoResponse>, t: Throwable) {
                 listener.onFailure(task)
-
                 log("Server not responding(uploadImageURLsInterior)")
                 Log.e("Respo Image ", "Image error")
                 log("onFailure: " + t.localizedMessage)
@@ -345,7 +346,7 @@ class PhotoUploader(var task: Task, var listener: Listener) {
                 os.flush()
                 os.close()
             } catch (e: Exception) {
-                Log.e(javaClass.simpleName, "Error writing bitmap", e)
+                log("Error writing bitmap: " + e.localizedMessage)
             }
         }
         return imageFile
@@ -433,7 +434,7 @@ class PhotoUploader(var task: Task, var listener: Listener) {
 
                     }
                 } else {
-
+                    listener.onFailure(task)
                     log("Error in fetch sku data")
                     log("Error: " + response.errorBody())
                 }
@@ -476,10 +477,6 @@ class PhotoUploader(var task: Task, var listener: Listener) {
             MultipartBody.FORM,
             task.photoList[task.countGif].displayThumbnail
         )
-        Log.e(
-            "Sku NAme Upload done",
-            task.skuName
-        )
         val SkuName = RequestBody.create(
             MultipartBody.FORM,
             task.skuName
@@ -507,13 +504,8 @@ class PhotoUploader(var task: Task, var listener: Listener) {
                 response: Response<BulkUploadResponse>
             ) {
                 if (response.isSuccessful && response.body()!!.status == 200) {
-
                     task.countGif++
-//                        PROGRESS_CURRENT++
-
-//                        val notification = updateNotification("AI for Image Processing started...")
-//                        startForeground(notificationID, notification)
-
+                    log("bulk upload count: " + task.countGif)
                     if (task.countGif < task.photoList.size) {
                         Log.e("countGif", task.countGif.toString())
                         bulkUpload()
@@ -523,9 +515,7 @@ class PhotoUploader(var task: Task, var listener: Listener) {
                             addWatermark()
                         }
                     } else
-                        fetchBulkUpload(
-
-                        )
+                        fetchBulkUpload()
 
                     Log.e("Upload Replace", "bulk")
                     Log.e(
@@ -533,19 +523,45 @@ class PhotoUploader(var task: Task, var listener: Listener) {
                         task.skuName
                     )
                 } else {
-
-
-                    log("Error in bulk upload")
-                    log("Error: " + response.errorBody())
-                    log("Response: " + response.body())
+                    if (task.processingRetry <= task.retryCount) {
+                        task.processingRetry++
+                        if (task.countGif < task.photoList.size) {
+                            Log.e("countGif", task.countGif.toString())
+                            bulkUpload()
+                        } else if (task.photoListInteriors.size > 0) {
+                            task.countGif = 0
+                            if (task.countGif < task.photoListInteriors.size) {
+                                addWatermark()
+                            }
+                        } else
+                            fetchBulkUpload()
+                    } else {
+                        listener.onFailure(task)
+                        log("Error in bulk upload")
+                        log("Error: " + response.errorBody())
+                        log("Response: " + response.body())
+                    }
                 }
             }
 
             override fun onFailure(call: Call<BulkUploadResponse>, t: Throwable) {
-
-                listener.onFailure(task)
-                log("Server not responding(bulkUpload)")
-                log("onFailure: " + t.localizedMessage)
+                if (task.processingRetry <= task.retryCount) {
+                    task.processingRetry++
+                    if (task.countGif < task.photoList.size) {
+                        Log.e("countGif", task.countGif.toString())
+                        bulkUpload()
+                    } else if (task.photoListInteriors.size > 0) {
+                        task.countGif = 0
+                        if (task.countGif < task.photoListInteriors.size) {
+                            addWatermark()
+                        }
+                    } else
+                        fetchBulkUpload()
+                } else {
+                    listener.onFailure(task)
+                    log("Server not responding(bulkUpload)")
+                    log("onFailure: " + t.localizedMessage)
+                }
             }
         })
 
@@ -646,10 +662,6 @@ class PhotoUploader(var task: Task, var listener: Listener) {
             MultipartBody.FORM,
             task.photoList[task.countGif].displayThumbnail
         )
-        Log.e(
-            "Sku NAme Upload",
-            task.skuName
-        )
         val SkuName = RequestBody.create(
             MultipartBody.FORM,
             task.skuName
@@ -682,8 +694,7 @@ class PhotoUploader(var task: Task, var listener: Listener) {
 
                     ++task.countGif
                     if (task.countGif < task.photoList.size) {
-                        Log.e("countGif", task.countGif.toString())
-                        log("countGif"+task.countGif.toString())
+                        log("countGif: " + task.countGif.toString())
                         bulkUploadFootwear()
                     } else
                         fetchBulkUpload()
@@ -693,9 +704,9 @@ class PhotoUploader(var task: Task, var listener: Listener) {
                                 task.skuName
                     )
                 } else {
-                    if (task.retry <= task.retryCount) {
-                        task.retry++
-                        log("retry: "+task.retry)
+                    if (task.processingRetry <= task.retryCount) {
+                        task.processingRetry++
+                        log("retry: " + task.processingRetry)
                         if (task.countGif < task.photoList.size) {
                             Log.e("countGif", task.countGif.toString())
                             bulkUploadFootwear()
@@ -710,9 +721,9 @@ class PhotoUploader(var task: Task, var listener: Listener) {
             }
 
             override fun onFailure(call: Call<FootwearBulkResponse>, t: Throwable) {
-                if (task.retry <= task.retryCount) {
-                    task.retry++
-                    log("retry: "+task.retry)
+                if (task.processingRetry <= task.retryCount) {
+                    task.processingRetry++
+                    log("retry: " + task.processingRetry)
                     if (task.countGif < task.photoList.size) {
                         Log.e("countGif", task.countGif.toString())
                         bulkUploadFootwear()
@@ -901,15 +912,13 @@ class PhotoUploader(var task: Task, var listener: Listener) {
             override fun onResponse(call: Call<OtpResponse>, response: Response<OtpResponse>) {
                 if (response.isSuccessful) {
                     if (response.body()!!.id.equals("200")) {
-
                         log("" + response.body()!!.message)
-//                            val notification = updateNotification("Output email sent...")
-//                            startForeground(notificationID, notification)
 
                         listener.onSuccess(task)
                     }
                 } else {
                     listener.onFailure(task)
+                    log("Error in send email: " + response.errorBody())
                 }
             }
 
@@ -923,8 +932,6 @@ class PhotoUploader(var task: Task, var listener: Listener) {
         })
 
     }
-
-
 }
 
 interface Listener {

@@ -3,10 +3,8 @@ package com.spyneai.activity
 import android.app.*
 import android.content.Context
 import android.content.Intent
-import android.net.Uri
 import android.os.Build
 import android.os.Bundle
-import android.os.Environment
 import android.os.Handler
 import android.util.Log
 import android.view.View
@@ -48,8 +46,6 @@ import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 import java.io.File
-import java.net.URLEncoder
-import java.text.SimpleDateFormat
 import java.util.*
 import kotlin.collections.ArrayList
 
@@ -62,7 +58,7 @@ class ShowImagesActivity : AppCompatActivity() {
     lateinit var downloadList2: ArrayList<String>
     lateinit var imageListWaterMark: ArrayList<String>
     lateinit var listHdQuality: ArrayList<String>
-    var catName : String = ""
+    var catName: String = ""
     var numberOfImages: Int = 0
 
     private lateinit var showReplacedImagesAdapter: ShowReplacedImagesAdapter
@@ -80,39 +76,6 @@ class ShowImagesActivity : AppCompatActivity() {
 
         AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
 
-//        PRDownloader.initialize(getApplicationContext());
-//        val config = PRDownloaderConfig.newBuilder()
-//            .setDatabaseEnabled(true)
-//            .build()
-//        PRDownloader.initialize(applicationContext, config)
-
-        downloadList1 = ArrayList<String>()
-        downloadList1.add("https://storage.googleapis.com/spyne/AI/raw/f2517017-b3f0-468c-ae3a-05d9c92797ec.jpg")
-        downloadList1.add("https://storage.googleapis.com/spyne/AI/raw/f2517017-b3f0-468c-ae3a-05d9c92797ec.jpg")
-        downloadList2 = ArrayList<String>()
-        downloadList2.add("https://storage.googleapis.com/spyne/AI/raw/f2517017-b3f0-468c-ae3a-05d9c92797ec.jpg")
-        downloadList2.add("https://storage.googleapis.com/spyne/AI/raw/f2517017-b3f0-468c-ae3a-05d9c92797ec.jpg")
-        imageListWaterMark = ArrayList<String>()
-
-//        if (Utilities.getPreference(this, AppConstants.highQualityCount).equals("0")) {
-//            downloadHighQualityCount = 0
-//            tvHighQualityCount.setText(downloadHighQualityCount.toString())
-//        } else if (Utilities.getPreference(this, AppConstants.highQualityCount).equals("1")) {
-//            downloadHighQualityCount = 1
-//            tvHighQualityCount.setText(downloadHighQualityCount.toString())
-//        } else if (Utilities.getPreference(this, AppConstants.highQualityCount).equals("2")) {
-//            downloadHighQualityCount = 2
-//            tvHighQualityCount.setText(downloadHighQualityCount.toString())
-//        } else if (Utilities.getPreference(this, AppConstants.highQualityCount).equals("3")) {
-//            downloadHighQualityCount = 3
-//            tvHighQualityCount.setText(downloadHighQualityCount.toString())
-//        } else if (Utilities.getPreference(this, AppConstants.highQualityCount).equals("4")) {
-//            downloadHighQualityCount = 4
-//            tvHighQualityCount.setText(downloadHighQualityCount.toString())
-//        } else if (Utilities.getPreference(this, AppConstants.highQualityCount).equals("5")) {
-//            downloadHighQualityCount = 5
-//            tvHighQualityCount.setText(downloadHighQualityCount.toString())
-//        }
 
         setBulkImages()
         setListeners()
@@ -122,7 +85,7 @@ class ShowImagesActivity : AppCompatActivity() {
         else
             catName = Utilities.getPreference(this, AppConstants.CATEGORY_NAME)!!
 
-        if (catName.equals("Footwear")){
+        if (catName.equals("Footwear")) {
             tvViewGif.visibility = View.GONE
         }
     }
@@ -134,8 +97,7 @@ class ShowImagesActivity : AppCompatActivity() {
             tvViewGif.visibility = View.VISIBLE
             tvInterior.visibility = View.VISIBLE
 //            llDownloads.visibility = View.VISIBLE
-        }
-        else{
+        } else {
             tvYourEmailIdReplaced.visibility = View.GONE
             tvViewGif.visibility = View.GONE
             tvInterior.visibility = View.GONE
@@ -190,42 +152,6 @@ class ShowImagesActivity : AppCompatActivity() {
             intent.putExtra(AppConstants.LIST_HD_QUALITY, listHdQuality)
             startActivity(intent)
         }
-
-      /*  tvRequestWappImages.setOnClickListener(View.OnClickListener {
-            try {
-                val i = Intent(Intent.ACTION_VIEW)
-                val url = "https://api.whatsapp.com/send?phone=" + "+919953325165" + "&text=" +
-                        URLEncoder.encode(
-                            "Hey! The Spyne 360° Shot looks impressive; I liked the user experience and would like to learn more about the commercial application and how I can best access this technology. I look forward to connecting!",
-                            "UTF-8"
-                        )
-                i.setPackage("com.whatsapp")
-                i.setData(Uri.parse(url))
-                startActivity(i)
-            } catch (e: Exception) {
-                e.printStackTrace()
-            }
-        })
-
-        llDownloadHighQuality.setOnClickListener(View.OnClickListener {
-            if (Utilities.getPreference(this, AppConstants.highQualityCount).equals("0"))
-                Toast.makeText(
-                    this@ShowImagesActivity,
-                    "you have reached your high-quality download limit!! Please contact us on WhatsApp for more credits.",
-                    Toast.LENGTH_LONG
-                ).show()
-            else {
-                /* llDownloadHighQuality.isEnabled = false
-                 llDownloadHighQuality.isFocusable = false*/
-                downloadHighQuality()
-            }
-        })
-
-        llDownloadWithWatermark.setOnClickListener(View.OnClickListener {
-            downloadWatermark()
-            llDownloadWithWatermark.isEnabled = false
-            llDownloadWithWatermark.isFocusable = false
-        })*/
     }
 
 
@@ -298,31 +224,38 @@ class ShowImagesActivity : AppCompatActivity() {
                 Utilities.hideProgressDialog()
                 if (response.isSuccessful) {
                     for (i in 0..response.body()!!.size - 1) {
-//                        if (response.body()!![i].category.equals("Interior")) {
-//                            numberOfImages = response.body()!!.size/2
-//                            Utilities.savePrefrence(this@ShowImagesActivity, AppConstants.NO_OF_IMAGES, numberOfImages.toString())
-//
-//                        }else{
-//                            numberOfImages = response.body()!!.size
-//                            Utilities.savePrefrence(this@ShowImagesActivity, AppConstants.NO_OF_IMAGES, numberOfImages.toString())
-//
-//                        }
                         if (response.body()!![i].category.equals("Exterior")) {
                             Category = response.body()!![i].category
                             (imageList as ArrayList).add(response.body()!![i].input_image_url)
                             (imageListAfter as ArrayList).add(response.body()!![i].output_image_url)
                             (imageListWaterMark as ArrayList).add(response.body()!![i].watermark_image)
-                            (listHdQuality as ArrayList).add(response.body()!![i].output_image_url)
-                            Utilities.savePrefrence(this@ShowImagesActivity, AppConstants.CATEGORY_NAME, response.body()!![0].product_category)
-                            Utilities.savePrefrence(this@ShowImagesActivity, AppConstants.NO_OF_IMAGES, imageListAfter.size.toString())
+                            (listHdQuality as ArrayList).add(response.body()!![i].original_image)
+                            Utilities.savePrefrence(
+                                this@ShowImagesActivity,
+                                AppConstants.CATEGORY_NAME,
+                                response.body()!![0].product_category
+                            )
+                            Utilities.savePrefrence(
+                                this@ShowImagesActivity,
+                                AppConstants.NO_OF_IMAGES,
+                                imageListAfter.size.toString()
+                            )
                             hideData(0)
                         } else if (response.body()!![i].category.equals("Interior")) {
                             Category = response.body()!![i].category
                             (imageListInterior as ArrayList).add(response.body()!![i].output_image_url)
                             (imageListWaterMark as ArrayList).add(response.body()!![i].output_image_url)
                             (listHdQuality as ArrayList).add(response.body()!![i].input_image_url)
-                            Utilities.savePrefrence(this@ShowImagesActivity, AppConstants.CATEGORY_NAME, response.body()!![0].product_category)
-                            Utilities.savePrefrence(this@ShowImagesActivity, AppConstants.NO_OF_IMAGES, imageListAfter.size.toString())
+                            Utilities.savePrefrence(
+                                this@ShowImagesActivity,
+                                AppConstants.CATEGORY_NAME,
+                                response.body()!![0].product_category
+                            )
+                            Utilities.savePrefrence(
+                                this@ShowImagesActivity,
+                                AppConstants.NO_OF_IMAGES,
+                                imageListAfter.size.toString()
+                            )
                             hideData(0)
                         } else {
                             Category = response.body()!![i].category
@@ -330,8 +263,16 @@ class ShowImagesActivity : AppCompatActivity() {
                             (imageListAfter as ArrayList).add(response.body()!![i].output_image_url)
                             (listHdQuality as ArrayList).add(response.body()!![i].output_image_url)
                             (imageListWaterMark as ArrayList).add(response.body()!![i].watermark_image)
-                            Utilities.savePrefrence(this@ShowImagesActivity, AppConstants.CATEGORY_NAME, response.body()!![0].product_category)
-                            Utilities.savePrefrence(this@ShowImagesActivity, AppConstants.NO_OF_IMAGES, imageListAfter.size.toString())
+                            Utilities.savePrefrence(
+                                this@ShowImagesActivity,
+                                AppConstants.CATEGORY_NAME,
+                                response.body()!![0].product_category
+                            )
+                            Utilities.savePrefrence(
+                                this@ShowImagesActivity,
+                                AppConstants.NO_OF_IMAGES,
+                                imageListAfter.size.toString()
+                            )
                             hideData(1)
                         }
 
@@ -423,195 +364,6 @@ class ShowImagesActivity : AppCompatActivity() {
         }
     }
 
-    /*  fun downloadHighQuality() {
-         Toast.makeText(
-             this@ShowImagesActivity,
-             "Download started", Toast.LENGTH_SHORT
-         ).show()
-
-         if (listHdQuality.size > 0 && listHdQuality != null) {
-             for (i in 0 until listHdQuality.size) {
-                 seekbarDownload.setProgress(i)
-
-                 if (listHdQuality[i] != null)
-                     downloadWithHighQuality(listHdQuality[i].toString())
-             }
-         }
-     }
-
-     fun downloadWatermark() {
-         if (imageListWaterMark.size > 0 && imageListWaterMark != null) {
-             for (i in 0 until 3/*imageListWaterMark.size*/) {
-                 seekbarDownload.setProgress(i)
-                 tvProgress.setText(i.toString() + "/" + listHdQuality.size)
-                 if (imageListWaterMark[i] != null)
-                     downloadWithWatermark(imageListWaterMark[i].toString())
-             }
-         }
-     }
-
-     //Download
-    fun downloadWithHighQuality(imageFile: String?) {
-         downloadCount++
-
-         val FILENAME_FORMAT = "yyyy-MM-dd-HH-mm-ss-SSS"
-
-         showNotifications()
-
-         val imageName : String = "Spyne" + SimpleDateFormat(
-             FILENAME_FORMAT, Locale.US).format(System.currentTimeMillis()) + ".png"
-
-         val downloadId = PRDownloader.download(
-             imageFile,
-             Environment.getExternalStorageDirectory().toString() + "/Spyne",
-             imageName)
-             .build()
-             .setOnStartOrResumeListener {
-             }
-             .setOnPauseListener {
-
-             }
-             .setOnCancelListener(object : OnCancelListener {
-                 override fun onCancel() {}
-             })
-             .setOnProgressListener(object : OnProgressListener {
-                 override fun onProgress(progress: Progress) {
-                     //showNotifications(((progress.totalBytes / 100) * progress.currentBytes).toInt())
-
-                     builder.setContentTitle(imageName)
-                         .setContentText(
-                             ((100 - (progress.currentBytes%100)).toInt())
-                                 .toString() + "/" + "100"+ "%")
-                         .setProgress(100, (100 - (progress.currentBytes%100)).toInt(),
-                             false);
-
-                     with(NotificationManagerCompat.from(this@ShowImagesActivity)) {
-                         // notificationId is a unique int for each notification that you must define
-                         notify(1, builder.build())
-                     }
-
-                     llDownloadProgress.visibility = View.VISIBLE
-
-                     tvProgress.setText(imageName)
-                     tvProgressvalue.setText(((100 - (progress.currentBytes%100)).toInt())
-                         .toString() + "/" + "100" + "%")
-
-                     seekbarDownload.setProgress((100 - (progress.currentBytes%100)).toInt())
-
-                     Log.e("Progress HD", imageFile + " " +
-                             ((100 - (progress.currentBytes%100)).toInt())
-                                 .toString() + "/" + "100")
-                 }
-             })
-             .start(object : OnDownloadListener {
-                 override fun onDownloadComplete() {
-                     if (downloadCount == listHdQuality.size) {
-                         Toast.makeText(
-                             this@ShowImagesActivity,
-                             "Download Completed", Toast.LENGTH_SHORT
-                         ).show()
-
-                         downloadHighQualityCount--
-                         tvHighQualityCount.setText(downloadHighQualityCount.toString())
-                         Utilities.savePrefrence(
-                             this@ShowImagesActivity,
-                             AppConstants.highQualityCount,
-                             downloadHighQualityCount.toString()
-                         )
-                         downloadCount = 0
-                         llDownloadProgress.visibility = View.GONE
-                         llDownloadHighQuality.isEnabled = true
-                         llDownloadHighQuality.isFocusable = true
-                     }
-
-                     seekbarDownload.visibility = View.GONE
-                 }
-
-                 override fun onError(error: com.downloader.Error?) {
-                     Toast.makeText(
-                         this@ShowImagesActivity,
-                         "Download Failed", Toast.LENGTH_SHORT
-                     ).show()
-                 }
-
-             })
-     }
-
-     fun downloadWithWatermark(imageFile: String?) {
-         downloadCount++
-         val FILENAME_FORMAT = "yyyy-MM-dd-HH-mm-ss-SSS"
-
-         seekbarDownload.visibility = View.VISIBLE
-
-         showNotifications()
-
-         val imageName : String = "Spyne" + SimpleDateFormat(
-             FILENAME_FORMAT, Locale.US).format(System.currentTimeMillis()) + ".png"
-
-         val downloadId = PRDownloader.download(
-             imageFile,
-             Environment.getExternalStorageDirectory().toString() + "/Spyne",
-             imageName)
-             .build()
-             .setOnStartOrResumeListener {
-             }
-             .setOnPauseListener {
-
-             }
-             .setOnCancelListener(object : OnCancelListener {
-                 override fun onCancel() {}
-             })
-             .setOnProgressListener(object : OnProgressListener {
-                 override fun onProgress(progress: Progress) {
-                     builder.setContentTitle(imageName)
-                         .setContentText(
-                             ((100 - (progress.currentBytes%100)).toInt())
-                                 .toString() + "/" + "100"+ "%")
-                         .setProgress(100, (100 - (progress.currentBytes%100)).toInt(),
-                             false);
-
-                     with(NotificationManagerCompat.from(this@ShowImagesActivity)) {
-                         // notificationId is a unique int for each notification that you must define
-                         notify(1, builder.build())
-                     }
-
-                     Log.e("Progress HD", imageFile + " " +
-                             ((100 - (progress.currentBytes%100)).toInt())
-                                 .toString() + "/" + "100"+ "%")
-                     tvProgress.setText(imageName)
-                     tvProgressvalue.setText(((100 - (progress.currentBytes%100)).toInt())
-                         .toString() + "/" + "100" + "%")
-                     llDownloadProgress.visibility = View.VISIBLE
-                     seekbarDownload.setProgress((100 - (progress.currentBytes%100)).toInt())
-                 }
-             })
-             .start(object : OnDownloadListener {
-                 override fun onDownloadComplete() {
-
-                     if (downloadCount == imageListWaterMark.size)
-                         Toast.makeText(
-                             this@ShowImagesActivity,
-                             "Download Completed", Toast.LENGTH_SHORT
-                         ).show()
-
-                     llDownloadWithWatermark.isEnabled = true
-                     llDownloadWithWatermark.isFocusable = true
-                     llDownloadProgress.visibility = View.GONE
-                 }
-
-                 override fun onError(error: com.downloader.Error?) {
-                     TODO("Not yet implemented")
-                     Toast.makeText(
-                         this@ShowImagesActivity,
-                         "Download Failed.", Toast.LENGTH_SHORT
-                     ).show()
-                 }
-             })
-     }
-
-    */
-
-
     private fun getOutputDirectory(): String? {
         val mediaDir =
             if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP) {
@@ -627,8 +379,7 @@ class ShowImagesActivity : AppCompatActivity() {
             filesDir.toString() + File.separator
     }
 
-    fun showNotifications()
-    {
+    fun showNotifications() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             val name = getString(R.string.channel_name)
             val descriptionText = getString(R.string.channel_description)
@@ -662,37 +413,4 @@ class ShowImagesActivity : AppCompatActivity() {
 
         }
     }
-
-/*
-    private fun processProgress(s: String)
-    {
-        var cdt: CountDownTimer
-        val id: Int = 1
-        val mNotifyManager: NotificationManager
-        val mBuilder: NotificationCompat.Builder
-        try {
-            mNotifyManager = getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
-            mBuilder = NotificationCompat.Builder(this)
-            mBuilder.setContentTitle("Downloading File")
-                .setContentText(s)
-                .setProgress(0, 100, false)
-                .setOngoing(true)
-                .setSmallIcon(R.mipmap.app_icon)
-                .setPriority(Notification.PRIORITY_HIGH)
-
-
-            mBuilder.setContentInfo(values[0] + "%")
-                .setProgress(100, Integer.parseInt(values[0]), false);
-
-            // Initialize Objects here
-            mNotifyManager.notify(id, mBuilder.build())
-
-            // Create connection here
-        } catch (e: java.lang.Exception) {
-            e.printStackTrace()
-        }
-    }
-*/
-
-
 }

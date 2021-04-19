@@ -2,14 +2,14 @@ package com.spyneai.extras.events
 
 class ProcessingImagesEvent {
 
-    private var notificationID: Int = 0
+    private var shootStatus: String = ""
 
-    public fun  getNotificationID(): Int {
-        return notificationID;
+    public fun  getShootStatus(): String {
+        return shootStatus;
     }
 
-    public fun  setNotificationID(notificationID:Int){
-        this.notificationID = notificationID;
+    public fun  setShootStatus(shootStatus:String){
+        this.shootStatus = shootStatus;
     }
 
 }
