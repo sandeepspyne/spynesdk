@@ -1116,6 +1116,7 @@ class Camera2Activity : AppCompatActivity(), SubCategoriesAdapter.BtnClickListen
             if (!focusedEnabled) {
                 ivClickedImage.setImageBitmap(rotatedBitmap)
                 ivClickedImageover.setImageBitmap(rotatedBitmap)
+                if (frameImageList!=null)
                 Glide.with(this@Camera2Activity).load(
                     AppConstants.BASE_IMAGE_URL + frameImageList[frameNumber - 1].displayImage
                 ).into(ivClickedImageoverlay)

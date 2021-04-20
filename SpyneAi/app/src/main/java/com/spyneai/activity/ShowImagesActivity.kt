@@ -3,8 +3,10 @@ package com.spyneai.activity
 import android.app.*
 import android.content.Context
 import android.content.Intent
+import android.net.Uri
 import android.os.Build
 import android.os.Bundle
+import android.os.Environment
 import android.os.Handler
 import android.util.Log
 import android.view.View
@@ -23,10 +25,12 @@ import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.downloader.*
 import com.spyneai.R
 import com.spyneai.adapter.ShowReplacedImagesAdapter
+import com.spyneai.adapter.ShowReplacedImagesFocusedAdapter
 import com.spyneai.adapter.ShowReplacedImagesInteriorAdapter
 import com.spyneai.aipack.FetchBulkResponse
 import com.spyneai.interfaces.APiService
 import com.spyneai.interfaces.RetrofitClients
+import com.spyneai.interfaces.RetrofitClientsStaging
 import com.spyneai.model.skumap.UpdateSkuResponse
 import com.spyneai.needs.AppConstants
 import com.spyneai.needs.ScrollingLinearLayoutManager
@@ -34,6 +38,7 @@ import com.spyneai.needs.Utilities
 import com.synnapps.carouselview.CarouselView
 import com.synnapps.carouselview.ViewListener
 import kotlinx.android.synthetic.main.activity_before_after.*
+import kotlinx.android.synthetic.main.activity_camera.*
 import kotlinx.android.synthetic.main.activity_show_gif.*
 import kotlinx.android.synthetic.main.activity_show_images.*
 import kotlinx.android.synthetic.main.activity_timer.*
@@ -46,6 +51,8 @@ import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 import java.io.File
+import java.net.URLEncoder
+import java.text.SimpleDateFormat
 import java.util.*
 import kotlin.collections.ArrayList
 
@@ -54,15 +61,16 @@ class ShowImagesActivity : AppCompatActivity() {
     lateinit var imageList: List<String>
     lateinit var imageListAfter: List<String>
     lateinit var imageListInterior: List<String>
-    lateinit var downloadList1: ArrayList<String>
-    lateinit var downloadList2: ArrayList<String>
+    lateinit var imageListFocused: List<String>
+
     lateinit var imageListWaterMark: ArrayList<String>
     lateinit var listHdQuality: ArrayList<String>
-    var catName: String = ""
+    var catName : String = ""
     var numberOfImages: Int = 0
 
     private lateinit var showReplacedImagesAdapter: ShowReplacedImagesAdapter
     private lateinit var ShowReplacedImagesInteriorAdapter: ShowReplacedImagesInteriorAdapter
+    private lateinit var ShowReplacedImagesFocusedAdapter: ShowReplacedImagesFocusedAdapter
 
     var downloadCount: Int = 0
     lateinit var Category: String
@@ -76,7 +84,6 @@ class ShowImagesActivity : AppCompatActivity() {
 
         AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
 
-
         setBulkImages()
         setListeners()
 
@@ -85,7 +92,7 @@ class ShowImagesActivity : AppCompatActivity() {
         else
             catName = Utilities.getPreference(this, AppConstants.CATEGORY_NAME)!!
 
-        if (catName.equals("Footwear")) {
+        if (catName.equals("Footwear")){
             tvViewGif.visibility = View.GONE
         }
     }
@@ -97,7 +104,8 @@ class ShowImagesActivity : AppCompatActivity() {
             tvViewGif.visibility = View.VISIBLE
             tvInterior.visibility = View.VISIBLE
 //            llDownloads.visibility = View.VISIBLE
-        } else {
+        }
+        else{
             tvYourEmailIdReplaced.visibility = View.GONE
             tvViewGif.visibility = View.GONE
             tvInterior.visibility = View.GONE
@@ -161,6 +169,7 @@ class ShowImagesActivity : AppCompatActivity() {
         imageListAfter = ArrayList<String>()
         imageListWaterMark = ArrayList<String>()
         imageListInterior = ArrayList<String>()
+        imageListFocused = ArrayList<String>()
         listHdQuality = ArrayList<String>()
 
         showReplacedImagesAdapter = ShowReplacedImagesAdapter(this,
@@ -182,6 +191,16 @@ class ShowImagesActivity : AppCompatActivity() {
                 }
             })
 
+
+        ShowReplacedImagesFocusedAdapter = ShowReplacedImagesFocusedAdapter(this,
+            imageListFocused as ArrayList<String>,
+            object : ShowReplacedImagesFocusedAdapter.BtnClickListener {
+                override fun onBtnClick(position: Int) {
+                    //   showImagesDialog(position)
+                    Log.e("position preview", position.toString())
+                }
+            })
+
         rvImagesBackgroundRemoved.setLayoutManager(
             ScrollingLinearLayoutManager(
                 this,
@@ -197,8 +216,16 @@ class ShowImagesActivity : AppCompatActivity() {
             )
         )
 
+        rvFocused.setLayoutManager(
+            GridLayoutManager(
+                this,
+                2
+            )
+        )
+
         rvImagesBackgroundRemoved.setAdapter(showReplacedImagesAdapter)
         rvInteriors.setAdapter(ShowReplacedImagesInteriorAdapter)
+        rvFocused.setAdapter(ShowReplacedImagesFocusedAdapter)
         fetchBulkUpload()
     }
 
@@ -230,49 +257,33 @@ class ShowImagesActivity : AppCompatActivity() {
                             (imageListAfter as ArrayList).add(response.body()!![i].output_image_url)
                             (imageListWaterMark as ArrayList).add(response.body()!![i].watermark_image)
                             (listHdQuality as ArrayList).add(response.body()!![i].original_image)
-                            Utilities.savePrefrence(
-                                this@ShowImagesActivity,
-                                AppConstants.CATEGORY_NAME,
-                                response.body()!![0].product_category
-                            )
-                            Utilities.savePrefrence(
-                                this@ShowImagesActivity,
-                                AppConstants.NO_OF_IMAGES,
-                                imageListAfter.size.toString()
-                            )
+                            Utilities.savePrefrence(this@ShowImagesActivity, AppConstants.CATEGORY_NAME, response.body()!![0].product_category)
+                            Utilities.savePrefrence(this@ShowImagesActivity, AppConstants.NO_OF_IMAGES, imageListAfter.size.toString())
                             hideData(0)
                         } else if (response.body()!![i].category.equals("Interior")) {
                             Category = response.body()!![i].category
                             (imageListInterior as ArrayList).add(response.body()!![i].output_image_url)
                             (imageListWaterMark as ArrayList).add(response.body()!![i].output_image_url)
                             (listHdQuality as ArrayList).add(response.body()!![i].input_image_url)
-                            Utilities.savePrefrence(
-                                this@ShowImagesActivity,
-                                AppConstants.CATEGORY_NAME,
-                                response.body()!![0].product_category
-                            )
-                            Utilities.savePrefrence(
-                                this@ShowImagesActivity,
-                                AppConstants.NO_OF_IMAGES,
-                                imageListAfter.size.toString()
-                            )
+                            Utilities.savePrefrence(this@ShowImagesActivity, AppConstants.CATEGORY_NAME, response.body()!![0].product_category)
+                            Utilities.savePrefrence(this@ShowImagesActivity, AppConstants.NO_OF_IMAGES, imageListAfter.size.toString())
                             hideData(0)
-                        } else {
+                        }else if (response.body()!![i].category.equals("Focus Shoot")) {
+                            Category = response.body()!![i].category
+                            (imageListFocused as ArrayList).add(response.body()!![i].output_image_url)
+                            (imageListWaterMark as ArrayList).add(response.body()!![i].output_image_url)
+                            (listHdQuality as ArrayList).add(response.body()!![i].input_image_url)
+                            Utilities.savePrefrence(this@ShowImagesActivity, AppConstants.CATEGORY_NAME, response.body()!![0].product_category)
+                            Utilities.savePrefrence(this@ShowImagesActivity, AppConstants.NO_OF_IMAGES, imageListAfter.size.toString())
+                            hideData(0)
+                        } else{
                             Category = response.body()!![i].category
                             (imageList as ArrayList).add(response.body()!![i].input_image_url)
                             (imageListAfter as ArrayList).add(response.body()!![i].output_image_url)
-                            (listHdQuality as ArrayList).add(response.body()!![i].output_image_url)
+                            (listHdQuality as ArrayList).add(response.body()!![i].original_image)
                             (imageListWaterMark as ArrayList).add(response.body()!![i].watermark_image)
-                            Utilities.savePrefrence(
-                                this@ShowImagesActivity,
-                                AppConstants.CATEGORY_NAME,
-                                response.body()!![0].product_category
-                            )
-                            Utilities.savePrefrence(
-                                this@ShowImagesActivity,
-                                AppConstants.NO_OF_IMAGES,
-                                imageListAfter.size.toString()
-                            )
+                            Utilities.savePrefrence(this@ShowImagesActivity, AppConstants.CATEGORY_NAME, response.body()!![0].product_category)
+                            Utilities.savePrefrence(this@ShowImagesActivity, AppConstants.NO_OF_IMAGES, imageListAfter.size.toString())
                             hideData(1)
                         }
 
@@ -282,6 +293,7 @@ class ShowImagesActivity : AppCompatActivity() {
                 }
                 showReplacedImagesAdapter.notifyDataSetChanged()
                 ShowReplacedImagesInteriorAdapter.notifyDataSetChanged()
+                ShowReplacedImagesFocusedAdapter.notifyDataSetChanged()
             }
 
             override fun onFailure(call: Call<List<FetchBulkResponse>>, t: Throwable) {
@@ -294,32 +306,7 @@ class ShowImagesActivity : AppCompatActivity() {
         })
     }
 
-//    override fun onBackPressed() {
-//        super.onBackPressed()
-//        Utilities.savePrefrence(this@ShowImagesActivity, AppConstants.SHOOT_ID, "")
-//        Utilities.savePrefrence(this@ShowImagesActivity, AppConstants.CATEGORY_ID, "")
-//        Utilities.savePrefrence(this@ShowImagesActivity, AppConstants.PRODUCT_ID, "")
-//        Utilities.savePrefrence(this@ShowImagesActivity, AppConstants.SKU_NAME, "")
-//        Utilities.savePrefrence(this@ShowImagesActivity, AppConstants.SKU_ID, "")
-//        val intent = Intent(this, DashboardActivity::class.java)
-//
-//        val updateSkuResponseList = ArrayList<UpdateSkuResponse>()
-//        updateSkuResponseList.clear()
-//
-//        Utilities.setList(
-//            this@ShowImagesActivity,
-//            AppConstants.FRAME_LIST, updateSkuResponseList
-//        )
-//        startActivity(intent)
-//        finish()
-//    }
-
     fun showImagesDialog(position: Int) {
-        Utilities.showProgressDialog(this)
-        Handler().postDelayed({
-            Utilities.hideProgressDialog()
-        }, 3000)
-
         val dialog = Dialog(this)
         dialog.requestWindowFeature(Window.FEATURE_NO_TITLE)
         dialog.setCancelable(true)
@@ -361,56 +348,6 @@ class ShowImagesActivity : AppCompatActivity() {
                 .into(customView.ivAfter)
 
             return customView
-        }
-    }
-
-    private fun getOutputDirectory(): String? {
-        val mediaDir =
-            if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP) {
-                externalMediaDirs.firstOrNull()?.let {
-                    File(it, resources.getString(R.string.app_name)).apply { mkdirs() }
-                }
-            } else {
-                TODO("VERSION.SDK_INT < LOLLIPOP")
-            }
-        return if (mediaDir != null && mediaDir.exists())
-            mediaDir.toString() + File.separator
-        else
-            filesDir.toString() + File.separator
-    }
-
-    fun showNotifications() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            val name = getString(R.string.channel_name)
-            val descriptionText = getString(R.string.channel_description)
-            val importance = NotificationManager.IMPORTANCE_DEFAULT
-            val channel = NotificationChannel("CHANNEL_ID", name, importance).apply {
-                description = descriptionText
-            }
-            // Register the channel with the system
-            val notificationManager: NotificationManager =
-                getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
-            notificationManager.createNotificationChannel(channel)
-
-            val intent = Intent(this, SplashActivity::class.java).apply {
-                flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
-            }
-            val pendingIntent: PendingIntent = PendingIntent.getActivity(this, 0, intent, 0)
-            builder = NotificationCompat.Builder(this, "CHANNEL_ID")
-                .setSmallIcon(R.mipmap.home)
-                .setContentTitle("MAin")
-                .setContentText("Sub")
-                .setPriority(NotificationCompat.PRIORITY_DEFAULT)
-                .setContentIntent(pendingIntent)
-                .setAutoCancel(true)
-
-            builder.setProgress(100, 0, false);
-
-            with(NotificationManagerCompat.from(this)) {
-                // notificationId is a unique int for each notification that you must define
-                notify(1, builder.build())
-            }
-
         }
     }
 }

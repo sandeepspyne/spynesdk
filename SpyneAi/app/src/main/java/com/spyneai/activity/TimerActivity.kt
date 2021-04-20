@@ -132,7 +132,7 @@ class TimerActivity : AppCompatActivity() {
         setListener()
     }
 
-    private fun setListener(){
+    private fun setListener() {
         llStartNewShoot.setOnClickListener {
             val intent = Intent(this, DashboardActivity::class.java)
             startActivity(intent)
@@ -180,35 +180,54 @@ class TimerActivity : AppCompatActivity() {
     private fun actionOnService(action: Actions) {
         if (getServiceState(this) == com.spyneai.service.ServiceState.STOPPED && action == Actions.STOP)
             return
-                val serviceIntent = Intent(this@TimerActivity, ProcessImagesService::class.java)
-                serviceIntent.putExtra(AppConstants.BG_ID, backgroundSelect)
-                serviceIntent.putExtra(AppConstants.ALL_IMAGE_LIST, imageFileList)
-                serviceIntent.putExtra(AppConstants.ALL_FRAME_LIST, imageFileListFrames)
-                serviceIntent.putExtra(AppConstants.ALL_INTERIOR_IMAGE_LIST, imageInteriorFileList)
-                serviceIntent.putExtra(AppConstants.ALL_INTERIOR_FRAME_LIST, imageInteriorFileListFrames)
-                serviceIntent.putExtra(AppConstants.CATEGORY_NAME, catName)
-                serviceIntent.putExtra(AppConstants.MARKETPLACE_ID, marketplaceId)
-                serviceIntent.putExtra(AppConstants.BACKGROUND_COLOUR, backgroundColour)
-                serviceIntent.putExtra(AppConstants.SKU_NAME, Utilities.getPreference(this, AppConstants.SKU_NAME))
-                serviceIntent.putExtra(AppConstants.SKU_ID, Utilities.getPreference(this, AppConstants.SKU_ID))
-                serviceIntent.putExtra(AppConstants.SHOOT_ID, Utilities.getPreference(this, AppConstants.SHOOT_ID))
-                serviceIntent.putExtra(AppConstants.tokenId, Utilities.getPreference(this, AppConstants.tokenId))
-                serviceIntent.putExtra(AppConstants.WINDOWS, Utilities.getPreference(this, AppConstants.WINDOWS))
-                serviceIntent.putExtra(AppConstants.EXPOSURES, Utilities.getPreference(this, AppConstants.EXPOSURES))
+        val serviceIntent = Intent(this@TimerActivity, ProcessImagesService::class.java)
+        serviceIntent.putExtra(AppConstants.BG_ID, backgroundSelect)
+        serviceIntent.putExtra(AppConstants.ALL_IMAGE_LIST, imageFileList)
+        serviceIntent.putExtra(AppConstants.ALL_FRAME_LIST, imageFileListFrames)
+        serviceIntent.putExtra(AppConstants.ALL_INTERIOR_IMAGE_LIST, imageInteriorFileList)
+        serviceIntent.putExtra(AppConstants.ALL_INTERIOR_FRAME_LIST, imageInteriorFileListFrames)
+        serviceIntent.putExtra(AppConstants.ALL_FOCUSED_IMAGE_LIST, imageFocusedFileList)
+        serviceIntent.putExtra(AppConstants.ALL_FOCUSED_FRAME_LIST, imageFocusedFileListFrames)
+        serviceIntent.putExtra(AppConstants.CATEGORY_NAME, catName)
+        serviceIntent.putExtra(AppConstants.MARKETPLACE_ID, marketplaceId)
+        serviceIntent.putExtra(AppConstants.BACKGROUND_COLOUR, backgroundColour)
+        serviceIntent.putExtra(
+            AppConstants.SKU_NAME,
+            Utilities.getPreference(this, AppConstants.SKU_NAME)
+        )
+        serviceIntent.putExtra(
+            AppConstants.SKU_ID,
+            Utilities.getPreference(this, AppConstants.SKU_ID)
+        )
+        serviceIntent.putExtra(
+            AppConstants.SHOOT_ID,
+            Utilities.getPreference(this, AppConstants.SHOOT_ID)
+        )
+        serviceIntent.putExtra(
+            AppConstants.tokenId,
+            Utilities.getPreference(this, AppConstants.tokenId)
+        )
+        serviceIntent.putExtra(
+            AppConstants.WINDOWS,
+            Utilities.getPreference(this, AppConstants.WINDOWS)
+        )
+        serviceIntent.putExtra(
+            AppConstants.EXPOSURES,
+            Utilities.getPreference(this, AppConstants.EXPOSURES)
+        )
 
-                serviceIntent.action = action.name
+        serviceIntent.action = action.name
 
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                    log("Starting the service in >=26 Mode")
-                    ContextCompat.startForegroundService(this@TimerActivity, serviceIntent)
-                    return
-                }else{
-                    log("Starting the service in < 26 Mode")
-                    startService(serviceIntent)
-                }
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            log("Starting the service in >=26 Mode")
+            ContextCompat.startForegroundService(this@TimerActivity, serviceIntent)
+            return
+        } else {
+            log("Starting the service in < 26 Mode")
+            startService(serviceIntent)
+        }
 
     }
-
 
 
     private fun setCustomTimer() {
@@ -228,8 +247,7 @@ class TimerActivity : AppCompatActivity() {
                 CountDownTimer(480000)
             } else if (Utilities.getPreference(this, AppConstants.FRAME_SHOOOTS).equals("7")) {
                 CountDownTimer(580000)
-            }
-            else{
+            } else {
                 CountDownTimer(720000)
             }
         }
@@ -273,15 +291,15 @@ class TimerActivity : AppCompatActivity() {
     }
 
 
-
     @Subscribe(threadMode = ThreadMode.MAIN)
     fun onMessageEvent(event: ProcessingImagesEvent?) {
         event?.getShootStatus()?.let {
-                var intent = Intent(this@TimerActivity, DashboardActivity::class.java)
-                startActivity(intent)
-                finish()
+            var intent = Intent(this@TimerActivity, DashboardActivity::class.java)
+            startActivity(intent)
+            finish()
         }
     }
+
     override fun onBackPressed() {
 
 
