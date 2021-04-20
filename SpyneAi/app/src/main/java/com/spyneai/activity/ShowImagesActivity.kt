@@ -294,25 +294,25 @@ class ShowImagesActivity : AppCompatActivity() {
         })
     }
 
-    override fun onBackPressed() {
-        super.onBackPressed()
-        Utilities.savePrefrence(this@ShowImagesActivity, AppConstants.SHOOT_ID, "")
-        Utilities.savePrefrence(this@ShowImagesActivity, AppConstants.CATEGORY_ID, "")
-        Utilities.savePrefrence(this@ShowImagesActivity, AppConstants.PRODUCT_ID, "")
-        Utilities.savePrefrence(this@ShowImagesActivity, AppConstants.SKU_NAME, "")
-        Utilities.savePrefrence(this@ShowImagesActivity, AppConstants.SKU_ID, "")
-        val intent = Intent(this, DashboardActivity::class.java)
-
-        val updateSkuResponseList = ArrayList<UpdateSkuResponse>()
-        updateSkuResponseList.clear()
-
-        Utilities.setList(
-            this@ShowImagesActivity,
-            AppConstants.FRAME_LIST, updateSkuResponseList
-        )
-        startActivity(intent)
-        finish()
-    }
+//    override fun onBackPressed() {
+//        super.onBackPressed()
+//        Utilities.savePrefrence(this@ShowImagesActivity, AppConstants.SHOOT_ID, "")
+//        Utilities.savePrefrence(this@ShowImagesActivity, AppConstants.CATEGORY_ID, "")
+//        Utilities.savePrefrence(this@ShowImagesActivity, AppConstants.PRODUCT_ID, "")
+//        Utilities.savePrefrence(this@ShowImagesActivity, AppConstants.SKU_NAME, "")
+//        Utilities.savePrefrence(this@ShowImagesActivity, AppConstants.SKU_ID, "")
+//        val intent = Intent(this, DashboardActivity::class.java)
+//
+//        val updateSkuResponseList = ArrayList<UpdateSkuResponse>()
+//        updateSkuResponseList.clear()
+//
+//        Utilities.setList(
+//            this@ShowImagesActivity,
+//            AppConstants.FRAME_LIST, updateSkuResponseList
+//        )
+//        startActivity(intent)
+//        finish()
+//    }
 
     fun showImagesDialog(position: Int) {
         Utilities.showProgressDialog(this)

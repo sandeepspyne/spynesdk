@@ -72,7 +72,7 @@ class PhotoUploader(var task: Task, var listener: Listener) {
                     if (response.isSuccessful) {
 
                         task.mainImage = response.body()?.image.toString()
-                        log("image upload count" + task.totalImagesToUploadIndex)
+                        log("image upload count: " + task.totalImagesToUploadIndex)
                         log("image upload success:\n" + task.mainImage)
 
                         uploadImageURLs()
