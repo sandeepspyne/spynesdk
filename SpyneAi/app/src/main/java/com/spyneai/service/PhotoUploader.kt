@@ -400,7 +400,8 @@ class PhotoUploader(var task: Task, var listener: Listener) {
                     }
 
                 } else {
-                    log("Error in uploading image to bucket(focused)")
+                    listener.onFailure(task)
+                    log("Error in uploading image url to bucket(focused)")
                     log("Error Body: " + response.errorBody())
                     log("Response: " + response.body())
 
@@ -408,6 +409,7 @@ class PhotoUploader(var task: Task, var listener: Listener) {
             }
 
             override fun onFailure(call: Call<UploadPhotoResponse>, t: Throwable) {
+                listener.onFailure(task)
                 log("Server not responding(uploadImageURLsFocused)")
                 log("error: "+t.localizedMessage)
             }
@@ -1058,6 +1060,7 @@ class PhotoUploader(var task: Task, var listener: Listener) {
                         } else
                             fetchBulkUpload()
                     } else {
+                        listener.onFailure(task)
                         log("Error in add addWatermarkFocused")
                         log("Error: " + response.errorBody())
                     }
