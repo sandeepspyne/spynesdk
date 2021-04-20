@@ -11,6 +11,7 @@ import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayoutMediator
 import com.spyneai.R
 import com.spyneai.databinding.DialogShootThreeSixtyDemoBinding
+import com.spyneai.videorecording.adapter.ThreeSixtyShootDemoAdapter
 
 
 class DialogThreeSixtyDemo : DialogFragment() {

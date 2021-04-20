@@ -56,6 +56,7 @@ class VideoUploader(var task : VideoTask, var listener: VideoTaskListener) {
                     ) {
                         Log.d(TAG, "onResponse: success")
                         if (response.isSuccessful){
+                            task.responseUrl = response.body()!!.video_url
                             listener.onSuccess(task)
                         }else{
                             listener.onFailure(task)
@@ -63,12 +64,77 @@ class VideoUploader(var task : VideoTask, var listener: VideoTaskListener) {
                     }
 
                     override fun onFailure(call: Call<UploadVideoResponse>, t: Throwable) {
+
                         Log.d(TAG, "onResponse: failure")
                         listener.onFailure(task)
                     }
                 })
 
 
+
+            } catch (e: Exception) {
+
+            }
+        }
+    }
+
+    fun processVideo(){
+        GlobalScope.launch(Dispatchers.Default){
+            try {
+                val request = RetrofitClients.buildService(APiService::class.java)
+
+                val requestFile = RequestBody.create(MediaType.parse("multipart/form-data"), File(task.filePath))
+                val video = MultipartBody.Part.createFormData("video", File(task.filePath)!!.name, requestFile)
+
+                val userId = RequestBody.create(
+                    MultipartBody.FORM,"sandeep singh"
+                )
+
+                val skuName = RequestBody.create(
+                    MultipartBody.FORM,"sku name"
+                )
+
+                val skuId = RequestBody.create(
+                    MultipartBody.FORM,"sku id"
+                )
+
+                val type = RequestBody.create(
+                    MultipartBody.FORM,"three sixty"
+                )
+
+                val category = RequestBody.create(
+                    MultipartBody.FORM,"automobiles"
+                )
+
+                val subCategory = RequestBody.create(
+                    MultipartBody.FORM,"automobiles"
+                )
+
+                val videoUrl= RequestBody.create(
+                    MultipartBody.FORM,task.videoUrl
+                )
+
+                val call = request.processVideo(video,videoUrl,userId,skuName,skuId,type,category,subCategory)
+
+                call?.enqueue(object : Callback<VideoProcessResponse> {
+                    override fun onResponse(
+                        call: Call<VideoProcessResponse>,
+                        response: Response<VideoProcessResponse>
+                    ) {
+                        Log.d(TAG, "onResponse: success")
+                        if (response.isSuccessful){
+                            task.frames = response.body()!!.url
+                            listener.onSuccess(task)
+                        }else{
+                            listener.onFailure(task)
+                        }
+                    }
+
+                    override fun onFailure(call: Call<VideoProcessResponse>, t: Throwable) {
+                        Log.d(TAG, "onResponse: failure")
+                        listener.onFailure(task)
+                    }
+                })
 
             } catch (e: Exception) {
 

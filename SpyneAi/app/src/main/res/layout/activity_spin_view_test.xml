@@ -7,7 +7,7 @@
         android:layout_height="match_parent"
         tools:context=".videorecording.SpinViewTestActivity">
 
-        <com.spyneai.videorecording.ThreeSixtyView
+        <com.spyneai.videorecording.ui.ThreeSixtyView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:id="@+id/three_sixty_view"

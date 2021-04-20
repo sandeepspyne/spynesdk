@@ -7,26 +7,7 @@ import android.graphics.Color
 import android.os.Build
 import android.os.IBinder
 import android.os.PowerManager
-import android.telephony.ServiceState
-import android.util.Log
-import android.widget.Toast
 import com.spyneai.R
-import com.spyneai.aipack.FetchBulkResponse
-import com.spyneai.interfaces.APiService
-import com.spyneai.interfaces.RetrofitClients
-import com.spyneai.needs.AppConstants
-import com.spyneai.needs.Utilities
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
-import okhttp3.MediaType
-import okhttp3.MultipartBody
-import okhttp3.RequestBody
-import retrofit2.Call
-import retrofit2.Callback
-import retrofit2.Response
-import java.io.File
 
 
 class UploadVideoService : Service(), VideoUploader.VideoTaskListener {
@@ -38,6 +19,7 @@ class UploadVideoService : Service(), VideoUploader.VideoTaskListener {
     lateinit var channel: NotificationChannel
     lateinit var builder: Notification.Builder
     lateinit var filePath : String
+    var shootMode : Int = 0
 
     var tasksInProgress = ArrayList<VideoTask>()
 
@@ -50,8 +32,8 @@ class UploadVideoService : Service(), VideoUploader.VideoTaskListener {
             return START_STICKY
 
         val action = intent.action
+        shootMode = intent.getIntExtra("shoot_mode",0)
         filePath = intent.getStringExtra("file_path").toString()
-
 
         when (action) {
             "START" -> startService()
@@ -68,16 +50,22 @@ class UploadVideoService : Service(), VideoUploader.VideoTaskListener {
         val task = VideoTask()
 
         task.filePath = filePath
+        task.shootMode = shootMode
+
+        if (shootMode == 1)
+            task.videoUrl = tasksInProgress.get(0).responseUrl
+
 
         tasksInProgress.add(task)
 
         checkAndFinishService()
 
-        VideoUploader(task,this).uploadVideo()
+        if (shootMode == 0) VideoUploader(task,this).uploadVideo()
+        else VideoUploader(task,this).processVideo()
     }
 
     private fun stopService() {
-         Toast.makeText(this, "Service stopping", Toast.LENGTH_SHORT).show()
+        // Toast.makeText(this, "Service stopping", Toast.LENGTH_SHORT).show()
         try {
             wakeLock?.let {
                 if (it.isHeld) {
@@ -102,11 +90,11 @@ class UploadVideoService : Service(), VideoUploader.VideoTaskListener {
         tasksInProgress.forEach {
 
             if (it.isCompleted) {
-                createCompletedNotification()
+                createCompletedNotification(it.shootMode)
             } else if (it.onFailure) {
-                createFailureNotification()
+                createFailureNotification(it.shootMode)
             } else
-                createOngoingNotificaiton()
+                createOngoingNotificaiton(it.shootMode)
 
         }
 
@@ -116,23 +104,33 @@ class UploadVideoService : Service(), VideoUploader.VideoTaskListener {
         }
     }
 
-    private fun createOngoingNotificaiton() {
+
+    private fun createVideoUploadingNotification() {
+        var notificationId = (0..999999).random()
+        val text: String = "Video Uploading in progress..."
+        var notification = createNotification(text , true,shootMode)
+
+        notificationManager.notify(notificationId, notification)
+        startForeground(notificationId, notification)
+    }
+
+    private fun createOngoingNotificaiton(shootMode: Int) {
         var notificationId = (0..999999).random()
         val text: String = "Video processing in progress..."
-        var notification = createNotification(text , true)
+        var notification = createNotification(text , true,shootMode)
 
         notificationManager.notify(notificationId, notification)
         startForeground(notificationId, notification)
 
     }
 
-    private fun createCompletedNotification() {
-        var notification = createNotification("Video processing completed", false)
+    private fun createCompletedNotification(shootMode: Int) {
+        var notification = createNotification("Video processing completed", false,shootMode)
         notificationManager.notify((0..999999).random(), notification)
     }
 
-    private fun createFailureNotification() {
-        var notification = createNotification("Video processing failed.", false)
+    private fun createFailureNotification(shootMode: Int) {
+        var notification = createNotification("Video processing failed.", false,shootMode)
         notificationManager.notify((0..999999).random(), notification)
     }
 
@@ -151,7 +149,7 @@ class UploadVideoService : Service(), VideoUploader.VideoTaskListener {
 
     }
 
-    private fun createNotification(text: String, isOngoing: Boolean): Notification {
+    private fun createNotification(text: String, isOngoing: Boolean,shootMode : Int): Notification {
         val notificationChannelId = "PROCESSING VIDEO SERVICE CHANNEL"
         // depending on the Android API that we're dealing with we will have
         // to use a specific method to create the notification
@@ -171,10 +169,17 @@ class UploadVideoService : Service(), VideoUploader.VideoTaskListener {
             notificationManager.createNotificationChannel(channel)
         }
 
-        val pendingIntent: PendingIntent =
-            Intent(this, ThreeSixtyViewActivity::class.java).let { notificationIntent ->
+        var pendingIntent: PendingIntent
+
+        if (shootMode == 0){
+            pendingIntent = Intent(this, ThreeSixtyViewActivity::class.java).let { notificationIntent ->
                 PendingIntent.getActivity(this, 0, notificationIntent, 0)
             }
+        }else{
+            pendingIntent = Intent(this, SpinViewActivity::class.java).let { notificationIntent ->
+                PendingIntent.getActivity(this, 0, notificationIntent, 0)
+            }
+        }
 
 
         builder =
@@ -194,13 +199,19 @@ class UploadVideoService : Service(), VideoUploader.VideoTaskListener {
             .setPriority(Notification.PRIORITY_HIGH) // for under android 26 compatibility
             .build()
 
-
     }
 
 
     override fun onSuccess(task: VideoTask) {
             task.isCompleted = true
-            stopService()
+
+        checkAndFinishService()
+//        if (task.taskType == 0){
+//            stopService()
+//        }else{
+//            stopService()
+//        }
+
     }
 
     override fun onFailure(task: VideoTask) {

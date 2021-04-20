@@ -11,4 +11,8 @@ class VideoTask {
     var filePath : String = ""
     // 0 for upload 1 for processing
     var taskType = 0
+    var responseUrl : String = ""
+    var videoUrl : String = ""
+    lateinit var frames : List<List<String>>
+    var shootMode = 0
 }
