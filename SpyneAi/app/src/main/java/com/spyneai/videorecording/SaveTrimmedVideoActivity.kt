@@ -97,7 +97,7 @@ class SaveTrimmedVideoActivity : AppCompatActivity(), SeekListener {
         //start uploading video
         val myServiceIntent = Intent(this, UploadVideoService::class.java)
         myServiceIntent.action = "START"
-        myServiceIntent.putExtra("file_path", intent.data?.toFile()?.path)
+        myServiceIntent.putExtra("file_path", uri?.toFile()?.path)
         myServiceIntent.putExtra("sku_id",intent.getStringExtra("sku_id"))
         myServiceIntent.putExtra("shoot_mode",intent.getIntExtra("shoot_mode",0))
         ContextCompat.startForegroundService(this, myServiceIntent)
@@ -122,6 +122,7 @@ class SaveTrimmedVideoActivity : AppCompatActivity(), SeekListener {
             videoPlayer = SimpleExoPlayer.Builder(this).build()
             playerView?.setResizeMode(AspectRatioFrameLayout.RESIZE_MODE_FIT)
             playerView?.setPlayer(videoPlayer)
+            videoPlayer!!.volume = 0F
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
                 val audioAttributes = AudioAttributes.Builder()
                     .setUsage(C.USAGE_MEDIA)
@@ -136,9 +137,9 @@ class SaveTrimmedVideoActivity : AppCompatActivity(), SeekListener {
 
     private fun setDataInView() {
         try {
-            uri = Uri.parse(intent.data.toString())
+            //uri = Uri.parse(intent.data.toString())
 
-            //  uri = Uri.parse(FileUtils.getPath(this, uri))
+                uri = Uri.parse(intent.getStringExtra("uri"))
 
             //  LogMessage.v("VideoUri:: $uri")
             totalDuration = getDuration(this, uri)
@@ -241,17 +242,16 @@ class SaveTrimmedVideoActivity : AppCompatActivity(), SeekListener {
             try {
                 currentDuration = videoPlayer!!.currentPosition
                 trim_view.onVideoCurrentPositionUpdated(currentDuration)
-//                if (!videoPlayer!!.playWhenReady) return
-//                if (currentDuration <= lastMaxValue)
-//                    seekbarController?.setMinStartValue(currentDuration.toFloat())?.apply()
-//                else
-//                    videoPlayer!!.playWhenReady = false;
-
             } finally {
                 seekHandler!!.postDelayed(this, 1000)
             }
         }
     }
+
+//    override fun onStop() {
+//        super.onStop()
+//        if (videoPlayer != null) videoPlayer!!.release()
+//    }
 
     override fun onDestroy() {
         super.onDestroy()

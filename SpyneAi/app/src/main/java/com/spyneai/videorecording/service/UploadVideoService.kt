@@ -8,11 +8,15 @@ import android.os.Build
 import android.os.IBinder
 import android.os.PowerManager
 import android.util.Log
+import org.greenrobot.eventbus.EventBus
 import com.spyneai.R
+import com.spyneai.videorecording.ProcessVideoTimerActivity
 import com.spyneai.videorecording.SpinViewActivity
 import com.spyneai.videorecording.ThreeSixtyInteriorViewActivity
 import com.spyneai.videorecording.ThreeSixtyViewActivity
+import com.spyneai.videorecording.model.ProcessVideoEvent
 import com.spyneai.videorecording.model.VideoTask
+import java.util.Locale.getDefault
 
 
 class UploadVideoService : Service(), VideoUploader.VideoTaskListener {
@@ -109,10 +113,12 @@ class UploadVideoService : Service(), VideoUploader.VideoTaskListener {
         tasksInProgress.forEach {
 
             if (it.isCompleted) {
-                if (it.shootMode == 1)
+                if (it.shootMode == 1){
                     processedSkuId = it.skuId
 
-                createCompletedNotification(it.shootMode)
+                    createCompletedNotification(it.shootMode)
+                }
+
             } else if (it.onFailure) {
                 createFailureNotification(it.shootMode)
             } else
@@ -126,18 +132,11 @@ class UploadVideoService : Service(), VideoUploader.VideoTaskListener {
     }
 
 
-    private fun createVideoUploadingNotification() {
-        var notificationId = (0..999999).random()
-        val text: String = "Video Uploading in progress..."
-        var notification = createNotification(text , true,shootMode)
 
-        notificationManager.notify(notificationId, notification)
-        startForeground(notificationId, notification)
-    }
 
     private fun createOngoingNotificaiton(shootMode: Int) {
         var notificationId = (0..999999).random()
-        val text: String = "Video processing in progress..."
+        val text = if (shootMode == 0) "Video uploading in progress..." else "360 view generation in progress..."
         var notification = createNotification(text , true,shootMode)
 
         notificationManager.notify(notificationId, notification)
@@ -146,12 +145,16 @@ class UploadVideoService : Service(), VideoUploader.VideoTaskListener {
     }
 
     private fun createCompletedNotification(shootMode: Int) {
-        var notification = createNotification("Video processing completed", false,shootMode)
+        val text = if (shootMode == 0) "Video upload completed" else "360 view generated, click to view"
+
+        var notification = createNotification(text, false,shootMode)
         notificationManager.notify((0..999999).random(), notification)
     }
 
     private fun createFailureNotification(shootMode: Int) {
-        var notification = createNotification("Video processing failed.", false,shootMode)
+        val text = if (shootMode == 0) "Video uploading failed" else "360 view generation failed try again..."
+
+        var notification = createNotification(text, false,shootMode)
         notificationManager.notify((0..999999).random(), notification)
     }
 
@@ -193,14 +196,23 @@ class UploadVideoService : Service(), VideoUploader.VideoTaskListener {
         var pendingIntent: PendingIntent
 
         if (shootMode == 0){
-            pendingIntent = Intent(this, ThreeSixtyViewActivity::class.java).let { notificationIntent ->
-                PendingIntent.getActivity(this, 0, notificationIntent, 0)
-            }
+            val resultIntent = Intent()
+
+            pendingIntent = PendingIntent.getActivity(this,0,resultIntent,0)
+//            pendingIntent = Intent(this, ThreeSixtyViewActivity::class.java).let { notificationIntent ->
+//                PendingIntent.getActivity(this, 0, notificationIntent, 0)
+//            }
         }
         else{
 
             // Create an Intent for the activity you want to start
-            val resultIntent = Intent(baseContext, ThreeSixtyInteriorViewActivity::class.java)
+            val resultIntent : Intent
+
+            if (isOngoing){
+                resultIntent = Intent(baseContext, ProcessVideoTimerActivity::class.java)
+            }else{
+                resultIntent = Intent(baseContext, ThreeSixtyInteriorViewActivity::class.java)
+            }
 
             resultIntent.setAction(processedSkuId)
 
@@ -246,6 +258,11 @@ class UploadVideoService : Service(), VideoUploader.VideoTaskListener {
             Log.d(TAG, "onSuccess: skuid"+processedSkuId)
             frams = task.frames as ArrayList<String>
             FramesHelper.hashMap.put(task.skuId,frams)
+
+            var processingVideoEvent = ProcessVideoEvent();
+            processingVideoEvent.setSkuId(task.skuId)
+            EventBus.getDefault().post(processingVideoEvent)
+
         }else {
             FramesHelper.videoUrlMap.put(task.skuId,task.responseUrl)
 
@@ -266,6 +283,10 @@ class UploadVideoService : Service(), VideoUploader.VideoTaskListener {
     }
 
     override fun onFailure(task: VideoTask) {
-
+            if (task.shootMode == 0){
+                VideoUploader(task,this).uploadVideo()
+            }else{
+                VideoUploader(task,this).processVideo()
+            }
     }
 }

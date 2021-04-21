@@ -129,16 +129,17 @@ class VideoUploader(var task : VideoTask, var listener: VideoTaskListener) {
                     ) {
                         Log.d(TAG, "onResponse: success ")
                         if (response.isSuccessful){
-//                            var strResponse = response.body()
-//
-//                            val sType = object : TypeToken<VideoProcessResponse>() { }.type
-//
-//                            var videoProcessResponse : VideoProcessResponse = Gson().fromJson<VideoProcessResponse>(JSONObject(strResponse).toString(),sType)
 
-                           GlobalScope.launch(Dispatchers.Main) {
-                               task.frames = response.body()!!.url.get(0)
-                               listener.onSuccess(task)
-                           }
+                            var videoProcessResponse = response.body()
+
+                            if (videoProcessResponse != null && videoProcessResponse.url != null){
+                                task.frames = response.body()!!.url.get(0)
+                                listener.onSuccess(task)
+                            }else{
+                                Log.d(TAG, "onResponse: success null ")
+                                listener.onFailure(task)
+                            }
+
                         }else{
                             listener.onFailure(task)
                         }

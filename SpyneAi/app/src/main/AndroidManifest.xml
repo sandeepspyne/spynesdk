@@ -37,7 +37,8 @@
         android:theme="@style/Theme.SpyneAi"
         android:usesCleartextTraffic="true"
         tools:targetApi="m">
-        <activity android:name=".videorecording.ThreeSixtyInteriorViewActivity"></activity>
+        <activity android:name=".videorecording.VideoUploadHandlerActivity"></activity>
+        <activity android:name=".videorecording.ThreeSixtyInteriorViewActivity" />
         <activity android:name=".videorecording.ProcessVideoTimerActivity" />
 
         <service
@@ -45,8 +46,6 @@
             android:enabled="true"
             android:exported="false" />
 
-        <activity android:name=".videorecording.SpinTestActivity" />
-        <activity android:name=".videorecording.SpinViewTestActivity" />
         <activity android:name=".videorecording.SpinViewActivity" />
         <activity android:name=".videorecording.SaveTrimmedVideoActivity" />
         <activity

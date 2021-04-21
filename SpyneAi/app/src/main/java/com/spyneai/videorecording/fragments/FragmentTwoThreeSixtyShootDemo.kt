@@ -38,7 +38,7 @@ class FragmentTwoThreeSixtyShootDemo : Fragment() {
     private var playWhenReady = true
     private var currentWindow = 0
     private var playbackPosition: Long = 0
-    var isPaused = false
+    var isActive = false
 
 
     override fun onCreateView(
@@ -86,8 +86,9 @@ class FragmentTwoThreeSixtyShootDemo : Fragment() {
             }
 
             val mediaItem = MediaItem.fromUri(uri!!)
+            videoPlayer!!.volume = 0F
             videoPlayer!!.setMediaItem(mediaItem)
-            videoPlayer!!.setPlayWhenReady(playWhenReady)
+           // videoPlayer!!.setPlayWhenReady(playWhenReady)
 
             videoPlayer!!.addListener(object : Player.EventListener {
                 override fun onPlayWhenReadyChanged(playWhenReady: Boolean, reason: Int) {
@@ -116,35 +117,39 @@ class FragmentTwoThreeSixtyShootDemo : Fragment() {
 
     override fun onResume() {
         super.onResume()
-        if (!videoPlayer?.playWhenReady!!)
+        if (!isActive && !videoPlayer?.playWhenReady!!){
+            isActive = true
             videoPlayer!!.setPlayWhenReady(true)
-    }
-    
-    override fun onPause() {
-        super.onPause()
+        }else{
+            //videoPlayer!!.setPlayWhenReady(true)
+        }
 
     }
+
 
     override fun onStop() {
         super.onStop()
         Log.d(TAG, "onStop: ")
-
     }
 
     override fun onDestroy() {
         super.onDestroy()
-       // releasePlayer()
+        releasePlayer()
     }
 
      fun releasePlayer() {
-        playWhenReady = videoPlayer!!.getPlayWhenReady()
-        playbackPosition = videoPlayer!!.getCurrentPosition()
-        currentWindow = videoPlayer!!.getCurrentWindowIndex()
-         videoPlayer!!.setPlayWhenReady(false);
-        videoPlayer?.release()
-        videoPlayer = null
+//        playWhenReady = videoPlayer!!.getPlayWhenReady()
+//        playbackPosition = videoPlayer!!.getCurrentPosition()
+//        currentWindow = videoPlayer!!.getCurrentWindowIndex()
+         try {
+             videoPlayer!!.setPlayWhenReady(false);
+             videoPlayer?.release()
+             videoPlayer = null
 
-         playerView?.visibility = View.GONE
+             playerView?.visibility = View.GONE
+         }catch (e:Exception){
+
+         }
     }
 
 

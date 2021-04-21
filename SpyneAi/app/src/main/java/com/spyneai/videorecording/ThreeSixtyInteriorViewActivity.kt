@@ -44,9 +44,11 @@ class ThreeSixtyInteriorViewActivity : AppCompatActivity(),View.OnTouchListener 
 //        framesList = intent.getStringArrayListExtra("frames")!!
         framesList = FramesHelper.hashMap.get(intent.action)!!
 
+        binding.progressBarFront.visibility = View.VISIBLE
+
         mImageIndex = framesList.size / 2
 
-                for ((index, url) in framesList.withIndex()) {
+        for ((index, url) in framesList.withIndex()) {
 
             Glide.with(this)
                 .load(url)
@@ -79,7 +81,7 @@ class ThreeSixtyInteriorViewActivity : AppCompatActivity(),View.OnTouchListener 
                             loadImage(mImageIndex)
                         }
 
-                        return true
+                        return false
                     }
 
                 })
@@ -90,7 +92,9 @@ class ThreeSixtyInteriorViewActivity : AppCompatActivity(),View.OnTouchListener 
 
      }
 
+        binding.ivBack.setOnClickListener { onBackPressed() }
         binding.ivFront.setOnTouchListener(this)
+
 
     }
 
@@ -159,7 +163,7 @@ class ThreeSixtyInteriorViewActivity : AppCompatActivity(),View.OnTouchListener 
                         isFirstResource: Boolean
                     ): Boolean {
                         Log.d(TAG, "onResourceReady: failed")
-                        return true
+                        return false
                     }
 
                     override fun onResourceReady(
@@ -171,7 +175,7 @@ class ThreeSixtyInteriorViewActivity : AppCompatActivity(),View.OnTouchListener 
                     ): Boolean {
                         placeholder = resource!!
 
-                        return true
+                        return false
                     }
 
                 })

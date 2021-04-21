@@ -400,7 +400,7 @@ class RecordVideoActivity : AppCompatActivity() {
                 binding.btnRecordVideo.setOnClickListener { recordVideo() }
 
             } catch (e: Exception) {
-                Log.e(RecordVideoTestActivity.TAG, "Failed to bind use cases", e)
+                Log.e(TAG, "Failed to bind use cases", e)
             }
         }, ContextCompat.getMainExecutor(this))
     }
@@ -479,7 +479,7 @@ class RecordVideoActivity : AppCompatActivity() {
                                 trimIntent.putExtra("shoot_mode",intent.getIntExtra("shoot_mode",0))
                                 trimIntent.setData(uri)
                                 startActivity(trimIntent)
-                                Log.d(RecordVideoTestActivity.TAG, "Video saved in $uri")
+                                Log.d(TAG, "Video saved in $uri")
 
                                 binding.tvStart.text = "Start"
                             }
@@ -495,7 +495,7 @@ class RecordVideoActivity : AppCompatActivity() {
                         //animateRecord.cancel()
                         val msg = "Video capture failed: $message"
                         Toast.makeText(this@RecordVideoActivity, msg, Toast.LENGTH_SHORT).show()
-                        Log.e(RecordVideoTestActivity.TAG, msg)
+                        Log.e(TAG, msg)
                         cause?.printStackTrace()
 
                         binding.tvStart.text = "Start"

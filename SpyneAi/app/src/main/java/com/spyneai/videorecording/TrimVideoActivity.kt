@@ -9,16 +9,15 @@ import android.os.Build
 import android.os.Bundle
 import android.os.Handler
 import android.util.Log
-import android.view.MenuItem
 import android.view.View
+import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.net.toFile
 import androidx.databinding.DataBindingUtil
 import com.arthenica.mobileffmpeg.FFmpeg
-import com.crystal.crystalrangeseekbar.widgets.CrystalRangeSeekbar
-import com.crystal.crystalrangeseekbar.widgets.CrystalSeekbar
 import com.google.android.exoplayer2.C
 import com.google.android.exoplayer2.MediaItem
 import com.google.android.exoplayer2.Player
@@ -35,6 +34,9 @@ import com.spyneai.databinding.ActivityTrimVideoBinding
 import com.spyneai.videorecording.listener.SeekListener
 import kotlinx.android.synthetic.main.activity_timer.*
 import kotlinx.android.synthetic.main.activity_trim_video.*
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
 import java.io.File
 import java.util.*
 
@@ -50,7 +52,6 @@ class TrimVideoActivity : AppCompatActivity() , SeekListener {
 
     private var totalDuration: Long = 0
 
-    private val dialog: Dialog? = null
 
     private var uri: Uri? = null
 
@@ -69,23 +70,20 @@ class TrimVideoActivity : AppCompatActivity() , SeekListener {
 
     private var currentDuration: Long = 0
 
-    private var outputPath: String? = null
+    private var outputPath: String = ""
 
     private  var maxToGap:kotlin.Long = 0
-
-
-    private  var showFileLocationAlert:kotlin.Boolean = false
-
 
     private val fileName: String? = null
 
     private lateinit var binding : ActivityTrimVideoBinding
+    private var videoTrimmed = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        binding = DataBindingUtil.setContentView(this,R.layout.activity_trim_video)
+        binding = DataBindingUtil.setContentView(this, R.layout.activity_trim_video)
 
-        if(intent.getIntExtra("shoot_mode",0) == 1) binding.tvViewType.text = "Interior Back View"
+        if(intent.getIntExtra("shoot_mode", 0) == 1) binding.tvViewType.text = "Interior Back View"
 
         playerView = binding.playerViewLib
         imagePlayPause = binding.imagePlayPause
@@ -104,7 +102,12 @@ class TrimVideoActivity : AppCompatActivity() , SeekListener {
         }
 
         btn_confirm.setOnClickListener {
-            trimVideo()
+            if (videoTrimmed){
+
+            }else{
+                trimVideo()
+            }
+
         }
 
         iv_back.setOnClickListener{ finish()}
@@ -139,7 +142,7 @@ class TrimVideoActivity : AppCompatActivity() , SeekListener {
             Objects.requireNonNull(playerView!!.videoSurfaceView)!!
                 .setOnClickListener { v: View? -> onVideoClicked() }
             // initTrimData()
-            trim_view.init(uri.toString(),totalDuration,this)
+            trim_view.init(uri.toString(), totalDuration, this)
 
             lastMaxValue = totalDuration * 1000
             buildMediaSource()
@@ -188,7 +191,9 @@ class TrimVideoActivity : AppCompatActivity() , SeekListener {
                 )
             videoPlayer!!.addMediaSource(mediaSource)
             videoPlayer!!.prepare()
+            videoPlayer!!.volume = 0F
             videoPlayer!!.playWhenReady = true
+
             videoPlayer!!.addListener(object : Player.EventListener {
                 override fun onPlayWhenReadyChanged(playWhenReady: Boolean, reason: Int) {
                     imagePlayPause!!.visibility = if (playWhenReady) View.GONE else View.VISIBLE
@@ -235,23 +240,22 @@ class TrimVideoActivity : AppCompatActivity() , SeekListener {
     }
 
     private fun trimVideo() {
-        var test : String? = "saa";
         if (isValidVideo) {
             //not exceed given maxDuration if has given
-            outputPath = getFileName()
+            outputPath = getFileName().toString()
             //LogMessage.v("outputPath::" + outputPath + File(outputPath).exists())
             //LogMessage.v("sourcePath::$uri")
             videoPlayer!!.playWhenReady = false
-            //showProcessingDialog()
             val complexCommand: Array<String?>? = getAccurateCmd()
 
             execFFmpegBinary(complexCommand, true)
-        } else Toast.makeText(
+       } else Toast.makeText(
             this,
-            "getString(R.string.txt_smaller)" + " " + TrimmerUtils.getLimitedTimeFormatted(maxToGap),
+            "Video should not be smaller than" + " " + TrimmerUtils.getLimitedTimeFormatted(maxToGap),
             Toast.LENGTH_SHORT
         ).show()
     }
+
 
     private fun getFileName(): String? {
         val path = getExternalFilesDir("Download")!!.path
@@ -272,49 +276,37 @@ class TrimVideoActivity : AppCompatActivity() , SeekListener {
     }
 
     private fun execFFmpegBinary(command: Array<String?>?, retry: Boolean) {
+
+        binding.progressBar.visibility = View.VISIBLE
         try {
             Thread {
                 val result = FFmpeg.execute(command)
-                var s : String? = "sasas"
                 if (result == 0) {
-//                    dialog!!.dismiss()
-                    if (showFileLocationAlert) Log.d(TAG, "execFFmpegBinary: show alert") else {
 
-                        val intentPlay = Intent(this@TrimVideoActivity, SaveTrimmedVideoActivity::class.java);
-                        intentPlay.setData(intent.data);
-
-
-                        intentPlay.putExtra("uri",Uri.fromFile(File(outputPath)).toString())
-                        intentPlay.putExtra("sku_id",intent.getStringExtra("sku_id"))
-                        intentPlay.putExtra("shoot_mode",intent.getIntExtra("shoot_mode",0))
-                        startActivity(intentPlay);
-                        Log.d(TAG, "execFFmpegBinary: "+outputPath)
-                        //intent.putExtra(TrimVideo.TRIMMED_VIDEO_PATH, outputPath)
-                        //setResult(RESULT_OK, intent)
-                        //finish()
+                    GlobalScope.launch(Dispatchers.Main) {
+                        binding.progressBar.visibility = View.GONE
                     }
-                } else if (result == 255) {
-                    //LogMessage.v("Command cancelled")
-                    if (dialog!!.isShowing) dialog.dismiss()
+
+                    startNextActivity(outputPath)
+
+                    Log.d(TAG, "execFFmpegBinary: " + outputPath)
                 } else {
-                    Log.d(TAG, "execFFmpegBinary: "+"failed")
+                    Log.d(TAG, "execFFmpegBinary: " + "failed")
                     // Failed case:
                     // line 489 command fails on some devices in
                     // that case retrying with accurateCmt as alternative command
-//                    if (retry && !isAccurateCut && compressOption == null) {
-//                        val newFile = File(outputPath)
-//                        if (newFile.exists()) newFile.delete()
-//                        execFFmpegBinary(getAccurateCmd(), false)
-//                    } else {
-//                        if (dialog!!.isShowing) dialog.dismiss()
-//                        runOnUiThread {
-//                            Toast.makeText(
-//                                this@TrimVideoActivity,
-//                                "Failed to trim",
-//                                Toast.LENGTH_SHORT
-//                            ).show()
-//                        }
-//                    }
+                    if (retry) {
+                        val newFile = File(outputPath)
+                        if (newFile.exists()) newFile.delete()
+                        execFFmpegBinary(getAccurateCmd(), false)
+                    } else {
+                        GlobalScope.launch(Dispatchers.Main) {
+                            binding.progressBar.visibility = View.GONE
+                        }
+                        // start next activity in case of trimming failed
+                        var file = intent.data?.toFile()
+                       startNextActivity(file?.path.toString())
+                    }
                 }
             }.start()
         } catch (e: java.lang.Exception) {
@@ -322,10 +314,40 @@ class TrimVideoActivity : AppCompatActivity() , SeekListener {
         }
     }
 
+    private fun startNextActivity(path: String) {
+        val intentPlay = Intent(
+            this@TrimVideoActivity,
+            SaveTrimmedVideoActivity::class.java
+        )
+        intentPlay.setData(intent.data)
+
+        intentPlay.putExtra("uri", Uri.fromFile(File(path)).toString())
+        intentPlay.putExtra("sku_id", intent.getStringExtra("sku_id"))
+        intentPlay.putExtra("shoot_mode", intent.getIntExtra("shoot_mode", 0))
+        startActivity(intentPlay)
+    }
+
     private fun getAccurateCmd(): Array<String?>? {
-        return arrayOf("-ss", TrimmerUtils.formatCSeconds(lastMinValue), "-i", uri.toString(), "-t",
-            TrimmerUtils.formatCSeconds(lastMaxValue - lastMinValue),
-            "-c", "copy", outputPath)
+//        return arrayOf(
+//            uri.toString(), "-ss",
+//            TrimmerUtils.formatCSeconds(lastMinValue),
+//            "-vcodec copy " +
+//                    "-acodec copy -t",
+//            TrimmerUtils.formatCSeconds(lastMaxValue - lastMinValue),
+//            "-strict -2", outputPath
+//        )
+
+//        return arrayOf(
+//            "-ss", TrimmerUtils.formatCSeconds(lastMinValue), "-i", uri.toString(), "-t",
+//            TrimmerUtils.formatCSeconds(lastMaxValue - lastMinValue),
+//            "-async", "1", outputPath
+//        )
+
+        return arrayOf(
+            "-ss", TrimmerUtils.formatCSeconds(lastMinValue / 1000), "-i", uri.toString(), "-t",
+            TrimmerUtils.formatCSeconds(lastMaxValue / 1000 - lastMinValue / 1000),
+            "-c", "copy", outputPath
+        )
     }
 
 
@@ -361,6 +383,9 @@ class TrimVideoActivity : AppCompatActivity() , SeekListener {
 
     }
 
+
+
+
     override fun onSeekEnd(start: Long, end: Long) {
 //        lastMinValue = start
 //        lastMaxValue = end
@@ -373,8 +398,6 @@ class TrimVideoActivity : AppCompatActivity() , SeekListener {
         lastMaxValue = end
         txtStartDuration!!.setText(TrimmerUtils.formatSeconds(start / 1000))
         txtEndDuration!!.setText(TrimmerUtils.formatSeconds(end / 1000))
-        Log.d(TAG, "onSeek: "+start+":"+end)
-
     }
 
 }
