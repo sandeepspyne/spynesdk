@@ -15,6 +15,7 @@ import android.util.DisplayMetrics
 import android.util.Log
 import android.util.Size
 import android.view.View
+import android.view.ViewStructure
 import android.view.WindowInsets
 import android.view.WindowManager
 import android.widget.ImageButton
@@ -38,7 +39,9 @@ import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayoutMediator
 import com.spyneai.R
 import com.spyneai.databinding.ActivityRecordVideoBinding
-import com.spyneai.model.beforeafter.Data
+import com.spyneai.videorecording.adapter.ThreeSixtyShootDemoAdapter
+import com.spyneai.videorecording.fragments.FragmentOneThreeSixtyShootDemo
+import com.spyneai.videorecording.fragments.FragmentTwoThreeSixtyShootDemo
 import kotlinx.android.synthetic.main.activity_otp.*
 import kotlinx.android.synthetic.main.activity_record_video.*
 import kotlinx.coroutines.Dispatchers
@@ -62,7 +65,7 @@ class RecordVideoActivity : AppCompatActivity() {
         private const val RATIO_16_9_VALUE = 16.0 / 9.0 // aspect ratio 16x9
 
         private const val REQUEST_CODE_PERMISSIONS = 100
-        var intent : Intent? = null;
+        var intent : Intent? = null
 
         // The permissions we need for the app to work properly
         private val permissions = mutableListOf(
@@ -80,14 +83,15 @@ class RecordVideoActivity : AppCompatActivity() {
 
     }
 
-    private lateinit var demoCollectionAdapter: ThreeSixtyShootDemoAdapter
+    private lateinit var threeSixtyDemoAdapter: ThreeSixtyShootDemoAdapter
     private lateinit var binding : ActivityRecordVideoBinding
 
     private val permissionRequest = registerForActivityResult(ActivityResultContracts.RequestMultiplePermissions()) { permissions ->
         if (permissions.all { it.value }) {
             binding.btnRecordVideo.visibility = View.VISIBLE
 
-            binding.llSelectThreeSixtyMode.visibility = View.VISIBLE
+            setupDemo(intent.getIntExtra("shoot_mode",0))
+
             //startCamera();
         } else {
             Toast.makeText(this, "Permissions not granted", Toast.LENGTH_LONG)
@@ -151,26 +155,23 @@ class RecordVideoActivity : AppCompatActivity() {
 
         binding = DataBindingUtil.setContentView(this, R.layout.activity_record_video)
 
-        if (intent.getIntExtra("shoot_mode",0) == 1){
-            binding.llSelectThreeSixtyMode.visibility = View.GONE
-
-            setupDemo(1)
-        }
-
-        binding.llInterior.setOnClickListener{
-            setupDemo(0)
-        }
 
         binding.btnFlash.setOnClickListener { toggleFlash() }
 
         binding.tvNext.setOnClickListener {
             if (binding.tvNext.text.toString() == "Next") {
                 binding.tabLayout.getTabAt(1)?.select()
-            } else {
+            } else if (binding.tvNext.text.toString() == "Got it"){
+                binding.tabLayout.getTabAt(2)?.select()
+            }
+            else {
                 binding.clShootDemo.visibility = View.GONE
                 //disable video player
                 var fragment : FragmentTwoThreeSixtyShootDemo = fragmentList.get(1) as FragmentTwoThreeSixtyShootDemo
+                var fragmentTwo : FragmentTwoThreeSixtyShootDemo = fragmentList.get(2) as FragmentTwoThreeSixtyShootDemo
+
                 fragment.releasePlayer()
+                fragmentTwo.releasePlayer()
 
                 startTimer()
             }
@@ -259,32 +260,21 @@ class RecordVideoActivity : AppCompatActivity() {
         if (allPermissionsGranted()) {
             binding.btnRecordVideo.visibility = View.VISIBLE;
 
-            if (intent.getIntExtra("shoot_mode",0) == 1){
-                binding.llSelectThreeSixtyMode.visibility = View.GONE
-
-                setupDemo(1)
-            }else{
-                binding.llSelectThreeSixtyMode.visibility = View.VISIBLE
-            }
+            setupDemo(intent.getIntExtra("shoot_mode",0))
 
         } else {
-            permissionRequest.launch(RecordVideoActivity.permissions.toTypedArray())
+            permissionRequest.launch(permissions.toTypedArray())
         }
     }
 
     private fun setupDemo(shootMode : Int) {
-        binding.llSelectThreeSixtyMode.visibility = View.GONE
 
-        binding.clShootDemo.visibility = View.VISIBLE;
+       binding.clShootDemo.visibility = View.VISIBLE
 
         fragmentList = ArrayList<Fragment>()
 
         var args = Bundle()
         args.putInt("shoot_mode",shootMode)
-
-        if (shootMode == 1){
-            binding.tvHint.text = "Shoot the back side of the car"
-        }
 
         var fragmentOne =  FragmentOneThreeSixtyShootDemo()
         fragmentOne.arguments = args
@@ -295,28 +285,39 @@ class RecordVideoActivity : AppCompatActivity() {
 
         fragmentList.add(fragmentTwo)
 
-        demoCollectionAdapter = ThreeSixtyShootDemoAdapter(this,fragmentList)
+        var fragmentThree =  FragmentTwoThreeSixtyShootDemo()
+        fragmentThree.arguments = args
 
-        binding.viewPager.adapter = demoCollectionAdapter
+        fragmentList.add(fragmentThree)
+
+        threeSixtyDemoAdapter = ThreeSixtyShootDemoAdapter(this,fragmentList)
+
+        binding.viewPager.adapter = threeSixtyDemoAdapter
 
         TabLayoutMediator(binding.tabLayout, binding.viewPager) { tab, position ->
         }.attach()
 
+        var next = ""
+        var hint = ""
+
         binding.tabLayout.addOnTabSelectedListener(object : TabLayout.OnTabSelectedListener {
             override fun onTabSelected(tab: TabLayout.Tab?) {
-                if (tab!!.position == 0) {
-                    if (shootMode == 1){
-                        binding.tvHint.text = "Shoot the back side of the car"
-                    }else{
-                        binding.tvHint.text = "Shoot the front side of the car"
-                    }
 
-                    binding.tvNext.text = "Next"
-                } else {
-                    binding.tvHint.text =
-                        "Sit on the middle of the back seat, Place the phone in the centre & start moving your wrist"
-                    binding.tvNext.text = "Begin Shoot"
+                when(tab!!.position){
+                    0 -> {
+                        next = "Next"
+                        hint = if (shootMode == 0)  "Shoot the front side of the car" else "Shoot the back side of the car"
+                    } 1 -> {
+                        next = "Got it"
+                        hint = if (shootMode == 0)  "Sit on the middle of the front seat, Place the phone in the centre & start moving your wrist" else "Sit on the middle of the back seat, Place the phone in the centre & start moving your wrist"
+                    } 2 -> {
+                        next = "Begin Shoot"
+                        hint = "Start moving your wrist and keep your hands steady. You can trim the video after shoot"
+                    }
                 }
+
+                binding.tvHint.text = hint
+                binding.tvNext.text = next
             }
 
             override fun onTabUnselected(tab: TabLayout.Tab?) {
@@ -383,8 +384,9 @@ class RecordVideoActivity : AppCompatActivity() {
                 // Attach the viewfinder's surface provider to preview use case
                 preview?.setSurfaceProvider(viewFinder.surfaceProvider)
 
-                //start video recording
-                recordVideo()
+                binding.clHint.visibility = View.VISIBLE
+                binding.btnRecordVideo.setOnClickListener { recordVideo() }
+
             } catch (e: Exception) {
                 Log.e(RecordVideoTestActivity.TAG, "Failed to bind use cases", e)
             }
@@ -440,7 +442,7 @@ class RecordVideoActivity : AppCompatActivity() {
             binding.tvTimer.visibility = View.VISIBLE
                     startRecordTime(0)
             binding.btnRecordVideo.setImageDrawable(ContextCompat.getDrawable(this,R.drawable.bg_record_button_enabled))
-            binding.btnRecordVideo.setOnClickListener { recordVideo() }
+           // binding.btnRecordVideo.setOnClickListener { recordVideo() }
             binding.btnFlash.visibility = View.VISIBLE
 
 
@@ -455,12 +457,17 @@ class RecordVideoActivity : AppCompatActivity() {
                             ?.let { uri ->
                                 //setGalleryThumbnail(uri)
 
-                                val intent = Intent(
+                                val trimIntent = Intent(
                                     this@RecordVideoActivity,
                                     TrimVideoActivity::class.java
-                                );
-                                intent.setData(uri);
-                                startActivity(intent);
+                                )
+
+                                var skuId = if(intent.getIntExtra("shoot_mode",0) == 0) System.currentTimeMillis().toString() else intent.getStringExtra("sku_id")
+
+                                trimIntent.putExtra("sku_id",skuId)
+                                trimIntent.putExtra("shoot_mode",intent.getIntExtra("shoot_mode",0))
+                                trimIntent.setData(uri);
+                                startActivity(trimIntent);
                                 Log.d(RecordVideoTestActivity.TAG, "Video saved in $uri")
                             }
 

@@ -1,14 +1,20 @@
-package com.spyneai.videorecording
+package com.spyneai.videorecording.service
 
 import android.util.Log
+import com.google.gson.Gson
+import com.google.gson.reflect.TypeToken
 import com.spyneai.interfaces.APiService
 import com.spyneai.interfaces.RetrofitClients
+import com.spyneai.videorecording.model.UploadVideoResponse
+import com.spyneai.videorecording.model.VideoProcessResponse
+import com.spyneai.videorecording.model.VideoTask
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import okhttp3.MediaType
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
+import org.json.JSONObject
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -121,17 +127,25 @@ class VideoUploader(var task : VideoTask, var listener: VideoTaskListener) {
                         call: Call<VideoProcessResponse>,
                         response: Response<VideoProcessResponse>
                     ) {
-                        Log.d(TAG, "onResponse: success")
+                        Log.d(TAG, "onResponse: success ")
                         if (response.isSuccessful){
-                            task.frames = response.body()!!.url
-                            listener.onSuccess(task)
+//                            var strResponse = response.body()
+//
+//                            val sType = object : TypeToken<VideoProcessResponse>() { }.type
+//
+//                            var videoProcessResponse : VideoProcessResponse = Gson().fromJson<VideoProcessResponse>(JSONObject(strResponse).toString(),sType)
+
+                           GlobalScope.launch(Dispatchers.Main) {
+                               task.frames = response.body()!!.url.get(0)
+                               listener.onSuccess(task)
+                           }
                         }else{
                             listener.onFailure(task)
                         }
                     }
 
                     override fun onFailure(call: Call<VideoProcessResponse>, t: Throwable) {
-                        Log.d(TAG, "onResponse: failure")
+                        Log.d(TAG, "onResponse: failure"+t.localizedMessage)
                         listener.onFailure(task)
                     }
                 })

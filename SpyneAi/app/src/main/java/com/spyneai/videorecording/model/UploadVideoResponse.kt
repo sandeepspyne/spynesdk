@@ -1,4 +1,4 @@
-package com.spyneai.videorecording
+package com.spyneai.videorecording.model
 
 import com.google.gson.annotations.SerializedName
 

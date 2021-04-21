@@ -1,4 +1,4 @@
-package com.spyneai.videorecording
+package com.spyneai.videorecording.service
 
 import android.app.*
 import android.content.Context
@@ -7,13 +7,17 @@ import android.graphics.Color
 import android.os.Build
 import android.os.IBinder
 import android.os.PowerManager
+import android.util.Log
 import com.spyneai.R
+import com.spyneai.videorecording.SpinViewActivity
+import com.spyneai.videorecording.ThreeSixtyInteriorViewActivity
+import com.spyneai.videorecording.ThreeSixtyViewActivity
+import com.spyneai.videorecording.model.VideoTask
 
 
 class UploadVideoService : Service(), VideoUploader.VideoTaskListener {
 
     private var wakeLock: PowerManager.WakeLock? = null
-
 
     lateinit var notificationManager: NotificationManager
     lateinit var channel: NotificationChannel
@@ -22,6 +26,10 @@ class UploadVideoService : Service(), VideoUploader.VideoTaskListener {
     var shootMode : Int = 0
 
     var tasksInProgress = ArrayList<VideoTask>()
+    var frams = ArrayList<String>()
+    var TAG = "UploadVideoService"
+    var skuId = ""
+    var processedSkuId = ""
 
     override fun onBind(intent: Intent?): IBinder? {
         return null
@@ -34,6 +42,8 @@ class UploadVideoService : Service(), VideoUploader.VideoTaskListener {
         val action = intent.action
         shootMode = intent.getIntExtra("shoot_mode",0)
         filePath = intent.getStringExtra("file_path").toString()
+        skuId = intent.getStringExtra("sku_id")!!
+        Log.d(TAG, "onStartCommand: "+shootMode+" "+skuId)
 
         when (action) {
             "START" -> startService()
@@ -51,17 +61,26 @@ class UploadVideoService : Service(), VideoUploader.VideoTaskListener {
 
         task.filePath = filePath
         task.shootMode = shootMode
+        task.skuId = skuId
 
-        if (shootMode == 1)
-            task.videoUrl = tasksInProgress.get(0).responseUrl
+        if (shootMode == 1 && FramesHelper.videoUrlMap.get(skuId) != null)
+            task.videoUrl = FramesHelper.videoUrlMap.get(skuId)!!
 
-
+        FramesHelper.taskMap.put(skuId,task)
         tasksInProgress.add(task)
 
         checkAndFinishService()
 
         if (shootMode == 0) VideoUploader(task,this).uploadVideo()
-        else VideoUploader(task,this).processVideo()
+        else {
+            if (FramesHelper.videoUrlMap.get(skuId) != null){
+                FramesHelper.processingMap.put(skuId,true)
+                VideoUploader(task,this).processVideo()
+            }else{
+                Log.d(TAG, "startService: video uploading in progress")
+            }
+
+        }
     }
 
     private fun stopService() {
@@ -90,12 +109,14 @@ class UploadVideoService : Service(), VideoUploader.VideoTaskListener {
         tasksInProgress.forEach {
 
             if (it.isCompleted) {
+                if (it.shootMode == 1)
+                    processedSkuId = it.skuId
+
                 createCompletedNotification(it.shootMode)
             } else if (it.onFailure) {
                 createFailureNotification(it.shootMode)
             } else
                 createOngoingNotificaiton(it.shootMode)
-
         }
 
         if (tasksInProgress.filter { !it.isCompleted }.isEmpty()) {
@@ -175,10 +196,25 @@ class UploadVideoService : Service(), VideoUploader.VideoTaskListener {
             pendingIntent = Intent(this, ThreeSixtyViewActivity::class.java).let { notificationIntent ->
                 PendingIntent.getActivity(this, 0, notificationIntent, 0)
             }
-        }else{
-            pendingIntent = Intent(this, SpinViewActivity::class.java).let { notificationIntent ->
-                PendingIntent.getActivity(this, 0, notificationIntent, 0)
-            }
+        }
+        else{
+
+            // Create an Intent for the activity you want to start
+            val resultIntent = Intent(baseContext, ThreeSixtyInteriorViewActivity::class.java)
+
+            resultIntent.setAction(processedSkuId)
+
+            pendingIntent = PendingIntent.getActivity(this,0,resultIntent,0)
+
+//            pendingIntent = Intent(resultIntent).let { notificationIntent ->
+//                notificationIntent.putExtra("frames",frams)
+//                notificationIntent.putExtra("sandeep","singh")
+//
+//                PendingIntent.getActivity(this, 0, notificationIntent, 0)
+//            }
+
+
+
         }
 
 
@@ -203,15 +239,30 @@ class UploadVideoService : Service(), VideoUploader.VideoTaskListener {
 
 
     override fun onSuccess(task: VideoTask) {
-            task.isCompleted = true
+        task.isCompleted = true
+
+        if (task.shootMode == 1) {
+            processedSkuId = task.skuId
+            Log.d(TAG, "onSuccess: skuid"+processedSkuId)
+            frams = task.frames as ArrayList<String>
+            FramesHelper.hashMap.put(task.skuId,frams)
+        }else {
+            FramesHelper.videoUrlMap.put(task.skuId,task.responseUrl)
+
+            //start processing if not started
+            if (FramesHelper.processingMap.get(task.skuId) == null || FramesHelper.processingMap.get(task.skuId) == false){
+                var pendingProcessing =  FramesHelper.taskMap.get(task.skuId)
+                pendingProcessing?.videoUrl = FramesHelper.videoUrlMap.get(task.skuId).toString()
+
+                FramesHelper.processingMap.put(skuId,true)
+                if (pendingProcessing != null) {
+                    Log.d(TAG, "startService: video completed processing started")
+                    VideoUploader(pendingProcessing,this).processVideo()
+                }
+            }
+        }
 
         checkAndFinishService()
-//        if (task.taskType == 0){
-//            stopService()
-//        }else{
-//            stopService()
-//        }
-
     }
 
     override fun onFailure(task: VideoTask) {

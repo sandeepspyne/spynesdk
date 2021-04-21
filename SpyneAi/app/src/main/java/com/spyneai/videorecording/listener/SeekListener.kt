@@ -1,4 +1,4 @@
-package com.spyneai.videorecording
+package com.spyneai.videorecording.listener
 
 interface SeekListener {
     enum class Type {

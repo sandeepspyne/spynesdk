@@ -1,4 +1,4 @@
-package com.spyneai.videorecording
+package com.spyneai.videorecording.model
 
 class VideoTask {
     var user_id : String = ""
@@ -13,6 +13,6 @@ class VideoTask {
     var taskType = 0
     var responseUrl : String = ""
     var videoUrl : String = ""
-    lateinit var frames : List<List<String>>
+    lateinit var frames : List<String>
     var shootMode = 0
 }

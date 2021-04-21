@@ -1,38 +1,28 @@
 package com.spyneai.videorecording
 
-import android.graphics.Bitmap
 import android.graphics.drawable.Drawable
 import android.graphics.drawable.LevelListDrawable
 import android.net.Uri
-import android.os.Build
 import android.os.Bundle
-import android.os.Environment
 import android.os.Handler
 import android.util.Log
 import android.view.MotionEvent
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.net.toUri
 import androidx.core.view.MotionEventCompat
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.DataSource
 import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.bumptech.glide.load.engine.GlideException
-import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions.withCrossFade
 import com.bumptech.glide.request.RequestListener
 import com.bumptech.glide.request.RequestOptions
-import com.bumptech.glide.request.target.SimpleTarget
 import com.bumptech.glide.request.target.Target
-import com.bumptech.glide.request.transition.DrawableCrossFadeFactory
-import com.bumptech.glide.request.transition.Transition
 import com.spyneai.R
+import com.spyneai.videorecording.listener.PreLoadListener
 import kotlinx.android.synthetic.main.activity_spin_view.*
 
-import java.io.File
-import java.io.FileOutputStream
 
-
-class SpinViewActivity : AppCompatActivity(),View.OnTouchListener,PreLoadListener {
+class SpinViewActivity : AppCompatActivity(),View.OnTouchListener, PreLoadListener {
     private var array: Array<String> = emptyArray()
     private var mImageIndex: Int = 0
     private var mEndY: Int = 0
@@ -184,8 +174,6 @@ class SpinViewActivity : AppCompatActivity(),View.OnTouchListener,PreLoadListene
         requestOptions.diskCacheStrategy(DiskCacheStrategy.ALL)
 
         three_sixty_view.init(array,this)
-
-
 
 
         iv.visibility = View.GONE

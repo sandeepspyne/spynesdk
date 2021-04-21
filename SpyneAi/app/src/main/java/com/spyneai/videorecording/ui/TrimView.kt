@@ -1,4 +1,4 @@
-package com.spyneai.videorecording
+package com.spyneai.videorecording.ui
 
 import android.content.Context
 import android.media.MediaMetadataRetriever
@@ -19,6 +19,7 @@ import com.bumptech.glide.Glide
 import com.bumptech.glide.request.RequestOptions
 import com.spyneai.R
 import com.spyneai.databinding.ViewTrimBinding
+import com.spyneai.videorecording.listener.SeekListener
 import kotlinx.android.synthetic.main.view_trim.view.*
 
 

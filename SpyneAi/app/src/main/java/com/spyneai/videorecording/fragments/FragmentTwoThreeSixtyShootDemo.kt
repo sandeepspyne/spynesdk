@@ -1,4 +1,4 @@
-package com.spyneai.videorecording
+package com.spyneai.videorecording.fragments
 
 import android.net.Uri
 import android.os.Build
@@ -11,6 +11,7 @@ import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import com.google.android.exoplayer2.C
 import com.google.android.exoplayer2.MediaItem
+import com.google.android.exoplayer2.Player
 import com.google.android.exoplayer2.SimpleExoPlayer
 import com.google.android.exoplayer2.audio.AudioAttributes
 import com.google.android.exoplayer2.ui.AspectRatioFrameLayout
@@ -78,7 +79,6 @@ class FragmentTwoThreeSixtyShootDemo : Fragment() {
                 videoPlayer!!.setAudioAttributes(audioAttributes, true)
             }
 
-
             if(requireArguments()?.getInt("shoot_mode",0) == 1){
                  uri = RawResourceDataSource.buildRawResourceUri(R.raw.how_to_shoot_interior_back)
             }else{
@@ -87,8 +87,24 @@ class FragmentTwoThreeSixtyShootDemo : Fragment() {
 
             val mediaItem = MediaItem.fromUri(uri!!)
             videoPlayer!!.setMediaItem(mediaItem)
-            videoPlayer!!.setPlayWhenReady(playWhenReady);
-            videoPlayer!!.seekTo(currentWindow, playbackPosition);
+            videoPlayer!!.setPlayWhenReady(playWhenReady)
+
+            videoPlayer!!.addListener(object : Player.EventListener {
+                override fun onPlayWhenReadyChanged(playWhenReady: Boolean, reason: Int) {
+
+                }
+
+                override fun onPlaybackStateChanged(state: Int) {
+                    when (state) {
+                        Player.STATE_ENDED -> {
+                            videoPlayer!!.seekTo(0)
+                        }
+
+                    }
+                }
+            })
+
+            videoPlayer!!.seekTo(currentWindow, playbackPosition)
             videoPlayer!!.prepare();
 
 

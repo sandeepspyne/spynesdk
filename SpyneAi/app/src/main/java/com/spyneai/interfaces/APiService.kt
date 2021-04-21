@@ -10,10 +10,8 @@ import com.spyneai.model.carreplace.CarBackgroundsResponse
 import com.spyneai.model.categories.CategoriesResponse
 import com.spyneai.model.channel.BackgroundsResponse
 import com.spyneai.model.channel.ChannelResponse
-import com.spyneai.model.channel.ChannelsResponse
 import com.spyneai.model.channels.MarketplaceResponse
 import com.spyneai.model.credit.CreditDetailsResponse
-import com.spyneai.model.credit.CreditEligiblityRequest
 import com.spyneai.model.credit.FreeCreditEligblityResponse
 import com.spyneai.model.credit.UpdateCreditResponse
 import com.spyneai.model.dashboard.DashboardResponse
@@ -21,7 +19,6 @@ import com.spyneai.model.login.LoginRequest
 import com.spyneai.model.login.LoginResponse
 import com.spyneai.model.marketplace.FootwearBulkResponse
 import com.spyneai.model.marketplace.FootwearMarketplaceResponse
-import com.spyneai.model.marketplace.MarketplaceBackgroundResponse
 import com.spyneai.model.marketupdate.ShootMarketUpdateRequest
 import com.spyneai.model.nextsku.SkuRequest
 import com.spyneai.model.order.PlaceOrderResponse
@@ -38,7 +35,8 @@ import com.spyneai.model.skustatus.UpdateSkuStatusResponse
 import com.spyneai.model.upload.PreviewResponse
 import com.spyneai.model.upload.UploadResponse
 import com.spyneai.model.uploadRough.UploadPhotoRequest
-import com.spyneai.videorecording.UploadVideoResponse
+import com.spyneai.videorecording.model.UploadVideoResponse
+import com.spyneai.videorecording.model.VideoProcessResponse
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
 import retrofit2.Call
@@ -384,5 +382,18 @@ interface APiService {
     @Part("type") type: RequestBody?,
     @Part("category") category: RequestBody?
     ): Call<UploadVideoResponse>?
+
+    @Multipart
+    @POST("360-image-processing")
+    fun processVideo(
+        @Part file: MultipartBody.Part,
+        @Part("video_url") video_url : RequestBody,
+        @Part("user_id") user_id: RequestBody?,
+        @Part("sku_name") sku_name: RequestBody?,
+        @Part("sku_id") sku_id: RequestBody?,
+        @Part("type") type: RequestBody?,
+        @Part("category") category: RequestBody?,
+        @Part("sub_category") sub_category: RequestBody?
+    ): Call<VideoProcessResponse>?
 
 }

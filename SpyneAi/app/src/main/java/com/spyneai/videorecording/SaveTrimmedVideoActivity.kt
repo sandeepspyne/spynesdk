@@ -15,6 +15,7 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.core.content.ContextCompat
 import androidx.core.net.toFile
+import androidx.databinding.DataBindingUtil
 import com.crystal.crystalrangeseekbar.widgets.CrystalRangeSeekbar
 import com.crystal.crystalrangeseekbar.widgets.CrystalSeekbar
 import com.google.android.exoplayer2.C
@@ -29,73 +30,54 @@ import com.google.android.exoplayer2.ui.PlayerView
 import com.google.android.exoplayer2.upstream.DataSource
 import com.google.android.exoplayer2.upstream.DefaultDataSourceFactory
 import com.spyneai.R
+import com.spyneai.databinding.ActivitySaveTrimmedVideoBinding
+import com.spyneai.videorecording.listener.SeekListener
+import com.spyneai.videorecording.service.UploadVideoService
 import kotlinx.android.synthetic.main.activity_save_trimmed_video.*
-import java.io.File
 
 import java.util.*
 
-class SaveTrimmedVideoActivity : AppCompatActivity(),SeekListener {
+class SaveTrimmedVideoActivity : AppCompatActivity(), SeekListener {
 
     private var videoPlayer: SimpleExoPlayer? = null
     private var playerView: PlayerView? = null
     private var imagePlayPause: ImageView? = null
 
-    private lateinit var imageViews: Array<ImageView>
-
     private var totalDuration: Long = 0
-
-    private val dialog: Dialog? = null
 
     private var uri: Uri? = null
 
     private var txtStartDuration: TextView? = null
     private  var txtEndDuration: TextView? = null
 
-    private var seekbar: CrystalRangeSeekbar? = null
 
     private var lastMinValue: Long = 0
 
     private var lastMaxValue: Long = 0
 
-    private val menuDone: MenuItem? = null
 
-    private var seekbarController: CrystalSeekbar? = null
-
-    private var isValidVideo = true
     private  var isVideoEnded:kotlin.Boolean = false
 
     private var seekHandler: Handler? = null
 
     private var currentDuration: Long = 0
-    private  var lastClickedTime:kotlin.Long = 0
+
+    private lateinit var binding : ActivitySaveTrimmedVideoBinding
 
 
-
-    private var outputPath: String? = null
-
-    private val trimType = 0
-
-    private val fixedGap: Long = 0
-    private  var minGap:kotlin.Long = 0
-    private  var minFromGap:kotlin.Long = 0
-    private  var maxToGap:kotlin.Long = 0
-
-    private val hidePlayerSeek = false
-    private  var isAccurateCut:kotlin.Boolean = false
-    private  var showFileLocationAlert:kotlin.Boolean = false
-
-
-    private val fileName: String? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_save_trimmed_video)
 
-        playerView = player_view_lib
-        imagePlayPause = image_play_pause
+        binding = DataBindingUtil.setContentView(this,R.layout.activity_save_trimmed_video)
 
-        txtStartDuration = txt_start_duration
-        txtEndDuration = txt_end_duration
+        if(intent.getIntExtra("shoot_mode",0) == 1) binding.tvViewType.text = "Interior Back View"
+
+        playerView = binding.playerViewLib
+        imagePlayPause = binding.imagePlayPause
+
+        txtStartDuration = binding.txtStartDuration
+        txtEndDuration = binding.txtEndDuration
 
         seekHandler = Handler()
 
@@ -116,13 +98,20 @@ class SaveTrimmedVideoActivity : AppCompatActivity(),SeekListener {
         val myServiceIntent = Intent(this, UploadVideoService::class.java)
         myServiceIntent.action = "START"
         myServiceIntent.putExtra("file_path", intent.data?.toFile()?.path)
+        myServiceIntent.putExtra("sku_id",intent.getStringExtra("sku_id"))
+        myServiceIntent.putExtra("shoot_mode",intent.getIntExtra("shoot_mode",0))
         ContextCompat.startForegroundService(this, myServiceIntent)
 
-
-//        var intent = Intent(this,RecordVideoActivity::class.java)
-//        intent.putExtra("shoot_mode",1)
-//        intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
-//        startActivity(intent)
+        if (intent.getIntExtra("shoot_mode",0) == 0){
+            var recordIntent = Intent(this,RecordVideoActivity::class.java)
+            recordIntent.putExtra("sku_id",intent.getStringExtra("sku_id"))
+            recordIntent.putExtra("shoot_mode",1)
+            recordIntent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+            startActivity(recordIntent)
+        }else{
+            //start timer screen
+            startActivity(Intent(this,ProcessVideoTimerActivity::class.java))
+        }
     }
 
     /**

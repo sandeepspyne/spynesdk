@@ -3,13 +3,10 @@ package com.spyneai.videorecording
 import android.app.Activity
 import android.app.Dialog
 import android.content.Intent
-import android.graphics.PorterDuff
-import android.graphics.PorterDuffColorFilter
 import android.media.*
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
-import android.os.Environment
 import android.os.Handler
 import android.util.Log
 import android.view.MenuItem
@@ -18,11 +15,8 @@ import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.content.ContextCompat
+import androidx.databinding.DataBindingUtil
 import com.arthenica.mobileffmpeg.FFmpeg
-import com.bumptech.glide.Glide
-import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions
-import com.bumptech.glide.request.RequestOptions
 import com.crystal.crystalrangeseekbar.widgets.CrystalRangeSeekbar
 import com.crystal.crystalrangeseekbar.widgets.CrystalSeekbar
 import com.google.android.exoplayer2.C
@@ -37,26 +31,22 @@ import com.google.android.exoplayer2.ui.PlayerView
 import com.google.android.exoplayer2.upstream.DataSource
 import com.google.android.exoplayer2.upstream.DefaultDataSourceFactory
 import com.spyneai.R
+import com.spyneai.databinding.ActivityTrimVideoBinding
+import com.spyneai.videorecording.listener.SeekListener
 import kotlinx.android.synthetic.main.activity_timer.*
 import kotlinx.android.synthetic.main.activity_trim_video.*
 import java.io.File
-import java.io.IOException
-import java.nio.ByteBuffer
 import java.util.*
 
 
-class TrimVideoActivity : AppCompatActivity() ,SeekListener{
+class TrimVideoActivity : AppCompatActivity() , SeekListener {
     private val TAG : String? = "TrimVideo"
 
     private var playerView: PlayerView? = null
 
-    private val PER_REQ_CODE = 115
-
     private var videoPlayer: SimpleExoPlayer? = null
 
     private var imagePlayPause: ImageView? = null
-
-    private lateinit var imageViews: Array<ImageView>
 
     private var totalDuration: Long = 0
 
@@ -67,15 +57,10 @@ class TrimVideoActivity : AppCompatActivity() ,SeekListener{
     private var txtStartDuration: TextView? = null
     private  var txtEndDuration:TextView? = null
 
-    private var seekbar: CrystalRangeSeekbar? = null
-
     private var lastMinValue: Long = 0
 
     private var lastMaxValue: Long = 0
 
-    private val menuDone: MenuItem? = null
-
-    private var seekbarController: CrystalSeekbar? = null
 
     private var isValidVideo = true
     private  var isVideoEnded:kotlin.Boolean = false
@@ -83,38 +68,33 @@ class TrimVideoActivity : AppCompatActivity() ,SeekListener{
     private var seekHandler: Handler? = null
 
     private var currentDuration: Long = 0
-    private  var lastClickedTime:kotlin.Long = 0
-
-
 
     private var outputPath: String? = null
 
-    private val trimType = 0
-
-    private val fixedGap: Long = 0
-    private  var minGap:kotlin.Long = 0
-    private  var minFromGap:kotlin.Long = 0
     private  var maxToGap:kotlin.Long = 0
 
-    private val hidePlayerSeek = false
-    private  var isAccurateCut:kotlin.Boolean = false
+
     private  var showFileLocationAlert:kotlin.Boolean = false
 
 
     private val fileName: String? = null
 
+    private lateinit var binding : ActivityTrimVideoBinding
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_trim_video)
+        binding = DataBindingUtil.setContentView(this,R.layout.activity_trim_video)
 
-        playerView = findViewById<PlayerView>(R.id.player_view_lib)
+        if(intent.getIntExtra("shoot_mode",0) == 1) binding.tvViewType.text = "Interior Back View"
 
-        imagePlayPause = findViewById<ImageView>(R.id.image_play_pause)
+        playerView = binding.playerViewLib
+        imagePlayPause = binding.imagePlayPause
 
-        txtStartDuration = findViewById<TextView>(R.id.txt_start_duration)
-        txtEndDuration = findViewById<TextView>(R.id.txt_end_duration)
+        txtStartDuration = binding.txtStartDuration
+        txtEndDuration = binding.txtEndDuration
 
         seekHandler = Handler()
+
         initPlayer()
 
         setDataInView()
@@ -153,10 +133,7 @@ class TrimVideoActivity : AppCompatActivity() ,SeekListener{
     private fun setDataInView() {
         try {
             uri = Uri.parse(intent.data.toString())
-
-            //  uri = Uri.parse(FileUtils.getPath(this, uri))
-
-            //  LogMessage.v("VideoUri:: $uri")
+            
             totalDuration = getDuration(this, uri)
             imagePlayPause!!.setOnClickListener { v: View? -> onVideoClicked() }
             Objects.requireNonNull(playerView!!.videoSurfaceView)!!
@@ -164,7 +141,7 @@ class TrimVideoActivity : AppCompatActivity() ,SeekListener{
             // initTrimData()
             trim_view.init(uri.toString(),totalDuration,this)
 
-            lastMaxValue = totalDuration
+            lastMaxValue = totalDuration * 1000
             buildMediaSource()
             //loadThumbnails()
             //setUpSeekBar()
@@ -306,7 +283,10 @@ class TrimVideoActivity : AppCompatActivity() ,SeekListener{
                         val intentPlay = Intent(this@TrimVideoActivity, SaveTrimmedVideoActivity::class.java);
                         intentPlay.setData(intent.data);
 
+
                         intentPlay.putExtra("uri",Uri.fromFile(File(outputPath)).toString())
+                        intentPlay.putExtra("sku_id",intent.getStringExtra("sku_id"))
+                        intentPlay.putExtra("shoot_mode",intent.getIntExtra("shoot_mode",0))
                         startActivity(intentPlay);
                         Log.d(TAG, "execFFmpegBinary: "+outputPath)
                         //intent.putExtra(TrimVideo.TRIMMED_VIDEO_PATH, outputPath)
@@ -354,6 +334,8 @@ class TrimVideoActivity : AppCompatActivity() ,SeekListener{
             try {
                 currentDuration = videoPlayer!!.currentPosition
                 trim_view.onVideoCurrentPositionUpdated(currentDuration)
+                if (currentDuration >= lastMaxValue)
+                    videoPlayer!!.playWhenReady = false
 //                if (currentDuration >= lastMaxValue)
 //                    videoPlayer!!.playWhenReady = false;
 

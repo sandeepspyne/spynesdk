@@ -14,6 +14,7 @@ import com.spyneai.R
 
 import com.spyneai.databinding.ActivityThreeSixtyViewBinding
 import com.spyneai.needs.ScrollingLinearLayoutManager
+import com.spyneai.videorecording.adapter.BeforeAfterTestAdapter
 import kotlinx.android.synthetic.main.activity_before_after.*
 import java.lang.Math.*
 import java.util.*

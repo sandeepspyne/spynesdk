@@ -24,8 +24,8 @@
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" /> <!-- <uses-permission -->
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" /> <!-- Needed only if your app targets Android 5.0 (API level 21) or higher. -->
     <uses-feature android:name="android.hardware.location.gps" />
-    <uses-permission android:name="android.permission.FOREGROUND_SERVICE"></uses-permission>
 
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
 
     <application
         android:allowBackup="true"
@@ -37,20 +37,21 @@
         android:theme="@style/Theme.SpyneAi"
         android:usesCleartextTraffic="true"
         tools:targetApi="m">
-        <service android:name=".videorecording.UploadVideoService"
+        <activity android:name=".videorecording.ThreeSixtyInteriorViewActivity"></activity>
+        <activity android:name=".videorecording.ProcessVideoTimerActivity" />
+
+        <service
+            android:name=".videorecording.service.UploadVideoService"
             android:enabled="true"
-            android:exported="false">
+            android:exported="false" />
 
-        </service>
-        <activity android:name=".videorecording.SpinTestActivity"></activity>
+        <activity android:name=".videorecording.SpinTestActivity" />
         <activity android:name=".videorecording.SpinViewTestActivity" />
-        <activity android:name=".videorecording.SpinViewActivity">
-
-        </activity>
+        <activity android:name=".videorecording.SpinViewActivity" />
         <activity android:name=".videorecording.SaveTrimmedVideoActivity" />
         <activity
             android:name=".videorecording.RecordVideoActivity"
-            android:screenOrientation="landscape" >
+            android:screenOrientation="landscape">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 

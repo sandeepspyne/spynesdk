@@ -1,4 +1,4 @@
-package com.spyneai.videorecording
+package com.spyneai.videorecording.fragments
 
 import android.app.Activity
 import android.content.pm.ActivityInfo

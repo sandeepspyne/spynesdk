@@ -1,4 +1,4 @@
-package com.spyneai.videorecording
+package com.spyneai.videorecording.fragments
 
 import android.os.Bundle
 import android.view.LayoutInflater
