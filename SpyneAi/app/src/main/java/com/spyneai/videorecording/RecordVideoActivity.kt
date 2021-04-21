@@ -244,6 +244,8 @@ class RecordVideoActivity : AppCompatActivity() {
                             // Animation is done. update the UI or whatever you want
                             Log.d(TAG, "onResourceReady: end")
                             iv_timer.visibility = View.GONE
+                            binding.btnRecordVideo.setImageDrawable(ContextCompat.getDrawable(this@RecordVideoActivity,R.drawable.bg_record_button_enabled))
+                            binding.btnFlash.visibility = View.VISIBLE
                             startCamera()
                         }
                     })
@@ -269,6 +271,9 @@ class RecordVideoActivity : AppCompatActivity() {
 
     private fun setupDemo(shootMode : Int) {
 
+        if (shootMode == 1)
+            binding.tvHint.text = "Shoot the back side of the car"
+
        binding.clShootDemo.visibility = View.VISIBLE
 
         fragmentList = ArrayList<Fragment>()
@@ -292,6 +297,7 @@ class RecordVideoActivity : AppCompatActivity() {
 
         threeSixtyDemoAdapter = ThreeSixtyShootDemoAdapter(this,fragmentList)
 
+        binding.viewPager.offscreenPageLimit = 3
         binding.viewPager.adapter = threeSixtyDemoAdapter
 
         TabLayoutMediator(binding.tabLayout, binding.viewPager) { tab, position ->
@@ -384,6 +390,12 @@ class RecordVideoActivity : AppCompatActivity() {
                 // Attach the viewfinder's surface provider to preview use case
                 preview?.setSurfaceProvider(viewFinder.surfaceProvider)
 
+                if (intent.getIntExtra("shoot_mode",0) == 1){
+                    binding.ivLeftHint.setImageDrawable(ContextCompat.getDrawable(this,R.drawable.back_left_hint))
+                    binding.ivMiddleHint.setImageDrawable(ContextCompat.getDrawable(this,R.drawable.back_middle_hint))
+                    binding.ivRightHint.setImageDrawable(ContextCompat.getDrawable(this,R.drawable.back_right_hint))
+                }
+
                 binding.clHint.visibility = View.VISIBLE
                 binding.btnRecordVideo.setOnClickListener { recordVideo() }
 
@@ -435,15 +447,14 @@ class RecordVideoActivity : AppCompatActivity() {
         }.build()
 
         if (!isRecording) {
+            binding.tvStart.text = "Stop"
             //animateRecord.start()
 
                 //start record timer && enable button click && flash button
                     stopTimer = false
             binding.tvTimer.visibility = View.VISIBLE
                     startRecordTime(0)
-            binding.btnRecordVideo.setImageDrawable(ContextCompat.getDrawable(this,R.drawable.bg_record_button_enabled))
-           // binding.btnRecordVideo.setOnClickListener { recordVideo() }
-            binding.btnFlash.visibility = View.VISIBLE
+
 
 
 
@@ -466,9 +477,11 @@ class RecordVideoActivity : AppCompatActivity() {
 
                                 trimIntent.putExtra("sku_id",skuId)
                                 trimIntent.putExtra("shoot_mode",intent.getIntExtra("shoot_mode",0))
-                                trimIntent.setData(uri);
-                                startActivity(trimIntent);
+                                trimIntent.setData(uri)
+                                startActivity(trimIntent)
                                 Log.d(RecordVideoTestActivity.TAG, "Video saved in $uri")
+
+                                binding.tvStart.text = "Start"
                             }
 
                     }
@@ -479,11 +492,13 @@ class RecordVideoActivity : AppCompatActivity() {
                         cause: Throwable?
                     ) {
                         // This function is called if there is an error during recording process
-                        animateRecord.cancel()
+                        //animateRecord.cancel()
                         val msg = "Video capture failed: $message"
                         Toast.makeText(this@RecordVideoActivity, msg, Toast.LENGTH_SHORT).show()
                         Log.e(RecordVideoTestActivity.TAG, msg)
                         cause?.printStackTrace()
+
+                        binding.tvStart.text = "Start"
                     }
                 })
         } else {

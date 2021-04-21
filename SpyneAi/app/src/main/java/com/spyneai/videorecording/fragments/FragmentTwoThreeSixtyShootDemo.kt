@@ -3,6 +3,7 @@ package com.spyneai.videorecording.fragments
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -37,6 +38,7 @@ class FragmentTwoThreeSixtyShootDemo : Fragment() {
     private var playWhenReady = true
     private var currentWindow = 0
     private var playbackPosition: Long = 0
+    var isPaused = false
 
 
     override fun onCreateView(
@@ -56,11 +58,9 @@ class FragmentTwoThreeSixtyShootDemo : Fragment() {
 
 
 
-
     override fun onStart() {
         super.onStart()
         initPlayer()
-        //setDataInView()
     }
 
     /**
@@ -112,6 +112,28 @@ class FragmentTwoThreeSixtyShootDemo : Fragment() {
         } catch (e: Exception) {
             e.printStackTrace()
         }
+    }
+
+    override fun onResume() {
+        super.onResume()
+        if (!videoPlayer?.playWhenReady!!)
+            videoPlayer!!.setPlayWhenReady(true)
+    }
+    
+    override fun onPause() {
+        super.onPause()
+
+    }
+
+    override fun onStop() {
+        super.onStop()
+        Log.d(TAG, "onStop: ")
+
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+       // releasePlayer()
     }
 
      fun releasePlayer() {

@@ -26,7 +26,7 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:adjustViewBounds="true"
-            android:src="@drawable/left_hint"/>
+            android:src="@drawable/back_left_hint"/>
 
         <ImageView
             android:layout_width="match_parent"
@@ -40,7 +40,7 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:adjustViewBounds="true"
-            android:src="@drawable/middle_hint"/>
+            android:src="@drawable/back_middle_hint"/>
 
         <ImageView
             android:layout_width="match_parent"
@@ -54,7 +54,7 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:adjustViewBounds="true"
-            android:src="@drawable/right_hint"/>
+            android:src="@drawable/back_right_hint"/>
 
     </LinearLayout>
 

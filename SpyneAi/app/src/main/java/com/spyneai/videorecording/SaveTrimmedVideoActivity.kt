@@ -142,8 +142,9 @@ class SaveTrimmedVideoActivity : AppCompatActivity(), SeekListener {
 
             //  LogMessage.v("VideoUri:: $uri")
             totalDuration = getDuration(this, uri)
+            totalDuration = totalDuration * 1000
 
-            txtEndDuration!!.setText(TrimmerUtils.formatSeconds(5 * 1000 / 1000))
+            txtEndDuration!!.setText(TrimmerUtils.formatSeconds(totalDuration / 1000))
 
             imagePlayPause!!.setOnClickListener { v: View? -> onVideoClicked() }
             Objects.requireNonNull(playerView!!.videoSurfaceView)!!
