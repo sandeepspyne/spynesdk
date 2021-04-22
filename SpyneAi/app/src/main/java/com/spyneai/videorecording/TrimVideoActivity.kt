@@ -1,17 +1,14 @@
 package com.spyneai.videorecording
 
 import android.app.Activity
-import android.app.Dialog
 import android.content.Intent
 import android.media.*
 import android.net.Uri
-import android.opengl.Visibility
 import android.os.Build
 import android.os.Bundle
 import android.os.Handler
 import android.util.Log
 import android.view.View
-import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toast
@@ -30,6 +27,8 @@ import com.google.android.exoplayer2.ui.AspectRatioFrameLayout
 import com.google.android.exoplayer2.ui.PlayerView
 import com.google.android.exoplayer2.upstream.DataSource
 import com.google.android.exoplayer2.upstream.DefaultDataSourceFactory
+import com.hbisoft.pickit.PickiT
+import com.hbisoft.pickit.PickiTCallbacks
 import com.spyneai.R
 import com.spyneai.databinding.ActivityTrimVideoBinding
 import com.spyneai.videorecording.listener.SeekListener
@@ -42,7 +41,7 @@ import java.io.File
 import java.util.*
 
 
-class TrimVideoActivity : AppCompatActivity() , SeekListener {
+class TrimVideoActivity : AppCompatActivity() , SeekListener, PickiTCallbacks {
     private val TAG : String? = "TrimVideo"
 
     private var playerView: PlayerView? = null
@@ -82,6 +81,9 @@ class TrimVideoActivity : AppCompatActivity() , SeekListener {
     private lateinit var binding : ActivityTrimVideoBinding
     private var videoTrimmed = false
 
+    //Declare PickiT
+    var pickiT: PickiT? = null
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = DataBindingUtil.setContentView(this, R.layout.activity_trim_video)
@@ -95,6 +97,10 @@ class TrimVideoActivity : AppCompatActivity() , SeekListener {
         txtEndDuration = binding.txtEndDuration
 
         seekHandler = Handler()
+
+        //context, listener, activity
+        //context, listener, activity
+        pickiT = PickiT(this, this, this)
 
         initPlayer()
 
@@ -260,7 +266,14 @@ class TrimVideoActivity : AppCompatActivity() , SeekListener {
                 execFFmpegBinary(complexCommand, true)
             }else{
                 //do not trim send original video
-                startNextActivity(intent.data?.toFile()?.path.toString())
+                    // handle toFile() method exception
+                        try {
+                            var file = intent.data?.toFile()
+                            startNextActivity(file?.path!!)
+                        }catch (ex : IllegalArgumentException){
+                            pickiT?.getPath(intent.data, Build.VERSION.SDK_INT)
+                        }
+
             }
 
        } else Toast.makeText(
@@ -318,8 +331,13 @@ class TrimVideoActivity : AppCompatActivity() , SeekListener {
                             binding.progressBar.visibility = View.GONE
                         }
                         // start next activity in case of trimming failed
-                        var file = intent.data?.toFile()
-                       startNextActivity(file?.path.toString())
+                        try {
+                            var file = intent.data?.toFile()
+                            startNextActivity(file?.path!!)
+                        }catch (ex : IllegalArgumentException){
+                            pickiT?.getPath(intent.data, Build.VERSION.SDK_INT)
+                        }
+
                     }
                 }
             }.start()
@@ -335,7 +353,7 @@ class TrimVideoActivity : AppCompatActivity() , SeekListener {
         )
         intentPlay.setData(intent.data)
 
-        intentPlay.putExtra("uri", Uri.fromFile(File(path)).toString())
+        intentPlay.putExtra("file_path", path)
         intentPlay.putExtra("sku_id", intent.getStringExtra("sku_id"))
         intentPlay.putExtra("shoot_mode", intent.getIntExtra("shoot_mode", 0))
         startActivity(intentPlay)
@@ -372,14 +390,6 @@ class TrimVideoActivity : AppCompatActivity() , SeekListener {
                 trim_view.onVideoCurrentPositionUpdated(currentDuration)
                 if (currentDuration >= lastMaxValue)
                     videoPlayer!!.playWhenReady = false
-//                if (currentDuration >= lastMaxValue)
-//                    videoPlayer!!.playWhenReady = false;
-
-//                if (!videoPlayer!!.playWhenReady) return
-//                if (currentDuration <= lastMaxValue)
-//                    seekbarController?.setMinStartValue(currentDuration.toFloat())?.apply()
-//                else
-//                    videoPlayer!!.playWhenReady = false;
 
             } finally {
                 seekHandler!!.postDelayed(this, 1000)
@@ -401,9 +411,6 @@ class TrimVideoActivity : AppCompatActivity() , SeekListener {
 
 
     override fun onSeekEnd(start: Long, end: Long) {
-//        lastMinValue = start
-//        lastMaxValue = end
-
         seekTo(start);
     }
 
@@ -412,8 +419,29 @@ class TrimVideoActivity : AppCompatActivity() , SeekListener {
         lastMaxValue = end
         txtStartDuration!!.setText(TrimmerUtils.formatSeconds(start / 1000))
         txtEndDuration!!.setText(TrimmerUtils.formatSeconds(end / 1000))
-        Log.d(TAG, "onSeek: "+start)
-        Log.d(TAG, "onSeek: "+end)
+    }
+
+    override fun PickiTonUriReturned() {
+
+    }
+
+    override fun PickiTonStartListener() {
+
+    }
+
+    override fun PickiTonProgressUpdate(progress: Int) {
+
+    }
+
+    override fun PickiTonCompleteListener(
+        path: String?,
+        wasDriveFile: Boolean,
+        wasUnknownProvider: Boolean,
+        wasSuccessful: Boolean,
+        Reason: String?
+    ) {
+        Log.d(TAG, "PickiTonCompleteListener: "+path)
+        startNextActivity(path.toString())
     }
 
 }

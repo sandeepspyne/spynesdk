@@ -14,7 +14,6 @@ import android.view.View
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.core.content.ContextCompat
-import androidx.core.net.toFile
 import androidx.databinding.DataBindingUtil
 import com.crystal.crystalrangeseekbar.widgets.CrystalRangeSeekbar
 import com.crystal.crystalrangeseekbar.widgets.CrystalSeekbar
@@ -97,7 +96,7 @@ class SaveTrimmedVideoActivity : AppCompatActivity(), SeekListener {
         //start uploading video
         val myServiceIntent = Intent(this, UploadVideoService::class.java)
         myServiceIntent.action = "START"
-        myServiceIntent.putExtra("file_path", uri?.toFile()?.path)
+        myServiceIntent.putExtra("file_path", intent.getStringExtra("file_path"))
         myServiceIntent.putExtra("sku_id",intent.getStringExtra("sku_id"))
         myServiceIntent.putExtra("shoot_mode",intent.getIntExtra("shoot_mode",0))
         ContextCompat.startForegroundService(this, myServiceIntent)
@@ -139,7 +138,7 @@ class SaveTrimmedVideoActivity : AppCompatActivity(), SeekListener {
         try {
             //uri = Uri.parse(intent.data.toString())
 
-                uri = Uri.parse(intent.getStringExtra("uri"))
+                uri = Uri.parse(intent.getStringExtra("file_path"))
 
             //  LogMessage.v("VideoUri:: $uri")
             totalDuration = getDuration(this, uri)

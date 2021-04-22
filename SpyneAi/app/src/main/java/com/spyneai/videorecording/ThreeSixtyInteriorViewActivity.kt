@@ -90,8 +90,7 @@ class ThreeSixtyInteriorViewActivity : AppCompatActivity(),View.OnTouchListener,
 
 
         binding.ivBack.setOnClickListener { onBackPressed() }
-        binding.ivFront.setOnTouchListener(this)
-        binding.ivBackView.setOnTouchListener(this)
+
     }
 
     private fun preLoad(tsvParams: TSVParams) {
@@ -142,6 +141,8 @@ class ThreeSixtyInteriorViewActivity : AppCompatActivity(),View.OnTouchListener,
                                 binding.ivCopyLink.setOnClickListener(this@ThreeSixtyInteriorViewActivity)
                                 binding.ivEmbbedCode.setOnClickListener(this@ThreeSixtyInteriorViewActivity)
 
+                                binding.ivFront.setOnTouchListener(this@ThreeSixtyInteriorViewActivity)
+
                             }else{
                                 binding.progressBarBack.visibility = View.GONE
                                 loadImage(tsvParams,binding.ivBackView)
@@ -159,6 +160,8 @@ class ThreeSixtyInteriorViewActivity : AppCompatActivity(),View.OnTouchListener,
                                 binding.ivBackShare.setOnClickListener(this@ThreeSixtyInteriorViewActivity)
                                 binding.ivBackCopyLink.setOnClickListener(this@ThreeSixtyInteriorViewActivity)
                                 binding.ivBackEmbbedCode.setOnClickListener(this@ThreeSixtyInteriorViewActivity)
+
+                                binding.ivBackView.setOnTouchListener(this@ThreeSixtyInteriorViewActivity)
                             }
                         }
 
@@ -356,7 +359,7 @@ class ThreeSixtyInteriorViewActivity : AppCompatActivity(),View.OnTouchListener,
         val clip: ClipData = ClipData.newPlainText("link", link)
         clipboard.setPrimaryClip(clip)
 
-        Toast.makeText(this,"Link copied successfully!",Toast.LENGTH_LONG)
+        Toast.makeText(this,"Link copied successfully!",Toast.LENGTH_LONG).show()
     }
 
     private fun share(code: String) {

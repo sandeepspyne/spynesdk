@@ -54,7 +54,7 @@ class DialogEmbedCode : DialogFragment() {
             val clip: ClipData = ClipData.newPlainText("link", binding.tvCode.text)
             myClipboard.setPrimaryClip(clip)
 
-            Toast.makeText(requireContext(),"Embedded code copied successfully", Toast.LENGTH_LONG)
+            Toast.makeText(requireContext(),"Embedded code copied successfully", Toast.LENGTH_LONG).show()
 
             dismiss()
         }
