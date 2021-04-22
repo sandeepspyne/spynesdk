@@ -47,27 +47,54 @@
             android:layout_marginTop="15dp"
             android:textSize="14sp"/>
 
-        <FrameLayout
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            app:layout_constraintTop_toBottomOf="@id/tv_view_type"
+        <ImageView
+            android:layout_width="300dp"
+            android:layout_height="200dp"
+            android:id="@+id/iv_front"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toRightOf="parent"
-            android:layout_marginTop="20dp"
-            android:background="@color/black">
+            app:layout_constraintTop_toBottomOf="@id/tv_view_type"
+            android:layout_marginTop="20dp"/>
 
-            <ImageView
-                android:layout_width="300dp"
-                android:layout_height="250dp"
-                android:id="@+id/iv_front"/>
+        <ProgressBar
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:id="@+id/progress_bar_front"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toTopOf="@id/iv_front"
+            app:layout_constraintBottom_toBottomOf="@id/iv_front"/>
 
-            <ProgressBar
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:id="@+id/progress_bar_front"/>
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Interior Back View"
+            android:id="@+id/tv_back_view"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/iv_front"
+            android:layout_marginTop="15dp"
+            android:textSize="14sp"/>
 
-        </FrameLayout>
+        <ImageView
+            android:layout_width="300dp"
+            android:layout_height="200dp"
+            android:id="@+id/iv_back_view"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/tv_back_view"
+            android:layout_marginTop="20dp"/>
+
+        <ProgressBar
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:id="@+id/progress_bar_back"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toTopOf="@id/iv_back_view"
+            app:layout_constraintBottom_toBottomOf="@id/iv_back_view"/>
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

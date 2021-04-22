@@ -5,6 +5,7 @@ import android.app.Dialog
 import android.content.Intent
 import android.media.*
 import android.net.Uri
+import android.opengl.Visibility
 import android.os.Build
 import android.os.Bundle
 import android.os.Handler
@@ -61,6 +62,8 @@ class TrimVideoActivity : AppCompatActivity() , SeekListener {
     private var lastMinValue: Long = 0
 
     private var lastMaxValue: Long = 0
+    private var originalMinValue : Long = 0
+    private var originalMaxValue : Long = 0
 
 
     private var isValidVideo = true
@@ -121,6 +124,7 @@ class TrimVideoActivity : AppCompatActivity() , SeekListener {
             videoPlayer = SimpleExoPlayer.Builder(this).build()
             playerView?.setResizeMode(AspectRatioFrameLayout.RESIZE_MODE_FIT)
             playerView?.setPlayer(videoPlayer)
+            // videoPlayer!!.volume = 0F
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
                 val audioAttributes = AudioAttributes.Builder()
                     .setUsage(C.USAGE_MEDIA)
@@ -145,6 +149,7 @@ class TrimVideoActivity : AppCompatActivity() , SeekListener {
             trim_view.init(uri.toString(), totalDuration, this)
 
             lastMaxValue = totalDuration * 1000
+            originalMaxValue = totalDuration * 1000
             buildMediaSource()
             //loadThumbnails()
             //setUpSeekBar()
@@ -208,6 +213,9 @@ class TrimVideoActivity : AppCompatActivity() , SeekListener {
                         }
                         Player.STATE_READY -> {
                             isVideoEnded = false
+                            binding.progressBar.visibility = View.GONE
+                            binding.playerViewLib.visibility = View.VISIBLE
+                            binding.imagePlayPause.visibility = View.VISIBLE
                             startProgress()
                             //LogMessage.v("onPlayerStateChanged: Ready to play.")
                         }
@@ -241,14 +249,20 @@ class TrimVideoActivity : AppCompatActivity() , SeekListener {
 
     private fun trimVideo() {
         if (isValidVideo) {
-            //not exceed given maxDuration if has given
-            outputPath = getFileName().toString()
-            //LogMessage.v("outputPath::" + outputPath + File(outputPath).exists())
-            //LogMessage.v("sourcePath::$uri")
-            videoPlayer!!.playWhenReady = false
-            val complexCommand: Array<String?>? = getAccurateCmd()
+            if (originalMinValue != lastMinValue && originalMaxValue != lastMaxValue){
+                //not exceed given maxDuration if has given
+                outputPath = getFileName().toString()
+                //LogMessage.v("outputPath::" + outputPath + File(outputPath).exists())
+                //LogMessage.v("sourcePath::$uri")
+                videoPlayer!!.playWhenReady = false
+                val complexCommand: Array<String?>? = getAccurateCmd()
 
-            execFFmpegBinary(complexCommand, true)
+                execFFmpegBinary(complexCommand, true)
+            }else{
+                //do not trim send original video
+                startNextActivity(intent.data?.toFile()?.path.toString())
+            }
+
        } else Toast.makeText(
             this,
             "Video should not be smaller than" + " " + TrimmerUtils.getLimitedTimeFormatted(maxToGap),
@@ -398,6 +412,8 @@ class TrimVideoActivity : AppCompatActivity() , SeekListener {
         lastMaxValue = end
         txtStartDuration!!.setText(TrimmerUtils.formatSeconds(start / 1000))
         txtEndDuration!!.setText(TrimmerUtils.formatSeconds(end / 1000))
+        Log.d(TAG, "onSeek: "+start)
+        Log.d(TAG, "onSeek: "+end)
     }
 
 }

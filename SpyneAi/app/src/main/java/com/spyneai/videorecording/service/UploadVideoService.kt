@@ -30,7 +30,6 @@ class UploadVideoService : Service(), VideoUploader.VideoTaskListener {
     var shootMode : Int = 0
 
     var tasksInProgress = ArrayList<VideoTask>()
-    var frams = ArrayList<String>()
     var TAG = "UploadVideoService"
     var skuId = ""
     var processedSkuId = ""
@@ -255,9 +254,6 @@ class UploadVideoService : Service(), VideoUploader.VideoTaskListener {
 
         if (task.shootMode == 1) {
             processedSkuId = task.skuId
-            Log.d(TAG, "onSuccess: skuid"+processedSkuId)
-            frams = task.frames as ArrayList<String>
-            FramesHelper.hashMap.put(task.skuId,frams)
 
             var processingVideoEvent = ProcessVideoEvent();
             processingVideoEvent.setSkuId(task.skuId)

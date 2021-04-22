@@ -88,11 +88,7 @@ class RecordVideoActivity : AppCompatActivity() {
 
     private val permissionRequest = registerForActivityResult(ActivityResultContracts.RequestMultiplePermissions()) { permissions ->
         if (permissions.all { it.value }) {
-            binding.btnRecordVideo.visibility = View.VISIBLE
-
             setupDemo(intent.getIntExtra("shoot_mode",0))
-
-            //startCamera();
         } else {
             Toast.makeText(this, "Permissions not granted", Toast.LENGTH_LONG)
         }
@@ -173,7 +169,22 @@ class RecordVideoActivity : AppCompatActivity() {
                 fragment.releasePlayer()
                 fragmentTwo.releasePlayer()
 
-                startTimer()
+                //start camera
+                startCamera()
+                handleVideoHintVisibility(true)
+
+                //enable video record button
+                binding.btnRecordVideo.setImageDrawable(ContextCompat.getDrawable(this@RecordVideoActivity,R.drawable.bg_record_button_enabled))
+                binding.btnFlash.visibility = View.VISIBLE
+
+                binding.btnRecordVideo.setOnClickListener {
+                    if (isRecording){
+                        recordVideo()
+                    }else{
+                        handleVideoHintVisibility(false)
+                        startTimer()
+                    }
+                }
             }
         }
 
@@ -185,6 +196,10 @@ class RecordVideoActivity : AppCompatActivity() {
             }
         }, 300)
 
+    }
+
+    private fun handleVideoHintVisibility(enable: Boolean) {
+        binding.clHint.visibility = if(enable) View.VISIBLE else View.GONE
     }
 
     private fun startRecordTime(millisUntilFinished: Long) {
@@ -224,8 +239,9 @@ class RecordVideoActivity : AppCompatActivity() {
                     isFirstResource: Boolean
                 ): Boolean {
                     iv_timer.visibility = View.GONE
-
-                    startCamera()
+                    //start recording
+                    handleVideoHintVisibility(true)
+                    recordVideo()
                     return false
                 }
 
@@ -244,9 +260,10 @@ class RecordVideoActivity : AppCompatActivity() {
                             // Animation is done. update the UI or whatever you want
                             Log.d(TAG, "onResourceReady: end")
                             iv_timer.visibility = View.GONE
-                            binding.btnRecordVideo.setImageDrawable(ContextCompat.getDrawable(this@RecordVideoActivity,R.drawable.bg_record_button_enabled))
-                            binding.btnFlash.visibility = View.VISIBLE
-                            startCamera()
+
+                            handleVideoHintVisibility(true)
+                            //start recording
+                            recordVideo()
                         }
                     })
 
@@ -260,10 +277,7 @@ class RecordVideoActivity : AppCompatActivity() {
     private fun setPermissions() {
         // Request camera permissions
         if (allPermissionsGranted()) {
-            binding.btnRecordVideo.visibility = View.VISIBLE;
-
             setupDemo(intent.getIntExtra("shoot_mode",0))
-
         } else {
             permissionRequest.launch(permissions.toTypedArray())
         }
@@ -396,9 +410,6 @@ class RecordVideoActivity : AppCompatActivity() {
                     binding.ivRightHint.setImageDrawable(ContextCompat.getDrawable(this,R.drawable.back_right_hint))
                 }
 
-                binding.clHint.visibility = View.VISIBLE
-                binding.btnRecordVideo.setOnClickListener { recordVideo() }
-
             } catch (e: Exception) {
                 Log.e(TAG, "Failed to bind use cases", e)
             }
@@ -454,8 +465,6 @@ class RecordVideoActivity : AppCompatActivity() {
                     stopTimer = false
             binding.tvTimer.visibility = View.VISIBLE
                     startRecordTime(0)
-
-
 
 
             localVideoCapture.startRecording(

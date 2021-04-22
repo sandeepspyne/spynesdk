@@ -7,6 +7,7 @@ import com.spyneai.interfaces.APiService
 import com.spyneai.interfaces.RetrofitClients
 import com.spyneai.videorecording.model.UploadVideoResponse
 import com.spyneai.videorecording.model.VideoProcessResponse
+import com.spyneai.videorecording.model.VideoProcessingResponse
 import com.spyneai.videorecording.model.VideoTask
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
@@ -25,6 +26,7 @@ class VideoUploader(var task : VideoTask, var listener: VideoTaskListener) {
     var TAG = "VideoUploader"
 
     fun uploadVideo() {
+        Log.d(TAG, "uploadVideo: ")
 
         GlobalScope.launch(Dispatchers.Default){
             try {
@@ -42,7 +44,7 @@ class VideoUploader(var task : VideoTask, var listener: VideoTaskListener) {
                 )
 
                 val skuId = RequestBody.create(
-                    MultipartBody.FORM,"sku id"
+                    MultipartBody.FORM,task.skuId
                 )
 
                 val type = RequestBody.create(
@@ -60,18 +62,19 @@ class VideoUploader(var task : VideoTask, var listener: VideoTaskListener) {
                         call: Call<UploadVideoResponse>,
                         response: Response<UploadVideoResponse>
                     ) {
-                        Log.d(TAG, "onResponse: success")
+                        Log.d(TAG, "onResponse: upload success")
                         if (response.isSuccessful){
                             task.responseUrl = response.body()!!.video_url
                             listener.onSuccess(task)
                         }else{
+                            Log.d(TAG, "onResponse: upload failure")
                             listener.onFailure(task)
                         }
                     }
 
                     override fun onFailure(call: Call<UploadVideoResponse>, t: Throwable) {
 
-                        Log.d(TAG, "onResponse: failure")
+                        Log.d(TAG, "onResponse: upload failure")
                         listener.onFailure(task)
                     }
                 })
@@ -85,6 +88,7 @@ class VideoUploader(var task : VideoTask, var listener: VideoTaskListener) {
     }
 
     fun processVideo(){
+        Log.d(TAG, "processVideo: ")
         GlobalScope.launch(Dispatchers.Default){
             try {
                 val request = RetrofitClients.buildService(APiService::class.java)
@@ -101,7 +105,7 @@ class VideoUploader(var task : VideoTask, var listener: VideoTaskListener) {
                 )
 
                 val skuId = RequestBody.create(
-                    MultipartBody.FORM,"sku id"
+                    MultipartBody.FORM,task.skuId
                 )
 
                 val type = RequestBody.create(
@@ -116,37 +120,44 @@ class VideoUploader(var task : VideoTask, var listener: VideoTaskListener) {
                     MultipartBody.FORM,"automobiles"
                 )
 
+                val frames= RequestBody.create(
+                    MultipartBody.FORM,"10"
+                )
+
                 val videoUrl= RequestBody.create(
                     MultipartBody.FORM,task.videoUrl
                 )
 
-                val call = request.processVideo(video,videoUrl,userId,skuName,skuId,type,category,subCategory)
+                val call = request.processVideo(video,videoUrl,userId,skuName,skuId,type,category,subCategory,frames)
 
-                call?.enqueue(object : Callback<VideoProcessResponse> {
+                call?.enqueue(object : Callback<VideoProcessingResponse> {
                     override fun onResponse(
-                        call: Call<VideoProcessResponse>,
-                        response: Response<VideoProcessResponse>
+                        call: Call<VideoProcessingResponse>,
+                        response: Response<VideoProcessingResponse>
                     ) {
-                        Log.d(TAG, "onResponse: success ")
+                        Log.d(TAG, "onResponse:  processVideo success ")
                         if (response.isSuccessful){
 
                             var videoProcessResponse = response.body()
 
-                            if (videoProcessResponse != null && videoProcessResponse.url != null){
-                                task.frames = response.body()!!.url.get(0)
+                            if (videoProcessResponse != null){
+                             //   task.frames = response.body()
+                                FramesHelper.framesMap.put(task.skuId,videoProcessResponse)
                                 listener.onSuccess(task)
+
                             }else{
-                                Log.d(TAG, "onResponse: success null ")
+                                Log.d(TAG, "onResponse:  processVideo sussess null ")
                                 listener.onFailure(task)
                             }
 
                         }else{
+                            Log.d(TAG, "onResponse:  processVideo success fail ")
                             listener.onFailure(task)
                         }
                     }
 
-                    override fun onFailure(call: Call<VideoProcessResponse>, t: Throwable) {
-                        Log.d(TAG, "onResponse: failure"+t.localizedMessage)
+                    override fun onFailure(call: Call<VideoProcessingResponse>, t: Throwable) {
+                        Log.d(TAG, "onResponse: processVideo failure"+t.localizedMessage)
                         listener.onFailure(task)
                     }
                 })

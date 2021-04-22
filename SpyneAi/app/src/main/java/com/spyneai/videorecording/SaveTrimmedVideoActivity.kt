@@ -122,7 +122,7 @@ class SaveTrimmedVideoActivity : AppCompatActivity(), SeekListener {
             videoPlayer = SimpleExoPlayer.Builder(this).build()
             playerView?.setResizeMode(AspectRatioFrameLayout.RESIZE_MODE_FIT)
             playerView?.setPlayer(videoPlayer)
-            videoPlayer!!.volume = 0F
+           // videoPlayer!!.volume = 0F
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
                 val audioAttributes = AudioAttributes.Builder()
                     .setUsage(C.USAGE_MEDIA)
@@ -221,14 +221,17 @@ class SaveTrimmedVideoActivity : AppCompatActivity(), SeekListener {
                             isVideoEnded = true
                         }
                         Player.STATE_READY -> {
+                            //player visibility only when video is ready to play
+                            binding.progressBar.visibility = View.GONE
+                            binding.playerViewLib.visibility = View.VISIBLE
+                            binding.imagePlayPause.visibility = View.VISIBLE
                             isVideoEnded = false
                             startProgress()
                             //LogMessage.v("onPlayerStateChanged: Ready to play.")
                         }
                         //Player.STATE_BUFFERING -> LogMessage.v("onPlayerStateChanged: STATE_BUFFERING.")
                         //Player.STATE_IDLE -> LogMessage.v("onPlayerStateChanged: STATE_IDLE.")
-                        else -> {
-                        }
+
                     }
                 }
             })

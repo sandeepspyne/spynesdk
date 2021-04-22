@@ -54,6 +54,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             app:use_controller="false"
+            android:visibility="invisible"
             app:shutter_background_color="@android:color/transparent"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintBottom_toBottomOf="parent"/>
@@ -63,6 +64,7 @@
             android:layout_height="70dp"
             android:src="@drawable/play"
             android:padding="18dp"
+            android:visibility="invisible"
             android:layout_centerInParent="true"
             android:background="@drawable/shape_circle_lib"
             android:id="@+id/image_play_pause"
@@ -144,6 +146,15 @@
             android:layout_marginBottom="10dp"
             app:layout_constraintBottom_toTopOf="@id/trim_view"
             app:layout_constraintRight_toRightOf="parent"/>
+
+        <ProgressBar
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/progress_bar"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent" />
 
 
     </androidx.constraintlayout.widget.ConstraintLayout>

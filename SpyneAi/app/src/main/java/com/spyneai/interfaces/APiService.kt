@@ -37,6 +37,7 @@ import com.spyneai.model.upload.UploadResponse
 import com.spyneai.model.uploadRough.UploadPhotoRequest
 import com.spyneai.videorecording.model.UploadVideoResponse
 import com.spyneai.videorecording.model.VideoProcessResponse
+import com.spyneai.videorecording.model.VideoProcessingResponse
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
 import retrofit2.Call
@@ -393,7 +394,8 @@ interface APiService {
         @Part("sku_id") sku_id: RequestBody?,
         @Part("type") type: RequestBody?,
         @Part("category") category: RequestBody?,
-        @Part("sub_category") sub_category: RequestBody?
-    ): Call<VideoProcessResponse>?
+        @Part("sub_category") sub_category: RequestBody?,
+        @Part("frames") frames:RequestBody?
+    ): Call<VideoProcessingResponse>?
 
 }

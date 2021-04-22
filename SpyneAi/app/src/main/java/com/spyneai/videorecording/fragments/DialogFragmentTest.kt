@@ -7,9 +7,8 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.core.content.ContextCompat
 import androidx.databinding.DataBindingUtil
-import androidx.fragment.app.Fragment
+import androidx.fragment.app.DialogFragment
 import com.google.android.exoplayer2.C
 import com.google.android.exoplayer2.MediaItem
 import com.google.android.exoplayer2.Player
@@ -20,12 +19,8 @@ import com.google.android.exoplayer2.ui.PlayerView
 import com.google.android.exoplayer2.upstream.RawResourceDataSource
 import com.spyneai.R
 import com.spyneai.databinding.FragmentTwoThreeSixtyShootDemoBinding
-import kotlinx.android.synthetic.main.fragment_one_three_sixty_shoot_demo.*
 
-import java.util.*
-
-
-class FragmentTwoThreeSixtyShootDemo : Fragment() {
+class DialogFragmentTest : DialogFragment() {
 
     private var isVideoPlaying: Boolean = false
     private var totalDuration: Long = 0
@@ -52,7 +47,8 @@ class FragmentTwoThreeSixtyShootDemo : Fragment() {
             container,
             false
         )
-        playerView = binding.playerViewLib;
+        playerView = binding.playerViewLib
+        isCancelable = false
         return binding.root
     }
 
@@ -69,7 +65,7 @@ class FragmentTwoThreeSixtyShootDemo : Fragment() {
     private fun initPlayer() {
         try {
             videoPlayer = SimpleExoPlayer.Builder(requireContext()).build()
-            playerView?.setResizeMode(AspectRatioFrameLayout.RESIZE_MODE_FIXED_WIDTH)
+            playerView?.setResizeMode(AspectRatioFrameLayout.RESIZE_MODE_FIT)
             playerView?.setPlayer(videoPlayer)
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
                 val audioAttributes = AudioAttributes.Builder()
@@ -79,16 +75,19 @@ class FragmentTwoThreeSixtyShootDemo : Fragment() {
                 videoPlayer!!.setAudioAttributes(audioAttributes, true)
             }
 
-            if(requireArguments()?.getInt("shoot_mode",0) == 1){
-                 uri = RawResourceDataSource.buildRawResourceUri(R.raw.how_to_shoot_interior_back)
-            }else{
-                 uri = RawResourceDataSource.buildRawResourceUri(R.raw.how_to_shoot_interior_front)
-            }
+            uri = RawResourceDataSource.buildRawResourceUri(R.raw.how_to_shoot_interior_back)
+
+
+//            if(requireArguments()?.getInt("shoot_mode",0) == 1){
+//                uri = RawResourceDataSource.buildRawResourceUri(R.raw.how_to_shoot_interior_back)
+//            }else{
+//                uri = RawResourceDataSource.buildRawResourceUri(R.raw.how_to_shoot_interior_front)
+//            }
 
             val mediaItem = MediaItem.fromUri(uri!!)
-            videoPlayer!!.volume = 0F
+            //videoPlayer!!.volume = 0F
             videoPlayer!!.setMediaItem(mediaItem)
-           // videoPlayer!!.setPlayWhenReady(playWhenReady)
+             videoPlayer!!.setPlayWhenReady(playWhenReady)
 
             videoPlayer!!.addListener(object : Player.EventListener {
                 override fun onPlayWhenReadyChanged(playWhenReady: Boolean, reason: Int) {
@@ -96,6 +95,7 @@ class FragmentTwoThreeSixtyShootDemo : Fragment() {
                 }
 
                 override fun onPlaybackStateChanged(state: Int) {
+                    var s = ""
                     when (state) {
                         Player.STATE_ENDED -> {
                             videoPlayer!!.seekTo(0)
@@ -106,7 +106,7 @@ class FragmentTwoThreeSixtyShootDemo : Fragment() {
             })
 
             videoPlayer!!.seekTo(currentWindow, playbackPosition)
-            videoPlayer!!.prepare();
+            videoPlayer!!.prepare()
 
 
 
@@ -117,12 +117,13 @@ class FragmentTwoThreeSixtyShootDemo : Fragment() {
 
     override fun onResume() {
         super.onResume()
-        if (!isActive && !videoPlayer?.playWhenReady!!){
-            isActive = true
-            videoPlayer!!.setPlayWhenReady(true)
-        }else{
-            //videoPlayer!!.setPlayWhenReady(true)
-        }
+       // videoPlayer!!.setPlayWhenReady(true)
+//        if (!isActive && !videoPlayer?.playWhenReady!!){
+//            isActive = true
+//
+//        }else{
+//            //videoPlayer!!.setPlayWhenReady(true)
+//        }
 
     }
 
@@ -137,21 +138,18 @@ class FragmentTwoThreeSixtyShootDemo : Fragment() {
         releasePlayer()
     }
 
-     fun releasePlayer() {
+    fun releasePlayer() {
 //        playWhenReady = videoPlayer!!.getPlayWhenReady()
 //        playbackPosition = videoPlayer!!.getCurrentPosition()
 //        currentWindow = videoPlayer!!.getCurrentWindowIndex()
-         try {
-             videoPlayer!!.setPlayWhenReady(false);
-             videoPlayer?.release()
-             videoPlayer = null
+        try {
+            videoPlayer!!.setPlayWhenReady(false);
+            videoPlayer?.release()
+            videoPlayer = null
 
-             playerView?.visibility = View.GONE
-         }catch (e:Exception){
+            playerView?.visibility = View.GONE
+        }catch (e:Exception){
 
-         }
+        }
     }
-
-
-
 }
