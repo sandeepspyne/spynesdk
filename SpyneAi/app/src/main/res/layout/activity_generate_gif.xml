@@ -89,6 +89,151 @@
                     android:layout_margin="@dimen/dp_10" />
             </LinearLayout>
 
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:orientation="vertical">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="@dimen/dp_10"
+                    android:layout_marginEnd="@dimen/dp_10"
+                    android:orientation="horizontal"
+                    android:padding="@dimen/dp_10">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:fontFamily="@font/bold"
+                        android:text="@string/dealership_logo"
+                        android:textColor="@color/black"
+                        android:textSize="@dimen/sp_16" />
+
+                    <ImageView
+                        android:layout_width="@dimen/dp_20"
+                        android:layout_height="@dimen/dp_20"
+                        android:layout_gravity="center"
+                        android:layout_marginLeft="@dimen/dp_10"
+                        android:src="@drawable/i"></ImageView>
+
+                </LinearLayout>
+
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+
+                    <TextView
+
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_margin="@dimen/sp_18"
+                        android:background="@drawable/bg_dealership_logo"
+                        android:fontFamily="@font/medium"
+                        android:padding="@dimen/dp_15"
+                        android:text="@string/upload_logo"
+                        android:textColor="@color/primary"
+                        android:textSize="@dimen/sp_13"></TextView>
+
+                    <RelativeLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_margin="@dimen/sp_18"
+                        android:background="@drawable/bg_channel"
+                        android:elevation="@dimen/dp_5"
+                        android:padding="0.1dp"
+                        android:visibility="gone"
+                        tools:context=".activity.CameraActivity">
+
+                        <ImageView
+                            android:layout_width="@dimen/dp_20"
+                            android:layout_height="@dimen/dp_20"
+                            android:layout_gravity="end"
+                            android:layout_marginLeft="60dp"
+                            android:background="#00000000"
+                            android:scaleType="fitXY"
+                            android:src="@drawable/close" />
+
+
+                        <androidx.cardview.widget.CardView
+                            android:layout_width="@dimen/dp_70"
+                            android:layout_height="@dimen/dp_70"
+                            android:layout_margin="@dimen/dp_1"
+                            app:cardCornerRadius="@dimen/dp_10">
+
+                            <ImageView
+                                android:id="@+id/ivdealership_logo"
+                                android:layout_width="@dimen/dp_70"
+                                android:layout_height="@dimen/dp_70"
+                                android:background="@drawable/click_backgrounds"
+                                android:contentDescription="@string/app_name"
+                                android:scaleType="fitXY"
+                                android:src="@mipmap/defaults" />
+                        </androidx.cardview.widget.CardView>
+
+                    </RelativeLayout>
+
+                </RelativeLayout>
+
+            </LinearLayout>
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/dp_10"
+                android:layout_marginEnd="@dimen/dp_10"
+                android:fontFamily="@font/bold"
+                android:padding="@dimen/dp_10"
+                android:text="@string/select_corner"
+                android:textColor="@color/black"
+                android:textSize="@dimen/sp_16" />
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="@dimen/dp_15"
+                android:orientation="horizontal">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
+
+                    <CheckBox
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/top_left"></CheckBox>
+
+                    <CheckBox
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/bottom_left"></CheckBox>
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:layout_marginLeft="@dimen/dp_50">
+
+                    <CheckBox
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/top_right"></CheckBox>
+
+                    <CheckBox
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/bottom_right"></CheckBox>
+
+                </LinearLayout>
+
+
+            </LinearLayout>
+
+
             <androidx.cardview.widget.CardView
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
@@ -104,11 +249,11 @@
             </androidx.cardview.widget.CardView>
 
             <LinearLayout
-                android:visibility="gone"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_margin="@dimen/dp_10"
-                android:orientation="horizontal">
+                android:orientation="horizontal"
+                android:visibility="gone">
 
                 <TextView
                     android:layout_width="wrap_content"

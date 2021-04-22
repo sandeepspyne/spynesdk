@@ -478,61 +478,6 @@ class PhotoUploader(var task: Task, var listener: Listener) {
         return imageFile
     }
 
-    suspend fun persistImageFootwear(bitmap: Bitmap): File? {
-        var imageFile: File? = null
-        if (BaseApplication.getContext() != null) {
-            val filesDir: File = BaseApplication.getContext().filesDir
-            imageFile = File(filesDir, "photo" + "footwear" + System.currentTimeMillis() + ".png")
-            val os: OutputStream
-            try {
-                os = FileOutputStream(imageFile)
-                bitmap.compress(Bitmap.CompressFormat.PNG, 70, os)
-                os.flush()
-                os.close()
-            } catch (e: Exception) {
-                log("Error writing bitmap: " + e.localizedMessage)
-            }
-        }
-        return imageFile
-    }
-
-    suspend fun persistImageAutomobiles(bitmap: Bitmap): File? {
-        var imageFile: File? = null
-        if (BaseApplication.getContext() != null) {
-            val filesDir: File = BaseApplication.getContext().filesDir
-            imageFile =
-                File(filesDir, "photo" + "automobiles" + System.currentTimeMillis() + ".png")
-            val os: OutputStream
-            try {
-                os = FileOutputStream(imageFile)
-                bitmap.compress(Bitmap.CompressFormat.PNG, 70, os)
-                os.flush()
-                os.close()
-            } catch (e: Exception) {
-                log("Error writing bitmap: " + e.localizedMessage)
-            }
-        }
-        return imageFile
-    }
-
-    suspend fun persistImageGrocery(bitmap: Bitmap): File? {
-        var imageFile: File? = null
-        if (BaseApplication.getContext() != null) {
-            val filesDir: File = BaseApplication.getContext().filesDir
-            imageFile = File(filesDir, "photo" + "grocery" + System.currentTimeMillis() + ".png")
-            val os: OutputStream
-            try {
-                os = FileOutputStream(imageFile)
-                bitmap.compress(Bitmap.CompressFormat.PNG, 70, os)
-                os.flush()
-                os.close()
-            } catch (e: Exception) {
-                log("Error writing bitmap: " + e.localizedMessage)
-            }
-        }
-        return imageFile
-    }
-
     //MArk the SKu as complete
     private fun markSkuComplete() {
         log("start markSkuComplete")
@@ -640,9 +585,12 @@ class PhotoUploader(var task: Task, var listener: Listener) {
 //        PROGRESS_MAX = photoList.size
 
 
+        log("category: "+task.catName)
         log("start bulk upload")
+        log("skuId: "+task.skuId)
+        log("imageUrl: "+task.photoList[task.countGif].displayThumbnail)
+        log("skuName: "+task.skuName)
         val request = RetrofitClients.buildService(APiService::class.java)
-        Log.e("Upload bulk", "started......")
 
         val Background = RequestBody.create(
             MultipartBody.FORM,
@@ -828,8 +776,12 @@ class PhotoUploader(var task: Task, var listener: Listener) {
 
 
         val request = RetrofitClients.buildService(APiService::class.java)
-        Log.e("Upload bulk footwear", "started......")
         log("start bulk Upload Footwear")
+        log("category: "+task.catName)
+        log("start bulk upload")
+        log("skuId: "+task.skuId)
+        log("imageUrl: "+task.photoList[task.countGif].displayThumbnail)
+        log("skuName: "+task.skuName)
         val marketplace_id = RequestBody.create(
             MultipartBody.FORM,
             task.marketplaceId

@@ -56,7 +56,7 @@ class Task {
     var processingRetry: Int = 0
     var uploadingRetry: Int = 0
 
-    var retryCount: Int = 3
+    var retryCount: Int = 5
 
 
 
