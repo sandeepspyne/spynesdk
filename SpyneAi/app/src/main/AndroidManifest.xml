@@ -38,7 +38,9 @@
         android:usesCleartextTraffic="true"
         tools:targetApi="m">
         <activity android:name=".videorecording.VideoUploadHandlerActivity"></activity>
-        <activity android:name=".videorecording.ThreeSixtyInteriorViewActivity" />
+        <activity android:name=".videorecording.ThreeSixtyInteriorViewActivity" >
+
+        </activity>
         <activity android:name=".videorecording.ProcessVideoTimerActivity" />
 
         <service
@@ -57,7 +59,6 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".videorecording.SeekBarTestActivity" />
 
         <receiver
             android:name=".service.StartReceiver"
@@ -195,10 +196,7 @@
             android:name=".activity.SplashActivity"
             android:screenOrientation="portrait" />
         <activity android:name=".videorecording.ThreeSixtyViewActivity" />
-        <activity
-            android:name=".videorecording.RecordVideoTestActivity"
-            android:screenOrientation="landscape" />
-        <activity android:name=".videorecording.PlayVideoActivity" />
+
         <activity android:name=".videorecording.TrimVideoActivity" />
 
         <meta-data

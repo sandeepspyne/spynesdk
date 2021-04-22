@@ -1,5 +1,9 @@
 package com.spyneai.videorecording
 
+import android.content.ClipData
+import android.content.ClipboardManager
+import android.content.Context
+import android.content.Intent
 import android.graphics.drawable.Drawable
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
@@ -19,19 +23,22 @@ import com.bumptech.glide.request.RequestListener
 import com.spyneai.R
 import com.bumptech.glide.request.target.Target
 import com.spyneai.databinding.ActivityThreeSixtyInteriorViewBinding
+import com.spyneai.databinding.DialogCopyEmbeddedCodeBinding
+import com.spyneai.videorecording.fragments.DialogEmbedCode
 import com.spyneai.videorecording.model.TSVParams
 import com.spyneai.videorecording.service.FramesHelper
 
 
-class ThreeSixtyInteriorViewActivity : AppCompatActivity(),View.OnTouchListener {
+class ThreeSixtyInteriorViewActivity : AppCompatActivity(),View.OnTouchListener,View.OnClickListener {
 
+    private lateinit var backFramesList: List<String>
+    private lateinit var frontFramesList: List<String>
     private lateinit var binding : ActivityThreeSixtyInteriorViewBinding
     var handler = Handler()
     var TAG = "UploadVideoTestService"
-    lateinit var frontPlaceholder : Drawable
-    lateinit var backPlaceholder : Drawable
     lateinit var tsvParamFront : TSVParams
     lateinit var tsvParamBack : TSVParams
+    var shootId = ""
 
 
 
@@ -40,18 +47,20 @@ class ThreeSixtyInteriorViewActivity : AppCompatActivity(),View.OnTouchListener 
 
         binding = DataBindingUtil.setContentView(this,R.layout.activity_three_sixty_interior_view)
 
-        Log.d(TAG, "onCreate: "+intent.action)
-
 //        framesList = intent.getStringArrayListExtra("frames")!!
-        var frontFramesList =
-            FramesHelper.framesMap.get(intent.action)?.video_data?.get(0)!!.processed_image_list
-        var backFramesList = FramesHelper.framesMap.get(intent.action)?.video_data?.get(1)!!.processed_image_list
+       if (FramesHelper.framesMap != null && intent.action != null){
+           shootId = FramesHelper.framesMap.get(intent.action)?.sku_id ?: ""
+            frontFramesList =
+               FramesHelper.framesMap.get(intent.action)?.video_data?.get(0)!!.processed_image_list
+            backFramesList = FramesHelper.framesMap.get(intent.action)?.video_data?.get(1)!!.processed_image_list
 
+       }
 
 
         if (frontFramesList != null && frontFramesList.size > 0){
             //load front image
             tsvParamFront = TSVParams()
+            tsvParamFront.type = 0
             tsvParamFront.framesList = frontFramesList
             tsvParamFront.mImageIndex = frontFramesList.size / 2
 
@@ -83,8 +92,6 @@ class ThreeSixtyInteriorViewActivity : AppCompatActivity(),View.OnTouchListener 
         binding.ivBack.setOnClickListener { onBackPressed() }
         binding.ivFront.setOnTouchListener(this)
         binding.ivBackView.setOnTouchListener(this)
-
-
     }
 
     private fun preLoad(tsvParams: TSVParams) {
@@ -121,9 +128,37 @@ class ThreeSixtyInteriorViewActivity : AppCompatActivity(),View.OnTouchListener 
                             if (tsvParams.type == 0){
                                 binding.progressBarFront.visibility = View.GONE
                                 loadImage(tsvParams,binding.ivFront)
+//                                Glide.with(this@ThreeSixtyInteriorViewActivity)
+//                                    .load(tsvParams.placeholder)
+//                                    .placeholder(tsvParams.placeholder)
+//                                    .into(binding.ivFront)
+
+                                //show images and set listener
+                                binding.ivShare.visibility = View.VISIBLE
+                                binding.ivCopyLink.visibility = View.VISIBLE
+                                binding.ivEmbbedCode.visibility = View.VISIBLE
+
+                                binding.ivShare.setOnClickListener(this@ThreeSixtyInteriorViewActivity)
+                                binding.ivCopyLink.setOnClickListener(this@ThreeSixtyInteriorViewActivity)
+                                binding.ivEmbbedCode.setOnClickListener(this@ThreeSixtyInteriorViewActivity)
+
                             }else{
                                 binding.progressBarBack.visibility = View.GONE
                                 loadImage(tsvParams,binding.ivBackView)
+
+//                                Glide.with(this@ThreeSixtyInteriorViewActivity)
+//                                    .load(tsvParams.placeholder)
+//                                    .placeholder(tsvParams.placeholder)
+//                                    .into(binding.ivBackView)
+
+                                //show images and set listener
+                                binding.ivBackShare.visibility = View.VISIBLE
+                                binding.ivBackCopyLink.visibility = View.VISIBLE
+                                binding.ivBackEmbbedCode.visibility = View.VISIBLE
+
+                                binding.ivBackShare.setOnClickListener(this@ThreeSixtyInteriorViewActivity)
+                                binding.ivBackCopyLink.setOnClickListener(this@ThreeSixtyInteriorViewActivity)
+                                binding.ivBackEmbbedCode.setOnClickListener(this@ThreeSixtyInteriorViewActivity)
                             }
                         }
 
@@ -131,7 +166,6 @@ class ThreeSixtyInteriorViewActivity : AppCompatActivity(),View.OnTouchListener 
                     }
 
                 })
-                //.override(300, 300)
                 .dontAnimate()
                 .diskCacheStrategy(DiskCacheStrategy.ALL)
                 .preload()
@@ -278,6 +312,75 @@ class ThreeSixtyInteriorViewActivity : AppCompatActivity(),View.OnTouchListener 
         }
 
         return super.onTouchEvent(event)
+    }
+
+    override fun onClick(v: View?) {
+        when(v?.id){
+            R.id.iv_share -> {
+                share(getCode(0))
+            }
+
+            R.id.iv_copy_link -> {
+                copy("https://www.spyne.ai/shoots/shoot?skuId="+shootId+"&type=front")
+            }
+
+            R.id.iv_embbed_code -> {
+                embed(getCode(0))
+            }
+
+            R.id.iv_back_share -> {
+                share(getCode(1))
+            }
+
+            R.id.iv_back_copy_link -> {
+                copy("https://www.spyne.ai/shoots/shoot?skuId="+shootId+"&type=back")
+            }
+
+            R.id.iv_back_embbed_code -> {
+                embed(getCode(1))
+            }
+        }
+    }
+
+    private fun embed(code: String) {
+            var args = Bundle()
+        args.putString("code",code)
+
+        var dialogCopyEmbeddedCode = DialogEmbedCode()
+        dialogCopyEmbeddedCode.arguments = args
+        dialogCopyEmbeddedCode.show(supportFragmentManager,"DialogEmbedCode")
+    }
+
+    private fun copy(link: String) {
+        val clipboard = getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
+        val clip: ClipData = ClipData.newPlainText("link", link)
+        clipboard.setPrimaryClip(clip)
+
+        Toast.makeText(this,"Link copied successfully!",Toast.LENGTH_LONG)
+    }
+
+    private fun share(code: String) {
+        val sendIntent: Intent = Intent().apply {
+            action = Intent.ACTION_SEND
+            putExtra(Intent.EXTRA_TEXT, code)
+            type = "text/plain"
+        }
+
+        val shareIntent = Intent.createChooser(sendIntent, null)
+        startActivity(shareIntent)
+    }
+
+    private fun getCode(type : Int) : String {
+        if (type == 0){
+            return "<iframe \n" +
+                    "  src=\"https://www.spyne.ai/shoots/shoot?skuId="+shootId+"&type=front\" \n" +
+                    "  style=\"border:0; height: 100%; width: 100%;\" framerborder=\"0\"></iframe>"
+        }else{
+            return "<iframe \n" +
+                    "  src=\"https://www.spyne.ai/shoots/shoot?skuId="+shootId+"&type=back\" \n" +
+                    "  style=\"border:0; height: 100%; width: 100%;\" framerborder=\"0\"></iframe>"
+        }
+
     }
 
 
