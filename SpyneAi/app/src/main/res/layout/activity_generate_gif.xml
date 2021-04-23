@@ -1,21 +1,21 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:fillViewport="true"
-    android:orientation="vertical"
-    tools:context=".activity.OrderActivity">
-
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    tools:context=".activity.OrderActivity"
+    android:orientation="vertical">
     <androidx.appcompat.widget.Toolbar
         android:id="@+id/my_toolbar"
         android:layout_width="match_parent"
         android:layout_height="?attr/actionBarSize"
         android:background="?attr/colorPrimary"
-        android:backgroundTint="@color/white"
         android:elevation="@dimen/dp_5"
-        android:theme="@style/ThemeOverlay.AppCompat.Light">
+        android:backgroundTint="@color/white"
+        android:theme="@style/ThemeOverlay.AppCompat.Light" >
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -55,69 +55,62 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:fillViewport="true"
-        android:orientation="vertical"
-        tools:context=".activity.OrderActivity">
-
+        tools:context=".activity.OrderActivity"
+        android:orientation="vertical">
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical"
-            tools:context=".activity.OrderActivity">
-
+            tools:context=".activity.OrderActivity"
+            android:orientation="vertical">
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:gravity="center"
-                android:orientation="vertical">
-
+                android:orientation="vertical"
+                android:gravity="center">
                 <TextView
                     android:id="@+id/tvMarketPlace"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:text="@string/select_backgrounds"
+                    android:fontFamily="@font/bold"
+                    android:textColor="@color/black"
+                    android:padding="@dimen/dp_10"
                     android:layout_marginStart="@dimen/dp_10"
                     android:layout_marginEnd="@dimen/dp_10"
-                    android:fontFamily="@font/bold"
-                    android:padding="@dimen/dp_10"
-                    android:text="@string/select_backgrounds"
-                    android:textColor="@color/black"
-                    android:textSize="@dimen/sp_16" />
+                    android:textSize="@dimen/sp_16"/>
 
                 <androidx.recyclerview.widget.RecyclerView
                     android:id="@+id/rvBackgroundsCars"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_margin="@dimen/dp_10" />
+                    android:layout_margin="@dimen/dp_10"/>
             </LinearLayout>
 
             <androidx.cardview.widget.CardView
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_margin="@dimen/dp_10"
-                android:elevation="@dimen/dp_5"
                 android:visibility="gone"
+                android:elevation="@dimen/dp_5"
                 app:cardCornerRadius="@dimen/dp_10">
-
                 <androidx.recyclerview.widget.RecyclerView
                     android:id="@+id/rvPhotosClicked"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent" />
             </androidx.cardview.widget.CardView>
-
             <LinearLayout
-                android:visibility="gone"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_margin="@dimen/dp_10"
                 android:orientation="horizontal">
-
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:fontFamily="@font/bold"
-                    android:padding="@dimen/dp_10"
                     android:text="@string/apply_reflection"
+                    android:fontFamily="@font/bold"
                     android:textColor="@color/black"
-                    android:textSize="@dimen/sp_16" />
+                    android:padding="@dimen/dp_10"
+                    android:textSize="@dimen/sp_16"/>
 
                 <com.google.android.material.switchmaterial.SwitchMaterial
                     android:id="@+id/toggle"
@@ -125,118 +118,109 @@
                     android:layout_height="match_parent"
                     android:buttonTint="@drawable/custom_track" />
             </LinearLayout>
-
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="vertical"
-                android:visibility="gone">
-
+                android:visibility="gone"
+                android:orientation="vertical">
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:fontFamily="@font/bold"
-                    android:padding="@dimen/dp_10"
                     android:text="@string/window_reflection"
+                    android:fontFamily="@font/bold"
                     android:textColor="@color/black"
-                    android:textSize="@dimen/sp_16" />
-
+                    android:padding="@dimen/dp_10"
+                    android:textSize="@dimen/sp_16"/>
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="@dimen/dp_10"
                     android:orientation="horizontal">
-
                     <LinearLayout
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
+                        android:orientation="vertical"
                         android:layout_marginStart="@dimen/dp_10"
-                        android:layout_marginEnd="@dimen/dp_10"
-                        android:orientation="vertical">
+                        android:layout_marginEnd="@dimen/dp_10">
 
                         <LinearLayout
-                            android:id="@+id/llTransparent"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:background="@drawable/bg_selected"
                             android:elevation="@dimen/dp_5"
-                            android:orientation="vertical"
+                            android:background="@drawable/bg_selected"
                             android:padding="1dp"
-                            tools:context=".activity.CameraActivity">
+                            android:id="@+id/llTransparent"
+                            tools:context=".activity.CameraActivity"
+                            android:orientation="vertical">
 
                             <androidx.cardview.widget.CardView
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:elevation="@dimen/dp_10"
                                 app:cardCornerRadius="@dimen/dp_10">
-
                                 <ImageView
                                     android:id="@+id/ivMarketPlace"
                                     android:layout_width="@dimen/dp_70"
                                     android:layout_height="@dimen/dp_70"
-                                    android:background="@drawable/click_backgrounds"
-                                    android:contentDescription="@string/app_name"
+                                    android:src="@mipmap/wr"
                                     android:padding="@dimen/dp_5"
                                     android:scaleType="fitXY"
-                                    android:src="@mipmap/wr" />
+                                    android:background="@drawable/click_backgrounds"
+                                    android:contentDescription="@string/app_name" />
                             </androidx.cardview.widget.CardView>
                         </LinearLayout>
-
                         <TextView
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
+                            android:text="@string/transparent"
+                            android:gravity="center"
                             android:layout_margin="@dimen/dp_2"
                             android:fontFamily="@font/medium"
-                            android:gravity="center"
-                            android:text="@string/transparent"
                             android:textColor="@color/black"
-                            android:textSize="@dimen/sp_10" />
+                            android:textSize="@dimen/sp_10"/>
                     </LinearLayout>
-
                     <LinearLayout
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
+                        android:orientation="vertical"
                         android:layout_marginStart="@dimen/dp_10"
-                        android:layout_marginEnd="@dimen/dp_10"
-                        android:orientation="vertical">
+                        android:layout_marginEnd="@dimen/dp_10">
 
                         <LinearLayout
                             android:id="@+id/llOriginal"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:background="@drawable/bg_channel"
                             android:elevation="@dimen/dp_5"
-                            android:orientation="vertical"
+                            android:background="@drawable/bg_channel"
                             android:padding="1dp"
-                            tools:context=".activity.CameraActivity">
+                            tools:context=".activity.CameraActivity"
+                            android:orientation="vertical">
 
                             <androidx.cardview.widget.CardView
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:elevation="@dimen/dp_10"
                                 app:cardCornerRadius="@dimen/dp_10">
-
                                 <ImageView
                                     android:layout_width="@dimen/dp_70"
                                     android:layout_height="@dimen/dp_70"
-                                    android:background="@drawable/click_backgrounds"
-                                    android:contentDescription="@string/app_name"
-                                    android:padding="@dimen/dp_5"
+                                    android:src="@mipmap/wrs"
                                     android:scaleType="fitXY"
-                                    android:src="@mipmap/wrs" />
+                                    android:padding="@dimen/dp_5"
+                                    android:background="@drawable/click_backgrounds"
+                                    android:contentDescription="@string/app_name" />
                             </androidx.cardview.widget.CardView>
                         </LinearLayout>
-
                         <TextView
                             android:id="@+id/tvCarBgName"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
+                            android:text="@string/original"
+                            android:gravity="center"
                             android:layout_margin="@dimen/dp_2"
                             android:fontFamily="@font/medium"
-                            android:gravity="center"
-                            android:text="@string/original"
                             android:textColor="@color/black"
-                            android:textSize="@dimen/sp_10" />
+                            android:textSize="@dimen/sp_10"/>
                     </LinearLayout>
 
                 </LinearLayout>
@@ -246,33 +230,32 @@
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:text="@string/select_output"
+                android:fontFamily="@font/bold"
+                android:textColor="@color/black"
+                android:padding="@dimen/dp_10"
                 android:layout_marginStart="@dimen/dp_10"
                 android:layout_marginEnd="@dimen/dp_10"
-                android:fontFamily="@font/bold"
-                android:padding="@dimen/dp_10"
-                android:text="@string/select_output"
-                android:textColor="@color/black"
-                android:textSize="@dimen/sp_16" />
+                android:textSize="@dimen/sp_16"/>
 
             <ImageView
                 android:id="@+id/imageViewGif"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_margin="@dimen/dp_20"
-                android:src="@mipmap/defaults" />
-
+                android:src="@mipmap/defaults"/>
             <TextView
                 android:id="@+id/tvGenerateGif"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:layout_margin="@dimen/dp_20"
-                android:background="@drawable/bg_edit_button"
-                android:fontFamily="@font/medium"
-                android:gravity="center"
-                android:padding="@dimen/dp_20"
                 android:text="@string/create_shoots"
                 android:textColor="@color/white"
+                android:gravity="center"
+                android:layout_gravity="center"
+                android:padding="@dimen/dp_20"
+                android:layout_margin="@dimen/dp_20"
+                android:fontFamily="@font/medium"
+                android:background="@drawable/bg_rectangle_button_ripple"
                 android:textSize="@dimen/sp_20" />
 
         </LinearLayout>

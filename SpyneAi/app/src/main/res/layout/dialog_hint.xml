@@ -46,7 +46,7 @@
         android:textColor="@color/white"
         android:fontFamily="@font/medium"
         android:textSize="@dimen/sp_13"
-        android:background="@drawable/bg_edit_button"
+        android:background="@drawable/bg_rectangle_button_ripple"
         android:textAllCaps="false"/>
 
 

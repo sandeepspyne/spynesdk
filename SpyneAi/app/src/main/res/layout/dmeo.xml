@@ -114,7 +114,7 @@
                             android:gravity="center"
                             android:layout_margin="@dimen/dp_10"
                             android:textColor="@color/primary"
-                            android:background="@drawable/bg_selected"
+                            android:background="@drawable/bg_skip"
                             android:textAllCaps="false"/>
                         <TextView
                             android:id="@+id/btnOk"
@@ -126,7 +126,7 @@
                             android:padding="@dimen/dp_10"
                             android:gravity="center"
                             android:textColor="@color/white"
-                            android:background="@drawable/bg_edit_button"
+                            android:background="@drawable/bg_rectangle_button_ripple"
                             android:textAllCaps="false"/>
                     </LinearLayout>
 

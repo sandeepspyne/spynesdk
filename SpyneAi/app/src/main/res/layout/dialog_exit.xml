@@ -34,7 +34,7 @@
             android:textColor="@color/primary"
             android:fontFamily="@font/medium"
             android:textSize="@dimen/sp_15"
-            android:background="@drawable/bg_selected"
+            android:background="@drawable/bg_skip"
             android:textAllCaps="false"/>
 
         <TextView
@@ -49,7 +49,7 @@
             android:textColor="@color/white"
             android:fontFamily="@font/medium"
             android:textSize="@dimen/sp_15"
-            android:background="@drawable/bg_edit_button"
+            android:background="@drawable/bg_rectangle_button_ripple"
             android:textAllCaps="false"/>
     </LinearLayout>
 

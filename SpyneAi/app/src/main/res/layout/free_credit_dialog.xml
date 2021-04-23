@@ -42,9 +42,8 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:padding="@dimen/dp_10"
             android:layout_margin="@dimen/dp_20"
-            android:background="@drawable/bg_downloadall"
+            android:background="@drawable/bg_rectangle_button_ripple"
             android:gravity="center">
 
             <TextView
@@ -54,7 +53,7 @@
                 android:layout_marginStart="@dimen/dp_30"
                 android:layout_marginEnd="@dimen/dp_30"
                 android:fontFamily="@font/medium"
-                android:padding="@dimen/dp_5"
+                android:padding="@dimen/dp_12"
                 android:text="@string/ok"
                 android:textAllCaps="false"
                 android:textColor="@color/white"
