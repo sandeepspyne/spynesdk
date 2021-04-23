@@ -140,6 +140,9 @@ class RecordVideoActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        binding = DataBindingUtil.setContentView(this, R.layout.activity_record_video)
+
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
             window.insetsController?.hide(WindowInsets.Type.statusBars())
         } else {
@@ -148,9 +151,6 @@ class RecordVideoActivity : AppCompatActivity() {
                 WindowManager.LayoutParams.FLAG_FULLSCREEN
             )
         }
-
-        binding = DataBindingUtil.setContentView(this, R.layout.activity_record_video)
-
 
         binding.btnFlash.setOnClickListener { toggleFlash() }
 
