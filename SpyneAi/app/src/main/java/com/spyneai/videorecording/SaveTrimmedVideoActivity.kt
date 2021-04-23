@@ -15,8 +15,6 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.core.content.ContextCompat
 import androidx.databinding.DataBindingUtil
-import com.crystal.crystalrangeseekbar.widgets.CrystalRangeSeekbar
-import com.crystal.crystalrangeseekbar.widgets.CrystalSeekbar
 import com.google.android.exoplayer2.C
 import com.google.android.exoplayer2.MediaItem
 import com.google.android.exoplayer2.Player

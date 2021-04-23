@@ -27,6 +27,7 @@ import androidx.camera.core.*
 import androidx.camera.lifecycle.ProcessCameraProvider
 import androidx.core.animation.doOnCancel
 import androidx.core.content.ContextCompat
+import androidx.core.net.toFile
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.vectordrawable.graphics.drawable.Animatable2Compat
@@ -37,6 +38,8 @@ import com.bumptech.glide.load.resource.gif.GifDrawable
 import com.bumptech.glide.request.RequestListener
 import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayoutMediator
+import com.hbisoft.pickit.PickiT
+import com.hbisoft.pickit.PickiTCallbacks
 import com.spyneai.R
 import com.spyneai.databinding.ActivityRecordVideoBinding
 import com.spyneai.videorecording.adapter.ThreeSixtyShootDemoAdapter
@@ -56,7 +59,7 @@ import kotlin.math.min
 import kotlin.properties.Delegates
 
 
-class RecordVideoActivity : AppCompatActivity() {
+class RecordVideoActivity : AppCompatActivity(), PickiTCallbacks {
 
     companion object {
         private const val TAG = "CameraXTest"
@@ -137,6 +140,9 @@ class RecordVideoActivity : AppCompatActivity() {
         }
     }
 
+    //Declare PickiT
+    var pickiT: PickiT? = null
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -151,6 +157,11 @@ class RecordVideoActivity : AppCompatActivity() {
                 WindowManager.LayoutParams.FLAG_FULLSCREEN
             )
         }
+
+        //context, listener, activity
+        //context, listener, activity
+        pickiT = PickiT(this, this, this)
+
 
         binding.btnFlash.setOnClickListener { toggleFlash() }
 
@@ -477,20 +488,12 @@ class RecordVideoActivity : AppCompatActivity() {
                             ?.let { uri ->
                                 //setGalleryThumbnail(uri)
 
-                                val trimIntent = Intent(
-                                    this@RecordVideoActivity,
-                                    TrimVideoActivity::class.java
-                                )
-
-                                var skuId = if(intent.getIntExtra("shoot_mode",0) == 0) System.currentTimeMillis().toString() else intent.getStringExtra("sku_id")
-
-                                trimIntent.putExtra("sku_id",skuId)
-                                trimIntent.putExtra("shoot_mode",intent.getIntExtra("shoot_mode",0))
-                                trimIntent.setData(uri)
-                                startActivity(trimIntent)
-                                Log.d(TAG, "Video saved in $uri")
-
-                                binding.tvStart.text = "Start"
+                                try {
+                                    var file = uri.toFile()
+                                    startNextActivity(file.path)
+                                }catch (ex : IllegalArgumentException){
+                                    pickiT?.getPath(uri, Build.VERSION.SDK_INT)
+                                }
                             }
 
                     }
@@ -519,6 +522,22 @@ class RecordVideoActivity : AppCompatActivity() {
             localVideoCapture.stopRecording()
         }
         isRecording = !isRecording
+    }
+
+    private fun startNextActivity(videoPath: String) {
+        val trimIntent = Intent(
+            this@RecordVideoActivity,
+            TrimVideoActivity::class.java
+        )
+
+        trimIntent.putExtra("src_path",videoPath)
+        var skuId = if(intent.getIntExtra("shoot_mode",0) == 0) System.currentTimeMillis().toString() else intent.getStringExtra("sku_id")
+
+        trimIntent.putExtra("sku_id",skuId)
+        trimIntent.putExtra("shoot_mode",intent.getIntExtra("shoot_mode",0))
+        startActivity(trimIntent)
+
+        binding.tvStart.text = "Start"
     }
 
     private fun toggleFlash() = binding.btnFlash.toggleButton(
@@ -574,5 +593,28 @@ class RecordVideoActivity : AppCompatActivity() {
                 setImageResource(secondIcon)
             }
         }
+    }
+
+    override fun PickiTonUriReturned() {
+
+    }
+
+    override fun PickiTonStartListener() {
+
+    }
+
+    override fun PickiTonProgressUpdate(progress: Int) {
+
+    }
+
+    override fun PickiTonCompleteListener(
+        path: String?,
+        wasDriveFile: Boolean,
+        wasUnknownProvider: Boolean,
+        wasSuccessful: Boolean,
+        Reason: String?
+    ) {
+        Log.d(TAG, "PickiTonCompleteListener: " + path)
+        startNextActivity(path.toString())
     }
 }

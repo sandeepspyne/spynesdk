@@ -19,3 +19,19 @@
 # If you keep the line number information, uncomment this to
 # hide the original source file name.
 #-renamesourcefileattribute SourceFile
+
+# Uncomment this to preserve the line number information for
+# debugging stack traces.
+#-keepattributes SourceFile,LineNumberTable
+
+# If you keep the line number information, uncomment this to
+# hide the original source file name.
+#-renamesourcefileattribute SourceFile
+#-keep class com.arthenica.mobileffmpeg.* { *; }
+#-keep class com.arthenica.mobileffmpeg.Config {
+#    native <methods>;
+#}
+#
+#-keep class com.arthenica.mobileffmpeg.AbiDetect {
+#    native <methods>;
+#}

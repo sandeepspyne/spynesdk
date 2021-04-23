@@ -1,8 +1,10 @@
 package com.spyneai.videorecording
 
+import android.annotation.TargetApi
 import android.app.Activity
 import android.content.Intent
 import android.media.*
+import android.media.MediaMuxer
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
@@ -15,7 +17,6 @@ import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.net.toFile
 import androidx.databinding.DataBindingUtil
-import com.arthenica.mobileffmpeg.FFmpeg
 import com.google.android.exoplayer2.C
 import com.google.android.exoplayer2.MediaItem
 import com.google.android.exoplayer2.Player
@@ -38,10 +39,12 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import java.io.File
+import java.io.IOException
+import java.nio.ByteBuffer
 import java.util.*
 
 
-class TrimVideoActivity : AppCompatActivity() , SeekListener, PickiTCallbacks {
+class TrimVideoActivity : AppCompatActivity() , SeekListener {
     private val TAG : String? = "TrimVideo"
 
     private var playerView: PlayerView? = null
@@ -81,8 +84,7 @@ class TrimVideoActivity : AppCompatActivity() , SeekListener, PickiTCallbacks {
     private lateinit var binding : ActivityTrimVideoBinding
     private var videoTrimmed = false
 
-    //Declare PickiT
-    var pickiT: PickiT? = null
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -98,9 +100,6 @@ class TrimVideoActivity : AppCompatActivity() , SeekListener, PickiTCallbacks {
 
         seekHandler = Handler()
 
-        //context, listener, activity
-        //context, listener, activity
-        pickiT = PickiT(this, this, this)
 
         initPlayer()
 
@@ -130,7 +129,7 @@ class TrimVideoActivity : AppCompatActivity() , SeekListener, PickiTCallbacks {
             videoPlayer = SimpleExoPlayer.Builder(this).build()
             playerView?.setResizeMode(AspectRatioFrameLayout.RESIZE_MODE_FIT)
             playerView?.setPlayer(videoPlayer)
-            // videoPlayer!!.volume = 0F
+             videoPlayer!!.volume = 0F
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
                 val audioAttributes = AudioAttributes.Builder()
                     .setUsage(C.USAGE_MEDIA)
@@ -145,7 +144,7 @@ class TrimVideoActivity : AppCompatActivity() , SeekListener, PickiTCallbacks {
 
     private fun setDataInView() {
         try {
-            uri = Uri.parse(intent.data.toString())
+            uri = Uri.parse(intent.getStringExtra("src_path"))
             
             totalDuration = getDuration(this, uri)
             imagePlayPause!!.setOnClickListener { v: View? -> onVideoClicked() }
@@ -255,25 +254,17 @@ class TrimVideoActivity : AppCompatActivity() , SeekListener, PickiTCallbacks {
 
     private fun trimVideo() {
         if (isValidVideo) {
-            if (originalMinValue != lastMinValue && originalMaxValue != lastMaxValue){
+            if (originalMinValue != lastMinValue || originalMaxValue != lastMaxValue){
                 //not exceed given maxDuration if has given
                 outputPath = getFileName().toString()
                 //LogMessage.v("outputPath::" + outputPath + File(outputPath).exists())
                 //LogMessage.v("sourcePath::$uri")
                 videoPlayer!!.playWhenReady = false
-                val complexCommand: Array<String?>? = getAccurateCmd()
 
-                execFFmpegBinary(complexCommand, true)
+                genVideoUsingMuxer(intent.getStringExtra("src_path").toString(),outputPath,lastMinValue,lastMaxValue,false,true)
             }else{
                 //do not trim send original video
-                    // handle toFile() method exception
-                        try {
-                            var file = intent.data?.toFile()
-                            startNextActivity(file?.path!!)
-                        }catch (ex : IllegalArgumentException){
-                            pickiT?.getPath(intent.data, Build.VERSION.SDK_INT)
-                        }
-
+                startNextActivity(intent.getStringExtra("src_path").toString())
             }
 
        } else Toast.makeText(
@@ -302,49 +293,6 @@ class TrimVideoActivity : AppCompatActivity() , SeekListener, PickiTCallbacks {
         return newFile.toString()
     }
 
-    private fun execFFmpegBinary(command: Array<String?>?, retry: Boolean) {
-
-        binding.progressBar.visibility = View.VISIBLE
-        try {
-            Thread {
-                val result = FFmpeg.execute(command)
-                if (result == 0) {
-
-                    GlobalScope.launch(Dispatchers.Main) {
-                        binding.progressBar.visibility = View.GONE
-                    }
-
-                    startNextActivity(outputPath)
-
-                    Log.d(TAG, "execFFmpegBinary: " + outputPath)
-                } else {
-                    Log.d(TAG, "execFFmpegBinary: " + "failed")
-                    // Failed case:
-                    // line 489 command fails on some devices in
-                    // that case retrying with accurateCmt as alternative command
-                    if (retry) {
-                        val newFile = File(outputPath)
-                        if (newFile.exists()) newFile.delete()
-                        execFFmpegBinary(getAccurateCmd(), false)
-                    } else {
-                        GlobalScope.launch(Dispatchers.Main) {
-                            binding.progressBar.visibility = View.GONE
-                        }
-                        // start next activity in case of trimming failed
-                        try {
-                            var file = intent.data?.toFile()
-                            startNextActivity(file?.path!!)
-                        }catch (ex : IllegalArgumentException){
-                            pickiT?.getPath(intent.data, Build.VERSION.SDK_INT)
-                        }
-
-                    }
-                }
-            }.start()
-        } catch (e: java.lang.Exception) {
-            e.printStackTrace()
-        }
-    }
 
     private fun startNextActivity(path: String) {
         val intentPlay = Intent(
@@ -358,30 +306,6 @@ class TrimVideoActivity : AppCompatActivity() , SeekListener, PickiTCallbacks {
         intentPlay.putExtra("shoot_mode", intent.getIntExtra("shoot_mode", 0))
         startActivity(intentPlay)
     }
-
-    private fun getAccurateCmd(): Array<String?>? {
-//        return arrayOf(
-//            uri.toString(), "-ss",
-//            TrimmerUtils.formatCSeconds(lastMinValue),
-//            "-vcodec copy " +
-//                    "-acodec copy -t",
-//            TrimmerUtils.formatCSeconds(lastMaxValue - lastMinValue),
-//            "-strict -2", outputPath
-//        )
-
-//        return arrayOf(
-//            "-ss", TrimmerUtils.formatCSeconds(lastMinValue), "-i", uri.toString(), "-t",
-//            TrimmerUtils.formatCSeconds(lastMaxValue - lastMinValue),
-//            "-async", "1", outputPath
-//        )
-
-        return arrayOf(
-            "-ss", TrimmerUtils.formatCSeconds(lastMinValue / 1000), "-i", uri.toString(), "-t",
-            TrimmerUtils.formatCSeconds(lastMaxValue / 1000 - lastMinValue / 1000),
-            "-c", "copy", outputPath
-        )
-    }
-
 
     var updateSeekbar: Runnable = object : Runnable {
         override fun run() {
@@ -421,27 +345,132 @@ class TrimVideoActivity : AppCompatActivity() , SeekListener, PickiTCallbacks {
         txtEndDuration!!.setText(TrimmerUtils.formatSeconds(end / 1000))
     }
 
-    override fun PickiTonUriReturned() {
 
-    }
 
-    override fun PickiTonStartListener() {
-
-    }
-
-    override fun PickiTonProgressUpdate(progress: Int) {
-
-    }
-
-    override fun PickiTonCompleteListener(
-        path: String?,
-        wasDriveFile: Boolean,
-        wasUnknownProvider: Boolean,
-        wasSuccessful: Boolean,
-        Reason: String?
+    /**
+     * @param srcPath  the path of source video file.
+     * @param dstPath  the path of destination video file.
+     * @param startMs  starting time in milliseconds for trimming. Set to
+     * negative if starting from beginning.
+     * @param endMs    end time for trimming in milliseconds. Set to negative if
+     * no trimming at the end.
+     * @param useAudio true if keep the audio track from the source.
+     * @param useVideo true if keep the video track from the source.
+     * @throws IOException
+     */
+    @TargetApi(Build.VERSION_CODES.LOLLIPOP)
+    @Throws(IOException::class)
+    private fun genVideoUsingMuxer(
+        srcPath: String,
+        dstPath: String,
+        startMs: Long,
+        endMs: Long,
+        useAudio: Boolean,
+        useVideo: Boolean
     ) {
-        Log.d(TAG, "PickiTonCompleteListener: "+path)
-        startNextActivity(path.toString())
+
+        binding.progressBar.visibility = View.VISIBLE
+
+        // Set up MediaExtractor to read from the source.
+        val extractor = MediaExtractor()
+        extractor.setDataSource(srcPath)
+        val trackCount = extractor.trackCount
+        // Set up MediaMuxer for the destination.
+        val muxer: MediaMuxer
+        muxer = MediaMuxer(dstPath, MediaMuxer.OutputFormat.MUXER_OUTPUT_MPEG_4)
+        // Set up the tracks and retrieve the max buffer size for selected
+        // tracks.
+        val indexMap: HashMap<Int, Int> = HashMap(trackCount)
+        var bufferSize = -1
+        for (i in 0 until trackCount) {
+            val format = extractor.getTrackFormat(i)
+            val mime = format.getString(MediaFormat.KEY_MIME)
+            var selectCurrentTrack = false
+            if (mime!!.startsWith("audio/") && useAudio) {
+                selectCurrentTrack = true
+            } else if (mime.startsWith("video/") && useVideo) {
+                selectCurrentTrack = true
+            }
+            if (selectCurrentTrack) {
+                extractor.selectTrack(i)
+                val dstIndex = muxer.addTrack(format)
+                indexMap[i] = dstIndex
+                if (format.containsKey(MediaFormat.KEY_MAX_INPUT_SIZE)) {
+                    val newSize = format.getInteger(MediaFormat.KEY_MAX_INPUT_SIZE)
+                    bufferSize = if (newSize > bufferSize) newSize else bufferSize
+                }
+            }
+        }
+        if (bufferSize < 0) {
+            bufferSize = DEFAULT_BUFFER_SIZE
+        }
+        // Set up the orientation and starting time for extractor.
+        val retrieverSrc = MediaMetadataRetriever()
+        retrieverSrc.setDataSource(srcPath)
+        val degreesString = retrieverSrc.extractMetadata(
+            MediaMetadataRetriever.METADATA_KEY_VIDEO_ROTATION
+        )
+        if (degreesString != null) {
+            val degrees = degreesString.toInt()
+            if (degrees >= 0) {
+                muxer.setOrientationHint(degrees)
+            }
+        }
+        if (startMs > 0) {
+            extractor.seekTo((startMs * 1000), MediaExtractor.SEEK_TO_CLOSEST_SYNC)
+        }
+        // Copy the samples from MediaExtractor to MediaMuxer. We will loop
+        // for copying each sample and stop when we get to the end of the source
+        // file or exceed the end time of the trimming.
+        val offset = 0
+        var trackIndex = -1
+        val dstBuf: ByteBuffer = ByteBuffer.allocate(bufferSize)
+        val bufferInfo = MediaCodec.BufferInfo()
+        try {
+            muxer.start()
+            while (true) {
+                bufferInfo.offset = offset
+                bufferInfo.size = extractor.readSampleData(dstBuf, offset)
+                if (bufferInfo.size < 0) {
+                    //InstabugSDKLogger.d(TAG, "Saw input EOS.")
+                    Log.d(TAG, "genVideoUsingMuxer: "+"Saw input EOS.")
+                    bufferInfo.size = 0
+                    break
+                } else {
+                    bufferInfo.presentationTimeUs = extractor.sampleTime
+                    if (endMs > 0 && bufferInfo.presentationTimeUs > endMs * 1000) {
+                        //InstabugSDKLogger.d(TAG, "The current sample is over the trim end time.")
+                        Log.d(TAG, "genVideoUsingMuxer: "+"The current sample is over the trim end time")
+                        break
+                    } else {
+                        bufferInfo.flags = extractor.sampleFlags
+                        trackIndex = extractor.sampleTrackIndex
+                        muxer.writeSampleData(
+                            indexMap[trackIndex]!!, dstBuf,
+                            bufferInfo
+                        )
+                        extractor.advance()
+                    }
+                }
+            }
+            muxer.stop()
+
+            Log.d(TAG, "genVideoUsingMuxer: "+dstPath)
+            //deleting the old file
+            //val file = File(srcPath)
+            //file.delete()
+            binding.progressBar.visibility = View.GONE
+            startNextActivity(dstPath)
+        } catch (e: IllegalStateException) {
+            // Swallow the exception due to malformed source.
+            //InstabugSDKLogger.w(TAG, "The source video file is malformed")
+            Log.d(TAG, "genVideoUsingMuxer: "+"The source video file is malformed")
+            binding.progressBar.visibility = View.GONE
+            startNextActivity(srcPath)
+        } finally {
+            muxer.release()
+        }
+        return
     }
 
 }

@@ -27,7 +27,7 @@ class TrimView : ConstraintLayout, View.OnTouchListener {
 
     val TAG = javaClass.simpleName
 
-    val VIDEO_EDIT_DISPLAY_FRAMES_COUNT  = 16;
+    val VIDEO_EDIT_DISPLAY_FRAMES_COUNT  = 8;
     private var minDuration = 3000L
     private var maxDuration = Long.MAX_VALUE
 
