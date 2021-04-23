@@ -151,4 +151,7 @@ dependencies {
 
     implementation 'com.facebook.stetho:stetho-okhttp3:1.5.1'
 
+    //PickiT
+    implementation 'com.github.HBiSoft:PickiT:0.1.14'
+
 }

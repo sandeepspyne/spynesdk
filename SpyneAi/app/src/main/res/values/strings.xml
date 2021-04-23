@@ -200,7 +200,7 @@
     <string name="images_will_be_lost">Your Images will be lost. Are you sure you want to leave this page?</string>
 
 
-    <string name="dealership_popup">Logo will be displayed on the number plates and on corner of image</string>
+    <string name="dealership_popup">Logo will be displayed on the <br /><b>number plates</b> and on <b>corner</b> <br />of image</string>
 
 
     <string name="select_corner">Select corner to display logo</string>
@@ -209,10 +209,6 @@
     <string name="top_right">Top Right</string>
     <string name="bottom_left">Bottom Left</string>
     <string name="bottom_right">Bottom Right</string>
-
-
-
-
 
 
     <string-array name="planets_array">

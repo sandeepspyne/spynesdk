@@ -45,7 +45,16 @@ class Task {
     var photoListInteriors = ArrayList<Photos>()
     var photoListFocused = ArrayList<Photos>()
 
+    var afterImagesCar = ArrayList<String>()
+
+    var dealershipLogo: String = ""
+    var dealershipCornerList = ArrayList<String>()
+
     var countGif: Int = 0
+
+    var cornerCount: Int = 0
+
+    var cornerPosition: String = ""
 
     var imageList = ArrayList<String>()
     var imageListAfter = ArrayList<String>()

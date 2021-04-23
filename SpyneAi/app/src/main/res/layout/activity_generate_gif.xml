@@ -112,6 +112,7 @@
                         android:textSize="@dimen/sp_16" />
 
                     <ImageView
+                        android:id="@+id/ivShowPopup"
                         android:layout_width="@dimen/dp_20"
                         android:layout_height="@dimen/dp_20"
                         android:layout_gravity="center"
@@ -120,15 +121,17 @@
 
                 </LinearLayout>
 
-                <RelativeLayout
+                <FrameLayout
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content">
+                    android:layout_height="wrap_content"
+                    android:layout_margin="@dimen/dp_10">
 
                     <TextView
 
+                        android:id="@+id/tvUpoadLogo"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_margin="@dimen/sp_18"
+                        android:layout_marginLeft="@dimen/sp_18"
                         android:background="@drawable/bg_dealership_logo"
                         android:fontFamily="@font/medium"
                         android:padding="@dimen/dp_15"
@@ -136,17 +139,39 @@
                         android:textColor="@color/primary"
                         android:textSize="@dimen/sp_13"></TextView>
 
-                    <RelativeLayout
+                    <FrameLayout
+                        android:visibility="gone"
+                        android:id="@+id/rlDealershipLogo"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_margin="@dimen/sp_18"
-                        android:background="@drawable/bg_channel"
-                        android:elevation="@dimen/dp_5"
+                         android:layout_marginLeft="@dimen/sp_18"
                         android:padding="0.1dp"
-                        android:visibility="gone"
                         tools:context=".activity.CameraActivity">
 
+
+
+<!--                        <androidx.cardview.widget.CardView-->
+<!--                            android:layout_width="wrap_content"-->
+<!--                            android:layout_height="wrap_content"-->
+<!--                            android:layout_margin="@dimen/dp_1"-->
+<!--                            app:cardCornerRadius="@dimen/dp_10"-->
+<!--                            app:cardBackgroundColor="@android:color/white">-->
+
+                            <com.google.android.material.imageview.ShapeableImageView
+                                app:shapeAppearanceOverlay="@style/roundedImageView"
+                                android:id="@+id/ivDealershipLogo"
+                                android:layout_width="@dimen/dp_70"
+                                android:layout_height="@dimen/dp_70"
+                                android:background="@drawable/bg_channel"
+                                android:contentDescription="@string/app_name"
+                                android:scaleType="fitXY"
+                                android:src="@mipmap/defaults" />
+
+
+<!--                        </androidx.cardview.widget.CardView>-->
+
                         <ImageView
+                            android:id="@+id/ivRemoveLogo"
                             android:layout_width="@dimen/dp_20"
                             android:layout_height="@dimen/dp_20"
                             android:layout_gravity="end"
@@ -155,26 +180,9 @@
                             android:scaleType="fitXY"
                             android:src="@drawable/close" />
 
+                    </FrameLayout>
 
-                        <androidx.cardview.widget.CardView
-                            android:layout_width="@dimen/dp_70"
-                            android:layout_height="@dimen/dp_70"
-                            android:layout_margin="@dimen/dp_1"
-                            app:cardCornerRadius="@dimen/dp_10">
-
-                            <ImageView
-                                android:id="@+id/ivdealership_logo"
-                                android:layout_width="@dimen/dp_70"
-                                android:layout_height="@dimen/dp_70"
-                                android:background="@drawable/click_backgrounds"
-                                android:contentDescription="@string/app_name"
-                                android:scaleType="fitXY"
-                                android:src="@mipmap/defaults" />
-                        </androidx.cardview.widget.CardView>
-
-                    </RelativeLayout>
-
-                </RelativeLayout>
+                </FrameLayout>
 
             </LinearLayout>
 
@@ -192,7 +200,7 @@
             <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_margin="@dimen/dp_15"
+                android:layout_marginLeft="@dimen/sp_18"
                 android:orientation="horizontal">
 
                 <LinearLayout
@@ -201,13 +209,19 @@
                     android:orientation="vertical">
 
                     <CheckBox
+                        android:id="@+id/cbTopLeft"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
+                        android:paddingLeft="@dimen/dp_10"
+                        android:theme="@style/ColourPrimaryCheck"
                         android:text="@string/top_left"></CheckBox>
 
                     <CheckBox
+                        android:id="@+id/cbBottomLeft"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
+                        android:paddingLeft="@dimen/dp_10"
+                        android:theme="@style/ColourPrimaryCheck"
                         android:text="@string/bottom_left"></CheckBox>
 
                 </LinearLayout>
@@ -219,13 +233,19 @@
                     android:layout_marginLeft="@dimen/dp_50">
 
                     <CheckBox
+                        android:id="@+id/cbTopRight"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
+                        android:paddingLeft="@dimen/dp_10"
+                        android:theme="@style/ColourPrimaryCheck"
                         android:text="@string/top_right"></CheckBox>
 
                     <CheckBox
+                        android:id="@+id/cbBottomRight"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
+                        android:paddingLeft="@dimen/dp_10"
+                        android:theme="@style/ColourPrimaryCheck"
                         android:text="@string/bottom_right"></CheckBox>
 
                 </LinearLayout>
@@ -403,7 +423,7 @@
                 android:id="@+id/imageViewGif"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_margin="@dimen/dp_20"
+                android:layout_margin="@dimen/dp_10"
                 android:src="@mipmap/defaults" />
 
             <TextView

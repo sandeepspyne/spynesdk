@@ -13,6 +13,8 @@ object AppConstants {
     val ALL_FOCUSED_IMAGE_LIST: String = "all_focused_image_list"
     val ALL_FOCUSED_FRAME_LIST: String = "all_focused_frame_list"
 
+    val ALL_DEALERSHIP_CORNER_LIST: String = "all_dealership_corner_list"
+
     val LIST_HD_QUALITY: String = "list_hd_quality"
     val LIST_WATERMARK: String = "list_watermark"
 
@@ -78,6 +80,10 @@ object AppConstants {
     val PRICE: String = "price"
 
     val UPDATED_CREDIT: String = "updated_credit"
+
+    val DEALERSHIP_LOGO: String = "dealership_logo"
+
+    val CORNER_POSITION: String = "corner_position"
 
 
 

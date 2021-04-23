@@ -6,7 +6,6 @@ import android.graphics.BitmapFactory
 import android.graphics.Matrix
 import android.media.ExifInterface
 import android.util.Log
-import android.widget.Toast
 import com.spyneai.BaseApplication
 import com.spyneai.aipack.BulkUploadResponse
 import com.spyneai.aipack.FetchBulkResponse
@@ -16,6 +15,7 @@ import com.spyneai.interfaces.*
 import com.spyneai.model.ai.SendEmailRequest
 import com.spyneai.model.ai.UploadGifResponse
 import com.spyneai.model.ai.WaterMarkResponse
+import com.spyneai.model.dealershiplogo.DealershipLogoResponse
 import com.spyneai.model.marketplace.FootwearBulkResponse
 import com.spyneai.model.otp.OtpResponse
 import com.spyneai.model.processImageService.Task
@@ -39,6 +39,7 @@ import java.io.File
 import java.io.FileOutputStream
 import java.io.IOException
 import java.io.OutputStream
+
 
 class PhotoUploader(var task: Task, var listener: Listener) {
 
@@ -324,7 +325,7 @@ class PhotoUploader(var task: Task, var listener: Listener) {
                     //  Utilities.hideProgressDialog()
                     if (response.isSuccessful) {
                         task.mainImageFocused = response.body()?.image.toString()
-                        log("image url: "+task.mainImageFocused)
+                        log("image url: " + task.mainImageFocused)
                         uploadImageURLsFocused()
                     } else {
                         if (task.uploadingRetry <= task.retryCount) {
@@ -348,7 +349,7 @@ class PhotoUploader(var task: Task, var listener: Listener) {
                     } else {
                         listener.onFailure(task)
                         log("Server not responding(uploadImageToBucketFocused)")
-                        log("error: "+t.localizedMessage)
+                        log("error: " + t.localizedMessage)
                     }
 
                 }
@@ -396,7 +397,7 @@ class PhotoUploader(var task: Task, var listener: Listener) {
                         }
                     } catch (e: Exception) {
                         log("catch exception(focused)")
-                        log("exception: "+e.localizedMessage)
+                        log("exception: " + e.localizedMessage)
                     }
 
                 } else {
@@ -411,7 +412,7 @@ class PhotoUploader(var task: Task, var listener: Listener) {
             override fun onFailure(call: Call<UploadPhotoResponse>, t: Throwable) {
                 listener.onFailure(task)
                 log("Server not responding(uploadImageURLsFocused)")
-                log("error: "+t.localizedMessage)
+                log("error: " + t.localizedMessage)
             }
         })
     }
@@ -546,7 +547,10 @@ class PhotoUploader(var task: Task, var listener: Listener) {
                             for (i in 0..response.body()?.payload!!.data.photos.size - 1) {
                                 if (response.body()?.payload!!.data.photos[i].photoType.equals("EXTERIOR"))
                                     task.photoList.add(response.body()?.payload!!.data.photos[i])
-                                else if(response.body()?.payload!!.data.photos[i].photoType.equals("INTERIOR"))
+                                else if (response.body()?.payload!!.data.photos[i].photoType.equals(
+                                        "INTERIOR"
+                                    )
+                                )
                                     task.photoListInteriors.add(response.body()?.payload!!.data.photos[i])
                                 else
                                     task.photoListFocused.add(response.body()?.payload!!.data.photos[i])
@@ -585,11 +589,11 @@ class PhotoUploader(var task: Task, var listener: Listener) {
 //        PROGRESS_MAX = photoList.size
 
 
-        log("category: "+task.catName)
+        log("category: " + task.catName)
         log("start bulk upload")
-        log("skuId: "+task.skuId)
-        log("imageUrl: "+task.photoList[task.countGif].displayThumbnail)
-        log("skuName: "+task.skuName)
+        log("skuId: " + task.skuId)
+        log("imageUrl: " + task.photoList[task.countGif].displayThumbnail)
+        log("skuName: " + task.skuName)
         val request = RetrofitClients.buildService(APiService::class.java)
 
         val Background = RequestBody.create(
@@ -636,23 +640,25 @@ class PhotoUploader(var task: Task, var listener: Listener) {
                 response: Response<BulkUploadResponse>
             ) {
                 if (response.isSuccessful && response.body()!!.status == 200) {
+                    task.afterImagesCar.add(response.body()!!.output_image)
                     task.countGif++
                     log("bulk upload count: " + task.countGif)
                     if (task.countGif < task.photoList.size) {
                         Log.e("countGif", task.countGif.toString())
                         bulkUpload()
+                    } else if (task.cornerCount < task.afterImagesCar.size) {
+                        addDealershiplogo()
                     } else if (task.photoListInteriors.size > 0) {
                         task.countGif = 0
                         if (task.countGif < task.photoListInteriors.size) {
                             addWatermark()
                         }
-                    }else if (task.photoListFocused.size > 0) {
+                    } else if (task.photoListFocused.size > 0) {
                         task.countGif = 0
                         if (task.countGif < task.photoListFocused.size) {
                             addWatermarkFocused()
                         }
-                    }
-                    else
+                    } else
                         fetchBulkUpload()
 
                     Log.e("Upload Replace", "bulk")
@@ -703,6 +709,62 @@ class PhotoUploader(var task: Task, var listener: Listener) {
             }
         })
 
+    }
+
+    private fun addDealershiplogo() {
+
+        log("start addDealershiplogo")
+        val cornerPosition = RequestBody.create(
+            MultipartBody.FORM,
+            task.cornerPosition
+        )
+        val requestFile = RequestBody.create(MediaType.parse("multipart/form-data"), File(task.dealershipLogo))
+        val logo = MultipartBody.Part.createFormData("logo", File(task.dealershipLogo)!!.name, requestFile)
+
+
+        val imageUrl = RequestBody.create(
+            MultipartBody.FORM,
+            task.afterImagesCar[task.cornerCount]
+        )
+
+        val request = RetrofitClients.buildService(APiService::class.java)
+        val call = request.adddealershipLogo(logo, cornerPosition, imageUrl)
+        call?.enqueue(object : Callback<DealershipLogoResponse> {
+            override fun onResponse(
+                call: Call<DealershipLogoResponse>,
+                response: Response<DealershipLogoResponse>
+            ) {
+                if (response.isSuccessful) {
+                    task.cornerCount++
+                    log("image with dealership logo: " + response.body()!!.org_url)
+                    if (task.cornerCount < task.afterImagesCar.size) {
+                        addDealershiplogo()
+                    } else if (task.photoListInteriors.size > 0) {
+                        task.countGif = 0
+                        if (task.countGif < task.photoListInteriors.size) {
+                            addWatermark()
+                        }
+                    } else if (task.photoListFocused.size > 0) {
+                        task.countGif = 0
+                        if (task.countGif < task.photoListFocused.size) {
+                            addWatermarkFocused()
+                        }
+                    } else
+                        fetchBulkUpload()
+                } else {
+                    listener.onFailure(task)
+                    log("Error in addDealershiplogo")
+                    log("Error: " + response.errorBody().toString())
+                    log("Response: " + response.body())
+                }
+            }
+
+            override fun onFailure(call: Call<DealershipLogoResponse>, t: Throwable) {
+                listener.onFailure(task)
+                log("Server not responding(addDealershiplogo)")
+                log("onFailure: " + t.localizedMessage)
+            }
+        })
     }
 
     //Fetch bulk data
@@ -777,11 +839,11 @@ class PhotoUploader(var task: Task, var listener: Listener) {
 
         val request = RetrofitClients.buildService(APiService::class.java)
         log("start bulk Upload Footwear")
-        log("category: "+task.catName)
+        log("category: " + task.catName)
         log("start bulk upload")
-        log("skuId: "+task.skuId)
-        log("imageUrl: "+task.photoList[task.countGif].displayThumbnail)
-        log("skuName: "+task.skuName)
+        log("skuId: " + task.skuId)
+        log("imageUrl: " + task.photoList[task.countGif].displayThumbnail)
+        log("skuName: " + task.skuName)
         val marketplace_id = RequestBody.create(
             MultipartBody.FORM,
             task.marketplaceId
@@ -931,13 +993,11 @@ class PhotoUploader(var task: Task, var listener: Listener) {
                         addWatermark(
 
                         )
-                    } else
-                    {
+                    } else {
                         task.countGif = 0
                         if (task.countGif < task.photoListFocused.size) {
                             addWatermarkFocused()
-                        }
-                        else{
+                        } else {
                             fetchBulkUpload()
                         }
                     }
@@ -964,68 +1024,69 @@ class PhotoUploader(var task: Task, var listener: Listener) {
 
     private fun addWatermarkFocused() {
 
-            val request = RetrofitClients.buildService(APiService::class.java)
+        val request = RetrofitClients.buildService(APiService::class.java)
         log("start addWatermarkFocused")
-            val background = RequestBody.create(
-                MultipartBody.FORM,
-                task.backgroundSelect
+        val background = RequestBody.create(
+            MultipartBody.FORM,
+            task.backgroundSelect
+        )
+
+        val userId = RequestBody.create(
+            MultipartBody.FORM,
+            task.tokenId
+        )
+        val skuId = RequestBody.create(
+            MultipartBody.FORM,
+            task.skuId
+        )
+        val imageUrl = RequestBody.create(
+            MultipartBody.FORM,
+            task.photoListFocused[task.countGif].displayThumbnail
+        )
+
+        val skuName = RequestBody.create(
+            MultipartBody.FORM,
+            task.skuName
+        )
+
+        val category = RequestBody.create(
+            MultipartBody.FORM,
+            "Focus Shoot"
+        )
+
+        val call =
+            request.addWaterMarkFocused(
+                background, userId, skuId,
+                imageUrl, skuName, category
             )
 
-            val userId = RequestBody.create(
-                MultipartBody.FORM,
-                task.tokenId
-            )
-            val skuId = RequestBody.create(
-                MultipartBody.FORM,
-                task.skuId
-            )
-            val imageUrl = RequestBody.create(
-                MultipartBody.FORM,
-                task.photoListFocused[task.countGif].displayThumbnail
-            )
-
-            val skuName = RequestBody.create(
-                MultipartBody.FORM,
-                task.skuName
-            )
-
-            val category = RequestBody.create(
-                MultipartBody.FORM,
-                "Focus Shoot"
-            )
-
-            val call =
-                request.addWaterMarkFocused(
-                    background, userId, skuId,
-                    imageUrl, skuName,category
-                )
-
-            call?.enqueue(object : Callback<WaterMarkResponse> {
-                override fun onResponse(
-                    call: Call<WaterMarkResponse>,
-                    response: Response<WaterMarkResponse>
-                ) {
-                    if (response.isSuccessful && response.body()!!.status == 200) {
-                        task.countGif++
-                        if (task.countGif < task.photoListFocused.size) {
-                            addWatermarkFocused()
-                        } else
-                            fetchBulkUpload()
-                    } else {
-                        listener.onFailure(task)
-                        log("Error in add addWatermarkFocused")
-                        log("Error: " + response.errorBody())
-                    }
-
+        call?.enqueue(object : Callback<WaterMarkResponse> {
+            override fun onResponse(
+                call: Call<WaterMarkResponse>,
+                response: Response<WaterMarkResponse>
+            ) {
+                if (response.isSuccessful && response.body()!!.status == 200) {
+                    task.countGif++
+                    if (task.countGif < task.photoListFocused.size) {
+                        addWatermarkFocused()
+                    } else
+                        fetchBulkUpload()
+                } else {
+                    listener.onFailure(task)
+                    log("Error in add addWatermarkFocused")
+                    log("Error: " + response.errorBody())
                 }
-                    override fun onFailure(call: Call<WaterMarkResponse>, t: Throwable) {
-                        listener.onFailure(task)
-                        log("Server not responding(addWatermarkFocused)")
-                        log("onFailure: " + t.localizedMessage)
-                    }
-                })
 
             }
+
+            override fun onFailure(call: Call<WaterMarkResponse>, t: Throwable) {
+                listener.onFailure(task)
+                log("Server not responding(addWatermarkFocused)")
+                log("onFailure: " + t.localizedMessage)
+            }
+        })
+
+    }
 
     private fun fetchGif(
 

@@ -2,20 +2,25 @@ package com.spyneai.activity
 
 import android.app.Dialog
 import android.content.Intent
+import android.graphics.Color
+import android.graphics.drawable.ColorDrawable
+import android.net.Uri
+import android.os.Build
 import android.os.Bundle
+import android.provider.MediaStore
 import android.util.Log
 import android.view.View
 import android.view.Window
-import android.widget.CompoundButton
-import android.widget.TextView
-import android.widget.Toast
+import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.net.toFile
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
+import com.hbisoft.pickit.PickiT
+import com.hbisoft.pickit.PickiTCallbacks
 import com.spyneai.R
 import com.spyneai.adapter.CarBackgroundAdapter
-import com.spyneai.adapter.MarketplacesAdapter
 import com.spyneai.adapter.PhotosAdapter
 import com.spyneai.aipack.*
 import com.spyneai.model.carreplace.CarBackgroundsResponse
@@ -29,8 +34,10 @@ import kotlinx.android.synthetic.main.activity_order.*
 import kotlinx.android.synthetic.main.activity_shoot_selection.*
 import kotlinx.android.synthetic.main.activity_show_gif.*
 import java.io.File
+import java.net.URLEncoder
 
-class GenerateGifActivity : AppCompatActivity() {
+
+class GenerateGifActivity : AppCompatActivity(), PickiTCallbacks {
     private lateinit var photsAdapter: PhotosAdapter
     private lateinit var photoList: List<Photos>
 
@@ -43,6 +50,10 @@ class GenerateGifActivity : AppCompatActivity() {
 
     public lateinit var imageFocusedFileList: ArrayList<File>
     public lateinit var imageFocusedFileListFrames: ArrayList<Int>
+
+    lateinit var dealershipCornerList: ArrayList<String>
+
+    var cornerPosition: String = ""
 
     private var currentPOsition : Int = 0
     lateinit var carBackgroundList : ArrayList<CarBackgroundsResponse>
@@ -57,11 +68,18 @@ class GenerateGifActivity : AppCompatActivity() {
     var exposures : String = "false"
     lateinit var windows : String
 
+    val PICK_IMAGE = 1
+    var pickiT: PickiT? = null
+
+    var dealershipLogo: String = ""
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_generate_gif)
 
-        Utilities.savePrefrence(this,AppConstants.EXPOSURES,exposures)
+        Utilities.savePrefrence(this, AppConstants.EXPOSURES, exposures)
+
+        pickiT = PickiT(this, this, this)
 
         setBasics()
         if (intent.getStringExtra(AppConstants.CATEGORY_NAME) != null)
@@ -88,7 +106,7 @@ class GenerateGifActivity : AppCompatActivity() {
         imageFileList.addAll(intent.getParcelableArrayListExtra(AppConstants.ALL_IMAGE_LIST)!!)
         imageFileListFrames.addAll(intent.getIntegerArrayListExtra(AppConstants.ALL_FRAME_LIST)!!)
 
-        if (Utilities.getPreference(this,AppConstants.CATEGORY_NAME).equals("Automobiles"))
+        if (Utilities.getPreference(this, AppConstants.CATEGORY_NAME).equals("Automobiles"))
         {
             imageInteriorFileList.addAll(intent.getParcelableArrayListExtra(AppConstants.ALL_INTERIOR_IMAGE_LIST)!!)
             imageInteriorFileListFrames.addAll(intent.getIntegerArrayListExtra(AppConstants.ALL_INTERIOR_FRAME_LIST)!!)
@@ -99,7 +117,7 @@ class GenerateGifActivity : AppCompatActivity() {
 
         totalImagesToUPload = imageFileList.size
         windows = "inner"
-        Utilities.savePrefrence(this,AppConstants.WINDOWS,windows)
+        Utilities.savePrefrence(this, AppConstants.WINDOWS, windows)
     }
 
     private fun setBackgroundsCar() {
@@ -116,12 +134,12 @@ class GenerateGifActivity : AppCompatActivity() {
                     backgroundSelect = carBackgroundList[position].imageId.toString()
                     carbackgroundsAdapter.notifyDataSetChanged()
 
-                    if (position <= gifList.size-1){
+                    if (position <= gifList.size - 1) {
                         Glide.with(this@GenerateGifActivity) // replace with 'this' if it's in activity
                             .load(gifList[position])
                             .error(R.mipmap.defaults) // show error drawable if the image is not a gif
                             .into(imageViewGif)
-                    }else{
+                    } else {
                         Glide.with(this@GenerateGifActivity) // replace with 'this' if it's in activity
                             .load(R.drawable.no_sample_image)
                             .error(R.mipmap.defaults) // show error drawable if the image is not a gif
@@ -168,13 +186,10 @@ class GenerateGifActivity : AppCompatActivity() {
     }
 
     private fun listeners() {
-        Log.e(
-            "Generate  SKU",
-            Utilities.getPreference(
-                this,
-                AppConstants.SKU_NAME
-            )!!
-        )
+
+        dealershipCornerList = ArrayList<String>()
+
+
         tvGenerateGif.setOnClickListener(View.OnClickListener {
             if (Utilities.isNetworkAvailable(this)) {
                 val intent = Intent(
@@ -188,6 +203,9 @@ class GenerateGifActivity : AppCompatActivity() {
                 intent.putExtra(AppConstants.ALL_INTERIOR_FRAME_LIST, imageInteriorFileListFrames)
                 intent.putExtra(AppConstants.ALL_FOCUSED_IMAGE_LIST, imageFocusedFileList)
                 intent.putExtra(AppConstants.ALL_FOCUSED_FRAME_LIST, imageFocusedFileListFrames)
+                intent.putExtra(AppConstants.ALL_DEALERSHIP_CORNER_LIST, dealershipCornerList)
+                intent.putExtra(AppConstants.DEALERSHIP_LOGO, dealershipLogo)
+                intent.putExtra(AppConstants.CORNER_POSITION, cornerPosition)
                 intent.putExtra(AppConstants.CATEGORY_NAME, catName)
 //                intent.putExtra(AppConstants.GIF_LIST, gifList)
                 startActivity(intent)
@@ -219,7 +237,7 @@ class GenerateGifActivity : AppCompatActivity() {
 //        })
 
         windows = "outer"
-        Utilities.savePrefrence(this,AppConstants.WINDOWS,windows)
+        Utilities.savePrefrence(this, AppConstants.WINDOWS, windows)
 
 
 
@@ -238,6 +256,66 @@ class GenerateGifActivity : AppCompatActivity() {
               Utilities.savePrefrence(this,AppConstants.WINDOWS,windows)
 
           })*/
+
+        tvUpoadLogo.setOnClickListener {
+            val getIntent = Intent(Intent.ACTION_GET_CONTENT)
+            getIntent.type = "image/*"
+            val pickIntent =
+                Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI)
+            pickIntent.type = "image/*"
+            val chooserIntent = Intent.createChooser(getIntent, "Select Logo")
+            chooserIntent.putExtra(Intent.EXTRA_INITIAL_INTENTS, arrayOf(pickIntent))
+            startActivityForResult(chooserIntent, PICK_IMAGE)
+        }
+        ivRemoveLogo.setOnClickListener {
+            tvUpoadLogo.visibility = View.VISIBLE
+            rlDealershipLogo.visibility = View.GONE
+        }
+
+        cbTopLeft.setOnCheckedChangeListener(object : CompoundButton.OnCheckedChangeListener {
+            override fun onCheckedChanged(buttonView: CompoundButton?, isChecked: Boolean) {
+                if (isChecked) {
+                    cornerPosition = "leftTop"
+                    cbBottomLeft.setChecked(false)
+                    cbTopRight.setChecked(false)
+                    cbBottomRight.setChecked(false)
+                }
+            }
+        })
+        cbBottomLeft.setOnCheckedChangeListener(object : CompoundButton.OnCheckedChangeListener {
+            override fun onCheckedChanged(buttonView: CompoundButton?, isChecked: Boolean) {
+                if (isChecked) {
+                    cornerPosition = "leftBottom"
+                    cbTopLeft.setChecked(false)
+                    cbTopRight.setChecked(false)
+                    cbBottomRight.setChecked(false)
+                }
+            }
+        })
+        cbTopRight.setOnCheckedChangeListener(object : CompoundButton.OnCheckedChangeListener {
+            override fun onCheckedChanged(buttonView: CompoundButton?, isChecked: Boolean) {
+                if (isChecked) {
+                    cornerPosition = "rightTop"
+                    cbTopLeft.setChecked(false)
+                    cbBottomLeft.setChecked(false)
+                    cbBottomRight.setChecked(false)
+                }
+            }
+        })
+        cbBottomRight.setOnCheckedChangeListener(object : CompoundButton.OnCheckedChangeListener {
+            override fun onCheckedChanged(buttonView: CompoundButton?, isChecked: Boolean) {
+                if (isChecked) {
+                    cornerPosition = "rightBottom"
+                    cbTopLeft.setChecked(false)
+                    cbBottomLeft.setChecked(false)
+                    cbTopRight.setChecked(false)
+                }
+            }
+        })
+
+        ivShowPopup.setOnClickListener {
+            showDealershipDialog()
+        }
 
     }
 
@@ -282,4 +360,62 @@ class GenerateGifActivity : AppCompatActivity() {
         dialog.show()
     }
 
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        if (requestCode == PICK_IMAGE) {
+                val selectedLogoUri: Uri = data?.getData()!!
+                Log.e("logoPath", selectedLogoUri.toString())
+                showLogo(selectedLogoUri)
+            try {
+                var file = selectedLogoUri?.toFile()
+                dealershipLogo = file?.path!!.toString()
+            }catch (ex : IllegalArgumentException){
+                pickiT?.getPath(selectedLogoUri, Build.VERSION.SDK_INT)
+            }
+
+        }
+    }
+
+    fun showLogo(selectedLogoUri: Uri) {
+        Glide.with(this).load(selectedLogoUri.toString()).into(ivDealershipLogo)
+        tvUpoadLogo.visibility = View.GONE
+        rlDealershipLogo.visibility = View.VISIBLE
+    }
+
+    override fun PickiTonUriReturned() {
+
+    }
+
+    override fun PickiTonStartListener() {
+    }
+
+    override fun PickiTonProgressUpdate(progress: Int) {
+    }
+
+    override fun PickiTonCompleteListener(
+        path: String?,
+        wasDriveFile: Boolean,
+        wasUnknownProvider: Boolean,
+        wasSuccessful: Boolean,
+        Reason: String?
+    ) {
+        dealershipLogo = path.toString()
+    }
+
+    private fun showDealershipDialog(){
+
+        val dialog = Dialog(this)
+        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE)
+        dialog.setCancelable(true)
+        dialog.setContentView(R.layout.dealership_dialog)
+        dialog.getWindow()?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT));
+        val ivClose: ImageView = dialog.findViewById(R.id.ivClose)
+
+
+        ivClose.setOnClickListener(View.OnClickListener {
+            dialog.dismiss()
+        })
+        dialog.show()
+
+    }
 }
