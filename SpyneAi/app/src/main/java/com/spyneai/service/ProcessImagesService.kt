@@ -84,9 +84,8 @@ class ProcessImagesService() : Service(), Listener {
         )
         task.imageFocusedFileList.addAll(intent.getParcelableArrayListExtra(AppConstants.ALL_FOCUSED_IMAGE_LIST)!!)
         task.imageFocusedFileListFrames.addAll(intent.getIntegerArrayListExtra(AppConstants.ALL_FOCUSED_FRAME_LIST)!!)
-        task.dealershipLogo = intent.getStringExtra(AppConstants.DEALERSHIP_LOGO)!!
-        task.cornerPosition = intent.getStringExtra(AppConstants.CORNER_POSITION)!!
-        task.dealershipCornerList.addAll(intent.getStringArrayListExtra(AppConstants.ALL_DEALERSHIP_CORNER_LIST)!!)
+        task.dealershipLogo = intent.getStringExtra(AppConstants.DEALERSHIP_LOGO)?: ""
+        task.cornerPosition = intent.getStringExtra(AppConstants.CORNER_POSITION)?: ""
 
         tasksInProgress.add(task)
         checkAndFinishService()

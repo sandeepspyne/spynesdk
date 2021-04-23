@@ -51,7 +51,6 @@ class GenerateGifActivity : AppCompatActivity(), PickiTCallbacks {
     public lateinit var imageFocusedFileList: ArrayList<File>
     public lateinit var imageFocusedFileListFrames: ArrayList<Int>
 
-    lateinit var dealershipCornerList: ArrayList<String>
 
     var cornerPosition: String = ""
 
@@ -187,7 +186,6 @@ class GenerateGifActivity : AppCompatActivity(), PickiTCallbacks {
 
     private fun listeners() {
 
-        dealershipCornerList = ArrayList<String>()
 
 
         tvGenerateGif.setOnClickListener(View.OnClickListener {
@@ -203,7 +201,6 @@ class GenerateGifActivity : AppCompatActivity(), PickiTCallbacks {
                 intent.putExtra(AppConstants.ALL_INTERIOR_FRAME_LIST, imageInteriorFileListFrames)
                 intent.putExtra(AppConstants.ALL_FOCUSED_IMAGE_LIST, imageFocusedFileList)
                 intent.putExtra(AppConstants.ALL_FOCUSED_FRAME_LIST, imageFocusedFileListFrames)
-                intent.putExtra(AppConstants.ALL_DEALERSHIP_CORNER_LIST, dealershipCornerList)
                 intent.putExtra(AppConstants.DEALERSHIP_LOGO, dealershipLogo)
                 intent.putExtra(AppConstants.CORNER_POSITION, cornerPosition)
                 intent.putExtra(AppConstants.CATEGORY_NAME, catName)

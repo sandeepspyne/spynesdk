@@ -76,7 +76,6 @@ class TimerActivity : AppCompatActivity() {
     var catName: String = ""
 
     var dealershipLogo: String = ""
-    lateinit var dealershipCornerList: ArrayList<String>
 
     var cornerPosition: String = ""
 
@@ -97,11 +96,11 @@ class TimerActivity : AppCompatActivity() {
 //            startActivity(intent)
 //        }
 
-        dealershipCornerList = ArrayList<String>()
 
-            dealershipLogo = intent.getStringExtra(AppConstants.DEALERSHIP_LOGO)!!
-
-            cornerPosition = intent.getStringExtra(AppConstants.CORNER_POSITION)!!
+        if (intent.getStringExtra(AppConstants.DEALERSHIP_LOGO) != null)
+        dealershipLogo = intent.getStringExtra(AppConstants.DEALERSHIP_LOGO)!!
+        if (intent.getStringExtra(AppConstants.CORNER_POSITION) != null)
+        cornerPosition = intent.getStringExtra(AppConstants.CORNER_POSITION)!!
 
         backgroundSelect = intent.getStringExtra(AppConstants.BG_ID)!!
         circular_progress.setInterpolator(LinearInterpolator())
@@ -173,7 +172,6 @@ class TimerActivity : AppCompatActivity() {
         //Get Intents
         imageFileList.addAll(intent.getParcelableArrayListExtra(AppConstants.ALL_IMAGE_LIST)!!)
         imageFileListFrames.addAll(intent.getIntegerArrayListExtra(AppConstants.ALL_FRAME_LIST)!!)
-        dealershipCornerList.addAll(intent.getStringArrayListExtra(AppConstants.ALL_DEALERSHIP_CORNER_LIST)!!)
 
         if (Utilities.getPreference(this, AppConstants.CATEGORY_NAME).equals("Automobiles")) {
             imageInteriorFileList.addAll(intent.getParcelableArrayListExtra(AppConstants.ALL_INTERIOR_IMAGE_LIST)!!)
@@ -228,7 +226,6 @@ class TimerActivity : AppCompatActivity() {
             Utilities.getPreference(this, AppConstants.EXPOSURES)
         )
 
-        serviceIntent.putExtra(AppConstants.ALL_DEALERSHIP_CORNER_LIST, dealershipCornerList)
         serviceIntent.putExtra(AppConstants.DEALERSHIP_LOGO, dealershipLogo)
         serviceIntent.putExtra(AppConstants.CORNER_POSITION, cornerPosition)
 

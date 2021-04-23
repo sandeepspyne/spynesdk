@@ -48,7 +48,6 @@ class Task {
     var afterImagesCar = ArrayList<String>()
 
     var dealershipLogo: String = ""
-    var dealershipCornerList = ArrayList<String>()
 
     var countGif: Int = 0
 
