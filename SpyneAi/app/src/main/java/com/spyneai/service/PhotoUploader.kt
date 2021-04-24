@@ -646,9 +646,11 @@ class PhotoUploader(var task: Task, var listener: Listener) {
                     if (task.countGif < task.photoList.size) {
                         Log.e("countGif", task.countGif.toString())
                         bulkUpload()
-                    } else if (task.cornerCount < task.afterImagesCar.size) {
-                        addDealershiplogo()
-                    } else if (task.photoListInteriors.size > 0) {
+                    }
+//                    else if (task.cornerCount < task.afterImagesCar.size) {
+//                        addDealershiplogo()
+//                    }
+                    else if (task.photoListInteriors.size > 0) {
                         task.countGif = 0
                         if (task.countGif < task.photoListInteriors.size) {
                             addWatermark()

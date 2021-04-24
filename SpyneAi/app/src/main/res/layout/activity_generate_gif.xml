@@ -127,7 +127,6 @@
                     android:layout_margin="@dimen/dp_10">
 
                     <TextView
-
                         android:id="@+id/tvUpoadLogo"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
@@ -150,15 +149,18 @@
 
 
 
-<!--                        <androidx.cardview.widget.CardView-->
-<!--                            android:layout_width="wrap_content"-->
-<!--                            android:layout_height="wrap_content"-->
-<!--                            android:layout_margin="@dimen/dp_1"-->
-<!--                            app:cardCornerRadius="@dimen/dp_10"-->
-<!--                            app:cardBackgroundColor="@android:color/white">-->
+                        <androidx.cardview.widget.CardView
+                            android:id="@+id/card_view"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_margin="@dimen/dp_1"
+                            app:cardBackgroundColor="@android:color/white"
+                            app:cardElevation="2dp"
+                            app:cardCornerRadius="4dp"
+                            app:cardUseCompatPadding="false"
+                            app:cardPreventCornerOverlap="false">
 
-                            <com.google.android.material.imageview.ShapeableImageView
-                                app:shapeAppearanceOverlay="@style/roundedImageView"
+                            <ImageView
                                 android:id="@+id/ivDealershipLogo"
                                 android:layout_width="@dimen/dp_70"
                                 android:layout_height="@dimen/dp_70"
@@ -167,17 +169,16 @@
                                 android:scaleType="fitXY"
                                 android:src="@mipmap/defaults" />
 
-
-<!--                        </androidx.cardview.widget.CardView>-->
+                        </androidx.cardview.widget.CardView>
 
                         <ImageView
                             android:id="@+id/ivRemoveLogo"
-                            android:layout_width="@dimen/dp_20"
-                            android:layout_height="@dimen/dp_20"
+                            android:layout_width="@dimen/dp_25"
+                            android:layout_height="@dimen/dp_25"
                             android:layout_gravity="end"
                             android:layout_marginLeft="60dp"
-                            android:background="#00000000"
                             android:scaleType="fitXY"
+                            android:elevation="10dp"
                             android:src="@drawable/close" />
 
                     </FrameLayout>
@@ -185,6 +186,13 @@
                 </FrameLayout>
 
             </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/llSelectCorner"
+                android:visibility="gone"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
 
             <TextView
                 android:layout_width="match_parent"
@@ -251,6 +259,7 @@
                 </LinearLayout>
 
 
+            </LinearLayout>
             </LinearLayout>
 
 

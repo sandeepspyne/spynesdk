@@ -30,8 +30,8 @@
 
         <ImageView
             android:id="@+id/ivCoins"
-            android:layout_width="@dimen/dp_60"
-            android:layout_height="@dimen/dp_60"
+            android:layout_width="@dimen/dp_50"
+            android:layout_height="@dimen/dp_50"
             android:layout_marginTop="@dimen/dp_15"
             android:layout_centerHorizontal="true"
             android:src="@drawable/ic_brand"></ImageView>

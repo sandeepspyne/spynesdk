@@ -35,6 +35,10 @@ import kotlinx.android.synthetic.main.activity_shoot_selection.*
 import kotlinx.android.synthetic.main.activity_show_gif.*
 import java.io.File
 import java.net.URLEncoder
+import com.google.android.material.shape.CornerFamily
+
+
+
 
 
 class GenerateGifActivity : AppCompatActivity(), PickiTCallbacks {
@@ -267,6 +271,8 @@ class GenerateGifActivity : AppCompatActivity(), PickiTCallbacks {
         ivRemoveLogo.setOnClickListener {
             tvUpoadLogo.visibility = View.VISIBLE
             rlDealershipLogo.visibility = View.GONE
+            llSelectCorner.visibility = View.GONE
+            ivDealershipLogo.setImageDrawable(null);
         }
 
         cbTopLeft.setOnCheckedChangeListener(object : CompoundButton.OnCheckedChangeListener {
@@ -359,14 +365,14 @@ class GenerateGifActivity : AppCompatActivity(), PickiTCallbacks {
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
-        if (requestCode == PICK_IMAGE) {
+        if (requestCode == PICK_IMAGE && data != null) {
                 val selectedLogoUri: Uri = data?.getData()!!
                 Log.e("logoPath", selectedLogoUri.toString())
                 showLogo(selectedLogoUri)
             try {
                 var file = selectedLogoUri?.toFile()
                 dealershipLogo = file?.path!!.toString()
-            }catch (ex : IllegalArgumentException){
+            }catch (ex: IllegalArgumentException){
                 pickiT?.getPath(selectedLogoUri, Build.VERSION.SDK_INT)
             }
 
@@ -374,9 +380,11 @@ class GenerateGifActivity : AppCompatActivity(), PickiTCallbacks {
     }
 
     fun showLogo(selectedLogoUri: Uri) {
+
         Glide.with(this).load(selectedLogoUri.toString()).into(ivDealershipLogo)
         tvUpoadLogo.visibility = View.GONE
         rlDealershipLogo.visibility = View.VISIBLE
+        llSelectCorner.visibility = View.VISIBLE
     }
 
     override fun PickiTonUriReturned() {

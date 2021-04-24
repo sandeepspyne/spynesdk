@@ -305,6 +305,20 @@ interface APiService {
         @Part("contrast") contrast: RequestBody?,
     ): Call<BulkUploadResponse>?
 
+    @Multipart
+    @POST("v3/bulk-car-reaplacement")
+    fun bulkUPloadv3(
+        @Part("background") background: RequestBody?,
+        @Part("user_id") user_id: RequestBody?,
+        @Part("sku_id") sku_id: RequestBody?,
+        @Part("image_url") image_url: RequestBody?,
+        @Part("sku_name") sku_name: RequestBody?,
+        @Part("window_status") window_status: RequestBody?,
+        @Part("contrast") contrast: RequestBody?,
+        @Part logo: MultipartBody.Part?,
+        @Part("logo-position") logo_position: RequestBody?
+    ): Call<BulkUploadResponse>?
+
 
     @Multipart
     @POST("dealership-logo")
@@ -313,15 +327,6 @@ interface APiService {
         @Part("logo-position") logo_position: RequestBody?,
         @Part("image_url") image_url: RequestBody?
     ): Call<DealershipLogoResponse>?
-
-//    @Multipart
-//    @POST("user/updateprofile")
-//    fun updateProfile(
-//        @Part("user_id") id: RequestBody?,
-//        @Part("full_name") fullName: RequestBody?,
-//        @Part image: MultipartBody.Part?,
-//        @Part("other") other: RequestBody?
-//    ): Observable<ResponseBody?>?
 
     @Multipart
     @POST("footwear-background-replacement")

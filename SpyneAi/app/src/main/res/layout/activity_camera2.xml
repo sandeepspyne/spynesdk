@@ -206,7 +206,6 @@
                     android:gravity="center"
                     android:layout_gravity="center"
                     android:visibility="gone"
-
                     android:drawablePadding="@dimen/dp_5"
                     android:fontFamily="@font/bold"
                     android:text="@string/skip"

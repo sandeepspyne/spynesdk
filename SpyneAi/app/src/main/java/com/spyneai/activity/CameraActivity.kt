@@ -919,7 +919,8 @@ class CameraActivity : AppCompatActivity(), SubCategoriesAdapter.BtnClickListene
         } catch (e: IOException) {
             e.printStackTrace()
         }
-        assert(ei != null)
+//        assert(ei != null)
+        if (ei != null){
         val orientation = ei!!.getAttributeInt(
             ExifInterface.TAG_ORIENTATION,
             ExifInterface.ORIENTATION_UNDEFINED
@@ -934,6 +935,7 @@ class CameraActivity : AppCompatActivity(), SubCategoriesAdapter.BtnClickListene
         }
 
         showSuggestionDialog(rotatedBitmap)
+        }
 
         //  imageFile = persistImage(rotatedBitmap!!)
     }

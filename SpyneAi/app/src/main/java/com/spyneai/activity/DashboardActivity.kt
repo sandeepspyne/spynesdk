@@ -159,9 +159,10 @@ class DashboardActivity : AppCompatActivity() {
             object : CategoriesDashboardAdapter.BtnClickListener {
                 override fun onBtnClick(position: Int) {
                     Log.e("position cat", position.toString())
-                    if (position < 3)
+                    if (position < 3) {
+                        Utilities.savePrefrence(this@DashboardActivity, AppConstants.CATEGORY_NAME, categoriesResponseList[position].displayName)
                         setShoot(categoriesResponseList, position)
-                    else
+                    }else
                         Toast.makeText(
                             this@DashboardActivity,
                             "Coming Soon !",
