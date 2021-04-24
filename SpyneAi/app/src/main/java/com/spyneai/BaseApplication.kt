@@ -3,6 +3,7 @@ package com.spyneai
 import android.annotation.SuppressLint
 import android.app.Application
 import android.content.Context
+import androidx.appcompat.app.AppCompatDelegate
 
 @SuppressLint("StaticFieldLeak")
 class BaseApplication : Application() {
@@ -19,5 +20,9 @@ class BaseApplication : Application() {
     override fun onCreate() {
         super.onCreate()
         context = this
+
+        //disable night mode
+        AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
+
     }
 }

@@ -33,6 +33,7 @@ class UploadVideoService : Service(), VideoUploader.VideoTaskListener {
     var TAG = "UploadVideoService"
     var skuId = ""
     var processedSkuId = ""
+    var userId = ""
 
     override fun onBind(intent: Intent?): IBinder? {
         return null
@@ -46,6 +47,7 @@ class UploadVideoService : Service(), VideoUploader.VideoTaskListener {
         shootMode = intent.getIntExtra("shoot_mode",0)
         filePath = intent.getStringExtra("file_path").toString()
         skuId = intent.getStringExtra("sku_id")!!
+        userId = intent.getStringExtra("user_id")!!
         Log.d(TAG, "onStartCommand: "+shootMode+" "+skuId)
 
         when (action) {
@@ -64,7 +66,9 @@ class UploadVideoService : Service(), VideoUploader.VideoTaskListener {
 
         task.filePath = filePath
         task.shootMode = shootMode
+        task.user_id = userId
         task.skuId = skuId
+
 
         if (shootMode == 1 && FramesHelper.videoUrlMap.get(skuId) != null)
             task.videoUrl = FramesHelper.videoUrlMap.get(skuId)!!

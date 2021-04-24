@@ -26,11 +26,15 @@ import com.spyneai.adapter.ShowReplacedImagesAdapter
 import com.spyneai.adapter.ShowReplacedImagesInteriorAdapter
 import com.spyneai.aipack.FetchBulkResponse
 import com.spyneai.interfaces.APiService
+import com.spyneai.interfaces.RetrofitClientSpyneAi
 import com.spyneai.interfaces.RetrofitClients
 import com.spyneai.model.skumap.UpdateSkuResponse
 import com.spyneai.needs.AppConstants
 import com.spyneai.needs.ScrollingLinearLayoutManager
 import com.spyneai.needs.Utilities
+import com.spyneai.videorecording.ThreeSixtyInteriorViewActivity
+import com.spyneai.videorecording.model.VideoProcessingResponse
+import com.spyneai.videorecording.service.FramesHelper
 import com.synnapps.carouselview.CarouselView
 import com.synnapps.carouselview.ViewListener
 import kotlinx.android.synthetic.main.activity_before_after.*
@@ -66,9 +70,9 @@ class ShowImagesActivity : AppCompatActivity() {
 
     var downloadCount: Int = 0
     lateinit var Category: String
+    var TAG = "ShowImagesActivity"
 
     var downloadHighQualityCount: Int = 5
-
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -78,6 +82,7 @@ class ShowImagesActivity : AppCompatActivity() {
 
 
         setBulkImages()
+        checkThreeSixtyInterior()
         setListeners()
 
         if (intent.getStringExtra(AppConstants.CATEGORY_NAME) != null)
@@ -88,6 +93,64 @@ class ShowImagesActivity : AppCompatActivity() {
         if (catName.equals("Footwear")) {
             tvViewGif.visibility = View.GONE
         }
+    }
+
+    private fun checkThreeSixtyInterior() {
+        val request = RetrofitClientSpyneAi.buildService(APiService::class.java)
+
+        val call = request.getThreeSixtyInteriorByShootId(Utilities.getPreference(this, AppConstants.SKU_ID)
+            .toString())
+
+        call?.enqueue(object : Callback<VideoProcessingResponse> {
+            override fun onResponse(
+                call: Call<VideoProcessingResponse>,
+                response: Response<VideoProcessingResponse>
+            ) {
+                Log.d(TAG, "onResponse:  processVideo success ")
+                if (response.isSuccessful) {
+
+                    var videoProcessResponse = response.body()
+
+                    if (videoProcessResponse != null) {
+                        //   task.frames = response.body()
+                        FramesHelper.framesMap.put(
+                            (Utilities.getPreference(this@ShowImagesActivity, AppConstants.SKU_ID)
+                                .toString()), videoProcessResponse
+                        )
+
+                        tv_three_sixty_view.visibility = View.VISIBLE
+                        tv_three_sixty_view.setOnClickListener {
+                            var intent = Intent(
+                                this@ShowImagesActivity,
+                                ThreeSixtyInteriorViewActivity::class.java
+                            )
+                            intent.action = Utilities.getPreference(
+                                this@ShowImagesActivity,
+                                AppConstants.SKU_ID
+                            )
+                                .toString()
+                            Log.d(TAG, "onResponse: "+Utilities.getPreference(this@ShowImagesActivity, AppConstants.SKU_ID)
+                                .toString())
+                            startActivity(intent)
+                        }
+
+                    } else {
+                        Log.d(TAG, "onResponse:  processVideo sussess null ")
+
+                    }
+
+                } else {
+                    Log.d(TAG, "onResponse:  processVideo success fail ")
+
+                }
+            }
+
+            override fun onFailure(call: Call<VideoProcessingResponse>, t: Throwable) {
+                Log.d(TAG, "onResponse: processVideo failure" + t.localizedMessage)
+
+            }
+        })
+
     }
 
     private fun hideData(i: Int) {

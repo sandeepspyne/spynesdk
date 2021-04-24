@@ -303,6 +303,7 @@ class TrimVideoActivity : AppCompatActivity() , SeekListener {
 
         intentPlay.putExtra("file_path", path)
         intentPlay.putExtra("sku_id", intent.getStringExtra("sku_id"))
+        intentPlay.putExtra("user_id",intent.getStringExtra("user_id"))
         intentPlay.putExtra("shoot_mode", intent.getIntExtra("shoot_mode", 0))
         startActivity(intentPlay)
     }

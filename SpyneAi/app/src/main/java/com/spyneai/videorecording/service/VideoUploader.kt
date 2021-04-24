@@ -36,7 +36,7 @@ class VideoUploader(var task : VideoTask, var listener: VideoTaskListener) {
                 val video = MultipartBody.Part.createFormData("video", File(task.filePath)!!.name, requestFile)
 
                 val userId = RequestBody.create(
-                    MultipartBody.FORM,"sandeep singh"
+                    MultipartBody.FORM,task.user_id
                 )
 
                 val skuName = RequestBody.create(
@@ -48,14 +48,15 @@ class VideoUploader(var task : VideoTask, var listener: VideoTaskListener) {
                 )
 
                 val type = RequestBody.create(
-                    MultipartBody.FORM,"three sixty"
+                    MultipartBody.FORM,"360"
                 )
 
                 val category = RequestBody.create(
-                    MultipartBody.FORM,"automobiles"
+                    MultipartBody.FORM,"Automobiles"
                 )
 
-                val call = request.uploadVideo(video,userId,skuName,skuId,type,category)
+                val call = request.
+                uploadVideo(video,userId,skuName,skuId,type,category)
 
                 call?.enqueue(object : Callback<UploadVideoResponse> {
                     override fun onResponse(
@@ -97,7 +98,7 @@ class VideoUploader(var task : VideoTask, var listener: VideoTaskListener) {
                 val video = MultipartBody.Part.createFormData("video", File(task.filePath)!!.name, requestFile)
 
                 val userId = RequestBody.create(
-                    MultipartBody.FORM,"sandeep singh"
+                    MultipartBody.FORM,task.user_id
                 )
 
                 val skuName = RequestBody.create(
@@ -109,15 +110,15 @@ class VideoUploader(var task : VideoTask, var listener: VideoTaskListener) {
                 )
 
                 val type = RequestBody.create(
-                    MultipartBody.FORM,"three sixty"
+                    MultipartBody.FORM,"360"
                 )
 
                 val category = RequestBody.create(
-                    MultipartBody.FORM,"automobiles"
+                    MultipartBody.FORM,"Automobiles"
                 )
 
                 val subCategory = RequestBody.create(
-                    MultipartBody.FORM,"automobiles"
+                    MultipartBody.FORM,"sedan"
                 )
 
                 val frames= RequestBody.create(

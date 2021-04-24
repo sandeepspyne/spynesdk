@@ -126,6 +126,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_margin="@dimen/dp_10"/>
+
                 <TextView
                     android:id="@+id/tvViewGif"
                     android:layout_width="wrap_content"
@@ -138,6 +139,21 @@
                     android:layout_margin="@dimen/dp_10"
                     android:drawablePadding="@dimen/dp_10"
                     app:drawableRightCompat="@mipmap/move" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/tv_three_sixty_view"
+                    android:text="View 360° Interior Shot"
+                    android:textColor="@color/primary"
+                    android:visibility="gone"
+                    android:fontFamily="@font/medium"
+                    android:layout_gravity="center"
+                    android:textSize="@dimen/sp_15"
+                    android:layout_margin="@dimen/dp_10"
+                    android:drawablePadding="@dimen/dp_10"
+                    app:drawableRightCompat="@mipmap/move" />
+
                 <TextView
                     android:id="@+id/tvInterior"
                     android:layout_width="match_parent"

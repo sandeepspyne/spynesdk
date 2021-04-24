@@ -531,9 +531,8 @@ class RecordVideoActivity : AppCompatActivity(), PickiTCallbacks {
         )
 
         trimIntent.putExtra("src_path",videoPath)
-        var skuId = if(intent.getIntExtra("shoot_mode",0) == 0) System.currentTimeMillis().toString() else intent.getStringExtra("sku_id")
-
-        trimIntent.putExtra("sku_id",skuId)
+        trimIntent.putExtra("sku_id",intent.getStringExtra("sku_id"))
+        trimIntent.putExtra("user_id",intent.getStringExtra("user_id"))
         trimIntent.putExtra("shoot_mode",intent.getIntExtra("shoot_mode",0))
         startActivity(trimIntent)
 

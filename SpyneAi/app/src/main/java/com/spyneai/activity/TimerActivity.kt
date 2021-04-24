@@ -27,6 +27,7 @@ import com.spyneai.service.Actions
 import com.spyneai.service.ProcessImagesService
 import com.spyneai.service.getServiceState
 import com.spyneai.service.log
+import com.spyneai.videorecording.RecordVideoActivity
 import kotlinx.android.synthetic.main.activity_timer.*
 import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
@@ -141,7 +142,14 @@ class TimerActivity : AppCompatActivity() {
             finish()
             val intent = Intent(this, DashboardActivity::class.java)
             startActivity(intent)
+        }
 
+        llThreeSixtyShoot.setOnClickListener {
+            val intent = Intent(this, RecordVideoActivity::class.java)
+            intent.putExtra("sku_id", Utilities.getPreference(this, AppConstants.SKU_ID))
+            intent.putExtra("user_id",Utilities.getPreference(this, AppConstants.tokenId))
+
+            startActivity(intent)
         }
     }
 

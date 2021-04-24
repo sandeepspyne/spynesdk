@@ -415,4 +415,9 @@ interface APiService {
         @Part("frames") frames:RequestBody?
     ): Call<VideoProcessingResponse>?
 
+    @POST("real-estate/cars-360-interior-ping")
+    fun getThreeSixtyInteriorByShootId(
+        @Query("sku_id") skuId : String
+    ): Call<VideoProcessingResponse>?
+
 }

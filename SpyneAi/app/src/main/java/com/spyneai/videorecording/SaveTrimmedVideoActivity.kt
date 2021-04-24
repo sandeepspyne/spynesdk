@@ -95,6 +95,7 @@ class SaveTrimmedVideoActivity : AppCompatActivity(), SeekListener {
         val myServiceIntent = Intent(this, UploadVideoService::class.java)
         myServiceIntent.action = "START"
         myServiceIntent.putExtra("file_path", intent.getStringExtra("file_path"))
+        myServiceIntent.putExtra("user_id",intent.getStringExtra("user_id"))
         myServiceIntent.putExtra("sku_id",intent.getStringExtra("sku_id"))
         myServiceIntent.putExtra("shoot_mode",intent.getIntExtra("shoot_mode",0))
         ContextCompat.startForegroundService(this, myServiceIntent)
@@ -102,6 +103,7 @@ class SaveTrimmedVideoActivity : AppCompatActivity(), SeekListener {
         if (intent.getIntExtra("shoot_mode",0) == 0){
             var recordIntent = Intent(this,RecordVideoActivity::class.java)
             recordIntent.putExtra("sku_id",intent.getStringExtra("sku_id"))
+            recordIntent.putExtra("user_id",intent.getStringExtra("user_id"))
             recordIntent.putExtra("shoot_mode",1)
             recordIntent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
             startActivity(recordIntent)
