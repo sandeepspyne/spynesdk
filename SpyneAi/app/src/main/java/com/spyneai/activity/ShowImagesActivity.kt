@@ -82,13 +82,17 @@ class ShowImagesActivity : AppCompatActivity() {
 
 
         setBulkImages()
-        checkThreeSixtyInterior()
+
         setListeners()
 
         if (intent.getStringExtra(AppConstants.CATEGORY_NAME) != null)
             catName = intent.getStringExtra(AppConstants.CATEGORY_NAME)!!
         else
             catName = Utilities.getPreference(this, AppConstants.CATEGORY_NAME)!!
+
+        //check for 360 interior shoot only in case of Automobiles
+        if (catName.equals("Automobiles"))
+            checkThreeSixtyInterior()
 
         if (catName.equals("Footwear")) {
             tvViewGif.visibility = View.GONE
@@ -135,19 +139,16 @@ class ShowImagesActivity : AppCompatActivity() {
                         }
 
                     } else {
-                        Log.d(TAG, "onResponse:  processVideo sussess null ")
-
+                        Log.d(TAG, "onResponse:  processVideo success null ")
                     }
 
                 } else {
                     Log.d(TAG, "onResponse:  processVideo success fail ")
-
                 }
             }
 
             override fun onFailure(call: Call<VideoProcessingResponse>, t: Throwable) {
                 Log.d(TAG, "onResponse: processVideo failure" + t.localizedMessage)
-
             }
         })
 

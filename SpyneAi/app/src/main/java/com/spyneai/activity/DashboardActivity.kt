@@ -468,7 +468,7 @@ class DashboardActivity : AppCompatActivity() {
     override fun onBackPressed() {
         super.onBackPressed()
         moveTaskToBack(true);
-        System.exit(1);
+        //System.exit(1);
     }
 
 }

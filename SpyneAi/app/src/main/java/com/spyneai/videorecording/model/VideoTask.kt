@@ -15,4 +15,5 @@ class VideoTask {
     var videoUrl : String = ""
     lateinit var frames : List<String>
     var shootMode = 0
+    var retry = 0
 }

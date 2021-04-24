@@ -68,7 +68,7 @@ class VideoUploader(var task : VideoTask, var listener: VideoTaskListener) {
                             task.responseUrl = response.body()!!.video_url
                             listener.onSuccess(task)
                         }else{
-                            Log.d(TAG, "onResponse: upload failure")
+                           Log.d(TAG, "onResponse: upload failure")
                             listener.onFailure(task)
                         }
                     }
@@ -122,7 +122,7 @@ class VideoUploader(var task : VideoTask, var listener: VideoTaskListener) {
                 )
 
                 val frames= RequestBody.create(
-                    MultipartBody.FORM,"10"
+                    MultipartBody.FORM,"72"
                 )
 
                 val videoUrl= RequestBody.create(

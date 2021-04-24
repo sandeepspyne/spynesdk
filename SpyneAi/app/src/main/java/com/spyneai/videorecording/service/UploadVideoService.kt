@@ -70,9 +70,6 @@ class UploadVideoService : Service(), VideoUploader.VideoTaskListener {
         task.skuId = skuId
 
 
-        if (shootMode == 1 && FramesHelper.videoUrlMap.get(skuId) != null)
-            task.videoUrl = FramesHelper.videoUrlMap.get(skuId)!!
-
         FramesHelper.taskMap.put(skuId,task)
         tasksInProgress.add(task)
 
@@ -80,8 +77,11 @@ class UploadVideoService : Service(), VideoUploader.VideoTaskListener {
 
         if (shootMode == 0) VideoUploader(task,this).uploadVideo()
         else {
+            //put task to processing
+            FramesHelper.processingMap.put(skuId,true)
+
             if (FramesHelper.videoUrlMap.get(skuId) != null){
-                FramesHelper.processingMap.put(skuId,true)
+                task.videoUrl = FramesHelper.videoUrlMap.get(skuId)!!
                 VideoUploader(task,this).processVideo()
             }else{
                 Log.d(TAG, "startService: video uploading in progress")
@@ -267,7 +267,7 @@ class UploadVideoService : Service(), VideoUploader.VideoTaskListener {
             FramesHelper.videoUrlMap.put(task.skuId,task.responseUrl)
 
             //start processing if not started
-            if (FramesHelper.processingMap.get(task.skuId) == null || FramesHelper.processingMap.get(task.skuId) == false){
+            if (FramesHelper.processingMap.get(task.skuId) != null || FramesHelper.processingMap.get(task.skuId) == false){
                 var pendingProcessing =  FramesHelper.taskMap.get(task.skuId)
                 pendingProcessing?.videoUrl = FramesHelper.videoUrlMap.get(task.skuId).toString()
 
@@ -283,10 +283,18 @@ class UploadVideoService : Service(), VideoUploader.VideoTaskListener {
     }
 
     override fun onFailure(task: VideoTask) {
+        task.retry++
+
+        if (task.retry < 4){
+            task.onFailure = true
+            checkAndFinishService()
+        }else{
             if (task.shootMode == 0){
                 VideoUploader(task,this).uploadVideo()
             }else{
                 VideoUploader(task,this).processVideo()
             }
+        }
+
     }
 }
