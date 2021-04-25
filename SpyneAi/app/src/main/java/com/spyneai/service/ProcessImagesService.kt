@@ -74,17 +74,18 @@ class ProcessImagesService() : Service(), Listener {
         task.imageFileListFrames.addAll(intent.getIntegerArrayListExtra(AppConstants.ALL_FRAME_LIST)!!)
         task.totalImagesToUpload = task.imageFileList.size
 
-
         task.imageInteriorFileList.addAll(
             intent.getParcelableArrayListExtra(AppConstants.ALL_INTERIOR_IMAGE_LIST)
                 ?: ArrayList()
         )
-
         task.imageInteriorFileListFrames.addAll(
             intent.getIntegerArrayListExtra(AppConstants.ALL_INTERIOR_FRAME_LIST)
                 ?: ArrayList()
         )
-
+        task.imageFocusedFileList.addAll(intent.getParcelableArrayListExtra(AppConstants.ALL_FOCUSED_IMAGE_LIST)!!)
+        task.imageFocusedFileListFrames.addAll(intent.getIntegerArrayListExtra(AppConstants.ALL_FOCUSED_FRAME_LIST)!!)
+        task.dealershipLogo = intent.getStringExtra(AppConstants.DEALERSHIP_LOGO)?: ""
+        task.cornerPosition = intent.getStringExtra(AppConstants.CORNER_POSITION)?: ""
 
         tasksInProgress.add(task)
         checkAndFinishService()
@@ -218,15 +219,6 @@ class ProcessImagesService() : Service(), Listener {
 
 
     }
-
-//    private fun updateNotification(notificationContentText: String): Notification {
-//        return builder
-//            .setContentText(notificationContentText)
-//            .setProgress(PROGRESS_MAX, PROGRESS_CURRENT, false)
-//            .build()=
-//        notificationManager.notify(notificationID, builder.build())
-//    }
-
 
     override fun onSuccess(task: Task) {
         task.isCompleted = true

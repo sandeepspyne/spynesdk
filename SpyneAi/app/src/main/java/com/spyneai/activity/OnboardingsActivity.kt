@@ -18,6 +18,7 @@ import com.spyneai.fragment.OnboardingOneFragment
 import com.spyneai.fragment.OnboardingThreeFragment
 import com.spyneai.fragment.OnboardingTwoFragment
 import com.spyneai.needs.AppConstants
+import com.spyneai.service.log
 import kotlinx.android.synthetic.main.activity_onboardings.*
 
 
@@ -28,6 +29,7 @@ class OnboardingsActivity : AppCompatActivity() {
     private lateinit var tabLayout: TabLayout
 
     private var counts: Int = 0
+    private var number: Int = 0
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -48,18 +50,28 @@ class OnboardingsActivity : AppCompatActivity() {
 
         tabLayout.setupWithViewPager(mPager, true)
         mPager.setCurrentItem(0)
+        log("countbeforeclick: "+counts)
 
         tvGet.setOnClickListener(View.OnClickListener {
+            log("countonclick: "+counts)
+            if (number == 0)
+                counts=0
             when (counts) {
                 0 -> {
                     mPager.setCurrentItem(1)
+                    log("0")
+                    log("count1:" +counts)
                     counts = 1
+                    number++
                     //tvGet.setText(getString(R.string.get_started))
                 }
                 1 -> {
                     mPager.setCurrentItem(2)
+                    log("1")
+                    log("count2:" +counts)
                     counts = 2
                     tvGet.setText(getString(R.string.start_shooting))
+
                     //tvGet.setText(getString(R.string.get_started))
                 }
                 2 -> {
@@ -81,12 +93,13 @@ class OnboardingsActivity : AppCompatActivity() {
 
     private inner class ScreenSlidePagerAdapter(fm: FragmentManager) : FragmentStatePagerAdapter(fm) {
 
+
         override fun getCount(): Int = NUM_PAGES
 
         override fun getItem(position: Int) : Fragment {
             when (position) {
                 0 -> {
-                    counts = 1
+                    counts = 0
                     tvGet.setText(getString(R.string.get_started))
                     return OnboardingOneFragment()
                 }

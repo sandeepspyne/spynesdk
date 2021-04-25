@@ -1070,11 +1070,10 @@ class Camera2Activity : AppCompatActivity(), SubCategoriesAdapter.BtnClickListen
         } catch (e: IOException) {
             e.printStackTrace()
         }
-        assert(ei != null)
-        val orientation = ei!!.getAttributeInt(
-            ExifInterface.TAG_ORIENTATION,
-            ExifInterface.ORIENTATION_UNDEFINED
-        )
+//        assert(ei != null)
+        if (ei != null){
+           val orientation = ei!!.getAttributeInt(ExifInterface.TAG_ORIENTATION, ExifInterface.ORIENTATION_UNDEFINED)
+
         val rotatedBitmap: Bitmap?
         when (orientation) {
             ExifInterface.ORIENTATION_ROTATE_90 -> rotatedBitmap = rotateImage(myBitmap!!, 90f)
@@ -1083,8 +1082,8 @@ class Camera2Activity : AppCompatActivity(), SubCategoriesAdapter.BtnClickListen
             ExifInterface.ORIENTATION_NORMAL -> rotatedBitmap = myBitmap
             else -> rotatedBitmap = myBitmap
         }
-
-        showSuggestionDialog(rotatedBitmap)
+            showSuggestionDialog(rotatedBitmap)
+        }
 
         //  imageFile = persistImage(rotatedBitmap!!)
     }
@@ -1116,6 +1115,7 @@ class Camera2Activity : AppCompatActivity(), SubCategoriesAdapter.BtnClickListen
             if (!focusedEnabled) {
                 ivClickedImage.setImageBitmap(rotatedBitmap)
                 ivClickedImageover.setImageBitmap(rotatedBitmap)
+                if (frameImageList!=null)
                 Glide.with(this@Camera2Activity).load(
                     AppConstants.BASE_IMAGE_URL + frameImageList[frameNumber - 1].displayImage
                 ).into(ivClickedImageoverlay)
@@ -1999,6 +1999,8 @@ class Camera2Activity : AppCompatActivity(), SubCategoriesAdapter.BtnClickListen
         })
 
         tvShootNowFocused.setOnClickListener(View.OnClickListener {
+            tvSkipShoot.visibility = View.VISIBLE
+            cardOverlay.visibility = View.GONE
             camera_capture_button.isEnabled = true
             camera_capture_button.isFocusable = true
             interiorEnabled = false

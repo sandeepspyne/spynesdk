@@ -78,9 +78,15 @@ class CategoriesActivity : AppCompatActivity(),CategoriesAdapter.BtnClickListene
                 object : CategoriesAdapter.BtnClickListener {
                     override fun onBtnClick(position: Int) {
                         Log.e("position cat", position.toString())
-                        if (position < 3)
-                          setShoot(categoriesResponseList,position)
-                        else
+                        if (position < 3) {
+
+                            Utilities.savePrefrence(
+                                this@CategoriesActivity,
+                                AppConstants.CATEGORY_NAME,
+                                categoriesResponseList[position].displayName
+                            )
+                            setShoot(categoriesResponseList, position)
+                        }else
                             Toast.makeText(this@CategoriesActivity,
                                     "Coming Soon !",
                                     Toast.LENGTH_SHORT).show()

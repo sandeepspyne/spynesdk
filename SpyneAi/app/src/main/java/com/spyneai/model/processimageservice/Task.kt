@@ -26,6 +26,9 @@ class Task {
     var imageInteriorFileList = ArrayList<File>()
     var imageInteriorFileListFrames = ArrayList<Int>()
 
+    var imageFocusedFileList = ArrayList<File>()
+    var imageFocusedFileListFrames = ArrayList<Int>()
+
     var totalImagesToUploadIndex = 0
 
     var totalImagesToUpload = 0
@@ -36,11 +39,21 @@ class Task {
 
     var mainImage: String = ""
     var mainImageInterior: String = ""
+    var mainImageFocused: String = ""
 
     var photoList = ArrayList<Photos>()
     var photoListInteriors = ArrayList<Photos>()
+    var photoListFocused = ArrayList<Photos>()
+
+    var afterImagesCar = ArrayList<String>()
+
+    var dealershipLogo: String = ""
 
     var countGif: Int = 0
+
+    var cornerCount: Int = 0
+
+    var cornerPosition: String = ""
 
     var imageList = ArrayList<String>()
     var imageListAfter = ArrayList<String>()
@@ -49,10 +62,9 @@ class Task {
     var gifLink: String = ""
 
     var processingRetry: Int = 0
-
     var uploadingRetry: Int = 0
 
-    var retryCount: Int = 3
+    var retryCount: Int = 5
 
 
 

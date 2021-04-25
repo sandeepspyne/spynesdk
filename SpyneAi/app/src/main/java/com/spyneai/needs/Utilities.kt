@@ -12,6 +12,7 @@ import android.util.Patterns
 import android.view.Gravity
 import android.view.Window
 import com.bumptech.glide.Glide
+import com.google.android.play.core.internal.e
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import com.spyneai.R
@@ -81,29 +82,33 @@ object Utilities {
     }
 
     fun showProgressDialog(context: Context?) {
-        dialog = Dialog(context!!)
-        dialog!!.requestWindowFeature(Window.FEATURE_NO_TITLE)
-        dialog!!.setContentView(R.layout.dialog_progress)
-        dialog!!.setCancelable(false)
-        Glide.with(context).load(R.raw.logo).into(dialog!!.ivLoaders);
-        dialog!!.window!!.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
-        dialog!!.show()
+        if (context != null) {
+            dialog = Dialog(context!!)
+            dialog!!.requestWindowFeature(Window.FEATURE_NO_TITLE)
+            dialog!!.setContentView(R.layout.dialog_progress)
+            dialog!!.setCancelable(false)
+            Glide.with(context).load(R.raw.logo).into(dialog!!.ivLoaders);
+            dialog!!.window!!.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
+            dialog!!.show()
+        }
+
     }
 
 
     fun showProgressDialogPreview(context: Context?) {
-        dialog = Dialog(context!!)
-
-        val window: Window = dialog!!.getWindow()!!
-        val wlp = window.attributes
-        wlp.gravity = Gravity.TOP;
-        window.setAttributes(wlp);
-        dialog!!.requestWindowFeature(Window.FEATURE_NO_TITLE)
-        dialog!!.setContentView(R.layout.dialog_progress_preview)
-        dialog!!.setCancelable(false)
-        Glide.with(context).load(R.raw.loaders).into(dialog!!.ivLoaderPreview);
-        dialog!!.window!!.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
-        dialog!!.show()
+        if (context != null) {
+            dialog = Dialog(context!!)
+            val window: Window = dialog!!.getWindow()!!
+            val wlp = window.attributes
+            wlp.gravity = Gravity.TOP;
+            window.setAttributes(wlp);
+            dialog!!.requestWindowFeature(Window.FEATURE_NO_TITLE)
+            dialog!!.setContentView(R.layout.dialog_progress_preview)
+            dialog!!.setCancelable(false)
+            Glide.with(context).load(R.raw.loaders).into(dialog!!.ivLoaderPreview);
+            dialog!!.window!!.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
+            dialog!!.show()
+        }
     }
 
     fun hideProgressDialog() {
@@ -117,7 +122,8 @@ object Utilities {
     }
 
     fun isNetworkAvailable(context: Context): Boolean {
-        val connectivityManager = context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
+        val connectivityManager =
+            context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
         return connectivityManager.activeNetworkInfo != null && connectivityManager.activeNetworkInfo!!.isConnected
     }
 
@@ -190,7 +196,8 @@ object Utilities {
         if (serializedObject != null) {
             val gson = Gson()
             val type: Type = object : TypeToken<List<FootwearMarketplaceResponse?>?>() {}.type
-            arrayItems = gson.fromJson<ArrayList<FootwearMarketplaceResponse>>(serializedObject, type)
+            arrayItems =
+                gson.fromJson<ArrayList<FootwearMarketplaceResponse>>(serializedObject, type)
         }
 
         return arrayItems

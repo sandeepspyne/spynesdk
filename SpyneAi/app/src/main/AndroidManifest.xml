@@ -153,6 +153,7 @@
             android:screenOrientation="portrait" />
         <activity
             android:name=".activity.CompletedProjectsActivity"
+            android:launchMode="singleTask"
             android:screenOrientation="portrait" />
         <activity
             android:name=".activity.ChannelActivity"

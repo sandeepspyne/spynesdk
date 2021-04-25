@@ -9,6 +9,11 @@ apply plugin: 'kotlin-android-extensions'
 apply plugin: 'com.google.firebase.crashlytics'
 
 android {
+
+    lintOptions {
+        checkReleaseBuilds false
+    }
+
     compileSdkVersion 30
     buildToolsVersion "30.0.3"
 
@@ -16,8 +21,8 @@ android {
         applicationId "com.spyneai"
         minSdkVersion 21
         targetSdkVersion 30
-        versionCode 28
-        versionName "2.41"
+        versionCode 29
+        versionName "2.42"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
 
@@ -131,6 +136,7 @@ dependencies {
     implementation 'androidx.legacy:legacy-support-v4:1.0.0'
     testImplementation 'junit:junit:4.13.2'
     androidTestImplementation 'androidx.test.ext:junit:1.1.2'
+    androidTestImplementation 'com.android.support.test:runner:1.0.2'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.3.0'
 
     //circle image view
@@ -153,4 +159,6 @@ dependencies {
 
     //for file path
     implementation 'com.github.HBiSoft:PickiT:0.1.14'
+    //cardview
+    implementation "androidx.cardview:cardview:1.0.0"
 }
