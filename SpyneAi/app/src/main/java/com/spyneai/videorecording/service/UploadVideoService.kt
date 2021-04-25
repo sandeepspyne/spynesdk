@@ -215,6 +215,7 @@ class UploadVideoService : Service(), VideoUploader.VideoTaskListener {
                 resultIntent = Intent(baseContext, ProcessVideoTimerActivity::class.java)
             }else{
                 resultIntent = Intent(baseContext, ThreeSixtyInteriorViewActivity::class.java)
+                resultIntent.putExtra("back_press_type",1)
             }
 
             resultIntent.setAction(processedSkuId)

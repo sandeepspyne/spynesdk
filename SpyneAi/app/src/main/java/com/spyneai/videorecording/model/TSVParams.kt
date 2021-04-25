@@ -8,7 +8,7 @@ import android.graphics.drawable.Drawable
      var mEndX: Int = 0
      var mStartY: Int = 0
      var mStartX: Int = 0
-     lateinit var placeholder : Drawable
+     var placeholder : Drawable? = null
      var type : Int = 0
 
 }

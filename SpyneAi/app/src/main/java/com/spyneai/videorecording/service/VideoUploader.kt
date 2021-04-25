@@ -131,10 +131,10 @@ class VideoUploader(var task : VideoTask, var listener: VideoTaskListener) {
 
                 val call = request.processVideo(video,videoUrl,userId,skuName,skuId,type,category,subCategory,frames)
 
-                call?.enqueue(object : Callback<VideoProcessingResponse> {
+                call?.enqueue(object : Callback<String> {
                     override fun onResponse(
-                        call: Call<VideoProcessingResponse>,
-                        response: Response<VideoProcessingResponse>
+                        call: Call<String>,
+                        response: Response<String>
                     ) {
                         Log.d(TAG, "onResponse:  processVideo success ")
                         if (response.isSuccessful){
@@ -143,7 +143,7 @@ class VideoUploader(var task : VideoTask, var listener: VideoTaskListener) {
 
                             if (videoProcessResponse != null){
                              //   task.frames = response.body()
-                                FramesHelper.framesMap.put(task.skuId,videoProcessResponse)
+                              //  FramesHelper.framesMap.put(task.skuId,videoProcessResponse)
                                 listener.onSuccess(task)
 
                             }else{
@@ -157,7 +157,7 @@ class VideoUploader(var task : VideoTask, var listener: VideoTaskListener) {
                         }
                     }
 
-                    override fun onFailure(call: Call<VideoProcessingResponse>, t: Throwable) {
+                    override fun onFailure(call: Call<String>, t: Throwable) {
                         Log.d(TAG, "onResponse: processVideo failure"+t.localizedMessage)
                         listener.onFailure(task)
                     }

@@ -40,6 +40,7 @@ import com.spyneai.videorecording.model.VideoProcessResponse
 import com.spyneai.videorecording.model.VideoProcessingResponse
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
+import org.json.JSONObject
 import retrofit2.Call
 import retrofit2.http.*
 
@@ -413,7 +414,7 @@ interface APiService {
         @Part("category") category: RequestBody?,
         @Part("sub_category") sub_category: RequestBody?,
         @Part("frames") frames:RequestBody?
-    ): Call<VideoProcessingResponse>?
+    ): Call<String>?
 
     @POST("real-estate/cars-360-interior-ping")
     fun getThreeSixtyInteriorByShootId(

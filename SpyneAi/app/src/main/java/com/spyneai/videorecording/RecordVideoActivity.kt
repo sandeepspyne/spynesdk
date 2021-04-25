@@ -535,14 +535,14 @@ class RecordVideoActivity : AppCompatActivity(), PickiTCallbacks {
 
 
         trimIntent.putExtra("src_path",videoPath)
-       if (intent.getIntExtra("shoot_mode", 0) == 0){
-           trimIntent.putExtra("sku_id",System.currentTimeMillis().toString())
-       }else{
-           trimIntent.putExtra("sku_id",intent.getStringExtra("sku_id"))
-       }
-        trimIntent.putExtra("user_id","sandeep singh")
-       // trimIntent.putExtra("sku_id",intent.getStringExtra("sku_id"))
-      //  trimIntent.putExtra("user_id",intent.getStringExtra("user_id"))
+//       if (intent.getIntExtra("shoot_mode", 0) == 0){
+//           trimIntent.putExtra("sku_id",System.currentTimeMillis().toString())
+//       }else{
+//           trimIntent.putExtra("sku_id",intent.getStringExtra("sku_id"))
+//       }
+//        trimIntent.putExtra("user_id","sandeep singh")
+       trimIntent.putExtra("sku_id",intent.getStringExtra("sku_id"))
+        trimIntent.putExtra("user_id",intent.getStringExtra("user_id"))
         trimIntent.putExtra("shoot_mode",intent.getIntExtra("shoot_mode",0))
         startActivity(trimIntent)
 

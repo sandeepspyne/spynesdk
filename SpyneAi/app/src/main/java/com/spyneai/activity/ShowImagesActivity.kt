@@ -91,7 +91,7 @@ class ShowImagesActivity : AppCompatActivity() {
             catName = Utilities.getPreference(this, AppConstants.CATEGORY_NAME)!!
 
         //check for 360 interior shoot only in case of Automobiles
-        if (catName.equals("Automobiles"))
+      //  if (catName.equals("Automobile"))
             checkThreeSixtyInterior()
 
         if (catName.equals("Footwear")) {
@@ -100,6 +100,9 @@ class ShowImagesActivity : AppCompatActivity() {
     }
 
     private fun checkThreeSixtyInterior() {
+        Log.d(TAG, "onResponse: "+Utilities.getPreference(this@ShowImagesActivity, AppConstants.SKU_ID)
+            .toString())
+
         val request = RetrofitClientSpyneAi.buildService(APiService::class.java)
 
         val call = request.getThreeSixtyInteriorByShootId(Utilities.getPreference(this, AppConstants.SKU_ID)
@@ -143,7 +146,7 @@ class ShowImagesActivity : AppCompatActivity() {
                     }
 
                 } else {
-                    Log.d(TAG, "onResponse:  processVideo success fail ")
+                    Log.d(TAG, "onResponse:  processVideo success fail "+response.errorBody().toString())
                 }
             }
 
