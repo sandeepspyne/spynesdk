@@ -414,7 +414,7 @@ interface APiService {
         @Part("category") category: RequestBody?,
         @Part("sub_category") sub_category: RequestBody?,
         @Part("frames") frames:RequestBody?
-    ): Call<String>?
+    ): Call<VideoProcessingResponse>?
 
     @POST("real-estate/cars-360-interior-ping")
     fun getThreeSixtyInteriorByShootId(
