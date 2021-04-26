@@ -42,11 +42,7 @@
         android:usesCleartextTraffic="true"
         tools:targetApi="m">
         <activity android:name=".videorecording.ThreeSixtyViewTestActivity">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
 
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
         </activity>
         <activity android:name=".videorecording.VideoUploadHandlerActivity" />
         <activity
@@ -217,7 +213,11 @@
         <activity
             android:name=".activity.SplashActivity"
             android:screenOrientation="portrait">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
 
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
         </activity>
         <activity android:name=".videorecording.ThreeSixtyViewActivity" />
         <activity android:name=".videorecording.TrimVideoActivity" />

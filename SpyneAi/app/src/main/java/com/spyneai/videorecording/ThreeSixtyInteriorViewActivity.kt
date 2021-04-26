@@ -23,8 +23,9 @@ import com.bumptech.glide.request.RequestListener
 import com.spyneai.R
 import com.bumptech.glide.request.target.Target
 import com.spyneai.activity.DashboardActivity
-import com.spyneai.databinding.ActivityThreeSixtyInteriorViewBinding
-import com.spyneai.databinding.DialogCopyEmbeddedCodeBinding
+
+import com.spyneai.databinding.ActivityThreeSixtyViewTestBinding
+
 import com.spyneai.videorecording.fragments.DialogEmbedCode
 import com.spyneai.videorecording.model.TSVParams
 import com.spyneai.videorecording.service.FramesHelper
@@ -34,7 +35,7 @@ class ThreeSixtyInteriorViewActivity : AppCompatActivity(),View.OnTouchListener,
 
     private lateinit var backFramesList: List<String>
     private lateinit var frontFramesList: List<String>
-    private lateinit var binding : ActivityThreeSixtyInteriorViewBinding
+    private lateinit var binding : ActivityThreeSixtyViewTestBinding
     var handler = Handler()
     var TAG = "UploadVideoTestService"
     lateinit var tsvParamFront : TSVParams
@@ -46,7 +47,7 @@ class ThreeSixtyInteriorViewActivity : AppCompatActivity(),View.OnTouchListener,
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        binding = DataBindingUtil.setContentView(this,R.layout.activity_three_sixty_interior_view)
+        binding = DataBindingUtil.setContentView(this,R.layout.activity_three_sixty_view_test)
 
 //        framesList = intent.getStringArrayListExtra("frames")!!
        if (FramesHelper.framesMap != null && intent.action != null){
@@ -65,11 +66,14 @@ class ThreeSixtyInteriorViewActivity : AppCompatActivity(),View.OnTouchListener,
             tsvParamFront.framesList = frontFramesList
             tsvParamFront.mImageIndex = frontFramesList.size / 2
 
-            binding.progressBarFront.visibility = View.VISIBLE
+            //binding.sv.visibility = View.VISIBLE
 
+            binding.svFront.startShimmer()
             preLoadFront(tsvParamFront)
         }else{
-            binding.progressBarFront.visibility = View.GONE
+            //binding.progressBarFront.visibility = View.GONE
+                binding.svFront.stopShimmer()
+            binding.svFront.visibility = View.GONE
             Toast.makeText(this,"Frames list empty failed to load front view",Toast.LENGTH_LONG)
         }
 
@@ -80,17 +84,19 @@ class ThreeSixtyInteriorViewActivity : AppCompatActivity(),View.OnTouchListener,
             tsvParamBack.framesList = backFramesList
             tsvParamBack.mImageIndex = backFramesList.size / 2
 
-            binding.progressBarBack.visibility = View.VISIBLE
+            //binding.progressBarBack.visibility = View.VISIBLE
+            binding.svBack.startShimmer()
 
             preLoadBack(tsvParamBack)
         }else{
-            binding.progressBarBack.visibility = View.GONE
+           // binding.progressBarBack.visibility = View.GONE
+            binding.svBack.stopShimmer()
+            binding.svBack.visibility = View.GONE
             Toast.makeText(this,"Frames list empty failed to load back view",Toast.LENGTH_LONG)
         }
 
         binding.ivBack.setOnClickListener {
-        onBackPressed()
-
+            onBackPressed()
         }
     }
 
@@ -135,52 +141,26 @@ class ThreeSixtyInteriorViewActivity : AppCompatActivity(),View.OnTouchListener,
                         }
 
                         if (index == tsvParams.framesList.size - 1) {
-                            binding.progressBarFront.visibility = View.GONE
+                            //binding.progressBarFront.visibility = View.GONE
+
+                            binding.svFront.stopShimmer()
+                            binding.svFront.visibility = View.GONE
+
                             loadImage(tsvParams,binding.ivFront)
 
-
                             //show images and set listener
-                            binding.ivShare.visibility = View.VISIBLE
-                            binding.ivCopyLink.visibility = View.VISIBLE
-                            binding.ivEmbbedCode.visibility = View.VISIBLE
+                            binding.clFront.visibility = View.VISIBLE
 
-                            binding.ivShare.setOnClickListener(this@ThreeSixtyInteriorViewActivity)
+                            binding.tvShare.setOnClickListener(this@ThreeSixtyInteriorViewActivity)
+
                             binding.ivCopyLink.setOnClickListener(this@ThreeSixtyInteriorViewActivity)
-                            binding.ivEmbbedCode.setOnClickListener(this@ThreeSixtyInteriorViewActivity)
+                            binding.tvCopyLink.setOnClickListener(this@ThreeSixtyInteriorViewActivity)
+
+                            binding.ivShareLink.setOnClickListener(this@ThreeSixtyInteriorViewActivity)
+                            binding.tvShareLink.setOnClickListener(this@ThreeSixtyInteriorViewActivity)
 
                             binding.ivFront.setOnTouchListener(this@ThreeSixtyInteriorViewActivity)
 
-//                            if (tsvParams.type == 0){
-//                                binding.progressBarFront.visibility = View.GONE
-//                                loadImage(tsvParams,binding.ivFront)
-//
-//
-//                                //show images and set listener
-//                                binding.ivShare.visibility = View.VISIBLE
-//                                binding.ivCopyLink.visibility = View.VISIBLE
-//                                binding.ivEmbbedCode.visibility = View.VISIBLE
-//
-//                                binding.ivShare.setOnClickListener(this@ThreeSixtyInteriorViewActivity)
-//                                binding.ivCopyLink.setOnClickListener(this@ThreeSixtyInteriorViewActivity)
-//                                binding.ivEmbbedCode.setOnClickListener(this@ThreeSixtyInteriorViewActivity)
-//
-//                                binding.ivFront.setOnTouchListener(this@ThreeSixtyInteriorViewActivity)
-//
-//                            }else{
-//                                binding.progressBarBack.visibility = View.GONE
-//                                loadImage(tsvParams,binding.ivBackView)
-//
-//                                //show images and set listener
-//                                binding.ivBackShare.visibility = View.VISIBLE
-//                                binding.ivBackCopyLink.visibility = View.VISIBLE
-//                                binding.ivBackEmbbedCode.visibility = View.VISIBLE
-//
-//                                binding.ivBackShare.setOnClickListener(this@ThreeSixtyInteriorViewActivity)
-//                                binding.ivBackCopyLink.setOnClickListener(this@ThreeSixtyInteriorViewActivity)
-//                                binding.ivBackEmbbedCode.setOnClickListener(this@ThreeSixtyInteriorViewActivity)
-//
-//                                binding.ivBackView.setOnTouchListener(this@ThreeSixtyInteriorViewActivity)
-//                            }
                         }
 
                         return false
@@ -226,17 +206,23 @@ class ThreeSixtyInteriorViewActivity : AppCompatActivity(),View.OnTouchListener,
                         }
 
                         if (index == tsvParams.framesList.size - 1) {
-                            binding.progressBarBack.visibility = View.GONE
+                            //binding.progressBarBack.visibility = View.GONE
+                            binding.svBack.stopShimmer()
+                            binding.svBack.visibility = View.GONE
+
                             loadImage(tsvParams,binding.ivBackView)
 
                             //show images and set listener
-                            binding.ivBackShare.visibility = View.VISIBLE
-                            binding.ivBackCopyLink.visibility = View.VISIBLE
-                            binding.ivBackEmbbedCode.visibility = View.VISIBLE
+                            binding.clBack.visibility = View.VISIBLE
 
-                            binding.ivBackShare.setOnClickListener(this@ThreeSixtyInteriorViewActivity)
+
+                            binding.tvBackShare.setOnClickListener(this@ThreeSixtyInteriorViewActivity)
+
+                            binding.tvBackCopyLink.setOnClickListener(this@ThreeSixtyInteriorViewActivity)
                             binding.ivBackCopyLink.setOnClickListener(this@ThreeSixtyInteriorViewActivity)
-                            binding.ivBackEmbbedCode.setOnClickListener(this@ThreeSixtyInteriorViewActivity)
+
+                            binding.ivBackShareLink.setOnClickListener(this@ThreeSixtyInteriorViewActivity)
+                            binding.tvBackShareLink.setOnClickListener(this@ThreeSixtyInteriorViewActivity)
 
                             binding.ivBackView.setOnTouchListener(this@ThreeSixtyInteriorViewActivity)
 
@@ -292,7 +278,7 @@ class ThreeSixtyInteriorViewActivity : AppCompatActivity(),View.OnTouchListener,
                         }
 
                     })
-                    .override(250, 250)
+                    //.override(250, 250)
                     .dontAnimate()
                     .diskCacheStrategy(DiskCacheStrategy.ALL)
                     .into(imageView)
@@ -341,12 +327,15 @@ class ThreeSixtyInteriorViewActivity : AppCompatActivity(),View.OnTouchListener,
                         tsvParamFront.mStartX = event.x.toInt()
                         tsvParamFront.mStartY = event.y.toInt()
 
+                        if (binding.clShareFront.visibility == View.VISIBLE) binding.clShareFront.visibility = View.GONE
+
                         return true
                     }
 
                     MotionEvent.ACTION_UP -> {
                         tsvParamFront.mEndX = event!!.x.toInt()
                         tsvParamFront.mEndY = event.y.toInt()
+
 
                         return true
                     }
@@ -386,6 +375,8 @@ class ThreeSixtyInteriorViewActivity : AppCompatActivity(),View.OnTouchListener,
                         tsvParamBack.mStartX = event.x.toInt()
                         tsvParamBack.mStartY = event.y.toInt()
 
+                        if (binding.clShareBack.visibility == View.VISIBLE) binding.clShareBack.visibility = View.GONE
+
                         return true
                     }
 
@@ -407,29 +398,30 @@ class ThreeSixtyInteriorViewActivity : AppCompatActivity(),View.OnTouchListener,
 
     override fun onClick(v: View?) {
         when(v?.id){
-            R.id.iv_share -> {
-                share(getCode(0))
-            }
+            R.id.tv_share-> binding.clShareFront.visibility = View.VISIBLE
 
-            R.id.iv_copy_link -> {
-                copy("https://www.spyne.ai/shoots/shoot?skuId="+shootId+"&type=front")
-            }
+            R.id.tv_back_share-> binding.clShareBack.visibility = View.VISIBLE
 
-            R.id.iv_embbed_code -> {
+            R.id.iv_copy_link, R.id.tv_copy_link -> {
+                binding.clShareFront.visibility = View.GONE
                 embed(getCode(0))
             }
 
-            R.id.iv_back_share -> {
+            R.id.iv_share_link,R.id.tv_share_link -> {
+                binding.clShareFront.visibility = View.GONE
+                share(getCode(0))
+            }
+
+            R.id.iv_back_copy_link, R.id.tv_back_copy_link -> {
+                binding.clShareBack.visibility = View.GONE
+                embed(getCode(1))
+            }
+
+            R.id.iv_back_share_link,R.id.tv_back_share_link -> {
+                binding.clShareBack.visibility = View.GONE
                 share(getCode(1))
             }
 
-            R.id.iv_back_copy_link -> {
-                copy("https://www.spyne.ai/shoots/shoot?skuId="+shootId+"&type=back")
-            }
-
-            R.id.iv_back_embbed_code -> {
-                embed(getCode(1))
-            }
         }
     }
 
