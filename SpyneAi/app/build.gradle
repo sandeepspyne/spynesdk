@@ -159,6 +159,13 @@ dependencies {
 
     //for file path
     implementation 'com.github.HBiSoft:PickiT:0.1.14'
-    //cardview
+
     implementation "androidx.cardview:cardview:1.0.0"
+
+    //round corner image view: remove in next build
+    implementation 'com.makeramen:roundedimageview:2.3.0'
+
+    //shimer view
+    implementation 'com.facebook.shimmer:shimmer:0.5.0'
+
 }
