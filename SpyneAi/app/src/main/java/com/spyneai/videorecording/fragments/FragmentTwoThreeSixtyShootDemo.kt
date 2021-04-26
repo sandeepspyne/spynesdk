@@ -117,7 +117,7 @@ class FragmentTwoThreeSixtyShootDemo : Fragment() {
 
     override fun onResume() {
         super.onResume()
-        if (!isActive && !videoPlayer?.playWhenReady!!){
+        if (!isActive && (videoPlayer != null && !videoPlayer?.playWhenReady!!)){
             isActive = true
             videoPlayer!!.setPlayWhenReady(true)
         }else{

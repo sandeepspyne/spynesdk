@@ -7,6 +7,7 @@ import android.os.Bundle
 import android.os.CountDownTimer
 import android.os.StrictMode
 import android.util.Log
+import android.view.View
 import android.view.animation.LinearInterpolator
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
@@ -110,6 +111,9 @@ class TimerActivity : AppCompatActivity() {
             catName = intent.getStringExtra(AppConstants.CATEGORY_NAME)!!
         else
             catName = Utilities.getPreference(this, AppConstants.CATEGORY_NAME)!!
+
+        //show 360 only in case of Automobiles
+        if(catName == "Automobiles") llThreeSixtyShoot.visibility = View.VISIBLE
 
         if (intent.getStringExtra(AppConstants.MARKETPLACE_ID) != null)
             marketplaceId = intent.getStringExtra(AppConstants.MARKETPLACE_ID)!!

@@ -5,6 +5,7 @@ import android.animation.Animator
 import android.animation.AnimatorListenerAdapter
 import android.animation.ObjectAnimator
 import android.annotation.SuppressLint
+import android.app.ProgressDialog.show
 import android.content.ContentValues
 import android.content.Intent
 import android.content.pm.PackageManager
@@ -43,6 +44,7 @@ import com.hbisoft.pickit.PickiTCallbacks
 import com.spyneai.R
 import com.spyneai.databinding.ActivityRecordVideoBinding
 import com.spyneai.videorecording.adapter.ThreeSixtyShootDemoAdapter
+import com.spyneai.videorecording.fragments.DialogExitWarning
 import com.spyneai.videorecording.fragments.FragmentOneThreeSixtyShootDemo
 import com.spyneai.videorecording.fragments.FragmentTwoThreeSixtyShootDemo
 import kotlinx.android.synthetic.main.activity_otp.*
@@ -199,7 +201,7 @@ class RecordVideoActivity : AppCompatActivity(), PickiTCallbacks {
             }
         }
 
-        binding.ivBack.setOnClickListener { finish() }
+        binding.ivBack.setOnClickListener { onBackPressed() }
 
         Handler(Looper.getMainLooper()).postDelayed(object : Runnable {
             override fun run() {
@@ -530,8 +532,16 @@ class RecordVideoActivity : AppCompatActivity(), PickiTCallbacks {
             TrimVideoActivity::class.java
         )
 
+
+
         trimIntent.putExtra("src_path",videoPath)
-        trimIntent.putExtra("sku_id",intent.getStringExtra("sku_id"))
+//       if (intent.getIntExtra("shoot_mode", 0) == 0){
+//           trimIntent.putExtra("sku_id",System.currentTimeMillis().toString())
+//       }else{
+//           trimIntent.putExtra("sku_id",intent.getStringExtra("sku_id"))
+//       }
+//        trimIntent.putExtra("user_id","sandeep singh")
+       trimIntent.putExtra("sku_id",intent.getStringExtra("sku_id"))
         trimIntent.putExtra("user_id",intent.getStringExtra("user_id"))
         trimIntent.putExtra("shoot_mode",intent.getIntExtra("shoot_mode",0))
         startActivity(trimIntent)
@@ -552,7 +562,12 @@ class RecordVideoActivity : AppCompatActivity(), PickiTCallbacks {
 
 
 
-    override fun onBackPressed() = finish()
+    override fun onBackPressed() {
+//        if (intent.getIntExtra("shoot_mode",0) == 0)  finish()
+//        else DialogExitWarning().show(supportFragmentManager,"DialogExitWarning")
+        DialogExitWarning().show(supportFragmentManager,"DialogExitWarning")
+    }
+
 
     override fun onStop() {
         super.onStop()

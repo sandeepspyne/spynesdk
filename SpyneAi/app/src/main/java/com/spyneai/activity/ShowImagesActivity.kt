@@ -69,7 +69,7 @@ class ShowImagesActivity : AppCompatActivity() {
 
     lateinit var imageListWaterMark: ArrayList<String>
     lateinit var listHdQuality: ArrayList<String>
-    var catName : String = ""
+    var catName: String = ""
     var numberOfImages: Int = 0
 
     private lateinit var showReplacedImagesAdapter: ShowReplacedImagesAdapter
@@ -88,8 +88,9 @@ class ShowImagesActivity : AppCompatActivity() {
 
         AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
 
+
         setBulkImages()
-        checkThreeSixtyInterior()
+
         setListeners()
 
         if (intent.getStringExtra(AppConstants.CATEGORY_NAME) != null)
@@ -97,320 +98,375 @@ class ShowImagesActivity : AppCompatActivity() {
         else
             catName = Utilities.getPreference(this, AppConstants.CATEGORY_NAME)!!
 
-        if (catName.equals("Footwear")){
+        checkThreeSixtyInterior()
+
+        if (catName.equals("Footwear")) {
             tvViewGif.visibility = View.GONE
         }
     }
 
-    private fun checkThreeSixtyInterior() {
-        val request = RetrofitClientSpyneAi.buildService(APiService::class.java)
+        private fun checkThreeSixtyInterior() {
+            Log.d(
+                TAG,
+                "onResponse: " + Utilities.getPreference(
+                    this@ShowImagesActivity,
+                    AppConstants.SKU_ID
+                )
+                    .toString()
+            )
 
-        val call = request.getThreeSixtyInteriorByShootId(Utilities.getPreference(this, AppConstants.SKU_ID)
-            .toString())
+            val request = RetrofitClientSpyneAi.buildService(APiService::class.java)
 
-        call?.enqueue(object : Callback<VideoProcessingResponse> {
-            override fun onResponse(
-                call: Call<VideoProcessingResponse>,
-                response: Response<VideoProcessingResponse>
-            ) {
-                Log.d(TAG, "onResponse:  processVideo success ")
-                if (response.isSuccessful) {
+            val call = request.getThreeSixtyInteriorByShootId(
+                Utilities.getPreference(this, AppConstants.SKU_ID)
+                    .toString()
+            )
 
-                    var videoProcessResponse = response.body()
+            call?.enqueue(object : Callback<VideoProcessingResponse> {
+                override fun onResponse(
+                    call: Call<VideoProcessingResponse>,
+                    response: Response<VideoProcessingResponse>
+                ) {
+                    Log.d(TAG, "onResponse:  processVideo success ")
+                    if (response.isSuccessful) {
 
-                    if (videoProcessResponse != null) {
-                        //   task.frames = response.body()
-                        FramesHelper.framesMap.put(
-                            (Utilities.getPreference(this@ShowImagesActivity, AppConstants.SKU_ID)
-                                .toString()), videoProcessResponse
-                        )
+                        var videoProcessResponse = response.body()
 
-                        tv_three_sixty_view.visibility = View.VISIBLE
-                        tv_three_sixty_view.setOnClickListener {
-                            var intent = Intent(
-                                this@ShowImagesActivity,
-                                ThreeSixtyInteriorViewActivity::class.java
+                        if (videoProcessResponse != null) {
+                            //   task.frames = response.body()
+                            FramesHelper.framesMap.put(
+                                (Utilities.getPreference(
+                                    this@ShowImagesActivity,
+                                    AppConstants.SKU_ID
+                                )
+                                    .toString()), videoProcessResponse
                             )
-                            intent.action = Utilities.getPreference(
-                                this@ShowImagesActivity,
-                                AppConstants.SKU_ID
-                            )
-                                .toString()
-                            Log.d(TAG, "onResponse: "+Utilities.getPreference(this@ShowImagesActivity, AppConstants.SKU_ID)
-                                .toString())
-                            startActivity(intent)
+
+                            tv_three_sixty_view.visibility = View.VISIBLE
+                            tv_three_sixty_view.setOnClickListener {
+                                var intent = Intent(
+                                    this@ShowImagesActivity,
+                                    ThreeSixtyInteriorViewActivity::class.java
+                                )
+                                intent.action = Utilities.getPreference(
+                                    this@ShowImagesActivity,
+                                    AppConstants.SKU_ID
+                                )
+                                    .toString()
+                                Log.d(
+                                    TAG,
+                                    "onResponse: " + Utilities.getPreference(
+                                        this@ShowImagesActivity,
+                                        AppConstants.SKU_ID
+                                    )
+                                        .toString()
+                                )
+                                startActivity(intent)
+                            }
+
+                        } else {
+                            Log.d(TAG, "onResponse:  processVideo success null ")
                         }
 
                     } else {
-                        Log.d(TAG, "onResponse:  processVideo sussess null ")
-
+                        Log.d(
+                            TAG,
+                            "onResponse:  processVideo success fail " + response.errorBody()
+                                .toString()
+                        )
                     }
-
-                } else {
-                    Log.d(TAG, "onResponse:  processVideo success fail ")
-
                 }
-            }
 
-            override fun onFailure(call: Call<VideoProcessingResponse>, t: Throwable) {
-                Log.d(TAG, "onResponse: processVideo failure" + t.localizedMessage)
+                override fun onFailure(call: Call<VideoProcessingResponse>, t: Throwable) {
+                    Log.d(TAG, "onResponse: processVideo failure" + t.localizedMessage)
+                }
+            })
 
-            }
-        })
+        }
 
-    }
+        private fun hideData(i: Int) {
 
-    private fun hideData(i: Int) {
-
-        if (i == 0) {
-            tvYourEmailIdReplaced.visibility = View.VISIBLE
-            tvViewGif.visibility = View.VISIBLE
-            tvInterior.visibility = View.VISIBLE
+            if (i == 0) {
+                tvYourEmailIdReplaced.visibility = View.VISIBLE
+                tvViewGif.visibility = View.VISIBLE
+                tvInterior.visibility = View.VISIBLE
 //            llDownloads.visibility = View.VISIBLE
-        }
-        else{
-            tvYourEmailIdReplaced.visibility = View.GONE
-            tvViewGif.visibility = View.GONE
-            tvInterior.visibility = View.GONE
+            } else {
+                tvYourEmailIdReplaced.visibility = View.GONE
+                tvViewGif.visibility = View.GONE
+                tvInterior.visibility = View.GONE
 //            llDownloads.visibility = View.GONE
-        }
-    }
-
-    private fun setListeners() {
-        tvViewGif.setOnClickListener(View.OnClickListener {
-            val intent = Intent(
-                this,
-                ShowGifActivity::class.java
-            )
-            startActivity(intent)
-        })
-
-        ivBackShowImages.setOnClickListener(View.OnClickListener {
-            onBackPressed()
-        })
-
-        ivHomeShowImages.setOnClickListener(View.OnClickListener {
-            Utilities.savePrefrence(this@ShowImagesActivity, AppConstants.SHOOT_ID, "")
-            Utilities.savePrefrence(this@ShowImagesActivity, AppConstants.CATEGORY_ID, "")
-            Utilities.savePrefrence(this@ShowImagesActivity, AppConstants.PRODUCT_ID, "")
-            Utilities.savePrefrence(this@ShowImagesActivity, AppConstants.SKU_NAME, "")
-            Utilities.savePrefrence(this@ShowImagesActivity, AppConstants.SKU_ID, "")
-            val intent = Intent(this, DashboardActivity::class.java)
-            startActivity(intent)
-            finish()
-
-            val updateSkuResponseList = ArrayList<UpdateSkuResponse>()
-            updateSkuResponseList.clear()
-
-            Utilities.setList(
-                this,
-                AppConstants.FRAME_LIST, updateSkuResponseList
-            )
-        })
-
-        tvDownloadFree.setOnClickListener {
-            Utilities.savePrefrence(this, AppConstants.DOWNLOAD_TYPE, "watermark")
-            val intent = Intent(this, DownloadingActivity::class.java)
-            intent.putExtra(AppConstants.LIST_WATERMARK, imageListWaterMark)
-            intent.putExtra(AppConstants.LIST_HD_QUALITY, listHdQuality)
-            startActivity(intent)
+            }
         }
 
-        llDownloadHdImages.setOnClickListener {
-            Utilities.savePrefrence(this, AppConstants.DOWNLOAD_TYPE, "hd")
-            val intent = Intent(this, OrderSummary2Activity::class.java)
-            intent.putExtra(AppConstants.LIST_WATERMARK, imageListWaterMark)
-            intent.putExtra(AppConstants.LIST_HD_QUALITY, listHdQuality)
-            startActivity(intent)
+        private fun setListeners() {
+            tvViewGif.setOnClickListener(View.OnClickListener {
+                val intent = Intent(
+                    this,
+                    ShowGifActivity::class.java
+                )
+                startActivity(intent)
+            })
+
+            ivBackShowImages.setOnClickListener(View.OnClickListener {
+                onBackPressed()
+            })
+
+            ivHomeShowImages.setOnClickListener(View.OnClickListener {
+                Utilities.savePrefrence(this@ShowImagesActivity, AppConstants.SHOOT_ID, "")
+                Utilities.savePrefrence(this@ShowImagesActivity, AppConstants.CATEGORY_ID, "")
+                Utilities.savePrefrence(this@ShowImagesActivity, AppConstants.PRODUCT_ID, "")
+                Utilities.savePrefrence(this@ShowImagesActivity, AppConstants.SKU_NAME, "")
+                Utilities.savePrefrence(this@ShowImagesActivity, AppConstants.SKU_ID, "")
+                val intent = Intent(this, DashboardActivity::class.java)
+                startActivity(intent)
+                finish()
+
+                val updateSkuResponseList = ArrayList<UpdateSkuResponse>()
+                updateSkuResponseList.clear()
+
+                Utilities.setList(
+                    this,
+                    AppConstants.FRAME_LIST, updateSkuResponseList
+                )
+            })
+
+            tvDownloadFree.setOnClickListener {
+                Utilities.savePrefrence(this, AppConstants.DOWNLOAD_TYPE, "watermark")
+                val intent = Intent(this, DownloadingActivity::class.java)
+                intent.putExtra(AppConstants.LIST_WATERMARK, imageListWaterMark)
+                intent.putExtra(AppConstants.LIST_HD_QUALITY, listHdQuality)
+                startActivity(intent)
+            }
+
+            llDownloadHdImages.setOnClickListener {
+                Utilities.savePrefrence(this, AppConstants.DOWNLOAD_TYPE, "hd")
+                val intent = Intent(this, OrderSummary2Activity::class.java)
+                intent.putExtra(AppConstants.LIST_WATERMARK, imageListWaterMark)
+                intent.putExtra(AppConstants.LIST_HD_QUALITY, listHdQuality)
+                startActivity(intent)
+            }
         }
-    }
 
 
-    private fun setBulkImages() {
-        Utilities.showProgressDialog(this)
-        imageList = ArrayList<String>()
-        imageListAfter = ArrayList<String>()
-        imageListWaterMark = ArrayList<String>()
-        imageListInterior = ArrayList<String>()
-        imageListFocused = ArrayList<String>()
-        listHdQuality = ArrayList<String>()
+        private fun setBulkImages() {
+            Utilities.showProgressDialog(this)
+            imageList = ArrayList<String>()
+            imageListAfter = ArrayList<String>()
+            imageListWaterMark = ArrayList<String>()
+            imageListInterior = ArrayList<String>()
+            imageListFocused = ArrayList<String>()
+            listHdQuality = ArrayList<String>()
 
-        showReplacedImagesAdapter = ShowReplacedImagesAdapter(this,
-            imageList as ArrayList<String>,
-            imageListAfter as ArrayList<String>,
-            object : ShowReplacedImagesAdapter.BtnClickListener {
-                override fun onBtnClick(position: Int) {
-                    showImagesDialog(position)
-                    Log.e("position preview", position.toString())
-                }
-            })
+            showReplacedImagesAdapter = ShowReplacedImagesAdapter(this,
+                imageList as ArrayList<String>,
+                imageListAfter as ArrayList<String>,
+                object : ShowReplacedImagesAdapter.BtnClickListener {
+                    override fun onBtnClick(position: Int) {
+                        showImagesDialog(position)
+                        Log.e("position preview", position.toString())
+                    }
+                })
 
-        ShowReplacedImagesInteriorAdapter = ShowReplacedImagesInteriorAdapter(this,
-            imageListInterior as ArrayList<String>,
-            object : ShowReplacedImagesInteriorAdapter.BtnClickListener {
-                override fun onBtnClick(position: Int) {
-                    //   showImagesDialog(position)
-                    Log.e("position preview", position.toString())
-                }
-            })
+            ShowReplacedImagesInteriorAdapter = ShowReplacedImagesInteriorAdapter(this,
+                imageListInterior as ArrayList<String>,
+                object : ShowReplacedImagesInteriorAdapter.BtnClickListener {
+                    override fun onBtnClick(position: Int) {
+                        //   showImagesDialog(position)
+                        Log.e("position preview", position.toString())
+                    }
+                })
 
 
-        ShowReplacedImagesFocusedAdapter = ShowReplacedImagesFocusedAdapter(this,
-            imageListFocused as ArrayList<String>,
-            object : ShowReplacedImagesFocusedAdapter.BtnClickListener {
-                override fun onBtnClick(position: Int) {
-                    //   showImagesDialog(position)
-                    Log.e("position preview", position.toString())
-                }
-            })
+            ShowReplacedImagesFocusedAdapter = ShowReplacedImagesFocusedAdapter(this,
+                imageListFocused as ArrayList<String>,
+                object : ShowReplacedImagesFocusedAdapter.BtnClickListener {
+                    override fun onBtnClick(position: Int) {
+                        //   showImagesDialog(position)
+                        Log.e("position preview", position.toString())
+                    }
+                })
 
-        rvImagesBackgroundRemoved.setLayoutManager(
-            ScrollingLinearLayoutManager(
-                this,
-                LinearLayoutManager.VERTICAL,
-                false
+            rvImagesBackgroundRemoved.setLayoutManager(
+                ScrollingLinearLayoutManager(
+                    this,
+                    LinearLayoutManager.VERTICAL,
+                    false
+                )
             )
-        )
 
-        rvInteriors.setLayoutManager(
-            GridLayoutManager(
-                this,
-                2
+            rvInteriors.setLayoutManager(
+                GridLayoutManager(
+                    this,
+                    2
+                )
             )
-        )
 
-        rvFocused.setLayoutManager(
-            GridLayoutManager(
-                this,
-                2
+            rvFocused.setLayoutManager(
+                GridLayoutManager(
+                    this,
+                    2
+                )
             )
-        )
 
-        rvImagesBackgroundRemoved.setAdapter(showReplacedImagesAdapter)
-        rvInteriors.setAdapter(ShowReplacedImagesInteriorAdapter)
-        rvFocused.setAdapter(ShowReplacedImagesFocusedAdapter)
-        fetchBulkUpload()
-    }
+            rvImagesBackgroundRemoved.setAdapter(showReplacedImagesAdapter)
+            rvInteriors.setAdapter(ShowReplacedImagesInteriorAdapter)
+            rvFocused.setAdapter(ShowReplacedImagesFocusedAdapter)
+            fetchBulkUpload()
+        }
 
-    //Fetch bulk data
-    private fun fetchBulkUpload() {
-        val request = RetrofitClients.buildService(APiService::class.java)
-        val userId = RequestBody.create(
-            MultipartBody.FORM,
-            Utilities.getPreference(this, AppConstants.tokenId)!!
-        )
-        val skuId = RequestBody.create(
-            MultipartBody.FORM,
-            Utilities.getPreference(this, AppConstants.SKU_ID)!!
-        )
+        //Fetch bulk data
+        private fun fetchBulkUpload() {
+            val request = RetrofitClients.buildService(APiService::class.java)
+            val userId = RequestBody.create(
+                MultipartBody.FORM,
+                Utilities.getPreference(this, AppConstants.tokenId)!!
+            )
+            val skuId = RequestBody.create(
+                MultipartBody.FORM,
+                Utilities.getPreference(this, AppConstants.SKU_ID)!!
+            )
 
-        val call = request.fetchBulkImage(userId, skuId)
+            val call = request.fetchBulkImage(userId, skuId)
 
-        call?.enqueue(object : Callback<List<FetchBulkResponse>> {
-            override fun onResponse(
-                call: Call<List<FetchBulkResponse>>,
-                response: Response<List<FetchBulkResponse>>
-            ) {
-                Utilities.hideProgressDialog()
-                if (response.isSuccessful) {
-                    for (i in 0..response.body()!!.size - 1) {
-                        if (response.body()!![i].category.equals("Exterior")) {
-                            Category = response.body()!![i].category
-                            (imageList as ArrayList).add(response.body()!![i].input_image_url)
-                            (imageListAfter as ArrayList).add(response.body()!![i].output_image_url)
-                            (imageListWaterMark as ArrayList).add(response.body()!![i].watermark_image)
-                            (listHdQuality as ArrayList).add(response.body()!![i].original_image)
-                            Utilities.savePrefrence(this@ShowImagesActivity, AppConstants.CATEGORY_NAME, response.body()!![0].product_category)
-                            Utilities.savePrefrence(this@ShowImagesActivity, AppConstants.NO_OF_IMAGES, imageListAfter.size.toString())
-                            hideData(0)
-                        } else if (response.body()!![i].category.equals("Interior")) {
-                            Category = response.body()!![i].category
-                            (imageListInterior as ArrayList).add(response.body()!![i].output_image_url)
-                            (imageListWaterMark as ArrayList).add(response.body()!![i].output_image_url)
-                            (listHdQuality as ArrayList).add(response.body()!![i].input_image_url)
-                            Utilities.savePrefrence(this@ShowImagesActivity, AppConstants.CATEGORY_NAME, response.body()!![0].product_category)
-                            Utilities.savePrefrence(this@ShowImagesActivity, AppConstants.NO_OF_IMAGES, imageListAfter.size.toString())
-                            hideData(0)
-                        }else if (response.body()!![i].category.equals("Focus Shoot")) {
-                            Category = response.body()!![i].category
-                            (imageListFocused as ArrayList).add(response.body()!![i].output_image_url)
-                            (imageListWaterMark as ArrayList).add(response.body()!![i].output_image_url)
-                            (listHdQuality as ArrayList).add(response.body()!![i].input_image_url)
-                            Utilities.savePrefrence(this@ShowImagesActivity, AppConstants.CATEGORY_NAME, response.body()!![0].product_category)
-                            Utilities.savePrefrence(this@ShowImagesActivity, AppConstants.NO_OF_IMAGES, imageListAfter.size.toString())
-                            hideData(0)
-                        } else{
-                            Category = response.body()!![i].category
-                            (imageList as ArrayList).add(response.body()!![i].input_image_url)
-                            (imageListAfter as ArrayList).add(response.body()!![i].output_image_url)
-                            (listHdQuality as ArrayList).add(response.body()!![i].original_image)
-                            (imageListWaterMark as ArrayList).add(response.body()!![i].watermark_image)
-                            Utilities.savePrefrence(this@ShowImagesActivity, AppConstants.CATEGORY_NAME, response.body()!![0].product_category)
-                            Utilities.savePrefrence(this@ShowImagesActivity, AppConstants.NO_OF_IMAGES, imageListAfter.size.toString())
-                            hideData(1)
+            call?.enqueue(object : Callback<List<FetchBulkResponse>> {
+                override fun onResponse(
+                    call: Call<List<FetchBulkResponse>>,
+                    response: Response<List<FetchBulkResponse>>
+                ) {
+                    Utilities.hideProgressDialog()
+                    if (response.isSuccessful) {
+                        for (i in 0..response.body()!!.size - 1) {
+                            if (response.body()!![i].category.equals("Exterior")) {
+                                Category = response.body()!![i].category
+                                (imageList as ArrayList).add(response.body()!![i].input_image_url)
+                                (imageListAfter as ArrayList).add(response.body()!![i].output_image_url)
+                                (imageListWaterMark as ArrayList).add(response.body()!![i].watermark_image)
+                                (listHdQuality as ArrayList).add(response.body()!![i].original_image)
+                                Utilities.savePrefrence(
+                                    this@ShowImagesActivity,
+                                    AppConstants.CATEGORY_NAME,
+                                    response.body()!![0].product_category
+                                )
+                                Utilities.savePrefrence(
+                                    this@ShowImagesActivity,
+                                    AppConstants.NO_OF_IMAGES,
+                                    imageListAfter.size.toString()
+                                )
+                                hideData(0)
+                            } else if (response.body()!![i].category.equals("Interior")) {
+                                Category = response.body()!![i].category
+                                (imageListInterior as ArrayList).add(response.body()!![i].output_image_url)
+                                (imageListWaterMark as ArrayList).add(response.body()!![i].output_image_url)
+                                (listHdQuality as ArrayList).add(response.body()!![i].input_image_url)
+                                Utilities.savePrefrence(
+                                    this@ShowImagesActivity,
+                                    AppConstants.CATEGORY_NAME,
+                                    response.body()!![0].product_category
+                                )
+                                Utilities.savePrefrence(
+                                    this@ShowImagesActivity,
+                                    AppConstants.NO_OF_IMAGES,
+                                    imageListAfter.size.toString()
+                                )
+                                hideData(0)
+                            } else if (response.body()!![i].category.equals("Focus Shoot")) {
+                                Category = response.body()!![i].category
+                                (imageListFocused as ArrayList).add(response.body()!![i].output_image_url)
+                                (imageListWaterMark as ArrayList).add(response.body()!![i].output_image_url)
+                                (listHdQuality as ArrayList).add(response.body()!![i].input_image_url)
+                                Utilities.savePrefrence(
+                                    this@ShowImagesActivity,
+                                    AppConstants.CATEGORY_NAME,
+                                    response.body()!![0].product_category
+                                )
+                                Utilities.savePrefrence(
+                                    this@ShowImagesActivity,
+                                    AppConstants.NO_OF_IMAGES,
+                                    imageListAfter.size.toString()
+                                )
+                                hideData(0)
+                            } else {
+                                Category = response.body()!![i].category
+                                (imageList as ArrayList).add(response.body()!![i].input_image_url)
+                                (imageListAfter as ArrayList).add(response.body()!![i].output_image_url)
+                                (listHdQuality as ArrayList).add(response.body()!![i].original_image)
+                                (imageListWaterMark as ArrayList).add(response.body()!![i].watermark_image)
+                                Utilities.savePrefrence(
+                                    this@ShowImagesActivity,
+                                    AppConstants.CATEGORY_NAME,
+                                    response.body()!![0].product_category
+                                )
+                                Utilities.savePrefrence(
+                                    this@ShowImagesActivity,
+                                    AppConstants.NO_OF_IMAGES,
+                                    imageListAfter.size.toString()
+                                )
+                                hideData(1)
+                            }
+
+
                         }
 
-
                     }
-
+                    showReplacedImagesAdapter.notifyDataSetChanged()
+                    ShowReplacedImagesInteriorAdapter.notifyDataSetChanged()
+                    ShowReplacedImagesFocusedAdapter.notifyDataSetChanged()
                 }
-                showReplacedImagesAdapter.notifyDataSetChanged()
-                ShowReplacedImagesInteriorAdapter.notifyDataSetChanged()
-                ShowReplacedImagesFocusedAdapter.notifyDataSetChanged()
+
+                override fun onFailure(call: Call<List<FetchBulkResponse>>, t: Throwable) {
+                    Utilities.hideProgressDialog()
+                    Toast.makeText(
+                        this@ShowImagesActivity,
+                        "Server not responding!!!", Toast.LENGTH_SHORT
+                    ).show()
+                }
+            })
+        }
+
+        fun showImagesDialog(position: Int) {
+            val dialog = Dialog(this)
+            dialog.requestWindowFeature(Window.FEATURE_NO_TITLE)
+            dialog.setCancelable(true)
+            dialog.setContentView(R.layout.dialog_show_images)
+
+            val window: Window = dialog.getWindow()!!
+            window.setLayout(
+                WindowManager.LayoutParams.MATCH_PARENT,
+                WindowManager.LayoutParams.WRAP_CONTENT
+            )
+
+            val carouselViewImages: CarouselView = dialog.findViewById(R.id.carouselViewImages)
+            val ivCrossImages: ImageView = dialog.findViewById(R.id.ivCrossImages)
+
+            ivCrossImages.setOnClickListener(View.OnClickListener {
+                dialog.dismiss()
+            })
+
+            carouselViewImages.setPageCount(imageList.size);
+            carouselViewImages.setViewListener(viewListener);
+            carouselViewImages.setCurrentItem(position)
+
+            dialog.show()
+        }
+
+        var viewListener = object : ViewListener {
+            override fun setViewForPosition(position: Int): View? {
+                val customView: View = layoutInflater.inflate(R.layout.view_images, null)
+
+                Glide.with(this@ShowImagesActivity) // replace with 'this' if it's in activity
+                    .load(imageList[position])
+                    .diskCacheStrategy(DiskCacheStrategy.RESOURCE)
+                    .error(R.mipmap.defaults) // show error drawable if the image is not a gif
+                    .into(customView.ivBefore)
+                Glide.with(this@ShowImagesActivity) // replace with 'this' if it's in activity
+                    .load(imageListAfter[position])
+                    .diskCacheStrategy(DiskCacheStrategy.RESOURCE)
+                    .error(R.mipmap.defaults) // show error drawable if the image is not a gif
+                    .into(customView.ivAfter)
+
+                return customView
             }
-
-            override fun onFailure(call: Call<List<FetchBulkResponse>>, t: Throwable) {
-                Utilities.hideProgressDialog()
-                Toast.makeText(
-                    this@ShowImagesActivity,
-                    "Server not responding!!!", Toast.LENGTH_SHORT
-                ).show()
-            }
-        })
-    }
-
-    fun showImagesDialog(position: Int) {
-        val dialog = Dialog(this)
-        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE)
-        dialog.setCancelable(true)
-        dialog.setContentView(R.layout.dialog_show_images)
-
-        val window: Window = dialog.getWindow()!!
-        window.setLayout(
-            WindowManager.LayoutParams.MATCH_PARENT,
-            WindowManager.LayoutParams.WRAP_CONTENT
-        )
-
-        val carouselViewImages: CarouselView = dialog.findViewById(R.id.carouselViewImages)
-        val ivCrossImages: ImageView = dialog.findViewById(R.id.ivCrossImages)
-
-        ivCrossImages.setOnClickListener(View.OnClickListener {
-            dialog.dismiss()
-        })
-
-        carouselViewImages.setPageCount(imageList.size);
-        carouselViewImages.setViewListener(viewListener);
-        carouselViewImages.setCurrentItem(position)
-
-        dialog.show()
-    }
-
-    var viewListener = object : ViewListener {
-        override fun setViewForPosition(position: Int): View? {
-            val customView: View = layoutInflater.inflate(R.layout.view_images, null)
-
-            Glide.with(this@ShowImagesActivity) // replace with 'this' if it's in activity
-                .load(imageList[position])
-                .diskCacheStrategy(DiskCacheStrategy.RESOURCE)
-                .error(R.mipmap.defaults) // show error drawable if the image is not a gif
-                .into(customView.ivBefore)
-            Glide.with(this@ShowImagesActivity) // replace with 'this' if it's in activity
-                .load(imageListAfter[position])
-                .diskCacheStrategy(DiskCacheStrategy.RESOURCE)
-                .error(R.mipmap.defaults) // show error drawable if the image is not a gif
-                .into(customView.ivAfter)
-
-            return customView
         }
     }
-}
+

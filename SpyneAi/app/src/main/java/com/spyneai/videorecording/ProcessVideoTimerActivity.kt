@@ -73,6 +73,7 @@ class ProcessVideoTimerActivity : AppCompatActivity() {
     fun onMessageEvent(event: ProcessVideoEvent?) {
         event?.getSkuId()?.let {
             var resultIntent = Intent(baseContext, ThreeSixtyInteriorViewActivity::class.java)
+            resultIntent.putExtra("back_press_type",1)
             resultIntent.setAction(it)
             startActivity(resultIntent)
             finish()

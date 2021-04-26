@@ -53,6 +53,7 @@ class TimerDemoActivity : AppCompatActivity() {
     lateinit var image_url : ArrayList<String>
     var countGif : Int = 0
     private lateinit var handler: Handler
+    private var isActive = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -82,9 +83,6 @@ class TimerDemoActivity : AppCompatActivity() {
 //        },5500)
 
     }
-
-
-
 
     private fun CountDownTimer(maxProgress: Long){
         countDownTimer = object : CountDownTimer(maxProgress.toLong(), progress.toLong()) {
@@ -129,7 +127,23 @@ class TimerDemoActivity : AppCompatActivity() {
 
     override fun onBackPressed() {
         //  super.onBackPressed()
-        showExitDialog()
+        if (isActive)
+            showExitDialog()
+    }
+
+    override fun onResume() {
+        super.onResume()
+        isActive = true
+    }
+
+    override fun onPause() {
+        super.onPause()
+        isActive = false
+    }
+
+    override fun onStop() {
+        super.onStop()
+        isActive = false
     }
 
     fun showExitDialog( ) {

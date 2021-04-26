@@ -46,7 +46,8 @@
         tools:targetApi="m">
 
         <activity android:name=".videorecording.VideoUploadHandlerActivity"></activity>
-        <activity android:name=".videorecording.ThreeSixtyInteriorViewActivity" >
+        <activity android:name=".videorecording.ThreeSixtyInteriorViewActivity"
+            android:launchMode="singleTop">
 
         </activity>
         <activity android:name=".videorecording.ProcessVideoTimerActivity" />
@@ -177,6 +178,9 @@
             android:name=".camera2.Camera2Activity"
             android:screenOrientation="landscape"
             />
+
+        <activity android:name=".activity.PreviewOrderActivity"/>
+
         <activity
             android:name=".activity.HomeActivity"
             android:screenOrientation="portrait" />

@@ -121,7 +121,7 @@ class SaveTrimmedVideoActivity : AppCompatActivity(), SeekListener {
             videoPlayer = SimpleExoPlayer.Builder(this).build()
             playerView?.setResizeMode(AspectRatioFrameLayout.RESIZE_MODE_FIT)
             playerView?.setPlayer(videoPlayer)
-           // videoPlayer!!.volume = 0F
+           videoPlayer!!.volume = 0F
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
                 val audioAttributes = AudioAttributes.Builder()
                     .setUsage(C.USAGE_MEDIA)

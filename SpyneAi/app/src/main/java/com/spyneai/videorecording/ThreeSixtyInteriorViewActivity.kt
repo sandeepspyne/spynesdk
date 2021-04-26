@@ -22,6 +22,7 @@ import com.bumptech.glide.load.engine.GlideException
 import com.bumptech.glide.request.RequestListener
 import com.spyneai.R
 import com.bumptech.glide.request.target.Target
+import com.spyneai.activity.DashboardActivity
 import com.spyneai.databinding.ActivityThreeSixtyInteriorViewBinding
 import com.spyneai.databinding.DialogCopyEmbeddedCodeBinding
 import com.spyneai.videorecording.fragments.DialogEmbedCode
@@ -66,7 +67,7 @@ class ThreeSixtyInteriorViewActivity : AppCompatActivity(),View.OnTouchListener,
 
             binding.progressBarFront.visibility = View.VISIBLE
 
-            preLoad(tsvParamFront)
+            preLoadFront(tsvParamFront)
         }else{
             binding.progressBarFront.visibility = View.GONE
             Toast.makeText(this,"Frames list empty failed to load front view",Toast.LENGTH_LONG)
@@ -81,19 +82,30 @@ class ThreeSixtyInteriorViewActivity : AppCompatActivity(),View.OnTouchListener,
 
             binding.progressBarBack.visibility = View.VISIBLE
 
-            preLoad(tsvParamBack)
+            preLoadBack(tsvParamBack)
         }else{
             binding.progressBarBack.visibility = View.GONE
             Toast.makeText(this,"Frames list empty failed to load back view",Toast.LENGTH_LONG)
         }
 
+        binding.ivBack.setOnClickListener {
+        onBackPressed()
 
+        }
+    }
 
-        binding.ivBack.setOnClickListener { onBackPressed() }
+    override fun onBackPressed() {
+        if (intent.getIntExtra("back_press_type",0) == 1){
+            var dashboardIntent = Intent(this, DashboardActivity::class.java)
+            dashboardIntent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+            startActivity(dashboardIntent)
+        }else{
+            super.onBackPressed()
+        }
 
     }
 
-    private fun preLoad(tsvParams: TSVParams) {
+    private fun preLoadFront(tsvParams: TSVParams) {
         for ((index, url) in tsvParams.framesList.withIndex()) {
 
             Glide.with(this)
@@ -106,7 +118,7 @@ class ThreeSixtyInteriorViewActivity : AppCompatActivity(),View.OnTouchListener,
                         isFirstResource: Boolean
                     ): Boolean {
                         Log.d(TAG, "onResourceReady: failed")
-                        return true
+                        return false
                     }
 
                     override fun onResourceReady(
@@ -122,47 +134,53 @@ class ThreeSixtyInteriorViewActivity : AppCompatActivity(),View.OnTouchListener,
                             tsvParams.placeholder = resource!!
                         }
 
-
                         if (index == tsvParams.framesList.size - 1) {
-                            if (tsvParams.type == 0){
-                                binding.progressBarFront.visibility = View.GONE
-                                loadImage(tsvParams,binding.ivFront)
-//                                Glide.with(this@ThreeSixtyInteriorViewActivity)
-//                                    .load(tsvParams.placeholder)
-//                                    .placeholder(tsvParams.placeholder)
-//                                    .into(binding.ivFront)
+                            binding.progressBarFront.visibility = View.GONE
+                            loadImage(tsvParams,binding.ivFront)
 
-                                //show images and set listener
-                                binding.ivShare.visibility = View.VISIBLE
-                                binding.ivCopyLink.visibility = View.VISIBLE
-                                binding.ivEmbbedCode.visibility = View.VISIBLE
 
-                                binding.ivShare.setOnClickListener(this@ThreeSixtyInteriorViewActivity)
-                                binding.ivCopyLink.setOnClickListener(this@ThreeSixtyInteriorViewActivity)
-                                binding.ivEmbbedCode.setOnClickListener(this@ThreeSixtyInteriorViewActivity)
+                            //show images and set listener
+                            binding.ivShare.visibility = View.VISIBLE
+                            binding.ivCopyLink.visibility = View.VISIBLE
+                            binding.ivEmbbedCode.visibility = View.VISIBLE
 
-                                binding.ivFront.setOnTouchListener(this@ThreeSixtyInteriorViewActivity)
+                            binding.ivShare.setOnClickListener(this@ThreeSixtyInteriorViewActivity)
+                            binding.ivCopyLink.setOnClickListener(this@ThreeSixtyInteriorViewActivity)
+                            binding.ivEmbbedCode.setOnClickListener(this@ThreeSixtyInteriorViewActivity)
 
-                            }else{
-                                binding.progressBarBack.visibility = View.GONE
-                                loadImage(tsvParams,binding.ivBackView)
+                            binding.ivFront.setOnTouchListener(this@ThreeSixtyInteriorViewActivity)
 
-//                                Glide.with(this@ThreeSixtyInteriorViewActivity)
-//                                    .load(tsvParams.placeholder)
-//                                    .placeholder(tsvParams.placeholder)
-//                                    .into(binding.ivBackView)
-
-                                //show images and set listener
-                                binding.ivBackShare.visibility = View.VISIBLE
-                                binding.ivBackCopyLink.visibility = View.VISIBLE
-                                binding.ivBackEmbbedCode.visibility = View.VISIBLE
-
-                                binding.ivBackShare.setOnClickListener(this@ThreeSixtyInteriorViewActivity)
-                                binding.ivBackCopyLink.setOnClickListener(this@ThreeSixtyInteriorViewActivity)
-                                binding.ivBackEmbbedCode.setOnClickListener(this@ThreeSixtyInteriorViewActivity)
-
-                                binding.ivBackView.setOnTouchListener(this@ThreeSixtyInteriorViewActivity)
-                            }
+//                            if (tsvParams.type == 0){
+//                                binding.progressBarFront.visibility = View.GONE
+//                                loadImage(tsvParams,binding.ivFront)
+//
+//
+//                                //show images and set listener
+//                                binding.ivShare.visibility = View.VISIBLE
+//                                binding.ivCopyLink.visibility = View.VISIBLE
+//                                binding.ivEmbbedCode.visibility = View.VISIBLE
+//
+//                                binding.ivShare.setOnClickListener(this@ThreeSixtyInteriorViewActivity)
+//                                binding.ivCopyLink.setOnClickListener(this@ThreeSixtyInteriorViewActivity)
+//                                binding.ivEmbbedCode.setOnClickListener(this@ThreeSixtyInteriorViewActivity)
+//
+//                                binding.ivFront.setOnTouchListener(this@ThreeSixtyInteriorViewActivity)
+//
+//                            }else{
+//                                binding.progressBarBack.visibility = View.GONE
+//                                loadImage(tsvParams,binding.ivBackView)
+//
+//                                //show images and set listener
+//                                binding.ivBackShare.visibility = View.VISIBLE
+//                                binding.ivBackCopyLink.visibility = View.VISIBLE
+//                                binding.ivBackEmbbedCode.visibility = View.VISIBLE
+//
+//                                binding.ivBackShare.setOnClickListener(this@ThreeSixtyInteriorViewActivity)
+//                                binding.ivBackCopyLink.setOnClickListener(this@ThreeSixtyInteriorViewActivity)
+//                                binding.ivBackEmbbedCode.setOnClickListener(this@ThreeSixtyInteriorViewActivity)
+//
+//                                binding.ivBackView.setOnTouchListener(this@ThreeSixtyInteriorViewActivity)
+//                            }
                         }
 
                         return false
@@ -177,19 +195,17 @@ class ThreeSixtyInteriorViewActivity : AppCompatActivity(),View.OnTouchListener,
 
     }
 
-    private fun loadImage(tsvParams: TSVParams, imageView: ImageView) {
-        handler.removeCallbacksAndMessages(null)
 
-        handler.postDelayed({
+    private fun preLoadBack(tsvParams: TSVParams) {
+        for ((index, url) in tsvParams.framesList.withIndex()) {
 
             Glide.with(this)
-                .load(tsvParams.framesList.get(tsvParams.mImageIndex))
-                .placeholder(tsvParams.placeholder)
+                .load(url)
                 .listener(object : RequestListener<Drawable> {
                     override fun onLoadFailed(
                         e: GlideException?,
                         model: Any?,
-                        target: com.bumptech.glide.request.target.Target<Drawable>?,
+                        target: Target<Drawable>?,
                         isFirstResource: Boolean
                     ): Boolean {
                         Log.d(TAG, "onResourceReady: failed")
@@ -199,20 +215,92 @@ class ThreeSixtyInteriorViewActivity : AppCompatActivity(),View.OnTouchListener,
                     override fun onResourceReady(
                         resource: Drawable?,
                         model: Any?,
-                        target: com.bumptech.glide.request.target.Target<Drawable>?,
+                        target: Target<Drawable>?,
                         dataSource: DataSource?,
                         isFirstResource: Boolean
                     ): Boolean {
-                        tsvParams.placeholder = resource!!
+                        Log.d(TAG, "onResourceReady: paseed " + index)
+
+                        if (index == tsvParams.mImageIndex){
+                            tsvParams.placeholder = resource!!
+                        }
+
+                        if (index == tsvParams.framesList.size - 1) {
+                            binding.progressBarBack.visibility = View.GONE
+                            loadImage(tsvParams,binding.ivBackView)
+
+                            //show images and set listener
+                            binding.ivBackShare.visibility = View.VISIBLE
+                            binding.ivBackCopyLink.visibility = View.VISIBLE
+                            binding.ivBackEmbbedCode.visibility = View.VISIBLE
+
+                            binding.ivBackShare.setOnClickListener(this@ThreeSixtyInteriorViewActivity)
+                            binding.ivBackCopyLink.setOnClickListener(this@ThreeSixtyInteriorViewActivity)
+                            binding.ivBackEmbbedCode.setOnClickListener(this@ThreeSixtyInteriorViewActivity)
+
+                            binding.ivBackView.setOnTouchListener(this@ThreeSixtyInteriorViewActivity)
+
+                        }
 
                         return false
                     }
 
                 })
-                .override(250, 250)
                 .dontAnimate()
                 .diskCacheStrategy(DiskCacheStrategy.ALL)
-                .into(imageView)
+                .preload()
+
+        }
+
+    }
+
+
+    private fun loadImage(tsvParams: TSVParams, imageView: ImageView) {
+
+        handler.removeCallbacksAndMessages(null)
+
+        handler.postDelayed({
+
+            try {
+                var glide = Glide.with(this)
+                    .load(tsvParams.framesList.get(tsvParams.mImageIndex))
+
+                       if (tsvParams.placeholder != null)
+                           glide.placeholder(tsvParams.placeholder)
+
+                    glide.listener(object : RequestListener<Drawable> {
+                        override fun onLoadFailed(
+                            e: GlideException?,
+                            model: Any?,
+                            target: com.bumptech.glide.request.target.Target<Drawable>?,
+                            isFirstResource: Boolean
+                        ): Boolean {
+                            Log.d(TAG, "onResourceReady: failed")
+                            return false
+                        }
+
+                        override fun onResourceReady(
+                            resource: Drawable?,
+                            model: Any?,
+                            target: com.bumptech.glide.request.target.Target<Drawable>?,
+                            dataSource: DataSource?,
+                            isFirstResource: Boolean
+                        ): Boolean {
+                            tsvParams.placeholder = resource!!
+
+                            return false
+                        }
+
+                    })
+                    .override(250, 250)
+                    .dontAnimate()
+                    .diskCacheStrategy(DiskCacheStrategy.ALL)
+                    .into(imageView)
+            }catch (ex : UninitializedPropertyAccessException){
+                Log.d(TAG, "loadImage: ex "+tsvParams.type)
+                Log.d(TAG, "loadImage: ex "+ex.localizedMessage)
+
+            }
         }, 10)
     }
 

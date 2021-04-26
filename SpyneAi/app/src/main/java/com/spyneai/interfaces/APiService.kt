@@ -41,10 +41,9 @@ import com.spyneai.videorecording.model.VideoProcessResponse
 import com.spyneai.videorecording.model.VideoProcessingResponse
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
-import okhttp3.ResponseBody
+import org.json.JSONObject
 import retrofit2.Call
 import retrofit2.http.*
-import java.util.*
 
 
 interface APiService {
@@ -65,17 +64,13 @@ interface APiService {
     fun postOtp(@Header("tokenId") tokenId: String?, @Body userOtp: OtpRequest): Call<OtpResponse>?
 */
     @GET("credit-user/validate-otp")
-    fun postOtp(
-       @Query("emailId") emailId: String?,
-       @Query("otp") otp: String?
-   ):
+    fun postOtp(@Query("emailId") emailId: String?,
+                @Query("otp") otp: String?):
            Call<OtpResponse>?
 
     @GET("credit-user/send-download-mail")
-    fun sendEmail(
-        @Query("emailId") emailId: String?,
-        @Query("gifLink") otp: String?
-    ):
+    fun sendEmail(@Query("emailId") emailId: String?,
+                @Query("gifLink") otp: String?):
            Call<OtpResponse>?
 
     @POST("v2/app/send-shoot-results")
@@ -146,8 +141,7 @@ interface APiService {
     @GET("sku/continue-shoot")
     fun getContinueShoot(
         @Header("tokenId") tokenId: String?,
-        @Query("skuId") skuId: String?
-    )
+        @Query("skuId") skuId: String?)
             : Call<UploadPhotoResponse>?
 
     @GET("order/skus")
@@ -212,9 +206,8 @@ interface APiService {
     ): Call<UploadPhotoResponse>?*/
 
     @PUT("shoot/marketplace")
-    fun updateMarket(
-        @Header("tokenId") tokenId: String?,
-        @Body shootMarketUpdateRequest: ShootMarketUpdateRequest?
+    fun updateMarket(@Header("tokenId") tokenId: String?,
+                     @Body shootMarketUpdateRequest: ShootMarketUpdateRequest?
     ): Call<UploadPhotoResponse>?
 
     @GET("shoot/v2")
@@ -227,11 +220,9 @@ interface APiService {
             : Call<MyOrdersResponse>?
 
     @GET("order/summary")
-    fun getOrderSummary(
-        @Header("tokenId") tokenId: String?,
-        @Query("shootId") shootId: String?,
-        @Query("skuId") skuId: String?
-    )
+    fun getOrderSummary(@Header("tokenId") tokenId: String?,
+                        @Query("shootId") shootId: String?,
+                        @Query("skuId") skuId: String?)
             : Call<OrderSummaryResponse>?
 
 
@@ -276,8 +267,7 @@ interface APiService {
     @Multipart
     @POST("shadow-over-footwear?api_key=fde46c58-5735-4fcf-8b38-980c95001dc3")
     fun previewPhoto(
-        @Part("image_url") image_url: RequestBody?
-    )
+        @Part("image_url") image_url: RequestBody?)
             : Call<PreviewResponse>?
 
     @Multipart
@@ -388,10 +378,9 @@ interface APiService {
     @Multipart
     @POST("upload-user-gif")
     fun uploadUserGif(
-        @Part("user_id") user_id: RequestBody?,
-        @Part("sku_id") sku_id: RequestBody?,
-        @Part("gif_url") gif_url: RequestBody?
-    )
+            @Part("user_id") user_id: RequestBody?,
+            @Part("sku_id") sku_id: RequestBody?,
+            @Part("gif_url") gif_url: RequestBody?)
     : Call<UploadGifResponse>?
 
     @Multipart
