@@ -427,7 +427,8 @@ class PhotoUploader(var task: Task, var listener: Listener) {
         } catch (e: IOException) {
             e.printStackTrace()
         }
-        assert(ei != null)
+
+//        assert(ei != null)
         val orientation = ei!!.getAttributeInt(
             ExifInterface.TAG_ORIENTATION,
             ExifInterface.ORIENTATION_UNDEFINED
@@ -443,12 +444,6 @@ class PhotoUploader(var task: Task, var listener: Listener) {
 
         return persistImage(rotatedBitmap!!)
 
-//        if (task.catName.equals("Automobiles"))
-//            return persistImageAutomobiles(rotatedBitmap!!)
-//        else if (task.catName.equals("Footwear"))
-//            return persistImageFootwear(rotatedBitmap!!)
-//        else
-//            return persistImageGrocery(rotatedBitmap!!)
     }
 
     suspend fun rotateImage(source: Bitmap, angle: Float): Bitmap? {
@@ -628,10 +623,33 @@ class PhotoUploader(var task: Task, var listener: Listener) {
             task.exposures
         )
 
+        val cornerPosition = RequestBody.create(
+            MultipartBody.FORM,
+            task.cornerPosition
+        )
+
+        var logo: MultipartBody.Part? = null
+        if (task.dealershipLogo.equals("")) {
+            val attachmentEmpty = RequestBody.create(MediaType.parse("multipart/form-data"), "")
+            logo = MultipartBody.Part.createFormData("attachment", "", attachmentEmpty)
+        } else {
+            val requestFile =
+                RequestBody.create(
+                    MediaType.parse("multipart/form-data"),
+                    File(task.dealershipLogo)
+                )
+            logo =
+                MultipartBody.Part.createFormData(
+                    "logo",
+                    File(task.dealershipLogo)!!.name,
+                    requestFile
+                )
+        }
+
         val call =
-            request.bulkUPload(
+            request.bulkUPloadv3(
                 Background, UserId, SkuId,
-                ImageUrl, SkuName, WindowStatus, contrast
+                ImageUrl, SkuName, WindowStatus, contrast, logo, cornerPosition
             )
 
         call?.enqueue(object : Callback<BulkUploadResponse> {
@@ -643,6 +661,7 @@ class PhotoUploader(var task: Task, var listener: Listener) {
                     task.afterImagesCar.add(response.body()!!.output_image)
                     task.countGif++
                     log("bulk upload count: " + task.countGif)
+                    log("output image: " + response.body()!!.output_image)
                     if (task.countGif < task.photoList.size) {
                         Log.e("countGif", task.countGif.toString())
                         bulkUpload()
@@ -720,8 +739,10 @@ class PhotoUploader(var task: Task, var listener: Listener) {
             MultipartBody.FORM,
             task.cornerPosition
         )
-        val requestFile = RequestBody.create(MediaType.parse("multipart/form-data"), File(task.dealershipLogo))
-        val logo = MultipartBody.Part.createFormData("logo", File(task.dealershipLogo)!!.name, requestFile)
+        val requestFile =
+            RequestBody.create(MediaType.parse("multipart/form-data"), File(task.dealershipLogo))
+        val logo =
+            MultipartBody.Part.createFormData("logo", File(task.dealershipLogo)!!.name, requestFile)
 
 
         val imageUrl = RequestBody.create(

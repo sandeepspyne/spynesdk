@@ -161,4 +161,7 @@ dependencies {
     implementation 'com.github.HBiSoft:PickiT:0.1.14'
     //cardview
     implementation "androidx.cardview:cardview:1.0.0"
+
+    //uCrop
+    implementation 'com.github.yalantis:ucrop:2.2.6-native'
 }
