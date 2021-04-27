@@ -55,9 +55,7 @@ class ThreeSixtyInteriorViewActivity : AppCompatActivity(),View.OnTouchListener,
             frontFramesList =
                FramesHelper.framesMap.get(intent.action)?.video_data?.get(0)!!.processed_image_list
             backFramesList = FramesHelper.framesMap.get(intent.action)?.video_data?.get(1)!!.processed_image_list
-
        }
-
 
         if (frontFramesList != null && frontFramesList.size > 0){
             //load front image
@@ -134,9 +132,9 @@ class ThreeSixtyInteriorViewActivity : AppCompatActivity(),View.OnTouchListener,
                         dataSource: DataSource?,
                         isFirstResource: Boolean
                     ): Boolean {
-                        Log.d(TAG, "onResourceReady: paseed " + index)
+                        //Log.d(TAG, "onResourceReady: paseed " + index)
 
-                        if (index == tsvParams.mImageIndex){
+                        if (index == tsvParams.mImageIndex) {
                             tsvParams.placeholder = resource!!
                         }
 
@@ -146,10 +144,12 @@ class ThreeSixtyInteriorViewActivity : AppCompatActivity(),View.OnTouchListener,
                             binding.svFront.stopShimmer()
                             binding.svFront.visibility = View.GONE
 
-                            loadImage(tsvParams,binding.ivFront)
+
+                            loadImage(tsvParams, binding.ivFront)
 
                             //show images and set listener
                             binding.clFront.visibility = View.VISIBLE
+                            showGoToHomeButton()
 
                             binding.tvShare.setOnClickListener(this@ThreeSixtyInteriorViewActivity)
 
@@ -199,7 +199,7 @@ class ThreeSixtyInteriorViewActivity : AppCompatActivity(),View.OnTouchListener,
                         dataSource: DataSource?,
                         isFirstResource: Boolean
                     ): Boolean {
-                        Log.d(TAG, "onResourceReady: paseed " + index)
+                       // Log.d(TAG, "onResourceReady: paseed " + index)
 
                         if (index == tsvParams.mImageIndex){
                             tsvParams.placeholder = resource!!
@@ -214,7 +214,7 @@ class ThreeSixtyInteriorViewActivity : AppCompatActivity(),View.OnTouchListener,
 
                             //show images and set listener
                             binding.clBack.visibility = View.VISIBLE
-
+                            showGoToHomeButton()
 
                             binding.tvBackShare.setOnClickListener(this@ThreeSixtyInteriorViewActivity)
 
@@ -251,40 +251,44 @@ class ThreeSixtyInteriorViewActivity : AppCompatActivity(),View.OnTouchListener,
                 var glide = Glide.with(this)
                     .load(tsvParams.framesList.get(tsvParams.mImageIndex))
 
-                       if (tsvParams.placeholder != null)
-                           glide.placeholder(tsvParams.placeholder)
+                if (tsvParams.placeholder != null)
+                    glide.placeholder(tsvParams.placeholder)
 
-                    glide.listener(object : RequestListener<Drawable> {
-                        override fun onLoadFailed(
-                            e: GlideException?,
-                            model: Any?,
-                            target: com.bumptech.glide.request.target.Target<Drawable>?,
-                            isFirstResource: Boolean
-                        ): Boolean {
-                            Log.d(TAG, "onResourceReady: failed")
-                            return false
-                        }
+                glide.listener(object : RequestListener<Drawable> {
+                    override fun onLoadFailed(
+                        e: GlideException?,
+                        model: Any?,
+                        target: com.bumptech.glide.request.target.Target<Drawable>?,
+                        isFirstResource: Boolean
+                    ): Boolean {
+                        Log.d(TAG, "onResourceReady: failed")
+                        return false
+                    }
 
-                        override fun onResourceReady(
-                            resource: Drawable?,
-                            model: Any?,
-                            target: com.bumptech.glide.request.target.Target<Drawable>?,
-                            dataSource: DataSource?,
-                            isFirstResource: Boolean
-                        ): Boolean {
-                            tsvParams.placeholder = resource!!
+                    override fun onResourceReady(
+                        resource: Drawable?,
+                        model: Any?,
+                        target: com.bumptech.glide.request.target.Target<Drawable>?,
+                        dataSource: DataSource?,
+                        isFirstResource: Boolean
+                    ): Boolean {
+                        Log.d(TAG, "loading: a"+tsvParams.type)
+                        tsvParams.placeholder = resource!!
 
-                            return false
-                        }
+                        return false
+                    }
 
-                    })
+                })
                     //.override(250, 250)
                     .dontAnimate()
                     .diskCacheStrategy(DiskCacheStrategy.ALL)
                     .into(imageView)
-            }catch (ex : UninitializedPropertyAccessException){
-                Log.d(TAG, "loadImage: ex "+tsvParams.type)
-                Log.d(TAG, "loadImage: ex "+ex.localizedMessage)
+
+
+                if (binding.ivFront.visibility == View.INVISIBLE) binding.ivFront.visibility = View.VISIBLE
+            } catch (ex: UninitializedPropertyAccessException) {
+                Log.d(TAG, "loadImage: ex " + tsvParams.type)
+                Log.d(TAG, "loadImage: ex " + ex.localizedMessage)
 
             }
         }, 10)
@@ -422,6 +426,12 @@ class ThreeSixtyInteriorViewActivity : AppCompatActivity(),View.OnTouchListener,
                 share(getCode(1))
             }
 
+            R.id.tv_go_to_home -> {
+                var dashboardIntent = Intent(this, DashboardActivity::class.java)
+                dashboardIntent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+                startActivity(dashboardIntent)
+            }
+
         }
     }
 
@@ -464,6 +474,13 @@ class ThreeSixtyInteriorViewActivity : AppCompatActivity(),View.OnTouchListener,
                     "  style=\"border:0; height: 100%; width: 100%;\" framerborder=\"0\"></iframe>"
         }
 
+    }
+
+    private fun showGoToHomeButton(){
+        binding.tvShowIframe.visibility = View.VISIBLE
+        binding.tvGoToHome.visibility = View.VISIBLE
+
+        binding.tvGoToHome.setOnClickListener(this)
     }
 
 

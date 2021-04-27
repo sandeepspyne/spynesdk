@@ -45,6 +45,7 @@
             app:layout_constraintRight_toRightOf="parent"
             app:layout_constraintTop_toBottomOf="@id/fl_tool_bar"
             android:layout_height="200dp"
+            android:visibility="invisible"
             android:layout_width="match_parent"
             android:layout_marginRight="25dp"
             android:layout_marginLeft="25dp"
@@ -211,6 +212,40 @@
             android:id="@+id/sv_back"
             android:visibility="visible"
             android:background="@drawable/bg_three_sixty_shimmer"/>
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Show this shoot on your website by using the iFrame code"
+            app:layout_constraintTop_toBottomOf="@id/iv_back_view"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            android:layout_marginTop="20dp"
+            android:textColor="#323232"
+            android:visibility="invisible"
+            android:id="@+id/tv_show_iframe"
+            android:layout_marginLeft="@dimen/dp_25"
+            android:layout_marginRight="@dimen/dp_25"
+            android:gravity="center"
+            android:textSize="14sp"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/tv_go_to_home"
+            android:visibility="invisible"
+            app:layout_constraintTop_toBottomOf="@id/tv_show_iframe"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            android:layout_marginTop="@dimen/dp_25"
+            android:text="Go to home"
+            android:paddingLeft="45dp"
+            android:paddingRight="45dp"
+            android:paddingTop="@dimen/dp_12"
+            android:paddingBottom="@dimen/dp_12"
+            android:fontFamily="@font/medium"
+            android:textColor="@color/white"
+            android:background="@drawable/bg_rectangle_button_ripple"/>
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="wrap_content"

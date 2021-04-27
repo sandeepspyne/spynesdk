@@ -225,6 +225,13 @@
         <meta-data
             android:name="com.razorpay.ApiKey"
             android:value="@string/api_key_razorpay" />
+
+        <provider
+            tools:replace="android:authorities"
+            android:name="com.iceteck.silicompressorr.provider.GenericFileProvider"
+            android:authorities="${applicationId}.AUTH_SILI_COMPRESS"
+            android:exported="false" />
+
     </application>
 
 </manifest>
