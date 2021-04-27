@@ -36,7 +36,8 @@ class ThreeSixtyInteriorViewActivity : AppCompatActivity(),View.OnTouchListener,
     private lateinit var backFramesList: List<String>
     private lateinit var frontFramesList: List<String>
     private lateinit var binding : ActivityThreeSixtyViewTestBinding
-    var handler = Handler()
+    var frontHandler = Handler()
+    var backHandler = Handler()
     var TAG = "UploadVideoTestService"
     lateinit var tsvParamFront : TSVParams
     lateinit var tsvParamBack : TSVParams
@@ -145,7 +146,7 @@ class ThreeSixtyInteriorViewActivity : AppCompatActivity(),View.OnTouchListener,
                             binding.svFront.visibility = View.GONE
 
 
-                            loadImage(tsvParams, binding.ivFront)
+                            loadImageFront(tsvParams)
 
                             //show images and set listener
                             binding.clFront.visibility = View.VISIBLE
@@ -210,7 +211,7 @@ class ThreeSixtyInteriorViewActivity : AppCompatActivity(),View.OnTouchListener,
                             binding.svBack.stopShimmer()
                             binding.svBack.visibility = View.GONE
 
-                            loadImage(tsvParams,binding.ivBackView)
+                            loadImageBack(tsvParams)
 
                             //show images and set listener
                             binding.clBack.visibility = View.VISIBLE
@@ -241,11 +242,64 @@ class ThreeSixtyInteriorViewActivity : AppCompatActivity(),View.OnTouchListener,
     }
 
 
-    private fun loadImage(tsvParams: TSVParams, imageView: ImageView) {
+//    private fun loadImage(tsvParams: TSVParams, imageView: ImageView) {
+//
+//        handler.removeCallbacksAndMessages(null)
+//
+//        handler.postDelayed({
+//
+//            try {
+//                var glide = Glide.with(this)
+//                    .load(tsvParams.framesList.get(tsvParams.mImageIndex))
+//
+//                if (tsvParams.placeholder != null)
+//                    glide.placeholder(tsvParams.placeholder)
+//
+//                glide.listener(object : RequestListener<Drawable> {
+//                    override fun onLoadFailed(
+//                        e: GlideException?,
+//                        model: Any?,
+//                        target: com.bumptech.glide.request.target.Target<Drawable>?,
+//                        isFirstResource: Boolean
+//                    ): Boolean {
+//                        Log.d(TAG, "onResourceReady: failed")
+//                        return false
+//                    }
+//
+//                    override fun onResourceReady(
+//                        resource: Drawable?,
+//                        model: Any?,
+//                        target: com.bumptech.glide.request.target.Target<Drawable>?,
+//                        dataSource: DataSource?,
+//                        isFirstResource: Boolean
+//                    ): Boolean {
+//                        Log.d(TAG, "loading: a"+tsvParams.type)
+//                        tsvParams.placeholder = resource!!
+//
+//                        return false
+//                    }
+//
+//                })
+//                    //.override(250, 250)
+//                    .dontAnimate()
+//                    .diskCacheStrategy(DiskCacheStrategy.ALL)
+//                    .into(imageView)
+//
+//
+//                if (binding.ivFront.visibility == View.INVISIBLE) binding.ivFront.visibility = View.VISIBLE
+//            } catch (ex: UninitializedPropertyAccessException) {
+//                Log.d(TAG, "loadImage: ex " + tsvParams.type)
+//                Log.d(TAG, "loadImage: ex " + ex.localizedMessage)
+//
+//            }
+//        }, 10)
+//    }
 
-        handler.removeCallbacksAndMessages(null)
+    private fun loadImageFront(tsvParams: TSVParams) {
 
-        handler.postDelayed({
+        frontHandler.removeCallbacksAndMessages(null)
+
+        frontHandler.postDelayed({
 
             try {
                 var glide = Glide.with(this)
@@ -282,7 +336,7 @@ class ThreeSixtyInteriorViewActivity : AppCompatActivity(),View.OnTouchListener,
                     //.override(250, 250)
                     .dontAnimate()
                     .diskCacheStrategy(DiskCacheStrategy.ALL)
-                    .into(imageView)
+                    .into(binding.ivFront)
 
 
                 if (binding.ivFront.visibility == View.INVISIBLE) binding.ivFront.visibility = View.VISIBLE
@@ -294,6 +348,59 @@ class ThreeSixtyInteriorViewActivity : AppCompatActivity(),View.OnTouchListener,
         }, 10)
     }
 
+
+    private fun loadImageBack(tsvParams: TSVParams) {
+
+        backHandler.removeCallbacksAndMessages(null)
+
+        backHandler.postDelayed({
+
+            try {
+                var glide = Glide.with(this)
+                    .load(tsvParams.framesList.get(tsvParams.mImageIndex))
+
+                if (tsvParams.placeholder != null)
+                    glide.placeholder(tsvParams.placeholder)
+
+                glide.listener(object : RequestListener<Drawable> {
+                    override fun onLoadFailed(
+                        e: GlideException?,
+                        model: Any?,
+                        target: com.bumptech.glide.request.target.Target<Drawable>?,
+                        isFirstResource: Boolean
+                    ): Boolean {
+                        Log.d(TAG, "onResourceReady: failed")
+                        return false
+                    }
+
+                    override fun onResourceReady(
+                        resource: Drawable?,
+                        model: Any?,
+                        target: com.bumptech.glide.request.target.Target<Drawable>?,
+                        dataSource: DataSource?,
+                        isFirstResource: Boolean
+                    ): Boolean {
+                        Log.d(TAG, "loading: a"+tsvParams.type)
+                        tsvParams.placeholder = resource!!
+
+                        return false
+                    }
+
+                })
+                    //.override(250, 250)
+                    .dontAnimate()
+                    .diskCacheStrategy(DiskCacheStrategy.ALL)
+                    .into(binding.ivBackView)
+
+
+                if (binding.ivBackView.visibility == View.INVISIBLE) binding.ivBackView.visibility = View.VISIBLE
+            } catch (ex: UninitializedPropertyAccessException) {
+                Log.d(TAG, "loadImage: ex " + tsvParams.type)
+                Log.d(TAG, "loadImage: ex " + ex.localizedMessage)
+
+            }
+        }, 10)
+    }
 
 
     override fun onTouch(v: View?, event: MotionEvent?): Boolean {
@@ -318,14 +425,14 @@ class ThreeSixtyInteriorViewActivity : AppCompatActivity(),View.OnTouchListener,
                             if (tsvParamFront.mImageIndex >= tsvParamFront.framesList.size) tsvParamFront.mImageIndex = tsvParamFront.framesList.size - 1
 
                             //iv.setImageLevel(mImageIndex)
-                            loadImage(tsvParamFront,binding.ivFront)
+                            loadImageFront(tsvParamFront)
 
                         }
                         if (tsvParamFront.mEndX - tsvParamFront.mStartX < -3) {
                             tsvParamFront.mImageIndex--
                             if (tsvParamFront.mImageIndex < 0) tsvParamFront.mImageIndex = 0
 
-                            loadImage(tsvParamFront,binding.ivFront)
+                            loadImageFront(tsvParamFront)
                             //iv.setImageLevel(mImageIndex)
                         }
                         tsvParamFront.mStartX = event.x.toInt()
@@ -366,14 +473,14 @@ class ThreeSixtyInteriorViewActivity : AppCompatActivity(),View.OnTouchListener,
                             if (tsvParamBack.mImageIndex >= tsvParamBack.framesList.size) tsvParamBack.mImageIndex = tsvParamBack.framesList.size - 1
 
                             //iv.setImageLevel(mImageIndex)
-                            loadImage(tsvParamBack,binding.ivBackView)
+                            loadImageBack(tsvParamBack)
 
                         }
                         if (tsvParamBack.mEndX - tsvParamBack.mStartX < -3) {
                             tsvParamBack.mImageIndex--
                             if (tsvParamBack.mImageIndex < 0) tsvParamBack.mImageIndex = 0
 
-                            loadImage(tsvParamBack,binding.ivBackView)
+                            loadImageBack(tsvParamBack)
                             //iv.setImageLevel(mImageIndex)
                         }
                         tsvParamBack.mStartX = event.x.toInt()
