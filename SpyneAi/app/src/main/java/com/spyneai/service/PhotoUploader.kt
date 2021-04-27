@@ -691,7 +691,7 @@ class PhotoUploader(var task: Task, var listener: Listener) {
                     if (task.processingRetry <= task.retryCount) {
                         task.processingRetry++
                         if (task.countGif < task.photoList.size) {
-                            Log.e("countGif", task.countGif.toString())
+                            log("retry: "+task.processingRetry)
                             bulkUpload()
                         } else if (task.photoListInteriors.size > 0) {
                             task.countGif = 0
@@ -713,7 +713,7 @@ class PhotoUploader(var task: Task, var listener: Listener) {
                 if (task.processingRetry <= task.retryCount) {
                     task.processingRetry++
                     if (task.countGif < task.photoList.size) {
-                        Log.e("countGif", task.countGif.toString())
+                        log("retry: "+task.processingRetry)
                         bulkUpload()
                     } else if (task.photoListInteriors.size > 0) {
                         task.countGif = 0

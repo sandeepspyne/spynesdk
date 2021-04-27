@@ -52,9 +52,6 @@ class GenerateGifActivity : AppCompatActivity(), PickiTCallbacks {
     public lateinit var imageFocusedFileList: ArrayList<File>
     public lateinit var imageFocusedFileListFrames: ArrayList<Int>
 
-    val title: String = "Edit Logo"
-
-
     var cornerPosition: String = ""
 
     private var currentPOsition: Int = 0
@@ -386,7 +383,11 @@ class GenerateGifActivity : AppCompatActivity(), PickiTCallbacks {
 
             var ucropOptions = UCrop.Options()
             ucropOptions.setStatusBarColor(ContextCompat.getColor(this@GenerateGifActivity,R.color.primary))
-            ucropOptions.setToolbarTitle(title)
+            ucropOptions.setToolbarTitle("Edit Logo")
+            ucropOptions.setFreeStyleCropEnabled(true)
+            ucropOptions.setShowCropFrame(true)
+            ucropOptions.setCropGridCornerColor(ContextCompat.getColor(this@GenerateGifActivity,R.color.primary))
+
 
             UCrop.of(sourceUri, destinationUri)
                 .withAspectRatio(1F, 1F)
