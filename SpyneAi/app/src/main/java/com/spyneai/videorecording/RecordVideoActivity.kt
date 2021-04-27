@@ -342,10 +342,10 @@ class RecordVideoActivity : AppCompatActivity(), PickiTCallbacks {
                         hint = if (shootMode == 0)  "Shoot the front side of the car" else "Shoot the back side of the car"
                     } 1 -> {
                         next = "Got it"
-                        hint = if (shootMode == 0)  "Sit on the middle of the front seat, Place the phone in the centre & start moving your wrist" else "Sit on the middle of the back seat, Place the phone in the centre & start moving your wrist"
+                        hint = if (shootMode == 0)  "Sit on the back seat, place your phone in the centre & start from the left side" else "Sit on the front seat, place your phone in the centre & start from the left side"
                     } 2 -> {
                         next = "Begin Shoot"
-                        hint = "Start moving your wrist and keep your hands steady. You can trim the video after shoot"
+                        hint = "Move your wrist and keep your hands steady. You can trim the video after shoot"
                     }
                 }
 

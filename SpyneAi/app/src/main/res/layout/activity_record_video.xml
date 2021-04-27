@@ -390,7 +390,7 @@
                 android:layout_marginTop="5dp"
                 android:textSize="13sp"
                 android:textColor="@color/black"
-                android:text="Shoot the front side of the card"/>
+                android:text="Shoot the front side of the car"/>
 
 
             <TextView

@@ -61,7 +61,7 @@
             android:layout_marginRight="25dp"
             android:layout_marginLeft="25dp"
             android:elevation="3dp"
-            android:visibility="invisible"
+            android:visibility="gone"
             android:background="@drawable/bg_interior_view_shadow">
 
             <TextView
@@ -78,8 +78,8 @@
                 app:layout_constraintBottom_toBottomOf="parent"/>
 
             <ImageView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_width="20dp"
+                android:layout_height="20dp"
                 android:src="@drawable/share"
                 app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintRight_toRightOf="parent"
@@ -123,10 +123,6 @@
             android:visibility="visible"
             android:background="@drawable/bg_three_sixty_shimmer"/>
 
-
-
-
-
         <com.makeramen.roundedimageview.RoundedImageView
             android:id="@+id/iv_back_view"
             android:scaleType="fitXY"
@@ -160,7 +156,7 @@
             android:layout_marginRight="25dp"
             android:layout_marginLeft="25dp"
             android:elevation="3dp"
-            android:visibility="invisible"
+            android:visibility="visible"
             android:background="@drawable/bg_interior_view_shadow">
 
             <TextView
@@ -177,8 +173,8 @@
                 app:layout_constraintBottom_toBottomOf="parent"/>
 
             <ImageView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_width="20dp"
+                android:layout_height="20dp"
                 android:src="@drawable/share"
                 app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintRight_toRightOf="parent"
@@ -260,13 +256,15 @@
             android:background="@drawable/bg_interior_share_popup">
 
             <ImageView
-                android:layout_width="15dp"
-                android:layout_height="15dp"
-                android:src="@drawable/copy"
-                app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintEnd_toStartOf="@id/tv_copy_link"
                 android:id="@+id/iv_copy_link"
-                android:layout_marginRight="15dp"/>
+                android:layout_width="20dp"
+                android:layout_height="20dp"
+                android:src="@drawable/copy"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintRight_toLeftOf="@id/tv_copy_link"
+                android:layout_marginRight="@dimen/dp_15"
+                android:layout_marginLeft="5dp"/>
 
             <TextView
                 android:layout_width="wrap_content"
@@ -276,7 +274,7 @@
                 app:layout_constraintRight_toRightOf="parent"
                 android:layout_marginLeft="@dimen/dp_15"
                 android:paddingRight="@dimen/dp_40"
-                android:id="@+id/tv_copy_link"/>
+                android:id="@+id/tv_copy_link" />
 
             <TextView
                 android:layout_width="0dp"
@@ -291,15 +289,17 @@
                 android:id="@+id/tv_line"/>
 
             <ImageView
-                android:layout_width="15dp"
-                android:layout_height="15dp"
-                android:src="@drawable/share_link"
-                app:layout_constraintTop_toBottomOf="@id/tv_line"
-               app:layout_constraintRight_toLeftOf="@id/tv_share"
                 android:id="@+id/iv_share_link"
+                android:layout_width="20dp"
+                android:layout_height="20dp"
                 android:layout_marginTop="10dp"
                 android:layout_marginRight="@dimen/dp_15"
-                tools:ignore="NotSibling" />
+                android:src="@drawable/share_link"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintRight_toLeftOf="@id/tv_share"
+                app:layout_constraintTop_toBottomOf="@id/tv_line"
+                tools:ignore="NotSibling"
+                android:layout_marginLeft="5dp"/>
 
             <TextView
                 android:layout_width="wrap_content"
@@ -327,14 +327,18 @@
             android:visibility="gone"
             android:background="@drawable/bg_interior_share_popup">
 
+
+
             <ImageView
-                android:layout_width="15dp"
-                android:layout_height="15dp"
-                android:src="@drawable/copy"
-                app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintEnd_toStartOf="@id/tv_back_copy_link"
                 android:id="@+id/iv_back_copy_link"
-                android:layout_marginRight="15dp"/>
+                android:layout_width="20dp"
+                android:layout_height="20dp"
+                android:src="@drawable/copy"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintRight_toLeftOf="@id/tv_back_share_link"
+                android:layout_marginRight="@dimen/dp_15"
+                android:layout_marginLeft="5dp"/>
 
             <TextView
                 android:layout_width="wrap_content"
@@ -360,16 +364,20 @@
                 android:id="@+id/tv_back_line"
                 android:orientation="vertical"/>
 
+
+
             <ImageView
-                android:layout_width="15dp"
-                android:layout_height="15dp"
-                android:src="@drawable/share_link"
-                app:layout_constraintTop_toBottomOf="@id/tv_back_line"
-                app:layout_constraintRight_toLeftOf="@id/tv_share"
                 android:id="@+id/iv_back_share_link"
+                android:layout_width="20dp"
+                android:layout_height="20dp"
                 android:layout_marginTop="10dp"
                 android:layout_marginRight="@dimen/dp_15"
-                tools:ignore="NotSibling" />
+                android:src="@drawable/share_link"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintRight_toLeftOf="@id/tv_share"
+                app:layout_constraintTop_toBottomOf="@id/tv_back_line"
+                tools:ignore="NotSibling"
+                android:layout_marginLeft="5dp"/>
 
             <TextView
                 android:layout_width="wrap_content"
