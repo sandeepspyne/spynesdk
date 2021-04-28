@@ -65,17 +65,17 @@ class DownloadingActivity : AppCompatActivity() {
 
         listHdQuality.addAll(intent.getStringArrayListExtra(AppConstants.LIST_HD_QUALITY)!!)
 
-        if (Utilities.getPreference(this, AppConstants.NO_OF_IMAGES).equals("8")) {
-            Utilities.savePrefrence(this, AppConstants.PRICE, "5")
-        } else if (Utilities.getPreference(this, AppConstants.NO_OF_IMAGES).equals("4")) {
-            Utilities.savePrefrence(this, AppConstants.PRICE, "3")
-        } else if (Utilities.getPreference(this, AppConstants.NO_OF_IMAGES).equals("5")) {
-            Utilities.savePrefrence(this, AppConstants.PRICE, "5")
-        } else if (Utilities.getPreference(this, AppConstants.NO_OF_IMAGES).equals("6")) {
-            Utilities.savePrefrence(this, AppConstants.PRICE, "5")
-        } else if (Utilities.getPreference(this, AppConstants.NO_OF_IMAGES).equals("7")) {
-            Utilities.savePrefrence(this, AppConstants.PRICE, "5")
-        }
+//        if (Utilities.getPreference(this, AppConstants.NO_OF_IMAGES).equals("8")) {
+//            Utilities.savePrefrence(this, AppConstants.PRICE, "5")
+//        } else if (Utilities.getPreference(this, AppConstants.NO_OF_IMAGES).equals("4")) {
+//            Utilities.savePrefrence(this, AppConstants.PRICE, "3")
+//        } else if (Utilities.getPreference(this, AppConstants.NO_OF_IMAGES).equals("5")) {
+//            Utilities.savePrefrence(this, AppConstants.PRICE, "5")
+//        } else if (Utilities.getPreference(this, AppConstants.NO_OF_IMAGES).equals("6")) {
+//            Utilities.savePrefrence(this, AppConstants.PRICE, "5")
+//        } else if (Utilities.getPreference(this, AppConstants.NO_OF_IMAGES).equals("7")) {
+//            Utilities.savePrefrence(this, AppConstants.PRICE, "5")
+//        }
 
         setPermissions()
 
@@ -359,7 +359,6 @@ class DownloadingActivity : AppCompatActivity() {
 
     private fun userUpdateCredit() {
 
-
         val userId = RequestBody.create(
             MultipartBody.FORM,
             Utilities.getPreference(this, AppConstants.tokenId)!!
@@ -374,7 +373,6 @@ class DownloadingActivity : AppCompatActivity() {
             MultipartBody.FORM,
             Utilities.getPreference(this, AppConstants.PRICE)
         )
-
 
         val request = RetrofitClients.buildService(APiService::class.java)
         val call = request.userUpdateCredit(userId, creditAvailable, creditUsed)
@@ -394,7 +392,6 @@ class DownloadingActivity : AppCompatActivity() {
                         Toast.LENGTH_SHORT
                     ).show()
                 }
-
             }
 
             override fun onFailure(call: Call<UpdateCreditResponse>, t: Throwable) {
@@ -428,9 +425,6 @@ class DownloadingActivity : AppCompatActivity() {
         context.sendBroadcast(mediaScanIntent)
     }
 
-
-
-
     override fun onRequestPermissionsResult(
         requestCode: Int, permissions: Array<String>, grantResults:
         IntArray
@@ -449,6 +443,4 @@ class DownloadingActivity : AppCompatActivity() {
             }
         }
     }
-
-
 }

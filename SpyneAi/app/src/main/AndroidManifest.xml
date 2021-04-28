@@ -41,13 +41,14 @@
         android:theme="@style/Theme.SpyneAi"
         android:usesCleartextTraffic="true"
         tools:targetApi="m">
-        <activity android:name=".videorecording.ThreeSixtyViewTestActivity">
+        <activity android:name=".wallet.WalletActivity">
 
         </activity>
+        <activity android:name=".videorecording.ThreeSixtyViewTestActivity"></activity>
         <activity android:name=".videorecording.VideoUploadHandlerActivity" />
         <activity
             android:name=".videorecording.ThreeSixtyInteriorViewActivity"
-            android:launchMode="singleTop"></activity>
+            android:launchMode="singleTop" />
         <activity android:name=".videorecording.ProcessVideoTimerActivity" />
 
         <service
@@ -59,7 +60,7 @@
         <activity android:name=".videorecording.SaveTrimmedVideoActivity" />
         <activity
             android:name=".videorecording.RecordVideoActivity"
-            android:screenOrientation="landscape"></activity>
+            android:screenOrientation="landscape" />
 
         <receiver
             android:name=".service.StartReceiver"
@@ -81,7 +82,7 @@
             android:name=".service.ProcessImagesService"
             android:enabled="true"
             android:exported="true"
-            android:stopWithTask="false"></service>
+            android:stopWithTask="false" />
 
         <receiver
             android:name=".service.StartReceiver"
@@ -227,11 +228,10 @@
             android:value="@string/api_key_razorpay" />
 
         <provider
-            tools:replace="android:authorities"
             android:name="com.iceteck.silicompressorr.provider.GenericFileProvider"
             android:authorities="${applicationId}.AUTH_SILI_COMPRESS"
-            android:exported="false" />
-
+            android:exported="false"
+            tools:replace="android:authorities" />
     </application>
 
 </manifest>

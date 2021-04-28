@@ -88,7 +88,6 @@ class ShowImagesActivity : AppCompatActivity() {
 
         AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
 
-
         setBulkImages()
 
         setListeners()

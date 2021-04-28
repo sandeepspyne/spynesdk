@@ -9,6 +9,7 @@ import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import android.os.Vibrator
+import android.util.Log
 import android.view.View
 import android.view.Window
 import android.view.animation.AnimationUtils
@@ -39,6 +40,8 @@ import java.net.URLEncoder
 
 class OrderSummary2Activity : AppCompatActivity() {
 
+    private var TAG = "OrderSummary2Activity"
+
     private lateinit var listHdQuality : ArrayList<String>
     lateinit var productImage : String
     private lateinit var listWatermark : ArrayList<String>
@@ -56,22 +59,10 @@ class OrderSummary2Activity : AppCompatActivity() {
             .build()
         PRDownloader.initialize(applicationContext, config)
 
-        if (Utilities.getPreference(this, AppConstants.NO_OF_IMAGES).equals("8")){
-            Utilities.savePrefrence(this, AppConstants.PRICE, "5")
-        }else if (Utilities.getPreference(this, AppConstants.NO_OF_IMAGES).equals("4")){
-            Utilities.savePrefrence(this, AppConstants.PRICE, "3")
-        }else if (Utilities.getPreference(this, AppConstants.NO_OF_IMAGES).equals("5")){
-            Utilities.savePrefrence(this, AppConstants.PRICE, "5")
-        }else if (Utilities.getPreference(this, AppConstants.NO_OF_IMAGES).equals("6")){
-            Utilities.savePrefrence(this, AppConstants.PRICE, "5")
-        }else if (Utilities.getPreference(this, AppConstants.NO_OF_IMAGES).equals("7")){
-            Utilities.savePrefrence(this, AppConstants.PRICE, "5")
-        }else{
-            Utilities.savePrefrence(this, AppConstants.PRICE, "5")
-        }
+        Utilities.savePrefrence(this, AppConstants.PRICE, Utilities.getPreference(this, AppConstants.NO_OF_IMAGES))
+
 
         tvTotalCost.setText(Utilities.getPreference(this, AppConstants.PRICE).toString())
-
 
 
         fetchUserCreditDetails()
@@ -98,6 +89,7 @@ class OrderSummary2Activity : AppCompatActivity() {
                 AppConstants.CATEGORY_NAME
             )
         )
+
         tvNoOfImages.setText(
             Utilities.getPreference(
                 this@OrderSummary2Activity,
@@ -145,6 +137,8 @@ class OrderSummary2Activity : AppCompatActivity() {
     }
 
     private fun fetchUserCreditDetails(){
+        Log.d(TAG, "fetchUserCreditDetails: my id "+Utilities.getPreference(this, AppConstants.tokenId).toString())
+
 
         val request = RetrofitClientSpyneAi.buildService(APiService::class.java)
         val call = request.userCreditsDetails(

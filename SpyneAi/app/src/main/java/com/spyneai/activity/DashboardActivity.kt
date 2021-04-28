@@ -37,6 +37,7 @@ import com.spyneai.model.shoot.CreateCollectionResponse
 import com.spyneai.model.shoot.UpdateShootCategoryRequest
 import com.spyneai.needs.AppConstants
 import com.spyneai.needs.Utilities
+import com.spyneai.wallet.WalletActivity
 import com.synnapps.carouselview.ViewListener
 import kotlinx.android.synthetic.main.activity_dashboard.*
 import kotlinx.android.synthetic.main.fragment_home.view.*
@@ -94,6 +95,8 @@ class DashboardActivity : AppCompatActivity() {
         ivAppLogo.setOnClickListener {
 
         }
+
+        iv_wallet.setOnClickListener { startActivity(Intent(this,WalletActivity::class.java)) }
 
         freeCreditEligiblityCheck()
 
