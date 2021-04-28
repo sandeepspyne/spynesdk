@@ -115,7 +115,7 @@ class DashboardActivity : AppCompatActivity() {
 
     private fun setCarosels() {
         tvCompleted.setOnClickListener(View.OnClickListener {
-            val intent = Intent(this, CompletedProjectsActivity::class.java)
+            val intent = Intent(this, YourOrdersActivity::class.java)
             startActivity(intent)
         })
 

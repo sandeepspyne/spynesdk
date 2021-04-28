@@ -41,7 +41,9 @@
         android:theme="@style/Theme.SpyneAi"
         android:usesCleartextTraffic="true"
         tools:targetApi="m">
-        <activity android:name=".activity.YourOrders"></activity>
+        <activity android:name=".activity.YourOrdersActivity"
+            android:screenOrientation="portrait"
+            android:launchMode="singleTask"/>
         <activity android:name=".videorecording.VideoUploadHandlerActivity" />
         <activity
             android:name=".videorecording.ThreeSixtyInteriorViewActivity"
@@ -67,7 +69,6 @@
             </intent-filter>
         </receiver>
 
-        <activity android:name=".activity.YourOrdersActivity" />
         <activity
             android:name=".activity.OrderSummary2Activity"
             android:screenOrientation="portrait" />
