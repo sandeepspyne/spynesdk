@@ -211,6 +211,10 @@
             android:name=".spyneaidemo.activity.camera2.Camera2DemoActivity"
             android:screenOrientation="landscape" />
         <activity
+            android:name="com.yalantis.ucrop.UCropActivity"
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar"/>
+        <activity
             android:name=".activity.SplashActivity"
             android:screenOrientation="portrait">
             <intent-filter>

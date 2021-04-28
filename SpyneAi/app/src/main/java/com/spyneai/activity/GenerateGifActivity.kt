@@ -13,6 +13,7 @@ import android.view.View
 import android.view.Window
 import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.ContextCompat
 import androidx.core.net.toFile
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -28,48 +29,43 @@ import com.spyneai.model.sku.Photos
 import com.spyneai.model.skumap.UpdateSkuResponse
 import com.spyneai.needs.AppConstants
 import com.spyneai.needs.Utilities
+import com.yalantis.ucrop.UCrop
 import kotlinx.android.synthetic.main.activity_edit_sku.*
 import kotlinx.android.synthetic.main.activity_generate_gif.*
 import kotlinx.android.synthetic.main.activity_order.*
 import kotlinx.android.synthetic.main.activity_shoot_selection.*
 import kotlinx.android.synthetic.main.activity_show_gif.*
 import java.io.File
-import java.net.URLEncoder
-import com.google.android.material.shape.CornerFamily
-
-
-
 
 
 class GenerateGifActivity : AppCompatActivity(), PickiTCallbacks {
     private lateinit var photsAdapter: PhotosAdapter
     private lateinit var photoList: List<Photos>
 
-    lateinit var imageList : List<String>
-    public lateinit var imageFileList : ArrayList<File>
-    public lateinit var imageFileListFrames : ArrayList<Int>
+    lateinit var imageList: List<String>
+    public lateinit var imageFileList: ArrayList<File>
+    public lateinit var imageFileListFrames: ArrayList<Int>
 
-    public lateinit var imageInteriorFileList : ArrayList<File>
-    public lateinit var imageInteriorFileListFrames : ArrayList<Int>
+    public lateinit var imageInteriorFileList: ArrayList<File>
+    public lateinit var imageInteriorFileListFrames: ArrayList<Int>
 
     public lateinit var imageFocusedFileList: ArrayList<File>
     public lateinit var imageFocusedFileListFrames: ArrayList<Int>
 
-
     var cornerPosition: String = ""
 
-    private var currentPOsition : Int = 0
-    lateinit var carBackgroundList : ArrayList<CarBackgroundsResponse>
+    private var currentPOsition: Int = 0
+    lateinit var carBackgroundList: ArrayList<CarBackgroundsResponse>
     lateinit var carbackgroundsAdapter: CarBackgroundAdapter
-    var backgroundSelect : String = ""
+    var backgroundSelect: String = ""
 
-    var totalImagesToUPload : Int = 0
-    var totalImagesToUPloadIndex : Int = 0
-    lateinit var gifList : ArrayList<String>
+    var totalImagesToUPload: Int = 0
+    var totalImagesToUPloadIndex: Int = 0
+    lateinit var gifList: ArrayList<String>
     var catName = ""
 
-    var exposures : String = "false"
-    lateinit var windows : String
+    var exposures: String = "false"
+    lateinit var windows: String
 
     val PICK_IMAGE = 1
     var pickiT: PickiT? = null
@@ -109,8 +105,7 @@ class GenerateGifActivity : AppCompatActivity(), PickiTCallbacks {
         imageFileList.addAll(intent.getParcelableArrayListExtra(AppConstants.ALL_IMAGE_LIST)!!)
         imageFileListFrames.addAll(intent.getIntegerArrayListExtra(AppConstants.ALL_FRAME_LIST)!!)
 
-        if (Utilities.getPreference(this, AppConstants.CATEGORY_NAME).equals("Automobiles"))
-        {
+        if (Utilities.getPreference(this, AppConstants.CATEGORY_NAME).equals("Automobiles")) {
             imageInteriorFileList.addAll(intent.getParcelableArrayListExtra(AppConstants.ALL_INTERIOR_IMAGE_LIST)!!)
             imageInteriorFileListFrames.addAll(intent.getIntegerArrayListExtra(AppConstants.ALL_INTERIOR_FRAME_LIST)!!)
 
@@ -174,7 +169,7 @@ class GenerateGifActivity : AppCompatActivity(), PickiTCallbacks {
 
         carbackgroundsAdapter.notifyDataSetChanged()
 
-        backgroundSelect  = carBackgroundList[0].imageId.toString()
+        backgroundSelect = carBackgroundList[0].imageId.toString()
 
 
         if (gifList != null && gifList.size > 0) {
@@ -189,7 +184,6 @@ class GenerateGifActivity : AppCompatActivity(), PickiTCallbacks {
     }
 
     private fun listeners() {
-
 
 
         tvGenerateGif.setOnClickListener(View.OnClickListener {
@@ -239,7 +233,6 @@ class GenerateGifActivity : AppCompatActivity(), PickiTCallbacks {
 
         windows = "outer"
         Utilities.savePrefrence(this, AppConstants.WINDOWS, windows)
-
 
 
         /*  llTransparent.setOnClickListener(View.OnClickListener {
@@ -328,7 +321,7 @@ class GenerateGifActivity : AppCompatActivity(), PickiTCallbacks {
         showExitDialog()
     }
 
-    fun showExitDialog( ) {
+    fun showExitDialog() {
         val dialog = Dialog(this)
         dialog.requestWindowFeature(Window.FEATURE_NO_TITLE)
         dialog.setCancelable(false)
@@ -365,23 +358,47 @@ class GenerateGifActivity : AppCompatActivity(), PickiTCallbacks {
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
-        if (requestCode == PICK_IMAGE && data != null) {
-                val selectedLogoUri: Uri = data?.getData()!!
-                Log.e("logoPath", selectedLogoUri.toString())
-                showLogo(selectedLogoUri)
-            try {
-                var file = selectedLogoUri?.toFile()
-                dealershipLogo = file?.path!!.toString()
-            }catch (ex: IllegalArgumentException){
-                pickiT?.getPath(selectedLogoUri, Build.VERSION.SDK_INT)
-            }
 
+        if (resultCode == UCrop.RESULT_ERROR) {
+            Toast.makeText(this, "uCrop error", Toast.LENGTH_SHORT).show()
+            return
+        }
+
+        if (requestCode == UCrop.REQUEST_CROP && data != null) {
+            val finalLogoUri: Uri = UCrop.getOutput(data!!)!!
+            showLogo(finalLogoUri)
+            try {
+                var file = finalLogoUri?.toFile()
+                dealershipLogo = file?.path!!.toString()
+            } catch (ex: IllegalArgumentException) {
+                pickiT?.getPath(finalLogoUri, Build.VERSION.SDK_INT)
+            }
+            return
+        }
+
+        if (requestCode == PICK_IMAGE && resultCode == RESULT_OK) {
+            val sourceUri: Uri = data?.getData()!!
+            var tempCropped: File = File(cacheDir, "tempImgCropped.png")
+            var destinationUri: Uri = Uri.fromFile(tempCropped)
+
+            var ucropOptions = UCrop.Options()
+            ucropOptions.setStatusBarColor(ContextCompat.getColor(this@GenerateGifActivity,R.color.primary))
+            ucropOptions.setToolbarTitle("Edit Logo")
+            ucropOptions.setFreeStyleCropEnabled(true)
+            ucropOptions.setShowCropFrame(true)
+            ucropOptions.setCropGridCornerColor(ContextCompat.getColor(this@GenerateGifActivity,R.color.primary))
+
+
+            UCrop.of(sourceUri, destinationUri)
+                .withAspectRatio(1F, 1F)
+                .withOptions(ucropOptions)
+                .withMaxResultSize(200, 120)
+                .start(this);
         }
     }
 
-    fun showLogo(selectedLogoUri: Uri) {
-
-        Glide.with(this).load(selectedLogoUri.toString()).into(ivDealershipLogo)
+    fun showLogo(logoUri: Uri) {
+        ivDealershipLogo.setImageURI(logoUri)
         tvUpoadLogo.visibility = View.GONE
         rlDealershipLogo.visibility = View.VISIBLE
         llSelectCorner.visibility = View.VISIBLE
@@ -407,7 +424,7 @@ class GenerateGifActivity : AppCompatActivity(), PickiTCallbacks {
         dealershipLogo = path.toString()
     }
 
-    private fun showDealershipDialog(){
+    private fun showDealershipDialog() {
 
         val dialog = Dialog(this)
         dialog.requestWindowFeature(Window.FEATURE_NO_TITLE)
