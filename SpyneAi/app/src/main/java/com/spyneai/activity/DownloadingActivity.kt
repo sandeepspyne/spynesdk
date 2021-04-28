@@ -194,52 +194,15 @@ class DownloadingActivity : AppCompatActivity() {
 
         var file = File(Environment.getExternalStorageDirectory().toString() + "/Spyne")
 
-        scanFile(file.getAbsolutePath());
-
-//        SingleMediaScanner(this, file)
-
-
         val downloadId = PRDownloader.download(
             imageFile,
             Environment.getExternalStorageDirectory().toString() + "/Spyne",
             imageName
         )
             .build()
-            .setOnStartOrResumeListener {
-            }
-            .setOnPauseListener {
-
-            }
-            .setOnCancelListener(object : OnCancelListener {
-                override fun onCancel() {}
-            })
-            .setOnProgressListener(object : OnProgressListener {
-                override fun onProgress(progress: Progress) {
-//                    builder.setContentTitle(imageName)
-//                        .setContentText(
-//                            ((100 - (progress.currentBytes%100)).toInt())
-//                                .toString() + "/" + "100"+ "%")
-//                        .setProgress(100, (100 - (progress.currentBytes%100)).toInt(),
-//                            false);
-//
-//                    with(NotificationManagerCompat.from(this@DownloadingActivity)) {
-//                        // notificationId is a unique int for each notification that you must define
-//                        notify(1, builder.build())
-//                    }
-//
-//                    Log.e("Progress HD", imageFile + " " +
-//                            ((100 - (progress.currentBytes%100)).toInt())
-//                                .toString() + "/" + "100"+ "%")
-//                    tvProgress.setText(imageName)
-//                    tvProgressvalue.setText(((100 - (progress.currentBytes%100)).toInt())
-//                        .toString() + "/" + "100" + "%")
-//                    llDownloadProgress.visibility = View.VISIBLE
-//                    seekbarDownload.setProgress((100 - (progress.currentBytes%100)).toInt())
-                }
-            })
             .start(object : OnDownloadListener {
                 override fun onDownloadComplete() {
-
+                    scanFile(file.getAbsolutePath()+"/"+imageName)
                     if (downloadCount == listWatermark.size)
                         Toast.makeText(
                             this@DownloadingActivity,
@@ -278,53 +241,15 @@ class DownloadingActivity : AppCompatActivity() {
 
         var file = File(Environment.getExternalStorageDirectory().toString() + "/Spyne")
 
-        scanFile(file.getAbsolutePath());
-
         val downloadId = PRDownloader.download(
             imageFile,
             Environment.getExternalStorageDirectory().toString() + "/Spyne",
             imageName
         )
             .build()
-            .setOnStartOrResumeListener {
-            }
-            .setOnPauseListener {
-
-            }
-            .setOnCancelListener(object : OnCancelListener {
-                override fun onCancel() {}
-            })
-            .setOnProgressListener(object : OnProgressListener {
-                override fun onProgress(progress: Progress) {
-                    //showNotifications(((progress.totalBytes / 100) * progress.currentBytes).toInt())
-
-//                    builder.setContentTitle(imageName)
-//                        .setContentText(
-//                            ((100 - (progress.currentBytes%100)).toInt())
-//                                .toString() + "/" + "100"+ "%")
-//                        .setProgress(100, (100 - (progress.currentBytes%100)).toInt(),
-//                            false);
-//
-//                    with(NotificationManagerCompat.from(this@ShowImagesActivity)) {
-//                        // notificationId is a unique int for each notification that you must define
-//                        notify(1, builder.build())
-//                    }
-//
-//                    llDownloadProgress.visibility = View.VISIBLE
-//
-//                    tvProgress.setText(imageName)
-//                    tvProgressvalue.setText(((100 - (progress.currentBytes%100)).toInt())
-//                        .toString() + "/" + "100" + "%")
-//
-//                    seekbarDownload.setProgress((100 - (progress.currentBytes%100)).toInt())
-//
-//                    Log.e("Progress HD", imageFile + " " +
-//                            ((100 - (progress.currentBytes%100)).toInt())
-//                                .toString() + "/" + "100")
-                }
-            })
             .start(object : OnDownloadListener {
                 override fun onDownloadComplete() {
+                    scanFile(file.getAbsolutePath()+"/"+imageName)
                     if (downloadCount == listHdQuality.size) {
                         Toast.makeText(
                             this@DownloadingActivity,
