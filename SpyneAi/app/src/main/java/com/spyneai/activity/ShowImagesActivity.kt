@@ -243,6 +243,18 @@ class ShowImagesActivity : AppCompatActivity() {
                 val intent = Intent(this, OrderSummary2Activity::class.java)
                 intent.putExtra(AppConstants.LIST_WATERMARK, imageListWaterMark)
                 intent.putExtra(AppConstants.LIST_HD_QUALITY, listHdQuality)
+
+                var skuId = Utilities.getPreference(this, AppConstants.SKU_ID)
+                    .toString()
+
+                var skuName = Utilities.getPreference(this, AppConstants.SKU_ID)
+                    .toString()
+
+                var s = ""
+
+                intent.putExtra(AppConstants.SKU_ID,skuId)
+                intent.putExtra(AppConstants.SKU_NAME,skuName)
+
                 startActivity(intent)
             }
         }

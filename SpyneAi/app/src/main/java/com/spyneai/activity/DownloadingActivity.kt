@@ -6,6 +6,7 @@ import android.content.Intent
 import android.content.pm.PackageManager
 import android.media.MediaScannerConnection
 import android.net.Uri
+import android.os.Build
 import android.os.Bundle
 import android.os.Environment
 import android.util.Log
@@ -17,15 +18,22 @@ import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import com.downloader.*
 import com.spyneai.R
+import com.spyneai.imagesdowloading.DownloadImageService
+import com.spyneai.imagesdowloading.HDImagesDownloadedEvent
 import com.spyneai.interfaces.APiService
 import com.spyneai.interfaces.RetrofitClients
 import com.spyneai.model.credit.UpdateCreditResponse
 import com.spyneai.needs.AppConstants
 import com.spyneai.needs.Utilities
+import com.spyneai.videorecording.ThreeSixtyInteriorViewActivity
+import com.spyneai.videorecording.model.ProcessVideoEvent
 import kotlinx.android.synthetic.main.activity_downloading.*
 import kotlinx.android.synthetic.main.activity_order_summary2.*
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
+import org.greenrobot.eventbus.EventBus
+import org.greenrobot.eventbus.Subscribe
+import org.greenrobot.eventbus.ThreadMode
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -148,11 +156,23 @@ class DownloadingActivity : AppCompatActivity() {
                     Utilities.getPreference(this, AppConstants.CREDIT_AVAILABLE)!!.toInt()
                 price = Utilities.getPreference(this, AppConstants.PRICE)!!.toInt()
                 remaningCredit = avaliableCredit - price
-                downloadHighQuality()
+
+                //downloadHighQuality()
+
+                //start service
+
+                var imageDownloadingServiceIntent = Intent(this,DownloadImageService::class.java)
+                imageDownloadingServiceIntent.action = "START"
+                imageDownloadingServiceIntent.putExtra(AppConstants.LIST_HD_QUALITY,listHdQuality)
+                imageDownloadingServiceIntent.putExtra(AppConstants.SKU_NAME,intent.getStringExtra(AppConstants.SKU_NAME))
+                imageDownloadingServiceIntent.putExtra(AppConstants.SKU_ID,intent.getStringExtra(AppConstants.SKU_ID))
+                imageDownloadingServiceIntent.putExtra(AppConstants.CREDIT_REMAINING,remaningCredit)
+                imageDownloadingServiceIntent.putExtra(AppConstants.PRICE,price)
+                ContextCompat.startForegroundService(this, imageDownloadingServiceIntent)
+
             } else {
                 Toast.makeText(this, "You are out of credits", Toast.LENGTH_SHORT)
             }
-
         }
     }
 
@@ -213,32 +233,10 @@ class DownloadingActivity : AppCompatActivity() {
             .setOnCancelListener(object : OnCancelListener {
                 override fun onCancel() {}
             })
-            .setOnProgressListener(object : OnProgressListener {
-                override fun onProgress(progress: Progress) {
-//                    builder.setContentTitle(imageName)
-//                        .setContentText(
-//                            ((100 - (progress.currentBytes%100)).toInt())
-//                                .toString() + "/" + "100"+ "%")
-//                        .setProgress(100, (100 - (progress.currentBytes%100)).toInt(),
-//                            false);
-//
-//                    with(NotificationManagerCompat.from(this@DownloadingActivity)) {
-//                        // notificationId is a unique int for each notification that you must define
-//                        notify(1, builder.build())
-//                    }
-//
-//                    Log.e("Progress HD", imageFile + " " +
-//                            ((100 - (progress.currentBytes%100)).toInt())
-//                                .toString() + "/" + "100"+ "%")
-//                    tvProgress.setText(imageName)
-//                    tvProgressvalue.setText(((100 - (progress.currentBytes%100)).toInt())
-//                        .toString() + "/" + "100" + "%")
-//                    llDownloadProgress.visibility = View.VISIBLE
-//                    seekbarDownload.setProgress((100 - (progress.currentBytes%100)).toInt())
-                }
-            })
             .start(object : OnDownloadListener {
                 override fun onDownloadComplete() {
+
+                    var s = "";
 
                     if (downloadCount == listWatermark.size)
                         Toast.makeText(
@@ -251,7 +249,6 @@ class DownloadingActivity : AppCompatActivity() {
                     tvDownloading.visibility = View.GONE
                     tvDownloadCompleted.visibility = View.VISIBLE
                     downloadCount = 0
-
                 }
 
                 override fun onError(error: com.downloader.Error?) {
@@ -263,6 +260,15 @@ class DownloadingActivity : AppCompatActivity() {
                     }
                 }
             })
+    }
+
+    // The Folder location where all the files will be stored
+    private val outputDirectory: String by lazy {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+            "${Environment.DIRECTORY_DCIM}/Spyne-HD/"
+        } else {
+            "${getExternalFilesDir(Environment.DIRECTORY_DCIM)?.path}/Spyne-HD/"
+        }
     }
 
     //Download
@@ -278,13 +284,21 @@ class DownloadingActivity : AppCompatActivity() {
 
         var file = File(Environment.getExternalStorageDirectory().toString() + "/Spyne")
 
-        scanFile(file.getAbsolutePath());
+        //File(outputDirectory).mkdirs()
+        //val file = File("$outputDirectory/${System.currentTimeMillis()}.png")
+
+
+        scanFile(file.getAbsolutePath())
+
+        Log.d(TAG, "downloadWithHighQuality: "+Environment.getExternalStorageDirectory().toString() + "/Spyne/"+imageName)
+
 
         val downloadId = PRDownloader.download(
             imageFile,
             Environment.getExternalStorageDirectory().toString() + "/Spyne",
             imageName
         )
+
             .build()
             .setOnStartOrResumeListener {
             }
@@ -294,37 +308,9 @@ class DownloadingActivity : AppCompatActivity() {
             .setOnCancelListener(object : OnCancelListener {
                 override fun onCancel() {}
             })
-            .setOnProgressListener(object : OnProgressListener {
-                override fun onProgress(progress: Progress) {
-                    //showNotifications(((progress.totalBytes / 100) * progress.currentBytes).toInt())
-
-//                    builder.setContentTitle(imageName)
-//                        .setContentText(
-//                            ((100 - (progress.currentBytes%100)).toInt())
-//                                .toString() + "/" + "100"+ "%")
-//                        .setProgress(100, (100 - (progress.currentBytes%100)).toInt(),
-//                            false);
-//
-//                    with(NotificationManagerCompat.from(this@ShowImagesActivity)) {
-//                        // notificationId is a unique int for each notification that you must define
-//                        notify(1, builder.build())
-//                    }
-//
-//                    llDownloadProgress.visibility = View.VISIBLE
-//
-//                    tvProgress.setText(imageName)
-//                    tvProgressvalue.setText(((100 - (progress.currentBytes%100)).toInt())
-//                        .toString() + "/" + "100" + "%")
-//
-//                    seekbarDownload.setProgress((100 - (progress.currentBytes%100)).toInt())
-//
-//                    Log.e("Progress HD", imageFile + " " +
-//                            ((100 - (progress.currentBytes%100)).toInt())
-//                                .toString() + "/" + "100")
-                }
-            })
             .start(object : OnDownloadListener {
                 override fun onDownloadComplete() {
+
                     if (downloadCount == listHdQuality.size) {
                         Toast.makeText(
                             this@DownloadingActivity,
@@ -412,17 +398,48 @@ class DownloadingActivity : AppCompatActivity() {
     }
 
     private fun scanFile(path: String) {
+        Log.d(TAG, "scanFile: s"+path)
         MediaScannerConnection.scanFile(
             this@DownloadingActivity, arrayOf(path), null
         ) { path, uri -> Log.i("TAG", "Finished scanning $path") }
     }
 
     private fun refreshGallery(mCurrentPhotoPath: String, context: Context) {
+        Log.d(TAG, "scanFile: r"+mCurrentPhotoPath)
         val mediaScanIntent = Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE)
         val f = File(mCurrentPhotoPath)
         val contentUri: Uri = Uri.fromFile(f)
         mediaScanIntent.data = contentUri
         context.sendBroadcast(mediaScanIntent)
+    }
+
+    override fun onStart() {
+        super.onStart()
+        EventBus.getDefault().register(this)
+    }
+
+    override fun onStop() {
+        super.onStop()
+        EventBus.getDefault().unregister(this)
+    }
+
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    fun onMessageEvent(event: HDImagesDownloadedEvent?) {
+        event?.getSkuId()?.let {
+                                    Toast.makeText(
+                            this@DownloadingActivity,
+                            "Download Completed", Toast.LENGTH_SHORT
+                        ).show()
+
+                        tvDownloading.visibility = View.GONE
+                        tvDownloadCompleted.visibility = View.VISIBLE
+                        llButton.visibility = View.VISIBLE
+                        tvButtonText.setText("Go to Home")
+                       // userUpdateCredit()
+                        downloadCount = 0
+                        //llDownloadProgress.visibility = View.GONE
+        }
     }
 
     override fun onRequestPermissionsResult(

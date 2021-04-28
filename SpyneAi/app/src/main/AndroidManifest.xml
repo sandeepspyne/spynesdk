@@ -51,6 +51,10 @@
             android:launchMode="singleTop" />
         <activity android:name=".videorecording.ProcessVideoTimerActivity" />
 
+        <service android:name=".imagesdowloading.DownloadImageService"
+            android:enabled="true"
+            android:exported="false"/>
+
         <service
             android:name=".videorecording.service.UploadVideoService"
             android:enabled="true"

@@ -4,6 +4,7 @@ import android.app.Dialog
 import android.content.Context
 import android.content.Intent
 import android.graphics.Color
+import android.graphics.Paint
 import android.graphics.drawable.ColorDrawable
 import android.net.Uri
 import android.os.Build
@@ -20,6 +21,7 @@ import android.widget.Toast
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AppCompatDelegate
+import androidx.core.content.ContextCompat
 import com.bumptech.glide.Glide
 import com.downloader.PRDownloader
 import com.downloader.PRDownloaderConfig
@@ -29,6 +31,7 @@ import com.spyneai.interfaces.RetrofitClientSpyneAi
 import com.spyneai.model.credit.CreditDetailsResponse
 import com.spyneai.needs.AppConstants
 import com.spyneai.needs.Utilities
+import com.spyneai.wallet.CreditManager
 import kotlinx.android.synthetic.main.activity_before_after.*
 import kotlinx.android.synthetic.main.activity_order_summary2.*
 import kotlinx.android.synthetic.main.activity_order_summary2.tvCategoryName
@@ -62,7 +65,27 @@ class OrderSummary2Activity : AppCompatActivity() {
         Utilities.savePrefrence(this, AppConstants.PRICE, Utilities.getPreference(this, AppConstants.NO_OF_IMAGES))
 
 
-        tvTotalCost.setText(Utilities.getPreference(this, AppConstants.PRICE).toString())
+        if(Utilities.getPreference(this@OrderSummary2Activity,Utilities.getPreference(this@OrderSummary2Activity, AppConstants.SKU_ID)
+                .toString()+AppConstants.CREDIT_DECUCTED) == ""){
+            tvTotalCost.setText(Utilities.getPreference(this, AppConstants.PRICE).toString())
+        }else{
+
+            tvTotalCost.setTextColor(ContextCompat.getColor(this,R.color.credit_deducted))
+
+            tv_credits.setTextColor(ContextCompat.getColor(this,R.color.credit_deducted))
+
+            tvTotalCost.apply {
+                paintFlags = paintFlags or Paint.STRIKE_THRU_TEXT_FLAG
+                text = Utilities.getPreference(this@OrderSummary2Activity, AppConstants.PRICE).toString()
+            }
+            tv_credits.apply {
+                paintFlags = paintFlags or Paint.STRIKE_THRU_TEXT_FLAG
+                text = "Credits"
+            }
+        }
+
+
+
 
 
         fetchUserCreditDetails()
@@ -113,6 +136,9 @@ class OrderSummary2Activity : AppCompatActivity() {
                 Utilities.savePrefrence(this, AppConstants.DOWNLOAD_TYPE, "hd")
                 intent.putExtra(AppConstants.LIST_HD_QUALITY, listHdQuality)
                 intent.putExtra(AppConstants.LIST_WATERMARK, listWatermark)
+                intent.putExtra(AppConstants.SKU_ID, Utilities.getPreference(this@OrderSummary2Activity, AppConstants.SKU_ID)
+                    .toString())
+                intent.putExtra(AppConstants.SKU_NAME,intent.getStringExtra(AppConstants.SKU_NAME))
                 startActivity(intent)
             }else{
                 Toast.makeText(
