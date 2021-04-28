@@ -13,6 +13,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.spyneai.R
 import com.spyneai.model.categories.Data
+import com.spyneai.model.completedAndongoing.CompletedOngoingProjectResponse
 import com.spyneai.model.projects.CompletedProjectResponse
 
 class CompletedProjectAdapter (

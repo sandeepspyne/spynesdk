@@ -41,13 +41,15 @@
         android:theme="@style/Theme.SpyneAi"
         android:usesCleartextTraffic="true"
         tools:targetApi="m">
-        <activity android:name=".activity.YourOrdersActivity"
-            android:screenOrientation="portrait"
-            android:launchMode="singleTask"/>
+        <activity android:name=".activity.OngoingOrdersActivity"></activity>
+        <activity
+            android:name=".activity.YourOrdersActivity"
+            android:launchMode="singleTask"
+            android:screenOrientation="portrait" />
         <activity android:name=".videorecording.VideoUploadHandlerActivity" />
         <activity
             android:name=".videorecording.ThreeSixtyInteriorViewActivity"
-            android:launchMode="singleTop"></activity>
+            android:launchMode="singleTop" />
         <activity android:name=".videorecording.ProcessVideoTimerActivity" />
 
         <service
@@ -59,7 +61,7 @@
         <activity android:name=".videorecording.SaveTrimmedVideoActivity" />
         <activity
             android:name=".videorecording.RecordVideoActivity"
-            android:screenOrientation="landscape"></activity>
+            android:screenOrientation="landscape" />
 
         <receiver
             android:name=".service.StartReceiver"
@@ -80,7 +82,7 @@
             android:name=".service.ProcessImagesService"
             android:enabled="true"
             android:exported="true"
-            android:stopWithTask="false"></service>
+            android:stopWithTask="false" />
 
         <receiver
             android:name=".service.StartReceiver"

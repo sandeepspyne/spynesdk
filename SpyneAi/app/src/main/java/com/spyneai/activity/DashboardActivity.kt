@@ -115,20 +115,20 @@ class DashboardActivity : AppCompatActivity() {
 
     private fun setCarosels() {
         tvCompleted.setOnClickListener(View.OnClickListener {
-            val intent = Intent(this, YourOrdersActivity::class.java)
+            val intent = Intent(this, CompletedProjectsActivity::class.java)
             startActivity(intent)
         })
 
         tvOngoing.setOnClickListener(View.OnClickListener {
-            /* val intent = Intent(contexts, OngoingActivity::class.java)
-            startActivity(intent)*/
-            Toast.makeText(
-                this,
-                "Coming Soon !",
-                Toast.LENGTH_SHORT
-            ).show()
-
+            val intent = Intent(this, OngoingOrdersActivity::class.java)
+            startActivity(intent)
         })
+
+        tvOrders.setOnClickListener(View.OnClickListener {
+            val intent = Intent(this, YourOrdersActivity::class.java)
+            startActivity(intent)
+        })
+
 
         carouselView!!.setPageCount(sampleImages.size);
         carouselView.setViewListener(viewListener);
@@ -330,23 +330,6 @@ class DashboardActivity : AppCompatActivity() {
                 this,
                 "Coming Soon!",
                 Toast.LENGTH_SHORT
-            ).show()
-        })
-
-        tvOrders.setOnClickListener(View.OnClickListener {
-           /* fragment = OrdersFragment(this)
-            fragmentManager = supportFragmentManager
-            fragmentTransaction = fragmentManager!!.beginTransaction()
-            fragmentTransaction!!.replace(R.id.fragment_container_view, fragment!!)
-            fragmentTransaction!!.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
-            fragmentTransaction!!.commit()
-            setFooters(2)*/
-         //   setFooters(2)
-
-            Toast.makeText(
-                    this,
-                    "Coming Soon !",
-                    Toast.LENGTH_SHORT
             ).show()
         })
 

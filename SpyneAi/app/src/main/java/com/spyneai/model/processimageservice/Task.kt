@@ -53,6 +53,10 @@ class Task {
 
     var cornerCount: Int = 0
 
+    var totalFrames: Int = 0
+
+    var currentFrame: Int = 1
+
     var cornerPosition: String = ""
 
     var imageList = ArrayList<String>()

@@ -16,21 +16,22 @@ import com.spyneai.model.projects.CompletedProjectResponse
 import com.spyneai.needs.AppConstants
 import com.spyneai.needs.Utilities
 import kotlinx.android.synthetic.main.activity_completed_projects.*
-import kotlinx.android.synthetic.main.fragment_home.view.*
+import kotlinx.android.synthetic.main.activity_completed_projects.imgBackCompleted
+import kotlinx.android.synthetic.main.activity_ongoing_orders.*
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 
-class CompletedProjectsActivity : AppCompatActivity() {
+class OngoingOrdersActivity : AppCompatActivity() {
 
     lateinit var completedProjectList : ArrayList<CompletedProjectResponse>
     lateinit var completedProjectAdapter : CompletedProjectAdapter
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_completed_projects)
+        setContentView(R.layout.activity_ongoing_orders)
 
         fatchCompletedProjects()
         listeners()
@@ -46,33 +47,33 @@ class CompletedProjectsActivity : AppCompatActivity() {
     private fun fatchCompletedProjects(){
         completedProjectList = ArrayList<CompletedProjectResponse>()
 
-        completedProjectAdapter = CompletedProjectAdapter(this@CompletedProjectsActivity,
-                completedProjectList, object : CompletedProjectAdapter.BtnClickListener {
-            override fun onBtnClick(position: Int) {
-                Log.e("position cat", position.toString())
-                Utilities.savePrefrence(this@CompletedProjectsActivity,
+        completedProjectAdapter = CompletedProjectAdapter(this@OngoingOrdersActivity,
+            completedProjectList, object : CompletedProjectAdapter.BtnClickListener {
+                override fun onBtnClick(position: Int) {
+                    Log.e("position cat", position.toString())
+                    Utilities.savePrefrence(this@OngoingOrdersActivity,
                         AppConstants.SKU_ID,
                         completedProjectList[position].sku_id)
-                val intent = Intent(this@CompletedProjectsActivity,
+                    val intent = Intent(this@OngoingOrdersActivity,
                         ShowImagesActivity::class.java)
-                startActivity(intent)
+                    startActivity(intent)
 
-            }
-        })
+                }
+            })
 
-        val layoutManager: RecyclerView.LayoutManager = LinearLayoutManager(this@CompletedProjectsActivity, LinearLayoutManager.VERTICAL, false)
-        rv_completedActivity.setLayoutManager(layoutManager)
-        rv_completedActivity.setAdapter(completedProjectAdapter)
+        val layoutManager: RecyclerView.LayoutManager = LinearLayoutManager(this@OngoingOrdersActivity, LinearLayoutManager.VERTICAL, false)
+        rv_ongoingActivity.setLayoutManager(layoutManager)
+        rv_ongoingActivity.setAdapter(completedProjectAdapter)
 
 
         Utilities.showProgressDialog(this)
 
         val request = RetrofitClients.buildService(APiService::class.java)
-        Utilities.savePrefrence(this,AppConstants.tokenId,
-                Utilities.getPreference(this,AppConstants.tokenId))
+        Utilities.savePrefrence(this, AppConstants.tokenId,
+            Utilities.getPreference(this, AppConstants.tokenId))
         val userId = RequestBody.create(
-                MultipartBody.FORM,
-                Utilities.getPreference(this, AppConstants.tokenId)!!)
+            MultipartBody.FORM,
+            Utilities.getPreference(this, AppConstants.tokenId)!!)
         val call = request.getCompletedProjects(userId)
 
         call?.enqueue(object : Callback<List<CompletedProjectResponse>> {
@@ -84,15 +85,15 @@ class CompletedProjectsActivity : AppCompatActivity() {
                     if (response.body()!!.size > 0)
                     {
                         for (i in 0..response.body()!!.size - 1) {
-                            if (response.body()!![i].current_frame == response.body()!![i].total_frames){
+                            if (response.body()!![i].current_frame < response.body()!![i].total_frames){
                                 completedProjectList.addAll(response.body()!!)
                                 completedProjectList.reverse()
                             }
                         }
                     }
                     else{
-                        Toast.makeText(this@CompletedProjectsActivity ,
-                                "No projects found !", Toast.LENGTH_SHORT).show()
+                        Toast.makeText(this@OngoingOrdersActivity ,
+                            "No projects found !", Toast.LENGTH_SHORT).show()
                     }
 
                     completedProjectAdapter.notifyDataSetChanged()
@@ -100,7 +101,7 @@ class CompletedProjectsActivity : AppCompatActivity() {
             }
             override fun onFailure(call: Call<List<CompletedProjectResponse>>, t: Throwable) {
                 Utilities.hideProgressDialog()
-                Toast.makeText(this@CompletedProjectsActivity , "Server not responding!!!", Toast.LENGTH_SHORT).show()
+                Toast.makeText(this@OngoingOrdersActivity , "Server not responding!!!", Toast.LENGTH_SHORT).show()
             }
         })
 

@@ -538,8 +538,11 @@ class PhotoUploader(var task: Task, var listener: Listener) {
                         if (response.body()?.payload!!.data.photos.size > 0) {
                             task.photoList.clear()
                             task.photoListInteriors.clear()
+                            task.totalFrames = response.body()?.payload!!.data.photos.size
 
                             for (i in 0..response.body()?.payload!!.data.photos.size - 1) {
+
+
                                 if (response.body()?.payload!!.data.photos[i].photoType.equals("EXTERIOR"))
                                     task.photoList.add(response.body()?.payload!!.data.photos[i])
                                 else if (response.body()?.payload!!.data.photos[i].photoType.equals(
@@ -628,6 +631,21 @@ class PhotoUploader(var task: Task, var listener: Listener) {
             task.cornerPosition
         )
 
+        val enterpriseId = RequestBody.create(
+            MultipartBody.FORM,
+            "TaD1VC1Ko"
+        )
+
+        val currentFrame = RequestBody.create(
+            MultipartBody.FORM,
+            task.currentFrame.toString()
+        )
+
+        val totalFrame = RequestBody.create(
+            MultipartBody.FORM,
+            task.totalFrames.toString()
+        )
+
         var logo: MultipartBody.Part? = null
         if (task.dealershipLogo.equals("")) {
             val attachmentEmpty = RequestBody.create(MediaType.parse("multipart/form-data"), "")
@@ -647,9 +665,9 @@ class PhotoUploader(var task: Task, var listener: Listener) {
         }
 
         val call =
-            request.bulkUPloadv3(
+            request.bulkUPloadv4(
                 Background, UserId, SkuId,
-                ImageUrl, SkuName, WindowStatus, contrast, logo, cornerPosition
+                ImageUrl, SkuName, WindowStatus, contrast, logo, cornerPosition, enterpriseId, currentFrame, totalFrame
             )
 
         call?.enqueue(object : Callback<BulkUploadResponse> {
@@ -660,6 +678,7 @@ class PhotoUploader(var task: Task, var listener: Listener) {
                 if (response.isSuccessful && response.body()!!.status == 200) {
                     task.afterImagesCar.add(response.body()!!.output_image)
                     task.countGif++
+                    task.currentFrame++
                     log("bulk upload count: " + task.countGif)
                     log("output image: " + response.body()!!.output_image)
                     if (task.countGif < task.photoList.size) {
@@ -899,14 +918,32 @@ class PhotoUploader(var task: Task, var listener: Listener) {
             "inner"
         )
 
+        val enterpriseId = RequestBody.create(
+            MultipartBody.FORM,
+            "TaD1VC1Ko"
+        )
+
+        val currentFrame = RequestBody.create(
+            MultipartBody.FORM,
+            task.currentFrame.toString()
+        )
+
+        val totalFrame = RequestBody.create(
+            MultipartBody.FORM,
+            task.totalFrames.toString()
+        )
+
         val call =
-            request.bulkUPloadFootwear(
+            request.bulkUPloadFootwearv4(
                 UserId,
                 SkuId,
                 imageUrl,
                 SkuName,
                 marketplace_id,
-                bg_color
+                bg_color,
+                enterpriseId,
+                currentFrame,
+                totalFrame
             )
 
         call?.enqueue(object : Callback<FootwearBulkResponse> {
@@ -919,7 +956,8 @@ class PhotoUploader(var task: Task, var listener: Listener) {
 //                        val notification = updateNotification("AI for Image Processing started...")
 //                        startForeground(notificationID, notification)
 
-                    ++task.countGif
+                    task.countGif++
+                    task.currentFrame++
                     if (task.countGif < task.photoList.size) {
                         log("countGif: " + task.countGif.toString())
                         bulkUploadFootwear()

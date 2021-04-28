@@ -15,6 +15,7 @@ import com.spyneai.activity.ShowImagesActivity
 import com.spyneai.adapter.CompletedProjectAdapter
 import com.spyneai.interfaces.APiService
 import com.spyneai.interfaces.RetrofitClients
+import com.spyneai.interfaces.Staging
 import com.spyneai.model.projects.CompletedProjectResponse
 import com.spyneai.needs.AppConstants
 import com.spyneai.needs.Utilities
@@ -28,8 +29,8 @@ import retrofit2.Response
 
 class CompletedOrdersFragment : Fragment() {
 
-    lateinit var completedProjectList : ArrayList<CompletedProjectResponse>
-    lateinit var completedProjectAdapter : CompletedProjectAdapter
+    lateinit var completedProjectList: ArrayList<CompletedProjectResponse>
+    lateinit var completedProjectAdapter: CompletedProjectAdapter
     protected lateinit var rootView: View
     lateinit var recyclerView: RecyclerView
 
@@ -46,63 +47,79 @@ class CompletedOrdersFragment : Fragment() {
     }
 
 
-
-
-    private fun fatchCompletedProjects(){
+    private fun fatchCompletedProjects() {
         completedProjectList = ArrayList<CompletedProjectResponse>()
 
         completedProjectAdapter = CompletedProjectAdapter(requireContext(),
             completedProjectList, object : CompletedProjectAdapter.BtnClickListener {
                 override fun onBtnClick(position: Int) {
                     Log.e("position cat", position.toString())
-                    Utilities.savePrefrence(requireContext(),
+                    Utilities.savePrefrence(
+                        requireContext(),
                         AppConstants.SKU_ID,
-                        completedProjectList[position].sku_id)
-                    val intent = Intent(requireContext(),
-                        ShowImagesActivity::class.java)
+                        completedProjectList[position].sku_id
+                    )
+                    val intent = Intent(
+                        requireContext(),
+                        ShowImagesActivity::class.java
+                    )
                     startActivity(intent)
 
                 }
             })
 
-        recyclerView = rootView.findViewById(R.id.rv_completedProject)
-        val layoutManager: RecyclerView.LayoutManager = LinearLayoutManager(requireContext(), LinearLayoutManager.VERTICAL, false)
+        recyclerView = rootView.findViewById(R.id.rv_completedFragment)
+        val layoutManager: RecyclerView.LayoutManager =
+            LinearLayoutManager(requireContext(), LinearLayoutManager.VERTICAL, false)
         recyclerView.setLayoutManager(layoutManager)
         recyclerView.setAdapter(completedProjectAdapter)
 
 
         Utilities.showProgressDialog(requireContext())
 
-        val request = RetrofitClients.buildService(APiService::class.java)
-        Utilities.savePrefrence(requireContext(), AppConstants.tokenId,
-            Utilities.getPreference(requireContext(), AppConstants.tokenId))
+        val request = Staging.buildService(APiService::class.java)
+        Utilities.savePrefrence(
+            requireContext(), AppConstants.tokenId,
+            Utilities.getPreference(requireContext(), AppConstants.tokenId)
+        )
         val userId = RequestBody.create(
             MultipartBody.FORM,
-            Utilities.getPreference(requireContext(), AppConstants.tokenId)!!)
-        val call = request.getCompletedProjects(userId)
-
+            Utilities.getPreference(requireContext(), AppConstants.tokenId)!!
+        )
+        val enterpriseId = RequestBody.create(
+            MultipartBody.FORM,
+            "TaD1VC1Ko"
+        )
+        val call = request.getCompletedOngoingProjects(userId, enterpriseId)
         call?.enqueue(object : Callback<List<CompletedProjectResponse>> {
-            override fun onResponse(call: Call<List<CompletedProjectResponse>>,
-                                    response: Response<List<CompletedProjectResponse>>
+            override fun onResponse(
+                call: Call<List<CompletedProjectResponse>>,
+                response: Response<List<CompletedProjectResponse>>
             ) {
                 Utilities.hideProgressDialog()
-                if (response.isSuccessful){
-                    if (response.body()!!.size > 0)
-                    {
-                        completedProjectList.addAll(response.body()!!)
-                        completedProjectList.reverse()
-                    }
-                    else{
-                        Toast.makeText(requireContext() ,
-                            "No projects found !", Toast.LENGTH_SHORT).show()
+                if (response.isSuccessful) {
+                    if (response.body()!!.size > 0) {
+                        for (i in 0..response.body()!!.size - 1) {
+                            if (response.body()!![i].current_frame == response.body()!![i].total_frames){
+                                completedProjectList.addAll(response.body()!!)
+                                completedProjectList.reverse()
+                            }
+                        }
+                    } else {
+                        Toast.makeText(
+                            requireContext(),
+                            "No projects found !", Toast.LENGTH_SHORT
+                        ).show()
                     }
 
                     completedProjectAdapter.notifyDataSetChanged()
                 }
             }
+
             override fun onFailure(call: Call<List<CompletedProjectResponse>>, t: Throwable) {
                 Utilities.hideProgressDialog()
-                Toast.makeText(requireContext() , "Server not responding!!!", Toast.LENGTH_SHORT).show()
+                Toast.makeText(requireContext(), "Server not responding!!!", Toast.LENGTH_SHORT)
+                    .show()
             }
         })
 

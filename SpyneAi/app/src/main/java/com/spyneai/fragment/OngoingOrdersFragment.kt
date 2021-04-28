@@ -74,7 +74,7 @@ public class OngoingOrdersFragment : Fragment() {
 
                 }
             })
-        recyclerView = rootView.findViewById(R.id.rv_ongoingProjects)
+        recyclerView = rootView.findViewById(R.id.rv_ongoingFragment)
         val layoutManager: RecyclerView.LayoutManager = LinearLayoutManager(
             requireContext(),
             LinearLayoutManager.VERTICAL,
@@ -105,8 +105,12 @@ public class OngoingOrdersFragment : Fragment() {
                 Utilities.hideProgressDialog()
                 if (response.isSuccessful) {
                     if (response.body()!!.size > 0) {
-                        completedProjectList.addAll(response.body()!!)
-                        completedProjectList.reverse()
+                        for (i in 0..response.body()!!.size - 1) {
+                            if (response.body()!![i].current_frame < response.body()!![i].total_frames){
+                                completedProjectList.addAll(response.body()!!)
+                                completedProjectList.reverse()
+                            }
+                        }
                     } else {
                         Toast.makeText(
                             requireContext(),

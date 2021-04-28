@@ -6,7 +6,7 @@
     tools:context=".fragment.OngoingOrdersFragment">
 
     <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/rv_ongoingProjects"
+        android:id="@+id/rv_ongoingFragment"
         android:layout_width="match_parent"
         android:layout_height="match_parent"/>
 

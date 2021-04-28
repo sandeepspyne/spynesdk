@@ -392,7 +392,7 @@ class GenerateGifActivity : AppCompatActivity(), PickiTCallbacks {
             UCrop.of(sourceUri, destinationUri)
                 .withAspectRatio(1F, 1F)
                 .withOptions(ucropOptions)
-                .withMaxResultSize(250, 100)
+                .withMaxResultSize(200, 120)
                 .start(this);
         }
     }

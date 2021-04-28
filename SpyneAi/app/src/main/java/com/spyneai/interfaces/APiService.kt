@@ -312,13 +312,30 @@ interface APiService {
         @Part("logo-position") logo_position: RequestBody?
     ): Call<BulkUploadResponse>?
 
+    @Multipart
+    @POST("v4/bulk-car-reaplacement")
+    fun bulkUPloadv4(
+        @Part("background") background: RequestBody?,
+        @Part("user_id") user_id: RequestBody?,
+        @Part("sku_id") sku_id: RequestBody?,
+        @Part("image_url") image_url: RequestBody?,
+        @Part("sku_name") sku_name: RequestBody?,
+        @Part("window_status") window_status: RequestBody?,
+        @Part("contrast") contrast: RequestBody?,
+        @Part logo: MultipartBody.Part?,
+        @Part("logo-position") logo_position: RequestBody?,
+        @Part("enterprise_id") enterprise_id: RequestBody?,
+        @Part("total_frames") total_frames: RequestBody?,
+        @Part("current_frame") current_frame: RequestBody?
+    ): Call<BulkUploadResponse>?
+
 
     @Multipart
     @POST("dealership-logo")
     fun adddealershipLogo(
         @Part logo: MultipartBody.Part?,
         @Part("logo-position") logo_position: RequestBody?,
-        @Part("image_url") image_url: RequestBody?
+        @Part("image_url") image_url: RequestBody?,
     ): Call<DealershipLogoResponse>?
 
     @Multipart
@@ -330,6 +347,20 @@ interface APiService {
         @Part("sku_name") sku_name: RequestBody?,
         @Part("marketplace_id") marketplace_id: RequestBody?,
         @Part("bg_color") bg_color: RequestBody?,
+    ): Call<FootwearBulkResponse>?
+
+    @Multipart
+    @POST("v4/footwear-background-replacement")
+    fun bulkUPloadFootwearv4(
+        @Part("user_id") user_id: RequestBody?,
+        @Part("sku_id") sku_id: RequestBody?,
+        @Part("image_url") image_url: RequestBody?,
+        @Part("sku_name") sku_name: RequestBody?,
+        @Part("marketplace_id") marketplace_id: RequestBody?,
+        @Part("bg_color") bg_color: RequestBody?,
+        @Part("enterprise_id") enterprise_id: RequestBody?,
+        @Part("total_frames") total_frames: RequestBody?,
+        @Part("current_frame") current_frame: RequestBody?
     ): Call<FootwearBulkResponse>?
 
     @Multipart
@@ -373,6 +404,13 @@ interface APiService {
     @Multipart
     @POST("fetch-sku-name")
     fun getCompletedProjects(@Part("user_id") user_id: RequestBody?)
+    : Call<List<CompletedProjectResponse>>?
+
+    @Multipart
+    @POST("v4/fetch-sku-name")
+    fun getCompletedOngoingProjects(
+        @Part("user_id") user_id: RequestBody?,
+        @Part("enterprise_id") enterprise_id: RequestBody?, )
     : Call<List<CompletedProjectResponse>>?
 
     @Multipart
