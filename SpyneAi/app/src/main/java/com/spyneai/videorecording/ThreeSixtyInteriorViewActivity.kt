@@ -25,7 +25,7 @@ import com.bumptech.glide.request.target.Target
 import com.spyneai.activity.DashboardActivity
 import com.spyneai.databinding.ActivityThreeSixtyInteriorViewBinding
 
-import com.spyneai.databinding.ActivityThreeSixtyViewTestBinding
+
 
 import com.spyneai.videorecording.fragments.DialogEmbedCode
 import com.spyneai.videorecording.model.TSVParams
@@ -357,7 +357,7 @@ class ThreeSixtyInteriorViewActivity : AppCompatActivity(),View.OnTouchListener,
                     }
 
                 })
-                    //.override(250, 250)
+                    .override(250, 250)
                     .dontAnimate()
                     .diskCacheStrategy(DiskCacheStrategy.ALL)
                     .into(binding.ivFront)
@@ -411,7 +411,7 @@ class ThreeSixtyInteriorViewActivity : AppCompatActivity(),View.OnTouchListener,
                     }
 
                 })
-                    //.override(250, 250)
+                    .override(250, 250)
                     .dontAnimate()
                     .diskCacheStrategy(DiskCacheStrategy.ALL)
                     .into(binding.ivBackView)
