@@ -8,7 +8,7 @@ import com.spyneai.R
 import com.spyneai.databinding.ActivityCreditPlansBinding
 import com.spyneai.databinding.ActivityCreditSuccessBinding
 
-class CreditSuccessActivity : AppCompatActivity() {
+class CreditPaymentSuccessActivity : AppCompatActivity() {
 
     private lateinit var binding : ActivityCreditSuccessBinding
 
