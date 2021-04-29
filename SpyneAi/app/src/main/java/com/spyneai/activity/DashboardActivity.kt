@@ -9,7 +9,6 @@ import android.os.Bundle
 import android.util.Log
 import android.view.View
 import android.view.Window
-import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
@@ -22,11 +21,9 @@ import androidx.recyclerview.widget.RecyclerView
 import com.spyneai.extras.OnboardTwoActivity
 import com.spyneai.R
 import com.spyneai.adapter.CategoriesDashboardAdapter
-import com.spyneai.adapter.HomeFragment
 import com.spyneai.extras.BeforeAfterActivity
 import com.spyneai.interfaces.APiService
 import com.spyneai.interfaces.RetrofitClient
-import com.spyneai.interfaces.RetrofitClientSpyneAi
 import com.spyneai.interfaces.RetrofitClients
 import com.spyneai.model.categories.CategoriesResponse
 import com.spyneai.model.categories.Data
@@ -37,7 +34,7 @@ import com.spyneai.model.shoot.CreateCollectionResponse
 import com.spyneai.model.shoot.UpdateShootCategoryRequest
 import com.spyneai.needs.AppConstants
 import com.spyneai.needs.Utilities
-import com.spyneai.wallet.WalletActivity
+import com.spyneai.credits.WalletActivity
 import com.synnapps.carouselview.ViewListener
 import kotlinx.android.synthetic.main.activity_dashboard.*
 import kotlinx.android.synthetic.main.fragment_home.view.*

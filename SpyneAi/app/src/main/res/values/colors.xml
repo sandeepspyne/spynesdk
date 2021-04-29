@@ -25,5 +25,7 @@
     <color name="dark_blue">#3F3D56</color>
 
     <color name="credit_deducted">#B3B1B1</color>
+    <color name="line_separator">#F0EEEE</color>
+    <color name="image_download_preview">#5F5F5F</color>
 
 </resources>

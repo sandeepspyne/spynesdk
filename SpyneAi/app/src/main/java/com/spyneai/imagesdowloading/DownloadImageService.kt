@@ -9,7 +9,6 @@ import android.net.Uri
 import android.os.Build
 import android.os.IBinder
 import android.os.PowerManager
-import android.provider.MediaStore
 import android.util.Log
 import android.webkit.MimeTypeMap
 import com.spyneai.R
@@ -20,7 +19,7 @@ import com.spyneai.needs.Utilities
 import com.spyneai.service.ServiceState
 import com.spyneai.service.log
 import com.spyneai.service.setServiceState
-import com.spyneai.wallet.CreditManager
+import com.spyneai.credits.CreditManager
 import org.greenrobot.eventbus.EventBus
 import java.io.File
 

@@ -41,20 +41,25 @@
         android:theme="@style/Theme.SpyneAi"
         android:usesCleartextTraffic="true"
         tools:targetApi="m">
-        <activity android:name=".wallet.WalletActivity">
+        <activity android:name=".credits.LowCreditsActivity">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
 
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
         </activity>
-        <activity android:name=".videorecording.ThreeSixtyViewTestActivity"></activity>
+        <activity android:name=".credits.WalletActivity"></activity>
+        <activity android:name=".videorecording.ThreeSixtyViewTestActivity" />
         <activity android:name=".videorecording.VideoUploadHandlerActivity" />
         <activity
             android:name=".videorecording.ThreeSixtyInteriorViewActivity"
             android:launchMode="singleTop" />
         <activity android:name=".videorecording.ProcessVideoTimerActivity" />
 
-        <service android:name=".imagesdowloading.DownloadImageService"
+        <service
+            android:name=".imagesdowloading.DownloadImageService"
             android:enabled="true"
-            android:exported="false"/>
-
+            android:exported="false" />
         <service
             android:name=".videorecording.service.UploadVideoService"
             android:enabled="true"
@@ -218,11 +223,7 @@
         <activity
             android:name=".activity.SplashActivity"
             android:screenOrientation="portrait">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
 
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
         </activity>
         <activity android:name=".videorecording.ThreeSixtyViewActivity" />
         <activity android:name=".videorecording.TrimVideoActivity" />

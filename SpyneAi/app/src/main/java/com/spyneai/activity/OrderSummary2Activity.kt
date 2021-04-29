@@ -14,7 +14,6 @@ import android.util.Log
 import android.view.View
 import android.view.Window
 import android.view.animation.AnimationUtils
-import android.view.animation.RotateAnimation
 import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.Toast
@@ -31,7 +30,6 @@ import com.spyneai.interfaces.RetrofitClientSpyneAi
 import com.spyneai.model.credit.CreditDetailsResponse
 import com.spyneai.needs.AppConstants
 import com.spyneai.needs.Utilities
-import com.spyneai.wallet.CreditManager
 import kotlinx.android.synthetic.main.activity_before_after.*
 import kotlinx.android.synthetic.main.activity_order_summary2.*
 import kotlinx.android.synthetic.main.activity_order_summary2.tvCategoryName

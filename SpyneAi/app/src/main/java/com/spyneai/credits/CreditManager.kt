@@ -1,4 +1,4 @@
-package com.spyneai.wallet
+package com.spyneai.credits
 
 import android.content.Context
 import android.util.Log
