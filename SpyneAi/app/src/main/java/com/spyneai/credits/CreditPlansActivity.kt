@@ -2,6 +2,7 @@ package com.spyneai.credits
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.util.Log
 import android.view.View
 import android.widget.Toast
 import androidx.databinding.DataBindingUtil
@@ -23,6 +24,7 @@ class CreditPlansActivity : AppCompatActivity(),CreditsPlandAdapter.Listener {
     private lateinit var binding : ActivityCreditPlansBinding
     private var lastSelectedItem : CreditPlansResItem? = null
     private var newSelectedItem : CreditPlansResItem? = null
+    private var TAG = "CreditPlansActivity"
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -83,7 +85,7 @@ class CreditPlansActivity : AppCompatActivity(),CreditsPlandAdapter.Listener {
 
               adapter.notifyDataSetChanged()
 
-
+              Log.d(TAG, "onSelected: "+lastSelectedItem!!.price)
           }else{
               if (!lastSelectedItem!!.equals(item)){
                   lastSelectedItem!!.isSelected = false
@@ -93,6 +95,8 @@ class CreditPlansActivity : AppCompatActivity(),CreditsPlandAdapter.Listener {
                   adapter.notifyDataSetChanged()
 
                   lastSelectedItem = newSelectedItem
+
+                  Log.d(TAG, "onSelected: "+lastSelectedItem!!.price)
               }
           }
     }

@@ -28,7 +28,8 @@ class CreditsPlandAdapter(var context: Context, var plansList: ArrayList<CreditP
     override fun onBindViewHolder(holder: CreditsPlanHolder, position: Int) {
         var item = plansList.get(position)
 
-        holder.tvCredits.text = item.credits.toString()+" credits"
+        holder.tvCredits.text = if (item.credits == 1) item.credits.toString()+" credit" else item.credits.toString()+" credits"
+
         holder.tvPrice.text = "₹ "+item.price
         //holder.tvPricePerImage.text = "₹ "+item.pricePerImage+" /image"
 

@@ -29,5 +29,6 @@
     <color name="image_download_preview">#5F5F5F</color>
     <color name="shimmer_background">#dddddd</color>
     <color name="credit_plan_selected">#C5BABA</color>
+    <color name="credit_success">#40CE4E</color>
 
 </resources>
