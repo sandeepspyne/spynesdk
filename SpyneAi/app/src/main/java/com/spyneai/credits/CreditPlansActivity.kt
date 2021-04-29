@@ -7,6 +7,7 @@ import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.razorpay.Checkout
 import com.spyneai.R
 import com.spyneai.credits.adapter.CreditsPlandAdapter
 import com.spyneai.credits.model.CreateOrderBody
@@ -17,10 +18,12 @@ import com.spyneai.databinding.ActivityCreditPlansBinding
 import com.spyneai.interfaces.RetrofitClients
 import com.spyneai.needs.AppConstants
 import com.spyneai.needs.Utilities
+import org.json.JSONObject
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 import java.util.*
+import kotlin.math.roundToInt
 
 class CreditPlansActivity : AppCompatActivity(),CreditsPlandAdapter.Listener {
 
@@ -32,8 +35,6 @@ class CreditPlansActivity : AppCompatActivity(),CreditsPlandAdapter.Listener {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
-        Log.d(TAG, "onCreate: "+getSaltString())
 
         binding = DataBindingUtil.setContentView(this, R.layout.activity_credit_plans)
 
@@ -57,7 +58,9 @@ class CreditPlansActivity : AppCompatActivity(),CreditsPlandAdapter.Listener {
             Utilities.getPreference(this, AppConstants.tokenId).toString()
         )
 
-        var call = RetrofitClients.buildService(CreditApiService::class.java).createOrder(body)
+        var call = RetrofitClientPayment.buildService(CreditApiService::class.java).createOrder(body)
+
+        var string = ""
 
         call?.enqueue(object : Callback<CreateOrderResponse> {
             override fun onResponse(
@@ -65,8 +68,15 @@ class CreditPlansActivity : AppCompatActivity(),CreditsPlandAdapter.Listener {
                 response: Response<CreateOrderResponse>
             ) {
                 if (response.isSuccessful) {
+                    var createOrderResponse = response.body()
 
+                    var amount : Int = createOrderResponse?.planFinalCost!!.roundToInt()
+
+                    amount = amount * 100
+
+                    prepareCheckOut(createOrderResponse.orderId,amount.toString())
                 } else {
+                    var s = ""
                     Toast.makeText(
                         this@CreditPlansActivity,
                         "Server not responded please try again",
@@ -85,16 +95,48 @@ class CreditPlansActivity : AppCompatActivity(),CreditsPlandAdapter.Listener {
 
     }
 
+    private fun prepareCheckOut(orderId : String,amount : String) {
+        val co = Checkout()
+
+        try {
+            val options = JSONObject()
+            options.put("name","Sypne")
+            options.put("description","Credits checkout")
+            //You can omit the image option to fetch the image from dashboard
+            options.put("image","https://play-lh.googleusercontent.com/b4BzZiP4gey3FVCXPGQbrX1DNABnoDionTG05HaG2qWeZshkSp33NT2aDSBYOfEQPkU=s360-rw")
+            options.put("theme.color", "#FF7700");
+            options.put("currency","INR")
+            options.put("order_id", orderId)
+            options.put("amount",amount)//pass amount in currency subunits
+
+            val retryObj = JSONObject()
+            retryObj.put("enabled", true)
+            retryObj.put("max_count", 4);
+            options.put("retry", retryObj);
+
+            val prefill = JSONObject()
+            prefill.put("email","gaurav.kumar@example.com")
+            prefill.put("contact","9876543210")
+
+           // options.put("prefill",prefill)
+            co.open(this,options)
+        }catch (e: Exception){
+            Toast.makeText(this,"Error in payment: "+ e.message,Toast.LENGTH_LONG).show()
+            e.printStackTrace()
+        }
+    }
+
     private fun getOrderId(): String {
         return "ord_clippr_"+ getSaltString()
     }
 
-    protected fun getSaltString(): String? {
+    private fun getSaltString(): String? {
         val SALTCHARS = "abcdefghijklmnopqrstuvwxyz1234567890"
         val salt = StringBuilder()
         val rnd = Random()
         while (salt.length < 7) { // length of the random string.
-            val index = (rnd.nextFloat() * SALTCHARS.length) as Int
+            //val index = (rnd.nextFloat() * SALTCHARS.length) as Int
+                val index = rnd.nextInt(SALTCHARS.length)
             salt.append(SALTCHARS[index])
         }
         return salt.toString()
