@@ -1,5 +1,6 @@
 package com.spyneai.activity
 
+import android.content.ContentValues
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
@@ -32,6 +33,7 @@ class OngoingOrdersActivity : AppCompatActivity() {
         setContentView(R.layout.activity_ongoing_orders)
 
         ongoingProjectList = ProcessImagesService.tasksInProgress
+
 
 //        fatchCompletedProjects()
         showOngoingProjects()
@@ -77,6 +79,10 @@ class OngoingOrdersActivity : AppCompatActivity() {
 
     fun refreshList(){
         Handler(Looper.getMainLooper()).postDelayed({
+            for (item in ongoingProjectList){
+                if (item.isCompleted)
+                    ongoingProjectList.remove(item)
+            }
             ongoingProjectAdapter.notifyDataSetChanged()
             refreshList()
         }, 10000)

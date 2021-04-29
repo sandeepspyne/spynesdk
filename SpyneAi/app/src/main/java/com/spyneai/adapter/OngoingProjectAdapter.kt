@@ -1,6 +1,8 @@
 package com.spyneai.adapter
 
+import android.content.ContentValues.TAG
 import android.content.Context
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -63,11 +65,16 @@ class OngoingProjectAdapter(
             .load(ongoingProjectList[position].imageFileList[0])
             .into(holder.ivImage)
 
-        if (ongoingProjectList[position].imageProcessing.equals("your order is now completed :) email sent!")) {
-            ongoingProjectList.removeAt(position)
-            notifyItemRemoved(position)
-            notifyItemRangeChanged(position, ongoingProjectList.size)
-        }
+//        if (ongoingProjectList[position].isCompleted) {
+//            ongoingProjectList.removeAt(position)
+//            try {
+//                notifyItemRemoved(position)
+//                notifyItemRangeChanged(position, ongoingProjectList.size)
+//            } catch (e: Exception) {
+//                Log.d(TAG, e.toString())
+//            }
+//
+//        }
 
         holder.ivRemoveCard.setOnClickListener {
             ongoingProjectList.removeAt(position)
@@ -77,7 +84,8 @@ class OngoingProjectAdapter(
         }
 
         if (ongoingProjectList[position].imageProcessing.equals("image processing failed :( please try again with new shoot!") || ongoingProjectList[position].imageProcessing.equals(
-                "your order is now completed :) email sent!")){
+                "your order is now completed :) email sent!"
+            )){
             holder.tvDots.visibility = View.GONE
             holder.ivRemoveCard.visibility = View.VISIBLE
         }
