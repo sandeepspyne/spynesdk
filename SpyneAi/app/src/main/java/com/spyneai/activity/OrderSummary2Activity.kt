@@ -25,6 +25,7 @@ import com.bumptech.glide.Glide
 import com.downloader.PRDownloader
 import com.downloader.PRDownloaderConfig
 import com.spyneai.R
+import com.spyneai.credits.CreditPlansActivity
 import com.spyneai.interfaces.APiService
 import com.spyneai.interfaces.RetrofitClientSpyneAi
 import com.spyneai.model.credit.CreditDetailsResponse
@@ -152,7 +153,8 @@ class OrderSummary2Activity : AppCompatActivity() {
         }
 
         tvTopUp.setOnClickListener {
-            showWhatsappCreditDialog()
+            //showWhatsappCreditDialog()
+            startActivity(Intent(this,CreditPlansActivity::class.java))
         }
 
         imgBack.setOnClickListener {
