@@ -27,5 +27,6 @@
     <color name="credit_deducted">#B3B1B1</color>
     <color name="line_separator">#F0EEEE</color>
     <color name="image_download_preview">#5F5F5F</color>
+    <color name="shimmer_background">#dddddd</color>
 
 </resources>
