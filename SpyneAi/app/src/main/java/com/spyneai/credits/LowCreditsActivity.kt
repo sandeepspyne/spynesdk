@@ -1,5 +1,6 @@
 package com.spyneai.credits
 
+import android.content.Intent
 import android.graphics.drawable.Drawable
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
@@ -25,6 +26,12 @@ class LowCreditsActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
 
         binding = DataBindingUtil.setContentView(this,R.layout.activity_low_credits)
+
+        binding.ivWallet.setOnClickListener {
+            startActivity(Intent(this,WalletActivity::class.java))
+        }
+
+        binding.ivBack.setOnClickListener { onBackPressed() }
 
         //load gif
         Glide.with(this).asGif().load(R.raw.opps_gif)

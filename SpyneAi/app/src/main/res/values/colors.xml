@@ -30,5 +30,7 @@
     <color name="shimmer_background">#dddddd</color>
     <color name="credit_plan_selected">#C5BABA</color>
     <color name="credit_success">#40CE4E</color>
+    <color name="zero_credits">#FF1F1F</color>
+    <color name="available_credits">#33AF38</color>
 
 </resources>

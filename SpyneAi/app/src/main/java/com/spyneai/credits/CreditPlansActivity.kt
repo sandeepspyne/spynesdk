@@ -1,5 +1,6 @@
 package com.spyneai.credits
 
+import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import android.view.View
@@ -8,6 +9,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.razorpay.Checkout
+import com.razorpay.PaymentResultListener
 import com.spyneai.R
 import com.spyneai.credits.adapter.CreditsPlandAdapter
 import com.spyneai.credits.model.CreateOrderBody
@@ -25,7 +27,8 @@ import retrofit2.Response
 import java.util.*
 import kotlin.math.roundToInt
 
-class CreditPlansActivity : AppCompatActivity(),CreditsPlandAdapter.Listener {
+class CreditPlansActivity : AppCompatActivity(),CreditsPlandAdapter.Listener,
+    PaymentResultListener {
 
     private lateinit var adapter: CreditsPlandAdapter
     private lateinit var binding : ActivityCreditPlansBinding
@@ -38,7 +41,15 @@ class CreditPlansActivity : AppCompatActivity(),CreditsPlandAdapter.Listener {
 
         binding = DataBindingUtil.setContentView(this, R.layout.activity_credit_plans)
 
+        Checkout.preload(applicationContext)
+
         getCreditplans()
+
+        binding.ivWallet.setOnClickListener {
+            startActivity(Intent(this,WalletActivity::class.java))
+        }
+
+        binding.ivBack.setOnClickListener { onBackPressed() }
 
         binding.tvBuyNow.setOnClickListener {
            if (lastSelectedItem == null){
@@ -51,10 +62,17 @@ class CreditPlansActivity : AppCompatActivity(),CreditsPlandAdapter.Listener {
     }
 
     private fun createOrder() {
+//        var body = CreateOrderBody(
+//            false, "INR", getOrderId(),
+//            0, lastSelectedItem!!.price, lastSelectedItem!!.creditId,
+//            lastSelectedItem!!.price, "CREATED", lastSelectedItem!!.planType,
+//            Utilities.getPreference(this, AppConstants.tokenId).toString()
+//        )
+
         var body = CreateOrderBody(
-            false, "INR", getOrderId(),
-            0, lastSelectedItem!!.price, lastSelectedItem!!.creditId,
-            lastSelectedItem!!.price, "CREATED", lastSelectedItem!!.planType,
+            false, "INR", "ord_clippr_4e81kot",
+            0, 10, 2.toString(),
+            10, "CREATED", "New",
             Utilities.getPreference(this, AppConstants.tokenId).toString()
         )
 
@@ -72,9 +90,9 @@ class CreditPlansActivity : AppCompatActivity(),CreditsPlandAdapter.Listener {
 
                     var amount : Int = createOrderResponse?.planFinalCost!!.roundToInt()
 
-                    amount = amount * 100
+                    amount = amount * 100 * 100
 
-                    prepareCheckOut(createOrderResponse.orderId,amount.toString())
+                    prepareCheckOut(createOrderResponse.razorpayOrderId,amount.toString())
                 } else {
                     var s = ""
                     Toast.makeText(
@@ -106,7 +124,7 @@ class CreditPlansActivity : AppCompatActivity(),CreditsPlandAdapter.Listener {
             options.put("image","https://play-lh.googleusercontent.com/b4BzZiP4gey3FVCXPGQbrX1DNABnoDionTG05HaG2qWeZshkSp33NT2aDSBYOfEQPkU=s360-rw")
             options.put("theme.color", "#FF7700");
             options.put("currency","INR")
-            options.put("order_id", orderId)
+           // options.put("order_id", orderId)
             options.put("amount",amount)//pass amount in currency subunits
 
             val retryObj = JSONObject()
@@ -216,5 +234,15 @@ class CreditPlansActivity : AppCompatActivity(),CreditsPlandAdapter.Listener {
                   Log.d(TAG, "onSelected: " + lastSelectedItem!!.price)
               }
           }
+    }
+
+    override fun onPaymentSuccess(razorpayPaymentID: String?) {
+        var successIntent = Intent(this,CreditPaymentSuccessActivity::class.java)
+        successIntent.putExtra("amount","200")
+        startActivity(successIntent)
+    }
+
+    override fun onPaymentError(code: Int, response: String?) {
+        startActivity(Intent(this,CreditPaymentFailedActivity::class.java))
     }
 }

@@ -69,6 +69,7 @@
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toRightOf="parent"
             android:layout_marginTop="@dimen/dp_20"
+            android:id="@+id/tv_amount"
             android:text="200 credits has been added to\nyour wallet"
             android:gravity="center"
             android:textColor="@color/black"

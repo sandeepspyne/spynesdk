@@ -1,6 +1,7 @@
 package com.spyneai.credits
 
 import com.google.gson.GsonBuilder
+import okhttp3.Credentials
 import okhttp3.OkHttpClient
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
@@ -14,6 +15,13 @@ object RetrofitClientPayment {
         .readTimeout(10, TimeUnit.MINUTES)
         .writeTimeout(10, TimeUnit.MINUTES)
         .connectTimeout(10, TimeUnit.MINUTES)
+        .addInterceptor { chain ->
+            val newRequest = chain.request().newBuilder()
+                .addHeader("content-type","application/json")
+                .build()
+
+            chain.proceed(newRequest)
+        }
         .build()
 
 

@@ -12,6 +12,7 @@ import android.view.Window
 import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.Toast
+import androidx.core.content.ContextCompat
 import androidx.databinding.DataBindingUtil
 import com.spyneai.R
 import com.spyneai.databinding.ActivityWalletBinding
@@ -36,7 +37,8 @@ class WalletActivity : AppCompatActivity() {
 
 
         binding.tvAddCredit.setOnClickListener {
-            showWhatsappCreditDialog()
+           // showWhatsappCreditDialog()
+            startActivity(Intent(this,CreditPlansActivity::class.java))
         }
 
         binding.ivBack.setOnClickListener { onBackPressed() }
@@ -79,6 +81,8 @@ class WalletActivity : AppCompatActivity() {
 
     private fun fetchUserCreditDetails(){
 
+        binding.shimmer.startShimmer()
+
         val request = RetrofitClientSpyneAi.buildService(APiService::class.java)
         val call = request.userCreditsDetails(
             Utilities.getPreference(this, AppConstants.tokenId).toString()
@@ -90,8 +94,21 @@ class WalletActivity : AppCompatActivity() {
                 response: Response<CreditDetailsResponse>
             ) {
                 Utilities.hideProgressDialog()
+                binding.shimmer.startShimmer()
+
                 if (response.isSuccessful) {
-                    binding.tvCredits.setText(response.body()?.data?.creditAvailable.toString()!!)
+                    binding.shimmer.visibility = View.GONE
+                    binding.tvCredits.visibility = View.VISIBLE
+
+                    if (response.body()?.data?.creditAvailable.toString() == "0"){
+                        binding.tvCredits.setTextColor(ContextCompat.getColor(this@WalletActivity,R.color.zero_credits))
+                        binding.tvCredits.text = "0.00"
+                    }else{
+                        binding.tvCredits.setTextColor(ContextCompat.getColor(this@WalletActivity,R.color.available_credits))
+                        binding.tvCredits.text = CreditUtils.getFormattedNumber(response.body()!!.data.creditAvailable) + ".00"
+                    }
+
+
                     Utilities.savePrefrence(
                         this@WalletActivity,
                         AppConstants.CREDIT_ALLOTED,
@@ -110,6 +127,7 @@ class WalletActivity : AppCompatActivity() {
 
 
                 } else {
+
                     Toast.makeText(
                         this@WalletActivity,
                         "Server not responding!!!",
@@ -120,6 +138,7 @@ class WalletActivity : AppCompatActivity() {
             }
 
             override fun onFailure(call: Call<CreditDetailsResponse>, t: Throwable) {
+                binding.shimmer.startShimmer()
                 Toast.makeText(
                     this@WalletActivity,
                     "Server not responding!!!",

@@ -21,5 +21,7 @@ class CreditPaymentSuccessActivity : AppCompatActivity() {
         Glide.with(this).asGif().load(R.raw.credits_added)
             .into(binding.ivWalletGif)
 
+        binding.tvAmount.text = intent.getStringExtra("amount")+" credits has been added to "+"\n"+"your wallet"
+
     }
 }
