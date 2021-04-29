@@ -14,7 +14,7 @@ class CreditsPlandAdapter(var context : Context, var plansList : ArrayList<Credi
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): CreditsPlanHolder {
         val view = LayoutInflater.from(context)
-            .inflate(R.layout.row_channel_add, parent, false)
+            .inflate(R.layout.item_credit_plans, parent, false)
 
         return CreditsPlanHolder(view)
     }
