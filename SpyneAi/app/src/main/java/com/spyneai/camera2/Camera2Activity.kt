@@ -1409,7 +1409,7 @@ class Camera2Activity : AppCompatActivity(), SubCategoriesAdapter.BtnClickListen
                 response: Response<UpdateSkuResponse>
             ) {
                 Utilities.hideProgressDialog()
-                if (response.isSuccessful && response.body()!!.payload.data != null) {
+                if (response.isSuccessful && response.body()!!.payload != null) {
                     Log.e("Sku map", prodId + " " + response.body()!!.msgInfo.msgDescription)
                     etSkuName.setText(response.body()!!.payload.data.skuName)
                     skuName = response.body()!!.payload.data.skuName

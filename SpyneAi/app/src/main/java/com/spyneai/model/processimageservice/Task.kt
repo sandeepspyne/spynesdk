@@ -57,6 +57,12 @@ class Task {
 
     var currentFrame: Int = 1
 
+    var totalExteriorImages: Int = 0
+    var totalInteriorImages: Int = 0
+    var totalFocusedImages: Int = 0
+
+    var imageProcessing: String = "image-processing started..."
+
     var cornerPosition: String = ""
 
     var imageList = ArrayList<String>()

@@ -50,6 +50,7 @@
     <string name="order_now">Order Now</string>
     <string name="shoot_selection">Shoot Selection</string>
     <string name="sku_names">Sku Name</string>
+    <string name="sku">Sku:</string>
     <string name="total_cost">Total Cost</string>
     <string name="number_of_skus">Number Of SKUs</string>
     <string name="number_of_channels">Number Of Channels</string>
@@ -209,6 +210,8 @@
     <string name="top_right">Top Right</string>
     <string name="bottom_left">Bottom Left</string>
     <string name="bottom_right">Bottom Right</string>
+
+    <string name="dots">....</string>
 
 
     <string-array name="planets_array">

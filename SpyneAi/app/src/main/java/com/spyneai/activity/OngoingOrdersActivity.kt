@@ -3,37 +3,38 @@ package com.spyneai.activity
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
 import android.util.Log
+import android.view.Menu
 import android.view.View
-import android.widget.Toast
+import android.view.animation.AlphaAnimation
+import android.view.animation.Animation
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.spyneai.R
-import com.spyneai.adapter.CompletedProjectAdapter
-import com.spyneai.interfaces.APiService
-import com.spyneai.interfaces.RetrofitClients
-import com.spyneai.model.projects.CompletedProjectResponse
+import com.spyneai.adapter.OngoingProjectAdapter
 import com.spyneai.needs.AppConstants
 import com.spyneai.needs.Utilities
+import com.spyneai.service.ProcessImagesService
+import kotlinx.android.synthetic.main.activity_completed.*
 import kotlinx.android.synthetic.main.activity_completed_projects.*
 import kotlinx.android.synthetic.main.activity_completed_projects.imgBackCompleted
 import kotlinx.android.synthetic.main.activity_ongoing_orders.*
-import okhttp3.MultipartBody
-import okhttp3.RequestBody
-import retrofit2.Call
-import retrofit2.Callback
-import retrofit2.Response
 
 class OngoingOrdersActivity : AppCompatActivity() {
 
-    lateinit var completedProjectList : ArrayList<CompletedProjectResponse>
-    lateinit var completedProjectAdapter : CompletedProjectAdapter
+    lateinit var ongoingProjectAdapter : OngoingProjectAdapter
+    lateinit var ongoingProjectList : ArrayList<com.spyneai.model.processImageService.Task>
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_ongoing_orders)
 
-        fatchCompletedProjects()
+        ongoingProjectList = ProcessImagesService.tasksInProgress
+
+//        fatchCompletedProjects()
+        showOngoingProjects()
         listeners()
     }
 
@@ -43,67 +44,42 @@ class OngoingOrdersActivity : AppCompatActivity() {
         })
     }
 
-
-    private fun fatchCompletedProjects(){
-        completedProjectList = ArrayList<CompletedProjectResponse>()
-
-        completedProjectAdapter = CompletedProjectAdapter(this@OngoingOrdersActivity,
-            completedProjectList, object : CompletedProjectAdapter.BtnClickListener {
+    private fun showOngoingProjects(){
+        ongoingProjectAdapter = OngoingProjectAdapter(this@OngoingOrdersActivity,
+            ongoingProjectList, object : OngoingProjectAdapter.BtnClickListener {
                 override fun onBtnClick(position: Int) {
                     Log.e("position cat", position.toString())
-                    Utilities.savePrefrence(this@OngoingOrdersActivity,
-                        AppConstants.SKU_ID,
-                        completedProjectList[position].sku_id)
-                    val intent = Intent(this@OngoingOrdersActivity,
-                        ShowImagesActivity::class.java)
-                    startActivity(intent)
+//                    Utilities.savePrefrence(this@OngoingOrdersActivity,
+//                        AppConstants.SKU_ID,
+//                        ongoingProjectList[position].skuId)
+//                    val intent = Intent(this@OngoingOrdersActivity,
+//                        ShowImagesActivity::class.java)
+//                    startActivity(intent)
 
                 }
             })
 
         val layoutManager: RecyclerView.LayoutManager = LinearLayoutManager(this@OngoingOrdersActivity, LinearLayoutManager.VERTICAL, false)
         rv_ongoingActivity.setLayoutManager(layoutManager)
-        rv_ongoingActivity.setAdapter(completedProjectAdapter)
+        rv_ongoingActivity.setAdapter(ongoingProjectAdapter)
+        refreshList()
+        if (ongoingProjectList.size > 0)
+        {
+            rv_ongoingActivity.visibility = View.VISIBLE
+            tvOngoingOrders.visibility = View.GONE
+        }
+        else{
+            rv_ongoingActivity.visibility = View.GONE
+            tvOngoingOrders.visibility = View.VISIBLE
+        }
 
+    }
 
-        Utilities.showProgressDialog(this)
-
-        val request = RetrofitClients.buildService(APiService::class.java)
-        Utilities.savePrefrence(this, AppConstants.tokenId,
-            Utilities.getPreference(this, AppConstants.tokenId))
-        val userId = RequestBody.create(
-            MultipartBody.FORM,
-            Utilities.getPreference(this, AppConstants.tokenId)!!)
-        val call = request.getCompletedProjects(userId)
-
-        call?.enqueue(object : Callback<List<CompletedProjectResponse>> {
-            override fun onResponse(call: Call<List<CompletedProjectResponse>>,
-                                    response: Response<List<CompletedProjectResponse>>
-            ) {
-                Utilities.hideProgressDialog()
-                if (response.isSuccessful){
-                    if (response.body()!!.size > 0)
-                    {
-                        for (i in 0..response.body()!!.size - 1) {
-                            if (response.body()!![i].current_frame < response.body()!![i].total_frames){
-                                completedProjectList.addAll(response.body()!!)
-                                completedProjectList.reverse()
-                            }
-                        }
-                    }
-                    else{
-                        Toast.makeText(this@OngoingOrdersActivity ,
-                            "No projects found !", Toast.LENGTH_SHORT).show()
-                    }
-
-                    completedProjectAdapter.notifyDataSetChanged()
-                }
-            }
-            override fun onFailure(call: Call<List<CompletedProjectResponse>>, t: Throwable) {
-                Utilities.hideProgressDialog()
-                Toast.makeText(this@OngoingOrdersActivity , "Server not responding!!!", Toast.LENGTH_SHORT).show()
-            }
-        })
+    fun refreshList(){
+        Handler(Looper.getMainLooper()).postDelayed({
+            ongoingProjectAdapter.notifyDataSetChanged()
+            refreshList()
+        }, 10000)
 
     }
 
