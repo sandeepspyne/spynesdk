@@ -5,5 +5,6 @@ data class CreditPlansResItem(
     val credits: Int,
     val planType: String,
     val price: Int,
-    val pricePerImage: Double
+    val pricePerImage: Double,
+    var isSelected : Boolean = false
 )

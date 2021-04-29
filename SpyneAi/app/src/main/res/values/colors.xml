@@ -28,5 +28,6 @@
     <color name="line_separator">#F0EEEE</color>
     <color name="image_download_preview">#5F5F5F</color>
     <color name="shimmer_background">#dddddd</color>
+    <color name="credit_plan_selected">#C5BABA</color>
 
 </resources>

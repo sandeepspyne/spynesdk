@@ -9,15 +9,20 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.spyneai.R
 import com.spyneai.credits.adapter.CreditsPlandAdapter
 import com.spyneai.credits.model.CreditPlansRes
+import com.spyneai.credits.model.CreditPlansResItem
 import com.spyneai.databinding.ActivityCreditPlansBinding
 import com.spyneai.interfaces.RetrofitClients
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
+import java.text.FieldPosition
 
-class CreditPlansActivity : AppCompatActivity() {
+class CreditPlansActivity : AppCompatActivity(),CreditsPlandAdapter.Listener {
 
+    private lateinit var adapter: CreditsPlandAdapter
     private lateinit var binding : ActivityCreditPlansBinding
+    private var lastSelectedItem : CreditPlansResItem? = null
+    private var newSelectedItem : CreditPlansResItem? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -48,10 +53,7 @@ class CreditPlansActivity : AppCompatActivity() {
               if (response.isSuccessful){
                   binding.sh.visibility = View.GONE
 
-                  binding.rvCredits.layoutManager = LinearLayoutManager(this@CreditPlansActivity,LinearLayoutManager.VERTICAL,false)
-                  var adapter = CreditsPlandAdapter(this@CreditPlansActivity, response.body()!!)
-                  binding.rvCredits.visibility = View.VISIBLE
-                  binding.rvCredits.adapter = adapter
+                  setData(response.body())
 
               }else{
                   Toast.makeText(this@CreditPlansActivity,"Request failed please try again",Toast.LENGTH_LONG).show()
@@ -65,5 +67,33 @@ class CreditPlansActivity : AppCompatActivity() {
             }
 
         })
+    }
+
+    private fun setData(body: CreditPlansRes?) {
+        binding.rvCredits.layoutManager = LinearLayoutManager(this@CreditPlansActivity,LinearLayoutManager.VERTICAL,false)
+        adapter = CreditsPlandAdapter(this@CreditPlansActivity, body!!,this)
+        binding.rvCredits.visibility = View.VISIBLE
+        binding.rvCredits.adapter = adapter
+    }
+
+    override fun onSelected(item: CreditPlansResItem) {
+          if (lastSelectedItem == null){
+              lastSelectedItem = item
+              lastSelectedItem!!.isSelected = true
+
+              adapter.notifyDataSetChanged()
+
+
+          }else{
+              if (!lastSelectedItem!!.equals(item)){
+                  lastSelectedItem!!.isSelected = false
+                  newSelectedItem = item
+                  newSelectedItem!!.isSelected = true
+
+                  adapter.notifyDataSetChanged()
+
+                  lastSelectedItem = newSelectedItem
+              }
+          }
     }
 }
