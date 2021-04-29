@@ -62,23 +62,22 @@ class CreditPlansActivity : AppCompatActivity(),CreditsPlandAdapter.Listener,
     }
 
     private fun createOrder() {
-//        var body = CreateOrderBody(
-//            false, "INR", getOrderId(),
-//            0, lastSelectedItem!!.price, lastSelectedItem!!.creditId,
-//            lastSelectedItem!!.price, "CREATED", lastSelectedItem!!.planType,
-//            Utilities.getPreference(this, AppConstants.tokenId).toString()
-//        )
-
         var body = CreateOrderBody(
-            false, "INR", "ord_clippr_4e81kot",
-            0, 10, 2.toString(),
-            10, "CREATED", "New",
+            false, "INR", getOrderId(),
+            0, lastSelectedItem!!.price, lastSelectedItem!!.creditId,
+            lastSelectedItem!!.price, "CREATED", lastSelectedItem!!.planType,
             Utilities.getPreference(this, AppConstants.tokenId).toString()
         )
 
+//        var body = CreateOrderBody(
+//            false, "INR", "ord_clippr_4e81kot",
+//            0, 10, 2.toString(),
+//            10, "CREATED", "New",
+//            Utilities.getPreference(this, AppConstants.tokenId).toString()
+//        )
+
         var call = RetrofitClientPayment.buildService(CreditApiService::class.java).createOrder(body)
 
-        var string = ""
 
         call?.enqueue(object : Callback<CreateOrderResponse> {
             override fun onResponse(
