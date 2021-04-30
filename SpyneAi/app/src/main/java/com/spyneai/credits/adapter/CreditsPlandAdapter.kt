@@ -54,7 +54,7 @@ class CreditsPlandAdapter(var context: Context, var plansList: ArrayList<CreditP
         }
 
         holder.clMain.setOnClickListener {
-            listener.onSelected(plansList.get(position))
+            listener.onSelected(plansList.get(position),position)
         }
 
 
@@ -66,7 +66,7 @@ class CreditsPlandAdapter(var context: Context, var plansList: ArrayList<CreditP
     }
 
     interface Listener {
-        fun onSelected(item: CreditPlansResItem)
+        fun onSelected(item: CreditPlansResItem,position : Int)
 
     }
 }

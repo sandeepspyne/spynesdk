@@ -8,18 +8,18 @@ import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.work.impl.utils.PreferenceUtils
 import com.razorpay.Checkout
 import com.razorpay.PaymentResultListener
 import com.spyneai.R
 import com.spyneai.credits.adapter.CreditsPlandAdapter
-import com.spyneai.credits.model.CreateOrderBody
-import com.spyneai.credits.model.CreateOrderResponse
-import com.spyneai.credits.model.CreditPlansRes
-import com.spyneai.credits.model.CreditPlansResItem
+import com.spyneai.credits.model.*
 import com.spyneai.databinding.ActivityCreditPlansBinding
 import com.spyneai.interfaces.RetrofitClients
 import com.spyneai.needs.AppConstants
 import com.spyneai.needs.Utilities
+import okhttp3.MultipartBody
+import okhttp3.RequestBody
 import org.json.JSONObject
 import retrofit2.Call
 import retrofit2.Callback
@@ -34,6 +34,7 @@ class CreditPlansActivity : AppCompatActivity(),CreditsPlandAdapter.Listener,
     private lateinit var binding : ActivityCreditPlansBinding
     private var lastSelectedItem : CreditPlansResItem? = null
     private var newSelectedItem : CreditPlansResItem? = null
+    private var updateCredit = true
     private var TAG = "CreditPlansActivity"
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -63,8 +64,8 @@ class CreditPlansActivity : AppCompatActivity(),CreditsPlandAdapter.Listener,
 
     private fun createOrder() {
         var body = CreateOrderBody(
-            false, "INR", getOrderId(),
-            0, lastSelectedItem!!.price, lastSelectedItem!!.creditId,
+            false, "USD", getOrderId(),
+            0, lastSelectedItem!!.price, lastSelectedItem!!.planId.toString(),
             lastSelectedItem!!.price, "CREATED", lastSelectedItem!!.planType,
             Utilities.getPreference(this, AppConstants.tokenId).toString()
         )
@@ -88,12 +89,10 @@ class CreditPlansActivity : AppCompatActivity(),CreditsPlandAdapter.Listener,
                     var createOrderResponse = response.body()
 
                     var amount : Int = createOrderResponse?.planFinalCost!!.roundToInt()
-
-                    amount = amount * 100 * 100
+                    lastSelectedItem!!.finalPrice = amount
 
                     prepareCheckOut(createOrderResponse.razorpayOrderId,amount.toString())
                 } else {
-                    var s = ""
                     Toast.makeText(
                         this@CreditPlansActivity,
                         "Server not responded please try again",
@@ -212,14 +211,12 @@ class CreditPlansActivity : AppCompatActivity(),CreditsPlandAdapter.Listener,
         binding.rvCredits.adapter = adapter
     }
 
-    override fun onSelected(item: CreditPlansResItem) {
+    override fun onSelected(item: CreditPlansResItem, position : Int) {
           if (lastSelectedItem == null){
               lastSelectedItem = item
               lastSelectedItem!!.isSelected = true
 
               adapter.notifyDataSetChanged()
-
-              Log.d(TAG, "onSelected: " + lastSelectedItem!!.price)
           }else{
               if (!lastSelectedItem!!.equals(item)){
                   lastSelectedItem!!.isSelected = false
@@ -229,17 +226,26 @@ class CreditPlansActivity : AppCompatActivity(),CreditsPlandAdapter.Listener,
                   adapter.notifyDataSetChanged()
 
                   lastSelectedItem = newSelectedItem
-
-                  Log.d(TAG, "onSelected: " + lastSelectedItem!!.price)
               }
           }
+
+        lastSelectedItem!!.planId = position
     }
 
     override fun onPaymentSuccess(razorpayPaymentID: String?) {
+        //update credit
+            addCredit()
+
         var successIntent = Intent(this,CreditPaymentSuccessActivity::class.java)
         successIntent.putExtra("amount","200")
         startActivity(successIntent)
     }
+
+    private fun addCredit() {
+
+
+    }
+
 
     override fun onPaymentError(code: Int, response: String?) {
         startActivity(Intent(this,CreditPaymentFailedActivity::class.java))

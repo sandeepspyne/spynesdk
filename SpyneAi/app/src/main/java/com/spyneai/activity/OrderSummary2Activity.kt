@@ -55,14 +55,14 @@ class OrderSummary2Activity : AppCompatActivity() {
 
         AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
 
-        PRDownloader.initialize(getApplicationContext());
+        PRDownloader.initialize(getApplicationContext())
+
         val config = PRDownloaderConfig.newBuilder()
             .setDatabaseEnabled(true)
             .build()
         PRDownloader.initialize(applicationContext, config)
 
         Utilities.savePrefrence(this, AppConstants.PRICE, Utilities.getPreference(this, AppConstants.NO_OF_IMAGES))
-
 
         if(Utilities.getPreference(this@OrderSummary2Activity,Utilities.getPreference(this@OrderSummary2Activity, AppConstants.SKU_ID)
                 .toString()+AppConstants.CREDIT_DECUCTED) == ""){
@@ -83,10 +83,6 @@ class OrderSummary2Activity : AppCompatActivity() {
             }
         }
 
-
-
-
-
         fetchUserCreditDetails()
 
         listHdQuality = ArrayList<String>()
@@ -104,7 +100,6 @@ class OrderSummary2Activity : AppCompatActivity() {
             ).into(ivProductImage)
         }
 
-
         tvCategoryName.setText(
             Utilities.getPreference(
                 this@OrderSummary2Activity,
@@ -118,9 +113,11 @@ class OrderSummary2Activity : AppCompatActivity() {
                 AppConstants.NO_OF_IMAGES
             ).toString()
         )
+
         tvSkuId.setText(
             Utilities.getPreference(this@OrderSummary2Activity, AppConstants.SKU_ID).toString()
         )
+
         tvTotalImagesClicked.setText(
             Utilities.getPreference(this@OrderSummary2Activity, AppConstants.NO_OF_IMAGES)
                 .toString()
@@ -214,42 +211,8 @@ class OrderSummary2Activity : AppCompatActivity() {
                 ).show()
             }
         })
-
     }
 
-    private fun showWhatsappCreditDialog(){
-
-        val dialog = Dialog(this)
-        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE)
-        dialog.setCancelable(true)
-        dialog.setContentView(R.layout.whatsapp_credit_dialog)
-        dialog.getWindow()?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT));
-        val ivClose: ImageView = dialog.findViewById(R.id.ivClose)
-        val llRequestWappCredit: LinearLayout = dialog.findViewById(R.id.llRequestWappCredit)
-
-
-        ivClose.setOnClickListener(View.OnClickListener {
-            dialog.dismiss()
-        })
-        llRequestWappCredit.setOnClickListener {
-            try {
-                val i = Intent(Intent.ACTION_VIEW)
-                val url = "https://api.whatsapp.com/send?phone=" + "+919625429526" + "&text=" +
-                        URLEncoder.encode(
-                            "Spyne App is awesome!, I already used all my free credits. \n" +
-                                    "Can you please help me get more credits.",
-                            "UTF-8"
-                        )
-                i.setPackage("com.whatsapp")
-                i.setData(Uri.parse(url))
-                startActivity(i)
-            } catch (e: Exception) {
-                e.printStackTrace()
-            }
-        }
-        dialog.show()
-
-    }
 
     override fun onBackPressed() {
         super.onBackPressed()

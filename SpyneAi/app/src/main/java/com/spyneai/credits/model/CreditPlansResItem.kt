@@ -8,5 +8,7 @@ data class CreditPlansResItem(
     val pricePerImage: Double,
     val rackPrice: Int,
     val rackPricePerImage: Double,
-    var isSelected : Boolean = false
+    var isSelected : Boolean = false,
+    var planId : Int = 0,
+    var finalPrice : Int = 0
 )

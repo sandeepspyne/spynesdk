@@ -11,7 +11,8 @@ class DownloadTask {
     var isFailure = false
     var retry = 0
     var downloadCount = 0
-    var remainingCredits = 10
+    var remainingCredits = 0
+    var creditsToReduce = 0
     var price = 0
     var listHdQuality = ArrayList<String>()
 }

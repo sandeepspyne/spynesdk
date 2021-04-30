@@ -1,12 +1,11 @@
 package com.spyneai.credits
 
-import com.spyneai.credits.model.CreateOrderBody
-import com.spyneai.credits.model.CreateOrderResponse
-import com.spyneai.credits.model.CreditPlansRes
+import com.spyneai.credits.model.*
+import com.spyneai.videorecording.model.VideoProcessingResponse
+import okhttp3.MultipartBody
+import okhttp3.RequestBody
 import retrofit2.Call
-import retrofit2.http.Body
-import retrofit2.http.GET
-import retrofit2.http.POST
+import retrofit2.http.*
 
 interface CreditApiService {
 
@@ -16,4 +15,29 @@ interface CreditApiService {
 
     @POST("order/credit/")
     fun createOrder(@Body body: CreateOrderBody) : Call<CreateOrderResponse>?
+
+    @PUT("reduce-credit")
+    fun reduceCredit(
+        @Part("user_id") userId : RequestBody,
+        @Part("credit_reduce") creditReduce: RequestBody?,
+        @Part("enterprise_id") enterpriseId: RequestBody?,
+        @Part("sku_id") skuId: RequestBody?
+    ): Call<ReduceCreditResponse>?
+
+    @GET("credit/insert-user")
+    fun createCreditPurchaseLog(
+        @Query("userId") userId: String,
+        @Query("creditId") creditId: String,
+        @Query("creditAlloted") creditAlloted: String,
+        @Query("creditUsed") creditUsed: Int = 0,
+        @Query("creditAvailable") creditAvailable: Int
+    ): Call<CreditPurchaseLogRes>?
+
+    @GET("credit/insert-user")
+    fun updatePurchasedCredit(
+        @Query("userId") userId: String,
+        @Query("creditAlloted") creditAlloted : String,
+        @Query("creditUsed") creditUsed: Int = 0,
+        @Query("creditAvailable") creditAvailable: Int
+    ): Call<UpdatePurchaseCreditRes>?
 }

@@ -3,6 +3,7 @@ package com.spyneai.credits
 import android.content.Context
 import android.util.Log
 import android.widget.Toast
+import com.spyneai.credits.model.ReduceCreditResponse
 import com.spyneai.interfaces.APiService
 import com.spyneai.interfaces.RetrofitClients
 import com.spyneai.model.credit.UpdateCreditResponse
@@ -19,11 +20,7 @@ class CreditManager {
     var TAG = "CreditManager"
 
      fun updateCredit(remainingCredit : String, price: String,skuId : String,context: Context) {
-         Log.d(TAG, "updateCredit: "+remainingCredit)
-         Log.d(TAG, "updateCredit: "+price)
-         Log.d(TAG, "updateCredit: "+skuId)
-         Log.d(TAG, "updateCredit: "+ Utilities.getPreference(context, AppConstants.tokenId))
-
+         
         val userId = RequestBody.create(
             MultipartBody.FORM,
             Utilities.getPreference(context, AppConstants.tokenId)!!
@@ -47,7 +44,6 @@ class CreditManager {
                 call: Call<UpdateCreditResponse>,
                 response: Response<UpdateCreditResponse>
             ) {
-                Utilities.hideProgressDialog()
                 if (response.isSuccessful) {
                     updateCreditOnLocal(context, skuId)
                 } else {
@@ -62,6 +58,53 @@ class CreditManager {
 
             override fun onFailure(call: Call<UpdateCreditResponse>, t: Throwable) {
                 Log.d(TAG, "onResponse: failure")
+                Toast.makeText(
+                    context,
+                    "Server not responding!!!",
+                    Toast.LENGTH_SHORT
+                ).show()
+            }
+        })
+    }
+
+    fun reduceCredit(creditReduced : String,skuId : String,context: Context) {
+        var call = RetrofitCreditClient("v4").buildService(CreditApiService::class.java)
+
+        val userId = RequestBody.create(
+            MultipartBody.FORM,Utilities.getPreference(context,AppConstants.tokenId)!!.toString()
+        )
+
+        val creditReduced = RequestBody.create(
+            MultipartBody.FORM,creditReduced
+        )
+
+        val enterpriseId = RequestBody.create(
+            MultipartBody.FORM,"TaD1VC1Ko"
+        )
+
+        val mSkuId = RequestBody.create(
+            MultipartBody.FORM,skuId
+        )
+
+
+        call.reduceCredit(userId,creditReduced,enterpriseId,mSkuId)?.enqueue(object : Callback<ReduceCreditResponse>{
+            override fun onResponse(
+                call: Call<ReduceCreditResponse>,
+                response: Response<ReduceCreditResponse>
+            ) {
+                if (response.isSuccessful) {
+                    updateCreditOnLocal(context, skuId)
+                } else {
+                    Log.d(TAG, "onResponse: failed")
+                    Toast.makeText(
+                        context,
+                        "Server not responding!!!",
+                        Toast.LENGTH_SHORT
+                    ).show()
+                }
+            }
+
+            override fun onFailure(call: Call<ReduceCreditResponse>, t: Throwable) {
                 Toast.makeText(
                     context,
                     "Server not responding!!!",

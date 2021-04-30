@@ -60,6 +60,7 @@ class DownloadImageService : Service(),ImageDownloaManager.Listener {
         task.skuName = intent.getStringExtra(AppConstants.SKU_NAME) ?: ""
         task.skuId = intent.getStringExtra(AppConstants.SKU_ID) ?: ""
         task.remainingCredits = intent.getIntExtra(AppConstants.CREDIT_REMAINING, 10)
+        task.creditsToReduce = intent.getIntExtra(AppConstants.PRICE, 0)
         task.price = intent.getIntExtra(AppConstants.PRICE, 10)
 
         task.listHdQuality.addAll(intent.getParcelableArrayListExtra(AppConstants.LIST_HD_QUALITY)!!)
@@ -206,14 +207,18 @@ class DownloadImageService : Service(),ImageDownloaManager.Listener {
         hdImagesDownloadedEvent.setSkuId(task.skuId)
         EventBus.getDefault().post(hdImagesDownloadedEvent)
 
-        Log.d(TAG, "onSuccess: " + task.skuId)
          if(Utilities.getPreference(this, task.skuId + AppConstants.CREDIT_DECUCTED) == ""){
-            Log.d(TAG, "onSuccess: update credit")
-            CreditManager().updateCredit(
-                task.remainingCredits.toString(),
-                task.price.toString(),
-                task.skuId,
-                this
+
+             CreditManager().reduceCredit(
+                 task.creditsToReduce.toString(),
+                 task.skuId,
+                 this
+
+//            CreditManager().updateCredit(
+//                task.remainingCredits.toString(),
+//                task.price.toString(),
+//                task.skuId,
+//                this
             )
         }else{
             Log.d(TAG, "onSuccess: deducted")
