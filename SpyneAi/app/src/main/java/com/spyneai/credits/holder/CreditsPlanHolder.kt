@@ -13,5 +13,6 @@ class CreditsPlanHolder(view: View) : RecyclerView.ViewHolder(view)  {
     val rb : RadioButton = view.findViewById(R.id.rb)
     val tvCredits : TextView = view.findViewById(R.id.tv_credits)
     val tvPrice : TextView = view.findViewById(R.id.tv_price)
+    val tvDiscountedPrice : TextView = view.findViewById(R.id.tv_discounted_price)
     val tvPricePerImage : TextView = view.findViewById(R.id.tv_price_per_image)
 }

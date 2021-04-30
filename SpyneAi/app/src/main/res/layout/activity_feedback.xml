@@ -55,7 +55,7 @@
             android:id="@+id/tv_suggestion"
             android:text="Do you have any suggestion or found some bug?\n please let us know in the field below."/>
 
-        <TextView
+        <EditText
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             app:layout_constraintTop_toBottomOf="@id/tv_suggestion"
@@ -66,6 +66,7 @@
             android:layout_marginRight="@dimen/dp_40"
             android:background="@drawable/bg_feedback"
             android:maxLines="8"
+            android:gravity="start"
             android:lines="8"
             android:hint="Describe your issue or idea...."
             android:padding="15dp"

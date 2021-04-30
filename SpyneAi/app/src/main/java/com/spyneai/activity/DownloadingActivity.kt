@@ -18,6 +18,7 @@ import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import com.downloader.*
 import com.spyneai.R
+import com.spyneai.credits.fragments.DownloadCompletedFragment
 import com.spyneai.imagesdowloading.DownloadImageService
 import com.spyneai.imagesdowloading.HDImagesDownloadedEvent
 import com.spyneai.interfaces.APiService
@@ -171,7 +172,7 @@ class DownloadingActivity : AppCompatActivity() {
                 ContextCompat.startForegroundService(this, imageDownloadingServiceIntent)
 
             } else {
-                Toast.makeText(this, "You are out of credits", Toast.LENGTH_SHORT)
+                //Toast.makeText(this, "You are out of credits", Toast.LENGTH_SHORT)
             }
         }
     }
@@ -188,17 +189,6 @@ class DownloadingActivity : AppCompatActivity() {
         }
     }
 
-    private fun downloadHighQuality() {
-        if (listHdQuality.size > 0 && listHdQuality != null) {
-            for (i in 0 until listHdQuality.size/*imageListWaterMark.size*/) {
-//                seekbarDownload.setProgress(i)
-//                tvProgress.setText(i.toString() + "/" + listHdQuality.size)
-                if (listHdQuality[i] != null)
-                    downloadWithHighQuality(listHdQuality[i].toString())
-            }
-        }
-
-    }
 
     fun downloadWithWatermark(imageFile: String?) {
         downloadCount++
@@ -271,129 +261,12 @@ class DownloadingActivity : AppCompatActivity() {
         }
     }
 
-    //Download
-    fun downloadWithHighQuality(imageFile: String?) {
-        downloadCount++
-        val FILENAME_FORMAT = "yyyy-MM-dd-HH-mm-ss-SSS"
-
-//        showNotifications()
-
-        val imageName: String = "Spyne" + SimpleDateFormat(
-            FILENAME_FORMAT, Locale.US
-        ).format(System.currentTimeMillis()) + ".png"
-
-        var file = File(Environment.getExternalStorageDirectory().toString() + "/Spyne")
-
-        //File(outputDirectory).mkdirs()
-        //val file = File("$outputDirectory/${System.currentTimeMillis()}.png")
-
-
-        scanFile(file.getAbsolutePath())
-
-        Log.d(TAG, "downloadWithHighQuality: "+Environment.getExternalStorageDirectory().toString() + "/Spyne/"+imageName)
-
-
-        val downloadId = PRDownloader.download(
-            imageFile,
-            Environment.getExternalStorageDirectory().toString() + "/Spyne",
-            imageName
-        )
-
-            .build()
-            .setOnStartOrResumeListener {
-            }
-            .setOnPauseListener {
-
-            }
-            .setOnCancelListener(object : OnCancelListener {
-                override fun onCancel() {}
-            })
-            .start(object : OnDownloadListener {
-                override fun onDownloadComplete() {
-
-                    if (downloadCount == listHdQuality.size) {
-                        Toast.makeText(
-                            this@DownloadingActivity,
-                            "Download Completed", Toast.LENGTH_SHORT
-                        ).show()
-
-                        refreshGallery(file.getAbsolutePath(), this@DownloadingActivity)
-
-                        tvDownloading.visibility = View.GONE
-                        tvDownloadCompleted.visibility = View.VISIBLE
-                        llButton.visibility = View.VISIBLE
-                        tvButtonText.setText("Go to Home")
-                        userUpdateCredit()
-                        downloadCount = 0
-//                        llDownloadProgress.visibility = View.GONE
-                    }
-
-//                    seekbarDownload.visibility = View.GONE
-                }
-
-                override fun onError(error: com.downloader.Error?) {
-                    if (downloadCount == listHdQuality.size) {
-                        Toast.makeText(
-                            this@DownloadingActivity,
-                            "Download Failed", Toast.LENGTH_SHORT
-                        ).show()
-                    }
-                }
-
-            })
-    }
-
-    private fun userUpdateCredit() {
-
-        val userId = RequestBody.create(
-            MultipartBody.FORM,
-            Utilities.getPreference(this, AppConstants.tokenId)!!
-        )
-
-        val creditAvailable = RequestBody.create(
-            MultipartBody.FORM,
-            remaningCredit.toString()
-        )
-
-        val creditUsed = RequestBody.create(
-            MultipartBody.FORM,
-            Utilities.getPreference(this, AppConstants.PRICE)
-        )
-
-        val request = RetrofitClients.buildService(APiService::class.java)
-        val call = request.userUpdateCredit(userId, creditAvailable, creditUsed)
-
-        call?.enqueue(object : Callback<UpdateCreditResponse> {
-            override fun onResponse(
-                call: Call<UpdateCreditResponse>,
-                response: Response<UpdateCreditResponse>
-            ) {
-                Utilities.hideProgressDialog()
-                if (response.isSuccessful) {
-
-                } else {
-                    Toast.makeText(
-                        this@DownloadingActivity,
-                        "Server not responding!!!",
-                        Toast.LENGTH_SHORT
-                    ).show()
-                }
-            }
-
-            override fun onFailure(call: Call<UpdateCreditResponse>, t: Throwable) {
-                Toast.makeText(
-                    this@DownloadingActivity,
-                    "Server not responding!!!",
-                    Toast.LENGTH_SHORT
-                ).show()
-            }
-        })
-    }
 
     override fun onBackPressed() {
         if (Utilities.getPreference(this, AppConstants.DOWNLOAD_TYPE).equals("watermark")) {
-            super.onBackPressed()
             finish()
+        }else{
+            super.onBackPressed()
         }
     }
 
@@ -432,13 +305,21 @@ class DownloadingActivity : AppCompatActivity() {
                             "Download Completed", Toast.LENGTH_SHORT
                         ).show()
 
-                        tvDownloading.visibility = View.GONE
-                        tvDownloadCompleted.visibility = View.VISIBLE
-                        llButton.visibility = View.VISIBLE
-                        tvButtonText.setText("Go to Home")
-                       // userUpdateCredit()
+
+                                        //add download complete fragment
+
+            supportFragmentManager.beginTransaction()
+                .add(R.id.fl_container,DownloadCompletedFragment())
+                .commit()
+
+
+
+//                        tvDownloading.visibility = View.GONE
+//                        tvDownloadCompleted.visibility = View.VISIBLE
+//                        llButton.visibility = View.VISIBLE
+//                        tvButtonText.setText("Go to Home")
                         downloadCount = 0
-                        //llDownloadProgress.visibility = View.GONE
+
         }
     }
 

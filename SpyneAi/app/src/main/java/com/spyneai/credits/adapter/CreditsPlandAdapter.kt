@@ -1,18 +1,16 @@
 package com.spyneai.credits.adapter
 
 import android.content.Context
+import android.graphics.Paint
 import android.view.LayoutInflater
-import android.view.OrientationEventListener
 import android.view.View
 import android.view.ViewGroup
-import android.widget.RadioButton
-import android.widget.RadioGroup
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.spyneai.R
 import com.spyneai.credits.holder.CreditsPlanHolder
 import com.spyneai.credits.model.CreditPlansResItem
-import com.spyneai.imagesdowloading.DownloadTask
+import kotlinx.android.synthetic.main.activity_order_summary2.*
 
 
 class CreditsPlandAdapter(var context: Context, var plansList: ArrayList<CreditPlansResItem>, var listener: Listener)
@@ -30,8 +28,22 @@ class CreditsPlandAdapter(var context: Context, var plansList: ArrayList<CreditP
 
         holder.tvCredits.text = if (item.credits == 1) item.credits.toString()+" credit" else item.credits.toString()+" credits"
 
-        holder.tvPrice.text = "₹ "+item.price
-        //holder.tvPricePerImage.text = "₹ "+item.pricePerImage+" /image"
+
+        if (item.rackPrice == item.price){
+            holder.tvDiscountedPrice.text = "＄ "+item.price
+            holder.tvPrice.visibility = View.GONE
+        }else{
+            holder.tvPrice.apply {
+                paintFlags = paintFlags or Paint.STRIKE_THRU_TEXT_FLAG
+                text = "＄ "+item.rackPrice
+            }
+
+            holder.tvDiscountedPrice.text = "＄ "+item.price
+        }
+
+
+
+        holder.tvPricePerImage.text = "＄ "+item.pricePerImage+" /image"
 
         if (item.isSelected){
             holder.rb.isChecked = true
