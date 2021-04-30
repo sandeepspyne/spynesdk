@@ -209,8 +209,8 @@
         </FrameLayout>
 
     <LinearLayout
-        android:visibility="gone"
         android:id="@+id/llShootNow"
+        android:visibility="gone"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginLeft="@dimen/dp_20"
@@ -241,8 +241,41 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_weight="1"
+            android:id="@+id/tvDemo"
+            android:visibility="visible"
             android:layout_marginRight="10dp"
+            android:background="@drawable/bg_demo">
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center">
+
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:src="@mipmap/demo"
+                    android:layout_gravity="center_vertical"
+                    app:tint="@color/primary" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/demo"
+                    android:textColor="@color/primary"
+                    android:textSize="@dimen/sp_13"
+                    android:padding="@dimen/dp_12"/>
+
+            </LinearLayout>
+
+        </FrameLayout>
+
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
             android:id="@+id/tvShootNow"
+            android:layout_marginLeft="10dp"
             android:background="@drawable/bg_rectangle_button_ripple">
 
             <LinearLayout
@@ -271,37 +304,7 @@
 
 
 
-        <FrameLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:id="@+id/tvDemo"
-            android:visibility="visible"
-            android:layout_marginLeft="10dp"
-            android:background="@drawable/bg_rectangle_button_ripple">
 
-            <LinearLayout
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center">
-
-                <ImageView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:src="@mipmap/demo"
-                    android:layout_gravity="center_vertical" />
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="@string/demo"
-                    android:textColor="@color/white"
-                    android:textSize="@dimen/sp_13"
-                    android:padding="@dimen/dp_12"/>
-
-            </LinearLayout>
-
-        </FrameLayout>
 
 
 
