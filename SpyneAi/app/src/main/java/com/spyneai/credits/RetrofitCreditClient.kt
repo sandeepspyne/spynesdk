@@ -6,9 +6,8 @@ import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import java.util.concurrent.TimeUnit
 
-class RetrofitCreditClient(var version: String) {
+class RetrofitCreditClient(var baseUrl: String) {
 
-    private  val BASE_URL = "https://www.clippr.ai/api/{$version}/"
     private  val STAGING_URL = "http://34.87.119.10/api/"
 
     private val client = OkHttpClient.Builder()
@@ -26,7 +25,7 @@ class RetrofitCreditClient(var version: String) {
 
 
     private val retrofit = Retrofit.Builder()
-        .baseUrl(BASE_URL)
+        .baseUrl(baseUrl)
         .client(client)
         .addConverterFactory(
             GsonConverterFactory.create(

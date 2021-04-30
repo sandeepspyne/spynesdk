@@ -28,7 +28,7 @@ interface CreditApiService {
     fun createCreditPurchaseLog(
         @Query("userId") userId: String,
         @Query("creditId") creditId: String,
-        @Query("creditAlloted") creditAlloted: String,
+        @Query("creditAlloted") creditAlloted: Int,
         @Query("creditUsed") creditUsed: Int = 0,
         @Query("creditAvailable") creditAvailable: Int
     ): Call<CreditPurchaseLogRes>?
@@ -36,7 +36,7 @@ interface CreditApiService {
     @GET("credit/insert-user")
     fun updatePurchasedCredit(
         @Query("userId") userId: String,
-        @Query("creditAlloted") creditAlloted : String,
+        @Query("creditAlloted") creditAlloted : Int,
         @Query("creditUsed") creditUsed: Int = 0,
         @Query("creditAvailable") creditAvailable: Int
     ): Call<UpdatePurchaseCreditRes>?

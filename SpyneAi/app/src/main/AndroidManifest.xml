@@ -228,6 +228,7 @@
             android:name=".activity.SplashActivity"
             android:screenOrientation="portrait" >
 
+
         </activity>
 
         <activity android:name=".videorecording.ThreeSixtyViewActivity" />

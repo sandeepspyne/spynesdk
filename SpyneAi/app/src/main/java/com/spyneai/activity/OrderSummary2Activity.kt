@@ -55,6 +55,8 @@ class OrderSummary2Activity : AppCompatActivity() {
 
         AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
 
+        getSkuIdDownloadStatus()
+
         PRDownloader.initialize(getApplicationContext())
 
         val config = PRDownloaderConfig.newBuilder()
@@ -157,6 +159,11 @@ class OrderSummary2Activity : AppCompatActivity() {
         imgBack.setOnClickListener {
             onBackPressed()
         }
+    }
+
+    private fun getSkuIdDownloadStatus() {
+
+
     }
 
     private fun fetchUserCreditDetails(){

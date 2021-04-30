@@ -20,7 +20,7 @@ class CreditManager {
     var TAG = "CreditManager"
 
      fun updateCredit(remainingCredit : String, price: String,skuId : String,context: Context) {
-         
+
         val userId = RequestBody.create(
             MultipartBody.FORM,
             Utilities.getPreference(context, AppConstants.tokenId)!!
@@ -68,7 +68,8 @@ class CreditManager {
     }
 
     fun reduceCredit(creditReduced : String,skuId : String,context: Context) {
-        var call = RetrofitCreditClient("v4").buildService(CreditApiService::class.java)
+        //added base url as depedancy
+        var call = RetrofitCreditClient("https://www.clippr.ai/api/v4/").buildService(CreditApiService::class.java)
 
         val userId = RequestBody.create(
             MultipartBody.FORM,Utilities.getPreference(context,AppConstants.tokenId)!!.toString()

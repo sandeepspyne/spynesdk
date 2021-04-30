@@ -68,11 +68,13 @@ class CompletedProjectsActivity : AppCompatActivity() {
         Utilities.showProgressDialog(this)
 
         val request = RetrofitClients.buildService(APiService::class.java)
+
         Utilities.savePrefrence(this,AppConstants.tokenId,
                 Utilities.getPreference(this,AppConstants.tokenId))
         val userId = RequestBody.create(
                 MultipartBody.FORM,
                 Utilities.getPreference(this, AppConstants.tokenId)!!)
+
         val call = request.getCompletedProjects(userId)
 
         call?.enqueue(object : Callback<List<CompletedProjectResponse>> {

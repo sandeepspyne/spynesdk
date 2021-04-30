@@ -8,18 +8,20 @@ import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
 import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.work.impl.utils.PreferenceUtils
 import com.razorpay.Checkout
 import com.razorpay.PaymentResultListener
 import com.spyneai.R
 import com.spyneai.credits.adapter.CreditsPlandAdapter
+import com.spyneai.credits.fragments.CreditPaymentFailedFragment
+import com.spyneai.credits.fragments.CreditPyamentSuccessFragment
 import com.spyneai.credits.model.*
 import com.spyneai.databinding.ActivityCreditPlansBinding
 import com.spyneai.interfaces.RetrofitClients
 import com.spyneai.needs.AppConstants
 import com.spyneai.needs.Utilities
-import okhttp3.MultipartBody
-import okhttp3.RequestBody
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
 import org.json.JSONObject
 import retrofit2.Call
 import retrofit2.Callback
@@ -36,6 +38,8 @@ class CreditPlansActivity : AppCompatActivity(),CreditsPlandAdapter.Listener,
     private var newSelectedItem : CreditPlansResItem? = null
     private var updateCredit = true
     private var TAG = "CreditPlansActivity"
+    private var amount = 0
+    private lateinit var razorPayOrderId : String
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -66,9 +70,11 @@ class CreditPlansActivity : AppCompatActivity(),CreditsPlandAdapter.Listener,
         var body = CreateOrderBody(
             false, "USD", getOrderId(),
             0, lastSelectedItem!!.price, lastSelectedItem!!.planId.toString(),
-            lastSelectedItem!!.price, "CREATED", lastSelectedItem!!.planType,
+            lastSelectedItem!!.price, "CREATED", "New",
             Utilities.getPreference(this, AppConstants.tokenId).toString()
         )
+
+        var s =  ""
 
 //        var body = CreateOrderBody(
 //            false, "INR", "ord_clippr_4e81kot",
@@ -85,13 +91,18 @@ class CreditPlansActivity : AppCompatActivity(),CreditsPlandAdapter.Listener,
                 call: Call<CreateOrderResponse>,
                 response: Response<CreateOrderResponse>
             ) {
+                var s = ""
                 if (response.isSuccessful) {
                     var createOrderResponse = response.body()
 
-                    var amount : Int = createOrderResponse?.planFinalCost!!.roundToInt()
-                    lastSelectedItem!!.finalPrice = amount
+                    amount  = createOrderResponse?.planFinalCost!!.roundToInt()
 
-                    prepareCheckOut(createOrderResponse.razorpayOrderId,amount.toString())
+                    amount = amount * 100
+
+                    lastSelectedItem!!.finalPrice = amount
+                    razorPayOrderId = createOrderResponse.razorpayOrderId
+
+                    prepareCheckOut()
                 } else {
                     Toast.makeText(
                         this@CreditPlansActivity,
@@ -111,7 +122,7 @@ class CreditPlansActivity : AppCompatActivity(),CreditsPlandAdapter.Listener,
 
     }
 
-    private fun prepareCheckOut(orderId : String,amount : String) {
+     fun prepareCheckOut() {
         val co = Checkout()
 
         try {
@@ -121,13 +132,13 @@ class CreditPlansActivity : AppCompatActivity(),CreditsPlandAdapter.Listener,
             //You can omit the image option to fetch the image from dashboard
             options.put("image","https://play-lh.googleusercontent.com/b4BzZiP4gey3FVCXPGQbrX1DNABnoDionTG05HaG2qWeZshkSp33NT2aDSBYOfEQPkU=s360-rw")
             options.put("theme.color", "#FF7700");
-            options.put("currency","INR")
+            options.put("currency","USD")
            // options.put("order_id", orderId)
             options.put("amount",amount)//pass amount in currency subunits
 
             val retryObj = JSONObject()
-            retryObj.put("enabled", true)
-            retryObj.put("max_count", 4);
+            retryObj.put("enabled", false)
+            retryObj.put("max_count", 0);
             options.put("retry", retryObj);
 
             val prefill = JSONObject()
@@ -234,20 +245,91 @@ class CreditPlansActivity : AppCompatActivity(),CreditsPlandAdapter.Listener,
 
     override fun onPaymentSuccess(razorpayPaymentID: String?) {
         //update credit
-            addCredit()
+//        GlobalScope.launch(Dispatchers.IO) {
+//            createCreditPurchaseLog()
+//        }
 
-        var successIntent = Intent(this,CreditPaymentSuccessActivity::class.java)
-        successIntent.putExtra("amount","200")
-        startActivity(successIntent)
+            try {
+                var fragment = CreditPyamentSuccessFragment()
+
+                var agrs = Bundle()
+
+                agrs.putInt("amount",lastSelectedItem!!.credits)
+                fragment.arguments = agrs
+
+                binding.tvBuyNow.visibility = View.GONE
+
+                supportFragmentManager.beginTransaction()
+                    .add(R.id.fl_container,fragment)
+                    .commitAllowingStateLoss()
+
+            }catch (ex : Exception){
+
+            }
+
+
     }
-
-    private fun addCredit() {
-
-
-    }
-
 
     override fun onPaymentError(code: Int, response: String?) {
-        startActivity(Intent(this,CreditPaymentFailedActivity::class.java))
+        binding.tvBuyNow.visibility = View.GONE
+
+        supportFragmentManager.beginTransaction()
+            .add(R.id.fl_container,CreditPaymentFailedFragment())
+            .commitAllowingStateLoss()
+
     }
+
+    private suspend fun createCreditPurchaseLog() {
+        var call = RetrofitCreditClient("https://www.spyne.ai/").buildService(CreditApiService::class.java)
+            .createCreditPurchaseLog(Utilities.getPreference(this,AppConstants.tokenId)!!.toString(),
+            lastSelectedItem!!.creditId,
+            lastSelectedItem!!.credits,0,200)
+
+        call?.enqueue(object : Callback<CreditPurchaseLogRes> {
+            override fun onResponse(
+                call: Call<CreditPurchaseLogRes>,
+                response: Response<CreditPurchaseLogRes>
+            ) {
+                if (response.isSuccessful) {
+                    GlobalScope.launch(Dispatchers.IO) {
+                        updatePurchasedCredits()
+                    }
+                } else {
+                    Log.d(TAG, "onResponse: "+"credit log creation failed")
+                }
+            }
+
+            override fun onFailure(call: Call<CreditPurchaseLogRes>, t: Throwable) {
+                Log.d(TAG, "onFailure: credit log creation failure")
+            }
+        })
+    }
+
+    private suspend fun updatePurchasedCredits() {
+        var call = RetrofitCreditClient("https://www.spyne.ai/").buildService(CreditApiService::class.java)
+            .updatePurchasedCredit(Utilities.getPreference(this,AppConstants.tokenId)!!.toString(),
+                lastSelectedItem!!.credits,0,200)
+
+        call?.enqueue(object : Callback<UpdatePurchaseCreditRes>{
+            override fun onResponse(
+                call: Call<UpdatePurchaseCreditRes>,
+                response: Response<UpdatePurchaseCreditRes>
+            ) {
+                if (response.isSuccessful) {
+                    Log.d(TAG, "onResponse: "+"credit UDPATE SUCCESS")
+                } else {
+                    Log.d(TAG, "onResponse: "+"credit log creation failed")
+                }
+            }
+
+            override fun onFailure(call: Call<UpdatePurchaseCreditRes>, t: Throwable) {
+                Log.d(TAG, "onFailure: credit UDPATE  failure")
+            }
+
+        })
+
+    }
+
+
+
 }
