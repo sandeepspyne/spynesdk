@@ -99,7 +99,7 @@
             android:hint="Total Images"
             android:textColor="@color/black"
             android:textColorHint="@color/black"
-            android:textSize="@dimen/dp_12"/>
+            android:textSize="@dimen/dp_12" />
         <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -128,6 +128,17 @@
         </LinearLayout>
 
     </LinearLayout>
+
+    <TextView
+        android:id="@+id/tvImageCount"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:fontFamily="@font/bold"
+        android:hint="4/1"
+        android:layout_alignParentRight="true"
+        android:textColor="@color/black"
+        android:textColorHint="@color/black"
+        android:textSize="@dimen/dp_12" />
 
     <ImageView
         android:visibility="gone"

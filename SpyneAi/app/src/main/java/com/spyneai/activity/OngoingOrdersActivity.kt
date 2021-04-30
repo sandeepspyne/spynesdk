@@ -27,6 +27,7 @@ class OngoingOrdersActivity : AppCompatActivity() {
 
     lateinit var ongoingProjectAdapter : OngoingProjectAdapter
     lateinit var ongoingProjectList : ArrayList<com.spyneai.model.processImageService.Task>
+    var itemPosition: Int = 0
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -65,6 +66,27 @@ class OngoingOrdersActivity : AppCompatActivity() {
         rv_ongoingActivity.setLayoutManager(layoutManager)
         rv_ongoingActivity.setAdapter(ongoingProjectAdapter)
         refreshList()
+        showHideRecyclerView()
+
+    }
+
+    fun refreshList(){
+        Handler(Looper.getMainLooper()).postDelayed({
+
+//            ongoingProjectList.forEachIndexed { index, item ->
+//                if (item.isCompleted){
+//                    ongoingProjectList.remove(item)
+//                    ongoingProjectAdapter.notifyItemChanged(index)
+//                }
+//                showHideRecyclerView()
+//            }
+            ongoingProjectAdapter.notifyDataSetChanged()
+            refreshList()
+        }, 5000)
+
+    }
+
+    fun showHideRecyclerView(){
         if (ongoingProjectList.size > 0)
         {
             rv_ongoingActivity.visibility = View.VISIBLE
@@ -74,18 +96,6 @@ class OngoingOrdersActivity : AppCompatActivity() {
             rv_ongoingActivity.visibility = View.GONE
             tvOngoingOrders.visibility = View.VISIBLE
         }
-
-    }
-
-    fun refreshList(){
-        Handler(Looper.getMainLooper()).postDelayed({
-            for (item in ongoingProjectList){
-                if (item.isCompleted)
-                    ongoingProjectList.remove(item)
-            }
-            ongoingProjectAdapter.notifyDataSetChanged()
-            refreshList()
-        }, 10000)
 
     }
 

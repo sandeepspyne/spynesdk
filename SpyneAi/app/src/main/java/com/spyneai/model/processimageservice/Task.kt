@@ -61,6 +61,10 @@ class Task {
     var totalInteriorImages: Int = 0
     var totalFocusedImages: Int = 0
 
+    var totalImageToProcessed: Int = 0
+
+    var totalImageProcessed: Int = 0
+
     var imageProcessing: String = "image-processing started..."
 
     var cornerPosition: String = ""

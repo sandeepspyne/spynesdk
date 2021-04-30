@@ -40,6 +40,7 @@ class OngoingProjectAdapter(
         val tvSkuId: TextView = view.findViewById(R.id.tvSkuId)
         val tvDots: TextView = view.findViewById(R.id.tvDots)
         val ivRemoveCard: ImageView = view.findViewById(R.id.ivRemoveCard)
+        val tvImageCount: TextView = view.findViewById(R.id.tvImageCount)
 
 
     }
@@ -61,20 +62,17 @@ class OngoingProjectAdapter(
         holder.tvImageProcessing.text = ongoingProjectList[position].imageProcessing
         holder.tvSkuId.text = ongoingProjectList[position].skuId
         holder.tvDots.blink()
+        holder.tvImageCount.text = ongoingProjectList[position].totalImageToProcessed.toString()+"/"+ongoingProjectList[position].totalImageProcessed.toString()
         Glide.with(context)
             .load(ongoingProjectList[position].imageFileList[0])
             .into(holder.ivImage)
 
-//        if (ongoingProjectList[position].isCompleted) {
-//            ongoingProjectList.removeAt(position)
-//            try {
-//                notifyItemRemoved(position)
-//                notifyItemRangeChanged(position, ongoingProjectList.size)
-//            } catch (e: Exception) {
-//                Log.d(TAG, e.toString())
-//            }
-//
-//        }
+
+
+        if (ongoingProjectList[position].isCompleted) {
+//            removeItem(position)
+
+        }
 
         holder.ivRemoveCard.setOnClickListener {
             ongoingProjectList.removeAt(position)
@@ -84,18 +82,28 @@ class OngoingProjectAdapter(
         }
 
         if (ongoingProjectList[position].imageProcessing.equals("image processing failed :( please try again with new shoot!") || ongoingProjectList[position].imageProcessing.equals(
-                "your order is now completed :) email sent!"
-            )){
+                "your order is now completed :) email sent!") || ongoingProjectList[position].imageProcessing.equals(
+                "your order is now completed :) sending email...")){
             holder.tvDots.visibility = View.GONE
+            holder.tvImageCount.visibility = View.GONE
             holder.ivRemoveCard.visibility = View.VISIBLE
         }
 
 
-        mClickListener = btnlistener
+
+
+
+
+            mClickListener = btnlistener
         holder.rlSkuGifList.setOnClickListener(View.OnClickListener {
             if (mClickListener != null)
                 mClickListener?.onBtnClick(position)
         })
+    }
+
+    fun removeItem(position: Int) {
+        ongoingProjectList.removeAt(position)
+        notifyDataSetChanged()
     }
 
 
@@ -116,6 +124,8 @@ class OngoingProjectAdapter(
             it.repeatCount = times
         })
     }
+
+
 
 }
 
