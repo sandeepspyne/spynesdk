@@ -153,7 +153,6 @@ class ThreeSixtyInteriorViewActivity : AppCompatActivity(),View.OnTouchListener,
                             binding.ivShare.setOnClickListener(this@ThreeSixtyInteriorViewActivity)
 
 
-
                             binding.ivCopyLink.setOnClickListener(this@ThreeSixtyInteriorViewActivity)
                             binding.tvCopyLink.setOnClickListener(this@ThreeSixtyInteriorViewActivity)
 
@@ -168,7 +167,7 @@ class ThreeSixtyInteriorViewActivity : AppCompatActivity(),View.OnTouchListener,
 
                 })
                 .dontAnimate()
-                .diskCacheStrategy(DiskCacheStrategy.ALL)
+                .override(250, 250)
                 .preload()
 
         }
@@ -210,7 +209,7 @@ class ThreeSixtyInteriorViewActivity : AppCompatActivity(),View.OnTouchListener,
                             binding.svBack.stopShimmer()
                             binding.svBack.visibility = View.GONE
 
-                            loadImage(tsvParams,binding.ivBackView)
+                            loadImageBack(tsvParams,binding.ivBackView)
 
                             //show images and set listener
                             binding.clBack.visibility = View.VISIBLE
@@ -234,7 +233,7 @@ class ThreeSixtyInteriorViewActivity : AppCompatActivity(),View.OnTouchListener,
 
                 })
                 .dontAnimate()
-                .diskCacheStrategy(DiskCacheStrategy.ALL)
+                .override(250, 250)
                 .preload()
 
         }
@@ -247,6 +246,10 @@ class ThreeSixtyInteriorViewActivity : AppCompatActivity(),View.OnTouchListener,
         handler.removeCallbacksAndMessages(null)
 
         handler.postDelayed({
+
+            Log.d(TAG, "loading: a"+tsvParams.type)
+            Log.d(TAG, "loading: a"+tsvParams.framesList.get(tsvParams.mImageIndex))
+
 
             try {
                 var glide = Glide.with(this)
@@ -273,16 +276,69 @@ class ThreeSixtyInteriorViewActivity : AppCompatActivity(),View.OnTouchListener,
                         dataSource: DataSource?,
                         isFirstResource: Boolean
                     ): Boolean {
-                        Log.d(TAG, "loading: a"+tsvParams.type)
                         tsvParams.placeholder = resource!!
 
                         return false
                     }
 
                 })
-                    //.override(250, 250)
+                    .override(250, 250)
                     .dontAnimate()
-                    .diskCacheStrategy(DiskCacheStrategy.ALL)
+                    .into(imageView)
+
+
+                if (binding.ivFront.visibility == View.INVISIBLE) binding.ivFront.visibility = View.VISIBLE
+            } catch (ex: UninitializedPropertyAccessException) {
+                Log.d(TAG, "loadImage: ex " + tsvParams.type)
+                Log.d(TAG, "loadImage: ex " + ex.localizedMessage)
+
+            }
+        }, 10)
+    }
+
+    private fun loadImageBack(tsvParams: TSVParams, imageView: ImageView) {
+
+        handler.removeCallbacksAndMessages(null)
+
+        handler.postDelayed({
+
+            Log.d(TAG, "loading: a"+tsvParams.type)
+            Log.d(TAG, "loading: a"+tsvParams.framesList.get(tsvParams.mImageIndex))
+
+
+            try {
+                var glide = Glide.with(this)
+                    .load(tsvParams.framesList.get(tsvParams.mImageIndex))
+
+                if (tsvParams.placeholder != null)
+                    glide.placeholder(tsvParams.placeholder)
+
+                glide.listener(object : RequestListener<Drawable> {
+                    override fun onLoadFailed(
+                        e: GlideException?,
+                        model: Any?,
+                        target: com.bumptech.glide.request.target.Target<Drawable>?,
+                        isFirstResource: Boolean
+                    ): Boolean {
+                        Log.d(TAG, "onResourceReady: failed")
+                        return false
+                    }
+
+                    override fun onResourceReady(
+                        resource: Drawable?,
+                        model: Any?,
+                        target: com.bumptech.glide.request.target.Target<Drawable>?,
+                        dataSource: DataSource?,
+                        isFirstResource: Boolean
+                    ): Boolean {
+                        tsvParams.placeholder = resource!!
+
+                        return false
+                    }
+
+                })
+                    .override(250, 250)
+                    .dontAnimate()
                     .into(imageView)
 
 
@@ -363,14 +419,14 @@ class ThreeSixtyInteriorViewActivity : AppCompatActivity(),View.OnTouchListener,
                             tsvParamBack.mImageIndex++
                             if (tsvParamBack.mImageIndex >= tsvParamBack.framesList.size) tsvParamBack.mImageIndex = tsvParamBack.framesList.size - 1
 
-                            loadImage(tsvParamBack,binding.ivBackView)
+                            loadImageBack(tsvParamBack,binding.ivBackView)
 
                         }
                         if (tsvParamBack.mEndX - tsvParamBack.mStartX < -3) {
                             tsvParamBack.mImageIndex--
                             if (tsvParamBack.mImageIndex < 0) tsvParamBack.mImageIndex = 0
 
-                            loadImage(tsvParamBack,binding.ivBackView)
+                            loadImageBack(tsvParamBack,binding.ivBackView)
                         }
                         tsvParamBack.mStartX = event.x.toInt()
                         tsvParamBack.mStartY = event.y.toInt()
