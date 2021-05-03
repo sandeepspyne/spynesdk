@@ -125,7 +125,6 @@ class CreditPlansActivity : AppCompatActivity(),CreditsPlandAdapter.Listener,
      fun prepareCheckOut() {
         val co = Checkout()
          co.setKeyID("rzp_live_IHhXp2aSS9Ys4p")
-         Log.d(TAG, "prepareCheckOut: "+razorPayOrderId)
 
         try {
             val options = JSONObject()
@@ -135,17 +134,17 @@ class CreditPlansActivity : AppCompatActivity(),CreditsPlandAdapter.Listener,
             options.put("image","https://play-lh.googleusercontent.com/b4BzZiP4gey3FVCXPGQbrX1DNABnoDionTG05HaG2qWeZshkSp33NT2aDSBYOfEQPkU=s360-rw")
             options.put("theme.color", "#FF7700");
             options.put("currency","USD")
-           // options.put("order_id", razorPayOrderId)
-            options.put("amount",50)//pass amount in currency subunits
+            options.put("order_id", razorPayOrderId)
+            options.put("amount",amount)//pass amount in currency subunits
 
             val retryObj = JSONObject()
             retryObj.put("enabled", false)
-            retryObj.put("max_count", 0);
-            options.put("retry", retryObj);
+            retryObj.put("max_count", 0)
+            options.put("retry", retryObj)
 
-            val prefill = JSONObject()
-            prefill.put("email","gaurav.kumar@example.com")
-            prefill.put("contact","9876543210")
+//            val prefill = JSONObject()
+//            prefill.put("email","gaurav.kumar@example.com")
+//            prefill.put("contact","9876543210")
 
            // options.put("prefill",prefill)
             co.open(this,options)

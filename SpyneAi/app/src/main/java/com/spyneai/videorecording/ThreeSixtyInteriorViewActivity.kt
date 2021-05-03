@@ -240,7 +240,6 @@ class ThreeSixtyInteriorViewActivity : AppCompatActivity(),View.OnTouchListener,
 
     }
 
-
     private fun loadImage(tsvParams: TSVParams, imageView: ImageView) {
 
         handler.removeCallbacksAndMessages(null)
@@ -332,21 +331,17 @@ class ThreeSixtyInteriorViewActivity : AppCompatActivity(),View.OnTouchListener,
                         isFirstResource: Boolean
                     ): Boolean {
                         tsvParams.placeholder = resource!!
-
                         return false
                     }
-
                 })
                     .override(250, 250)
                     .dontAnimate()
                     .into(imageView)
 
-
                 if (binding.ivFront.visibility == View.INVISIBLE) binding.ivFront.visibility = View.VISIBLE
             } catch (ex: UninitializedPropertyAccessException) {
                 Log.d(TAG, "loadImage: ex " + tsvParams.type)
                 Log.d(TAG, "loadImage: ex " + ex.localizedMessage)
-
             }
         }, 10)
     }
