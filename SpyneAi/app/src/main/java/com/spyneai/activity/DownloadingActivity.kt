@@ -88,13 +88,13 @@ class DownloadingActivity : AppCompatActivity() {
         } else {
             ActivityCompat.requestPermissions(
                 this,
-                DownloadingActivity.REQUIRED_PERMISSIONS,
-                DownloadingActivity.REQUEST_CODE_PERMISSIONS
+                REQUIRED_PERMISSIONS,
+                REQUEST_CODE_PERMISSIONS
             )
         }
     }
 
-    private fun allPermissionsGranted() = DownloadingActivity.REQUIRED_PERMISSIONS.all {
+    private fun allPermissionsGranted() = REQUIRED_PERMISSIONS.all {
         ContextCompat.checkSelfPermission(
             baseContext, it
         ) == PackageManager.PERMISSION_GRANTED
@@ -115,7 +115,7 @@ class DownloadingActivity : AppCompatActivity() {
             tvIncreaseSale.visibility = View.VISIBLE
             llButton.visibility = View.VISIBLE
             tvButtonText.setText("Download HD Images")
-            downloadWatermark()
+            downloadWaterMark()
         } else if (Utilities.getPreference(this, AppConstants.DOWNLOAD_TYPE).equals("hd")) {
             ivBack.visibility = View.INVISIBLE
             llButton.visibility = View.VISIBLE
@@ -152,19 +152,17 @@ class DownloadingActivity : AppCompatActivity() {
         }
     }
 
-    fun downloadWatermark() {
+    private fun downloadWaterMark() {
         if (listWatermark.size > 0 && listWatermark != null) {
-            for (i in 0 until listWatermark.size/*imageListWaterMark.size*/) {
-//                seekbarDownload.setProgress(i)
-//                tvProgress.setText(i.toString() + "/" + listHdQuality.size)
+            for (i in 0 until listWatermark.size) {
                 if (listWatermark[i] != null)
-                    downloadWithWatermark(listWatermark[i].toString())
+                    downloadWithWaterMark(listWatermark[i])
             }
         }
     }
 
 
-    fun downloadWithWatermark(imageFile: String?) {
+    private fun downloadWithWaterMark(imageFile: String?) {
         downloadCount++
         val FILENAME_FORMAT = "yyyy-MM-dd-HH-mm-ss-SSS"
 
@@ -174,33 +172,20 @@ class DownloadingActivity : AppCompatActivity() {
 
         var file = File(Environment.getExternalStorageDirectory().toString() + "/Spyne")
 
-
-
-
-        val downloadId = PRDownloader.download(
+        PRDownloader.download(
             imageFile,
             Environment.getExternalStorageDirectory().toString() + "/Spyne",
             imageName
         )
             .build()
-            .setOnStartOrResumeListener {
-            }
-            .setOnPauseListener {
 
-            }
-            .setOnCancelListener(object : OnCancelListener {
-                override fun onCancel() {}
-            })
             .start(object : OnDownloadListener {
                 override fun onDownloadComplete() {
 
                     scanFile(file.absolutePath+"/"+imageName)
 
                     if (downloadCount == listWatermark.size)
-                        Toast.makeText(
-                            this@DownloadingActivity,
-                            "Download Completed", Toast.LENGTH_SHORT
-                        ).show()
+                        Toast.makeText(this@DownloadingActivity, "Download Completed", Toast.LENGTH_SHORT).show()
 
                     refreshGallery(file.getAbsolutePath(), this@DownloadingActivity)
 
@@ -219,7 +204,6 @@ class DownloadingActivity : AppCompatActivity() {
                 }
             })
     }
-
 
     override fun onBackPressed() {
         if (Utilities.getPreference(this, AppConstants.DOWNLOAD_TYPE).equals("watermark")) {
@@ -253,18 +237,12 @@ class DownloadingActivity : AppCompatActivity() {
         EventBus.getDefault().unregister(this)
     }
 
-
     @Subscribe(threadMode = ThreadMode.MAIN)
     fun onMessageEvent(event: HDImagesDownloadedEvent?) {
         event?.getSkuId()?.let {
-                                    Toast.makeText(
-                            this@DownloadingActivity,
-                            "Download Completed", Toast.LENGTH_SHORT
-                        ).show()
+            Toast.makeText(this@DownloadingActivity, "Download Completed", Toast.LENGTH_SHORT).show()
 
-
-                                        //add download complete fragment
-
+            //add download complete fragment
             var downloadCompletedFragment = DownloadCompletedFragment()
             var args = Bundle()
             args.putString("image",listHdQuality.get(0))
@@ -274,8 +252,7 @@ class DownloadingActivity : AppCompatActivity() {
                 .add(R.id.fl_container,downloadCompletedFragment)
                 .commit()
 
-                        downloadCount = 0
-
+            downloadCount = 0
         }
     }
 

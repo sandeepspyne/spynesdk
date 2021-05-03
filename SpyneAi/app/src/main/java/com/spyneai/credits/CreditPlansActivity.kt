@@ -67,14 +67,14 @@ class CreditPlansActivity : AppCompatActivity(),CreditsPlandAdapter.Listener,
     }
 
     private fun createOrder() {
+        binding.progressBar.visibility = View.VISIBLE
+
         var body = CreateOrderBody(
             false, "INR", getOrderId(),
             0, lastSelectedItem!!.price, lastSelectedItem!!.planId.toString(),
             lastSelectedItem!!.price, "CREATED", "New",
             Utilities.getPreference(this, AppConstants.tokenId).toString()
         )
-
-        var s =  ""
 
 //        var body = CreateOrderBody(
 //            false, "INR", "ord_clippr_4e81kot",
@@ -91,6 +91,8 @@ class CreditPlansActivity : AppCompatActivity(),CreditsPlandAdapter.Listener,
                 call: Call<CreateOrderResponse>,
                 response: Response<CreateOrderResponse>
             ) {
+                binding.progressBar.visibility = View.GONE
+
                 if (response.isSuccessful) {
                     var createOrderResponse = response.body()
 
@@ -112,10 +114,10 @@ class CreditPlansActivity : AppCompatActivity(),CreditsPlandAdapter.Listener,
             }
 
             override fun onFailure(call: Call<CreateOrderResponse>, t: Throwable) {
-                Toast.makeText(this@CreditPlansActivity, t.localizedMessage, Toast.LENGTH_LONG)
-                    .show()
-            }
+                binding.progressBar.visibility = View.GONE
 
+                Toast.makeText(this@CreditPlansActivity, t.localizedMessage, Toast.LENGTH_LONG).show()
+            }
         })
 
 

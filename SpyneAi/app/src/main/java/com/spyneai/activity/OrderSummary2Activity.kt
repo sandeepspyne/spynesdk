@@ -129,7 +129,6 @@ class OrderSummary2Activity : AppCompatActivity() {
                     intent.putExtra("image", listHdQuality[0])
                     intent.putExtra("credit_available",availableCredits)
                     startActivity(intent)
-
                 }
             }
         }
