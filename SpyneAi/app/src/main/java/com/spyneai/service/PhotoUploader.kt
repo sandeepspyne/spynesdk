@@ -47,11 +47,15 @@ class PhotoUploader(var task: Task, var listener: Listener) {
         task.processingRetry = 0
         task.uploadingRetry = 0
         uploadImageToBucket()
-        task.imageProcessing = "uploading image service started"
     }
 
     fun uploadImageToBucket() {
-        task.imageProcessing = "uploading image started"
+        if (task.catName.equals("Automobiles"))
+        task.imageProcessing = "uploading exterior image started"
+        else if (task.catName.equals("Footwear"))
+            task.imageProcessing = "uploading footwear image started"
+        else if (task.catName.equals("Grocery"))
+            task.imageProcessing = "uploading grocery image started"
         log("Start uploading images to bucket")
         //Get All Data to be uploaded
         task.totalImageToProcessed = task.imageFileList.size
@@ -656,16 +660,6 @@ class PhotoUploader(var task: Task, var listener: Listener) {
             task.exposures
         )
 
-        val cornerPosition = RequestBody.create(
-            MultipartBody.FORM,
-            task.cornerPosition
-        )
-
-        val enterpriseId = RequestBody.create(
-            MultipartBody.FORM,
-            "TaD1VC1Ko"
-        )
-
         val currentFrame = RequestBody.create(
             MultipartBody.FORM,
             task.currentFrame.toString()
@@ -674,6 +668,16 @@ class PhotoUploader(var task: Task, var listener: Listener) {
         val totalFrame = RequestBody.create(
             MultipartBody.FORM,
             task.totalFrames.toString()
+        )
+
+        val cornerPosition = RequestBody.create(
+            MultipartBody.FORM,
+            task.cornerPosition
+        )
+
+        val enterpriseId = RequestBody.create(
+            MultipartBody.FORM,
+            "TaD1VC1Ko"
         )
 
         var logo: MultipartBody.Part? = null
@@ -781,9 +785,7 @@ class PhotoUploader(var task: Task, var listener: Listener) {
                 }
             }
         })
-
     }
-
     private fun addDealershiplogo() {
 
         log("start addDealershiplogo")
@@ -1043,8 +1045,6 @@ class PhotoUploader(var task: Task, var listener: Listener) {
     }
 
     private fun addWatermark() {
-        task.imageProcessing = "add image watermark started"
-
 
         val request = RetrofitClients.buildService(APiService::class.java)
         log("start add watermark")
@@ -1072,10 +1072,38 @@ class PhotoUploader(var task: Task, var listener: Listener) {
             task.skuName
         )
 
+        val cornerPosition = RequestBody.create(
+            MultipartBody.FORM,
+            task.cornerPosition
+        )
+
+        val enterpriseId = RequestBody.create(
+            MultipartBody.FORM,
+            "TaD1VC1Ko"
+        )
+
+        var logo: MultipartBody.Part? = null
+        if (task.dealershipLogo.equals("")) {
+            val attachmentEmpty = RequestBody.create(MediaType.parse("multipart/form-data"), "")
+            logo = MultipartBody.Part.createFormData("attachment", "", attachmentEmpty)
+        } else {
+            val requestFile =
+                RequestBody.create(
+                    MediaType.parse("multipart/form-data"),
+                    File(task.dealershipLogo)
+                )
+            logo =
+                MultipartBody.Part.createFormData(
+                    "logo",
+                    File(task.dealershipLogo)!!.name,
+                    requestFile
+                )
+        }
+
         val call =
-            request.addWaterMark(
+            request.addWaterMarkv4(
                 background, UserId, SkuId,
-                imageUrl, SkuName
+                imageUrl, SkuName, logo, cornerPosition, enterpriseId
             )
 
         call?.enqueue(object : Callback<WaterMarkResponse> {
@@ -1154,10 +1182,38 @@ class PhotoUploader(var task: Task, var listener: Listener) {
             "Focus Shoot"
         )
 
+        val cornerPosition = RequestBody.create(
+            MultipartBody.FORM,
+            task.cornerPosition
+        )
+
+        val enterpriseId = RequestBody.create(
+            MultipartBody.FORM,
+            "TaD1VC1Ko"
+        )
+
+        var logo: MultipartBody.Part? = null
+        if (task.dealershipLogo.equals("")) {
+            val attachmentEmpty = RequestBody.create(MediaType.parse("multipart/form-data"), "")
+            logo = MultipartBody.Part.createFormData("attachment", "", attachmentEmpty)
+        } else {
+            val requestFile =
+                RequestBody.create(
+                    MediaType.parse("multipart/form-data"),
+                    File(task.dealershipLogo)
+                )
+            logo =
+                MultipartBody.Part.createFormData(
+                    "logo",
+                    File(task.dealershipLogo)!!.name,
+                    requestFile
+                )
+        }
+
         val call =
-            request.addWaterMarkFocused(
+            request.addWaterMarkFocusedv4(
                 background, userId, skuId,
-                imageUrl, skuName, category
+                imageUrl, skuName, category, logo, cornerPosition, enterpriseId
             )
 
         call?.enqueue(object : Callback<WaterMarkResponse> {

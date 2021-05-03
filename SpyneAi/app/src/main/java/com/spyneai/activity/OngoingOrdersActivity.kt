@@ -82,7 +82,7 @@ class OngoingOrdersActivity : AppCompatActivity() {
 //            }
             ongoingProjectAdapter.notifyDataSetChanged()
             refreshList()
-        }, 5000)
+        }, 3000)
 
     }
 

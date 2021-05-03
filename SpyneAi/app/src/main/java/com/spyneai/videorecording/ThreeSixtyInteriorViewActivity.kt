@@ -65,11 +65,9 @@ class ThreeSixtyInteriorViewActivity : AppCompatActivity(),View.OnTouchListener,
             tsvParamFront.framesList = frontFramesList
             tsvParamFront.mImageIndex = frontFramesList.size / 2
 
-            binding.progressBarFront.visibility = View.VISIBLE
 
             preLoadFront(tsvParamFront)
         }else{
-            binding.progressBarFront.visibility = View.GONE
             Toast.makeText(this,"Frames list empty failed to load front view",Toast.LENGTH_LONG)
         }
 
@@ -80,11 +78,9 @@ class ThreeSixtyInteriorViewActivity : AppCompatActivity(),View.OnTouchListener,
             tsvParamBack.framesList = backFramesList
             tsvParamBack.mImageIndex = backFramesList.size / 2
 
-            binding.progressBarBack.visibility = View.VISIBLE
 
             preLoadBack(tsvParamBack)
         }else{
-            binding.progressBarBack.visibility = View.GONE
             Toast.makeText(this,"Frames list empty failed to load back view",Toast.LENGTH_LONG)
         }
 
@@ -135,7 +131,6 @@ class ThreeSixtyInteriorViewActivity : AppCompatActivity(),View.OnTouchListener,
                         }
 
                         if (index == tsvParams.framesList.size - 1) {
-                            binding.progressBarFront.visibility = View.GONE
                             loadImage(tsvParams,binding.ivFront)
 
 
@@ -226,7 +221,6 @@ class ThreeSixtyInteriorViewActivity : AppCompatActivity(),View.OnTouchListener,
                         }
 
                         if (index == tsvParams.framesList.size - 1) {
-                            binding.progressBarBack.visibility = View.GONE
                             loadImage(tsvParams,binding.ivBackView)
 
                             //show images and set listener

@@ -10,6 +10,8 @@ import android.os.PowerManager
 import android.widget.Toast
 import com.spyneai.R
 import com.spyneai.activity.CompletedProjectsActivity
+import com.spyneai.activity.DashboardActivity
+import com.spyneai.activity.OngoingOrdersActivity
 import com.spyneai.extras.events.ProcessingImagesEvent
 import com.spyneai.model.processImageService.Task
 import com.spyneai.needs.AppConstants
@@ -24,6 +26,7 @@ class ProcessImagesService() : Service(), Listener {
     lateinit var notificationManager: NotificationManager
     lateinit var channel: NotificationChannel
     lateinit var builder: Notification.Builder
+
 
 
 
@@ -218,10 +221,22 @@ class ProcessImagesService() : Service(), Listener {
             notificationManager.createNotificationChannel(channel)
         }
 
-        val pendingIntent: PendingIntent =
+        var pendingIntent: PendingIntent? = null
+
+        if (text.equals("Image processing in progress...")){
+            pendingIntent =
+                Intent(this, OngoingOrdersActivity::class.java).let { notificationIntent ->
+                    PendingIntent.getActivity(this, 0, notificationIntent, 0)
+                }
+        }else if (text.equals("Image processing completed")){
             Intent(this, CompletedProjectsActivity::class.java).let { notificationIntent ->
                 PendingIntent.getActivity(this, 0, notificationIntent, 0)
             }
+        }else{
+            Intent(this, DashboardActivity::class.java).let { notificationIntent ->
+                PendingIntent.getActivity(this, 0, notificationIntent, 0)
+            }
+        }
 
 
         builder =

@@ -380,6 +380,19 @@ interface APiService {
         @Part("sku_name") sku_name: RequestBody?
     ): Call<WaterMarkResponse>?
 
+    @Multipart
+    @POST("v4/interior-processing")
+    fun addWaterMarkv4(
+        @Part("background") background: RequestBody?,
+        @Part("user_id") user_id: RequestBody?,
+        @Part("sku_id") sku_id: RequestBody?,
+        @Part("image_url") image_url: RequestBody?,
+        @Part("sku_name") sku_name: RequestBody?,
+        @Part logo: MultipartBody.Part?,
+        @Part("logo-position") logo_position: RequestBody?,
+        @Part("enterprise_id") enterprise_id: RequestBody?,
+    ): Call<WaterMarkResponse>?
+
 
     @Multipart
     @POST("images-processing-v2")
@@ -390,6 +403,20 @@ interface APiService {
         @Part("image_url") image_url: RequestBody?,
         @Part("sku_name") sku_name: RequestBody?,
         @Part("category") category: RequestBody?
+    ): Call<WaterMarkResponse>?
+
+    @Multipart
+    @POST("v4/images-processing-v2")
+    fun addWaterMarkFocusedv4(
+        @Part("background") background: RequestBody?,
+        @Part("user_id") user_id: RequestBody?,
+        @Part("sku_id") sku_id: RequestBody?,
+        @Part("image_url") image_url: RequestBody?,
+        @Part("sku_name") sku_name: RequestBody?,
+        @Part("category") category: RequestBody?,
+        @Part logo: MultipartBody.Part?,
+        @Part("logo-position") logo_position: RequestBody?,
+        @Part("enterprise_id") enterprise_id: RequestBody?,
     ): Call<WaterMarkResponse>?
 
     @POST("create_gif/")

@@ -84,6 +84,7 @@ class OngoingProjectAdapter(
         if (ongoingProjectList[position].imageProcessing.equals("image processing failed :( please try again with new shoot!") || ongoingProjectList[position].imageProcessing.equals(
                 "your order is now completed :) email sent!") || ongoingProjectList[position].imageProcessing.equals(
                 "your order is now completed :) sending email...")){
+                    holder.tvDots.clearAnimation()
             holder.tvDots.visibility = View.GONE
             holder.tvImageCount.visibility = View.GONE
             holder.ivRemoveCard.visibility = View.VISIBLE
