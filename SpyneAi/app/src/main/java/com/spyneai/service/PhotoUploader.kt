@@ -50,8 +50,15 @@ class PhotoUploader(var task: Task, var listener: Listener) {
     }
 
     fun uploadImageToBucket() {
+        if (task.catName.equals("Automobiles"))
+        task.imageProcessing = "uploading exterior image started"
+        else if (task.catName.equals("Footwear"))
+            task.imageProcessing = "uploading footwear image started"
+        else if (task.catName.equals("Grocery"))
+            task.imageProcessing = "uploading grocery image started"
         log("Start uploading images to bucket")
         //Get All Data to be uploaded
+        task.totalImageToProcessed = task.imageFileList.size
 
         GlobalScope.launch(Dispatchers.Default) {
 
@@ -72,6 +79,7 @@ class PhotoUploader(var task: Task, var listener: Listener) {
                 ) {
                     //
                     if (response.isSuccessful) {
+                        task.totalImageProcessed++
 
                         task.mainImage = response.body()?.image.toString()
                         log("image upload count: " + task.totalImagesToUploadIndex)
@@ -83,7 +91,9 @@ class PhotoUploader(var task: Task, var listener: Listener) {
                             task.uploadingRetry++
                             uploadImageToBucket()
                         } else {
+                            task.imageProcessing = "Image Processing Failed :( - Please try again!"
                             listener.onFailure(task)
+                            task.imageProcessing = "image processing failed"
                             log("Error in uploading image to bucket")
                             log("Error Body: " + response.errorBody())
                             log("Response: " + response.body())
@@ -96,6 +106,7 @@ class PhotoUploader(var task: Task, var listener: Listener) {
                         task.uploadingRetry++
                         uploadImageToBucket()
                     } else {
+                        task.imageProcessing = "Image Processing Failed :( - Please try again!"
                         listener.onFailure(task)
                         log("Server not responding(uploadImageToBucket)")
                         log("onFailure: " + t.localizedMessage)
@@ -145,6 +156,7 @@ class PhotoUploader(var task: Task, var listener: Listener) {
 
                         } else {
                             task.totalImagesToUploadIndex = 0
+                            task.totalImageProcessed = 0
 
                             if (!task.imageInteriorFileList.isEmpty()) {
                                 task.totalImagesToUpload = task.imageInteriorFileList.size
@@ -162,12 +174,14 @@ class PhotoUploader(var task: Task, var listener: Listener) {
 
                 } else {
                     listener.onFailure(task)
+                    task.imageProcessing = "Image Processing Failed :( - Please try again!"
                     log("Error in uploading image url. Please try again")
                     log("Error: " + response.errorBody())
                 }
             }
 
             override fun onFailure(call: Call<UploadPhotoResponse>, t: Throwable) {
+                task.imageProcessing = "Image Processing Failed :( - Please try again!"
                 listener.onFailure(task)
                 log("Server not responding(uploadImageURLs)")
                 log("onFailure: " + t.localizedMessage)
@@ -177,6 +191,8 @@ class PhotoUploader(var task: Task, var listener: Listener) {
     }
 
     fun uploadImageToBucketInterior() {
+        task.totalImageToProcessed = task.imageInteriorFileList.size
+        task.imageProcessing = "uploading interior image started"
         Log.e("First execution", "UploadImage Bucket")
         log("start uploading interior to bucket")
         //Get All Data to be uploaded
@@ -204,6 +220,8 @@ class PhotoUploader(var task: Task, var listener: Listener) {
                         log("uploadImageToBucketInterior" + response.body()?.image.toString())
                         log("uploadImageToBucketInterior" + response.body()?.image.toString())
 
+                        task.totalImageProcessed++
+
                         task.mainImageInterior = response.body()?.image.toString()
                         uploadImageURLsInterior()
                     } else {
@@ -212,6 +230,7 @@ class PhotoUploader(var task: Task, var listener: Listener) {
                             uploadImageToBucketInterior()
                         } else {
                             listener.onFailure(task)
+                            task.imageProcessing = "Image Processing Failed :( - Please try again!"
                             log("Error in uploading interior images.")
                             log("Error: " + response.errorBody())
                         }
@@ -223,6 +242,7 @@ class PhotoUploader(var task: Task, var listener: Listener) {
                         task.uploadingRetry++
                         uploadImageToBucketInterior()
                     } else {
+                        task.imageProcessing = "Image Processing Failed :( - Please try again!"
                         listener.onFailure(task)
                         Log.e("Respo Image ", "Image error")
                         log("Server not responding(uploadImageToBucketInterior): ")
@@ -272,6 +292,7 @@ class PhotoUploader(var task: Task, var listener: Listener) {
 
                             )
                         } else {
+                            task.totalImageProcessed = 0
                             task.totalImagesToUploadIndex = 0
                             task.totalImagesToUpload = task.imageFocusedFileList.size
 
@@ -287,6 +308,7 @@ class PhotoUploader(var task: Task, var listener: Listener) {
 
                 } else {
                     listener.onFailure(task)
+                    task.imageProcessing = "Image Processing Failed :( - Please try again!"
                     log("Error in uploading image url(INTERIOR)")
                     log("Error: " + response.errorBody())
                 }
@@ -294,6 +316,7 @@ class PhotoUploader(var task: Task, var listener: Listener) {
 
             override fun onFailure(call: Call<UploadPhotoResponse>, t: Throwable) {
                 listener.onFailure(task)
+                task.imageProcessing = "Image Processing Failed :( - Please try again!"
                 log("Server not responding(uploadImageURLsInterior)")
                 log("onFailure: " + t.localizedMessage)
             }
@@ -303,6 +326,8 @@ class PhotoUploader(var task: Task, var listener: Listener) {
 
     //Focused Start
     fun uploadImageToBucketFocused() {
+        task.totalImageToProcessed = task.imageFocusedFileList.size
+        task.imageProcessing = "uploading focused image started"
         log("start uploadImageToBucketFocused")
         GlobalScope.launch(Dispatchers.Default) {
             //Get All Data to be uploaded
@@ -324,6 +349,7 @@ class PhotoUploader(var task: Task, var listener: Listener) {
                 ) {
                     //  Utilities.hideProgressDialog()
                     if (response.isSuccessful) {
+                        task.totalImageProcessed++
                         task.mainImageFocused = response.body()?.image.toString()
                         log("image url: " + task.mainImageFocused)
                         uploadImageURLsFocused()
@@ -333,6 +359,7 @@ class PhotoUploader(var task: Task, var listener: Listener) {
                             uploadImageToBucketFocused()
                         } else {
                             listener.onFailure(task)
+                            task.imageProcessing = "Image Processing Failed :( - Please try again!"
                             log("Error in uploading image to bucket(focused)")
                             log("Error Body: " + response.errorBody())
                             log("Response: " + response.body())
@@ -347,6 +374,7 @@ class PhotoUploader(var task: Task, var listener: Listener) {
                         task.uploadingRetry++
                         uploadImageToBucketFocused()
                     } else {
+                        task.imageProcessing = "Image Processing Failed :( - Please try again!"
                         listener.onFailure(task)
                         log("Server not responding(uploadImageToBucketFocused)")
                         log("error: " + t.localizedMessage)
@@ -393,6 +421,7 @@ class PhotoUploader(var task: Task, var listener: Listener) {
                             ++task.totalImagesToUploadIndex
                             uploadImageToBucketFocused()
                         } else {
+                            task.totalImageProcessed = 0
                             markSkuComplete()
                         }
                     } catch (e: Exception) {
@@ -402,6 +431,7 @@ class PhotoUploader(var task: Task, var listener: Listener) {
 
                 } else {
                     listener.onFailure(task)
+                    task.imageProcessing = "Image Processing Failed :( - Please try again!"
                     log("Error in uploading image url to bucket(focused)")
                     log("Error Body: " + response.errorBody())
                     log("Response: " + response.body())
@@ -410,6 +440,7 @@ class PhotoUploader(var task: Task, var listener: Listener) {
             }
 
             override fun onFailure(call: Call<UploadPhotoResponse>, t: Throwable) {
+                task.imageProcessing = "Image Processing Failed :( - Please try again!"
                 listener.onFailure(task)
                 log("Server not responding(uploadImageURLsFocused)")
                 log("error: " + t.localizedMessage)
@@ -495,7 +526,7 @@ class PhotoUploader(var task: Task, var listener: Listener) {
                 response: Response<UpdateSkuStatusResponse>
             ) {
 
-//                    val notification = updateNotification("Mark SKU started...")
+//                    val notification = updateNotification("Mark SKU started")
 //                    startForeground(notificationID, notification)
 
                 if (response.isSuccessful) {
@@ -505,6 +536,7 @@ class PhotoUploader(var task: Task, var listener: Listener) {
             }
 
             override fun onFailure(call: Call<UpdateSkuStatusResponse>, t: Throwable) {
+                task.imageProcessing = "Image Processing Failed :( - Please try again!"
                 fetchSkuData()
                 log("Server not responding(markSkuComplete)")
                 log("onFailure: " + t.localizedMessage)
@@ -514,9 +546,8 @@ class PhotoUploader(var task: Task, var listener: Listener) {
 
     }
 
-    private fun fetchSkuData(
-
-    ) {
+    private fun fetchSkuData() {
+        task.imageProcessing = "fetch sku started"
 
 
         log("start fetchSkuData")
@@ -538,8 +569,13 @@ class PhotoUploader(var task: Task, var listener: Listener) {
                         if (response.body()?.payload!!.data.photos.size > 0) {
                             task.photoList.clear()
                             task.photoListInteriors.clear()
+                            task.totalFrames = response.body()?.payload!!.data.photos.size
 
                             for (i in 0..response.body()?.payload!!.data.photos.size - 1) {
+
+                                task.totalImageToProcessed = response.body()!!.payload.data.photos.size
+
+
                                 if (response.body()?.payload!!.data.photos[i].photoType.equals("EXTERIOR"))
                                     task.photoList.add(response.body()?.payload!!.data.photos[i])
                                 else if (response.body()?.payload!!.data.photos[i].photoType.equals(
@@ -563,12 +599,14 @@ class PhotoUploader(var task: Task, var listener: Listener) {
                     }
                 } else {
                     listener.onFailure(task)
+                    task.imageProcessing = "Image Processing Failed :( - Please try again!"
                     log("Error in fetch sku data")
                     log("Error: " + response.errorBody())
                 }
             }
 
             override fun onFailure(call: Call<SkuResponse>, t: Throwable) {
+                task.imageProcessing = "Image Processing Failed :( - Please try again!"
                 listener.onFailure(task)
                 log("Server not responding(fetchSkuData)")
                 log("onFailure: " + t.localizedMessage)
@@ -578,9 +616,8 @@ class PhotoUploader(var task: Task, var listener: Listener) {
     }
 
     //Upload bulk data
-    private fun bulkUpload(
-
-    ) {
+    private fun bulkUpload() {
+        task.imageProcessing = "AI for image processing started"
 //        PROGRESS_MAX = photoList.size
 
 
@@ -623,9 +660,24 @@ class PhotoUploader(var task: Task, var listener: Listener) {
             task.exposures
         )
 
+        val currentFrame = RequestBody.create(
+            MultipartBody.FORM,
+            task.currentFrame.toString()
+        )
+
+        val totalFrame = RequestBody.create(
+            MultipartBody.FORM,
+            task.totalFrames.toString()
+        )
+
         val cornerPosition = RequestBody.create(
             MultipartBody.FORM,
             task.cornerPosition
+        )
+
+        val enterpriseId = RequestBody.create(
+            MultipartBody.FORM,
+            "TaD1VC1Ko"
         )
 
         var logo: MultipartBody.Part? = null
@@ -649,7 +701,7 @@ class PhotoUploader(var task: Task, var listener: Listener) {
         val call =
             request.bulkUPloadv3(
                 Background, UserId, SkuId,
-                ImageUrl, SkuName, WindowStatus, contrast, logo, cornerPosition
+                ImageUrl, SkuName, WindowStatus, contrast, logo, cornerPosition/*, enterpriseId, currentFrame, totalFrame*/
             )
 
         call?.enqueue(object : Callback<BulkUploadResponse> {
@@ -658,8 +710,10 @@ class PhotoUploader(var task: Task, var listener: Listener) {
                 response: Response<BulkUploadResponse>
             ) {
                 if (response.isSuccessful && response.body()!!.status == 200) {
+                    task.totalImageProcessed++
                     task.afterImagesCar.add(response.body()!!.output_image)
                     task.countGif++
+                    task.currentFrame++
                     log("bulk upload count: " + task.countGif)
                     log("output image: " + response.body()!!.output_image)
                     if (task.countGif < task.photoList.size) {
@@ -702,6 +756,7 @@ class PhotoUploader(var task: Task, var listener: Listener) {
                             fetchBulkUpload()
                     } else {
                         listener.onFailure(task)
+                        task.imageProcessing = "Image Processing Failed :( - Please try again!"
                         log("Error in bulk upload")
                         log("Error: " + response.errorBody())
                         log("Response: " + response.body())
@@ -724,14 +779,13 @@ class PhotoUploader(var task: Task, var listener: Listener) {
                         fetchBulkUpload()
                 } else {
                     listener.onFailure(task)
+                    task.imageProcessing = "Image Processing Failed :( - Please try again!"
                     log("Server not responding(bulkUpload)")
                     log("onFailure: " + t.localizedMessage)
                 }
             }
         })
-
     }
-
     private fun addDealershiplogo() {
 
         log("start addDealershiplogo")
@@ -776,6 +830,7 @@ class PhotoUploader(var task: Task, var listener: Listener) {
                         fetchBulkUpload()
                 } else {
                     listener.onFailure(task)
+                    task.imageProcessing = "Image Processing Failed :( - Please try again!"
                     log("Error in addDealershiplogo")
                     log("Error: " + response.errorBody().toString())
                     log("Response: " + response.body())
@@ -784,6 +839,7 @@ class PhotoUploader(var task: Task, var listener: Listener) {
 
             override fun onFailure(call: Call<DealershipLogoResponse>, t: Throwable) {
                 listener.onFailure(task)
+                task.imageProcessing = "Image Processing Failed :( - Please try again!"
                 log("Server not responding(addDealershiplogo)")
                 log("onFailure: " + t.localizedMessage)
             }
@@ -796,7 +852,7 @@ class PhotoUploader(var task: Task, var listener: Listener) {
     ) {
 
 
-        Log.e("Fetchbulkupload", "started......")
+        Log.e("Fetchbulkupload", "started")
         log("start featch bulk upload")
 
         val request = RetrofitClients.buildService(APiService::class.java)
@@ -846,6 +902,7 @@ class PhotoUploader(var task: Task, var listener: Listener) {
             }
 
             override fun onFailure(call: Call<List<FetchBulkResponse>>, t: Throwable) {
+                task.imageProcessing = "Image Processing Failed :( - Please try again!"
                 listener.onFailure(task)
                 log("Server not responding(fetchBulkUpload)")
                 log("onFailure: " + t.localizedMessage)
@@ -855,9 +912,8 @@ class PhotoUploader(var task: Task, var listener: Listener) {
 
     }
 
-    private fun bulkUploadFootwear(
-
-    ) {
+    private fun bulkUploadFootwear() {
+        task.imageProcessing = "AI for image processing started"
 
 
         val request = RetrofitClients.buildService(APiService::class.java)
@@ -899,6 +955,21 @@ class PhotoUploader(var task: Task, var listener: Listener) {
             "inner"
         )
 
+        val enterpriseId = RequestBody.create(
+            MultipartBody.FORM,
+            "TaD1VC1Ko"
+        )
+
+        val currentFrame = RequestBody.create(
+            MultipartBody.FORM,
+            task.currentFrame.toString()
+        )
+
+        val totalFrame = RequestBody.create(
+            MultipartBody.FORM,
+            task.totalFrames.toString()
+        )
+
         val call =
             request.bulkUPloadFootwear(
                 UserId,
@@ -906,7 +977,10 @@ class PhotoUploader(var task: Task, var listener: Listener) {
                 imageUrl,
                 SkuName,
                 marketplace_id,
-                bg_color
+                bg_color/*,
+                enterpriseId,
+                currentFrame,
+                totalFrame */
             )
 
         call?.enqueue(object : Callback<FootwearBulkResponse> {
@@ -915,11 +989,13 @@ class PhotoUploader(var task: Task, var listener: Listener) {
                 response: Response<FootwearBulkResponse>
             ) {
                 if (response.isSuccessful && response.body()!!.status == 200) {
+                    task.totalImageProcessed++
 
-//                        val notification = updateNotification("AI for Image Processing started...")
+//                        val notification = updateNotification("AI for Image Processing started")
 //                        startForeground(notificationID, notification)
 
-                    ++task.countGif
+                    task.countGif++
+                    task.currentFrame++
                     if (task.countGif < task.photoList.size) {
                         log("countGif: " + task.countGif.toString())
                         bulkUploadFootwear()
@@ -941,6 +1017,7 @@ class PhotoUploader(var task: Task, var listener: Listener) {
                             fetchBulkUpload()
                     } else {
                         listener.onFailure(task)
+                        task.imageProcessing = "Image Processing Failed :( - Please try again!"
                         log("Error in bulk upload footwear")
                         log("Error: " + response.errorBody())
                     }
@@ -958,6 +1035,7 @@ class PhotoUploader(var task: Task, var listener: Listener) {
                         fetchBulkUpload()
                 } else {
                     listener.onFailure(task)
+                    task.imageProcessing = "Image Processing Failed :( - Please try again!"
                     log("Server not responding(bulkUploadFootwear)")
                     log("onFailure: " + t.localizedMessage)
                 }
@@ -966,10 +1044,7 @@ class PhotoUploader(var task: Task, var listener: Listener) {
 
     }
 
-    private fun addWatermark(
-
-    ) {
-
+    private fun addWatermark() {
 
         val request = RetrofitClients.buildService(APiService::class.java)
         log("start add watermark")
@@ -997,10 +1072,38 @@ class PhotoUploader(var task: Task, var listener: Listener) {
             task.skuName
         )
 
+        val cornerPosition = RequestBody.create(
+            MultipartBody.FORM,
+            task.cornerPosition
+        )
+
+        val enterpriseId = RequestBody.create(
+            MultipartBody.FORM,
+            "TaD1VC1Ko"
+        )
+
+        var logo: MultipartBody.Part? = null
+        if (task.dealershipLogo.equals("")) {
+            val attachmentEmpty = RequestBody.create(MediaType.parse("multipart/form-data"), "")
+            logo = MultipartBody.Part.createFormData("attachment", "", attachmentEmpty)
+        } else {
+            val requestFile =
+                RequestBody.create(
+                    MediaType.parse("multipart/form-data"),
+                    File(task.dealershipLogo)
+                )
+            logo =
+                MultipartBody.Part.createFormData(
+                    "logo",
+                    File(task.dealershipLogo)!!.name,
+                    requestFile
+                )
+        }
+
         val call =
-            request.addWaterMark(
+            request.addWaterMarkv4(
                 background, UserId, SkuId,
-                imageUrl, SkuName
+                imageUrl, SkuName, logo, cornerPosition, enterpriseId
             )
 
         call?.enqueue(object : Callback<WaterMarkResponse> {
@@ -1031,12 +1134,14 @@ class PhotoUploader(var task: Task, var listener: Listener) {
                     )
                 } else {
                     listener.onFailure(task)
+                    task.imageProcessing = "Image Processing Failed :( - Please try again!"
                     log("Error in add watermark")
                     log("Error: " + response.errorBody())
                 }
             }
 
             override fun onFailure(call: Call<WaterMarkResponse>, t: Throwable) {
+                task.imageProcessing = "Image Processing Failed :( - Please try again!"
                 listener.onFailure(task)
                 log("Server not responding(addWatermark)")
                 log("onFailure: " + t.localizedMessage)
@@ -1077,10 +1182,38 @@ class PhotoUploader(var task: Task, var listener: Listener) {
             "Focus Shoot"
         )
 
+        val cornerPosition = RequestBody.create(
+            MultipartBody.FORM,
+            task.cornerPosition
+        )
+
+        val enterpriseId = RequestBody.create(
+            MultipartBody.FORM,
+            "TaD1VC1Ko"
+        )
+
+        var logo: MultipartBody.Part? = null
+        if (task.dealershipLogo.equals("")) {
+            val attachmentEmpty = RequestBody.create(MediaType.parse("multipart/form-data"), "")
+            logo = MultipartBody.Part.createFormData("attachment", "", attachmentEmpty)
+        } else {
+            val requestFile =
+                RequestBody.create(
+                    MediaType.parse("multipart/form-data"),
+                    File(task.dealershipLogo)
+                )
+            logo =
+                MultipartBody.Part.createFormData(
+                    "logo",
+                    File(task.dealershipLogo)!!.name,
+                    requestFile
+                )
+        }
+
         val call =
-            request.addWaterMarkFocused(
+            request.addWaterMarkFocusedv4(
                 background, userId, skuId,
-                imageUrl, skuName, category
+                imageUrl, skuName, category, logo, cornerPosition, enterpriseId
             )
 
         call?.enqueue(object : Callback<WaterMarkResponse> {
@@ -1096,6 +1229,7 @@ class PhotoUploader(var task: Task, var listener: Listener) {
                         fetchBulkUpload()
                 } else {
                     listener.onFailure(task)
+                    task.imageProcessing = "Image Processing Failed :( - Please try again!"
                     log("Error in add addWatermarkFocused")
                     log("Error: " + response.errorBody())
                 }
@@ -1103,6 +1237,7 @@ class PhotoUploader(var task: Task, var listener: Listener) {
             }
 
             override fun onFailure(call: Call<WaterMarkResponse>, t: Throwable) {
+                task.imageProcessing = "Image Processing Failed :( - Please try again!"
                 listener.onFailure(task)
                 log("Server not responding(addWatermarkFocused)")
                 log("onFailure: " + t.localizedMessage)
@@ -1141,6 +1276,7 @@ class PhotoUploader(var task: Task, var listener: Listener) {
             }
 
             override fun onFailure(call: Call<FetchGifResponse>, t: Throwable) {
+                task.imageProcessing = "Image Processing Failed :( - Please try again!"
                 listener.onFailure(task)
                 log("Server not responding(fetchGif)")
                 log("onFailure: " + t.localizedMessage)
@@ -1185,6 +1321,7 @@ class PhotoUploader(var task: Task, var listener: Listener) {
             }
 
             override fun onFailure(call: Call<UploadGifResponse>, t: Throwable) {
+                task.imageProcessing = "Image Processing Failed :( - Please try again!"
                 listener.onFailure(task)
                 log("Server not responding(uploadGif)")
                 log("onFailure: " + t.localizedMessage)
@@ -1194,6 +1331,7 @@ class PhotoUploader(var task: Task, var listener: Listener) {
     }
 
     private fun sendEmail() {
+        task.imageProcessing = "your order is now completed :) sending email..."
 
         log("start send email")
         val request = RetrofitClientSpyneAi.buildService(APiService::class.java)
@@ -1209,16 +1347,19 @@ class PhotoUploader(var task: Task, var listener: Listener) {
                 if (response.isSuccessful) {
                     if (response.body()!!.id.equals("200")) {
                         log("" + response.body()!!.message)
+                        task.imageProcessing = "Order is completed should just move to completed orders."
 
                         listener.onSuccess(task)
                     }
                 } else {
                     listener.onFailure(task)
+                    task.imageProcessing = "Image Processing Failed :( - Please try again!"
                     log("Error in send email: " + response.errorBody())
                 }
             }
 
             override fun onFailure(call: Call<OtpResponse>, t: Throwable) {
+                task.imageProcessing = "Image Processing Failed :( - Please try again!"
                 listener.onFailure(task)
                 Log.e("ok", "no way")
 

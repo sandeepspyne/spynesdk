@@ -21,7 +21,8 @@
     <uses-permission
         android:name="android.permission.WRITE_EXTERNAL_STORAGE"
         tools:ignore="ScopedStorage" />
-    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" /> <!-- Needed only if your app targets Android 5.0 (API level 21) or higher. -->
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+    <!-- Needed only if your app targets Android 5.0 (API level 21) or higher. -->
     <uses-feature android:name="android.hardware.location.gps" />
 
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" /> <!-- <uses-permission -->
@@ -54,6 +55,17 @@
         <activity
             android:name=".videorecording.ThreeSixtyInteriorViewActivity"
             android:launchMode="singleTop" />
+        <activity android:name=".activity.OngoingOrdersActivity"
+            android:launchMode="singleTask"
+            android:screenOrientation="portrait"/>
+        <activity
+            android:name=".activity.YourOrdersActivity"
+            android:launchMode="singleTask"
+            android:screenOrientation="portrait" />
+        <activity android:name=".videorecording.VideoUploadHandlerActivity" />
+        <activity
+            android:name=".videorecording.ThreeSixtyInteriorViewActivity"
+            android:launchMode="singleTop" />
         <activity android:name=".videorecording.ProcessVideoTimerActivity" />
 
         <service
@@ -79,7 +91,6 @@
             </intent-filter>
         </receiver>
 
-        <activity android:name=".activity.YourOrdersActivity" />
         <activity
             android:name=".activity.OrderSummary2Activity"
             android:screenOrientation="portrait" />
@@ -223,7 +234,7 @@
         <activity
             android:name="com.yalantis.ucrop.UCropActivity"
             android:screenOrientation="portrait"
-            android:theme="@style/Theme.AppCompat.Light.NoActionBar"/>
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
         <activity
             android:name=".activity.SplashActivity"
             android:screenOrientation="portrait" >
@@ -233,7 +244,6 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-
         <activity android:name=".videorecording.ThreeSixtyViewActivity" />
         <activity android:name=".videorecording.TrimVideoActivity" />
 

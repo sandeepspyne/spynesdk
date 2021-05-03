@@ -379,7 +379,7 @@ class ShowImagesActivity : AppCompatActivity() {
                                 Category = response.body()!![i].category
                                 (imageListInterior as ArrayList).add(response.body()!![i].output_image_url)
                                 (imageListWaterMark as ArrayList).add(response.body()!![i].output_image_url)
-                                (listHdQuality as ArrayList).add(response.body()!![i].input_image_url)
+                                (listHdQuality as ArrayList).add(response.body()!![i].output_image_url)
                                 Utilities.savePrefrence(
                                     this@ShowImagesActivity,
                                     AppConstants.CATEGORY_NAME,
@@ -395,7 +395,7 @@ class ShowImagesActivity : AppCompatActivity() {
                                 Category = response.body()!![i].category
                                 (imageListFocused as ArrayList).add(response.body()!![i].output_image_url)
                                 (imageListWaterMark as ArrayList).add(response.body()!![i].output_image_url)
-                                (listHdQuality as ArrayList).add(response.body()!![i].input_image_url)
+                                (listHdQuality as ArrayList).add(response.body()!![i].output_image_url)
                                 Utilities.savePrefrence(
                                     this@ShowImagesActivity,
                                     AppConstants.CATEGORY_NAME,

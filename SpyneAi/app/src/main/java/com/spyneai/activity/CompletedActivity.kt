@@ -64,7 +64,7 @@ class CompletedActivity : AppCompatActivity() {
                                     response: Response<DashboardResponse>) {
                 Utilities.hideProgressDialog()
                 if (response.isSuccessful){
-                    if (response.body()?.payload?.data?.size!! > 0)
+                    if (response.body()?.payload?.data?.size != null)
                     {
                         for (i in 0..response.body()?.payload?.data!!.size-1) {
                             if (response.body()?.payload?.data!![i].status.equals("completed")) {

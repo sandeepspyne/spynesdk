@@ -10,6 +10,8 @@ import android.os.PowerManager
 import android.widget.Toast
 import com.spyneai.R
 import com.spyneai.activity.CompletedProjectsActivity
+import com.spyneai.activity.DashboardActivity
+import com.spyneai.activity.OngoingOrdersActivity
 import com.spyneai.extras.events.ProcessingImagesEvent
 import com.spyneai.model.processImageService.Task
 import com.spyneai.needs.AppConstants
@@ -25,7 +27,13 @@ class ProcessImagesService() : Service(), Listener {
     lateinit var channel: NotificationChannel
     lateinit var builder: Notification.Builder
 
-    var tasksInProgress = ArrayList<Task>()
+
+
+
+    companion object {
+        var tasksInProgress = ArrayList<Task>()
+    }
+
 
     override fun onBind(intent: Intent): IBinder? {
         return null
@@ -57,6 +65,10 @@ class ProcessImagesService() : Service(), Listener {
 
         val task = Task()
 
+        task.totalExteriorImages = 0
+        task.totalInteriorImages = 0
+        task.totalFocusedImages = 0
+
         task.skuName = intent.getStringExtra(AppConstants.SKU_NAME) ?: ""
         task.skuId = intent.getStringExtra(AppConstants.SKU_ID) ?: ""
         task.shootId = intent.getStringExtra(AppConstants.SHOOT_ID) ?: ""
@@ -84,12 +96,28 @@ class ProcessImagesService() : Service(), Listener {
         )
         task.imageFocusedFileList.addAll(intent.getParcelableArrayListExtra(AppConstants.ALL_FOCUSED_IMAGE_LIST)!!)
         task.imageFocusedFileListFrames.addAll(intent.getIntegerArrayListExtra(AppConstants.ALL_FOCUSED_FRAME_LIST)!!)
-        task.dealershipLogo = intent.getStringExtra(AppConstants.DEALERSHIP_LOGO)?: ""
-        task.cornerPosition = intent.getStringExtra(AppConstants.CORNER_POSITION)?: ""
+        task.dealershipLogo = intent.getStringExtra(AppConstants.DEALERSHIP_LOGO) ?: ""
+        task.cornerPosition = intent.getStringExtra(AppConstants.CORNER_POSITION) ?: ""
+
+        if (task.imageFileList.size > 0)
+            task.totalExteriorImages = task.imageFileList.size
+        else
+            task.totalExteriorImages = 0
+        if (task.imageInteriorFileList.size > 0)
+        task.totalInteriorImages = task.imageInteriorFileList.size
+        else
+            task.totalInteriorImages = 0
+        if (task.imageFocusedFileList.size > 0)
+        task.totalFocusedImages = task.imageFocusedFileList.size
+        else
+            task.totalFocusedImages = 0
+
+
 
         tasksInProgress.add(task)
         checkAndFinishService()
         PhotoUploader(task, this).start()
+
 
     }
 
@@ -102,7 +130,6 @@ class ProcessImagesService() : Service(), Listener {
 
             if (it.isCompleted) {
                 createCompletedNotification()
-
             } else if (it.isFailure) {
                 createFailureNotification()
             } else
@@ -194,10 +221,22 @@ class ProcessImagesService() : Service(), Listener {
             notificationManager.createNotificationChannel(channel)
         }
 
-        val pendingIntent: PendingIntent =
+        var pendingIntent: PendingIntent? = null
+
+        if (text.equals("Image processing in progress...")){
+            pendingIntent =
+                Intent(this, OngoingOrdersActivity::class.java).let { notificationIntent ->
+                    PendingIntent.getActivity(this, 0, notificationIntent, 0)
+                }
+        }else if (text.equals("Image processing completed")){
             Intent(this, CompletedProjectsActivity::class.java).let { notificationIntent ->
                 PendingIntent.getActivity(this, 0, notificationIntent, 0)
             }
+        }else{
+            Intent(this, DashboardActivity::class.java).let { notificationIntent ->
+                PendingIntent.getActivity(this, 0, notificationIntent, 0)
+            }
+        }
 
 
         builder =

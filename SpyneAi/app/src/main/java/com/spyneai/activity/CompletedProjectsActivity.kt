@@ -61,8 +61,8 @@ class CompletedProjectsActivity : AppCompatActivity() {
         })
 
         val layoutManager: RecyclerView.LayoutManager = LinearLayoutManager(this@CompletedProjectsActivity, LinearLayoutManager.VERTICAL, false)
-        rv_completedProject.setLayoutManager(layoutManager)
-        rv_completedProject.setAdapter(completedProjectAdapter)
+        rv_completedActivity.setLayoutManager(layoutManager)
+        rv_completedActivity.setAdapter(completedProjectAdapter)
 
 
         Utilities.showProgressDialog(this)

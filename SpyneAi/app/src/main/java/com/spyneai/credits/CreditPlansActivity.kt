@@ -174,7 +174,7 @@ class CreditPlansActivity : AppCompatActivity(),CreditsPlandAdapter.Listener,
     private fun getCreditplans() {
         binding.sh.startShimmer()
 
-        var request = RetrofitClients.buildService(CreditApiService::class.java)
+        var request = RetrofitCreditClient("https://www.clippr.ai/api/v2/").buildService(CreditApiService::class.java)
 
         var call = request.getThreeSixtyInteriorByShootId()
 

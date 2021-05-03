@@ -24,9 +24,7 @@ import com.spyneai.R
 import com.bumptech.glide.request.target.Target
 import com.spyneai.activity.DashboardActivity
 import com.spyneai.databinding.ActivityThreeSixtyInteriorViewBinding
-
-
-
+import com.spyneai.databinding.DialogCopyEmbeddedCodeBinding
 import com.spyneai.videorecording.fragments.DialogEmbedCode
 import com.spyneai.videorecording.model.TSVParams
 import com.spyneai.videorecording.service.FramesHelper
@@ -52,12 +50,12 @@ class ThreeSixtyInteriorViewActivity : AppCompatActivity(),View.OnTouchListener,
 
         binding = DataBindingUtil.setContentView(this,R.layout.activity_three_sixty_interior_view)
 
-       if (FramesHelper.framesMap != null && intent.action != null){
-           shootId = FramesHelper.framesMap.get(intent.action)?.sku_id ?: ""
+        if (FramesHelper.framesMap != null && intent.action != null){
+            shootId = FramesHelper.framesMap.get(intent.action)?.sku_id ?: ""
 
             frontFramesList = FramesHelper.framesMap.get(intent.action)?.video_data?.get(0)!!.processed_image_list
             backFramesList = FramesHelper.framesMap.get(intent.action)?.video_data?.get(1)!!.processed_image_list
-       }
+        }
 
         if (frontFramesList != null && frontFramesList.size > 0){
             //load front image
@@ -347,7 +345,6 @@ class ThreeSixtyInteriorViewActivity : AppCompatActivity(),View.OnTouchListener,
     }
 
 
-
     override fun onTouch(v: View?, event: MotionEvent?): Boolean {
 
         var action = MotionEventCompat.getActionMasked(event)
@@ -481,14 +478,13 @@ class ThreeSixtyInteriorViewActivity : AppCompatActivity(),View.OnTouchListener,
     }
 
     private fun embed(code: String) {
-            var args = Bundle()
+        var args = Bundle()
         args.putString("code",code)
 
         var dialogCopyEmbeddedCode = DialogEmbedCode()
         dialogCopyEmbeddedCode.arguments = args
         dialogCopyEmbeddedCode.show(supportFragmentManager,"DialogEmbedCode")
     }
-
 
     private fun share(code: String) {
         val sendIntent: Intent = Intent().apply {
@@ -519,7 +515,4 @@ class ThreeSixtyInteriorViewActivity : AppCompatActivity(),View.OnTouchListener,
         binding.tvGoToHome.visibility = View.VISIBLE
 
         binding.tvGoToHome.setOnClickListener(this)
-    }
-
-
-}
+    }}

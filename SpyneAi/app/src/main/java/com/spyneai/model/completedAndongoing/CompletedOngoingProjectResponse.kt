@@ -1,11 +1,8 @@
-package com.spyneai.model.projects
+package com.spyneai.model.completedAndongoing
 
 import com.google.gson.annotations.SerializedName
-import com.spyneai.model.dashboard.Payload
-import com.spyneai.model.login.Header
-import com.spyneai.model.login.MsgInfo
 
-data class CompletedProjectResponse(
+data class CompletedOngoingProjectResponse (
     @SerializedName("total_frames")
     val total_frames: String,
     @SerializedName("current_frame")
@@ -18,5 +15,4 @@ data class CompletedProjectResponse(
     val sku_name: String,
     @SerializedName("created_at")
     val created_at: String,
-
 )

@@ -33,7 +33,7 @@
                 android:layout_width="0dp"
                 android:layout_weight="1"
                 android:layout_height="match_parent"
-                android:text="@string/completed_projects"
+                android:text="@string/ongoing_projects"
                 android:fontFamily="@font/bold"
                 android:gravity="center"
                 android:textStyle="bold"
@@ -52,8 +52,19 @@
     </androidx.appcompat.widget.Toolbar>
 
     <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/rv_completedActivity"
+        android:visibility="gone"
+        android:id="@+id/rv_ongoingActivity"
         android:layout_width="match_parent"
         android:layout_height="match_parent"/>
+
+    <TextView
+        android:id="@+id/tvOngoingOrders"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:text="@string/no_ongoing"
+        android:textStyle="bold"
+        android:textSize="@dimen/sp_20"
+        android:gravity="center"
+        android:fontFamily="@font/bold"/>
 
 </LinearLayout>
