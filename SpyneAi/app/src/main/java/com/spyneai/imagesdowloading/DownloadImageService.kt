@@ -11,6 +11,7 @@ import android.os.IBinder
 import android.os.PowerManager
 import android.util.Log
 import android.webkit.MimeTypeMap
+import com.spyneai.BaseApplication
 import com.spyneai.R
 import com.spyneai.activity.DashboardActivity
 import com.spyneai.extras.events.ProcessingImagesEvent
@@ -213,7 +214,7 @@ class DownloadImageService : Service(),ImageDownloaManager.Listener {
            CreditManager().reduceCredit(
                task.creditsToReduce,
                task.skuId,
-               this)
+               BaseApplication.getContext())
        }
 
         stopService()
@@ -221,16 +222,15 @@ class DownloadImageService : Service(),ImageDownloaManager.Listener {
     }
 
     override fun onScan(filePath: String) {
-        Log.d(TAG, "onScan: " + filePath)
 
         var type: String? = null
         val extension = MimeTypeMap.getFileExtensionFromUrl(filePath)
         if (extension != null) {
             type = MimeTypeMap.getSingleton().getMimeTypeFromExtension(extension)
         }
-        Log.d(TAG, "onScan: " + type)
+
         MediaScannerConnection.scanFile(
-            this, arrayOf(filePath), arrayOf(type)
+            BaseApplication.getContext(), arrayOf(filePath), arrayOf(type)
         ) { path, uri -> Log.i("TAG", "Finished scanning $path") }
     }
 

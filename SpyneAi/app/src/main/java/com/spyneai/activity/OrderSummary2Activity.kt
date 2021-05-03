@@ -123,21 +123,12 @@ class OrderSummary2Activity : AppCompatActivity() {
                     this,
                     AppConstants.PRICE
                 )!!.toInt()){
-                 startDownloadActivity()
+                    startDownloadActivity()
             }else{
                     var intent = Intent(this,LowCreditsActivity::class.java)
                     intent.putExtra("credit_available",availableCredits)
                     startActivity(intent)
 
-
-//                Toast.makeText(
-//                    this@OrderSummary2Activity,
-//                    "You are out of credits",
-//                    Toast.LENGTH_SHORT
-//                ).show()
-//                tvTopUp.startAnimation(AnimationUtils.loadAnimation(this, R.anim.move));
-//                val vibe = getSystemService(Context.VIBRATOR_SERVICE) as Vibrator
-//                    vibe.vibrate(100)
                 }
             }
         }

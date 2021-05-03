@@ -39,7 +39,9 @@ class DownloadCompletedFragment : Fragment() {
         }
 
         binding.ivThumbsUp.setOnClickListener {
-            startFeedbackActivity(true)
+           binding.tvOutput.text = " Thanks for your feedback"
+            binding.ivThumbsUp.visibility = View.GONE
+            binding.ivThumbsDown.visibility = View.GONE
         }
 
         binding.ivThumbsDown.setOnClickListener {

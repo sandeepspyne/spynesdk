@@ -30,6 +30,7 @@ class WalletActivity : AppCompatActivity() {
 
     private lateinit var binding : ActivityWalletBinding
     private var availableCredits = 0
+    private var retry = 0
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -37,14 +38,10 @@ class WalletActivity : AppCompatActivity() {
         binding = DataBindingUtil.setContentView(this,R.layout.activity_wallet)
 
 
-        binding.tvAddCredit.setOnClickListener {
-           // showWhatsappCreditDialog()
-
+        binding.flAddCredits.setOnClickListener {
             var intent = Intent(this,CreditPlansActivity::class.java)
             intent.putExtra("credit_available",availableCredits)
             startActivity(intent)
-
-
         }
 
         binding.ivBack.setOnClickListener { onBackPressed() }
@@ -52,39 +49,6 @@ class WalletActivity : AppCompatActivity() {
         fetchUserCreditDetails()
     }
 
-    private fun showWhatsappCreditDialog(){
-
-        val dialog = Dialog(this)
-        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE)
-        dialog.setCancelable(true)
-        dialog.setContentView(R.layout.whatsapp_credit_dialog)
-        dialog.getWindow()?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT));
-        val ivClose: ImageView = dialog.findViewById(R.id.ivClose)
-        val llRequestWappCredit: LinearLayout = dialog.findViewById(R.id.llRequestWappCredit)
-
-
-        ivClose.setOnClickListener(View.OnClickListener {
-            dialog.dismiss()
-        })
-        llRequestWappCredit.setOnClickListener {
-            try {
-                val i = Intent(Intent.ACTION_VIEW)
-                val url = "https://api.whatsapp.com/send?phone=" + "+919625429526" + "&text=" +
-                        URLEncoder.encode(
-                            "Spyne App is awesome!, I already used all my free credits. \n" +
-                                    "Can you please help me get more credits.",
-                            "UTF-8"
-                        )
-                i.setPackage("com.whatsapp")
-                i.setData(Uri.parse(url))
-                startActivity(i)
-            } catch (e: Exception) {
-                e.printStackTrace()
-            }
-        }
-        dialog.show()
-
-    }
 
     private fun fetchUserCreditDetails(){
 
@@ -137,22 +101,31 @@ class WalletActivity : AppCompatActivity() {
 
                 } else {
 
+                    retry++
+                    if (retry < 4){
+                        fetchUserCreditDetails()
+                    }else{
+                        Toast.makeText(
+                            this@WalletActivity,
+                            "Server not responding!!!",
+                            Toast.LENGTH_SHORT
+                        ).show()
+                    }
+                }
+            }
+
+            override fun onFailure(call: Call<CreditDetailsResponse>, t: Throwable) {
+                binding.shimmer.startShimmer()
+                retry++
+                if (retry < 4){
+                    fetchUserCreditDetails()
+                }else{
                     Toast.makeText(
                         this@WalletActivity,
                         "Server not responding!!!",
                         Toast.LENGTH_SHORT
                     ).show()
                 }
-
-            }
-
-            override fun onFailure(call: Call<CreditDetailsResponse>, t: Throwable) {
-                binding.shimmer.startShimmer()
-                Toast.makeText(
-                    this@WalletActivity,
-                    "Server not responding!!!",
-                    Toast.LENGTH_SHORT
-                ).show()
             }
         })
 
