@@ -33,6 +33,12 @@ class LowCreditsActivity : AppCompatActivity() {
 
         binding.ivBack.setOnClickListener { onBackPressed() }
 
+        binding.tvBuyCreditsNow.setOnClickListener {
+            var intent = Intent(this,CreditPlansActivity::class.java)
+            intent.putExtra("credit_available",intent.getIntExtra("credit_available",0))
+            startActivity(intent)
+        }
+
         //load gif
         Glide.with(this).asGif().load(R.raw.opps_gif)
             .into(binding.ivOppsGif)

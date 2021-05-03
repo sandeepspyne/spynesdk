@@ -16,28 +16,56 @@ interface CreditApiService {
     @POST("order/credit/")
     fun createOrder(@Body body: CreateOrderBody) : Call<CreateOrderResponse>?
 
+    @FormUrlEncoded
     @PUT("reduce-credit")
     fun reduceCredit(
-        @Part("user_id") userId : RequestBody,
-        @Part("credit_reduce") creditReduce: RequestBody?,
-        @Part("enterprise_id") enterpriseId: RequestBody?,
-        @Part("sku_id") skuId: RequestBody?
+        @Field("user_id") userId : String,
+        @Field("credit_reduce") creditReduce:String,
+        @Field("enterprise_id") enterpriseId: String,
+        @Field("sku_id") skuId: String
     ): Call<ReduceCreditResponse>?
+
 
     @GET("credit/insert-user")
     fun createCreditPurchaseLog(
         @Query("userId") userId: String,
         @Query("creditId") creditId: String,
         @Query("creditAlloted") creditAlloted: Int,
-        @Query("creditUsed") creditUsed: Int = 0,
-        @Query("creditAvailable") creditAvailable: Int
+        @Query("creditUsed") creditUsed: String,
+        @Query("creditAvailable") creditAvailable: String
     ): Call<CreditPurchaseLogRes>?
 
-    @GET("credit/insert-user")
+    @GET("credit/update-total-credit")
     fun updatePurchasedCredit(
         @Query("userId") userId: String,
         @Query("creditAlloted") creditAlloted : Int,
-        @Query("creditUsed") creditUsed: Int = 0,
+        @Query("creditUsed") creditUsed: String,
         @Query("creditAvailable") creditAvailable: Int
     ): Call<UpdatePurchaseCreditRes>?
+
+    @GET("download-history")
+    fun getHDDownloadStatus(
+        @Query("user_id") userId: String,
+        @Query("sku_id") skuId : String,
+        @Query("enterprise_id") enterpriseId: String = "TaD1VC1Ko"
+    ) : Call<DownloadHDRes>?
+
+    @FormUrlEncoded
+    @POST("update-download-status")
+    fun updateDownloadStatus(@Field("user_id") userId : String,
+                             @Field("sku_id") skuId: String,
+                             @Field("enterprise_id") enterpriseId: String,
+                             @Field("download_hd") downloadHd: Boolean
+    ): Call<DownloadHDRes>?
+
+    @GET("insert-review")
+    fun insertReview(@Query("userId") userId: String,
+                     @Query("description") description: String,
+                     @Query("editedUrl") editedUrl: String,
+                     @Query("likes") likes: Boolean,
+                     @Query("orgUrl") orgUrl: String,
+                     @Query("productCategory") productCategory: String
+    ): Call<InsertReviewResponse>?
+
+
 }

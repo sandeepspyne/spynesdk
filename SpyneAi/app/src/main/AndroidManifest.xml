@@ -45,11 +45,7 @@
         <activity android:name=".credits.CreditPaymentFailedActivity" />
         <activity android:name=".credits.CreditPaymentSuccessActivity"></activity>
         <activity android:name=".credits.CreditPlansActivity">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
 
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
         </activity>
         <activity android:name=".credits.LowCreditsActivity" />
         <activity android:name=".credits.WalletActivity" />
@@ -227,8 +223,11 @@
         <activity
             android:name=".activity.SplashActivity"
             android:screenOrientation="portrait" >
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
 
-
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
         </activity>
 
         <activity android:name=".videorecording.ThreeSixtyViewActivity" />

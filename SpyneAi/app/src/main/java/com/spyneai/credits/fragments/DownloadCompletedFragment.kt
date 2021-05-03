@@ -38,13 +38,19 @@ class DownloadCompletedFragment : Fragment() {
             startActivity(dashboardIntent)
         }
 
-        binding.ivThumbsUp.setOnClickListener {  }
-
-        binding.ivThumbsDown.setOnClickListener {
-            var feedbackIntent = Intent(requireContext(), FeedbackActivity::class.java)
-
-            startActivity(feedbackIntent)
+        binding.ivThumbsUp.setOnClickListener {
+            startFeedbackActivity(true)
         }
 
+        binding.ivThumbsDown.setOnClickListener {
+           startFeedbackActivity(false)
+        }
+    }
+
+    fun startFeedbackActivity(like : Boolean) {
+        var feedbackIntent = Intent(requireContext(), FeedbackActivity::class.java)
+        feedbackIntent.putExtra("like",like)
+
+        startActivity(feedbackIntent)
     }
 }

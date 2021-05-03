@@ -29,6 +29,7 @@ import java.net.URLEncoder
 class WalletActivity : AppCompatActivity() {
 
     private lateinit var binding : ActivityWalletBinding
+    private var availableCredits = 0
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -38,10 +39,16 @@ class WalletActivity : AppCompatActivity() {
 
         binding.tvAddCredit.setOnClickListener {
            // showWhatsappCreditDialog()
-            startActivity(Intent(this,CreditPlansActivity::class.java))
+
+            var intent = Intent(this,CreditPlansActivity::class.java)
+            intent.putExtra("credit_available",availableCredits)
+            startActivity(intent)
+
+
         }
 
         binding.ivBack.setOnClickListener { onBackPressed() }
+
         fetchUserCreditDetails()
     }
 
@@ -99,6 +106,8 @@ class WalletActivity : AppCompatActivity() {
                 if (response.isSuccessful) {
                     binding.shimmer.visibility = View.GONE
                     binding.tvCredits.visibility = View.VISIBLE
+
+                    availableCredits = response.body()?.data?.creditAvailable!!
 
                     if (response.body()?.data?.creditAvailable.toString() == "0"){
                         binding.tvCredits.setTextColor(ContextCompat.getColor(this@WalletActivity,R.color.zero_credits))

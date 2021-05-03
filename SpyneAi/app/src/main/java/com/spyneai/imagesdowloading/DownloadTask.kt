@@ -9,6 +9,7 @@ class DownloadTask {
     var isCompleted = false
     var onFailure = false
     var isFailure = false
+    var isDownloadedBefore = false
     var retry = 0
     var downloadCount = 0
     var remainingCredits = 0

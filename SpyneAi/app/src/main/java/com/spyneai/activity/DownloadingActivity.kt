@@ -54,7 +54,6 @@ class DownloadingActivity : AppCompatActivity() {
     var price: Int = 0
 
 
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_downloading)
@@ -74,18 +73,6 @@ class DownloadingActivity : AppCompatActivity() {
 
         listHdQuality.addAll(intent.getStringArrayListExtra(AppConstants.LIST_HD_QUALITY)!!)
 
-//        if (Utilities.getPreference(this, AppConstants.NO_OF_IMAGES).equals("8")) {
-//            Utilities.savePrefrence(this, AppConstants.PRICE, "5")
-//        } else if (Utilities.getPreference(this, AppConstants.NO_OF_IMAGES).equals("4")) {
-//            Utilities.savePrefrence(this, AppConstants.PRICE, "3")
-//        } else if (Utilities.getPreference(this, AppConstants.NO_OF_IMAGES).equals("5")) {
-//            Utilities.savePrefrence(this, AppConstants.PRICE, "5")
-//        } else if (Utilities.getPreference(this, AppConstants.NO_OF_IMAGES).equals("6")) {
-//            Utilities.savePrefrence(this, AppConstants.PRICE, "5")
-//        } else if (Utilities.getPreference(this, AppConstants.NO_OF_IMAGES).equals("7")) {
-//            Utilities.savePrefrence(this, AppConstants.PRICE, "5")
-//        }
-
         setPermissions()
 
         llButton.setOnClickListener {
@@ -103,8 +90,6 @@ class DownloadingActivity : AppCompatActivity() {
         ivBack.setOnClickListener {
             onBackPressed()
         }
-
-
     }
 
     private fun setPermissions() {
@@ -169,6 +154,7 @@ class DownloadingActivity : AppCompatActivity() {
                 imageDownloadingServiceIntent.putExtra(AppConstants.SKU_ID,intent.getStringExtra(AppConstants.SKU_ID))
                 imageDownloadingServiceIntent.putExtra(AppConstants.CREDIT_REMAINING,remaningCredit)
                 imageDownloadingServiceIntent.putExtra(AppConstants.PRICE,price)
+                imageDownloadingServiceIntent.putExtra(AppConstants.IS_DOWNLOADED_BEFORE,intent.getBooleanExtra(AppConstants.IS_DOWNLOADED_BEFORE,false))
                 ContextCompat.startForegroundService(this, imageDownloadingServiceIntent)
 
             } else {
@@ -176,7 +162,6 @@ class DownloadingActivity : AppCompatActivity() {
             }
         }
     }
-
 
     fun downloadWatermark() {
         if (listWatermark.size > 0 && listWatermark != null) {
@@ -194,19 +179,13 @@ class DownloadingActivity : AppCompatActivity() {
         downloadCount++
         val FILENAME_FORMAT = "yyyy-MM-dd-HH-mm-ss-SSS"
 
-//        seekbarDownload.visibility = View.VISIBLE
-
-//        showNotifications()
-
         val imageName: String = "Spyne" + SimpleDateFormat(
             FILENAME_FORMAT, Locale.US
         ).format(System.currentTimeMillis()) + ".png"
 
         var file = File(Environment.getExternalStorageDirectory().toString() + "/Spyne")
 
-        scanFile(file.getAbsolutePath());
 
-//        SingleMediaScanner(this, file)
 
 
         val downloadId = PRDownloader.download(
@@ -226,7 +205,7 @@ class DownloadingActivity : AppCompatActivity() {
             .start(object : OnDownloadListener {
                 override fun onDownloadComplete() {
 
-                    var s = "";
+                    scanFile(file.absolutePath+"/"+imageName)
 
                     if (downloadCount == listWatermark.size)
                         Toast.makeText(
@@ -252,15 +231,6 @@ class DownloadingActivity : AppCompatActivity() {
             })
     }
 
-    // The Folder location where all the files will be stored
-    private val outputDirectory: String by lazy {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-            "${Environment.DIRECTORY_DCIM}/Spyne-HD/"
-        } else {
-            "${getExternalFilesDir(Environment.DIRECTORY_DCIM)?.path}/Spyne-HD/"
-        }
-    }
-
 
     override fun onBackPressed() {
         if (Utilities.getPreference(this, AppConstants.DOWNLOAD_TYPE).equals("watermark")) {
@@ -271,14 +241,12 @@ class DownloadingActivity : AppCompatActivity() {
     }
 
     private fun scanFile(path: String) {
-        Log.d(TAG, "scanFile: s"+path)
         MediaScannerConnection.scanFile(
             this@DownloadingActivity, arrayOf(path), null
         ) { path, uri -> Log.i("TAG", "Finished scanning $path") }
     }
 
     private fun refreshGallery(mCurrentPhotoPath: String, context: Context) {
-        Log.d(TAG, "scanFile: r"+mCurrentPhotoPath)
         val mediaScanIntent = Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE)
         val f = File(mCurrentPhotoPath)
         val contentUri: Uri = Uri.fromFile(f)
@@ -312,12 +280,6 @@ class DownloadingActivity : AppCompatActivity() {
                 .add(R.id.fl_container,DownloadCompletedFragment())
                 .commit()
 
-
-
-//                        tvDownloading.visibility = View.GONE
-//                        tvDownloadCompleted.visibility = View.VISIBLE
-//                        llButton.visibility = View.VISIBLE
-//                        tvButtonText.setText("Go to Home")
                         downloadCount = 0
 
         }

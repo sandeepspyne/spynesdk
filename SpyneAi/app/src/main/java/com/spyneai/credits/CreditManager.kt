@@ -3,12 +3,15 @@ package com.spyneai.credits
 import android.content.Context
 import android.util.Log
 import android.widget.Toast
+import com.spyneai.credits.model.DownloadHDRes
 import com.spyneai.credits.model.ReduceCreditResponse
+import com.spyneai.credits.model.ReduceCreditResponseX
 import com.spyneai.interfaces.APiService
 import com.spyneai.interfaces.RetrofitClients
 import com.spyneai.model.credit.UpdateCreditResponse
 import com.spyneai.needs.AppConstants
 import com.spyneai.needs.Utilities
+import com.spyneai.service.log
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
 import retrofit2.Call
@@ -67,36 +70,24 @@ class CreditManager {
         })
     }
 
-    fun reduceCredit(creditReduced : String,skuId : String,context: Context) {
-        //added base url as depedancy
-        var call = RetrofitCreditClient("https://www.clippr.ai/api/v4/").buildService(CreditApiService::class.java)
-
-        val userId = RequestBody.create(
-            MultipartBody.FORM,Utilities.getPreference(context,AppConstants.tokenId)!!.toString()
-        )
-
-        val creditReduced = RequestBody.create(
-            MultipartBody.FORM,creditReduced
-        )
-
-        val enterpriseId = RequestBody.create(
-            MultipartBody.FORM,"TaD1VC1Ko"
-        )
-
-        val mSkuId = RequestBody.create(
-            MultipartBody.FORM,skuId
-        )
+    fun reduceCredit(creditReduced : Int,skuId : String,context: Context) {
 
 
-        call.reduceCredit(userId,creditReduced,enterpriseId,mSkuId)?.enqueue(object : Callback<ReduceCreditResponse>{
+        var request = RetrofitCreditClient("https://www.clippr.ai/api/v4/").buildService(CreditApiService::class.java)
+
+        var call = request.reduceCredit(Utilities.getPreference(context,AppConstants.tokenId)!!.toString(),creditReduced.toString(),"TaD1VC1Ko",skuId)
+
+        call?.enqueue(object : Callback<ReduceCreditResponse> {
             override fun onResponse(
                 call: Call<ReduceCreditResponse>,
                 response: Response<ReduceCreditResponse>
             ) {
+                var s = ""
                 if (response.isSuccessful) {
-                    updateCreditOnLocal(context, skuId)
+                    Log.d(TAG, "onResponse: reduce success")
+                    updateCreditOnServer(context, skuId)
                 } else {
-                    Log.d(TAG, "onResponse: failed")
+                    Log.d(TAG, "onResponse:  reduce failed")
                     Toast.makeText(
                         context,
                         "Server not responding!!!",
@@ -106,13 +97,35 @@ class CreditManager {
             }
 
             override fun onFailure(call: Call<ReduceCreditResponse>, t: Throwable) {
-                Toast.makeText(
-                    context,
-                    "Server not responding!!!",
-                    Toast.LENGTH_SHORT
-                ).show()
+                Log.d(TAG, "onResponse: reduce failure")
             }
         })
+    }
+
+    private fun updateCreditOnServer(context: Context, skuId: String) {
+
+
+        var call = RetrofitCreditClient("https://www.clippr.ai/api/v4/").buildService(CreditApiService::class.java)
+            .updateDownloadStatus(Utilities.getPreference(context,AppConstants.tokenId)!!.toString(),skuId,"TaD1VC1Ko",true)
+
+            call?.enqueue(object : Callback<DownloadHDRes> {
+                override fun onResponse(
+                    call: Call<DownloadHDRes>,
+                    response: Response<DownloadHDRes>
+                ) {
+                    if (response.isSuccessful) {
+                        Log.d(TAG, "onResponse: sucess")
+                    }else{
+                        Log.d(TAG, "onResponse: failed")
+                    }
+                }
+
+                override fun onFailure(call: Call<DownloadHDRes>, t: Throwable) {
+                    Log.d(TAG, "onResponse: failure")
+                }
+
+            })
+
     }
 
     private fun updateCreditOnLocal(context: Context, skuId: String) {

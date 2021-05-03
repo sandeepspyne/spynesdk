@@ -62,6 +62,7 @@ class DownloadImageService : Service(),ImageDownloaManager.Listener {
         task.remainingCredits = intent.getIntExtra(AppConstants.CREDIT_REMAINING, 10)
         task.creditsToReduce = intent.getIntExtra(AppConstants.PRICE, 0)
         task.price = intent.getIntExtra(AppConstants.PRICE, 10)
+        task.isDownloadedBefore = intent.getBooleanExtra(AppConstants.IS_DOWNLOADED_BEFORE,false)
 
         task.listHdQuality.addAll(intent.getParcelableArrayListExtra(AppConstants.LIST_HD_QUALITY)!!)
 
@@ -207,22 +208,13 @@ class DownloadImageService : Service(),ImageDownloaManager.Listener {
         hdImagesDownloadedEvent.setSkuId(task.skuId)
         EventBus.getDefault().post(hdImagesDownloadedEvent)
 
-         if(Utilities.getPreference(this, task.skuId + AppConstants.CREDIT_DECUCTED) == ""){
-
-             CreditManager().reduceCredit(
-                 task.creditsToReduce.toString(),
-                 task.skuId,
-                 this
-
-//            CreditManager().updateCredit(
-//                task.remainingCredits.toString(),
-//                task.price.toString(),
-//                task.skuId,
-//                this
-            )
-        }else{
-            Log.d(TAG, "onSuccess: deducted")
-        }
+      //check if downloaded before or not
+       if (!task.isDownloadedBefore){
+           CreditManager().reduceCredit(
+               task.creditsToReduce,
+               task.skuId,
+               this)
+       }
 
         stopService()
         checkAndFinishService()

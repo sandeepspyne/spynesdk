@@ -16,7 +16,7 @@ class RetrofitCreditClient(var baseUrl: String) {
         .connectTimeout(10, TimeUnit.MINUTES)
         .addInterceptor { chain ->
             val newRequest = chain.request().newBuilder()
-                .addHeader("content-type", "application/json")
+               // .addHeader("content-type", "application/json")
                 .build()
 
             chain.proceed(newRequest)

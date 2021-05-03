@@ -28,6 +28,7 @@ import com.spyneai.adapter.ShowReplacedImagesAdapter
 import com.spyneai.adapter.ShowReplacedImagesFocusedAdapter
 import com.spyneai.adapter.ShowReplacedImagesInteriorAdapter
 import com.spyneai.aipack.FetchBulkResponse
+import com.spyneai.credits.model.ReviewHolder
 import com.spyneai.interfaces.APiService
 import com.spyneai.interfaces.RetrofitClientSpyneAi
 import com.spyneai.interfaces.RetrofitClients
@@ -352,6 +353,15 @@ class ShowImagesActivity : AppCompatActivity() {
                                 Category = response.body()!![i].category
                                 (imageList as ArrayList).add(response.body()!![i].input_image_url)
                                 (imageListAfter as ArrayList).add(response.body()!![i].output_image_url)
+
+                                //save for in case of user review
+                                if (imageListAfter != null && imageList.size > 0)
+                                    ReviewHolder.orgUrl = imageList.get(0)
+
+                                if (imageListAfter != null && imageListAfter.size > 0)
+                                    ReviewHolder.editedUrl = imageListAfter.get(0)
+
+
                                 (imageListWaterMark as ArrayList).add(response.body()!![i].watermark_image)
                                 (listHdQuality as ArrayList).add(response.body()!![i].original_image)
                                 Utilities.savePrefrence(

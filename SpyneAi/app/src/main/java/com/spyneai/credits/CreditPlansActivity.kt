@@ -68,7 +68,7 @@ class CreditPlansActivity : AppCompatActivity(),CreditsPlandAdapter.Listener,
 
     private fun createOrder() {
         var body = CreateOrderBody(
-            false, "USD", getOrderId(),
+            false, "INR", getOrderId(),
             0, lastSelectedItem!!.price, lastSelectedItem!!.planId.toString(),
             lastSelectedItem!!.price, "CREATED", "New",
             Utilities.getPreference(this, AppConstants.tokenId).toString()
@@ -124,6 +124,8 @@ class CreditPlansActivity : AppCompatActivity(),CreditsPlandAdapter.Listener,
 
      fun prepareCheckOut() {
         val co = Checkout()
+         //co.setKeyID("rzp_live_IHhXp2aSS9Ys4p")
+         Log.d(TAG, "prepareCheckOut: "+razorPayOrderId)
 
         try {
             val options = JSONObject()
@@ -133,8 +135,8 @@ class CreditPlansActivity : AppCompatActivity(),CreditsPlandAdapter.Listener,
             options.put("image","https://play-lh.googleusercontent.com/b4BzZiP4gey3FVCXPGQbrX1DNABnoDionTG05HaG2qWeZshkSp33NT2aDSBYOfEQPkU=s360-rw")
             options.put("theme.color", "#FF7700");
             options.put("currency","USD")
-           // options.put("order_id", orderId)
-            options.put("amount",amount)//pass amount in currency subunits
+           // options.put("order_id", razorPayOrderId)
+            options.put("amount",100)//pass amount in currency subunits
 
             val retryObj = JSONObject()
             retryObj.put("enabled", false)
@@ -245,9 +247,9 @@ class CreditPlansActivity : AppCompatActivity(),CreditsPlandAdapter.Listener,
 
     override fun onPaymentSuccess(razorpayPaymentID: String?) {
         //update credit
-//        GlobalScope.launch(Dispatchers.IO) {
-//            createCreditPurchaseLog()
-//        }
+        GlobalScope.launch(Dispatchers.IO) {
+            createCreditPurchaseLog()
+        }
 
             try {
                 var fragment = CreditPyamentSuccessFragment()
@@ -271,19 +273,24 @@ class CreditPlansActivity : AppCompatActivity(),CreditsPlandAdapter.Listener,
     }
 
     override fun onPaymentError(code: Int, response: String?) {
-        binding.tvBuyNow.visibility = View.GONE
+       if (code == Checkout.PAYMENT_CANCELED){
+           Toast.makeText(this,"Payment Cancelled",Toast.LENGTH_LONG).show()
+       }else{
+           binding.tvBuyNow.visibility = View.GONE
 
-        supportFragmentManager.beginTransaction()
-            .add(R.id.fl_container,CreditPaymentFailedFragment())
-            .commitAllowingStateLoss()
-
+           supportFragmentManager.beginTransaction()
+               .add(R.id.fl_container,CreditPaymentFailedFragment())
+               .commitAllowingStateLoss()
+       }
     }
 
     private suspend fun createCreditPurchaseLog() {
         var call = RetrofitCreditClient("https://www.spyne.ai/").buildService(CreditApiService::class.java)
             .createCreditPurchaseLog(Utilities.getPreference(this,AppConstants.tokenId)!!.toString(),
             lastSelectedItem!!.creditId,
-            lastSelectedItem!!.credits,0,200)
+            lastSelectedItem!!.credits,Utilities.getPreference(this, AppConstants.CREDIT_USED).toString(),
+                Utilities.getPreference(this, AppConstants.CREDIT_AVAILABLE).toString()
+            )
 
         call?.enqueue(object : Callback<CreditPurchaseLogRes> {
             override fun onResponse(
@@ -306,9 +313,15 @@ class CreditPlansActivity : AppCompatActivity(),CreditsPlandAdapter.Listener,
     }
 
     private suspend fun updatePurchasedCredits() {
+        var creditAvailable = lastSelectedItem!!.credits + intent.getIntExtra("credit_available",0)
+
+        Log.d(TAG, "updatePurchasedCredits: "+ lastSelectedItem!!.credits)
+        Log.d(TAG, "updatePurchasedCredits: "+creditAvailable)
+
+
         var call = RetrofitCreditClient("https://www.spyne.ai/").buildService(CreditApiService::class.java)
             .updatePurchasedCredit(Utilities.getPreference(this,AppConstants.tokenId)!!.toString(),
-                lastSelectedItem!!.credits,0,200)
+                lastSelectedItem!!.credits,Utilities.getPreference(this,AppConstants.CREDIT_USED)!!.toString(),creditAvailable)
 
         call?.enqueue(object : Callback<UpdatePurchaseCreditRes>{
             override fun onResponse(
