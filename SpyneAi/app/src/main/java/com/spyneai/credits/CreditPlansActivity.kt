@@ -120,7 +120,6 @@ class CreditPlansActivity : AppCompatActivity(),CreditsPlandAdapter.Listener,
             }
         })
 
-
     }
 
      fun prepareCheckOut() {
@@ -137,7 +136,7 @@ class CreditPlansActivity : AppCompatActivity(),CreditsPlandAdapter.Listener,
             options.put("theme.color", "#FF7700");
             options.put("currency","USD")
            // options.put("order_id", razorPayOrderId)
-            options.put("amount",amount)//pass amount in currency subunits
+            options.put("amount",50)//pass amount in currency subunits
 
             val retryObj = JSONObject()
             retryObj.put("enabled", false)
@@ -274,6 +273,7 @@ class CreditPlansActivity : AppCompatActivity(),CreditsPlandAdapter.Listener,
     }
 
     override fun onPaymentError(code: Int, response: String?) {
+        Log.d(TAG, "onPaymentError: "+response)
        if (code == Checkout.PAYMENT_CANCELED){
            Toast.makeText(this,"Payment Cancelled",Toast.LENGTH_LONG).show()
        }else{
