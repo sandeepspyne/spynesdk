@@ -189,6 +189,8 @@ class Camera2Activity : AppCompatActivity(), SubCategoriesAdapter.BtnClickListen
         gifList = ArrayList<String>()
         frameImageListSelections = ArrayList<Int>()
 
+        frameImageList = ArrayList<FrameImages>()
+
         //Get Intents
         gifList.addAll(intent.getParcelableArrayListExtra(AppConstants.GIF_LIST)!!)
 
