@@ -70,7 +70,7 @@ class CreditPlansActivity : AppCompatActivity(),CreditsPlandAdapter.Listener,
         binding.progressBar.visibility = View.VISIBLE
 
         var body = CreateOrderBody(
-            false, "INR", getOrderId(),
+            false, "USD", getOrderId(),
             0, lastSelectedItem!!.price, lastSelectedItem!!.planId.toString(),
             lastSelectedItem!!.price, "CREATED", "New",
             Utilities.getPreference(this, AppConstants.tokenId).toString()
