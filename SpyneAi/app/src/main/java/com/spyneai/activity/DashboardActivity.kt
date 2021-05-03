@@ -7,9 +7,11 @@ import android.graphics.drawable.ColorDrawable
 import android.net.Uri
 import android.os.Bundle
 import android.util.Log
+import android.view.LayoutInflater
 import android.view.View
 import android.view.Window
 import android.widget.LinearLayout
+import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AppCompatDelegate
@@ -27,7 +29,6 @@ import com.spyneai.interfaces.RetrofitClient
 import com.spyneai.interfaces.RetrofitClients
 import com.spyneai.model.categories.CategoriesResponse
 import com.spyneai.model.categories.Data
-import com.spyneai.model.credit.CreditEligiblityRequest
 import com.spyneai.model.credit.FreeCreditEligblityResponse
 import com.spyneai.model.shoot.CreateCollectionRequest
 import com.spyneai.model.shoot.CreateCollectionResponse
@@ -96,7 +97,6 @@ class DashboardActivity : AppCompatActivity() {
         iv_wallet.setOnClickListener { startActivity(Intent(this,WalletActivity::class.java)) }
 
         freeCreditEligiblityCheck()
-
 
         setCarosels()
         setFooters(0)
@@ -412,9 +412,6 @@ class DashboardActivity : AppCompatActivity() {
     }
 
     private fun freeCreditEligiblityCheck(){
-
-        val creditEligiblityRequest = CreditEligiblityRequest(Utilities.getPreference(this, AppConstants.tokenId).toString(), Utilities.getPreference(this, AppConstants.EMAIL_ID).toString());
-
         val userId = RequestBody.create(
             MultipartBody.FORM,
             Utilities.getPreference(this, AppConstants.tokenId)!!
@@ -432,13 +429,12 @@ class DashboardActivity : AppCompatActivity() {
             override fun onResponse(call: Call<FreeCreditEligblityResponse>, response: Response<FreeCreditEligblityResponse>) {
                 Utilities.hideProgressDialog()
                 if (response.isSuccessful ) {
-                    if (response.body()?.message.equals("Free credit added to user"))
-                    showFreeCreditDialog()
+                    if (response.body()?.status == 200)
+                        showFreeCreditDialog(response.body()!!.message)
                 }
                 else{
                     Toast.makeText(this@DashboardActivity, "Server not responding!!!", Toast.LENGTH_SHORT).show()
                 }
-
             }
 
             override fun onFailure(call: Call<FreeCreditEligblityResponse>, t: Throwable) {
@@ -447,12 +443,18 @@ class DashboardActivity : AppCompatActivity() {
         })
     }
 
-    private fun showFreeCreditDialog(){
+    private fun showFreeCreditDialog(message: String) {
 
         val dialog = Dialog(this)
         dialog.requestWindowFeature(Window.FEATURE_NO_TITLE)
         dialog.setCancelable(true)
-        dialog.setContentView(R.layout.free_credit_dialog)
+
+        var dialogView = LayoutInflater.from(this).inflate(R.layout.free_credit_dialog,null)
+        var tvMessage : TextView = dialogView.findViewById(R.id.tvSkuNameDialog)
+        tvMessage.text = message
+
+        dialog.setContentView(dialogView)
+
         dialog.getWindow()?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT));
         val llOk: LinearLayout = dialog.findViewById(R.id.llOk)
 

@@ -3,6 +3,7 @@ package com.spyneai.imagesdowloading
 import android.content.Context
 import android.os.Build
 import android.os.Environment
+import android.util.Log
 import android.view.View
 import android.widget.Toast
 import com.downloader.*
@@ -22,34 +23,20 @@ import java.io.File
 import java.text.SimpleDateFormat
 import java.util.*
 
-class ImageDownloaManager(var task : DownloadTask, var listener : Listener) {
-
+class ImageDownloadManager(var task : DownloadTask, var listener : Listener) {
 
     fun start() {
         if (task.listHdQuality.size > 0 && task.listHdQuality != null) {
-//            if (!File(outputDirectory).exists())
-//                File(outputDirectory).mkdir()
 
-            for (i in 0 until task.listHdQuality.size/*imageListWaterMark.size*/) {
-//                seekbarDownload.setProgress(i)
-//                tvProgress.setText(i.toString() + "/" + listHdQuality.size)
-                if (task.listHdQuality[i] != null)
-                    downloadWithHighQuality(task.listHdQuality[i].toString())
+            for (i in 0 until task.listHdQuality.size) {
+              if (task.listHdQuality[i] != null)
+                    downloadWithHighQuality(task.listHdQuality[i])
             }
         }
     }
 
-    // The Folder location where all the files will be stored
-//    private val outputDirectory: String by lazy {
-//        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-//            "${Environment.DIRECTORY_DCIM}/Spyne-HD"
-//        } else {
-//            "${context.getExternalFilesDir(Environment.DIRECTORY_DCIM)?.path}/Spyne-HD"
-//        }
-//    }
-
     //Download
-    fun downloadWithHighQuality(imageFile: String?) {
+    private fun downloadWithHighQuality(imageFile: String?) {
         val FILENAME_FORMAT = "yyyy-MM-dd-HH-mm-ss-SSS"
 
         val imageName: String = "Spyne" + SimpleDateFormat(
@@ -58,26 +45,16 @@ class ImageDownloaManager(var task : DownloadTask, var listener : Listener) {
 
         var file = File(Environment.getExternalStorageDirectory().toString() + "/Spyne")
 
-       // listener.onScan(file.absolutePath)
-
-        val downloadId = PRDownloader.download(
+       PRDownloader.download(
             imageFile,
             Environment.getExternalStorageDirectory().toString() + "/Spyne",
             imageName
         )
 
             .build()
-            .setOnStartOrResumeListener {
-            }
-            .setOnPauseListener {
-
-            }
-            .setOnCancelListener(object : OnCancelListener {
-                override fun onCancel() {}
-            })
             .start(object : OnDownloadListener {
                 override fun onDownloadComplete() {
-                    listener.onScan(file.absolutePath+"/"+imageName)
+                    listener.onScan(file.absolutePath + "/" + imageName)
                     task.downloadCount++
 
                     if (task.downloadCount == task.listHdQuality.size) {
@@ -87,6 +64,7 @@ class ImageDownloaManager(var task : DownloadTask, var listener : Listener) {
                 }
 
                 override fun onError(error: com.downloader.Error?) {
+                    Log.d("ImageDownloadManager", "onError: ")
                     if (task.downloadCount == task.listHdQuality.size) {
                         listener.onFailure(task)
                     }

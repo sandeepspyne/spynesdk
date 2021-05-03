@@ -46,6 +46,7 @@ class SplashActivity : AppCompatActivity() {
        // setAnimation()
         setSplash();
 //        autoUpdates()
+
     }
 
     private fun setAnimation() {

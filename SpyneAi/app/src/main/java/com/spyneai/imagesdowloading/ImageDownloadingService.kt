@@ -16,7 +16,6 @@ import com.spyneai.R
 import com.spyneai.activity.DashboardActivity
 import com.spyneai.extras.events.ProcessingImagesEvent
 import com.spyneai.needs.AppConstants
-import com.spyneai.needs.Utilities
 import com.spyneai.service.ServiceState
 import com.spyneai.service.log
 import com.spyneai.service.setServiceState
@@ -25,7 +24,7 @@ import org.greenrobot.eventbus.EventBus
 import java.io.File
 
 
-class DownloadImageService : Service(),ImageDownloaManager.Listener {
+class ImageDownloadingService : Service(),ImageDownloadManager.Listener {
 
     private var wakeLock: PowerManager.WakeLock? = null
 
@@ -71,7 +70,7 @@ class DownloadImageService : Service(),ImageDownloaManager.Listener {
 
         checkAndFinishService()
 
-        ImageDownloaManager(task, this).start()
+        ImageDownloadManager(task, this).start()
     }
 
     private fun checkAndFinishService() {
@@ -251,7 +250,7 @@ class DownloadImageService : Service(),ImageDownloaManager.Listener {
             //retry funcnality
             checkAndFinishService()
         }else{
-            ImageDownloaManager(task, this).start()
+            ImageDownloadManager(task, this).start()
         }
     }
 }

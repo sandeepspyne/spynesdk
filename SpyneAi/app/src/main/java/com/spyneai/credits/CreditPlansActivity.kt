@@ -91,7 +91,6 @@ class CreditPlansActivity : AppCompatActivity(),CreditsPlandAdapter.Listener,
                 call: Call<CreateOrderResponse>,
                 response: Response<CreateOrderResponse>
             ) {
-                var s = ""
                 if (response.isSuccessful) {
                     var createOrderResponse = response.body()
 
@@ -124,19 +123,19 @@ class CreditPlansActivity : AppCompatActivity(),CreditsPlandAdapter.Listener,
 
      fun prepareCheckOut() {
         val co = Checkout()
-         //co.setKeyID("rzp_live_IHhXp2aSS9Ys4p")
+         co.setKeyID("rzp_live_IHhXp2aSS9Ys4p")
          Log.d(TAG, "prepareCheckOut: "+razorPayOrderId)
 
         try {
             val options = JSONObject()
             options.put("name","Sypne")
-            options.put("description","Credits checkout")
+            options.put("description","Buying "+lastSelectedItem!!.credits+" credits")
             //You can omit the image option to fetch the image from dashboard
             options.put("image","https://play-lh.googleusercontent.com/b4BzZiP4gey3FVCXPGQbrX1DNABnoDionTG05HaG2qWeZshkSp33NT2aDSBYOfEQPkU=s360-rw")
             options.put("theme.color", "#FF7700");
             options.put("currency","USD")
            // options.put("order_id", razorPayOrderId)
-            options.put("amount",100)//pass amount in currency subunits
+            options.put("amount",amount)//pass amount in currency subunits
 
             val retryObj = JSONObject()
             retryObj.put("enabled", false)

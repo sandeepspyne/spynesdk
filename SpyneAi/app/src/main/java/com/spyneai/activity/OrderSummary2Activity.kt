@@ -85,9 +85,9 @@ class OrderSummary2Activity : AppCompatActivity() {
 
 //        productImage = listHdQuality[0].toString()
 
-        if (listHdQuality.size>0){
+        if (listHdQuality.size >0 && listHdQuality[0] != null){
             Glide.with(this).load(
-                listHdQuality[0].toString()
+                listHdQuality[0]
             ).into(ivProductImage)
         }
 
@@ -126,6 +126,7 @@ class OrderSummary2Activity : AppCompatActivity() {
                     startDownloadActivity()
             }else{
                     var intent = Intent(this,LowCreditsActivity::class.java)
+                    intent.putExtra("image", listHdQuality[0])
                     intent.putExtra("credit_available",availableCredits)
                     startActivity(intent)
 
@@ -143,6 +144,11 @@ class OrderSummary2Activity : AppCompatActivity() {
         imgBack.setOnClickListener {
             onBackPressed()
         }
+    }
+
+    override fun onResume() {
+        super.onResume()
+        fetchUserCreditDetails()
     }
 
     private fun startDownloadActivity() {

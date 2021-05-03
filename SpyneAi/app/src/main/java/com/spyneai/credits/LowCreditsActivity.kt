@@ -34,14 +34,21 @@ class LowCreditsActivity : AppCompatActivity() {
         binding.ivBack.setOnClickListener { onBackPressed() }
 
         binding.tvBuyCreditsNow.setOnClickListener {
-            var intent = Intent(this,CreditPlansActivity::class.java)
-            intent.putExtra("credit_available",intent.getIntExtra("credit_available",0))
-            startActivity(intent)
+            Log.d("LowCreditsActivity", "onCreate: "+intent.getIntExtra("credit_available",0))
+            var creditIntent = Intent(this,CreditPlansActivity::class.java)
+            creditIntent.putExtra("credit_available",intent.getIntExtra("credit_available",0))
+            startActivity(creditIntent)
+            finish()
+        }
+
+        if (intent.getStringExtra("image") != null){
+            Glide.with(this)
+                .load(intent.getStringExtra("image"))
+                .into(binding.ivDonwlaodPreview)
         }
 
         //load gif
         Glide.with(this).asGif().load(R.raw.opps_gif)
             .into(binding.ivOppsGif)
-
     }
 }

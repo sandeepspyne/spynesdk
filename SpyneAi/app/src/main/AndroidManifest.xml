@@ -57,7 +57,7 @@
         <activity android:name=".videorecording.ProcessVideoTimerActivity" />
 
         <service
-            android:name=".imagesdowloading.DownloadImageService"
+            android:name=".imagesdowloading.ImageDownloadingService"
             android:enabled="true"
             android:exported="false" />
         <service

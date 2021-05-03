@@ -6,7 +6,6 @@ import android.content.Intent
 import android.content.pm.PackageManager
 import android.media.MediaScannerConnection
 import android.net.Uri
-import android.os.Build
 import android.os.Bundle
 import android.os.Environment
 import android.util.Log
@@ -19,25 +18,15 @@ import androidx.core.content.ContextCompat
 import com.downloader.*
 import com.spyneai.R
 import com.spyneai.credits.fragments.DownloadCompletedFragment
-import com.spyneai.imagesdowloading.DownloadImageService
+import com.spyneai.imagesdowloading.ImageDownloadingService
 import com.spyneai.imagesdowloading.HDImagesDownloadedEvent
-import com.spyneai.interfaces.APiService
-import com.spyneai.interfaces.RetrofitClients
-import com.spyneai.model.credit.UpdateCreditResponse
 import com.spyneai.needs.AppConstants
 import com.spyneai.needs.Utilities
-import com.spyneai.videorecording.ThreeSixtyInteriorViewActivity
-import com.spyneai.videorecording.model.ProcessVideoEvent
 import kotlinx.android.synthetic.main.activity_downloading.*
 import kotlinx.android.synthetic.main.activity_order_summary2.*
-import okhttp3.MultipartBody
-import okhttp3.RequestBody
 import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode
-import retrofit2.Call
-import retrofit2.Callback
-import retrofit2.Response
 import java.io.File
 import java.text.SimpleDateFormat
 import java.util.*
@@ -147,7 +136,7 @@ class DownloadingActivity : AppCompatActivity() {
 
                 //start service
 
-                var imageDownloadingServiceIntent = Intent(this,DownloadImageService::class.java)
+                var imageDownloadingServiceIntent = Intent(this,ImageDownloadingService::class.java)
                 imageDownloadingServiceIntent.action = "START"
                 imageDownloadingServiceIntent.putExtra(AppConstants.LIST_HD_QUALITY,listHdQuality)
                 imageDownloadingServiceIntent.putExtra(AppConstants.SKU_NAME,intent.getStringExtra(AppConstants.SKU_NAME))
@@ -276,8 +265,13 @@ class DownloadingActivity : AppCompatActivity() {
 
                                         //add download complete fragment
 
+            var downloadCompletedFragment = DownloadCompletedFragment()
+            var args = Bundle()
+            args.putString("image",listHdQuality.get(0))
+            downloadCompletedFragment.arguments = args
+
             supportFragmentManager.beginTransaction()
-                .add(R.id.fl_container,DownloadCompletedFragment())
+                .add(R.id.fl_container,downloadCompletedFragment)
                 .commit()
 
                         downloadCount = 0
