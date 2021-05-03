@@ -56,8 +56,10 @@
             app:use_controller="false"
             android:visibility="invisible"
             app:shutter_background_color="@android:color/transparent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintBottom_toBottomOf="parent"/>
+            app:layout_constraintTop_toBottomOf="@id/tv_view_type"
+            app:layout_constraintLeft_toLeftOf="parent"
+            android:layout_marginTop="60dp"
+            app:layout_constraintRight_toRightOf="parent"/>
 
         <ImageView
             android:layout_width="70dp"
@@ -69,8 +71,8 @@
             android:background="@drawable/shape_circle_lib"
             android:id="@+id/image_play_pause"
             app:tint="@color/white"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintTop_toTopOf="@id/player_view_lib"
+            app:layout_constraintBottom_toBottomOf="@id/player_view_lib"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toRightOf="parent"/>
 

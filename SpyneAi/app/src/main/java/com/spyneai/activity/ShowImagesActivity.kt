@@ -28,6 +28,7 @@ import com.spyneai.adapter.ShowReplacedImagesAdapter
 import com.spyneai.adapter.ShowReplacedImagesFocusedAdapter
 import com.spyneai.adapter.ShowReplacedImagesInteriorAdapter
 import com.spyneai.aipack.FetchBulkResponse
+import com.spyneai.credits.model.ReviewHolder
 import com.spyneai.interfaces.APiService
 import com.spyneai.interfaces.RetrofitClientSpyneAi
 import com.spyneai.interfaces.RetrofitClients
@@ -87,7 +88,6 @@ class ShowImagesActivity : AppCompatActivity() {
         setContentView(R.layout.activity_show_images)
 
         AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
-
 
         setBulkImages()
 
@@ -244,6 +244,18 @@ class ShowImagesActivity : AppCompatActivity() {
                 val intent = Intent(this, OrderSummary2Activity::class.java)
                 intent.putExtra(AppConstants.LIST_WATERMARK, imageListWaterMark)
                 intent.putExtra(AppConstants.LIST_HD_QUALITY, listHdQuality)
+
+                var skuId = Utilities.getPreference(this, AppConstants.SKU_ID)
+                    .toString()
+
+                var skuName = Utilities.getPreference(this, AppConstants.SKU_ID)
+                    .toString()
+
+                var s = ""
+
+                intent.putExtra(AppConstants.SKU_ID,skuId)
+                intent.putExtra(AppConstants.SKU_NAME,skuName)
+
                 startActivity(intent)
             }
         }
@@ -341,6 +353,15 @@ class ShowImagesActivity : AppCompatActivity() {
                                 Category = response.body()!![i].category
                                 (imageList as ArrayList).add(response.body()!![i].input_image_url)
                                 (imageListAfter as ArrayList).add(response.body()!![i].output_image_url)
+
+                                //save for in case of user review
+                                if (imageListAfter != null && imageList.size > 0)
+                                    ReviewHolder.orgUrl = imageList.get(0)
+
+                                if (imageListAfter != null && imageListAfter.size > 0)
+                                    ReviewHolder.editedUrl = imageListAfter.get(0)
+
+
                                 (imageListWaterMark as ArrayList).add(response.body()!![i].watermark_image)
                                 (listHdQuality as ArrayList).add(response.body()!![i].original_image)
                                 Utilities.savePrefrence(

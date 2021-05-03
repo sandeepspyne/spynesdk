@@ -17,18 +17,16 @@ import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import com.downloader.*
 import com.spyneai.R
-import com.spyneai.interfaces.APiService
-import com.spyneai.interfaces.RetrofitClients
-import com.spyneai.model.credit.UpdateCreditResponse
+import com.spyneai.credits.fragments.DownloadCompletedFragment
+import com.spyneai.imagesdowloading.ImageDownloadingService
+import com.spyneai.imagesdowloading.HDImagesDownloadedEvent
 import com.spyneai.needs.AppConstants
 import com.spyneai.needs.Utilities
 import kotlinx.android.synthetic.main.activity_downloading.*
 import kotlinx.android.synthetic.main.activity_order_summary2.*
-import okhttp3.MultipartBody
-import okhttp3.RequestBody
-import retrofit2.Call
-import retrofit2.Callback
-import retrofit2.Response
+import org.greenrobot.eventbus.EventBus
+import org.greenrobot.eventbus.Subscribe
+import org.greenrobot.eventbus.ThreadMode
 import java.io.File
 import java.text.SimpleDateFormat
 import java.util.*
@@ -43,7 +41,6 @@ class DownloadingActivity : AppCompatActivity() {
     var avaliableCredit: Int = 0
     var remaningCredit: Int = 0
     var price: Int = 0
-
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -65,18 +62,6 @@ class DownloadingActivity : AppCompatActivity() {
 
         listHdQuality.addAll(intent.getStringArrayListExtra(AppConstants.LIST_HD_QUALITY)!!)
 
-        if (Utilities.getPreference(this, AppConstants.NO_OF_IMAGES).equals("8")) {
-            Utilities.savePrefrence(this, AppConstants.PRICE, "5")
-        } else if (Utilities.getPreference(this, AppConstants.NO_OF_IMAGES).equals("4")) {
-            Utilities.savePrefrence(this, AppConstants.PRICE, "3")
-        } else if (Utilities.getPreference(this, AppConstants.NO_OF_IMAGES).equals("5")) {
-            Utilities.savePrefrence(this, AppConstants.PRICE, "5")
-        } else if (Utilities.getPreference(this, AppConstants.NO_OF_IMAGES).equals("6")) {
-            Utilities.savePrefrence(this, AppConstants.PRICE, "5")
-        } else if (Utilities.getPreference(this, AppConstants.NO_OF_IMAGES).equals("7")) {
-            Utilities.savePrefrence(this, AppConstants.PRICE, "5")
-        }
-
         setPermissions()
 
         llButton.setOnClickListener {
@@ -94,8 +79,6 @@ class DownloadingActivity : AppCompatActivity() {
         ivBack.setOnClickListener {
             onBackPressed()
         }
-
-
     }
 
     private fun setPermissions() {
@@ -105,13 +88,13 @@ class DownloadingActivity : AppCompatActivity() {
         } else {
             ActivityCompat.requestPermissions(
                 this,
-                DownloadingActivity.REQUIRED_PERMISSIONS,
-                DownloadingActivity.REQUEST_CODE_PERMISSIONS
+                REQUIRED_PERMISSIONS,
+                REQUEST_CODE_PERMISSIONS
             )
         }
     }
 
-    private fun allPermissionsGranted() = DownloadingActivity.REQUIRED_PERMISSIONS.all {
+    private fun allPermissionsGranted() = REQUIRED_PERMISSIONS.all {
         ContextCompat.checkSelfPermission(
             baseContext, it
         ) == PackageManager.PERMISSION_GRANTED
@@ -132,7 +115,7 @@ class DownloadingActivity : AppCompatActivity() {
             tvIncreaseSale.visibility = View.VISIBLE
             llButton.visibility = View.VISIBLE
             tvButtonText.setText("Download HD Images")
-            downloadWatermark()
+            downloadWaterMark()
         } else if (Utilities.getPreference(this, AppConstants.DOWNLOAD_TYPE).equals("hd")) {
             ivBack.visibility = View.INVISIBLE
             llButton.visibility = View.VISIBLE
@@ -148,45 +131,40 @@ class DownloadingActivity : AppCompatActivity() {
                     Utilities.getPreference(this, AppConstants.CREDIT_AVAILABLE)!!.toInt()
                 price = Utilities.getPreference(this, AppConstants.PRICE)!!.toInt()
                 remaningCredit = avaliableCredit - price
-                downloadHighQuality()
+
+                //downloadHighQuality()
+
+                //start service
+
+                var imageDownloadingServiceIntent = Intent(this,ImageDownloadingService::class.java)
+                imageDownloadingServiceIntent.action = "START"
+                imageDownloadingServiceIntent.putExtra(AppConstants.LIST_HD_QUALITY,listHdQuality)
+                imageDownloadingServiceIntent.putExtra(AppConstants.SKU_NAME,intent.getStringExtra(AppConstants.SKU_NAME))
+                imageDownloadingServiceIntent.putExtra(AppConstants.SKU_ID,intent.getStringExtra(AppConstants.SKU_ID))
+                imageDownloadingServiceIntent.putExtra(AppConstants.CREDIT_REMAINING,remaningCredit)
+                imageDownloadingServiceIntent.putExtra(AppConstants.PRICE,price)
+                imageDownloadingServiceIntent.putExtra(AppConstants.IS_DOWNLOADED_BEFORE,intent.getBooleanExtra(AppConstants.IS_DOWNLOADED_BEFORE,false))
+                ContextCompat.startForegroundService(this, imageDownloadingServiceIntent)
+
             } else {
-                Toast.makeText(this, "You are out of credits", Toast.LENGTH_SHORT)
+                //Toast.makeText(this, "You are out of credits", Toast.LENGTH_SHORT)
             }
-
         }
     }
 
-
-    fun downloadWatermark() {
+    private fun downloadWaterMark() {
         if (listWatermark.size > 0 && listWatermark != null) {
-            for (i in 0 until listWatermark.size/*imageListWaterMark.size*/) {
-//                seekbarDownload.setProgress(i)
-//                tvProgress.setText(i.toString() + "/" + listHdQuality.size)
+            for (i in 0 until listWatermark.size) {
                 if (listWatermark[i] != null)
-                    downloadWithWatermark(listWatermark[i].toString())
+                    downloadWithWaterMark(listWatermark[i])
             }
         }
     }
 
-    private fun downloadHighQuality() {
-        if (listHdQuality.size > 0 && listHdQuality != null) {
-            for (i in 0 until listHdQuality.size/*imageListWaterMark.size*/) {
-//                seekbarDownload.setProgress(i)
-//                tvProgress.setText(i.toString() + "/" + listHdQuality.size)
-                if (listHdQuality[i] != null)
-                    downloadWithHighQuality(listHdQuality[i].toString())
-            }
-        }
 
-    }
-
-    fun downloadWithWatermark(imageFile: String?) {
+    private fun downloadWithWaterMark(imageFile: String?) {
         downloadCount++
         val FILENAME_FORMAT = "yyyy-MM-dd-HH-mm-ss-SSS"
-
-//        seekbarDownload.visibility = View.VISIBLE
-
-//        showNotifications()
 
         val imageName: String = "Spyne" + SimpleDateFormat(
             FILENAME_FORMAT, Locale.US
@@ -194,27 +172,26 @@ class DownloadingActivity : AppCompatActivity() {
 
         var file = File(Environment.getExternalStorageDirectory().toString() + "/Spyne")
 
-        val downloadId = PRDownloader.download(
+        PRDownloader.download(
             imageFile,
             Environment.getExternalStorageDirectory().toString() + "/Spyne",
             imageName
         )
             .build()
+
             .start(object : OnDownloadListener {
                 override fun onDownloadComplete() {
-                    scanFile(file.getAbsolutePath()+"/"+imageName)
+
+                    scanFile(file.absolutePath+"/"+imageName)
+
                     if (downloadCount == listWatermark.size)
-                        Toast.makeText(
-                            this@DownloadingActivity,
-                            "Download Completed", Toast.LENGTH_SHORT
-                        ).show()
+                        Toast.makeText(this@DownloadingActivity, "Download Completed", Toast.LENGTH_SHORT).show()
 
                     refreshGallery(file.getAbsolutePath(), this@DownloadingActivity)
 
                     tvDownloading.visibility = View.GONE
                     tvDownloadCompleted.visibility = View.VISIBLE
                     downloadCount = 0
-
                 }
 
                 override fun onError(error: com.downloader.Error?) {
@@ -226,116 +203,13 @@ class DownloadingActivity : AppCompatActivity() {
                     }
                 }
             })
-    }
-
-    //Download
-    fun downloadWithHighQuality(imageFile: String?) {
-        downloadCount++
-        val FILENAME_FORMAT = "yyyy-MM-dd-HH-mm-ss-SSS"
-
-//        showNotifications()
-
-        val imageName: String = "Spyne" + SimpleDateFormat(
-            FILENAME_FORMAT, Locale.US
-        ).format(System.currentTimeMillis()) + ".png"
-
-        var file = File(Environment.getExternalStorageDirectory().toString() + "/Spyne")
-
-        val downloadId = PRDownloader.download(
-            imageFile,
-            Environment.getExternalStorageDirectory().toString() + "/Spyne",
-            imageName
-        )
-            .build()
-            .start(object : OnDownloadListener {
-                override fun onDownloadComplete() {
-                    scanFile(file.getAbsolutePath()+"/"+imageName)
-                    if (downloadCount == listHdQuality.size) {
-                        Toast.makeText(
-                            this@DownloadingActivity,
-                            "Download Completed", Toast.LENGTH_SHORT
-                        ).show()
-
-                        refreshGallery(file.getAbsolutePath(), this@DownloadingActivity)
-
-                        tvDownloading.visibility = View.GONE
-                        tvDownloadCompleted.visibility = View.VISIBLE
-                        llButton.visibility = View.VISIBLE
-                        tvButtonText.setText("Go to Home")
-                        userUpdateCredit()
-                        downloadCount = 0
-//                        llDownloadProgress.visibility = View.GONE
-                    }
-
-//                    seekbarDownload.visibility = View.GONE
-                }
-
-                override fun onError(error: com.downloader.Error?) {
-                    if (downloadCount == listHdQuality.size) {
-                        Toast.makeText(
-                            this@DownloadingActivity,
-                            "Download Failed", Toast.LENGTH_SHORT
-                        ).show()
-                    }
-                }
-
-            })
-    }
-
-    private fun userUpdateCredit() {
-
-
-        val userId = RequestBody.create(
-            MultipartBody.FORM,
-            Utilities.getPreference(this, AppConstants.tokenId)!!
-        )
-
-        val creditAvailable = RequestBody.create(
-            MultipartBody.FORM,
-            remaningCredit.toString()
-        )
-
-        val creditUsed = RequestBody.create(
-            MultipartBody.FORM,
-            Utilities.getPreference(this, AppConstants.PRICE)
-        )
-
-
-        val request = RetrofitClients.buildService(APiService::class.java)
-        val call = request.userUpdateCredit(userId, creditAvailable, creditUsed)
-
-        call?.enqueue(object : Callback<UpdateCreditResponse> {
-            override fun onResponse(
-                call: Call<UpdateCreditResponse>,
-                response: Response<UpdateCreditResponse>
-            ) {
-                Utilities.hideProgressDialog()
-                if (response.isSuccessful) {
-
-                } else {
-                    Toast.makeText(
-                        this@DownloadingActivity,
-                        "Server not responding!!!",
-                        Toast.LENGTH_SHORT
-                    ).show()
-                }
-
-            }
-
-            override fun onFailure(call: Call<UpdateCreditResponse>, t: Throwable) {
-                Toast.makeText(
-                    this@DownloadingActivity,
-                    "Server not responding!!!",
-                    Toast.LENGTH_SHORT
-                ).show()
-            }
-        })
     }
 
     override fun onBackPressed() {
         if (Utilities.getPreference(this, AppConstants.DOWNLOAD_TYPE).equals("watermark")) {
-            super.onBackPressed()
             finish()
+        }else{
+            super.onBackPressed()
         }
     }
 
@@ -353,8 +227,34 @@ class DownloadingActivity : AppCompatActivity() {
         context.sendBroadcast(mediaScanIntent)
     }
 
+    override fun onStart() {
+        super.onStart()
+        EventBus.getDefault().register(this)
+    }
 
+    override fun onStop() {
+        super.onStop()
+        EventBus.getDefault().unregister(this)
+    }
 
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    fun onMessageEvent(event: HDImagesDownloadedEvent?) {
+        event?.getSkuId()?.let {
+            Toast.makeText(this@DownloadingActivity, "Download Completed", Toast.LENGTH_SHORT).show()
+
+            //add download complete fragment
+            var downloadCompletedFragment = DownloadCompletedFragment()
+            var args = Bundle()
+            args.putString("image",listHdQuality.get(0))
+            downloadCompletedFragment.arguments = args
+
+            supportFragmentManager.beginTransaction()
+                .add(R.id.fl_container,downloadCompletedFragment)
+                .commit()
+
+            downloadCount = 0
+        }
+    }
 
     override fun onRequestPermissionsResult(
         requestCode: Int, permissions: Array<String>, grantResults:

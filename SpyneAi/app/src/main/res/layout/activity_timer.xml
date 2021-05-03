@@ -244,14 +244,6 @@
                     android:background="@drawable/bg_ongoing_projects"
                     android:gravity="center">
 
-                    <ImageView
-                        android:layout_width="wrap_content"
-                        android:layout_height="match_parent"
-                        android:src="@drawable/arrow"
-                        android:scaleX="-1"
-                        android:layout_marginLeft="@dimen/dp_20"></ImageView>
-
-
 
                     <TextView
                         android:layout_width="wrap_content"
@@ -265,6 +257,14 @@
                         android:textAllCaps="false"
                         android:textColor="@color/primary"
                         android:textSize="@dimen/sp_16" />
+
+                    <ImageView
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:src="@drawable/arrow"
+                        android:scaleX="-1"
+                        android:layout_marginRight="@dimen/dp_20"></ImageView>
+
 
 
                 </LinearLayout>

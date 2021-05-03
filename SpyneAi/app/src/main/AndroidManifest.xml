@@ -41,15 +41,25 @@
         android:theme="@style/Theme.SpyneAi"
         android:usesCleartextTraffic="true"
         tools:targetApi="m">
-        <activity android:name=".videorecording.ThreeSixtyViewTestActivity">
+        <activity android:name=".credits.FeedbackActivity"></activity>
+        <activity android:name=".credits.CreditPaymentFailedActivity" />
+        <activity android:name=".credits.CreditPaymentSuccessActivity"></activity>
+        <activity android:name=".credits.CreditPlansActivity">
 
         </activity>
+        <activity android:name=".credits.LowCreditsActivity" />
+        <activity android:name=".credits.WalletActivity" />
+        <activity android:name=".videorecording.ThreeSixtyViewTestActivity" />
         <activity android:name=".videorecording.VideoUploadHandlerActivity" />
         <activity
             android:name=".videorecording.ThreeSixtyInteriorViewActivity"
-            android:launchMode="singleTop"></activity>
+            android:launchMode="singleTop" />
         <activity android:name=".videorecording.ProcessVideoTimerActivity" />
 
+        <service
+            android:name=".imagesdowloading.ImageDownloadingService"
+            android:enabled="true"
+            android:exported="false" />
         <service
             android:name=".videorecording.service.UploadVideoService"
             android:enabled="true"
@@ -59,7 +69,7 @@
         <activity android:name=".videorecording.SaveTrimmedVideoActivity" />
         <activity
             android:name=".videorecording.RecordVideoActivity"
-            android:screenOrientation="landscape"></activity>
+            android:screenOrientation="landscape" />
 
         <receiver
             android:name=".service.StartReceiver"
@@ -81,7 +91,7 @@
             android:name=".service.ProcessImagesService"
             android:enabled="true"
             android:exported="true"
-            android:stopWithTask="false"></service>
+            android:stopWithTask="false" />
 
         <receiver
             android:name=".service.StartReceiver"
@@ -216,13 +226,14 @@
             android:theme="@style/Theme.AppCompat.Light.NoActionBar"/>
         <activity
             android:name=".activity.SplashActivity"
-            android:screenOrientation="portrait">
+            android:screenOrientation="portrait" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
         <activity android:name=".videorecording.ThreeSixtyViewActivity" />
         <activity android:name=".videorecording.TrimVideoActivity" />
 
@@ -231,11 +242,10 @@
             android:value="@string/api_key_razorpay" />
 
         <provider
-            tools:replace="android:authorities"
             android:name="com.iceteck.silicompressorr.provider.GenericFileProvider"
             android:authorities="${applicationId}.AUTH_SILI_COMPRESS"
-            android:exported="false" />
-
+            android:exported="false"
+            tools:replace="android:authorities" />
     </application>
 
 </manifest>

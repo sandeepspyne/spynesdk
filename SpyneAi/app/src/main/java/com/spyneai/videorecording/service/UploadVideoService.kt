@@ -10,13 +10,10 @@ import android.os.PowerManager
 import android.util.Log
 import org.greenrobot.eventbus.EventBus
 import com.spyneai.R
-import com.spyneai.videorecording.ProcessVideoTimerActivity
-import com.spyneai.videorecording.SpinViewActivity
+import com.spyneai.activity.DashboardActivity
 import com.spyneai.videorecording.ThreeSixtyInteriorViewActivity
-import com.spyneai.videorecording.ThreeSixtyViewActivity
 import com.spyneai.videorecording.model.ProcessVideoEvent
 import com.spyneai.videorecording.model.VideoTask
-import java.util.Locale.getDefault
 
 
 class UploadVideoService : Service(), VideoUploader.VideoTaskListener {
@@ -125,7 +122,7 @@ class UploadVideoService : Service(), VideoUploader.VideoTaskListener {
             } else if (it.onFailure) {
                 createFailureNotification(it.shootMode)
             } else
-                createOngoingNotificaiton(it.shootMode)
+                createOngoingNotification(it.shootMode)
         }
 
         if (tasksInProgress.filter { !it.isCompleted }.isEmpty()) {
@@ -135,9 +132,7 @@ class UploadVideoService : Service(), VideoUploader.VideoTaskListener {
     }
 
 
-
-
-    private fun createOngoingNotificaiton(shootMode: Int) {
+    private fun createOngoingNotification(shootMode: Int) {
         var notificationId = (0..999999).random()
         val text = if (shootMode == 0) "Video uploading in progress..." else "360 view generation in progress..."
         var notification = createNotification(text , true,shootMode)
@@ -200,11 +195,7 @@ class UploadVideoService : Service(), VideoUploader.VideoTaskListener {
 
         if (shootMode == 0){
             val resultIntent = Intent()
-
             pendingIntent = PendingIntent.getActivity(this,0,resultIntent,0)
-//            pendingIntent = Intent(this, ThreeSixtyViewActivity::class.java).let { notificationIntent ->
-//                PendingIntent.getActivity(this, 0, notificationIntent, 0)
-//            }
         }
         else{
 
@@ -212,25 +203,15 @@ class UploadVideoService : Service(), VideoUploader.VideoTaskListener {
             val resultIntent : Intent
 
             if (isOngoing){
-                resultIntent = Intent(baseContext, ProcessVideoTimerActivity::class.java)
+                resultIntent = Intent(baseContext, DashboardActivity::class.java)
             }else{
                 resultIntent = Intent(baseContext, ThreeSixtyInteriorViewActivity::class.java)
                 resultIntent.putExtra("back_press_type",1)
             }
 
-            resultIntent.setAction(processedSkuId)
+            resultIntent.action = processedSkuId
 
             pendingIntent = PendingIntent.getActivity(this,0,resultIntent,0)
-
-//            pendingIntent = Intent(resultIntent).let { notificationIntent ->
-//                notificationIntent.putExtra("frames",frams)
-//                notificationIntent.putExtra("sandeep","singh")
-//
-//                PendingIntent.getActivity(this, 0, notificationIntent, 0)
-//            }
-
-
-
         }
 
 

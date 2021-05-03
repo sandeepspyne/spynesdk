@@ -16,11 +16,12 @@
         android:elevation="@dimen/dp_5"
         android:backgroundTint="@color/white"
         android:theme="@style/ThemeOverlay.AppCompat.Light" >
-        <LinearLayout
+
+        <FrameLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:gravity="center">
+            android:orientation="horizontal">
+
             <ImageView
                 android:id="@+id/ivAppLogo"
                 android:layout_gravity="center"
@@ -28,7 +29,16 @@
                 android:layout_height="@dimen/dp_50"
                 android:src="@mipmap/app_logo" />
 
-        </LinearLayout>
+            <ImageView
+                android:layout_width="@dimen/dp_50"
+                android:layout_height="@dimen/dp_50"
+                android:src="@drawable/wallet"
+                android:layout_gravity="right"
+                android:padding="10dp"
+                android:id="@+id/iv_wallet"
+                android:layout_marginRight="10dp"/>
+
+        </FrameLayout>
 
     </androidx.appcompat.widget.Toolbar>
 

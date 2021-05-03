@@ -291,6 +291,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:gravity="end"
+                        android:id="@+id/tv_credits"
                         android:fontFamily="@font/bold"
                         android:text="@string/credits"
                         android:layout_marginLeft="@dimen/dp_5"

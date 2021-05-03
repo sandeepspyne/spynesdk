@@ -1,6 +1,8 @@
 package com.spyneai.needs
 
 object AppConstants {
+    val IS_DOWNLOADED_BEFORE =  "IS_DOWNLOADED_BEFORE"
+    val CREDIT_REMAINING = "credit_remaining"
     val EXPOSURES: String = "exposures"
     val WINDOWS : String = "windows"
     val BG_ID: String = "bg_id"
@@ -76,6 +78,7 @@ object AppConstants {
 
     val CREDIT_AVAILABLE: String = "credit_available"
     val CREDIT_USED: String = "credit_used"
+    val CREDIT_DECUCTED: String = "credit_deducted"
     val CREDIT_ALLOTED: String = "credit_alloted"
     val PRICE: String = "price"
 

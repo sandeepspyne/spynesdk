@@ -24,4 +24,13 @@
 
     <color name="dark_blue">#3F3D56</color>
 
+    <color name="credit_deducted">#B3B1B1</color>
+    <color name="line_separator">#F0EEEE</color>
+    <color name="image_download_preview">#5F5F5F</color>
+    <color name="shimmer_background">#dddddd</color>
+    <color name="credit_plan_selected">#F0EEEE</color>
+    <color name="credit_success">#40CE4E</color>
+    <color name="zero_credits">#FF1F1F</color>
+    <color name="available_credits">#33AF38</color>
+
 </resources>
