@@ -243,14 +243,7 @@ class ImageDownloadingService : Service(),ImageDownloadManager.Listener {
     }
 
     override fun onFailure(task: DownloadTask) {
-        task.retry++
-        if (task.retry >= 4){
-            task.isFailure = true
-            stopService()
-            //retry funcnality
-            checkAndFinishService()
-        }else{
-            ImageDownloadManager(task, this).start()
-        }
+        stopService()
+        checkAndFinishService()
     }
 }

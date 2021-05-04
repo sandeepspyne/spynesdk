@@ -106,14 +106,6 @@ class ShowImagesActivity : AppCompatActivity() {
     }
 
         private fun checkThreeSixtyInterior() {
-            Log.d(
-                TAG,
-                "onResponse: " + Utilities.getPreference(
-                    this@ShowImagesActivity,
-                    AppConstants.SKU_ID
-                )
-                    .toString()
-            )
 
             val request = RetrofitClientSpyneAi.buildService(APiService::class.java)
 
@@ -135,32 +127,14 @@ class ShowImagesActivity : AppCompatActivity() {
                         if (videoProcessResponse != null) {
                             //   task.frames = response.body()
                             FramesHelper.framesMap.put(
-                                (Utilities.getPreference(
-                                    this@ShowImagesActivity,
-                                    AppConstants.SKU_ID
-                                )
-                                    .toString()), videoProcessResponse
+                                (Utilities.getPreference(this@ShowImagesActivity, AppConstants.SKU_ID).toString()), videoProcessResponse
                             )
 
                             tv_three_sixty_view.visibility = View.VISIBLE
                             tv_three_sixty_view.setOnClickListener {
-                                var intent = Intent(
-                                    this@ShowImagesActivity,
-                                    ThreeSixtyInteriorViewActivity::class.java
-                                )
-                                intent.action = Utilities.getPreference(
-                                    this@ShowImagesActivity,
-                                    AppConstants.SKU_ID
-                                )
-                                    .toString()
-                                Log.d(
-                                    TAG,
-                                    "onResponse: " + Utilities.getPreference(
-                                        this@ShowImagesActivity,
-                                        AppConstants.SKU_ID
-                                    )
-                                        .toString()
-                                )
+                                var intent = Intent(this@ShowImagesActivity, ThreeSixtyInteriorViewActivity::class.java)
+                                intent.action = Utilities.getPreference(this@ShowImagesActivity, AppConstants.SKU_ID).toString()
+
                                 startActivity(intent)
                             }
 
@@ -169,11 +143,7 @@ class ShowImagesActivity : AppCompatActivity() {
                         }
 
                     } else {
-                        Log.d(
-                            TAG,
-                            "onResponse:  processVideo success fail " + response.errorBody()
-                                .toString()
-                        )
+
                     }
                 }
 

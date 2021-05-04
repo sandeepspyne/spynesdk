@@ -75,10 +75,10 @@ class WalletActivity : AppCompatActivity() {
 
                     if (response.body()?.data?.creditAvailable.toString() == "0"){
                         binding.tvCredits.setTextColor(ContextCompat.getColor(this@WalletActivity,R.color.zero_credits))
-                        binding.tvCredits.text = "0.00"
+                        binding.tvCredits.text = "00"
                     }else{
                         binding.tvCredits.setTextColor(ContextCompat.getColor(this@WalletActivity,R.color.available_credits))
-                        binding.tvCredits.text = CreditUtils.getFormattedNumber(response.body()!!.data.creditAvailable) + ".00"
+                        binding.tvCredits.text = CreditUtils.getFormattedNumber(response.body()!!.data.creditAvailable)
                     }
 
 

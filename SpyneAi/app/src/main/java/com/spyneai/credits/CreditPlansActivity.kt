@@ -242,6 +242,8 @@ class CreditPlansActivity : AppCompatActivity(),CreditsPlandAdapter.Listener,
           }
 
         lastSelectedItem!!.planId = position
+
+        binding.tvPricePerImage.text = "＄ "+ lastSelectedItem!!.pricePerImage
     }
 
     override fun onPaymentSuccess(razorpayPaymentID: String?) {
