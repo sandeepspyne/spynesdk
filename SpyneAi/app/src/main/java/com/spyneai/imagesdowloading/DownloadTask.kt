@@ -16,4 +16,5 @@ class DownloadTask {
     var creditsToReduce = 0
     var price = 0
     var listHdQuality = ArrayList<String>()
+    var failureNotified = false
 }

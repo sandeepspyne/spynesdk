@@ -381,7 +381,7 @@ class ShowImagesActivity : AppCompatActivity() {
                                 Category = response.body()!![i].category
                                 (imageList as ArrayList).add(response.body()!![i].input_image_url)
                                 (imageListAfter as ArrayList).add(response.body()!![i].output_image_url)
-                                (listHdQuality as ArrayList).add(response.body()!![i].original_image)
+                                (listHdQuality as ArrayList).add(response.body()!![i].output_image_url)
                                 (imageListWaterMark as ArrayList).add(response.body()!![i].watermark_image)
                                 Utilities.savePrefrence(
                                     this@ShowImagesActivity,

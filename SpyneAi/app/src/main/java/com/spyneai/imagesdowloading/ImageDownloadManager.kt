@@ -65,7 +65,8 @@ class ImageDownloadManager(var task : DownloadTask, var listener : Listener) {
 
                 override fun onError(error: com.downloader.Error?) {
                     Log.d("ImageDownloadManager", "onError: ")
-                    if (task.downloadCount == task.listHdQuality.size) {
+                    if (!task.failureNotified){
+                        task.failureNotified = true
                         listener.onFailure(task)
                     }
                 }

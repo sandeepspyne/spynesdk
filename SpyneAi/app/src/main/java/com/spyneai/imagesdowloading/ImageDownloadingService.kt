@@ -243,6 +243,7 @@ class ImageDownloadingService : Service(),ImageDownloadManager.Listener {
     }
 
     override fun onFailure(task: DownloadTask) {
+        task.isFailure = true
         stopService()
         checkAndFinishService()
     }
