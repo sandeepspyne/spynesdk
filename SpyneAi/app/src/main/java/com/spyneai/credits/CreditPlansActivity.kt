@@ -46,6 +46,10 @@ class CreditPlansActivity : AppCompatActivity(),CreditsPlandAdapter.Listener,
 
         binding = DataBindingUtil.setContentView(this, R.layout.activity_credit_plans)
 
+        // terminate loop if come from wallet activity
+        if (intent.getBooleanExtra("from_wallet",false))
+            binding.ivWallet.visibility = View.GONE
+
         Checkout.preload(applicationContext)
 
         getCreditplans()
@@ -218,6 +222,14 @@ class CreditPlansActivity : AppCompatActivity(),CreditsPlandAdapter.Listener,
             LinearLayoutManager.VERTICAL,
             false
         )
+
+        //set first value selected by default
+        if (body != null && body.size > 0){
+            body.get(0).isSelected = true
+            lastSelectedItem = body.get(0)
+        }
+
+
         adapter = CreditsPlandAdapter(this@CreditPlansActivity, body!!, this)
         binding.rvCredits.visibility = View.VISIBLE
         binding.rvCredits.adapter = adapter

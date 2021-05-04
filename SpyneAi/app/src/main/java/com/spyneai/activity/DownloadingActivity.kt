@@ -18,6 +18,7 @@ import androidx.core.content.ContextCompat
 import com.downloader.*
 import com.spyneai.R
 import com.spyneai.credits.fragments.DownloadCompletedFragment
+import com.spyneai.credits.fragments.FeedbackSubmittedFragment
 import com.spyneai.imagesdowloading.ImageDownloadingService
 import com.spyneai.imagesdowloading.HDImagesDownloadedEvent
 import com.spyneai.needs.AppConstants
@@ -254,6 +255,19 @@ class DownloadingActivity : AppCompatActivity() {
 
             downloadCount = 0
         }
+    }
+
+    fun addFeedbackFragment() {
+        iv_home.visibility = View.VISIBLE
+        iv_home.setOnClickListener {
+            var dashboardIntent = Intent(this, DashboardActivity::class.java)
+            dashboardIntent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+            startActivity(dashboardIntent)
+        }
+
+        supportFragmentManager.beginTransaction()
+            .add(R.id.fl_container, FeedbackSubmittedFragment())
+            .commit()
     }
 
     override fun onRequestPermissionsResult(

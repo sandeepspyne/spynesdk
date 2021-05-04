@@ -40,6 +40,7 @@ class WalletActivity : AppCompatActivity() {
 
         binding.flAddCredits.setOnClickListener {
             var intent = Intent(this,CreditPlansActivity::class.java)
+            intent.putExtra("from_wallet",true)
             intent.putExtra("credit_available",availableCredits)
             startActivity(intent)
         }

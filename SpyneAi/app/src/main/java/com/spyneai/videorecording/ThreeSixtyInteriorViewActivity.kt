@@ -173,6 +173,7 @@ class ThreeSixtyInteriorViewActivity : AppCompatActivity(),View.OnTouchListener,
 
                             binding.svFront.stopShimmer()
                             binding.svFront.visibility = View.GONE
+                            binding.ivFront.visibility = View.VISIBLE
 
                             //show images and set listener
                             binding.clFront.visibility = View.VISIBLE
@@ -225,7 +226,7 @@ class ThreeSixtyInteriorViewActivity : AppCompatActivity(),View.OnTouchListener,
                             binding.svBack.stopShimmer()
                             binding.svBack.visibility = View.GONE
 
-                            loadImageBack(tsvParams,binding.ivBackView)
+                            binding.ivBackView.visibility = View.VISIBLE
 
                             //show images and set listener
                             binding.clBack.visibility = View.VISIBLE

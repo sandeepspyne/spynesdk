@@ -10,6 +10,7 @@ import androidx.fragment.app.Fragment
 import com.bumptech.glide.Glide
 import com.spyneai.R
 import com.spyneai.activity.DashboardActivity
+import com.spyneai.activity.DownloadingActivity
 import com.spyneai.credits.FeedbackActivity
 import com.spyneai.databinding.ActivityCreditFailedBinding
 import com.spyneai.databinding.FragmentDownloadCompletedBinding
@@ -46,9 +47,10 @@ class DownloadCompletedFragment : Fragment() {
         }
 
         binding.ivThumbsUp.setOnClickListener {
-           binding.tvOutput.text = " Thanks for your feedback"
-            binding.ivThumbsUp.visibility = View.GONE
-            binding.ivThumbsDown.visibility = View.GONE
+           if (requireActivity() != null){
+               var activity = requireActivity() as DownloadingActivity
+               activity.addFeedbackFragment()
+           }
         }
 
         binding.ivThumbsDown.setOnClickListener {

@@ -36,6 +36,7 @@
                 android:layout_gravity="right"
                 android:padding="10dp"
                 android:id="@+id/iv_wallet"
+                android:visibility="invisible"
                 android:layout_marginRight="10dp"/>
 
         </FrameLayout>
@@ -218,18 +219,19 @@
                     android:textSize="@dimen/sp_10"
                     android:fontFamily="@font/light"
                     app:drawableTopCompat="@mipmap/home" />
+
                 <TextView
-                    android:id="@+id/tvNotifications"
+                    android:id="@+id/tv_wallet"
                     android:layout_width="0dp"
                     android:layout_weight="1"
-                    android:drawablePadding="@dimen/dp_5"
                     android:layout_height="wrap_content"
-                    android:text="@string/notifications"
+                    android:drawablePadding="@dimen/dp_5"
+                    android:text="Wallet"
                     android:gravity="center"
                     android:textSize="@dimen/sp_10"
                     android:fontFamily="@font/light"
                     android:textColor="@color/black"
-                    app:drawableTopCompat="@mipmap/bell" />
+                    app:drawableTopCompat="@drawable/wallet_small" />
                 <TextView
                     android:layout_width="0dp"
                     android:layout_weight="1"

@@ -331,12 +331,8 @@ class DashboardActivity : AppCompatActivity() {
             setFooters(0)
         })
 
-        tvNotifications.setOnClickListener(View.OnClickListener {
-            Toast.makeText(
-                this,
-                "Coming Soon!",
-                Toast.LENGTH_SHORT
-            ).show()
+        tv_wallet.setOnClickListener(View.OnClickListener {
+            startActivity(Intent(this,WalletActivity::class.java))
         })
 
         tvProfile.setOnClickListener(View.OnClickListener {
@@ -354,45 +350,45 @@ class DashboardActivity : AppCompatActivity() {
             when (positionsClicked) {
                 0 -> {
                     tvHome.setTextColor(getColor(R.color.primary))
-                    tvNotifications.setTextColor(getColor(R.color.black))
+                    tv_wallet.setTextColor(getColor(R.color.black))
                     tvOrders.setTextColor(getColor(R.color.black))
                     tvProfile.setTextColor(getColor(R.color.black))
 
                     tvHome.setCompoundDrawablesWithIntrinsicBounds(0, R.mipmap.homes, 0, 0);
-                    tvNotifications.setCompoundDrawablesWithIntrinsicBounds(0, R.mipmap.bell, 0, 0);
+                    tv_wallet.setCompoundDrawablesWithIntrinsicBounds(0, R.drawable.wallet_small, 0, 0);
                     tvOrders.setCompoundDrawablesWithIntrinsicBounds(0, R.mipmap.order, 0, 0);
                     tvProfile.setCompoundDrawablesWithIntrinsicBounds(0, R.mipmap.profile, 0, 0);
                 }
                 1 -> {
                     tvHome.setTextColor(getColor(R.color.black))
-                    tvNotifications.setTextColor(getColor(R.color.primary))
+                    tv_wallet.setTextColor(getColor(R.color.primary))
                     tvOrders.setTextColor(getColor(R.color.black))
                     tvProfile.setTextColor(getColor(R.color.black))
 
                     tvHome.setCompoundDrawablesWithIntrinsicBounds(0, R.mipmap.home, 0, 0);
-                    tvNotifications.setCompoundDrawablesWithIntrinsicBounds(0, R.mipmap.bells, 0, 0);
+                    tv_wallet.setCompoundDrawablesWithIntrinsicBounds(0, R.drawable.wallet_small, 0, 0);
                     tvOrders.setCompoundDrawablesWithIntrinsicBounds(0, R.mipmap.order, 0, 0);
                     tvProfile.setCompoundDrawablesWithIntrinsicBounds(0, R.mipmap.profile, 0, 0);
                 }
                 2 -> {
                     tvHome.setTextColor(getColor(R.color.black))
-                    tvNotifications.setTextColor(getColor(R.color.black))
+                    tv_wallet.setTextColor(getColor(R.color.black))
                     tvOrders.setTextColor(getColor(R.color.primary))
                     tvProfile.setTextColor(getColor(R.color.black))
 
                     tvHome.setCompoundDrawablesWithIntrinsicBounds(0, R.mipmap.home, 0, 0);
-                    tvNotifications.setCompoundDrawablesWithIntrinsicBounds(0, R.mipmap.bell, 0, 0);
+                    tv_wallet.setCompoundDrawablesWithIntrinsicBounds(0, R.drawable.wallet_small, 0, 0);
                     tvOrders.setCompoundDrawablesWithIntrinsicBounds(0, R.mipmap.orders, 0, 0);
                     tvProfile.setCompoundDrawablesWithIntrinsicBounds(0, R.mipmap.profile, 0, 0);
                 }
                 3 -> {
                     tvHome.setTextColor(getColor(R.color.black))
-                    tvNotifications.setTextColor(getColor(R.color.black))
+                    tv_wallet.setTextColor(getColor(R.color.black))
                     tvOrders.setTextColor(getColor(R.color.black))
                     tvProfile.setTextColor(getColor(R.color.primary))
 
                     tvHome.setCompoundDrawablesWithIntrinsicBounds(0, R.mipmap.home, 0, 0);
-                    tvNotifications.setCompoundDrawablesWithIntrinsicBounds(0, R.mipmap.bell, 0, 0);
+                    tv_wallet.setCompoundDrawablesWithIntrinsicBounds(0, R.drawable.wallet_small, 0, 0);
                     tvOrders.setCompoundDrawablesWithIntrinsicBounds(0, R.mipmap.order, 0, 0);
                     tvProfile.setCompoundDrawablesWithIntrinsicBounds(0, R.mipmap.profiles, 0, 0);
                 }

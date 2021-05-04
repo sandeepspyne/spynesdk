@@ -21,7 +21,7 @@
             android:backgroundTint="@color/white"
             android:theme="@style/ThemeOverlay.AppCompat.Light" >
 
-            <LinearLayout
+            <FrameLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:orientation="horizontal">
@@ -33,16 +33,8 @@
                     android:paddingStart="@dimen/dp_10"
                     android:paddingEnd="@dimen/dp_10"
                     app:tint="@color/black" />
-                <TextView
-                    android:layout_width="0dp"
-                    android:layout_weight="1"
-                    android:layout_height="match_parent"
-                    android:text="@string/completed"
-                    android:fontFamily="@font/bold"
-                    android:visibility="invisible"
-                    android:gravity="center"
-                    android:textStyle="bold"
-                    android:textSize="@dimen/sp_16"/>
+
+
                 <ImageView
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent"
@@ -50,7 +42,17 @@
                     android:visibility="invisible"
                     app:tint="@color/black" />
 
-            </LinearLayout>
+                <ImageView
+                    android:id="@+id/iv_home"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:src="@mipmap/home"
+                    android:padding="@dimen/dp_10"
+                    app:tint="@color/black"
+                    android:visibility="invisible"
+                    android:layout_gravity="right"/>
+
+            </FrameLayout>
         </androidx.appcompat.widget.Toolbar>
 
        <FrameLayout
