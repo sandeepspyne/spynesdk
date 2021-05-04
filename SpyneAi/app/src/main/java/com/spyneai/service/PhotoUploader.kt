@@ -50,15 +50,15 @@ class PhotoUploader(var task: Task, var listener: Listener) {
     }
 
     fun uploadImageToBucket() {
+        task.totalImageToProcessed = task.imageFileList.size
         if (task.catName.equals("Automobiles"))
-        task.imageProcessing = "uploading exterior image started"
+        task.imageProcessing = "Uploading "+task.totalImageProcessed+"/"+task.totalImageToProcessed +" Exterior shots"
         else if (task.catName.equals("Footwear"))
-            task.imageProcessing = "uploading footwear image started"
+            task.imageProcessing = "Uploading "+task.totalImageProcessed+"/"+task.totalImageToProcessed +" Footwear shots"
         else if (task.catName.equals("Grocery"))
-            task.imageProcessing = "uploading grocery image started"
+            task.imageProcessing = "Uploading "+task.totalImageProcessed+"/"+task.totalImageToProcessed +" Grocery shots"
         log("Start uploading images to bucket")
         //Get All Data to be uploaded
-        task.totalImageToProcessed = task.imageFileList.size
 
         GlobalScope.launch(Dispatchers.Default) {
 
@@ -192,7 +192,7 @@ class PhotoUploader(var task: Task, var listener: Listener) {
 
     fun uploadImageToBucketInterior() {
         task.totalImageToProcessed = task.imageInteriorFileList.size
-        task.imageProcessing = "uploading interior image started"
+        task.imageProcessing = "Uploading "+task.totalImageProcessed+"/"+task.totalImageToProcessed +" Interior shots"
         Log.e("First execution", "UploadImage Bucket")
         log("start uploading interior to bucket")
         //Get All Data to be uploaded
@@ -327,7 +327,7 @@ class PhotoUploader(var task: Task, var listener: Listener) {
     //Focused Start
     fun uploadImageToBucketFocused() {
         task.totalImageToProcessed = task.imageFocusedFileList.size
-        task.imageProcessing = "uploading focused image started"
+        task.imageProcessing = "Uploading "+task.totalImageProcessed+"/"+task.totalImageToProcessed +" Focus shots"
         log("start uploadImageToBucketFocused")
         GlobalScope.launch(Dispatchers.Default) {
             //Get All Data to be uploaded
@@ -547,8 +547,6 @@ class PhotoUploader(var task: Task, var listener: Listener) {
     }
 
     private fun fetchSkuData() {
-        task.imageProcessing = "fetch sku started"
-
 
         log("start fetchSkuData")
         val request = RetrofitClient.buildService(APiService::class.java)
@@ -617,7 +615,7 @@ class PhotoUploader(var task: Task, var listener: Listener) {
 
     //Upload bulk data
     private fun bulkUpload() {
-        task.imageProcessing = "AI for image processing started"
+        task.imageProcessing = "AI Image Processing"
 //        PROGRESS_MAX = photoList.size
 
 
@@ -913,7 +911,7 @@ class PhotoUploader(var task: Task, var listener: Listener) {
     }
 
     private fun bulkUploadFootwear() {
-        task.imageProcessing = "AI for image processing started"
+        task.imageProcessing = "AI Image Processing"
 
 
         val request = RetrofitClients.buildService(APiService::class.java)
@@ -1331,7 +1329,7 @@ class PhotoUploader(var task: Task, var listener: Listener) {
     }
 
     private fun sendEmail() {
-        task.imageProcessing = "your order is now completed :) sending email..."
+        task.imageProcessing = "Sending email..."
 
         log("start send email")
         val request = RetrofitClientSpyneAi.buildService(APiService::class.java)
@@ -1347,7 +1345,7 @@ class PhotoUploader(var task: Task, var listener: Listener) {
                 if (response.isSuccessful) {
                     if (response.body()!!.id.equals("200")) {
                         log("" + response.body()!!.message)
-                        task.imageProcessing = "Order is completed should just move to completed orders."
+                        task.imageProcessing = "Order is Complete - View Now"
 
                         listener.onSuccess(task)
                     }

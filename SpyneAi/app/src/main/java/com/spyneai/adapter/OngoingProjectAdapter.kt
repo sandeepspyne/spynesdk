@@ -2,6 +2,7 @@ package com.spyneai.adapter
 
 import android.content.ContentValues.TAG
 import android.content.Context
+import android.content.Intent
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
@@ -11,10 +12,15 @@ import android.view.animation.Animation
 import android.widget.ImageView
 import android.widget.RelativeLayout
 import android.widget.TextView
+import androidx.core.content.ContextCompat
+import androidx.core.content.ContextCompat.startActivity
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.spyneai.R
+import com.spyneai.activity.ShowImagesActivity
 import com.spyneai.model.processImageService.Task
+import com.spyneai.needs.AppConstants
+import com.spyneai.needs.Utilities
 
 class OngoingProjectAdapter(
     val context: Context,
@@ -63,7 +69,7 @@ class OngoingProjectAdapter(
         holder.tvSkuId.text = ongoingProjectList[position].skuId
         holder.tvDots.blink()
         holder.tvImageCount.text =
-            ongoingProjectList[position].totalImageToProcessed.toString() + "/" + ongoingProjectList[position].totalImageProcessed.toString()
+            ongoingProjectList[position].totalImageProcessed.toString() + "/" + ongoingProjectList[position].totalImageToProcessed.toString()
         Glide.with(context)
             .load(ongoingProjectList[position].imageFileList[0])
             .into(holder.ivImage)
@@ -81,23 +87,31 @@ class OngoingProjectAdapter(
             notifyItemRangeChanged(position, ongoingProjectList.size)
 
         }
+        if (ongoingProjectList[position].imageProcessing.equals("AI Image Processing")){
+            holder.tvDots.text = ""
+            holder.tvDots.text = "....."
 
-        if (ongoingProjectList[position].imageProcessing.equals("Image Processing Failed :( - Please try again!") || ongoingProjectList[position].imageProcessing.equals(
-                "Order is completed should just move to completed orders."
-            ) || ongoingProjectList[position].imageProcessing.equals(
-                "your order is now completed :) sending email..."
-            )
-        ) {
-            holder.tvDots.clearAnimation()
-            holder.tvDots.visibility = View.GONE
-            holder.tvImageCount.visibility = View.GONE
-            holder.ivRemoveCard.visibility = View.VISIBLE
         }
 
-
-
-
-
+        if (ongoingProjectList[position].imageProcessing.equals("Image Processing Failed :( - Please try again!") || ongoingProjectList[position].imageProcessing.equals(
+                "Order is Complete - View Now"
+            )
+        ) {
+            if (ongoingProjectList[position].imageProcessing.equals("Image Processing Failed :( - Please try again!"))
+                holder.tvImageProcessing.setTextColor(ContextCompat.getColor(context,R.color.errorcolor))
+            if (ongoingProjectList[position].imageProcessing.equals("Order is Complete - View Now")){
+                holder.tvImageProcessing.setTextColor(ContextCompat.getColor(context,R.color.green))
+                holder.tvImageProcessing.setOnClickListener {
+                    Utilities.savePrefrence(context,
+                        AppConstants.SKU_ID,
+                        ongoingProjectList[position].skuId)
+                    viewOrder()
+                }
+            }
+            holder.tvDots.clearAnimation()
+            holder.tvDots.visibility = View.GONE
+            holder.ivRemoveCard.visibility = View.VISIBLE
+        }
 
         mClickListener = btnlistener
         holder.rlSkuGifList.setOnClickListener(View.OnClickListener {
@@ -105,6 +119,13 @@ class OngoingProjectAdapter(
                 mClickListener?.onBtnClick(position)
         })
     }
+
+    private fun viewOrder(){
+        val intent = Intent(context,
+            ShowImagesActivity::class.java)
+        startActivity(context, intent, null)
+    }
+
 
     fun removeItem(position: Int) {
         ongoingProjectList.removeAt(position)
