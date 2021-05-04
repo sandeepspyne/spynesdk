@@ -213,6 +213,8 @@
 
     <string name="dots">....</string>
 
+    <string name="view_completed_orders">View Completed Orders</string>
+
 
     <string-array name="planets_array">
         <item>4 Shoots</item>

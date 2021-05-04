@@ -45,6 +45,11 @@ class OngoingOrdersActivity : AppCompatActivity() {
         imgBackCompleted.setOnClickListener(View.OnClickListener {
             onBackPressed()
         })
+
+        llViewCompletedOrders.setOnClickListener {
+            val intent = Intent(this, CompletedProjectsActivity::class.java)
+            startActivity(intent)
+        }
     }
 
     private fun showOngoingProjects(){
@@ -91,9 +96,11 @@ class OngoingOrdersActivity : AppCompatActivity() {
         {
             rv_ongoingActivity.visibility = View.VISIBLE
             tvOngoingOrders.visibility = View.GONE
+            llViewCompletedOrders.visibility = View.VISIBLE
         }
         else{
             rv_ongoingActivity.visibility = View.GONE
+            llViewCompletedOrders.visibility = View.GONE
             tvOngoingOrders.visibility = View.VISIBLE
         }
 

@@ -125,13 +125,8 @@ class DashboardActivity : AppCompatActivity() {
         })
 
         tvOrders.setOnClickListener(View.OnClickListener {
-            Toast.makeText(
-                this@DashboardActivity,
-                "Coming Soon !",
-                Toast.LENGTH_SHORT
-            ).show()
-//            val intent = Intent(this, YourOrdersActivity::class.java)
-//            startActivity(intent)
+            val intent = Intent(this, CompletedProjectsActivity::class.java)
+            startActivity(intent)
 
         })
 
