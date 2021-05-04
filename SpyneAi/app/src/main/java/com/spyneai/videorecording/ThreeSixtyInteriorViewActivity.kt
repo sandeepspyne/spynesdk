@@ -71,6 +71,42 @@ class ThreeSixtyInteriorViewActivity : AppCompatActivity(),View.OnTouchListener,
             //load front image
             Glide.with(this)
                 .load(frontFramesList.get(tsvParamFront.mImageIndex))
+                .listener(object : RequestListener<Drawable> {
+                    override fun onLoadFailed(
+                        e: GlideException?,
+                        model: Any?,
+                        target: Target<Drawable>?,
+                        isFirstResource: Boolean
+                    ): Boolean {
+                        binding.ivFront.visibility = View.VISIBLE
+                        binding.svFront.stopShimmer()
+                        binding.svFront.visibility = View.GONE
+
+                        //show images and set listener
+                        binding.clFront.visibility = View.VISIBLE
+
+                        showGoToHomeButton()
+                        return false
+                    }
+
+                    override fun onResourceReady(
+                        resource: Drawable?,
+                        model: Any?,
+                        target: Target<Drawable>?,
+                        dataSource: DataSource?,
+                        isFirstResource: Boolean
+                    ): Boolean {
+                        binding.ivFront.visibility = View.VISIBLE
+                        binding.svFront.stopShimmer()
+                        binding.svFront.visibility = View.GONE
+
+                        //show images and set listener
+                        binding.clFront.visibility = View.VISIBLE
+                        showGoToHomeButton()
+                        return false
+                    }
+
+                })
                 .into(binding.ivFront)
         }else{
             binding.svFront.stopShimmer()
@@ -89,9 +125,48 @@ class ThreeSixtyInteriorViewActivity : AppCompatActivity(),View.OnTouchListener,
 
             preLoadBack(tsvParamBack)
 
-            //load vack image
+            //load back image
             Glide.with(this)
                 .load(backFramesList.get(tsvParamBack.mImageIndex))
+                .listener(object : RequestListener<Drawable> {
+                    override fun onLoadFailed(
+                        e: GlideException?,
+                        model: Any?,
+                        target: Target<Drawable>?,
+                        isFirstResource: Boolean
+                    ): Boolean {
+                        binding.ivBackView.visibility = View.VISIBLE
+                        binding.svBack.stopShimmer()
+                        binding.svBack.visibility = View.GONE
+
+                        binding.ivBackView.visibility = View.VISIBLE
+
+                        //show images and set listener
+                        binding.clBack.visibility = View.VISIBLE
+                        showGoToHomeButton()
+                        return false
+                    }
+
+                    override fun onResourceReady(
+                        resource: Drawable?,
+                        model: Any?,
+                        target: Target<Drawable>?,
+                        dataSource: DataSource?,
+                        isFirstResource: Boolean
+                    ): Boolean {
+                        binding.ivBackView.visibility = View.VISIBLE
+                        binding.svBack.stopShimmer()
+                        binding.svBack.visibility = View.GONE
+
+                        binding.ivBackView.visibility = View.VISIBLE
+
+                        //show images and set listener
+                        binding.clBack.visibility = View.VISIBLE
+                        showGoToHomeButton()
+                        return false
+                    }
+
+                })
                 .into(binding.ivBackView)
         }else{
             binding.svBack.stopShimmer()
@@ -171,14 +246,6 @@ class ThreeSixtyInteriorViewActivity : AppCompatActivity(),View.OnTouchListener,
 
                         if (index == tsvParams.framesList.size - 1) {
 
-                            binding.svFront.stopShimmer()
-                            binding.svFront.visibility = View.GONE
-                            binding.ivFront.visibility = View.VISIBLE
-
-                            //show images and set listener
-                            binding.clFront.visibility = View.VISIBLE
-                            showGoToHomeButton()
-
                             binding.ivFront.setOnTouchListener(this@ThreeSixtyInteriorViewActivity)
                         }
 
@@ -222,15 +289,6 @@ class ThreeSixtyInteriorViewActivity : AppCompatActivity(),View.OnTouchListener,
 
 
                         if (index == tsvParams.framesList.size - 1) {
-
-                            binding.svBack.stopShimmer()
-                            binding.svBack.visibility = View.GONE
-
-                            binding.ivBackView.visibility = View.VISIBLE
-
-                            //show images and set listener
-                            binding.clBack.visibility = View.VISIBLE
-                            showGoToHomeButton()
 
                             binding.ivBackView.setOnTouchListener(this@ThreeSixtyInteriorViewActivity)
 
