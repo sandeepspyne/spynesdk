@@ -547,8 +547,6 @@ class PhotoUploader(var task: Task, var listener: Listener) {
     }
 
     private fun fetchSkuData() {
-        task.imageProcessing = "fetch sku started"
-
 
         log("start fetchSkuData")
         val request = RetrofitClient.buildService(APiService::class.java)

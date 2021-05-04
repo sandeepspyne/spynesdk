@@ -88,8 +88,8 @@ class OngoingProjectAdapter(
 
         }
         if (ongoingProjectList[position].imageProcessing.equals("AI Image Processing")){
-            holder.tvImageProcessing.text = ""
-            holder.tvImageProcessing.text = "....."
+            holder.tvDots.text = ""
+            holder.tvDots.text = "....."
 
         }
 
