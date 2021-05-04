@@ -59,7 +59,7 @@ class OrderActivity : AppCompatActivity() {
 
         AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
 
-        setBackgroundsCar()
+//        setBackgroundsCar()
         setChannels()
         setSkus()
         listeners()
@@ -110,24 +110,24 @@ class OrderActivity : AppCompatActivity() {
 
 
     }
-    private fun setBackgroundsCar() {
-        carBackgroundList = ArrayList<CarBackgroundsResponse>()
-        carbackgroundsAdapter = CarBackgroundAdapter(this,
-            carBackgroundList as ArrayList<CarBackgroundsResponse>,
-            0,
-            object : CarBackgroundAdapter.BtnClickListener {
-                override fun onBtnClick(position: Int) {
-                    Log.e("position preview", position.toString())
-                }
-            })
-        val layoutManager: RecyclerView.LayoutManager =
-            LinearLayoutManager(this,
-                LinearLayoutManager.HORIZONTAL, false)
-        rvBackgroundsCar.setLayoutManager(layoutManager)
-        rvBackgroundsCar.setAdapter(carbackgroundsAdapter)
-
-        fetchBackgrounds()
-    }
+//    private fun setBackgroundsCar() {
+//        carBackgroundList = ArrayList<CarBackgroundsResponse>()
+//        carbackgroundsAdapter = CarBackgroundAdapter(this,
+//            carBackgroundList as ArrayList<CarBackgroundsResponse>,
+//            0,
+//            object : CarBackgroundAdapter.BtnClickListener {
+//                override fun onBtnClick(position: Int) {
+//                    Log.e("position preview", position.toString())
+//                }
+//            })
+//        val layoutManager: RecyclerView.LayoutManager =
+//            LinearLayoutManager(this,
+//                LinearLayoutManager.HORIZONTAL, false)
+//        rvBackgroundsCar.setLayoutManager(layoutManager)
+//        rvBackgroundsCar.setAdapter(carbackgroundsAdapter)
+//
+//        fetchBackgrounds()
+//    }
 
     private fun fetchBackgrounds() {
         (carBackgroundList as ArrayList).clear()

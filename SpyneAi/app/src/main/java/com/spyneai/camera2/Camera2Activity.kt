@@ -8,7 +8,6 @@ import android.app.Dialog
 import android.content.ContentValues
 import android.content.Context
 import android.content.Intent
-import android.content.pm.ActivityInfo
 import android.content.pm.PackageManager
 import android.database.Cursor
 import android.graphics.Bitmap
@@ -51,7 +50,7 @@ import com.spyneai.R
 import com.spyneai.activity.DashboardActivity
 import com.spyneai.activity.GenerateGifActivity
 import com.spyneai.adapter.InteriorFramesAdapter
-import com.spyneai.activity.GenrateMarketplaceActivity
+import com.spyneai.activity.GenerateMarketplaceActivity
 import com.spyneai.adapter.FocusedFramesAdapter
 import com.spyneai.adapter.ProgressAdapter
 import com.spyneai.adapter.SubCategoriesAdapter
@@ -1145,7 +1144,7 @@ class Camera2Activity : AppCompatActivity(), SubCategoriesAdapter.BtnClickListen
             if (catName.equals("Footwear")) {
                 val intent = Intent(
                     this,
-                    GenrateMarketplaceActivity::class.java
+                    GenerateMarketplaceActivity::class.java
                 )
 
                 intent.putExtra(AppConstants.ALL_IMAGE_LIST, imageFileList)

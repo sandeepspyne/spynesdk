@@ -12,7 +12,6 @@ import androidx.recyclerview.widget.RecyclerView
 import com.spyneai.R
 import com.spyneai.activity.CameraPreviewActivity
 import com.spyneai.adapter.CarBackgroundAdapter
-import com.spyneai.adapter.MarketplacesAdapter
 import com.spyneai.model.carreplace.CarBackgroundsResponse
 import com.spyneai.needs.AppConstants
 import com.spyneai.needs.Utilities
@@ -45,38 +44,38 @@ class CarBackgroundFragment(context: Context,categoryId: String,
     ): View? {
         // Inflate the layout for this fragment
         val view = inflater.inflate(R.layout.fragment_channel, container, false)
-        setRecycler(view)
+//        setRecycler(view)
         return view
     }
 
-    private fun setRecycler(view: View) {
-        carBackgroundsResponseList = ArrayList<CarBackgroundsResponse>()
-        carBackgroundAdapter = CarBackgroundAdapter(contexts!!,
-                carBackgroundsResponseList as ArrayList<CarBackgroundsResponse>,
-                pos,
-                object : CarBackgroundAdapter.BtnClickListener {
-                    override fun onBtnClick(position: Int) {
-                        Log.e("position preview", position.toString())
-                        Utilities.savePrefrence(contexts, AppConstants.IMAGE_ID,
-                                carBackgroundsResponseList[position].imageId.toString())
-                        if (position == 0)
-                        {
-                            (activity as CameraPreviewActivity?)!!.setImageRaw()
-                        }
-                        else {
-                            (activity as CameraPreviewActivity?)!!.showPreviewCar()
-                        }
-
-                        carBackgroundAdapter.notifyDataSetChanged()
-                    }
-                })
-        val layoutManager: RecyclerView.LayoutManager =
-                LinearLayoutManager(contexts,
-                        LinearLayoutManager.HORIZONTAL, false)
-        view.rvChannel.setLayoutManager(layoutManager)
-        view.rvChannel.setAdapter(carBackgroundAdapter)
-        fetchChannels(view)
-    }
+//    private fun setRecycler(view: View) {
+//        carBackgroundsResponseList = ArrayList<CarBackgroundsResponse>()
+//        carBackgroundAdapter = CarBackgroundAdapter(contexts!!,
+//                carBackgroundsResponseList as ArrayList<CarBackgroundsResponse>,
+//                pos,
+//                object : CarBackgroundAdapter.BtnClickListener {
+//                    override fun onBtnClick(position: Int) {
+//                        Log.e("position preview", position.toString())
+//                        Utilities.savePrefrence(contexts, AppConstants.IMAGE_ID,
+//                                carBackgroundsResponseList[position].imageId.toString())
+//                        if (position == 0)
+//                        {
+//                            (activity as CameraPreviewActivity?)!!.setImageRaw()
+//                        }
+//                        else {
+//                            (activity as CameraPreviewActivity?)!!.showPreviewCar()
+//                        }
+//
+//                        carBackgroundAdapter.notifyDataSetChanged()
+//                    }
+//                })
+//        val layoutManager: RecyclerView.LayoutManager =
+//                LinearLayoutManager(contexts,
+//                        LinearLayoutManager.HORIZONTAL, false)
+//        view.rvChannel.setLayoutManager(layoutManager)
+//        view.rvChannel.setAdapter(carBackgroundAdapter)
+//        fetchChannels(view)
+//    }
 
     private fun fetchChannels(view : View) {
         (carBackgroundsResponseList as ArrayList).clear()

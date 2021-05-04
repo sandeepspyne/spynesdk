@@ -24,7 +24,9 @@ import com.spyneai.R
 import com.spyneai.adapter.CarBackgroundAdapter
 import com.spyneai.adapter.PhotosAdapter
 import com.spyneai.aipack.*
-import com.spyneai.model.carreplace.CarBackgroundsResponse
+import com.spyneai.interfaces.APiService
+import com.spyneai.interfaces.RetrofitClients
+import com.spyneai.model.carbackgroundgif.CarBackgrounGifResponse
 import com.spyneai.model.sku.Photos
 import com.spyneai.model.skumap.UpdateSkuResponse
 import com.spyneai.needs.AppConstants
@@ -35,6 +37,9 @@ import kotlinx.android.synthetic.main.activity_generate_gif.*
 import kotlinx.android.synthetic.main.activity_order.*
 import kotlinx.android.synthetic.main.activity_shoot_selection.*
 import kotlinx.android.synthetic.main.activity_show_gif.*
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
 import java.io.File
 
 
@@ -55,13 +60,12 @@ class GenerateGifActivity : AppCompatActivity(), PickiTCallbacks {
     var cornerPosition: String = ""
 
     private var currentPOsition: Int = 0
-    lateinit var carBackgroundList: ArrayList<CarBackgroundsResponse>
+    lateinit var carBackgroundGifList: ArrayList<CarBackgrounGifResponse>
     lateinit var carbackgroundsAdapter: CarBackgroundAdapter
     var backgroundSelect: String = ""
 
     var totalImagesToUPload: Int = 0
     var totalImagesToUPloadIndex: Int = 0
-    lateinit var gifList: ArrayList<String>
     var catName = ""
 
     var exposures: String = "false"
@@ -86,7 +90,7 @@ class GenerateGifActivity : AppCompatActivity(), PickiTCallbacks {
         else
             catName = Utilities.getPreference(this, AppConstants.CATEGORY_NAME)!!
 
-        setBackgroundsCar()
+        fetchBackgroundGif()
         listeners()
     }
 
@@ -99,6 +103,8 @@ class GenerateGifActivity : AppCompatActivity(), PickiTCallbacks {
 
         imageFocusedFileList = ArrayList<File>()
         imageFocusedFileListFrames = ArrayList<Int>()
+
+        carBackgroundGifList = ArrayList<CarBackgrounGifResponse>()
 
         //Get Intents
 
@@ -119,30 +125,22 @@ class GenerateGifActivity : AppCompatActivity(), PickiTCallbacks {
     }
 
     private fun setBackgroundsCar() {
-        carBackgroundList = ArrayList<CarBackgroundsResponse>()
-        gifList = ArrayList<String>()
-        gifList.addAll(intent.getParcelableArrayListExtra(AppConstants.GIF_LIST)!!)
-
+        Utilities.showProgressDialog(this)
         carbackgroundsAdapter = CarBackgroundAdapter(this,
-            carBackgroundList as ArrayList<CarBackgroundsResponse>, 0,
+            carBackgroundGifList as ArrayList<CarBackgrounGifResponse>, 0,
             object : CarBackgroundAdapter.BtnClickListener {
                 override fun onBtnClick(position: Int) {
                     Log.e("position preview", position.toString())
                     //if (position<carBackgroundList.size)
-                    backgroundSelect = carBackgroundList[position].imageId.toString()
+                    backgroundSelect = carBackgroundGifList[position].imageId.toString()
                     carbackgroundsAdapter.notifyDataSetChanged()
 
-                    if (position <= gifList.size - 1) {
+
                         Glide.with(this@GenerateGifActivity) // replace with 'this' if it's in activity
-                            .load(gifList[position])
+                            .load(carBackgroundGifList[position].gifUrl)
                             .error(R.mipmap.defaults) // show error drawable if the image is not a gif
                             .into(imageViewGif)
-                    } else {
-                        Glide.with(this@GenerateGifActivity) // replace with 'this' if it's in activity
-                            .load(R.drawable.no_sample_image)
-                            .error(R.mipmap.defaults) // show error drawable if the image is not a gif
-                            .into(imageViewGif)
-                    }
+
 
                     //showPreviewCar()
                 }
@@ -154,34 +152,48 @@ class GenerateGifActivity : AppCompatActivity(), PickiTCallbacks {
             )
         rvBackgroundsCars.setLayoutManager(layoutManager)
         rvBackgroundsCars.setAdapter(carbackgroundsAdapter)
-
-        fetchBackgrounds()
     }
 
+    private fun fetchBackgroundGif(){
+        val request = RetrofitClients.buildService(APiService::class.java)
+        val call = request.getBackgroundGifCars()
 
-    private fun fetchBackgrounds() {
-        (carBackgroundList as ArrayList).clear()
-        (carBackgroundList as ArrayList).addAll(
-            Utilities.getListBackgroundsCar(
-                this, AppConstants.BACKGROUND_LIST_CARS
-            )!!
-        )
-
-        carbackgroundsAdapter.notifyDataSetChanged()
-
-        backgroundSelect = carBackgroundList[0].imageId.toString()
-
-
-        if (gifList != null && gifList.size > 0) {
-            if (gifList[0] != null) {
-                Glide.with(this@GenerateGifActivity) // replace with 'this' if it's in activity
-                    .load(gifList[0])
-                    .error(R.mipmap.defaults) // show error drawable if the image is not a gif
-                    .into(imageViewGif)
+        call?.enqueue(object : Callback<List<CarBackgrounGifResponse>> {
+            override fun onResponse(
+                call: Call<List<CarBackgrounGifResponse>>,
+                response: Response<List<CarBackgrounGifResponse>>
+            ) {
+                if (response.isSuccessful) {
+                    if (!response.body().isNullOrEmpty() && response.body()?.size!! > 0) {
+                        for (i in 0..response.body()!!.size-1)
+                        (carBackgroundGifList as ArrayList).add(response.body()!![i])
+                        setBackgroundsCar()
+                        Glide.with(this@GenerateGifActivity) // replace with 'this' if it's in activity
+                            .load(carBackgroundGifList[0].gifUrl)
+                            .error(R.mipmap.defaults) // show error drawable if the image is not a gif
+                            .into(imageViewGif)
+                        Utilities.hideProgressDialog()
+                    } else {
+                        Toast.makeText(
+                            this@GenerateGifActivity,
+                            "Server not responding!!!",
+                            Toast.LENGTH_SHORT
+                        ).show()
+                    }
+                }
             }
-        }
 
+            override fun onFailure(call: Call<List<CarBackgrounGifResponse>>, t: Throwable) {
+                Utilities.hideProgressDialog()
+                Toast.makeText(
+                    this@GenerateGifActivity,
+                    "Server not responding!!!",
+                    Toast.LENGTH_SHORT
+                ).show()
+            }
+        })
     }
+
 
     private fun listeners() {
 

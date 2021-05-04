@@ -219,27 +219,6 @@ class BeforeAfterActivity : AppCompatActivity() {
 
 
 
-                /*  if (catName.equals("Automobiles")) {
-                      if ( Utilities.getList(this@BeforeAfterActivity,AppConstants.BACKGROUND_LIST_CARS)!!.size == 0) {
-                          fetchBackgroundCars()
-                      }
-                      else{
-                          Utilities.hideProgressDialog()
-                      }
-                  }
-                  else
-                      if (catName.equals("Footwear")) {
-                          if ( Utilities.getList(this@BeforeAfterActivity,AppConstants.CHANNEL_LIST)!!.size == 0) {
-                              fetchChannels()
-                          }
-                          else{
-                              Utilities.hideProgressDialog()
-                          }
-                      }
-                      else{
-                          Utilities.hideProgressDialog()
-                      }*/
-
             }
 
             override fun onFailure(call: Call<BeforeAfterResponse>, t: Throwable) {

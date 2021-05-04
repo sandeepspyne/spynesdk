@@ -15,7 +15,7 @@ import com.bumptech.glide.Glide
 import com.spyneai.R
 import com.spyneai.activity.DashboardActivity
 import com.spyneai.adapter.CarBackgroundAdapter
-import com.spyneai.adapter.MarketplacesAdapter
+import com.spyneai.adapter.CarBackgroundDemoAdapter
 import com.spyneai.adapter.PhotosAdapter
 import com.spyneai.aipack.*
 import com.spyneai.model.carreplace.CarBackgroundsResponse
@@ -40,7 +40,7 @@ class GenerateGifDemoActivity : AppCompatActivity() {
 
     private var currentPOsition : Int = 0
     lateinit var carBackgroundList : ArrayList<CarBackgroundsResponse>
-    lateinit var carbackgroundsAdapter: CarBackgroundAdapter
+    lateinit var carbackgroundsAdapter: CarBackgroundDemoAdapter
     var backgroundSelect : String = ""
 
     var totalImagesToUPload : Int = 0
@@ -71,7 +71,7 @@ class GenerateGifDemoActivity : AppCompatActivity() {
         gifList = ArrayList<String>()
         gifList.addAll(intent.getParcelableArrayListExtra(AppConstants.GIF_LIST)!!)
 
-        carbackgroundsAdapter = CarBackgroundAdapter(this,
+        carbackgroundsAdapter = CarBackgroundDemoAdapter(this,
             carBackgroundList as ArrayList<CarBackgroundsResponse>, 0,
             object : CarBackgroundAdapter.BtnClickListener {
                 override fun onBtnClick(position: Int) {

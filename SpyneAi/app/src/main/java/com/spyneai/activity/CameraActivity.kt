@@ -25,7 +25,6 @@ import android.text.SpannableString
 import android.text.SpannableStringBuilder
 import android.text.TextWatcher
 import android.text.style.ForegroundColorSpan
-import android.util.DisplayMetrics
 import android.util.Log
 import android.util.Rational
 import android.view.View
@@ -1003,7 +1002,7 @@ class CameraActivity : AppCompatActivity(), SubCategoriesAdapter.BtnClickListene
                     if (catName.equals("Footwear")) {
                         val intent = Intent(
                             this,
-                            GenrateMarketplaceActivity::class.java
+                            GenerateMarketplaceActivity::class.java
                         )
 
                         intent.putExtra(AppConstants.ALL_IMAGE_LIST, imageFileList)
@@ -1065,7 +1064,7 @@ class CameraActivity : AppCompatActivity(), SubCategoriesAdapter.BtnClickListene
                 } else if (catName.equals("Footwear") || catName.equals("Grocery")) {
                     val intent = Intent(
                         this,
-                        GenrateMarketplaceActivity::class.java
+                        GenerateMarketplaceActivity::class.java
                     )
 
                     intent.putExtra(AppConstants.ALL_IMAGE_LIST, imageFileList)

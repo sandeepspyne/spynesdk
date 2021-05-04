@@ -13,7 +13,6 @@ import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.spyneai.R
 import com.spyneai.adapter.CarBackgroundAdapter
-import com.spyneai.adapter.MarketplacesAdapter
 import com.spyneai.adapter.ChannelsAdapter
 import com.spyneai.adapter.PhotosAdapter
 import com.spyneai.interfaces.APiService
@@ -61,7 +60,7 @@ class ShootSelectionActivity : AppCompatActivity() {
               setRecycler()
           }
           else{*/
-        setRecyclerCar()
+//        setRecyclerCar()
         // }
     }
 
@@ -128,33 +127,33 @@ class ShootSelectionActivity : AppCompatActivity() {
     }
 
     //Car flow
-    private fun setRecyclerCar() {
-        carList = ArrayList<CarBackgroundsResponse>()
-        carAdapter = CarBackgroundAdapter(this!!, carList as ArrayList<CarBackgroundsResponse>,0,
-                object : CarBackgroundAdapter.BtnClickListener {
-                    override fun onBtnClick(position: Int) {
-                        Log.e("position preview", position.toString())
-                        Utilities.savePrefrence(this@ShootSelectionActivity
-                                ,AppConstants.IMAGE_ID,carList[position].imageId.toString())
-
-                        if (position == 0)
-                        {
-                            Glide.with(this@ShootSelectionActivity).load(photoList[currentPOsition].displayThumbnail).into(ivImage)
-                        }
-                        else {
-                            showPreviewCar()
-                        }
-                        carAdapter.notifyDataSetChanged()
-
-                    }
-                })
-        val layoutManager: RecyclerView.LayoutManager =
-                LinearLayoutManager(this,
-                        LinearLayoutManager.HORIZONTAL, false)
-        rvChannels.setLayoutManager(layoutManager)
-        rvChannels.setAdapter(carAdapter)
-        fetchcars()
-    }
+//    private fun setRecyclerCar() {
+//        carList = ArrayList<CarBackgroundsResponse>()
+//        carAdapter = CarBackgroundAdapter(this!!, carList as ArrayList<CarBackgroundsResponse>,0,
+//                object : CarBackgroundAdapter.BtnClickListener {
+//                    override fun onBtnClick(position: Int) {
+//                        Log.e("position preview", position.toString())
+//                        Utilities.savePrefrence(this@ShootSelectionActivity
+//                                ,AppConstants.IMAGE_ID,carList[position].imageId.toString())
+//
+//                        if (position == 0)
+//                        {
+//                            Glide.with(this@ShootSelectionActivity).load(photoList[currentPOsition].displayThumbnail).into(ivImage)
+//                        }
+//                        else {
+//                            showPreviewCar()
+//                        }
+//                        carAdapter.notifyDataSetChanged()
+//
+//                    }
+//                })
+//        val layoutManager: RecyclerView.LayoutManager =
+//                LinearLayoutManager(this,
+//                        LinearLayoutManager.HORIZONTAL, false)
+//        rvChannels.setLayoutManager(layoutManager)
+//        rvChannels.setAdapter(carAdapter)
+//        fetchcars()
+//    }
 
     private fun fetchcars() {
         (carList as ArrayList).clear()

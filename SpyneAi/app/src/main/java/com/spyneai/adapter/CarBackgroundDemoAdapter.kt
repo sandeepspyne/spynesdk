@@ -10,14 +10,15 @@ import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.spyneai.R
-import com.spyneai.model.carbackgroundgif.CarBackgrounGifResponse
+import com.spyneai.model.carreplace.CarBackgroundsResponse
 
-class CarBackgroundAdapter(
+class CarBackgroundDemoAdapter(
     val context: Context,
-    val channelList: ArrayList<CarBackgrounGifResponse>,
+    val channelList: ArrayList<CarBackgroundsResponse>,
     var pos: Int,
-    val btnlistener: BtnClickListener?)
-    : RecyclerView.Adapter<CarBackgroundAdapter.ViewHolder>() {
+    val btnlistener: CarBackgroundAdapter.BtnClickListener
+)
+    : RecyclerView.Adapter<CarBackgroundDemoAdapter.ViewHolder>() {
 
     companion object {
         var mClickListener: BtnClickListener? = null
@@ -90,7 +91,7 @@ class CarBackgroundAdapter(
 
     // Return the size of your dataset (invoked by the layout manager)
     override fun getItemCount() = channelList.size
-    open interface BtnClickListener : CarBackgroundDemoAdapter.BtnClickListener {
-        override fun onBtnClick(position: Int)
+    open interface BtnClickListener {
+        fun onBtnClick(position: Int)
     }
 }

@@ -5,6 +5,7 @@ import UploadPhotoResponse
 import com.spyneai.aipack.*
 import com.spyneai.model.ai.*
 import com.spyneai.model.beforeafter.BeforeAfterResponse
+import com.spyneai.model.carbackgroundgif.CarBackgrounGifResponse
 import com.spyneai.model.carreplace.AddCarLogoResponse
 import com.spyneai.model.carreplace.CarBackgroundsResponse
 import com.spyneai.model.categories.CategoriesResponse
@@ -249,6 +250,9 @@ interface APiService {
 
     @GET("car-replacement-plans?api_key=fde46c58-5735-4fcf-8b38-980c95001dc3")
     fun getBackgroundCars(): Call<List<CarBackgroundsResponse>>?
+
+    @GET("v4/car-replacement-plans?api_key=fde46c58-5735-4fcf-8b38-980c95001dc3")
+    fun getBackgroundGifCars(): Call<List<CarBackgrounGifResponse>>?
 
     /* @Multipart
      @POST("upload")

@@ -36,7 +36,7 @@ import retrofit2.Callback
 import retrofit2.Response
 import java.io.File
 
-class GenrateMarketplaceActivity : AppCompatActivity() {
+class GenerateMarketplaceActivity : AppCompatActivity() {
 
     private lateinit var photsAdapter: PhotosAdapter
     private lateinit var photoList: List<Photos>
@@ -106,19 +106,19 @@ class GenrateMarketplaceActivity : AppCompatActivity() {
 
                     if (!response.body().isNullOrEmpty() && response.body()?.size!! > 0) {
                         Utilities.setList(
-                            this@GenrateMarketplaceActivity, AppConstants.CHANNEL_LIST,
+                            this@GenerateMarketplaceActivity, AppConstants.CHANNEL_LIST,
                             response.body() as ArrayList
                         )
 
                         (marketplacesList as ArrayList).addAll(Utilities.getListMarketplaces(
-                            this@GenrateMarketplaceActivity, AppConstants.CHANNEL_LIST)!!)
+                            this@GenerateMarketplaceActivity, AppConstants.CHANNEL_LIST)!!)
 
                         setMarketplaces()
 
                     } else {
                         Utilities.hideProgressDialog()
                         Toast.makeText(
-                            this@GenrateMarketplaceActivity,
+                            this@GenerateMarketplaceActivity,
                             "Server not responding!!!",
                             Toast.LENGTH_SHORT
                         ).show()
@@ -129,7 +129,7 @@ class GenrateMarketplaceActivity : AppCompatActivity() {
             override fun onFailure(call: Call<List<FootwearMarketplaceResponse>>, t: Throwable) {
                 Utilities.hideProgressDialog()
                 Toast.makeText(
-                    this@GenrateMarketplaceActivity,
+                    this@GenerateMarketplaceActivity,
                     "Server not responding!!!",
                     Toast.LENGTH_SHORT
                 ).show()
@@ -173,7 +173,7 @@ class GenrateMarketplaceActivity : AppCompatActivity() {
                     backgroundPosition = position
                     backgroundColour = backgrounds[position].custom_bg_url
 
-                    Glide.with(this@GenrateMarketplaceActivity) // replace with 'this' if it's in activity
+                    Glide.with(this@GenerateMarketplaceActivity) // replace with 'this' if it's in activity
                         .load(backgrounds[position].sample_image)
                         .error(R.mipmap.defaults) // show error drawable if the image is not a gif
                         .into(ivSampleOutput)
@@ -188,7 +188,7 @@ class GenrateMarketplaceActivity : AppCompatActivity() {
 
         backgroundColour = backgrounds[0].custom_bg_url
 
-        Glide.with(this@GenrateMarketplaceActivity) // replace with 'this' if it's in activity
+        Glide.with(this@GenerateMarketplaceActivity) // replace with 'this' if it's in activity
             .load(backgrounds[0].sample_image)
             .error(R.mipmap.defaults) // show error drawable if the image is not a gif
             .into(ivSampleOutput)
@@ -203,7 +203,7 @@ class GenrateMarketplaceActivity : AppCompatActivity() {
         (marketplacesList as ArrayList).clear()
         (marketplacesList as ArrayList).addAll(
             Utilities.getListMarketplaces(
-                this@GenrateMarketplaceActivity, AppConstants.CHANNEL_LIST)!!)
+                this@GenerateMarketplaceActivity, AppConstants.CHANNEL_LIST)!!)
 
 //        marketplacesAdapter.notifyDataSetChanged()
 //        backgroundColourAdapter.notifyDataSetChanged()
@@ -234,7 +234,7 @@ class GenrateMarketplaceActivity : AppCompatActivity() {
         tvGenerateGif.setOnClickListener(View.OnClickListener {
             if (Utilities.isNetworkAvailable(this))
             {
-                val intent = Intent(this@GenrateMarketplaceActivity,
+                val intent = Intent(this@GenerateMarketplaceActivity,
                     TimerActivity::class.java)
                 intent.putExtra(AppConstants.BG_ID,backgroundSelect)
                 intent.putExtra(AppConstants.MARKETPLACE_ID,marketplaceId)
@@ -275,18 +275,18 @@ class GenrateMarketplaceActivity : AppCompatActivity() {
         val dialogButtonNo: TextView = dialog.findViewById(R.id.btnNo)
 
         dialogButtonYes.setOnClickListener(View.OnClickListener {
-            Utilities.savePrefrence(this@GenrateMarketplaceActivity, AppConstants.SHOOT_ID, "")
-            Utilities.savePrefrence(this@GenrateMarketplaceActivity, AppConstants.CATEGORY_ID, "")
-            Utilities.savePrefrence(this@GenrateMarketplaceActivity, AppConstants.PRODUCT_ID, "")
-            Utilities.savePrefrence(this@GenrateMarketplaceActivity, AppConstants.SKU_NAME, "")
-            Utilities.savePrefrence(this@GenrateMarketplaceActivity, AppConstants.SKU_ID, "")
+            Utilities.savePrefrence(this@GenerateMarketplaceActivity, AppConstants.SHOOT_ID, "")
+            Utilities.savePrefrence(this@GenerateMarketplaceActivity, AppConstants.CATEGORY_ID, "")
+            Utilities.savePrefrence(this@GenerateMarketplaceActivity, AppConstants.PRODUCT_ID, "")
+            Utilities.savePrefrence(this@GenerateMarketplaceActivity, AppConstants.SKU_NAME, "")
+            Utilities.savePrefrence(this@GenerateMarketplaceActivity, AppConstants.SKU_ID, "")
 
 
             val updateSkuResponseList = ArrayList<UpdateSkuResponse>()
             updateSkuResponseList.clear()
 
             Utilities.setList(
-                this@GenrateMarketplaceActivity,
+                this@GenerateMarketplaceActivity,
                 AppConstants.FRAME_LIST, updateSkuResponseList
             )
             val intent = Intent(this, DashboardActivity::class.java)

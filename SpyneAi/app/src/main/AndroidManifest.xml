@@ -134,7 +134,7 @@
             android:name=".activity.BackgroundAddActivity"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".activity.GenrateMarketplaceActivity"
+            android:name=".activity.GenerateMarketplaceActivity"
             android:screenOrientation="portrait" />
         <activity
             android:name=".activity.OngoingActivity"
