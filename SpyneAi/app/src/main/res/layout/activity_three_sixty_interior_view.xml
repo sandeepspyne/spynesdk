@@ -45,7 +45,6 @@
             app:layout_constraintRight_toRightOf="parent"
             app:layout_constraintTop_toBottomOf="@id/fl_tool_bar"
             android:layout_height="200dp"
-            android:visibility="invisible"
             android:layout_width="match_parent"
             android:layout_marginRight="25dp"
             android:layout_marginLeft="25dp"

@@ -67,6 +67,11 @@ class ThreeSixtyInteriorViewActivity : AppCompatActivity(),View.OnTouchListener,
             binding.svFront.startShimmer()
 
             preLoadFront(tsvParamFront)
+
+            //load front image
+            Glide.with(this)
+                .load(frontFramesList.get(tsvParamFront.mImageIndex))
+                .into(binding.ivFront)
         }else{
             binding.svFront.stopShimmer()
             binding.svFront.visibility = View.GONE
@@ -83,15 +88,48 @@ class ThreeSixtyInteriorViewActivity : AppCompatActivity(),View.OnTouchListener,
             binding.svBack.startShimmer()
 
             preLoadBack(tsvParamBack)
+
+            //load vack image
+            Glide.with(this)
+                .load(backFramesList.get(tsvParamBack.mImageIndex))
+                .into(binding.ivBackView)
         }else{
             binding.svBack.stopShimmer()
             binding.svBack.visibility = View.GONE
 
             Toast.makeText(this,"Frames list empty failed to load back view",Toast.LENGTH_LONG)
         }
+
+
+        setListeners()
+
+    }
+
+    private fun setListeners() {
         binding.ivBack.setOnClickListener {
             onBackPressed()
         }
+
+        //front view listener
+        binding.tvShare.setOnClickListener(this@ThreeSixtyInteriorViewActivity)
+        binding.ivShare.setOnClickListener(this@ThreeSixtyInteriorViewActivity)
+
+
+        binding.ivCopyLink.setOnClickListener(this@ThreeSixtyInteriorViewActivity)
+        binding.tvCopyLink.setOnClickListener(this@ThreeSixtyInteriorViewActivity)
+
+        binding.ivShareLink.setOnClickListener(this@ThreeSixtyInteriorViewActivity)
+        binding.tvShareLink.setOnClickListener(this@ThreeSixtyInteriorViewActivity)
+
+        //back view listeners
+        binding.tvBackShare.setOnClickListener(this@ThreeSixtyInteriorViewActivity)
+        binding.ivBackShare.setOnClickListener(this@ThreeSixtyInteriorViewActivity)
+
+        binding.tvBackCopyLink.setOnClickListener(this@ThreeSixtyInteriorViewActivity)
+        binding.ivBackCopyLink.setOnClickListener(this@ThreeSixtyInteriorViewActivity)
+
+        binding.ivBackShareLink.setOnClickListener(this@ThreeSixtyInteriorViewActivity)
+        binding.tvBackShareLink.setOnClickListener(this@ThreeSixtyInteriorViewActivity)
     }
 
     override fun onBackPressed() {
@@ -130,32 +168,15 @@ class ThreeSixtyInteriorViewActivity : AppCompatActivity(),View.OnTouchListener,
                     ): Boolean {
                         Log.d(TAG, "onResourceReady: paseed " + index)
 
-                        if (index == tsvParams.mImageIndex){
-                            tsvParams.placeholder = resource!!
-                        }
 
                         if (index == tsvParams.framesList.size - 1) {
-
 
                             binding.svFront.stopShimmer()
                             binding.svFront.visibility = View.GONE
 
-
-                            loadImage(tsvParams,binding.ivFront)
-
                             //show images and set listener
                             binding.clFront.visibility = View.VISIBLE
                             showGoToHomeButton()
-
-                            binding.tvShare.setOnClickListener(this@ThreeSixtyInteriorViewActivity)
-                            binding.ivShare.setOnClickListener(this@ThreeSixtyInteriorViewActivity)
-
-
-                            binding.ivCopyLink.setOnClickListener(this@ThreeSixtyInteriorViewActivity)
-                            binding.tvCopyLink.setOnClickListener(this@ThreeSixtyInteriorViewActivity)
-
-                            binding.ivShareLink.setOnClickListener(this@ThreeSixtyInteriorViewActivity)
-                            binding.tvShareLink.setOnClickListener(this@ThreeSixtyInteriorViewActivity)
 
                             binding.ivFront.setOnTouchListener(this@ThreeSixtyInteriorViewActivity)
                         }
@@ -198,9 +219,6 @@ class ThreeSixtyInteriorViewActivity : AppCompatActivity(),View.OnTouchListener,
                     ): Boolean {
                         Log.d(TAG, "onResourceReady: paseed " + index)
 
-                        if (index == tsvParams.mImageIndex){
-                            tsvParams.placeholder = resource!!
-                        }
 
                         if (index == tsvParams.framesList.size - 1) {
 
@@ -212,15 +230,6 @@ class ThreeSixtyInteriorViewActivity : AppCompatActivity(),View.OnTouchListener,
                             //show images and set listener
                             binding.clBack.visibility = View.VISIBLE
                             showGoToHomeButton()
-
-                            binding.tvBackShare.setOnClickListener(this@ThreeSixtyInteriorViewActivity)
-                            binding.ivBackShare.setOnClickListener(this@ThreeSixtyInteriorViewActivity)
-
-                            binding.tvBackCopyLink.setOnClickListener(this@ThreeSixtyInteriorViewActivity)
-                            binding.ivBackCopyLink.setOnClickListener(this@ThreeSixtyInteriorViewActivity)
-
-                            binding.ivBackShareLink.setOnClickListener(this@ThreeSixtyInteriorViewActivity)
-                            binding.tvBackShareLink.setOnClickListener(this@ThreeSixtyInteriorViewActivity)
 
                             binding.ivBackView.setOnTouchListener(this@ThreeSixtyInteriorViewActivity)
 
@@ -366,7 +375,6 @@ class ThreeSixtyInteriorViewActivity : AppCompatActivity(),View.OnTouchListener,
                             tsvParamFront.mImageIndex++
                             if (tsvParamFront.mImageIndex >= tsvParamFront.framesList.size) tsvParamFront.mImageIndex = tsvParamFront.framesList.size - 1
 
-                            //iv.setImageLevel(mImageIndex)
                             loadImage(tsvParamFront,binding.ivFront)
 
                         }
@@ -375,7 +383,6 @@ class ThreeSixtyInteriorViewActivity : AppCompatActivity(),View.OnTouchListener,
                             if (tsvParamFront.mImageIndex < 0) tsvParamFront.mImageIndex = 0
 
                             loadImage(tsvParamFront,binding.ivFront)
-                            //iv.setImageLevel(mImageIndex)
                         }
                         tsvParamFront.mStartX = event.x.toInt()
                         tsvParamFront.mStartY = event.y.toInt()
