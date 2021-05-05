@@ -15,6 +15,7 @@ import android.widget.TextView
 import androidx.core.content.ContextCompat
 import androidx.core.content.ContextCompat.startActivity
 import androidx.recyclerview.widget.RecyclerView
+import com.airbnb.lottie.LottieAnimationView
 import com.bumptech.glide.Glide
 import com.spyneai.R
 import com.spyneai.activity.ShowImagesActivity
@@ -44,9 +45,8 @@ class OngoingProjectAdapter(
         val tvTotalImages: TextView = view.findViewById(R.id.tvTotalImages)
         val tvImageProcessing: TextView = view.findViewById(R.id.tvImageProcessing)
         val tvSkuId: TextView = view.findViewById(R.id.tvSkuId)
-        val tvDots: TextView = view.findViewById(R.id.tvDots)
         val ivRemoveCard: ImageView = view.findViewById(R.id.ivRemoveCard)
-        val tvImageCount: TextView = view.findViewById(R.id.tvImageCount)
+        val lottieProgressDots: LottieAnimationView = view.findViewById(R.id.lottieProgressDots)
 
 
     }
@@ -67,9 +67,7 @@ class OngoingProjectAdapter(
                 ongoingProjectList[position].totalExteriorImages.toString() + " Images"
         holder.tvImageProcessing.text = ongoingProjectList[position].imageProcessing
         holder.tvSkuId.text = ongoingProjectList[position].skuId
-        holder.tvDots.blink()
-        holder.tvImageCount.text =
-            ongoingProjectList[position].totalImageProcessed.toString() + "/" + ongoingProjectList[position].totalImageToProcessed.toString()
+        holder.lottieProgressDots.setPadding(0, -10, -10, 0);
         Glide.with(context)
             .load(ongoingProjectList[position].imageFileList[0])
             .into(holder.ivImage)
@@ -85,11 +83,6 @@ class OngoingProjectAdapter(
             ongoingProjectList.removeAt(position)
             notifyItemRemoved(position)
             notifyItemRangeChanged(position, ongoingProjectList.size)
-
-        }
-        if (ongoingProjectList[position].imageProcessing.equals("AI Image Processing")){
-            holder.tvDots.text = ""
-            holder.tvDots.text = "....."
 
         }
 
@@ -108,8 +101,7 @@ class OngoingProjectAdapter(
                     viewOrder()
                 }
             }
-            holder.tvDots.clearAnimation()
-            holder.tvDots.visibility = View.GONE
+            holder.lottieProgressDots.visibility = View.GONE
             holder.ivRemoveCard.visibility = View.VISIBLE
         }
 

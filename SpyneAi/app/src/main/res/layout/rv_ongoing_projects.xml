@@ -102,13 +102,14 @@
             android:textSize="@dimen/dp_12" />
         <LinearLayout
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal">
+            android:layout_height="@dimen/dp_30"
+            android:orientation="horizontal"
+            android:gravity="center">
 
         <TextView
             android:id="@+id/tvImageProcessing"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_height="@dimen/dp_20"
             android:fontFamily="@font/medium"
             android:hint="image processing started"
             android:textColor="@color/black"
@@ -116,6 +117,7 @@
             android:textSize="@dimen/dp_12"/>
 
             <TextView
+                android:visibility="gone"
                 android:id="@+id/tvDots"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -129,17 +131,15 @@
 
     </LinearLayout>
 
-    <TextView
-        android:visibility="gone"
-        android:id="@+id/tvImageCount"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:fontFamily="@font/bold"
-        android:hint="4/1"
+
+    <com.airbnb.lottie.LottieAnimationView
+        android:id="@+id/lottieProgressDots"
+        android:layout_width="@dimen/dp_40"
+        android:layout_height="@dimen/dp_40"
         android:layout_alignParentRight="true"
-        android:textColor="@color/black"
-        android:textColorHint="@color/black"
-        android:textSize="@dimen/dp_12" />
+        app:lottie_autoPlay="true"
+        app:lottie_rawRes="@raw/progress_dots"
+        app:lottie_loop="true" />
 
     <ImageView
         android:visibility="gone"
