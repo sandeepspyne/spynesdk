@@ -19,6 +19,7 @@ import com.facebook.stetho.Stetho
 import com.facebook.stetho.okhttp3.StethoInterceptor
 import com.google.android.play.core.appupdate.AppUpdateManagerFactory
 import com.google.android.play.core.install.model.AppUpdateType
+import com.google.android.play.core.install.model.AppUpdateType.IMMEDIATE
 import com.google.android.play.core.install.model.UpdateAvailability
 import kotlinx.android.synthetic.main.activity_splash.*
 import okhttp3.OkHttpClient
@@ -26,6 +27,7 @@ import okhttp3.OkHttpClient
 
 class SplashActivity : AppCompatActivity() {
     private val MY_REQUEST_CODE: Int = 1
+    val appUpdateManager = AppUpdateManagerFactory.create(this)
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -43,9 +45,9 @@ class SplashActivity : AppCompatActivity() {
             .addNetworkInterceptor(StethoInterceptor())
             .build()
 
-       // setAnimation()
-        setSplash();
-//        autoUpdates()
+        setAnimation()
+//        setSplash();
+        autoUpdates()
 
     }
 
@@ -55,12 +57,13 @@ class SplashActivity : AppCompatActivity() {
     }
 
     private fun autoUpdates() {
-        val appUpdateManager = AppUpdateManagerFactory.create(this)
+
 
         val appUpdateInfoTask = appUpdateManager.appUpdateInfo
         appUpdateInfoTask.addOnSuccessListener { appUpdateInfo ->
             if (appUpdateInfo.updateAvailability() == UpdateAvailability.UPDATE_AVAILABLE
-                && appUpdateInfo.isUpdateTypeAllowed(AppUpdateType.IMMEDIATE)) {
+                && appUpdateInfo.isUpdateTypeAllowed(AppUpdateType.IMMEDIATE)
+            ) {
 
                 // Request the update.
                 appUpdateManager.startUpdateFlowForResult(
@@ -73,9 +76,8 @@ class SplashActivity : AppCompatActivity() {
                     // Include a request code to later monitor this update request.
                     MY_REQUEST_CODE
                 )
-            }
-            else{
-               // setSplash();
+            } else {
+                setSplash();
             }
         }
 
@@ -96,18 +98,54 @@ class SplashActivity : AppCompatActivity() {
         }, 3000)
     }
 
+    //    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+//        super.onActivityResult(requestCode, resultCode, data)
+//        if (requestCode == MY_REQUEST_CODE) {
+//            if (resultCode != RESULT_OK) {
+//                Log.e("UPdate", "Update flow failed! Result code: $resultCode")
+//                // If the update is cancelled or fails,
+//                // you can request to start the update again.
+//            }
+//            else{
+//               // setSplash()
+//            }
+//
+//        }
+//    }
+
+    // Checks that the update is not stalled during 'onResume()'.
+// However, you should execute this check at all entry points into the app.
+    override fun onResume() {
+        super.onResume()
+
+        appUpdateManager
+            .appUpdateInfo
+            .addOnSuccessListener { appUpdateInfo ->
+                if (appUpdateInfo.updateAvailability()
+                    == UpdateAvailability.DEVELOPER_TRIGGERED_UPDATE_IN_PROGRESS
+                ) {
+                    // If an in-app update is already running, resume the update.
+                    appUpdateManager.startUpdateFlowForResult(
+                        appUpdateInfo,
+                        IMMEDIATE,
+                        this,
+                        MY_REQUEST_CODE
+                    )
+                }
+            }
+    }
+
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         if (requestCode == MY_REQUEST_CODE) {
             if (resultCode != RESULT_OK) {
-                Log.e("UPdate", "Update flow failed! Result code: $resultCode")
+                Log.e("MY_APP", "Update flow failed! Result code: $resultCode")
                 // If the update is cancelled or fails,
                 // you can request to start the update again.
             }
             else{
-               // setSplash()
+                setSplash()
             }
-
         }
     }
 }
