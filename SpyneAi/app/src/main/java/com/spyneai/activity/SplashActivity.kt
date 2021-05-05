@@ -17,6 +17,7 @@ import android.util.Log
 
 import com.facebook.stetho.Stetho
 import com.facebook.stetho.okhttp3.StethoInterceptor
+import com.google.android.play.core.appupdate.AppUpdateManager
 import com.google.android.play.core.appupdate.AppUpdateManagerFactory
 import com.google.android.play.core.install.model.AppUpdateType
 import com.google.android.play.core.install.model.AppUpdateType.IMMEDIATE
@@ -27,7 +28,8 @@ import okhttp3.OkHttpClient
 
 class SplashActivity : AppCompatActivity() {
     private val MY_REQUEST_CODE: Int = 1
-    val appUpdateManager = AppUpdateManagerFactory.create(this)
+
+    lateinit var appUpdateManager: AppUpdateManager
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -35,7 +37,6 @@ class SplashActivity : AppCompatActivity() {
             WindowManager.LayoutParams.FLAG_FULLSCREEN,
             WindowManager.LayoutParams.FLAG_FULLSCREEN
         )
-
         setContentView(R.layout.activity_splash)
         AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
 
@@ -44,6 +45,9 @@ class SplashActivity : AppCompatActivity() {
         OkHttpClient.Builder()
             .addNetworkInterceptor(StethoInterceptor())
             .build()
+
+
+        appUpdateManager = AppUpdateManagerFactory.create(this)
 
         setAnimation()
 //        setSplash();
@@ -57,7 +61,6 @@ class SplashActivity : AppCompatActivity() {
     }
 
     private fun autoUpdates() {
-
 
         val appUpdateInfoTask = appUpdateManager.appUpdateInfo
         appUpdateInfoTask.addOnSuccessListener { appUpdateInfo ->
