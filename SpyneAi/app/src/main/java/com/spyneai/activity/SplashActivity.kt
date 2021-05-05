@@ -22,6 +22,7 @@ import com.google.android.play.core.appupdate.AppUpdateManagerFactory
 import com.google.android.play.core.install.model.AppUpdateType
 import com.google.android.play.core.install.model.AppUpdateType.IMMEDIATE
 import com.google.android.play.core.install.model.UpdateAvailability
+import com.spyneai.BuildConfig
 import kotlinx.android.synthetic.main.activity_splash.*
 import okhttp3.OkHttpClient
 
@@ -50,7 +51,9 @@ class SplashActivity : AppCompatActivity() {
         appUpdateManager = AppUpdateManagerFactory.create(this)
 
         setAnimation()
-//        setSplash();
+        if (BuildConfig.DEBUG) {
+            setSplash();
+        }else
         autoUpdates()
 
     }
