@@ -10,8 +10,8 @@
     {
       "type": "SINGLE",
       "filters": [],
-      "versionCode": 36,
-      "versionName": "2.59",
+      "versionCode": 34,
+      "versionName": "2.46",
       "outputFile": "app-release.apk"
     }
   ]

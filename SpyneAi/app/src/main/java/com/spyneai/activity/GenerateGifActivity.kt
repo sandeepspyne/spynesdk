@@ -165,13 +165,14 @@ class GenerateGifActivity : AppCompatActivity(), PickiTCallbacks {
             ) {
                 if (response.isSuccessful) {
                     if (!response.body().isNullOrEmpty() && response.body()?.size!! > 0) {
+                        Glide.with(this@GenerateGifActivity) // replace with 'this' if it's in activity
+                            .load(response.body()!![0].gifUrl)
+                            .error(R.mipmap.defaults) // show error drawable if the image is not a gif
+                            .into(imageViewGif)
+                        backgroundSelect = response.body()!![0].imageId.toString()
                         for (i in 0..response.body()!!.size-1)
                         (carBackgroundGifList as ArrayList).add(response.body()!![i])
                         setBackgroundsCar()
-                        Glide.with(this@GenerateGifActivity) // replace with 'this' if it's in activity
-                            .load(carBackgroundGifList[0].gifUrl)
-                            .error(R.mipmap.defaults) // show error drawable if the image is not a gif
-                            .into(imageViewGif)
                         Utilities.hideProgressDialog()
                     } else {
                         Toast.makeText(
