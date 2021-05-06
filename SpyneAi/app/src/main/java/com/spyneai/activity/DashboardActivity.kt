@@ -20,6 +20,10 @@ import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.FragmentTransaction
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.google.android.play.core.appupdate.AppUpdateManager
+import com.google.android.play.core.appupdate.AppUpdateManagerFactory
+import com.google.android.play.core.install.model.AppUpdateType
+import com.google.android.play.core.install.model.UpdateAvailability
 import com.spyneai.extras.OnboardTwoActivity
 import com.spyneai.R
 import com.spyneai.adapter.CategoriesDashboardAdapter
@@ -36,6 +40,7 @@ import com.spyneai.model.shoot.UpdateShootCategoryRequest
 import com.spyneai.needs.AppConstants
 import com.spyneai.needs.Utilities
 import com.spyneai.credits.WalletActivity
+import com.synnapps.carouselview.BuildConfig
 import com.synnapps.carouselview.ViewListener
 import kotlinx.android.synthetic.main.activity_dashboard.*
 import kotlinx.android.synthetic.main.fragment_home.view.*
@@ -51,16 +56,19 @@ class DashboardActivity : AppCompatActivity() {
     var fragment: Fragment? = null
     var fragmentManager: FragmentManager? = null
     var fragmentTransaction: FragmentTransaction? = null
+    lateinit var appUpdateManager: AppUpdateManager
+    private val MY_REQUEST_CODE: Int = 1
 
-    lateinit var categoriesResponseList : ArrayList<Data>
-    lateinit var categoriesAdapter : CategoriesDashboardAdapter
-    lateinit var rv_categories : RecyclerView
+    lateinit var categoriesResponseList: ArrayList<Data>
+    lateinit var categoriesAdapter: CategoriesDashboardAdapter
+    lateinit var rv_categories: RecyclerView
     val sampleImages = intArrayOf(
         R.mipmap.w1,
         R.mipmap.w2,
         R.mipmap.w3,
         R.mipmap.w4
     )
+    lateinit var PACKAGE_NAME: String
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -68,48 +76,86 @@ class DashboardActivity : AppCompatActivity() {
 
         AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
 
-        showCoachMarks()
-        Utilities.savePrefrence(
+        PACKAGE_NAME = getApplicationContext().getPackageName();
+
+        appUpdateManager = AppUpdateManagerFactory.create(this)
+        if (PACKAGE_NAME.equals("com.spyneai.debug")){
+            Utilities.savePrefrence(
                 this,
                 AppConstants.FRAME_SHOOOTS,
                 ""
-        )
-        Utilities.savePrefrence(this,
-                AppConstants.SKU_ID,
-                "")
-        setRecycler()
-
-        if (Utilities.isNetworkAvailable(this))
-            fetchCategories()
-        else
-            Toast.makeText(
+            )
+            Utilities.savePrefrence(
                 this,
-                "Please check your internet connection",
-                Toast.LENGTH_SHORT
-            ).show()
+                AppConstants.SKU_ID,
+                ""
+            )
+            setRecycler()
+            if (Utilities.isNetworkAvailable(this))
+                fetchCategories()
+            else
+                Toast.makeText(
+                    this,
+                    "Please check your internet connection",
+                    Toast.LENGTH_SHORT
+                ).show()
+            freeCreditEligiblityCheck()
+            setCarosels()
+            setFooters(0)
+            finishAllBacks()
+            listeners()
+        } else {
+            autoUpdates()
+        }
+    }
 
+    private fun autoUpdates() {
 
+        val appUpdateInfoTask = appUpdateManager.appUpdateInfo
+        appUpdateInfoTask.addOnSuccessListener { appUpdateInfo ->
+            if (appUpdateInfo.updateAvailability() == UpdateAvailability.UPDATE_AVAILABLE
+                && appUpdateInfo.isUpdateTypeAllowed(AppUpdateType.IMMEDIATE)
+            ) {
 
-        ivAppLogo.setOnClickListener {
-
+                // Request the update.
+                appUpdateManager.startUpdateFlowForResult(
+                    // Pass the intent that is returned by 'getAppUpdateInfo()'.
+                    appUpdateInfo,
+                    // Or 'AppUpdateType.FLEXIBLE' for flexible updates.
+                    AppUpdateType.IMMEDIATE,
+                    // The current activity making the update request.
+                    this,
+                    // Include a request code to later monitor this update request.
+                    MY_REQUEST_CODE
+                )
+            } else {
+                Utilities.savePrefrence(
+                    this,
+                    AppConstants.FRAME_SHOOOTS,
+                    ""
+                )
+                Utilities.savePrefrence(
+                    this,
+                    AppConstants.SKU_ID,
+                    ""
+                )
+                setRecycler()
+                if (Utilities.isNetworkAvailable(this))
+                    fetchCategories()
+                else
+                    Toast.makeText(
+                        this,
+                        "Please check your internet connection",
+                        Toast.LENGTH_SHORT
+                    ).show()
+                freeCreditEligiblityCheck()
+                setCarosels()
+                setFooters(0)
+                finishAllBacks()
+                listeners()
+            }
         }
 
-        iv_wallet.setOnClickListener { startActivity(Intent(this,WalletActivity::class.java)) }
-
-        freeCreditEligiblityCheck()
-
-        setCarosels()
-        setFooters(0)
-/*
-        Utilities.savePrefrence(
-            this,
-            AppConstants.tokenId,
-            "C1i19DFuH"
-        )
-*/
-
-        finishAllBacks()
-        listeners()
     }
 
 
@@ -130,9 +176,9 @@ class DashboardActivity : AppCompatActivity() {
 
         })
 
-
-        carouselView!!.setPageCount(sampleImages.size);
         carouselView.setViewListener(viewListener);
+        carouselView!!.setPageCount(sampleImages.size);
+
 
         tvHaveLook.setOnClickListener(View.OnClickListener {
             startActivity(
@@ -161,9 +207,13 @@ class DashboardActivity : AppCompatActivity() {
                 override fun onBtnClick(position: Int) {
                     Log.e("position cat", position.toString())
                     if (position < 3) {
-                        Utilities.savePrefrence(this@DashboardActivity, AppConstants.CATEGORY_NAME, categoriesResponseList[position].displayName)
+                        Utilities.savePrefrence(
+                            this@DashboardActivity,
+                            AppConstants.CATEGORY_NAME,
+                            categoriesResponseList[position].displayName
+                        )
                         setShoot(categoriesResponseList, position)
-                    }else
+                    } else
                         Toast.makeText(
                             this@DashboardActivity,
                             "Coming Soon !",
@@ -304,9 +354,6 @@ class DashboardActivity : AppCompatActivity() {
         })
     }
 
-    private fun showCoachMarks() {
-
-    }
     //var viewListener = ViewListener { layoutInflater.inflate(R.layout.view_custom, null) }
     private fun finishAllBacks() {
         SplashActivity().finish()
@@ -317,6 +364,7 @@ class DashboardActivity : AppCompatActivity() {
     }
 
     private fun listeners() {
+        iv_wallet.setOnClickListener { startActivity(Intent(this, WalletActivity::class.java)) }
         ivClicks.setOnClickListener(View.OnClickListener {
             val intent = Intent(applicationContext, CategoriesActivity::class.java)
             startActivity(intent)
@@ -327,7 +375,7 @@ class DashboardActivity : AppCompatActivity() {
         })
 
         tv_wallet.setOnClickListener(View.OnClickListener {
-            startActivity(Intent(this,WalletActivity::class.java))
+            startActivity(Intent(this, WalletActivity::class.java))
         })
 
         tvProfile.setOnClickListener(View.OnClickListener {
@@ -339,7 +387,7 @@ class DashboardActivity : AppCompatActivity() {
         })
     }
 
-    fun setFooters(positionsClicked : Int) {
+    fun setFooters(positionsClicked: Int) {
         if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.M) {
 
             when (positionsClicked) {
@@ -350,7 +398,12 @@ class DashboardActivity : AppCompatActivity() {
                     tvProfile.setTextColor(getColor(R.color.black))
 
                     tvHome.setCompoundDrawablesWithIntrinsicBounds(0, R.mipmap.homes, 0, 0);
-                    tv_wallet.setCompoundDrawablesWithIntrinsicBounds(0, R.drawable.wallet_small, 0, 0);
+                    tv_wallet.setCompoundDrawablesWithIntrinsicBounds(
+                        0,
+                        R.drawable.wallet_small,
+                        0,
+                        0
+                    );
                     tvOrders.setCompoundDrawablesWithIntrinsicBounds(0, R.mipmap.order, 0, 0);
                     tvProfile.setCompoundDrawablesWithIntrinsicBounds(0, R.mipmap.profile, 0, 0);
                 }
@@ -361,7 +414,12 @@ class DashboardActivity : AppCompatActivity() {
                     tvProfile.setTextColor(getColor(R.color.black))
 
                     tvHome.setCompoundDrawablesWithIntrinsicBounds(0, R.mipmap.home, 0, 0);
-                    tv_wallet.setCompoundDrawablesWithIntrinsicBounds(0, R.drawable.wallet_small, 0, 0);
+                    tv_wallet.setCompoundDrawablesWithIntrinsicBounds(
+                        0,
+                        R.drawable.wallet_small,
+                        0,
+                        0
+                    );
                     tvOrders.setCompoundDrawablesWithIntrinsicBounds(0, R.mipmap.order, 0, 0);
                     tvProfile.setCompoundDrawablesWithIntrinsicBounds(0, R.mipmap.profile, 0, 0);
                 }
@@ -372,7 +430,12 @@ class DashboardActivity : AppCompatActivity() {
                     tvProfile.setTextColor(getColor(R.color.black))
 
                     tvHome.setCompoundDrawablesWithIntrinsicBounds(0, R.mipmap.home, 0, 0);
-                    tv_wallet.setCompoundDrawablesWithIntrinsicBounds(0, R.drawable.wallet_small, 0, 0);
+                    tv_wallet.setCompoundDrawablesWithIntrinsicBounds(
+                        0,
+                        R.drawable.wallet_small,
+                        0,
+                        0
+                    );
                     tvOrders.setCompoundDrawablesWithIntrinsicBounds(0, R.mipmap.orders, 0, 0);
                     tvProfile.setCompoundDrawablesWithIntrinsicBounds(0, R.mipmap.profile, 0, 0);
                 }
@@ -383,7 +446,12 @@ class DashboardActivity : AppCompatActivity() {
                     tvProfile.setTextColor(getColor(R.color.primary))
 
                     tvHome.setCompoundDrawablesWithIntrinsicBounds(0, R.mipmap.home, 0, 0);
-                    tv_wallet.setCompoundDrawablesWithIntrinsicBounds(0, R.drawable.wallet_small, 0, 0);
+                    tv_wallet.setCompoundDrawablesWithIntrinsicBounds(
+                        0,
+                        R.drawable.wallet_small,
+                        0,
+                        0
+                    );
                     tvOrders.setCompoundDrawablesWithIntrinsicBounds(0, R.mipmap.order, 0, 0);
                     tvProfile.setCompoundDrawablesWithIntrinsicBounds(0, R.mipmap.profiles, 0, 0);
                 }
@@ -391,34 +459,44 @@ class DashboardActivity : AppCompatActivity() {
         }
     }
 
-    private fun freeCreditEligiblityCheck(){
+    private fun freeCreditEligiblityCheck() {
         val userId = RequestBody.create(
             MultipartBody.FORM,
             Utilities.getPreference(this, AppConstants.tokenId)!!
         )
 
-            val emaiId = RequestBody.create(
-                MultipartBody.FORM,
-        Utilities.getPreference(this, AppConstants.EMAIL_ID)!!
+        val emaiId = RequestBody.create(
+            MultipartBody.FORM,
+            Utilities.getPreference(this, AppConstants.EMAIL_ID)!!
         )
 
         val request = RetrofitClients.buildService(APiService::class.java)
         val call = request.UserFreeCreditEligiblityCheck(userId, emaiId)
 
         call?.enqueue(object : Callback<FreeCreditEligblityResponse> {
-            override fun onResponse(call: Call<FreeCreditEligblityResponse>, response: Response<FreeCreditEligblityResponse>) {
+            override fun onResponse(
+                call: Call<FreeCreditEligblityResponse>,
+                response: Response<FreeCreditEligblityResponse>
+            ) {
                 Utilities.hideProgressDialog()
-                if (response.isSuccessful ) {
+                if (response.isSuccessful) {
                     if (response.body()?.status == 200)
                         showFreeCreditDialog(response.body()!!.message)
-                }
-                else{
-                    Toast.makeText(this@DashboardActivity, "Server not responding!!!", Toast.LENGTH_SHORT).show()
+                } else {
+                    Toast.makeText(
+                        this@DashboardActivity,
+                        "Server not responding!!!",
+                        Toast.LENGTH_SHORT
+                    ).show()
                 }
             }
 
             override fun onFailure(call: Call<FreeCreditEligblityResponse>, t: Throwable) {
-                Toast.makeText(this@DashboardActivity, "Server not responding!!!", Toast.LENGTH_SHORT).show()
+                Toast.makeText(
+                    this@DashboardActivity,
+                    "Server not responding!!!",
+                    Toast.LENGTH_SHORT
+                ).show()
             }
         })
     }
@@ -429,8 +507,8 @@ class DashboardActivity : AppCompatActivity() {
         dialog.requestWindowFeature(Window.FEATURE_NO_TITLE)
         dialog.setCancelable(true)
 
-        var dialogView = LayoutInflater.from(this).inflate(R.layout.free_credit_dialog,null)
-        var tvMessage : TextView = dialogView.findViewById(R.id.tvSkuNameDialog)
+        var dialogView = LayoutInflater.from(this).inflate(R.layout.free_credit_dialog, null)
+        var tvMessage: TextView = dialogView.findViewById(R.id.tvSkuNameDialog)
         tvMessage.text = message
 
         dialog.setContentView(dialogView)
@@ -452,6 +530,46 @@ class DashboardActivity : AppCompatActivity() {
         super.onBackPressed()
         moveTaskToBack(true);
         //System.exit(1);
+    }
+
+
+    override fun onResume() {
+        super.onResume()
+
+        appUpdateManager
+            .appUpdateInfo
+            .addOnSuccessListener { appUpdateInfo ->
+                if (appUpdateInfo.updateAvailability()
+                    == UpdateAvailability.DEVELOPER_TRIGGERED_UPDATE_IN_PROGRESS
+                ) {
+                    // If an in-app update is already running, resume the update.
+                    appUpdateManager.startUpdateFlowForResult(
+                        appUpdateInfo,
+                        AppUpdateType.IMMEDIATE,
+                        this,
+                        MY_REQUEST_CODE
+                    )
+                }
+            }
+    }
+
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        if (requestCode == MY_REQUEST_CODE) {
+            if (resultCode != AppCompatActivity.RESULT_OK) {
+                this.finishAffinity();
+                Toast.makeText(
+                    this,
+                    "Update flow failed!" + requestCode,
+                    Toast.LENGTH_SHORT
+                ).show()
+
+                Log.e("MY_APP", "Update flow failed! Result code: $resultCode")
+                // If the update is cancelled or fails,
+                // you can request to start the update again.
+            }
+        }
     }
 
 }

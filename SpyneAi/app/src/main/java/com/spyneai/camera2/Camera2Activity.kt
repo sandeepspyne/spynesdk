@@ -650,7 +650,7 @@ class Camera2Activity : AppCompatActivity(), SubCategoriesAdapter.BtnClickListen
                 Utilities.hideProgressDialog()
                 Toast.makeText(
                     applicationContext,
-                    "Server not responding!!!",
+                    "Server not responding(getSubCategories)",
                     Toast.LENGTH_SHORT
                 ).show()
             }
@@ -907,7 +907,7 @@ class Camera2Activity : AppCompatActivity(), SubCategoriesAdapter.BtnClickListen
                 Utilities.hideProgressDialog()
                 Toast.makeText(
                     applicationContext,
-                    "Server not responding!!!",
+                    "Server not responding(editSku)",
                     Toast.LENGTH_SHORT
                 ).show()
             }
@@ -1389,6 +1389,11 @@ class Camera2Activity : AppCompatActivity(), SubCategoriesAdapter.BtnClickListen
 
             override fun onFailure(call: Call<CreateCollectionResponse>, t: Throwable) {
                 Log.e("ok", "no way")
+                Toast.makeText(
+                    applicationContext,
+                    "Server not responding(updateShootProduct)",
+                    Toast.LENGTH_SHORT
+                ).show()
 
             }
         })
@@ -1569,7 +1574,7 @@ class Camera2Activity : AppCompatActivity(), SubCategoriesAdapter.BtnClickListen
                 Log.e("ok", "no way")
                 Toast.makeText(
                     applicationContext,
-                    "Server not responding!!!",
+                    "Server not responding(updateSku)",
                     Toast.LENGTH_SHORT
                 ).show()
                 Utilities.hideProgressDialog()
