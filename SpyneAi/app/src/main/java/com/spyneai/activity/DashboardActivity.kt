@@ -79,34 +79,34 @@ class DashboardActivity : AppCompatActivity() {
         PACKAGE_NAME = getApplicationContext().getPackageName();
 
         appUpdateManager = AppUpdateManagerFactory.create(this)
-//        if (PACKAGE_NAME.equals("com.spyneai.debug")){
-//            Utilities.savePrefrence(
-//                this,
-//                AppConstants.FRAME_SHOOOTS,
-//                ""
-//            )
-//            Utilities.savePrefrence(
-//                this,
-//                AppConstants.SKU_ID,
-//                ""
-//            )
-//            setRecycler()
-//            if (Utilities.isNetworkAvailable(this))
-//                fetchCategories()
-//            else
-//                Toast.makeText(
-//                    this,
-//                    "Please check your internet connection",
-//                    Toast.LENGTH_SHORT
-//                ).show()
-//            freeCreditEligiblityCheck()
-//            setCarosels()
-//            setFooters(0)
-//            finishAllBacks()
-//            listeners()
-//        } else {
+        if (PACKAGE_NAME.equals("com.spyneai.debug")){
+            Utilities.savePrefrence(
+                this,
+                AppConstants.FRAME_SHOOOTS,
+                ""
+            )
+            Utilities.savePrefrence(
+                this,
+                AppConstants.SKU_ID,
+                ""
+            )
+            setRecycler()
+            if (Utilities.isNetworkAvailable(this))
+                fetchCategories()
+            else
+                Toast.makeText(
+                    this,
+                    "Please check your internet connection",
+                    Toast.LENGTH_SHORT
+                ).show()
+            freeCreditEligiblityCheck()
+            setCarosels()
+            setFooters(0)
+            finishAllBacks()
+            listeners()
+        } else {
             autoUpdates()
-//        }
+        }
     }
 
     private fun autoUpdates() {

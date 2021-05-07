@@ -21,15 +21,14 @@ android {
         applicationId "com.spyneai"
         minSdkVersion 21
         targetSdkVersion 30
-        versionCode 34
-        versionName "2.46"
+        versionCode 35
+        versionName "2.47"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
 
     buildTypes {
         release {
             minifyEnabled false
-            debuggable true
           //  proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
             firebaseCrashlytics {
                 // If you don't need crash reporting for your debug build,
@@ -42,7 +41,6 @@ android {
             versionNameSuffix ".debug"
             applicationIdSuffix ".debug"
             minifyEnabled false
-            debuggable true
         }
     }
     compileOptions {
