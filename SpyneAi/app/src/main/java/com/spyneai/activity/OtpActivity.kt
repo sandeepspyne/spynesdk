@@ -392,7 +392,7 @@ public class OtpActivity : AppCompatActivity() {
                         OnboardOneActivity().finish()
                         OnboardTwoActivity().finish()
                         OnboardThreeActivity().finish()
-                        SignInActivity().finish()
+                        SignInUsingEmailActivity().finish()
                         tvError.visibility = View.INVISIBLE
 
                     }else{

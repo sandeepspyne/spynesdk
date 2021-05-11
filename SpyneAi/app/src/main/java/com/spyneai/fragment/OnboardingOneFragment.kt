@@ -1,6 +1,5 @@
 package com.spyneai.fragment
 
-import android.content.Intent
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
@@ -8,9 +7,6 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
 import com.spyneai.R
-import com.spyneai.activity.OnboardingsActivity
-import com.spyneai.activity.SignInActivity
-import com.spyneai.needs.AppConstants
 
 class OnboardingOneFragment : Fragment() {
     private lateinit var tvGetStarted: TextView

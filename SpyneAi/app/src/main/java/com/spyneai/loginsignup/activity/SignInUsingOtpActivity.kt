@@ -20,12 +20,12 @@ import com.spyneai.model.login.LoginRequest
 import com.spyneai.model.login.LoginResponse
 import com.spyneai.needs.AppConstants
 import com.spyneai.needs.Utilities
-import kotlinx.android.synthetic.main.activity_sign_in.*
+import kotlinx.android.synthetic.main.activity_sign_in_using_email.*
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 
-class SignInActivity : AppCompatActivity() {
+class SignInUsingEmailActivity : AppCompatActivity() {
 
     private lateinit var etNumber : EditText
     private lateinit var etEmail : EditText
@@ -40,7 +40,7 @@ class SignInActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_sign_in)
+        setContentView(R.layout.activity_sign_in_using_email)
 
         AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
 
@@ -127,26 +127,26 @@ class SignInActivity : AppCompatActivity() {
                 if (response.isSuccessful) {
                     if (response.body()!!.header.tokenId != null) {
                         Toast.makeText(
-                            this@SignInActivity,
+                            this@SignInUsingEmailActivity,
                             response.body()!!.msgInfo.msgDescription,
                             Toast.LENGTH_SHORT
                         ).show()
 
                         //  Log.e("ok", response.body()!!.header.tokenId)
-                        Utilities.savePrefrence(this@SignInActivity,
+                        Utilities.savePrefrence(this@SignInUsingEmailActivity,
                             AppConstants.EMAIL_ID, etEmail.text.toString())
-                        val intent = Intent(this@SignInActivity, OtpActivity::class.java)
+                        val intent = Intent(this@SignInUsingEmailActivity, OtpActivity::class.java)
                         if (response.body()!!.header.tokenId != null)
                             intent.putExtra(AppConstants.tokenId, response.body()!!.header.tokenId)
                         startActivity(intent)
                     }
                     else{
-                        val intent = Intent(this@SignInActivity, OtpActivity::class.java)
+                        val intent = Intent(this@SignInUsingEmailActivity, OtpActivity::class.java)
                         if (response.body()!!.header.tokenId != null)
                             intent.putExtra(AppConstants.tokenId, response.body()!!.header.tokenId)
                         startActivity(intent)
                         Toast.makeText(
-                            this@SignInActivity,
+                            this@SignInUsingEmailActivity,
                             "Otp Sent",
                             Toast.LENGTH_SHORT
                         ).show()
@@ -181,7 +181,7 @@ class SignInActivity : AppCompatActivity() {
     override fun onBackPressed() {
         super.onBackPressed()
         Utilities.savePrefrence(
-            this@SignInActivity,
+            this@SignInUsingEmailActivity,
             AppConstants.tokenId, "")
     }
 

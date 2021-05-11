@@ -2,9 +2,7 @@ package com.spyneai.activity
 
 import android.content.Intent
 import android.os.Bundle
-import android.text.Html
 import android.view.View
-import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.fragment.app.Fragment
@@ -17,7 +15,6 @@ import com.spyneai.extras.ZoomOutPageTransformer
 import com.spyneai.fragment.OnboardingOneFragment
 import com.spyneai.fragment.OnboardingThreeFragment
 import com.spyneai.fragment.OnboardingTwoFragment
-import com.spyneai.needs.AppConstants
 import com.spyneai.service.log
 import kotlinx.android.synthetic.main.activity_onboardings.*
 
@@ -75,7 +72,7 @@ class OnboardingsActivity : AppCompatActivity() {
                     //tvGet.setText(getString(R.string.get_started))
                 }
                 2 -> {
-                    val intent = Intent(this, SignInActivity::class.java)
+                    val intent = Intent(this, SignInUsingEmailActivity::class.java)
                     startActivity(intent)
                 }
             }
