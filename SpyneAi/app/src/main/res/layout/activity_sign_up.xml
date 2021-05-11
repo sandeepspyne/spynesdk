@@ -23,7 +23,7 @@
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="@string/please"
+            android:text="@string/please_signup"
             android:textColor="#484848"
             android:fontFamily="@font/light"
             android:gravity="center"
@@ -74,35 +74,22 @@
                 android:textSize="15sp"
                 android:maxLength="30"
                 android:fontFamily="@font/light"
-                android:hint="Enter Password" />
+                android:hint="Create Password" />
         </LinearLayout>
-        <RelativeLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:padding="@dimen/dp_10"
-            android:layout_marginRight="@dimen/dp_25"
-            android:layout_marginLeft="@dimen/dp_25">
+
 
             <TextView
                 android:id="@+id/tvSignup"
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="@string/sign_up_here"
+                android:text="@string/login_here"
                 android:layout_alignParentLeft="true"
                 android:fontFamily="@font/light"
-                android:textSize="@dimen/sp_13"/>
+                android:textSize="@dimen/sp_13"
+                android:padding="@dimen/dp_10"
+                android:layout_marginRight="@dimen/dp_25"
+                android:layout_marginLeft="@dimen/dp_25"/>
 
-            <TextView
-                android:id="@+id/tvForgotPassword"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/forgot_password"
-                android:fontFamily="@font/light"
-                android:textColor="@color/primary"
-                android:layout_alignParentRight="true"
-                android:textSize="@dimen/sp_13"/>
-        </RelativeLayout>
 
 
         <TextView
@@ -124,7 +111,7 @@
             android:id="@+id/tv_login"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="@string/login"
+            android:text="@string/sign_up"
             android:textAllCaps="false"
             android:textColor="@color/white"
             android:gravity="center"

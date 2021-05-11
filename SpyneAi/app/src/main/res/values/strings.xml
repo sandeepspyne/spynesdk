@@ -10,8 +10,11 @@
     <string name="access_to">You have access to everything \nyou need for taking fantastic \nproduct photos.</string>
     <string name="snap">"Lorem ipsum Lorem ipsum Lorem ipsum Lorem ipsum Lorem ipsum Lorem ipsum Lorem ipsum Lorem ipsum"</string>
     <string name="please">Please login to continue</string>
+    <string name="please_signup">Please sign up to continue</string>
     <string name="use_email">Use Email Instead</string>
     <string name="sign_in">Sign in with OTP</string>
+    <string name="login">Login</string>
+    <string name="sign_up">Sign up </string>
     <string name="or">OR</string>
     <string name="by"><![CDATA[By continuing you agree to our ]]></string>
     <string name="terms">Terms &amp; Policies</string>
@@ -214,6 +217,11 @@
     <string name="dots">....</string>
 
     <string name="view_completed_orders">View Completed Orders</string>
+
+
+    <string name="sign_up_here">New to Spyne?&#160; <font color='#FF7700'><b>Sign up here</b></font></string>
+    <string name="login_here">Already a Spyne User?&#160; <font color='#FF7700'><b>Login here</b></font></string>
+    <string name="forgot_password">Forgot password?</string>
 
 
     <string-array name="planets_array">
