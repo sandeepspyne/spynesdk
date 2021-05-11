@@ -135,12 +135,16 @@ class SignInUsingOtpActivity : AppCompatActivity() {
                             AppConstants.EMAIL_ID, etEmail.text.toString())
                         val intent = Intent(this@SignInUsingOtpActivity, OtpActivity::class.java)
                         if (response.body()!!.header.tokenId != null)
+                            Utilities.savePrefrence(this@SignInUsingOtpActivity,
+                                AppConstants.tokenId, response.body()!!.header.tokenId)
                             intent.putExtra(AppConstants.tokenId, response.body()!!.header.tokenId)
                         startActivity(intent)
                     }
                     else{
                         val intent = Intent(this@SignInUsingOtpActivity, OtpActivity::class.java)
                         if (response.body()!!.header.tokenId != null)
+                            Utilities.savePrefrence(this@SignInUsingOtpActivity,
+                                AppConstants.tokenId, response.body()!!.header.tokenId)
                             intent.putExtra(AppConstants.tokenId, response.body()!!.header.tokenId)
                         startActivity(intent)
                         Toast.makeText(

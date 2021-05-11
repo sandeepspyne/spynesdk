@@ -43,7 +43,9 @@ class ForgotPasswordActivity : AppCompatActivity() {
             if (!et_forgotPasswordEmail.text.toString().trim().isEmpty()
                 && Utilities.isValidEmail(et_forgotPasswordEmail.text.toString().trim())) {
                 forgotPassword()
-            }
+                tvErrorEmail.visibility = View.GONE
+            }else
+                tvErrorEmail.visibility = View.VISIBLE
         }
 
         bt_forgotLogin.setOnClickListener {
@@ -117,7 +119,6 @@ class ForgotPasswordActivity : AppCompatActivity() {
             dialog.dismiss()
             val intent = Intent(this, LoginActivity::class.java)
             startActivity(intent)
-            finish()
 
         })
 

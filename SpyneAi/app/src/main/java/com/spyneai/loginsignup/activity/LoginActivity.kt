@@ -65,7 +65,6 @@ class LoginActivity : AppCompatActivity() {
         bt_sign_in_using_otp.setOnClickListener {
             val intent = Intent(this, SignInUsingOtpActivity::class.java)
             startActivity(intent)
-            finish()
         }
 
         tvForgotPassword.setOnClickListener {
@@ -101,6 +100,8 @@ class LoginActivity : AppCompatActivity() {
                         tvterms.isClickable = true
                     }else if (response.body()!!.status.equals("LOGGED_IN")){
                         Toast.makeText(this@LoginActivity, "Login successful", Toast.LENGTH_SHORT).show()
+                        Utilities.savePrefrence(this@LoginActivity,AppConstants.tokenId,
+                            response.body()!!.userId)
                         val intent = Intent(this@LoginActivity, DashboardActivity::class.java)
                         startActivity(intent)
                         finish()

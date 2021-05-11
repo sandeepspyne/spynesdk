@@ -12,6 +12,7 @@ import com.spyneai.interfaces.APiService
 import com.spyneai.interfaces.RetrofitClientSpyneAi
 import com.spyneai.loginsignup.models.SignupBody
 import com.spyneai.loginsignup.models.SignupResponse
+import com.spyneai.needs.AppConstants
 import com.spyneai.needs.Utilities
 import kotlinx.android.synthetic.main.activity_login.*
 import kotlinx.android.synthetic.main.activity_sign_in_using_otp.*
@@ -55,7 +56,6 @@ class SignUpActivity : AppCompatActivity() {
         tv_sign_in_using_otp.setOnClickListener {
             val intent = Intent(this, SignInUsingOtpActivity::class.java)
             startActivity(intent)
-            finish()
         }
     }
 
@@ -83,6 +83,8 @@ class SignUpActivity : AppCompatActivity() {
                         tv_sign_in_using_otp.isClickable = true
                     }else if (response.body()!!.exists.equals(false)){
                         Toast.makeText(this@SignUpActivity, "Signup successful", Toast.LENGTH_SHORT).show()
+                        Utilities.savePrefrence(this@SignUpActivity, AppConstants.tokenId,
+                            response.body()!!.userId)
                         val intent = Intent(this@SignUpActivity, DashboardActivity::class.java)
                         startActivity(intent)
                         finish()
