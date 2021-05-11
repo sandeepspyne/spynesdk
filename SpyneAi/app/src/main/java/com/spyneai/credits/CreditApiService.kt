@@ -14,7 +14,8 @@ interface CreditApiService {
     ): Call<CreditPlansRes>?
 
     @POST("order/credit/")
-    fun createOrder(@Body body: CreateOrderBody) : Call<CreateOrderResponse>?
+    fun createOrder(@Body body: CreateOrderBody)
+    : Call<CreateOrderResponse>?
 
     @FormUrlEncoded
     @PUT("reduce-credit")

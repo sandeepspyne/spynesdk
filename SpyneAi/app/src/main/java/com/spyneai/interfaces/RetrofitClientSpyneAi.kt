@@ -16,6 +16,13 @@ object RetrofitClientSpyneAi {
             .readTimeout(2, TimeUnit.MINUTES)
             .writeTimeout(2, TimeUnit.MINUTES)
             .connectTimeout(2, TimeUnit.MINUTES)
+            .addInterceptor { chain ->
+            val newRequest = chain.request().newBuilder()
+                // .addHeader("content-type", "application/json")
+                .build()
+                var xyz = "xyz"
+            chain.proceed(newRequest)
+        }
         .retryOnConnectionFailure(true)
             .build()
 

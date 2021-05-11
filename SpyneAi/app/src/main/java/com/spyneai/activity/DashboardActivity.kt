@@ -40,6 +40,8 @@ import com.spyneai.model.shoot.UpdateShootCategoryRequest
 import com.spyneai.needs.AppConstants
 import com.spyneai.needs.Utilities
 import com.spyneai.credits.WalletActivity
+import com.spyneai.loginsignup.activity.LoginActivity
+import com.spyneai.loginsignup.activity.SignUpActivity
 import com.synnapps.carouselview.ViewListener
 import kotlinx.android.synthetic.main.activity_dashboard.*
 import kotlinx.android.synthetic.main.fragment_home.view.*
@@ -359,7 +361,9 @@ class DashboardActivity : AppCompatActivity() {
         OnboardOneActivity().finish()
         OnboardTwoActivity().finish()
         OnboardThreeActivity().finish()
-        SignInUsingEmailActivity().finish()
+        SignInUsingOtpActivity().finish()
+        LoginActivity().finish()
+        SignUpActivity().finish()
     }
 
     private fun listeners() {

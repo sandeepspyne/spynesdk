@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".activity.SignInUsingEmailActivity"
+    tools:context=".activity.SignInUsingOtpActivity"
     android:orientation="vertical">
     <LinearLayout
         android:layout_width="match_parent"
@@ -30,46 +30,6 @@
             android:layout_marginBottom="30dp"
             android:textSize="@dimen/sp_13"/>
 
-        <LinearLayout
-            android:id="@+id/ll_number"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:background="@drawable/bg_edit"
-            android:padding="@dimen/dp_7"
-            android:visibility="gone"
-            android:layout_marginLeft="20dp"
-            android:layout_marginTop="10dp"
-            android:layout_marginRight="20dp">
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:gravity="center"
-                android:fontFamily="@font/light"
-                android:text="+91"
-                android:drawablePadding="5dp"
-                android:textSize="15sp"
-                android:drawableRight="@drawable/down"/>
-            <View
-                android:layout_width="1dp"
-                android:layout_marginLeft="5dp"
-                android:layout_marginRight="5dp"
-                android:layout_height="match_parent"
-                android:background="#EBF0FF" />
-            <EditText
-                android:id="@+id/et_number"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:background="@null"
-                android:inputType="number"
-                android:maxLines="1"
-                android:textSize="@dimen/sp_16"
-                android:textColorHint="#DDDDDD"
-                android:maxLength="10"
-                android:fontFamily="@font/light"
-                android:hint="Your Mobile Number"
-                android:padding="10dp"/>
-        </LinearLayout>
 
         <LinearLayout
             android:id="@+id/ll_email"

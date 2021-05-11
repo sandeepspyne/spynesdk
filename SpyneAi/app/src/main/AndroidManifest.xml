@@ -41,14 +41,24 @@
         android:theme="@style/Theme.SpyneAi"
         android:usesCleartextTraffic="true"
         tools:targetApi="m">
-        <activity android:name=".loginsignup.activity.SignUpActivity"></activity>
-        <activity android:name=".loginsignup.activity.LoginActivity" />
-        <activity android:name=".credits.FeedbackActivity" />
-        <activity android:name=".credits.CreditPaymentFailedActivity" />
-        <activity android:name=".credits.CreditPaymentSuccessActivity" />
-        <activity android:name=".credits.CreditPlansActivity" />
-        <activity android:name=".credits.LowCreditsActivity" />
-        <activity android:name=".credits.WalletActivity" />
+        <activity android:name=".loginsignup.activity.ForgotPasswordActivity"
+            android:screenOrientation="portrait" ></activity>
+        <activity android:name=".loginsignup.activity.SignUpActivity"
+            android:screenOrientation="portrait" />
+        <activity android:name=".loginsignup.activity.LoginActivity"
+            android:screenOrientation="portrait" />
+        <activity android:name=".credits.FeedbackActivity"
+            android:screenOrientation="portrait" />
+        <activity android:name=".credits.CreditPaymentFailedActivity"
+            android:screenOrientation="portrait" />
+        <activity android:name=".credits.CreditPaymentSuccessActivity"
+            android:screenOrientation="portrait" />
+        <activity android:name=".credits.CreditPlansActivity"
+            android:screenOrientation="portrait" />
+        <activity android:name=".credits.LowCreditsActivity"
+            android:screenOrientation="portrait" />
+        <activity android:name=".credits.WalletActivity"
+            android:screenOrientation="portrait" />
         <activity android:name=".videorecording.ThreeSixtyViewTestActivity" />
         <activity android:name=".videorecording.VideoUploadHandlerActivity" />
         <activity
@@ -208,7 +218,7 @@
             android:name=".activity.CategoriesActivity"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".activity.SignInUsingEmailActivity"
+            android:name=".activity.SignInUsingOtpActivity"
             android:screenOrientation="portrait" />
         <activity
             android:name=".activity.TimerActivity"

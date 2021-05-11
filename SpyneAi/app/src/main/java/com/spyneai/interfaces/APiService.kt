@@ -3,6 +3,8 @@ package com.spyneai.interfaces
 import SubcategoriesResponse
 import UploadPhotoResponse
 import com.spyneai.aipack.*
+import com.spyneai.credits.model.CreateOrderBody
+import com.spyneai.loginsignup.models.*
 import com.spyneai.model.ai.*
 import com.spyneai.model.beforeafter.BeforeAfterResponse
 import com.spyneai.model.carbackgroundgif.CarBackgrounGifResponse
@@ -50,13 +52,28 @@ import retrofit2.http.*
 interface APiService {
     //-- Cliq APIs --
     @POST("user/registeration")
-    fun loginEmailApp(@Body loginRequest: LoginRequest?): Call<LoginResponse>?
+    fun loginEmailApp(@Body loginRequest: LoginRequest?):
+            Call<LoginResponse>?
+
+    @POST("sso/vendor/api/auth?strategy=EMAILANDPASSWORD&redirectUrl")
+    fun loginEmailPassword(@Body body: LoginEmailPasswordBody):
+    Call<LoginEmailPasswordResponse>?
+
+
+    @POST("v2/business/user-register-car")
+    fun signUp(@Body body: SignupBody):
+    Call<SignupResponse>?
 
     @GET("user/registeration")
     fun loginEmailApp(
         @Query("emailId") emailId: String?,
         @Query("type") type: String?
     ): Call<LoginResponse>?
+
+    @POST("v2/forgot-password")
+    fun forgotPassword(
+        @Query("emailId") userId: String?,
+    ): Call<ForgotPasswordResponse>?
 
     @POST("user/phone")
     fun loginApp(@Body loginRequest: LoginRequest?): Call<LoginResponse>?
