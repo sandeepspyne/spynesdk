@@ -30,6 +30,7 @@
     <string name="did_not">Didn\'t receive the OTP?</string>
     <string name="resend">Resend</string>
     <string name="submit_otp">Submit OTP</string>
+    <string name="submit">Submit</string>
     <string name="continue_with_this_shoot">Continue with this shoot</string>
     <string name="cancel">Cancel</string>
     <string name="ok">OK</string>
@@ -228,6 +229,7 @@
     <string name="forgot_password">Forgot password?</string>
 
     <string name="forgot_password_mail">Enter the email address to reset your password. <br/> You may need to check your spam folder.</string>
+    <string name="enter_vin">Please enter the Vehicle Identification Number (VIN)</string>
 
 
     <string-array name="planets_array">

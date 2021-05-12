@@ -59,7 +59,6 @@ class LoginActivity : AppCompatActivity() {
         tvSignup.setOnClickListener {
             val intent = Intent(this, SignUpActivity::class.java)
             startActivity(intent)
-            finish()
         }
 
         bt_sign_in_using_otp.setOnClickListener {

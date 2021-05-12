@@ -10,10 +10,8 @@ import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.database.Cursor
-import android.graphics.Bitmap
-import android.graphics.BitmapFactory
-import android.graphics.Matrix
-import android.graphics.Paint
+import android.graphics.*
+import android.graphics.drawable.ColorDrawable
 import android.media.AudioManager
 import android.media.ExifInterface
 import android.media.MediaActionSound
@@ -27,6 +25,7 @@ import android.text.TextWatcher
 import android.text.style.ForegroundColorSpan
 import android.util.Log
 import android.util.Rational
+import android.view.LayoutInflater
 import android.view.View
 import android.view.Window
 import android.view.WindowManager
@@ -39,12 +38,14 @@ import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.camera.core.*
+import androidx.camera.core.Camera
 import androidx.camera.lifecycle.ProcessCameraProvider
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.core.view.isVisible
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.airbnb.lottie.LottieAnimationView
 import com.bumptech.glide.Glide
 import com.spyneai.R
 import com.spyneai.activity.DashboardActivity
@@ -56,6 +57,7 @@ import com.spyneai.adapter.ProgressAdapter
 import com.spyneai.adapter.SubCategoriesAdapter
 import com.spyneai.interfaces.APiService
 import com.spyneai.interfaces.RetrofitClient
+import com.spyneai.loginsignup.activity.LoginActivity
 import com.spyneai.model.shoot.*
 import com.spyneai.model.sku.SkuResponse
 import com.spyneai.model.skuedit.EditSkuRequest
@@ -128,7 +130,8 @@ class Camera2Activity : AppCompatActivity(), SubCategoriesAdapter.BtnClickListen
     lateinit var focusedFramesAdapter: FocusedFramesAdapter
     var catName: String = "Category"
 
-    lateinit var skuId: String
+
+    var skuId: String = ""
     var skuName: String = "SKU"
     lateinit var shootIds: String
     lateinit var catIds: String
@@ -159,6 +162,8 @@ class Camera2Activity : AppCompatActivity(), SubCategoriesAdapter.BtnClickListen
     var focusedEnabled: Boolean = false
     var catId = ""
 
+    var vinNumber: String = ""
+
 
     @RequiresApi(Build.VERSION_CODES.M)
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -171,6 +176,7 @@ class Camera2Activity : AppCompatActivity(), SubCategoriesAdapter.BtnClickListen
 
         if (Utilities.getPreference(this,AppConstants.CATEGORY_NAME).equals("Automobiles"))
             showHint()
+
         setSubCategories()
         setPermissions()
         setCameraActions()
@@ -865,7 +871,11 @@ class Camera2Activity : AppCompatActivity(), SubCategoriesAdapter.BtnClickListen
 
         val request = RetrofitClient.buildService(APiService::class.java)
 
-        val editSkuRequest = EditSkuRequest(skuId, etSkuName.text.toString().trim())
+        if (vinNumber.equals(""))
+            vinNumber = etSkuName.text.toString().trim()
+
+
+        val editSkuRequest = EditSkuRequest(skuId, vinNumber)
 
         val call = request.editSku(
             Utilities.getPreference(this, AppConstants.tokenId),
@@ -894,6 +904,7 @@ class Camera2Activity : AppCompatActivity(), SubCategoriesAdapter.BtnClickListen
 
                     }
                 } else {
+                    Utilities.hideProgressDialog()
                     Toast.makeText(
                         applicationContext,
                         "Please try again later!!!",
@@ -1235,7 +1246,7 @@ class Camera2Activity : AppCompatActivity(), SubCategoriesAdapter.BtnClickListen
     private fun showHint() {
         val dialog = Dialog(this)
         dialog.requestWindowFeature(Window.FEATURE_NO_TITLE)
-        dialog.setCancelable(true)
+        dialog.setCancelable(false)
         dialog.setContentView(R.layout.dialog_hint)
 
         val window: Window = dialog.getWindow()!!
@@ -1289,10 +1300,36 @@ class Camera2Activity : AppCompatActivity(), SubCategoriesAdapter.BtnClickListen
 
         tvContinue.setOnClickListener(View.OnClickListener {
             dialog.dismiss()
+            showVin()
         })
 
         dialog.show()
     }
+
+    private fun showVin(){
+
+            val dialog = Dialog(this)
+            dialog.requestWindowFeature(Window.FEATURE_NO_TITLE)
+            dialog.setCancelable(false)
+            var dialogView = LayoutInflater.from(this).inflate(R.layout.vin_dialog, null)
+            dialog.setContentView(dialogView)
+
+            dialog.getWindow()?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT));
+            val llSubmit: LinearLayout = dialog.findViewById(R.id.llSubmit)
+            var etVin: EditText = dialogView.findViewById(R.id.etVin)
+
+            dialog.show()
+
+        llSubmit.setOnClickListener(View.OnClickListener {
+                dialog.dismiss()
+                updateSkus()
+                vinNumber = etVin.text.toString()
+            etSkuName.setText(vinNumber)
+
+            })
+
+        }
+
 
     override fun onRequestPermissionsResult(
         requestCode: Int, permissions: Array<String>, grantResults:

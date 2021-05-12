@@ -89,7 +89,7 @@
                     <EditText
                         android:id="@+id/etSkuName"
                         android:layout_width="wrap_content"
-                        android:layout_height="match_parent"
+                        android:layout_height="wrap_content"
                         android:layout_gravity="center_horizontal"
                         android:background="@drawable/bg_edit"
                         android:fontFamily="@font/medium"
@@ -104,7 +104,7 @@
                     <ImageView
                         android:id="@+id/imgNext"
                         android:layout_width="wrap_content"
-                        android:layout_height="match_parent"
+                        android:layout_height="wrap_content"
                         android:padding="@dimen/dp_5"
                         android:src="@drawable/right"
                         android:visibility="gone"
