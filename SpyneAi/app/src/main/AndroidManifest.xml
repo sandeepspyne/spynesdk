@@ -42,11 +42,14 @@
         android:usesCleartextTraffic="true"
         tools:targetApi="m">
         <activity android:name=".loginsignup.activity.ForgotPasswordActivity"
-            android:screenOrientation="portrait" ></activity>
+            android:screenOrientation="portrait"
+            android:launchMode="singleTask"></activity>
         <activity android:name=".loginsignup.activity.SignUpActivity"
-            android:screenOrientation="portrait" />
+            android:screenOrientation="portrait"
+            android:launchMode="singleTask"/>
         <activity android:name=".loginsignup.activity.LoginActivity"
-            android:screenOrientation="portrait" />
+            android:screenOrientation="portrait"
+            android:launchMode="singleTask"/>
         <activity android:name=".credits.FeedbackActivity"
             android:screenOrientation="portrait" />
         <activity android:name=".credits.CreditPaymentFailedActivity"

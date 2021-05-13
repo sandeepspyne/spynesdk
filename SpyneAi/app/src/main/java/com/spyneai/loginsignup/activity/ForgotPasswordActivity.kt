@@ -119,6 +119,7 @@ class ForgotPasswordActivity : AppCompatActivity() {
             dialog.dismiss()
             val intent = Intent(this, LoginActivity::class.java)
             startActivity(intent)
+            finish()
 
         })
 

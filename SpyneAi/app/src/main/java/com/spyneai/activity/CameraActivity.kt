@@ -1110,10 +1110,12 @@ class CameraActivity : AppCompatActivity(), SubCategoriesAdapter.BtnClickListene
         )
 
         val tvHint: TextView = dialog.findViewById(R.id.tvHint)
-        val tvHintMove: TextView = dialog.findViewById(R.id.tvHintMove)
         val tvContinue: TextView = dialog.findViewById(R.id.tvContinue)
+        val ivBeforeShootGif: ImageView = dialog.findViewById(R.id.ivBeforeShootGif)
         val builder = SpannableStringBuilder()
         val builders = SpannableStringBuilder()
+
+        Glide.with(this).asGif().load(R.raw.before_shoot).into(ivBeforeShootGif)
 
         //First text
         val black = "Shoot "
@@ -1149,8 +1151,6 @@ class CameraActivity : AppCompatActivity(), SubCategoriesAdapter.BtnClickListene
         val bluesSpannable = SpannableString(blues)
         bluesSpannable.setSpan(ForegroundColorSpan(getColor(R.color.black)), 0, blues.length, 0)
         builders.append(bluesSpannable)
-
-        tvHintMove.setText(builders, TextView.BufferType.SPANNABLE)
 
         tvContinue.setOnClickListener(View.OnClickListener {
             dialog.dismiss()

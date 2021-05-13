@@ -47,6 +47,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.airbnb.lottie.LottieAnimationView
 import com.bumptech.glide.Glide
+import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.spyneai.R
 import com.spyneai.activity.DashboardActivity
 import com.spyneai.activity.GenerateGifActivity
@@ -83,6 +84,7 @@ import kotlinx.android.synthetic.main.activity_camera.viewFinder
 import kotlinx.android.synthetic.main.activity_camera2.*
 import kotlinx.android.synthetic.main.activity_camera_preview.*
 import kotlinx.android.synthetic.main.dialog_spinner.*
+import kotlinx.android.synthetic.main.view_images.view.*
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -276,6 +278,7 @@ class Camera2Activity : AppCompatActivity(), SubCategoriesAdapter.BtnClickListen
             object : SubCategoriesAdapter.BtnClickListener {
                 override fun onBtnClick(position: Int) {
                     Log.d("Position click", position.toString())
+                    etSkuName.setText(vinNumber)
                     setProductMap(
                         Utilities.getPreference(
                             this@Camera2Activity,
@@ -890,7 +893,7 @@ class Camera2Activity : AppCompatActivity(), SubCategoriesAdapter.BtnClickListen
                 Utilities.hideProgressDialog()
                 if (response.isSuccessful) {
                     if (response.body()?.payload?.data != null) {
-                        etSkuName.setText(etSkuName.text.toString().trim())
+                        etSkuName.setText(vinNumber)
                         skuName = etSkuName.text.toString().trim()
                         Utilities.savePrefrence(this@Camera2Activity,
                             AppConstants.SKU_NAME,
@@ -898,7 +901,7 @@ class Camera2Activity : AppCompatActivity(), SubCategoriesAdapter.BtnClickListen
                         imgNext.visibility = View.GONE
                         Toast.makeText(
                             applicationContext,
-                            "Updated SKU name successfully!!!",
+                            "Updated VIN successfully!!!",
                             Toast.LENGTH_SHORT
                         ).show()
 
@@ -1247,56 +1250,15 @@ class Camera2Activity : AppCompatActivity(), SubCategoriesAdapter.BtnClickListen
         val dialog = Dialog(this)
         dialog.requestWindowFeature(Window.FEATURE_NO_TITLE)
         dialog.setCancelable(false)
-        dialog.setContentView(R.layout.dialog_hint)
+        var dialogView = LayoutInflater.from(this).inflate(R.layout.dialog_gif_hint, null)
+        dialog.setContentView(dialogView)
 
-        val window: Window = dialog.getWindow()!!
-        window.setLayout(
-            WindowManager.LayoutParams.WRAP_CONTENT,
-            WindowManager.LayoutParams.WRAP_CONTENT
-        )
+        dialog.getWindow()?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT));
 
-        val tvHint: TextView = dialog.findViewById(R.id.tvHint)
-        val tvHintMove: TextView = dialog.findViewById(R.id.tvHintMove)
+        val ivBeforeShootGif: ImageView = dialog.findViewById(R.id.ivBeforeShootGif)
         val tvContinue: TextView = dialog.findViewById(R.id.tvContinue)
-        val builder = SpannableStringBuilder()
-        val builders = SpannableStringBuilder()
 
-        //First text
-        val black = "Shoot "
-        val blackSpannable = SpannableString(black)
-        blackSpannable.setSpan(ForegroundColorSpan(getColor(R.color.black)), 0, black.length, 0)
-        builder.append(blackSpannable)
-
-        val red = "Outdoors"
-        val redSpannable = SpannableString(red)
-        redSpannable.setSpan(ForegroundColorSpan(getColor(R.color.primary)), 0, red.length, 0)
-        builder.append(redSpannable)
-
-        val blue = " to avoid irregular reflections"
-        val blueSpannable = SpannableString(blue)
-        blueSpannable.setSpan(ForegroundColorSpan(getColor(R.color.black)), 0, blue.length, 0)
-        builder.append(blueSpannable)
-
-        tvHint.setText(builder, BufferType.SPANNABLE)
-
-
-        //Second text
-        val blacks = "Move "
-        val blacksSpannable = SpannableString(blacks)
-        blacksSpannable.setSpan(ForegroundColorSpan(getColor(R.color.black)), 0, blacks.length, 0)
-        builders.append(blacksSpannable)
-
-        val reds = "Left"
-        val redsSpannable = SpannableString(reds)
-        redsSpannable.setSpan(ForegroundColorSpan(getColor(R.color.primary)), 0, reds.length, 0)
-        builders.append(redsSpannable)
-
-        val blues = " after each shot"
-        val bluesSpannable = SpannableString(blues)
-        bluesSpannable.setSpan(ForegroundColorSpan(getColor(R.color.black)), 0, blues.length, 0)
-        builders.append(bluesSpannable)
-
-        tvHintMove.setText(builders, BufferType.SPANNABLE)
+        Glide.with(this).asGif().load(R.raw.before_shoot).into(ivBeforeShootGif)
 
         tvContinue.setOnClickListener(View.OnClickListener {
             dialog.dismiss()
@@ -1454,7 +1416,7 @@ class Camera2Activity : AppCompatActivity(), SubCategoriesAdapter.BtnClickListen
                 Utilities.hideProgressDialog()
                 if (response.isSuccessful && response.body()!!.payload != null) {
                     Log.e("Sku map", prodId + " " + response.body()!!.msgInfo.msgDescription)
-                    etSkuName.setText(response.body()!!.payload.data.skuName)
+                    etSkuName.setText(vinNumber)
                     skuName = response.body()!!.payload.data.skuName
                     skuId = response.body()!!.payload.data.skuId
                     shootIds = shootId

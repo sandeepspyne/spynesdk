@@ -7,15 +7,13 @@ import android.text.Editable
 import android.text.TextWatcher
 import android.util.Log
 import android.view.View
-import android.widget.EditText
-import android.widget.LinearLayout
-import android.widget.TextView
-import android.widget.Toast
+import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AppCompatDelegate
 import com.spyneai.R
 import com.spyneai.interfaces.APiService
 import com.spyneai.interfaces.RetrofitClient
+import com.spyneai.loginsignup.activity.LoginActivity
 import com.spyneai.model.login.LoginRequest
 import com.spyneai.model.login.LoginResponse
 import com.spyneai.needs.AppConstants
@@ -33,9 +31,8 @@ class SignInUsingOtpActivity : AppCompatActivity() {
     private lateinit var llNumber : LinearLayout
     private lateinit var llEmail : LinearLayout
 
-    private lateinit var tvEmailInstead : TextView
 
-    private lateinit var tvSignIn: TextView
+    private lateinit var tvSignIn: Button
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -53,23 +50,24 @@ class SignInUsingOtpActivity : AppCompatActivity() {
 
         llEmail = findViewById(R.id.ll_email)
 
-        tvEmailInstead = findViewById(R.id.tv_email_instead)
         tvSignIn = findViewById(R.id.tv_sign_in)
 
     }
 
     private fun listeners() {
-        tvEmailInstead.setOnClickListener(View.OnClickListener {
-            llEmail.visibility = View.VISIBLE
-            tvEmailInstead.visibility = View.GONE
-            llNumber.visibility = View.GONE
-        })
+
+        bt_login_with_password.setOnClickListener {
+            val intent = Intent(this, LoginActivity::class.java)
+            startActivity(intent)
+            finish()
+        }
+
 
         tvSignIn.setOnClickListener(View.OnClickListener {
             if (!et_email.text.toString().trim().isEmpty()
                 && Utilities.isValidEmail(et_email.text.toString().trim())) {
                 makeSignIn()
-                tvErrorEmail.visibility = View.INVISIBLE
+                tvErrorEmail.visibility = View.GONE
             } else
                 tvErrorEmail.visibility = View.VISIBLE
 
@@ -91,7 +89,7 @@ class SignInUsingOtpActivity : AppCompatActivity() {
 
             override fun onTextChanged(s: CharSequence, start: Int, before: Int,
                                        count: Int) {
-                tvErrorEmail.visibility = View.INVISIBLE
+                tvErrorEmail.visibility = View.GONE
             }
         })
 

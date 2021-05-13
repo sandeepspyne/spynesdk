@@ -94,7 +94,7 @@
                         android:background="@drawable/bg_edit"
                         android:fontFamily="@font/medium"
                         android:gravity="center"
-                        android:hint="@string/sku_names"
+                        android:hint="@string/vin_number"
                         android:maxLines="1"
                         android:maxLength="20"
                         android:padding="@dimen/dp_5"

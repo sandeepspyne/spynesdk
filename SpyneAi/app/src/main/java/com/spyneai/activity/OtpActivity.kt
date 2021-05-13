@@ -433,6 +433,8 @@ public class OtpActivity : AppCompatActivity() {
                             response.body()!!.msgInfo.msgDescription,
                             Toast.LENGTH_SHORT
                         ).show()
+                        Utilities.savePrefrence(this@OtpActivity,
+                            AppConstants.tokenId, response.body()!!.header.tokenId)
                         Log.e("ok", response.body()!!.header.tokenId )
                         val intent = Intent(this@OtpActivity, OtpActivity::class.java)
                         intent.putExtra(AppConstants.tokenId,response.body()!!.header.tokenId)

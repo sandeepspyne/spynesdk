@@ -1,10 +1,39 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:padding="@dimen/dp_5"
-    android:gravity="center">
+    android:layout_margin="@dimen/dp_5"
+    android:gravity="center"
+    android:background="@null">
+
+    <LinearLayout
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:tools="http://schemas.android.com/tools"
+        android:id="@+id/lldialog"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:padding="@dimen/dp_10"
+        android:layout_margin="@dimen/dp_10"
+        android:background="@drawable/bg_channel"
+        android:elevation="@dimen/dp_10"
+        android:orientation="vertical">
+
+        <androidx.core.widget.NestedScrollView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:fillViewport="true"
+            android:orientation="vertical"
+            tools:context=".activity.OrderActivity">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:orientation="vertical">
 
     <TextView
         android:id="@+id/tvHint"
@@ -14,35 +43,26 @@
         android:fontFamily="@font/medium"
         android:textSize="@dimen/sp_13"
         android:textColor="@color/black"
-        android:layout_margin="@dimen/dp_5" />
+        android:layout_margin="@dimen/dp_8" />
 
     <ImageView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:src="@mipmap/carhint"/>
-    <TextView
-        android:id="@+id/tvHintMove"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:gravity="center"
-        android:fontFamily="@font/medium"
-        android:textSize="@dimen/sp_13"
-        android:textColor="@color/black"
-        android:layout_margin="@dimen/dp_5" />
-
-    <ImageView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:src="@mipmap/leftflow"/>
+        android:id="@+id/ivBeforeShootGif"
+        android:layout_width="@dimen/dp_250"
+        android:layout_height="@dimen/dp_150"
+        android:layout_margin="@dimen/dp_10"
+        android:scaleType="fitXY"
+        ></ImageView>
 
     <TextView
         android:id="@+id/tvContinue"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="@string/continues"
-        android:padding="@dimen/dp_5"
+        android:padding="@dimen/dp_8"
         android:gravity="center"
-        android:layout_margin="@dimen/dp_5"
+        android:layout_marginLeft="@dimen/dp_40"
+        android:layout_marginRight="@dimen/dp_40"
+        android:layout_marginBottom="@dimen/dp_10"
         android:textColor="@color/white"
         android:fontFamily="@font/medium"
         android:textSize="@dimen/sp_13"
@@ -50,4 +70,14 @@
         android:textAllCaps="false"/>
 
 
-</LinearLayout>
+            </LinearLayout>
+
+
+        </androidx.core.widget.NestedScrollView>
+
+    </LinearLayout>
+
+
+
+
+</RelativeLayout>
