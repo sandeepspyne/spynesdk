@@ -31,7 +31,7 @@ class SignUpActivity : AppCompatActivity() {
 
     private fun listeners() {
         tv_signUp.setOnClickListener {
-            if (et_signupPassword.text.toString().trim().length < 2) {
+            if (et_signupPassword.text.toString().trim().length < 3) {
                 Toast.makeText(
                     this,
                     "Password must be at least 3 characters long.",
