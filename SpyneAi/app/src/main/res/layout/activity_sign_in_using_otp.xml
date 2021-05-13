@@ -115,7 +115,7 @@
             android:id="@+id/bt_login_with_password"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="@string/login"
+            android:text="@string/login_with_password"
             android:textAllCaps="false"
             android:textColor="@color/white"
             android:gravity="center"
