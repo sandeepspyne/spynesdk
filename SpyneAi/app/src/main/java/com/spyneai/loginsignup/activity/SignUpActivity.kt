@@ -31,8 +31,18 @@ class SignUpActivity : AppCompatActivity() {
 
     private fun listeners() {
         tv_signUp.setOnClickListener {
-            if (!et_signupEmail.text.toString().trim().isEmpty() && !et_signupPassword.text.toString().trim().isEmpty()
-                && Utilities.isValidEmail(et_signupEmail.text.toString().trim())) {
+            if (et_signupPassword.text.toString().trim().length < 2) {
+                Toast.makeText(
+                    this,
+                    "Password must be at least 3 characters long.",
+                    Toast.LENGTH_SHORT
+                ).show()
+                return@setOnClickListener
+            }
+            if (!et_signupEmail.text.toString().trim()
+                    .isEmpty() && !et_signupPassword.text.toString().trim().isEmpty()
+                && Utilities.isValidEmail(et_signupEmail.text.toString().trim())
+            ) {
                 signUp()
                 tvEmailError.visibility = View.GONE
                 tvLogin.isClickable = false
@@ -59,32 +69,42 @@ class SignUpActivity : AppCompatActivity() {
         }
     }
 
-    private fun signUp(){
+    private fun signUp() {
         Utilities.showProgressDialog(this)
 
         var body = SignupBody(
             et_signupEmail.text.toString(), "spyne-default", "spyne-default", "", "corporate",
-            et_signupPassword.text.toString(), 91 , "yes", "", "Others"
+            et_signupPassword.text.toString(), 91, "yes", "", "Others"
         )
 
         var call = RetrofitClientSpyneAi.buildService(APiService::class.java).signUp(body)
 
         call?.enqueue(object : Callback<SignupResponse> {
-            override fun onResponse(call: Call<SignupResponse>, response: Response<SignupResponse>) {
+            override fun onResponse(
+                call: Call<SignupResponse>,
+                response: Response<SignupResponse>
+            ) {
                 Utilities.hideProgressDialog()
 
-                if (response.isSuccessful && response.body()!=null) {
+                if (response.isSuccessful && response.body() != null) {
                     Utilities.hideProgressDialog()
-                    if (response.body()!!.exists.equals(true)){
-                        Toast.makeText(this@SignUpActivity, "Email id already exists, please login." , Toast.LENGTH_SHORT).show()
+                    if (response.body()!!.exists.equals(true)) {
+                        Toast.makeText(
+                            this@SignUpActivity,
+                            "Email id already exists, please login.",
+                            Toast.LENGTH_SHORT
+                        ).show()
                         tvLogin.isClickable = true
                         tv_signUp.isClickable = true
                         tv_terms.isClickable = true
                         tv_sign_in_using_otp.isClickable = true
-                    }else if (response.body()!!.exists.equals(false)){
-                        Toast.makeText(this@SignUpActivity, "Signup successful", Toast.LENGTH_SHORT).show()
-                        Utilities.savePrefrence(this@SignUpActivity, AppConstants.tokenId,
-                            response.body()!!.userId)
+                    } else if (response.body()!!.exists.equals(false)) {
+                        Toast.makeText(this@SignUpActivity, "Signup successful", Toast.LENGTH_SHORT)
+                            .show()
+                        Utilities.savePrefrence(
+                            this@SignUpActivity, AppConstants.tokenId,
+                            response.body()!!.userId
+                        )
                         val intent = Intent(this@SignUpActivity, DashboardActivity::class.java)
                         startActivity(intent)
                         finish()
@@ -93,10 +113,13 @@ class SignUpActivity : AppCompatActivity() {
                         tv_terms.isClickable = true
                         tv_sign_in_using_otp.isClickable = true
                     }
-                }
-                else{
+                } else {
                     Utilities.hideProgressDialog()
-                    Toast.makeText(this@SignUpActivity, response.errorBody().toString(), Toast.LENGTH_SHORT).show()
+                    Toast.makeText(
+                        this@SignUpActivity,
+                        response.errorBody().toString(),
+                        Toast.LENGTH_SHORT
+                    ).show()
                     tvLogin.isClickable = true
                     tv_signUp.isClickable = true
                     tv_terms.isClickable = true
