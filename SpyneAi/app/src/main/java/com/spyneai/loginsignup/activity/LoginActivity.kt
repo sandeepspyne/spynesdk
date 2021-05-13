@@ -91,7 +91,7 @@ class LoginActivity : AppCompatActivity() {
                 if (response.isSuccessful && response.body()!=null) {
                     Utilities.hideProgressDialog()
                     if (response.body()!!.status.equals("INVALID")){
-                        Toast.makeText(this@LoginActivity, "Email not found. Sign up instead.", Toast.LENGTH_SHORT).show()
+                        Toast.makeText(this@LoginActivity, response.body()!!.message, Toast.LENGTH_SHORT).show()
                         bt_login.isClickable = true
                         tvSignup.isClickable = true
                         tvForgotPassword.isClickable = true
