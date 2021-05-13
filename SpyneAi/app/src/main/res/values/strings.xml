@@ -78,6 +78,7 @@
     <string name="home">Home</string>
     <string name="notifications">Notifications</string>
     <string name="profile">Profile</string>
+    <string name="logout">Logout</string>
     <string name="pay">Pay</string>
     <string name="dealership">DealerShip Logo</string>
     <string name="no_completed">Completed orders\nwill appear here</string>
@@ -191,6 +192,7 @@
     <string name="forgot_password_dialog">Link sent successfully.<br /> Please check your email.</string>
 
 
+
     <string name="request_credits">Request credits on <br />Whatsapp</string>
     <string name="we_recommend_focused">(2/2) Miscellaneous Shots</string>
     <string name="focused">Miscellaneous</string>
@@ -226,6 +228,9 @@
 
 
     <string name="sign_up_here">New to Spyne?&#160; <font color='#FF7700'><b>Sign up here</b></font></string>
+
+    <string name="logout_dialog_text">Are you sure you want to <b>log out.</b></string>
+
     <string name="login_here">Seem like you are already a Spyne User?&#160; <font color='#FF7700'><b>Login here</b></font></string>
     <string name="shoot_outdoor">Shoot&#160; <font color='#FF7700'><b>Outdoors</b></font>&#160;to avoid irregular reflections</string>
     <string name="forgot_password">Forgot password?</string>

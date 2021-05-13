@@ -10,6 +10,7 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.Window
+import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
 import android.widget.Toast
@@ -20,6 +21,7 @@ import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.FragmentTransaction
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.airbnb.lottie.LottieAnimationView
 import com.google.android.play.core.appupdate.AppUpdateManager
 import com.google.android.play.core.appupdate.AppUpdateManagerFactory
 import com.google.android.play.core.install.model.AppUpdateType
@@ -381,12 +383,45 @@ class DashboardActivity : AppCompatActivity() {
             startActivity(Intent(this, WalletActivity::class.java))
         })
 
-        tvProfile.setOnClickListener(View.OnClickListener {
-            Toast.makeText(
-                this,
-                "Coming Soon !",
-                Toast.LENGTH_SHORT
-            ).show()
+        tvLogout.setOnClickListener(View.OnClickListener {
+            logoutDialog()
+        })
+    }
+
+    private fun logoutDialog(){
+
+        val dialog = Dialog(this)
+        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE)
+        dialog.setCancelable(true)
+
+        var dialogView = LayoutInflater.from(this).inflate(R.layout.logout_dialog, null)
+
+        dialog.setContentView(dialogView)
+
+        dialog.getWindow()?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT));
+        val llLogout: LinearLayout = dialog.findViewById(R.id.llLogout)
+        var ivClose: ImageView = dialogView.findViewById(R.id.ivClose)
+        var lottielogout: LottieAnimationView = dialogView.findViewById(R.id.lottielogout)
+
+
+        ivClose.setOnClickListener(View.OnClickListener {
+
+            dialog.dismiss()
+
+        })
+
+        dialog.show()
+
+
+        llLogout.setOnClickListener(View.OnClickListener {
+            dialog.dismiss()
+            Utilities.savePrefrence(this, AppConstants.tokenId, "")
+            Utilities.savePrefrence(this, AppConstants.SHOOT_ID, "")
+            Utilities.savePrefrence(this, AppConstants.SKU_ID, "")
+            val intent = Intent(this, LoginActivity::class.java)
+            startActivity(intent)
+            finish()
+
         })
     }
 
@@ -398,7 +433,7 @@ class DashboardActivity : AppCompatActivity() {
                     tvHome.setTextColor(getColor(R.color.primary))
                     tv_wallet.setTextColor(getColor(R.color.black))
                     tvOrders.setTextColor(getColor(R.color.black))
-                    tvProfile.setTextColor(getColor(R.color.black))
+                    tvLogout.setTextColor(getColor(R.color.black))
 
                     tvHome.setCompoundDrawablesWithIntrinsicBounds(0, R.mipmap.homes, 0, 0);
                     tv_wallet.setCompoundDrawablesWithIntrinsicBounds(
@@ -408,13 +443,13 @@ class DashboardActivity : AppCompatActivity() {
                         0
                     );
                     tvOrders.setCompoundDrawablesWithIntrinsicBounds(0, R.mipmap.order, 0, 0);
-                    tvProfile.setCompoundDrawablesWithIntrinsicBounds(0, R.mipmap.profile, 0, 0);
+                    tvLogout.setCompoundDrawablesWithIntrinsicBounds(0, R.mipmap.logout, 0, 0);
                 }
                 1 -> {
                     tvHome.setTextColor(getColor(R.color.black))
                     tv_wallet.setTextColor(getColor(R.color.primary))
                     tvOrders.setTextColor(getColor(R.color.black))
-                    tvProfile.setTextColor(getColor(R.color.black))
+                    tvLogout.setTextColor(getColor(R.color.black))
 
                     tvHome.setCompoundDrawablesWithIntrinsicBounds(0, R.mipmap.home, 0, 0);
                     tv_wallet.setCompoundDrawablesWithIntrinsicBounds(
@@ -424,13 +459,13 @@ class DashboardActivity : AppCompatActivity() {
                         0
                     );
                     tvOrders.setCompoundDrawablesWithIntrinsicBounds(0, R.mipmap.order, 0, 0);
-                    tvProfile.setCompoundDrawablesWithIntrinsicBounds(0, R.mipmap.profile, 0, 0);
+                    tvLogout.setCompoundDrawablesWithIntrinsicBounds(0, R.mipmap.logout, 0, 0);
                 }
                 2 -> {
                     tvHome.setTextColor(getColor(R.color.black))
                     tv_wallet.setTextColor(getColor(R.color.black))
                     tvOrders.setTextColor(getColor(R.color.primary))
-                    tvProfile.setTextColor(getColor(R.color.black))
+                    tvLogout.setTextColor(getColor(R.color.black))
 
                     tvHome.setCompoundDrawablesWithIntrinsicBounds(0, R.mipmap.home, 0, 0);
                     tv_wallet.setCompoundDrawablesWithIntrinsicBounds(
@@ -440,13 +475,13 @@ class DashboardActivity : AppCompatActivity() {
                         0
                     );
                     tvOrders.setCompoundDrawablesWithIntrinsicBounds(0, R.mipmap.orders, 0, 0);
-                    tvProfile.setCompoundDrawablesWithIntrinsicBounds(0, R.mipmap.profile, 0, 0);
+                    tvLogout.setCompoundDrawablesWithIntrinsicBounds(0, R.mipmap.logout, 0, 0);
                 }
                 3 -> {
                     tvHome.setTextColor(getColor(R.color.black))
                     tv_wallet.setTextColor(getColor(R.color.black))
                     tvOrders.setTextColor(getColor(R.color.black))
-                    tvProfile.setTextColor(getColor(R.color.primary))
+                    tvLogout.setTextColor(getColor(R.color.primary))
 
                     tvHome.setCompoundDrawablesWithIntrinsicBounds(0, R.mipmap.home, 0, 0);
                     tv_wallet.setCompoundDrawablesWithIntrinsicBounds(
@@ -456,7 +491,7 @@ class DashboardActivity : AppCompatActivity() {
                         0
                     );
                     tvOrders.setCompoundDrawablesWithIntrinsicBounds(0, R.mipmap.order, 0, 0);
-                    tvProfile.setCompoundDrawablesWithIntrinsicBounds(0, R.mipmap.profiles, 0, 0);
+                    tvLogout.setCompoundDrawablesWithIntrinsicBounds(0, R.mipmap.logout, 0, 0);
                 }
             }
         }

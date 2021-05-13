@@ -257,17 +257,17 @@
                     android:textColor="@color/black"
                     app:drawableTopCompat="@mipmap/order" />
                 <TextView
-                    android:id="@+id/tvProfile"
+                    android:id="@+id/tvLogout"
                     android:layout_width="0dp"
                     android:layout_weight="1"
                     android:layout_height="wrap_content"
-                    android:text="@string/profile"
+                    android:text="@string/logout"
                     android:textSize="@dimen/sp_10"
                     android:gravity="center"
-                    android:drawablePadding="@dimen/dp_5"
+                    android:drawablePadding="@dimen/dp_7"
                     android:fontFamily="@font/light"
                     android:textColor="@color/black"
-                    app:drawableTopCompat="@mipmap/profile" />
+                    app:drawableTopCompat="@mipmap/logout" />
             </LinearLayout>
         </LinearLayout>
         <ImageView
