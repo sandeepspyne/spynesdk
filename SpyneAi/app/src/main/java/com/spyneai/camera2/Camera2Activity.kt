@@ -682,6 +682,7 @@ class Camera2Activity : AppCompatActivity(), SubCategoriesAdapter.BtnClickListen
         imgNext.setOnClickListener(View.OnClickListener {
             if (frameNumber == 1) {
                 if (Utilities.isNetworkAvailable(this)) {
+                    vinNumber = etSkuName.text.toString().trim()
                     updateSkus()
                 } else {
                     Toast.makeText(
@@ -874,9 +875,11 @@ class Camera2Activity : AppCompatActivity(), SubCategoriesAdapter.BtnClickListen
 
         val request = RetrofitClient.buildService(APiService::class.java)
 
-        if (vinNumber.equals(""))
-            vinNumber = etSkuName.text.toString().trim()
+        if (vinNumber.equals("")){
+            vinNumber = "sku-000"
+            etSkuName.setText("sku-000")
 
+        }
 
         val editSkuRequest = EditSkuRequest(skuId, vinNumber)
 
@@ -1284,9 +1287,9 @@ class Camera2Activity : AppCompatActivity(), SubCategoriesAdapter.BtnClickListen
 
         llSubmit.setOnClickListener(View.OnClickListener {
                 dialog.dismiss()
-                updateSkus()
                 vinNumber = etVin.text.toString()
             etSkuName.setText(vinNumber)
+            updateSkus()
 
             })
 
