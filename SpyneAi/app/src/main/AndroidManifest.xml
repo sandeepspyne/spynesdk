@@ -42,6 +42,9 @@
         android:theme="@style/Theme.SpyneAi"
         android:usesCleartextTraffic="true"
         tools:targetApi="m">
+<!--        <activity-->
+<!--            android:name=".dashboard.ui.MainDashboardActivity"-->
+<!--            android:screenOrientation="portrait" />-->
         <activity android:name=".loginsignup.activity.ForgotPasswordActivity"
             android:screenOrientation="portrait"
             android:launchMode="singleTask"></activity>
@@ -250,7 +253,7 @@
             android:screenOrientation="portrait"
             android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
         <activity
-            android:name=".activity.SplashActivity"
+            android:name=".dashboard.ui.MainDashboardActivity"
             android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
