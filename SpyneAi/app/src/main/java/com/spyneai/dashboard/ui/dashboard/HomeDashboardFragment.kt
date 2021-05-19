@@ -33,14 +33,20 @@ class HomeDashboardFragment :
     lateinit var rvDashboardCategories: RecyclerView
     lateinit var PACKAGE_NAME: String
 
-    override fun onActivityCreated(savedInstanceState: Bundle?) {
-        super.onActivityCreated(savedInstanceState)
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+
+        categoriesResponseList = ArrayList<Data>()
+        Utilities.showProgressDialog(requireContext())
+        viewModel.getCategories("utq10CZvW")
 
         viewModel.categoriesResponse.observe(viewLifecycleOwner, Observer {
+            Utilities.hideProgressDialog()
             when(it){
                 is Resource.Sucess -> {
                     Toast.makeText(requireContext(), it.value.payload.data.size.toString(), Toast.LENGTH_SHORT).show()
                     categoriesResponseList.addAll(it.value.payload.data)
+
                 }
                 is Resource.Failure -> {
                     Toast.makeText(requireContext(), "Api Failure", Toast.LENGTH_SHORT).show()
@@ -48,8 +54,8 @@ class HomeDashboardFragment :
             }
         })
 
-
     }
+
 
 
     override fun getViewModel() = DashboardViewModel::class.java

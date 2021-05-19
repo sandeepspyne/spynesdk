@@ -14,6 +14,7 @@ abstract class BaseRepository {
             try {
                 Resource.Sucess(apiCall.invoke())
             }catch (throwable: Throwable){
+                val abc = ""
                 when(throwable){
                     is HttpException -> {
                         Resource.Failure(false, throwable.code(), throwable.response()?.errorBody())
