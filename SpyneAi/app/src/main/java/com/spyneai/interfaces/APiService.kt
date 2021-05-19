@@ -98,6 +98,7 @@ interface APiService {
     @GET("categories/default")
     fun getCategories(@Header("tokenId") tokenId: String?): Call<CategoriesResponse>?
 
+
     @GET("categories/{catId}/products")
     fun getSubCategories(
         @Header("tokenId") tokenId: String?,

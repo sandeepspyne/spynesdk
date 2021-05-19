@@ -56,21 +56,12 @@ import retrofit2.Response
 
 
 class DashboardActivity : AppCompatActivity() {
-    var fragment: Fragment? = null
-    var fragmentManager: FragmentManager? = null
-    var fragmentTransaction: FragmentTransaction? = null
     lateinit var appUpdateManager: AppUpdateManager
     private val MY_REQUEST_CODE: Int = 1
 
     lateinit var categoriesResponseList: ArrayList<Data>
     lateinit var categoriesAdapter: CategoriesDashboardAdapter
     lateinit var rv_categories: RecyclerView
-    val sampleImages = intArrayOf(
-        R.mipmap.w1,
-        R.mipmap.w2,
-        R.mipmap.w3,
-        R.mipmap.w4
-    )
     lateinit var PACKAGE_NAME: String
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -103,10 +94,6 @@ class DashboardActivity : AppCompatActivity() {
                     Toast.LENGTH_SHORT
                 ).show()
             freeCreditEligiblityCheck()
-            setCarosels()
-            setFooters(0)
-            finishAllBacks()
-            listeners()
         } else {
             autoUpdates()
         }
@@ -152,54 +139,9 @@ class DashboardActivity : AppCompatActivity() {
                         Toast.LENGTH_SHORT
                     ).show()
                 freeCreditEligiblityCheck()
-                setCarosels()
-                setFooters(0)
-                finishAllBacks()
-                listeners()
             }
         }
 
-    }
-
-
-    private fun setCarosels() {
-        tvCompleted.setOnClickListener(View.OnClickListener {
-            val intent = Intent(this, CompletedProjectsActivity::class.java)
-            startActivity(intent)
-        })
-
-        tvOngoing.setOnClickListener(View.OnClickListener {
-            val intent = Intent(this, OngoingOrdersActivity::class.java)
-            startActivity(intent)
-        })
-
-        tvOrders.setOnClickListener(View.OnClickListener {
-            val intent = Intent(this, CompletedProjectsActivity::class.java)
-            startActivity(intent)
-
-        })
-
-        carouselView.setViewListener(viewListener);
-        carouselView!!.setPageCount(sampleImages.size);
-
-
-        tvHaveLook.setOnClickListener(View.OnClickListener {
-            startActivity(
-                Intent(
-                    Intent.ACTION_VIEW,
-                    Uri.parse("https://www.youtube.com/watch?v=LV9sgTxsIgI")
-                )
-            )
-            Log.i("Video", "Video Playing....")
-        })
-    }
-
-    var viewListener = object : ViewListener {
-        override fun setViewForPosition(position: Int): View? {
-            val customView: View = layoutInflater.inflate(R.layout.view_custom, null)
-            customView.ivCarosel.setImageResource(sampleImages[position])
-            return customView
-        }
     }
 
     private fun setRecycler() {
@@ -357,37 +299,6 @@ class DashboardActivity : AppCompatActivity() {
         })
     }
 
-    //var viewListener = ViewListener { layoutInflater.inflate(R.layout.view_custom, null) }
-    private fun finishAllBacks() {
-        SplashActivity().finish()
-        OnboardOneActivity().finish()
-        OnboardTwoActivity().finish()
-        OnboardThreeActivity().finish()
-        SignInUsingOtpActivity().finish()
-        LoginActivity().finish()
-        SignUpActivity().finish()
-    }
-
-    private fun listeners() {
-        iv_wallet.setOnClickListener { startActivity(Intent(this, WalletActivity::class.java)) }
-        ivClicks.setOnClickListener(View.OnClickListener {
-            val intent = Intent(applicationContext, CategoriesActivity::class.java)
-            startActivity(intent)
-        })
-
-        tvHome.setOnClickListener(View.OnClickListener {
-            setFooters(0)
-        })
-
-        tv_wallet.setOnClickListener(View.OnClickListener {
-            startActivity(Intent(this, WalletActivity::class.java))
-        })
-
-        tvLogout.setOnClickListener(View.OnClickListener {
-            logoutDialog()
-        })
-    }
-
     private fun logoutDialog(){
 
         val dialog = Dialog(this)
@@ -425,77 +336,6 @@ class DashboardActivity : AppCompatActivity() {
         })
     }
 
-    fun setFooters(positionsClicked: Int) {
-        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.M) {
-
-            when (positionsClicked) {
-                0 -> {
-                    tvHome.setTextColor(getColor(R.color.primary))
-                    tv_wallet.setTextColor(getColor(R.color.black))
-                    tvOrders.setTextColor(getColor(R.color.black))
-                    tvLogout.setTextColor(getColor(R.color.black))
-
-                    tvHome.setCompoundDrawablesWithIntrinsicBounds(0, R.mipmap.homes, 0, 0);
-                    tv_wallet.setCompoundDrawablesWithIntrinsicBounds(
-                        0,
-                        R.drawable.wallet_small,
-                        0,
-                        0
-                    );
-                    tvOrders.setCompoundDrawablesWithIntrinsicBounds(0, R.mipmap.order, 0, 0);
-                    tvLogout.setCompoundDrawablesWithIntrinsicBounds(0, R.mipmap.logout, 0, 0);
-                }
-                1 -> {
-                    tvHome.setTextColor(getColor(R.color.black))
-                    tv_wallet.setTextColor(getColor(R.color.primary))
-                    tvOrders.setTextColor(getColor(R.color.black))
-                    tvLogout.setTextColor(getColor(R.color.black))
-
-                    tvHome.setCompoundDrawablesWithIntrinsicBounds(0, R.mipmap.home, 0, 0);
-                    tv_wallet.setCompoundDrawablesWithIntrinsicBounds(
-                        0,
-                        R.drawable.wallet_small,
-                        0,
-                        0
-                    );
-                    tvOrders.setCompoundDrawablesWithIntrinsicBounds(0, R.mipmap.order, 0, 0);
-                    tvLogout.setCompoundDrawablesWithIntrinsicBounds(0, R.mipmap.logout, 0, 0);
-                }
-                2 -> {
-                    tvHome.setTextColor(getColor(R.color.black))
-                    tv_wallet.setTextColor(getColor(R.color.black))
-                    tvOrders.setTextColor(getColor(R.color.primary))
-                    tvLogout.setTextColor(getColor(R.color.black))
-
-                    tvHome.setCompoundDrawablesWithIntrinsicBounds(0, R.mipmap.home, 0, 0);
-                    tv_wallet.setCompoundDrawablesWithIntrinsicBounds(
-                        0,
-                        R.drawable.wallet_small,
-                        0,
-                        0
-                    );
-                    tvOrders.setCompoundDrawablesWithIntrinsicBounds(0, R.mipmap.orders, 0, 0);
-                    tvLogout.setCompoundDrawablesWithIntrinsicBounds(0, R.mipmap.logout, 0, 0);
-                }
-                3 -> {
-                    tvHome.setTextColor(getColor(R.color.black))
-                    tv_wallet.setTextColor(getColor(R.color.black))
-                    tvOrders.setTextColor(getColor(R.color.black))
-                    tvLogout.setTextColor(getColor(R.color.primary))
-
-                    tvHome.setCompoundDrawablesWithIntrinsicBounds(0, R.mipmap.home, 0, 0);
-                    tv_wallet.setCompoundDrawablesWithIntrinsicBounds(
-                        0,
-                        R.drawable.wallet_small,
-                        0,
-                        0
-                    );
-                    tvOrders.setCompoundDrawablesWithIntrinsicBounds(0, R.mipmap.order, 0, 0);
-                    tvLogout.setCompoundDrawablesWithIntrinsicBounds(0, R.mipmap.logout, 0, 0);
-                }
-            }
-        }
-    }
 
     private fun freeCreditEligiblityCheck() {
         val userId = RequestBody.create(

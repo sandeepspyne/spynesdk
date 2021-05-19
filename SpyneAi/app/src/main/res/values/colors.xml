@@ -7,6 +7,8 @@
     <color name="teal_700">#FF018786</color>
     <color name="black">#FF000000</color>
 
+    <color name="primary_dark">#223263</color>
+
     <color name="primary">#FF7700</color>
     <color name="light">#ffa842</color>
     <color name="light_soft">#FBF2EC</color>
@@ -23,6 +25,8 @@
     <color name="darkgray">#354044</color>
 
     <color name="dark_blue">#3F3D56</color>
+
+    <color name="categories_text">#4F4F4F</color>
 
     <color name="credit_deducted">#B3B1B1</color>
     <color name="line_separator">#F0EEEE</color>

@@ -30,6 +30,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import okhttp3.MediaType
+import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
 import retrofit2.Call
@@ -65,7 +66,10 @@ class PhotoUploader(var task: Task, var listener: Listener) {
             val imageFile = setImageRaw(task.imageFileList[task.totalImagesToUploadIndex])
 
             val request = RetrofitClients.buildService(APiService::class.java)
-            val requestFile = RequestBody.create(MediaType.parse("multipart/form-data"), imageFile)
+            val requestFile = RequestBody.create(
+                "multipart/form-data".toMediaTypeOrNull(),
+                imageFile!!
+            )
             val body = MultipartBody.Part.createFormData("image", imageFile!!.name, requestFile)
             val descriptionString = "false"
 
@@ -200,7 +204,10 @@ class PhotoUploader(var task: Task, var listener: Listener) {
             val imageFile = setImageRaw(task.imageInteriorFileList[task.totalImagesToUploadIndex])
 
             val request = RetrofitClients.buildService(APiService::class.java)
-            val requestFile = RequestBody.create(MediaType.parse("multipart/form-data"), imageFile)
+            val requestFile = RequestBody.create(
+                "multipart/form-data".toMediaTypeOrNull(),
+                imageFile!!
+            )
             val body = MultipartBody.Part.createFormData("image", imageFile!!.name, requestFile)
             val descriptionString = "false"
 
@@ -335,7 +342,10 @@ class PhotoUploader(var task: Task, var listener: Listener) {
             val imageFile = setImageRaw(task.imageFocusedFileList[task.totalImagesToUploadIndex])
 
             val request = RetrofitClients.buildService(APiService::class.java)
-            val requestFile = RequestBody.create(MediaType.parse("multipart/form-data"), imageFile)
+            val requestFile = RequestBody.create(
+                "multipart/form-data".toMediaTypeOrNull(),
+                imageFile!!
+            )
             val body = MultipartBody.Part.createFormData("image", imageFile!!.name, requestFile)
             val descriptionString = "false"
 
@@ -680,12 +690,12 @@ class PhotoUploader(var task: Task, var listener: Listener) {
 
         var logo: MultipartBody.Part? = null
         if (task.dealershipLogo.equals("")) {
-            val attachmentEmpty = RequestBody.create(MediaType.parse("multipart/form-data"), "")
+            val attachmentEmpty = RequestBody.create("multipart/form-data".toMediaTypeOrNull(), "")
             logo = MultipartBody.Part.createFormData("attachment", "", attachmentEmpty)
         } else {
             val requestFile =
                 RequestBody.create(
-                    MediaType.parse("multipart/form-data"),
+                    "multipart/form-data".toMediaTypeOrNull(),
                     File(task.dealershipLogo)
                 )
             logo =
@@ -792,7 +802,7 @@ class PhotoUploader(var task: Task, var listener: Listener) {
             task.cornerPosition
         )
         val requestFile =
-            RequestBody.create(MediaType.parse("multipart/form-data"), File(task.dealershipLogo))
+            RequestBody.create("multipart/form-data".toMediaTypeOrNull(), File(task.dealershipLogo))
         val logo =
             MultipartBody.Part.createFormData("logo", File(task.dealershipLogo)!!.name, requestFile)
 
@@ -1082,12 +1092,12 @@ class PhotoUploader(var task: Task, var listener: Listener) {
 
         var logo: MultipartBody.Part? = null
         if (task.dealershipLogo.equals("")) {
-            val attachmentEmpty = RequestBody.create(MediaType.parse("multipart/form-data"), "")
+            val attachmentEmpty = RequestBody.create("multipart/form-data".toMediaTypeOrNull(), "")
             logo = MultipartBody.Part.createFormData("attachment", "", attachmentEmpty)
         } else {
             val requestFile =
                 RequestBody.create(
-                    MediaType.parse("multipart/form-data"),
+                    "multipart/form-data".toMediaTypeOrNull(),
                     File(task.dealershipLogo)
                 )
             logo =
@@ -1192,12 +1202,12 @@ class PhotoUploader(var task: Task, var listener: Listener) {
 
         var logo: MultipartBody.Part? = null
         if (task.dealershipLogo.equals("")) {
-            val attachmentEmpty = RequestBody.create(MediaType.parse("multipart/form-data"), "")
+            val attachmentEmpty = RequestBody.create("multipart/form-data".toMediaTypeOrNull(), "")
             logo = MultipartBody.Part.createFormData("attachment", "", attachmentEmpty)
         } else {
             val requestFile =
                 RequestBody.create(
-                    MediaType.parse("multipart/form-data"),
+                    "multipart/form-data".toMediaTypeOrNull(),
                     File(task.dealershipLogo)
                 )
             logo =

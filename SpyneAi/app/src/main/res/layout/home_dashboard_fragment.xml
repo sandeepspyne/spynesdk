@@ -1,13 +1,145 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     tools:context=".dashboard.ui.dashboard.HomeDashboardFragment">
 
-    <TextView
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:text="Hello" />
+        android:layout_height="match_parent">
 
-</FrameLayout>
+        <TextView
+            android:id="@+id/tvWelcomeHome"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/welcome_home"
+            android:textSize="@dimen/sp_22"
+            android:padding="@dimen/sp_20"
+            android:textColor="@color/primary_dark"
+            android:fontFamily="@font/medium"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintBottom_toTopOf="@+id/tvExploreCategories"></TextView>
+
+        <TextView
+            android:id="@+id/tvExploreCategories"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/explore_categories"
+            android:textSize="@dimen/sp_22"
+            android:padding="@dimen/sp_20"
+            android:textColor="@color/categories_text"
+            android:fontFamily="@font/bold"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/tvWelcomeHome"
+            app:layout_constraintEnd_toEndOf="parent"></TextView>
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/rvDashboardCategories"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/dp_10"
+            android:layout_marginEnd="@dimen/dp_10"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/tvExploreCategories" />
+
+        <RelativeLayout
+            android:id="@+id/rlOngoingShoots"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:layout_constraintTop_toBottomOf="@+id/rvDashboardCategories"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            android:padding="@dimen/dp_20">
+
+        <TextView
+            android:id="@+id/tvOngoingShoots"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/on_going_shoots"
+            android:textSize="@dimen/sp_22"
+            android:textColor="@color/categories_text"
+            android:fontFamily="@font/bold"
+            android:layout_alignParentLeft="true"
+            android:layout_centerInParent="true"
+            ></TextView>
+
+        <TextView
+            android:id="@+id/tvOngoingViewall"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/view_all"
+            android:textSize="@dimen/sp_12"
+            android:textColor="@color/primary"
+            android:fontFamily="@font/medium"
+            android:layout_alignParentRight="true"
+            android:layout_centerInParent="true"></TextView>
+
+        </RelativeLayout>
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/rvOngoingShoots"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/dp_10"
+            android:layout_marginEnd="@dimen/dp_10"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/rlOngoingShoots" />
+
+        <RelativeLayout
+            android:id="@+id/rlCompletedShoots"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:layout_constraintTop_toBottomOf="@+id/rvOngoingShoots"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            android:padding="@dimen/dp_20">
+
+            <TextView
+                android:id="@+id/tvCompletedShoots"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/completed_shoots"
+                android:textSize="@dimen/sp_22"
+                android:textColor="@color/categories_text"
+                android:fontFamily="@font/bold"
+                android:layout_alignParentLeft="true"
+                android:layout_centerInParent="true"
+                ></TextView>
+
+            <TextView
+                android:id="@+id/tvCompletedViewall"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/view_all"
+                android:textSize="@dimen/sp_12"
+                android:textColor="@color/primary"
+                android:fontFamily="@font/medium"
+                android:layout_alignParentRight="true"
+                android:layout_centerInParent="true"></TextView>
+
+        </RelativeLayout>
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/rvCompletedShoots"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/dp_10"
+            android:layout_marginEnd="@dimen/dp_10"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/rlCompletedShoots" />
+
+
+
+
+
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</ScrollView>

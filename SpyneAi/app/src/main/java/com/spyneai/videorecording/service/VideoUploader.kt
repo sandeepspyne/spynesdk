@@ -13,6 +13,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import okhttp3.MediaType
+import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
 import org.json.JSONObject
@@ -32,7 +33,10 @@ class VideoUploader(var task : VideoTask, var listener: VideoTaskListener) {
             try {
                 val request = RetrofitClients.buildService(APiService::class.java)
 
-                val requestFile = RequestBody.create(MediaType.parse("multipart/form-data"), File(task.filePath))
+                val requestFile = RequestBody.create(
+                    "multipart/form-data".toMediaTypeOrNull(),
+                    File(task.filePath)
+                )
                 val video = MultipartBody.Part.createFormData("video", File(task.filePath)!!.name, requestFile)
 
                 val userId = RequestBody.create(
@@ -94,7 +98,10 @@ class VideoUploader(var task : VideoTask, var listener: VideoTaskListener) {
             try {
                 val request = RetrofitClients.buildService(APiService::class.java)
 
-                val requestFile = RequestBody.create(MediaType.parse("multipart/form-data"), File(task.filePath))
+                val requestFile = RequestBody.create(
+                    "multipart/form-data".toMediaTypeOrNull(),
+                    File(task.filePath)
+                )
                 val video = MultipartBody.Part.createFormData("video", File(task.filePath)!!.name, requestFile)
 
                 val userId = RequestBody.create(

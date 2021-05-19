@@ -187,6 +187,9 @@ dependencies {
     implementation("androidx.navigation:navigation-fragment-ktx:$nav_version")
     implementation("androidx.navigation:navigation-ui-ktx:$nav_version")
 
+    //logging interceptor
+    implementation("com.squareup.okhttp3:logging-interceptor:4.9.1")
+
 
 
 

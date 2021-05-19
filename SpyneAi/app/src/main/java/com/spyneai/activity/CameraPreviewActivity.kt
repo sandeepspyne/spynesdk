@@ -34,6 +34,7 @@ import com.spyneai.needs.AppConstants
 import com.spyneai.needs.Utilities
 import kotlinx.android.synthetic.main.activity_camera_preview.*
 import okhttp3.MediaType
+import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
 import retrofit2.Call
@@ -231,7 +232,7 @@ public class CameraPreviewActivity : AppCompatActivity() {
 
         val request = RetrofitClients.buildService(APiService::class.java)
 
-        val requestFile = RequestBody.create(MediaType.parse("multipart/form-data"), imageFile)
+        val requestFile = RequestBody.create("multipart/form-data".toMediaTypeOrNull(), imageFile!!)
         val body = MultipartBody.Part.createFormData("image", imageFile!!.name, requestFile)
         var descriptionString = "true"
 
@@ -286,7 +287,8 @@ public class CameraPreviewActivity : AppCompatActivity() {
 
         val request = RetrofitClients.buildService(APiService::class.java)
         val img_url = RequestBody.create(MultipartBody.FORM,
-            Utilities.getPreference(this@CameraPreviewActivity, AppConstants.MAIN_IMAGE))
+            Utilities.getPreference(this@CameraPreviewActivity, AppConstants.MAIN_IMAGE)!!
+        )
 
         val call = request.previewPhoto(img_url)
         //val imgPreview = findViewById<ImageView>(R.id.imgPreview)
@@ -320,7 +322,8 @@ public class CameraPreviewActivity : AppCompatActivity() {
         setImageRaw()
 
         val img_url = RequestBody.create(MultipartBody.FORM,
-            Utilities.getPreference(this@CameraPreviewActivity, AppConstants.MAIN_IMAGE))
+            Utilities.getPreference(this@CameraPreviewActivity, AppConstants.MAIN_IMAGE)!!
+        )
 
         val bg_replacement_backgound_id = RequestBody.create(MultipartBody.FORM, Utilities.getPreference(this,AppConstants.IMAGE_ID)!!)
 
@@ -404,7 +407,9 @@ public class CameraPreviewActivity : AppCompatActivity() {
 
             val request = RetrofitClient.buildService(APiService::class.java)
 
-            val requestFile = RequestBody.create(MediaType.parse("multipart/form-data"), imageFile)
+            val requestFile = RequestBody.create("multipart/form-data".toMediaTypeOrNull(),
+                imageFile!!
+            )
             val body = MultipartBody.Part.createFormData("photo", imageFile!!.name, requestFile)
 
             val uploadPhotoName : String =
@@ -549,7 +554,9 @@ public class CameraPreviewActivity : AppCompatActivity() {
 
             val imageFiles = persistImage(rotatedBitmap!!)
 
-            val requestFile = RequestBody.create(MediaType.parse("multipart/form-data"), imageFiles)
+            val requestFile = RequestBody.create("multipart/form-data".toMediaTypeOrNull(),
+                imageFiles!!
+            )
             val body = MultipartBody.Part.createFormData("logo", imageFiles!!.name, requestFile)
             val logo_position = RequestBody.create(MultipartBody.FORM, rotatePosition)
             val img_url = RequestBody.create(MultipartBody.FORM, Utilities.getPreference(this,AppConstants.REPLACED_IMAGE)!!)
