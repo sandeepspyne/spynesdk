@@ -7,7 +7,7 @@
 
     <fragment
         android:id="@+id/homeDashboardFragment"
-        android:name="com.spyneai.dashboard.ui.HomeDashboardFragment"
+        android:name="com.spyneai.dashboard.ui.dashboard.HomeDashboardFragment"
         android:label="home_dashboard_fragment"
         tools:layout="@layout/home_dashboard_fragment" >
         <action
@@ -16,7 +16,7 @@
     </fragment>
     <fragment
         android:id="@+id/walletDashboardFragment"
-        android:name="com.spyneai.dashboard.ui.WalletDashboardFragment"
+        android:name="com.spyneai.dashboard.ui.dashboard.WalletDashboardFragment"
         android:label="wallet_dashboard_fragment"
         tools:layout="@layout/wallet_dashboard_fragment" >
         <action
@@ -25,7 +25,7 @@
     </fragment>
     <fragment
         android:id="@+id/completedOrdersDashboardFragment"
-        android:name="com.spyneai.dashboard.ui.CompletedOrdersDashboardFragment"
+        android:name="com.spyneai.dashboard.ui.dashboard.CompletedOrdersDashboardFragment"
         android:label="completed_orders_dashboard_fragment"
         tools:layout="@layout/completed_orders_dashboard_fragment" >
         <action
@@ -34,7 +34,7 @@
     </fragment>
     <fragment
         android:id="@+id/logoutDashBoardFragment"
-        android:name="com.spyneai.dashboard.ui.LogoutDashBoardFragment"
+        android:name="com.spyneai.dashboard.ui.dashboard.LogoutDashBoardFragment"
         android:label="fragment_dashboard_logout"
         tools:layout="@layout/fragment_dashboard_logout" >
         <action

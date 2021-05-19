@@ -253,7 +253,7 @@
             android:screenOrientation="portrait"
             android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
         <activity
-            android:name=".dashboard.ui.MainDashboardActivity"
+            android:name=".dashboard.ui.dashboard.MainDashboardActivity"
             android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

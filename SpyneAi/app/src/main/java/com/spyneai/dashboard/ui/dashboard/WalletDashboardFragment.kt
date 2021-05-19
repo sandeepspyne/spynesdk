@@ -1,4 +1,4 @@
-package com.spyneai.dashboard.ui
+package com.spyneai.dashboard.ui.dashboard
 
 import androidx.lifecycle.ViewModelProvider
 import android.os.Bundle
@@ -8,24 +8,24 @@ import android.view.View
 import android.view.ViewGroup
 import com.spyneai.R
 
-class HomeDashboardFragment : Fragment() {
+class WalletDashboardFragment : Fragment() {
 
     companion object {
-        fun newInstance() = HomeDashboardFragment()
+        fun newInstance() = WalletDashboardFragment()
     }
 
-    private lateinit var viewModel: HomeDashboardViewModel
+    private lateinit var viewModel: WalletDashboardViewModel
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        return inflater.inflate(R.layout.home_dashboard_fragment, container, false)
+        return inflater.inflate(R.layout.wallet_dashboard_fragment, container, false)
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
-        viewModel = ViewModelProvider(this).get(HomeDashboardViewModel::class.java)
+        viewModel = ViewModelProvider(this).get(WalletDashboardViewModel::class.java)
         // TODO: Use the ViewModel
     }
 

@@ -1,4 +1,4 @@
-package com.spyneai.dashboard.ui
+package com.spyneai.dashboard.ui.dashboard
 
 import android.app.Dialog
 import android.content.Intent

@@ -1,4 +1,4 @@
-package com.spyneai.dashboard.ui
+package com.spyneai.dashboard.ui.dashboard
 
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
