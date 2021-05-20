@@ -58,7 +58,6 @@ class ImageDownloadingService : Service(),ImageDownloadManager.Listener {
     private fun fetchDataAndStartService(intent: Intent) {
         val task = DownloadTask()
 
-        task.imageDir = outputDirectory
         task.skuName = intent.getStringExtra(AppConstants.SKU_NAME) ?: ""
         task.skuId = intent.getStringExtra(AppConstants.SKU_ID) ?: ""
         task.remainingCredits = intent.getIntExtra(AppConstants.CREDIT_REMAINING, 10)
@@ -73,15 +72,6 @@ class ImageDownloadingService : Service(),ImageDownloadManager.Listener {
         checkAndFinishService()
 
         ImageDownloadManager(task, this).start()
-    }
-
-    // The Folder location where all the files will be stored
-    private val outputDirectory: String by lazy {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-            "${Environment.getExternalStorageDirectory()}/Spyne"
-        } else {
-            "${getExternalFilesDir(Environment.DIRECTORY_DCIM)?.path}/Spyne"
-        }
     }
 
     private fun checkAndFinishService() {

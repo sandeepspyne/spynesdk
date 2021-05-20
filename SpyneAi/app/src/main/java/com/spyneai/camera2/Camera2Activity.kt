@@ -1607,7 +1607,13 @@ class Camera2Activity : AppCompatActivity(), SubCategoriesAdapter.BtnClickListen
 
         val valuesShoots = arrayOf("4 Angles","8 Angles", "12 Angles"/*, "24 Angles"*/)
 
-        npShoots.setMinValue(0); //from array first value
+        when(Utilities.getPreference(this,AppConstants.FRAME_SHOOOTS)){
+            "4" ->  npShoots.setMinValue(0)
+            "8" -> npShoots.setMinValue(1)
+            "12" -> npShoots.setMinValue(2)
+        }
+
+        npShoots.setMinValue(0) //from array first value
         //Specify the maximum value/number of NumberPicker
         npShoots.setMaxValue(valuesShoots.size - 1); //to array last value
 
@@ -1622,7 +1628,7 @@ class Camera2Activity : AppCompatActivity(), SubCategoriesAdapter.BtnClickListen
                     this@Camera2Activity,
                     AppConstants.FRAME_SHOOOTS,
                     "4"
-                );
+                )
                 //   setNumberPickerTextColor(npShoots, getColor(R.color.primary))
                 setProgressFrame(4)
             } else if (valuesShoots[newVal].equals("8 Angles")) {

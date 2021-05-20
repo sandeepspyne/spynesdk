@@ -43,14 +43,13 @@ class ImageDownloadManager(var task : DownloadTask, var listener : Listener) {
             FILENAME_FORMAT, Locale.US
         ).format(System.currentTimeMillis()) + ".png"
 
-        var file = File(task.imageDir)
+        var file = File(Environment.getExternalStorageDirectory().toString() + "/Spyne")
 
-       PRDownloader.download(
+        PRDownloader.download(
             imageFile,
-            task.imageDir,
+            Environment.getExternalStorageDirectory().toString() + "/Spyne",
             imageName
         )
-
             .build()
             .start(object : OnDownloadListener {
                 override fun onDownloadComplete() {
@@ -59,7 +58,6 @@ class ImageDownloadManager(var task : DownloadTask, var listener : Listener) {
 
                     if (task.downloadCount == task.listHdQuality.size) {
                         listener.onSuccess(task)
-
                     }
                 }
 
