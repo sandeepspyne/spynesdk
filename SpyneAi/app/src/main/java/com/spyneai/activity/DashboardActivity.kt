@@ -401,7 +401,6 @@ class DashboardActivity : AppCompatActivity() {
         dialog.getWindow()?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT));
         val llLogout: LinearLayout = dialog.findViewById(R.id.llLogout)
         var ivClose: ImageView = dialogView.findViewById(R.id.ivClose)
-        var lottielogout: LottieAnimationView = dialogView.findViewById(R.id.lottielogout)
 
 
         ivClose.setOnClickListener(View.OnClickListener {

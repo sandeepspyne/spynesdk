@@ -43,11 +43,11 @@ class ImageDownloadManager(var task : DownloadTask, var listener : Listener) {
             FILENAME_FORMAT, Locale.US
         ).format(System.currentTimeMillis()) + ".png"
 
-        var file = File(Environment.getExternalStorageDirectory().toString() + "/Spyne")
+        var file = File(task.imageDir)
 
        PRDownloader.download(
             imageFile,
-            Environment.getExternalStorageDirectory().toString() + "/Spyne",
+            task.imageDir,
             imageName
         )
 

@@ -101,10 +101,8 @@ typealias LumaListener = (luma: Double) -> Unit
 
 class Camera2Activity : AppCompatActivity(), SubCategoriesAdapter.BtnClickListener {
     private lateinit var gifList: ArrayList<String>
-    private lateinit var photoFilePath: File
     private var savedUri: Uri? = null
     private lateinit var photoFile: File
-    private val PICK_IMAGE: Int = 1
     private var pos: Int = 0
     private lateinit var progressList: List<Data>
     private lateinit var progressAdapter: ProgressAdapter
@@ -115,7 +113,6 @@ class Camera2Activity : AppCompatActivity(), SubCategoriesAdapter.BtnClickListen
     private var selectedImagePath: String? = null
     private lateinit var selectedItemFrame: String
 
-    //   private var btnlistener: SubCategoriesAdapter.BtnClickListener? = null
     private var imageCapture: ImageCapture? = null
 
     private lateinit var outputDirectory: File
@@ -147,11 +144,9 @@ class Camera2Activity : AppCompatActivity(), SubCategoriesAdapter.BtnClickListen
     lateinit var frameInteriorImageList: ArrayList<FrameImages>
     lateinit var frameFocusedImageList: ArrayList<FrameImages>
     lateinit var frameImageListSelections: ArrayList<Int>
-    lateinit var frameINteriorImageListSelections: ArrayList<Int>
 
-    public var imageFile: File? = null
 
-    public lateinit var imageFileList: ArrayList<File>
+    lateinit var imageFileList: ArrayList<File>
     public lateinit var imageFileListFrames: ArrayList<Int>
 
     public lateinit var imageInteriorFileList: ArrayList<File>
@@ -244,11 +239,6 @@ class Camera2Activity : AppCompatActivity(), SubCategoriesAdapter.BtnClickListen
             selectedItemFrame = Utilities.getPreference(this, AppConstants.FRAME_SHOOOTS).toString()
         }
 
-        /*frameNumber = intent.getIntExtra(AppConstants.FRAME, 1)
-        totalFrames = intent.getIntExtra(AppConstants.TOTAL_FRAME, 1)
-        if(intent.getStringExtra(AppConstants.FRAME_IMAGE) != null)
-            frameImage = intent.getStringExtra(AppConstants.FRAME_IMAGE)!!
-*/
         if (!etSkuName.text.toString().isEmpty()) {
             rvSubcategories.visibility = View.GONE
             //etSkuName.visibility = View.GONE
@@ -277,15 +267,10 @@ class Camera2Activity : AppCompatActivity(), SubCategoriesAdapter.BtnClickListen
             subCategoriesList, pos,
             object : SubCategoriesAdapter.BtnClickListener {
                 override fun onBtnClick(position: Int) {
-                    Log.d("Position click", position.toString())
+                    Log.d("Sub Position click", position.toString())
                     etSkuName.setText(vinNumber)
-                    setProductMap(
-                        Utilities.getPreference(
-                            this@Camera2Activity,
-                            AppConstants.SHOOT_ID
-                        ).toString(), position
-                    )
-                    // pos = position
+                    setProductMap(Utilities.getPreference(this@Camera2Activity,
+                        AppConstants.SHOOT_ID).toString(), position,false)
                     subCategoriesAdapter.notifyDataSetChanged()
                 }
             })
@@ -328,7 +313,6 @@ class Camera2Activity : AppCompatActivity(), SubCategoriesAdapter.BtnClickListen
             object : FocusedFramesAdapter.BtnClickListener {
                 override fun onBtnClick(position: Int) {
                     Log.d("Position click", position.toString())
-                    // pos = position
                     focusedFramesAdapter.notifyDataSetChanged()
                     rvFocusedFrames.scrollToPosition(position)
                 }
@@ -649,7 +633,7 @@ class Camera2Activity : AppCompatActivity(), SubCategoriesAdapter.BtnClickListen
                             Utilities.getPreference(
                                 this@Camera2Activity,
                                 AppConstants.SHOOT_ID
-                            ).toString(), 0
+                            ).toString(), 0,true
                         )
                 }
             }
@@ -1078,7 +1062,6 @@ class Camera2Activity : AppCompatActivity(), SubCategoriesAdapter.BtnClickListen
             })
     }
 
-
     @RequiresApi(Build.VERSION_CODES.M)
     fun setImageRaw() {
         val myBitmap = BitmapFactory.decodeFile(photoFile.getAbsolutePath())
@@ -1247,7 +1230,6 @@ class Camera2Activity : AppCompatActivity(), SubCategoriesAdapter.BtnClickListen
         dialog.show()
     }
 
-
     @RequiresApi(Build.VERSION_CODES.M)
     private fun showHint() {
         val dialog = Dialog(this)
@@ -1286,11 +1268,14 @@ class Camera2Activity : AppCompatActivity(), SubCategoriesAdapter.BtnClickListen
             dialog.show()
 
         llSubmit.setOnClickListener(View.OnClickListener {
+            if (etVin.text.isNullOrEmpty()){
+                etVin.setError("Please enter any unique")
+            }else{
                 dialog.dismiss()
                 vinNumber = etVin.text.toString()
-            etSkuName.setText(vinNumber)
-            updateSkus()
-
+                etSkuName.setText(vinNumber)
+                updateSkus()
+            }
             })
 
         }
@@ -1324,40 +1309,15 @@ class Camera2Activity : AppCompatActivity(), SubCategoriesAdapter.BtnClickListen
             }
 
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-/*
-                if (!s.isNullOrEmpty())
-                    imgNext.visibility = View.VISIBLE
-                else
-                    imgNext.visibility = View.INVISIBLE
-*/
 
             }
         })
 
-/*
-        imgNext.setOnClickListener(View.OnClickListener {
-            val createCollectionRequest = UpdateShootCategoryRequest("Spyne SKU");
 
-            val request = RetrofitClient.buildService(APiService::class.java)
-            val call = request.createCollection(Utilities.getPreference(this,AppConstants.tokenId),createCollectionRequest)
-
-            call?.enqueue(object : Callback<UpdateShootCategoryResponse>{
-                override fun onResponse(call: Call<UpdateShootCategoryResponse>, response: Response<UpdateShootCategoryResponse>) {
-                    if (response.isSuccessful){
-                        Log.e("ok", response.body()?.payload?.data?.shootId.toString())
-                    }
-                }
-                override fun onFailure(call: Call<UpdateShootCategoryResponse>, t: Throwable) {
-                    Log.e("ok", "no way")
-
-                }
-            })
-        })
-*/
     }
 
 
-    private fun setProductMap(shootId: String, position: Int) {
+    private fun setProductMap(shootId: String, position: Int,updateShoots : Boolean) {
         Utilities.showProgressDialog(this)
 
         val updateShootProductRequest = UpdateShootProductRequest(
@@ -1384,8 +1344,8 @@ class Camera2Activity : AppCompatActivity(), SubCategoriesAdapter.BtnClickListen
                     )
                     setSkuIdMap(
                         shootId,
-                        subCategoriesList[position].catId, subCategoriesList[position].prodId
-                    )
+                        subCategoriesList[position].catId, subCategoriesList[position].prodId,
+                        updateShoots)
                 }
             }
 
@@ -1401,7 +1361,7 @@ class Camera2Activity : AppCompatActivity(), SubCategoriesAdapter.BtnClickListen
         })
     }
 
-    private fun setSkuIdMap(shootId: String, catId: String, prodId: String) {
+    private fun setSkuIdMap(shootId: String, catId: String, prodId: String,updateShots : Boolean) {
         val updateSkuRequest = UpdateSkuRequest(shootId, prodId)
 
         val request = RetrofitClient.buildService(APiService::class.java)
@@ -1541,16 +1501,19 @@ class Camera2Activity : AppCompatActivity(), SubCategoriesAdapter.BtnClickListen
                         Utilities.savePrefrence(
                             this@Camera2Activity,
                             AppConstants.FRAME_SHOOOTS,
-                            "4"
-                        );
+                            "8"
+                        )
                     }
+
+
                     if (catName.equals("Automobiles")) {
                         Utilities.savePrefrence(
                             this@Camera2Activity,
                             AppConstants.FRAME_SHOOOTS,
-                            "4"
-                        );
-                        setProgressFrame(4)
+                            "8"
+                        )
+                        if (updateShots)
+                            setProgressFrame(8)
                     } else if (catName.equals("Footwear")) {
                         Utilities.savePrefrence(
                             this@Camera2Activity,
@@ -1588,26 +1551,10 @@ class Camera2Activity : AppCompatActivity(), SubCategoriesAdapter.BtnClickListen
         Log.d("Position", position.toString())
     }
 
-    public fun getInstance(): Camera2Activity {
-        return this
-    }
-
     override fun onBackPressed() {
-//        super.onBackPressed()
         showExitDialog()
     }
 
-    private fun defaultSet() {
-        val intent = Intent()
-        intent.type = "image/*"
-        intent.action = Intent.ACTION_GET_CONTENT
-        startActivityForResult(
-            Intent.createChooser(
-                intent,
-                "Select Picture"
-            ), SELECT_PICTURE
-        )
-    }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
@@ -1626,116 +1573,12 @@ class Camera2Activity : AppCompatActivity(), SubCategoriesAdapter.BtnClickListen
                     photoFile.toString()
                 )
 
-                // uploadImage()
-                /*  val intent = Intent(this@Camera2Activity, CameraPreviewActivity::class.java)
-                  Utilities.savePrefrence(this@Camera2Activity, AppConstants.FROM, "AB")
-                  intent.putExtra(AppConstants.FRAME, frameNumber)
-                  intent.putExtra(AppConstants.TOTAL_FRAME, totalFrames)
-                  startActivity(intent)*/
             }
         }
     }
 
-    fun getImageUri(inContext: Context, inImage: Bitmap): Uri? {
-        val values = ContentValues()
-        values.put(MediaStore.Images.Media.TITLE, "Title")
-        values.put(MediaStore.Images.Media.DESCRIPTION, "From Camera")
-        val path = contentResolver.insert(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, values)
-        return Uri.parse(path.toString())
-    }
 
-    fun getRealPathFromURI(uri: Uri?): String? {
-        val cursor: Cursor? = contentResolver.query(uri!!, null, null, null, null)
-        cursor!!.moveToFirst()
-        val idx: Int = cursor.getColumnIndex(MediaStore.Images.ImageColumns.DATA)
-        return cursor.getString(idx)
-    }
-
-/*
-    private fun decodeFile(path: String): String? {
-        var strMyImagePath: String? = null
-        var scaledBitmap: Bitmap? = null
-        try {
-            // Part 1: Decode image
-            val unscaledBitmap: Bitmap =
-                    ScalingUtilities().decodeFile(path, 700, 700, ScalingUtilities.ScalingLogic.FIT)!!
-            scaledBitmap = if (!(unscaledBitmap.width <= 500 && unscaledBitmap.height <= 500)) {
-                // Part 2: Scale image
-                ScalingUtilities().createScaledBitmap(
-                        unscaledBitmap,
-                        700,
-                        700,
-                        ScalingUtilities.ScalingLogic.FIT
-                )
-            } else {
-                unscaledBitmap.recycle()
-                return path
-            }
-
-            // Store to tmp file
-            val extr: String = Environment.getExternalStorageDirectory().toString()
-            val mFolder = File("$extr/myTmpDir")
-            if (!mFolder.exists()) {
-                mFolder.mkdir()
-            }
-            val s = "tmp.png"
-            val f = File(mFolder.absolutePath, s)
-            strMyImagePath = f.absolutePath
-            var fos: FileOutputStream? = null
-            try {
-                fos = FileOutputStream(f)
-                scaledBitmap!!.compress(Bitmap.CompressFormat.PNG, 70, fos)
-                fos.flush()
-                fos.close()
-            } catch (e: FileNotFoundException) {
-                e.printStackTrace()
-            } catch (e: java.lang.Exception) {
-                e.printStackTrace()
-            }
-            scaledBitmap!!.recycle()
-
-            //Rotate if phone rotates
-            val tempBitmap = scaledBitmap
-
-            var ei: ExifInterface? = null
-            try {
-                ei = ExifInterface(photoFile.getAbsolutePath())
-            } catch (e: IOException) {
-                e.printStackTrace()
-            }
-            if (BuildConfig.DEBUG && ei == null) {
-                error("Assertion failed")
-            }
-            val orientation = ei!!.getAttributeInt(
-                    ExifInterface.TAG_ORIENTATION,
-                    ExifInterface.ORIENTATION_UNDEFINED
-            )
-            val rotatedBitmap: Bitmap?
-            when (orientation) {
-                ExifInterface.ORIENTATION_ROTATE_90 -> rotatedBitmap = rotateImage(tempBitmap, 90f)
-                ExifInterface.ORIENTATION_ROTATE_180 -> rotatedBitmap = rotateImage(
-                        tempBitmap,
-                        180f
-                )
-                ExifInterface.ORIENTATION_ROTATE_270 -> rotatedBitmap = rotateImage(
-                        tempBitmap,
-                        270f
-                )
-                ExifInterface.ORIENTATION_NORMAL -> rotatedBitmap = tempBitmap
-                else -> rotatedBitmap = tempBitmap
-            }
-
-            scaledBitmap = rotatedBitmap
-            scaledBitmap!!.recycle()
-            //End of rotations
-
-        } catch (e: Throwable) {
-        }
-        return strMyImagePath ?: path
-    }
-*/
-
-    public fun rotateImage(source: Bitmap, angle: Float): Bitmap? {
+    fun rotateImage(source: Bitmap, angle: Float): Bitmap? {
         val matrix = Matrix()
 
         matrix.postRotate(angle)
@@ -1745,26 +1588,8 @@ class Camera2Activity : AppCompatActivity(), SubCategoriesAdapter.BtnClickListen
         )
     }
 
-    public fun persistImage(bitmap: Bitmap): File? {
-        var imageFile: File? = null
-        if (applicationContext != null) {
-            val filesDir: File = applicationContext.getFilesDir()
-            imageFile = File(filesDir, "photo" + ".png")
-            val os: OutputStream
-            try {
-                os = FileOutputStream(imageFile)
-                bitmap.compress(Bitmap.CompressFormat.PNG, 100, os)
-                os.flush()
-                os.close()
-            } catch (e: Exception) {
-                Log.e(javaClass.simpleName, "Error writing bitmap", e)
-            }
-        }
-        return imageFile
-    }
 
     //Custom frame selection
-
 
     @RequiresApi(Build.VERSION_CODES.M)
     @SuppressLint("SetTextI18n")
@@ -1790,13 +1615,6 @@ class Camera2Activity : AppCompatActivity(), SubCategoriesAdapter.BtnClickListen
         npShoots.setDisplayedValues(valuesShoots);
 
         //Set a value change listener for NumberPicker
-        //Set a value change listener for NumberPicker
-
-//        if (catName.equals("Automobiles")) {
-//            setProgressFrame(4)
-//        } else if (catName.equals("Footwear")) {
-//            setProgressFrame(5)
-//        }
 
         npShoots.setOnValueChangedListener(OnValueChangeListener { picker, oldVal, newVal -> //Display the newly selected value from picker
             if (valuesShoots[newVal].equals("4 Angles")) {
@@ -1889,27 +1707,6 @@ class Camera2Activity : AppCompatActivity(), SubCategoriesAdapter.BtnClickListen
         dialog.show()
     }
 
-    fun setNumberPickerTextColor(numberPicker: NumberPicker, color: Int) {
-        try {
-            val selectorWheelPaintField: Field = numberPicker.javaClass
-                .getDeclaredField("mSelectorWheelPaint")
-            selectorWheelPaintField.setAccessible(true)
-            (selectorWheelPaintField.get(numberPicker) as Paint)
-                .setColor(ContextCompat.getColor(this, R.color.primary))
-        } catch (e: NoSuchFieldException) {
-            Log.w("o", e)
-        } catch (e: IllegalAccessException) {
-            Log.w("p", e)
-        } catch (e: IllegalArgumentException) {
-            Log.w("q", e)
-        }
-        val count = numberPicker.childCount
-        for (i in 0 until count) {
-            val child = numberPicker.getChildAt(i)
-            if (child is EditText) child.setTextColor(ContextCompat.getColor(this, R.color.black))
-        }
-        numberPicker.invalidate()
-    }
 
     @RequiresApi(Build.VERSION_CODES.M)
     fun showInteriorDialog() {
@@ -1927,25 +1724,6 @@ class Camera2Activity : AppCompatActivity(), SubCategoriesAdapter.BtnClickListen
         val tvShootNowInterior: TextView = dialog.findViewById(R.id.tvShootNowInterior)
 
         tvSkip.setOnClickListener(View.OnClickListener {
-            /*  val intent = Intent(
-                  this,
-                  GenerateGifActivity::class.java
-              )
-
-              intent.putExtra(AppConstants.ALL_IMAGE_LIST, imageFileList)
-              intent.putExtra(AppConstants.ALL_FRAME_LIST, imageFileListFrames)
-              intent.putExtra(AppConstants.ALL_INTERIOR_IMAGE_LIST, imageInteriorFileList)
-              intent.putExtra(AppConstants.ALL_INTERIOR_FRAME_LIST, imageInteriorFileListFrames)
-              intent.putExtra(AppConstants.ALL_FOCUSED_IMAGE_LIST, imageFocusedFileList)
-              intent.putExtra(AppConstants.ALL_FOCUSED_FRAME_LIST, imageFocusedFileListFrames)
-              intent.putExtra(AppConstants.GIF_LIST, gifList)
-
-              Utilities.savePrefrence(this, AppConstants.SKU_NAME, skuName)
-              Log.e("Camera  SKU",
-                  Utilities.getPreference(this,
-                      AppConstants.SKU_NAME)!!)
-              startActivity(intent)
-              finish()*/
             dialog.dismiss()
             showFocusedDialog()
 
@@ -2058,14 +1836,6 @@ class Camera2Activity : AppCompatActivity(), SubCategoriesAdapter.BtnClickListen
         dialog.show()
     }
 
-    fun showSpinner() {
-        /*val spinner = findViewById<View>(R.id.pioedittxt5) as Spinner
-        val adapter = ArrayAdapter.createFromResource(this,
-                R.array.travelreasons, R.layout.simple_spinner_item)
-        adapter.setDropDownViewResource(R.layout.simple_spinner_dropdown_item)
-        spinner.adapter = adapter*/
-    }
-
     @RequiresApi(Build.VERSION_CODES.M)
     fun uploadImage() {
         Utilities.savePrefrence(this, AppConstants.REPLACED_IMAGE, "")
@@ -2079,6 +1849,4 @@ class Camera2Activity : AppCompatActivity(), SubCategoriesAdapter.BtnClickListen
         setImageRaw()
 
     }
-
-
 }

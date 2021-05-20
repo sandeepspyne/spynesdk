@@ -17,4 +17,5 @@ class DownloadTask {
     var price = 0
     var listHdQuality = ArrayList<String>()
     var failureNotified = false
+    var imageDir : String = ""
 }
