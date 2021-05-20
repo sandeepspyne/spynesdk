@@ -10,19 +10,59 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
+        <androidx.appcompat.widget.Toolbar
+            android:id="@+id/my_toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="?attr/actionBarSize"
+            android:background="?attr/colorPrimary"
+            android:elevation="@dimen/dp_5"
+            android:backgroundTint="@color/white"
+            android:theme="@style/ThemeOverlay.AppCompat.Light"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintBottom_toTopOf="@+id/tvWelcomeHome">
+
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <ImageView
+                android:id="@+id/ivAppLogo"
+                android:layout_gravity="center"
+                android:layout_width="@dimen/dp_50"
+                android:layout_height="@dimen/dp_50"
+                android:src="@mipmap/app_logo" />
+
+
+        </FrameLayout>
+
+        </androidx.appcompat.widget.Toolbar>
+
         <TextView
             android:id="@+id/tvWelcomeHome"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="@string/welcome_home"
             android:textSize="@dimen/sp_22"
-            android:padding="@dimen/sp_20"
+            android:layout_marginLeft="@dimen/dp_10"
+            android:layout_marginTop="@dimen/dp_10"
             android:textColor="@color/primary_dark"
             android:fontFamily="@font/medium"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/my_toolbar"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintBottom_toTopOf="@+id/tvExploreCategories"></TextView>
+            app:layout_constraintBottom_toTopOf="@+id/viewWelcome"></TextView>
+
+        <View
+            android:id="@+id/viewWelcome"
+            android:layout_width="43dp"
+            android:layout_height="5dp"
+            app:layout_constraintStart_toStartOf="parent"
+            android:background="@color/primary_dark"
+            android:layout_marginLeft="@dimen/dp_12"
+            app:layout_constraintTop_toBottomOf="@+id/tvWelcomeHome"></View>
 
         <TextView
             android:id="@+id/tvExploreCategories"
@@ -34,7 +74,7 @@
             android:textColor="@color/categories_text"
             android:fontFamily="@font/bold"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/tvWelcomeHome"
+            app:layout_constraintTop_toBottomOf="@+id/viewWelcome"
             app:layout_constraintEnd_toEndOf="parent"></TextView>
 
         <androidx.recyclerview.widget.RecyclerView
@@ -47,11 +87,23 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/tvExploreCategories" />
 
+        <View
+            android:id="@+id/viewOngoing"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/dp_2"
+            android:background="@color/line_separator"
+            app:layout_constraintTop_toBottomOf="@+id/rvDashboardCategories"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            android:layout_marginLeft="@dimen/dp_10"
+            android:layout_marginRight="@dimen/dp_10"
+            ></View>
+
         <RelativeLayout
             android:id="@+id/rlOngoingShoots"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            app:layout_constraintTop_toBottomOf="@+id/rvDashboardCategories"
+            app:layout_constraintTop_toBottomOf="@+id/viewOngoing"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             android:padding="@dimen/dp_10">
@@ -147,6 +199,18 @@
             android:layout_height="wrap_content"
             app:constraint_referenced_ids="rvCompletedShoots, rlCompletedShoots"></androidx.constraintlayout.widget.Group>
 
+        <View
+            android:id="@+id/viewTutorial"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/dp_2"
+            android:background="@color/line_separator"
+            app:layout_constraintTop_toBottomOf="@+id/rvCompletedShoots"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            android:layout_marginLeft="@dimen/dp_10"
+            android:layout_marginRight="@dimen/dp_10"
+            ></View>
+
         <TextView
             android:id="@+id/tvTutorialVideos"
             android:layout_width="match_parent"
@@ -157,7 +221,7 @@
             android:textColor="@color/categories_text"
             android:fontFamily="@font/bold"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/rvCompletedShoots"
+            app:layout_constraintTop_toBottomOf="@+id/viewTutorial"
             app:layout_constraintEnd_toEndOf="parent"></TextView>
 
         <androidx.recyclerview.widget.RecyclerView

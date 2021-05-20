@@ -22,7 +22,7 @@ import com.bumptech.glide.load.engine.GlideException
 import com.bumptech.glide.request.RequestListener
 import com.spyneai.R
 import com.bumptech.glide.request.target.Target
-import com.spyneai.activity.DashboardActivity
+import com.spyneai.dashboard.ui.dashboard.MainDashboardActivity
 import com.spyneai.databinding.ActivityThreeSixtyInteriorViewBinding
 import com.spyneai.databinding.DialogCopyEmbeddedCodeBinding
 import com.spyneai.videorecording.fragments.DialogEmbedCode
@@ -209,7 +209,7 @@ class ThreeSixtyInteriorViewActivity : AppCompatActivity(),View.OnTouchListener,
 
     override fun onBackPressed() {
         if (intent.getIntExtra("back_press_type",0) == 1){
-            var dashboardIntent = Intent(this, DashboardActivity::class.java)
+            var dashboardIntent = Intent(this, MainDashboardActivity::class.java)
             dashboardIntent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
             startActivity(dashboardIntent)
         }else{
@@ -535,7 +535,7 @@ class ThreeSixtyInteriorViewActivity : AppCompatActivity(),View.OnTouchListener,
             }
 
             R.id.tv_go_to_home -> {
-                var dashboardIntent = Intent(this, DashboardActivity::class.java)
+                var dashboardIntent = Intent(this, MainDashboardActivity::class.java)
                 dashboardIntent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
                 startActivity(dashboardIntent)
             }

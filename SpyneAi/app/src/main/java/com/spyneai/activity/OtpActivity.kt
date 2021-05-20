@@ -13,6 +13,7 @@ import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
 import com.spyneai.extras.OnboardTwoActivity
 import com.spyneai.R
+import com.spyneai.dashboard.ui.dashboard.MainDashboardActivity
 import com.spyneai.interfaces.APiService
 import com.spyneai.interfaces.RetrofitClient
 import com.spyneai.interfaces.RetrofitClientSpyneAi
@@ -384,7 +385,7 @@ public class OtpActivity : AppCompatActivity() {
                         if (intent.getStringExtra(AppConstants.tokenId) != null)
                             Utilities.savePrefrence(this@OtpActivity,AppConstants.tokenId,
                                 intent.getStringExtra(AppConstants.tokenId))
-                        val intent = Intent(applicationContext, DashboardActivity::class.java)
+                        val intent = Intent(applicationContext, MainDashboardActivity::class.java)
                         startActivity(intent)
                         finish()
 

@@ -9,10 +9,9 @@ import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import com.bumptech.glide.Glide
 import com.spyneai.R
-import com.spyneai.activity.DashboardActivity
 import com.spyneai.activity.DownloadingActivity
 import com.spyneai.credits.FeedbackActivity
-import com.spyneai.databinding.ActivityCreditFailedBinding
+import com.spyneai.dashboard.ui.dashboard.MainDashboardActivity
 import com.spyneai.databinding.FragmentDownloadCompletedBinding
 
 class DownloadCompletedFragment : Fragment() {
@@ -41,7 +40,7 @@ class DownloadCompletedFragment : Fragment() {
         }
 
         binding.tvGoToHome.setOnClickListener {
-            var dashboardIntent = Intent(requireContext(), DashboardActivity::class.java)
+            var dashboardIntent = Intent(requireContext(), MainDashboardActivity::class.java)
             dashboardIntent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
             startActivity(dashboardIntent)
         }

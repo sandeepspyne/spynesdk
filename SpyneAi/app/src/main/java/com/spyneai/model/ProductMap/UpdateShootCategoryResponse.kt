@@ -6,9 +6,9 @@ import com.spyneai.model.login.MsgInfo
 
 data class UpdateShootCategoryResponse(
         @SerializedName("header")
-        val header: Header,
+        val header : Header,
         @SerializedName("msgInfo")
-        val msgInfo: MsgInfo,
+        val msgInfo : MsgInfo,
         @SerializedName("payload")
-        val payload: List<Any?>?
+        val payload : Payload
 )

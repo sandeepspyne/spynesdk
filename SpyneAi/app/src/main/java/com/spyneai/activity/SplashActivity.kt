@@ -20,6 +20,7 @@ import com.facebook.stetho.okhttp3.StethoInterceptor
 import com.google.android.play.core.appupdate.AppUpdateManagerFactory
 import com.google.android.play.core.install.model.AppUpdateType
 import com.google.android.play.core.install.model.UpdateAvailability
+import com.spyneai.dashboard.ui.dashboard.MainDashboardActivity
 import kotlinx.android.synthetic.main.activity_splash.*
 import okhttp3.OkHttpClient
 
@@ -57,7 +58,7 @@ class SplashActivity : AppCompatActivity() {
                 startActivity(intent)
                 finish()
             } else {
-                val intent = Intent(this, DashboardActivity::class.java)
+                val intent = Intent(this, MainDashboardActivity::class.java)
                 startActivity(intent)
                 finish()
             }

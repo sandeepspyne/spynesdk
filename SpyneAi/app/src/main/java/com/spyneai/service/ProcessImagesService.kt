@@ -10,8 +10,8 @@ import android.os.PowerManager
 import android.widget.Toast
 import com.spyneai.R
 import com.spyneai.activity.CompletedProjectsActivity
-import com.spyneai.activity.DashboardActivity
 import com.spyneai.activity.OngoingOrdersActivity
+import com.spyneai.dashboard.ui.dashboard.MainDashboardActivity
 import com.spyneai.extras.events.ProcessingImagesEvent
 import com.spyneai.model.processImageService.Task
 import com.spyneai.needs.AppConstants
@@ -233,7 +233,7 @@ class ProcessImagesService() : Service(), Listener {
                 PendingIntent.getActivity(this, 0, notificationIntent, 0)
             }
         }else{
-            Intent(this, DashboardActivity::class.java).let { notificationIntent ->
+            Intent(this, MainDashboardActivity::class.java).let { notificationIntent ->
                 PendingIntent.getActivity(this, 0, notificationIntent, 0)
             }
         }

@@ -66,7 +66,7 @@
             android:textSize="@dimen/sp_13"/>
 
 
-        <Button
+        <androidx.appcompat.widget.AppCompatButton
             android:id="@+id/tv_sign_in"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -111,7 +111,7 @@
                 android:background="#EBF0FF"/>
         </LinearLayout>
 
-        <Button
+        <androidx.appcompat.widget.AppCompatButton
             android:id="@+id/bt_login_with_password"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"

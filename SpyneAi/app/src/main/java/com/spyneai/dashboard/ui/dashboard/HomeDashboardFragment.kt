@@ -66,11 +66,15 @@ class HomeDashboardFragment :
     lateinit var tutorialVideosAdapter : TutorialVideosAdapter
 
     var handelBaseUrl = 0
-
     var categoryPosition: Int = 0
+    lateinit var tokenId: String
+    lateinit var email: String
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
+
+        tokenId = Utilities.getPreference(requireContext(), AppConstants.tokenId).toString()
+        email = Utilities.getPreference(requireContext(), AppConstants.EMAIL_ID).toString()
 
         Utilities.showProgressDialog(requireContext())
         userFreeCreditEligiblityCheck()
@@ -79,7 +83,7 @@ class HomeDashboardFragment :
         lisners()
 
         categoriesResponseList = ArrayList<Data>()
-        viewModel.getCategories("utq10CZvW")
+        viewModel.getCategories(tokenId)
         viewModel.categoriesResponse.observe(viewLifecycleOwner, Observer {
             when(it){
                 is Resource.Sucess -> {
@@ -98,13 +102,12 @@ class HomeDashboardFragment :
 
         val userId = RequestBody.create(
             MultipartBody.FORM,
-            "utq10CZvW")
+            tokenId)
         handelBaseUrl = 1
         viewModel.getCompletedProjects(userId)
         completedProjectList = ArrayList<CompletedProjectResponse>()
 
         viewModel.completedProjectResponse.observe(viewLifecycleOwner, Observer {
-            Utilities.hideProgressDialog()
             when(it){
                 is Resource.Sucess -> {
                     completedProjectList.addAll(it.value)
@@ -123,7 +126,6 @@ class HomeDashboardFragment :
 
 
         viewModel.createCollectionResponse.observe(viewLifecycleOwner, Observer {
-            Utilities.hideProgressDialog()
             when(it){
                 is Resource.Sucess -> {
                     Utilities.savePrefrence(
@@ -142,7 +144,6 @@ class HomeDashboardFragment :
         })
 
         viewModel.updateShootCategoryResponse.observe(viewLifecycleOwner, Observer {
-            Utilities.hideProgressDialog()
             when(it){
                 is Resource.Sucess -> {
                     val intent = Intent(requireContext(), BeforeAfterActivity::class.java)
@@ -198,7 +199,6 @@ class HomeDashboardFragment :
     }
 
     private fun setCompletedProjectRecycler(){
-        Utilities.hideProgressDialog()
         completedDashboardAdapter = CompletedDashboardAdapter(requireContext(),
             completedProjectList)
 
@@ -251,12 +251,12 @@ class HomeDashboardFragment :
             categoriesResponseList[categoryPosition].catId,
             categoriesResponseList[categoryPosition].displayName
         )
-        viewModel.updateShootCategory("utq10CZvW", updateShootCategoryRequest)
+        viewModel.updateShootCategory(tokenId, updateShootCategoryRequest)
     }
 
     private fun setShoot(categoriesResponseList: ArrayList<Data>, position: Int){
         val createCollectionRequest = CreateCollectionRequest("Spyne Shoot");
-        viewModel.createCollection("utq10CZvW", createCollectionRequest)
+        viewModel.createCollection(tokenId, createCollectionRequest)
     }
 
     private fun setOngoingProjectRecycler(){
@@ -287,12 +287,12 @@ class HomeDashboardFragment :
     private fun userFreeCreditEligiblityCheck(){
         val userId = RequestBody.create(
             MultipartBody.FORM,
-            "utq105CZvW"
+            tokenId
         )
 
         val emaiId = RequestBody.create(
             MultipartBody.FORM,
-            "xxyyz55z@gmail.com"
+            email
         )
         viewModel.userFreeCreditEligiblityCheck(userId, emaiId)
     }
@@ -354,7 +354,7 @@ class HomeDashboardFragment :
 
     override fun getFragmentRepository() : DashboardRepository{
         return when(handelBaseUrl){
-            0 -> DashboardRepository(RemoteDataSourceSpyneAi("https://www.clippr.ai/api/").buildApi(DashboardApi::class.java))
+            0 -> DashboardRepository(RemoteDataSourceSpyneAi("https://api.spyne.ai/").buildApi(DashboardApi::class.java))
             1 -> DashboardRepository(RemoteDataSourceSpyneAi("https://www.clippr.ai/api/").buildApi(DashboardApi::class.java))
 
             else -> DashboardRepository(RemoteDataSourceSpyneAi("https://api.spyne.ai/").buildApi(DashboardApi::class.java))

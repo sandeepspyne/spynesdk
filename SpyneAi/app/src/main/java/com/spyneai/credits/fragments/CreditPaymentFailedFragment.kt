@@ -9,8 +9,8 @@ import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import com.bumptech.glide.Glide
 import com.spyneai.R
-import com.spyneai.activity.DashboardActivity
 import com.spyneai.credits.CreditPlansActivity
+import com.spyneai.dashboard.ui.dashboard.MainDashboardActivity
 import com.spyneai.databinding.FragmentCreditPaymentFailedBinding
 import com.spyneai.databinding.FragmentCreditSuccessBinding
 
@@ -37,7 +37,7 @@ class CreditPaymentFailedFragment : Fragment() {
             .into(binding.ivWalletGif)
 
         binding.tvGoToHome.setOnClickListener {
-            var dashboardIntent = Intent(requireContext(), DashboardActivity::class.java)
+            var dashboardIntent = Intent(requireContext(), MainDashboardActivity::class.java)
             dashboardIntent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
             startActivity(dashboardIntent)
         }

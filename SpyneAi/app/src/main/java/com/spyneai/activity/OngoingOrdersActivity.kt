@@ -15,6 +15,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.spyneai.R
 import com.spyneai.adapter.OngoingProjectAdapter
+import com.spyneai.dashboard.ui.dashboard.MainDashboardActivity
 import com.spyneai.needs.AppConstants
 import com.spyneai.needs.Utilities
 import com.spyneai.service.ProcessImagesService
@@ -107,7 +108,7 @@ class OngoingOrdersActivity : AppCompatActivity() {
 
     override fun onBackPressed() {
         super.onBackPressed()
-        val intent = Intent(this, DashboardActivity::class.java)
+        val intent = Intent(this, MainDashboardActivity::class.java)
         startActivity(intent)
         finish()
     }

@@ -10,7 +10,7 @@ import android.os.PowerManager
 import android.util.Log
 import org.greenrobot.eventbus.EventBus
 import com.spyneai.R
-import com.spyneai.activity.DashboardActivity
+import com.spyneai.dashboard.ui.dashboard.MainDashboardActivity
 import com.spyneai.videorecording.ThreeSixtyInteriorViewActivity
 import com.spyneai.videorecording.model.ProcessVideoEvent
 import com.spyneai.videorecording.model.VideoTask
@@ -203,7 +203,7 @@ class UploadVideoService : Service(), VideoUploader.VideoTaskListener {
             val resultIntent : Intent
 
             if (isOngoing){
-                resultIntent = Intent(baseContext, DashboardActivity::class.java)
+                resultIntent = Intent(baseContext, MainDashboardActivity::class.java)
             }else{
                 resultIntent = Intent(baseContext, ThreeSixtyInteriorViewActivity::class.java)
                 resultIntent.putExtra("back_press_type",1)

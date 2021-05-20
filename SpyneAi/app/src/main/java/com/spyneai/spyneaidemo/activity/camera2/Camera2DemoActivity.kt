@@ -46,10 +46,10 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.spyneai.R
-import com.spyneai.activity.DashboardActivity
 import com.spyneai.activity.GenerateGifActivity
 import com.spyneai.adapter.ProgressAdapter
 import com.spyneai.adapter.SubCategoriesAdapter
+import com.spyneai.dashboard.ui.dashboard.MainDashboardActivity
 import com.spyneai.interfaces.APiService
 import com.spyneai.interfaces.RetrofitClient
 import com.spyneai.model.shoot.*
@@ -171,7 +171,7 @@ class Camera2DemoActivity : AppCompatActivity(), SubCategoriesAdapter.BtnClickLi
 //        fetchIntents()
 
         etExitDemo.setOnClickListener(View.OnClickListener {
-            val intent = Intent(this, DashboardActivity::class.java)
+            val intent = Intent(this, MainDashboardActivity::class.java)
             startActivity(intent)
             finish()
         })
@@ -1606,7 +1606,7 @@ class Camera2DemoActivity : AppCompatActivity(), SubCategoriesAdapter.BtnClickLi
             Utilities.savePrefrence(this@Camera2DemoActivity, AppConstants.PRODUCT_ID, "")
             Utilities.savePrefrence(this@Camera2DemoActivity, AppConstants.SKU_NAME, "")
             Utilities.savePrefrence(this@Camera2DemoActivity, AppConstants.SKU_ID, "")
-            val intent = Intent(this, DashboardActivity::class.java)
+            val intent = Intent(this, MainDashboardActivity::class.java)
             startActivity(intent)
             finish()
 
