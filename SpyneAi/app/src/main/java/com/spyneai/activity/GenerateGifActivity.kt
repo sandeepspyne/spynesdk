@@ -399,7 +399,7 @@ class GenerateGifActivity : AppCompatActivity(), PickiTCallbacks {
             ucropOptions.setToolbarTitle("Edit Logo")
             ucropOptions.setFreeStyleCropEnabled(true)
             ucropOptions.setShowCropFrame(true)
-            ucropOptions.setCropGridCornerColor(ContextCompat.getColor(this@GenerateGifActivity,R.color.primary))
+//            ucropOptions.setCropGridCornerColor(ContextCompat.getColor(this@GenerateGifActivity,R.color.primary))
 
 
             UCrop.of(sourceUri, destinationUri)

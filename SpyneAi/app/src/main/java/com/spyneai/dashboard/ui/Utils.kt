@@ -6,6 +6,7 @@ import android.view.View
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
 import com.google.android.material.snackbar.Snackbar
+import com.spyneai.dashboard.network.Resource
 import kotlinx.coroutines.launch
 
 fun <A : Activity> Activity.startNewActivity(activity: Class<A>) {
@@ -32,6 +33,27 @@ fun View.snackbar(message: String, action: (() -> Unit)? = null) {
         }
     }
     snackbar.show()
+}
+
+fun Fragment.handleApiError(
+    failure: Resource.Failure,
+    retry: (() -> Unit)? = null
+) {
+    when {
+        failure.isNetworkError -> requireView().snackbar(
+            "Please check your internet connection",
+            retry
+        )
+        failure.errorCode == 401 -> {
+            val error = failure.errorBody?.string().toString()
+            requireView().snackbar(error)
+
+        }
+        else -> {
+            val error = failure.errorBody?.string().toString()
+            requireView().snackbar(error)
+        }
+    }
 }
 
 

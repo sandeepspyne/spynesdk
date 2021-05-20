@@ -26,25 +26,31 @@ class DashboardRepository(
         api.getCategories(tokenId)
     }
 
-//    suspend fun createCollection(
-//        tokenId: String,
-//        createCollectionRequest: CreateCollectionRequest
-//    ) = safeApiCall {
-//        api.createCollection(tokenId, createCollectionRequest)
-//    }
-//
-//    suspend fun updateShootCategory(
-//        tokenId: String,
-//        updateShootCategoryRequest: UpdateShootCategoryRequest
-//    ) = safeApiCall {
-//        api.updateShootCategory(tokenId, updateShootCategoryRequest)
-//    }
-//
-//    suspend fun UserFreeCreditEligiblityCheck(
-//        user_id: RequestBody?,
-//        email_id: RequestBody?,
-//    ) = safeApiCall {
-//        api.UserFreeCreditEligiblityCheck(user_id, email_id)
-//    }
+    suspend fun createCollection(
+        tokenId: String,
+        createCollectionRequest: CreateCollectionRequest
+    ) = safeApiCall {
+        api.createCollection(tokenId, createCollectionRequest)
+    }
+
+    suspend fun updateShootCategory(
+        tokenId: String,
+        updateShootCategoryRequest: UpdateShootCategoryRequest
+    ) = safeApiCall {
+        api.updateShootCategory(tokenId, updateShootCategoryRequest)
+    }
+
+    suspend fun UserFreeCreditEligiblityCheck(
+        user_id: RequestBody?,
+        email_id: RequestBody?,
+    ) = safeApiCall {
+        api.UserFreeCreditEligiblityCheck(user_id, email_id)
+    }
+
+    suspend fun getCompletedProjects(
+        user_id: RequestBody?
+    ) = safeApiCall {
+        api.getCompletedProjects(user_id)
+    }
 
 }

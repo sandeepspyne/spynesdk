@@ -91,6 +91,12 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/rlOngoingShoots" />
 
+        <androidx.constraintlayout.widget.Group
+            android:id="@+id/groupOngoingProjects"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:constraint_referenced_ids="rlOngoingShoots, rvOngoingShoots"></androidx.constraintlayout.widget.Group>
+
         <RelativeLayout
             android:id="@+id/rlCompletedShoots"
             android:layout_width="match_parent"

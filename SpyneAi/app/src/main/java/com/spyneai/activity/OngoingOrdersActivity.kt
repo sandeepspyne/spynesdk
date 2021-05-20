@@ -27,7 +27,6 @@ class OngoingOrdersActivity : AppCompatActivity() {
 
     lateinit var ongoingProjectAdapter : OngoingProjectAdapter
     lateinit var ongoingProjectList : ArrayList<com.spyneai.model.processImageService.Task>
-    var itemPosition: Int = 0
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

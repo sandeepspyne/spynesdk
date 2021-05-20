@@ -8,7 +8,7 @@ import retrofit2.converter.gson.GsonConverterFactory
 import java.util.concurrent.TimeUnit
 import java.util.logging.Level
 
-class RemoteDataSource{
+class RemoteDataSourceSpyneAi{
     companion object{
         private const val BASE_URL = "https://api.spyne.ai/"
     }

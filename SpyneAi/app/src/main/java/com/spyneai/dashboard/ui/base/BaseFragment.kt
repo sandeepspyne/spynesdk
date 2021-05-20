@@ -9,14 +9,14 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.viewbinding.ViewBinding
 import com.spyneai.dashboard.data.repository.BaseRepository
-import com.spyneai.dashboard.network.RemoteDataSource
+import com.spyneai.dashboard.network.RemoteDataSourceSpyneAi
 
 abstract class BaseFragment<VM : ViewModel, B : ViewBinding, R : BaseRepository> : Fragment() {
 
     protected lateinit var binding: B
     protected lateinit var viewModel: VM
 
-    protected val remoteDataSource = RemoteDataSource()
+    protected val remoteDataSource = RemoteDataSourceSpyneAi()
 
     override fun onCreateView(
         inflater: LayoutInflater,
