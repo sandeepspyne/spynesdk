@@ -18,9 +18,9 @@ import com.spyneai.model.shoot.UpdateShootCategoryResponse
 import kotlinx.coroutines.launch
 import okhttp3.RequestBody
 
-class DashboardViewModel(
-    private val repository: DashboardRepository
-) : ViewModel() {
+class DashboardViewModel() : ViewModel() {
+
+    private val repository = DashboardRepository()
 
     private val _categoriesResponse: MutableLiveData<Resource<CategoriesResponse>> = MutableLiveData()
     val categoriesResponse: LiveData<Resource<CategoriesResponse>>

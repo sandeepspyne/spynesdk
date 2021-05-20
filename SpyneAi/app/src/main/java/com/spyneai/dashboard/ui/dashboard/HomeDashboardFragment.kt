@@ -25,15 +25,13 @@ import com.spyneai.adapter.CategoriesDashboardAdapter
 import com.spyneai.dashboard.adapters.CompletedDashboardAdapter
 import com.spyneai.dashboard.adapters.OngoingDashboardAdapter
 import com.spyneai.dashboard.adapters.TutorialVideosAdapter
-import com.spyneai.dashboard.data.repository.DashboardRepository
-import com.spyneai.dashboard.network.DashboardApi
-import com.spyneai.dashboard.network.RemoteDataSourceSpyneAi
 import com.spyneai.dashboard.network.Resource
 import com.spyneai.dashboard.ui.base.BaseFragment
 import com.spyneai.dashboard.ui.handleApiError
 import com.spyneai.databinding.HomeDashboardFragmentBinding
 import com.spyneai.extras.BeforeAfterActivity
 import com.spyneai.model.categories.Data
+import com.spyneai.model.processImageService.Task
 import com.spyneai.model.projects.CompletedProjectResponse
 import com.spyneai.model.shoot.CreateCollectionRequest
 import com.spyneai.model.shoot.UpdateShootCategoryRequest
@@ -46,20 +44,17 @@ import okhttp3.RequestBody
 
 
 class HomeDashboardFragment :
-    BaseFragment<DashboardViewModel, HomeDashboardFragmentBinding, DashboardRepository>() {
+    BaseFragment<DashboardViewModel, HomeDashboardFragmentBinding>() {
 
     lateinit var appUpdateManager: AppUpdateManager
     private val MY_REQUEST_CODE: Int = 1
     lateinit var PACKAGE_NAME: String
     lateinit var btnlistener: CategoriesDashboardAdapter.BtnClickListener
 
-    lateinit var categoriesResponseList: ArrayList<Data>
     lateinit var categoriesAdapter: CategoriesDashboardAdapter
 
     lateinit var ongoingDashboardAdapter : OngoingDashboardAdapter
-    lateinit var ongoingProjectList : ArrayList<com.spyneai.model.processImageService.Task>
 
-    lateinit var completedProjectList : ArrayList<CompletedProjectResponse>
     lateinit var completedDashboardAdapter : CompletedDashboardAdapter
 
     var tutorialVideosList = intArrayOf(R.drawable.ic_tv1, R.drawable.ic_tv2)
@@ -69,6 +64,12 @@ class HomeDashboardFragment :
     var categoryPosition: Int = 0
     lateinit var tokenId: String
     lateinit var email: String
+
+    lateinit var catId: String
+    lateinit var displayName: String
+    lateinit var displayThumbnail: String
+    lateinit var description: String
+    lateinit var colorCode: String
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
@@ -82,19 +83,53 @@ class HomeDashboardFragment :
         showTutorialVideos()
         lisners()
 
-        categoriesResponseList = ArrayList<Data>()
         viewModel.getCategories(tokenId)
         viewModel.categoriesResponse.observe(viewLifecycleOwner, Observer {
             when(it){
                 is Resource.Sucess -> {
-                    categoriesResponseList.addAll(it.value.payload.data)
+                    categoriesAdapter = CategoriesDashboardAdapter(requireContext(),
+                        it.value.payload.data as ArrayList<Data>,
+                        object : CategoriesDashboardAdapter.BtnClickListener {
+                            override fun onBtnClick(position: Int) {
+                                if (position < 3) {
+                                    categoryPosition = position
+                                    Utilities.savePrefrence(
+                                        requireContext(),
+                                        AppConstants.CATEGORY_NAME,
+                                        it.value.payload.data[position].displayName
+                                    )
+
+                                    catId =   it.value.payload.data[position].catId
+                                    displayName =   it.value.payload.data[position].displayName
+                                    displayThumbnail =   it.value.payload.data[position].displayThumbnail
+                                    description =   it.value.payload.data[position].description
+                                    colorCode =   it.value.payload.data[position].colorCode
+
+
+
+                                    setShoot(it.value.payload.data as ArrayList<Data>, position)
+                                } else
+                                    Toast.makeText(
+                                        requireContext(),
+                                        "Coming Soon !",
+                                        Toast.LENGTH_SHORT
+                                    ).show()
+                            }
+                        })
+                    val layoutManager: RecyclerView.LayoutManager = LinearLayoutManager(
+                        requireContext(),
+                        LinearLayoutManager.HORIZONTAL,
+                        false
+                    )
+                    rvDashboardCategories.setLayoutManager(layoutManager)
+                    rvDashboardCategories.setAdapter(categoriesAdapter)
 //                    categoriesAdapter.notifyDataSetChanged()
-                    setCategoriesRecycler()
                 }
 //                is Resource.Loading -> {
 //                    Utilities.showProgressDialog(requireContext())
 //                }
                 is Resource.Failure -> {
+                    Utilities.hideProgressDialog()
                     handleApiError(it)
                 }
             }
@@ -103,22 +138,30 @@ class HomeDashboardFragment :
         val userId = RequestBody.create(
             MultipartBody.FORM,
             tokenId)
-        handelBaseUrl = 1
         viewModel.getCompletedProjects(userId)
-        completedProjectList = ArrayList<CompletedProjectResponse>()
 
         viewModel.completedProjectResponse.observe(viewLifecycleOwner, Observer {
             when(it){
                 is Resource.Sucess -> {
-                    completedProjectList.addAll(it.value)
-                    completedProjectList.reverse()
+                    Utilities.hideProgressDialog()
+                    completedDashboardAdapter = CompletedDashboardAdapter(requireContext(),
+                        it.value as ArrayList<CompletedProjectResponse>
+                    )
+
+                    val layoutManager: RecyclerView.LayoutManager = LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
+                    rvCompletedShoots.setLayoutManager(layoutManager)
+                    rvCompletedShoots.setAdapter(completedDashboardAdapter)
+
+                        if (it.value.size == 0)
+                            groupCompletedShoots.visibility = View.GONE
+
 //                    categoriesAdapter.notifyDataSetChanged()
-                    setCompletedProjectRecycler()
                 }
 //                is Resource.Loading -> {
 //                    Utilities.showProgressDialog(requireContext())
 //                }
                 is Resource.Failure -> {
+                    Utilities.hideProgressDialog()
                     handleApiError(it)
                 }
             }
@@ -132,12 +175,13 @@ class HomeDashboardFragment :
                         requireContext(),
                         AppConstants.SHOOT_ID,
                         it.value.payload.data.shootId.toString())
-                    setCategoryMap(it.value.payload.data.shootId.toString(), categoryPosition)
+                    setCategoryMap(it.value.payload.data.shootId.toString(), categoryPosition, it.value.payload.data.catId, it.value.payload.data.categoryName)
                 }
 //                is Resource.Loading -> {
 //                    Utilities.showProgressDialog(requireContext())
 //                }
                 is Resource.Failure -> {
+                    Utilities.hideProgressDialog()
                     handleApiError(it)
                 }
             }
@@ -148,28 +192,29 @@ class HomeDashboardFragment :
                 is Resource.Sucess -> {
                     val intent = Intent(requireContext(), BeforeAfterActivity::class.java)
                     intent.putExtra(
-                        AppConstants.CATEGORY_ID,
-                        categoriesResponseList[categoryPosition].catId
+                        AppConstants.CATEGORY_NAME,
+                        displayName
                     )
                     intent.putExtra(
-                        AppConstants.CATEGORY_NAME,
-                        categoriesResponseList[categoryPosition].displayName
+                        AppConstants.CATEGORY_ID,
+                        catId
                     )
                     intent.putExtra(
                         AppConstants.IMAGE_URL,
-                        categoriesResponseList[categoryPosition].displayThumbnail
+                        displayThumbnail
                     )
                     intent.putExtra(
                         AppConstants.DESCRIPTION,
-                        categoriesResponseList[categoryPosition].description
+                        description
                     )
-                    intent.putExtra(AppConstants.COLOR, categoriesResponseList[categoryPosition].colorCode)
+                    intent.putExtra(AppConstants.COLOR, colorCode)
                     startActivity(intent)
                 }
 //                is Resource.Loading -> {
 //                    Utilities.showProgressDialog(requireContext())
 //                }
                 is Resource.Failure -> {
+                    Utilities.hideProgressDialog()
                     handleApiError(it)
                 }
             }
@@ -185,6 +230,7 @@ class HomeDashboardFragment :
 //                    Utilities.showProgressDialog(requireContext())
 //                }
                 is Resource.Failure -> {
+                    Utilities.hideProgressDialog()
                     handleApiError(it)
                 }
             }
@@ -195,61 +241,43 @@ class HomeDashboardFragment :
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-
     }
 
-    private fun setCompletedProjectRecycler(){
-        completedDashboardAdapter = CompletedDashboardAdapter(requireContext(),
-            completedProjectList)
+//    private fun setCategoriesRecycler(){
+//        Utilities.hideProgressDialog()
+//        categoriesAdapter = CategoriesDashboardAdapter(requireContext(), categoriesResponseList,
+//            object : CategoriesDashboardAdapter.BtnClickListener {
+//                override fun onBtnClick(position: Int) {
+//                    if (position < 3) {
+//                        categoryPosition = position
+//                        Utilities.savePrefrence(
+//                            requireContext(),
+//                            AppConstants.CATEGORY_NAME,
+//                            categoriesResponseList[position].displayName
+//                        )
+//                        setShoot(categoriesResponseList, position)
+//                    } else
+//                        Toast.makeText(
+//                            requireContext(),
+//                            "Coming Soon !",
+//                            Toast.LENGTH_SHORT
+//                        ).show()
+//                }
+//            })
+//        val layoutManager: RecyclerView.LayoutManager = LinearLayoutManager(
+//            requireContext(),
+//            LinearLayoutManager.HORIZONTAL,
+//            false
+//        )
+//        rvDashboardCategories.setLayoutManager(layoutManager)
+//        rvDashboardCategories.setAdapter(categoriesAdapter)
+//    }
 
-        val layoutManager: RecyclerView.LayoutManager = LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
-        rvCompletedShoots.setLayoutManager(layoutManager)
-        rvCompletedShoots.setAdapter(completedDashboardAdapter)
-
-        hideRecyclerView()
-
-    }
-
-    private fun hideRecyclerView(){
-        if (completedProjectList.size == 0)
-            groupCompletedShoots.visibility = View.GONE
-    }
-
-    private fun setCategoriesRecycler(){
-        Utilities.hideProgressDialog()
-        categoriesAdapter = CategoriesDashboardAdapter(requireContext(), categoriesResponseList,
-            object : CategoriesDashboardAdapter.BtnClickListener {
-                override fun onBtnClick(position: Int) {
-                    if (position < 3) {
-                        categoryPosition = position
-                        Utilities.savePrefrence(
-                            requireContext(),
-                            AppConstants.CATEGORY_NAME,
-                            categoriesResponseList[position].displayName
-                        )
-                        setShoot(categoriesResponseList, position)
-                    } else
-                        Toast.makeText(
-                            requireContext(),
-                            "Coming Soon !",
-                            Toast.LENGTH_SHORT
-                        ).show()
-                }
-            })
-        val layoutManager: RecyclerView.LayoutManager = LinearLayoutManager(
-            requireContext(),
-            LinearLayoutManager.HORIZONTAL,
-            false
-        )
-        rvDashboardCategories.setLayoutManager(layoutManager)
-        rvDashboardCategories.setAdapter(categoriesAdapter)
-    }
-
-    private fun setCategoryMap(shootId: String, categoryPosition: Int) {
+    private fun setCategoryMap(shootId: String, categoryPosition: Int, catId: String, displayName: String) {
         val updateShootCategoryRequest = UpdateShootCategoryRequest(
             shootId,
-            categoriesResponseList[categoryPosition].catId,
-            categoriesResponseList[categoryPosition].displayName
+            catId,
+            displayName
         )
         viewModel.updateShootCategory(tokenId, updateShootCategoryRequest)
     }
@@ -260,15 +288,14 @@ class HomeDashboardFragment :
     }
 
     private fun setOngoingProjectRecycler(){
-        ongoingProjectList = ProcessImagesService.tasksInProgress
         ongoingDashboardAdapter = OngoingDashboardAdapter(requireContext(),
-            ongoingProjectList)
+            ProcessImagesService.tasksInProgress)
 
         val layoutManager: RecyclerView.LayoutManager = LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
         rvOngoingShoots.setLayoutManager(layoutManager)
         rvOngoingShoots.setAdapter(ongoingDashboardAdapter)
         refreshList()
-        showHideRecyclerView()
+        showHideRecyclerView(ProcessImagesService.tasksInProgress)
     }
 
     private fun refreshList(){
@@ -279,8 +306,8 @@ class HomeDashboardFragment :
 
     }
 
-    private fun showHideRecyclerView(){
-        if (ongoingProjectList.size == 0)
+    private fun showHideRecyclerView(tasksInProgress: ArrayList<Task>) {
+        if (tasksInProgress.size == 0)
             groupOngoingProjects.visibility = View.GONE
     }
 
@@ -352,14 +379,6 @@ class HomeDashboardFragment :
         container: ViewGroup?
     ) = HomeDashboardFragmentBinding.inflate(inflater, container, false)
 
-    override fun getFragmentRepository() : DashboardRepository{
-        return when(handelBaseUrl){
-            0 -> DashboardRepository(RemoteDataSourceSpyneAi("https://api.spyne.ai/").buildApi(DashboardApi::class.java))
-            1 -> DashboardRepository(RemoteDataSourceSpyneAi("https://www.clippr.ai/api/").buildApi(DashboardApi::class.java))
-
-            else -> DashboardRepository(RemoteDataSourceSpyneAi("https://api.spyne.ai/").buildApi(DashboardApi::class.java))
-        }
-    }
 
 
 

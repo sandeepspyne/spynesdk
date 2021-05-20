@@ -2,8 +2,10 @@ package com.spyneai.dashboard.data.repository
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import com.spyneai.dashboard.network.ClipperApiClient
 import com.spyneai.dashboard.network.DashboardApi
 import com.spyneai.dashboard.network.Resource
+import com.spyneai.dashboard.network.SpyneAiApiClient
 import com.spyneai.interfaces.APiService
 import com.spyneai.model.categories.CategoriesResponse
 import com.spyneai.model.categories.Data
@@ -16,41 +18,43 @@ import okhttp3.MultipartBody
 import okhttp3.RequestBody
 import okhttp3.Response
 
-class DashboardRepository(
-    private val api: DashboardApi
-) : BaseRepository() {
+class DashboardRepository() : BaseRepository() {
+
+    private var spyneApi = SpyneAiApiClient().getClient()
+
+    private var clipperApi = ClipperApiClient().getClient()
 
     suspend fun getCategories(
         tokenId: String
     ) = safeApiCall {
-        api.getCategories(tokenId)
+        spyneApi.getCategories(tokenId)
     }
 
     suspend fun createCollection(
         tokenId: String,
         createCollectionRequest: CreateCollectionRequest
     ) = safeApiCall {
-        api.createCollection(tokenId, createCollectionRequest)
+        spyneApi.createCollection(tokenId, createCollectionRequest)
     }
 
     suspend fun updateShootCategory(
         tokenId: String,
         updateShootCategoryRequest: UpdateShootCategoryRequest
     ) = safeApiCall {
-        api.updateShootCategory(tokenId, updateShootCategoryRequest)
+        spyneApi.updateShootCategory(tokenId, updateShootCategoryRequest)
     }
 
     suspend fun UserFreeCreditEligiblityCheck(
         user_id: RequestBody?,
         email_id: RequestBody?,
     ) = safeApiCall {
-        api.UserFreeCreditEligiblityCheck(user_id, email_id)
+        clipperApi.UserFreeCreditEligiblityCheck(user_id, email_id)
     }
 
     suspend fun getCompletedProjects(
         user_id: RequestBody?
     ) = safeApiCall {
-        api.getCompletedProjects(user_id)
+        clipperApi.getCompletedProjects(user_id)
     }
 
 }

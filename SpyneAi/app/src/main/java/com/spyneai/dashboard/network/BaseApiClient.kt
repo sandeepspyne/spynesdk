@@ -1,22 +1,22 @@
 package com.spyneai.dashboard.network
 
+import com.google.android.gms.common.api.Api
 import com.spyneai.BuildConfig
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
-import java.util.concurrent.TimeUnit
-import java.util.logging.Level
 
-class RemoteDataSourceSpyneAi(val BASE_URL: String){
-//    companion object{
-//        private const val BASE_URL = "https://www.clippr.ai/api/"
-//    }
+open class BaseApiClient<Api>(val BASE_URL: String, api: Class<Api>){
 
-    fun<Api> buildApi(
-        api: Class<Api>
-    ): Api{
-        return Retrofit.Builder()
+    var builder: Api
+
+    fun getClient():Api{
+        return builder
+    }
+
+    init  {
+         builder = Retrofit.Builder()
             .baseUrl(BASE_URL)
             .client(OkHttpClient.Builder().also { client ->
                 if (BuildConfig.DEBUG) {

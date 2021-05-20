@@ -9,9 +9,8 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.viewbinding.ViewBinding
 import com.spyneai.dashboard.data.repository.BaseRepository
-import com.spyneai.dashboard.network.RemoteDataSourceSpyneAi
 
-abstract class BaseFragment<VM : ViewModel, B : ViewBinding, R : BaseRepository> : Fragment() {
+abstract class BaseFragment<VM : ViewModel, B : ViewBinding> : Fragment() {
 
     protected lateinit var binding: B
     protected lateinit var viewModel: VM
@@ -22,7 +21,7 @@ abstract class BaseFragment<VM : ViewModel, B : ViewBinding, R : BaseRepository>
         savedInstanceState: Bundle?
     ): View? {
         binding = getFragmentBinding(inflater, container)
-        val factory = ViewModelFactory(getFragmentRepository())
+        val factory = ViewModelFactory()
         viewModel = ViewModelProvider(this, factory).get(getViewModel())
         return binding.root
     }
@@ -31,6 +30,5 @@ abstract class BaseFragment<VM : ViewModel, B : ViewBinding, R : BaseRepository>
 
     abstract fun getFragmentBinding(inflater: LayoutInflater, container: ViewGroup?) : B
 
-    abstract fun getFragmentRepository() : R
 
 }
