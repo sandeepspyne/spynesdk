@@ -30,7 +30,7 @@
             android:layout_height="wrap_content"
             android:text="@string/explore_categories"
             android:textSize="@dimen/sp_22"
-            android:padding="@dimen/sp_20"
+            android:padding="@dimen/dp_10"
             android:textColor="@color/categories_text"
             android:fontFamily="@font/bold"
             app:layout_constraintStart_toStartOf="parent"
@@ -54,7 +54,7 @@
             app:layout_constraintTop_toBottomOf="@+id/rvDashboardCategories"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            android:padding="@dimen/dp_20">
+            android:padding="@dimen/dp_10">
 
         <TextView
             android:id="@+id/tvOngoingShoots"
@@ -104,7 +104,7 @@
             app:layout_constraintTop_toBottomOf="@+id/rvOngoingShoots"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            android:padding="@dimen/dp_20">
+            android:padding="@dimen/dp_10">
 
             <TextView
                 android:id="@+id/tvCompletedShoots"
@@ -140,6 +140,35 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/rlCompletedShoots" />
+
+        <androidx.constraintlayout.widget.Group
+            android:id="@+id/groupCompletedShoots"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:constraint_referenced_ids="rvCompletedShoots, rlCompletedShoots"></androidx.constraintlayout.widget.Group>
+
+        <TextView
+            android:id="@+id/tvTutorialVideos"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/tutorial_videos"
+            android:textSize="@dimen/sp_22"
+            android:padding="@dimen/dp_10"
+            android:textColor="@color/categories_text"
+            android:fontFamily="@font/bold"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/rvCompletedShoots"
+            app:layout_constraintEnd_toEndOf="parent"></TextView>
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/rvTutorialVideos"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/dp_10"
+            android:layout_marginEnd="@dimen/dp_10"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/tvTutorialVideos" />
 
 
 

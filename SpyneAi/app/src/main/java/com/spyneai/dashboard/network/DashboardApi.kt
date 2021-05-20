@@ -6,6 +6,7 @@ import com.spyneai.model.projects.CompletedProjectResponse
 import com.spyneai.model.shoot.CreateCollectionRequest
 import com.spyneai.model.shoot.CreateCollectionResponse
 import com.spyneai.model.shoot.UpdateShootCategoryRequest
+import com.spyneai.model.shoot.UpdateShootCategoryResponse
 import okhttp3.RequestBody
 import retrofit2.Call
 import retrofit2.http.*
@@ -26,7 +27,7 @@ interface DashboardApi {
     suspend fun updateShootCategory(
         @Header("tokenId") tokenId: String?,
         @Body updateShootCategoryRequest: UpdateShootCategoryRequest
-    ): CreateCollectionResponse
+    ): UpdateShootCategoryResponse
 
     @Multipart
     @POST("insert-user")
