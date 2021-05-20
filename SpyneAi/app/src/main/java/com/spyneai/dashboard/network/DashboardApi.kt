@@ -17,26 +17,26 @@ interface DashboardApi {
     ): CategoriesResponse
 
     @POST("shoot/")
-    fun createCollection(
+    suspend fun createCollection(
         @Header("tokenId") tokenId: String?,
         @Body createCollectionRequest: CreateCollectionRequest?
     ): CreateCollectionResponse
 
     @PUT("categories/")
-    fun updateShootCategory(
+    suspend fun updateShootCategory(
         @Header("tokenId") tokenId: String?,
         @Body updateShootCategoryRequest: UpdateShootCategoryRequest
     ): CreateCollectionResponse
 
     @Multipart
     @POST("insert-user")
-    fun UserFreeCreditEligiblityCheck(
+    suspend fun UserFreeCreditEligiblityCheck(
         @Part("user_id") user_id: RequestBody?,
         @Part("email_id") email_id: RequestBody?
     ): FreeCreditEligblityResponse
 
     @Multipart
     @POST("fetch-sku-name")
-    fun getCompletedProjects(@Part("user_id") user_id: RequestBody?)
+    suspend fun getCompletedProjects(@Part("user_id") user_id: RequestBody?)
             : List<CompletedProjectResponse>
 }

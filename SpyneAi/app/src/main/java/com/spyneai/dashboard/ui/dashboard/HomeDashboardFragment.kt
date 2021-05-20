@@ -9,6 +9,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.play.core.appupdate.AppUpdateManager
@@ -16,11 +17,14 @@ import com.spyneai.R
 import com.spyneai.adapter.CategoriesDashboardAdapter
 import com.spyneai.adapter.CompletedProjectAdapter
 import com.spyneai.adapter.OngoingProjectAdapter
+import com.spyneai.dashboard.adapters.CompletedDashboardAdapter
 import com.spyneai.dashboard.adapters.OngoingDashboardAdapter
 import com.spyneai.dashboard.data.repository.DashboardRepository
 import com.spyneai.dashboard.network.DashboardApi
+import com.spyneai.dashboard.network.RemoteDataSourceSpyneAi
 import com.spyneai.dashboard.network.Resource
 import com.spyneai.dashboard.ui.base.BaseFragment
+import com.spyneai.dashboard.ui.base.ViewModelFactory
 import com.spyneai.dashboard.ui.handleApiError
 import com.spyneai.databinding.HomeDashboardFragmentBinding
 import com.spyneai.interfaces.APiService
@@ -40,42 +44,34 @@ class HomeDashboardFragment :
 
     lateinit var appUpdateManager: AppUpdateManager
     private val MY_REQUEST_CODE: Int = 1
-    lateinit var categoriesResponseList: ArrayList<Data>
-    lateinit var categoriesAdapter: CategoriesDashboardAdapter
-    lateinit var rvDashboardCategories: RecyclerView
     lateinit var PACKAGE_NAME: String
     lateinit var btnlistener: CategoriesDashboardAdapter.BtnClickListener
 
+    lateinit var categoriesResponseList: ArrayList<Data>
+    lateinit var categoriesAdapter: CategoriesDashboardAdapter
+
     lateinit var ongoingDashboardAdapter : OngoingDashboardAdapter
-    lateinit var rvOngoingShoots: RecyclerView
     lateinit var ongoingProjectList : ArrayList<com.spyneai.model.processImageService.Task>
 
     lateinit var completedProjectList : ArrayList<CompletedProjectResponse>
-    lateinit var completedProjectAdapter : CompletedProjectAdapter
+    lateinit var completedDashboardAdapter : CompletedDashboardAdapter
+
+    var handelBaseUrl = 0
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
 
         Utilities.showProgressDialog(requireContext())
 
-        showOngoingProjects()
+        setOngoingProjectRecycler()
 
         categoriesResponseList = ArrayList<Data>()
-        rvDashboardCategories = RecyclerView(requireContext())
 
         viewModel.getCategories("utq10CZvW")
 
-        val userId = RequestBody.create(
-            MultipartBody.FORM,
-            "utq10CZvW")
-
-        viewModel.getCompletedProjects(userId)
-
         viewModel.categoriesResponse.observe(viewLifecycleOwner, Observer {
-            Utilities.hideProgressDialog()
             when(it){
                 is Resource.Sucess -> {
-                    Utilities.hideProgressDialog()
                     Toast.makeText(requireContext(), it.value.payload.data.size.toString(), Toast.LENGTH_SHORT).show()
                     categoriesResponseList.addAll(it.value.payload.data)
 //                    categoriesAdapter.notifyDataSetChanged()
@@ -90,11 +86,21 @@ class HomeDashboardFragment :
             }
         })
 
+        val userId = RequestBody.create(
+            MultipartBody.FORM,
+            "utq10CZvW")
+
+        handelBaseUrl = 1
+        val factory = ViewModelFactory(getFragmentRepository())
+        viewModel = ViewModelProvider(this, factory).get(getViewModel())
+
+        viewModel.getCompletedProjects(userId)
+        completedProjectList = ArrayList<CompletedProjectResponse>()
+
         viewModel.completedProjectResponse.observe(viewLifecycleOwner, Observer {
             Utilities.hideProgressDialog()
             when(it){
                 is Resource.Sucess -> {
-                    Utilities.hideProgressDialog()
                     Toast.makeText(requireContext(), it.value.toString(), Toast.LENGTH_SHORT).show()
                     completedProjectList.addAll(it.value)
                     completedProjectList.reverse()
@@ -119,10 +125,18 @@ class HomeDashboardFragment :
     }
 
     private fun setCompletedProjectRecycler(){
+        Utilities.hideProgressDialog()
+        completedDashboardAdapter = CompletedDashboardAdapter(requireContext(),
+            completedProjectList)
+
+        val layoutManager: RecyclerView.LayoutManager = LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
+        rvCompletedShoots.setLayoutManager(layoutManager)
+        rvCompletedShoots.setAdapter(completedDashboardAdapter)
 
     }
 
     private fun setCategoriesRecycler(){
+        Utilities.hideProgressDialog()
         categoriesAdapter = CategoriesDashboardAdapter(requireContext(), categoriesResponseList,
             object : CategoriesDashboardAdapter.BtnClickListener {
                 override fun onBtnClick(position: Int) {
@@ -150,13 +164,12 @@ class HomeDashboardFragment :
         rvDashboardCategories.setAdapter(categoriesAdapter)
     }
 
-    private fun showOngoingProjects(){
-        rvOngoingShoots = RecyclerView(requireContext())
+    private fun setOngoingProjectRecycler(){
         ongoingProjectList = ProcessImagesService.tasksInProgress
         ongoingDashboardAdapter = OngoingDashboardAdapter(requireContext(),
             ongoingProjectList)
 
-        val layoutManager: RecyclerView.LayoutManager = LinearLayoutManager(requireContext(), LinearLayoutManager.VERTICAL, false)
+        val layoutManager: RecyclerView.LayoutManager = LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
         rvOngoingShoots.setLayoutManager(layoutManager)
         rvOngoingShoots.setAdapter(ongoingDashboardAdapter)
         refreshList()
@@ -176,8 +189,6 @@ class HomeDashboardFragment :
             groupOngoingProjects.visibility = View.GONE
     }
 
-
-
     override fun getViewModel() = DashboardViewModel::class.java
 
     override fun getFragmentBinding(
@@ -185,8 +196,15 @@ class HomeDashboardFragment :
         container: ViewGroup?
     ) = HomeDashboardFragmentBinding.inflate(inflater, container, false)
 
-    override fun getFragmentRepository() =
-        DashboardRepository(remoteDataSource.buildApi(DashboardApi::class.java))
+    override fun getFragmentRepository() : DashboardRepository{
+        return when(handelBaseUrl){
+            0 -> DashboardRepository(RemoteDataSourceSpyneAi("https://api.spyne.ai/").buildApi(DashboardApi::class.java))
+            1 -> DashboardRepository(RemoteDataSourceSpyneAi("https://www.clippr.ai/api/").buildApi(DashboardApi::class.java))
+
+            else -> DashboardRepository(RemoteDataSourceSpyneAi("https://api.spyne.ai/").buildApi(DashboardApi::class.java))
+        }
+    }
+
 
 
 }

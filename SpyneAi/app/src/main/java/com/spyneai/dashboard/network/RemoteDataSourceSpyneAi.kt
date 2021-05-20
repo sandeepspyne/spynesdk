@@ -8,10 +8,10 @@ import retrofit2.converter.gson.GsonConverterFactory
 import java.util.concurrent.TimeUnit
 import java.util.logging.Level
 
-class RemoteDataSourceSpyneAi{
-    companion object{
-        private const val BASE_URL = "https://api.spyne.ai/"
-    }
+class RemoteDataSourceSpyneAi(val BASE_URL: String){
+//    companion object{
+//        private const val BASE_URL = "https://www.clippr.ai/api/"
+//    }
 
     fun<Api> buildApi(
         api: Class<Api>

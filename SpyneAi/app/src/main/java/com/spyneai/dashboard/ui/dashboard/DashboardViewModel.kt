@@ -29,8 +29,6 @@ class DashboardViewModel(
     fun getCategories(
         tokenId: String
     ) = viewModelScope.launch {
-        repository.getCategories(tokenId)
-
         _categoriesResponse.value = Resource.Loading
         _categoriesResponse.value = repository.getCategories(tokenId)
 
@@ -39,8 +37,6 @@ class DashboardViewModel(
     fun getCompletedProjects(
         user_id: RequestBody
     ) = viewModelScope.launch {
-        repository.getCompletedProjects(user_id)
-
         _completedProjectResponse.value = Resource.Loading
         _completedProjectResponse.value = repository.getCompletedProjects(user_id)
 
