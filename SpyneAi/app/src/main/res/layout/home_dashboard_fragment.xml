@@ -61,7 +61,7 @@
             android:layout_width="43dp"
             android:layout_height="5dp"
             app:layout_constraintStart_toStartOf="parent"
-            android:background="@color/primary_dark"
+            android:background="@drawable/bg_view"
             android:layout_marginLeft="@dimen/dp_12"
             app:layout_constraintTop_toBottomOf="@+id/tvWelcomeHome"
             app:layout_constraintBottom_toTopOf="@+id/rvSlider"></View>
@@ -85,7 +85,6 @@
             app:layout_constraintTop_toTopOf="@+id/rvSlider"
             app:layout_constraintBottom_toBottomOf="@+id/rvSlider"
             android:layout_margin="@dimen/dp_10"
-            app:tint="@color/primary"
             ></ImageView>
 
         <ImageView
@@ -93,7 +92,6 @@
             android:layout_width="20dp"
             android:layout_height="20dp"
             android:src="@drawable/ic_slider_previous"
-            app:tint="@color/primary"
             app:layout_constraintStart_toStartOf="@+id/rvSlider"
             app:layout_constraintTop_toTopOf="@+id/rvSlider"
             app:layout_constraintBottom_toBottomOf="@+id/rvSlider"

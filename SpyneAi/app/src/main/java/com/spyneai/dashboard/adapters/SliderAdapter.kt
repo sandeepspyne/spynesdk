@@ -40,7 +40,10 @@ class SliderAdapter(
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
 
-        holder.ivSlider.setBeforeImage(ContextCompat.getDrawable(context,sliderImageList[position].before)).setAfterImage(ContextCompat.getDrawable(context,sliderImageList[position].before))
+        holder.ivSlider.setSliderThumb(ContextCompat.getDrawable(context,R.drawable.ic_sliderline))
+
+        holder.ivSlider.setBeforeImage(ContextCompat.getDrawable(context,sliderImageList[position].before)).setAfterImage(ContextCompat.getDrawable(context,sliderImageList[position].after
+        ))
 
 
 

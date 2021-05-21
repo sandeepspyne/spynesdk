@@ -7,17 +7,14 @@ import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
-import android.view.Window
+import android.view.*
 import android.widget.LinearLayout
 import android.widget.TextView
 import android.widget.Toast
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.google.android.material.tabs.TabLayout
+import androidx.recyclerview.widget.RecyclerView.SimpleOnItemTouchListener
 import com.google.android.play.core.appupdate.AppUpdateManager
 import com.spyneai.R
 import com.spyneai.activity.CompletedProjectsActivity
@@ -85,6 +82,8 @@ class HomeDashboardFragment :
 
         tokenId = Utilities.getPreference(requireContext(), AppConstants.tokenId).toString()
         email = Utilities.getPreference(requireContext(), AppConstants.EMAIL_ID).toString()
+
+        rvSlider.stopScroll()
 
         Utilities.showProgressDialog(requireContext())
         userFreeCreditEligiblityCheck()
@@ -257,17 +256,29 @@ class HomeDashboardFragment :
 
         sliderImageList = ArrayList<SliderModel>()
 
-        sliderImageList.add(SliderModel(R.drawable.ic_tv1, R.drawable.ic_tv2))
-        sliderImageList.add(SliderModel(R.drawable.ic_tv2, R.drawable.ic_tv1))
-        sliderImageList.add(SliderModel(R.drawable.ic_tv1, R.drawable.ic_tv2))
+        sliderImageList.add(SliderModel(R.drawable.car_before, R.drawable.car_after))
+        sliderImageList.add(SliderModel(R.drawable.footwear_before, R.drawable.footwear_after))
         sliderAdapter = SliderAdapter(requireContext(),
             sliderImageList)
 
         val layoutManager = LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
+
+//        rvSlider.layoutManager = object : LinearLayoutManager(context) {
+//            override fun canScrollHorizontally(): Boolean = false
+//        }
+//        rvSlider.suppressLayout(true)
+
         rvSlider.setLayoutManager(layoutManager)
         rvSlider.setAdapter(sliderAdapter)
 
 //        sliderDots(layoutManager)
+
+        rvSlider.addOnItemTouchListener(object : SimpleOnItemTouchListener() {
+            override fun onInterceptTouchEvent(rv: RecyclerView, e: MotionEvent): Boolean {
+                // Stop only scrolling.
+                return rv.scrollState == RecyclerView.SCROLL_STATE_DRAGGING
+            }
+        })
 
         ivNext.setOnClickListener {
             if (layoutManager.findLastCompletelyVisibleItemPosition() < (sliderAdapter.getItemCount() - 1)) {
@@ -282,27 +293,27 @@ class HomeDashboardFragment :
         }
 
     }
-    private fun sliderDots(layoutManager: LinearLayoutManager) {
-        rvSlider.addOnScrollListener(object : RecyclerView.OnScrollListener() {
-            override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
-                super.onScrolled(recyclerView, dx, dy)
-                val itemPosition: Int = layoutManager.findFirstCompletelyVisibleItemPosition()
-                if (itemPosition == 0) { //  item position of uses
-                    val tab: TabLayout.Tab = tbDashboard.getTabAt(0)!!
-                    tab.select()
-                } else if (itemPosition == 1) { //  item position of side effects
-                    val tab: TabLayout.Tab = tbDashboard.getTabAt(1)!!
-                    tab.select()
-                } else if (itemPosition == 2) { //  item position of how it works
-                    val tab: TabLayout.Tab = tbDashboard.getTabAt(2)!!
-                    tab.select()
-                } else if (itemPosition == 3) { //  item position of precaution
-                    val tab: TabLayout.Tab = tbDashboard.getTabAt(3)!!
-                    tab.select()
-                }
-            }
-        })
-    }
+//    private fun sliderDots(layoutManager: LinearLayoutManager) {
+//        rvSlider.addOnScrollListener(object : RecyclerView.OnScrollListener() {
+//            override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
+//                super.onScrolled(recyclerView, dx, dy)
+//                val itemPosition: Int = layoutManager.findFirstCompletelyVisibleItemPosition()
+//                if (itemPosition == 0) { //  item position of uses
+//                    val tab: TabLayout.Tab = tbDashboard.getTabAt(0)!!
+//                    tab.select()
+//                } else if (itemPosition == 1) { //  item position of side effects
+//                    val tab: TabLayout.Tab = tbDashboard.getTabAt(1)!!
+//                    tab.select()
+//                } else if (itemPosition == 2) { //  item position of how it works
+//                    val tab: TabLayout.Tab = tbDashboard.getTabAt(2)!!
+//                    tab.select()
+//                } else if (itemPosition == 3) { //  item position of precaution
+//                    val tab: TabLayout.Tab = tbDashboard.getTabAt(3)!!
+//                    tab.select()
+//                }
+//            }
+//        })
+//    }
 
     private fun setCategoryMap(shootId: String, categoryPosition: Int, catId: String, displayName: String) {
         val updateShootCategoryRequest = UpdateShootCategoryRequest(
