@@ -80,8 +80,6 @@ class HomeDashboardFragment :
     lateinit var description: String
     lateinit var colorCode: String
 
-    var index = 0
-
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
 
@@ -256,6 +254,8 @@ class HomeDashboardFragment :
     }
 
     private fun setSliderRecycler(){
+
+        sliderImageList = ArrayList<SliderModel>()
 
         sliderImageList.add(SliderModel(R.drawable.ic_tv1, R.drawable.ic_tv2))
         sliderImageList.add(SliderModel(R.drawable.ic_tv2, R.drawable.ic_tv1))

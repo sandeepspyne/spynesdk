@@ -21,13 +21,13 @@
         tools:layout="@layout/wallet_dashboard_fragment" >
         <action
             android:id="@+id/action_walletDashboardFragment_to_completedOrdersDashboardFragment"
-            app:destination="@id/completedOrdersDashboardFragment" />
+            app:destination="@id/completedOrdersFragment" />
     </fragment>
     <fragment
-        android:id="@+id/completedOrdersDashboardFragment"
+        android:id="@+id/completedOrdersFragment"
         android:name="com.spyneai.fragment.CompletedOrdersFragment"
-        android:label="completed_orders_dashboard_fragment"
-        tools:layout="@layout/completed_orders_dashboard_fragment" >
+        android:label="completed_orders_fragment"
+        tools:layout="@layout/fragment_completed_orders" >
         <action
             android:id="@+id/action_completedOrdersDashboardFragment_to_logoutDashBoardFragment"
             app:destination="@id/logoutDashBoardFragment" />

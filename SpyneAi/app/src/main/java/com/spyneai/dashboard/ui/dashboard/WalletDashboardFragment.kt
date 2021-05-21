@@ -15,6 +15,7 @@ import com.spyneai.R
 import com.spyneai.credits.CreditPlansActivity
 import com.spyneai.credits.CreditUtils
 import com.spyneai.databinding.ActivityWalletBinding
+import com.spyneai.databinding.WalletDashboardFragmentBinding
 import com.spyneai.interfaces.APiService
 import com.spyneai.interfaces.RetrofitClientSpyneAi
 import com.spyneai.model.credit.CreditDetailsResponse
@@ -26,7 +27,7 @@ import retrofit2.Response
 
 class WalletDashboardFragment : Fragment() {
 
-    private lateinit var binding : ActivityWalletBinding
+    private lateinit var binding : WalletDashboardFragmentBinding
     private var availableCredits = 0
     private var retry = 0
     protected lateinit var rootView: View
@@ -36,10 +37,16 @@ class WalletDashboardFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        rootView = inflater.inflate(R.layout.wallet_dashboard_fragment, container, false)
 
-        binding = DataBindingUtil.setContentView(requireContext() as Activity,R.layout.activity_wallet)
+        binding = WalletDashboardFragmentBinding.inflate(inflater, container, false)
 
+        return binding.root
+
+
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
         binding.flAddCredits.setOnClickListener {
             val intent = Intent(requireContext(), CreditPlansActivity::class.java)
             intent.putExtra("from_wallet",true)
@@ -48,9 +55,6 @@ class WalletDashboardFragment : Fragment() {
         }
 
         fetchUserCreditDetails()
-
-        return rootView
-
     }
 
     private fun fetchUserCreditDetails(){

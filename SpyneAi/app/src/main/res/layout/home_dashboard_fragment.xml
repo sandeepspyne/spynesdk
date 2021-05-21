@@ -10,6 +10,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
+
         <androidx.appcompat.widget.Toolbar
             android:id="@+id/my_toolbar"
             android:layout_width="match_parent"
@@ -62,7 +63,6 @@
             app:layout_constraintStart_toStartOf="parent"
             android:background="@color/primary_dark"
             android:layout_marginLeft="@dimen/dp_12"
-            android:layout_marginBottom="@dimen/dp_10"
             app:layout_constraintTop_toBottomOf="@+id/tvWelcomeHome"
             app:layout_constraintBottom_toTopOf="@+id/rvSlider"></View>
 
@@ -70,9 +70,8 @@
             android:id="@+id/rvSlider"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:nestedScrollingEnabled="false"
-            android:layout_marginStart="@dimen/dp_10"
-            android:layout_marginEnd="@dimen/dp_10"
+            android:layout_marginTop="@dimen/dp_20"
+            android:layout_marginBottom="@dimen/dp_20"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/viewWelcome" />

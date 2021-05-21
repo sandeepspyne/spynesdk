@@ -4,10 +4,14 @@ import android.content.Context
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageView
+import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
+import com.github.developer__.BeforeAfterSlider
 import com.spyneai.R
 import com.spyneai.adapter.CategoriesDashboardAdapter
 import com.spyneai.dashboard.data.model.SliderModel
+import org.aspectj.lang.annotation.Before
 
 class SliderAdapter(
     val context: Context,
@@ -24,7 +28,9 @@ class SliderAdapter(
     }
 
     class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
+        val ivSlider: BeforeAfterSlider = view.findViewById(R.id.ivSlider)
     }
+    
 
     override fun onCreateViewHolder(viewGroup: ViewGroup, viewType: Int): ViewHolder {
         val view = LayoutInflater.from(viewGroup.context)
@@ -34,7 +40,7 @@ class SliderAdapter(
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
 
-//        mySlider.setBeforeImage(sliderImageList[position]).setAfterImage(imgUrl2)
+        holder.ivSlider.setBeforeImage(ContextCompat.getDrawable(context,sliderImageList[position].before)).setAfterImage(ContextCompat.getDrawable(context,sliderImageList[position].before))
 
 
 
