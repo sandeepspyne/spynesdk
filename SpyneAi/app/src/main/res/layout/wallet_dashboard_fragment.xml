@@ -1,13 +1,151 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    tools:context=".dashboard.ui.dashboard.WalletDashboardFragment">
-
-    <TextView
+<layout>
+    <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        xmlns:tools="http://schemas.android.com/tools"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:text="Hello" />
+        tools:context=".credits.WalletActivity">
 
-</FrameLayout>
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/tool_bar_height"
+            app:layout_constraintTop_toTopOf="parent"
+            android:elevation="10dp"
+            android:background="@color/white"
+            android:id="@+id/fl_tool_bar">
+
+            <ImageView
+                android:layout_width="@dimen/tool_bar_height"
+                android:layout_height="@dimen/tool_bar_height"
+                android:src="@drawable/back"
+                android:padding="@dimen/dp_15"
+                app:tint="@color/black"
+                android:id="@+id/iv_back"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/tv_tittle"
+                android:layout_gravity="center"
+                android:text="My Wallet"
+                android:fontFamily="@font/medium"
+                android:textColor="@color/black"
+                android:textSize="16sp"/>
+        </FrameLayout>
+
+        <androidx.cardview.widget.CardView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            app:layout_constraintTop_toBottomOf="@id/fl_tool_bar"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            android:layout_margin="@dimen/dp_15"
+            android:elevation="@dimen/dp_5">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:gravity="center_horizontal">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Available Credits"
+                    android:textColor="#232121"
+                    android:id="@+id/tv_avilable_credit"
+                    android:layout_marginTop="15dp"
+                    android:textSize="16sp"/>
+
+                <FrameLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/dp_25">
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text=""
+                        android:textColor="@color/available_credits"
+                        android:id="@+id/tv_credits"
+                        android:visibility="gone"
+                        android:fontFamily="@font/medium"
+                        android:textSize="26sp" />
+
+                    <com.facebook.shimmer.ShimmerFrameLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:id="@+id/shimmer">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="2,565.00"
+                            android:textColor="@color/shimmer_background"
+                            android:background="@color/shimmer_background"
+                            android:fontFamily="@font/medium"
+                            android:textSize="26sp"/>
+
+                    </com.facebook.shimmer.ShimmerFrameLayout>
+
+                </FrameLayout>
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:id="@+id/tv_line"
+                    app:layout_constraintLeft_toLeftOf="parent"
+                    app:layout_constraintRight_toRightOf="parent"
+                    android:layout_marginLeft="@dimen/dp_10"
+                    android:layout_marginRight="@dimen/dp_10"
+                    android:background="#F0EEEE"
+                    app:layout_constraintTop_toBottomOf="@id/tv_credits"
+                    android:layout_marginTop="@dimen/dp_25"/>
+
+                <FrameLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/bg_rectangle_button_ripple"
+                    android:layout_marginTop="@dimen/dp_20"
+                    android:paddingTop="14dp"
+                    android:paddingBottom="14dp"
+                    android:layout_marginLeft="30dp"
+                    android:layout_marginRight="30dp"
+                    android:layout_marginBottom="15dp"
+                    android:id="@+id/fl_add_credits">
+
+                    <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:layout_gravity="center">
+
+                        <ImageView
+                            android:layout_width="20dp"
+                            android:layout_height="20dp"
+                            android:src="@drawable/add_icon"/>
+
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:text="Add Credit"
+                            android:gravity="center"
+                            app:layout_constraintTop_toBottomOf="@id/tv_line"
+                            android:textColor="@color/white"
+                            app:layout_constraintLeft_toLeftOf="parent"
+                            app:layout_constraintRight_toRightOf="parent"
+                            android:layout_marginLeft="@dimen/dp_10"/>
+
+                    </LinearLayout>
+                </FrameLayout>
+
+
+
+            </LinearLayout>
+
+        </androidx.cardview.widget.CardView>
+
+
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>

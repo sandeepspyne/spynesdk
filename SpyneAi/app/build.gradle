@@ -195,6 +195,8 @@ dependencies {
     //logging interceptor
     implementation("com.squareup.okhttp3:logging-interceptor:4.9.1")
 
+    //and add this to your module level build.gradle file
+    implementation 'com.github.blackfox94:before_after_slider:701e3d5861'
 
 
 

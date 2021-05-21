@@ -17,6 +17,7 @@ import android.widget.Toast
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.google.android.material.tabs.TabLayout
 import com.google.android.play.core.appupdate.AppUpdateManager
 import com.spyneai.R
 import com.spyneai.activity.CompletedProjectsActivity
@@ -24,7 +25,9 @@ import com.spyneai.activity.OngoingOrdersActivity
 import com.spyneai.adapter.CategoriesDashboardAdapter
 import com.spyneai.dashboard.adapters.CompletedDashboardAdapter
 import com.spyneai.dashboard.adapters.OngoingDashboardAdapter
+import com.spyneai.dashboard.adapters.SliderAdapter
 import com.spyneai.dashboard.adapters.TutorialVideosAdapter
+import com.spyneai.dashboard.data.model.SliderModel
 import com.spyneai.dashboard.network.Resource
 import com.spyneai.dashboard.ui.base.BaseFragment
 import com.spyneai.dashboard.ui.handleApiError
@@ -39,6 +42,7 @@ import com.spyneai.needs.AppConstants
 import com.spyneai.needs.Utilities
 import com.spyneai.service.ProcessImagesService
 import kotlinx.android.synthetic.main.home_dashboard_fragment.*
+import kotlinx.android.synthetic.main.rv_dashboard_slider.*
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
 
@@ -57,7 +61,12 @@ class HomeDashboardFragment :
 
     lateinit var completedDashboardAdapter : CompletedDashboardAdapter
 
+    lateinit var sliderAdapter : SliderAdapter
+
+    lateinit var sliderImageList: ArrayList<SliderModel>
+
     var tutorialVideosList = intArrayOf(R.drawable.ic_tv1, R.drawable.ic_tv2)
+
     lateinit var tutorialVideosAdapter : TutorialVideosAdapter
 
     var handelBaseUrl = 0
@@ -71,6 +80,8 @@ class HomeDashboardFragment :
     lateinit var description: String
     lateinit var colorCode: String
 
+    var index = 0
+
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
 
@@ -80,6 +91,7 @@ class HomeDashboardFragment :
         Utilities.showProgressDialog(requireContext())
         userFreeCreditEligiblityCheck()
         setOngoingProjectRecycler()
+        setSliderRecycler()
         showTutorialVideos()
         lisners()
 
@@ -243,35 +255,54 @@ class HomeDashboardFragment :
 
     }
 
-//    private fun setCategoriesRecycler(){
-//        Utilities.hideProgressDialog()
-//        categoriesAdapter = CategoriesDashboardAdapter(requireContext(), categoriesResponseList,
-//            object : CategoriesDashboardAdapter.BtnClickListener {
-//                override fun onBtnClick(position: Int) {
-//                    if (position < 3) {
-//                        categoryPosition = position
-//                        Utilities.savePrefrence(
-//                            requireContext(),
-//                            AppConstants.CATEGORY_NAME,
-//                            categoriesResponseList[position].displayName
-//                        )
-//                        setShoot(categoriesResponseList, position)
-//                    } else
-//                        Toast.makeText(
-//                            requireContext(),
-//                            "Coming Soon !",
-//                            Toast.LENGTH_SHORT
-//                        ).show()
-//                }
-//            })
-//        val layoutManager: RecyclerView.LayoutManager = LinearLayoutManager(
-//            requireContext(),
-//            LinearLayoutManager.HORIZONTAL,
-//            false
-//        )
-//        rvDashboardCategories.setLayoutManager(layoutManager)
-//        rvDashboardCategories.setAdapter(categoriesAdapter)
-//    }
+    private fun setSliderRecycler(){
+
+        sliderImageList.add(SliderModel(R.drawable.ic_tv1, R.drawable.ic_tv2))
+        sliderImageList.add(SliderModel(R.drawable.ic_tv2, R.drawable.ic_tv1))
+        sliderImageList.add(SliderModel(R.drawable.ic_tv1, R.drawable.ic_tv2))
+        sliderAdapter = SliderAdapter(requireContext(),
+            sliderImageList)
+
+        val layoutManager = LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
+        rvSlider.setLayoutManager(layoutManager)
+        rvSlider.setAdapter(sliderAdapter)
+
+//        sliderDots(layoutManager)
+
+        ivNext.setOnClickListener {
+            if (layoutManager.findLastCompletelyVisibleItemPosition() < (sliderAdapter.getItemCount() - 1)) {
+                layoutManager.scrollToPosition(layoutManager.findLastCompletelyVisibleItemPosition() + 1);
+            }
+        }
+        ivPrevious.setOnClickListener {
+            if (layoutManager.findLastCompletelyVisibleItemPosition() != 0) {
+                layoutManager.scrollToPosition(layoutManager.findLastCompletelyVisibleItemPosition() - 1);
+            }
+
+        }
+
+    }
+    private fun sliderDots(layoutManager: LinearLayoutManager) {
+        rvSlider.addOnScrollListener(object : RecyclerView.OnScrollListener() {
+            override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
+                super.onScrolled(recyclerView, dx, dy)
+                val itemPosition: Int = layoutManager.findFirstCompletelyVisibleItemPosition()
+                if (itemPosition == 0) { //  item position of uses
+                    val tab: TabLayout.Tab = tbDashboard.getTabAt(0)!!
+                    tab.select()
+                } else if (itemPosition == 1) { //  item position of side effects
+                    val tab: TabLayout.Tab = tbDashboard.getTabAt(1)!!
+                    tab.select()
+                } else if (itemPosition == 2) { //  item position of how it works
+                    val tab: TabLayout.Tab = tbDashboard.getTabAt(2)!!
+                    tab.select()
+                } else if (itemPosition == 3) { //  item position of precaution
+                    val tab: TabLayout.Tab = tbDashboard.getTabAt(3)!!
+                    tab.select()
+                }
+            }
+        })
+    }
 
     private fun setCategoryMap(shootId: String, categoryPosition: Int, catId: String, displayName: String) {
         val updateShootCategoryRequest = UpdateShootCategoryRequest(

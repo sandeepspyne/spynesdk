@@ -15,6 +15,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.airbnb.lottie.LottieAnimationView
 import com.bumptech.glide.Glide
 import com.spyneai.R
+import com.spyneai.activity.OngoingOrdersActivity
 import com.spyneai.activity.ShowImagesActivity
 import com.spyneai.adapter.OngoingProjectAdapter
 import com.spyneai.model.processImageService.Task
@@ -44,6 +45,11 @@ class OngoingDashboardAdapter (
         Glide.with(context)
             .load(ongoingProjectList[position].imageFileList[0])
             .into(holder.ivImage)
+
+        holder.ivImage.setOnClickListener {
+            val intent = Intent(context, OngoingOrdersActivity::class.java)
+            context.startActivity(intent)
+        }
 
                     Utilities.savePrefrence(context,
                         AppConstants.SKU_ID,
