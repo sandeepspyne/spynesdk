@@ -14,6 +14,8 @@ import android.widget.ImageView
 import android.widget.LinearLayout
 import com.airbnb.lottie.LottieAnimationView
 import com.spyneai.R
+import com.spyneai.databinding.LogoutDialogBinding
+import com.spyneai.databinding.WalletDashboardFragmentBinding
 import com.spyneai.loginsignup.activity.LoginActivity
 import com.spyneai.needs.AppConstants
 import com.spyneai.needs.Utilities
@@ -22,52 +24,28 @@ import com.spyneai.needs.Utilities
 class LogoutDashBoardFragment : Fragment() {
 
 
+    private lateinit var binding : LogoutDialogBinding
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.logout_dialog, container, false)
+        binding = LogoutDialogBinding.inflate(inflater, container, false)
+
+        return binding.root
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
-        logoutDialog()
-    }
-
-    private fun logoutDialog(){
-
-        val dialog = Dialog(requireContext())
-        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE)
-        dialog.setCancelable(true)
-
-        var dialogView = LayoutInflater.from(requireContext()).inflate(R.layout.logout_dialog, null)
-
-        dialog.setContentView(dialogView)
-
-        dialog.getWindow()?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT));
-        val llLogout: LinearLayout = dialog.findViewById(R.id.llLogout)
-        var ivClose: ImageView = dialogView.findViewById(R.id.ivClose)
-        var lottielogout: LottieAnimationView = dialogView.findViewById(R.id.lottielogout)
-
-
-        ivClose.setOnClickListener(View.OnClickListener {
-
-            dialog.dismiss()
-
-        })
-
-        dialog.show()
-
-
-        llLogout.setOnClickListener(View.OnClickListener {
-            dialog.dismiss()
+        binding.llLogout.setOnClickListener {
             Utilities.savePrefrence(requireContext(), AppConstants.tokenId, "")
             Utilities.savePrefrence(requireContext(), AppConstants.SHOOT_ID, "")
             Utilities.savePrefrence(requireContext(), AppConstants.SKU_ID, "")
             val intent = Intent(requireContext(), LoginActivity::class.java)
             startActivity(intent)
-        })
+        }
     }
+
 
 }

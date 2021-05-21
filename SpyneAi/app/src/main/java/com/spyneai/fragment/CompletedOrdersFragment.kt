@@ -41,9 +41,12 @@ class CompletedOrdersFragment : Fragment() {
         // Inflate the layout for this fragment
         rootView = inflater.inflate(R.layout.fragment_completed_orders, container, false)
 
-        fatchCompletedProjects()
-
         return rootView
+    }
+
+    override fun onActivityCreated(savedInstanceState: Bundle?) {
+        super.onActivityCreated(savedInstanceState)
+        fatchCompletedProjects()
     }
 
 
@@ -77,7 +80,7 @@ class CompletedOrdersFragment : Fragment() {
 
         Utilities.showProgressDialog(requireContext())
 
-        val request = Staging.buildService(APiService::class.java)
+        val request = RetrofitClients.buildService(APiService::class.java)
         Utilities.savePrefrence(
             requireContext(), AppConstants.tokenId,
             Utilities.getPreference(requireContext(), AppConstants.tokenId)
