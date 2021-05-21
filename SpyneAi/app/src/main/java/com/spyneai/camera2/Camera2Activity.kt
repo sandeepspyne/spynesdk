@@ -1269,7 +1269,7 @@ class Camera2Activity : AppCompatActivity(), SubCategoriesAdapter.BtnClickListen
 
         llSubmit.setOnClickListener(View.OnClickListener {
             if (etVin.text.isNullOrEmpty()){
-                etVin.setError("Please enter any unique")
+                etVin.setError("Please enter any unique number")
             }else{
                 dialog.dismiss()
                 vinNumber = etVin.text.toString()

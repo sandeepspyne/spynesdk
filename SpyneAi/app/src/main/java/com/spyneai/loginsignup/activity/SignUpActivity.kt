@@ -31,30 +31,26 @@ class SignUpActivity : AppCompatActivity() {
 
     private fun listeners() {
         tv_signUp.setOnClickListener {
-            if (et_signupPassword.text.toString().trim().length < 3) {
-                Toast.makeText(
-                    this,
-                    "Password must be at least 3 characters long.",
-                    Toast.LENGTH_SHORT
-                ).show()
+
+            if (et_signupEmail.text.isNullOrEmpty() || !Utilities.isValidEmail(et_signupEmail.text.toString().trim())){
+                et_signupEmail.error = getString(R.string.please_enter_email)
+                tvLogin.isClickable = true
+                tv_signUp.isClickable = true
+                tv_terms.isClickable = true
+                tv_sign_in_using_otp.isClickable = true
+            }else if (et_signupPassword.text.isNullOrEmpty() || et_signupPassword.text.toString().trim().length < 3) {
+                et_signupPassword.error = "Password must be at least 3 characters long."
                 return@setOnClickListener
-            }
-            if (!et_signupEmail.text.toString().trim()
-                    .isEmpty() && !et_signupPassword.text.toString().trim().isEmpty()
-                && Utilities.isValidEmail(et_signupEmail.text.toString().trim())
-            ) {
+            }else if(et_business_name.text.isNullOrEmpty()){
+                et_business_name.error = "PLease enter business/your name"
+            }else{
                 signUp()
                 tvEmailError.visibility = View.GONE
                 tvLogin.isClickable = false
                 tv_signUp.isClickable = false
                 tv_terms.isClickable = false
                 tv_sign_in_using_otp.isClickable = false
-            } else
-                tvEmailError.visibility = View.VISIBLE
-            tvLogin.isClickable = true
-            tv_signUp.isClickable = true
-            tv_terms.isClickable = true
-            tv_sign_in_using_otp.isClickable = true
+            }
         }
 
         tvLogin.setOnClickListener {
@@ -73,7 +69,7 @@ class SignUpActivity : AppCompatActivity() {
         Utilities.showProgressDialog(this)
 
         var body = SignupBody(
-            et_signupEmail.text.toString(), "spyne-default", "spyne-default", "", "corporate",
+            et_signupEmail.text.toString(), "spyne-default", et_business_name.text.toString(), "", "corporate",
             et_signupPassword.text.toString(), 91, "yes", "", "Others"
         )
 
