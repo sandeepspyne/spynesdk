@@ -11,6 +11,7 @@ import android.view.*
 import android.widget.LinearLayout
 import android.widget.TextView
 import android.widget.Toast
+import androidx.core.content.ContextCompat
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -82,8 +83,6 @@ class HomeDashboardFragment :
 
         tokenId = Utilities.getPreference(requireContext(), AppConstants.tokenId).toString()
         email = Utilities.getPreference(requireContext(), AppConstants.EMAIL_ID).toString()
-
-        rvSlider.stopScroll()
 
         Utilities.showProgressDialog(requireContext())
         userFreeCreditEligiblityCheck()
@@ -254,6 +253,19 @@ class HomeDashboardFragment :
 
     private fun setSliderRecycler(){
 
+        ivBanner.setSliderThumb(ContextCompat.getDrawable(requireContext(),R.drawable.ic_sliderline))
+
+        ivBanner.setBeforeImage(ContextCompat.getDrawable(requireContext(),R.drawable.car_before)).setAfterImage(ContextCompat.getDrawable(requireContext(),R.drawable.car_after))
+        ivNext.setOnClickListener {
+            ivBanner.setBeforeImage(ContextCompat.getDrawable(requireContext(),R.drawable.footwear_before)).setAfterImage(ContextCompat.getDrawable(requireContext(),R.drawable.footwear_after))
+        }
+
+        ivPrevious.setOnClickListener {
+            ivBanner.setBeforeImage(ContextCompat.getDrawable(requireContext(),R.drawable.car_before)).setAfterImage(ContextCompat.getDrawable(requireContext(),R.drawable.car_after))
+
+        }
+
+/*
         sliderImageList = ArrayList<SliderModel>()
 
         sliderImageList.add(SliderModel(R.drawable.car_before, R.drawable.car_after))
@@ -291,6 +303,8 @@ class HomeDashboardFragment :
             }
 
         }
+
+ */
 
     }
 //    private fun sliderDots(layoutManager: LinearLayoutManager) {

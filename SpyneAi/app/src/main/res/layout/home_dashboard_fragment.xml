@@ -66,24 +66,46 @@
             app:layout_constraintTop_toBottomOf="@+id/tvWelcomeHome"
             app:layout_constraintBottom_toTopOf="@+id/rvSlider"></View>
 
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/rvSlider"
+<!--        <androidx.recyclerview.widget.RecyclerView-->
+<!--            android:id="@+id/rvSlider"-->
+<!--            android:layout_width="match_parent"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            android:layout_marginTop="@dimen/dp_20"-->
+<!--            android:layout_marginBottom="@dimen/dp_20"-->
+<!--            app:layout_constraintStart_toStartOf="parent"-->
+<!--            app:layout_constraintEnd_toEndOf="parent"-->
+<!--            app:layout_constraintTop_toBottomOf="@+id/viewWelcome" />-->
+
+        <FrameLayout
+            android:id="@+id/flSlider"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="187dp"
             android:layout_marginTop="@dimen/dp_20"
             android:layout_marginBottom="@dimen/dp_20"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/viewWelcome" />
+            app:layout_constraintTop_toBottomOf="@+id/viewWelcome">
+
+        <com.github.developer__.BeforeAfterSlider
+            android:id="@+id/ivBanner"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:slider_thumb="@drawable/ic_sliderline" />
+
+        </FrameLayout>
 
         <ImageView
             android:id="@+id/ivNext"
             android:layout_width="20dp"
             android:layout_height="20dp"
             android:src="@drawable/ic_slider_next"
-            app:layout_constraintEnd_toEndOf="@+id/rvSlider"
-            app:layout_constraintTop_toTopOf="@+id/rvSlider"
-            app:layout_constraintBottom_toBottomOf="@+id/rvSlider"
+            app:layout_constraintEnd_toEndOf="@+id/flSlider"
+            app:layout_constraintTop_toTopOf="@+id/flSlider"
+            app:layout_constraintBottom_toBottomOf="@+id/flSlider"
             android:layout_margin="@dimen/dp_10"
             ></ImageView>
 
@@ -92,9 +114,9 @@
             android:layout_width="20dp"
             android:layout_height="20dp"
             android:src="@drawable/ic_slider_previous"
-            app:layout_constraintStart_toStartOf="@+id/rvSlider"
-            app:layout_constraintTop_toTopOf="@+id/rvSlider"
-            app:layout_constraintBottom_toBottomOf="@+id/rvSlider"
+            app:layout_constraintStart_toStartOf="@+id/flSlider"
+            app:layout_constraintTop_toTopOf="@+id/flSlider"
+            app:layout_constraintBottom_toBottomOf="@+id/flSlider"
             android:layout_margin="@dimen/dp_10"
             ></ImageView>
 
@@ -109,7 +131,7 @@
             app:tabBackground="@drawable/tab_selector"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/rvSlider"
+            app:layout_constraintTop_toBottomOf="@+id/flSlider"
             app:tabIndicatorHeight="0dp" />
 
         <TextView
