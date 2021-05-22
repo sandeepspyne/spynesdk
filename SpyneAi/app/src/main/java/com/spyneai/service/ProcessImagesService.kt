@@ -260,12 +260,14 @@ class ProcessImagesService() : Service(), Listener {
     }
 
     override fun onSuccess(task: Task) {
+        tasksInProgress.remove(task)
         task.isCompleted = true
         stopService()
         checkAndFinishService()
     }
 
     override fun onFailure(task: Task) {
+        tasksInProgress.remove(task)
         task.isFailure = true
         stopService()
         //retry funcnality

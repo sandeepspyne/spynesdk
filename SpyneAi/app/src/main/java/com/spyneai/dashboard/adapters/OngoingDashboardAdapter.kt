@@ -10,6 +10,7 @@ import android.view.animation.Animation
 import android.widget.ImageView
 import android.widget.RelativeLayout
 import android.widget.TextView
+import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.airbnb.lottie.LottieAnimationView
@@ -31,6 +32,7 @@ class OngoingDashboardAdapter (
         val ivImage: ImageView = view.findViewById(R.id.ivImage)
         val tvSku: TextView = view.findViewById(R.id.tvSku)
         val tvDate: TextView = view.findViewById(R.id.tvDate)
+        val clBackground: ConstraintLayout = view.findViewById(R.id.clBackground)
     }
 
     override fun onCreateViewHolder(viewGroup: ViewGroup, viewType: Int): ViewHolder {
@@ -42,11 +44,12 @@ class OngoingDashboardAdapter (
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         holder.tvSku.text = ongoingProjectList[position].catName
 
+
         Glide.with(context)
             .load(ongoingProjectList[position].imageFileList[0])
             .into(holder.ivImage)
 
-        holder.ivImage.setOnClickListener {
+        holder.clBackground.setOnClickListener {
             val intent = Intent(context, OngoingOrdersActivity::class.java)
             context.startActivity(intent)
         }

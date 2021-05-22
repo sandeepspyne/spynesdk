@@ -330,6 +330,7 @@ class HomeDashboardFragment :
     private fun refreshList(){
         Handler(Looper.getMainLooper()).postDelayed({
             ongoingDashboardAdapter.notifyDataSetChanged()
+            showHideRecyclerView(ProcessImagesService.tasksInProgress)
             refreshList()
         }, 3000)
 
