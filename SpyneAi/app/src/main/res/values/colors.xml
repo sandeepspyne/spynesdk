@@ -10,7 +10,7 @@
     <color name="primary_dark">#223263</color>
 
     <color name="primary">#FF7700</color>
-    <color name="light">#ffa842</color>
+    <color name="light">#F69C4C</color>
     <color name="light_soft">#FBF2EC</color>
     <color name="light_">#EFCEB3</color>
     <color name="dark">#c54700</color>
@@ -37,5 +37,7 @@
     <color name="green">#40CE4E</color>
     <color name="zero_credits">#FF1F1F</color>
     <color name="available_credits">#33AF38</color>
+
+    <color name="toolbar_light">#11FFAB40</color>
 
 </resources>

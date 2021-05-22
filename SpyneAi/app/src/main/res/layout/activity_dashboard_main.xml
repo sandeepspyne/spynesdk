@@ -26,7 +26,6 @@
         android:layout_height="wrap_content"
         android:layout_margin="10dp"
         android:background="@drawable/nav_background"
-        app:elevation="@dimen/dp_5"
         app:labelVisibilityMode="labeled">
 
     </com.google.android.material.bottomnavigation.BottomNavigationView>

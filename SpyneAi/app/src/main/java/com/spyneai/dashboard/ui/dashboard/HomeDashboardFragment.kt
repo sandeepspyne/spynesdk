@@ -7,6 +7,7 @@ import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
+import android.util.Log
 import android.view.*
 import android.widget.LinearLayout
 import android.widget.TextView
@@ -16,10 +17,13 @@ import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.RecyclerView.SimpleOnItemTouchListener
+import com.google.android.material.tabs.TabLayout
 import com.google.android.play.core.appupdate.AppUpdateManager
 import com.spyneai.R
+import com.spyneai.activity.CategoriesActivity
 import com.spyneai.activity.CompletedProjectsActivity
 import com.spyneai.activity.OngoingOrdersActivity
+import com.spyneai.activity.ShowImagesActivity
 import com.spyneai.adapter.CategoriesDashboardAdapter
 import com.spyneai.dashboard.adapters.CompletedDashboardAdapter
 import com.spyneai.dashboard.adapters.OngoingDashboardAdapter
@@ -91,6 +95,11 @@ class HomeDashboardFragment :
         showTutorialVideos()
         lisners()
 
+        btGetStarted.setOnClickListener {
+            val intent = Intent(requireContext(), CategoriesActivity::class.java)
+            startActivity(intent)
+        }
+
         viewModel.getCategories(tokenId)
         viewModel.categoriesResponse.observe(viewLifecycleOwner, Observer {
             when(it){
@@ -153,7 +162,17 @@ class HomeDashboardFragment :
                 is Resource.Sucess -> {
                     Utilities.hideProgressDialog()
                     completedDashboardAdapter = CompletedDashboardAdapter(requireContext(),
-                        it.value as ArrayList<CompletedProjectResponse>
+                        it.value as ArrayList<CompletedProjectResponse>,
+                        object : CompletedDashboardAdapter.BtnClickListener {
+                            override fun onBtnClick(position: Int) {
+                                Utilities.savePrefrence(requireContext(),
+                                    AppConstants.SKU_ID,
+                                    it.value[position].sku_id)
+                                val intent = Intent(requireContext(),
+                                    ShowImagesActivity::class.java)
+                                startActivity(intent)
+
+                            }}
                     )
 
                     val layoutManager: RecyclerView.LayoutManager = LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
@@ -257,54 +276,19 @@ class HomeDashboardFragment :
 
         ivBanner.setBeforeImage(ContextCompat.getDrawable(requireContext(),R.drawable.car_before)).setAfterImage(ContextCompat.getDrawable(requireContext(),R.drawable.car_after))
         ivNext.setOnClickListener {
+//            val tab: TabLayout.Tab = tbDashboard.getTabAt(1)!!
+//            tab.select()
             ivBanner.setBeforeImage(ContextCompat.getDrawable(requireContext(),R.drawable.footwear_before)).setAfterImage(ContextCompat.getDrawable(requireContext(),R.drawable.footwear_after))
         }
 
         ivPrevious.setOnClickListener {
+//            val tab: TabLayout.Tab = tbDashboard.getTabAt(0)!!
+//            tab.select()
             ivBanner.setBeforeImage(ContextCompat.getDrawable(requireContext(),R.drawable.car_before)).setAfterImage(ContextCompat.getDrawable(requireContext(),R.drawable.car_after))
 
         }
 
-/*
-        sliderImageList = ArrayList<SliderModel>()
 
-        sliderImageList.add(SliderModel(R.drawable.car_before, R.drawable.car_after))
-        sliderImageList.add(SliderModel(R.drawable.footwear_before, R.drawable.footwear_after))
-        sliderAdapter = SliderAdapter(requireContext(),
-            sliderImageList)
-
-        val layoutManager = LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
-
-//        rvSlider.layoutManager = object : LinearLayoutManager(context) {
-//            override fun canScrollHorizontally(): Boolean = false
-//        }
-//        rvSlider.suppressLayout(true)
-
-        rvSlider.setLayoutManager(layoutManager)
-        rvSlider.setAdapter(sliderAdapter)
-
-//        sliderDots(layoutManager)
-
-        rvSlider.addOnItemTouchListener(object : SimpleOnItemTouchListener() {
-            override fun onInterceptTouchEvent(rv: RecyclerView, e: MotionEvent): Boolean {
-                // Stop only scrolling.
-                return rv.scrollState == RecyclerView.SCROLL_STATE_DRAGGING
-            }
-        })
-
-        ivNext.setOnClickListener {
-            if (layoutManager.findLastCompletelyVisibleItemPosition() < (sliderAdapter.getItemCount() - 1)) {
-                layoutManager.scrollToPosition(layoutManager.findLastCompletelyVisibleItemPosition() + 1);
-            }
-        }
-        ivPrevious.setOnClickListener {
-            if (layoutManager.findLastCompletelyVisibleItemPosition() != 0) {
-                layoutManager.scrollToPosition(layoutManager.findLastCompletelyVisibleItemPosition() - 1);
-            }
-
-        }
-
- */
 
     }
 //    private fun sliderDots(layoutManager: LinearLayoutManager) {
