@@ -94,6 +94,8 @@ class HomeDashboardFragment :
         setSliderRecycler()
         showTutorialVideos()
         lisners()
+        Utilities.showProgressDialog(requireContext())
+
 
         btGetStarted.setOnClickListener {
             val intent = Intent(requireContext(), CategoriesActivity::class.java)
@@ -146,8 +148,7 @@ class HomeDashboardFragment :
 //                    Utilities.showProgressDialog(requireContext())
 //                }
                 is Resource.Failure -> {
-                     shimmer.visibility = View.GONE
-                    clMain.visibility = View.VISIBLE
+                     Utilities.hideProgressDialog()
 
                     handleApiError(it)
                 }
@@ -187,8 +188,7 @@ class HomeDashboardFragment :
 
                         if (it.value.size == 0)
                             groupCompletedShoots.visibility = View.GONE
-                    shimmer.visibility = View.GONE
-                    clMain.visibility = View.VISIBLE
+                    Utilities.hideProgressDialog()
 
 //                    categoriesAdapter.notifyDataSetChanged()
                 }
@@ -196,8 +196,7 @@ class HomeDashboardFragment :
 //                    Utilities.showProgressDialog(requireContext())
 //                }
                 is Resource.Failure -> {
-                     shimmer.visibility = View.GONE
-                    clMain.visibility = View.VISIBLE
+                     Utilities.hideProgressDialog()
                     handleApiError(it)
                 }
             }
@@ -217,8 +216,7 @@ class HomeDashboardFragment :
 //                    Utilities.showProgressDialog(requireContext())
 //                }
                 is Resource.Failure -> {
-                     shimmer.visibility = View.GONE
-                    clMain.visibility = View.VISIBLE
+                     Utilities.hideProgressDialog()
                     handleApiError(it)
                 }
             }
@@ -251,8 +249,7 @@ class HomeDashboardFragment :
 //                    Utilities.showProgressDialog(requireContext())
 //                }
                 is Resource.Failure -> {
-                     shimmer.visibility = View.GONE
-                    clMain.visibility = View.VISIBLE
+                     Utilities.hideProgressDialog()
                     handleApiError(it)
                 }
             }
@@ -268,8 +265,7 @@ class HomeDashboardFragment :
 //                    Utilities.showProgressDialog(requireContext())
 //                }
                 is Resource.Failure -> {
-                     shimmer.visibility = View.GONE
-                    clMain.visibility = View.VISIBLE
+                     Utilities.hideProgressDialog()
                     handleApiError(it)
                 }
             }
