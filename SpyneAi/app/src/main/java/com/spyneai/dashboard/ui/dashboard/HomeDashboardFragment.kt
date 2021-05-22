@@ -62,6 +62,7 @@ class HomeDashboardFragment :
     lateinit var ongoingDashboardAdapter : OngoingDashboardAdapter
 
     lateinit var completedDashboardAdapter : CompletedDashboardAdapter
+    lateinit var completedProjectList: ArrayList<CompletedProjectResponse>
 
     lateinit var sliderAdapter : SliderAdapter
 
@@ -88,7 +89,6 @@ class HomeDashboardFragment :
         tokenId = Utilities.getPreference(requireContext(), AppConstants.tokenId).toString()
         email = Utilities.getPreference(requireContext(), AppConstants.EMAIL_ID).toString()
 
-        Utilities.showProgressDialog(requireContext())
         userFreeCreditEligiblityCheck()
         setOngoingProjectRecycler()
         setSliderRecycler()
@@ -146,7 +146,9 @@ class HomeDashboardFragment :
 //                    Utilities.showProgressDialog(requireContext())
 //                }
                 is Resource.Failure -> {
-                    Utilities.hideProgressDialog()
+                     shimmer.visibility = View.GONE
+                    clMain.visibility = View.VISIBLE
+
                     handleApiError(it)
                 }
             }
@@ -160,9 +162,13 @@ class HomeDashboardFragment :
         viewModel.completedProjectResponse.observe(viewLifecycleOwner, Observer {
             when(it){
                 is Resource.Sucess -> {
-                    Utilities.hideProgressDialog()
+
+                    completedProjectList = ArrayList<CompletedProjectResponse>()
+                    completedProjectList.addAll(it.value)
+                    completedProjectList.reverse()
+
                     completedDashboardAdapter = CompletedDashboardAdapter(requireContext(),
-                        it.value as ArrayList<CompletedProjectResponse>,
+                        completedProjectList,
                         object : CompletedDashboardAdapter.BtnClickListener {
                             override fun onBtnClick(position: Int) {
                                 Utilities.savePrefrence(requireContext(),
@@ -181,6 +187,8 @@ class HomeDashboardFragment :
 
                         if (it.value.size == 0)
                             groupCompletedShoots.visibility = View.GONE
+                    shimmer.visibility = View.GONE
+                    clMain.visibility = View.VISIBLE
 
 //                    categoriesAdapter.notifyDataSetChanged()
                 }
@@ -188,7 +196,8 @@ class HomeDashboardFragment :
 //                    Utilities.showProgressDialog(requireContext())
 //                }
                 is Resource.Failure -> {
-                    Utilities.hideProgressDialog()
+                     shimmer.visibility = View.GONE
+                    clMain.visibility = View.VISIBLE
                     handleApiError(it)
                 }
             }
@@ -208,7 +217,8 @@ class HomeDashboardFragment :
 //                    Utilities.showProgressDialog(requireContext())
 //                }
                 is Resource.Failure -> {
-                    Utilities.hideProgressDialog()
+                     shimmer.visibility = View.GONE
+                    clMain.visibility = View.VISIBLE
                     handleApiError(it)
                 }
             }
@@ -241,7 +251,8 @@ class HomeDashboardFragment :
 //                    Utilities.showProgressDialog(requireContext())
 //                }
                 is Resource.Failure -> {
-                    Utilities.hideProgressDialog()
+                     shimmer.visibility = View.GONE
+                    clMain.visibility = View.VISIBLE
                     handleApiError(it)
                 }
             }
@@ -257,7 +268,8 @@ class HomeDashboardFragment :
 //                    Utilities.showProgressDialog(requireContext())
 //                }
                 is Resource.Failure -> {
-                    Utilities.hideProgressDialog()
+                     shimmer.visibility = View.GONE
+                    clMain.visibility = View.VISIBLE
                     handleApiError(it)
                 }
             }
@@ -273,6 +285,8 @@ class HomeDashboardFragment :
     private fun setSliderRecycler(){
 
         ivBanner.setSliderThumb(ContextCompat.getDrawable(requireContext(),R.drawable.ic_sliderline))
+
+
 
         ivBanner.setBeforeImage(ContextCompat.getDrawable(requireContext(),R.drawable.car_before)).setAfterImage(ContextCompat.getDrawable(requireContext(),R.drawable.car_after))
         ivNext.setOnClickListener {
@@ -291,27 +305,6 @@ class HomeDashboardFragment :
 
 
     }
-//    private fun sliderDots(layoutManager: LinearLayoutManager) {
-//        rvSlider.addOnScrollListener(object : RecyclerView.OnScrollListener() {
-//            override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
-//                super.onScrolled(recyclerView, dx, dy)
-//                val itemPosition: Int = layoutManager.findFirstCompletelyVisibleItemPosition()
-//                if (itemPosition == 0) { //  item position of uses
-//                    val tab: TabLayout.Tab = tbDashboard.getTabAt(0)!!
-//                    tab.select()
-//                } else if (itemPosition == 1) { //  item position of side effects
-//                    val tab: TabLayout.Tab = tbDashboard.getTabAt(1)!!
-//                    tab.select()
-//                } else if (itemPosition == 2) { //  item position of how it works
-//                    val tab: TabLayout.Tab = tbDashboard.getTabAt(2)!!
-//                    tab.select()
-//                } else if (itemPosition == 3) { //  item position of precaution
-//                    val tab: TabLayout.Tab = tbDashboard.getTabAt(3)!!
-//                    tab.select()
-//                }
-//            }
-//        })
-//    }
 
     private fun setCategoryMap(shootId: String, categoryPosition: Int, catId: String, displayName: String) {
         val updateShootCategoryRequest = UpdateShootCategoryRequest(

@@ -1,0 +1,240 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+<androidx.constraintlayout.widget.ConstraintLayout
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+
+
+    <androidx.appcompat.widget.Toolbar
+        android:id="@+id/my_toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        android:background="?attr/colorPrimary"
+        android:backgroundTint="@color/white"
+        android:theme="@style/ThemeOverlay.AppCompat.Light"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintBottom_toTopOf="@+id/viewToolbar">
+
+        <ImageView
+            android:layout_gravity="center"
+            android:layout_width="@dimen/dp_50"
+            android:layout_height="@dimen/dp_50"
+            android:background="@color/shimmer_background"/>
+    </androidx.appcompat.widget.Toolbar>
+
+    <View
+        android:id="@+id/viewToolbar"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        android:background="@color/shimmer_background"
+        app:layout_constraintTop_toBottomOf="@+id/my_toolbar"></View>
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textSize="@dimen/sp_22"
+        android:layout_marginLeft="@dimen/dp_10"
+        android:layout_marginTop="@dimen/dp_10"
+        android:textColor="@color/primary_dark"
+        android:fontFamily="@font/light"
+        android:background="@color/shimmer_background"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/viewToolbar"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintBottom_toTopOf="@+id/viewWelcome"></TextView>
+
+    <View
+        android:id="@+id/viewWelcome"
+        android:layout_width="43dp"
+        android:layout_height="1dp"
+        app:layout_constraintStart_toStartOf="parent"
+        android:background="@color/shimmer_background"
+        android:layout_marginLeft="@dimen/dp_12"
+        app:layout_constraintBottom_toTopOf="@+id/flSlider"></View>
+
+    <!--        <androidx.recyclerview.widget.RecyclerView-->
+    <!--            android:id="@+id/rvSlider"-->
+    <!--            android:layout_width="match_parent"-->
+    <!--            android:layout_height="wrap_content"-->
+    <!--            android:layout_marginTop="@dimen/dp_20"-->
+    <!--            android:layout_marginBottom="@dimen/dp_20"-->
+    <!--            app:layout_constraintStart_toStartOf="parent"-->
+    <!--            app:layout_constraintEnd_toEndOf="parent"-->
+    <!--            app:layout_constraintTop_toBottomOf="@+id/viewWelcome" />-->
+
+    <FrameLayout
+        android:id="@+id/flSlider"
+        android:layout_width="match_parent"
+        android:layout_height="187dp"
+        android:layout_marginTop="@dimen/dp_20"
+        android:layout_marginBottom="@dimen/dp_20"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/viewWelcome">
+
+        <ImageView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            android:background="@color/shimmer_background"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:slider_thumb="@drawable/ic_sliderline" />
+
+    </FrameLayout>
+
+    <RelativeLayout
+        android:id="@+id/rlGetStarted"
+        android:layout_marginTop="@dimen/dp_20"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toBottomOf="@+id/flSlider"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintBottom_toTopOf="@+id/tbDashboard"
+        android:background="@color/shimmer_background"
+        android:gravity="center">
+
+        <TextView
+            android:id="@+id/tvGetStartedText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="13dp"
+            android:layout_alignParentLeft="true"
+            android:textColor="@color/white"
+            android:fontFamily="@font/medium"
+            android:textSize="@dimen/sp_12"
+            android:layout_centerInParent="true"></TextView>
+
+        <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/btGetStarted"
+            android:layout_width="112dp"
+            android:layout_height="30dp"
+            android:textAllCaps="false"
+            android:textColor="@color/primary"
+            android:layout_alignParentRight="true"
+            android:layout_marginRight="13dp"
+            android:gravity="center"
+            android:elevation="@dimen/dp_5"
+            android:fontFamily="@font/bold"
+            android:background="@color/shimmer_background"
+            android:layout_margin="@dimen/dp_20"
+            android:layout_marginStart="@dimen/dp_5"
+            android:layout_marginEnd="@dimen/dp_5"
+            android:textSize="@dimen/sp_12"
+            android:layout_centerInParent="true"/>
+
+
+
+
+    </RelativeLayout>
+
+    <ImageView
+        android:id="@+id/ivNext"
+        android:layout_width="20dp"
+        android:layout_height="20dp"
+        android:src="@drawable/ic_slider_next"
+        app:layout_constraintEnd_toEndOf="@+id/flSlider"
+        app:layout_constraintTop_toTopOf="@+id/flSlider"
+        app:layout_constraintBottom_toBottomOf="@+id/flSlider"
+        android:layout_margin="@dimen/dp_10"
+        ></ImageView>
+
+    <ImageView
+        android:id="@+id/ivPrevious"
+        android:layout_width="20dp"
+        android:layout_height="20dp"
+        android:src="@drawable/ic_slider_previous"
+        app:layout_constraintStart_toStartOf="@+id/flSlider"
+        app:layout_constraintTop_toTopOf="@+id/flSlider"
+        app:layout_constraintBottom_toBottomOf="@+id/flSlider"
+        android:layout_margin="@dimen/dp_10"
+        ></ImageView>
+
+
+
+    <com.google.android.material.tabs.TabLayout
+        android:id="@+id/tbDashboard"
+        android:layout_width="@dimen/dp_100"
+        android:layout_height="@dimen/dp_10"
+        android:layout_gravity="center"
+        android:padding="@dimen/dp_10"
+        android:layout_margin="@dimen/dp_10"
+        app:tabBackground="@drawable/tab_selector"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/rlGetStarted"
+        app:tabIndicatorHeight="0dp" />
+
+
+
+    <View
+        android:id="@+id/viewOngoing"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/dp_2"
+        android:background="@color/line_separator"
+        app:layout_constraintTop_toBottomOf="@+id/tbDashboard"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_margin="@dimen/dp_10"
+        ></View>
+
+    <RelativeLayout
+        android:id="@+id/rl"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toBottomOf="@+id/viewOngoing"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:background="@color/shimmer_background"
+        android:padding="@dimen/dp_10">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="@dimen/sp_22"
+            android:textColor="@color/categories_text"
+            android:fontFamily="@font/bold"
+            android:layout_alignParentLeft="true"
+            android:layout_centerInParent="true"
+            ></TextView>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="@dimen/sp_12"
+            android:textColor="@color/primary"
+            android:fontFamily="@font/medium"
+            android:layout_alignParentRight="true"
+            android:layout_centerInParent="true"></TextView>
+
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="500dp"
+        android:background="@color/shimmer_background"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintLeft_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/rl"
+        android:layout_margin="@dimen/dp_20"></RelativeLayout>
+
+
+
+
+
+
+
+
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>
+
+</layout>
