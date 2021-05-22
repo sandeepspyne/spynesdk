@@ -8,6 +8,7 @@ import android.view.ViewGroup
 import android.view.animation.AlphaAnimation
 import android.view.animation.Animation
 import android.widget.ImageView
+import android.widget.LinearLayout
 import android.widget.RelativeLayout
 import android.widget.TextView
 import androidx.constraintlayout.widget.ConstraintLayout
@@ -33,6 +34,8 @@ class OngoingDashboardAdapter (
         val tvSku: TextView = view.findViewById(R.id.tvSku)
         val tvDate: TextView = view.findViewById(R.id.tvDate)
         val clBackground: ConstraintLayout = view.findViewById(R.id.clBackground)
+        val llFailed: LinearLayout = view.findViewById(R.id.llFailed)
+        val llOngoing: LinearLayout = view.findViewById(R.id.llOngoing)
     }
 
     override fun onCreateViewHolder(viewGroup: ViewGroup, viewType: Int): ViewHolder {
@@ -48,6 +51,12 @@ class OngoingDashboardAdapter (
         Glide.with(context)
             .load(ongoingProjectList[position].imageFileList[0])
             .into(holder.ivImage)
+
+        if (ongoingProjectList[position].isFailure){
+            holder.llFailed.visibility = View.VISIBLE
+            holder.llOngoing.visibility = View.GONE
+        }
+
 
         holder.clBackground.setOnClickListener {
             val intent = Intent(context, OngoingOrdersActivity::class.java)

@@ -267,7 +267,6 @@ class ProcessImagesService() : Service(), Listener {
     }
 
     override fun onFailure(task: Task) {
-        tasksInProgress.remove(task)
         task.isFailure = true
         stopService()
         //retry funcnality
