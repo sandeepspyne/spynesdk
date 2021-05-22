@@ -337,7 +337,7 @@ class HomeDashboardFragment :
     }
 
     private fun showHideRecyclerView(tasksInProgress: ArrayList<Task>) {
-        if (tasksInProgress.size == 0)
+        if (tasksInProgress.size == 0 && groupOngoingProjects!=null)
             groupOngoingProjects.visibility = View.GONE
     }
 

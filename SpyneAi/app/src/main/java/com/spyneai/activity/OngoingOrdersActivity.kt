@@ -108,8 +108,6 @@ class OngoingOrdersActivity : AppCompatActivity() {
 
     override fun onBackPressed() {
         super.onBackPressed()
-        val intent = Intent(this, MainDashboardActivity::class.java)
-        startActivity(intent)
         finish()
     }
 }
