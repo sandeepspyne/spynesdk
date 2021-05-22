@@ -175,7 +175,7 @@
 
     <string name="credits"><u>Credits</u></string>
 
-    <string name="increase_online_sale"><u>Increase Online Sales for your products by <br />uploading visually stunning images on <br />Marketplaces
+    <string name="increase_online_sale"><u>Increase Online Sales for your products by \n<br />uploading visually stunning images on \n<br />Marketplaces
 
 </u></string>
 
@@ -187,13 +187,12 @@
     <string name="channel_description">spyne</string>
 
 
-    <string name="free_credits">10 Credits has been added to <br />your account</string>
+    <string name="free_credits">10 Credits has been added to \n<br />your account</string>
 
-    <string name="forgot_password_dialog">Link sent successfully.<br /> Please check your email.</string>
+    <string name="forgot_password_dialog">Link sent successfully.\n<br /> Please check your email.</string>
 
 
-
-    <string name="request_credits">Request credits on <br />Whatsapp</string>
+    <string name="request_credits">Request credits on \n<br />Whatsapp</string>
     <string name="we_recommend_focused">(2/2) Miscellaneous Shots</string>
     <string name="focused">Miscellaneous</string>
 
@@ -212,7 +211,7 @@
     <string name="images_will_be_lost">Your Images will be lost. Are you sure you want to leave this page?</string>
 
 
-    <string name="dealership_popup">Logo will be displayed on the <br /><b>number plates</b> and on <b>corner</b> <br />of image</string>
+    <string name="dealership_popup">Logo will be displayed on the \n<br /><b>number plates</b> and on <b>corner</b> \n<br />of image</string>
 
 
     <string name="select_corner">Select corner to display logo</string>
@@ -235,9 +234,20 @@
     <string name="shoot_outdoor">Shoot&#160; <font color='#FF7700'><b>Outdoors</b></font>&#160;to avoid irregular reflections</string>
     <string name="forgot_password">Forgot password?</string>
 
-    <string name="forgot_password_mail">Enter the email address to reset your password. <br/> You may need to check your spam folder.</string>
+    <string name="forgot_password_mail">Enter the email address to reset your password. \n<br /> You may need to check your spam folder.</string>
     <string name="enter_vin">Please enter the Vehicle Identification Number (VIN)</string>
     <string name="vin_number">VIN</string>
+
+    <string name="welcome_home">Welcome Home!</string>
+    <string name="explore_categories">Explore Categories</string>
+    <string name="on_going_shoots">On-going Shoots</string>
+    <string name="completed_shoots">Completed Shoots</string>
+    <string name="view_all">View All</string>
+    <string name="tutorial_videos">Tutorial Videos</string>
+
+    <string name="create_professional_automobile">Create Professional\n<br/>Pictures in a Single Click using AI</string>
+
+    <string name="get_started_">Get Started</string>
 
 
     <string-array name="planets_array">

@@ -49,13 +49,13 @@ import com.airbnb.lottie.LottieAnimationView
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.spyneai.R
-import com.spyneai.activity.DashboardActivity
 import com.spyneai.activity.GenerateGifActivity
 import com.spyneai.adapter.InteriorFramesAdapter
 import com.spyneai.activity.GenerateMarketplaceActivity
 import com.spyneai.adapter.FocusedFramesAdapter
 import com.spyneai.adapter.ProgressAdapter
 import com.spyneai.adapter.SubCategoriesAdapter
+import com.spyneai.dashboard.ui.dashboard.MainDashboardActivity
 import com.spyneai.interfaces.APiService
 import com.spyneai.interfaces.RetrofitClient
 import com.spyneai.loginsignup.activity.LoginActivity
@@ -1823,7 +1823,7 @@ class Camera2Activity : AppCompatActivity(), SubCategoriesAdapter.BtnClickListen
             Utilities.savePrefrence(this@Camera2Activity, AppConstants.PRODUCT_ID, "")
             Utilities.savePrefrence(this@Camera2Activity, AppConstants.SKU_NAME, "")
             Utilities.savePrefrence(this@Camera2Activity, AppConstants.SKU_ID, "")
-            val intent = Intent(this, DashboardActivity::class.java)
+            val intent = Intent(this, MainDashboardActivity::class.java)
             startActivity(intent)
             finish()
 

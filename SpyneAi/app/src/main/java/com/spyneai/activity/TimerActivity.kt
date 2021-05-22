@@ -19,6 +19,7 @@ import com.spyneai.BuildConfig
 import com.spyneai.R
 import com.spyneai.adapter.MarketplacesAdapter
 import com.spyneai.adapter.PhotosAdapter
+import com.spyneai.dashboard.ui.dashboard.MainDashboardActivity
 import com.spyneai.extras.events.ProcessingImagesEvent
 import com.spyneai.model.carreplace.CarBackgroundsResponse
 import com.spyneai.model.sku.Photos
@@ -149,12 +150,12 @@ class TimerActivity : AppCompatActivity() {
 
     private fun setListener() {
         llStartNewShoot.setOnClickListener {
-            val intent = Intent(this, DashboardActivity::class.java)
+            val intent = Intent(this, MainDashboardActivity::class.java)
             startActivity(intent)
         }
         llHome.setOnClickListener {
             finish()
-            val intent = Intent(this, DashboardActivity::class.java)
+            val intent = Intent(this, MainDashboardActivity::class.java)
             startActivity(intent)
         }
 
@@ -319,7 +320,7 @@ class TimerActivity : AppCompatActivity() {
     @Subscribe(threadMode = ThreadMode.MAIN)
     fun onMessageEvent(event: ProcessingImagesEvent?) {
         event?.getShootStatus()?.let {
-            var intent = Intent(this@TimerActivity, DashboardActivity::class.java)
+            var intent = Intent(this@TimerActivity, MainDashboardActivity::class.java)
             startActivity(intent)
             finish()
         }

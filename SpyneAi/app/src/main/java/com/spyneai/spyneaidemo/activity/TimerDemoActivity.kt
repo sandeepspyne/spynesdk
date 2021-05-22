@@ -12,10 +12,10 @@ import android.view.animation.LinearInterpolator
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import com.spyneai.R
-import com.spyneai.activity.DashboardActivity
 import com.spyneai.adapter.MarketplacesAdapter
 import com.spyneai.adapter.PhotosAdapter
 import com.spyneai.aipack.*
+import com.spyneai.dashboard.ui.dashboard.MainDashboardActivity
 import com.spyneai.interfaces.*
 import com.spyneai.model.carreplace.CarBackgroundsResponse
 import com.spyneai.model.sku.Photos
@@ -169,7 +169,7 @@ class TimerDemoActivity : AppCompatActivity() {
                 this@TimerDemoActivity,
                 AppConstants.FRAME_LIST, updateSkuResponseList
             )
-            val intent = Intent(this, DashboardActivity::class.java)
+            val intent = Intent(this, MainDashboardActivity::class.java)
             startActivity(intent)
             finish()
             dialog.dismiss()

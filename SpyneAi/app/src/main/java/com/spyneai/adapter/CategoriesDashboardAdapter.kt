@@ -89,7 +89,8 @@ public class CategoriesDashboardAdapter(
     }
 
     // Return the size of your dataset (invoked by the layout manager)
-    override fun getItemCount() = categoriesResponseList.size
+    override fun getItemCount() =
+        categoriesResponseList.size
 
     fun <T : RecyclerView.ViewHolder> T.listen(event: (position: Int, type: Int) -> Unit): T {
         itemView.setOnClickListener {

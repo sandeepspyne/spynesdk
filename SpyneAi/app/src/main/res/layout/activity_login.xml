@@ -135,7 +135,7 @@
                 android:layout_marginRight="@dimen/dp_20"
                 android:textSize="12sp"/>
 
-            <Button
+            <androidx.appcompat.widget.AppCompatButton
                 android:id="@+id/bt_login"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -180,7 +180,7 @@
                     android:background="#EBF0FF"/>
             </LinearLayout>
 
-            <Button
+            <androidx.appcompat.widget.AppCompatButton
                 android:id="@+id/bt_sign_in_using_otp"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"

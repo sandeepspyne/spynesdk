@@ -7,12 +7,12 @@ import android.util.Log
 import android.view.View
 import android.widget.Toast
 import com.spyneai.R
-import com.spyneai.activity.DashboardActivity
 import com.spyneai.activity.OtpActivity
 import com.spyneai.activity.SignInUsingOtpActivity
 import com.spyneai.credits.CreditApiService
 import com.spyneai.credits.RetrofitClientPayment
 import com.spyneai.credits.model.CreateOrderBody
+import com.spyneai.dashboard.ui.dashboard.MainDashboardActivity
 import com.spyneai.interfaces.APiService
 import com.spyneai.interfaces.RetrofitClient
 import com.spyneai.interfaces.RetrofitClientSpyneAi
@@ -101,7 +101,7 @@ class LoginActivity : AppCompatActivity() {
                         Toast.makeText(this@LoginActivity, "Login successful", Toast.LENGTH_SHORT).show()
                         Utilities.savePrefrence(this@LoginActivity,AppConstants.tokenId,
                             response.body()!!.userId)
-                        val intent = Intent(this@LoginActivity, DashboardActivity::class.java)
+                        val intent = Intent(this@LoginActivity, MainDashboardActivity::class.java)
                         startActivity(intent)
                         finish()
                         bt_login.isClickable = true

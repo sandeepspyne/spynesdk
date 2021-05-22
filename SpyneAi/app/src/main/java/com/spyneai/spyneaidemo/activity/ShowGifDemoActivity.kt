@@ -9,7 +9,7 @@ import android.view.View
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.spyneai.R
-import com.spyneai.activity.DashboardActivity
+import com.spyneai.dashboard.ui.dashboard.MainDashboardActivity
 import com.spyneai.model.skumap.UpdateSkuResponse
 import com.spyneai.needs.AppConstants
 import com.spyneai.needs.Utilities
@@ -44,7 +44,7 @@ class ShowGifDemoActivity : AppCompatActivity() {
             Utilities.savePrefrence(this@ShowGifDemoActivity, AppConstants.PRODUCT_ID, "")
             Utilities.savePrefrence(this@ShowGifDemoActivity, AppConstants.SKU_NAME, "")
             Utilities.savePrefrence(this@ShowGifDemoActivity, AppConstants.SKU_ID, "")
-            val intent = Intent(this, DashboardActivity::class.java)
+            val intent = Intent(this, MainDashboardActivity::class.java)
             startActivity(intent)
             finish()
 
@@ -119,7 +119,7 @@ class ShowGifDemoActivity : AppCompatActivity() {
 //    override fun onBackPressed() {
 //        super.onBackPressed()
 //        val intent = Intent(this,
-//                DashboardActivity::class.java)
+//                MainDashboardActivity::class.java)
 //        startActivity(intent)
 //        finish()
 //    }

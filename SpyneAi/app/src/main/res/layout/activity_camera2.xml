@@ -96,6 +96,7 @@
                         android:gravity="center"
                         android:hint="@string/vin_number"
                         android:maxLines="1"
+                        android:inputType="text"
                         android:maxLength="20"
                         android:padding="@dimen/dp_5"
                         android:textColor="@color/white"

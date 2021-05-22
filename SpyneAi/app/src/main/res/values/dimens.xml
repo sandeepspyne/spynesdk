@@ -16,6 +16,7 @@
     <dimen name="sp_8">8sp</dimen>
 
     <dimen name="dots_height">30dp</dimen>
+    <dimen name="radius">30dp</dimen>
     <dimen name="dots_margin_bottom">20dp</dimen>
     <dimen name="img_width_height">120dp</dimen>
     <dimen name="slide_title">30dp</dimen>
@@ -34,6 +35,7 @@
     <dimen name="dp_140">140dp</dimen>
     <dimen name="dp_3">3dp</dimen>
     <dimen name="sp_20">20sp</dimen>
+    <dimen name="sp_22">22sp</dimen>
     <dimen name="dp_65">65dp</dimen>
     <dimen name="dp_55">55dp</dimen>
     <dimen name="sp_15">15sp</dimen>
@@ -43,6 +45,7 @@
     <dimen name="sp_5">5sp</dimen>
     <dimen name="sp_7">7sp</dimen>
     <dimen name="sp_25">25sp</dimen>
+    <dimen name="sp_12">12sp</dimen>
 
     <dimen name="dp_12">12dp</dimen>
 

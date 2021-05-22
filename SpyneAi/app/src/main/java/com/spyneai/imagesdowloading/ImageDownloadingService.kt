@@ -14,13 +14,13 @@ import android.util.Log
 import android.webkit.MimeTypeMap
 import com.spyneai.BaseApplication
 import com.spyneai.R
-import com.spyneai.activity.DashboardActivity
 import com.spyneai.extras.events.ProcessingImagesEvent
 import com.spyneai.needs.AppConstants
 import com.spyneai.service.ServiceState
 import com.spyneai.service.log
 import com.spyneai.service.setServiceState
 import com.spyneai.credits.CreditManager
+import com.spyneai.dashboard.ui.dashboard.MainDashboardActivity
 import org.greenrobot.eventbus.EventBus
 import java.io.File
 
@@ -139,7 +139,7 @@ class ImageDownloadingService : Service(),ImageDownloadManager.Listener {
         }
 
         val pendingIntent: PendingIntent =
-            Intent(this, DashboardActivity::class.java).let { notificationIntent ->
+            Intent(this, MainDashboardActivity::class.java).let { notificationIntent ->
                 PendingIntent.getActivity(this, 0, notificationIntent, 0)
             }
 

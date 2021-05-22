@@ -42,6 +42,9 @@
         android:theme="@style/Theme.SpyneAi"
         android:usesCleartextTraffic="true"
         tools:targetApi="m">
+        <activity
+            android:name=".dashboard.ui.dashboard.MainDashboardActivity"
+            android:screenOrientation="portrait" />
         <activity android:name=".loginsignup.activity.ForgotPasswordActivity"
             android:screenOrientation="portrait"
             android:launchMode="singleTask"></activity>

@@ -8,7 +8,7 @@ import android.view.ViewGroup
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.DialogFragment
 import com.spyneai.R
-import com.spyneai.activity.DashboardActivity
+import com.spyneai.dashboard.ui.dashboard.MainDashboardActivity
 import com.spyneai.databinding.DialogExitBinding
 import com.spyneai.videorecording.service.UploadVideoService
 
@@ -41,7 +41,7 @@ class DialogExitWarning : DialogFragment() {
                 requireActivity().stopService(serviceIntent)
 
                 //start dashboard activity
-                val intent = Intent(requireContext(), DashboardActivity::class.java)
+                val intent = Intent(requireContext(), MainDashboardActivity::class.java)
                 requireActivity().startActivity(intent)
                 requireActivity().finish()
                 dismiss()

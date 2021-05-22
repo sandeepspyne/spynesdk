@@ -19,6 +19,7 @@ import com.downloader.*
 import com.spyneai.R
 import com.spyneai.credits.fragments.DownloadCompletedFragment
 import com.spyneai.credits.fragments.FeedbackSubmittedFragment
+import com.spyneai.dashboard.ui.dashboard.MainDashboardActivity
 import com.spyneai.imagesdowloading.ImageDownloadingService
 import com.spyneai.imagesdowloading.HDImagesDownloadedEvent
 import com.spyneai.needs.AppConstants
@@ -72,7 +73,7 @@ class DownloadingActivity : AppCompatActivity() {
                 intent.putExtra(AppConstants.LIST_WATERMARK, listWatermark)
                 startActivity(intent)
             } else {
-                val intent = Intent(this, DashboardActivity::class.java)
+                val intent = Intent(this, MainDashboardActivity::class.java)
                 startActivity(intent)
             }
         }
@@ -260,7 +261,7 @@ class DownloadingActivity : AppCompatActivity() {
     fun addFeedbackFragment() {
         iv_home.visibility = View.VISIBLE
         iv_home.setOnClickListener {
-            var dashboardIntent = Intent(this, DashboardActivity::class.java)
+            var dashboardIntent = Intent(this, MainDashboardActivity::class.java)
             dashboardIntent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
             startActivity(dashboardIntent)
         }

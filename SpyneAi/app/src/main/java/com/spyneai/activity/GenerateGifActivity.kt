@@ -24,6 +24,7 @@ import com.spyneai.R
 import com.spyneai.adapter.CarBackgroundAdapter
 import com.spyneai.adapter.PhotosAdapter
 import com.spyneai.aipack.*
+import com.spyneai.dashboard.ui.dashboard.MainDashboardActivity
 import com.spyneai.interfaces.APiService
 import com.spyneai.interfaces.RetrofitClients
 import com.spyneai.model.carbackgroundgif.CarBackgrounGifResponse
@@ -358,7 +359,7 @@ class GenerateGifActivity : AppCompatActivity(), PickiTCallbacks {
                 AppConstants.FRAME_LIST, updateSkuResponseList
             )
 
-            val intent = Intent(this, DashboardActivity::class.java)
+            val intent = Intent(this, MainDashboardActivity::class.java)
             dialog.dismiss()
 
             startActivity(intent)
@@ -399,7 +400,7 @@ class GenerateGifActivity : AppCompatActivity(), PickiTCallbacks {
             ucropOptions.setToolbarTitle("Edit Logo")
             ucropOptions.setFreeStyleCropEnabled(true)
             ucropOptions.setShowCropFrame(true)
-            ucropOptions.setCropGridCornerColor(ContextCompat.getColor(this@GenerateGifActivity,R.color.primary))
+//            ucropOptions.setCropGridCornerColor(ContextCompat.getColor(this@GenerateGifActivity,R.color.primary))
 
 
             UCrop.of(sourceUri, destinationUri)

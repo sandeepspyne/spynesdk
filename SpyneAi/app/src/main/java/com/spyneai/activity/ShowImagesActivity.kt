@@ -29,6 +29,7 @@ import com.spyneai.adapter.ShowReplacedImagesFocusedAdapter
 import com.spyneai.adapter.ShowReplacedImagesInteriorAdapter
 import com.spyneai.aipack.FetchBulkResponse
 import com.spyneai.credits.model.ReviewHolder
+import com.spyneai.dashboard.ui.dashboard.MainDashboardActivity
 import com.spyneai.interfaces.APiService
 import com.spyneai.interfaces.RetrofitClientSpyneAi
 import com.spyneai.interfaces.RetrofitClients
@@ -188,7 +189,7 @@ class ShowImagesActivity : AppCompatActivity() {
                 Utilities.savePrefrence(this@ShowImagesActivity, AppConstants.PRODUCT_ID, "")
                 Utilities.savePrefrence(this@ShowImagesActivity, AppConstants.SKU_NAME, "")
                 Utilities.savePrefrence(this@ShowImagesActivity, AppConstants.SKU_ID, "")
-                val intent = Intent(this, DashboardActivity::class.java)
+                val intent = Intent(this, MainDashboardActivity::class.java)
                 startActivity(intent)
                 finish()
 

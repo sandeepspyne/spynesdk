@@ -6,7 +6,7 @@ import android.os.Bundle
 import android.os.CountDownTimer
 import androidx.databinding.DataBindingUtil
 import com.spyneai.R
-import com.spyneai.activity.DashboardActivity
+import com.spyneai.dashboard.ui.dashboard.MainDashboardActivity
 import com.spyneai.databinding.ActivityProcessVideoTimerBinding
 import com.spyneai.videorecording.model.ProcessVideoEvent
 import kotlinx.android.synthetic.main.activity_timer.*
@@ -29,7 +29,7 @@ class ProcessVideoTimerActivity : AppCompatActivity() {
         binding = DataBindingUtil.setContentView(this,R.layout.activity_process_video_timer)
 
         binding.tvBackToHome.setOnClickListener {
-            var dashboardIntent = Intent(this, DashboardActivity::class.java)
+            var dashboardIntent = Intent(this, MainDashboardActivity::class.java)
             dashboardIntent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
             startActivity(dashboardIntent)
         }

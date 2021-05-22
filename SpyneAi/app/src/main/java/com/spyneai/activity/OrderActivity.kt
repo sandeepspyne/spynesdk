@@ -18,6 +18,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.spyneai.R
 import com.spyneai.adapter.*
+import com.spyneai.dashboard.ui.dashboard.MainDashboardActivity
 import com.spyneai.interfaces.APiService
 import com.spyneai.interfaces.RetrofitClient
 import com.spyneai.model.carreplace.CarBackgroundsResponse
@@ -267,11 +268,11 @@ class OrderActivity : AppCompatActivity() {
         super.onBackPressed()
         var intents : Intent? = null
         if (intent.getStringExtra(AppConstants.FROM_ACTIVITY) != null) {
-            //intents = Intent(this@OrderActivity, DashboardActivity::class.java)
+            //intents = Intent(this@OrderActivity, MainDashboardActivity::class.java)
             finish()
         }
         else{
-            intents = Intent(this@OrderActivity, DashboardActivity::class.java)
+            intents = Intent(this@OrderActivity, MainDashboardActivity::class.java)
             startActivity(intents)
             finish()
         }

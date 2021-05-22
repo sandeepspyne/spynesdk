@@ -13,11 +13,11 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.spyneai.R
-import com.spyneai.activity.DashboardActivity
 import com.spyneai.adapter.CarBackgroundAdapter
 import com.spyneai.adapter.CarBackgroundDemoAdapter
 import com.spyneai.adapter.PhotosAdapter
 import com.spyneai.aipack.*
+import com.spyneai.dashboard.ui.dashboard.MainDashboardActivity
 import com.spyneai.model.carreplace.CarBackgroundsResponse
 import com.spyneai.model.sku.Photos
 import com.spyneai.model.skumap.UpdateSkuResponse
@@ -180,7 +180,7 @@ class GenerateGifDemoActivity : AppCompatActivity() {
                 this@GenerateGifDemoActivity,
                 AppConstants.FRAME_LIST, updateSkuResponseList
             )
-            val intent = Intent(this, DashboardActivity::class.java)
+            val intent = Intent(this, MainDashboardActivity::class.java)
             startActivity(intent)
             finish()
             dialog.dismiss()
@@ -215,7 +215,7 @@ class GenerateGifDemoActivity : AppCompatActivity() {
                 this@GenerateGifDemoActivity,
                 AppConstants.FRAME_LIST, updateSkuResponseList
             )
-            val intent = Intent(this, DashboardActivity::class.java)
+            val intent = Intent(this, MainDashboardActivity::class.java)
             startActivity(intent)
             finish()
             dialog.dismiss()

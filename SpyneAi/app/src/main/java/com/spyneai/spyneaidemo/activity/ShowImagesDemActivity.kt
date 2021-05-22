@@ -17,9 +17,9 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.spyneai.R
-import com.spyneai.activity.DashboardActivity
 import com.spyneai.adapter.ShowReplacedImagesAdapter
 import com.spyneai.aipack.FetchBulkResponse
+import com.spyneai.dashboard.ui.dashboard.MainDashboardActivity
 import com.spyneai.interfaces.APiService
 import com.spyneai.interfaces.RetrofitClients
 import com.spyneai.model.skumap.UpdateSkuResponse
@@ -82,7 +82,7 @@ class ShowImagesDemActivity : AppCompatActivity() {
             Utilities.savePrefrence(this@ShowImagesDemActivity, AppConstants.PRODUCT_ID, "")
             Utilities.savePrefrence(this@ShowImagesDemActivity, AppConstants.SKU_NAME, "")
             Utilities.savePrefrence(this@ShowImagesDemActivity, AppConstants.SKU_ID, "")
-            val intent = Intent(this, DashboardActivity::class.java)
+            val intent = Intent(this, MainDashboardActivity::class.java)
             startActivity(intent)
             finish()
 
@@ -342,7 +342,7 @@ class ShowImagesDemActivity : AppCompatActivity() {
                 this@ShowImagesDemActivity,
                 AppConstants.FRAME_LIST, updateSkuResponseList
             )
-            val intent = Intent(this, DashboardActivity::class.java)
+            val intent = Intent(this, MainDashboardActivity::class.java)
             startActivity(intent)
             finish()
             dialog.dismiss()

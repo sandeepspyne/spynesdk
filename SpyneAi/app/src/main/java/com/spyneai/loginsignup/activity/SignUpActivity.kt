@@ -6,8 +6,8 @@ import android.os.Bundle
 import android.view.View
 import android.widget.Toast
 import com.spyneai.R
-import com.spyneai.activity.DashboardActivity
 import com.spyneai.activity.SignInUsingOtpActivity
+import com.spyneai.dashboard.ui.dashboard.MainDashboardActivity
 import com.spyneai.interfaces.APiService
 import com.spyneai.interfaces.RetrofitClientSpyneAi
 import com.spyneai.loginsignup.models.SignupBody
@@ -101,7 +101,7 @@ class SignUpActivity : AppCompatActivity() {
                             this@SignUpActivity, AppConstants.tokenId,
                             response.body()!!.userId
                         )
-                        val intent = Intent(this@SignUpActivity, DashboardActivity::class.java)
+                        val intent = Intent(this@SignUpActivity, MainDashboardActivity::class.java)
                         startActivity(intent)
                         finish()
                         tvLogin.isClickable = true
