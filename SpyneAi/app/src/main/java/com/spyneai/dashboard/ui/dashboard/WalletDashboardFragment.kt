@@ -27,10 +27,12 @@ import retrofit2.Response
 
 class WalletDashboardFragment : Fragment() {
 
-    private lateinit var binding : WalletDashboardFragmentBinding
+    private var _binding : WalletDashboardFragmentBinding? = null
     private var availableCredits = 0
     private var retry = 0
     protected lateinit var rootView: View
+
+    private val binding get() = _binding!!
 
 
     override fun onCreateView(
@@ -38,11 +40,8 @@ class WalletDashboardFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
 
-        binding = WalletDashboardFragmentBinding.inflate(inflater, container, false)
-
+        _binding = WalletDashboardFragmentBinding.inflate(inflater, container, false)
         return binding.root
-
-
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -56,6 +55,12 @@ class WalletDashboardFragment : Fragment() {
 
         fetchUserCreditDetails()
     }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
+    }
+
 
     private fun fetchUserCreditDetails(){
 
