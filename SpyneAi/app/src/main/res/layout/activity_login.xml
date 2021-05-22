@@ -96,15 +96,25 @@
                     android:fontFamily="@font/light"
                     android:textSize="@dimen/sp_13"/>
 
-                <TextView
-                    android:id="@+id/tvForgotPassword"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="@string/forgot_password"
-                    android:fontFamily="@font/light"
-                    android:textColor="@color/primary"
-                    android:layout_alignParentRight="true"
-                    android:textSize="@dimen/sp_13"/>
+
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginRight="@dimen/dp_25"
+                >
+
+            <TextView
+                android:id="@+id/tvForgotPassword"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/forgot_password"
+                android:fontFamily="@font/light"
+                android:textColor="@color/primary"
+                android:layout_alignParentRight="true"
+                android:textSize="@dimen/sp_13"/>
+
             </RelativeLayout>
 
             <TextView

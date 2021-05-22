@@ -1,25 +1,18 @@
 package com.spyneai.loginsignup.activity
 
 import android.content.Intent
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.util.Log
+import android.text.InputType
 import android.view.View
 import android.widget.Toast
+import androidx.appcompat.app.AppCompatActivity
 import com.spyneai.R
-import com.spyneai.activity.OtpActivity
 import com.spyneai.activity.SignInUsingOtpActivity
-import com.spyneai.credits.CreditApiService
-import com.spyneai.credits.RetrofitClientPayment
-import com.spyneai.credits.model.CreateOrderBody
 import com.spyneai.dashboard.ui.dashboard.MainDashboardActivity
 import com.spyneai.interfaces.APiService
-import com.spyneai.interfaces.RetrofitClient
 import com.spyneai.interfaces.RetrofitClientSpyneAi
 import com.spyneai.loginsignup.models.LoginEmailPasswordBody
 import com.spyneai.loginsignup.models.LoginEmailPasswordResponse
-import com.spyneai.model.login.LoginRequest
-import com.spyneai.model.login.LoginResponse
 import com.spyneai.needs.AppConstants
 import com.spyneai.needs.Utilities
 import kotlinx.android.synthetic.main.activity_login.*
@@ -28,11 +21,13 @@ import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 
+
 class LoginActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_login)
 
+        et_loginPassword.setInputType(InputType.TYPE_CLASS_TEXT or InputType.TYPE_TEXT_VARIATION_PASSWORD)
         listeners()
     }
 

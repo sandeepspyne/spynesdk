@@ -46,6 +46,9 @@ class OngoingDashboardAdapter (
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         holder.tvSku.text = ongoingProjectList[position].catName
+        holder.tvDate.text = ongoingProjectList[position].skuName
+
+
 
 
         Glide.with(context)
