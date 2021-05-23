@@ -42,6 +42,7 @@ class LogoutDashBoardFragment : Fragment() {
         _binding = null
     }
 
+
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
         binding.llLogout.setOnClickListener {
@@ -50,6 +51,7 @@ class LogoutDashBoardFragment : Fragment() {
             Utilities.savePrefrence(requireContext(), AppConstants.SKU_ID, "")
             val intent = Intent(requireContext(), LoginActivity::class.java)
             startActivity(intent)
+
         }
     }
 
