@@ -12,6 +12,10 @@
         android:icon="@drawable/ic_wallet"></item>
 
     <item
+        android:id="@+id/placeholder"
+        android:title="" />
+
+    <item
         android:id="@+id/completedOrdersFragment"
         android:title="Orders"
         android:icon="@drawable/ic_orders"></item>
