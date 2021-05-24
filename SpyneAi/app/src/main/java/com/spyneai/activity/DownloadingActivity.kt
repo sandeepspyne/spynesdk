@@ -126,41 +126,49 @@ class DownloadingActivity : AppCompatActivity() {
             llButton.visibility = View.VISIBLE
             tvIncreaseSale.visibility = View.INVISIBLE
             tvButtonText.setText("Go to Home")
-            if (Utilities.getPreference(this, AppConstants.CREDIT_AVAILABLE)!!
-                    .toInt() >= Utilities.getPreference(
-                    this,
-                    AppConstants.PRICE
-                )!!.toInt()
-            ) {
-                avaliableCredit =
-                    Utilities.getPreference(this, AppConstants.CREDIT_AVAILABLE)!!.toInt()
-                price = Utilities.getPreference(this, AppConstants.PRICE)!!.toInt()
-                remaningCredit = avaliableCredit - price
 
-                //downloadHighQuality()
+            if (intent.getBooleanExtra(AppConstants.IS_DOWNLOADED_BEFORE,false)){
+                startDownloading()
+            }else{
+                if (Utilities.getPreference(this, AppConstants.CREDIT_AVAILABLE)!!
+                        .toInt() >= Utilities.getPreference(
+                        this,
+                        AppConstants.PRICE
+                    )!!.toInt()
+                ) {
+                    avaliableCredit =
+                        Utilities.getPreference(this, AppConstants.CREDIT_AVAILABLE)!!.toInt()
+                    price = Utilities.getPreference(this, AppConstants.PRICE)!!.toInt()
+                    remaningCredit = avaliableCredit - price
 
-                //start service
-                if (listHdQuality[0] == null){
-                    Toast.makeText(this, "HD images are null.", Toast.LENGTH_SHORT).show()
-                    tvDownloadFailed.visibility = View.VISIBLE
-                    tvDownloadCompleted.visibility = View.GONE
-                    tvDownloading.visibility = View.GONE
+                    if (listHdQuality[0] == null){
+                        Toast.makeText(this, "HD images are null.", Toast.LENGTH_SHORT).show()
+                        tvDownloadFailed.visibility = View.VISIBLE
+                        tvDownloadCompleted.visibility = View.GONE
+                        tvDownloading.visibility = View.GONE
+                    }else{
+                        //start service
+                        startDownloading()
+                    }
+
                 }else{
-                    var imageDownloadingServiceIntent = Intent(this,ImageDownloadingService::class.java)
-                    imageDownloadingServiceIntent.action = "START"
-                    imageDownloadingServiceIntent.putExtra(AppConstants.LIST_HD_QUALITY,listHdQuality)
-                    imageDownloadingServiceIntent.putExtra(AppConstants.SKU_NAME,intent.getStringExtra(AppConstants.SKU_NAME))
-                    imageDownloadingServiceIntent.putExtra(AppConstants.SKU_ID,intent.getStringExtra(AppConstants.SKU_ID))
-                    imageDownloadingServiceIntent.putExtra(AppConstants.CREDIT_REMAINING,remaningCredit)
-                    imageDownloadingServiceIntent.putExtra(AppConstants.PRICE,price)
-                    imageDownloadingServiceIntent.putExtra(AppConstants.IS_DOWNLOADED_BEFORE,intent.getBooleanExtra(AppConstants.IS_DOWNLOADED_BEFORE,false))
-                    ContextCompat.startForegroundService(this, imageDownloadingServiceIntent)
+                    Toast.makeText(this,"Not enough credits available",Toast.LENGTH_LONG).show()
                 }
-
-            } else {
-                //Toast.makeText(this, "You are out of credits", Toast.LENGTH_SHORT)
             }
+
         }
+    }
+
+    private fun startDownloading() {
+        var imageDownloadingServiceIntent = Intent(this,ImageDownloadingService::class.java)
+        imageDownloadingServiceIntent.action = "START"
+        imageDownloadingServiceIntent.putExtra(AppConstants.LIST_HD_QUALITY,listHdQuality)
+        imageDownloadingServiceIntent.putExtra(AppConstants.SKU_NAME,intent.getStringExtra(AppConstants.SKU_NAME))
+        imageDownloadingServiceIntent.putExtra(AppConstants.SKU_ID,intent.getStringExtra(AppConstants.SKU_ID))
+        imageDownloadingServiceIntent.putExtra(AppConstants.CREDIT_REMAINING,remaningCredit)
+        imageDownloadingServiceIntent.putExtra(AppConstants.PRICE,price)
+        imageDownloadingServiceIntent.putExtra(AppConstants.IS_DOWNLOADED_BEFORE,intent.getBooleanExtra(AppConstants.IS_DOWNLOADED_BEFORE,false))
+        ContextCompat.startForegroundService(this, imageDownloadingServiceIntent)
     }
 
     private fun downloadWaterMark() {
@@ -190,7 +198,7 @@ class DownloadingActivity : AppCompatActivity() {
 
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R){
-            path_save_photos = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS).toString() + File.separator + R.string.app_name;
+            path_save_photos = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS).toString() + File.separator + this.getResources().getString(R.string.app_name)
         }else{
             path_save_photos = Environment.getExternalStorageDirectory().getAbsolutePath() +
                     File.separator +

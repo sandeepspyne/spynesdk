@@ -10,6 +10,7 @@ import android.view.View
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.downloader.*
+import com.spyneai.BaseApplication
 import com.spyneai.R
 import com.spyneai.interfaces.APiService
 import com.spyneai.interfaces.RetrofitClients
@@ -27,7 +28,7 @@ import java.io.File
 import java.text.SimpleDateFormat
 import java.util.*
 
-class ImageDownloadManager(var task : DownloadTask, var listener : Listener) : AppCompatActivity() {
+class ImageDownloadManager(var task : DownloadTask, var listener : Listener) {
 
     var path_save_photos: String = ""
     lateinit var file: File
@@ -58,7 +59,7 @@ class ImageDownloadManager(var task : DownloadTask, var listener : Listener) : A
         }else{
             path_save_photos = Environment.getExternalStorageDirectory().getAbsolutePath() +
                     File.separator +
-                    this.getResources().getString(R.string.app_name)
+                    BaseApplication.getContext().getResources().getString(R.string.app_name)
         }
 
         file = File(path_save_photos)
