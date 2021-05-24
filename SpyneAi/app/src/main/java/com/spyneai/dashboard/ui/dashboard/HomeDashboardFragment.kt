@@ -174,7 +174,7 @@ class HomeDashboardFragment :
                             override fun onBtnClick(position: Int) {
                                 Utilities.savePrefrence(requireContext(),
                                     AppConstants.SKU_ID,
-                                    it.value[position].sku_id)
+                                    completedProjectList[position].sku_id)
                                 val intent = Intent(requireContext(),
                                     ShowImagesActivity::class.java)
                                 startActivity(intent)
