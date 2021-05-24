@@ -6,6 +6,7 @@ import android.content.Intent
 import android.content.pm.PackageManager
 import android.media.MediaScannerConnection
 import android.net.Uri
+import android.os.Build
 import android.os.Bundle
 import android.os.Environment
 import android.util.Log
@@ -20,8 +21,8 @@ import com.spyneai.R
 import com.spyneai.credits.fragments.DownloadCompletedFragment
 import com.spyneai.credits.fragments.FeedbackSubmittedFragment
 import com.spyneai.dashboard.ui.dashboard.MainDashboardActivity
-import com.spyneai.imagesdowloading.ImageDownloadingService
 import com.spyneai.imagesdowloading.HDImagesDownloadedEvent
+import com.spyneai.imagesdowloading.ImageDownloadingService
 import com.spyneai.needs.AppConstants
 import com.spyneai.needs.Utilities
 import kotlinx.android.synthetic.main.activity_downloading.*
@@ -43,6 +44,8 @@ class DownloadingActivity : AppCompatActivity() {
     var avaliableCredit: Int = 0
     var remaningCredit: Int = 0
     var price: Int = 0
+    var path_save_photos: String = ""
+    lateinit var file: File
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -137,16 +140,22 @@ class DownloadingActivity : AppCompatActivity() {
                 //downloadHighQuality()
 
                 //start service
-
-                var imageDownloadingServiceIntent = Intent(this,ImageDownloadingService::class.java)
-                imageDownloadingServiceIntent.action = "START"
-                imageDownloadingServiceIntent.putExtra(AppConstants.LIST_HD_QUALITY,listHdQuality)
-                imageDownloadingServiceIntent.putExtra(AppConstants.SKU_NAME,intent.getStringExtra(AppConstants.SKU_NAME))
-                imageDownloadingServiceIntent.putExtra(AppConstants.SKU_ID,intent.getStringExtra(AppConstants.SKU_ID))
-                imageDownloadingServiceIntent.putExtra(AppConstants.CREDIT_REMAINING,remaningCredit)
-                imageDownloadingServiceIntent.putExtra(AppConstants.PRICE,price)
-                imageDownloadingServiceIntent.putExtra(AppConstants.IS_DOWNLOADED_BEFORE,intent.getBooleanExtra(AppConstants.IS_DOWNLOADED_BEFORE,false))
-                ContextCompat.startForegroundService(this, imageDownloadingServiceIntent)
+                if (listHdQuality[0] == null){
+                    Toast.makeText(this, "HD images are null.", Toast.LENGTH_SHORT).show()
+                    tvDownloadFailed.visibility = View.VISIBLE
+                    tvDownloadCompleted.visibility = View.GONE
+                    tvDownloading.visibility = View.GONE
+                }else{
+                    var imageDownloadingServiceIntent = Intent(this,ImageDownloadingService::class.java)
+                    imageDownloadingServiceIntent.action = "START"
+                    imageDownloadingServiceIntent.putExtra(AppConstants.LIST_HD_QUALITY,listHdQuality)
+                    imageDownloadingServiceIntent.putExtra(AppConstants.SKU_NAME,intent.getStringExtra(AppConstants.SKU_NAME))
+                    imageDownloadingServiceIntent.putExtra(AppConstants.SKU_ID,intent.getStringExtra(AppConstants.SKU_ID))
+                    imageDownloadingServiceIntent.putExtra(AppConstants.CREDIT_REMAINING,remaningCredit)
+                    imageDownloadingServiceIntent.putExtra(AppConstants.PRICE,price)
+                    imageDownloadingServiceIntent.putExtra(AppConstants.IS_DOWNLOADED_BEFORE,intent.getBooleanExtra(AppConstants.IS_DOWNLOADED_BEFORE,false))
+                    ContextCompat.startForegroundService(this, imageDownloadingServiceIntent)
+                }
 
             } else {
                 //Toast.makeText(this, "You are out of credits", Toast.LENGTH_SHORT)
@@ -157,8 +166,14 @@ class DownloadingActivity : AppCompatActivity() {
     private fun downloadWaterMark() {
         if (listWatermark.size > 0 && listWatermark != null) {
             for (i in 0 until listWatermark.size) {
-                if (listWatermark[i] != null)
+                if (listWatermark[i] == null){
+                    Toast.makeText(this, "Watermark images are null.", Toast.LENGTH_SHORT).show()
+                    tvDownloadFailed.visibility = View.VISIBLE
+                    tvDownloadCompleted.visibility = View.GONE
+                    tvDownloading.visibility = View.GONE
+                } else{
                     downloadWithWaterMark(listWatermark[i])
+                }
             }
         }
     }
@@ -172,11 +187,21 @@ class DownloadingActivity : AppCompatActivity() {
             FILENAME_FORMAT, Locale.US
         ).format(System.currentTimeMillis()) + ".png"
 
-        var file = File(Environment.getExternalStorageDirectory().toString() + "/Spyne")
+
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R){
+            path_save_photos = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS).toString() + File.separator + R.string.app_name;
+        }else{
+            path_save_photos = Environment.getExternalStorageDirectory().getAbsolutePath() +
+                    File.separator +
+                    this.getResources().getString(R.string.app_name)
+        }
+
+        file = File(path_save_photos)
 
         PRDownloader.download(
             imageFile,
-            Environment.getExternalStorageDirectory().toString() + "/Spyne",
+            path_save_photos,
             imageName
         )
             .build()
@@ -208,11 +233,7 @@ class DownloadingActivity : AppCompatActivity() {
     }
 
     override fun onBackPressed() {
-        if (Utilities.getPreference(this, AppConstants.DOWNLOAD_TYPE).equals("watermark")) {
-            finish()
-        }else{
-            super.onBackPressed()
-        }
+
     }
 
     private fun scanFile(path: String) {

@@ -2,11 +2,15 @@ package com.spyneai.imagesdowloading
 
 import android.content.Context
 import android.os.Build
+import android.os.Bundle
 import android.os.Environment
+import android.os.PersistableBundle
 import android.util.Log
 import android.view.View
 import android.widget.Toast
+import androidx.appcompat.app.AppCompatActivity
 import com.downloader.*
+import com.spyneai.R
 import com.spyneai.interfaces.APiService
 import com.spyneai.interfaces.RetrofitClients
 import com.spyneai.model.credit.UpdateCreditResponse
@@ -23,18 +27,24 @@ import java.io.File
 import java.text.SimpleDateFormat
 import java.util.*
 
-class ImageDownloadManager(var task : DownloadTask, var listener : Listener) {
+class ImageDownloadManager(var task : DownloadTask, var listener : Listener) : AppCompatActivity() {
+
+    var path_save_photos: String = ""
+    lateinit var file: File
 
     fun start() {
         if (task.listHdQuality.size > 0 && task.listHdQuality != null) {
 
             for (i in 0 until task.listHdQuality.size) {
-              if (task.listHdQuality[i] != null)
-                    downloadWithHighQuality(task.listHdQuality[i])
+              if (task.listHdQuality[i] == null){
+
+              } else{
+                  downloadWithHighQuality(task.listHdQuality[i])
+              }
+
             }
         }
     }
-
     //Download
     private fun downloadWithHighQuality(imageFile: String?) {
         val FILENAME_FORMAT = "yyyy-MM-dd-HH-mm-ss-SSS"
@@ -43,11 +53,19 @@ class ImageDownloadManager(var task : DownloadTask, var listener : Listener) {
             FILENAME_FORMAT, Locale.US
         ).format(System.currentTimeMillis()) + ".png"
 
-        var file = File(Environment.getExternalStorageDirectory().toString() + "/Spyne")
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R){
+            path_save_photos = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS).toString() + File.separator + R.string.app_name;
+        }else{
+            path_save_photos = Environment.getExternalStorageDirectory().getAbsolutePath() +
+                    File.separator +
+                    this.getResources().getString(R.string.app_name)
+        }
+
+        file = File(path_save_photos)
 
         PRDownloader.download(
             imageFile,
-            Environment.getExternalStorageDirectory().toString() + "/Spyne",
+            path_save_photos,
             imageName
         )
             .build()

@@ -221,12 +221,9 @@ class ShowImagesActivity : AppCompatActivity() {
 
                 var skuName = Utilities.getPreference(this, AppConstants.SKU_ID)
                     .toString()
-
                 var s = ""
-
                 intent.putExtra(AppConstants.SKU_ID,skuId)
                 intent.putExtra(AppConstants.SKU_NAME,skuName)
-
                 startActivity(intent)
             }
         }

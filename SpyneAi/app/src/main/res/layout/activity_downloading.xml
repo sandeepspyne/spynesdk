@@ -32,6 +32,7 @@
                     android:src="@drawable/back"
                     android:paddingStart="@dimen/dp_10"
                     android:paddingEnd="@dimen/dp_10"
+                    android:visibility="gone"
                     app:tint="@color/black" />
 
 
@@ -109,6 +110,17 @@
                            android:textSize="@dimen/sp_18"
                            android:textStyle="bold"
                            android:textColor="@color/primary"
+                           ></TextView>
+
+                       <TextView
+                           android:id="@+id/tvDownloadFailed"
+                           android:layout_width="wrap_content"
+                           android:layout_height="wrap_content"
+                           android:text="@string/download_failed"
+                           android:visibility="gone"
+                           android:textSize="@dimen/sp_18"
+                           android:textStyle="bold"
+                           android:textColor="@color/red"
                            ></TextView>
 
                    </RelativeLayout>

@@ -25,7 +25,7 @@ import org.greenrobot.eventbus.EventBus
 import java.io.File
 
 
-class ImageDownloadingService : Service(),ImageDownloadManager.Listener {
+class ImageDownloadingService : Service(), ImageDownloadManager.Listener {
 
     private var wakeLock: PowerManager.WakeLock? = null
 
