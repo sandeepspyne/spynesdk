@@ -145,24 +145,29 @@
 
         <ImageView
             android:id="@+id/ivNext"
-            android:layout_width="20dp"
-            android:layout_height="20dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:src="@drawable/ic_slider_next"
             app:layout_constraintEnd_toEndOf="@+id/flSlider"
             app:layout_constraintTop_toTopOf="@+id/flSlider"
             app:layout_constraintBottom_toBottomOf="@+id/flSlider"
-            android:layout_margin="@dimen/dp_10"
-            ></ImageView>
+            android:paddingLeft="@dimen/dp_20"
+            android:paddingBottom="@dimen/dp_20"
+            android:paddingTop="@dimen/dp_20"
+            android:paddingRight="@dimen/dp_10" />
 
         <ImageView
             android:id="@+id/ivPrevious"
-            android:layout_width="20dp"
-            android:layout_height="20dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:src="@drawable/ic_slider_previous"
             app:layout_constraintStart_toStartOf="@+id/flSlider"
             app:layout_constraintTop_toTopOf="@+id/flSlider"
             app:layout_constraintBottom_toBottomOf="@+id/flSlider"
-            android:layout_margin="@dimen/dp_10"
+            android:paddingLeft="@dimen/dp_10"
+            android:paddingBottom="@dimen/dp_20"
+            android:paddingTop="@dimen/dp_20"
+            android:paddingRight="@dimen/dp_20"
             ></ImageView>
 
 

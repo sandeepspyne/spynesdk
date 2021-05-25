@@ -39,8 +39,9 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:contentDescription="@string/app_name"
-            android:background="@color/primary"
-            android:src="@android:drawable/ic_menu_camera"
+            app:backgroundTint="@color/primary"
+            android:src="@drawable/ic_shoot"
+            app:tint="@android:color/white"
             app:layout_anchor="@id/bottomAppBar" />
 
         </androidx.coordinatorlayout.widget.CoordinatorLayout>
