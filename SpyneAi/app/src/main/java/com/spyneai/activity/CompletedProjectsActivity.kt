@@ -44,6 +44,9 @@ class CompletedProjectsActivity : AppCompatActivity() {
 
 
     private fun fatchCompletedProjects(){
+
+        shimmerCompletedProjects.startShimmer()
+
         completedProjectList = ArrayList<CompletedProjectResponse>()
 
         completedProjectAdapter = CompletedProjectAdapter(this@CompletedProjectsActivity,
@@ -64,9 +67,6 @@ class CompletedProjectsActivity : AppCompatActivity() {
         rv_completedActivity.setLayoutManager(layoutManager)
         rv_completedActivity.setAdapter(completedProjectAdapter)
 
-
-        Utilities.showProgressDialog(this)
-
         val request = RetrofitClients.buildService(APiService::class.java)
 
         Utilities.savePrefrence(this,AppConstants.tokenId,
@@ -81,8 +81,10 @@ class CompletedProjectsActivity : AppCompatActivity() {
             override fun onResponse(call: Call<List<CompletedProjectResponse>>,
                                     response: Response<List<CompletedProjectResponse>>
             ) {
-                Utilities.hideProgressDialog()
                 if (response.isSuccessful){
+                    shimmerCompletedProjects.stopShimmer()
+                    shimmerCompletedProjects.visibility = View.GONE
+                    rv_completedActivity.visibility = View.VISIBLE
                     if (response.body()!!.size > 0)
                     {
                         completedProjectList.addAll(response.body()!!)
@@ -97,7 +99,9 @@ class CompletedProjectsActivity : AppCompatActivity() {
                 }
             }
             override fun onFailure(call: Call<List<CompletedProjectResponse>>, t: Throwable) {
-                Utilities.hideProgressDialog()
+                shimmerCompletedProjects.stopShimmer()
+                shimmerCompletedProjects.visibility = View.GONE
+                rv_completedActivity.visibility = View.VISIBLE
                 Toast.makeText(this@CompletedProjectsActivity , "Server not responding!!!", Toast.LENGTH_SHORT).show()
             }
         })

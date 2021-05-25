@@ -4,6 +4,7 @@ import android.app.Dialog
 import android.content.Intent
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
+import android.net.Uri
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
@@ -82,6 +83,8 @@ class HomeDashboardFragment :
     lateinit var displayThumbnail: String
     lateinit var description: String
     lateinit var colorCode: String
+
+    private lateinit var tabLayout: TabLayout
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
@@ -288,18 +291,23 @@ class HomeDashboardFragment :
 
         ivBanner.setSliderThumb(ContextCompat.getDrawable(requireContext(),R.drawable.ic_sliderline))
 
+        tabLayout = tbDashboard
+        tabLayout.addTab(tabLayout.newTab());
+        tabLayout.addTab(tabLayout.newTab());
+
+
 
 
         ivBanner.setBeforeImage(ContextCompat.getDrawable(requireContext(),R.drawable.car_before)).setAfterImage(ContextCompat.getDrawable(requireContext(),R.drawable.car_after))
         ivNext.setOnClickListener {
-//            val tab: TabLayout.Tab = tbDashboard.getTabAt(1)!!
-//            tab.select()
+            val tab: TabLayout.Tab = tbDashboard.getTabAt(1)!!
+            tab.select()
             ivBanner.setBeforeImage(ContextCompat.getDrawable(requireContext(),R.drawable.footwear_before)).setAfterImage(ContextCompat.getDrawable(requireContext(),R.drawable.footwear_after))
         }
 
         ivPrevious.setOnClickListener {
-//            val tab: TabLayout.Tab = tbDashboard.getTabAt(0)!!
-//            tab.select()
+            val tab: TabLayout.Tab = tbDashboard.getTabAt(0)!!
+            tab.select()
             ivBanner.setBeforeImage(ContextCompat.getDrawable(requireContext(),R.drawable.car_before)).setAfterImage(ContextCompat.getDrawable(requireContext(),R.drawable.car_after))
 
         }
@@ -364,7 +372,21 @@ class HomeDashboardFragment :
     private fun showTutorialVideos(){
 
         tutorialVideosAdapter = TutorialVideosAdapter(requireContext(),
-            tutorialVideosList)
+            tutorialVideosList,
+            object : TutorialVideosAdapter.BtnClickListener {
+                override fun onBtnClick(position: Int) {
+                    if (position == 0){
+                        val intent = Intent(Intent.ACTION_VIEW)
+                        intent.data = Uri.parse("https://www.youtube.com/watch?v=6XKDsFaGgLY")
+                        ContextCompat.startActivity(requireContext(), intent, null)
+                    }else{
+                        val intent = Intent(Intent.ACTION_VIEW)
+                        intent.data = Uri.parse("https://www.youtube.com/watch?v=twW9N1B-7_o")
+                        ContextCompat.startActivity(requireContext(), intent, null)
+                    }
+
+                }}
+        )
 
         val layoutManager: RecyclerView.LayoutManager = LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
         rvTutorialVideos.setLayoutManager(layoutManager)

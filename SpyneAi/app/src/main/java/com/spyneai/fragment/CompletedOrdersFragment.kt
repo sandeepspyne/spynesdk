@@ -10,6 +10,7 @@ import android.view.ViewGroup
 import android.widget.Toast
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.facebook.shimmer.ShimmerFrameLayout
 import com.spyneai.R
 import com.spyneai.activity.ShowImagesActivity
 import com.spyneai.adapter.CompletedProjectAdapter
@@ -20,6 +21,7 @@ import com.spyneai.model.projects.CompletedProjectResponse
 import com.spyneai.needs.AppConstants
 import com.spyneai.needs.Utilities
 import kotlinx.android.synthetic.main.activity_completed_projects.*
+import kotlinx.android.synthetic.main.fragment_completed_orders.*
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
 import retrofit2.Call
@@ -33,6 +35,7 @@ class CompletedOrdersFragment : Fragment() {
     lateinit var completedProjectAdapter: CompletedProjectAdapter
     protected lateinit var rootView: View
     lateinit var recyclerView: RecyclerView
+    lateinit var shimmerCompletedShoot: ShimmerFrameLayout
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -40,12 +43,13 @@ class CompletedOrdersFragment : Fragment() {
     ): View? {
         // Inflate the layout for this fragment
         rootView = inflater.inflate(R.layout.fragment_completed_orders, container, false)
-
         return rootView
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
+        shimmerCompletedShoot = rootView.findViewById(R.id.shimmerCompletedShoot)
+        shimmerCompletedShoot.startShimmer()
         fatchCompletedProjects()
     }
 
@@ -77,9 +81,6 @@ class CompletedOrdersFragment : Fragment() {
         recyclerView.setLayoutManager(layoutManager)
         recyclerView.setAdapter(completedProjectAdapter)
 
-
-        Utilities.showProgressDialog(requireContext())
-
         val request = RetrofitClients.buildService(APiService::class.java)
         Utilities.savePrefrence(
             requireContext(), AppConstants.tokenId,
@@ -102,6 +103,9 @@ class CompletedOrdersFragment : Fragment() {
                 Utilities.hideProgressDialog()
                 if (response.isSuccessful) {
                     if (response.body()!!.size > 0) {
+                        shimmerCompletedShoot.stopShimmer()
+                        shimmerCompletedShoot.visibility = View.GONE
+                        rv_completedFragment.visibility = View.VISIBLE
                         for (i in 0..response.body()!!.size - 1) {
                             if (response.body()!![i].current_frame == response.body()!![i].total_frames){
                                 completedProjectList.addAll(response.body()!!)
@@ -120,7 +124,9 @@ class CompletedOrdersFragment : Fragment() {
             }
 
             override fun onFailure(call: Call<List<CompletedProjectResponse>>, t: Throwable) {
-                Utilities.hideProgressDialog()
+                shimmerCompletedShoot.stopShimmer()
+                shimmerCompletedShoot.visibility = View.GONE
+                rv_completedFragment.visibility = View.VISIBLE
                 Toast.makeText(requireContext(), "Server not responding!!!", Toast.LENGTH_SHORT)
                     .show()
             }

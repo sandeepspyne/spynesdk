@@ -16,7 +16,16 @@ import com.spyneai.R
 class TutorialVideosAdapter(
     val context: Context,
     val tutorialVideosList: IntArray,
+    val btnlistener: BtnClickListener
 ) : RecyclerView.Adapter<TutorialVideosAdapter.ViewHolder>() {
+
+    companion object {
+        var mClickListener: BtnClickListener? = null
+    }
+
+    open interface BtnClickListener {
+        fun onBtnClick(position: Int)
+    }
 
     class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
         val ivTutorialImage: ImageView = view.findViewById(R.id.ivTutorialImage)
@@ -34,10 +43,10 @@ class TutorialVideosAdapter(
             .load(tutorialVideosList[position])
             .into(holder.ivTutorialImage)
 
+       mClickListener = btnlistener
         holder.ivTutorialImage.setOnClickListener {
-            val intent = Intent(Intent.ACTION_VIEW)
-            intent.data = Uri.parse("https://www.youtube.com/channel/UCXFGiawbLL2pBWI84VY5sJw")
-            startActivity(context, intent, null)
+            if (TutorialVideosAdapter.mClickListener != null)
+                TutorialVideosAdapter.mClickListener?.onBtnClick(position)
         }
 
     }

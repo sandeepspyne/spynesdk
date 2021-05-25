@@ -12,15 +12,14 @@
     app:layout_constraintBottom_toBottomOf="parent">
 
     <androidx.cardview.widget.CardView
-        android:id="@+id/cvTutorialImage"
         android:layout_width="116dp"
         android:layout_height="120dp"
         app:cardCornerRadius="@dimen/dp_10"
         android:layout_centerVertical="true"
-        app:layout_constraintStart_toStartOf="@+id/clTutorialImage"
-        app:layout_constraintTop_toTopOf="@+id/clTutorialImage"
-        app:layout_constraintBottom_toBottomOf="@+id/clTutorialImage"
-        app:layout_constraintEnd_toEndOf="@+id/clTutorialImage">
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent">
 
         <ImageView
             android:id="@+id/ivTutorialImage"
@@ -28,8 +27,8 @@
             android:layout_height="match_parent"
             android:src="@mipmap/defaults"
             android:layout_centerVertical="true"
-            android:scaleType="fitXY"/>
-
-    </androidx.cardview.widget.CardView>
+            android:scaleType="fitXY"
+            android:background="@color/shimmer_background"/>
+            </androidx.cardview.widget.CardView>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
