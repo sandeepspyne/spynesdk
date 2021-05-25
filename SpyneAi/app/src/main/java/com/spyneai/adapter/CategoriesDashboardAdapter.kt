@@ -8,15 +8,19 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.FrameLayout
 import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
+import com.facebook.shimmer.Shimmer
+import com.facebook.shimmer.ShimmerFrameLayout
 import com.spyneai.R
 import com.spyneai.model.categories.Data
 import com.spyneai.needs.AppConstants
 import com.spyneai.needs.Utilities
+import kotlinx.android.synthetic.main.row_categories_dashboard.view.*
 
 
 public class CategoriesDashboardAdapter(
@@ -38,6 +42,7 @@ public class CategoriesDashboardAdapter(
      * (custom ViewHolder).
      */
     class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
+        val flCategories: FrameLayout = view.findViewById(R.id.flCategories)
         val llCategories: LinearLayout = view.findViewById(R.id.llCategories)
         val tvCategoryName: TextView = view.findViewById(R.id.tvCategoryName)
         val imgCategory: ImageView = view.findViewById(R.id.imgCategory)
@@ -46,6 +51,7 @@ public class CategoriesDashboardAdapter(
     // Create new views (invoked by the layout manager)
     override fun onCreateViewHolder(viewGroup: ViewGroup, viewType: Int): ViewHolder {
         // Create a new view, which defines the UI of the list item
+
         val view = LayoutInflater.from(viewGroup.context)
                 .inflate(R.layout.row_categories_dashboard, viewGroup, false)
 
@@ -56,6 +62,7 @@ public class CategoriesDashboardAdapter(
         }
 */
         return ViewHolder(view)
+
     }
 
     // Replace the contents of a view (invoked by the layout manager)
@@ -65,7 +72,7 @@ public class CategoriesDashboardAdapter(
         // contents of the view with that element
         /*  if (categoriesResponseList[position].displayName.equals("Footwear")
                   || categoriesResponseList[position].displayName.equals("Automobiles") ) {*/
-        viewHolder.llCategories.visibility = View.VISIBLE
+
         viewHolder.tvCategoryName.text = categoriesResponseList[position].displayName
 
         Log.e("Color ", categoriesResponseList[position].colorCode)
@@ -75,12 +82,16 @@ public class CategoriesDashboardAdapter(
                         categoriesResponseList[position].displayThumbnail.toString()
         ).into(viewHolder.imgCategory)
 
+
+
+
+
         viewHolder.imgCategory.setBackgroundColor(Color.parseColor(categoriesResponseList[position].colorCode))
 
         if (position > 2)
-            viewHolder.llCategories.alpha = 0.5F
+            viewHolder.flCategories.alpha = 0.5F
         mClickListener = btnlistener
-        viewHolder.llCategories.setOnClickListener(View.OnClickListener {
+        viewHolder.flCategories.setOnClickListener(View.OnClickListener {
             Log.e("ok", "Ok way" + position)
             if (mClickListener != null)
                 Utilities.savePrefrence(context, AppConstants.CATEGORY_NAME, categoriesResponseList[position].displayName)

@@ -234,6 +234,7 @@
 
         </RelativeLayout>
 
+
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/rvOngoingShoots"
             android:layout_width="match_parent"
@@ -284,30 +285,59 @@
 
         </RelativeLayout>
 
+        <FrameLayout
+            android:id="@+id/flCompletedShoots"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/rlCompletedShoots">
+
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/rvCompletedShoots"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginStart="@dimen/dp_10"
-            android:layout_marginEnd="@dimen/dp_10"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/rlCompletedShoots" />
+            android:visibility="gone"
+            />
+
+        <com.facebook.shimmer.ShimmerFrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/shimmerCompleted">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <include layout="@layout/dashboard_completed_shimmer"></include>
+
+                <include layout="@layout/dashboard_completed_shimmer"></include>
+
+                <include layout="@layout/dashboard_completed_shimmer"></include>
+
+                <include layout="@layout/dashboard_completed_shimmer"></include>
+                <include layout="@layout/dashboard_completed_shimmer"></include>
+
+            </LinearLayout>
+
+        </com.facebook.shimmer.ShimmerFrameLayout>
+
 
         <androidx.constraintlayout.widget.Group
             android:id="@+id/groupCompletedShoots"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            app:constraint_referenced_ids="rvCompletedShoots, rlCompletedShoots"></androidx.constraintlayout.widget.Group>
+            android:layout_height="0dp"
+            app:constraint_referenced_ids="rvCompletedShoots, rlCompletedShoots, shimmerCompleted"></androidx.constraintlayout.widget.Group>
 
-
+        </FrameLayout>
 
         <View
             android:id="@+id/viewTutorial"
             android:layout_width="match_parent"
             android:layout_height="@dimen/dp_2"
             android:background="@color/line_separator"
-            app:layout_constraintTop_toBottomOf="@+id/rvCompletedShoots"
+            app:layout_constraintTop_toBottomOf="@+id/flCompletedShoots"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             android:layout_margin="@dimen/dp_10"
@@ -327,23 +357,61 @@
             app:layout_constraintTop_toBottomOf="@+id/viewTutorial"
             app:layout_constraintEnd_toEndOf="parent"></TextView>
 
+        <FrameLayout
+            android:id="@+id/flCategories"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/tvExploreCategories">
+
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/rvDashboardCategories"
+            android:visibility="gone"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/dp_10"
+            android:layout_marginEnd="@dimen/dp_10" />
+
+        <com.facebook.shimmer.ShimmerFrameLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/dp_10"
             android:layout_marginEnd="@dimen/dp_10"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/tvExploreCategories" />
+            android:id="@+id/shimmerCategories">
 
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <include layout="@layout/dashboard_categories_shimmer"></include>
+
+                <include layout="@layout/dashboard_categories_shimmer"></include>
+
+                <include layout="@layout/dashboard_categories_shimmer"></include>
+
+                <include layout="@layout/dashboard_categories_shimmer"></include>
+                <include layout="@layout/dashboard_categories_shimmer"></include>
+
+            </LinearLayout>
+
+        </com.facebook.shimmer.ShimmerFrameLayout>
+
+        <androidx.constraintlayout.widget.Group
+            android:id="@+id/groupCategories"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            app:constraint_referenced_ids="tvExploreCategories, rvDashboardCategories, shimmerCategories"></androidx.constraintlayout.widget.Group>
+
+        </FrameLayout>
 
         <View
             android:id="@+id/viewCat"
             android:layout_width="match_parent"
             android:layout_height="@dimen/dp_2"
             android:background="@color/line_separator"
-            app:layout_constraintTop_toBottomOf="@+id/rvDashboardCategories"
+            app:layout_constraintTop_toBottomOf="@+id/flCategories"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             android:layout_margin="@dimen/dp_10"

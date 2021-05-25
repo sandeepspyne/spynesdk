@@ -94,7 +94,6 @@ class HomeDashboardFragment :
         setSliderRecycler()
         showTutorialVideos()
         lisners()
-        Utilities.showProgressDialog(requireContext())
 
 
         btGetStarted.setOnClickListener {
@@ -106,6 +105,9 @@ class HomeDashboardFragment :
         viewModel.categoriesResponse.observe(viewLifecycleOwner, Observer {
             when(it){
                 is Resource.Sucess -> {
+                    shimmerCategories.stopShimmer()
+                    shimmerCategories.visibility = View.GONE
+                    rvDashboardCategories.visibility = View.VISIBLE
                     categoriesAdapter = CategoriesDashboardAdapter(requireContext(),
                         it.value.payload.data as ArrayList<Data>,
                         object : CategoriesDashboardAdapter.BtnClickListener {
@@ -134,6 +136,7 @@ class HomeDashboardFragment :
                                         Toast.LENGTH_SHORT
                                     ).show()
                             }
+
                         })
                     val layoutManager: RecyclerView.LayoutManager = LinearLayoutManager(
                         requireContext(),
@@ -144,11 +147,13 @@ class HomeDashboardFragment :
                     rvDashboardCategories.setAdapter(categoriesAdapter)
 //                    categoriesAdapter.notifyDataSetChanged()
                 }
-//                is Resource.Loading -> {
-//                    Utilities.showProgressDialog(requireContext())
-//                }
+                is Resource.Loading -> {
+                    shimmerCategories.startShimmer()
+                }
                 is Resource.Failure -> {
-                     Utilities.hideProgressDialog()
+                    shimmerCategories.stopShimmer()
+                    shimmerCategories.visibility = View.GONE
+
 
                     handleApiError(it)
                 }
@@ -163,7 +168,9 @@ class HomeDashboardFragment :
         viewModel.completedProjectResponse.observe(viewLifecycleOwner, Observer {
             when(it){
                 is Resource.Sucess -> {
-
+                    rvCompletedShoots.visibility = View.VISIBLE
+                    shimmerCompleted.stopShimmer()
+                    shimmerCompleted.visibility = View.GONE
                     completedProjectList = ArrayList<CompletedProjectResponse>()
                     completedProjectList.addAll(it.value)
                     completedProjectList.reverse()
@@ -188,15 +195,17 @@ class HomeDashboardFragment :
 
                         if (it.value.size == 0)
                             groupCompletedShoots.visibility = View.GONE
-                    Utilities.hideProgressDialog()
+
 
 //                    categoriesAdapter.notifyDataSetChanged()
                 }
-//                is Resource.Loading -> {
-//                    Utilities.showProgressDialog(requireContext())
-//                }
+                is Resource.Loading -> {
+                    shimmerCompleted.startShimmer()
+                }
                 is Resource.Failure -> {
-                     Utilities.hideProgressDialog()
+                    shimmerCompleted.stopShimmer()
+                    shimmerCompleted.visibility = View.GONE
+
                     handleApiError(it)
                 }
             }
@@ -213,10 +222,9 @@ class HomeDashboardFragment :
                     setCategoryMap(it.value.payload.data.shootId.toString(), categoryPosition, it.value.payload.data.catId, it.value.payload.data.categoryName)
                 }
 //                is Resource.Loading -> {
-//                    Utilities.showProgressDialog(requireContext())
 //                }
                 is Resource.Failure -> {
-                     Utilities.hideProgressDialog()
+
                     handleApiError(it)
                 }
             }
@@ -246,10 +254,9 @@ class HomeDashboardFragment :
                     startActivity(intent)
                 }
 //                is Resource.Loading -> {
-//                    Utilities.showProgressDialog(requireContext())
 //                }
                 is Resource.Failure -> {
-                     Utilities.hideProgressDialog()
+
                     handleApiError(it)
                 }
             }
@@ -262,10 +269,9 @@ class HomeDashboardFragment :
                         showFreeCreditDialog(it.value.message)
                 }
 //                is Resource.Loading -> {
-//                    Utilities.showProgressDialog(requireContext())
 //                }
                 is Resource.Failure -> {
-                     Utilities.hideProgressDialog()
+
                     handleApiError(it)
                 }
             }
@@ -317,6 +323,7 @@ class HomeDashboardFragment :
     }
 
     private fun setOngoingProjectRecycler(){
+
         ongoingDashboardAdapter = OngoingDashboardAdapter(requireContext(),
             ProcessImagesService.tasksInProgress)
 

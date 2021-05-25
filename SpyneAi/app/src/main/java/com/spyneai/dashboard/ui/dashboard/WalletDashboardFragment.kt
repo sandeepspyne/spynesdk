@@ -77,7 +77,7 @@ class WalletDashboardFragment : Fragment() {
                 response: Response<CreditDetailsResponse>
             ) {
                 Utilities.hideProgressDialog()
-                binding.shimmer.startShimmer()
+                binding.shimmer.stopShimmer()
 
                 if (response.isSuccessful) {
                     binding.shimmer.visibility = View.GONE
