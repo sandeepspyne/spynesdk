@@ -55,14 +55,28 @@ interface APiService {
     fun loginEmailApp(@Body loginRequest: LoginRequest?):
             Call<LoginResponse>?
 
-    @POST("sso/vendor/api/auth?strategy=EMAILANDPASSWORD&redirectUrl")
-    fun loginEmailPassword(@Body body: LoginEmailPasswordBody):
-    Call<LoginEmailPasswordResponse>?
+    @FormUrlEncoded
+    @POST("v2/user/login")
+    fun loginEmailPassword(@Field("email_id") email_id : String,
+                           @Field("api_key") apiKey : String,
+                           @Field("password") password : String,
+                           @Field("strategy") strategy : String):
+            Call<LoginEmailPasswordResponse>?
+
+    @GET("v2/user/countries")
+    fun getCountries() : Call<GetCountriesResponse>
 
 
-    @POST("v2/business/user-register-car")
-    fun signUp(@Body body: SignupBody):
-    Call<SignupResponse>?
+    @FormUrlEncoded
+    @POST("v2/user/signup")
+    fun signUp(@Field("api_key") apiKey : String,
+               @Field("email_id") email_id : String,
+               @Field("password") password : String,
+               @Field("strategy") strategy : String,
+               @Field("user_name") user_name : String,
+               @Field("country") country : String):
+
+            Call<SignupResponse>?
 
     @GET("user/registeration")
     fun loginEmailApp(

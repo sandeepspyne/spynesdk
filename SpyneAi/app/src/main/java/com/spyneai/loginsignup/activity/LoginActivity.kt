@@ -11,6 +11,7 @@ import com.spyneai.activity.SignInUsingOtpActivity
 import com.spyneai.dashboard.ui.dashboard.MainDashboardActivity
 import com.spyneai.interfaces.APiService
 import com.spyneai.interfaces.RetrofitClientSpyneAi
+import com.spyneai.interfaces.RetrofitClients
 import com.spyneai.loginsignup.models.LoginEmailPasswordBody
 import com.spyneai.loginsignup.models.LoginEmailPasswordResponse
 import com.spyneai.needs.AppConstants
@@ -31,11 +32,13 @@ class LoginActivity : AppCompatActivity() {
         listeners()
     }
 
-    private fun listeners(){
+    private fun listeners() {
         bt_login.setOnClickListener {
-            if (!et_loginEmail.text.toString().trim().isEmpty() && !et_loginPassword.text.toString().trim().isEmpty()
-                && Utilities.isValidEmail(et_loginEmail.text.toString().trim())) {
-                login()
+            if (!et_loginEmail.text.toString().trim().isEmpty() && !et_loginPassword.text.toString()
+                    .trim().isEmpty()
+                && Utilities.isValidEmail(et_loginEmail.text.toString().trim())
+            ) {
+                login(et_loginEmail.text.toString().trim(), et_loginPassword.text.toString().trim())
                 bt_login.isClickable = false
                 tvSignup.isClickable = false
                 tvForgotPassword.isClickable = false
@@ -50,7 +53,6 @@ class LoginActivity : AppCompatActivity() {
             bt_sign_in_using_otp.isClickable = true
             tvterms.isClickable = true
         }
-
         tvSignup.setOnClickListener {
             val intent = Intent(this, SignUpActivity::class.java)
             startActivity(intent)
@@ -68,7 +70,7 @@ class LoginActivity : AppCompatActivity() {
         }
     }
 
-    private fun login(){
+    private fun login(email: String, password: String) {
 
         Utilities.showProgressDialog(this)
 
@@ -76,39 +78,55 @@ class LoginActivity : AppCompatActivity() {
             et_loginEmail.text.toString(), et_loginPassword.text.toString()
         )
 
-        var call = RetrofitClientSpyneAi.buildService(APiService::class.java).loginEmailPassword(body)
+        val call = RetrofitClients.buildService(APiService::class.java)
+            .loginEmailPassword(email, AppConstants.API_KEY, password, "PASSWORD")
 
 
         call?.enqueue(object : Callback<LoginEmailPasswordResponse> {
-            override fun onResponse(call: Call<LoginEmailPasswordResponse>, response: Response<LoginEmailPasswordResponse>) {
+            override fun onResponse(
+                call: Call<LoginEmailPasswordResponse>,
+                response: Response<LoginEmailPasswordResponse>
+            ) {
                 Utilities.hideProgressDialog()
 
-                if (response.isSuccessful && response.body()!=null) {
-                    Utilities.hideProgressDialog()
-                    if (response.body()!!.status.equals("INVALID")){
-                        Toast.makeText(this@LoginActivity, response.body()!!.message, Toast.LENGTH_SHORT).show()
+                var loginResponse = response.body()
+
+                if (response.isSuccessful && loginResponse != null) {
+                    if (loginResponse?.status == 400) {
+
+                        Toast.makeText(
+                            this@LoginActivity,
+                            response.body()!!.message,
+                            Toast.LENGTH_SHORT
+                        ).show()
                         bt_login.isClickable = true
                         tvSignup.isClickable = true
                         tvForgotPassword.isClickable = true
                         bt_sign_in_using_otp.isClickable = true
                         tvterms.isClickable = true
-                    }else if (response.body()!!.status.equals("LOGGED_IN")){
-                        Toast.makeText(this@LoginActivity, "Login successful", Toast.LENGTH_SHORT).show()
-                        Utilities.savePrefrence(this@LoginActivity,AppConstants.tokenId,
-                            response.body()!!.userId)
+                    } else if (loginResponse?.status == 200) {
+
+                        Toast.makeText(this@LoginActivity, "Login successful", Toast.LENGTH_SHORT)
+                            .show()
+
+                        Utilities.savePrefrence(
+                            this@LoginActivity, AppConstants.tokenId,
+                            loginResponse.user_id
+                        )
+
+                        bt_login.isClickable = true
+                        tvSignup.isClickable = true
+                        tvForgotPassword.isClickable = true
+                        bt_sign_in_using_otp.isClickable = true
+                        tvterms.isClickable = true
+
                         val intent = Intent(this@LoginActivity, MainDashboardActivity::class.java)
                         startActivity(intent)
                         finish()
-                        bt_login.isClickable = true
-                        tvSignup.isClickable = true
-                        tvForgotPassword.isClickable = true
-                        bt_sign_in_using_otp.isClickable = true
-                        tvterms.isClickable = true
                     }
-                }
-                else{
-                    Utilities.hideProgressDialog()
-                    Toast.makeText(this@LoginActivity, response.errorBody().toString(), Toast.LENGTH_SHORT).show()
+                } else {
+                    val error = response.errorBody().toString()
+                    Toast.makeText(this@LoginActivity, error, Toast.LENGTH_SHORT).show()
                     bt_login.isClickable = true
                     tvSignup.isClickable = true
                     tvForgotPassword.isClickable = true
