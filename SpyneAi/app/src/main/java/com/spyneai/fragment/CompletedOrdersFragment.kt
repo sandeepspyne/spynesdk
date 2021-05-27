@@ -124,9 +124,6 @@ class CompletedOrdersFragment : Fragment() {
             }
 
             override fun onFailure(call: Call<List<CompletedProjectResponse>>, t: Throwable) {
-                shimmerCompletedShoot.stopShimmer()
-                shimmerCompletedShoot.visibility = View.GONE
-                rv_completedFragment.visibility = View.VISIBLE
                 Toast.makeText(requireContext(), "Server not responding!!!", Toast.LENGTH_SHORT)
                     .show()
             }

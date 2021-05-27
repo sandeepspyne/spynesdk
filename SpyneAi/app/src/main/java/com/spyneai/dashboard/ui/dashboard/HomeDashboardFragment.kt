@@ -154,9 +154,6 @@ class HomeDashboardFragment :
                     shimmerCategories.startShimmer()
                 }
                 is Resource.Failure -> {
-                    shimmerCategories.stopShimmer()
-                    shimmerCategories.visibility = View.GONE
-
 
                     handleApiError(it)
                 }
@@ -206,9 +203,6 @@ class HomeDashboardFragment :
                     shimmerCompleted.startShimmer()
                 }
                 is Resource.Failure -> {
-                    shimmerCompleted.stopShimmer()
-                    shimmerCompleted.visibility = View.GONE
-
                     handleApiError(it)
                 }
             }
