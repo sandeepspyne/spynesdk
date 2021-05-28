@@ -34,6 +34,10 @@ class LogoutDashBoardFragment : Fragment() {
         // Inflate the layout for this fragment
         _binding = LogoutDialogBinding.inflate(inflater, container, false)
 
+        if (Utilities.getPreference(requireContext(), AppConstants.EMAIL_ID).toString() != ""){
+            binding.tvUserEmail.setText("( "+Utilities.getPreference(requireContext(), AppConstants.USER_EMAIL)+" )")
+        }
+
         return binding.root
     }
 
@@ -49,9 +53,9 @@ class LogoutDashBoardFragment : Fragment() {
             Utilities.savePrefrence(requireContext(), AppConstants.tokenId, "")
             Utilities.savePrefrence(requireContext(), AppConstants.SHOOT_ID, "")
             Utilities.savePrefrence(requireContext(), AppConstants.SKU_ID, "")
+            Intent.FLAG_ACTIVITY_CLEAR_TASK
             val intent = Intent(requireContext(), LoginActivity::class.java)
             startActivity(intent)
-
         }
     }
 

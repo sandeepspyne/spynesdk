@@ -53,6 +53,16 @@
             android:textColor="@color/black"
             android:textSize="@dimen/sp_16" />
 
+        <TextView
+
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@color/black"
+            android:id="@+id/tvUserEmail"
+            android:fontFamily="@font/medium"
+            android:layout_marginTop="@dimen/dp_5"
+            android:textSize="@dimen/sp_10"/>
+
         <LinearLayout
             android:id="@+id/llLogout"
             android:layout_width="wrap_content"

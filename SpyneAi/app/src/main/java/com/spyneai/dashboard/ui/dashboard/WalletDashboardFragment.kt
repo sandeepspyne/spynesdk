@@ -46,6 +46,14 @@ class WalletDashboardFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        if (Utilities.getPreference(requireContext(), AppConstants.USER_EMAIL).toString() != ""){
+            binding.tvUserName.visibility = View.VISIBLE
+            binding.tvUserEmail.visibility = View.VISIBLE
+            binding.tvUserName.setText(Utilities.getPreference(requireContext(), AppConstants.USER_NAME))
+            binding.tvUserEmail.setText(Utilities.getPreference(requireContext(), AppConstants.USER_EMAIL))
+        }
+
         binding.flAddCredits.setOnClickListener {
             val intent = Intent(requireContext(), CreditPlansActivity::class.java)
             intent.putExtra("from_wallet",true)

@@ -43,12 +43,12 @@
             android:id="@+id/tvWelcomeHome"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="@string/welcome_home"
             android:textSize="@dimen/sp_22"
+            android:visibility="gone"
             android:layout_marginLeft="@dimen/dp_10"
             android:layout_marginTop="@dimen/dp_10"
             android:textColor="@color/primary_dark"
-            android:fontFamily="@font/light"
+            android:fontFamily="@font/medium"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/viewToolbar"
             app:layout_constraintEnd_toEndOf="parent"
@@ -57,7 +57,8 @@
         <View
             android:id="@+id/viewWelcome"
             android:layout_width="43dp"
-            android:layout_height="1dp"
+            android:visibility="gone"
+            android:layout_height="2dp"
             app:layout_constraintStart_toStartOf="parent"
             android:background="@drawable/bg_view"
             android:layout_marginLeft="@dimen/dp_12"
@@ -78,10 +79,10 @@
             android:id="@+id/flSlider"
             android:layout_width="match_parent"
             android:layout_height="187dp"
-            android:layout_marginTop="@dimen/dp_20"
             android:layout_marginBottom="@dimen/dp_20"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
+            android:layout_marginTop="@dimen/dp_5"
             app:layout_constraintTop_toBottomOf="@+id/viewWelcome">
 
             <com.github.developer__.BeforeAfterSlider

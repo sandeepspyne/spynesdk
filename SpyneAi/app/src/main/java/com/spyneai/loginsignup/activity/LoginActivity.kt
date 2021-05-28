@@ -109,10 +109,9 @@ class LoginActivity : AppCompatActivity() {
                         Toast.makeText(this@LoginActivity, "Login successful", Toast.LENGTH_SHORT)
                             .show()
 
-                        Utilities.savePrefrence(
-                            this@LoginActivity, AppConstants.tokenId,
-                            loginResponse.user_id
-                        )
+                        Utilities.savePrefrence(this@LoginActivity, AppConstants.tokenId, loginResponse.user_id)
+                        Utilities.savePrefrence(this@LoginActivity, AppConstants.USER_NAME, loginResponse.user_name)
+                        Utilities.savePrefrence(this@LoginActivity, AppConstants.USER_EMAIL, loginResponse.email_id)
 
                         bt_login.isClickable = true
                         tvSignup.isClickable = true

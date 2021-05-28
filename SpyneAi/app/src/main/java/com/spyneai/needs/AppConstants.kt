@@ -90,6 +90,9 @@ object AppConstants {
 
     val API_KEY: String = "ee84dc3e-340e-4d39-a24c-9365272405f9"
 
+    val  USER_NAME: String = "userName"
+    val  USER_EMAIL: String = "userEmail"
+
 
 
 

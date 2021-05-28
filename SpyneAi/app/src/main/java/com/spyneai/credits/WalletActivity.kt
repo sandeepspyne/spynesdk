@@ -37,6 +37,13 @@ class WalletActivity : AppCompatActivity() {
 
         binding = DataBindingUtil.setContentView(this,R.layout.activity_wallet)
 
+        if (Utilities.getPreference(this, AppConstants.USER_EMAIL).toString() != ""){
+            binding.tvUserName.visibility = View.VISIBLE
+            binding.tvUserEmail.visibility = View.VISIBLE
+            binding.tvUserName.setText(Utilities.getPreference(this, AppConstants.USER_NAME))
+            binding.tvUserEmail.setText(Utilities.getPreference(this, AppConstants.EMAIL_ID))
+        }
+
 
         binding.flAddCredits.setOnClickListener {
             var intent = Intent(this,CreditPlansActivity::class.java)

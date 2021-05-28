@@ -385,6 +385,8 @@ public class OtpActivity : AppCompatActivity() {
                         if (intent.getStringExtra(AppConstants.tokenId) != null)
                             Utilities.savePrefrence(this@OtpActivity,AppConstants.tokenId,
                                 intent.getStringExtra(AppConstants.tokenId))
+                        Utilities.savePrefrence(this@OtpActivity, AppConstants.USER_NAME, response.body()!!.user_name)
+                        Utilities.savePrefrence(this@OtpActivity, AppConstants.USER_EMAIL, response.body()!!.email_id)
                         val intent = Intent(applicationContext, MainDashboardActivity::class.java)
                         startActivity(intent)
                         finish()

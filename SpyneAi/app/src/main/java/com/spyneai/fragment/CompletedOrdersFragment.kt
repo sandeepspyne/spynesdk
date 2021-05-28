@@ -113,6 +113,9 @@ class CompletedOrdersFragment : Fragment() {
                             }
                         }
                     } else {
+                        shimmerCompletedShoot.stopShimmer()
+                        shimmerCompletedShoot.visibility = View.GONE
+                        rv_completedFragment.visibility = View.VISIBLE
                         Toast.makeText(
                             requireContext(),
                             "No projects found !", Toast.LENGTH_SHORT

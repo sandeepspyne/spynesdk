@@ -98,6 +98,13 @@ class HomeDashboardFragment :
         showTutorialVideos()
         lisners()
 
+        if (Utilities.getPreference(requireContext(), AppConstants.USER_NAME).toString() != "") {
+            tvWelcomeHome.visibility = View.VISIBLE
+            viewWelcome.visibility = View.VISIBLE
+            tvWelcomeHome.setText("Welcome "+
+                Utilities.getPreference(requireContext(), AppConstants.USER_NAME).toString()
+            )
+        }
 
         btGetStarted.setOnClickListener {
             val intent = Intent(requireContext(), CategoriesActivity::class.java)
@@ -175,6 +182,9 @@ class HomeDashboardFragment :
                     completedProjectList.addAll(it.value)
                     completedProjectList.reverse()
 
+                    if (completedProjectList.size == 0)
+                        rlCompletedShoots.visibility = View.GONE
+
                     completedDashboardAdapter = CompletedDashboardAdapter(requireContext(),
                         completedProjectList,
                         object : CompletedDashboardAdapter.BtnClickListener {
@@ -193,8 +203,7 @@ class HomeDashboardFragment :
                     rvCompletedShoots.setLayoutManager(layoutManager)
                     rvCompletedShoots.setAdapter(completedDashboardAdapter)
 
-                        if (it.value.size == 0)
-                            groupCompletedShoots.visibility = View.GONE
+
 
 
 //                    categoriesAdapter.notifyDataSetChanged()

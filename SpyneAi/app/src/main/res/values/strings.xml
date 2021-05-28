@@ -240,7 +240,7 @@
     <string name="enter_vin">Please enter the Vehicle Identification Number (VIN)</string>
     <string name="vin_number">VIN</string>
 
-    <string name="welcome_home">Welcome Home!</string>
+    <string name="welcome_user">Welcome</string>
     <string name="explore_categories">Explore Categories</string>
     <string name="on_going_shoots">On-going Shoots</string>
     <string name="completed_shoots">Completed Shoots</string>

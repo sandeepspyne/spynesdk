@@ -49,19 +49,52 @@
               android:orientation="vertical"
               android:gravity="center_horizontal">
 
+              <ImageView
+                  android:layout_width="@dimen/dp_50"
+                  android:layout_height="@dimen/dp_50"
+                  android:layout_marginTop="@dimen/dp_15"
+                  android:src="@drawable/ic_user"
+                  ></ImageView>
+
+              <TextView
+                  android:visibility="gone"
+                  android:layout_width="wrap_content"
+                  android:layout_height="wrap_content"
+                  android:textColor="#232121"
+                  android:id="@+id/tvUserName"
+                  android:fontFamily="@font/bold"
+                  android:layout_marginTop="@dimen/dp_10"
+                  android:textSize="20sp"/>
+
+              <TextView
+                  android:visibility="gone"
+                  android:layout_width="wrap_content"
+                  android:layout_height="wrap_content"
+                  android:textColor="#232121"
+                  android:id="@+id/tvUserEmail"
+                  android:fontFamily="@font/medium"
+                  android:textSize="@dimen/sp_16"/>
+
+              <View
+                  android:layout_width="match_parent"
+                  android:layout_height="@dimen/dp_1"
+                  android:background="@color/line_separator"
+                  android:layout_margin="@dimen/dp_10"></View>
+
               <TextView
                   android:layout_width="wrap_content"
                   android:layout_height="wrap_content"
                   android:text="Available Credits"
                   android:textColor="#232121"
+                  android:fontFamily="@font/bold"
                   android:id="@+id/tv_avilable_credit"
-                  android:layout_marginTop="15dp"
-                  android:textSize="16sp"/>
+                  android:layout_marginTop="20dp"
+                  android:textSize="@dimen/sp_20"/>
 
               <FrameLayout
                   android:layout_width="wrap_content"
                   android:layout_height="wrap_content"
-                  android:layout_marginTop="@dimen/dp_25">
+                  android:layout_marginTop="@dimen/dp_10">
                   <TextView
                       android:layout_width="wrap_content"
                       android:layout_height="wrap_content"
