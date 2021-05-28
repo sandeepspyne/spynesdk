@@ -104,6 +104,10 @@ class HomeDashboardFragment :
             tvWelcomeHome.setText("Welcome "+
                 Utilities.getPreference(requireContext(), AppConstants.USER_NAME).toString()
             )
+            if (Utilities.getPreference(requireContext(), AppConstants.USER_NAME).toString().trim().equals("default")){
+                tvWelcomeHome.visibility = View.GONE
+                viewWelcome.visibility = View.GONE
+            }
         }
 
         btGetStarted.setOnClickListener {

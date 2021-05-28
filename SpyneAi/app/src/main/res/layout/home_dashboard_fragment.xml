@@ -61,6 +61,7 @@
             android:layout_height="2dp"
             app:layout_constraintStart_toStartOf="parent"
             android:background="@drawable/bg_view"
+            android:layout_marginBottom="@dimen/dp_5"
             android:layout_marginLeft="@dimen/dp_12"
             app:layout_constraintTop_toBottomOf="@+id/tvWelcomeHome"
             app:layout_constraintBottom_toTopOf="@+id/flSlider"></View>
@@ -82,7 +83,6 @@
             android:layout_marginBottom="@dimen/dp_20"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            android:layout_marginTop="@dimen/dp_5"
             app:layout_constraintTop_toBottomOf="@+id/viewWelcome">
 
             <com.github.developer__.BeforeAfterSlider

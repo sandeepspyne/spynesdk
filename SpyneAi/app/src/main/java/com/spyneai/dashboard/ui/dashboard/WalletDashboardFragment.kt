@@ -1,29 +1,29 @@
 package com.spyneai.dashboard.ui.dashboard
 
-import android.app.Activity
+import android.app.ActionBar
 import android.content.Intent
-import androidx.lifecycle.ViewModelProvider
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.LinearLayout
 import android.widget.Toast
 import androidx.core.content.ContextCompat
-import androidx.databinding.DataBindingUtil
+import androidx.fragment.app.Fragment
 import com.spyneai.R
 import com.spyneai.credits.CreditPlansActivity
 import com.spyneai.credits.CreditUtils
-import com.spyneai.databinding.ActivityWalletBinding
 import com.spyneai.databinding.WalletDashboardFragmentBinding
 import com.spyneai.interfaces.APiService
 import com.spyneai.interfaces.RetrofitClientSpyneAi
 import com.spyneai.model.credit.CreditDetailsResponse
 import com.spyneai.needs.AppConstants
 import com.spyneai.needs.Utilities
+import kotlinx.android.synthetic.main.home_dashboard_fragment.*
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
+
 
 class WalletDashboardFragment : Fragment() {
 
@@ -50,9 +50,25 @@ class WalletDashboardFragment : Fragment() {
         if (Utilities.getPreference(requireContext(), AppConstants.USER_EMAIL).toString() != ""){
             binding.tvUserName.visibility = View.VISIBLE
             binding.tvUserEmail.visibility = View.VISIBLE
+            binding.viewUser.visibility = View.VISIBLE
             binding.tvUserName.setText(Utilities.getPreference(requireContext(), AppConstants.USER_NAME))
             binding.tvUserEmail.setText(Utilities.getPreference(requireContext(), AppConstants.USER_EMAIL))
+
+            if (Utilities.getPreference(requireContext(), AppConstants.USER_NAME).toString().trim().equals("default")){
+                binding.tvUserName.visibility = View.GONE
+                binding.tvUserName.paddingTop
+
+                val params: LinearLayout.LayoutParams =
+                    LinearLayout.LayoutParams(ActionBar.LayoutParams.WRAP_CONTENT, ActionBar.LayoutParams.WRAP_CONTENT)
+                params.setMargins(10, 20, 10, 10)
+                binding.tvUserEmail.setLayoutParams(params)
+
+            }
+
         }
+
+
+
 
         binding.flAddCredits.setOnClickListener {
             val intent = Intent(requireContext(), CreditPlansActivity::class.java)

@@ -76,6 +76,8 @@
                   android:textSize="@dimen/sp_16"/>
 
               <View
+                  android:id="@+id/viewUser"
+                  android:visibility="gone"
                   android:layout_width="match_parent"
                   android:layout_height="@dimen/dp_1"
                   android:background="@color/line_separator"

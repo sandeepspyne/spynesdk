@@ -1,5 +1,6 @@
 package com.spyneai.credits
 
+import android.app.ActionBar
 import android.app.Dialog
 import android.content.Intent
 import android.graphics.Color
@@ -21,6 +22,7 @@ import com.spyneai.interfaces.RetrofitClientSpyneAi
 import com.spyneai.model.credit.CreditDetailsResponse
 import com.spyneai.needs.AppConstants
 import com.spyneai.needs.Utilities
+import kotlinx.android.synthetic.main.home_dashboard_fragment.*
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -38,11 +40,22 @@ class WalletActivity : AppCompatActivity() {
         binding = DataBindingUtil.setContentView(this,R.layout.activity_wallet)
 
         if (Utilities.getPreference(this, AppConstants.USER_EMAIL).toString() != ""){
-            binding.tvUserName.visibility = View.VISIBLE
             binding.tvUserEmail.visibility = View.VISIBLE
-            binding.tvUserName.setText(Utilities.getPreference(this, AppConstants.USER_NAME))
+            binding.viewUser.visibility = View.VISIBLE
+            binding.tvUserName.visibility = View.VISIBLE
             binding.tvUserEmail.setText(Utilities.getPreference(this, AppConstants.EMAIL_ID))
+            binding.tvUserName.setText(Utilities.getPreference(this, AppConstants.USER_NAME))
+
+            if (Utilities.getPreference(this, AppConstants.USER_NAME).toString().trim().equals("default")){
+                binding.tvUserName.visibility = View.GONE
+
+                val params: LinearLayout.LayoutParams =
+                    LinearLayout.LayoutParams(ActionBar.LayoutParams.WRAP_CONTENT, ActionBar.LayoutParams.WRAP_CONTENT)
+                params.setMargins(10, 20, 10, 10)
+                binding.tvUserEmail.setLayoutParams(params)
+            }
         }
+
 
 
         binding.flAddCredits.setOnClickListener {
