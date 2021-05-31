@@ -20,6 +20,7 @@
             android:layout_height="match_parent"
             android:orientation="vertical"
             android:background="@color/black" >
+
             <ImageView
                 android:id="@+id/imgBack"
                 android:layout_width="match_parent"
@@ -56,6 +57,7 @@
 
 
         </LinearLayout>
+
         <LinearLayout
             android:layout_width="0dp"
             android:layout_weight="1"
@@ -69,7 +71,9 @@
                 <androidx.camera.view.PreviewView
                     android:id="@+id/viewFinder"
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent" />
+                    android:layout_height="match_parent"
+                    android:layout_gravity="center"/>
+
                 <ImageView
                     android:id="@+id/imgOverlay"
                     android:layout_width="match_parent"
@@ -77,7 +81,6 @@
                     android:src="@mipmap/defaults"
                     android:layout_margin="@dimen/dp_50"
                     android:contentDescription="@string/app_name" />
-
 
                 <LinearLayout
                     android:layout_width="match_parent"
@@ -224,5 +227,12 @@
         android:layout_height="match_parent"
         android:visibility="gone"
         android:background="@color/black" />
+
+    <ImageView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:id="@+id/imgv_test"
+        android:layout_gravity="center"
+        android:layout_margin="50dp"/>
 
 </FrameLayout>

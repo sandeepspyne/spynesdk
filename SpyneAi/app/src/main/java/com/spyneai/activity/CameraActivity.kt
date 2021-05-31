@@ -96,7 +96,7 @@ import kotlin.collections.ArrayList
 
 typealias LumaListener = (luma: Double) -> Unit
 
-class CameraActivity : AppCompatActivity(), SubCategoriesAdapter.BtnClickListener {
+class CameraActivity : AppCompatActivity(){
     private lateinit var gifList: ArrayList<String>
     private lateinit var photoFilePath: File
     private var savedUri: Uri? = null
@@ -297,7 +297,7 @@ class CameraActivity : AppCompatActivity(), SubCategoriesAdapter.BtnClickListene
             this,
             subCategoriesList, pos,
             object : SubCategoriesAdapter.BtnClickListener {
-                override fun onBtnClick(position: Int) {
+                override fun onBtnClick(position: Int,subcategoryName : String,subcategoryImage : String) {
                     Log.d("Position click", position.toString())
                     setProductMap(
                         Utilities.getPreference(
@@ -1418,13 +1418,7 @@ class CameraActivity : AppCompatActivity(), SubCategoriesAdapter.BtnClickListene
         })
     }
 
-    override fun onBtnClick(position: Int) {
-        Log.d("Position", position.toString())
-    }
 
-    public fun getInstance(): CameraActivity {
-        return this
-    }
 
     override fun onBackPressed() {
 //        super.onBackPressed()

@@ -14,7 +14,7 @@ import com.spyneai.R
 import com.spyneai.model.subcategories.Data
 import com.spyneai.needs.AppConstants
 
-public class SubCategoriesAdapter(val context: Context,
+class SubCategoriesAdapter(val context: Context,
                                   val subCategoriesList: ArrayList<Data>,
                                   var pos : Int,
                                   val btnlistener: BtnClickListener?)
@@ -69,7 +69,7 @@ public class SubCategoriesAdapter(val context: Context,
 
         viewHolder.llSubCategories.setOnClickListener(View.OnClickListener {
             if (mClickListener != null)
-                mClickListener?.onBtnClick(position)
+                mClickListener?.onBtnClick(position,subCategoriesList[position].displayName,subCategoriesList[position].displayThumbnail)
             pos = position
 
             viewHolder.llSubCategoriesImage.setBackgroundResource(R.drawable.bg_selected)
@@ -81,7 +81,7 @@ public class SubCategoriesAdapter(val context: Context,
     override fun getItemCount() = subCategoriesList.size
 
     open interface BtnClickListener {
-        fun onBtnClick(position: Int)
+        fun onBtnClick(position: Int,subcategoryName : String,subcategoryImage : String)
     }
 
 }

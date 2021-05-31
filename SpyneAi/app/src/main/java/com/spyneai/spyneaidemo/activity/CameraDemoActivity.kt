@@ -74,7 +74,7 @@ import kotlin.collections.ArrayList
 
 typealias LumaListener = (luma: Double) -> Unit
 
-class CameraDemoActivity : AppCompatActivity() , SubCategoriesAdapter.BtnClickListener {
+class CameraDemoActivity : AppCompatActivity()  {
     private lateinit var gifList: ArrayList<String>
     private lateinit var photoFilePath: File
     private var savedUri: Uri? = null
@@ -585,60 +585,6 @@ class CameraDemoActivity : AppCompatActivity() , SubCategoriesAdapter.BtnClickLi
         }
     }
 
-    //Edit and update skus
-    private fun updateSkus() {
-        Utilities.showProgressDialog(this)
-
-        val request = RetrofitClient.buildService(APiService::class.java)
-
-        val editSkuRequest = EditSkuRequest(skuId, etSkuName.text.toString().trim())
-
-        val call = request.editSku(
-                Utilities.getPreference(this, AppConstants.tokenId),
-                editSkuRequest
-        )
-
-        call?.enqueue(object : Callback<SkuResponse> {
-            override fun onResponse(
-                    call: Call<SkuResponse>,
-                    response: Response<SkuResponse>
-            ) {
-                Utilities.hideProgressDialog()
-                if (response.isSuccessful) {
-                    if (response.body()?.payload?.data != null) {
-                        etSkuName.setText(etSkuName.text.toString().trim())
-                        skuName = etSkuName.text.toString().trim()
-                        Utilities.savePrefrence(this@CameraDemoActivity,
-                                AppConstants.SKU_NAME,
-                                skuName)
-                        imgNext.visibility = View.GONE
-                        Toast.makeText(
-                                applicationContext,
-                                "Updated SKU name successfully!!!",
-                                Toast.LENGTH_SHORT
-                        ).show()
-
-                    }
-                } else {
-                    Toast.makeText(
-                            applicationContext,
-                            "Please try again later!!!",
-                            Toast.LENGTH_SHORT
-                    ).show()
-                }
-            }
-
-            override fun onFailure(call: Call<SkuResponse>, t: Throwable) {
-                Log.e("ok", "no way")
-                Utilities.hideProgressDialog()
-                Toast.makeText(
-                        applicationContext,
-                        "Server not responding!!!",
-                        Toast.LENGTH_SHORT
-                ).show()
-            }
-        })
-    }
 
     private fun allPermissionsGranted() = REQUIRED_PERMISSIONS.all {
         ContextCompat.checkSelfPermission(
@@ -997,13 +943,8 @@ class CameraDemoActivity : AppCompatActivity() , SubCategoriesAdapter.BtnClickLi
         })
     }
 
-    override fun onBtnClick(position: Int) {
-        Log.d("Position", position.toString())
-    }
 
-    public fun getInstance(): CameraDemoActivity {
-        return this
-    }
+
 
     override fun onBackPressed() {
 //        super.onBackPressed()
