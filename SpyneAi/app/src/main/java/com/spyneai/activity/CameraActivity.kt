@@ -1231,7 +1231,7 @@ class CameraActivity : AppCompatActivity(){
 
         val updateShootProductRequest = UpdateShootProductRequest(
             shootId,
-            subCategoriesList[position].prod_cat_id,
+            subCategoriesList[position].prod_sub_cat_id,
             subCategoriesList[position].sub_cat_name
         )
 
@@ -1247,13 +1247,9 @@ class CameraActivity : AppCompatActivity(){
                 response: Response<CreateCollectionResponse>
             ) {
                 if (response.isSuccessful) {
-                    Log.e(
-                        "Product map",
-                        subCategoriesList[position].prod_cat_id + " " + response.body()!!.msgInfo.msgDescription
-                    )
                     setSkuIdMap(
                         shootId,
-                        subCategoriesList[position].prod_sub_cat_id, subCategoriesList[position].prod_cat_id
+                        subCategoriesList[position].prod_cat_id, subCategoriesList[position].prod_sub_cat_id
                     )
                 }
             }
