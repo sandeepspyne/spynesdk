@@ -34,8 +34,8 @@ class LogoutDashBoardFragment : Fragment() {
         // Inflate the layout for this fragment
         _binding = LogoutDialogBinding.inflate(inflater, container, false)
 
-        if (Utilities.getPreference(requireContext(), AppConstants.EMAIL_ID).toString() != ""){
-            binding.tvUserEmail.setText("( "+Utilities.getPreference(requireContext(), AppConstants.USER_EMAIL)+" )")
+        if (Utilities.getPreference(requireContext(), AppConstants.USER_EMAIL).toString() != ""){
+            binding.tvUserEmail.setText("("+Utilities.getPreference(requireContext(), AppConstants.USER_EMAIL)+")")
         }
 
         return binding.root

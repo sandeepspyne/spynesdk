@@ -4,6 +4,7 @@
     package="com.spyneai">
 
     <uses-feature android:name="android.hardware.camera.any" />
+
     <uses-permission android:name="android.permission.RECORD_AUDIO" />
     <uses-permission android:name="android.permission.ACCESS_MEDIA_LOCATION" />
     <uses-permission android:name="android.permission.CAMERA" />
@@ -14,16 +15,16 @@
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
     <uses-permission android:name="android.permission.WAKE_LOCK" />
     <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
+
     <uses-feature android:name="android.hardware.camera" />
+
     <uses-permission
         android:name="android.permission.WRITE_EXTERNAL_STORAGE"
         tools:ignore="ScopedStorage" />
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" /> <!-- Needed only if your app targets Android 5.0 (API level 21) or higher. -->
     <uses-feature android:name="android.hardware.location.gps" />
-    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
 
-<!--     <uses-permission android:name="android.permission.MANAGE_EXTERNAL_STORAGE" tools:ignore="ScopedStorage" />-->
-
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" /> <!-- <uses-permission android:name="android.permission.MANAGE_EXTERNAL_STORAGE" tools:ignore="ScopedStorage" /> -->
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" /> <!-- Needed only if your app targets Android 5.0 (API level 21) or higher. -->
     <uses-feature android:name="android.hardware.location.gps" />
 
@@ -38,29 +39,39 @@
         android:theme="@style/Theme.SpyneAi"
         android:usesCleartextTraffic="true"
         tools:targetApi="m">
+        <activity android:name=".dashboard.ui.dashboard.YoutubeVideoPlayerActivity"></activity>
         <activity
             android:name=".dashboard.ui.dashboard.MainDashboardActivity"
             android:screenOrientation="portrait" />
-        <activity android:name=".loginsignup.activity.ForgotPasswordActivity"
-            android:screenOrientation="portrait"
-            android:launchMode="singleTask"></activity>
-        <activity android:name=".loginsignup.activity.SignUpActivity"
-            android:screenOrientation="portrait"
-            android:launchMode="singleTask"/>
-        <activity android:name=".loginsignup.activity.LoginActivity"
-            android:screenOrientation="portrait"
-            android:launchMode="singleTask"/>
-        <activity android:name=".credits.FeedbackActivity"
+        <activity
+            android:name=".loginsignup.activity.ForgotPasswordActivity"
+            android:launchMode="singleTask"
             android:screenOrientation="portrait" />
-        <activity android:name=".credits.CreditPaymentFailedActivity"
+        <activity
+            android:name=".loginsignup.activity.SignUpActivity"
+            android:launchMode="singleTask"
             android:screenOrientation="portrait" />
-        <activity android:name=".credits.CreditPaymentSuccessActivity"
+        <activity
+            android:name=".loginsignup.activity.LoginActivity"
+            android:launchMode="singleTask"
             android:screenOrientation="portrait" />
-        <activity android:name=".credits.CreditPlansActivity"
+        <activity
+            android:name=".credits.FeedbackActivity"
             android:screenOrientation="portrait" />
-        <activity android:name=".credits.LowCreditsActivity"
+        <activity
+            android:name=".credits.CreditPaymentFailedActivity"
             android:screenOrientation="portrait" />
-        <activity android:name=".credits.WalletActivity"
+        <activity
+            android:name=".credits.CreditPaymentSuccessActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".credits.CreditPlansActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".credits.LowCreditsActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".credits.WalletActivity"
             android:screenOrientation="portrait" />
         <activity android:name=".videorecording.ThreeSixtyViewTestActivity" />
         <activity android:name=".videorecording.VideoUploadHandlerActivity" />

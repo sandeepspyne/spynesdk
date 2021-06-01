@@ -18,6 +18,10 @@ import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.RecyclerView.SimpleOnItemTouchListener
+import com.google.android.exoplayer2.SimpleExoPlayer
+import com.google.android.exoplayer2.source.MediaSource
+import com.google.android.exoplayer2.source.ProgressiveMediaSource
+import com.google.android.exoplayer2.upstream.DefaultDataSourceFactory
 import com.google.android.material.tabs.TabLayout
 import com.google.android.play.core.appupdate.AppUpdateManager
 import com.spyneai.R
@@ -105,8 +109,9 @@ class HomeDashboardFragment :
                 Utilities.getPreference(requireContext(), AppConstants.USER_NAME).toString()
             )
             if (Utilities.getPreference(requireContext(), AppConstants.USER_NAME).toString().trim().equals("default")){
-                tvWelcomeHome.visibility = View.GONE
-                viewWelcome.visibility = View.GONE
+                tvWelcomeHome.visibility = View.VISIBLE
+                viewWelcome.visibility = View.VISIBLE
+                tvWelcomeHome.setText("Welcome Home")
             }
         }
 
@@ -291,7 +296,6 @@ class HomeDashboardFragment :
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
     }
 
     private fun setSliderRecycler(){
@@ -383,13 +387,15 @@ class HomeDashboardFragment :
             object : TutorialVideosAdapter.BtnClickListener {
                 override fun onBtnClick(position: Int) {
                     if (position == 0){
-                        val intent = Intent(Intent.ACTION_VIEW)
-                        intent.data = Uri.parse("https://www.youtube.com/watch?v=6XKDsFaGgLY")
-                        ContextCompat.startActivity(requireContext(), intent, null)
+                        val intent = Intent(requireContext(), YoutubeVideoPlayerActivity::class.java)
+                        intent.putExtra(AppConstants.VIDEO_URL, "https://storage.googleapis.com/spyne-cliq/spyne-cliq/AboutVideo/car_spyne.mp4")
+                        startActivity(intent)
+
+
                     }else{
-                        val intent = Intent(Intent.ACTION_VIEW)
-                        intent.data = Uri.parse("https://www.youtube.com/watch?v=twW9N1B-7_o")
-                        ContextCompat.startActivity(requireContext(), intent, null)
+                        val intent = Intent(requireContext(), YoutubeVideoPlayerActivity::class.java)
+                        intent.putExtra(AppConstants.VIDEO_URL, "https://storage.googleapis.com/spyne-cliq/spyne-cliq/AboutVideo/footwear_spyne.mp4")
+                        startActivity(intent)
                     }
 
                 }}
@@ -438,14 +444,13 @@ class HomeDashboardFragment :
         }
     }
 
+
+
     override fun getViewModel() = DashboardViewModel::class.java
 
     override fun getFragmentBinding(
         inflater: LayoutInflater,
         container: ViewGroup?
     ) = HomeDashboardFragmentBinding.inflate(inflater, container, false)
-
-
-
 
 }

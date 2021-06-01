@@ -93,6 +93,8 @@ object AppConstants {
     val  USER_NAME: String = "userName"
     val  USER_EMAIL: String = "userEmail"
 
+    val  VIDEO_URL: String = "videoUrl"
+
 
 
 
