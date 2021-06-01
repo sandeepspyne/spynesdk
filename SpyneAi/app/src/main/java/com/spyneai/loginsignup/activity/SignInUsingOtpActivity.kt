@@ -13,6 +13,7 @@ import androidx.appcompat.app.AppCompatDelegate
 import com.spyneai.R
 import com.spyneai.interfaces.APiService
 import com.spyneai.interfaces.RetrofitClient
+import com.spyneai.interfaces.RetrofitClients
 import com.spyneai.loginsignup.activity.LoginActivity
 import com.spyneai.model.login.LoginRequest
 import com.spyneai.model.login.LoginResponse
@@ -106,13 +107,10 @@ class SignInUsingOtpActivity : AppCompatActivity() {
 
     //Sign in api
     private fun makeSignIn() {
-        //val todoPostCall: Call<com.spyneai.model.login.LoginResponse> = apiInterface.postContactNum(userRegistrationRequest)
-
         Utilities.showProgressDialog(this)
-        val loginRequest = LoginRequest(etEmail.text.toString());
 
-        val request = RetrofitClient.buildService(APiService::class.java)
-        val call = request.loginEmailApp(loginRequest)
+        val request = RetrofitClients.buildService(APiService::class.java)
+        val call = request.loginEmailApp(etEmail.text.toString().trim(),AppConstants.API_KEY)
 //        val call = request.loginEmailApp(etEmail.text.toString(),"value")
 
 
@@ -120,41 +118,36 @@ class SignInUsingOtpActivity : AppCompatActivity() {
             override fun onResponse(call: Call<LoginResponse>, response: Response<LoginResponse>) {
                 Utilities.hideProgressDialog()
 
-                if (response.isSuccessful) {
-                    if (response.body()!!.header.tokenId != null) {
-                        Toast.makeText(
-                            this@SignInUsingOtpActivity,
-                            response.body()!!.msgInfo.msgDescription,
-                            Toast.LENGTH_SHORT
-                        ).show()
 
-                        //  Log.e("ok", response.body()!!.header.tokenId)
-                        Utilities.savePrefrence(this@SignInUsingOtpActivity,
-                            AppConstants.EMAIL_ID, etEmail.text.toString())
-                        val intent = Intent(this@SignInUsingOtpActivity, OtpActivity::class.java)
-                        if (response.body()!!.header.tokenId != null)
+                if (response.isSuccessful) {
+
+                    var loginResponse = response.body()
+
+                    loginResponse?.status.let {
+                        if (it == 200){
+                            Toast.makeText(
+                                this@SignInUsingOtpActivity,
+                                loginResponse?.message,
+                                Toast.LENGTH_SHORT
+                            ).show()
+
+                            //  Log.e("ok", response.body()!!.header.tokenId)
                             Utilities.savePrefrence(this@SignInUsingOtpActivity,
-                                AppConstants.tokenId, response.body()!!.header.tokenId)
-                            intent.putExtra(AppConstants.tokenId, response.body()!!.header.tokenId)
-                        startActivity(intent)
-                    }
-                    else{
-                        val intent = Intent(this@SignInUsingOtpActivity, OtpActivity::class.java)
-                        if (response.body()!!.header.tokenId != null)
-                            Utilities.savePrefrence(this@SignInUsingOtpActivity,
-                                AppConstants.tokenId, response.body()!!.header.tokenId)
-                            intent.putExtra(AppConstants.tokenId, response.body()!!.header.tokenId)
-                        startActivity(intent)
-                        Toast.makeText(
-                            this@SignInUsingOtpActivity,
-                            "Otp Sent",
-                            Toast.LENGTH_SHORT
-                        ).show()
-                       /* Toast.makeText(
-                            applicationContext,
-                            "Unable to send OTP, Please try again later.",
-                            Toast.LENGTH_SHORT
-                        ).show()*/
+                                AppConstants.EMAIL_ID, etEmail.text.toString())
+                            val intent = Intent(this@SignInUsingOtpActivity, OtpActivity::class.java)
+
+                            if (loginResponse?.userId != null)
+                                Utilities.savePrefrence(this@SignInUsingOtpActivity,
+                                    AppConstants.tokenId, loginResponse?.userId)
+
+                            startActivity(intent)
+                        }else{
+                            Toast.makeText(
+                                applicationContext,
+                                "Server not responding!, Please try again later",
+                                Toast.LENGTH_SHORT
+                            ).show()
+                        }
                     }
                 }
                 else{

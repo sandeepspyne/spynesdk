@@ -4,6 +4,8 @@ import SubcategoriesResponse
 import UploadPhotoResponse
 import com.spyneai.aipack.*
 import com.spyneai.credits.model.CreateOrderBody
+import com.spyneai.dashboard.response.NewCategoriesResponse
+import com.spyneai.dashboard.response.NewSubCatResponse
 import com.spyneai.loginsignup.models.*
 import com.spyneai.model.ai.*
 import com.spyneai.model.beforeafter.BeforeAfterResponse
@@ -29,6 +31,7 @@ import com.spyneai.model.order.PlaceOrderResponse
 import com.spyneai.model.orders.MyOrdersResponse
 import com.spyneai.model.ordersummary.OrderSummaryResponse
 import com.spyneai.model.otp.OtpResponse
+import com.spyneai.model.otp.SendEmailResponse
 import com.spyneai.model.projects.CompletedProjectResponse
 import com.spyneai.model.shoot.*
 import com.spyneai.model.sku.SkuResponse
@@ -51,9 +54,6 @@ import retrofit2.http.*
 
 interface APiService {
     //-- Cliq APIs --
-    @POST("user/registeration")
-    fun loginEmailApp(@Body loginRequest: LoginRequest?):
-            Call<LoginResponse>?
 
     @FormUrlEncoded
     @POST("v2/user/login")
@@ -78,11 +78,6 @@ interface APiService {
 
             Call<SignupResponse>?
 
-    @GET("user/registeration")
-    fun loginEmailApp(
-        @Query("emailId") emailId: String?,
-        @Query("type") type: String?
-    ): Call<LoginResponse>?
 
     @POST("v2/forgot-password")
     fun forgotPassword(
@@ -95,10 +90,19 @@ interface APiService {
    /* @POST("user/signin")
     fun postOtp(@Header("tokenId") tokenId: String?, @Body userOtp: OtpRequest): Call<OtpResponse>?
 */
-    @GET("credit-user/validate-otp")
-    fun postOtp(@Query("emailId") emailId: String?,
-                @Query("otp") otp: String?):
+    @FormUrlEncoded
+    @POST("v2/user/validate-otp")
+    fun postOtp(@Field("email_id") email_id : String,
+    @Field("api_key") apiKey : String,
+    @Field("otp") otp : String):
            Call<OtpResponse>?
+
+    @FormUrlEncoded
+    @POST("v2/user/request-otp")
+    fun loginEmailApp(@Field("email_id") email_id : String,
+                      @Field("api_key") apiKey : String):
+            Call<LoginResponse>?
+
 
     @GET("credit-user/send-download-mail")
     fun sendEmail(@Query("emailId") emailId: String?,
@@ -107,17 +111,17 @@ interface APiService {
 
     @POST("v2/app/send-shoot-results")
     fun sendEmailAll(@Body sendEmailRequest: SendEmailRequest?):
-           Call<OtpResponse>?
+           Call<SendEmailResponse>?
 
-    @GET("categories/default")
-    fun getCategories(@Header("tokenId") tokenId: String?): Call<CategoriesResponse>?
+    @GET("v2/product/fetch")
+    fun getCategories(@Query("auth_key") authKey : String): Call<NewCategoriesResponse>?
 
 
-    @GET("categories/{catId}/products")
+    @GET("v2/prod/sub/fetch")
     fun getSubCategories(
-        @Header("tokenId") tokenId: String?,
-        @Path("catId") catID: String?
-    ): Call<SubcategoriesResponse>?
+        @Query("auth_key") authKey : String,
+        @Query("prod_id") prodId : String
+    ): Call<NewSubCatResponse>?
 
     @GET("categories/{cat}/products/{product}/markets")
     fun getChannels(

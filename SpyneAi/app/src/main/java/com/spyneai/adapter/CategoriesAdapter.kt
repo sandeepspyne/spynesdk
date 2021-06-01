@@ -14,16 +14,16 @@ import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.spyneai.R
-import com.spyneai.model.categories.Data
+import com.spyneai.dashboard.response.Data
 import com.spyneai.needs.AppConstants
 
 
 public class CategoriesAdapter(
-        val context: Context,
-        val categoriesResponseList: ArrayList<Data>,
-        val btnlistener: BtnClickListener,
-        val before: String,
-        val after: String
+    val context: Context,
+    val categoriesResponseList: ArrayList<Data>,
+    val btnlistener: BtnClickListener,
+    val before: String,
+    val after: String
 )
     : RecyclerView.Adapter<CategoriesAdapter.ViewHolder>() {
 
@@ -74,17 +74,16 @@ public class CategoriesAdapter(
         /*  if (categoriesResponseList[position].displayName.equals("Footwear")
                   || categoriesResponseList[position].displayName.equals("Automobiles") ) {*/
         viewHolder.llCategories.visibility = View.VISIBLE
-        viewHolder.tvCategoryName.text = categoriesResponseList[position].displayName
+        viewHolder.tvCategoryName.text = categoriesResponseList[position].prod_cat_name
         viewHolder.tvCategoryNameSub.text = categoriesResponseList[position].description
 
-        Log.e("Color ", categoriesResponseList[position].colorCode)
 
         Glide.with(context).load(
                 AppConstants.BASE_IMAGE_URL +
-                        categoriesResponseList[position].displayThumbnail.toString()
+                        categoriesResponseList[position].display_thumbnail.toString()
         ).into(viewHolder.imgCategory)
 
-        val colors = intArrayOf(Color.parseColor(categoriesResponseList[position].colorCode),
+        val colors = intArrayOf(Color.parseColor(categoriesResponseList[position].color_code),
                 Color.parseColor("#FFFFFF"))
 
         if (position > 2)

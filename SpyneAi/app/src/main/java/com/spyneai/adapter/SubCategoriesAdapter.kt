@@ -11,13 +11,14 @@ import androidx.cardview.widget.CardView
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.spyneai.R
+import com.spyneai.dashboard.response.NewSubCatResponse
 import com.spyneai.model.subcategories.Data
 import com.spyneai.needs.AppConstants
 
 class SubCategoriesAdapter(val context: Context,
-                                  val subCategoriesList: ArrayList<Data>,
-                                  var pos : Int,
-                                  val btnlistener: BtnClickListener?)
+                           val subCategoriesList: ArrayList<NewSubCatResponse.Data>,
+                           var pos : Int,
+                           val btnlistener: BtnClickListener?)
     : RecyclerView.Adapter<SubCategoriesAdapter.ViewHolder>() {
 
     companion object {
@@ -57,10 +58,10 @@ class SubCategoriesAdapter(val context: Context,
         // Get element from your dataset at this position and replace the
         // contents of the view with that element
         Glide.with(context).load(AppConstants.BASE_IMAGE_URL +
-                subCategoriesList[position].displayThumbnail.toString())
+                subCategoriesList[position].display_thumbnail)
                 .into(viewHolder.ivSubCategories)
 
-        viewHolder.tvSubcategories.setText(subCategoriesList[position].displayName)
+        viewHolder.tvSubcategories.setText(subCategoriesList[position].sub_cat_name)
         mClickListener = btnlistener
         if (position == pos)
             viewHolder.llSubCategoriesImage.setBackgroundResource(R.drawable.bg_selected)
@@ -69,7 +70,7 @@ class SubCategoriesAdapter(val context: Context,
 
         viewHolder.llSubCategories.setOnClickListener(View.OnClickListener {
             if (mClickListener != null)
-                mClickListener?.onBtnClick(position,subCategoriesList[position].displayName,subCategoriesList[position].displayThumbnail)
+                mClickListener?.onBtnClick(position,subCategoriesList[position].sub_cat_name,subCategoriesList[position].display_thumbnail)
             pos = position
 
             viewHolder.llSubCategoriesImage.setBackgroundResource(R.drawable.bg_selected)

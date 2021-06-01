@@ -167,6 +167,10 @@ class SignUpActivity : AppCompatActivity() {
                             this@SignUpActivity, AppConstants.tokenId,
                             response.body()!!.userId
                         )
+
+                        Utilities.savePrefrence(this@SignUpActivity,AppConstants.AUTH_KEY, response.body()!!.auth_token)
+
+
                         val intent = Intent(this@SignUpActivity, MainDashboardActivity::class.java)
                         intent.putExtra("from_signup",true)
 

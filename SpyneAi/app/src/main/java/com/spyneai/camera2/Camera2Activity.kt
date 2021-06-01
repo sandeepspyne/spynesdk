@@ -46,10 +46,13 @@ import com.spyneai.adapter.FocusedFramesAdapter
 import com.spyneai.adapter.InteriorFramesAdapter
 import com.spyneai.adapter.ProgressAdapter
 import com.spyneai.adapter.SubCategoriesAdapter
+import com.spyneai.dashboard.response.NewCategoriesResponse
+import com.spyneai.dashboard.response.NewSubCatResponse
 import com.spyneai.dashboard.ui.dashboard.MainDashboardActivity
 import com.spyneai.fragment.SubCategoryConfirmationDialog
 import com.spyneai.interfaces.APiService
 import com.spyneai.interfaces.RetrofitClient
+import com.spyneai.interfaces.RetrofitClients
 import com.spyneai.model.shoot.*
 import com.spyneai.model.sku.SkuResponse
 import com.spyneai.model.skuedit.EditSkuRequest
@@ -96,7 +99,7 @@ class Camera2Activity : AppCompatActivity() {
     private lateinit var cameraExecutor: ExecutorService
     lateinit var cameraProvider: ProcessCameraProvider
 
-    lateinit var subCategoriesList: ArrayList<Data>
+    lateinit var subCategoriesList: ArrayList<NewSubCatResponse.Data>
     lateinit var subCategoriesAdapter: SubCategoriesAdapter
 
     lateinit var interiorFrameList: ArrayList<FrameImages>
@@ -107,7 +110,7 @@ class Camera2Activity : AppCompatActivity() {
     var catName: String = "Category"
     var selectedSubCategory = ""
     var selectedSubcategoryImage= ""
-    var isSubcatgoryConfirmed = true
+    var isSubcatgoryConfirmed = false
 
 
     var skuId: String = ""
@@ -120,7 +123,8 @@ class Camera2Activity : AppCompatActivity() {
     var frameNumberTemp: Int = 0
 
     var frameImage: String = ""
-    lateinit var frameImageList: ArrayList<FrameImages>
+   // lateinit var frameImageList: ArrayList<FrameImages>
+    lateinit var overlaysList : ArrayList<OverlaysResponse.Data>
     lateinit var frameInteriorImageList: ArrayList<FrameImages>
     lateinit var frameFocusedImageList: ArrayList<FrameImages>
     lateinit var frameImageListSelections: ArrayList<Int>
@@ -149,6 +153,15 @@ class Camera2Activity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_camera2)
 
+        overlaysList = ArrayList()
+
+
+        overlaysList.add(OverlaysResponse.Data(0,"Back",4,"01 Jun, 2021",
+        "Back 180","spyne-cliq/product/Automobile/sedan.png","TaD1VC1Ko","180",1,
+        "over-1002",1,"prodsc-1003","prodsc-1003","Exterior",
+        "01 Jun, 2021"))
+
+
 
         window.setFlags(
             WindowManager.LayoutParams.FLAG_FULLSCREEN,
@@ -162,7 +175,7 @@ class Camera2Activity : AppCompatActivity() {
         setSubCategories()
         setPermissions()
         setCameraActions()
-        setSku()
+
 
         imageFileList = ArrayList<File>()
         imageFileListFrames = ArrayList<Int>()
@@ -176,7 +189,7 @@ class Camera2Activity : AppCompatActivity() {
         gifList = ArrayList<String>()
         frameImageListSelections = ArrayList<Int>()
 
-        frameImageList = ArrayList<FrameImages>()
+        //frameImageList = ArrayList<FrameImages>()
 
         //Get Intents
         gifList.addAll(intent.getParcelableArrayListExtra(AppConstants.GIF_LIST)!!)
@@ -254,14 +267,10 @@ class Camera2Activity : AppCompatActivity() {
                     0 -> {
                         shootDimensions.previewWidth = view.width
                         shootDimensions.previewHeight = view.height
-
-                        Log.d(TAG, "onGlobalLayout: preview "+shootDimensions.previewWidth+ " "+shootDimensions.previewHeight)
                     }
                     1 -> {
                         shootDimensions.overlayWidth = view.width
                         shootDimensions.overlayHeight = view.height
-
-                        Log.d(TAG, "onGlobalLayout: overlay "+shootDimensions.overlayWidth+ " "+shootDimensions.overlayHeight)
                     }
                 }
             }
@@ -269,7 +278,7 @@ class Camera2Activity : AppCompatActivity() {
     }
 
     private fun setSubCategories() {
-        subCategoriesList = ArrayList<Data>()
+        subCategoriesList = ArrayList<NewSubCatResponse.Data>()
         subCategoriesAdapter = SubCategoriesAdapter(
             this,
             subCategoriesList, pos,
@@ -286,6 +295,7 @@ class Camera2Activity : AppCompatActivity() {
                         selectedSubCategory = subcategoryName
                         selectedSubcategoryImage = subcategoryImage
                         etSkuName.setText(vinNumber)
+
                         setProductMap(
                             Utilities.getPreference(
                                 this@Camera2Activity,
@@ -537,8 +547,9 @@ class Camera2Activity : AppCompatActivity() {
 
         if (!interiorEnabled) {
             if (!focusedEnabled) {
-                if (frameImageList.size > 0) {
-                    Glide.with(this@Camera2Activity).load(
+//                if (frameImageList.size > 0) {
+                if (overlaysList.size > 0) {
+                    /*Glide.with(this@Camera2Activity).load(
                         AppConstants.BASE_IMAGE_URL +
                                 frameImageList[frameNumber - 1].displayImage
                     ).into(ivPreview)
@@ -546,8 +557,17 @@ class Camera2Activity : AppCompatActivity() {
                     Glide.with(this@Camera2Activity).load(
                         AppConstants.BASE_IMAGE_URL +
                                 frameImageList[frameNumber - 1].displayImage
-                    ).into(imgOverlay)
+                    ).into(imgOverlay)*/
 
+                    Glide.with(this@Camera2Activity).load(
+                        AppConstants.BASE_IMAGE_URL +
+                                overlaysList[0].display_thumbnail
+                    ).into(ivPreview)
+
+                    Glide.with(this@Camera2Activity).load(
+                        AppConstants.BASE_IMAGE_URL +
+                                overlaysList[0].display_thumbnail
+                    ).into(imgOverlay)
 
                     ivPreview.visibility = View.VISIBLE
                     imgOverlay.visibility = View.VISIBLE
@@ -600,25 +620,34 @@ class Camera2Activity : AppCompatActivity() {
         else
             catIds = Utilities.getPreference(this, AppConstants.CATEGORY_ID)!!
 
-        val request = RetrofitClient.buildService(APiService::class.java)
+        val request = RetrofitClients.buildService(APiService::class.java)
+//        val call = request.getSubCategories(
+//            Utilities.getPreference(this, AppConstants.tokenId), catIds
+//        )
+
         val call = request.getSubCategories(
-            Utilities.getPreference(this, AppConstants.tokenId), catIds
+            Utilities.getPreference(this,AppConstants.AUTH_KEY).toString(), catIds
         )
 
-        call?.enqueue(object : Callback<SubcategoriesResponse> {
+        call?.enqueue(object : Callback<NewSubCatResponse> {
             override fun onResponse(
-                call: Call<SubcategoriesResponse>,
-                response: Response<SubcategoriesResponse>
+                call: Call<NewSubCatResponse>,
+                response: Response<NewSubCatResponse>
             ) {
                 Utilities.hideProgressDialog()
                 if (response.isSuccessful) {
-                    if (response.body()?.payload?.data?.size!! > 0) {
-                        subCategoriesList.addAll(response.body()?.payload?.data!!)
 
-                        selectedSubCategory = subCategoriesList.get(pos).displayName
-                        selectedSubcategoryImage = subCategoriesList.get(pos).displayThumbnail
+
+                    if (response.body()?.status == 200 && response.body()?.data?.isNotEmpty()!!) {
+
+                        subCategoriesList.addAll(response.body()?.data!!)
+
+                        selectedSubCategory = subCategoriesList.get(pos).sub_cat_name
+                        selectedSubcategoryImage = subCategoriesList.get(pos).display_thumbnail
+
+                        subCategoriesAdapter.notifyDataSetChanged()
                     }
-                    subCategoriesAdapter.notifyDataSetChanged()
+
 
                     if (Utilities.getPreference(this@Camera2Activity, AppConstants.FROM)
                             .equals("BA")
@@ -632,7 +661,7 @@ class Camera2Activity : AppCompatActivity() {
                 }
             }
 
-            override fun onFailure(call: Call<SubcategoriesResponse>, t: Throwable) {
+            override fun onFailure(call: Call<NewSubCatResponse>, t: Throwable) {
                 Log.e("ok", "no way")
                 Utilities.hideProgressDialog()
                 Toast.makeText(
@@ -972,9 +1001,6 @@ class Camera2Activity : AppCompatActivity() {
             Manifest.permission.WRITE_EXTERNAL_STORAGE,
             Manifest.permission.READ_EXTERNAL_STORAGE
         )
-
-        private const val RATIO_4_3_VALUE = 4.0 / 3.0 // aspect ratio 4x3
-        private const val RATIO_16_9_VALUE = 16.0 / 9.0 // aspect ratio 16x9
     }
 
     @SuppressLint("RestrictedApi", "UnsafeExperimentalUsageError", "UnsafeOptInUsageError")
@@ -997,7 +1023,11 @@ class Camera2Activity : AppCompatActivity() {
                     it.setSurfaceProvider(viewFinder.surfaceProvider)
                 }
 
-            val viewPort = ViewPort.Builder(Rational(3,4), display!!.rotation).build()
+            // Preview
+            val viewPort = ViewPort.Builder(
+                Rational(4, 3),
+                display!!.rotation
+            ).build()
 
             //for exact image cropping
            // val viewPort = findViewById<PreviewView>(R.id.viewFinder).viewPort
@@ -1176,10 +1206,15 @@ class Camera2Activity : AppCompatActivity() {
 
                         ivClickedImageoverlay.layoutParams = params
 
-                        if (frameImageList != null)
+                        if (overlaysList != null)
                             Glide.with(this@Camera2Activity).load(
-                                AppConstants.BASE_IMAGE_URL + frameImageList[frameNumber - 1].displayImage
+                                AppConstants.BASE_IMAGE_URL + overlaysList[0].display_thumbnail
                             ).into(ivClickedImageoverlay)
+
+//                        if (overlaysList != null)
+//                            Glide.with(this@Camera2Activity).load(
+//                                AppConstants.BASE_IMAGE_URL + overlaysList[frameNumber - 1].display_thumbnail
+//                            ).into(ivClickedImageoverlay)
                     }
                 })
             }
@@ -1230,7 +1265,11 @@ class Camera2Activity : AppCompatActivity() {
                     rvSubcategories.visibility = View.VISIBLE
 
                     imageFileList.add(photoFile!!)
-                    imageFileListFrames.add(frameImageList[frameImageListSelections[frameNumberTemp]].frameNumber)
+
+//                    imageFileListFrames.add(frameImageList[frameImageListSelections[frameNumberTemp]].frameNumber)
+                   //update this
+                    imageFileListFrames.add(4)
+
                     if (frameNumberTemp < frameImageListSelections.size - 1) {
                         showProgressFrames(++frameNumberTemp)
                         camera_capture_button.isEnabled = true
@@ -1266,17 +1305,8 @@ class Camera2Activity : AppCompatActivity() {
                         )
                         intent.putExtra(AppConstants.GIF_LIST, gifList)
 
-                        Log.e("All focused Image", imageFocusedFileList.toString())
-                        Log.e("All focused Frames", imageFocusedFileListFrames.toString())
+                         Utilities.savePrefrence(this, AppConstants.SKU_NAME, skuName)
 
-                        Utilities.savePrefrence(this, AppConstants.SKU_NAME, skuName)
-                        Log.e(
-                            "Camera  SKU",
-                            Utilities.getPreference(
-                                this,
-                                AppConstants.SKU_NAME
-                            )!!
-                        )
                         startActivity(intent)
                         finish()
                     }
@@ -1368,30 +1398,14 @@ class Camera2Activity : AppCompatActivity() {
         }
     }
 
-    private fun setSku() {
-        etSkuName.addTextChangedListener(object : TextWatcher {
-            override fun afterTextChanged(s: Editable?) {
-            }
-
-            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
-            }
-
-            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-
-            }
-        })
-
-
-    }
-
 
     private fun setProductMap(shootId: String, position: Int, updateShoots: Boolean) {
         Utilities.showProgressDialog(this)
 
         val updateShootProductRequest = UpdateShootProductRequest(
             shootId,
-            subCategoriesList[position].prodId,
-            subCategoriesList[position].displayName
+            subCategoriesList[position].prod_sub_cat_id,
+            subCategoriesList[position].sub_cat_name
         )
 
         val request = RetrofitClient.buildService(APiService::class.java)
@@ -1408,13 +1422,9 @@ class Camera2Activity : AppCompatActivity() {
                 if (response.isSuccessful) {
                     Log.e(
                         "Product map",
-                        subCategoriesList[position].prodId + " " + response.body()!!.msgInfo.msgDescription
+                        subCategoriesList[position].prod_cat_id + " " + response.body()!!.msgInfo.msgDescription
                     )
-                    setSkuIdMap(
-                        shootId,
-                        subCategoriesList[position].catId, subCategoriesList[position].prodId,
-                        updateShoots
-                    )
+                    setSkuIdMap(shootId, subCategoriesList[position].prod_cat_id, subCategoriesList[position].prod_sub_cat_id, updateShoots)
                 }
             }
 
@@ -1466,16 +1476,18 @@ class Camera2Activity : AppCompatActivity() {
                     /*   if (response.body()!!.payload.data.frames != null)
                            totalFrames = response.body()!!.payload.data.frames.totalFrames
    */
-                    frameImageList = ArrayList<FrameImages>()
-                    frameInteriorImageList = ArrayList<FrameImages>()
-                    frameFocusedImageList = ArrayList<FrameImages>()
-                    interiorFrameList = ArrayList<FrameImages>()
-                    focusedFrameList = ArrayList<FrameImages>()
+                    //fetch new overlay call here
+                   // frameImageList = ArrayList<FrameImages>()
+                    //frameImageList.clear()
+                    //frameImageList.addAll(response.body()?.payload!!.data.frames.frameImages)
 
-                    frameImageList.clear()
+                    frameInteriorImageList = ArrayList()
+                    frameFocusedImageList = ArrayList()
+                    interiorFrameList = ArrayList()
+                    focusedFrameList = ArrayList()
+
                     frameInteriorImageList.clear()
 
-                    frameImageList.addAll(response.body()?.payload!!.data.frames.frameImages)
                     frameInteriorImageList.addAll(response.body()?.payload!!.data.frames.interiorImages)
                     frameFocusedImageList.addAll(response.body()?.payload!!.data.frames.focusImages)
                     interiorFrameList.addAll(response.body()?.payload!!.data.frames.interiorImages)
@@ -1532,13 +1544,13 @@ class Camera2Activity : AppCompatActivity() {
                     Log.e("focused List ", frameFocusedImageList.toString())
                     focusedFramesAdapter.notifyDataSetChanged()
 
-
-
-                    if (response.body()?.payload!!.data.frames != null && response.body()?.payload!!.data.frames.frameImages.size > 0) {
+                    //update as per new overlay api
+                   /* if (response.body()?.payload!!.data.frames != null && response.body()?.payload!!.data.frames.frameImages.size > 0) {
                         frameImageList = ArrayList<FrameImages>()
                         frameImageList.clear()
                         frameImageList.addAll(response.body()?.payload!!.data.frames.frameImages)
                     }
+
                     Glide.with(this@Camera2Activity).load(
                         AppConstants.BASE_IMAGE_URL +
                                 frameImageList[frameNumber - 1].displayImage
@@ -1547,6 +1559,16 @@ class Camera2Activity : AppCompatActivity() {
                     Glide.with(this@Camera2Activity).load(
                         AppConstants.BASE_IMAGE_URL +
                                 frameImageList[frameNumber - 1].displayImage
+                    ).into(imgOverlay)*/
+
+                    Glide.with(this@Camera2Activity).load(
+                        AppConstants.BASE_IMAGE_URL +
+                                overlaysList[frameNumber - 1].display_thumbnail
+                    ).into(ivPreview)
+
+                    Glide.with(this@Camera2Activity).load(
+                        AppConstants.BASE_IMAGE_URL +
+                                overlaysList[frameNumber - 1].display_thumbnail
                     ).into(imgOverlay)
 
                     Utilities.savePrefrence(this@Camera2Activity, AppConstants.SHOOT_ID, shootIds)
@@ -1616,12 +1638,9 @@ class Camera2Activity : AppCompatActivity() {
         })
     }
 
-
-
     override fun onBackPressed() {
         showExitDialog()
     }
-
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
@@ -1643,18 +1662,6 @@ class Camera2Activity : AppCompatActivity() {
             }
         }
     }
-
-
-    fun rotateImage(source: Bitmap, angle: Float): Bitmap? {
-        val matrix = Matrix()
-
-        matrix.postRotate(angle)
-        return Bitmap.createBitmap(
-            source, 0, 0, source.width, source.height,
-            matrix, true
-        )
-    }
-
 
     //Custom frame selection
 
@@ -1787,7 +1794,6 @@ class Camera2Activity : AppCompatActivity() {
         dialog.show()
     }
 
-
     @RequiresApi(Build.VERSION_CODES.M)
     fun showInteriorDialog() {
         val dialog = Dialog(this)
@@ -1824,7 +1830,6 @@ class Camera2Activity : AppCompatActivity() {
 
         dialog.show()
     }
-
 
     @RequiresApi(Build.VERSION_CODES.M)
     fun showFocusedDialog() {
@@ -1885,7 +1890,6 @@ class Camera2Activity : AppCompatActivity() {
 
         dialog.show()
     }
-
 
     fun showExitDialog() {
         val dialog = Dialog(this)

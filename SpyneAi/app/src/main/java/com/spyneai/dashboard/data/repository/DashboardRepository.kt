@@ -27,7 +27,7 @@ class DashboardRepository() : BaseRepository() {
     suspend fun getCategories(
         tokenId: String
     ) = safeApiCall {
-        spyneApi.getCategories(tokenId)
+        clipperApi.getCategories("fde46c58-5735-4fcf-8b38-980c95001dc3")
     }
 
     suspend fun createCollection(

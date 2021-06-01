@@ -33,8 +33,8 @@ class SubCategoryConfirmationDialog : DialogFragment() {
                     arguments?.getString("subcat_image"))
                 .into(binding.ivSubcat)
 
-            binding.tvMessage.text = "Selected Category "+arguments?.getString("subcat_name")+
-                    " Angles "+Utilities.getPreference(requireContext(), AppConstants.FRAME_SHOOOTS).toString()
+            binding.tvAngles.text = Utilities.getPreference(requireContext(), AppConstants.FRAME_SHOOOTS).toString()
+
         }catch (e : Exception){
             e.printStackTrace()
         }

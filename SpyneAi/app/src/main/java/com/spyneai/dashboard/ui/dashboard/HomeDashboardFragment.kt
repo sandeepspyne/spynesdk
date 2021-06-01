@@ -32,11 +32,11 @@ import com.spyneai.dashboard.adapters.SliderAdapter
 import com.spyneai.dashboard.adapters.TutorialVideosAdapter
 import com.spyneai.dashboard.data.model.SliderModel
 import com.spyneai.dashboard.network.Resource
+import com.spyneai.dashboard.response.Data
 import com.spyneai.dashboard.ui.base.BaseFragment
 import com.spyneai.dashboard.ui.handleApiError
 import com.spyneai.databinding.HomeDashboardFragmentBinding
 import com.spyneai.extras.BeforeAfterActivity
-import com.spyneai.model.categories.Data
 import com.spyneai.model.processImageService.Task
 import com.spyneai.model.projects.CompletedProjectResponse
 import com.spyneai.model.shoot.CreateCollectionRequest
@@ -80,9 +80,10 @@ class HomeDashboardFragment :
 
     lateinit var catId: String
     lateinit var displayName: String
-    lateinit var displayThumbnail: String
+    lateinit var display_thumbnail: String
     lateinit var description: String
     lateinit var colorCode: String
+    val TAG = "HomeDashboardFragment"
 
     private lateinit var tabLayout: TabLayout
 
@@ -90,6 +91,9 @@ class HomeDashboardFragment :
         super.onActivityCreated(savedInstanceState)
 
         tokenId = Utilities.getPreference(requireContext(), AppConstants.tokenId).toString()
+
+        Log.d(TAG, "onActivityCreated: "+tokenId)
+
         email = Utilities.getPreference(requireContext(), AppConstants.EMAIL_ID).toString()
 
         userFreeCreditEligiblityCheck()
@@ -105,6 +109,7 @@ class HomeDashboardFragment :
         }
 
         viewModel.getCategories(tokenId)
+
         viewModel.categoriesResponse.observe(viewLifecycleOwner, Observer {
             when(it){
                 is Resource.Sucess -> {
@@ -112,7 +117,7 @@ class HomeDashboardFragment :
                     shimmerCategories.visibility = View.GONE
                     rvDashboardCategories.visibility = View.VISIBLE
                     categoriesAdapter = CategoriesDashboardAdapter(requireContext(),
-                        it.value.payload.data as ArrayList<Data>,
+                        it.value.data as ArrayList<Data>,
                         object : CategoriesDashboardAdapter.BtnClickListener {
                             override fun onBtnClick(position: Int) {
                                 if (position < 3) {
@@ -120,18 +125,16 @@ class HomeDashboardFragment :
                                     Utilities.savePrefrence(
                                         requireContext(),
                                         AppConstants.CATEGORY_NAME,
-                                        it.value.payload.data[position].displayName
+                                        it.value.data[position].prod_cat_name
                                     )
 
-                                    catId =   it.value.payload.data[position].catId
-                                    displayName =   it.value.payload.data[position].displayName
-                                    displayThumbnail =   it.value.payload.data[position].displayThumbnail
-                                    description =   it.value.payload.data[position].description
-                                    colorCode =   it.value.payload.data[position].colorCode
+                                    catId =   it.value.data[position].prod_cat_id
+                                    displayName =   it.value.data[position].prod_cat_name
+                                    display_thumbnail =   it.value.data[position].display_thumbnail
+                                    description =   it.value.data[position].description
+                                    colorCode =   it.value.data[position].color_code
 
-
-
-                                    setShoot(it.value.payload.data as ArrayList<Data>, position)
+                                    setShoot(it.value.data as ArrayList<Data>, position)
                                 } else
                                     Toast.makeText(
                                         requireContext(),
@@ -221,7 +224,6 @@ class HomeDashboardFragment :
 //                is Resource.Loading -> {
 //                }
                 is Resource.Failure -> {
-
                     handleApiError(it)
                 }
             }
@@ -241,7 +243,7 @@ class HomeDashboardFragment :
                     )
                     intent.putExtra(
                         AppConstants.IMAGE_URL,
-                        displayThumbnail
+                        display_thumbnail
                     )
                     intent.putExtra(
                         AppConstants.DESCRIPTION,
@@ -268,17 +270,10 @@ class HomeDashboardFragment :
 //                is Resource.Loading -> {
 //                }
                 is Resource.Failure -> {
-
                     handleApiError(it)
                 }
             }
         })
-
-    }
-
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
-
     }
 
     private fun setSliderRecycler(){
@@ -288,9 +283,6 @@ class HomeDashboardFragment :
         tabLayout = tbDashboard
         tabLayout.addTab(tabLayout.newTab());
         tabLayout.addTab(tabLayout.newTab());
-
-
-
 
         ivBanner.setBeforeImage(ContextCompat.getDrawable(requireContext(),R.drawable.car_before)).setAfterImage(ContextCompat.getDrawable(requireContext(),R.drawable.car_after))
         ivNext.setOnClickListener {
@@ -303,7 +295,6 @@ class HomeDashboardFragment :
             val tab: TabLayout.Tab = tbDashboard.getTabAt(0)!!
             tab.select()
             ivBanner.setBeforeImage(ContextCompat.getDrawable(requireContext(),R.drawable.car_before)).setAfterImage(ContextCompat.getDrawable(requireContext(),R.drawable.car_after))
-
         }
 
 

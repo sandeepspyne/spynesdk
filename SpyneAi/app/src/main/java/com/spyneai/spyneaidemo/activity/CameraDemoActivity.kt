@@ -46,9 +46,11 @@ import com.bumptech.glide.Glide
 import com.spyneai.R
 import com.spyneai.adapter.ProgressAdapter
 import com.spyneai.adapter.SubCategoriesAdapter
+import com.spyneai.dashboard.response.NewSubCatResponse
 import com.spyneai.dashboard.ui.dashboard.MainDashboardActivity
 import com.spyneai.interfaces.APiService
 import com.spyneai.interfaces.RetrofitClient
+import com.spyneai.interfaces.RetrofitClients
 import com.spyneai.model.shoot.*
 import com.spyneai.model.sku.SkuResponse
 import com.spyneai.model.skuedit.EditSkuRequest
@@ -97,7 +99,7 @@ class CameraDemoActivity : AppCompatActivity()  {
     private lateinit var cameraExecutor: ExecutorService
     lateinit var cameraProvider : ProcessCameraProvider
 
-    lateinit var subCategoriesList : ArrayList<Data>
+    lateinit var subCategoriesList : ArrayList<NewSubCatResponse.Data>
 //    lateinit var subCategoriesAdapter: SubCategoriesAdapter
     var catName : String = "Category"
 
@@ -369,7 +371,7 @@ class CameraDemoActivity : AppCompatActivity()  {
 
     private fun fetchSubCategories() {
         Utilities.showProgressDialog(this)
-        subCategoriesList = ArrayList<Data>()
+        subCategoriesList = ArrayList<NewSubCatResponse.Data>()
         subCategoriesList.clear()
 
         if (intent.getStringExtra(AppConstants.CATEGORY_ID) != null)
@@ -377,22 +379,25 @@ class CameraDemoActivity : AppCompatActivity()  {
         else
             catIds = Utilities.getPreference(this, AppConstants.CATEGORY_ID)!!
 
-        val request = RetrofitClient.buildService(APiService::class.java)
+        val request = RetrofitClients.buildService(APiService::class.java)
+//        val call = request.getSubCategories(
+//                Utilities.getPreference(this, AppConstants.tokenId), catIds
+//        )
+
         val call = request.getSubCategories(
-                Utilities.getPreference(this, AppConstants.tokenId), catIds
+            "3c436435-238a-4bdc-adb8-d6182fddeb43", "prodc-1001"
         )
 
-        call?.enqueue(object : Callback<SubcategoriesResponse> {
+        call?.enqueue(object : Callback<NewSubCatResponse> {
             override fun onResponse(
-                    call: Call<SubcategoriesResponse>,
-                    response: Response<SubcategoriesResponse>
+                    call: Call<NewSubCatResponse>,
+                    response: Response<NewSubCatResponse>
             ) {
                 Utilities.hideProgressDialog()
                 if (response.isSuccessful) {
-                    if (response.body()?.payload?.data?.size!! > 0) {
-                        subCategoriesList.addAll(response.body()?.payload?.data!!)
+                    if (response.body()?.status == 200 && response.body()?.data?.isNotEmpty()!!) {
+                        subCategoriesList.addAll(response.body()?.data!!)
                     }
-//                    subCategoriesAdapter.notifyDataSetChanged()
 
                     if (Utilities.getPreference(this@CameraDemoActivity, AppConstants.FROM)
                                     .equals("BA")
@@ -408,7 +413,7 @@ class CameraDemoActivity : AppCompatActivity()  {
                 }
             }
 
-            override fun onFailure(call: Call<SubcategoriesResponse>, t: Throwable) {
+            override fun onFailure(call: Call<NewSubCatResponse>, t: Throwable) {
                 Log.e("ok", "no way")
                 Utilities.hideProgressDialog()
                 Toast.makeText(
@@ -822,8 +827,8 @@ class CameraDemoActivity : AppCompatActivity()  {
 
         val updateShootProductRequest = UpdateShootProductRequest(
                 shootId,
-                subCategoriesList[position].prodId,
-                subCategoriesList[position].displayName
+                subCategoriesList[position].prod_cat_id,
+                subCategoriesList[position].sub_cat_name
         )
 
         val request = RetrofitClient.buildService(APiService::class.java)
@@ -840,11 +845,11 @@ class CameraDemoActivity : AppCompatActivity()  {
                 if (response.isSuccessful) {
                     Log.e(
                             "Product map",
-                            subCategoriesList[position].prodId + " " + response.body()!!.msgInfo.msgDescription
+                            subCategoriesList[position].prod_cat_id + " " + response.body()!!.msgInfo.msgDescription
                     )
                     setSkuIdMap(
                             shootId,
-                            subCategoriesList[position].catId, subCategoriesList[position].prodId
+                            subCategoriesList[position].prod_sub_cat_id, subCategoriesList[position].prod_cat_id
                     )
                 }
             }

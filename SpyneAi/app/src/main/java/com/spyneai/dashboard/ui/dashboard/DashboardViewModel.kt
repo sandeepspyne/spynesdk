@@ -7,6 +7,7 @@ import androidx.lifecycle.viewModelScope
 import com.spyneai.dashboard.data.repository.BaseRepository
 import com.spyneai.dashboard.data.repository.DashboardRepository
 import com.spyneai.dashboard.network.Resource
+import com.spyneai.dashboard.response.NewCategoriesResponse
 import com.spyneai.model.categories.CategoriesResponse
 import com.spyneai.model.categories.Data
 import com.spyneai.model.credit.FreeCreditEligblityResponse
@@ -22,8 +23,8 @@ class DashboardViewModel() : ViewModel() {
 
     private val repository = DashboardRepository()
 
-    private val _categoriesResponse: MutableLiveData<Resource<CategoriesResponse>> = MutableLiveData()
-    val categoriesResponse: LiveData<Resource<CategoriesResponse>>
+    private val _categoriesResponse: MutableLiveData<Resource<NewCategoriesResponse>> = MutableLiveData()
+    val categoriesResponse: LiveData<Resource<NewCategoriesResponse>>
         get() = _categoriesResponse
 
     private val _completedProjectResponse: MutableLiveData<Resource<List<CompletedProjectResponse>>> = MutableLiveData()

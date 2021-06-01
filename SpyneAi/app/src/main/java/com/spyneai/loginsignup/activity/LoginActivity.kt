@@ -114,6 +114,8 @@ class LoginActivity : AppCompatActivity() {
                             loginResponse.user_id
                         )
 
+                        Utilities.savePrefrence(this@LoginActivity,AppConstants.AUTH_KEY, response.body()!!.auth_token)
+
                         bt_login.isClickable = true
                         tvSignup.isClickable = true
                         tvForgotPassword.isClickable = true

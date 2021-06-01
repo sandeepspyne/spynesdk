@@ -1,6 +1,7 @@
 package com.spyneai.needs
 
 object AppConstants {
+    val AUTH_KEY ="AUTH_KEY"
     val IS_DOWNLOADED_BEFORE =  "IS_DOWNLOADED_BEFORE"
     val CREDIT_REMAINING = "credit_remaining"
     val EXPOSURES: String = "exposures"
@@ -89,10 +90,4 @@ object AppConstants {
     val CORNER_POSITION: String = "corner_position"
 
     val API_KEY: String = "ee84dc3e-340e-4d39-a24c-9365272405f9"
-
-
-
-
-
-
 }
