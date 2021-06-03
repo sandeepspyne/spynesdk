@@ -39,7 +39,8 @@
         android:theme="@style/Theme.SpyneAi"
         android:usesCleartextTraffic="true"
         tools:targetApi="m">
-        <activity android:name=".dashboard.ui.dashboard.YoutubeVideoPlayerActivity"></activity>
+        <activity android:name=".shoot.ui.ShootActivity"></activity>
+        <activity android:name=".dashboard.ui.dashboard.YoutubeVideoPlayerActivity" />
         <activity
             android:name=".dashboard.ui.dashboard.MainDashboardActivity"
             android:screenOrientation="portrait" />

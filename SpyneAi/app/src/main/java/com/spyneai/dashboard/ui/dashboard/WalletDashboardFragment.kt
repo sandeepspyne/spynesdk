@@ -149,7 +149,6 @@ class WalletDashboardFragment : Fragment() {
                     }
                 }
             }
-
             override fun onFailure(call: Call<CreditDetailsResponse>, t: Throwable) {
                 binding.shimmer.startShimmer()
                 retry++
