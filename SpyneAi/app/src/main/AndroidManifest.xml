@@ -39,7 +39,7 @@
         android:theme="@style/Theme.SpyneAi"
         android:usesCleartextTraffic="true"
         tools:targetApi="m">
-        <activity android:name=".shoot.ui.ShootActivity"></activity>
+<!--        <activity android:name=".shoot.ui.ShootActivity"></activity>-->
         <activity android:name=".dashboard.ui.dashboard.YoutubeVideoPlayerActivity" />
         <activity
             android:name=".dashboard.ui.dashboard.MainDashboardActivity"
@@ -261,8 +261,8 @@
             android:screenOrientation="portrait"
             android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
         <activity
-            android:name=".activity.SplashActivity"
-            android:screenOrientation="portrait">
+            android:name=".shoot.ui.ShootActivity"
+            android:screenOrientation="landscape">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
