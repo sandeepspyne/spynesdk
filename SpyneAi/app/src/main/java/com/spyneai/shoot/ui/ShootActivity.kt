@@ -7,6 +7,8 @@ import android.os.Build
 import android.os.Bundle
 import android.os.Environment
 import android.view.View
+import android.view.Window
+import android.view.WindowManager
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
@@ -19,16 +21,20 @@ import com.spyneai.R
 class ShootActivity : AppCompatActivity() {
 
     lateinit var cameraFragment: CameraFragment
+    lateinit var overlaysFragment: OverlaysFragment
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_shoot)
 
         cameraFragment = CameraFragment()
+        overlaysFragment = OverlaysFragment()
 
         if(savedInstanceState == null) { // initial transaction should be wrapped like this
             supportFragmentManager.beginTransaction()
-                .replace(R.id.flCamerFragment, cameraFragment)
+                .add(R.id.flCamerFragment, cameraFragment)
+                .add(R.id.flCamerFragment, overlaysFragment)
                 .commitAllowingStateLoss()
         }
 

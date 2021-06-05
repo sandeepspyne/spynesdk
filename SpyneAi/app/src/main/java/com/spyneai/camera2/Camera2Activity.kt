@@ -165,10 +165,10 @@ class Camera2Activity : AppCompatActivity(), SubCategoriesAdapter.BtnClickListen
     @RequiresApi(Build.VERSION_CODES.M)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_camera2)
-
         window.setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
             WindowManager.LayoutParams.FLAG_FULLSCREEN)
+        setContentView(R.layout.activity_camera2)
+
         AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
 
         if (Utilities.getPreference(this,AppConstants.CATEGORY_NAME).equals("Automobiles"))

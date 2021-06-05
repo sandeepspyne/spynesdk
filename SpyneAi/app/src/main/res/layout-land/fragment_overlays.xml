@@ -4,7 +4,8 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    tools:context=".shoot.ui.OverlaysFragment">
+    tools:context=".shoot.ui.OverlaysFragment"
+    android:background="@android:color/transparent">
 
     <LinearLayout
         android:id="@+id/llLeft"
@@ -71,7 +72,6 @@
         <ImageView
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:src="@mipmap/defaults"
             android:padding="@dimen/dp_20"/>
 
 
