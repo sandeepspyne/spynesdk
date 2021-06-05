@@ -9,7 +9,7 @@
 
     <LinearLayout
         android:id="@+id/llLeft"
-        android:layout_width="wrap_content"
+        android:layout_width="75dp"
         android:layout_height="match_parent"
         android:background="@color/black"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -39,13 +39,13 @@
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"
         android:orientation="vertical">
-        
+
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
             android:gravity="center">
-            
+
             <EditText
                 android:id="@+id/etSkuName"
                 android:layout_width="wrap_content"
@@ -67,7 +67,7 @@
                 android:padding="@dimen/dp_5"
                 android:src="@drawable/right"
                 app:tint="@color/primary" />
-            
+
         </LinearLayout>
         <ImageView
             android:layout_width="match_parent"
@@ -133,6 +133,6 @@
 
 
 
-   
+
 
 </androidx.constraintlayout.widget.ConstraintLayout>

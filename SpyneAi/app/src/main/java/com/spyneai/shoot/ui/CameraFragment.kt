@@ -3,7 +3,9 @@ package com.spyneai.shoot.ui
 import android.app.Activity
 import android.content.ContentValues
 import android.content.ContentValues.TAG
+import android.content.Context
 import android.content.pm.ActivityInfo
+import android.hardware.display.DisplayManager
 import android.os.*
 import android.provider.MediaStore
 import android.util.DisplayMetrics
@@ -21,6 +23,7 @@ import com.robertlevonyan.demo.camerax.analyzer.LuminosityAnalyzer
 import com.spyneai.databinding.FragmentCameraBinding
 import com.spyneai.shoot.utils.ThreadExecutor
 import com.spyneai.shoot.utils.mainExecutor
+import kotlinx.android.synthetic.main.activity_camera.*
 import java.io.File
 import java.util.concurrent.ExecutionException
 import kotlin.math.abs
@@ -45,7 +48,6 @@ class CameraFragment : Fragment() {
         private const val RATIO_4_3_VALUE = 4.0 / 3.0 // aspect ratio 4x3
         private const val RATIO_16_9_VALUE = 16.0 / 9.0 // aspect ratio 16x9
     }
-
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
