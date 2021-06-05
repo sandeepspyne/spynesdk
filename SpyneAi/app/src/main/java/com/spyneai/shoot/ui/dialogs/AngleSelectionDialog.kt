@@ -19,17 +19,15 @@ class AngleSelectionDialog : BaseDialogFragment<ShootViewModel,DialogAngleSelect
     private fun showOptions() {
         val valuesShoots = arrayOf("4 Angles", "8 Angles", "12 Angles")
 
-        val lastSelectedAngles = viewModel.angles.value.toString()
-        var newSelectedAngles =viewModel.angles.value.toString()
+        val lastSelectedAngles = viewModel.getAngles().toString()
+        var newSelectedAngles =viewModel.getAngles().toString()
 
-
-        when(viewModel.angles.value){
+        when(viewModel.getAngles()){
             4 -> binding.npShoots.minValue = 0
             8 -> binding.npShoots.minValue = 1
             12 -> binding.npShoots.minValue = 2
         }
 
-        binding.npShoots.minValue = 0
         binding.npShoots.maxValue = valuesShoots.size - 1
         binding.npShoots.displayedValues = valuesShoots
 
@@ -38,19 +36,19 @@ class AngleSelectionDialog : BaseDialogFragment<ShootViewModel,DialogAngleSelect
 
             when {
                 valuesShoots[newVal] == "4 Angles" -> {
-                    viewModel._angles.value = 4
+                    viewModel.angles.value = 4
                     //setProgressFrame(4)
                 }
                 valuesShoots[newVal] == "8 Angles" -> {
-                    viewModel._angles.value = 8
+                    viewModel.angles.value = 8
                     //setProgressFrame(8)
                 }
                 valuesShoots[newVal] == "12 Angles" -> {
-                    viewModel._angles.value = 12
+                    viewModel.angles.value = 12
                     // setProgressFrame(12)
                 }
                 valuesShoots[newVal] == "24 Angles" -> {
-                    viewModel._angles.value = 24
+                    viewModel.angles.value = 24
                     //setProgressFrame(24)
                 }
             }

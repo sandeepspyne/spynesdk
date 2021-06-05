@@ -18,9 +18,11 @@ class ShootViewModel : ViewModel(){
     val subCategoriesResponse: LiveData<Resource<NewSubCatResponse>>
         get() = _subCategoriesResponse
 
-    public val _angles: MutableLiveData<Int> = MutableLiveData()
-    val angles: LiveData<Int>
-        get() = _angles
+    val angles: MutableLiveData<Int> = MutableLiveData()
+//    val angles: LiveData<Int>
+//        get() = _angles
+
+    fun getAngles() = angles.value
 
     fun getSubCategories(
         authKey : String,prodId : String

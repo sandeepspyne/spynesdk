@@ -21,7 +21,6 @@ class OverlaysFragment : BaseFragment<ShootViewModel,FragmentOverlaysBinding>() 
 
     lateinit var subCategoriesAdapter: SubCategoriesAdapter
 
-
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
@@ -50,7 +49,7 @@ class OverlaysFragment : BaseFragment<ShootViewModel,FragmentOverlaysBinding>() 
     }
 
     private fun initAngles() {
-        viewModel._angles.value = 8
+        viewModel.angles.value = 8
 
         binding.tvShoot?.setOnClickListener {
             AngleSelectionDialog().show(requireFragmentManager(),"AngleSelectionDialog")
@@ -79,5 +78,4 @@ class OverlaysFragment : BaseFragment<ShootViewModel,FragmentOverlaysBinding>() 
         inflater: LayoutInflater,
         container: ViewGroup?
     ) = FragmentOverlaysBinding.inflate(inflater, container, false)
-
 }
