@@ -17,16 +17,16 @@ import com.bumptech.glide.Glide
 import com.facebook.shimmer.Shimmer
 import com.facebook.shimmer.ShimmerFrameLayout
 import com.spyneai.R
-import com.spyneai.model.categories.Data
+import com.spyneai.dashboard.response.Data
 import com.spyneai.needs.AppConstants
 import com.spyneai.needs.Utilities
 import kotlinx.android.synthetic.main.row_categories_dashboard.view.*
 
 
 public class CategoriesDashboardAdapter(
-        val context: Context,
-        val categoriesResponseList: ArrayList<Data>,
-        val btnlistener: BtnClickListener
+    val context: Context,
+    val categoriesResponseList: ArrayList<Data>,
+    val btnlistener: BtnClickListener
 )
     : RecyclerView.Adapter<CategoriesDashboardAdapter.ViewHolder>() {
 
@@ -73,20 +73,19 @@ public class CategoriesDashboardAdapter(
         /*  if (categoriesResponseList[position].displayName.equals("Footwear")
                   || categoriesResponseList[position].displayName.equals("Automobiles") ) {*/
 
-        viewHolder.tvCategoryName.text = categoriesResponseList[position].displayName
+        viewHolder.tvCategoryName.text = categoriesResponseList[position].prod_cat_name
 
-        Log.e("Color ", categoriesResponseList[position].colorCode)
 
         Glide.with(context).load(
                 AppConstants.BASE_IMAGE_URL +
-                        categoriesResponseList[position].displayThumbnail.toString()
+                        categoriesResponseList[position].display_thumbnail.toString()
         ).into(viewHolder.imgCategory)
 
 
 
 
 
-        viewHolder.imgCategory.setBackgroundColor(Color.parseColor(categoriesResponseList[position].colorCode))
+       // viewHolder.imgCategory.setBackgroundColor(Color.parseColor(categoriesResponseList[position].colorCode))
 
         if (position > 2)
             viewHolder.flCategories.alpha = 0.5F
@@ -94,7 +93,7 @@ public class CategoriesDashboardAdapter(
         viewHolder.flCategories.setOnClickListener(View.OnClickListener {
             Log.e("ok", "Ok way" + position)
             if (mClickListener != null)
-                Utilities.savePrefrence(context, AppConstants.CATEGORY_NAME, categoriesResponseList[position].displayName)
+                Utilities.savePrefrence(context, AppConstants.CATEGORY_NAME, categoriesResponseList[position].prod_cat_name)
                 mClickListener?.onBtnClick(position)
         })
     }

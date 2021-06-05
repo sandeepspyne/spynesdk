@@ -5,14 +5,18 @@ import com.spyneai.model.login.Header
 import com.spyneai.model.login.MsgInfo
 
 data class OtpResponse (
-        @SerializedName("id")
-        val id : String,
-        @SerializedName("status")
-        val status : String,
+        @SerializedName("auth_token")
+        val authToken : String,
+        @SerializedName("email_id")
+        val emailId : String,
         @SerializedName("message")
         val message : String,
-        @SerializedName("data")
-        val data : String,
+        @SerializedName("status")
+        val status : Int,
+        @SerializedName("user_id")
+        val userId : String,
+        @SerializedName("user_name")
+        val userName : String,
         @SerializedName("user_name") val user_name : String,
         @SerializedName("email_id") val email_id : String
 )

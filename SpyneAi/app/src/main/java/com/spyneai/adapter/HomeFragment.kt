@@ -15,11 +15,12 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.spyneai.R
 import com.spyneai.activity.CompletedProjectsActivity
+import com.spyneai.dashboard.response.Data
+import com.spyneai.dashboard.response.NewCategoriesResponse
 import com.spyneai.extras.BeforeAfterActivity
 import com.spyneai.interfaces.APiService
 import com.spyneai.interfaces.RetrofitClient
 import com.spyneai.model.categories.CategoriesResponse
-import com.spyneai.model.categories.Data
 import com.spyneai.model.shoot.CreateCollectionRequest
 import com.spyneai.model.shoot.CreateCollectionResponse
 import com.spyneai.model.shoot.UpdateShootCategoryRequest
@@ -147,24 +148,34 @@ class HomeFragment(context: Context) : Fragment() {
         categoriesResponseList.clear()
 
         val request = RetrofitClient.buildService(APiService::class.java)
-        val call = request.getCategories(Utilities.getPreference(contexts, AppConstants.tokenId))
+        val call = request.getCategories(Utilities.getPreference(requireContext(),AppConstants.AUTH_KEY).toString())
 
-        call?.enqueue(object : Callback<CategoriesResponse> {
+        call?.enqueue(object : Callback<NewCategoriesResponse> {
             override fun onResponse(
-                call: Call<CategoriesResponse>,
-                response: Response<CategoriesResponse>
+                call: Call<NewCategoriesResponse>,
+                response: Response<NewCategoriesResponse>
             ) {
                 Utilities.hideProgressDialog()
                 if (response.isSuccessful) {
-                    if (response.body()?.payload?.data?.size!! > 0) {
-                        categoriesResponseList.addAll(response.body()?.payload?.data!!)
+
+                    var categoriesResponse = response.body()
+
+                    if (categoriesResponse?.status == 200 && categoriesResponse.data.isNotEmpty()){
+                        categoriesResponseList.addAll(categoriesResponse.data)
+
+                        categoriesAdapter.notifyDataSetChanged()
+                    }else{
+                        Toast.makeText(
+                            contexts,
+                            categoriesResponse?.message,
+                            Toast.LENGTH_SHORT
+                        ).show()
                     }
 
-                    categoriesAdapter.notifyDataSetChanged()
                 }
             }
 
-            override fun onFailure(call: Call<CategoriesResponse>, t: Throwable) {
+            override fun onFailure(call: Call<NewCategoriesResponse>, t: Throwable) {
                 Log.e("ok", "no way")
                 Utilities.hideProgressDialog()
                 Toast.makeText(
@@ -178,6 +189,8 @@ class HomeFragment(context: Context) : Fragment() {
 
     private fun setShoot(categoriesResponseList: ArrayList<Data>, position: Int) {
         Utilities.showProgressDialog(contexts)
+
+        var s = ""
         val createCollectionRequest = CreateCollectionRequest("Spyne Shoot");
 
         val request = RetrofitClient.buildService(APiService::class.java)
@@ -213,8 +226,8 @@ class HomeFragment(context: Context) : Fragment() {
 
         val updateShootCategoryRequest = UpdateShootCategoryRequest(
             shootId,
-            categoriesResponseList[position].catId,
-            categoriesResponseList[position].displayName
+            categoriesResponseList[position].prod_cat_id,
+            categoriesResponseList[position].prod_cat_name
         )
 
         val request = RetrofitClient.buildService(APiService::class.java)
@@ -233,25 +246,25 @@ class HomeFragment(context: Context) : Fragment() {
                     val intent = Intent(contexts, BeforeAfterActivity::class.java)
                     intent.putExtra(
                         AppConstants.CATEGORY_ID,
-                        categoriesResponseList[position].catId
+                        categoriesResponseList[position].prod_cat_id
                     )
                     intent.putExtra(
                         AppConstants.CATEGORY_NAME,
-                        categoriesResponseList[position].displayName
+                        categoriesResponseList[position].prod_cat_name
                     )
                     intent.putExtra(
                         AppConstants.IMAGE_URL,
-                        categoriesResponseList[position].displayThumbnail
+                        categoriesResponseList[position].display_thumbnail
                     )
                     intent.putExtra(
                         AppConstants.DESCRIPTION,
                         categoriesResponseList[position].description
                     )
-                    intent.putExtra(AppConstants.COLOR, categoriesResponseList[position].colorCode)
+                    intent.putExtra(AppConstants.COLOR, categoriesResponseList[position].color_code)
                     startActivity(intent)
                     Log.e(
                         "Category map",
-                        categoriesResponseList[position].catId + " " + response.body()!!.msgInfo.msgDescription
+                        categoriesResponseList[position].prod_cat_id + " " + response.body()!!.msgInfo.msgDescription
                     )
                 }
             }

@@ -18,6 +18,7 @@ import com.spyneai.model.ai.WaterMarkResponse
 import com.spyneai.model.dealershiplogo.DealershipLogoResponse
 import com.spyneai.model.marketplace.FootwearBulkResponse
 import com.spyneai.model.otp.OtpResponse
+import com.spyneai.model.otp.SendEmailResponse
 import com.spyneai.model.processImageService.Task
 import com.spyneai.model.sku.SkuResponse
 import com.spyneai.model.skustatus.UpdateSkuStatusRequest
@@ -1350,10 +1351,10 @@ class PhotoUploader(var task: Task, var listener: Listener) {
         )
         val call = request.sendEmailAll(sendEmailRequest)
 
-        call?.enqueue(object : Callback<OtpResponse> {
-            override fun onResponse(call: Call<OtpResponse>, response: Response<OtpResponse>) {
+        call?.enqueue(object : Callback<SendEmailResponse> {
+            override fun onResponse(call: Call<SendEmailResponse>, response: Response<SendEmailResponse>) {
                 if (response.isSuccessful) {
-                    if (response.body()!!.id.equals("200")) {
+                    if (response.body()!!.status.equals("200")) {
                         log("" + response.body()!!.message)
                         task.imageProcessing = "Order is Complete - View Now"
 
@@ -1366,7 +1367,7 @@ class PhotoUploader(var task: Task, var listener: Listener) {
                 }
             }
 
-            override fun onFailure(call: Call<OtpResponse>, t: Throwable) {
+            override fun onFailure(call: Call<SendEmailResponse>, t: Throwable) {
                 task.imageProcessing = "Image Processing Failed :( - Please try again!"
                 listener.onFailure(task)
                 Log.e("ok", "no way")

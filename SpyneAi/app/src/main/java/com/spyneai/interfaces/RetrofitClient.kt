@@ -3,7 +3,9 @@ package com.spyneai.interfaces
 import android.util.Base64
 import com.facebook.stetho.Stetho
 import com.facebook.stetho.okhttp3.StethoInterceptor
+import com.spyneai.BuildConfig
 import okhttp3.OkHttpClient
+import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import java.util.concurrent.TimeUnit
@@ -19,7 +21,13 @@ object RetrofitClient {
             .connectTimeout(10, TimeUnit.MINUTES)
             .addNetworkInterceptor(StethoInterceptor())
         .retryOnConnectionFailure(true)
-            .build()
+        .also { client ->
+            if (BuildConfig.DEBUG) {
+                val logging = HttpLoggingInterceptor()
+                logging.setLevel(HttpLoggingInterceptor.Level.BODY)
+                client.addInterceptor(logging)
+            }
+        }.build()
 
 
     private val retrofit = Retrofit.Builder()

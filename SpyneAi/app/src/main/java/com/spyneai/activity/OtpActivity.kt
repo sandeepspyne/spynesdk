@@ -17,6 +17,7 @@ import com.spyneai.dashboard.ui.dashboard.MainDashboardActivity
 import com.spyneai.interfaces.APiService
 import com.spyneai.interfaces.RetrofitClient
 import com.spyneai.interfaces.RetrofitClientSpyneAi
+import com.spyneai.interfaces.RetrofitClients
 import com.spyneai.model.login.LoginRequest
 import com.spyneai.model.login.LoginResponse
 import com.spyneai.model.otp.OtpRequest
@@ -371,31 +372,26 @@ public class OtpActivity : AppCompatActivity() {
 
     private fun postOtp(otpEntered: String) {
         Utilities.showProgressDialog(this)
-        val otpRequest : OtpRequest = OtpRequest(otpEntered);
 
-        val request = RetrofitClientSpyneAi.buildService(APiService::class.java)
-        val call = request.postOtp(Utilities.getPreference(this, AppConstants.EMAIL_ID), otpEntered)
+        val request = RetrofitClients.buildService(APiService::class.java)
+        val call = request.postOtp(Utilities.getPreference(this, AppConstants.EMAIL_ID).toString(),
+            AppConstants.API_KEY,
+            otpEntered)
 
         call?.enqueue(object : Callback<OtpResponse> {
             override fun onResponse(call: Call<OtpResponse>, response: Response<OtpResponse>) {
                 Utilities.hideProgressDialog()
                 if (response.isSuccessful ) {
-                    if (response.body()!!.id.equals("200")) {
+                    if (response.body()!!.status == 200) {
+
                         Toast.makeText(this@OtpActivity, response.body()!!.message, Toast.LENGTH_SHORT).show()
-                        if (intent.getStringExtra(AppConstants.tokenId) != null)
-                            Utilities.savePrefrence(this@OtpActivity,AppConstants.tokenId,
-                                intent.getStringExtra(AppConstants.tokenId))
-                        Utilities.savePrefrence(this@OtpActivity, AppConstants.USER_NAME, response.body()!!.user_name)
-                        Utilities.savePrefrence(this@OtpActivity, AppConstants.USER_EMAIL, response.body()!!.email_id)
+
+                        Utilities.savePrefrence(this@OtpActivity,AppConstants.AUTH_KEY, response.body()!!.authToken)
+
                         val intent = Intent(applicationContext, MainDashboardActivity::class.java)
                         startActivity(intent)
                         finish()
 
-                        SplashActivity().finish()
-                        OnboardOneActivity().finish()
-                        OnboardTwoActivity().finish()
-                        OnboardThreeActivity().finish()
-                        SignInUsingOtpActivity().finish()
                         tvError.visibility = View.INVISIBLE
 
                     }else{
@@ -421,28 +417,41 @@ public class OtpActivity : AppCompatActivity() {
         val loginRequest = LoginRequest(Utilities.getPreference(this, AppConstants.EMAIL_ID).toString());
 
         val request = RetrofitClient.buildService(APiService::class.java)
-        val call = request.loginEmailApp(loginRequest)
-//        val call = request.loginEmailApp(Utilities.getPreference(this, AppConstants.EMAIL_ID).toString(),"value")
+        val call = request.loginEmailApp(Utilities.getPreference(this, AppConstants.EMAIL_ID).toString(),AppConstants.API_KEY)
 
         call?.enqueue(object : Callback<LoginResponse>{
             override fun onResponse(call: Call<LoginResponse>, response: Response<LoginResponse>) {
                 Utilities.hideProgressDialog()
 
                 if (response.isSuccessful){
-                    if (response.body()?.header?.tokenId != null)
-                    {
-                        Toast.makeText(
-                            this@OtpActivity,
-                            response.body()!!.msgInfo.msgDescription,
-                            Toast.LENGTH_SHORT
-                        ).show()
-                        Utilities.savePrefrence(this@OtpActivity,
-                            AppConstants.tokenId, response.body()!!.header.tokenId)
-                        Log.e("ok", response.body()!!.header.tokenId )
-                        val intent = Intent(this@OtpActivity, OtpActivity::class.java)
-                        intent.putExtra(AppConstants.tokenId,response.body()!!.header.tokenId)
-                        startActivity(intent)
+                    var loginResponse = response.body()
+
+                    loginResponse?.status.let {
+                        if (it == 200){
+                            Toast.makeText(
+                                this@OtpActivity,
+                                loginResponse?.message,
+                                Toast.LENGTH_SHORT
+                            ).show()
+
+                            if (loginResponse?.userId != null)
+                                Utilities.savePrefrence(this@OtpActivity,
+                                    AppConstants.tokenId, loginResponse?.userId)
+
+                        }else{
+                            Toast.makeText(
+                                applicationContext,
+                                "Server not responding!, Please try again later",
+                                Toast.LENGTH_SHORT
+                            ).show()
+                        }
                     }
+                }else{
+                    Toast.makeText(
+                        applicationContext,
+                        "Server not responding!, Please try again later",
+                        Toast.LENGTH_SHORT
+                    ).show()
                 }
             }
             override fun onFailure(call: Call<LoginResponse>, t: Throwable) {
@@ -455,25 +464,6 @@ public class OtpActivity : AppCompatActivity() {
                 ).show()
             }
         })
-    }
-
-    override fun onPause() {
-        super.onPause()
-/*
-        Utilities.savePrefrence(
-                this,
-                AppConstants.tokenId,
-                "")
-*/
-    }
-
-
-    override fun onDestroy() {
-        super.onDestroy()
-        /* Utilities.savePrefrence(
-                 this,
-                 AppConstants.tokenId,
-                 "")*/
     }
 
     /*

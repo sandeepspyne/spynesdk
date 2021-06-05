@@ -175,14 +175,14 @@ class CameraFragment : Fragment() {
             // The Configuration of camera preview
             preview = Preview.Builder()
                 .setTargetAspectRatio(aspectRatio) // set the camera aspect ratio
-                .setTargetRotation(rotation!!) // set the camera rotation
+              //  .setTargetRotation(rotation!!) // set the camera rotation
                 .build()
 
             // The Configuration of image capture
             imageCapture = ImageCapture.Builder()
                 .setCaptureMode(ImageCapture.CAPTURE_MODE_MAXIMIZE_QUALITY) // setting to have pictures with highest quality possible (may be slow)
                 .setTargetAspectRatio(aspectRatio) // set the capture aspect ratio
-                .setTargetRotation(rotation) // set the capture rotation
+              //  .setTargetRotation(rotation) // set the capture rotation
                 .also {
                     // Create a Vendor Extension for HDR
                     val hdrImageCapture = HdrImageCaptureExtender.create(it)
@@ -201,7 +201,7 @@ class CameraFragment : Fragment() {
             // The Configuration of image analyzing
             imageAnalyzer = ImageAnalysis.Builder()
                 .setTargetAspectRatio(aspectRatio) // set the analyzer aspect ratio
-                .setTargetRotation(rotation) // set the analyzer rotation
+               // .setTargetRotation(rotation) // set the analyzer rotation
                 .setBackpressureStrategy(ImageAnalysis.STRATEGY_KEEP_ONLY_LATEST) // in our analysis, we care about the latest image
                 .build()
                 .apply {
@@ -226,7 +226,7 @@ class CameraFragment : Fragment() {
                 )
 
                 // Attach the viewfinder's surface provider to preview use case
-                preview?.setSurfaceProvider(viewFinder.surfaceProvider)
+                preview?.setSurfaceProvider(viewFinder?.surfaceProvider)
             } catch (e: Exception) {
                 Log.e(TAG, "Failed to bind use cases", e)
             }

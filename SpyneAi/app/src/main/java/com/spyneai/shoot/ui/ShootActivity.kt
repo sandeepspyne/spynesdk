@@ -33,7 +33,7 @@ class ShootActivity : AppCompatActivity() {
 
         if(savedInstanceState == null) { // initial transaction should be wrapped like this
             supportFragmentManager.beginTransaction()
-                .add(R.id.flCamerFragment, cameraFragment)
+                //.add(R.id.flCamerFragment, cameraFragment)
                 .add(R.id.flCamerFragment, overlaysFragment)
                 .commitAllowingStateLoss()
         }

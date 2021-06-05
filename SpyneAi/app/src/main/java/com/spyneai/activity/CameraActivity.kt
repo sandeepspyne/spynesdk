@@ -1,7 +1,6 @@
 package com.spyneai.activity
 
 import FrameImages
-import SubcategoriesResponse
 import android.Manifest
 import android.annotation.SuppressLint
 import android.app.Dialog
@@ -51,9 +50,11 @@ import com.spyneai.R
 import com.spyneai.adapter.InteriorFramesAdapter
 import com.spyneai.adapter.ProgressAdapter
 import com.spyneai.adapter.SubCategoriesAdapter
+import com.spyneai.dashboard.response.NewSubCatResponse
 import com.spyneai.dashboard.ui.dashboard.MainDashboardActivity
 import com.spyneai.interfaces.APiService
 import com.spyneai.interfaces.RetrofitClient
+import com.spyneai.interfaces.RetrofitClients
 import com.spyneai.model.shoot.*
 import com.spyneai.model.sku.SkuResponse
 import com.spyneai.model.skuedit.EditSkuRequest
@@ -80,7 +81,6 @@ import kotlinx.android.synthetic.main.activity_camera_.tvshoot
 import kotlinx.android.synthetic.main.activity_camera_.viewFinder
 import kotlinx.android.synthetic.main.activity_camera_grocery.*
 import kotlinx.android.synthetic.main.activity_camera_preview.*
-import kotlinx.android.synthetic.main.dialog_spinner.*
 import kotlinx.android.synthetic.main.footwear_dialog_suggestion.*
 import retrofit2.Call
 import retrofit2.Callback
@@ -96,7 +96,7 @@ import kotlin.collections.ArrayList
 
 typealias LumaListener = (luma: Double) -> Unit
 
-class CameraActivity : AppCompatActivity(), SubCategoriesAdapter.BtnClickListener {
+class CameraActivity : AppCompatActivity(){
     private lateinit var gifList: ArrayList<String>
     private lateinit var photoFilePath: File
     private var savedUri: Uri? = null
@@ -119,7 +119,7 @@ class CameraActivity : AppCompatActivity(), SubCategoriesAdapter.BtnClickListene
     private lateinit var cameraExecutor: ExecutorService
     lateinit var cameraProvider: ProcessCameraProvider
 
-    lateinit var subCategoriesList: ArrayList<Data>
+    lateinit var subCategoriesList: ArrayList<NewSubCatResponse.Data>
     lateinit var subCategoriesAdapter: SubCategoriesAdapter
 
     lateinit var interiorFrameList: ArrayList<FrameImages>
@@ -292,12 +292,12 @@ class CameraActivity : AppCompatActivity(), SubCategoriesAdapter.BtnClickListene
     }
 
     private fun setSubCategories() {
-        subCategoriesList = ArrayList<Data>()
+        subCategoriesList = ArrayList<NewSubCatResponse.Data>()
         subCategoriesAdapter = SubCategoriesAdapter(
             this,
             subCategoriesList, pos,
             object : SubCategoriesAdapter.BtnClickListener {
-                override fun onBtnClick(position: Int) {
+                override fun onBtnClick(position: Int,subcategoryName : String,subcategoryImage : String) {
                     Log.d("Position click", position.toString())
                     setProductMap(
                         Utilities.getPreference(
@@ -513,24 +513,27 @@ class CameraActivity : AppCompatActivity(), SubCategoriesAdapter.BtnClickListene
         else
             catIds = Utilities.getPreference(this, AppConstants.CATEGORY_ID)!!
 
-        val request = RetrofitClient.buildService(APiService::class.java)
+        val request = RetrofitClients.buildService(APiService::class.java)
+//        val call = request.getSubCategories(
+//            "3c436435-238a-4bdc-adb8-d6182fddeb43", catIds
+//        )
+
         val call = request.getSubCategories(
-            Utilities.getPreference(this, AppConstants.tokenId), catIds
+            "3c436435-238a-4bdc-adb8-d6182fddeb43", "prodc-1001"
         )
 
-        call?.enqueue(object : Callback<SubcategoriesResponse> {
+        call?.enqueue(object : Callback<NewSubCatResponse> {
             override fun onResponse(
-                call: Call<SubcategoriesResponse>,
-                response: Response<SubcategoriesResponse>
+                call: Call<NewSubCatResponse>,
+                response: Response<NewSubCatResponse>
             ) {
                 Utilities.hideProgressDialog()
                 if (response.isSuccessful) {
-                    if (response.body()?.payload?.data?.size!! > 0) {
-                        subCategoriesList.addAll(response.body()?.payload?.data!!)
-                        Log.e("subCategoriesList..", subCategoriesList.toString())
+                    if (response.body()?.status == 200 && response.body()?.data?.isNotEmpty()!!) {
+                        subCategoriesList.addAll(response.body()?.data!!)
 
+                        subCategoriesAdapter.notifyDataSetChanged()
                     }
-                    subCategoriesAdapter.notifyDataSetChanged()
 
                     if (Utilities.getPreference(this@CameraActivity, AppConstants.FROM)
                             .equals("BA")
@@ -544,7 +547,7 @@ class CameraActivity : AppCompatActivity(), SubCategoriesAdapter.BtnClickListene
                 }
             }
 
-            override fun onFailure(call: Call<SubcategoriesResponse>, t: Throwable) {
+            override fun onFailure(call: Call<NewSubCatResponse>, t: Throwable) {
                 Log.e("ok", "no way")
                 Utilities.hideProgressDialog()
                 Toast.makeText(
@@ -1226,8 +1229,8 @@ class CameraActivity : AppCompatActivity(), SubCategoriesAdapter.BtnClickListene
 
         val updateShootProductRequest = UpdateShootProductRequest(
             shootId,
-            subCategoriesList[position].prodId,
-            subCategoriesList[position].displayName
+            subCategoriesList[position].prod_sub_cat_id,
+            subCategoriesList[position].sub_cat_name
         )
 
         val request = RetrofitClient.buildService(APiService::class.java)
@@ -1242,13 +1245,9 @@ class CameraActivity : AppCompatActivity(), SubCategoriesAdapter.BtnClickListene
                 response: Response<CreateCollectionResponse>
             ) {
                 if (response.isSuccessful) {
-                    Log.e(
-                        "Product map",
-                        subCategoriesList[position].prodId + " " + response.body()!!.msgInfo.msgDescription
-                    )
                     setSkuIdMap(
                         shootId,
-                        subCategoriesList[position].catId, subCategoriesList[position].prodId
+                        subCategoriesList[position].prod_cat_id, subCategoriesList[position].prod_sub_cat_id
                     )
                 }
             }
@@ -1418,13 +1417,7 @@ class CameraActivity : AppCompatActivity(), SubCategoriesAdapter.BtnClickListene
         })
     }
 
-    override fun onBtnClick(position: Int) {
-        Log.d("Position", position.toString())
-    }
 
-    public fun getInstance(): CameraActivity {
-        return this
-    }
 
     override fun onBackPressed() {
 //        super.onBackPressed()
@@ -1606,7 +1599,7 @@ class CameraActivity : AppCompatActivity(), SubCategoriesAdapter.BtnClickListene
         val dialog = Dialog(this)
         dialog.requestWindowFeature(Window.FEATURE_NO_TITLE)
         dialog.setCancelable(true)
-        dialog.setContentView(R.layout.dialog_spinner)
+        dialog.setContentView(R.layout.dialog_angle_selection)
         val window: Window = dialog.getWindow()!!
         window.setLayout(
             WindowManager.LayoutParams.WRAP_CONTENT,
@@ -1671,7 +1664,7 @@ class CameraActivity : AppCompatActivity(), SubCategoriesAdapter.BtnClickListene
         val dialog = Dialog(this)
         dialog.requestWindowFeature(Window.FEATURE_NO_TITLE)
         dialog.setCancelable(true)
-        dialog.setContentView(R.layout.dialog_spinner)
+        dialog.setContentView(R.layout.dialog_angle_selection)
         val window: Window = dialog.getWindow()!!
         window.setLayout(
             WindowManager.LayoutParams.WRAP_CONTENT,

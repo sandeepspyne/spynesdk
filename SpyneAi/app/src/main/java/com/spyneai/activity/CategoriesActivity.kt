@@ -12,11 +12,13 @@ import androidx.recyclerview.widget.RecyclerView
 import com.spyneai.extras.BeforeAfterActivity
 import com.spyneai.R
 import com.spyneai.adapter.CategoriesAdapter
+import com.spyneai.dashboard.response.Data
+import com.spyneai.dashboard.response.NewCategoriesResponse
 import com.spyneai.interfaces.APiService
 import com.spyneai.interfaces.RetrofitClient
 import com.spyneai.model.beforeafter.BeforeAfterResponse
 import com.spyneai.model.categories.CategoriesResponse
-import com.spyneai.model.categories.Data
+
 import com.spyneai.model.shoot.CreateCollectionRequest
 import com.spyneai.model.shoot.CreateCollectionResponse
 import com.spyneai.model.shoot.UpdateShootCategoryRequest
@@ -83,7 +85,7 @@ class CategoriesActivity : AppCompatActivity(),CategoriesAdapter.BtnClickListene
                             Utilities.savePrefrence(
                                 this@CategoriesActivity,
                                 AppConstants.CATEGORY_NAME,
-                                categoriesResponseList[position].displayName
+                                categoriesResponseList[position].prod_cat_id
                             )
                             setShoot(categoriesResponseList, position)
                         }else
@@ -103,28 +105,33 @@ class CategoriesActivity : AppCompatActivity(),CategoriesAdapter.BtnClickListene
         categoriesResponseList.clear()
 
         val request = RetrofitClient.buildService(APiService::class.java)
-        val call = request.getCategories(Utilities.getPreference(this, AppConstants.tokenId))
+        val call = request.getCategories(Utilities.getPreference(this,AppConstants.AUTH_KEY).toString())
 
-        call?.enqueue(object : Callback<CategoriesResponse> {
-            override fun onResponse(call: Call<CategoriesResponse>,
-                                    response: Response<CategoriesResponse>) {
+        call?.enqueue(object : Callback<NewCategoriesResponse> {
+            override fun onResponse(call: Call<NewCategoriesResponse>,
+                                    response: Response<NewCategoriesResponse>) {
                 Utilities.hideProgressDialog()
                 if (response.isSuccessful){
-                    if (response.body()?.payload?.data?.size!! > 0)
-                    {
-                        categoriesResponseList.addAll(response.body()?.payload?.data!!)
-                        //fetchBeforeAfter()
+                    if (response.isSuccessful) {
 
-//                        categoriesResponseList.removeAt(4)
+                        var categoriesResponse = response.body()
+
+                        if (categoriesResponse?.status == 200 && categoriesResponse.data.isNotEmpty()){
+                            categoriesResponseList.addAll(categoriesResponse.data)
+
+                            categoriesAdapter.notifyDataSetChanged()
+                        }else{
+                            Toast.makeText(
+                                this@CategoriesActivity,
+                                categoriesResponse?.message,
+                                Toast.LENGTH_SHORT
+                            ).show()
+                        }
+
                     }
-//                    categoriesResponseList.removeAt(0)
-  //                  categoriesResponseList.removeAt(2)
-    //                categoriesResponseList.removeAt(1)
-      //              categoriesResponseList.removeAt(1)
-                    categoriesAdapter.notifyDataSetChanged()
                 }
             }
-            override fun onFailure(call: Call<CategoriesResponse>, t: Throwable) {
+            override fun onFailure(call: Call<NewCategoriesResponse>, t: Throwable) {
                 Log.e("ok", "no way")
                 Utilities.hideProgressDialog()
                 Toast.makeText(this@CategoriesActivity,
@@ -165,8 +172,8 @@ class CategoriesActivity : AppCompatActivity(),CategoriesAdapter.BtnClickListene
     private fun setCategoryMap(shootId: String, position: Int) {
 
         val updateShootCategoryRequest = UpdateShootCategoryRequest(shootId,
-                categoriesResponseList[position].catId,
-                categoriesResponseList[position].displayName)
+                categoriesResponseList[position].prod_cat_id,
+                categoriesResponseList[position].prod_cat_name)
 
         val request = RetrofitClient.buildService(APiService::class.java)
         val call = request.updateShootCategory(
@@ -178,13 +185,13 @@ class CategoriesActivity : AppCompatActivity(),CategoriesAdapter.BtnClickListene
                 Utilities.hideProgressDialog()
                 if (response.isSuccessful){
                     val intent = Intent(this@CategoriesActivity, BeforeAfterActivity::class.java)
-                    intent.putExtra(AppConstants.CATEGORY_ID,categoriesResponseList[position].catId)
-                    intent.putExtra(AppConstants.CATEGORY_NAME,categoriesResponseList[position].displayName)
-                    intent.putExtra(AppConstants.IMAGE_URL,categoriesResponseList[position].displayThumbnail)
+                    intent.putExtra(AppConstants.CATEGORY_ID,categoriesResponseList[position].prod_cat_id)
+                    intent.putExtra(AppConstants.CATEGORY_NAME,categoriesResponseList[position].prod_cat_name)
+                    intent.putExtra(AppConstants.IMAGE_URL,categoriesResponseList[position].display_thumbnail)
                     intent.putExtra(AppConstants.DESCRIPTION,categoriesResponseList[position].description)
-                    intent.putExtra(AppConstants.COLOR,categoriesResponseList[position].colorCode)
+                    intent.putExtra(AppConstants.COLOR,categoriesResponseList[position].color_code)
                     startActivity(intent)
-                    Log.e("Category map",categoriesResponseList[position].catId+" " + response.body()!!.msgInfo.msgDescription)
+                    Log.e("Category map",categoriesResponseList[position].prod_cat_id+" " + response.body()!!.msgInfo.msgDescription)
                 }
             }
             override fun onFailure(call: Call<CreateCollectionResponse>, t: Throwable) {

@@ -113,6 +113,8 @@ class LoginActivity : AppCompatActivity() {
                         Utilities.savePrefrence(this@LoginActivity, AppConstants.USER_NAME, loginResponse.user_name)
                         Utilities.savePrefrence(this@LoginActivity, AppConstants.USER_EMAIL, loginResponse.email_id)
 
+                        Utilities.savePrefrence(this@LoginActivity,AppConstants.AUTH_KEY, response.body()!!.auth_token)
+
                         bt_login.isClickable = true
                         tvSignup.isClickable = true
                         tvForgotPassword.isClickable = true
