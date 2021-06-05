@@ -9,7 +9,6 @@ apply plugin: 'kotlin-android-extensions'
 apply plugin: 'com.google.firebase.crashlytics'
 
 android {
-
     lintOptions {
         checkReleaseBuilds false
     }

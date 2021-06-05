@@ -8,7 +8,7 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.viewbinding.ViewBinding
-import com.spyneai.dashboard.data.repository.BaseRepository
+import com.spyneai.base.ViewModelFactory
 
 abstract class BaseFragment<VM : ViewModel, B : ViewBinding> : Fragment() {
 

@@ -6,15 +6,19 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import com.spyneai.R
+import com.spyneai.dashboard.ui.base.BaseFragment
+import com.spyneai.databinding.FragmentOverlaysBinding
+import com.spyneai.shoot.data.ShootViewModel
 
-class OverlaysFragment : Fragment() {
+class OverlaysFragment : BaseFragment<ShootViewModel,FragmentOverlaysBinding>() {
 
-    override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View? {
-        // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_overlays, container, false)
-    }
+    override fun getViewModel() =  ShootViewModel::class.java
+
+    override fun getFragmentBinding(
+        inflater: LayoutInflater,
+        container: ViewGroup?
+    ) = FragmentOverlaysBinding.inflate(inflater, container, false)
+
+
 
 }

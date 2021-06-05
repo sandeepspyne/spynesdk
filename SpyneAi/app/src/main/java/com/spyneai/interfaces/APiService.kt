@@ -119,6 +119,8 @@ interface APiService {
         @Path("catId") catID: String?
     ): Call<SubcategoriesResponse>?
 
+
+
     @GET("categories/{cat}/products/{product}/markets")
     fun getChannels(
         @Header("tokenId") tokenId: String?,

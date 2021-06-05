@@ -5,133 +5,112 @@
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     tools:context=".shoot.ui.OverlaysFragment"
-    android:background="@android:color/transparent">
+    android:background="@color/black">
 
-    <LinearLayout
-        android:id="@+id/llLeft"
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/rvSubcategories"
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
-        android:background="@color/black"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintLeft_toLeftOf="parent"
+        android:layout_gravity="start|center"
         app:layout_constraintTop_toTopOf="parent"
-        android:orientation="vertical">
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        android:padding="@dimen/dp_10" />
 
-        <ImageView
-            android:id="@+id/ivBack"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:padding="@dimen/dp_10"
-            android:src="@drawable/back"
-            app:tint="@color/white"/>
 
-        <androidx.recyclerview.widget.RecyclerView
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent" />
+    <TextView
+        android:id="@+id/tvSkuName"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="left"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintLeft_toRightOf="@id/rvSubcategories"
+        android:background="@drawable/bg_edit"
+        android:fontFamily="@font/medium"
+        android:gravity="center"
+        android:hint="@string/sku_names"
+        android:maxLines="1"
+        android:maxLength="20"
+        tools:text="sku-name"
+        android:layout_marginLeft="@dimen/dp_30"
+        android:layout_marginTop="@dimen/dp_10"
+        android:padding="@dimen/dp_5"
+        android:textColor="@color/white"
+        android:textColorHint="@color/white"
+        android:textSize="@dimen/sp_13" />
 
-    </LinearLayout>
+    <TextView
+        android:id="@+id/tvAngleName"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:background="@drawable/bg_angle_name"
+        android:fontFamily="@font/medium"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:text="Right Front 330º"
+        android:padding="@dimen/dp_5"
+        android:layout_marginTop="@dimen/dp_10"
+        android:paddingLeft="@dimen/dp_10"
+        android:paddingRight="@dimen/dp_10"
+        android:textColor="@color/primary"
+        android:textColorHint="@color/white"
+        android:textSize="@dimen/sp_13" />
 
     <LinearLayout
         android:layout_width="0dp"
-        android:layout_height="match_parent"
-        app:layout_constraintStart_toEndOf="@+id/llLeft"
-        app:layout_constraintEnd_toStartOf="@+id/llRight"
-        app:layout_constraintTop_toTopOf="parent"
+        android:layout_height="wrap_content"
+        android:gravity="bottom"
+        app:layout_constraintLeft_toRightOf="@id/rvSubcategories"
+        app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"
-        android:orientation="vertical">
-        
+        android:id="@+id/llProgress"
+        android:orientation="horizontal">
+
         <LinearLayout
-            android:layout_width="match_parent"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_margin="@dimen/dp_10"
             android:orientation="horizontal"
-            android:gravity="center">
-            
-            <EditText
-                android:id="@+id/etSkuName"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:background="@drawable/bg_edit"
-                android:fontFamily="@font/medium"
-                android:hint="@string/vin_number"
-                android:maxLines="1"
-                android:inputType="text"
-                android:maxLength="20"
-                android:padding="@dimen/dp_5"
-                android:textColor="@color/black"
-                android:textColorHint="@color/black"
-                android:textSize="@dimen/sp_13" />
-            <ImageView
-                android:id="@+id/imgNext"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:padding="@dimen/dp_5"
-                android:src="@drawable/right"
-                app:tint="@color/primary" />
-            
-        </LinearLayout>
-        <ImageView
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:padding="@dimen/dp_20"/>
-
-
-
-    </LinearLayout>
-
-
-    <LinearLayout
-        android:id="@+id/llRight"
-        android:layout_width="wrap_content"
-        android:layout_height="match_parent"
-        android:padding="@dimen/dp_10"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintBottom_toBottomOf="parent"
-        android:background="@color/black"
-        android:orientation="vertical"
-        android:gravity="center">
-
-        <ImageView
-            android:layout_width="wrap_content"
-            android:layout_height="0dp"
-            android:src="@mipmap/gallery"
-            android:layout_weight="1"></ImageView>
-
-        <ImageView
-            android:layout_width="wrap_content"
-            android:layout_height="0dp"
-            android:layout_weight="1"></ImageView>
-
-        <RelativeLayout
-            android:layout_width="wrap_content"
-            android:layout_height="0dp"
-            android:layout_weight="1"
-            android:gravity="center">
-            <ImageView
-                android:layout_width="@dimen/dp_50"
-                android:layout_height="@dimen/dp_50"
-                android:src="@drawable/bg_round"/>
+            android:background="@drawable/bg_shoot_anlges">
 
             <TextView
+                android:id="@+id/tvshoot"
                 android:layout_width="wrap_content"
+                tools:text="Angles 1/4"
                 android:layout_height="wrap_content"
-                android:layout_centerVertical="true"
-                android:drawablePadding="@dimen/dp_5"
+                android:layout_gravity="center"
                 android:fontFamily="@font/bold"
-                android:visibility="gone"
-                android:text="@string/skip"
+                android:gravity="center"
+                android:paddingLeft="@dimen/dp_10"
+                android:paddingRight="@dimen/dp_10"
+                android:paddingTop="@dimen/dp_5"
+                android:paddingBottom="@dimen/dp_5"
                 android:textColor="@color/primary"
-                android:textSize="@dimen/sp_16"
-                app:drawableEndCompat="@mipmap/skip"/>
+                android:textSize="@dimen/sp_13" />
 
-        </RelativeLayout>
+            <ImageView
+                android:layout_width="10dp"
+                android:layout_height="10dp"
+                android:src="@drawable/ic_angle_selection"
+                android:layout_gravity="right|center_vertical"
+                app:tint="@color/primary"
+                android:layout_marginRight="@dimen/dp_10"/>
 
+        </LinearLayout>
 
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/rvProgress"
+            android:layout_width="0dp"
+            android:layout_weight="3"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:orientation="horizontal"
+            android:layout_margin="@dimen/dp_10"/>
 
     </LinearLayout>
-
-
-
 
    
 
