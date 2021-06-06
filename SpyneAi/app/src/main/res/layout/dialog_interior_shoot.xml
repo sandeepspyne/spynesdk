@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_margin="@dimen/dp_10"
+    android:padding="@dimen/dp_10">
+
+    <TextView
+        android:id="@+id/tvInterior"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/we_recommend"
+        android:fontFamily="@font/medium"
+        android:textSize="@dimen/sp_13"
+        android:textColor="@color/primary"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="parent"/>
+
+    <LinearLayout
+        android:id="@+id/llInterior"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:orientation="horizontal"
+        app:layout_constraintTop_toBottomOf="@+id/tvInterior"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent">
+        <ImageView
+            android:layout_width="@dimen/dp_80"
+            android:layout_height="@dimen/dp_70"
+            android:layout_margin="@dimen/dp_10"
+            android:src="@mipmap/interior_demo1"/>
+        <ImageView
+            android:layout_width="@dimen/dp_80"
+            android:layout_height="@dimen/dp_70"
+            android:layout_margin="@dimen/dp_10"
+            android:src="@mipmap/idemo2"/>
+    </LinearLayout>
+    <LinearLayout
+        android:id="@+id/llInteriorImages"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:orientation="horizontal"
+        app:layout_constraintTop_toBottomOf="@+id/llInterior"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent">
+        <ImageView
+            android:layout_width="@dimen/dp_80"
+            android:layout_height="@dimen/dp_70"
+            android:layout_margin="@dimen/dp_10"
+            android:src="@mipmap/idemo3"/>
+        <ImageView
+            android:layout_width="@dimen/dp_80"
+            android:layout_height="@dimen/dp_70"
+            android:layout_margin="@dimen/dp_10"
+            android:src="@mipmap/idemo4"/>
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_marginLeft="@dimen/dp_20"
+        android:layout_marginRight="@dimen/dp_20"
+        app:layout_constraintTop_toBottomOf="@+id/llInteriorImages"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent">
+        <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/btSkip"
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="wrap_content"
+            android:text="@string/skip"
+            android:padding="@dimen/dp_5"
+            android:gravity="center"
+            android:textColor="@color/primary"
+            android:fontFamily="@font/medium"
+            android:textSize="@dimen/sp_15"
+            android:layout_margin="@dimen/dp_5"
+            android:background="@drawable/bg_skip"
+            android:textAllCaps="false"/>
+
+        <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/btShootInterior"
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="wrap_content"
+            android:text="@string/shoot_now"
+            android:padding="@dimen/dp_5"
+            android:gravity="center"
+            android:layout_margin="@dimen/dp_5"
+            android:textColor="@color/white"
+            android:fontFamily="@font/medium"
+            android:textSize="@dimen/sp_15"
+            android:background="@drawable/bg_rectangle_button_ripple"
+            android:textAllCaps="false"/>
+    </LinearLayout>
+
+
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>

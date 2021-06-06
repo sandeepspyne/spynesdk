@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:gravity="center"
+    android:layout_margin="@dimen/dp_15"
+    android:background="@android:color/transparent">
+
+
+
+    <androidx.core.widget.NestedScrollView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:fillViewport="true"
+        android:orientation="vertical"
+        tools:context=".activity.OrderActivity">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:orientation="vertical">
+
+
+
+
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:fontFamily="@font/medium"
+                android:textSize="@dimen/sp_13"
+                android:text="@string/shoot_outdoor"
+                android:textColor="@color/black" />
+
+            <ImageView
+                android:id="@+id/ivBeforeShootGif"
+                android:layout_width="@dimen/dp_250"
+                android:layout_height="@dimen/dp_150"
+                android:layout_margin="@dimen/dp_10"
+                android:scaleType="fitXY"
+                ></ImageView>
+
+            <androidx.appcompat.widget.AppCompatButton
+                android:id="@+id/btContinue"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/continues"
+                android:padding="@dimen/dp_8"
+                android:gravity="center"
+                android:layout_marginLeft="@dimen/dp_40"
+                android:layout_marginRight="@dimen/dp_40"
+                android:textColor="@color/white"
+                android:fontFamily="@font/medium"
+                android:textSize="@dimen/sp_13"
+                android:background="@drawable/bg_rectangle_button_ripple"
+                android:textAllCaps="false"/>
+
+
+        </LinearLayout>
+
+
+    </androidx.core.widget.NestedScrollView>
+
+
+</RelativeLayout>

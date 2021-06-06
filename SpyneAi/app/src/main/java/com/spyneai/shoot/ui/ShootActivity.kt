@@ -13,9 +13,20 @@ import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
+import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.FragmentTransaction
+import com.balsikandar.kotlindslsamples.dialogfragment.DialogDSLBuilder.Companion.dialog
 import com.google.android.material.snackbar.Snackbar
 import com.spyneai.R
+import kotlinx.android.synthetic.main.dialog_confirm_reshoot.view.*
+import kotlinx.android.synthetic.main.dialog_confirm_reshoot.view.btReshootImage
+import kotlinx.android.synthetic.main.dialog_exit_shoot.view.*
+import kotlinx.android.synthetic.main.dialog_exit_shoot.view.btNo
+import kotlinx.android.synthetic.main.dialog_focus_shoot.view.*
+import kotlinx.android.synthetic.main.dialog_gif_hint.view.*
+import kotlinx.android.synthetic.main.dialog_interior_shoot.view.*
+import kotlinx.android.synthetic.main.dialog_interior_shoot.view.btShootInterior
+import kotlinx.android.synthetic.main.dialog_shoot_hint.view.*
 
 
 class ShootActivity : AppCompatActivity() {
@@ -33,8 +44,8 @@ class ShootActivity : AppCompatActivity() {
 
         if(savedInstanceState == null) { // initial transaction should be wrapped like this
             supportFragmentManager.beginTransaction()
-                .add(R.id.flCamerFragment, cameraFragment)
                 .add(R.id.flCamerFragment, overlaysFragment)
+                .add(R.id.flCamerFragment, cameraFragment)
                 .commitAllowingStateLoss()
         }
 
@@ -84,6 +95,104 @@ class ShootActivity : AppCompatActivity() {
     fun View.snackbar(message: String, action: (() -> Unit)? = null) {
         val snackbar = Snackbar.make(this, message, Snackbar.LENGTH_LONG)
         snackbar.show()
+    }
+
+    fun showExitShootDialog(view: View) {
+        dialog {
+            layoutId = R.layout.dialog_exit_shoot
+            setCustomView = {it: View, dialog: DialogFragment ->
+
+
+                it.btNo.setOnClickListener {
+                    Toast.makeText(this@ShootActivity, "No", Toast.LENGTH_LONG).show()
+                    dialog.dismiss()
+                }
+
+                it.btYes.setOnClickListener {
+                    Toast.makeText(this@ShootActivity, "Yes", Toast.LENGTH_LONG).show()
+                    dialog.dismiss()
+                }
+
+            }
+        }
+    }
+
+    fun showConfirmReshootDialog(view: View) {
+        dialog {
+            layoutId = R.layout.dialog_confirm_reshoot
+            setCustomView = {it: View, dialog: DialogFragment ->
+
+
+                it.btReshootImage.setOnClickListener {
+                    Toast.makeText(this@ShootActivity, "Reshoot Image", Toast.LENGTH_LONG).show()
+                    dialog.dismiss()
+                }
+
+                it.btConfirmImage.setOnClickListener {
+                    Toast.makeText(this@ShootActivity, "Confirm Image", Toast.LENGTH_LONG).show()
+                    dialog.dismiss()
+                }
+
+            }
+        }
+    }
+
+    fun showGifHintDialog(view: View) {
+        dialog {
+            layoutId = R.layout.dialog_shoot_hint
+            setCustomView = {it: View, dialog: DialogFragment ->
+
+
+                it.btContinue.setOnClickListener {
+                    Toast.makeText(this@ShootActivity, "Continue", Toast.LENGTH_LONG).show()
+                    dialog.dismiss()
+                }
+
+
+            }
+        }
+    }
+
+    fun showInteriorShootDialog(view: View) {
+        dialog {
+            layoutId = R.layout.dialog_interior_shoot
+            setCustomView = {it: View, dialog: DialogFragment ->
+
+
+                it.btSkip.setOnClickListener {
+                    Toast.makeText(this@ShootActivity, "Skip", Toast.LENGTH_LONG).show()
+                    dialog.dismiss()
+                }
+
+                it.btShootInterior.setOnClickListener {
+                    Toast.makeText(this@ShootActivity, "Shoot Interior", Toast.LENGTH_LONG).show()
+                    dialog.dismiss()
+                }
+
+
+            }
+        }
+    }
+
+    fun showFocusShootDialog(view: View) {
+        dialog {
+            layoutId = R.layout.dialog_focus_shoot
+            setCustomView = {it: View, dialog: DialogFragment ->
+
+
+                it.tvSkip.setOnClickListener {
+                    Toast.makeText(this@ShootActivity, "Skip", Toast.LENGTH_LONG).show()
+                    dialog.dismiss()
+                }
+
+                it.tvShoot.setOnClickListener {
+                    Toast.makeText(this@ShootActivity, "Shoot Interior", Toast.LENGTH_LONG).show()
+                    dialog.dismiss()
+                }
+
+
+            }
+        }
     }
 
 
