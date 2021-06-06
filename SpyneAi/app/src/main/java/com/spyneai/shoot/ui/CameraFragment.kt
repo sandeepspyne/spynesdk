@@ -175,45 +175,38 @@ class CameraFragment : Fragment() {
                 ?: throw IllegalStateException("Camera initialization failed.")
 
             // The Configuration of camera preview
-            preview = Preview.Builder()
-                .setTargetAspectRatio(aspectRatio) // set the camera aspect ratio
-                .setTargetRotation(rotation!!) // set the camera rotation
-                .build()
+            preview = rotation?.let {
+                Preview.Builder()
+                    .setTargetAspectRatio(aspectRatio) // set the camera aspect ratio
+                    .setTargetRotation(it) // set the camera rotation
+                    .build()
+            }
 
             // The Configuration of image capture
-            imageCapture = ImageCapture.Builder()
-                .setCaptureMode(ImageCapture.CAPTURE_MODE_MAXIMIZE_QUALITY) // setting to have pictures with highest quality possible (may be slow)
-                .setTargetAspectRatio(aspectRatio) // set the capture aspect ratio
-                .setTargetRotation(rotation) // set the capture rotation
-                .also {
-                    // Create a Vendor Extension for HDR
-                    val hdrImageCapture = HdrImageCaptureExtender.create(it)
-
-                    // Check if the extension is available on the device
-//                    if (!hdrImageCapture.isExtensionAvailable(CameraSelector.DEFAULT_BACK_CAMERA)) {
-//                        // If not, hide the HDR button
-//                        binding.btnHdr.visibility = View.GONE
-//                    } else if (hasHdr) {
-//                        // If yes, turn on if the HDR is turned on by the user
-//                        hdrImageCapture.enableExtension(lensFacing)
-//                    }
-                }
-                .build()
+            imageCapture = rotation?.let {
+                ImageCapture.Builder()
+                    .setCaptureMode(ImageCapture.CAPTURE_MODE_MAXIMIZE_QUALITY) // setting to have pictures with highest quality possible (may be slow)
+                    .setTargetAspectRatio(aspectRatio) // set the capture aspect ratio
+                    .setTargetRotation(it) // set the capture rotation
+                    .build()
+            }
 
             // The Configuration of image analyzing
-            imageAnalyzer = ImageAnalysis.Builder()
-                .setTargetAspectRatio(aspectRatio) // set the analyzer aspect ratio
-                .setTargetRotation(rotation) // set the analyzer rotation
-                .setBackpressureStrategy(ImageAnalysis.STRATEGY_KEEP_ONLY_LATEST) // in our analysis, we care about the latest image
-                .build()
-                .apply {
-                    // Use a worker thread for image analysis to prevent glitches
-                    val analyzerThread = HandlerThread("LuminosityAnalysis").apply { start() }
-                    setAnalyzer(
-                        ThreadExecutor(Handler(analyzerThread.looper)),
-                        LuminosityAnalyzer()
-                    )
-                }
+            imageAnalyzer = rotation?.let {
+                ImageAnalysis.Builder()
+                    .setTargetAspectRatio(aspectRatio) // set the analyzer aspect ratio
+                    .setTargetRotation(it) // set the analyzer rotation
+                    .setBackpressureStrategy(ImageAnalysis.STRATEGY_KEEP_ONLY_LATEST) // in our analysis, we care about the latest image
+                    .build()
+                    .apply {
+                        // Use a worker thread for image analysis to prevent glitches
+                        val analyzerThread = HandlerThread("LuminosityAnalysis").apply { start() }
+                        setAnalyzer(
+                            ThreadExecutor(Handler(analyzerThread.looper)),
+                            LuminosityAnalyzer()
+                        )
+                    }
+            }
 
             localCameraProvider.unbindAll() // unbind the use-cases before rebinding them
 
@@ -228,7 +221,9 @@ class CameraFragment : Fragment() {
                 )
 
                 // Attach the viewfinder's surface provider to preview use case
-                preview?.setSurfaceProvider(viewFinder.surfaceProvider)
+                if (viewFinder != null) {
+                    preview?.setSurfaceProvider(viewFinder.surfaceProvider)
+                }
             } catch (e: Exception) {
                 Log.e(TAG, "Failed to bind use cases", e)
             }

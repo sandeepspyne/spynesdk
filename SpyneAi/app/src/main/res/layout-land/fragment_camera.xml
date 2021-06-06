@@ -8,22 +8,20 @@
     android:background="@android:color/transparent">
 
     <View
-        android:id="@+id/viewSubcategories"
         android:layout_width="75dp"
         android:layout_height="match_parent"
-        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        android:background="@color/primary"
-        app:layout_constraintBottom_toBottomOf="parent"></View>
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"></View>
 
     <androidx.camera.view.PreviewView
         android:id="@+id/viewFinder"
         android:layout_width="0dp"
         android:layout_height="0dp"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toStartOf="@+id/rlTakePicture"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toEndOf="@+id/viewSubcategories"
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.0" />
 
@@ -38,27 +36,19 @@
         app:layout_constraintBottom_toBottomOf="parent"
         ></ImageView>
 
-    <RelativeLayout
-        android:id="@+id/rlTakePicture"
+
+
+    <ImageButton
+        android:id="@+id/btnTakePicture"
         android:layout_width="wrap_content"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@android:color/transparent"
+        android:padding="@dimen/double_margin"
+        android:src="@drawable/click_effect"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        android:background="@color/primary">
-
-        <ImageButton
-            android:id="@+id/btnTakePicture"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:background="@android:color/transparent"
-            android:padding="@dimen/dp_10"
-            android:layout_centerInParent="true"
-            android:src="@drawable/click_effect"
-            tools:ignore="ContentDescription" />
-
-    </RelativeLayout>
-
+        tools:ignore="ContentDescription" />
 
 
 
