@@ -4,11 +4,9 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.spyneai.dashboard.data.repository.BaseRepository
 import com.spyneai.dashboard.data.repository.DashboardRepository
-import com.spyneai.dashboard.network.Resource
+import com.spyneai.base.network.Resource
 import com.spyneai.model.categories.CategoriesResponse
-import com.spyneai.model.categories.Data
 import com.spyneai.model.credit.FreeCreditEligblityResponse
 import com.spyneai.model.projects.CompletedProjectResponse
 import com.spyneai.model.shoot.CreateCollectionRequest

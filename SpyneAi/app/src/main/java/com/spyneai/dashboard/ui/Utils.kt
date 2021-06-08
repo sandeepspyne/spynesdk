@@ -4,10 +4,8 @@ import android.app.Activity
 import android.content.Intent
 import android.view.View
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.lifecycleScope
 import com.google.android.material.snackbar.Snackbar
-import com.spyneai.dashboard.network.Resource
-import kotlinx.coroutines.launch
+import com.spyneai.base.network.Resource
 
 fun <A : Activity> Activity.startNewActivity(activity: Class<A>) {
     Intent(this, activity).also {

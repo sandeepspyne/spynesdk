@@ -17,4 +17,8 @@ class OverlaysFragment : Fragment() {
         return inflater.inflate(R.layout.fragment_overlays, container, false)
     }
 
+    override fun onActivityCreated(savedInstanceState: Bundle?) {
+        super.onActivityCreated(savedInstanceState)
+    }
+
 }

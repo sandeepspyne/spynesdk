@@ -4,11 +4,9 @@ import android.app.Dialog
 import android.content.Intent
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
-import android.net.Uri
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
-import android.util.Log
 import android.view.*
 import android.widget.LinearLayout
 import android.widget.TextView
@@ -17,11 +15,6 @@ import androidx.core.content.ContextCompat
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import androidx.recyclerview.widget.RecyclerView.SimpleOnItemTouchListener
-import com.google.android.exoplayer2.SimpleExoPlayer
-import com.google.android.exoplayer2.source.MediaSource
-import com.google.android.exoplayer2.source.ProgressiveMediaSource
-import com.google.android.exoplayer2.upstream.DefaultDataSourceFactory
 import com.google.android.material.tabs.TabLayout
 import com.google.android.play.core.appupdate.AppUpdateManager
 import com.spyneai.R
@@ -35,7 +28,7 @@ import com.spyneai.dashboard.adapters.OngoingDashboardAdapter
 import com.spyneai.dashboard.adapters.SliderAdapter
 import com.spyneai.dashboard.adapters.TutorialVideosAdapter
 import com.spyneai.dashboard.data.model.SliderModel
-import com.spyneai.dashboard.network.Resource
+import com.spyneai.base.network.Resource
 import com.spyneai.dashboard.ui.base.BaseFragment
 import com.spyneai.dashboard.ui.handleApiError
 import com.spyneai.databinding.HomeDashboardFragmentBinding
@@ -49,7 +42,6 @@ import com.spyneai.needs.AppConstants
 import com.spyneai.needs.Utilities
 import com.spyneai.service.ProcessImagesService
 import kotlinx.android.synthetic.main.home_dashboard_fragment.*
-import kotlinx.android.synthetic.main.rv_dashboard_slider.*
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
 

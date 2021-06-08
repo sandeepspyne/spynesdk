@@ -59,9 +59,6 @@ class CameraFragment : Fragment() {
         startCamera()
 
         binding.btnTakePicture?.setOnClickListener { captureImage() }
-        binding.ivCapturedImage?.setOnClickListener {
-            binding.ivCapturedImage!!.visibility = View.GONE
-        }
 
         return binding.root
     }
@@ -124,8 +121,7 @@ class CameraFragment : Fragment() {
                     // This function is called if capture is successfully completed
                     outputFileResults.savedUri
                         ?.let { uri ->
-                            binding.ivCapturedImage!!.setImageURI(uri)
-                            binding.ivCapturedImage!!.visibility = View.VISIBLE
+
                         }
                 }
 
