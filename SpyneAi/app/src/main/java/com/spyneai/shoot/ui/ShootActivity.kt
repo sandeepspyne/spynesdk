@@ -142,7 +142,6 @@ class ShootActivity : AppCompatActivity() {
             layoutId = R.layout.dialog_shoot_hint
             setCustomView = {it: View, dialog: DialogFragment ->
 
-
                 it.btContinue.setOnClickListener {
                     Toast.makeText(this@ShootActivity, "Continue", Toast.LENGTH_LONG).show()
                     dialog.dismiss()

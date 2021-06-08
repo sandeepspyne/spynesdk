@@ -6,6 +6,7 @@ import android.content.ContentValues.TAG
 import android.content.Context
 import android.content.pm.ActivityInfo
 import android.hardware.display.DisplayManager
+import android.net.Uri
 import android.os.*
 import android.provider.MediaStore
 import android.util.DisplayMetrics
@@ -19,10 +20,17 @@ import androidx.camera.extensions.HdrImageCaptureExtender
 import androidx.camera.lifecycle.ProcessCameraProvider
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
+import androidx.work.OneTimeWorkRequestBuilder
+import androidx.work.WorkManager
+import androidx.work.WorkRequest
 import com.robertlevonyan.demo.camerax.analyzer.LuminosityAnalyzer
+import com.spyneai.base.BaseFragment
+import com.spyneai.dashboard.ui.dashboard.DashboardViewModel
 import com.spyneai.databinding.FragmentCameraBinding
+import com.spyneai.databinding.HomeDashboardFragmentBinding
 import com.spyneai.shoot.utils.ThreadExecutor
 import com.spyneai.shoot.utils.mainExecutor
+import com.spyneai.shoot.workmanager.UploadImageWorker
 import kotlinx.android.synthetic.main.activity_camera.*
 import java.io.File
 import java.util.concurrent.ExecutionException
@@ -31,10 +39,8 @@ import kotlin.math.max
 import kotlin.math.min
 
 
-class CameraFragment : Fragment() {
+class CameraFragment : BaseFragment<ShootViewModel, FragmentCameraBinding>() {
 
-    private var fragmentCameraBinding: FragmentCameraBinding? = null
-    private val binding get() = fragmentCameraBinding!!
 
     private var imageCapture: ImageCapture? = null
     private var cameraProvider: ProcessCameraProvider? = null
@@ -44,23 +50,19 @@ class CameraFragment : Fragment() {
     // Selector showing which camera is selected (front or back)
     private var lensFacing = CameraSelector.DEFAULT_BACK_CAMERA
 
+    lateinit var photoFile: File
+    val uploadWorkRequest: WorkRequest = OneTimeWorkRequestBuilder<UploadImageWorker>().build()
+
     companion object {
         private const val RATIO_4_3_VALUE = 4.0 / 3.0 // aspect ratio 4x3
         private const val RATIO_16_9_VALUE = 16.0 / 9.0 // aspect ratio 16x9
     }
 
-    override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View? {
-        // Inflate the layout for this fragment
-        fragmentCameraBinding = FragmentCameraBinding.inflate(inflater, container, false)
-
+    override fun onActivityCreated(savedInstanceState: Bundle?) {
+        super.onActivityCreated(savedInstanceState)
         startCamera()
-
         binding.btnTakePicture?.setOnClickListener { captureImage() }
 
-        return binding.root
     }
 
     override fun setUserVisibleHint(isVisibleToUser: Boolean) {
@@ -121,7 +123,7 @@ class CameraFragment : Fragment() {
                     // This function is called if capture is successfully completed
                     outputFileResults.savedUri
                         ?.let { uri ->
-
+                            uploadImageRequest(uri)
                         }
                 }
 
@@ -134,6 +136,10 @@ class CameraFragment : Fragment() {
                 }
             }
         )
+    }
+
+    private fun uploadImageRequest(uri: Uri) {
+        WorkManager.getInstance(requireContext()).enqueue(uploadWorkRequest)
     }
 
     private fun aspectRatio(width: Int, height: Int): Int {
@@ -226,5 +232,13 @@ class CameraFragment : Fragment() {
 
         }, ContextCompat.getMainExecutor(requireContext()))
     }
+
+
+    override fun getViewModel() = ShootViewModel::class.java
+
+    override fun getFragmentBinding(
+        inflater: LayoutInflater,
+        container: ViewGroup?
+    ) = FragmentCameraBinding.inflate(inflater, container, false)
 
 }

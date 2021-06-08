@@ -29,7 +29,7 @@ import com.spyneai.dashboard.adapters.SliderAdapter
 import com.spyneai.dashboard.adapters.TutorialVideosAdapter
 import com.spyneai.dashboard.data.model.SliderModel
 import com.spyneai.base.network.Resource
-import com.spyneai.dashboard.ui.base.BaseFragment
+import com.spyneai.base.BaseFragment
 import com.spyneai.dashboard.ui.handleApiError
 import com.spyneai.databinding.HomeDashboardFragmentBinding
 import com.spyneai.extras.BeforeAfterActivity
