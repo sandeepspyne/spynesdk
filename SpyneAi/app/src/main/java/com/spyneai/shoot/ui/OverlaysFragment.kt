@@ -6,6 +6,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.bumptech.glide.Glide
 import com.spyneai.adapter.SubCategoriesAdapter
 import com.spyneai.dashboard.network.Resource
 import com.spyneai.dashboard.response.NewSubCatResponse
@@ -28,8 +29,10 @@ class OverlaysFragment : BaseFragment<ShootViewModel,FragmentOverlaysBinding>() 
         initAngles()
         initSubcategories()
         initProgressFrames()
+        initOverlays()
 
         viewModel.getSubCategories("3c436435-238a-4bdc-adb8-d6182fddeb43", "cat_d8R14zUNE")
+
         viewModel.subCategoriesResponse.observe(viewLifecycleOwner, {
             when(it){
                 is Resource.Sucess -> {
@@ -47,6 +50,29 @@ class OverlaysFragment : BaseFragment<ShootViewModel,FragmentOverlaysBinding>() 
 
         viewModel.shootNumber.observe(viewLifecycleOwner,{
             binding.tvShoot?.text = "Angles $it/${viewModel.getSelectedAngles()}"
+        })
+    }
+
+    private fun initOverlays() {
+        viewModel.getOverlays("3c436435-238a-4bdc-adb8-d6182fddeb43", "cat_d8R14zUNE",
+        "prod_seY3vxSUV","8")
+
+        viewModel.overlaysResponse.observe(viewLifecycleOwner,{
+            when(it){
+                is Resource.Sucess -> {
+                   Glide.with(requireContext())
+                       .load(it.value.data.get(0).display_thumbnail)
+                       .into(binding.imgOverlay!!)
+                }
+
+                is Resource.Loading -> {
+
+                }
+
+                is Resource.Failure -> {
+                    handleApiError(it)
+                }
+            }
         })
     }
 

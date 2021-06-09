@@ -1,5 +1,6 @@
 package com.spyneai.dashboard.network
 
+import com.spyneai.camera2.OverlaysResponse
 import com.spyneai.dashboard.response.NewCategoriesResponse
 import com.spyneai.dashboard.response.NewSubCatResponse
 import com.spyneai.model.categories.CategoriesResponse
@@ -31,4 +32,10 @@ interface ClipperApi {
         @Query("auth_key") authKey : String,
         @Query("prod_id") prodId : String
     ): NewSubCatResponse
+
+    @GET("v2/overlays/fetch")
+    suspend fun getOverlays(@Query("auth_key") authKey : String,
+                    @Query("prod_id") prodId : String,
+                    @Query("prod_sub_cat_id") prodSubcatId : String,
+                    @Query("no_of_frames") frames : String,) : OverlaysResponse
 }

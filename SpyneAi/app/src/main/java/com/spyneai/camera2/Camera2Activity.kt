@@ -1181,8 +1181,6 @@ class Camera2Activity : AppCompatActivity() {
 
                         var equlizer = (30 * resources.displayMetrics.density).toInt()
 
-
-
                         var params = FrameLayout.LayoutParams(newW.toInt(), newH.toInt())
                         params.gravity = Gravity.CENTER
 

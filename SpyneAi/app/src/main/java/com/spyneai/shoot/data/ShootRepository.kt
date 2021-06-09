@@ -12,4 +12,10 @@ class ShootRepository : BaseRepository() {
     ) = safeApiCall {
         clipperApi.getSubCategories(authKey, prodId)
     }
+
+    suspend fun getOverlays(authKey: String, prodId: String,
+                            prodSubcategoryId : String, frames : String) = safeApiCall {
+        clipperApi.getOverlays(authKey, prodId, prodSubcategoryId, frames)
+    }
+
 }
