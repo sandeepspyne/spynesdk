@@ -4,8 +4,11 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
+import androidx.fragment.app.DialogFragment
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.spyneai.adapter.SubCategoriesAdapter
+import com.balsikandar.kotlindslsamples.dialogfragment.DialogDSLBuilder.Companion.dialog
+import com.spyneai.R
 import com.spyneai.base.BaseFragment
 import com.spyneai.base.network.Resource
 import com.spyneai.dashboard.response.NewSubCatResponse
@@ -13,7 +16,9 @@ import com.spyneai.dashboard.ui.handleApiError
 import com.spyneai.databinding.FragmentOverlaysBinding
 import com.spyneai.shoot.adapter.ShootProgressAdapter
 import com.spyneai.shoot.adapters.NewSubCategoriesAdapter
+import com.spyneai.shoot.data.model.ShootData
 import com.spyneai.shoot.ui.dialogs.AngleSelectionDialog
+import kotlinx.android.synthetic.main.dialog_confirm_reshoot.view.*
 import java.util.*
 
 class OverlaysFragment : BaseFragment<ShootViewModel,FragmentOverlaysBinding>() {
@@ -21,6 +26,7 @@ class OverlaysFragment : BaseFragment<ShootViewModel,FragmentOverlaysBinding>() 
 
     lateinit var subCategoriesAdapter: NewSubCategoriesAdapter
     lateinit var progressAdapter : ShootProgressAdapter
+    private var showDialog = true
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
@@ -47,6 +53,33 @@ class OverlaysFragment : BaseFragment<ShootViewModel,FragmentOverlaysBinding>() 
         viewModel.shootNumber.observe(viewLifecycleOwner,{
             binding.tvShoot?.text = "Angles $it/${viewModel.getSelectedAngles()}"
         })
+
+        viewModel.shootList.observe(viewLifecycleOwner,{
+            if (showDialog)
+            showConfirmReshootDialog(it.get(it.size-1))
+        })
+    }
+
+    fun showConfirmReshootDialog(shootData: ShootData) {
+        dialog {
+            layoutId = R.layout.dialog_confirm_reshoot
+            setCustomView = {it: View, dialog: DialogFragment ->
+
+
+                it.btReshootImage.setOnClickListener {
+                    showDialog = false
+                    viewModel.shootList.value?.remove(shootData)
+                    dialog.dismiss()
+                    showDialog = true
+                }
+
+                it.btConfirmImage.setOnClickListener {
+                    viewModel.uploadImageWithWorkManager(requireContext(), shootData)
+                    dialog.dismiss()
+                }
+
+            }
+        }
     }
 
     private fun initProgressFrames() {

@@ -117,25 +117,7 @@ class ShootActivity : AppCompatActivity() {
         }
     }
 
-    fun showConfirmReshootDialog(view: View) {
-        dialog {
-            layoutId = R.layout.dialog_confirm_reshoot
-            setCustomView = {it: View, dialog: DialogFragment ->
 
-
-                it.btReshootImage.setOnClickListener {
-                    Toast.makeText(this@ShootActivity, "Reshoot Image", Toast.LENGTH_LONG).show()
-                    dialog.dismiss()
-                }
-
-                it.btConfirmImage.setOnClickListener {
-                    Toast.makeText(this@ShootActivity, "Confirm Image", Toast.LENGTH_LONG).show()
-                    dialog.dismiss()
-                }
-
-            }
-        }
-    }
 
     fun showGifHintDialog(view: View) {
         dialog {

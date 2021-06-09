@@ -26,6 +26,16 @@
         app:layout_constraintVertical_bias="0.0" />
 
     <ImageView
+        android:id="@+id/ivUploadedImage"
+        android:layout_width="@dimen/dp_100"
+        android:layout_height="@dimen/dp_100"
+        android:visibility="gone"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"></ImageView>
+
+    <ImageView
         android:visibility="gone"
         android:id="@+id/ivCapturedImage"
         android:layout_width="@dimen/dp_400"

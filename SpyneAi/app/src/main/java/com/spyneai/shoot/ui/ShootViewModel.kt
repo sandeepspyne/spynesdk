@@ -1,36 +1,42 @@
 package com.spyneai.shoot.ui
 
+import android.content.Context
+import android.net.Uri
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import androidx.work.*
 import com.spyneai.base.network.Resource
 import com.spyneai.dashboard.response.NewSubCatResponse
+import com.spyneai.shoot.data.model.ShootData
 import com.spyneai.shoot.data.model.ShootProgress
 import com.spyneai.shoot.data.model.UploadImageResponse
 import com.spyneai.shoot.data.repository.ShootRepository
+import com.spyneai.shoot.workmanager.UploadImageWorker
 import kotlinx.coroutines.launch
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
-import java.util.*
+import kotlin.collections.ArrayList
 
 class ShootViewModel : ViewModel() {
 
+    val shootList: MutableLiveData<ArrayList<ShootData>> = MutableLiveData()
     private val repository = ShootRepository()
 
-    private val _uploadImageResponse: MutableLiveData<Resource<UploadImageResponse>> = MutableLiveData()
-    val uploadImageResponse: LiveData<Resource<UploadImageResponse>>
-    get() = _uploadImageResponse
 
-    fun uploadImage(
-        project_id: RequestBody,
-        sku_id: RequestBody,
-        image_category: RequestBody,
-        auth_key: RequestBody,
-        image: MultipartBody.Part
-    ) = viewModelScope.launch {
-        _uploadImageResponse.value = Resource.Loading
-        _uploadImageResponse.value = repository.uploadImage(project_id, sku_id, image_category, auth_key, image)
+    fun uploadImageWithWorkManager(
+        requireContext: Context,
+        shootData: ShootData
+    ) {
+        val uploadWorkRequest = OneTimeWorkRequest.Builder(UploadImageWorker::class.java)
+        val data = Data.Builder()
+        data.putString("uri", shootData.uri.toString())
+        data.putString("projectId", shootData.project_id)
+        data.putString("skuId", shootData.sku_id)
+        data.putString("imageCategory", shootData.image_category)
+        data.putString("authKey", shootData.auth_key)
+        WorkManager.getInstance(requireContext).enqueue(uploadWorkRequest.build())
     }
 
     private val _subCategoriesResponse: MutableLiveData<Resource<NewSubCatResponse>> = MutableLiveData()

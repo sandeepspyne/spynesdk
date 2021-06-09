@@ -3,10 +3,7 @@ package com.spyneai.shoot.ui
 import android.app.Activity
 import android.content.ContentValues
 import android.content.ContentValues.TAG
-import android.content.Context
 import android.content.pm.ActivityInfo
-import android.hardware.display.DisplayManager
-import android.net.Uri
 import android.os.*
 import android.provider.MediaStore
 import android.util.DisplayMetrics
@@ -16,23 +13,22 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.camera.core.*
-import androidx.camera.extensions.HdrImageCaptureExtender
 import androidx.camera.lifecycle.ProcessCameraProvider
 import androidx.core.content.ContextCompat
-import androidx.fragment.app.Fragment
-import androidx.work.OneTimeWorkRequestBuilder
-import androidx.work.WorkManager
-import androidx.work.WorkRequest
+import com.bumptech.glide.Glide
 import com.robertlevonyan.demo.camerax.analyzer.LuminosityAnalyzer
 import com.spyneai.base.BaseFragment
-import com.spyneai.dashboard.ui.dashboard.DashboardViewModel
+import com.spyneai.base.network.Resource
+import com.spyneai.dashboard.response.NewSubCatResponse
+import com.spyneai.dashboard.ui.handleApiError
 import com.spyneai.databinding.FragmentCameraBinding
-import com.spyneai.databinding.HomeDashboardFragmentBinding
+import com.spyneai.needs.AppConstants
+import com.spyneai.shoot.data.model.ShootData
 import com.spyneai.shoot.utils.ThreadExecutor
 import com.spyneai.shoot.utils.mainExecutor
-import com.spyneai.shoot.workmanager.UploadImageWorker
 import kotlinx.android.synthetic.main.activity_camera.*
 import java.io.File
+import java.util.ArrayList
 import java.util.concurrent.ExecutionException
 import kotlin.math.abs
 import kotlin.math.max
@@ -40,18 +36,20 @@ import kotlin.math.min
 
 
 class CameraFragment : BaseFragment<ShootViewModel, FragmentCameraBinding>() {
-
-
     private var imageCapture: ImageCapture? = null
     private var cameraProvider: ProcessCameraProvider? = null
     private var preview: Preview? = null
     private var imageAnalyzer: ImageAnalysis? = null
 
+    private var projectId: String = "prj-27d33afa-4f50-4af0-b769-a97adf247fae"
+    private var skuId: String = "sku-9c0775d2-69e4-4ecf-a134-7b61a48e15ee\n"
+    private var imageCategory: String= "Exterior"
+    private var authKey: String = "813a71af-a2fb-4ef8-87b3-059d01c5b9ba"
+
     // Selector showing which camera is selected (front or back)
     private var lensFacing = CameraSelector.DEFAULT_BACK_CAMERA
 
     lateinit var photoFile: File
-    val uploadWorkRequest: WorkRequest = OneTimeWorkRequestBuilder<UploadImageWorker>().build()
 
     companion object {
         private const val RATIO_4_3_VALUE = 4.0 / 3.0 // aspect ratio 4x3
@@ -62,6 +60,10 @@ class CameraFragment : BaseFragment<ShootViewModel, FragmentCameraBinding>() {
         super.onActivityCreated(savedInstanceState)
         startCamera()
         binding.btnTakePicture?.setOnClickListener { captureImage() }
+
+        binding.ivUploadedImage?.setOnClickListener {
+            binding.ivUploadedImage!!.visibility = View.GONE
+        }
 
     }
 
@@ -123,7 +125,8 @@ class CameraFragment : BaseFragment<ShootViewModel, FragmentCameraBinding>() {
                     // This function is called if capture is successfully completed
                     outputFileResults.savedUri
                         ?.let { uri ->
-                            uploadImageRequest(uri)
+                            viewModel.shootList.value?.add(ShootData(uri, "prj-27d33afa-4f50-4af0-b769-a97adf247fae",
+                                "sku-9c0775d2-69e4-4ecf-a134-7b61a48e15ee", "Exterior", "813a71af-a2fb-4ef8-87b3-059d01c5b9ba"))
                         }
                 }
 
@@ -136,10 +139,6 @@ class CameraFragment : BaseFragment<ShootViewModel, FragmentCameraBinding>() {
                 }
             }
         )
-    }
-
-    private fun uploadImageRequest(uri: Uri) {
-        WorkManager.getInstance(requireContext()).enqueue(uploadWorkRequest)
     }
 
     private fun aspectRatio(width: Int, height: Int): Int {
