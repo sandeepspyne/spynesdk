@@ -1,13 +1,12 @@
 package com.spyneai.base.network
 
+import com.spyneai.dashboard.response.NewSubCatResponse
 import com.spyneai.model.credit.FreeCreditEligblityResponse
 import com.spyneai.model.projects.CompletedProjectResponse
 import com.spyneai.shoot.data.model.UploadImageResponse
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
-import retrofit2.http.Multipart
-import retrofit2.http.POST
-import retrofit2.http.Part
+import retrofit2.http.*
 
 interface ClipperApi {
 
@@ -32,6 +31,12 @@ interface ClipperApi {
         @Part("auth_key") auth_key: RequestBody?,
         @Part file: MultipartBody.Part
     ): UploadImageResponse
+
+    @GET("v2/prod/sub/fetch")
+    suspend fun getSubCategories(
+        @Query("auth_key") authKey : String,
+        @Query("prod_id") prodId : String
+    ): NewSubCatResponse
 
 
 }

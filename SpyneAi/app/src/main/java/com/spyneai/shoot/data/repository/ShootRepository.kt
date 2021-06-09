@@ -22,4 +22,10 @@ class ShootRepository : BaseRepository() {
         clipperApi.uploadImage(project_id, sku_id, image_category, auth_key, image)
     }
 
+    suspend fun getSubCategories(
+        authKey : String,prodId : String
+    ) = safeApiCall {
+        clipperApi.getSubCategories(authKey, prodId)
+    }
+
 }

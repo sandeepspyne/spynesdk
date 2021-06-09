@@ -5,11 +5,9 @@ import SubcategoriesResponse
 import android.Manifest
 import android.annotation.SuppressLint
 import android.app.Dialog
-import android.content.ContentValues
 import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
-import android.database.Cursor
 import android.graphics.*
 import android.graphics.drawable.ColorDrawable
 import android.media.AudioManager
@@ -17,12 +15,8 @@ import android.media.ExifInterface
 import android.media.MediaActionSound
 import android.net.Uri
 import android.os.*
-import android.provider.MediaStore
 import android.text.Editable
-import android.text.SpannableString
-import android.text.SpannableStringBuilder
 import android.text.TextWatcher
-import android.text.style.ForegroundColorSpan
 import android.util.Log
 import android.util.Rational
 import android.view.LayoutInflater
@@ -33,7 +27,6 @@ import android.view.animation.AlphaAnimation
 import android.view.animation.Animation
 import android.widget.*
 import android.widget.NumberPicker.OnValueChangeListener
-import android.widget.TextView.BufferType
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AppCompatDelegate
@@ -45,9 +38,7 @@ import androidx.core.content.ContextCompat
 import androidx.core.view.isVisible
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.airbnb.lottie.LottieAnimationView
 import com.bumptech.glide.Glide
-import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.spyneai.R
 import com.spyneai.activity.GenerateGifActivity
 import com.spyneai.adapter.InteriorFramesAdapter
@@ -58,7 +49,6 @@ import com.spyneai.adapter.SubCategoriesAdapter
 import com.spyneai.dashboard.ui.dashboard.MainDashboardActivity
 import com.spyneai.interfaces.APiService
 import com.spyneai.interfaces.RetrofitClient
-import com.spyneai.loginsignup.activity.LoginActivity
 import com.spyneai.model.shoot.*
 import com.spyneai.model.sku.SkuResponse
 import com.spyneai.model.skuedit.EditSkuRequest
@@ -89,7 +79,6 @@ import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 import java.io.*
-import java.lang.reflect.Field
 import java.text.SimpleDateFormat
 import java.util.*
 import java.util.concurrent.ExecutorService

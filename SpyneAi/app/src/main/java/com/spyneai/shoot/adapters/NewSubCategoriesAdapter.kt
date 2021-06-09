@@ -1,4 +1,4 @@
-package com.spyneai.adapter
+package com.spyneai.shoot.adapters
 
 import android.content.Context
 import android.view.LayoutInflater
@@ -11,14 +11,15 @@ import androidx.cardview.widget.CardView
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.spyneai.R
-import com.spyneai.model.subcategories.Data
+import com.spyneai.adapter.SubCategoriesAdapter
+import com.spyneai.dashboard.response.NewSubCatResponse
 import com.spyneai.needs.AppConstants
 
-public class SubCategoriesAdapter(val context: Context,
-                                  val subCategoriesList: ArrayList<Data>,
-                                  var pos : Int,
-                                  val btnlistener: BtnClickListener?)
-    : RecyclerView.Adapter<SubCategoriesAdapter.ViewHolder>() {
+class NewSubCategoriesAdapter (val context: Context,
+                               var subCategoriesList: ArrayList<NewSubCatResponse.Data>?,
+                               var pos : Int,
+                               val btnlistener: BtnClickListener?)
+: RecyclerView.Adapter<NewSubCategoriesAdapter.ViewHolder>() {
 
     companion object {
         var mClickListener: BtnClickListener? = null
@@ -56,11 +57,15 @@ public class SubCategoriesAdapter(val context: Context,
 
         // Get element from your dataset at this position and replace the
         // contents of the view with that element
-        Glide.with(context).load(AppConstants.BASE_IMAGE_URL +
-                subCategoriesList[position].displayThumbnail.toString())
+
+        val subCategory = subCategoriesList!![position]
+
+        Glide.with(context).load(
+            AppConstants.BASE_IMAGE_URL +
+                subCategory.display_thumbnail)
             .into(viewHolder.ivSubCategories)
 
-        viewHolder.tvSubcategories.setText(subCategoriesList[position].displayName)
+        viewHolder.tvSubcategories.setText(subCategory.sub_cat_name)
         mClickListener = btnlistener
         if (position == pos)
             viewHolder.llSubCategoriesImage.setBackgroundResource(R.drawable.bg_selected)
@@ -69,7 +74,7 @@ public class SubCategoriesAdapter(val context: Context,
 
         viewHolder.llSubCategories.setOnClickListener(View.OnClickListener {
             if (mClickListener != null)
-                mClickListener?.onBtnClick(position)
+                mClickListener?.onBtnClick(position,subCategory.sub_cat_name,subCategory.display_thumbnail)
             pos = position
 
             viewHolder.llSubCategoriesImage.setBackgroundResource(R.drawable.bg_selected)
@@ -78,10 +83,10 @@ public class SubCategoriesAdapter(val context: Context,
     }
 
     // Return the size of your dataset (invoked by the layout manager)
-    override fun getItemCount() = subCategoriesList.size
+    override fun getItemCount() = if (subCategoriesList == null) 0 else subCategoriesList!!.size
 
     open interface BtnClickListener {
-        fun onBtnClick(position: Int)
+        fun onBtnClick(position: Int,subcategoryName : String,subcategoryImage : String)
     }
 
 }
