@@ -22,7 +22,7 @@ abstract class BaseDialogFragment<VM : ViewModel, B : ViewBinding> : DialogFragm
     ): View? {
         binding = getFragmentBinding(inflater, container)
         val factory = ViewModelFactory()
-        viewModel = ViewModelProvider(this, factory).get(getViewModel())
+        viewModel = ViewModelProvider(requireActivity(), factory).get(getViewModel())
         return binding.root
     }
 
