@@ -50,9 +50,6 @@ import okhttp3.RequestBody
 class HomeDashboardFragment :
     BaseFragment<DashboardViewModel, HomeDashboardFragmentBinding>() {
 
-    lateinit var appUpdateManager: AppUpdateManager
-    private val MY_REQUEST_CODE: Int = 1
-    lateinit var PACKAGE_NAME: String
     lateinit var btnlistener: CategoriesDashboardAdapter.BtnClickListener
 
     lateinit var categoriesAdapter: CategoriesDashboardAdapter
@@ -62,15 +59,10 @@ class HomeDashboardFragment :
     lateinit var completedDashboardAdapter : CompletedDashboardAdapter
     lateinit var completedProjectList: ArrayList<CompletedProjectResponse>
 
-    lateinit var sliderAdapter : SliderAdapter
-
-    lateinit var sliderImageList: ArrayList<SliderModel>
-
     var tutorialVideosList = intArrayOf(R.drawable.ic_tv1, R.drawable.ic_tv2)
 
     lateinit var tutorialVideosAdapter : TutorialVideosAdapter
 
-    var handelBaseUrl = 0
     var categoryPosition: Int = 0
     lateinit var tokenId: String
     lateinit var email: String
@@ -137,8 +129,7 @@ class HomeDashboardFragment :
                                     description =   it.value.data[position].description
                                     colorCode =   it.value.data[position].color_code
 
-
-                                    setShoot()
+                                    startBeforeAfter()
                                 } else
                                     Toast.makeText(
                                         requireContext(),
@@ -216,75 +207,30 @@ class HomeDashboardFragment :
                 }
             }
         })
-
-
-        viewModel.createCollectionResponse.observe(viewLifecycleOwner, Observer {
-            when(it){
-                is Resource.Sucess -> {
-                    Utilities.savePrefrence(
-                        requireContext(),
-                        AppConstants.SHOOT_ID,
-                        it.value.payload.data.shootId.toString())
-                    setCategoryMap(it.value.payload.data.shootId.toString(), categoryPosition, it.value.payload.data.catId, it.value.payload.data.categoryName)
-                }
-//                is Resource.Loading -> {
-//                }
-                is Resource.Failure -> {
-
-                    handleApiError(it)
-                }
-            }
-        })
-
-        viewModel.updateShootCategoryResponse.observe(viewLifecycleOwner, Observer {
-            when(it){
-                is Resource.Sucess -> {
-                    val intent = Intent(requireContext(), BeforeAfterActivity::class.java)
-                    intent.putExtra(
-                        AppConstants.CATEGORY_NAME,
-                        displayName
-                    )
-                    intent.putExtra(
-                        AppConstants.CATEGORY_ID,
-                        catId
-                    )
-                    intent.putExtra(
-                        AppConstants.IMAGE_URL,
-                        displayThumbnail
-                    )
-                    intent.putExtra(
-                        AppConstants.DESCRIPTION,
-                        description
-                    )
-                    intent.putExtra(AppConstants.COLOR, colorCode)
-                    startActivity(intent)
-                }
-//                is Resource.Loading -> {
-//                }
-                is Resource.Failure -> {
-
-                    handleApiError(it)
-                }
-            }
-        })
-
-        viewModel.freeCreditEligblityResponse.observe(viewLifecycleOwner, Observer {
-            when(it){
-                is Resource.Sucess -> {
-                    if (it.value.status == 200)
-                        showFreeCreditDialog(it.value.message)
-                }
-//                is Resource.Loading -> {
-//                }
-                is Resource.Failure -> {
-
-                    handleApiError(it)
-                }
-            }
-        })
-
     }
 
+
+    private fun startBeforeAfter() {
+        val intent = Intent(requireContext(), BeforeAfterActivity::class.java)
+        intent.putExtra(
+            AppConstants.CATEGORY_NAME,
+            displayName
+        )
+        intent.putExtra(
+            AppConstants.CATEGORY_ID,
+            catId
+        )
+        intent.putExtra(
+            AppConstants.IMAGE_URL,
+            displayThumbnail
+        )
+        intent.putExtra(
+            AppConstants.DESCRIPTION,
+            description
+        )
+        intent.putExtra(AppConstants.COLOR, colorCode)
+        startActivity(intent)
+    }
 
     private fun setSliderRecycler(){
 
@@ -310,19 +256,6 @@ class HomeDashboardFragment :
         }
     }
 
-    private fun setCategoryMap(shootId: String, categoryPosition: Int, catId: String, displayName: String) {
-        val updateShootCategoryRequest = UpdateShootCategoryRequest(
-            shootId,
-            catId,
-            displayName
-        )
-        viewModel.updateShootCategory(tokenId, updateShootCategoryRequest)
-    }
-
-    private fun setShoot(){
-        val createCollectionRequest = CreateCollectionRequest("Spyne Shoot");
-        viewModel.createCollection(tokenId, createCollectionRequest)
-    }
 
     private fun setOngoingProjectRecycler(){
 
@@ -377,7 +310,6 @@ class HomeDashboardFragment :
     }
 
     private fun showFreeCreditDialog(message: String) {
-
         val dialog = Dialog(requireContext())
         dialog.requestWindowFeature(Window.FEATURE_NO_TITLE)
         dialog.setCancelable(true)

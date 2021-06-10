@@ -3,6 +3,7 @@ package com.spyneai.dashboard.ui.base
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import com.spyneai.dashboard.ui.dashboard.DashboardViewModel
+import com.spyneai.shoot.data.ShootViewModel
 
 class ViewModelFactory() : ViewModelProvider.NewInstanceFactory() {
 

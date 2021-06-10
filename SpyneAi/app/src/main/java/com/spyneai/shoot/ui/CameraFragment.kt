@@ -23,6 +23,7 @@ import com.spyneai.dashboard.response.NewSubCatResponse
 import com.spyneai.dashboard.ui.handleApiError
 import com.spyneai.databinding.FragmentCameraBinding
 import com.spyneai.needs.AppConstants
+import com.spyneai.shoot.data.ShootViewModel
 import com.spyneai.shoot.data.model.ShootData
 import com.spyneai.shoot.utils.ThreadExecutor
 import com.spyneai.shoot.utils.mainExecutor

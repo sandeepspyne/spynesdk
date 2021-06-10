@@ -3,7 +3,7 @@ package com.spyneai.shoot.workmanager
 import android.content.Context
 import androidx.work.CoroutineWorker
 import androidx.work.WorkerParameters
-import com.spyneai.shoot.data.repository.ShootRepository
+import com.spyneai.shoot.data.ShootRepository
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
@@ -13,7 +13,6 @@ class UploadImageWorker(appContext: Context, workerParams: WorkerParameters):
     CoroutineWorker(appContext, workerParams) {
 
     private val repository = ShootRepository()
-    private val viewModel = ShootViewModel()
 
     override suspend fun doWork(): Result {
         uploadImages()

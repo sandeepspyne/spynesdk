@@ -30,20 +30,6 @@ class DashboardViewModel() : ViewModel() {
     val completedProjectResponse: LiveData<Resource<List<CompletedProjectResponse>>>
         get() = _completedProjectResponse
 
-    private val _createCollectionResponse: MutableLiveData<Resource<CreateCollectionResponse>> = MutableLiveData()
-    val createCollectionResponse: LiveData<Resource<CreateCollectionResponse>>
-        get() = _createCollectionResponse
-
-    private val _updateShootCategoryResponse: MutableLiveData<Resource<UpdateShootCategoryResponse>> = MutableLiveData()
-    val updateShootCategoryResponse: LiveData<Resource<UpdateShootCategoryResponse>>
-        get() = _updateShootCategoryResponse
-
-
-    private val _freeCreditEligblityResponse: MutableLiveData<Resource<FreeCreditEligblityResponse>> = MutableLiveData()
-    val freeCreditEligblityResponse: LiveData<Resource<FreeCreditEligblityResponse>>
-        get() = _freeCreditEligblityResponse
-
-
 
     fun getCategories(
         tokenId: String
@@ -60,34 +46,6 @@ class DashboardViewModel() : ViewModel() {
         _completedProjectResponse.value = repository.getCompletedProjects(user_id)
 
     }
-
-    fun createCollection(
-        tokenId: String,
-        createCollectionRequest: CreateCollectionRequest
-    )  = viewModelScope.launch {
-        _createCollectionResponse.value = Resource.Loading
-        _createCollectionResponse.value = repository.createCollection(tokenId, createCollectionRequest)
-
-    }
-
-    fun updateShootCategory(
-        tokenId: String,
-        updateShootCategoryRequest: UpdateShootCategoryRequest
-    )  = viewModelScope.launch {
-        _updateShootCategoryResponse.value = Resource.Loading
-        _updateShootCategoryResponse.value = repository.updateShootCategory(tokenId, updateShootCategoryRequest)
-
-    }
-
-    fun userFreeCreditEligiblityCheck(
-        user_id: RequestBody?,
-        email_id: RequestBody?,
-    )  = viewModelScope.launch {
-        _freeCreditEligblityResponse.value = Resource.Loading
-        _freeCreditEligblityResponse.value = repository.UserFreeCreditEligiblityCheck(user_id, email_id)
-
-    }
-
 
 
 }

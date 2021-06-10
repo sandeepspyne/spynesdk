@@ -31,9 +31,7 @@ import retrofit2.Callback
 import retrofit2.Response
 import kotlin.collections.ArrayList
 
-class CategoriesActivity : AppCompatActivity(),CategoriesAdapter.BtnClickListener {
-    private lateinit var beforeAfterResponser: BeforeAfterResponse
-    private lateinit var beforeAfterData: com.spyneai.model.beforeafter.Data
+class CategoriesActivity : AppCompatActivity(){
     lateinit var categoriesResponseList : ArrayList<NewCategoriesResponse.Data>
     lateinit var categoriesAdapter : CategoriesAdapter
     lateinit var rv_categories : RecyclerView
@@ -48,7 +46,8 @@ class CategoriesActivity : AppCompatActivity(),CategoriesAdapter.BtnClickListene
 
         setPreferences()
         setListeners()
-        setRecycler();
+        setRecycler()
+
         if (Utilities.isNetworkAvailable(applicationContext))
             fetchCategories()
         else
@@ -72,9 +71,9 @@ class CategoriesActivity : AppCompatActivity(),CategoriesAdapter.BtnClickListene
         super.onResume()
         setPreferences()
     }
+
     //Set Recycler
     private fun setRecycler() {
-        Log.e("Token Mine" , Utilities.getPreference(this, AppConstants.tokenId).toString())
         rv_categories = findViewById(R.id.rv_categories)
         categoriesResponseList = ArrayList()
         categoriesAdapter = CategoriesAdapter(this, categoriesResponseList,
@@ -88,7 +87,14 @@ class CategoriesActivity : AppCompatActivity(),CategoriesAdapter.BtnClickListene
                                 AppConstants.CATEGORY_NAME,
                                 categoriesResponseList[position].prod_cat_id
                             )
-                            setShoot(position)
+
+                            val intent = Intent(this@CategoriesActivity, BeforeAfterActivity::class.java)
+                            intent.putExtra(AppConstants.CATEGORY_ID,categoriesResponseList[position].prod_cat_id)
+                            intent.putExtra(AppConstants.CATEGORY_NAME,categoriesResponseList[position].prod_cat_name)
+                            intent.putExtra(AppConstants.IMAGE_URL,categoriesResponseList[position].display_thumbnail)
+                            intent.putExtra(AppConstants.DESCRIPTION,categoriesResponseList[position].description)
+                            intent.putExtra(AppConstants.COLOR,categoriesResponseList[position].color_code)
+                            startActivity(intent)
                         }else
                             Toast.makeText(this@CategoriesActivity,
                                     "Coming Soon !",
@@ -142,64 +148,4 @@ class CategoriesActivity : AppCompatActivity(),CategoriesAdapter.BtnClickListene
         })
     }
 
-    override fun onBtnClick(position: Int) {
-        Log.e("position", position.toString())
-    }
-
-    //Fetch shootId
-    private fun setShoot(position: Int) {
-        Utilities.showProgressDialog(this)
-        val createCollectionRequest = CreateCollectionRequest("Spyne Shoot");
-
-        val request = RetrofitClient.buildService(APiService::class.java)
-        val call = request.createCollection(Utilities.getPreference(this,AppConstants.tokenId),createCollectionRequest)
-
-        call?.enqueue(object : Callback<CreateCollectionResponse>{
-            override fun onResponse(call: Call<CreateCollectionResponse>, response: Response<CreateCollectionResponse>) {
-                if (response.isSuccessful){
-                    Log.e("ok", response.body()?.payload?.data?.shootId.toString())
-                    Utilities.savePrefrence(this@CategoriesActivity,
-                            AppConstants.SHOOT_ID,
-                            response.body()?.payload?.data?.shootId.toString())
-                    setCategoryMap(response.body()?.payload?.data?.shootId.toString(),position)
-                }
-            }
-            override fun onFailure(call: Call<CreateCollectionResponse>, t: Throwable) {
-                Log.e("ok", "no way")
-            }
-        })
-    }
-
-    private fun setCategoryMap(shootId: String, position: Int) {
-
-        val updateShootCategoryRequest = UpdateShootCategoryRequest(shootId,
-                categoriesResponseList[position].prod_cat_id,
-                categoriesResponseList[position].prod_cat_name)
-
-        val request = RetrofitClient.buildService(APiService::class.java)
-        val call = request.updateShootCategory(
-                Utilities.getPreference(this,AppConstants.tokenId),
-                updateShootCategoryRequest)
-
-        call?.enqueue(object : Callback<CreateCollectionResponse>{
-            override fun onResponse(call: Call<CreateCollectionResponse>, response: Response<CreateCollectionResponse>) {
-                Utilities.hideProgressDialog()
-                if (response.isSuccessful){
-                    val intent = Intent(this@CategoriesActivity, BeforeAfterActivity::class.java)
-                    intent.putExtra(AppConstants.CATEGORY_ID,categoriesResponseList[position].prod_cat_id)
-                    intent.putExtra(AppConstants.CATEGORY_NAME,categoriesResponseList[position].prod_cat_name)
-                    intent.putExtra(AppConstants.IMAGE_URL,categoriesResponseList[position].display_thumbnail)
-                    intent.putExtra(AppConstants.DESCRIPTION,categoriesResponseList[position].description)
-                    intent.putExtra(AppConstants.COLOR,categoriesResponseList[position].color_code)
-                    startActivity(intent)
-                    Log.e("Category map",categoriesResponseList[position].prod_cat_id+" " + response.body()!!.msgInfo.msgDescription)
-                }
-            }
-            override fun onFailure(call: Call<CreateCollectionResponse>, t: Throwable) {
-                Utilities.hideProgressDialog()
-                Log.e("ok", "no way")
-
-            }
-        })
-    }
 }
