@@ -4,12 +4,9 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.spyneai.dashboard.data.repository.BaseRepository
+
 import com.spyneai.dashboard.data.repository.DashboardRepository
-import com.spyneai.dashboard.network.Resource
-import com.spyneai.dashboard.response.NewCategoriesResponse
 import com.spyneai.model.categories.CategoriesResponse
-import com.spyneai.model.categories.Data
 import com.spyneai.model.credit.FreeCreditEligblityResponse
 import com.spyneai.model.projects.CompletedProjectResponse
 import com.spyneai.model.shoot.CreateCollectionRequest
@@ -18,6 +15,8 @@ import com.spyneai.model.shoot.UpdateShootCategoryRequest
 import com.spyneai.model.shoot.UpdateShootCategoryResponse
 import kotlinx.coroutines.launch
 import okhttp3.RequestBody
+import com.spyneai.base.network.Resource
+import com.spyneai.dashboard.response.NewCategoriesResponse
 
 class DashboardViewModel() : ViewModel() {
 
@@ -50,8 +49,7 @@ class DashboardViewModel() : ViewModel() {
         tokenId: String
     ) = viewModelScope.launch {
         _categoriesResponse.value = Resource.Loading
-        _categoriesResponse.value = repository.
-        getCategories(tokenId)
+        _categoriesResponse.value = repository.getCategories(tokenId)
 
     }
 

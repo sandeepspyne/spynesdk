@@ -5,8 +5,8 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.spyneai.base.network.Resource
 import com.spyneai.camera2.OverlaysResponse
-import com.spyneai.dashboard.network.Resource
 import com.spyneai.dashboard.response.NewSubCatResponse
 import com.spyneai.shoot.data.model.ShootProgress
 import kotlinx.coroutines.launch

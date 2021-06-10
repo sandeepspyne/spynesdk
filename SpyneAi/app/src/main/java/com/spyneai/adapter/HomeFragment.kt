@@ -20,7 +20,6 @@ import com.spyneai.dashboard.response.NewCategoriesResponse
 import com.spyneai.extras.BeforeAfterActivity
 import com.spyneai.interfaces.APiService
 import com.spyneai.interfaces.RetrofitClient
-import com.spyneai.model.categories.CategoriesResponse
 import com.spyneai.model.shoot.CreateCollectionRequest
 import com.spyneai.model.shoot.CreateCollectionResponse
 import com.spyneai.model.shoot.UpdateShootCategoryRequest
@@ -36,7 +35,7 @@ import retrofit2.Response
 class HomeFragment(context: Context) : Fragment() {
     val contexts = context
     var contextFrag = context
-    lateinit var categoriesResponseList : ArrayList<Data>
+    lateinit var categoriesResponseList : ArrayList<NewCategoriesResponse.Data>
     lateinit var categoriesAdapter : CategoriesDashboardAdapter
     lateinit var rv_categories : RecyclerView
     val sampleImages = intArrayOf(
@@ -117,13 +116,13 @@ class HomeFragment(context: Context) : Fragment() {
 
     private fun setRecycler(view: View) {
         Log.e("Token Mine", Utilities.getPreference(contexts, AppConstants.tokenId).toString())
-        categoriesResponseList = ArrayList<Data>()
+        categoriesResponseList = ArrayList()
         categoriesAdapter = CategoriesDashboardAdapter(contexts, categoriesResponseList,
             object : CategoriesDashboardAdapter.BtnClickListener {
                 override fun onBtnClick(position: Int) {
                     Log.e("position cat", position.toString())
                     if (position < 2)
-                        setShoot(categoriesResponseList,position)
+                        setShoot(position)
                     else
                         Toast.makeText(
                             contexts,
@@ -187,7 +186,7 @@ class HomeFragment(context: Context) : Fragment() {
         })
     }
 
-    private fun setShoot(categoriesResponseList: ArrayList<Data>, position: Int) {
+    private fun setShoot( position: Int) {
         Utilities.showProgressDialog(contexts)
 
         var s = ""

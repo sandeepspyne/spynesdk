@@ -14,7 +14,6 @@ class CompletedOrdersDashboardFragment : Fragment() {
         fun newInstance() = CompletedOrdersDashboardFragment()
     }
 
-    private lateinit var viewModel: CompletedOrdersDashboardViewModel
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -23,10 +22,5 @@ class CompletedOrdersDashboardFragment : Fragment() {
         return inflater.inflate(R.layout.completed_orders_dashboard_fragment, container, false)
     }
 
-    override fun onActivityCreated(savedInstanceState: Bundle?) {
-        super.onActivityCreated(savedInstanceState)
-        viewModel = ViewModelProvider(this).get(CompletedOrdersDashboardViewModel::class.java)
-        // TODO: Use the ViewModel
-    }
 
 }

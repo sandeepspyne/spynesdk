@@ -1,4 +1,4 @@
-package com.spyneai.dashboard.ui.base
+package com.spyneai.base
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -8,7 +8,7 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.viewbinding.ViewBinding
-import com.spyneai.base.ViewModelFactory
+import com.spyneai.dashboard.ui.base.ViewModelFactory
 
 abstract class BaseFragment<VM : ViewModel, B : ViewBinding> : Fragment() {
 

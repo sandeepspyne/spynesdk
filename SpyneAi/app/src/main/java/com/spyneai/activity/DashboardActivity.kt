@@ -4,7 +4,6 @@ import android.app.Dialog
 import android.content.Intent
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
-import android.net.Uri
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -16,36 +15,27 @@ import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AppCompatDelegate
-import androidx.fragment.app.Fragment
-import androidx.fragment.app.FragmentManager
-import androidx.fragment.app.FragmentTransaction
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.airbnb.lottie.LottieAnimationView
 import com.google.android.play.core.appupdate.AppUpdateManager
 import com.google.android.play.core.appupdate.AppUpdateManagerFactory
 import com.google.android.play.core.install.model.AppUpdateType
 import com.google.android.play.core.install.model.UpdateAvailability
-import com.spyneai.extras.OnboardTwoActivity
 import com.spyneai.R
 import com.spyneai.adapter.CategoriesDashboardAdapter
 import com.spyneai.extras.BeforeAfterActivity
 import com.spyneai.interfaces.APiService
 import com.spyneai.interfaces.RetrofitClient
 import com.spyneai.interfaces.RetrofitClients
-import com.spyneai.model.categories.CategoriesResponse
 import com.spyneai.model.credit.FreeCreditEligblityResponse
 import com.spyneai.model.shoot.CreateCollectionRequest
 import com.spyneai.model.shoot.CreateCollectionResponse
 import com.spyneai.model.shoot.UpdateShootCategoryRequest
 import com.spyneai.needs.AppConstants
 import com.spyneai.needs.Utilities
-import com.spyneai.credits.WalletActivity
 import com.spyneai.dashboard.response.Data
 import com.spyneai.dashboard.response.NewCategoriesResponse
 import com.spyneai.loginsignup.activity.LoginActivity
-import com.spyneai.loginsignup.activity.SignUpActivity
-import com.synnapps.carouselview.ViewListener
 import kotlinx.android.synthetic.main.activity_dashboard.*
 import kotlinx.android.synthetic.main.fragment_home.view.*
 import kotlinx.android.synthetic.main.view_custom.view.*
@@ -60,7 +50,7 @@ class DashboardActivity : AppCompatActivity() {
     lateinit var appUpdateManager: AppUpdateManager
     private val MY_REQUEST_CODE: Int = 1
 
-    lateinit var categoriesResponseList: ArrayList<Data>
+    lateinit var categoriesResponseList: ArrayList<NewCategoriesResponse.Data>
     lateinit var categoriesAdapter: CategoriesDashboardAdapter
 
     lateinit var PACKAGE_NAME: String
@@ -147,7 +137,7 @@ class DashboardActivity : AppCompatActivity() {
 
     private fun setRecycler() {
         Log.e("Token Mine", Utilities.getPreference(this, AppConstants.tokenId).toString())
-        categoriesResponseList = ArrayList<Data>()
+        categoriesResponseList = ArrayList()
         categoriesAdapter = CategoriesDashboardAdapter(this, categoriesResponseList,
             object : CategoriesDashboardAdapter.BtnClickListener {
                 override fun onBtnClick(position: Int) {
@@ -158,7 +148,7 @@ class DashboardActivity : AppCompatActivity() {
                             AppConstants.CATEGORY_NAME,
                             categoriesResponseList[position].prod_cat_name
                         )
-                        setShoot(categoriesResponseList, position)
+                        setShoot(position)
                     } else
                         Toast.makeText(
                             this@DashboardActivity,
@@ -220,7 +210,7 @@ class DashboardActivity : AppCompatActivity() {
         })
     }
 
-    private fun setShoot(categoriesResponseList: ArrayList<Data>, position: Int) {
+    private fun setShoot(position: Int) {
         Utilities.showProgressDialog(this)
         val createCollectionRequest = CreateCollectionRequest("Spyne Shoot");
 

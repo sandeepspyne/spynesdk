@@ -16,6 +16,7 @@ import com.spyneai.dashboard.response.Data
 import com.spyneai.dashboard.response.NewCategoriesResponse
 import com.spyneai.interfaces.APiService
 import com.spyneai.interfaces.RetrofitClient
+import com.spyneai.interfaces.RetrofitClients
 import com.spyneai.model.beforeafter.BeforeAfterResponse
 import com.spyneai.model.categories.CategoriesResponse
 
@@ -33,7 +34,7 @@ import kotlin.collections.ArrayList
 class CategoriesActivity : AppCompatActivity(),CategoriesAdapter.BtnClickListener {
     private lateinit var beforeAfterResponser: BeforeAfterResponse
     private lateinit var beforeAfterData: com.spyneai.model.beforeafter.Data
-    lateinit var categoriesResponseList : ArrayList<Data>
+    lateinit var categoriesResponseList : ArrayList<NewCategoriesResponse.Data>
     lateinit var categoriesAdapter : CategoriesAdapter
     lateinit var rv_categories : RecyclerView
     var before = ""
@@ -75,7 +76,7 @@ class CategoriesActivity : AppCompatActivity(),CategoriesAdapter.BtnClickListene
     private fun setRecycler() {
         Log.e("Token Mine" , Utilities.getPreference(this, AppConstants.tokenId).toString())
         rv_categories = findViewById(R.id.rv_categories)
-        categoriesResponseList = ArrayList<Data>()
+        categoriesResponseList = ArrayList()
         categoriesAdapter = CategoriesAdapter(this, categoriesResponseList,
                 object : CategoriesAdapter.BtnClickListener {
                     override fun onBtnClick(position: Int) {
@@ -87,7 +88,7 @@ class CategoriesActivity : AppCompatActivity(),CategoriesAdapter.BtnClickListene
                                 AppConstants.CATEGORY_NAME,
                                 categoriesResponseList[position].prod_cat_id
                             )
-                            setShoot(categoriesResponseList, position)
+                            setShoot(position)
                         }else
                             Toast.makeText(this@CategoriesActivity,
                                     "Coming Soon !",
@@ -104,7 +105,7 @@ class CategoriesActivity : AppCompatActivity(),CategoriesAdapter.BtnClickListene
         Utilities.showProgressDialog(this)
         categoriesResponseList.clear()
 
-        val request = RetrofitClient.buildService(APiService::class.java)
+        val request = RetrofitClients.buildService(APiService::class.java)
         val call = request.getCategories(Utilities.getPreference(this,AppConstants.AUTH_KEY).toString())
 
         call?.enqueue(object : Callback<NewCategoriesResponse> {
@@ -146,7 +147,7 @@ class CategoriesActivity : AppCompatActivity(),CategoriesAdapter.BtnClickListene
     }
 
     //Fetch shootId
-    private fun setShoot(categoriesResponseList: ArrayList<Data>, position: Int) {
+    private fun setShoot(position: Int) {
         Utilities.showProgressDialog(this)
         val createCollectionRequest = CreateCollectionRequest("Spyne Shoot");
 

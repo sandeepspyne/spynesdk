@@ -1,7 +1,8 @@
 package com.spyneai.shoot.data
 
-import com.spyneai.dashboard.data.repository.BaseRepository
-import com.spyneai.dashboard.network.ClipperApiClient
+import com.spyneai.base.BaseRepository
+import com.spyneai.base.network.ClipperApiClient
+
 
 class ShootRepository : BaseRepository() {
 

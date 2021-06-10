@@ -1,27 +1,16 @@
 package com.spyneai.dashboard.data.repository
 
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
-import com.spyneai.dashboard.network.ClipperApiClient
-import com.spyneai.dashboard.network.DashboardApi
-import com.spyneai.dashboard.network.Resource
-import com.spyneai.dashboard.network.SpyneAiApiClient
-import com.spyneai.interfaces.APiService
-import com.spyneai.model.categories.CategoriesResponse
-import com.spyneai.model.categories.Data
+
+import com.spyneai.base.BaseRepository
+import com.spyneai.base.network.ClipperApiClient
+import com.spyneai.base.network.SpyneAiApiClient
 import com.spyneai.model.shoot.CreateCollectionRequest
-import com.spyneai.model.shoot.Payload
 import com.spyneai.model.shoot.UpdateShootCategoryRequest
-import com.spyneai.needs.AppConstants
-import com.spyneai.needs.Utilities
-import okhttp3.MultipartBody
 import okhttp3.RequestBody
-import okhttp3.Response
 
 class DashboardRepository() : BaseRepository() {
 
     private var spyneApi = SpyneAiApiClient().getClient()
-
     private var clipperApi = ClipperApiClient().getClient()
 
     suspend fun getCategories(

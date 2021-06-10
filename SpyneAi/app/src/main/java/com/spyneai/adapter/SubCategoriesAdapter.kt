@@ -48,7 +48,7 @@ class SubCategoriesAdapter(val context: Context,
     override fun onCreateViewHolder(viewGroup: ViewGroup, viewType: Int): ViewHolder {
         // Create a new view, which defines the UI of the list item
         val view = LayoutInflater.from(viewGroup.context)
-                .inflate(R.layout.sub_categories, viewGroup, false)
+            .inflate(R.layout.sub_categories, viewGroup, false)
         return ViewHolder(view)
     }
 
@@ -62,7 +62,7 @@ class SubCategoriesAdapter(val context: Context,
 
         Glide.with(context).load(AppConstants.BASE_IMAGE_URL +
                 subCategory.display_thumbnail)
-                .into(viewHolder.ivSubCategories)
+            .into(viewHolder.ivSubCategories)
 
         viewHolder.tvSubcategories.setText(subCategory.sub_cat_name)
         mClickListener = btnlistener

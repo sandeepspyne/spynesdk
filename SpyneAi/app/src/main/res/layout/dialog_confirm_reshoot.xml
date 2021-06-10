@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@null"
+    android:gravity="center">
+
+    <LinearLayout
+        android:id="@+id/llBeforeAfter"
+        android:layout_width="wrap_content"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:padding="@dimen/dp_5"
+        android:orientation="horizontal"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <ImageView
+            android:id="@+id/ivCapturedImage"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:src="@mipmap/defaults" />
+
+        <FrameLayout
+            android:id="@+id/flAfter"
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_gravity="center"
+            android:layout_height="match_parent">
+            <ImageView
+                android:id="@+id/ivCaptured2"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:gravity="center"
+                android:src="@mipmap/defaults" />
+            <ImageView
+                android:id="@+id/ivCapturedOverlay"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:gravity="center"
+                android:layout_margin="@dimen/dp_50"
+                android:src="@mipmap/defaults" />
+        </FrameLayout>
+
+    </LinearLayout>
+
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center"
+        android:layout_gravity="center"
+        app:layout_constraintTop_toBottomOf="@+id/llBeforeAfter"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent">
+
+        <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/btReshootImage"
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="match_parent"
+            android:text="@string/no_reshoot"
+            android:padding="@dimen/dp_10"
+            android:gravity="center"
+            android:textColor="@color/primary"
+            android:fontFamily="@font/medium"
+            android:textSize="@dimen/sp_15"
+            android:layout_margin="@dimen/dp_10"
+            android:background="@drawable/bg_skip"
+            android:textAllCaps="false"/>
+
+
+        <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/btConfirmImage"
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="match_parent"
+            android:text="@string/confirm"
+            android:padding="@dimen/dp_10"
+            android:gravity="center"
+            android:layout_margin="@dimen/dp_10"
+            android:elevation="@dimen/dp_5"
+            android:textColor="@color/white"
+            android:fontFamily="@font/medium"
+            android:textSize="@dimen/sp_15"
+            android:background="@drawable/bg_rectangle_button_ripple"
+            android:textAllCaps="false"/>
+    </LinearLayout>
+
+
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>

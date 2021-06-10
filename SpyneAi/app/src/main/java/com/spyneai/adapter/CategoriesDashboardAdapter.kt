@@ -18,6 +18,7 @@ import com.facebook.shimmer.Shimmer
 import com.facebook.shimmer.ShimmerFrameLayout
 import com.spyneai.R
 import com.spyneai.dashboard.response.Data
+import com.spyneai.dashboard.response.NewCategoriesResponse
 import com.spyneai.needs.AppConstants
 import com.spyneai.needs.Utilities
 import kotlinx.android.synthetic.main.row_categories_dashboard.view.*
@@ -25,7 +26,7 @@ import kotlinx.android.synthetic.main.row_categories_dashboard.view.*
 
 public class CategoriesDashboardAdapter(
     val context: Context,
-    val categoriesResponseList: ArrayList<Data>,
+    val categoriesResponseList: ArrayList<NewCategoriesResponse.Data>,
     val btnlistener: BtnClickListener
 )
     : RecyclerView.Adapter<CategoriesDashboardAdapter.ViewHolder>() {

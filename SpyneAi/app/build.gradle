@@ -198,6 +198,13 @@ dependencies {
     //and add this to your module level build.gradle file
     implementation 'com.github.blackfox94:before_after_slider:701e3d5861'
 
+    //noinspection GradleCompatible
+    implementation 'com.android.support:design:28.0.0'
+
+    // Work manager: Kotlin + coroutines
+    def work_version = "2.5.0"
+    implementation "androidx.work:work-runtime-ktx:$work_version"
+
 
 
 

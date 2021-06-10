@@ -15,12 +15,13 @@ import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.spyneai.R
 import com.spyneai.dashboard.response.Data
+import com.spyneai.dashboard.response.NewCategoriesResponse
 import com.spyneai.needs.AppConstants
 
 
 public class CategoriesAdapter(
     val context: Context,
-    val categoriesResponseList: ArrayList<Data>,
+    val categoriesResponseList: ArrayList<NewCategoriesResponse.Data>,
     val btnlistener: BtnClickListener,
     val before: String,
     val after: String

@@ -4,11 +4,9 @@ import android.app.Dialog
 import android.content.Intent
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
-import android.net.Uri
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
-import android.util.Log
 import android.view.*
 import android.widget.LinearLayout
 import android.widget.TextView
@@ -17,11 +15,6 @@ import androidx.core.content.ContextCompat
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import androidx.recyclerview.widget.RecyclerView.SimpleOnItemTouchListener
-import com.google.android.exoplayer2.SimpleExoPlayer
-import com.google.android.exoplayer2.source.MediaSource
-import com.google.android.exoplayer2.source.ProgressiveMediaSource
-import com.google.android.exoplayer2.upstream.DefaultDataSourceFactory
 import com.google.android.material.tabs.TabLayout
 import com.google.android.play.core.appupdate.AppUpdateManager
 import com.spyneai.R
@@ -35,12 +28,13 @@ import com.spyneai.dashboard.adapters.OngoingDashboardAdapter
 import com.spyneai.dashboard.adapters.SliderAdapter
 import com.spyneai.dashboard.adapters.TutorialVideosAdapter
 import com.spyneai.dashboard.data.model.SliderModel
-import com.spyneai.dashboard.network.Resource
-import com.spyneai.dashboard.response.Data
-import com.spyneai.dashboard.ui.base.BaseFragment
+import com.spyneai.base.network.Resource
+import com.spyneai.base.BaseFragment
+import com.spyneai.dashboard.response.NewCategoriesResponse
 import com.spyneai.dashboard.ui.handleApiError
 import com.spyneai.databinding.HomeDashboardFragmentBinding
 import com.spyneai.extras.BeforeAfterActivity
+import com.spyneai.model.categories.Data
 import com.spyneai.model.processImageService.Task
 import com.spyneai.model.projects.CompletedProjectResponse
 import com.spyneai.model.shoot.CreateCollectionRequest
@@ -83,10 +77,9 @@ class HomeDashboardFragment :
 
     lateinit var catId: String
     lateinit var displayName: String
-    lateinit var display_thumbnail: String
+    lateinit var displayThumbnail: String
     lateinit var description: String
     lateinit var colorCode: String
-    val TAG = "HomeDashboardFragment"
 
     private lateinit var tabLayout: TabLayout
 
@@ -94,12 +87,8 @@ class HomeDashboardFragment :
         super.onActivityCreated(savedInstanceState)
 
         tokenId = Utilities.getPreference(requireContext(), AppConstants.tokenId).toString()
-
-        Log.d(TAG, "onActivityCreated: "+tokenId)
-
         email = Utilities.getPreference(requireContext(), AppConstants.EMAIL_ID).toString()
 
-        userFreeCreditEligiblityCheck()
         setOngoingProjectRecycler()
         setSliderRecycler()
         showTutorialVideos()
@@ -124,7 +113,6 @@ class HomeDashboardFragment :
         }
 
         viewModel.getCategories(tokenId)
-
         viewModel.categoriesResponse.observe(viewLifecycleOwner, Observer {
             when(it){
                 is Resource.Sucess -> {
@@ -132,7 +120,7 @@ class HomeDashboardFragment :
                     shimmerCategories.visibility = View.GONE
                     rvDashboardCategories.visibility = View.VISIBLE
                     categoriesAdapter = CategoriesDashboardAdapter(requireContext(),
-                        it.value.data as ArrayList<Data>,
+                        it.value.data as ArrayList<NewCategoriesResponse.Data>,
                         object : CategoriesDashboardAdapter.BtnClickListener {
                             override fun onBtnClick(position: Int) {
                                 if (position < 3) {
@@ -145,11 +133,12 @@ class HomeDashboardFragment :
 
                                     catId =   it.value.data[position].prod_cat_id
                                     displayName =   it.value.data[position].prod_cat_name
-                                    display_thumbnail =   it.value.data[position].display_thumbnail
+                                    displayThumbnail =   it.value.data[position].display_thumbnail
                                     description =   it.value.data[position].description
                                     colorCode =   it.value.data[position].color_code
 
-                                    setShoot(it.value.data as ArrayList<Data>, position)
+
+                                    setShoot()
                                 } else
                                     Toast.makeText(
                                         requireContext(),
@@ -241,6 +230,7 @@ class HomeDashboardFragment :
 //                is Resource.Loading -> {
 //                }
                 is Resource.Failure -> {
+
                     handleApiError(it)
                 }
             }
@@ -260,7 +250,7 @@ class HomeDashboardFragment :
                     )
                     intent.putExtra(
                         AppConstants.IMAGE_URL,
-                        display_thumbnail
+                        displayThumbnail
                     )
                     intent.putExtra(
                         AppConstants.DESCRIPTION,
@@ -287,11 +277,14 @@ class HomeDashboardFragment :
 //                is Resource.Loading -> {
 //                }
                 is Resource.Failure -> {
+
                     handleApiError(it)
                 }
             }
         })
+
     }
+
 
     private fun setSliderRecycler(){
 
@@ -300,6 +293,7 @@ class HomeDashboardFragment :
         tabLayout = tbDashboard
         tabLayout.addTab(tabLayout.newTab());
         tabLayout.addTab(tabLayout.newTab());
+
 
         ivBanner.setBeforeImage(ContextCompat.getDrawable(requireContext(),R.drawable.car_before)).setAfterImage(ContextCompat.getDrawable(requireContext(),R.drawable.car_after))
         ivNext.setOnClickListener {
@@ -312,10 +306,8 @@ class HomeDashboardFragment :
             val tab: TabLayout.Tab = tbDashboard.getTabAt(0)!!
             tab.select()
             ivBanner.setBeforeImage(ContextCompat.getDrawable(requireContext(),R.drawable.car_before)).setAfterImage(ContextCompat.getDrawable(requireContext(),R.drawable.car_after))
+
         }
-
-
-
     }
 
     private fun setCategoryMap(shootId: String, categoryPosition: Int, catId: String, displayName: String) {
@@ -327,7 +319,7 @@ class HomeDashboardFragment :
         viewModel.updateShootCategory(tokenId, updateShootCategoryRequest)
     }
 
-    private fun setShoot(categoriesResponseList: ArrayList<Data>, position: Int){
+    private fun setShoot(){
         val createCollectionRequest = CreateCollectionRequest("Spyne Shoot");
         viewModel.createCollection(tokenId, createCollectionRequest)
     }
@@ -358,21 +350,7 @@ class HomeDashboardFragment :
             groupOngoingProjects.visibility = View.GONE
     }
 
-    private fun userFreeCreditEligiblityCheck(){
-        val userId = RequestBody.create(
-            MultipartBody.FORM,
-            tokenId
-        )
-
-        val emaiId = RequestBody.create(
-            MultipartBody.FORM,
-            email
-        )
-        viewModel.userFreeCreditEligiblityCheck(userId, emaiId)
-    }
-
     private fun showTutorialVideos(){
-
         tutorialVideosAdapter = TutorialVideosAdapter(requireContext(),
             tutorialVideosList,
             object : TutorialVideosAdapter.BtnClickListener {

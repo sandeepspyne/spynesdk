@@ -1,6 +1,6 @@
-package com.spyneai.dashboard.data.repository
+package com.spyneai.base
 
-import com.spyneai.dashboard.network.Resource
+import com.spyneai.base.network.Resource
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import retrofit2.HttpException
@@ -9,7 +9,7 @@ abstract class BaseRepository {
 
     suspend fun <T> safeApiCall(
         apiCall: suspend () -> T
-    ) : Resource<T>{
+    ) : Resource<T> {
         return withContext(Dispatchers.IO){
             try {
                 Resource.Sucess(apiCall.invoke())

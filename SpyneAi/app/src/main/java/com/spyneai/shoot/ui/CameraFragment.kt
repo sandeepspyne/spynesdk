@@ -13,55 +13,58 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.camera.core.*
-import androidx.camera.extensions.HdrImageCaptureExtender
 import androidx.camera.lifecycle.ProcessCameraProvider
 import androidx.core.content.ContextCompat
-import androidx.fragment.app.Fragment
+import com.bumptech.glide.Glide
 import com.robertlevonyan.demo.camerax.analyzer.LuminosityAnalyzer
+import com.spyneai.base.BaseFragment
+import com.spyneai.base.network.Resource
+import com.spyneai.dashboard.response.NewSubCatResponse
+import com.spyneai.dashboard.ui.handleApiError
 import com.spyneai.databinding.FragmentCameraBinding
+import com.spyneai.needs.AppConstants
+import com.spyneai.shoot.data.model.ShootData
 import com.spyneai.shoot.utils.ThreadExecutor
 import com.spyneai.shoot.utils.mainExecutor
+import kotlinx.android.synthetic.main.activity_camera.*
 import java.io.File
+import java.util.ArrayList
 import java.util.concurrent.ExecutionException
 import kotlin.math.abs
 import kotlin.math.max
 import kotlin.math.min
 
 
-class CameraFragment : Fragment() {
-
-    private var fragmentCameraBinding: FragmentCameraBinding? = null
-    private val binding get() = fragmentCameraBinding!!
-
+class CameraFragment : BaseFragment<ShootViewModel, FragmentCameraBinding>() {
     private var imageCapture: ImageCapture? = null
     private var cameraProvider: ProcessCameraProvider? = null
     private var preview: Preview? = null
     private var imageAnalyzer: ImageAnalysis? = null
 
+    private var projectId: String = "prj-27d33afa-4f50-4af0-b769-a97adf247fae"
+    private var skuId: String = "sku-9c0775d2-69e4-4ecf-a134-7b61a48e15ee\n"
+    private var imageCategory: String= "Exterior"
+    private var authKey: String = "813a71af-a2fb-4ef8-87b3-059d01c5b9ba"
+
     // Selector showing which camera is selected (front or back)
     private var lensFacing = CameraSelector.DEFAULT_BACK_CAMERA
+
+    lateinit var photoFile: File
 
     companion object {
         private const val RATIO_4_3_VALUE = 4.0 / 3.0 // aspect ratio 4x3
         private const val RATIO_16_9_VALUE = 16.0 / 9.0 // aspect ratio 16x9
     }
 
-
-    override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View? {
-        // Inflate the layout for this fragment
-        fragmentCameraBinding = FragmentCameraBinding.inflate(inflater, container, false)
-
+    override fun onActivityCreated(savedInstanceState: Bundle?) {
+        super.onActivityCreated(savedInstanceState)
         startCamera()
-
         binding.btnTakePicture?.setOnClickListener { captureImage() }
-        binding.ivCapturedImage?.setOnClickListener {
-            binding.ivCapturedImage!!.visibility = View.GONE
+
+        binding.ivUploadedImage?.setOnClickListener {
+            binding.ivUploadedImage!!.visibility = View.GONE
         }
 
-        return binding.root
     }
 
     override fun setUserVisibleHint(isVisibleToUser: Boolean) {
@@ -122,8 +125,8 @@ class CameraFragment : Fragment() {
                     // This function is called if capture is successfully completed
                     outputFileResults.savedUri
                         ?.let { uri ->
-                            binding.ivCapturedImage!!.setImageURI(uri)
-                            binding.ivCapturedImage!!.visibility = View.VISIBLE
+                            viewModel.shootList.value?.add(ShootData(uri, "prj-27d33afa-4f50-4af0-b769-a97adf247fae",
+                                "sku-9c0775d2-69e4-4ecf-a134-7b61a48e15ee", "Exterior", "813a71af-a2fb-4ef8-87b3-059d01c5b9ba"))
                         }
                 }
 
@@ -173,45 +176,38 @@ class CameraFragment : Fragment() {
                 ?: throw IllegalStateException("Camera initialization failed.")
 
             // The Configuration of camera preview
-            preview = Preview.Builder()
-                .setTargetAspectRatio(aspectRatio) // set the camera aspect ratio
-              //  .setTargetRotation(rotation!!) // set the camera rotation
-                .build()
+            preview = rotation?.let {
+                Preview.Builder()
+                    .setTargetAspectRatio(aspectRatio) // set the camera aspect ratio
+                    .setTargetRotation(it) // set the camera rotation
+                    .build()
+            }
 
             // The Configuration of image capture
-            imageCapture = ImageCapture.Builder()
-                .setCaptureMode(ImageCapture.CAPTURE_MODE_MAXIMIZE_QUALITY) // setting to have pictures with highest quality possible (may be slow)
-                .setTargetAspectRatio(aspectRatio) // set the capture aspect ratio
-              //  .setTargetRotation(rotation) // set the capture rotation
-                .also {
-                    // Create a Vendor Extension for HDR
-                    val hdrImageCapture = HdrImageCaptureExtender.create(it)
-
-                    // Check if the extension is available on the device
-//                    if (!hdrImageCapture.isExtensionAvailable(CameraSelector.DEFAULT_BACK_CAMERA)) {
-//                        // If not, hide the HDR button
-//                        binding.btnHdr.visibility = View.GONE
-//                    } else if (hasHdr) {
-//                        // If yes, turn on if the HDR is turned on by the user
-//                        hdrImageCapture.enableExtension(lensFacing)
-//                    }
-                }
-                .build()
+            imageCapture = rotation?.let {
+                ImageCapture.Builder()
+                    .setCaptureMode(ImageCapture.CAPTURE_MODE_MAXIMIZE_QUALITY) // setting to have pictures with highest quality possible (may be slow)
+                    .setTargetAspectRatio(aspectRatio) // set the capture aspect ratio
+                    .setTargetRotation(it) // set the capture rotation
+                    .build()
+            }
 
             // The Configuration of image analyzing
-            imageAnalyzer = ImageAnalysis.Builder()
-                .setTargetAspectRatio(aspectRatio) // set the analyzer aspect ratio
-               // .setTargetRotation(rotation) // set the analyzer rotation
-                .setBackpressureStrategy(ImageAnalysis.STRATEGY_KEEP_ONLY_LATEST) // in our analysis, we care about the latest image
-                .build()
-                .apply {
-                    // Use a worker thread for image analysis to prevent glitches
-                    val analyzerThread = HandlerThread("LuminosityAnalysis").apply { start() }
-                    setAnalyzer(
-                        ThreadExecutor(Handler(analyzerThread.looper)),
-                        LuminosityAnalyzer()
-                    )
-                }
+            imageAnalyzer = rotation?.let {
+                ImageAnalysis.Builder()
+                    .setTargetAspectRatio(aspectRatio) // set the analyzer aspect ratio
+                    .setTargetRotation(it) // set the analyzer rotation
+                    .setBackpressureStrategy(ImageAnalysis.STRATEGY_KEEP_ONLY_LATEST) // in our analysis, we care about the latest image
+                    .build()
+                    .apply {
+                        // Use a worker thread for image analysis to prevent glitches
+                        val analyzerThread = HandlerThread("LuminosityAnalysis").apply { start() }
+                        setAnalyzer(
+                            ThreadExecutor(Handler(analyzerThread.looper)),
+                            LuminosityAnalyzer()
+                        )
+                    }
+            }
 
             localCameraProvider.unbindAll() // unbind the use-cases before rebinding them
 
@@ -226,12 +222,22 @@ class CameraFragment : Fragment() {
                 )
 
                 // Attach the viewfinder's surface provider to preview use case
-                preview?.setSurfaceProvider(viewFinder?.surfaceProvider)
+                if (viewFinder != null) {
+                    preview?.setSurfaceProvider(viewFinder.surfaceProvider)
+                }
             } catch (e: Exception) {
                 Log.e(TAG, "Failed to bind use cases", e)
             }
 
         }, ContextCompat.getMainExecutor(requireContext()))
     }
+
+
+    override fun getViewModel() = ShootViewModel::class.java
+
+    override fun getFragmentBinding(
+        inflater: LayoutInflater,
+        container: ViewGroup?
+    ) = FragmentCameraBinding.inflate(inflater, container, false)
 
 }
