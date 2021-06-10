@@ -8,12 +8,16 @@ import com.spyneai.base.BaseDialogFragment
 import com.spyneai.base.network.Resource
 import com.spyneai.dashboard.ui.handleApiError
 import com.spyneai.databinding.DialogCreateProjectAndSkuBinding
+import com.spyneai.needs.AppConstants
+import com.spyneai.needs.Utilities
 import com.spyneai.shoot.data.ShootViewModel
 
 class CreateProjectAndSkuDialog : BaseDialogFragment<ShootViewModel,DialogCreateProjectAndSkuBinding>() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        dialog?.setCancelable(false)
 
         binding.btnSubmit.setOnClickListener {
             when {
@@ -29,7 +33,10 @@ class CreateProjectAndSkuDialog : BaseDialogFragment<ShootViewModel,DialogCreate
     }
 
     private fun createProject(projectName : String) {
-        viewModel.createProject("3c436435-238a-4bdc-adb8-d6182fddeb43",projectName,"cat_d8R14zUNE")
+        viewModel.createProject(
+            Utilities.getPreference(requireContext(),AppConstants.AUTH_KEY).toString(),
+            projectName,
+            requireActivity().intent.getStringExtra(AppConstants.CATEGORY_ID).toString())
 
         viewModel.createProjectRes.observe(viewLifecycleOwner,{
             when(it){
@@ -58,6 +65,8 @@ class CreateProjectAndSkuDialog : BaseDialogFragment<ShootViewModel,DialogCreate
             when(it) {
                 is Resource.Sucess -> {
                     //notify sku created
+                    viewModel.isProjectCreated.value = true
+                    dismiss()
                 }
 
                 is Resource.Loading -> {

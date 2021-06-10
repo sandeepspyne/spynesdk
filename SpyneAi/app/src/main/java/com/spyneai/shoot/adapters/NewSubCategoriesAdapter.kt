@@ -74,7 +74,7 @@ class NewSubCategoriesAdapter (val context: Context,
 
         viewHolder.llSubCategories.setOnClickListener(View.OnClickListener {
             if (mClickListener != null)
-                mClickListener?.onBtnClick(position,subCategory.sub_cat_name,subCategory.display_thumbnail)
+                mClickListener?.onBtnClick(subCategoriesList!![position])
             pos = position
 
             viewHolder.llSubCategoriesImage.setBackgroundResource(R.drawable.bg_selected)
@@ -86,7 +86,7 @@ class NewSubCategoriesAdapter (val context: Context,
     override fun getItemCount() = if (subCategoriesList == null) 0 else subCategoriesList!!.size
 
     open interface BtnClickListener {
-        fun onBtnClick(position: Int,subcategoryName : String,subcategoryImage : String)
+        fun onBtnClick(data : NewSubCatResponse.Data)
     }
 
 }

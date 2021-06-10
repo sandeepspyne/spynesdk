@@ -1,25 +1,25 @@
 package com.spyneai.shoot.ui
 
 import android.Manifest
-import android.app.FragmentManager
 import android.content.pm.PackageManager
 import android.os.Build
 import android.os.Bundle
 import android.os.Environment
 import android.view.View
-import android.view.Window
-import android.view.WindowManager
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.DialogFragment
-import androidx.fragment.app.FragmentTransaction
+import androidx.lifecycle.ViewModelProvider
 import com.balsikandar.kotlindslsamples.dialogfragment.DialogDSLBuilder.Companion.dialog
 import com.google.android.material.snackbar.Snackbar
 import com.spyneai.R
+import com.spyneai.dashboard.ui.base.ViewModelFactory
+import com.spyneai.needs.AppConstants
+import com.spyneai.shoot.data.ShootViewModel
+import com.spyneai.shoot.data.model.CategoryDetails
 import kotlinx.android.synthetic.main.dialog_confirm_reshoot.view.*
-import kotlinx.android.synthetic.main.dialog_confirm_reshoot.view.btReshootImage
 import kotlinx.android.synthetic.main.dialog_exit_shoot.view.*
 import kotlinx.android.synthetic.main.dialog_exit_shoot.view.btNo
 import kotlinx.android.synthetic.main.dialog_focus_shoot.view.*
@@ -39,12 +39,24 @@ class ShootActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_shoot)
 
+        val shootViewModel = ViewModelProvider(this, ViewModelFactory()).get(ShootViewModel::class.java)
+
+        val categoryDetails = CategoryDetails()
+
+        categoryDetails.apply {
+           categoryId = intent.getStringExtra(AppConstants.CATEGORY_ID)
+            categoryName = intent.getStringExtra(AppConstants.CATEGORY_NAME)
+            gifList =  intent.getStringExtra(AppConstants.GIF_LIST)
+        }
+
+        shootViewModel.categoryDetails.value = categoryDetails
+
         cameraFragment = CameraFragment()
         overlaysFragment = OverlaysFragment()
 
         if(savedInstanceState == null) { // initial transaction should be wrapped like this
             supportFragmentManager.beginTransaction()
-                //.add(R.id.flCamerFragment, cameraFragment)
+                .add(R.id.flCamerFragment, cameraFragment)
                 .add(R.id.flCamerFragment, overlaysFragment)
                 .commitAllowingStateLoss()
         }
@@ -54,7 +66,6 @@ class ShootActivity : AppCompatActivity() {
         } else {
             permissionRequest.launch(permissions.toTypedArray())
         }
-
     }
 
     /**

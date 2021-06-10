@@ -11,10 +11,7 @@ import androidx.work.WorkManager
 import com.spyneai.base.network.Resource
 import com.spyneai.camera2.OverlaysResponse
 import com.spyneai.dashboard.response.NewSubCatResponse
-import com.spyneai.shoot.data.model.CreateProjectRes
-import com.spyneai.shoot.data.model.CreateSkuRes
-import com.spyneai.shoot.data.model.ShootData
-import com.spyneai.shoot.data.model.ShootProgress
+import com.spyneai.shoot.data.model.*
 import com.spyneai.shoot.workmanager.UploadImageWorker
 import kotlinx.coroutines.launch
 import java.util.ArrayList
@@ -33,7 +30,6 @@ class ShootViewModel : ViewModel(){
     val overlaysResponse: LiveData<Resource<OverlaysResponse>>
         get() = _overlaysResponse
 
-
     private val _createProjectRes : MutableLiveData<Resource<CreateProjectRes>> = MutableLiveData()
     val createProjectRes: LiveData<Resource<CreateProjectRes>>
         get() = _createProjectRes
@@ -42,8 +38,13 @@ class ShootViewModel : ViewModel(){
     val createSkuRes: LiveData<Resource<CreateSkuRes>>
         get() = _createSkuRes
 
-    val selectedAngles: MutableLiveData<Int> = MutableLiveData()
 
+    var categoryDetails : MutableLiveData<CategoryDetails> = MutableLiveData()
+    val showVin : MutableLiveData<Boolean> = MutableLiveData()
+    val isProjectCreated : MutableLiveData<Boolean> = MutableLiveData()
+
+    val subCategoryId : MutableLiveData<String> = MutableLiveData()
+    val selectedAngles: MutableLiveData<Int> = MutableLiveData()
     val shootNumber: MutableLiveData<Int> = MutableLiveData()
 
 
