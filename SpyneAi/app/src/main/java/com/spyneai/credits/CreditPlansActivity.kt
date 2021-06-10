@@ -329,9 +329,6 @@ class CreditPlansActivity : AppCompatActivity(),CreditsPlandAdapter.Listener,
     private suspend fun updatePurchasedCredits() {
         var creditAvailable = lastSelectedItem!!.credits + intent.getIntExtra("credit_available",0)
 
-        Log.d(TAG, "updatePurchasedCredits: "+ lastSelectedItem!!.credits)
-        Log.d(TAG, "updatePurchasedCredits: "+creditAvailable)
-
 
         var call = RetrofitCreditClient("https://www.spyne.ai/").buildService(CreditApiService::class.java)
             .updatePurchasedCredit(Utilities.getPreference(this,AppConstants.tokenId)!!.toString(),

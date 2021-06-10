@@ -9,5 +9,4 @@ data class UploadImageResponse (
     @SerializedName("category") val category : String,
     @SerializedName("status") val status : String,
     @SerializedName("output_image_hres_url") val output_image_hres_url : String,
-    @SerializedName("output_image_lres_url") val output_image_lres_url : String
-        )
+    @SerializedName("output_image_lres_url") val output_image_lres_url : String)

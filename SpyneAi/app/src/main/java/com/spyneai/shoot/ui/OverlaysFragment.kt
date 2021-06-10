@@ -18,6 +18,7 @@ import com.spyneai.dashboard.ui.handleApiError
 import com.spyneai.databinding.FragmentOverlaysBinding
 import com.spyneai.shoot.adapter.ShootProgressAdapter
 import com.spyneai.shoot.adapters.NewSubCategoriesAdapter
+import com.spyneai.shoot.data.ShootViewModel
 import com.spyneai.shoot.data.model.ShootData
 import com.spyneai.shoot.ui.dialogs.AngleSelectionDialog
 import kotlinx.android.synthetic.main.dialog_confirm_reshoot.view.*

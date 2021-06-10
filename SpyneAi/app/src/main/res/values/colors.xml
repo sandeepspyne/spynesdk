@@ -41,4 +41,6 @@
 
     <color name="iv_light">#90FFAB40</color>
 
+    <color name="dialog_bold_text_color">#424242</color>
+
 </resources>
