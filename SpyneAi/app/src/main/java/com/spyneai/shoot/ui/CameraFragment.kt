@@ -15,21 +15,15 @@ import android.widget.Toast
 import androidx.camera.core.*
 import androidx.camera.lifecycle.ProcessCameraProvider
 import androidx.core.content.ContextCompat
-import com.bumptech.glide.Glide
 import com.robertlevonyan.demo.camerax.analyzer.LuminosityAnalyzer
 import com.spyneai.base.BaseFragment
-import com.spyneai.base.network.Resource
-import com.spyneai.dashboard.response.NewSubCatResponse
-import com.spyneai.dashboard.ui.handleApiError
 import com.spyneai.databinding.FragmentCameraBinding
-import com.spyneai.needs.AppConstants
 import com.spyneai.shoot.data.ShootViewModel
 import com.spyneai.shoot.data.model.ShootData
 import com.spyneai.shoot.utils.ThreadExecutor
 import com.spyneai.shoot.utils.mainExecutor
 import kotlinx.android.synthetic.main.activity_camera.*
 import java.io.File
-import java.util.ArrayList
 import java.util.concurrent.ExecutionException
 import kotlin.math.abs
 import kotlin.math.max
@@ -59,6 +53,9 @@ class CameraFragment : BaseFragment<ShootViewModel, FragmentCameraBinding>() {
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
+
+        viewModel.shootList.value = ArrayList()
+
         startCamera()
         binding.btnTakePicture?.setOnClickListener { captureImage() }
 

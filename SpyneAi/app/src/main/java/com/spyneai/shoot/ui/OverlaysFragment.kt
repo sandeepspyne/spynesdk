@@ -1,11 +1,9 @@
 package com.spyneai.shoot.ui
 
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
 import androidx.fragment.app.DialogFragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.balsikandar.kotlindslsamples.dialogfragment.DialogDSLBuilder.Companion.dialog
@@ -23,6 +21,7 @@ import com.spyneai.shoot.adapters.NewSubCategoriesAdapter
 import com.spyneai.shoot.data.ShootViewModel
 import com.spyneai.shoot.data.model.ShootData
 import com.spyneai.shoot.ui.dialogs.AngleSelectionDialog
+import com.spyneai.shoot.ui.dialogs.ConfirmReshootDialog
 import com.spyneai.shoot.ui.dialogs.CreateProjectAndSkuDialog
 import com.spyneai.shoot.ui.dialogs.ShootHintDialog
 import kotlinx.android.synthetic.main.dialog_confirm_reshoot.view.*
@@ -34,6 +33,8 @@ class OverlaysFragment : BaseFragment<ShootViewModel,FragmentOverlaysBinding>(),
     lateinit var subCategoriesAdapter: NewSubCategoriesAdapter
     lateinit var progressAdapter: ShootProgressAdapter
     private var showDialog = true
+    var prodSubcategoryId = ""
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
@@ -41,8 +42,12 @@ class OverlaysFragment : BaseFragment<ShootViewModel,FragmentOverlaysBinding>(),
 
         //observe new image clicked
         viewModel.shootList.observe(viewLifecycleOwner, {
-            if (showDialog)
-                showConfirmReshootDialog(it.get(it.size - 1))
+            try {
+                if (showDialog)
+                    showImageConfirmDialog(it.get(it.size - 1))
+            }catch (e : Exception){
+
+            }
         })
     }
 
@@ -69,6 +74,7 @@ class OverlaysFragment : BaseFragment<ShootViewModel,FragmentOverlaysBinding>(),
 
     private fun initAngles() {
         viewModel.selectedAngles.value = 8
+
         binding.tvShoot?.setOnClickListener {
             AngleSelectionDialog().show(requireFragmentManager(), "AngleSelectionDialog")
         }
@@ -94,6 +100,10 @@ class OverlaysFragment : BaseFragment<ShootViewModel,FragmentOverlaysBinding>(),
         viewModel.selectedAngles.observe(viewLifecycleOwner, {
             binding.tvShoot?.text = "Angles 1/${viewModel.getSelectedAngles()}"
             progressAdapter.updateList(viewModel.getShootProgressList())
+
+            //get overlays when value changed
+            if(prodSubcategoryId != "")
+                getOverlays(prodSubcategoryId)
         })
     }
 
@@ -161,29 +171,32 @@ class OverlaysFragment : BaseFragment<ShootViewModel,FragmentOverlaysBinding>(),
     }
 
     override fun onBtnClick(data: NewSubCatResponse.Data) {
-        getOverlays(data.prod_sub_cat_id)
+        prodSubcategoryId = data.prod_sub_cat_id
+        getOverlays(prodSubcategoryId)
     }
 
-    fun showConfirmReshootDialog(shootData: ShootData) {
-        dialog {
-            layoutId = R.layout.dialog_confirm_reshoot
-            setCustomView = { it: View, dialog: DialogFragment ->
+    fun showImageConfirmDialog(shootData: ShootData) {
 
+        ConfirmReshootDialog().show(requireFragmentManager(), "ConfirmReshootDialog")
 
-                it.btReshootImage.setOnClickListener {
-                    showDialog = false
-                    viewModel.shootList.value?.remove(shootData)
-                    dialog.dismiss()
-                    showDialog = true
-                }
-
-                it.btConfirmImage.setOnClickListener {
-                    viewModel.uploadImageWithWorkManager(requireContext(), shootData)
-                    dialog.dismiss()
-                }
-
-            }
-        }
+//        dialog {
+//            layoutId = R.layout.dialog_confirm_reshoot
+//            setCustomView = { it: View, dialog: DialogFragment ->
+//
+//                it.btReshootImage.setOnClickListener {
+//                    showDialog = false
+//                    viewModel.shootList.value?.remove(shootData)
+//                    dialog.dismiss()
+//                    showDialog = true
+//                }
+//
+//                it.btConfirmImage.setOnClickListener {
+//                    viewModel.uploadImageWithWorkManager(requireContext(), shootData)
+//                    dialog.dismiss()
+//                }
+//
+//            }
+//        }
     }
 
 

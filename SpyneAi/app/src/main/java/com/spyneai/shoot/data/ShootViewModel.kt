@@ -109,4 +109,5 @@ class ShootViewModel : ViewModel(){
         _createSkuRes.value = repository.createSku(authKey, projectId, prodCatId, prodSubCatId, skuName)
     }
 
+
 }
