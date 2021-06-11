@@ -8,6 +8,7 @@
     android:background="@android:color/transparent">
 
     <View
+        android:id="@+id/viewCamera"
         android:layout_width="75dp"
         android:layout_height="match_parent"
         app:layout_constraintTop_toTopOf="parent"
@@ -19,11 +20,9 @@
         android:layout_width="0dp"
         android:layout_height="0dp"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.0" />
+        app:layout_constraintRight_toLeftOf="@+id/btnTakePicture"
+        app:layout_constraintLeft_toRightOf="@+id/viewCamera"
+        app:layout_constraintTop_toTopOf="parent" />
 
     <ImageView
         android:id="@+id/ivUploadedImage"
@@ -53,7 +52,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:background="@android:color/transparent"
-        android:padding="@dimen/double_margin"
+        android:padding="@dimen/dp_10"
         android:src="@drawable/click_effect"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
