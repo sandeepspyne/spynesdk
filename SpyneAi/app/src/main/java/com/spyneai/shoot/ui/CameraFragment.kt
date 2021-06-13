@@ -1,5 +1,6 @@
 package com.spyneai.shoot.ui
 
+import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.ContentValues
 import android.content.ContentValues.TAG
@@ -8,6 +9,7 @@ import android.os.*
 import android.provider.MediaStore
 import android.util.DisplayMetrics
 import android.util.Log
+import android.util.Rational
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -17,12 +19,15 @@ import androidx.camera.lifecycle.ProcessCameraProvider
 import androidx.core.content.ContextCompat
 import com.robertlevonyan.demo.camerax.analyzer.LuminosityAnalyzer
 import com.spyneai.base.BaseFragment
+import com.spyneai.camera2.Camera2Activity
 import com.spyneai.databinding.FragmentCameraBinding
 import com.spyneai.shoot.data.ShootViewModel
 import com.spyneai.shoot.data.model.ShootData
 import com.spyneai.shoot.utils.ThreadExecutor
 import com.spyneai.shoot.utils.mainExecutor
 import kotlinx.android.synthetic.main.activity_camera.*
+import kotlinx.android.synthetic.main.activity_camera.viewFinder
+import kotlinx.android.synthetic.main.activity_camera2.*
 import java.io.File
 import java.util.concurrent.ExecutionException
 import kotlin.math.abs
@@ -40,6 +45,8 @@ class CameraFragment : BaseFragment<ShootViewModel, FragmentCameraBinding>() {
     private var skuId: String = "sku-9c0775d2-69e4-4ecf-a134-7b61a48e15ee\n"
     private var imageCategory: String= "Exterior"
     private var authKey: String = "813a71af-a2fb-4ef8-87b3-059d01c5b9ba"
+    private var flashMode: Int = ImageCapture.FLASH_MODE_OFF
+
 
     // Selector showing which camera is selected (front or back)
     private var lensFacing = CameraSelector.DEFAULT_BACK_CAMERA
@@ -53,8 +60,6 @@ class CameraFragment : BaseFragment<ShootViewModel, FragmentCameraBinding>() {
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
-
-        viewModel.shootList.value = ArrayList()
 
         startCamera()
         binding.btnTakePicture?.setOnClickListener { captureImage() }
@@ -123,6 +128,9 @@ class CameraFragment : BaseFragment<ShootViewModel, FragmentCameraBinding>() {
                     // This function is called if capture is successfully completed
                     outputFileResults.savedUri
                         ?.let { uri ->
+                            if (viewModel.shootList.value == null)
+                                viewModel.shootList.value = ArrayList()
+
                             viewModel.shootList.value?.add(ShootData(uri, "prj-27d33afa-4f50-4af0-b769-a97adf247fae",
                                 "sku-9c0775d2-69e4-4ecf-a134-7b61a48e15ee", "Exterior", "813a71af-a2fb-4ef8-87b3-059d01c5b9ba"))
                         }
@@ -147,87 +155,63 @@ class CameraFragment : BaseFragment<ShootViewModel, FragmentCameraBinding>() {
         return AspectRatio.RATIO_16_9
     }
 
+    @SuppressLint("RestrictedApi", "UnsafeExperimentalUsageError", "UnsafeOptInUsageError")
     private fun startCamera() {
-        // This is the CameraX PreviewView where the camera will be rendered
-        val viewFinder = binding.viewFinder
-
         val cameraProviderFuture = ProcessCameraProvider.getInstance(requireContext())
-        cameraProviderFuture.addListener({
+
+        cameraProviderFuture.addListener(Runnable {
+            // Used to bind the lifecycle of cameras to the lifecycle owner
+
             try {
                 cameraProvider = cameraProviderFuture.get()
-            } catch (e: InterruptedException) {
-                Toast.makeText(requireContext(), "Error starting camera", Toast.LENGTH_SHORT).show()
-                return@addListener
-            } catch (e: ExecutionException) {
-                Toast.makeText(requireContext(), "Error starting camera", Toast.LENGTH_SHORT).show()
-                return@addListener
+            } catch (e: Exception) {
+                e.printStackTrace()
             }
 
-            // The display information
-            val metrics = DisplayMetrics().also { viewFinder?.display?.getRealMetrics(it) }
-            // The ratio for the output image and preview
-            val aspectRatio = aspectRatio(metrics.widthPixels, metrics.heightPixels)
-            // The display rotation
-            val rotation = viewFinder?.display?.rotation
+            val preview = Preview.Builder()
+                //.setTargetResolution(Size(1280, 720))
+                .build()
+                .also {
+                    it.setSurfaceProvider(viewFinder.surfaceProvider)
+                }
 
-            val localCameraProvider = cameraProvider
-                ?: throw IllegalStateException("Camera initialization failed.")
+            // Preview
+//            val viewPort = ViewPort.Builder(
+//                Rational(4, 3),
+//                display!!.rotation
+//            ).build()
 
-            // The Configuration of camera preview
-            preview = rotation?.let {
-                Preview.Builder()
-                    .setTargetAspectRatio(aspectRatio) // set the camera aspect ratio
-                    .setTargetRotation(it) // set the camera rotation
-                    .build()
-            }
+            //for exact image cropping
+             val viewPort = binding.viewFinder?.viewPort
 
-            // The Configuration of image capture
-            imageCapture = rotation?.let {
-                ImageCapture.Builder()
-                    .setCaptureMode(ImageCapture.CAPTURE_MODE_MAXIMIZE_QUALITY) // setting to have pictures with highest quality possible (may be slow)
-                    .setTargetAspectRatio(aspectRatio) // set the capture aspect ratio
-                    .setTargetRotation(it) // set the capture rotation
-                    .build()
-            }
+            imageCapture = ImageCapture.Builder()
+                .setCaptureMode(ImageCapture.CAPTURE_MODE_MINIMIZE_LATENCY)
+                .setFlashMode(flashMode).build()
 
-            // The Configuration of image analyzing
-            imageAnalyzer = rotation?.let {
-                ImageAnalysis.Builder()
-                    .setTargetAspectRatio(aspectRatio) // set the analyzer aspect ratio
-                    .setTargetRotation(it) // set the analyzer rotation
-                    .setBackpressureStrategy(ImageAnalysis.STRATEGY_KEEP_ONLY_LATEST) // in our analysis, we care about the latest image
-                    .build()
-                    .apply {
-                        // Use a worker thread for image analysis to prevent glitches
-                        val analyzerThread = HandlerThread("LuminosityAnalysis").apply { start() }
-                        setAnalyzer(
-                            ThreadExecutor(Handler(analyzerThread.looper)),
-                            LuminosityAnalyzer()
-                        )
-                    }
-            }
+            val useCaseGroup = UseCaseGroup.Builder()
+                .addUseCase(preview)
+                .addUseCase(imageCapture!!)
+                .setViewPort(viewPort!!)
+                .build()
 
-            localCameraProvider.unbindAll() // unbind the use-cases before rebinding them
+            // Select back camera as a default
+            val cameraSelector = CameraSelector.DEFAULT_BACK_CAMERA
 
             try {
-                // Bind all use cases to the camera with lifecycle
-                localCameraProvider.bindToLifecycle(
-                    viewLifecycleOwner, // current lifecycle owner
-                    lensFacing, // always back facing
-                    preview, // camera preview use case
-                    imageCapture, // image capture use case
-                    imageAnalyzer, // image analyzer use case
+                // Unbind use cases before rebinding
+                cameraProvider?.unbindAll()
+
+                // Bind use cases to camera
+               cameraProvider?.bindToLifecycle(
+                    this, cameraSelector, useCaseGroup
                 )
 
-                // Attach the viewfinder's surface provider to preview use case
-                if (viewFinder != null) {
-                    preview?.setSurfaceProvider(viewFinder.surfaceProvider)
-                }
-            } catch (e: Exception) {
-                Log.e(TAG, "Failed to bind use cases", e)
+            } catch (exc: Exception) {
+                Log.e(TAG, "Use case binding failed", exc)
             }
 
         }, ContextCompat.getMainExecutor(requireContext()))
+
     }
 
 

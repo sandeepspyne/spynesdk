@@ -43,7 +43,7 @@ class OverlaysFragment : BaseFragment<ShootViewModel,FragmentOverlaysBinding>(),
         //observe new image clicked
         viewModel.shootList.observe(viewLifecycleOwner, {
             try {
-                if (showDialog)
+                if (showDialog && !it.isNullOrEmpty())
                     showImageConfirmDialog(it.get(it.size - 1))
             }catch (e : Exception){
 
