@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
@@ -13,13 +12,10 @@
         android:layout_height="0dp"
         android:layout_weight="1"
         android:padding="@dimen/dp_5"
-        android:orientation="horizontal"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
+        android:orientation="horizontal">
 
         <ImageView
-            android:id="@+id/ivCapturedImage"
+            android:id="@+id/ivConfirmReshoot1"
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="1"
@@ -33,7 +29,7 @@
             android:layout_gravity="center"
             android:layout_height="match_parent">
             <ImageView
-                android:id="@+id/ivCaptured2"
+                android:id="@+id/ivConfirmReshoot2"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:gravity="center"
@@ -55,10 +51,7 @@
         android:layout_height="wrap_content"
         android:orientation="horizontal"
         android:gravity="center"
-        android:layout_gravity="center"
-        app:layout_constraintTop_toBottomOf="@+id/llBeforeAfter"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent">
+        android:layout_gravity="center">
 
         <androidx.appcompat.widget.AppCompatButton
             android:id="@+id/btReshootImage"
@@ -96,4 +89,4 @@
 
 
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+</LinearLayout>

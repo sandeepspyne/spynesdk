@@ -1,10 +1,12 @@
 package com.spyneai.shoot.ui
 
+import android.graphics.Bitmap
+import android.graphics.BitmapFactory
+import android.net.Uri
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
 import androidx.fragment.app.DialogFragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.balsikandar.kotlindslsamples.dialogfragment.DialogDSLBuilder.Companion.dialog
@@ -18,8 +20,12 @@ import com.spyneai.shoot.adapter.ShootProgressAdapter
 import com.spyneai.shoot.adapters.NewSubCategoriesAdapter
 import com.spyneai.shoot.data.model.ShootData
 import com.spyneai.shoot.ui.dialogs.AngleSelectionDialog
+import kotlinx.android.synthetic.main.activity_camera_.*
+import kotlinx.android.synthetic.main.dialog_confirm_reshoot.*
 import kotlinx.android.synthetic.main.dialog_confirm_reshoot.view.*
+import java.io.File
 import java.util.*
+
 
 class OverlaysFragment : BaseFragment<ShootViewModel,FragmentOverlaysBinding>() {
 
@@ -27,6 +33,7 @@ class OverlaysFragment : BaseFragment<ShootViewModel,FragmentOverlaysBinding>() 
     lateinit var subCategoriesAdapter: NewSubCategoriesAdapter
     lateinit var progressAdapter : ShootProgressAdapter
     private var showDialog = true
+    private lateinit var imageUri: Uri
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
@@ -56,6 +63,7 @@ class OverlaysFragment : BaseFragment<ShootViewModel,FragmentOverlaysBinding>() 
 
         viewModel.shootList.observe(viewLifecycleOwner,{
             if (showDialog)
+            imageUri = Uri.fromFile(File(it[it.size-1].capturedImage))
             showConfirmReshootDialog(it.get(it.size-1))
         })
     }
@@ -65,6 +73,9 @@ class OverlaysFragment : BaseFragment<ShootViewModel,FragmentOverlaysBinding>() 
             layoutId = R.layout.dialog_confirm_reshoot
             setCustomView = {it: View, dialog: DialogFragment ->
 
+
+                it.ivConfirmReshoot1.setImageURI(imageUri)
+                it.ivConfirmReshoot2.setImageURI(imageUri)
 
                 it.btReshootImage.setOnClickListener {
                     showDialog = false

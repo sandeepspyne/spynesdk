@@ -9,23 +9,20 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
 import androidx.camera.core.*
 import androidx.camera.lifecycle.ProcessCameraProvider
 import androidx.core.content.ContextCompat
-import androidx.fragment.app.DialogFragment
-import com.balsikandar.kotlindslsamples.dialogfragment.DialogDSLBuilder.Companion.dialog
-import com.spyneai.R
+import com.hbisoft.pickit.PickiT
 import com.spyneai.base.BaseFragment
 import com.spyneai.databinding.FragmentCameraBinding
 import com.spyneai.shoot.data.model.ShootData
 import kotlinx.android.synthetic.main.activity_camera.*
-import kotlinx.android.synthetic.main.dialog_confirm_reshoot.view.*
 import java.io.File
 import java.text.SimpleDateFormat
 import java.util.*
 import java.util.concurrent.ExecutorService
 import java.util.concurrent.Executors
+import kotlin.collections.ArrayList
 import kotlin.math.abs
 import kotlin.math.max
 import kotlin.math.min
@@ -37,9 +34,14 @@ class CameraFragment : BaseFragment<ShootViewModel, FragmentCameraBinding>() {
     private var preview: Preview? = null
     private var imageAnalyzer: ImageAnalysis? = null
 
+    private lateinit var shootList : ArrayList<ShootData>
+
     private lateinit var cameraExecutor: ExecutorService
 
     private lateinit var outputDirectory: File
+
+    private var capturedImage = ""
+    var pickiT: PickiT? = null
 
     private val FILENAME_FORMAT = "yyyy-MM-dd-HH-mm-ss-SSS"
 
@@ -68,6 +70,7 @@ class CameraFragment : BaseFragment<ShootViewModel, FragmentCameraBinding>() {
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
+        shootList = ArrayList<ShootData>()
         startCamera()
         binding.btnTakePicture?.setOnClickListener { takePhoto() }
 
@@ -109,10 +112,18 @@ class CameraFragment : BaseFragment<ShootViewModel, FragmentCameraBinding>() {
                 override fun onImageSaved(output: ImageCapture.OutputFileResults) {
                     val savedUri = Uri.fromFile(photoFile)
                     val msg = "Photo capture succeeded: $savedUri"
-                    Toast.makeText(requireContext(), msg, Toast.LENGTH_SHORT).show()
                     Log.d(TAG, msg)
-                    viewModel.shootList.value?.add(ShootData(savedUri, "prj-27d33afa-4f50-4af0-b769-a97adf247fae",
-                                "sku-9c0775d2-69e4-4ecf-a134-7b61a48e15ee", "Exterior", "813a71af-a2fb-4ef8-87b3-059d01c5b9ba"))
+                    try {
+                        capturedImage = photoFile?.path!!.toString()
+                    } catch (ex: IllegalArgumentException) {
+//                        pickiT?.getPath(finalLogoUri, Build.VERSION.SDK_INT)
+                    }
+                    shootList.add(
+                        ShootData(capturedImage, "prj-27d33afa-4f50-4af0-b769-a97adf247fae",
+                            "sku-9c0775d2-69e4-4ecf-a134-7b61a48e15ee",
+                            "Exterior",
+                            "813a71af-a2fb-4ef8-87b3-059d01c5b9ba"))
+                    viewModel.setShoot(shootList)
                 }
             })
     }

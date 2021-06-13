@@ -24,6 +24,9 @@ class ShootViewModel : ViewModel() {
     val shootList: MutableLiveData<ArrayList<ShootData>> = MutableLiveData()
     private val repository = ShootRepository()
 
+    fun setShoot(shoot: ArrayList<ShootData>) {
+        shootList.value = shoot
+    }
 
     fun uploadImageWithWorkManager(
         requireContext: Context,
@@ -31,11 +34,12 @@ class ShootViewModel : ViewModel() {
     ) {
         val uploadWorkRequest = OneTimeWorkRequest.Builder(UploadImageWorker::class.java)
         val data = Data.Builder()
-        data.putString("uri", shootData.uri.toString())
+        data.putString("capturedImage", shootData.capturedImage)
         data.putString("projectId", shootData.project_id)
         data.putString("skuId", shootData.sku_id)
         data.putString("imageCategory", shootData.image_category)
         data.putString("authKey", shootData.auth_key)
+        uploadWorkRequest.setInputData(data.build())
         WorkManager.getInstance(requireContext).enqueue(uploadWorkRequest.build())
     }
 
