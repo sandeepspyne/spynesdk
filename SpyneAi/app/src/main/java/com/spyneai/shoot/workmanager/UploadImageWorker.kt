@@ -22,9 +22,6 @@ class UploadImageWorker(appContext: Context, workerParams: WorkerParameters):
 
     private suspend fun uploadImages() {
         try {
-            val uri = RequestBody.create(
-                MultipartBody.FORM,
-                inputData.getString("uri").toString())
 
             val projectId =  RequestBody.create(
                 MultipartBody.FORM,
@@ -38,16 +35,17 @@ class UploadImageWorker(appContext: Context, workerParams: WorkerParameters):
             val authKey =  RequestBody.create(
                 MultipartBody.FORM,
                 inputData.getString("authKey").toString())
+
+
             var image: MultipartBody.Part? = null
             val requestFile =
                 RequestBody.create(
                     "multipart/form-data".toMediaTypeOrNull(),
-                    File(uri.toString())
-                )
+                    File(inputData.getString("capturedImage")))
             image =
                 MultipartBody.Part.createFormData(
                     "image",
-                    File(uri.toString())!!.name,
+                    File(inputData.getString("capturedImage"))!!.name,
                     requestFile
                 )
 

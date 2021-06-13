@@ -2,34 +2,36 @@ package com.spyneai.shoot.ui
 
 import android.annotation.SuppressLint
 import android.app.Activity
-import android.content.ContentValues
 import android.content.ContentValues.TAG
 import android.content.pm.ActivityInfo
+import android.net.Uri
 import android.os.*
-import android.provider.MediaStore
-import android.util.DisplayMetrics
 import android.util.Log
 import android.util.Rational
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
 import androidx.camera.core.*
 import androidx.camera.lifecycle.ProcessCameraProvider
 import androidx.core.content.ContextCompat
-import com.robertlevonyan.demo.camerax.analyzer.LuminosityAnalyzer
+import com.hbisoft.pickit.PickiT
 import com.spyneai.base.BaseFragment
-import com.spyneai.camera2.Camera2Activity
+import com.spyneai.base.network.Resource
+import com.spyneai.dashboard.response.NewSubCatResponse
+import com.spyneai.dashboard.ui.handleApiError
 import com.spyneai.databinding.FragmentCameraBinding
+import com.spyneai.needs.AppConstants
 import com.spyneai.shoot.data.ShootViewModel
 import com.spyneai.shoot.data.model.ShootData
-import com.spyneai.shoot.utils.ThreadExecutor
-import com.spyneai.shoot.utils.mainExecutor
 import kotlinx.android.synthetic.main.activity_camera.*
 import kotlinx.android.synthetic.main.activity_camera.viewFinder
 import kotlinx.android.synthetic.main.activity_camera2.*
 import java.io.File
-import java.util.concurrent.ExecutionException
+import java.text.SimpleDateFormat
+import java.util.*
+import java.util.concurrent.ExecutorService
+import java.util.concurrent.Executors
+import kotlin.collections.ArrayList
 import kotlin.math.abs
 import kotlin.math.max
 import kotlin.math.min
@@ -37,36 +39,34 @@ import kotlin.math.min
 
 class CameraFragment : BaseFragment<ShootViewModel, FragmentCameraBinding>() {
     private var imageCapture: ImageCapture? = null
-    private var cameraProvider: ProcessCameraProvider? = null
-    private var preview: Preview? = null
-    private var imageAnalyzer: ImageAnalysis? = null
-
-    private var projectId: String = "prj-27d33afa-4f50-4af0-b769-a97adf247fae"
-    private var skuId: String = "sku-9c0775d2-69e4-4ecf-a134-7b61a48e15ee\n"
-    private var imageCategory: String= "Exterior"
-    private var authKey: String = "813a71af-a2fb-4ef8-87b3-059d01c5b9ba"
-    private var flashMode: Int = ImageCapture.FLASH_MODE_OFF
-
-
-    // Selector showing which camera is selected (front or back)
-    private var lensFacing = CameraSelector.DEFAULT_BACK_CAMERA
-
-    lateinit var photoFile: File
+    private lateinit var cameraExecutor: ExecutorService
+    private lateinit var outputDirectory: File
+    private var capturedImage = ""
+    var pickiT: PickiT? = null
+    private val FILENAME_FORMAT = "yyyy-MM-dd-HH-mm-ss-SSS"
 
     companion object {
         private const val RATIO_4_3_VALUE = 4.0 / 3.0 // aspect ratio 4x3
         private const val RATIO_16_9_VALUE = 16.0 / 9.0 // aspect ratio 16x9
     }
 
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+
+        cameraExecutor = Executors.newSingleThreadExecutor()
+        // Determine the output directory
+        outputDirectory = ShootActivity.getOutputDirectory(requireContext())
+    }
+
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
 
         startCamera()
-        binding.btnTakePicture?.setOnClickListener { captureImage() }
+        binding.cameraCaptureButton?.setOnClickListener { takePhoto() }
 
-        binding.ivUploadedImage?.setOnClickListener {
-            binding.ivUploadedImage!!.visibility = View.GONE
-        }
+//        binding.ivUploadedImage?.setOnClickListener {
+//            binding.ivUploadedImage!!.visibility = View.GONE
+//        }
 
     }
 
@@ -76,75 +76,6 @@ class CameraFragment : BaseFragment<ShootViewModel, FragmentCameraBinding>() {
             val a: Activity? = activity
             if (a != null) a.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE
         }
-    }
-
-    //The folder location where all the files will be stored
-    protected val outputDirectory: String by lazy {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-            "${Environment.DIRECTORY_DCIM}/Spyne/"
-        } else {
-            "${Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DCIM)}/Spyne/"
-        }
-    }
-
-    private fun captureImage() {
-        val localImageCapture =
-            imageCapture ?: throw IllegalStateException("Camera initialization failed.")
-
-        // Setup image capture metadata
-        val metadata = ImageCapture.Metadata().apply {
-            // Mirror image when using the front camera
-            isReversedHorizontal = lensFacing == CameraSelector.DEFAULT_FRONT_CAMERA
-        }
-
-        // Options fot the output image file
-        val outputOptions = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-            val contentValues = ContentValues().apply {
-                put(MediaStore.MediaColumns.DISPLAY_NAME, System.currentTimeMillis())
-                put(MediaStore.MediaColumns.MIME_TYPE, "image/jpeg")
-                put(MediaStore.MediaColumns.RELATIVE_PATH, outputDirectory)
-            }
-
-            val contentResolver = requireContext().contentResolver
-
-            // Create the output uri
-            val contentUri =
-                MediaStore.Images.Media.getContentUri(MediaStore.VOLUME_EXTERNAL_PRIMARY)
-
-            ImageCapture.OutputFileOptions.Builder(contentResolver, contentUri, contentValues)
-        } else {
-            File(outputDirectory).mkdirs()
-            val file = File(outputDirectory, "${System.currentTimeMillis()}.jpg")
-
-            ImageCapture.OutputFileOptions.Builder(file)
-        }.setMetadata(metadata).build()
-
-        localImageCapture.takePicture(
-            outputOptions, // the options needed for the final image
-            requireContext().mainExecutor(), // the executor, on which the task will run
-            object :
-                ImageCapture.OnImageSavedCallback { // the callback, about the result of capture process
-                override fun onImageSaved(outputFileResults: ImageCapture.OutputFileResults) {
-                    // This function is called if capture is successfully completed
-                    outputFileResults.savedUri
-                        ?.let { uri ->
-                            if (viewModel.shootList.value == null)
-                                viewModel.shootList.value = ArrayList()
-
-                            viewModel.shootList.value?.add(ShootData(uri, "prj-27d33afa-4f50-4af0-b769-a97adf247fae",
-                                "sku-9c0775d2-69e4-4ecf-a134-7b61a48e15ee", "Exterior", "813a71af-a2fb-4ef8-87b3-059d01c5b9ba"))
-                        }
-                }
-
-                override fun onError(exception: ImageCaptureException) {
-                    // This function is called if there is an errors during capture process
-                    val msg = "Photo capture failed: ${exception.message}"
-                    Toast.makeText(requireContext(), msg, Toast.LENGTH_SHORT).show()
-                    Log.e(TAG, msg)
-                    exception.printStackTrace()
-                }
-            }
-        )
     }
 
     private fun aspectRatio(width: Int, height: Int): Int {
@@ -161,37 +92,16 @@ class CameraFragment : BaseFragment<ShootViewModel, FragmentCameraBinding>() {
 
         cameraProviderFuture.addListener(Runnable {
             // Used to bind the lifecycle of cameras to the lifecycle owner
+            val cameraProvider: ProcessCameraProvider = cameraProviderFuture.get()
 
-            try {
-                cameraProvider = cameraProviderFuture.get()
-            } catch (e: Exception) {
-                e.printStackTrace()
-            }
-
+            // Preview
             val preview = Preview.Builder()
-                //.setTargetResolution(Size(1280, 720))
                 .build()
                 .also {
                     it.setSurfaceProvider(viewFinder.surfaceProvider)
                 }
 
-            // Preview
-//            val viewPort = ViewPort.Builder(
-//                Rational(4, 3),
-//                display!!.rotation
-//            ).build()
-
-            //for exact image cropping
-             val viewPort = binding.viewFinder?.viewPort
-
             imageCapture = ImageCapture.Builder()
-                .setCaptureMode(ImageCapture.CAPTURE_MODE_MINIMIZE_LATENCY)
-                .setFlashMode(flashMode).build()
-
-            val useCaseGroup = UseCaseGroup.Builder()
-                .addUseCase(preview)
-                .addUseCase(imageCapture!!)
-                .setViewPort(viewPort!!)
                 .build()
 
             // Select back camera as a default
@@ -199,11 +109,11 @@ class CameraFragment : BaseFragment<ShootViewModel, FragmentCameraBinding>() {
 
             try {
                 // Unbind use cases before rebinding
-                cameraProvider?.unbindAll()
+                cameraProvider.unbindAll()
 
                 // Bind use cases to camera
-               cameraProvider?.bindToLifecycle(
-                    this, cameraSelector, useCaseGroup
+                cameraProvider.bindToLifecycle(
+                    viewLifecycleOwner, cameraSelector, preview, imageCapture
                 )
 
             } catch (exc: Exception) {
@@ -214,6 +124,56 @@ class CameraFragment : BaseFragment<ShootViewModel, FragmentCameraBinding>() {
 
     }
 
+    override fun onDestroyView() {
+        super.onDestroyView()
+
+        // Shut down our background executor
+        cameraExecutor.shutdown()
+
+    }
+
+
+    private fun takePhoto() {
+        // Get a stable reference of the modifiable image capture use case
+        val imageCapture = imageCapture ?: return
+
+        val photoFile = File(
+            outputDirectory,
+            SimpleDateFormat(FILENAME_FORMAT, Locale.US
+            ).format(System.currentTimeMillis()) + ".jpg")
+
+        // Create output options object which contains file + metadata
+        val outputOptions = ImageCapture.OutputFileOptions.Builder(photoFile).build()
+
+        // Set up image capture listener, which is triggered after photo has
+        // been taken
+        imageCapture.takePicture(
+            outputOptions, ContextCompat.getMainExecutor(requireContext()), object : ImageCapture.OnImageSavedCallback {
+                override fun onError(exc: ImageCaptureException) {
+                    Log.e(TAG, "Photo capture failed: ${exc.message}", exc)
+                }
+                override fun onImageSaved(output: ImageCapture.OutputFileResults) {
+                    val savedUri = Uri.fromFile(photoFile)
+                    val msg = "Photo capture succeeded: $savedUri"
+                    Log.d(TAG, msg)
+                    try {
+                        capturedImage = photoFile?.path!!.toString()
+                    } catch (ex: IllegalArgumentException) {
+//                        pickiT?.getPath(finalLogoUri, Build.VERSION.SDK_INT)
+                    }
+
+                    if (viewModel.shootList.value == null)
+                        viewModel.shootList.value = ArrayList()
+
+                    viewModel.shootList.value!!.add(  ShootData(capturedImage, "prj-27d33afa-4f50-4af0-b769-a97adf247fae",
+                        "sku-9c0775d2-69e4-4ecf-a134-7b61a48e15ee",
+                        "Exterior",
+                        "813a71af-a2fb-4ef8-87b3-059d01c5b9ba"))
+
+                    viewModel.shootList.value = viewModel.shootList.value
+                }
+            })
+    }
 
     override fun getViewModel() = ShootViewModel::class.java
 

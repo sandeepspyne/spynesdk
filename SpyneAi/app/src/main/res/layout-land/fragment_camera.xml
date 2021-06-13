@@ -8,60 +8,100 @@
     android:background="@android:color/transparent">
 
     <View
-        android:layout_width="75dp"
+        android:id="@+id/viewCamera"
+        android:layout_width="85dp"
         android:layout_height="match_parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintLeft_toLeftOf="parent"></View>
+        app:layout_constraintLeft_toLeftOf="parent"
+        android:background="@color/black"/>
 
     <androidx.camera.view.PreviewView
         android:id="@+id/viewFinder"
         android:layout_width="0dp"
         android:layout_height="0dp"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.0" />
-
-    <ImageView
-        android:id="@+id/ivUploadedImage"
-        android:layout_width="@dimen/dp_100"
-        android:layout_height="@dimen/dp_100"
-        android:visibility="gone"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintBottom_toBottomOf="parent"></ImageView>
-
-    <ImageView
-        android:visibility="gone"
-        android:id="@+id/ivCapturedImage"
-        android:layout_width="@dimen/dp_400"
-        android:layout_height="@dimen/dp_400"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintBottom_toBottomOf="parent"
-        ></ImageView>
+        app:layout_constraintRight_toLeftOf="@+id/llCapture"
+        app:layout_constraintLeft_toRightOf="@+id/viewCamera"
+        app:layout_constraintTop_toTopOf="parent" />
 
 
-
-    <ImageButton
-        android:id="@+id/btnTakePicture"
+    <LinearLayout
+        android:id="@+id/llCapture"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:background="@android:color/transparent"
-        android:padding="@dimen/double_margin"
-        android:src="@drawable/click_effect"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_height="match_parent"
+        android:layout_gravity="end|center"
+        android:padding="@dimen/dp_10"
+        android:background="@color/black"
+        android:orientation="vertical"
+        android:gravity="center"
         app:layout_constraintTop_toTopOf="parent"
-        tools:ignore="ContentDescription" />
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintRight_toRightOf="parent">
 
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:layout_height="0dp">
 
+            <com.mikhaellopez.circularimageview.CircularImageView
+                android:id="@+id/ivGallery"
+                android:layout_width="@dimen/dp_50"
+                android:layout_height="@dimen/dp_50"
+                android:gravity="center"
+                android:src="@mipmap/gallery" />
 
+        </LinearLayout>
+
+        <ImageView
+            android:id="@+id/cameraCaptureButton"
+            android:layout_width="wrap_content"
+            android:layout_weight="1"
+            android:src="@drawable/click_effect"
+            android:layout_height="0dp"
+            android:elevation="2dp" />
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:padding="@dimen/dp_5"
+            android:layout_height="0dp"
+            android:visibility="invisible">
+
+            <androidx.cardview.widget.CardView
+                android:id="@+id/cardOverlay"
+                android:layout_width="@dimen/dp_50"
+                android:layout_height="@dimen/dp_50"
+                app:cardCornerRadius="@dimen/dp_50">
+                <ImageView
+                    android:id="@+id/ivPreview"
+                    android:layout_width="@dimen/dp_50"
+                    android:layout_height="@dimen/dp_50"
+                    android:fontFamily="@font/bold"
+                    android:gravity="center"
+                    android:elevation="@dimen/dp_5"
+                    android:padding="@dimen/sp_5"
+                    android:background="@drawable/bg_round" />
+            </androidx.cardview.widget.CardView>
+            <TextView
+                android:id="@+id/tvSkipShoot"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:layout_gravity="center"
+                android:visibility="gone"
+                android:drawablePadding="@dimen/dp_5"
+                android:fontFamily="@font/bold"
+                android:text="@string/skip"
+                android:textColor="@color/primary"
+                android:textSize="@dimen/sp_16"
+                app:drawableEndCompat="@mipmap/skip" />
+
+        </LinearLayout>
+
+    </LinearLayout>
 
 
 

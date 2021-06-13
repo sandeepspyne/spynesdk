@@ -88,7 +88,7 @@ class ShootViewModel : ViewModel(){
     ) {
         val uploadWorkRequest = OneTimeWorkRequest.Builder(UploadImageWorker::class.java)
         val data = Data.Builder()
-        data.putString("uri", shootData.uri.toString())
+        data.putString("uri", shootData.capturedImage)
         data.putString("projectId", shootData.project_id)
         data.putString("skuId", shootData.sku_id)
         data.putString("imageCategory", shootData.image_category)

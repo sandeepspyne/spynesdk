@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
+    android:layout_width="300dp"
     android:layout_height="wrap_content"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
@@ -14,6 +14,7 @@
         android:id="@+id/etProjectName"
         android:background="@null"
         tools:text="Project-001"
+        android:text="Project-001"
         android:maxLines="1"
         android:inputType="text"
         android:fontFamily="@font/poppins_regular"
@@ -81,6 +82,7 @@
         android:textColor="@color/black"
         android:maxLines="1"
         android:inputType="text"
+        android:text="My Car Shoot"
         android:textSize="@dimen/sp_14"
         android:paddingLeft="@dimen/dp_10"
         android:paddingRight="@dimen/dp_10"

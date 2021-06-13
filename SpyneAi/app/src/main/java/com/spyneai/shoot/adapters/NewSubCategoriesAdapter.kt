@@ -18,7 +18,8 @@ import com.spyneai.needs.AppConstants
 class NewSubCategoriesAdapter (val context: Context,
                                var subCategoriesList: ArrayList<NewSubCatResponse.Data>?,
                                var pos : Int,
-                               val btnlistener: BtnClickListener?)
+                               val btnlistener: BtnClickListener?,
+                               var selectionEnabled : Boolean = false)
 : RecyclerView.Adapter<NewSubCategoriesAdapter.ViewHolder>() {
 
     companion object {
@@ -67,14 +68,17 @@ class NewSubCategoriesAdapter (val context: Context,
 
         viewHolder.tvSubcategories.setText(subCategory.sub_cat_name)
         mClickListener = btnlistener
-        if (position == pos)
-            viewHolder.llSubCategoriesImage.setBackgroundResource(R.drawable.bg_selected)
-        else
-            viewHolder.llSubCategoriesImage.setBackgroundResource(R.drawable.bg_channel)
+
+       if (selectionEnabled){
+           if (position == pos)
+               viewHolder.llSubCategoriesImage.setBackgroundResource(R.drawable.bg_selected)
+           else
+               viewHolder.llSubCategoriesImage.setBackgroundResource(R.drawable.bg_channel)
+       }
 
         viewHolder.llSubCategories.setOnClickListener(View.OnClickListener {
             if (mClickListener != null)
-                mClickListener?.onBtnClick(subCategoriesList!![position])
+                mClickListener?.onBtnClick(position,subCategoriesList!![position])
             pos = position
 
             viewHolder.llSubCategoriesImage.setBackgroundResource(R.drawable.bg_selected)
@@ -86,7 +90,7 @@ class NewSubCategoriesAdapter (val context: Context,
     override fun getItemCount() = if (subCategoriesList == null) 0 else subCategoriesList!!.size
 
     open interface BtnClickListener {
-        fun onBtnClick(data : NewSubCatResponse.Data)
+        fun onBtnClick(position : Int,data : NewSubCatResponse.Data)
     }
 
 }
