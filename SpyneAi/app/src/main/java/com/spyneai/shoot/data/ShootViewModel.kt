@@ -39,16 +39,17 @@ class ShootViewModel : ViewModel(){
         get() = _createSkuRes
 
 
+    val sku : MutableLiveData<Sku> = MutableLiveData()
+    val subCategory : MutableLiveData<NewSubCatResponse.Data> = MutableLiveData()
     var categoryDetails : MutableLiveData<CategoryDetails> = MutableLiveData()
+    val isSubCategoryConfirmed : MutableLiveData<Boolean> = MutableLiveData()
     val showVin : MutableLiveData<Boolean> = MutableLiveData()
     val isProjectCreated : MutableLiveData<Boolean> = MutableLiveData()
 
     val subCategoryId : MutableLiveData<String> = MutableLiveData()
     val selectedAngles: MutableLiveData<Int> = MutableLiveData()
     val shootNumber: MutableLiveData<Int> = MutableLiveData()
-
-
-
+    val shootData : MutableLiveData<ShootData> =  MutableLiveData()
 
     fun getSubCategories(
         authKey : String,prodId : String

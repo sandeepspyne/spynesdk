@@ -44,7 +44,7 @@ import com.spyneai.adapter.ProgressAdapter
 import com.spyneai.adapter.SubCategoriesAdapter
 import com.spyneai.dashboard.response.NewSubCatResponse
 import com.spyneai.dashboard.ui.dashboard.MainDashboardActivity
-import com.spyneai.fragment.SubCategoryConfirmationDialog
+import com.spyneai.shoot.ui.dialogs.SubCategoryConfirmationDialog
 import com.spyneai.interfaces.APiService
 import com.spyneai.interfaces.RetrofitClient
 import com.spyneai.interfaces.RetrofitClients

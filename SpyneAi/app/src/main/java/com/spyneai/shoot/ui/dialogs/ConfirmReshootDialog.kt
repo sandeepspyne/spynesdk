@@ -5,6 +5,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import com.bumptech.glide.Glide
 import com.hbisoft.pickit.PickiTCallbacks
 import com.spyneai.base.BaseDialogFragment
@@ -14,17 +15,34 @@ import com.spyneai.databinding.DialogShootHintBinding
 import com.spyneai.shoot.data.ShootViewModel
 import java.io.File
 
-class ConfirmReshootDialog: BaseDialogFragment<ShootViewModel, DialogConfirmReshootBinding>(),PickiTCallbacks {
+class ConfirmReshootDialog : BaseDialogFragment<ShootViewModel, DialogConfirmReshootBinding>() {
 
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        binding.btReshootImage.setOnClickListener{
+            dismiss()
+        }
+
+
+        binding.btConfirmImage.setOnClickListener {
+
+            if (viewModel.shootNumber.value  == viewModel.selectedAngles.value?.minus(1)){
+                Toast.makeText(requireContext(),"DONE!!!!!",Toast.LENGTH_LONG).show()
+                // viewModel.uploadImageWithWorkManager(requireContext(), viewModel.shootData.value!!)
+            }else{
+                viewModel.shootNumber.value = viewModel.shootNumber.value!! + 1
+                // viewModel.uploadImageWithWorkManager(requireContext(), viewModel.shootData.value!!)
+            }
+
+            dismiss()
+        }
 
        viewModel.overlaysResponse.observe(viewLifecycleOwner,{
            when(it){
                 is Resource.Sucess -> {
-                    val uri = viewModel.shootList.value?.get(viewModel.shootNumber.value!!)
+                    val uri = viewModel.shootData.value?.capturedImage
                     val overlay = it.value.data[viewModel.shootNumber.value!!]
 
                     Glide.with(requireContext())
@@ -46,10 +64,9 @@ class ConfirmReshootDialog: BaseDialogFragment<ShootViewModel, DialogConfirmResh
            }
        })
 
-
-
-
     }
+
+
 
     override fun getViewModel() = ShootViewModel::class.java
 
@@ -57,26 +74,4 @@ class ConfirmReshootDialog: BaseDialogFragment<ShootViewModel, DialogConfirmResh
         inflater: LayoutInflater,
         container: ViewGroup?
     ) = DialogConfirmReshootBinding.inflate(inflater, container, false)
-
-    override fun PickiTonUriReturned() {
-
-    }
-
-    override fun PickiTonStartListener() {
-
-    }
-
-    override fun PickiTonProgressUpdate(progress: Int) {
-
-    }
-
-    override fun PickiTonCompleteListener(
-        path: String?,
-        wasDriveFile: Boolean,
-        wasUnknownProvider: Boolean,
-        wasSuccessful: Boolean,
-        Reason: String?
-    ) {
-
-    }
 }

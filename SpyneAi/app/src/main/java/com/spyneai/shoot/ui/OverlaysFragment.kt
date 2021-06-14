@@ -1,17 +1,12 @@
 package com.spyneai.shoot.ui
 
-import android.graphics.Bitmap
-import android.graphics.BitmapFactory
 import android.net.Uri
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.fragment.app.DialogFragment
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.balsikandar.kotlindslsamples.dialogfragment.DialogDSLBuilder.Companion.dialog
 import com.bumptech.glide.Glide
-import com.spyneai.R
 import com.spyneai.base.BaseFragment
 import com.spyneai.base.network.Resource
 import com.spyneai.dashboard.response.NewSubCatResponse
@@ -27,8 +22,6 @@ import com.spyneai.shoot.ui.dialogs.AngleSelectionDialog
 import com.spyneai.shoot.ui.dialogs.ConfirmReshootDialog
 import com.spyneai.shoot.ui.dialogs.CreateProjectAndSkuDialog
 import com.spyneai.shoot.ui.dialogs.ShootHintDialog
-import kotlinx.android.synthetic.main.dialog_confirm_reshoot.view.*
-import java.io.File
 import java.util.*
 
 
@@ -39,7 +32,6 @@ class OverlaysFragment : BaseFragment<ShootViewModel,FragmentOverlaysBinding>(),
     lateinit var progressAdapter: ShootProgressAdapter
     private var showDialog = true
     private lateinit var imageUri: Uri
-    var prodSubcategoryId = ""
     var pos = 0
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -52,12 +44,9 @@ class OverlaysFragment : BaseFragment<ShootViewModel,FragmentOverlaysBinding>(),
             try {
                 if (showDialog && !it.isNullOrEmpty()){
                     showImageConfirmDialog(it.get(it.size - 1))
-                }else{
-                    var s = ""
                 }
-
             }catch (e : Exception){
-                var s = ""
+                e.printStackTrace()
             }
         })
     }
@@ -75,8 +64,6 @@ class OverlaysFragment : BaseFragment<ShootViewModel,FragmentOverlaysBinding>(),
 
         viewModel.isProjectCreated.observe(viewLifecycleOwner,{
             if (it) {
-                initAngles()
-                initProgressFrames()
                 intSubcategorySelection()
             }
         })
@@ -90,40 +77,18 @@ class OverlaysFragment : BaseFragment<ShootViewModel,FragmentOverlaysBinding>(),
             AngleSelectionDialog().show(requireFragmentManager(), "AngleSelectionDialog")
         }
 
-        viewModel.shootNumber.observe(viewLifecycleOwner, {
-            binding.tvShoot?.text = "Angles $it/${viewModel.getSelectedAngles()}"
+        //update progress list
+        viewModel.selectedAngles.observe(viewLifecycleOwner, {
+            binding.tvShoot?.text = "Angles 1/${viewModel.getSelectedAngles()}"
+
+            initProgressFrames()
+            getOverlays()
         })
-
     }
-
-//    fun showConfirmReshootDialog(shootData: ShootData) {
-//        dialog {
-//            layoutId = R.layout.dialog_confirm_reshoot
-//            setCustomView = {it: View, dialog: DialogFragment ->
-//
-//
-//                it.ivConfirmReshoot1.setImageURI(imageUri)
-//                it.ivConfirmReshoot2.setImageURI(imageUri)
-//
-//                it.btReshootImage.setOnClickListener {
-//                    showDialog = false
-//                    viewModel.shootList.value?.remove(shootData)
-//                    dialog.dismiss()
-//                    showDialog = true
-//                }
-//
-//                it.btConfirmImage.setOnClickListener {
-//                    viewModel.uploadImageWithWorkManager(requireContext(), shootData)
-//                    dialog.dismiss()
-//                }
-//
-//            }
-//        }
-//    }
 
     private fun initProgressFrames() {
         //update this shoot number
-        viewModel.shootNumber.value = 1
+        viewModel.shootNumber.value = 0
 
         progressAdapter = ShootProgressAdapter(requireContext(), viewModel.getShootProgressList())
 
@@ -133,15 +98,33 @@ class OverlaysFragment : BaseFragment<ShootViewModel,FragmentOverlaysBinding>(),
             this?.adapter = progressAdapter
         }
 
-        //update progress list
-        viewModel.selectedAngles.observe(viewLifecycleOwner, {
-            binding.tvShoot?.text = "Angles 1/${viewModel.getSelectedAngles()}"
-            progressAdapter.updateList(viewModel.getShootProgressList())
+        viewModel.shootNumber.observe(viewLifecycleOwner, {
+            binding.tvShoot?.text = "Angles ${viewModel.shootNumber.value!! + 1}/${viewModel.getSelectedAngles()}"
 
-            //get overlays when value changed
-            if(prodSubcategoryId != "")
-                getOverlays(prodSubcategoryId)
+            viewModel.overlaysResponse.observe(viewLifecycleOwner,{
+                when(it){
+                    is Resource.Sucess -> {
+                        val name = it.value.data[viewModel.shootNumber.value!!].display_name
+                        val overlay = it.value.data[viewModel.shootNumber.value!!].display_thumbnail
+
+
+                        binding.tvAngleName?.text = name
+
+                        Glide.with(requireContext())
+                            .load(overlay)
+                            .into(binding.imgOverlay!!)
+
+                    }
+                    else -> {
+
+                    }
+                }
+            })
+
+            progressAdapter.updateList(viewModel.shootNumber.value!!)
         })
+
+
     }
 
     private fun intSubcategorySelection() {
@@ -189,55 +172,59 @@ class OverlaysFragment : BaseFragment<ShootViewModel,FragmentOverlaysBinding>(),
         }
     }
 
-    private fun getOverlays(prodSubcategoryId : String) {
-        viewModel.getOverlays(
-            Utilities.getPreference(requireContext(),AppConstants.AUTH_KEY).toString(),
-            requireActivity().intent.getStringExtra(AppConstants.CATEGORY_ID).toString(),
-            prodSubcategoryId,
-            viewModel.selectedAngles.value.toString()
-        )
+    private fun getOverlays() {
+        viewModel.subCategory.value?.let {
+            viewModel.getOverlays(
+                Utilities.getPreference(requireContext(),AppConstants.AUTH_KEY).toString(),
+                requireActivity().intent.getStringExtra(AppConstants.CATEGORY_ID).toString(),
+                it.prod_sub_cat_id!!,
+                viewModel.selectedAngles.value.toString()
+            )
 
-        viewModel.overlaysResponse.observe(viewLifecycleOwner,{
-            when(it){
-                is Resource.Sucess -> {
+            viewModel.overlaysResponse.observe(viewLifecycleOwner,{ it ->
+                when(it){
+                    is Resource.Sucess -> {
 
-                    binding.clSubcatSelectionOverlay?.visibility = View.GONE
+                        binding.clSubcatSelectionOverlay?.visibility = View.GONE
+                        showViews()
 
-                    showViews()
+//                        binding.tvAngleName?.text = it.value.data[0].display_name
+//
+//                        Glide.with(requireContext())
+//                            .load(it.value.data[0].display_thumbnail)
+//                            .into(binding.imgOverlay!!)
+                    }
 
-                    binding.tvAngleName?.text = it.value.data[0].display_name
+                    is Resource.Loading -> {
 
-                    Glide.with(requireContext())
-                        .load(it.value.data[0].display_thumbnail)
-                        .into(binding.imgOverlay!!)
+                    }
+
+                    is Resource.Failure -> {
+                        handleApiError(it)
+                    }
                 }
-
-                is Resource.Loading -> {
-
-                }
-
-                is Resource.Failure -> {
-                    handleApiError(it)
-                }
-            }
-        })
+            })
+        }
     }
 
     override fun onBtnClick(position : Int,data: NewSubCatResponse.Data) {
         if (pos != position || !subCategoriesAdapter.selectionEnabled){
+
+            viewModel.subCategory.value = data
             pos = position
-            prodSubcategoryId = data.prod_sub_cat_id
 
             subCategoriesAdapter.selectionEnabled = true
             subCategoriesAdapter.notifyDataSetChanged()
 
-            getOverlays(prodSubcategoryId)
+            initAngles()
+            initProgressFrames()
+            getOverlays()
         }
 
     }
 
     fun showImageConfirmDialog(shootData: ShootData) {
-
+        viewModel.shootData.value = shootData
         ConfirmReshootDialog().show(requireFragmentManager(), "ConfirmReshootDialog")
 
 //        dialog {

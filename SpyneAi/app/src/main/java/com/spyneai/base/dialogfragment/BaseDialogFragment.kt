@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.WindowManager
 import androidx.fragment.app.DialogFragment
 
 import androidx.lifecycle.ViewModel
@@ -26,6 +27,12 @@ abstract class BaseDialogFragment<VM : ViewModel, B : ViewBinding> : DialogFragm
         viewModel = ViewModelProvider(requireActivity(), factory).get(getViewModel())
         return binding.root
     }
+
+//    override fun onResume() {
+//        super.onResume()
+//
+//        dialog?.getWindow()?.setLayout(WindowManager.LayoutParams.MATCH_PARENT, WindowManager.LayoutParams.WRAP_CONTENT)
+//    }
 
     abstract fun getViewModel() : Class<VM>
 

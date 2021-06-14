@@ -39,7 +39,12 @@ class ShootProgressAdapter(
     // Return the size of your data set (invoked by the layout manager)
     override fun getItemCount() = if (shootProgressList == null) 0 else shootProgressList.size
 
-    fun updateList(shootProgressList: ArrayList<ShootProgress>) {
+    fun updateList(position : Int) {
+        shootProgressList[position].isSelected = true
+        notifyDataSetChanged()
+    }
+
+    fun updateList(shootProgressList : ArrayList<ShootProgress>) {
         this.shootProgressList = shootProgressList
         notifyDataSetChanged()
     }

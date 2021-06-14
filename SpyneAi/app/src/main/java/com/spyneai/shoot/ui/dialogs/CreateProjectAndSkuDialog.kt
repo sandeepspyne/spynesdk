@@ -11,6 +11,7 @@ import com.spyneai.databinding.DialogCreateProjectAndSkuBinding
 import com.spyneai.needs.AppConstants
 import com.spyneai.needs.Utilities
 import com.spyneai.shoot.data.ShootViewModel
+import com.spyneai.shoot.data.model.Sku
 
 class CreateProjectAndSkuDialog : BaseDialogFragment<ShootViewModel,DialogCreateProjectAndSkuBinding>() {
 
@@ -26,13 +27,13 @@ class CreateProjectAndSkuDialog : BaseDialogFragment<ShootViewModel,DialogCreate
                     binding.etVinNumber.error = "Please enter any unique number"
                 }
                 else -> {
-                    createProject(binding.etProjectName.text.toString())
+                    createProject(binding.etProjectName.text.toString(),binding.etVinNumber.text.toString())
                 }
             }
         }
     }
 
-    private fun createProject(projectName : String) {
+    private fun createProject(projectName : String,skuName : String) {
         viewModel.createProject(
             Utilities.getPreference(requireContext(),AppConstants.AUTH_KEY).toString(),
             projectName,
@@ -41,12 +42,16 @@ class CreateProjectAndSkuDialog : BaseDialogFragment<ShootViewModel,DialogCreate
         viewModel.createProjectRes.observe(viewLifecycleOwner,{
             when(it){
                     is Resource.Sucess -> {
-                        //create sku
-                        createSku(it.value.project_id)
+                        //notify project created
+                        viewModel.isProjectCreated.value = true
+                        val subCategory = Sku()
+                        subCategory.skuName = skuName
+                        viewModel.sku.value = subCategory
+
+                        dismiss()
                     }
 
                     is Resource.Loading -> {
-
                     }
 
                     is Resource.Failure -> {
@@ -55,29 +60,6 @@ class CreateProjectAndSkuDialog : BaseDialogFragment<ShootViewModel,DialogCreate
             }
         })
 
-    }
-
-    private fun createSku(projectId: String) {
-        viewModel.createSku("3c436435-238a-4bdc-adb8-d6182fddeb43",projectId,
-        "cat_d8R14zUNE","prod_seY3vxhATCH",binding.etVinNumber.text.toString())
-
-        viewModel.createProjectRes.observe(viewLifecycleOwner,{
-            when(it) {
-                is Resource.Sucess -> {
-                    //notify sku created
-                    viewModel.isProjectCreated.value = true
-                    dismiss()
-                }
-
-                is Resource.Loading -> {
-
-                }
-
-                is Resource.Failure -> {
-                    handleApiError(it)
-                }
-            }
-        })
     }
 
     override fun getViewModel() = ShootViewModel::class.java

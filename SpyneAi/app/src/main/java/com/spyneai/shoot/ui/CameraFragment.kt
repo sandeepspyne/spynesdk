@@ -23,6 +23,8 @@ import com.spyneai.databinding.FragmentCameraBinding
 import com.spyneai.needs.AppConstants
 import com.spyneai.shoot.data.ShootViewModel
 import com.spyneai.shoot.data.model.ShootData
+import com.spyneai.shoot.ui.dialogs.ConfirmReshootDialog
+import com.spyneai.shoot.ui.dialogs.SubCategoryConfirmationDialog
 import kotlinx.android.synthetic.main.activity_camera.*
 import kotlinx.android.synthetic.main.activity_camera.viewFinder
 import kotlinx.android.synthetic.main.activity_camera2.*
@@ -62,7 +64,14 @@ class CameraFragment : BaseFragment<ShootViewModel, FragmentCameraBinding>() {
         super.onActivityCreated(savedInstanceState)
 
         startCamera()
-        binding.cameraCaptureButton?.setOnClickListener { takePhoto() }
+
+        binding.cameraCaptureButton?.setOnClickListener {
+            if (viewModel.isSubCategoryConfirmed.value == null || viewModel.isSubCategoryConfirmed.value == false){
+                SubCategoryConfirmationDialog().show(requireFragmentManager(), "SubCategoryConfirmationDialog")
+            }else{
+                takePhoto()
+            }
+        }
 
 //        binding.ivUploadedImage?.setOnClickListener {
 //            binding.ivUploadedImage!!.visibility = View.GONE
