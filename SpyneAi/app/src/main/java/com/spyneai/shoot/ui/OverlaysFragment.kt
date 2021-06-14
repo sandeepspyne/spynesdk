@@ -19,6 +19,7 @@ import com.spyneai.databinding.FragmentOverlaysBinding
 import com.spyneai.shoot.adapter.ShootProgressAdapter
 import com.spyneai.shoot.adapters.NewSubCategoriesAdapter
 import com.spyneai.shoot.data.model.ShootData
+import com.spyneai.shoot.data.room.entities.ShootEntity
 import com.spyneai.shoot.ui.dialogs.AngleSelectionDialog
 import kotlinx.android.synthetic.main.activity_camera_.*
 import kotlinx.android.synthetic.main.dialog_confirm_reshoot.*
@@ -57,6 +58,23 @@ class OverlaysFragment : BaseFragment<ShootViewModel,FragmentOverlaysBinding>() 
             }
         })
 
+        viewModel.uploadImageResonse.observe(viewLifecycleOwner,{
+            when(it){
+                is Resource.Sucess -> {
+                    var shootEntity = ShootEntity(it.value.image_id, "", 10, 1,
+                        "", "", "", "",
+                    "", "")
+                    viewModel.insertShootData(requireContext(), shootEntity)
+                }
+                is Resource.Loading -> {
+
+                }
+                is Resource.Failure -> {
+                    handleApiError(it)
+                }
+            }
+        })
+
         viewModel.shootNumber.observe(viewLifecycleOwner,{
             binding.tvShoot?.text = "Angles $it/${viewModel.getSelectedAngles()}"
         })
@@ -72,8 +90,6 @@ class OverlaysFragment : BaseFragment<ShootViewModel,FragmentOverlaysBinding>() 
         dialog {
             layoutId = R.layout.dialog_confirm_reshoot
             setCustomView = {it: View, dialog: DialogFragment ->
-
-
                 it.ivConfirmReshoot1.setImageURI(imageUri)
                 it.ivConfirmReshoot2.setImageURI(imageUri)
 
