@@ -7,27 +7,21 @@ import android.content.pm.ActivityInfo
 import android.net.Uri
 import android.os.*
 import android.util.Log
-import android.util.Rational
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.ViewTreeObserver
 import androidx.camera.core.*
 import androidx.camera.lifecycle.ProcessCameraProvider
 import androidx.core.content.ContextCompat
 import com.hbisoft.pickit.PickiT
 import com.spyneai.base.BaseFragment
-import com.spyneai.base.network.Resource
-import com.spyneai.dashboard.response.NewSubCatResponse
-import com.spyneai.dashboard.ui.handleApiError
+import com.spyneai.camera2.ShootDimensions
 import com.spyneai.databinding.FragmentCameraBinding
-import com.spyneai.needs.AppConstants
 import com.spyneai.shoot.data.ShootViewModel
 import com.spyneai.shoot.data.model.ShootData
-import com.spyneai.shoot.ui.dialogs.ConfirmReshootDialog
 import com.spyneai.shoot.ui.dialogs.SubCategoryConfirmationDialog
-import kotlinx.android.synthetic.main.activity_camera.*
 import kotlinx.android.synthetic.main.activity_camera.viewFinder
-import kotlinx.android.synthetic.main.activity_camera2.*
 import java.io.File
 import java.text.SimpleDateFormat
 import java.util.*
@@ -67,7 +61,7 @@ class CameraFragment : BaseFragment<ShootViewModel, FragmentCameraBinding>() {
 
         binding.cameraCaptureButton?.setOnClickListener {
             if (viewModel.isSubCategoryConfirmed.value == null || viewModel.isSubCategoryConfirmed.value == false){
-                SubCategoryConfirmationDialog().show(requireFragmentManager(), "SubCategoryConfirmationDialog")
+                takePhoto()
             }else{
                 takePhoto()
             }
@@ -124,6 +118,13 @@ class CameraFragment : BaseFragment<ShootViewModel, FragmentCameraBinding>() {
                 cameraProvider.bindToLifecycle(
                     viewLifecycleOwner, cameraSelector, preview, imageCapture
                 )
+
+                if (viewModel.shootDimensions.value == null ||
+                    viewModel.shootDimensions.value?.previewHeight == 0){
+                    getPreviewDimensions(binding.viewFinder!!)
+                }else{
+                    var s = ""
+                }
 
             } catch (exc: Exception) {
                 Log.e(TAG, "Use case binding failed", exc)
@@ -182,6 +183,22 @@ class CameraFragment : BaseFragment<ShootViewModel, FragmentCameraBinding>() {
                     viewModel.shootList.value = viewModel.shootList.value
                 }
             })
+    }
+
+    private fun getPreviewDimensions(view : View) {
+        view.viewTreeObserver.addOnGlobalLayoutListener(object :
+            ViewTreeObserver.OnGlobalLayoutListener {
+            override fun onGlobalLayout() {
+                view.viewTreeObserver.removeOnGlobalLayoutListener(this)
+
+                val shootDimensions = ShootDimensions()
+                shootDimensions.previewWidth = view.width
+                shootDimensions.previewHeight = view.height
+
+
+                viewModel.shootDimensions.value = shootDimensions
+            }
+        })
     }
 
     override fun getViewModel() = ShootViewModel::class.java

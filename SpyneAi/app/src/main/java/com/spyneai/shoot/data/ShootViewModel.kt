@@ -10,6 +10,7 @@ import androidx.work.OneTimeWorkRequest
 import androidx.work.WorkManager
 import com.spyneai.base.network.Resource
 import com.spyneai.camera2.OverlaysResponse
+import com.spyneai.camera2.ShootDimensions
 import com.spyneai.dashboard.response.NewSubCatResponse
 import com.spyneai.shoot.data.model.*
 import com.spyneai.shoot.workmanager.UploadImageWorker
@@ -39,6 +40,7 @@ class ShootViewModel : ViewModel(){
         get() = _createSkuRes
 
 
+    val shootDimensions : MutableLiveData<ShootDimensions> = MutableLiveData()
     val sku : MutableLiveData<Sku> = MutableLiveData()
     val subCategory : MutableLiveData<NewSubCatResponse.Data> = MutableLiveData()
     var categoryDetails : MutableLiveData<CategoryDetails> = MutableLiveData()
@@ -50,6 +52,14 @@ class ShootViewModel : ViewModel(){
     val selectedAngles: MutableLiveData<Int> = MutableLiveData()
     val shootNumber: MutableLiveData<Int> = MutableLiveData()
     val shootData : MutableLiveData<ShootData> =  MutableLiveData()
+
+    //interior and misc shots
+    val showInteriorDialog : MutableLiveData<Boolean> = MutableLiveData()
+    val startInteriorShots : MutableLiveData<Boolean> = MutableLiveData()
+    val showMiscDialog : MutableLiveData<Boolean> = MutableLiveData()
+    val startMiscShots : MutableLiveData<Boolean> = MutableLiveData()
+    val selectBackground : MutableLiveData<Boolean> = MutableLiveData()
+
 
     fun getSubCategories(
         authKey : String,prodId : String

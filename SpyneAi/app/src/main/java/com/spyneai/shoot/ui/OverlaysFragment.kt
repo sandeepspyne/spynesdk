@@ -1,14 +1,21 @@
 package com.spyneai.shoot.ui
 
+import android.graphics.drawable.Drawable
 import android.net.Uri
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.ViewTreeObserver
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.bumptech.glide.Glide
+import com.bumptech.glide.load.DataSource
+import com.bumptech.glide.load.engine.GlideException
+import com.bumptech.glide.request.RequestListener
+import com.bumptech.glide.request.target.Target
 import com.spyneai.base.BaseFragment
 import com.spyneai.base.network.Resource
+import com.spyneai.camera2.ShootDimensions
 import com.spyneai.dashboard.response.NewSubCatResponse
 import com.spyneai.dashboard.ui.handleApiError
 import com.spyneai.databinding.FragmentOverlaysBinding
@@ -18,20 +25,15 @@ import com.spyneai.shoot.adapter.ShootProgressAdapter
 import com.spyneai.shoot.adapters.NewSubCategoriesAdapter
 import com.spyneai.shoot.data.ShootViewModel
 import com.spyneai.shoot.data.model.ShootData
-import com.spyneai.shoot.ui.dialogs.AngleSelectionDialog
-import com.spyneai.shoot.ui.dialogs.ConfirmReshootDialog
-import com.spyneai.shoot.ui.dialogs.CreateProjectAndSkuDialog
-import com.spyneai.shoot.ui.dialogs.ShootHintDialog
+import com.spyneai.shoot.ui.dialogs.*
 import java.util.*
 
 
 class OverlaysFragment : BaseFragment<ShootViewModel,FragmentOverlaysBinding>(),NewSubCategoriesAdapter.BtnClickListener {
 
-
     lateinit var subCategoriesAdapter: NewSubCategoriesAdapter
     lateinit var progressAdapter: ShootProgressAdapter
     private var showDialog = true
-    private lateinit var imageUri: Uri
     var pos = 0
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -49,7 +51,47 @@ class OverlaysFragment : BaseFragment<ShootViewModel,FragmentOverlaysBinding>(),
                 e.printStackTrace()
             }
         })
+
+        viewModel.showInteriorDialog.observe(viewLifecycleOwner,{
+            if (it) {
+                initInteriorShots()
+
+                viewModel.startMiscShots.observe(viewLifecycleOwner,{
+
+                })
+            }
+        })
     }
+
+    private fun initInteriorShots() {
+        InteriorHintDialog().show(requireFragmentManager(), "InteriorHintDialog")
+
+        viewModel.showMiscDialog.observe(viewLifecycleOwner,{
+            if (it) initMiscShots()
+        })
+
+        viewModel.startInteriorShots.observe(viewLifecycleOwner,{
+            if (it) startInteriorShots()
+        })
+    }
+
+    private fun startInteriorShots() {
+
+
+    }
+
+    private fun initMiscShots() {
+        MiscShotsDialog().show(requireFragmentManager(), "MiscShotsDialog")
+
+        viewModel.startMiscShots.observe(viewLifecycleOwner,{
+            if (it) startMiscShots()
+        })
+    }
+
+    private fun startMiscShots() {
+
+    }
+
 
     private fun initShootHint() {
         ShootHintDialog().show(requireFragmentManager(), "ShootHintDialog")
@@ -107,11 +149,32 @@ class OverlaysFragment : BaseFragment<ShootViewModel,FragmentOverlaysBinding>(),
                         val name = it.value.data[viewModel.shootNumber.value!!].display_name
                         val overlay = it.value.data[viewModel.shootNumber.value!!].display_thumbnail
 
-
                         binding.tvAngleName?.text = name
 
                         Glide.with(requireContext())
                             .load(overlay)
+                            .addListener(object : RequestListener<Drawable>{
+                                override fun onLoadFailed(
+                                    e: GlideException?,
+                                    model: Any?,
+                                    target: Target<Drawable>?,
+                                    isFirstResource: Boolean
+                                ): Boolean {
+                                    return false
+                                }
+
+                                override fun onResourceReady(
+                                    resource: Drawable?,
+                                    model: Any?,
+                                    target: Target<Drawable>?,
+                                    dataSource: DataSource?,
+                                    isFirstResource: Boolean
+                                ): Boolean {
+                                    getPreviewDimensions(binding.imgOverlay!!)
+                                    return false
+                                }
+
+                            })
                             .into(binding.imgOverlay!!)
 
                     }
@@ -123,7 +186,6 @@ class OverlaysFragment : BaseFragment<ShootViewModel,FragmentOverlaysBinding>(),
 
             progressAdapter.updateList(viewModel.shootNumber.value!!)
         })
-
 
     }
 
@@ -226,27 +288,22 @@ class OverlaysFragment : BaseFragment<ShootViewModel,FragmentOverlaysBinding>(),
     fun showImageConfirmDialog(shootData: ShootData) {
         viewModel.shootData.value = shootData
         ConfirmReshootDialog().show(requireFragmentManager(), "ConfirmReshootDialog")
-
-//        dialog {
-//            layoutId = R.layout.dialog_confirm_reshoot
-//            setCustomView = { it: View, dialog: DialogFragment ->
-//
-//                it.btReshootImage.setOnClickListener {
-//                    showDialog = false
-//                    viewModel.shootList.value?.remove(shootData)
-//                    dialog.dismiss()
-//                    showDialog = true
-//                }
-//
-//                it.btConfirmImage.setOnClickListener {
-//                    viewModel.uploadImageWithWorkManager(requireContext(), shootData)
-//                    dialog.dismiss()
-//                }
-//
-//            }
-//        }
     }
 
+    private fun getPreviewDimensions(view : View) {
+        view.viewTreeObserver.addOnGlobalLayoutListener(object :
+            ViewTreeObserver.OnGlobalLayoutListener {
+            override fun onGlobalLayout() {
+                view.viewTreeObserver.removeOnGlobalLayoutListener(this)
+
+                val shootDimensions = viewModel.shootDimensions.value
+                shootDimensions?.overlayWidth = view.width
+                shootDimensions?.overlayHeight = view.height
+
+                viewModel.shootDimensions.value = shootDimensions
+            }
+        })
+    }
 
 
     override fun getViewModel() = ShootViewModel::class.java

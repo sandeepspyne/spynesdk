@@ -69,6 +69,13 @@ class ShootActivity : AppCompatActivity() {
         } else {
             permissionRequest.launch(permissions.toTypedArray())
         }
+
+
+        shootViewModel.selectBackground.observe(this,{
+            if (it) {
+                // add select background fragment
+            }
+        })
     }
 
     /**
