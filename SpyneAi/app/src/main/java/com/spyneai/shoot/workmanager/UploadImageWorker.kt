@@ -4,8 +4,7 @@ import android.content.Context
 import androidx.work.CoroutineWorker
 import androidx.work.WorkerParameters
 import com.spyneai.shoot.data.repository.ShootRepository
-import com.spyneai.shoot.ui.ShootViewModel
-import kotlinx.coroutines.flow.collect
+import com.spyneai.shoot.data.ShootViewModel
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.MultipartBody
 import okhttp3.RequestBody.Companion.asRequestBody
@@ -44,7 +43,10 @@ class UploadImageWorker(appContext: Context, workerParams: WorkerParameters) :
                     File(inputData.getString("capturedImage"))!!.name,
                     requestFile
                 )
+
+
             viewModel.uploadImage(projectId, skuId, imageCategory, authKey, image)
+
 
         } catch (exeption: Exception) {
             exeption.printStackTrace()

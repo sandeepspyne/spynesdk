@@ -8,9 +8,8 @@ import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.spyneai.R
 import com.spyneai.activity.SignInUsingOtpActivity
-import com.spyneai.dashboard.ui.dashboard.MainDashboardActivity
+import com.spyneai.dashboard.ui.MainDashboardActivity
 import com.spyneai.interfaces.APiService
-import com.spyneai.interfaces.RetrofitClientSpyneAi
 import com.spyneai.interfaces.RetrofitClients
 import com.spyneai.loginsignup.models.LoginEmailPasswordBody
 import com.spyneai.loginsignup.models.LoginEmailPasswordResponse

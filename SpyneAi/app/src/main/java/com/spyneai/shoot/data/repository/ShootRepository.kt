@@ -2,7 +2,9 @@ package com.spyneai.shoot.data.repository
 
 import android.content.Context
 import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
 import com.spyneai.base.network.ClipperApiClient
+import com.spyneai.base.network.Resource
 import com.spyneai.base.network.SpyneAiApiClient
 import com.spyneai.base.repository.BaseRepository
 import com.spyneai.shoot.data.model.UploadImageResponse
@@ -20,6 +22,11 @@ class ShootRepository : BaseRepository() {
 
     private var spyneApi = SpyneAiApiClient().getClient()
     private var clipperApi = ClipperApiClient().getClient()
+
+    private val _uploadImageResonse: MutableLiveData<Resource<UploadImageResponse>> =
+        MutableLiveData()
+    val uploadImageResonse: LiveData<Resource<UploadImageResponse>>
+        get() = _uploadImageResonse
 
     companion object{
         var shootDataBase: ShootDataBase? = null

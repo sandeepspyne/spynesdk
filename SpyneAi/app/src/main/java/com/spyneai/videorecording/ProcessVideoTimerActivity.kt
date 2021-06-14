@@ -6,7 +6,7 @@ import android.os.Bundle
 import android.os.CountDownTimer
 import androidx.databinding.DataBindingUtil
 import com.spyneai.R
-import com.spyneai.dashboard.ui.dashboard.MainDashboardActivity
+import com.spyneai.dashboard.ui.MainDashboardActivity
 import com.spyneai.databinding.ActivityProcessVideoTimerBinding
 import com.spyneai.videorecording.model.ProcessVideoEvent
 import kotlinx.android.synthetic.main.activity_timer.*

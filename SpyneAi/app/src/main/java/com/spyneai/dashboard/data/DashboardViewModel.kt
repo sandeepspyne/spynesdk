@@ -1,4 +1,4 @@
-package com.spyneai.dashboard.ui.dashboard
+package com.spyneai.dashboard.data
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData

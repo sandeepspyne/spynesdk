@@ -13,14 +13,9 @@ import com.spyneai.R
 import com.spyneai.needs.AppConstants
 import com.spyneai.needs.Utilities
 
-import android.util.Log
-
 import com.facebook.stetho.Stetho
 import com.facebook.stetho.okhttp3.StethoInterceptor
-import com.google.android.play.core.appupdate.AppUpdateManagerFactory
-import com.google.android.play.core.install.model.AppUpdateType
-import com.google.android.play.core.install.model.UpdateAvailability
-import com.spyneai.dashboard.ui.dashboard.MainDashboardActivity
+import com.spyneai.dashboard.ui.MainDashboardActivity
 import kotlinx.android.synthetic.main.activity_splash.*
 import okhttp3.OkHttpClient
 

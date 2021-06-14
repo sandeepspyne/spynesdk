@@ -40,9 +40,9 @@
         android:usesCleartextTraffic="true"
         tools:targetApi="m">
 <!--        <activity android:name=".shoot.ui.ShootActivity"></activity>-->
-        <activity android:name=".dashboard.ui.dashboard.YoutubeVideoPlayerActivity" />
+        <activity android:name=".dashboard.ui.YoutubeVideoPlayerActivity" />
         <activity
-            android:name=".dashboard.ui.dashboard.MainDashboardActivity"
+            android:name=".dashboard.ui.MainDashboardActivity"
             android:screenOrientation="portrait" />
         <activity
             android:name=".loginsignup.activity.ForgotPasswordActivity"

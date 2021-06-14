@@ -10,7 +10,7 @@ import android.os.PowerManager
 import android.util.Log
 import org.greenrobot.eventbus.EventBus
 import com.spyneai.R
-import com.spyneai.dashboard.ui.dashboard.MainDashboardActivity
+import com.spyneai.dashboard.ui.MainDashboardActivity
 import com.spyneai.videorecording.ThreeSixtyInteriorViewActivity
 import com.spyneai.videorecording.model.ProcessVideoEvent
 import com.spyneai.videorecording.model.VideoTask

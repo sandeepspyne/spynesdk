@@ -15,6 +15,7 @@ import androidx.core.content.ContextCompat
 import com.hbisoft.pickit.PickiT
 import com.spyneai.base.BaseFragment
 import com.spyneai.databinding.FragmentCameraBinding
+import com.spyneai.shoot.data.ShootViewModel
 import com.spyneai.shoot.data.model.ShootData
 import kotlinx.android.synthetic.main.activity_camera.*
 import java.io.File
@@ -23,9 +24,6 @@ import java.util.*
 import java.util.concurrent.ExecutorService
 import java.util.concurrent.Executors
 import kotlin.collections.ArrayList
-import kotlin.math.abs
-import kotlin.math.max
-import kotlin.math.min
 
 
 class CameraFragment : BaseFragment<ShootViewModel, FragmentCameraBinding>() {

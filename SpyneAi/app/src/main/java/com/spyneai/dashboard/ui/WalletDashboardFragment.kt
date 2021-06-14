@@ -1,4 +1,4 @@
-package com.spyneai.dashboard.ui.dashboard
+package com.spyneai.dashboard.ui
 
 import android.app.ActionBar
 import android.content.Intent
@@ -19,7 +19,6 @@ import com.spyneai.interfaces.RetrofitClientSpyneAi
 import com.spyneai.model.credit.CreditDetailsResponse
 import com.spyneai.needs.AppConstants
 import com.spyneai.needs.Utilities
-import kotlinx.android.synthetic.main.home_dashboard_fragment.*
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response

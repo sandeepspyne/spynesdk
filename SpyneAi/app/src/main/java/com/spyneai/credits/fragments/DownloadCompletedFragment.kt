@@ -11,7 +11,7 @@ import com.bumptech.glide.Glide
 import com.spyneai.R
 import com.spyneai.activity.DownloadingActivity
 import com.spyneai.credits.FeedbackActivity
-import com.spyneai.dashboard.ui.dashboard.MainDashboardActivity
+import com.spyneai.dashboard.ui.MainDashboardActivity
 import com.spyneai.databinding.FragmentDownloadCompletedBinding
 
 class DownloadCompletedFragment : Fragment() {

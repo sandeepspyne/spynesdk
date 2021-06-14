@@ -1,4 +1,4 @@
-package com.spyneai.dashboard.ui.dashboard
+package com.spyneai.dashboard.ui
 
 import android.content.Intent
 import android.net.Uri
@@ -10,10 +10,7 @@ import com.google.android.exoplayer2.source.MediaSource
 import com.google.android.exoplayer2.source.ProgressiveMediaSource
 import com.google.android.exoplayer2.upstream.DefaultDataSourceFactory
 import com.spyneai.R
-import com.spyneai.model.skumap.UpdateSkuResponse
 import com.spyneai.needs.AppConstants
-import com.spyneai.needs.Utilities
-import kotlinx.android.synthetic.main.activity_show_images.*
 import kotlinx.android.synthetic.main.activity_youtube_video_player.*
 
 class YoutubeVideoPlayerActivity : AppCompatActivity() {

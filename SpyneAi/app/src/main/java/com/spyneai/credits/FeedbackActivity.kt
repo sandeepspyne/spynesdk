@@ -8,16 +8,12 @@ import android.view.View
 import androidx.databinding.DataBindingUtil
 import com.spyneai.R
 import com.spyneai.credits.fragments.FeedbackSubmittedFragment
-import com.spyneai.credits.model.CreditPurchaseLogRes
 import com.spyneai.credits.model.InsertReviewResponse
 import com.spyneai.credits.model.ReviewHolder
-import com.spyneai.dashboard.ui.dashboard.MainDashboardActivity
+import com.spyneai.dashboard.ui.MainDashboardActivity
 import com.spyneai.databinding.ActivityFeedbackBinding
 import com.spyneai.needs.AppConstants
 import com.spyneai.needs.Utilities
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.launch
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response

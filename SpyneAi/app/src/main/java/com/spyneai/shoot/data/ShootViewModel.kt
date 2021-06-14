@@ -1,7 +1,6 @@
-package com.spyneai.shoot.ui
+package com.spyneai.shoot.data
 
 import android.content.Context
-import android.net.Uri
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel

@@ -1,21 +1,12 @@
-package com.spyneai.dashboard.ui.dashboard
+package com.spyneai.dashboard.ui
 
-import android.app.Dialog
 import android.content.Intent
-import android.graphics.Color
-import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.view.Window
-import android.widget.ImageView
-import android.widget.LinearLayout
-import com.airbnb.lottie.LottieAnimationView
-import com.spyneai.R
 import com.spyneai.databinding.LogoutDialogBinding
-import com.spyneai.databinding.WalletDashboardFragmentBinding
 import com.spyneai.loginsignup.activity.LoginActivity
 import com.spyneai.needs.AppConstants
 import com.spyneai.needs.Utilities
