@@ -20,6 +20,7 @@ import com.spyneai.camera2.ShootDimensions
 import com.spyneai.databinding.FragmentCameraBinding
 import com.spyneai.shoot.data.ShootViewModel
 import com.spyneai.shoot.data.model.ShootData
+import com.spyneai.shoot.ui.dialogs.InteriorHintDialog
 import com.spyneai.shoot.ui.dialogs.SubCategoryConfirmationDialog
 import kotlinx.android.synthetic.main.activity_camera.viewFinder
 import java.io.File
@@ -52,6 +53,35 @@ class CameraFragment : BaseFragment<ShootViewModel, FragmentCameraBinding>() {
         cameraExecutor = Executors.newSingleThreadExecutor()
         // Determine the output directory
         outputDirectory = ShootActivity.getOutputDirectory(requireContext())
+
+
+        viewModel.startInteriorShots.observe(viewLifecycleOwner,{
+            if (it) binding.tvSkipShoot?.visibility = View.VISIBLE
+        })
+
+        viewModel.startMiscShots.observe(viewLifecycleOwner,{
+            if (it) binding.tvSkipShoot?.visibility = View.VISIBLE
+        })
+
+        binding.tvSkipShoot?.setOnClickListener {
+            when(viewModel.categoryDetails.value?.imageType){
+                "Interior" -> {
+                    if (viewModel.interiorShootNumber.value  == viewModel.interiorAngles.value?.minus(1)){
+                        viewModel.showMiscDialog.value = true
+                    }else{
+                        viewModel.interiorShootNumber.value = viewModel.interiorShootNumber.value!! + 1
+                    }
+                }
+
+                "Miscellaneous" -> {
+                    if (viewModel.miscShootNumber.value  == viewModel.miscAngles.value?.minus(1)){
+                        viewModel.selectBackground.value = true
+                    }else{
+                        viewModel.miscShootNumber.value = viewModel.miscShootNumber.value!! + 1
+                    }
+                }
+            }
+        }
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
@@ -61,7 +91,7 @@ class CameraFragment : BaseFragment<ShootViewModel, FragmentCameraBinding>() {
 
         binding.cameraCaptureButton?.setOnClickListener {
             if (viewModel.isSubCategoryConfirmed.value == null || viewModel.isSubCategoryConfirmed.value == false){
-                takePhoto()
+                SubCategoryConfirmationDialog().show(requireFragmentManager(), "SubCategoryConfirmationDialog")
             }else{
                 takePhoto()
             }
@@ -175,9 +205,9 @@ class CameraFragment : BaseFragment<ShootViewModel, FragmentCameraBinding>() {
                     if (viewModel.shootList.value == null)
                         viewModel.shootList.value = ArrayList()
 
-                    viewModel.shootList.value!!.add(  ShootData(capturedImage, "prj-27d33afa-4f50-4af0-b769-a97adf247fae",
+                    viewModel.shootList.value!!.add(ShootData(capturedImage, "prj-27d33afa-4f50-4af0-b769-a97adf247fae",
                         "sku-9c0775d2-69e4-4ecf-a134-7b61a48e15ee",
-                        "Exterior",
+                        viewModel.categoryDetails.value?.imageType!!,
                         "813a71af-a2fb-4ef8-87b3-059d01c5b9ba"))
 
                     viewModel.shootList.value = viewModel.shootList.value

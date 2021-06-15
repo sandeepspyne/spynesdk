@@ -37,19 +37,19 @@ class AngleSelectionDialog : BaseDialogFragment<ShootViewModel,DialogAngleSelect
 
             when {
                 valuesShoots[newVal] == "4 Angles" -> {
-                    viewModel.selectedAngles.value = 4
+                    viewModel.exterirorAngles.value = 4
                     //setProgressFrame(4)
                 }
                 valuesShoots[newVal] == "8 Angles" -> {
-                    viewModel.selectedAngles.value = 8
+                    viewModel.exterirorAngles.value = 8
                     //setProgressFrame(8)
                 }
                 valuesShoots[newVal] == "12 Angles" -> {
-                    viewModel.selectedAngles.value = 12
+                    viewModel.exterirorAngles.value = 12
                     // setProgressFrame(12)
                 }
                 valuesShoots[newVal] == "24 Angles" -> {
-                    viewModel.selectedAngles.value = 24
+                    viewModel.exterirorAngles.value = 24
                     //setProgressFrame(24)
                 }
             }

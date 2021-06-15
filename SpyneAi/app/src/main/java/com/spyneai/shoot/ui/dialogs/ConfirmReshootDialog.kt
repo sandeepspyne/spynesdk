@@ -3,11 +3,9 @@ package com.spyneai.shoot.ui.dialogs
 import android.os.Bundle
 import android.view.*
 import android.widget.FrameLayout
-import android.widget.Toast
 import com.bumptech.glide.Glide
 import com.spyneai.base.BaseDialogFragment
 import com.spyneai.base.network.Resource
-import com.spyneai.camera2.OverlaysResponse
 import com.spyneai.databinding.DialogConfirmReshootBinding
 import com.spyneai.shoot.data.ShootViewModel
 
@@ -23,40 +21,72 @@ class ConfirmReshootDialog : BaseDialogFragment<ShootViewModel, DialogConfirmRes
 
         binding.btConfirmImage.setOnClickListener {
 
-            if (viewModel.shootNumber.value  == viewModel.selectedAngles.value?.minus(1)){
-                Toast.makeText(requireContext(),"DONE!!!!!",Toast.LENGTH_LONG).show()
-                // viewModel.uploadImageWithWorkManager(requireContext(), viewModel.shootData.value!!)
-                dismiss()
+            when(viewModel.categoryDetails.value?.imageType) {
+                "Exterior" -> {
+                    if (viewModel.shootNumber.value  == viewModel.exterirorAngles.value?.minus(1)){
+                        // viewModel.uploadImageWithWorkManager(requireContext(), viewModel.shootData.value!!)
+                        dismiss()
+                        viewModel.showInteriorDialog.value = true
+                    }else{
+                        viewModel.shootNumber.value = viewModel.shootNumber.value!! + 1
+                        // viewModel.uploadImageWithWorkManager(requireContext(), viewModel.shootData.value!!)
+                        dismiss()
+                    }
+                }
 
-                viewModel.showInteriorDialog.value = true
+                "Interior" -> {
+                    if (viewModel.interiorShootNumber.value  == viewModel.interiorAngles.value?.minus(1)){
 
-            }else{
-                viewModel.shootNumber.value = viewModel.shootNumber.value!! + 1
-                // viewModel.uploadImageWithWorkManager(requireContext(), viewModel.shootData.value!!)
-                dismiss()
+                        // viewModel.uploadImageWithWorkManager(requireContext(), viewModel.shootData.value!!)
+                        viewModel.showMiscDialog.value = true
+                        dismiss()
+                    }else{
+                        viewModel.interiorShootNumber.value = viewModel.interiorShootNumber.value!! + 1
+                        // viewModel.uploadImageWithWorkManager(requireContext(), viewModel.shootData.value!!)
+                        dismiss()
+                    }
+                }
+
+                "Miscellaneous" -> {
+                    if (viewModel.miscShootNumber.value  == viewModel.miscAngles.value?.minus(1)){
+
+                        // viewModel.uploadImageWithWorkManager(requireContext(), viewModel.shootData.value!!)
+                       viewModel.selectBackground.value = true
+                        dismiss()
+                    }else{
+                        viewModel.miscShootNumber.value = viewModel.miscShootNumber.value!! + 1
+                        // viewModel.uploadImageWithWorkManager(requireContext(), viewModel.shootData.value!!)
+                        dismiss()
+                    }
+                }
             }
+
         }
 
        viewModel.overlaysResponse.observe(viewLifecycleOwner,{
            when(it){
                 is Resource.Sucess -> {
                     val uri = viewModel.shootData.value?.capturedImage
-                    val overlay = it.value.data[viewModel.shootNumber.value!!].display_thumbnail
-
-                    Glide.with(requireContext())
-                        .load(uri)
-                        .into(binding.ivCaptured2)
 
                     Glide.with(requireContext())
                         .load(uri)
                         .into(binding.ivCapturedImage)
 
+                    if (viewModel.categoryDetails.value?.imageType == "Exterior"){
 
-                    setOverlay(binding.ivCaptured2,overlay)
-               }
-               else -> {
+                        val overlay = it.value.data[viewModel.shootNumber.value!!].display_thumbnail
 
+                        Glide.with(requireContext())
+                            .load(uri)
+                            .into(binding.ivCaptured2)
+
+                        setOverlay(binding.ivCaptured2,overlay)
+
+                    }else{
+                       binding.flAfter.visibility = View.GONE
+                    }
                }
+               else -> {}
            }
        })
 
@@ -82,7 +112,7 @@ class ConfirmReshootDialog : BaseDialogFragment<ShootViewModel, DialogConfirmRes
 
 
                     var params = FrameLayout.LayoutParams(newW.toInt(), newH.toInt())
-                    //params.gravity = Gravity.CENTER
+                    params.gravity = Gravity.CENTER
 
                     binding.ivCapturedOverlay.layoutParams = params
 

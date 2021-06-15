@@ -49,7 +49,7 @@ class ShootViewModel : ViewModel(){
     val isProjectCreated : MutableLiveData<Boolean> = MutableLiveData()
 
     val subCategoryId : MutableLiveData<String> = MutableLiveData()
-    val selectedAngles: MutableLiveData<Int> = MutableLiveData()
+    val exterirorAngles: MutableLiveData<Int> = MutableLiveData()
     val shootNumber: MutableLiveData<Int> = MutableLiveData()
     val shootData : MutableLiveData<ShootData> =  MutableLiveData()
 
@@ -59,6 +59,11 @@ class ShootViewModel : ViewModel(){
     val showMiscDialog : MutableLiveData<Boolean> = MutableLiveData()
     val startMiscShots : MutableLiveData<Boolean> = MutableLiveData()
     val selectBackground : MutableLiveData<Boolean> = MutableLiveData()
+
+    val interiorAngles : MutableLiveData<Int> = MutableLiveData()
+    val interiorShootNumber: MutableLiveData<Int> = MutableLiveData()
+    val miscAngles: MutableLiveData<Int> = MutableLiveData()
+    val miscShootNumber: MutableLiveData<Int> = MutableLiveData()
 
 
     fun getSubCategories(
@@ -74,15 +79,15 @@ class ShootViewModel : ViewModel(){
         _overlaysResponse.value = repository.getOverlays(authKey, prodId, prodSubcategoryId, frames)
     }
 
-    fun getSelectedAngles() = selectedAngles.value
+    fun getSelectedAngles() = exterirorAngles.value
 
     fun getShootNumber() = shootNumber.value
 
-    fun getShootProgressList(): ArrayList<ShootProgress> {
+    fun getShootProgressList(angles : Int): ArrayList<ShootProgress> {
         val shootProgressList = ArrayList<ShootProgress>()
         shootProgressList.add(ShootProgress(true))
 
-        for (i in 1 until selectedAngles.value!!)
+        for (i in 1 until angles)
             shootProgressList.add(ShootProgress(false))
 
         return shootProgressList

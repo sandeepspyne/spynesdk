@@ -6,7 +6,6 @@ import android.view.View
 import android.view.ViewGroup
 import com.spyneai.base.BaseDialogFragment
 import com.spyneai.databinding.DialogFocusedHintBinding
-import com.spyneai.databinding.DialogInteriorHintBinding
 import com.spyneai.shoot.data.ShootViewModel
 
 class MiscShotsDialog : BaseDialogFragment<ShootViewModel, DialogFocusedHintBinding>() {
@@ -25,9 +24,7 @@ class MiscShotsDialog : BaseDialogFragment<ShootViewModel, DialogFocusedHintBind
             viewModel.startMiscShots.value = true
             dismiss()
         }
-
     }
-
 
     override fun getViewModel() = ShootViewModel::class.java
 

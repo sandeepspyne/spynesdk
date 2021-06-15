@@ -7,13 +7,11 @@ import android.view.ViewGroup
 import com.bumptech.glide.Glide
 import com.spyneai.base.BaseDialogFragment
 import com.spyneai.base.network.Resource
-import com.spyneai.dashboard.response.NewSubCatResponse
 import com.spyneai.dashboard.ui.handleApiError
 import com.spyneai.databinding.DialogSubcategoryConfirmationBinding
 import com.spyneai.needs.AppConstants
 import com.spyneai.needs.Utilities
 import com.spyneai.shoot.data.ShootViewModel
-import com.spyneai.shoot.data.model.Sku
 
 class SubCategoryConfirmationDialog : BaseDialogFragment<ShootViewModel, DialogSubcategoryConfirmationBinding>(){
 
@@ -29,8 +27,7 @@ class SubCategoryConfirmationDialog : BaseDialogFragment<ShootViewModel, DialogS
 
             binding.tvSubcatName.text = subCategory?.sub_cat_name
 
-            binding.tvAnglesCount.text = viewModel.selectedAngles.value.toString()
-
+            binding.tvAngles.text = viewModel.exterirorAngles.value.toString()
         }catch (e : Exception){
             e.printStackTrace()
         }
