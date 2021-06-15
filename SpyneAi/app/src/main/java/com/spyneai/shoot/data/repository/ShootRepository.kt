@@ -31,21 +31,21 @@ class ShootRepository : BaseRepository() {
     companion object{
         var shootDataBase: ShootDataBase? = null
         var shootEntity: ShootEntity? = null
-        fun initializeDB(context: Context): ShootDataBase{
-            return ShootDataBase.invoke(context)
-        }
+//        fun initializeDB(context: Context): ShootDataBase{
+//            return ShootDataBase.invoke(context)
+//        }
     }
 
      fun insertShootData(context: Context, shootEntity: ShootEntity){
-        shootDataBase = initializeDB(context)
-        CoroutineScope(IO).launch {
-            shootDataBase?.getShootDao()?.insertShootData(shootEntity)
-        }
+//        shootDataBase = initializeDB(context)
+//        CoroutineScope(IO).launch {
+//            shootDataBase?.getShootDao()?.insertShootData(shootEntity)
+//        }
     }
 
     fun getShootData(context: Context, sku_id: String): LiveData<ShootEntity>?{
-        shootDataBase = initializeDB(context)
-        shootDataBase?.getShootDao()?.getShootData(sku_id)
+//        shootDataBase = initializeDB(context)
+//        shootDataBase?.getShootDao()?.getShootData(sku_id)
         return shootEntity as LiveData<ShootEntity>
     }
 
