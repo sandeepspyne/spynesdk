@@ -21,6 +21,10 @@ import com.spyneai.shoot.data.model.ShootData
 import com.spyneai.shoot.data.room.entities.ShootEntity
 import com.spyneai.shoot.ui.dialogs.AngleSelectionDialog
 import kotlinx.android.synthetic.main.dialog_confirm_reshoot.view.*
+import okhttp3.MediaType.Companion.toMediaTypeOrNull
+import okhttp3.MultipartBody
+import okhttp3.RequestBody.Companion.asRequestBody
+import okhttp3.RequestBody.Companion.toRequestBody
 import java.io.File
 import java.util.*
 
@@ -62,6 +66,7 @@ class OverlaysFragment : BaseFragment<ShootViewModel,FragmentOverlaysBinding>() 
                         "", "", "", "",
                     "", "")
                     viewModel.insertShootData(requireContext(), shootEntity)
+                    val abc = ""
                 }
                 is Resource.Loading -> {
 
@@ -98,7 +103,25 @@ class OverlaysFragment : BaseFragment<ShootViewModel,FragmentOverlaysBinding>() 
                 }
 
                 it.btConfirmImage.setOnClickListener {
-                    viewModel.uploadImageWithWorkManager(requireContext(), shootData)
+//                    viewModel.uploadImageWithWorkManager(requireContext(), shootData)
+                    val projectId =
+                        "prj-27d33afa-4f50-4af0-b769-a97adf247fae".toRequestBody(MultipartBody.FORM)
+                    val skuId = "sku-9c0775d2-69e4-4ecf-a134-7b61a48e15ee".toRequestBody(MultipartBody.FORM)
+                    val imageCategory =
+                        "Exterior".toRequestBody(MultipartBody.FORM)
+                    val authKey =
+                        "813a71af-a2fb-4ef8-87b3-059d01c5b9ba".toRequestBody(MultipartBody.FORM)
+                    var image: MultipartBody.Part? = null
+                    val requestFile =
+                        File("/storage/emulated/0/Android/media/com.spyneai.debug/debug/2021-06-15-11-39-23-243.jpg").asRequestBody("multipart/form-data".toMediaTypeOrNull())
+                    image =
+                        MultipartBody.Part.createFormData(
+                            "image",
+                            File("/storage/emulated/0/Android/media/com.spyneai.debug/debug/2021-06-15-11-39-23-243.jpg")!!.name,
+                            requestFile
+                        )
+
+                    viewModel.uploadImage(projectId, skuId, imageCategory, authKey, image)
                     dialog.dismiss()
                 }
 

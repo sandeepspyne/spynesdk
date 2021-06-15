@@ -8,7 +8,8 @@ import com.spyneai.shoot.data.room.entities.ShootEntity
 
 @Database(
     entities = [ShootEntity::class],
-    version = 1
+    version = 1,
+    exportSchema = false
 )
 abstract class ShootDataBase: RoomDatabase() {
 
