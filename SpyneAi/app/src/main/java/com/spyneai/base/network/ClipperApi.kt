@@ -10,6 +10,7 @@ import com.spyneai.shoot.data.model.CreateSkuRes
 import com.spyneai.shoot.data.model.UploadImageResponse
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
+import retrofit2.Call
 import retrofit2.http.*
 
 interface ClipperApi {
@@ -30,6 +31,16 @@ interface ClipperApi {
         @Part("auth_key") auth_key: RequestBody?,
         @Part file: MultipartBody.Part
     ): UploadImageResponse
+
+    @Multipart
+    @POST("v2/image/upload")
+    fun uploadImageInWorker(
+        @Part("project_id") project_id: RequestBody?,
+        @Part("sku_id") sku_id: RequestBody?,
+        @Part("image_category") image_category: RequestBody?,
+        @Part("auth_key") auth_key: RequestBody?,
+        @Part file: MultipartBody.Part
+    ): Call<UploadImageResponse>
 
     @Multipart
     @POST("fetch-sku-name")

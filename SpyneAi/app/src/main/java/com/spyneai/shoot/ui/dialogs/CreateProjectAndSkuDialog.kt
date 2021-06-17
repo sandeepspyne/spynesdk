@@ -44,9 +44,10 @@ class CreateProjectAndSkuDialog : BaseDialogFragment<ShootViewModel,DialogCreate
                     is Resource.Sucess -> {
                         //notify project created
                         viewModel.isProjectCreated.value = true
-                        val subCategory = Sku()
-                        subCategory.skuName = skuName
-                        viewModel.sku.value = subCategory
+                        val sku = Sku()
+                        sku.projectId = it.value.project_id
+                        sku.skuName = skuName
+                        viewModel.sku.value = sku
 
                         dismiss()
                     }

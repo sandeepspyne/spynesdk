@@ -103,12 +103,19 @@ class ShootViewModel : ViewModel(){
         shootData: ShootData
     ) {
         val uploadWorkRequest = OneTimeWorkRequest.Builder(UploadImageWorker::class.java)
+
         val data = Data.Builder()
         data.putString("uri", shootData.capturedImage)
         data.putString("projectId", shootData.project_id)
         data.putString("skuId", shootData.sku_id)
         data.putString("imageCategory", shootData.image_category)
         data.putString("authKey", shootData.auth_key)
+
+
+        uploadWorkRequest.setInputData(data.build())
+
+
+
         WorkManager.getInstance(requireContext).enqueue(uploadWorkRequest.build())
     }
 

@@ -24,12 +24,12 @@ class ConfirmReshootDialog : BaseDialogFragment<ShootViewModel, DialogConfirmRes
             when(viewModel.categoryDetails.value?.imageType) {
                 "Exterior" -> {
                     if (viewModel.shootNumber.value  == viewModel.exterirorAngles.value?.minus(1)){
-                        // viewModel.uploadImageWithWorkManager(requireContext(), viewModel.shootData.value!!)
+                         viewModel.uploadImageWithWorkManager(requireContext(), viewModel.shootData.value!!)
                         dismiss()
                         viewModel.showInteriorDialog.value = true
                     }else{
                         viewModel.shootNumber.value = viewModel.shootNumber.value!! + 1
-                        // viewModel.uploadImageWithWorkManager(requireContext(), viewModel.shootData.value!!)
+                        viewModel.uploadImageWithWorkManager(requireContext(), viewModel.shootData.value!!)
                         dismiss()
                     }
                 }

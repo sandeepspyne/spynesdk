@@ -52,9 +52,14 @@ class SubCategoryConfirmationDialog : BaseDialogFragment<ShootViewModel, DialogS
             viewModel.sku.value.toString()
         )
 
-        viewModel.createProjectRes.observe(viewLifecycleOwner,{
+        viewModel.createSkuRes.observe(viewLifecycleOwner,{
             when(it) {
                 is Resource.Sucess -> {
+                   val sku = viewModel.sku.value
+                    sku?.skuId = it.value.sku_id
+
+                    viewModel.sku.value = sku
+
                     viewModel.isSubCategoryConfirmed.value = true
                     dismiss()
                 }

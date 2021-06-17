@@ -16,5 +16,7 @@ object ShootContract {
         const val COLUMN_NAME_BACKGROUND_COLOR = "background_color"
         const val COLUMN_NAME_MARKET_PLACE_ID = "market_place_id"
         const val COLUMN_NAME_DEALERSHIP_LOG = "dealership_logo"
+        const val COLUMN_NAME_PROCESS_SKU = "process_sku"
+        const val COLUMN_NAME_PROJECT_ID = "project_id"
     }
 }
