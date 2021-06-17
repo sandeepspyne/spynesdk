@@ -7,6 +7,7 @@ import androidx.work.WorkerParameters
 import com.spyneai.base.network.ClipperApi
 import com.spyneai.interfaces.RetrofitClients
 import com.spyneai.service.log
+import com.spyneai.shoot.data.ShootLocalRepository
 import com.spyneai.shoot.data.ShootRepository
 import com.spyneai.shoot.data.ShootViewModel
 import com.spyneai.shoot.data.model.UploadImageResponse
@@ -23,7 +24,7 @@ import java.io.File
 class UploadImageWorker(appContext: Context, workerParams: WorkerParameters) :
     CoroutineWorker(appContext, workerParams) {
 
-    private val repository = ShootRepository()
+    private val localRepository = ShootLocalRepository()
     private val TAG = "UploadImageWorker"
 
     override suspend fun doWork(): Result {
@@ -62,16 +63,24 @@ class UploadImageWorker(appContext: Context, workerParams: WorkerParameters) :
                     response: Response<UploadImageResponse>
                 ) {
 
-                    Log.d(TAG, "onResponse: "+response.body().toString())
-                    var s = ""
+                    Log.d(TAG, "onResponse: " + response.body().toString())
 
                     if (response.isSuccessful) {
                         val uploadImageResponse = response.body()
+
+                        //update uploaded image count
+                        localRepository.updateUploadCount(inputData.getString("skuId").toString())
+
+                        // check if all image uploaded
+                        if (localRepository.processSku(inputData.getString("skuId").toString())) {
+                            //process sku
+                        }
                     }
                 }
 
                 override fun onFailure(call: Call<UploadImageResponse>, t: Throwable) {
-                    var s = ""
+                    Log.d(TAG, "onFailure: "+t.localizedMessage)
+
                 }
 
             })

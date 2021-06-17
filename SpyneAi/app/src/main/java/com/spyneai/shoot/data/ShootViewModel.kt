@@ -20,6 +20,7 @@ import java.util.ArrayList
 class ShootViewModel : ViewModel(){
 
     private val repository = ShootRepository()
+    private val localRepository = ShootLocalRepository()
 
     val shootList: MutableLiveData<ArrayList<ShootData>> = MutableLiveData()
 
@@ -130,6 +131,10 @@ class ShootViewModel : ViewModel(){
                   skuName : String) = viewModelScope.launch {
         _createSkuRes.value = Resource.Loading
         _createSkuRes.value = repository.createSku(authKey, projectId, prodCatId, prodSubCatId, skuName)
+    }
+
+    fun insertSku(sku: Sku) {
+        localRepository.insertSku(sku)
     }
 
 
