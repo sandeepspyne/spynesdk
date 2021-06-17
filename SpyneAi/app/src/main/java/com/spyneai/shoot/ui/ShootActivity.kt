@@ -80,6 +80,18 @@ class ShootActivity : AppCompatActivity() {
         shootViewModel.selectBackground.observe(this,{
             if (it) {
                 // add select background fragment
+                supportFragmentManager.beginTransaction()
+                    .add(R.id.flCamerFragment, SelectBackgroundFragment())
+                    .commit()
+            }
+        })
+
+        shootViewModel.startTimer.observe(this,{
+            if (it) {
+                // add select background fragment
+                supportFragmentManager.beginTransaction()
+                    .add(R.id.flCamerFragment, TimerFragment())
+                    .commit()
             }
         })
     }

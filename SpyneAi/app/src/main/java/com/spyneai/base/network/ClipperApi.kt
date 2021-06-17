@@ -3,10 +3,12 @@ package com.spyneai.base.network
 import com.spyneai.camera2.OverlaysResponse
 import com.spyneai.dashboard.response.NewCategoriesResponse
 import com.spyneai.dashboard.response.NewSubCatResponse
+import com.spyneai.model.carbackgroundgif.CarBackgrounGifResponse
 import com.spyneai.model.credit.FreeCreditEligblityResponse
 import com.spyneai.model.projects.CompletedProjectResponse
 import com.spyneai.shoot.data.model.CreateProjectRes
 import com.spyneai.shoot.data.model.CreateSkuRes
+import com.spyneai.shoot.data.model.ProcessSkuRes
 import com.spyneai.shoot.data.model.UploadImageResponse
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
@@ -75,6 +77,16 @@ interface ClipperApi {
                               @Field("prod_cat_id") prodCatId : String,
                           @Field("prod_sub_cat_id") prodSubCatId : String,
                           @Field("sku_name") skuName : String) : CreateSkuRes
+
+    @GET("v4/car-replacement-plans?api_key=fde46c58-5735-4fcf-8b38-980c95001dc3")
+    suspend fun getBackgroundGifCars() : List<CarBackgrounGifResponse>
+
+    @POST("v2/sku/processImages")
+    suspend fun processSku(
+        @Field("auth_key") authKey : String,
+        @Field("sku_id") skuId : String,
+        @Field("background_id") backgroundId : String
+    ) : ProcessSkuRes
 
 
 

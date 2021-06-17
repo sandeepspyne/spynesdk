@@ -123,6 +123,11 @@ class ShootLocalRepository {
         return sku.uploadedImages == sku.totalImages && sku.processSku
     }
 
+    fun isImagesUploaded(skuId : String) : Boolean {
+        val sku = getUploadedAndTotalImagesCount(skuId)
+        return sku.uploadedImages == sku.totalImages
+    }
+
     fun updateUploadCount(skuId : String) {
         var uploadCount = getUploadedAndTotalImagesCount(skuId).uploadedImages
 

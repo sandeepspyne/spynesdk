@@ -91,6 +91,7 @@ class GenerateGifActivity : AppCompatActivity(), PickiTCallbacks {
         else
             catName = Utilities.getPreference(this, AppConstants.CATEGORY_NAME)!!
 
+
         fetchBackgroundGif()
         listeners()
     }
@@ -135,7 +136,6 @@ class GenerateGifActivity : AppCompatActivity(), PickiTCallbacks {
                     //if (position<carBackgroundList.size)
                     backgroundSelect = carBackgroundGifList[position].imageId.toString()
                     carbackgroundsAdapter.notifyDataSetChanged()
-
 
                         Glide.with(this@GenerateGifActivity) // replace with 'this' if it's in activity
                             .load(carBackgroundGifList[position].gifUrl)
