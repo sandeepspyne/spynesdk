@@ -17,7 +17,7 @@ import com.spyneai.adapter.CarBackgroundAdapter
 import com.spyneai.adapter.CarBackgroundDemoAdapter
 import com.spyneai.adapter.PhotosAdapter
 import com.spyneai.aipack.*
-import com.spyneai.dashboard.ui.dashboard.MainDashboardActivity
+import com.spyneai.dashboard.ui.MainDashboardActivity
 import com.spyneai.model.carreplace.CarBackgroundsResponse
 import com.spyneai.model.sku.Photos
 import com.spyneai.model.skumap.UpdateSkuResponse

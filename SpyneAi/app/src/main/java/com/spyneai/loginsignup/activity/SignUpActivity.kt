@@ -8,12 +8,10 @@ import android.widget.ArrayAdapter
 import android.widget.Toast
 import com.spyneai.R
 import com.spyneai.activity.SignInUsingOtpActivity
-import com.spyneai.dashboard.ui.dashboard.MainDashboardActivity
+import com.spyneai.dashboard.ui.MainDashboardActivity
 import com.spyneai.interfaces.APiService
-import com.spyneai.interfaces.RetrofitClientSpyneAi
 import com.spyneai.interfaces.RetrofitClients
 import com.spyneai.loginsignup.models.GetCountriesResponse
-import com.spyneai.loginsignup.models.SignupBody
 import com.spyneai.loginsignup.models.SignupResponse
 import com.spyneai.needs.AppConstants
 import com.spyneai.needs.Utilities

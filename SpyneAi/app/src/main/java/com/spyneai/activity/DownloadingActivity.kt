@@ -20,7 +20,7 @@ import com.downloader.*
 import com.spyneai.R
 import com.spyneai.credits.fragments.DownloadCompletedFragment
 import com.spyneai.credits.fragments.FeedbackSubmittedFragment
-import com.spyneai.dashboard.ui.dashboard.MainDashboardActivity
+import com.spyneai.dashboard.ui.MainDashboardActivity
 import com.spyneai.imagesdowloading.HDImagesDownloadedEvent
 import com.spyneai.imagesdowloading.ImageDownloadingService
 import com.spyneai.needs.AppConstants

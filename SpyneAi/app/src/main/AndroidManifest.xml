@@ -40,9 +40,9 @@
         android:usesCleartextTraffic="true"
         tools:targetApi="m">
 <!--        <activity android:name=".shoot.ui.ShootActivity"></activity>-->
-        <activity android:name=".dashboard.ui.dashboard.YoutubeVideoPlayerActivity" />
+        <activity android:name=".dashboard.ui.YoutubeVideoPlayerActivity" />
         <activity
-            android:name=".dashboard.ui.dashboard.MainDashboardActivity"
+            android:name=".dashboard.ui.MainDashboardActivity"
             android:screenOrientation="portrait" />
         <activity
             android:name=".loginsignup.activity.ForgotPasswordActivity"
@@ -87,10 +87,7 @@
             android:name=".activity.YourOrdersActivity"
             android:launchMode="singleTask"
             android:screenOrientation="portrait" />
-        <activity android:name=".videorecording.VideoUploadHandlerActivity" />
-        <activity
-            android:name=".videorecording.ThreeSixtyInteriorViewActivity"
-            android:launchMode="singleTop" />
+
         <activity android:name=".videorecording.ProcessVideoTimerActivity" />
 
         <service
@@ -263,17 +260,19 @@
         <activity
             android:name=".shoot.ui.ShootActivity"
             android:screenOrientation="landscape">
-
-        </activity>
-
-        <activity android:name=".activity.SplashActivity"
-            android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
+        <activity android:name=".activity.SplashActivity"
+            android:screenOrientation="portrait">
+
+        </activity>
+
+
 
         <activity android:name=".videorecording.ThreeSixtyViewActivity" />
         <activity android:name=".videorecording.TrimVideoActivity" />

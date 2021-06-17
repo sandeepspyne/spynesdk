@@ -11,7 +11,7 @@ import android.widget.Toast
 import com.spyneai.R
 import com.spyneai.activity.CompletedProjectsActivity
 import com.spyneai.activity.OngoingOrdersActivity
-import com.spyneai.dashboard.ui.dashboard.MainDashboardActivity
+import com.spyneai.dashboard.ui.MainDashboardActivity
 import com.spyneai.extras.events.ProcessingImagesEvent
 import com.spyneai.model.processImageService.Task
 import com.spyneai.needs.AppConstants

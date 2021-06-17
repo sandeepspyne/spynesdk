@@ -29,18 +29,29 @@ import java.util.*
 import java.util.concurrent.ExecutorService
 import java.util.concurrent.Executors
 import kotlin.collections.ArrayList
-import kotlin.math.abs
-import kotlin.math.max
-import kotlin.math.min
 
 
 class CameraFragment : BaseFragment<ShootViewModel, FragmentCameraBinding>() {
     private var imageCapture: ImageCapture? = null
+    private var cameraProvider: ProcessCameraProvider? = null
+    private var preview: Preview? = null
+    private var imageAnalyzer: ImageAnalysis? = null
+    private lateinit var shootList : ArrayList<ShootData>
     private lateinit var cameraExecutor: ExecutorService
     private lateinit var outputDirectory: File
     private var capturedImage = ""
     var pickiT: PickiT? = null
     private val FILENAME_FORMAT = "yyyy-MM-dd-HH-mm-ss-SSS"
+
+    private var projectId: String = "prj-27d33afa-4f50-4af0-b769-a97adf247fae"
+    private var skuId: String = "sku-9c0775d2-69e4-4ecf-a134-7b61a48e15ee\n"
+    private var imageCategory: String = "Exterior"
+    private var authKey: String = "813a71af-a2fb-4ef8-87b3-059d01c5b9ba"
+
+    // Selector showing which camera is selected (front or back)
+    private var lensFacing = CameraSelector.DEFAULT_BACK_CAMERA
+
+    lateinit var photoFile: File
 
     companion object {
         private const val RATIO_4_3_VALUE = 4.0 / 3.0 // aspect ratio 4x3
@@ -111,15 +122,8 @@ class CameraFragment : BaseFragment<ShootViewModel, FragmentCameraBinding>() {
         }
     }
 
-    private fun aspectRatio(width: Int, height: Int): Int {
-        val previewRatio = max(width, height).toDouble() / min(width, height)
-        if (abs(previewRatio - RATIO_4_3_VALUE) <= abs(previewRatio - RATIO_16_9_VALUE)) {
-            return AspectRatio.RATIO_4_3
-        }
-        return AspectRatio.RATIO_16_9
-    }
 
-    @SuppressLint("RestrictedApi", "UnsafeExperimentalUsageError", "UnsafeOptInUsageError")
+
     private fun startCamera() {
         val cameraProviderFuture = ProcessCameraProvider.getInstance(requireContext())
 

@@ -1,23 +1,16 @@
 package com.spyneai.activity
 
-import android.content.ContentValues
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
 import android.util.Log
-import android.view.Menu
 import android.view.View
-import android.view.animation.AlphaAnimation
-import android.view.animation.Animation
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.spyneai.R
 import com.spyneai.adapter.OngoingProjectAdapter
-import com.spyneai.dashboard.ui.dashboard.MainDashboardActivity
-import com.spyneai.needs.AppConstants
-import com.spyneai.needs.Utilities
 import com.spyneai.service.ProcessImagesService
 import kotlinx.android.synthetic.main.activity_completed.*
 import kotlinx.android.synthetic.main.activity_completed_projects.*

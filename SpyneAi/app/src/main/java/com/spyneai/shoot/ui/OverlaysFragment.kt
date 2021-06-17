@@ -1,6 +1,7 @@
 package com.spyneai.shoot.ui
 
 import android.graphics.drawable.Drawable
+import android.net.Uri
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -25,9 +26,15 @@ import com.spyneai.shoot.adapters.MiscAdapter
 import com.spyneai.shoot.adapters.NewSubCategoriesAdapter
 import com.spyneai.shoot.data.ShootViewModel
 import com.spyneai.shoot.data.model.ShootData
+import com.spyneai.shoot.data.room.entities.ShootEntity
 import com.spyneai.shoot.ui.dialogs.*
-import kotlinx.android.synthetic.main.activity_camera2.*
-import kotlin.collections.ArrayList
+import kotlinx.android.synthetic.main.dialog_confirm_reshoot.view.*
+import okhttp3.MediaType.Companion.toMediaTypeOrNull
+import okhttp3.MultipartBody
+import okhttp3.RequestBody.Companion.asRequestBody
+import okhttp3.RequestBody.Companion.toRequestBody
+import java.io.File
+import java.util.*
 
 
 class OverlaysFragment : BaseFragment<ShootViewModel,FragmentOverlaysBinding>(),NewSubCategoriesAdapter.BtnClickListener {
@@ -283,7 +290,8 @@ class OverlaysFragment : BaseFragment<ShootViewModel,FragmentOverlaysBinding>(),
             requireContext(),
             null,
             pos,
-            this)
+            this
+        )
 
         binding.rvSubcategories.apply {
             this?.layoutManager = LinearLayoutManager(requireContext())
@@ -291,7 +299,7 @@ class OverlaysFragment : BaseFragment<ShootViewModel,FragmentOverlaysBinding>(),
         }
 
         viewModel.getSubCategories(
-            Utilities.getPreference(requireContext(),AppConstants.AUTH_KEY).toString(),
+            Utilities.getPreference(requireContext(), AppConstants.AUTH_KEY).toString(),
             requireActivity().intent.getStringExtra(AppConstants.CATEGORY_ID).toString()
         )
 
@@ -311,6 +319,11 @@ class OverlaysFragment : BaseFragment<ShootViewModel,FragmentOverlaysBinding>(),
                     handleApiError(it)
                 }
             }
+        })
+
+
+        viewModel.shootNumber.observe(viewLifecycleOwner, {
+            binding.tvShoot?.text = "Angles $it/${viewModel.getSelectedAngles()}"
         })
     }
 
@@ -345,11 +358,6 @@ class OverlaysFragment : BaseFragment<ShootViewModel,FragmentOverlaysBinding>(),
 //                            .load(it.value.data[0].display_thumbnail)
 //                            .into(binding.imgOverlay!!)
                     }
-
-                    is Resource.Loading -> {
-
-                    }
-
                     is Resource.Failure -> {
                         handleApiError(it)
                     }

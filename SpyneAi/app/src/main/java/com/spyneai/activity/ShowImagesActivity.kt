@@ -1,13 +1,8 @@
 package com.spyneai.activity
 
 import android.app.*
-import android.content.Context
 import android.content.Intent
-import android.net.Uri
-import android.os.Build
 import android.os.Bundle
-import android.os.Environment
-import android.os.Handler
 import android.util.Log
 import android.view.View
 import android.view.Window
@@ -17,7 +12,6 @@ import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.core.app.NotificationCompat
-import androidx.core.app.NotificationManagerCompat
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.bumptech.glide.Glide
@@ -29,11 +23,10 @@ import com.spyneai.adapter.ShowReplacedImagesFocusedAdapter
 import com.spyneai.adapter.ShowReplacedImagesInteriorAdapter
 import com.spyneai.aipack.FetchBulkResponse
 import com.spyneai.credits.model.ReviewHolder
-import com.spyneai.dashboard.ui.dashboard.MainDashboardActivity
+import com.spyneai.dashboard.ui.MainDashboardActivity
 import com.spyneai.interfaces.APiService
 import com.spyneai.interfaces.RetrofitClientSpyneAi
 import com.spyneai.interfaces.RetrofitClients
-import com.spyneai.interfaces.RetrofitClientsStaging
 import com.spyneai.model.skumap.UpdateSkuResponse
 import com.spyneai.needs.AppConstants
 import com.spyneai.needs.ScrollingLinearLayoutManager
@@ -56,9 +49,6 @@ import okhttp3.RequestBody
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
-import java.io.File
-import java.net.URLEncoder
-import java.text.SimpleDateFormat
 import java.util.*
 import kotlin.collections.ArrayList
 

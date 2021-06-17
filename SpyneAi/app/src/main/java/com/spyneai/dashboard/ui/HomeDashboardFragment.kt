@@ -1,4 +1,4 @@
-package com.spyneai.dashboard.ui.dashboard
+package com.spyneai.dashboard.ui
 
 import android.app.Dialog
 import android.content.Intent
@@ -31,7 +31,7 @@ import com.spyneai.dashboard.data.model.SliderModel
 import com.spyneai.base.network.Resource
 import com.spyneai.base.BaseFragment
 import com.spyneai.dashboard.response.NewCategoriesResponse
-import com.spyneai.dashboard.ui.handleApiError
+import com.spyneai.dashboard.data.DashboardViewModel
 import com.spyneai.databinding.HomeDashboardFragmentBinding
 import com.spyneai.extras.BeforeAfterActivity
 import com.spyneai.model.categories.Data

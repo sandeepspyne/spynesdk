@@ -74,7 +74,7 @@ class ShootViewModel : ViewModel(){
     }
 
     fun getOverlays(authKey: String, prodId: String,
-                            prodSubcategoryId : String, frames : String) = viewModelScope.launch {
+                    prodSubcategoryId : String, frames : String) = viewModelScope.launch {
         _overlaysResponse.value = Resource.Loading
         _overlaysResponse.value = repository.getOverlays(authKey, prodId, prodSubcategoryId, frames)
     }

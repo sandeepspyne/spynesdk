@@ -1,6 +1,5 @@
 package com.spyneai.activity
 
-import android.content.ComponentName
 import android.content.Intent
 import android.os.Build
 import android.os.Bundle
@@ -9,17 +8,12 @@ import android.os.StrictMode
 import android.util.Log
 import android.view.View
 import android.view.animation.LinearInterpolator
-import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
-import androidx.recyclerview.widget.GridLayoutManager
-import androidx.recyclerview.widget.RecyclerView
-import com.google.gson.Gson
-import com.spyneai.BuildConfig
 import com.spyneai.R
 import com.spyneai.adapter.MarketplacesAdapter
 import com.spyneai.adapter.PhotosAdapter
-import com.spyneai.dashboard.ui.dashboard.MainDashboardActivity
+import com.spyneai.dashboard.ui.MainDashboardActivity
 import com.spyneai.extras.events.ProcessingImagesEvent
 import com.spyneai.model.carreplace.CarBackgroundsResponse
 import com.spyneai.model.sku.Photos

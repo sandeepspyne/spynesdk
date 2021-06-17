@@ -2,11 +2,14 @@ package com.spyneai.shoot.ui
 
 import android.Manifest
 import android.app.FragmentManager
+import android.content.ContentValues
 import android.content.Context
 import android.content.pm.PackageManager
 import android.os.Build
 import android.os.Bundle
 import android.os.Environment
+import android.provider.BaseColumns
+import android.util.Log
 import android.view.View
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
@@ -21,6 +24,8 @@ import com.spyneai.dashboard.ui.base.ViewModelFactory
 import com.spyneai.needs.AppConstants
 import com.spyneai.shoot.data.ShootViewModel
 import com.spyneai.shoot.data.model.CategoryDetails
+import com.spyneai.shoot.data.sqlite.DBHelper
+import com.spyneai.shoot.data.sqlite.ShootContract
 import kotlinx.android.synthetic.main.dialog_confirm_reshoot.view.*
 import kotlinx.android.synthetic.main.dialog_exit_shoot.view.*
 import kotlinx.android.synthetic.main.dialog_exit_shoot.view.btNo
@@ -36,11 +41,80 @@ class ShootActivity : AppCompatActivity() {
 
     lateinit var cameraFragment: CameraFragment
     lateinit var overlaysFragment: OverlaysFragment
+    val TAG = "ShootActivity"
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_shoot)
+
+        val db = DBHelper(this).writableDatabase
+
+        // Create a new map of values, where column names are the keys
+        val values = ContentValues().apply {
+            put(ShootContract.ShootEntry.COLUMN_NAME_SKU_ID, "sku id2")
+            put(ShootContract.ShootEntry.COLUMN_NAME_TOTAL_IMAGES, 8)
+            put(ShootContract.ShootEntry.COLUMN_NAME_CATEGORY_NAME, "automobiles")
+        }
+
+// Insert the new row, returning the primary key value of the new row
+        val newRowId = db?.insert(ShootContract.ShootEntry.TABLE_NAME, null, values)
+
+        Log.d(TAG, "onCreate: "+newRowId)
+
+        // New value for one column
+        val title = "sku id2"
+        val valuess = ContentValues().apply {
+            put(ShootContract.ShootEntry.COLUMN_NAME_TOTAL_IMAGES, 12)
+        }
+
+// Which row to update, based on the title
+        val selections = "${ShootContract.ShootEntry.COLUMN_NAME_SKU_ID} LIKE ?"
+
+        val selectionArgss = arrayOf("sku id2")
+
+        val count = db.update(
+            ShootContract.ShootEntry.TABLE_NAME,
+            valuess,
+            selections,
+            selectionArgss)
+
+
+        val dbR = DBHelper(this).readableDatabase
+
+// Define a projection that specifies which columns from the database
+// you will actually use after this query.
+        val projection = arrayOf(BaseColumns._ID,
+            ShootContract.ShootEntry.COLUMN_NAME_SKU_ID,
+            ShootContract.ShootEntry.COLUMN_NAME_TOTAL_IMAGES)
+
+// Filter results WHERE "title" = 'My Title'
+        val selection = "${ShootContract.ShootEntry.COLUMN_NAME_SKU_ID} = ?"
+        val selectionArgs = arrayOf("sku id2")
+
+// How you want the results sorted in the resulting Cursor
+        val sortOrder = "${ShootContract.ShootEntry.COLUMN_NAME_SKU_ID} DESC"
+
+        val cursor = dbR.query(
+            ShootContract.ShootEntry.TABLE_NAME,   // The table to query
+            projection,             // The array of columns to return (pass null to get all)
+            selection,              // The columns for the WHERE clause
+            selectionArgs,          // The values for the WHERE clause
+            null,                   // don't group the rows
+            null,                   // don't filter by row groups
+            sortOrder               // The sort order
+        )
+
+        with(cursor) {
+            while (moveToNext()) {
+                val itemId = getLong(getColumnIndexOrThrow(BaseColumns._ID))
+                val skudId = getString(getColumnIndexOrThrow(ShootContract.ShootEntry.COLUMN_NAME_SKU_ID))
+                //val cat = getString(getColumnIndexOrThrow(ShootContract.ShootEntry.COLUMN_NAME_CATEGORY_NAME))
+                val no = getInt(getColumnIndexOrThrow(ShootContract.ShootEntry.COLUMN_NAME_TOTAL_IMAGES))
+
+                Log.d(TAG, "onCreate: "+itemId+ " "+skudId+" "+no)
+            }
+        }
 
         val shootViewModel = ViewModelProvider(this, ViewModelFactory()).get(ShootViewModel::class.java)
 

@@ -45,7 +45,7 @@ import com.bumptech.glide.Glide
 import com.spyneai.R
 import com.spyneai.adapter.ProgressAdapter
 import com.spyneai.dashboard.response.NewSubCatResponse
-import com.spyneai.dashboard.ui.dashboard.MainDashboardActivity
+import com.spyneai.dashboard.ui.MainDashboardActivity
 import com.spyneai.interfaces.APiService
 import com.spyneai.interfaces.RetrofitClient
 import com.spyneai.interfaces.RetrofitClients

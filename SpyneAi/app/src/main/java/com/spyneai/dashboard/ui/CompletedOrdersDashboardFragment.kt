@@ -1,6 +1,5 @@
-package com.spyneai.dashboard.ui.dashboard
+package com.spyneai.dashboard.ui
 
-import androidx.lifecycle.ViewModelProvider
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
