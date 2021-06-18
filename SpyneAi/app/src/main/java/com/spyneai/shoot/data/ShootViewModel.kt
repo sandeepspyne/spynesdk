@@ -41,13 +41,7 @@ class ShootViewModel : ViewModel(){
     val createSkuRes: LiveData<Resource<CreateSkuRes>>
         get() = _createSkuRes
 
-    private val _carGifRes : MutableLiveData<Resource<List<CarBackgrounGifResponse>>> = MutableLiveData()
-    val carGifRes: LiveData<Resource<List<CarBackgrounGifResponse>>>
-        get() = _carGifRes
 
-    private val _processSkuRes : MutableLiveData<Resource<ProcessSkuRes>> = MutableLiveData()
-    val processSkuRes: LiveData<Resource<ProcessSkuRes>>
-        get() = _processSkuRes
 
 
     val shootDimensions : MutableLiveData<ShootDimensions> = MutableLiveData()
@@ -69,9 +63,7 @@ class ShootViewModel : ViewModel(){
     val showMiscDialog : MutableLiveData<Boolean> = MutableLiveData()
     val startMiscShots : MutableLiveData<Boolean> = MutableLiveData()
     val selectBackground : MutableLiveData<Boolean> = MutableLiveData()
-    val startTimer : MutableLiveData<Boolean> = MutableLiveData()
-    val processSku : MutableLiveData<Boolean> = MutableLiveData()
-    val skuQueued : MutableLiveData<Boolean> = MutableLiveData()
+
 
     val interiorAngles : MutableLiveData<Int> = MutableLiveData()
     val interiorShootNumber: MutableLiveData<Int> = MutableLiveData()
@@ -148,26 +140,5 @@ class ShootViewModel : ViewModel(){
     fun insertSku(sku: Sku) {
         localRepository.insertSku(sku)
     }
-
-    fun getBackgroundGifCars() = viewModelScope.launch {
-        _carGifRes.value = Resource.Loading
-        _carGifRes.value = repository.getBackgroundGifCars()
-    }
-
-    fun processSku(authKey : String,skuId : String, backgroundId : String)
-    = viewModelScope.launch {
-        _processSkuRes.value = Resource.Loading
-        _processSkuRes.value = repository.processSku(authKey, skuId, backgroundId)
-    }
-
-    fun checkImagesUploadStatus() {
-        if (localRepository.isImagesUploaded(sku.value?.skuId!!)){
-            processSku.value = true
-        }else{
-            localRepository.queueProcessRequest(sku.value?.skuId!!)
-            skuQueued.value = true
-        }
-    }
-
 
 }

@@ -6,15 +6,12 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import com.spyneai.base.BaseFragment
-import com.spyneai.databinding.FragmentSelectBackgroundBinding
 import com.spyneai.databinding.FragmentTimerBinding
-import com.spyneai.needs.AppConstants
-import com.spyneai.needs.Utilities
-import com.spyneai.shoot.data.ShootViewModel
+import com.spyneai.shoot.data.ProcessViewModel
 
 import java.util.concurrent.TimeUnit
 
-class TimerFragment : BaseFragment<ShootViewModel, FragmentTimerBinding>()  {
+class TimerFragment : BaseFragment<ProcessViewModel, FragmentTimerBinding>()  {
 
     val progress = 1000
 
@@ -28,7 +25,7 @@ class TimerFragment : BaseFragment<ShootViewModel, FragmentTimerBinding>()  {
     }
 
     private fun setCustomTimer() {
-        when(viewModel.exterirorAngles.value){
+        when(viewModel.exteriorAngles.value){
             4 ->  CountDownTimer(480000)
             8 ->  CountDownTimer(480000 * 2)
             12 ->   CountDownTimer(480000 * 3)
@@ -67,7 +64,7 @@ class TimerFragment : BaseFragment<ShootViewModel, FragmentTimerBinding>()  {
     }
 
 
-    override fun getViewModel() = ShootViewModel::class.java
+    override fun getViewModel() = ProcessViewModel::class.java
 
     override fun getFragmentBinding(
         inflater: LayoutInflater,

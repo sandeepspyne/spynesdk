@@ -81,6 +81,7 @@ interface ClipperApi {
     @GET("v4/car-replacement-plans?api_key=fde46c58-5735-4fcf-8b38-980c95001dc3")
     suspend fun getBackgroundGifCars() : List<CarBackgrounGifResponse>
 
+    @FormUrlEncoded
     @POST("v2/sku/processImages")
     suspend fun processSku(
         @Field("auth_key") authKey : String,

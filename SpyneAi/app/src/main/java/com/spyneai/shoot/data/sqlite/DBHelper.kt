@@ -37,7 +37,7 @@ class DBHelper (context: Context) : SQLiteOpenHelper(context, DATABASE_NAME, nul
                     "${ShootContract.ShootEntry.COLUMN_NAME_MARKET_PLACE_ID} TEXT," +
                     "${ShootContract.ShootEntry.COLUMN_NAME_DEALERSHIP_LOG} TEXT," +
                     "${ShootContract.ShootEntry.COLUMN_NAME_PROJECT_ID} TEXT," +
-                    "${ShootContract.ShootEntry.COLUMN_NAME_PROCESS_SKU} BOOLEAN," +
+                    "${ShootContract.ShootEntry.COLUMN_NAME_PROCESS_SKU} INTEGER," +
                     "${ShootContract.ShootEntry.TABLE_NAME} TEXT)"
 
         private const val SQL_DELETE_ENTRIES = "DROP TABLE IF EXISTS ${ShootContract.ShootEntry.TABLE_NAME}"

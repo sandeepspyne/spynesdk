@@ -4,6 +4,7 @@ import android.Manifest
 import android.app.FragmentManager
 import android.content.ContentValues
 import android.content.Context
+import android.content.Intent
 import android.content.pm.PackageManager
 import android.os.Build
 import android.os.Bundle
@@ -79,19 +80,14 @@ class ShootActivity : AppCompatActivity() {
 
         shootViewModel.selectBackground.observe(this,{
             if (it) {
-                // add select background fragment
-                supportFragmentManager.beginTransaction()
-                    .add(R.id.flCamerFragment, SelectBackgroundFragment())
-                    .commit()
-            }
-        })
+                // start process activity
+                val intent = Intent(this,ProcessActivity::class.java)
 
-        shootViewModel.startTimer.observe(this,{
-            if (it) {
-                // add select background fragment
-                supportFragmentManager.beginTransaction()
-                    .add(R.id.flCamerFragment, TimerFragment())
-                    .commit()
+                intent.apply {
+                    this.putExtra("sku_id",shootViewModel.sku.value?.skuId)
+                    this.putExtra("exterior_angles",shootViewModel.exterirorAngles.value)
+                    startActivity(this)
+                }
             }
         })
     }

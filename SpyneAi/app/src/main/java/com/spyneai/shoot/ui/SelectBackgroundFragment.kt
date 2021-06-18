@@ -1,5 +1,6 @@
 package com.spyneai.shoot.ui
 
+import android.content.pm.ActivityInfo
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -16,18 +17,19 @@ import com.spyneai.databinding.FragmentSelectBackgroundBinding
 import com.spyneai.model.carbackgroundgif.CarBackgrounGifResponse
 import com.spyneai.needs.AppConstants
 import com.spyneai.needs.Utilities
+import com.spyneai.shoot.data.ProcessViewModel
 import com.spyneai.shoot.data.ShootViewModel
 
 
-class SelectBackgroundFragment : BaseFragment<ShootViewModel,FragmentSelectBackgroundBinding>() {
+class SelectBackgroundFragment : BaseFragment<ProcessViewModel,FragmentSelectBackgroundBinding>() {
 
     lateinit var carBackgroundGifList: ArrayList<CarBackgrounGifResponse>
     var backgroundSelect: String = ""
     lateinit var carbackgroundsAdapter: CarBackgroundAdapter
 
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
 
         carBackgroundGifList = ArrayList()
 
@@ -80,7 +82,6 @@ class SelectBackgroundFragment : BaseFragment<ShootViewModel,FragmentSelectBackg
     }
 
     private fun setBackgroundsCar() {
-        Utilities.showProgressDialog(requireContext())
         carbackgroundsAdapter = CarBackgroundAdapter(requireContext(),
             carBackgroundGifList as ArrayList<CarBackgrounGifResponse>, 0,
             object : CarBackgroundAdapter.BtnClickListener {
@@ -118,20 +119,22 @@ class SelectBackgroundFragment : BaseFragment<ShootViewModel,FragmentSelectBackg
         viewModel.processSkuRes.observe(viewLifecycleOwner,{
             when(it) {
                 is Resource.Loading -> {
+                    var s = ""
                 }
 
                 is Resource.Sucess -> {
                     //start timer
+                    var s = ""
                     viewModel.startTimer.value = true
                 }
                 is Resource.Failure -> {
-
+                    var s = ""
                 }
             }
         })
     }
 
-    override fun getViewModel() = ShootViewModel::class.java
+    override fun getViewModel() = ProcessViewModel::class.java
 
     override fun getFragmentBinding(
         inflater: LayoutInflater,

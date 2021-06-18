@@ -44,14 +44,4 @@ class ShootRepository : BaseRepository() {
         clipperApi.createSku(authKey, projectId, prodCatId, prodSubCatId, skuName)
     }
 
-    suspend fun getBackgroundGifCars()
-    = safeApiCall {
-        clipperApi.getBackgroundGifCars()
-    }
-
-    suspend fun processSku(authKey : String,skuId : String, backgroundId : String)
-            = safeApiCall {
-        clipperApi.processSku(authKey, skuId, backgroundId)
-    }
-
 }

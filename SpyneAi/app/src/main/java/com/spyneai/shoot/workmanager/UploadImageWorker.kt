@@ -2,8 +2,7 @@ package com.spyneai.shoot.workmanager
 
 import android.content.Context
 import android.util.Log
-import androidx.work.CoroutineWorker
-import androidx.work.WorkerParameters
+import androidx.work.*
 import com.spyneai.base.network.ClipperApi
 import com.spyneai.interfaces.RetrofitClients
 import com.spyneai.service.log
@@ -33,7 +32,7 @@ class UploadImageWorker(appContext: Context, workerParams: WorkerParameters) :
         return Result.success()
     }
 
-    private suspend fun uploadImages() {
+    private fun uploadImages() {
         try {
             val projectId =
                 inputData.getString("projectId").toString().toRequestBody(MultipartBody.FORM)
@@ -74,6 +73,15 @@ class UploadImageWorker(appContext: Context, workerParams: WorkerParameters) :
                         // check if all image uploaded
                         if (localRepository.processSku(inputData.getString("skuId").toString())) {
                             //process sku
+                            val processSkuWorkRequest = OneTimeWorkRequest.Builder(ProcessSkuWorker::class.java)
+
+                            val data = Data.Builder()
+                            data.putString("skuId", inputData.getString("skuId").toString())
+                            data.putString("authKey",  inputData.getString("authKey").toString())
+
+                            processSkuWorkRequest.setInputData(data.build())
+                            WorkManager.getInstance(applicationContext).enqueue(processSkuWorkRequest.build())
+
                         }
                     }
                 }

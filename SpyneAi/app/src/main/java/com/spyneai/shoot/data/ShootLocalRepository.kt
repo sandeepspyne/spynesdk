@@ -23,7 +23,7 @@ class ShootLocalRepository {
             put(ShootContract.ShootEntry.COLUMN_NAME_CATEGORY_NAME, sku.categoryName)
             put(ShootContract.ShootEntry.COLUMN_NAME_TOTAL_IMAGES, sku.totalImages)
             put(ShootContract.ShootEntry.COLUMN_NAME_UPLOADED_IMAGES, 0)
-            put(ShootContract.ShootEntry.COLUMN_NAME_PROCESS_SKU, false)
+            put(ShootContract.ShootEntry.COLUMN_NAME_PROCESS_SKU, 0)
         }
 
         val newRowId = dbWritable?.insert(ShootContract.ShootEntry.TABLE_NAME, null, values)
@@ -65,7 +65,7 @@ class ShootLocalRepository {
                 val skuId = getString(getColumnIndexOrThrow(ShootContract.ShootEntry.COLUMN_NAME_SKU_ID))
                // val categoryName = getString(getColumnIndexOrThrow(ShootContract.ShootEntry.COLUMN_NAME_CATEGORY_NAME))
                 val totalImages = getInt(getColumnIndexOrThrow(ShootContract.ShootEntry.COLUMN_NAME_TOTAL_IMAGES))
-                val uploadedImages = getInt(getColumnIndexOrThrow(ShootContract.ShootEntry.COLUMN_NAME_TOTAL_IMAGES))
+                val uploadedImages = getInt(getColumnIndexOrThrow(ShootContract.ShootEntry.COLUMN_NAME_UPLOADED_IMAGES))
 
                 sku.skuId = skuId
               //  sku.categoryName = categoryName
@@ -107,7 +107,7 @@ class ShootLocalRepository {
             while (moveToNext()) {
                 val skuId = getString(getColumnIndexOrThrow(ShootContract.ShootEntry.COLUMN_NAME_SKU_ID))
                 val totalImages = getInt(getColumnIndexOrThrow(ShootContract.ShootEntry.COLUMN_NAME_TOTAL_IMAGES))
-                val uploadedImages = getInt(getColumnIndexOrThrow(ShootContract.ShootEntry.COLUMN_NAME_TOTAL_IMAGES))
+                val uploadedImages = getInt(getColumnIndexOrThrow(ShootContract.ShootEntry.COLUMN_NAME_UPLOADED_IMAGES))
 
                 sku.skuId = skuId
                 sku.totalImages = totalImages
@@ -120,7 +120,7 @@ class ShootLocalRepository {
 
     fun processSku(skuId: String) : Boolean {
         val sku = getUploadedAndTotalImagesCount(skuId)
-        return sku.uploadedImages == sku.totalImages && sku.processSku
+        return sku.uploadedImages == sku.totalImages && sku.processSku == 1
     }
 
     fun isImagesUploaded(skuId : String) : Boolean {
@@ -149,7 +149,7 @@ class ShootLocalRepository {
             selection,
             selectionArgs)
 
-        Log.d(TAG, "updateUploadCount: "+count)
+        Log.d(TAG, "updateUploadCount: "+uploadCount)
     }
 
     fun updateTotalImageCount(skuId : String, totalImages : Int) {
@@ -171,9 +171,10 @@ class ShootLocalRepository {
         Log.d(TAG, "updateTotalImageCount: "+count)
     }
 
-    fun queueProcessRequest(skuId: String) {
+    fun queueProcessRequest(skuId: String,backgroundId : String) {
         val values = ContentValues().apply {
-            put(ShootContract.ShootEntry.COLUMN_NAME_PROCESS_SKU, true)
+            put(ShootContract.ShootEntry.COLUMN_NAME_PROCESS_SKU, 1)
+            put(ShootContract.ShootEntry.COLUMN_NAME_BACKGROUND_ID,backgroundId)
         }
 
         // Which row to update, based on the title
@@ -188,6 +189,41 @@ class ShootLocalRepository {
             selectionArgs)
 
         Log.d(TAG, "queueProcessRequest: "+count)
+    }
+
+    fun getBackgroundId(skuId: String): String {
+        val projection = arrayOf(
+            BaseColumns._ID,
+            ShootContract.ShootEntry.COLUMN_NAME_SKU_ID,
+            ShootContract.ShootEntry.COLUMN_NAME_BACKGROUND_ID)
+
+        // Filter results WHERE "title" = 'My Title'
+        val selection = "${ShootContract.ShootEntry.COLUMN_NAME_SKU_ID} = ?"
+        val selectionArgs = arrayOf(skuId)
+
+        // How you want the results sorted in the resulting Cursor
+        val sortOrder = "${ShootContract.ShootEntry.COLUMN_NAME_SKU_ID} DESC"
+
+        val cursor = dbReadable.query(
+            ShootContract.ShootEntry.TABLE_NAME,   // The table to query
+            projection,             // The array of columns to return (pass null to get all)
+            selection,              // The columns for the WHERE clause
+            selectionArgs,          // The values for the WHERE clause
+            null,                   // don't group the rows
+            null,                   // don't filter by row groups
+            sortOrder               // The sort order
+        )
+
+        var backgroundId = ""
+
+        with(cursor) {
+            while (moveToNext()) {
+                val skuId = getString(getColumnIndexOrThrow(ShootContract.ShootEntry.COLUMN_NAME_SKU_ID))
+                backgroundId = getString(getColumnIndexOrThrow(ShootContract.ShootEntry.COLUMN_NAME_BACKGROUND_ID))
+            }
+        }
+
+        return backgroundId
     }
 
 }
