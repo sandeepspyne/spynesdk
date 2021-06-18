@@ -116,9 +116,7 @@ class ShootViewModel : ViewModel(){
         data.putString("imageCategory", shootData.image_category)
         data.putString("authKey", shootData.auth_key)
 
-
         uploadWorkRequest.setInputData(data.build())
-
 
 
         WorkManager.getInstance(requireContext).enqueue(uploadWorkRequest.build())
@@ -139,6 +137,10 @@ class ShootViewModel : ViewModel(){
 
     fun insertSku(sku: Sku) {
         localRepository.insertSku(sku)
+    }
+
+    fun updateTotalImages(skuId : String) {
+        localRepository.updateTotalImageCount(skuId)
     }
 
 }

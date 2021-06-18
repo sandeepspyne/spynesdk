@@ -61,8 +61,6 @@ class UploadImageWorker(appContext: Context, workerParams: WorkerParameters) :
                     call: Call<UploadImageResponse>,
                     response: Response<UploadImageResponse>
                 ) {
-
-
                     if (response.isSuccessful) {
                         Log.d(TAG, "onResponse: "+"uploaded")
                         val uploadImageResponse = response.body()

@@ -155,9 +155,13 @@ class ShootLocalRepository {
         Log.d(TAG, "updateUploadCount: "+uploadCount)
     }
 
-    fun updateTotalImageCount(skuId : String, totalImages : Int) {
+    fun updateTotalImageCount(skuId : String) {
+        var totalImagesCount = getUploadedAndTotalImagesCount(skuId).totalImages
+
         val values = ContentValues().apply {
-            put(ShootContract.ShootEntry.COLUMN_NAME_TOTAL_IMAGES, totalImages)
+            put(
+                ShootContract.ShootEntry.COLUMN_NAME_TOTAL_IMAGES,
+                totalImagesCount?.plus(1))
         }
 
         // Which row to update, based on the title

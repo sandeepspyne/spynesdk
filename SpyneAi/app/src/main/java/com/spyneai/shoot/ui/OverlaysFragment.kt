@@ -91,6 +91,8 @@ class OverlaysFragment : BaseFragment<ShootViewModel,FragmentOverlaysBinding>(),
     }
 
     private fun startInteriorShots() {
+        binding.rvSubcategories?.visibility = View.VISIBLE
+
         viewModel.subCategoriesResponse.observe(viewLifecycleOwner,{
             when(it){
                 is Resource.Sucess -> {
@@ -143,6 +145,8 @@ class OverlaysFragment : BaseFragment<ShootViewModel,FragmentOverlaysBinding>(),
     }
 
     private fun startMiscShots() {
+        binding.rvSubcategories?.visibility = View.VISIBLE
+
         viewModel.subCategoriesResponse.observe(viewLifecycleOwner,{
             when(it){
                 is Resource.Sucess -> {
@@ -160,7 +164,7 @@ class OverlaysFragment : BaseFragment<ShootViewModel,FragmentOverlaysBinding>(),
                     }
 
                     //change image type
-                    viewModel.categoryDetails.value?.imageType = "Miscellaneous"
+                    viewModel.categoryDetails.value?.imageType = "Focus Shoot"
                 }
                 else -> {}
             }

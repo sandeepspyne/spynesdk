@@ -42,8 +42,6 @@ class CameraFragment : BaseFragment<ShootViewModel, FragmentCameraBinding>() {
     var pickiT: PickiT? = null
     private val FILENAME_FORMAT = "yyyy-MM-dd-HH-mm-ss-SSS"
 
-
-
     companion object {
         private const val RATIO_4_3_VALUE = 4.0 / 3.0 // aspect ratio 4x3
         private const val RATIO_16_9_VALUE = 16.0 / 9.0 // aspect ratio 16x9
@@ -55,7 +53,6 @@ class CameraFragment : BaseFragment<ShootViewModel, FragmentCameraBinding>() {
         cameraExecutor = Executors.newSingleThreadExecutor()
         // Determine the output directory
         outputDirectory = ShootActivity.getOutputDirectory(requireContext())
-
 
         viewModel.startInteriorShots.observe(viewLifecycleOwner,{
             if (it) binding.tvSkipShoot?.visibility = View.VISIBLE

@@ -17,6 +17,7 @@ class ConfirmReshootDialog : BaseDialogFragment<ShootViewModel, DialogConfirmRes
 
         binding.btReshootImage.setOnClickListener{
             //remove last item from shoot list
+            viewModel.shootList.value?.removeAt(viewModel.shootList.value!!.size - 1)
             dismiss()
         }
 
@@ -24,44 +25,43 @@ class ConfirmReshootDialog : BaseDialogFragment<ShootViewModel, DialogConfirmRes
 
             when(viewModel.categoryDetails.value?.imageType) {
                 "Exterior" -> {
+                    viewModel.uploadImageWithWorkManager(requireContext(), viewModel.shootData.value!!)
+
                     if (viewModel.shootNumber.value  == viewModel.exterirorAngles.value?.minus(1)){
-                         viewModel.uploadImageWithWorkManager(requireContext(), viewModel.shootData.value!!)
                         dismiss()
                         viewModel.showInteriorDialog.value = true
                     }else{
                         viewModel.shootNumber.value = viewModel.shootNumber.value!! + 1
-                        viewModel.uploadImageWithWorkManager(requireContext(), viewModel.shootData.value!!)
                         dismiss()
                     }
                 }
 
                 "Interior" -> {
-                    if (viewModel.interiorShootNumber.value  == viewModel.interiorAngles.value?.minus(1)){
+                    updateTotalImages()
+                    viewModel.uploadImageWithWorkManager(requireContext(), viewModel.shootData.value!!)
 
-                        // viewModel.uploadImageWithWorkManager(requireContext(), viewModel.shootData.value!!)
+                    if (viewModel.interiorShootNumber.value  == viewModel.interiorAngles.value?.minus(1)){
                         viewModel.showMiscDialog.value = true
                         dismiss()
                     }else{
                         viewModel.interiorShootNumber.value = viewModel.interiorShootNumber.value!! + 1
-                        // viewModel.uploadImageWithWorkManager(requireContext(), viewModel.shootData.value!!)
                         dismiss()
                     }
                 }
 
-                "Miscellaneous" -> {
-                    if (viewModel.miscShootNumber.value  == viewModel.miscAngles.value?.minus(1)){
+                "Focus Shoot" -> {
+                    updateTotalImages()
+                    viewModel.uploadImageWithWorkManager(requireContext(), viewModel.shootData.value!!)
 
-                        // viewModel.uploadImageWithWorkManager(requireContext(), viewModel.shootData.value!!)
-                       viewModel.selectBackground.value = true
+                    if (viewModel.miscShootNumber.value  == viewModel.miscAngles.value?.minus(1)){
+                        viewModel.selectBackground.value = true
                         dismiss()
                     }else{
                         viewModel.miscShootNumber.value = viewModel.miscShootNumber.value!! + 1
-                        // viewModel.uploadImageWithWorkManager(requireContext(), viewModel.shootData.value!!)
                         dismiss()
                     }
                 }
             }
-
         }
 
        viewModel.overlaysResponse.observe(viewLifecycleOwner,{
@@ -90,7 +90,10 @@ class ConfirmReshootDialog : BaseDialogFragment<ShootViewModel, DialogConfirmRes
                else -> {}
            }
        })
+    }
 
+    fun updateTotalImages() {
+        viewModel.updateTotalImages(viewModel.sku.value?.skuId!!)
     }
 
     private fun setOverlay(view: View, overlay : String) {
