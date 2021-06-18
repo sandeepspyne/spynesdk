@@ -62,32 +62,40 @@ class UploadImageWorker(appContext: Context, workerParams: WorkerParameters) :
                     response: Response<UploadImageResponse>
                 ) {
 
-                    Log.d(TAG, "onResponse: " + response.body().toString())
 
                     if (response.isSuccessful) {
+                        Log.d(TAG, "onResponse: "+"uploaded")
                         val uploadImageResponse = response.body()
 
                         //update uploaded image count
                         localRepository.updateUploadCount(inputData.getString("skuId").toString())
 
+
                         // check if all image uploaded
                         if (localRepository.processSku(inputData.getString("skuId").toString())) {
+                            Log.d(TAG, "onResponse: "+"process started")
                             //process sku
-                            val processSkuWorkRequest = OneTimeWorkRequest.Builder(ProcessSkuWorker::class.java)
+                            val processSkuWorkRequest =
+                                OneTimeWorkRequest.Builder(ProcessSkuWorker::class.java)
 
                             val data = Data.Builder()
                             data.putString("skuId", inputData.getString("skuId").toString())
-                            data.putString("authKey",  inputData.getString("authKey").toString())
+                            data.putString("authKey", inputData.getString("authKey").toString())
 
                             processSkuWorkRequest.setInputData(data.build())
-                            WorkManager.getInstance(applicationContext).enqueue(processSkuWorkRequest.build())
+                            WorkManager.getInstance(applicationContext)
+                                .enqueue(processSkuWorkRequest.build())
 
+
+
+                        }else{
+                            Log.d(TAG, "onResponse: "+"process not started")
                         }
                     }
                 }
 
                 override fun onFailure(call: Call<UploadImageResponse>, t: Throwable) {
-                    Log.d(TAG, "onFailure: "+t.localizedMessage)
+                    Log.d(TAG, "onFailure: " + t.localizedMessage)
 
                 }
 

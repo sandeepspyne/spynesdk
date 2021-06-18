@@ -82,7 +82,8 @@ class ShootLocalRepository {
             BaseColumns._ID,
             ShootContract.ShootEntry.COLUMN_NAME_SKU_ID,
             ShootContract.ShootEntry.COLUMN_NAME_TOTAL_IMAGES,
-            ShootContract.ShootEntry.COLUMN_NAME_UPLOADED_IMAGES)
+            ShootContract.ShootEntry.COLUMN_NAME_UPLOADED_IMAGES,
+            ShootContract.ShootEntry.COLUMN_NAME_PROCESS_SKU)
 
         // Filter results WHERE "title" = 'My Title'
         val selection = "${ShootContract.ShootEntry.COLUMN_NAME_SKU_ID} = ?"
@@ -108,10 +109,12 @@ class ShootLocalRepository {
                 val skuId = getString(getColumnIndexOrThrow(ShootContract.ShootEntry.COLUMN_NAME_SKU_ID))
                 val totalImages = getInt(getColumnIndexOrThrow(ShootContract.ShootEntry.COLUMN_NAME_TOTAL_IMAGES))
                 val uploadedImages = getInt(getColumnIndexOrThrow(ShootContract.ShootEntry.COLUMN_NAME_UPLOADED_IMAGES))
+                val processSku = getInt(getColumnIndexOrThrow(ShootContract.ShootEntry.COLUMN_NAME_PROCESS_SKU))
 
                 sku.skuId = skuId
                 sku.totalImages = totalImages
                 sku.uploadedImages = uploadedImages
+                sku.processSku = processSku
             }
         }
 

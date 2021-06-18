@@ -16,6 +16,7 @@ class ConfirmReshootDialog : BaseDialogFragment<ShootViewModel, DialogConfirmRes
         super.onViewCreated(view, savedInstanceState)
 
         binding.btReshootImage.setOnClickListener{
+            //remove last item from shoot list
             dismiss()
         }
 

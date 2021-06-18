@@ -42,6 +42,7 @@ class ProcessSkuWorker (appContext: Context, workerParams: WorkerParameters) :
             processRepository.processSku(authKey,skuId,backgroundId)
 
         } catch (e : Exception) {
+            Log.d(TAG, "processSku: "+e.localizedMessage)
             e.printStackTrace()
         }
     }

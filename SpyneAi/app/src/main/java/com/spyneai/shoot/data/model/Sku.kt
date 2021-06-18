@@ -6,6 +6,6 @@ package com.spyneai.shoot.data.model
         var projectId : String? = null
         var totalImages : Int? = null
         var uploadedImages : Int? = null
-        val processSku : Int = 0
+        var processSku : Int = 0
 
  }
