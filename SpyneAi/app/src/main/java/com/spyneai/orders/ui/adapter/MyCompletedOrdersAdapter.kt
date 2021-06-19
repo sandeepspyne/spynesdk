@@ -6,17 +6,14 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
-import androidx.cardview.widget.CardView
-import androidx.navigation.findNavController
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.spyneai.R
-import com.spyneai.orders.data.response.GetCompletedSKUsResponse
-import kotlinx.android.synthetic.main.activity_generate_gif.*
+import com.spyneai.orders.data.response.CompletedSKUsResponse
 
 class MyCompletedOrdersAdapter(
     val context: Context,
-    val completedSkuList: ArrayList<GetCompletedSKUsResponse.Data>
+    val completedSkuList: ArrayList<CompletedSKUsResponse.Data>
 ) : RecyclerView.Adapter<MyCompletedOrdersAdapter.ViewHolder>() {
 
     class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {

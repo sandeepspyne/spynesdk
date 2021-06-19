@@ -40,7 +40,7 @@ class MyOngoingOrdersFragment : BaseFragment<MyOrdersViewModel, MyOngoingOrdersF
         ongoingSkuList = ArrayList<GetOngoingSkusResponse.Data>()
         setOngoingSkuRecycler()
 
-        viewModel.getOngoingSKUs("18e13dda-ceb8-48f0-8ee0-13fecc26a7f8")
+        viewModel.getOngoingSKUs(Utilities.getPreference(requireContext(), AppConstants.AUTH_KEY).toString())
         viewModel.getOngoingSkusResponse.observe(
             viewLifecycleOwner, androidx.lifecycle.Observer {
                 when (it) {

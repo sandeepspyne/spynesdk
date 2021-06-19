@@ -6,7 +6,7 @@ import com.spyneai.dashboard.response.NewSubCatResponse
 import com.spyneai.model.carbackgroundgif.CarBackgrounGifResponse
 import com.spyneai.model.credit.FreeCreditEligblityResponse
 import com.spyneai.model.projects.CompletedProjectResponse
-import com.spyneai.orders.data.response.GetCompletedSKUsResponse
+import com.spyneai.orders.data.response.CompletedSKUsResponse
 import com.spyneai.orders.data.response.GetImagesOfSkuResponse
 import com.spyneai.orders.data.response.GetOngoingSkusResponse
 import com.spyneai.shoot.data.model.CreateProjectRes
@@ -101,7 +101,7 @@ interface ClipperApi {
     @GET("v2/sku/getCompSKU")
     suspend fun getCompletedSkus(
         @Query("auth_key") authKey: String
-    ) : GetCompletedSKUsResponse
+    ) : CompletedSKUsResponse
 
     @POST("v2/sku/getImagesByName")
     suspend fun getImagesOfSku(

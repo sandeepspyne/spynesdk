@@ -38,9 +38,12 @@ import com.spyneai.model.categories.Data
 import com.spyneai.model.processImageService.Task
 import com.spyneai.model.projects.CompletedProjectResponse
 import com.spyneai.model.shoot.CreateCollectionRequest
-import com.spyneai.model.shoot.UpdateShootCategoryRequest
+
 import com.spyneai.needs.AppConstants
 import com.spyneai.needs.Utilities
+import com.spyneai.orders.data.response.CompletedSKUsResponse
+import com.spyneai.orders.data.response.GetOngoingSkusResponse
+import com.spyneai.orders.ui.adapter.MyOngoingOrdersAdapter
 import com.spyneai.service.ProcessImagesService
 import kotlinx.android.synthetic.main.home_dashboard_fragment.*
 import okhttp3.MultipartBody
@@ -57,7 +60,7 @@ class HomeDashboardFragment :
     lateinit var ongoingDashboardAdapter : OngoingDashboardAdapter
 
     lateinit var completedDashboardAdapter : CompletedDashboardAdapter
-    lateinit var completedProjectList: ArrayList<CompletedProjectResponse>
+    lateinit var completedProjectList: ArrayList<CompletedSKUsResponse.Data>
 
     var tutorialVideosList = intArrayOf(R.drawable.ic_tv1, R.drawable.ic_tv2)
 
@@ -104,7 +107,7 @@ class HomeDashboardFragment :
             startActivity(intent)
         }
 
-        viewModel.getCategories(tokenId)
+        viewModel.getCategories(Utilities.getPreference(requireContext(),AppConstants.AUTH_KEY).toString())
         viewModel.categoriesResponse.observe(viewLifecycleOwner, Observer {
             when(it){
                 is Resource.Sucess -> {
@@ -158,10 +161,8 @@ class HomeDashboardFragment :
             }
         })
 
-        val userId = RequestBody.create(
-            MultipartBody.FORM,
-            tokenId)
-        viewModel.getCompletedProjects(userId)
+
+        viewModel.getCompletedProjects(Utilities.getPreference(requireContext(),AppConstants.AUTH_KEY).toString())
 
         viewModel.completedProjectResponse.observe(viewLifecycleOwner, Observer {
             when(it){
@@ -169,8 +170,8 @@ class HomeDashboardFragment :
                     rvCompletedShoots.visibility = View.VISIBLE
                     shimmerCompleted.stopShimmer()
                     shimmerCompleted.visibility = View.GONE
-                    completedProjectList = ArrayList<CompletedProjectResponse>()
-                    completedProjectList.addAll(it.value)
+                    completedProjectList = ArrayList()
+                    completedProjectList.addAll(it.value.data)
                     completedProjectList.reverse()
 
                     if (completedProjectList.size == 0)
@@ -259,26 +260,36 @@ class HomeDashboardFragment :
 
     private fun setOngoingProjectRecycler(){
 
-        ongoingDashboardAdapter = OngoingDashboardAdapter(requireContext(),
-            ProcessImagesService.tasksInProgress)
+        viewModel.getOngoingSKUs(Utilities.getPreference(requireContext(), AppConstants.AUTH_KEY).toString())
+        viewModel.getOngoingSkusResponse.observe(
+            viewLifecycleOwner, androidx.lifecycle.Observer {
+                when (it) {
+                    is Resource.Sucess -> {
+                        ongoingDashboardAdapter = OngoingDashboardAdapter(requireContext(),
+                            it.value.data as ArrayList<GetOngoingSkusResponse.Data>
+                        )
 
-        val layoutManager: RecyclerView.LayoutManager = LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
-        rvOngoingShoots.setLayoutManager(layoutManager)
-        rvOngoingShoots.setAdapter(ongoingDashboardAdapter)
-        refreshList()
-        showHideRecyclerView(ProcessImagesService.tasksInProgress)
+                        val layoutManager: RecyclerView.LayoutManager = LinearLayoutManager(requireContext(), LinearLayoutManager.VERTICAL, false)
+                        binding.rvOngoingShoots.setLayoutManager(layoutManager)
+                        binding.rvOngoingShoots.setAdapter(ongoingDashboardAdapter)
+
+                        showHideRecyclerView(it.value.data)
+                    }
+                    is Resource.Loading -> {
+
+                    }
+                    is Resource.Failure -> {
+                        handleApiError(it)
+                    }
+
+                }
+            }
+        )
+
     }
 
-    private fun refreshList(){
-        Handler(Looper.getMainLooper()).postDelayed({
-            ongoingDashboardAdapter.notifyDataSetChanged()
-            showHideRecyclerView(ProcessImagesService.tasksInProgress)
-            refreshList()
-        }, 3000)
 
-    }
-
-    private fun showHideRecyclerView(tasksInProgress: ArrayList<Task>) {
+    private fun showHideRecyclerView(tasksInProgress: ArrayList<GetOngoingSkusResponse.Data>) {
         if (tasksInProgress.size == 0 && groupOngoingProjects!=null)
             groupOngoingProjects.visibility = View.GONE
     }
@@ -292,8 +303,6 @@ class HomeDashboardFragment :
                         val intent = Intent(requireContext(), YoutubeVideoPlayerActivity::class.java)
                         intent.putExtra(AppConstants.VIDEO_URL, "https://storage.googleapis.com/spyne-cliq/spyne-cliq/AboutVideo/car_spyne.mp4")
                         startActivity(intent)
-
-
                     }else{
                         val intent = Intent(requireContext(), YoutubeVideoPlayerActivity::class.java)
                         intent.putExtra(AppConstants.VIDEO_URL, "https://storage.googleapis.com/spyne-cliq/spyne-cliq/AboutVideo/footwear_spyne.mp4")

@@ -6,17 +6,11 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 
 import com.spyneai.dashboard.data.repository.DashboardRepository
-import com.spyneai.model.categories.CategoriesResponse
-import com.spyneai.model.credit.FreeCreditEligblityResponse
-import com.spyneai.model.projects.CompletedProjectResponse
-import com.spyneai.model.shoot.CreateCollectionRequest
-import com.spyneai.model.shoot.CreateCollectionResponse
-import com.spyneai.model.shoot.UpdateShootCategoryRequest
-import com.spyneai.model.shoot.UpdateShootCategoryResponse
 import kotlinx.coroutines.launch
-import okhttp3.RequestBody
 import com.spyneai.base.network.Resource
 import com.spyneai.dashboard.response.NewCategoriesResponse
+import com.spyneai.orders.data.response.CompletedSKUsResponse
+import com.spyneai.orders.data.response.GetOngoingSkusResponse
 
 class DashboardViewModel() : ViewModel() {
 
@@ -26,8 +20,12 @@ class DashboardViewModel() : ViewModel() {
     val categoriesResponse: LiveData<Resource<NewCategoriesResponse>>
         get() = _categoriesResponse
 
-    private val _completedProjectResponse: MutableLiveData<Resource<List<CompletedProjectResponse>>> = MutableLiveData()
-    val completedProjectResponse: LiveData<Resource<List<CompletedProjectResponse>>>
+    private val _getOngoingSkusResponse: MutableLiveData<Resource<GetOngoingSkusResponse>> = MutableLiveData()
+    val getOngoingSkusResponse: LiveData<Resource<GetOngoingSkusResponse>>
+        get() = _getOngoingSkusResponse
+
+    private val _completedProjectResponse: MutableLiveData<Resource<CompletedSKUsResponse>> = MutableLiveData()
+    val completedProjectResponse: LiveData<Resource<CompletedSKUsResponse>>
         get() = _completedProjectResponse
 
 
@@ -36,14 +34,21 @@ class DashboardViewModel() : ViewModel() {
     ) = viewModelScope.launch {
         _categoriesResponse.value = Resource.Loading
         _categoriesResponse.value = repository.getCategories(tokenId)
+    }
+
+    fun getOngoingSKUs(
+        tokenId: String
+    ) = viewModelScope.launch {
+        _getOngoingSkusResponse.value = Resource.Loading
+        _getOngoingSkusResponse.value = repository.getOngoingSKUs(tokenId)
 
     }
 
     fun getCompletedProjects(
-        user_id: RequestBody
+        auth_key : String
     ) = viewModelScope.launch {
         _completedProjectResponse.value = Resource.Loading
-        _completedProjectResponse.value = repository.getCompletedProjects(user_id)
+        _completedProjectResponse.value = repository.getCompletedProjects(auth_key)
 
     }
 

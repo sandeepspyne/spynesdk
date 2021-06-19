@@ -6,7 +6,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.spyneai.base.network.Resource
 import com.spyneai.orders.data.repository.MyOrdersRepository
-import com.spyneai.orders.data.response.GetCompletedSKUsResponse
+import com.spyneai.orders.data.response.CompletedSKUsResponse
 import com.spyneai.orders.data.response.GetImagesOfSkuResponse
 import com.spyneai.orders.data.response.GetOngoingSkusResponse
 import kotlinx.coroutines.launch
@@ -15,9 +15,9 @@ class MyOrdersViewModel : ViewModel() {
 
     private val repository = MyOrdersRepository()
 
-    private val _getCompletedSKUsResponse: MutableLiveData<Resource<GetCompletedSKUsResponse>> = MutableLiveData()
-    val getCompletedSKUsResponse: LiveData<Resource<GetCompletedSKUsResponse>>
-        get() = _getCompletedSKUsResponse
+    private val _CompletedSKUsResponse: MutableLiveData<Resource<CompletedSKUsResponse>> = MutableLiveData()
+    val completedSKUsResponse: LiveData<Resource<CompletedSKUsResponse>>
+        get() = _CompletedSKUsResponse
 
     private val _getOngoingSkusResponse: MutableLiveData<Resource<GetOngoingSkusResponse>> = MutableLiveData()
     val getOngoingSkusResponse: LiveData<Resource<GetOngoingSkusResponse>>
@@ -30,8 +30,8 @@ class MyOrdersViewModel : ViewModel() {
     fun getCompletedSKUs(
         tokenId: String
     ) = viewModelScope.launch {
-        _getCompletedSKUsResponse.value = Resource.Loading
-        _getCompletedSKUsResponse.value = repository.getCompletedSKUs(tokenId)
+        _CompletedSKUsResponse.value = Resource.Loading
+        _CompletedSKUsResponse.value = repository.getCompletedSKUs(tokenId)
 
     }
 

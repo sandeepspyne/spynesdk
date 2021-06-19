@@ -17,10 +17,11 @@ import com.spyneai.adapter.CompletedProjectAdapter
 import com.spyneai.model.projects.CompletedProjectResponse
 import com.spyneai.needs.AppConstants
 import com.spyneai.needs.Utilities
+import com.spyneai.orders.data.response.CompletedSKUsResponse
 
 class CompletedDashboardAdapter (
     val context: Context,
-    val completedProjectList: ArrayList<CompletedProjectResponse>,
+    val completedProjectList: ArrayList<CompletedSKUsResponse.Data>,
     val btnlistener: BtnClickListener
 ) : RecyclerView.Adapter<CompletedDashboardAdapter.ViewHolder>() {
 
@@ -48,9 +49,9 @@ class CompletedDashboardAdapter (
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         holder.tvSku.text = completedProjectList[position].sku_name
-        holder.tvDate.text = completedProjectList[position].created_at
+        holder.tvDate.text = completedProjectList[position].created_date
         Glide.with(context)
-            .load(completedProjectList[position].output_image_url)
+            .load(completedProjectList[position].thumbnail)
             .into(holder.ivImage)
 
         mClickListener = btnlistener

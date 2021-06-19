@@ -23,10 +23,11 @@ import com.spyneai.adapter.OngoingProjectAdapter
 import com.spyneai.model.processImageService.Task
 import com.spyneai.needs.AppConstants
 import com.spyneai.needs.Utilities
+import com.spyneai.orders.data.response.GetOngoingSkusResponse
 
 class OngoingDashboardAdapter (
     val context: Context,
-    val ongoingProjectList: ArrayList<Task>,
+    val ongoingProjectList: ArrayList<GetOngoingSkusResponse.Data>,
 ) : RecyclerView.Adapter<OngoingDashboardAdapter.ViewHolder>() {
 
     class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
@@ -45,20 +46,20 @@ class OngoingDashboardAdapter (
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        holder.tvSku.text = ongoingProjectList[position].catName
-        holder.tvDate.text = ongoingProjectList[position].skuName
+        holder.tvSku.text = ongoingProjectList[position].category
+        holder.tvDate.text = ongoingProjectList[position].sku_name
 
 
 
 
         Glide.with(context)
-            .load(ongoingProjectList[position].imageFileList[0])
+            .load(ongoingProjectList[position].thumbnail)
             .into(holder.ivImage)
 
-        if (ongoingProjectList[position].isFailure){
-            holder.llFailed.visibility = View.VISIBLE
-            holder.llOngoing.visibility = View.GONE
-        }
+//        if (ongoingProjectList[position].isFailure){
+//            holder.llFailed.visibility = View.VISIBLE
+//            holder.llOngoing.visibility = View.GONE
+//        }
 
 
         holder.clBackground.setOnClickListener {
@@ -66,10 +67,11 @@ class OngoingDashboardAdapter (
             context.startActivity(intent)
         }
 
-                    Utilities.savePrefrence(context,
-                        AppConstants.SKU_ID,
-                        ongoingProjectList[position].skuId)
+//                    Utilities.savePrefrence(context,
+//                        AppConstants.SKU_ID,
+//                        ongoingProjectList[position].skuId)
     }
+
     override fun getItemCount() = ongoingProjectList.size
 
 }
