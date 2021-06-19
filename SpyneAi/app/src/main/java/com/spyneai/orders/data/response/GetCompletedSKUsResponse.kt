@@ -1,24 +1,26 @@
 package com.spyneai.orders.data.response
 
+import com.google.gson.annotations.SerializedName
+
 data class GetCompletedSKUsResponse(
-    val count: Int,
-    val `data`: List<Data>,
-    val message: String,
-    val status: Int
+    @SerializedName("count") val count : Int,
+    @SerializedName("data") val data : List<Data>,
+    @SerializedName("message") val message : String,
+    @SerializedName("status") val status : Int
 ){
     data class Data(
-        val category: String,
-        val created_date: String,
-        val paid: String,
-        val sku_id: String,
-        val sku_name: String,
-        val status: String,
-        val sub_category: String,
-        val thumbnail: String,
-        val total_exterior: Int,
-        val total_focus: Any,
-        val total_images: Int,
-        val total_interior: Any
+        @SerializedName("category") val category : String,
+        @SerializedName("created_date") val created_date : String,
+        @SerializedName("paid") val paid : Boolean,
+        @SerializedName("sku_id") val sku_id : String,
+        @SerializedName("sku_name") val sku_name : String,
+        @SerializedName("status") val status : String,
+        @SerializedName("sub_category") val sub_category : String,
+        @SerializedName("thumbnail") val thumbnail : String,
+        @SerializedName("total_exterior") val total_exterior : Int,
+        @SerializedName("total_focus") val total_focus : String,
+        @SerializedName("total_images") val total_images : Int,
+        @SerializedName("total_interior") val total_interior : String
     )
 }
 

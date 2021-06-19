@@ -21,7 +21,7 @@ class MyOngoingOrdersFragment : BaseFragment<MyOrdersViewModel, MyOngoingOrdersF
 
     lateinit var tokenId: String
     lateinit var myOngoingOrdersAdapter: MyOngoingOrdersAdapter
-    lateinit var ongoingSkuList: ArrayList<GetOngoingSkusResponse>
+    lateinit var ongoingSkuList: ArrayList<GetOngoingSkusResponse.Data>
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -37,15 +37,21 @@ class MyOngoingOrdersFragment : BaseFragment<MyOrdersViewModel, MyOngoingOrdersF
         super.onActivityCreated(savedInstanceState)
 
         tokenId = Utilities.getPreference(requireContext(), AppConstants.tokenId).toString()
-        ongoingSkuList = ArrayList<GetOngoingSkusResponse>()
+        ongoingSkuList = ArrayList<GetOngoingSkusResponse.Data>()
         setOngoingSkuRecycler()
 
-        viewModel.getOngoingSKUs(tokenId)
+        viewModel.getOngoingSKUs("18e13dda-ceb8-48f0-8ee0-13fecc26a7f8")
         viewModel.getOngoingSkusResponse.observe(
             viewLifecycleOwner, androidx.lifecycle.Observer {
                 when (it) {
                     is Resource.Sucess -> {
-                        ongoingSkuList.add(it.value)
+                        ongoingSkuList.addAll(it.value.data)
+                        myOngoingOrdersAdapter = MyOngoingOrdersAdapter(requireContext(),
+                            ongoingSkuList)
+
+                        val layoutManager: RecyclerView.LayoutManager = LinearLayoutManager(requireContext(), LinearLayoutManager.VERTICAL, false)
+                        binding.rvMyOngoingOrders.setLayoutManager(layoutManager)
+                        binding.rvMyOngoingOrders.setAdapter(myOngoingOrdersAdapter)
                         myOngoingOrdersAdapter =
                             MyOngoingOrdersAdapter(
                                 requireContext(),
@@ -65,12 +71,7 @@ class MyOngoingOrdersFragment : BaseFragment<MyOrdersViewModel, MyOngoingOrdersF
     }
 
     private fun setOngoingSkuRecycler(){
-        myOngoingOrdersAdapter = MyOngoingOrdersAdapter(requireContext(),
-            ongoingSkuList)
 
-        val layoutManager: RecyclerView.LayoutManager = LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
-        binding.rvMyOngoingOrders.setLayoutManager(layoutManager)
-        binding.rvMyOngoingOrders.setAdapter(myOngoingOrdersAdapter)
     }
 
     override fun getViewModel() = MyOrdersViewModel::class.java

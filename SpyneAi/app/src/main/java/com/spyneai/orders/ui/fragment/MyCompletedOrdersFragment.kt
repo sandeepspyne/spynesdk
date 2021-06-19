@@ -25,7 +25,7 @@ class MyCompletedOrdersFragment :
 
     lateinit var tokenId: String
     lateinit var myCompletedOrdersAdapter: MyCompletedOrdersAdapter
-    lateinit var completedSkuList: ArrayList<GetCompletedSKUsResponse>
+    lateinit var completedSkuList: ArrayList<GetCompletedSKUsResponse.Data>
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -43,15 +43,21 @@ class MyCompletedOrdersFragment :
         super.onActivityCreated(savedInstanceState)
 
         tokenId = Utilities.getPreference(requireContext(), AppConstants.tokenId).toString()
-        completedSkuList = ArrayList<GetCompletedSKUsResponse>()
+        completedSkuList = ArrayList<GetCompletedSKUsResponse.Data>()
         setCompletedSkuRecycler()
 
-        viewModel.getCompletedSKUs(tokenId)
+        viewModel.getCompletedSKUs("18e13dda-ceb8-48f0-8ee0-13fecc26a7f8")
         viewModel.getCompletedSKUsResponse.observe(
             viewLifecycleOwner, Observer {
                 when (it) {
                     is com.spyneai.base.network.Resource.Sucess -> {
-                        completedSkuList.add(it.value)
+                        completedSkuList.addAll(it.value.data)
+                        myCompletedOrdersAdapter = MyCompletedOrdersAdapter(requireContext(),
+                            completedSkuList)
+
+                        val layoutManager: RecyclerView.LayoutManager = LinearLayoutManager(requireContext(), LinearLayoutManager.VERTICAL, false)
+                        binding.rvMyCompletedOrders.setLayoutManager(layoutManager)
+                        binding.rvMyCompletedOrders.setAdapter(myCompletedOrdersAdapter)
                         myCompletedOrdersAdapter =
                             MyCompletedOrdersAdapter(
                                 requireContext(),
@@ -71,12 +77,7 @@ class MyCompletedOrdersFragment :
     }
 
     private fun setCompletedSkuRecycler(){
-        myCompletedOrdersAdapter = MyCompletedOrdersAdapter(requireContext(),
-            completedSkuList)
 
-        val layoutManager: RecyclerView.LayoutManager = LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
-        binding.rvMyCompletedOrders.setLayoutManager(layoutManager)
-        binding.rvMyCompletedOrders.setAdapter(myCompletedOrdersAdapter)
     }
 
     override fun getViewModel() = MyOrdersViewModel::class.java
