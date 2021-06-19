@@ -1,6 +1,7 @@
 package com.spyneai.orders.ui.adapter
 
 import android.content.Context
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -15,6 +16,13 @@ class MyOngoingOrdersAdapter(
     val context: Context,
     val ongoingSkuList: ArrayList<GetOngoingSkusResponse.Data>
 ) : RecyclerView.Adapter<MyOngoingOrdersAdapter.ViewHolder>() {
+
+    override fun getItemViewType(position: Int): Int {
+        if (position == ongoingSkuList.size - 1){
+            return 1
+        }
+        return 0
+    }
 
     class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
 
@@ -33,13 +41,20 @@ class MyOngoingOrdersAdapter(
     override fun onCreateViewHolder(
         parent: ViewGroup,
         viewType: Int
-    ): MyOngoingOrdersAdapter.ViewHolder {
-        val view = LayoutInflater.from(parent.context)
-            .inflate(R.layout.item_my_ongoing_orders, parent, false)
-        return MyOngoingOrdersAdapter.ViewHolder(view)
+    ):ViewHolder {
+        val view : View?
+
+        if (viewType == 0){
+            view = LayoutInflater.from(parent.context)
+                .inflate(R.layout.item_my_ongoing_orders, parent, false)
+        }else{
+            view = LayoutInflater.from(parent.context)
+                .inflate(R.layout.item_last_ongoing_order, parent, false)
+        }
+        return ViewHolder(view)
     }
 
-    override fun onBindViewHolder(holder: MyOngoingOrdersAdapter.ViewHolder, position: Int) {
+    override fun onBindViewHolder(holder: ViewHolder, position: Int) {
 
         holder.tv_images_count_ongoing.text = ongoingSkuList[position].total_images.toString()
         holder.tvSubCategory.text = ongoingSkuList[position].sub_category
@@ -56,6 +71,6 @@ class MyOngoingOrdersAdapter(
     }
 
     override fun getItemCount(): Int {
-        return 5
+        return ongoingSkuList.size
     }
 }

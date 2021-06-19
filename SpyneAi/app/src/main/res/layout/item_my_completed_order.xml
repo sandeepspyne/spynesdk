@@ -1,0 +1,281 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.cardview.widget.CardView android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_marginTop="@dimen/dp_15"
+    android:layout_marginLeft="@dimen/dp_20"
+    android:layout_marginRight="@dimen/dp_20"
+    android:layout_marginBottom="@dimen/dp_100"
+    app:cardElevation="@dimen/dp_5"
+    app:cardCornerRadius="@dimen/dp_5">
+
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="@dimen/dp_10">
+
+        <androidx.cardview.widget.CardView
+            android:id="@+id/cvThumbnail"
+            android:layout_width="129dp"
+            android:layout_height="61dp"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintLeft_toLeftOf="parent"
+            android:layout_marginTop="19dp"
+            app:cardCornerRadius="@dimen/dp_5"
+            android:layout_marginLeft="@dimen/dp_15">
+
+            <ImageView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:id="@+id/iv_thumbnail_completed"
+                android:scaleType="fitXY" />
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:layout_margin="@dimen/dp_3"
+                android:gravity="center"
+                android:background="@drawable/bg_images_count">
+
+                <ImageView
+                    android:layout_width="9dp"
+                    android:layout_height="8dp"
+                    android:layout_margin="@dimen/dp_5"
+                    android:src="@drawable/ic_camera_icon"
+                    android:layout_gravity="center_vertical"/>
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/tv_images_count"
+                    android:hint="10"
+                    android:fontFamily="@font/poppins_medium"
+                    android:textColor="@color/white"
+                    android:textSize="@dimen/dp_8"
+                    android:layout_gravity="center"
+                    android:layout_margin="4dp"/>
+
+            </LinearLayout>
+
+        </androidx.cardview.widget.CardView>
+
+        <TextView
+            android:id="@+id/tvCategoryName"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:hint="Automobiles"
+            android:textSize="@dimen/sp_10"
+            android:fontFamily="@font/poppins_medium"
+            android:textColor="@color/primary"
+            app:layout_constraintTop_toBottomOf="@+id/cvThumbnail"
+            app:layout_constraintLeft_toLeftOf="parent"
+            android:layout_marginLeft="@dimen/dp_40"
+            android:padding="@dimen/dp_5"/>
+
+        <TextView
+            android:id="@+id/tvProjectname"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Project Name:"
+            android:textColor="@color/primary"
+            android:textSize="@dimen/sp_12"
+            app:layout_constraintLeft_toRightOf="@+id/cvThumbnail"
+            app:layout_constraintTop_toTopOf="@+id/cvThumbnail"
+            android:layout_marginLeft="@dimen/dp_10"
+            android:fontFamily="@font/poppins_medium"/>
+
+        <TextView
+            android:id="@+id/tvProjectName"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:hint="12345"
+            android:textColor="@color/black"
+            android:textSize="@dimen/sp_12"
+            app:layout_constraintLeft_toRightOf="@+id/tvProjectname"
+            app:layout_constraintTop_toTopOf="@+id/cvThumbnail"
+            android:layout_marginLeft="@dimen/dp_5"
+            android:fontFamily="@font/poppins_medium"/>
+
+        <TextView
+            android:id="@+id/tvProjectid"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Sub Category:"
+            android:textColor="@color/primary"
+            android:textSize="@dimen/sp_12"
+            app:layout_constraintLeft_toRightOf="@+id/cvThumbnail"
+            app:layout_constraintTop_toBottomOf="@+id/tvProjectname"
+            android:layout_marginLeft="@dimen/dp_10"
+            android:fontFamily="@font/poppins_medium"/>
+
+        <TextView
+            android:id="@+id/tvSubCat"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:hint="Sedan"
+            android:textColor="@color/black"
+            android:textSize="@dimen/sp_12"
+            app:layout_constraintLeft_toRightOf="@+id/tvProjectid"
+            app:layout_constraintTop_toBottomOf="@+id/tvProjectname"
+            android:layout_marginLeft="@dimen/dp_5"
+            android:fontFamily="@font/poppins_medium"/>
+
+        <TextView
+            android:id="@+id/tvdate"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Date:"
+            android:textColor="@color/primary"
+            android:textSize="@dimen/sp_12"
+            app:layout_constraintLeft_toRightOf="@+id/cvThumbnail"
+            app:layout_constraintTop_toBottomOf="@+id/tvProjectid"
+            android:layout_marginLeft="@dimen/dp_10"
+            android:fontFamily="@font/poppins_medium"/>
+
+        <TextView
+            android:id="@+id/tvDate"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:hint="12/12/2012"
+            android:textColor="@color/black"
+            android:textSize="@dimen/sp_12"
+            app:layout_constraintLeft_toRightOf="@+id/tvdate"
+            app:layout_constraintTop_toBottomOf="@+id/tvProjectid"
+            android:layout_marginLeft="@dimen/dp_5"
+            android:maxLength="16"
+            android:fontFamily="@font/poppins_medium"/>
+
+
+
+        <androidx.cardview.widget.CardView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            app:cardCornerRadius="@dimen/dp_5"
+            app:cardBackgroundColor="@color/paid_background">
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Paid"
+                android:textSize="@dimen/sp_10"
+                android:textColor="@color/paid_text_colour"
+                android:layout_marginLeft="@dimen/dp_15"
+                android:layout_marginRight="@dimen/dp_15"
+                android:layout_marginTop="@dimen/dp_5"
+                android:background="@android:color/transparent"
+                android:layout_marginBottom="@dimen/dp_5"/>
+
+        </androidx.cardview.widget.CardView>
+
+
+
+        <View
+            android:id="@+id/viewH"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/dp_1"
+            android:background="@color/line_separator"
+            app:layout_constraintTop_toBottomOf="@+id/tvCategoryName"
+            android:layout_marginLeft="@dimen/dp_15"/>
+
+        <LinearLayout
+            android:id="@+id/llNumberOfSku"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/viewH">
+
+
+            <TextView
+                android:id="@+id/tvnumbersofsku"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="SKU Name:"
+                android:textColor="@color/primary"
+                android:textSize="@dimen/sp_10"
+                android:fontFamily="@font/poppins_medium"/>
+
+            <TextView
+                android:id="@+id/tvSkuName"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:hint="1234"
+                android:textColor="@color/black"
+                android:textSize="@dimen/sp_10"
+                android:layout_marginLeft="@dimen/dp_5"
+                android:maxLength="5"
+                android:fontFamily="@font/poppins_medium"/>
+
+        </LinearLayout>
+
+        <View
+            android:id="@+id/viewV"
+            android:layout_width="@dimen/dp_1"
+            android:layout_height="0dp"
+            app:layout_constraintTop_toTopOf="@+id/viewH"
+            app:layout_constraintLeft_toRightOf="@+id/llNumberOfSku"
+            android:background="@color/line_separator"></View>
+
+        <LinearLayout
+            android:id="@+id/llSource"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            app:layout_constraintLeft_toRightOf="@id/viewV"
+            app:layout_constraintTop_toBottomOf="@+id/viewH">
+
+
+            <TextView
+                android:id="@+id/tvsource"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Source:"
+                android:textColor="@color/primary"
+                android:textSize="@dimen/sp_10"
+                android:fontFamily="@font/poppins_medium"/>
+
+            <TextView
+                android:id="@+id/tvSource"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:hint="App"
+                android:textColor="@color/black"
+                android:textSize="@dimen/sp_10"
+                android:layout_marginLeft="@dimen/dp_5"
+                android:fontFamily="@font/poppins_medium"/>
+
+        </LinearLayout>
+
+
+        <ImageView
+            android:id="@+id/ivDownloadSKU"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/ic_download_sku"
+            app:layout_constraintTop_toBottomOf="@+id/viewH"
+            app:layout_constraintLeft_toRightOf="@+id/llSource"/>
+
+        <androidx.constraintlayout.helper.widget.Flow
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            app:layout_constraintStart_toStartOf="parent"
+            android:layout_marginTop="@dimen/dp_10"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/viewH"
+            app:flow_wrapMode="chain"
+            app:constraint_referenced_ids="llNumberOfSku, viewV, llSource, ivDownloadSKU"
+            />
+
+
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+
+
+
+</androidx.cardview.widget.CardView>

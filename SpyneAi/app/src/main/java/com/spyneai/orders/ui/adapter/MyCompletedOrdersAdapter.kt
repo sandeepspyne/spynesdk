@@ -27,12 +27,27 @@ class MyCompletedOrdersAdapter(
         val iv_thumbnail_completed: ImageView = view.findViewById(R.id.iv_thumbnail_completed)
     }
 
+    override fun getItemViewType(position: Int): Int {
+        if (position == completedSkuList.size - 1){
+            return 1
+        }
+        return 0
+    }
+
     override fun onCreateViewHolder(
         parent: ViewGroup,
         viewType: Int
     ): MyCompletedOrdersAdapter.ViewHolder {
-        val view = LayoutInflater.from(parent.context)
-            .inflate(R.layout.item_my_completed_orders, parent, false)
+        val view : View?
+
+        if (viewType == 0){
+            view = LayoutInflater.from(parent.context)
+                .inflate(R.layout.item_my_completed_orders, parent, false)
+        }else{
+            view = LayoutInflater.from(parent.context)
+                .inflate(R.layout.item_last_ongoing_order, parent, false)
+        }
+
 
         return MyCompletedOrdersAdapter.ViewHolder(view)
     }
@@ -50,14 +65,12 @@ class MyCompletedOrdersAdapter(
             .error(R.mipmap.defaults) // show error drawable if the image is not a gif
             .into(holder.iv_thumbnail_completed)
 
-
-
 //        holder.cvDownload.setOnClickListener { view ->
 //            view.findNavController().navigate(R.id.nav_request_download)
 //        }
     }
 
     override fun getItemCount(): Int {
-        return 10
+        return completedSkuList.size
     }
 }

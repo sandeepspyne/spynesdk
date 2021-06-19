@@ -36,13 +36,6 @@ class ShootActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_shoot)
 
-        setWindowFlag(
-            WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS
-                    or WindowManager.LayoutParams.FLAG_TRANSLUCENT_NAVIGATION, false
-        )
-        window.statusBarColor = Color.TRANSPARENT
-        window.navigationBarColor = Color.TRANSPARENT
-
         val shootViewModel = ViewModelProvider(this, ViewModelFactory()).get(ShootViewModel::class.java)
 
         val categoryDetails = CategoryDetails()
@@ -84,17 +77,6 @@ class ShootActivity : AppCompatActivity() {
                 }
             }
         })
-    }
-
-    private fun setWindowFlag(bits: Int, on: Boolean) {
-        val win: Window = window
-        val winParams: WindowManager.LayoutParams = win.getAttributes()
-        if (on) {
-            winParams.flags = winParams.flags or bits
-        } else {
-            winParams.flags = winParams.flags and bits.inv()
-        }
-        win.setAttributes(winParams)
     }
 
     /**

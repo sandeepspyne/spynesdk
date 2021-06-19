@@ -32,6 +32,8 @@ class SubCategoryConfirmationDialog : BaseDialogFragment<ShootViewModel, DialogS
             e.printStackTrace()
         }
 
+        binding.tvCancel.setOnClickListener { dismiss() }
+
         binding.btnYes.setOnClickListener {
            viewModel.createProjectRes.observe(viewLifecycleOwner,{
                when(it){
