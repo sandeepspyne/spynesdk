@@ -9,7 +9,8 @@ import androidx.appcompat.app.AppCompatActivity
 import com.spyneai.R
 import com.spyneai.activity.SignInUsingOtpActivity
 import com.spyneai.dashboard.ui.MainDashboardActivity
-import com.spyneai.interfaces.APiService
+import com.spyneai.interfaces.MyAPIService
+
 import com.spyneai.interfaces.RetrofitClientSpyneAi
 import com.spyneai.interfaces.RetrofitClients
 import com.spyneai.loginsignup.models.LoginEmailPasswordBody
@@ -77,7 +78,7 @@ class LoginActivity : AppCompatActivity() {
             et_loginEmail.text.toString(), et_loginPassword.text.toString()
         )
 
-        val call = RetrofitClients.buildService(APiService::class.java)
+        val call = RetrofitClients.buildService(MyAPIService::class.java)
             .loginEmailPassword(email, AppConstants.API_KEY, password, "PASSWORD")
 
 

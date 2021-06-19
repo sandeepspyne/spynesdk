@@ -11,6 +11,7 @@ import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AppCompatDelegate
 import com.spyneai.R
+import com.spyneai.interfaces.MyAPIService
 import com.spyneai.interfaces.RetrofitClient
 import com.spyneai.interfaces.RetrofitClients
 import com.spyneai.loginsignup.activity.LoginActivity
@@ -108,7 +109,7 @@ class SignInUsingOtpActivity : AppCompatActivity() {
     private fun makeSignIn() {
         Utilities.showProgressDialog(this)
 
-        val request = RetrofitClients.buildService(APiService::class.java)
+        val request = RetrofitClients.buildService(MyAPIService::class.java)
         val call = request.loginEmailApp(etEmail.text.toString().trim(),AppConstants.API_KEY)
 //        val call = request.loginEmailApp(etEmail.text.toString(),"value")
 

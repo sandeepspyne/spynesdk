@@ -73,7 +73,7 @@ class CameraFragment : BaseFragment<ShootViewModel, FragmentCameraBinding>(),Pic
                     }
                 }
 
-                "Miscellaneous" -> {
+                "Focus Shoot" -> {
                     if (viewModel.miscShootNumber.value  == viewModel.miscAngles.value?.minus(1)){
                         viewModel.selectBackground.value = true
                     }else{

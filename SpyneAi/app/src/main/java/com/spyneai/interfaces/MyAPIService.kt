@@ -55,7 +55,7 @@ import okhttp3.RequestBody
 import retrofit2.Call
 import retrofit2.http.*
 
-interface APiService {
+interface MyAPIService {
 
     @FormUrlEncoded
     @POST("v2/user/login")

@@ -42,6 +42,7 @@ class LogoutDashBoardFragment : Fragment() {
         super.onActivityCreated(savedInstanceState)
         binding.llLogout.setOnClickListener {
             Utilities.savePrefrence(requireContext(), AppConstants.tokenId, "")
+            Utilities.savePrefrence(requireContext(), AppConstants.AUTH_KEY, "")
             Utilities.savePrefrence(requireContext(), AppConstants.SHOOT_ID, "")
             Utilities.savePrefrence(requireContext(), AppConstants.SKU_ID, "")
             Intent.FLAG_ACTIVITY_CLEAR_TASK

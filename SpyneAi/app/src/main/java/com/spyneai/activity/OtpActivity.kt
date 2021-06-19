@@ -14,7 +14,7 @@ import androidx.appcompat.app.AppCompatActivity
 import com.spyneai.extras.OnboardTwoActivity
 import com.spyneai.R
 import com.spyneai.dashboard.ui.MainDashboardActivity
-import com.spyneai.interfaces.APiService
+import com.spyneai.interfaces.MyAPIService
 import com.spyneai.interfaces.RetrofitClient
 import com.spyneai.interfaces.RetrofitClientSpyneAi
 import com.spyneai.interfaces.RetrofitClients
@@ -49,7 +49,7 @@ public class OtpActivity : AppCompatActivity() {
     var tick_image: ImageView? = null
 
     var otp_entered = ""
-    var apiInterface: APiService? = null
+
     @SuppressLint("SetTextI18n")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -371,7 +371,7 @@ public class OtpActivity : AppCompatActivity() {
     private fun postOtp(otpEntered: String) {
         Utilities.showProgressDialog(this)
 
-        val request = RetrofitClients.buildService(APiService::class.java)
+        val request = RetrofitClients.buildService(MyAPIService::class.java)
         val call = request.postOtp(Utilities.getPreference(this, AppConstants.EMAIL_ID).toString(),
             AppConstants.API_KEY,
             otpEntered)
@@ -423,7 +423,7 @@ public class OtpActivity : AppCompatActivity() {
         Utilities.showProgressDialog(this)
         val loginRequest = LoginRequest(Utilities.getPreference(this, AppConstants.EMAIL_ID).toString());
 
-        val request = RetrofitClient.buildService(APiService::class.java)
+        val request = RetrofitClient.buildService(MyAPIService::class.java)
         val call = request.loginEmailApp(Utilities.getPreference(this, AppConstants.EMAIL_ID).toString(),AppConstants.API_KEY)
 
         call?.enqueue(object : Callback<LoginResponse>{

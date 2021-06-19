@@ -15,7 +15,7 @@ import android.widget.TextView
 import android.widget.Toast
 import com.airbnb.lottie.LottieAnimationView
 import com.spyneai.R
-import com.spyneai.interfaces.APiService
+import com.spyneai.interfaces.MyAPIService
 import com.spyneai.interfaces.RetrofitClientSpyneAi
 import com.spyneai.loginsignup.models.ForgotPasswordResponse
 import com.spyneai.loginsignup.models.LoginEmailPasswordBody
@@ -57,7 +57,7 @@ class ForgotPasswordActivity : AppCompatActivity() {
     private fun forgotPassword(){
         Utilities.showProgressDialog(this)
 
-        val request = RetrofitClientSpyneAi.buildService(APiService::class.java)
+        val request = RetrofitClientSpyneAi.buildService(MyAPIService::class.java)
         val call = request.forgotPassword(
             et_forgotPasswordEmail.text.toString()
         )
