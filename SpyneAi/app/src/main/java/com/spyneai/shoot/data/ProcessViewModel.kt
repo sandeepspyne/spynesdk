@@ -42,11 +42,11 @@ class ProcessViewModel : ViewModel() {
         _processSkuRes.value = repository.processSku(authKey, skuId, backgroundId)
     }
 
-    fun checkImagesUploadStatus() {
+    fun checkImagesUploadStatus(backgroundSelect: String) {
         if (localRepository.isImagesUploaded(sku.value?.skuId!!)){
             processSku.value = true
         }else{
-            localRepository.queueProcessRequest(sku.value?.skuId!!)
+            localRepository.queueProcessRequest(sku.value?.skuId!!, backgroundSelect)
             skuQueued.value = true
         }
     }

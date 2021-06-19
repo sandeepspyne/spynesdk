@@ -1,6 +1,5 @@
 package com.spyneai.shoot.ui
 
-import android.content.pm.ActivityInfo
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -18,7 +17,6 @@ import com.spyneai.model.carbackgroundgif.CarBackgrounGifResponse
 import com.spyneai.needs.AppConstants
 import com.spyneai.needs.Utilities
 import com.spyneai.shoot.data.ProcessViewModel
-import com.spyneai.shoot.data.ShootViewModel
 
 
 class SelectBackgroundFragment : BaseFragment<ProcessViewModel,FragmentSelectBackgroundBinding>() {
@@ -37,7 +35,7 @@ class SelectBackgroundFragment : BaseFragment<ProcessViewModel,FragmentSelectBac
 
         binding.tvGenerateGif.setOnClickListener {
             //process image call
-            viewModel.checkImagesUploadStatus()
+            viewModel.checkImagesUploadStatus(backgroundSelect)
 
             viewModel.processSku.observe(viewLifecycleOwner,{
                 if (it)  processSku()

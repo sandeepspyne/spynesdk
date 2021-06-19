@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto" android:id="@+id/nav_my_orders"
+    app:startDestination="@id/myOrdersFragment">
+
+    <fragment
+        android:id="@+id/myOrdersFragment"
+        android:name="com.spyneai.orders.ui.fragment.MyOrdersFragment"
+        android:label="MyOrdersFragment" >
+        <action
+            android:id="@+id/action_myOrdersFragment_to_myOngoingOrdersFragment"
+            app:destination="@id/nav_my_ongoing_orders" />
+        <action
+            android:id="@+id/action_myOrdersFragment_to_myCompletedOrdersFragment"
+            app:destination="@id/nav_my_completed_orders" />
+    </fragment>
+    <fragment
+        android:id="@+id/nav_my_ongoing_orders"
+        android:name="com.spyneai.orders.ui.fragment.MyOngoingOrdersFragment"
+        android:label="MyOngoingOrdersFragment" />
+    <fragment
+        android:id="@+id/nav_my_completed_orders"
+        android:name="com.spyneai.orders.ui.fragment.MyCompletedOrdersFragment"
+        android:label="MyCompletedOrdersFragment" >
+        <action
+            android:id="@+id/nav_request_download"
+            app:destination="@id/nav_request_download" />
+    </fragment>
+    <fragment
+        android:id="@+id/nav_request_download"
+        android:name="com.spyneai.orders.ui.fragment.DownloadRequestFragment"
+        android:label="DownloadRequestFragment" />
+</navigation>

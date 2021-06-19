@@ -43,4 +43,6 @@
 
     <color name="dialog_bold_text_color">#424242</color>
 
+    <color name="orders_text_light">#425466</color>
+
 </resources>
