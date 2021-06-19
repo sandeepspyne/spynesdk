@@ -91,69 +91,13 @@
                         android:textColor="@color/black"
                         android:textSize="@dimen/sp_20" />
 
-                    <RelativeLayout
+                    <ImageView
                         android:layout_width="300dp"
                         android:layout_height="300dp"
+                        android:id="@+id/ivProcessing"
                         android:layout_gravity="center_horizontal"
-                        android:layout_marginTop="@dimen/dp_50">
+                        android:layout_marginTop="@dimen/dp_50"/>
 
-                        <antonkozyriatskyi.circularprogressindicator.CircularProgressIndicator
-                            android:id="@+id/circular_progress"
-                            android:layout_width="match_parent"
-                            android:layout_height="match_parent"
-                            android:layout_gravity="center"
-                            android:layout_marginBottom="8dp"
-                            android:layout_marginTop="8dp"
-                            app:textColor="#fff"
-                            app:textSize="0sp"
-                            app:progressStrokeWidth="15dp"
-                            app:progressColor="?colorPrimary"
-                            app:progressBackgroundColor="#EFF3FE"
-                            app:direction="clockwise"
-                            android:elevation="@dimen/dp_20"/>
-
-                        <LinearLayout
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_centerInParent="true"
-                            android:orientation="vertical">
-
-                            <TextView
-                                android:id="@+id/tvMinSec"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:text="00:00"
-                                android:textColor="@color/primary"
-                                android:textSize="72sp"
-                                android:fontFamily="@font/medium"
-                                android:textStyle="bold" />
-
-                            <LinearLayout
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:layout_gravity="center">
-
-                                <TextView
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="wrap_content"
-                                    android:text="Mins"
-                                    android:textSize="14sp"
-                                    android:textStyle="bold"
-                                    android:textColor="@color/primary" />
-                                <TextView
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="wrap_content"
-                                    android:text="Seconds"
-                                    android:layout_marginStart="@dimen/dp_50"
-                                    android:textSize="14sp"
-                                    android:textStyle="bold"
-                                    android:textColor="@color/primary" />
-                            </LinearLayout>
-
-                        </LinearLayout>
-
-
-                    </RelativeLayout>
 
                     <LinearLayout
                         android:layout_width="wrap_content"

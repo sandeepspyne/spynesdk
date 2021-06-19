@@ -6,7 +6,6 @@ import androidx.lifecycle.ViewModelProvider
 import com.spyneai.R
 import com.spyneai.dashboard.ui.base.ViewModelFactory
 import com.spyneai.shoot.data.ProcessViewModel
-import com.spyneai.shoot.data.ShootViewModel
 import com.spyneai.shoot.data.model.Sku
 import com.spyneai.shoot.ui.dialogs.ShootExitDialog
 
@@ -31,7 +30,7 @@ class ProcessActivity : AppCompatActivity() {
             if (it) {
                 // add select background fragment
                 supportFragmentManager.beginTransaction()
-                    .add(R.id.flContainer, TimerFragment())
+                    .add(R.id.flContainer, ImageProcessingStartedFragment())
                     .commit()
             }
         })
