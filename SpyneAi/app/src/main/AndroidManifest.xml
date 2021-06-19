@@ -262,7 +262,7 @@
             android:name=".shoot.ui.ShootActivity"
             android:screenOrientation="landscape"></activity>
         <activity
-            android:name=".activity.SplashActivity"
+            android:name=".orders.ui.MyOrdersActivity"
             android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

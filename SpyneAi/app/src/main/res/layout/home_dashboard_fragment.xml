@@ -245,7 +245,7 @@
             android:id="@+id/groupOngoingProjects"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            app:constraint_referenced_ids="rlOngoingShoots, rvOngoingShoots"></androidx.constraintlayout.widget.Group>
+            app:constraint_referenced_ids="rlOngoingShoots, rvOngoingShoots"/>
 
         <RelativeLayout
             android:id="@+id/rlCompletedShoots"

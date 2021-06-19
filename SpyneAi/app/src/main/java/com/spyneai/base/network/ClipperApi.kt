@@ -6,6 +6,9 @@ import com.spyneai.dashboard.response.NewSubCatResponse
 import com.spyneai.model.carbackgroundgif.CarBackgrounGifResponse
 import com.spyneai.model.credit.FreeCreditEligblityResponse
 import com.spyneai.model.projects.CompletedProjectResponse
+import com.spyneai.orders.data.response.GetCompletedSKUsResponse
+import com.spyneai.orders.data.response.GetImagesOfSkuResponse
+import com.spyneai.orders.data.response.GetOngoingSkusResponse
 import com.spyneai.shoot.data.model.CreateProjectRes
 import com.spyneai.shoot.data.model.CreateSkuRes
 import com.spyneai.shoot.data.model.ProcessSkuRes
@@ -50,7 +53,8 @@ interface ClipperApi {
             : List<CompletedProjectResponse>
 
     @GET("v2/product/fetch")
-    suspend fun getCategories(@Query("auth_key") authKey : String): NewCategoriesResponse
+    suspend fun getCategories(@Query(
+        "auth_key") authKey : String): NewCategoriesResponse
 
     @GET("v2/prod/sub/fetch")
     suspend fun getSubCategories(
@@ -88,6 +92,23 @@ interface ClipperApi {
         @Field("sku_id") skuId : String,
         @Field("background_id") backgroundId : String
     ) : ProcessSkuRes
+
+    @GET("v2/sku/getOngoingSKU")
+    suspend fun getOngoingSKUs(
+        @Query("auth_key") authKey : String
+    ) : GetOngoingSkusResponse
+
+    @GET("v2/sku/getCompSKU")
+    suspend fun getCompletedSkus(
+        @Query("auth_key") authKey: String
+    ) : GetCompletedSKUsResponse
+
+    @POST("v2/sku/getImagesByName")
+    suspend fun getImagesOfSku(
+        @Field("sku_id") skuId : String,
+        @Field("auth_key") authKey : String
+    ) : GetImagesOfSkuResponse
+
 
 
 

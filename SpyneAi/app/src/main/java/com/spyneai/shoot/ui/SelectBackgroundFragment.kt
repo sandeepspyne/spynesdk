@@ -12,14 +12,11 @@ import com.spyneai.R
 import com.spyneai.adapter.CarBackgroundAdapter
 import com.spyneai.base.BaseFragment
 import com.spyneai.base.network.Resource
-import com.spyneai.dashboard.ui.enable
-import com.spyneai.dashboard.ui.handleApiError
 import com.spyneai.databinding.FragmentSelectBackgroundBinding
 import com.spyneai.model.carbackgroundgif.CarBackgrounGifResponse
 import com.spyneai.needs.AppConstants
 import com.spyneai.needs.Utilities
 import com.spyneai.shoot.data.ProcessViewModel
-
 
 
 class SelectBackgroundFragment : BaseFragment<ProcessViewModel,FragmentSelectBackgroundBinding>() {
@@ -36,11 +33,6 @@ class SelectBackgroundFragment : BaseFragment<ProcessViewModel,FragmentSelectBac
 
         initSelectBackground()
 
-
-        binding.ivBackGif.setOnClickListener {
-            requireActivity().onBackPressed()
-        }
-
         binding.tvGenerateGif.setOnClickListener {
             //process image call
             viewModel.checkImagesUploadStatus(backgroundSelect)
@@ -54,7 +46,6 @@ class SelectBackgroundFragment : BaseFragment<ProcessViewModel,FragmentSelectBac
                 viewModel.startTimer.value = true
             })
         }
-
     }
 
     private fun initSelectBackground() {
@@ -63,11 +54,6 @@ class SelectBackgroundFragment : BaseFragment<ProcessViewModel,FragmentSelectBac
         viewModel.carGifRes.observe(viewLifecycleOwner,{
             when(it) {
                 is Resource.Sucess -> {
-                    binding.shimmer.stopShimmer()
-                    binding.shimmer.visibility = View.GONE
-                    binding.rvBackgroundsCars.visibility = View.VISIBLE
-                    binding.tvGenerateGif.enable(true)
-
                     val response = it.value
                     Glide.with(requireContext()) // replace with 'this' if it's in activity
                         .load(response[0].gifUrl)
@@ -83,11 +69,12 @@ class SelectBackgroundFragment : BaseFragment<ProcessViewModel,FragmentSelectBac
                 }
 
                 is Resource.Failure -> {
-                    binding.shimmer.stopShimmer()
-                    handleApiError(it)
+
                 }
 
-                is Resource.Loading -> binding.shimmer.startShimmer()
+                is Resource.Loading -> {
+
+                }
             }
         })
     }
@@ -129,15 +116,17 @@ class SelectBackgroundFragment : BaseFragment<ProcessViewModel,FragmentSelectBac
 
         viewModel.processSkuRes.observe(viewLifecycleOwner,{
             when(it) {
-                is Resource.Loading -> Utilities.showProgressDialog(requireContext())
+                is Resource.Loading -> {
+                    var s = ""
+                }
 
                 is Resource.Sucess -> {
-                    Utilities.hideProgressDialog()
+                    //start timer
+                    var s = ""
                     viewModel.startTimer.value = true
                 }
                 is Resource.Failure -> {
-                    Utilities.hideProgressDialog()
-                    handleApiError(it)
+                    var s = ""
                 }
             }
         })
