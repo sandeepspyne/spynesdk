@@ -55,9 +55,7 @@ class SubCategoryConfirmationDialog : BaseDialogFragment<ShootViewModel, DialogS
         viewModel.createSkuRes.observe(viewLifecycleOwner,{
             when(it) {
                 is Resource.Sucess -> {
-
-
-
+                    Utilities.hideProgressDialog()
                     val sku = viewModel.sku.value
                     sku?.skuId = it.value.sku_id
                     sku?.totalImages = viewModel.exterirorAngles.value
@@ -70,11 +68,10 @@ class SubCategoryConfirmationDialog : BaseDialogFragment<ShootViewModel, DialogS
                     dismiss()
                 }
 
-                is Resource.Loading -> {
-
-                }
+                is Resource.Loading ->  Utilities.showProgressDialog(requireContext())
 
                 is Resource.Failure -> {
+                    Utilities.hideProgressDialog()
                     handleApiError(it)
                 }
             }

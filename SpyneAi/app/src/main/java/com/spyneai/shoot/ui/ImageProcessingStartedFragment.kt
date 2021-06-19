@@ -1,7 +1,6 @@
 package com.spyneai.shoot.ui
 
 import android.os.Bundle
-import android.os.CountDownTimer
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -9,10 +8,8 @@ import com.bumptech.glide.Glide
 import com.spyneai.R
 import com.spyneai.base.BaseFragment
 import com.spyneai.databinding.FragmentImageProcessingStartedBinding
-import com.spyneai.databinding.FragmentTimerBinding
 import com.spyneai.shoot.data.ProcessViewModel
 
-import java.util.concurrent.TimeUnit
 
 class ImageProcessingStartedFragment : BaseFragment<ProcessViewModel, FragmentImageProcessingStartedBinding>()  {
 

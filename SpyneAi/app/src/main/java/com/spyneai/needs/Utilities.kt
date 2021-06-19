@@ -16,6 +16,7 @@ import com.google.android.play.core.internal.e
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import com.spyneai.R
+import com.spyneai.isValidGlideContext
 import com.spyneai.model.carreplace.CarBackgroundsResponse
 import com.spyneai.model.channel.BackgroundsResponse
 import com.spyneai.model.channel.ChannelsResponse
@@ -81,13 +82,15 @@ object Utilities {
         return preferences.getString(key, "")
     }
 
-    fun showProgressDialog(context: Context?) {
-        if (context != null) {
-            dialog = Dialog(context!!)
+    fun showProgressDialog(context: Context) {
+        if (context.isValidGlideContext()) {
+            dialog = Dialog(context)
             dialog!!.requestWindowFeature(Window.FEATURE_NO_TITLE)
             dialog!!.setContentView(R.layout.dialog_progress)
             dialog!!.setCancelable(false)
+
             Glide.with(context).load(R.raw.logo).into(dialog!!.ivLoaders);
+
             dialog!!.window!!.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
             dialog!!.show()
         }

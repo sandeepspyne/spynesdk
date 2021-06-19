@@ -84,7 +84,6 @@
         android:textColor="@color/black"
         android:maxLines="1"
         android:inputType="text"
-        android:text="My Car Shoot"
         android:textSize="@dimen/sp_14"
         android:paddingLeft="@dimen/dp_10"
         android:paddingRight="@dimen/dp_10"

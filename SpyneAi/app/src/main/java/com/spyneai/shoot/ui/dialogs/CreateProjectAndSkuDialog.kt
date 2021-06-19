@@ -42,6 +42,7 @@ class CreateProjectAndSkuDialog : BaseDialogFragment<ShootViewModel,DialogCreate
         viewModel.createProjectRes.observe(viewLifecycleOwner,{
             when(it){
                     is Resource.Sucess -> {
+                        Utilities.hideProgressDialog()
                         //notify project created
                         viewModel.isProjectCreated.value = true
                         val sku = Sku()
@@ -53,9 +54,11 @@ class CreateProjectAndSkuDialog : BaseDialogFragment<ShootViewModel,DialogCreate
                     }
 
                     is Resource.Loading -> {
+                        Utilities.showProgressDialog(requireContext())
                     }
 
                     is Resource.Failure -> {
+                        Utilities.hideProgressDialog()
                         handleApiError(it)
                     }
             }
