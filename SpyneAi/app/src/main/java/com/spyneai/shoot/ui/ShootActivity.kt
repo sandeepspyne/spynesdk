@@ -1,40 +1,27 @@
 package com.spyneai.shoot.ui
 
 import android.Manifest
-import android.app.FragmentManager
-import android.content.ContentValues
 import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
+import android.graphics.Color
 import android.os.Build
 import android.os.Bundle
 import android.os.Environment
-import android.provider.BaseColumns
-import android.util.Log
 import android.view.View
+import android.view.Window
+import android.view.WindowManager
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
-import androidx.fragment.app.DialogFragment
 import androidx.lifecycle.ViewModelProvider
-import com.balsikandar.kotlindslsamples.dialogfragment.DialogDSLBuilder.Companion.dialog
-import com.google.android.material.snackbar.Snackbar
 import com.spyneai.R
 import com.spyneai.dashboard.ui.base.ViewModelFactory
 import com.spyneai.needs.AppConstants
 import com.spyneai.shoot.data.ShootViewModel
 import com.spyneai.shoot.data.model.CategoryDetails
-import com.spyneai.shoot.data.sqlite.DBHelper
-import com.spyneai.shoot.data.sqlite.ShootContract
-import kotlinx.android.synthetic.main.dialog_confirm_reshoot.view.*
-import kotlinx.android.synthetic.main.dialog_exit_shoot.view.*
-import kotlinx.android.synthetic.main.dialog_exit_shoot.view.btNo
-import kotlinx.android.synthetic.main.dialog_focus_shoot.view.*
-import kotlinx.android.synthetic.main.dialog_gif_hint.view.*
-import kotlinx.android.synthetic.main.dialog_interior_shoot.view.*
-import kotlinx.android.synthetic.main.dialog_interior_shoot.view.btShootInterior
-import kotlinx.android.synthetic.main.dialog_shoot_hint.view.*
+import com.spyneai.shoot.ui.dialogs.ShootExitDialog
 import java.io.File
 
 
@@ -48,6 +35,13 @@ class ShootActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_shoot)
+
+        setWindowFlag(
+            WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS
+                    or WindowManager.LayoutParams.FLAG_TRANSLUCENT_NAVIGATION, false
+        )
+        window.statusBarColor = Color.TRANSPARENT
+        window.navigationBarColor = Color.TRANSPARENT
 
         val shootViewModel = ViewModelProvider(this, ViewModelFactory()).get(ShootViewModel::class.java)
 
@@ -78,18 +72,29 @@ class ShootActivity : AppCompatActivity() {
         }
 
 
-        shootViewModel.selectBackground.observe(this,{
+        shootViewModel.selectBackground.observe(this, {
             if (it) {
                 // start process activity
-                val intent = Intent(this,ProcessActivity::class.java)
+                val intent = Intent(this, ProcessActivity::class.java)
 
                 intent.apply {
-                    this.putExtra("sku_id",shootViewModel.sku.value?.skuId)
-                    this.putExtra("exterior_angles",shootViewModel.exterirorAngles.value)
+                    this.putExtra("sku_id", shootViewModel.sku.value?.skuId)
+                    this.putExtra("exterior_angles", shootViewModel.exterirorAngles.value)
                     startActivity(this)
                 }
             }
         })
+    }
+
+    private fun setWindowFlag(bits: Int, on: Boolean) {
+        val win: Window = window
+        val winParams: WindowManager.LayoutParams = win.getAttributes()
+        if (on) {
+            winParams.flags = winParams.flags or bits
+        } else {
+            winParams.flags = winParams.flags and bits.inv()
+        }
+        win.setAttributes(winParams)
     }
 
     /**
@@ -97,15 +102,6 @@ class ShootActivity : AppCompatActivity() {
      */
     protected fun allPermissionsGranted() = permissions.all {
         ContextCompat.checkSelfPermission(this, it) == PackageManager.PERMISSION_GRANTED
-    }
-
-    // The Folder location where all the files will be stored
-    protected val outputDirectory: String by lazy {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-            "${Environment.DIRECTORY_DCIM}/CameraXDemo/"
-        } else {
-            "${Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DCIM)}/CameraXDemo/"
-        }
     }
 
     private val permissions = mutableListOf(
@@ -127,93 +123,8 @@ class ShootActivity : AppCompatActivity() {
 
     open fun onPermissionGranted() = Unit
 
-    fun View.snackbar(message: String, action: (() -> Unit)? = null) {
-        val snackbar = Snackbar.make(this, message, Snackbar.LENGTH_LONG)
-        snackbar.show()
-    }
-
-    fun showExitShootDialog(view: View) {
-        dialog {
-            layoutId = R.layout.dialog_exit_shoot
-            setCustomView = {it: View, dialog: DialogFragment ->
-
-
-                it.btNo.setOnClickListener {
-                    Toast.makeText(this@ShootActivity, "No", Toast.LENGTH_LONG).show()
-                    dialog.dismiss()
-                }
-
-                it.btYes.setOnClickListener {
-                    Toast.makeText(this@ShootActivity, "Yes", Toast.LENGTH_LONG).show()
-                    dialog.dismiss()
-                }
-
-            }
-        }
-    }
-
-
-
-    fun showGifHintDialog(view: View) {
-        dialog {
-            layoutId = R.layout.dialog_shoot_hint
-            setCustomView = {it: View, dialog: DialogFragment ->
-
-                it.btContinue.setOnClickListener {
-                    Toast.makeText(this@ShootActivity, "Continue", Toast.LENGTH_LONG).show()
-                    dialog.dismiss()
-                }
-
-
-            }
-        }
-    }
-
-    fun showInteriorShootDialog(view: View) {
-        dialog {
-            layoutId = R.layout.dialog_interior_shoot
-            setCustomView = {it: View, dialog: DialogFragment ->
-
-
-                it.btSkip.setOnClickListener {
-                    Toast.makeText(this@ShootActivity, "Skip", Toast.LENGTH_LONG).show()
-                    dialog.dismiss()
-                }
-
-                it.btShootInterior.setOnClickListener {
-                    Toast.makeText(this@ShootActivity, "Shoot Interior", Toast.LENGTH_LONG).show()
-                    dialog.dismiss()
-                }
-
-
-            }
-        }
-    }
-
-    fun showFocusShootDialog(view: View) {
-
-        dialog {
-            layoutId = R.layout.dialog_focus_shoot
-            setCustomView = {it: View, dialog: DialogFragment ->
-
-
-                it.tvSkip.setOnClickListener {
-                    Toast.makeText(this@ShootActivity, "Skip", Toast.LENGTH_LONG).show()
-                    dialog.dismiss()
-                }
-
-                it.tvShoot.setOnClickListener {
-                    Toast.makeText(this@ShootActivity, "Shoot Interior", Toast.LENGTH_LONG).show()
-                    dialog.dismiss()
-                }
-
-
-            }
-        }
-    }
 
     companion object {
-
         /** Use external media if it is available, our app's file directory otherwise */
         fun getOutputDirectory(context: Context): File {
             val appContext = context.applicationContext
@@ -222,5 +133,9 @@ class ShootActivity : AppCompatActivity() {
             return if (mediaDir != null && mediaDir.exists())
                 mediaDir else appContext.filesDir
         }
+    }
+
+    override fun onBackPressed() {
+        ShootExitDialog().show(supportFragmentManager,"ShootExitDialog")
     }
 }

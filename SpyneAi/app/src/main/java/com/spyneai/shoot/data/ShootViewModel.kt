@@ -42,8 +42,6 @@ class ShootViewModel : ViewModel(){
         get() = _createSkuRes
 
 
-
-
     val shootDimensions : MutableLiveData<ShootDimensions> = MutableLiveData()
     val sku : MutableLiveData<Sku> = MutableLiveData()
     val subCategory : MutableLiveData<NewSubCatResponse.Data> = MutableLiveData()

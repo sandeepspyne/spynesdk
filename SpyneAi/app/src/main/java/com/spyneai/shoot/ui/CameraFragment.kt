@@ -15,6 +15,7 @@ import androidx.camera.core.*
 import androidx.camera.lifecycle.ProcessCameraProvider
 import androidx.core.content.ContextCompat
 import com.hbisoft.pickit.PickiT
+import com.hbisoft.pickit.PickiTCallbacks
 import com.spyneai.base.BaseFragment
 import com.spyneai.camera2.ShootDimensions
 import com.spyneai.databinding.FragmentCameraBinding
@@ -33,13 +34,12 @@ import java.util.concurrent.Executors
 import kotlin.collections.ArrayList
 
 
-class CameraFragment : BaseFragment<ShootViewModel, FragmentCameraBinding>() {
+class CameraFragment : BaseFragment<ShootViewModel, FragmentCameraBinding>(),PickiTCallbacks {
     private var imageCapture: ImageCapture? = null
 
     private lateinit var cameraExecutor: ExecutorService
     private lateinit var outputDirectory: File
-    private var capturedImage = ""
-    var pickiT: PickiT? = null
+    var pickIt : PickiT? = null
     private val FILENAME_FORMAT = "yyyy-MM-dd-HH-mm-ss-SSS"
 
     companion object {
@@ -53,6 +53,7 @@ class CameraFragment : BaseFragment<ShootViewModel, FragmentCameraBinding>() {
         cameraExecutor = Executors.newSingleThreadExecutor()
         // Determine the output directory
         outputDirectory = ShootActivity.getOutputDirectory(requireContext())
+        pickIt = PickiT(requireContext(),this,requireActivity())
 
         viewModel.startInteriorShots.observe(viewLifecycleOwner,{
             if (it) binding.tvSkipShoot?.visibility = View.VISIBLE
@@ -95,11 +96,6 @@ class CameraFragment : BaseFragment<ShootViewModel, FragmentCameraBinding>() {
                 takePhoto()
             }
         }
-
-//        binding.ivUploadedImage?.setOnClickListener {
-//            binding.ivUploadedImage!!.visibility = View.GONE
-//        }
-
     }
 
     override fun setUserVisibleHint(isVisibleToUser: Boolean) {
@@ -109,8 +105,6 @@ class CameraFragment : BaseFragment<ShootViewModel, FragmentCameraBinding>() {
             if (a != null) a.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE
         }
     }
-
-
 
     private fun startCamera() {
         val cameraProviderFuture = ProcessCameraProvider.getInstance(requireContext())
@@ -186,21 +180,11 @@ class CameraFragment : BaseFragment<ShootViewModel, FragmentCameraBinding>() {
                     val msg = "Photo capture succeeded: $savedUri"
                     Log.d(TAG, msg)
                     try {
-                        capturedImage = photoFile?.path!!.toString()
+                       addShootItem(photoFile?.path!!.toString())
                     } catch (ex: IllegalArgumentException) {
-//                        pickiT?.getPath(finalLogoUri, Build.VERSION.SDK_INT)
+                        pickIt?.getPath(savedUri, Build.VERSION.SDK_INT)
                     }
 
-                    if (viewModel.shootList.value == null)
-                        viewModel.shootList.value = ArrayList()
-
-                    viewModel.shootList.value!!.add(ShootData(capturedImage,
-                        viewModel.sku.value?.projectId!!,
-                        viewModel.sku.value?.skuId!!,
-                        viewModel.categoryDetails.value?.imageType!!,
-                        Utilities.getPreference(requireContext(),AppConstants.AUTH_KEY).toString()))
-
-                    viewModel.shootList.value = viewModel.shootList.value
                 }
             })
     }
@@ -221,11 +205,46 @@ class CameraFragment : BaseFragment<ShootViewModel, FragmentCameraBinding>() {
         })
     }
 
+    private fun addShootItem(capturedImage : String) {
+        if (viewModel.shootList.value == null)
+            viewModel.shootList.value = ArrayList()
+
+        viewModel.shootList.value!!.add(ShootData(capturedImage,
+            viewModel.sku.value?.projectId!!,
+            viewModel.sku.value?.skuId!!,
+            viewModel.categoryDetails.value?.imageType!!,
+            Utilities.getPreference(requireContext(),AppConstants.AUTH_KEY).toString()))
+
+        viewModel.shootList.value = viewModel.shootList.value
+    }
+
     override fun getViewModel() = ShootViewModel::class.java
 
     override fun getFragmentBinding(
         inflater: LayoutInflater,
         container: ViewGroup?
     ) = FragmentCameraBinding.inflate(inflater, container, false)
+
+    override fun PickiTonUriReturned() {
+
+    }
+
+    override fun PickiTonStartListener() {
+
+    }
+
+    override fun PickiTonProgressUpdate(progress: Int) {
+
+    }
+
+    override fun PickiTonCompleteListener(
+        path: String?,
+        wasDriveFile: Boolean,
+        wasUnknownProvider: Boolean,
+        wasSuccessful: Boolean,
+        Reason: String?
+    ) {
+        addShootItem(path!!)
+    }
 
 }

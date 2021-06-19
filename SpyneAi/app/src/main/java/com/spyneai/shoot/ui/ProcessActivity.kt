@@ -8,6 +8,7 @@ import com.spyneai.dashboard.ui.base.ViewModelFactory
 import com.spyneai.shoot.data.ProcessViewModel
 import com.spyneai.shoot.data.ShootViewModel
 import com.spyneai.shoot.data.model.Sku
+import com.spyneai.shoot.ui.dialogs.ShootExitDialog
 
 class ProcessActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -34,6 +35,9 @@ class ProcessActivity : AppCompatActivity() {
                     .commit()
             }
         })
+    }
 
+    override fun onBackPressed() {
+        ShootExitDialog().show(supportFragmentManager,"ShootExitDialog")
     }
 }

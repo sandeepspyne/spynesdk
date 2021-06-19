@@ -74,7 +74,7 @@ class OverlaysFragment : BaseFragment<ShootViewModel,FragmentOverlaysBinding>(),
         })
 
         viewModel.isSubCategoryConfirmed.observe(viewLifecycleOwner,{
-            if (it) binding.rvSubcategories?.visibility = View.GONE
+            if (it) binding.rvSubcategories?.visibility = View.INVISIBLE
         })
     }
 
