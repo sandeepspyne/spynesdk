@@ -6,13 +6,13 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.spyneai.R
+import com.spyneai.orders.data.response.GetOngoingSkusResponse
 
-class MyOngoingOrdersAdapter (val context: Context)  : RecyclerView.Adapter<MyOngoingOrdersAdapter.ViewHolder>() {
+class MyOngoingOrdersAdapter(
+    val context: Context,
+    ongoingSkuList: ArrayList<GetOngoingSkusResponse>
+) : RecyclerView.Adapter<MyOngoingOrdersAdapter.ViewHolder>() {
 
-    /**
-     * Provide a reference to the type of views that you are using
-     * (custom ViewHolder).
-     */
     class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
 
     }
@@ -21,7 +21,6 @@ class MyOngoingOrdersAdapter (val context: Context)  : RecyclerView.Adapter<MyOn
         parent: ViewGroup,
         viewType: Int
     ): MyOngoingOrdersAdapter.ViewHolder {
-        // Create a new view, which defines the UI of the list item
         val view = LayoutInflater.from(parent.context)
             .inflate(R.layout.item_my_ongoing_orders, parent, false)
         return MyOngoingOrdersAdapter.ViewHolder(view)

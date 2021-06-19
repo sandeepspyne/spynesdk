@@ -9,23 +9,22 @@ import androidx.cardview.widget.CardView
 import androidx.navigation.findNavController
 import androidx.recyclerview.widget.RecyclerView
 import com.spyneai.R
+import com.spyneai.orders.data.response.GetCompletedSKUsResponse
 
-class MyCompletedOrdersAdapter (val context: Context)  : RecyclerView.Adapter<MyCompletedOrdersAdapter.ViewHolder>() {
+class MyCompletedOrdersAdapter(
+    val context: Context,
+    completedSkuList: ArrayList<GetCompletedSKUsResponse>
+) : RecyclerView.Adapter<MyCompletedOrdersAdapter.ViewHolder>() {
 
-    /**
-     * Provide a reference to the type of views that you are using
-     * (custom ViewHolder).
-     */
     class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
-        val ivThumbnail : ImageView =  view.findViewById(R.id.iv_thumbnail)
-        val cvDownload : CardView =  view.findViewById(R.id.cv_download)
+        val ivThumbnail: ImageView = view.findViewById(R.id.iv_thumbnail)
+        val cvDownload: CardView = view.findViewById(R.id.cv_download)
     }
 
     override fun onCreateViewHolder(
         parent: ViewGroup,
         viewType: Int
     ): MyCompletedOrdersAdapter.ViewHolder {
-        // Create a new view, which defines the UI of the list item
         val view = LayoutInflater.from(parent.context)
             .inflate(R.layout.item_my_completed_orders, parent, false)
 
@@ -34,11 +33,8 @@ class MyCompletedOrdersAdapter (val context: Context)  : RecyclerView.Adapter<My
 
     override fun onBindViewHolder(holder: MyCompletedOrdersAdapter.ViewHolder, position: Int) {
 
-//        holder.ivThumbnail.setOnClickListener{ view ->
-//            view.findNavController().navigate(R.id.nav_market_details)
-//        }
 
-        holder.cvDownload.setOnClickListener{ view ->
+        holder.cvDownload.setOnClickListener { view ->
             view.findNavController().navigate(R.id.nav_request_download)
         }
     }

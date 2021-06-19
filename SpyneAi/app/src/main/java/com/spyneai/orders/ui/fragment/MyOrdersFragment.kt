@@ -7,7 +7,7 @@ import android.view.ViewGroup
 import com.google.android.material.tabs.TabLayoutMediator
 import com.spyneai.base.BaseFragment
 import com.spyneai.databinding.FragmentMyOrdersBinding
-import com.spyneai.orders.data.MyOrdersViewModel
+import com.spyneai.orders.data.viewmodel.MyOrdersViewModel
 import com.spyneai.orders.ui.adapter.OrdersSlideAdapter
 
 class MyOrdersFragment : BaseFragment<MyOrdersViewModel, FragmentMyOrdersBinding>() {
