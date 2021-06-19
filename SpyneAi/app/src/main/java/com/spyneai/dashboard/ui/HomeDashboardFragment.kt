@@ -163,11 +163,13 @@ class HomeDashboardFragment :
         viewModel.completedProjectResponse.observe(viewLifecycleOwner, Observer {
             when(it){
                 is Resource.Sucess -> {
+                    completedProjectList = ArrayList()
+                    if (it.value.data.isNullOrEmpty())
+                        binding.rlCompletedShoots.visibility = View.GONE
                     binding.rvCompletedShoots.visibility = View.VISIBLE
                     binding.shimmerCompleted.stopShimmer()
                     binding.shimmerCompleted.visibility = View.GONE
                     if (it.value.data != null){
-                        completedProjectList = ArrayList()
                         completedProjectList.addAll(it.value.data)
                         completedProjectList.reverse()
 
@@ -256,6 +258,8 @@ class HomeDashboardFragment :
             viewLifecycleOwner, androidx.lifecycle.Observer {
                 when (it) {
                     is Resource.Sucess -> {
+                        if (it.value.data.isNullOrEmpty())
+                            binding.rlOngoingShoots.visibility = View.GONE
                         if (it.value.data != null){
                             ongoingDashboardAdapter = OngoingDashboardAdapter(requireContext(),
                                 it.value.data as ArrayList<GetOngoingSkusResponse.Data>
