@@ -11,6 +11,8 @@ data class GetOngoingSkusResponse(
     data class Data(
         @SerializedName("category") val category : String,
         @SerializedName("created_date") val created_date : String,
+        @SerializedName("project_id") val project_id : String,
+        @SerializedName("project_name") val project_name : String,
         @SerializedName("sku_id") val sku_id : String,
         @SerializedName("sku_name") val sku_name : String,
         @SerializedName("source") val source : String,

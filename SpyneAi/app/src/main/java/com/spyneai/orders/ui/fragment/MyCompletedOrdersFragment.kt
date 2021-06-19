@@ -42,6 +42,9 @@ class MyCompletedOrdersFragment :
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
 
+
+        binding.shimmerCompletedSKU.startShimmer()
+
         tokenId = Utilities.getPreference(requireContext(), AppConstants.tokenId).toString()
         completedSkuList = ArrayList<GetCompletedSKUsResponse.Data>()
         setCompletedSkuRecycler()
@@ -51,6 +54,11 @@ class MyCompletedOrdersFragment :
             viewLifecycleOwner, Observer {
                 when (it) {
                     is com.spyneai.base.network.Resource.Sucess -> {
+
+                        binding.shimmerCompletedSKU.stopShimmer()
+                        binding.shimmerCompletedSKU.visibility = View.GONE
+                        binding.rvMyCompletedOrders.visibility = View.VISIBLE
+
                         completedSkuList.addAll(it.value.data)
                         myCompletedOrdersAdapter = MyCompletedOrdersAdapter(requireContext(),
                             completedSkuList)
