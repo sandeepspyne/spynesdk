@@ -34,20 +34,11 @@ import com.spyneai.dashboard.response.NewCategoriesResponse
 import com.spyneai.dashboard.data.DashboardViewModel
 import com.spyneai.databinding.HomeDashboardFragmentBinding
 import com.spyneai.extras.BeforeAfterActivity
-import com.spyneai.model.categories.Data
-import com.spyneai.model.processImageService.Task
-import com.spyneai.model.projects.CompletedProjectResponse
-import com.spyneai.model.shoot.CreateCollectionRequest
-
 import com.spyneai.needs.AppConstants
 import com.spyneai.needs.Utilities
 import com.spyneai.orders.data.response.CompletedSKUsResponse
 import com.spyneai.orders.data.response.GetOngoingSkusResponse
-import com.spyneai.orders.ui.adapter.MyOngoingOrdersAdapter
-import com.spyneai.service.ProcessImagesService
-import kotlinx.android.synthetic.main.home_dashboard_fragment.*
-import okhttp3.MultipartBody
-import okhttp3.RequestBody
+
 
 
 class HomeDashboardFragment :
@@ -90,19 +81,19 @@ class HomeDashboardFragment :
         lisners()
 
         if (Utilities.getPreference(requireContext(), AppConstants.USER_NAME).toString() != "") {
-            tvWelcomeHome.visibility = View.VISIBLE
-            viewWelcome.visibility = View.VISIBLE
-            tvWelcomeHome.setText("Welcome "+
+            binding.tvWelcomeHome.visibility = View.VISIBLE
+            binding.viewWelcome.visibility = View.VISIBLE
+            binding.tvWelcomeHome.setText("Welcome "+
                 Utilities.getPreference(requireContext(), AppConstants.USER_NAME).toString()
             )
             if (Utilities.getPreference(requireContext(), AppConstants.USER_NAME).toString().trim().equals("default")){
-                tvWelcomeHome.visibility = View.VISIBLE
-                viewWelcome.visibility = View.VISIBLE
-                tvWelcomeHome.setText("Welcome Home")
+                binding.tvWelcomeHome.visibility = View.VISIBLE
+                binding.viewWelcome.visibility = View.VISIBLE
+                binding.tvWelcomeHome.setText("Welcome Home")
             }
         }
 
-        btGetStarted.setOnClickListener {
+        binding.btGetStarted.setOnClickListener {
             val intent = Intent(requireContext(), CategoriesActivity::class.java)
             startActivity(intent)
         }
@@ -111,9 +102,9 @@ class HomeDashboardFragment :
         viewModel.categoriesResponse.observe(viewLifecycleOwner, Observer {
             when(it){
                 is Resource.Sucess -> {
-                    shimmerCategories.stopShimmer()
-                    shimmerCategories.visibility = View.GONE
-                    rvDashboardCategories.visibility = View.VISIBLE
+                    binding.shimmerCategories.stopShimmer()
+                    binding.shimmerCategories.visibility = View.GONE
+                    binding.rvDashboardCategories.visibility = View.VISIBLE
                     categoriesAdapter = CategoriesDashboardAdapter(requireContext(),
                         it.value.data as ArrayList<NewCategoriesResponse.Data>,
                         object : CategoriesDashboardAdapter.BtnClickListener {
@@ -147,12 +138,12 @@ class HomeDashboardFragment :
                         LinearLayoutManager.HORIZONTAL,
                         false
                     )
-                    rvDashboardCategories.setLayoutManager(layoutManager)
-                    rvDashboardCategories.setAdapter(categoriesAdapter)
+                    binding.rvDashboardCategories.setLayoutManager(layoutManager)
+                    binding.rvDashboardCategories.setAdapter(categoriesAdapter)
 //                    categoriesAdapter.notifyDataSetChanged()
                 }
                 is Resource.Loading -> {
-                    shimmerCategories.startShimmer()
+                    binding.shimmerCategories.startShimmer()
                 }
                 is Resource.Failure -> {
 
@@ -167,15 +158,15 @@ class HomeDashboardFragment :
         viewModel.completedProjectResponse.observe(viewLifecycleOwner, Observer {
             when(it){
                 is Resource.Sucess -> {
-                    rvCompletedShoots.visibility = View.VISIBLE
-                    shimmerCompleted.stopShimmer()
-                    shimmerCompleted.visibility = View.GONE
+                    binding.rvCompletedShoots.visibility = View.VISIBLE
+                    binding.shimmerCompleted.stopShimmer()
+                    binding.shimmerCompleted.visibility = View.GONE
                     completedProjectList = ArrayList()
                     completedProjectList.addAll(it.value.data)
                     completedProjectList.reverse()
 
                     if (completedProjectList.size == 0)
-                        rlCompletedShoots.visibility = View.GONE
+                        binding.rlCompletedShoots.visibility = View.GONE
 
                     completedDashboardAdapter = CompletedDashboardAdapter(requireContext(),
                         completedProjectList,
@@ -192,8 +183,8 @@ class HomeDashboardFragment :
                     )
 
                     val layoutManager: RecyclerView.LayoutManager = LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
-                    rvCompletedShoots.setLayoutManager(layoutManager)
-                    rvCompletedShoots.setAdapter(completedDashboardAdapter)
+                    binding.rvCompletedShoots.setLayoutManager(layoutManager)
+                    binding.rvCompletedShoots.setAdapter(completedDashboardAdapter)
 
 
 
@@ -201,7 +192,7 @@ class HomeDashboardFragment :
 //                    categoriesAdapter.notifyDataSetChanged()
                 }
                 is Resource.Loading -> {
-                    shimmerCompleted.startShimmer()
+                    binding.shimmerCompleted.startShimmer()
                 }
                 is Resource.Failure -> {
                     handleApiError(it)
@@ -235,31 +226,29 @@ class HomeDashboardFragment :
 
     private fun setSliderRecycler(){
 
-        ivBanner.setSliderThumb(ContextCompat.getDrawable(requireContext(),R.drawable.ic_sliderline))
+        binding.ivBanner.setSliderThumb(ContextCompat.getDrawable(requireContext(),R.drawable.ic_sliderline))
 
-        tabLayout = tbDashboard
+        tabLayout = binding.tbDashboard
         tabLayout.addTab(tabLayout.newTab());
         tabLayout.addTab(tabLayout.newTab());
 
 
-        ivBanner.setBeforeImage(ContextCompat.getDrawable(requireContext(),R.drawable.car_before)).setAfterImage(ContextCompat.getDrawable(requireContext(),R.drawable.car_after))
-        ivNext.setOnClickListener {
-            val tab: TabLayout.Tab = tbDashboard.getTabAt(1)!!
+        binding.ivBanner.setBeforeImage(ContextCompat.getDrawable(requireContext(),R.drawable.car_before)).setAfterImage(ContextCompat.getDrawable(requireContext(),R.drawable.car_after))
+        binding.ivNext.setOnClickListener {
+            val tab: TabLayout.Tab = binding.tbDashboard.getTabAt(1)!!
             tab.select()
-            ivBanner.setBeforeImage(ContextCompat.getDrawable(requireContext(),R.drawable.footwear_before)).setAfterImage(ContextCompat.getDrawable(requireContext(),R.drawable.footwear_after))
+            binding.ivBanner.setBeforeImage(ContextCompat.getDrawable(requireContext(),R.drawable.footwear_before)).setAfterImage(ContextCompat.getDrawable(requireContext(),R.drawable.footwear_after))
         }
 
-        ivPrevious.setOnClickListener {
-            val tab: TabLayout.Tab = tbDashboard.getTabAt(0)!!
+        binding.ivPrevious.setOnClickListener {
+            val tab: TabLayout.Tab = binding.tbDashboard.getTabAt(0)!!
             tab.select()
-            ivBanner.setBeforeImage(ContextCompat.getDrawable(requireContext(),R.drawable.car_before)).setAfterImage(ContextCompat.getDrawable(requireContext(),R.drawable.car_after))
-
+            binding.ivBanner.setBeforeImage(ContextCompat.getDrawable(requireContext(),R.drawable.car_before)).setAfterImage(ContextCompat.getDrawable(requireContext(),R.drawable.car_after))
         }
     }
 
 
     private fun setOngoingProjectRecycler(){
-
         viewModel.getOngoingSKUs(Utilities.getPreference(requireContext(), AppConstants.AUTH_KEY).toString())
         viewModel.getOngoingSkusResponse.observe(
             viewLifecycleOwner, androidx.lifecycle.Observer {
@@ -269,7 +258,7 @@ class HomeDashboardFragment :
                             it.value.data as ArrayList<GetOngoingSkusResponse.Data>
                         )
 
-                        val layoutManager: RecyclerView.LayoutManager = LinearLayoutManager(requireContext(), LinearLayoutManager.VERTICAL, false)
+                        val layoutManager: RecyclerView.LayoutManager = LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
                         binding.rvOngoingShoots.setLayoutManager(layoutManager)
                         binding.rvOngoingShoots.setAdapter(ongoingDashboardAdapter)
 
@@ -290,8 +279,8 @@ class HomeDashboardFragment :
 
 
     private fun showHideRecyclerView(tasksInProgress: ArrayList<GetOngoingSkusResponse.Data>) {
-        if (tasksInProgress.size == 0 && groupOngoingProjects!=null)
-            groupOngoingProjects.visibility = View.GONE
+        if (tasksInProgress.size == 0 && binding.groupOngoingProjects!=null)
+            binding.groupOngoingProjects.visibility = View.GONE
     }
 
     private fun showTutorialVideos(){
@@ -313,9 +302,8 @@ class HomeDashboardFragment :
         )
 
         val layoutManager: RecyclerView.LayoutManager = LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
-        rvTutorialVideos.setLayoutManager(layoutManager)
-        rvTutorialVideos.setAdapter(tutorialVideosAdapter)
-
+        binding.rvTutorialVideos.setLayoutManager(layoutManager)
+        binding.rvTutorialVideos.setAdapter(tutorialVideosAdapter)
     }
 
     private fun showFreeCreditDialog(message: String) {
@@ -343,12 +331,12 @@ class HomeDashboardFragment :
     }
 
     private fun lisners(){
-        tvCompletedViewall.setOnClickListener {
+        binding.tvCompletedViewall.setOnClickListener {
             val intent = Intent(requireContext(), CompletedProjectsActivity::class.java)
             startActivity(intent)
         }
 
-        tvOngoingViewall.setOnClickListener {
+        binding.tvOngoingViewall.setOnClickListener {
             val intent = Intent(requireContext(), OngoingOrdersActivity::class.java)
             startActivity(intent)
         }

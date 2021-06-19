@@ -25,7 +25,7 @@
     </fragment>
     <fragment
         android:id="@+id/completedOrdersFragment"
-        android:name="com.spyneai.fragment.CompletedOrdersFragment"
+        android:name="com.spyneai.orders.ui.fragment.MyOrdersFragment"
         android:label="completed_orders_fragment"
         tools:layout="@layout/fragment_completed_orders" >
         <action
