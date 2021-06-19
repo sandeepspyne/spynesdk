@@ -85,7 +85,7 @@ class CategoriesActivity : AppCompatActivity(){
                             Utilities.savePrefrence(
                                 this@CategoriesActivity,
                                 AppConstants.CATEGORY_NAME,
-                                categoriesResponseList[position].prod_cat_id
+                                categoriesResponseList[position].prod_cat_name
                             )
 
                             val intent = Intent(this@CategoriesActivity, BeforeAfterActivity::class.java)

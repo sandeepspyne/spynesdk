@@ -192,12 +192,6 @@ class HomeDashboardFragment :
                         binding.rvCompletedShoots.setLayoutManager(layoutManager)
                         binding.rvCompletedShoots.setAdapter(completedDashboardAdapter)
                     }
-
-
-
-
-
-//                    categoriesAdapter.notifyDataSetChanged()
                 }
                 is Resource.Loading -> {
                     binding.shimmerCompleted.startShimmer()
