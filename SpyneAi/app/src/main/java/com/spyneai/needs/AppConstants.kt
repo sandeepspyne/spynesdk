@@ -1,6 +1,7 @@
 package com.spyneai.needs
 
 object AppConstants {
+    val CREDITS_MESSAGE = "CREDITS_MESSAGE"
     val AUTH_KEY ="AUTH_KEY"
     val IS_DOWNLOADED_BEFORE =  "IS_DOWNLOADED_BEFORE"
     val CREDIT_REMAINING = "credit_remaining"

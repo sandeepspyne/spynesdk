@@ -11,7 +11,6 @@ import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AppCompatDelegate
 import com.spyneai.R
-import com.spyneai.interfaces.APiService
 import com.spyneai.interfaces.RetrofitClient
 import com.spyneai.interfaces.RetrofitClients
 import com.spyneai.loginsignup.activity.LoginActivity
@@ -59,8 +58,8 @@ class SignInUsingOtpActivity : AppCompatActivity() {
 
         bt_login_with_password.setOnClickListener {
             val intent = Intent(this, LoginActivity::class.java)
+            intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
             startActivity(intent)
-            finish()
         }
 
 
@@ -171,26 +170,4 @@ class SignInUsingOtpActivity : AppCompatActivity() {
         })
     }
 
-    override fun onBackPressed() {
-        super.onBackPressed()
-        Utilities.savePrefrence(
-            this@SignInUsingOtpActivity,
-            AppConstants.tokenId, "")
-    }
-
-    override fun onPause() {
-        super.onPause()
-        /* Utilities.savePrefrence(
-                 this,
-                 AppConstants.tokenId,
-                 "")*/
-    }
-
-    override fun onDestroy() {
-        super.onDestroy()
-        /* Utilities.savePrefrence(
-                 this,
-                 AppConstants.tokenId,
-                 "")*/
-    }
 }

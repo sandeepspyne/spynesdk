@@ -10,8 +10,10 @@ import com.spyneai.R
 import com.spyneai.activity.SignInUsingOtpActivity
 import com.spyneai.dashboard.ui.MainDashboardActivity
 import com.spyneai.interfaces.APiService
+import com.spyneai.interfaces.RetrofitClientSpyneAi
 import com.spyneai.interfaces.RetrofitClients
 import com.spyneai.loginsignup.models.GetCountriesResponse
+import com.spyneai.loginsignup.models.SignupBody
 import com.spyneai.loginsignup.models.SignupResponse
 import com.spyneai.needs.AppConstants
 import com.spyneai.needs.Utilities
@@ -98,7 +100,10 @@ class SignUpActivity : AppCompatActivity() {
                 return@setOnClickListener
             } else if (et_business_name.text.isNullOrEmpty()) {
                 et_business_name.error = "PLease enter business/your name"
-            } else {
+            }else if (counties_spinner.selectedItemPosition == 0){
+                Toast.makeText(this,"Please select your country",Toast.LENGTH_LONG).show()
+            }
+            else {
                 signUp(
                     et_signupEmail.text.toString().trim(),
                     et_signupPassword.text.toString(),
@@ -115,6 +120,7 @@ class SignUpActivity : AppCompatActivity() {
 
         tvLogin.setOnClickListener {
             val intent = Intent(this, LoginActivity::class.java)
+            intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
             startActivity(intent)
             finish()
         }

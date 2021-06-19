@@ -28,6 +28,8 @@ class DashboardViewModel() : ViewModel() {
     val completedProjectResponse: LiveData<Resource<CompletedSKUsResponse>>
         get() = _completedProjectResponse
 
+    val isNewUser: MutableLiveData<Boolean> = MutableLiveData()
+    val creditsMessage: MutableLiveData<String> = MutableLiveData()
 
     fun getCategories(
         tokenId: String

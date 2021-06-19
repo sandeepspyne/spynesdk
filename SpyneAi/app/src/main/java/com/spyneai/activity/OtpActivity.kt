@@ -57,14 +57,12 @@ public class OtpActivity : AppCompatActivity() {
 
 //        val strNumber = intent.getStringExtra(AppConstants.phone)!!
         /*  val newString =  StringBuilder(strNumber)
-
           newString.setCharAt(2,'X')
           newString.setCharAt(3,'X')
           newString.setCharAt(4,'X')
           newString.setCharAt(5,'X')
           newString.setCharAt(6,'X')
           newString.setCharAt(7,'X')
-
           tvNumber.setText("+91" + newString)*/
 
         tvNumber.setText(Utilities.getPreference(this,AppConstants.EMAIL_ID))
@@ -388,9 +386,18 @@ public class OtpActivity : AppCompatActivity() {
 
                         Utilities.savePrefrence(this@OtpActivity,AppConstants.AUTH_KEY, response.body()!!.authToken)
 
+                        Utilities.savePrefrence(this@OtpActivity, AppConstants.USER_NAME, response.body()!!.userName)
+                        Utilities.savePrefrence(this@OtpActivity, AppConstants.USER_EMAIL, response.body()!!.emailId)
+
                         val intent = Intent(applicationContext, MainDashboardActivity::class.java)
+                        intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+
+                        if (response.body()!!.message == "OTP validated"){
+                            intent.putExtra(AppConstants.IS_NEW_USER,true)
+                            intent.putExtra(AppConstants.CREDITS_MESSAGE, response.body()!!.displayMessage)
+                        }
+
                         startActivity(intent)
-                        finish()
 
                         tvError.visibility = View.INVISIBLE
 
@@ -471,9 +478,5 @@ public class OtpActivity : AppCompatActivity() {
         */
     override fun onBackPressed() {
         super.onBackPressed()
-        Utilities.savePrefrence(
-            this,
-            AppConstants.tokenId,
-            "")
     }
 }

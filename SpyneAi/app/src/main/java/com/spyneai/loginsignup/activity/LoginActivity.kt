@@ -10,6 +10,7 @@ import com.spyneai.R
 import com.spyneai.activity.SignInUsingOtpActivity
 import com.spyneai.dashboard.ui.MainDashboardActivity
 import com.spyneai.interfaces.APiService
+import com.spyneai.interfaces.RetrofitClientSpyneAi
 import com.spyneai.interfaces.RetrofitClients
 import com.spyneai.loginsignup.models.LoginEmailPasswordBody
 import com.spyneai.loginsignup.models.LoginEmailPasswordResponse
@@ -65,7 +66,6 @@ class LoginActivity : AppCompatActivity() {
         tvForgotPassword.setOnClickListener {
             val intent = Intent(this, ForgotPasswordActivity::class.java)
             startActivity(intent)
-            finish()
         }
     }
 
@@ -121,6 +121,8 @@ class LoginActivity : AppCompatActivity() {
                         tvterms.isClickable = true
 
                         val intent = Intent(this@LoginActivity, MainDashboardActivity::class.java)
+                        intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+                        intent.putExtra(AppConstants.IS_NEW_USER,false)
                         startActivity(intent)
                         finish()
                     }

@@ -13,10 +13,7 @@ import com.spyneai.R
 import com.spyneai.needs.AppConstants
 import com.spyneai.needs.Utilities
 
-import com.facebook.stetho.Stetho
-import com.facebook.stetho.okhttp3.StethoInterceptor
 import com.spyneai.dashboard.ui.MainDashboardActivity
-import kotlinx.android.synthetic.main.activity_splash.*
 import okhttp3.OkHttpClient
 
 
@@ -30,32 +27,22 @@ class SplashActivity : AppCompatActivity() {
         )
 
         setContentView(R.layout.activity_splash)
-        AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
 
-        FirebaseCrashlytics.getInstance().setCrashlyticsCollectionEnabled(true);
-        Stetho.initializeWithDefaults(this);
-        OkHttpClient.Builder()
-            .addNetworkInterceptor(StethoInterceptor())
-            .build()
-        setSplash();
+        setSplash()
     }
 
-    private fun setAnimation() {
-        val animTogether = AnimationUtils.loadAnimation(this, R.anim.together);
-        ivLogoSpyne.startAnimation(animTogether)
-    }
 
     //Start splash
     private fun setSplash() {
         Handler().postDelayed({
-            if (Utilities.getPreference(this, AppConstants.tokenId).isNullOrEmpty()) {
+            if (Utilities.getPreference(this, AppConstants.AUTH_KEY).isNullOrEmpty()) {
                 val intent = Intent(this, OnboardingsActivity::class.java)
+                intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
                 startActivity(intent)
-                finish()
             } else {
                 val intent = Intent(this, MainDashboardActivity::class.java)
+                intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
                 startActivity(intent)
-                finish()
             }
         }, 3000)
     }

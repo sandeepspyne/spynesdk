@@ -12,6 +12,8 @@ import com.spyneai.R
 import com.spyneai.adapter.CarBackgroundAdapter
 import com.spyneai.base.BaseFragment
 import com.spyneai.base.network.Resource
+import com.spyneai.dashboard.ui.enable
+import com.spyneai.dashboard.ui.handleApiError
 import com.spyneai.databinding.FragmentSelectBackgroundBinding
 import com.spyneai.model.carbackgroundgif.CarBackgrounGifResponse
 import com.spyneai.needs.AppConstants
@@ -54,6 +56,11 @@ class SelectBackgroundFragment : BaseFragment<ProcessViewModel,FragmentSelectBac
         viewModel.carGifRes.observe(viewLifecycleOwner,{
             when(it) {
                 is Resource.Sucess -> {
+                    binding.shimmer.stopShimmer()
+                    binding.shimmer.visibility = View.GONE
+                    binding.rvBackgroundsCars.visibility = View.VISIBLE
+                    binding.tvGenerateGif.enable(true)
+
                     val response = it.value
                     Glide.with(requireContext()) // replace with 'this' if it's in activity
                         .load(response[0].gifUrl)
@@ -69,12 +76,10 @@ class SelectBackgroundFragment : BaseFragment<ProcessViewModel,FragmentSelectBac
                 }
 
                 is Resource.Failure -> {
-
+                    handleApiError(it)
                 }
 
-                is Resource.Loading -> {
-
-                }
+                is Resource.Loading -> binding.shimmer.startShimmer()
             }
         })
     }

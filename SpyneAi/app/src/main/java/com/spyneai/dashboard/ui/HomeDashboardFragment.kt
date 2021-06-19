@@ -75,6 +75,11 @@ class HomeDashboardFragment :
         tokenId = Utilities.getPreference(requireContext(), AppConstants.tokenId).toString()
         email = Utilities.getPreference(requireContext(), AppConstants.EMAIL_ID).toString()
 
+        if (viewModel.isNewUser.value == true){
+            showFreeCreditDialog(viewModel.creditsMessage.value.toString())
+            viewModel.isNewUser.value = false
+        }
+
         setOngoingProjectRecycler()
         setSliderRecycler()
         showTutorialVideos()
