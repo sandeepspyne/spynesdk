@@ -17,7 +17,6 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:elevation="@dimen/dp_5"
-            android:background="@drawable/bg_channel"
             android:padding="0.1dp"
             tools:context=".activity.CameraActivity"
             android:orientation="vertical">
@@ -26,15 +25,16 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_margin="@dimen/dp_1"
-                app:cardCornerRadius="@dimen/dp_10">
+                app:cardCornerRadius="@dimen/dp_10"
+                app:cardBackgroundColor="@color/shimmer_background">
+
                 <ImageView
                     android:id="@+id/ivCarBackground"
                     android:layout_width="@dimen/dp_70"
                     android:layout_height="@dimen/dp_70"
-                    android:src="@mipmap/defaults"
                     android:scaleType="fitXY"
-                    android:background="@drawable/click_backgrounds"
                     android:contentDescription="@string/app_name" />
+
             </androidx.cardview.widget.CardView>
         </LinearLayout>
         <TextView
@@ -45,7 +45,8 @@
             android:gravity="center"
             android:layout_margin="@dimen/dp_2"
             android:fontFamily="@font/medium"
-            android:textColor="@color/black"
+            android:background="@color/shimmer_background"
+            android:textColor="@color/shimmer_background"
             android:textSize="@dimen/sp_10"/>
     </LinearLayout>
 

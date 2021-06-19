@@ -109,7 +109,8 @@ class OverlaysFragment : BaseFragment<ShootViewModel,FragmentOverlaysBinding>(),
             binding.tvShoot?.text = "Angles 1/${viewModel.getSelectedAngles()}"
 
             initProgressFrames()
-            getOverlays()
+            if (viewModel.subCategory.value?.prod_cat_id != null)
+                getOverlays()
         })
     }
 
@@ -165,9 +166,7 @@ class OverlaysFragment : BaseFragment<ShootViewModel,FragmentOverlaysBinding>(),
                             .into(binding.imgOverlay!!)
 
                     }
-                    else -> {
-
-                    }
+                    else -> { }
                 }
             })
 
@@ -197,16 +196,22 @@ class OverlaysFragment : BaseFragment<ShootViewModel,FragmentOverlaysBinding>(),
         viewModel.subCategoriesResponse.observe(viewLifecycleOwner, {
             when (it) {
                 is Resource.Sucess -> {
+                    Utilities.hideProgressDialog()
                     subCategoriesAdapter.subCategoriesList =
                         it.value.data as ArrayList<NewSubCatResponse.Data>
                     subCategoriesAdapter.notifyDataSetChanged()
 
+                    //set default angles on sub cat response
+                    initAngles()
+                    initProgressFrames()
+                    observeOverlays()
+
                     binding.clSubcatSelectionOverlay?.visibility = View.VISIBLE
                 }
-                is Resource.Loading -> {
+                is Resource.Loading ->  Utilities.showProgressDialog(requireContext())
 
-                }
                 is Resource.Failure -> {
+                    Utilities.hideProgressDialog()
                     handleApiError(it)
                 }
             }
@@ -235,24 +240,26 @@ class OverlaysFragment : BaseFragment<ShootViewModel,FragmentOverlaysBinding>(),
                 it.prod_sub_cat_id!!,
                 viewModel.exterirorAngles.value.toString()
             )
-
-            viewModel.overlaysResponse.observe(viewLifecycleOwner,{ it ->
-                when(it){
-                    is Resource.Sucess -> {
-                        Utilities.hideProgressDialog()
-                        binding.clSubcatSelectionOverlay?.visibility = View.GONE
-                        showViews()
-                    }
-
-                    is Resource.Loading -> Utilities.showProgressDialog(requireContext())
-
-                    is Resource.Failure -> {
-                        Utilities.hideProgressDialog()
-                        handleApiError(it)
-                    }
-                }
-            })
         }
+    }
+
+    private fun observeOverlays() {
+        viewModel.overlaysResponse.observe(viewLifecycleOwner,{ it ->
+            when(it){
+                is Resource.Sucess -> {
+                    Utilities.hideProgressDialog()
+                    binding.clSubcatSelectionOverlay?.visibility = View.GONE
+                    showViews()
+                }
+
+                is Resource.Loading -> Utilities.showProgressDialog(requireContext())
+
+                is Resource.Failure -> {
+                    Utilities.hideProgressDialog()
+                    handleApiError(it)
+                }
+            }
+        })
     }
 
     private fun initInteriorShots() {
@@ -362,9 +369,6 @@ class OverlaysFragment : BaseFragment<ShootViewModel,FragmentOverlaysBinding>(),
                 progressAdapter.updateList(viewModel.getShootProgressList(viewModel.miscAngles.value!!))
             else
                 progressAdapter.updateList(viewModel.miscShootNumber.value!!)
-
-
-
         })
     }
 
@@ -377,8 +381,6 @@ class OverlaysFragment : BaseFragment<ShootViewModel,FragmentOverlaysBinding>(),
             subCategoriesAdapter.selectionEnabled = true
             subCategoriesAdapter.notifyDataSetChanged()
 
-            initAngles()
-            initProgressFrames()
             getOverlays()
         }
 

@@ -10,11 +10,14 @@ import com.spyneai.shoot.data.model.Sku
 import com.spyneai.shoot.ui.dialogs.ShootExitDialog
 
 class ProcessActivity : AppCompatActivity() {
+
+    lateinit var processViewModel : ProcessViewModel
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_process)
 
-        val processViewModel = ViewModelProvider(this, ViewModelFactory()).get(ProcessViewModel::class.java)
+        processViewModel = ViewModelProvider(this, ViewModelFactory()).get(ProcessViewModel::class.java)
 
         val sku = Sku()
         sku.skuId = intent.getStringExtra("sku_id")
@@ -37,6 +40,7 @@ class ProcessActivity : AppCompatActivity() {
     }
 
     override fun onBackPressed() {
-        ShootExitDialog().show(supportFragmentManager,"ShootExitDialog")
+        if (processViewModel.startTimer.value == null || !processViewModel.startTimer.value!!)
+            ShootExitDialog().show(supportFragmentManager,"ShootExitDialog")
     }
 }

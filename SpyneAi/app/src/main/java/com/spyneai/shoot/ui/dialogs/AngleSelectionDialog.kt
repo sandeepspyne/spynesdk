@@ -19,8 +19,8 @@ class AngleSelectionDialog : BaseDialogFragment<ShootViewModel,DialogAngleSelect
     private fun showOptions() {
         val valuesShoots = arrayOf("4 Angles", "8 Angles", "12 Angles")
 
-        val lastSelectedAngles = viewModel.getSelectedAngles().toString()
-        var newSelectedAngles =viewModel.getSelectedAngles().toString()
+        val lastSelectedAngles = viewModel.getSelectedAngles()
+        var newSelectedAngles = viewModel.getSelectedAngles()
 
         when(viewModel.getSelectedAngles()){
             4 -> binding.npShoots.minValue = 0
@@ -33,31 +33,18 @@ class AngleSelectionDialog : BaseDialogFragment<ShootViewModel,DialogAngleSelect
         binding.npShoots.displayedValues = valuesShoots
 
         binding.npShoots.setOnValueChangedListener { _, _, newVal ->
-            newSelectedAngles = valuesShoots[newVal]
-
-            when {
-                valuesShoots[newVal] == "4 Angles" -> {
-                    viewModel.exterirorAngles.value = 4
-                    //setProgressFrame(4)
-                }
-                valuesShoots[newVal] == "8 Angles" -> {
-                    viewModel.exterirorAngles.value = 8
-                    //setProgressFrame(8)
-                }
-                valuesShoots[newVal] == "12 Angles" -> {
-                    viewModel.exterirorAngles.value = 12
-                    // setProgressFrame(12)
-                }
-                valuesShoots[newVal] == "24 Angles" -> {
-                    viewModel.exterirorAngles.value = 24
-                    //setProgressFrame(24)
-                }
-            }
+           when(valuesShoots[newVal]) {
+               "4 Angles" -> newSelectedAngles = 4
+               "8 Angles" -> newSelectedAngles = 8
+               "12 Angles" -> newSelectedAngles = 12
+               "24 Angles" -> newSelectedAngles = 24
+           }
         }
 
         binding.tvProceed.setOnClickListener {
             if (lastSelectedAngles != newSelectedAngles)
                 //isSubcatgoryConfirmed = false
+                viewModel.exterirorAngles.value = newSelectedAngles
                     dismiss()
         }
     }

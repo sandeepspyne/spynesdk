@@ -8,6 +8,7 @@ import com.bumptech.glide.Glide
 import com.spyneai.R
 import com.spyneai.base.BaseFragment
 import com.spyneai.databinding.FragmentImageProcessingStartedBinding
+import com.spyneai.gotoHome
 import com.spyneai.shoot.data.ProcessViewModel
 
 
@@ -21,6 +22,9 @@ class ImageProcessingStartedFragment : BaseFragment<ProcessViewModel, FragmentIm
         Glide.with(this).asGif().load(R.raw.image_processing_started)
             .into(binding.ivProcessing)
 
+        binding.llHome.setOnClickListener {
+            requireContext().gotoHome()
+        }
     }
 
 
