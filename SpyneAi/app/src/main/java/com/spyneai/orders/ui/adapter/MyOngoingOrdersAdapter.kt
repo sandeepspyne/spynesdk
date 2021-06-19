@@ -35,6 +35,7 @@ class MyOngoingOrdersAdapter(
         val tvSkuId: TextView = view.findViewById(R.id.tvSkuId)
         val tvNoOfSku: TextView = view.findViewById(R.id.tvNoOfSku)
         val iv_thumbnail_ongoing: ImageView = view.findViewById(R.id.iv_thumbnail_ongoing)
+        val tvImageCount: TextView = view.findViewById(R.id.tvImageCount)
 
     }
 
@@ -62,6 +63,8 @@ class MyOngoingOrdersAdapter(
         holder.tvCategoryName.text = ongoingSkuList[position].category
         holder.tvSkuName.text = ongoingSkuList[position].sku_name
         holder.tvSkuId.text = ongoingSkuList[position].sku_id
+        holder.tvProjectId.text = ongoingSkuList[position].project_id
+        holder.tvImageCount.text = ongoingSkuList[position].total_processed +"/" +ongoingSkuList[position].total_images
 
         Glide.with(context) // replace with 'this' if it's in activity
             .load(ongoingSkuList[position].thumbnail)

@@ -36,6 +36,8 @@ class MyOngoingOrdersFragment : BaseFragment<MyOrdersViewModel, MyOngoingOrdersF
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
 
+        binding.shimmerOngoingSKU.startShimmer()
+
         tokenId = Utilities.getPreference(requireContext(), AppConstants.tokenId).toString()
         ongoingSkuList = ArrayList<GetOngoingSkusResponse.Data>()
         setOngoingSkuRecycler()
@@ -45,6 +47,11 @@ class MyOngoingOrdersFragment : BaseFragment<MyOrdersViewModel, MyOngoingOrdersF
             viewLifecycleOwner, androidx.lifecycle.Observer {
                 when (it) {
                     is Resource.Sucess -> {
+
+                        binding.shimmerOngoingSKU.stopShimmer()
+                        binding.shimmerOngoingSKU.visibility = View.GONE
+                        binding.rvMyOngoingOrders.visibility = View.VISIBLE
+
                         ongoingSkuList.addAll(it.value.data)
                         myOngoingOrdersAdapter = MyOngoingOrdersAdapter(requireContext(),
                             ongoingSkuList)

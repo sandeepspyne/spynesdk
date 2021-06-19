@@ -6,6 +6,7 @@
     xmlns:tools="http://schemas.android.com/tools">
 
     <androidx.recyclerview.widget.RecyclerView
+        android:visibility="gone"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:id="@+id/rv_my_completed_orders"
@@ -14,5 +15,24 @@
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"
         tools:listitem="@layout/item_my_completed_orders"/>
+
+    <com.facebook.shimmer.ShimmerFrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:id="@+id/shimmerCompletedSKU">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical">
+
+            <include layout="@layout/completed_ongoing_sku_simmer"></include>
+            <include layout="@layout/completed_ongoing_sku_simmer"></include>
+            <include layout="@layout/completed_ongoing_sku_simmer"></include>
+            <include layout="@layout/completed_ongoing_sku_simmer"></include>
+            <include layout="@layout/completed_ongoing_sku_simmer"></include>
+
+        </LinearLayout>
+    </com.facebook.shimmer.ShimmerFrameLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

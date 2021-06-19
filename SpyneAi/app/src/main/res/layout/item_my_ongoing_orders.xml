@@ -3,6 +3,7 @@
     android:layout_height="wrap_content"
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_marginTop="@dimen/dp_15"
     android:layout_marginLeft="@dimen/dp_20"
     android:layout_marginRight="@dimen/dp_20"
@@ -15,6 +16,35 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginBottom="@dimen/dp_10">
+
+        <FrameLayout
+            android:layout_width="45dp"
+            android:layout_height="45dp"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            android:layout_marginTop="@dimen/dp_8"
+            android:layout_marginRight="@dimen/dp_8">
+
+        <com.airbnb.lottie.LottieAnimationView
+            android:id="@+id/lottieProgressCircle"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_alignParentRight="true"
+            app:lottie_autoPlay="true"
+            app:lottie_rawRes="@raw/progress_circle"
+            app:lottie_loop="true" />
+
+            <TextView
+                android:id="@+id/tvImageCount"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="@color/black"
+                android:fontFamily="@font/bold"
+                android:textSize="10sp"
+                android:layout_gravity="center"
+                tools:text="2/5"/>
+
+        </FrameLayout>
 
         <androidx.cardview.widget.CardView
             android:id="@+id/cvThumbnail"
@@ -30,7 +60,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:id="@+id/iv_thumbnail_ongoing"
-                android:scaleType="fitXY" />
+                android:scaleType="centerCrop" />
 
             <LinearLayout
                 android:layout_width="wrap_content"
@@ -51,7 +81,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:id="@+id/tv_images_count_ongoing"
-                    android:hint="10"
+                    tools:text="10"
                     android:fontFamily="@font/poppins_medium"
                     android:textColor="@color/white"
                     android:textSize="@dimen/dp_8"
@@ -66,7 +96,7 @@
             android:id="@+id/tvCategoryName"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
-            android:hint="Automobiles"
+            tools:text="Automobiles"
             android:textSize="@dimen/sp_10"
             android:fontFamily="@font/poppins_medium"
             android:textColor="@color/primary"
@@ -91,7 +121,7 @@
             android:id="@+id/tvProjectId"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:hint="12345"
+            tools:text="1234"
             android:textColor="@color/black"
             android:textSize="@dimen/sp_12"
             app:layout_constraintLeft_toRightOf="@+id/tvProjectname"
@@ -116,12 +146,13 @@
             android:id="@+id/tvSubCategory"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:hint="Sedan"
+            tools:text="Sedan"
             android:textColor="@color/black"
             android:textSize="@dimen/sp_12"
             app:layout_constraintLeft_toRightOf="@+id/tvProjectid"
             app:layout_constraintTop_toBottomOf="@+id/tvProjectname"
             android:layout_marginLeft="@dimen/dp_5"
+            android:maxLength="5"
             android:fontFamily="@font/poppins_medium"/>
 
         <TextView
@@ -140,7 +171,7 @@
             android:id="@+id/tvDateOngoing"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:hint="12/12/2012"
+            tools:text="12/12/1212"
             android:textColor="@color/black"
             android:textSize="@dimen/sp_12"
             app:layout_constraintLeft_toRightOf="@+id/tvdate"
@@ -181,7 +212,7 @@
                 android:id="@+id/tvSkuName"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:hint="1234"
+                tools:text="13231"
                 android:textColor="@color/black"
                 android:textSize="@dimen/sp_10"
                 android:layout_marginLeft="@dimen/dp_5"
@@ -220,7 +251,7 @@
                 android:id="@+id/tvSkuId"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:hint="App"
+                tools:text="App"
                 android:textColor="@color/black"
                 android:textSize="@dimen/sp_10"
                 android:layout_marginLeft="@dimen/dp_5"
@@ -250,16 +281,16 @@
                 android:id="@+id/tvnoofsku"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:fontFamily="@font/poppins_medium"
                 android:text="No. of SKU:"
                 android:textColor="@color/primary"
-                android:textSize="@dimen/sp_10"
-                android:fontFamily="@font/poppins_medium"/>
+                android:textSize="@dimen/sp_10" />
 
             <TextView
                 android:id="@+id/tvNoOfSku"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:hint="10"
+                tools:text="10"
                 android:textColor="@color/black"
                 android:textSize="@dimen/sp_10"
                 android:layout_marginLeft="@dimen/dp_5"
