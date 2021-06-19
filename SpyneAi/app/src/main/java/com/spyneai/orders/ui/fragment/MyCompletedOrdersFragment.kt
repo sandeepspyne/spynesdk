@@ -19,7 +19,6 @@ import com.spyneai.orders.ui.adapter.MyCompletedOrdersAdapter
 class MyCompletedOrdersFragment :
     BaseFragment<MyOrdersViewModel, MyCompletedOrdersFragmentBinding>() {
 
-    lateinit var tokenId: String
     lateinit var myCompletedOrdersAdapter: MyCompletedOrdersAdapter
     lateinit var completedSkuList: ArrayList<CompletedSKUsResponse.Data>
 
@@ -41,11 +40,10 @@ class MyCompletedOrdersFragment :
 
         binding.shimmerCompletedSKU.startShimmer()
 
-        tokenId = Utilities.getPreference(requireContext(), AppConstants.tokenId).toString()
         completedSkuList = ArrayList<CompletedSKUsResponse.Data>()
         setCompletedSkuRecycler()
 
-        viewModel.getCompletedSKUs("18e13dda-ceb8-48f0-8ee0-13fecc26a7f8")
+        viewModel.getCompletedSKUs(Utilities.getPreference(requireContext(), AppConstants.AUTH_KEY).toString())
         viewModel.completedSKUsResponse.observe(
             viewLifecycleOwner, Observer {
                 when (it) {

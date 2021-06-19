@@ -19,7 +19,6 @@ import com.spyneai.orders.ui.adapter.MyOngoingOrdersAdapter
 
 class MyOngoingOrdersFragment : BaseFragment<MyOrdersViewModel, MyOngoingOrdersFragmentBinding>() {
 
-    lateinit var tokenId: String
     lateinit var myOngoingOrdersAdapter: MyOngoingOrdersAdapter
     lateinit var ongoingSkuList: ArrayList<GetOngoingSkusResponse.Data>
 
@@ -38,7 +37,6 @@ class MyOngoingOrdersFragment : BaseFragment<MyOrdersViewModel, MyOngoingOrdersF
 
         binding.shimmerOngoingSKU.startShimmer()
 
-        tokenId = Utilities.getPreference(requireContext(), AppConstants.tokenId).toString()
         ongoingSkuList = ArrayList<GetOngoingSkusResponse.Data>()
         setOngoingSkuRecycler()
 
