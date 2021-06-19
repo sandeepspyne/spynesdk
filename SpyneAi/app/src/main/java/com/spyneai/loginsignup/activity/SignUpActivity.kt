@@ -139,58 +139,76 @@ class SignUpActivity : AppCompatActivity() {
                 Utilities.hideProgressDialog()
 
 
-            if (response.isSuccessful && response.body() != null) {
+                if (response.isSuccessful && response.body() != null) {
 
-                var signUpResponse = response.body()
+                    var signUpResponse = response.body()
 
-                if (signUpResponse?.status == 200) {
-                    if (signUpResponse.message == "User already exists. Please Login") {
-                        Toast.makeText(
-                            this@SignUpActivity,
-                            "Email id already exists, please login.",
-                            Toast.LENGTH_SHORT
-                        ).show()
-                        tvLogin.isClickable = true
-                        tv_signUp.isClickable = true
-                        tv_terms.isClickable = true
-                        tv_sign_in_using_otp.isClickable = true
-                    } else {
-                        Toast.makeText(
-                            this@SignUpActivity,
-                            "Signup successful",
-                            Toast.LENGTH_SHORT
-                        )
-                            .show()
-                        Utilities.savePrefrence(
-                            this@SignUpActivity, AppConstants.tokenId,
-                            response.body()!!.userId
-                        )
+                    when(signUpResponse?.status){
+                        200 -> {
+                            Toast.makeText(
+                                this@SignUpActivity,
+                                "Signup successful",
+                                Toast.LENGTH_SHORT
+                            )
+                                .show()
+                            Utilities.savePrefrence(
+                                this@SignUpActivity, AppConstants.tokenId,
+                                response.body()!!.userId
+                            )
 
-                        Utilities.savePrefrence(this@SignUpActivity,AppConstants.AUTH_KEY, response.body()!!.auth_token)
+                            Utilities.savePrefrence(this@SignUpActivity,AppConstants.AUTH_KEY, response.body()!!.auth_token)
+                            Utilities.savePrefrence(this@SignUpActivity, AppConstants.USER_NAME, response.body()!!.userName)
+                            Utilities.savePrefrence(this@SignUpActivity, AppConstants.USER_EMAIL, response.body()!!.emailId)
 
+                            val intent = Intent(this@SignUpActivity, MainDashboardActivity::class.java)
+                            intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+                            intent.putExtra(AppConstants.IS_NEW_USER,true)
+                            intent.putExtra(AppConstants.CREDITS_MESSAGE,signUpResponse.displayMessage)
+                            startActivity(intent)
 
-                        val intent = Intent(this@SignUpActivity, MainDashboardActivity::class.java)
-                        intent.putExtra("from_signup",true)
+                            tvLogin.isClickable = true
+                            tv_signUp.isClickable = true
+                            tv_terms.isClickable = true
+                            tv_sign_in_using_otp.isClickable = true
+                        }
 
-                        startActivity(intent)
-                        finish()
-                        tvLogin.isClickable = true
-                        tv_signUp.isClickable = true
-                        tv_terms.isClickable = true
-                        tv_sign_in_using_otp.isClickable = true
+                        400 -> {
+                            Toast.makeText(
+                                this@SignUpActivity,
+                                signUpResponse.message,
+                                Toast.LENGTH_SHORT
+                            ).show()
+                            tvLogin.isClickable = true
+                            tv_signUp.isClickable = true
+                            tv_terms.isClickable = true
+                            tv_sign_in_using_otp.isClickable = true
+                        }
+
+                        else -> {
+                            Toast.makeText(
+                                this@SignUpActivity,
+                                response.errorBody().toString(),
+                                Toast.LENGTH_SHORT
+                            ).show()
+                            tvLogin.isClickable = true
+                            tv_signUp.isClickable = true
+                            tv_terms.isClickable = true
+                            tv_sign_in_using_otp.isClickable = true
+                        }
                     }
-                } else {
+                }else{
                     Toast.makeText(
-                        this@SignUpActivity,
-                        response.errorBody().toString(),
+                        applicationContext,
+                        "Server not responding!, Please try again later",
                         Toast.LENGTH_SHORT
                     ).show()
+
                     tvLogin.isClickable = true
                     tv_signUp.isClickable = true
                     tv_terms.isClickable = true
                     tv_sign_in_using_otp.isClickable = true
                 }
-            }
+
             }
             override fun onFailure(call: Call<SignupResponse>, t: Throwable) {
                 Utilities.hideProgressDialog()

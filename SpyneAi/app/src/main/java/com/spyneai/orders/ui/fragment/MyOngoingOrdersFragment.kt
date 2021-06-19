@@ -45,23 +45,22 @@ class MyOngoingOrdersFragment : BaseFragment<MyOrdersViewModel, MyOngoingOrdersF
             viewLifecycleOwner, androidx.lifecycle.Observer {
                 when (it) {
                     is Resource.Sucess -> {
-
                         binding.shimmerOngoingSKU.stopShimmer()
                         binding.shimmerOngoingSKU.visibility = View.GONE
                         binding.rvMyOngoingOrders.visibility = View.VISIBLE
-
-                        ongoingSkuList.addAll(it.value.data)
-                        myOngoingOrdersAdapter = MyOngoingOrdersAdapter(requireContext(),
-                            ongoingSkuList)
-
-                        val layoutManager: RecyclerView.LayoutManager = LinearLayoutManager(requireContext(), LinearLayoutManager.VERTICAL, false)
-                        binding.rvMyOngoingOrders.setLayoutManager(layoutManager)
-                        binding.rvMyOngoingOrders.setAdapter(myOngoingOrdersAdapter)
-                        myOngoingOrdersAdapter =
-                            MyOngoingOrdersAdapter(
-                                requireContext(),
-                                ongoingSkuList
-                            )
+                        if (it.value.data != null){
+                            ongoingSkuList.addAll(it.value.data)
+                            myOngoingOrdersAdapter = MyOngoingOrdersAdapter(requireContext(),
+                                ongoingSkuList)
+                            val layoutManager: RecyclerView.LayoutManager = LinearLayoutManager(requireContext(), LinearLayoutManager.VERTICAL, false)
+                            binding.rvMyOngoingOrders.setLayoutManager(layoutManager)
+                            binding.rvMyOngoingOrders.setAdapter(myOngoingOrdersAdapter)
+                            myOngoingOrdersAdapter =
+                                MyOngoingOrdersAdapter(
+                                    requireContext(),
+                                    ongoingSkuList
+                                )
+                        }
                     }
                     is Resource.Loading -> {
 

@@ -17,6 +17,4 @@ data class OtpResponse (
         val userId : String,
         @SerializedName("user_name")
         val userName : String,
-        @SerializedName("user_name") val user_name : String,
-        @SerializedName("email_id") val email_id : String
 )

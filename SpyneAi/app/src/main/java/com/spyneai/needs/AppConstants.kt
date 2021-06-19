@@ -96,6 +96,8 @@ object AppConstants {
 
     val  VIDEO_URL: String = "videoUrl"
 
+    val  IS_NEW_USER: String = "isNewUser"
+
 
 
 

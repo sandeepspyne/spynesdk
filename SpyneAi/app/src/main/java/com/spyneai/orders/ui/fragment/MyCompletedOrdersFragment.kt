@@ -48,23 +48,23 @@ class MyCompletedOrdersFragment :
             viewLifecycleOwner, Observer {
                 when (it) {
                     is com.spyneai.base.network.Resource.Sucess -> {
-
                         binding.shimmerCompletedSKU.stopShimmer()
                         binding.shimmerCompletedSKU.visibility = View.GONE
                         binding.rvMyCompletedOrders.visibility = View.VISIBLE
+                        if (it.value.data != null){
+                            completedSkuList.addAll(it.value.data)
+                            myCompletedOrdersAdapter = MyCompletedOrdersAdapter(requireContext(),
+                                completedSkuList)
 
-                        completedSkuList.addAll(it.value.data)
-                        myCompletedOrdersAdapter = MyCompletedOrdersAdapter(requireContext(),
-                            completedSkuList)
-
-                        val layoutManager: RecyclerView.LayoutManager = LinearLayoutManager(requireContext(), LinearLayoutManager.VERTICAL, false)
-                        binding.rvMyCompletedOrders.setLayoutManager(layoutManager)
-                        binding.rvMyCompletedOrders.setAdapter(myCompletedOrdersAdapter)
-                        myCompletedOrdersAdapter =
-                            MyCompletedOrdersAdapter(
-                                requireContext(),
-                                completedSkuList
-                            )
+                            val layoutManager: RecyclerView.LayoutManager = LinearLayoutManager(requireContext(), LinearLayoutManager.VERTICAL, false)
+                            binding.rvMyCompletedOrders.setLayoutManager(layoutManager)
+                            binding.rvMyCompletedOrders.setAdapter(myCompletedOrdersAdapter)
+                            myCompletedOrdersAdapter =
+                                MyCompletedOrdersAdapter(
+                                    requireContext(),
+                                    completedSkuList
+                                )
+                        }
                     }
                     is com.spyneai.base.network.Resource.Loading -> {
 

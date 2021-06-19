@@ -161,30 +161,33 @@ class HomeDashboardFragment :
                     binding.rvCompletedShoots.visibility = View.VISIBLE
                     binding.shimmerCompleted.stopShimmer()
                     binding.shimmerCompleted.visibility = View.GONE
-                    completedProjectList = ArrayList()
-                    completedProjectList.addAll(it.value.data)
-                    completedProjectList.reverse()
+                    if (it.value.data != null){
+                        completedProjectList = ArrayList()
+                        completedProjectList.addAll(it.value.data)
+                        completedProjectList.reverse()
 
-                    if (completedProjectList.size == 0)
-                        binding.rlCompletedShoots.visibility = View.GONE
+                        if (completedProjectList.size == 0)
+                            binding.rlCompletedShoots.visibility = View.GONE
 
-                    completedDashboardAdapter = CompletedDashboardAdapter(requireContext(),
-                        completedProjectList,
-                        object : CompletedDashboardAdapter.BtnClickListener {
-                            override fun onBtnClick(position: Int) {
-                                Utilities.savePrefrence(requireContext(),
-                                    AppConstants.SKU_ID,
-                                    completedProjectList[position].sku_id)
-                                val intent = Intent(requireContext(),
-                                    ShowImagesActivity::class.java)
-                                startActivity(intent)
+                        completedDashboardAdapter = CompletedDashboardAdapter(requireContext(),
+                            completedProjectList,
+                            object : CompletedDashboardAdapter.BtnClickListener {
+                                override fun onBtnClick(position: Int) {
+                                    Utilities.savePrefrence(requireContext(),
+                                        AppConstants.SKU_ID,
+                                        completedProjectList[position].sku_id)
+                                    val intent = Intent(requireContext(),
+                                        ShowImagesActivity::class.java)
+                                    startActivity(intent)
 
-                            }}
-                    )
+                                }}
+                        )
 
-                    val layoutManager: RecyclerView.LayoutManager = LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
-                    binding.rvCompletedShoots.setLayoutManager(layoutManager)
-                    binding.rvCompletedShoots.setAdapter(completedDashboardAdapter)
+                        val layoutManager: RecyclerView.LayoutManager = LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
+                        binding.rvCompletedShoots.setLayoutManager(layoutManager)
+                        binding.rvCompletedShoots.setAdapter(completedDashboardAdapter)
+                    }
+
 
 
 
@@ -254,15 +257,18 @@ class HomeDashboardFragment :
             viewLifecycleOwner, androidx.lifecycle.Observer {
                 when (it) {
                     is Resource.Sucess -> {
-                        ongoingDashboardAdapter = OngoingDashboardAdapter(requireContext(),
-                            it.value.data as ArrayList<GetOngoingSkusResponse.Data>
-                        )
+                        if (it.value.data != null){
+                            ongoingDashboardAdapter = OngoingDashboardAdapter(requireContext(),
+                                it.value.data as ArrayList<GetOngoingSkusResponse.Data>
+                            )
 
-                        val layoutManager: RecyclerView.LayoutManager = LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
-                        binding.rvOngoingShoots.setLayoutManager(layoutManager)
-                        binding.rvOngoingShoots.setAdapter(ongoingDashboardAdapter)
+                            val layoutManager: RecyclerView.LayoutManager = LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
+                            binding.rvOngoingShoots.setLayoutManager(layoutManager)
+                            binding.rvOngoingShoots.setAdapter(ongoingDashboardAdapter)
 
-                        showHideRecyclerView(it.value.data)
+                            showHideRecyclerView(it.value.data)
+                        }
+
                     }
                     is Resource.Loading -> {
 

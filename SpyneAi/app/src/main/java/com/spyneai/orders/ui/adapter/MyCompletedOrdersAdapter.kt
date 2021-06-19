@@ -56,7 +56,7 @@ class MyCompletedOrdersAdapter(
                 .inflate(R.layout.item_my_completed_orders, parent, false)
         }else{
             view = LayoutInflater.from(parent.context)
-                .inflate(R.layout.item_last_ongoing_order, parent, false)
+                .inflate(R.layout.item_last_completed_order, parent, false)
         }
 
 
