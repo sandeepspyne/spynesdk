@@ -7,7 +7,6 @@ import android.os.Bundle
 import androidx.camera.core.*
 
 
-import androidx.databinding.DataBindingUtil
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.spyneai.R
@@ -31,7 +30,7 @@ class ThreeSixtyViewActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        binding = ActivityProcessVideoTimerBinding.inflate(layoutInflater)
+        binding = ActivityThreeSixtyViewBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
         binding.flShootNow.setOnClickListener {

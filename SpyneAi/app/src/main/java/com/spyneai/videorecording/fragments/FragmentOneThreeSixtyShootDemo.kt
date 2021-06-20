@@ -21,8 +21,6 @@ class FragmentOneThreeSixtyShootDemo : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-
-
         if(requireArguments().getInt("shoot_mode",0) == 1){
             iv.setImageDrawable(ContextCompat.getDrawable(requireContext(),R.drawable.shoot_back_side))
         }

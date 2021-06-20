@@ -16,7 +16,6 @@ import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.net.toFile
-import androidx.databinding.DataBindingUtil
 import com.google.android.exoplayer2.C
 import com.google.android.exoplayer2.MediaItem
 import com.google.android.exoplayer2.Player
@@ -90,7 +89,7 @@ class TrimVideoActivity : AppCompatActivity() , SeekListener {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        binding = ActivityProcessVideoTimerBinding.inflate(layoutInflater)
+        binding = ActivityTrimVideoBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
         if(intent.getIntExtra("shoot_mode", 0) == 1) binding.tvViewType.text = "Interior Back View"

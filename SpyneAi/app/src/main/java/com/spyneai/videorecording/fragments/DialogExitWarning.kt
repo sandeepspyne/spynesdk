@@ -5,7 +5,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.databinding.DataBindingUtil
+
 import androidx.fragment.app.DialogFragment
 import com.spyneai.R
 import com.spyneai.dashboard.ui.MainDashboardActivity
@@ -14,18 +14,19 @@ import com.spyneai.videorecording.service.UploadVideoService
 
 class DialogExitWarning : DialogFragment() {
 
-    private lateinit var binding : DialogExitBinding
+
+    private var _binding: DialogExitBinding? = null
+    private val binding get() = _binding!!
 
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-
-        binding = DataBindingUtil.inflate(inflater, R.layout.dialog_exit, container, false )
-
-        return binding.root
+        _binding = DialogExitBinding.inflate(inflater, container, false)
+        return  binding.root
     }
+
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -47,6 +48,11 @@ class DialogExitWarning : DialogFragment() {
                 dismiss()
             }
         }
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
     }
 
 }

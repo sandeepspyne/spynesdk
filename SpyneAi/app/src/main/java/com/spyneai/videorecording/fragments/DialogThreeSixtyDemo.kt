@@ -4,12 +4,10 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.Fragment
 import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayoutMediator
-import com.spyneai.R
 import com.spyneai.databinding.DialogShootThreeSixtyDemoBinding
 import com.spyneai.videorecording.adapter.ThreeSixtyShootDemoAdapter
 
@@ -17,19 +15,22 @@ import com.spyneai.videorecording.adapter.ThreeSixtyShootDemoAdapter
 class DialogThreeSixtyDemo : DialogFragment() {
 
     private lateinit var demoCollectionAdapter: ThreeSixtyShootDemoAdapter
-    lateinit var binding : DialogShootThreeSixtyDemoBinding
     private lateinit var fragmentList: ArrayList<Fragment>
     val shootMode  = 1
+
+    private var _binding: DialogShootThreeSixtyDemoBinding? = null
+    private val binding get() = _binding!!
 
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        getDialog()?.setCancelable(false);
-        binding = DataBindingUtil.inflate(inflater,R.layout.dialog_shoot_three_sixty_demo, container, false)
-        return binding.root
+        _binding = DialogShootThreeSixtyDemoBinding.inflate(inflater, container, false)
+        return  binding.root
     }
+
+
 
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -88,5 +89,10 @@ class DialogThreeSixtyDemo : DialogFragment() {
             override fun onTabReselected(tab: TabLayout.Tab?) {
             }
         })
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
     }
 }

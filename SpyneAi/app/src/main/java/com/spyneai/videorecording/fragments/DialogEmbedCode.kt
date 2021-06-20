@@ -11,31 +11,26 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
-import androidx.core.content.ContextCompat.getSystemService
-import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.DialogFragment
 import com.spyneai.R
 import com.spyneai.databinding.DialogCopyEmbeddedCodeBinding
 
 class DialogEmbedCode : DialogFragment() {
 
-    private lateinit var binding : DialogCopyEmbeddedCodeBinding
+
+
+    private var _binding: DialogCopyEmbeddedCodeBinding? = null
+    private val binding get() = _binding!!
 
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-
-        binding = DataBindingUtil.inflate(
-            inflater,
-            R.layout.dialog_copy_embedded_code,
-            container,
-            false
-        )
-
-        return binding.root
+        _binding = DialogCopyEmbeddedCodeBinding.inflate(inflater, container, false)
+        return  binding.root
     }
+
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -58,5 +53,10 @@ class DialogEmbedCode : DialogFragment() {
 
             dismiss()
         }
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
     }
 }

@@ -7,8 +7,6 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.core.content.ContextCompat
-import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import com.google.android.exoplayer2.C
 import com.google.android.exoplayer2.MediaItem
@@ -19,6 +17,7 @@ import com.google.android.exoplayer2.ui.AspectRatioFrameLayout
 import com.google.android.exoplayer2.ui.PlayerView
 import com.google.android.exoplayer2.upstream.RawResourceDataSource
 import com.spyneai.R
+import com.spyneai.databinding.DialogCopyEmbeddedCodeBinding
 import com.spyneai.databinding.FragmentTwoThreeSixtyShootDemoBinding
 import kotlinx.android.synthetic.main.fragment_one_three_sixty_shoot_demo.*
 
@@ -30,7 +29,6 @@ class FragmentTwoThreeSixtyShootDemo : Fragment() {
     private var isVideoPlaying: Boolean = false
     private var totalDuration: Long = 0
     private var uri: Uri? = null
-    private lateinit var binding : FragmentTwoThreeSixtyShootDemoBinding
     private var playerView: PlayerView? = null
     private var videoPlayer: SimpleExoPlayer? = null
     private val TAG : String = "Exoplayer"
@@ -40,21 +38,19 @@ class FragmentTwoThreeSixtyShootDemo : Fragment() {
     private var playbackPosition: Long = 0
     var isActive = false
 
+    private var _binding: FragmentTwoThreeSixtyShootDemoBinding? = null
+    private val binding get() = _binding!!
 
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        binding = DataBindingUtil.inflate(
-            inflater,
-            R.layout.fragment_two_three_sixty_shoot_demo,
-            container,
-            false
-        )
-        playerView = binding.playerViewLib;
-        return binding.root
+        _binding = FragmentTwoThreeSixtyShootDemoBinding.inflate(inflater, container, false)
+        return  binding.root
     }
+
+
 
 
 
@@ -150,6 +146,11 @@ class FragmentTwoThreeSixtyShootDemo : Fragment() {
          }catch (e:Exception){
 
          }
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
     }
 
 
