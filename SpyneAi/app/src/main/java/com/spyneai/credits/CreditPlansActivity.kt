@@ -6,7 +6,6 @@ import android.util.Log
 import android.view.View
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
-import androidx.databinding.DataBindingUtil
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.razorpay.Checkout
 import com.razorpay.PaymentResultListener
@@ -16,7 +15,6 @@ import com.spyneai.credits.fragments.CreditPaymentFailedFragment
 import com.spyneai.credits.fragments.CreditPyamentSuccessFragment
 import com.spyneai.credits.model.*
 import com.spyneai.databinding.ActivityCreditPlansBinding
-import com.spyneai.interfaces.RetrofitClients
 import com.spyneai.needs.AppConstants
 import com.spyneai.needs.Utilities
 import kotlinx.coroutines.Dispatchers
@@ -44,7 +42,8 @@ class CreditPlansActivity : AppCompatActivity(),CreditsPlandAdapter.Listener,
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        binding = DataBindingUtil.setContentView(this, R.layout.activity_credit_plans)
+        binding = ActivityCreditPlansBinding.inflate(layoutInflater)
+        setContentView(binding.root)
 
         // terminate loop if come from wallet activity
         if (intent.getBooleanExtra("from_wallet",false))

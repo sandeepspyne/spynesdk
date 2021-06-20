@@ -11,6 +11,7 @@ import androidx.databinding.DataBindingUtil
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.spyneai.R
+import com.spyneai.databinding.ActivityProcessVideoTimerBinding
 
 import com.spyneai.databinding.ActivityThreeSixtyViewBinding
 import com.spyneai.needs.ScrollingLinearLayoutManager
@@ -29,7 +30,9 @@ class ThreeSixtyViewActivity : AppCompatActivity() {
     @SuppressLint("RestrictedApi")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        binding = DataBindingUtil.setContentView(this,R.layout.activity_three_sixty_view)
+
+        binding = ActivityProcessVideoTimerBinding.inflate(layoutInflater)
+        setContentView(binding.root)
 
         binding.flShootNow.setOnClickListener {
             startActivity(Intent(this@ThreeSixtyViewActivity, RecordVideoActivity::class.java))

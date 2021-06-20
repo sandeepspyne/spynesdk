@@ -5,7 +5,6 @@ import android.animation.Animator
 import android.animation.AnimatorListenerAdapter
 import android.animation.ObjectAnimator
 import android.annotation.SuppressLint
-import android.app.ProgressDialog.show
 import android.content.ContentValues
 import android.content.Intent
 import android.content.pm.PackageManager
@@ -16,7 +15,6 @@ import android.util.DisplayMetrics
 import android.util.Log
 import android.util.Size
 import android.view.View
-import android.view.ViewStructure
 import android.view.WindowInsets
 import android.view.WindowManager
 import android.widget.ImageButton
@@ -29,7 +27,6 @@ import androidx.camera.lifecycle.ProcessCameraProvider
 import androidx.core.animation.doOnCancel
 import androidx.core.content.ContextCompat
 import androidx.core.net.toFile
-import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.vectordrawable.graphics.drawable.Animatable2Compat
 import com.bumptech.glide.Glide
@@ -149,7 +146,8 @@ class RecordVideoActivity : AppCompatActivity(), PickiTCallbacks {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        binding = DataBindingUtil.setContentView(this, R.layout.activity_record_video)
+        binding = ActivityRecordVideoBinding.inflate(layoutInflater)
+        setContentView(binding.root)
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
             window.insetsController?.hide(WindowInsets.Type.statusBars())

@@ -40,8 +40,6 @@ class SpinViewActivity : AppCompatActivity(),View.OnTouchListener, PreLoadListen
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_spin_view)
 
-
-
          array = arrayOf(
              "https://storage.googleapis.com/spyne-website/landing-page/static/360/Interior/front/ezgif-frame-001.jpg",
              "https://storage.googleapis.com/spyne-website/landing-page/static/360/Interior/front/ezgif-frame-002.jpg",

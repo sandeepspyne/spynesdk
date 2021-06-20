@@ -14,7 +14,7 @@ import android.view.View
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.core.content.ContextCompat
-import androidx.databinding.DataBindingUtil
+
 import com.google.android.exoplayer2.C
 import com.google.android.exoplayer2.MediaItem
 import com.google.android.exoplayer2.Player
@@ -27,6 +27,7 @@ import com.google.android.exoplayer2.ui.PlayerView
 import com.google.android.exoplayer2.upstream.DataSource
 import com.google.android.exoplayer2.upstream.DefaultDataSourceFactory
 import com.spyneai.R
+import com.spyneai.databinding.ActivityProcessVideoTimerBinding
 import com.spyneai.databinding.ActivitySaveTrimmedVideoBinding
 import com.spyneai.videorecording.listener.SeekListener
 import com.spyneai.videorecording.service.UploadVideoService
@@ -66,7 +67,8 @@ class SaveTrimmedVideoActivity : AppCompatActivity(), SeekListener {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        binding = DataBindingUtil.setContentView(this,R.layout.activity_save_trimmed_video)
+        binding = ActivitySaveTrimmedVideoBinding.inflate(layoutInflater)
+        setContentView(binding.root)
 
         if(intent.getIntExtra("shoot_mode",0) == 1) binding.tvViewType.text = "Interior Back View"
 

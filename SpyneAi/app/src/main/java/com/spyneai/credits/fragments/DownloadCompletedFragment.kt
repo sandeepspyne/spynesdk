@@ -5,18 +5,21 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import com.bumptech.glide.Glide
 import com.spyneai.R
 import com.spyneai.activity.DownloadingActivity
 import com.spyneai.credits.FeedbackActivity
 import com.spyneai.dashboard.ui.MainDashboardActivity
+import com.spyneai.databinding.FragmentCreditSuccessBinding
 import com.spyneai.databinding.FragmentDownloadCompletedBinding
 
 class DownloadCompletedFragment : Fragment() {
 
-    private lateinit var binding: FragmentDownloadCompletedBinding
+    private var _binding: FragmentDownloadCompletedBinding? = null
+    // This property is only valid between onCreateView and
+// onDestroyView.
+    private val binding get() = _binding!!
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -24,9 +27,10 @@ class DownloadCompletedFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
 
-        binding = DataBindingUtil.inflate(inflater,R.layout.fragment_download_completed,container,false)
+        _binding = FragmentDownloadCompletedBinding.inflate(inflater, container, false)
 
         return binding.root
+
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -62,5 +66,10 @@ class DownloadCompletedFragment : Fragment() {
         feedbackIntent.putExtra("like",like)
 
         startActivity(feedbackIntent)
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
     }
 }

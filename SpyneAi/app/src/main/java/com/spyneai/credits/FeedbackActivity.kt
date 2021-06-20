@@ -5,12 +5,12 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
 import android.view.View
-import androidx.databinding.DataBindingUtil
 import com.spyneai.R
 import com.spyneai.credits.fragments.FeedbackSubmittedFragment
 import com.spyneai.credits.model.InsertReviewResponse
 import com.spyneai.credits.model.ReviewHolder
 import com.spyneai.dashboard.ui.MainDashboardActivity
+import com.spyneai.databinding.ActivityCreditPlansBinding
 import com.spyneai.databinding.ActivityFeedbackBinding
 import com.spyneai.needs.AppConstants
 import com.spyneai.needs.Utilities
@@ -27,7 +27,8 @@ class FeedbackActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        binding = DataBindingUtil.setContentView(this,R.layout.activity_feedback)
+        binding = ActivityFeedbackBinding.inflate(layoutInflater)
+        setContentView(binding.root)
 
         binding.ivBack.setOnClickListener {
             onBackPressed()

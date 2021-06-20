@@ -1,20 +1,13 @@
 package com.spyneai.credits
 
 import android.app.ActionBar
-import android.app.Dialog
 import android.content.Intent
-import android.graphics.Color
-import android.graphics.drawable.ColorDrawable
-import android.net.Uri
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.View
-import android.view.Window
-import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.Toast
+import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
-import androidx.databinding.DataBindingUtil
 import com.spyneai.R
 import com.spyneai.databinding.ActivityWalletBinding
 import com.spyneai.interfaces.APiService
@@ -26,7 +19,6 @@ import kotlinx.android.synthetic.main.home_dashboard_fragment.*
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
-import java.net.URLEncoder
 
 class WalletActivity : AppCompatActivity() {
 
@@ -37,7 +29,8 @@ class WalletActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        binding = DataBindingUtil.setContentView(this,R.layout.activity_wallet)
+        binding = ActivityWalletBinding.inflate(layoutInflater)
+        setContentView(binding.root)
 
         if (Utilities.getPreference(this, AppConstants.USER_EMAIL).toString() != ""){
             binding.tvUserEmail.visibility = View.VISIBLE

@@ -19,6 +19,7 @@ import com.bumptech.glide.request.RequestListener
 import com.spyneai.R
 import com.bumptech.glide.request.target.Target
 import com.spyneai.dashboard.ui.MainDashboardActivity
+import com.spyneai.databinding.ActivityProcessVideoTimerBinding
 import com.spyneai.databinding.ActivityThreeSixtyInteriorViewBinding
 import com.spyneai.videorecording.fragments.DialogEmbedCode
 import com.spyneai.videorecording.model.TSVParams
@@ -43,7 +44,8 @@ class ThreeSixtyInteriorViewActivity : AppCompatActivity(),View.OnTouchListener,
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        binding = DataBindingUtil.setContentView(this,R.layout.activity_three_sixty_interior_view)
+        binding = ActivityThreeSixtyInteriorViewBinding.inflate(layoutInflater)
+        setContentView(binding.root)
 
         if (FramesHelper.framesMap != null && intent.action != null){
             shootId = FramesHelper.framesMap.get(intent.action)?.sku_id ?: ""

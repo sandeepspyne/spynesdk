@@ -8,6 +8,7 @@ import androidx.databinding.DataBindingUtil
 import com.spyneai.R
 import com.spyneai.dashboard.ui.MainDashboardActivity
 import com.spyneai.databinding.ActivityProcessVideoTimerBinding
+import com.spyneai.databinding.ActivityWalletBinding
 import com.spyneai.videorecording.model.ProcessVideoEvent
 import kotlinx.android.synthetic.main.activity_timer.*
 import org.greenrobot.eventbus.EventBus
@@ -26,7 +27,8 @@ class ProcessVideoTimerActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        binding = DataBindingUtil.setContentView(this,R.layout.activity_process_video_timer)
+        binding = ActivityProcessVideoTimerBinding.inflate(layoutInflater)
+        setContentView(binding.root)
 
         binding.tvBackToHome.setOnClickListener {
             var dashboardIntent = Intent(this, MainDashboardActivity::class.java)

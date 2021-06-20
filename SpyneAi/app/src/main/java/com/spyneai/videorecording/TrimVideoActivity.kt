@@ -31,6 +31,7 @@ import com.google.android.exoplayer2.upstream.DefaultDataSourceFactory
 import com.hbisoft.pickit.PickiT
 import com.hbisoft.pickit.PickiTCallbacks
 import com.spyneai.R
+import com.spyneai.databinding.ActivityProcessVideoTimerBinding
 import com.spyneai.databinding.ActivityTrimVideoBinding
 import com.spyneai.videorecording.listener.SeekListener
 import kotlinx.android.synthetic.main.activity_timer.*
@@ -88,7 +89,9 @@ class TrimVideoActivity : AppCompatActivity() , SeekListener {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        binding = DataBindingUtil.setContentView(this, R.layout.activity_trim_video)
+
+        binding = ActivityProcessVideoTimerBinding.inflate(layoutInflater)
+        setContentView(binding.root)
 
         if(intent.getIntExtra("shoot_mode", 0) == 1) binding.tvViewType.text = "Interior Back View"
 
