@@ -48,7 +48,7 @@ class ProcessSkuWorker (appContext: Context, workerParams: WorkerParameters) :
             processRepository.processSku(authKey,skuId,backgroundId)
 
         } catch (e : Exception) {
-            Log.d(TAG, "processSku: "+e.localizedMessage)
+            com.spyneai.shoot.utils.log("Process Sku Exception: "+e.localizedMessage)
             e.printStackTrace()
         }
     }

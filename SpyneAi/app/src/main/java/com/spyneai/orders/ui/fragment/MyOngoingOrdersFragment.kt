@@ -51,7 +51,6 @@ class MyOngoingOrdersFragment : BaseFragment<MyOrdersViewModel, MyOngoingOrdersF
                         binding.shimmerOngoingSKU.visibility = View.GONE
                         binding.rvMyOngoingOrders.visibility = View.VISIBLE
                         if (it.value.data != null){
-                            log("Ongoing SKUs list: "+it.value.data.toString())
                             ongoingSkuList.addAll(it.value.data)
                             myOngoingOrdersAdapter = MyOngoingOrdersAdapter(requireContext(),
                                 ongoingSkuList)

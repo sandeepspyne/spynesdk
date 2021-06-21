@@ -9,5 +9,5 @@ val Any.TAG: String
     }
 
 fun log(msg: String) {
-    Log.d("SPYNE", msg)
+    Log.d("TESTING", msg)
 }

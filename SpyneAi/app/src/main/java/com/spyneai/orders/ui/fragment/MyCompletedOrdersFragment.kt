@@ -54,7 +54,6 @@ class MyCompletedOrdersFragment :
                         binding.shimmerCompletedSKU.visibility = View.GONE
                         binding.rvMyCompletedOrders.visibility = View.VISIBLE
                         if (it.value.data != null){
-                            log("Ongoing SKUs list: "+it.value.data)
                             completedSkuList.addAll(it.value.data)
                             myCompletedOrdersAdapter = MyCompletedOrdersAdapter(requireContext(),
                                 completedSkuList)

@@ -19,6 +19,7 @@ import com.spyneai.model.carbackgroundgif.CarBackgrounGifResponse
 import com.spyneai.needs.AppConstants
 import com.spyneai.needs.Utilities
 import com.spyneai.shoot.data.ProcessViewModel
+import com.spyneai.shoot.utils.log
 
 
 class SelectBackgroundFragment : BaseFragment<ProcessViewModel,FragmentSelectBackgroundBinding>() {
@@ -118,6 +119,12 @@ class SelectBackgroundFragment : BaseFragment<ProcessViewModel,FragmentSelectBac
             Utilities.getPreference(requireContext(),AppConstants.AUTH_KEY).toString(),
         viewModel.sku.value?.skuId!!,
         backgroundSelect)
+
+        log("Process sku started")
+        log("Auth key: "+Utilities.getPreference(requireContext(),AppConstants.AUTH_KEY).toString())
+        log("Sku Id: : "+viewModel.sku.value?.skuId!!)
+        log("Background Id: : "+backgroundSelect)
+
 
         viewModel.processSkuRes.observe(viewLifecycleOwner,{
             when(it) {
