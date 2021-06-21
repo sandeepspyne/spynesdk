@@ -56,17 +56,20 @@ class UploadImageWorker(appContext: Context, workerParams: WorkerParameters) :
             val call = RetrofitClients.buildService(ClipperApi::class.java)
                 .uploadImageInWorker(projectId,skuId,imageCategory,authKey,image)
 
+            log("Upload image started(image): " +image)
+
             call.enqueue(object : Callback<UploadImageResponse> {
                 override fun onResponse(
                     call: Call<UploadImageResponse>,
                     response: Response<UploadImageResponse>
                 ) {
                     if (response.isSuccessful) {
-                        Log.d(TAG, "onResponse: "+"uploaded")
                         val uploadImageResponse = response.body()
 
                         //update uploaded image count
                         localRepository.updateUploadCount(inputData.getString("skuId").toString())
+
+
 
 
                         // check if all image uploaded
@@ -93,7 +96,8 @@ class UploadImageWorker(appContext: Context, workerParams: WorkerParameters) :
                 }
 
                 override fun onFailure(call: Call<UploadImageResponse>, t: Throwable) {
-                    Log.d(TAG, "onFailure: " + t.localizedMessage)
+                    log("Upload image failed")
+                    log("Error: "+t.localizedMessage)
 
                 }
 

@@ -25,6 +25,7 @@ import com.spyneai.shoot.data.ShootViewModel
 import com.spyneai.shoot.data.model.ShootData
 import com.spyneai.shoot.ui.dialogs.InteriorHintDialog
 import com.spyneai.shoot.ui.dialogs.SubCategoryConfirmationDialog
+import com.spyneai.shoot.utils.log
 import kotlinx.android.synthetic.main.activity_camera.viewFinder
 import java.io.File
 import java.text.SimpleDateFormat
@@ -173,12 +174,11 @@ class CameraFragment : BaseFragment<ShootViewModel, FragmentCameraBinding>(),Pic
         imageCapture.takePicture(
             outputOptions, ContextCompat.getMainExecutor(requireContext()), object : ImageCapture.OnImageSavedCallback {
                 override fun onError(exc: ImageCaptureException) {
-                    Log.e(TAG, "Photo capture failed: ${exc.message}", exc)
+                    log("Photo capture succeeded: "+exc.message)
                 }
                 override fun onImageSaved(output: ImageCapture.OutputFileResults) {
                     val savedUri = Uri.fromFile(photoFile)
-                    val msg = "Photo capture succeeded: $savedUri"
-                    Log.d(TAG, msg)
+                    log("Photo capture succeeded: "+savedUri)
                     try {
                        addShootItem(photoFile?.path!!.toString())
                     } catch (ex: IllegalArgumentException) {
@@ -216,6 +216,7 @@ class CameraFragment : BaseFragment<ShootViewModel, FragmentCameraBinding>(),Pic
             Utilities.getPreference(requireContext(),AppConstants.AUTH_KEY).toString()))
 
         viewModel.shootList.value = viewModel.shootList.value
+        log("Captured image data added to SHOOT LIST: "+viewModel.shootList.value )
     }
 
     override fun getViewModel() = ShootViewModel::class.java

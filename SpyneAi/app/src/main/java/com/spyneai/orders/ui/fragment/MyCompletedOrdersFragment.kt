@@ -15,6 +15,7 @@ import com.spyneai.needs.Utilities
 import com.spyneai.orders.data.response.CompletedSKUsResponse
 import com.spyneai.orders.data.viewmodel.MyOrdersViewModel
 import com.spyneai.orders.ui.adapter.MyCompletedOrdersAdapter
+import com.spyneai.shoot.utils.log
 
 class MyCompletedOrdersFragment :
     BaseFragment<MyOrdersViewModel, MyCompletedOrdersFragmentBinding>() {
@@ -44,6 +45,7 @@ class MyCompletedOrdersFragment :
         setCompletedSkuRecycler()
 
         viewModel.getCompletedSKUs(Utilities.getPreference(requireContext(), AppConstants.AUTH_KEY).toString())
+        log("Completed SKUs(auth key): "+AppConstants.AUTH_KEY)
         viewModel.completedSKUsResponse.observe(
             viewLifecycleOwner, Observer {
                 when (it) {
@@ -52,6 +54,7 @@ class MyCompletedOrdersFragment :
                         binding.shimmerCompletedSKU.visibility = View.GONE
                         binding.rvMyCompletedOrders.visibility = View.VISIBLE
                         if (it.value.data != null){
+                            log("Ongoing SKUs list: "+it.value.data)
                             completedSkuList.addAll(it.value.data)
                             myCompletedOrdersAdapter = MyCompletedOrdersAdapter(requireContext(),
                                 completedSkuList)

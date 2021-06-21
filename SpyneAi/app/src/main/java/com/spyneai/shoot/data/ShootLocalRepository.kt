@@ -4,6 +4,7 @@ import android.content.ContentValues
 import android.provider.BaseColumns
 import android.util.Log
 import com.spyneai.BaseApplication
+import com.spyneai.service.log
 import com.spyneai.shoot.data.model.Sku
 import com.spyneai.shoot.data.sqlite.DBHelper
 import com.spyneai.shoot.data.sqlite.ShootContract
@@ -153,6 +154,7 @@ class ShootLocalRepository {
             selectionArgs)
 
         Log.d(TAG, "updateUploadCount: "+uploadCount)
+        log("Upload count(update): "+uploadCount)
     }
 
     fun updateTotalImageCount(skuId : String) {
@@ -174,7 +176,7 @@ class ShootLocalRepository {
             values,
             selection,
             selectionArgs)
-
+        log("total images count(update): "+ totalImagesCount)
         Log.d(TAG, "updateTotalImageCount: "+count)
     }
 
@@ -196,6 +198,7 @@ class ShootLocalRepository {
             selectionArgs)
 
         Log.d(TAG, "queueProcessRequest: "+count)
+        log("Queue Process Request: "+count)
     }
 
     fun getBackgroundId(skuId: String): String {
@@ -231,6 +234,7 @@ class ShootLocalRepository {
         }
 
         return backgroundId
+        log("Background id: "+backgroundId)
     }
 
 }

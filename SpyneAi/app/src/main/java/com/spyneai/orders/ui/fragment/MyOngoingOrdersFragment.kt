@@ -16,6 +16,7 @@ import com.spyneai.orders.data.response.GetOngoingSkusResponse
 import com.spyneai.orders.data.viewmodel.MyOrdersViewModel
 import com.spyneai.orders.ui.adapter.MyCompletedOrdersAdapter
 import com.spyneai.orders.ui.adapter.MyOngoingOrdersAdapter
+import com.spyneai.shoot.utils.log
 
 class MyOngoingOrdersFragment : BaseFragment<MyOrdersViewModel, MyOngoingOrdersFragmentBinding>() {
 
@@ -41,6 +42,7 @@ class MyOngoingOrdersFragment : BaseFragment<MyOrdersViewModel, MyOngoingOrdersF
         setOngoingSkuRecycler()
 
         viewModel.getOngoingSKUs(Utilities.getPreference(requireContext(), AppConstants.AUTH_KEY).toString())
+        log("Get ongoing SKUs(auth_key): "+AppConstants.AUTH_KEY)
         viewModel.getOngoingSkusResponse.observe(
             viewLifecycleOwner, androidx.lifecycle.Observer {
                 when (it) {
@@ -49,6 +51,7 @@ class MyOngoingOrdersFragment : BaseFragment<MyOrdersViewModel, MyOngoingOrdersF
                         binding.shimmerOngoingSKU.visibility = View.GONE
                         binding.rvMyOngoingOrders.visibility = View.VISIBLE
                         if (it.value.data != null){
+                            log("Ongoing SKUs list: "+it.value.data.toString())
                             ongoingSkuList.addAll(it.value.data)
                             myOngoingOrdersAdapter = MyOngoingOrdersAdapter(requireContext(),
                                 ongoingSkuList)
