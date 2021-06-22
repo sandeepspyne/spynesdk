@@ -5,12 +5,16 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import com.bumptech.glide.Glide
+import com.posthog.android.Properties
 import com.spyneai.base.BaseDialogFragment
 import com.spyneai.base.network.Resource
+import com.spyneai.captureEvent
+import com.spyneai.captureFailureEvent
 import com.spyneai.dashboard.ui.handleApiError
 import com.spyneai.databinding.DialogSubcategoryConfirmationBinding
 import com.spyneai.needs.AppConstants
 import com.spyneai.needs.Utilities
+import com.spyneai.posthog.Events
 import com.spyneai.shoot.data.ShootViewModel
 
 class SubCategoryConfirmationDialog : BaseDialogFragment<ShootViewModel, DialogSubcategoryConfirmationBinding>(){
@@ -51,12 +55,18 @@ class SubCategoryConfirmationDialog : BaseDialogFragment<ShootViewModel, DialogS
             Utilities.getPreference(requireContext(),AppConstants.AUTH_KEY).toString(),projectId,
             requireActivity().intent.getStringExtra(AppConstants.CATEGORY_ID).toString(),
             prod_sub_cat_id!!,
-            viewModel.sku.value.toString()
+            viewModel.sku.value?.skuName.toString()
         )
 
         viewModel.createSkuRes.observe(viewLifecycleOwner,{
             when(it) {
                 is Resource.Sucess -> {
+                    requireContext().captureEvent(
+                        Events.CREATE_SKU,
+                        Properties().putValue("sku_name",viewModel.sku.value?.skuName.toString())
+                            .putValue("project_id",projectId)
+                            .putValue("prod_sub_cat_id",prod_sub_cat_id))
+
                     Utilities.hideProgressDialog()
                     val sku = viewModel.sku.value
                     sku?.skuId = it.value.sku_id
@@ -73,6 +83,9 @@ class SubCategoryConfirmationDialog : BaseDialogFragment<ShootViewModel, DialogS
                 is Resource.Loading ->  Utilities.showProgressDialog(requireContext())
 
                 is Resource.Failure -> {
+                    requireContext().captureFailureEvent(Events.CREATE_SKU_FAILED, Properties(),
+                        it.errorMessage!!
+                    )
                     Utilities.hideProgressDialog()
                     handleApiError(it)
                 }

@@ -13,13 +13,17 @@ import com.bumptech.glide.load.DataSource
 import com.bumptech.glide.load.engine.GlideException
 import com.bumptech.glide.request.RequestListener
 import com.bumptech.glide.request.target.Target
+import com.posthog.android.Properties
 import com.spyneai.base.BaseFragment
 import com.spyneai.base.network.Resource
+import com.spyneai.captureEvent
+import com.spyneai.captureFailureEvent
 import com.spyneai.dashboard.response.NewSubCatResponse
 import com.spyneai.dashboard.ui.handleApiError
 import com.spyneai.databinding.FragmentOverlaysBinding
 import com.spyneai.needs.AppConstants
 import com.spyneai.needs.Utilities
+import com.spyneai.posthog.Events
 import com.spyneai.shoot.adapter.ShootProgressAdapter
 import com.spyneai.shoot.adapters.InteriorAdapter
 import com.spyneai.shoot.adapters.MiscAdapter
@@ -79,6 +83,7 @@ class OverlaysFragment : BaseFragment<ShootViewModel,FragmentOverlaysBinding>(),
     }
 
     private fun initShootHint() {
+        requireContext().captureEvent(Events.SHOW_HINT, Properties())
         ShootHintDialog().show(requireFragmentManager(), "ShootHintDialog")
 
         viewModel.showVin.observe(viewLifecycleOwner,{
@@ -196,6 +201,10 @@ class OverlaysFragment : BaseFragment<ShootViewModel,FragmentOverlaysBinding>(),
         viewModel.subCategoriesResponse.observe(viewLifecycleOwner, {
             when (it) {
                 is Resource.Sucess -> {
+                    requireContext().captureEvent(
+                        Events.GET_SUBCATEGORIES,
+                        Properties())
+
                     Utilities.hideProgressDialog()
                     subCategoriesAdapter.subCategoriesList =
                         it.value.data as ArrayList<NewSubCatResponse.Data>
@@ -211,6 +220,9 @@ class OverlaysFragment : BaseFragment<ShootViewModel,FragmentOverlaysBinding>(),
                 is Resource.Loading ->  Utilities.showProgressDialog(requireContext())
 
                 is Resource.Failure -> {
+                    requireContext().captureFailureEvent(Events.GET_SUBCATRGORIES_FAILED, Properties(),
+                        it.errorMessage!!
+                    )
                     Utilities.hideProgressDialog()
                     handleApiError(it)
                 }
@@ -240,6 +252,12 @@ class OverlaysFragment : BaseFragment<ShootViewModel,FragmentOverlaysBinding>(),
                 it.prod_sub_cat_id!!,
                 viewModel.exterirorAngles.value.toString()
             )
+
+            requireContext().captureEvent(
+                Events.GET_OVERLAYS_INTIATED,
+                Properties().putValue("angles",viewModel.exterirorAngles.value)
+                    .putValue("prod_sub_cat_id", it.prod_sub_cat_id!!))
+
         }
     }
 
@@ -247,6 +265,10 @@ class OverlaysFragment : BaseFragment<ShootViewModel,FragmentOverlaysBinding>(),
         viewModel.overlaysResponse.observe(viewLifecycleOwner,{ it ->
             when(it){
                 is Resource.Sucess -> {
+                    requireContext().captureEvent(
+                        Events.GET_OVERLAYS,
+                        Properties().putValue("angles",it.value.data.size))
+
                     Utilities.hideProgressDialog()
                     binding.clSubcatSelectionOverlay?.visibility = View.GONE
                     showViews()
@@ -255,6 +277,9 @@ class OverlaysFragment : BaseFragment<ShootViewModel,FragmentOverlaysBinding>(),
                 is Resource.Loading -> Utilities.showProgressDialog(requireContext())
 
                 is Resource.Failure -> {
+                    requireContext().captureFailureEvent(Events.GET_OVERLAYS_FAILED, Properties(),
+                        it.errorMessage!!
+                    )
                     Utilities.hideProgressDialog()
                     handleApiError(it)
                 }

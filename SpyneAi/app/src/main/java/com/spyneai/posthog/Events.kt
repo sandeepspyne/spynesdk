@@ -47,6 +47,22 @@ object Events {
     val FETCH_CREDITS = "Credits Fetched"
     val FETCH_CREDITS_FAILED = "Credits Fetch Failed"
 
+    //logout
+    val LOG_OUT = "Log Out"
+
+    //shoot
+    val SHOW_HINT = "Show Hint"
+    val CREATE_PROJECT = "Create Project"
+    val CREATE_PROJECT_FAILED = "Create Project Failed"
+    val GET_SUBCATEGORIES = "Got Subcategories"
+    val GET_SUBCATRGORIES_FAILED = "Get Subcategories Failed"
+    val GET_OVERLAYS_INTIATED = "Get Overlays Initiated"
+    val GET_OVERLAYS = "Got Overlays"
+    val GET_OVERLAYS_FAILED = "Get Overlays Failed"
+    val CREATE_SKU = "Create SKU"
+    val CREATE_SKU_FAILED = "Create SKU Failed"
+
+
 
 
 }

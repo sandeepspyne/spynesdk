@@ -4,12 +4,16 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import com.posthog.android.Properties
 import com.spyneai.base.BaseDialogFragment
 import com.spyneai.base.network.Resource
+import com.spyneai.captureEvent
+import com.spyneai.captureFailureEvent
 import com.spyneai.dashboard.ui.handleApiError
 import com.spyneai.databinding.DialogCreateProjectAndSkuBinding
 import com.spyneai.needs.AppConstants
 import com.spyneai.needs.Utilities
+import com.spyneai.posthog.Events
 import com.spyneai.shoot.data.ShootViewModel
 import com.spyneai.shoot.data.model.Sku
 
@@ -42,6 +46,10 @@ class CreateProjectAndSkuDialog : BaseDialogFragment<ShootViewModel,DialogCreate
         viewModel.createProjectRes.observe(viewLifecycleOwner,{
             when(it){
                     is Resource.Sucess -> {
+                        requireContext().captureEvent(
+                            Events.CREATE_PROJECT,
+                            Properties().putValue("project_name",projectName))
+
                         Utilities.hideProgressDialog()
                         //notify project created
                         viewModel.isProjectCreated.value = true
@@ -58,6 +66,9 @@ class CreateProjectAndSkuDialog : BaseDialogFragment<ShootViewModel,DialogCreate
                     }
 
                     is Resource.Failure -> {
+                        requireContext().captureFailureEvent(Events.CREATE_PROJECT_FAILED, Properties(),
+                            it.errorMessage!!
+                        )
                         Utilities.hideProgressDialog()
                         handleApiError(it)
                     }
