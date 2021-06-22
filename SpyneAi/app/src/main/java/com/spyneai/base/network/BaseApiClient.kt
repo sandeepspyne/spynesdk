@@ -23,7 +23,9 @@ open class BaseApiClient<Api>(val BASE_URL: String, api: Class<Api>){
                     logging.setLevel(HttpLoggingInterceptor.Level.BODY)
                     client.addInterceptor(logging)
                 }
-            }.build())
+            }
+                .addInterceptor(ResponseInterceptor())
+                .build())
             .addConverterFactory(GsonConverterFactory.create())
             .build()
             .create(api)

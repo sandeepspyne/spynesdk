@@ -43,13 +43,12 @@ fun Fragment.handleApiError(
             retry
         )
         failure.errorCode == 401 -> {
-            val error = failure.errorBody?.string().toString()
-            requireView().snackbar(error)
-
+            val error = failure.errorMessage
+            requireView().snackbar(error!!,retry)
         }
         else -> {
-            val error = failure.errorBody?.string().toString()
-            requireView().snackbar(error)
+            val error = failure.errorMessage
+            requireView().snackbar(error!!,retry)
         }
     }
 }
