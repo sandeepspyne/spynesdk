@@ -76,7 +76,7 @@ class CreditPlansActivity : AppCompatActivity(),CreditsPlandAdapter.Listener,
             false, "USD", getOrderId(),
             0, lastSelectedItem!!.price, lastSelectedItem!!.planId.toString(),
             lastSelectedItem!!.price, "CREATED", "New",
-            Utilities.getPreference(this, AppConstants.tokenId).toString()
+            Utilities.getPreference(this, AppConstants.TOKEN_ID).toString()
         )
 
 //        var body = CreateOrderBody(
@@ -299,7 +299,7 @@ class CreditPlansActivity : AppCompatActivity(),CreditsPlandAdapter.Listener,
 
     private suspend fun createCreditPurchaseLog() {
         var call = RetrofitCreditClient("https://www.spyne.ai/").buildService(CreditApiService::class.java)
-            .createCreditPurchaseLog(Utilities.getPreference(this,AppConstants.tokenId)!!.toString(),
+            .createCreditPurchaseLog(Utilities.getPreference(this,AppConstants.TOKEN_ID)!!.toString(),
             lastSelectedItem!!.creditId,
             lastSelectedItem!!.credits,Utilities.getPreference(this, AppConstants.CREDIT_USED).toString(),
                 Utilities.getPreference(this, AppConstants.CREDIT_AVAILABLE).toString()
@@ -330,7 +330,7 @@ class CreditPlansActivity : AppCompatActivity(),CreditsPlandAdapter.Listener,
 
 
         var call = RetrofitCreditClient("https://www.spyne.ai/").buildService(CreditApiService::class.java)
-            .updatePurchasedCredit(Utilities.getPreference(this,AppConstants.tokenId)!!.toString(),
+            .updatePurchasedCredit(Utilities.getPreference(this,AppConstants.TOKEN_ID)!!.toString(),
                 lastSelectedItem!!.credits,Utilities.getPreference(this,AppConstants.CREDIT_USED)!!.toString(),creditAvailable)
 
         call?.enqueue(object : Callback<UpdatePurchaseCreditRes>{

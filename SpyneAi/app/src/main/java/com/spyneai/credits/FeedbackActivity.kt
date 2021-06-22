@@ -5,12 +5,10 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
 import android.view.View
-import com.spyneai.R
 import com.spyneai.credits.fragments.FeedbackSubmittedFragment
 import com.spyneai.credits.model.InsertReviewResponse
 import com.spyneai.credits.model.ReviewHolder
 import com.spyneai.dashboard.ui.MainDashboardActivity
-import com.spyneai.databinding.ActivityCreditPlansBinding
 import com.spyneai.databinding.ActivityFeedbackBinding
 import com.spyneai.needs.AppConstants
 import com.spyneai.needs.Utilities
@@ -58,7 +56,7 @@ class FeedbackActivity : AppCompatActivity() {
         binding.progressBar.visibility = View.VISIBLE
         var request = RetrofitCreditClient("https://www.spyne.ai/credit-user/").buildService(CreditApiService::class.java)
 
-        var call = request.insertReview(Utilities.getPreference(this,AppConstants.tokenId).toString(),
+        var call = request.insertReview(Utilities.getPreference(this,AppConstants.TOKEN_ID).toString(),
         binding.etComment.text.toString(),ReviewHolder.editedUrl,intent.getBooleanExtra("like",false),ReviewHolder.orgUrl,"Automobile")
 
 

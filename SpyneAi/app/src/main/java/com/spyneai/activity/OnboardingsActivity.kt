@@ -10,12 +10,15 @@ import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.FragmentStatePagerAdapter
 import androidx.viewpager.widget.ViewPager
 import com.google.android.material.tabs.TabLayout
+import com.posthog.android.Properties
 import com.spyneai.R
+import com.spyneai.captureEvent
 import com.spyneai.extras.ZoomOutPageTransformer
 import com.spyneai.fragment.OnboardingOneFragment
 import com.spyneai.fragment.OnboardingThreeFragment
 import com.spyneai.fragment.OnboardingTwoFragment
 import com.spyneai.loginsignup.activity.LoginActivity
+import com.spyneai.posthog.Events
 import com.spyneai.service.log
 import kotlinx.android.synthetic.main.activity_onboardings.*
 
@@ -54,14 +57,19 @@ class OnboardingsActivity : AppCompatActivity() {
                 1 -> mPager.currentItem = 2
                 2 -> {
                     val intent = Intent(this, LoginActivity::class.java)
+                    intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
                     startActivity(intent)
-                    finish()
                 }
             }
         })
 
         tabLayout.addOnTabSelectedListener(object : TabLayout.OnTabSelectedListener {
             override fun onTabSelected(tab: TabLayout.Tab) {
+
+                captureEvent(
+                    Events.SLIDE_CHANGE,
+                    Properties().putValue("position",tab.position))
+
                 when(tab.position) {
                     0,1 ->  tvGet.text = getString(R.string.get_started)
                     2 ->  tvGet.text = getString(R.string.start_shooting)
@@ -90,7 +98,6 @@ class OnboardingsActivity : AppCompatActivity() {
         override fun getItem(position: Int) : Fragment {
             when (position) {
                 0 -> {
-
                     return OnboardingOneFragment()
                 }
                 1 -> {

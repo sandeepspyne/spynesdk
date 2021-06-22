@@ -65,7 +65,7 @@ class EditSkuActivity : AppCompatActivity() {
         val request = RetrofitClient.buildService(APiService::class.java)
 
         val call = request.getSkuDetails(
-            Utilities.getPreference(this,AppConstants.tokenId),
+            Utilities.getPreference(this,AppConstants.TOKEN_ID),
                 intent.getStringExtra(AppConstants.SKU_ID)!!)
 
         call?.enqueue(object : Callback<SkuResponse> {
@@ -97,7 +97,7 @@ class EditSkuActivity : AppCompatActivity() {
     private fun deleteSkus() {
         val request = RetrofitClient.buildService(APiService::class.java)
         val call = request.deleteSku(
-                Utilities.getPreference(this, AppConstants.tokenId),
+                Utilities.getPreference(this, AppConstants.TOKEN_ID),
                 Utilities.getPreference(this, AppConstants.SHOOT_ID),
                 Utilities.getPreference(this, AppConstants.SKU_ID))
 

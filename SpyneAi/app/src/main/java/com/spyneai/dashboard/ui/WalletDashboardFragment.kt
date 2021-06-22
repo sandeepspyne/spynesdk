@@ -91,7 +91,7 @@ class WalletDashboardFragment : Fragment() {
 
         val request = RetrofitClientSpyneAi.buildService(APiService::class.java)
         val call = request.userCreditsDetails(
-            Utilities.getPreference(requireContext(), AppConstants.tokenId).toString()
+            Utilities.getPreference(requireContext(), AppConstants.TOKEN_ID).toString()
         )
 
         call?.enqueue(object : Callback<CreditDetailsResponse> {

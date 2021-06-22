@@ -164,7 +164,7 @@ class OrderActivity : AppCompatActivity() {
     private fun fetchSkus() {
         val request = RetrofitClient.buildService(APiService::class.java)
         val call = request.getOrderList(
-            Utilities.getPreference(this,AppConstants.tokenId),
+            Utilities.getPreference(this,AppConstants.TOKEN_ID),
             Utilities.getPreference(this,AppConstants.SHOOT_ID),
             Utilities.getPreference(this,AppConstants.SKU_ID))
 
@@ -239,7 +239,7 @@ class OrderActivity : AppCompatActivity() {
             Utilities.getPreference(this,AppConstants.SHOOT_ID).toString(),
             Utilities.getPreference(this,AppConstants.SKU_ID).toString())
 
-        val call = request.getNextShoot(Utilities.getPreference(this,AppConstants.tokenId),skuRequest )
+        val call = request.getNextShoot(Utilities.getPreference(this,AppConstants.TOKEN_ID),skuRequest )
 
         call?.enqueue(object : Callback<UploadPhotoResponse> {
             override fun onResponse(call: Call<UploadPhotoResponse>,

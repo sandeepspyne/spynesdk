@@ -66,7 +66,7 @@ object AppConstants {
     val LOGO_FILE = "logo_file"
     val RAW_IMAGE_FILE = "raw_image_file"
     val phone: String = "number"
-    val tokenId : String = "tokenId"
+    val TOKEN_ID : String = "tokenId"
     val otp : String = "otp"
 
     val highQualityCount : String = "highQualityCount"

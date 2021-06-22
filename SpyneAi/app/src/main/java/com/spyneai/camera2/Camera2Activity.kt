@@ -903,7 +903,7 @@ class Camera2Activity : AppCompatActivity() {
         val editSkuRequest = EditSkuRequest(skuId, vinNumber)
 
         val call = request.editSku(
-            Utilities.getPreference(this, AppConstants.tokenId),
+            Utilities.getPreference(this, AppConstants.TOKEN_ID),
             editSkuRequest
         )
 
@@ -1390,7 +1390,7 @@ class Camera2Activity : AppCompatActivity() {
 
         val request = RetrofitClient.buildService(APiService::class.java)
         val call = request.updateShootProduct(
-            Utilities.getPreference(this, AppConstants.tokenId),
+            Utilities.getPreference(this, AppConstants.TOKEN_ID),
             updateShootProductRequest
         )
 
@@ -1425,7 +1425,7 @@ class Camera2Activity : AppCompatActivity() {
 
         val request = RetrofitClient.buildService(APiService::class.java)
         val call = request.updateSku(
-            Utilities.getPreference(this, AppConstants.tokenId),
+            Utilities.getPreference(this, AppConstants.TOKEN_ID),
             updateSkuRequest
         )
 

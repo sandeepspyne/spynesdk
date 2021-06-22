@@ -233,7 +233,7 @@ class ShowImagesDemActivity : AppCompatActivity() {
         val request = RetrofitClients.buildService(APiService::class.java)
         val userId = RequestBody.create(
             MultipartBody.FORM,
-            Utilities.getPreference(this, AppConstants.tokenId)!!)
+            Utilities.getPreference(this, AppConstants.TOKEN_ID)!!)
         val skuId = RequestBody.create(
             MultipartBody.FORM,
             Utilities.getPreference(this, AppConstants.SKU_ID)!!)

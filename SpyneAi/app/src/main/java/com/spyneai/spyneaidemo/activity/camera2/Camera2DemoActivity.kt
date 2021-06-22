@@ -960,7 +960,7 @@ class Camera2DemoActivity : AppCompatActivity(){
 
         val request = RetrofitClient.buildService(APiService::class.java)
         val call = request.updateShootProduct(
-            Utilities.getPreference(this, AppConstants.tokenId),
+            Utilities.getPreference(this, AppConstants.TOKEN_ID),
             updateShootProductRequest
         )
 
@@ -989,7 +989,7 @@ class Camera2DemoActivity : AppCompatActivity(){
 
         val request = RetrofitClient.buildService(APiService::class.java)
         val call = request.updateSku(
-            Utilities.getPreference(this, AppConstants.tokenId),
+            Utilities.getPreference(this, AppConstants.TOKEN_ID),
             updateSkuRequest
         )
 

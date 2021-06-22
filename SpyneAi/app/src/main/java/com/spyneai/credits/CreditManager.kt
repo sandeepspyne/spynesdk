@@ -5,13 +5,11 @@ import android.util.Log
 import android.widget.Toast
 import com.spyneai.credits.model.DownloadHDRes
 import com.spyneai.credits.model.ReduceCreditResponse
-import com.spyneai.credits.model.ReduceCreditResponseX
 import com.spyneai.interfaces.APiService
 import com.spyneai.interfaces.RetrofitClients
 import com.spyneai.model.credit.UpdateCreditResponse
 import com.spyneai.needs.AppConstants
 import com.spyneai.needs.Utilities
-import com.spyneai.service.log
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
 import retrofit2.Call
@@ -26,7 +24,7 @@ class CreditManager {
 
         val userId = RequestBody.create(
             MultipartBody.FORM,
-            Utilities.getPreference(context, AppConstants.tokenId)!!
+            Utilities.getPreference(context, AppConstants.TOKEN_ID)!!
         )
 
         val creditAvailable = RequestBody.create(
@@ -75,7 +73,7 @@ class CreditManager {
 
         var request = RetrofitCreditClient("https://www.clippr.ai/api/v4/").buildService(CreditApiService::class.java)
 
-        var call = request.reduceCredit(Utilities.getPreference(context,AppConstants.tokenId)!!.toString(),creditReduced.toString(),"TaD1VC1Ko",skuId)
+        var call = request.reduceCredit(Utilities.getPreference(context,AppConstants.TOKEN_ID)!!.toString(),creditReduced.toString(),"TaD1VC1Ko",skuId)
 
         call?.enqueue(object : Callback<ReduceCreditResponse> {
             override fun onResponse(
@@ -106,7 +104,7 @@ class CreditManager {
 
 
         var call = RetrofitCreditClient("https://www.clippr.ai/api/v4/").buildService(CreditApiService::class.java)
-            .updateDownloadStatus(Utilities.getPreference(context,AppConstants.tokenId)!!.toString(),skuId,"TaD1VC1Ko",true)
+            .updateDownloadStatus(Utilities.getPreference(context,AppConstants.TOKEN_ID)!!.toString(),skuId,"TaD1VC1Ko",true)
 
             call?.enqueue(object : Callback<DownloadHDRes> {
                 override fun onResponse(

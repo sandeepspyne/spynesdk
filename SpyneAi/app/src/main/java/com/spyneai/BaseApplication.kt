@@ -11,17 +11,19 @@ import com.google.android.play.core.appupdate.AppUpdateManager
 import com.google.android.play.core.appupdate.AppUpdateManagerFactory
 import com.google.android.play.core.install.model.AppUpdateType
 import com.google.android.play.core.install.model.UpdateAvailability
+import com.google.firebase.crashlytics.FirebaseCrashlytics
+import com.posthog.android.PostHog
 
 @SuppressLint("StaticFieldLeak")
 class BaseApplication : Application() {
 
+    private val POSTHOG_API_KEY = "FoIzpWdbY_I9T_4jr5k4zzNuVJPcpzs_mIpO6y7581M"
+    private val POSTHOG_HOST = "https://app.posthog.com"
+
     companion object {
+        private lateinit var context: Context
 
-
-        private lateinit var context: Context;
-
-
-        public fun getContext(): Context {
+        fun getContext(): Context {
             return context;
         }
     }
@@ -33,8 +35,17 @@ class BaseApplication : Application() {
         //disable night mode
         AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
 
+        // Create a PostHog client with the given context, API key and host.
+        val posthog : PostHog = PostHog.Builder(this, POSTHOG_API_KEY, POSTHOG_HOST)
+            .captureApplicationLifecycleEvents() // Record certain application events automatically!
+            // .recordScreenViews() // Record screen views automatically!
+            .build()
 
 
+        // Set the initialized instance as a globally accessible instance.
+        PostHog.setSingletonInstance(posthog)
+
+        FirebaseCrashlytics.getInstance().setCrashlyticsCollectionEnabled(true)
     }
 
 

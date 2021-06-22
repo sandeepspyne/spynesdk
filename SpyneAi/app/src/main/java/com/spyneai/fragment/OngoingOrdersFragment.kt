@@ -18,7 +18,6 @@ import com.spyneai.interfaces.RetrofitClients
 import com.spyneai.model.projects.CompletedProjectResponse
 import com.spyneai.needs.AppConstants
 import com.spyneai.needs.Utilities
-import kotlinx.android.synthetic.main.fragment_ongoing_orders.*
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
 import retrofit2.Call
@@ -88,12 +87,12 @@ public class OngoingOrdersFragment : Fragment() {
 
         val request = RetrofitClients.buildService(APiService::class.java)
         Utilities.savePrefrence(
-            requireContext(), AppConstants.tokenId,
-            Utilities.getPreference(requireContext(), AppConstants.tokenId)
+            requireContext(), AppConstants.TOKEN_ID,
+            Utilities.getPreference(requireContext(), AppConstants.TOKEN_ID)
         )
         val userId = RequestBody.create(
             MultipartBody.FORM,
-            Utilities.getPreference(requireContext(), AppConstants.tokenId)!!
+            Utilities.getPreference(requireContext(), AppConstants.TOKEN_ID)!!
         )
         val call = request.getCompletedProjects(userId)
 

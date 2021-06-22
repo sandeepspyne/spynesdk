@@ -11,19 +11,21 @@ import android.view.KeyEvent
 import android.view.View
 import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
-import com.spyneai.extras.OnboardTwoActivity
+import com.posthog.android.Properties
 import com.spyneai.R
+import com.spyneai.captureEvent
+import com.spyneai.captureFailureEvent
+import com.spyneai.captureIdentity
 import com.spyneai.dashboard.ui.MainDashboardActivity
 import com.spyneai.interfaces.MyAPIService
 import com.spyneai.interfaces.RetrofitClient
-import com.spyneai.interfaces.RetrofitClientSpyneAi
 import com.spyneai.interfaces.RetrofitClients
 import com.spyneai.model.login.LoginRequest
 import com.spyneai.model.login.LoginResponse
-import com.spyneai.model.otp.OtpRequest
 import com.spyneai.model.otp.OtpResponse
 import com.spyneai.needs.AppConstants
 import com.spyneai.needs.Utilities
+import com.spyneai.posthog.Events
 import kotlinx.android.synthetic.main.activity_otp.*
 import retrofit2.Call
 import retrofit2.Callback
@@ -369,6 +371,7 @@ public class OtpActivity : AppCompatActivity() {
     }
 
     private fun postOtp(otpEntered: String) {
+        captureEvent(Events.OTP_VERIFICATION_FAILED, Properties())
         Utilities.showProgressDialog(this)
 
         val request = RetrofitClients.buildService(MyAPIService::class.java)
@@ -380,14 +383,23 @@ public class OtpActivity : AppCompatActivity() {
             override fun onResponse(call: Call<OtpResponse>, response: Response<OtpResponse>) {
                 Utilities.hideProgressDialog()
                 if (response.isSuccessful ) {
-                    if (response.body()!!.status == 200) {
 
+                    var otpResponse = response.body()
+
+                    if (otpResponse?.status == 200) {
                         Toast.makeText(this@OtpActivity, response.body()!!.message, Toast.LENGTH_SHORT).show()
 
                         Utilities.savePrefrence(this@OtpActivity,AppConstants.AUTH_KEY, response.body()!!.authToken)
 
-                        Utilities.savePrefrence(this@OtpActivity, AppConstants.USER_NAME, response.body()!!.userName)
-                        Utilities.savePrefrence(this@OtpActivity, AppConstants.USER_EMAIL, response.body()!!.emailId)
+                        val properties = Properties()
+                        properties.apply {
+                            this["user_id"] = otpResponse.userId
+                            this["user_name"] = otpResponse.userName
+                            this["email_id"] = otpResponse.emailId
+                        }
+
+                        captureIdentity(otpResponse.userId,properties)
+                        captureEvent(Events.OTP_VERIFIED,properties)
 
                         val intent = Intent(applicationContext, MainDashboardActivity::class.java)
                         intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
@@ -402,17 +414,20 @@ public class OtpActivity : AppCompatActivity() {
                         tvError.visibility = View.INVISIBLE
 
                     }else{
+                        captureFailureEvent(Events.OTP_VERIFICATION_FAILED,Properties(),"Server not responding")
                         tvError.visibility = View.VISIBLE
                     }
                 }
                 else{
+                    captureFailureEvent(Events.OTP_VERIFICATION_FAILED,Properties(),"Server not responding")
                     Toast.makeText(this@OtpActivity, "Server not responding!!!", Toast.LENGTH_SHORT).show()
                 }
+
 
             }
 
             override fun onFailure(call: Call<OtpResponse>, t: Throwable) {
-                Log.e("ok", "no way")
+                captureFailureEvent(Events.OTP_VERIFICATION_FAILED,Properties(),t?.localizedMessage)
                 Toast.makeText(this@OtpActivity, "Server not responding!!!", Toast.LENGTH_SHORT).show()
                 Utilities.hideProgressDialog()
                 //Toast.makeText(this@MainActivity, "${t.message}", Toast.LENGTH_SHORT).show()
@@ -420,6 +435,7 @@ public class OtpActivity : AppCompatActivity() {
         })
     }
     private fun resendOtp(phoneNumber: String) {
+        captureEvent(Events.OTP_RESEND_INITIATED, Properties())
         Utilities.showProgressDialog(this)
         val loginRequest = LoginRequest(Utilities.getPreference(this, AppConstants.EMAIL_ID).toString());
 
@@ -443,9 +459,12 @@ public class OtpActivity : AppCompatActivity() {
 
                             if (loginResponse?.userId != null)
                                 Utilities.savePrefrence(this@OtpActivity,
-                                    AppConstants.tokenId, loginResponse?.userId)
+                                    AppConstants.TOKEN_ID, loginResponse?.userId)
+
+                            captureEvent(Events.OTP_RESENT, Properties())
 
                         }else{
+                            captureFailureEvent(Events.OTP_RESENT_FAILED,Properties(),"Server not responding")
                             Toast.makeText(
                                 applicationContext,
                                 "Server not responding!, Please try again later",
@@ -454,6 +473,7 @@ public class OtpActivity : AppCompatActivity() {
                         }
                     }
                 }else{
+                    captureFailureEvent(Events.OTP_RESENT_FAILED,Properties(),"Server not responding")
                     Toast.makeText(
                         applicationContext,
                         "Server not responding!, Please try again later",
@@ -462,7 +482,7 @@ public class OtpActivity : AppCompatActivity() {
                 }
             }
             override fun onFailure(call: Call<LoginResponse>, t: Throwable) {
-                Log.e("ok", "no way")
+                captureFailureEvent(Events.OTP_RESENT_FAILED,Properties(),t?.localizedMessage)
                 Utilities.hideProgressDialog()
                 Toast.makeText(
                     this@OtpActivity,
