@@ -371,7 +371,7 @@ public class OtpActivity : AppCompatActivity() {
     }
 
     private fun postOtp(otpEntered: String) {
-        captureEvent(Events.OTP_VERIFICATION_FAILED, Properties())
+        captureEvent(Events.OTP_VERIFICATION_INITIATED, Properties())
         Utilities.showProgressDialog(this)
 
         val request = RetrofitClients.buildService(MyAPIService::class.java)

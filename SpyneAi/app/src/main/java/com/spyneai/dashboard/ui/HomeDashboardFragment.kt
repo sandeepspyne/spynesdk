@@ -14,6 +14,7 @@ import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.tabs.TabLayout
+import com.posthog.android.Properties
 import com.spyneai.R
 import com.spyneai.activity.CategoriesActivity
 import com.spyneai.activity.CompletedProjectsActivity
@@ -25,6 +26,8 @@ import com.spyneai.dashboard.adapters.OngoingDashboardAdapter
 import com.spyneai.dashboard.adapters.TutorialVideosAdapter
 import com.spyneai.base.network.Resource
 import com.spyneai.base.BaseFragment
+import com.spyneai.captureEvent
+import com.spyneai.captureFailureEvent
 import com.spyneai.dashboard.response.NewCategoriesResponse
 import com.spyneai.dashboard.data.DashboardViewModel
 import com.spyneai.databinding.HomeDashboardFragmentBinding
@@ -33,7 +36,7 @@ import com.spyneai.needs.AppConstants
 import com.spyneai.needs.Utilities
 import com.spyneai.orders.data.response.CompletedSKUsResponse
 import com.spyneai.orders.data.response.GetOngoingSkusResponse
-
+import com.spyneai.posthog.Events
 
 
 class HomeDashboardFragment :
@@ -102,6 +105,8 @@ class HomeDashboardFragment :
         viewModel.categoriesResponse.observe(viewLifecycleOwner, Observer {
             when(it){
                 is Resource.Sucess -> {
+                    requireContext().captureEvent(Events.GOT_CATEGORIES, Properties())
+
                     binding.shimmerCategories.stopShimmer()
                     binding.shimmerCategories.visibility = View.GONE
                     binding.rvDashboardCategories.visibility = View.VISIBLE
@@ -146,7 +151,9 @@ class HomeDashboardFragment :
                     binding.shimmerCategories.startShimmer()
                 }
                 is Resource.Failure -> {
-
+                    requireContext().captureFailureEvent(Events.GET_CATEGORIES_FAILED, Properties(),
+                        it.errorMessage!!
+                    )
                     handleApiError(it)
                 }
             }
@@ -158,6 +165,7 @@ class HomeDashboardFragment :
         viewModel.completedProjectResponse.observe(viewLifecycleOwner, Observer {
             when(it){
                 is Resource.Sucess -> {
+                    requireContext().captureEvent(Events.GET_COMPLETED_ORDERS, Properties())
                     completedProjectList = ArrayList()
                     if (it.value.data.isNullOrEmpty())
                         binding.rlCompletedShoots.visibility = View.GONE
@@ -194,6 +202,9 @@ class HomeDashboardFragment :
                     binding.shimmerCompleted.startShimmer()
                 }
                 is Resource.Failure -> {
+                    requireContext().captureFailureEvent(Events.GET_COMPLETED_ORDERS_FAILED, Properties(),
+                        it.errorMessage!!
+                    )
                     handleApiError(it)
                 }
             }
@@ -256,6 +267,7 @@ class HomeDashboardFragment :
                         if (it.value.data.isNullOrEmpty())
                             binding.rlOngoingShoots.visibility = View.GONE
                         if (it.value.data != null){
+                            requireContext().captureEvent(Events.GOT_ONGOING_ORDERS, Properties())
                             ongoingDashboardAdapter = OngoingDashboardAdapter(requireContext(),
                                 it.value.data as ArrayList<GetOngoingSkusResponse.Data>
                             )
@@ -272,6 +284,9 @@ class HomeDashboardFragment :
 
                     }
                     is Resource.Failure -> {
+                        requireContext().captureFailureEvent(Events.GET_ONGOING_ORDERS_FAILED, Properties(),
+                            it.errorMessage!!
+                        )
                         handleApiError(it)
                     }
 

@@ -28,4 +28,25 @@ object Events {
     val OTP_RESENT = "OTP Resent"
     val OTP_RESENT_FAILED = "OTP Resent Failed"
 
+    //forgot password
+    val FORGOT_PASSWORD_INTIATED = "Forgot Password Initiated"
+    val FORGOT_PASSWORD_MAIL_SENT = "Forgot Password Mail Sent"
+    val FORGOT_PASSWORD_FAILED = "Forgot Password Failed"
+
+    //home
+    val GOT_CATEGORIES = "Got Categories"
+    val GET_CATEGORIES_FAILED = "Get Categories Failed"
+
+    val GOT_ONGOING_ORDERS = "Got Ongoing Orders"
+    val GET_ONGOING_ORDERS_FAILED = "Get Ongoing Orders Failed"
+
+    val GET_COMPLETED_ORDERS = "Got Completed Orders"
+    val GET_COMPLETED_ORDERS_FAILED = "Get Completed Orders Failed"
+
+    //wallet
+    val FETCH_CREDITS = "Credits Fetched"
+    val FETCH_CREDITS_FAILED = "Credits Fetch Failed"
+
+
+
 }

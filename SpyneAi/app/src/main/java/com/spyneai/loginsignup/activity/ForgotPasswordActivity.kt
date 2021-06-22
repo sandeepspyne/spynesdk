@@ -11,22 +11,23 @@ import android.view.View
 import android.view.Window
 import android.widget.ImageView
 import android.widget.LinearLayout
-import android.widget.TextView
 import android.widget.Toast
 import com.airbnb.lottie.LottieAnimationView
+import com.posthog.android.Properties
 import com.spyneai.R
+import com.spyneai.captureEvent
+import com.spyneai.captureFailureEvent
 import com.spyneai.interfaces.MyAPIService
 import com.spyneai.interfaces.RetrofitClientSpyneAi
 import com.spyneai.loginsignup.models.ForgotPasswordResponse
-import com.spyneai.loginsignup.models.LoginEmailPasswordBody
-import com.spyneai.loginsignup.models.LoginEmailPasswordResponse
-import com.spyneai.needs.AppConstants
 import com.spyneai.needs.Utilities
+import com.spyneai.posthog.Events
 import kotlinx.android.synthetic.main.activity_forgot_password.*
 import kotlinx.android.synthetic.main.activity_login.*
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
+
 
 class ForgotPasswordActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -55,11 +56,14 @@ class ForgotPasswordActivity : AppCompatActivity() {
     }
 
     private fun forgotPassword(){
+        var properties = Properties().putValue("email", et_forgotPasswordEmail.text.toString().trim())
+        captureEvent(Events.FORGOT_PASSWORD_INTIATED,properties)
+
         Utilities.showProgressDialog(this)
 
         val request = RetrofitClientSpyneAi.buildService(MyAPIService::class.java)
         val call = request.forgotPassword(
-            et_forgotPasswordEmail.text.toString()
+            et_forgotPasswordEmail.text.toString().trim()
         )
 
         call?.enqueue(object : Callback<ForgotPasswordResponse> {
@@ -69,15 +73,17 @@ class ForgotPasswordActivity : AppCompatActivity() {
                 if (response.isSuccessful && response.body()!=null) {
                     Utilities.hideProgressDialog()
                     showFreeCreditDialog()
-
+                    captureEvent(Events.FORGOT_PASSWORD_MAIL_SENT,properties)
                 }
                 else{
+                    captureFailureEvent(Events.FORGOT_PASSWORD_FAILED,properties,"Sever not responding")
                     Utilities.hideProgressDialog()
                     Toast.makeText(this@ForgotPasswordActivity, response.errorBody().toString(), Toast.LENGTH_SHORT).show()
                 }
             }
 
             override fun onFailure(call: Call<ForgotPasswordResponse>, t: Throwable) {
+                captureFailureEvent(Events.FORGOT_PASSWORD_FAILED,properties,t?.localizedMessage)
                 Utilities.hideProgressDialog()
                 Toast.makeText(
                     applicationContext,

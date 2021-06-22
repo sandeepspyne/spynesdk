@@ -10,7 +10,10 @@ import android.widget.LinearLayout
 import android.widget.Toast
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
+import com.posthog.android.Properties
 import com.spyneai.R
+import com.spyneai.captureEvent
+import com.spyneai.captureFailureEvent
 import com.spyneai.credits.CreditPlansActivity
 import com.spyneai.credits.CreditUtils
 import com.spyneai.databinding.WalletDashboardFragmentBinding
@@ -19,6 +22,7 @@ import com.spyneai.interfaces.RetrofitClientSpyneAi
 import com.spyneai.model.credit.CreditDetailsResponse
 import com.spyneai.needs.AppConstants
 import com.spyneai.needs.Utilities
+import com.spyneai.posthog.Events
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -103,6 +107,8 @@ class WalletDashboardFragment : Fragment() {
                 binding.shimmer.stopShimmer()
 
                 if (response.isSuccessful) {
+                    requireContext().captureEvent(Events.FETCH_CREDITS, Properties())
+
                     binding.shimmer.visibility = View.GONE
                     binding.tvCredits.visibility = View.VISIBLE
 
@@ -140,6 +146,9 @@ class WalletDashboardFragment : Fragment() {
                     if (retry < 4){
                         fetchUserCreditDetails()
                     }else{
+                        requireContext().captureFailureEvent(Events.FETCH_CREDITS_FAILED, Properties(),
+                            "Server not responding"
+                        )
                         Toast.makeText(
                             requireContext(),
                             "Server not responding!!!",
@@ -149,6 +158,9 @@ class WalletDashboardFragment : Fragment() {
                 }
             }
             override fun onFailure(call: Call<CreditDetailsResponse>, t: Throwable) {
+                requireContext().captureFailureEvent(Events.FETCH_CREDITS_FAILED, Properties(),
+                    t?.localizedMessage
+                )
                 binding.shimmer.startShimmer()
                 retry++
                 if (retry < 4){
