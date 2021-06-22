@@ -24,9 +24,9 @@ class DashboardViewModel() : ViewModel() {
     val getOngoingSkusResponse: LiveData<Resource<GetOngoingSkusResponse>>
         get() = _getOngoingSkusResponse
 
-    private val _completedProjectResponse: MutableLiveData<Resource<CompletedSKUsResponse>> = MutableLiveData()
-    val completedProjectResponse: LiveData<Resource<CompletedSKUsResponse>>
-        get() = _completedProjectResponse
+    private val _completedSkusResponse: MutableLiveData<Resource<CompletedSKUsResponse>> = MutableLiveData()
+    val completedSkusResponse: LiveData<Resource<CompletedSKUsResponse>>
+        get() = _completedSkusResponse
 
     val isNewUser: MutableLiveData<Boolean> = MutableLiveData()
     val creditsMessage: MutableLiveData<String> = MutableLiveData()
@@ -46,11 +46,11 @@ class DashboardViewModel() : ViewModel() {
 
     }
 
-    fun getCompletedProjects(
+    fun getCompletedSKUs(
         auth_key : String
     ) = viewModelScope.launch {
-        _completedProjectResponse.value = Resource.Loading
-        _completedProjectResponse.value = repository.getCompletedProjects(auth_key)
+        _completedSkusResponse.value = Resource.Loading
+        _completedSkusResponse.value = repository.getCompletedProjects(auth_key)
 
     }
 

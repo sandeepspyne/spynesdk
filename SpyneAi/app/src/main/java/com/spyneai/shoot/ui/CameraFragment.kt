@@ -94,7 +94,10 @@ class CameraFragment : BaseFragment<ShootViewModel, FragmentCameraBinding>(),Pic
             if (viewModel.isSubCategoryConfirmed.value == null || viewModel.isSubCategoryConfirmed.value == false){
                 SubCategoryConfirmationDialog().show(requireFragmentManager(), "SubCategoryConfirmationDialog")
             }else{
-                takePhoto()
+                if (viewModel.isCameraButtonClickable){
+                    takePhoto()
+                    viewModel.isCameraButtonClickable = false
+                }
             }
         }
     }
@@ -174,6 +177,7 @@ class CameraFragment : BaseFragment<ShootViewModel, FragmentCameraBinding>(),Pic
         imageCapture.takePicture(
             outputOptions, ContextCompat.getMainExecutor(requireContext()), object : ImageCapture.OnImageSavedCallback {
                 override fun onError(exc: ImageCaptureException) {
+                    viewModel.isCameraButtonClickable = true
                     log("Photo capture succeeded: "+exc.message)
                 }
                 override fun onImageSaved(output: ImageCapture.OutputFileResults) {

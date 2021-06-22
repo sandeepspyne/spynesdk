@@ -1,4 +1,4 @@
-package com.spyneai.orders.ui.fragment
+package com.spyneai.orders.ui
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -6,11 +6,11 @@ import android.view.View
 import android.view.ViewGroup
 import com.google.android.material.tabs.TabLayoutMediator
 import com.spyneai.base.BaseFragment
+import com.spyneai.dashboard.data.DashboardViewModel
 import com.spyneai.databinding.FragmentMyOrdersBinding
-import com.spyneai.orders.data.viewmodel.MyOrdersViewModel
 import com.spyneai.orders.ui.adapter.OrdersSlideAdapter
 
-class MyOrdersFragment : BaseFragment<MyOrdersViewModel, FragmentMyOrdersBinding>() {
+class MyOrdersFragment : BaseFragment<DashboardViewModel, FragmentMyOrdersBinding>() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -33,7 +33,7 @@ class MyOrdersFragment : BaseFragment<MyOrdersViewModel, FragmentMyOrdersBinding
         }.attach()
     }
 
-    override fun getViewModel() = MyOrdersViewModel::class.java
+    override fun getViewModel() = DashboardViewModel::class.java
 
     override fun getFragmentBinding(
         inflater: LayoutInflater,

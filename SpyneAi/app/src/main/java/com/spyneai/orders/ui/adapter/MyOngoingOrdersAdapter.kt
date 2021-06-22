@@ -57,13 +57,15 @@ class MyOngoingOrdersAdapter(
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
 
+        val dots = "..."
+
         holder.tv_images_count_ongoing.text = ongoingSkuList[position].total_images.toString()
         holder.tvSubCategory.text = ongoingSkuList[position].sub_category
         holder.tvDateOngoing.text = ongoingSkuList[position].created_date
         holder.tvCategoryName.text = ongoingSkuList[position].category
-        holder.tvSkuName.text = ongoingSkuList[position].sku_name
-        holder.tvSkuId.text = ongoingSkuList[position].sku_id
-        holder.tvProjectId.text = ongoingSkuList[position].project_id
+        holder.tvSkuName.text = ongoingSkuList[position].sku_name + dots
+        holder.tvSkuId.text = ongoingSkuList[position].sku_id + dots
+        holder.tvProjectId.text = ongoingSkuList[position].project_id + dots
         holder.tvImageCount.text = ongoingSkuList[position].total_processed +"/" +ongoingSkuList[position].total_images
 
         Glide.with(context) // replace with 'this' if it's in activity

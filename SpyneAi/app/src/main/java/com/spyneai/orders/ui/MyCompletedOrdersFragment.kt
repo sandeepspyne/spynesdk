@@ -1,4 +1,4 @@
-package com.spyneai.orders.ui.fragment
+package com.spyneai.orders.ui
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -8,6 +8,7 @@ import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.spyneai.base.BaseFragment
+import com.spyneai.dashboard.data.DashboardViewModel
 import com.spyneai.dashboard.ui.handleApiError
 import com.spyneai.databinding.MyCompletedOrdersFragmentBinding
 import com.spyneai.needs.AppConstants
@@ -53,6 +54,7 @@ class MyCompletedOrdersFragment :
                         binding.shimmerCompletedSKU.visibility = View.GONE
                         binding.rvMyCompletedOrders.visibility = View.VISIBLE
                         if (it.value.data != null){
+                            completedSkuList.clear()
                             completedSkuList.addAll(it.value.data)
                             myCompletedOrdersAdapter = MyCompletedOrdersAdapter(requireContext(),
                                 completedSkuList)

@@ -230,6 +230,14 @@
 
         </RelativeLayout>
 
+        <FrameLayout
+            android:id="@+id/flOngoingShoots"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/rlOngoingShoots">
+
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/rvOngoingShoots"
@@ -237,21 +245,38 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/dp_10"
             android:layout_marginEnd="@dimen/dp_10"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/rlOngoingShoots" />
+            android:visibility="gone"/>
 
-        <androidx.constraintlayout.widget.Group
-            android:id="@+id/groupOngoingProjects"
+        <com.facebook.shimmer.ShimmerFrameLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            app:constraint_referenced_ids="rlOngoingShoots, rvOngoingShoots"/>
+            android:id="@+id/shimmerOngoing">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <include layout="@layout/dashboard_completed_shimmer"></include>
+
+                <include layout="@layout/dashboard_completed_shimmer"></include>
+
+                <include layout="@layout/dashboard_completed_shimmer"></include>
+
+                <include layout="@layout/dashboard_completed_shimmer"></include>
+                <include layout="@layout/dashboard_completed_shimmer"></include>
+
+            </LinearLayout>
+
+        </com.facebook.shimmer.ShimmerFrameLayout>
+
+        </FrameLayout>
 
         <RelativeLayout
             android:id="@+id/rlCompletedShoots"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            app:layout_constraintTop_toBottomOf="@+id/rvOngoingShoots"
+            app:layout_constraintTop_toBottomOf="@+id/flOngoingShoots"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             android:padding="@dimen/dp_10">

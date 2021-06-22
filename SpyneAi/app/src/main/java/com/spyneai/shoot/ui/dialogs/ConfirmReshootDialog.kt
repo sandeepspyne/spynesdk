@@ -15,14 +15,17 @@ class ConfirmReshootDialog : BaseDialogFragment<ShootViewModel, DialogConfirmRes
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        isCancelable = false
+
         binding.btReshootImage.setOnClickListener{
+            viewModel.isCameraButtonClickable = true
             //remove last item from shoot list
             viewModel.shootList.value?.removeAt(viewModel.shootList.value!!.size - 1)
             dismiss()
         }
 
         binding.btConfirmImage.setOnClickListener {
-
+            viewModel.isCameraButtonClickable = true
             when(viewModel.categoryDetails.value?.imageType) {
                 "Exterior" -> {
                     viewModel.uploadImageWithWorkManager(requireContext(), viewModel.shootData.value!!)
