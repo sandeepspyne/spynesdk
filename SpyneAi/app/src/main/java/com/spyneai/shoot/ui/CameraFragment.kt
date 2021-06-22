@@ -16,11 +16,15 @@ import androidx.camera.lifecycle.ProcessCameraProvider
 import androidx.core.content.ContextCompat
 import com.hbisoft.pickit.PickiT
 import com.hbisoft.pickit.PickiTCallbacks
+import com.posthog.android.Properties
 import com.spyneai.base.BaseFragment
 import com.spyneai.camera2.ShootDimensions
+import com.spyneai.captureEvent
+import com.spyneai.captureFailureEvent
 import com.spyneai.databinding.FragmentCameraBinding
 import com.spyneai.needs.AppConstants
 import com.spyneai.needs.Utilities
+import com.spyneai.posthog.Events
 import com.spyneai.shoot.data.ShootViewModel
 import com.spyneai.shoot.data.model.ShootData
 import com.spyneai.shoot.ui.dialogs.InteriorHintDialog
@@ -174,6 +178,7 @@ class CameraFragment : BaseFragment<ShootViewModel, FragmentCameraBinding>(),Pic
             outputOptions, ContextCompat.getMainExecutor(requireContext()), object : ImageCapture.OnImageSavedCallback {
                 override fun onError(exc: ImageCaptureException) {
                     Log.e(TAG, "Photo capture failed: ${exc.message}", exc)
+                    requireContext().captureFailureEvent(Events.IMAGE_CAPRURE_FAILED,Properties(),exc.localizedMessage)
                 }
                 override fun onImageSaved(output: ImageCapture.OutputFileResults) {
                     val savedUri = Uri.fromFile(photoFile)
@@ -216,6 +221,15 @@ class CameraFragment : BaseFragment<ShootViewModel, FragmentCameraBinding>(),Pic
             Utilities.getPreference(requireContext(),AppConstants.AUTH_KEY).toString()))
 
         viewModel.shootList.value = viewModel.shootList.value
+
+        val properties = Properties()
+        properties.apply {
+            this["project_id"] = viewModel.sku.value?.projectId!!
+            this["sku_id"] = viewModel.sku.value?.skuId!!
+            this["image_type"] = viewModel.categoryDetails.value?.imageType!!
+        }
+
+        requireContext().captureEvent(Events.IMAGE_CAPTURED,properties)
     }
 
     override fun getViewModel() = ShootViewModel::class.java

@@ -4,9 +4,12 @@ import android.os.Bundle
 import android.view.*
 import android.widget.FrameLayout
 import com.bumptech.glide.Glide
+import com.posthog.android.Properties
 import com.spyneai.base.BaseDialogFragment
 import com.spyneai.base.network.Resource
+import com.spyneai.captureEvent
 import com.spyneai.databinding.DialogConfirmReshootBinding
+import com.spyneai.posthog.Events
 import com.spyneai.shoot.data.ShootViewModel
 
 class ConfirmReshootDialog : BaseDialogFragment<ShootViewModel, DialogConfirmReshootBinding>() {
@@ -16,12 +19,30 @@ class ConfirmReshootDialog : BaseDialogFragment<ShootViewModel, DialogConfirmRes
         super.onViewCreated(view, savedInstanceState)
 
         binding.btReshootImage.setOnClickListener{
+            val properties = Properties()
+            properties.apply {
+                this["sku_id"] = viewModel.shootData.value?.sku_id
+                this["project_id"] = viewModel.shootData.value?.project_id
+                this["image_type"] = viewModel.shootData.value?.image_category
+            }
+            requireContext().captureEvent(
+                Events.RESHOOT,
+                properties)
             //remove last item from shoot list
             viewModel.shootList.value?.removeAt(viewModel.shootList.value!!.size - 1)
             dismiss()
         }
 
         binding.btConfirmImage.setOnClickListener {
+            val properties = Properties()
+            properties.apply {
+                this["sku_id"] = viewModel.shootData.value?.sku_id
+                this["project_id"] = viewModel.shootData.value?.project_id
+                this["image_type"] = viewModel.shootData.value?.image_category
+            }
+            requireContext().captureEvent(
+                Events.CONFIRMED,
+                properties)
 
             when(viewModel.categoryDetails.value?.imageType) {
                 "Exterior" -> {

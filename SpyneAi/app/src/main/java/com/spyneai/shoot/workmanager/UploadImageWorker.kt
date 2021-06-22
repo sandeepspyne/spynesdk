@@ -3,8 +3,12 @@ package com.spyneai.shoot.workmanager
 import android.content.Context
 import android.util.Log
 import androidx.work.*
+import com.posthog.android.Properties
 import com.spyneai.base.network.ClipperApi
+import com.spyneai.captureEvent
+import com.spyneai.captureFailureEvent
 import com.spyneai.interfaces.RetrofitClients
+import com.spyneai.posthog.Events
 import com.spyneai.service.log
 import com.spyneai.shoot.data.ShootLocalRepository
 import com.spyneai.shoot.data.ShootRepository
@@ -20,7 +24,7 @@ import retrofit2.Callback
 import retrofit2.Response
 import java.io.File
 
-class UploadImageWorker(appContext: Context, workerParams: WorkerParameters) :
+class UploadImageWorker(val appContext: Context, workerParams: WorkerParameters) :
     CoroutineWorker(appContext, workerParams) {
 
     private val localRepository = ShootLocalRepository()
@@ -62,39 +66,41 @@ class UploadImageWorker(appContext: Context, workerParams: WorkerParameters) :
                     response: Response<UploadImageResponse>
                 ) {
                     if (response.isSuccessful) {
-                        Log.d(TAG, "onResponse: "+"uploaded")
+
                         val uploadImageResponse = response.body()
 
-                        //update uploaded image count
-                        localRepository.updateUploadCount(inputData.getString("skuId").toString())
+                        if (uploadImageResponse?.status == "200"){
+
+                            captureEvent(Events.UPLOADED,true,null)
+                            //update uploaded image count
+                            localRepository.updateUploadCount(inputData.getString("skuId").toString())
 
 
-                        // check if all image uploaded
-                        if (localRepository.processSku(inputData.getString("skuId").toString())) {
-                            Log.d(TAG, "onResponse: "+"process started")
-                            //process sku
-                            val processSkuWorkRequest =
-                                OneTimeWorkRequest.Builder(ProcessSkuWorker::class.java)
+                            // check if all image uploaded
+                            if (localRepository.processSku(inputData.getString("skuId").toString())) {
+                                Log.d(TAG, "onResponse: "+"process started")
+                                //process sku
+                                val processSkuWorkRequest =
+                                    OneTimeWorkRequest.Builder(ProcessSkuWorker::class.java)
 
-                            val data = Data.Builder()
-                            data.putString("skuId", inputData.getString("skuId").toString())
-                            data.putString("authKey", inputData.getString("authKey").toString())
+                                val data = Data.Builder()
+                                data.putString("skuId", inputData.getString("skuId").toString())
+                                data.putString("authKey", inputData.getString("authKey").toString())
 
-                            processSkuWorkRequest.setInputData(data.build())
-                            WorkManager.getInstance(applicationContext)
-                                .enqueue(processSkuWorkRequest.build())
-
-
-
+                                processSkuWorkRequest.setInputData(data.build())
+                                WorkManager.getInstance(applicationContext)
+                                    .enqueue(processSkuWorkRequest.build())
+                            }
                         }else{
-                            Log.d(TAG, "onResponse: "+"process not started")
+                            captureEvent(Events.UPLOAD_FAILED,false,uploadImageResponse?.status)
+                            uploadImages()
                         }
                     }
                 }
 
                 override fun onFailure(call: Call<UploadImageResponse>, t: Throwable) {
-                    Log.d(TAG, "onFailure: " + t.localizedMessage)
-
+                    captureEvent(Events.UPLOAD_FAILED,false,t.localizedMessage)
+                    uploadImages()
                 }
 
             })
@@ -105,6 +111,27 @@ class UploadImageWorker(appContext: Context, workerParams: WorkerParameters) :
 
         } catch (exeption: Exception) {
             exeption.printStackTrace()
+        }
+
+    }
+
+    private fun captureEvent(eventName : String,isSuccess : Boolean,error: String?) {
+        val properties = Properties()
+        properties.apply {
+            this["sku_id"] = inputData.getString("projectId").toString()
+            this["project_id"] = inputData.getString("projectId").toString()
+            this["image_type"] = inputData.getString("projectId").toString()
+        }
+
+        if (isSuccess) {
+            appContext.captureEvent(
+                eventName,
+                properties)
+        }else{
+            appContext.captureFailureEvent(
+                eventName,
+                properties, error!!
+            )
         }
 
     }

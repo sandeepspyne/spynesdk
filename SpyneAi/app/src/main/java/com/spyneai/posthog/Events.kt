@@ -62,6 +62,18 @@ object Events {
     val CREATE_SKU = "Create SKU"
     val CREATE_SKU_FAILED = "Create SKU Failed"
 
+    val IMAGE_CAPTURED = "Image Captured"
+    val IMAGE_CAPRURE_FAILED = "Image Capture Failed"
+    val CONFIRMED = "Confirmed"
+    val RESHOOT = "Reshoot"
+    val UPLOADED = "Uploaded"
+    val UPLOAD_FAILED = "Upload Failed"
+    val GET_BACKGROUND = "Got Background"
+    val GET_BACKGROUND_FAILED = "Get Background Failed"
+    val PROCESS = "Process Completed"
+    val PROCESS_FAILED = "Process Failed"
+    val SHOOT_QUEUED = "Shoot Queued"
+
 
 
 
