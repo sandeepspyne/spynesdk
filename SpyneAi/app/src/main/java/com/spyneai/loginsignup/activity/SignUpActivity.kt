@@ -169,6 +169,8 @@ class SignUpActivity : AppCompatActivity() {
                             log("User name(savePrefrence): "+response.body()!!.userName)
                             log("User Email(savePrefrence): "+response.body()!!.emailId)
                             log("Auth token(savePrefrence): "+response.body()!!.auth_token)
+                            log("User Id(savePrefrence): "+response.body()!!.userId)
+
 
                             val intent = Intent(this@SignUpActivity, MainDashboardActivity::class.java)
                             intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK

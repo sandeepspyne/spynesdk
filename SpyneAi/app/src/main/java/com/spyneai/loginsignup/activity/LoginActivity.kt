@@ -116,6 +116,7 @@ class LoginActivity : AppCompatActivity() {
                         Utilities.savePrefrence(this@LoginActivity,AppConstants.AUTH_KEY, response.body()!!.auth_token)
                         log("User name(savePrefrence): "+response.body()!!.user_name)
                         log("User Email(savePrefrence): "+response.body()!!.email_id)
+                        log("User Id(savePrefrence): "+response.body()!!.user_id)
                         log("Auth token(savePrefrence): "+response.body()!!.auth_token)
 
                         bt_login.isClickable = true

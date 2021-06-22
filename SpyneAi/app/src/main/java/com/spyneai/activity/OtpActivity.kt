@@ -388,9 +388,11 @@ public class OtpActivity : AppCompatActivity() {
                         Utilities.savePrefrence(this@OtpActivity,AppConstants.AUTH_KEY, response.body()!!.authToken)
                         Utilities.savePrefrence(this@OtpActivity, AppConstants.USER_NAME, response.body()!!.userName)
                         Utilities.savePrefrence(this@OtpActivity, AppConstants.USER_EMAIL, response.body()!!.emailId)
+                        Utilities.savePrefrence(this@OtpActivity, AppConstants.tokenId, response.body()!!.userId)
                         log("User name(savePrefrence): "+response.body()!!.userName)
                         log("User Email(savePrefrence): "+response.body()!!.emailId)
                         log("Auth token(savePrefrence): "+response.body()!!.authToken)
+                        log("User Id(savePrefrence): "+response.body()!!.userId)
 
                         val intent = Intent(applicationContext, MainDashboardActivity::class.java)
                         intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK

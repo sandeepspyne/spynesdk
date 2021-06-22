@@ -7,6 +7,7 @@ import com.spyneai.aipack.FetchGifRequest
 import com.spyneai.aipack.FetchGifResponse
 import com.spyneai.dashboard.response.NewCategoriesResponse
 import com.spyneai.dashboard.response.NewSubCatResponse
+import com.spyneai.downloadsku.FetchBulkResponseV2
 import com.spyneai.loginsignup.models.ForgotPasswordResponse
 import com.spyneai.loginsignup.models.GetCountriesResponse
 import com.spyneai.loginsignup.models.LoginEmailPasswordResponse
@@ -406,6 +407,13 @@ interface APiService {
         @Part("user_id") user_id: RequestBody?,
         @Part("sku_id") sku_id: RequestBody?,
     ): Call<List<FetchBulkResponse>>?
+
+    @Multipart
+    @POST("v2/sku/getImagesById")
+    fun fetchBulkImageV2(
+        @Part("sku_id") sku_id: RequestBody?,
+        @Part("auth_key") auth_key: RequestBody?,
+    ): Call<FetchBulkResponseV2>?
 
     @Multipart
     @POST("interior-processing")

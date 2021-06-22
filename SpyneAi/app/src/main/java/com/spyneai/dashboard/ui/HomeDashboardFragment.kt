@@ -38,7 +38,7 @@ import com.spyneai.needs.AppConstants
 import com.spyneai.needs.Utilities
 import com.spyneai.orders.data.response.CompletedSKUsResponse
 import com.spyneai.orders.data.response.GetOngoingSkusResponse
-
+import com.spyneai.shoot.utils.log
 
 
 class HomeDashboardFragment :
@@ -114,7 +114,7 @@ class HomeDashboardFragment :
                         it.value.data as ArrayList<NewCategoriesResponse.Data>,
                         object : CategoriesDashboardAdapter.BtnClickListener {
                             override fun onBtnClick(position: Int) {
-                                if (position < 3) {
+                                if (position < 1) {
                                     categoryPosition = position
                                     Utilities.savePrefrence(
                                         requireContext(),
@@ -183,6 +183,7 @@ class HomeDashboardFragment :
                                     Utilities.savePrefrence(requireContext(),
                                         AppConstants.SKU_ID,
                                         completedProjectList[position].sku_id)
+                                    log("Show Completed orders(sku_id): "+completedProjectList[position].sku_id)
                                     val intent = Intent(requireContext(),
                                         ShowImagesActivity::class.java)
                                     startActivity(intent)

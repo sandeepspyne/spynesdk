@@ -42,7 +42,7 @@ class MyOngoingOrdersFragment : BaseFragment<MyOrdersViewModel, MyOngoingOrdersF
         setOngoingSkuRecycler()
 
         viewModel.getOngoingSKUs(Utilities.getPreference(requireContext(), AppConstants.AUTH_KEY).toString())
-        log("Get ongoing SKUs(auth_key): "+AppConstants.AUTH_KEY)
+        log("Get ongoing SKUs(auth_key): "+Utilities.getPreference(requireContext(), AppConstants.AUTH_KEY).toString())
         viewModel.getOngoingSkusResponse.observe(
             viewLifecycleOwner, androidx.lifecycle.Observer {
                 when (it) {

@@ -42,7 +42,6 @@ class MyCompletedOrdersFragment :
         binding.shimmerCompletedSKU.startShimmer()
 
         completedSkuList = ArrayList<CompletedSKUsResponse.Data>()
-        setCompletedSkuRecycler()
 
         viewModel.getCompletedSKUs(Utilities.getPreference(requireContext(), AppConstants.AUTH_KEY).toString())
         log("Completed SKUs(auth key): "+AppConstants.AUTH_KEY)
@@ -79,11 +78,6 @@ class MyCompletedOrdersFragment :
             }
         )
     }
-
-    private fun setCompletedSkuRecycler(){
-
-    }
-
     override fun getViewModel() = MyOrdersViewModel::class.java
 
     override fun getFragmentBinding(
