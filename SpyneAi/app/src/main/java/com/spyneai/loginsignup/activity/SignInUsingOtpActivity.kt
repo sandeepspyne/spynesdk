@@ -10,15 +10,17 @@ import android.view.View
 import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AppCompatDelegate
+import com.posthog.android.Properties
 import com.spyneai.R
+import com.spyneai.captureEvent
+import com.spyneai.captureFailureEvent
 import com.spyneai.interfaces.MyAPIService
-import com.spyneai.interfaces.RetrofitClient
 import com.spyneai.interfaces.RetrofitClients
 import com.spyneai.loginsignup.activity.LoginActivity
-import com.spyneai.model.login.LoginRequest
 import com.spyneai.model.login.LoginResponse
 import com.spyneai.needs.AppConstants
 import com.spyneai.needs.Utilities
+import com.spyneai.posthog.Events
 import kotlinx.android.synthetic.main.activity_sign_in_using_otp.*
 import retrofit2.Call
 import retrofit2.Callback
@@ -107,6 +109,9 @@ class SignInUsingOtpActivity : AppCompatActivity() {
 
     //Sign in api
     private fun makeSignIn() {
+        val properties = Properties().putValue("email",etEmail.text.toString().trim())
+        captureEvent(Events.OTP_LOGIN_INTIATED,properties)
+
         Utilities.showProgressDialog(this)
 
         val request = RetrofitClients.buildService(MyAPIService::class.java)
@@ -131,6 +136,8 @@ class SignInUsingOtpActivity : AppCompatActivity() {
                                 Toast.LENGTH_SHORT
                             ).show()
 
+                            captureEvent(Events.OTP_LOGIN_SUCCEED,properties)
+
                             //  Log.e("ok", response.body()!!.header.tokenId)
                             Utilities.savePrefrence(this@SignInUsingOtpActivity,
                                 AppConstants.EMAIL_ID, etEmail.text.toString())
@@ -138,10 +145,12 @@ class SignInUsingOtpActivity : AppCompatActivity() {
 
                             if (loginResponse?.userId != null)
                                 Utilities.savePrefrence(this@SignInUsingOtpActivity,
-                                    AppConstants.tokenId, loginResponse?.userId)
+                                    AppConstants.TOKEN_ID, loginResponse?.userId)
 
                             startActivity(intent)
+
                         }else{
+                            captureFailureEvent(Events.OTP_LOGIN_FAILED,properties,"Server not responding")
                             Toast.makeText(
                                 applicationContext,
                                 "Server not responding!, Please try again later",
@@ -151,6 +160,7 @@ class SignInUsingOtpActivity : AppCompatActivity() {
                     }
                 }
                 else{
+                    captureFailureEvent(Events.OTP_LOGIN_FAILED,properties,"Server not responding")
                     Toast.makeText(
                         applicationContext,
                         "Server not responding!, Please try again later",
@@ -160,7 +170,7 @@ class SignInUsingOtpActivity : AppCompatActivity() {
             }
 
             override fun onFailure(call: Call<LoginResponse>, t: Throwable) {
-                Log.e("ok", "no way")
+                captureFailureEvent(Events.OTP_LOGIN_FAILED,properties,t?.localizedMessage)
                 Utilities.hideProgressDialog()
                 Toast.makeText(
                     applicationContext,

@@ -6,10 +6,13 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import com.posthog.android.Properties
+import com.spyneai.captureEvent
 import com.spyneai.databinding.LogoutDialogBinding
 import com.spyneai.loginsignup.activity.LoginActivity
 import com.spyneai.needs.AppConstants
 import com.spyneai.needs.Utilities
+import com.spyneai.posthog.Events
 
 
 class LogoutDashBoardFragment : Fragment() {
@@ -41,7 +44,9 @@ class LogoutDashBoardFragment : Fragment() {
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
         binding.llLogout.setOnClickListener {
-            Utilities.savePrefrence(requireContext(), AppConstants.tokenId, "")
+            requireContext().captureEvent(Events.LOG_OUT, Properties())
+
+            Utilities.savePrefrence(requireContext(), AppConstants.TOKEN_ID, "")
             Utilities.savePrefrence(requireContext(), AppConstants.AUTH_KEY, "")
             Utilities.savePrefrence(requireContext(), AppConstants.SHOOT_ID, "")
             Utilities.savePrefrence(requireContext(), AppConstants.SKU_ID, "")

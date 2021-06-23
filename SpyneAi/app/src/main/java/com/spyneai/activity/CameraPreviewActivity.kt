@@ -33,7 +33,6 @@ import com.spyneai.model.uploadRough.UploadPhotoRequest
 import com.spyneai.needs.AppConstants
 import com.spyneai.needs.Utilities
 import kotlinx.android.synthetic.main.activity_camera_preview.*
-import okhttp3.MediaType
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
@@ -434,7 +433,7 @@ public class CameraPreviewActivity : AppCompatActivity() {
             //  val skuName = RequestBody.create(MediaType.parse("application/json"), personString)
 
             val call = request.uploadPhotoRough(
-                Utilities.getPreference(this, AppConstants.tokenId), uploadPhotoRequest)
+                Utilities.getPreference(this, AppConstants.TOKEN_ID), uploadPhotoRequest)
 
             call?.enqueue(object : Callback<UploadPhotoResponse> {
                 override fun onResponse(

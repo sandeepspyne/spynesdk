@@ -1,6 +1,7 @@
 package com.spyneai.needs
 
 object AppConstants {
+    val tokenId: String = "tokenId"
     val CREDITS_MESSAGE = "CREDITS_MESSAGE"
     val AUTH_KEY ="AUTH_KEY"
     val IS_DOWNLOADED_BEFORE =  "IS_DOWNLOADED_BEFORE"
@@ -66,7 +67,7 @@ object AppConstants {
     val LOGO_FILE = "logo_file"
     val RAW_IMAGE_FILE = "raw_image_file"
     val phone: String = "number"
-    val tokenId : String = "tokenId"
+    val TOKEN_ID : String = "tokenId"
     val otp : String = "otp"
 
     val highQualityCount : String = "highQualityCount"

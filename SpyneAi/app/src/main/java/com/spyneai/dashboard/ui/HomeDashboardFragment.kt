@@ -15,18 +15,24 @@ import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.tabs.TabLayout
+import com.posthog.android.Properties
 import com.spyneai.R
 import com.spyneai.activity.CategoriesActivity
 import com.spyneai.activity.CompletedProjectsActivity
 import com.spyneai.activity.OngoingOrdersActivity
 import com.spyneai.activity.ShowImagesActivity
 import com.spyneai.adapter.CategoriesDashboardAdapter
-import com.spyneai.base.BaseFragment
-import com.spyneai.base.network.Resource
+
+
 import com.spyneai.dashboard.adapters.CompletedDashboardAdapter
 import com.spyneai.dashboard.adapters.OngoingDashboardAdapter
 import com.spyneai.dashboard.adapters.TutorialVideosAdapter
 import com.spyneai.dashboard.data.DashboardViewModel
+
+import com.spyneai.base.BaseFragment
+import com.spyneai.base.network.Resource
+import com.spyneai.captureEvent
+import com.spyneai.captureFailureEvent
 import com.spyneai.dashboard.response.NewCategoriesResponse
 import com.spyneai.databinding.HomeDashboardFragmentBinding
 import com.spyneai.extras.BeforeAfterActivity
@@ -35,6 +41,7 @@ import com.spyneai.needs.Utilities
 import com.spyneai.orders.data.response.CompletedSKUsResponse
 import com.spyneai.orders.data.response.GetOngoingSkusResponse
 import com.spyneai.shoot.utils.log
+import com.spyneai.posthog.Events
 
 
 class HomeDashboardFragment :
@@ -73,7 +80,7 @@ class HomeDashboardFragment :
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
 
-        tokenId = Utilities.getPreference(requireContext(), AppConstants.tokenId).toString()
+        tokenId = Utilities.getPreference(requireContext(), AppConstants.TOKEN_ID).toString()
         email = Utilities.getPreference(requireContext(), AppConstants.EMAIL_ID).toString()
 
         if (viewModel.isNewUser.value == true){
@@ -108,6 +115,8 @@ class HomeDashboardFragment :
         viewModel.categoriesResponse.observe(viewLifecycleOwner, Observer {
             when(it){
                 is Resource.Sucess -> {
+                    requireContext().captureEvent(Events.GOT_CATEGORIES, Properties())
+
                     binding.shimmerCategories.stopShimmer()
                     binding.shimmerCategories.visibility = View.GONE
                     binding.rvDashboardCategories.visibility = View.VISIBLE
@@ -152,7 +161,9 @@ class HomeDashboardFragment :
                     binding.shimmerCategories.startShimmer()
                 }
                 is Resource.Failure -> {
-
+                    requireContext().captureFailureEvent(Events.GET_CATEGORIES_FAILED, Properties(),
+                        it.errorMessage!!
+                    )
                     handleApiError(it)
                 }
             }
@@ -164,6 +175,7 @@ class HomeDashboardFragment :
         viewModel.completedSkusResponse.observe(viewLifecycleOwner, Observer {
             when(it){
                 is Resource.Sucess -> {
+                    requireContext().captureEvent(Events.GET_COMPLETED_ORDERS, Properties())
                     completedProjectList = ArrayList()
                     if (it.value.data.isNullOrEmpty()){
                         binding.rlCompletedShoots.visibility = View.GONE
@@ -205,6 +217,9 @@ class HomeDashboardFragment :
                     binding.shimmerCompleted.startShimmer()
                 }
                 is Resource.Failure -> {
+                    requireContext().captureFailureEvent(Events.GET_COMPLETED_ORDERS_FAILED, Properties(),
+                        it.errorMessage!!
+                    )
                     handleApiError(it)
                 }
             }
@@ -305,6 +320,51 @@ class HomeDashboardFragment :
             tab.select()
             binding.ivBanner.setBeforeImage(ContextCompat.getDrawable(requireContext(),R.drawable.car_before)).setAfterImage(ContextCompat.getDrawable(requireContext(),R.drawable.car_after))
         }
+    }
+
+
+    private fun setOngoingProjectRecycler(){
+        viewModel.getOngoingSKUs(Utilities.getPreference(requireContext(), AppConstants.AUTH_KEY).toString())
+        viewModel.getOngoingSkusResponse.observe(
+            viewLifecycleOwner, androidx.lifecycle.Observer {
+                when (it) {
+                    is Resource.Sucess -> {
+                        if (it.value.data.isNullOrEmpty())
+                            binding.rlOngoingShoots.visibility = View.GONE
+                        if (it.value.data != null){
+                            requireContext().captureEvent(Events.GOT_ONGOING_ORDERS, Properties())
+                            ongoingDashboardAdapter = OngoingDashboardAdapter(requireContext(),
+                                it.value.data as ArrayList<GetOngoingSkusResponse.Data>
+                            )
+
+                            val layoutManager: RecyclerView.LayoutManager = LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
+                            binding.rvOngoingShoots.setLayoutManager(layoutManager)
+                            binding.rvOngoingShoots.setAdapter(ongoingDashboardAdapter)
+
+                            showHideRecyclerView(it.value.data)
+                        }
+
+                    }
+                    is Resource.Loading -> {
+
+                    }
+                    is Resource.Failure -> {
+                        requireContext().captureFailureEvent(Events.GET_ONGOING_ORDERS_FAILED, Properties(),
+                            it.errorMessage!!
+                        )
+                        handleApiError(it)
+                    }
+
+                }
+            }
+        )
+
+    }
+
+
+    private fun showHideRecyclerView(tasksInProgress: ArrayList<GetOngoingSkusResponse.Data>) {
+        if (tasksInProgress.isNullOrEmpty())
+            binding.groupOngoingProjects.visibility = View.GONE
     }
 
     private fun showTutorialVideos(){

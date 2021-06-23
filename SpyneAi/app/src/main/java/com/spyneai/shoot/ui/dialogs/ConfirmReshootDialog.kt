@@ -1,16 +1,21 @@
 package com.spyneai.shoot.ui.dialogs
 
 import android.os.Bundle
+import android.util.Log
 import android.view.*
 import android.widget.FrameLayout
 import com.bumptech.glide.Glide
+import com.posthog.android.Properties
 import com.spyneai.base.BaseDialogFragment
 import com.spyneai.base.network.Resource
+import com.spyneai.captureEvent
 import com.spyneai.databinding.DialogConfirmReshootBinding
+import com.spyneai.posthog.Events
 import com.spyneai.shoot.data.ShootViewModel
 
 class ConfirmReshootDialog : BaseDialogFragment<ShootViewModel, DialogConfirmReshootBinding>() {
 
+    val TAG = "ConfirmReshootDialog"
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -19,12 +24,31 @@ class ConfirmReshootDialog : BaseDialogFragment<ShootViewModel, DialogConfirmRes
 
         binding.btReshootImage.setOnClickListener{
             viewModel.isCameraButtonClickable = true
+            val properties = Properties()
+            properties.apply {
+                this["sku_id"] = viewModel.shootData.value?.sku_id
+                this["project_id"] = viewModel.shootData.value?.project_id
+                this["image_type"] = viewModel.shootData.value?.image_category
+            }
+            requireContext().captureEvent(
+                Events.RESHOOT,
+                properties)
             //remove last item from shoot list
             viewModel.shootList.value?.removeAt(viewModel.shootList.value!!.size - 1)
             dismiss()
         }
 
         binding.btConfirmImage.setOnClickListener {
+            val properties = Properties()
+            properties.apply {
+                this["sku_id"] = viewModel.shootData.value?.sku_id
+                this["project_id"] = viewModel.shootData.value?.project_id
+                this["image_type"] = viewModel.shootData.value?.image_category
+            }
+            requireContext().captureEvent(
+                Events.CONFIRMED,
+                properties)
+
             viewModel.isCameraButtonClickable = true
             when(viewModel.categoryDetails.value?.imageType) {
                 "Exterior" -> {
@@ -111,6 +135,16 @@ class ConfirmReshootDialog : BaseDialogFragment<ShootViewModel, DialogConfirmRes
 
                     var ow = it?.overlayWidth
                     var oh = it?.overlayHeight
+
+
+                    Log.d(TAG, "onGlobalLayout: "+prw)
+                    Log.d(TAG, "onGlobalLayout: "+prh)
+
+                    Log.d(TAG, "onGlobalLayout: "+ow)
+                    Log.d(TAG, "onGlobalLayout: "+oh)
+
+                    Log.d(TAG, "onGlobalLayout: "+view.width)
+                    Log.d(TAG, "onGlobalLayout: "+view.height)
 
                     var newW =
                         ow!!.toFloat().div(prw!!.toFloat()).times(view.width)

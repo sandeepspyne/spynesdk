@@ -31,7 +31,7 @@ class OrderSummaryActivity : AppCompatActivity() {
     private fun fetchOrderSummary() {
         val request = RetrofitClient.buildService(APiService::class.java)
         val call = request.getOrderSummary(
-                Utilities.getPreference(this, AppConstants.tokenId),
+                Utilities.getPreference(this, AppConstants.TOKEN_ID),
                 Utilities.getPreference(this, AppConstants.SHOOT_ID),
                 Utilities.getPreference(this, AppConstants.SKU_ID))
 

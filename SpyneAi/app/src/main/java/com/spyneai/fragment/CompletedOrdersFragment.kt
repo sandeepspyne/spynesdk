@@ -16,11 +16,9 @@ import com.spyneai.activity.ShowImagesActivity
 import com.spyneai.adapter.CompletedProjectAdapter
 import com.spyneai.interfaces.APiService
 import com.spyneai.interfaces.RetrofitClients
-import com.spyneai.interfaces.Staging
 import com.spyneai.model.projects.CompletedProjectResponse
 import com.spyneai.needs.AppConstants
 import com.spyneai.needs.Utilities
-import kotlinx.android.synthetic.main.activity_completed_projects.*
 import kotlinx.android.synthetic.main.fragment_completed_orders.*
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
@@ -83,12 +81,12 @@ class CompletedOrdersFragment : Fragment() {
 
         val request = RetrofitClients.buildService(APiService::class.java)
         Utilities.savePrefrence(
-            requireContext(), AppConstants.tokenId,
-            Utilities.getPreference(requireContext(), AppConstants.tokenId)
+            requireContext(), AppConstants.TOKEN_ID,
+            Utilities.getPreference(requireContext(), AppConstants.TOKEN_ID)
         )
         val userId = RequestBody.create(
             MultipartBody.FORM,
-            Utilities.getPreference(requireContext(), AppConstants.tokenId)!!
+            Utilities.getPreference(requireContext(), AppConstants.TOKEN_ID)!!
         )
         val enterpriseId = RequestBody.create(
             MultipartBody.FORM,

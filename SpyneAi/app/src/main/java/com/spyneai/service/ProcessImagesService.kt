@@ -72,7 +72,7 @@ class ProcessImagesService() : Service(), Listener {
         task.skuName = intent.getStringExtra(AppConstants.SKU_NAME) ?: ""
         task.skuId = intent.getStringExtra(AppConstants.SKU_ID) ?: ""
         task.shootId = intent.getStringExtra(AppConstants.SHOOT_ID) ?: ""
-        task.tokenId = intent.getStringExtra(AppConstants.tokenId) ?: ""
+        task.tokenId = intent.getStringExtra(AppConstants.TOKEN_ID) ?: ""
         task.windows = intent.getStringExtra(AppConstants.WINDOWS) ?: ""
         task.exposures = intent.getStringExtra(AppConstants.EXPOSURES) ?: ""
 

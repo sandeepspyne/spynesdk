@@ -6,8 +6,12 @@ import android.text.InputType
 import android.view.View
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import com.posthog.android.Properties
 import com.spyneai.R
 import com.spyneai.activity.SignInUsingOtpActivity
+import com.spyneai.captureEvent
+import com.spyneai.captureFailureEvent
+import com.spyneai.captureIdentity
 import com.spyneai.dashboard.ui.MainDashboardActivity
 import com.spyneai.interfaces.MyAPIService
 
@@ -18,6 +22,7 @@ import com.spyneai.loginsignup.models.LoginEmailPasswordResponse
 import com.spyneai.needs.AppConstants
 import com.spyneai.needs.Utilities
 import com.spyneai.shoot.utils.log
+import com.spyneai.posthog.Events
 import kotlinx.android.synthetic.main.activity_login.*
 import kotlinx.android.synthetic.main.activity_sign_in_using_otp.*
 import retrofit2.Call
@@ -72,12 +77,10 @@ class LoginActivity : AppCompatActivity() {
     }
 
     private fun login(email: String, password: String) {
+        val properties = Properties().putValue("email",email)
+        captureEvent(Events.LOGIN_INTIATED,properties)
 
         Utilities.showProgressDialog(this)
-
-        var body = LoginEmailPasswordBody(
-            et_loginEmail.text.toString(), et_loginPassword.text.toString()
-        )
 
         val call = RetrofitClients.buildService(MyAPIService::class.java)
             .loginEmailPassword(email, AppConstants.API_KEY, password, "PASSWORD")
@@ -110,14 +113,20 @@ class LoginActivity : AppCompatActivity() {
                         Toast.makeText(this@LoginActivity, "Login successful", Toast.LENGTH_SHORT)
                             .show()
 
-                        Utilities.savePrefrence(this@LoginActivity, AppConstants.tokenId, loginResponse.user_id)
-                        Utilities.savePrefrence(this@LoginActivity, AppConstants.USER_NAME, loginResponse.user_name)
-                        Utilities.savePrefrence(this@LoginActivity, AppConstants.USER_EMAIL, loginResponse.email_id)
                         Utilities.savePrefrence(this@LoginActivity,AppConstants.AUTH_KEY, response.body()!!.auth_token)
                         log("User name(savePrefrence): "+response.body()!!.user_name)
                         log("User Email(savePrefrence): "+response.body()!!.email_id)
                         log("User Id(savePrefrence): "+response.body()!!.user_id)
                         log("Auth token(savePrefrence): "+response.body()!!.auth_token)
+
+                        properties.apply {
+                            this["user_id"] = loginResponse.user_id
+                            this["name"] = loginResponse.user_name
+                        }
+
+                        captureEvent(Events.LOGIN_SUCCEED,properties)
+                        captureIdentity(loginResponse.user_id,properties)
+
 
                         bt_login.isClickable = true
                         tvSignup.isClickable = true
@@ -129,7 +138,6 @@ class LoginActivity : AppCompatActivity() {
                         intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
                         intent.putExtra(AppConstants.IS_NEW_USER,false)
                         startActivity(intent)
-                        finish()
                     }
                 } else {
                     val error = response.errorBody().toString()
@@ -139,11 +147,13 @@ class LoginActivity : AppCompatActivity() {
                     tvForgotPassword.isClickable = true
                     bt_sign_in_using_otp.isClickable = true
                     tvterms.isClickable = true
+                    captureFailureEvent(Events.LOGIN_FAILED,properties,error)
                 }
             }
 
             override fun onFailure(call: Call<LoginEmailPasswordResponse>, t: Throwable) {
                 Utilities.hideProgressDialog()
+                captureFailureEvent(Events.LOGIN_FAILED,properties,t?.localizedMessage)
                 Toast.makeText(
                     applicationContext,
                     "Server not responding!, Please try again later",

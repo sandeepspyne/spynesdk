@@ -8,16 +8,20 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
+import com.posthog.android.Properties
 import com.spyneai.R
 import com.spyneai.adapter.CarBackgroundAdapter
 import com.spyneai.base.BaseFragment
 import com.spyneai.base.network.Resource
+import com.spyneai.captureEvent
+import com.spyneai.captureFailureEvent
 import com.spyneai.dashboard.ui.enable
 import com.spyneai.dashboard.ui.handleApiError
 import com.spyneai.databinding.FragmentSelectBackgroundBinding
 import com.spyneai.model.carbackgroundgif.CarBackgrounGifResponse
 import com.spyneai.needs.AppConstants
 import com.spyneai.needs.Utilities
+import com.spyneai.posthog.Events
 import com.spyneai.shoot.data.ProcessViewModel
 import com.spyneai.shoot.utils.log
 
@@ -46,7 +50,7 @@ class SelectBackgroundFragment : BaseFragment<ProcessViewModel,FragmentSelectBac
 
             viewModel.skuQueued.observe(viewLifecycleOwner,{
                 //sku process queued start timer
-                viewModel.startTimer.value = true
+                if (it)  viewModel.startTimer.value = true
             })
         }
     }
@@ -57,6 +61,7 @@ class SelectBackgroundFragment : BaseFragment<ProcessViewModel,FragmentSelectBac
         viewModel.carGifRes.observe(viewLifecycleOwner,{
             when(it) {
                 is Resource.Sucess -> {
+                    requireContext().captureEvent(Events.GET_BACKGROUND, Properties())
                     binding.shimmer.stopShimmer()
                     binding.shimmer.visibility = View.GONE
                     binding.rvBackgroundsCars.visibility = View.VISIBLE
@@ -77,6 +82,9 @@ class SelectBackgroundFragment : BaseFragment<ProcessViewModel,FragmentSelectBac
                 }
 
                 is Resource.Failure -> {
+                    requireContext().captureFailureEvent(Events.GET_BACKGROUND_FAILED, Properties(),
+                        it.errorMessage!!
+                    )
                     handleApiError(it)
                 }
 
@@ -129,16 +137,22 @@ class SelectBackgroundFragment : BaseFragment<ProcessViewModel,FragmentSelectBac
         viewModel.processSkuRes.observe(viewLifecycleOwner,{
             when(it) {
                 is Resource.Loading -> {
-                    var s = ""
                 }
 
                 is Resource.Sucess -> {
-                    //start timer
-                    var s = ""
+                    requireContext().captureEvent(
+                        Events.PROCESS,
+                        Properties().putValue("sku_id", viewModel.sku.value?.skuId!!)
+                            .putValue("background_id",backgroundSelect)
+                    )
                     viewModel.startTimer.value = true
                 }
                 is Resource.Failure -> {
-                    var s = ""
+                    requireContext().captureFailureEvent(
+                        Events.PROCESS_FAILED,
+                        Properties().putValue("sku_id",viewModel.sku.value?.skuId!!),
+                        it.errorMessage!!)
+                    handleApiError(it)
                 }
             }
         })

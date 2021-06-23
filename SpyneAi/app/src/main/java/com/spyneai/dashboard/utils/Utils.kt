@@ -6,7 +6,9 @@ import android.util.Log
 import android.view.View
 import androidx.fragment.app.Fragment
 import com.google.android.material.snackbar.Snackbar
+import com.posthog.android.Properties
 import com.spyneai.base.network.Resource
+import com.spyneai.captureFailureEvent
 
 fun <A : Activity> Activity.startNewActivity(activity: Class<A>) {
     Intent(this, activity).also {
@@ -40,17 +42,16 @@ fun Fragment.handleApiError(
 ) {
     when {
         failure.isNetworkError -> requireView().snackbar(
-            "Please check your internet connection",
+            failure.errorMessage!!,
             retry
         )
         failure.errorCode == 401 -> {
-            val error = failure.errorBody?.string().toString()
-            requireView().snackbar(error)
-
+            val error = failure.errorMessage
+            requireView().snackbar(error!!,retry)
         }
         else -> {
-            val error = failure.errorBody?.string().toString()
-            requireView().snackbar(error)
+            val error = failure.errorMessage
+            requireView().snackbar(error!!,retry)
         }
     }
 }

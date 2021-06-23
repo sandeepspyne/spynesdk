@@ -14,7 +14,6 @@ import com.bumptech.glide.Glide
 import com.spyneai.R
 import com.spyneai.activity.CameraActivity
 import com.spyneai.adapter.BeforeAfterAdapter
-import com.spyneai.camera2.Camera2Activity
 import com.spyneai.interfaces.APiService
 import com.spyneai.interfaces.RetrofitClient
 import com.spyneai.interfaces.RetrofitClients
@@ -23,8 +22,6 @@ import com.spyneai.model.beforeafter.BeforeAfterResponse
 import com.spyneai.model.beforeafter.Data
 import com.spyneai.model.carreplace.CarBackgroundsResponse
 import com.spyneai.model.channel.BackgroundsResponse
-import com.spyneai.model.channel.ChannelsResponse
-import com.spyneai.model.marketplace.FootwearMarketplaceResponse
 import com.spyneai.needs.AppConstants
 import com.spyneai.needs.ScrollingLinearLayoutManager
 import com.spyneai.needs.Utilities
@@ -88,7 +85,7 @@ class BeforeAfterActivity : AppCompatActivity() {
 
     private fun setRecycler() {
         gifList = ArrayList<String>()
-        Log.e("Token Mine", Utilities.getPreference(this, AppConstants.tokenId).toString())
+        Log.e("Token Mine", Utilities.getPreference(this, AppConstants.TOKEN_ID).toString())
         beforeAfterList = ArrayList<Data>()
         beforeAfterAdapter = BeforeAfterAdapter(this, beforeAfterList,
             object : BeforeAfterAdapter.BtnClickListener {
@@ -194,7 +191,7 @@ class BeforeAfterActivity : AppCompatActivity() {
         Utilities.showProgressDialog(this)
         val request = RetrofitClient.buildService(APiService::class.java)
         val call = request.getBeforeAfter(
-            Utilities.getPreference(this, AppConstants.tokenId),
+            Utilities.getPreference(this, AppConstants.TOKEN_ID),
             intent.getStringExtra(AppConstants.CATEGORY_ID)!!
         )
 

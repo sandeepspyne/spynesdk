@@ -69,7 +69,7 @@ class OngoingActivity : AppCompatActivity() {
 
         val request = RetrofitClient.buildService(APiService::class.java)
         val call = request.getContinueShoot(
-                Utilities.getPreference(this, AppConstants.tokenId),
+                Utilities.getPreference(this, AppConstants.TOKEN_ID),
                 dashboardResponseList[position].skuId)
 
         call?.enqueue(object : Callback<UploadPhotoResponse> {
@@ -118,7 +118,7 @@ class OngoingActivity : AppCompatActivity() {
         dashboardResponseList.clear()
 
         val request = RetrofitClient.buildService(APiService::class.java)
-        val call = request.getDashboardData(Utilities.getPreference(this, AppConstants.tokenId))
+        val call = request.getDashboardData(Utilities.getPreference(this, AppConstants.TOKEN_ID))
 
         call?.enqueue(object : Callback<DashboardResponse> {
             override fun onResponse(call: Call<DashboardResponse>,

@@ -97,7 +97,7 @@ class OrdersFragment(context: Context) : Fragment() {
         (myOrdersResponseListSubmitted as ArrayList).clear()
 
         val request = RetrofitClient.buildService(APiService::class.java)
-        val call = request.getMyOrders(Utilities.getPreference(contexts, AppConstants.tokenId))
+        val call = request.getMyOrders(Utilities.getPreference(contexts, AppConstants.TOKEN_ID))
 
         call?.enqueue(object : Callback<MyOrdersResponse> {
             override fun onResponse(call: Call<MyOrdersResponse>,

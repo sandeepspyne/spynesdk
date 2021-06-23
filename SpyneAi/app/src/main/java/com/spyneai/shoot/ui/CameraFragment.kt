@@ -16,11 +16,15 @@ import androidx.camera.lifecycle.ProcessCameraProvider
 import androidx.core.content.ContextCompat
 import com.hbisoft.pickit.PickiT
 import com.hbisoft.pickit.PickiTCallbacks
+import com.posthog.android.Properties
 import com.spyneai.base.BaseFragment
 import com.spyneai.camera2.ShootDimensions
+import com.spyneai.captureEvent
+import com.spyneai.captureFailureEvent
 import com.spyneai.databinding.FragmentCameraBinding
 import com.spyneai.needs.AppConstants
 import com.spyneai.needs.Utilities
+import com.spyneai.posthog.Events
 import com.spyneai.shoot.data.ShootViewModel
 import com.spyneai.shoot.data.model.ShootData
 import com.spyneai.shoot.ui.dialogs.InteriorHintDialog
@@ -42,6 +46,7 @@ class CameraFragment : BaseFragment<ShootViewModel, FragmentCameraBinding>(),Pic
     private lateinit var outputDirectory: File
     var pickIt : PickiT? = null
     private val FILENAME_FORMAT = "yyyy-MM-dd-HH-mm-ss-SSS"
+    private var flashMode: Int = ImageCapture.FLASH_MODE_OFF
 
     companion object {
         private const val RATIO_4_3_VALUE = 4.0 / 3.0 // aspect ratio 4x3
@@ -110,6 +115,7 @@ class CameraFragment : BaseFragment<ShootViewModel, FragmentCameraBinding>(),Pic
         }
     }
 
+    @SuppressLint("UnsafeOptInUsageError")
     private fun startCamera() {
         val cameraProviderFuture = ProcessCameraProvider.getInstance(requireContext())
 
@@ -124,11 +130,23 @@ class CameraFragment : BaseFragment<ShootViewModel, FragmentCameraBinding>(),Pic
                     it.setSurfaceProvider(viewFinder.surfaceProvider)
                 }
 
+            //for exact image cropping
+            val viewPort = binding.viewFinder?.viewPort
+
             imageCapture = ImageCapture.Builder()
+                .setCaptureMode(ImageCapture.CAPTURE_MODE_MINIMIZE_LATENCY)
+                .setFlashMode(flashMode).build()
+
+            val useCaseGroup = UseCaseGroup.Builder()
+                .addUseCase(preview)
+                .addUseCase(imageCapture!!)
+                .setViewPort(viewPort!!)
                 .build()
+
 
             // Select back camera as a default
             val cameraSelector = CameraSelector.DEFAULT_BACK_CAMERA
+
 
             try {
                 // Unbind use cases before rebinding
@@ -136,7 +154,7 @@ class CameraFragment : BaseFragment<ShootViewModel, FragmentCameraBinding>(),Pic
 
                 // Bind use cases to camera
                 cameraProvider.bindToLifecycle(
-                    viewLifecycleOwner, cameraSelector, preview, imageCapture
+                    viewLifecycleOwner, cameraSelector, useCaseGroup
                 )
 
                 if (viewModel.shootDimensions.value == null ||
@@ -178,7 +196,8 @@ class CameraFragment : BaseFragment<ShootViewModel, FragmentCameraBinding>(),Pic
             outputOptions, ContextCompat.getMainExecutor(requireContext()), object : ImageCapture.OnImageSavedCallback {
                 override fun onError(exc: ImageCaptureException) {
                     viewModel.isCameraButtonClickable = true
-                    log("Photo capture succeeded: "+exc.message)
+                    log("Photo capture failed: "+exc.message)
+                    requireContext().captureFailureEvent(Events.IMAGE_CAPRURE_FAILED,Properties(),exc.localizedMessage)
                 }
                 override fun onImageSaved(output: ImageCapture.OutputFileResults) {
                     val savedUri = Uri.fromFile(photoFile)
@@ -220,7 +239,15 @@ class CameraFragment : BaseFragment<ShootViewModel, FragmentCameraBinding>(),Pic
             Utilities.getPreference(requireContext(),AppConstants.AUTH_KEY).toString()))
 
         viewModel.shootList.value = viewModel.shootList.value
-        log("Captured image data added to SHOOT LIST: "+viewModel.shootList.value )
+
+        val properties = Properties()
+        properties.apply {
+            this["project_id"] = viewModel.sku.value?.projectId!!
+            this["sku_id"] = viewModel.sku.value?.skuId!!
+            this["image_type"] = viewModel.categoryDetails.value?.imageType!!
+        }
+
+        requireContext().captureEvent(Events.IMAGE_CAPTURED,properties)
     }
 
     override fun getViewModel() = ShootViewModel::class.java

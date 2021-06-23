@@ -70,7 +70,7 @@ class WalletActivity : AppCompatActivity() {
 
         val request = RetrofitClientSpyneAi.buildService(APiService::class.java)
         val call = request.userCreditsDetails(
-            Utilities.getPreference(this, AppConstants.tokenId).toString()
+            Utilities.getPreference(this, AppConstants.TOKEN_ID).toString()
         )
 
         call?.enqueue(object : Callback<CreditDetailsResponse> {

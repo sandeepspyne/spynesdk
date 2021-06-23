@@ -96,7 +96,7 @@ class ShowGifActivity : AppCompatActivity() {
 
         val userId = RequestBody.create(
                 MultipartBody.FORM,
-                Utilities.getPreference(this, AppConstants.tokenId)!!)
+                Utilities.getPreference(this, AppConstants.TOKEN_ID)!!)
 
         val skuId = RequestBody.create(
                 MultipartBody.FORM,

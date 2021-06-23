@@ -1,21 +1,9 @@
 package com.spyneai.activity
 
-import android.app.Dialog
-import android.content.Context
 import android.content.Intent
-import android.graphics.Color
 import android.graphics.Paint
-import android.graphics.drawable.ColorDrawable
-import android.net.Uri
 import android.os.Build
 import android.os.Bundle
-import android.os.Vibrator
-import android.util.Log
-import android.view.View
-import android.view.Window
-import android.view.animation.AnimationUtils
-import android.widget.ImageView
-import android.widget.LinearLayout
 import android.widget.Toast
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
@@ -41,7 +29,6 @@ import kotlinx.android.synthetic.main.activity_order_summary2.tvCategoryName
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
-import java.net.URLEncoder
 
 
 class OrderSummary2Activity : AppCompatActivity() {
@@ -164,7 +151,7 @@ class OrderSummary2Activity : AppCompatActivity() {
 
     private fun getSkuIdDownloadStatus() {
         var call = RetrofitCreditClient("https://www.clippr.ai/api/v4/").buildService(CreditApiService::class.java)
-            .getHDDownloadStatus(Utilities.getPreference(this,AppConstants.tokenId).toString(),
+            .getHDDownloadStatus(Utilities.getPreference(this,AppConstants.TOKEN_ID).toString(),
                 Utilities.getPreference(this@OrderSummary2Activity, AppConstants.SKU_ID)
                     .toString(),"TaD1VC1Ko")
 
@@ -205,7 +192,7 @@ class OrderSummary2Activity : AppCompatActivity() {
     private fun fetchUserCreditDetails(){
         val request = RetrofitClientSpyneAi.buildService(APiService::class.java)
         val call = request.userCreditsDetails(
-            Utilities.getPreference(this, AppConstants.tokenId).toString()
+            Utilities.getPreference(this, AppConstants.TOKEN_ID).toString()
         )
 
         call?.enqueue(object : Callback<CreditDetailsResponse> {

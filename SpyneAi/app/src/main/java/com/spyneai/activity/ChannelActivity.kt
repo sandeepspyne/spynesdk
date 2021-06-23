@@ -92,7 +92,7 @@ class ChannelActivity : AppCompatActivity() {
 
         val request = RetrofitClient.buildService(APiService::class.java)
         val call = request.updateMarket(
-                Utilities.getPreference(this, AppConstants.tokenId), shootMarketUpdateRequest)
+                Utilities.getPreference(this, AppConstants.TOKEN_ID), shootMarketUpdateRequest)
 
         call?.enqueue(object : Callback<UploadPhotoResponse> {
             override fun onResponse(call: Call<UploadPhotoResponse>,

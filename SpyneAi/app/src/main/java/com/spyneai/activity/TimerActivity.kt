@@ -156,7 +156,7 @@ class TimerActivity : AppCompatActivity() {
         llThreeSixtyShoot.setOnClickListener {
             val intent = Intent(this, RecordVideoActivity::class.java)
             intent.putExtra("sku_id", Utilities.getPreference(this, AppConstants.SKU_ID))
-            intent.putExtra("user_id",Utilities.getPreference(this, AppConstants.tokenId))
+            intent.putExtra("user_id",Utilities.getPreference(this, AppConstants.TOKEN_ID))
 
             startActivity(intent)
         }
@@ -221,8 +221,8 @@ class TimerActivity : AppCompatActivity() {
             Utilities.getPreference(this, AppConstants.SHOOT_ID)
         )
         serviceIntent.putExtra(
-            AppConstants.tokenId,
-            Utilities.getPreference(this, AppConstants.tokenId)
+            AppConstants.TOKEN_ID,
+            Utilities.getPreference(this, AppConstants.TOKEN_ID)
         )
         serviceIntent.putExtra(
             AppConstants.WINDOWS,

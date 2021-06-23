@@ -1,8 +1,6 @@
 package com.spyneai.interfaces
 
-import android.util.Base64
-import com.facebook.stetho.Stetho
-import com.facebook.stetho.okhttp3.StethoInterceptor
+
 import com.spyneai.BuildConfig
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
@@ -19,7 +17,6 @@ object RetrofitClient {
             .readTimeout(10, TimeUnit.MINUTES)
             .writeTimeout(10, TimeUnit.MINUTES)
             .connectTimeout(10, TimeUnit.MINUTES)
-            .addNetworkInterceptor(StethoInterceptor())
         .retryOnConnectionFailure(true)
         .also { client ->
             if (BuildConfig.DEBUG) {
