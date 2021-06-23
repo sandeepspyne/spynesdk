@@ -1,6 +1,7 @@
 package com.spyneai.shoot.ui.dialogs
 
 import android.os.Bundle
+import android.util.Log
 import android.view.*
 import android.widget.FrameLayout
 import com.bumptech.glide.Glide
@@ -14,6 +15,7 @@ import com.spyneai.shoot.data.ShootViewModel
 
 class ConfirmReshootDialog : BaseDialogFragment<ShootViewModel, DialogConfirmReshootBinding>() {
 
+    val TAG = "ConfirmReshootDialog"
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -129,6 +131,16 @@ class ConfirmReshootDialog : BaseDialogFragment<ShootViewModel, DialogConfirmRes
 
                     var ow = it?.overlayWidth
                     var oh = it?.overlayHeight
+
+
+                    Log.d(TAG, "onGlobalLayout: "+prw)
+                    Log.d(TAG, "onGlobalLayout: "+prh)
+
+                    Log.d(TAG, "onGlobalLayout: "+ow)
+                    Log.d(TAG, "onGlobalLayout: "+oh)
+
+                    Log.d(TAG, "onGlobalLayout: "+view.width)
+                    Log.d(TAG, "onGlobalLayout: "+view.height)
 
                     var newW =
                         ow!!.toFloat().div(prw!!.toFloat()).times(view.width)
