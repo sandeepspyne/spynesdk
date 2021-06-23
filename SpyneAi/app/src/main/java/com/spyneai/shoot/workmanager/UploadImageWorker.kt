@@ -56,7 +56,6 @@ class UploadImageWorker(val appContext: Context, workerParams: WorkerParameters)
                     requestFile
                 )
 
-
             val call = RetrofitClients.buildService(ClipperApi::class.java)
                 .uploadImageInWorker(projectId,skuId,imageCategory,authKey,image)
 

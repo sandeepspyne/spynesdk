@@ -49,7 +49,7 @@ class SelectBackgroundFragment : BaseFragment<ProcessViewModel,FragmentSelectBac
 
             viewModel.skuQueued.observe(viewLifecycleOwner,{
                 //sku process queued start timer
-                viewModel.startTimer.value = true
+                if (it)  viewModel.startTimer.value = true
             })
         }
     }
