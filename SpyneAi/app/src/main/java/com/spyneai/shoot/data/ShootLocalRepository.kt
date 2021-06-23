@@ -4,6 +4,7 @@ import android.content.ContentValues
 import android.provider.BaseColumns
 import android.util.Log
 import com.spyneai.BaseApplication
+import com.spyneai.service.log
 import com.spyneai.shoot.data.model.Sku
 import com.spyneai.shoot.data.sqlite.DBHelper
 import com.spyneai.shoot.data.sqlite.ShootContract
@@ -28,7 +29,7 @@ class ShootLocalRepository {
 
         val newRowId = dbWritable?.insert(ShootContract.ShootEntry.TABLE_NAME, null, values)
 
-        Log.d(TAG, "insertSku: "+newRowId)
+        com.spyneai.shoot.utils.log("insertSku: "+newRowId)
     }
 
     fun getSku(skuId : String) : Sku {
@@ -152,7 +153,7 @@ class ShootLocalRepository {
             selection,
             selectionArgs)
 
-        Log.d(TAG, "updateUploadCount: "+uploadCount)
+        com.spyneai.shoot.utils.log("Upload count(update): "+uploadCount)
     }
 
     fun updateTotalImageCount(skuId : String) {
@@ -174,8 +175,7 @@ class ShootLocalRepository {
             values,
             selection,
             selectionArgs)
-
-        Log.d(TAG, "updateTotalImageCount: "+count)
+        com.spyneai.shoot.utils.log("total images count(update): "+ totalImagesCount)
     }
 
     fun queueProcessRequest(skuId: String,backgroundId : String) {
@@ -195,7 +195,7 @@ class ShootLocalRepository {
             selection,
             selectionArgs)
 
-        Log.d(TAG, "queueProcessRequest: "+count)
+        com.spyneai.shoot.utils.log("Queue Process Request: "+count)
     }
 
     fun getBackgroundId(skuId: String): String {
@@ -231,6 +231,7 @@ class ShootLocalRepository {
         }
 
         return backgroundId
+        com.spyneai.shoot.utils.log("Background id: "+backgroundId)
     }
 
 }

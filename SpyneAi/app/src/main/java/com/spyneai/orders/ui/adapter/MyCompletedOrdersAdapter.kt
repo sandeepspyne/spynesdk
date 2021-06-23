@@ -65,6 +65,8 @@ class MyCompletedOrdersAdapter(
 
     override fun onBindViewHolder(holder: MyCompletedOrdersAdapter.ViewHolder, position: Int) {
 
+        val dots = "..."
+
         if (completedSkuList[position].paid)
             holder.llPaid.visibility = View.VISIBLE
 
@@ -72,7 +74,7 @@ class MyCompletedOrdersAdapter(
         holder.tvSubCat.text = completedSkuList[position].sub_category
         holder.tvDate.text = completedSkuList[position].created_date
         holder.tvCategoryName.text = completedSkuList[position].category
-        holder.tvSkuName.text = completedSkuList[position].sku_name
+        holder.tvSkuName.text = completedSkuList[position].sku_name + dots
         holder.tvProjectName.text = completedSkuList[position].project_name
         holder.tvSource.text = completedSkuList[position].source
 

@@ -4,7 +4,7 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.View
 import com.spyneai.databinding.ActivityCompletedProjectsBinding
-import com.spyneai.orders.ui.fragment.MyCompletedOrdersFragment
+import com.spyneai.orders.ui.MyCompletedOrdersFragment
 class CompletedProjectsActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityCompletedProjectsBinding

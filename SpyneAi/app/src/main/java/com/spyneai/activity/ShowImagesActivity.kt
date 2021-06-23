@@ -24,6 +24,7 @@ import com.spyneai.adapter.ShowReplacedImagesInteriorAdapter
 import com.spyneai.aipack.FetchBulkResponse
 import com.spyneai.credits.model.ReviewHolder
 import com.spyneai.dashboard.ui.MainDashboardActivity
+import com.spyneai.downloadsku.FetchBulkResponseV2
 import com.spyneai.interfaces.APiService
 import com.spyneai.interfaces.RetrofitClientSpyneAi
 import com.spyneai.interfaces.RetrofitClients
@@ -31,6 +32,7 @@ import com.spyneai.model.skumap.UpdateSkuResponse
 import com.spyneai.needs.AppConstants
 import com.spyneai.needs.ScrollingLinearLayoutManager
 import com.spyneai.needs.Utilities
+import com.spyneai.shoot.utils.log
 import com.spyneai.videorecording.ThreeSixtyInteriorViewActivity
 import com.spyneai.videorecording.model.VideoProcessingResponse
 import com.spyneai.videorecording.service.FramesHelper
@@ -288,29 +290,30 @@ class ShowImagesActivity : AppCompatActivity() {
         //Fetch bulk data
         private fun fetchBulkUpload() {
             val request = RetrofitClients.buildService(APiService::class.java)
-            val userId = RequestBody.create(
+            val authKey = RequestBody.create(
                 MultipartBody.FORM,
-                Utilities.getPreference(this, AppConstants.tokenId)!!
+                Utilities.getPreference(this, AppConstants.AUTH_KEY)!!
             )
             val skuId = RequestBody.create(
                 MultipartBody.FORM,
                 Utilities.getPreference(this, AppConstants.SKU_ID)!!
             )
 
-            val call = request.fetchBulkImage(userId, skuId)
+            val call = request.fetchBulkImageV2(skuId, authKey)
 
-            call?.enqueue(object : Callback<List<FetchBulkResponse>> {
+            call?.enqueue(object : Callback<FetchBulkResponseV2> {
                 override fun onResponse(
-                    call: Call<List<FetchBulkResponse>>,
-                    response: Response<List<FetchBulkResponse>>
+                    call: Call<FetchBulkResponseV2>,
+                    response: Response<FetchBulkResponseV2>
                 ) {
                     Utilities.hideProgressDialog()
                     if (response.isSuccessful) {
-                        for (i in 0..response.body()!!.size - 1) {
-                            if (response.body()!![i].category.equals("Exterior")) {
-                                Category = response.body()!![i].category
-                                (imageList as ArrayList).add(response.body()!![i].input_image_url)
-                                (imageListAfter as ArrayList).add(response.body()!![i].output_image_url)
+                        var dataList: List<FetchBulkResponseV2.Data> = response.body()!!.data
+                        for (i in 0..(dataList.size) -1) {
+                            if (dataList!![i].image_category.equals("Exterior")) {
+                                Category = dataList!![i].image_category
+                                (imageList as ArrayList).add(dataList!![i].input_image_lres_url)
+                                (imageListAfter as ArrayList).add(dataList!![i].output_image_lres_wm_url)
 
                                 //save for in case of user review
                                 if (imageListAfter != null && imageList.size > 0)
@@ -320,45 +323,33 @@ class ShowImagesActivity : AppCompatActivity() {
                                     ReviewHolder.editedUrl = imageListAfter.get(0)
 
 
-                                (imageListWaterMark as ArrayList).add(response.body()!![i].watermark_image)
-                                (listHdQuality as ArrayList).add(response.body()!![i].original_image)
-                                Utilities.savePrefrence(
-                                    this@ShowImagesActivity,
-                                    AppConstants.CATEGORY_NAME,
-                                    response.body()!![0].product_category
-                                )
+                                (imageListWaterMark as ArrayList).add(dataList!![i].output_image_lres_wm_url)
+                                (listHdQuality as ArrayList).add(dataList!![i].output_image_hres_url)
+
                                 Utilities.savePrefrence(
                                     this@ShowImagesActivity,
                                     AppConstants.NO_OF_IMAGES,
                                     imageListAfter.size.toString()
                                 )
                                 hideData(0)
-                            } else if (response.body()!![i].category.equals("Interior")) {
-                                Category = response.body()!![i].category
-                                (imageListInterior as ArrayList).add(response.body()!![i].output_image_url)
-                                (imageListWaterMark as ArrayList).add(response.body()!![i].output_image_url)
-                                (listHdQuality as ArrayList).add(response.body()!![i].output_image_url)
-                                Utilities.savePrefrence(
-                                    this@ShowImagesActivity,
-                                    AppConstants.CATEGORY_NAME,
-                                    response.body()!![0].product_category
-                                )
+                            } else if (dataList!![i].image_category.equals("Interior")) {
+                                Category = dataList!![i].image_category
+                                (imageListInterior as ArrayList).add(dataList!![i].output_image_lres_url)
+                                (imageListWaterMark as ArrayList).add(dataList!![i].output_image_lres_wm_url)
+                                (listHdQuality as ArrayList).add(dataList!![i].output_image_hres_url)
+
                                 Utilities.savePrefrence(
                                     this@ShowImagesActivity,
                                     AppConstants.NO_OF_IMAGES,
                                     imageListAfter.size.toString()
                                 )
                                 hideData(0)
-                            } else if (response.body()!![i].category.equals("Focus Shoot")) {
-                                Category = response.body()!![i].category
-                                (imageListFocused as ArrayList).add(response.body()!![i].output_image_url)
-                                (imageListWaterMark as ArrayList).add(response.body()!![i].output_image_url)
-                                (listHdQuality as ArrayList).add(response.body()!![i].output_image_url)
-                                Utilities.savePrefrence(
-                                    this@ShowImagesActivity,
-                                    AppConstants.CATEGORY_NAME,
-                                    response.body()!![0].product_category
-                                )
+                            } else if (dataList!![i].image_category.equals("Focus Shoot")) {
+                                Category = dataList!![i].image_category
+                                (imageListFocused as ArrayList).add(dataList!![i].output_image_lres_url)
+                                (imageListWaterMark as ArrayList).add(dataList!![i].output_image_lres_wm_url)
+                                (listHdQuality as ArrayList).add(dataList!![i].output_image_hres_url)
+
                                 Utilities.savePrefrence(
                                     this@ShowImagesActivity,
                                     AppConstants.NO_OF_IMAGES,
@@ -366,16 +357,12 @@ class ShowImagesActivity : AppCompatActivity() {
                                 )
                                 hideData(0)
                             } else {
-                                Category = response.body()!![i].category
-                                (imageList as ArrayList).add(response.body()!![i].input_image_url)
-                                (imageListAfter as ArrayList).add(response.body()!![i].output_image_url)
-                                (listHdQuality as ArrayList).add(response.body()!![i].output_image_url)
-                                (imageListWaterMark as ArrayList).add(response.body()!![i].watermark_image)
-                                Utilities.savePrefrence(
-                                    this@ShowImagesActivity,
-                                    AppConstants.CATEGORY_NAME,
-                                    response.body()!![0].product_category
-                                )
+                                Category = dataList!![i].image_category
+                                (imageList as ArrayList).add(dataList!![i].input_image_lres_url)
+                                (imageListAfter as ArrayList).add(dataList!![i].output_image_lres_wm_url)
+                                (listHdQuality as ArrayList).add(dataList!![i].output_image_hres_url)
+                                (imageListWaterMark as ArrayList).add(dataList!![i].output_image_lres_wm_url)
+
                                 Utilities.savePrefrence(
                                     this@ShowImagesActivity,
                                     AppConstants.NO_OF_IMAGES,
@@ -393,8 +380,9 @@ class ShowImagesActivity : AppCompatActivity() {
                     ShowReplacedImagesFocusedAdapter.notifyDataSetChanged()
                 }
 
-                override fun onFailure(call: Call<List<FetchBulkResponse>>, t: Throwable) {
+                override fun onFailure(call: Call<FetchBulkResponseV2>, t: Throwable) {
                     Utilities.hideProgressDialog()
+                    log("Error: "+t.localizedMessage)
                     Toast.makeText(
                         this@ShowImagesActivity,
                         "Server not responding!!!", Toast.LENGTH_SHORT

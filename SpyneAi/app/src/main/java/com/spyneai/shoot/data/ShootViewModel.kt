@@ -23,6 +23,8 @@ class ShootViewModel : ViewModel(){
     private val repository = ShootRepository()
     private val localRepository = ShootLocalRepository()
 
+    public var isCameraButtonClickable = true
+
     val shootList: MutableLiveData<ArrayList<ShootData>> = MutableLiveData()
 
     private val _subCategoriesResponse: MutableLiveData<Resource<NewSubCatResponse>> = MutableLiveData()

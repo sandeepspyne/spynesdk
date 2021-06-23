@@ -6,6 +6,7 @@ import androidx.work.CoroutineWorker
 import androidx.work.WorkerParameters
 import com.spyneai.base.network.ClipperApi
 import com.spyneai.interfaces.RetrofitClients
+import com.spyneai.service.log
 import com.spyneai.shoot.data.ProcessRepository
 import com.spyneai.shoot.data.ShootLocalRepository
 import com.spyneai.shoot.data.model.UploadImageResponse
@@ -39,10 +40,15 @@ class ProcessSkuWorker (appContext: Context, workerParams: WorkerParameters) :
             val backgroundId = localRepository.getBackgroundId(skuId)
 
             //process SKU
+            com.spyneai.shoot.utils.log("Process SKU started")
+            com.spyneai.shoot.utils.log("Sku Id: "+skuId)
+            com.spyneai.shoot.utils.log("Auth Key: "+authKey)
+            com.spyneai.shoot.utils.log("Background Id: "+backgroundId)
+
             processRepository.processSku(authKey,skuId,backgroundId)
 
         } catch (e : Exception) {
-            Log.d(TAG, "processSku: "+e.localizedMessage)
+            com.spyneai.shoot.utils.log("Process Sku Exception: "+e.localizedMessage)
             e.printStackTrace()
         }
     }

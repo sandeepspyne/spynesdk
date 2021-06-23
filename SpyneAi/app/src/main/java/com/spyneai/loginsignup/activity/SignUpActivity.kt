@@ -17,6 +17,7 @@ import com.spyneai.loginsignup.models.SignupBody
 import com.spyneai.loginsignup.models.SignupResponse
 import com.spyneai.needs.AppConstants
 import com.spyneai.needs.Utilities
+import com.spyneai.shoot.utils.log
 import kotlinx.android.synthetic.main.activity_login.*
 import kotlinx.android.synthetic.main.activity_sign_in_using_otp.*
 import kotlinx.android.synthetic.main.activity_sign_up.*
@@ -165,6 +166,11 @@ class SignUpActivity : AppCompatActivity() {
                             Utilities.savePrefrence(this@SignUpActivity,AppConstants.AUTH_KEY, response.body()!!.auth_token)
                             Utilities.savePrefrence(this@SignUpActivity, AppConstants.USER_NAME, response.body()!!.userName)
                             Utilities.savePrefrence(this@SignUpActivity, AppConstants.USER_EMAIL, response.body()!!.emailId)
+                            log("User name(savePrefrence): "+response.body()!!.userName)
+                            log("User Email(savePrefrence): "+response.body()!!.emailId)
+                            log("Auth token(savePrefrence): "+response.body()!!.auth_token)
+                            log("User Id(savePrefrence): "+response.body()!!.userId)
+
 
                             val intent = Intent(this@SignUpActivity, MainDashboardActivity::class.java)
                             intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK

@@ -1,6 +1,8 @@
-package com.spyneai.orders.ui.fragment
+package com.spyneai.orders.ui
 
 import android.os.Bundle
+import android.os.Handler
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -14,13 +16,16 @@ import com.spyneai.needs.AppConstants
 import com.spyneai.needs.Utilities
 import com.spyneai.orders.data.response.GetOngoingSkusResponse
 import com.spyneai.orders.data.viewmodel.MyOrdersViewModel
-import com.spyneai.orders.ui.adapter.MyCompletedOrdersAdapter
 import com.spyneai.orders.ui.adapter.MyOngoingOrdersAdapter
+import com.spyneai.shoot.utils.log
 
 class MyOngoingOrdersFragment : BaseFragment<MyOrdersViewModel, MyOngoingOrdersFragmentBinding>() {
 
     lateinit var myOngoingOrdersAdapter: MyOngoingOrdersAdapter
     lateinit var ongoingSkuList: ArrayList<GetOngoingSkusResponse.Data>
+    var refreshData = true
+    lateinit var handler: Handler
+    lateinit var runnable: Runnable
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -41,6 +46,8 @@ class MyOngoingOrdersFragment : BaseFragment<MyOrdersViewModel, MyOngoingOrdersF
         setOngoingSkuRecycler()
 
         viewModel.getOngoingSKUs(Utilities.getPreference(requireContext(), AppConstants.AUTH_KEY).toString())
+        repeatRefreshData()
+        log("Get ongoing SKUs(auth_key): "+Utilities.getPreference(requireContext(), AppConstants.AUTH_KEY).toString())
         viewModel.getOngoingSkusResponse.observe(
             viewLifecycleOwner, androidx.lifecycle.Observer {
                 when (it) {
@@ -48,7 +55,10 @@ class MyOngoingOrdersFragment : BaseFragment<MyOrdersViewModel, MyOngoingOrdersF
                         binding.shimmerOngoingSKU.stopShimmer()
                         binding.shimmerOngoingSKU.visibility = View.GONE
                         binding.rvMyOngoingOrders.visibility = View.VISIBLE
+                        if (it.value.data.isNullOrEmpty())
+                            refreshData = false
                         if (it.value.data != null){
+                            ongoingSkuList.clear()
                             ongoingSkuList.addAll(it.value.data)
                             myOngoingOrdersAdapter = MyOngoingOrdersAdapter(requireContext(),
                                 ongoingSkuList)
@@ -74,8 +84,32 @@ class MyOngoingOrdersFragment : BaseFragment<MyOrdersViewModel, MyOngoingOrdersF
         )
     }
 
+    fun repeatRefreshData(){
+        viewModel.getOngoingSKUs(Utilities.getPreference(requireContext(), AppConstants.AUTH_KEY).toString())
+        handler = Handler()
+        runnable = Runnable {
+            if (refreshData)
+            repeatRefreshData()  }
+        handler.postDelayed(runnable,15000)
+    }
+
     private fun setOngoingSkuRecycler(){
 
+    }
+
+    override fun onDestroy() {
+        handler.removeCallbacks(runnable)
+        super.onDestroy()
+    }
+
+    override fun onPause() {
+        handler.removeCallbacks(runnable)
+        super.onPause()
+    }
+
+    override fun onResume() {
+        repeatRefreshData()
+        super.onResume()
     }
 
     override fun getViewModel() = MyOrdersViewModel::class.java

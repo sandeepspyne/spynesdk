@@ -5,7 +5,7 @@
 
     <fragment
         android:id="@+id/myOrdersFragment"
-        android:name="com.spyneai.orders.ui.fragment.MyOrdersFragment"
+        android:name="com.spyneai.orders.ui.MyOrdersFragment"
         android:label="MyOrdersFragment" >
         <action
             android:id="@+id/action_myOrdersFragment_to_myOngoingOrdersFragment"
@@ -16,11 +16,11 @@
     </fragment>
     <fragment
         android:id="@+id/nav_my_ongoing_orders"
-        android:name="com.spyneai.orders.ui.fragment.MyOngoingOrdersFragment"
+        android:name="com.spyneai.orders.ui.MyOngoingOrdersFragment"
         android:label="MyOngoingOrdersFragment" />
     <fragment
         android:id="@+id/nav_my_completed_orders"
-        android:name="com.spyneai.orders.ui.fragment.MyCompletedOrdersFragment"
+        android:name="com.spyneai.orders.ui.MyCompletedOrdersFragment"
         android:label="MyCompletedOrdersFragment" >
         <action
             android:id="@+id/nav_request_download"

@@ -6,7 +6,6 @@ import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
 import android.os.Handler
-import android.os.Looper
 import android.view.*
 import android.widget.LinearLayout
 import android.widget.TextView
@@ -16,29 +15,26 @@ import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.tabs.TabLayout
-import com.google.android.play.core.appupdate.AppUpdateManager
 import com.spyneai.R
 import com.spyneai.activity.CategoriesActivity
 import com.spyneai.activity.CompletedProjectsActivity
 import com.spyneai.activity.OngoingOrdersActivity
 import com.spyneai.activity.ShowImagesActivity
 import com.spyneai.adapter.CategoriesDashboardAdapter
+import com.spyneai.base.BaseFragment
+import com.spyneai.base.network.Resource
 import com.spyneai.dashboard.adapters.CompletedDashboardAdapter
 import com.spyneai.dashboard.adapters.OngoingDashboardAdapter
-import com.spyneai.dashboard.adapters.SliderAdapter
 import com.spyneai.dashboard.adapters.TutorialVideosAdapter
-import com.spyneai.dashboard.data.model.SliderModel
-import com.spyneai.base.network.Resource
-import com.spyneai.base.BaseFragment
-import com.spyneai.dashboard.response.NewCategoriesResponse
 import com.spyneai.dashboard.data.DashboardViewModel
+import com.spyneai.dashboard.response.NewCategoriesResponse
 import com.spyneai.databinding.HomeDashboardFragmentBinding
 import com.spyneai.extras.BeforeAfterActivity
 import com.spyneai.needs.AppConstants
 import com.spyneai.needs.Utilities
 import com.spyneai.orders.data.response.CompletedSKUsResponse
 import com.spyneai.orders.data.response.GetOngoingSkusResponse
-
+import com.spyneai.shoot.utils.log
 
 
 class HomeDashboardFragment :
@@ -52,6 +48,10 @@ class HomeDashboardFragment :
 
     lateinit var completedDashboardAdapter : CompletedDashboardAdapter
     lateinit var completedProjectList: ArrayList<CompletedSKUsResponse.Data>
+    lateinit var ongoingProjectList: ArrayList<GetOngoingSkusResponse.Data>
+
+    lateinit var handler: Handler
+    lateinit var runnable: Runnable
 
     var tutorialVideosList = intArrayOf(R.drawable.ic_tv1, R.drawable.ic_tv2)
 
@@ -66,6 +66,7 @@ class HomeDashboardFragment :
     lateinit var displayThumbnail: String
     lateinit var description: String
     lateinit var colorCode: String
+    private var refreshData = true
 
     private lateinit var tabLayout: TabLayout
 
@@ -80,7 +81,7 @@ class HomeDashboardFragment :
             viewModel.isNewUser.value = false
         }
 
-        setOngoingProjectRecycler()
+        repeatRefreshData()
         setSliderRecycler()
         showTutorialVideos()
         lisners()
@@ -114,7 +115,7 @@ class HomeDashboardFragment :
                         it.value.data as ArrayList<NewCategoriesResponse.Data>,
                         object : CategoriesDashboardAdapter.BtnClickListener {
                             override fun onBtnClick(position: Int) {
-                                if (position < 3) {
+                                if (position < 1) {
                                     categoryPosition = position
                                     Utilities.savePrefrence(
                                         requireContext(),
@@ -158,18 +159,22 @@ class HomeDashboardFragment :
         })
 
 
-        viewModel.getCompletedProjects(Utilities.getPreference(requireContext(),AppConstants.AUTH_KEY).toString())
 
-        viewModel.completedProjectResponse.observe(viewLifecycleOwner, Observer {
+
+        viewModel.completedSkusResponse.observe(viewLifecycleOwner, Observer {
             when(it){
                 is Resource.Sucess -> {
                     completedProjectList = ArrayList()
-                    if (it.value.data.isNullOrEmpty())
+                    if (it.value.data.isNullOrEmpty()){
                         binding.rlCompletedShoots.visibility = View.GONE
+                        refreshData = false
+                    }
+
                     binding.rvCompletedShoots.visibility = View.VISIBLE
                     binding.shimmerCompleted.stopShimmer()
                     binding.shimmerCompleted.visibility = View.GONE
                     if (it.value.data != null){
+                        completedProjectList.clear()
                         completedProjectList.addAll(it.value.data)
                         completedProjectList.reverse()
 
@@ -183,6 +188,7 @@ class HomeDashboardFragment :
                                     Utilities.savePrefrence(requireContext(),
                                         AppConstants.SKU_ID,
                                         completedProjectList[position].sku_id)
+                                    log("Show Completed orders(sku_id): "+completedProjectList[position].sku_id)
                                     val intent = Intent(requireContext(),
                                         ShowImagesActivity::class.java)
                                     startActivity(intent)
@@ -203,6 +209,56 @@ class HomeDashboardFragment :
                 }
             }
         })
+
+
+        viewModel.getOngoingSkusResponse.observe(
+            viewLifecycleOwner, androidx.lifecycle.Observer {
+                when (it) {
+                    is Resource.Sucess -> {
+                        binding.rvOngoingShoots.visibility = View.VISIBLE
+                        binding.shimmerOngoing.stopShimmer()
+                        binding.shimmerOngoing.visibility = View.GONE
+                        if (it.value.data.isNullOrEmpty()){
+                            binding.rlOngoingShoots.visibility = View.GONE
+                            refreshData = false
+                        }
+
+                        if (it.value.data != null){
+                            ongoingProjectList = ArrayList()
+                            ongoingProjectList.clear()
+                            ongoingProjectList.addAll(it.value.data)
+                            ongoingDashboardAdapter = OngoingDashboardAdapter(requireContext(),
+                                ongoingProjectList
+                            )
+
+                            val layoutManager: RecyclerView.LayoutManager = LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
+                            binding.rvOngoingShoots.setLayoutManager(layoutManager)
+                            binding.rvOngoingShoots.setAdapter(ongoingDashboardAdapter)
+
+                        }
+
+                    }
+                    is Resource.Loading -> {
+                        binding.shimmerOngoing.startShimmer()
+
+                    }
+                    is Resource.Failure -> {
+                        handleApiError(it)
+                    }
+
+                }
+            }
+        )
+
+    }
+
+    fun repeatRefreshData(){
+        viewModel.getOngoingSKUs(Utilities.getPreference(requireContext(), AppConstants.AUTH_KEY).toString())
+        viewModel.getCompletedSKUs(Utilities.getPreference(requireContext(),AppConstants.AUTH_KEY).toString())
+        handler = Handler()
+        runnable = Runnable { if (refreshData)
+            repeatRefreshData()  }
+        handler.postDelayed(runnable,15000)
     }
 
 
@@ -249,47 +305,6 @@ class HomeDashboardFragment :
             tab.select()
             binding.ivBanner.setBeforeImage(ContextCompat.getDrawable(requireContext(),R.drawable.car_before)).setAfterImage(ContextCompat.getDrawable(requireContext(),R.drawable.car_after))
         }
-    }
-
-
-    private fun setOngoingProjectRecycler(){
-        viewModel.getOngoingSKUs(Utilities.getPreference(requireContext(), AppConstants.AUTH_KEY).toString())
-        viewModel.getOngoingSkusResponse.observe(
-            viewLifecycleOwner, androidx.lifecycle.Observer {
-                when (it) {
-                    is Resource.Sucess -> {
-                        if (it.value.data.isNullOrEmpty())
-                            binding.rlOngoingShoots.visibility = View.GONE
-                        if (it.value.data != null){
-                            ongoingDashboardAdapter = OngoingDashboardAdapter(requireContext(),
-                                it.value.data as ArrayList<GetOngoingSkusResponse.Data>
-                            )
-
-                            val layoutManager: RecyclerView.LayoutManager = LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
-                            binding.rvOngoingShoots.setLayoutManager(layoutManager)
-                            binding.rvOngoingShoots.setAdapter(ongoingDashboardAdapter)
-
-                            showHideRecyclerView(it.value.data)
-                        }
-
-                    }
-                    is Resource.Loading -> {
-
-                    }
-                    is Resource.Failure -> {
-                        handleApiError(it)
-                    }
-
-                }
-            }
-        )
-
-    }
-
-
-    private fun showHideRecyclerView(tasksInProgress: ArrayList<GetOngoingSkusResponse.Data>) {
-        if (tasksInProgress.size == 0 && binding.groupOngoingProjects!=null)
-            binding.groupOngoingProjects.visibility = View.GONE
     }
 
     private fun showTutorialVideos(){
@@ -349,6 +364,21 @@ class HomeDashboardFragment :
             val intent = Intent(requireContext(), OngoingOrdersActivity::class.java)
             startActivity(intent)
         }
+    }
+
+    override fun onDestroy() {
+        handler.removeCallbacks(runnable)
+        super.onDestroy()
+    }
+
+    override fun onPause() {
+        handler.removeCallbacks(runnable)
+        super.onPause()
+    }
+
+    override fun onResume() {
+        repeatRefreshData()
+        super.onResume()
     }
 
 

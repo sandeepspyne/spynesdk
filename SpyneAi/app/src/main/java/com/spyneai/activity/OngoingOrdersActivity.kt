@@ -1,12 +1,10 @@
 package com.spyneai.activity
 
-import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.View
-import com.spyneai.R
 import com.spyneai.databinding.ActivityOngoingOrdersBinding
-import com.spyneai.orders.ui.fragment.MyOngoingOrdersFragment
+import com.spyneai.orders.ui.MyOngoingOrdersFragment
 
 
 class OngoingOrdersActivity : AppCompatActivity() {
@@ -20,7 +18,7 @@ class OngoingOrdersActivity : AppCompatActivity() {
 
         supportFragmentManager
             .beginTransaction()
-            .add(binding.flContainer.id,MyOngoingOrdersFragment())
+            .add(binding.flContainer.id, MyOngoingOrdersFragment())
             .commit()
 
         binding.imgBackCompleted.setOnClickListener(View.OnClickListener {

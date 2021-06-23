@@ -229,6 +229,7 @@ class OverlaysFragment : BaseFragment<ShootViewModel,FragmentOverlaysBinding>(),
             tvAngleName?.visibility = View.VISIBLE
             llProgress?.visibility = View.VISIBLE
             imgOverlay?.visibility = View.VISIBLE
+            tvSkuName?.text = viewModel.sku.value?.skuName
         }
     }
 
@@ -263,6 +264,7 @@ class OverlaysFragment : BaseFragment<ShootViewModel,FragmentOverlaysBinding>(),
     }
 
     private fun initInteriorShots() {
+        binding.tvShoot?.isClickable = false
         InteriorHintDialog().show(requireFragmentManager(), "InteriorHintDialog")
 
         viewModel.showMiscDialog.observe(viewLifecycleOwner,{

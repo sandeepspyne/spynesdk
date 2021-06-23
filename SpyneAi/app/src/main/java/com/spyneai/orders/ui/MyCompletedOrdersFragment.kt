@@ -1,4 +1,4 @@
-package com.spyneai.orders.ui.fragment
+package com.spyneai.orders.ui
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -8,6 +8,7 @@ import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.spyneai.base.BaseFragment
+import com.spyneai.dashboard.data.DashboardViewModel
 import com.spyneai.dashboard.ui.handleApiError
 import com.spyneai.databinding.MyCompletedOrdersFragmentBinding
 import com.spyneai.needs.AppConstants
@@ -15,6 +16,7 @@ import com.spyneai.needs.Utilities
 import com.spyneai.orders.data.response.CompletedSKUsResponse
 import com.spyneai.orders.data.viewmodel.MyOrdersViewModel
 import com.spyneai.orders.ui.adapter.MyCompletedOrdersAdapter
+import com.spyneai.shoot.utils.log
 
 class MyCompletedOrdersFragment :
     BaseFragment<MyOrdersViewModel, MyCompletedOrdersFragmentBinding>() {
@@ -41,9 +43,9 @@ class MyCompletedOrdersFragment :
         binding.shimmerCompletedSKU.startShimmer()
 
         completedSkuList = ArrayList<CompletedSKUsResponse.Data>()
-        setCompletedSkuRecycler()
 
         viewModel.getCompletedSKUs(Utilities.getPreference(requireContext(), AppConstants.AUTH_KEY).toString())
+        log("Completed SKUs(auth key): "+AppConstants.AUTH_KEY)
         viewModel.completedSKUsResponse.observe(
             viewLifecycleOwner, Observer {
                 when (it) {
@@ -52,6 +54,7 @@ class MyCompletedOrdersFragment :
                         binding.shimmerCompletedSKU.visibility = View.GONE
                         binding.rvMyCompletedOrders.visibility = View.VISIBLE
                         if (it.value.data != null){
+                            completedSkuList.clear()
                             completedSkuList.addAll(it.value.data)
                             myCompletedOrdersAdapter = MyCompletedOrdersAdapter(requireContext(),
                                 completedSkuList)
@@ -77,11 +80,6 @@ class MyCompletedOrdersFragment :
             }
         )
     }
-
-    private fun setCompletedSkuRecycler(){
-
-    }
-
     override fun getViewModel() = MyOrdersViewModel::class.java
 
     override fun getFragmentBinding(

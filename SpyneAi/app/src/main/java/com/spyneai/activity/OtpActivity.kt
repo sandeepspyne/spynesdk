@@ -24,6 +24,7 @@ import com.spyneai.model.otp.OtpRequest
 import com.spyneai.model.otp.OtpResponse
 import com.spyneai.needs.AppConstants
 import com.spyneai.needs.Utilities
+import com.spyneai.shoot.utils.log
 import kotlinx.android.synthetic.main.activity_otp.*
 import retrofit2.Call
 import retrofit2.Callback
@@ -385,9 +386,13 @@ public class OtpActivity : AppCompatActivity() {
                         Toast.makeText(this@OtpActivity, response.body()!!.message, Toast.LENGTH_SHORT).show()
 
                         Utilities.savePrefrence(this@OtpActivity,AppConstants.AUTH_KEY, response.body()!!.authToken)
-
                         Utilities.savePrefrence(this@OtpActivity, AppConstants.USER_NAME, response.body()!!.userName)
                         Utilities.savePrefrence(this@OtpActivity, AppConstants.USER_EMAIL, response.body()!!.emailId)
+                        Utilities.savePrefrence(this@OtpActivity, AppConstants.tokenId, response.body()!!.userId)
+                        log("User name(savePrefrence): "+response.body()!!.userName)
+                        log("User Email(savePrefrence): "+response.body()!!.emailId)
+                        log("Auth token(savePrefrence): "+response.body()!!.authToken)
+                        log("User Id(savePrefrence): "+response.body()!!.userId)
 
                         val intent = Intent(applicationContext, MainDashboardActivity::class.java)
                         intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK

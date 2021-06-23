@@ -5,12 +5,8 @@ import android.util.Log
 import androidx.work.*
 import com.spyneai.base.network.ClipperApi
 import com.spyneai.interfaces.RetrofitClients
-import com.spyneai.service.log
 import com.spyneai.shoot.data.ShootLocalRepository
-import com.spyneai.shoot.data.ShootRepository
-import com.spyneai.shoot.data.ShootViewModel
 import com.spyneai.shoot.data.model.UploadImageResponse
-import com.spyneai.shoot.data.sqlite.DBHelper
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.MultipartBody
 import okhttp3.RequestBody.Companion.asRequestBody
@@ -27,7 +23,7 @@ class UploadImageWorker(appContext: Context, workerParams: WorkerParameters) :
     private val TAG = "UploadImageWorker"
 
     override suspend fun doWork(): Result {
-       if (runAttemptCount > 0) return Result.failure()
+        if (runAttemptCount > 0) return Result.failure()
         uploadImages()
         return Result.success()
     }
@@ -54,7 +50,9 @@ class UploadImageWorker(appContext: Context, workerParams: WorkerParameters) :
 
 
             val call = RetrofitClients.buildService(ClipperApi::class.java)
-                .uploadImageInWorker(projectId,skuId,imageCategory,authKey,image)
+                .uploadImageInWorker(projectId, skuId, imageCategory, authKey, image)
+
+            com.spyneai.shoot.utils.log("Upload image started(image): " + image)
 
             call.enqueue(object : Callback<UploadImageResponse> {
                 override fun onResponse(
@@ -62,16 +60,24 @@ class UploadImageWorker(appContext: Context, workerParams: WorkerParameters) :
                     response: Response<UploadImageResponse>
                 ) {
                     if (response.isSuccessful) {
-                        Log.d(TAG, "onResponse: "+"uploaded")
                         val uploadImageResponse = response.body()
 
                         //update uploaded image count
                         localRepository.updateUploadCount(inputData.getString("skuId").toString())
 
+                        com.spyneai.shoot.utils.log("upload image sucess")
+                        com.spyneai.shoot.utils.log(
+                            "upload image status: " +
+                                    (response.body()?.status)
+                        )
+                        com.spyneai.shoot.utils.log(
+                            "upload image url: " +
+                                    (response.body()?.output_image_lres_url)
+                        )
+
 
                         // check if all image uploaded
                         if (localRepository.processSku(inputData.getString("skuId").toString())) {
-                            Log.d(TAG, "onResponse: "+"process started")
                             //process sku
                             val processSkuWorkRequest =
                                 OneTimeWorkRequest.Builder(ProcessSkuWorker::class.java)
@@ -85,15 +91,15 @@ class UploadImageWorker(appContext: Context, workerParams: WorkerParameters) :
                                 .enqueue(processSkuWorkRequest.build())
 
 
-
-                        }else{
-                            Log.d(TAG, "onResponse: "+"process not started")
+                        } else {
+                            com.spyneai.shoot.utils.log("processing not started yet")
                         }
                     }
                 }
 
                 override fun onFailure(call: Call<UploadImageResponse>, t: Throwable) {
-                    Log.d(TAG, "onFailure: " + t.localizedMessage)
+                    com.spyneai.shoot.utils.log("Upload image failed")
+                    com.spyneai.shoot.utils.log("Error: " + t.localizedMessage)
 
                 }
 
