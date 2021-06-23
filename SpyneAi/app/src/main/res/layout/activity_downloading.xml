@@ -44,13 +44,12 @@
                     app:tint="@color/black" />
 
                 <ImageView
-                    android:id="@+id/iv_home"
+                    android:id="@+id/ivDownloadingHome"
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent"
                     android:src="@mipmap/home"
                     android:padding="@dimen/dp_10"
                     app:tint="@color/black"
-                    android:visibility="invisible"
                     android:layout_gravity="right"/>
 
             </FrameLayout>

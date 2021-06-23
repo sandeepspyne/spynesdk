@@ -27,6 +27,7 @@ import com.spyneai.needs.AppConstants
 import com.spyneai.needs.Utilities
 import kotlinx.android.synthetic.main.activity_downloading.*
 import kotlinx.android.synthetic.main.activity_order_summary2.*
+import kotlinx.android.synthetic.main.activity_show_images.*
 import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode
@@ -68,6 +69,12 @@ class DownloadingActivity : AppCompatActivity() {
         listHdQuality.addAll(intent.getStringArrayListExtra(AppConstants.LIST_HD_QUALITY)!!)
 
         setPermissions()
+
+        ivDownloadingHome.setOnClickListener {
+            val intent = Intent(this, MainDashboardActivity::class.java)
+            startActivity(intent)
+            finish()
+        }
 
         llButton.setOnClickListener {
             if (Utilities.getPreference(this, AppConstants.DOWNLOAD_TYPE).equals("watermark")) {
@@ -288,12 +295,7 @@ class DownloadingActivity : AppCompatActivity() {
     }
 
     fun addFeedbackFragment() {
-        iv_home.visibility = View.VISIBLE
-        iv_home.setOnClickListener {
-            var dashboardIntent = Intent(this, MainDashboardActivity::class.java)
-            dashboardIntent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
-            startActivity(dashboardIntent)
-        }
+
 
         supportFragmentManager.beginTransaction()
             .add(R.id.fl_container, FeedbackSubmittedFragment())
