@@ -97,11 +97,6 @@ class MyOngoingOrdersFragment : BaseFragment<MyOrdersViewModel, MyOngoingOrdersF
 
     }
 
-    override fun onDestroy() {
-        handler.removeCallbacks(runnable)
-        super.onDestroy()
-    }
-
     override fun onPause() {
         handler.removeCallbacks(runnable)
         super.onPause()

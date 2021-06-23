@@ -1,13 +1,18 @@
 package com.spyneai.dashboard.ui
 
+
 import android.app.Dialog
 import android.content.Intent
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
 import android.os.Handler
-import android.view.*
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
+import android.view.Window
 import android.widget.LinearLayout
+import android.widget.Switch
 import android.widget.TextView
 import android.widget.Toast
 import androidx.core.content.ContextCompat
@@ -15,6 +20,7 @@ import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.tabs.TabLayout
+import com.google.android.material.tabs.TabLayout.OnTabSelectedListener
 import com.posthog.android.Properties
 import com.spyneai.R
 import com.spyneai.activity.CategoriesActivity
@@ -22,17 +28,14 @@ import com.spyneai.activity.CompletedProjectsActivity
 import com.spyneai.activity.OngoingOrdersActivity
 import com.spyneai.activity.ShowImagesActivity
 import com.spyneai.adapter.CategoriesDashboardAdapter
-
-
-import com.spyneai.dashboard.adapters.CompletedDashboardAdapter
-import com.spyneai.dashboard.adapters.OngoingDashboardAdapter
-import com.spyneai.dashboard.adapters.TutorialVideosAdapter
-import com.spyneai.dashboard.data.DashboardViewModel
-
 import com.spyneai.base.BaseFragment
 import com.spyneai.base.network.Resource
 import com.spyneai.captureEvent
 import com.spyneai.captureFailureEvent
+import com.spyneai.dashboard.adapters.CompletedDashboardAdapter
+import com.spyneai.dashboard.adapters.OngoingDashboardAdapter
+import com.spyneai.dashboard.adapters.TutorialVideosAdapter
+import com.spyneai.dashboard.data.DashboardViewModel
 import com.spyneai.dashboard.response.NewCategoriesResponse
 import com.spyneai.databinding.HomeDashboardFragmentBinding
 import com.spyneai.extras.BeforeAfterActivity
@@ -40,8 +43,8 @@ import com.spyneai.needs.AppConstants
 import com.spyneai.needs.Utilities
 import com.spyneai.orders.data.response.CompletedSKUsResponse
 import com.spyneai.orders.data.response.GetOngoingSkusResponse
-import com.spyneai.shoot.utils.log
 import com.spyneai.posthog.Events
+import com.spyneai.shoot.utils.log
 
 
 class HomeDashboardFragment :
@@ -320,6 +323,22 @@ class HomeDashboardFragment :
             tab.select()
             binding.ivBanner.setBeforeImage(ContextCompat.getDrawable(requireContext(),R.drawable.car_before)).setAfterImage(ContextCompat.getDrawable(requireContext(),R.drawable.car_after))
         }
+
+        tabLayout.addOnTabSelectedListener(object : TabLayout.OnTabSelectedListener {
+            override fun onTabSelected(tab: TabLayout.Tab?) {
+                if (tab?.position == 0)
+                    binding.ivBanner.setBeforeImage(ContextCompat.getDrawable(requireContext(),R.drawable.car_before)).setAfterImage(ContextCompat.getDrawable(requireContext(),R.drawable.car_after))
+                else
+                    binding.ivBanner.setBeforeImage(ContextCompat.getDrawable(requireContext(),R.drawable.footwear_before)).setAfterImage(ContextCompat.getDrawable(requireContext(),R.drawable.footwear_after))
+            }
+
+            override fun onTabUnselected(tab: TabLayout.Tab?) {
+            }
+
+            override fun onTabReselected(tab: TabLayout.Tab?) {
+            }
+        })
+
     }
 
 
@@ -341,7 +360,6 @@ class HomeDashboardFragment :
                             binding.rvOngoingShoots.setLayoutManager(layoutManager)
                             binding.rvOngoingShoots.setAdapter(ongoingDashboardAdapter)
 
-                            showHideRecyclerView(it.value.data)
                         }
 
                     }
@@ -362,10 +380,6 @@ class HomeDashboardFragment :
     }
 
 
-    private fun showHideRecyclerView(tasksInProgress: ArrayList<GetOngoingSkusResponse.Data>) {
-        if (tasksInProgress.isNullOrEmpty())
-            binding.groupOngoingProjects.visibility = View.GONE
-    }
 
     private fun showTutorialVideos(){
         tutorialVideosAdapter = TutorialVideosAdapter(requireContext(),
@@ -424,11 +438,6 @@ class HomeDashboardFragment :
             val intent = Intent(requireContext(), OngoingOrdersActivity::class.java)
             startActivity(intent)
         }
-    }
-
-    override fun onDestroy() {
-        handler.removeCallbacks(runnable)
-        super.onDestroy()
     }
 
     override fun onPause() {
