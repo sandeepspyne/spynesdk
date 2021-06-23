@@ -9,6 +9,7 @@ import com.spyneai.model.carbackgroundgif.CarBackgrounGifResponse
 import com.spyneai.shoot.data.model.ProcessSkuRes
 import com.spyneai.shoot.data.model.Sku
 import kotlinx.coroutines.launch
+import okhttp3.RequestBody
 
 class ProcessViewModel : ViewModel() {
 
@@ -31,9 +32,12 @@ class ProcessViewModel : ViewModel() {
     val processSkuRes: LiveData<Resource<ProcessSkuRes>>
         get() = _processSkuRes
 
-    fun getBackgroundGifCars() = viewModelScope.launch {
+    fun getBackgroundGifCars(
+        category: RequestBody,
+        auth_key: RequestBody
+    ) = viewModelScope.launch {
         _carGifRes.value = Resource.Loading
-        _carGifRes.value = repository.getBackgroundGifCars()
+        _carGifRes.value = repository.getBackgroundGifCars(category, auth_key)
     }
 
     fun processSku(authKey : String,skuId : String, backgroundId : String)

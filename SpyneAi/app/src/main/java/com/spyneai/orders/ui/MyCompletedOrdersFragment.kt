@@ -45,7 +45,7 @@ class MyCompletedOrdersFragment :
         completedSkuList = ArrayList<CompletedSKUsResponse.Data>()
 
         viewModel.getCompletedSKUs(Utilities.getPreference(requireContext(), AppConstants.AUTH_KEY).toString())
-        log("Completed SKUs(auth key): "+AppConstants.AUTH_KEY)
+        log("Completed SKUs(auth key): "+Utilities.getPreference(requireContext(), AppConstants.AUTH_KEY))
         viewModel.completedSKUsResponse.observe(
             viewLifecycleOwner, Observer {
                 when (it) {

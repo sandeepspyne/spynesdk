@@ -445,10 +445,10 @@ class HomeDashboardFragment :
         super.onPause()
     }
 
-    override fun onResume() {
-        repeatRefreshData()
-        super.onResume()
-    }
+//    override fun onResume() {
+//        repeatRefreshData()
+//        super.onResume()
+//    }
 
 
 

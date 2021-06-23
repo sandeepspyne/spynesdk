@@ -102,10 +102,10 @@ class MyOngoingOrdersFragment : BaseFragment<MyOrdersViewModel, MyOngoingOrdersF
         super.onPause()
     }
 
-    override fun onResume() {
-        repeatRefreshData()
-        super.onResume()
-    }
+//    override fun onResume() {
+//        repeatRefreshData()
+//        super.onResume()
+//    }
 
     override fun getViewModel() = MyOrdersViewModel::class.java
 

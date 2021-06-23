@@ -82,8 +82,12 @@ interface ClipperApi {
                           @Field("prod_sub_cat_id") prodSubCatId : String,
                           @Field("sku_name") skuName : String) : CreateSkuRes
 
-    @GET("v4/car-replacement-plans?api_key=fde46c58-5735-4fcf-8b38-980c95001dc3")
-    suspend fun getBackgroundGifCars() : List<CarBackgrounGifResponse>
+    @Multipart
+    @POST("v2/backgrounds/fetchEnterpriseBgs")
+    suspend fun getBackgroundGifCars(
+        @Part("category") category: RequestBody?,
+        @Part("auth_key") auth_key: RequestBody?,
+    ) : List<CarBackgrounGifResponse>
 
     @FormUrlEncoded
     @POST("v2/sku/processImages")

@@ -394,8 +394,8 @@ public class OtpActivity : AppCompatActivity() {
                         val properties = Properties()
                         properties.apply {
                             this["user_id"] = otpResponse.userId
-                            this["user_name"] = otpResponse.userName
-                            this["email_id"] = otpResponse.emailId
+                            this["name"] = otpResponse.userName
+                            this["email"] = otpResponse.emailId
                         }
 
                         captureIdentity(otpResponse.userId,properties)

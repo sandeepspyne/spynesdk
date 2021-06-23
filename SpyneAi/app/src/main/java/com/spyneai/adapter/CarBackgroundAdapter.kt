@@ -50,7 +50,9 @@ class CarBackgroundAdapter(
         Glide.with(context).load(channelList[position].imageUrl)
             .into(viewHolder.ivCarBackground)
 
-        viewHolder.tvCarBgName.setText(channelList[position].bgName)
+        val list: List<String> = channelList[position].bgName.trim().split("\\s+".toRegex())
+
+        viewHolder.tvCarBgName.text = list[0]+"\n"+list[1]
 
         mClickListener = btnlistener
 /*

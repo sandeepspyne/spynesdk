@@ -67,7 +67,7 @@ class UploadImageWorker(val appContext: Context, workerParams: WorkerParameters)
 
                         val uploadImageResponse = response.body()
 
-                        if (uploadImageResponse?.status == "200"){
+//                        if (uploadImageResponse?.status == "200"){
 
                             captureEvent(Events.UPLOADED,true,null)
                             //update uploaded image count
@@ -98,11 +98,11 @@ class UploadImageWorker(val appContext: Context, workerParams: WorkerParameters)
                                 WorkManager.getInstance(applicationContext)
                                     .enqueue(processSkuWorkRequest.build())
                             }
-                        }else{
-                            captureEvent(Events.UPLOAD_FAILED,false,uploadImageResponse?.status)
-                            uploadImages()
-
-                        }
+//                        }else{
+//                            captureEvent(Events.UPLOAD_FAILED,false,uploadImageResponse?.status)
+//                            uploadImages()
+//
+//                        }
                     }else {
                         com.spyneai.shoot.utils.log("processing not started yet")
                     }

@@ -24,6 +24,8 @@ import com.spyneai.needs.Utilities
 import com.spyneai.posthog.Events
 import com.spyneai.shoot.data.ProcessViewModel
 import com.spyneai.shoot.utils.log
+import okhttp3.MultipartBody
+import okhttp3.RequestBody.Companion.toRequestBody
 
 
 class SelectBackgroundFragment : BaseFragment<ProcessViewModel,FragmentSelectBackgroundBinding>() {
@@ -56,7 +58,14 @@ class SelectBackgroundFragment : BaseFragment<ProcessViewModel,FragmentSelectBac
     }
 
     private fun initSelectBackground() {
-        viewModel.getBackgroundGifCars()
+
+        val category =
+            Utilities.getPreference(requireContext(), AppConstants.CATEGORY_NAME)!!.toRequestBody(MultipartBody.FORM)
+
+        val auth_key =
+            Utilities.getPreference(requireContext(), AppConstants.AUTH_KEY)!!.toRequestBody(MultipartBody.FORM)
+
+        viewModel.getBackgroundGifCars(category, auth_key)
 
         viewModel.carGifRes.observe(viewLifecycleOwner,{
             when(it) {

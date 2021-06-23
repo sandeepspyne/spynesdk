@@ -12,10 +12,13 @@ import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import com.posthog.android.Properties
 import com.spyneai.R
+import com.spyneai.base.BaseFragment
 import com.spyneai.captureEvent
 import com.spyneai.captureFailureEvent
 import com.spyneai.credits.CreditPlansActivity
 import com.spyneai.credits.CreditUtils
+import com.spyneai.dashboard.data.DashboardViewModel
+import com.spyneai.databinding.HomeDashboardFragmentBinding
 import com.spyneai.databinding.WalletDashboardFragmentBinding
 import com.spyneai.interfaces.APiService
 import com.spyneai.interfaces.RetrofitClientSpyneAi
@@ -28,24 +31,16 @@ import retrofit2.Callback
 import retrofit2.Response
 
 
-class WalletDashboardFragment : Fragment() {
+class WalletDashboardFragment :
+    BaseFragment<DashboardViewModel, WalletDashboardFragmentBinding>()  {
 
-    private var _binding : WalletDashboardFragmentBinding? = null
     private var availableCredits = 0
     private var retry = 0
     protected lateinit var rootView: View
 
-    private val binding get() = _binding!!
 
 
-    override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View? {
 
-        _binding = WalletDashboardFragmentBinding.inflate(inflater, container, false)
-        return binding.root
-    }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -81,11 +76,6 @@ class WalletDashboardFragment : Fragment() {
         }
 
         fetchUserCreditDetails()
-    }
-
-    override fun onDestroyView() {
-        super.onDestroyView()
-        _binding = null
     }
 
 
@@ -176,5 +166,12 @@ class WalletDashboardFragment : Fragment() {
         })
 
     }
+
+    override fun getViewModel() = DashboardViewModel::class.java
+
+    override fun getFragmentBinding(
+        inflater: LayoutInflater,
+        container: ViewGroup?
+    ) = WalletDashboardFragmentBinding.inflate(inflater, container, false)
 
 }
