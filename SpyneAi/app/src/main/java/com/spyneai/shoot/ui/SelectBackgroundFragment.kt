@@ -19,10 +19,13 @@ import com.spyneai.dashboard.ui.enable
 import com.spyneai.dashboard.ui.handleApiError
 import com.spyneai.databinding.FragmentSelectBackgroundBinding
 import com.spyneai.model.carbackgroundgif.CarBackgrounGifResponse
+import com.spyneai.model.carreplace.CarBackgroundsResponse
 import com.spyneai.needs.AppConstants
 import com.spyneai.needs.Utilities
 import com.spyneai.posthog.Events
+import com.spyneai.shoot.adapters.NewCarBackgroundAdapter
 import com.spyneai.shoot.data.ProcessViewModel
+import com.spyneai.shoot.data.model.CarsBackgroundRes
 import com.spyneai.shoot.utils.log
 import okhttp3.MultipartBody
 import okhttp3.RequestBody.Companion.toRequestBody
@@ -30,9 +33,9 @@ import okhttp3.RequestBody.Companion.toRequestBody
 
 class SelectBackgroundFragment : BaseFragment<ProcessViewModel,FragmentSelectBackgroundBinding>() {
 
-    lateinit var carBackgroundGifList: ArrayList<CarBackgrounGifResponse>
+    lateinit var carBackgroundGifList: ArrayList<CarsBackgroundRes.Data>
     var backgroundSelect: String = ""
-    lateinit var carbackgroundsAdapter: CarBackgroundAdapter
+    lateinit var carbackgroundsAdapter: NewCarBackgroundAdapter
 
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -80,16 +83,17 @@ class SelectBackgroundFragment : BaseFragment<ProcessViewModel,FragmentSelectBac
                     binding.rvBackgroundsCars.visibility = View.VISIBLE
                     binding.tvGenerateGif.enable(true)
 
+
                     val response = it.value
                     Glide.with(requireContext()) // replace with 'this' if it's in activity
-                        .load(response[0].gifUrl)
+                        .load(response.data[0].gifUrl)
                         .error(R.mipmap.defaults) // show error drawable if the image is not a gif
                         .into(binding.imageViewGif)
 
-                    backgroundSelect = response[0].imageId.toString()
+                    backgroundSelect = response.data[0].imageId.toString()
 
-                    for (i in 0..response.size-1)
-                        (carBackgroundGifList).add(response[i])
+                    for (i in 0..response.data.size-1)
+                        (carBackgroundGifList).add(response.data[i])
 
                     setBackgroundsCar()
                 }
@@ -107,9 +111,9 @@ class SelectBackgroundFragment : BaseFragment<ProcessViewModel,FragmentSelectBac
     }
 
     private fun setBackgroundsCar() {
-        carbackgroundsAdapter = CarBackgroundAdapter(requireContext(),
-            carBackgroundGifList as ArrayList<CarBackgrounGifResponse>, 0,
-            object : CarBackgroundAdapter.BtnClickListener {
+        carbackgroundsAdapter = NewCarBackgroundAdapter(requireContext(),
+            carBackgroundGifList as ArrayList<CarsBackgroundRes.Data>, 0,
+            object : NewCarBackgroundAdapter.BtnClickListener {
                 override fun onBtnClick(position: Int) {
                     Log.e("position preview", position.toString())
                     //if (position<carBackgroundList.size)

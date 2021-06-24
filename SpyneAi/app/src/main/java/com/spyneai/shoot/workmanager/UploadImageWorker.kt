@@ -1,7 +1,6 @@
 package com.spyneai.shoot.workmanager
 
 import android.content.Context
-import android.util.Log
 import androidx.work.*
 import com.posthog.android.Properties
 import com.spyneai.base.network.ClipperApi
@@ -9,7 +8,6 @@ import com.spyneai.captureEvent
 import com.spyneai.captureFailureEvent
 import com.spyneai.interfaces.RetrofitClients
 import com.spyneai.posthog.Events
-import com.spyneai.service.log
 import com.spyneai.shoot.data.ShootLocalRepository
 import com.spyneai.shoot.data.model.UploadImageResponse
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
@@ -67,7 +65,7 @@ class UploadImageWorker(val appContext: Context, workerParams: WorkerParameters)
 
                         val uploadImageResponse = response.body()
 
-//                        if (uploadImageResponse?.status == "200"){
+                        if (uploadImageResponse?.status == 200){
 
                             captureEvent(Events.UPLOADED,true,null)
                             //update uploaded image count
@@ -80,7 +78,7 @@ class UploadImageWorker(val appContext: Context, workerParams: WorkerParameters)
                             )
                             com.spyneai.shoot.utils.log(
                             "upload image url: " +
-                                    (response.body()?.output_image_lres_url)
+                                    (response.body()?.data?.output_image_hres_url)
                             )
 
 
@@ -98,11 +96,11 @@ class UploadImageWorker(val appContext: Context, workerParams: WorkerParameters)
                                 WorkManager.getInstance(applicationContext)
                                     .enqueue(processSkuWorkRequest.build())
                             }
-//                        }else{
-//                            captureEvent(Events.UPLOAD_FAILED,false,uploadImageResponse?.status)
-//                            uploadImages()
-//
-//                        }
+                        }else{
+                            captureEvent(Events.UPLOAD_FAILED,false,uploadImageResponse?.message)
+                            uploadImages()
+
+                        }
                     }else {
                         com.spyneai.shoot.utils.log("processing not started yet")
                     }

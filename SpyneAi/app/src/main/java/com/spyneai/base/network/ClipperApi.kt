@@ -9,23 +9,13 @@ import com.spyneai.model.projects.CompletedProjectResponse
 import com.spyneai.orders.data.response.CompletedSKUsResponse
 import com.spyneai.orders.data.response.GetImagesOfSkuResponse
 import com.spyneai.orders.data.response.GetOngoingSkusResponse
-import com.spyneai.shoot.data.model.CreateProjectRes
-import com.spyneai.shoot.data.model.CreateSkuRes
-import com.spyneai.shoot.data.model.ProcessSkuRes
-import com.spyneai.shoot.data.model.UploadImageResponse
+import com.spyneai.shoot.data.model.*
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
 import retrofit2.Call
 import retrofit2.http.*
 
 interface ClipperApi {
-
-    @Multipart
-    @POST("insert-user")
-    suspend fun UserFreeCreditEligiblityCheck(
-        @Part("user_id") user_id: RequestBody?,
-        @Part("email_id") email_id: RequestBody?
-    ): FreeCreditEligblityResponse
 
     @Multipart
     @POST("v2/image/upload")
@@ -87,7 +77,7 @@ interface ClipperApi {
     suspend fun getBackgroundGifCars(
         @Part("category") category: RequestBody?,
         @Part("auth_key") auth_key: RequestBody?,
-    ) : List<CarBackgrounGifResponse>
+    ) : CarsBackgroundRes
 
     @FormUrlEncoded
     @POST("v2/sku/processImages")
@@ -96,6 +86,16 @@ interface ClipperApi {
         @Field("sku_id") skuId : String,
         @Field("background_id") backgroundId : String
     ) : ProcessSkuRes
+
+
+    @FormUrlEncoded
+    @POST("v2/sku/processImages")
+    fun processSkuWithWorker(
+        @Field("auth_key") authKey : String,
+        @Field("sku_id") skuId : String,
+        @Field("background_id") backgroundId : String
+    ) : Call<ProcessSkuRes>
+
 
     @GET("v2/sku/getOngoingSKU")
     suspend fun getOngoingSKUs(

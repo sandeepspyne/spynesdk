@@ -6,6 +6,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.spyneai.base.network.Resource
 import com.spyneai.model.carbackgroundgif.CarBackgrounGifResponse
+import com.spyneai.shoot.data.model.CarsBackgroundRes
 import com.spyneai.shoot.data.model.ProcessSkuRes
 import com.spyneai.shoot.data.model.Sku
 import kotlinx.coroutines.launch
@@ -24,8 +25,8 @@ class ProcessViewModel : ViewModel() {
     val processSku : MutableLiveData<Boolean> = MutableLiveData()
     val skuQueued : MutableLiveData<Boolean> = MutableLiveData()
 
-    private val _carGifRes : MutableLiveData<Resource<List<CarBackgrounGifResponse>>> = MutableLiveData()
-    val carGifRes: LiveData<Resource<List<CarBackgrounGifResponse>>>
+    private val _carGifRes : MutableLiveData<Resource<CarsBackgroundRes>> = MutableLiveData()
+    val carGifRes: LiveData<Resource<CarsBackgroundRes>>
         get() = _carGifRes
 
     private val _processSkuRes : MutableLiveData<Resource<ProcessSkuRes>> = MutableLiveData()

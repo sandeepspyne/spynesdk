@@ -1,5 +1,10 @@
 package com.spyneai.shoot.data.model
 
 data class ProcessSkuRes(
-    val status: String
-)
+    val `data`: Data,
+    val message: String,
+    val status: Int
+) {
+    class Data(
+    )
+}

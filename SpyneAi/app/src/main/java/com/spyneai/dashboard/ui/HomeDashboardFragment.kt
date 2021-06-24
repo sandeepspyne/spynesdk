@@ -20,16 +20,15 @@ import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.tabs.TabLayout
-import com.google.android.material.tabs.TabLayout.OnTabSelectedListener
 import com.posthog.android.Properties
 import com.spyneai.R
 import com.spyneai.activity.CategoriesActivity
 import com.spyneai.activity.CompletedProjectsActivity
 import com.spyneai.activity.OngoingOrdersActivity
-import com.spyneai.activity.ShowImagesActivity
 import com.spyneai.adapter.CategoriesDashboardAdapter
 import com.spyneai.base.BaseFragment
 import com.spyneai.base.network.Resource
+import com.spyneai.base.network.ServerException
 import com.spyneai.captureEvent
 import com.spyneai.captureFailureEvent
 import com.spyneai.dashboard.adapters.CompletedDashboardAdapter
@@ -173,8 +172,6 @@ class HomeDashboardFragment :
         })
 
 
-
-
         viewModel.completedSkusResponse.observe(viewLifecycleOwner, Observer {
             when(it){
                 is Resource.Sucess -> {
@@ -208,10 +205,19 @@ class HomeDashboardFragment :
                     binding.shimmerCompleted.startShimmer()
                 }
                 is Resource.Failure -> {
-                    requireContext().captureFailureEvent(Events.GET_COMPLETED_ORDERS_FAILED, Properties(),
-                        it.errorMessage!!
-                    )
-                    handleApiError(it)
+                    binding.shimmerCompleted.stopShimmer()
+                    binding.shimmerCompleted.visibility = View.GONE
+
+                    if (it.errorCode == 404){
+                        binding.rlCompletedShoots.visibility = View.GONE
+                        refreshData = false
+                    }else{
+                        requireContext().captureFailureEvent(Events.GET_COMPLETED_ORDERS_FAILED, Properties(),
+                            it.errorMessage!!
+                        )
+                        handleApiError(it)
+                    }
+
                 }
             }
         })
@@ -249,7 +255,20 @@ class HomeDashboardFragment :
 
                     }
                     is Resource.Failure -> {
-                        handleApiError(it)
+                        binding.shimmerOngoing.stopShimmer()
+                        binding.shimmerOngoing.visibility = View.GONE
+
+                        if (it.errorCode == 404){
+                            binding.rlOngoingShoots.visibility = View.GONE
+                            refreshData = false
+                        }else{
+                            requireContext().captureFailureEvent(Events.GET_ONGOING_ORDERS_FAILED, Properties(),
+                                it.errorMessage!!
+                            )
+                            handleApiError(it)
+                        }
+
+
                     }
 
                 }
