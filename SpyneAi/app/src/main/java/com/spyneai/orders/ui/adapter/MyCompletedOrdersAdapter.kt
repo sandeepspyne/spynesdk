@@ -33,7 +33,7 @@ class MyCompletedOrdersAdapter(
         val tvCategoryName: TextView = view.findViewById(R.id.tvCategoryName)
         val tvSkuName: TextView = view.findViewById(R.id.tvSkuName)
         val tvSource: TextView = view.findViewById(R.id.tvSource)
-        val llPaid: LinearLayout = view.findViewById(R.id.llPaid)
+        val tvPaid: TextView = view.findViewById(R.id.tvPaid)
         val iv_thumbnail_completed: ImageView = view.findViewById(R.id.iv_thumbnail_completed)
         val ivDownloadSKU: ImageView = view.findViewById(R.id.ivDownloadSKU)
     }
@@ -68,7 +68,7 @@ class MyCompletedOrdersAdapter(
         val dots = "..."
 
         if (completedSkuList[position].paid)
-            holder.llPaid.visibility = View.VISIBLE
+            holder.tvPaid.visibility = View.VISIBLE
 
         holder.tv_images_count.text = completedSkuList[position].total_images.toString()
         holder.tvSubCat.text = completedSkuList[position].sub_category
@@ -93,14 +93,9 @@ class MyCompletedOrdersAdapter(
                 context,
                 ShowImagesActivity::class.java
             )
+            intent.putExtra("is_paid",completedSkuList[position].paid)
             context.startActivity(intent)
         }
-
-
-
-//        holder.cvDownload.setOnClickListener { view ->
-//            view.findNavController().navigate(R.id.nav_request_download)
-//        }
     }
 
     override fun getItemCount(): Int {

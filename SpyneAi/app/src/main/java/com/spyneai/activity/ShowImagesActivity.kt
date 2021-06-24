@@ -152,8 +152,8 @@ class ShowImagesActivity : AppCompatActivity() {
 
         if (i == 0) {
             tvYourEmailIdReplaced.visibility = View.VISIBLE
-            tvViewGif.visibility = View.VISIBLE
-            tvInterior.visibility = View.VISIBLE
+            tvViewGif.visibility = View.GONE
+            tvInterior.visibility = View.GONE
 //            llDownloads.visibility = View.VISIBLE
         } else {
             tvYourEmailIdReplaced.visibility = View.GONE
@@ -201,6 +201,7 @@ class ShowImagesActivity : AppCompatActivity() {
             val intent = Intent(this, OrderSummary2Activity::class.java)
             intent.putExtra(AppConstants.LIST_WATERMARK, imageListWaterMark)
             intent.putExtra(AppConstants.LIST_HD_QUALITY, listHdQuality)
+            intent.putExtra("is_paid",intent.getBooleanExtra("is_paid",false))
 
             var skuId = Utilities.getPreference(this, AppConstants.SKU_ID)
                 .toString()

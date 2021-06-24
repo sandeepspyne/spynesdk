@@ -53,9 +53,8 @@ class OrderSummary2Activity : AppCompatActivity() {
             gotoHome()
         }
 
-        AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
 
-        getSkuIdDownloadStatus()
+        getSkuIdDownloadStatus(intent.getBooleanExtra("is_paid",false))
 
         PRDownloader.initialize(getApplicationContext())
 
@@ -149,6 +148,7 @@ class OrderSummary2Activity : AppCompatActivity() {
         Utilities.savePrefrence(this, AppConstants.DOWNLOAD_TYPE, "hd")
         intent.putExtra(AppConstants.LIST_HD_QUALITY, listHdQuality)
         intent.putExtra(AppConstants.LIST_WATERMARK, listWatermark)
+        intent.putExtra("is_paid",intent.getBooleanExtra("is_paid",false))
         intent.putExtra(AppConstants.SKU_ID, Utilities.getPreference(this@OrderSummary2Activity, AppConstants.SKU_ID)
             .toString())
         intent.putExtra(AppConstants.SKU_NAME,intent.getStringExtra(AppConstants.SKU_NAME))
@@ -156,29 +156,11 @@ class OrderSummary2Activity : AppCompatActivity() {
         startActivity(intent)
     }
 
-    private fun getSkuIdDownloadStatus() {
-        var call = RetrofitCreditClient("https://www.clippr.ai/api/v4/").buildService(CreditApiService::class.java)
-            .getHDDownloadStatus(Utilities.getPreference(this,AppConstants.TOKEN_ID).toString(),
-                Utilities.getPreference(this@OrderSummary2Activity, AppConstants.SKU_ID)
-                    .toString(),"TaD1VC1Ko")
-
-        call?.enqueue(object : Callback<DownloadHDRes>{
-            override fun onResponse(call: Call<DownloadHDRes>, response: Response<DownloadHDRes>) {
-                if (response.isSuccessful){
-                    if (response.body()?.staus.toString() == "200") {
-                        hdDownloaded = true
-                        applyDownloadedUI()
-                    }
-                }else{
-                    Toast.makeText(this@OrderSummary2Activity,"Error from server",Toast.LENGTH_LONG).show()
-                }
-            }
-
-            override fun onFailure(call: Call<DownloadHDRes>, t: Throwable) {
-                Toast.makeText(this@OrderSummary2Activity,"Error from server",Toast.LENGTH_LONG).show()
-            }
-
-        })
+    private fun getSkuIdDownloadStatus(isPaid : Boolean) {
+       if (isPaid){
+           hdDownloaded = true
+           applyDownloadedUI()
+       }
     }
 
     private fun applyDownloadedUI() {

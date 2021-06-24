@@ -80,6 +80,7 @@ class DownloadingActivity : AppCompatActivity() {
                 val intent = Intent(this, OrderSummary2Activity::class.java)
                 intent.putExtra(AppConstants.LIST_HD_QUALITY, listHdQuality)
                 intent.putExtra(AppConstants.LIST_WATERMARK, listWatermark)
+                intent.putExtra("is_paid",intent.getBooleanExtra("is_paid",false))
                 startActivity(intent)
             } else {
                 gotoHome()

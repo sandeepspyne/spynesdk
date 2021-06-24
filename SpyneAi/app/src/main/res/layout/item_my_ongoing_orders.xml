@@ -48,8 +48,8 @@
 
         <androidx.cardview.widget.CardView
             android:id="@+id/cvThumbnail"
-            android:layout_width="129dp"
-            android:layout_height="61dp"
+            android:layout_width="112dp"
+            android:layout_height="63dp"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintLeft_toLeftOf="parent"
             android:layout_marginTop="19dp"
