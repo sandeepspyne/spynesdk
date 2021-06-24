@@ -99,8 +99,6 @@
                             <include
                                 layout="@layout/item_select_background_shimmer"/>
 
-                            <include
-                                layout="@layout/item_select_background_shimmer"/>
 
                         </LinearLayout>
                     </com.facebook.shimmer.ShimmerFrameLayout>

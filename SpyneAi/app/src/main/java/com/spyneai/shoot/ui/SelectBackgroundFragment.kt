@@ -42,6 +42,10 @@ class SelectBackgroundFragment : BaseFragment<ProcessViewModel,FragmentSelectBac
 
         initSelectBackground()
 
+        binding.ivBackGif.setOnClickListener {
+            requireActivity().onBackPressed()
+        }
+
         binding.tvGenerateGif.setOnClickListener {
             //process image call
             viewModel.checkImagesUploadStatus(backgroundSelect)
