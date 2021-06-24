@@ -77,11 +77,11 @@ class DownloadingActivity : AppCompatActivity() {
 
         llButton.setOnClickListener {
             if (Utilities.getPreference(this, AppConstants.DOWNLOAD_TYPE).equals("watermark")) {
-                val intent = Intent(this, OrderSummary2Activity::class.java)
-                intent.putExtra(AppConstants.LIST_HD_QUALITY, listHdQuality)
-                intent.putExtra(AppConstants.LIST_WATERMARK, listWatermark)
-                intent.putExtra("is_paid",intent.getBooleanExtra("is_paid",false))
-                startActivity(intent)
+                val orderIntent = Intent(this, OrderSummary2Activity::class.java)
+                orderIntent.putExtra(AppConstants.LIST_HD_QUALITY, listHdQuality)
+                orderIntent.putExtra(AppConstants.LIST_WATERMARK, listWatermark)
+                orderIntent.putExtra("is_paid",intent.getBooleanExtra("is_paid",false))
+                startActivity(orderIntent)
             } else {
                 gotoHome()
             }

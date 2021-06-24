@@ -144,16 +144,16 @@ class OrderSummary2Activity : AppCompatActivity() {
     }
 
     private fun startDownloadActivity() {
-        val intent = Intent(this@OrderSummary2Activity, DownloadingActivity::class.java)
+        val downloadIntent = Intent(this@OrderSummary2Activity, DownloadingActivity::class.java)
         Utilities.savePrefrence(this, AppConstants.DOWNLOAD_TYPE, "hd")
-        intent.putExtra(AppConstants.LIST_HD_QUALITY, listHdQuality)
-        intent.putExtra(AppConstants.LIST_WATERMARK, listWatermark)
-        intent.putExtra("is_paid",intent.getBooleanExtra("is_paid",false))
-        intent.putExtra(AppConstants.SKU_ID, Utilities.getPreference(this@OrderSummary2Activity, AppConstants.SKU_ID)
+        downloadIntent.putExtra(AppConstants.LIST_HD_QUALITY, listHdQuality)
+        downloadIntent.putExtra(AppConstants.LIST_WATERMARK, listWatermark)
+        downloadIntent.putExtra("is_paid",intent.getBooleanExtra("is_paid",false))
+        downloadIntent.putExtra(AppConstants.SKU_ID, Utilities.getPreference(this@OrderSummary2Activity, AppConstants.SKU_ID)
             .toString())
-        intent.putExtra(AppConstants.SKU_NAME,intent.getStringExtra(AppConstants.SKU_NAME))
-        intent.putExtra(AppConstants.IS_DOWNLOADED_BEFORE,hdDownloaded)
-        startActivity(intent)
+        downloadIntent.putExtra(AppConstants.SKU_NAME,intent.getStringExtra(AppConstants.SKU_NAME))
+        downloadIntent.putExtra(AppConstants.IS_DOWNLOADED_BEFORE,hdDownloaded)
+        startActivity(downloadIntent)
     }
 
     private fun getSkuIdDownloadStatus(isPaid : Boolean) {

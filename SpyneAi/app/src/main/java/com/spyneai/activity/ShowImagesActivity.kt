@@ -190,28 +190,29 @@ class ShowImagesActivity : AppCompatActivity() {
 
         tvDownloadFree.setOnClickListener {
             Utilities.savePrefrence(this, AppConstants.DOWNLOAD_TYPE, "watermark")
-            val intent = Intent(this, DownloadingActivity::class.java)
-            intent.putExtra(AppConstants.LIST_WATERMARK, imageListWaterMark)
-            intent.putExtra(AppConstants.LIST_HD_QUALITY, listHdQuality)
-            startActivity(intent)
+            val downloadIntent = Intent(this, DownloadingActivity::class.java)
+            downloadIntent.putExtra(AppConstants.LIST_WATERMARK, imageListWaterMark)
+            downloadIntent.putExtra(AppConstants.LIST_HD_QUALITY, listHdQuality)
+            downloadIntent.putExtra("is_paid",intent.getBooleanExtra("is_paid",false))
+            startActivity(downloadIntent)
         }
 
         llDownloadHdImages.setOnClickListener {
             Utilities.savePrefrence(this, AppConstants.DOWNLOAD_TYPE, "hd")
-            val intent = Intent(this, OrderSummary2Activity::class.java)
-            intent.putExtra(AppConstants.LIST_WATERMARK, imageListWaterMark)
-            intent.putExtra(AppConstants.LIST_HD_QUALITY, listHdQuality)
-            intent.putExtra("is_paid",intent.getBooleanExtra("is_paid",false))
+            val orderIntent = Intent(this, OrderSummary2Activity::class.java)
+            orderIntent.putExtra(AppConstants.LIST_WATERMARK, imageListWaterMark)
+            orderIntent.putExtra(AppConstants.LIST_HD_QUALITY, listHdQuality)
+            orderIntent.putExtra("is_paid",intent.getBooleanExtra("is_paid",false))
 
             var skuId = Utilities.getPreference(this, AppConstants.SKU_ID)
                 .toString()
 
             var skuName = Utilities.getPreference(this, AppConstants.SKU_ID)
                 .toString()
-            var s = ""
-            intent.putExtra(AppConstants.SKU_ID,skuId)
-            intent.putExtra(AppConstants.SKU_NAME,skuName)
-            startActivity(intent)
+
+            orderIntent.putExtra(AppConstants.SKU_ID,skuId)
+            orderIntent.putExtra(AppConstants.SKU_NAME,skuName)
+            startActivity(orderIntent)
         }
     }
 

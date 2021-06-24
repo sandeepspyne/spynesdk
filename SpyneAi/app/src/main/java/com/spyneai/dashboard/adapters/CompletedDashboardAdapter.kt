@@ -1,6 +1,7 @@
 package com.spyneai.dashboard.adapters
 
 import android.content.Context
+import android.content.Intent
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
@@ -12,17 +13,18 @@ import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.spyneai.R
+import com.spyneai.activity.ShowImagesActivity
 import com.spyneai.adapter.CategoriesDashboardAdapter
 import com.spyneai.adapter.CompletedProjectAdapter
 import com.spyneai.model.projects.CompletedProjectResponse
 import com.spyneai.needs.AppConstants
 import com.spyneai.needs.Utilities
 import com.spyneai.orders.data.response.CompletedSKUsResponse
+import com.spyneai.shoot.utils.log
 
 class CompletedDashboardAdapter (
     val context: Context,
-    val completedProjectList: ArrayList<CompletedSKUsResponse.Data>,
-    val btnlistener: BtnClickListener
+    val completedProjectList: ArrayList<CompletedSKUsResponse.Data>
 ) : RecyclerView.Adapter<CompletedDashboardAdapter.ViewHolder>() {
 
     companion object {
@@ -54,12 +56,17 @@ class CompletedDashboardAdapter (
             .load(completedProjectList[position].thumbnail)
             .into(holder.ivImage)
 
-        mClickListener = btnlistener
-        holder.clBackground.setOnClickListener(View.OnClickListener {
-            Log.e("ok", "Ok way" + position)
-            if (CompletedDashboardAdapter.mClickListener != null)
-                CompletedDashboardAdapter.mClickListener?.onBtnClick(position)
-        })
+        holder.clBackground.setOnClickListener{
+            Utilities.savePrefrence(context,
+                AppConstants.SKU_ID,
+                completedProjectList[position].sku_id)
+            log("Show Completed orders(sku_id): "+completedProjectList[position].sku_id)
+            val intent = Intent(context,
+                ShowImagesActivity::class.java)
+
+            intent.putExtra("is_paid",completedProjectList[position].paid)
+            context.startActivity(intent)
+        }
 
     }
 
