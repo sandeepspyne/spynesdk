@@ -54,7 +54,7 @@ class ProcessSkuWorker (val appContext: Context, workerParams: WorkerParameters)
                         val processSkuRes = response.body()
 
                         if (processSkuRes?.status == 200){
-
+                            appContext.captureEvent(Events.PROCESS,Properties().putValue("sku_id",inputData.getString("skuId").toString()))
                         }else{
                             appContext.captureFailureEvent(
                                 Events.PROCESS_FAILED,
@@ -65,6 +65,7 @@ class ProcessSkuWorker (val appContext: Context, workerParams: WorkerParameters)
 
                         }
                     }else {
+                        processSku()
                         com.spyneai.shoot.utils.log("processing not started yet")
                     }
                 }

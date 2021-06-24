@@ -267,8 +267,6 @@ class HomeDashboardFragment :
                             )
                             handleApiError(it)
                         }
-
-
                     }
 
                 }

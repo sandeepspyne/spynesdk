@@ -8,8 +8,10 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.posthog.android.Properties
 import com.spyneai.base.BaseFragment
 import com.spyneai.base.network.Resource
+import com.spyneai.captureFailureEvent
 import com.spyneai.dashboard.ui.handleApiError
 import com.spyneai.databinding.MyOngoingOrdersFragmentBinding
 import com.spyneai.needs.AppConstants
@@ -17,6 +19,7 @@ import com.spyneai.needs.Utilities
 import com.spyneai.orders.data.response.GetOngoingSkusResponse
 import com.spyneai.orders.data.viewmodel.MyOrdersViewModel
 import com.spyneai.orders.ui.adapter.MyOngoingOrdersAdapter
+import com.spyneai.posthog.Events
 import com.spyneai.shoot.utils.log
 
 class MyOngoingOrdersFragment : BaseFragment<MyOrdersViewModel, MyOngoingOrdersFragmentBinding>() {
@@ -76,7 +79,20 @@ class MyOngoingOrdersFragment : BaseFragment<MyOrdersViewModel, MyOngoingOrdersF
 
                     }
                     is Resource.Failure -> {
-                        handleApiError(it)
+                        binding.shimmerOngoingSKU.stopShimmer()
+                        binding.shimmerOngoingSKU.visibility = View.GONE
+
+                        if (it.errorCode == 404){
+                            binding.rvMyOngoingOrders.visibility = View.GONE
+                            refreshData = false
+                        }else{
+                            requireContext().captureFailureEvent(
+                                Events.GET_COMPLETED_ORDERS_FAILED, Properties(),
+                                it.errorMessage!!
+                            )
+                            handleApiError(it)
+                        }
+
                     }
 
                 }
