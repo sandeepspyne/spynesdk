@@ -118,6 +118,7 @@
             tools:text="Sedan"
             android:textColor="@color/black"
             android:textSize="@dimen/sp_12"
+            android:maxLength="5"
             app:layout_constraintLeft_toRightOf="@+id/tvProjectid"
             app:layout_constraintTop_toBottomOf="@+id/tvProjectname"
             android:layout_marginLeft="@dimen/dp_5"

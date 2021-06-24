@@ -124,7 +124,7 @@ class ShowImagesActivity : AppCompatActivity() {
                             (Utilities.getPreference(this@ShowImagesActivity, AppConstants.SKU_ID).toString()), videoProcessResponse
                         )
 
-                        tv_three_sixty_view.visibility = View.VISIBLE
+//                        tv_three_sixty_view.visibility = View.VISIBLE
                         tv_three_sixty_view.setOnClickListener {
                             var intent = Intent(this@ShowImagesActivity, ThreeSixtyInteriorViewActivity::class.java)
                             intent.action = Utilities.getPreference(this@ShowImagesActivity, AppConstants.SKU_ID).toString()
