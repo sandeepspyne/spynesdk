@@ -152,7 +152,7 @@ class ShowImagesActivity : AppCompatActivity() {
 
         if (i == 0) {
             tvYourEmailIdReplaced.visibility = View.VISIBLE
-            tvViewGif.visibility = View.VISIBLE
+//            tvViewGif.visibility = View.VISIBLE
             tvInterior.visibility = View.VISIBLE
 //            llDownloads.visibility = View.VISIBLE
         } else {
