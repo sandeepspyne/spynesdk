@@ -10,6 +10,7 @@ import com.bumptech.glide.Glide
 import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.spyneai.R
 import com.spyneai.dashboard.ui.MainDashboardActivity
+import com.spyneai.gotoHome
 import com.spyneai.interfaces.APiService
 import com.spyneai.interfaces.RetrofitClients
 import com.spyneai.model.ai.GifFetchResponse
@@ -52,9 +53,7 @@ class ShowGifActivity : AppCompatActivity() {
             Utilities.savePrefrence(this@ShowGifActivity, AppConstants.PRODUCT_ID, "")
             Utilities.savePrefrence(this@ShowGifActivity, AppConstants.SKU_NAME, "")
             Utilities.savePrefrence(this@ShowGifActivity, AppConstants.SKU_ID, "")
-            val intent = Intent(this, MainDashboardActivity::class.java)
-            startActivity(intent)
-            finish()
+            gotoHome()
 
             val updateSkuResponseList = ArrayList<UpdateSkuResponse>()
             updateSkuResponseList.clear()

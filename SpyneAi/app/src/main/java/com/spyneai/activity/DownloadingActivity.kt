@@ -21,6 +21,7 @@ import com.spyneai.R
 import com.spyneai.credits.fragments.DownloadCompletedFragment
 import com.spyneai.credits.fragments.FeedbackSubmittedFragment
 import com.spyneai.dashboard.ui.MainDashboardActivity
+import com.spyneai.gotoHome
 import com.spyneai.imagesdowloading.HDImagesDownloadedEvent
 import com.spyneai.imagesdowloading.ImageDownloadingService
 import com.spyneai.needs.AppConstants
@@ -71,9 +72,7 @@ class DownloadingActivity : AppCompatActivity() {
         setPermissions()
 
         ivDownloadingHome.setOnClickListener {
-            val intent = Intent(this, MainDashboardActivity::class.java)
-            startActivity(intent)
-            finish()
+            gotoHome()
         }
 
         llButton.setOnClickListener {
@@ -83,8 +82,7 @@ class DownloadingActivity : AppCompatActivity() {
                 intent.putExtra(AppConstants.LIST_WATERMARK, listWatermark)
                 startActivity(intent)
             } else {
-                val intent = Intent(this, MainDashboardActivity::class.java)
-                startActivity(intent)
+                gotoHome()
             }
         }
 

@@ -10,6 +10,7 @@ import com.google.android.exoplayer2.source.MediaSource
 import com.google.android.exoplayer2.source.ProgressiveMediaSource
 import com.google.android.exoplayer2.upstream.DefaultDataSourceFactory
 import com.spyneai.R
+import com.spyneai.gotoHome
 import com.spyneai.needs.AppConstants
 import kotlinx.android.synthetic.main.activity_youtube_video_player.*
 
@@ -33,9 +34,7 @@ class YoutubeVideoPlayerActivity : AppCompatActivity() {
 
         ivDashboardHome.setOnClickListener(View.OnClickListener {
             releasePlayer()
-            val intent = Intent(this, MainDashboardActivity::class.java)
-            startActivity(intent)
-            finish()
+            gotoHome()
         })
 
     }

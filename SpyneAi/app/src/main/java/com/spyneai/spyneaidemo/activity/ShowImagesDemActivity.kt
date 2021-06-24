@@ -20,6 +20,7 @@ import com.spyneai.R
 import com.spyneai.adapter.ShowReplacedImagesAdapter
 import com.spyneai.aipack.FetchBulkResponse
 import com.spyneai.dashboard.ui.MainDashboardActivity
+import com.spyneai.gotoHome
 import com.spyneai.interfaces.APiService
 import com.spyneai.interfaces.RetrofitClients
 import com.spyneai.model.skumap.UpdateSkuResponse
@@ -82,9 +83,7 @@ class ShowImagesDemActivity : AppCompatActivity() {
             Utilities.savePrefrence(this@ShowImagesDemActivity, AppConstants.PRODUCT_ID, "")
             Utilities.savePrefrence(this@ShowImagesDemActivity, AppConstants.SKU_NAME, "")
             Utilities.savePrefrence(this@ShowImagesDemActivity, AppConstants.SKU_ID, "")
-            val intent = Intent(this, MainDashboardActivity::class.java)
-            startActivity(intent)
-            finish()
+            gotoHome()
 
             val updateSkuResponseList = ArrayList<UpdateSkuResponse>()
             updateSkuResponseList.clear()

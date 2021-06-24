@@ -263,6 +263,7 @@
 <!--            android:screenOrientation="portrait" />-->
         <activity
             android:name=".shoot.ui.ShootActivity"
+            android:configChanges="orientation|screenSize"
             android:screenOrientation="landscape"></activity>
         <activity
             android:name=".orders.ui.MyOrdersActivity"

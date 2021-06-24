@@ -19,6 +19,7 @@ import com.spyneai.adapter.BackgroundColourAdapter
 import com.spyneai.adapter.MarketplacesAdapter
 import com.spyneai.adapter.PhotosAdapter
 import com.spyneai.dashboard.ui.MainDashboardActivity
+import com.spyneai.gotoHome
 import com.spyneai.interfaces.APiService
 import com.spyneai.interfaces.RetrofitClients
 import com.spyneai.model.marketplace.Backgrounds
@@ -290,11 +291,9 @@ class GenerateMarketplaceActivity : AppCompatActivity() {
                 this@GenerateMarketplaceActivity,
                 AppConstants.FRAME_LIST, updateSkuResponseList
             )
-            val intent = Intent(this, MainDashboardActivity::class.java)
             dialog.dismiss()
+            gotoHome()
 
-            startActivity(intent)
-            finish()
 
         })
         dialogButtonNo.setOnClickListener(View.OnClickListener { dialog.dismiss() })

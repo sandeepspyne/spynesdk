@@ -18,12 +18,15 @@ import com.spyneai.credits.CreditPlansActivity
 import com.spyneai.credits.LowCreditsActivity
 import com.spyneai.credits.RetrofitCreditClient
 import com.spyneai.credits.model.DownloadHDRes
+import com.spyneai.dashboard.ui.MainDashboardActivity
+import com.spyneai.gotoHome
 import com.spyneai.interfaces.APiService
 import com.spyneai.interfaces.RetrofitClientSpyneAi
 import com.spyneai.model.credit.CreditDetailsResponse
 import com.spyneai.needs.AppConstants
 import com.spyneai.needs.Utilities
 import kotlinx.android.synthetic.main.activity_before_after.*
+import kotlinx.android.synthetic.main.activity_downloading.*
 import kotlinx.android.synthetic.main.activity_order_summary2.*
 import kotlinx.android.synthetic.main.activity_order_summary2.tvCategoryName
 import retrofit2.Call
@@ -45,6 +48,10 @@ class OrderSummary2Activity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_order_summary2)
+
+        ivOrderSummaryHome.setOnClickListener {
+            gotoHome()
+        }
 
         AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
 

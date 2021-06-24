@@ -25,6 +25,7 @@ import com.spyneai.adapter.CarBackgroundAdapter
 import com.spyneai.adapter.PhotosAdapter
 import com.spyneai.aipack.*
 import com.spyneai.dashboard.ui.MainDashboardActivity
+import com.spyneai.gotoHome
 import com.spyneai.interfaces.APiService
 import com.spyneai.interfaces.RetrofitClients
 import com.spyneai.model.carbackgroundgif.CarBackgrounGifResponse
@@ -359,11 +360,9 @@ class GenerateGifActivity : AppCompatActivity(), PickiTCallbacks {
                 AppConstants.FRAME_LIST, updateSkuResponseList
             )
 
-            val intent = Intent(this, MainDashboardActivity::class.java)
             dialog.dismiss()
+            gotoHome()
 
-            startActivity(intent)
-            finish()
 
         })
         dialogButtonNo.setOnClickListener(View.OnClickListener { dialog.dismiss() })

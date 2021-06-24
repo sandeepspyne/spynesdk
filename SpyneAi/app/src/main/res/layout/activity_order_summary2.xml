@@ -37,12 +37,13 @@
                 android:textStyle="bold"
                 android:textSize="@dimen/sp_16"/>
             <ImageView
+                android:id="@+id/ivOrderSummaryHome"
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
-                android:src="@drawable/back"
+                android:src="@mipmap/home"
                 android:padding="@dimen/dp_10"
-                android:visibility="invisible"
-                app:tint="@color/black" />
+                app:tint="@color/black"
+                android:layout_gravity="right"/>
 
         </LinearLayout>
 

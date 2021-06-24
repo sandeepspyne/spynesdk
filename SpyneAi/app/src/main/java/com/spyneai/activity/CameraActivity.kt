@@ -52,6 +52,7 @@ import com.spyneai.adapter.ProgressAdapter
 import com.spyneai.adapter.SubCategoriesAdapter
 import com.spyneai.dashboard.response.NewSubCatResponse
 import com.spyneai.dashboard.ui.MainDashboardActivity
+import com.spyneai.gotoHome
 import com.spyneai.interfaces.APiService
 import com.spyneai.interfaces.RetrofitClient
 import com.spyneai.interfaces.RetrofitClients
@@ -1794,14 +1795,13 @@ class CameraActivity : AppCompatActivity(){
         val dialogButtonNo: TextView = dialog.findViewById(R.id.btnNo)
 
         dialogButtonYes.setOnClickListener(View.OnClickListener {
+
             Utilities.savePrefrence(this@CameraActivity, AppConstants.SHOOT_ID, "")
             Utilities.savePrefrence(this@CameraActivity, AppConstants.CATEGORY_ID, "")
             Utilities.savePrefrence(this@CameraActivity, AppConstants.PRODUCT_ID, "")
             Utilities.savePrefrence(this@CameraActivity, AppConstants.SKU_NAME, "")
             Utilities.savePrefrence(this@CameraActivity, AppConstants.SKU_ID, "")
-            val intent = Intent(this, MainDashboardActivity::class.java)
-            startActivity(intent)
-            finish()
+            gotoHome()
 
             val updateSkuResponseList = ArrayList<UpdateSkuResponse>()
             updateSkuResponseList.clear()

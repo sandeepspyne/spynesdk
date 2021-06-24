@@ -25,6 +25,7 @@ import com.spyneai.aipack.FetchBulkResponse
 import com.spyneai.credits.model.ReviewHolder
 import com.spyneai.dashboard.ui.MainDashboardActivity
 import com.spyneai.downloadsku.FetchBulkResponseV2
+import com.spyneai.gotoHome
 import com.spyneai.interfaces.APiService
 import com.spyneai.interfaces.RetrofitClientSpyneAi
 import com.spyneai.interfaces.RetrofitClients
@@ -176,9 +177,7 @@ class ShowImagesActivity : AppCompatActivity() {
         })
 
         ivHomeShowImages.setOnClickListener(View.OnClickListener {
-            val intent = Intent(this, MainDashboardActivity::class.java)
-            startActivity(intent)
-            finish()
+            gotoHome()
 
             val updateSkuResponseList = ArrayList<UpdateSkuResponse>()
             updateSkuResponseList.clear()

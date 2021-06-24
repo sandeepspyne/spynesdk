@@ -21,6 +21,7 @@ import androidx.recyclerview.widget.GridLayoutManager
 import com.spyneai.R
 import com.spyneai.adapter.ShowPreviewImagesAdapter
 import com.spyneai.dashboard.ui.MainDashboardActivity
+import com.spyneai.gotoHome
 import com.spyneai.model.skumap.UpdateSkuResponse
 import com.spyneai.needs.AppConstants
 import com.spyneai.needs.Utilities
@@ -191,9 +192,7 @@ class PreviewOrderActivity : AppCompatActivity() {
             Utilities.savePrefrence(this@PreviewOrderActivity, AppConstants.PRODUCT_ID, "")
             Utilities.savePrefrence(this@PreviewOrderActivity, AppConstants.SKU_NAME, "")
             Utilities.savePrefrence(this@PreviewOrderActivity, AppConstants.SKU_ID, "")
-            val intent = Intent(this, MainDashboardActivity::class.java)
-            startActivity(intent)
-            finish()
+            gotoHome()
 
             val updateSkuResponseList = ArrayList<UpdateSkuResponse>()
             updateSkuResponseList.clear()
