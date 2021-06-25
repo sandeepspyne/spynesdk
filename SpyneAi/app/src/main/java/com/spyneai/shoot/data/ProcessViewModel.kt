@@ -25,7 +25,7 @@ class ProcessViewModel : ViewModel() {
     val processSku : MutableLiveData<Boolean> = MutableLiveData()
     val skuQueued : MutableLiveData<Boolean> = MutableLiveData()
 
-    private val _carGifRes : MutableLiveData<Resource<CarsBackgroundRes>> = MutableLiveData()
+    val _carGifRes : MutableLiveData<Resource<CarsBackgroundRes>> = MutableLiveData()
     val carGifRes: LiveData<Resource<CarsBackgroundRes>>
         get() = _carGifRes
 
@@ -35,10 +35,24 @@ class ProcessViewModel : ViewModel() {
 
     fun getBackgroundGifCars(
         category: RequestBody,
-        auth_key: RequestBody
+        auth_key: RequestBody,
+        isKarvi : Boolean
     ) = viewModelScope.launch {
         _carGifRes.value = Resource.Loading
-        _carGifRes.value = repository.getBackgroundGifCars(category, auth_key)
+        if (isKarvi){
+            val carGifList = ArrayList<CarsBackgroundRes.Data>()
+            carGifList.add(
+                CarsBackgroundRes.Data(
+                    "Radiant Aluminium",
+                    "https://storage.googleapis.com/spyne-website/static/website-themes/clippr/comp_backgroundV2/601_2.png",
+                    1,
+                    "601",
+                    "https://storage.googleapis.com/spyne-website/static/website-themes/clippr/comp_backgroundV2/601_2.png"
+                )
+            )
+            _carGifRes.value =  Resource.Sucess(CarsBackgroundRes(carGifList,"Success",200))
+        }else _carGifRes.value = repository.getBackgroundGifCars(category, auth_key)
+
     }
 
     fun processSku(authKey : String,skuId : String, backgroundId : String)
