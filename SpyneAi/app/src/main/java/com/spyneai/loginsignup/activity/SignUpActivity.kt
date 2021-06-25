@@ -13,6 +13,7 @@ import com.spyneai.captureEvent
 import com.spyneai.captureFailureEvent
 import com.spyneai.captureIdentity
 import com.spyneai.dashboard.ui.MainDashboardActivity
+import com.spyneai.dashboard.ui.WhiteLabelConstants
 import com.spyneai.interfaces.MyAPIService
 import com.spyneai.interfaces.RetrofitClientSpyneAi
 import com.spyneai.interfaces.RetrofitClients
@@ -149,7 +150,7 @@ class SignUpActivity : AppCompatActivity() {
         Utilities.showProgressDialog(this)
 
         val call = RetrofitClients.buildService(MyAPIService::class.java)
-            .signUp(AppConstants.API_KEY, email, password, "PASSWORD", name, country)
+            .signUp(WhiteLabelConstants.API_KEY, email, password, "PASSWORD", name, country)
 
         call?.enqueue(object : Callback<SignupResponse> {
             override fun onResponse(

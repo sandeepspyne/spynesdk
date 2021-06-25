@@ -4,6 +4,6 @@
     android:color="?colorControlHighlight">
 
     <item
-        android:drawable="@drawable/bg_edit_button_round"/>
+        android:drawable="@drawable/bg_round_ripple_primary"/>
 
     </ripple>

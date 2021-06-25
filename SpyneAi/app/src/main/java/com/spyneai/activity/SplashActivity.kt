@@ -14,6 +14,7 @@ import com.spyneai.needs.AppConstants
 import com.spyneai.needs.Utilities
 
 import com.spyneai.dashboard.ui.MainDashboardActivity
+import com.spyneai.loginsignup.activity.LoginActivity
 import okhttp3.OkHttpClient
 
 
@@ -36,7 +37,10 @@ class SplashActivity : AppCompatActivity() {
     private fun setSplash() {
         Handler().postDelayed({
             if (Utilities.getPreference(this, AppConstants.AUTH_KEY).isNullOrEmpty()) {
-                val intent = Intent(this, OnboardingsActivity::class.java)
+                var intent : Intent? = null
+                intent = if (getString(R.string.app_name) == "Karvi.com") Intent(this,
+                    LoginActivity::class.java) else Intent(this, OnboardingsActivity::class.java)
+
                 intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
                 startActivity(intent)
             } else {

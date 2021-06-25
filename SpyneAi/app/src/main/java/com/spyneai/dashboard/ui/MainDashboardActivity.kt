@@ -3,6 +3,7 @@ package com.spyneai.dashboard.ui
 import android.content.Intent
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
+import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.NavController
 import androidx.navigation.fragment.NavHostFragment
@@ -12,43 +13,72 @@ import com.spyneai.R
 import com.spyneai.activity.CategoriesActivity
 import com.spyneai.dashboard.data.DashboardViewModel
 import com.spyneai.dashboard.ui.base.ViewModelFactory
+import com.spyneai.databinding.ActivityDashboardMainBinding
 import com.spyneai.needs.AppConstants
-import kotlinx.android.synthetic.main.activity_dashboard_main.*
+import com.spyneai.orders.ui.MyOrdersActivity
+import com.spyneai.orders.ui.MyOrdersFragment
+import com.spyneai.shoot.ui.ShootActivity
 
 
 class MainDashboardActivity : AppCompatActivity() {
 
-    lateinit var navHostFragment: NavHostFragment
-
-    lateinit var navController: NavController
+    private lateinit var binding : ActivityDashboardMainBinding
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_dashboard_main)
-
-        navHostFragment = supportFragmentManager.findFragmentById(R.id.navHostFragment) as NavHostFragment
-
-        navController = navHostFragment.navController
-
-        bottomNavigation.background = null
-        bottomNavigation.menu.getItem(2).isEnabled = false
-        bottomNavigation.setupWithNavController(navController)
+        binding = ActivityDashboardMainBinding.inflate(layoutInflater)
+        val view = binding.root
+        setContentView(view)
 
         val viewModel = ViewModelProvider(this, ViewModelFactory()).get(DashboardViewModel::class.java)
+
+        val firstFragment=HomeDashboardFragment()
+        val thirdFragment=LogoutDashBoardFragment()
+
+
+
+        binding.bottomNavigation.setOnNavigationItemSelectedListener {
+            when(it.itemId){
+                R.id.homeDashboardFragment->setCurrentFragment(firstFragment)
+
+                R.id.shootActivity-> {
+                    var intent : Intent? = null
+                    intent = if (getString(R.string.app_name) == "Karvi.com") Intent(this,
+                        ShootActivity::class.java) else Intent(this, CategoriesActivity::class.java)
+
+                    intent.putExtra(AppConstants.CATEGORY_ID,AppConstants.CARS_CATEGORY_ID)
+                    intent.putExtra(AppConstants.CATEGORY_NAME,"Automobiles")
+                    startActivity(intent)
+                }
+                R.id.completedOrdersFragment-> {
+                    intent = Intent(this, MyOrdersActivity::class.java)
+
+                    startActivity(intent)
+                }
+                R.id.logoutDashBoardFragment->setCurrentFragment(thirdFragment)
+
+            }
+            true
+        }
+
         if (intent.getBooleanExtra(AppConstants.IS_NEW_USER,false)){
             viewModel.isNewUser.value = intent.getBooleanExtra(AppConstants.IS_NEW_USER,false)
             viewModel.creditsMessage.value = intent.getStringExtra(AppConstants.CREDITS_MESSAGE)
         }
+    }
 
-        fab.setOnClickListener {
-            val intent = Intent(this, CategoriesActivity::class.java)
-            startActivity(intent)
+
+    override fun onResume() {
+        super.onResume()
+
+       binding.bottomNavigation.selectedItemId = R.id.homeDashboardFragment
+    }
+
+    private fun setCurrentFragment(fragment: Fragment)=
+        supportFragmentManager.beginTransaction().apply {
+            replace(binding.flContainer.id,fragment)
+            commit()
         }
 
-    }
-
-    override fun onSupportNavigateUp(): Boolean {
-        return NavigationUI.navigateUp(navController, null)
-    }
 
 }

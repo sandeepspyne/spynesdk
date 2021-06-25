@@ -48,8 +48,6 @@ import com.spyneai.model.skustatus.UpdateSkuStatusResponse
 import com.spyneai.model.upload.PreviewResponse
 import com.spyneai.model.upload.UploadResponse
 import com.spyneai.model.uploadRough.UploadPhotoRequest
-import com.spyneai.videorecording.model.UploadVideoResponse
-import com.spyneai.videorecording.model.VideoProcessingResponse
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
 import retrofit2.Call
@@ -518,33 +516,4 @@ interface MyAPIService {
         @Part("credit_used") credit_used: RequestBody?
     ): Call<UpdateCreditResponse>?
 
-    @Multipart
-    @POST("upload-video")
-    fun uploadVideo(
-        @Part file: MultipartBody.Part,
-        @Part("user_id") user_id: RequestBody?,
-        @Part("sku_name") sku_name: RequestBody?,
-        @Part("sku_id") sku_id: RequestBody?,
-        @Part("type") type: RequestBody?,
-        @Part("category") category: RequestBody?
-    ): Call<UploadVideoResponse>?
-
-    @Multipart
-    @POST("360-image-processing")
-    fun processVideo(
-        @Part file: MultipartBody.Part,
-        @Part("video_url") video_url : RequestBody,
-        @Part("user_id") user_id: RequestBody?,
-        @Part("sku_name") sku_name: RequestBody?,
-        @Part("sku_id") sku_id: RequestBody?,
-        @Part("type") type: RequestBody?,
-        @Part("category") category: RequestBody?,
-        @Part("sub_category") sub_category: RequestBody?,
-        @Part("frames") frames: RequestBody?
-    ): Call<VideoProcessingResponse>?
-
-    @POST("real-estate/cars-360-interior-ping")
-    fun getThreeSixtyInteriorByShootId(
-        @Query("sku_id") skuId : String
-    ): Call<VideoProcessingResponse>?
 }

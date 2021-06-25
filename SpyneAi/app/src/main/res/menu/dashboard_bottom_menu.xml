@@ -7,13 +7,9 @@
         android:icon="@drawable/ic_home"></item>
 
     <item
-        android:id="@+id/walletDashboardFragment"
-        android:title="Wallet"
-        android:icon="@drawable/ic_wallet"></item>
-
-    <item
-        android:id="@+id/placeholder"
-        android:title="" />
+        android:id="@+id/shootActivity"
+        android:title="Shoot"
+        android:icon="@drawable/ic_shoot"></item>
 
     <item
         android:id="@+id/completedOrdersFragment"

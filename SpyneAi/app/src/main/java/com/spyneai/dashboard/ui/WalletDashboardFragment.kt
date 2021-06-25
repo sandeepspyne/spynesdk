@@ -9,16 +9,13 @@ import android.view.ViewGroup
 import android.widget.LinearLayout
 import android.widget.Toast
 import androidx.core.content.ContextCompat
-import androidx.fragment.app.Fragment
 import com.posthog.android.Properties
 import com.spyneai.R
 import com.spyneai.base.BaseFragment
 import com.spyneai.captureEvent
 import com.spyneai.captureFailureEvent
-import com.spyneai.credits.CreditPlansActivity
 import com.spyneai.credits.CreditUtils
 import com.spyneai.dashboard.data.DashboardViewModel
-import com.spyneai.databinding.HomeDashboardFragmentBinding
 import com.spyneai.databinding.WalletDashboardFragmentBinding
 import com.spyneai.interfaces.APiService
 import com.spyneai.interfaces.RetrofitClientSpyneAi
@@ -37,8 +34,6 @@ class WalletDashboardFragment :
     private var availableCredits = 0
     private var retry = 0
     protected lateinit var rootView: View
-
-
 
 
 
@@ -69,10 +64,10 @@ class WalletDashboardFragment :
 
 
         binding.flAddCredits.setOnClickListener {
-            val intent = Intent(requireContext(), CreditPlansActivity::class.java)
-            intent.putExtra("from_wallet",true)
-            intent.putExtra("credit_available",availableCredits)
-            startActivity(intent)
+//            val intent = Intent(requireContext(), CreditPlansActivity::class.java)
+//            intent.putExtra("from_wallet",true)
+//            intent.putExtra("credit_available",availableCredits)
+//            startActivity(intent)
         }
 
         fetchUserCreditDetails()
@@ -173,5 +168,10 @@ class WalletDashboardFragment :
         inflater: LayoutInflater,
         container: ViewGroup?
     ) = WalletDashboardFragmentBinding.inflate(inflater, container, false)
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+       // _binding = null
+    }
 
 }

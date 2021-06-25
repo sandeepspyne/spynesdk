@@ -7,18 +7,12 @@ import android.os.Bundle
 import android.widget.Toast
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
-import androidx.appcompat.app.AppCompatDelegate
 import androidx.core.content.ContextCompat
 import com.bumptech.glide.Glide
 import com.downloader.PRDownloader
 import com.downloader.PRDownloaderConfig
 import com.spyneai.R
-import com.spyneai.credits.CreditApiService
-import com.spyneai.credits.CreditPlansActivity
-import com.spyneai.credits.LowCreditsActivity
-import com.spyneai.credits.RetrofitCreditClient
-import com.spyneai.credits.model.DownloadHDRes
-import com.spyneai.dashboard.ui.MainDashboardActivity
+import com.spyneai.fragment.TopUpFragment
 import com.spyneai.gotoHome
 import com.spyneai.interfaces.APiService
 import com.spyneai.interfaces.RetrofitClientSpyneAi
@@ -118,19 +112,13 @@ class OrderSummary2Activity : AppCompatActivity() {
                 )!!.toInt()){
                     startDownloadActivity()
             }else{
-                    var intent = Intent(this,LowCreditsActivity::class.java)
-                    intent.putExtra("image", listHdQuality[0])
-                    intent.putExtra("credit_available",availableCredits)
-                    startActivity(intent)
+                    TopUpFragment().show(supportFragmentManager,"TopUpFragment")
                 }
             }
         }
 
         tvTopUp.setOnClickListener {
-            //showWhatsappCreditDialog()
-            var intent = Intent(this,CreditPlansActivity::class.java)
-            intent.putExtra("credit_available",availableCredits)
-            startActivity(intent)
+            TopUpFragment().show(supportFragmentManager,"TopUpFragment")
         }
 
         imgBack.setOnClickListener {

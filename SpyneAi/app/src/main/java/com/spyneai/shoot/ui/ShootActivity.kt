@@ -47,7 +47,7 @@ class ShootActivity : AppCompatActivity() {
         val categoryDetails = CategoryDetails()
 
         categoryDetails.apply {
-           categoryId = intent.getStringExtra(AppConstants.CATEGORY_ID)
+            categoryId = intent.getStringExtra(AppConstants.CATEGORY_ID)
             categoryName = intent.getStringExtra(AppConstants.CATEGORY_NAME)
             gifList =  intent.getStringExtra(AppConstants.GIF_LIST)
         }

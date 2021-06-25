@@ -58,7 +58,14 @@
     <dimen name="button_size_big">56dp</dimen>
     <dimen name="button_size_small">36dp</dimen>
     <dimen name="count_down_text_size">72sp</dimen>
-    <dimen name="tool_bar_height">56dp</dimen>
+
     <dimen name="sp_14">14sp</dimen>
+
+
+
+
+
+    <dimen name="tool_bar_height">56dp</dimen>
+    <dimen name="dp_180">180dp</dimen>
 
 </resources>

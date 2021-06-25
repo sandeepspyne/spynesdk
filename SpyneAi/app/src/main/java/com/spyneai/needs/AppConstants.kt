@@ -1,6 +1,7 @@
 package com.spyneai.needs
 
 object AppConstants {
+    val CARS_CATEGORY_ID = "cat_d8R14zUNE"
     val tokenId: String = "tokenId"
     val CREDITS_MESSAGE = "CREDITS_MESSAGE"
     val AUTH_KEY ="AUTH_KEY"
@@ -91,7 +92,6 @@ object AppConstants {
 
     val CORNER_POSITION: String = "corner_position"
 
-    val API_KEY: String = "ee84dc3e-340e-4d39-a24c-9365272405f9"
 
     val  USER_NAME: String = "userName"
     val  USER_EMAIL: String = "userEmail"

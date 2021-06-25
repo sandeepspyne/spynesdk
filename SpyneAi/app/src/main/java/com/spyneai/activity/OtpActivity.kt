@@ -17,6 +17,7 @@ import com.spyneai.captureEvent
 import com.spyneai.captureFailureEvent
 import com.spyneai.captureIdentity
 import com.spyneai.dashboard.ui.MainDashboardActivity
+import com.spyneai.dashboard.ui.WhiteLabelConstants
 import com.spyneai.interfaces.MyAPIService
 import com.spyneai.interfaces.RetrofitClient
 import com.spyneai.interfaces.RetrofitClients
@@ -377,7 +378,7 @@ public class OtpActivity : AppCompatActivity() {
 
         val request = RetrofitClients.buildService(MyAPIService::class.java)
         val call = request.postOtp(Utilities.getPreference(this, AppConstants.EMAIL_ID).toString(),
-            AppConstants.API_KEY,
+            WhiteLabelConstants.API_KEY,
             otpEntered)
 
         call?.enqueue(object : Callback<OtpResponse> {
@@ -445,7 +446,7 @@ public class OtpActivity : AppCompatActivity() {
         val loginRequest = LoginRequest(Utilities.getPreference(this, AppConstants.EMAIL_ID).toString());
 
         val request = RetrofitClient.buildService(MyAPIService::class.java)
-        val call = request.loginEmailApp(Utilities.getPreference(this, AppConstants.EMAIL_ID).toString(),AppConstants.API_KEY)
+        val call = request.loginEmailApp(Utilities.getPreference(this, AppConstants.EMAIL_ID).toString(),WhiteLabelConstants.API_KEY)
 
         call?.enqueue(object : Callback<LoginResponse>{
             override fun onResponse(call: Call<LoginResponse>, response: Response<LoginResponse>) {

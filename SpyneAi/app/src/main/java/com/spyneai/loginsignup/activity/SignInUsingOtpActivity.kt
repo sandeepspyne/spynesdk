@@ -14,6 +14,7 @@ import com.posthog.android.Properties
 import com.spyneai.R
 import com.spyneai.captureEvent
 import com.spyneai.captureFailureEvent
+import com.spyneai.dashboard.ui.WhiteLabelConstants
 import com.spyneai.interfaces.MyAPIService
 import com.spyneai.interfaces.RetrofitClients
 import com.spyneai.loginsignup.activity.LoginActivity
@@ -115,7 +116,7 @@ class SignInUsingOtpActivity : AppCompatActivity() {
         Utilities.showProgressDialog(this)
 
         val request = RetrofitClients.buildService(MyAPIService::class.java)
-        val call = request.loginEmailApp(etEmail.text.toString().trim(),AppConstants.API_KEY)
+        val call = request.loginEmailApp(etEmail.text.toString().trim(), WhiteLabelConstants.API_KEY)
 //        val call = request.loginEmailApp(etEmail.text.toString(),"value")
 
 
