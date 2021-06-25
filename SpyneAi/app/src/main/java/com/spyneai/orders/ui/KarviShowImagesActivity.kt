@@ -34,6 +34,7 @@ import com.spyneai.needs.AppConstants
 import com.spyneai.needs.ScrollingLinearLayoutManager
 import com.spyneai.needs.Utilities
 import com.spyneai.orders.ui.adapter.KarviImagesAdapter
+import com.spyneai.shoot.ui.ShootActivity
 import com.spyneai.shoot.utils.log
 import com.synnapps.carouselview.CarouselView
 import com.synnapps.carouselview.ViewListener
@@ -112,21 +113,10 @@ class KarviShowImagesActivity : AppCompatActivity() {
 
 
         binding.llStartNewShoot.setOnClickListener {
-            Utilities.savePrefrence(this, AppConstants.DOWNLOAD_TYPE, "hd")
-            val orderIntent = Intent(this, OrderSummary2Activity::class.java)
-            orderIntent.putExtra(AppConstants.LIST_WATERMARK, imageListWaterMark)
-            orderIntent.putExtra(AppConstants.LIST_HD_QUALITY, listHdQuality)
-            orderIntent.putExtra("is_paid",intent.getBooleanExtra("is_paid",false))
-
-            var skuId = Utilities.getPreference(this, AppConstants.SKU_ID)
-                .toString()
-
-            var skuName = Utilities.getPreference(this, AppConstants.SKU_ID)
-                .toString()
-
-            orderIntent.putExtra(AppConstants.SKU_ID,skuId)
-            orderIntent.putExtra(AppConstants.SKU_NAME,skuName)
-            startActivity(orderIntent)
+            val intent = Intent(this, ShootActivity::class.java)
+            intent.putExtra(AppConstants.CATEGORY_ID, AppConstants.CARS_CATEGORY_ID)
+            intent.putExtra(AppConstants.CATEGORY_NAME,"Automobiles")
+            startActivity(intent)
         }
     }
 

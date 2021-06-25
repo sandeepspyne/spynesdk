@@ -54,12 +54,12 @@ class SelectBackgroundFragment : BaseFragment<ProcessViewModel,FragmentSelectBac
             viewModel.checkImagesUploadStatus(backgroundSelect)
 
             viewModel.processSku.observe(viewLifecycleOwner,{
-                if (it)  processSku()
+                if (it) processSku()
             })
 
             viewModel.skuQueued.observe(viewLifecycleOwner,{
                 //sku process queued start timer
-                if (it)  viewModel.startTimer.value = true
+                if (it) viewModel.startTimer.value = true
             })
         }
     }

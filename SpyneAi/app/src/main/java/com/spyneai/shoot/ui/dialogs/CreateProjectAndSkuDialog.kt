@@ -102,7 +102,7 @@ class CreateProjectAndSkuDialog : BaseDialogFragment<ShootViewModel,DialogCreate
                     Utilities.hideProgressDialog()
                     val sku = viewModel.sku.value
                     sku?.skuId = it.value.sku_id
-                    sku?.totalImages = viewModel.exterirorAngles.value
+                    sku?.totalImages = 8
 
                     viewModel.sku.value = sku
                     //notify project created

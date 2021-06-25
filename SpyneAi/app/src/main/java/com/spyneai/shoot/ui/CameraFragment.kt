@@ -202,7 +202,11 @@ class CameraFragment : BaseFragment<ShootViewModel, FragmentCameraBinding>(),Pic
                 override fun onError(exc: ImageCaptureException) {
                     viewModel.isCameraButtonClickable = true
                     log("Photo capture failed: "+exc.message)
-                    requireContext().captureFailureEvent(Events.IMAGE_CAPRURE_FAILED,Properties(),exc.localizedMessage)
+                   try {
+                       requireContext().captureFailureEvent(Events.IMAGE_CAPRURE_FAILED,Properties(),exc.localizedMessage)
+                   }catch (e : IllegalStateException){
+
+                   }
                 }
                 override fun onImageSaved(output: ImageCapture.OutputFileResults) {
                     val savedUri = Uri.fromFile(photoFile)

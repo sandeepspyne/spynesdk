@@ -4,20 +4,21 @@
     android:orientation="horizontal"
     android:layout_width="match_parent"
     android:id="@+id/llBeforeAfterReplaced"
+    android:gravity="center"
     android:layout_margin="@dimen/dp_10"
     android:layout_height="wrap_content">
 
     <LinearLayout
-        android:layout_width="0dp"
-        android:layout_weight="1"
+        android:layout_width="224dp"
+        android:layout_height="126dp"
         android:gravity="center"
         android:layout_marginStart="@dimen/dp_5"
         android:layout_marginEnd="@dimen/dp_5"
-        android:layout_height="wrap_content"
         android:orientation="vertical">
+
         <androidx.cardview.widget.CardView
             android:layout_width="match_parent"
-            android:layout_height="@dimen/dp_100"
+            android:layout_height="match_parent"
             android:background="@drawable/bg_edit_black_bf"
             android:layout_margin="@dimen/dp_1"
             android:elevation="@dimen/dp_10"
@@ -28,7 +29,7 @@
                 android:src="@mipmap/defaults"
                 android:scaleType="centerCrop"
                 android:layout_gravity="center"
-                android:layout_height="@dimen/dp_100" />
+                android:layout_height="match_parent" />
         </androidx.cardview.widget.CardView>
 
 

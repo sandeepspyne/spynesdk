@@ -61,6 +61,9 @@ class MyOngoingOrdersAdapter(
 
         holder.tv_images_count_ongoing.text = ongoingSkuList[position].total_images.toString()
         holder.tvSubCategory.text = ongoingSkuList[position].sub_category
+        if (ongoingSkuList[position].sub_category == null)
+            holder.tvSubCategory.text = "prod_Gcg69Rkxa"
+
         holder.tvDateOngoing.text = ongoingSkuList[position].created_date
         holder.tvCategoryName.text = ongoingSkuList[position].category
         holder.tvSkuName.text = ongoingSkuList[position].sku_name + dots

@@ -75,6 +75,9 @@ class MyCompletedOrdersAdapter(
 
         holder.tv_images_count.text = completedSkuList[position].total_images.toString()
         holder.tvSubCat.text = completedSkuList[position].sub_category
+        if (completedSkuList[position].sub_category == null)
+            holder.tvSubCat.text = "prod_Gcg69Rkxa"
+
         holder.tvDate.text = completedSkuList[position].created_date
         holder.tvCategoryName.text = completedSkuList[position].category
         holder.tvSkuName.text = completedSkuList[position].sku_name + dots

@@ -95,6 +95,8 @@ class UploadImageWorker(val appContext: Context, workerParams: WorkerParameters)
                                 processSkuWorkRequest.setInputData(data.build())
                                 WorkManager.getInstance(applicationContext)
                                     .enqueue(processSkuWorkRequest.build())
+                            }else {
+                                com.spyneai.shoot.utils.log("processing not started yet")
                             }
                         }else{
                             captureEvent(Events.UPLOAD_FAILED,false,uploadImageResponse?.message)
