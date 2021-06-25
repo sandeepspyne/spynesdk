@@ -73,6 +73,7 @@
             app:layout_constraintTop_toBottomOf="@+id/cvThumbnail"
             app:layout_constraintLeft_toLeftOf="parent"
             android:layout_marginLeft="@dimen/dp_40"
+            android:maxLength="10"
             android:padding="@dimen/dp_5"/>
 
         <TextView
@@ -99,6 +100,7 @@
             app:layout_constraintRight_toRightOf="parent"
             android:layout_marginRight="@dimen/dp_10"
             android:layout_marginLeft="@dimen/dp_5"
+            android:maxLength="5"
             android:fontFamily="@font/poppins_medium"/>
 
         <TextView
