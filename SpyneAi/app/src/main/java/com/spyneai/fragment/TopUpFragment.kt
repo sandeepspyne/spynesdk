@@ -9,6 +9,7 @@ import android.view.ViewGroup
 import android.widget.Toast
 import androidx.fragment.app.DialogFragment
 import com.posthog.android.Properties
+import com.spyneai.R
 import com.spyneai.captureEvent
 import com.spyneai.captureFailureEvent
 import com.spyneai.credits.CreditUtils
@@ -34,12 +35,10 @@ class TopUpFragment: DialogFragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-
         // Inflate the layout for this fragment
         _binding = DialogTopUpBinding.inflate(inflater, container, false)
 
         isCancelable = false
-
 
         return binding.root
     }
@@ -49,6 +48,11 @@ class TopUpFragment: DialogFragment() {
 
         binding.ivClose.setOnClickListener {
             dismiss()
+        }
+
+        if (getString(R.string.app_name) == "Karvi.com"){
+            binding.tvReqCredit.visibility = View.GONE
+            binding.tvSendRequest.visibility = View.GONE
         }
 
         fetchUserCreditDetails()
@@ -91,7 +95,6 @@ class TopUpFragment: DialogFragment() {
                     }
 
                     try {
-
                         requireContext().captureEvent(" Wallet Credits Fetched", Properties())
 
                         Utilities.savePrefrence(
@@ -115,23 +118,13 @@ class TopUpFragment: DialogFragment() {
 
                 } else {
 
-                    retry++
-                    if (retry < 4){
-                        fetchUserCreditDetails()
-                    }else{
-                        onError()
-                    }
+                    onError()
                 }
             }
 
             override fun onFailure(call: Call<CreditDetailsResponse>, t: Throwable) {
                 binding.shimmer.startShimmer()
-                retry++
-                if (retry < 4){
-                    fetchUserCreditDetails()
-                }else{
-                    onError()
-                }
+                onError()
             }
         })
 

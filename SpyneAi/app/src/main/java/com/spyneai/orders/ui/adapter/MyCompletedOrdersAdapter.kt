@@ -15,10 +15,13 @@ import androidx.navigation.findNavController
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.spyneai.R
+import com.spyneai.activity.OnboardingsActivity
 import com.spyneai.activity.ShowImagesActivity
+import com.spyneai.loginsignup.activity.LoginActivity
 import com.spyneai.needs.AppConstants
 import com.spyneai.needs.Utilities
 import com.spyneai.orders.data.response.CompletedSKUsResponse
+import com.spyneai.orders.ui.KarviShowImagesActivity
 
 class MyCompletedOrdersAdapter(
     val context: Context,
@@ -89,10 +92,11 @@ class MyCompletedOrdersAdapter(
                 AppConstants.SKU_ID,
                 completedSkuList[position].sku_id
             )
-            val intent = Intent(
-                context,
-                ShowImagesActivity::class.java
-            )
+            var intent : Intent? = null
+            intent = if (context.getString(R.string.app_name) == "Karvi.com") Intent(context,
+                KarviShowImagesActivity::class.java) else Intent(context, ShowImagesActivity::class.java)
+
+
             intent.putExtra("is_paid",completedSkuList[position].paid)
             context.startActivity(intent)
         }
