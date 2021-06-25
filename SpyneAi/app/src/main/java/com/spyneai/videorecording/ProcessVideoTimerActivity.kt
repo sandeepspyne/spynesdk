@@ -8,6 +8,7 @@ import com.spyneai.R
 import com.spyneai.dashboard.ui.MainDashboardActivity
 import com.spyneai.databinding.ActivityProcessVideoTimerBinding
 import com.spyneai.databinding.ActivityWalletBinding
+import com.spyneai.gotoHome
 import com.spyneai.videorecording.model.ProcessVideoEvent
 import kotlinx.android.synthetic.main.activity_timer.*
 import org.greenrobot.eventbus.EventBus
@@ -30,9 +31,7 @@ class ProcessVideoTimerActivity : AppCompatActivity() {
         setContentView(binding.root)
 
         binding.tvBackToHome.setOnClickListener {
-            var dashboardIntent = Intent(this, MainDashboardActivity::class.java)
-            dashboardIntent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
-            startActivity(dashboardIntent)
+           gotoHome()
         }
 
         countDownTimer(300000)

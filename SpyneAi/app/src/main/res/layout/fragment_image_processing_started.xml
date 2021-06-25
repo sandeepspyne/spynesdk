@@ -174,7 +174,6 @@
                         </LinearLayout>
 
                         <LinearLayout
-                            android:visibility="gone"
                             android:id="@+id/llThreeSixtyShoot"
                             android:layout_below="@+id/llStartNewShoot"
                             android:layout_weight="1"
