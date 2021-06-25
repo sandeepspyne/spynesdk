@@ -14,6 +14,7 @@ import com.bumptech.glide.load.engine.GlideException
 import com.bumptech.glide.request.RequestListener
 import com.bumptech.glide.request.target.Target
 import com.posthog.android.Properties
+import com.spyneai.R
 import com.spyneai.base.BaseFragment
 import com.spyneai.base.network.Resource
 import com.spyneai.captureEvent
@@ -105,8 +106,10 @@ class OverlaysFragment : BaseFragment<ShootViewModel,FragmentOverlaysBinding>(),
     private fun initAngles() {
         viewModel.exterirorAngles.value = 8
 
-        binding.tvShoot?.setOnClickListener {
-            AngleSelectionDialog().show(requireFragmentManager(), "AngleSelectionDialog")
+        if (getString(R.string.app_name) != "Karvi.com"){
+            binding.tvShoot?.setOnClickListener {
+                AngleSelectionDialog().show(requireFragmentManager(), "AngleSelectionDialog")
+            }
         }
 
         //update progress list

@@ -106,6 +106,7 @@ class ShootActivity : AppCompatActivity() {
             onPermissionGranted()
         } else {
             Toast.makeText(this, R.string.message_no_permissions, Toast.LENGTH_SHORT).show()
+            finish()
         }
     }
 

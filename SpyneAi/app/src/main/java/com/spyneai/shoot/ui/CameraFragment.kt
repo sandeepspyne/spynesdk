@@ -17,6 +17,7 @@ import androidx.core.content.ContextCompat
 import com.hbisoft.pickit.PickiT
 import com.hbisoft.pickit.PickiTCallbacks
 import com.posthog.android.Properties
+import com.spyneai.R
 import com.spyneai.base.BaseFragment
 import com.spyneai.camera2.ShootDimensions
 import com.spyneai.captureEvent
@@ -27,6 +28,7 @@ import com.spyneai.needs.Utilities
 import com.spyneai.posthog.Events
 import com.spyneai.shoot.data.ShootViewModel
 import com.spyneai.shoot.data.model.ShootData
+import com.spyneai.shoot.ui.dialogs.AngleSelectionDialog
 import com.spyneai.shoot.ui.dialogs.InteriorHintDialog
 import com.spyneai.shoot.ui.dialogs.SubCategoryConfirmationDialog
 import com.spyneai.shoot.utils.log
@@ -96,7 +98,10 @@ class CameraFragment : BaseFragment<ShootViewModel, FragmentCameraBinding>(),Pic
         startCamera()
 
         binding.cameraCaptureButton?.setOnClickListener {
-            if (viewModel.isSubCategoryConfirmed.value == null || viewModel.isSubCategoryConfirmed.value == false){
+
+            if ((viewModel.isSubCategoryConfirmed.value == null || viewModel.isSubCategoryConfirmed.value == false)
+                &&
+                getString(R.string.app_name) != "Karvi.com"){
                 SubCategoryConfirmationDialog().show(requireFragmentManager(), "SubCategoryConfirmationDialog")
             }else{
                 if (viewModel.isCameraButtonClickable){

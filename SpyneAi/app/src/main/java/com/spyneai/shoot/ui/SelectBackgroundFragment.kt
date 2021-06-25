@@ -67,10 +67,10 @@ class SelectBackgroundFragment : BaseFragment<ProcessViewModel,FragmentSelectBac
     private fun initSelectBackground() {
 
         val category =
-            Utilities.getPreference(requireContext(), AppConstants.CATEGORY_NAME)!!.toRequestBody(MultipartBody.FORM)
+            Utilities.getPreference(requireContext(), AppConstants.CATEGORY_NAME).toString().toRequestBody(MultipartBody.FORM)
 
         val auth_key =
-            Utilities.getPreference(requireContext(), AppConstants.AUTH_KEY)!!.toRequestBody(MultipartBody.FORM)
+            Utilities.getPreference(requireContext(), AppConstants.AUTH_KEY).toString().toRequestBody(MultipartBody.FORM)
 
         viewModel.getBackgroundGifCars(category, auth_key)
 

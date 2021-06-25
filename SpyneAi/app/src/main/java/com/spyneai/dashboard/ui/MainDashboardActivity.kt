@@ -15,6 +15,7 @@ import com.spyneai.dashboard.data.DashboardViewModel
 import com.spyneai.dashboard.ui.base.ViewModelFactory
 import com.spyneai.databinding.ActivityDashboardMainBinding
 import com.spyneai.needs.AppConstants
+import com.spyneai.needs.Utilities
 import com.spyneai.orders.ui.MyOrdersActivity
 import com.spyneai.orders.ui.MyOrdersFragment
 import com.spyneai.shoot.ui.ShootActivity
@@ -35,6 +36,9 @@ class MainDashboardActivity : AppCompatActivity() {
         val firstFragment=HomeDashboardFragment()
         val thirdFragment=LogoutDashBoardFragment()
 
+        //save category id and name
+        Utilities.savePrefrence(this,AppConstants.CATEGORY_ID,AppConstants.CARS_CATEGORY_ID)
+        Utilities.savePrefrence(this,AppConstants.CATEGORY_NAME,"Automobiles")
 
 
         binding.bottomNavigation.setOnNavigationItemSelectedListener {
@@ -48,6 +52,7 @@ class MainDashboardActivity : AppCompatActivity() {
 
                     intent.putExtra(AppConstants.CATEGORY_ID,AppConstants.CARS_CATEGORY_ID)
                     intent.putExtra(AppConstants.CATEGORY_NAME,"Automobiles")
+
                     startActivity(intent)
                 }
                 R.id.completedOrdersFragment-> {
