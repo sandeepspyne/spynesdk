@@ -17,7 +17,7 @@ class AngleSelectionDialog : BaseDialogFragment<ShootViewModel,DialogAngleSelect
     }
 
     private fun showOptions() {
-        val valuesShoots = arrayOf("4 Angles", "8 Angles", "12 Angles")
+        val valuesShoots = arrayOf("4 Angles", "8 Angles", "12 Angles", "36 Angles")
 
         val lastSelectedAngles = viewModel.getSelectedAngles()
         var newSelectedAngles = viewModel.getSelectedAngles()
@@ -26,6 +26,7 @@ class AngleSelectionDialog : BaseDialogFragment<ShootViewModel,DialogAngleSelect
             4 -> binding.npShoots.minValue = 0
             8 -> binding.npShoots.minValue = 1
             12 -> binding.npShoots.minValue = 2
+            36 -> binding.npShoots.minValue = 3
         }
 
         binding.npShoots.minValue = 0
@@ -38,6 +39,7 @@ class AngleSelectionDialog : BaseDialogFragment<ShootViewModel,DialogAngleSelect
                "8 Angles" -> newSelectedAngles = 8
                "12 Angles" -> newSelectedAngles = 12
                "24 Angles" -> newSelectedAngles = 24
+               "36 Angles" -> newSelectedAngles = 36
            }
         }
 
