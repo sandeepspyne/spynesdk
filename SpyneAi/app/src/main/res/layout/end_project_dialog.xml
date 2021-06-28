@@ -1,0 +1,126 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_gravity="bottom"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    tools:context=".ecom.EndProjectDialog">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        android:layout_marginBottom="16dp">
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/llYes"
+        android:layout_width="100dp"
+        android:layout_height="@dimen/dp_40"
+        android:background="@drawable/bg_rectangle_button_ripple"
+        android:gravity="center"
+        app:layout_constraintLeft_toRightOf="@+id/llNo"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        android:layout_marginBottom="@dimen/dp_15">
+
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/yes"
+            android:textSize="@dimen/sp_16"
+            android:textColor="@color/white"
+            android:fontFamily="@font/poppins_medium"/>
+
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/llNo"
+        android:layout_width="100dp"
+        android:layout_height="@dimen/dp_40"
+        android:background="@drawable/bg_demo"
+        android:gravity="center"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toLeftOf="@+id/llYes"
+        app:layout_constraintBottom_toBottomOf="parent"
+        android:layout_marginBottom="@dimen/dp_15">
+
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/no"
+            android:textSize="@dimen/sp_16"
+            android:textColor="@color/black"
+            android:fontFamily="@font/poppins_medium"/>
+
+
+    </LinearLayout>
+
+    <TextView
+        android:id="@+id/tvEndProject"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:fontFamily="@font/poppins_medium"
+        android:textSize="@dimen/sp_16"
+        android:textColor="@color/black_varient"
+        android:text="@string/end_project"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintBottom_toTopOf="@+id/llNo"
+        android:layout_marginBottom="23dp"/>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center"
+        android:layout_marginTop="@dimen/dp_30"
+        android:layout_marginBottom="@dimen/dp_8"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toTopOf="@+id/tvEndProject">
+
+    <TextView
+        android:id="@+id/tvProjectText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:fontFamily="@font/poppins_medium"
+        android:textSize="@dimen/sp_16"
+        android:textColor="@color/black"
+        android:text="Project: " />
+
+    <TextView
+        android:id="@+id/tvProjectName"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:fontFamily="@font/poppins_medium"
+        android:textSize="@dimen/sp_16"
+        android:textColor="@color/primary"
+        android:layout_marginLeft="@dimen/dp_5"
+        tools:text="Project Name" />
+
+    </LinearLayout>
+
+    <ImageView
+        android:id="@+id/ivCloseDialog"
+        android:layout_width="@dimen/dp_15"
+        android:layout_height="@dimen/dp_15"
+        android:src="@drawable/ic_close"
+        android:layout_margin="@dimen/dp_15"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:tint="@color/black_varient" />
+
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>

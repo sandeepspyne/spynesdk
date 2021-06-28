@@ -201,6 +201,7 @@
                     android:layout_height="wrap_content"
                     android:text="@string/shoot_now"
                     android:textColor="@color/white"
+                    android:fontFamily="@font/poppins_medium"
                     android:textSize="@dimen/sp_13"
                     android:padding="@dimen/dp_12"/>
 
