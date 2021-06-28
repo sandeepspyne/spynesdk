@@ -94,6 +94,13 @@ android {
 
 
     }
+    sourceSets {
+        sweepCars {
+            java {
+                srcDirs 'src/sweepCars/java'
+            }
+        }
+    }
 
 }
 

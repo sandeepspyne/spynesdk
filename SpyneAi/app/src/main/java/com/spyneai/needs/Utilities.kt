@@ -84,13 +84,11 @@ object Utilities {
 
     fun showProgressDialog(context: Context) {
         if (context.isValidGlideContext()) {
-            dialog = Dialog(context)
+            dialog = Dialog(context!!)
             dialog!!.requestWindowFeature(Window.FEATURE_NO_TITLE)
             dialog!!.setContentView(R.layout.dialog_progress)
             dialog!!.setCancelable(false)
-
-            Glide.with(context).load(R.raw.logo).into(dialog!!.ivLoaders);
-
+            Glide.with(context).load(R.raw.loader).into(dialog!!.ivLoaders);
             dialog!!.window!!.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
             dialog!!.show()
         }

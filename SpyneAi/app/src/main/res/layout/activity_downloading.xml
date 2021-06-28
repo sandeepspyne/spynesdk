@@ -32,7 +32,6 @@
                     android:src="@drawable/back"
                     android:paddingStart="@dimen/dp_10"
                     android:paddingEnd="@dimen/dp_10"
-                    android:visibility="gone"
                     app:tint="@color/black" />
 
 
@@ -44,156 +43,154 @@
                     app:tint="@color/black" />
 
                 <ImageView
-                    android:id="@+id/ivDownloadingHome"
+                    android:id="@+id/iv_home"
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent"
                     android:src="@mipmap/home"
                     android:padding="@dimen/dp_10"
                     app:tint="@color/black"
+                    android:visibility="invisible"
                     android:layout_gravity="right"/>
 
             </FrameLayout>
         </androidx.appcompat.widget.Toolbar>
 
-       <FrameLayout
-           android:layout_width="match_parent"
-           android:layout_height="match_parent">
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
 
-           <androidx.core.widget.NestedScrollView
-               android:layout_width="match_parent"
-               android:layout_height="match_parent"
-               android:fillViewport="true"
-               tools:context=".activity.OrderActivity"
-               android:orientation="vertical">
-               <LinearLayout
-                   android:layout_width="match_parent"
-                   android:layout_height="wrap_content"
-                   android:orientation="vertical">
+            <androidx.core.widget.NestedScrollView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:fillViewport="true"
+                tools:context=".activity.OrderActivity"
+                android:orientation="vertical">
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
 
-                   <LinearLayout
-                       android:layout_width="match_parent"
-                       android:layout_height="wrap_content"
-                       android:padding="@dimen/dp_50"
-                       android:gravity="center">
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:padding="@dimen/dp_50"
+                        android:gravity="center">
 
-                       <ImageView
-                           android:layout_width="wrap_content"
-                           android:layout_height="wrap_content"
-                           android:src="@drawable/downloading"></ImageView>
+                        <ImageView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:adjustViewBounds="true"
+                            android:src="@drawable/downloading"></ImageView>
 
-                   </LinearLayout>
+                    </LinearLayout>
 
-                   <RelativeLayout
-                       android:layout_width="match_parent"
-                       android:layout_height="wrap_content"
-                       android:gravity="center"
-                       android:layout_marginTop="@dimen/dp_20"
-                       android:padding="@dimen/dp_20">
+                    <RelativeLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:gravity="center"
+                        android:layout_marginTop="@dimen/dp_20"
+                        android:padding="@dimen/dp_20">
 
-                       <TextView
-                           android:id="@+id/tvDownloading"
-                           android:layout_width="wrap_content"
-                           android:layout_height="wrap_content"
-                           android:text="@string/downloading...."
-                           android:textSize="@dimen/sp_18"
-                           android:fontFamily="@font/bold"
-                           android:textColor="@color/primary"
-                           ></TextView>
+                        <TextView
+                            android:id="@+id/tvDownloading"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@string/downloading...."
+                            android:textSize="@dimen/sp_18"
+                            android:fontFamily="@font/bold"
+                            android:textColor="@color/primary"
+                            ></TextView>
 
-                       <TextView
-                           android:id="@+id/tvDownloadCompleted"
-                           android:layout_width="wrap_content"
-                           android:layout_height="wrap_content"
-                           android:text="@string/download_completed"
-                           android:visibility="gone"
-                           android:textSize="@dimen/sp_18"
-                           android:textStyle="bold"
-                           android:textColor="@color/primary"
-                           ></TextView>
+                        <TextView
+                            android:id="@+id/tvDownloadCompleted"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@string/download_completed"
+                            android:visibility="gone"
+                            android:textSize="@dimen/sp_18"
+                            android:textStyle="bold"
+                            android:textColor="@color/primary"
+                            ></TextView>
 
-                       <TextView
-                           android:id="@+id/tvDownloadFailed"
-                           android:layout_width="wrap_content"
-                           android:layout_height="wrap_content"
-                           android:text="@string/download_failed"
-                           android:visibility="gone"
-                           android:textSize="@dimen/sp_18"
-                           android:textStyle="bold"
-                           android:textColor="@color/red"
-                           ></TextView>
+                        <TextView
+                            android:id="@+id/tvDownloadFailed"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@string/download_failed"
+                            android:visibility="gone"
+                            android:textSize="@dimen/sp_18"
+                            android:textStyle="bold"
+                            android:textColor="@color/errorcolor"
+                            ></TextView>
 
-                   </RelativeLayout>
+                    </RelativeLayout>
 
-                   <LinearLayout
-                       android:layout_width="match_parent"
-                       android:layout_height="wrap_content"
-                       android:padding="@dimen/dp_10"
-                       android:layout_marginTop="@dimen/dp_15"
-                       android:gravity="center">
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:padding="@dimen/dp_10"
+                        android:layout_marginTop="@dimen/dp_15"
+                        android:gravity="center">
 
-                       <TextView
-                           android:id="@+id/tvIncreaseSale"
-                           android:layout_width="wrap_content"
-                           android:layout_height="wrap_content"
-                           android:gravity="center"
-                           android:fontFamily="@font/medium"
-                           android:textSize="@dimen/sp_16"
-                           android:textColor="@color/dark_blue"
-                           android:text="@string/increase_online_sale"></TextView>
+                        <TextView
+                            android:id="@+id/tvIncreaseSale"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:gravity="center"
+                            android:fontFamily="@font/medium"
+                            android:textSize="@dimen/sp_16"
+                            android:textColor="@color/dark_blue"
+                            android:text="@string/increase_online_sale"></TextView>
 
-                   </LinearLayout>
+                    </LinearLayout>
 
-                   <RelativeLayout
-                       android:layout_width="match_parent"
-                       android:layout_height="wrap_content"
-                       android:gravity="center">
+                    <RelativeLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:gravity="center">
 
-                       <LinearLayout
-                           android:id="@+id/llButton"
-                           android:layout_width="wrap_content"
-                           android:layout_height="wrap_content"
-                           android:layout_gravity="center"
-                           android:padding="@dimen/dp_10"
-                           android:layout_marginTop="@dimen/dp_30"
-                           android:layout_marginBottom="@dimen/dp_20"
-                           android:background="@drawable/bg_downloadall"
-                           android:gravity="center">
+                        <LinearLayout
+                            android:id="@+id/llButton"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center"
+                            android:padding="@dimen/dp_10"
+                            android:layout_marginTop="@dimen/dp_30"
+                            android:layout_marginBottom="@dimen/dp_20"
+                            android:background="@drawable/bg_downloadall"
+                            android:gravity="center">
 
-                           <TextView
-                               android:id="@+id/tvButtonText"
-                               android:layout_width="wrap_content"
-                               android:layout_height="match_parent"
-                               android:layout_gravity="center"
-                               android:gravity="center"
-                               android:layout_marginStart="@dimen/dp_30"
-                               android:layout_marginEnd="@dimen/dp_30"
-                               android:fontFamily="@font/bold"
-                               android:padding="@dimen/dp_5"
-                               android:hint="@string/download_hd_images"
-                               android:textAllCaps="false"
-                               android:textColor="@color/white"
-                               android:textSize="@dimen/sp_16" />
-
-
-                       </LinearLayout>
+                            <TextView
+                                android:id="@+id/tvButtonText"
+                                android:layout_width="wrap_content"
+                                android:layout_height="match_parent"
+                                android:layout_gravity="center"
+                                android:gravity="center"
+                                android:layout_marginStart="@dimen/dp_30"
+                                android:layout_marginEnd="@dimen/dp_30"
+                                android:fontFamily="@font/bold"
+                                android:padding="@dimen/dp_5"
+                                android:hint="@string/download_hd_images"
+                                android:textAllCaps="false"
+                                android:textColor="@color/white"
+                                android:textSize="@dimen/sp_16" />
 
 
-                   </RelativeLayout>
-
-               </LinearLayout>
-
-           </androidx.core.widget.NestedScrollView>
-
-           <FrameLayout
-               android:layout_width="match_parent"
-               android:layout_height="match_parent"
-               android:id="@+id/fl_container"/>
-
-       </FrameLayout>
+                        </LinearLayout>
 
 
+                    </RelativeLayout>
 
+                </LinearLayout>
 
+            </androidx.core.widget.NestedScrollView>
+
+            <FrameLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:id="@+id/fl_container"/>
+
+        </FrameLayout>
 
 
 

@@ -17,7 +17,7 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:padding="@dimen/dp_10"
-            android:src="@mipmap/b" />
+            android:src="@drawable/slide_two_image" />
     </LinearLayout>
     <LinearLayout
         android:layout_width="match_parent"
@@ -29,7 +29,7 @@
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="@string/edit"
+            android:text="@string/slide_two_title"
             android:fontFamily="@font/medium"
             android:textColor="@color/black"
             android:gravity="center"
@@ -38,33 +38,31 @@
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="@string/you_have_access"
+            android:text="@string/slide_two_description"
             android:fontFamily="@font/light"
             android:gravity="center"
             android:textColor="@color/black"
             android:layout_marginBottom="@dimen/dp_10"
             android:layout_marginTop="@dimen/dp_10"
-            android:textSize="@dimen/sp_15"
-            android:layout_marginLeft="@dimen/dp_20"
-            android:layout_marginRight="@dimen/dp_20"/>
+            android:textSize="@dimen/sp_15"/>
 
-<!--
-        <TextView
-            android:id="@+id/tv_get_started"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="@string/get_started"
-            android:textColor="@color/white"
-            android:gravity="center"
-            android:padding="@dimen/dp_10"
-            android:layout_marginLeft="20dp"
-            android:elevation="@dimen/dp_5"
-            android:layout_marginRight="20dp"
-            android:layout_marginTop="10dp"
-            android:layout_marginBottom="20dp"
-            android:background="@drawable/bg_edit_button"
-            android:textSize="@dimen/sp_13"/>
--->
+        <!--
+                <TextView
+                    android:id="@+id/tv_get_started"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/get_started"
+                    android:textColor="@color/white"
+                    android:gravity="center"
+                    android:padding="@dimen/dp_10"
+                    android:layout_marginLeft="20dp"
+                    android:elevation="@dimen/dp_5"
+                    android:layout_marginRight="20dp"
+                    android:layout_marginTop="10dp"
+                    android:layout_marginBottom="20dp"
+                    android:background="@drawable/bg_edit_button"
+                    android:textSize="@dimen/sp_13"/>
+        -->
     </LinearLayout>
 
 </LinearLayout>

@@ -1,15 +1,18 @@
 package com.spyneai.credits
 
+import android.content.Context
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
 import android.view.View
+import android.view.inputmethod.InputMethodManager
 import com.spyneai.credits.fragments.FeedbackSubmittedFragment
 import com.spyneai.credits.model.InsertReviewResponse
 import com.spyneai.credits.model.ReviewHolder
 import com.spyneai.dashboard.ui.MainDashboardActivity
 import com.spyneai.databinding.ActivityFeedbackBinding
+import com.spyneai.gotoHome
 import com.spyneai.needs.AppConstants
 import com.spyneai.needs.Utilities
 import retrofit2.Call
@@ -33,9 +36,7 @@ class FeedbackActivity : AppCompatActivity() {
         }
 
         binding.ivHome.setOnClickListener {
-            var dashboardIntent = Intent(this, MainDashboardActivity::class.java)
-            dashboardIntent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
-            startActivity(dashboardIntent)
+            gotoHome()
         }
 
         binding.tvSubmit.setOnClickListener {
@@ -82,6 +83,9 @@ class FeedbackActivity : AppCompatActivity() {
     }
 
     private fun onFeedbackSubmitted() {
+        val imm: InputMethodManager = getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+        imm.hideSoftInputFromWindow(binding.etComment.getWindowToken(), 0)
+
         binding.progressBar.visibility = View.GONE
         binding.ivHome.visibility = View.VISIBLE
         backPressAllowed = false

@@ -13,6 +13,7 @@ import com.spyneai.credits.FeedbackActivity
 import com.spyneai.dashboard.ui.MainDashboardActivity
 import com.spyneai.databinding.FragmentCreditSuccessBinding
 import com.spyneai.databinding.FragmentDownloadCompletedBinding
+import com.spyneai.gotoHome
 
 class DownloadCompletedFragment : Fragment() {
 
@@ -44,20 +45,18 @@ class DownloadCompletedFragment : Fragment() {
         }
 
         binding.tvGoToHome.setOnClickListener {
-            var dashboardIntent = Intent(requireContext(), MainDashboardActivity::class.java)
-            dashboardIntent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
-            startActivity(dashboardIntent)
+            requireContext().gotoHome()
         }
 
         binding.ivThumbsUp.setOnClickListener {
-           if (requireActivity() != null){
-               var activity = requireActivity() as DownloadingActivity
-               activity.addFeedbackFragment()
-           }
+            if (requireActivity() != null){
+                var activity = requireActivity() as DownloadingActivity
+                activity.addFeedbackFragment()
+            }
         }
 
         binding.ivThumbsDown.setOnClickListener {
-           startFeedbackActivity(false)
+            startFeedbackActivity(false)
         }
     }
 

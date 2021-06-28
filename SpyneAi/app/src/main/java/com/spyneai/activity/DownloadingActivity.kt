@@ -17,7 +17,9 @@ import androidx.appcompat.app.AppCompatDelegate
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import com.downloader.*
+import com.posthog.android.Properties
 import com.spyneai.R
+import com.spyneai.captureEvent
 import com.spyneai.credits.fragments.DownloadCompletedFragment
 import com.spyneai.credits.fragments.FeedbackSubmittedFragment
 import com.spyneai.dashboard.ui.MainDashboardActivity
@@ -49,7 +51,6 @@ class DownloadingActivity : AppCompatActivity() {
     var path_save_photos: String = ""
     lateinit var file: File
 
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_downloading)
@@ -60,8 +61,6 @@ class DownloadingActivity : AppCompatActivity() {
             .build()
         PRDownloader.initialize(getApplicationContext(), config)
 
-        AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
-
         listWatermark = ArrayList<String>()
         listHdQuality = ArrayList<String>()
 
@@ -71,17 +70,12 @@ class DownloadingActivity : AppCompatActivity() {
 
         setPermissions()
 
-        ivDownloadingHome.setOnClickListener {
-            gotoHome()
-        }
-
         llButton.setOnClickListener {
             if (Utilities.getPreference(this, AppConstants.DOWNLOAD_TYPE).equals("watermark")) {
-                val orderIntent = Intent(this, OrderSummary2Activity::class.java)
-                orderIntent.putExtra(AppConstants.LIST_HD_QUALITY, listHdQuality)
-                orderIntent.putExtra(AppConstants.LIST_WATERMARK, listWatermark)
-                orderIntent.putExtra("is_paid",intent.getBooleanExtra("is_paid",false))
-                startActivity(orderIntent)
+                val intent = Intent(this, OrderSummary2Activity::class.java)
+                intent.putExtra(AppConstants.LIST_HD_QUALITY, listHdQuality)
+                intent.putExtra(AppConstants.LIST_WATERMARK, listWatermark)
+                startActivity(intent)
             } else {
                 gotoHome()
             }
@@ -126,6 +120,9 @@ class DownloadingActivity : AppCompatActivity() {
             tvIncreaseSale.visibility = View.VISIBLE
             llButton.visibility = View.VISIBLE
             tvButtonText.setText("Download HD Images")
+
+            captureEvent("Watermark Download Started", Properties())
+
             downloadWaterMark()
         } else if (Utilities.getPreference(this, AppConstants.DOWNLOAD_TYPE).equals("hd")) {
             ivBack.visibility = View.INVISIBLE
@@ -166,6 +163,9 @@ class DownloadingActivity : AppCompatActivity() {
     }
 
     private fun startDownloading() {
+
+        captureEvent("Download Started", Properties())
+
         var imageDownloadingServiceIntent = Intent(this,ImageDownloadingService::class.java)
         imageDownloadingServiceIntent.action = "START"
         imageDownloadingServiceIntent.putExtra(AppConstants.LIST_HD_QUALITY,listHdQuality)
@@ -185,7 +185,7 @@ class DownloadingActivity : AppCompatActivity() {
                     tvDownloadFailed.visibility = View.VISIBLE
                     tvDownloadCompleted.visibility = View.GONE
                     tvDownloading.visibility = View.GONE
-                } else{
+                }else{
                     downloadWithWaterMark(listWatermark[i])
                 }
             }
@@ -200,8 +200,6 @@ class DownloadingActivity : AppCompatActivity() {
         val imageName: String = "Spyne" + SimpleDateFormat(
             FILENAME_FORMAT, Locale.US
         ).format(System.currentTimeMillis()) + ".png"
-
-
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R){
             path_save_photos = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS).toString() + File.separator + this.getResources().getString(R.string.app_name)
@@ -225,8 +223,11 @@ class DownloadingActivity : AppCompatActivity() {
 
                     scanFile(file.absolutePath+"/"+imageName)
 
-                    if (downloadCount == listWatermark.size)
+                    if (downloadCount == listWatermark.size){
+                        captureEvent("Watermark Download Completed", Properties())
                         Toast.makeText(this@DownloadingActivity, "Download Completed", Toast.LENGTH_SHORT).show()
+                    }
+
 
                     refreshGallery(file.getAbsolutePath(), this@DownloadingActivity)
 
@@ -237,6 +238,8 @@ class DownloadingActivity : AppCompatActivity() {
 
                 override fun onError(error: com.downloader.Error?) {
                     if (downloadCount == listHdQuality.size) {
+
+                        captureEvent("Watermark Download Failed", Properties())
                         Toast.makeText(
                             this@DownloadingActivity,
                             "Download Failed", Toast.LENGTH_SHORT
@@ -247,7 +250,11 @@ class DownloadingActivity : AppCompatActivity() {
     }
 
     override fun onBackPressed() {
-
+        if (Utilities.getPreference(this, AppConstants.DOWNLOAD_TYPE).equals("watermark")) {
+            finish()
+        }else{
+            super.onBackPressed()
+        }
     }
 
     private fun scanFile(path: String) {
@@ -277,6 +284,8 @@ class DownloadingActivity : AppCompatActivity() {
     @Subscribe(threadMode = ThreadMode.MAIN)
     fun onMessageEvent(event: HDImagesDownloadedEvent?) {
         event?.getSkuId()?.let {
+            captureEvent("Download Completed", Properties())
+
             Toast.makeText(this@DownloadingActivity, "Download Completed", Toast.LENGTH_SHORT).show()
 
             //add download complete fragment
@@ -294,7 +303,10 @@ class DownloadingActivity : AppCompatActivity() {
     }
 
     fun addFeedbackFragment() {
-
+        iv_home.visibility = View.VISIBLE
+        iv_home.setOnClickListener {
+           gotoHome()
+        }
 
         supportFragmentManager.beginTransaction()
             .add(R.id.fl_container, FeedbackSubmittedFragment())

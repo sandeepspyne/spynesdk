@@ -11,8 +11,10 @@ import android.os.IBinder
 import android.os.PowerManager
 import android.util.Log
 import android.webkit.MimeTypeMap
+import com.posthog.android.Properties
 import com.spyneai.BaseApplication
 import com.spyneai.R
+import com.spyneai.captureEvent
 import com.spyneai.extras.events.ProcessingImagesEvent
 import com.spyneai.needs.AppConstants
 import com.spyneai.service.ServiceState
@@ -24,7 +26,7 @@ import org.greenrobot.eventbus.EventBus
 import java.io.File
 
 
-class ImageDownloadingService : Service(), ImageDownloadManager.Listener {
+class ImageDownloadingService : Service(),ImageDownloadManager.Listener {
 
     private var wakeLock: PowerManager.WakeLock? = null
 
@@ -104,11 +106,15 @@ class ImageDownloadingService : Service(), ImageDownloadManager.Listener {
     }
 
     private fun createCompletedNotification() {
+        captureEvent("Download Completed", Properties())
+
         var notification = createNotification("HD images downloaded! Check in your gallery", false)
         notificationManager.notify((0..999999).random(), notification)
     }
 
     private fun createFailureNotification() {
+        captureEvent("Download Failed", Properties())
+
         var notification = createNotification(
             "HD images downloading failed! please try again",
             false
@@ -150,20 +156,20 @@ class ImageDownloadingService : Service(), ImageDownloadManager.Listener {
             ) else
                 Notification.Builder(this)
 
-         var notificationBuilder = builder
-            .setContentTitle("Spyne")
+        var notificationBuilder = builder
+            .setContentTitle(getString(R.string.app_name))
             .setContentText(text)
             .setContentIntent(pendingIntent)
-            .setSmallIcon(R.mipmap.app_logo)
+            .setSmallIcon(R.mipmap.app_ic)
             .setOngoing(isOngoing)
             .setOnlyAlertOnce(true)
             .setPriority(Notification.PRIORITY_HIGH) // for under android 26 compatibility
 
-                 if(!isOngoing){
-                     notificationBuilder.setAutoCancel(true)
-                 }
+        if(!isOngoing){
+            notificationBuilder.setAutoCancel(true)
+        }
 
-           return notificationBuilder.build()
+        return notificationBuilder.build()
     }
 
     override fun onCreate() {
@@ -208,13 +214,13 @@ class ImageDownloadingService : Service(), ImageDownloadManager.Listener {
         hdImagesDownloadedEvent.setSkuId(task.skuId)
         EventBus.getDefault().post(hdImagesDownloadedEvent)
 
-      //check if downloaded before or not
-       if (!task.isDownloadedBefore){
-           CreditManager().reduceCredit(
-               task.creditsToReduce,
-               task.skuId,
-               BaseApplication.getContext())
-       }
+        //check if downloaded before or not
+        if (!task.isDownloadedBefore){
+            CreditManager().reduceCredit(
+                task.creditsToReduce,
+                task.skuId,
+                BaseApplication.getContext())
+        }
 
         stopService()
         checkAndFinishService()
