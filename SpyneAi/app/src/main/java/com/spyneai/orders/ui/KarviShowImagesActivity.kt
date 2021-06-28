@@ -131,10 +131,10 @@ class KarviShowImagesActivity : AppCompatActivity() {
         listHdQuality = ArrayList<String>()
 
         showReplacedImagesAdapter = KarviImagesAdapter(this,
-            imageListAfter as ArrayList<String>,
+            listHdQuality as ArrayList<String>,
             object : KarviImagesAdapter.BtnClickListener {
                 override fun onBtnClick(position: Int) {
-                    showImagesDialog(position)
+                    showImagesDialog(listHdQuality[position])
                     Log.e("position preview", position.toString())
                 }
             })
@@ -292,11 +292,11 @@ class KarviShowImagesActivity : AppCompatActivity() {
         })
     }
 
-    fun showImagesDialog(position: Int) {
+    fun showImagesDialog(url: String) {
         val dialog = Dialog(this)
         dialog.requestWindowFeature(Window.FEATURE_NO_TITLE)
         dialog.setCancelable(true)
-        dialog.setContentView(R.layout.dialog_show_images)
+        dialog.setContentView(R.layout.dialog_show_processed_images)
 
         val window: Window = dialog.getWindow()!!
         window.setLayout(
@@ -304,16 +304,17 @@ class KarviShowImagesActivity : AppCompatActivity() {
             WindowManager.LayoutParams.WRAP_CONTENT
         )
 
-        val carouselViewImages: CarouselView = dialog.findViewById(R.id.carouselViewImages)
+        val carouselViewImages: ImageView = dialog.findViewById(R.id.ivProcessed)
         val ivCrossImages: ImageView = dialog.findViewById(R.id.ivCrossImages)
+
 
         ivCrossImages.setOnClickListener(View.OnClickListener {
             dialog.dismiss()
         })
 
-        carouselViewImages.setPageCount(imageList.size);
-        carouselViewImages.setViewListener(viewListener);
-        carouselViewImages.setCurrentItem(position)
+        Glide.with(this)
+            .load(url)
+            .into(carouselViewImages)
 
         dialog.show()
     }

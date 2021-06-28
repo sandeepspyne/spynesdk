@@ -74,9 +74,13 @@ class MyCompletedOrdersAdapter(
             holder.tvPaid.visibility = View.VISIBLE
 
         holder.tv_images_count.text = completedSkuList[position].total_images.toString()
-        holder.tvSubCat.text = completedSkuList[position].sub_category
-        if (completedSkuList[position].sub_category == null)
+
+        if (completedSkuList[position].sub_category == "null"){
             holder.tvSubCat.text = "prod_Gcg69Rkxa"
+        }else{
+            holder.tvSubCat.text = completedSkuList[position].sub_category
+        }
+
 
         holder.tvDate.text = completedSkuList[position].created_date
         holder.tvCategoryName.text = completedSkuList[position].category
