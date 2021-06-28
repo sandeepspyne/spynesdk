@@ -32,7 +32,6 @@ import com.spyneai.shoot.ui.dialogs.AngleSelectionDialog
 import com.spyneai.shoot.ui.dialogs.InteriorHintDialog
 import com.spyneai.shoot.ui.dialogs.SubCategoryConfirmationDialog
 import com.spyneai.shoot.utils.log
-import kotlinx.android.synthetic.main.activity_camera.viewFinder
 import java.io.File
 import java.text.SimpleDateFormat
 import java.util.*
@@ -132,7 +131,7 @@ class CameraFragment : BaseFragment<ShootViewModel, FragmentCameraBinding>(),Pic
             val preview = Preview.Builder()
                 .build()
                 .also {
-                    it.setSurfaceProvider(viewFinder.surfaceProvider)
+                    it.setSurfaceProvider(binding.viewFinder?.surfaceProvider)
                 }
 
             //for exact image cropping

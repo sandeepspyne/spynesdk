@@ -15,7 +15,7 @@ import com.spyneai.model.dashboard.Data
 import com.spyneai.needs.AppConstants
 import com.spyneai.needs.Utilities
 import kotlinx.android.synthetic.main.activity_completed.*
-import kotlinx.android.synthetic.main.activity_dashboard.*
+
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response

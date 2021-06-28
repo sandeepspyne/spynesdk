@@ -39,8 +39,6 @@ import kotlinx.android.synthetic.main.activity_show_images.tvViewGif
 import kotlinx.android.synthetic.main.activity_show_images.tvYourEmailIdReplaced
 import kotlinx.android.synthetic.main.activity_show_images_demo.*
 import kotlinx.android.synthetic.main.activity_timer.*
-import kotlinx.android.synthetic.main.fragment_home.view.*
-import kotlinx.android.synthetic.main.view_custom.view.*
 import kotlinx.android.synthetic.main.view_images.view.*
 import okhttp3.MultipartBody
 import okhttp3.RequestBody

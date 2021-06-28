@@ -10,8 +10,6 @@ import com.bumptech.glide.Glide
 import com.spyneai.R
 import com.spyneai.activity.DownloadingActivity
 import com.spyneai.credits.FeedbackActivity
-import com.spyneai.dashboard.ui.MainDashboardActivity
-import com.spyneai.databinding.FragmentCreditSuccessBinding
 import com.spyneai.databinding.FragmentDownloadCompletedBinding
 import com.spyneai.gotoHome
 

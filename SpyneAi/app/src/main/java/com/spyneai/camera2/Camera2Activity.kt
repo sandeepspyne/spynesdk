@@ -58,7 +58,7 @@ import com.spyneai.needs.ImageFilePath
 import com.spyneai.needs.Utilities
 import kotlinx.android.synthetic.main.activity_camera2.*
 import kotlinx.android.synthetic.main.activity_camera_preview.*
-import kotlinx.android.synthetic.main.activity_credit_plans.*
+
 import kotlinx.android.synthetic.main.view_images.view.*
 import retrofit2.Call
 import retrofit2.Callback

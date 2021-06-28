@@ -37,12 +37,9 @@ import com.spyneai.shoot.utils.log
 import com.synnapps.carouselview.CarouselView
 import com.synnapps.carouselview.ViewListener
 import kotlinx.android.synthetic.main.activity_before_after.*
-import kotlinx.android.synthetic.main.activity_camera.*
 import kotlinx.android.synthetic.main.activity_show_gif.*
 import kotlinx.android.synthetic.main.activity_show_images.*
 import kotlinx.android.synthetic.main.activity_timer.*
-import kotlinx.android.synthetic.main.fragment_home.view.*
-import kotlinx.android.synthetic.main.view_custom.view.*
 import kotlinx.android.synthetic.main.view_images.view.*
 import okhttp3.MultipartBody
 import okhttp3.RequestBody

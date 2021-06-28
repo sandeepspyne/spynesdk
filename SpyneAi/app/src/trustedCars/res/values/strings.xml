@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Trusted cars</string>
+
+    //On Boarding
+    <string name="slide_one_title">Shoot</string>
+    <string name="slide_one_description">Snap edit and sell your cars\nthrough Store Camera</string>
+    <string name="slide_two_title">Edit</string>
+    <string name="slide_two_description">You have access to everything you need for taking fantastic
+        product photos.
+</string>
+    <string name="slide_three_tittle">Free Credits</string>
+    <string name="slide_three_description">Enjoy Free Credits on Signup</string>
+
+
+    //Sign In
+    <string name="terms">Terms &amp; Policies</string>
+
+
+    //Enter OTP
+    <string name="submit_otp">Submit OTP</string>
+
+    //dashboard
+    <string name="ongoing">On-Going</string>
+    <string name="completed">Completed</string>
+    <string name="our_work">Our Work</string>
+
+    //bottom navigation
+    <string name="home">Home</string>
+    <string name="order_now">Orders</string>
+</resources>
