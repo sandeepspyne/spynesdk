@@ -108,8 +108,8 @@ interface ClipperApi {
     @FormUrlEncoded
     @POST("v2/sku/getImagesById")
     suspend fun getImagesOfSku(
-        @Field("sku_id") skuId : String,
-        @Field("auth_key") authKey : String
+        @Field("auth_key") authKey : String,
+        @Field("sku_id") skuId : String
     ) : ImagesOfSkuRes
 
 

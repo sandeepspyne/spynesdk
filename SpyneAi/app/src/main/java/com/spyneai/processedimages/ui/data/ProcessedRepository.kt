@@ -8,9 +8,9 @@ class ProcessedRepository : BaseRepository() {
     private var clipperApi = ClipperApiClient().getClient()
 
     suspend fun getImagesOfSku(
-        tokenId: String,
+        authKey: String,
         skuId: String
     ) = safeApiCall{
-        clipperApi.getImagesOfSku(tokenId, skuId)
+        clipperApi.getImagesOfSku(authKey, skuId)
     }
 }

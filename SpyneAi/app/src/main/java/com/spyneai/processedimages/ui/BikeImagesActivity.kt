@@ -8,5 +8,9 @@ class BikeImagesActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_bike_images)
+
+        supportFragmentManager.beginTransaction()
+            .add(R.id.flContainer,BikeImagesFragment())
+            .commit()
     }
 }
