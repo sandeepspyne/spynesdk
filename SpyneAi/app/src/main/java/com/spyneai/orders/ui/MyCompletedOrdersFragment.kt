@@ -10,7 +10,6 @@ import androidx.recyclerview.widget.RecyclerView
 import com.posthog.android.Properties
 import com.spyneai.base.BaseFragment
 import com.spyneai.captureFailureEvent
-import com.spyneai.dashboard.data.DashboardViewModel
 import com.spyneai.dashboard.ui.handleApiError
 import com.spyneai.databinding.MyCompletedOrdersFragmentBinding
 import com.spyneai.needs.AppConstants
@@ -52,7 +51,7 @@ class MyCompletedOrdersFragment :
         viewModel.completedSKUsResponse.observe(
             viewLifecycleOwner, Observer {
                 when (it) {
-                    is com.spyneai.base.network.Resource.Sucess -> {
+                    is com.spyneai.base.network.Resource.Success -> {
                         binding.shimmerCompletedSKU.stopShimmer()
                         binding.shimmerCompletedSKU.visibility = View.GONE
                         binding.rvMyCompletedOrders.visibility = View.VISIBLE

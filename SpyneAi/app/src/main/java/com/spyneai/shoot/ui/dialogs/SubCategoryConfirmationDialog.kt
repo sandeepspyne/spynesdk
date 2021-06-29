@@ -41,7 +41,7 @@ class SubCategoryConfirmationDialog : BaseDialogFragment<ShootViewModel, DialogS
         binding.btnYes.setOnClickListener {
            viewModel.createProjectRes.observe(viewLifecycleOwner,{
                when(it){
-                   is Resource.Sucess -> {
+                   is Resource.Success -> {
                        createSku(it.value.project_id, subCategory?.prod_sub_cat_id.toString())
                    }
                    else -> {}
@@ -60,7 +60,7 @@ class SubCategoryConfirmationDialog : BaseDialogFragment<ShootViewModel, DialogS
 
         viewModel.createSkuRes.observe(viewLifecycleOwner,{
             when(it) {
-                is Resource.Sucess -> {
+                is Resource.Success -> {
                     requireContext().captureEvent(
                         Events.CREATE_SKU,
                         Properties().putValue("sku_name",viewModel.sku.value?.skuName.toString())

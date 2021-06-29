@@ -93,7 +93,7 @@ class ConfirmReshootDialog : BaseDialogFragment<ShootViewModel, DialogConfirmRes
 
        viewModel.overlaysResponse.observe(viewLifecycleOwner,{
            when(it){
-                is Resource.Sucess -> {
+                is Resource.Success -> {
                     val uri = viewModel.shootData.value?.capturedImage
 
                     Glide.with(requireContext())

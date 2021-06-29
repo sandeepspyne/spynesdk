@@ -45,7 +45,7 @@ class CreateProjectAndSkuDialog : BaseDialogFragment<ShootViewModel,DialogCreate
 
         viewModel.createProjectRes.observe(viewLifecycleOwner,{
             when(it){
-                    is Resource.Sucess -> {
+                    is Resource.Success -> {
                         requireContext().captureEvent(
                             Events.CREATE_PROJECT,
                             Properties().putValue("project_name",projectName))

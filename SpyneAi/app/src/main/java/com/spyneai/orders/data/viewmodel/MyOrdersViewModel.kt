@@ -7,7 +7,6 @@ import androidx.lifecycle.viewModelScope
 import com.spyneai.base.network.Resource
 import com.spyneai.orders.data.repository.MyOrdersRepository
 import com.spyneai.orders.data.response.CompletedSKUsResponse
-import com.spyneai.orders.data.response.GetImagesOfSkuResponse
 import com.spyneai.orders.data.response.GetOngoingSkusResponse
 import kotlinx.coroutines.launch
 
@@ -23,9 +22,7 @@ class MyOrdersViewModel : ViewModel() {
     val getOngoingSkusResponse: LiveData<Resource<GetOngoingSkusResponse>>
         get() = _getOngoingSkusResponse
 
-    private val _getImagesOfSkuResponse: MutableLiveData<Resource<GetImagesOfSkuResponse>> = MutableLiveData()
-    val getImagesOfSkuResponse: LiveData<Resource<GetImagesOfSkuResponse>>
-        get() = _getImagesOfSkuResponse
+
 
     fun getCompletedSKUs(
         tokenId: String
@@ -42,16 +39,6 @@ class MyOrdersViewModel : ViewModel() {
         _getOngoingSkusResponse.value = repository.getOngoingSKUs(tokenId)
 
     }
-
-    fun getImagesOfSku(
-        tokenId: String,
-        skuId: String
-    ) = viewModelScope.launch {
-        _getImagesOfSkuResponse.value = Resource.Loading
-        _getImagesOfSkuResponse.value = repository.getImagesOfSku(tokenId, skuId)
-
-    }
-
 
 
 }

@@ -12,11 +12,9 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.Window
 import android.widget.LinearLayout
-import android.widget.Switch
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
-import androidx.camera.core.impl.utils.ContextUtil.getApplicationContext
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -35,7 +33,6 @@ import com.spyneai.activity.OngoingOrdersActivity
 import com.spyneai.adapter.CategoriesDashboardAdapter
 import com.spyneai.base.BaseFragment
 import com.spyneai.base.network.Resource
-import com.spyneai.base.network.ServerException
 import com.spyneai.captureEvent
 import com.spyneai.captureFailureEvent
 import com.spyneai.dashboard.adapters.CompletedDashboardAdapter
@@ -151,7 +148,7 @@ class HomeDashboardFragment :
         viewModel.getOngoingSkusResponse.observe(
             viewLifecycleOwner, androidx.lifecycle.Observer {
                 when (it) {
-                    is Resource.Sucess -> {
+                    is Resource.Success -> {
                         binding.rvOngoingShoots.visibility = View.VISIBLE
                         binding.shimmerOngoing.stopShimmer()
                         binding.shimmerOngoing.visibility = View.GONE
@@ -217,7 +214,7 @@ class HomeDashboardFragment :
         )
         viewModel.completedSkusResponse.observe(viewLifecycleOwner, Observer {
             when (it) {
-                is Resource.Sucess -> {
+                is Resource.Success -> {
                     requireContext().captureEvent(Events.GET_COMPLETED_ORDERS, Properties())
                     completedProjectList = ArrayList()
                     if (it.value.data.isNullOrEmpty()) {
@@ -279,7 +276,7 @@ class HomeDashboardFragment :
         )
         viewModel.categoriesResponse.observe(viewLifecycleOwner, Observer {
             when (it) {
-                is Resource.Sucess -> {
+                is Resource.Success -> {
                     requireContext().captureEvent(Events.GOT_CATEGORIES, Properties())
 
                     binding.shimmerCategories.stopShimmer()

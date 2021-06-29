@@ -1,7 +1,6 @@
 package com.spyneai.shoot.ui
 
 import android.graphics.drawable.Drawable
-import android.net.Uri
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -30,14 +29,7 @@ import com.spyneai.shoot.adapters.MiscAdapter
 import com.spyneai.shoot.adapters.NewSubCategoriesAdapter
 import com.spyneai.shoot.data.ShootViewModel
 import com.spyneai.shoot.data.model.ShootData
-import com.spyneai.shoot.data.room.entities.ShootEntity
 import com.spyneai.shoot.ui.dialogs.*
-import kotlinx.android.synthetic.main.dialog_confirm_reshoot.view.*
-import okhttp3.MediaType.Companion.toMediaTypeOrNull
-import okhttp3.MultipartBody
-import okhttp3.RequestBody.Companion.asRequestBody
-import okhttp3.RequestBody.Companion.toRequestBody
-import java.io.File
 import java.util.*
 
 
@@ -138,7 +130,7 @@ class OverlaysFragment : BaseFragment<ShootViewModel,FragmentOverlaysBinding>(),
 
             viewModel.overlaysResponse.observe(viewLifecycleOwner,{
                 when(it){
-                    is Resource.Sucess -> {
+                    is Resource.Success -> {
                         val name = it.value.data[viewModel.shootNumber.value!!].display_name
                         val overlay = it.value.data[viewModel.shootNumber.value!!].display_thumbnail
 
@@ -200,7 +192,7 @@ class OverlaysFragment : BaseFragment<ShootViewModel,FragmentOverlaysBinding>(),
 
         viewModel.subCategoriesResponse.observe(viewLifecycleOwner, {
             when (it) {
-                is Resource.Sucess -> {
+                is Resource.Success -> {
                     requireContext().captureEvent(
                         Events.GET_SUBCATEGORIES,
                         Properties())
@@ -265,7 +257,7 @@ class OverlaysFragment : BaseFragment<ShootViewModel,FragmentOverlaysBinding>(),
     private fun observeOverlays() {
         viewModel.overlaysResponse.observe(viewLifecycleOwner,{ it ->
             when(it){
-                is Resource.Sucess -> {
+                is Resource.Success -> {
                     requireContext().captureEvent(
                         Events.GET_OVERLAYS,
                         Properties().putValue("angles",it.value.data.size))
@@ -306,7 +298,7 @@ class OverlaysFragment : BaseFragment<ShootViewModel,FragmentOverlaysBinding>(),
 
         viewModel.subCategoriesResponse.observe(viewLifecycleOwner,{
             when(it){
-                is Resource.Sucess -> {
+                is Resource.Success -> {
 
                     val interiorList = it.value.interior as ArrayList<NewSubCatResponse.Interior>
 
@@ -360,7 +352,7 @@ class OverlaysFragment : BaseFragment<ShootViewModel,FragmentOverlaysBinding>(),
 
         viewModel.subCategoriesResponse.observe(viewLifecycleOwner,{
             when(it){
-                is Resource.Sucess -> {
+                is Resource.Success -> {
 
                     val miscList = it.value.miscellaneous as ArrayList<NewSubCatResponse.Miscellaneous>
 
