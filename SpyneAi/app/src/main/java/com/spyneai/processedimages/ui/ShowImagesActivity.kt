@@ -1,4 +1,4 @@
-package com.spyneai.activity
+package com.spyneai.processedimages.ui
 
 import android.app.*
 import android.content.Intent
@@ -18,12 +18,13 @@ import com.bumptech.glide.Glide
 import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.downloader.*
 import com.spyneai.R
+import com.spyneai.activity.DownloadingActivity
+import com.spyneai.activity.OrderSummary2Activity
+import com.spyneai.activity.ShowGifActivity
 import com.spyneai.adapter.ShowReplacedImagesAdapter
 import com.spyneai.adapter.ShowReplacedImagesFocusedAdapter
 import com.spyneai.adapter.ShowReplacedImagesInteriorAdapter
-import com.spyneai.aipack.FetchBulkResponse
 import com.spyneai.credits.model.ReviewHolder
-import com.spyneai.dashboard.ui.MainDashboardActivity
 import com.spyneai.downloadsku.FetchBulkResponseV2
 import com.spyneai.gotoHome
 import com.spyneai.interfaces.APiService

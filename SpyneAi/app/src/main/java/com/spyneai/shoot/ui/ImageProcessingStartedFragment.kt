@@ -30,13 +30,18 @@ class ImageProcessingStartedFragment : BaseFragment<ProcessViewModel, FragmentIm
             requireContext().gotoHome()
         }
 
-        binding.llThreeSixtyShoot.setOnClickListener {
-            val intent = Intent(requireContext(), RecordVideoActivity::class.java)
-            intent.putExtra("sku_id", viewModel.sku.value?.skuId!!)
-            intent.putExtra("user_id", Utilities.getPreference(requireContext(), AppConstants.TOKEN_ID).toString())
+        if (viewModel.categoryName == "Automobiles") {
+            binding.llThreeSixtyShoot.visibility = View.VISIBLE
 
-            startActivity(intent)
+            binding.llThreeSixtyShoot.setOnClickListener {
+                val intent = Intent(requireContext(), RecordVideoActivity::class.java)
+                intent.putExtra("sku_id", viewModel.sku.value?.skuId!!)
+                intent.putExtra("user_id", Utilities.getPreference(requireContext(), AppConstants.TOKEN_ID).toString())
+
+                startActivity(intent)
+            }
         }
+
     }
 
 

@@ -77,6 +77,7 @@ class ShootActivity : AppCompatActivity() {
                 val intent = Intent(this, ProcessActivity::class.java)
 
                 intent.apply {
+                    this.putExtra(AppConstants.CATEGORY_NAME, categoryDetails.categoryName)
                     this.putExtra("sku_id", shootViewModel.sku.value?.skuId)
                     this.putExtra("exterior_angles", shootViewModel.exterirorAngles.value)
                     startActivity(this)

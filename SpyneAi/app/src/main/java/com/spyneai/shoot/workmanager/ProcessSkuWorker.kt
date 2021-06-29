@@ -62,7 +62,6 @@ class ProcessSkuWorker (val appContext: Context, workerParams: WorkerParameters)
                                 processSkuRes?.message!!)
 
                             processSku()
-
                         }
                     }else {
                         processSku()

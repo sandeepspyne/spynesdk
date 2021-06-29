@@ -5,6 +5,7 @@ import android.os.Bundle
 import androidx.lifecycle.ViewModelProvider
 import com.spyneai.R
 import com.spyneai.dashboard.ui.base.ViewModelFactory
+import com.spyneai.needs.AppConstants
 import com.spyneai.shoot.data.ProcessViewModel
 import com.spyneai.shoot.data.model.Sku
 import com.spyneai.shoot.ui.dialogs.ShootExitDialog
@@ -24,10 +25,21 @@ class ProcessActivity : AppCompatActivity() {
         processViewModel.sku.value = sku
 
         processViewModel.exteriorAngles.value =  intent.getIntExtra("exterior_angles",0)
+        processViewModel.categoryName = intent.getStringExtra(AppConstants.CATEGORY_NAME)
 
-        supportFragmentManager.beginTransaction()
-            .add(R.id.flContainer, SelectBackgroundFragment())
-            .commit()
+        when(intent.getStringExtra(AppConstants.CATEGORY_NAME)) {
+            "Automobiles" -> {
+                supportFragmentManager.beginTransaction()
+                    .add(R.id.flContainer, SelectBackgroundFragment())
+                    .commit()
+            }
+            "Bikes" -> {
+                supportFragmentManager.beginTransaction()
+                    .add(R.id.flContainer, ImageProcessingStartedFragment())
+                    .commit()
+            }
+        }
+
 
         processViewModel.startTimer.observe(this,{
             if (it) {

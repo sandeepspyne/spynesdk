@@ -50,6 +50,7 @@ import com.spyneai.needs.Utilities
 import com.spyneai.orders.data.response.CompletedSKUsResponse
 import com.spyneai.orders.data.response.GetOngoingSkusResponse
 import com.spyneai.posthog.Events
+import com.spyneai.shoot.ui.ShootActivity
 import com.spyneai.shoot.utils.log
 
 
@@ -288,27 +289,58 @@ class HomeDashboardFragment :
                         it.value.data as ArrayList<NewCategoriesResponse.Data>,
                         object : CategoriesDashboardAdapter.BtnClickListener {
                             override fun onBtnClick(position: Int) {
-                                if (position < 1) {
-                                    categoryPosition = position
-                                    Utilities.savePrefrence(
-                                        requireContext(),
-                                        AppConstants.CATEGORY_NAME,
-                                        it.value.data[position].prod_cat_name
-                                    )
+                                when(position){
+                                    0 -> {
+                                        val intent = Intent(requireContext(), BeforeAfterActivity::class.java)
+                                        intent.putExtra(
+                                            AppConstants.CATEGORY_NAME,
+                                            displayName
+                                        )
+                                        intent.putExtra(
+                                            AppConstants.CATEGORY_ID,
+                                            catId
+                                        )
+                                        intent.putExtra(
+                                            AppConstants.IMAGE_URL,
+                                            displayThumbnail
+                                        )
+                                        intent.putExtra(
+                                            AppConstants.DESCRIPTION,
+                                            description
+                                        )
+                                        intent.putExtra(AppConstants.COLOR, colorCode)
+                                        startActivity(intent)
+                                    }
 
-                                    catId = it.value.data[position].prod_cat_id
-                                    displayName = it.value.data[position].prod_cat_name
-                                    displayThumbnail = it.value.data[position].display_thumbnail
-                                    description = it.value.data[position].description
-                                    colorCode = it.value.data[position].color_code
-
-                                    startBeforeAfter()
-                                } else
+                                    5 -> {
+                                        val intent = Intent(requireContext(), ShootActivity::class.java)
+                                        intent.putExtra(
+                                            AppConstants.CATEGORY_NAME,
+                                            displayName
+                                        )
+                                        intent.putExtra(
+                                            AppConstants.CATEGORY_ID,
+                                            catId
+                                        )
+                                        intent.putExtra(
+                                            AppConstants.IMAGE_URL,
+                                            displayThumbnail
+                                        )
+                                        intent.putExtra(
+                                            AppConstants.DESCRIPTION,
+                                            description
+                                        )
+                                        intent.putExtra(AppConstants.COLOR, colorCode)
+                                        startActivity(intent)
+                                    }else -> {
                                     Toast.makeText(
                                         requireContext(),
                                         "Coming Soon !",
                                         Toast.LENGTH_SHORT
                                     ).show()
+                                    }
+                                }
+
                             }
 
                         })
@@ -365,27 +397,7 @@ class HomeDashboardFragment :
     }
 
 
-    private fun startBeforeAfter() {
-        val intent = Intent(requireContext(), BeforeAfterActivity::class.java)
-        intent.putExtra(
-            AppConstants.CATEGORY_NAME,
-            displayName
-        )
-        intent.putExtra(
-            AppConstants.CATEGORY_ID,
-            catId
-        )
-        intent.putExtra(
-            AppConstants.IMAGE_URL,
-            displayThumbnail
-        )
-        intent.putExtra(
-            AppConstants.DESCRIPTION,
-            description
-        )
-        intent.putExtra(AppConstants.COLOR, colorCode)
-        startActivity(intent)
-    }
+
 
     private fun setSliderRecycler() {
 
@@ -463,52 +475,6 @@ class HomeDashboardFragment :
             override fun onTabReselected(tab: TabLayout.Tab?) {
             }
         })
-
-    }
-
-
-    private fun setOngoingProjectRecycler() {
-        viewModel.getOngoingSKUs(
-            Utilities.getPreference(requireContext(), AppConstants.AUTH_KEY).toString()
-        )
-        viewModel.getOngoingSkusResponse.observe(
-            viewLifecycleOwner, androidx.lifecycle.Observer {
-                when (it) {
-                    is Resource.Sucess -> {
-                        if (it.value.data.isNullOrEmpty())
-                            binding.rlOngoingShoots.visibility = View.GONE
-                        if (it.value.data != null) {
-                            requireContext().captureEvent(Events.GOT_ONGOING_ORDERS, Properties())
-                            ongoingDashboardAdapter = OngoingDashboardAdapter(
-                                requireContext(),
-                                it.value.data as ArrayList<GetOngoingSkusResponse.Data>
-                            )
-
-                            val layoutManager: RecyclerView.LayoutManager = LinearLayoutManager(
-                                requireContext(),
-                                LinearLayoutManager.HORIZONTAL,
-                                false
-                            )
-                            binding.rvOngoingShoots.setLayoutManager(layoutManager)
-                            binding.rvOngoingShoots.setAdapter(ongoingDashboardAdapter)
-
-                        }
-
-                    }
-                    is Resource.Loading -> {
-
-                    }
-                    is Resource.Failure -> {
-                        requireContext().captureFailureEvent(
-                            Events.GET_ONGOING_ORDERS_FAILED, Properties(),
-                            it.errorMessage!!
-                        )
-                        handleApiError(it)
-                    }
-
-                }
-            }
-        )
 
     }
 
