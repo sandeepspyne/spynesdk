@@ -151,7 +151,7 @@ class BeforeAfterActivity : AppCompatActivity() {
         }
         else if (Utilities.getPreference(this, AppConstants.CATEGORY_NAME).equals("Footwear")){
             tvShootFootwear.setOnClickListener(View.OnClickListener {
-                val intent = Intent(this, CameraActivity::class.java)
+                val intent = Intent(this, ShootActivity::class.java)
                 intent.putExtra(AppConstants.CATEGORY_ID, catId)
                 intent.putExtra(AppConstants.CATEGORY_NAME, catName)
                 intent.putExtra(AppConstants.GIF_LIST, gifList)

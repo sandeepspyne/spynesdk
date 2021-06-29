@@ -1,7 +1,7 @@
 package com.spyneai.shoot.ui
 
+import android.content.pm.ActivityInfo
 import android.graphics.drawable.Drawable
-import android.net.Uri
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -30,14 +30,8 @@ import com.spyneai.shoot.adapters.MiscAdapter
 import com.spyneai.shoot.adapters.NewSubCategoriesAdapter
 import com.spyneai.shoot.data.ShootViewModel
 import com.spyneai.shoot.data.model.ShootData
-import com.spyneai.shoot.data.room.entities.ShootEntity
 import com.spyneai.shoot.ui.dialogs.*
 import kotlinx.android.synthetic.main.dialog_confirm_reshoot.view.*
-import okhttp3.MediaType.Companion.toMediaTypeOrNull
-import okhttp3.MultipartBody
-import okhttp3.RequestBody.Companion.asRequestBody
-import okhttp3.RequestBody.Companion.toRequestBody
-import java.io.File
 import java.util.*
 
 
@@ -52,6 +46,14 @@ class OverlaysFragment : BaseFragment<ShootViewModel,FragmentOverlaysBinding>(),
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        if (Utilities.getPreference(requireContext(), AppConstants.CATEGORY_NAME).equals("Automobiles")){
+            getActivity()?.setRequestedOrientation(
+                ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE)
+        }else if (Utilities.getPreference(requireContext(), AppConstants.CATEGORY_NAME).equals("Footwear")){
+            getActivity()?.setRequestedOrientation(
+                ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
+        }
 
         initShootHint()
 

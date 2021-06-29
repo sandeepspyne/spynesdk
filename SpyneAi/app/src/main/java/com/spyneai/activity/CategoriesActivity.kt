@@ -80,7 +80,7 @@ class CategoriesActivity : AppCompatActivity(){
                 object : CategoriesAdapter.BtnClickListener {
                     override fun onBtnClick(position: Int) {
                         Log.e("position cat", position.toString())
-                        if (position < 1) {
+                        if (position < 2) {
 
                             Utilities.savePrefrence(
                                 this@CategoriesActivity,
