@@ -61,7 +61,7 @@ class CameraFragment : BaseFragment<ShootViewModel, FragmentCameraBinding>(),Pic
                 ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE)
         }else if (Utilities.getPreference(requireContext(), AppConstants.CATEGORY_NAME).equals("Footwear")){
             getActivity()?.setRequestedOrientation(
-                ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
+                ActivityInfo.SCREEN_ORIENTATION_PORTRAIT)
         }
 
         cameraExecutor = Executors.newSingleThreadExecutor()

@@ -1,6 +1,7 @@
 package com.spyneai.shoot.ui
 
 import android.content.pm.ActivityInfo
+import android.content.res.Configuration
 import android.graphics.drawable.Drawable
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -190,10 +191,22 @@ class OverlaysFragment : BaseFragment<ShootViewModel,FragmentOverlaysBinding>(),
             this
         )
 
-        binding.rvSubcategories.apply {
-            this?.layoutManager = LinearLayoutManager(requireContext())
-            this?.adapter = subCategoriesAdapter
+        if (getResources().getConfiguration().orientation === Configuration.ORIENTATION_LANDSCAPE) {
+            binding.rvSubcategories.apply {
+                this?.layoutManager = LinearLayoutManager(requireContext())
+                this?.adapter = subCategoriesAdapter
+            }
+
+        } else if (getResources().getConfiguration().orientation === Configuration.ORIENTATION_PORTRAIT) {
+            binding.rvSubcategories.apply {
+                this?.layoutManager = LinearLayoutManager(requireContext(),
+                    LinearLayoutManager.HORIZONTAL,
+                    false)
+                this?.adapter = subCategoriesAdapter
+            }
+
         }
+
 
         viewModel.getSubCategories(
             Utilities.getPreference(requireContext(), AppConstants.AUTH_KEY).toString(),

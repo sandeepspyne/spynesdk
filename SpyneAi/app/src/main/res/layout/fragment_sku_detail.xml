@@ -34,10 +34,12 @@
             <TextView
                 android:id="@+id/tvProjectName"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
+                android:layout_marginLeft="@dimen/dp_10"
+                android:layout_height="wrap_content"
                 android:fontFamily="@font/poppins_medium"
-                android:gravity="center"
                 tools:text="Project Name"
+                android:gravity="center"
+                android:layout_gravity="center"
                 android:textColor="@color/primary"
                 android:textSize="@dimen/sp_18" />
 
@@ -47,16 +49,69 @@
     </androidx.appcompat.widget.Toolbar>
 
     <TextView
-        android:id="@+id/tvSkuName"
+        android:id="@+id/tvProjectDetail"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:fontFamily="@font/poppins_medium"
-        tools:text="SKU Name"
+        android:text="PROJECT DETAILS"
         app:layout_constraintTop_toBottomOf="@+id/my_toolbar"
         app:layout_constraintLeft_toLeftOf="parent"
         android:textColor="@color/primary"
-        android:textSize="@dimen/sp_18"
-        android:layout_margin="@dimen/dp_25"/>
+        android:textSize="@dimen/sp_14"
+        android:layout_marginTop="@dimen/dp_20"
+        android:layout_marginLeft="35dp"/>
+
+    <TextView
+        android:id="@+id/tvTotalSku"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:fontFamily="@font/poppins_regular"
+        android:text="Total SKU’s Captured"
+        app:layout_constraintTop_toBottomOf="@+id/tvProjectDetail"
+        app:layout_constraintLeft_toLeftOf="@+id/tvProjectDetail"
+        android:textColor="@color/black_varient"
+        android:textSize="@dimen/sp_14"
+        android:layout_marginTop="@dimen/dp_10" />
+
+    <TextView
+        android:id="@+id/tvTotalSkuCaptured"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:fontFamily="@font/poppins_medium"
+        tools:text="50"
+        android:layout_marginRight="@dimen/dp_70"
+        app:layout_constraintTop_toBottomOf="@+id/tvProjectDetail"
+        app:layout_constraintRight_toRightOf="parent"
+        android:textColor="@color/primary"
+        android:textSize="@dimen/sp_14"
+        android:layout_marginTop="@dimen/dp_10" />
+
+
+    <TextView
+        android:id="@+id/tvTotalImage"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:fontFamily="@font/poppins_regular"
+        android:text="Total Images Captured"
+        app:layout_constraintTop_toBottomOf="@+id/tvTotalSku"
+        app:layout_constraintLeft_toLeftOf="@+id/tvTotalSku"
+        android:textColor="@color/black_varient"
+        android:textSize="@dimen/sp_14"
+        android:layout_marginTop="@dimen/dp_10" />
+
+    <TextView
+        android:id="@+id/tvTotalImageCaptured"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:fontFamily="@font/poppins_medium"
+        tools:text="80"
+        app:layout_constraintTop_toBottomOf="@+id/tvTotalSkuCaptured"
+        app:layout_constraintRight_toRightOf="@+id/tvTotalSkuCaptured"
+        android:textColor="@color/primary"
+        android:textSize="@dimen/sp_14"
+        android:layout_marginTop="@dimen/dp_10" />
+
+
 
 
     <TextView
@@ -65,8 +120,8 @@
         android:layout_height="wrap_content"
         android:fontFamily="@font/poppins_medium"
         tools:text="Captured Images"
-        app:layout_constraintTop_toBottomOf="@+id/tvSkuName"
-        app:layout_constraintLeft_toLeftOf="@+id/tvSkuName"
+        app:layout_constraintTop_toBottomOf="@+id/tvTotalImage"
+        app:layout_constraintLeft_toLeftOf="@+id/tvTotalImage"
         android:textColor="@color/black"
         android:layout_marginTop="22dp"
         android:textSize="@dimen/sp_16" />
@@ -78,7 +133,38 @@
         android:layout_margin="@dimen/dp_20"
         app:layout_constraintTop_toBottomOf="@+id/tvCapturedImages"
         app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"/>
+        app:layout_constraintRight_toRightOf="parent" />
+
+    <TextView
+        android:id="@+id/tvAddAngle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:fontFamily="@font/poppins_medium"
+        android:text="Add Another Angle"
+        app:layout_constraintTop_toBottomOf="@+id/rvSkuImages"
+        app:layout_constraintLeft_toLeftOf="parent"
+        android:textColor="@color/primary"
+        android:textSize="@dimen/sp_14"
+        android:layout_marginTop="@dimen/dp_20"
+        android:layout_marginLeft="35dp"/>
+
+    <ImageView
+        android:id="@+id/ivAddAngle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/ic_add_angle"
+        app:layout_constraintLeft_toRightOf="@+id/tvAddAngle"
+        app:layout_constraintTop_toTopOf="@+id/tvAddAngle"
+        android:layout_marginLeft="@dimen/dp_10"/>
+
+    <androidx.constraintlayout.widget.Group
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:constraint_referenced_ids="tvAddAngle, ivAddAngle"
+        android:id="@+id/groupAddAngle" />
+
+
+
 
     <LinearLayout
         android:id="@+id/llNextSKU"

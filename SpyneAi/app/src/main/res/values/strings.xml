@@ -273,6 +273,7 @@
     <string name="do_you_need_footwear_overlayes">Do you need footwear overlays?</string>
 
     <string name="end_project">Are you sure you want to end this project?</string>
+    <string name="submit_and_process">Submit and Process this Project</string>
 
     <string name="refund_credit"><font color='#FF7700'>Note : </font><font color='#000000'>Credits for bad quality output images will be refunded.</font></string>
 

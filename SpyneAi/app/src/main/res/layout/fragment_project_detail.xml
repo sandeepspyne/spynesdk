@@ -52,40 +52,79 @@
         android:layout_height="0dp"
         android:layout_margin="@dimen/dp_20"
         app:layout_constraintTop_toBottomOf="@+id/my_toolbar"
-        app:layout_constraintBottom_toTopOf="@+id/tvRefund"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"/>
-
-    <TextView
-        android:id="@+id/tvRefund"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:textSize="@dimen/sp_14"
-        android:text="@string/refund_credit"
-        android:layout_margin="@dimen/dp_20"
-        android:fontFamily="@font/poppins_medium"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintBottom_toTopOf="@+id/tvAddSku" />
+        app:layout_constraintBottom_toTopOf="@+id/tvSkuName"/>
 
     <TextView
-        android:id="@+id/tvAddSku"
+        android:id="@+id/tvSkuName"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Add SKU"
-        android:textColor="@color/primary"
-        android:textSize="@dimen/sp_18"
         android:fontFamily="@font/poppins_medium"
-        app:layout_constraintLeft_toLeftOf="parent"
+        android:text="SHOOT DETAILS"
+        app:layout_constraintBottom_toTopOf="@+id/tvTotalSku"
+        app:layout_constraintLeft_toLeftOf="@+id/tvTotalImage"
+        android:textColor="@color/primary"
+        android:textSize="@dimen/sp_14"
+        android:layout_marginTop="@dimen/dp_20"
+        android:layout_marginBottom="@dimen/dp_10"/>
+
+    <TextView
+        android:id="@+id/tvTotalSku"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:fontFamily="@font/poppins_regular"
+        android:text="Total SKU’s Captured"
+        app:layout_constraintBottom_toTopOf="@+id/tvTotalImage"
+        app:layout_constraintLeft_toLeftOf="@+id/tvTotalImage"
+        android:textColor="@color/black_varient"
+        android:textSize="@dimen/sp_14"
+        android:layout_marginBottom="@dimen/dp_10" />
+
+    <TextView
+        android:id="@+id/tvTotalSkuCaptured"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:fontFamily="@font/poppins_medium"
+        tools:text="50"
+        android:layout_marginRight="@dimen/dp_70"
+        app:layout_constraintBottom_toTopOf="@+id/tvTotalImage"
         app:layout_constraintRight_toRightOf="parent"
-        android:layout_marginBottom="20dp"
-        android:padding="@dimen/dp_10"
+        android:textColor="@color/primary"
+        android:textSize="@dimen/sp_14"
+        android:layout_marginBottom="@dimen/dp_10" />
+
+
+    <TextView
+        android:id="@+id/tvTotalImage"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:fontFamily="@font/poppins_regular"
+        android:text="Total Images Captured"
         app:layout_constraintBottom_toTopOf="@+id/llOngoingProjects"
-        />
+        app:layout_constraintLeft_toLeftOf="parent"
+        android:textColor="@color/black_varient"
+        android:textSize="@dimen/sp_14"
+        android:layout_marginLeft="35dp"
+        android:layout_marginBottom="35dp" />
+
+    <TextView
+        android:id="@+id/tvTotalImageCaptured"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:fontFamily="@font/poppins_medium"
+        tools:text="80"
+        app:layout_constraintRight_toRightOf="@+id/tvTotalSkuCaptured"
+        app:layout_constraintBottom_toTopOf="@+id/llOngoingProjects"
+        android:textColor="@color/primary"
+        android:textSize="@dimen/sp_14"
+        android:layout_marginBottom="35dp" />
+
+
 
     <LinearLayout
         android:id="@+id/llOngoingProjects"
-        android:layout_width="222dp"
+        android:layout_width="wrap_content"
         android:layout_height="@dimen/dp_50"
         android:background="@drawable/bg_rectangle_button_ripple"
         android:gravity="center"
@@ -97,8 +136,10 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/ongoing_projects"
+            android:text="@string/submit_and_process"
             android:textSize="@dimen/sp_18"
+            android:layout_marginLeft="@dimen/dp_10"
+            android:layout_marginRight="@dimen/dp_10"
             android:textColor="@color/white"
             android:fontFamily="@font/poppins_medium"/>
 

@@ -7,14 +7,31 @@
     android:background="@android:color/transparent"
     tools:context=".shoot.ui.CameraFragment">
 
-    <View
+    <RelativeLayout
         android:id="@+id/viewCamera"
         android:layout_width="match_parent"
         android:layout_height="85dp"
         android:background="@color/black"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent" >
+
+        <TextView
+            android:id="@+id/tvSkipShoot"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:visibility="invisible"
+            android:layout_alignParentRight="true"
+            android:layout_marginTop="@dimen/dp_10"
+            android:layout_marginRight="@dimen/dp_10"
+            android:drawablePadding="@dimen/dp_5"
+            android:fontFamily="@font/bold"
+            android:text="@string/skip"
+            android:textColor="@color/primary"
+            android:textSize="@dimen/sp_16"
+            app:drawableEndCompat="@mipmap/skip" />
+
+    </RelativeLayout>
 
     <androidx.camera.view.PreviewView
         android:id="@+id/viewFinder"

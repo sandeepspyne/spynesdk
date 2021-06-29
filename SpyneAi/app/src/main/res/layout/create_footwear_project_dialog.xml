@@ -15,7 +15,8 @@
         android:src="@drawable/ic_close"
         android:layout_margin="@dimen/dp_15"
         app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toTopOf="parent"/>
+        app:layout_constraintTop_toTopOf="parent"
+        app:tint="@color/black_varient" />
 
     <TextView
         android:id="@+id/tvProjectName"
@@ -52,7 +53,7 @@
             android:textColor="@color/black_varient"
             android:maxLines="1"
             android:textSize="@dimen/sp_18"
-            android:hint="enter project name"
+            android:hint="Ex. Amazon 16 Feb"
             android:layout_marginLeft="@dimen/dp_20"/>
         
     </LinearLayout>
@@ -61,7 +62,7 @@
         android:id="@+id/tvCity"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/city"
+        android:text="Enter Product Name"
         android:textSize="@dimen/sp_18"
         android:textColor="@color/black_varient"
         android:fontFamily="@font/poppins_medium"
@@ -92,7 +93,7 @@
             android:maxLines="1"
             android:textSize="@dimen/sp_18"
             android:textColor="@color/black_varient"
-            android:hint="enter city name"
+            android:hint="Ex: Kashmiri Apples Basket"
             android:layout_marginLeft="@dimen/dp_20"/>
 
     </LinearLayout>
