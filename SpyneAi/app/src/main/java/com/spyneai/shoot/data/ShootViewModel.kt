@@ -105,7 +105,8 @@ class ShootViewModel : ViewModel(){
 
     fun uploadImageWithWorkManager(
         requireContext: Context,
-        shootData: ShootData
+        shootData: ShootData,
+        processSku : Boolean
     ) {
         val uploadWorkRequest = OneTimeWorkRequest.Builder(UploadImageWorker::class.java)
 
@@ -115,9 +116,9 @@ class ShootViewModel : ViewModel(){
         data.putString("skuId", shootData.sku_id)
         data.putString("imageCategory", shootData.image_category)
         data.putString("authKey", shootData.auth_key)
+        data.putBoolean("processSku", processSku)
 
         uploadWorkRequest.setInputData(data.build())
-
 
         WorkManager.getInstance(requireContext).enqueue(uploadWorkRequest.build())
     }

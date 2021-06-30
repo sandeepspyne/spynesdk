@@ -50,10 +50,11 @@ class ConfirmReshootDialog : BaseDialogFragment<ShootViewModel, DialogConfirmRes
                 properties)
 
             viewModel.isCameraButtonClickable = true
+
+
             when(viewModel.categoryDetails.value?.imageType) {
                 "Exterior" -> {
-                    viewModel.uploadImageWithWorkManager(requireContext(), viewModel.shootData.value!!)
-
+                    uploadImages()
                     if (viewModel.shootNumber.value  == viewModel.exterirorAngles.value?.minus(1)){
                         dismiss()
                         viewModel.showInteriorDialog.value = true
@@ -65,8 +66,7 @@ class ConfirmReshootDialog : BaseDialogFragment<ShootViewModel, DialogConfirmRes
 
                 "Interior" -> {
                     updateTotalImages()
-                    viewModel.uploadImageWithWorkManager(requireContext(), viewModel.shootData.value!!)
-
+                    uploadImages()
                     if (viewModel.interiorShootNumber.value  == viewModel.interiorAngles.value?.minus(1)){
                         viewModel.showMiscDialog.value = true
                         dismiss()
@@ -78,8 +78,7 @@ class ConfirmReshootDialog : BaseDialogFragment<ShootViewModel, DialogConfirmRes
 
                 "Focus Shoot" -> {
                     updateTotalImages()
-                    viewModel.uploadImageWithWorkManager(requireContext(), viewModel.shootData.value!!)
-
+                    uploadImages()
                     if (viewModel.miscShootNumber.value  == viewModel.miscAngles.value?.minus(1)){
                         viewModel.selectBackground.value = true
                         dismiss()
@@ -117,6 +116,22 @@ class ConfirmReshootDialog : BaseDialogFragment<ShootViewModel, DialogConfirmRes
                else -> {}
            }
        })
+    }
+
+    fun uploadImages() {
+        when(viewModel.categoryDetails.value?.categoryName) {
+            "Automobiles" ->  viewModel.uploadImageWithWorkManager(
+                requireContext(),
+                viewModel.shootData.value!!,
+                true
+            )
+
+            "Bikes" -> viewModel.uploadImageWithWorkManager(
+                requireContext(),
+                viewModel.shootData.value!!,
+                false
+            )
+        }
     }
 
     fun updateTotalImages() {

@@ -161,7 +161,8 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Select your car's sub-category"
+            android:id="@+id/tvSubCategory"
+            android:text="@string/car_subcategory"
             app:layout_constraintTop_toBottomOf="@id/iv_arrow"
             app:layout_constraintLeft_toLeftOf="parent"
             android:textColor="@color/white"

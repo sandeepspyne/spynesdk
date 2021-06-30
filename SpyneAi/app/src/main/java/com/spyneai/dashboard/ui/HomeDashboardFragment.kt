@@ -282,10 +282,18 @@ class HomeDashboardFragment :
                     binding.shimmerCategories.stopShimmer()
                     binding.shimmerCategories.visibility = View.GONE
                     binding.rvDashboardCategories.visibility = View.VISIBLE
+
                     categoriesAdapter = CategoriesDashboardAdapter(requireContext(),
                         it.value.data as ArrayList<NewCategoriesResponse.Data>,
                         object : CategoriesDashboardAdapter.BtnClickListener {
                             override fun onBtnClick(position: Int) {
+
+                                catId = it.value.data[position].prod_cat_id
+                                displayName = it.value.data[position].prod_cat_name
+                                displayThumbnail = it.value.data[position].display_thumbnail
+                                description = it.value.data[position].description
+                                colorCode = it.value.data[position].color_code
+
                                 when(position){
                                     0 -> {
                                         val intent = Intent(requireContext(), BeforeAfterActivity::class.java)
