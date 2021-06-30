@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    tools:context=".shoot.ui.OverlaysFragment"
+    android:background="@android:color/transparent">
+
+    <TextView
+        android:id="@+id/tvSkuName"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        android:layout_marginTop="@dimen/dp_10"
+        android:background="@drawable/bg_edit"
+        android:fontFamily="@font/medium"
+        android:gravity="center"
+        android:hint="@string/sku_names"
+        android:maxLines="1"
+        android:maxLength="20"
+        tools:text="sku-name"
+        android:padding="@dimen/dp_5"
+        android:textColor="@color/white"
+        android:textColorHint="@color/white"
+        android:textSize="@dimen/sp_13"
+        android:visibility="invisible"/>
+
+    <LinearLayout
+        android:id="@+id/llCapture"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/black"
+        android:padding="@dimen/dp_10"
+        android:visibility="invisible"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent">
+
+        <ImageView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+
+            android:elevation="2dp"
+            android:src="@drawable/click_effect" />
+
+    </LinearLayout>
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/rvCapturedImages"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintBottom_toTopOf="@+id/llCapture"
+        android:padding="@dimen/dp_10"
+        android:background="@color/black"/>
+
+
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>

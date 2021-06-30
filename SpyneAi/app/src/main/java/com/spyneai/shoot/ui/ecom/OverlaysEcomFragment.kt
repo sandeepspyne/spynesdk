@@ -1,16 +1,18 @@
-package com.spyneai.ecom
+package com.spyneai.shoot.ui.ecom
 
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.lifecycle.ViewModel
 import com.spyneai.R
 import com.spyneai.base.BaseFragment
-import com.spyneai.databinding.FragmentProjectDetailBinding
+import com.spyneai.databinding.FragmentOverlaysEcomBinding
 import com.spyneai.shoot.data.ShootViewModel
 
-class ProjectDetailFragment : BaseFragment<ShootViewModel, FragmentProjectDetailBinding>() {
+class OverlaysEcomFragment : BaseFragment<ShootViewModel, FragmentOverlaysEcomBinding>() {
+
 
 
 
@@ -19,6 +21,6 @@ class ProjectDetailFragment : BaseFragment<ShootViewModel, FragmentProjectDetail
     override fun getFragmentBinding(
         inflater: LayoutInflater,
         container: ViewGroup?
-    ) = FragmentProjectDetailBinding.inflate(inflater, container, false)
+    ) = FragmentOverlaysEcomBinding.inflate(inflater, container, false)
 
 }
