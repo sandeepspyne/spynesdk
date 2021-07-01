@@ -9,6 +9,7 @@ import com.posthog.android.Properties
 import com.spyneai.base.BaseDialogFragment
 import com.spyneai.base.network.Resource
 import com.spyneai.captureEvent
+import com.spyneai.dashboard.response.NewSubCatResponse
 import com.spyneai.databinding.DialogConfirmReshootBinding
 import com.spyneai.posthog.Events
 import com.spyneai.shoot.data.ShootViewModel
@@ -45,20 +46,21 @@ class ConfirmReshootDialog : BaseDialogFragment<ShootViewModel, DialogConfirmRes
                 this["project_id"] = viewModel.shootData.value?.project_id
                 this["image_type"] = viewModel.shootData.value?.image_category
             }
+
             requireContext().captureEvent(
                 Events.CONFIRMED,
                 properties)
 
             viewModel.isCameraButtonClickable = true
 
-
             when(viewModel.categoryDetails.value?.imageType) {
                 "Exterior" -> {
                     uploadImages()
-                    if (viewModel.shootNumber.value  == viewModel.exterirorAngles.value?.minus(1)){
+                    if (viewModel.shootNumber.value == viewModel.exterirorAngles.value?.minus(1)) {
                         dismiss()
-                        viewModel.showInteriorDialog.value = true
-                    }else{
+                        Log.d(TAG, "onViewCreated: "+"checkInteriorShootStatus")
+                        checkInteriorShootStatus()
+                    } else {
                         viewModel.shootNumber.value = viewModel.shootNumber.value!! + 1
                         dismiss()
                     }
@@ -118,23 +120,14 @@ class ConfirmReshootDialog : BaseDialogFragment<ShootViewModel, DialogConfirmRes
        })
     }
 
-    fun uploadImages() {
-        when(viewModel.categoryDetails.value?.categoryName) {
-            "Automobiles" ->  viewModel.uploadImageWithWorkManager(
-                requireContext(),
-                viewModel.shootData.value!!,
-                true
-            )
-
-            "Bikes" -> viewModel.uploadImageWithWorkManager(
-                requireContext(),
-                viewModel.shootData.value!!,
-                false
-            )
-        }
+    private fun uploadImages() {
+        viewModel.uploadImageWithWorkManager(
+            requireContext(),
+            viewModel.shootData.value!!
+        )
     }
 
-    fun updateTotalImages() {
+    private fun updateTotalImages() {
         viewModel.updateTotalImages(viewModel.sku.value?.skuId!!)
     }
 
@@ -181,6 +174,35 @@ class ConfirmReshootDialog : BaseDialogFragment<ShootViewModel, DialogConfirmRes
         })
     }
 
+    private fun checkInteriorShootStatus() {
+        viewModel.subCategoriesResponse.observe(viewLifecycleOwner, {
+            when (it) {
+                is Resource.Success -> {
+                    Log.d(TAG, "checkInteriorShootStatus: "+"sucess")
+                    when {
+                        it.value.interior.isNotEmpty() -> {
+                            viewModel.showInteriorDialog.value = true
+                            Log.d(TAG, "checkInteriorShootStatus: "+"interior")
+                        }
+                        it.value.miscellaneous.isNotEmpty() -> {
+                            viewModel.showMiscDialog.value = true
+                            Log.d(TAG, "checkInteriorShootStatus: "+"miscellaneous")
+                        }
+                        else -> {
+                            viewModel.selectBackground.value = true
+                            Log.d(TAG, "checkInteriorShootStatus: "+"selectBackground")
+                        }
+                    }
+                }
+                else -> {
+                    Log.d(TAG, "checkInteriorShootStatus: "+"failed")
+                    var s = ""
+                }
+            }
+        })
+
+
+    }
 
     override fun getViewModel() = ShootViewModel::class.java
 

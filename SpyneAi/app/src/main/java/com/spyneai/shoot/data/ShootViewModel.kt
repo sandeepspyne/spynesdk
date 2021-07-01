@@ -24,6 +24,7 @@ class ShootViewModel : ViewModel(){
     private val localRepository = ShootLocalRepository()
 
     public var isCameraButtonClickable = true
+    var processSku : Boolean = true
 
     val shootList: MutableLiveData<ArrayList<ShootData>> = MutableLiveData()
 
@@ -105,8 +106,7 @@ class ShootViewModel : ViewModel(){
 
     fun uploadImageWithWorkManager(
         requireContext: Context,
-        shootData: ShootData,
-        processSku : Boolean
+        shootData: ShootData
     ) {
         val uploadWorkRequest = OneTimeWorkRequest.Builder(UploadImageWorker::class.java)
 

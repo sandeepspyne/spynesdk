@@ -54,6 +54,11 @@ class ShootActivity : AppCompatActivity() {
 
         shootViewModel.categoryDetails.value = categoryDetails
 
+        when(shootViewModel.categoryDetails.value?.categoryName) {
+            "Automobiles" -> shootViewModel.processSku = true
+            "Bikes" -> shootViewModel.processSku = false
+        }
+
         cameraFragment = CameraFragment()
         overlaysFragment = OverlaysFragment()
 
@@ -70,7 +75,6 @@ class ShootActivity : AppCompatActivity() {
             permissionRequest.launch(permissions.toTypedArray())
         }
 
-
         shootViewModel.selectBackground.observe(this, {
             if (it) {
                 // start process activity
@@ -80,6 +84,7 @@ class ShootActivity : AppCompatActivity() {
                     this.putExtra(AppConstants.CATEGORY_NAME, categoryDetails.categoryName)
                     this.putExtra("sku_id", shootViewModel.sku.value?.skuId)
                     this.putExtra("exterior_angles", shootViewModel.exterirorAngles.value)
+                    this.putExtra("process_sku",shootViewModel.processSku)
                     startActivity(this)
                 }
             }

@@ -73,6 +73,8 @@ class OverlaysFragment : BaseFragment<ShootViewModel,FragmentOverlaysBinding>(),
         viewModel.isSubCategoryConfirmed.observe(viewLifecycleOwner,{
             if (it) binding.rvSubcategories?.visibility = View.INVISIBLE
         })
+
+        observerMiscShots()
     }
 
     private fun initShootHint() {
@@ -289,10 +291,6 @@ class OverlaysFragment : BaseFragment<ShootViewModel,FragmentOverlaysBinding>(),
         binding.tvShoot?.isClickable = false
         InteriorHintDialog().show(requireFragmentManager(), "InteriorHintDialog")
 
-        viewModel.showMiscDialog.observe(viewLifecycleOwner,{
-            if (it) initMiscShots()
-        })
-
         viewModel.startInteriorShots.observe(viewLifecycleOwner,{
             if (it) startInteriorShots()
         })
@@ -341,6 +339,15 @@ class OverlaysFragment : BaseFragment<ShootViewModel,FragmentOverlaysBinding>(),
                 progressAdapter.updateList(viewModel.interiorShootNumber.value!!)
 
 
+        })
+    }
+
+    private fun observerMiscShots() {
+        viewModel.showMiscDialog.observe(viewLifecycleOwner,{
+            if (it) {
+                binding.imgOverlay?.visibility = View.GONE
+                initMiscShots()
+            }
         })
     }
 

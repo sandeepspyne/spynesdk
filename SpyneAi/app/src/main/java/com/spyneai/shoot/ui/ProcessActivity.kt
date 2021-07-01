@@ -27,19 +27,13 @@ class ProcessActivity : AppCompatActivity() {
         processViewModel.exteriorAngles.value =  intent.getIntExtra("exterior_angles",0)
         processViewModel.categoryName = intent.getStringExtra(AppConstants.CATEGORY_NAME)
 
-        when(intent.getStringExtra(AppConstants.CATEGORY_NAME)) {
-            "Automobiles" -> {
-                supportFragmentManager.beginTransaction()
-                    .add(R.id.flContainer, SelectBackgroundFragment())
-                    .commit()
-            }
-            "Bikes" -> {
-                supportFragmentManager.beginTransaction()
-                    .add(R.id.flContainer, ImageProcessingStartedFragment())
-                    .commit()
-            }
+        if (intent.getBooleanExtra("process_sku",true)){
+            supportFragmentManager.beginTransaction()
+                .add(R.id.flContainer, SelectBackgroundFragment())
+                .commit()
+        }else{
+           processViewModel.startTimer.value = true
         }
-
 
         processViewModel.startTimer.observe(this,{
             if (it) {
