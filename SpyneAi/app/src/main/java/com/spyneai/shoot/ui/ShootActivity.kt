@@ -4,6 +4,7 @@ import android.Manifest
 import android.app.Activity
 import android.content.Context
 import android.content.Intent
+import android.content.pm.ActivityInfo
 import android.content.pm.PackageManager
 import android.graphics.Color
 import android.os.Build
@@ -21,9 +22,11 @@ import androidx.lifecycle.ViewModelProvider
 import com.spyneai.R
 import com.spyneai.dashboard.ui.base.ViewModelFactory
 import com.spyneai.needs.AppConstants
+import com.spyneai.needs.Utilities
 import com.spyneai.shoot.data.ShootViewModel
 import com.spyneai.shoot.data.model.CategoryDetails
 import com.spyneai.shoot.ui.dialogs.ShootExitDialog
+import com.spyneai.shoot.ui.ecom.OverlaysEcomFragment
 import java.io.File
 
 
@@ -31,6 +34,7 @@ class ShootActivity : AppCompatActivity() {
 
     lateinit var cameraFragment: CameraFragment
     lateinit var overlaysFragment: OverlaysFragment
+    lateinit var overlaysEcomFragment: OverlaysEcomFragment
     val TAG = "ShootActivity"
 
 
@@ -56,13 +60,25 @@ class ShootActivity : AppCompatActivity() {
 
         cameraFragment = CameraFragment()
         overlaysFragment = OverlaysFragment()
+        overlaysEcomFragment = OverlaysEcomFragment()
 
-        if(savedInstanceState == null) { // initial transaction should be wrapped like this
-            supportFragmentManager.beginTransaction()
-                .add(R.id.flCamerFragment, cameraFragment)
-                .add(R.id.flCamerFragment, overlaysFragment)
-                .commitAllowingStateLoss()
+        if (Utilities.getPreference(this, AppConstants.CATEGORY_NAME).equals("Automobiles")){
+            if(savedInstanceState == null) { // initial transaction should be wrapped like this
+                supportFragmentManager.beginTransaction()
+                    .add(R.id.flCamerFragment, cameraFragment)
+                    .add(R.id.flCamerFragment, overlaysFragment)
+                    .commitAllowingStateLoss()
+            }
+        }else if (Utilities.getPreference(this, AppConstants.CATEGORY_NAME).equals("Footwear")){
+            if(savedInstanceState == null) { // initial transaction should be wrapped like this
+                supportFragmentManager.beginTransaction()
+                    .add(R.id.flCamerFragment, cameraFragment)
+                    .add(R.id.flCamerFragment, overlaysEcomFragment)
+                    .commitAllowingStateLoss()
+            }
         }
+
+
 
         if (allPermissionsGranted()) {
             onPermissionGranted()

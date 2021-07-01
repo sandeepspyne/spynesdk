@@ -50,7 +50,6 @@ class CreateProjectEcomDialog : BaseDialogFragment<ShootViewModel, CreateProject
                         Events.CREATE_PROJECT,
                         Properties().putValue("project_name",projectName))
 
-                    Utilities.hideProgressDialog()
                     //notify project created
                     viewModel.isProjectCreated.value = true
                     val sku = Sku()
@@ -58,7 +57,9 @@ class CreateProjectEcomDialog : BaseDialogFragment<ShootViewModel, CreateProject
                     sku.skuName = skuName
                     viewModel.sku.value = sku
 
-                    dismiss()
+                    createSku(it.value.project_id, skuName)
+
+
                 }
 
                 is Resource.Loading -> {
@@ -76,6 +77,49 @@ class CreateProjectEcomDialog : BaseDialogFragment<ShootViewModel, CreateProject
             }
         })
 
+    }
+
+    private fun createSku(projectId: String, skuName : String) {
+        viewModel.createSku(
+            Utilities.getPreference(requireContext(),AppConstants.AUTH_KEY).toString(),
+            projectId,
+            requireActivity().intent.getStringExtra(AppConstants.CATEGORY_ID).toString(),
+            "",
+            skuName
+        )
+
+        viewModel.createSkuRes.observe(viewLifecycleOwner,{
+            when(it) {
+                is Resource.Sucess -> {
+                    requireContext().captureEvent(
+                        Events.CREATE_SKU,
+                        Properties().putValue("sku_name",viewModel.sku.value?.skuName.toString())
+                            .putValue("project_id",projectId)
+                            .putValue("prod_sub_cat_id",""))
+
+                    Utilities.hideProgressDialog()
+                    val sku = viewModel.sku.value
+                    sku?.skuId = it.value.sku_id
+
+                    viewModel.sku.value = sku
+                    viewModel.isSubCategoryConfirmed.value = true
+
+                    //add sku to local database
+                    viewModel.insertSku(sku!!)
+                    dismiss()
+                }
+
+                is Resource.Loading ->  Utilities.showProgressDialog(requireContext())
+
+                is Resource.Failure -> {
+                    requireContext().captureFailureEvent(Events.CREATE_SKU_FAILED, Properties(),
+                        it.errorMessage!!
+                    )
+                    Utilities.hideProgressDialog()
+                    handleApiError(it)
+                }
+            }
+        })
     }
 
 

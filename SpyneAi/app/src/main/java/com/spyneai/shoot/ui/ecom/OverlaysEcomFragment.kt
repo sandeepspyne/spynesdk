@@ -16,39 +16,50 @@ import com.spyneai.shoot.ui.dialogs.CreateProjectAndSkuDialog
 
 class OverlaysEcomFragment : BaseFragment<ShootViewModel, FragmentOverlaysEcomBinding>() {
 
+    private var showDialog = true
+
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        initProjectDialog()
+
 
         //observe new image clicked
-//        viewModel.shootList.observe(viewLifecycleOwner, {
-//            try {
-//                if (showDialog && !it.isNullOrEmpty()){
-//                    showImageConfirmDialog(it.get(it.size - 1))
-//                }
-//            }catch (e : Exception){
-//                e.printStackTrace()
-//            }
-//        })
+        viewModel.shootList.observe(viewLifecycleOwner, {
+            try {
+                if (showDialog && !it.isNullOrEmpty()){
+                    showImageConfirmDialog(it.get(it.size - 1))
+                }
+            }catch (e : Exception){
+                e.printStackTrace()
+            }
+        })
 
 
-//        private fun initProjectDialog(){
-//            CreateProjectAndSkuDialog().show(requireFragmentManager(), "CreateProjectAndSkuDialog")
-//
-//            viewModel.isProjectCreated.observe(viewLifecycleOwner,{
-//                if (it) {
-//                    intSubcategorySelection()
-//                }
-//            })
-//
-//        }
+
 //
 //        private fun showImageConfirmDialog(shootData: ShootData) {
 //            viewModel.shootData.value = shootData
 //            ConfirmReshootDialog().show(requireFragmentManager(), "ConfirmReshootDialog")
 //        }
-//
+
+
+    }
+
+    private fun initProjectDialog(){
+        CreateProjectEcomDialog().show(requireFragmentManager(), "CreateProjectAndSkuDialog")
+
+        viewModel.isProjectCreated.observe(viewLifecycleOwner,{
+            if (it) {
+            }
+        })
+
+    }
+
+    private fun showImageConfirmDialog(shootData: ShootData) {
+        viewModel.shootData.value = shootData
+        ConfirmReshootEcomDialog().show(requireFragmentManager(), "ConfirmReshootDialog")
     }
 
     override fun getViewModel() = ShootViewModel::class.java
