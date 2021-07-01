@@ -1,23 +1,17 @@
 package com.spyneai.shoot.ui
 
 import android.Manifest
-import android.app.Activity
 import android.content.Context
 import android.content.Intent
-import android.content.pm.ActivityInfo
 import android.content.pm.PackageManager
-import android.graphics.Color
 import android.os.Build
 import android.os.Bundle
-import android.os.Environment
-import android.view.View
-import android.view.Window
 import android.view.WindowManager
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
-import androidx.fragment.app.FragmentActivity
+import androidx.fragment.app.FragmentTransaction
 import androidx.lifecycle.ViewModelProvider
 import com.spyneai.R
 import com.spyneai.dashboard.ui.base.ViewModelFactory
@@ -27,6 +21,7 @@ import com.spyneai.shoot.data.ShootViewModel
 import com.spyneai.shoot.data.model.CategoryDetails
 import com.spyneai.shoot.ui.dialogs.ShootExitDialog
 import com.spyneai.shoot.ui.ecom.OverlaysEcomFragment
+import com.spyneai.shoot.ui.ecom.SkuDetailFragment
 import java.io.File
 
 
@@ -86,6 +81,13 @@ class ShootActivity : AppCompatActivity() {
             permissionRequest.launch(permissions.toTypedArray())
         }
 
+        shootViewModel.endShoot.observe(this,{
+            if(it){
+                supportFragmentManager.beginTransaction()
+                    .add(R.id.flCamerFragment, SkuDetailFragment())
+                    .commit()
+            }
+        })
 
         shootViewModel.selectBackground.observe(this, {
             if (it) {

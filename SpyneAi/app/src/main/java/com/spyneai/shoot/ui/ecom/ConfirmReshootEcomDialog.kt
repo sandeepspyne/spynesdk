@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.WindowManager
 import com.bumptech.glide.Glide
 import com.posthog.android.Properties
 import com.spyneai.base.BaseDialogFragment
@@ -13,7 +14,8 @@ import com.spyneai.databinding.ConfirmReshootEcomDialogBinding
 import com.spyneai.posthog.Events
 import com.spyneai.shoot.data.ShootViewModel
 
-class ConfirmReshootEcomDialog : BaseDialogFragment<ShootViewModel, ConfirmReshootEcomDialogBinding>() {
+class ConfirmReshootEcomDialog :
+    BaseDialogFragment<ShootViewModel, ConfirmReshootEcomDialogBinding>() {
 
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -27,7 +29,8 @@ class ConfirmReshootEcomDialog : BaseDialogFragment<ShootViewModel, ConfirmResho
             .load(uri)
             .into(binding.ivCapturedImage)
 
-        binding.btReshootImage.setOnClickListener{
+        binding.btReshootImage.setOnClickListener {
+            viewModel.reshootCapturedImage.value = true
             viewModel.isCameraButtonClickable = true
             val properties = Properties()
             properties.apply {
@@ -37,7 +40,8 @@ class ConfirmReshootEcomDialog : BaseDialogFragment<ShootViewModel, ConfirmResho
             }
             requireContext().captureEvent(
                 Events.RESHOOT,
-                properties)
+                properties
+            )
             //remove last item from shoot list
             viewModel.shootList.value?.removeAt(viewModel.shootList.value!!.size - 1)
             dismiss()
@@ -50,17 +54,26 @@ class ConfirmReshootEcomDialog : BaseDialogFragment<ShootViewModel, ConfirmResho
                 this["project_id"] = viewModel.shootData.value?.project_id
                 this["image_type"] = viewModel.shootData.value?.image_category
             }
+
+
             requireContext().captureEvent(
                 Events.CONFIRMED,
-                properties)
+                properties
+            )
 
             viewModel.isCameraButtonClickable = true
-
-                    viewModel.uploadImageWithWorkManager(requireContext(), viewModel.shootData.value!!)
-
-                }
+            viewModel.uploadImageWithWorkManager(requireContext(), viewModel.shootData.value!!)
+            dismiss()
+        }
     }
 
+    override fun onResume() {
+        super.onResume()
+        dialog?.getWindow()?.setLayout(
+            WindowManager.LayoutParams.MATCH_PARENT,
+            WindowManager.LayoutParams.WRAP_CONTENT
+        );
+    }
 
 
     override fun getViewModel() = ShootViewModel::class.java

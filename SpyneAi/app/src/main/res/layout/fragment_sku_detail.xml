@@ -4,6 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:background="@color/white"
     tools:context=".shoot.ui.ecom.SkuDetailFragment">
 
     <androidx.appcompat.widget.Toolbar
@@ -163,30 +164,22 @@
         app:constraint_referenced_ids="tvAddAngle, ivAddAngle"
         android:id="@+id/groupAddAngle" />
 
-
-
-
-    <LinearLayout
-        android:id="@+id/llNextSKU"
-        android:layout_width="174dp"
-        android:layout_height="@dimen/dp_40"
+    <androidx.appcompat.widget.AppCompatButton
+        android:layout_width="230dp"
+        android:layout_height="@dimen/dp_50"
+        android:id="@+id/btNextSku"
+        android:text="Next SKU"
+        android:textAllCaps="false"
+        android:fontFamily="@font/poppins_medium"
+        android:layout_marginTop="@dimen/dp_15"
         android:background="@drawable/bg_rectangle_button_ripple"
+        android:textColor="@color/white"
         android:gravity="center"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintBottom_toTopOf="@+id/tvEndProject"
-        android:layout_marginBottom="17dp">
+        android:layout_marginBottom="17dp" />
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Next SKU"
-            android:textSize="@dimen/sp_16"
-            android:textColor="@color/white"
-            android:fontFamily="@font/poppins_medium"/>
-
-
-    </LinearLayout>
 
     <TextView
         android:id="@+id/tvEndProject"

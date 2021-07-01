@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.WindowManager
 import com.posthog.android.Properties
 import com.spyneai.base.BaseDialogFragment
 import com.spyneai.base.network.Resource
@@ -17,7 +18,8 @@ import com.spyneai.posthog.Events
 import com.spyneai.shoot.data.ShootViewModel
 import com.spyneai.shoot.data.model.Sku
 
-class CreateProjectEcomDialog : BaseDialogFragment<ShootViewModel, CreateProjectEcomDialogBinding>() {
+class CreateProjectEcomDialog :
+    BaseDialogFragment<ShootViewModel, CreateProjectEcomDialogBinding>() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -26,29 +28,35 @@ class CreateProjectEcomDialog : BaseDialogFragment<ShootViewModel, CreateProject
 
         binding.btnProceed.setOnClickListener {
             when {
-                binding.etProjectName.text.toString().isEmpty() -> binding.etProjectName.error = "Please enter project name"
+                binding.etProjectName.text.toString().isEmpty() -> binding.etProjectName.error =
+                    "Please enter project name"
                 binding.etSkuName.text.toString().isEmpty() -> {
                     binding.etSkuName.error = "Please enter product name"
                 }
                 else -> {
-                    createProject(binding.etProjectName.text.toString(),binding.etSkuName.text.toString())
+                    createProject(
+                        binding.etProjectName.text.toString(),
+                        binding.etSkuName.text.toString()
+                    )
                 }
             }
         }
     }
 
-    private fun createProject(projectName : String,skuName : String) {
+    private fun createProject(projectName: String, skuName: String) {
         viewModel.createProject(
             Utilities.getPreference(requireContext(), AppConstants.AUTH_KEY).toString(),
             projectName,
-            requireActivity().intent.getStringExtra(AppConstants.CATEGORY_ID).toString())
+            requireActivity().intent.getStringExtra(AppConstants.CATEGORY_ID).toString()
+        )
 
-        viewModel.createProjectRes.observe(viewLifecycleOwner,{
-            when(it){
+        viewModel.createProjectRes.observe(viewLifecycleOwner, {
+            when (it) {
                 is Resource.Sucess -> {
                     requireContext().captureEvent(
                         Events.CREATE_PROJECT,
-                        Properties().putValue("project_name",projectName))
+                        Properties().putValue("project_name", projectName)
+                    )
 
                     //notify project created
                     viewModel.isProjectCreated.value = true
@@ -63,7 +71,7 @@ class CreateProjectEcomDialog : BaseDialogFragment<ShootViewModel, CreateProject
                 }
 
                 is Resource.Loading -> {
-                    Utilities.showProgressDialog(requireContext())
+//                    Utilities.showProgressDialog(requireContext())
                 }
 
                 is Resource.Failure -> {
@@ -79,27 +87,32 @@ class CreateProjectEcomDialog : BaseDialogFragment<ShootViewModel, CreateProject
 
     }
 
-    private fun createSku(projectId: String, skuName : String) {
+    private fun createSku(projectId: String, skuName: String) {
         viewModel.createSku(
-            Utilities.getPreference(requireContext(),AppConstants.AUTH_KEY).toString(),
+            Utilities.getPreference(requireContext(), AppConstants.AUTH_KEY).toString(),
             projectId,
             requireActivity().intent.getStringExtra(AppConstants.CATEGORY_ID).toString(),
             "",
             skuName
         )
 
-        viewModel.createSkuRes.observe(viewLifecycleOwner,{
-            when(it) {
+        viewModel.createSkuRes.observe(viewLifecycleOwner, {
+            when (it) {
                 is Resource.Sucess -> {
                     requireContext().captureEvent(
                         Events.CREATE_SKU,
-                        Properties().putValue("sku_name",viewModel.sku.value?.skuName.toString())
-                            .putValue("project_id",projectId)
-                            .putValue("prod_sub_cat_id",""))
+                        Properties().putValue("sku_name", viewModel.sku.value?.skuName.toString())
+                            .putValue("project_id", projectId)
+                            .putValue("prod_sub_cat_id", "")
+                    )
+
+                    //notify project created
+                    viewModel.isSkuCreated.value = true
 
                     Utilities.hideProgressDialog()
                     val sku = viewModel.sku.value
                     sku?.skuId = it.value.sku_id
+                    sku?.skuName = skuName
 
                     viewModel.sku.value = sku
                     viewModel.isSubCategoryConfirmed.value = true
@@ -109,10 +122,14 @@ class CreateProjectEcomDialog : BaseDialogFragment<ShootViewModel, CreateProject
                     dismiss()
                 }
 
-                is Resource.Loading ->  Utilities.showProgressDialog(requireContext())
+                is Resource.Loading -> {
+                    Utilities.showProgressDialog(requireContext())
+
+                }
 
                 is Resource.Failure -> {
-                    requireContext().captureFailureEvent(Events.CREATE_SKU_FAILED, Properties(),
+                    requireContext().captureFailureEvent(
+                        Events.CREATE_SKU_FAILED, Properties(),
                         it.errorMessage!!
                     )
                     Utilities.hideProgressDialog()
@@ -120,6 +137,14 @@ class CreateProjectEcomDialog : BaseDialogFragment<ShootViewModel, CreateProject
                 }
             }
         })
+    }
+
+    override fun onResume() {
+        super.onResume()
+        dialog?.getWindow()?.setLayout(
+            WindowManager.LayoutParams.MATCH_PARENT,
+            WindowManager.LayoutParams.WRAP_CONTENT
+        );
     }
 
 

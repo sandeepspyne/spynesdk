@@ -39,9 +39,10 @@
         android:theme="@style/Theme.SpyneAi"
         android:usesCleartextTraffic="true"
         tools:targetApi="m">
-        <activity android:name=".shoot.ui.ProcessActivity"
-            android:screenOrientation="portrait"></activity>
-        <!-- <activity android:name=".shoot.ui.ShootActivity"></activity> -->
+        <activity android:name=".shoot.ui.ecom.ShowSkuProjectActivity"></activity>
+        <activity
+            android:name=".shoot.ui.ProcessActivity"
+            android:screenOrientation="portrait" /> <!-- <activity android:name=".shoot.ui.ShootActivity"></activity> -->
         <activity android:name=".dashboard.ui.YoutubeVideoPlayerActivity" />
         <activity
             android:name=".dashboard.ui.MainDashboardActivity"
@@ -257,20 +258,17 @@
         <activity
             android:name="com.yalantis.ucrop.UCropActivity"
             android:screenOrientation="portrait"
-            android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
-<!--        <activity-->
-<!--            android:name=".orders.ui.MyOrdersActivity"-->
-<!--            android:screenOrientation="portrait" />-->
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar" /> <!-- <activity -->
+        <!-- android:name=".orders.ui.MyOrdersActivity" -->
+        <!-- android:screenOrientation="portrait" /> -->
         <activity
             android:name=".shoot.ui.ShootActivity"
-            android:configChanges="orientation|screenSize|screenLayout|keyboardHidden"></activity>
+            android:configChanges="orientation|screenSize|screenLayout|keyboardHidden" />
         <activity
             android:name=".orders.ui.MyOrdersActivity"
-            android:screenOrientation="portrait">
-
-        </activity>
-
-        <activity android:name=".activity.SplashActivity"
+            android:screenOrientation="portrait"></activity>
+        <activity
+            android:name=".activity.SplashActivity"
             android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -278,7 +276,6 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-
         <activity android:name=".videorecording.ThreeSixtyViewActivity" />
         <activity android:name=".videorecording.TrimVideoActivity" />
 

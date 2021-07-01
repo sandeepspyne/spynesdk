@@ -4,7 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:layout_margin="@dimen/dp_30"
+    android:layout_margin="45dp"
     tools:context=".shoot.ui.ecom.CreateProjectEcomDialog"
     android:background="@null">
 
