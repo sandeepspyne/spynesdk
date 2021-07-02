@@ -61,7 +61,7 @@ class ProjectDetailFragment : BaseFragment<ShootViewModel, FragmentProjectDetail
 
                     binding.rvParentProjects.apply {
                         this?.layoutManager =
-                            LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
+                            LinearLayoutManager(requireContext(), LinearLayoutManager.VERTICAL, false)
                         this?.adapter = projectDetailAdapter
                     }
 
