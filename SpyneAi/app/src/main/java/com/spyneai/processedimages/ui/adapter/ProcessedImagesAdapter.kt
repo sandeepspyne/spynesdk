@@ -9,12 +9,14 @@ import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.spyneai.R
+import com.spyneai.base.OnItemClickListener
 import com.spyneai.orders.data.response.ImagesOfSkuRes
 
 
 class ProcessedImagesAdapter(
     val context: Context,
-    val imageList: ArrayList<ImagesOfSkuRes.Data>
+    val imageList: ArrayList<ImagesOfSkuRes.Data>,
+    val listener : OnItemClickListener
 ) : RecyclerView.Adapter<ProcessedImagesAdapter.ViewHolder>() {
 
     /**
@@ -58,6 +60,10 @@ class ProcessedImagesAdapter(
             .load(imageList[position].input_image_hres_url)
             .error(R.mipmap.defaults) // show error drawable if the image is not a gif
             .into(holder.ivProcessed)
+
+        holder.ivProcessed.setOnClickListener {
+            listener.onItemClick(holder.ivProcessed,position,imageList[position])
+        }
 
     }
 

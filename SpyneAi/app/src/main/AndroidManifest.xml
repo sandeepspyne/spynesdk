@@ -39,11 +39,9 @@
         android:theme="@style/Theme.SpyneAi"
         android:usesCleartextTraffic="true"
         tools:targetApi="m">
-        <activity android:name=".RecylerviewTestActivity">
-        </activity>
-        <activity android:name=".processedimages.ui.BikeImagesActivity">
-
-        </activity>
+        <activity android:name=".processedimages.ui.BikeOrderSummaryActivity"></activity>
+        <activity android:name=".RecylerviewTestActivity"></activity>
+        <activity android:name=".processedimages.ui.BikeImagesActivity"></activity>
         <activity
             android:name=".shoot.ui.ProcessActivity"
             android:screenOrientation="portrait" /> <!-- <activity android:name=".shoot.ui.ShootActivity"></activity> -->

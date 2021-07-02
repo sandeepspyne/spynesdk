@@ -15,6 +15,7 @@ import com.spyneai.processedimages.ui.ShowImagesActivity
 import com.spyneai.needs.AppConstants
 import com.spyneai.needs.Utilities
 import com.spyneai.orders.data.response.CompletedSKUsResponse
+import com.spyneai.processedimages.ui.BikeImagesActivity
 import com.spyneai.shoot.utils.log
 
 class CompletedDashboardAdapter (
@@ -56,9 +57,17 @@ class CompletedDashboardAdapter (
                 AppConstants.SKU_ID,
                 completedProjectList[position].sku_id)
             log("Show Completed orders(sku_id): "+completedProjectList[position].sku_id)
-            val intent = Intent(context,
-                ShowImagesActivity::class.java)
 
+            val intent = if (completedProjectList[position].category == "cat_d8R14zUNx")
+                Intent(
+                    context,
+                    BikeImagesActivity::class.java
+                )else Intent(
+                context,
+                ShowImagesActivity::class.java
+            )
+
+            intent.putExtra(AppConstants.SKU_ID,completedProjectList[position].sku_id)
             intent.putExtra("is_paid",completedProjectList[position].paid)
             context.startActivity(intent)
         }

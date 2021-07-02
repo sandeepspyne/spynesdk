@@ -370,7 +370,6 @@ class OverlaysFragment : BaseFragment<ShootViewModel,FragmentOverlaysBinding>(),
                     viewModel.miscShootNumber.value = 0
                     viewModel.miscAngles.value = miscList.size
 
-
                     miscAdapter = MiscAdapter(requireContext(),miscList as ArrayList<NewSubCatResponse.Miscellaneous>)
 
                     binding.rvSubcategories.apply {

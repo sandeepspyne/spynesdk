@@ -40,7 +40,6 @@ class MiscShotsDialog : BaseDialogFragment<ShootViewModel, DialogFocusedHintBind
         viewModel.subCategoriesResponse.observe(viewLifecycleOwner,{
             when(it) {
                 is Resource.Success -> {
-                    val miscList = it.value.miscellaneous
                     //filter miscshots
                     val filteredList: List<NewSubCatResponse.Miscellaneous> = it.value.miscellaneous.filter {
                         it.prod_sub_cat_id ==  viewModel.subCategory.value?.prod_sub_cat_id

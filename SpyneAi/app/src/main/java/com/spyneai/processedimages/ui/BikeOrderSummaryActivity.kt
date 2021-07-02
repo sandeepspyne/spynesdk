@@ -1,58 +1,55 @@
-package com.spyneai.activity
+package com.spyneai.processedimages.ui
 
 import android.content.Intent
 import android.graphics.Paint
-import android.os.Build
+import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.widget.Toast
-import androidx.annotation.RequiresApi
-import androidx.appcompat.app.AppCompatActivity
-import androidx.appcompat.app.AppCompatDelegate
 import androidx.core.content.ContextCompat
 import com.bumptech.glide.Glide
 import com.downloader.PRDownloader
 import com.downloader.PRDownloaderConfig
 import com.spyneai.R
-import com.spyneai.credits.CreditApiService
+import com.spyneai.activity.DownloadingActivity
 import com.spyneai.credits.CreditPlansActivity
 import com.spyneai.credits.LowCreditsActivity
-import com.spyneai.credits.RetrofitCreditClient
-import com.spyneai.credits.model.DownloadHDRes
-import com.spyneai.dashboard.ui.MainDashboardActivity
 import com.spyneai.gotoHome
 import com.spyneai.interfaces.APiService
 import com.spyneai.interfaces.RetrofitClientSpyneAi
 import com.spyneai.model.credit.CreditDetailsResponse
 import com.spyneai.needs.AppConstants
 import com.spyneai.needs.Utilities
-import kotlinx.android.synthetic.main.activity_before_after.*
-import kotlinx.android.synthetic.main.activity_downloading.*
-import kotlinx.android.synthetic.main.activity_order_summary2.*
-import kotlinx.android.synthetic.main.activity_order_summary2.tvCategoryName
+import kotlinx.android.synthetic.main.activity_bike_order_summary.*
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 
 
-class OrderSummary2Activity : AppCompatActivity() {
+class BikeOrderSummaryActivity : AppCompatActivity() {
 
-    private var TAG = "OrderSummary2Activity"
+    private var TAG = "BikeOrderSummaryActivity"
 
     private lateinit var listHdQuality : ArrayList<String>
     lateinit var productImage : String
     private lateinit var listWatermark : ArrayList<String>
     private var availableCredits = 0
     private var hdDownloaded = false
-
-    @RequiresApi(Build.VERSION_CODES.M)
+    
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_order_summary2)
+        setContentView(R.layout.activity_bike_order_summary)
+
+        listHdQuality = ArrayList<String>()
+        listWatermark = ArrayList<String>()
+
+        listHdQuality.addAll(intent.getStringArrayListExtra(AppConstants.LIST_HD_QUALITY)!!)
+
+        listWatermark.addAll(intent.getStringArrayListExtra(AppConstants.LIST_WATERMARK)!!)
+
 
         ivOrderSummaryHome.setOnClickListener {
             gotoHome()
         }
-
 
         getSkuIdDownloadStatus(intent.getBooleanExtra("is_paid",false))
 
@@ -63,18 +60,12 @@ class OrderSummary2Activity : AppCompatActivity() {
             .build()
         PRDownloader.initialize(applicationContext, config)
 
-        Utilities.savePrefrence(this, AppConstants.PRICE, Utilities.getPreference(this, AppConstants.NO_OF_IMAGES))
+        Utilities.savePrefrence(this, AppConstants.PRICE, listHdQuality.size.toString())
 
         tvTotalCost.setText(Utilities.getPreference(this, AppConstants.PRICE).toString())
 
         fetchUserCreditDetails()
 
-        listHdQuality = ArrayList<String>()
-        listWatermark = ArrayList<String>()
-
-        listHdQuality.addAll(intent.getStringArrayListExtra(AppConstants.LIST_HD_QUALITY)!!)
-
-        listWatermark.addAll(intent.getStringArrayListExtra(AppConstants.LIST_WATERMARK)!!)
 
 //        productImage = listHdQuality[0].toString()
 
@@ -86,39 +77,30 @@ class OrderSummary2Activity : AppCompatActivity() {
 
         tvCategoryName.setText(
             Utilities.getPreference(
-                this@OrderSummary2Activity,
+                this@BikeOrderSummaryActivity,
                 AppConstants.CATEGORY_NAME
             )
         )
 
-        tvNoOfImages.setText(
-            Utilities.getPreference(
-                this@OrderSummary2Activity,
-                AppConstants.NO_OF_IMAGES
-            ).toString()
-        )
+        tvNoOfImages.text = listHdQuality.size.toString()
 
         tvSkuId.setText(
-            Utilities.getPreference(this@OrderSummary2Activity, AppConstants.SKU_ID).toString()
+            Utilities.getPreference(this@BikeOrderSummaryActivity, AppConstants.SKU_ID).toString()
         )
 
-        tvTotalImagesClicked.setText(
-            Utilities.getPreference(this@OrderSummary2Activity, AppConstants.NO_OF_IMAGES)
-                .toString()
-        )
+        tvTotalImagesClicked.text = listHdQuality.size.toString()
 
         tvDownloadHdImages.setOnClickListener {
-
             if (hdDownloaded){
                 startDownloadActivity()
             }else{
                 if (Utilities.getPreference(this, AppConstants.CREDIT_AVAILABLE)!!.toInt() >= Utilities.getPreference(
-                    this,
-                    AppConstants.PRICE
-                )!!.toInt()){
+                        this,
+                        AppConstants.PRICE
+                    )!!.toInt()){
                     startDownloadActivity()
-            }else{
-                    var intent = Intent(this,LowCreditsActivity::class.java)
+                }else{
+                    var intent = Intent(this, LowCreditsActivity::class.java)
                     intent.putExtra("image", listHdQuality[0])
                     intent.putExtra("credit_available",availableCredits)
                     startActivity(intent)
@@ -128,7 +110,7 @@ class OrderSummary2Activity : AppCompatActivity() {
 
         tvTopUp.setOnClickListener {
             //showWhatsappCreditDialog()
-            var intent = Intent(this,CreditPlansActivity::class.java)
+            var intent = Intent(this, CreditPlansActivity::class.java)
             intent.putExtra("credit_available",availableCredits)
             startActivity(intent)
         }
@@ -144,12 +126,13 @@ class OrderSummary2Activity : AppCompatActivity() {
     }
 
     private fun startDownloadActivity() {
-        val downloadIntent = Intent(this@OrderSummary2Activity, DownloadingActivity::class.java)
+        val downloadIntent = Intent(this@BikeOrderSummaryActivity, DownloadingActivity::class.java)
         Utilities.savePrefrence(this, AppConstants.DOWNLOAD_TYPE, "hd")
         downloadIntent.putExtra(AppConstants.LIST_HD_QUALITY, listHdQuality)
         downloadIntent.putExtra(AppConstants.LIST_WATERMARK, listWatermark)
         downloadIntent.putExtra("is_paid",intent.getBooleanExtra("is_paid",false))
-        downloadIntent.putExtra(AppConstants.SKU_ID, Utilities.getPreference(this@OrderSummary2Activity, AppConstants.SKU_ID)
+        downloadIntent.putExtra(
+            AppConstants.SKU_ID, Utilities.getPreference(this@BikeOrderSummaryActivity, AppConstants.SKU_ID)
             .toString())
         downloadIntent.putExtra(AppConstants.SKU_NAME,intent.getStringExtra(AppConstants.SKU_NAME))
         downloadIntent.putExtra(AppConstants.IS_DOWNLOADED_BEFORE,hdDownloaded)
@@ -157,10 +140,10 @@ class OrderSummary2Activity : AppCompatActivity() {
     }
 
     private fun getSkuIdDownloadStatus(isPaid : Boolean) {
-       if (isPaid){
-           hdDownloaded = true
-           applyDownloadedUI()
-       }
+        if (isPaid){
+            hdDownloaded = true
+            applyDownloadedUI()
+        }
     }
 
     private fun applyDownloadedUI() {
@@ -170,7 +153,7 @@ class OrderSummary2Activity : AppCompatActivity() {
 
         tvTotalCost.apply {
             paintFlags = paintFlags or Paint.STRIKE_THRU_TEXT_FLAG
-            text = Utilities.getPreference(this@OrderSummary2Activity, AppConstants.PRICE).toString()
+            text = listHdQuality.size.toString()
         }
         tv_credits.apply {
             paintFlags = paintFlags or Paint.STRIKE_THRU_TEXT_FLAG
@@ -193,7 +176,7 @@ class OrderSummary2Activity : AppCompatActivity() {
                 if (response.isSuccessful) {
                     tvCreditsAvailable.setText(response.body()?.data?.creditAvailable.toString()!!)
                     Utilities.savePrefrence(
-                        this@OrderSummary2Activity,
+                        this@BikeOrderSummaryActivity,
                         AppConstants.CREDIT_ALLOTED,
                         response.body()?.data?.creditAlloted.toString()
                     )
@@ -201,12 +184,12 @@ class OrderSummary2Activity : AppCompatActivity() {
                     availableCredits = response.body()?.data?.creditAvailable!!
 
                     Utilities.savePrefrence(
-                        this@OrderSummary2Activity,
+                        this@BikeOrderSummaryActivity,
                         AppConstants.CREDIT_AVAILABLE,
                         response.body()?.data?.creditAvailable.toString()
                     )
                     Utilities.savePrefrence(
-                        this@OrderSummary2Activity,
+                        this@BikeOrderSummaryActivity,
                         AppConstants.CREDIT_USED,
                         response.body()?.data?.creditUsed.toString()
                     )
@@ -214,7 +197,7 @@ class OrderSummary2Activity : AppCompatActivity() {
 
                 } else {
                     Toast.makeText(
-                        this@OrderSummary2Activity,
+                        this@BikeOrderSummaryActivity,
                         "Server not responding!!!",
                         Toast.LENGTH_SHORT
                     ).show()
@@ -224,15 +207,11 @@ class OrderSummary2Activity : AppCompatActivity() {
 
             override fun onFailure(call: Call<CreditDetailsResponse>, t: Throwable) {
                 Toast.makeText(
-                    this@OrderSummary2Activity,
+                    this@BikeOrderSummaryActivity,
                     "Server not responding!!!",
                     Toast.LENGTH_SHORT
                 ).show()
             }
         })
     }
-
-
-
 }
-

@@ -14,6 +14,7 @@ import com.spyneai.processedimages.ui.ShowImagesActivity
 import com.spyneai.needs.AppConstants
 import com.spyneai.needs.Utilities
 import com.spyneai.orders.data.response.CompletedSKUsResponse
+import com.spyneai.processedimages.ui.BikeImagesActivity
 
 class MyCompletedOrdersAdapter(
     val context: Context,
@@ -84,10 +85,17 @@ class MyCompletedOrdersAdapter(
                 AppConstants.SKU_ID,
                 completedSkuList[position].sku_id
             )
-            val intent = Intent(
+
+            val intent = if (completedSkuList[position].category == "cat_d8R14zUNx")
+                Intent(
+                    context,
+                    BikeImagesActivity::class.java
+                )else Intent(
                 context,
                 ShowImagesActivity::class.java
             )
+
+            intent.putExtra(AppConstants.SKU_ID,completedSkuList[position].sku_id)
             intent.putExtra("is_paid",completedSkuList[position].paid)
             context.startActivity(intent)
         }

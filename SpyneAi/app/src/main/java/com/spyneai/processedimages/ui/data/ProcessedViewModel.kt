@@ -16,6 +16,9 @@ class ProcessedViewModel : ViewModel() {
     val imagesOfSkuRes: LiveData<Resource<ImagesOfSkuRes>>
         get() = _imagesOfSkuRes
 
+    var skuId : String? = null
+    var selectedImageUrl : String? = null
+
     fun getImagesOfSku(
         authKey: String,
         skuId: String

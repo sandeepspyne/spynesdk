@@ -264,6 +264,7 @@
     <string name="label_ok">OK</string>
     <string name="car_subcategory">Select your car\'s sub-category</string>
     <string name="bike_subcategory">Select your bike\'s sub-category</string>
+    <string name="bikes">Bikes</string>
 
 
 </resources>
