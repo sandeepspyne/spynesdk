@@ -51,6 +51,7 @@ class ShootViewModel : ViewModel(){
     val isSubCategoryConfirmed : MutableLiveData<Boolean> = MutableLiveData()
     val showVin : MutableLiveData<Boolean> = MutableLiveData()
     val isProjectCreated : MutableLiveData<Boolean> = MutableLiveData()
+    val isProjectCreatedEcom : MutableLiveData<Boolean> = MutableLiveData()
     val isSkuCreated : MutableLiveData<Boolean> = MutableLiveData()
 
     val subCategoryId : MutableLiveData<String> = MutableLiveData()
@@ -64,7 +65,7 @@ class ShootViewModel : ViewModel(){
     val showMiscDialog : MutableLiveData<Boolean> = MutableLiveData()
     val startMiscShots : MutableLiveData<Boolean> = MutableLiveData()
     val selectBackground : MutableLiveData<Boolean> = MutableLiveData()
-    val endShoot : MutableLiveData<Boolean> = MutableLiveData()
+    val stopShoot : MutableLiveData<Boolean> = MutableLiveData()
 
 
     val interiorAngles : MutableLiveData<Int> = MutableLiveData()
@@ -73,6 +74,7 @@ class ShootViewModel : ViewModel(){
     val miscShootNumber: MutableLiveData<Int> = MutableLiveData()
 
     val reshootCapturedImage: MutableLiveData<Boolean> = MutableLiveData()
+    val projectId: MutableLiveData<String> = MutableLiveData()
 
 
     fun getSubCategories(

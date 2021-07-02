@@ -1,5 +1,6 @@
 package com.spyneai.shoot.ui.ecom
 
+import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -9,7 +10,9 @@ import com.spyneai.base.BaseFragment
 import com.spyneai.databinding.FragmentSkuDetailBinding
 import com.spyneai.shoot.adapters.CapturedImageAdapter
 import com.spyneai.shoot.data.ShootViewModel
-import java.util.ArrayList
+import com.spyneai.shoot.ui.ShootActivity
+import java.util.*
+
 
 class SkuDetailFragment : BaseFragment<ShootViewModel, FragmentSkuDetailBinding>() {
 
@@ -32,6 +35,18 @@ class SkuDetailFragment : BaseFragment<ShootViewModel, FragmentSkuDetailBinding>
                 e.printStackTrace()
             }
         })
+
+        binding.btNextSku.setOnClickListener {
+            viewModel.shootList.value?.clear()
+            val intent = Intent(activity, ShootActivity::class.java)
+            intent.putExtra("project_id", viewModel.sku.value?.projectId);
+            startActivity(intent)
+
+        }
+
+        binding.tvEndProject.setOnClickListener {
+            // make project id null
+        }
 
     }
 

@@ -1,16 +1,99 @@
 package com.spyneai.shoot.ui.ecom
 
+import android.os.Bundle
 import android.view.LayoutInflater
+import android.view.View
 import android.view.ViewGroup
 import android.view.WindowManager
+import com.posthog.android.Properties
 import com.spyneai.base.BaseDialogFragment
 import com.spyneai.base.BaseFragment
+import com.spyneai.base.network.Resource
+import com.spyneai.captureEvent
+import com.spyneai.captureFailureEvent
+import com.spyneai.dashboard.ui.handleApiError
 import com.spyneai.databinding.CreateSkuEcomDialogBinding
+import com.spyneai.needs.AppConstants
+import com.spyneai.needs.Utilities
+import com.spyneai.posthog.Events
 import com.spyneai.shoot.data.ShootViewModel
 
 class CreateSkuEcomDialog : BaseDialogFragment<ShootViewModel, CreateSkuEcomDialogBinding>() {
 
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
 
+        dialog?.setCancelable(false)
+
+        binding.btnProceed.setOnClickListener {
+            when {
+                binding.etSkuName.text.toString().isEmpty() -> {
+                    binding.etSkuName.error = "Please enter product name"
+                }
+                else -> {
+                    createSku(
+                        viewModel.projectId.value.toString(), binding.etSkuName.text.toString()
+                    )
+                }
+            }
+        }
+    }
+
+
+    private fun createSku(projectId: String, skuName: String) {
+
+        viewModel.createSku(
+            Utilities.getPreference(requireContext(), AppConstants.AUTH_KEY).toString(),
+            projectId,
+            requireActivity().intent.getStringExtra(AppConstants.CATEGORY_ID).toString(),
+            "",
+            skuName
+        )
+
+        viewModel.createSkuRes.observe(viewLifecycleOwner, {
+            when (it) {
+                is Resource.Sucess -> {
+                    requireContext().captureEvent(
+                        Events.CREATE_SKU,
+                        Properties().putValue("sku_name", viewModel.sku.value?.skuName.toString())
+                            .putValue("project_id", projectId)
+                            .putValue("prod_sub_cat_id", "")
+                    )
+
+                    //notify project created
+                    viewModel.isSkuCreated.value = true
+
+                    Utilities.hideProgressDialog()
+                    val sku = viewModel.sku.value
+                    sku?.skuId = it.value.sku_id
+                    sku?.projectId = projectId
+                    sku?.skuName = skuName
+
+                    viewModel.sku.value = sku
+
+                    viewModel.isSubCategoryConfirmed.value = true
+
+                    //add sku to local database
+//                    viewModel.insertSku(sku!!)
+                    dismiss()
+                }
+
+                is Resource.Loading -> {
+                    Utilities.showProgressDialog(requireContext())
+
+                }
+
+                is Resource.Failure -> {
+                    requireContext().captureFailureEvent(
+                        Events.CREATE_SKU_FAILED, Properties(),
+                        it.errorMessage!!
+                    )
+                    Utilities.hideProgressDialog()
+                    handleApiError(it)
+                }
+            }
+        })
+    }
 
 
 

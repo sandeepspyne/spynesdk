@@ -24,11 +24,15 @@ class OverlaysEcomFragment : BaseFragment<ShootViewModel, FragmentOverlaysEcomBi
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        initProjectDialog()
+
+        if (viewModel.projectId.value == null)
+            initProjectDialog()
+        else
+            initSkuDialog()
 
 
         binding.ivEndProject.setOnClickListener {
-            viewModel.endShoot.value = true
+            viewModel.stopShoot.value = true
         }
 
 
@@ -37,7 +41,7 @@ class OverlaysEcomFragment : BaseFragment<ShootViewModel, FragmentOverlaysEcomBi
             try {
                 if (showDialog && !it.isNullOrEmpty()) {
                     capturedImageList = ArrayList<String>()
-                    position = it.size-1
+                    position = it.size - 1
                     capturedImageList.clear()
                     for (i in 0..(it.size - 1))
                         (capturedImageList as ArrayList).add(it[i].capturedImage)
@@ -49,14 +53,16 @@ class OverlaysEcomFragment : BaseFragment<ShootViewModel, FragmentOverlaysEcomBi
             }
         })
 
-//
-//        private fun showImageConfirmDialog(shootData: ShootData) {
-//            viewModel.shootData.value = shootData
-//            ConfirmReshootDialog().show(requireFragmentManager(), "ConfirmReshootDialog")
-//        }
-
-
+        // set sku name
+        viewModel.isSkuCreated.observe(viewLifecycleOwner, {
+            if (it) {
+                Utilities.hideProgressDialog()
+                binding.tvSkuName?.text = viewModel.sku.value?.skuName
+                binding.tvSkuName.visibility = View.VISIBLE
+            }
+        })
     }
+
 
     private fun initCapturedImages() {
         capturedImageAdapter = CapturedImageAdapter(
@@ -73,17 +79,12 @@ class OverlaysEcomFragment : BaseFragment<ShootViewModel, FragmentOverlaysEcomBi
 
     }
 
+    private fun initSkuDialog() {
+        CreateSkuEcomDialog().show(requireFragmentManager(), "CreateSkuEcomDialog")
+    }
+
     private fun initProjectDialog() {
-        CreateProjectEcomDialog().show(requireFragmentManager(), "CreateProjectAndSkuDialog")
-
-        viewModel.isSkuCreated.observe(viewLifecycleOwner, {
-            if (it) {
-                Utilities.hideProgressDialog()
-                binding.tvSkuName?.text = viewModel.sku.value?.skuName
-                binding.tvSkuName.visibility = View.VISIBLE
-            }
-        })
-
+        CreateProjectEcomDialog().show(requireFragmentManager(), "CreateProjectEcomDialog")
     }
 
     private fun showImageConfirmDialog(shootData: ShootData) {

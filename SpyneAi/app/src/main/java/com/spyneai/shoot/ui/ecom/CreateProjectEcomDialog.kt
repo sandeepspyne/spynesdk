@@ -24,6 +24,8 @@ class CreateProjectEcomDialog :
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+
+
         dialog?.setCancelable(false)
 
         binding.btnProceed.setOnClickListener {
@@ -62,6 +64,7 @@ class CreateProjectEcomDialog :
                     viewModel.isProjectCreated.value = true
                     val sku = Sku()
                     sku.projectId = it.value.project_id
+                    Utilities.savePrefrence(requireContext(), AppConstants.PROJECT_ID, it.value.project_id)
                     sku.skuName = skuName
                     viewModel.sku.value = sku
 

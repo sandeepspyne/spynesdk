@@ -11,7 +11,6 @@ import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
-import androidx.fragment.app.FragmentTransaction
 import androidx.lifecycle.ViewModelProvider
 import com.spyneai.R
 import com.spyneai.dashboard.ui.base.ViewModelFactory
@@ -35,13 +34,18 @@ class ShootActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
         window.setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
             WindowManager.LayoutParams.FLAG_FULLSCREEN)
-
         setContentView(R.layout.activity_shoot)
 
         val shootViewModel = ViewModelProvider(this, ViewModelFactory()).get(ShootViewModel::class.java)
+
+        try {
+            val intent = intent
+            shootViewModel.projectId.value = intent.getStringExtra("project_id")
+        } catch (e: Exception) {
+            e.printStackTrace()
+        }
 
         val categoryDetails = CategoryDetails()
 
@@ -81,7 +85,7 @@ class ShootActivity : AppCompatActivity() {
             permissionRequest.launch(permissions.toTypedArray())
         }
 
-        shootViewModel.endShoot.observe(this,{
+        shootViewModel.stopShoot.observe(this,{
             if(it){
                 supportFragmentManager.beginTransaction()
                     .add(R.id.flCamerFragment, SkuDetailFragment())
