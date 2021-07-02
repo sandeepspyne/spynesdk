@@ -99,6 +99,7 @@ class ShootActivity : AppCompatActivity() {
 
         shootViewModel.stopShoot.observe(this,{
             if(it){
+                window.clearFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN)
                 supportFragmentManager.beginTransaction()
                     .add(R.id.flCamerFragment, skuDetailFragment)
                     .commit()
@@ -107,7 +108,10 @@ class ShootActivity : AppCompatActivity() {
 
         shootViewModel.showProjectDetail.observe(this,{
             if(it){
+                window.clearFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN)
                 supportFragmentManager.beginTransaction().remove(skuDetailFragment).commit()
+                supportFragmentManager.beginTransaction().remove(cameraFragment).commit()
+                supportFragmentManager.beginTransaction().remove(overlaysEcomFragment).commit()
                 supportFragmentManager.beginTransaction()
                     .add(R.id.flCamerFragment, projectDetailFragment)
                     .commit()
@@ -116,6 +120,7 @@ class ShootActivity : AppCompatActivity() {
 
         shootViewModel.addMoreAngle.observe(this, {
             if (it)
+                window.clearFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
                 supportFragmentManager.beginTransaction().remove(skuDetailFragment).commit()
         })
 

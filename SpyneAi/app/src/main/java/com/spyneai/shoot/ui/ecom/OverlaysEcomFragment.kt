@@ -37,6 +37,7 @@ class OverlaysEcomFragment : BaseFragment<ShootViewModel, FragmentOverlaysEcomBi
         }
 
         binding.ivEndProject.setOnClickListener {
+            if (viewModel.isStopCaptureClickable)
             viewModel.stopShoot.value = true
         }
 

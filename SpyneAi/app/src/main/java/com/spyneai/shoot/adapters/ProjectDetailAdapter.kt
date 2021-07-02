@@ -2,18 +2,23 @@ package com.spyneai.shoot.adapters
 
 import android.content.Context
 import android.view.LayoutInflater
+import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import androidx.recyclerview.widget.RecyclerView.OnItemTouchListener
 import com.spyneai.R
 import com.spyneai.shoot.data.model.ProjectDetailResponse
+
 
 lateinit var projectChildAdapter: ProjectChildAdapter
 
 class ProjectDetailAdapter(
-    val context: Context, var projectList: ArrayList<ProjectDetailResponse.Sku>
+    val context: Context,
+    var projectList: ArrayList<ProjectDetailResponse.Sku>,
+    var imageList: ArrayList<ProjectDetailResponse.Images>
 ) : RecyclerView.Adapter<ProjectDetailAdapter.ViewHolder>() {
 
     class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
@@ -34,9 +39,22 @@ class ProjectDetailAdapter(
 
         viewHolder.tvSkuName.text = projectList[position].sku_name
 
+        val mScrollTouchListener: OnItemTouchListener = object : OnItemTouchListener {
+            override fun onInterceptTouchEvent(rv: RecyclerView, e: MotionEvent): Boolean {
+                val action = e.action
+                when (action) {
+                    MotionEvent.ACTION_MOVE -> rv.parent.requestDisallowInterceptTouchEvent(true)
+                }
+                return false
+            }
+
+            override fun onTouchEvent(rv: RecyclerView, e: MotionEvent) {}
+            override fun onRequestDisallowInterceptTouchEvent(disallowIntercept: Boolean) {}
+        }
+
         projectChildAdapter = ProjectChildAdapter(
             context,
-            projectList
+            imageList
         )
 
         viewHolder.rvChildProject.apply {
@@ -45,6 +63,10 @@ class ProjectDetailAdapter(
             viewHolder.rvChildProject.setLayoutManager(layoutManager)
             this?.adapter = projectChildAdapter
         }
+
+        viewHolder.rvChildProject.addOnItemTouchListener(mScrollTouchListener)
+
+
 
     }
 

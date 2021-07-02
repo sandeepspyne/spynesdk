@@ -24,6 +24,7 @@ class ShootViewModel : ViewModel(){
     private val localRepository = ShootLocalRepository()
 
     public var isCameraButtonClickable = true
+    public var isStopCaptureClickable = false
 
     val totalSkuCaptured : MutableLiveData<String> = MutableLiveData()
     val totalImageCaptured : MutableLiveData<String> = MutableLiveData()

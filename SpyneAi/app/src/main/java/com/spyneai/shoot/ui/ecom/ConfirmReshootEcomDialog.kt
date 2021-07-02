@@ -48,6 +48,7 @@ class ConfirmReshootEcomDialog :
         }
 
         binding.btConfirmImage.setOnClickListener {
+            viewModel.isStopCaptureClickable = true
             val properties = Properties()
             properties.apply {
                 this["sku_id"] = viewModel.shootData.value?.sku_id

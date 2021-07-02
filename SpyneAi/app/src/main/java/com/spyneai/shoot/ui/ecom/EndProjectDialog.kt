@@ -1,13 +1,13 @@
 package com.spyneai.shoot.ui.ecom
 
+import android.R
+import android.app.DialogFragment.STYLE_NO_FRAME
+import android.graphics.Color
+import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
-import android.view.WindowManager
-import com.spyneai.R
+import android.view.*
+import androidx.fragment.app.DialogFragment.STYLE_NO_FRAME
 import com.spyneai.base.BaseDialogFragment
-import com.spyneai.base.BaseFragment
 import com.spyneai.databinding.EndProjectDialogBinding
 import com.spyneai.shoot.data.ShootViewModel
 
@@ -16,6 +16,7 @@ class EndProjectDialog : BaseDialogFragment<ShootViewModel, EndProjectDialogBind
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
         dialog?.setCancelable(false)
         binding.tvSkuName.text = viewModel.sku.value?.skuName.toString()
         binding.tvTotalSkuCaptured.text = viewModel.totalSkuCaptured.value
@@ -42,6 +43,8 @@ class EndProjectDialog : BaseDialogFragment<ShootViewModel, EndProjectDialogBind
         super.onResume()
         dialog?.getWindow()?.setLayout(WindowManager.LayoutParams.MATCH_PARENT,
             WindowManager.LayoutParams.WRAP_CONTENT);
+        dialog?.window?.setGravity(Gravity.BOTTOM)
+        getDialog()?.getWindow()?.setBackgroundDrawable(ColorDrawable(Color.WHITE));
     }
     override fun getViewModel() = ShootViewModel::class.java
 

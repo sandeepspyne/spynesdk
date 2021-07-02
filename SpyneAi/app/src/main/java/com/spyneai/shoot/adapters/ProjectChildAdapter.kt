@@ -5,14 +5,13 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
-import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.spyneai.R
 import com.spyneai.shoot.data.model.ProjectDetailResponse
 
-class ProjectChildAdapter (
-    val context: Context, var projectList: ArrayList<ProjectDetailResponse.Sku>
+class ProjectChildAdapter(
+    val context: Context, var projectList: ArrayList<ProjectDetailResponse.Images>
 )
     : RecyclerView.Adapter<ProjectChildAdapter.ViewHolder>() {
 
@@ -32,7 +31,7 @@ class ProjectChildAdapter (
     override fun onBindViewHolder(viewHolder: ViewHolder, position: Int) {
 
         Glide.with(context).load(
-            projectList[position].images[position].input_lres)
+            projectList[position].input_lres)
             .into(viewHolder.ivSkuImages)
     }
 
