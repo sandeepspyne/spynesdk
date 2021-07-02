@@ -17,6 +17,7 @@ import com.spyneai.needs.Utilities
 import com.spyneai.posthog.Events
 import com.spyneai.shoot.data.ShootViewModel
 import com.spyneai.shoot.data.model.Sku
+import com.spyneai.shoot.utils.log
 
 class CreateProjectEcomDialog :
     BaseDialogFragment<ShootViewModel, CreateProjectEcomDialogBinding>() {
@@ -36,6 +37,9 @@ class CreateProjectEcomDialog :
                     binding.etSkuName.error = "Please enter product name"
                 }
                 else -> {
+                    log("create project started")
+                    log("project name: "+binding.etProjectName.text.toString())
+                    log("sku name: "+binding.etSkuName.text.toString())
                     createProject(
                         binding.etProjectName.text.toString(),
                         binding.etSkuName.text.toString()
@@ -63,11 +67,14 @@ class CreateProjectEcomDialog :
                     //notify project created
                     viewModel.isProjectCreated.value = true
                     val sku = Sku()
+                    log("project id created")
+                    log("project id: "+it.value.project_id)
                     sku.projectId = it.value.project_id
                     Utilities.savePrefrence(requireContext(), AppConstants.PROJECT_ID, it.value.project_id)
                     sku.skuName = skuName
                     viewModel.sku.value = sku
 
+                    log("create sku started")
                     createSku(it.value.project_id, skuName)
 
 
@@ -78,6 +85,7 @@ class CreateProjectEcomDialog :
                 }
 
                 is Resource.Failure -> {
+                    log("create project id failed")
                     requireContext().captureFailureEvent(
                         Events.CREATE_PROJECT_FAILED, Properties(),
                         it.errorMessage!!
@@ -115,13 +123,15 @@ class CreateProjectEcomDialog :
                     Utilities.hideProgressDialog()
                     val sku = viewModel.sku.value
                     sku?.skuId = it.value.sku_id
+                    log("sku id created")
+                    log("sku id: "+it.value.sku_id)
                     sku?.skuName = skuName
 
                     viewModel.sku.value = sku
                     viewModel.isSubCategoryConfirmed.value = true
 
                     //add sku to local database
-                    viewModel.insertSku(sku!!)
+//                    viewModel.insertSku(sku!!)
                     dismiss()
                 }
 
@@ -131,6 +141,7 @@ class CreateProjectEcomDialog :
                 }
 
                 is Resource.Failure -> {
+                    log("create sku id failed")
                     requireContext().captureFailureEvent(
                         Events.CREATE_SKU_FAILED, Properties(),
                         it.errorMessage!!

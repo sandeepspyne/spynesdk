@@ -114,6 +114,12 @@ interface ClipperApi {
     ) : GetImagesOfSkuResponse
 
 
+    @GET("v2/project/getSkuOfProject")
+    suspend fun getProjectDetail(
+        @Field("auth_key") authKey : String
+    ) : ProjectDetailResponse
+
+
 
 
 }

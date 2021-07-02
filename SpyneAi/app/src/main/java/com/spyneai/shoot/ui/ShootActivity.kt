@@ -18,9 +18,11 @@ import com.spyneai.needs.AppConstants
 import com.spyneai.needs.Utilities
 import com.spyneai.shoot.data.ShootViewModel
 import com.spyneai.shoot.data.model.CategoryDetails
+import com.spyneai.shoot.data.model.Sku
 import com.spyneai.shoot.ui.dialogs.ShootExitDialog
 import com.spyneai.shoot.ui.ecom.OverlaysEcomFragment
 import com.spyneai.shoot.ui.ecom.SkuDetailFragment
+import com.spyneai.shoot.utils.log
 import java.io.File
 
 
@@ -29,6 +31,7 @@ class ShootActivity : AppCompatActivity() {
     lateinit var cameraFragment: CameraFragment
     lateinit var overlaysFragment: OverlaysFragment
     lateinit var overlaysEcomFragment: OverlaysEcomFragment
+    lateinit var skuDetailFragment: SkuDetailFragment
     val TAG = "ShootActivity"
 
 
@@ -39,13 +42,6 @@ class ShootActivity : AppCompatActivity() {
         setContentView(R.layout.activity_shoot)
 
         val shootViewModel = ViewModelProvider(this, ViewModelFactory()).get(ShootViewModel::class.java)
-
-        try {
-            val intent = intent
-            shootViewModel.projectId.value = intent.getStringExtra("project_id")
-        } catch (e: Exception) {
-            e.printStackTrace()
-        }
 
         val categoryDetails = CategoryDetails()
 
@@ -60,6 +56,7 @@ class ShootActivity : AppCompatActivity() {
         cameraFragment = CameraFragment()
         overlaysFragment = OverlaysFragment()
         overlaysEcomFragment = OverlaysEcomFragment()
+        skuDetailFragment = SkuDetailFragment()
 
         if (Utilities.getPreference(this, AppConstants.CATEGORY_NAME).equals("Automobiles")){
             if(savedInstanceState == null) { // initial transaction should be wrapped like this
@@ -75,6 +72,18 @@ class ShootActivity : AppCompatActivity() {
                     .add(R.id.flCamerFragment, overlaysEcomFragment)
                     .commitAllowingStateLoss()
             }
+
+            try {
+                val intent = intent
+                shootViewModel.projectId.value = intent.getStringExtra("project_id")
+                val sku = Sku()
+                sku?.projectId = shootViewModel.projectId.value
+                shootViewModel.categoryDetails.value?.imageType = "Ecom"
+                shootViewModel.sku.value = sku
+            } catch (e: Exception) {
+                e.printStackTrace()
+            }
+
         }
 
 
@@ -88,9 +97,14 @@ class ShootActivity : AppCompatActivity() {
         shootViewModel.stopShoot.observe(this,{
             if(it){
                 supportFragmentManager.beginTransaction()
-                    .add(R.id.flCamerFragment, SkuDetailFragment())
+                    .add(R.id.flCamerFragment, skuDetailFragment)
                     .commit()
             }
+        })
+
+        shootViewModel.addMoreAngle.observe(this, {
+            if (it)
+                supportFragmentManager.beginTransaction().remove(skuDetailFragment).commit()
         })
 
         shootViewModel.selectBackground.observe(this, {

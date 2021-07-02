@@ -6,6 +6,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.spyneai.R
 import com.spyneai.base.BaseFragment
 import com.spyneai.databinding.FragmentSkuDetailBinding
 import com.spyneai.shoot.adapters.CapturedImageAdapter
@@ -42,6 +43,10 @@ class SkuDetailFragment : BaseFragment<ShootViewModel, FragmentSkuDetailBinding>
             intent.putExtra("project_id", viewModel.sku.value?.projectId);
             startActivity(intent)
 
+        }
+
+        binding.ivAddAngle.setOnClickListener {
+            viewModel.addMoreAngle.value = true
         }
 
         binding.tvEndProject.setOnClickListener {

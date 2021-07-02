@@ -11,6 +11,7 @@ import com.spyneai.needs.Utilities
 import com.spyneai.shoot.adapters.CapturedImageAdapter
 import com.spyneai.shoot.data.ShootViewModel
 import com.spyneai.shoot.data.model.ShootData
+import com.spyneai.shoot.utils.log
 import java.util.ArrayList
 
 class OverlaysEcomFragment : BaseFragment<ShootViewModel, FragmentOverlaysEcomBinding>() {
@@ -25,11 +26,15 @@ class OverlaysEcomFragment : BaseFragment<ShootViewModel, FragmentOverlaysEcomBi
         super.onViewCreated(view, savedInstanceState)
 
 
-        if (viewModel.projectId.value == null)
+        if (viewModel.projectId.value == null){
             initProjectDialog()
-        else
-            initSkuDialog()
+            log("project and SKU dialog shown")
+        }
 
+        else {
+            initSkuDialog()
+            log("SKU dialog shown")
+        }
 
         binding.ivEndProject.setOnClickListener {
             viewModel.stopShoot.value = true

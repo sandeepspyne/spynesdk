@@ -31,6 +31,10 @@ class ShootViewModel : ViewModel(){
     val subCategoriesResponse: LiveData<Resource<NewSubCatResponse>>
         get() = _subCategoriesResponse
 
+    private val _projectDetailResponse: MutableLiveData<Resource<ProjectDetailResponse>> = MutableLiveData()
+    val projectDetailResponse: LiveData<Resource<ProjectDetailResponse>>
+        get() = _projectDetailResponse
+
     private val _overlaysResponse: MutableLiveData<Resource<OverlaysResponse>> = MutableLiveData()
     val overlaysResponse: LiveData<Resource<OverlaysResponse>>
         get() = _overlaysResponse
@@ -76,6 +80,8 @@ class ShootViewModel : ViewModel(){
     val reshootCapturedImage: MutableLiveData<Boolean> = MutableLiveData()
     val projectId: MutableLiveData<String> = MutableLiveData()
 
+    val addMoreAngle : MutableLiveData<Boolean> = MutableLiveData()
+
 
     fun getSubCategories(
         authKey : String,prodId : String
@@ -88,6 +94,11 @@ class ShootViewModel : ViewModel(){
                     prodSubcategoryId : String, frames : String) = viewModelScope.launch {
         _overlaysResponse.value = Resource.Loading
         _overlaysResponse.value = repository.getOverlays(authKey, prodId, prodSubcategoryId, frames)
+    }
+
+    fun getProjectDetail(authKey: String) = viewModelScope.launch {
+        _projectDetailResponse.value = Resource.Loading
+        _projectDetailResponse.value = repository.getProjectDetail(authKey)
     }
 
     fun getSelectedAngles() = exterirorAngles.value

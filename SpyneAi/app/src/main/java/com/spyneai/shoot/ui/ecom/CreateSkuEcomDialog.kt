@@ -17,6 +17,7 @@ import com.spyneai.needs.AppConstants
 import com.spyneai.needs.Utilities
 import com.spyneai.posthog.Events
 import com.spyneai.shoot.data.ShootViewModel
+import com.spyneai.shoot.utils.log
 
 class CreateSkuEcomDialog : BaseDialogFragment<ShootViewModel, CreateSkuEcomDialogBinding>() {
 
@@ -31,6 +32,9 @@ class CreateSkuEcomDialog : BaseDialogFragment<ShootViewModel, CreateSkuEcomDial
                     binding.etSkuName.error = "Please enter product name"
                 }
                 else -> {
+                    log("create sku started")
+                    log("project id: "+viewModel.projectId.value.toString())
+                    log("create sku name: "+binding.etSkuName.text.toString())
                     createSku(
                         viewModel.projectId.value.toString(), binding.etSkuName.text.toString()
                     )
@@ -60,11 +64,13 @@ class CreateSkuEcomDialog : BaseDialogFragment<ShootViewModel, CreateSkuEcomDial
                             .putValue("prod_sub_cat_id", "")
                     )
 
-                    //notify project created
+                    //notify sku created
                     viewModel.isSkuCreated.value = true
 
                     Utilities.hideProgressDialog()
                     val sku = viewModel.sku.value
+                    log("sku id created sucess")
+                    log("sku id: "+it.value.sku_id)
                     sku?.skuId = it.value.sku_id
                     sku?.projectId = projectId
                     sku?.skuName = skuName
