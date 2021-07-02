@@ -9,6 +9,7 @@ import com.bumptech.glide.Glide
 
 import com.spyneai.base.BaseDialogFragment
 import com.spyneai.base.network.Resource
+import com.spyneai.dashboard.response.NewSubCatResponse
 import com.spyneai.databinding.DialogFocusedHintBinding
 import com.spyneai.shoot.data.ShootViewModel
 
@@ -40,11 +41,18 @@ class MiscShotsDialog : BaseDialogFragment<ShootViewModel, DialogFocusedHintBind
             when(it) {
                 is Resource.Success -> {
                     val miscList = it.value.miscellaneous
-                    if (miscList.isNotEmpty() && miscList.size > 3){
-                        loadImage(miscList[0].display_thumbnail,binding.ivFirst)
-                        loadImage(miscList[1].display_thumbnail,binding.ivSecond)
-                        loadImage(miscList[2].display_thumbnail,binding.ivThird)
-                        loadImage(miscList[3].display_thumbnail,binding.ivFourth)
+                    //filter miscshots
+                    val filteredList: List<NewSubCatResponse.Miscellaneous> = it.value.miscellaneous.filter {
+                        it.prod_sub_cat_id ==  viewModel.subCategory.value?.prod_sub_cat_id
+                    }
+
+                    it.value.miscellaneous = filteredList
+
+                    if (filteredList.isNotEmpty() && filteredList.size > 3){
+                        loadImage(filteredList[0].display_thumbnail,binding.ivFirst)
+                        loadImage(filteredList[1].display_thumbnail,binding.ivSecond)
+                        loadImage(filteredList[2].display_thumbnail,binding.ivThird)
+                        loadImage(filteredList[3].display_thumbnail,binding.ivFourth)
                     }
                 }
                 else -> {}

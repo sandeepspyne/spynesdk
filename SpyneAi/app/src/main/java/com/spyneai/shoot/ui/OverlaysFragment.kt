@@ -6,6 +6,8 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.ViewTreeObserver
+import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.constraintlayout.widget.ConstraintSet
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.DataSource
@@ -205,6 +207,7 @@ class OverlaysFragment : BaseFragment<ShootViewModel,FragmentOverlaysBinding>(),
                         it.value.data as ArrayList<NewSubCatResponse.Data>
                     subCategoriesAdapter.notifyDataSetChanged()
 
+
                     //set default angles on sub cat response
                     initAngles()
                     initProgressFrames()
@@ -302,7 +305,6 @@ class OverlaysFragment : BaseFragment<ShootViewModel,FragmentOverlaysBinding>(),
         viewModel.subCategoriesResponse.observe(viewLifecycleOwner,{
             when(it){
                 is Resource.Success -> {
-
                     val interiorList = it.value.interior as ArrayList<NewSubCatResponse.Interior>
 
                     //set interior angles value
@@ -314,7 +316,6 @@ class OverlaysFragment : BaseFragment<ShootViewModel,FragmentOverlaysBinding>(),
                     binding.rvSubcategories.apply {
                         this?.adapter = interiorAdapter
                     }
-
                     //change image type
                     viewModel.categoryDetails.value?.imageType = "Interior"
                 }
@@ -337,8 +338,6 @@ class OverlaysFragment : BaseFragment<ShootViewModel,FragmentOverlaysBinding>(),
                 progressAdapter.updateList(viewModel.getShootProgressList(viewModel.interiorAngles.value!!))
             else
                 progressAdapter.updateList(viewModel.interiorShootNumber.value!!)
-
-
         })
     }
 
@@ -365,14 +364,14 @@ class OverlaysFragment : BaseFragment<ShootViewModel,FragmentOverlaysBinding>(),
         viewModel.subCategoriesResponse.observe(viewLifecycleOwner,{
             when(it){
                 is Resource.Success -> {
-
-                    val miscList = it.value.miscellaneous as ArrayList<NewSubCatResponse.Miscellaneous>
+                    val miscList = it.value.miscellaneous
 
                     //set interior angles value
                     viewModel.miscShootNumber.value = 0
                     viewModel.miscAngles.value = miscList.size
 
-                    miscAdapter = MiscAdapter(requireContext(),miscList)
+
+                    miscAdapter = MiscAdapter(requireContext(),miscList as ArrayList<NewSubCatResponse.Miscellaneous>)
 
                     binding.rvSubcategories.apply {
                         this?.adapter = miscAdapter
@@ -414,7 +413,6 @@ class OverlaysFragment : BaseFragment<ShootViewModel,FragmentOverlaysBinding>(),
 
             getOverlays()
         }
-
     }
 
     private fun showImageConfirmDialog(shootData: ShootData) {
@@ -444,8 +442,4 @@ class OverlaysFragment : BaseFragment<ShootViewModel,FragmentOverlaysBinding>(),
         inflater: LayoutInflater,
         container: ViewGroup?
     ) = FragmentOverlaysBinding.inflate(inflater, container, false)
-
-
-
-
 }

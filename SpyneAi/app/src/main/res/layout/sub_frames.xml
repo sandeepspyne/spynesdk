@@ -12,16 +12,16 @@
 
     <androidx.cardview.widget.CardView
         android:id="@+id/cardIFrameImages"
-        android:layout_width="@dimen/dp_100"
-        android:layout_height="@dimen/dp_100"
+        android:layout_width="@dimen/dp_80"
+        android:layout_height="@dimen/dp_80"
         android:gravity="center"
         app:cardCornerRadius="@dimen/dp_10"
         android:background="@drawable/bg_channel">
 
         <ImageView
             android:id="@+id/ivIFrameImages"
-            android:layout_width="@dimen/dp_100"
-            android:layout_height="@dimen/dp_100"
+            android:layout_width="@dimen/dp_80"
+            android:layout_height="@dimen/dp_80"
             android:layout_gravity="center"
             android:padding="@dimen/dp_1"
             android:scaleType="fitXY"

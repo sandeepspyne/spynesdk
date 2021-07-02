@@ -71,6 +71,8 @@ class ShootViewModel : ViewModel(){
     val miscAngles: MutableLiveData<Int> = MutableLiveData()
     val miscShootNumber: MutableLiveData<Int> = MutableLiveData()
 
+    var overlayRightMargin = 0
+
 
     fun getSubCategories(
         authKey : String,prodId : String
