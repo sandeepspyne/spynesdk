@@ -17,6 +17,7 @@ import com.spyneai.needs.AppConstants
 import com.spyneai.needs.Utilities
 import com.spyneai.posthog.Events
 import com.spyneai.shoot.data.ShootViewModel
+import com.spyneai.shoot.data.model.Sku
 import com.spyneai.shoot.utils.log
 
 class CreateSkuEcomDialog : BaseDialogFragment<ShootViewModel, CreateSkuEcomDialogBinding>() {
@@ -68,7 +69,7 @@ class CreateSkuEcomDialog : BaseDialogFragment<ShootViewModel, CreateSkuEcomDial
                     viewModel.isSkuCreated.value = true
 
                     Utilities.hideProgressDialog()
-                    val sku = viewModel.sku.value
+                    val sku = Sku()
                     log("sku id created sucess")
                     log("sku id: "+it.value.sku_id)
                     sku?.skuId = it.value.sku_id

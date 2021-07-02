@@ -21,6 +21,7 @@ import com.spyneai.shoot.data.model.CategoryDetails
 import com.spyneai.shoot.data.model.Sku
 import com.spyneai.shoot.ui.dialogs.ShootExitDialog
 import com.spyneai.shoot.ui.ecom.OverlaysEcomFragment
+import com.spyneai.shoot.ui.ecom.ProjectDetailFragment
 import com.spyneai.shoot.ui.ecom.SkuDetailFragment
 import com.spyneai.shoot.utils.log
 import java.io.File
@@ -32,6 +33,7 @@ class ShootActivity : AppCompatActivity() {
     lateinit var overlaysFragment: OverlaysFragment
     lateinit var overlaysEcomFragment: OverlaysEcomFragment
     lateinit var skuDetailFragment: SkuDetailFragment
+    lateinit var projectDetailFragment: ProjectDetailFragment
     val TAG = "ShootActivity"
 
 
@@ -57,6 +59,7 @@ class ShootActivity : AppCompatActivity() {
         overlaysFragment = OverlaysFragment()
         overlaysEcomFragment = OverlaysEcomFragment()
         skuDetailFragment = SkuDetailFragment()
+        projectDetailFragment = ProjectDetailFragment()
 
         if (Utilities.getPreference(this, AppConstants.CATEGORY_NAME).equals("Automobiles")){
             if(savedInstanceState == null) { // initial transaction should be wrapped like this
@@ -98,6 +101,15 @@ class ShootActivity : AppCompatActivity() {
             if(it){
                 supportFragmentManager.beginTransaction()
                     .add(R.id.flCamerFragment, skuDetailFragment)
+                    .commit()
+            }
+        })
+
+        shootViewModel.showProjectDetail.observe(this,{
+            if(it){
+                supportFragmentManager.beginTransaction().remove(skuDetailFragment).commit()
+                supportFragmentManager.beginTransaction()
+                    .add(R.id.flCamerFragment, projectDetailFragment)
                     .commit()
             }
         })

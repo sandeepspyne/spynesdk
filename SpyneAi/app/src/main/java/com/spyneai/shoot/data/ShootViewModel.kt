@@ -25,6 +25,9 @@ class ShootViewModel : ViewModel(){
 
     public var isCameraButtonClickable = true
 
+    val totalSkuCaptured : MutableLiveData<String> = MutableLiveData()
+    val totalImageCaptured : MutableLiveData<String> = MutableLiveData()
+
     val shootList: MutableLiveData<ArrayList<ShootData>> = MutableLiveData()
 
     private val _subCategoriesResponse: MutableLiveData<Resource<NewSubCatResponse>> = MutableLiveData()
@@ -70,6 +73,7 @@ class ShootViewModel : ViewModel(){
     val startMiscShots : MutableLiveData<Boolean> = MutableLiveData()
     val selectBackground : MutableLiveData<Boolean> = MutableLiveData()
     val stopShoot : MutableLiveData<Boolean> = MutableLiveData()
+    val showProjectDetail : MutableLiveData<Boolean> = MutableLiveData()
 
 
     val interiorAngles : MutableLiveData<Int> = MutableLiveData()
@@ -96,9 +100,9 @@ class ShootViewModel : ViewModel(){
         _overlaysResponse.value = repository.getOverlays(authKey, prodId, prodSubcategoryId, frames)
     }
 
-    fun getProjectDetail(authKey: String) = viewModelScope.launch {
+    fun getProjectDetail(authKey: String, projectId:  String) = viewModelScope.launch {
         _projectDetailResponse.value = Resource.Loading
-        _projectDetailResponse.value = repository.getProjectDetail(authKey)
+        _projectDetailResponse.value = repository.getProjectDetail(authKey, projectId)
     }
 
     fun getSelectedAngles() = exterirorAngles.value

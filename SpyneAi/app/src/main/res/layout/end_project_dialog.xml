@@ -7,17 +7,21 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     tools:context=".shoot.ui.ecom.EndProjectDialog">
 
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:gravity="center"
-        app:layout_constraintLeft_toLeftOf="parent"
+
+    <androidx.appcompat.widget.AppCompatButton
+        android:layout_width="100dp"
+        android:layout_height="@dimen/dp_40"
+        android:id="@+id/btYes"
+        android:text="Yes"
+        android:textAllCaps="false"
+        android:fontFamily="@font/poppins_medium"
+        android:layout_marginTop="@dimen/dp_15"
+        android:background="@drawable/bg_round_button_ripple"
+        android:textColor="@color/white"
+        app:layout_constraintLeft_toRightOf="@+id/btNo"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"
-        android:layout_marginBottom="16dp">
-
-    </LinearLayout>
+        android:layout_marginBottom="@dimen/dp_15"/>
 
     <LinearLayout
         android:id="@+id/llYes"
@@ -25,7 +29,7 @@
         android:layout_height="@dimen/dp_40"
         android:background="@drawable/bg_rectangle_button_ripple"
         android:gravity="center"
-        app:layout_constraintLeft_toRightOf="@+id/llNo"
+        app:layout_constraintLeft_toRightOf="@+id/btNo"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"
         android:layout_marginBottom="@dimen/dp_15">
@@ -42,28 +46,21 @@
 
     </LinearLayout>
 
-    <LinearLayout
-        android:id="@+id/llNo"
+    <androidx.appcompat.widget.AppCompatButton
         android:layout_width="100dp"
         android:layout_height="@dimen/dp_40"
-        android:background="@drawable/bg_demo"
-        android:gravity="center"
+        android:id="@+id/btNo"
+        android:text="No"
+        android:textAllCaps="false"
+        android:fontFamily="@font/poppins_medium"
+        android:layout_marginTop="@dimen/dp_15"
+        android:background="@drawable/bg_skip"
+        android:textColor="@color/primary"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toLeftOf="@+id/llYes"
         app:layout_constraintBottom_toBottomOf="parent"
-        android:layout_marginBottom="@dimen/dp_15">
+        android:layout_marginBottom="@dimen/dp_15"/>
 
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/no"
-            android:textSize="@dimen/sp_16"
-            android:textColor="@color/black"
-            android:fontFamily="@font/poppins_medium"/>
-
-
-    </LinearLayout>
 
     <TextView
         android:id="@+id/tvEndProject"
@@ -75,41 +72,131 @@
         android:text="@string/end_project"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintBottom_toTopOf="@+id/llNo"
+        app:layout_constraintBottom_toTopOf="@+id/btNo"
         android:layout_marginBottom="23dp"/>
 
-    <LinearLayout
+    <View
+        android:id="@+id/viewEndProject"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:gravity="center"
-        android:layout_marginTop="@dimen/dp_30"
-        android:layout_marginBottom="@dimen/dp_8"
-        app:layout_constraintLeft_toLeftOf="parent"
+        android:layout_height="1dp"
+        android:background="@color/line_separator"
         app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintBottom_toTopOf="@+id/tvEndProject"
+        android:layout_marginBottom="@dimen/dp_15"/>
+
+    <TextView
+        android:id="@+id/tvProjectDetail"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:fontFamily="@font/poppins_medium"
+        android:text="PROJECT: "
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintBottom_toTopOf="@+id/tvEndProject">
-
-    <TextView
-        android:id="@+id/tvProjectText"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:fontFamily="@font/poppins_medium"
-        android:textSize="@dimen/sp_16"
+        app:layout_constraintLeft_toLeftOf="parent"
         android:textColor="@color/black"
-        android:text="Project: " />
+        android:textSize="@dimen/sp_14"
+        android:layout_marginTop="@dimen/dp_20"
+        android:layout_marginLeft="35dp"/>
 
     <TextView
-        android:id="@+id/tvProjectName"
+        android:id="@+id/tvSkuName"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:fontFamily="@font/poppins_medium"
-        android:textSize="@dimen/sp_16"
+        tools:text="Sku Name"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintLeft_toRightOf="@+id/tvProjectDetail"
         android:textColor="@color/primary"
-        android:layout_marginLeft="@dimen/dp_5"
-        tools:text="Project Name" />
+        android:textSize="@dimen/sp_14"
+        android:layout_marginTop="@dimen/dp_20"
+        android:layout_marginLeft="5dp"/>
 
-    </LinearLayout>
+    <TextView
+        android:id="@+id/tvTotalSku"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:fontFamily="@font/poppins_regular"
+        android:text="Total SKU’s Captured"
+        app:layout_constraintTop_toBottomOf="@+id/tvProjectDetail"
+        app:layout_constraintLeft_toLeftOf="@+id/tvProjectDetail"
+        android:textColor="@color/black_varient"
+        android:textSize="@dimen/sp_14"
+        android:layout_marginTop="@dimen/dp_10" />
+
+    <TextView
+        android:id="@+id/tvTotalSkuCaptured"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:fontFamily="@font/poppins_medium"
+        tools:text="50"
+        android:layout_marginRight="@dimen/dp_70"
+        app:layout_constraintTop_toBottomOf="@+id/tvProjectDetail"
+        app:layout_constraintRight_toRightOf="parent"
+        android:textColor="@color/primary"
+        android:textSize="@dimen/sp_14"
+        android:layout_marginTop="@dimen/dp_10" />
+
+
+    <TextView
+        android:id="@+id/tvTotalImage"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:fontFamily="@font/poppins_regular"
+        android:text="Total Images Captured"
+        app:layout_constraintTop_toBottomOf="@+id/tvTotalSku"
+        app:layout_constraintLeft_toLeftOf="@+id/tvTotalSku"
+        android:textColor="@color/black_varient"
+        android:textSize="@dimen/sp_14"
+        android:layout_marginTop="@dimen/dp_10" />
+
+    <TextView
+        android:id="@+id/tvTotalImageCaptured"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:fontFamily="@font/poppins_medium"
+        tools:text="80"
+        app:layout_constraintTop_toBottomOf="@+id/tvTotalSkuCaptured"
+        app:layout_constraintRight_toRightOf="@+id/tvTotalSkuCaptured"
+        app:layout_constraintBottom_toTopOf="@+id/viewEndProject"
+        android:layout_marginBottom="@dimen/dp_30"
+        android:textColor="@color/primary"
+        android:textSize="@dimen/sp_14"
+        android:layout_marginTop="@dimen/dp_10" />
+
+
+
+<!--    <LinearLayout-->
+<!--        android:layout_width="match_parent"-->
+<!--        android:layout_height="wrap_content"-->
+<!--        android:orientation="horizontal"-->
+<!--        android:gravity="center"-->
+<!--        android:layout_marginTop="@dimen/dp_30"-->
+<!--        android:layout_marginBottom="@dimen/dp_8"-->
+<!--        app:layout_constraintLeft_toLeftOf="parent"-->
+<!--        app:layout_constraintRight_toRightOf="parent"-->
+<!--        app:layout_constraintTop_toTopOf="parent"-->
+<!--        app:layout_constraintBottom_toTopOf="@+id/tvEndProject">-->
+
+<!--    <TextView-->
+<!--        android:id="@+id/tvProjectText"-->
+<!--        android:layout_width="wrap_content"-->
+<!--        android:layout_height="wrap_content"-->
+<!--        android:fontFamily="@font/poppins_medium"-->
+<!--        android:textSize="@dimen/sp_16"-->
+<!--        android:textColor="@color/black"-->
+<!--        android:text="Project: " />-->
+
+<!--    <TextView-->
+<!--        android:id="@+id/tvProjectName"-->
+<!--        android:layout_width="wrap_content"-->
+<!--        android:layout_height="wrap_content"-->
+<!--        android:fontFamily="@font/poppins_medium"-->
+<!--        android:textSize="@dimen/sp_16"-->
+<!--        android:textColor="@color/primary"-->
+<!--        android:layout_marginLeft="@dimen/dp_5"-->
+<!--        tools:text="Project Name" />-->
+
+<!--    </LinearLayout>-->
 
     <ImageView
         android:id="@+id/ivCloseDialog"

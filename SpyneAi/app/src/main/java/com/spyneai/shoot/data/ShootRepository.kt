@@ -45,9 +45,10 @@ class ShootRepository : BaseRepository() {
     }
 
     suspend fun getProjectDetail(
-        tokenId: String
+        tokenId: String,
+        projectId:  String
     ) = safeApiCall{
-        clipperApi.getProjectDetail(tokenId)
+        clipperApi.getProjectDetail(tokenId, projectId)
     }
 
 }
