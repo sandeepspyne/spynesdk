@@ -41,7 +41,8 @@ class ProjectDetailAdapter(
 
         viewHolder.rvChildProject.apply {
             this?.layoutManager =
-                LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
+                LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
+            viewHolder.rvChildProject.setLayoutManager(layoutManager)
             this?.adapter = projectChildAdapter
         }
 

@@ -32,7 +32,7 @@ class ProjectChildAdapter (
     override fun onBindViewHolder(viewHolder: ViewHolder, position: Int) {
 
         Glide.with(context).load(
-            projectList[position].sku_name)
+            projectList[position].images[position].input_lres)
             .into(viewHolder.ivSkuImages)
     }
 

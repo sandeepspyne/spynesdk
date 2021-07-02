@@ -137,10 +137,10 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/submit_and_process"
+            android:text="@string/home"
             android:textSize="@dimen/sp_18"
-            android:layout_marginLeft="@dimen/dp_10"
-            android:layout_marginRight="@dimen/dp_10"
+            android:layout_marginLeft="@dimen/dp_60"
+            android:layout_marginRight="@dimen/dp_60"
             android:textColor="@color/white"
             android:fontFamily="@font/poppins_medium"/>
 
