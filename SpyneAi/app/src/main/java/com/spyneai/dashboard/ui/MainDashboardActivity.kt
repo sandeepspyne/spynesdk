@@ -47,8 +47,11 @@ class MainDashboardActivity : AppCompatActivity() {
 
                 R.id.shootActivity-> {
                     var intent : Intent? = null
-                    intent = if (getString(R.string.app_name) == "Karvi.com") Intent(this,
-                        ShootActivity::class.java) else Intent(this, CategoriesActivity::class.java)
+//                    intent = if (getString(R.string.app_name) == "Karvi.com") Intent(this,
+//                        ShootActivity::class.java) else Intent(this, CategoriesActivity::class.java)
+
+                    intent = Intent(this,
+                        ShootActivity::class.java)
 
                     intent.putExtra(AppConstants.CATEGORY_ID,AppConstants.CARS_CATEGORY_ID)
                     intent.putExtra(AppConstants.CATEGORY_NAME,"Automobiles")

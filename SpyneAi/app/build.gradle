@@ -92,12 +92,24 @@ android {
             versionName "1.0.0"
         }
 
+        olacabs {
+            dimension 'version'
+            applicationId "com.spyneai.olacabs"
+            versionCode 1
+            versionName "1.0.0"
+        }
+
 
     }
     sourceSets {
         sweepCars {
             java {
                 srcDirs 'src/sweepCars/java'
+            }
+        }
+        olacabs {
+            java {
+                srcDirs 'src/olacabs/java'
             }
         }
     }

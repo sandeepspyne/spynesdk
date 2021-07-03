@@ -38,8 +38,13 @@ class SplashActivity : AppCompatActivity() {
         Handler().postDelayed({
             if (Utilities.getPreference(this, AppConstants.AUTH_KEY).isNullOrEmpty()) {
                 var intent : Intent? = null
-                intent = if (getString(R.string.app_name) == "Karvi.com") Intent(this,
-                    LoginActivity::class.java) else Intent(this, OnboardingsActivity::class.java)
+
+                intent = when(getString(R.string.app_name)) {
+                    "Karvi.com","Ola Cabs" ->  Intent(this,
+                        LoginActivity::class.java)
+
+                    else -> Intent(this, OnboardingsActivity::class.java)
+                }
 
                 intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
                 startActivity(intent)
