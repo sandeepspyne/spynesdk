@@ -24,6 +24,7 @@ class ProcessViewModel : ViewModel() {
     val startTimer : MutableLiveData<Boolean> = MutableLiveData()
     val processSku : MutableLiveData<Boolean> = MutableLiveData()
     val skuQueued : MutableLiveData<Boolean> = MutableLiveData()
+    var categoryName : String? = null
 
     private val _carGifRes : MutableLiveData<Resource<CarsBackgroundRes>> = MutableLiveData()
     val carGifRes: LiveData<Resource<CarsBackgroundRes>>

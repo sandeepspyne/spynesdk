@@ -88,7 +88,9 @@ class UploadImageWorker(val appContext: Context, workerParams: WorkerParameters)
 
 
                             // check if all image uploaded
-                            if (localRepository.processSku(inputData.getString("skuId").toString())) {
+                            if (inputData.getBoolean("processSku",true)
+                                &&
+                                localRepository.processSku(inputData.getString("skuId").toString())) {
                                 //process sku
                             val processSkuWorkRequest =
                                 OneTimeWorkRequest.Builder(ProcessSkuWorker::class.java)

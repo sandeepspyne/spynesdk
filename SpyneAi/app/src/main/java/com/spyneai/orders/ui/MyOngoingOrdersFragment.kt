@@ -2,7 +2,6 @@ package com.spyneai.orders.ui
 
 import android.os.Bundle
 import android.os.Handler
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -54,7 +53,7 @@ class MyOngoingOrdersFragment : BaseFragment<MyOrdersViewModel, MyOngoingOrdersF
         viewModel.getOngoingSkusResponse.observe(
             viewLifecycleOwner, androidx.lifecycle.Observer {
                 when (it) {
-                    is Resource.Sucess -> {
+                    is Resource.Success -> {
                         binding.shimmerOngoingSKU.stopShimmer()
                         binding.shimmerOngoingSKU.visibility = View.GONE
                         binding.rvMyOngoingOrders.visibility = View.VISIBLE

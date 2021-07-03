@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
@@ -23,33 +24,43 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:gravity="center"
-        android:orientation="horizontal">
-        <ImageView
+        android:orientation="horizontal"
+        android:layout_marginTop="@dimen/dp_10">
+        <com.makeramen.roundedimageview.RoundedImageView
             android:layout_width="@dimen/dp_100"
             android:layout_height="@dimen/dp_80"
             android:layout_marginEnd="@dimen/dp_10"
-            android:src="@mipmap/pedal"/>
-        <ImageView
+            android:id="@+id/ivFirst"
+            android:src="@mipmap/pedal"
+            app:riv_corner_radius="@dimen/dp_7"/>
+        <com.makeramen.roundedimageview.RoundedImageView
             android:layout_width="@dimen/dp_100"
             android:layout_height="@dimen/dp_80"
             android:layout_marginStart="@dimen/dp_10"
-            android:src="@mipmap/engine"/>
+            android:id="@+id/ivSecond"
+            android:src="@mipmap/engine"
+            app:riv_corner_radius="@dimen/dp_7"/>
     </LinearLayout>
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:gravity="center"
+        android:layout_marginTop="@dimen/dp_10"
         android:orientation="horizontal">
-        <ImageView
+        <com.makeramen.roundedimageview.RoundedImageView
             android:layout_width="@dimen/dp_100"
             android:layout_height="@dimen/dp_80"
             android:layout_marginEnd="@dimen/dp_10"
-            android:src="@mipmap/keys"/>
-        <ImageView
+            android:src="@mipmap/keys"
+            android:id="@+id/ivThird"
+            app:riv_corner_radius="@dimen/dp_7"/>
+        <com.makeramen.roundedimageview.RoundedImageView
             android:layout_width="@dimen/dp_100"
             android:layout_height="@dimen/dp_80"
             android:layout_marginStart="@dimen/dp_10"
-            android:src="@mipmap/tyre"/>
+            android:src="@mipmap/tyre"
+            android:id="@+id/ivFourth"
+            app:riv_corner_radius="@dimen/dp_7"/>
     </LinearLayout>
 
     <LinearLayout
@@ -69,7 +80,7 @@
             android:fontFamily="@font/medium"
             android:textSize="@dimen/sp_15"
             android:layout_margin="@dimen/dp_5"
-            android:background="@drawable/bg_selected"
+            android:background="@drawable/bg_skip"
             android:textAllCaps="false"/>
 
         <TextView

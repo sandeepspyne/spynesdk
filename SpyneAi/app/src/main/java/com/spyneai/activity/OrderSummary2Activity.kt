@@ -233,9 +233,6 @@ class OrderSummary2Activity : AppCompatActivity() {
     }
 
 
-    override fun onBackPressed() {
-        super.onBackPressed()
-        finish()
-    }
+
 }
 

@@ -262,6 +262,9 @@
 
     <string name="message_no_permissions">The app cannot work without permissions</string>
     <string name="label_ok">OK</string>
+    <string name="car_subcategory">Select your car\'s sub-category</string>
+    <string name="bike_subcategory">Select your bike\'s sub-category</string>
+    <string name="bikes">Bikes</string>
 
     <string name="project_name">Project Name</string>
     <string name="project_name_">Project Name -</string>

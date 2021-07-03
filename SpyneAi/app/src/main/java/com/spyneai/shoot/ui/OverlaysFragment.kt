@@ -8,6 +8,8 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.ViewTreeObserver
+import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.constraintlayout.widget.ConstraintSet
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.DataSource
@@ -15,6 +17,7 @@ import com.bumptech.glide.load.engine.GlideException
 import com.bumptech.glide.request.RequestListener
 import com.bumptech.glide.request.target.Target
 import com.posthog.android.Properties
+import com.spyneai.R
 import com.spyneai.base.BaseFragment
 import com.spyneai.base.network.Resource
 import com.spyneai.captureEvent
@@ -33,6 +36,11 @@ import com.spyneai.shoot.data.ShootViewModel
 import com.spyneai.shoot.data.model.ShootData
 import com.spyneai.shoot.ui.dialogs.*
 import kotlinx.android.synthetic.main.dialog_confirm_reshoot.view.*
+import okhttp3.MediaType.Companion.toMediaTypeOrNull
+import okhttp3.MultipartBody
+import okhttp3.RequestBody.Companion.asRequestBody
+import okhttp3.RequestBody.Companion.toRequestBody
+import java.io.File
 import java.util.*
 
 
@@ -75,6 +83,8 @@ class OverlaysFragment : BaseFragment<ShootViewModel,FragmentOverlaysBinding>(),
         viewModel.isSubCategoryConfirmed.observe(viewLifecycleOwner,{
             if (it) binding.rvSubcategories?.visibility = View.INVISIBLE
         })
+
+        observerMiscShots()
     }
 
     private fun initShootHint() {
@@ -133,7 +143,7 @@ class OverlaysFragment : BaseFragment<ShootViewModel,FragmentOverlaysBinding>(),
 
             viewModel.overlaysResponse.observe(viewLifecycleOwner,{
                 when(it){
-                    is Resource.Sucess -> {
+                    is Resource.Success -> {
                         val name = it.value.data[viewModel.shootNumber.value!!].display_name
                         val overlay = it.value.data[viewModel.shootNumber.value!!].display_thumbnail
 
@@ -207,7 +217,7 @@ class OverlaysFragment : BaseFragment<ShootViewModel,FragmentOverlaysBinding>(),
 
         viewModel.subCategoriesResponse.observe(viewLifecycleOwner, {
             when (it) {
-                is Resource.Sucess -> {
+                is Resource.Success -> {
                     requireContext().captureEvent(
                         Events.GET_SUBCATEGORIES,
                         Properties())
@@ -217,12 +227,17 @@ class OverlaysFragment : BaseFragment<ShootViewModel,FragmentOverlaysBinding>(),
                         it.value.data as ArrayList<NewSubCatResponse.Data>
                     subCategoriesAdapter.notifyDataSetChanged()
 
+
                     //set default angles on sub cat response
                     initAngles()
                     initProgressFrames()
                     observeOverlays()
 
                     binding.clSubcatSelectionOverlay?.visibility = View.VISIBLE
+
+                    when(viewModel.categoryDetails.value?.categoryName){
+                        "Bikes" -> binding.tvSubCategory?.text = getString(R.string.bike_subcategory)
+                    }
                 }
                 is Resource.Loading ->  Utilities.showProgressDialog(requireContext())
 
@@ -272,7 +287,7 @@ class OverlaysFragment : BaseFragment<ShootViewModel,FragmentOverlaysBinding>(),
     private fun observeOverlays() {
         viewModel.overlaysResponse.observe(viewLifecycleOwner,{ it ->
             when(it){
-                is Resource.Sucess -> {
+                is Resource.Success -> {
                     requireContext().captureEvent(
                         Events.GET_OVERLAYS,
                         Properties().putValue("angles",it.value.data.size))
@@ -299,10 +314,6 @@ class OverlaysFragment : BaseFragment<ShootViewModel,FragmentOverlaysBinding>(),
         binding.tvShoot?.isClickable = false
         InteriorHintDialog().show(requireFragmentManager(), "InteriorHintDialog")
 
-        viewModel.showMiscDialog.observe(viewLifecycleOwner,{
-            if (it) initMiscShots()
-        })
-
         viewModel.startInteriorShots.observe(viewLifecycleOwner,{
             if (it) startInteriorShots()
         })
@@ -313,8 +324,7 @@ class OverlaysFragment : BaseFragment<ShootViewModel,FragmentOverlaysBinding>(),
 
         viewModel.subCategoriesResponse.observe(viewLifecycleOwner,{
             when(it){
-                is Resource.Sucess -> {
-
+                is Resource.Success -> {
                     val interiorList = it.value.interior as ArrayList<NewSubCatResponse.Interior>
 
                     //set interior angles value
@@ -326,7 +336,6 @@ class OverlaysFragment : BaseFragment<ShootViewModel,FragmentOverlaysBinding>(),
                     binding.rvSubcategories.apply {
                         this?.adapter = interiorAdapter
                     }
-
                     //change image type
                     viewModel.categoryDetails.value?.imageType = "Interior"
                 }
@@ -349,8 +358,15 @@ class OverlaysFragment : BaseFragment<ShootViewModel,FragmentOverlaysBinding>(),
                 progressAdapter.updateList(viewModel.getShootProgressList(viewModel.interiorAngles.value!!))
             else
                 progressAdapter.updateList(viewModel.interiorShootNumber.value!!)
+        })
+    }
 
-
+    private fun observerMiscShots() {
+        viewModel.showMiscDialog.observe(viewLifecycleOwner,{
+            if (it) {
+                binding.imgOverlay?.visibility = View.GONE
+                initMiscShots()
+            }
         })
     }
 
@@ -367,15 +383,14 @@ class OverlaysFragment : BaseFragment<ShootViewModel,FragmentOverlaysBinding>(),
 
         viewModel.subCategoriesResponse.observe(viewLifecycleOwner,{
             when(it){
-                is Resource.Sucess -> {
-
-                    val miscList = it.value.miscellaneous as ArrayList<NewSubCatResponse.Miscellaneous>
+                is Resource.Success -> {
+                    val miscList = it.value.miscellaneous
 
                     //set interior angles value
                     viewModel.miscShootNumber.value = 0
                     viewModel.miscAngles.value = miscList.size
 
-                    miscAdapter = MiscAdapter(requireContext(),miscList)
+                    miscAdapter = MiscAdapter(requireContext(),miscList as ArrayList<NewSubCatResponse.Miscellaneous>)
 
                     binding.rvSubcategories.apply {
                         this?.adapter = miscAdapter
@@ -417,7 +432,6 @@ class OverlaysFragment : BaseFragment<ShootViewModel,FragmentOverlaysBinding>(),
 
             getOverlays()
         }
-
     }
 
     private fun showImageConfirmDialog(shootData: ShootData) {
@@ -447,8 +461,4 @@ class OverlaysFragment : BaseFragment<ShootViewModel,FragmentOverlaysBinding>(),
         inflater: LayoutInflater,
         container: ViewGroup?
     ) = FragmentOverlaysBinding.inflate(inflater, container, false)
-
-
-
-
 }

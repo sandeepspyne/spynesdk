@@ -3,11 +3,9 @@ package com.spyneai.base.network
 import com.spyneai.camera2.OverlaysResponse
 import com.spyneai.dashboard.response.NewCategoriesResponse
 import com.spyneai.dashboard.response.NewSubCatResponse
-import com.spyneai.model.carbackgroundgif.CarBackgrounGifResponse
-import com.spyneai.model.credit.FreeCreditEligblityResponse
 import com.spyneai.model.projects.CompletedProjectResponse
 import com.spyneai.orders.data.response.CompletedSKUsResponse
-import com.spyneai.orders.data.response.GetImagesOfSkuResponse
+import com.spyneai.orders.data.response.ImagesOfSkuRes
 import com.spyneai.orders.data.response.GetOngoingSkusResponse
 import com.spyneai.shoot.data.model.*
 import okhttp3.MultipartBody
@@ -107,11 +105,12 @@ interface ClipperApi {
         @Query("auth_key") authKey: String
     ) : CompletedSKUsResponse
 
-    @POST("v2/sku/getImagesByName")
+    @FormUrlEncoded
+    @POST("v2/sku/getImagesById")
     suspend fun getImagesOfSku(
-        @Field("sku_id") skuId : String,
-        @Field("auth_key") authKey : String
-    ) : GetImagesOfSkuResponse
+        @Field("auth_key") authKey : String,
+        @Field("sku_id") skuId : String
+    ) : ImagesOfSkuRes
 
 
     @GET("v2/project/getSkuPerProject")

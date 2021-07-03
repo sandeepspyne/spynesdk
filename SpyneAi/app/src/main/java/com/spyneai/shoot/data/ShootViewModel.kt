@@ -24,6 +24,7 @@ class ShootViewModel : ViewModel(){
     private val localRepository = ShootLocalRepository()
 
     public var isCameraButtonClickable = true
+    var processSku : Boolean = true
     public var isStopCaptureClickable = false
 
     val totalSkuCaptured : MutableLiveData<String> = MutableLiveData()
@@ -82,6 +83,8 @@ class ShootViewModel : ViewModel(){
     val miscAngles: MutableLiveData<Int> = MutableLiveData()
     val miscShootNumber: MutableLiveData<Int> = MutableLiveData()
 
+    var overlayRightMargin = 0
+
     val reshootCapturedImage: MutableLiveData<Boolean> = MutableLiveData()
     val projectId: MutableLiveData<String> = MutableLiveData()
 
@@ -137,9 +140,9 @@ class ShootViewModel : ViewModel(){
         data.putString("skuId", shootData.sku_id)
         data.putString("imageCategory", shootData.image_category)
         data.putString("authKey", shootData.auth_key)
+        data.putBoolean("processSku", processSku)
 
         uploadWorkRequest.setInputData(data.build())
-
 
         WorkManager.getInstance(requireContext).enqueue(uploadWorkRequest.build())
     }

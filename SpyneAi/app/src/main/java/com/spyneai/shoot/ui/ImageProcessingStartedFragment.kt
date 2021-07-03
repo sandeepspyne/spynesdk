@@ -22,21 +22,31 @@ class ImageProcessingStartedFragment : BaseFragment<ProcessViewModel, FragmentIm
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        //load gif
-        Glide.with(this).asGif().load(R.raw.image_processing_started)
-            .into(binding.ivProcessing)
+        if (requireActivity().intent.getBooleanExtra("process_sku",true)) {
+            //load gif
+            Glide.with(this).asGif().load(R.raw.image_processing_started)
+                .into(binding.ivProcessing)
+        }else{
+            Glide.with(this).asGif().load(R.raw.logo)
+                .into(binding.ivProcessing)
+        }
 
         binding.llHome.setOnClickListener {
             requireContext().gotoHome()
         }
 
-        binding.llThreeSixtyShoot.setOnClickListener {
-            val intent = Intent(requireContext(), RecordVideoActivity::class.java)
-            intent.putExtra("sku_id", viewModel.sku.value?.skuId!!)
-            intent.putExtra("user_id", Utilities.getPreference(requireContext(), AppConstants.TOKEN_ID).toString())
+        if (viewModel.categoryName == "Automobiles") {
+            binding.llThreeSixtyShoot.visibility = View.VISIBLE
 
-            startActivity(intent)
+            binding.llThreeSixtyShoot.setOnClickListener {
+                val intent = Intent(requireContext(), RecordVideoActivity::class.java)
+                intent.putExtra("sku_id", viewModel.sku.value?.skuId!!)
+                intent.putExtra("user_id", Utilities.getPreference(requireContext(), AppConstants.TOKEN_ID).toString())
+
+                startActivity(intent)
+            }
         }
+
     }
 
 

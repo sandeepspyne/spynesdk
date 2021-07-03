@@ -4,7 +4,7 @@ data class NewSubCatResponse(
     val `data`: List<Data>,
     val interior: List<Interior>,
     val message: String,
-    val miscellaneous: List<Miscellaneous>,
+    var miscellaneous: List<Miscellaneous>,
     val status: Int
 ) {
     data class Data(
@@ -29,6 +29,8 @@ data class NewSubCatResponse(
     data class Miscellaneous(
         val display_name: String,
         val display_thumbnail: String,
+        val prod_cat_id: String,
+        val prod_sub_cat_id: String,
         var isSelected : Boolean = false
     )
 }

@@ -1,6 +1,6 @@
 package com.spyneai.orders.data.response
 
-data class GetImagesOfSkuResponse(
+data class ImagesOfSkuRes(
     val `data`: List<Data>,
     val message: String,
     val paid: String,

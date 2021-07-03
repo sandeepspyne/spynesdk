@@ -11,7 +11,7 @@ import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.spyneai.R
-import com.spyneai.activity.ShowImagesActivity
+import com.spyneai.processedimages.ui.ShowImagesActivity
 import com.spyneai.adapter.CompletedProjectAdapter
 import com.spyneai.interfaces.APiService
 import com.spyneai.interfaces.RetrofitClients

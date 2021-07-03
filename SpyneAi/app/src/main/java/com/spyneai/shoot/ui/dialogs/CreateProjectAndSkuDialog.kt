@@ -41,11 +41,11 @@ class CreateProjectAndSkuDialog : BaseDialogFragment<ShootViewModel,DialogCreate
         viewModel.createProject(
             Utilities.getPreference(requireContext(),AppConstants.AUTH_KEY).toString(),
             projectName,
-            requireActivity().intent.getStringExtra(AppConstants.CATEGORY_ID).toString())
+        viewModel.categoryDetails.value?.categoryId.toString())
 
         viewModel.createProjectRes.observe(viewLifecycleOwner,{
             when(it){
-                    is Resource.Sucess -> {
+                    is Resource.Success -> {
                         requireContext().captureEvent(
                             Events.CREATE_PROJECT,
                             Properties().putValue("project_name",projectName))

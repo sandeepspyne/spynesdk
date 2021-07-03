@@ -164,7 +164,8 @@ class CameraFragment : BaseFragment<ShootViewModel, FragmentCameraBinding>(),Pic
 
                 if (viewModel.shootDimensions.value == null ||
                     viewModel.shootDimensions.value?.previewHeight == 0){
-                    getPreviewDimensions(binding.viewFinder!!)
+                    getPreviewDimensions(binding.viewFinder!!,true)
+                    getPreviewDimensions(binding.llCapture!!,false)
                 }
             } catch (exc: Exception) {
                 Log.e(TAG, "Use case binding failed", exc)
@@ -217,18 +218,22 @@ class CameraFragment : BaseFragment<ShootViewModel, FragmentCameraBinding>(),Pic
             })
     }
 
-    private fun getPreviewDimensions(view : View) {
+    private fun getPreviewDimensions(view : View,isPreview : Boolean) {
         view.viewTreeObserver.addOnGlobalLayoutListener(object :
             ViewTreeObserver.OnGlobalLayoutListener {
             override fun onGlobalLayout() {
                 view.viewTreeObserver.removeOnGlobalLayoutListener(this)
 
-                val shootDimensions = ShootDimensions()
-                shootDimensions.previewWidth = view.width
-                shootDimensions.previewHeight = view.height
+                if (isPreview){
+                    val shootDimensions = ShootDimensions()
+                    shootDimensions.previewWidth = view.width
+                    shootDimensions.previewHeight = view.height
 
+                    viewModel.shootDimensions.value = shootDimensions
+                }else{
+                    viewModel.overlayRightMargin = view.width
+                }
 
-                viewModel.shootDimensions.value = shootDimensions
             }
         })
     }

@@ -57,6 +57,11 @@ class ShootActivity : AppCompatActivity() {
 
         shootViewModel.categoryDetails.value = categoryDetails
 
+        when(shootViewModel.categoryDetails.value?.categoryName) {
+            "Automobiles" -> shootViewModel.processSku = true
+            "Bikes" -> shootViewModel.processSku = false
+        }
+
         cameraFragment = CameraFragment()
         overlaysFragment = OverlaysFragment()
         overlaysEcomFragment = OverlaysEcomFragment()
@@ -131,8 +136,10 @@ class ShootActivity : AppCompatActivity() {
                 val intent = Intent(this, ProcessActivity::class.java)
 
                 intent.apply {
+                    this.putExtra(AppConstants.CATEGORY_NAME, categoryDetails.categoryName)
                     this.putExtra("sku_id", shootViewModel.sku.value?.skuId)
                     this.putExtra("exterior_angles", shootViewModel.exterirorAngles.value)
+                    this.putExtra("process_sku",shootViewModel.processSku)
                     startActivity(this)
                 }
             }
