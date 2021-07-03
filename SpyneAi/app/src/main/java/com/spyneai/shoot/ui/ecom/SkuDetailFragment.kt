@@ -21,6 +21,7 @@ import com.spyneai.shoot.adapters.CapturedImageAdapter
 import com.spyneai.shoot.adapters.SkuImageAdapter
 import com.spyneai.shoot.data.ShootViewModel
 import com.spyneai.shoot.ui.ShootActivity
+import com.spyneai.shoot.ui.ShootPortraitActivity
 import java.util.*
 
 
@@ -76,7 +77,7 @@ class SkuDetailFragment : BaseFragment<ShootViewModel, FragmentSkuDetailBinding>
 
         binding.btNextSku.setOnClickListener {
             viewModel.shootList.value?.clear()
-            val intent = Intent(activity, ShootActivity::class.java)
+            val intent = Intent(activity, ShootPortraitActivity::class.java)
             intent.putExtra("project_id", viewModel.sku.value?.projectId);
             startActivity(intent)
 

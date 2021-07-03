@@ -62,7 +62,6 @@ class OverlaysEcomFragment : BaseFragment<ShootViewModel, FragmentOverlaysEcomBi
         // set sku name
         viewModel.isSkuCreated.observe(viewLifecycleOwner, {
             if (it) {
-                Utilities.hideProgressDialog()
                 binding.tvSkuName?.text = viewModel.sku.value?.skuName
                 binding.tvSkuName.visibility = View.VISIBLE
                 log("sku name set to text view: "+viewModel.sku.value?.skuName)

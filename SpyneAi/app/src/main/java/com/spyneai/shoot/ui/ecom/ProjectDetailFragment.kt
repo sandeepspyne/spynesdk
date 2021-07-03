@@ -12,6 +12,7 @@ import com.spyneai.dashboard.ui.HomeDashboardFragment
 import com.spyneai.dashboard.ui.MainDashboardActivity
 import com.spyneai.dashboard.ui.handleApiError
 import com.spyneai.databinding.FragmentProjectDetailBinding
+import com.spyneai.gotoHome
 import com.spyneai.needs.AppConstants
 import com.spyneai.needs.Utilities
 import com.spyneai.shoot.adapters.ProjectDetailAdapter
@@ -37,8 +38,7 @@ class ProjectDetailFragment : BaseFragment<ShootViewModel, FragmentProjectDetail
         )
 
         binding.btHome.setOnClickListener {
-            val intent = Intent(activity, MainDashboardActivity::class.java)
-            startActivity(intent)
+           requireContext().gotoHome()
         }
 
         viewModel.projectDetailResponse.observe(viewLifecycleOwner, {

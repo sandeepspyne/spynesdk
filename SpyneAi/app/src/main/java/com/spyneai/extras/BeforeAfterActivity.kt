@@ -26,6 +26,7 @@ import com.spyneai.needs.AppConstants
 import com.spyneai.needs.ScrollingLinearLayoutManager
 import com.spyneai.needs.Utilities
 import com.spyneai.shoot.ui.ShootActivity
+import com.spyneai.shoot.ui.ShootPortraitActivity
 import com.spyneai.spyneaidemo.activity.camera2.Camera2DemoActivity
 import kotlinx.android.synthetic.main.activity_before_after.*
 import kotlinx.android.synthetic.main.activity_before_after.llBeforeAfters
@@ -151,7 +152,7 @@ class BeforeAfterActivity : AppCompatActivity() {
         }
         else if (Utilities.getPreference(this, AppConstants.CATEGORY_NAME).equals("Footwear")){
             tvShootFootwear.setOnClickListener(View.OnClickListener {
-                val intent = Intent(this, ShootActivity::class.java)
+                val intent = Intent(this, ShootPortraitActivity::class.java)
                 intent.putExtra(AppConstants.CATEGORY_ID, catId)
                 intent.putExtra(AppConstants.CATEGORY_NAME, catName)
                 intent.putExtra(AppConstants.GIF_LIST, gifList)

@@ -58,6 +58,8 @@ class CreateSkuEcomDialog : BaseDialogFragment<ShootViewModel, CreateSkuEcomDial
         viewModel.createSkuRes.observe(viewLifecycleOwner, {
             when (it) {
                 is Resource.Sucess -> {
+                    Utilities.hideProgressDialog()
+
                     requireContext().captureEvent(
                         Events.CREATE_SKU,
                         Properties().putValue("sku_name", viewModel.sku.value?.skuName.toString())
@@ -66,9 +68,6 @@ class CreateSkuEcomDialog : BaseDialogFragment<ShootViewModel, CreateSkuEcomDial
                     )
 
                     //notify sku created
-
-
-                    Utilities.hideProgressDialog()
                     val sku = Sku()
                     log("sku id created sucess")
                     log("sku id: "+it.value.sku_id)
@@ -82,7 +81,7 @@ class CreateSkuEcomDialog : BaseDialogFragment<ShootViewModel, CreateSkuEcomDial
 
                     log("sssskkkkuuu: "+viewModel.sku.value?.skuName)
 
-                    viewModel.isSubCategoryConfirmed.value = true
+                    //viewModel.isSubCategoryConfirmed.value = true
 
                     viewModel.isSkuCreated.value = true
 

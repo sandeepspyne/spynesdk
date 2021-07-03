@@ -3,14 +3,13 @@ package com.spyneai.shoot.ui
 import android.Manifest
 import android.content.Context
 import android.content.Intent
-import android.content.pm.ActivityInfo
 import android.content.pm.PackageManager
 import android.os.Build
+import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.WindowManager
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.ViewModelProvider
 import com.spyneai.R
@@ -24,33 +23,27 @@ import com.spyneai.shoot.ui.dialogs.ShootExitDialog
 import com.spyneai.shoot.ui.ecom.OverlaysEcomFragment
 import com.spyneai.shoot.ui.ecom.ProjectDetailFragment
 import com.spyneai.shoot.ui.ecom.SkuDetailFragment
-import com.spyneai.shoot.utils.log
 import java.io.File
 
-
-class ShootActivity : AppCompatActivity() {
+class ShootPortraitActivity : AppCompatActivity() {
 
     lateinit var cameraFragment: CameraFragment
     lateinit var overlaysFragment: OverlaysFragment
     lateinit var overlaysEcomFragment: OverlaysEcomFragment
     lateinit var skuDetailFragment: SkuDetailFragment
     lateinit var projectDetailFragment: ProjectDetailFragment
-    val TAG = "ShootActivity"
-
+    val TAG = "ShootPortraitActivity"
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        window.setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
-            WindowManager.LayoutParams.FLAG_FULLSCREEN)
-
-        setContentView(R.layout.activity_shoot)
+        setContentView(R.layout.activity_shoot_portrait)
 
         val shootViewModel = ViewModelProvider(this, ViewModelFactory()).get(ShootViewModel::class.java)
 
         val categoryDetails = CategoryDetails()
 
         categoryDetails.apply {
-           categoryId = intent.getStringExtra(AppConstants.CATEGORY_ID)
+            categoryId = intent.getStringExtra(AppConstants.CATEGORY_ID)
             categoryName = intent.getStringExtra(AppConstants.CATEGORY_NAME)
             gifList =  intent.getStringExtra(AppConstants.GIF_LIST)
         }
@@ -123,7 +116,7 @@ class ShootActivity : AppCompatActivity() {
         shootViewModel.addMoreAngle.observe(this, {
             if (it)
                 window.clearFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
-                supportFragmentManager.beginTransaction().remove(skuDetailFragment).commit()
+            supportFragmentManager.beginTransaction().remove(skuDetailFragment).commit()
         })
 
         shootViewModel.selectBackground.observe(this, {

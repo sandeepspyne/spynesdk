@@ -39,7 +39,10 @@
         android:theme="@style/Theme.SpyneAi"
         android:usesCleartextTraffic="true"
         tools:targetApi="m">
-        <activity android:name=".shoot.ui.ecom.ShowSkuProjectActivity"></activity>
+        <activity android:name=".shoot.ui.ShootPortraitActivity"
+            android:configChanges="screenLayout|keyboardHidden"
+            android:screenOrientation="portrait"></activity>
+        <activity android:name=".shoot.ui.ecom.ShowSkuProjectActivity" />
         <activity
             android:name=".shoot.ui.ProcessActivity"
             android:screenOrientation="portrait" /> <!-- <activity android:name=".shoot.ui.ShootActivity"></activity> -->
@@ -263,10 +266,11 @@
         <!-- android:screenOrientation="portrait" /> -->
         <activity
             android:name=".shoot.ui.ShootActivity"
-            android:configChanges="screenLayout|keyboardHidden" />
+            android:configChanges="screenLayout|keyboardHidden"
+            android:screenOrientation="landscape" />
         <activity
             android:name=".orders.ui.MyOrdersActivity"
-            android:screenOrientation="portrait"></activity>
+            android:screenOrientation="portrait" />
         <activity
             android:name=".activity.SplashActivity"
             android:screenOrientation="portrait">

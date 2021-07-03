@@ -48,6 +48,7 @@ class CameraFragment : BaseFragment<ShootViewModel, FragmentCameraBinding>(),Pic
     private val FILENAME_FORMAT = "yyyy-MM-dd-HH-mm-ss-SSS"
     private var flashMode: Int = ImageCapture.FLASH_MODE_OFF
 
+
     companion object {
         private const val RATIO_4_3_VALUE = 4.0 / 3.0 // aspect ratio 4x3
         private const val RATIO_16_9_VALUE = 16.0 / 9.0 // aspect ratio 16x9
@@ -56,13 +57,7 @@ class CameraFragment : BaseFragment<ShootViewModel, FragmentCameraBinding>(),Pic
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        if (Utilities.getPreference(requireContext(), AppConstants.CATEGORY_NAME).equals("Automobiles")){
-            getActivity()?.setRequestedOrientation(
-                ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE)
-        }else if (Utilities.getPreference(requireContext(), AppConstants.CATEGORY_NAME).equals("Footwear")){
-            getActivity()?.setRequestedOrientation(
-                ActivityInfo.SCREEN_ORIENTATION_PORTRAIT)
-        }
+
 
 
         cameraExecutor = Executors.newSingleThreadExecutor()
@@ -105,7 +100,8 @@ class CameraFragment : BaseFragment<ShootViewModel, FragmentCameraBinding>(),Pic
         startCamera()
 
         binding.cameraCaptureButton?.setOnClickListener {
-            if (viewModel.isSubCategoryConfirmed.value == null || viewModel.isSubCategoryConfirmed.value == false){
+            if ((viewModel.isSubCategoryConfirmed.value == null || viewModel.isSubCategoryConfirmed.value == false) &&
+                    viewModel.categoryDetails.value?.categoryName == "Automobiles"){
                 SubCategoryConfirmationDialog().show(requireFragmentManager(), "SubCategoryConfirmationDialog")
             }else{
                 if (viewModel.isCameraButtonClickable){
