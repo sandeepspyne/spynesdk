@@ -118,7 +118,7 @@ class CreateProjectEcomDialog :
                     )
 
                     //notify project created
-                    viewModel.isSkuCreated.value = true
+
 
                     Utilities.hideProgressDialog()
                     val sku = viewModel.sku.value
@@ -129,6 +129,8 @@ class CreateProjectEcomDialog :
 
                     viewModel.sku.value = sku
                     viewModel.isSubCategoryConfirmed.value = true
+
+                    viewModel.isSkuCreated.value = true
 
                     //add sku to local database
 //                    viewModel.insertSku(sku!!)

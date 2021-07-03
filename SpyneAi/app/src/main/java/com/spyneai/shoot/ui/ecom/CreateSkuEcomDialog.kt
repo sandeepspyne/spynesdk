@@ -35,7 +35,7 @@ class CreateSkuEcomDialog : BaseDialogFragment<ShootViewModel, CreateSkuEcomDial
                 else -> {
                     log("create sku started")
                     log("project id: "+viewModel.projectId.value.toString())
-                    log("create sku name: "+binding.etSkuName.text.toString())
+                    log("sku name: "+binding.etSkuName.text.toString())
                     createSku(
                         viewModel.projectId.value.toString(), binding.etSkuName.text.toString()
                     )
@@ -66,7 +66,7 @@ class CreateSkuEcomDialog : BaseDialogFragment<ShootViewModel, CreateSkuEcomDial
                     )
 
                     //notify sku created
-                    viewModel.isSkuCreated.value = true
+
 
                     Utilities.hideProgressDialog()
                     val sku = Sku()
@@ -76,9 +76,15 @@ class CreateSkuEcomDialog : BaseDialogFragment<ShootViewModel, CreateSkuEcomDial
                     sku?.projectId = projectId
                     sku?.skuName = skuName
 
+                    log("sssskkkkuuu: "+skuName)
+
                     viewModel.sku.value = sku
 
+                    log("sssskkkkuuu: "+viewModel.sku.value?.skuName)
+
                     viewModel.isSubCategoryConfirmed.value = true
+
+                    viewModel.isSkuCreated.value = true
 
                     //add sku to local database
 //                    viewModel.insertSku(sku!!)
@@ -91,11 +97,11 @@ class CreateSkuEcomDialog : BaseDialogFragment<ShootViewModel, CreateSkuEcomDial
                 }
 
                 is Resource.Failure -> {
+                    Utilities.hideProgressDialog()
                     requireContext().captureFailureEvent(
                         Events.CREATE_SKU_FAILED, Properties(),
                         it.errorMessage!!
                     )
-                    Utilities.hideProgressDialog()
                     handleApiError(it)
                 }
             }

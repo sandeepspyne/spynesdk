@@ -20,7 +20,8 @@
         app:layout_constraintTop_toTopOf="parent" >
         <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            android:gravity="center">
             <ImageView
                 android:id="@+id/ivBackCompleted"
                 android:layout_width="wrap_content"
@@ -37,7 +38,6 @@
                 android:layout_centerInParent="true"
                 android:background="@drawable/bg_edit"
                 android:fontFamily="@font/medium"
-                android:hint="@string/sku_names"
                 android:maxLines="1"
                 android:maxLength="20"
                 tools:text="sku-name"

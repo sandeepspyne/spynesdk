@@ -64,6 +64,7 @@ class CameraFragment : BaseFragment<ShootViewModel, FragmentCameraBinding>(),Pic
                 ActivityInfo.SCREEN_ORIENTATION_PORTRAIT)
         }
 
+
         cameraExecutor = Executors.newSingleThreadExecutor()
         // Determine the output directory
         outputDirectory = ShootActivity.getOutputDirectory(requireContext())
@@ -211,7 +212,7 @@ class CameraFragment : BaseFragment<ShootViewModel, FragmentCameraBinding>(),Pic
                     val savedUri = Uri.fromFile(photoFile)
                     log("Photo capture succeeded: "+savedUri)
                     try {
-                       addShootItem(photoFile?.path!!.toString())
+                        addShootItem(photoFile?.path!!.toString())
                     } catch (ex: IllegalArgumentException) {
                         pickIt?.getPath(savedUri, Build.VERSION.SDK_INT)
                     }

@@ -29,8 +29,6 @@ class ShootViewModel : ViewModel(){
     val totalSkuCaptured : MutableLiveData<String> = MutableLiveData()
     val totalImageCaptured : MutableLiveData<String> = MutableLiveData()
 
-    val hideImageNumber : MutableLiveData<Boolean> = MutableLiveData()
-
     val shootList: MutableLiveData<ArrayList<ShootData>> = MutableLiveData()
 
     private val _subCategoriesResponse: MutableLiveData<Resource<NewSubCatResponse>> = MutableLiveData()

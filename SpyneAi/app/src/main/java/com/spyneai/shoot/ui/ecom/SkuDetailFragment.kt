@@ -5,6 +5,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.posthog.android.Properties
 import com.spyneai.R
@@ -17,6 +18,7 @@ import com.spyneai.needs.AppConstants
 import com.spyneai.needs.Utilities
 import com.spyneai.posthog.Events
 import com.spyneai.shoot.adapters.CapturedImageAdapter
+import com.spyneai.shoot.adapters.SkuImageAdapter
 import com.spyneai.shoot.data.ShootViewModel
 import com.spyneai.shoot.ui.ShootActivity
 import java.util.*
@@ -24,7 +26,7 @@ import java.util.*
 
 class SkuDetailFragment : BaseFragment<ShootViewModel, FragmentSkuDetailBinding>() {
 
-    lateinit var capturedImageAdapter: CapturedImageAdapter
+    lateinit var skuImageAdapter: SkuImageAdapter
     lateinit var capturedImageList: ArrayList<String>
 
 
@@ -83,6 +85,9 @@ class SkuDetailFragment : BaseFragment<ShootViewModel, FragmentSkuDetailBinding>
         binding.ivAddAngle.setOnClickListener {
             viewModel.addMoreAngle.value = true
         }
+        binding.tvAddAngle.setOnClickListener {
+            viewModel.addMoreAngle.value = true
+        }
 
         binding.tvEndProject.setOnClickListener {
             EndProjectDialog().show(requireFragmentManager(), "EndProjectDialog")
@@ -91,15 +96,15 @@ class SkuDetailFragment : BaseFragment<ShootViewModel, FragmentSkuDetailBinding>
     }
 
     private fun initCapturedImages() {
-        capturedImageAdapter = CapturedImageAdapter(
+        skuImageAdapter = SkuImageAdapter(
             requireContext(),
             capturedImageList
         )
 
         binding.rvSkuImages.apply {
             this?.layoutManager =
-                LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
-            this?.adapter = capturedImageAdapter
+                GridLayoutManager(requireContext(),  3)
+            this?.adapter = skuImageAdapter
         }
 
 

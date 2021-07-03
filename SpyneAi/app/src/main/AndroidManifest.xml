@@ -263,7 +263,7 @@
         <!-- android:screenOrientation="portrait" /> -->
         <activity
             android:name=".shoot.ui.ShootActivity"
-            android:configChanges="orientation|screenSize|screenLayout|keyboardHidden" />
+            android:configChanges="screenLayout|keyboardHidden" />
         <activity
             android:name=".orders.ui.MyOrdersActivity"
             android:screenOrientation="portrait"></activity>

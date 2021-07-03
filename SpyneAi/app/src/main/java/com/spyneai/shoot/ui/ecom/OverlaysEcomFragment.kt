@@ -37,7 +37,6 @@ class OverlaysEcomFragment : BaseFragment<ShootViewModel, FragmentOverlaysEcomBi
         }
 
         binding.ivEndProject.setOnClickListener {
-            viewModel.hideImageNumber.value = true
             if (viewModel.isStopCaptureClickable)
             viewModel.stopShoot.value = true
         }
@@ -66,6 +65,7 @@ class OverlaysEcomFragment : BaseFragment<ShootViewModel, FragmentOverlaysEcomBi
                 Utilities.hideProgressDialog()
                 binding.tvSkuName?.text = viewModel.sku.value?.skuName
                 binding.tvSkuName.visibility = View.VISIBLE
+                log("sku name set to text view: "+viewModel.sku.value?.skuName)
             }
         })
 

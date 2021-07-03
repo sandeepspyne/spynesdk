@@ -120,7 +120,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:fontFamily="@font/poppins_medium"
-        tools:text="Captured Images"
+        android:text="Captured Images"
         app:layout_constraintTop_toBottomOf="@+id/tvTotalImage"
         app:layout_constraintLeft_toLeftOf="@+id/tvTotalImage"
         android:textColor="@color/black"
@@ -130,11 +130,14 @@
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rvSkuImages"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_margin="@dimen/dp_20"
+        android:layout_height="0dp"
+        android:layout_marginLeft="35dp"
+        android:layout_marginRight="35dp"
         app:layout_constraintTop_toBottomOf="@+id/tvCapturedImages"
         app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent" />
+        app:layout_constraintBottom_toTopOf="@+id/btNextSku"
+        app:layout_constraintRight_toRightOf="parent"
+        android:layout_marginBottom="@dimen/dp_100"/>
 
     <TextView
         android:id="@+id/tvAddAngle"
@@ -144,6 +147,7 @@
         android:text="Add Another Angle"
         app:layout_constraintTop_toBottomOf="@+id/rvSkuImages"
         app:layout_constraintLeft_toLeftOf="parent"
+        android:layout_marginBottom="@dimen/dp_20"
         android:textColor="@color/primary"
         android:textSize="@dimen/sp_14"
         android:layout_marginTop="@dimen/dp_20"
@@ -156,11 +160,13 @@
         android:src="@drawable/ic_add_angle"
         app:layout_constraintLeft_toRightOf="@+id/tvAddAngle"
         app:layout_constraintTop_toTopOf="@+id/tvAddAngle"
+        app:layout_constraintBottom_toBottomOf="@+id/tvAddAngle"
         android:layout_marginLeft="@dimen/dp_10"/>
 
     <androidx.constraintlayout.widget.Group
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:visibility="visible"
         app:constraint_referenced_ids="tvAddAngle, ivAddAngle"
         android:id="@+id/groupAddAngle" />
 
