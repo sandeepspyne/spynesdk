@@ -29,5 +29,34 @@
 
     </androidx.cardview.widget.CardView>
 
+    <FrameLayout
+        android:layout_width="20dp"
+        android:layout_height="@dimen/dp_20"
+        android:layout_marginTop="3dp"
+        android:background="@null">
+
+        <ImageView
+            android:layout_width="@dimen/dp_20"
+            android:layout_height="@dimen/dp_20"
+            android:scaleType="fitXY"
+            android:src="@drawable/ic_numbercircle" />
+
+        <TextView
+            android:id="@+id/tvImageCount"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:fontFamily="@font/poppins_medium"
+            android:textSize="@dimen/sp_12"
+            android:textColor="@color/credit_deducted"
+            tools:text="1" />
+
+
+
+
+    </FrameLayout>
+
+
+
 
 </LinearLayout>

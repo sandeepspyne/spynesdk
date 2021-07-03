@@ -37,6 +37,7 @@ class OverlaysEcomFragment : BaseFragment<ShootViewModel, FragmentOverlaysEcomBi
         }
 
         binding.ivEndProject.setOnClickListener {
+            viewModel.hideImageNumber.value = true
             if (viewModel.isStopCaptureClickable)
             viewModel.stopShoot.value = true
         }
@@ -67,6 +68,13 @@ class OverlaysEcomFragment : BaseFragment<ShootViewModel, FragmentOverlaysEcomBi
                 binding.tvSkuName.visibility = View.VISIBLE
             }
         })
+
+        viewModel.reshootCapturedImage.observe(viewLifecycleOwner,{
+            if (it){
+                capturedImageAdapter.removeLastItem()
+            }
+        })
+
     }
 
 
