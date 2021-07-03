@@ -58,7 +58,7 @@ class CreateProjectEcomDialog :
 
         viewModel.createProjectRes.observe(viewLifecycleOwner, {
             when (it) {
-                is Resource.Sucess -> {
+                is Resource.Success -> {
                     requireContext().captureEvent(
                         Events.CREATE_PROJECT,
                         Properties().putValue("project_name", projectName)
@@ -76,8 +76,6 @@ class CreateProjectEcomDialog :
 
                     log("create sku started")
                     createSku(it.value.project_id, skuName)
-
-
                 }
 
                 is Resource.Loading -> {
@@ -109,7 +107,9 @@ class CreateProjectEcomDialog :
 
         viewModel.createSkuRes.observe(viewLifecycleOwner, {
             when (it) {
-                is Resource.Sucess -> {
+                is Resource.Success -> {
+                    Utilities.hideProgressDialog()
+
                     requireContext().captureEvent(
                         Events.CREATE_SKU,
                         Properties().putValue("sku_name", viewModel.sku.value?.skuName.toString())
@@ -120,7 +120,7 @@ class CreateProjectEcomDialog :
                     //notify project created
 
 
-                    Utilities.hideProgressDialog()
+
                     val sku = viewModel.sku.value
                     sku?.skuId = it.value.sku_id
                     log("sku id created")
@@ -144,11 +144,12 @@ class CreateProjectEcomDialog :
 
                 is Resource.Failure -> {
                     log("create sku id failed")
+                    Utilities.hideProgressDialog()
                     requireContext().captureFailureEvent(
                         Events.CREATE_SKU_FAILED, Properties(),
                         it.errorMessage!!
                     )
-                    Utilities.hideProgressDialog()
+
                     handleApiError(it)
                 }
             }

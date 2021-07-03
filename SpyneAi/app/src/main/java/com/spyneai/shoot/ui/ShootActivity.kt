@@ -57,46 +57,52 @@ class ShootActivity : AppCompatActivity() {
 
         shootViewModel.categoryDetails.value = categoryDetails
 
-        when(shootViewModel.categoryDetails.value?.categoryName) {
-            "Automobiles" -> shootViewModel.processSku = true
-            "Bikes" -> shootViewModel.processSku = false
-        }
-
         cameraFragment = CameraFragment()
         overlaysFragment = OverlaysFragment()
         overlaysEcomFragment = OverlaysEcomFragment()
         skuDetailFragment = SkuDetailFragment()
         projectDetailFragment = ProjectDetailFragment()
 
-        if (Utilities.getPreference(this, AppConstants.CATEGORY_NAME).equals("Automobiles")){
-            if(savedInstanceState == null) { // initial transaction should be wrapped like this
-                supportFragmentManager.beginTransaction()
-                    .add(R.id.flCamerFragment, cameraFragment)
-                    .add(R.id.flCamerFragment, overlaysFragment)
-                    .commitAllowingStateLoss()
+        when(shootViewModel.categoryDetails.value?.categoryName) {
+            "Automobiles" -> {
+                shootViewModel.processSku = true
+
+                if(savedInstanceState == null) { // initial transaction should be wrapped like this
+                    supportFragmentManager.beginTransaction()
+                        .add(R.id.flCamerFragment, cameraFragment)
+                        .add(R.id.flCamerFragment, overlaysFragment)
+                        .commitAllowingStateLoss()
+                }
             }
-        }else if (Utilities.getPreference(this, AppConstants.CATEGORY_NAME).equals("Footwear")){
-            if(savedInstanceState == null) { // initial transaction should be wrapped like this
-                supportFragmentManager.beginTransaction()
-                    .add(R.id.flCamerFragment, cameraFragment)
-                    .add(R.id.flCamerFragment, overlaysEcomFragment)
-                    .commitAllowingStateLoss()
+            "Bikes" -> {
+                shootViewModel.processSku = false
+                if(savedInstanceState == null) { // initial transaction should be wrapped like this
+                    supportFragmentManager.beginTransaction()
+                        .add(R.id.flCamerFragment, cameraFragment)
+                        .add(R.id.flCamerFragment, overlaysFragment)
+                        .commitAllowingStateLoss()
+                }
             }
 
-            try {
-                val intent = intent
-                shootViewModel.projectId.value = intent.getStringExtra("project_id")
-                val sku = Sku()
-                sku?.projectId = shootViewModel.projectId.value
-                shootViewModel.categoryDetails.value?.imageType = "Ecom"
-                shootViewModel.sku.value = sku
-            } catch (e: Exception) {
-                e.printStackTrace()
+            "Footwear" -> {
+                if(savedInstanceState == null) { // initial transaction should be wrapped like this
+                    supportFragmentManager.beginTransaction()
+                        .add(R.id.flCamerFragment, cameraFragment)
+                        .add(R.id.flCamerFragment, overlaysEcomFragment)
+                        .commitAllowingStateLoss()
+                }
+                try {
+                    val intent = intent
+                    shootViewModel.projectId.value = intent.getStringExtra("project_id")
+                    val sku = Sku()
+                    sku?.projectId = shootViewModel.projectId.value
+                    shootViewModel.categoryDetails.value?.imageType = "Ecom"
+                    shootViewModel.sku.value = sku
+                } catch (e: Exception) {
+                    e.printStackTrace()
+                }
             }
-
         }
-
-
 
         if (allPermissionsGranted()) {
             onPermissionGranted()

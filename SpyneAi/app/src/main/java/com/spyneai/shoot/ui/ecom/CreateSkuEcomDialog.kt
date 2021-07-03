@@ -57,7 +57,7 @@ class CreateSkuEcomDialog : BaseDialogFragment<ShootViewModel, CreateSkuEcomDial
 
         viewModel.createSkuRes.observe(viewLifecycleOwner, {
             when (it) {
-                is Resource.Sucess -> {
+                is Resource.Success -> {
                     Utilities.hideProgressDialog()
 
                     requireContext().captureEvent(
@@ -92,7 +92,6 @@ class CreateSkuEcomDialog : BaseDialogFragment<ShootViewModel, CreateSkuEcomDial
 
                 is Resource.Loading -> {
                     Utilities.showProgressDialog(requireContext())
-
                 }
 
                 is Resource.Failure -> {

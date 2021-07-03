@@ -42,7 +42,7 @@ class SkuDetailFragment : BaseFragment<ShootViewModel, FragmentSkuDetailBinding>
 
        viewModel.projectDetailResponse.observe(viewLifecycleOwner, {
            when (it) {
-               is Resource.Sucess -> {
+               is Resource.Success -> {
                    Utilities.hideProgressDialog()
                    viewModel.totalSkuCaptured.value = it.value.data.total_sku.toString()
                    viewModel.totalImageCaptured.value = it.value.data.total_images.toString()

@@ -101,7 +101,8 @@ class CameraFragment : BaseFragment<ShootViewModel, FragmentCameraBinding>(),Pic
 
         binding.cameraCaptureButton?.setOnClickListener {
             if ((viewModel.isSubCategoryConfirmed.value == null || viewModel.isSubCategoryConfirmed.value == false) &&
-                    viewModel.categoryDetails.value?.categoryName == "Automobiles"){
+                ( viewModel.categoryDetails.value?.categoryName == "Automobiles" ||
+                        viewModel.categoryDetails.value?.categoryName == "Bikes")){
                 SubCategoryConfirmationDialog().show(requireFragmentManager(), "SubCategoryConfirmationDialog")
             }else{
                 if (viewModel.isCameraButtonClickable){

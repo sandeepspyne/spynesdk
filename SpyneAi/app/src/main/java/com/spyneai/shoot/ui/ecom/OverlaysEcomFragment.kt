@@ -65,6 +65,7 @@ class OverlaysEcomFragment : BaseFragment<ShootViewModel, FragmentOverlaysEcomBi
                 binding.tvSkuName?.text = viewModel.sku.value?.skuName
                 binding.tvSkuName.visibility = View.VISIBLE
                 log("sku name set to text view: "+viewModel.sku.value?.skuName)
+                viewModel.isSkuCreated.value = false
             }
         })
 

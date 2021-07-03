@@ -43,7 +43,7 @@ class ProjectDetailFragment : BaseFragment<ShootViewModel, FragmentProjectDetail
 
         viewModel.projectDetailResponse.observe(viewLifecycleOwner, {
             when (it) {
-                is Resource.Sucess -> {
+                is Resource.Success -> {
                     Utilities.hideProgressDialog()
                     for (i in 0..(it.value.data.sku.size - 1))
                         (skuList as java.util.ArrayList).addAll(it.value.data.sku)

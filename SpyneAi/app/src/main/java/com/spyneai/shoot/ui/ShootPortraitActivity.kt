@@ -53,6 +53,10 @@ class ShootPortraitActivity : AppCompatActivity() {
 
         shootViewModel.categoryDetails.value = categoryDetails
 
+        when(shootViewModel.categoryDetails.value?.categoryName) {
+            "Footwear" -> shootViewModel.processSku = false
+        }
+
         cameraFragment = CameraFragment()
         overlaysFragment = OverlaysFragment()
         overlaysEcomFragment = OverlaysEcomFragment()
