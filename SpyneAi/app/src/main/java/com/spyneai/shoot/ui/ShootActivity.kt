@@ -122,7 +122,6 @@ class ShootActivity : AppCompatActivity() {
 
         shootViewModel.addMoreAngle.observe(this, {
             if (it)
-                window.clearFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
                 supportFragmentManager.beginTransaction().remove(skuDetailFragment).commit()
         })
 

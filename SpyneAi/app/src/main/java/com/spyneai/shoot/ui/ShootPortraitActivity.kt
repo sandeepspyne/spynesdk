@@ -38,6 +38,9 @@ class ShootPortraitActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_shoot_portrait)
 
+        window.setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
+            WindowManager.LayoutParams.FLAG_FULLSCREEN)
+
         val shootViewModel = ViewModelProvider(this, ViewModelFactory()).get(ShootViewModel::class.java)
 
         val categoryDetails = CategoryDetails()
@@ -115,7 +118,6 @@ class ShootPortraitActivity : AppCompatActivity() {
 
         shootViewModel.addMoreAngle.observe(this, {
             if (it)
-                window.clearFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
             supportFragmentManager.beginTransaction().remove(skuDetailFragment).commit()
         })
 

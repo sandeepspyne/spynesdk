@@ -55,34 +55,14 @@ class BeforeAfterActivity : AppCompatActivity() {
         setRecycler()
         setData()
         listeners()
-        demo()
 
         if (intent.getStringExtra(AppConstants.CATEGORY_NAME) != null)
             catName = intent.getStringExtra(AppConstants.CATEGORY_NAME)!!
         else
             catName = Utilities.getPreference(this, AppConstants.CATEGORY_NAME)!!
-
-        if (catName.equals("Footwear") || catName.equals("Grocery")){
-            tvShootFootwear.visibility = View.VISIBLE
-            llShootNow.visibility = View.GONE
-        }else{
-            tvShootFootwear.visibility = View.GONE
-            llShootNow.visibility = View.VISIBLE
-        }
     }
 
-    private fun demo(){
-        tvDemo.setOnClickListener(View.OnClickListener {
-            val intent = Intent(this, Camera2DemoActivity::class.java)
-            intent.putExtra(AppConstants.CATEGORY_ID, catId)
-            intent.putExtra(AppConstants.CATEGORY_NAME, catName)
-            intent.putExtra(AppConstants.GIF_LIST, gifList)
 
-            Log.e("Download gif List", gifList.toString())
-            Utilities.savePrefrence(this, AppConstants.FROM, "BA")
-            startActivity(intent)
-        })
-    }
 
     private fun setRecycler() {
         gifList = ArrayList<String>()
@@ -141,7 +121,7 @@ class BeforeAfterActivity : AppCompatActivity() {
 
     private fun listeners() {
         if (Utilities.getPreference(this, AppConstants.CATEGORY_NAME).equals("Automobiles")){
-            tvShootNow.setOnClickListener(View.OnClickListener {
+            tvShootFootwear.setOnClickListener(View.OnClickListener {
                 val intent = Intent(this, ShootActivity::class.java)
                 intent.putExtra(AppConstants.CATEGORY_ID, catId)
                 intent.putExtra(AppConstants.CATEGORY_NAME, catName)
