@@ -19,6 +19,7 @@ class AngleSelectionDialog : BaseDialogFragment<ShootViewModel,DialogAngleSelect
     private fun showOptions() {
         val valuesShoots = arrayOf("4 Angles", "8 Angles", "12 Angles", "16 Angles", "24 Angles", "36 Angles")
 
+
         val lastSelectedAngles = viewModel.getSelectedAngles()
         var newSelectedAngles = viewModel.getSelectedAngles()
 

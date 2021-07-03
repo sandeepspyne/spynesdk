@@ -288,7 +288,7 @@ class HomeDashboardFragment :
                         it.value.data as ArrayList<NewCategoriesResponse.Data>,
                         object : CategoriesDashboardAdapter.BtnClickListener {
                             override fun onBtnClick(position: Int) {
-                                if (position < 1) {
+                                if (position < 2) {
                                     categoryPosition = position
                                     Utilities.savePrefrence(
                                         requireContext(),

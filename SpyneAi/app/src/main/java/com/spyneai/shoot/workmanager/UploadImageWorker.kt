@@ -10,6 +10,7 @@ import com.spyneai.interfaces.RetrofitClients
 import com.spyneai.posthog.Events
 import com.spyneai.shoot.data.ShootLocalRepository
 import com.spyneai.shoot.data.model.UploadImageResponse
+import com.spyneai.shoot.utils.log
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.MultipartBody
 import okhttp3.RequestBody.Companion.asRequestBody
@@ -54,7 +55,11 @@ class UploadImageWorker(val appContext: Context, workerParams: WorkerParameters)
             val call = RetrofitClients.buildService(ClipperApi::class.java)
                 .uploadImageInWorker(projectId, skuId, imageCategory, authKey, image)
 
-            com.spyneai.shoot.utils.log("Upload image started(image): " + image)
+            com.spyneai.shoot.utils.log("Upload image started(image)")
+            log("Upload image projectId: "+inputData.getString("projectId").toString())
+            log("Upload image skuId: "+inputData.getString("skuId").toString())
+            log("Upload image imageCategory: "+inputData.getString("imageCategory").toString())
+            log("Upload image authKey: "+inputData.getString("authKey").toString())
 
             call.enqueue(object : Callback<UploadImageResponse> {
                 override fun onResponse(
@@ -98,7 +103,9 @@ class UploadImageWorker(val appContext: Context, workerParams: WorkerParameters)
                             }
                         }else{
                             captureEvent(Events.UPLOAD_FAILED,false,uploadImageResponse?.message)
+                            com.spyneai.shoot.utils.log("Upload image retry")
                             uploadImages()
+
 
                         }
                     }else {
@@ -122,6 +129,7 @@ class UploadImageWorker(val appContext: Context, workerParams: WorkerParameters)
 
         } catch (exeption: Exception) {
             exeption.printStackTrace()
+            com.spyneai.shoot.utils.log("upload image exception: "+exeption.localizedMessage.toString())
         }
 
     }

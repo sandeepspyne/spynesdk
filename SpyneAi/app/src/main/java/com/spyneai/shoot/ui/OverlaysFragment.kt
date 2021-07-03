@@ -1,7 +1,8 @@
 package com.spyneai.shoot.ui
 
+import android.content.pm.ActivityInfo
+import android.content.res.Configuration
 import android.graphics.drawable.Drawable
-import android.net.Uri
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -30,14 +31,8 @@ import com.spyneai.shoot.adapters.MiscAdapter
 import com.spyneai.shoot.adapters.NewSubCategoriesAdapter
 import com.spyneai.shoot.data.ShootViewModel
 import com.spyneai.shoot.data.model.ShootData
-import com.spyneai.shoot.data.room.entities.ShootEntity
 import com.spyneai.shoot.ui.dialogs.*
 import kotlinx.android.synthetic.main.dialog_confirm_reshoot.view.*
-import okhttp3.MediaType.Companion.toMediaTypeOrNull
-import okhttp3.MultipartBody
-import okhttp3.RequestBody.Companion.asRequestBody
-import okhttp3.RequestBody.Companion.toRequestBody
-import java.io.File
 import java.util.*
 
 
@@ -188,10 +183,22 @@ class OverlaysFragment : BaseFragment<ShootViewModel,FragmentOverlaysBinding>(),
             this
         )
 
-        binding.rvSubcategories.apply {
-            this?.layoutManager = LinearLayoutManager(requireContext())
-            this?.adapter = subCategoriesAdapter
+        if (getResources().getConfiguration().orientation === Configuration.ORIENTATION_LANDSCAPE) {
+            binding.rvSubcategories.apply {
+                this?.layoutManager = LinearLayoutManager(requireContext())
+                this?.adapter = subCategoriesAdapter
+            }
+
+        } else if (getResources().getConfiguration().orientation === Configuration.ORIENTATION_PORTRAIT) {
+            binding.rvSubcategories.apply {
+                this?.layoutManager = LinearLayoutManager(requireContext(),
+                    LinearLayoutManager.HORIZONTAL,
+                    false)
+                this?.adapter = subCategoriesAdapter
+            }
+
         }
+
 
         viewModel.getSubCategories(
             Utilities.getPreference(requireContext(), AppConstants.AUTH_KEY).toString(),

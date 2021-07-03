@@ -24,12 +24,20 @@ class ShootViewModel : ViewModel(){
     private val localRepository = ShootLocalRepository()
 
     public var isCameraButtonClickable = true
+    public var isStopCaptureClickable = false
+
+    val totalSkuCaptured : MutableLiveData<String> = MutableLiveData()
+    val totalImageCaptured : MutableLiveData<String> = MutableLiveData()
 
     val shootList: MutableLiveData<ArrayList<ShootData>> = MutableLiveData()
 
     private val _subCategoriesResponse: MutableLiveData<Resource<NewSubCatResponse>> = MutableLiveData()
     val subCategoriesResponse: LiveData<Resource<NewSubCatResponse>>
         get() = _subCategoriesResponse
+
+    private val _projectDetailResponse: MutableLiveData<Resource<ProjectDetailResponse>> = MutableLiveData()
+    val projectDetailResponse: LiveData<Resource<ProjectDetailResponse>>
+        get() = _projectDetailResponse
 
     private val _overlaysResponse: MutableLiveData<Resource<OverlaysResponse>> = MutableLiveData()
     val overlaysResponse: LiveData<Resource<OverlaysResponse>>
@@ -51,6 +59,8 @@ class ShootViewModel : ViewModel(){
     val isSubCategoryConfirmed : MutableLiveData<Boolean> = MutableLiveData()
     val showVin : MutableLiveData<Boolean> = MutableLiveData()
     val isProjectCreated : MutableLiveData<Boolean> = MutableLiveData()
+    val isProjectCreatedEcom : MutableLiveData<Boolean> = MutableLiveData()
+    val isSkuCreated : MutableLiveData<Boolean> = MutableLiveData()
 
     val subCategoryId : MutableLiveData<String> = MutableLiveData()
     val exterirorAngles: MutableLiveData<Int> = MutableLiveData()
@@ -63,12 +73,19 @@ class ShootViewModel : ViewModel(){
     val showMiscDialog : MutableLiveData<Boolean> = MutableLiveData()
     val startMiscShots : MutableLiveData<Boolean> = MutableLiveData()
     val selectBackground : MutableLiveData<Boolean> = MutableLiveData()
+    val stopShoot : MutableLiveData<Boolean> = MutableLiveData()
+    val showProjectDetail : MutableLiveData<Boolean> = MutableLiveData()
 
 
     val interiorAngles : MutableLiveData<Int> = MutableLiveData()
     val interiorShootNumber: MutableLiveData<Int> = MutableLiveData()
     val miscAngles: MutableLiveData<Int> = MutableLiveData()
     val miscShootNumber: MutableLiveData<Int> = MutableLiveData()
+
+    val reshootCapturedImage: MutableLiveData<Boolean> = MutableLiveData()
+    val projectId: MutableLiveData<String> = MutableLiveData()
+
+    val addMoreAngle : MutableLiveData<Boolean> = MutableLiveData()
 
 
     fun getSubCategories(
@@ -82,6 +99,11 @@ class ShootViewModel : ViewModel(){
                     prodSubcategoryId : String, frames : String) = viewModelScope.launch {
         _overlaysResponse.value = Resource.Loading
         _overlaysResponse.value = repository.getOverlays(authKey, prodId, prodSubcategoryId, frames)
+    }
+
+    fun getProjectDetail(authKey: String, projectId:  String) = viewModelScope.launch {
+        _projectDetailResponse.value = Resource.Loading
+        _projectDetailResponse.value = repository.getProjectDetail(authKey, projectId)
     }
 
     fun getSelectedAngles() = exterirorAngles.value

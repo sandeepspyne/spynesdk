@@ -1,29 +1,30 @@
 package com.spyneai.shoot.ui
 
 import android.Manifest
-import android.app.Activity
 import android.content.Context
 import android.content.Intent
+import android.content.pm.ActivityInfo
 import android.content.pm.PackageManager
-import android.graphics.Color
 import android.os.Build
 import android.os.Bundle
-import android.os.Environment
-import android.view.View
-import android.view.Window
 import android.view.WindowManager
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
-import androidx.fragment.app.FragmentActivity
 import androidx.lifecycle.ViewModelProvider
 import com.spyneai.R
 import com.spyneai.dashboard.ui.base.ViewModelFactory
 import com.spyneai.needs.AppConstants
+import com.spyneai.needs.Utilities
 import com.spyneai.shoot.data.ShootViewModel
 import com.spyneai.shoot.data.model.CategoryDetails
+import com.spyneai.shoot.data.model.Sku
 import com.spyneai.shoot.ui.dialogs.ShootExitDialog
+import com.spyneai.shoot.ui.ecom.OverlaysEcomFragment
+import com.spyneai.shoot.ui.ecom.ProjectDetailFragment
+import com.spyneai.shoot.ui.ecom.SkuDetailFragment
+import com.spyneai.shoot.utils.log
 import java.io.File
 
 
@@ -31,12 +32,14 @@ class ShootActivity : AppCompatActivity() {
 
     lateinit var cameraFragment: CameraFragment
     lateinit var overlaysFragment: OverlaysFragment
+    lateinit var overlaysEcomFragment: OverlaysEcomFragment
+    lateinit var skuDetailFragment: SkuDetailFragment
+    lateinit var projectDetailFragment: ProjectDetailFragment
     val TAG = "ShootActivity"
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
         window.setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
             WindowManager.LayoutParams.FLAG_FULLSCREEN)
 
@@ -56,13 +59,39 @@ class ShootActivity : AppCompatActivity() {
 
         cameraFragment = CameraFragment()
         overlaysFragment = OverlaysFragment()
+        overlaysEcomFragment = OverlaysEcomFragment()
+        skuDetailFragment = SkuDetailFragment()
+        projectDetailFragment = ProjectDetailFragment()
 
-        if(savedInstanceState == null) { // initial transaction should be wrapped like this
-            supportFragmentManager.beginTransaction()
-                .add(R.id.flCamerFragment, cameraFragment)
-                .add(R.id.flCamerFragment, overlaysFragment)
-                .commitAllowingStateLoss()
+        if (Utilities.getPreference(this, AppConstants.CATEGORY_NAME).equals("Automobiles")){
+            if(savedInstanceState == null) { // initial transaction should be wrapped like this
+                supportFragmentManager.beginTransaction()
+                    .add(R.id.flCamerFragment, cameraFragment)
+                    .add(R.id.flCamerFragment, overlaysFragment)
+                    .commitAllowingStateLoss()
+            }
+        }else if (Utilities.getPreference(this, AppConstants.CATEGORY_NAME).equals("Footwear")){
+            if(savedInstanceState == null) { // initial transaction should be wrapped like this
+                supportFragmentManager.beginTransaction()
+                    .add(R.id.flCamerFragment, cameraFragment)
+                    .add(R.id.flCamerFragment, overlaysEcomFragment)
+                    .commitAllowingStateLoss()
+            }
+
+            try {
+                val intent = intent
+                shootViewModel.projectId.value = intent.getStringExtra("project_id")
+                val sku = Sku()
+                sku?.projectId = shootViewModel.projectId.value
+                shootViewModel.categoryDetails.value?.imageType = "Ecom"
+                shootViewModel.sku.value = sku
+            } catch (e: Exception) {
+                e.printStackTrace()
+            }
+
         }
+
+
 
         if (allPermissionsGranted()) {
             onPermissionGranted()
@@ -70,6 +99,31 @@ class ShootActivity : AppCompatActivity() {
             permissionRequest.launch(permissions.toTypedArray())
         }
 
+        shootViewModel.stopShoot.observe(this,{
+            if(it){
+                window.clearFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN)
+                supportFragmentManager.beginTransaction()
+                    .add(R.id.flCamerFragment, skuDetailFragment)
+                    .commit()
+            }
+        })
+
+        shootViewModel.showProjectDetail.observe(this,{
+            if(it){
+                window.clearFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN)
+                supportFragmentManager.beginTransaction().remove(skuDetailFragment).commit()
+                supportFragmentManager.beginTransaction().remove(cameraFragment).commit()
+                supportFragmentManager.beginTransaction().remove(overlaysEcomFragment).commit()
+                supportFragmentManager.beginTransaction()
+                    .add(R.id.flCamerFragment, projectDetailFragment)
+                    .commit()
+            }
+        })
+
+        shootViewModel.addMoreAngle.observe(this, {
+            if (it)
+                supportFragmentManager.beginTransaction().remove(skuDetailFragment).commit()
+        })
 
         shootViewModel.selectBackground.observe(this, {
             if (it) {

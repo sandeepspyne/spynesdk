@@ -48,6 +48,7 @@ class CameraFragment : BaseFragment<ShootViewModel, FragmentCameraBinding>(),Pic
     private val FILENAME_FORMAT = "yyyy-MM-dd-HH-mm-ss-SSS"
     private var flashMode: Int = ImageCapture.FLASH_MODE_OFF
 
+
     companion object {
         private const val RATIO_4_3_VALUE = 4.0 / 3.0 // aspect ratio 4x3
         private const val RATIO_16_9_VALUE = 16.0 / 9.0 // aspect ratio 16x9
@@ -55,6 +56,9 @@ class CameraFragment : BaseFragment<ShootViewModel, FragmentCameraBinding>(),Pic
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+
+
 
         cameraExecutor = Executors.newSingleThreadExecutor()
         // Determine the output directory
@@ -96,7 +100,8 @@ class CameraFragment : BaseFragment<ShootViewModel, FragmentCameraBinding>(),Pic
         startCamera()
 
         binding.cameraCaptureButton?.setOnClickListener {
-            if (viewModel.isSubCategoryConfirmed.value == null || viewModel.isSubCategoryConfirmed.value == false){
+            if ((viewModel.isSubCategoryConfirmed.value == null || viewModel.isSubCategoryConfirmed.value == false) &&
+                    viewModel.categoryDetails.value?.categoryName == "Automobiles"){
                 SubCategoryConfirmationDialog().show(requireFragmentManager(), "SubCategoryConfirmationDialog")
             }else{
                 if (viewModel.isCameraButtonClickable){
@@ -203,7 +208,7 @@ class CameraFragment : BaseFragment<ShootViewModel, FragmentCameraBinding>(),Pic
                     val savedUri = Uri.fromFile(photoFile)
                     log("Photo capture succeeded: "+savedUri)
                     try {
-                       addShootItem(photoFile?.path!!.toString())
+                        addShootItem(photoFile?.path!!.toString())
                     } catch (ex: IllegalArgumentException) {
                         pickIt?.getPath(savedUri, Build.VERSION.SDK_INT)
                     }
