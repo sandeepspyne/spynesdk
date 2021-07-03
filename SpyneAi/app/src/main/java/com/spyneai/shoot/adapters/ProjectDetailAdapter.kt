@@ -17,8 +17,7 @@ lateinit var projectChildAdapter: ProjectChildAdapter
 
 class ProjectDetailAdapter(
     val context: Context,
-    var projectList: ArrayList<ProjectDetailResponse.Sku>,
-    var imageList: ArrayList<ProjectDetailResponse.Images>
+    var projectList: List<ProjectDetailResponse.Sku>,
 ) : RecyclerView.Adapter<ProjectDetailAdapter.ViewHolder>() {
 
     class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
@@ -54,7 +53,7 @@ class ProjectDetailAdapter(
 
         projectChildAdapter = ProjectChildAdapter(
             context,
-            imageList
+            projectList[position].images as ArrayList<ProjectDetailResponse.Images>
         )
 
         viewHolder.rvChildProject.apply {
