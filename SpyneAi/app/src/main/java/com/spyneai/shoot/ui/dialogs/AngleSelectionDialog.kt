@@ -23,9 +23,11 @@ class AngleSelectionDialog : BaseDialogFragment<ShootViewModel,DialogAngleSelect
         var newSelectedAngles = viewModel.getSelectedAngles()
 
         when(viewModel.getSelectedAngles()){
-            4 -> binding.npShoots.minValue = 0
-            8 -> binding.npShoots.minValue = 1
-            12 -> binding.npShoots.minValue = 2
+            8 -> binding.npShoots.minValue = 0
+            12 -> binding.npShoots.minValue = 1
+            16 -> binding.npShoots.minValue = 2
+            24 -> binding.npShoots.minValue = 3
+            36 -> binding.npShoots.minValue = 4
         }
 
         binding.npShoots.minValue = 0

@@ -72,12 +72,7 @@ class SelectBackgroundFragment : BaseFragment<ProcessViewModel,FragmentSelectBac
         val auth_key =
             Utilities.getPreference(requireContext(), AppConstants.AUTH_KEY).toString().toRequestBody(MultipartBody.FORM)
 
-        if (getString(R.string.app_name) == "Karvi.com"){
-            viewModel.getBackgroundGifCars(category, auth_key,true)
-        }else{
-            viewModel.getBackgroundGifCars(category, auth_key,false)
-        }
-
+        viewModel.getBackgroundGifCars(category, auth_key,getString(R.string.app_name))
 
         viewModel.carGifRes.observe(viewLifecycleOwner,{
             when(it) {

@@ -259,10 +259,10 @@ class ShowImagesActivity : AppCompatActivity() {
 
                             //save for in case of user review
                             if (imageListAfter != null && imageList.size > 0)
-                                ReviewHolder.orgUrl = imageList.get(0)
+                               // ReviewHolder.orgUrl = imageList.get(0)
 
                             if (imageListAfter != null && imageListAfter.size > 0)
-                                ReviewHolder.editedUrl = imageListAfter.get(0)
+                               // ReviewHolder.editedUrl = imageListAfter.get(0)
 
 
                             (imageListWaterMark as ArrayList).add(dataList!![i].output_image_lres_wm_url)
