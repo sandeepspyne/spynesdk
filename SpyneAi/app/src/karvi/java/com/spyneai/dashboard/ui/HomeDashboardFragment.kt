@@ -52,6 +52,10 @@ class HomeDashboardFragment :
         tokenId = Utilities.getPreference(requireContext(), AppConstants.TOKEN_ID).toString()
         email = Utilities.getPreference(requireContext(), AppConstants.EMAIL_ID).toString()
 
+        if (getString(R.string.app_name) == "Karvi.com"){
+            binding.ivWallet.visibility = View.GONE
+        }
+
         if (viewModel.isNewUser.value == true && getString(R.string.app_name) != "Karvi.com"){
             showFreeCreditDialog(viewModel.creditsMessage.value.toString())
             viewModel.isNewUser.value = false

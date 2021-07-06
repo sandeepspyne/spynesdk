@@ -136,7 +136,7 @@ class OrderSummary2Activity : AppCompatActivity() {
         Utilities.savePrefrence(this, AppConstants.DOWNLOAD_TYPE, "hd")
         downloadIntent.putExtra(AppConstants.LIST_HD_QUALITY, listHdQuality)
         downloadIntent.putExtra(AppConstants.LIST_WATERMARK, listWatermark)
-        downloadIntent.putExtra("is_paid",intent.getBooleanExtra("is_paid",false))
+        downloadIntent.putExtra("is_paid",hdDownloaded)
         downloadIntent.putExtra(AppConstants.SKU_ID, Utilities.getPreference(this@OrderSummary2Activity, AppConstants.SKU_ID)
             .toString())
         downloadIntent.putExtra(AppConstants.SKU_NAME,intent.getStringExtra(AppConstants.SKU_NAME))

@@ -66,6 +66,8 @@ class ImageDownloadingService : Service(),ImageDownloadManager.Listener {
         task.price = intent.getIntExtra(AppConstants.PRICE, 10)
         task.isDownloadedBefore = intent.getBooleanExtra(AppConstants.IS_DOWNLOADED_BEFORE,false)
 
+        //task.isDownloadedBefore = false
+
         task.listHdQuality.addAll(intent.getParcelableArrayListExtra(AppConstants.LIST_HD_QUALITY)!!)
 
         tasksInProgress.add(task)

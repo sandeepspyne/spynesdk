@@ -39,6 +39,12 @@ class ImageProcessingStartedFragment : BaseFragment<ProcessViewModel, FragmentIm
 
                 requireActivity().finish()
             }
+
+
+            binding.ivHome.visibility = View.VISIBLE
+            binding.ivHome.setOnClickListener {
+                requireContext().gotoHome()
+            }
         }
     }
 

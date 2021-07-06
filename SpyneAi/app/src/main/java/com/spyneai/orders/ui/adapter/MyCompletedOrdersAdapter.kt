@@ -10,6 +10,7 @@ import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.cardview.widget.CardView
+import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.ContextCompat.startActivity
 import androidx.navigation.findNavController
 import androidx.recyclerview.widget.RecyclerView
@@ -29,6 +30,7 @@ class MyCompletedOrdersAdapter(
 ) : RecyclerView.Adapter<MyCompletedOrdersAdapter.ViewHolder>() {
 
     class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
+        val clMain: ConstraintLayout = view.findViewById(R.id.clMain)
         val tv_images_count: TextView = view.findViewById(R.id.tv_images_count)
         val tvProjectName: TextView = view.findViewById(R.id.tvProjectName)
         val tvSubCat: TextView = view.findViewById(R.id.tvSubCat)
@@ -93,20 +95,33 @@ class MyCompletedOrdersAdapter(
             .error(R.mipmap.defaults) // show error drawable if the image is not a gif
             .into(holder.iv_thumbnail_completed)
 
-        holder.ivDownloadSKU.setOnClickListener {
-            Utilities.savePrefrence(
-                context,
-                AppConstants.SKU_ID,
-                completedSkuList[position].sku_id
-            )
-            var intent : Intent? = null
-            intent = if (context.getString(R.string.app_name) == "Karvi.com") Intent(context,
-                KarviShowImagesActivity::class.java) else Intent(context, ShowImagesActivity::class.java)
+        if (context.getString(R.string.app_name) == "Karvi.com"){
+            holder.ivDownloadSKU.visibility = View.INVISIBLE
 
-
-            intent.putExtra("is_paid",completedSkuList[position].paid)
-            context.startActivity(intent)
+            holder.clMain.setOnClickListener {
+                Utilities.savePrefrence(
+                    context,
+                    AppConstants.SKU_ID,
+                    completedSkuList[position].sku_id
+                )
+                var intent = Intent(context, KarviShowImagesActivity::class.java)
+                intent.putExtra("is_paid",completedSkuList[position].paid)
+                context.startActivity(intent)
+            }
+        }else{
+            holder.ivDownloadSKU.setOnClickListener {
+                Utilities.savePrefrence(
+                    context,
+                    AppConstants.SKU_ID,
+                    completedSkuList[position].sku_id
+                )
+                var intent = Intent(context, ShowImagesActivity::class.java)
+               intent.putExtra("is_paid",completedSkuList[position].paid)
+                context.startActivity(intent)
+            }
         }
+
+
     }
 
     override fun getItemCount(): Int {
