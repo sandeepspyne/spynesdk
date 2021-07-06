@@ -251,6 +251,12 @@ class ShowImagesActivity : AppCompatActivity() {
                 Utilities.hideProgressDialog()
                 if (response.isSuccessful) {
                     var dataList: List<FetchBulkResponseV2.Data> = response.body()!!.data
+
+                    Utilities.savePrefrence(
+                        this@ShowImagesActivity,
+                        AppConstants.NO_OF_IMAGES,
+                        dataList.size.toString())
+
                     for (i in 0..(dataList.size) -1) {
                         if (dataList!![i].image_category.equals("Exterior")) {
                             Category = dataList!![i].image_category
@@ -268,48 +274,46 @@ class ShowImagesActivity : AppCompatActivity() {
                             (imageListWaterMark as ArrayList).add(dataList!![i].output_image_lres_wm_url)
                             (listHdQuality as ArrayList).add(dataList!![i].output_image_hres_url)
 
-                            Utilities.savePrefrence(
-                                this@ShowImagesActivity,
-                                AppConstants.NO_OF_IMAGES,
-                                imageListAfter.size.toString()
-                            )
-                            hideData(0)
+
+                           // hideData(0)
                         } else if (dataList!![i].image_category.equals("Interior")) {
                             Category = dataList!![i].image_category
                             (imageListInterior as ArrayList).add(dataList!![i].output_image_lres_url)
                             (imageListWaterMark as ArrayList).add(dataList!![i].output_image_lres_wm_url)
                             (listHdQuality as ArrayList).add(dataList!![i].output_image_hres_url)
 
-                            Utilities.savePrefrence(
-                                this@ShowImagesActivity,
-                                AppConstants.NO_OF_IMAGES,
-                                imageListAfter.size.toString()
-                            )
-                            hideData(0)
+//                            Utilities.savePrefrence(
+//                                this@ShowImagesActivity,
+//                                AppConstants.NO_OF_IMAGES,
+//                                imageListAfter.size.toString()
+//                            )
+                            //hideData(0)
+
                         } else if (dataList!![i].image_category.equals("Focus Shoot")) {
                             Category = dataList!![i].image_category
                             (imageListFocused as ArrayList).add(dataList!![i].output_image_lres_url)
                             (imageListWaterMark as ArrayList).add(dataList!![i].output_image_lres_wm_url)
                             (listHdQuality as ArrayList).add(dataList!![i].output_image_hres_url)
 
-                            Utilities.savePrefrence(
-                                this@ShowImagesActivity,
-                                AppConstants.NO_OF_IMAGES,
-                                imageListAfter.size.toString()
-                            )
-                            hideData(0)
+//                            Utilities.savePrefrence(
+//                                this@ShowImagesActivity,
+//                                AppConstants.NO_OF_IMAGES,
+//                                imageListAfter.size.toString()
+//                            )
+                            //hideData(0)
+
                         } else {
                             Category = dataList!![i].image_category
                             (imageList as ArrayList).add(dataList!![i].input_image_lres_url)
                             (imageListAfter as ArrayList).add(dataList!![i].output_image_lres_wm_url)
                             (listHdQuality as ArrayList).add(dataList!![i].output_image_hres_url)
                             (imageListWaterMark as ArrayList).add(dataList!![i].output_image_lres_wm_url)
-
-                            Utilities.savePrefrence(
-                                this@ShowImagesActivity,
-                                AppConstants.NO_OF_IMAGES,
-                                imageListAfter.size.toString()
-                            )
+//
+//                            Utilities.savePrefrence(
+//                                this@ShowImagesActivity,
+//                                AppConstants.NO_OF_IMAGES,
+//                                imageListAfter.size.toString()
+//                            )
                             hideData(1)
                         }
 
@@ -317,6 +321,17 @@ class ShowImagesActivity : AppCompatActivity() {
                     }
 
                 }
+
+                if (imageListInterior.isNullOrEmpty())
+                    tvInterior.visibility = View.GONE
+                else
+                    tvInterior.visibility = View.VISIBLE
+
+                if (imageListFocused.isNullOrEmpty())
+                    tvFocused.visibility = View.GONE
+                else
+                    tvFocused.visibility = View.VISIBLE
+
                 showReplacedImagesAdapter.notifyDataSetChanged()
                 ShowReplacedImagesInteriorAdapter.notifyDataSetChanged()
                 ShowReplacedImagesFocusedAdapter.notifyDataSetChanged()
