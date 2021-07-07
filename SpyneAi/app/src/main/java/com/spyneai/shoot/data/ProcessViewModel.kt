@@ -48,7 +48,7 @@ class ProcessViewModel : ViewModel() {
                         "Radiant Aluminium",
                         "https://storage.googleapis.com/spyne-website/static/website-themes/clippr/comp_backgroundV2/601_2.png",
                         1,
-                        "601",
+                        "978",
                         "https://storage.googleapis.com/spyne-website/static/website-themes/clippr/comp_backgroundV2/601_2.png"
                     )
                 )
