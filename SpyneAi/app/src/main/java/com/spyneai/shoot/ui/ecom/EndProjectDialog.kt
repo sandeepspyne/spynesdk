@@ -20,7 +20,12 @@ class EndProjectDialog : BaseDialogFragment<ShootViewModel, EndProjectDialogBind
         dialog?.setCancelable(false)
         binding.tvSkuName.text = viewModel.sku.value?.skuName.toString()
         binding.tvTotalSkuCaptured.text = viewModel.totalSkuCaptured.value
-        binding.tvTotalImageCaptured.text = viewModel.totalImageCaptured.value
+
+
+        viewModel.shootList.observe(viewLifecycleOwner, {
+                binding.tvTotalImageCaptured.text = it.size.toString()
+
+        })
 
         binding.btNo.setOnClickListener {
             dismiss()
@@ -38,14 +43,16 @@ class EndProjectDialog : BaseDialogFragment<ShootViewModel, EndProjectDialogBind
     }
 
 
-
     override fun onResume() {
         super.onResume()
-        dialog?.getWindow()?.setLayout(WindowManager.LayoutParams.MATCH_PARENT,
-            WindowManager.LayoutParams.WRAP_CONTENT);
+        dialog?.getWindow()?.setLayout(
+            WindowManager.LayoutParams.MATCH_PARENT,
+            WindowManager.LayoutParams.WRAP_CONTENT
+        );
         dialog?.window?.setGravity(Gravity.BOTTOM)
         getDialog()?.getWindow()?.setBackgroundDrawable(ColorDrawable(Color.WHITE));
     }
+
     override fun getViewModel() = ShootViewModel::class.java
 
     override fun getFragmentBinding(

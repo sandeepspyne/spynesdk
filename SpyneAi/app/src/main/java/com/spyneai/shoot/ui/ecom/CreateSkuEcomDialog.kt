@@ -95,6 +95,7 @@ class CreateSkuEcomDialog : BaseDialogFragment<ShootViewModel, CreateSkuEcomDial
                 }
 
                 is Resource.Failure -> {
+                    dismiss()
                     Utilities.hideProgressDialog()
                     requireContext().captureFailureEvent(
                         Events.CREATE_SKU_FAILED, Properties(),

@@ -9,6 +9,8 @@ import com.google.android.material.snackbar.Snackbar
 import com.posthog.android.Properties
 import com.spyneai.base.network.Resource
 import com.spyneai.captureFailureEvent
+import com.spyneai.logout.InvalidAuthDialog
+import com.spyneai.shoot.ui.ecom.CreateProjectEcomDialog
 
 fun <A : Activity> Activity.startNewActivity(activity: Class<A>) {
     Intent(this, activity).also {
@@ -46,8 +48,7 @@ fun Fragment.handleApiError(
             retry
         )
         failure.errorCode == 401 -> {
-            val error = failure.errorMessage
-            requireView().snackbar(error!!,retry)
+            InvalidAuthDialog().show(requireFragmentManager(), "InvalidAuthDialog")
         }
         else -> {
             val error = failure.errorMessage

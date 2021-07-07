@@ -13,6 +13,7 @@ import com.spyneai.captureEvent
 import com.spyneai.databinding.ConfirmReshootEcomDialogBinding
 import com.spyneai.posthog.Events
 import com.spyneai.shoot.data.ShootViewModel
+import com.spyneai.shoot.utils.log
 
 class ConfirmReshootEcomDialog :
     BaseDialogFragment<ShootViewModel, ConfirmReshootEcomDialogBinding>() {
@@ -28,6 +29,8 @@ class ConfirmReshootEcomDialog :
         Glide.with(requireContext())
             .load(uri)
             .into(binding.ivCapturedImage)
+
+        log("Image set to dialog: "+uri)
 
         binding.btReshootImage.setOnClickListener {
             viewModel.reshootCapturedImage.value = true

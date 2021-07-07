@@ -295,7 +295,7 @@ class HomeDashboardFragment :
                                 colorCode = it.value.data[position].color_code
 
                                 when(position){
-                                    0,1 -> {
+                                    0 -> {
                                         val intent = Intent(requireContext(), BeforeAfterActivity::class.java)
                                         intent.putExtra(
                                             AppConstants.CATEGORY_NAME,
@@ -317,27 +317,28 @@ class HomeDashboardFragment :
                                         startActivity(intent)
                                     }
 
-                                    5 -> {
-                                        val intent = Intent(requireContext(), ShootActivity::class.java)
-                                        intent.putExtra(
-                                            AppConstants.CATEGORY_NAME,
-                                            displayName
-                                        )
-                                        intent.putExtra(
-                                            AppConstants.CATEGORY_ID,
-                                            catId
-                                        )
-                                        intent.putExtra(
-                                            AppConstants.IMAGE_URL,
-                                            displayThumbnail
-                                        )
-                                        intent.putExtra(
-                                            AppConstants.DESCRIPTION,
-                                            description
-                                        )
-                                        intent.putExtra(AppConstants.COLOR, colorCode)
-                                        startActivity(intent)
-                                    }else -> {
+//                                    5 -> {
+//                                        val intent = Intent(requireContext(), ShootActivity::class.java)
+//                                        intent.putExtra(
+//                                            AppConstants.CATEGORY_NAME,
+//                                            displayName
+//                                        )
+//                                        intent.putExtra(
+//                                            AppConstants.CATEGORY_ID,
+//                                            catId
+//                                        )
+//                                        intent.putExtra(
+//                                            AppConstants.IMAGE_URL,
+//                                            displayThumbnail
+//                                        )
+//                                        intent.putExtra(
+//                                            AppConstants.DESCRIPTION,
+//                                            description
+//                                        )
+//                                        intent.putExtra(AppConstants.COLOR, colorCode)
+//                                        startActivity(intent)
+//                                    }
+                                    else -> {
                                     Toast.makeText(
                                         requireContext(),
                                         "Coming Soon !",

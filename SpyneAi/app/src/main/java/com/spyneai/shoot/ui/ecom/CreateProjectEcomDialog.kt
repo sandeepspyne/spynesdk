@@ -83,6 +83,7 @@ class CreateProjectEcomDialog :
                 }
 
                 is Resource.Failure -> {
+                    dismiss()
                     log("create project id failed")
                     requireContext().captureFailureEvent(
                         Events.CREATE_PROJECT_FAILED, Properties(),
@@ -143,6 +144,7 @@ class CreateProjectEcomDialog :
                 }
 
                 is Resource.Failure -> {
+                    dismiss()
                     log("create sku id failed")
                     Utilities.hideProgressDialog()
                     requireContext().captureFailureEvent(

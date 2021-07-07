@@ -13,6 +13,7 @@ import com.spyneai.dashboard.response.NewSubCatResponse
 import com.spyneai.databinding.DialogConfirmReshootBinding
 import com.spyneai.posthog.Events
 import com.spyneai.shoot.data.ShootViewModel
+import com.spyneai.shoot.utils.log
 
 class ConfirmReshootDialog : BaseDialogFragment<ShootViewModel, DialogConfirmReshootBinding>() {
 
@@ -159,10 +160,11 @@ class ConfirmReshootDialog : BaseDialogFragment<ShootViewModel, DialogConfirmRes
                     var newH =
                         oh!!.toFloat().div(prh!!.toFloat()).times(view.height)
 
-                    var equlizer = (25 * resources.displayMetrics.density).toInt()
+                    var equlizerOverlayMargin = (9.5 * resources.displayMetrics.density).toInt()
 
-                    var params = FrameLayout.LayoutParams(newW.toInt() - equlizer, newH.toInt() + equlizer)
+                    var params = FrameLayout.LayoutParams(newW.toInt(), newH.toInt())
                     params.gravity = Gravity.CENTER
+                    params.topMargin = equlizerOverlayMargin
 
                     binding.ivCapturedOverlay.layoutParams = params
 

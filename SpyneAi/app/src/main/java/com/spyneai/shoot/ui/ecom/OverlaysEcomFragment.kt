@@ -53,6 +53,7 @@ class OverlaysEcomFragment : BaseFragment<ShootViewModel, FragmentOverlaysEcomBi
                         (capturedImageList as ArrayList).add(it[i].capturedImage)
                     initCapturedImages()
                     showImageConfirmDialog(it.get(it.size - 1))
+                    log("call showImageConfirmDialog")
                 }
             } catch (e: Exception) {
                 e.printStackTrace()
