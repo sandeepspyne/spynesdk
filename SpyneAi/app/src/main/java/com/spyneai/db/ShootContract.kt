@@ -1,4 +1,4 @@
-package com.spyneai.shoot.data.sqlite
+package com.spyneai.db
 
 import android.provider.BaseColumns
 

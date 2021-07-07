@@ -88,7 +88,6 @@ class CreditPlansActivity : AppCompatActivity(),CreditsPlandAdapter.Listener,
 
         var call = RetrofitClientPayment.buildService(CreditApiService::class.java).createOrder(body)
 
-
         call?.enqueue(object : Callback<CreateOrderResponse> {
             override fun onResponse(
                 call: Call<CreateOrderResponse>,
@@ -179,7 +178,7 @@ class CreditPlansActivity : AppCompatActivity(),CreditsPlandAdapter.Listener,
 
         var request = RetrofitCreditClient("https://www.clippr.ai/api/v2/").buildService(CreditApiService::class.java)
 
-        var call = request.getThreeSixtyInteriorByShootId()
+        var call = request.getCredits()
 
         call?.enqueue(object : Callback<CreditPlansRes> {
             override fun onResponse(
@@ -262,7 +261,6 @@ class CreditPlansActivity : AppCompatActivity(),CreditsPlandAdapter.Listener,
         GlobalScope.launch(Dispatchers.IO) {
             createCreditPurchaseLog()
         }
-
             try {
                 var fragment = CreditPyamentSuccessFragment()
 
@@ -280,8 +278,6 @@ class CreditPlansActivity : AppCompatActivity(),CreditsPlandAdapter.Listener,
             }catch (ex : Exception){
 
             }
-
-
     }
 
     override fun onPaymentError(code: Int, response: String?) {

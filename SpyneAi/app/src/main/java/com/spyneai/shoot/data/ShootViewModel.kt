@@ -1,31 +1,34 @@
 package com.spyneai.shoot.data
 
 import android.content.Context
+import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import androidx.work.Data
-import androidx.work.OneTimeWorkRequest
-import androidx.work.WorkManager
+import androidx.work.*
+import com.spyneai.BaseApplication
 import com.spyneai.base.network.Resource
 import com.spyneai.camera2.OverlaysResponse
 import com.spyneai.camera2.ShootDimensions
 import com.spyneai.dashboard.response.NewSubCatResponse
 import com.spyneai.model.carbackgroundgif.CarBackgrounGifResponse
 import com.spyneai.shoot.data.model.*
+import com.spyneai.shoot.workmanager.LongRunningWorker
 import com.spyneai.shoot.workmanager.UploadImageWorker
 import kotlinx.coroutines.launch
 import java.util.ArrayList
 
 class ShootViewModel : ViewModel(){
 
+    private val TAG = "ShootViewModel"
     private val repository = ShootRepository()
     private val localRepository = ShootLocalRepository()
 
-    public var isCameraButtonClickable = true
+     var isCameraButtonClickable = true
     var processSku : Boolean = true
-    public var isStopCaptureClickable = false
+     var isStopCaptureClickable = false
+    var isLongRunningWorkerAlive = false
 
     val totalSkuCaptured : MutableLiveData<String> = MutableLiveData()
     val totalImageCaptured : MutableLiveData<String> = MutableLiveData()
@@ -126,6 +129,55 @@ class ShootViewModel : ViewModel(){
 
     fun uploadImage(context : Context) {
 
+    }
+
+     suspend fun insertImage(shootData: ShootData) {
+        val image = Image()
+        image.projectId = shootData.project_id
+        image.skuId = shootData.sku_id
+        image.categoryName = shootData.image_category
+        image.imagePath = shootData.capturedImage
+        image.sequence = shootData.sequence
+
+        localRepository.insertImage(image)
+
+         startLongRunningWorker()
+
+        //check if long running worker is alive
+        if (!isLongRunningWorkerAlive){
+            val workManager = WorkManager.getInstance()
+
+            val workInfos = workManager.getWorkInfosByTag("Long Running Worker").await()
+
+
+
+//            if (workInfos.size == 1) {
+//                // for (workInfo in workInfos) {
+//                val workInfo = workInfos[0]
+//                Log.d("ShootViewModel", "insertImage: ${workInfo.state}, id=${workInfo.id}")
+//
+//                if (workInfo.state == WorkInfo.State.BLOCKED || workInfo.state == WorkInfo.State.ENQUEUED || workInfo.state == WorkInfo.State.RUNNING) {
+//                    Log.d(TAG, "insertImage: alive")
+//                    isLongRunningWorkerAlive = true
+//                } else {
+//                    Log.d(TAG, "insertImage: isDead")
+//                    //start long running worker
+//                    startLongRunningWorker()
+//                }
+//            } else {
+//                Log.d(TAG, "insertImage: notFound")
+//                //start long running worker
+//                startLongRunningWorker()
+//
+//            }
+        }
+    }
+
+    fun startLongRunningWorker() {
+        val longWorkRequest = OneTimeWorkRequest.Builder(LongRunningWorker::class.java)
+        WorkManager.getInstance(BaseApplication.getContext()).enqueue(longWorkRequest.build())
+
+        isLongRunningWorkerAlive = true
     }
 
     fun uploadImageWithWorkManager(

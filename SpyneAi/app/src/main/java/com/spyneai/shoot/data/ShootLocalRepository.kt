@@ -2,12 +2,12 @@ package com.spyneai.shoot.data
 
 import android.content.ContentValues
 import android.provider.BaseColumns
-import android.util.Log
 import com.spyneai.BaseApplication
-import com.spyneai.service.log
 import com.spyneai.shoot.data.model.Sku
-import com.spyneai.shoot.data.sqlite.DBHelper
-import com.spyneai.shoot.data.sqlite.ShootContract
+import com.spyneai.db.DBHelper
+import com.spyneai.db.Images
+import com.spyneai.db.ShootContract
+import com.spyneai.shoot.data.model.Image
 
 class ShootLocalRepository {
 
@@ -15,6 +15,70 @@ class ShootLocalRepository {
     private val dbReadable = DBHelper(BaseApplication.getContext()).readableDatabase
     private val TAG = "ShootLocalRepository"
 
+
+    fun insertImage(image : Image) {
+        val values = ContentValues().apply {
+            put(Images.COLUMN_NAME_PROJECT_ID, image.projectId)
+            put(Images.COLUMN_NAME_SKU_ID, image.skuId)
+            put(Images.COLUMN_NAME_CATEGORY_NAME, image.categoryName)
+            put(Images.COLUMN_NAME_IMAGE_PATH, image.imagePath)
+            put(Images.COLUMN_NAME_IMAGE_SEQUENCE, image.sequence)
+        }
+
+        val newRowId = dbWritable?.insert(Images.TABLE_NAME, null, values)
+
+        com.spyneai.shoot.utils.log("insertImage: "+newRowId)
+    }
+
+    fun getOldestImage() : Image {
+        val projection = arrayOf(
+            BaseColumns._ID,
+            Images.COLUMN_NAME_PROJECT_ID,
+            Images.COLUMN_NAME_SKU_ID,
+            Images.COLUMN_NAME_CATEGORY_NAME,
+            Images.COLUMN_NAME_IMAGE_PATH,
+            Images.COLUMN_NAME_IMAGE_SEQUENCE)
+
+        // Filter results WHERE "title" = 'My Title'
+       // val selection = "${ShootContract.ShootEntry.COLUMN_NAME_SKU_ID} = ?"
+
+
+        // How you want the results sorted in the resulting Cursor
+        val sortOrder = "${BaseColumns._ID} ASC"
+
+        val cursor = dbReadable.query(
+            Images.TABLE_NAME,   // The table to query
+            projection,             // The array of columns to return (pass null to get all)
+            null,              // The columns for the WHERE clause
+            null,          // The values for the WHERE clause
+            null,                   // don't group the rows
+            null,                   // don't filter by row groups
+            sortOrder,               // The sort order
+        "1"
+        )
+
+        val image = Image()
+
+        with(cursor) {
+            while (moveToNext()) {
+                val itemId = getLong(getColumnIndexOrThrow(BaseColumns._ID))
+                val projectId = getString(getColumnIndexOrThrow(Images.COLUMN_NAME_PROJECT_ID))
+                val skuId = getString(getColumnIndexOrThrow(Images.COLUMN_NAME_SKU_ID))
+                val categoryName = getString(getColumnIndexOrThrow(Images.COLUMN_NAME_CATEGORY_NAME))
+                val imagePath = getString(getColumnIndexOrThrow(Images.COLUMN_NAME_IMAGE_PATH))
+                val sequence = getInt(getColumnIndexOrThrow(Images.COLUMN_NAME_IMAGE_SEQUENCE))
+
+                image.itemId = itemId
+                image.projectId = projectId
+                image.skuId = skuId
+                image.categoryName = categoryName
+                image.imagePath = imagePath
+                image.sequence = sequence
+            }
+        }
+
+        return image
+    }
 
     fun insertSku(sku : Sku) {
         // Create a new map of values, where column names are the keys
