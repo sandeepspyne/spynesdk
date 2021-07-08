@@ -40,6 +40,10 @@ class ShootViewModel : ViewModel(){
     val projectDetailResponse: LiveData<Resource<ProjectDetailResponse>>
         get() = _projectDetailResponse
 
+    private val _updateTotalFramesRes : MutableLiveData<Resource<UpdateTotalFramesRes>> = MutableLiveData()
+    val updateTotalFramesRes: LiveData<Resource<UpdateTotalFramesRes>>
+        get() = _updateTotalFramesRes
+
     private val _overlaysResponse: MutableLiveData<Resource<OverlaysResponse>> = MutableLiveData()
     val overlaysResponse: LiveData<Resource<OverlaysResponse>>
         get() = _overlaysResponse
@@ -107,6 +111,11 @@ class ShootViewModel : ViewModel(){
     fun getProjectDetail(authKey: String, projectId:  String) = viewModelScope.launch {
         _projectDetailResponse.value = Resource.Loading
         _projectDetailResponse.value = repository.getProjectDetail(authKey, projectId)
+    }
+
+    fun updateTotalFrames(skuId: String, totalFrames:  String, authKey:  String) = viewModelScope.launch {
+        _updateTotalFramesRes.value = Resource.Loading
+        _updateTotalFramesRes.value = repository.updateTotalFrames(skuId, totalFrames, authKey)
     }
 
     fun getSelectedAngles() = exterirorAngles.value

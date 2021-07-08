@@ -295,7 +295,7 @@ class HomeDashboardFragment :
                                 colorCode = it.value.data[position].color_code
 
                                 when(position){
-                                    0 -> {
+                                    0,1 -> {
                                         val intent = Intent(requireContext(), BeforeAfterActivity::class.java)
                                         intent.putExtra(
                                             AppConstants.CATEGORY_NAME,

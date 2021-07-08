@@ -119,6 +119,13 @@ interface ClipperApi {
         @Query("project_id") projectId : String
     ) : ProjectDetailResponse
 
+    @GET("v2/sku/updateTotalFrames")
+    suspend fun updateTotalFrames(
+        @Query("sku_id") skuId : String,
+        @Query("total_frames") totalFrames : String,
+        @Query("auth_key") authKey : String
+    ) : UpdateTotalFramesRes
+
 
 
 

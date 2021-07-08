@@ -8,8 +8,13 @@ import android.os.Bundle
 import android.view.*
 import androidx.fragment.app.DialogFragment.STYLE_NO_FRAME
 import com.spyneai.base.BaseDialogFragment
+import com.spyneai.base.network.Resource
+import com.spyneai.dashboard.ui.handleApiError
 import com.spyneai.databinding.EndProjectDialogBinding
+import com.spyneai.needs.AppConstants
+import com.spyneai.needs.Utilities
 import com.spyneai.shoot.data.ShootViewModel
+import com.spyneai.shoot.utils.log
 
 
 class EndProjectDialog : BaseDialogFragment<ShootViewModel, EndProjectDialogBinding>() {
@@ -18,14 +23,36 @@ class EndProjectDialog : BaseDialogFragment<ShootViewModel, EndProjectDialogBind
         super.onViewCreated(view, savedInstanceState)
 
         dialog?.setCancelable(false)
-        binding.tvSkuName.text = viewModel.sku.value?.skuName.toString()
-        binding.tvTotalSkuCaptured.text = viewModel.totalSkuCaptured.value
+
+        viewModel.getProjectDetail(
+            Utilities.getPreference(requireContext(), AppConstants.AUTH_KEY).toString(),
+            viewModel.sku.value?.projectId.toString()
+        )
+
+        viewModel.projectDetailResponse.observe(viewLifecycleOwner, {
+            when (it) {
+                is Resource.Success -> {
+
+                    binding.pbEndProject.visibility = View.GONE
+                    binding.btYes.isEnabled = true
+
+                    binding.tvSkuName.text = viewModel.sku.value?.skuName.toString()
+                    binding.tvTotalSkuCaptured.text = it.value.data.total_sku.toString()
+                    binding.tvTotalImageCaptured.text = it.value.data.total_images.toString()
 
 
-        viewModel.shootList.observe(viewLifecycleOwner, {
-                binding.tvTotalImageCaptured.text = it.size.toString()
 
+                }
+                is Resource.Loading -> {
+
+                }
+                is Resource.Failure -> {
+                    handleApiError(it)
+                }
+            }
         })
+
+
 
         binding.btNo.setOnClickListener {
             dismiss()

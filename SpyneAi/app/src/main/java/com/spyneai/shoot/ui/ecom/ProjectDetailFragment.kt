@@ -55,10 +55,10 @@ class ProjectDetailFragment : BaseFragment<ShootViewModel, FragmentProjectDetail
 
                 }
                 is Resource.Loading -> {
-                    Utilities.showProgressDialog(requireContext())
 
                 }
                 is Resource.Failure -> {
+                    Utilities.hideProgressDialog()
                     handleApiError(it)
                 }
             }
