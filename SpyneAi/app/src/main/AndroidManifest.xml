@@ -295,6 +295,11 @@
             android:authorities="${applicationId}.AUTH_SILI_COMPRESS"
             android:exported="false"
             tools:replace="android:authorities" />
+
+        <service
+            android:name="androidx.work.impl.foreground.SystemForegroundService"
+            tools:node="merge"
+            tools:ignore="Instantiatable" />
     </application>
 
 </manifest>

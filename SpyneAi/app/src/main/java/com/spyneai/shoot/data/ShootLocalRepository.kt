@@ -298,4 +298,18 @@ class ShootLocalRepository {
         com.spyneai.shoot.utils.log("Background id: "+backgroundId)
     }
 
+    fun deleteImage(itemId: Long) {
+        // Which row to update, based on the title
+        val selection = "${BaseColumns._ID} LIKE ?"
+
+        val selectionArgs = arrayOf(itemId.toString())
+
+        val count = dbWritable.delete(
+            Images.TABLE_NAME,
+            selection,
+            selectionArgs)
+
+        com.spyneai.shoot.utils.log("deleteImage : "+count)
+    }
+
 }

@@ -14,6 +14,7 @@ import android.view.ViewTreeObserver
 import androidx.camera.core.*
 import androidx.camera.lifecycle.ProcessCameraProvider
 import androidx.core.content.ContextCompat
+import androidx.core.net.toFile
 import com.hbisoft.pickit.PickiT
 import com.hbisoft.pickit.PickiTCallbacks
 import com.posthog.android.Properties
@@ -210,6 +211,8 @@ class CameraFragment : BaseFragment<ShootViewModel, FragmentCameraBinding>(),Pic
                     val savedUri = Uri.fromFile(photoFile)
                     log("Photo capture succeeded: "+savedUri)
                     try {
+
+                        savedUri.toFile()
                         addShootItem(photoFile?.path!!.toString())
                     } catch (ex: IllegalArgumentException) {
                         pickIt?.getPath(savedUri, Build.VERSION.SDK_INT)

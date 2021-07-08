@@ -48,16 +48,7 @@ class SelectBackgroundFragment : BaseFragment<ProcessViewModel,FragmentSelectBac
 
         binding.tvGenerateGif.setOnClickListener {
             //process image call
-            viewModel.checkImagesUploadStatus(backgroundSelect)
-
-            viewModel.processSku.observe(viewLifecycleOwner,{
-                if (it)  processSku()
-            })
-
-            viewModel.skuQueued.observe(viewLifecycleOwner,{
-                //sku process queued start timer
-                if (it)  viewModel.startTimer.value = true
-            })
+            processSku()
         }
     }
 

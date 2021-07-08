@@ -12,12 +12,11 @@ import com.spyneai.base.network.Resource
 import com.spyneai.camera2.OverlaysResponse
 import com.spyneai.camera2.ShootDimensions
 import com.spyneai.dashboard.response.NewSubCatResponse
-import com.spyneai.model.carbackgroundgif.CarBackgrounGifResponse
 import com.spyneai.shoot.data.model.*
-import com.spyneai.shoot.workmanager.LongRunningWorker
+import com.spyneai.shoot.workmanager.RecursiveImageWorker
 import com.spyneai.shoot.workmanager.UploadImageWorker
 import kotlinx.coroutines.launch
-import java.util.ArrayList
+import java.util.*
 
 class ShootViewModel : ViewModel(){
 
@@ -28,7 +27,7 @@ class ShootViewModel : ViewModel(){
      var isCameraButtonClickable = true
     var processSku : Boolean = true
      var isStopCaptureClickable = false
-    var isLongRunningWorkerAlive = false
+
 
     val totalSkuCaptured : MutableLiveData<String> = MutableLiveData()
     val totalImageCaptured : MutableLiveData<String> = MutableLiveData()
@@ -95,19 +94,21 @@ class ShootViewModel : ViewModel(){
 
 
     fun getSubCategories(
-        authKey : String,prodId : String
+        authKey: String, prodId: String
     ) = viewModelScope.launch {
         _subCategoriesResponse.value = Resource.Loading
         _subCategoriesResponse.value = repository.getSubCategories(authKey, prodId)
     }
 
-    fun getOverlays(authKey: String, prodId: String,
-                    prodSubcategoryId : String, frames : String) = viewModelScope.launch {
+    fun getOverlays(
+        authKey: String, prodId: String,
+        prodSubcategoryId: String, frames: String
+    ) = viewModelScope.launch {
         _overlaysResponse.value = Resource.Loading
         _overlaysResponse.value = repository.getOverlays(authKey, prodId, prodSubcategoryId, frames)
     }
 
-    fun getProjectDetail(authKey: String, projectId:  String) = viewModelScope.launch {
+    fun getProjectDetail(authKey: String, projectId: String) = viewModelScope.launch {
         _projectDetailResponse.value = Resource.Loading
         _projectDetailResponse.value = repository.getProjectDetail(authKey, projectId)
     }
@@ -116,7 +117,7 @@ class ShootViewModel : ViewModel(){
 
     fun getShootNumber() = shootNumber.value
 
-    fun getShootProgressList(angles : Int): ArrayList<ShootProgress> {
+    fun getShootProgressList(angles: Int): ArrayList<ShootProgress> {
         val shootProgressList = ArrayList<ShootProgress>()
         shootProgressList.add(ShootProgress(true))
 
@@ -127,7 +128,7 @@ class ShootViewModel : ViewModel(){
     }
 
 
-    fun uploadImage(context : Context) {
+    fun uploadImage(context: Context) {
 
     }
 
@@ -141,43 +142,41 @@ class ShootViewModel : ViewModel(){
 
         localRepository.insertImage(image)
 
-         startLongRunningWorker()
-
         //check if long running worker is alive
-        if (!isLongRunningWorkerAlive){
-            val workManager = WorkManager.getInstance()
+         val workManager = WorkManager.getInstance(BaseApplication.getContext())
 
-            val workInfos = workManager.getWorkInfosByTag("Long Running Worker").await()
+         val workQuery = WorkQuery.Builder
+             .fromTags(listOf("Long Running Worker"))
+             .addStates(listOf(WorkInfo.State.BLOCKED, WorkInfo.State.ENQUEUED,WorkInfo.State.RUNNING))
+             .build()
 
+         val workInfos = workManager.getWorkInfos(workQuery).await()
 
+         Log.d(TAG, "insertImage: "+workInfos.size)
 
-//            if (workInfos.size == 1) {
-//                // for (workInfo in workInfos) {
-//                val workInfo = workInfos[0]
-//                Log.d("ShootViewModel", "insertImage: ${workInfo.state}, id=${workInfo.id}")
-//
-//                if (workInfo.state == WorkInfo.State.BLOCKED || workInfo.state == WorkInfo.State.ENQUEUED || workInfo.state == WorkInfo.State.RUNNING) {
-//                    Log.d(TAG, "insertImage: alive")
-//                    isLongRunningWorkerAlive = true
-//                } else {
-//                    Log.d(TAG, "insertImage: isDead")
-//                    //start long running worker
-//                    startLongRunningWorker()
-//                }
-//            } else {
-//                Log.d(TAG, "insertImage: notFound")
-//                //start long running worker
-//                startLongRunningWorker()
-//
-//            }
-        }
+         if (workInfos.size > 0) {
+             com.spyneai.shoot.utils.log("alive : ")
+            } else {
+             com.spyneai.shoot.utils.log("not found : start new")
+                //start long running worker
+                startLongRunningWorker()
+            }
+
     }
 
     fun startLongRunningWorker() {
-        val longWorkRequest = OneTimeWorkRequest.Builder(LongRunningWorker::class.java)
-        WorkManager.getInstance(BaseApplication.getContext()).enqueue(longWorkRequest.build())
+        val constraints: Constraints = Constraints.Builder()
+            .setRequiredNetworkType(NetworkType.CONNECTED)
+            .build()
 
-        isLongRunningWorkerAlive = true
+        val longWorkRequest = OneTimeWorkRequest.Builder(RecursiveImageWorker::class.java)
+            .addTag("Long Running Worker")
+
+        WorkManager.getInstance(BaseApplication.getContext())
+            .enqueue(
+                longWorkRequest
+                    .setConstraints(constraints)
+                    .build())
     }
 
     fun uploadImageWithWorkManager(
@@ -196,27 +195,39 @@ class ShootViewModel : ViewModel(){
 
         uploadWorkRequest.setInputData(data.build())
 
-        WorkManager.getInstance(requireContext).enqueue(uploadWorkRequest.build())
+        WorkManager.getInstance(requireContext)
+            .enqueue(
+                uploadWorkRequest
+                    .build()
+            )
     }
 
-    fun createProject(authKey: String,projectName : String
-                      ,prodCatId : String) = viewModelScope.launch {
+    fun createProject(
+        authKey: String, projectName: String, prodCatId: String
+    ) = viewModelScope.launch {
         _createProjectRes.value = Resource.Loading
         _createProjectRes.value = repository.createProject(authKey, projectName, prodCatId)
     }
 
-    fun createSku(authKey: String,projectId : String
-                  ,prodCatId : String,prodSubCatId : String,
-                  skuName : String) = viewModelScope.launch {
+    fun createSku(
+        authKey: String, projectId: String, prodCatId: String, prodSubCatId: String,
+        skuName: String
+    ) = viewModelScope.launch {
         _createSkuRes.value = Resource.Loading
-        _createSkuRes.value = repository.createSku(authKey, projectId, prodCatId, prodSubCatId, skuName)
+        _createSkuRes.value = repository.createSku(
+            authKey,
+            projectId,
+            prodCatId,
+            prodSubCatId,
+            skuName
+        )
     }
 
     fun insertSku(sku: Sku) {
         localRepository.insertSku(sku)
     }
 
-    fun updateTotalImages(skuId : String) {
+    fun updateTotalImages(skuId: String) {
         localRepository.updateTotalImageCount(skuId)
     }
 
