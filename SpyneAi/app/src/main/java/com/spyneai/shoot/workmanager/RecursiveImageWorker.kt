@@ -49,6 +49,15 @@ class RecursiveImageWorker(private val appContext: Context, workerParams: Worker
         val image = localRepository.getOldestImage()
 
         if (image.itemId != null){
+
+            if (image.imagePath != null){
+                if (!File(image.imagePath!!).exists()){
+                    captureEvent(Events.UPLOAD_FAILED,image,false,"Image file got deleted by user")
+                    return failure()
+                }
+            }
+
+
             var jobs : Deferred<Resource<UploadImageResponse>>?
 
             com.spyneai.shoot.utils.log("image selected "+image.itemId + " "+image.imagePath)
@@ -58,8 +67,11 @@ class RecursiveImageWorker(private val appContext: Context, workerParams: Worker
             val skuId = image.skuId?.toRequestBody(MultipartBody.FORM)
             val imageCategory =
                 image.categoryName?.toRequestBody(MultipartBody.FORM)
+
             val authKey =
                 Utilities.getPreference(appContext,AppConstants.AUTH_KEY).toString().toRequestBody(MultipartBody.FORM)
+
+            val frameSeqNumber = image.sequence?.toString()?.toRequestBody(MultipartBody.FORM)
 
             var imageFile: MultipartBody.Part? = null
             val requestFile =
@@ -76,7 +88,7 @@ class RecursiveImageWorker(private val appContext: Context, workerParams: Worker
                 jobs =
                     async {
                         shootRepository.uploadImage(projectId!!,
-                            skuId!!, imageCategory!!,authKey,imageFile)
+                            skuId!!, imageCategory!!,authKey, frameSeqNumber!!,imageFile)
                     }
 
                 jobs!!.await()

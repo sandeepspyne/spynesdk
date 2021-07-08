@@ -250,7 +250,8 @@ class CameraFragment : BaseFragment<ShootViewModel, FragmentCameraBinding>(),Pic
             viewModel.sku.value?.projectId!!,
             viewModel.sku.value?.skuId!!,
             viewModel.categoryDetails.value?.imageType!!,
-            Utilities.getPreference(requireContext(),AppConstants.AUTH_KEY).toString()))
+            Utilities.getPreference(requireContext(),AppConstants.AUTH_KEY).toString(),
+            viewModel.shootList.value!!.size.plus(1)))
 
         viewModel.shootList.value = viewModel.shootList.value
 

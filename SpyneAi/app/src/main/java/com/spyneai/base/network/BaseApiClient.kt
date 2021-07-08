@@ -21,7 +21,7 @@ open class BaseApiClient<Api>(val BASE_URL: String, api: Class<Api>){
                 if (BuildConfig.DEBUG) {
                     val logging = HttpLoggingInterceptor()
                     logging.setLevel(HttpLoggingInterceptor.Level.BODY)
-                    //client.addInterceptor(logging)
+                    client.addInterceptor(logging)
                 }
             }
                .addInterceptor(ResponseInterceptor())

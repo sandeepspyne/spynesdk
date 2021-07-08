@@ -34,7 +34,6 @@ class SelectBackgroundFragment : BaseFragment<ProcessViewModel,FragmentSelectBac
     var backgroundSelect: String = ""
     lateinit var carbackgroundsAdapter: NewCarBackgroundAdapter
 
-
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
