@@ -13,9 +13,12 @@ import androidx.constraintlayout.widget.ConstraintSet
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.DataSource
+import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.bumptech.glide.load.engine.GlideException
 import com.bumptech.glide.request.RequestListener
+import com.bumptech.glide.request.RequestOptions
 import com.bumptech.glide.request.target.Target
+import com.bumptech.glide.signature.ObjectKey
 import com.posthog.android.Properties
 import com.spyneai.R
 import com.spyneai.base.BaseFragment
@@ -149,6 +152,10 @@ class OverlaysFragment : BaseFragment<ShootViewModel,FragmentOverlaysBinding>(),
 
                         binding.tvAngleName?.text = name
 
+                        val requestOptions = RequestOptions()
+                            .diskCacheStrategy(DiskCacheStrategy.ALL)
+                            .signature(ObjectKey(overlay))
+
                         Glide.with(requireContext())
                             .load(overlay)
                             .addListener(object : RequestListener<Drawable>{
@@ -173,6 +180,7 @@ class OverlaysFragment : BaseFragment<ShootViewModel,FragmentOverlaysBinding>(),
                                 }
 
                             })
+                            .apply(requestOptions)
                             .into(binding.imgOverlay!!)
 
                     }
