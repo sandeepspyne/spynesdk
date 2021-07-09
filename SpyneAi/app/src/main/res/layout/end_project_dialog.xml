@@ -88,11 +88,11 @@
         android:layout_marginLeft="35dp"/>
 
     <TextView
-        android:id="@+id/tvSkuName"
+        android:id="@+id/tvProjectName"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:fontFamily="@font/poppins_medium"
-        tools:text="Sku Name"
+        tools:text="Project Name"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintLeft_toRightOf="@+id/tvProjectDetail"
         android:textColor="@color/primary"

@@ -27,6 +27,7 @@ class ShootViewModel : ViewModel(){
     var processSku : Boolean = true
     public var isStopCaptureClickable = false
 
+
     val totalSkuCaptured : MutableLiveData<String> = MutableLiveData()
     val totalImageCaptured : MutableLiveData<String> = MutableLiveData()
 

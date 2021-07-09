@@ -36,7 +36,7 @@ class EndProjectDialog : BaseDialogFragment<ShootViewModel, EndProjectDialogBind
                     binding.pbEndProject.visibility = View.GONE
                     binding.btYes.isEnabled = true
 
-                    binding.tvSkuName.text = viewModel.sku.value?.skuName.toString()
+                    binding.tvProjectName.text = it.value.data.project_name
                     binding.tvTotalSkuCaptured.text = it.value.data.total_sku.toString()
                     binding.tvTotalImageCaptured.text = it.value.data.total_images.toString()
 

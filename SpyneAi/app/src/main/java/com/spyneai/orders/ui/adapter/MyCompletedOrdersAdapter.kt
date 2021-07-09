@@ -61,6 +61,9 @@ class MyCompletedOrdersAdapter(
 
     override fun onBindViewHolder(holder: MyCompletedOrdersAdapter.ViewHolder, position: Int) {
 
+        if (completedSkuList[position].category.equals("cat_Ujt0kuFxX"))
+            holder.ivDownloadSKU.visibility = View.INVISIBLE
+
         val dots = "..."
 
         if (completedSkuList[position].paid)

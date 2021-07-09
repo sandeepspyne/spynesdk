@@ -102,6 +102,8 @@ object AppConstants {
 
     val  PROJECT_ID: String = "projectId"
 
+    val  PROJECT_NAME: String = "projectName"
+
 
 
 
