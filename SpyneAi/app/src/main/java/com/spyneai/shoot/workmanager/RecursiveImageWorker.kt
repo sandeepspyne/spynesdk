@@ -42,16 +42,23 @@ class RecursiveImageWorker(private val appContext: Context, workerParams: Worker
 
     override suspend fun doWork(): Result {
 
+        val image = localRepository.getOldestImage()
+
         if (runAttemptCount > 4) {
+            if (image.itemId != null)
+                localRepository.deleteImage(image.itemId!!)
+
+            captureEvent(Events.UPLOAD_FAILED,image,false,"Image upload limit  reached")
             return failure()
         }
 
-        val image = localRepository.getOldestImage()
+
 
         if (image.itemId != null){
 
             if (image.imagePath != null){
                 if (!File(image.imagePath!!).exists()){
+                    localRepository.deleteImage(image.itemId!!)
                     captureEvent(Events.UPLOAD_FAILED,image,false,"Image file got deleted by user")
                     return failure()
                 }
