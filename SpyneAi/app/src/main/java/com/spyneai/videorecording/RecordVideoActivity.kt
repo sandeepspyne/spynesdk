@@ -82,7 +82,6 @@ class RecordVideoActivity : AppCompatActivity(), PickiTCallbacks {
 
         private var stopTimer = false
         private lateinit var fragmentList: ArrayList<Fragment>
-
     }
 
     private lateinit var threeSixtyDemoAdapter: ThreeSixtyShootDemoAdapter

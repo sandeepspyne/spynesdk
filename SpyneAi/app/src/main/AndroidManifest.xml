@@ -39,13 +39,22 @@
         android:theme="@style/Theme.SpyneAi"
         android:usesCleartextTraffic="true"
         tools:targetApi="m">
-        <activity android:name=".processedimages.ui.BikeOrderSummaryActivity"></activity>
-        <activity android:name=".RecylerviewTestActivity"></activity>
-        <activity android:name=".processedimages.ui.BikeImagesActivity"></activity>
+        <activity android:name=".threesixty.ui.ThreeSixtyActivity"
+            android:screenOrientation="landscape">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+        <activity android:name=".processedimages.ui.BikeOrderSummaryActivity" />
+        <activity android:name=".RecylerviewTestActivity" />
+        <activity android:name=".processedimages.ui.BikeImagesActivity" />
         <activity
             android:name=".shoot.ui.ShootPortraitActivity"
             android:configChanges="screenLayout|keyboardHidden"
-            android:screenOrientation="portrait" /> <activity android:name=".shoot.ui.ecom.ShowSkuProjectActivity" />
+            android:screenOrientation="portrait" />
+        <activity android:name=".shoot.ui.ecom.ShowSkuProjectActivity" />
         <activity
             android:name=".shoot.ui.ProcessActivity"
             android:screenOrientation="portrait" /> <!-- <activity android:name=".shoot.ui.ShootActivity"></activity> -->
@@ -277,11 +286,7 @@
         <activity
             android:name=".activity.SplashActivity"
             android:screenOrientation="portrait">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
 
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
         </activity>
         <activity android:name=".videorecording.ThreeSixtyViewActivity" />
         <activity android:name=".videorecording.TrimVideoActivity" />
@@ -298,8 +303,8 @@
 
         <service
             android:name="androidx.work.impl.foreground.SystemForegroundService"
-            tools:node="merge"
-            tools:ignore="Instantiatable" />
+            tools:ignore="Instantiatable"
+            tools:node="merge" />
     </application>
 
 </manifest>

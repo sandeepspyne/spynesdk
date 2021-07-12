@@ -7,6 +7,7 @@ import com.spyneai.orders.data.viewmodel.MyOrdersViewModel
 import com.spyneai.processedimages.ui.data.ProcessedViewModel
 import com.spyneai.shoot.data.ProcessViewModel
 import com.spyneai.shoot.data.ShootViewModel
+import com.spyneai.threesixty.data.ThreeSixtyViewModel
 
 class ViewModelFactory() : ViewModelProvider.NewInstanceFactory() {
 
@@ -17,6 +18,7 @@ class ViewModelFactory() : ViewModelProvider.NewInstanceFactory() {
             modelClass.isAssignableFrom(ProcessViewModel::class.java) -> ProcessViewModel() as T
             modelClass.isAssignableFrom(MyOrdersViewModel::class.java) -> MyOrdersViewModel() as T
             modelClass.isAssignableFrom(ProcessedViewModel::class.java) -> ProcessedViewModel() as T
+            modelClass.isAssignableFrom(ThreeSixtyViewModel::class.java) -> ThreeSixtyViewModel() as T
             else -> throw IllegalArgumentException("ViewModelClass not found")
         }
     }
