@@ -35,7 +35,6 @@ import com.spyneai.shoot.adapters.NewSubCategoriesAdapter
 import com.spyneai.shoot.data.ShootViewModel
 import com.spyneai.shoot.data.model.ShootData
 import com.spyneai.shoot.ui.dialogs.*
-import kotlinx.android.synthetic.main.dialog_confirm_reshoot.view.*
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.MultipartBody
 import okhttp3.RequestBody.Companion.asRequestBody
@@ -81,6 +80,8 @@ class OverlaysFragment : BaseFragment<ShootViewModel,FragmentOverlaysBinding>(),
         })
 
         viewModel.isSubCategoryConfirmed.observe(viewLifecycleOwner,{
+            //disable angle selection click
+            binding.tvShoot?.isClickable = false
             if (it) binding.rvSubcategories?.visibility = View.INVISIBLE
         })
 
@@ -311,7 +312,6 @@ class OverlaysFragment : BaseFragment<ShootViewModel,FragmentOverlaysBinding>(),
     }
 
     private fun initInteriorShots() {
-        binding.tvShoot?.isClickable = false
         InteriorHintDialog().show(requireFragmentManager(), "InteriorHintDialog")
 
         viewModel.startInteriorShots.observe(viewLifecycleOwner,{
