@@ -14,7 +14,6 @@
         android:background="@color/black"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
-        android:visibility="gone"
         app:layout_constraintTop_toTopOf="parent" >
 
         <TextView
@@ -38,10 +37,19 @@
         android:id="@+id/viewFinder"
         android:layout_width="0dp"
         android:layout_height="0dp"
-        app:layout_constraintBottom_toTopOf="@+id/llCapture"
+        app:layout_constraintBottom_toTopOf="@+id/rlCapturedImage"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/viewCamera" />
+
+    <RelativeLayout
+        android:id="@+id/rlCapturedImage"
+        android:layout_width="match_parent"
+        android:layout_height="125dp"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintBottom_toTopOf="@+id/llCapture"
+        android:background="@color/black"></RelativeLayout>
 
     <LinearLayout
         android:id="@+id/llCapture"
@@ -54,8 +62,7 @@
         android:padding="@dimen/dp_10"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/viewFinder">
+        app:layout_constraintRight_toRightOf="parent">
 
         <LinearLayout
             android:layout_width="0dp"
