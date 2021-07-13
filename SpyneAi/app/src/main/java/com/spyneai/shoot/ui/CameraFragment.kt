@@ -2,22 +2,27 @@ package com.spyneai.shoot.ui
 
 import android.annotation.SuppressLint
 import android.app.Activity
+import android.content.ContentValues
 import android.content.ContentValues.TAG
 import android.content.pm.ActivityInfo
 import android.net.Uri
 import android.os.*
+import android.provider.MediaStore
+import android.util.DisplayMetrics
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.ViewTreeObserver
+import android.widget.Toast
 import androidx.camera.core.*
 import androidx.camera.lifecycle.ProcessCameraProvider
 import androidx.core.content.ContextCompat
+import androidx.core.net.toFile
 import com.hbisoft.pickit.PickiT
 import com.hbisoft.pickit.PickiTCallbacks
 import com.posthog.android.Properties
-import com.spyneai.R
+import com.robertlevonyan.demo.camerax.analyzer.LuminosityAnalyzer
 import com.spyneai.base.BaseFragment
 import com.spyneai.camera2.ShootDimensions
 import com.spyneai.captureEvent
@@ -28,26 +33,35 @@ import com.spyneai.needs.Utilities
 import com.spyneai.posthog.Events
 import com.spyneai.shoot.data.ShootViewModel
 import com.spyneai.shoot.data.model.ShootData
-import com.spyneai.shoot.ui.dialogs.AngleSelectionDialog
 import com.spyneai.shoot.ui.dialogs.InteriorHintDialog
 import com.spyneai.shoot.ui.dialogs.SubCategoryConfirmationDialog
+import com.spyneai.shoot.utils.ThreadExecutor
 import com.spyneai.shoot.utils.log
+import kotlinx.android.synthetic.main.fragment_camera.*
 import java.io.File
-import java.text.SimpleDateFormat
 import java.util.*
+import java.util.concurrent.ExecutionException
 import java.util.concurrent.ExecutorService
 import java.util.concurrent.Executors
 import kotlin.collections.ArrayList
+import kotlin.math.abs
+import kotlin.math.max
+import kotlin.math.min
 
 
-class CameraFragment : BaseFragment<ShootViewModel, FragmentCameraBinding>(),PickiTCallbacks {
+class CameraFragment : BaseFragment<ShootViewModel, FragmentCameraBinding>(), PickiTCallbacks {
     private var imageCapture: ImageCapture? = null
 
+    private var imageAnalyzer: ImageAnalysis? = null
+
     private lateinit var cameraExecutor: ExecutorService
-    private lateinit var outputDirectory: File
-    var pickIt : PickiT? = null
+    var pickIt: PickiT? = null
     private val FILENAME_FORMAT = "yyyy-MM-dd-HH-mm-ss-SSS"
     private var flashMode: Int = ImageCapture.FLASH_MODE_OFF
+
+    // Selector showing which camera is selected (front or back)
+    private var lensFacing = CameraSelector.DEFAULT_BACK_CAMERA
+
 
     companion object {
         private const val RATIO_4_3_VALUE = 4.0 / 3.0 // aspect ratio 4x3
@@ -57,33 +71,37 @@ class CameraFragment : BaseFragment<ShootViewModel, FragmentCameraBinding>(),Pic
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+
         cameraExecutor = Executors.newSingleThreadExecutor()
         // Determine the output directory
-        outputDirectory = ShootActivity.getOutputDirectory(requireContext())
-        pickIt = PickiT(requireContext(),this,requireActivity())
+        pickIt = PickiT(requireContext(), this, requireActivity())
 
-        viewModel.startInteriorShots.observe(viewLifecycleOwner,{
+        viewModel.startInteriorShots.observe(viewLifecycleOwner, {
             if (it) binding.tvSkipShoot?.visibility = View.VISIBLE
         })
 
-        viewModel.startMiscShots.observe(viewLifecycleOwner,{
+        viewModel.startMiscShots.observe(viewLifecycleOwner, {
             if (it) binding.tvSkipShoot?.visibility = View.VISIBLE
         })
 
         binding.tvSkipShoot?.setOnClickListener {
-            when(viewModel.categoryDetails.value?.imageType){
+            when (viewModel.categoryDetails.value?.imageType) {
                 "Interior" -> {
-                    if (viewModel.interiorShootNumber.value  == viewModel.interiorAngles.value?.minus(1)){
+                    if (viewModel.interiorShootNumber.value == viewModel.interiorAngles.value?.minus(
+                            1
+                        )
+                    ) {
                         viewModel.showMiscDialog.value = true
-                    }else{
-                        viewModel.interiorShootNumber.value = viewModel.interiorShootNumber.value!! + 1
+                    } else {
+                        viewModel.interiorShootNumber.value =
+                            viewModel.interiorShootNumber.value!! + 1
                     }
                 }
 
                 "Focus Shoot" -> {
-                    if (viewModel.miscShootNumber.value  == viewModel.miscAngles.value?.minus(1)){
+                    if (viewModel.miscShootNumber.value == viewModel.miscAngles.value?.minus(1)) {
                         viewModel.selectBackground.value = true
-                    }else{
+                    } else {
                         viewModel.miscShootNumber.value = viewModel.miscShootNumber.value!! + 1
                     }
                 }
@@ -97,14 +115,18 @@ class CameraFragment : BaseFragment<ShootViewModel, FragmentCameraBinding>(),Pic
         startCamera()
 
         binding.cameraCaptureButton?.setOnClickListener {
-
-            if ((viewModel.isSubCategoryConfirmed.value == null || viewModel.isSubCategoryConfirmed.value == false)
-                &&
-                getString(R.string.app_name) != "Karvi.com"){
-                SubCategoryConfirmationDialog().show(requireFragmentManager(), "SubCategoryConfirmationDialog")
-            }else{
-                if (viewModel.isCameraButtonClickable){
+            if ((viewModel.isSubCategoryConfirmed.value == null || viewModel.isSubCategoryConfirmed.value == false) &&
+                (viewModel.categoryDetails.value?.categoryName == "Automobiles" ||
+                        viewModel.categoryDetails.value?.categoryName == "Bikes")
+            ) {
+                SubCategoryConfirmationDialog().show(
+                    requireFragmentManager(),
+                    "SubCategoryConfirmationDialog"
+                )
+            } else {
+                if (viewModel.isCameraButtonClickable) {
                     takePhoto()
+                    log("shoot image button clicked")
                     viewModel.isCameraButtonClickable = false
                 }
             }
@@ -182,39 +204,92 @@ class CameraFragment : BaseFragment<ShootViewModel, FragmentCameraBinding>(),Pic
     }
 
 
+    private fun aspectRatio(width: Int, height: Int): Int {
+        val previewRatio = max(width, height).toDouble() / min(width, height)
+        if (abs(previewRatio - RATIO_4_3_VALUE) <= abs(previewRatio - RATIO_16_9_VALUE)) {
+            return AspectRatio.RATIO_4_3
+        }
+        return AspectRatio.RATIO_16_9
+    }
+
+
     private fun takePhoto() {
         // Get a stable reference of the modifiable image capture use case
         val imageCapture = imageCapture ?: return
 
-        val photoFile = File(
-            outputDirectory,
-            SimpleDateFormat(FILENAME_FORMAT, Locale.US
-            ).format(System.currentTimeMillis()) + ".jpg")
+//        val photoFile = File(
+//            outputDirectory,
+//            SimpleDateFormat(FILENAME_FORMAT, Locale.US
+//            ).format(System.currentTimeMillis()) + ".jpg")
+//
+//        // Create output options object which contains file + metadata
+//        val outputOptions = ImageCapture.OutputFileOptions.Builder(photoFile).build()
 
-        // Create output options object which contains file + metadata
-        val outputOptions = ImageCapture.OutputFileOptions.Builder(photoFile).build()
+        // Setup image capture metadata
+        val metadata = ImageCapture.Metadata().apply {
+            // Mirror image when using the front camera
+            isReversedHorizontal = lensFacing == CameraSelector.DEFAULT_FRONT_CAMERA
+        }
+
+        // The Folder location where all the files will be stored
+        val outputDirectory: String by lazy {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+                "${Environment.DIRECTORY_DCIM}/Spyne/"
+            } else {
+                "${Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DCIM)}/Spyne/"
+            }
+        }
+
+        // Options fot the output image file
+        val outputOptions = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+            val contentValues = ContentValues().apply {
+                put(MediaStore.MediaColumns.DISPLAY_NAME, System.currentTimeMillis())
+                put(MediaStore.MediaColumns.MIME_TYPE, "image/jpeg")
+                put(MediaStore.MediaColumns.RELATIVE_PATH, outputDirectory)
+            }
+
+            val contentResolver = requireContext().contentResolver
+
+            // Create the output uri
+            val contentUri =
+                MediaStore.Images.Media.getContentUri(MediaStore.VOLUME_EXTERNAL_PRIMARY)
+
+            ImageCapture.OutputFileOptions.Builder(contentResolver, contentUri, contentValues)
+        } else {
+            File(outputDirectory).mkdirs()
+            var file = File(outputDirectory, "${System.currentTimeMillis()}.jpg")
+
+            ImageCapture.OutputFileOptions.Builder(file)
+        }.setMetadata(metadata).build()
 
         // Set up image capture listener, which is triggered after photo has
         // been taken
         imageCapture.takePicture(
-            outputOptions, ContextCompat.getMainExecutor(requireContext()), object : ImageCapture.OnImageSavedCallback {
+            outputOptions,
+            ContextCompat.getMainExecutor(requireContext()),
+            object : ImageCapture.OnImageSavedCallback {
                 override fun onError(exc: ImageCaptureException) {
                     viewModel.isCameraButtonClickable = true
-                    log("Photo capture failed: "+exc.message)
-                   try {
-                       requireContext().captureFailureEvent(Events.IMAGE_CAPRURE_FAILED,Properties(),exc.localizedMessage)
-                   }catch (e : IllegalStateException){
-
-                   }
+                    log("Photo capture failed: " + exc.message)
+                    requireContext().captureFailureEvent(
+                        Events.IMAGE_CAPRURE_FAILED,
+                        Properties(),
+                        exc.localizedMessage
+                    )
                 }
+
                 override fun onImageSaved(output: ImageCapture.OutputFileResults) {
-                    val savedUri = Uri.fromFile(photoFile)
-                    log("Photo capture succeeded: "+savedUri)
-                    try {
-                       addShootItem(photoFile?.path!!.toString())
-                    } catch (ex: IllegalArgumentException) {
-                        pickIt?.getPath(savedUri, Build.VERSION.SDK_INT)
-                    }
+                    // This function is called if capture is successfully completed
+                    output.savedUri
+                        ?.let { uri ->
+                            log("Photo capture succeeded: " + uri)
+                            try {
+                                var file = uri.toFile()
+                                addShootItem(file.path)
+                            } catch (ex: IllegalArgumentException) {
+                                pickIt?.getPath(uri, Build.VERSION.SDK_INT)
+                            }
+                        }
 
                 }
             })
@@ -236,7 +311,7 @@ class CameraFragment : BaseFragment<ShootViewModel, FragmentCameraBinding>(),Pic
         })
     }
 
-    private fun addShootItem(capturedImage : String) {
+    private fun addShootItem(capturedImage: String) {
         if (viewModel.shootList.value == null)
             viewModel.shootList.value = ArrayList()
 
@@ -255,7 +330,7 @@ class CameraFragment : BaseFragment<ShootViewModel, FragmentCameraBinding>(),Pic
             this["image_type"] = viewModel.categoryDetails.value?.imageType!!
         }
 
-        requireContext().captureEvent(Events.IMAGE_CAPTURED,properties)
+        requireContext().captureEvent(Events.IMAGE_CAPTURED, properties)
     }
 
     override fun getViewModel() = ShootViewModel::class.java

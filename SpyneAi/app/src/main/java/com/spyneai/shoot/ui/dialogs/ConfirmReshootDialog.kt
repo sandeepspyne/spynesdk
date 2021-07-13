@@ -151,10 +151,11 @@ class ConfirmReshootDialog : BaseDialogFragment<ShootViewModel, DialogConfirmRes
                     var newH =
                         oh!!.toFloat().div(prh!!.toFloat()).times(view.height)
 
-                    var equlizer = (25 * resources.displayMetrics.density).toInt()
+                    var equlizerOverlayMargin = (9.5 * resources.displayMetrics.density).toInt()
 
-                    var params = FrameLayout.LayoutParams(newW.toInt() - equlizer, newH.toInt() + equlizer)
+                    var params = FrameLayout.LayoutParams(newW.toInt(), newH.toInt())
                     params.gravity = Gravity.CENTER
+                    params.topMargin = equlizerOverlayMargin
 
                     binding.ivCapturedOverlay.layoutParams = params
 
