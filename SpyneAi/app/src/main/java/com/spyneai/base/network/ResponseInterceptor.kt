@@ -18,7 +18,7 @@ class ResponseInterceptor : Interceptor {
             val bodyString = body!!.string()
             val contentType: MediaType? = body!!.contentType()
             val json = JSONObject(bodyString)
-            Log.d("ResponseInterceptor", "intercept: " + json)
+           // Log.d("ResponseInterceptor", "intercept: " + json)
 
             var finalResponse = response.newBuilder().body(bodyString.toResponseBody(contentType)).build()
 

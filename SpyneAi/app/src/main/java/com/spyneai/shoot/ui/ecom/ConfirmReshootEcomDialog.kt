@@ -5,6 +5,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.WindowManager
+import androidx.lifecycle.lifecycleScope
 import com.bumptech.glide.Glide
 import com.posthog.android.Properties
 import com.spyneai.base.BaseDialogFragment
@@ -13,6 +14,7 @@ import com.spyneai.captureEvent
 import com.spyneai.databinding.ConfirmReshootEcomDialogBinding
 import com.spyneai.posthog.Events
 import com.spyneai.shoot.data.ShootViewModel
+import kotlinx.coroutines.launch
 import com.spyneai.shoot.utils.log
 
 class ConfirmReshootEcomDialog :
@@ -66,7 +68,12 @@ class ConfirmReshootEcomDialog :
             )
 
             viewModel.isCameraButtonClickable = true
-            viewModel.uploadImageWithWorkManager(requireContext(), viewModel.shootData.value!!)
+            //viewModel.uploadImageWithWorkManager(requireContext(), viewModel.shootData.value!!)
+
+            viewLifecycleOwner.lifecycleScope.launch {
+                viewModel.insertImage(viewModel.shootData.value!!)
+            }
+
             dismiss()
         }
     }

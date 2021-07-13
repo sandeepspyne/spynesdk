@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.util.Log
 import android.view.*
 import android.widget.FrameLayout
+import androidx.lifecycle.lifecycleScope
 import com.bumptech.glide.Glide
 import com.posthog.android.Properties
 import com.spyneai.base.BaseDialogFragment
@@ -13,7 +14,7 @@ import com.spyneai.dashboard.response.NewSubCatResponse
 import com.spyneai.databinding.DialogConfirmReshootBinding
 import com.spyneai.posthog.Events
 import com.spyneai.shoot.data.ShootViewModel
-import com.spyneai.shoot.utils.log
+import kotlinx.coroutines.launch
 
 class ConfirmReshootDialog : BaseDialogFragment<ShootViewModel, DialogConfirmReshootBinding>() {
 
@@ -122,10 +123,14 @@ class ConfirmReshootDialog : BaseDialogFragment<ShootViewModel, DialogConfirmRes
     }
 
     private fun uploadImages() {
-        viewModel.uploadImageWithWorkManager(
-            requireContext(),
-            viewModel.shootData.value!!
-        )
+//        viewModel.uploadImageWithWorkManager(
+//            requireContext(),
+//            viewModel.shootData.value!!
+//        )
+
+        viewLifecycleOwner.lifecycleScope.launch {
+            viewModel.insertImage(viewModel.shootData.value!!)
+        }
     }
 
     private fun updateTotalImages() {

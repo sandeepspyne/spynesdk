@@ -72,8 +72,6 @@ class CameraFragment : BaseFragment<ShootViewModel, FragmentCameraBinding>(), Pi
         super.onViewCreated(view, savedInstanceState)
 
 
-
-
         cameraExecutor = Executors.newSingleThreadExecutor()
         // Determine the output directory
         pickIt = PickiT(requireContext(), this, requireActivity())
@@ -364,15 +362,12 @@ class CameraFragment : BaseFragment<ShootViewModel, FragmentCameraBinding>(), Pi
         if (viewModel.shootList.value == null)
             viewModel.shootList.value = ArrayList()
 
-        viewModel.shootList.value!!.add(
-            ShootData(
-                capturedImage,
-                viewModel.sku.value?.projectId!!,
-                viewModel.sku.value?.skuId!!,
-                viewModel.categoryDetails.value?.imageType!!,
-                Utilities.getPreference(requireContext(), AppConstants.AUTH_KEY).toString()
-            )
-        )
+        viewModel.shootList.value!!.add(ShootData(capturedImage,
+            viewModel.sku.value?.projectId!!,
+            viewModel.sku.value?.skuId!!,
+            viewModel.categoryDetails.value?.imageType!!,
+            Utilities.getPreference(requireContext(),AppConstants.AUTH_KEY).toString(),
+            viewModel.shootList.value!!.size.plus(1)))
 
         viewModel.shootList.value = viewModel.shootList.value
 
