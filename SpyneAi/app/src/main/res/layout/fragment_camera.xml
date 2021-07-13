@@ -10,7 +10,7 @@
     <RelativeLayout
         android:id="@+id/viewCamera"
         android:layout_width="match_parent"
-        android:layout_height="85dp"
+        android:layout_height="?attr/actionBarSize"
         android:background="@color/black"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
