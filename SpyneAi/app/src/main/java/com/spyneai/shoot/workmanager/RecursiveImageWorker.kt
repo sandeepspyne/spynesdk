@@ -104,7 +104,7 @@ class RecursiveImageWorker(private val appContext: Context, workerParams: Worker
             }
 
             return if (jobs?.getCompleted() is Resource.Success) {
-                com.spyneai.shoot.utils.log("upload image sucess")
+                com.spyneai.shoot.utils.log("upload image success")
                 captureEvent(Events.UPLOADED,image,true,null)
                 startNextUpload(image.itemId!!)
                 success()
@@ -115,7 +115,8 @@ class RecursiveImageWorker(private val appContext: Context, workerParams: Worker
 
                 when(throwable) {
                     is ServerException -> {
-                        error = throwable.message.toString()
+                        if (throwable.message != null)
+                            error = throwable.message.toString()
                     }
 
                     is HttpException -> {

@@ -220,9 +220,7 @@ class CameraFragment : BaseFragment<ShootViewModel, FragmentCameraBinding>(), Pi
                 cameraProvider.bindToLifecycle(
                     viewLifecycleOwner,
                     cameraSelector,
-                    preview, // camera preview use case
-                    imageCapture, // image capture use case
-                    imageAnalyzer,
+                   useCaseGroup
                 )
 
                 if (viewModel.shootDimensions.value == null ||
