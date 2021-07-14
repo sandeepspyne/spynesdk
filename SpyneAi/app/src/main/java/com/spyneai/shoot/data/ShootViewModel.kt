@@ -13,6 +13,7 @@ import com.spyneai.camera2.OverlaysResponse
 import com.spyneai.camera2.ShootDimensions
 import com.spyneai.dashboard.response.NewSubCatResponse
 import com.spyneai.shoot.data.model.*
+import com.spyneai.shoot.workmanager.OverlaysPreloadWorker
 import com.spyneai.shoot.workmanager.RecursiveImageWorker
 import com.spyneai.shoot.workmanager.UploadImageWorker
 import kotlinx.coroutines.launch
@@ -113,6 +114,46 @@ class ShootViewModel : ViewModel(){
         _overlaysResponse.value = repository.getOverlays(authKey, prodId, prodSubcategoryId, frames)
     }
 
+
+    suspend fun preloadOverlays(overlays : List<String>) {
+        //check if preload worker is alive
+        val workManager = WorkManager.getInstance(BaseApplication.getContext())
+
+        val workQuery = WorkQuery.Builder
+            .fromTags(listOf("Preload Overlays"))
+            .addStates(listOf(WorkInfo.State.BLOCKED, WorkInfo.State.ENQUEUED,WorkInfo.State.RUNNING))
+            .build()
+
+        val workInfos = workManager.getWorkInfos(workQuery).await()
+
+        if (workInfos.size > 0) {
+            // stop worker
+            startPreloadWorker(overlays)
+        }else{
+            startPreloadWorker(overlays)
+        }
+    }
+
+    private fun startPreloadWorker(overlays : List<String>) {
+        val data = Data.Builder()
+            .putStringArray("overlays",overlays.toTypedArray())
+            .putInt("position",0)
+            .build()
+
+        val constraints: Constraints = Constraints.Builder()
+            .setRequiredNetworkType(NetworkType.CONNECTED)
+            .build()
+
+        val overlayPreloadWorkRequest = OneTimeWorkRequest.Builder(OverlaysPreloadWorker::class.java)
+            .addTag("Preload Overlays")
+            .setConstraints(constraints)
+            .setInputData(data)
+            .build()
+
+        WorkManager.getInstance(BaseApplication.getContext())
+            .enqueue(overlayPreloadWorkRequest)
+    }
+
     fun getProjectDetail(authKey: String, projectId: String) = viewModelScope.launch {
         _projectDetailResponse.value = Resource.Loading
         _projectDetailResponse.value = repository.getProjectDetail(authKey, projectId)
@@ -125,7 +166,6 @@ class ShootViewModel : ViewModel(){
 
     fun getSelectedAngles() = exterirorAngles.value
 
-    fun getShootNumber() = shootNumber.value
 
     fun getShootProgressList(angles: Int): ArrayList<ShootProgress> {
         val shootProgressList = ArrayList<ShootProgress>()
@@ -138,9 +178,6 @@ class ShootViewModel : ViewModel(){
     }
 
 
-    fun uploadImage(context: Context) {
-
-    }
 
      suspend fun insertImage(shootData: ShootData) {
         val image = Image()

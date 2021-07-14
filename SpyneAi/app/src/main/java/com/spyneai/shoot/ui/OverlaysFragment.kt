@@ -10,6 +10,7 @@ import android.view.ViewGroup
 import android.view.ViewTreeObserver
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.constraintlayout.widget.ConstraintSet
+import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.DataSource
@@ -38,6 +39,7 @@ import com.spyneai.shoot.adapters.NewSubCategoriesAdapter
 import com.spyneai.shoot.data.ShootViewModel
 import com.spyneai.shoot.data.model.ShootData
 import com.spyneai.shoot.ui.dialogs.*
+import kotlinx.coroutines.launch
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.MultipartBody
 import okhttp3.RequestBody.Companion.asRequestBody
@@ -297,6 +299,13 @@ class OverlaysFragment : BaseFragment<ShootViewModel,FragmentOverlaysBinding>(),
         viewModel.overlaysResponse.observe(viewLifecycleOwner,{ it ->
             when(it){
                 is Resource.Success -> {
+                    //pre load overlays
+                    val overlaysList = it.value.data.map { it.display_thumbnail }
+
+                    viewLifecycleOwner.lifecycleScope.launch {
+                        viewModel.preloadOverlays(overlaysList)
+                    }
+
                     requireContext().captureEvent(
                         Events.GET_OVERLAYS,
                         Properties().putValue("angles",it.value.data.size))
