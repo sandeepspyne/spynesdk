@@ -43,11 +43,11 @@
         <activity android:name=".RecylerviewTestActivity"></activity>
         <activity android:name=".processedimages.ui.BikeImagesActivity"></activity>
         <activity
-            android:name=".shoot.ui.ShootPortraitActivity"
+            android:name=".shoot.ui.base.ShootPortraitActivity"
             android:configChanges="screenLayout|keyboardHidden"
-            android:screenOrientation="portrait" /> <activity android:name=".shoot.ui.ecom.ShowSkuProjectActivity" />
+            android:screenOrientation="portrait" /> <activity android:name=".shoot.ui.ecomwithgrid.ShowSkuProjectActivity" />
         <activity
-            android:name=".shoot.ui.ProcessActivity"
+            android:name=".shoot.ui.base.ProcessActivity"
             android:screenOrientation="portrait" /> <!-- <activity android:name=".shoot.ui.ShootActivity"></activity> -->
         <activity android:name=".dashboard.ui.YoutubeVideoPlayerActivity" />
         <activity
@@ -268,7 +268,7 @@
         <!-- android:name=".orders.ui.MyOrdersActivity" -->
         <!-- android:screenOrientation="portrait" /> -->
         <activity
-            android:name=".shoot.ui.ShootActivity"
+            android:name=".shoot.ui.base.ShootActivity"
             android:configChanges="screenLayout|keyboardHidden"
             android:screenOrientation="landscape" />
         <activity

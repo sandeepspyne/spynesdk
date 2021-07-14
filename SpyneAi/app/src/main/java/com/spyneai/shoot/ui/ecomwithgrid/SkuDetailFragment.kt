@@ -1,4 +1,4 @@
-package com.spyneai.shoot.ui.ecom
+package com.spyneai.shoot.ui.ecomwithgrid
 
 import android.content.Intent
 import android.os.Bundle
@@ -9,15 +9,14 @@ import androidx.recyclerview.widget.GridLayoutManager
 import com.spyneai.base.BaseFragment
 import com.spyneai.base.network.Resource
 import com.spyneai.dashboard.ui.handleApiError
-import com.spyneai.dashboard.ui.snackbar
 import com.spyneai.databinding.FragmentSkuDetailBinding
 import com.spyneai.needs.AppConstants
 import com.spyneai.needs.Utilities
 import com.spyneai.shoot.adapters.SkuImageAdapter
 import com.spyneai.shoot.data.ShootViewModel
-import com.spyneai.shoot.ui.ShootPortraitActivity
+import com.spyneai.shoot.ui.base.ShootPortraitActivity
+import com.spyneai.shoot.ui.ecomwithgrid.dialogs.EndProjectDialog
 import com.spyneai.shoot.utils.log
-import java.util.*
 
 
 class SkuDetailFragment : BaseFragment<ShootViewModel, FragmentSkuDetailBinding>() {

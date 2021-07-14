@@ -1,12 +1,9 @@
-package com.spyneai.shoot.ui.ecom
+package com.spyneai.shoot.ui.ecomwithgrid.dialogs
 
-import android.R
-import android.app.DialogFragment.STYLE_NO_FRAME
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
 import android.view.*
-import androidx.fragment.app.DialogFragment.STYLE_NO_FRAME
 import com.spyneai.base.BaseDialogFragment
 import com.spyneai.base.network.Resource
 import com.spyneai.dashboard.ui.handleApiError
@@ -14,7 +11,6 @@ import com.spyneai.databinding.EndProjectDialogBinding
 import com.spyneai.needs.AppConstants
 import com.spyneai.needs.Utilities
 import com.spyneai.shoot.data.ShootViewModel
-import com.spyneai.shoot.utils.log
 
 
 class EndProjectDialog : BaseDialogFragment<ShootViewModel, EndProjectDialogBinding>() {

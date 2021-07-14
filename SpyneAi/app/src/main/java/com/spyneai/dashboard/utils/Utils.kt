@@ -2,15 +2,11 @@ package com.spyneai.dashboard.ui
 
 import android.app.Activity
 import android.content.Intent
-import android.util.Log
 import android.view.View
 import androidx.fragment.app.Fragment
 import com.google.android.material.snackbar.Snackbar
-import com.posthog.android.Properties
 import com.spyneai.base.network.Resource
-import com.spyneai.captureFailureEvent
 import com.spyneai.logout.InvalidAuthDialog
-import com.spyneai.shoot.ui.ecom.CreateProjectEcomDialog
 
 fun <A : Activity> Activity.startNewActivity(activity: Class<A>) {
     Intent(this, activity).also {

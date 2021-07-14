@@ -1,4 +1,4 @@
-package com.spyneai.shoot.ui.ecom
+package com.spyneai.shoot.ui.ecomwithgrid.dialogs
 
 import android.os.Bundle
 import android.view.LayoutInflater

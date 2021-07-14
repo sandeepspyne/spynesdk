@@ -1,4 +1,4 @@
-package com.spyneai.shoot.ui.ecom
+package com.spyneai.shoot.ui.ecomwithgrid.dialogs
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -9,7 +9,6 @@ import androidx.lifecycle.lifecycleScope
 import com.bumptech.glide.Glide
 import com.posthog.android.Properties
 import com.spyneai.base.BaseDialogFragment
-import com.spyneai.base.BaseFragment
 import com.spyneai.captureEvent
 import com.spyneai.databinding.ConfirmReshootEcomDialogBinding
 import com.spyneai.posthog.Events

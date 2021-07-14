@@ -25,9 +25,8 @@ import com.spyneai.model.channel.BackgroundsResponse
 import com.spyneai.needs.AppConstants
 import com.spyneai.needs.ScrollingLinearLayoutManager
 import com.spyneai.needs.Utilities
-import com.spyneai.shoot.ui.ShootActivity
-import com.spyneai.shoot.ui.ShootPortraitActivity
-import com.spyneai.spyneaidemo.activity.camera2.Camera2DemoActivity
+import com.spyneai.shoot.ui.base.ShootActivity
+import com.spyneai.shoot.ui.base.ShootPortraitActivity
 import kotlinx.android.synthetic.main.activity_before_after.*
 import kotlinx.android.synthetic.main.activity_before_after.llBeforeAfters
 import kotlinx.android.synthetic.main.activity_show_images.*

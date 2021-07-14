@@ -1,4 +1,4 @@
-package com.spyneai.shoot.ui.ecom
+package com.spyneai.shoot.ui.ecomwithgrid
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -6,15 +6,17 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.spyneai.base.BaseFragment
-import com.spyneai.databinding.FragmentOverlaysEcomBinding
-import com.spyneai.needs.Utilities
+import com.spyneai.databinding.FragmentGridEcomBinding
 import com.spyneai.shoot.adapters.CapturedImageAdapter
 import com.spyneai.shoot.data.ShootViewModel
 import com.spyneai.shoot.data.model.ShootData
+import com.spyneai.shoot.ui.ecomwithgrid.dialogs.ConfirmReshootEcomDialog
+import com.spyneai.shoot.ui.ecomwithgrid.dialogs.CreateProjectEcomDialog
+import com.spyneai.shoot.ui.ecomwithgrid.dialogs.CreateSkuEcomDialog
 import com.spyneai.shoot.utils.log
 import java.util.ArrayList
 
-class OverlaysEcomFragment : BaseFragment<ShootViewModel, FragmentOverlaysEcomBinding>() {
+class GridEcomFragment : BaseFragment<ShootViewModel, FragmentGridEcomBinding>() {
 
     private var showDialog = true
     lateinit var capturedImageAdapter: CapturedImageAdapter
@@ -112,6 +114,6 @@ class OverlaysEcomFragment : BaseFragment<ShootViewModel, FragmentOverlaysEcomBi
     override fun getFragmentBinding(
         inflater: LayoutInflater,
         container: ViewGroup?
-    ) = FragmentOverlaysEcomBinding.inflate(inflater, container, false)
+    ) = FragmentGridEcomBinding.inflate(inflater, container, false)
 
 }
