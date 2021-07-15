@@ -281,9 +281,9 @@ class CameraFragment : BaseFragment<ShootViewModel, FragmentCameraBinding>(), Pi
             }
         }
 
-        var filename  = ""
+        var filename  = viewModel.sku.value?.skuId+"_"
 
-        filename = if (viewModel.shootList.value == null)
+        filename += if (viewModel.shootList.value == null)
             viewModel.categoryDetails.value?.imageType!!+"_1"
         else{
             val size = viewModel.shootList.value!!.size.plus(1)
@@ -320,7 +320,6 @@ class CameraFragment : BaseFragment<ShootViewModel, FragmentCameraBinding>(), Pi
             }
         }
 
-        filename += "_"+System.currentTimeMillis()
 
 
         // Options fot the output image file
