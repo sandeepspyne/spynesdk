@@ -100,9 +100,10 @@ class UploadImageWorker(val appContext: Context, workerParams: WorkerParameters)
 
             Result.success()
         }else{
-            com.spyneai.shoot.utils.log("Upload image failed")
+
             val throwable = jobs?.getCompletionExceptionOrNull()
             var error = ""
+
 
             when(throwable) {
                 is ServerException -> {
@@ -121,6 +122,7 @@ class UploadImageWorker(val appContext: Context, workerParams: WorkerParameters)
                 }
             }
 
+            com.spyneai.shoot.utils.log("Upload image failed $error")
 
             captureEvent(Events.UPLOAD_FAILED,false,error)
             Result.retry()

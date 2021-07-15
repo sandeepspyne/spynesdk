@@ -5,6 +5,7 @@ import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
+import java.util.concurrent.TimeUnit
 
 open class BaseApiClient<Api>(val BASE_URL: String, api: Class<Api>){
 
@@ -25,6 +26,9 @@ open class BaseApiClient<Api>(val BASE_URL: String, api: Class<Api>){
                 }
             }
                .addInterceptor(ResponseInterceptor())
+                .readTimeout(2, TimeUnit.MINUTES)
+                .writeTimeout(2, TimeUnit.MINUTES)
+                .connectTimeout(2, TimeUnit.MINUTES)
                 .build())
             .addConverterFactory(GsonConverterFactory.create())
             .build()
