@@ -9,7 +9,7 @@
 
     <androidx.cardview.widget.CardView
         android:id="@+id/cvBefore"
-        android:layout_width="230dp"
+        android:layout_width="200dp"
         android:layout_height="230dp"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"
@@ -21,7 +21,8 @@
             android:id="@+id/ivCapturedImage"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:scaleType="fitXY"/>
+            android:scaleType="centerInside"
+            android:adjustViewBounds="true"/>
 
     </androidx.cardview.widget.CardView>
 

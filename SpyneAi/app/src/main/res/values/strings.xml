@@ -281,4 +281,7 @@
     <string name="refund_credit"><font color='#FF7700'>Note : </font><font color='#000000'>Credits for bad quality output images will be refunded.</font></string>
 
 
+    <string name="session_expired">Session Expired. Please <b>log in</b> again.</string>
+
+
 </resources>

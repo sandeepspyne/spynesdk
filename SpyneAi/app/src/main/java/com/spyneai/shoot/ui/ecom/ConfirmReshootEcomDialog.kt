@@ -15,6 +15,7 @@ import com.spyneai.databinding.ConfirmReshootEcomDialogBinding
 import com.spyneai.posthog.Events
 import com.spyneai.shoot.data.ShootViewModel
 import kotlinx.coroutines.launch
+import com.spyneai.shoot.utils.log
 
 class ConfirmReshootEcomDialog :
     BaseDialogFragment<ShootViewModel, ConfirmReshootEcomDialogBinding>() {
@@ -30,6 +31,8 @@ class ConfirmReshootEcomDialog :
         Glide.with(requireContext())
             .load(uri)
             .into(binding.ivCapturedImage)
+
+        log("Image set to dialog: "+uri)
 
         binding.btReshootImage.setOnClickListener {
             viewModel.reshootCapturedImage.value = true
@@ -65,11 +68,11 @@ class ConfirmReshootEcomDialog :
             )
 
             viewModel.isCameraButtonClickable = true
-            //viewModel.uploadImageWithWorkManager(requireContext(), viewModel.shootData.value!!)
+            viewModel.uploadImageWithWorkManager(viewModel.shootData.value!!)
 
-            viewLifecycleOwner.lifecycleScope.launch {
-                viewModel.insertImage(viewModel.shootData.value!!)
-            }
+//            viewLifecycleOwner.lifecycleScope.launch {
+//                viewModel.insertImage(viewModel.shootData.value!!)
+//            }
 
             dismiss()
         }

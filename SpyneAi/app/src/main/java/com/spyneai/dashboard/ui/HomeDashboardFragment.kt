@@ -317,7 +317,7 @@ class HomeDashboardFragment :
                                         startActivity(intent)
                                     }
 
-                                    5 -> {
+                                    2 -> {
                                         val intent = Intent(requireContext(), ShootActivity::class.java)
                                         intent.putExtra(
                                             AppConstants.CATEGORY_NAME,
@@ -337,7 +337,8 @@ class HomeDashboardFragment :
                                         )
                                         intent.putExtra(AppConstants.COLOR, colorCode)
                                         startActivity(intent)
-                                    }else -> {
+                                    }
+                                    else -> {
                                     Toast.makeText(
                                         requireContext(),
                                         "Coming Soon !",

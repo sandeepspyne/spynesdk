@@ -13,6 +13,7 @@ import com.spyneai.camera2.OverlaysResponse
 import com.spyneai.camera2.ShootDimensions
 import com.spyneai.dashboard.response.NewSubCatResponse
 import com.spyneai.shoot.data.model.*
+import com.spyneai.shoot.workmanager.OverlaysPreloadWorker
 import com.spyneai.shoot.workmanager.RecursiveImageWorker
 import com.spyneai.shoot.workmanager.UploadImageWorker
 import kotlinx.coroutines.launch
@@ -29,6 +30,7 @@ class ShootViewModel : ViewModel(){
      var isStopCaptureClickable = false
 
 
+
     val totalSkuCaptured : MutableLiveData<String> = MutableLiveData()
     val totalImageCaptured : MutableLiveData<String> = MutableLiveData()
 
@@ -41,6 +43,10 @@ class ShootViewModel : ViewModel(){
     private val _projectDetailResponse: MutableLiveData<Resource<ProjectDetailResponse>> = MutableLiveData()
     val projectDetailResponse: LiveData<Resource<ProjectDetailResponse>>
         get() = _projectDetailResponse
+
+    private val _updateTotalFramesRes : MutableLiveData<Resource<UpdateTotalFramesRes>> = MutableLiveData()
+    val updateTotalFramesRes: LiveData<Resource<UpdateTotalFramesRes>>
+        get() = _updateTotalFramesRes
 
     private val _overlaysResponse: MutableLiveData<Resource<OverlaysResponse>> = MutableLiveData()
     val overlaysResponse: LiveData<Resource<OverlaysResponse>>
@@ -108,14 +114,58 @@ class ShootViewModel : ViewModel(){
         _overlaysResponse.value = repository.getOverlays(authKey, prodId, prodSubcategoryId, frames)
     }
 
+
+    suspend fun preloadOverlays(overlays : List<String>) {
+        //check if preload worker is alive
+        val workManager = WorkManager.getInstance(BaseApplication.getContext())
+
+        val workQuery = WorkQuery.Builder
+            .fromTags(listOf("Preload Overlays"))
+            .addStates(listOf(WorkInfo.State.BLOCKED, WorkInfo.State.ENQUEUED,WorkInfo.State.RUNNING))
+            .build()
+
+        val workInfos = workManager.getWorkInfos(workQuery).await()
+
+        if (workInfos.size > 0) {
+            // stop worker
+            startPreloadWorker(overlays)
+        }else{
+            startPreloadWorker(overlays)
+        }
+    }
+
+    private fun startPreloadWorker(overlays : List<String>) {
+        val data = Data.Builder()
+            .putStringArray("overlays",overlays.toTypedArray())
+            .putInt("position",0)
+            .build()
+
+        val constraints: Constraints = Constraints.Builder()
+            .setRequiredNetworkType(NetworkType.CONNECTED)
+            .build()
+
+        val overlayPreloadWorkRequest = OneTimeWorkRequest.Builder(OverlaysPreloadWorker::class.java)
+            .addTag("Preload Overlays")
+            .setConstraints(constraints)
+            .setInputData(data)
+            .build()
+
+        WorkManager.getInstance(BaseApplication.getContext())
+            .enqueue(overlayPreloadWorkRequest)
+    }
+
     fun getProjectDetail(authKey: String, projectId: String) = viewModelScope.launch {
         _projectDetailResponse.value = Resource.Loading
         _projectDetailResponse.value = repository.getProjectDetail(authKey, projectId)
     }
 
+    fun updateTotalFrames(skuId: String, totalFrames:  String, authKey:  String) = viewModelScope.launch {
+        _updateTotalFramesRes.value = Resource.Loading
+        _updateTotalFramesRes.value = repository.updateTotalFrames(skuId, totalFrames, authKey)
+    }
+
     fun getSelectedAngles() = exterirorAngles.value
 
-    fun getShootNumber() = shootNumber.value
 
     fun getShootProgressList(angles: Int): ArrayList<ShootProgress> {
         val shootProgressList = ArrayList<ShootProgress>()
@@ -128,9 +178,6 @@ class ShootViewModel : ViewModel(){
     }
 
 
-    fun uploadImage(context: Context) {
-
-    }
 
      suspend fun insertImage(shootData: ShootData) {
         val image = Image()
@@ -180,9 +227,12 @@ class ShootViewModel : ViewModel(){
     }
 
     fun uploadImageWithWorkManager(
-        requireContext: Context,
         shootData: ShootData
     ) {
+        val constraints: Constraints = Constraints.Builder()
+            .setRequiredNetworkType(NetworkType.CONNECTED)
+            .build()
+
         val uploadWorkRequest = OneTimeWorkRequest.Builder(UploadImageWorker::class.java)
 
         val data = Data.Builder()
@@ -192,12 +242,15 @@ class ShootViewModel : ViewModel(){
         data.putString("imageCategory", shootData.image_category)
         data.putString("authKey", shootData.auth_key)
         data.putBoolean("processSku", processSku)
+        data.putString("sequence",shootData.sequence.toString())
+
 
         uploadWorkRequest.setInputData(data.build())
 
-        WorkManager.getInstance(requireContext)
+        WorkManager.getInstance(BaseApplication.getContext())
             .enqueue(
                 uploadWorkRequest
+                    .setConstraints(constraints)
                     .build()
             )
     }

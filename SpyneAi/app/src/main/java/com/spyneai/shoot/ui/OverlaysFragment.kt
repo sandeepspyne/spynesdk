@@ -10,12 +10,16 @@ import android.view.ViewGroup
 import android.view.ViewTreeObserver
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.constraintlayout.widget.ConstraintSet
+import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.DataSource
+import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.bumptech.glide.load.engine.GlideException
 import com.bumptech.glide.request.RequestListener
+import com.bumptech.glide.request.RequestOptions
 import com.bumptech.glide.request.target.Target
+import com.bumptech.glide.signature.ObjectKey
 import com.posthog.android.Properties
 import com.spyneai.R
 import com.spyneai.base.BaseFragment
@@ -35,7 +39,7 @@ import com.spyneai.shoot.adapters.NewSubCategoriesAdapter
 import com.spyneai.shoot.data.ShootViewModel
 import com.spyneai.shoot.data.model.ShootData
 import com.spyneai.shoot.ui.dialogs.*
-import kotlinx.android.synthetic.main.dialog_confirm_reshoot.view.*
+import kotlinx.coroutines.launch
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.MultipartBody
 import okhttp3.RequestBody.Companion.asRequestBody
@@ -56,7 +60,10 @@ class OverlaysFragment : BaseFragment<ShootViewModel,FragmentOverlaysBinding>(),
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        initShootHint()
+       when(viewModel.categoryDetails.value?.categoryName){
+           "Bikes" ->  initProjectDialog()
+           else ->  initShootHint()
+       }
 
         //observe new image clicked
         viewModel.shootList.observe(viewLifecycleOwner, {
@@ -81,6 +88,8 @@ class OverlaysFragment : BaseFragment<ShootViewModel,FragmentOverlaysBinding>(),
         })
 
         viewModel.isSubCategoryConfirmed.observe(viewLifecycleOwner,{
+            //disable angle selection click
+            binding.tvShoot?.isClickable = false
             if (it) binding.rvSubcategories?.visibility = View.INVISIBLE
         })
 
@@ -149,6 +158,10 @@ class OverlaysFragment : BaseFragment<ShootViewModel,FragmentOverlaysBinding>(),
 
                         binding.tvAngleName?.text = name
 
+                        val requestOptions = RequestOptions()
+                            .diskCacheStrategy(DiskCacheStrategy.ALL)
+                            .signature(ObjectKey(overlay))
+
                         Glide.with(requireContext())
                             .load(overlay)
                             .addListener(object : RequestListener<Drawable>{
@@ -173,6 +186,7 @@ class OverlaysFragment : BaseFragment<ShootViewModel,FragmentOverlaysBinding>(),
                                 }
 
                             })
+                            .apply(requestOptions)
                             .into(binding.imgOverlay!!)
 
                     }
@@ -288,6 +302,13 @@ class OverlaysFragment : BaseFragment<ShootViewModel,FragmentOverlaysBinding>(),
         viewModel.overlaysResponse.observe(viewLifecycleOwner,{ it ->
             when(it){
                 is Resource.Success -> {
+                    //pre load overlays
+                    val overlaysList = it.value.data.map { it.display_thumbnail }
+
+                    viewLifecycleOwner.lifecycleScope.launch {
+                        viewModel.preloadOverlays(overlaysList)
+                    }
+
                     requireContext().captureEvent(
                         Events.GET_OVERLAYS,
                         Properties().putValue("angles",it.value.data.size))
@@ -311,7 +332,6 @@ class OverlaysFragment : BaseFragment<ShootViewModel,FragmentOverlaysBinding>(),
     }
 
     private fun initInteriorShots() {
-        binding.tvShoot?.isClickable = false
         InteriorHintDialog().show(requireFragmentManager(), "InteriorHintDialog")
 
         viewModel.startInteriorShots.observe(viewLifecycleOwner,{

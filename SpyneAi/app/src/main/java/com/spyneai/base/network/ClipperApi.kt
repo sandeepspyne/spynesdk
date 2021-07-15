@@ -33,6 +33,7 @@ interface ClipperApi {
         @Part("sku_id") sku_id: RequestBody?,
         @Part("image_category") image_category: RequestBody?,
         @Part("auth_key") auth_key: RequestBody?,
+        @Part("frame_seq_no") frame_seq_no: RequestBody?,
         @Part file: MultipartBody.Part
     ): Call<UploadImageResponse>
 
@@ -119,6 +120,13 @@ interface ClipperApi {
         @Query("auth_key") authKey : String,
         @Query("project_id") projectId : String
     ) : ProjectDetailResponse
+
+    @GET("v2/sku/updateTotalFrames")
+    suspend fun updateTotalFrames(
+        @Query("sku_id") skuId : String,
+        @Query("total_frames") totalFrames : String,
+        @Query("auth_key") authKey : String
+    ) : UpdateTotalFramesRes
 
 
 

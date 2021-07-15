@@ -66,6 +66,7 @@ class CreateProjectAndSkuDialog : BaseDialogFragment<ShootViewModel,DialogCreate
                     }
 
                     is Resource.Failure -> {
+                        dismiss()
                         requireContext().captureFailureEvent(Events.CREATE_PROJECT_FAILED, Properties(),
                             it.errorMessage!!
                         )
@@ -76,6 +77,8 @@ class CreateProjectAndSkuDialog : BaseDialogFragment<ShootViewModel,DialogCreate
         })
 
     }
+
+
 
     override fun getViewModel() = ShootViewModel::class.java
 

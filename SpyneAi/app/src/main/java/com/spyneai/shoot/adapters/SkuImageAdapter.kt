@@ -4,17 +4,16 @@ import android.content.Context
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.FrameLayout
 import android.widget.ImageView
-import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.spyneai.R
 import com.spyneai.shoot.data.ShootViewModel
+import com.spyneai.shoot.data.model.ShootData
 import java.util.ArrayList
 
-class SkuImageAdapter (
-    val context: Context, private var shootList: ArrayList<String>
+class SkuImageAdapter(
+    val context: Context, private var shootList: ArrayList<ShootData>
 )
     : RecyclerView.Adapter<SkuImageAdapter.ViewHolder>() {
 
@@ -36,7 +35,7 @@ class SkuImageAdapter (
 
     override fun onBindViewHolder(viewHolder: ViewHolder, position: Int) {
         Glide.with(context).load(
-            shootList[position])
+            shootList[position].capturedImage)
             .into(viewHolder.ivCapturedImage)
     }
 

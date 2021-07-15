@@ -10,6 +10,7 @@ import com.posthog.android.Properties
 import com.spyneai.BaseApplication
 import com.spyneai.base.network.ClipperApi
 import com.spyneai.base.network.Resource
+import com.spyneai.base.network.ServerException
 import com.spyneai.captureEvent
 import com.spyneai.captureFailureEvent
 import com.spyneai.interfaces.RetrofitClients
@@ -28,6 +29,7 @@ import okhttp3.MultipartBody
 import okhttp3.RequestBody.Companion.asRequestBody
 import okhttp3.RequestBody.Companion.toRequestBody
 import okhttp3.internal.wait
+import retrofit2.HttpException
 import retrofit2.Response
 import java.io.File
 import java.io.IOException
@@ -65,7 +67,7 @@ class RecursiveImageWorker(private val appContext: Context, workerParams: Worker
             }
 
 
-            var jobs : Deferred<Resource<UploadImageResponse>>?
+            var jobs : Deferred<Resource<Any>>?
 
             com.spyneai.shoot.utils.log("image selected "+image.itemId + " "+image.imagePath)
 
@@ -102,15 +104,35 @@ class RecursiveImageWorker(private val appContext: Context, workerParams: Worker
             }
 
             return if (jobs?.getCompleted() is Resource.Success) {
-                com.spyneai.shoot.utils.log("upload image sucess")
+                com.spyneai.shoot.utils.log("upload image success")
                 captureEvent(Events.UPLOADED,image,true,null)
                 startNextUpload(image.itemId!!)
                 success()
             }else{
                 com.spyneai.shoot.utils.log("Upload image failed")
-                val error = jobs?.getCompletionExceptionOrNull()?.localizedMessage
+                val throwable = jobs?.getCompletionExceptionOrNull()
+                var error = ""
 
-                captureEvent(Events.UPLOAD_FAILED,image,false,error)
+                when(throwable) {
+                    is ServerException -> {
+                        if (throwable.message != null)
+                            error = throwable.message.toString()
+                    }
+
+                    is HttpException -> {
+                        val serverError = throwable.response()?.errorBody().toString()
+                        if (serverError != null)
+                            error = serverError
+                    }
+
+                    else -> {
+                       error = "Request failed due to internet connection"
+                    }
+                }
+
+
+
+                 captureEvent(Events.UPLOAD_FAILED,image,false,error)
                 retry()
             }
         }else{
@@ -136,7 +158,6 @@ class RecursiveImageWorker(private val appContext: Context, workerParams: Worker
                 properties, error!!
             )
         }
-
     }
 
     private fun startNextUpload(itemId: Long) {

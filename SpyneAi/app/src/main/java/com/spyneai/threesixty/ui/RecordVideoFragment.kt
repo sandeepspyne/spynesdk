@@ -53,7 +53,7 @@ class RecordVideoFragment : BaseFragment<ThreeSixtyViewModel,FragmentRecordVideo
 
 
     companion object {
-        private const val TAG = "CameraXTest"
+        private const val TAG = "RecordVideoFragment"
 
         private const val RATIO_4_3_VALUE = 4.0 / 3.0 // aspect ratio 4x3
         private const val RATIO_16_9_VALUE = 16.0 / 9.0 // aspect ratio 16x9
@@ -129,29 +129,12 @@ class RecordVideoFragment : BaseFragment<ThreeSixtyViewModel,FragmentRecordVideo
 
     //Declare PickiT
     var pickiT: PickiT? = null
-    private lateinit var mOrientation: Orientation
+    private var mOrientation: Orientation? = null
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
         pickiT = PickiT(requireContext(), this, requireActivity())
-
-        mOrientation = Orientation(requireActivity())
-        binding.myLevelIndicator.tvDemo = binding.tvWarning
-
-        binding.btnRecordVideo.setImageDrawable(ContextCompat.getDrawable(requireContext(),R.drawable.bg_record_button_enabled))
-        binding.btnFlash.visibility = View.VISIBLE
-
-        binding.btnFlash.setOnClickListener { toggleFlash() }
-
-        binding.btnRecordVideo.setOnClickListener {
-            if (isRecording){
-                recordVideo()
-            }else{
-                startTimer()
-            }
-        }
-
 
         binding.ivBack.setOnClickListener { requireActivity().onBackPressed() }
 
@@ -160,6 +143,29 @@ class RecordVideoFragment : BaseFragment<ThreeSixtyViewModel,FragmentRecordVideo
                 setPermissions()
             }
         }, 300)
+
+        viewModel.enableRecording.observe(viewLifecycleOwner,{
+            if (it) {
+                binding.btnRecordVideo.setImageDrawable(ContextCompat.getDrawable(requireContext(),R.drawable.bg_record_button_enabled))
+
+                mOrientation = Orientation(requireActivity())
+                binding.myLevelIndicator.visibility = View.VISIBLE
+                binding.myLevelIndicator.tvDemo = binding.tvWarning
+                mOrientation?.startListening(this)
+
+                binding.btnFlash.visibility = View.VISIBLE
+
+                binding.btnFlash.setOnClickListener { toggleFlash() }
+
+                binding.btnRecordVideo.setOnClickListener {
+                    if (isRecording){
+                        recordVideo()
+                    }else{
+                        startTimer()
+                    }
+                }
+            }
+        })
     }
 
     private fun setPermissions() {
@@ -174,8 +180,6 @@ class RecordVideoFragment : BaseFragment<ThreeSixtyViewModel,FragmentRecordVideo
     protected fun allPermissionsGranted() = permissions.all {
         ContextCompat.checkSelfPermission(requireContext(), it) == PackageManager.PERMISSION_GRANTED
     }
-
-
 
     /**
      * Unbinds all the lifecycles from CameraX, then creates new with new parameters
@@ -460,7 +464,6 @@ class RecordVideoFragment : BaseFragment<ThreeSixtyViewModel,FragmentRecordVideo
             TrimVideoActivity::class.java
         )
 
-
         trimIntent.putExtra("src_path",videoPath)
         trimIntent.putExtra("sku_id",intent?.getStringExtra("sku_id"))
         trimIntent.putExtra("user_id",intent?.getStringExtra("user_id"))
@@ -485,18 +488,18 @@ class RecordVideoFragment : BaseFragment<ThreeSixtyViewModel,FragmentRecordVideo
     }
 
     override fun onDestroy() {
-        mOrientation.stopListening()
+            mOrientation?.stopListening()
         super.onDestroy()
     }
 
 
     override fun onResume() {
-        mOrientation.startListening(this)
+            mOrientation?.startListening(this)
         super.onResume()
     }
 
     override fun onPause() {
-        mOrientation.stopListening()
+            mOrientation?.stopListening()
         super.onPause()
     }
 }

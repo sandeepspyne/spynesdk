@@ -96,7 +96,7 @@ class LoginActivity : AppCompatActivity() {
                 var loginResponse = response.body()
 
                 if (response.isSuccessful && loginResponse != null) {
-                    if (loginResponse?.status == 400) {
+                    if (loginResponse?.status == 401) {
 
                         Toast.makeText(
                             this@LoginActivity,

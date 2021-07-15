@@ -123,14 +123,14 @@ class ConfirmReshootDialog : BaseDialogFragment<ShootViewModel, DialogConfirmRes
     }
 
     private fun uploadImages() {
-//        viewModel.uploadImageWithWorkManager(
-//            requireContext(),
-//            viewModel.shootData.value!!
-//        )
+        viewModel.uploadImageWithWorkManager(
+            viewModel.shootData.value!!
+        )
 
-        viewLifecycleOwner.lifecycleScope.launch {
-            viewModel.insertImage(viewModel.shootData.value!!)
-        }
+//        viewLifecycleOwner.lifecycleScope.launch {
+//            viewModel.
+//            insertImage(viewModel.shootData.value!!)
+//        }
     }
 
     private fun updateTotalImages() {
@@ -165,10 +165,11 @@ class ConfirmReshootDialog : BaseDialogFragment<ShootViewModel, DialogConfirmRes
                     var newH =
                         oh!!.toFloat().div(prh!!.toFloat()).times(view.height)
 
-                   // var equlizer = (25 * resources.displayMetrics.density).toInt()
+                    var equlizerOverlayMargin = (9.5 * resources.displayMetrics.density).toInt()
 
                     var params = FrameLayout.LayoutParams(newW.toInt(), newH.toInt())
                     params.gravity = Gravity.CENTER
+                    params.topMargin = equlizerOverlayMargin
 
                     binding.ivCapturedOverlay.layoutParams = params
 

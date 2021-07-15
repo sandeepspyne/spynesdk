@@ -75,6 +75,15 @@ object Events {
     val SHOOT_QUEUED = "Shoot Queued"
 
 
+    //360
+    val SHOW_360_HINT = "Show 360 Hint"
+    val CREATE_360_PROJECT = "Create 360 Project"
+    val CREATE_360_PROJECT_FAILED = "Create Project 360 Failed"
+    val CREATE_360_SKU = "Create 360 SKU"
+    val CREATE_360_SKU_FAILED = "Create SKU 360 Failed"
+    val GET_360_SUBCATEGORIES = "Got 360 Subcategories"
+    val GET_360_SUBCATRGORIES_FAILED = "Get Subcategories 360 Failed"
+
 
 
 }

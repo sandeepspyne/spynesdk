@@ -35,12 +35,6 @@ class WalletDashboardFragment :
     BaseFragment<DashboardViewModel, WalletDashboardFragmentBinding>()  {
 
     private var availableCredits = 0
-    private var retry = 0
-    protected lateinit var rootView: View
-
-
-
-
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -131,37 +125,22 @@ class WalletDashboardFragment :
 
 
                 } else {
-
-                    retry++
-                    if (retry < 4){
-                        fetchUserCreditDetails()
-                    }else{
-                        requireContext().captureFailureEvent(Events.FETCH_CREDITS_FAILED, Properties(),
-                            "Server not responding"
-                        )
-                        Toast.makeText(
-                            requireContext(),
-                            "Server not responding!!!",
-                            Toast.LENGTH_SHORT
-                        ).show()
-                    }
-                }
-            }
-            override fun onFailure(call: Call<CreditDetailsResponse>, t: Throwable) {
-                requireContext().captureFailureEvent(Events.FETCH_CREDITS_FAILED, Properties(),
-                    t?.localizedMessage
-                )
-                binding.shimmer.startShimmer()
-                retry++
-                if (retry < 4){
-                    fetchUserCreditDetails()
-                }else{
+                    requireContext().captureFailureEvent(Events.FETCH_CREDITS_FAILED, Properties(),
+                        "Server not responding"
+                    )
                     Toast.makeText(
                         requireContext(),
                         "Server not responding!!!",
                         Toast.LENGTH_SHORT
                     ).show()
                 }
+            }
+            override fun onFailure(call: Call<CreditDetailsResponse>, t: Throwable) {
+                Toast.makeText(
+                    requireContext(),
+                    "Server not responding!!!",
+                    Toast.LENGTH_SHORT
+                ).show()
             }
         })
 

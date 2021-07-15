@@ -52,4 +52,12 @@ class ShootRepository : BaseRepository() {
         clipperApi.getProjectDetail(tokenId, projectId)
     }
 
+    suspend fun updateTotalFrames(
+        skuId: String,
+        totalFrames:  String,
+        authKey:  String
+    ) = safeApiCall{
+        clipperApi.updateTotalFrames(skuId, totalFrames, authKey)
+    }
+
 }
