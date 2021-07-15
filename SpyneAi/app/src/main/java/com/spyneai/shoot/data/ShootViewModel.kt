@@ -227,9 +227,12 @@ class ShootViewModel : ViewModel(){
     }
 
     fun uploadImageWithWorkManager(
-        requireContext: Context,
         shootData: ShootData
     ) {
+        val constraints: Constraints = Constraints.Builder()
+            .setRequiredNetworkType(NetworkType.CONNECTED)
+            .build()
+
         val uploadWorkRequest = OneTimeWorkRequest.Builder(UploadImageWorker::class.java)
 
         val data = Data.Builder()
@@ -239,12 +242,15 @@ class ShootViewModel : ViewModel(){
         data.putString("imageCategory", shootData.image_category)
         data.putString("authKey", shootData.auth_key)
         data.putBoolean("processSku", processSku)
+        data.putString("sequence",shootData.sequence.toString())
+
 
         uploadWorkRequest.setInputData(data.build())
 
-        WorkManager.getInstance(requireContext)
+        WorkManager.getInstance(BaseApplication.getContext())
             .enqueue(
                 uploadWorkRequest
+                    .setConstraints(constraints)
                     .build()
             )
     }

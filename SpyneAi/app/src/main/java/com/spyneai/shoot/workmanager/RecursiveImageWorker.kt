@@ -132,7 +132,7 @@ class RecursiveImageWorker(private val appContext: Context, workerParams: Worker
 
 
 
-                captureEvent(Events.UPLOAD_FAILED,image,false,error)
+                 captureEvent(Events.UPLOAD_FAILED,image,false,error)
                 retry()
             }
         }else{

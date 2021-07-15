@@ -17,7 +17,10 @@ class AngleSelectionDialog : BaseDialogFragment<ShootViewModel,DialogAngleSelect
     }
 
     private fun showOptions() {
-        val valuesShoots = arrayOf("4 Angles", "8 Angles", "12 Angles", "16 Angles", "24 Angles", "36 Angles")
+        val valuesShoots = if (viewModel.categoryDetails.value?.categoryName == "Bikes")
+            arrayOf("4 Angles", "8 Angles", "12 Angles")
+        else
+            arrayOf("4 Angles", "8 Angles", "12 Angles", "16 Angles", "24 Angles", "36 Angles")
 
 
         val lastSelectedAngles = viewModel.getSelectedAngles()

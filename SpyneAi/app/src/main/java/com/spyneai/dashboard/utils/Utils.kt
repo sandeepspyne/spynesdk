@@ -29,7 +29,11 @@ fun View.enable(enabled: Boolean) {
 }
 
 fun View.snackbar(message: String, action: (() -> Unit)? = null) {
-    val snackbar = Snackbar.make(this, message, Snackbar.LENGTH_LONG)
+    val snackbar = if (action == null)
+        Snackbar.make(this, message, Snackbar.LENGTH_LONG)
+    else
+        Snackbar.make(this, message, Snackbar.LENGTH_INDEFINITE)
+
     action?.let {
         snackbar.setAction("Retry") {
             it()
