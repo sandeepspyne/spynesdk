@@ -61,7 +61,7 @@ class UploadImageWorker(val appContext: Context, workerParams: WorkerParameters)
                 requestFile
             )
 
-        val frameSeqNumber = inputData.getString("frame_seq_no").toString().toRequestBody(MultipartBody.FORM)
+        val frameSeqNumber = inputData.getString("sequence").toString().toRequestBody(MultipartBody.FORM)
 
         var jobs : Deferred<Resource<Any>>?
 
