@@ -68,11 +68,11 @@ class ConfirmReshootEcomDialog :
             )
 
             viewModel.isCameraButtonClickable = true
-            viewModel.uploadImageWithWorkManager(viewModel.shootData.value!!)
+            //viewModel.uploadImageWithWorkManager(viewModel.shootData.value!!)
 
-//            viewLifecycleOwner.lifecycleScope.launch {
-//                viewModel.insertImage(viewModel.shootData.value!!)
-//            }
+            viewLifecycleOwner.lifecycleScope.launch {
+                viewModel.insertImage(viewModel.shootData.value!!)
+            }
 
             dismiss()
         }

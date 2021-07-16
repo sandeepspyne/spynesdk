@@ -123,14 +123,14 @@ class ConfirmReshootDialog : BaseDialogFragment<ShootViewModel, DialogConfirmRes
     }
 
     private fun uploadImages() {
-        viewModel.uploadImageWithWorkManager(
-            viewModel.shootData.value!!
-        )
+//        viewModel.uploadImageWithWorkManager(
+//            viewModel.shootData.value!!
+//        )
 
-//        viewLifecycleOwner.lifecycleScope.launch {
-//            viewModel.
-//            insertImage(viewModel.shootData.value!!)
-//        }
+        viewLifecycleOwner.lifecycleScope.launch {
+            viewModel.
+            insertImage(viewModel.shootData.value!!)
+        }
     }
 
     private fun updateTotalImages() {
