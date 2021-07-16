@@ -89,7 +89,7 @@ class CategoriesActivity : AppCompatActivity(){
                                     categoriesResponseList[position].prod_cat_name
                                 )
 
-                                val intent = Intent(this@CategoriesActivity, BeforeAfterActivity::class.java)
+                                val intent = Intent(this@CategoriesActivity, ShootActivity::class.java)
                                 intent.putExtra(AppConstants.CATEGORY_ID,categoriesResponseList[position].prod_cat_id)
                                 intent.putExtra(AppConstants.CATEGORY_NAME,categoriesResponseList[position].prod_cat_name)
                                 intent.putExtra(AppConstants.IMAGE_URL,categoriesResponseList[position].display_thumbnail)

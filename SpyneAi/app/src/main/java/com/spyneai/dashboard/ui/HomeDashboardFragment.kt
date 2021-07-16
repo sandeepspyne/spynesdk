@@ -296,7 +296,7 @@ class HomeDashboardFragment :
 
                                 when(position){
                                     0,1 -> {
-                                        val intent = Intent(requireContext(), BeforeAfterActivity::class.java)
+                                        val intent = Intent(requireContext(), ShootActivity::class.java)
                                         intent.putExtra(
                                             AppConstants.CATEGORY_NAME,
                                             displayName
