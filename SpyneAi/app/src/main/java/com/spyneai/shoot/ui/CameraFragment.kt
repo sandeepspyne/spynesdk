@@ -68,6 +68,8 @@ class CameraFragment : BaseFragment<ShootViewModel, FragmentCameraBinding>(), Pi
         private const val RATIO_16_9_VALUE = 16.0 / 9.0 // aspect ratio 16x9
     }
 
+    lateinit var file : File
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
@@ -240,10 +242,51 @@ class CameraFragment : BaseFragment<ShootViewModel, FragmentCameraBinding>(), Pi
             }
         }
 
+        var filename  = viewModel.sku.value?.skuId+"_"
+
+        filename += if (viewModel.shootList.value == null)
+            viewModel.categoryDetails.value?.imageType!!+"_1"
+        else{
+            val size = viewModel.shootList.value!!.size.plus(1)
+            val list = viewModel.shootList.value
+
+            when(viewModel.categoryDetails.value?.imageType) {
+                "Exterior" -> {
+                    viewModel.categoryDetails.value?.imageType!!+"_"+size
+                }
+                "Interior" -> {
+
+                    val interiorList = list?.filter {
+                        it.image_category == "Interior"
+                    }
+
+                    if (interiorList == null){
+                        viewModel.categoryDetails.value?.imageType!!+"_1"
+                    }else{
+                        viewModel.categoryDetails.value?.imageType!!+"_"+interiorList.size.plus(1)
+                    }
+                }
+                "Focus Shoot" -> {
+                    val miscList = list?.filter {
+                        it.image_category == "Focus Shoot"
+                    }
+
+                    if (miscList == null){
+                        "Miscellaneous"+"_1"
+                    }else{
+                        "Miscellaneous_"+miscList.size.plus(1)
+                    }
+                }
+                else -> {System.currentTimeMillis().toString()}
+            }
+        }
+
+
+
         // Options fot the output image file
         val outputOptions = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
             val contentValues = ContentValues().apply {
-                put(MediaStore.MediaColumns.DISPLAY_NAME, System.currentTimeMillis())
+                put(MediaStore.MediaColumns.DISPLAY_NAME, filename)
                 put(MediaStore.MediaColumns.MIME_TYPE, "image/jpeg")
                 put(MediaStore.MediaColumns.RELATIVE_PATH, outputDirectory)
             }
@@ -257,7 +300,7 @@ class CameraFragment : BaseFragment<ShootViewModel, FragmentCameraBinding>(), Pi
             ImageCapture.OutputFileOptions.Builder(contentResolver, contentUri, contentValues)
         } else {
             File(outputDirectory).mkdirs()
-            var file = File(outputDirectory, "${System.currentTimeMillis()}.jpg")
+            file = File(outputDirectory, "${filename}.jpg")
 
             ImageCapture.OutputFileOptions.Builder(file)
         }.setMetadata(metadata).build()
@@ -280,17 +323,17 @@ class CameraFragment : BaseFragment<ShootViewModel, FragmentCameraBinding>(), Pi
 
                 override fun onImageSaved(output: ImageCapture.OutputFileResults) {
                     // This function is called if capture is successfully completed
-                    output.savedUri
-                        ?.let { uri ->
-                            log("Photo capture succeeded: " + uri)
-                            try {
-                                var file = uri.toFile()
-                                addShootItem(file.path)
-                            } catch (ex: IllegalArgumentException) {
-                                pickIt?.getPath(uri, Build.VERSION.SDK_INT)
-                            }
+                    if (output.savedUri == null){
+                        if (file != null)
+                            addShootItem(file.path)
+                    }else {
+                        try {
+                            var file = output.savedUri!!.toFile()
+                            addShootItem(file.path)
+                        } catch (ex: IllegalArgumentException) {
+                            pickIt?.getPath(output.savedUri, Build.VERSION.SDK_INT)
                         }
-
+                    }
                 }
             })
     }
@@ -319,7 +362,8 @@ class CameraFragment : BaseFragment<ShootViewModel, FragmentCameraBinding>(), Pi
             viewModel.sku.value?.projectId!!,
             viewModel.sku.value?.skuId!!,
             viewModel.categoryDetails.value?.imageType!!,
-            Utilities.getPreference(requireContext(),AppConstants.AUTH_KEY).toString()))
+            Utilities.getPreference(requireContext(),AppConstants.AUTH_KEY).toString(),
+            viewModel.shootList.value!!.size.plus(1)))
 
         viewModel.shootList.value = viewModel.shootList.value
 

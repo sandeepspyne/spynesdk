@@ -52,7 +52,7 @@ class ConfirmReshootDialog : BaseDialogFragment<ShootViewModel, DialogConfirmRes
             viewModel.isCameraButtonClickable = true
             when(viewModel.categoryDetails.value?.imageType) {
                 "Exterior" -> {
-                    viewModel.uploadImageWithWorkManager(requireContext(), viewModel.shootData.value!!)
+                    uploadImages()
 
                     if (viewModel.shootNumber.value  == viewModel.exterirorAngles.value?.minus(1)){
                         dismiss()
@@ -65,7 +65,7 @@ class ConfirmReshootDialog : BaseDialogFragment<ShootViewModel, DialogConfirmRes
 
                 "Interior" -> {
                     updateTotalImages()
-                    viewModel.uploadImageWithWorkManager(requireContext(), viewModel.shootData.value!!)
+                    uploadImages()
 
                     if (viewModel.interiorShootNumber.value  == viewModel.interiorAngles.value?.minus(1)){
                         viewModel.showMiscDialog.value = true
@@ -78,7 +78,7 @@ class ConfirmReshootDialog : BaseDialogFragment<ShootViewModel, DialogConfirmRes
 
                 "Focus Shoot" -> {
                     updateTotalImages()
-                    viewModel.uploadImageWithWorkManager(requireContext(), viewModel.shootData.value!!)
+                    uploadImages()
 
                     if (viewModel.miscShootNumber.value  == viewModel.miscAngles.value?.minus(1)){
                         viewModel.selectBackground.value = true
@@ -117,6 +117,16 @@ class ConfirmReshootDialog : BaseDialogFragment<ShootViewModel, DialogConfirmRes
                else -> {}
            }
        })
+    }
+    private fun uploadImages() {
+        viewModel.uploadImageWithWorkManager(
+            viewModel.shootData.value!!
+        )
+
+//        viewLifecycleOwner.lifecycleScope.launch {
+//            viewModel.
+//            insertImage(viewModel.shootData.value!!)
+//        }
     }
 
     fun updateTotalImages() {

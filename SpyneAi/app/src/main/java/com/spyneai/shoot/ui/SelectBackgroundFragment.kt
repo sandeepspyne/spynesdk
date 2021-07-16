@@ -64,15 +64,20 @@ class SelectBackgroundFragment : BaseFragment<ProcessViewModel,FragmentSelectBac
         }
     }
 
-    private fun initSelectBackground() {
-
+    fun getBackgorund() {
         val category =
-            Utilities.getPreference(requireContext(), AppConstants.CATEGORY_NAME).toString().toRequestBody(MultipartBody.FORM)
+            Utilities.getPreference(requireContext(), AppConstants.CATEGORY_NAME)!!.toRequestBody(MultipartBody.FORM)
 
         val auth_key =
-            Utilities.getPreference(requireContext(), AppConstants.AUTH_KEY).toString().toRequestBody(MultipartBody.FORM)
+            Utilities.getPreference(requireContext(), AppConstants.AUTH_KEY)!!.toRequestBody(MultipartBody.FORM)
 
         viewModel.getBackgroundGifCars(category, auth_key,getString(R.string.app_name))
+    }
+
+    private fun initSelectBackground() {
+
+      getBackgorund()
+
 
         viewModel.carGifRes.observe(viewLifecycleOwner,{
             when(it) {
@@ -102,7 +107,7 @@ class SelectBackgroundFragment : BaseFragment<ProcessViewModel,FragmentSelectBac
                     requireContext().captureFailureEvent(Events.GET_BACKGROUND_FAILED, Properties(),
                         it.errorMessage!!
                     )
-                    handleApiError(it)
+                    handleApiError(it) { getBackgorund() }
                 }
 
                 is Resource.Loading -> binding.shimmer.startShimmer()
@@ -153,10 +158,10 @@ class SelectBackgroundFragment : BaseFragment<ProcessViewModel,FragmentSelectBac
 
         viewModel.processSkuRes.observe(viewLifecycleOwner,{
             when(it) {
-                is Resource.Loading -> {
-                }
+                is Resource.Loading -> Utilities.showProgressDialog(requireContext())
 
                 is Resource.Sucess -> {
+                    Utilities.hideProgressDialog()
                     requireContext().captureEvent(
                         Events.PROCESS,
                         Properties().putValue("sku_id", viewModel.sku.value?.skuId!!)
@@ -165,11 +170,12 @@ class SelectBackgroundFragment : BaseFragment<ProcessViewModel,FragmentSelectBac
                     viewModel.startTimer.value = true
                 }
                 is Resource.Failure -> {
+                    Utilities.hideProgressDialog()
                     requireContext().captureFailureEvent(
                         Events.PROCESS_FAILED,
                         Properties().putValue("sku_id",viewModel.sku.value?.skuId!!),
                         it.errorMessage!!)
-                    handleApiError(it)
+                    handleApiError(it) { processSku() }
                 }
             }
         })

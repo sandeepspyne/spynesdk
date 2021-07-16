@@ -9,6 +9,8 @@ import com.google.android.material.snackbar.Snackbar
 import com.posthog.android.Properties
 import com.spyneai.base.network.Resource
 import com.spyneai.captureFailureEvent
+import com.spyneai.logout.InvalidAuthDialog
+
 
 fun <A : Activity> Activity.startNewActivity(activity: Class<A>) {
     Intent(this, activity).also {
@@ -27,7 +29,11 @@ fun View.enable(enabled: Boolean) {
 }
 
 fun View.snackbar(message: String, action: (() -> Unit)? = null) {
-    val snackbar = Snackbar.make(this, message, Snackbar.LENGTH_LONG)
+    val snackbar = if (action == null)
+        Snackbar.make(this, message, Snackbar.LENGTH_LONG)
+    else
+        Snackbar.make(this, message, Snackbar.LENGTH_INDEFINITE)
+
     action?.let {
         snackbar.setAction("Retry") {
             it()
@@ -46,8 +52,7 @@ fun Fragment.handleApiError(
             retry
         )
         failure.errorCode == 401 -> {
-            val error = failure.errorMessage
-            requireView().snackbar(error!!,retry)
+            InvalidAuthDialog().show(requireFragmentManager(), "InvalidAuthDialog")
         }
         else -> {
             val error = failure.errorMessage

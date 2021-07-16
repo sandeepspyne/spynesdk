@@ -7,6 +7,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.ViewTreeObserver
+import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.DataSource
@@ -34,6 +35,7 @@ import com.spyneai.shoot.data.model.ShootData
 import com.spyneai.shoot.data.room.entities.ShootEntity
 import com.spyneai.shoot.ui.dialogs.*
 import kotlinx.android.synthetic.main.dialog_confirm_reshoot.view.*
+import kotlinx.coroutines.launch
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.MultipartBody
 import okhttp3.RequestBody.Companion.asRequestBody
@@ -79,6 +81,8 @@ class OverlaysFragment : BaseFragment<ShootViewModel,FragmentOverlaysBinding>(),
         })
 
         viewModel.isSubCategoryConfirmed.observe(viewLifecycleOwner,{
+            //disable angle selection click
+            binding.tvShoot?.isClickable = false
             if (it) binding.rvSubcategories?.visibility = View.INVISIBLE
         })
     }
@@ -269,6 +273,13 @@ class OverlaysFragment : BaseFragment<ShootViewModel,FragmentOverlaysBinding>(),
         viewModel.overlaysResponse.observe(viewLifecycleOwner,{ it ->
             when(it){
                 is Resource.Sucess -> {
+                    //pre load overlays
+                    val overlaysList = it.value.data.map { it.display_thumbnail }
+
+                    viewLifecycleOwner.lifecycleScope.launch {
+                        viewModel.preloadOverlays(overlaysList)
+                    }
+
                     requireContext().captureEvent(
                         Events.GET_OVERLAYS,
                         Properties().putValue("angles",it.value.data.size))
@@ -292,7 +303,6 @@ class OverlaysFragment : BaseFragment<ShootViewModel,FragmentOverlaysBinding>(),
     }
 
     private fun initInteriorShots() {
-        binding.tvShoot?.isClickable = false
         InteriorHintDialog().show(requireFragmentManager(), "InteriorHintDialog")
 
         viewModel.showMiscDialog.observe(viewLifecycleOwner,{

@@ -54,6 +54,8 @@ class ShootActivity : AppCompatActivity() {
 
         shootViewModel.categoryDetails.value = categoryDetails
 
+        shootViewModel.processSku = true
+
         cameraFragment = CameraFragment()
         overlaysFragment = OverlaysFragment()
 
@@ -79,6 +81,7 @@ class ShootActivity : AppCompatActivity() {
                 intent.apply {
                     this.putExtra("sku_id", shootViewModel.sku.value?.skuId)
                     this.putExtra("exterior_angles", shootViewModel.exterirorAngles.value)
+                    this.putExtra("process_sku",shootViewModel.processSku)
                     startActivity(this)
                 }
             }
@@ -95,6 +98,7 @@ class ShootActivity : AppCompatActivity() {
     private val permissions = mutableListOf(
         Manifest.permission.CAMERA,
         Manifest.permission.READ_EXTERNAL_STORAGE,
+        Manifest.permission.WRITE_EXTERNAL_STORAGE
     ).apply {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
             add(Manifest.permission.ACCESS_MEDIA_LOCATION)

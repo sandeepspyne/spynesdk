@@ -7,5 +7,6 @@ data class ShootData(
     @SerializedName("project_id") val project_id: String,
     @SerializedName("sku_id") val sku_id: String,
     @SerializedName("image_category") val image_category: String,
-    @SerializedName("auth_key") val auth_key: String
+    @SerializedName("auth_key") val auth_key: String,
+    val sequence: Int = 0
     )
