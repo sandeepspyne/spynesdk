@@ -34,26 +34,9 @@
                 app:tint="@color/black" />
 
             <TextView
-                android:id="@+id/tvAngleName"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:background="@drawable/bg_angle_name"
-                android:fontFamily="@font/medium"
-                tools:text="Right Front 330º"
-                android:padding="@dimen/dp_5"
-                android:layout_marginTop="@dimen/dp_10"
-                android:paddingLeft="@dimen/dp_10"
-                android:paddingRight="@dimen/dp_10"
-                android:textColor="@color/primary"
-                android:textSize="@dimen/sp_13"
-                android:visibility="invisible"
-                android:layout_centerInParent="true"/>
-
-            <TextView
                 android:id="@+id/tvSkuName"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_alignParentRight="true"
                 android:background="@drawable/bg_edit"
                 android:fontFamily="@font/medium"
                 android:maxLines="1"
@@ -136,14 +119,6 @@
                 android:paddingBottom="@dimen/dp_5"
                 android:textColor="@color/primary"
                 android:textSize="@dimen/sp_13" />
-
-            <ImageView
-                android:layout_width="10dp"
-                android:layout_height="10dp"
-                android:src="@drawable/ic_angle_selection"
-                android:layout_gravity="right|center_vertical"
-                app:tint="@color/primary"
-                android:layout_marginRight="@dimen/dp_10"/>
 
         </LinearLayout>
 

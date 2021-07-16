@@ -78,9 +78,6 @@ class OverlayEcomFragment : BaseFragment<ShootViewModel, FragmentOverlayEcomBind
             }
         })
 
-        viewModel.shootNumber.observe(viewLifecycleOwner, {
-            binding.tvShoot?.text = "Angles $it/${viewModel.getSelectedAngles()}"
-        })
 
 //        binding.ivEndProject.setOnClickListener {
 //            if (viewModel.isStopCaptureClickable)
@@ -115,6 +112,32 @@ class OverlayEcomFragment : BaseFragment<ShootViewModel, FragmentOverlayEcomBind
 //                viewModel.isSkuCreated.value = false
 //            }
 //        })
+
+        viewModel.overlaysResponse.observe(viewLifecycleOwner,{ it ->
+            when(it){
+                is Resource.Success -> {
+                    requireContext().captureEvent(
+                        Events.GET_OVERLAYS,
+                        Properties().putValue("angles",it.value.data.size))
+
+                    binding.tvShoot?.text = "1/${it.value.data.size}"
+
+                    Utilities.hideProgressDialog()
+                    binding.clSubcatSelectionOverlay?.visibility = View.GONE
+                    showViews()
+                }
+
+                is Resource.Loading -> Utilities.showProgressDialog(requireContext())
+
+                is Resource.Failure -> {
+                    requireContext().captureFailureEvent(Events.GET_OVERLAYS_FAILED, Properties(),
+                        it.errorMessage!!
+                    )
+                    Utilities.hideProgressDialog()
+                    handleApiError(it)
+                }
+            }
+        })
 
 
     }
@@ -155,17 +178,13 @@ class OverlayEcomFragment : BaseFragment<ShootViewModel, FragmentOverlayEcomBind
                         Events.GET_SUBCATEGORIES,
                         Properties()
                     )
-
                     Utilities.hideProgressDialog()
                     subCategoriesAdapter.subCategoriesList =
                         it.value.data as ArrayList<NewSubCatResponse.Data>
                     subCategoriesAdapter.notifyDataSetChanged()
 
-
                     //set default angles on sub cat response
-                    initAngles()
-                    initProgressFrames()
-                    observeOverlays()
+//                    initProgressFrames()
 
                     binding.clSubcatSelectionOverlay?.visibility = View.VISIBLE
 
@@ -187,30 +206,14 @@ class OverlayEcomFragment : BaseFragment<ShootViewModel, FragmentOverlayEcomBind
         })
     }
 
-    private fun initAngles() {
-        viewModel.exterirorAngles.value = 8
 
-        binding.tvShoot?.setOnClickListener {
-            AngleSelectionDialog().show(requireFragmentManager(), "AngleSelectionDialog")
-        }
-
-        //update progress list
-        viewModel.exterirorAngles.observe(viewLifecycleOwner, {
-            binding.tvShoot?.text = "Angles 1/${viewModel.getSelectedAngles()}"
-
-            initProgressFrames()
-            if (viewModel.subCategory.value?.prod_cat_id != null)
-                getOverlays()
-        })
-    }
-
-    private fun initProgressFrames() {
+    private fun initProgressFrames(frames: Int) {
         //update this shoot number
         viewModel.shootNumber.value = 0
 
         progressAdapter = ShootProgressAdapter(
             requireContext(),
-            viewModel.getShootProgressList(viewModel.exterirorAngles.value!!))
+            viewModel.getShootProgressList(frames))
 
         binding.rvProgress.apply {
             this?.layoutManager =
@@ -219,15 +222,12 @@ class OverlayEcomFragment : BaseFragment<ShootViewModel, FragmentOverlayEcomBind
         }
 
         viewModel.shootNumber.observe(viewLifecycleOwner, {
-            binding.tvShoot?.text = "Angles ${viewModel.shootNumber.value!! + 1}/${viewModel.getSelectedAngles()}"
 
             viewModel.overlaysResponse.observe(viewLifecycleOwner,{
                 when(it){
                     is Resource.Success -> {
                         val name = it.value.data[viewModel.shootNumber.value!!].display_name
                         val overlay = it.value.data[viewModel.shootNumber.value!!].display_thumbnail
-
-                        binding.tvAngleName?.text = name
 
                         val requestOptions = RequestOptions()
                             .diskCacheStrategy(DiskCacheStrategy.ALL)
@@ -318,52 +318,42 @@ class OverlayEcomFragment : BaseFragment<ShootViewModel, FragmentOverlayEcomBind
             subCategoriesAdapter.selectionEnabled = true
             subCategoriesAdapter.notifyDataSetChanged()
 
+            viewModel.subCatName.value = data.sub_cat_name
+
+
             getOverlays()
+
         }
     }
 
     private fun getOverlays() {
+
+        var frames = 0
+        if (viewModel.subCatName.equals("Men Formal"))
+            frames = 6
+        else
+            frames = 5
+
+        initProgressFrames(frames)
+
+
         viewModel.subCategory.value?.let {
             viewModel.getOverlays(
                 Utilities.getPreference(requireContext(),AppConstants.AUTH_KEY).toString(),
                 requireActivity().intent.getStringExtra(AppConstants.CATEGORY_ID).toString(),
                 it.prod_sub_cat_id!!,
-                viewModel.exterirorAngles.value.toString()
+                frames.toString()
             )
 
             requireContext().captureEvent(
                 Events.GET_OVERLAYS_INTIATED,
-                Properties().putValue("angles",viewModel.exterirorAngles.value)
+                Properties().putValue("angles",frames)
                     .putValue("prod_sub_cat_id", it.prod_sub_cat_id!!))
 
         }
     }
 
-    private fun observeOverlays() {
-        viewModel.overlaysResponse.observe(viewLifecycleOwner,{ it ->
-            when(it){
-                is Resource.Success -> {
-                    requireContext().captureEvent(
-                        Events.GET_OVERLAYS,
-                        Properties().putValue("angles",it.value.data.size))
 
-                    Utilities.hideProgressDialog()
-                    binding.clSubcatSelectionOverlay?.visibility = View.GONE
-                    showViews()
-                }
-
-                is Resource.Loading -> Utilities.showProgressDialog(requireContext())
-
-                is Resource.Failure -> {
-                    requireContext().captureFailureEvent(Events.GET_OVERLAYS_FAILED, Properties(),
-                        it.errorMessage!!
-                    )
-                    Utilities.hideProgressDialog()
-                    handleApiError(it)
-                }
-            }
-        })
-    }
 
     private fun showViews() {
         binding.apply {
