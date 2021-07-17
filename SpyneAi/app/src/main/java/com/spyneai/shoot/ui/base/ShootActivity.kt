@@ -98,7 +98,7 @@ class ShootActivity : AppCompatActivity() {
                     shootViewModel.projectId.value = intent.getStringExtra("project_id")
                     val sku = Sku()
                     sku?.projectId = shootViewModel.projectId.value
-                    shootViewModel.categoryDetails.value?.imageType = ""
+                    shootViewModel.categoryDetails.value?.imageType = "ecom"
                     shootViewModel.sku.value = sku
                 } catch (e: Exception) {
                     e.printStackTrace()
@@ -118,7 +118,7 @@ class ShootActivity : AppCompatActivity() {
                     shootViewModel.projectId.value = intent.getStringExtra("project_id")
                     val sku = Sku()
                     sku?.projectId = shootViewModel.projectId.value
-                    shootViewModel.categoryDetails.value?.imageType = ""
+                    shootViewModel.categoryDetails.value?.imageType = "footwear"
                     shootViewModel.sku.value = sku
                 } catch (e: Exception) {
                     e.printStackTrace()
