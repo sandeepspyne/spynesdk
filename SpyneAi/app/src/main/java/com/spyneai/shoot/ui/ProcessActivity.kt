@@ -24,6 +24,7 @@ class ProcessActivity : AppCompatActivity() {
         processViewModel.sku.value = sku
 
         processViewModel.exteriorAngles.value =  intent.getIntExtra("exterior_angles",0)
+        processViewModel.interiorMiscShootsCount = intent.getIntExtra("interior_misc_count",0)
 
         supportFragmentManager.beginTransaction()
             .add(R.id.flContainer, SelectBackgroundFragment())

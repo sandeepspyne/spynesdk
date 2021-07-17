@@ -44,4 +44,5 @@ class ShootRepository : BaseRepository() {
         clipperApi.createSku(authKey, projectId, prodCatId, prodSubCatId, skuName,total_frames)
     }
 
+
 }

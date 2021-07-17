@@ -47,18 +47,31 @@ class SelectBackgroundFragment : BaseFragment<ProcessViewModel,FragmentSelectBac
         }
 
         binding.tvGenerateGif.setOnClickListener {
+            //update total frame if user clicked interior and misc
+            if (viewModel.interiorMiscShootsCount > 0)
+                updateTotalFrames()
+
             //process image call
-            viewModel.checkImagesUploadStatus(backgroundSelect)
-
-            viewModel.processSku.observe(viewLifecycleOwner,{
-                if (it) processSku()
-            })
-
-            viewModel.skuQueued.observe(viewLifecycleOwner,{
-                //sku process queued start timer
-                if (it) viewModel.startTimer.value = true
-            })
+            processSku()
+//            viewModel.checkImagesUploadStatus(backgroundSelect)
+//
+//            viewModel.processSku.observe(viewLifecycleOwner,{
+//                if (it) processSku()
+//            })
+//
+//            viewModel.skuQueued.observe(viewLifecycleOwner,{
+//                //sku process queued start timer
+//                if (it) viewModel.startTimer.value = true
+//            })
         }
+    }
+
+    private fun updateTotalFrames() {
+        viewModel.updateTotalFrames(
+            Utilities.getPreference(requireContext(),AppConstants.AUTH_KEY).toString(),
+            viewModel.sku.value?.skuId!!,
+            viewModel.interiorMiscShootsCount.toString()
+        )
     }
 
     fun getBackgorund() {

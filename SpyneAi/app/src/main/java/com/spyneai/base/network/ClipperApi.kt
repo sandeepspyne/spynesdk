@@ -74,6 +74,13 @@ interface ClipperApi {
                           @Field("sku_name") skuName : String,
         @Field("total_frames") totalFrames : Int) : CreateSkuRes
 
+    @GET("v2/sku/updateTotalFrames")
+    suspend fun updateTotalFrames(
+        @Query("auth_key") authKey : String,
+        @Query("sku_id") skuId : String,
+        @Query("total_frames") totalFrames : String
+    ) : UpdateTotalFramesRes
+
     @Multipart
     @POST("v2/backgrounds/fetchEnterpriseBgs")
     suspend fun getBackgroundGifCars(
