@@ -70,6 +70,10 @@ class CameraFragment : BaseFragment<ShootViewModel, FragmentCameraBinding>(), Pi
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        Handler(Looper.getMainLooper()).postDelayed({
+            startCamera()
+        }, 300)
+
         cameraExecutor = Executors.newSingleThreadExecutor()
         // Determine the output directory
         pickIt = PickiT(requireContext(), this, requireActivity())
@@ -109,8 +113,6 @@ class CameraFragment : BaseFragment<ShootViewModel, FragmentCameraBinding>(), Pi
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
-
-        startCamera()
 
         binding.cameraCaptureButton?.setOnClickListener {
             if ((viewModel.isSubCategoryConfirmed.value == null || viewModel.isSubCategoryConfirmed.value == false) &&

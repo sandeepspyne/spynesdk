@@ -4,7 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    tools:context=".shoot.ui.ecomwithgrid.dialogs.ConfirmReshootPortraitDialog"
+    tools:context=".shoot.ui.ecomwithoverlays.ConfirmReshootPortraitDialog"
     android:layout_margin="45dp">
 
     <androidx.cardview.widget.CardView

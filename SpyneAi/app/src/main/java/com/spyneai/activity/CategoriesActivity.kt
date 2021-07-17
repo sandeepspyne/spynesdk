@@ -25,6 +25,7 @@ import com.spyneai.model.shoot.CreateCollectionResponse
 import com.spyneai.model.shoot.UpdateShootCategoryRequest
 import com.spyneai.needs.AppConstants
 import com.spyneai.needs.Utilities
+import com.spyneai.shoot.ui.base.ShootActivity
 import kotlinx.android.synthetic.main.activity_categories.*
 import retrofit2.Call
 import retrofit2.Callback
@@ -88,6 +89,8 @@ class CategoriesActivity : AppCompatActivity(){
                                 categoriesResponseList[position].prod_cat_name
                             )
 
+                            Utilities.savePrefrence(this@CategoriesActivity, AppConstants.CATEGORY_ID, categoriesResponseList[position].prod_cat_id)
+
                             val intent = Intent(this@CategoriesActivity, BeforeAfterActivity::class.java)
                             intent.putExtra(AppConstants.CATEGORY_ID,categoriesResponseList[position].prod_cat_id)
                             intent.putExtra(AppConstants.CATEGORY_NAME,categoriesResponseList[position].prod_cat_name)
@@ -95,7 +98,24 @@ class CategoriesActivity : AppCompatActivity(){
                             intent.putExtra(AppConstants.DESCRIPTION,categoriesResponseList[position].description)
                             intent.putExtra(AppConstants.COLOR,categoriesResponseList[position].color_code)
                             startActivity(intent)
-                        }else
+                        }else if (position == 2 || position == 3){
+                            Utilities.savePrefrence(
+                                this@CategoriesActivity,
+                                AppConstants.CATEGORY_NAME,
+                                categoriesResponseList[position].prod_cat_name
+                            )
+
+                            Utilities.savePrefrence(this@CategoriesActivity, AppConstants.CATEGORY_ID, categoriesResponseList[position].prod_cat_id)
+
+                            val intent = Intent(this@CategoriesActivity, ShootActivity::class.java)
+                            intent.putExtra(AppConstants.CATEGORY_ID,categoriesResponseList[position].prod_cat_id)
+                            intent.putExtra(AppConstants.CATEGORY_NAME,categoriesResponseList[position].prod_cat_name)
+                            intent.putExtra(AppConstants.IMAGE_URL,categoriesResponseList[position].display_thumbnail)
+                            intent.putExtra(AppConstants.DESCRIPTION,categoriesResponseList[position].description)
+                            intent.putExtra(AppConstants.COLOR,categoriesResponseList[position].color_code)
+                            startActivity(intent)
+
+                        } else
                             Toast.makeText(this@CategoriesActivity,
                                     "Coming Soon !",
                                     Toast.LENGTH_SHORT).show()

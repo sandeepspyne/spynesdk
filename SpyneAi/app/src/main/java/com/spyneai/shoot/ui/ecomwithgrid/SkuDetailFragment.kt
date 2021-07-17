@@ -27,6 +27,11 @@ class SkuDetailFragment : BaseFragment<ShootViewModel, FragmentSkuDetailBinding>
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        if (Utilities.getPreference(requireContext(), AppConstants.CATEGORY_NAME).equals("Footwear")){
+            binding.ivAddAngle.visibility = View.GONE
+            binding.tvAddAngle.visibility = View.GONE
+
+        }
 
         viewModel.getProjectDetail(
             Utilities.getPreference(requireContext(), AppConstants.AUTH_KEY).toString(),

@@ -35,6 +35,7 @@ import com.spyneai.shoot.adapters.NewSubCategoriesAdapter
 import com.spyneai.shoot.data.ShootViewModel
 import com.spyneai.shoot.data.model.ShootData
 import com.spyneai.shoot.ui.dialogs.AngleSelectionDialog
+import com.spyneai.shoot.ui.dialogs.ConfirmReshootDialog
 import com.spyneai.shoot.ui.ecomwithgrid.dialogs.ConfirmReshootEcomDialog
 import com.spyneai.shoot.ui.ecomwithgrid.dialogs.CreateProjectEcomDialog
 import com.spyneai.shoot.ui.ecomwithgrid.dialogs.CreateSkuEcomDialog
@@ -68,6 +69,7 @@ class OverlayEcomFragment : BaseFragment<ShootViewModel, FragmentOverlayEcomBind
             log("SKU dialog shown")
         }
 
+        //observe new image clicked
         viewModel.shootList.observe(viewLifecycleOwner, {
             try {
                 if (showDialog && !it.isNullOrEmpty()){
@@ -139,6 +141,12 @@ class OverlayEcomFragment : BaseFragment<ShootViewModel, FragmentOverlayEcomBind
             }
         })
 
+        viewModel.isSubCategoryConfirmed.observe(viewLifecycleOwner,{
+            //disable angle selection click
+            binding.tvShoot?.isClickable = false
+            if (it) binding.rvSubcategories?.visibility = View.INVISIBLE
+        })
+
 
     }
     private fun intSubcategorySelection() {
@@ -168,7 +176,7 @@ class OverlayEcomFragment : BaseFragment<ShootViewModel, FragmentOverlayEcomBind
 
         viewModel.getSubCategories(
             Utilities.getPreference(requireContext(), AppConstants.AUTH_KEY).toString(),
-            requireActivity().intent.getStringExtra(AppConstants.CATEGORY_ID).toString()
+            Utilities.getPreference(requireContext(), AppConstants.CATEGORY_ID).toString()
         )
 
         viewModel.subCategoriesResponse.observe(viewLifecycleOwner, {
@@ -222,6 +230,8 @@ class OverlayEcomFragment : BaseFragment<ShootViewModel, FragmentOverlayEcomBind
         }
 
         viewModel.shootNumber.observe(viewLifecycleOwner, {
+
+            binding.tvShoot?.text = "${1+ viewModel.shootNumber.value!!}/"+frames
 
             viewModel.overlaysResponse.observe(viewLifecycleOwner,{
                 when(it){
@@ -306,12 +316,12 @@ class OverlayEcomFragment : BaseFragment<ShootViewModel, FragmentOverlayEcomBind
 
     private fun showImageConfirmDialog(shootData: ShootData) {
         viewModel.shootData.value = shootData
-        ConfirmReshootEcomDialog().show(requireFragmentManager(), "ConfirmReshootDialog")
+        ConfirmReshootPortraitDialog().show(requireFragmentManager(), "ConfirmReshootDialog")
     }
 
     override fun onBtnClick(position: Int, data: NewSubCatResponse.Data) {
         if (pos != position || !subCategoriesAdapter.selectionEnabled){
-
+            binding.llCapture.visibility = View.VISIBLE
             viewModel.subCategory.value = data
             pos = position
 
@@ -329,10 +339,12 @@ class OverlayEcomFragment : BaseFragment<ShootViewModel, FragmentOverlayEcomBind
     private fun getOverlays() {
 
         var frames = 0
-        if (viewModel.subCatName.equals("Men Formal"))
+        if (viewModel.subCatName.value.equals("Men Formal"))
             frames = 6
         else
             frames = 5
+
+        viewModel.exterirorAngles.value = frames
 
         initProgressFrames(frames)
 
@@ -340,7 +352,7 @@ class OverlayEcomFragment : BaseFragment<ShootViewModel, FragmentOverlayEcomBind
         viewModel.subCategory.value?.let {
             viewModel.getOverlays(
                 Utilities.getPreference(requireContext(),AppConstants.AUTH_KEY).toString(),
-                requireActivity().intent.getStringExtra(AppConstants.CATEGORY_ID).toString(),
+                Utilities.getPreference(requireContext(), AppConstants.CATEGORY_ID).toString(),
                 it.prod_sub_cat_id!!,
                 frames.toString()
             )

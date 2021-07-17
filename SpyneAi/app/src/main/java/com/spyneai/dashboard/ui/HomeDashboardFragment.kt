@@ -47,6 +47,8 @@ import com.spyneai.needs.Utilities
 import com.spyneai.orders.data.response.CompletedSKUsResponse
 import com.spyneai.orders.data.response.GetOngoingSkusResponse
 import com.spyneai.posthog.Events
+import com.spyneai.shoot.ui.base.ShootActivity
+import com.spyneai.shoot.ui.base.ShootPortraitActivity
 import com.spyneai.shoot.utils.log
 
 
@@ -287,6 +289,8 @@ class HomeDashboardFragment :
                         object : CategoriesDashboardAdapter.BtnClickListener {
                             override fun onBtnClick(position: Int) {
 
+                                Utilities.savePrefrence(requireContext(), AppConstants.CATEGORY_ID, it.value.data[position].prod_cat_id)
+
                                 catId = it.value.data[position].prod_cat_id
                                 displayName = it.value.data[position].prod_cat_name
                                 displayThumbnail = it.value.data[position].display_thumbnail
@@ -316,27 +320,48 @@ class HomeDashboardFragment :
                                         startActivity(intent)
                                     }
 
-//                                    5 -> {
-//                                        val intent = Intent(requireContext(), ShootActivity::class.java)
-//                                        intent.putExtra(
-//                                            AppConstants.CATEGORY_NAME,
-//                                            displayName
-//                                        )
-//                                        intent.putExtra(
-//                                            AppConstants.CATEGORY_ID,
-//                                            catId
-//                                        )
-//                                        intent.putExtra(
-//                                            AppConstants.IMAGE_URL,
-//                                            displayThumbnail
-//                                        )
-//                                        intent.putExtra(
-//                                            AppConstants.DESCRIPTION,
-//                                            description
-//                                        )
-//                                        intent.putExtra(AppConstants.COLOR, colorCode)
-//                                        startActivity(intent)
-//                                    }
+                                    2 -> {
+                                        val intent = Intent(requireContext(), ShootActivity::class.java)
+                                        intent.putExtra(
+                                            AppConstants.CATEGORY_NAME,
+                                            displayName
+                                        )
+                                        intent.putExtra(
+                                            AppConstants.CATEGORY_ID,
+                                            catId
+                                        )
+                                        intent.putExtra(
+                                            AppConstants.IMAGE_URL,
+                                            displayThumbnail
+                                        )
+                                        intent.putExtra(
+                                            AppConstants.DESCRIPTION,
+                                            description
+                                        )
+                                        intent.putExtra(AppConstants.COLOR, colorCode)
+                                        startActivity(intent)
+                                    }
+                                    3 ->{
+                                        val intent = Intent(requireContext(), ShootPortraitActivity::class.java)
+                                        intent.putExtra(
+                                            AppConstants.CATEGORY_NAME,
+                                            displayName
+                                        )
+                                        intent.putExtra(
+                                            AppConstants.CATEGORY_ID,
+                                            catId
+                                        )
+                                        intent.putExtra(
+                                            AppConstants.IMAGE_URL,
+                                            displayThumbnail
+                                        )
+                                        intent.putExtra(
+                                            AppConstants.DESCRIPTION,
+                                            description
+                                        )
+                                        intent.putExtra(AppConstants.COLOR, colorCode)
+                                        startActivity(intent)
+                                    }
                                     else -> {
                                     Toast.makeText(
                                         requireContext(),

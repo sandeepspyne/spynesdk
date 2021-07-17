@@ -119,18 +119,12 @@ class CreateProjectEcomDialog :
                     )
 
                     //notify project created
-
-
-
                     val sku = viewModel.sku.value
                     sku?.skuId = it.value.sku_id
                     log("sku id created")
                     log("sku id: "+it.value.sku_id)
                     sku?.skuName = skuName
-
                     viewModel.sku.value = sku
-                    viewModel.isSubCategoryConfirmed.value = true
-
                     viewModel.isSkuCreated.value = true
 
                     //add sku to local database
