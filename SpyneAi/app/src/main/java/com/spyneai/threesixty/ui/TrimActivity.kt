@@ -22,8 +22,11 @@ class TrimActivity : AppCompatActivity() {
         val threeSixtyViewModel = ViewModelProvider(this, ViewModelFactory()).get(ThreeSixtyViewModel::class.java)
 
         threeSixtyViewModel.videoDetails.apply {
-
+            videoPath = intent.getStringExtra("src_path")
+            skuId = intent.getStringExtra("sku_id")
+            skuName = intent.getStringExtra("sku_name")
+            projectId = intent.getStringExtra("project_id")
+            shootMode = intent.getIntExtra("shoot_mode",0)
         }
-
     }
 }

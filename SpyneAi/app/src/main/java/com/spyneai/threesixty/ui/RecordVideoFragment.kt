@@ -158,11 +158,12 @@ class RecordVideoFragment : BaseFragment<ThreeSixtyViewModel,FragmentRecordVideo
                 binding.btnFlash.setOnClickListener { toggleFlash() }
 
                 binding.btnRecordVideo.setOnClickListener {
-                    if (isRecording){
-                        recordVideo()
-                    }else{
-                        startTimer()
-                    }
+                    recordVideo()
+//                    if (isRecording){
+//                        recordVideo()
+//                    }else{
+//                        startTimer()
+//                    }
                 }
             }
         })
@@ -461,11 +462,15 @@ class RecordVideoFragment : BaseFragment<ThreeSixtyViewModel,FragmentRecordVideo
     private fun startNextActivity(videoPath: String) {
         val trimIntent = Intent(
             requireContext(),
-            TrimVideoActivity::class.java
+            TrimActivity::class.java
         )
 
         trimIntent.putExtra("src_path",videoPath)
-        trimIntent.putExtra("sku_id",intent?.getStringExtra("sku_id"))
+        trimIntent.putExtra("sku_id",viewModel.videoDetails.skuId)
+        trimIntent.putExtra("sku_name",viewModel.videoDetails.skuName)
+        trimIntent.putExtra("project_id",viewModel.videoDetails.projectId)
+        trimIntent.putExtra("category",viewModel.videoDetails.category)
+        trimIntent.putExtra("subcategory",viewModel.videoDetails.subCategory)
         trimIntent.putExtra("user_id",intent?.getStringExtra("user_id"))
         trimIntent.putExtra("shoot_mode",intent?.getIntExtra("shoot_mode",0))
         startActivity(trimIntent)

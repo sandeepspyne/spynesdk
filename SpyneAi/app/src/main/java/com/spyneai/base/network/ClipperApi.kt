@@ -8,6 +8,7 @@ import com.spyneai.orders.data.response.CompletedSKUsResponse
 import com.spyneai.orders.data.response.ImagesOfSkuRes
 import com.spyneai.orders.data.response.GetOngoingSkusResponse
 import com.spyneai.shoot.data.model.*
+import com.spyneai.threesixty.data.response.ProcessThreeSixtyRes
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
 import retrofit2.Call
@@ -129,6 +130,19 @@ interface ClipperApi {
     ) : UpdateTotalFramesRes
 
 
-
+    @Multipart
+    @POST("v2/video/upload_two")
+    suspend fun process360(
+        @Part("auth_key") authKey: String,
+        @Part("type") type: String,
+        @Part("project_id") projectId: String,
+        @Part("sku_name") skuName: String,
+        @Part("sku_id") skuId: String,
+        @Part("category") category: String,
+        @Part("sub_category") subCategory: String,
+        @Part("frames") frames: Int,
+        @Part videoFile: MultipartBody.Part,
+        @Part("video_url") videoUrl: String? = null
+    ) : ProcessThreeSixtyRes
 
 }

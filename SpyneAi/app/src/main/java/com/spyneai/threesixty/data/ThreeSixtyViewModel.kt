@@ -11,11 +11,13 @@ import com.spyneai.shoot.data.model.CategoryDetails
 import com.spyneai.shoot.data.model.CreateProjectRes
 import com.spyneai.shoot.data.model.CreateSkuRes
 import com.spyneai.threesixty.data.model.VideoDetails
+import com.spyneai.threesixty.data.response.ProcessThreeSixtyRes
 import kotlinx.coroutines.launch
 
 class ThreeSixtyViewModel : ViewModel() {
 
     private val repository = ShootRepository()
+    private val threeSixtyRepository = ThreeSixtyRepository()
 
     val isDemoClicked: MutableLiveData<Boolean> = MutableLiveData()
 
@@ -49,6 +51,10 @@ class ThreeSixtyViewModel : ViewModel() {
     val createSkuRes: LiveData<Resource<CreateSkuRes>>
         get() = _createSkuRes
 
+    private val _process360Res : MutableLiveData<Resource<ProcessThreeSixtyRes>> = MutableLiveData()
+    val process360Res: LiveData<Resource<ProcessThreeSixtyRes>>
+        get() = _process360Res
+
     fun createProject(
         authKey: String, projectName: String, prodCatId: String
     ) = viewModelScope.launch {
@@ -68,6 +74,13 @@ class ThreeSixtyViewModel : ViewModel() {
             prodSubCatId,
             skuName
         )
+    }
+
+    fun process360(
+        authKey: String
+    ) = viewModelScope.launch {
+        _process360Res.value = Resource.Loading
+        _process360Res.value = threeSixtyRepository.process360(authKey,videoDetails)
     }
 
 

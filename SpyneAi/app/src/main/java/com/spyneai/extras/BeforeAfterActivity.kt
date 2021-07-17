@@ -99,7 +99,7 @@ class BeforeAfterActivity : AppCompatActivity() {
 
         rvBeforeAfter.setAdapter(beforeAfterAdapter)
         if (Utilities.isNetworkAvailable(this))
-            fetchBeforeAfter()
+            //fetchBeforeAfter()
         else
             Toast.makeText(
                 this,

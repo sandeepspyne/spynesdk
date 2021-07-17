@@ -238,9 +238,6 @@ class TrimVideoActivity : AppCompatActivity() , SeekListener {
         }
     }
 
-
-
-
     private fun seekTo(sec: Long) {
         if (videoPlayer != null) videoPlayer!!.seekTo(sec)
     }
@@ -276,7 +273,6 @@ class TrimVideoActivity : AppCompatActivity() , SeekListener {
         ).show()
     }
 
-
     private fun getFileName(): String? {
         val path = getExternalFilesDir("Download")!!.path
         val calender = Calendar.getInstance()
@@ -294,7 +290,6 @@ class TrimVideoActivity : AppCompatActivity() , SeekListener {
         )
         return newFile.toString()
     }
-
 
     private fun startNextActivity(path: String) {
         val intentPlay = Intent(
@@ -331,11 +326,7 @@ class TrimVideoActivity : AppCompatActivity() , SeekListener {
     }
 
     override fun onSeekStarted() {
-
     }
-
-
-
 
     override fun onSeekEnd(start: Long, end: Long) {
         seekTo(start);
