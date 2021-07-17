@@ -84,7 +84,11 @@ class ConfirmReshootPortraitDialog : BaseDialogFragment<ShootViewModel, ConfirmR
                             .load(uri)
                             .into(binding.ivCaptured2)
 
-                        setOverlay(binding.ivCaptured2,overlay)
+                    Glide.with(requireContext())
+                        .load(overlay)
+                        .into(binding.ivCapturedOverlay)
+
+//                        setOverlay(binding.ivCaptured2,overlay)
 
 
                 }
@@ -136,7 +140,8 @@ class ConfirmReshootPortraitDialog : BaseDialogFragment<ShootViewModel, ConfirmR
 
                     var params = FrameLayout.LayoutParams(newW.toInt(), newH.toInt())
                     params.gravity = Gravity.CENTER
-                    params.topMargin = equlizerOverlayMargin
+                    params.leftMargin = equlizerOverlayMargin
+                    params.rightMargin = equlizerOverlayMargin
 
                     binding.ivCapturedOverlay.layoutParams = params
 
