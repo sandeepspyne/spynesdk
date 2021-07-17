@@ -5,7 +5,6 @@ import com.spyneai.base.network.ServerException
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import retrofit2.HttpException
-import java.lang.Exception
 
 abstract class BaseRepository {
 
@@ -14,7 +13,7 @@ abstract class BaseRepository {
     ) : Resource<T> {
         return withContext(Dispatchers.IO){
             try {
-                Resource.Sucess(apiCall.invoke())
+                Resource.Success(apiCall.invoke())
             }catch (throwable: Throwable){
                 var  s = ""
                 when(throwable){

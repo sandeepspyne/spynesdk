@@ -3,19 +3,13 @@ package com.spyneai.shoot.workmanager
 import android.content.Context
 import androidx.work.*
 import com.posthog.android.Properties
-import com.spyneai.base.network.ClipperApi
 import com.spyneai.base.network.Resource
 import com.spyneai.base.network.ServerException
 import com.spyneai.captureEvent
 import com.spyneai.captureFailureEvent
-import com.spyneai.interfaces.RetrofitClients
-import com.spyneai.needs.AppConstants
-import com.spyneai.needs.Utilities
 import com.spyneai.posthog.Events
 import com.spyneai.shoot.data.ShootLocalRepository
 import com.spyneai.shoot.data.ShootRepository
-import com.spyneai.shoot.data.model.UploadImageResponse
-import com.spyneai.shoot.utils.log
 import kotlinx.coroutines.Deferred
 import kotlinx.coroutines.async
 import kotlinx.coroutines.coroutineScope
@@ -23,10 +17,7 @@ import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.MultipartBody
 import okhttp3.RequestBody.Companion.asRequestBody
 import okhttp3.RequestBody.Companion.toRequestBody
-import retrofit2.Call
-import retrofit2.Callback
 import retrofit2.HttpException
-import retrofit2.Response
 import java.io.File
 
 class UploadImageWorker(val appContext: Context, workerParams: WorkerParameters) :
@@ -61,21 +52,19 @@ class UploadImageWorker(val appContext: Context, workerParams: WorkerParameters)
                 requestFile
             )
 
-        val frameSeqNumber = inputData.getString("sequence").toString().toRequestBody(MultipartBody.FORM)
-
         var jobs : Deferred<Resource<Any>>?
 
         coroutineScope {
             jobs =
                 async {
                     shootRepository.uploadImage(projectId!!,
-                        skuId!!, imageCategory!!,authKey, frameSeqNumber!!,image)
+                        skuId!!, imageCategory!!,authKey, inputData.getInt("sequence",0),image)
                 }
 
             jobs!!.await()
         }
 
-        return if (jobs?.getCompleted() is Resource.Sucess) {
+        return if (jobs?.getCompleted() is Resource.Success) {
             com.spyneai.shoot.utils.log("upload image success")
             captureEvent(Events.UPLOADED,true,null)
 

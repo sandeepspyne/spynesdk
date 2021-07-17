@@ -1,6 +1,8 @@
 package com.spyneai.shoot.data
 
 import android.content.Context
+import android.media.Image
+import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -14,12 +16,14 @@ import com.spyneai.dashboard.response.NewSubCatResponse
 import com.spyneai.model.carbackgroundgif.CarBackgrounGifResponse
 import com.spyneai.shoot.data.model.*
 import com.spyneai.shoot.workmanager.OverlaysPreloadWorker
+import com.spyneai.shoot.workmanager.RecursiveImageWorker
 import com.spyneai.shoot.workmanager.UploadImageWorker
 import kotlinx.coroutines.launch
 import java.util.ArrayList
 
 class ShootViewModel : ViewModel(){
 
+    private val TAG = "ShootViewModel"
     private val repository = ShootRepository()
     private val localRepository = ShootLocalRepository()
 
@@ -120,7 +124,7 @@ class ShootViewModel : ViewModel(){
         data.putString("imageCategory", shootData.image_category)
         data.putString("authKey", shootData.auth_key)
         data.putBoolean("processSku", processSku)
-        data.putString("sequence",shootData.sequence.toString())
+        data.putInt("sequence",shootData.sequence)
 
 
         uploadWorkRequest.setInputData(data.build())
@@ -142,14 +146,62 @@ class ShootViewModel : ViewModel(){
 
     fun createSku(authKey: String,projectId : String
                   ,prodCatId : String,prodSubCatId : String,
-                  skuName : String) = viewModelScope.launch {
+                  skuName : String,totalFrames : Int) = viewModelScope.launch {
         _createSkuRes.value = Resource.Loading
-        _createSkuRes.value = repository.createSku(authKey, projectId, prodCatId, prodSubCatId, skuName)
+        _createSkuRes.value = repository.createSku(authKey, projectId, prodCatId, prodSubCatId, skuName,totalFrames)
     }
 
     fun insertSku(sku: Sku) {
         localRepository.insertSku(sku)
     }
+
+    suspend fun insertImage(shootData: ShootData) {
+        val image = Image()
+        image.projectId = shootData.project_id
+        image.skuId = shootData.sku_id
+        image.categoryName = shootData.image_category
+        image.imagePath = shootData.capturedImage
+        image.sequence = shootData.sequence
+
+        localRepository.insertImage(image)
+
+        //check if long running worker is alive
+        val workManager = WorkManager.getInstance(BaseApplication.getContext())
+
+        val workQuery = WorkQuery.Builder
+            .fromTags(listOf("Long Running Worker"))
+            .addStates(listOf(WorkInfo.State.BLOCKED, WorkInfo.State.ENQUEUED,WorkInfo.State.RUNNING))
+            .build()
+
+        val workInfos = workManager.getWorkInfos(workQuery).await()
+
+        Log.d(TAG, "insertImage: "+workInfos.size)
+
+        if (workInfos.size > 0) {
+            com.spyneai.shoot.utils.log("alive : ")
+        } else {
+            com.spyneai.shoot.utils.log("not found : start new")
+            //start long running worker
+            startLongRunningWorker()
+        }
+
+    }
+
+    fun startLongRunningWorker() {
+        val constraints: Constraints = Constraints.Builder()
+            .setRequiredNetworkType(NetworkType.CONNECTED)
+            .build()
+
+        val longWorkRequest = OneTimeWorkRequest.Builder(RecursiveImageWorker::class.java)
+            .addTag("Long Running Worker")
+
+        WorkManager.getInstance(BaseApplication.getContext())
+            .enqueue(
+                longWorkRequest
+                    .setConstraints(constraints)
+                    .build())
+    }
+
 
     fun updateTotalImages(skuId : String) {
         localRepository.updateTotalImageCount(skuId)

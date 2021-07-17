@@ -10,7 +10,6 @@ import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.posthog.android.Properties
 import com.spyneai.R
-import com.spyneai.adapter.CarBackgroundAdapter
 import com.spyneai.base.BaseFragment
 import com.spyneai.base.network.Resource
 import com.spyneai.captureEvent
@@ -18,8 +17,6 @@ import com.spyneai.captureFailureEvent
 import com.spyneai.dashboard.ui.enable
 import com.spyneai.dashboard.ui.handleApiError
 import com.spyneai.databinding.FragmentSelectBackgroundBinding
-import com.spyneai.model.carbackgroundgif.CarBackgrounGifResponse
-import com.spyneai.model.carreplace.CarBackgroundsResponse
 import com.spyneai.needs.AppConstants
 import com.spyneai.needs.Utilities
 import com.spyneai.posthog.Events
@@ -81,7 +78,7 @@ class SelectBackgroundFragment : BaseFragment<ProcessViewModel,FragmentSelectBac
 
         viewModel.carGifRes.observe(viewLifecycleOwner,{
             when(it) {
-                is Resource.Sucess -> {
+                is Resource.Success -> {
                     requireContext().captureEvent(Events.GET_BACKGROUND, Properties())
                     binding.shimmer.stopShimmer()
                     binding.shimmer.visibility = View.GONE
@@ -160,7 +157,7 @@ class SelectBackgroundFragment : BaseFragment<ProcessViewModel,FragmentSelectBac
             when(it) {
                 is Resource.Loading -> Utilities.showProgressDialog(requireContext())
 
-                is Resource.Sucess -> {
+                is Resource.Success -> {
                     Utilities.hideProgressDialog()
                     requireContext().captureEvent(
                         Events.PROCESS,

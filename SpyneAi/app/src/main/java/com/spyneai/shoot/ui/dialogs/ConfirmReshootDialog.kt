@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.util.Log
 import android.view.*
 import android.widget.FrameLayout
+import androidx.lifecycle.lifecycleScope
 import com.bumptech.glide.Glide
 import com.posthog.android.Properties
 import com.spyneai.base.BaseDialogFragment
@@ -12,6 +13,7 @@ import com.spyneai.captureEvent
 import com.spyneai.databinding.DialogConfirmReshootBinding
 import com.spyneai.posthog.Events
 import com.spyneai.shoot.data.ShootViewModel
+import kotlinx.coroutines.launch
 
 class ConfirmReshootDialog : BaseDialogFragment<ShootViewModel, DialogConfirmReshootBinding>() {
 
@@ -93,7 +95,7 @@ class ConfirmReshootDialog : BaseDialogFragment<ShootViewModel, DialogConfirmRes
 
        viewModel.overlaysResponse.observe(viewLifecycleOwner,{
            when(it){
-                is Resource.Sucess -> {
+                is Resource.Success -> {
                     val uri = viewModel.shootData.value?.capturedImage
 
                     Glide.with(requireContext())
@@ -119,14 +121,14 @@ class ConfirmReshootDialog : BaseDialogFragment<ShootViewModel, DialogConfirmRes
        })
     }
     private fun uploadImages() {
-        viewModel.uploadImageWithWorkManager(
-            viewModel.shootData.value!!
-        )
+//        viewModel.uploadImageWithWorkManager(
+//            viewModel.shootData.value!!
+//        )
 
-//        viewLifecycleOwner.lifecycleScope.launch {
-//            viewModel.
-//            insertImage(viewModel.shootData.value!!)
-//        }
+        viewLifecycleOwner.lifecycleScope.launch {
+            viewModel.
+            insertImage(viewModel.shootData.value!!)
+        }
     }
 
     fun updateTotalImages() {

@@ -5,7 +5,6 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.spyneai.base.network.Resource
-import com.spyneai.model.carbackgroundgif.CarBackgrounGifResponse
 import com.spyneai.shoot.data.model.CarsBackgroundRes
 import com.spyneai.shoot.data.model.ProcessSkuRes
 import com.spyneai.shoot.data.model.Sku
@@ -52,7 +51,7 @@ class ProcessViewModel : ViewModel() {
                         "https://storage.googleapis.com/spyne-website/static/website-themes/clippr/comp_backgroundV2/601_2.png"
                     )
                 )
-                _carGifRes.value =  Resource.Sucess(CarsBackgroundRes(carGifList,"Success",200))
+                _carGifRes.value =  Resource.Success(CarsBackgroundRes(carGifList,"Success",200))
             }
             "Ola Cabs" -> {
                 val carGifList = ArrayList<CarsBackgroundRes.Data>()
@@ -75,7 +74,7 @@ class ProcessViewModel : ViewModel() {
                         "https://storage.googleapis.com/spyne-website/static/website-themes/clippr/comp_backgroundV2/923_2.png"
                     )
                 )
-                _carGifRes.value =  Resource.Sucess(CarsBackgroundRes(carGifList,"Success",200))
+                _carGifRes.value =  Resource.Success(CarsBackgroundRes(carGifList,"Success",200))
 
             }
 

@@ -46,7 +46,7 @@ class CreateProjectAndSkuDialog : BaseDialogFragment<ShootViewModel,DialogCreate
 
         viewModel.createProjectRes.observe(viewLifecycleOwner,{
             when(it){
-                    is Resource.Sucess -> {
+                    is Resource.Success -> {
                         requireContext().captureEvent(
                             Events.CREATE_PROJECT,
                             Properties().putValue("project_name",projectName))
@@ -87,12 +87,13 @@ class CreateProjectAndSkuDialog : BaseDialogFragment<ShootViewModel,DialogCreate
             Utilities.getPreference(requireContext(),AppConstants.AUTH_KEY).toString(),projectId,
             requireActivity().intent.getStringExtra(AppConstants.CATEGORY_ID).toString(),
             prod_sub_cat_id!!,
-            viewModel.sku.value?.skuName.toString()
+            viewModel.sku.value?.skuName.toString(),
+            8
         )
 
         viewModel.createSkuRes.observe(viewLifecycleOwner,{
             when(it) {
-                is Resource.Sucess -> {
+                is Resource.Success -> {
                     requireContext().captureEvent(
                         Events.CREATE_SKU,
                         Properties().putValue("sku_name",viewModel.sku.value?.skuName.toString())

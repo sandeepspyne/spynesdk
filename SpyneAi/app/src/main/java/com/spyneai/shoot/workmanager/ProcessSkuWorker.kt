@@ -65,7 +65,7 @@ class ProcessSkuWorker (val appContext: Context, workerParams: WorkerParameters)
             jobs!!.await()
         }
 
-        return if (jobs?.getCompleted() is Resource.Sucess) {
+        return if (jobs?.getCompleted() is Resource.Success) {
             com.spyneai.shoot.utils.log("Processed sku success")
             captureEvent(Events.PROCESS,properties,true,null)
             Result.success()

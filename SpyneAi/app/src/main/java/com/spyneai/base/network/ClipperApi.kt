@@ -24,7 +24,7 @@ interface ClipperApi {
         @Part("sku_id") sku_id: RequestBody?,
         @Part("image_category") image_category: RequestBody?,
         @Part("auth_key") auth_key: RequestBody?,
-        @Part("frame_seq_no") frame_seq_no: RequestBody?,
+        @Part("frame_seq_no") frame_seq_no: Int,
         @Part file: MultipartBody.Part
     ): UploadImageResponse
 
@@ -71,7 +71,8 @@ interface ClipperApi {
                               @Field("project_id") projectId : String,
                               @Field("prod_cat_id") prodCatId : String,
                           @Field("prod_sub_cat_id") prodSubCatId : String,
-                          @Field("sku_name") skuName : String) : CreateSkuRes
+                          @Field("sku_name") skuName : String,
+        @Field("total_frames") totalFrames : Int) : CreateSkuRes
 
     @Multipart
     @POST("v2/backgrounds/fetchEnterpriseBgs")
