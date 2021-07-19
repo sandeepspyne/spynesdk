@@ -55,7 +55,8 @@ class SubCategoryConfirmationDialog : BaseDialogFragment<ShootViewModel, DialogS
             Utilities.getPreference(requireContext(),AppConstants.AUTH_KEY).toString(),projectId,
             requireActivity().intent.getStringExtra(AppConstants.CATEGORY_ID).toString(),
             prod_sub_cat_id!!,
-            viewModel.sku.value?.skuName.toString()
+            viewModel.sku.value?.skuName.toString(),
+            viewModel.exterirorAngles.value!!
         )
 
         viewModel.createSkuRes.observe(viewLifecycleOwner,{
@@ -65,7 +66,8 @@ class SubCategoryConfirmationDialog : BaseDialogFragment<ShootViewModel, DialogS
                         Events.CREATE_SKU,
                         Properties().putValue("sku_name",viewModel.sku.value?.skuName.toString())
                             .putValue("project_id",projectId)
-                            .putValue("prod_sub_cat_id",prod_sub_cat_id))
+                            .putValue("prod_sub_cat_id",prod_sub_cat_id)
+                            .putValue("angles",viewModel.exterirorAngles.value!!))
 
                     Utilities.hideProgressDialog()
                     val sku = viewModel.sku.value

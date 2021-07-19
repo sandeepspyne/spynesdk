@@ -1,5 +1,7 @@
 package com.spyneai.shoot.ui.ecom
 
+import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -9,13 +11,14 @@ import androidx.lifecycle.lifecycleScope
 import com.bumptech.glide.Glide
 import com.posthog.android.Properties
 import com.spyneai.base.BaseDialogFragment
-import com.spyneai.base.BaseFragment
 import com.spyneai.captureEvent
 import com.spyneai.databinding.ConfirmReshootEcomDialogBinding
 import com.spyneai.posthog.Events
 import com.spyneai.shoot.data.ShootViewModel
-import kotlinx.coroutines.launch
 import com.spyneai.shoot.utils.log
+import kotlinx.coroutines.launch
+import java.io.File
+
 
 class ConfirmReshootEcomDialog :
     BaseDialogFragment<ShootViewModel, ConfirmReshootEcomDialogBinding>() {
@@ -32,7 +35,7 @@ class ConfirmReshootEcomDialog :
             .load(uri)
             .into(binding.ivCapturedImage)
 
-        log("Image set to dialog: "+uri)
+        log("Image set to dialog: " + uri)
 
         binding.btReshootImage.setOnClickListener {
             viewModel.reshootCapturedImage.value = true
@@ -47,8 +50,16 @@ class ConfirmReshootEcomDialog :
                 Events.RESHOOT,
                 properties
             )
+
+            val file = File(viewModel.shootList.value?.get(viewModel.shootList.value!!.size - 1)?.capturedImage)
+
+            if (file.exists())
+                file.delete()
+
             //remove last item from shoot list
             viewModel.shootList.value?.removeAt(viewModel.shootList.value!!.size - 1)
+
+
             dismiss()
         }
 

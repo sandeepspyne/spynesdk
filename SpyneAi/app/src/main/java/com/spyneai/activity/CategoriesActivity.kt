@@ -82,7 +82,22 @@ class CategoriesActivity : AppCompatActivity(){
                     override fun onBtnClick(position: Int) {
                         Log.e("position cat", position.toString())
                         when(position) {
-                            0,1 -> {
+                            0 -> {
+                            Utilities.savePrefrence(
+                                this@CategoriesActivity,
+                                AppConstants.CATEGORY_NAME,
+                                categoriesResponseList[position].prod_cat_name
+                            )
+
+                            val intent = Intent(this@CategoriesActivity, BeforeAfterActivity::class.java)
+                            intent.putExtra(AppConstants.CATEGORY_ID,categoriesResponseList[position].prod_cat_id)
+                            intent.putExtra(AppConstants.CATEGORY_NAME,categoriesResponseList[position].prod_cat_name)
+                            intent.putExtra(AppConstants.IMAGE_URL,categoriesResponseList[position].display_thumbnail)
+                            intent.putExtra(AppConstants.DESCRIPTION,categoriesResponseList[position].description)
+                            intent.putExtra(AppConstants.COLOR,categoriesResponseList[position].color_code)
+                            startActivity(intent)
+                            }
+                                1 -> {
                                 Utilities.savePrefrence(
                                     this@CategoriesActivity,
                                     AppConstants.CATEGORY_NAME,
@@ -97,21 +112,21 @@ class CategoriesActivity : AppCompatActivity(){
                                 intent.putExtra(AppConstants.COLOR,categoriesResponseList[position].color_code)
                                 startActivity(intent)
                             }
-                            2 -> {
-                                Utilities.savePrefrence(
-                                    this@CategoriesActivity,
-                                    AppConstants.CATEGORY_NAME,
-                                    categoriesResponseList[position].prod_cat_name
-                                )
-
-                                val intent = Intent(this@CategoriesActivity, ShootActivity::class.java)
-                                intent.putExtra(AppConstants.CATEGORY_ID,categoriesResponseList[position].prod_cat_id)
-                                intent.putExtra(AppConstants.CATEGORY_NAME,categoriesResponseList[position].prod_cat_name)
-                                intent.putExtra(AppConstants.IMAGE_URL,categoriesResponseList[position].display_thumbnail)
-                                intent.putExtra(AppConstants.DESCRIPTION,categoriesResponseList[position].description)
-                                intent.putExtra(AppConstants.COLOR,categoriesResponseList[position].color_code)
-                                startActivity(intent)
-                            }
+//                            2 -> {
+//                                Utilities.savePrefrence(
+//                                    this@CategoriesActivity,
+//                                    AppConstants.CATEGORY_NAME,
+//                                    categoriesResponseList[position].prod_cat_name
+//                                )
+//
+//                                val intent = Intent(this@CategoriesActivity, ShootActivity::class.java)
+//                                intent.putExtra(AppConstants.CATEGORY_ID,categoriesResponseList[position].prod_cat_id)
+//                                intent.putExtra(AppConstants.CATEGORY_NAME,categoriesResponseList[position].prod_cat_name)
+//                                intent.putExtra(AppConstants.IMAGE_URL,categoriesResponseList[position].display_thumbnail)
+//                                intent.putExtra(AppConstants.DESCRIPTION,categoriesResponseList[position].description)
+//                                intent.putExtra(AppConstants.COLOR,categoriesResponseList[position].color_code)
+//                                startActivity(intent)
+//                            }
                             else ->{
                                 Toast.makeText(this@CategoriesActivity,
                                     "Coming Soon !",

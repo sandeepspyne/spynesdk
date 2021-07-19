@@ -52,7 +52,8 @@ class CreateSkuEcomDialog : BaseDialogFragment<ShootViewModel, CreateSkuEcomDial
             projectId,
             requireActivity().intent.getStringExtra(AppConstants.CATEGORY_ID).toString(),
             "",
-            skuName
+            skuName,
+            0
         )
 
         viewModel.createSkuRes.observe(viewLifecycleOwner, {

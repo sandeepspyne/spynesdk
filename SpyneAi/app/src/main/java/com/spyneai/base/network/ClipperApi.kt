@@ -67,10 +67,11 @@ interface ClipperApi {
     @FormUrlEncoded
     @POST("v2/sku/create")
     suspend fun createSku(@Field("auth_key") authKey : String,
-                              @Field("project_id") projectId : String,
-                              @Field("prod_cat_id") prodCatId : String,
+                          @Field("project_id") projectId : String,
+                          @Field("prod_cat_id") prodCatId : String,
                           @Field("prod_sub_cat_id") prodSubCatId : String,
-                          @Field("sku_name") skuName : String) : CreateSkuRes
+                          @Field("sku_name") skuName : String,
+                          @Field("total_frames") totalFrames : Int) : CreateSkuRes
 
     @Multipart
     @POST("v2/backgrounds/fetchEnterpriseBgs")

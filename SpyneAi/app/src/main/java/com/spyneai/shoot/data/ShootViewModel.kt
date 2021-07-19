@@ -264,18 +264,11 @@ class ShootViewModel : ViewModel(){
         _createProjectRes.value = repository.createProject(authKey, projectName, prodCatId)
     }
 
-    fun createSku(
-        authKey: String, projectId: String, prodCatId: String, prodSubCatId: String,
-        skuName: String
-    ) = viewModelScope.launch {
+    fun createSku(authKey: String,projectId : String
+                  ,prodCatId : String,prodSubCatId : String,
+                  skuName : String,totalFrames : Int) = viewModelScope.launch {
         _createSkuRes.value = Resource.Loading
-        _createSkuRes.value = repository.createSku(
-            authKey,
-            projectId,
-            prodCatId,
-            prodSubCatId,
-            skuName
-        )
+        _createSkuRes.value = repository.createSku(authKey, projectId, prodCatId, prodSubCatId, skuName,totalFrames)
     }
 
     fun insertSku(sku: Sku) {

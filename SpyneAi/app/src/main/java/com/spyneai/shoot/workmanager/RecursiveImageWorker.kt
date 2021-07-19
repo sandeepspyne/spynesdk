@@ -1,6 +1,7 @@
 package com.spyneai.shoot.workmanager
 
 import android.content.Context
+import android.os.Handler
 import android.util.Log
 import androidx.concurrent.callback.CallbackToFutureAdapter
 import androidx.work.*
@@ -80,6 +81,7 @@ class RecursiveImageWorker(private val appContext: Context, workerParams: Worker
             val authKey =
                 Utilities.getPreference(appContext,AppConstants.AUTH_KEY).toString().toRequestBody(MultipartBody.FORM)
 
+
             var imageFile: MultipartBody.Part? = null
             val requestFile =
                 File(image.imagePath).asRequestBody("multipart/form-data".toMediaTypeOrNull())
@@ -109,6 +111,7 @@ class RecursiveImageWorker(private val appContext: Context, workerParams: Worker
             }else{
                 com.spyneai.shoot.utils.log("Upload image failed")
                 val throwable = jobs?.getCompletionExceptionOrNull()
+
                 var error = ""
 
                 when(throwable) {
@@ -124,7 +127,11 @@ class RecursiveImageWorker(private val appContext: Context, workerParams: Worker
                     }
 
                     else -> {
-                       error = "Request failed due to internet connection"
+                        if (throwable == null)
+                            error = "Invalid auth key"
+                        else
+                            error = "Request failed due to internet connection"
+
                     }
                 }
 
@@ -164,17 +171,19 @@ class RecursiveImageWorker(private val appContext: Context, workerParams: Worker
         //remove uploaded item from database
         localRepository.deleteImage(itemId)
 
-        val constraints: Constraints = Constraints.Builder()
-            .setRequiredNetworkType(NetworkType.CONNECTED)
-            .build()
+        Handler().postDelayed({
+            val constraints: Constraints = Constraints.Builder()
+                .setRequiredNetworkType(NetworkType.CONNECTED)
+                .build()
 
-        val longWorkRequest = OneTimeWorkRequest.Builder(RecursiveImageWorker::class.java)
-            .addTag("Long Running Worker")
+            val longWorkRequest = OneTimeWorkRequest.Builder(RecursiveImageWorker::class.java)
+                .addTag("Long Running Worker")
 
-        WorkManager.getInstance(BaseApplication.getContext())
-            .enqueue(
-                longWorkRequest
-                    .setConstraints(constraints)
-                    .build())
+            WorkManager.getInstance(BaseApplication.getContext())
+                .enqueue(
+                    longWorkRequest
+                        .setConstraints(constraints)
+                        .build())
+        },300)
     }
 }
