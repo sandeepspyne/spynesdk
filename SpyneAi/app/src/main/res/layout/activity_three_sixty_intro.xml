@@ -40,7 +40,7 @@
         android:layout_width="0dp"
         android:layout_height="0dp"
         app:defaultNavHost="true"
-        app:navGraph="@navigation/nav_trim_video"
+        app:navGraph="@navigation/nav_three_sixty_intro"
         app:layout_constraintTop_toBottomOf="@id/fl_tool_bar"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"

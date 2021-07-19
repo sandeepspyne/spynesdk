@@ -8,7 +8,7 @@ import com.spyneai.orders.ui.MyOngoingOrdersFragment
 import com.spyneai.threesixty.ui.framents.ThreeSixtySampleFragment
 
 class ThreeSixtySampleAdapter (fa: FragmentActivity) : FragmentStateAdapter(fa) {
-    override fun getItemCount(): Int = 2
+    override fun getItemCount(): Int = 3
 
     override fun createFragment(position: Int): Fragment {
         return when(position) {
