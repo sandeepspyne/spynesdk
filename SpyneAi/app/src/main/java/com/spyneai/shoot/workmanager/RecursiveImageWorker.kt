@@ -80,8 +80,6 @@ class RecursiveImageWorker(private val appContext: Context, workerParams: Worker
             val authKey =
                 Utilities.getPreference(appContext,AppConstants.AUTH_KEY).toString().toRequestBody(MultipartBody.FORM)
 
-            val frameSeqNumber = image.sequence?.toString()?.toRequestBody(MultipartBody.FORM)
-
             var imageFile: MultipartBody.Part? = null
             val requestFile =
                 File(image.imagePath).asRequestBody("multipart/form-data".toMediaTypeOrNull())
@@ -97,7 +95,7 @@ class RecursiveImageWorker(private val appContext: Context, workerParams: Worker
                 jobs =
                     async {
                         shootRepository.uploadImage(projectId!!,
-                            skuId!!, imageCategory!!,authKey, frameSeqNumber!!,imageFile)
+                            skuId!!, imageCategory!!,authKey, image.sequence!!,imageFile)
                     }
 
                 jobs!!.await()

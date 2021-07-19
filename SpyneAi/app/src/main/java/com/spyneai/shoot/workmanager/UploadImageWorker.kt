@@ -61,15 +61,13 @@ class UploadImageWorker(val appContext: Context, workerParams: WorkerParameters)
                 requestFile
             )
 
-        val frameSeqNumber = inputData.getString("sequence").toString().toRequestBody(MultipartBody.FORM)
-
         var jobs : Deferred<Resource<Any>>?
 
         coroutineScope {
             jobs =
                 async {
                     shootRepository.uploadImage(projectId!!,
-                        skuId!!, imageCategory!!,authKey, frameSeqNumber!!,image)
+                        skuId!!, imageCategory!!,authKey, inputData.getInt("sequence",0),image)
                 }
 
             jobs!!.await()

@@ -25,6 +25,7 @@ class ProcessActivity : AppCompatActivity() {
         processViewModel.sku.value = sku
 
         processViewModel.exteriorAngles.value =  intent.getIntExtra("exterior_angles",0)
+        processViewModel.interiorMiscShootsCount = intent.getIntExtra("interior_misc_count",0)
         processViewModel.categoryName = intent.getStringExtra(AppConstants.CATEGORY_NAME)
 
         if (intent.getBooleanExtra("process_sku",true)){

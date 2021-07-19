@@ -13,6 +13,7 @@ import com.spyneai.camera2.OverlaysResponse
 import com.spyneai.camera2.ShootDimensions
 import com.spyneai.dashboard.response.NewSubCatResponse
 import com.spyneai.shoot.data.model.*
+import com.spyneai.shoot.workmanager.FrameUpdateWorker
 import com.spyneai.shoot.workmanager.OverlaysPreloadWorker
 import com.spyneai.shoot.workmanager.RecursiveImageWorker
 import com.spyneai.shoot.workmanager.UploadImageWorker
@@ -163,6 +164,7 @@ class ShootViewModel : ViewModel(){
         _updateTotalFramesRes.value = Resource.Loading
         _updateTotalFramesRes.value = repository.updateTotalFrames(skuId, totalFrames, authKey)
     }
+
 
     fun getSelectedAngles() = exterirorAngles.value
 

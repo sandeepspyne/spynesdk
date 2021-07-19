@@ -35,6 +35,7 @@ class ShootActivity : AppCompatActivity() {
     lateinit var overlaysEcomFragment: OverlaysEcomFragment
     lateinit var skuDetailFragment: SkuDetailFragment
     lateinit var projectDetailFragment: ProjectDetailFragment
+    lateinit var shootViewModel : ShootViewModel
     val TAG = "ShootActivity"
 
 
@@ -45,7 +46,7 @@ class ShootActivity : AppCompatActivity() {
 
         setContentView(R.layout.activity_shoot)
 
-        val shootViewModel = ViewModelProvider(this, ViewModelFactory()).get(ShootViewModel::class.java)
+        shootViewModel = ViewModelProvider(this, ViewModelFactory()).get(ShootViewModel::class.java)
 
         val categoryDetails = CategoryDetails()
 
@@ -146,12 +147,35 @@ class ShootActivity : AppCompatActivity() {
                     this.putExtra("sku_id", shootViewModel.sku.value?.skuId)
                     this.putExtra("exterior_angles", shootViewModel.exterirorAngles.value)
                     this.putExtra("process_sku",shootViewModel.processSku)
+                    this.putExtra("interior_misc_count",getInteriorMiscCount())
                     startActivity(this)
                 }
             }
         })
     }
 
+    private fun getInteriorMiscCount(): Int {
+        var total = 0
+
+        val list = shootViewModel.shootList.value
+
+        val interiorList = list?.filter {
+            it.image_category == "Interior"
+        }
+
+        if (interiorList != null)
+            total = interiorList.size
+
+
+        val miscList = list?.filter {
+            it.image_category == "Focus Shoot"
+        }
+
+        if (miscList != null)
+            total+= miscList.size
+
+        return total
+    }
     /**
      * Check for the permissions
      */
