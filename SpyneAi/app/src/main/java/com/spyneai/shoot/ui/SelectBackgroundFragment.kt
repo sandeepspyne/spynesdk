@@ -33,6 +33,7 @@ class SelectBackgroundFragment : BaseFragment<ProcessViewModel,FragmentSelectBac
     lateinit var carBackgroundGifList: ArrayList<CarsBackgroundRes.Data>
     var backgroundSelect: String = ""
     lateinit var carbackgroundsAdapter: NewCarBackgroundAdapter
+    val TAG = "SelectBackgroundFragment"
 
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -67,10 +68,14 @@ class SelectBackgroundFragment : BaseFragment<ProcessViewModel,FragmentSelectBac
     }
 
     private fun updateTotalFrames() {
+        val totalFrames = viewModel.exteriorAngles.value?.plus(viewModel.interiorMiscShootsCount)
+
+        Log.d(TAG, "updateTotalFrames: "+totalFrames)
+
         viewModel.updateTotalFrames(
             Utilities.getPreference(requireContext(),AppConstants.AUTH_KEY).toString(),
             viewModel.sku.value?.skuId!!,
-            viewModel.interiorMiscShootsCount.toString()
+            totalFrames.toString()
         )
     }
 
