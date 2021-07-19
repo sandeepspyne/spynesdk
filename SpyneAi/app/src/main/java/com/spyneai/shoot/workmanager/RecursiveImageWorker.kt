@@ -171,7 +171,6 @@ class RecursiveImageWorker(private val appContext: Context, workerParams: Worker
         //remove uploaded item from database
         localRepository.deleteImage(itemId)
 
-        Handler().postDelayed({
             val constraints: Constraints = Constraints.Builder()
                 .setRequiredNetworkType(NetworkType.CONNECTED)
                 .build()
@@ -184,6 +183,5 @@ class RecursiveImageWorker(private val appContext: Context, workerParams: Worker
                     longWorkRequest
                         .setConstraints(constraints)
                         .build())
-        },300)
     }
 }
