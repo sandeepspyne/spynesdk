@@ -20,6 +20,7 @@ class ThreeSixtyViewModel : ViewModel() {
     private val threeSixtyRepository = ThreeSixtyRepository()
 
     val isDemoClicked: MutableLiveData<Boolean> = MutableLiveData()
+    val title : MutableLiveData<String> = MutableLiveData()
 
     val videoDetails = VideoDetails()
 

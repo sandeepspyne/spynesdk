@@ -13,6 +13,7 @@ import com.spyneai.shoot.data.ShootViewModel
 import com.spyneai.shoot.data.model.CategoryDetails
 import com.spyneai.threesixty.data.ThreeSixtyViewModel
 import com.spyneai.threesixty.ui.dialogs.ThreeSixtyExteriorGifDialog
+import com.spyneai.threesixty.ui.framents.ThreeSixtyIntroFragment
 
 class ThreeSixtyActivity : AppCompatActivity() {
 
@@ -41,8 +42,8 @@ class ThreeSixtyActivity : AppCompatActivity() {
         threeSixtyViewModel.categoryDetails.value = categoryDetails
 
         supportFragmentManager.beginTransaction()
-            .add(binding.flContainer.id,RecordVideoFragment())
-            .add(binding.flContainer.id,SubcategoriesFragment())
+            .add(binding.flContainer.id,ThreeSixtyIntroFragment())
+           // .add(binding.flContainer.id,SubcategoriesFragment())
             .commit()
 
     }
