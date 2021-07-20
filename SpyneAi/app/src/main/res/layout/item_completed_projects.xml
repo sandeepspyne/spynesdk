@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout
-    android:id="@+id/clMain"
+<androidx.cardview.widget.CardView
+    android:id="@+id/cvMain"
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
@@ -12,6 +12,10 @@
     android:layout_marginBottom="22dp"
     app:cardElevation="@dimen/dp_5"
     app:cardCornerRadius="@dimen/dp_5">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
 
     <androidx.cardview.widget.CardView
         android:id="@+id/cvThumbnail"
@@ -236,4 +240,6 @@
         android:paddingTop="@dimen/dp_3"
         android:paddingBottom="@dimen/dp_3"/>
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</androidx.cardview.widget.CardView>

@@ -22,16 +22,17 @@
     <fragment
         android:id="@+id/nav_completed_projects_fragment"
         android:name="com.spyneai.orders.ui.fragment.CompletedProjectsFragment"
-        android:label="MyCompletedOrdersFragment" >
+        android:label="CompletedProjectsFragment" >
+
         <action
-            android:id="@+id/action_nav_my_completed_orders_to_skusFragment"
-            app:destination="@id/skusFragment" />
+            android:id="@+id/action_nav_completed_projects_fragment_to_nav_completed_skus_fragment"
+            app:destination="@id/nav_completed_skus_fragment" />
     </fragment>
 
 
     <fragment
-        android:id="@+id/skusFragment"
+        android:id="@+id/nav_completed_skus_fragment"
         android:name="com.spyneai.orders.ui.fragment.CompletedSkusFragment"
-        android:label="CompletedSkusFragment" />
+        android:label="CompletedSkusFragment"></fragment>
 
 </navigation>

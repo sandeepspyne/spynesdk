@@ -6,9 +6,14 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
+import androidx.cardview.widget.CardView
 import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.navigation.Navigation.findNavController
+import androidx.navigation.findNavController
+import androidx.navigation.fragment.NavHostFragment.findNavController
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
+import com.google.android.play.core.assetpacks.v
 import com.spyneai.R
 import com.spyneai.orders.data.response.GetProjectsResponse
 import com.spyneai.orders.data.viewmodel.MyOrdersViewModel
@@ -27,7 +32,7 @@ class MyCompletedProjectsAdapter(
         val tvDate: TextView = view.findViewById(R.id.tvDate)
         val tvPaid: TextView = view.findViewById(R.id.tvPaid)
         val ivThumbnail: ImageView = view.findViewById(R.id.ivThumbnail)
-        val clMain: ConstraintLayout = view.findViewById(R.id.clMain)
+        val cvMain: CardView = view.findViewById(R.id.cvMain)
 
     }
 
@@ -43,18 +48,19 @@ class MyCompletedProjectsAdapter(
     override fun onBindViewHolder(holder: MyCompletedProjectsAdapter.ViewHolder, position: Int) {
 
 
-        if (getProjectList[position].sku[position].images.size != 0)
+        if (getProjectList[0].sku[0].images.size != 0)
         Glide.with(context) // replace with 'this' if it's in activity
-            .load(getProjectList[position].sku[position].images[position].input_lres)
+            .load(getProjectList[position].sku[0].images[0].input_lres)
             .error(R.mipmap.defaults) // show error drawable if the image is not a gif
             .into(holder.ivThumbnail)
 
         holder.tvProjectName.text = getProjectList[position].project_name
         holder.tvSkus.text = getProjectList[position].total_sku.toString()
-        holder.tvImages.text = getProjectList[position].sku[position].total_images.toString()
+//        holder.tvImages.text = getProjectList[position].sku[position].total_images.toString()
 
-        holder.clMain.setOnClickListener {
+        holder.cvMain.setOnClickListener {
             viewModel.position.value = position
+                it.findNavController().navigate(R.id.action_nav_completed_projects_fragment_to_nav_completed_skus_fragment)
         }
 
 

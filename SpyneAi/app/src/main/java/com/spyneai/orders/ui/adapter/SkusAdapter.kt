@@ -40,10 +40,10 @@ class SkusAdapter(
     override fun onBindViewHolder(holder: SkusAdapter.ViewHolder, position: Int) {
 
 
-        Glide.with(context) // replace with 'this' if it's in activity
-            .load(getProjectList[position].sku[position].images[position].input_lres)
-            .error(R.mipmap.defaults) // show error drawable if the image is not a gif
-            .into(holder.ivThumbnail)
+            Glide.with(context) // replace with 'this' if it's in activity
+                .load(skuList[position].images[0].input_lres)
+                .error(R.mipmap.defaults) // show error drawable if the image is not a gif
+                .into(holder.ivThumbnail)
 
         val skuPosition = viewModel.position
 
