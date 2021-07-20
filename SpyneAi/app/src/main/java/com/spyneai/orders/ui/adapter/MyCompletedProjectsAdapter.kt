@@ -43,6 +43,7 @@ class MyCompletedProjectsAdapter(
     override fun onBindViewHolder(holder: MyCompletedProjectsAdapter.ViewHolder, position: Int) {
 
 
+        if (getProjectList[position].sku[position].images.size != 0)
         Glide.with(context) // replace with 'this' if it's in activity
             .load(getProjectList[position].sku[position].images[position].input_lres)
             .error(R.mipmap.defaults) // show error drawable if the image is not a gif
