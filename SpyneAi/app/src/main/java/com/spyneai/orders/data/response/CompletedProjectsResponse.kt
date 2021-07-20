@@ -17,10 +17,14 @@ data class GetProjectsResponse(
 
     data class Project_data(
 
-        @SerializedName("project_name") val project_name: String,
-        @SerializedName("project_id") val project_id: String,
-        @SerializedName("total_sku") val total_sku: Int,
-        @SerializedName("sku") val sku: List<Sku>
+        @SerializedName("project_name") val project_name : String,
+        @SerializedName("project_id") val project_id : String,
+        @SerializedName("total_sku") val total_sku : Int,
+        @SerializedName("created_on") val created_on : String,
+        @SerializedName("category") val category : String,
+        @SerializedName("sub_category") val sub_category : String,
+        @SerializedName("total_images") val total_images : Int,
+        @SerializedName("sku") val sku : List<Sku>
     )
 
     data class Sku(

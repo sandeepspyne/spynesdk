@@ -17,6 +17,7 @@ class MyOrdersViewModel : ViewModel() {
     private val repository = MyOrdersRepository()
 
     val position: MutableLiveData<Int> = MutableLiveData()
+    val projectItemClicked: MutableLiveData<Boolean> = MutableLiveData()
 
     private val _CompletedSKUsResponse: MutableLiveData<Resource<CompletedSKUsResponse>> = MutableLiveData()
     val completedSKUsResponse: LiveData<Resource<CompletedSKUsResponse>>

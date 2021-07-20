@@ -1,15 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_marginLeft="24dp"
-    android:layout_marginTop="22dp"
-    android:layout_marginRight="24dp"
-    android:layout_marginBottom="22dp"
+    android:layout_marginTop="@dimen/dp_10"
+    android:layout_marginLeft="@dimen/dp_20"
+    android:layout_marginRight="@dimen/dp_10"
+    android:layout_marginBottom="@dimen/dp_10"
     app:cardCornerRadius="@dimen/dp_5"
     app:cardElevation="@dimen/dp_5">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
 
     <androidx.cardview.widget.CardView
         android:id="@+id/cvThumbnail"
@@ -233,6 +237,7 @@
             android:fontFamily="@font/bold"
             android:textColor="@color/black"
             android:textSize="10sp"
+            android:visibility="invisible"
             tools:text="2/5" />
 
         <androidx.constraintlayout.widget.Group
@@ -270,3 +275,5 @@
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>
+
+</androidx.cardview.widget.CardView>
