@@ -6,7 +6,7 @@ class VideoDetails {
     var skuId : String? = null
     var categoryName : String = "Automobiles"
     var categoryId : String? = null
-    var subCategory : String = "Sedan"
+    var subCategory : String = "sedan"
     var type : String = "360_exterior"
     var videoPath : String? = null
     var shootMode : Int = 0

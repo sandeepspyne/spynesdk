@@ -468,6 +468,7 @@ class RecordVideoFragment : BaseFragment<ThreeSixtyViewModel,FragmentRecordVideo
         trimIntent.putExtra("project_id",viewModel.videoDetails.projectId)
         trimIntent.putExtra(AppConstants.CATEGORY_NAME,viewModel.videoDetails.categoryName)
         trimIntent.putExtra(AppConstants.CATEGORY_ID,viewModel.videoDetails.categoryId)
+        trimIntent.putExtra("frames",viewModel.videoDetails.frames)
         trimIntent.putExtra("shoot_mode",intent?.getIntExtra("shoot_mode",0))
 
         startActivity(trimIntent)

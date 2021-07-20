@@ -29,6 +29,7 @@ class TrimActivity : AppCompatActivity() {
             skuId = intent.getStringExtra("sku_id")
             skuName = intent.getStringExtra("sku_name")
             projectId = intent.getStringExtra("project_id")
+            frames = intent.getIntExtra("frames",0)
             shootMode = intent.getIntExtra("shoot_mode",0)
         }
 

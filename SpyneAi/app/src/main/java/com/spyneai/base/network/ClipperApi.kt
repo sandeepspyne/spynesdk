@@ -133,16 +133,17 @@ interface ClipperApi {
     @Multipart
     @POST("v2/video/upload_two")
     suspend fun process360(
-        @Part("auth_key") authKey: String,
-        @Part("type") type: String,
-        @Part("project_id") projectId: String,
-        @Part("sku_name") skuName: String,
-        @Part("sku_id") skuId: String,
-        @Part("category") category: String,
-        @Part("sub_category") subCategory: String,
-        @Part("frames") frames: Int,
+        @Part("auth_key") authKey: RequestBody,
+        @Part("type") type: RequestBody,
+        @Part("project_id") projectId: RequestBody,
+        @Part("sku_name") skuName: RequestBody,
+        @Part("sku_id") skuId: RequestBody,
+        @Part("category") category: RequestBody,
+        @Part("sub_category") subCategory: RequestBody,
+        @Part("frames") frames: RequestBody,
+        @Part("background_id") backgroundId: RequestBody,
         @Part videoFile: MultipartBody.Part,
-        @Part("video_url") videoUrl: String? = null
+        @Part("video_url") videoUrl: RequestBody? = null,
     ) : ProcessThreeSixtyRes
 
 }

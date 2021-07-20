@@ -30,7 +30,6 @@ class ThreeSixtyShootSummaryFragment : BaseFragment<ThreeSixtyViewModel, Fragmen
 
         binding.btnProceed.setOnClickListener {
 
-
             //process image call
             processSku()
         }
@@ -43,18 +42,18 @@ class ThreeSixtyShootSummaryFragment : BaseFragment<ThreeSixtyViewModel, Fragmen
         viewModel.process360Res.observe(viewLifecycleOwner,{
             when(it) {
                 is Resource.Success -> {
-                    Utilities.hideProgressDialog()
+                    //Utilities.hideProgressDialog()
                     Navigation.findNavController(binding.btnProceed)
                         .navigate(R.id.action_threeSixtyShootSummaryFragment_to_videoProcessingStartedFragment)
 
                     viewModel.title.value = "Processing Started"
                 }
                 is Resource.Failure -> {
-                    Utilities.hideProgressDialog()
+                   // Utilities.hideProgressDialog()
                     handleApiError(it) {processSku()}
                 }
 
-                is Resource.Loading -> Utilities.showProgressDialog(requireContext())
+                //is Resource.Loading -> Utilities.showProgressDialog(requireContext())
             }
         })
     }
