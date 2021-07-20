@@ -20,14 +20,23 @@
         android:label="MyOngoingOrdersFragment" />
     <fragment
         android:id="@+id/nav_my_completed_orders"
-        android:name="com.spyneai.orders.ui.MyCompletedOrdersFragment"
+        android:name="com.spyneai.orders.ui.fragment.CompletedProjectsFragment"
         android:label="MyCompletedOrdersFragment" >
         <action
             android:id="@+id/nav_request_download"
             app:destination="@id/nav_request_download" />
+        <action
+            android:id="@+id/action_nav_my_completed_orders_to_skusFragment"
+            app:destination="@id/skusFragment" />
     </fragment>
     <fragment
         android:id="@+id/nav_request_download"
         android:name="com.spyneai.orders.ui.fragment.DownloadRequestFragment"
         android:label="DownloadRequestFragment" />
+
+    <fragment
+        android:id="@+id/skusFragment"
+        android:name="com.spyneai.orders.ui.fragment.CompletedSkusFragment"
+        android:label="CompletedSkusFragment" />
+
 </navigation>

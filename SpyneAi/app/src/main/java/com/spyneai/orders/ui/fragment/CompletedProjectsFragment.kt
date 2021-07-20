@@ -1,5 +1,4 @@
 package com.spyneai.orders.ui.fragment
-
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -12,25 +11,23 @@ import com.spyneai.base.BaseFragment
 import com.spyneai.base.network.Resource
 import com.spyneai.captureFailureEvent
 import com.spyneai.dashboard.ui.handleApiError
-import com.spyneai.databinding.FragmentCompletedSkusBinding
+import com.spyneai.databinding.FragmentCompletedProjectsBinding
 import com.spyneai.needs.AppConstants
 import com.spyneai.needs.Utilities
-import com.spyneai.orders.data.response.GetProjectsResponse
 import com.spyneai.orders.data.viewmodel.MyOrdersViewModel
-import com.spyneai.orders.ui.adapter.SkusAdapter
+import com.spyneai.orders.ui.adapter.MyCompletedProjectsAdapter
 import com.spyneai.posthog.Events
 import com.spyneai.shoot.utils.log
 
-class CompletedSkusFragment : BaseFragment<MyOrdersViewModel, FragmentCompletedSkusBinding>() {
+class CompletedProjectsFragment : BaseFragment<MyOrdersViewModel, FragmentCompletedProjectsBinding>() {
 
-    lateinit var skusAdapter: SkusAdapter
+    lateinit var myCompletedProjectsAdapter: MyCompletedProjectsAdapter
     val status = "completed"
-    lateinit var skuList: ArrayList<GetProjectsResponse.Sku>
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        binding!!.rvSkus.apply {
+        binding!!.rvMyCompletedProjects.apply {
             layoutManager =
                 LinearLayoutManager(
                     requireContext(), LinearLayoutManager.VERTICAL,
@@ -41,8 +38,6 @@ class CompletedSkusFragment : BaseFragment<MyOrdersViewModel, FragmentCompletedS
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
-
-        skuList = ArrayList<GetProjectsResponse.Sku>()
 
 
         binding.shimmerCompletedSKU.startShimmer()
@@ -56,28 +51,16 @@ class CompletedSkusFragment : BaseFragment<MyOrdersViewModel, FragmentCompletedS
                     is Resource.Success -> {
                         binding.shimmerCompletedSKU.stopShimmer()
                         binding.shimmerCompletedSKU.visibility = View.GONE
-                        binding.rvSkus.visibility = View.VISIBLE
-
+                        binding.rvMyCompletedProjects.visibility = View.VISIBLE
                         if (it.value.data != null){
 
-                            binding.tvTotalSku.text = it.value.data.total_skus.toString()
-
-                            skuList.clear()
-                            for (i in 0..it.value.data.project_data.size){
-                                if (i == viewModel.position.value){
-                                    skuList.addAll(it.value.data.project_data[i].sku)
-                                    binding.tvProjectName.text = it.value.data.project_data[i].project_name
-                                }
-
-                            }
-
-                            skusAdapter = SkusAdapter(requireContext(),
-                                it.value.data.project_data, viewModel, skuList
+                            myCompletedProjectsAdapter = MyCompletedProjectsAdapter(requireContext(),
+                                it.value.data.project_data, viewModel
                             )
 
                             val layoutManager: RecyclerView.LayoutManager = LinearLayoutManager(requireContext(), LinearLayoutManager.VERTICAL, false)
-                            binding.rvSkus.setLayoutManager(layoutManager)
-                            binding.rvSkus.setAdapter(skusAdapter)
+                            binding.rvMyCompletedProjects.setLayoutManager(layoutManager)
+                            binding.rvMyCompletedProjects.setAdapter(myCompletedProjectsAdapter)
                         }
                     }
                     is Resource.Loading -> {
@@ -88,7 +71,7 @@ class CompletedSkusFragment : BaseFragment<MyOrdersViewModel, FragmentCompletedS
                         binding.shimmerCompletedSKU.visibility = View.GONE
 
                         if (it.errorCode == 404){
-                            binding.rvSkus.visibility = View.GONE
+                            binding.rvMyCompletedProjects.visibility = View.GONE
                         }else{
                             requireContext().captureFailureEvent(
                                 Events.GET_COMPLETED_ORDERS_FAILED, Properties(),
@@ -103,12 +86,10 @@ class CompletedSkusFragment : BaseFragment<MyOrdersViewModel, FragmentCompletedS
         )
     }
 
-
     override fun getViewModel() = MyOrdersViewModel::class.java
     override fun getFragmentBinding(
         inflater: LayoutInflater,
         container: ViewGroup?
-    ) = FragmentCompletedSkusBinding.inflate(inflater, container, false)
-
+    ) = FragmentCompletedProjectsBinding.inflate(inflater, container, false)
 
 }

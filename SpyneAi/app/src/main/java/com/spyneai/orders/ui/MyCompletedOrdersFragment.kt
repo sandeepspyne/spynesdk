@@ -93,6 +93,8 @@ class MyCompletedOrdersFragment :
             }
         )
     }
+
+
     override fun getViewModel() = MyOrdersViewModel::class.java
 
     override fun getFragmentBinding(
