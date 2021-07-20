@@ -5,6 +5,7 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import com.spyneai.R
 import com.spyneai.databinding.ActivityStartShootBinding
+import com.spyneai.needs.AppConstants
 import com.spyneai.threesixty.ui.ThreeSixtyIntroActivity
 
 class StartShootActivity : AppCompatActivity() {
@@ -18,7 +19,13 @@ class StartShootActivity : AppCompatActivity() {
         setContentView(binding.root)
 
         binding.tvExplore.setOnClickListener {
-            startActivity(Intent(this,ThreeSixtyIntroActivity::class.java))
+            Intent(this,ThreeSixtyIntroActivity::class.java)
+                .apply {
+                    putExtra(AppConstants.CATEGORY_ID,"cat_d8R14zUNE")
+                    putExtra(AppConstants.CATEGORY_NAME,"Automobiles")
+                    startActivity(this)
+                }
+
         }
     }
 }

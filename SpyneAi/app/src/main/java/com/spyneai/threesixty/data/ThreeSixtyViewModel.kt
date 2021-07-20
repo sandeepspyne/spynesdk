@@ -7,12 +7,14 @@ import androidx.lifecycle.viewModelScope
 import com.spyneai.base.network.Resource
 import com.spyneai.dashboard.response.NewSubCatResponse
 import com.spyneai.shoot.data.ShootRepository
+import com.spyneai.shoot.data.model.CarsBackgroundRes
 import com.spyneai.shoot.data.model.CategoryDetails
 import com.spyneai.shoot.data.model.CreateProjectRes
 import com.spyneai.shoot.data.model.CreateSkuRes
 import com.spyneai.threesixty.data.model.VideoDetails
 import com.spyneai.threesixty.data.response.ProcessThreeSixtyRes
 import kotlinx.coroutines.launch
+import okhttp3.RequestBody
 
 class ThreeSixtyViewModel : ViewModel() {
 
@@ -31,10 +33,8 @@ class ThreeSixtyViewModel : ViewModel() {
     val subCategoriesResponse: LiveData<Resource<NewSubCatResponse>>
         get() = _subCategoriesResponse
 
-    val subCategory : MutableLiveData<NewSubCatResponse.Data> = MutableLiveData()
     val enableRecording :  MutableLiveData<Boolean> = MutableLiveData()
 
-    var categoryDetails : MutableLiveData<CategoryDetails> = MutableLiveData()
 
 
     fun getSubCategories(
@@ -51,6 +51,11 @@ class ThreeSixtyViewModel : ViewModel() {
     private val _createSkuRes : MutableLiveData<Resource<CreateSkuRes>> = MutableLiveData()
     val createSkuRes: LiveData<Resource<CreateSkuRes>>
         get() = _createSkuRes
+
+    private val _carGifRes : MutableLiveData<Resource<CarsBackgroundRes>> = MutableLiveData()
+    val carGifRes: LiveData<Resource<CarsBackgroundRes>>
+        get() = _carGifRes
+
 
     private val _process360Res : MutableLiveData<Resource<ProcessThreeSixtyRes>> = MutableLiveData()
     val process360Res: LiveData<Resource<ProcessThreeSixtyRes>>
@@ -75,6 +80,14 @@ class ThreeSixtyViewModel : ViewModel() {
             prodSubCatId,
             skuName
         )
+    }
+
+    fun getBackgroundGifCars(
+        category: RequestBody,
+        auth_key: RequestBody
+    ) = viewModelScope.launch {
+        _carGifRes.value = Resource.Loading
+        _carGifRes.value = threeSixtyRepository.getBackgroundGifCars(category, auth_key)
     }
 
     fun process360(

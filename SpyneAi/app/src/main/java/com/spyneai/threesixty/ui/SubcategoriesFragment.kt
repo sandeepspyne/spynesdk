@@ -27,7 +27,7 @@ import com.spyneai.threesixty.ui.dialogs.ThreeSixtyExteriorGifDialog
 import com.spyneai.threesixty.ui.dialogs.ThreeSixtyProjectAndSkuDialog
 import java.util.ArrayList
 
-class SubcategoriesFragment : BaseFragment<ThreeSixtyViewModel,FragmentSubcategoriesBinding>(),NewSubCategoriesAdapter.BtnClickListener {
+class SubcategoriesFragment : BaseFragment<ThreeSixtyViewModel,FragmentSubcategoriesBinding>(){
 
     lateinit var subCategoriesAdapter: NewSubCategoriesAdapter
     var pos = 0
@@ -57,68 +57,9 @@ class SubcategoriesFragment : BaseFragment<ThreeSixtyViewModel,FragmentSubcatego
 
         viewModel.isProjectCreated.observe(viewLifecycleOwner,{
             if (it) {
-                intSubcategorySelection()
+                viewModel.enableRecording.value = true
             }
         })
-    }
-
-    private fun intSubcategorySelection() {
-        subCategoriesAdapter = NewSubCategoriesAdapter(
-            requireContext(),
-            null,
-            pos,
-            this
-        )
-
-        binding.rvSubcategories.apply {
-            this?.layoutManager = LinearLayoutManager(requireContext())
-            this?.adapter = subCategoriesAdapter
-        }
-
-        viewModel.getSubCategories(
-            Utilities.getPreference(requireContext(), AppConstants.AUTH_KEY).toString(),
-            requireActivity().intent.getStringExtra(AppConstants.CATEGORY_ID).toString()
-        )
-
-        viewModel.subCategoriesResponse.observe(viewLifecycleOwner, {
-            when (it) {
-                is Resource.Success -> {
-                    requireContext().captureEvent(
-                        Events.GET_360_SUBCATEGORIES,
-                        Properties())
-
-                    Utilities.hideProgressDialog()
-                    subCategoriesAdapter.subCategoriesList =
-                        it.value.data as ArrayList<NewSubCatResponse.Data>
-                    subCategoriesAdapter.notifyDataSetChanged()
-
-                    binding.clSubcatSelectionOverlay?.visibility = View.VISIBLE
-                }
-                is Resource.Loading ->  Utilities.showProgressDialog(requireContext())
-
-                is Resource.Failure -> {
-                    requireContext().captureFailureEvent(Events.GET_360_SUBCATRGORIES_FAILED, Properties(),
-                        it.errorMessage!!
-                    )
-                    Utilities.hideProgressDialog()
-                    handleApiError(it)
-                }
-            }
-        })
-    }
-
-    override fun onBtnClick(position: Int, data: NewSubCatResponse.Data) {
-        if (pos != position || !subCategoriesAdapter.selectionEnabled){
-
-            viewModel.subCategory.value = data
-            pos = position
-
-            subCategoriesAdapter.selectionEnabled = true
-            subCategoriesAdapter.notifyDataSetChanged()
-
-            binding.clSubcatSelectionOverlay.visibility = View.GONE
-            viewModel.enableRecording.value = true
-        }
     }
 
     override fun getViewModel() = ThreeSixtyViewModel::class.java

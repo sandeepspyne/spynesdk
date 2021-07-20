@@ -4,10 +4,12 @@ class VideoDetails {
     var projectId : String? = null
     var skuName : String? = null
     var skuId : String? = null
-    var category : String = "Automobiles"
+    var categoryName : String = "Automobiles"
+    var categoryId : String? = null
     var subCategory : String = "Sedan"
-    var type : String = "exterior"
+    var type : String = "360_exterior"
     var videoPath : String? = null
     var shootMode : Int = 0
-    var frames : Int = 32
+    var frames : Int = 0
+    var backgroundId : String? = null
 }

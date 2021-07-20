@@ -34,10 +34,17 @@ class ThreeSixtyRepository : BaseRepository() {
             videoDetails.projectId!!,
             videoDetails.skuName!!,
             videoDetails.skuId!!,
-            videoDetails.category,
+            videoDetails.categoryName,
             videoDetails.subCategory,
             videoDetails.frames,
             videoFile
         )
+    }
+
+    suspend fun getBackgroundGifCars(
+        category: RequestBody,
+        auth_key: RequestBody
+    ) = safeApiCall {
+        clipperApi.getBackgroundGifCars(category, auth_key)
     }
 }

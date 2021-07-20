@@ -1,4 +1,4 @@
-package com.spyneai.threesixty.ui.framents
+package com.spyneai.threesixty.ui.fragments
 
 import android.view.LayoutInflater
 import android.view.ViewGroup

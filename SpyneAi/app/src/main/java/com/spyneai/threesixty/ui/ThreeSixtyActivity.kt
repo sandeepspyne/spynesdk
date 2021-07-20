@@ -4,16 +4,10 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.WindowManager
 import androidx.lifecycle.ViewModelProvider
-import com.spyneai.R
 import com.spyneai.dashboard.ui.base.ViewModelFactory
 import com.spyneai.databinding.ActivityThreeSixtyBinding
-import com.spyneai.databinding.ActivityThreeSixtyViewBinding
 import com.spyneai.needs.AppConstants
-import com.spyneai.shoot.data.ShootViewModel
-import com.spyneai.shoot.data.model.CategoryDetails
 import com.spyneai.threesixty.data.ThreeSixtyViewModel
-import com.spyneai.threesixty.ui.dialogs.ThreeSixtyExteriorGifDialog
-import com.spyneai.threesixty.ui.framents.ThreeSixtyIntroFragment
 
 class ThreeSixtyActivity : AppCompatActivity() {
 
@@ -31,19 +25,17 @@ class ThreeSixtyActivity : AppCompatActivity() {
 
         val threeSixtyViewModel = ViewModelProvider(this, ViewModelFactory()).get(ThreeSixtyViewModel::class.java)
 
-        val categoryDetails = CategoryDetails()
 
-        categoryDetails.apply {
+        threeSixtyViewModel.videoDetails.apply {
             categoryId = intent.getStringExtra(AppConstants.CATEGORY_ID)
-            categoryName = intent.getStringExtra(AppConstants.CATEGORY_NAME)
-            gifList =  intent.getStringExtra(AppConstants.GIF_LIST)
+            categoryName = intent.getStringExtra(AppConstants.CATEGORY_NAME)!!
+            frames =  intent.getIntExtra("frames",0)
         }
 
-        threeSixtyViewModel.categoryDetails.value = categoryDetails
 
         supportFragmentManager.beginTransaction()
-            .add(binding.flContainer.id,ThreeSixtyIntroFragment())
-           // .add(binding.flContainer.id,SubcategoriesFragment())
+            .add(binding.flContainer.id,RecordVideoFragment())
+            .add(binding.flContainer.id,SubcategoriesFragment())
             .commit()
 
     }

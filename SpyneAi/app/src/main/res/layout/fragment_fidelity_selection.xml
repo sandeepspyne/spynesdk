@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Select the 360 exterior Fidelity"
+        android:id="@+id/tvSelectFidelity"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        android:fontFamily="@font/poppins_medium"
+        android:textColor="@color/three_sixty_features_text"
+        android:textSize="@dimen/sp_16"
+        app:layout_constraintTop_toTopOf="parent"
+        android:layout_marginTop="@dimen/dp_20"/>
+
+    <ImageView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:adjustViewBounds="true"
+        android:id="@+id/ivFidelity"
+        android:src="@drawable/start_shoot_image"
+        app:layout_constraintTop_toBottomOf="@id/tvSelectFidelity"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        android:layout_marginLeft="@dimen/dp_20"
+        android:layout_marginRight="@dimen/dp_20"
+        android:layout_marginTop="@dimen/dp_25"/>
+
+    <NumberPicker
+        android:id="@+id/npFrames"
+        android:layout_width="250dp"
+        android:layout_height="wrap_content"
+        android:theme="@style/AppTheme.Picker"
+        android:descendantFocusability="blocksDescendants"
+        android:selectionDividerHeight="@dimen/dp_1"
+        app:layout_constraintTop_toBottomOf="@id/ivFidelity"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        android:layout_marginTop="@dimen/dp_40"
+        android:layout_marginLeft="@dimen/dp_20"
+        android:layout_marginRight="@dimen/dp_20"/>
+
+    <com.google.android.material.button.MaterialButton
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/btnProceed"
+        app:layout_constraintTop_toBottomOf="@id/npFrames"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        android:layout_marginLeft="@dimen/dp_20"
+        android:layout_marginRight="@dimen/dp_20"
+        android:text="Proceed"
+        android:textColor="@color/white"
+        android:fontFamily="@font/medium"
+        android:insetTop="0dp"
+        android:insetBottom="0dp"
+        android:textAllCaps="false"
+        android:textSize="@dimen/sp_14"
+        android:background="@drawable/bg_rectangle_button_ripple"
+        android:layout_marginTop="@dimen/dp_30"/>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

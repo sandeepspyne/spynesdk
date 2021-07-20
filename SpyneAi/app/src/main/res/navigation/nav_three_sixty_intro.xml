@@ -5,6 +5,14 @@
 
     <fragment
         android:id="@+id/threeSixtyIntroFragment"
-        android:name="com.spyneai.threesixty.ui.framents.ThreeSixtyIntroFragment"
-        android:label="ThreeSixtyIntroFragment" />
+        android:name="com.spyneai.threesixty.ui.fragments.ThreeSixtyIntroFragment"
+        android:label="ThreeSixtyIntroFragment" >
+        <action
+            android:id="@+id/action_threeSixtyIntroFragment_to_fidelitySelectionFragment"
+            app:destination="@id/fidelitySelectionFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/fidelitySelectionFragment"
+        android:name="com.spyneai.threesixty.ui.fragments.FidelitySelectionFragment"
+        android:label="FidelitySelectionFragment" />
 </navigation>

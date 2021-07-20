@@ -1,0 +1,177 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <androidx.cardview.widget.CardView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        android:layout_margin="@dimen/dp_20"
+        app:cardCornerRadius="@dimen/dp_5">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:padding="@dimen/dp_20">
+
+            <ImageView
+                android:id="@+id/imageViewGif"
+                android:layout_width="match_parent"
+                android:layout_height="200dp"
+                android:src="@mipmap/defaults" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Exterior Sample output"
+                android:layout_gravity="center_horizontal"
+                android:textColor="@color/three_sixty_features_text"
+                android:fontFamily="@font/poppins_regular"
+                android:layout_marginTop="@dimen/dp_5"
+                android:textSize="@dimen/sp_14"/>
+
+            <FrameLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/dp_30">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Total Cost"
+                    android:textColor="@color/three_sixty_features_text"
+                    android:fontFamily="@font/poppins_medium"
+                    android:layout_marginTop="@dimen/dp_5"
+                    android:textSize="@dimen/sp_14"/>
+
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="500 Credits"
+                    android:layout_gravity="right"
+                    android:textColor="@color/primary"
+                    android:fontFamily="@font/poppins_medium"
+                    android:layout_marginTop="@dimen/dp_5"
+                    android:textSize="@dimen/sp_14"/>
+
+            </FrameLayout>
+
+            <FrameLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/dp_5">
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Total Fidelity"
+                        android:textColor="@color/three_sixty_features_text"
+                        android:fontFamily="@font/poppins_medium"
+                        android:layout_marginTop="@dimen/dp_5"
+                        android:textSize="@dimen/sp_14"/>
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/change_fidelity"
+                        android:textColor="@color/primary"
+                        android:fontFamily="@font/poppins_medium"
+                        android:layout_marginTop="@dimen/dp_5"
+                        android:textSize="@dimen/sp_14"
+                        android:layout_marginLeft="@dimen/dp_5"/>
+
+                </LinearLayout>
+
+
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="36 Frames"
+                    android:layout_gravity="right"
+                    android:textColor="@color/primary"
+                    android:fontFamily="@font/poppins_medium"
+                    android:layout_marginTop="@dimen/dp_5"
+                    android:textSize="@dimen/sp_14"/>
+
+            </FrameLayout>
+
+            <FrameLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/dp_5">
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Available credits"
+                        android:textColor="@color/three_sixty_features_text"
+                        android:fontFamily="@font/poppins_semibold"
+                        android:layout_marginTop="@dimen/dp_5"
+                        android:textSize="@dimen/sp_14"/>
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/top_up"
+                        android:textColor="@color/primary"
+                        android:fontFamily="@font/poppins_medium"
+                        android:layout_marginTop="@dimen/dp_5"
+                        android:textSize="@dimen/sp_14"
+                        android:layout_marginLeft="@dimen/dp_5"/>
+
+                </LinearLayout>
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="2400 Credits"
+                    android:layout_gravity="right"
+                    android:textColor="@color/primary"
+                    android:fontFamily="@font/poppins_medium"
+                    android:layout_marginTop="@dimen/dp_5"
+                    android:textSize="@dimen/sp_14"/>
+
+            </FrameLayout>
+
+            <com.google.android.material.button.MaterialButton
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/btnProceed"
+                app:layout_constraintTop_toBottomOf="@id/npFrames"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintRight_toRightOf="parent"
+                android:layout_marginLeft="@dimen/dp_20"
+                android:layout_marginRight="@dimen/dp_20"
+                android:text="Proceed"
+                android:textColor="@color/white"
+                android:fontFamily="@font/medium"
+                android:insetTop="0dp"
+                android:insetBottom="0dp"
+                android:textAllCaps="false"
+                android:textSize="@dimen/sp_14"
+                android:background="@drawable/bg_rectangle_button_ripple"
+                android:layout_marginTop="@dimen/dp_30"/>
+
+        </LinearLayout>
+
+
+    </androidx.cardview.widget.CardView>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

@@ -52,7 +52,8 @@
         <activity android:name=".threesixty.ui.TrimActivity" />
         <activity
             android:name=".threesixty.ui.ThreeSixtyActivity"
-            android:screenOrientation="portrait"></activity>
+            android:screenOrientation="landscape"
+            android:configChanges="screenLayout|keyboardHidden"></activity>
         <activity android:name=".processedimages.ui.BikeOrderSummaryActivity" />
         <activity android:name=".RecylerviewTestActivity" />
         <activity android:name=".processedimages.ui.BikeImagesActivity" />

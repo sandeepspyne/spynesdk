@@ -34,13 +34,10 @@ import com.hbisoft.pickit.PickiT
 import com.hbisoft.pickit.PickiTCallbacks
 import com.spyneai.R
 import com.spyneai.base.BaseFragment
-import com.spyneai.databinding.DialogThreeSixtyExteriorGifBinding
 import com.spyneai.databinding.FragmentRecordVideoBinding
+import com.spyneai.needs.AppConstants
 import com.spyneai.threesixty.data.ThreeSixtyViewModel
 import com.spyneai.toggleButton
-import com.spyneai.videorecording.RecordVideoActivity
-import com.spyneai.videorecording.TrimVideoActivity
-import com.spyneai.videorecording.fragments.FragmentTwoThreeSixtyShootDemo
 import java.io.File
 import java.util.concurrent.TimeUnit
 import kotlin.math.abs
@@ -469,10 +466,10 @@ class RecordVideoFragment : BaseFragment<ThreeSixtyViewModel,FragmentRecordVideo
         trimIntent.putExtra("sku_id",viewModel.videoDetails.skuId)
         trimIntent.putExtra("sku_name",viewModel.videoDetails.skuName)
         trimIntent.putExtra("project_id",viewModel.videoDetails.projectId)
-        trimIntent.putExtra("category",viewModel.videoDetails.category)
-        trimIntent.putExtra("subcategory",viewModel.videoDetails.subCategory)
-        trimIntent.putExtra("user_id",intent?.getStringExtra("user_id"))
+        trimIntent.putExtra(AppConstants.CATEGORY_NAME,viewModel.videoDetails.categoryName)
+        trimIntent.putExtra(AppConstants.CATEGORY_ID,viewModel.videoDetails.categoryId)
         trimIntent.putExtra("shoot_mode",intent?.getIntExtra("shoot_mode",0))
+
         startActivity(trimIntent)
 
         binding.tvStart.text = "Start"

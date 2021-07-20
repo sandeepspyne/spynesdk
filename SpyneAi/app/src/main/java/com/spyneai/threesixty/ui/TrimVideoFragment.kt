@@ -104,15 +104,8 @@ class TrimVideoFragment : BaseFragment<ThreeSixtyViewModel,FragmentTrimVideoBind
         }
 
         binding.btnConfirm.setOnClickListener {
-            if (videoTrimmed){
-
-            }else{
-                trimVideo()
-            }
-
+            trimVideo()
         }
-
-        binding.ivBack.setOnClickListener{  requireActivity().finish()}
     }
     
     /**
@@ -284,20 +277,12 @@ class TrimVideoFragment : BaseFragment<ThreeSixtyViewModel,FragmentTrimVideoBind
     }
 
     private fun startNextActivity(path: String) {
-        Navigation.findNavController(binding.btnConfirm)
-            .navigate(R.id.action_trimVideoFragment_to_saveVideoFragment);
+        viewModel.videoDetails.videoPath = path
 
-//        val intentPlay = Intent(
-//            this@TrimVideoActivity,
-//            SaveTrimmedVideoActivity::class.java
-//        )
-//        intentPlay.setData(intent.data)
-//
-//        intentPlay.putExtra("file_path", path)
-//        intentPlay.putExtra("sku_id", intent.getStringExtra("sku_id"))
-//        intentPlay.putExtra("user_id",intent.getStringExtra("user_id"))
-//        intentPlay.putExtra("shoot_mode", intent.getIntExtra("shoot_mode", 0))
-//        startActivity(intentPlay)
+        Navigation.findNavController(binding.btnConfirm)
+            .navigate(R.id.action_trimVideoFragment_to_threeSixtyBackgroundFragment)
+
+        viewModel.title.value = "Select Background"
     }
 
     var updateSeekbar: Runnable = object : Runnable {

@@ -8,11 +8,27 @@
         android:name="com.spyneai.threesixty.ui.TrimVideoFragment"
         android:label="TrimVideoFragment" >
         <action
-            android:id="@+id/action_trimVideoFragment_to_saveVideoFragment"
-            app:destination="@id/saveVideoFragment" />
+            android:id="@+id/action_trimVideoFragment_to_threeSixtyBackgroundFragment"
+            app:destination="@id/threeSixtyBackgroundFragment" />
     </fragment>
     <fragment
-        android:id="@+id/saveVideoFragment"
-        android:name="com.spyneai.threesixty.ui.SaveVideoFragment"
-        android:label="SaveVideoFragment" />
+        android:id="@+id/threeSixtyBackgroundFragment"
+        android:name="com.spyneai.threesixty.ui.fragments.ThreeSixtyBackgroundFragment"
+        android:label="ThreeSixtyBackgroundFragment" >
+        <action
+            android:id="@+id/action_threeSixtyBackgroundFragment_to_threeSixtyShootSummaryFragment"
+            app:destination="@id/threeSixtyShootSummaryFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/threeSixtyShootSummaryFragment"
+        android:name="com.spyneai.threesixty.ui.fragments.ThreeSixtyShootSummaryFragment"
+        android:label="ThreeSixtyShootSummaryFragment" >
+        <action
+            android:id="@+id/action_threeSixtyShootSummaryFragment_to_videoProcessingStartedFragment"
+            app:destination="@id/videoProcessingStartedFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/videoProcessingStartedFragment"
+        android:name="com.spyneai.threesixty.ui.fragments.VideoProcessingStartedFragment"
+        android:label="VideoProcessingStartedFragment" />
 </navigation>

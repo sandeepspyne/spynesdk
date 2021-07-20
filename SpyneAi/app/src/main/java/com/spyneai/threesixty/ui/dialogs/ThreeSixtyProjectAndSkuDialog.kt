@@ -42,7 +42,7 @@ class ThreeSixtyProjectAndSkuDialog : BaseDialogFragment<ThreeSixtyViewModel, Di
         viewModel.createProject(
             Utilities.getPreference(requireContext(), AppConstants.AUTH_KEY).toString(),
             projectName,
-            viewModel.categoryDetails.value?.categoryId.toString())
+            viewModel.videoDetails.categoryId!!)
 
         viewModel.createProjectRes.observe(viewLifecycleOwner,{
             when(it){
@@ -51,15 +51,12 @@ class ThreeSixtyProjectAndSkuDialog : BaseDialogFragment<ThreeSixtyViewModel, Di
                         Events.CREATE_360_PROJECT,
                         Properties().putValue("project_name",projectName))
 
-
                     viewModel.videoDetails.apply {
                         projectId = it.value.project_id
                         this.skuName = skuName
                     }
 
-                    val subCategory =  viewModel.subCategory.value
-
-                    createSku(it.value.project_id, subCategory?.prod_sub_cat_id.toString())
+                    createSku(it.value.project_id,viewModel.videoDetails.type)
                 }
 
                 is Resource.Loading -> {
