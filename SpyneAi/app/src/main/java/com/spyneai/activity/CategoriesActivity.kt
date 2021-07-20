@@ -25,6 +25,7 @@ import com.spyneai.model.shoot.CreateCollectionResponse
 import com.spyneai.model.shoot.UpdateShootCategoryRequest
 import com.spyneai.needs.AppConstants
 import com.spyneai.needs.Utilities
+import com.spyneai.shoot.ui.StartShootActivity
 import com.spyneai.shoot.ui.base.ShootActivity
 
 import kotlinx.android.synthetic.main.activity_categories.*
@@ -90,7 +91,7 @@ class CategoriesActivity : AppCompatActivity(){
                                 categoriesResponseList[position].prod_cat_name
                             )
 
-                            val intent = Intent(this@CategoriesActivity, BeforeAfterActivity::class.java)
+                            val intent = Intent(this@CategoriesActivity, StartShootActivity::class.java)
                             intent.putExtra(AppConstants.CATEGORY_ID,categoriesResponseList[position].prod_cat_id)
                             intent.putExtra(AppConstants.CATEGORY_NAME,categoriesResponseList[position].prod_cat_name)
                             intent.putExtra(AppConstants.IMAGE_URL,categoriesResponseList[position].display_thumbnail)

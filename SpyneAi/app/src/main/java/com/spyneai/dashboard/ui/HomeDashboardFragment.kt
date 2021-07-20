@@ -47,6 +47,7 @@ import com.spyneai.needs.Utilities
 import com.spyneai.orders.data.response.CompletedSKUsResponse
 import com.spyneai.orders.data.response.GetOngoingSkusResponse
 import com.spyneai.posthog.Events
+import com.spyneai.shoot.ui.StartShootActivity
 import com.spyneai.shoot.ui.base.ShootActivity
 import com.spyneai.shoot.utils.log
 
@@ -296,7 +297,7 @@ class HomeDashboardFragment :
 
                                 when(position){
                                     0 -> {
-                                        val intent = Intent(requireContext(), BeforeAfterActivity::class.java)
+                                        val intent = Intent(requireContext(), StartShootActivity::class.java)
                                         intent.putExtra(
                                             AppConstants.CATEGORY_NAME,
                                             displayName
