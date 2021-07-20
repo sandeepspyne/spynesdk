@@ -50,14 +50,15 @@ class ThreeSixtyBackgroundFragment : BaseFragment<ThreeSixtyViewModel, Fragment3
 
             Navigation.findNavController(binding.btnContinue)
                 .navigate(R.id.action_threeSixtyBackgroundFragment_to_threeSixtyShootSummaryFragment)
+
+            viewModel.title.value = "Shoot Summary"
         }
     }
 
 
-
     fun getBackgorund() {
         val category =
-            Utilities.getPreference(requireContext(), AppConstants.CATEGORY_NAME)!!.toRequestBody(
+            viewModel.videoDetails.categoryName.toRequestBody(
                 MultipartBody.FORM)
 
         val auth_key =
@@ -82,10 +83,13 @@ class ThreeSixtyBackgroundFragment : BaseFragment<ThreeSixtyViewModel, Fragment3
 
 
                     val response = it.value
+
                     Glide.with(requireContext()) // replace with 'this' if it's in activity
                         .load(response.data[0].gifUrl)
                         .error(R.mipmap.defaults) // show error drawable if the image is not a gif
                         .into(binding.imageViewGif)
+
+                    viewModel.videoDetails.sample360 = response.data[0].gifUrl
 
                     backgroundSelect = response.data[0].imageId.toString()
 
@@ -117,6 +121,8 @@ class ThreeSixtyBackgroundFragment : BaseFragment<ThreeSixtyViewModel, Fragment3
                     //if (position<carBackgroundList.size)
                     backgroundSelect = carBackgroundGifList[position].imageId.toString()
                     carbackgroundsAdapter.notifyDataSetChanged()
+
+                    viewModel.videoDetails.sample360 = carBackgroundGifList[position].gifUrl
 
                     Glide.with(requireContext()) // replace with 'this' if it's in activity
                         .load(carBackgroundGifList[position].gifUrl)

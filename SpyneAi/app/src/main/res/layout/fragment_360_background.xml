@@ -363,8 +363,7 @@
                             android:background="@drawable/bg_channel"
                             android:elevation="@dimen/dp_5"
                             android:orientation="vertical"
-                            android:padding="1dp"
-                            tools:context=".activity.CameraActivity">
+                            android:padding="1dp">
 
                             <androidx.cardview.widget.CardView
                                 android:layout_width="wrap_content"

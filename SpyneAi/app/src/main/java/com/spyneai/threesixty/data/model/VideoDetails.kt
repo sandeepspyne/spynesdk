@@ -12,4 +12,5 @@ class VideoDetails {
     var shootMode : Int = 0
     var frames : Int = 0
     var backgroundId : String? = null
+    var sample360 : String? = null
 }
