@@ -21,4 +21,12 @@ class ProcessRepository : BaseRepository() {
         clipperApi.processSku(authKey, skuId, backgroundId)
     }
 
+    suspend fun updateTotalFrames(
+        authKey: String,
+        skuId : String,
+        totalFrames: String
+    ) = safeApiCall {
+        clipperApi.updateTotalFrames(authKey,skuId,totalFrames)
+    }
+
 }

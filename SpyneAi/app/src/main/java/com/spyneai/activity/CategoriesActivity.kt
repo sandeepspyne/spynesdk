@@ -25,7 +25,8 @@ import com.spyneai.model.shoot.CreateCollectionResponse
 import com.spyneai.model.shoot.UpdateShootCategoryRequest
 import com.spyneai.needs.AppConstants
 import com.spyneai.needs.Utilities
-import com.spyneai.shoot.ui.ShootActivity
+import com.spyneai.shoot.ui.base.ShootActivity
+
 import kotlinx.android.synthetic.main.activity_categories.*
 import retrofit2.Call
 import retrofit2.Callback
@@ -82,22 +83,22 @@ class CategoriesActivity : AppCompatActivity(){
                     override fun onBtnClick(position: Int) {
                         Log.e("position cat", position.toString())
                         when(position) {
-                            0,1 -> {
-                                Utilities.savePrefrence(
-                                    this@CategoriesActivity,
-                                    AppConstants.CATEGORY_NAME,
-                                    categoriesResponseList[position].prod_cat_name
-                                )
+                            0 -> {
+                            Utilities.savePrefrence(
+                                this@CategoriesActivity,
+                                AppConstants.CATEGORY_NAME,
+                                categoriesResponseList[position].prod_cat_name
+                            )
 
-                                val intent = Intent(this@CategoriesActivity, BeforeAfterActivity::class.java)
-                                intent.putExtra(AppConstants.CATEGORY_ID,categoriesResponseList[position].prod_cat_id)
-                                intent.putExtra(AppConstants.CATEGORY_NAME,categoriesResponseList[position].prod_cat_name)
-                                intent.putExtra(AppConstants.IMAGE_URL,categoriesResponseList[position].display_thumbnail)
-                                intent.putExtra(AppConstants.DESCRIPTION,categoriesResponseList[position].description)
-                                intent.putExtra(AppConstants.COLOR,categoriesResponseList[position].color_code)
-                                startActivity(intent)
+                            val intent = Intent(this@CategoriesActivity, BeforeAfterActivity::class.java)
+                            intent.putExtra(AppConstants.CATEGORY_ID,categoriesResponseList[position].prod_cat_id)
+                            intent.putExtra(AppConstants.CATEGORY_NAME,categoriesResponseList[position].prod_cat_name)
+                            intent.putExtra(AppConstants.IMAGE_URL,categoriesResponseList[position].display_thumbnail)
+                            intent.putExtra(AppConstants.DESCRIPTION,categoriesResponseList[position].description)
+                            intent.putExtra(AppConstants.COLOR,categoriesResponseList[position].color_code)
+                            startActivity(intent)
                             }
-                            2 -> {
+                                1 -> {
                                 Utilities.savePrefrence(
                                     this@CategoriesActivity,
                                     AppConstants.CATEGORY_NAME,
@@ -112,6 +113,21 @@ class CategoriesActivity : AppCompatActivity(){
                                 intent.putExtra(AppConstants.COLOR,categoriesResponseList[position].color_code)
                                 startActivity(intent)
                             }
+//                            2 -> {
+//                                Utilities.savePrefrence(
+//                                    this@CategoriesActivity,
+//                                    AppConstants.CATEGORY_NAME,
+//                                    categoriesResponseList[position].prod_cat_name
+//                                )
+//
+//                                val intent = Intent(this@CategoriesActivity, ShootActivity::class.java)
+//                                intent.putExtra(AppConstants.CATEGORY_ID,categoriesResponseList[position].prod_cat_id)
+//                                intent.putExtra(AppConstants.CATEGORY_NAME,categoriesResponseList[position].prod_cat_name)
+//                                intent.putExtra(AppConstants.IMAGE_URL,categoriesResponseList[position].display_thumbnail)
+//                                intent.putExtra(AppConstants.DESCRIPTION,categoriesResponseList[position].description)
+//                                intent.putExtra(AppConstants.COLOR,categoriesResponseList[position].color_code)
+//                                startActivity(intent)
+//                            }
                             else ->{
                                 Toast.makeText(this@CategoriesActivity,
                                     "Coming Soon !",

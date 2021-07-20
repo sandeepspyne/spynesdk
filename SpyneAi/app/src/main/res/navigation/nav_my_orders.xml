@@ -1,6 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <navigation xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto" android:id="@+id/nav_my_orders"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/nav_my_orders"
     app:startDestination="@id/myOrdersFragment">
 
     <fragment
@@ -11,23 +13,27 @@
             android:id="@+id/action_myOrdersFragment_to_myOngoingOrdersFragment"
             app:destination="@id/nav_my_ongoing_orders" />
         <action
-            android:id="@+id/action_myOrdersFragment_to_myCompletedOrdersFragment"
-            app:destination="@id/nav_my_completed_orders" />
+            android:id="@+id/action_myOrdersFragment_to_completedProjectsFragment"
+            app:destination="@id/completedProjectsFragment" />
+
     </fragment>
     <fragment
         android:id="@+id/nav_my_ongoing_orders"
         android:name="com.spyneai.orders.ui.MyOngoingOrdersFragment"
         android:label="MyOngoingOrdersFragment" />
     <fragment
-        android:id="@+id/nav_my_completed_orders"
-        android:name="com.spyneai.orders.ui.MyCompletedOrdersFragment"
-        android:label="MyCompletedOrdersFragment" >
+        android:id="@+id/completedProjectsFragment"
+        android:name="com.spyneai.orders.ui.fragment.CompletedProjectsFragment"
+        android:label="CompletedProjectsFragment" >
         <action
-            android:id="@+id/nav_request_download"
-            app:destination="@id/nav_request_download" />
+            android:id="@+id/action_completedProjectsFragment_to_completedSkusFragment"
+            app:destination="@id/completedSkusFragment" />
     </fragment>
     <fragment
-        android:id="@+id/nav_request_download"
-        android:name="com.spyneai.orders.ui.fragment.DownloadRequestFragment"
-        android:label="DownloadRequestFragment" />
+        android:id="@+id/completedSkusFragment"
+        android:name="com.spyneai.orders.ui.fragment.CompletedSkusFragment"
+        android:label="fragment_completed_skus"
+        tools:layout="@layout/fragment_completed_skus" />
+
+
 </navigation>

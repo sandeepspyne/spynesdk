@@ -25,10 +25,8 @@ import com.spyneai.model.channel.BackgroundsResponse
 import com.spyneai.needs.AppConstants
 import com.spyneai.needs.ScrollingLinearLayoutManager
 import com.spyneai.needs.Utilities
-import com.spyneai.shoot.ui.ShootActivity
-import com.spyneai.shoot.ui.ShootPortraitActivity
-import com.spyneai.spyneaidemo.activity.camera2.Camera2DemoActivity
-import com.spyneai.threesixty.ui.ThreeSixtyActivity
+import com.spyneai.shoot.ui.base.ShootActivity
+import com.spyneai.shoot.ui.base.ShootPortraitActivity
 import kotlinx.android.synthetic.main.activity_before_after.*
 import kotlinx.android.synthetic.main.activity_before_after.llBeforeAfters
 import kotlinx.android.synthetic.main.activity_show_images.*
@@ -57,15 +55,6 @@ class BeforeAfterActivity : AppCompatActivity() {
         setData()
         listeners()
 
-        tvShootTS.setOnClickListener {
-            val intent = Intent(this, ThreeSixtyActivity::class.java)
-            intent.putExtra(AppConstants.CATEGORY_ID, catId)
-            intent.putExtra(AppConstants.CATEGORY_NAME, catName)
-            intent.putExtra(AppConstants.GIF_LIST, gifList)
-            Utilities.savePrefrence(this, AppConstants.FROM, "BA")
-            startActivity(intent)
-
-        }
         if (intent.getStringExtra(AppConstants.CATEGORY_NAME) != null)
             catName = intent.getStringExtra(AppConstants.CATEGORY_NAME)!!
         else
@@ -99,7 +88,7 @@ class BeforeAfterActivity : AppCompatActivity() {
 
         rvBeforeAfter.setAdapter(beforeAfterAdapter)
         if (Utilities.isNetworkAvailable(this))
-            //fetchBeforeAfter()
+            fetchBeforeAfter()
         else
             Toast.makeText(
                 this,
@@ -220,8 +209,84 @@ class BeforeAfterActivity : AppCompatActivity() {
         })
     }
 
+/*private fun fetchChannels()
+{
+    // Utilities.showProgressDialog(this)
+    val request = RetrofitClients.buildService(APiService::class.java)
+    val call = request.getChannelsList(catName)
 
+    call?.enqueue(object : Callback<List<FootwearMarketplaceResponse>> {
+        override fun onResponse(
+            call: Call<List<FootwearMarketplaceResponse>>,
+            response: Response<List<FootwearMarketplaceResponse>>
+        ) {
+            // Utilities.hideProgressDialog()
+            if (response.isSuccessful) {
+                if (!response.body().isNullOrEmpty() && response.body()?.size!! > 0) {
+                    Utilities.setList(
+                        this@BeforeAfterActivity, AppConstants.CHANNEL_LIST,
+                        response.body() as ArrayList
+                    )
+                } else {
+                    Utilities.hideProgressDialog()
+                    Toast.makeText(
+                        this@BeforeAfterActivity,
+                        "Server not responding!!!",
+                        Toast.LENGTH_SHORT
+                    ).show()
+                }
+            }
+        }
 
+        override fun onFailure(call: Call<List<FootwearMarketplaceResponse>>, t: Throwable) {
+            Utilities.hideProgressDialog()
+            Toast.makeText(
+                this@BeforeAfterActivity,
+                "Server not responding!!!",
+                Toast.LENGTH_SHORT
+            ).show()
+        }
+    })
+}*/
+
+    private fun fetchBackgrounds() {
+        val request = RetrofitClients.buildService(APiService::class.java)
+        val call = request.getBackgroundsList(catName)
+
+        call?.enqueue(object : Callback<List<BackgroundsResponse>> {
+            override fun onResponse(
+                call: Call<List<BackgroundsResponse>>,
+                response: Response<List<BackgroundsResponse>>
+            ) {
+                Utilities.hideProgressDialog()
+                if (response.isSuccessful) {
+                    if (!response.body().isNullOrEmpty() && response.body()?.size!! > 0) {
+                        Utilities.setList(
+                            this@BeforeAfterActivity, AppConstants.BACKGROUND_LIST,
+                            response.body() as ArrayList
+                        )
+
+                    } else {
+                        Utilities.hideProgressDialog()
+                        Toast.makeText(
+                            this@BeforeAfterActivity,
+                            "Server not responding!!!",
+                            Toast.LENGTH_SHORT
+                        ).show()
+                    }
+                }
+            }
+
+            override fun onFailure(call: Call<List<BackgroundsResponse>>, t: Throwable) {
+                Utilities.hideProgressDialog()
+                Toast.makeText(
+                    this@BeforeAfterActivity,
+                    "Server not responding!!!",
+                    Toast.LENGTH_SHORT
+                ).show()
+            }
+        })
+    }
 
     private fun fetchBackgroundCars()
     {

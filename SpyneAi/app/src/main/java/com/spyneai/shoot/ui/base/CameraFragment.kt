@@ -1,11 +1,10 @@
-package com.spyneai.shoot.ui
+package com.spyneai.shoot.ui.base
 
 import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.ContentValues
 import android.content.ContentValues.TAG
 import android.content.pm.ActivityInfo
-import android.net.Uri
 import android.os.*
 import android.provider.MediaStore
 import android.util.DisplayMetrics
@@ -33,7 +32,6 @@ import com.spyneai.needs.Utilities
 import com.spyneai.posthog.Events
 import com.spyneai.shoot.data.ShootViewModel
 import com.spyneai.shoot.data.model.ShootData
-import com.spyneai.shoot.ui.dialogs.InteriorHintDialog
 import com.spyneai.shoot.ui.dialogs.SubCategoryConfirmationDialog
 import com.spyneai.shoot.utils.ThreadExecutor
 import com.spyneai.shoot.utils.log
@@ -71,6 +69,10 @@ class CameraFragment : BaseFragment<ShootViewModel, FragmentCameraBinding>(), Pi
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        Handler(Looper.getMainLooper()).postDelayed({
+            startCamera()
+        }, 300)
 
         cameraExecutor = Executors.newSingleThreadExecutor()
         // Determine the output directory
@@ -111,8 +113,6 @@ class CameraFragment : BaseFragment<ShootViewModel, FragmentCameraBinding>(), Pi
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
-
-        startCamera()
 
         binding.cameraCaptureButton?.setOnClickListener {
             if ((viewModel.isSubCategoryConfirmed.value == null || viewModel.isSubCategoryConfirmed.value == false) &&
@@ -319,8 +319,6 @@ class CameraFragment : BaseFragment<ShootViewModel, FragmentCameraBinding>(), Pi
                 else -> {System.currentTimeMillis().toString()}
             }
         }
-
-
 
         // Options fot the output image file
         val outputOptions = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {

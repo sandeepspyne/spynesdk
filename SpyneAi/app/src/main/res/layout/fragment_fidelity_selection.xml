@@ -31,6 +31,19 @@
         android:layout_marginRight="@dimen/dp_20"
         android:layout_marginTop="@dimen/dp_25"/>
 
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="  1 Frame = 1 Credit"
+        android:textColor="@color/black"
+        android:fontFamily="@font/medium"
+        android:id="@+id/tv_image_to_credit"
+        android:layout_gravity="center_horizontal"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/ivFidelity"
+        android:layout_marginTop="@dimen/dp_25"/>
+
     <NumberPicker
         android:id="@+id/npFrames"
         android:layout_width="250dp"
@@ -38,10 +51,10 @@
         android:theme="@style/AppTheme.Picker"
         android:descendantFocusability="blocksDescendants"
         android:selectionDividerHeight="@dimen/dp_1"
-        app:layout_constraintTop_toBottomOf="@id/ivFidelity"
+        app:layout_constraintTop_toBottomOf="@id/tv_image_to_credit"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
-        android:layout_marginTop="@dimen/dp_40"
+        android:layout_marginTop="@dimen/dp_20"
         android:layout_marginLeft="@dimen/dp_20"
         android:layout_marginRight="@dimen/dp_20"/>
 

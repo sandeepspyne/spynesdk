@@ -7,7 +7,7 @@
     tools:context=".orders.ui.MyOrdersActivity">
 
     <androidx.fragment.app.FragmentContainerView
-        android:id="@+id/navHostFragment"
+        android:id="@+id/navHostFragmentShoots"
         android:name="androidx.navigation.fragment.NavHostFragment"
         android:layout_width="0dp"
         android:layout_height="0dp"
@@ -16,6 +16,6 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
-        app:navGraph="@navigation/nav_my_orders" />
+        app:navGraph="@navigation/nav_my_shoots" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

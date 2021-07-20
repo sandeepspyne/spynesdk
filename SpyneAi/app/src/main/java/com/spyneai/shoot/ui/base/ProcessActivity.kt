@@ -1,4 +1,4 @@
-package com.spyneai.shoot.ui
+package com.spyneai.shoot.ui.base
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
@@ -8,6 +8,7 @@ import com.spyneai.dashboard.ui.base.ViewModelFactory
 import com.spyneai.needs.AppConstants
 import com.spyneai.shoot.data.ProcessViewModel
 import com.spyneai.shoot.data.model.Sku
+import com.spyneai.shoot.ui.SelectBackgroundFragment
 import com.spyneai.shoot.ui.dialogs.ShootExitDialog
 
 class ProcessActivity : AppCompatActivity() {
@@ -25,6 +26,7 @@ class ProcessActivity : AppCompatActivity() {
         processViewModel.sku.value = sku
 
         processViewModel.exteriorAngles.value =  intent.getIntExtra("exterior_angles",0)
+        processViewModel.interiorMiscShootsCount = intent.getIntExtra("interior_misc_count",0)
         processViewModel.categoryName = intent.getStringExtra(AppConstants.CATEGORY_NAME)
 
         if (intent.getBooleanExtra("process_sku",true)){

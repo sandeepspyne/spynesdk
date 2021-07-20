@@ -1,4 +1,4 @@
-package com.spyneai.shoot.ui.ecom
+package com.spyneai.shoot.ui.ecomwithgrid
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle

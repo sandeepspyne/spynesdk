@@ -26,7 +26,7 @@ class ShootRepository : BaseRepository() {
         sku_id: RequestBody,
         image_category: RequestBody,
         auth_key: RequestBody,
-        sequenceNo : RequestBody,
+        sequenceNo : Int,
         image: MultipartBody.Part
     ) = safeApiCall {
         clipperApi.uploadImage(project_id, sku_id, image_category, auth_key, sequenceNo,image)
@@ -39,10 +39,10 @@ class ShootRepository : BaseRepository() {
     }
 
     suspend fun createSku(authKey: String,projectId : String
-                              ,prodCatId : String,prodSubCatId : String,
-                          skuName : String
+                          ,prodCatId : String,prodSubCatId : String,
+                          skuName : String,total_frames : Int
     ) = safeApiCall {
-        clipperApi.createSku(authKey, projectId, prodCatId, prodSubCatId, skuName)
+        clipperApi.createSku(authKey, projectId, prodCatId, prodSubCatId, skuName,total_frames)
     }
 
     suspend fun getProjectDetail(

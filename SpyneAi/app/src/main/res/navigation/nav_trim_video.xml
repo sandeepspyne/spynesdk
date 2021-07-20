@@ -26,9 +26,16 @@
         <action
             android:id="@+id/action_threeSixtyShootSummaryFragment_to_videoProcessingStartedFragment"
             app:destination="@id/videoProcessingStartedFragment" />
+        <action
+            android:id="@+id/action_threeSixtyShootSummaryFragment_to_fidelitySelectionFragment2"
+            app:destination="@id/fidelitySelectionFragment2" />
     </fragment>
     <fragment
         android:id="@+id/videoProcessingStartedFragment"
         android:name="com.spyneai.threesixty.ui.fragments.VideoProcessingStartedFragment"
         android:label="VideoProcessingStartedFragment" />
+    <fragment
+        android:id="@+id/fidelitySelectionFragment2"
+        android:name="com.spyneai.threesixty.ui.fragments.FidelitySelectionFragment"
+        android:label="FidelitySelectionFragment" />
 </navigation>

@@ -2,6 +2,7 @@ package com.spyneai.threesixty.data
 
 import com.spyneai.base.BaseRepository
 import com.spyneai.base.network.ClipperApiClient
+import com.spyneai.base.network.SpyneAiApiClient
 import com.spyneai.threesixty.data.model.VideoDetails
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.MultipartBody
@@ -13,6 +14,7 @@ import java.io.File
 class ThreeSixtyRepository : BaseRepository() {
 
     private var clipperApi = ClipperApiClient().getClient()
+    private var spyneApi = SpyneAiApiClient().getClient()
 
     suspend fun process360(
         authKey : String,
@@ -48,5 +50,11 @@ class ThreeSixtyRepository : BaseRepository() {
         auth_key: RequestBody
     ) = safeApiCall {
         clipperApi.getBackgroundGifCars(category, auth_key)
+    }
+
+    suspend fun getUserCredits(
+        userId : String
+    )= safeApiCall {
+        spyneApi.userCreditsDetails(userId)
     }
 }

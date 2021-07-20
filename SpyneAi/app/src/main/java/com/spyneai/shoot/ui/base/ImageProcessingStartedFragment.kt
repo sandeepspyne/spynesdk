@@ -1,4 +1,4 @@
-package com.spyneai.shoot.ui
+package com.spyneai.shoot.ui.base
 
 import android.content.Intent
 import android.os.Bundle

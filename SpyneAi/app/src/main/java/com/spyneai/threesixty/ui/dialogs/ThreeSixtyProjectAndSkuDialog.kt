@@ -25,15 +25,16 @@ class ThreeSixtyProjectAndSkuDialog : BaseDialogFragment<ThreeSixtyViewModel, Di
 
         dialog?.setCancelable(false)
 
+        binding.apply {
+            etProjectName.visibility = View.GONE
+            ivEditProjectName.visibility = View.GONE
+        }
+
         binding.btnSubmit.setOnClickListener {
-            when {
-                binding.etProjectName.text.toString().isEmpty() -> binding.etProjectName.error = "Please enter project name"
-                binding.etVinNumber.text.toString().isEmpty() -> {
-                    binding.etVinNumber.error = "Please enter any unique number"
-                }
-                else -> {
-                    createProject(binding.etProjectName.text.toString(),binding.etVinNumber.text.toString())
-                }
+            if (binding.etVinNumber.text.toString().isEmpty()) {
+                binding.etVinNumber.error = "Please enter any unique number"
+            }else{
+                createProject(binding.etVinNumber.text.toString(),binding.etVinNumber.text.toString())
             }
         }
     }

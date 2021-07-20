@@ -6,6 +6,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.spyneai.base.network.Resource
 import com.spyneai.dashboard.response.NewSubCatResponse
+import com.spyneai.model.credit.CreditDetailsResponse
 import com.spyneai.shoot.data.ShootRepository
 import com.spyneai.shoot.data.model.CarsBackgroundRes
 import com.spyneai.shoot.data.model.CategoryDetails
@@ -22,27 +23,15 @@ class ThreeSixtyViewModel : ViewModel() {
     private val threeSixtyRepository = ThreeSixtyRepository()
 
     val isDemoClicked: MutableLiveData<Boolean> = MutableLiveData()
+    val isFramesUpdated: MutableLiveData<Boolean> = MutableLiveData()
     val title : MutableLiveData<String> = MutableLiveData()
 
     val videoDetails = VideoDetails()
 
-    val showVin : MutableLiveData<Boolean> = MutableLiveData()
     val isProjectCreated : MutableLiveData<Boolean> = MutableLiveData()
-
-    private val _subCategoriesResponse: MutableLiveData<Resource<NewSubCatResponse>> = MutableLiveData()
-    val subCategoriesResponse: LiveData<Resource<NewSubCatResponse>>
-        get() = _subCategoriesResponse
 
     val enableRecording :  MutableLiveData<Boolean> = MutableLiveData()
 
-
-
-    fun getSubCategories(
-        authKey: String, prodId: String
-    ) = viewModelScope.launch {
-        _subCategoriesResponse.value = Resource.Loading
-        _subCategoriesResponse.value = repository.getSubCategories(authKey, prodId)
-    }
 
     private val _createProjectRes : MutableLiveData<Resource<CreateProjectRes>> = MutableLiveData()
     val createProjectRes: LiveData<Resource<CreateProjectRes>>
@@ -61,6 +50,10 @@ class ThreeSixtyViewModel : ViewModel() {
     val process360Res: LiveData<Resource<ProcessThreeSixtyRes>>
         get() = _process360Res
 
+    private val _userCreditsRes : MutableLiveData<Resource<CreditDetailsResponse>> = MutableLiveData()
+    val userCreditsRes: LiveData<Resource<CreditDetailsResponse>>
+        get() = _userCreditsRes
+
     fun createProject(
         authKey: String, projectName: String, prodCatId: String
     ) = viewModelScope.launch {
@@ -78,7 +71,8 @@ class ThreeSixtyViewModel : ViewModel() {
             projectId,
             prodCatId,
             prodSubCatId,
-            skuName
+            skuName,
+            0
         )
     }
 
@@ -95,6 +89,13 @@ class ThreeSixtyViewModel : ViewModel() {
     ) = viewModelScope.launch {
         _process360Res.value = Resource.Loading
         _process360Res.value = threeSixtyRepository.process360(authKey,videoDetails)
+    }
+
+    fun getUserCredits(
+        userId : String
+    ) = viewModelScope.launch {
+        _userCreditsRes.value = Resource.Loading
+        _userCreditsRes.value = threeSixtyRepository.getUserCredits(userId)
     }
 
 

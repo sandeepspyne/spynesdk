@@ -13,6 +13,7 @@ import com.spyneai.camera2.OverlaysResponse
 import com.spyneai.camera2.ShootDimensions
 import com.spyneai.dashboard.response.NewSubCatResponse
 import com.spyneai.shoot.data.model.*
+import com.spyneai.shoot.workmanager.FrameUpdateWorker
 import com.spyneai.shoot.workmanager.OverlaysPreloadWorker
 import com.spyneai.shoot.workmanager.RecursiveImageWorker
 import com.spyneai.shoot.workmanager.UploadImageWorker
@@ -33,6 +34,8 @@ class ShootViewModel : ViewModel(){
 
     val totalSkuCaptured : MutableLiveData<String> = MutableLiveData()
     val totalImageCaptured : MutableLiveData<String> = MutableLiveData()
+
+    val subCatName : MutableLiveData<String> = MutableLiveData()
 
     val shootList: MutableLiveData<ArrayList<ShootData>> = MutableLiveData()
 
@@ -164,6 +167,7 @@ class ShootViewModel : ViewModel(){
         _updateTotalFramesRes.value = repository.updateTotalFrames(skuId, totalFrames, authKey)
     }
 
+
     fun getSelectedAngles() = exterirorAngles.value
 
 
@@ -262,18 +266,11 @@ class ShootViewModel : ViewModel(){
         _createProjectRes.value = repository.createProject(authKey, projectName, prodCatId)
     }
 
-    fun createSku(
-        authKey: String, projectId: String, prodCatId: String, prodSubCatId: String,
-        skuName: String
-    ) = viewModelScope.launch {
+    fun createSku(authKey: String,projectId : String
+                  ,prodCatId : String,prodSubCatId : String,
+                  skuName : String,totalFrames : Int) = viewModelScope.launch {
         _createSkuRes.value = Resource.Loading
-        _createSkuRes.value = repository.createSku(
-            authKey,
-            projectId,
-            prodCatId,
-            prodSubCatId,
-            skuName
-        )
+        _createSkuRes.value = repository.createSku(authKey, projectId, prodCatId, prodSubCatId, skuName,totalFrames)
     }
 
     fun insertSku(sku: Sku) {

@@ -13,12 +13,12 @@ import com.spyneai.threesixty.ui.ThreeSixtyActivity
 
 class FidelitySelectionFragment : BaseFragment<ThreeSixtyViewModel, FragmentFidelitySelectionBinding>() {
 
+    var updateFidelity = false
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
         setUpFramesSelection()
-
-
     }
 
     private fun setUpFramesSelection() {
@@ -28,6 +28,7 @@ class FidelitySelectionFragment : BaseFragment<ThreeSixtyViewModel, FragmentFide
         var newSelectedFrames = 24
 
         if (viewModel.videoDetails.frames != 0){
+            updateFidelity = true
             lastSelectedFrames = viewModel.videoDetails.frames
             newSelectedFrames = viewModel.videoDetails.frames
         }
@@ -59,20 +60,23 @@ class FidelitySelectionFragment : BaseFragment<ThreeSixtyViewModel, FragmentFide
         binding.btnProceed.setOnClickListener {
             viewModel.videoDetails.frames = newSelectedFrames
 
-            val videoDetails = viewModel.videoDetails
+            if (updateFidelity) {
+               viewModel.isFramesUpdated.value = true
+               requireActivity().onBackPressed()
 
-            Intent(requireContext(),ThreeSixtyActivity::class.java)
-                .apply {
-                    putExtra(AppConstants.CATEGORY_NAME,videoDetails.categoryName)
-                    putExtra(AppConstants.CATEGORY_ID,videoDetails.categoryId)
-                    putExtra("frames",videoDetails.frames)
-                    startActivity(this)
-                }
+                viewModel.title.value = "Shoot Summary"
+            }else{
+                val videoDetails = viewModel.videoDetails
 
-
+                Intent(requireContext(),ThreeSixtyActivity::class.java)
+                    .apply {
+                        putExtra(AppConstants.CATEGORY_NAME,videoDetails.categoryName)
+                        putExtra(AppConstants.CATEGORY_ID,videoDetails.categoryId)
+                        putExtra("frames",videoDetails.frames)
+                        startActivity(this)
+                    }
+            }
         }
-
-
     }
 
     override fun getViewModel() = ThreeSixtyViewModel::class.java

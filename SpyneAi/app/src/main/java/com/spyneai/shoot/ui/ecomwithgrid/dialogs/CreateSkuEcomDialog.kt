@@ -1,4 +1,4 @@
-package com.spyneai.shoot.ui.ecom
+package com.spyneai.shoot.ui.ecomwithgrid.dialogs
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -7,7 +7,6 @@ import android.view.ViewGroup
 import android.view.WindowManager
 import com.posthog.android.Properties
 import com.spyneai.base.BaseDialogFragment
-import com.spyneai.base.BaseFragment
 import com.spyneai.base.network.Resource
 import com.spyneai.captureEvent
 import com.spyneai.captureFailureEvent
@@ -52,7 +51,8 @@ class CreateSkuEcomDialog : BaseDialogFragment<ShootViewModel, CreateSkuEcomDial
             projectId,
             requireActivity().intent.getStringExtra(AppConstants.CATEGORY_ID).toString(),
             "",
-            skuName
+            skuName,
+            0
         )
 
         viewModel.createSkuRes.observe(viewLifecycleOwner, {
@@ -95,7 +95,6 @@ class CreateSkuEcomDialog : BaseDialogFragment<ShootViewModel, CreateSkuEcomDial
                 }
 
                 is Resource.Failure -> {
-                    dismiss()
                     Utilities.hideProgressDialog()
                     requireContext().captureFailureEvent(
                         Events.CREATE_SKU_FAILED, Properties(),

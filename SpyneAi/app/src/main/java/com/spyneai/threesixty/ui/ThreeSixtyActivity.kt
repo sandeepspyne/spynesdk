@@ -25,13 +25,11 @@ class ThreeSixtyActivity : AppCompatActivity() {
 
         val threeSixtyViewModel = ViewModelProvider(this, ViewModelFactory()).get(ThreeSixtyViewModel::class.java)
 
-
         threeSixtyViewModel.videoDetails.apply {
             categoryId = intent.getStringExtra(AppConstants.CATEGORY_ID)
             categoryName = intent.getStringExtra(AppConstants.CATEGORY_NAME)!!
             frames =  intent.getIntExtra("frames",0)
         }
-
 
         supportFragmentManager.beginTransaction()
             .add(binding.flContainer.id,RecordVideoFragment())

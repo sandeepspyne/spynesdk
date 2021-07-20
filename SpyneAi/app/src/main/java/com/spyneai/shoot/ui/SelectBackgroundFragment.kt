@@ -46,17 +46,12 @@ class SelectBackgroundFragment : BaseFragment<ProcessViewModel,FragmentSelectBac
         }
 
         binding.tvGenerateGif.setOnClickListener {
+            //update total frame if user clicked interior and misc
+            if (viewModel.interiorMiscShootsCount > 0)
+                updateTotalFrames()
+
             //process image call
-            viewModel.checkImagesUploadStatus(backgroundSelect)
-
-            viewModel.processSku.observe(viewLifecycleOwner,{
-                if (it) processSku()
-            })
-
-            viewModel.skuQueued.observe(viewLifecycleOwner,{
-                //sku process queued start timer
-                if (it) viewModel.startTimer.value = true
-            })
+            processSku()
         }
     }
 
@@ -137,6 +132,17 @@ class SelectBackgroundFragment : BaseFragment<ProcessViewModel,FragmentSelectBac
 
         binding.rvBackgroundsCars.setLayoutManager(layoutManager)
         binding.rvBackgroundsCars.setAdapter(carbackgroundsAdapter)
+    }
+
+    private fun updateTotalFrames() {
+        val totalFrames = viewModel.exteriorAngles.value?.plus(viewModel.interiorMiscShootsCount)
+
+
+        viewModel.updateCarTotalFrames(
+            Utilities.getPreference(requireContext(),AppConstants.AUTH_KEY).toString(),
+            viewModel.sku.value?.skuId!!,
+            totalFrames.toString()
+        )
     }
 
     private fun processSku() {

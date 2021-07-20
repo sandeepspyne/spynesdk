@@ -26,9 +26,9 @@ open class BaseApiClient<Api>(val BASE_URL: String, api: Class<Api>){
                 }
             }
                .addInterceptor(ResponseInterceptor())
-                .readTimeout(2, TimeUnit.MINUTES)
-                .writeTimeout(2, TimeUnit.MINUTES)
-                .connectTimeout(2, TimeUnit.MINUTES)
+                .readTimeout(4, TimeUnit.MINUTES)
+                .writeTimeout(4, TimeUnit.MINUTES)
+                .connectTimeout(4, TimeUnit.MINUTES)
                 .build())
             .addConverterFactory(GsonConverterFactory.create())
             .build()

@@ -60,10 +60,8 @@ class OverlaysFragment : BaseFragment<ShootViewModel,FragmentOverlaysBinding>(),
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-       when(viewModel.categoryDetails.value?.categoryName){
-           "Bikes" ->  initProjectDialog()
-           else ->  initShootHint()
-       }
+        initShootHint()
+       
 
         //observe new image clicked
         viewModel.shootList.observe(viewLifecycleOwner, {
@@ -98,7 +96,7 @@ class OverlaysFragment : BaseFragment<ShootViewModel,FragmentOverlaysBinding>(),
 
     private fun initShootHint() {
         requireContext().captureEvent(Events.SHOW_HINT, Properties())
-        ShootHintDialog().show(requireFragmentManager(), "ShootHintDialog")
+        ShootHintDialog().show(requireActivity().supportFragmentManager, "ShootHintDialog")
 
         viewModel.showVin.observe(viewLifecycleOwner,{
             if (it) initProjectDialog()
@@ -106,7 +104,7 @@ class OverlaysFragment : BaseFragment<ShootViewModel,FragmentOverlaysBinding>(),
     }
 
     private fun initProjectDialog(){
-        CreateProjectAndSkuDialog().show(requireFragmentManager(), "CreateProjectAndSkuDialog")
+        CreateProjectAndSkuDialog().show(requireActivity().supportFragmentManager, "CreateProjectAndSkuDialog")
 
         viewModel.isProjectCreated.observe(viewLifecycleOwner,{
             if (it) {
@@ -120,7 +118,7 @@ class OverlaysFragment : BaseFragment<ShootViewModel,FragmentOverlaysBinding>(),
         viewModel.exterirorAngles.value = 8
 
         binding.tvShoot?.setOnClickListener {
-            AngleSelectionDialog().show(requireFragmentManager(), "AngleSelectionDialog")
+            AngleSelectionDialog().show(requireActivity().supportFragmentManager, "AngleSelectionDialog")
         }
 
         //update progress list
@@ -332,7 +330,7 @@ class OverlaysFragment : BaseFragment<ShootViewModel,FragmentOverlaysBinding>(),
     }
 
     private fun initInteriorShots() {
-        InteriorHintDialog().show(requireFragmentManager(), "InteriorHintDialog")
+        InteriorHintDialog().show(requireActivity().supportFragmentManager, "InteriorHintDialog")
 
         viewModel.startInteriorShots.observe(viewLifecycleOwner,{
             if (it) startInteriorShots()
@@ -391,7 +389,7 @@ class OverlaysFragment : BaseFragment<ShootViewModel,FragmentOverlaysBinding>(),
     }
 
     private fun initMiscShots() {
-        MiscShotsDialog().show(requireFragmentManager(), "MiscShotsDialog")
+        MiscShotsDialog().show(requireActivity().supportFragmentManager, "MiscShotsDialog")
 
         viewModel.startMiscShots.observe(viewLifecycleOwner,{
             if (it) startMiscShots()
@@ -456,7 +454,7 @@ class OverlaysFragment : BaseFragment<ShootViewModel,FragmentOverlaysBinding>(),
 
     private fun showImageConfirmDialog(shootData: ShootData) {
         viewModel.shootData.value = shootData
-        ConfirmReshootDialog().show(requireFragmentManager(), "ConfirmReshootDialog")
+        ConfirmReshootDialog().show(requireActivity().supportFragmentManager, "ConfirmReshootDialog")
     }
 
     private fun getPreviewDimensions(view : View) {
