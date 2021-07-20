@@ -66,7 +66,7 @@ class HomeDashboardFragment :
         viewModel.getCategories(Utilities.getPreference(requireContext(),AppConstants.AUTH_KEY).toString())
         viewModel.categoriesResponse.observe(viewLifecycleOwner, Observer {
             when(it){
-                is Resource.Sucess -> {
+                is Resource.Success -> {
                     requireContext().captureEvent(Events.GOT_CATEGORIES, Properties())
 
                 }

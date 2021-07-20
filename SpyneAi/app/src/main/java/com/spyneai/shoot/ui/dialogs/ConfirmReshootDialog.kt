@@ -6,6 +6,7 @@ import android.view.*
 import android.widget.FrameLayout
 import androidx.lifecycle.lifecycleScope
 import com.bumptech.glide.Glide
+import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.posthog.android.Properties
 import com.spyneai.base.BaseDialogFragment
 import com.spyneai.base.network.Resource
@@ -14,6 +15,7 @@ import com.spyneai.databinding.DialogConfirmReshootBinding
 import com.spyneai.posthog.Events
 import com.spyneai.shoot.data.ShootViewModel
 import kotlinx.coroutines.launch
+import java.io.File
 
 class ConfirmReshootDialog : BaseDialogFragment<ShootViewModel, DialogConfirmReshootBinding>() {
 
@@ -35,6 +37,12 @@ class ConfirmReshootDialog : BaseDialogFragment<ShootViewModel, DialogConfirmRes
             requireContext().captureEvent(
                 Events.RESHOOT,
                 properties)
+
+            val file = File(viewModel.shootList.value?.get(viewModel.shootList.value!!.size - 1)?.capturedImage)
+
+            if (file.exists())
+                file.delete()
+
             //remove last item from shoot list
             viewModel.shootList.value?.removeAt(viewModel.shootList.value!!.size - 1)
             dismiss()
@@ -100,6 +108,8 @@ class ConfirmReshootDialog : BaseDialogFragment<ShootViewModel, DialogConfirmRes
 
                     Glide.with(requireContext())
                         .load(uri)
+                        .diskCacheStrategy(DiskCacheStrategy.NONE)
+                        .skipMemoryCache(true)
                         .into(binding.ivCapturedImage)
 
                     if (viewModel.categoryDetails.value?.imageType == "Exterior"){
@@ -108,6 +118,8 @@ class ConfirmReshootDialog : BaseDialogFragment<ShootViewModel, DialogConfirmRes
 
                         Glide.with(requireContext())
                             .load(uri)
+                            .diskCacheStrategy(DiskCacheStrategy.NONE)
+                            .skipMemoryCache(true)
                             .into(binding.ivCaptured2)
 
                         setOverlay(binding.ivCaptured2,overlay)

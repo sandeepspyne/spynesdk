@@ -23,6 +23,7 @@ import com.hbisoft.pickit.PickiT
 import com.hbisoft.pickit.PickiTCallbacks
 import com.posthog.android.Properties
 import com.robertlevonyan.demo.camerax.analyzer.LuminosityAnalyzer
+import com.spyneai.R
 import com.spyneai.base.BaseFragment
 import com.spyneai.camera2.ShootDimensions
 import com.spyneai.captureEvent
@@ -117,19 +118,27 @@ class CameraFragment : BaseFragment<ShootViewModel, FragmentCameraBinding>(), Pi
         startCamera()
 
         binding.cameraCaptureButton?.setOnClickListener {
-            if ((viewModel.isSubCategoryConfirmed.value == null || viewModel.isSubCategoryConfirmed.value == false) &&
-                (viewModel.categoryDetails.value?.categoryName == "Automobiles" ||
-                        viewModel.categoryDetails.value?.categoryName == "Bikes")
-            ) {
-                SubCategoryConfirmationDialog().show(
-                    requireFragmentManager(),
-                    "SubCategoryConfirmationDialog"
-                )
-            } else {
+            if (getString(R.string.app_name) == "Karvi.com"){
                 if (viewModel.isCameraButtonClickable) {
                     takePhoto()
                     log("shoot image button clicked")
                     viewModel.isCameraButtonClickable = false
+                }
+            }else{
+                if ((viewModel.isSubCategoryConfirmed.value == null || viewModel.isSubCategoryConfirmed.value == false) &&
+                    (viewModel.categoryDetails.value?.categoryName == "Automobiles" ||
+                            viewModel.categoryDetails.value?.categoryName == "Bikes")
+                ) {
+                    SubCategoryConfirmationDialog().show(
+                        requireFragmentManager(),
+                        "SubCategoryConfirmationDialog"
+                    )
+                } else {
+                    if (viewModel.isCameraButtonClickable) {
+                        takePhoto()
+                        log("shoot image button clicked")
+                        viewModel.isCameraButtonClickable = false
+                    }
                 }
             }
         }
