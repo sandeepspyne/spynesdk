@@ -1,5 +1,4 @@
-package com.spyneai.orders.ui
-
+package com.spyneai.orders.ui.fragment
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -9,27 +8,26 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.posthog.android.Properties
 import com.spyneai.base.BaseFragment
+import com.spyneai.base.network.Resource
 import com.spyneai.captureFailureEvent
 import com.spyneai.dashboard.ui.handleApiError
-import com.spyneai.databinding.MyCompletedOrdersFragmentBinding
+import com.spyneai.databinding.FragmentCompletedProjectsBinding
 import com.spyneai.needs.AppConstants
 import com.spyneai.needs.Utilities
-import com.spyneai.orders.data.response.CompletedSKUsResponse
 import com.spyneai.orders.data.viewmodel.MyOrdersViewModel
-import com.spyneai.orders.ui.adapter.MyCompletedOrdersAdapter
+import com.spyneai.orders.ui.adapter.MyCompletedProjectsAdapter
 import com.spyneai.posthog.Events
 import com.spyneai.shoot.utils.log
 
-class MyCompletedOrdersFragment :
-    BaseFragment<MyOrdersViewModel, MyCompletedOrdersFragmentBinding>() {
+class CompletedProjectsFragment : BaseFragment<MyOrdersViewModel, FragmentCompletedProjectsBinding>() {
 
-    lateinit var myCompletedOrdersAdapter: MyCompletedOrdersAdapter
-    lateinit var completedSkuList: ArrayList<CompletedSKUsResponse.Data>
+    lateinit var myCompletedProjectsAdapter: MyCompletedProjectsAdapter
+    val status = "completed"
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        binding!!.rvMyCompletedOrders.apply {
+        binding!!.rvMyCompletedProjects.apply {
             layoutManager =
                 LinearLayoutManager(
                     requireContext(), LinearLayoutManager.VERTICAL,
@@ -44,42 +42,36 @@ class MyCompletedOrdersFragment :
 
         binding.shimmerCompletedSKU.startShimmer()
 
-        completedSkuList = ArrayList<CompletedSKUsResponse.Data>()
 
-        viewModel.getCompletedSKUs(Utilities.getPreference(requireContext(), AppConstants.AUTH_KEY).toString())
-        log("Completed SKUs(auth key): "+Utilities.getPreference(requireContext(), AppConstants.AUTH_KEY))
-        viewModel.completedSKUsResponse.observe(
+        viewModel.getProjects(Utilities.getPreference(requireContext(), AppConstants.AUTH_KEY).toString(), status)
+        log("Completed SKUs(auth key): "+ Utilities.getPreference(requireContext(), AppConstants.AUTH_KEY))
+        viewModel.getProjectsResponse.observe(
             viewLifecycleOwner, Observer {
                 when (it) {
-                    is com.spyneai.base.network.Resource.Success -> {
+                    is Resource.Success -> {
                         binding.shimmerCompletedSKU.stopShimmer()
                         binding.shimmerCompletedSKU.visibility = View.GONE
-                        binding.rvMyCompletedOrders.visibility = View.VISIBLE
+                        binding.rvMyCompletedProjects.visibility = View.VISIBLE
                         if (it.value.data != null){
-                            completedSkuList.clear()
-                            completedSkuList.addAll(it.value.data)
-                            myCompletedOrdersAdapter = MyCompletedOrdersAdapter(requireContext(),
-                                completedSkuList)
+
+                            myCompletedProjectsAdapter = MyCompletedProjectsAdapter(requireContext(),
+                                it.value.data.project_data, viewModel
+                            )
 
                             val layoutManager: RecyclerView.LayoutManager = LinearLayoutManager(requireContext(), LinearLayoutManager.VERTICAL, false)
-                            binding.rvMyCompletedOrders.setLayoutManager(layoutManager)
-                            binding.rvMyCompletedOrders.setAdapter(myCompletedOrdersAdapter)
-                            myCompletedOrdersAdapter =
-                                MyCompletedOrdersAdapter(
-                                    requireContext(),
-                                    completedSkuList
-                                )
+                            binding.rvMyCompletedProjects.setLayoutManager(layoutManager)
+                            binding.rvMyCompletedProjects.setAdapter(myCompletedProjectsAdapter)
                         }
                     }
-                    is com.spyneai.base.network.Resource.Loading -> {
+                    is Resource.Loading -> {
 
                     }
-                    is com.spyneai.base.network.Resource.Failure -> {
+                    is Resource.Failure -> {
                         binding.shimmerCompletedSKU.stopShimmer()
                         binding.shimmerCompletedSKU.visibility = View.GONE
 
                         if (it.errorCode == 404){
-                            binding.rvMyCompletedOrders.visibility = View.GONE
+                            binding.rvMyCompletedProjects.visibility = View.GONE
                         }else{
                             requireContext().captureFailureEvent(
                                 Events.GET_COMPLETED_ORDERS_FAILED, Properties(),
@@ -94,11 +86,10 @@ class MyCompletedOrdersFragment :
         )
     }
 
-
     override fun getViewModel() = MyOrdersViewModel::class.java
-
     override fun getFragmentBinding(
         inflater: LayoutInflater,
         container: ViewGroup?
-    ) = MyCompletedOrdersFragmentBinding.inflate(inflater, container, false)
+    ) = FragmentCompletedProjectsBinding.inflate(inflater, container, false)
+
 }

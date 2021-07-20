@@ -4,9 +4,7 @@ import com.spyneai.camera2.OverlaysResponse
 import com.spyneai.dashboard.response.NewCategoriesResponse
 import com.spyneai.dashboard.response.NewSubCatResponse
 import com.spyneai.model.projects.CompletedProjectResponse
-import com.spyneai.orders.data.response.CompletedSKUsResponse
-import com.spyneai.orders.data.response.ImagesOfSkuRes
-import com.spyneai.orders.data.response.GetOngoingSkusResponse
+import com.spyneai.orders.data.response.*
 import com.spyneai.shoot.data.model.*
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
@@ -128,6 +126,12 @@ interface ClipperApi {
         @Query("total_frames") totalFrames : String,
         @Query("auth_key") authKey : String
     ) : UpdateTotalFramesRes
+
+    @GET("v2/project/getDetailsProject")
+    suspend fun getProjects(
+        @Query("auth_key") authKey: String,
+        @Query("status") status: String
+    ) : GetProjectsResponse
 
 
 

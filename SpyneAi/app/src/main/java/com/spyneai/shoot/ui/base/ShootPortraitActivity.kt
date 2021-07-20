@@ -1,16 +1,15 @@
-package com.spyneai.shoot.ui
+package com.spyneai.shoot.ui.base
 
 import android.Manifest
 import android.content.Context
 import android.content.Intent
-import android.content.pm.ActivityInfo
 import android.content.pm.PackageManager
 import android.os.Build
+import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.WindowManager
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.ViewModelProvider
 import com.spyneai.R
@@ -20,90 +19,102 @@ import com.spyneai.needs.Utilities
 import com.spyneai.shoot.data.ShootViewModel
 import com.spyneai.shoot.data.model.CategoryDetails
 import com.spyneai.shoot.data.model.Sku
+import com.spyneai.shoot.ui.OverlaysFragment
 import com.spyneai.shoot.ui.dialogs.ShootExitDialog
-import com.spyneai.shoot.ui.ecom.OverlaysEcomFragment
-import com.spyneai.shoot.ui.ecom.ProjectDetailFragment
-import com.spyneai.shoot.ui.ecom.SkuDetailFragment
+import com.spyneai.shoot.ui.ecomwithgrid.GridEcomFragment
+import com.spyneai.shoot.ui.ecomwithgrid.ProjectDetailFragment
+import com.spyneai.shoot.ui.ecomwithgrid.SkuDetailFragment
+import com.spyneai.shoot.ui.ecomwithoverlays.OverlayEcomFragment
 import com.spyneai.shoot.utils.log
 import java.io.File
 
-
-class ShootActivity : AppCompatActivity() {
+class ShootPortraitActivity : AppCompatActivity() {
 
     lateinit var cameraFragment: CameraFragment
     lateinit var overlaysFragment: OverlaysFragment
-    lateinit var overlaysEcomFragment: OverlaysEcomFragment
+    lateinit var gridEcomFragment: GridEcomFragment
+    lateinit var overlayEcomFragment: OverlayEcomFragment
     lateinit var skuDetailFragment: SkuDetailFragment
     lateinit var projectDetailFragment: ProjectDetailFragment
-    lateinit var shootViewModel : ShootViewModel
-    val TAG = "ShootActivity"
-
+    val TAG = "ShootPortraitActivity"
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        setContentView(R.layout.activity_shoot_portrait)
+
         window.setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
             WindowManager.LayoutParams.FLAG_FULLSCREEN)
 
-        setContentView(R.layout.activity_shoot)
-
-        shootViewModel = ViewModelProvider(this, ViewModelFactory()).get(ShootViewModel::class.java)
+        val shootViewModel = ViewModelProvider(this, ViewModelFactory()).get(ShootViewModel::class.java)
 
         val categoryDetails = CategoryDetails()
 
         categoryDetails.apply {
-           categoryId = intent.getStringExtra(AppConstants.CATEGORY_ID)
+            categoryId = intent.getStringExtra(AppConstants.CATEGORY_ID)
             categoryName = intent.getStringExtra(AppConstants.CATEGORY_NAME)
             gifList =  intent.getStringExtra(AppConstants.GIF_LIST)
         }
 
         shootViewModel.categoryDetails.value = categoryDetails
 
+        when(shootViewModel.categoryDetails.value?.categoryName) {
+            "Footwear" -> shootViewModel.processSku = false
+        }
+
         cameraFragment = CameraFragment()
         overlaysFragment = OverlaysFragment()
-        overlaysEcomFragment = OverlaysEcomFragment()
+        gridEcomFragment = GridEcomFragment()
         skuDetailFragment = SkuDetailFragment()
         projectDetailFragment = ProjectDetailFragment()
+        overlayEcomFragment = OverlayEcomFragment()
 
-        when(shootViewModel.categoryDetails.value?.categoryName) {
-            "Automobiles" -> {
-                shootViewModel.processSku = true
-
-                if(savedInstanceState == null) { // initial transaction should be wrapped like this
-                    supportFragmentManager.beginTransaction()
-                        .add(R.id.flCamerFragment, cameraFragment)
-                        .add(R.id.flCamerFragment, overlaysFragment)
-                        .commitAllowingStateLoss()
-                }
+        if (Utilities.getPreference(this, AppConstants.CATEGORY_NAME).equals("Automobiles")){
+            if(savedInstanceState == null) { // initial transaction should be wrapped like this
+                supportFragmentManager.beginTransaction()
+                    .add(R.id.flCamerFragment, cameraFragment)
+                    .add(R.id.flCamerFragment, overlaysFragment)
+                    .commitAllowingStateLoss()
             }
-            "Bikes" -> {
-                shootViewModel.processSku = false
-                if(savedInstanceState == null) { // initial transaction should be wrapped like this
-                    supportFragmentManager.beginTransaction()
-                        .add(R.id.flCamerFragment, cameraFragment)
-                        .add(R.id.flCamerFragment, overlaysFragment)
-                        .commitAllowingStateLoss()
-                }
+        }else if (Utilities.getPreference(this, AppConstants.CATEGORY_NAME).equals("E-Commerce")){
+            if(savedInstanceState == null) { // initial transaction should be wrapped like this
+                supportFragmentManager.beginTransaction()
+                    .add(R.id.flCamerFragment, cameraFragment)
+                    .add(R.id.flCamerFragment, gridEcomFragment)
+                    .commitAllowingStateLoss()
             }
 
-            "Footwear" -> {
-                if(savedInstanceState == null) { // initial transaction should be wrapped like this
-                    supportFragmentManager.beginTransaction()
-                        .add(R.id.flCamerFragment, cameraFragment)
-                        .add(R.id.flCamerFragment, overlaysEcomFragment)
-                        .commitAllowingStateLoss()
-                }
-                try {
-                    val intent = intent
-                    shootViewModel.projectId.value = intent.getStringExtra("project_id")
-                    val sku = Sku()
-                    sku?.projectId = shootViewModel.projectId.value
-                    shootViewModel.categoryDetails.value?.imageType = "Ecom"
-                    shootViewModel.sku.value = sku
-                } catch (e: Exception) {
-                    e.printStackTrace()
-                }
+            try {
+                val intent = intent
+                shootViewModel.projectId.value = intent.getStringExtra("project_id")
+                val sku = Sku()
+                sku?.projectId = shootViewModel.projectId.value
+                shootViewModel.categoryDetails.value?.imageType = "Ecom"
+                shootViewModel.sku.value = sku
+            } catch (e: Exception) {
+                e.printStackTrace()
+            }
+
+        }else if (Utilities.getPreference(this, AppConstants.CATEGORY_NAME).equals("Footwear")){
+            shootViewModel.processSku = false
+            if(savedInstanceState == null) { // initial transaction should be wrapped like this
+                supportFragmentManager.beginTransaction()
+                    .add(R.id.flCamerFragment, cameraFragment)
+                    .add(R.id.flCamerFragment, overlayEcomFragment)
+                    .commitAllowingStateLoss()
+            }
+            try {
+                val intent = intent
+                shootViewModel.projectId.value = intent.getStringExtra("project_id")
+                val sku = Sku()
+                sku?.projectId = shootViewModel.projectId.value
+                shootViewModel.categoryDetails.value?.imageType = ""
+                shootViewModel.sku.value = sku
+            } catch (e: Exception) {
+                e.printStackTrace()
             }
         }
+
+
 
         if (allPermissionsGranted()) {
             onPermissionGranted()
@@ -125,7 +136,7 @@ class ShootActivity : AppCompatActivity() {
                 window.clearFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN)
                 supportFragmentManager.beginTransaction().remove(skuDetailFragment).commit()
                 supportFragmentManager.beginTransaction().remove(cameraFragment).commit()
-                supportFragmentManager.beginTransaction().remove(overlaysEcomFragment).commit()
+                supportFragmentManager.beginTransaction().remove(gridEcomFragment).commit()
                 supportFragmentManager.beginTransaction()
                     .add(R.id.flCamerFragment, projectDetailFragment)
                     .commit()
@@ -134,7 +145,7 @@ class ShootActivity : AppCompatActivity() {
 
         shootViewModel.addMoreAngle.observe(this, {
             if (it)
-                supportFragmentManager.beginTransaction().remove(skuDetailFragment).commit()
+            supportFragmentManager.beginTransaction().remove(skuDetailFragment).commit()
         })
 
         shootViewModel.selectBackground.observe(this, {
@@ -143,39 +154,14 @@ class ShootActivity : AppCompatActivity() {
                 val intent = Intent(this, ProcessActivity::class.java)
 
                 intent.apply {
-                    this.putExtra(AppConstants.CATEGORY_NAME, categoryDetails.categoryName)
                     this.putExtra("sku_id", shootViewModel.sku.value?.skuId)
                     this.putExtra("exterior_angles", shootViewModel.exterirorAngles.value)
-                    this.putExtra("process_sku",shootViewModel.processSku)
-                    this.putExtra("interior_misc_count",getInteriorMiscCount())
                     startActivity(this)
                 }
             }
         })
     }
 
-    private fun getInteriorMiscCount(): Int {
-        var total = 0
-
-        val list = shootViewModel.shootList.value
-
-        val interiorList = list?.filter {
-            it.image_category == "Interior"
-        }
-
-        if (interiorList != null)
-            total = interiorList.size
-
-
-        val miscList = list?.filter {
-            it.image_category == "Focus Shoot"
-        }
-
-        if (miscList != null)
-            total+= miscList.size
-
-        return total
-    }
     /**
      * Check for the permissions
      */

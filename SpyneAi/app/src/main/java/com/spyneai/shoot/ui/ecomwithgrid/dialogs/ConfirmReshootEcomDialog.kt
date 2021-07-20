@@ -1,4 +1,4 @@
-package com.spyneai.shoot.ui.ecom
+package com.spyneai.shoot.ui.ecomwithgrid.dialogs
 
 import android.content.Intent
 import android.net.Uri

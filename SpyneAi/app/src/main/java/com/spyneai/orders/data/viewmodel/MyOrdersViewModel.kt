@@ -8,15 +8,24 @@ import com.spyneai.base.network.Resource
 import com.spyneai.orders.data.repository.MyOrdersRepository
 import com.spyneai.orders.data.response.CompletedSKUsResponse
 import com.spyneai.orders.data.response.GetOngoingSkusResponse
+import com.spyneai.orders.data.response.GetProjectsResponse
 import kotlinx.coroutines.launch
 
 class MyOrdersViewModel : ViewModel() {
 
+
     private val repository = MyOrdersRepository()
+
+    val position: MutableLiveData<Int> = MutableLiveData()
+    val projectItemClicked: MutableLiveData<Boolean> = MutableLiveData()
 
     private val _CompletedSKUsResponse: MutableLiveData<Resource<CompletedSKUsResponse>> = MutableLiveData()
     val completedSKUsResponse: LiveData<Resource<CompletedSKUsResponse>>
         get() = _CompletedSKUsResponse
+
+    private val _getProjectsResponse: MutableLiveData<Resource<GetProjectsResponse>> = MutableLiveData()
+    val getProjectsResponse: LiveData<Resource<GetProjectsResponse>>
+        get() = _getProjectsResponse
 
     private val _getOngoingSkusResponse: MutableLiveData<Resource<GetOngoingSkusResponse>> = MutableLiveData()
     val getOngoingSkusResponse: LiveData<Resource<GetOngoingSkusResponse>>
@@ -29,6 +38,14 @@ class MyOrdersViewModel : ViewModel() {
     ) = viewModelScope.launch {
         _CompletedSKUsResponse.value = Resource.Loading
         _CompletedSKUsResponse.value = repository.getCompletedSKUs(tokenId)
+
+    }
+
+    fun getProjects(
+        tokenId: String, status: String
+    ) = viewModelScope.launch {
+        _getProjectsResponse.value = Resource.Loading
+        _getProjectsResponse.value = repository.getProjects(tokenId, status)
 
     }
 

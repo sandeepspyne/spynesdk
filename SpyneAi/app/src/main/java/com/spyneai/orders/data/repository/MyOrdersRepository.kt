@@ -25,6 +25,13 @@ class MyOrdersRepository : BaseRepository() {
         clipperApi.getCompletedSkus(tokenId)
     }
 
+    suspend fun getProjects(
+        tokenId: String,
+        status: String
+    ) = safeApiCall{
+        clipperApi.getProjects(tokenId, status)
+    }
+
 
 
 

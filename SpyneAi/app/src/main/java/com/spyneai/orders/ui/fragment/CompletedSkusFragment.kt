@@ -1,4 +1,4 @@
-package com.spyneai.orders.ui
+package com.spyneai.orders.ui.fragment
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -9,27 +9,28 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.posthog.android.Properties
 import com.spyneai.base.BaseFragment
+import com.spyneai.base.network.Resource
 import com.spyneai.captureFailureEvent
 import com.spyneai.dashboard.ui.handleApiError
-import com.spyneai.databinding.MyCompletedOrdersFragmentBinding
+import com.spyneai.databinding.FragmentCompletedSkusBinding
 import com.spyneai.needs.AppConstants
 import com.spyneai.needs.Utilities
-import com.spyneai.orders.data.response.CompletedSKUsResponse
+import com.spyneai.orders.data.response.GetProjectsResponse
 import com.spyneai.orders.data.viewmodel.MyOrdersViewModel
-import com.spyneai.orders.ui.adapter.MyCompletedOrdersAdapter
+import com.spyneai.orders.ui.adapter.SkusAdapter
 import com.spyneai.posthog.Events
 import com.spyneai.shoot.utils.log
 
-class MyCompletedOrdersFragment :
-    BaseFragment<MyOrdersViewModel, MyCompletedOrdersFragmentBinding>() {
+class CompletedSkusFragment : BaseFragment<MyOrdersViewModel, FragmentCompletedSkusBinding>() {
 
-    lateinit var myCompletedOrdersAdapter: MyCompletedOrdersAdapter
-    lateinit var completedSkuList: ArrayList<CompletedSKUsResponse.Data>
+    lateinit var skusAdapter: SkusAdapter
+    val status = "completed"
+    lateinit var skuList: ArrayList<GetProjectsResponse.Sku>
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        binding!!.rvMyCompletedOrders.apply {
+        binding!!.rvSkus.apply {
             layoutManager =
                 LinearLayoutManager(
                     requireContext(), LinearLayoutManager.VERTICAL,
@@ -41,45 +42,53 @@ class MyCompletedOrdersFragment :
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
 
+        skuList = ArrayList<GetProjectsResponse.Sku>()
+
 
         binding.shimmerCompletedSKU.startShimmer()
 
-        completedSkuList = ArrayList<CompletedSKUsResponse.Data>()
 
-        viewModel.getCompletedSKUs(Utilities.getPreference(requireContext(), AppConstants.AUTH_KEY).toString())
-        log("Completed SKUs(auth key): "+Utilities.getPreference(requireContext(), AppConstants.AUTH_KEY))
-        viewModel.completedSKUsResponse.observe(
+        viewModel.getProjects(Utilities.getPreference(requireContext(), AppConstants.AUTH_KEY).toString(), status)
+        log("Completed SKUs(auth key): "+ Utilities.getPreference(requireContext(), AppConstants.AUTH_KEY))
+        viewModel.getProjectsResponse.observe(
             viewLifecycleOwner, Observer {
                 when (it) {
-                    is com.spyneai.base.network.Resource.Success -> {
+                    is Resource.Success -> {
                         binding.shimmerCompletedSKU.stopShimmer()
                         binding.shimmerCompletedSKU.visibility = View.GONE
-                        binding.rvMyCompletedOrders.visibility = View.VISIBLE
+                        binding.rvSkus.visibility = View.VISIBLE
+
                         if (it.value.data != null){
-                            completedSkuList.clear()
-                            completedSkuList.addAll(it.value.data)
-                            myCompletedOrdersAdapter = MyCompletedOrdersAdapter(requireContext(),
-                                completedSkuList)
+
+                            binding.tvTotalSku.text = it.value.data.total_skus.toString()
+
+                            skuList.clear()
+                            for (i in 0..it.value.data.project_data.size){
+                                if (i == viewModel.position.value){
+                                    skuList.addAll(it.value.data.project_data[i].sku)
+                                    binding.tvProjectName.text = it.value.data.project_data[i].project_name
+                                }
+
+                            }
+
+                            skusAdapter = SkusAdapter(requireContext(),
+                                it.value.data.project_data, viewModel, skuList
+                            )
 
                             val layoutManager: RecyclerView.LayoutManager = LinearLayoutManager(requireContext(), LinearLayoutManager.VERTICAL, false)
-                            binding.rvMyCompletedOrders.setLayoutManager(layoutManager)
-                            binding.rvMyCompletedOrders.setAdapter(myCompletedOrdersAdapter)
-                            myCompletedOrdersAdapter =
-                                MyCompletedOrdersAdapter(
-                                    requireContext(),
-                                    completedSkuList
-                                )
+                            binding.rvSkus.setLayoutManager(layoutManager)
+                            binding.rvSkus.setAdapter(skusAdapter)
                         }
                     }
-                    is com.spyneai.base.network.Resource.Loading -> {
+                    is Resource.Loading -> {
 
                     }
-                    is com.spyneai.base.network.Resource.Failure -> {
+                    is Resource.Failure -> {
                         binding.shimmerCompletedSKU.stopShimmer()
                         binding.shimmerCompletedSKU.visibility = View.GONE
 
                         if (it.errorCode == 404){
-                            binding.rvMyCompletedOrders.visibility = View.GONE
+                            binding.rvSkus.visibility = View.GONE
                         }else{
                             requireContext().captureFailureEvent(
                                 Events.GET_COMPLETED_ORDERS_FAILED, Properties(),
@@ -96,9 +105,10 @@ class MyCompletedOrdersFragment :
 
 
     override fun getViewModel() = MyOrdersViewModel::class.java
-
     override fun getFragmentBinding(
         inflater: LayoutInflater,
         container: ViewGroup?
-    ) = MyCompletedOrdersFragmentBinding.inflate(inflater, container, false)
+    ) = FragmentCompletedSkusBinding.inflate(inflater, container, false)
+
+
 }
