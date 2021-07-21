@@ -24,6 +24,7 @@ class MyOngoingProjectAdapter (
         val tvProjectName: TextView = view.findViewById(R.id.tvProjectName)
         val tvCategory: TextView = view.findViewById(R.id.tvCategory)
         val tvSkus: TextView = view.findViewById(R.id.tvSkus)
+        val tvThreeSixty: TextView = view.findViewById(R.id.tvThreeSixty)
         val tvImages: TextView = view.findViewById(R.id.tvImages)
         val tvDate: TextView = view.findViewById(R.id.tvDate)
         val ivThumbnail: ImageView = view.findViewById(R.id.ivThumbnail)
@@ -40,6 +41,9 @@ class MyOngoingProjectAdapter (
     }
 
     override fun onBindViewHolder(holder: MyOngoingProjectAdapter.ViewHolder, position: Int) {
+
+        if (getProjectList[position].sub_category == "360_exterior")
+            holder.tvThreeSixty.visibility = View.VISIBLE
 
 
 //        if (getProjectList[0].sku[0].images.size != 0)

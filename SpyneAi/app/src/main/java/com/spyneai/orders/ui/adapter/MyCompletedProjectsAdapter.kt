@@ -1,6 +1,7 @@
 package com.spyneai.orders.ui.adapter
 
 import android.content.Context
+import android.content.Intent
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -18,6 +19,7 @@ import com.google.android.play.core.assetpacks.v
 import com.spyneai.R
 import com.spyneai.orders.data.response.GetProjectsResponse
 import com.spyneai.orders.data.viewmodel.MyOrdersViewModel
+import com.spyneai.threesixty.ui.ThreeSixtyExteriorActivity
 
 class MyCompletedProjectsAdapter(
     val context: Context,
@@ -29,6 +31,7 @@ class MyCompletedProjectsAdapter(
         val tvProjectName: TextView = view.findViewById(R.id.tvProjectName)
         val tvCategory: TextView = view.findViewById(R.id.tvCategory)
         val tvSkus: TextView = view.findViewById(R.id.tvSkus)
+        val tvThreeSixty: TextView = view.findViewById(R.id.tvThreeSixty)
         val tvImages: TextView = view.findViewById(R.id.tvImages)
         val tvDate: TextView = view.findViewById(R.id.tvDate)
         val tvPaid: TextView = view.findViewById(R.id.tvPaid)
@@ -49,6 +52,9 @@ class MyCompletedProjectsAdapter(
     override fun onBindViewHolder(holder: MyCompletedProjectsAdapter.ViewHolder, position: Int) {
 
 
+        if (getProjectList[position].sub_category == "360_exterior")
+            holder.tvThreeSixty.visibility = View.VISIBLE
+
         if (getProjectList[0].sku[0].images.size != 0)
         Glide.with(context) // replace with 'this' if it's in activity
             .load(getProjectList[position].sku[0].images[0].input_lres)
@@ -65,7 +71,15 @@ class MyCompletedProjectsAdapter(
             viewModel.position.value = position
             viewModel.projectItemClicked.value = true
 
-            it.findNavController().navigate(R.id.action_completedProjectsFragment_to_completedSkusFragment)
+            //val productNameList:List<String> = getProjectList.map { it.sku }
+
+            Intent(context,ThreeSixtyExteriorActivity::class.java)
+                .apply {
+                    putExtra("sku_id",getProjectList[position].sku[0].sku_id)
+                    context.startActivity(this)
+                }
+
+            //it.findNavController().navigate(R.id.action_completedProjectsFragment_to_completedSkusFragment)
         }
     }
 

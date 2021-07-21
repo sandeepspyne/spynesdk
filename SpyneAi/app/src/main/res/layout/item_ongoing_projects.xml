@@ -15,24 +15,52 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
-    <androidx.cardview.widget.CardView
-        android:id="@+id/cvThumbnail"
-        android:layout_width="111dp"
-        android:layout_height="84dp"
-        android:layout_marginLeft="@dimen/dp_8"
-        android:layout_marginTop="12dp"
-        app:cardCornerRadius="6dp"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
 
-        <ImageView
-            android:id="@+id/ivThumbnail"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:scaleType="centerCrop"
-            android:src="@mipmap/defaults" />
 
-    </androidx.cardview.widget.CardView>
+
+   <LinearLayout
+       android:layout_width="wrap_content"
+       android:layout_height="wrap_content"
+       android:id="@+id/llMain"
+       android:orientation="vertical"
+       app:layout_constraintLeft_toLeftOf="parent"
+       app:layout_constraintTop_toTopOf="parent">
+
+       <TextView
+           android:layout_width="80dp"
+           android:layout_height="wrap_content"
+           android:text="360"
+           app:layout_constraintBottom_toTopOf="@id/cvThumbnail"
+           app:layout_constraintTop_toTopOf="parent"
+           app:layout_constraintLeft_toLeftOf="parent"
+           android:layout_marginTop="@dimen/dp_5"
+           android:id="@+id/tvThreeSixty"
+           android:textColor="@color/black"
+           android:background="#C4C4C4"
+           android:gravity="center"
+           android:visibility="gone"
+           android:fontFamily="@font/medium"
+           android:paddingRight="@dimen/dp_10"
+           android:paddingLeft="@dimen/dp_10" />
+
+       <androidx.cardview.widget.CardView
+           android:layout_width="111dp"
+           android:layout_height="84dp"
+           android:id="@+id/cvThumbnail"
+           android:layout_marginLeft="@dimen/dp_8"
+           android:layout_marginTop="12dp"
+           app:cardCornerRadius="6dp">
+
+           <ImageView
+               android:id="@+id/ivThumbnail"
+               android:layout_width="match_parent"
+               android:layout_height="match_parent"
+               android:scaleType="centerCrop"
+               android:src="@mipmap/defaults" />
+
+       </androidx.cardview.widget.CardView>
+
+   </LinearLayout>
 
     <TextView
         android:id="@+id/tvProjectName"
@@ -43,7 +71,7 @@
         android:fontFamily="@font/poppins_medium"
         android:textColor="@color/black"
         android:textSize="14sp"
-        app:layout_constraintLeft_toRightOf="@+id/cvThumbnail"
+        app:layout_constraintLeft_toRightOf="@+id/llMain"
         app:layout_constraintTop_toTopOf="parent"
         tools:text="Project- 001" />
 
@@ -68,7 +96,7 @@
         android:layout_marginTop="@dimen/dp_5"
         android:layout_marginRight="@dimen/dp_8"
         android:background="@color/line_separator"
-        app:layout_constraintLeft_toRightOf="@+id/cvThumbnail"
+        app:layout_constraintLeft_toRightOf="@+id/llMain"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/tvProjectName" />
 
@@ -78,7 +106,7 @@
         android:layout_height="wrap_content"
         android:layout_marginLeft="@dimen/dp_12"
         android:layout_marginTop="@dimen/dp_10"
-        app:layout_constraintLeft_toRightOf="@+id/cvThumbnail"
+        app:layout_constraintLeft_toRightOf="@+id/llMain"
         app:layout_constraintTop_toBottomOf="@+id/view">
 
         <com.mikhaellopez.circularimageview.CircularImageView
@@ -123,7 +151,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/dp_5"
         app:layout_constraintLeft_toLeftOf="@+id/flCategory"
-        app:layout_constraintLeft_toRightOf="@+id/cvThumbnail"
+        app:layout_constraintLeft_toRightOf="@+id/llMain"
         app:layout_constraintTop_toBottomOf="@+id/flCategory">
 
         <com.mikhaellopez.circularimageview.CircularImageView
@@ -172,7 +200,7 @@
         android:layout_marginBottom="@dimen/dp_15"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintLeft_toLeftOf="@+id/flCategory"
-        app:layout_constraintLeft_toRightOf="@+id/cvThumbnail"
+        app:layout_constraintLeft_toRightOf="@+id/llMain"
         app:layout_constraintTop_toBottomOf="@+id/flSkus">
 
         <com.mikhaellopez.circularimageview.CircularImageView
@@ -272,6 +300,8 @@
         </LinearLayout>
 
     </FrameLayout>
+
+
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

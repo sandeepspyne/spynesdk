@@ -81,7 +81,7 @@ class ThreeSixtyProjectAndSkuDialog : BaseDialogFragment<ThreeSixtyViewModel, Di
         viewModel.createSku(
             Utilities.getPreference(requireContext(),AppConstants.AUTH_KEY).toString(),projectId,
             requireActivity().intent.getStringExtra(AppConstants.CATEGORY_ID).toString(),
-            prod_sub_cat_id!!,
+            "360_exterior",
             viewModel.videoDetails.skuName.toString()
         )
 

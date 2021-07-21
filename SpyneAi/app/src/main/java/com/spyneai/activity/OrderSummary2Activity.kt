@@ -7,21 +7,17 @@ import android.os.Bundle
 import android.widget.Toast
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
-import androidx.appcompat.app.AppCompatDelegate
 import androidx.core.content.ContextCompat
 import com.bumptech.glide.Glide
 import com.downloader.PRDownloader
 import com.downloader.PRDownloaderConfig
 import com.spyneai.R
-import com.spyneai.credits.CreditApiService
 import com.spyneai.credits.CreditPlansActivity
 import com.spyneai.credits.LowCreditsActivity
-import com.spyneai.credits.RetrofitCreditClient
-import com.spyneai.credits.model.DownloadHDRes
-import com.spyneai.dashboard.ui.MainDashboardActivity
 import com.spyneai.gotoHome
 import com.spyneai.interfaces.APiService
 import com.spyneai.interfaces.RetrofitClientSpyneAi
+import com.spyneai.interfaces.RetrofitClients
 import com.spyneai.model.credit.CreditDetailsResponse
 import com.spyneai.needs.AppConstants
 import com.spyneai.needs.Utilities
@@ -179,9 +175,9 @@ class OrderSummary2Activity : AppCompatActivity() {
     }
 
     private fun fetchUserCreditDetails(){
-        val request = RetrofitClientSpyneAi.buildService(APiService::class.java)
+        val request = RetrofitClients.buildService(APiService::class.java)
         val call = request.userCreditsDetails(
-            Utilities.getPreference(this, AppConstants.TOKEN_ID).toString()
+            Utilities.getPreference(this, AppConstants.AUTH_KEY).toString()
         )
 
         call?.enqueue(object : Callback<CreditDetailsResponse> {

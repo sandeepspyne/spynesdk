@@ -3,6 +3,7 @@ package com.spyneai.base.network
 import com.spyneai.camera2.OverlaysResponse
 import com.spyneai.dashboard.response.NewCategoriesResponse
 import com.spyneai.dashboard.response.NewSubCatResponse
+import com.spyneai.model.credit.CreditDetailsResponse
 import com.spyneai.model.projects.CompletedProjectResponse
 import com.spyneai.orders.data.response.*
 import com.spyneai.shoot.data.model.*
@@ -150,5 +151,11 @@ interface ClipperApi {
         @Part videoFile: MultipartBody.Part,
         @Part("video_url") videoUrl: RequestBody? = null,
     ) : ProcessThreeSixtyRes
+
+    @GET("v2/credit/fetch")
+    suspend fun userCreditsDetails(
+        @Query("auth_key") userId: String
+    ): CreditDetailsResponse
+
 
 }

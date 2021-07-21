@@ -9,7 +9,5 @@ class FramesHelper {
         var videoUrlMap = HashMap<String,String>()
         var processingMap = HashMap<String,Boolean>()
         var taskMap = HashMap<String, VideoTask>()
-
-
     }
 }

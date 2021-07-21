@@ -9,7 +9,6 @@ import android.view.ViewGroup
 import android.widget.LinearLayout
 import android.widget.Toast
 import androidx.core.content.ContextCompat
-import androidx.fragment.app.Fragment
 import com.posthog.android.Properties
 import com.spyneai.R
 import com.spyneai.base.BaseFragment
@@ -18,10 +17,11 @@ import com.spyneai.captureFailureEvent
 import com.spyneai.credits.CreditPlansActivity
 import com.spyneai.credits.CreditUtils
 import com.spyneai.dashboard.data.DashboardViewModel
-import com.spyneai.databinding.HomeDashboardFragmentBinding
 import com.spyneai.databinding.WalletDashboardFragmentBinding
 import com.spyneai.interfaces.APiService
+import com.spyneai.interfaces.RetrofitClient
 import com.spyneai.interfaces.RetrofitClientSpyneAi
+import com.spyneai.interfaces.RetrofitClients
 import com.spyneai.model.credit.CreditDetailsResponse
 import com.spyneai.needs.AppConstants
 import com.spyneai.needs.Utilities
@@ -77,9 +77,9 @@ class WalletDashboardFragment :
 
         binding.shimmer.startShimmer()
 
-        val request = RetrofitClientSpyneAi.buildService(APiService::class.java)
+        val request = RetrofitClients.buildService(APiService::class.java)
         val call = request.userCreditsDetails(
-            Utilities.getPreference(requireContext(), AppConstants.TOKEN_ID).toString()
+            Utilities.getPreference(requireContext(), AppConstants.AUTH_KEY).toString()
         )
 
         call?.enqueue(object : Callback<CreditDetailsResponse> {

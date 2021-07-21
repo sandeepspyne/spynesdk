@@ -56,6 +56,7 @@ class OngoingProjectAdapter(
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
+
         holder.tvCatName.text = ongoingProjectList[position].catName
         if (ongoingProjectList[position].catName.equals("Automobiles"))
             holder.tvTotalImages.text =

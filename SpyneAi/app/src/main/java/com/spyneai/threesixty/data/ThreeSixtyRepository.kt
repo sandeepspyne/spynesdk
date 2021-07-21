@@ -55,6 +55,6 @@ class ThreeSixtyRepository : BaseRepository() {
     suspend fun getUserCredits(
         userId : String
     )= safeApiCall {
-        spyneApi.userCreditsDetails(userId)
+        clipperApi.userCreditsDetails(userId)
     }
 }

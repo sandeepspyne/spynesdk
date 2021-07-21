@@ -513,9 +513,9 @@ interface APiService {
         @Part("email_id") email_id: RequestBody?
     ): Call<FreeCreditEligblityResponse>?
 
-    @GET("credit/user-total-credit")
+    @GET("v2/credit/fetch")
     fun userCreditsDetails(
-        @Query("userId") userId: String?,
+        @Query("auth_key") userId: String?,
     ): Call<CreditDetailsResponse>?
 
     @Multipart

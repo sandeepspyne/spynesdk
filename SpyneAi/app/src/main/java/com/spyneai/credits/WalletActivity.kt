@@ -12,6 +12,7 @@ import com.spyneai.R
 import com.spyneai.databinding.ActivityWalletBinding
 import com.spyneai.interfaces.APiService
 import com.spyneai.interfaces.RetrofitClientSpyneAi
+import com.spyneai.interfaces.RetrofitClients
 import com.spyneai.model.credit.CreditDetailsResponse
 import com.spyneai.needs.AppConstants
 import com.spyneai.needs.Utilities
@@ -68,9 +69,9 @@ class WalletActivity : AppCompatActivity() {
 
         binding.shimmer.startShimmer()
 
-        val request = RetrofitClientSpyneAi.buildService(APiService::class.java)
+        val request = RetrofitClients.buildService(APiService::class.java)
         val call = request.userCreditsDetails(
-            Utilities.getPreference(this, AppConstants.TOKEN_ID).toString()
+            Utilities.getPreference(this, AppConstants.AUTH_KEY).toString()
         )
 
         call?.enqueue(object : Callback<CreditDetailsResponse> {

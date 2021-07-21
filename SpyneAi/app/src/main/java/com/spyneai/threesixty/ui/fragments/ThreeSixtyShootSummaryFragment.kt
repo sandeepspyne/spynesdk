@@ -1,12 +1,10 @@
 package com.spyneai.threesixty.ui.fragments
 
-import android.annotation.SuppressLint
 import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
 import androidx.navigation.Navigation
 import com.bumptech.glide.Glide
 import com.spyneai.R
@@ -14,7 +12,6 @@ import com.spyneai.base.BaseFragment
 import com.spyneai.base.network.Resource
 import com.spyneai.credits.CreditPlansActivity
 import com.spyneai.dashboard.ui.handleApiError
-import com.spyneai.databinding.Fragment360IntroBinding
 import com.spyneai.databinding.Fragment360ShotSummaryBinding
 import com.spyneai.needs.AppConstants
 import com.spyneai.needs.Utilities
@@ -27,8 +24,8 @@ class ThreeSixtyShootSummaryFragment : BaseFragment<ThreeSixtyViewModel, Fragmen
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-//        getUserCredits()
-//        observeCredits()
+        getUserCredits()
+        observeCredits()
 
         Glide.with(requireContext()) // replace with 'this' if it's in activity
             .load(viewModel.videoDetails.sample360)
@@ -66,7 +63,7 @@ class ThreeSixtyShootSummaryFragment : BaseFragment<ThreeSixtyViewModel, Fragmen
 
 
     private fun getUserCredits() {
-        viewModel.getUserCredits(Utilities.getPreference(requireContext(), AppConstants.TOKEN_ID).toString())
+        viewModel.getUserCredits(Utilities.getPreference(requireContext(), AppConstants.AUTH_KEY).toString())
     }
 
     private fun observeCredits() {
