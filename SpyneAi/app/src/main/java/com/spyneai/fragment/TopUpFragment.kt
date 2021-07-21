@@ -16,6 +16,7 @@ import com.spyneai.credits.CreditUtils
 import com.spyneai.databinding.DialogTopUpBinding
 import com.spyneai.interfaces.APiService
 import com.spyneai.interfaces.RetrofitClientSpyneAi
+import com.spyneai.interfaces.RetrofitClients
 import com.spyneai.model.credit.CreditDetailsResponse
 import com.spyneai.needs.AppConstants
 import com.spyneai.needs.Utilities
@@ -69,9 +70,9 @@ class TopUpFragment: DialogFragment() {
 
         binding.shimmer.startShimmer()
 
-        val request = RetrofitClientSpyneAi.buildService(APiService::class.java)
+        val request = RetrofitClients.buildService(APiService::class.java)
         val call = request.userCreditsDetails(
-            Utilities.getPreference(requireContext(), AppConstants.tokenId).toString()
+            Utilities.getPreference(requireContext(), AppConstants.AUTH_KEY).toString()
         )
 
         call?.enqueue(object : Callback<CreditDetailsResponse> {
@@ -86,12 +87,12 @@ class TopUpFragment: DialogFragment() {
                     binding.shimmer.visibility = View.GONE
                     binding.tvCreditsRemaining.visibility = View.VISIBLE
 
-                    availableCredits = response.body()?.data?.creditAvailable!!
+                    availableCredits = response.body()?.data?.credit_available!!
 
-                    if (response.body()?.data?.creditAvailable.toString() == "0"){
+                    if (response.body()?.data?.credit_available.toString() == "0"){
                         binding.tvCreditsRemaining.text = "0 Credits Remaining"
                     }else{
-                        binding.tvCreditsRemaining.text = CreditUtils.getFormattedNumber(response.body()!!.data.creditAvailable) + " Credits Remaining"
+                        binding.tvCreditsRemaining.text = CreditUtils.getFormattedNumber(response.body()!!.data.credit_available) + " Credits Remaining"
                     }
 
                     try {
@@ -100,17 +101,17 @@ class TopUpFragment: DialogFragment() {
                         Utilities.savePrefrence(
                             requireContext(),
                             AppConstants.CREDIT_ALLOTED,
-                            response.body()?.data?.creditAlloted.toString()
+                            response.body()?.data?.credit_allotted.toString()
                         )
                         Utilities.savePrefrence(
                             requireContext(),
                             AppConstants.CREDIT_AVAILABLE,
-                            response.body()?.data?.creditAvailable.toString()
+                            response.body()?.data?.credit_available.toString()
                         )
                         Utilities.savePrefrence(
                             requireContext(),
                             AppConstants.CREDIT_USED,
-                            response.body()?.data?.creditUsed.toString()
+                            response.body()?.data?.credit_used.toString()
                         )
                     }catch (e : IllegalStateException){
                         e.printStackTrace()

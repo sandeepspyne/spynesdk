@@ -16,6 +16,7 @@ import com.spyneai.fragment.TopUpFragment
 import com.spyneai.gotoHome
 import com.spyneai.interfaces.APiService
 import com.spyneai.interfaces.RetrofitClientSpyneAi
+import com.spyneai.interfaces.RetrofitClients
 import com.spyneai.model.credit.CreditDetailsResponse
 import com.spyneai.needs.AppConstants
 import com.spyneai.needs.Utilities
@@ -167,9 +168,9 @@ class OrderSummary2Activity : AppCompatActivity() {
     }
 
     private fun fetchUserCreditDetails(){
-        val request = RetrofitClientSpyneAi.buildService(APiService::class.java)
+        val request = RetrofitClients.buildService(APiService::class.java)
         val call = request.userCreditsDetails(
-            Utilities.getPreference(this, AppConstants.TOKEN_ID).toString()
+            Utilities.getPreference(this, AppConstants.AUTH_KEY).toString()
         )
 
         call?.enqueue(object : Callback<CreditDetailsResponse> {
@@ -179,24 +180,24 @@ class OrderSummary2Activity : AppCompatActivity() {
             ) {
                 Utilities.hideProgressDialog()
                 if (response.isSuccessful) {
-                    tvCreditsAvailable.setText(response.body()?.data?.creditAvailable.toString()!!)
+                    tvCreditsAvailable.setText(response.body()?.data?.credit_available.toString()!!)
                     Utilities.savePrefrence(
                         this@OrderSummary2Activity,
                         AppConstants.CREDIT_ALLOTED,
-                        response.body()?.data?.creditAlloted.toString()
+                        response.body()?.data?.credit_allotted.toString()
                     )
 
-                    availableCredits = response.body()?.data?.creditAvailable!!
+                    availableCredits = response.body()?.data?.credit_available!!
 
                     Utilities.savePrefrence(
                         this@OrderSummary2Activity,
                         AppConstants.CREDIT_AVAILABLE,
-                        response.body()?.data?.creditAvailable.toString()
+                        response.body()?.data?.credit_available.toString()
                     )
                     Utilities.savePrefrence(
                         this@OrderSummary2Activity,
                         AppConstants.CREDIT_USED,
-                        response.body()?.data?.creditUsed.toString()
+                        response.body()?.data?.credit_used.toString()
                     )
 
 
