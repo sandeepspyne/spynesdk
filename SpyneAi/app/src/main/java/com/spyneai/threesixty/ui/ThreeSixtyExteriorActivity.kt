@@ -23,6 +23,7 @@ import com.spyneai.dashboard.ui.MainDashboardActivity
 import com.spyneai.dashboard.ui.base.ViewModelFactory
 import com.spyneai.databinding.ActivityThreeSixtyExteriorBinding
 import com.spyneai.databinding.ActivityThreeSixtyInteriorViewBinding
+import com.spyneai.gotoHome
 import com.spyneai.needs.AppConstants
 import com.spyneai.needs.Utilities
 import com.spyneai.processedimages.ui.data.ProcessedViewModel
@@ -179,15 +180,10 @@ class ThreeSixtyExteriorActivity : AppCompatActivity(),View.OnTouchListener,View
         }
 
         //front view listener
-        binding.tvShare.setOnClickListener(this@ThreeSixtyExteriorActivity)
         binding.ivShare.setOnClickListener(this@ThreeSixtyExteriorActivity)
+        binding.ivEmbed.setOnClickListener(this@ThreeSixtyExteriorActivity)
 
 
-        binding.ivCopyLink.setOnClickListener(this@ThreeSixtyExteriorActivity)
-        binding.tvCopyLink.setOnClickListener(this@ThreeSixtyExteriorActivity)
-
-        binding.ivShareLink.setOnClickListener(this@ThreeSixtyExteriorActivity)
-        binding.tvShareLink.setOnClickListener(this@ThreeSixtyExteriorActivity)
 
     }
 
@@ -300,22 +296,17 @@ class ThreeSixtyExteriorActivity : AppCompatActivity(),View.OnTouchListener,View
 
     override fun onClick(v: View?) {
         when(v?.id){
-            R.id.tv_share,R.id.iv_share-> binding.clShareFront.visibility = View.VISIBLE
 
-            R.id.iv_copy_link, R.id.tv_copy_link -> {
-                binding.clShareFront.visibility = View.GONE
+            R.id.ivEmbed -> {
                 embed(getCode(0))
             }
 
-            R.id.iv_share_link,R.id.tv_share_link -> {
-                binding.clShareFront.visibility = View.GONE
+            R.id.ivShare -> {
                 share(getCode(0))
             }
 
             R.id.tv_go_to_home -> {
-                var dashboardIntent = Intent(this, MainDashboardActivity::class.java)
-                dashboardIntent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
-                startActivity(dashboardIntent)
+               gotoHome()
             }
         }
     }
