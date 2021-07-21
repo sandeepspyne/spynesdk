@@ -33,6 +33,7 @@
                 app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintLeft_toLeftOf="parent"
                 android:layout_marginTop="@dimen/dp_5"
+                android:layout_marginLeft="@dimen/dp_8"
                 android:id="@+id/tvThreeSixty"
                 android:textColor="@color/black"
                 android:background="#C4C4C4"

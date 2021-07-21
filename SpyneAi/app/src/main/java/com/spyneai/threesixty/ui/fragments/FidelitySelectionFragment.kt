@@ -18,6 +18,10 @@ class FidelitySelectionFragment : BaseFragment<ThreeSixtyViewModel, FragmentFide
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        binding.ivFidelity.getSettings().setJavaScriptEnabled(true)
+
+        binding.ivFidelity.loadUrl("https://www.spyne.ai/shoots/shoot?skuId=hotstone")
+
         setUpFramesSelection()
     }
 

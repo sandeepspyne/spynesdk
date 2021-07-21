@@ -30,6 +30,7 @@
            android:layout_width="80dp"
            android:layout_height="wrap_content"
            android:text="360"
+           android:layout_marginLeft="@dimen/dp_8"
            app:layout_constraintBottom_toTopOf="@id/cvThumbnail"
            app:layout_constraintTop_toTopOf="parent"
            app:layout_constraintLeft_toLeftOf="parent"

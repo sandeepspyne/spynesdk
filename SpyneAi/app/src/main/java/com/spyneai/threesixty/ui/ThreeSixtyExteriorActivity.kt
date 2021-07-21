@@ -289,12 +289,10 @@ class ThreeSixtyExteriorActivity : AppCompatActivity(),View.OnTouchListener,View
 
                         return true
                     }
-
                     MotionEvent.ACTION_CANCEL -> return true
                     MotionEvent.ACTION_OUTSIDE -> return true
                 }
             }
-
         }
 
         return super.onTouchEvent(event)
@@ -314,14 +312,11 @@ class ThreeSixtyExteriorActivity : AppCompatActivity(),View.OnTouchListener,View
                 share(getCode(0))
             }
 
-
-
             R.id.tv_go_to_home -> {
                 var dashboardIntent = Intent(this, MainDashboardActivity::class.java)
                 dashboardIntent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
                 startActivity(dashboardIntent)
             }
-
         }
     }
 

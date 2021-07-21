@@ -6,6 +6,7 @@ import android.os.Bundle
 import com.spyneai.R
 import com.spyneai.databinding.ActivityStartShootBinding
 import com.spyneai.needs.AppConstants
+import com.spyneai.shoot.ui.base.ShootActivity
 import com.spyneai.threesixty.ui.ThreeSixtyIntroActivity
 
 class StartShootActivity : AppCompatActivity() {
@@ -18,6 +19,20 @@ class StartShootActivity : AppCompatActivity() {
         binding = ActivityStartShootBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
+        binding.flShootNow.setOnClickListener{
+            val intent = Intent(this, ShootActivity::class.java)
+
+            intent.putExtra(
+                AppConstants.CATEGORY_NAME,
+                "Automobiles")
+
+            intent.putExtra(
+                AppConstants.CATEGORY_ID,
+                "cat_d8R14zUNE")
+
+            startActivity(intent)
+        }
+
         binding.tvExplore.setOnClickListener {
             Intent(this,ThreeSixtyIntroActivity::class.java)
                 .apply {
@@ -25,7 +40,6 @@ class StartShootActivity : AppCompatActivity() {
                     putExtra(AppConstants.CATEGORY_NAME,"Automobiles")
                     startActivity(this)
                 }
-
         }
     }
 }
