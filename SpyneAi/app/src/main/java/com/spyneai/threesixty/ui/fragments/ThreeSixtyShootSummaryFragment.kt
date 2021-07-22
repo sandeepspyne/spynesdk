@@ -66,6 +66,46 @@ class ThreeSixtyShootSummaryFragment : BaseFragment<ThreeSixtyViewModel, Fragmen
         viewModel.getUserCredits(Utilities.getPreference(requireContext(), AppConstants.AUTH_KEY).toString())
     }
 
+    private fun reduceCredits() {
+
+        Utilities.showProgressDialog(requireContext())
+
+        viewModel.reduceCredit(
+            Utilities.getPreference(requireContext(), AppConstants.TOKEN_ID).toString(),
+            viewModel.videoDetails.frames.toString(),
+            "TaD1VC1Ko",
+            viewModel.videoDetails.skuId!!
+        )
+    }
+
+    private fun observeReduceCredits() {
+        viewModel.reduceCreditResponse.observe(viewLifecycleOwner,{
+            when(it) {
+                is Resource.Success -> {
+                    updatePaidStatus()
+                }
+
+                is Resource.Failure -> {
+                    Utilities.hideProgressDialog()
+                    handleApiError(it) { reduceCredits() }
+                }
+            }
+        })
+    }
+
+    private fun updatePaidStatus() {
+        viewModel.updateDownloadStatus(
+            Utilities.getPreference(requireContext(), AppConstants.TOKEN_ID).toString(),
+            viewModel.videoDetails.skuId!!,
+            "TaD1VC1Ko",
+            true
+        )
+    }
+
+    private fun observepaidStatus() {
+
+    }
+
     private fun observeCredits() {
         viewModel.userCreditsRes.observe(viewLifecycleOwner,{
             when(it) {

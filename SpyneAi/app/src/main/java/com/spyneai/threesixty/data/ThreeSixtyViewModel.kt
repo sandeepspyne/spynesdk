@@ -5,6 +5,8 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.spyneai.base.network.Resource
+import com.spyneai.credits.model.DownloadHDRes
+import com.spyneai.credits.model.ReduceCreditResponse
 import com.spyneai.model.credit.CreditDetailsResponse
 import com.spyneai.shoot.data.ShootRepository
 import com.spyneai.shoot.data.model.CarsBackgroundRes
@@ -52,6 +54,14 @@ class ThreeSixtyViewModel : ViewModel() {
     private val _userCreditsRes : MutableLiveData<Resource<CreditDetailsResponse>> = MutableLiveData()
     val userCreditsRes: LiveData<Resource<CreditDetailsResponse>>
         get() = _userCreditsRes
+
+    private val _downloadHDRes : MutableLiveData<Resource<DownloadHDRes>> = MutableLiveData()
+    val downloadHDRes: LiveData<Resource<DownloadHDRes>>
+        get() = _downloadHDRes
+
+    private val _reduceCreditResponse : MutableLiveData<Resource<ReduceCreditResponse>> = MutableLiveData()
+    val reduceCreditResponse: LiveData<Resource<ReduceCreditResponse>>
+        get() = _reduceCreditResponse
 
     fun createProject(
         authKey: String, projectName: String, prodCatId: String
@@ -103,8 +113,8 @@ class ThreeSixtyViewModel : ViewModel() {
         enterpriseId: String,
         skuId: String
     ) = viewModelScope.launch {
-        _userCreditsRes.value = Resource.Loading
-        _userCreditsRes.value = threeSixtyRepository.reduceCredit(userId,creditReduce, enterpriseId, skuId)
+        _reduceCreditResponse.value = Resource.Loading
+        _reduceCreditResponse.value = threeSixtyRepository.reduceCredit(userId,creditReduce, enterpriseId, skuId)
     }
 
     fun updateDownloadStatus(
@@ -113,8 +123,8 @@ class ThreeSixtyViewModel : ViewModel() {
         enterpriseId: String,
         downloadHd: Boolean
     ) = viewModelScope.launch {
-        _userCreditsRes.value = Resource.Loading
-        _userCreditsRes.value = threeSixtyRepository.updateDownloadStatus(userId,skuId, enterpriseId, downloadHd)
+        _downloadHDRes.value = Resource.Loading
+        _downloadHDRes.value = threeSixtyRepository.updateDownloadStatus(userId,skuId, enterpriseId, downloadHd)
     }
 
 
