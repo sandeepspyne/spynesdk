@@ -40,4 +40,8 @@
 
     <color name="black_varient">#424242</color>
 
+    <color name="start_shoot_text">#343434</color>
+    <color name="three_sixty_features_text">#333333</color>
+
+
 </resources>

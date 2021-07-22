@@ -20,8 +20,6 @@ import com.google.android.exoplayer2.ui.PlayerView
 import com.google.android.exoplayer2.upstream.RawResourceDataSource
 import com.spyneai.R
 import com.spyneai.base.BaseDialogFragment
-import com.spyneai.databinding.DialogAngleSelectionBinding
-import com.spyneai.databinding.DialogThreeSixtyExteriorGifBinding
 import com.spyneai.shoot.data.ShootViewModel
 import com.spyneai.threesixty.data.ThreeSixtyViewModel
 
