@@ -20,19 +20,28 @@ data class GetProjectsResponse(
         @SerializedName("project_name") val project_name : String,
         @SerializedName("project_id") val project_id : String,
         @SerializedName("total_sku") val total_sku : Int,
+        @SerializedName("status") val status : String,
         @SerializedName("created_on") val created_on : String,
         @SerializedName("category") val category : String,
         @SerializedName("sub_category") val sub_category : String,
+        @SerializedName("processed_images") val processed_images : Int,
         @SerializedName("total_images") val total_images : Int,
         @SerializedName("sku") val sku : List<Sku>
     )
 
     data class Sku(
 
+
+
         @SerializedName("sku_id") val sku_id: String,
+        @SerializedName("created_on") val created_on: String,
+        @SerializedName("status") val status: String,
+        @SerializedName("paid") val paid: String,
         @SerializedName("sku_name") val sku_name: String,
         @SerializedName("total_frames_no") val total_frames_no: Int,
         @SerializedName("total_images") val total_images: Int,
+        @SerializedName("processed_images") val processed_images: Int,
+        @SerializedName("category") val category: String,
         @SerializedName("images") val images: List<Images>
     )
 

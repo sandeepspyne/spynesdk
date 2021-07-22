@@ -52,70 +52,70 @@
 
     </androidx.appcompat.widget.Toolbar>
 
-<RelativeLayout
-    android:id="@+id/rlSku"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    app:layout_constraintLeft_toLeftOf="parent"
-    app:layout_constraintRight_toRightOf="parent"
-    app:layout_constraintTop_toBottomOf="@+id/my_toolbar"
-    android:layout_marginTop="16dp"
-    android:layout_marginLeft="16dp"
-    android:layout_marginRight="16dp"
-    android:background="@color/primary_light">
-
-    <TextView
-        android:id="@+id/tvProject"
-        android:layout_width="wrap_content"
+    <RelativeLayout
+        android:id="@+id/rlSku"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:textSize="@dimen/sp_14"
-        android:fontFamily="@font/poppins_medium"
-        android:text="Project Name"
-        android:textColor="@color/categories_text"
-        android:layout_marginLeft="17dp"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/my_toolbar"
         android:layout_marginTop="16dp"
-        android:layout_alignParentLeft="true"
-        android:layout_marginBottom="16dp"/>
+        android:layout_marginLeft="16dp"
+        android:layout_marginRight="16dp"
+        android:background="@color/primary_light">
 
-    <TextView
-        android:id="@+id/tvProjectName"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textSize="@dimen/sp_14"
-        android:fontFamily="@font/poppins_medium"
-        tools:text="Test "
-        android:layout_marginLeft="13dp"
-        android:textColor="@color/primary"
-        android:layout_toRightOf="@+id/tvProject"
-        android:layout_centerVertical="true"/>
+        <TextView
+            android:id="@+id/tvProject"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="@dimen/sp_14"
+            android:fontFamily="@font/poppins_medium"
+            android:text="Project Name"
+            android:textColor="@color/categories_text"
+            android:layout_marginLeft="17dp"
+            android:layout_marginTop="16dp"
+            android:layout_alignParentLeft="true"
+            android:layout_marginBottom="16dp"/>
+
+        <TextView
+            android:id="@+id/tvProjectName"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="@dimen/sp_14"
+            android:fontFamily="@font/poppins_medium"
+            tools:text="Test "
+            android:layout_marginLeft="13dp"
+            android:textColor="@color/primary"
+            android:layout_toRightOf="@+id/tvProject"
+            android:layout_centerVertical="true"/>
 
 
-    <TextView
-        android:id="@+id/tvTotalSku"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textSize="@dimen/sp_14"
-        android:fontFamily="@font/poppins_medium"
-        tools:text="5"
-        android:layout_alignParentRight="true"
-        android:textColor="@color/primary"
-        android:layout_marginRight="17dp"
-        android:layout_marginTop="16dp"
-        android:layout_marginBottom="16dp"/>
+        <TextView
+            android:id="@+id/tvTotalSku"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="@dimen/sp_14"
+            android:fontFamily="@font/poppins_medium"
+            tools:text="5"
+            android:layout_alignParentRight="true"
+            android:textColor="@color/primary"
+            android:layout_marginRight="17dp"
+            android:layout_marginTop="16dp"
+            android:layout_marginBottom="16dp"/>
 
-    <TextView
-        android:id="@+id/tvSku"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textSize="@dimen/sp_14"
-        android:fontFamily="@font/poppins_medium"
-        tools:text="Total SKUs "
-        android:layout_toLeftOf="@+id/tvTotalSku"
-        android:layout_marginRight="13dp"
-        android:textColor="@color/categories_text"
-        android:layout_centerVertical="true"/>
+        <TextView
+            android:id="@+id/tvSku"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="@dimen/sp_14"
+            android:fontFamily="@font/poppins_medium"
+            android:text="Total SKUs "
+            android:layout_toLeftOf="@+id/tvTotalSku"
+            android:layout_marginRight="13dp"
+            android:textColor="@color/categories_text"
+            android:layout_centerVertical="true"/>
 
-</RelativeLayout>
+    </RelativeLayout>
 
     <androidx.recyclerview.widget.RecyclerView
         android:layout_width="0dp"
