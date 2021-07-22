@@ -42,8 +42,6 @@
            android:layout_height="match_parent"
            tools:context=".shoot.ui.StartShootActivity">
 
-
-
            <RelativeLayout
                android:layout_width="match_parent"
                android:layout_height="wrap_content"
@@ -114,6 +112,21 @@
                android:layout_marginTop="@dimen/dp_10"
                android:layout_marginRight="@dimen/dp_20"
                android:layout_marginLeft="@dimen/dp_20"/>
+
+           <TextView
+               android:layout_width="0dp"
+               android:layout_height="wrap_content"
+               app:layout_constraintBottom_toBottomOf="@id/ivStartShoot"
+               app:layout_constraintLeft_toLeftOf="@id/ivStartShoot"
+               app:layout_constraintRight_toRightOf="@id/ivStartShoot"
+               android:background="@drawable/bg_start_shoot"
+               android:text="Capture upto 36 Exterior Images"
+               android:textColor="@color/white"
+               android:gravity="center"
+               android:paddingTop="@dimen/dp_5"
+               android:paddingBottom="@dimen/dp_5"
+               android:fontFamily="@font/poppins_medium"
+               android:textSize="@dimen/sp_12"/>
 
            <FrameLayout
                android:layout_width="wrap_content"
@@ -194,7 +207,7 @@
                android:adjustViewBounds="true"
                app:layout_constraintTop_toBottomOf="@id/llThreeSixtyExperience"
                app:layout_constraintBottom_toBottomOf="parent"
-               android:layout_marginTop="@dimen/dp_30"
+               android:layout_marginTop="@dimen/dp_10"
                android:layout_marginLeft="@dimen/dp_20"
                android:layout_marginRight="@dimen/dp_20"
                android:layout_marginBottom="@dimen/dp_30"/>

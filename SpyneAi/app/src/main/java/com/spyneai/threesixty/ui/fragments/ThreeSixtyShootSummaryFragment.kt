@@ -72,9 +72,9 @@ class ThreeSixtyShootSummaryFragment : BaseFragment<ThreeSixtyViewModel, Fragmen
                 is Resource.Success -> {
                     Utilities.hideProgressDialog()
                     availableCredits = it.value.data.creditAvailable
-                    binding.tvAvailableCredits.text = availableCredits.toString()
+                    binding.tvAvailableCredits.text = "$availableCredits Credits"
 
-                    if (availableCredits > viewModel.videoDetails.frames)
+                    if (availableCredits >= viewModel.videoDetails.frames)
                         binding.btnProceed.isEnabled = true
                 }
 

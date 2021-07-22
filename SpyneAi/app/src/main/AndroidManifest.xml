@@ -39,12 +39,15 @@
         android:theme="@style/Theme.SpyneAi"
         android:usesCleartextTraffic="true"
         tools:targetApi="m">
-        <activity android:name=".threesixty.ui.ThreeSixtyExteriorActivity"></activity>
-        <activity android:name=".threesixty.ui.ThreeSixtyIntroActivity" />
+        <activity android:name=".threesixty.ui.ThreeSixtyExteriorActivity"
+            android:screenOrientation="portrait"></activity>
+        <activity android:name=".threesixty.ui.ThreeSixtyIntroActivity"
+            android:screenOrientation="portrait"/>
         <activity
             android:name=".shoot.ui.StartShootActivity"
             android:screenOrientation="portrait"></activity>
-        <activity android:name=".threesixty.ui.TrimActivity" />
+        <activity android:name=".threesixty.ui.TrimActivity"
+            android:screenOrientation="portrait"/>
         <activity
             android:name=".threesixty.ui.ThreeSixtyActivity"
             android:configChanges="screenLayout|keyboardHidden"
@@ -79,12 +82,7 @@
         <activity
             android:name=".credits.FeedbackActivity"
             android:screenOrientation="portrait" />
-        <activity
-            android:name=".credits.CreditPaymentFailedActivity"
-            android:screenOrientation="portrait" />
-        <activity
-            android:name=".credits.CreditPaymentSuccessActivity"
-            android:screenOrientation="portrait" />
+
         <activity
             android:name=".credits.CreditPlansActivity"
             android:screenOrientation="portrait" />
