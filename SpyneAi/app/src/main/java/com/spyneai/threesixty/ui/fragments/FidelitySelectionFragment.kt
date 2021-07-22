@@ -79,6 +79,8 @@ class FidelitySelectionFragment : BaseFragment<ThreeSixtyViewModel, FragmentFide
                         putExtra("frames",videoDetails.frames)
                         startActivity(this)
                     }
+
+                requireActivity().finish()
             }
         }
     }

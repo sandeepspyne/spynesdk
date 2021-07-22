@@ -10,6 +10,7 @@ import androidx.navigation.ui.NavigationUI
 import androidx.navigation.ui.setupWithNavController
 import com.spyneai.R
 import com.spyneai.activity.CategoriesActivity
+import com.spyneai.activity.OngoingOrdersActivity
 import com.spyneai.dashboard.data.DashboardViewModel
 import com.spyneai.dashboard.ui.base.ViewModelFactory
 import com.spyneai.needs.AppConstants
@@ -25,6 +26,9 @@ class MainDashboardActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_dashboard_main)
+
+        if (intent.getBooleanExtra("show_ongoing",false))
+            startActivity(Intent(this, OngoingOrdersActivity::class.java))
 
         navHostFragment = supportFragmentManager.findFragmentById(R.id.navHostFragment) as NavHostFragment
 

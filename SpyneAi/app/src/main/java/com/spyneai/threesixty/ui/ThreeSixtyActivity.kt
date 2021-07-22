@@ -7,6 +7,7 @@ import androidx.lifecycle.ViewModelProvider
 import com.spyneai.dashboard.ui.base.ViewModelFactory
 import com.spyneai.databinding.ActivityThreeSixtyBinding
 import com.spyneai.needs.AppConstants
+import com.spyneai.shoot.ui.dialogs.ShootExitDialog
 import com.spyneai.threesixty.data.ThreeSixtyViewModel
 
 class ThreeSixtyActivity : AppCompatActivity() {
@@ -36,5 +37,10 @@ class ThreeSixtyActivity : AppCompatActivity() {
             .add(binding.flContainer.id,SubcategoriesFragment())
             .commit()
 
+    }
+
+    override fun onBackPressed() {
+        ShootExitDialog().show(supportFragmentManager,
+            "ShootExitDialog")
     }
 }

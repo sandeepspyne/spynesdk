@@ -36,6 +36,7 @@ import com.spyneai.R
 import com.spyneai.base.BaseFragment
 import com.spyneai.databinding.FragmentRecordVideoBinding
 import com.spyneai.needs.AppConstants
+import com.spyneai.shoot.ui.dialogs.ShootExitDialog
 import com.spyneai.threesixty.data.ThreeSixtyViewModel
 import com.spyneai.toggleButton
 import java.io.File
@@ -133,7 +134,9 @@ class RecordVideoFragment : BaseFragment<ThreeSixtyViewModel,FragmentRecordVideo
 
         pickiT = PickiT(requireContext(), this, requireActivity())
 
-        binding.ivBack.setOnClickListener { requireActivity().onBackPressed() }
+        binding.ivBack.setOnClickListener {
+            requireActivity().onBackPressed()
+        }
 
         Handler(Looper.getMainLooper()).postDelayed(object : Runnable {
             override fun run() {

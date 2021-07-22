@@ -100,6 +100,7 @@ class ThreeSixtyShootSummaryFragment : BaseFragment<ThreeSixtyViewModel, Fragmen
                         .navigate(R.id.action_threeSixtyShootSummaryFragment_to_videoProcessingStartedFragment)
 
                     viewModel.title.value = "Processing Started"
+                    viewModel.processingStarted.value = true
                 }
                 is Resource.Failure -> {
                     Utilities.hideProgressDialog()

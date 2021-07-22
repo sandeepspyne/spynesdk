@@ -23,6 +23,7 @@ class ThreeSixtyViewModel : ViewModel() {
     val isDemoClicked: MutableLiveData<Boolean> = MutableLiveData()
     val isFramesUpdated: MutableLiveData<Boolean> = MutableLiveData()
     val title : MutableLiveData<String> = MutableLiveData()
+    var processingStarted : MutableLiveData<Boolean> = MutableLiveData()
 
     val videoDetails = VideoDetails()
 
