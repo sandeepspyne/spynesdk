@@ -97,5 +97,25 @@ class ThreeSixtyViewModel : ViewModel() {
         _userCreditsRes.value = threeSixtyRepository.getUserCredits(userId)
     }
 
+    fun reduceCredit(
+        userId : String,
+        creditReduce:String,
+        enterpriseId: String,
+        skuId: String
+    ) = viewModelScope.launch {
+        _userCreditsRes.value = Resource.Loading
+        _userCreditsRes.value = threeSixtyRepository.reduceCredit(userId,creditReduce, enterpriseId, skuId)
+    }
+
+    fun updateDownloadStatus(
+        userId : String,
+        skuId: String,
+        enterpriseId: String,
+        downloadHd: Boolean
+    ) = viewModelScope.launch {
+        _userCreditsRes.value = Resource.Loading
+        _userCreditsRes.value = threeSixtyRepository.updateDownloadStatus(userId,skuId, enterpriseId, downloadHd)
+    }
+
 
 }

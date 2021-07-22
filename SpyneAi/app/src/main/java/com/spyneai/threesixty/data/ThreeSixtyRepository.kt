@@ -9,6 +9,7 @@ import okhttp3.MultipartBody
 import okhttp3.RequestBody
 import okhttp3.RequestBody.Companion.asRequestBody
 import okhttp3.RequestBody.Companion.toRequestBody
+import retrofit2.http.Field
 import java.io.File
 
 class ThreeSixtyRepository : BaseRepository() {
@@ -56,5 +57,23 @@ class ThreeSixtyRepository : BaseRepository() {
         userId : String
     )= safeApiCall {
         clipperApi.userCreditsDetails(userId)
+    }
+
+    suspend fun reduceCredit(
+        userId : String,
+        creditReduce:String,
+        enterpriseId: String,
+         skuId: String
+    )= safeApiCall {
+        clipperApi.reduceCredit(userId, creditReduce, enterpriseId, skuId)
+    }
+
+    suspend fun updateDownloadStatus(
+        userId : String,
+       skuId: String,
+        enterpriseId: String,
+         downloadHd: Boolean
+    )= safeApiCall {
+        clipperApi.updateDownloadStatus(userId,skuId, enterpriseId, downloadHd)
     }
 }

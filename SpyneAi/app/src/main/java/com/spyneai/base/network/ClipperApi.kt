@@ -1,6 +1,8 @@
 package com.spyneai.base.network
 
 import com.spyneai.camera2.OverlaysResponse
+import com.spyneai.credits.model.DownloadHDRes
+import com.spyneai.credits.model.ReduceCreditResponse
 import com.spyneai.dashboard.response.NewCategoriesResponse
 import com.spyneai.dashboard.response.NewSubCatResponse
 import com.spyneai.model.credit.CreditDetailsResponse
@@ -157,5 +159,22 @@ interface ClipperApi {
         @Query("auth_key") userId: String
     ): CreditDetailsResponse
 
+
+    @FormUrlEncoded
+    @PUT("v4/reduce-credit")
+    suspend fun reduceCredit(
+        @Field("user_id") userId : String,
+        @Field("credit_reduce") creditReduce:String,
+        @Field("enterprise_id") enterpriseId: String,
+        @Field("sku_id") skuId: String
+    ): ReduceCreditResponse
+
+    @FormUrlEncoded
+    @POST("v4/update-download-status")
+    fun updateDownloadStatus(@Field("user_id") userId : String,
+                             @Field("sku_id") skuId: String,
+                             @Field("enterprise_id") enterpriseId: String,
+                             @Field("download_hd") downloadHd: Boolean
+    ): DownloadHDRes
 
 }
