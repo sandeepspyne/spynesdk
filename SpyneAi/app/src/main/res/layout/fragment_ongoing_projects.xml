@@ -13,6 +13,8 @@
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
+        android:paddingBottom="@dimen/dp_100"
+        android:clipToPadding="false"
         tools:listitem="@layout/item_my_completed_orders"/>
 
     <com.facebook.shimmer.ShimmerFrameLayout

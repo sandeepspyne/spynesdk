@@ -1,6 +1,7 @@
 package com.spyneai.orders.ui.fragment
 
 import android.os.Bundle
+import android.os.Handler
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -28,6 +29,9 @@ class OngoingProjectsFragment : BaseFragment<MyOrdersViewModel, FragmentOngoingP
 
     lateinit var myOngoingProjectAdapter: MyOngoingProjectAdapter
     val status = "ongoing"
+    var refreshData = true
+    lateinit var handler: Handler
+    lateinit var runnable: Runnable
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -47,8 +51,8 @@ class OngoingProjectsFragment : BaseFragment<MyOrdersViewModel, FragmentOngoingP
 
         binding.shimmerCompletedSKU.startShimmer()
 
+        repeatRefreshData()
 
-        viewModel.getProjects(Utilities.getPreference(requireContext(), AppConstants.AUTH_KEY).toString(), status)
         log("Completed SKUs(auth key): "+ Utilities.getPreference(requireContext(), AppConstants.AUTH_KEY))
         viewModel.getProjectsResponse.observe(
             viewLifecycleOwner, Observer {
@@ -57,6 +61,10 @@ class OngoingProjectsFragment : BaseFragment<MyOrdersViewModel, FragmentOngoingP
                         binding.shimmerCompletedSKU.stopShimmer()
                         binding.shimmerCompletedSKU.visibility = View.GONE
                         binding.rvMyOngoingProjects.visibility = View.VISIBLE
+
+                        if (it.value.data.project_data.isNullOrEmpty())
+                            refreshData = false
+
                         if (it.value.data != null){
 
                             myOngoingProjectAdapter = MyOngoingProjectAdapter(requireContext(),
@@ -90,6 +98,21 @@ class OngoingProjectsFragment : BaseFragment<MyOrdersViewModel, FragmentOngoingP
             }
         )
     }
+
+    fun repeatRefreshData(){
+        viewModel.getProjects(Utilities.getPreference(requireContext(), AppConstants.AUTH_KEY).toString(), status)
+        handler = Handler()
+        runnable = Runnable {
+            if (refreshData)
+                repeatRefreshData()  }
+        handler.postDelayed(runnable,15000)
+    }
+
+    override fun onPause() {
+        handler.removeCallbacks(runnable)
+        super.onPause()
+    }
+
 
 
     override fun getViewModel()= MyOrdersViewModel::class.java

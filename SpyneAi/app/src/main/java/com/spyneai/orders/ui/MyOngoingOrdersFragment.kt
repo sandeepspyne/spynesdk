@@ -45,7 +45,6 @@ class MyOngoingOrdersFragment : BaseFragment<MyOrdersViewModel, MyOngoingOrdersF
         binding.shimmerOngoingSKU.startShimmer()
 
         ongoingSkuList = ArrayList<GetOngoingSkusResponse.Data>()
-        setOngoingSkuRecycler()
 
         viewModel.getOngoingSKUs(Utilities.getPreference(requireContext(), AppConstants.AUTH_KEY).toString())
         repeatRefreshData()
@@ -106,10 +105,6 @@ class MyOngoingOrdersFragment : BaseFragment<MyOrdersViewModel, MyOngoingOrdersF
             if (refreshData)
             repeatRefreshData()  }
         handler.postDelayed(runnable,15000)
-    }
-
-    private fun setOngoingSkuRecycler(){
-
     }
 
     override fun onPause() {

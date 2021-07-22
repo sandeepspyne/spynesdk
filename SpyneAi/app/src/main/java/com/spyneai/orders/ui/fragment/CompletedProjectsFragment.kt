@@ -1,5 +1,6 @@
 package com.spyneai.orders.ui.fragment
 import android.os.Bundle
+import android.os.Handler
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -23,6 +24,9 @@ class CompletedProjectsFragment : BaseFragment<MyOrdersViewModel, FragmentComple
 
     lateinit var myCompletedProjectsAdapter: MyCompletedProjectsAdapter
     val status = "completed"
+    var refreshData = true
+    lateinit var handler: Handler
+    lateinit var runnable: Runnable
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -43,7 +47,7 @@ class CompletedProjectsFragment : BaseFragment<MyOrdersViewModel, FragmentComple
         binding.shimmerCompletedSKU.startShimmer()
 
 
-        viewModel.getProjects(Utilities.getPreference(requireContext(), AppConstants.AUTH_KEY).toString(), status)
+        repeatRefreshData()
         log("Completed SKUs(auth key): "+ Utilities.getPreference(requireContext(), AppConstants.AUTH_KEY))
         viewModel.getProjectsResponse.observe(
             viewLifecycleOwner, Observer {
@@ -52,6 +56,10 @@ class CompletedProjectsFragment : BaseFragment<MyOrdersViewModel, FragmentComple
                         binding.shimmerCompletedSKU.stopShimmer()
                         binding.shimmerCompletedSKU.visibility = View.GONE
                         binding.rvMyCompletedProjects.visibility = View.VISIBLE
+
+                        if (it.value.data.project_data.isNullOrEmpty())
+                            refreshData = false
+
                         if (it.value.data != null){
 
                             myCompletedProjectsAdapter = MyCompletedProjectsAdapter(requireContext(),
@@ -67,6 +75,7 @@ class CompletedProjectsFragment : BaseFragment<MyOrdersViewModel, FragmentComple
 
                     }
                     is Resource.Failure -> {
+                        refreshData = false
                         binding.shimmerCompletedSKU.stopShimmer()
                         binding.shimmerCompletedSKU.visibility = View.GONE
 
@@ -84,6 +93,20 @@ class CompletedProjectsFragment : BaseFragment<MyOrdersViewModel, FragmentComple
                 }
             }
         )
+    }
+
+    fun repeatRefreshData(){
+        viewModel.getProjects(Utilities.getPreference(requireContext(), AppConstants.AUTH_KEY).toString(), status)
+        handler = Handler()
+        runnable = Runnable {
+            if (refreshData)
+                repeatRefreshData()  }
+        handler.postDelayed(runnable,15000)
+    }
+
+    override fun onPause() {
+        handler.removeCallbacks(runnable)
+        super.onPause()
     }
 
     override fun getViewModel() = MyOrdersViewModel::class.java

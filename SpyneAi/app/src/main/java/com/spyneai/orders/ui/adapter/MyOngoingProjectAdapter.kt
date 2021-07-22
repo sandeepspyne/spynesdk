@@ -5,10 +5,12 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
+import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.cardview.widget.CardView
 import androidx.navigation.findNavController
 import androidx.recyclerview.widget.RecyclerView
+import com.airbnb.lottie.LottieAnimationView
 import com.bumptech.glide.Glide
 import com.spyneai.R
 import com.spyneai.orders.data.response.GetProjectsResponse
@@ -28,6 +30,9 @@ class MyOngoingProjectAdapter (
         val tvImages: TextView = view.findViewById(R.id.tvImages)
         val tvDate: TextView = view.findViewById(R.id.tvDate)
         val ivThumbnail: ImageView = view.findViewById(R.id.ivThumbnail)
+        val tvImageCount: TextView = view.findViewById(R.id.tvImageCount)
+        val lottieProgressCircle: LottieAnimationView = view.findViewById(R.id.lottieProgressCircle)
+        val llUploaded: LinearLayout = view.findViewById(R.id.llUploaded)
 
     }
 
@@ -46,17 +51,28 @@ class MyOngoingProjectAdapter (
             holder.tvThreeSixty.visibility = View.VISIBLE
 
 
-//        if (getProjectList[0].sku[0].images.size != 0)
-//            Glide.with(context) // replace with 'this' if it's in activity
-//                .load(getProjectList[position].sku[0].images[0].input_lres)
-//                .error(R.mipmap.defaults) // show error drawable if the image is not a gif
-//                .into(holder.ivThumbnail)
+        try {
+            Glide.with(context) // replace with 'this' if it's in activity
+                .load(getProjectList[position].sku[0])
+                .error(R.mipmap.defaults) // show error drawable if the image is not a gif
+                .into(holder.ivThumbnail)
+        }catch (e: Exception){
+
+        }
+
+        if (getProjectList[position].status.equals("Uploaded")){
+            holder.tvImageCount.visibility = View.INVISIBLE
+            holder.lottieProgressCircle.visibility = View.INVISIBLE
+            holder.llUploaded.visibility = View.VISIBLE
+        }
 
         holder.tvProjectName.text = getProjectList[position].project_name
         holder.tvSkus.text = getProjectList[position].total_sku.toString()
         holder.tvDate.text = getProjectList[position].created_on
         holder.tvCategory.text = getProjectList[position].category
         holder.tvImages.text = getProjectList[position].total_images.toString()
+
+        holder.tvImageCount.text = getProjectList[position].processed_images.toString()+"/"+getProjectList[position].total_images.toString()
 
     }
 

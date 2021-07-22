@@ -1,16 +1,22 @@
 package com.spyneai.orders.ui.adapter
 
 import android.content.Context
+import android.content.Intent
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
+import androidx.cardview.widget.CardView
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.spyneai.R
+import com.spyneai.needs.AppConstants
+import com.spyneai.needs.Utilities
 import com.spyneai.orders.data.response.GetProjectsResponse
 import com.spyneai.orders.data.viewmodel.MyOrdersViewModel
+import com.spyneai.processedimages.ui.BikeImagesActivity
+import com.spyneai.processedimages.ui.ShowImagesActivity
 
 class SkusAdapter(
     val context: Context,
@@ -25,6 +31,7 @@ class SkusAdapter(
         val tvImages: TextView = view.findViewById(R.id.tvImages)
         val tvDate: TextView = view.findViewById(R.id.tvDate)
         val ivThumbnail: ImageView = view.findViewById(R.id.ivThumbnail)
+        val cvMain: CardView = view.findViewById(R.id.cvMain)
 
     }
 
@@ -40,20 +47,46 @@ class SkusAdapter(
     override fun onBindViewHolder(holder: SkusAdapter.ViewHolder, position: Int) {
 
 
+        try {
             Glide.with(context) // replace with 'this' if it's in activity
                 .load(skuList[position].images[0].input_lres)
                 .error(R.mipmap.defaults) // show error drawable if the image is not a gif
                 .into(holder.ivThumbnail)
 
-        val skuPosition = viewModel.position
+        }catch (e: Exception){
+
+        }
 
         holder.tvSkuName.text = skuList[position].sku_name
         holder.tvImages.text = skuList[position].total_images.toString()
 
 
+
+        holder.cvMain.setOnClickListener {
+            Utilities.savePrefrence(
+                context,
+                AppConstants.SKU_ID,
+                skuList[position].sku_id
+            )
+
+            val intent = if (skuList[position].category == "cat_d8R14zUNx")
+                Intent(
+                    context,
+                    BikeImagesActivity::class.java
+                ) else Intent(
+                context,
+                ShowImagesActivity::class.java
+            )
+
+            intent.putExtra(AppConstants.SKU_ID, skuList[position].sku_id)
+            intent.putExtra("is_paid",skuList[position].paid)
+            context.startActivity(intent)
+        }
+
+
     }
 
     override fun getItemCount(): Int {
-        return getProjectList.size
+        return skuList.size
     }
 }

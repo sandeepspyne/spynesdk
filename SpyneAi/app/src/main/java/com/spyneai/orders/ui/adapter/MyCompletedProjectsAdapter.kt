@@ -7,6 +7,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
+import android.widget.Toast
 import androidx.cardview.widget.CardView
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.navigation.Navigation
@@ -17,8 +18,12 @@ import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.google.android.play.core.assetpacks.v
 import com.spyneai.R
+import com.spyneai.base.network.Resource
+import com.spyneai.needs.Utilities
 import com.spyneai.orders.data.response.GetProjectsResponse
 import com.spyneai.orders.data.viewmodel.MyOrdersViewModel
+import com.spyneai.orders.ui.fragment.CompletedSkusActivity
+import com.spyneai.processedimages.ui.ShowImagesActivity
 import com.spyneai.threesixty.ui.ThreeSixtyExteriorActivity
 
 class MyCompletedProjectsAdapter(
@@ -55,11 +60,15 @@ class MyCompletedProjectsAdapter(
         if (getProjectList[position].sub_category == "360_exterior")
             holder.tvThreeSixty.visibility = View.VISIBLE
 
-        if (getProjectList[0].sku[0].images.size != 0)
-        Glide.with(context) // replace with 'this' if it's in activity
-            .load(getProjectList[position].sku[0].images[0].input_lres)
-            .error(R.mipmap.defaults) // show error drawable if the image is not a gif
-            .into(holder.ivThumbnail)
+        try {
+            Glide.with(context) // replace with 'this' if it's in activity
+                .load(getProjectList[position].sku[0].images[0].input_lres)
+                .error(R.mipmap.defaults) // show error drawable if the image is not a gif
+                .into(holder.ivThumbnail)
+        }catch (e: Exception){
+
+        }
+
 
         holder.tvProjectName.text = getProjectList[position].project_name
         holder.tvSkus.text = getProjectList[position].total_sku.toString()
@@ -71,15 +80,26 @@ class MyCompletedProjectsAdapter(
             viewModel.position.value = position
             viewModel.projectItemClicked.value = true
 
-            //val productNameList:List<String> = getProjectList.map { it.sku }
+            if (getProjectList[position].sub_category.equals("360 Interior") || getProjectList[position].sub_category.equals("360 Exterior")){
+                Intent(context,ThreeSixtyExteriorActivity::class.java)
+                    .apply {
+                        putExtra("sku_id",getProjectList[position].sku[0].sku_id)
+                        context.startActivity(this)
+                    }
+            }else{
 
-            Intent(context,ThreeSixtyExteriorActivity::class.java)
-                .apply {
-                    putExtra("sku_id",getProjectList[position].sku[0].sku_id)
-                    context.startActivity(this)
+                if (getProjectList[position].sku.isNullOrEmpty()){
+                    Toast.makeText(context, "No SKU data found", Toast.LENGTH_SHORT).show()
+                }else{
+                    Intent(context,CompletedSkusActivity::class.java)
+                        .apply {
+                            putExtra("position", position)
+                            context.startActivity(this)
+                        }
                 }
 
-            //it.findNavController().navigate(R.id.action_completedProjectsFragment_to_completedSkusFragment)
+
+            }
         }
     }
 

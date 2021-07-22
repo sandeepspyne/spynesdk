@@ -266,7 +266,6 @@
             android:fontFamily="@font/bold"
             android:textColor="@color/black"
             android:textSize="10sp"
-            android:visibility="invisible"
             tools:text="2/5" />
 
         <androidx.constraintlayout.widget.Group
