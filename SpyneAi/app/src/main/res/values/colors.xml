@@ -48,6 +48,8 @@
     <color name="paid_text_colour">#00680A</color>
     <color name="paid_background">#AE4CAF50</color>
 
+    <color name="test">#40CE4E</color>
+
     <color name="start_shoot_text">#343434</color>
     <color name="three_sixty_features_text">#333333</color>
 
