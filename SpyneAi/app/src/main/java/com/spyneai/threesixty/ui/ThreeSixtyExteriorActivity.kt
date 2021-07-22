@@ -333,7 +333,7 @@ class ThreeSixtyExteriorActivity : AppCompatActivity(),View.OnTouchListener,View
 
     private fun getCode(type : Int) : String {
         return "<iframe \n" +
-                "  src=\"https://www.spyne.ai/shoots/shoot?skuId="+shootId+" \n" +
+                "  src=\"https://www.spyne.ai/shoots/shoot?skuId="+shootId+"&type=360_exterior" +
                 "  style=\"border:0; height: 100%; width: 100%;\" framerborder=\"0\"></iframe>"
 
     }

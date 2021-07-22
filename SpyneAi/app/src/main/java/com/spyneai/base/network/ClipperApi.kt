@@ -171,7 +171,7 @@ interface ClipperApi {
 
     @FormUrlEncoded
     @POST("v4/update-download-status")
-    fun updateDownloadStatus(@Field("user_id") userId : String,
+    suspend fun updateDownloadStatus(@Field("user_id") userId : String,
                              @Field("sku_id") skuId: String,
                              @Field("enterprise_id") enterpriseId: String,
                              @Field("download_hd") downloadHd: Boolean
