@@ -30,7 +30,7 @@
             android:layout_height="match_parent"
             android:src="@mipmap/defaults"
             android:layout_centerVertical="true"
-            android:scaleType="fitXY"/>
+            android:scaleType="centerCrop"/>
 
     </androidx.cardview.widget.CardView>
 

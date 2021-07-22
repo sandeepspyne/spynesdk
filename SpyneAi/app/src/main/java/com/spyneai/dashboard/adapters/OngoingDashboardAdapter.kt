@@ -36,8 +36,11 @@ class OngoingDashboardAdapter (
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        holder.tvSku.text = ongoingProjectList[position].category
-        holder.tvDate.text = ongoingProjectList[position].sku_name
+//        holder.tvSku.text = ongoingProjectList[position].category
+//        holder.tvDate.text = ongoingProjectList[position].sku_name
+
+        holder.tvSku.text = ongoingProjectList[position].sku_name
+        holder.tvDate.text = ongoingProjectList[position].created_date
 
 
 

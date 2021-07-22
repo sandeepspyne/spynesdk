@@ -189,7 +189,7 @@
                     android:insetTop="0dp"
                     android:insetBottom="0dp"
                     android:layout_marginTop="@dimen/dp_20"
-                    android:text="Start Clicking"
+                    android:text="Start Shoot"
                     android:textAllCaps="false"
                     android:textColor="@color/white"
                     android:fontFamily="@font/poppins_medium"

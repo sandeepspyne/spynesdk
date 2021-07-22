@@ -57,8 +57,12 @@ class MyCompletedProjectsAdapter(
     override fun onBindViewHolder(holder: MyCompletedProjectsAdapter.ViewHolder, position: Int) {
 
 
-        if (getProjectList[position].sub_category == "360_exterior")
+        if (getProjectList[position].sub_category == "360_exterior"){
             holder.tvThreeSixty.visibility = View.VISIBLE
+            holder.tvCategory.text = "Automobiles"
+        }else{
+            holder.tvCategory.text = getProjectList[position].category
+        }
 
         try {
             Glide.with(context) // replace with 'this' if it's in activity
@@ -69,18 +73,16 @@ class MyCompletedProjectsAdapter(
 
         }
 
-
         holder.tvProjectName.text = getProjectList[position].project_name
         holder.tvSkus.text = getProjectList[position].total_sku.toString()
         holder.tvDate.text = getProjectList[position].created_on
-        holder.tvCategory.text = getProjectList[position].category
         holder.tvImages.text = getProjectList[position].total_images.toString()
 
         holder.cvMain.setOnClickListener {
             viewModel.position.value = position
             viewModel.projectItemClicked.value = true
 
-            if (getProjectList[position].sub_category.equals("360_Interior") || getProjectList[position].sub_category.equals("360_Exterior")){
+            if (getProjectList[position].sub_category.equals("360_interior") || getProjectList[position].sub_category.equals("360_exterior")){
                 Intent(context,ThreeSixtyExteriorActivity::class.java)
                     .apply {
                         putExtra("sku_id",getProjectList[position].sku[0].sku_id)

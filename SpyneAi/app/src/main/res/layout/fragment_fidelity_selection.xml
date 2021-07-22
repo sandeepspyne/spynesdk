@@ -110,7 +110,7 @@
             android:textSize="@dimen/sp_14"
             android:textColor="@color/black"
             android:fontFamily="@font/poppins_medium"
-            android:text="1 Credit will be utilized per frame"/>
+            android:text="1 Credit = 1 Frame"/>
 
         <com.google.android.material.button.MaterialButton
             android:layout_width="match_parent"

@@ -302,7 +302,7 @@ class ThreeSixtyExteriorActivity : AppCompatActivity(),View.OnTouchListener,View
             }
 
             R.id.ivShare -> {
-                share(getCode(0))
+                share(getLink())
             }
 
             R.id.tv_go_to_home -> {
@@ -337,6 +337,8 @@ class ThreeSixtyExteriorActivity : AppCompatActivity(),View.OnTouchListener,View
                 "  style=\"border:0; height: 100%; width: 100%;\" framerborder=\"0\"></iframe>"
 
     }
+
+    private fun getLink() = "https://www.spyne.ai/shoots/shoot?skuId="+shootId+"&type=360_exterior"
 
     private fun showGoToHomeButton(){
         binding.tvShowIframe.visibility = View.VISIBLE

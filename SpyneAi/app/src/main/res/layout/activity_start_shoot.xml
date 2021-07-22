@@ -165,52 +165,22 @@
 
            </FrameLayout>
 
-           <LinearLayout
-               android:layout_width="wrap_content"
-               android:layout_height="wrap_content"
-               android:orientation="horizontal"
-               android:id="@+id/llThreeSixtyExperience"
-               app:layout_constraintTop_toBottomOf="@id/flShootNow"
-               app:layout_constraintLeft_toLeftOf="parent"
-               app:layout_constraintRight_toRightOf="parent"
-               android:layout_marginTop="@dimen/dp_30">
 
-               <TextView
-                   android:layout_width="wrap_content"
-                   android:layout_height="wrap_content"
-                   android:text="360° Video Experience"
-                   android:textColor="@color/start_shoot_text"
-                   android:fontFamily="@font/poppins_medium"
-                   android:textSize="@dimen/sp_14"/>
-
-               <TextView
-                   android:layout_width="wrap_content"
-                   android:layout_height="wrap_content"
-                   android:text="Beta"
-                   android:textColor="@color/white"
-                   android:textSize="@dimen/sp_12"
-                   android:fontFamily="@font/poppins_regular"
-                   android:paddingLeft="@dimen/dp_10"
-                   android:paddingRight="@dimen/dp_10"
-                   android:paddingTop="@dimen/dp_2"
-                   android:paddingBottom="@dimen/dp_2"
-                   android:background="@drawable/bg_edit_button"
-                   android:layout_marginLeft="@dimen/dp_10"/>
-
-           </LinearLayout>
 
            <ImageView
+               android:id="@+id/ivExploreThreeSixty"
                android:layout_width="match_parent"
                android:layout_height="wrap_content"
-               android:id="@+id/ivExploreThreeSixty"
-               android:src="@drawable/explore_three_sixty"
+               android:layout_marginTop="@dimen/dp_30"
+               android:layout_marginBottom="@dimen/dp_30"
                android:adjustViewBounds="true"
-               app:layout_constraintTop_toBottomOf="@id/llThreeSixtyExperience"
+               android:src="@drawable/explore_three_sixty"
                app:layout_constraintBottom_toBottomOf="parent"
-               android:layout_marginTop="@dimen/dp_10"
+               app:layout_constraintTop_toBottomOf="@id/flShootNow"
+               app:layout_constraintVertical_bias="1.0"
+               tools:layout_editor_absoluteX="20dp"
                android:layout_marginLeft="@dimen/dp_20"
-               android:layout_marginRight="@dimen/dp_20"
-               android:layout_marginBottom="@dimen/dp_30"/>
+               android:layout_marginRight="@dimen/dp_20"/>
 
            <TextView
                android:layout_width="wrap_content"
@@ -252,6 +222,23 @@
                android:paddingTop="@dimen/dp_5"
                android:paddingBottom="@dimen/dp_5"
                android:background="@drawable/bg_explore"/>
+
+           <TextView
+               android:layout_width="wrap_content"
+               android:layout_height="wrap_content"
+               android:text="Beta"
+               android:textColor="@color/white"
+               android:textSize="@dimen/sp_12"
+               android:fontFamily="@font/poppins_regular"
+               android:paddingLeft="@dimen/dp_10"
+               android:paddingRight="@dimen/dp_10"
+               android:paddingTop="@dimen/dp_2"
+               android:paddingBottom="@dimen/dp_2"
+               android:background="@drawable/bg_beta_button"
+               android:layout_marginLeft="@dimen/dp_10"
+               app:layout_constraintTop_toTopOf="@id/ivExploreThreeSixty"
+               app:layout_constraintRight_toRightOf="@id/ivExploreThreeSixty"
+               />
 
        </androidx.constraintlayout.widget.ConstraintLayout>
    </ScrollView>

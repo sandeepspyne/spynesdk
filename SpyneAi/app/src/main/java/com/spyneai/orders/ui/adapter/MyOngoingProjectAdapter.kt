@@ -47,8 +47,13 @@ class MyOngoingProjectAdapter (
 
     override fun onBindViewHolder(holder: MyOngoingProjectAdapter.ViewHolder, position: Int) {
 
-        if (getProjectList[position].sub_category == "360_exterior")
+        if (getProjectList[position].sub_category == "360_exterior"){
             holder.tvThreeSixty.visibility = View.VISIBLE
+            holder.tvCategory.text = "Automobiles"
+        }else{
+            holder.tvCategory.text = getProjectList[position].category
+        }
+
 
 
         try {
@@ -69,7 +74,6 @@ class MyOngoingProjectAdapter (
         holder.tvProjectName.text = getProjectList[position].project_name
         holder.tvSkus.text = getProjectList[position].total_sku.toString()
         holder.tvDate.text = getProjectList[position].created_on
-        holder.tvCategory.text = getProjectList[position].category
         holder.tvImages.text = getProjectList[position].total_images.toString()
 
         holder.tvImageCount.text = getProjectList[position].processed_images.toString()+"/"+getProjectList[position].total_images.toString()

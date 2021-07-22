@@ -117,7 +117,7 @@ class MyIndicator @JvmOverloads constructor(context: Context, attrs: AttributeSe
 
         val paint = Paint()
 
-        if ((roll > 0 && roll < 1.5) && dy in -35.0..10.0){
+        if ((roll > 0 && roll < 1.5) && dy in -25.0..10.0){
             if (tvDemo != null)
                 tvDemo!!.visibility = View.INVISIBLE
             paint.setColor(Color.parseColor("#40CE4E"));
