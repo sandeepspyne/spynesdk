@@ -6,6 +6,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
+import android.widget.LinearLayout
 import android.widget.TextView
 import android.widget.Toast
 import androidx.cardview.widget.CardView
@@ -36,7 +37,7 @@ class MyCompletedProjectsAdapter(
         val tvProjectName: TextView = view.findViewById(R.id.tvProjectName)
         val tvCategory: TextView = view.findViewById(R.id.tvCategory)
         val tvSkus: TextView = view.findViewById(R.id.tvSkus)
-        val tvThreeSixty: TextView = view.findViewById(R.id.tvThreeSixty)
+        val llThreeSixty: LinearLayout = view.findViewById(R.id.llThreeSixty)
         val tvImages: TextView = view.findViewById(R.id.tvImages)
         val tvDate: TextView = view.findViewById(R.id.tvDate)
         val tvPaid: TextView = view.findViewById(R.id.tvPaid)
@@ -57,8 +58,8 @@ class MyCompletedProjectsAdapter(
     override fun onBindViewHolder(holder: MyCompletedProjectsAdapter.ViewHolder, position: Int) {
 
 
-        if (getProjectList[position].sub_category == "360_exterior"){
-            holder.tvThreeSixty.visibility = View.VISIBLE
+        if (getProjectList[position].sub_category == "360_exterior" || getProjectList[position].sub_category.equals("360_interior")){
+            holder.llThreeSixty.visibility = View.VISIBLE
             holder.tvCategory.text = "Automobiles"
         }else{
             holder.tvCategory.text = getProjectList[position].category

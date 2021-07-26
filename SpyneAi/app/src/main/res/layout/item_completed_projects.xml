@@ -25,24 +25,6 @@
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintLeft_toLeftOf="parent">
 
-            <TextView
-                android:layout_width="80dp"
-                android:layout_height="wrap_content"
-                android:text="360"
-                app:layout_constraintBottom_toTopOf="@id/cvThumbnail"
-                app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintLeft_toLeftOf="parent"
-                android:layout_marginTop="@dimen/dp_5"
-                android:layout_marginLeft="@dimen/dp_8"
-                android:id="@+id/tvThreeSixty"
-                android:textColor="@color/black"
-                android:background="#C4C4C4"
-                android:gravity="center"
-                android:visibility="gone"
-                android:fontFamily="@font/medium"
-                android:paddingRight="@dimen/dp_10"
-                android:paddingLeft="@dimen/dp_10" />
-
             <androidx.cardview.widget.CardView
                 android:id="@+id/cvThumbnail"
                 android:layout_width="111dp"
@@ -58,6 +40,35 @@
                     android:layout_height="match_parent"
                     android:src="@mipmap/defaults"
                     android:scaleType="centerCrop"/>
+
+                <LinearLayout
+                    android:id="@+id/llThreeSixty"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:layout_margin="@dimen/dp_3"
+                    android:gravity="center"
+                    android:background="@drawable/bg_white">
+
+                    <ImageView
+                        android:layout_width="9dp"
+                        android:layout_height="8dp"
+                        android:layout_margin="@dimen/dp_5"
+                        android:src="@drawable/ic_360"
+                        android:layout_gravity="center_vertical"/>
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:id="@+id/tvThreeSixty"
+                        android:text="360"
+                        android:fontFamily="@font/poppins_medium"
+                        android:textColor="@color/primary"
+                        android:textSize="@dimen/dp_8"
+                        android:layout_gravity="center"
+                        android:layout_margin="4dp"/>
+
+                </LinearLayout>
 
             </androidx.cardview.widget.CardView>
 

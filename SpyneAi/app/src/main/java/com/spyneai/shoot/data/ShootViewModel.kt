@@ -12,6 +12,7 @@ import com.spyneai.base.network.Resource
 import com.spyneai.camera2.OverlaysResponse
 import com.spyneai.camera2.ShootDimensions
 import com.spyneai.dashboard.response.NewSubCatResponse
+import com.spyneai.orders.data.response.GetProjectsResponse
 import com.spyneai.shoot.data.model.*
 import com.spyneai.shoot.workmanager.FrameUpdateWorker
 import com.spyneai.shoot.workmanager.OverlaysPreloadWorker
@@ -280,5 +281,7 @@ class ShootViewModel : ViewModel(){
     fun updateTotalImages(skuId: String) {
         localRepository.updateTotalImageCount(skuId)
     }
+
+
 
 }

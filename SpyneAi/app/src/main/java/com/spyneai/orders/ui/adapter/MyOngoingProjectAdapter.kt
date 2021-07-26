@@ -58,7 +58,7 @@ class MyOngoingProjectAdapter (
 
         try {
             Glide.with(context) // replace with 'this' if it's in activity
-                .load(getProjectList[position].sku[0])
+                .load(getProjectList[position].sku[0].images[0].input_lres)
                 .error(R.mipmap.defaults) // show error drawable if the image is not a gif
                 .into(holder.ivThumbnail)
         }catch (e: Exception){

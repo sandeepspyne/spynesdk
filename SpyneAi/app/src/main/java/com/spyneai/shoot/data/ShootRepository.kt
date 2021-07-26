@@ -60,4 +60,6 @@ class ShootRepository : BaseRepository() {
         clipperApi.updateTotalFrames(skuId, totalFrames, authKey)
     }
 
+
+
 }

@@ -41,14 +41,14 @@ import com.spyneai.dashboard.adapters.TutorialVideosAdapter
 import com.spyneai.dashboard.data.DashboardViewModel
 import com.spyneai.dashboard.response.NewCategoriesResponse
 import com.spyneai.databinding.HomeDashboardFragmentBinding
-import com.spyneai.extras.BeforeAfterActivity
 import com.spyneai.needs.AppConstants
 import com.spyneai.needs.Utilities
 import com.spyneai.orders.data.response.CompletedSKUsResponse
-import com.spyneai.orders.data.response.GetOngoingSkusResponse
+import com.spyneai.orders.data.response.GetProjectsResponse
 import com.spyneai.posthog.Events
 import com.spyneai.shoot.ui.StartShootActivity
 import com.spyneai.shoot.ui.base.ShootActivity
+import com.spyneai.shoot.ui.base.ShootPortraitActivity
 import com.spyneai.shoot.utils.log
 
 
@@ -63,7 +63,7 @@ class HomeDashboardFragment :
 
     lateinit var completedDashboardAdapter: CompletedDashboardAdapter
     lateinit var completedProjectList: ArrayList<CompletedSKUsResponse.Data>
-    lateinit var ongoingProjectList: ArrayList<GetOngoingSkusResponse.Data>
+    lateinit var ongoingProjectList: ArrayList<GetProjectsResponse.Project_data>
 
     lateinit var handler: Handler
     lateinit var runnable: Runnable
@@ -143,17 +143,18 @@ class HomeDashboardFragment :
     }
 
     private fun getOngoingOrders() {
-        viewModel.getOngoingSKUs(
-            Utilities.getPreference(requireContext(), AppConstants.AUTH_KEY).toString()
-        )
-        viewModel.getOngoingSkusResponse.observe(
-            viewLifecycleOwner, androidx.lifecycle.Observer {
+        log("Completed SKUs(auth key): "+ Utilities.getPreference(requireContext(), AppConstants.AUTH_KEY))
+
+        viewModel.getProjects(Utilities.getPreference(requireContext(), AppConstants.AUTH_KEY).toString(), "ongoing")
+
+        viewModel.getProjectsResponse.observe(
+            viewLifecycleOwner, Observer {
                 when (it) {
                     is Resource.Success -> {
                         binding.rvOngoingShoots.visibility = View.VISIBLE
                         binding.shimmerOngoing.stopShimmer()
                         binding.shimmerOngoing.visibility = View.GONE
-                        if (it.value.data.isNullOrEmpty()) {
+                        if (it.value.data.project_data.isNullOrEmpty()) {
                             binding.rlOngoingShoots.visibility = View.GONE
                             refreshData = false
                         }
@@ -161,7 +162,7 @@ class HomeDashboardFragment :
                         if (it.value.data != null) {
                             ongoingProjectList = ArrayList()
                             ongoingProjectList.clear()
-                            ongoingProjectList.addAll(it.value.data)
+                            ongoingProjectList.addAll(it.value.data.project_data)
                             ongoingDashboardAdapter = OngoingDashboardAdapter(
                                 requireContext(),
                                 ongoingProjectList
@@ -176,11 +177,9 @@ class HomeDashboardFragment :
                             binding.rvOngoingShoots.setAdapter(ongoingDashboardAdapter)
 
                         }
-
                     }
                     is Resource.Loading -> {
                         binding.shimmerOngoing.startShimmer()
-
                     }
                     is Resource.Failure -> {
                         binding.shimmerOngoing.stopShimmer()
@@ -199,7 +198,8 @@ class HomeDashboardFragment :
                     }
 
                 }
-            })
+            }
+        )
     }
 
     private fun newUserCreditDialog() {
@@ -210,64 +210,8 @@ class HomeDashboardFragment :
     }
 
     private fun getCompletedOrders() {
-        viewModel.getCompletedSKUs(
-            Utilities.getPreference(requireContext(), AppConstants.AUTH_KEY).toString()
-        )
-        viewModel.completedSkusResponse.observe(viewLifecycleOwner, Observer {
-            when (it) {
-                is Resource.Success -> {
-                    requireContext().captureEvent(Events.GET_COMPLETED_ORDERS, Properties())
-                    completedProjectList = ArrayList()
-                    if (it.value.data.isNullOrEmpty()) {
-                        binding.rlCompletedShoots.visibility = View.GONE
-                        refreshData = false
-                    }
 
-                    binding.rvCompletedShoots.visibility = View.VISIBLE
-                    binding.shimmerCompleted.stopShimmer()
-                    binding.shimmerCompleted.visibility = View.GONE
-                    if (it.value.data != null) {
-                        completedProjectList.clear()
-                        completedProjectList.addAll(it.value.data)
-                        completedProjectList.reverse()
 
-                        if (completedProjectList.size == 0)
-                            binding.rlCompletedShoots.visibility = View.GONE
-
-                        completedDashboardAdapter = CompletedDashboardAdapter(
-                            requireContext(),
-                            completedProjectList
-                        )
-
-                        val layoutManager: RecyclerView.LayoutManager = LinearLayoutManager(
-                            requireContext(),
-                            LinearLayoutManager.HORIZONTAL,
-                            false
-                        )
-                        binding.rvCompletedShoots.setLayoutManager(layoutManager)
-                        binding.rvCompletedShoots.setAdapter(completedDashboardAdapter)
-                    }
-                }
-                is Resource.Loading -> {
-                    binding.shimmerCompleted.startShimmer()
-                }
-                is Resource.Failure -> {
-                    binding.shimmerCompleted.stopShimmer()
-                    binding.shimmerCompleted.visibility = View.GONE
-
-                    if (it.errorCode == 404) {
-                        binding.rlCompletedShoots.visibility = View.GONE
-                        refreshData = false
-                    } else {
-                        requireContext().captureFailureEvent(
-                            Events.GET_COMPLETED_ORDERS_FAILED, Properties(),
-                            it.errorMessage!!
-                        )
-                        handleApiError(it)
-                    }
-                }
-            }
-        })
     }
 
     private fun getCategories() {
@@ -287,6 +231,8 @@ class HomeDashboardFragment :
                         it.value.data as ArrayList<NewCategoriesResponse.Data>,
                         object : CategoriesDashboardAdapter.BtnClickListener {
                             override fun onBtnClick(position: Int) {
+
+                                Utilities.savePrefrence(requireContext(), AppConstants.CATEGORY_ID, it.value.data[position].prod_cat_id)
 
                                 catId = it.value.data[position].prod_cat_id
                                 displayName = it.value.data[position].prod_cat_name
@@ -338,27 +284,27 @@ class HomeDashboardFragment :
                                         startActivity(intent)
                                     }
 
-//                                    2 -> {
-//                                        val intent = Intent(requireContext(), ShootActivity::class.java)
-//                                        intent.putExtra(
-//                                            AppConstants.CATEGORY_NAME,
-//                                            displayName
-//                                        )
-//                                        intent.putExtra(
-//                                            AppConstants.CATEGORY_ID,
-//                                            catId
-//                                        )
-//                                        intent.putExtra(
-//                                            AppConstants.IMAGE_URL,
-//                                            displayThumbnail
-//                                        )
-//                                        intent.putExtra(
-//                                            AppConstants.DESCRIPTION,
-//                                            description
-//                                        )
-//                                        intent.putExtra(AppConstants.COLOR, colorCode)
-//                                        startActivity(intent)
-//                                    }
+                                    2,3 -> {
+                                        val intent = Intent(requireContext(), ShootPortraitActivity::class.java)
+                                        intent.putExtra(
+                                            AppConstants.CATEGORY_NAME,
+                                            displayName
+                                        )
+                                        intent.putExtra(
+                                            AppConstants.CATEGORY_ID,
+                                            catId
+                                        )
+                                        intent.putExtra(
+                                            AppConstants.IMAGE_URL,
+                                            displayThumbnail
+                                        )
+                                        intent.putExtra(
+                                            AppConstants.DESCRIPTION,
+                                            description
+                                        )
+                                        intent.putExtra(AppConstants.COLOR, colorCode)
+                                        startActivity(intent)
+                                    }
                                     else -> {
                                     Toast.makeText(
                                         requireContext(),

@@ -13,16 +13,16 @@ import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.spyneai.R
 import com.spyneai.activity.OngoingOrdersActivity
-import com.spyneai.orders.data.response.GetOngoingSkusResponse
+import com.spyneai.orders.data.response.GetProjectsResponse
 
-class OngoingDashboardAdapter (
+class OngoingDashboardAdapter(
     val context: Context,
-    val ongoingProjectList: ArrayList<GetOngoingSkusResponse.Data>,
+    val ongoingProjectList: ArrayList<GetProjectsResponse.Project_data>,
 ) : RecyclerView.Adapter<OngoingDashboardAdapter.ViewHolder>() {
 
     class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
         val ivImage: ImageView = view.findViewById(R.id.ivImage)
-        val tvSku: TextView = view.findViewById(R.id.tvSku)
+        val tvProject: TextView = view.findViewById(R.id.tvProject)
         val tvDate: TextView = view.findViewById(R.id.tvDate)
         val clBackground: ConstraintLayout = view.findViewById(R.id.clBackground)
         val llFailed: LinearLayout = view.findViewById(R.id.llFailed)
@@ -39,15 +39,17 @@ class OngoingDashboardAdapter (
 //        holder.tvSku.text = ongoingProjectList[position].category
 //        holder.tvDate.text = ongoingProjectList[position].sku_name
 
-        holder.tvSku.text = ongoingProjectList[position].sku_name
-        holder.tvDate.text = ongoingProjectList[position].created_date
+        holder.tvProject.text = ongoingProjectList[position].project_name
+        holder.tvDate.text = ongoingProjectList[position].created_on
 
+        try {
+            Glide.with(context)
+                .load(ongoingProjectList[position].sku[0].images[0].input_lres)
+                .error(R.mipmap.defaults) // show error drawable if the image is not a gif
+                .into(holder.ivImage)
+        }catch (e: Exception){
 
-
-
-        Glide.with(context)
-            .load(ongoingProjectList[position].thumbnail)
-            .into(holder.ivImage)
+        }
 
 //        if (ongoingProjectList[position].isFailure){
 //            holder.llFailed.visibility = View.VISIBLE

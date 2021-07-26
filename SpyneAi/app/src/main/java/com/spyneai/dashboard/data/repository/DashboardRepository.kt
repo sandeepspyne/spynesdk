@@ -29,4 +29,12 @@ class DashboardRepository() : BaseRepository() {
         clipperApi.getCompletedSkus(auth_key)
     }
 
+    //ongoign completed
+    suspend fun getProjects(
+        tokenId: String,
+        status: String
+    ) = safeApiCall{
+        clipperApi.getProjects(tokenId, status)
+    }
+
 }
