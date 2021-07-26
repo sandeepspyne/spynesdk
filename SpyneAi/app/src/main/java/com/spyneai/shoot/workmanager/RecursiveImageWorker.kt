@@ -3,7 +3,6 @@ package com.spyneai.shoot.workmanager
 import android.content.Context
 import android.os.Handler
 import android.util.Log
-import androidx.concurrent.callback.CallbackToFutureAdapter
 import androidx.work.*
 import androidx.work.ListenableWorker.Result.*
 import com.google.common.util.concurrent.ListenableFuture
