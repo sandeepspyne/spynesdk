@@ -52,11 +52,6 @@ class HomeDashboardFragment :
         tokenId = Utilities.getPreference(requireContext(), AppConstants.TOKEN_ID).toString()
         email = Utilities.getPreference(requireContext(), AppConstants.EMAIL_ID).toString()
 
-        if (viewModel.isNewUser.value == true && getString(R.string.app_name) != "Karvi.com"){
-            showFreeCreditDialog(viewModel.creditsMessage.value.toString())
-            viewModel.isNewUser.value = false
-        }
-
         lisners()
 
         viewModel.getCategories(Utilities.getPreference(requireContext(),AppConstants.AUTH_KEY).toString())
@@ -103,29 +98,6 @@ class HomeDashboardFragment :
     }
 
 
-    private fun showFreeCreditDialog(message: String) {
-        val dialog = Dialog(requireContext())
-        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE)
-        dialog.setCancelable(true)
-
-        var dialogView = LayoutInflater.from(requireContext()).inflate(R.layout.free_credit_dialog, null)
-        var tvMessage: TextView = dialogView.findViewById(R.id.tvSkuNameDialog)
-        tvMessage.text = message
-
-        dialog.setContentView(dialogView)
-
-        dialog.getWindow()?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT));
-        val llOk: LinearLayout = dialog.findViewById(R.id.llOk)
-
-
-        llOk.setOnClickListener(View.OnClickListener {
-
-            dialog.dismiss()
-
-        })
-        dialog.show()
-
-    }
 
     private fun lisners(){
         binding.ivWallet.setOnClickListener {
