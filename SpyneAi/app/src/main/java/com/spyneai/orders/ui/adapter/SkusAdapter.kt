@@ -73,7 +73,7 @@ class SkusAdapter(
                 skuList[position].sku_id
             )
 
-            val intent = if (skuList[position].category == "cat_d8R14zUNx")
+            val intent = if (skuList[position].category == "cat_d8R14zUNx" || skuList[position].category == "Bikes")
                 Intent(
                     context,
                     BikeImagesActivity::class.java

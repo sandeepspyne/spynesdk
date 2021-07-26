@@ -67,7 +67,7 @@ class CompletedDashboardAdapter(
                 AppConstants.SKU_ID,
                 completedProjectList[position].sku[0].sku_id)
 
-            log("Show Completed orders(sku_id): "+completedProjectList[position].sku[position].sku_id)
+            log("Show Completed orders(sku_id): "+completedProjectList[position].sku[0].sku_id)
 
             if (completedProjectList[position].sub_category.equals("360_interior") || completedProjectList[position].sub_category.equals("360_exterior")){
                 Intent(context,ThreeSixtyExteriorActivity::class.java)
