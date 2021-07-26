@@ -30,54 +30,32 @@ class FrameUpdateWorker(private val appContext: Context, workerParams: WorkerPar
             return Result.failure()
         }
 
-        var jobs : Deferred<Resource<Any>>?
 
-        coroutineScope {
-            jobs =
-                async {
-                    processRepository.updateTotalFrames(
-                        inputData.getString("auth_key")!!,
-                        inputData.getString("sku_id")!!,
-                        inputData.getString("total_frames")!!
-                    )
-                }
+        var response = processRepository.updateTotalFrames(
+            inputData.getString("auth_key")!!,
+            inputData.getString("sku_id")!!,
+            inputData.getString("total_frames")!!)
 
-            jobs!!.await()
-        }
+        when(response) {
+            is Resource.Success -> {
+                com.spyneai.shoot.utils.log("Frames updated success")
+                captureEvent(Events.TOTAL_FRAMES_UPDATED,true,null)
 
-        return if (jobs?.getCompleted() is Resource.Success) {
-            com.spyneai.shoot.utils.log("Frames updated success")
-            captureEvent(Events.TOTAL_FRAMES_UPDATED,true,null)
-
-            Result.success()
-        }else{
-
-            val throwable = jobs?.getCompletionExceptionOrNull()
-            var error = ""
-
-
-            when(throwable) {
-                is ServerException -> {
-                    if (throwable.message != null)
-                        error = throwable.message.toString()
-                }
-
-                is HttpException -> {
-                    val serverError = throwable.response()?.errorBody().toString()
-                    if (serverError != null)
-                        error = serverError
-                }
-
-                else -> {
-                    error = "Request failed due to internet connection"
-                }
+                return Result.success()
             }
 
-            com.spyneai.shoot.utils.log("Frames update failed $error")
+            is Resource.Failure -> {
+                if(response.errorMessage == null){
+                    captureEvent(Events.TOTAL_FRAMES_UPDATE_FAILED,false,response.errorCode.toString()+": Http exception from server")
+                }else {
+                    captureEvent(Events.TOTAL_FRAMES_UPDATE_FAILED,false,response.errorCode.toString()+": "+response.errorMessage)
+                }
 
-            captureEvent(Events.TOTAL_FRAMES_UPDATE_FAILED,false,error)
-            Result.retry()
+                Result.retry()
+            }
         }
+
+        return Result.success()
     }
 
 

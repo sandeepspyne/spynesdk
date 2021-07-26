@@ -53,4 +53,7 @@
     <color name="start_shoot_text">#343434</color>
     <color name="three_sixty_features_text">#333333</color>
 
+    <color name="gyro_in_level">#1F7900</color>
+    <color name="gyro_error_level">#64FF0B0B</color>
+
 </resources>

@@ -39,7 +39,16 @@
         android:theme="@style/Theme.SpyneAi"
         android:usesCleartextTraffic="true"
         tools:targetApi="m">
-        <activity android:name=".orders.ui.fragment.CompletedSkusActivity"></activity>
+        <activity android:name=".threesixty.TiltTestActivity"
+            android:screenOrientation="landscape">
+
+        </activity>
+        <activity
+            android:name=".threesixty.SensorTestActivity"
+            android:screenOrientation="landscape">
+
+        </activity>
+        <activity android:name=".orders.ui.fragment.CompletedSkusActivity" />
         <activity
             android:name=".threesixty.ui.ThreeSixtyExteriorActivity"
             android:screenOrientation="portrait" />

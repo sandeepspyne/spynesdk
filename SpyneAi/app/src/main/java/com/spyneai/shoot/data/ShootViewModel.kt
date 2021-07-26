@@ -17,7 +17,6 @@ import com.spyneai.shoot.data.model.*
 import com.spyneai.shoot.workmanager.FrameUpdateWorker
 import com.spyneai.shoot.workmanager.OverlaysPreloadWorker
 import com.spyneai.shoot.workmanager.RecursiveImageWorker
-import com.spyneai.shoot.workmanager.UploadImageWorker
 import kotlinx.coroutines.launch
 import java.util.*
 
@@ -231,34 +230,6 @@ class ShootViewModel : ViewModel(){
                     .build())
     }
 
-    fun uploadImageWithWorkManager(
-        shootData: ShootData
-    ) {
-        val constraints: Constraints = Constraints.Builder()
-            .setRequiredNetworkType(NetworkType.CONNECTED)
-            .build()
-
-        val uploadWorkRequest = OneTimeWorkRequest.Builder(UploadImageWorker::class.java)
-
-        val data = Data.Builder()
-        data.putString("uri", shootData.capturedImage)
-        data.putString("projectId", shootData.project_id)
-        data.putString("skuId", shootData.sku_id)
-        data.putString("imageCategory", shootData.image_category)
-        data.putString("authKey", shootData.auth_key)
-        data.putBoolean("processSku", processSku)
-        data.putString("sequence",shootData.sequence.toString())
-
-
-        uploadWorkRequest.setInputData(data.build())
-
-        WorkManager.getInstance(BaseApplication.getContext())
-            .enqueue(
-                uploadWorkRequest
-                    .setConstraints(constraints)
-                    .build()
-            )
-    }
 
     fun createProject(
         authKey: String, projectName: String, prodCatId: String
