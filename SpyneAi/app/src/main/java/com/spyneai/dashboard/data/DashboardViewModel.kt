@@ -69,5 +69,17 @@ class DashboardViewModel() : ViewModel() {
 
     }
 
+    private val _getCompletedProjectsResponse: MutableLiveData<Resource<GetProjectsResponse>> = MutableLiveData()
+    val getCompletedProjectsResponse: LiveData<Resource<GetProjectsResponse>>
+        get() = _getCompletedProjectsResponse
+
+    fun getCompletedProjects(
+        tokenId: String, status: String
+    ) = viewModelScope.launch {
+        _getCompletedProjectsResponse.value = Resource.Loading
+        _getCompletedProjectsResponse.value = repository.getProjects(tokenId, status)
+
+    }
+
 
 }

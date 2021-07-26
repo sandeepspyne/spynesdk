@@ -13,8 +13,6 @@ import com.spyneai.R
 import com.spyneai.base.network.Resource
 import com.spyneai.captureFailureEvent
 import com.spyneai.dashboard.ui.base.ViewModelFactory
-import com.spyneai.databinding.ActivityCompletedBinding
-import com.spyneai.databinding.ActivityCompletedSkusBinding
 import com.spyneai.needs.AppConstants
 import com.spyneai.needs.Utilities
 import com.spyneai.orders.data.response.GetProjectsResponse
@@ -62,7 +60,7 @@ class CompletedSkusActivity : AppCompatActivity() {
 
 
         log("Completed SKUs(auth key): "+ Utilities.getPreference(this, AppConstants.AUTH_KEY))
-        viewModel.getProjectsResponse.observe(
+        viewModel.getCompletedProjectsResponse.observe(
             this, Observer {
                 when (it) {
                     is Resource.Success -> {
@@ -117,7 +115,7 @@ class CompletedSkusActivity : AppCompatActivity() {
     }
 
     fun repeatRefreshData(){
-        viewModel.getProjects(Utilities.getPreference(this, AppConstants.AUTH_KEY).toString(), status)
+        viewModel.getCompletedProjects(Utilities.getPreference(this, AppConstants.AUTH_KEY).toString(), status)
         handler = Handler()
         runnable = Runnable {
             if (refreshData)

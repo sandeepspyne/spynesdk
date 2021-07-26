@@ -210,10 +210,10 @@ class HomeDashboardFragment :
 
     private fun getCompletedOrders() {
 
-        viewModel.getProjects(Utilities.getPreference(requireContext(), AppConstants.AUTH_KEY).toString(), "completed")
+        viewModel.getCompletedProjects(Utilities.getPreference(requireContext(), AppConstants.AUTH_KEY).toString(), "completed")
 
         log("Completed SKUs(auth key): "+ Utilities.getPreference(requireContext(), AppConstants.AUTH_KEY))
-        viewModel.getProjectsResponse.observe(
+        viewModel.getCompletedProjectsResponse.observe(
             viewLifecycleOwner, Observer {
                 when (it) {
                     is Resource.Success -> {
@@ -232,9 +232,6 @@ class HomeDashboardFragment :
                             completedProjectList.clear()
                             completedProjectList.addAll(it.value.data.project_data)
                             completedProjectList.reverse()
-
-                            if (completedProjectList.size == 0)
-                                binding.rlCompletedShoots.visibility = View.GONE
 
                             completedDashboardAdapter = CompletedDashboardAdapter(
                                 requireContext(),

@@ -53,7 +53,7 @@ class CompletedProjectsFragment : BaseFragment<MyOrdersViewModel, FragmentComple
 
         repeatRefreshData()
         log("Completed SKUs(auth key): "+ Utilities.getPreference(requireContext(), AppConstants.AUTH_KEY))
-        viewModel.getProjectsResponse.observe(
+        viewModel.getCompletedProjectsResponse.observe(
             viewLifecycleOwner, Observer {
                 when (it) {
                     is Resource.Success -> {
@@ -102,7 +102,7 @@ class CompletedProjectsFragment : BaseFragment<MyOrdersViewModel, FragmentComple
     }
 
     fun repeatRefreshData(){
-        viewModel.getProjects(Utilities.getPreference(requireContext(), AppConstants.AUTH_KEY).toString(), status)
+        viewModel.getCompletedProjects(Utilities.getPreference(requireContext(), AppConstants.AUTH_KEY).toString(), status)
         handler = Handler()
         runnable = Runnable {
             if (refreshData)

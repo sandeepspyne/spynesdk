@@ -57,8 +57,12 @@ class MyOngoingProjectAdapter(
             holder.tvCategory.text = getProjectList[position].category
         }
 
-        if (getProjectList[position].category.equals("cat_d8R14zUNE") || getProjectList[position].category.equals("Automobiles"))
-            holder.tvImageCount.visibility = View.VISIBLE
+        if (getProjectList[position].sub_category.equals("360_interior")
+            || getProjectList[position].sub_category.equals("360_exterior")
+            || getProjectList[position].category.equals("cat_d8R14zUNx")
+            || getProjectList[position].category.equals("cat_Ujt0kuFxY")
+            || getProjectList[position].category.equals("cat_Ujt0kuFxX"))
+            holder.tvImageCount.visibility = View.INVISIBLE
 
 
         try {

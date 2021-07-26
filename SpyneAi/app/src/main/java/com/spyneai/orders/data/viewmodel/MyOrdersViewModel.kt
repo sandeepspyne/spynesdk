@@ -41,6 +41,14 @@ class MyOrdersViewModel : ViewModel() {
 
     }
 
+    fun getOngoingSKUs(
+        tokenId: String
+    ) = viewModelScope.launch {
+        _getOngoingSkusResponse.value = Resource.Loading
+        _getOngoingSkusResponse.value = repository.getOngoingSKUs(tokenId)
+
+    }
+
     fun getProjects(
         tokenId: String, status: String
     ) = viewModelScope.launch {
@@ -49,11 +57,15 @@ class MyOrdersViewModel : ViewModel() {
 
     }
 
-    fun getOngoingSKUs(
-        tokenId: String
+    private val _getCompletedProjectsResponse: MutableLiveData<Resource<GetProjectsResponse>> = MutableLiveData()
+    val getCompletedProjectsResponse: LiveData<Resource<GetProjectsResponse>>
+        get() = _getCompletedProjectsResponse
+
+    fun getCompletedProjects(
+        tokenId: String, status: String
     ) = viewModelScope.launch {
-        _getOngoingSkusResponse.value = Resource.Loading
-        _getOngoingSkusResponse.value = repository.getOngoingSKUs(tokenId)
+        _getCompletedProjectsResponse.value = Resource.Loading
+        _getCompletedProjectsResponse.value = repository.getProjects(tokenId, status)
 
     }
 

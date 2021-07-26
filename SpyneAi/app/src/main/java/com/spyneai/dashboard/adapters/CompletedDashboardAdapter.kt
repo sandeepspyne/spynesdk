@@ -7,6 +7,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
+import android.widget.Toast
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
@@ -15,6 +16,7 @@ import com.spyneai.processedimages.ui.ShowImagesActivity
 import com.spyneai.needs.AppConstants
 import com.spyneai.needs.Utilities
 import com.spyneai.orders.data.response.GetProjectsResponse
+import com.spyneai.orders.ui.fragment.CompletedSkusActivity
 import com.spyneai.processedimages.ui.BikeImagesActivity
 import com.spyneai.shoot.utils.log
 import com.spyneai.threesixty.ui.ThreeSixtyExteriorActivity
@@ -67,25 +69,25 @@ class CompletedDashboardAdapter(
 
             log("Show Completed orders(sku_id): "+completedProjectList[position].sku[position].sku_id)
 
-            if (completedProjectList[position].sub_category == "360_exterior"){
-                Intent(context, ThreeSixtyExteriorActivity::class.java)
+            if (completedProjectList[position].sub_category.equals("360_interior") || completedProjectList[position].sub_category.equals("360_exterior")){
+                Intent(context,ThreeSixtyExteriorActivity::class.java)
                     .apply {
                         putExtra("sku_id",completedProjectList[position].sku[0].sku_id)
                         context.startActivity(this)
                     }
             }else{
-                val intent = if (completedProjectList[position].category == "cat_d8R14zUNx")
-                    Intent(
-                        context,
-                        BikeImagesActivity::class.java
-                    )else Intent(
-                    context,
-                    ShowImagesActivity::class.java
-                )
 
-                intent.putExtra(AppConstants.SKU_ID,completedProjectList[position].sku[0].sku_id)
-                intent.putExtra("is_paid",completedProjectList[position].sku[0].paid)
-                context.startActivity(intent)
+                if (completedProjectList[position].sku.isNullOrEmpty()){
+                    Toast.makeText(context, "No SKU data found", Toast.LENGTH_SHORT).show()
+                }else{
+                    Intent(context, CompletedSkusActivity::class.java)
+                        .apply {
+                            putExtra("position", position)
+                            context.startActivity(this)
+                        }
+                }
+
+
             }
 
         }
