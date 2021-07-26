@@ -1,6 +1,9 @@
 package com.spyneai.shoot.workmanager
 
 import android.content.Context
+import android.os.Handler
+import android.util.Log
+import androidx.concurrent.callback.CallbackToFutureAdapter
 import androidx.work.*
 import androidx.work.ListenableWorker.Result.*
 import com.google.common.util.concurrent.ListenableFuture
@@ -64,9 +67,6 @@ class RecursiveImageWorker(private val appContext: Context, workerParams: Worker
                 }
             }
 
-
-            var jobs : Deferred<Resource<Any>>?
-
             com.spyneai.shoot.utils.log("image selected "+image.itemId + " "+image.imagePath)
 
             val projectId = image.projectId?.toRequestBody(MultipartBody.FORM)
@@ -77,7 +77,6 @@ class RecursiveImageWorker(private val appContext: Context, workerParams: Worker
 
             val authKey =
                 Utilities.getPreference(appContext,AppConstants.AUTH_KEY).toString().toRequestBody(MultipartBody.FORM)
-
 
             var imageFile: MultipartBody.Part? = null
             val requestFile =
@@ -90,48 +89,27 @@ class RecursiveImageWorker(private val appContext: Context, workerParams: Worker
                     requestFile
                 )
 
-            coroutineScope {
-                jobs =
-                    async {
-                        shootRepository.uploadImage(projectId!!,
-                            skuId!!, imageCategory!!,authKey, image.sequence!!,imageFile)
-                    }
+            var response = shootRepository.uploadImage(projectId!!,
+                skuId!!, imageCategory!!,authKey, image.sequence!!,imageFile)
 
-                jobs!!.await()
-            }
-
-            return if (jobs?.getCompleted() is Resource.Success) {
-                com.spyneai.shoot.utils.log("upload image success")
-                captureEvent(Events.UPLOADED,image,true,null)
-                startNextUpload(image.itemId!!)
-                success()
-            }else{
-                com.spyneai.shoot.utils.log("Upload image failed")
-                val throwable = jobs?.getCompletionExceptionOrNull()
-                var error = ""
-
-                when(throwable) {
-                    is ServerException -> {
-                        if (throwable.message != null)
-                            error = throwable.message.toString()
-                    }
-
-                    is HttpException -> {
-                        val serverError = throwable.response()?.errorBody().toString()
-                        if (serverError != null)
-                            error = serverError
-                    }
-
-                    else -> {
-                       error = "Request failed due to internet connection"
-                    }
+            when(response){
+                is Resource.Success -> {
+                    captureEvent(Events.UPLOADED,image,true,null)
+                    startNextUpload(image.itemId!!)
+                    return success()
                 }
 
-
-
-                 captureEvent(Events.UPLOAD_FAILED,image,false,error)
-                retry()
+                is Resource.Failure -> {
+                    if(response.errorMessage == null){
+                        captureEvent(Events.UPLOAD_FAILED,image,false,response.errorCode.toString()+": Http exception from server")
+                    }else {
+                        captureEvent(Events.UPLOAD_FAILED,image,false,response.errorCode.toString()+": "+response.errorMessage)
+                    }
+                    return retry()
+                }
             }
+
+            return success()
         }else{
             return success()
         }

@@ -47,54 +47,35 @@ class ProcessSkuWorker (val appContext: Context, workerParams: WorkerParameters)
             return Result.failure()
         }
 
-
         //process SKU
         com.spyneai.shoot.utils.log("Process SKU started")
         com.spyneai.shoot.utils.log("Sku Id: "+skuId)
         com.spyneai.shoot.utils.log("Auth Key: "+authKey)
         com.spyneai.shoot.utils.log("Background Id: "+backgroundId)
 
-        var jobs : Deferred<Resource<Any>>?
 
-        coroutineScope {
-            jobs =
-                async {
-                    processRepository.processSku(authKey,skuId, backgroundId)
-                }
 
-            jobs!!.await()
-        }
+        var response = processRepository.processSku(authKey,skuId, backgroundId)
 
-        return if (jobs?.getCompleted() is Resource.Success) {
-            com.spyneai.shoot.utils.log("Processed sku success")
-            captureEvent(Events.PROCESS,properties,true,null)
-            Result.success()
-        }else{
-            com.spyneai.shoot.utils.log("process sku failed")
-            val throwable = jobs?.getCompletionExceptionOrNull()
-            var error = ""
-
-            when(throwable) {
-                is ServerException -> {
-                    if (throwable.message != null)
-                        error = throwable.message.toString()
-                }
-
-                is HttpException -> {
-                    val serverError = throwable.response()?.errorBody().toString()
-                    if (serverError != null)
-                        error = serverError
-                }
-
-                else -> {
-                    error = "Request failed due to internet connection"
-                }
+        when(response){
+            is Resource.Success -> {
+                com.spyneai.shoot.utils.log("Processed sku success")
+                captureEvent(Events.PROCESS,properties,true,null)
+                Result.success()
             }
 
+            is Resource.Failure -> {
+                if(response.errorMessage == null){
+                    captureEvent(Events.PROCESS_FAILED,properties,false,response.errorCode.toString()+": Http exception from server")
+                }else {
+                    captureEvent(Events.PROCESS_FAILED,properties,false,response.errorCode.toString()+": "+response.errorMessage)
+                }
 
-            captureEvent(Events.PROCESS_FAILED,properties,false,error)
-            Result.retry()
+                Result.retry()
+            }
         }
+
+        return Result.success()
     }
 
 
