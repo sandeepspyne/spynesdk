@@ -56,7 +56,7 @@
         android:hint="24/07/2021"
         android:fontFamily="@font/medium"
         android:textSize="10sp"
-        android:maxLength="5"
+        android:maxLength="16"
         android:textColor="@color/black"
         app:layout_constraintStart_toStartOf="@id/clBackground"
         app:layout_constraintTop_toBottomOf="@+id/tvProject"

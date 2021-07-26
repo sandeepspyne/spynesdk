@@ -47,9 +47,8 @@ class MyOngoingProjectAdapter(
 
     override fun onBindViewHolder(holder: MyOngoingProjectAdapter.ViewHolder, position: Int) {
 
-        if (getProjectList[position].sub_category == "360_exterior" || getProjectList[position].sub_category.equals(
-                "360_interior"
-            )
+        if (getProjectList[position].sub_category == "360_exterior"
+            || getProjectList[position].sub_category.equals("360_interior")
         ) {
             holder.llThreeSixty.visibility = View.VISIBLE
             holder.tvCategory.text = "Automobiles"
@@ -61,7 +60,8 @@ class MyOngoingProjectAdapter(
             || getProjectList[position].sub_category.equals("360_exterior")
             || getProjectList[position].category.equals("cat_d8R14zUNx")
             || getProjectList[position].category.equals("cat_Ujt0kuFxY")
-            || getProjectList[position].category.equals("cat_Ujt0kuFxX"))
+            || getProjectList[position].category.equals("cat_Ujt0kuFxX")
+        )
             holder.tvImageCount.visibility = View.INVISIBLE
 
 

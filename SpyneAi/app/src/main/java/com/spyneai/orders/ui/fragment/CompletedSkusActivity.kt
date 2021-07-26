@@ -40,6 +40,10 @@ class CompletedSkusActivity : AppCompatActivity() {
 //        val binding = ActivityCompletedSkusBinding.inflate(layoutInflater)
         setContentView(R.layout.activity_completed_skus)
 
+        ivBack.setOnClickListener {
+            onBackPressed()
+        }
+
         position = intent.getIntExtra("position", 0)!!
 
         viewModel = ViewModelProvider(this, ViewModelFactory()).get(MyOrdersViewModel::class.java)

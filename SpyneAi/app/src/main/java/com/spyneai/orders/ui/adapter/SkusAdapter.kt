@@ -30,6 +30,7 @@ class SkusAdapter(
         val tvCategory: TextView = view.findViewById(R.id.tvCategory)
         val tvImages: TextView = view.findViewById(R.id.tvImages)
         val tvDate: TextView = view.findViewById(R.id.tvDate)
+        val tvPaid: TextView = view.findViewById(R.id.tvPaid)
         val ivThumbnail: ImageView = view.findViewById(R.id.ivThumbnail)
         val cvMain: CardView = view.findViewById(R.id.cvMain)
 
@@ -45,6 +46,9 @@ class SkusAdapter(
     }
 
     override fun onBindViewHolder(holder: SkusAdapter.ViewHolder, position: Int) {
+
+        if (skuList[position].paid.equals("true"))
+            holder.tvPaid.visibility = View.VISIBLE
 
 
         try {

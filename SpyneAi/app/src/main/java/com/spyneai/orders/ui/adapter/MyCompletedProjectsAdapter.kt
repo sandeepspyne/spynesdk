@@ -58,7 +58,9 @@ class MyCompletedProjectsAdapter(
     override fun onBindViewHolder(holder: MyCompletedProjectsAdapter.ViewHolder, position: Int) {
 
 
-        if (getProjectList[position].sub_category == "360_exterior" || getProjectList[position].sub_category.equals("360_interior")){
+        if (getProjectList[position].sub_category == "360_exterior"
+            || getProjectList[position].sub_category.equals("360_interior")
+        ){
             holder.llThreeSixty.visibility = View.VISIBLE
             holder.tvCategory.text = "Automobiles"
         }else{
