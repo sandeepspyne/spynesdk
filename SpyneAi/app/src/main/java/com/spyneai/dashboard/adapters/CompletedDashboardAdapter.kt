@@ -14,14 +14,14 @@ import com.spyneai.R
 import com.spyneai.processedimages.ui.ShowImagesActivity
 import com.spyneai.needs.AppConstants
 import com.spyneai.needs.Utilities
-import com.spyneai.orders.data.response.CompletedSKUsResponse
+import com.spyneai.orders.data.response.GetProjectsResponse
 import com.spyneai.processedimages.ui.BikeImagesActivity
 import com.spyneai.shoot.utils.log
 import com.spyneai.threesixty.ui.ThreeSixtyExteriorActivity
 
-class CompletedDashboardAdapter (
+class CompletedDashboardAdapter(
     val context: Context,
-    val completedProjectList: ArrayList<CompletedSKUsResponse.Data>
+    val completedProjectList: ArrayList<GetProjectsResponse.Project_data>
 ) : RecyclerView.Adapter<CompletedDashboardAdapter.ViewHolder>() {
 
     companion object {
@@ -34,7 +34,7 @@ class CompletedDashboardAdapter (
 
     class ViewHolder(view: View) : RecyclerView.ViewHolder(view){
         val ivImage: ImageView = view.findViewById(R.id.ivImage)
-        val tvSku: TextView = view.findViewById(R.id.tvSku)
+        val tvProject: TextView = view.findViewById(R.id.tvProject)
         val tvDate: TextView = view.findViewById(R.id.tvDate)
         val clBackground: ConstraintLayout = view.findViewById(R.id.clBackground)
 
@@ -47,23 +47,30 @@ class CompletedDashboardAdapter (
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        holder.tvSku.text = completedProjectList[position].sku_name
-        holder.tvDate.text = completedProjectList[position].created_date
-        Glide.with(context)
-            .load(completedProjectList[position].thumbnail)
-            .into(holder.ivImage)
+        holder.tvProject.text = completedProjectList[position].project_name
+        holder.tvDate.text = completedProjectList[position].created_on
+
+
+        try {
+            Glide.with(context)
+                .load(completedProjectList[position].sku[0].images[0].input_lres)
+                .error(R.mipmap.defaults) // show error drawable if the image is not a gif
+                .into(holder.ivImage)
+        }catch (e: Exception){
+
+        }
 
         holder.clBackground.setOnClickListener{
             Utilities.savePrefrence(context,
                 AppConstants.SKU_ID,
-                completedProjectList[position].sku_id)
+                completedProjectList[position].sku[0].sku_id)
 
-            log("Show Completed orders(sku_id): "+completedProjectList[position].sku_id)
+            log("Show Completed orders(sku_id): "+completedProjectList[position].sku[position].sku_id)
 
             if (completedProjectList[position].sub_category == "360_exterior"){
                 Intent(context, ThreeSixtyExteriorActivity::class.java)
                     .apply {
-                        putExtra("sku_id",completedProjectList[position].sku_id)
+                        putExtra("sku_id",completedProjectList[position].sku[0].sku_id)
                         context.startActivity(this)
                     }
             }else{
@@ -76,8 +83,8 @@ class CompletedDashboardAdapter (
                     ShowImagesActivity::class.java
                 )
 
-                intent.putExtra(AppConstants.SKU_ID,completedProjectList[position].sku_id)
-                intent.putExtra("is_paid",completedProjectList[position].paid)
+                intent.putExtra(AppConstants.SKU_ID,completedProjectList[position].sku[0].sku_id)
+                intent.putExtra("is_paid",completedProjectList[position].sku[0].paid)
                 context.startActivity(intent)
             }
 

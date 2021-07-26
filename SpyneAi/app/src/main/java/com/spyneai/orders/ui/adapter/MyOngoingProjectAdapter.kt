@@ -16,7 +16,7 @@ import com.spyneai.R
 import com.spyneai.orders.data.response.GetProjectsResponse
 import com.spyneai.orders.data.viewmodel.MyOrdersViewModel
 
-class MyOngoingProjectAdapter (
+class MyOngoingProjectAdapter(
     val context: Context,
     val getProjectList: List<GetProjectsResponse.Project_data>,
     val viewModel: MyOrdersViewModel
@@ -26,7 +26,7 @@ class MyOngoingProjectAdapter (
         val tvProjectName: TextView = view.findViewById(R.id.tvProjectName)
         val tvCategory: TextView = view.findViewById(R.id.tvCategory)
         val tvSkus: TextView = view.findViewById(R.id.tvSkus)
-        val tvThreeSixty: TextView = view.findViewById(R.id.tvThreeSixty)
+        val llThreeSixty: LinearLayout = view.findViewById(R.id.llThreeSixty)
         val tvImages: TextView = view.findViewById(R.id.tvImages)
         val tvDate: TextView = view.findViewById(R.id.tvDate)
         val ivThumbnail: ImageView = view.findViewById(R.id.ivThumbnail)
@@ -47,13 +47,18 @@ class MyOngoingProjectAdapter (
 
     override fun onBindViewHolder(holder: MyOngoingProjectAdapter.ViewHolder, position: Int) {
 
-        if (getProjectList[position].sub_category == "360_exterior"){
-            holder.tvThreeSixty.visibility = View.VISIBLE
+        if (getProjectList[position].sub_category == "360_exterior" || getProjectList[position].sub_category.equals(
+                "360_interior"
+            )
+        ) {
+            holder.llThreeSixty.visibility = View.VISIBLE
             holder.tvCategory.text = "Automobiles"
-        }else{
+        } else {
             holder.tvCategory.text = getProjectList[position].category
         }
 
+        if (getProjectList[position].category.equals("cat_d8R14zUNE") || getProjectList[position].category.equals("Automobiles"))
+            holder.tvImageCount.visibility = View.VISIBLE
 
 
         try {
@@ -61,11 +66,11 @@ class MyOngoingProjectAdapter (
                 .load(getProjectList[position].sku[0].images[0].input_lres)
                 .error(R.mipmap.defaults) // show error drawable if the image is not a gif
                 .into(holder.ivThumbnail)
-        }catch (e: Exception){
+        } catch (e: Exception) {
 
         }
 
-        if (getProjectList[position].status.equals("Uploaded")){
+        if (getProjectList[position].status.equals("Uploaded")) {
             holder.tvImageCount.visibility = View.INVISIBLE
             holder.lottieProgressCircle.visibility = View.INVISIBLE
             holder.llUploaded.visibility = View.VISIBLE
@@ -76,7 +81,8 @@ class MyOngoingProjectAdapter (
         holder.tvDate.text = getProjectList[position].created_on
         holder.tvImages.text = getProjectList[position].total_images.toString()
 
-        holder.tvImageCount.text = getProjectList[position].processed_images.toString()+"/"+getProjectList[position].total_images.toString()
+        holder.tvImageCount.text =
+            getProjectList[position].processed_images.toString() + "/" + getProjectList[position].total_images.toString()
 
     }
 

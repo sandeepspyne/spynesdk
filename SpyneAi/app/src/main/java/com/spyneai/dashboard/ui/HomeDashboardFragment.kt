@@ -43,7 +43,6 @@ import com.spyneai.dashboard.response.NewCategoriesResponse
 import com.spyneai.databinding.HomeDashboardFragmentBinding
 import com.spyneai.needs.AppConstants
 import com.spyneai.needs.Utilities
-import com.spyneai.orders.data.response.CompletedSKUsResponse
 import com.spyneai.orders.data.response.GetProjectsResponse
 import com.spyneai.posthog.Events
 import com.spyneai.shoot.ui.StartShootActivity
@@ -62,7 +61,7 @@ class HomeDashboardFragment :
     lateinit var ongoingDashboardAdapter: OngoingDashboardAdapter
 
     lateinit var completedDashboardAdapter: CompletedDashboardAdapter
-    lateinit var completedProjectList: ArrayList<CompletedSKUsResponse.Data>
+    lateinit var completedProjectList: ArrayList<GetProjectsResponse.Project_data>
     lateinit var ongoingProjectList: ArrayList<GetProjectsResponse.Project_data>
 
     lateinit var handler: Handler
@@ -211,6 +210,69 @@ class HomeDashboardFragment :
 
     private fun getCompletedOrders() {
 
+        viewModel.getProjects(Utilities.getPreference(requireContext(), AppConstants.AUTH_KEY).toString(), "completed")
+
+        log("Completed SKUs(auth key): "+ Utilities.getPreference(requireContext(), AppConstants.AUTH_KEY))
+        viewModel.getProjectsResponse.observe(
+            viewLifecycleOwner, Observer {
+                when (it) {
+                    is Resource.Success -> {
+
+                        requireContext().captureEvent(Events.GET_COMPLETED_ORDERS, Properties())
+                        completedProjectList = ArrayList()
+                        if (it.value.data.project_data.isNullOrEmpty()) {
+                            binding.rlCompletedShoots.visibility = View.GONE
+                            refreshData = false
+                        }
+
+                        binding.rvCompletedShoots.visibility = View.VISIBLE
+                        binding.shimmerCompleted.stopShimmer()
+                        binding.shimmerCompleted.visibility = View.GONE
+                        if (it.value.data != null) {
+                            completedProjectList.clear()
+                            completedProjectList.addAll(it.value.data.project_data)
+                            completedProjectList.reverse()
+
+                            if (completedProjectList.size == 0)
+                                binding.rlCompletedShoots.visibility = View.GONE
+
+                            completedDashboardAdapter = CompletedDashboardAdapter(
+                                requireContext(),
+                                completedProjectList
+                            )
+
+                            val layoutManager: RecyclerView.LayoutManager = LinearLayoutManager(
+                                requireContext(),
+                                LinearLayoutManager.HORIZONTAL,
+                                false
+                            )
+                            binding.rvCompletedShoots.setLayoutManager(layoutManager)
+                            binding.rvCompletedShoots.setAdapter(completedDashboardAdapter)
+                        }
+
+                    }
+                    is Resource.Loading -> {
+                        binding.shimmerCompleted.startShimmer()
+                    }
+                    is Resource.Failure -> {
+                        binding.shimmerCompleted.stopShimmer()
+                        binding.shimmerCompleted.visibility = View.GONE
+
+                        if (it.errorCode == 404) {
+                            binding.rlCompletedShoots.visibility = View.GONE
+                            refreshData = false
+                        } else {
+                            requireContext().captureFailureEvent(
+                                Events.GET_COMPLETED_ORDERS_FAILED, Properties(),
+                                it.errorMessage!!
+                            )
+                            handleApiError(it)
+                        }
+                    }
+
+                }
+            }
+        )
 
     }
 

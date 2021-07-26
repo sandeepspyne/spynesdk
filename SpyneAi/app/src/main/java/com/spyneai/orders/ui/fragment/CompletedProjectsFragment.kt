@@ -15,6 +15,7 @@ import com.spyneai.dashboard.ui.handleApiError
 import com.spyneai.databinding.FragmentCompletedProjectsBinding
 import com.spyneai.needs.AppConstants
 import com.spyneai.needs.Utilities
+import com.spyneai.orders.data.response.GetProjectsResponse
 import com.spyneai.orders.data.viewmodel.MyOrdersViewModel
 import com.spyneai.orders.ui.adapter.MyCompletedProjectsAdapter
 import com.spyneai.posthog.Events
@@ -27,6 +28,7 @@ class CompletedProjectsFragment : BaseFragment<MyOrdersViewModel, FragmentComple
     var refreshData = true
     lateinit var handler: Handler
     lateinit var runnable: Runnable
+    lateinit var completedProjectList: ArrayList<GetProjectsResponse.Project_data>
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -46,6 +48,8 @@ class CompletedProjectsFragment : BaseFragment<MyOrdersViewModel, FragmentComple
 
         binding.shimmerCompletedSKU.startShimmer()
 
+        completedProjectList = ArrayList()
+
 
         repeatRefreshData()
         log("Completed SKUs(auth key): "+ Utilities.getPreference(requireContext(), AppConstants.AUTH_KEY))
@@ -61,9 +65,11 @@ class CompletedProjectsFragment : BaseFragment<MyOrdersViewModel, FragmentComple
                             refreshData = false
 
                         if (it.value.data != null){
-
+                            completedProjectList.clear()
+                            completedProjectList.addAll(it.value.data.project_data)
+                            completedProjectList.reverse()
                             myCompletedProjectsAdapter = MyCompletedProjectsAdapter(requireContext(),
-                                it.value.data.project_data, viewModel
+                                completedProjectList, viewModel
                             )
 
                             val layoutManager: RecyclerView.LayoutManager = LinearLayoutManager(requireContext(), LinearLayoutManager.VERTICAL, false)
