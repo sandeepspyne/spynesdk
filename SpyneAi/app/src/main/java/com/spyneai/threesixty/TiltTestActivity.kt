@@ -3,6 +3,7 @@ package com.spyneai.threesixty
 import android.Manifest
 import android.animation.Animator
 import android.animation.AnimatorListenerAdapter
+import android.animation.ObjectAnimator
 import android.annotation.SuppressLint
 import android.content.Context
 import android.content.Intent
@@ -16,6 +17,10 @@ import android.util.DisplayMetrics
 import android.util.Log
 import android.util.Size
 import android.view.Gravity
+import android.view.View
+import android.view.ViewTreeObserver
+import android.view.animation.AccelerateInterpolator
+import android.view.animation.LinearInterpolator
 import android.widget.FrameLayout
 import android.widget.ImageButton
 import android.widget.Toast
@@ -27,9 +32,11 @@ import androidx.camera.lifecycle.ProcessCameraProvider
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import com.spyneai.R
+import com.spyneai.camera2.ShootDimensions
 import com.spyneai.databinding.ActivityTiltTestBinding
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.NonCancellable.start
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlin.math.*
@@ -50,6 +57,11 @@ class TiltTestActivity : AppCompatActivity() , SensorEventListener {
     private val rollPositiveMax = 45
     private val rollNegativeMin = -80
     private val rollNegativeMax = -100
+
+    private var ringHeight = 0
+    private var centerPosition = 0
+    private var topConstraint = 0
+    private var bottomConstraint = 0
 
 
 
@@ -86,10 +98,6 @@ class TiltTestActivity : AppCompatActivity() , SensorEventListener {
                 add(Manifest.permission.ACCESS_MEDIA_LOCATION)
             }
         }
-
-        private var stopTimer = false
-        private lateinit var fragmentList: ArrayList<Fragment>
-
     }
 
     private val permissionRequest = registerForActivityResult(ActivityResultContracts.RequestMultiplePermissions()) { permissions ->
@@ -162,37 +170,40 @@ class TiltTestActivity : AppCompatActivity() , SensorEventListener {
         // In this example, the sensor reporting delay is small enough such that
         // the application receives an update before the system checks the sensor
         // readings again.
-        mSensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER)?.also { accelerometer ->
-            mSensorManager.registerListener(
-                this,
-                accelerometer,
-                500
-            )
-        }
-        mSensorManager.getDefaultSensor(Sensor.TYPE_MAGNETIC_FIELD)?.also { magneticField ->
-            mSensorManager.registerListener(
-                this,
-                magneticField,
-                500
-            )
-        }
-
 //        mSensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER)?.also { accelerometer ->
 //            mSensorManager.registerListener(
 //                this,
 //                accelerometer,
-//                SensorManager.SENSOR_DELAY_NORMAL,
-//                SensorManager.SENSOR_DELAY_UI
+//                500
 //            )
 //        }
 //        mSensorManager.getDefaultSensor(Sensor.TYPE_MAGNETIC_FIELD)?.also { magneticField ->
 //            mSensorManager.registerListener(
 //                this,
 //                magneticField,
-//                SensorManager.SENSOR_DELAY_NORMAL,
-//                SensorManager.SENSOR_DELAY_UI
+//                500
 //            )
 //        }
+
+        getPreviewDimensions(binding.ivGryroRing,true)
+        getPreviewDimensions(binding.tvCenter,false)
+
+        mSensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER)?.also { accelerometer ->
+            mSensorManager.registerListener(
+                this,
+                accelerometer,
+                SensorManager.SENSOR_DELAY_NORMAL,
+                SensorManager.SENSOR_DELAY_UI
+            )
+        }
+        mSensorManager.getDefaultSensor(Sensor.TYPE_MAGNETIC_FIELD)?.also { magneticField ->
+            mSensorManager.registerListener(
+                this,
+                magneticField,
+                SensorManager.SENSOR_DELAY_NORMAL,
+                SensorManager.SENSOR_DELAY_UI
+            )
+        }
     }
 
     private fun allPermissionsGranted() = permissions.all {
@@ -364,30 +375,46 @@ class TiltTestActivity : AppCompatActivity() , SensorEventListener {
         pitch = Math.toDegrees(orientationAngles[1].toDouble())
         roll = Math.toDegrees(orientationAngles[2].toDouble())
 
-        if (movearrow)
-            moveArrow(diff.roundToInt())
 
-        if (rotatedarrow)
-        rotateArrow(pitch.roundToInt())
+        if ((roll >= -100 && roll <=-80) && (pitch >= -10 && pitch <= 10)){
 
-        //binding.tvValues.text = "roll $roll pitch $pitch"
+            binding
+                .tvLevelIndicator
+                .animate()
+                .translationY(0f)
+                .setInterpolator(AccelerateInterpolator()).duration = 0
 
-        if (movearrow || rotatedarrow){
-            if ((roll >= -100 && roll <=-80) && (pitch >= -10 && pitch <= 10)){
-                binding.tvLine.setBackgroundColor(ContextCompat.getColor(this, R.color.green))
-                binding.ivArrow.setColorFilter(ContextCompat.getColor(this, R.color.green))
-            }else{
-                // Log.d("TAG", "onSensorChanged: "+"false "+tilt)
-                binding.tvLine.setBackgroundColor(ContextCompat.getColor(this, R.color.errorcolor))
-                binding.ivArrow.setColorFilter(ContextCompat.getColor(this, R.color.errorcolor))
-            }
+            binding.tvLevelIndicator.rotation = 0f
+
+            binding.ivTopLeft.setColorFilter(ContextCompat.getColor(this, R.color.gyro_in_level))
+            binding.ivBottomLeft.setColorFilter(ContextCompat.getColor(this, R.color.gyro_in_level))
+
+            binding.ivGryroRing.setColorFilter(ContextCompat.getColor(this, R.color.gyro_in_level))
+            binding.tvLevelIndicator.background = ContextCompat.getDrawable(this, R.drawable.bg_gyro_level)
+
+            binding.ivTopRight.setColorFilter(ContextCompat.getColor(this, R.color.gyro_in_level))
+            binding.ivBottomRight.setColorFilter(ContextCompat.getColor(this, R.color.gyro_in_level))
+        }else{
+
+            binding.ivTopLeft.setColorFilter(ContextCompat.getColor(this, R.color.gyro_error_level))
+            binding.ivBottomLeft.setColorFilter(ContextCompat.getColor(this, R.color.gyro_error_level))
+
+            binding.ivGryroRing.setColorFilter(ContextCompat.getColor(this, R.color.gyro_error_level))
+            binding.tvLevelIndicator.background = ContextCompat.getDrawable(this, R.drawable.bg_gyro_error)
+
+            binding.ivTopRight.setColorFilter(ContextCompat.getColor(this, R.color.gyro_error_level))
+            binding.ivBottomRight.setColorFilter(ContextCompat.getColor(this, R.color.gyro_error_level))
+
+            if (movearrow)
+                moveArrow(roll)
+
+            if (rotatedarrow)
+                rotateArrow(pitch.roundToInt())
         }
-
-
     }
 
     private fun rotateArrow(roundToInt: Int) {
-        binding.ivArrow.rotation = roundToInt.toFloat()
+        binding.tvLevelIndicator.rotation = roundToInt.toFloat()
     }
 
     override fun onAccuracyChanged(sensor: Sensor?, accuracy: Int) {
@@ -400,49 +427,57 @@ class TiltTestActivity : AppCompatActivity() , SensorEventListener {
         return output
     }
 
-    private fun flatEnough(roll: Int): Boolean {
-        moveArrow(roll)
-        return roll in rollPositiveMin..rollPositiveMax || Math.abs(roll) in 133..138
+    private fun getPreviewDimensions(view: View,isRing : Boolean) {
+        view.viewTreeObserver.addOnGlobalLayoutListener(object :
+            ViewTreeObserver.OnGlobalLayoutListener {
+            override fun onGlobalLayout() {
+                view.viewTreeObserver.removeOnGlobalLayoutListener(this)
 
-        //return tilt in degreeToleranceMax..degreeToleranceMin && (pitch >= -5 && pitch <= 7 || pitch <= -170 && pitch >= -180)
-//        return if (tilt in degreeToleranceMax..degreeToleranceMin && pitch >= -5 && pitch <= 7) {
-//            true
-//        } else tilt in degreeToleranceMax..degreeToleranceMin
+                Log.d(TAG, "onGlobalLayout: " + view.left)
+                Log.d(TAG, "onGlobalLayout: " + view.top)
+                Log.d(TAG, "onGlobalLayout: " + view.height)
+                Log.d(TAG, "onGlobalLayout: " + view.width)
+                Log.d(TAG, "onGlobalLayout: -------------------------------")
+
+                if (isRing) {
+                    topConstraint = view.top
+                    bottomConstraint = topConstraint + view.height
+                } else {
+                    centerPosition = view.top
+                }
+
+            }
+        })
     }
 
+    private fun moveArrow(roll: Double) {
+        Log.d(TAG, "moveArrow: "+roll)
+        val newRoll = roll + 90
+        Log.d(TAG, "moveArrow: "+newRoll)
+        Log.d(TAG, "moveArrow: ------------------------------")
 
-    private fun moveArrow(roll: Int) {
-        var topMargin = 0
-        var bottomMargin = 0
-        if (roll > 0){
-            if (roll > rollPositiveMax){
-                topMargin = roll - rollPositiveMax
-            }
-
-            if (roll < rollPositiveMin){
-                bottomMargin = rollPositiveMin - roll
-            }
-        }else{
-            if (roll > rollNegativeMax){
-                topMargin = roll - rollNegativeMax
-                topMargin = Math.abs(topMargin)
-            }
-
-            if (roll < rollNegativeMin){
-                bottomMargin = rollNegativeMin - roll
-                bottomMargin = Math.abs(bottomMargin)
-            }
+        if (newRoll > 0 && (centerPosition + newRoll) < bottomConstraint){
+            binding
+                .tvLevelIndicator
+                .animate()
+                .translationY(newRoll.toFloat())
+                .setInterpolator(AccelerateInterpolator()).duration = 0
         }
 
-        val params = FrameLayout.LayoutParams(
-            dpToPx(50),
-            dpToPx(50)
-        )
+        if (newRoll < 0 && (centerPosition - newRoll) > topConstraint) {
+            binding
+                .tvLevelIndicator
+                .animate()
+                .translationY(newRoll.toFloat())
+                .setInterpolator(AccelerateInterpolator()).duration = 0
+        }
 
-        params.gravity = Gravity.CENTER
 
-        params.setMargins(0, dpToPx(topMargin), 0, dpToPx(bottomMargin))
-        binding.ivArrow.translationY = roll.toFloat()
+
+//        ObjectAnimator.ofFloat(binding.tvLevelIndicator, "translationY", roll.toFloat()).apply {
+//            duration = 5
+//            start()
+//        }
     }
 
     fun Context.dpToPx(dp: Int): Int {

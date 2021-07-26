@@ -41,7 +41,11 @@
         tools:targetApi="m">
         <activity android:name=".threesixty.TiltTestActivity"
             android:screenOrientation="landscape">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
 
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
         </activity>
         <activity
             android:name=".threesixty.SensorTestActivity"
@@ -298,11 +302,7 @@
         <activity
             android:name=".activity.SplashActivity"
             android:screenOrientation="portrait">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
 
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
         </activity>
         <activity android:name=".videorecording.ThreeSixtyViewActivity" />
         <activity android:name=".videorecording.TrimVideoActivity" />
