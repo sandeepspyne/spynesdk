@@ -426,37 +426,7 @@ class TiltTestActivity : AppCompatActivity() , SensorEventListener {
     override fun onAccuracyChanged(sensor: Sensor?, accuracy: Int) {
     }
 
-    private fun convertFloatsToDoubles(input: FloatArray?): DoubleArray? {
-        if (input == null) return null
-        val output = DoubleArray(input.size)
-        for (i in input.indices) output[i] = input[i].toDouble()
-        return output
-    }
-
-    private fun getPreviewDimensions(view: View,isRing : Boolean) {
-        view.viewTreeObserver.addOnGlobalLayoutListener(object :
-            ViewTreeObserver.OnGlobalLayoutListener {
-            override fun onGlobalLayout() {
-                view.viewTreeObserver.removeOnGlobalLayoutListener(this)
-
-                Log.d(TAG, "onGlobalLayout: " + view.left)
-                Log.d(TAG, "onGlobalLayout: " + view.top)
-                Log.d(TAG, "onGlobalLayout: " + view.height)
-                Log.d(TAG, "onGlobalLayout: " + view.width)
-                Log.d(TAG, "onGlobalLayout: -------------------------------")
-
-                if (isRing) {
-                    topConstraint = view.top
-                    bottomConstraint = topConstraint + view.height
-                } else {
-                    centerPosition = view.top
-                }
-
-            }
-        })
-    }
-
-    private fun moveArrow(roll: Double) {
+ private fun moveArrow(roll: Double) {
         var newRoll = roll + 90
         Log.d(TAG, "moveArrow: "+newRoll)
         Log.d(TAG, "moveArrow: ------------------------------")
@@ -489,6 +459,32 @@ class TiltTestActivity : AppCompatActivity() , SensorEventListener {
 //            start()
 //        }
     }
+
+
+    private fun getPreviewDimensions(view: View,isRing : Boolean) {
+        view.viewTreeObserver.addOnGlobalLayoutListener(object :
+            ViewTreeObserver.OnGlobalLayoutListener {
+            override fun onGlobalLayout() {
+                view.viewTreeObserver.removeOnGlobalLayoutListener(this)
+
+                Log.d(TAG, "onGlobalLayout: " + view.left)
+                Log.d(TAG, "onGlobalLayout: " + view.top)
+                Log.d(TAG, "onGlobalLayout: " + view.height)
+                Log.d(TAG, "onGlobalLayout: " + view.width)
+                Log.d(TAG, "onGlobalLayout: -------------------------------")
+
+                if (isRing) {
+                    topConstraint = view.top
+                    bottomConstraint = topConstraint + view.height
+                } else {
+                    centerPosition = view.top
+                }
+
+            }
+        })
+    }
+
+
 
     fun Context.dpToPx(dp: Int): Int {
         return (dp * resources.displayMetrics.density).toInt()
