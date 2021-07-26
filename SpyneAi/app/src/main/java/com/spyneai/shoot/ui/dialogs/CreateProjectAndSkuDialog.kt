@@ -29,7 +29,12 @@ class CreateProjectAndSkuDialog : BaseDialogFragment<ShootViewModel,DialogCreate
             when {
                 binding.etProjectName.text.toString().isEmpty() -> binding.etProjectName.error = "Please enter project name"
                 binding.etVinNumber.text.toString().isEmpty() -> {
-                    binding.etVinNumber.error = "Please enter any unique number"
+                    if (getString(R.string.app_name) == "Sweep.ie"){
+                        binding.etVinNumber.error = "Please enter vehicle number"
+                    }else{
+                        binding.etVinNumber.error = "Please enter any unique number"
+                    }
+
                 }
                 else -> {
                     createProject(binding.etProjectName.text.toString(),binding.etVinNumber.text.toString())

@@ -20,7 +20,7 @@
             android:textColor="@color/black"
             android:fontFamily="@font/bold"
             android:gravity="center"
-            android:textSize="@dimen/sp_35"/>
+            android:textSize="@dimen/greeting_text_size"/>
 
         <TextView
             android:layout_width="match_parent"

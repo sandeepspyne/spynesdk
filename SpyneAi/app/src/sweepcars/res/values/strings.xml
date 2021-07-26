@@ -3,7 +3,8 @@
     <string name="app_name">Sweep.ei</string>
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
-    <string name="greetings">Greetings!</string>
+    <string name="greetings">Welcome to sweep photos</string>
+    <string name="hello">Welcome to sweep photos</string>
 
     <string name="slide_one_title">Shoot</string>
     <string name="slide_one_description">camera that helps you to click product images accepted worldwide.</string>
@@ -124,6 +125,8 @@
     <string name="download_hd_images"><u>Download HD Images</u></string>
     <string name="download_free"><u>Download Free (Watermarked)</u></string>
 
+
+
     <string name="downloading...."><u>Downloading....</u></string>
     <string name="download_completed"><u> Download Completed</u></string>
 
@@ -198,15 +201,15 @@
     <string name="forgot_password_mail">Enter the email address to reset your password. <br/> You may need to check your spam folder.</string>
     <string name="forgot_password_dialog">Link sent successfully.<br /> Please check your email.</string>
     <string name="send_link">Send Link</string>
-    <string name="sign_up_here">New to Spyne?&#160; <font color='#FF7700'><b>Sign up here</b></font></string>
+    <string name="sign_up_here">New to Sweep?&#160; <font color='#FF7700'><b>Sign up here</b></font></string>
     <string name="sign_in">Sign in with OTP</string>
     <string name="sign_up">Sign up </string>
 
 
     <string name="login">Login</string>
     <string name="login_with_password">Login with Password</string>
-    <string name="login_here">Seem like you are already a Spyne User?&#160; <font color='#FF7700'><b>Login here</b></font></string>
-    <string name="hello">Greetings!</string>
+    <string name="login_here">Seem like you are already a Sweep User?&#160; <font color='#FF7700'><b>Login here</b></font></string>
+
 
     <string name="please">Please sign in to continue</string>
     <string name="please_signup">Please sign up to continue</string>
@@ -223,6 +226,7 @@
     <string name="submit">Submit</string>
     <string name="vin_hint">Enter VIN</string>
     <string name="download_failed"><u> Download Failed</u></string>
+    <string name="sku_name_hint">Enter vehicle name below</string>
 
 
 </resources>

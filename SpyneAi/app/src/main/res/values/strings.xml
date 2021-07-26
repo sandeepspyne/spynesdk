@@ -199,4 +199,5 @@
 
     <string name="session_expired">Session Expired. Please <b>log in</b> again.</string>
     <string name="change_fidelity"><u>Change Fidelity</u></string>
+    <string name="sku_name_hint">Enter Any Unique Car ID</string>
 </resources>

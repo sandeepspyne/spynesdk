@@ -80,7 +80,7 @@
         app:layout_constraintRight_toRightOf="parent"
         android:id="@+id/etVinNumber"
         android:background="@null"
-        android:hint="Enter Any Unique Car ID"
+        android:hint="@string/sku_name_hint"
         android:textColorHint="@color/dialog_bold_text_color"
         android:fontFamily="@font/poppins_regular"
         android:textColor="@color/black"
