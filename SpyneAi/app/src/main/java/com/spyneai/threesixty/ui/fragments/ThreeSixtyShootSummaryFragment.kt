@@ -10,7 +10,6 @@ import com.bumptech.glide.Glide
 import com.spyneai.R
 import com.spyneai.base.BaseFragment
 import com.spyneai.base.network.Resource
-import com.spyneai.credits.CreditPlansActivity
 import com.spyneai.dashboard.ui.handleApiError
 import com.spyneai.databinding.Fragment360ShotSummaryBinding
 import com.spyneai.needs.AppConstants
@@ -43,15 +42,18 @@ class ThreeSixtyShootSummaryFragment : BaseFragment<ThreeSixtyViewModel, Fragmen
         }
 
         binding.tvTopUp.setOnClickListener {
-            var intent = Intent(requireContext(), CreditPlansActivity::class.java)
-            intent.putExtra("credit_available",availableCredits)
-            startActivity(intent)
+//            var intent = Intent(requireContext(), CreditPlansActivity::class.java)
+//            intent.putExtra("credit_available",availableCredits)
+//            startActivity(intent)
         }
 
         binding.btnProceed.setOnClickListener {
             //process image call
-            processSku()
+            reduceCredits(true)
         }
+
+        observeReduceCredits()
+        observepaidStatus()
 
         viewModel.isFramesUpdated.observe(viewLifecycleOwner,{
             if (it) {
@@ -66,9 +68,9 @@ class ThreeSixtyShootSummaryFragment : BaseFragment<ThreeSixtyViewModel, Fragmen
         viewModel.getUserCredits(Utilities.getPreference(requireContext(), AppConstants.AUTH_KEY).toString())
     }
 
-    private fun reduceCredits() {
-
-        Utilities.showProgressDialog(requireContext())
+    private fun reduceCredits(showLoader : Boolean) {
+        if (showLoader)
+            Utilities.showProgressDialog(requireContext())
 
         viewModel.reduceCredit(
             Utilities.getPreference(requireContext(), AppConstants.TOKEN_ID).toString(),
@@ -82,18 +84,22 @@ class ThreeSixtyShootSummaryFragment : BaseFragment<ThreeSixtyViewModel, Fragmen
         viewModel.reduceCreditResponse.observe(viewLifecycleOwner,{
             when(it) {
                 is Resource.Success -> {
-                    updatePaidStatus()
+                    updatePaidStatus(false)
                 }
 
                 is Resource.Failure -> {
                     Utilities.hideProgressDialog()
-                    handleApiError(it) { reduceCredits() }
+                    handleApiError(it) { reduceCredits(true) }
                 }
             }
         })
     }
 
-    private fun updatePaidStatus() {
+    private fun updatePaidStatus(showLoader : Boolean) {
+        if (showLoader)
+            Utilities.showProgressDialog(requireContext())
+
+
         viewModel.updateDownloadStatus(
             Utilities.getPreference(requireContext(), AppConstants.TOKEN_ID).toString(),
             viewModel.videoDetails.skuId!!,
@@ -103,7 +109,18 @@ class ThreeSixtyShootSummaryFragment : BaseFragment<ThreeSixtyViewModel, Fragmen
     }
 
     private fun observepaidStatus() {
+        viewModel.downloadHDRes.observe(viewLifecycleOwner,{
+            when(it) {
+                is Resource.Success -> {
+                    processSku(false)
+                }
 
+                is Resource.Failure -> {
+                    Utilities.hideProgressDialog()
+                    handleApiError(it) { updatePaidStatus(true) }
+                }
+            }
+        })
     }
 
     private fun observeCredits() {
@@ -111,7 +128,7 @@ class ThreeSixtyShootSummaryFragment : BaseFragment<ThreeSixtyViewModel, Fragmen
             when(it) {
                 is Resource.Success -> {
                     Utilities.hideProgressDialog()
-                    availableCredits = it.value.data.creditAvailable
+                    availableCredits = it.value.data.credit_available
                     binding.tvAvailableCredits.text = "$availableCredits Credits"
 
                     if (availableCredits >= viewModel.videoDetails.frames)
@@ -120,7 +137,7 @@ class ThreeSixtyShootSummaryFragment : BaseFragment<ThreeSixtyViewModel, Fragmen
 
                 is Resource.Failure -> {
                     Utilities.hideProgressDialog()
-                    handleApiError(it) {getUserCredits()}
+                    handleApiError(it) { getUserCredits() }
                 }
 
                 is Resource.Loading -> Utilities.showProgressDialog(requireContext())
@@ -128,7 +145,10 @@ class ThreeSixtyShootSummaryFragment : BaseFragment<ThreeSixtyViewModel, Fragmen
         })
     }
 
-    private fun processSku() {
+    private fun processSku(showLoader : Boolean) {
+        if (showLoader)
+            Utilities.showProgressDialog(requireContext())
+
         viewModel.process360(
             Utilities.getPreference(requireContext(), AppConstants.AUTH_KEY).toString())
 
@@ -144,10 +164,8 @@ class ThreeSixtyShootSummaryFragment : BaseFragment<ThreeSixtyViewModel, Fragmen
                 }
                 is Resource.Failure -> {
                     Utilities.hideProgressDialog()
-                    handleApiError(it) {processSku()}
+                    handleApiError(it) {processSku(true)}
                 }
-
-                is Resource.Loading -> Utilities.showProgressDialog(requireContext())
             }
         })
     }

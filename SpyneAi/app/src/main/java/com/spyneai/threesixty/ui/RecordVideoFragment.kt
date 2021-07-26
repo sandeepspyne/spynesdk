@@ -387,51 +387,7 @@ class RecordVideoFragment : BaseFragment<ThreeSixtyViewModel,FragmentRecordVideo
         camera?.cameraControl?.enableTorch(flag)
     }
 
-    private fun startTimer() {
 
-        binding.ivTimer.visibility = View.VISIBLE
-
-        Glide.with(this).asGif().load(R.raw.timer_gif)
-            .listener(object : RequestListener<GifDrawable> {
-                override fun onLoadFailed(
-                    e: GlideException?,
-                    model: Any?,
-                    target: com.bumptech.glide.request.target.Target<GifDrawable>?,
-                    isFirstResource: Boolean
-                ): Boolean {
-                    binding.ivTimer.visibility = View.GONE
-                    //start recording
-                    recordVideo()
-                    return false
-                }
-
-                override fun onResourceReady(
-                    resource: GifDrawable?,
-                    model: Any?,
-                    target: com.bumptech.glide.request.target.Target<GifDrawable>?,
-                    dataSource: DataSource?,
-                    isFirstResource: Boolean
-                ): Boolean {
-                    Log.d(TAG, "onResourceReady: first")
-                    resource?.setLoopCount(1);
-                    resource?.registerAnimationCallback(object :
-                        Animatable2Compat.AnimationCallback() {
-                        override fun onAnimationEnd(drawable: Drawable) {
-                            // Animation is done. update the UI or whatever you want
-                            Log.d(TAG, "onResourceReady: end")
-                            binding.ivTimer.visibility = View.GONE
-
-                            //start recording
-                            recordVideo()
-                        }
-                    })
-
-                    return false
-                }
-
-            })
-            .into(binding.ivTimer)
-    }
     
     override fun getViewModel() = ThreeSixtyViewModel::class.java
 

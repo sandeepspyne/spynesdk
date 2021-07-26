@@ -22,7 +22,7 @@ class VideoProcessingStartedFragment :  BaseFragment<ThreeSixtyViewModel, Fragme
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        Glide.with(this).asGif().load(R.raw.logo)
+        Glide.with(this).load(R.drawable.app_logo)
             .into(binding.ivProcessing)
 
         binding.llHome.setOnClickListener {

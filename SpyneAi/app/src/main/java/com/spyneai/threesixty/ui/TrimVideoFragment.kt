@@ -30,11 +30,9 @@ import com.google.android.exoplayer2.upstream.DataSource
 import com.google.android.exoplayer2.upstream.DefaultDataSourceFactory
 import com.spyneai.R
 import com.spyneai.base.BaseFragment
-import com.spyneai.databinding.ActivityTrimVideoBinding
 import com.spyneai.databinding.FragmentRecordVideoBinding
 import com.spyneai.databinding.FragmentTrimVideoBinding
 import com.spyneai.threesixty.data.ThreeSixtyViewModel
-import com.spyneai.videorecording.SaveTrimmedVideoActivity
 import com.spyneai.videorecording.TrimmerUtils
 import com.spyneai.videorecording.listener.SeekListener
 import java.io.File

@@ -22,7 +22,6 @@ import com.spyneai.R
 import com.spyneai.dashboard.ui.MainDashboardActivity
 import com.spyneai.dashboard.ui.base.ViewModelFactory
 import com.spyneai.databinding.ActivityThreeSixtyExteriorBinding
-import com.spyneai.databinding.ActivityThreeSixtyInteriorViewBinding
 import com.spyneai.gotoHome
 import com.spyneai.needs.AppConstants
 import com.spyneai.needs.Utilities
@@ -31,7 +30,7 @@ import com.spyneai.shoot.data.ShootViewModel
 import com.spyneai.threesixty.data.model.ProcessedFrames
 import com.spyneai.videorecording.fragments.DialogEmbedCode
 import com.spyneai.videorecording.model.TSVParams
-import com.spyneai.videorecording.service.FramesHelper
+
 
 class ThreeSixtyExteriorActivity : AppCompatActivity(),View.OnTouchListener,View.OnClickListener {
 

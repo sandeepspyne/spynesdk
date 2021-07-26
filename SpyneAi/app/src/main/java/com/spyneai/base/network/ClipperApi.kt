@@ -1,15 +1,20 @@
 package com.spyneai.base.network
 
 import com.spyneai.camera2.OverlaysResponse
+import com.spyneai.credits.model.DownloadHDRes
+import com.spyneai.credits.model.ReduceCreditResponse
 import com.spyneai.dashboard.response.NewCategoriesResponse
 import com.spyneai.dashboard.response.NewSubCatResponse
 import com.spyneai.model.carbackgroundgif.CarBackgrounGifResponse
+import com.spyneai.model.credit.CreditDetailsResponse
 import com.spyneai.model.credit.FreeCreditEligblityResponse
 import com.spyneai.model.projects.CompletedProjectResponse
 import com.spyneai.orders.data.response.CompletedSKUsResponse
 import com.spyneai.orders.data.response.GetImagesOfSkuResponse
 import com.spyneai.orders.data.response.GetOngoingSkusResponse
+import com.spyneai.orders.data.response.ImagesOfSkuRes
 import com.spyneai.shoot.data.model.*
+import com.spyneai.threesixty.data.response.ProcessThreeSixtyRes
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
 import retrofit2.Call
@@ -120,9 +125,47 @@ interface ClipperApi {
     suspend fun getImagesOfSku(
         @Field("sku_id") skuId : String,
         @Field("auth_key") authKey : String
-    ) : GetImagesOfSkuResponse
+    ) : ImagesOfSkuRes
 
 
+    @Multipart
+    @POST("v2/video/upload_two")
+    suspend fun process360(
+        @Part("auth_key") authKey: RequestBody,
+        @Part("type") type: RequestBody,
+        @Part("project_id") projectId: RequestBody,
+        @Part("sku_name") skuName: RequestBody,
+        @Part("sku_id") skuId: RequestBody,
+        @Part("category") category: RequestBody,
+        @Part("sub_category") subCategory: RequestBody,
+        @Part("frames") frames: RequestBody,
+        @Part("background_id") backgroundId: RequestBody,
+        @Part videoFile: MultipartBody.Part,
+        @Part("video_url") videoUrl: RequestBody? = null,
+    ) : ProcessThreeSixtyRes
+
+    @GET("v2/credit/fetch")
+    suspend fun userCreditsDetails(
+        @Query("auth_key") userId: String
+    ): CreditDetailsResponse
+
+
+    @FormUrlEncoded
+    @PUT("v4/reduce-credit")
+    suspend fun reduceCredit(
+        @Field("user_id") userId : String,
+        @Field("credit_reduce") creditReduce:String,
+        @Field("enterprise_id") enterpriseId: String,
+        @Field("sku_id") skuId: String
+    ): ReduceCreditResponse
+
+    @FormUrlEncoded
+    @POST("v4/update-download-status")
+    suspend fun updateDownloadStatus(@Field("user_id") userId : String,
+                                     @Field("sku_id") skuId: String,
+                                     @Field("enterprise_id") enterpriseId: String,
+                                     @Field("download_hd") downloadHd: Boolean
+    ): DownloadHDRes
 
 
 }

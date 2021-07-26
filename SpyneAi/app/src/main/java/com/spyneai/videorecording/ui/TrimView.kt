@@ -84,14 +84,6 @@ class TrimView : ConstraintLayout, View.OnTouchListener {
         initDisplayThumbnails()
     }
 
-    fun disableTouch(context: Context) {
-        layout.ivStartSeekHandle.setOnTouchListener(null)
-        layout.ivEndSeekHandle.setOnTouchListener(null)
-
-        layout.ivStartSeekHandle.setImageDrawable(ContextCompat.getDrawable(context,R.drawable.ic_left_saved_handle))
-        layout.ivEndSeekHandle.setImageDrawable(ContextCompat.getDrawable(context,R.drawable.ic_right_saved_handle))
-    }
-
 
 
     fun getVideoDuration(videoPath: String): Long {
