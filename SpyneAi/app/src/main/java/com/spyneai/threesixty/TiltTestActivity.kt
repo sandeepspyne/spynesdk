@@ -408,8 +408,14 @@ class TiltTestActivity : AppCompatActivity() , SensorEventListener {
             if (movearrow)
                 moveArrow(roll)
 
-            if (rotatedarrow)
-                rotateArrow(pitch.roundToInt())
+            if (rotatedarrow){
+                if (pitch > 0){
+                    rotateArrow(pitch.minus(10).roundToInt())
+                }else{
+                    rotateArrow(pitch.plus(10).roundToInt())
+                }
+            }
+
         }
     }
 
@@ -451,12 +457,13 @@ class TiltTestActivity : AppCompatActivity() , SensorEventListener {
     }
 
     private fun moveArrow(roll: Double) {
-        Log.d(TAG, "moveArrow: "+roll)
-        val newRoll = roll + 90
+        var newRoll = roll + 90
         Log.d(TAG, "moveArrow: "+newRoll)
         Log.d(TAG, "moveArrow: ------------------------------")
 
         if (newRoll > 0 && (centerPosition + newRoll) < bottomConstraint){
+
+            newRoll -= 10
             binding
                 .tvLevelIndicator
                 .animate()
@@ -465,6 +472,9 @@ class TiltTestActivity : AppCompatActivity() , SensorEventListener {
         }
 
         if (newRoll < 0 && (centerPosition - newRoll) > topConstraint) {
+
+            newRoll += 10
+
             binding
                 .tvLevelIndicator
                 .animate()
