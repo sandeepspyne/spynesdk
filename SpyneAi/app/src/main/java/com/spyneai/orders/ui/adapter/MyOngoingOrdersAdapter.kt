@@ -56,7 +56,6 @@ class MyOngoingOrdersAdapter(
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-
         val dots = "..."
 
         holder.tv_images_count_ongoing.text = ongoingSkuList[position].total_images.toString()

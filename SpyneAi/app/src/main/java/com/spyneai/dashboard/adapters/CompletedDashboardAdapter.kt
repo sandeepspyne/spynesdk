@@ -2,29 +2,26 @@ package com.spyneai.dashboard.adapters
 
 import android.content.Context
 import android.content.Intent
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
-import android.widget.RelativeLayout
 import android.widget.TextView
+import android.widget.Toast
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.spyneai.R
-import com.spyneai.activity.ShowImagesActivity
-import com.spyneai.adapter.CategoriesDashboardAdapter
-import com.spyneai.adapter.CompletedProjectAdapter
-import com.spyneai.model.projects.CompletedProjectResponse
 import com.spyneai.needs.AppConstants
 import com.spyneai.needs.Utilities
-import com.spyneai.orders.data.response.CompletedSKUsResponse
+import com.spyneai.orders.data.response.GetProjectsResponse
+import com.spyneai.orders.ui.activity.CompletedSkusActivity
 import com.spyneai.shoot.utils.log
+import com.spyneai.threesixty.ui.ThreeSixtyExteriorActivity
 
-class CompletedDashboardAdapter (
+class CompletedDashboardAdapter(
     val context: Context,
-    val completedProjectList: ArrayList<CompletedSKUsResponse.Data>
+    val completedProjectList: ArrayList<GetProjectsResponse.Project_data>
 ) : RecyclerView.Adapter<CompletedDashboardAdapter.ViewHolder>() {
 
     companion object {
@@ -37,7 +34,7 @@ class CompletedDashboardAdapter (
 
     class ViewHolder(view: View) : RecyclerView.ViewHolder(view){
         val ivImage: ImageView = view.findViewById(R.id.ivImage)
-        val tvSku: TextView = view.findViewById(R.id.tvSku)
+        val tvProject: TextView = view.findViewById(R.id.tvProject)
         val tvDate: TextView = view.findViewById(R.id.tvDate)
         val clBackground: ConstraintLayout = view.findViewById(R.id.clBackground)
 
@@ -50,22 +47,47 @@ class CompletedDashboardAdapter (
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        holder.tvSku.text = completedProjectList[position].sku_name
-        holder.tvDate.text = completedProjectList[position].created_date
-        Glide.with(context)
-            .load(completedProjectList[position].thumbnail)
-            .into(holder.ivImage)
+        holder.tvProject.text = completedProjectList[position].project_name
+        holder.tvDate.text = completedProjectList[position].created_on
+
+
+        try {
+            Glide.with(context)
+                .load(completedProjectList[position].sku[0].images[0].input_lres)
+                .error(R.mipmap.defaults) // show error drawable if the image is not a gif
+                .into(holder.ivImage)
+        }catch (e: Exception){
+
+        }
 
         holder.clBackground.setOnClickListener{
             Utilities.savePrefrence(context,
                 AppConstants.SKU_ID,
-                completedProjectList[position].sku_id)
-            log("Show Completed orders(sku_id): "+completedProjectList[position].sku_id)
-            val intent = Intent(context,
-                ShowImagesActivity::class.java)
+                completedProjectList[position].sku[0].sku_id)
 
-            intent.putExtra("is_paid",completedProjectList[position].paid)
-            context.startActivity(intent)
+            log("Show Completed orders(sku_id): "+completedProjectList[position].sku[0].sku_id)
+
+            if (completedProjectList[position].sub_category.equals("360_interior") || completedProjectList[position].sub_category.equals("360_exterior")){
+                Intent(context,ThreeSixtyExteriorActivity::class.java)
+                    .apply {
+                        putExtra("sku_id",completedProjectList[position].sku[0].sku_id)
+                        context.startActivity(this)
+                    }
+            }else{
+
+                if (completedProjectList[position].sku.isNullOrEmpty()){
+                    Toast.makeText(context, "No SKU data found", Toast.LENGTH_SHORT).show()
+                }else{
+                    Intent(context, CompletedSkusActivity::class.java)
+                        .apply {
+                            putExtra("position", position)
+                            context.startActivity(this)
+                        }
+                }
+
+
+            }
+
         }
 
     }

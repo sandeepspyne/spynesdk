@@ -514,7 +514,7 @@ interface APiService {
 
     @GET("v2/credit/fetch")
     fun userCreditsDetails(
-        @Query("auth_key") auth_key: String?,
+        @Query("auth_key") userId: String?,
     ): Call<CreditDetailsResponse>?
 
     @Multipart

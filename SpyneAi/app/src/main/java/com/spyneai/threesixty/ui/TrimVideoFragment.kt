@@ -91,8 +91,7 @@ class TrimVideoFragment : BaseFragment<ThreeSixtyViewModel,FragmentTrimVideoBind
         txtEndDuration = binding.txtEndDuration
 
         seekHandler = Handler()
-
-
+        
         initPlayer()
 
         setDataInView()

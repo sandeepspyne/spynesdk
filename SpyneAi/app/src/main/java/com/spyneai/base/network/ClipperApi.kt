@@ -5,14 +5,9 @@ import com.spyneai.credits.model.DownloadHDRes
 import com.spyneai.credits.model.ReduceCreditResponse
 import com.spyneai.dashboard.response.NewCategoriesResponse
 import com.spyneai.dashboard.response.NewSubCatResponse
-import com.spyneai.model.carbackgroundgif.CarBackgrounGifResponse
 import com.spyneai.model.credit.CreditDetailsResponse
-import com.spyneai.model.credit.FreeCreditEligblityResponse
 import com.spyneai.model.projects.CompletedProjectResponse
-import com.spyneai.orders.data.response.CompletedSKUsResponse
-import com.spyneai.orders.data.response.GetImagesOfSkuResponse
-import com.spyneai.orders.data.response.GetOngoingSkusResponse
-import com.spyneai.orders.data.response.ImagesOfSkuRes
+import com.spyneai.orders.data.response.*
 import com.spyneai.shoot.data.model.*
 import com.spyneai.threesixty.data.response.ProcessThreeSixtyRes
 import okhttp3.MultipartBody
@@ -40,6 +35,7 @@ interface ClipperApi {
         @Part("sku_id") sku_id: RequestBody?,
         @Part("image_category") image_category: RequestBody?,
         @Part("auth_key") auth_key: RequestBody?,
+        @Part("frame_seq_no") frame_seq_no: RequestBody?,
         @Part file: MultipartBody.Part
     ): Call<UploadImageResponse>
 
@@ -73,18 +69,11 @@ interface ClipperApi {
     @FormUrlEncoded
     @POST("v2/sku/create")
     suspend fun createSku(@Field("auth_key") authKey : String,
-                              @Field("project_id") projectId : String,
-                              @Field("prod_cat_id") prodCatId : String,
+                          @Field("project_id") projectId : String,
+                          @Field("prod_cat_id") prodCatId : String,
                           @Field("prod_sub_cat_id") prodSubCatId : String,
                           @Field("sku_name") skuName : String,
-        @Field("total_frames") totalFrames : Int) : CreateSkuRes
-
-    @GET("v2/sku/updateTotalFrames")
-    suspend fun updateTotalFrames(
-        @Query("auth_key") authKey : String,
-        @Query("sku_id") skuId : String,
-        @Query("total_frames") totalFrames : String
-    ) : UpdateTotalFramesRes
+                          @Field("total_frames") totalFrames : Int) : CreateSkuRes
 
     @Multipart
     @POST("v2/backgrounds/fetchEnterpriseBgs")
@@ -121,11 +110,32 @@ interface ClipperApi {
         @Query("auth_key") authKey: String
     ) : CompletedSKUsResponse
 
-    @POST("v2/sku/getImagesByName")
+    @FormUrlEncoded
+    @POST("v2/sku/getImagesById")
     suspend fun getImagesOfSku(
-        @Field("sku_id") skuId : String,
-        @Field("auth_key") authKey : String
+        @Field("auth_key") authKey : String,
+        @Field("sku_id") skuId : String
     ) : ImagesOfSkuRes
+
+
+    @GET("v2/project/getSkuPerProject")
+    suspend fun getProjectDetail(
+        @Query("auth_key") authKey : String,
+        @Query("project_id") projectId : String
+    ) : ProjectDetailResponse
+
+    @GET("v2/sku/updateTotalFrames")
+    suspend fun updateTotalFrames(
+        @Query("sku_id") skuId : String,
+        @Query("total_frames") totalFrames : String,
+        @Query("auth_key") authKey : String
+    ) : UpdateTotalFramesRes
+
+    @GET("v2/project/getDetailsProject")
+    suspend fun getProjects(
+        @Query("auth_key") authKey: String,
+        @Query("status") status: String
+    ) : GetProjectsResponse
 
 
     @Multipart
@@ -162,10 +172,9 @@ interface ClipperApi {
     @FormUrlEncoded
     @POST("v4/update-download-status")
     suspend fun updateDownloadStatus(@Field("user_id") userId : String,
-                                     @Field("sku_id") skuId: String,
-                                     @Field("enterprise_id") enterpriseId: String,
-                                     @Field("download_hd") downloadHd: Boolean
+                             @Field("sku_id") skuId: String,
+                             @Field("enterprise_id") enterpriseId: String,
+                             @Field("download_hd") downloadHd: Boolean
     ): DownloadHDRes
-
 
 }

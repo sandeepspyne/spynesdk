@@ -39,9 +39,45 @@
         android:theme="@style/Theme.SpyneAi"
         android:usesCleartextTraffic="true"
         tools:targetApi="m">
-        <activity android:name=".orders.ui.KarviShowImagesActivity"></activity>
+        <activity android:name=".orders.ui.activity.ShowRawImagesActivity"></activity>
+        <activity android:name=".orders.ui.activity.OngoingSkusActivity" />
         <activity
-            android:name=".shoot.ui.ProcessActivity"
+            android:name=".threesixty.TiltTestActivity"
+            android:screenOrientation="landscape" />
+        <activity android:name=".processedimages.ui.ProcessedImageActivity"></activity>
+        <activity
+            android:name=".threesixty.TiltTestActivity"
+            android:screenOrientation="landscape"></activity>
+        <activity
+            android:name=".threesixty.SensorTestActivity"
+            android:screenOrientation="landscape" />
+        <activity android:name=".orders.ui.activity.CompletedSkusActivity" />
+        <activity
+            android:name=".threesixty.ui.ThreeSixtyExteriorActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".threesixty.ui.ThreeSixtyIntroActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".shoot.ui.StartShootActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".threesixty.ui.TrimActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".threesixty.ui.ThreeSixtyActivity"
+            android:configChanges="screenLayout|keyboardHidden"
+            android:screenOrientation="landscape" />
+        <activity android:name=".processedimages.ui.BikeOrderSummaryActivity" />
+        <activity android:name=".RecylerviewTestActivity" />
+        <activity android:name=".processedimages.ui.BikeImagesActivity" />
+        <activity
+            android:name=".shoot.ui.base.ShootPortraitActivity"
+            android:configChanges="screenLayout|keyboardHidden"
+            android:screenOrientation="portrait" />
+        <activity android:name=".shoot.ui.ecomwithgrid.ShowSkuProjectActivity" />
+        <activity
+            android:name=".shoot.ui.base.ProcessActivity"
             android:screenOrientation="portrait" /> <!-- <activity android:name=".shoot.ui.ShootActivity"></activity> -->
         <activity android:name=".dashboard.ui.YoutubeVideoPlayerActivity" />
         <activity
@@ -61,12 +97,6 @@
             android:screenOrientation="portrait" />
         <activity
             android:name=".credits.FeedbackActivity"
-            android:screenOrientation="portrait" />
-        <activity
-            android:name=".credits.CreditPaymentFailedActivity"
-            android:screenOrientation="portrait" />
-        <activity
-            android:name=".credits.CreditPaymentSuccessActivity"
             android:screenOrientation="portrait" />
         <activity
             android:name=".credits.CreditPlansActivity"
@@ -140,7 +170,7 @@
             android:name=".activity.OnboardingsActivity"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".activity.ShowImagesActivity"
+            android:name=".processedimages.ui.ShowImagesActivity"
             android:screenOrientation="portrait" />
         <activity
             android:name=".activity.ShowGifActivity"
@@ -262,13 +292,13 @@
         <!-- android:name=".orders.ui.MyOrdersActivity" -->
         <!-- android:screenOrientation="portrait" /> -->
         <activity
-            android:name=".shoot.ui.ShootActivity"
-            android:configChanges="orientation|screenSize"
+            android:name=".shoot.ui.base.ShootActivity"
+            android:configChanges="screenLayout|keyboardHidden"
             android:screenOrientation="landscape" />
         <activity
             android:name=".orders.ui.MyOrdersActivity"
-            android:screenOrientation="portrait"></activity>
-        <activity
+            android:screenOrientation="portrait" /><activity
+
             android:name=".activity.SplashActivity"
             android:screenOrientation="portrait">
             <intent-filter>
@@ -289,6 +319,11 @@
             android:authorities="${applicationId}.AUTH_SILI_COMPRESS"
             android:exported="false"
             tools:replace="android:authorities" />
+
+        <service
+            android:name="androidx.work.impl.foreground.SystemForegroundService"
+            tools:ignore="Instantiatable"
+            tools:node="merge" />
     </application>
 
 </manifest>

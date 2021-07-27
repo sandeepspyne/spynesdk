@@ -5,6 +5,8 @@ import android.os.Bundle
 import android.view.View
 import com.spyneai.databinding.ActivityCompletedProjectsBinding
 import com.spyneai.orders.ui.MyCompletedOrdersFragment
+import com.spyneai.orders.ui.fragment.CompletedProjectsFragment
+
 class CompletedProjectsActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityCompletedProjectsBinding
@@ -16,7 +18,7 @@ class CompletedProjectsActivity : AppCompatActivity() {
 
         supportFragmentManager
             .beginTransaction()
-            .add(binding.flContainer.id, MyCompletedOrdersFragment())
+            .add(binding.flContainer.id, CompletedProjectsFragment())
             .commit()
 
         binding.imgBackCompleted.setOnClickListener(View.OnClickListener {

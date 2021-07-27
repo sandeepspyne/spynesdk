@@ -106,6 +106,7 @@ class MyIndicator @JvmOverloads constructor(context: Context, attrs: AttributeSe
 
         Log.d(TAG, "getSrc: "+"-------------------------")
         Log.d(TAG, "getSrc: "+roll)
+        Log.d(TAG, "getSrc: "+dy)
         // Log.d(TAG, "getSrc: "+pitch)
         //Log.d(TAG, "getSrc: "+dy)
         Log.d(TAG, "getSrc: "+"-------------------------")
@@ -116,7 +117,7 @@ class MyIndicator @JvmOverloads constructor(context: Context, attrs: AttributeSe
 
         val paint = Paint()
 
-        if ((roll > 0 && roll < 1.5) && dy in -3.0..3.0){
+        if ((roll > 0 && roll < 1.5) && dy in -25.0..10.0){
             if (tvDemo != null)
                 tvDemo!!.visibility = View.INVISIBLE
             paint.setColor(Color.parseColor("#40CE4E"));

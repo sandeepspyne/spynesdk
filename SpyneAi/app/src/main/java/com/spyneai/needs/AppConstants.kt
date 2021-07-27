@@ -2,6 +2,7 @@ package com.spyneai.needs
 
 object AppConstants {
     val CARS_CATEGORY_ID = "cat_d8R14zUNE"
+    val LIST_IMAGE_NAME = "LIST_IMAGE_NAME"
     val tokenId: String = "tokenId"
     val CREDITS_MESSAGE = "CREDITS_MESSAGE"
     val AUTH_KEY ="AUTH_KEY"
@@ -56,6 +57,7 @@ object AppConstants {
     val INDEX_NUMBER: String = "index_number"
     val SKU_ID: String = "sku_id"
     val SKU_NAME: String = "sku_name"
+    val IMAGE_TYPE: String = "image_type"
     val IMAGE_URL: String = "image_url"
     val SHOOT_ID: String = "shopot_id"
     val CATEGORY_NAME: String =  "category_name"
@@ -100,8 +102,11 @@ object AppConstants {
 
     val  IS_NEW_USER: String = "isNewUser"
 
-
     val  PROJECT_ID: String = "projectId"
+
+    val  PROJECT_NAME: String = "projectName"
+
+
 
 
 

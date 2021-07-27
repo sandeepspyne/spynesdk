@@ -86,6 +86,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="@string/change_fidelity"
+                        android:visibility="gone"
                         android:id="@+id/tvChangeFidelity"
                         android:textColor="@color/primary"
                         android:fontFamily="@font/poppins_medium"

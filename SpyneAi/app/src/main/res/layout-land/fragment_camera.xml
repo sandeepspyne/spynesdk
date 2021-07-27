@@ -4,12 +4,12 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".shoot.ui.CameraFragment"
+    tools:context=".shoot.ui.base.CameraFragment"
     android:background="@android:color/transparent">
 
     <View
         android:id="@+id/viewCamera"
-        android:layout_width="85dp"
+        android:layout_width="@dimen/dp_100"
         android:layout_height="match_parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -25,10 +25,9 @@
         app:layout_constraintLeft_toRightOf="@+id/viewCamera"
         app:layout_constraintTop_toTopOf="parent" />
 
-
     <LinearLayout
         android:id="@+id/llCapture"
-        android:layout_width="wrap_content"
+        android:layout_width="@dimen/dp_100"
         android:layout_height="match_parent"
         android:layout_gravity="end|center"
         android:padding="@dimen/dp_10"
@@ -106,7 +105,69 @@
 
 
 
+    <FrameLayout
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:id="@+id/flLevelIndicator"
+        android:visibility="invisible"
+        app:layout_constraintRight_toLeftOf="@+id/llCapture"
+        app:layout_constraintLeft_toRightOf="@+id/viewCamera"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        android:layout_margin="@dimen/dp_20">
 
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/ic_top_left"
+            android:layout_gravity="left"
+            android:id="@+id/ivTopLeft"/>
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/ic_bottom_left"
+            android:layout_gravity="left|bottom"
+            android:id="@+id/ivBottomLeft"/>
+
+        <ImageView
+            android:layout_width="@dimen/dp_60"
+            android:layout_height="@dimen/dp_60"
+            android:layout_gravity="center"
+            android:id="@+id/ivGryroRing"
+            android:src="@drawable/ic_gyro_ring"/>
+
+        <TextView
+            android:layout_width="48dp"
+            android:layout_height="0.5dp"
+            android:layout_gravity="center"
+            android:id="@+id/tvCenter"
+            android:background="@color/black"/>
+
+        <ImageView
+            android:layout_width="@dimen/dp_25"
+            android:layout_height="3dp"
+            android:background="@drawable/bg_gyro_error"
+            android:id="@+id/tvLevelIndicator"
+            android:layout_gravity="center"/>
+
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/ic_top_right"
+            android:layout_gravity="right"
+            android:id="@+id/ivTopRight"/>
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/ic_bottom_right"
+            android:layout_gravity="right|bottom"
+            android:id="@+id/ivBottomRight"/>
+
+
+    </FrameLayout>
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

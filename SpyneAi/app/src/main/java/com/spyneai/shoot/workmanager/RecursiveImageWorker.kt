@@ -3,6 +3,7 @@ package com.spyneai.shoot.workmanager
 import android.content.Context
 import android.os.Handler
 import android.util.Log
+
 import androidx.work.*
 import androidx.work.ListenableWorker.Result.*
 import com.google.common.util.concurrent.ListenableFuture
@@ -140,17 +141,17 @@ class RecursiveImageWorker(private val appContext: Context, workerParams: Worker
         //remove uploaded item from database
         localRepository.deleteImage(itemId)
 
-        val constraints: Constraints = Constraints.Builder()
-            .setRequiredNetworkType(NetworkType.CONNECTED)
-            .build()
+            val constraints: Constraints = Constraints.Builder()
+                .setRequiredNetworkType(NetworkType.CONNECTED)
+                .build()
 
-        val longWorkRequest = OneTimeWorkRequest.Builder(RecursiveImageWorker::class.java)
-            .addTag("Long Running Worker")
+            val longWorkRequest = OneTimeWorkRequest.Builder(RecursiveImageWorker::class.java)
+                .addTag("Long Running Worker")
 
-        WorkManager.getInstance(BaseApplication.getContext())
-            .enqueue(
-                longWorkRequest
-                    .setConstraints(constraints)
-                    .build())
+            WorkManager.getInstance(BaseApplication.getContext())
+                .enqueue(
+                    longWorkRequest
+                        .setConstraints(constraints)
+                        .build())
     }
 }

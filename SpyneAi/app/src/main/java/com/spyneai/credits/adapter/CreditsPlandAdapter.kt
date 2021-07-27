@@ -11,6 +11,7 @@ import com.spyneai.R
 import com.spyneai.credits.holder.CreditsPlanHolder
 import com.spyneai.credits.model.CreditPlansResItem
 import kotlinx.android.synthetic.main.activity_order_summary2.*
+import kotlin.math.roundToInt
 
 
 class CreditsPlandAdapter(var context: Context, var plansList: ArrayList<CreditPlansResItem>, var listener: Listener)

@@ -22,6 +22,7 @@ import com.spyneai.model.channel.BackgroundsResponse
 import com.spyneai.model.channel.ChannelsResponse
 import com.spyneai.model.marketplace.FootwearMarketplaceResponse
 import com.spyneai.model.skumap.UpdateSkuResponse
+import com.spyneai.shoot.utils.log
 import kotlinx.android.synthetic.main.dialog_progress.*
 import kotlinx.android.synthetic.main.dialog_progress_preview.*
 import java.lang.reflect.Type
@@ -83,6 +84,7 @@ object Utilities {
     }
 
     fun showProgressDialog(context: Context) {
+        log("show progress dialog")
         if (context.isValidGlideContext()) {
             dialog = Dialog(context!!)
             dialog!!.requestWindowFeature(Window.FEATURE_NO_TITLE)

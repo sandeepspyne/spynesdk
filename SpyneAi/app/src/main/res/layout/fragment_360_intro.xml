@@ -1,15 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
 <ScrollView
     xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:scrollbars="none"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
+    android:scrollbars="none">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@color/white">
+        android:background="@color/white"
+        >
 
         <com.google.android.material.tabs.TabLayout
             android:layout_width="0dp"
@@ -21,17 +22,17 @@
             app:layout_constraintRight_toRightOf="parent"
             android:layout_marginLeft="@dimen/dp_20"
             android:layout_marginRight="@dimen/dp_20"
-            android:layout_marginTop="@dimen/dp_20"/>
+            android:layout_marginTop="@dimen/dp_10"/>
 
         <androidx.viewpager2.widget.ViewPager2
             android:layout_width="0dp"
-            android:layout_height="200dp"
+            android:layout_height="170dp"
             android:id="@+id/viewPager"
             app:layout_constraintTop_toBottomOf="@+id/tabLayout"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toRightOf="parent"
             app:layout_constraintBottom_toTopOf="@id/cvFeatures"
-            android:layout_marginTop="@dimen/dp_10"
+            android:layout_marginTop="@dimen/dp_15"
             android:layout_marginLeft="@dimen/dp_20"
             android:layout_marginRight="@dimen/dp_20"/>
 
@@ -68,11 +69,11 @@
                     android:layout_marginTop="@dimen/dp_20">
 
                     <ImageView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        app:tint="@color/primary"
+                        android:layout_width="@dimen/three_sixty_feature"
+                        android:layout_height="@dimen/three_sixty_feature"
                         android:layout_gravity="center_vertical"
-                        android:src="@drawable/ic_embed_feature"/>
+                        android:src="@drawable/ic_embed_feature"
+                        app:tint="@color/primary" />
 
                     <TextView
                         android:layout_width="wrap_content"
@@ -93,10 +94,10 @@
                     android:layout_marginTop="@dimen/dp_15">
 
                     <ImageView
-                        android:layout_width="wrap_content"
-                        app:tint="@color/primary"
-                        android:layout_height="wrap_content"
+                        android:layout_width="@dimen/three_sixty_feature"
+                        android:layout_height="@dimen/three_sixty_feature"
                         android:layout_gravity="center_vertical"
+                        app:tint="@color/primary"
                         android:src="@drawable/ic_shootanywhere_feature"/>
 
                     <TextView
@@ -118,8 +119,8 @@
                     android:layout_marginTop="@dimen/dp_20">
 
                     <ImageView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
+                        android:layout_width="@dimen/three_sixty_feature"
+                        android:layout_height="@dimen/three_sixty_feature"
                         app:tint="@color/primary"
                         android:layout_gravity="center_vertical"
                         android:src="@drawable/ic_shoot_any_car_feature"/>
@@ -143,10 +144,10 @@
                     android:layout_marginTop="@dimen/dp_20">
 
                     <ImageView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="center_vertical"
+                        android:layout_width="@dimen/three_sixty_feature"
+                        android:layout_height="@dimen/three_sixty_feature"
                         app:tint="@color/primary"
+                        android:layout_gravity="center_vertical"
                         android:src="@drawable/ic_shoot_video_feature"/>
 
                     <TextView
@@ -168,11 +169,11 @@
                     android:layout_marginTop="@dimen/dp_20">
 
                     <ImageView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
+                        android:layout_width="@dimen/three_sixty_feature"
+                        android:layout_height="@dimen/three_sixty_feature"
+                        app:tint="@color/primary"
                         android:layout_gravity="center_vertical"
-                        android:src="@drawable/ic_fedility_feature"
-                        app:tint="@color/primary" />
+                        android:src="@drawable/ic_fedility_feature"/>
 
                     <TextView
                         android:layout_width="wrap_content"
@@ -194,7 +195,7 @@
                     android:insetTop="0dp"
                     android:insetBottom="0dp"
                     android:layout_marginTop="@dimen/dp_20"
-                    android:text="Start Clicking"
+                    android:text="Start Shoot"
                     android:textAllCaps="false"
                     android:textColor="@color/white"
                     android:fontFamily="@font/poppins_medium"

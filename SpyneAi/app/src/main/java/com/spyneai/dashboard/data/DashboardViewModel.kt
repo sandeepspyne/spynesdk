@@ -11,6 +11,7 @@ import com.spyneai.base.network.Resource
 import com.spyneai.dashboard.response.NewCategoriesResponse
 import com.spyneai.orders.data.response.CompletedSKUsResponse
 import com.spyneai.orders.data.response.GetOngoingSkusResponse
+import com.spyneai.orders.data.response.GetProjectsResponse
 
 class DashboardViewModel() : ViewModel() {
 
@@ -51,6 +52,32 @@ class DashboardViewModel() : ViewModel() {
     ) = viewModelScope.launch {
         _completedSkusResponse.value = Resource.Loading
         _completedSkusResponse.value = repository.getCompletedProjects(auth_key)
+
+    }
+
+    //ongoing completed
+
+    private val _getProjectsResponse: MutableLiveData<Resource<GetProjectsResponse>> = MutableLiveData()
+    val getProjectsResponse: LiveData<Resource<GetProjectsResponse>>
+        get() = _getProjectsResponse
+
+    fun getProjects(
+        tokenId: String, status: String
+    ) = viewModelScope.launch {
+        _getProjectsResponse.value = Resource.Loading
+        _getProjectsResponse.value = repository.getProjects(tokenId, status)
+
+    }
+
+    private val _getCompletedProjectsResponse: MutableLiveData<Resource<GetProjectsResponse>> = MutableLiveData()
+    val getCompletedProjectsResponse: LiveData<Resource<GetProjectsResponse>>
+        get() = _getCompletedProjectsResponse
+
+    fun getCompletedProjects(
+        tokenId: String, status: String
+    ) = viewModelScope.launch {
+        _getCompletedProjectsResponse.value = Resource.Loading
+        _getCompletedProjectsResponse.value = repository.getProjects(tokenId, status)
 
     }
 

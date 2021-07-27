@@ -7,8 +7,6 @@ import com.spyneai.orders.data.response.ProjectCountResponse
 
 class MyOrdersRepository : BaseRepository() {
 
-    private var spyneApi = SpyneAiApiClient().getClient()
-
     private var clipperApi = ClipperApiClient().getClient()
 
     suspend fun getProjectCount(
@@ -27,11 +25,15 @@ class MyOrdersRepository : BaseRepository() {
         clipperApi.getCompletedSkus(tokenId)
     }
 
-    suspend fun getImagesOfSku(
+    suspend fun getProjects(
         tokenId: String,
-        skuId: String
+        status: String
     ) = safeApiCall{
-        clipperApi.getImagesOfSku(tokenId, skuId)
+        clipperApi.getProjects(tokenId, status)
     }
+
+
+
+
 
 }

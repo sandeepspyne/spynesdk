@@ -261,14 +261,14 @@ class ThreeSixtyExteriorActivity : AppCompatActivity(),View.OnTouchListener,View
 
                         if (tsvParamFront.mEndX - tsvParamFront.mStartX > 3) {
                             tsvParamFront.mImageIndex++
-                            if (tsvParamFront.mImageIndex >= tsvParamFront.framesList.size) tsvParamFront.mImageIndex = tsvParamFront.framesList.size - 1
+                            if (tsvParamFront.mImageIndex >= tsvParamFront.framesList.size) tsvParamFront.mImageIndex = 0
 
                             loadImage(tsvParamFront,binding.ivFront)
 
                         }
                         if (tsvParamFront.mEndX - tsvParamFront.mStartX < -3) {
                             tsvParamFront.mImageIndex--
-                            if (tsvParamFront.mImageIndex < 0) tsvParamFront.mImageIndex = 0
+                            if (tsvParamFront.mImageIndex < 0) tsvParamFront.mImageIndex = tsvParamFront.framesList.size - 1
 
                             loadImage(tsvParamFront,binding.ivFront)
                         }
@@ -301,7 +301,7 @@ class ThreeSixtyExteriorActivity : AppCompatActivity(),View.OnTouchListener,View
             }
 
             R.id.ivShare -> {
-                share(getCode(0))
+                share(getLink())
             }
 
             R.id.tv_go_to_home -> {
@@ -332,10 +332,12 @@ class ThreeSixtyExteriorActivity : AppCompatActivity(),View.OnTouchListener,View
 
     private fun getCode(type : Int) : String {
         return "<iframe \n" +
-                "  src=\"https://www.spyne.ai/shoots/shoot?skuId="+shootId+" \n" +
+                "  src=\"https://www.spyne.ai/shoots/shoot?skuId="+shootId+"&type=360_exterior" +
                 "  style=\"border:0; height: 100%; width: 100%;\" framerborder=\"0\"></iframe>"
 
     }
+
+    private fun getLink() = "https://www.spyne.ai/shoots/shoot?skuId="+shootId+"&type=360_exterior"
 
     private fun showGoToHomeButton(){
         binding.tvShowIframe.visibility = View.VISIBLE

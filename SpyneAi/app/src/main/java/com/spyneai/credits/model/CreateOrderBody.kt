@@ -5,9 +5,9 @@ data class CreateOrderBody(
     val currency: String,
     val orderId: String,
     val planDiscount: Int,
-    val planFinalCost: Int,
+    val planFinalCost: Float,
     val planId: String,
-    val planOrigCost: Int,
+    val planOrigCost: Float,
     val status: String,
     val subscriptionType: String,
     val userId: String

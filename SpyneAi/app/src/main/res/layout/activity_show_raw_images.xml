@@ -1,0 +1,163 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    tools:context=".orders.ui.fragment.CompletedSkusFragment">
+
+    <androidx.appcompat.widget.Toolbar
+        android:id="@+id/my_toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        android:background="?attr/colorPrimary"
+        android:elevation="@dimen/dp_5"
+        android:backgroundTint="@color/white"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        android:theme="@style/ThemeOverlay.AppCompat.Light" >
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="horizontal">
+            <ImageView
+                android:id="@+id/ivBack"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:src="@drawable/back"
+                android:paddingStart="@dimen/dp_10"
+                android:paddingEnd="@dimen/dp_10"
+                app:tint="@color/black"
+                android:contentDescription="@string/app_name" />
+            <TextView
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:layout_height="match_parent"
+                android:text="Images"
+                android:textColor="@color/primary"
+                android:fontFamily="@font/poppins_medium"
+                android:gravity="center"
+                android:textSize="@dimen/sp_18"/>
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:src="@drawable/back"
+                android:visibility="invisible"
+                android:paddingStart="@dimen/dp_10"
+                android:paddingEnd="@dimen/dp_10"
+                app:tint="@color/black" />
+
+        </LinearLayout>
+
+    </androidx.appcompat.widget.Toolbar>
+
+    <RelativeLayout
+        android:id="@+id/rlSku"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/my_toolbar"
+        android:layout_marginTop="16dp"
+        android:layout_marginLeft="16dp"
+        android:layout_marginRight="16dp"
+        android:background="@color/primary_light">
+
+        <TextView
+            android:id="@+id/tvSku"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="@dimen/sp_14"
+            android:fontFamily="@font/poppins_medium"
+            android:text="SKU Name"
+            android:textColor="@color/categories_text"
+            android:layout_marginLeft="17dp"
+            android:layout_marginTop="16dp"
+            android:layout_alignParentLeft="true"
+            android:layout_marginBottom="16dp"/>
+
+        <TextView
+            android:id="@+id/tvSkuNam"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="@dimen/sp_14"
+            android:fontFamily="@font/poppins_medium"
+            tools:text="Test "
+            android:maxLength="8"
+            android:layout_marginLeft="13dp"
+            android:textColor="@color/primary"
+            android:layout_toRightOf="@+id/tvSku"
+            android:layout_centerVertical="true"/>
+
+
+        <TextView
+            android:id="@+id/tvTotalImage"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="@dimen/sp_14"
+            android:fontFamily="@font/poppins_medium"
+            tools:text="5"
+            android:layout_alignParentRight="true"
+            android:textColor="@color/primary"
+            android:layout_marginRight="17dp"
+            android:layout_marginTop="16dp"
+            android:layout_marginBottom="16dp"/>
+
+        <TextView
+            android:id="@+id/tvImages"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="@dimen/sp_14"
+            android:fontFamily="@font/poppins_medium"
+            android:text="Total Images "
+            android:layout_toLeftOf="@+id/tvTotalImage"
+            android:layout_marginRight="13dp"
+            android:textColor="@color/categories_text"
+            android:layout_centerVertical="true"/>
+
+    </RelativeLayout>
+
+    <GridView
+        android:id="@+id/gvRawImages"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginTop="10dp"
+        android:paddingBottom="@dimen/dp_50"
+        android:layout_marginLeft="20dp"
+        android:layout_marginRight="@dimen/dp_20"
+        android:clipToPadding="false"
+        app:layout_constraintTop_toBottomOf="@+id/rlSku"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        android:verticalSpacing="10dp"
+        android:visibility="gone"
+        android:horizontalSpacing="10dp"
+        android:stretchMode="columnWidth"
+        android:numColumns="2"/>
+
+    <com.facebook.shimmer.ShimmerFrameLayout
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginTop="@dimen/dp_10"
+        android:visibility="visible"
+        app:layout_constraintTop_toBottomOf="@+id/rlSku"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        android:id="@+id/shimmerRawImages">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical">
+
+            <include layout="@layout/raw_images_simmer"></include>
+
+        </LinearLayout>
+    </com.facebook.shimmer.ShimmerFrameLayout>
+
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>

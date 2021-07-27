@@ -102,7 +102,7 @@ class ProcessViewModel : ViewModel() {
         }
     }
 
-    fun updateTotalFrames(authKey: String,skuId: String,totalFrames: String) {
+    fun updateCarTotalFrames(authKey: String,skuId: String,totalFrames: String) {
         val data = Data.Builder()
             .putString("auth_key", authKey)
             .putString("sku_id", skuId)

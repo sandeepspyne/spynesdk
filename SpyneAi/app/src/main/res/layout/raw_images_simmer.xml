@@ -1,0 +1,148 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <RelativeLayout
+        android:background="@color/transparent"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_margin="@dimen/dp_20">
+
+    <androidx.cardview.widget.CardView
+        android:layout_width="177dp"
+        android:layout_height="146dp"
+        android:layout_alignParentLeft="true">
+
+        <ImageView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@color/shimmer_background"
+            android:scaleType="centerCrop"/>
+
+    </androidx.cardview.widget.CardView>
+
+        <androidx.cardview.widget.CardView
+            android:layout_width="177dp"
+            android:layout_height="146dp"
+            android:layout_alignParentRight="true">
+
+            <ImageView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="@color/shimmer_background"
+                android:scaleType="centerCrop"/>
+
+        </androidx.cardview.widget.CardView>
+
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:background="@color/transparent"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_margin="@dimen/dp_20">
+
+        <androidx.cardview.widget.CardView
+            android:layout_width="177dp"
+            android:layout_height="146dp"
+            android:layout_alignParentLeft="true">
+
+            <ImageView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="@color/shimmer_background"
+                android:scaleType="centerCrop"/>
+
+        </androidx.cardview.widget.CardView>
+
+        <androidx.cardview.widget.CardView
+            android:layout_width="177dp"
+            android:layout_height="146dp"
+            android:layout_alignParentRight="true">
+
+            <ImageView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="@color/shimmer_background"
+                android:scaleType="centerCrop"/>
+
+        </androidx.cardview.widget.CardView>
+
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:background="@color/transparent"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_margin="@dimen/dp_20">
+
+        <androidx.cardview.widget.CardView
+            android:layout_width="177dp"
+            android:layout_height="146dp"
+            android:layout_alignParentLeft="true">
+
+            <ImageView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="@color/shimmer_background"
+                android:scaleType="centerCrop"/>
+
+        </androidx.cardview.widget.CardView>
+
+        <androidx.cardview.widget.CardView
+            android:layout_width="177dp"
+            android:layout_height="146dp"
+            android:layout_alignParentRight="true">
+
+            <ImageView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="@color/shimmer_background"
+                android:scaleType="centerCrop"/>
+
+        </androidx.cardview.widget.CardView>
+
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_margin="@dimen/dp_20"
+        android:background="@color/transparent">
+
+        <androidx.cardview.widget.CardView
+            android:layout_width="177dp"
+            android:layout_height="146dp"
+            android:layout_alignParentLeft="true">
+
+            <ImageView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="@color/shimmer_background"
+                android:scaleType="centerCrop"/>
+
+        </androidx.cardview.widget.CardView>
+
+        <androidx.cardview.widget.CardView
+            android:layout_width="177dp"
+            android:layout_height="146dp"
+            android:layout_alignParentRight="true">
+
+            <ImageView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="@color/shimmer_background"
+                android:scaleType="centerCrop"/>
+
+        </androidx.cardview.widget.CardView>
+
+    </RelativeLayout>
+
+</LinearLayout>

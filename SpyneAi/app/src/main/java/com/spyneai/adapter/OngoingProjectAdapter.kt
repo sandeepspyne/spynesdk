@@ -1,9 +1,7 @@
 package com.spyneai.adapter
 
-import android.content.ContentValues.TAG
 import android.content.Context
 import android.content.Intent
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -18,7 +16,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.airbnb.lottie.LottieAnimationView
 import com.bumptech.glide.Glide
 import com.spyneai.R
-import com.spyneai.activity.ShowImagesActivity
+import com.spyneai.processedimages.ui.ShowImagesActivity
 import com.spyneai.model.processImageService.Task
 import com.spyneai.needs.AppConstants
 import com.spyneai.needs.Utilities
@@ -58,6 +56,7 @@ class OngoingProjectAdapter(
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
+
         holder.tvCatName.text = ongoingProjectList[position].catName
         if (ongoingProjectList[position].catName.equals("Automobiles"))
             holder.tvTotalImages.text =

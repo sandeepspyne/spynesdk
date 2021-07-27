@@ -5,6 +5,7 @@ import android.os.Bundle
 import android.view.View
 import com.spyneai.databinding.ActivityOngoingOrdersBinding
 import com.spyneai.orders.ui.MyOngoingOrdersFragment
+import com.spyneai.orders.ui.fragment.OngoingProjectsFragment
 
 
 class OngoingOrdersActivity : AppCompatActivity() {
@@ -18,7 +19,7 @@ class OngoingOrdersActivity : AppCompatActivity() {
 
         supportFragmentManager
             .beginTransaction()
-            .add(binding.flContainer.id, MyOngoingOrdersFragment())
+            .add(binding.flContainer.id, OngoingProjectsFragment())
             .commit()
 
         binding.imgBackCompleted.setOnClickListener(View.OnClickListener {

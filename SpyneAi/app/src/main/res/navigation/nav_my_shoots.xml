@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/nav_my_shoots"
+    app:startDestination="@id/myOrdersFragment2">
+
+
+    <fragment
+        android:id="@+id/myOrdersFragment2"
+        android:name="com.spyneai.orders.ui.MyOrdersFragment"
+        android:label="MyOrdersFragment" >
+        <action
+            android:id="@+id/action_myOrdersFragment2_to_completedProjectsFragment2"
+            app:destination="@id/completedProjectsFragment2" />
+        <action
+            android:id="@+id/action_myOrdersFragment2_to_ongoingProjectsFragment"
+            app:destination="@id/ongoingProjectsFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/completedProjectsFragment2"
+        android:name="com.spyneai.orders.ui.fragment.CompletedProjectsFragment"
+        android:label="CompletedProjectsFragment" >
+        <action
+            android:id="@+id/action_completedProjectsFragment2_to_completedSkusFragment2"
+            app:destination="@id/completedSkusFragment2" />
+    </fragment>
+    <fragment
+        android:id="@+id/ongoingProjectsFragment"
+        android:name="com.spyneai.orders.ui.fragment.OngoingProjectsFragment"
+        android:label="fragment_ongoing_projects"
+        tools:layout="@layout/fragment_ongoing_projects" />
+    <fragment
+        android:id="@+id/completedSkusFragment2"
+        android:name="com.spyneai.orders.ui.fragment.CompletedSkusFragment"
+        android:label="fragment_completed_skus"
+        tools:layout="@layout/fragment_completed_skus" />
+</navigation>

@@ -33,8 +33,6 @@ class SelectBackgroundFragment : BaseFragment<ProcessViewModel,FragmentSelectBac
     lateinit var carBackgroundGifList: ArrayList<CarsBackgroundRes.Data>
     var backgroundSelect: String = ""
     lateinit var carbackgroundsAdapter: NewCarBackgroundAdapter
-    val TAG = "SelectBackgroundFragment"
-
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -54,29 +52,7 @@ class SelectBackgroundFragment : BaseFragment<ProcessViewModel,FragmentSelectBac
 
             //process image call
             processSku()
-//            viewModel.checkImagesUploadStatus(backgroundSelect)
-//
-//            viewModel.processSku.observe(viewLifecycleOwner,{
-//                if (it) processSku()
-//            })
-//
-//            viewModel.skuQueued.observe(viewLifecycleOwner,{
-//                //sku process queued start timer
-//                if (it) viewModel.startTimer.value = true
-//            })
         }
-    }
-
-    private fun updateTotalFrames() {
-        val totalFrames = viewModel.exteriorAngles.value?.plus(viewModel.interiorMiscShootsCount)
-
-        Log.d(TAG, "updateTotalFrames: "+totalFrames)
-
-        viewModel.updateTotalFrames(
-            Utilities.getPreference(requireContext(),AppConstants.AUTH_KEY).toString(),
-            viewModel.sku.value?.skuId!!,
-            totalFrames.toString()
-        )
     }
 
     fun getBackgorund() {
@@ -91,8 +67,7 @@ class SelectBackgroundFragment : BaseFragment<ProcessViewModel,FragmentSelectBac
 
     private fun initSelectBackground() {
 
-      getBackgorund()
-
+        getBackgorund()
 
         viewModel.carGifRes.observe(viewLifecycleOwner,{
             when(it) {
@@ -145,7 +120,6 @@ class SelectBackgroundFragment : BaseFragment<ProcessViewModel,FragmentSelectBac
                         .error(R.mipmap.defaults) // show error drawable if the image is not a gif
                         .into(binding.imageViewGif)
 
-
                     //showPreviewCar()
                 }
             })
@@ -157,6 +131,17 @@ class SelectBackgroundFragment : BaseFragment<ProcessViewModel,FragmentSelectBac
 
         binding.rvBackgroundsCars.setLayoutManager(layoutManager)
         binding.rvBackgroundsCars.setAdapter(carbackgroundsAdapter)
+    }
+
+    private fun updateTotalFrames() {
+        val totalFrames = viewModel.exteriorAngles.value?.plus(viewModel.interiorMiscShootsCount)
+
+
+        viewModel.updateCarTotalFrames(
+            Utilities.getPreference(requireContext(),AppConstants.AUTH_KEY).toString(),
+            viewModel.sku.value?.skuId!!,
+            totalFrames.toString()
+        )
     }
 
     private fun processSku() {
@@ -190,7 +175,8 @@ class SelectBackgroundFragment : BaseFragment<ProcessViewModel,FragmentSelectBac
                         Events.PROCESS_FAILED,
                         Properties().putValue("sku_id",viewModel.sku.value?.skuId!!),
                         it.errorMessage!!)
-                    handleApiError(it) { processSku() }
+
+                    handleApiError(it) { processSku()}
                 }
             }
         })

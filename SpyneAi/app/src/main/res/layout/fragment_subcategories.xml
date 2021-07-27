@@ -15,7 +15,7 @@
         android:layout_height="wrap_content"
         android:layout_gravity="left"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintLeft_toLeftOf="parent"
+       app:layout_constraintLeft_toLeftOf="parent"
         android:background="@drawable/bg_edit"
         android:fontFamily="@font/medium"
         android:gravity="center"

@@ -27,7 +27,6 @@ class CreateProjectAndSkuDialog : BaseDialogFragment<ShootViewModel,DialogCreate
 
         binding.btnSubmit.setOnClickListener {
             when {
-                binding.etProjectName.text.toString().isEmpty() -> binding.etProjectName.error = "Please enter project name"
                 binding.etVinNumber.text.toString().isEmpty() -> {
                     if (getString(R.string.app_name) == "Sweep.ie"){
                         binding.etVinNumber.error = "Please enter vehicle number"
@@ -37,7 +36,7 @@ class CreateProjectAndSkuDialog : BaseDialogFragment<ShootViewModel,DialogCreate
 
                 }
                 else -> {
-                    createProject(binding.etProjectName.text.toString(),binding.etVinNumber.text.toString())
+                    createProject(binding.etVinNumber.text.toString(),binding.etVinNumber.text.toString())
                 }
             }
         }

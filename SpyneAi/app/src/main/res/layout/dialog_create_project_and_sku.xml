@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
@@ -16,6 +17,7 @@
         tools:text="Project-001"
         android:text="Project-001"
         android:maxLines="1"
+        android:visibility="gone"
         android:imeOptions="actionDone"
         android:inputType="text"
         android:fontFamily="@font/poppins_regular"
@@ -67,7 +69,7 @@
         android:text="Enter Any Unique Car ID"
         android:gravity="center"
         android:fontFamily="@font/poppins_medium"
-        android:textColor="@color/dialog_bold_text_color"
+        android:textColor="@color/black_varient"
         android:textSize="@dimen/sp_16"
         android:visibility="gone"
         android:layout_marginTop="@dimen/dp_10"/>
@@ -81,10 +83,11 @@
         android:id="@+id/etVinNumber"
         android:background="@null"
         android:hint="@string/sku_name_hint"
-        android:textColorHint="@color/dialog_bold_text_color"
+        android:textColorHint="@color/black_varient"
         android:fontFamily="@font/poppins_regular"
         android:textColor="@color/black"
         android:maxLines="1"
+        android:imeOptions="actionDone"
         android:inputType="text"
         android:textSize="@dimen/sp_14"
         android:paddingLeft="@dimen/dp_10"

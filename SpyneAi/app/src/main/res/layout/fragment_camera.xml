@@ -1,15 +1,178 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".shoot.ui.CameraFragment"
-    android:background="@android:color/transparent">
+    android:background="@android:color/transparent"
+    tools:context=".shoot.ui.base.CameraFragment">
 
-    <!-- TODO: Update blank fragment layout -->
-    <TextView
+    <RelativeLayout
+        android:id="@+id/viewCamera"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:text="@string/hello_blank_fragment" />
+        android:layout_height="?attr/actionBarSize"
+        android:background="@color/black"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="parent" >
 
-</FrameLayout>
+        <TextView
+            android:id="@+id/tvSkipShoot"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:visibility="invisible"
+            android:layout_alignParentRight="true"
+            android:layout_marginTop="@dimen/dp_10"
+            android:layout_marginRight="@dimen/dp_10"
+            android:drawablePadding="@dimen/dp_5"
+            android:fontFamily="@font/bold"
+            android:text="@string/skip"
+            android:textColor="@color/primary"
+            android:textSize="@dimen/sp_16"
+            app:drawableEndCompat="@mipmap/skip" />
+
+    </RelativeLayout>
+
+    <androidx.camera.view.PreviewView
+        android:id="@+id/viewFinder"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        app:layout_constraintBottom_toTopOf="@+id/rlCapturedImage"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/viewCamera" />
+
+    <RelativeLayout
+        android:id="@+id/rlCapturedImage"
+        android:layout_width="match_parent"
+        android:layout_height="125dp"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintBottom_toTopOf="@+id/llCapture"
+        android:background="@color/black"></RelativeLayout>
+
+    <LinearLayout
+        android:id="@+id/llCapture"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="end|center"
+        android:background="@color/black"
+        android:gravity="center"
+        android:orientation="horizontal"
+        android:padding="@dimen/dp_10"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent">
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:padding="@dimen/dp_5">
+
+            <androidx.cardview.widget.CardView
+                android:id="@+id/cardOverlay"
+                android:layout_width="@dimen/dp_50"
+                android:layout_height="@dimen/dp_50"
+                app:cardCornerRadius="@dimen/dp_50">
+
+                <ImageView
+                    android:id="@+id/ivPreview"
+                    android:layout_width="@dimen/dp_50"
+                    android:layout_height="@dimen/dp_50"
+                    android:fontFamily="@font/bold"
+                    android:gravity="center"
+                    android:background="@color/black"
+                    android:padding="@dimen/sp_5" />
+            </androidx.cardview.widget.CardView>
+        </LinearLayout>
+
+        <ImageView
+            android:id="@+id/cameraCaptureButton"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:elevation="2dp"
+            android:src="@drawable/click_effect" />
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:gravity="center">
+
+            <com.mikhaellopez.circularimageview.CircularImageView
+                android:id="@+id/ivEndProject"
+                android:layout_width="@dimen/dp_50"
+                android:layout_height="@dimen/dp_50"
+                android:gravity="center"
+                android:visibility="invisible"
+                android:src="@drawable/ic_end_project" />
+        </LinearLayout>
+    </LinearLayout>
+
+    <FrameLayout
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:id="@+id/flLevelIndicator"
+        android:visibility="invisible"
+        app:layout_constraintRight_toLeftOf="@id/llCapture"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        android:layout_margin="@dimen/dp_20">
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/ic_top_left"
+            android:layout_gravity="left"
+            android:id="@+id/ivTopLeft"/>
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/ic_bottom_left"
+            android:layout_gravity="left|bottom"
+            android:id="@+id/ivBottomLeft"/>
+
+        <ImageView
+            android:layout_width="@dimen/dp_60"
+            android:layout_height="@dimen/dp_60"
+            android:layout_gravity="center"
+            android:id="@+id/ivGryroRing"
+            android:src="@drawable/ic_gyro_ring"/>
+
+        <TextView
+            android:layout_width="48dp"
+            android:layout_height="0.5dp"
+            android:layout_gravity="center"
+            android:id="@+id/tvCenter"
+            android:background="@color/black"/>
+
+        <ImageView
+            android:layout_width="@dimen/dp_25"
+            android:layout_height="3dp"
+            android:background="@drawable/bg_gyro_error"
+            android:id="@+id/tvLevelIndicator"
+            android:layout_gravity="center"/>
+
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/ic_top_right"
+            android:layout_gravity="right"
+            android:id="@+id/ivTopRight"/>
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/ic_bottom_right"
+            android:layout_gravity="right|bottom"
+            android:id="@+id/ivBottomRight"/>
+
+
+    </FrameLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>

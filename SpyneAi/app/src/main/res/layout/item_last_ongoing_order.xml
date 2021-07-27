@@ -103,6 +103,7 @@
             app:layout_constraintTop_toBottomOf="@+id/cvThumbnail"
             app:layout_constraintLeft_toLeftOf="parent"
             android:layout_marginLeft="@dimen/dp_40"
+            android:maxLength="10"
             android:padding="@dimen/dp_5"/>
 
         <TextView
@@ -294,6 +295,7 @@
                 android:textColor="@color/black"
                 android:textSize="@dimen/sp_10"
                 android:layout_marginLeft="@dimen/dp_5"
+                android:maxLength="10"
                 android:fontFamily="@font/poppins_medium"/>
 
         </LinearLayout>

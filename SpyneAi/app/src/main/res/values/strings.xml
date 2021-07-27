@@ -200,4 +200,17 @@
     <string name="session_expired">Session Expired. Please <b>log in</b> again.</string>
     <string name="change_fidelity"><u>Change Fidelity</u></string>
     <string name="sku_name_hint">Enter Any Unique Car ID</string>
+
+    <string name="do_you_need_footwear_overlayes">Do you need footwear overlays?</string>
+    <string name="bikes">Bikes</string>
+    <string name="project_name">Project Name</string>
+    <string name="project_name_">Project Name -</string>
+    <string name="end_project">Are you sure you want to end this project?</string>
+    <string name="submit_and_process">Submit and Process this Project</string>
+    <string name="city">City(optional)</string>
+    <string name="city_">City -</string>
+    <string name="new_project">New Project</string>
+    <string name="car_subcategory">Select your car\'s sub-category</string>
+    <string name="go_to_home">Go to home</string>
+
 </resources>

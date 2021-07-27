@@ -65,7 +65,7 @@ class ThreeSixtyBackgroundFragment : BaseFragment<ThreeSixtyViewModel, Fragment3
             Utilities.getPreference(requireContext(), AppConstants.AUTH_KEY)!!.toRequestBody(
                 MultipartBody.FORM)
 
-        viewModel.getBackgroundGifCars(category, auth_key)
+        viewModel.getBackgroundGifCars(category, auth_key,getString(R.string.app_name))
     }
 
     private fun initSelectBackground() {

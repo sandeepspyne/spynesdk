@@ -10,6 +10,7 @@ import com.bumptech.glide.Glide
 import com.spyneai.R
 import com.spyneai.base.BaseFragment
 import com.spyneai.base.network.Resource
+import com.spyneai.credits.CreditPlansActivity
 import com.spyneai.dashboard.ui.handleApiError
 import com.spyneai.databinding.Fragment360ShotSummaryBinding
 import com.spyneai.needs.AppConstants
@@ -42,14 +43,14 @@ class ThreeSixtyShootSummaryFragment : BaseFragment<ThreeSixtyViewModel, Fragmen
         }
 
         binding.tvTopUp.setOnClickListener {
-//            var intent = Intent(requireContext(), CreditPlansActivity::class.java)
-//            intent.putExtra("credit_available",availableCredits)
-//            startActivity(intent)
+            var intent = Intent(requireContext(), CreditPlansActivity::class.java)
+            intent.putExtra("credit_available",availableCredits)
+            startActivity(intent)
         }
 
         binding.btnProceed.setOnClickListener {
             //process image call
-            reduceCredits(true)
+           reduceCredits(true)
         }
 
         observeReduceCredits()
@@ -70,7 +71,7 @@ class ThreeSixtyShootSummaryFragment : BaseFragment<ThreeSixtyViewModel, Fragmen
 
     private fun reduceCredits(showLoader : Boolean) {
         if (showLoader)
-            Utilities.showProgressDialog(requireContext())
+        Utilities.showProgressDialog(requireContext())
 
         viewModel.reduceCredit(
             Utilities.getPreference(requireContext(), AppConstants.TOKEN_ID).toString(),

@@ -1,0 +1,247 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/tool_bar_height"
+        app:layout_constraintTop_toTopOf="parent"
+        android:elevation="10dp"
+        android:background="@color/white"
+        android:id="@+id/fl_tool_bar">
+
+        <ImageView
+            android:layout_width="@dimen/tool_bar_height"
+            android:layout_height="@dimen/tool_bar_height"
+            android:src="@drawable/back"
+            android:padding="@dimen/dp_15"
+            app:tint="@color/black"
+            android:id="@+id/iv_back"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/tv_tittle"
+            android:layout_gravity="center"
+            android:text="Start Shoot"
+            android:fontFamily="@font/poppins_semibold"
+            android:textColor="@color/black"
+            android:textSize="16sp"/>
+    </FrameLayout>
+
+   <ScrollView
+       android:layout_width="match_parent"
+       android:layout_height="wrap_content"
+       android:scrollbars="none">
+       <androidx.constraintlayout.widget.ConstraintLayout
+           android:layout_width="match_parent"
+           android:layout_height="match_parent"
+           tools:context=".shoot.ui.StartShootActivity">
+
+           <RelativeLayout
+               android:layout_width="match_parent"
+               android:layout_height="wrap_content"
+               app:layout_constraintTop_toTopOf="parent"
+               android:id="@+id/rl_automobiles"
+               android:visibility="visible"
+               android:background="@drawable/bg_automobile_gradient">
+
+
+               <TextView
+                   android:layout_width="wrap_content"
+                   android:layout_height="wrap_content"
+                   android:text="Automobiles"
+                   android:id="@+id/tv_automobiles"
+                   android:textColor="#343434"
+                   android:layout_marginTop="27dp"
+                   android:textSize="@dimen/sp_18"
+                   android:fontFamily="@font/poppins_medium"
+                   android:layout_marginLeft="20dp"/>
+
+
+               <TextView
+                   android:layout_width="wrap_content"
+                   android:layout_height="wrap_content"
+                   android:textColor="@color/black"
+                   android:text="Shoot all angle images and 360 \nvideo of your car for better \nreselling on leading marketplaces"
+                   android:layout_below="@id/tv_automobiles"
+                   android:layout_marginTop="5dp"
+                   android:textSize="12sp"
+                   android:fontFamily="@font/poppins_regular"
+                   android:layout_marginLeft="20dp" />
+
+
+               <ImageView
+                   android:layout_width="150dp"
+                   android:layout_height="90dp"
+                   android:src="@drawable/mercedes"
+                   android:layout_alignParentRight="true"
+                   android:layout_centerVertical="true"
+                   android:layout_marginTop="27dp"
+                   android:layout_marginBottom="18dp"
+                   android:layout_marginRight="7dp"/>
+
+           </RelativeLayout>
+
+           <TextView
+               android:layout_width="wrap_content"
+               android:layout_height="wrap_content"
+               app:layout_constraintLeft_toLeftOf="parent"
+               app:layout_constraintRight_toRightOf="parent"
+               app:layout_constraintTop_toBottomOf="@id/rl_automobiles"
+               android:text="Image Shoot"
+               android:id="@+id/tvImageShoot"
+               android:textColor="@color/start_shoot_text"
+               android:fontFamily="@font/poppins_medium"
+               android:layout_marginTop="@dimen/dp_25"
+               android:textSize="@dimen/sp_14"/>
+
+           <ImageView
+               android:layout_width="0dp"
+               android:layout_height="wrap_content"
+               android:id="@+id/ivStartShoot"
+               android:adjustViewBounds="true"
+               app:layout_constraintTop_toBottomOf="@id/tvImageShoot"
+               app:layout_constraintLeft_toLeftOf="parent"
+               app:layout_constraintRight_toRightOf="parent"
+               android:src="@drawable/start_shoot_image"
+               android:layout_marginTop="@dimen/dp_10"
+               android:layout_marginRight="@dimen/dp_20"
+               android:layout_marginLeft="@dimen/dp_20"/>
+
+           <TextView
+               android:layout_width="0dp"
+               android:layout_height="wrap_content"
+               app:layout_constraintBottom_toBottomOf="@id/ivStartShoot"
+               app:layout_constraintLeft_toLeftOf="@id/ivStartShoot"
+               app:layout_constraintRight_toRightOf="@id/ivStartShoot"
+               android:background="@drawable/bg_start_shoot"
+               android:text="Capture upto 36 Exterior Images"
+               android:textColor="@color/white"
+               android:gravity="center"
+               android:paddingTop="@dimen/dp_5"
+               android:paddingBottom="@dimen/dp_5"
+               android:fontFamily="@font/poppins_medium"
+               android:textSize="@dimen/sp_12"/>
+
+           <FrameLayout
+               android:layout_width="wrap_content"
+               android:layout_height="wrap_content"
+               android:layout_centerInParent="true"
+               android:id="@+id/flShootNow"
+               android:paddingLeft="@dimen/dp_30"
+               android:paddingRight="30dp"
+               android:layout_marginTop="@dimen/dp_20"
+               android:background="@drawable/bg_rectangle_button_ripple"
+               app:layout_constraintTop_toBottomOf="@id/ivStartShoot"
+               app:layout_constraintLeft_toLeftOf="parent"
+               app:layout_constraintRight_toRightOf="parent">
+
+               <LinearLayout
+                   android:layout_width="wrap_content"
+                   android:layout_height="wrap_content"
+                   android:layout_gravity="center">
+
+                   <ImageView
+                       android:layout_width="wrap_content"
+                       android:layout_height="wrap_content"
+                       android:src="@mipmap/shoot"
+                       android:layout_gravity="center_vertical"/>
+
+                   <TextView
+                       android:layout_width="wrap_content"
+                       android:layout_height="wrap_content"
+                       android:text="@string/shoot_now"
+                       android:textColor="@color/white"
+                       android:fontFamily="@font/poppins_medium"
+                       android:textSize="@dimen/sp_13"
+                       android:padding="@dimen/dp_12"/>
+
+               </LinearLayout>
+
+           </FrameLayout>
+
+
+
+           <ImageView
+               android:id="@+id/ivExploreThreeSixty"
+               android:layout_width="match_parent"
+               android:layout_height="wrap_content"
+               android:layout_marginTop="@dimen/dp_30"
+               android:layout_marginBottom="@dimen/dp_30"
+               android:adjustViewBounds="true"
+               android:src="@drawable/explore_three_sixty"
+               app:layout_constraintBottom_toBottomOf="parent"
+               app:layout_constraintTop_toBottomOf="@id/flShootNow"
+               app:layout_constraintVertical_bias="1.0"
+               tools:layout_editor_absoluteX="20dp"
+               android:layout_marginLeft="@dimen/dp_20"
+               android:layout_marginRight="@dimen/dp_20"/>
+
+           <TextView
+               android:layout_width="wrap_content"
+               android:layout_height="wrap_content"
+               android:text="Try our New\nFeature"
+               app:layout_constraintTop_toTopOf="@id/ivExploreThreeSixty"
+               app:layout_constraintBottom_toBottomOf="@id/ivExploreThreeSixty"
+               app:layout_constraintLeft_toLeftOf="@id/ivExploreThreeSixty"
+               android:textColor="@color/white"
+               android:textSize="@dimen/sp_20"
+               android:fontFamily="@font/poppins_bold"
+               android:layout_marginLeft="@dimen/dp_10"/>
+
+           <TextView
+               android:layout_width="wrap_content"
+               android:layout_height="wrap_content"
+               android:text="Get 360° video out in few\nminutes with the power of AI"
+               app:layout_constraintBottom_toBottomOf="@id/ivExploreThreeSixty"
+               app:layout_constraintLeft_toLeftOf="@id/ivExploreThreeSixty"
+               android:layout_marginLeft="@dimen/dp_10"
+               android:layout_marginBottom="@dimen/dp_10"
+               android:textColor="@color/white"
+               android:textSize="@dimen/sp_14"/>
+
+           <TextView
+               android:layout_width="wrap_content"
+               android:layout_height="wrap_content"
+               android:text="Explore"
+               android:id="@+id/tvExplore"
+               app:layout_constraintBottom_toBottomOf="@id/ivExploreThreeSixty"
+               app:layout_constraintRight_toRightOf="@id/ivExploreThreeSixty"
+               android:layout_marginBottom="@dimen/dp_10"
+               android:layout_marginRight="@dimen/dp_10"
+               android:textColor="@color/white"
+               android:fontFamily="@font/medium"
+               android:textSize="@dimen/sp_16"
+               android:paddingLeft="@dimen/dp_25"
+               android:paddingRight="@dimen/dp_25"
+               android:paddingTop="@dimen/dp_5"
+               android:paddingBottom="@dimen/dp_5"
+               android:background="@drawable/bg_explore"/>
+
+           <TextView
+               android:layout_width="wrap_content"
+               android:layout_height="wrap_content"
+               android:text="Beta"
+               android:textColor="@color/white"
+               android:textSize="@dimen/sp_12"
+               android:fontFamily="@font/poppins_regular"
+               android:paddingLeft="@dimen/dp_10"
+               android:paddingRight="@dimen/dp_10"
+               android:paddingTop="@dimen/dp_2"
+               android:paddingBottom="@dimen/dp_2"
+               android:background="@drawable/bg_beta_button"
+               android:layout_marginLeft="@dimen/dp_10"
+               app:layout_constraintTop_toTopOf="@id/ivExploreThreeSixty"
+               app:layout_constraintRight_toRightOf="@id/ivExploreThreeSixty"
+               />
+
+       </androidx.constraintlayout.widget.ConstraintLayout>
+   </ScrollView>
+
+</LinearLayout>

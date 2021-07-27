@@ -2,21 +2,19 @@ package com.spyneai.shoot.data
 
 import android.content.ContentValues
 import android.provider.BaseColumns
-import android.util.Log
 import com.spyneai.BaseApplication
+import com.spyneai.shoot.data.model.Sku
 import com.spyneai.db.DBHelper
 import com.spyneai.db.Images
 import com.spyneai.db.ShootContract
-import com.spyneai.service.log
 import com.spyneai.shoot.data.model.Image
-import com.spyneai.shoot.data.model.Sku
-
 
 class ShootLocalRepository {
 
     private val dbWritable = DBHelper(BaseApplication.getContext()).writableDatabase
     private val dbReadable = DBHelper(BaseApplication.getContext()).readableDatabase
     private val TAG = "ShootLocalRepository"
+
 
     fun insertImage(image : Image) {
         val values = ContentValues().apply {
@@ -42,7 +40,7 @@ class ShootLocalRepository {
             Images.COLUMN_NAME_IMAGE_SEQUENCE)
 
         // Filter results WHERE "title" = 'My Title'
-        // val selection = "${ShootContract.ShootEntry.COLUMN_NAME_SKU_ID} = ?"
+       // val selection = "${ShootContract.ShootEntry.COLUMN_NAME_SKU_ID} = ?"
 
 
         // How you want the results sorted in the resulting Cursor
@@ -56,19 +54,19 @@ class ShootLocalRepository {
             null,                   // don't group the rows
             null,                   // don't filter by row groups
             sortOrder,               // The sort order
-            "1"
+        "1"
         )
 
         val image = Image()
 
         with(cursor) {
             while (moveToNext()) {
-                val itemId = getLong(getColumnIndexOrThrow(android.provider.BaseColumns._ID))
-                val projectId = getString(getColumnIndexOrThrow(com.spyneai.db.Images.COLUMN_NAME_PROJECT_ID))
-                val skuId = getString(getColumnIndexOrThrow(com.spyneai.db.Images.COLUMN_NAME_SKU_ID))
-                val categoryName = getString(getColumnIndexOrThrow(com.spyneai.db.Images.COLUMN_NAME_CATEGORY_NAME))
-                val imagePath = getString(getColumnIndexOrThrow(com.spyneai.db.Images.COLUMN_NAME_IMAGE_PATH))
-                val sequence = getInt(getColumnIndexOrThrow(com.spyneai.db.Images.COLUMN_NAME_IMAGE_SEQUENCE))
+                val itemId = getLong(getColumnIndexOrThrow(BaseColumns._ID))
+                val projectId = getString(getColumnIndexOrThrow(Images.COLUMN_NAME_PROJECT_ID))
+                val skuId = getString(getColumnIndexOrThrow(Images.COLUMN_NAME_SKU_ID))
+                val categoryName = getString(getColumnIndexOrThrow(Images.COLUMN_NAME_CATEGORY_NAME))
+                val imagePath = getString(getColumnIndexOrThrow(Images.COLUMN_NAME_IMAGE_PATH))
+                val sequence = getInt(getColumnIndexOrThrow(Images.COLUMN_NAME_IMAGE_SEQUENCE))
 
                 image.itemId = itemId
                 image.projectId = projectId
@@ -80,20 +78,6 @@ class ShootLocalRepository {
         }
 
         return image
-    }
-
-    fun deleteImage(itemId: Long) {
-        // Which row to update, based on the title
-        val selection = "${BaseColumns._ID} LIKE ?"
-
-        val selectionArgs = arrayOf(itemId.toString())
-
-        val count = dbWritable.delete(
-            Images.TABLE_NAME,
-            selection,
-            selectionArgs)
-
-        com.spyneai.shoot.utils.log("deleteImage : "+count)
     }
 
     fun insertSku(sku : Sku) {
@@ -312,6 +296,20 @@ class ShootLocalRepository {
 
         return backgroundId
         com.spyneai.shoot.utils.log("Background id: "+backgroundId)
+    }
+
+    fun deleteImage(itemId: Long) {
+        // Which row to update, based on the title
+        val selection = "${BaseColumns._ID} LIKE ?"
+
+        val selectionArgs = arrayOf(itemId.toString())
+
+        val count = dbWritable.delete(
+            Images.TABLE_NAME,
+            selection,
+            selectionArgs)
+
+        com.spyneai.shoot.utils.log("deleteImage : "+count)
     }
 
 }

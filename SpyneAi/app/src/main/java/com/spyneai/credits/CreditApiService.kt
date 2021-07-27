@@ -9,7 +9,7 @@ import retrofit2.http.*
 interface CreditApiService {
 
     @GET("credit")
-    fun getThreeSixtyInteriorByShootId(
+    fun getCredits(
     ): Call<CreditPlansRes>?
 
     @POST("order/credit/")

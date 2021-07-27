@@ -5,9 +5,9 @@ import android.animation.AnimatorListenerAdapter
 import android.app.Activity
 import android.content.Context
 import android.content.Intent
+import com.posthog.android.Properties
 import android.widget.ImageButton
 import androidx.annotation.DrawableRes
-import com.posthog.android.Properties
 import com.spyneai.dashboard.ui.MainDashboardActivity
 import com.spyneai.loginsignup.activity.LoginActivity
 import com.spyneai.needs.AppConstants
@@ -39,7 +39,6 @@ fun Context.gotoLogin(){
 
 
 fun Context.isValidGlideContext() = this !is Activity || (!this.isDestroyed && !this.isFinishing)
-
 
 fun ImageButton.toggleButton(
     flag: Boolean, rotationAngle: Float, @DrawableRes firstIcon: Int, @DrawableRes secondIcon: Int,
