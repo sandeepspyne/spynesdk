@@ -307,13 +307,13 @@ class ShowImagesActivity : AppCompatActivity(),View.OnTouchListener,View.OnClick
     //Fetch bulk data
     private fun fetchBulkUpload() {
 
-        shootId = "sku-a5d2fb30-2878-4c3c-b757-c1fb2b02c755"
-        //shootId = Utilities.getPreference(this, AppConstants.SKU_ID)!!
+       // shootId = "sku-a5d2fb30-2878-4c3c-b757-c1fb2b02c755"
+        shootId = Utilities.getPreference(this, AppConstants.SKU_ID)!!
 
         val request = RetrofitClients.buildService(APiService::class.java)
         val authKey = RequestBody.create(
             MultipartBody.FORM,
-           "fd95f78c-9ff1-4bcc-a289-a9173d820ff1"
+            Utilities.getPreference(this, AppConstants.AUTH_KEY)!!
         )
         val skuId = RequestBody.create(
             MultipartBody.FORM,
