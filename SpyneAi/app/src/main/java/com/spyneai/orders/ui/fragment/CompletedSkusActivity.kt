@@ -25,7 +25,7 @@ import kotlinx.android.synthetic.main.activity_completed_skus.*
 
 class CompletedSkusActivity : AppCompatActivity() {
 
-    lateinit var viewModel : MyOrdersViewModel
+    lateinit var viewModel: MyOrdersViewModel
 
     lateinit var skusAdapter: SkusAdapter
     val status = "completed"
@@ -63,7 +63,7 @@ class CompletedSkusActivity : AppCompatActivity() {
         repeatRefreshData()
 
 
-        log("Completed SKUs(auth key): "+ Utilities.getPreference(this, AppConstants.AUTH_KEY))
+        log("Completed SKUs(auth key): " + Utilities.getPreference(this, AppConstants.AUTH_KEY))
         viewModel.getCompletedProjectsResponse.observe(
             this, Observer {
                 when (it) {
@@ -75,20 +75,19 @@ class CompletedSkusActivity : AppCompatActivity() {
                         if (it.value.data.project_data.isNullOrEmpty())
                             refreshData = false
 
-                        if (it.value.data != null){
-
+                        if (it.value.data != null) {
                             tvTotalSku.text = it.value.data.total_skus.toString()
-
                             skuList.clear()
+                            skuList.addAll(it.value.data.project_data[position].sku)
+                            tvProjectName.text = it.value.data.project_data[position].project_name
 
-                                skuList.addAll(it.value.data.project_data[position].sku)
-                                tvProjectName.text = it.value.data.project_data[position].project_name
-
-                            skusAdapter = SkusAdapter(this,
+                            skusAdapter = SkusAdapter(
+                                this,
                                 it.value.data.project_data, viewModel, skuList
                             )
 
-                            val layoutManager: RecyclerView.LayoutManager = LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false)
+                            val layoutManager: RecyclerView.LayoutManager =
+                                LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false)
                             rvSkus.setLayoutManager(layoutManager)
                             rvSkus.setAdapter(skusAdapter)
                         }
@@ -101,9 +100,9 @@ class CompletedSkusActivity : AppCompatActivity() {
                         shimmerCompletedSKU.stopShimmer()
                         shimmerCompletedSKU.visibility = View.GONE
 
-                        if (it.errorCode == 404){
+                        if (it.errorCode == 404) {
                             rvSkus.visibility = View.GONE
-                        }else{
+                        } else {
                             this.captureFailureEvent(
                                 Events.GET_COMPLETED_ORDERS_FAILED, Properties(),
                                 it.errorMessage!!
@@ -118,13 +117,16 @@ class CompletedSkusActivity : AppCompatActivity() {
 
     }
 
-    fun repeatRefreshData(){
-        viewModel.getCompletedProjects(Utilities.getPreference(this, AppConstants.AUTH_KEY).toString(), status)
+    fun repeatRefreshData() {
+        viewModel.getCompletedProjects(
+            Utilities.getPreference(this, AppConstants.AUTH_KEY).toString(), status
+        )
         handler = Handler()
         runnable = Runnable {
             if (refreshData)
-                repeatRefreshData()  }
-        handler.postDelayed(runnable,15000)
+                repeatRefreshData()
+        }
+        handler.postDelayed(runnable, 15000)
     }
 
     override fun onPause() {

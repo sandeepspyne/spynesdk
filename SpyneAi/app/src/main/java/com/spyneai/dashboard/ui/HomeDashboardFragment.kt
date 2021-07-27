@@ -231,7 +231,6 @@ class HomeDashboardFragment :
                         if (it.value.data != null) {
                             completedProjectList.clear()
                             completedProjectList.addAll(it.value.data.project_data)
-                            completedProjectList.reverse()
 
                             completedDashboardAdapter = CompletedDashboardAdapter(
                                 requireContext(),

@@ -65,6 +65,7 @@ class MyCompletedProjectsAdapter(
             holder.tvCategory.text = "Automobiles"
         }else{
             holder.tvCategory.text = getProjectList[position].category
+            holder.llThreeSixty.visibility = View.GONE
         }
 
         try {

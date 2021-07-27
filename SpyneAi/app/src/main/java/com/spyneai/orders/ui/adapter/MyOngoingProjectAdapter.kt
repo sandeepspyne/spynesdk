@@ -54,6 +54,7 @@ class MyOngoingProjectAdapter(
             holder.tvCategory.text = "Automobiles"
         } else {
             holder.tvCategory.text = getProjectList[position].category
+            holder.llThreeSixty.visibility = View.GONE
         }
 
         if (getProjectList[position].sub_category.equals("360_interior")

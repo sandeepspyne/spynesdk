@@ -39,7 +39,7 @@
                android:layout_height="wrap_content"
                android:orientation="horizontal"
                android:gravity="right"
-               android:visibility="invisible"
+               android:visibility="gone"
                android:layout_gravity="right"
                android:background="@drawable/bg_one_corner">
 

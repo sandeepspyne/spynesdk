@@ -67,7 +67,6 @@ class CompletedProjectsFragment : BaseFragment<MyOrdersViewModel, FragmentComple
                         if (it.value.data != null){
                             completedProjectList.clear()
                             completedProjectList.addAll(it.value.data.project_data)
-                            completedProjectList.reverse()
                             myCompletedProjectsAdapter = MyCompletedProjectsAdapter(requireContext(),
                                 completedProjectList, viewModel
                             )
