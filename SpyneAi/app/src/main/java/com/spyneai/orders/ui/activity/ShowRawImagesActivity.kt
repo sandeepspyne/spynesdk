@@ -4,6 +4,7 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.View
 import android.widget.GridView
+import android.widget.ImageView
 import android.widget.TextView
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
@@ -30,6 +31,7 @@ class ShowRawImagesActivity : AppCompatActivity() {
     lateinit var skuName: TextView
     lateinit var tvTotalImages: TextView
     lateinit var shimmerRawImages: ShimmerFrameLayout
+    lateinit var ivBack: ImageView
     var position = 0
     var projectPosition = 0
     lateinit var viewModel: MyOrdersViewModel
@@ -51,6 +53,11 @@ class ShowRawImagesActivity : AppCompatActivity() {
         skuName = findViewById(R.id.tvSkuNam)
         tvTotalImages = findViewById(R.id.tvTotalImage)
         shimmerRawImages = findViewById(R.id.shimmerRawImages)
+        ivBack = findViewById(R.id.ivBack)
+
+        ivBack.setOnClickListener {
+            onBackPressed()
+        }
 
         viewModel.getProjects(
             Utilities.getPreference(this, AppConstants.AUTH_KEY).toString(), status
