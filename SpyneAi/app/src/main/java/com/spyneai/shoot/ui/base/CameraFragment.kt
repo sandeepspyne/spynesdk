@@ -4,7 +4,12 @@ import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.ContentValues
 import android.content.ContentValues.TAG
+import android.content.Context
 import android.content.pm.ActivityInfo
+import android.hardware.Sensor
+import android.hardware.SensorEvent
+import android.hardware.SensorEventListener
+import android.hardware.SensorManager
 import android.os.*
 import android.provider.MediaStore
 import android.util.DisplayMetrics
@@ -13,6 +18,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.ViewTreeObserver
+import android.view.animation.AccelerateInterpolator
 import android.widget.Toast
 import androidx.camera.core.*
 import androidx.camera.lifecycle.ProcessCameraProvider
@@ -21,6 +27,7 @@ import androidx.core.net.toFile
 import com.hbisoft.pickit.PickiT
 import com.hbisoft.pickit.PickiTCallbacks
 import com.posthog.android.Properties
+import com.spyneai.R
 import com.spyneai.analyzer.LuminosityAnalyzer
 import com.spyneai.base.BaseFragment
 import com.spyneai.camera2.ShootDimensions
@@ -45,9 +52,11 @@ import kotlin.collections.ArrayList
 import kotlin.math.abs
 import kotlin.math.max
 import kotlin.math.min
+import kotlin.math.roundToInt
 
 
-class CameraFragment : BaseFragment<ShootViewModel, FragmentCameraBinding>(), PickiTCallbacks {
+class CameraFragment : BaseFragment<ShootViewModel, FragmentCameraBinding>(), PickiTCallbacks,
+    SensorEventListener {
     private var imageCapture: ImageCapture? = null
 
     private var imageAnalyzer: ImageAnalysis? = null
@@ -61,14 +70,35 @@ class CameraFragment : BaseFragment<ShootViewModel, FragmentCameraBinding>(), Pi
     private var lensFacing = CameraSelector.DEFAULT_BACK_CAMERA
     lateinit var file : File
 
-
     companion object {
         private const val RATIO_4_3_VALUE = 4.0 / 3.0 // aspect ratio 4x3
         private const val RATIO_16_9_VALUE = 16.0 / 9.0 // aspect ratio 16x9
     }
 
+    private var pitch = 0.0
+    var roll = 0.0
+
+    private var centerPosition = 0
+    private var topConstraint = 0
+    private var bottomConstraint = 0
+
+    private lateinit var mSensorManager: SensorManager
+    private var mAccelerometer: Sensor? = null
+    private val accelerometerReading = FloatArray(3)
+    private val magnetometerReading = FloatArray(3)
+
+    private val rotationMatrix = FloatArray(9)
+    private val orientationAngles = FloatArray(3)
+
+
+    var gravity = FloatArray(3)
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        mSensorManager = requireActivity().getSystemService(Context.SENSOR_SERVICE) as SensorManager
+        mAccelerometer = mSensorManager.getDefaultSensor(Sensor.TYPE_MAGNETIC_FIELD)
+
 
         Handler(Looper.getMainLooper()).postDelayed({
             startCamera()
@@ -84,6 +114,10 @@ class CameraFragment : BaseFragment<ShootViewModel, FragmentCameraBinding>(), Pi
 
         viewModel.startMiscShots.observe(viewLifecycleOwner, {
             if (it) binding.tvSkipShoot?.visibility = View.VISIBLE
+        })
+
+        viewModel.isSubCategoryConfirmed.observe(viewLifecycleOwner,{
+            if (it)  binding.flLevelIndicator.visibility = View.VISIBLE
         })
 
         binding.tvSkipShoot?.setOnClickListener {
@@ -110,6 +144,36 @@ class CameraFragment : BaseFragment<ShootViewModel, FragmentCameraBinding>(), Pi
             }
         }
     }
+
+    override fun onResume() {
+        super.onResume()
+
+        getPreviewDimensions(binding.ivGryroRing!!,1)
+        getPreviewDimensions(binding.tvCenter!!,2)
+
+        mSensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER)?.also { accelerometer ->
+            mSensorManager.registerListener(
+                this,
+                accelerometer,
+                SensorManager.SENSOR_DELAY_NORMAL,
+                SensorManager.SENSOR_DELAY_UI
+            )
+        }
+        mSensorManager.getDefaultSensor(Sensor.TYPE_MAGNETIC_FIELD)?.also { magneticField ->
+            mSensorManager.registerListener(
+                this,
+                magneticField,
+                SensorManager.SENSOR_DELAY_NORMAL,
+                SensorManager.SENSOR_DELAY_UI
+            )
+        }
+    }
+
+    override fun onDestroy() {
+        mSensorManager.unregisterListener(this)
+        super.onDestroy()
+    }
+
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
@@ -226,8 +290,8 @@ class CameraFragment : BaseFragment<ShootViewModel, FragmentCameraBinding>(), Pi
                 if (viewModel.shootDimensions.value == null ||
                     viewModel.shootDimensions.value?.previewHeight == 0
                 ) {
-                    getPreviewDimensions(binding.viewFinder!!, true)
-                    getPreviewDimensions(binding.llCapture!!, false)
+                    getPreviewDimensions(binding.viewFinder!!, 0)
+                    getPreviewDimensions(binding.llCapture!!, 3)
                 }
             } catch (exc: Exception) {
                 Log.e(TAG, "Use case binding failed", exc)
@@ -375,21 +439,147 @@ class CameraFragment : BaseFragment<ShootViewModel, FragmentCameraBinding>(), Pi
             })
     }
 
-    private fun getPreviewDimensions(view: View, isPreview: Boolean) {
+    override fun onSensorChanged(event: SensorEvent?) {
+        //Get Rotation Vector Sensor Values
+
+        if (event?.sensor?.type == Sensor.TYPE_ACCELEROMETER) {
+            System.arraycopy(event.values, 0, accelerometerReading, 0, accelerometerReading.size)
+        } else if (event?.sensor?.type == Sensor.TYPE_MAGNETIC_FIELD) {
+            System.arraycopy(event.values, 0, magnetometerReading, 0, magnetometerReading.size)
+        }
+
+        if (viewModel.isSubCategoryConfirmed.value == true)
+            updateOrientationAngles()
+
+    }
+
+    fun updateOrientationAngles() {
+        // Update rotation matrix, which is needed to update orientation angles.
+        SensorManager.getRotationMatrix(
+            rotationMatrix,
+            null,
+            accelerometerReading,
+            magnetometerReading
+        )
+
+        // "rotationMatrix" now has up-to-date information.
+
+        SensorManager.getOrientation(rotationMatrix, orientationAngles)
+
+        // "orientationAngles" now has up-to-date information.
+
+        //binding.tvAzimuth.text = "Azimuth ${Math.toDegrees(orientationAngles[0].toDouble())}"
+
+        val diff = Math.toDegrees(orientationAngles[2].toDouble()) - roll
+
+        val movearrow = abs(Math.toDegrees(orientationAngles[2].toDouble()).roundToInt()) -  abs(roll.roundToInt()) >= 1
+        val rotatedarrow = abs(Math.toDegrees(orientationAngles[1].toDouble()).roundToInt()) -  abs(pitch.roundToInt()) >= 1
+
+        pitch = Math.toDegrees(orientationAngles[1].toDouble())
+        roll = Math.toDegrees(orientationAngles[2].toDouble())
+
+
+        if ((roll >= -100 && roll <=-80) && (pitch >= -10 && pitch <= 10)){
+
+            binding
+                .tvLevelIndicator
+                ?.animate()
+                ?.translationY(0f)
+                ?.setInterpolator(AccelerateInterpolator())?.duration = 0
+
+            binding.tvLevelIndicator?.rotation = 0f
+
+            binding.ivTopLeft?.setColorFilter(ContextCompat.getColor(requireContext(), R.color.gyro_in_level))
+            binding.ivBottomLeft?.setColorFilter(ContextCompat.getColor(requireContext(), R.color.gyro_in_level))
+
+            binding.ivGryroRing?.setColorFilter(ContextCompat.getColor(requireContext(), R.color.gyro_in_level))
+            binding.tvLevelIndicator?.background = ContextCompat.getDrawable(requireContext(), R.drawable.bg_gyro_level)
+
+            binding.ivTopRight?.setColorFilter(ContextCompat.getColor(requireContext(), R.color.gyro_in_level))
+            binding.ivBottomRight?.setColorFilter(ContextCompat.getColor(requireContext(), R.color.gyro_in_level))
+
+        }else{
+            binding.ivTopLeft?.setColorFilter(ContextCompat.getColor(requireContext(), R.color.gyro_error_level))
+            binding.ivBottomLeft?.setColorFilter(ContextCompat.getColor(requireContext(), R.color.gyro_error_level))
+
+            binding.ivGryroRing?.setColorFilter(ContextCompat.getColor(requireContext(), R.color.gyro_error_level))
+            binding.tvLevelIndicator?.background = ContextCompat.getDrawable(requireContext(), R.drawable.bg_gyro_error)
+
+            binding.ivTopRight?.setColorFilter(ContextCompat.getColor(requireContext(), R.color.gyro_error_level))
+            binding.ivBottomRight?.setColorFilter(ContextCompat.getColor(requireContext(), R.color.gyro_error_level))
+
+            if (movearrow)
+                moveArrow(roll)
+
+            if (rotatedarrow){
+                if (pitch > 0){
+                    rotateArrow(pitch.minus(10).roundToInt())
+                }else{
+                    rotateArrow(pitch.plus(10).roundToInt())
+                }
+            }
+
+        }
+    }
+
+    private fun rotateArrow(roundToInt: Int) {
+        binding.tvLevelIndicator?.rotation = roundToInt.toFloat()
+    }
+
+    override fun onAccuracyChanged(sensor: Sensor?, accuracy: Int) {
+    }
+
+    private fun moveArrow(roll: Double) {
+        var newRoll = roll + 90
+
+        if (newRoll > 0 && (centerPosition + newRoll) < bottomConstraint){
+
+            newRoll -= 10
+            binding
+                .tvLevelIndicator
+                ?.animate()
+                ?.translationY(newRoll.toFloat())
+                ?.setInterpolator(AccelerateInterpolator())?.duration = 0
+        }
+
+        if (newRoll < 0 && (centerPosition - newRoll) > topConstraint) {
+
+            newRoll += 10
+
+            binding
+                .tvLevelIndicator
+                ?.animate()
+                ?.translationY(newRoll.toFloat())
+                ?.setInterpolator(AccelerateInterpolator())?.duration = 0
+        }
+    }
+
+
+    private fun getPreviewDimensions(view: View, type: Int) {
         view.viewTreeObserver.addOnGlobalLayoutListener(object :
             ViewTreeObserver.OnGlobalLayoutListener {
             override fun onGlobalLayout() {
                 view.viewTreeObserver.removeOnGlobalLayoutListener(this)
 
-                if (isPreview) {
-                    val shootDimensions = ShootDimensions()
-                    shootDimensions.previewWidth = view.width
-                    shootDimensions.previewHeight = view.height
+                when(type) {
+                    0 -> {
+                        val shootDimensions = ShootDimensions()
+                        shootDimensions.previewWidth = view.width
+                        shootDimensions.previewHeight = view.height
 
-                    viewModel.shootDimensions.value = shootDimensions
-                } else {
-                    viewModel.overlayRightMargin = view.width
+                        viewModel.shootDimensions.value = shootDimensions
+                    }
+
+                    1 -> {
+                        topConstraint = view.top
+                        bottomConstraint = topConstraint + view.height
+                    }
+
+                    2 -> {
+                        centerPosition = view.top
+                    }
                 }
+
             }
         })
     }

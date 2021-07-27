@@ -213,7 +213,6 @@ class RecordVideoFragment : BaseFragment<ThreeSixtyViewModel,FragmentRecordVideo
     override fun onSensorChanged(event: SensorEvent?) {
         //Get Rotation Vector Sensor Values
 
-
         if (event?.sensor?.type == Sensor.TYPE_ACCELEROMETER) {
             System.arraycopy(event.values, 0, accelerometerReading, 0, accelerometerReading.size)
         } else if (event?.sensor?.type == Sensor.TYPE_MAGNETIC_FIELD) {
@@ -222,19 +221,6 @@ class RecordVideoFragment : BaseFragment<ThreeSixtyViewModel,FragmentRecordVideo
 
         if (viewModel.enableRecording.value == true)
             updateOrientationAngles()
-
-
-//        moveArrow(roll.roundToInt())
-//
-//        if ((roll >= -145 && roll <=-130) || roll >= 40 && roll <= 50){
-//            binding.tvLine.setBackgroundColor(ContextCompat.getColor(this, R.color.green))
-//            binding.ivArrow.setColorFilter(ContextCompat.getColor(this, R.color.green))
-//        }else{
-//            // Log.d("TAG", "onSensorChanged: "+"false "+tilt)
-//            binding.tvLine.setBackgroundColor(ContextCompat.getColor(this, R.color.errorcolor))
-//            binding.ivArrow.setColorFilter(ContextCompat.getColor(this, R.color.errorcolor))
-//
-//        }
 
     }
 
@@ -340,13 +326,6 @@ class RecordVideoFragment : BaseFragment<ThreeSixtyViewModel,FragmentRecordVideo
                 .translationY(newRoll.toFloat())
                 .setInterpolator(AccelerateInterpolator()).duration = 0
         }
-
-
-
-//        ObjectAnimator.ofFloat(binding.tvLevelIndicator, "translationY", roll.toFloat()).apply {
-//            duration = 5
-//            start()
-//        }
     }
 
     /**
