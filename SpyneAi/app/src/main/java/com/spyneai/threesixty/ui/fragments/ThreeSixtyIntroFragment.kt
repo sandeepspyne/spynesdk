@@ -17,7 +17,11 @@ class ThreeSixtyIntroFragment : BaseFragment<ThreeSixtyViewModel,Fragment360Intr
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        setupTabLayout()
+       // setupTabLayout()
+
+        binding.ivFidelity.getSettings().setJavaScriptEnabled(true)
+
+        binding.ivFidelity.loadUrl("https://www.spyne.ai/shoots/shoot?skuId=hotstone")
 
         binding.btnStartClicking.setOnClickListener {
             Navigation.findNavController(binding.btnStartClicking)
@@ -27,20 +31,20 @@ class ThreeSixtyIntroFragment : BaseFragment<ThreeSixtyViewModel,Fragment360Intr
         }
     }
 
-    private fun setupTabLayout() {
-
-        binding.viewPager.apply {
-            adapter = ThreeSixtySampleAdapter(requireActivity())
-        }
-
-        TabLayoutMediator(binding.tabLayout, binding.viewPager) { tab, position ->
-            when(position) {
-                0 -> tab.text = "Hatchback"
-                1 -> tab.text = "SUV"
-                2 -> tab.text = "Sedan"
-            }
-        }.attach()
-    }
+//    private fun setupTabLayout() {
+//
+//        binding.viewPager.apply {
+//            adapter = ThreeSixtySampleAdapter(requireActivity())
+//        }
+//
+//        TabLayoutMediator(binding.tabLayout, binding.viewPager) { tab, position ->
+//            when(position) {
+//                0 -> tab.text = "Hatchback"
+//                1 -> tab.text = "SUV"
+//                2 -> tab.text = "Sedan"
+//            }
+//        }.attach()
+//    }
 
     override fun getViewModel() = ThreeSixtyViewModel::class.java
 
