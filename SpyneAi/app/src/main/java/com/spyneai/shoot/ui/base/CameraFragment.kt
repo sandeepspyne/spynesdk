@@ -281,7 +281,7 @@ class CameraFragment : BaseFragment<ShootViewModel, FragmentCameraBinding>(), Pi
             }
         }
 
-        var filename  = viewModel.sku.value?.skuId+"_"
+        var filename  = viewModel.sku.value?.skuName +"_"+viewModel.sku.value?.skuId+"_"
 
         filename += if (viewModel.shootList.value == null)
             viewModel.categoryDetails.value?.imageType!!+"_1"

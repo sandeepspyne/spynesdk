@@ -5,6 +5,7 @@ class DownloadTask {
     var skuName: String = ""
     var skuId: String = ""
     var type: String = ""
+    var frameSequenceNo : Int = 0
     var category: String = ""
     var isCompleted = false
     var onFailure = false
@@ -16,6 +17,7 @@ class DownloadTask {
     var creditsToReduce = 0
     var price = 0
     var listHdQuality = ArrayList<String>()
+    var imageNameList = ArrayList<String>()
     var failureNotified = false
     var imageDir : String = ""
 }

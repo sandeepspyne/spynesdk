@@ -65,6 +65,7 @@ class ShowImagesActivity : AppCompatActivity() {
 
     lateinit var imageListWaterMark: ArrayList<String>
     lateinit var listHdQuality: ArrayList<String>
+    lateinit var imageNameList: ArrayList<String>
     var catName: String = ""
     var numberOfImages: Int = 0
 
@@ -87,6 +88,8 @@ class ShowImagesActivity : AppCompatActivity() {
         setBulkImages()
 
         setListeners()
+
+        imageNameList = ArrayList()
 
         if (intent.getStringExtra(AppConstants.CATEGORY_NAME) != null)
             catName = intent.getStringExtra(AppConstants.CATEGORY_NAME)!!
@@ -132,11 +135,9 @@ class ShowImagesActivity : AppCompatActivity() {
 
                             startActivity(intent)
                         }
-
                     } else {
                         Log.d(TAG, "onResponse:  processVideo success null ")
                     }
-
                 } else {
 
                 }
@@ -194,6 +195,7 @@ class ShowImagesActivity : AppCompatActivity() {
             val downloadIntent = Intent(this, DownloadingActivity::class.java)
             downloadIntent.putExtra(AppConstants.LIST_WATERMARK, imageListWaterMark)
             downloadIntent.putExtra(AppConstants.LIST_HD_QUALITY, listHdQuality)
+            downloadIntent.putExtra(AppConstants.LIST_IMAGE_NAME, imageNameList)
             downloadIntent.putExtra("is_paid",intent.getBooleanExtra("is_paid",false))
             startActivity(downloadIntent)
         }
@@ -203,6 +205,7 @@ class ShowImagesActivity : AppCompatActivity() {
             val orderIntent = Intent(this, OrderSummary2Activity::class.java)
             orderIntent.putExtra(AppConstants.LIST_WATERMARK, imageListWaterMark)
             orderIntent.putExtra(AppConstants.LIST_HD_QUALITY, listHdQuality)
+            orderIntent.putExtra(AppConstants.LIST_IMAGE_NAME, imageNameList)
             orderIntent.putExtra("is_paid",intent.getBooleanExtra("is_paid",false))
 
             var skuId = Utilities.getPreference(this, AppConstants.SKU_ID)
@@ -213,6 +216,7 @@ class ShowImagesActivity : AppCompatActivity() {
 
             orderIntent.putExtra(AppConstants.SKU_ID,skuId)
             orderIntent.putExtra(AppConstants.SKU_NAME,skuName)
+            orderIntent.putExtra(AppConstants.IMAGE_TYPE,intent.getStringExtra(AppConstants.IMAGE_TYPE))
             startActivity(orderIntent)
         }
     }
@@ -319,21 +323,24 @@ class ShowImagesActivity : AppCompatActivity() {
                             if (imageListAfter != null && imageListAfter.size > 0)
                                 ReviewHolder.editedUrl = imageListAfter.get(0)
 
-
                             (imageListWaterMark as ArrayList).add(dataList!![i].output_image_lres_wm_url)
                             (listHdQuality as ArrayList).add(dataList!![i].output_image_hres_url)
+
+                            imageNameList.add(dataList[i].image_name)
 
                             Utilities.savePrefrence(
                                 this@ShowImagesActivity,
                                 AppConstants.NO_OF_IMAGES,
                                 imageListAfter.size.toString()
                             )
+
                             hideData(0)
                         } else if (dataList!![i].image_category.equals("Interior")) {
                             Category = dataList!![i].image_category
                             (imageListInterior as ArrayList).add(dataList!![i].output_image_lres_url)
                             (imageListWaterMark as ArrayList).add(dataList!![i].output_image_lres_wm_url)
                             (listHdQuality as ArrayList).add(dataList!![i].output_image_hres_url)
+                            imageNameList.add(dataList[i].image_name)
 
                             Utilities.savePrefrence(
                                 this@ShowImagesActivity,
@@ -346,6 +353,7 @@ class ShowImagesActivity : AppCompatActivity() {
                             (imageListFocused as ArrayList).add(dataList!![i].output_image_lres_url)
                             (imageListWaterMark as ArrayList).add(dataList!![i].output_image_lres_wm_url)
                             (listHdQuality as ArrayList).add(dataList!![i].output_image_hres_url)
+                            imageNameList.add(dataList[i].image_name)
 
                             Utilities.savePrefrence(
                                 this@ShowImagesActivity,
@@ -359,6 +367,7 @@ class ShowImagesActivity : AppCompatActivity() {
                             (imageListAfter as ArrayList).add(dataList!![i].output_image_lres_wm_url)
                             (listHdQuality as ArrayList).add(dataList!![i].output_image_hres_url)
                             (imageListWaterMark as ArrayList).add(dataList!![i].output_image_lres_wm_url)
+                            imageNameList.add(dataList[i].image_name)
 
                             Utilities.savePrefrence(
                                 this@ShowImagesActivity,
@@ -367,10 +376,7 @@ class ShowImagesActivity : AppCompatActivity() {
                             )
                             hideData(1)
                         }
-
-
                     }
-
                 }
                 showReplacedImagesAdapter.notifyDataSetChanged()
                 ShowReplacedImagesInteriorAdapter.notifyDataSetChanged()

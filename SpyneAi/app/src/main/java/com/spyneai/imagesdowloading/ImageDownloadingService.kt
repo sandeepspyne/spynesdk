@@ -59,14 +59,18 @@ class ImageDownloadingService : Service(), ImageDownloadManager.Listener {
 
         task.skuName = intent.getStringExtra(AppConstants.SKU_NAME) ?: ""
         task.skuId = intent.getStringExtra(AppConstants.SKU_ID) ?: ""
+        task.type = intent.getStringExtra(AppConstants.IMAGE_TYPE) ?: ""
         task.remainingCredits = intent.getIntExtra(AppConstants.CREDIT_REMAINING, 10)
         task.creditsToReduce = intent.getIntExtra(AppConstants.PRICE, 0)
         task.price = intent.getIntExtra(AppConstants.PRICE, 10)
         task.isDownloadedBefore = intent.getBooleanExtra(AppConstants.IS_DOWNLOADED_BEFORE,false)
 
         task.listHdQuality.addAll(intent.getParcelableArrayListExtra(AppConstants.LIST_HD_QUALITY)!!)
+        task.imageNameList.addAll(intent.getParcelableArrayListExtra(AppConstants.LIST_IMAGE_NAME)!!)
 
         tasksInProgress.add(task)
+
+        Log.d(TAG, "fetchDataAndStartService: "+task.skuName + " "+task.skuId + " "+task.type)
 
         checkAndFinishService()
 

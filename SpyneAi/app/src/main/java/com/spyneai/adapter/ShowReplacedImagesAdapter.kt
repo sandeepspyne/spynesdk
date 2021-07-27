@@ -1,30 +1,23 @@
 package com.spyneai.adapter
 
 import android.content.Context
-import android.graphics.Color
-import android.graphics.drawable.GradientDrawable
-import android.media.Image
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.LinearLayout
-import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.spyneai.R
-import com.spyneai.model.beforeafter.Data
-import com.spyneai.needs.AppConstants
-import kotlinx.android.synthetic.main.activity_show_gif.*
 
 
 public class ShowReplacedImagesAdapter(
-        val context: Context,
-        val imageList: ArrayList<String>,
-        val imageListAfter: ArrayList<String>,
-        val btnlistener: BtnClickListener,
+    val context: Context,
+    val rawImageList: ArrayList<String>,
+    val processedImageList: ArrayList<String>,
+    val btnlistener: BtnClickListener,
 )
     : RecyclerView.Adapter<ShowReplacedImagesAdapter.ViewHolder>() {
 
@@ -62,13 +55,13 @@ public class ShowReplacedImagesAdapter(
         //Glide.with(context).load(imageList[position]).into(viewHolder.imgReplaced)
 
         Glide.with(context) // replace with 'this' if it's in activity
-                .load(imageList[position])
+                .load(rawImageList[position])
                 .diskCacheStrategy(DiskCacheStrategy.RESOURCE)
                 .error(R.mipmap.defaults) // show error drawable if the image is not a gif
                 .into(viewHolder.imgBeforeReplaced)
 
         Glide.with(context) // replace with 'this' if it's in activity
-                .load(imageListAfter[position])
+                .load(processedImageList[position])
                 .diskCacheStrategy(DiskCacheStrategy.RESOURCE)
                 .error(R.mipmap.defaults) // show error drawable if the image is not a gif
                 .into(viewHolder.imgAfterReplaced)
@@ -83,7 +76,7 @@ public class ShowReplacedImagesAdapter(
     }
 
     // Return the size of your dataset (invoked by the layout manager)
-    override fun getItemCount() = imageList.size
+    override fun getItemCount() = rawImageList.size
 
     fun <T : RecyclerView.ViewHolder> T.listen(event: (position: Int, type: Int) -> Unit): T {
         itemView.setOnClickListener {

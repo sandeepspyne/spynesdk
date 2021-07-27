@@ -24,7 +24,6 @@ import com.spyneai.processedimages.ui.data.ProcessedViewModel
 class BikeImagesFragment : BaseFragment<ProcessedViewModel, FragmentBikeImagesBinding>(),
     OnItemClickListener {
 
-
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
