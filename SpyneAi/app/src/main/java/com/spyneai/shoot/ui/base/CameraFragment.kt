@@ -479,7 +479,7 @@ class CameraFragment : BaseFragment<ShootViewModel, FragmentCameraBinding>(), Pi
         roll = Math.toDegrees(orientationAngles[2].toDouble())
 
 
-        if ((roll >= -100 && roll <=-80) && (pitch >= -10 && pitch <= 10)){
+        if ((roll >= -100 && roll <=-80) && (pitch >= -5 && pitch <= 5)){
 
             binding
                 .tvLevelIndicator
@@ -513,9 +513,9 @@ class CameraFragment : BaseFragment<ShootViewModel, FragmentCameraBinding>(), Pi
 
             if (rotatedarrow){
                 if (pitch > 0){
-                    rotateArrow(pitch.minus(10).roundToInt())
+                    rotateArrow(pitch.minus(5).roundToInt())
                 }else{
-                    rotateArrow(pitch.plus(10).roundToInt())
+                    rotateArrow(pitch.plus(5).roundToInt())
                 }
             }
 
