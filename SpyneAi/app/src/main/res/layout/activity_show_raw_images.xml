@@ -34,7 +34,7 @@
                 android:layout_width="0dp"
                 android:layout_weight="1"
                 android:layout_height="match_parent"
-                android:text="SKU"
+                android:text="Images"
                 android:textColor="@color/primary"
                 android:fontFamily="@font/poppins_medium"
                 android:gravity="center"
@@ -65,12 +65,12 @@
         android:background="@color/primary_light">
 
         <TextView
-            android:id="@+id/tvProject"
+            android:id="@+id/tvSku"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textSize="@dimen/sp_14"
             android:fontFamily="@font/poppins_medium"
-            android:text="Project Name"
+            android:text="SKU Name"
             android:textColor="@color/categories_text"
             android:layout_marginLeft="17dp"
             android:layout_marginTop="16dp"
@@ -78,7 +78,7 @@
             android:layout_marginBottom="16dp"/>
 
         <TextView
-            android:id="@+id/tvProjectName"
+            android:id="@+id/tvSkuNam"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textSize="@dimen/sp_14"
@@ -87,12 +87,12 @@
             android:maxLength="8"
             android:layout_marginLeft="13dp"
             android:textColor="@color/primary"
-            android:layout_toRightOf="@+id/tvProject"
+            android:layout_toRightOf="@+id/tvSku"
             android:layout_centerVertical="true"/>
 
 
         <TextView
-            android:id="@+id/tvTotalSku"
+            android:id="@+id/tvTotalImage"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textSize="@dimen/sp_14"
@@ -105,53 +105,55 @@
             android:layout_marginBottom="16dp"/>
 
         <TextView
-            android:id="@+id/tvSku"
+            android:id="@+id/tvImages"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textSize="@dimen/sp_14"
             android:fontFamily="@font/poppins_medium"
-            android:text="Total SKUs "
-            android:layout_toLeftOf="@+id/tvTotalSku"
+            android:text="Total Images "
+            android:layout_toLeftOf="@+id/tvTotalImage"
             android:layout_marginRight="13dp"
             android:textColor="@color/categories_text"
             android:layout_centerVertical="true"/>
 
     </RelativeLayout>
 
-    <androidx.recyclerview.widget.RecyclerView
+    <GridView
+        android:id="@+id/gvRawImages"
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:layout_marginTop="10dp"
-        android:id="@+id/rvSkus"
-        android:visibility="gone"
-        android:paddingBottom="@dimen/dp_100"
+        android:paddingBottom="@dimen/dp_50"
+        android:layout_marginLeft="20dp"
+        android:layout_marginRight="@dimen/dp_20"
         android:clipToPadding="false"
         app:layout_constraintTop_toBottomOf="@+id/rlSku"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"
-        tools:listitem="@layout/item_my_completed_orders"/>
+        android:verticalSpacing="10dp"
+        android:visibility="gone"
+        android:horizontalSpacing="10dp"
+        android:stretchMode="columnWidth"
+        android:numColumns="2"/>
 
     <com.facebook.shimmer.ShimmerFrameLayout
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:layout_marginTop="@dimen/dp_10"
+        android:visibility="visible"
         app:layout_constraintTop_toBottomOf="@+id/rlSku"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"
-        android:id="@+id/shimmerCompletedSKU">
+        android:id="@+id/shimmerRawImages">
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:orientation="vertical">
 
-            <include layout="@layout/completed_ongoing_sku_simmer"></include>
-            <include layout="@layout/completed_ongoing_sku_simmer"></include>
-            <include layout="@layout/completed_ongoing_sku_simmer"></include>
-            <include layout="@layout/completed_ongoing_sku_simmer"></include>
-            <include layout="@layout/completed_ongoing_sku_simmer"></include>
+            <include layout="@layout/raw_images_simmer"></include>
 
         </LinearLayout>
     </com.facebook.shimmer.ShimmerFrameLayout>

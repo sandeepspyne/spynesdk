@@ -1,20 +1,22 @@
 package com.spyneai.orders.ui.adapter
 
 import android.content.Context
+import android.content.Intent
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
+import android.widget.Toast
 import androidx.cardview.widget.CardView
-import androidx.navigation.findNavController
 import androidx.recyclerview.widget.RecyclerView
 import com.airbnb.lottie.LottieAnimationView
 import com.bumptech.glide.Glide
 import com.spyneai.R
 import com.spyneai.orders.data.response.GetProjectsResponse
 import com.spyneai.orders.data.viewmodel.MyOrdersViewModel
+import com.spyneai.orders.ui.activity.OngoingSkusActivity
 
 class MyOngoingProjectAdapter(
     val context: Context,
@@ -33,6 +35,7 @@ class MyOngoingProjectAdapter(
         val tvImageCount: TextView = view.findViewById(R.id.tvImageCount)
         val lottieProgressCircle: LottieAnimationView = view.findViewById(R.id.lottieProgressCircle)
         val llUploaded: LinearLayout = view.findViewById(R.id.llUploaded)
+        val cvMain: CardView = view.findViewById(R.id.cvMain)
 
     }
 
@@ -91,6 +94,26 @@ class MyOngoingProjectAdapter(
 
         holder.tvImageCount.text =
             getProjectList[position].processed_images.toString() + "/" + getProjectList[position].total_images.toString()
+
+        holder.cvMain.setOnClickListener {
+
+            if (getProjectList[position].category.equals("cat_d8R14zUNE") || getProjectList[position].category.equals("Automobiles")){
+
+            }else{
+
+                if (getProjectList[position].sku.isNullOrEmpty()){
+                    Toast.makeText(context, "No SKU data found", Toast.LENGTH_SHORT).show()
+                }else if (getProjectList[position].status.equals("Uploaded")){
+                    Intent(context, OngoingSkusActivity::class.java)
+                        .apply {
+                            putExtra("position", position)
+                            context.startActivity(this)
+                        }
+                }
+
+
+            }
+        }
 
     }
 

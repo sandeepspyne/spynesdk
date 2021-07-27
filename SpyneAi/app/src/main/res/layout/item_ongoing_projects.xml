@@ -9,7 +9,8 @@
     android:layout_marginRight="@dimen/dp_10"
     android:layout_marginBottom="@dimen/dp_10"
     app:cardCornerRadius="@dimen/dp_5"
-    app:cardElevation="@dimen/dp_5">
+    app:cardElevation="@dimen/dp_5"
+    android:id="@+id/cvMain">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"

@@ -1,4 +1,4 @@
-package com.spyneai.orders.ui.fragment
+package com.spyneai.orders.ui.activity
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
@@ -17,18 +17,17 @@ import com.spyneai.needs.AppConstants
 import com.spyneai.needs.Utilities
 import com.spyneai.orders.data.response.GetProjectsResponse
 import com.spyneai.orders.data.viewmodel.MyOrdersViewModel
-import com.spyneai.orders.ui.adapter.SkusAdapter
+import com.spyneai.orders.ui.adapter.OngoingSkusAdapter
 import com.spyneai.posthog.Events
-import com.spyneai.shoot.data.ShootViewModel
 import com.spyneai.shoot.utils.log
 import kotlinx.android.synthetic.main.activity_completed_skus.*
 
-class CompletedSkusActivity : AppCompatActivity() {
+class OngoingSkusActivity : AppCompatActivity() {
 
     lateinit var viewModel: MyOrdersViewModel
 
-    lateinit var skusAdapter: SkusAdapter
-    val status = "completed"
+    lateinit var skusAdapter: OngoingSkusAdapter
+    val status = "ongoing"
     var refreshData = true
     lateinit var handler: Handler
     lateinit var runnable: Runnable
@@ -38,7 +37,7 @@ class CompletedSkusActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 //        val binding = ActivityCompletedSkusBinding.inflate(layoutInflater)
-        setContentView(R.layout.activity_completed_skus)
+        setContentView(R.layout.activity_ongoing_skus)
 
         ivBack.setOnClickListener {
             onBackPressed()
@@ -51,7 +50,7 @@ class CompletedSkusActivity : AppCompatActivity() {
         rvSkus.apply {
             layoutManager =
                 LinearLayoutManager(
-                    this@CompletedSkusActivity, LinearLayoutManager.VERTICAL,
+                    this@OngoingSkusActivity, LinearLayoutManager.VERTICAL,
                     false
                 )
         }
@@ -60,11 +59,13 @@ class CompletedSkusActivity : AppCompatActivity() {
 
 
         shimmerCompletedSKU.startShimmer()
-        repeatRefreshData()
+        viewModel.getProjects(
+            Utilities.getPreference(this, AppConstants.AUTH_KEY).toString(), status
+        )
 
 
         log("Completed SKUs(auth key): " + Utilities.getPreference(this, AppConstants.AUTH_KEY))
-        viewModel.getCompletedProjectsResponse.observe(
+        viewModel.getProjectsResponse.observe(
             this, Observer {
                 when (it) {
                     is Resource.Success -> {
@@ -76,14 +77,15 @@ class CompletedSkusActivity : AppCompatActivity() {
                             refreshData = false
 
                         if (it.value.data != null) {
-                            tvTotalSku.text = it.value.data.total_skus.toString()
                             skuList.clear()
                             skuList.addAll(it.value.data.project_data[position].sku)
                             tvProjectName.text = it.value.data.project_data[position].project_name
+                            tvTotalSku.text =
+                                it.value.data.project_data[position].sku.size.toString()
 
-                            skusAdapter = SkusAdapter(
+                            skusAdapter = OngoingSkusAdapter(
                                 this,
-                                it.value.data.project_data, viewModel, skuList
+                                viewModel, skuList, position
                             )
 
                             val layoutManager: RecyclerView.LayoutManager =
@@ -116,22 +118,4 @@ class CompletedSkusActivity : AppCompatActivity() {
         )
 
     }
-
-    fun repeatRefreshData() {
-        viewModel.getCompletedProjects(
-            Utilities.getPreference(this, AppConstants.AUTH_KEY).toString(), status
-        )
-        handler = Handler()
-        runnable = Runnable {
-            if (refreshData)
-                repeatRefreshData()
-        }
-        handler.postDelayed(runnable, 15000)
-    }
-
-    override fun onPause() {
-        handler.removeCallbacks(runnable)
-        super.onPause()
-    }
-
 }

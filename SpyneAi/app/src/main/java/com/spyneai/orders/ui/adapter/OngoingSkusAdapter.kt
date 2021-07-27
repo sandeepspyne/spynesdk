@@ -11,18 +11,16 @@ import androidx.cardview.widget.CardView
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.spyneai.R
-import com.spyneai.needs.AppConstants
-import com.spyneai.needs.Utilities
 import com.spyneai.orders.data.response.GetProjectsResponse
 import com.spyneai.orders.data.viewmodel.MyOrdersViewModel
-import com.spyneai.processedimages.ui.BikeImagesActivity
-import com.spyneai.processedimages.ui.ShowImagesActivity
+import com.spyneai.orders.ui.activity.ShowRawImagesActivity
 
-class SkusAdapter(
+class OngoingSkusAdapter(
     val context: Context,
     val viewModel: MyOrdersViewModel,
-    val skuList: ArrayList<GetProjectsResponse.Sku>
-) : RecyclerView.Adapter<SkusAdapter.ViewHolder>() {
+    val skuList: ArrayList<GetProjectsResponse.Sku>,
+    val projectPosition: Int
+) : RecyclerView.Adapter<OngoingSkusAdapter.ViewHolder>() {
 
     class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
         val tvSkuName: TextView = view.findViewById(R.id.tvSkuName)
@@ -38,13 +36,13 @@ class SkusAdapter(
     override fun onCreateViewHolder(
         parent: ViewGroup,
         viewType: Int
-    ): SkusAdapter.ViewHolder {
+    ): OngoingSkusAdapter.ViewHolder {
         val view = LayoutInflater.from(parent.context)
             .inflate(R.layout.item_completed_skus, parent, false)
-        return SkusAdapter.ViewHolder(view)
+        return OngoingSkusAdapter.ViewHolder(view)
     }
 
-    override fun onBindViewHolder(holder: SkusAdapter.ViewHolder, position: Int) {
+    override fun onBindViewHolder(holder: OngoingSkusAdapter.ViewHolder, position: Int) {
 
         if (skuList[position].paid.equals("true"))
             holder.tvPaid.visibility = View.VISIBLE
@@ -56,7 +54,7 @@ class SkusAdapter(
                 .error(R.mipmap.defaults) // show error drawable if the image is not a gif
                 .into(holder.ivThumbnail)
 
-        }catch (e: Exception){
+        } catch (e: Exception) {
 
         }
 
@@ -66,24 +64,13 @@ class SkusAdapter(
 
 
         holder.cvMain.setOnClickListener {
-            Utilities.savePrefrence(
-                context,
-                AppConstants.SKU_ID,
-                skuList[position].sku_id
-            )
 
-            val intent = if (skuList[position].category == "cat_d8R14zUNx" || skuList[position].category == "Bikes")
-                Intent(
-                    context,
-                    BikeImagesActivity::class.java
-                ) else Intent(
-                context,
-                ShowImagesActivity::class.java
-            )
-
-            intent.putExtra(AppConstants.SKU_ID, skuList[position].sku_id)
-            intent.putExtra("is_paid",skuList[position].paid)
-            context.startActivity(intent)
+            Intent(context, ShowRawImagesActivity::class.java)
+                .apply {
+                    putExtra("position", position)
+                    putExtra("projectPosition", projectPosition)
+                    context.startActivity(this)
+                }
         }
 
 

@@ -12,12 +12,10 @@ import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.spyneai.R
-import com.spyneai.processedimages.ui.ShowImagesActivity
 import com.spyneai.needs.AppConstants
 import com.spyneai.needs.Utilities
 import com.spyneai.orders.data.response.GetProjectsResponse
-import com.spyneai.orders.ui.fragment.CompletedSkusActivity
-import com.spyneai.processedimages.ui.BikeImagesActivity
+import com.spyneai.orders.ui.activity.CompletedSkusActivity
 import com.spyneai.shoot.utils.log
 import com.spyneai.threesixty.ui.ThreeSixtyExteriorActivity
 

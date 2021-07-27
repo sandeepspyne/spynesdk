@@ -10,21 +10,12 @@ import android.widget.LinearLayout
 import android.widget.TextView
 import android.widget.Toast
 import androidx.cardview.widget.CardView
-import androidx.constraintlayout.widget.ConstraintLayout
-import androidx.navigation.Navigation
-import androidx.navigation.Navigation.findNavController
-import androidx.navigation.findNavController
-import androidx.navigation.fragment.NavHostFragment.findNavController
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
-import com.google.android.play.core.assetpacks.v
 import com.spyneai.R
-import com.spyneai.base.network.Resource
-import com.spyneai.needs.Utilities
 import com.spyneai.orders.data.response.GetProjectsResponse
 import com.spyneai.orders.data.viewmodel.MyOrdersViewModel
-import com.spyneai.orders.ui.fragment.CompletedSkusActivity
-import com.spyneai.processedimages.ui.ShowImagesActivity
+import com.spyneai.orders.ui.activity.CompletedSkusActivity
 import com.spyneai.threesixty.ui.ThreeSixtyExteriorActivity
 
 class MyCompletedProjectsAdapter(
@@ -97,7 +88,7 @@ class MyCompletedProjectsAdapter(
                 if (getProjectList[position].sku.isNullOrEmpty()){
                     Toast.makeText(context, "No SKU data found", Toast.LENGTH_SHORT).show()
                 }else{
-                    Intent(context,CompletedSkusActivity::class.java)
+                    Intent(context, CompletedSkusActivity::class.java)
                         .apply {
                             putExtra("position", position)
                             context.startActivity(this)

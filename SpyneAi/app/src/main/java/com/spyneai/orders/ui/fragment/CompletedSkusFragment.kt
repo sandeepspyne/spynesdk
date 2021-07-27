@@ -79,7 +79,7 @@ class CompletedSkusFragment : BaseFragment<MyOrdersViewModel, FragmentCompletedS
                             }
 
                             skusAdapter = SkusAdapter(requireContext(),
-                                it.value.data.project_data, viewModel, skuList
+                                viewModel, skuList
                             )
 
                             val layoutManager: RecyclerView.LayoutManager = LinearLayoutManager(requireContext(), LinearLayoutManager.VERTICAL, false)
