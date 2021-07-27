@@ -25,10 +25,6 @@ class ThreeSixtyProjectAndSkuDialog : BaseDialogFragment<ThreeSixtyViewModel, Di
 
         dialog?.setCancelable(false)
 
-        binding.apply {
-            etProjectName.visibility = View.GONE
-            ivEditProjectName.visibility = View.GONE
-        }
 
         binding.btnSubmit.setOnClickListener {
             if (binding.etVinNumber.text.toString().isEmpty()) {

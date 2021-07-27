@@ -25,26 +25,14 @@ class CreateProjectAndSkuDialog : BaseDialogFragment<ShootViewModel, DialogCreat
         super.onViewCreated(view, savedInstanceState)
 
         dialog?.setCancelable(false)
-
-        binding.ivEditProjectName.setOnClickListener {
-            val imm: InputMethodManager =
-                requireActivity().getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
-
-            imm.toggleSoftInput(InputMethodManager.SHOW_FORCED,0)
-            binding.etProjectName.requestFocus()
-
-            binding.etProjectName.setSelection(binding.etProjectName.text.toString().length)
-        }
-
         binding.btnSubmit.setOnClickListener {
             when {
-                binding.etProjectName.text.toString().isEmpty() -> binding.etProjectName.error = "Please enter project name"
                 binding.etVinNumber.text.toString().isEmpty() -> {
                     binding.etVinNumber.error = "Please enter any unique number"
                 }
                 else -> {
                     createProject(
-                        binding.etProjectName.text.toString(),
+                        binding.etVinNumber.text.toString(),
                         binding.etVinNumber.text.toString()
                     )
                 }
