@@ -262,14 +262,14 @@ class ThreeSixtyExteriorActivity : AppCompatActivity(),View.OnTouchListener,View
 
                         if (tsvParamFront.mEndX - tsvParamFront.mStartX > 3) {
                             tsvParamFront.mImageIndex++
-                            if (tsvParamFront.mImageIndex >= tsvParamFront.framesList.size) tsvParamFront.mImageIndex = tsvParamFront.framesList.size - 1
+                            if (tsvParamFront.mImageIndex >= tsvParamFront.framesList.size) tsvParamFront.mImageIndex = 0
 
                             loadImage(tsvParamFront,binding.ivFront)
 
                         }
                         if (tsvParamFront.mEndX - tsvParamFront.mStartX < -3) {
                             tsvParamFront.mImageIndex--
-                            if (tsvParamFront.mImageIndex < 0) tsvParamFront.mImageIndex = 0
+                            if (tsvParamFront.mImageIndex < 0) tsvParamFront.mImageIndex = tsvParamFront.framesList.size - 1
 
                             loadImage(tsvParamFront,binding.ivFront)
                         }
