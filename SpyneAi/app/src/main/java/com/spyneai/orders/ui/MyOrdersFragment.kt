@@ -15,6 +15,10 @@ class MyOrdersFragment : BaseFragment<DashboardViewModel, FragmentMyOrdersBindin
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        binding.ivBack.setOnClickListener {
+            requireActivity().onBackPressed()
+        }
+
         setupTabLayout()
     }
 

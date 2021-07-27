@@ -37,6 +37,7 @@
                 android:layout_weight="1"
                 android:fontFamily="@font/bold"
                 android:gravity="center"
+                android:textColor="@color/primary"
                 android:text="@string/ongoing_projects"
                 android:textSize="@dimen/sp_16"
                 android:textStyle="bold" />

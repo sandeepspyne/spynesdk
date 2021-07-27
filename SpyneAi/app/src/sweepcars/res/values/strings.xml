@@ -94,7 +94,7 @@
     <string name="your_sent">Your 360° Shot was sent at</string>
     <string name="view_all_images">View all images</string>
     <string name="your_360_shot">Your images are \n almost ready</string>
-    <string name="completed_projects">Completed Projects</string>
+    <string name="completed_projects">Completed Vehicles</string>
     <string name="your_images">Your Images</string>
     <string name="processing">Processing</string>
     <string name="your_photos">Your photos were sent at</string>
@@ -106,6 +106,7 @@
 
     <string name="view_spin">View 360° Spin Shot</string>
     <string name="continues">Continue</string>
+
 
 
     <string name="your_360_shots">Your Images are almost ready</string>
@@ -162,7 +163,7 @@
 
     <string name="start_new_shoot">Start a new shoot</string>
 
-    <string name="ongoing_projects">Ongoing projects</string>
+    <string name="ongoing_projects">Ongoing Vehicles</string>
 
     <string name="your_orders">Your Orders</string>
     <string name="end_shoot">End Shoot</string>

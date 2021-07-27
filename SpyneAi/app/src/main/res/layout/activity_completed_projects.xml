@@ -37,6 +37,7 @@
                 android:fontFamily="@font/bold"
                 android:gravity="center"
                 android:textStyle="bold"
+                android:textColor="@color/primary"
                 android:textSize="@dimen/sp_16"/>
             <ImageView
                 android:layout_width="wrap_content"
