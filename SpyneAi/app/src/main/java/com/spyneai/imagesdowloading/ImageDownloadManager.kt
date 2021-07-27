@@ -31,7 +31,6 @@ import java.util.*
 class ImageDownloadManager(var task : DownloadTask, var listener : Listener) {
 
     var path_save_photos: String = ""
-    lateinit var file: File
 
     fun start() {
         if (task.listHdQuality.size > 0 && task.listHdQuality != null) {
@@ -40,19 +39,21 @@ class ImageDownloadManager(var task : DownloadTask, var listener : Listener) {
               if (task.listHdQuality[i] == null){
 
               } else{
-                  downloadWithHighQuality(task.listHdQuality[i])
+                  downloadWithHighQuality(task.listHdQuality[i],task.imageNameList[i])
               }
 
             }
         }
     }
     //Download
-    private fun downloadWithHighQuality(imageFile: String?) {
-        val FILENAME_FORMAT = "yyyy-MM-dd-HH-mm-ss-SSS"
+    private fun downloadWithHighQuality(imageFile: String,imageName : String) {
+//        val FILENAME_FORMAT = "yyyy-MM-dd-HH-mm-ss-SSS"
+//
+//        val imageName: String = "Spyne" + SimpleDateFormat(
+//            FILENAME_FORMAT, Locale.US
+//        ).format(System.currentTimeMillis()) + ".png"
 
-        val imageName: String = "Spyne" + SimpleDateFormat(
-            FILENAME_FORMAT, Locale.US
-        ).format(System.currentTimeMillis()) + ".png"
+        val imageName = imageName+".jpg"
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R){
             path_save_photos = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS).toString() + File.separator + R.string.app_name;
@@ -62,7 +63,11 @@ class ImageDownloadManager(var task : DownloadTask, var listener : Listener) {
                     BaseApplication.getContext().getResources().getString(R.string.app_name)
         }
 
-        file = File(path_save_photos)
+        var file = File(path_save_photos)
+
+        //delete existing file
+        if (File(path_save_photos).exists())
+            File(path_save_photos).delete()
 
         PRDownloader.download(
             imageFile,
@@ -81,11 +86,20 @@ class ImageDownloadManager(var task : DownloadTask, var listener : Listener) {
                 }
 
                 override fun onError(error: com.downloader.Error?) {
-                    Log.d("ImageDownloadManager", "onError: ")
-                    if (!task.failureNotified){
-                        task.failureNotified = true
-                        listener.onFailure(task)
+                    Log.d("ImageDownloadManager", "onError: "+error.toString())
+                    if (error?.connectionException != null && error.connectionException.message == "Rename Failed"){
+                        task.downloadCount++
+
+                        if (task.downloadCount == task.listHdQuality.size) {
+                            listener.onSuccess(task)
+                        }
+                    }else{
+                        if (!task.failureNotified){
+                            task.failureNotified = true
+                            listener.onFailure(task)
+                        }
                     }
+
                 }
 
             })

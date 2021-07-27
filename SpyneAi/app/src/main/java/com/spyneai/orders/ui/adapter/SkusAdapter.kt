@@ -83,6 +83,7 @@ class SkusAdapter(
 
             intent.putExtra(AppConstants.SKU_ID, skuList[position].sku_id)
             intent.putExtra("is_paid",skuList[position].paid)
+            intent.putExtra(AppConstants.IMAGE_TYPE,skuList[position].category)
             context.startActivity(intent)
         }
 

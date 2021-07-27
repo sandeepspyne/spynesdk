@@ -31,6 +31,10 @@ class ThreeSixtyIntroActivity : AppCompatActivity() {
         threeSixtyViewModel.title.observe(this,{
             binding.tvTitle.text = it
         })
+
+        binding.ivBack.setOnClickListener {
+            onBackPressed()
+        }
     }
 
 }

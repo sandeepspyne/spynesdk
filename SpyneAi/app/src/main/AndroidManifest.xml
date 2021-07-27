@@ -44,6 +44,10 @@
         <activity
             android:name=".threesixty.TiltTestActivity"
             android:screenOrientation="landscape" />
+        <activity android:name=".processedimages.ui.ProcessedImageActivity"></activity>
+        <activity
+            android:name=".threesixty.TiltTestActivity"
+            android:screenOrientation="landscape"></activity>
         <activity
             android:name=".threesixty.SensorTestActivity"
             android:screenOrientation="landscape" />

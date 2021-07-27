@@ -42,6 +42,7 @@ class DownloadingActivity : AppCompatActivity() {
 
     private lateinit var listWatermark: ArrayList<String>
     private lateinit var listHdQuality: ArrayList<String>
+    private lateinit var imageName: ArrayList<String>
     var downloadCount: Int = 0
     var avaliableCredit: Int = 0
     var remaningCredit: Int = 0
@@ -64,10 +65,11 @@ class DownloadingActivity : AppCompatActivity() {
 
         listWatermark = ArrayList<String>()
         listHdQuality = ArrayList<String>()
+        imageName = ArrayList<String>()
 
         listWatermark.addAll(intent.getStringArrayListExtra(AppConstants.LIST_WATERMARK)!!)
-
         listHdQuality.addAll(intent.getStringArrayListExtra(AppConstants.LIST_HD_QUALITY)!!)
+        imageName.addAll(intent.getStringArrayListExtra(AppConstants.LIST_IMAGE_NAME)!!)
 
         setPermissions()
 
@@ -80,6 +82,7 @@ class DownloadingActivity : AppCompatActivity() {
                 val orderIntent = Intent(this, OrderSummary2Activity::class.java)
                 orderIntent.putExtra(AppConstants.LIST_HD_QUALITY, listHdQuality)
                 orderIntent.putExtra(AppConstants.LIST_WATERMARK, listWatermark)
+                orderIntent.putExtra(AppConstants.LIST_IMAGE_NAME, imageName)
                 orderIntent.putExtra("is_paid",intent.getBooleanExtra("is_paid",false))
                 startActivity(orderIntent)
             } else {
@@ -156,12 +159,10 @@ class DownloadingActivity : AppCompatActivity() {
                         //start service
                         startDownloading()
                     }
-
                 }else{
                     Toast.makeText(this,"Not enough credits available",Toast.LENGTH_LONG).show()
                 }
             }
-
         }
     }
 
@@ -169,8 +170,10 @@ class DownloadingActivity : AppCompatActivity() {
         var imageDownloadingServiceIntent = Intent(this,ImageDownloadingService::class.java)
         imageDownloadingServiceIntent.action = "START"
         imageDownloadingServiceIntent.putExtra(AppConstants.LIST_HD_QUALITY,listHdQuality)
+        imageDownloadingServiceIntent.putExtra(AppConstants.LIST_IMAGE_NAME,imageName)
         imageDownloadingServiceIntent.putExtra(AppConstants.SKU_NAME,intent.getStringExtra(AppConstants.SKU_NAME))
         imageDownloadingServiceIntent.putExtra(AppConstants.SKU_ID,intent.getStringExtra(AppConstants.SKU_ID))
+        imageDownloadingServiceIntent.putExtra(AppConstants.IMAGE_TYPE,intent.getStringExtra(AppConstants.IMAGE_TYPE))
         imageDownloadingServiceIntent.putExtra(AppConstants.CREDIT_REMAINING,remaningCredit)
         imageDownloadingServiceIntent.putExtra(AppConstants.PRICE,price)
         imageDownloadingServiceIntent.putExtra(AppConstants.IS_DOWNLOADED_BEFORE,intent.getBooleanExtra(AppConstants.IS_DOWNLOADED_BEFORE,false))

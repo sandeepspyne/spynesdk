@@ -213,7 +213,6 @@ class RecordVideoFragment : BaseFragment<ThreeSixtyViewModel,FragmentRecordVideo
     override fun onSensorChanged(event: SensorEvent?) {
         //Get Rotation Vector Sensor Values
 
-
         if (event?.sensor?.type == Sensor.TYPE_ACCELEROMETER) {
             System.arraycopy(event.values, 0, accelerometerReading, 0, accelerometerReading.size)
         } else if (event?.sensor?.type == Sensor.TYPE_MAGNETIC_FIELD) {
@@ -222,19 +221,6 @@ class RecordVideoFragment : BaseFragment<ThreeSixtyViewModel,FragmentRecordVideo
 
         if (viewModel.enableRecording.value == true)
             updateOrientationAngles()
-
-
-//        moveArrow(roll.roundToInt())
-//
-//        if ((roll >= -145 && roll <=-130) || roll >= 40 && roll <= 50){
-//            binding.tvLine.setBackgroundColor(ContextCompat.getColor(this, R.color.green))
-//            binding.ivArrow.setColorFilter(ContextCompat.getColor(this, R.color.green))
-//        }else{
-//            // Log.d("TAG", "onSensorChanged: "+"false "+tilt)
-//            binding.tvLine.setBackgroundColor(ContextCompat.getColor(this, R.color.errorcolor))
-//            binding.ivArrow.setColorFilter(ContextCompat.getColor(this, R.color.errorcolor))
-//
-//        }
 
     }
 
@@ -264,7 +250,7 @@ class RecordVideoFragment : BaseFragment<ThreeSixtyViewModel,FragmentRecordVideo
         roll = Math.toDegrees(orientationAngles[2].toDouble())
 
 
-        if ((roll >= -100 && roll <=-80) && (pitch >= -10 && pitch <= 10)){
+        if ((roll >= -100 && roll <=-80) && (pitch >= -5 && pitch <= 5)){
 
             binding
                 .tvLevelIndicator
@@ -301,9 +287,9 @@ class RecordVideoFragment : BaseFragment<ThreeSixtyViewModel,FragmentRecordVideo
 
             if (rotatedarrow){
                 if (pitch > 0){
-                    rotateArrow(pitch.minus(10).roundToInt())
+                    rotateArrow(pitch.minus(5).roundToInt())
                 }else{
-                    rotateArrow(pitch.plus(10).roundToInt())
+                    rotateArrow(pitch.plus(5).roundToInt())
                 }
             }
 
@@ -340,13 +326,6 @@ class RecordVideoFragment : BaseFragment<ThreeSixtyViewModel,FragmentRecordVideo
                 .translationY(newRoll.toFloat())
                 .setInterpolator(AccelerateInterpolator()).duration = 0
         }
-
-
-
-//        ObjectAnimator.ofFloat(binding.tvLevelIndicator, "translationY", roll.toFloat()).apply {
-//            duration = 5
-//            start()
-//        }
     }
 
     /**
@@ -460,7 +439,6 @@ class RecordVideoFragment : BaseFragment<ThreeSixtyViewModel,FragmentRecordVideo
             binding.tvTimer.visibility = View.VISIBLE
             startRecordTime(0)
 
-
             if (ActivityCompat.checkSelfPermission(
                     requireContext(),
                     Manifest.permission.RECORD_AUDIO
@@ -475,6 +453,7 @@ class RecordVideoFragment : BaseFragment<ThreeSixtyViewModel,FragmentRecordVideo
                 // for ActivityCompat#requestPermissions for more details.
                 return
             }
+
             localVideoCapture.startRecording(
                 outputOptions, // the options needed for the final video
                 ContextCompat.getMainExecutor(requireContext()), // the executor, on which the task will run

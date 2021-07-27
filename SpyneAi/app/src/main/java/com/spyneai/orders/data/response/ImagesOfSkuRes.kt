@@ -10,7 +10,7 @@ data class ImagesOfSkuRes(
     data class Data(
         val background_id: String,
         val created_on: String,
-        val enterprise_id: Any,
+        val enterprise_id: String,
         val frame_seq_no: String,
         val id: Int,
         val image_category: String,
@@ -23,9 +23,9 @@ data class ImagesOfSkuRes(
         val output_image_lres_wm_url: String,
         val project_id: String,
         val sku_id: String,
-        val source: Any,
+        val source: String,
         val status: String,
         val updated_on: String,
-        val user_id: Any
+        val user_id: String
     )
 }

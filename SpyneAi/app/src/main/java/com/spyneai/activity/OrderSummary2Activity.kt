@@ -37,6 +37,7 @@ class OrderSummary2Activity : AppCompatActivity() {
     private lateinit var listHdQuality : ArrayList<String>
     lateinit var productImage : String
     private lateinit var listWatermark : ArrayList<String>
+    private lateinit var imageName: ArrayList<String>
     private var availableCredits = 0
     private var hdDownloaded = false
 
@@ -67,10 +68,12 @@ class OrderSummary2Activity : AppCompatActivity() {
 
         listHdQuality = ArrayList<String>()
         listWatermark = ArrayList<String>()
+        imageName = ArrayList<String>()
 
         listHdQuality.addAll(intent.getStringArrayListExtra(AppConstants.LIST_HD_QUALITY)!!)
-
         listWatermark.addAll(intent.getStringArrayListExtra(AppConstants.LIST_WATERMARK)!!)
+        imageName.addAll(intent.getStringArrayListExtra(AppConstants.LIST_IMAGE_NAME)!!)
+
 
 //        productImage = listHdQuality[0].toString()
 
@@ -144,10 +147,12 @@ class OrderSummary2Activity : AppCompatActivity() {
         Utilities.savePrefrence(this, AppConstants.DOWNLOAD_TYPE, "hd")
         downloadIntent.putExtra(AppConstants.LIST_HD_QUALITY, listHdQuality)
         downloadIntent.putExtra(AppConstants.LIST_WATERMARK, listWatermark)
+        downloadIntent.putExtra(AppConstants.LIST_IMAGE_NAME, imageName)
         downloadIntent.putExtra("is_paid",intent.getBooleanExtra("is_paid",false))
         downloadIntent.putExtra(AppConstants.SKU_ID, Utilities.getPreference(this@OrderSummary2Activity, AppConstants.SKU_ID)
             .toString())
         downloadIntent.putExtra(AppConstants.SKU_NAME,intent.getStringExtra(AppConstants.SKU_NAME))
+        downloadIntent.putExtra(AppConstants.IMAGE_TYPE,intent.getStringExtra(AppConstants.IMAGE_TYPE))
         downloadIntent.putExtra(AppConstants.IS_DOWNLOADED_BEFORE,hdDownloaded)
         startActivity(downloadIntent)
     }
