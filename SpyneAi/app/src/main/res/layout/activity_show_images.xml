@@ -66,6 +66,96 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:layout_marginTop="@dimen/dp_20"
+                    android:id="@+id/llThreeSixtyView">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:gravity="center"
+                        android:textColor="@color/primary"
+                        android:fontFamily="@font/medium"
+                        android:textSize="@dimen/sp_16"
+                        android:layout_gravity="center_horizontal"
+                        android:text="Exterior 360 view"/>
+
+                    <androidx.constraintlayout.widget.ConstraintLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content">
+
+                        <com.makeramen.roundedimageview.RoundedImageView
+                            android:id="@+id/iv_front"
+                            android:scaleType="fitXY"
+                            app:riv_corner_radius="6dp"
+                            app:riv_mutate_background="true"
+                            app:layout_constraintLeft_toLeftOf="parent"
+                            app:layout_constraintRight_toRightOf="parent"
+                           app:layout_constraintTop_toTopOf="parent"
+                            android:layout_height="200dp"
+                            android:visibility="invisible"
+                            android:layout_width="match_parent"
+                            android:layout_marginRight="25dp"
+                            android:layout_marginLeft="25dp"
+                            android:layout_marginTop="@dimen/dp_10" />
+
+                        <androidx.constraintlayout.widget.ConstraintLayout
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            app:layout_constraintTop_toTopOf="@id/iv_front"
+                            app:layout_constraintRight_toRightOf="@id/iv_front"
+                            android:id="@+id/cl_front"
+                            android:elevation="3dp"
+                            android:visibility="invisible"
+                            android:paddingLeft="@dimen/dp_5"
+                            android:paddingRight="@dimen/dp_5"
+                            android:background="@drawable/bg_exterior_share">
+
+                            <ImageView
+                                android:layout_width="@dimen/dp_30"
+                                android:layout_height="@dimen/dp_30"
+                                android:src="@drawable/ic_noun_share"
+                                android:padding="@dimen/dp_5"
+                                app:layout_constraintTop_toTopOf="parent"
+                                app:layout_constraintRight_toRightOf="parent"
+                                app:layout_constraintBottom_toBottomOf="parent"
+                                android:id="@+id/ivShare"/>
+
+                            <ImageView
+                                android:layout_width="@dimen/dp_30"
+                                android:layout_height="@dimen/dp_30"
+                                android:id="@+id/ivEmbed"
+                                android:src="@drawable/ic_noun_embed"
+                                app:layout_constraintRight_toLeftOf="@id/ivShare"
+                                app:layout_constraintTop_toTopOf="parent"
+                                android:layout_marginRight="5dp"
+                                app:layout_constraintBottom_toBottomOf="parent"/>
+
+                        </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+                        <com.facebook.shimmer.ShimmerFrameLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="200dp"
+                            app:layout_constraintLeft_toLeftOf="parent"
+                            app:layout_constraintRight_toRightOf="parent"
+                            app:layout_constraintTop_toTopOf="parent"
+                            android:layout_marginLeft="@dimen/dp_25"
+                            android:layout_marginRight="@dimen/dp_25"
+                            android:layout_marginTop="@dimen/dp_10"
+                            android:id="@+id/sv_front"
+                            android:visibility="visible"
+                            android:background="@drawable/bg_three_sixty_shimmer"/>
+
+
+                    </androidx.constraintlayout.widget.ConstraintLayout>
+
+                </LinearLayout>
+
                 <TextView
                     android:id="@+id/tvYourEmailIdReplaced"
                     android:layout_width="match_parent"
