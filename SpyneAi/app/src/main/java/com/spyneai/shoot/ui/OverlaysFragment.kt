@@ -77,6 +77,7 @@ class OverlaysFragment : BaseFragment<ShootViewModel,FragmentOverlaysBinding>(),
         viewModel.showInteriorDialog.observe(viewLifecycleOwner,{
             if (it) {
                 binding.imgOverlay?.visibility = View.GONE
+                viewModel.hideLeveler.value = true
                 initInteriorShots()
 
                 viewModel.startMiscShots.observe(viewLifecycleOwner,{
@@ -388,6 +389,7 @@ class OverlaysFragment : BaseFragment<ShootViewModel,FragmentOverlaysBinding>(),
     }
 
     private fun initMiscShots() {
+        viewModel.hideLeveler.value = true
         MiscShotsDialog().show(requireActivity().supportFragmentManager, "MiscShotsDialog")
 
         viewModel.startMiscShots.observe(viewLifecycleOwner,{

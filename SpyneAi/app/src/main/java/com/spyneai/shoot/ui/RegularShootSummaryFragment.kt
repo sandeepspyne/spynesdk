@@ -46,7 +46,9 @@ class RegularShootSummaryFragment  : BaseFragment<ProcessViewModel, FragmentRegu
         getUserCredits()
         observeCredits()
 
-        binding.ivBackGif.setOnClickListener { requireActivity().supportFragmentManager
+        binding.ivBackGif.setOnClickListener {
+            viewModel.isRegularShootSummaryActive = false
+            requireActivity().supportFragmentManager
             .beginTransaction()
             .remove(this)
             .commit()
@@ -62,6 +64,11 @@ class RegularShootSummaryFragment  : BaseFragment<ProcessViewModel, FragmentRegu
         binding.tvGenerateGif.setOnClickListener {
             reduceCredits(true)
         }
+    }
+
+    override fun onResume() {
+        super.onResume()
+        viewModel.isRegularShootSummaryActive = true
     }
 
     private fun setup360View() {

@@ -30,9 +30,6 @@ data class GetProjectsResponse(
     )
 
     data class Sku(
-
-
-
         @SerializedName("sku_id") val sku_id: String,
         @SerializedName("created_on") val created_on: String,
         @SerializedName("status") val status: String,
@@ -43,7 +40,7 @@ data class GetProjectsResponse(
         @SerializedName("processed_images") val processed_images: Int,
         @SerializedName("category") val category: String,
         @SerializedName("images") val images: List<Images>,
-        @SerializedName("is_360") val is360 : Boolean = true
+        @SerializedName("is_360") val is360 : Boolean
     )
 
     data class Images(

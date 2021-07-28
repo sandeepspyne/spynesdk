@@ -69,6 +69,7 @@ class ShootViewModel : ViewModel(){
     val subCategory : MutableLiveData<NewSubCatResponse.Data> = MutableLiveData()
     var categoryDetails : MutableLiveData<CategoryDetails> = MutableLiveData()
     val isSubCategoryConfirmed : MutableLiveData<Boolean> = MutableLiveData()
+    val hideLeveler : MutableLiveData<Boolean> = MutableLiveData()
     val showVin : MutableLiveData<Boolean> = MutableLiveData()
     val isProjectCreated : MutableLiveData<Boolean> = MutableLiveData()
     val isProjectCreatedEcom : MutableLiveData<Boolean> = MutableLiveData()

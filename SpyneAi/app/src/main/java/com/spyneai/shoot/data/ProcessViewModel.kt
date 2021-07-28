@@ -31,6 +31,7 @@ class ProcessViewModel : ViewModel() {
     var addRegularShootSummaryFragment : MutableLiveData<Boolean> = MutableLiveData()
     var backgroundSelect : String? = null
     var frontFramesList = ArrayList<String>()
+    var isRegularShootSummaryActive = false
 
     var interiorMiscShootsCount = 0
 

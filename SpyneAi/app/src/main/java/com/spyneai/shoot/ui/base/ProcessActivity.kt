@@ -5,7 +5,6 @@ import android.os.Bundle
 import androidx.lifecycle.ViewModelProvider
 import com.spyneai.R
 import com.spyneai.dashboard.ui.base.ViewModelFactory
-import com.spyneai.needs.AppConstants
 import com.spyneai.shoot.data.ProcessViewModel
 import com.spyneai.shoot.data.model.Sku
 import com.spyneai.shoot.ui.RegularShootSummaryFragment
@@ -62,7 +61,13 @@ class ProcessActivity : AppCompatActivity() {
     }
 
     override fun onBackPressed() {
-        if (processViewModel.startTimer.value == null || !processViewModel.startTimer.value!!)
-            ShootExitDialog().show(supportFragmentManager,"ShootExitDialog")
+        if (processViewModel.isRegularShootSummaryActive) {
+            processViewModel.isRegularShootSummaryActive = false
+            super.onBackPressed()
+        }else{
+            if (processViewModel.startTimer.value == null || !processViewModel.startTimer.value!!)
+                ShootExitDialog().show(supportFragmentManager,"ShootExitDialog")
+        }
+
     }
 }
