@@ -1,5 +1,6 @@
 package com.spyneai.shoot.ui
 
+import android.content.Intent
 import android.graphics.drawable.Drawable
 import android.os.Bundle
 import android.os.Handler
@@ -21,6 +22,7 @@ import com.spyneai.base.BaseFragment
 import com.spyneai.base.network.Resource
 import com.spyneai.captureEvent
 import com.spyneai.captureFailureEvent
+import com.spyneai.credits.CreditPlansActivity
 import com.spyneai.dashboard.ui.WhiteLabelConstants
 import com.spyneai.dashboard.ui.handleApiError
 import com.spyneai.databinding.FragmentRegularShootSummaryBinding
@@ -64,6 +66,13 @@ class RegularShootSummaryFragment  : BaseFragment<ProcessViewModel, FragmentRegu
 
         binding.tvGenerateGif.setOnClickListener {
             reduceCredits(true)
+        }
+
+        binding.tvTopUp.setOnClickListener {
+            var intent = Intent(requireContext(), CreditPlansActivity::class.java)
+            intent.putExtra("from_wallet",false)
+            intent.putExtra("credit_available",availableCredits)
+            startActivity(intent)
         }
     }
 
