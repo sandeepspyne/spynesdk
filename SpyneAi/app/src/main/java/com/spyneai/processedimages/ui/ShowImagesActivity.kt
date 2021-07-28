@@ -537,14 +537,14 @@ class ShowImagesActivity : AppCompatActivity(),View.OnTouchListener,View.OnClick
                         tsvParamFront.mEndX = event!!.x.toInt()
                         tsvParamFront.mEndY = event.y.toInt()
 
-                        if (tsvParamFront.mEndX - tsvParamFront.mStartX > 3) {
+                        if (tsvParamFront.mEndX - tsvParamFront.mStartX > 8) {
                             tsvParamFront.mImageIndex++
                             if (tsvParamFront.mImageIndex >= tsvParamFront.framesList.size) tsvParamFront.mImageIndex = 0
 
                             loadImage(tsvParamFront,iv_front)
 
                         }
-                        if (tsvParamFront.mEndX - tsvParamFront.mStartX < -3) {
+                        if (tsvParamFront.mEndX - tsvParamFront.mStartX < -8) {
                             tsvParamFront.mImageIndex--
                             if (tsvParamFront.mImageIndex < 0) tsvParamFront.mImageIndex = tsvParamFront.framesList.size - 1
 

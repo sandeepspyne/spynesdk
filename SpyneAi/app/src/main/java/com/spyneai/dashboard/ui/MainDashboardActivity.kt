@@ -20,6 +20,7 @@ import com.spyneai.orders.ui.MyOrdersActivity
 import com.spyneai.orders.ui.MyOrdersFragment
 import com.spyneai.shoot.ui.ShootActivity
 import com.spyneai.shoot.ui.StartShootActivity
+import kotlinx.android.synthetic.main.activity_show_images.*
 
 
 class MainDashboardActivity : AppCompatActivity() {
@@ -47,6 +48,7 @@ class MainDashboardActivity : AppCompatActivity() {
                 R.id.homeDashboardFragment->setCurrentFragment(firstFragment)
 
                 R.id.shootActivity-> {
+
                     var intent : Intent? = null
                     intent = if (getString(R.string.app_name) == "Ola Cabs") Intent(this,
                         StartShootActivity::class.java) else Intent(this, ShootActivity::class.java)

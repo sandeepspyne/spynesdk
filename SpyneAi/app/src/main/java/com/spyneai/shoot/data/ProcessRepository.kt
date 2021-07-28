@@ -40,11 +40,9 @@ class ProcessRepository : BaseRepository() {
 
     suspend fun reduceCredit(
         userId : String,
-        creditReduce:String,
-        enterpriseId: String,
-        skuId: String
+        creditReduce:String
     )= safeApiCall {
-        clipperApi.reduceCredit(userId, creditReduce, enterpriseId, skuId)
+        clipperApi.reduceCredit(userId, creditReduce)
     }
 
 }

@@ -148,12 +148,10 @@ class ProcessViewModel : ViewModel() {
 
     fun reduceCredit(
         userId : String,
-        creditReduce:String,
-        enterpriseId: String,
-        skuId: String
+        creditReduce:String
     ) = viewModelScope.launch {
         _reduceCreditResponse.value = Resource.Loading
-        _reduceCreditResponse.value = repository.reduceCredit(userId,creditReduce, enterpriseId, skuId)
+        _reduceCreditResponse.value = repository.reduceCredit(userId,creditReduce)
     }
 
 }

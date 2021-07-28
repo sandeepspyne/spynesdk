@@ -37,6 +37,7 @@ class RegularShootSummaryFragment  : BaseFragment<ProcessViewModel, FragmentRegu
     private lateinit var frontFramesList: List<String>
     lateinit var tsvParamFront : TSVParams
     var handler = Handler()
+    var TAG = "RegularShootSummaryFragment"
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -141,7 +142,6 @@ class RegularShootSummaryFragment  : BaseFragment<ProcessViewModel, FragmentRegu
                         dataSource: DataSource?,
                         isFirstResource: Boolean
                     ): Boolean {
-
 
 
                         if (index == tsvParams.framesList.size - 1) {
@@ -271,10 +271,8 @@ class RegularShootSummaryFragment  : BaseFragment<ProcessViewModel, FragmentRegu
             Utilities.showProgressDialog(requireContext())
 
         viewModel.reduceCredit(
-            Utilities.getPreference(requireContext(), AppConstants.TOKEN_ID).toString(),
-            viewModel.exteriorAngles.value.toString(),
-            WhiteLabelConstants.ENTERPRISE_ID,
-            viewModel.sku.value?.skuId!!
+            Utilities.getPreference(requireContext(), AppConstants.AUTH_KEY).toString(),
+            viewModel.exteriorAngles.value.toString()
         )
     }
 
@@ -316,6 +314,8 @@ class RegularShootSummaryFragment  : BaseFragment<ProcessViewModel, FragmentRegu
     }
 
     private fun processSku(showLoader : Boolean) {
+        Log.d(TAG, "processSku: "+ viewModel.backgroundSelect!!)
+
         if (showLoader)
             Utilities.showProgressDialog(requireContext())
 

@@ -170,6 +170,14 @@ interface ClipperApi {
         @Field("sku_id") skuId: String
     ): ReduceCreditResponse
 
+
+    @FormUrlEncoded
+    @PUT("v2/credit/reduce-credit")
+    suspend fun reduceCredit(
+        @Field("auth_key") authKey : String,
+        @Field("credit_reduce") creditReduce:String
+    ): ReduceCreditResponse
+
     @FormUrlEncoded
     @POST("v4/update-download-status")
     suspend fun updateDownloadStatus(@Field("user_id") userId : String,

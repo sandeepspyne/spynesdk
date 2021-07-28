@@ -32,6 +32,8 @@ class BaseApplication : Application() {
         super.onCreate()
         context = this
 
+        FirebaseCrashlytics.getInstance().setCrashlyticsCollectionEnabled(true)
+
         //disable night mode
         AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
 
@@ -45,7 +47,7 @@ class BaseApplication : Application() {
         // Set the initialized instance as a globally accessible instance.
         PostHog.setSingletonInstance(posthog)
 
-        FirebaseCrashlytics.getInstance().setCrashlyticsCollectionEnabled(true)
+
     }
 
 
