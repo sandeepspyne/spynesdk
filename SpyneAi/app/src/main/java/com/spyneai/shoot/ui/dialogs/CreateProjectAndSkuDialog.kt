@@ -36,7 +36,7 @@ class CreateProjectAndSkuDialog : BaseDialogFragment<ShootViewModel,DialogCreate
 
                 }
                 else -> {
-                    createProject(binding.etVinNumber.text.toString(),binding.etVinNumber.text.toString())
+                    createProject(binding.etVinNumber.text.toString().trim(),binding.etVinNumber.text.toString().trim())
                 }
             }
         }

@@ -59,6 +59,7 @@ class SkusAdapter(
 
         }
 
+        holder.tvCategory.text = skuList[position].category
         holder.tvSkuName.text = skuList[position].sku_name
         holder.tvImages.text = skuList[position].total_images.toString()
 
@@ -78,6 +79,7 @@ class SkusAdapter(
             intent.putExtra(AppConstants.SKU_ID, skuList[position].sku_id)
             intent.putExtra("is_paid",skuList[position].paid)
             intent.putExtra(AppConstants.IMAGE_TYPE,skuList[position].category)
+            intent.putExtra(AppConstants.IS_360,skuList[position].is360)
             context.startActivity(intent)
         }
 

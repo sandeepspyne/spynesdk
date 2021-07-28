@@ -42,7 +42,8 @@ data class GetProjectsResponse(
         @SerializedName("total_images") val total_images: Int,
         @SerializedName("processed_images") val processed_images: Int,
         @SerializedName("category") val category: String,
-        @SerializedName("images") val images: List<Images>
+        @SerializedName("images") val images: List<Images>,
+        @SerializedName("is_360") val is360 : Boolean = true
     )
 
     data class Images(

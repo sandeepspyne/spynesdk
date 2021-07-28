@@ -97,8 +97,8 @@ class ShowImagesActivity : AppCompatActivity(),View.OnTouchListener,View.OnClick
         AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
 
         frontFramesList = ArrayList()
-        setBulkImages()
 
+        setBulkImages()
 
         setListeners()
 
@@ -307,7 +307,6 @@ class ShowImagesActivity : AppCompatActivity(),View.OnTouchListener,View.OnClick
     //Fetch bulk data
     private fun fetchBulkUpload() {
 
-       // shootId = "sku-a5d2fb30-2878-4c3c-b757-c1fb2b02c755"
         shootId = Utilities.getPreference(this, AppConstants.SKU_ID)!!
 
         val request = RetrofitClients.buildService(APiService::class.java)
@@ -402,7 +401,8 @@ class ShowImagesActivity : AppCompatActivity(),View.OnTouchListener,View.OnClick
 
 
                 //show 360 view
-                showThreeSixtyView()
+                if (intent.getBooleanExtra(AppConstants.IS_360,false))
+                    showThreeSixtyView()
 
                 showReplacedImagesAdapter.notifyDataSetChanged()
                 ShowReplacedImagesInteriorAdapter.notifyDataSetChanged()
@@ -421,7 +421,7 @@ class ShowImagesActivity : AppCompatActivity(),View.OnTouchListener,View.OnClick
     }
 
     private fun showThreeSixtyView() {
-//        frontFramesList = it.value.data.map { it.output_image_lres_url }
+        llThreeSixtyView.visibility = View.VISIBLE
 
         tsvParamFront = TSVParams()
         tsvParamFront.type = 0

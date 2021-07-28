@@ -4,8 +4,12 @@ import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.ContentValues
 import android.content.ContentValues.TAG
+import android.content.Context
 import android.content.pm.ActivityInfo
-import android.net.Uri
+import android.hardware.Sensor
+import android.hardware.SensorEvent
+import android.hardware.SensorEventListener
+import android.hardware.SensorManager
 import android.os.*
 import android.provider.MediaStore
 import android.util.DisplayMetrics
@@ -14,6 +18,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.ViewTreeObserver
+import android.view.animation.AccelerateInterpolator
 import android.widget.Toast
 import androidx.camera.core.*
 import androidx.camera.lifecycle.ProcessCameraProvider
@@ -22,8 +27,8 @@ import androidx.core.net.toFile
 import com.hbisoft.pickit.PickiT
 import com.hbisoft.pickit.PickiTCallbacks
 import com.posthog.android.Properties
-import com.robertlevonyan.demo.camerax.analyzer.LuminosityAnalyzer
 import com.spyneai.R
+import com.spyneai.analyzer.LuminosityAnalyzer
 import com.spyneai.base.BaseFragment
 import com.spyneai.camera2.ShootDimensions
 import com.spyneai.captureEvent
@@ -34,11 +39,9 @@ import com.spyneai.needs.Utilities
 import com.spyneai.posthog.Events
 import com.spyneai.shoot.data.ShootViewModel
 import com.spyneai.shoot.data.model.ShootData
-import com.spyneai.shoot.ui.dialogs.InteriorHintDialog
 import com.spyneai.shoot.ui.dialogs.SubCategoryConfirmationDialog
 import com.spyneai.shoot.utils.ThreadExecutor
 import com.spyneai.shoot.utils.log
-import kotlinx.android.synthetic.main.fragment_camera.*
 import java.io.File
 import java.util.*
 import java.util.concurrent.ExecutionException
@@ -48,9 +51,11 @@ import kotlin.collections.ArrayList
 import kotlin.math.abs
 import kotlin.math.max
 import kotlin.math.min
+import kotlin.math.roundToInt
 
 
-class CameraFragment : BaseFragment<ShootViewModel, FragmentCameraBinding>(), PickiTCallbacks {
+class CameraFragment : BaseFragment<ShootViewModel, FragmentCameraBinding>(), PickiTCallbacks,
+    SensorEventListener {
     private var imageCapture: ImageCapture? = null
 
     private var imageAnalyzer: ImageAnalysis? = null
@@ -62,18 +67,41 @@ class CameraFragment : BaseFragment<ShootViewModel, FragmentCameraBinding>(), Pi
 
     // Selector showing which camera is selected (front or back)
     private var lensFacing = CameraSelector.DEFAULT_BACK_CAMERA
-
+    lateinit var file : File
 
     companion object {
         private const val RATIO_4_3_VALUE = 4.0 / 3.0 // aspect ratio 4x3
         private const val RATIO_16_9_VALUE = 16.0 / 9.0 // aspect ratio 16x9
     }
 
-    lateinit var file : File
+    private var pitch = 0.0
+    var roll = 0.0
+
+    private var centerPosition = 0
+    private var topConstraint = 0
+    private var bottomConstraint = 0
+
+    private lateinit var mSensorManager: SensorManager
+    private var mAccelerometer: Sensor? = null
+    private val accelerometerReading = FloatArray(3)
+    private val magnetometerReading = FloatArray(3)
+
+    private val rotationMatrix = FloatArray(9)
+    private val orientationAngles = FloatArray(3)
+
+
+    var gravity = FloatArray(3)
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        mSensorManager = requireActivity().getSystemService(Context.SENSOR_SERVICE) as SensorManager
+        mAccelerometer = mSensorManager.getDefaultSensor(Sensor.TYPE_MAGNETIC_FIELD)
+
+
+        Handler(Looper.getMainLooper()).postDelayed({
+            startCamera()
+        }, 300)
 
         cameraExecutor = Executors.newSingleThreadExecutor()
         // Determine the output directory
@@ -116,33 +144,53 @@ class CameraFragment : BaseFragment<ShootViewModel, FragmentCameraBinding>(), Pi
         }
     }
 
+    override fun onResume() {
+        super.onResume()
+
+        getPreviewDimensions(binding.ivGryroRing!!,1)
+        getPreviewDimensions(binding.tvCenter!!,2)
+
+        mSensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER)?.also { accelerometer ->
+            mSensorManager.registerListener(
+                this,
+                accelerometer,
+                SensorManager.SENSOR_DELAY_NORMAL,
+                SensorManager.SENSOR_DELAY_UI
+            )
+        }
+        mSensorManager.getDefaultSensor(Sensor.TYPE_MAGNETIC_FIELD)?.also { magneticField ->
+            mSensorManager.registerListener(
+                this,
+                magneticField,
+                SensorManager.SENSOR_DELAY_NORMAL,
+                SensorManager.SENSOR_DELAY_UI
+            )
+        }
+    }
+
+    override fun onDestroy() {
+        mSensorManager.unregisterListener(this)
+        super.onDestroy()
+    }
+
+
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
 
-        startCamera()
-
         binding.cameraCaptureButton?.setOnClickListener {
-            if (getString(R.string.app_name) == "Karvi.com"){
+            if ((viewModel.isSubCategoryConfirmed.value == null || viewModel.isSubCategoryConfirmed.value == false) &&
+                (viewModel.categoryDetails.value?.categoryName == "Automobiles" ||
+                        viewModel.categoryDetails.value?.categoryName == "Bikes")
+            ) {
+                SubCategoryConfirmationDialog().show(
+                    requireFragmentManager(),
+                    "SubCategoryConfirmationDialog"
+                )
+            } else {
                 if (viewModel.isCameraButtonClickable) {
                     takePhoto()
                     log("shoot image button clicked")
                     viewModel.isCameraButtonClickable = false
-                }
-            }else{
-                if ((viewModel.isSubCategoryConfirmed.value == null || viewModel.isSubCategoryConfirmed.value == false) &&
-                    (viewModel.categoryDetails.value?.categoryName == "Automobiles" ||
-                            viewModel.categoryDetails.value?.categoryName == "Bikes")
-                ) {
-                    SubCategoryConfirmationDialog().show(
-                        requireFragmentManager(),
-                        "SubCategoryConfirmationDialog"
-                    )
-                } else {
-                    if (viewModel.isCameraButtonClickable) {
-                        takePhoto()
-                        log("shoot image button clicked")
-                        viewModel.isCameraButtonClickable = false
-                    }
                 }
             }
         }
@@ -159,24 +207,48 @@ class CameraFragment : BaseFragment<ShootViewModel, FragmentCameraBinding>(), Pi
     @SuppressLint("UnsafeOptInUsageError")
     private fun startCamera() {
         val cameraProviderFuture = ProcessCameraProvider.getInstance(requireContext())
+        var cameraProvider: ProcessCameraProvider
+        cameraProviderFuture.addListener({
 
-        cameraProviderFuture.addListener(Runnable {
             // Used to bind the lifecycle of cameras to the lifecycle owner
-            val cameraProvider: ProcessCameraProvider = cameraProviderFuture.get()
+            try {
+                cameraProvider = cameraProviderFuture.get()
+            } catch (e: InterruptedException) {
+                Toast.makeText(requireContext(), "Error starting camera", Toast.LENGTH_SHORT).show()
+                return@addListener
+            } catch (e: ExecutionException) {
+                Toast.makeText(requireContext(), "Error starting camera", Toast.LENGTH_SHORT).show()
+                return@addListener
+            }
+
+            // The display information
+            val metrics = DisplayMetrics().also { binding.viewFinder.display.getRealMetrics(it) }
+            // The ratio for the output image and preview
+            val aspectRatio = aspectRatio(metrics.widthPixels, metrics.heightPixels)
+            // The display rotation
+            val rotation = binding.viewFinder.display.rotation
+
+            val localCameraProvider = cameraProvider
+                ?: throw IllegalStateException("Camera initialization failed.")
 
             // Preview
             val preview = Preview.Builder()
+//                .setTargetAspectRatio(aspectRatio) // set the camera aspect ratio
+                .setTargetRotation(rotation) // set the camera rotation
                 .build()
                 .also {
-                    it.setSurfaceProvider(binding.viewFinder?.surfaceProvider)
+                    it.setSurfaceProvider(binding.viewFinder.surfaceProvider)
                 }
 
             //for exact image cropping
             val viewPort = binding.viewFinder?.viewPort
 
             imageCapture = ImageCapture.Builder()
-                .setCaptureMode(ImageCapture.CAPTURE_MODE_MINIMIZE_LATENCY)
-                .setFlashMode(flashMode).build()
+                .setCaptureMode(ImageCapture.CAPTURE_MODE_MAXIMIZE_QUALITY)
+                .setFlashMode(flashMode)
+                .setTargetAspectRatio(aspectRatio) // set the capture aspect ratio
+                .setTargetRotation(rotation) // set the capture rotation
+                .build()
 
             val useCaseGroup = UseCaseGroup.Builder()
                 .addUseCase(preview)
@@ -184,23 +256,41 @@ class CameraFragment : BaseFragment<ShootViewModel, FragmentCameraBinding>(), Pi
                 .setViewPort(viewPort!!)
                 .build()
 
+            // The Configuration of image analyzing
+            imageAnalyzer = ImageAnalysis.Builder()
+                .setTargetAspectRatio(aspectRatio) // set the analyzer aspect ratio
+                .setTargetRotation(rotation) // set the analyzer rotation
+                .setBackpressureStrategy(ImageAnalysis.STRATEGY_KEEP_ONLY_LATEST) // in our analysis, we care about the latest image
+                .build()
+                .apply {
+                    // Use a worker thread for image analysis to prevent glitches
+                    val analyzerThread = HandlerThread("LuminosityAnalysis").apply { start() }
+                    setAnalyzer(
+                        ThreadExecutor(Handler(analyzerThread.looper)),
+                        LuminosityAnalyzer()
+                    )
+                }
+
 
             // Select back camera as a default
             val cameraSelector = CameraSelector.DEFAULT_BACK_CAMERA
 
 
+            // Unbind use cases before rebinding
+            cameraProvider.unbindAll()
             try {
-                // Unbind use cases before rebinding
-                cameraProvider.unbindAll()
-
                 // Bind use cases to camera
                 cameraProvider.bindToLifecycle(
-                    viewLifecycleOwner, cameraSelector, useCaseGroup
+                    viewLifecycleOwner,
+                    cameraSelector,
+                    useCaseGroup
                 )
 
                 if (viewModel.shootDimensions.value == null ||
-                    viewModel.shootDimensions.value?.previewHeight == 0){
-                    getPreviewDimensions(binding.viewFinder!!)
+                    viewModel.shootDimensions.value?.previewHeight == 0
+                ) {
+                    getPreviewDimensions(binding.viewFinder!!, 0)
+                    getPreviewDimensions(binding.llCapture!!, 3)
                 }
             } catch (exc: Exception) {
                 Log.e(TAG, "Use case binding failed", exc)
@@ -217,7 +307,6 @@ class CameraFragment : BaseFragment<ShootViewModel, FragmentCameraBinding>(), Pi
         cameraExecutor.shutdown()
 
     }
-
 
     private fun aspectRatio(width: Int, height: Int): Int {
         val previewRatio = max(width, height).toDouble() / min(width, height)
@@ -255,7 +344,7 @@ class CameraFragment : BaseFragment<ShootViewModel, FragmentCameraBinding>(), Pi
             }
         }
 
-        var filename  = viewModel.sku.value?.skuId+"_"
+        var filename  = viewModel.sku.value?.skuName +"_"+viewModel.sku.value?.skuId+"_"
 
         filename += if (viewModel.shootList.value == null)
             viewModel.categoryDetails.value?.imageType!!+"_1"
@@ -293,8 +382,6 @@ class CameraFragment : BaseFragment<ShootViewModel, FragmentCameraBinding>(), Pi
                 else -> {System.currentTimeMillis().toString()}
             }
         }
-
-
 
         // Options fot the output image file
         val outputOptions = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
@@ -351,18 +438,147 @@ class CameraFragment : BaseFragment<ShootViewModel, FragmentCameraBinding>(), Pi
             })
     }
 
-    private fun getPreviewDimensions(view : View) {
+    override fun onSensorChanged(event: SensorEvent?) {
+        //Get Rotation Vector Sensor Values
+
+        if (event?.sensor?.type == Sensor.TYPE_ACCELEROMETER) {
+            System.arraycopy(event.values, 0, accelerometerReading, 0, accelerometerReading.size)
+        } else if (event?.sensor?.type == Sensor.TYPE_MAGNETIC_FIELD) {
+            System.arraycopy(event.values, 0, magnetometerReading, 0, magnetometerReading.size)
+        }
+
+        if (viewModel.isSubCategoryConfirmed.value == true)
+            updateOrientationAngles()
+
+    }
+
+    fun updateOrientationAngles() {
+        // Update rotation matrix, which is needed to update orientation angles.
+        SensorManager.getRotationMatrix(
+            rotationMatrix,
+            null,
+            accelerometerReading,
+            magnetometerReading
+        )
+
+        // "rotationMatrix" now has up-to-date information.
+
+        SensorManager.getOrientation(rotationMatrix, orientationAngles)
+
+        // "orientationAngles" now has up-to-date information.
+
+        //binding.tvAzimuth.text = "Azimuth ${Math.toDegrees(orientationAngles[0].toDouble())}"
+
+        val diff = Math.toDegrees(orientationAngles[2].toDouble()) - roll
+
+        val movearrow = abs(Math.toDegrees(orientationAngles[2].toDouble()).roundToInt()) -  abs(roll.roundToInt()) >= 1
+        val rotatedarrow = abs(Math.toDegrees(orientationAngles[1].toDouble()).roundToInt()) -  abs(pitch.roundToInt()) >= 1
+
+        pitch = Math.toDegrees(orientationAngles[1].toDouble())
+        roll = Math.toDegrees(orientationAngles[2].toDouble())
+
+
+        if ((roll >= -100 && roll <=-80) && (pitch >= -5 && pitch <= 5)){
+
+            binding
+                .tvLevelIndicator
+                ?.animate()
+                ?.translationY(0f)
+                ?.setInterpolator(AccelerateInterpolator())?.duration = 0
+
+            binding.tvLevelIndicator?.rotation = 0f
+
+            binding.ivTopLeft?.setColorFilter(ContextCompat.getColor(requireContext(), R.color.gyro_in_level))
+            binding.ivBottomLeft?.setColorFilter(ContextCompat.getColor(requireContext(), R.color.gyro_in_level))
+
+            binding.ivGryroRing?.setColorFilter(ContextCompat.getColor(requireContext(), R.color.gyro_in_level))
+            binding.tvLevelIndicator?.background = ContextCompat.getDrawable(requireContext(), R.drawable.bg_gyro_level)
+
+            binding.ivTopRight?.setColorFilter(ContextCompat.getColor(requireContext(), R.color.gyro_in_level))
+            binding.ivBottomRight?.setColorFilter(ContextCompat.getColor(requireContext(), R.color.gyro_in_level))
+
+        }else{
+            binding.ivTopLeft?.setColorFilter(ContextCompat.getColor(requireContext(), R.color.gyro_error_level))
+            binding.ivBottomLeft?.setColorFilter(ContextCompat.getColor(requireContext(), R.color.gyro_error_level))
+
+            binding.ivGryroRing?.setColorFilter(ContextCompat.getColor(requireContext(), R.color.gyro_error_level))
+            binding.tvLevelIndicator?.background = ContextCompat.getDrawable(requireContext(), R.drawable.bg_gyro_error)
+
+            binding.ivTopRight?.setColorFilter(ContextCompat.getColor(requireContext(), R.color.gyro_error_level))
+            binding.ivBottomRight?.setColorFilter(ContextCompat.getColor(requireContext(), R.color.gyro_error_level))
+
+            if (movearrow)
+                moveArrow(roll)
+
+            if (rotatedarrow){
+                if (pitch > 0){
+                    rotateArrow(pitch.minus(0).roundToInt())
+                }else{
+                    rotateArrow(pitch.plus(0).roundToInt())
+                }
+            }
+
+        }
+    }
+
+    private fun rotateArrow(roundToInt: Int) {
+        binding.tvLevelIndicator?.rotation = roundToInt.toFloat()
+    }
+
+    override fun onAccuracyChanged(sensor: Sensor?, accuracy: Int) {
+    }
+
+    private fun moveArrow(roll: Double) {
+        var newRoll = roll + 90
+
+        if (newRoll > 0 && (centerPosition + newRoll) < bottomConstraint){
+
+            newRoll -= 0
+            binding
+                .tvLevelIndicator
+                ?.animate()
+                ?.translationY(newRoll.toFloat())
+                ?.setInterpolator(AccelerateInterpolator())?.duration = 0
+        }
+
+        if (newRoll < 0 && (centerPosition - newRoll) > topConstraint) {
+
+            newRoll += 0
+
+            binding
+                .tvLevelIndicator
+                ?.animate()
+                ?.translationY(newRoll.toFloat())
+                ?.setInterpolator(AccelerateInterpolator())?.duration = 0
+        }
+    }
+
+
+    private fun getPreviewDimensions(view: View, type: Int) {
         view.viewTreeObserver.addOnGlobalLayoutListener(object :
             ViewTreeObserver.OnGlobalLayoutListener {
             override fun onGlobalLayout() {
                 view.viewTreeObserver.removeOnGlobalLayoutListener(this)
 
-                val shootDimensions = ShootDimensions()
-                shootDimensions.previewWidth = view.width
-                shootDimensions.previewHeight = view.height
+                when(type) {
+                    0 -> {
+                        val shootDimensions = ShootDimensions()
+                        shootDimensions.previewWidth = view.width
+                        shootDimensions.previewHeight = view.height
 
+                        viewModel.shootDimensions.value = shootDimensions
+                    }
 
-                viewModel.shootDimensions.value = shootDimensions
+                    1 -> {
+                        topConstraint = view.top
+                        bottomConstraint = topConstraint + view.height
+                    }
+
+                    2 -> {
+                        centerPosition = view.top
+                    }
+                }
+
             }
         })
     }
