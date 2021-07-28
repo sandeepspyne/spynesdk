@@ -87,7 +87,8 @@ interface ClipperApi {
     suspend fun processSku(
         @Field("auth_key") authKey : String,
         @Field("sku_id") skuId : String,
-        @Field("background_id") backgroundId : String
+        @Field("background_id") backgroundId : String,
+        @Field("is_360") is360 : Boolean
     ) : ProcessSkuRes
 
 

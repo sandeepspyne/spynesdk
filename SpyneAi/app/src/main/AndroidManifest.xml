@@ -41,16 +41,10 @@
         tools:targetApi="m">
         <activity android:name=".orders.ui.activity.ShowRawImagesActivity"></activity>
         <activity android:name=".orders.ui.activity.OngoingSkusActivity" />
-        <activity
-            android:name=".threesixty.TiltTestActivity"
-            android:screenOrientation="landscape" />
-        <activity android:name=".processedimages.ui.ProcessedImageActivity"></activity>
-        <activity
-            android:name=".threesixty.TiltTestActivity"
-            android:screenOrientation="landscape"></activity>
-        <activity
-            android:name=".threesixty.SensorTestActivity"
-            android:screenOrientation="landscape" />
+
+        <activity android:name=".processedimages.ui.ProcessedImageActivity"
+            android:screenOrientation="portrait"></activity>
+
         <activity android:name=".orders.ui.activity.CompletedSkusActivity" />
         <activity
             android:name=".threesixty.ui.ThreeSixtyExteriorActivity"
@@ -68,14 +62,7 @@
             android:name=".threesixty.ui.ThreeSixtyActivity"
             android:configChanges="screenLayout|keyboardHidden"
             android:screenOrientation="landscape" />
-        <activity android:name=".processedimages.ui.BikeOrderSummaryActivity" />
-        <activity android:name=".RecylerviewTestActivity" />
-        <activity android:name=".processedimages.ui.BikeImagesActivity" />
-        <activity
-            android:name=".shoot.ui.base.ShootPortraitActivity"
-            android:configChanges="screenLayout|keyboardHidden"
-            android:screenOrientation="portrait" />
-        <activity android:name=".shoot.ui.ecomwithgrid.ShowSkuProjectActivity" />
+
         <activity
             android:name=".shoot.ui.base.ProcessActivity"
             android:screenOrientation="portrait" /> <!-- <activity android:name=".shoot.ui.ShootActivity"></activity> -->
@@ -107,11 +94,7 @@
         <activity
             android:name=".credits.WalletActivity"
             android:screenOrientation="portrait" />
-        <activity android:name=".videorecording.ThreeSixtyViewTestActivity" />
-        <activity android:name=".videorecording.VideoUploadHandlerActivity" />
-        <activity
-            android:name=".videorecording.ThreeSixtyInteriorViewActivity"
-            android:launchMode="singleTop" />
+
         <activity
             android:name=".activity.OngoingOrdersActivity"
             android:launchMode="singleTask"
@@ -120,22 +103,15 @@
             android:name=".activity.YourOrdersActivity"
             android:launchMode="singleTask"
             android:screenOrientation="portrait" />
-        <activity android:name=".videorecording.ProcessVideoTimerActivity" />
+
 
         <service
             android:name=".imagesdowloading.ImageDownloadingService"
             android:enabled="true"
             android:exported="false" />
-        <service
-            android:name=".videorecording.service.UploadVideoService"
-            android:enabled="true"
-            android:exported="false" />
 
-        <activity android:name=".videorecording.SpinViewActivity" />
-        <activity android:name=".videorecording.SaveTrimmedVideoActivity" />
-        <activity
-            android:name=".videorecording.RecordVideoActivity"
-            android:screenOrientation="landscape" />
+
+
 
         <receiver
             android:name=".service.StartReceiver"
@@ -291,10 +267,11 @@
             android:theme="@style/Theme.AppCompat.Light.NoActionBar" /> <!-- <activity -->
         <!-- android:name=".orders.ui.MyOrdersActivity" -->
         <!-- android:screenOrientation="portrait" /> -->
-        <activity
-            android:name=".shoot.ui.base.ShootActivity"
-            android:configChanges="screenLayout|keyboardHidden"
-            android:screenOrientation="landscape" />
+       <activity android:name=".shoot.ui.ShootActivity"
+           android:configChanges="screenLayout|keyboardHidden"
+           android:screenOrientation="landscape">
+
+       </activity>
         <activity
             android:name=".orders.ui.MyOrdersActivity"
             android:screenOrientation="portrait" /><activity

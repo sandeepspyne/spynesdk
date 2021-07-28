@@ -9,6 +9,7 @@ import android.graphics.Color
 import android.os.Build
 import android.os.Bundle
 import android.os.Environment
+import android.util.Log
 import android.view.View
 import android.view.Window
 import android.view.WindowManager
@@ -26,6 +27,7 @@ import com.spyneai.shoot.data.model.CategoryDetails
 import com.spyneai.shoot.ui.base.ProcessActivity
 import com.spyneai.shoot.ui.dialogs.ShootExitDialog
 import java.io.File
+import java.util.ArrayList
 
 
 class ShootActivity : AppCompatActivity() {
@@ -80,15 +82,33 @@ class ShootActivity : AppCompatActivity() {
                 // start process activity
                 val intent = Intent(this, ProcessActivity::class.java)
 
+
                 intent.apply {
                     this.putExtra("sku_id", shootViewModel.sku.value?.skuId)
                     this.putExtra("exterior_angles", shootViewModel.exterirorAngles.value)
                     this.putExtra("process_sku",shootViewModel.processSku)
                     this.putExtra("interior_misc_count",getInteriorMiscCount())
+                    this.putStringArrayListExtra("exterior_images_list",getExteriorImagesList())
                     startActivity(this)
                 }
             }
         })
+    }
+
+    private fun getExteriorImagesList(): ArrayList<String> {
+        val exteriorList = shootViewModel.shootList.value?.filter {
+            it.image_category == "Exterior"
+        }
+
+        Log.d(TAG, "getExteriorImagesList: "+exteriorList?.size)
+
+        val s = exteriorList?.map {
+            it.capturedImage
+        }
+
+        Log.d(TAG, "getExteriorImagesList: "+s?.size)
+
+        return s as ArrayList<String>
     }
 
     private fun getInteriorMiscCount(): Int {

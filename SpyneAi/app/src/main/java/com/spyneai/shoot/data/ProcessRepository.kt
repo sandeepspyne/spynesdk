@@ -19,9 +19,9 @@ class ProcessRepository : BaseRepository() {
 
 
 
-    suspend fun processSku(authKey : String,skuId : String, backgroundId : String)
+    suspend fun processSku(authKey : String,skuId : String, backgroundId : String,is360 : Boolean)
             = safeApiCall {
-        clipperApi.processSku(authKey, skuId, backgroundId)
+        clipperApi.processSku(authKey, skuId, backgroundId,is360)
     }
 
     suspend fun updateTotalFrames(
@@ -30,6 +30,21 @@ class ProcessRepository : BaseRepository() {
         totalFrames: String
     ) = safeApiCall {
         clipperApi.updateTotalFrames(authKey,skuId,totalFrames)
+    }
+
+    suspend fun getUserCredits(
+        userId : String
+    )= safeApiCall {
+        clipperApi.userCreditsDetails(userId)
+    }
+
+    suspend fun reduceCredit(
+        userId : String,
+        creditReduce:String,
+        enterpriseId: String,
+        skuId: String
+    )= safeApiCall {
+        clipperApi.reduceCredit(userId, creditReduce, enterpriseId, skuId)
     }
 
 }

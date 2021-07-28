@@ -130,6 +130,7 @@
     <string name="download_failed"><u> Download Failed</u></string>
 
     <string name="total_images_clicked"><u>Total Images Clicked</u></string>
+    <string name="total_exterior_clicked"><u>Total Exterior Images</u></string>
     <string name="credits_available"><u>Credits Available</u></string>
     <string name="top_up_2"><u>(Top Up)</u></string>
 

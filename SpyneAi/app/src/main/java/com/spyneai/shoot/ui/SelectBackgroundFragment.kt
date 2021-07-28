@@ -45,13 +45,25 @@ class SelectBackgroundFragment : BaseFragment<ProcessViewModel,FragmentSelectBac
             requireActivity().onBackPressed()
         }
 
+        binding.cb360.setOnCheckedChangeListener { buttonView, isChecked ->
+            if (isChecked)
+                binding.tvGenerateGif.text = "Continue"
+            else
+                binding.tvGenerateGif.text = "Generate Output"
+        }
+
         binding.tvGenerateGif.setOnClickListener {
             //update total frame if user clicked interior and misc
             if (viewModel.interiorMiscShootsCount > 0)
                 updateTotalFrames()
 
-            //process image call
-            processSku()
+            if (binding.cb360.isChecked){
+                viewModel.backgroundSelect = backgroundSelect
+                viewModel.addRegularShootSummaryFragment.value = true
+            }else{
+                //process image call
+                processSku()
+            }
         }
     }
 
@@ -148,7 +160,8 @@ class SelectBackgroundFragment : BaseFragment<ProcessViewModel,FragmentSelectBac
         viewModel.processSku(
             Utilities.getPreference(requireContext(),AppConstants.AUTH_KEY).toString(),
         viewModel.sku.value?.skuId!!,
-        backgroundSelect)
+        backgroundSelect,
+        false)
 
         log("Process sku started")
         log("Auth key: "+Utilities.getPreference(requireContext(),AppConstants.AUTH_KEY).toString())

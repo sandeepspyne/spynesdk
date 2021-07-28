@@ -610,7 +610,7 @@ class ShowImagesActivity : AppCompatActivity(),View.OnTouchListener,View.OnClick
 
     private fun getCode(type : Int) : String {
         return "<iframe \n" +
-                "  src=\"https://www.spyne.ai/shoots/shoot?skuId="+shootId+"&type=360_exterior" +
+                "  src=\"https://www.spyne.ai/shoots/shoot?skuId="+shootId+"&type=exterior" +
                 "  style=\"border:0; height: 100%; width: 100%;\" framerborder=\"0\"></iframe>"
 
     }

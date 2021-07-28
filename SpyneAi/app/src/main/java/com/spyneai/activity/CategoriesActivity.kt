@@ -17,8 +17,8 @@ import com.spyneai.interfaces.RetrofitClients
 
 import com.spyneai.needs.AppConstants
 import com.spyneai.needs.Utilities
+import com.spyneai.shoot.ui.ShootActivity
 import com.spyneai.shoot.ui.StartShootActivity
-import com.spyneai.shoot.ui.base.ShootActivity
 
 import kotlinx.android.synthetic.main.activity_categories.*
 import retrofit2.Call

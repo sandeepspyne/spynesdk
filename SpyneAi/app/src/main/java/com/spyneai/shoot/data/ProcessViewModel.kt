@@ -7,6 +7,9 @@ import androidx.lifecycle.viewModelScope
 import androidx.work.*
 import com.spyneai.BaseApplication
 import com.spyneai.base.network.Resource
+import com.spyneai.credits.model.DownloadHDRes
+import com.spyneai.credits.model.ReduceCreditResponse
+import com.spyneai.model.credit.CreditDetailsResponse
 import com.spyneai.shoot.data.model.CarsBackgroundRes
 import com.spyneai.shoot.data.model.ProcessSkuRes
 import com.spyneai.shoot.data.model.Sku
@@ -25,6 +28,9 @@ class ProcessViewModel : ViewModel() {
     val startTimer : MutableLiveData<Boolean> = MutableLiveData()
     val processSku : MutableLiveData<Boolean> = MutableLiveData()
     val skuQueued : MutableLiveData<Boolean> = MutableLiveData()
+    var addRegularShootSummaryFragment : MutableLiveData<Boolean> = MutableLiveData()
+    var backgroundSelect : String? = null
+    var frontFramesList = ArrayList<String>()
 
     var interiorMiscShootsCount = 0
 
@@ -35,6 +41,15 @@ class ProcessViewModel : ViewModel() {
     private val _processSkuRes : MutableLiveData<Resource<ProcessSkuRes>> = MutableLiveData()
     val processSkuRes: LiveData<Resource<ProcessSkuRes>>
         get() = _processSkuRes
+
+    private val _userCreditsRes : MutableLiveData<Resource<CreditDetailsResponse>> = MutableLiveData()
+    val userCreditsRes: LiveData<Resource<CreditDetailsResponse>>
+        get() = _userCreditsRes
+
+
+    private val _reduceCreditResponse : MutableLiveData<Resource<ReduceCreditResponse>> = MutableLiveData()
+    val reduceCreditResponse: LiveData<Resource<ReduceCreditResponse>>
+        get() = _reduceCreditResponse
 
     fun getBackgroundGifCars(
         category: RequestBody,
@@ -87,10 +102,10 @@ class ProcessViewModel : ViewModel() {
 
     }
 
-    fun processSku(authKey : String,skuId : String, backgroundId : String)
+    fun processSku(authKey : String,skuId : String, backgroundId : String,is360 : Boolean)
             = viewModelScope.launch {
         _processSkuRes.value = Resource.Loading
-        _processSkuRes.value = repository.processSku(authKey, skuId, backgroundId)
+        _processSkuRes.value = repository.processSku(authKey, skuId, backgroundId,is360)
     }
 
     fun checkImagesUploadStatus(backgroundSelect: String) {
@@ -121,6 +136,23 @@ class ProcessViewModel : ViewModel() {
                     .setConstraints(constraints)
                     .setInputData(data.build())
                     .build())
+    }
+
+    fun getUserCredits(
+        userId : String
+    ) = viewModelScope.launch {
+        _userCreditsRes.value = Resource.Loading
+        _userCreditsRes.value = repository.getUserCredits(userId)
+    }
+
+    fun reduceCredit(
+        userId : String,
+        creditReduce:String,
+        enterpriseId: String,
+        skuId: String
+    ) = viewModelScope.launch {
+        _reduceCreditResponse.value = Resource.Loading
+        _reduceCreditResponse.value = repository.reduceCredit(userId,creditReduce, enterpriseId, skuId)
     }
 
 }
