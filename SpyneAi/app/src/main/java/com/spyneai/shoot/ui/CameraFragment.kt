@@ -87,6 +87,10 @@ class CameraFragment : BaseFragment<ShootViewModel, FragmentCameraBinding>(), Pi
             if (it) binding.tvSkipShoot?.visibility = View.VISIBLE
         })
 
+        viewModel.isSubCategoryConfirmed.observe(viewLifecycleOwner,{
+            if (it)  binding.flLevelIndicator.visibility = View.VISIBLE
+        })
+
         binding.tvSkipShoot?.setOnClickListener {
             when (viewModel.categoryDetails.value?.imageType) {
                 "Interior" -> {

@@ -55,6 +55,7 @@ class RegularShootSummaryFragment  : BaseFragment<ProcessViewModel, FragmentRegu
         binding.tvNoOfImages.text = viewModel.exteriorAngles.value?.plus(viewModel.interiorMiscShootsCount).toString()
         binding.tvSkuId.text = viewModel.sku.value?.skuId
         binding.tvTotalImagesClicked.text = viewModel.exteriorAngles.value.toString()
+        binding.tvTotalCost.text = viewModel.exteriorAngles.value.toString()
 
         observeReduceCredits()
 
@@ -138,7 +139,7 @@ class RegularShootSummaryFragment  : BaseFragment<ProcessViewModel, FragmentRegu
 
                         if (index == tsvParams.framesList.size - 1) {
 
-                            binding.ivFront.setOnTouchListener(this@RegularShootSummaryFragment)
+                            //binding.ivFront.setOnTouchListener(this@RegularShootSummaryFragment)
                         }
 
                         return false
