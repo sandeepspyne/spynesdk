@@ -113,6 +113,7 @@ class CreateProjectAndSkuDialog : BaseDialogFragment<ShootViewModel,DialogCreate
                     //notify project created
                     viewModel.isProjectCreated.value = true
 
+
                     //add sku to local database
                     viewModel.insertSku(sku!!)
                     dismiss()

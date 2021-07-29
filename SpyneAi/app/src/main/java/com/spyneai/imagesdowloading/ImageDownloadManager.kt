@@ -53,7 +53,7 @@ class ImageDownloadManager(var task : DownloadTask, var listener : Listener) {
 //            FILENAME_FORMAT, Locale.US
 //        ).format(System.currentTimeMillis()) + ".png"
 
-        //val imageName = imageName+".jpg"
+        val imageName = imageName+".jpg"
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R){
             path_save_photos = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS).toString() + File.separator + R.string.app_name;

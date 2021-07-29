@@ -61,7 +61,6 @@
         android:layout_height="wrap_content"
         android:layout_marginLeft="@dimen/dp_8"
         android:layout_marginTop="@dimen/dp_8"
-        android:maxLength="8"
         android:fontFamily="@font/poppins_medium"
         android:textColor="@color/black"
         android:textSize="14sp"

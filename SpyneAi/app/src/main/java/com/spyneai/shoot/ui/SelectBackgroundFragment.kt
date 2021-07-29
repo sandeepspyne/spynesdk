@@ -45,24 +45,38 @@ class SelectBackgroundFragment : BaseFragment<ProcessViewModel,FragmentSelectBac
             requireActivity().onBackPressed()
         }
 
-        binding.cb360.setOnCheckedChangeListener { buttonView, isChecked ->
-            if (isChecked)
-                binding.tvGenerateGif.text = "Continue"
-            else
-                binding.tvGenerateGif.text = "Generate Output"
+
+        if (getString(R.string.app_name) == "Karvi.com"){
+            binding.cb360.visibility = View.GONE
+            binding.tv360.visibility = View.GONE
+            binding.tvGenerateGif.text = "Generate Output"
+        }else{
+            binding.cb360.setOnCheckedChangeListener { buttonView, isChecked ->
+                if (isChecked)
+                    binding.tvGenerateGif.text = "Continue"
+                else
+                    binding.tvGenerateGif.text = "Generate Output"
+            }
         }
+
+
 
         binding.tvGenerateGif.setOnClickListener {
             //update total frame if user clicked interior and misc
             if (viewModel.interiorMiscShootsCount > 0)
                 updateTotalFrames()
 
-            if (binding.cb360.isChecked){
-                viewModel.backgroundSelect = backgroundSelect
-                viewModel.addRegularShootSummaryFragment.value = true
-            }else{
+            if (getString(R.string.app_name) == "Karvi.com") {
                 //process image call
                 processSku()
+            }else{
+                if (binding.cb360.isChecked){
+                    viewModel.backgroundSelect = backgroundSelect
+                    viewModel.addRegularShootSummaryFragment.value = true
+                }else{
+                    //process image call
+                    processSku()
+                }
             }
         }
     }

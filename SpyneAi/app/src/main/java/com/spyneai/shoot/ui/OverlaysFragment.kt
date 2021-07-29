@@ -450,6 +450,8 @@ class OverlaysFragment : BaseFragment<ShootViewModel,FragmentOverlaysBinding>(),
             subCategoriesAdapter.notifyDataSetChanged()
 
             getOverlays()
+
+            viewModel.showLeveler.value = true
         }
     }
 

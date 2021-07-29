@@ -115,6 +115,11 @@ class CameraFragment : BaseFragment<ShootViewModel, FragmentCameraBinding>(), Pi
             if (it) binding.tvSkipShoot?.visibility = View.VISIBLE
         })
 
+        viewModel.showLeveler.observe(viewLifecycleOwner,{
+            if (it && getString(R.string.app_name) == "Karvi.com")
+                binding.flLevelIndicator.visibility = View.VISIBLE
+        })
+
         viewModel.isSubCategoryConfirmed.observe(viewLifecycleOwner,{
             if (it)  binding.flLevelIndicator.visibility = View.VISIBLE
         })
@@ -183,8 +188,7 @@ class CameraFragment : BaseFragment<ShootViewModel, FragmentCameraBinding>(), Pi
 
         binding.cameraCaptureButton?.setOnClickListener {
             if ((viewModel.isSubCategoryConfirmed.value == null || viewModel.isSubCategoryConfirmed.value == false) &&
-                (viewModel.categoryDetails.value?.categoryName == "Automobiles" ||
-                        viewModel.categoryDetails.value?.categoryName == "Bikes")
+               getString(R.string.app_name) != "Karvi.com"
             ) {
                 SubCategoryConfirmationDialog().show(
                     requireFragmentManager(),
@@ -451,7 +455,7 @@ class CameraFragment : BaseFragment<ShootViewModel, FragmentCameraBinding>(), Pi
             System.arraycopy(event.values, 0, magnetometerReading, 0, magnetometerReading.size)
         }
 
-        if (viewModel.isSubCategoryConfirmed.value == true)
+        if (viewModel.isSubCategoryConfirmed.value == true || viewModel.showLeveler.value == true)
             updateOrientationAngles()
 
     }

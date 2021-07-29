@@ -15,6 +15,7 @@ import com.spyneai.needs.AppConstants
 import com.spyneai.needs.Utilities
 import com.spyneai.orders.data.response.GetProjectsResponse
 import com.spyneai.orders.data.viewmodel.MyOrdersViewModel
+import com.spyneai.orders.ui.KarviShowImagesActivity
 import com.spyneai.processedimages.ui.ShowImagesActivity
 
 class SkusAdapter(
@@ -30,6 +31,7 @@ class SkusAdapter(
         val tvDate: TextView = view.findViewById(R.id.tvDate)
         val tvPaid: TextView = view.findViewById(R.id.tvPaid)
         val ivThumbnail: ImageView = view.findViewById(R.id.ivThumbnail)
+        val ivDownloadSKU: ImageView = view.findViewById(R.id.ivDownloadSKU)
         val cvMain: CardView = view.findViewById(R.id.cvMain)
 
     }
@@ -65,26 +67,41 @@ class SkusAdapter(
         holder.tvImages.text = skuList[position].total_images.toString()
 
 
+        if (context.getString(R.string.app_name) == "Karvi.com"){
+            holder.ivDownloadSKU.visibility = View.INVISIBLE
 
-        holder.cvMain.setOnClickListener {
-            Utilities.savePrefrence(
-                context,
-                AppConstants.SKU_ID,
-                skuList[position].sku_id
-            )
+            holder.cvMain.setOnClickListener {
+                Utilities.savePrefrence(
+                    context,
+                    AppConstants.SKU_ID,
+                    skuList[position].sku_id
+                )
+                var intent = Intent(context, KarviShowImagesActivity::class.java)
+                intent.putExtra(AppConstants.SKU_ID, skuList[position].sku_id)
+                intent.putExtra("is_paid",skuList[position].paid)
+                intent.putExtra(AppConstants.IMAGE_TYPE,skuList[position].category)
+                intent.putExtra(AppConstants.IS_360,skuList[position].is360)
+                context.startActivity(intent)
+            }
+        }else{
+            holder.cvMain.setOnClickListener {
+                Utilities.savePrefrence(
+                    context,
+                    AppConstants.SKU_ID,
+                    skuList[position].sku_id
+                )
 
-            val intent = Intent(
-                context,
-                ShowImagesActivity::class.java
-            )
-            intent.putExtra(AppConstants.SKU_ID, skuList[position].sku_id)
-            intent.putExtra("is_paid",skuList[position].paid)
-            intent.putExtra(AppConstants.IMAGE_TYPE,skuList[position].category)
-            intent.putExtra(AppConstants.IS_360,skuList[position].is360)
-            context.startActivity(intent)
+                val intent = Intent(
+                    context,
+                    ShowImagesActivity::class.java
+                )
+                intent.putExtra(AppConstants.SKU_ID, skuList[position].sku_id)
+                intent.putExtra("is_paid",skuList[position].paid)
+                intent.putExtra(AppConstants.IMAGE_TYPE,skuList[position].category)
+                intent.putExtra(AppConstants.IS_360,skuList[position].is360)
+                context.startActivity(intent)
+            }
         }
-
-
     }
 
     override fun getItemCount(): Int {

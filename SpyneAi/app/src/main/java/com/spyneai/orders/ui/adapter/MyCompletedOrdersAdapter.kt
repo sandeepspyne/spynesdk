@@ -81,6 +81,8 @@ class MyCompletedOrdersAdapter(
             .error(R.mipmap.defaults) // show error drawable if the image is not a gif
             .into(holder.iv_thumbnail_completed)
 
+
+
         holder.ivDownloadSKU.setOnClickListener {
             Utilities.savePrefrence(
                 context,

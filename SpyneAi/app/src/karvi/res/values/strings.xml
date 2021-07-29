@@ -23,6 +23,9 @@
     <string name="terms_and_conditions_url">https://www.karvi.com.br/termsAndConditions/</string>
 
 
+    <string name="shoot_outdoor">Make sure your&#160; <font color='#FF7700'><b>lighting</b></font>&#160;is setup correctly</string>
+
+
     //Enter OTP
     <string name="enter_otp_hint">Enter the 6-digit \none time password just sent to</string>
     <string name="submit_otp">Submit OTP</string>

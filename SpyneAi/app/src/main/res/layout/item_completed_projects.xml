@@ -17,7 +17,6 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
-
             <androidx.cardview.widget.CardView
                 android:id="@+id/cvThumbnail"
                 android:layout_width="111dp"
@@ -65,7 +64,6 @@
         tools:text="Project- 001"
         android:textColor="@color/black"
         android:textSize="14sp"
-        android:maxLength="8"
         android:fontFamily="@font/poppins_medium"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintLeft_toRightOf="@+id/cvThumbnail"

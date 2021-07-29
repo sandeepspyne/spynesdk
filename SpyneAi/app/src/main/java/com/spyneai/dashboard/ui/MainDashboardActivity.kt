@@ -56,8 +56,6 @@ class MainDashboardActivity : AppCompatActivity() {
                 R.id.homeDashboardFragment->setCurrentFragment(firstFragment)
 
                 R.id.shootActivity-> {
-
-                    tvFocused.text = "sandeep singh"
                     var intent : Intent? = null
                     intent = if (getString(R.string.app_name) == "Ola Cabs") Intent(this,
                         StartShootActivity::class.java) else Intent(this, ShootActivity::class.java)

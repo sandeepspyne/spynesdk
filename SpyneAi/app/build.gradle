@@ -84,8 +84,8 @@ android {
         karvi {
             dimension 'version'
             applicationId "com.spyneai.karvi"
-            versionCode 4
-            versionName "3.5"
+            versionCode 6
+            versionName "3.6"
         }
 
         travophotos {
@@ -98,8 +98,8 @@ android {
         olacabs {
             dimension 'version'
             applicationId "com.spyneai.olacabs"
-            versionCode 4
-            versionName "1.4"
+            versionCode 5
+            versionName "1.5"
         }
 
 

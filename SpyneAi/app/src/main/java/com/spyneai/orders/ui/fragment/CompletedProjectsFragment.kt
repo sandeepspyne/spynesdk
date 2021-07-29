@@ -27,11 +27,13 @@ class CompletedProjectsFragment : BaseFragment<MyOrdersViewModel, FragmentComple
     val status = "completed"
     var refreshData = true
     lateinit var handler: Handler
-    lateinit var runnable: Runnable
+    private var runnable: Runnable? = null
     lateinit var completedProjectList: ArrayList<GetProjectsResponse.Project_data>
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        handler = Handler()
 
         binding!!.rvMyCompletedProjects.apply {
             layoutManager =
@@ -102,15 +104,16 @@ class CompletedProjectsFragment : BaseFragment<MyOrdersViewModel, FragmentComple
 
     fun repeatRefreshData(){
         viewModel.getCompletedProjects(Utilities.getPreference(requireContext(), AppConstants.AUTH_KEY).toString(), status)
-        handler = Handler()
         runnable = Runnable {
             if (refreshData)
                 repeatRefreshData()  }
-        handler.postDelayed(runnable,15000)
+        if (runnable != null)
+        handler.postDelayed(runnable!!,15000)
     }
 
     override fun onPause() {
-        handler.removeCallbacks(runnable)
+        if (runnable != null)
+            handler.removeCallbacks(runnable!!)
         super.onPause()
     }
 

@@ -85,9 +85,23 @@ class MyOngoingProjectAdapter(
                         .into(holder.ivThumbnail)
                 }
             }else {
-                Glide.with(context) // replace with 'this' if it's in activity
-                    .load(getProjectList[position].sku[0].images[0].input_lres)
-                    .into(holder.ivThumbnail)
+                if (getProjectList[position].sku[0].images[0].input_lres == null){
+                    if (getProjectList[position].sub_category == "360_exterior"
+                        || getProjectList[position].sub_category.equals("360_interior")){
+                        Glide.with(context)
+                            .load(R.drawable.three_sixty_thumbnail)
+                            .into(holder.ivThumbnail)
+                    }else {
+                        Glide.with(context)
+                            .load(R.mipmap.defaults)
+                            .into(holder.ivThumbnail)
+                    }
+                }else{
+                    Glide.with(context) // replace with 'this' if it's in activity
+                        .load(getProjectList[position].sku[0].images[0].input_lres)
+                        .into(holder.ivThumbnail)
+                }
+
             }
         }catch (e : Exception){
             e.printStackTrace()
@@ -115,7 +129,6 @@ class MyOngoingProjectAdapter(
             if (getProjectList[position].category.equals("cat_d8R14zUNE") || getProjectList[position].category.equals("Automobiles")){
 
             }else{
-
                 if (getProjectList[position].sku.isNullOrEmpty()){
                     Toast.makeText(context, "No SKU data found", Toast.LENGTH_SHORT).show()
                 }else if (getProjectList[position].status.equals("Uploaded")){
