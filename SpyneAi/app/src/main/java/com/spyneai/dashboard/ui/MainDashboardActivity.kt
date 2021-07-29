@@ -33,6 +33,12 @@ class MainDashboardActivity : AppCompatActivity() {
         val view = binding.root
         setContentView(view)
 
+
+        if (intent.getBooleanExtra("show_ongoing",false)){
+            val intent = Intent(this, MyOrdersActivity::class.java)
+            startActivity(intent)
+        }
+
         val viewModel = ViewModelProvider(this, ViewModelFactory()).get(DashboardViewModel::class.java)
 
         val firstFragment=HomeDashboardFragment()
@@ -59,8 +65,7 @@ class MainDashboardActivity : AppCompatActivity() {
                     startActivity(intent)
                 }
                 R.id.completedOrdersFragment-> {
-                    intent = Intent(this, MyOrdersActivity::class.java)
-
+                    val intent = Intent(this, MyOrdersActivity::class.java)
                     startActivity(intent)
                 }
                 R.id.logoutDashBoardFragment->setCurrentFragment(thirdFragment)

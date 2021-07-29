@@ -137,9 +137,9 @@ class RecordVideoFragment : BaseFragment<ThreeSixtyViewModel,FragmentRecordVideo
     // The Folder location where all the files will be stored
     private val outputDirectory: String by lazy {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-            "${Environment.DIRECTORY_DCIM}/CameraXTest/"
+            "${Environment.DIRECTORY_DCIM}/Spyne/"
         } else {
-            "${requireActivity().getExternalFilesDir(Environment.DIRECTORY_DCIM)?.path}/CameraXTest/"
+            "${requireActivity().getExternalFilesDir(Environment.DIRECTORY_DCIM)?.path}/Spyne/"
         }
     }
 
@@ -178,11 +178,6 @@ class RecordVideoFragment : BaseFragment<ThreeSixtyViewModel,FragmentRecordVideo
 
                 binding.btnRecordVideo.setOnClickListener {
                     recordVideo()
-//                    if (isRecording){
-//                        recordVideo()
-//                    }else{
-//                        startTimer()
-//                    }
                 }
             }
         })
@@ -283,7 +278,6 @@ class RecordVideoFragment : BaseFragment<ThreeSixtyViewModel,FragmentRecordVideo
                     rotateArrow(pitch.plus(5).roundToInt())
                 }
             }
-
         }
     }
 
@@ -554,6 +548,11 @@ class RecordVideoFragment : BaseFragment<ThreeSixtyViewModel,FragmentRecordVideo
     }
 
     private fun startNextActivity(videoPath: String) {
+        stopTimer = true
+        binding.tvTimer.visibility = View.GONE
+        binding.tvTimer.text = "00:00"
+
+
         val trimIntent = Intent(
             requireContext(),
             TrimActivity::class.java
@@ -571,6 +570,8 @@ class RecordVideoFragment : BaseFragment<ThreeSixtyViewModel,FragmentRecordVideo
         startActivity(trimIntent)
 
         binding.tvStart.text = "Start"
+        binding.btnRecordVideo.setImageDrawable(ContextCompat.getDrawable(requireContext(),R.drawable.bg_record_button_enabled))
+        isRecording = !isRecording
     }
 
     override fun onResume() {
