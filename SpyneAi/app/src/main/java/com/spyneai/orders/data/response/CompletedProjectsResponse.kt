@@ -33,7 +33,7 @@ data class GetProjectsResponse(
         @SerializedName("sku_id") val sku_id: String,
         @SerializedName("created_on") val created_on: String,
         @SerializedName("status") val status: String,
-        @SerializedName("paid") val paid: String,
+        @SerializedName("paid") val paid: Boolean,
         @SerializedName("sku_name") val sku_name: String,
         @SerializedName("total_frames_no") val total_frames_no: Int,
         @SerializedName("total_images") val total_images: Int,

@@ -16,13 +16,13 @@ interface CreditApiService {
     fun createOrder(@Body body: CreateOrderBody)
     : Call<CreateOrderResponse>?
 
+
+
     @FormUrlEncoded
-    @PUT("reduce-credit")
+    @PUT("v2/credit/reduce-credit")
     fun reduceCredit(
-        @Field("user_id") userId : String,
-        @Field("credit_reduce") creditReduce:String,
-        @Field("enterprise_id") enterpriseId: String,
-        @Field("sku_id") skuId: String
+        @Field("auth_key") authKey : String,
+        @Field("credit_reduce") creditReduce:String
     ): Call<ReduceCreditResponse>?
 
 

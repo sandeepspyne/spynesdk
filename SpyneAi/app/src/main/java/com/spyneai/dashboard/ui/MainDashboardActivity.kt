@@ -2,6 +2,8 @@ package com.spyneai.dashboard.ui
 
 import android.content.Intent
 import android.os.Bundle
+import android.view.ViewGroup
+import android.widget.Button
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
@@ -55,6 +57,7 @@ class MainDashboardActivity : AppCompatActivity() {
 
                 R.id.shootActivity-> {
 
+                    tvFocused.text = "sandeep singh"
                     var intent : Intent? = null
                     intent = if (getString(R.string.app_name) == "Ola Cabs") Intent(this,
                         StartShootActivity::class.java) else Intent(this, ShootActivity::class.java)

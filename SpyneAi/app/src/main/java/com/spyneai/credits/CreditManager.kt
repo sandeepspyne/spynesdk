@@ -72,9 +72,9 @@ class CreditManager {
     fun reduceCredit(creditReduced : Int,skuId : String,context: Context) {
 
 
-        var request = RetrofitCreditClient("https://www.clippr.ai/api/v4/").buildService(CreditApiService::class.java)
+        var request = RetrofitClients.buildService(CreditApiService::class.java)
 
-        var call = request.reduceCredit(Utilities.getPreference(context,AppConstants.TOKEN_ID)!!.toString(),creditReduced.toString(),WhiteLabelConstants.ENTERPRISE_ID,skuId)
+        var call = request.reduceCredit(Utilities.getPreference(context,AppConstants.AUTH_KEY)!!.toString(),creditReduced.toString())
 
         call?.enqueue(object : Callback<ReduceCreditResponse> {
             override fun onResponse(

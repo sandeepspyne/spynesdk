@@ -148,7 +148,6 @@ class SelectBackgroundFragment : BaseFragment<ProcessViewModel,FragmentSelectBac
     private fun updateTotalFrames() {
         val totalFrames = viewModel.exteriorAngles.value?.plus(viewModel.interiorMiscShootsCount)
 
-
         viewModel.updateCarTotalFrames(
             Utilities.getPreference(requireContext(),AppConstants.AUTH_KEY).toString(),
             viewModel.sku.value?.skuId!!,
@@ -167,7 +166,6 @@ class SelectBackgroundFragment : BaseFragment<ProcessViewModel,FragmentSelectBac
         log("Auth key: "+Utilities.getPreference(requireContext(),AppConstants.AUTH_KEY).toString())
         log("Sku Id: : "+viewModel.sku.value?.skuId!!)
         log("Background Id: : "+backgroundSelect)
-
 
         viewModel.processSkuRes.observe(viewLifecycleOwner,{
             when(it) {

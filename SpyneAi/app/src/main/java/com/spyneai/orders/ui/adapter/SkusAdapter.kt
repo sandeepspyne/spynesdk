@@ -45,9 +45,10 @@ class SkusAdapter(
 
     override fun onBindViewHolder(holder: SkusAdapter.ViewHolder, position: Int) {
 
-        if (skuList[position].paid.equals("true"))
+        if (skuList[position].paid)
             holder.tvPaid.visibility = View.VISIBLE
-
+        else
+            holder.tvPaid.visibility = View.GONE
 
         try {
             Glide.with(context) // replace with 'this' if it's in activity

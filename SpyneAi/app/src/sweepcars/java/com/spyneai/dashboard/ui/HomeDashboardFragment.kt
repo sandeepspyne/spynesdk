@@ -23,7 +23,6 @@ import com.spyneai.captureEvent
 import com.spyneai.captureFailureEvent
 import com.spyneai.dashboard.data.DashboardViewModel
 import com.spyneai.databinding.HomeDashboardFragmentBinding
-import com.spyneai.extras.BeforeAfterActivity
 import com.spyneai.fragment.TopUpFragment
 import com.spyneai.needs.AppConstants
 import com.spyneai.needs.Utilities
@@ -75,27 +74,6 @@ class HomeDashboardFragment :
     }
 
 
-    private fun startBeforeAfter() {
-        val intent = Intent(requireContext(), BeforeAfterActivity::class.java)
-        intent.putExtra(
-            AppConstants.CATEGORY_NAME,
-            displayName
-        )
-        intent.putExtra(
-            AppConstants.CATEGORY_ID,
-            catId
-        )
-        intent.putExtra(
-            AppConstants.IMAGE_URL,
-            displayThumbnail
-        )
-        intent.putExtra(
-            AppConstants.DESCRIPTION,
-            description
-        )
-        intent.putExtra(AppConstants.COLOR, colorCode)
-        startActivity(intent)
-    }
 
 
 

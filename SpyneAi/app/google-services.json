@@ -95,7 +95,7 @@
     },
     {
       "client_info": {
-        "mobilesdk_app_id": "1:796517407311:android:7fdd53875d471d61e4a83a",
+        "mobilesdk_app_id": "1:796517407311:android:f8d03c5a086a1376e4a83a",
         "android_client_info": {
           "package_name": "com.spyneai.olacabs.debug"
         }
@@ -106,6 +106,50 @@
           "client_type": 1,
           "android_info": {
             "package_name": "com.spyneai.olacabs.debug",
+            "certificate_hash": "719d4dc215a5de7f06f7a9b7cb88efc221978c30"
+          }
+        },
+        {
+          "client_id": "796517407311-rtrqq3c76ujrhmhb3u1e63mfbhmhdeju.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCZYh2OqdLAr8r5kGU1pJPsqlW2TH_k_Do"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "796517407311-rtrqq3c76ujrhmhb3u1e63mfbhmhdeju.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "796517407311-a7eg68f3hlagr00ovebmqc48fpakl0bb.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.whitelabeltest.ai"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:796517407311:android:84adb2d269331b9de4a83a",
+        "android_client_info": {
+          "package_name": "com.spyneai.olacabs.release"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "796517407311-bi370hifespijj19vmsiv6rs1rt97asg.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.spyneai.olacabs.release",
             "certificate_hash": "719d4dc215a5de7f06f7a9b7cb88efc221978c30"
           }
         },
