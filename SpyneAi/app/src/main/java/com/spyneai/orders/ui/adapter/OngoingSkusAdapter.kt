@@ -38,7 +38,7 @@ class OngoingSkusAdapter(
         viewType: Int
     ): OngoingSkusAdapter.ViewHolder {
         val view = LayoutInflater.from(parent.context)
-            .inflate(R.layout.item_completed_skus, parent, false)
+            .inflate(R.layout.item_ongoing_skus, parent, false)
         return OngoingSkusAdapter.ViewHolder(view)
     }
 
@@ -47,6 +47,7 @@ class OngoingSkusAdapter(
         if (skuList[position].paid.equals("true"))
             holder.tvPaid.visibility = View.VISIBLE
 
+        holder.tvCategory.text = skuList[position].category
 
         try {
             Glide.with(context) // replace with 'this' if it's in activity

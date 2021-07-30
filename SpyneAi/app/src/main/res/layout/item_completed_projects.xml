@@ -65,7 +65,7 @@
         tools:text="Project- 001"
         android:textColor="@color/black"
         android:textSize="14sp"
-        android:maxLength="8"
+        android:maxLength="16"
         android:fontFamily="@font/poppins_medium"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintLeft_toRightOf="@+id/cvThumbnail"

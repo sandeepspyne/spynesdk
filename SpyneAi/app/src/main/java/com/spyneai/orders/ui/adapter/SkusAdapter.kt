@@ -49,6 +49,8 @@ class SkusAdapter(
         if (skuList[position].paid.equals("true"))
             holder.tvPaid.visibility = View.VISIBLE
 
+        holder.tvCategory.text = skuList[position].category
+
 
         try {
             Glide.with(context) // replace with 'this' if it's in activity

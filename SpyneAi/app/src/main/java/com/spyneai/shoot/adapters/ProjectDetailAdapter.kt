@@ -53,7 +53,9 @@ class ProjectDetailAdapter(
 
         projectChildAdapter = ProjectChildAdapter(
             context,
-            projectList[position].images as ArrayList<ProjectDetailResponse.Images>
+            projectList[position].images as ArrayList<ProjectDetailResponse.Images>,
+            projectList[position].total_images
+
         )
 
         viewHolder.rvChildProject.apply {
