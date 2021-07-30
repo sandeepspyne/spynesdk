@@ -65,7 +65,7 @@ class HomeDashboardFragment :
     lateinit var ongoingProjectList: ArrayList<GetProjectsResponse.Project_data>
 
     lateinit var handler: Handler
-    lateinit var runnable: Runnable
+    private var runnable: Runnable? = null
 
     var tutorialVideosList = intArrayOf(R.drawable.ic_tv1, R.drawable.ic_tv2)
 
@@ -87,8 +87,10 @@ class HomeDashboardFragment :
     private val MY_REQUEST_CODE: Int = 1
     lateinit var PACKAGE_NAME: String
 
-    override fun onActivityCreated(savedInstanceState: Bundle?) {
-        super.onActivityCreated(savedInstanceState)
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        handler = Handler()
 
         tokenId = Utilities.getPreference(requireContext(), AppConstants.TOKEN_ID).toString()
         email = Utilities.getPreference(requireContext(), AppConstants.EMAIL_ID).toString()
@@ -108,6 +110,7 @@ class HomeDashboardFragment :
         } else
             autoUpdates()
     }
+
 
     private fun autoUpdates() {
 
@@ -416,15 +419,26 @@ class HomeDashboardFragment :
         }
     }
 
-    private fun repeatRefreshData() {
-        getOngoingOrders()
-        getCompletedOrders()
-        handler = Handler()
-        runnable = Runnable {
-            if (refreshData)
-                repeatRefreshData()
+    fun repeatRefreshData(){
+        try {
+            getOngoingOrders()
+            getCompletedOrders()
+            runnable = Runnable {
+                if (refreshData)
+                    repeatRefreshData()  }
+            if (runnable != null)
+                handler.postDelayed(runnable!!,15000)
+        }catch (e : IllegalArgumentException){
+            e.printStackTrace()
+        }catch (e : Exception){
+            e.printStackTrace()
         }
-        handler.postDelayed(runnable, 15000)
+    }
+
+    override fun onPause() {
+        if (runnable != null)
+            handler.removeCallbacks(runnable!!)
+        super.onPause()
     }
 
 
@@ -584,10 +598,6 @@ class HomeDashboardFragment :
         }
     }
 
-    override fun onPause() {
-        handler.removeCallbacks(runnable)
-        super.onPause()
-    }
 
     override fun onResume() {
         super.onResume()
