@@ -37,12 +37,12 @@ class MainDashboardActivity : AppCompatActivity() {
         val view = binding.root
         setContentView(view)
 
-        Log.d(TAG, "onCreate: "+check("sandeep singh"))
-        Log.d(TAG, "onCreate: "+check("sandeep singh 1 2 3"))
+        Log.d(TAG, "onCreate: "+"sandeep si.ngh".takeLast(4))
+        Log.d(TAG, "onCreate: "+"sandeep singh 1 2 3".takeLast(4))
 
-        Log.d(TAG, "onCreate: "+check("sandeep singh &"))
+        Log.d(TAG, "onCreate: "+"sandeep singh &".takeLast(4))
         Log.d(TAG, "onCreate: -----------------------------------")
-        Log.d(TAG, "onCreate: "+check("sandeepsingh123"))
+        Log.d(TAG, "onCreate: "+"sandeepsingh123".takeLast(4))
 
 
         if (intent.getBooleanExtra("show_ongoing",false)){
@@ -90,7 +90,6 @@ class MainDashboardActivity : AppCompatActivity() {
         }
     }
 
-    private fun check(string: String) : Boolean = string.contains("[!\"#$%&'()*+,-./:;\\\\<=>?@\\[\\]^_`{|}~]".toRegex())
 
 
     override fun onResume() {
