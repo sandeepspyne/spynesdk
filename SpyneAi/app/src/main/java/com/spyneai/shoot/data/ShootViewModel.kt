@@ -82,6 +82,7 @@ class ShootViewModel : ViewModel(){
     //interior and misc shots
     val showInteriorDialog : MutableLiveData<Boolean> = MutableLiveData()
     val startInteriorShots : MutableLiveData<Boolean> = MutableLiveData()
+    val hideLeveler : MutableLiveData<Boolean> = MutableLiveData()
     val showMiscDialog : MutableLiveData<Boolean> = MutableLiveData()
     val startMiscShots : MutableLiveData<Boolean> = MutableLiveData()
     val selectBackground : MutableLiveData<Boolean> = MutableLiveData()

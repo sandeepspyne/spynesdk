@@ -69,12 +69,40 @@ class MyCompletedProjectsAdapter(
         }
 
         try {
-            Glide.with(context) // replace with 'this' if it's in activity
-                .load(getProjectList[position].sku[0].images[0].input_lres)
-                .error(R.mipmap.defaults) // show error drawable if the image is not a gif
-                .into(holder.ivThumbnail)
-        }catch (e: Exception){
+            if (getProjectList[position].sku[0].images.isNullOrEmpty()) {
+                if (getProjectList[position].sub_category == "360_exterior"
+                    || getProjectList[position].sub_category.equals("360_interior")){
+                    Glide.with(context)
+                        .load(R.drawable.three_sixty_thumbnail)
+                        .into(holder.ivThumbnail)
+                }else {
+                    Glide.with(context)
+                        .load(R.mipmap.defaults)
+                        .into(holder.ivThumbnail)
+                }
+            }else {
+                if (getProjectList[position].sku[0].images[0].input_lres == null){
+                    if (getProjectList[position].sub_category == "360_exterior"
+                        || getProjectList[position].sub_category.equals("360_interior")){
+                        Glide.with(context)
+                            .load(R.drawable.three_sixty_thumbnail)
+                            .into(holder.ivThumbnail)
+                    }else {
+                        Glide.with(context)
+                            .load(R.mipmap.defaults)
+                            .into(holder.ivThumbnail)
+                    }
+                }else{
+                    Glide.with(context) // replace with 'this' if it's in activity
+                        .load(getProjectList[position].sku[0].images[0].input_lres)
+                        .into(holder.ivThumbnail)
+                }
 
+            }
+        }catch (e : Exception){
+            e.printStackTrace()
+        }catch (e : IndexOutOfBoundsException){
+            e.printStackTrace()
         }
 
         holder.tvProjectName.text = getProjectList[position].project_name

@@ -12,11 +12,12 @@
         android:background="@color/white"
         >
 
-        <com.google.android.material.tabs.TabLayout
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:id="@+id/tabLayout"
-            app:tabTextAppearance="@style/CustomTextAppearance"
+        <WebView
+            android:layout_width="match_parent"
+            android:layout_height="170dp"
+            android:adjustViewBounds="true"
+            android:id="@+id/ivFidelity"
+            android:src="@drawable/start_shoot_image"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toRightOf="parent"
@@ -24,24 +25,12 @@
             android:layout_marginRight="@dimen/dp_20"
             android:layout_marginTop="@dimen/dp_10"/>
 
-        <androidx.viewpager2.widget.ViewPager2
-            android:layout_width="0dp"
-            android:layout_height="170dp"
-            android:id="@+id/viewPager"
-            app:layout_constraintTop_toBottomOf="@+id/tabLayout"
-            app:layout_constraintLeft_toLeftOf="parent"
-            app:layout_constraintRight_toRightOf="parent"
-            app:layout_constraintBottom_toTopOf="@id/cvFeatures"
-            android:layout_marginTop="@dimen/dp_15"
-            android:layout_marginLeft="@dimen/dp_20"
-            android:layout_marginRight="@dimen/dp_20"/>
-
 
         <androidx.cardview.widget.CardView
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:id="@+id/cvFeatures"
-            app:layout_constraintTop_toBottomOf="@id/viewPager"
+            app:layout_constraintTop_toBottomOf="@id/ivFidelity"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toRightOf="parent"

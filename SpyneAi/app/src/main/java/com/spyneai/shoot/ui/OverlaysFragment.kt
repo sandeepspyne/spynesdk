@@ -61,7 +61,6 @@ class OverlaysFragment : BaseFragment<ShootViewModel,FragmentOverlaysBinding>(),
         super.onViewCreated(view, savedInstanceState)
 
         initShootHint()
-       
 
         //observe new image clicked
         viewModel.shootList.observe(viewLifecycleOwner, {
@@ -330,6 +329,8 @@ class OverlaysFragment : BaseFragment<ShootViewModel,FragmentOverlaysBinding>(),
     }
 
     private fun initInteriorShots() {
+        viewModel.hideLeveler.value = true
+
         InteriorHintDialog().show(requireActivity().supportFragmentManager, "InteriorHintDialog")
 
         viewModel.startInteriorShots.observe(viewLifecycleOwner,{
@@ -389,6 +390,8 @@ class OverlaysFragment : BaseFragment<ShootViewModel,FragmentOverlaysBinding>(),
     }
 
     private fun initMiscShots() {
+        viewModel.hideLeveler.value = true
+
         MiscShotsDialog().show(requireActivity().supportFragmentManager, "MiscShotsDialog")
 
         viewModel.startMiscShots.observe(viewLifecycleOwner,{

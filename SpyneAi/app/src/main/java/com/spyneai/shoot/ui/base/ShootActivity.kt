@@ -171,6 +171,7 @@ class ShootActivity : AppCompatActivity() {
                     this.putExtra("exterior_angles", shootViewModel.exterirorAngles.value)
                     this.putExtra("process_sku",shootViewModel.processSku)
                     this.putExtra("interior_misc_count",getInteriorMiscCount())
+                    this.putStringArrayListExtra("exterior_images_list",getExteriorImagesList())
                     startActivity(this)
                 }
             }
@@ -199,6 +200,19 @@ class ShootActivity : AppCompatActivity() {
 
         return total
     }
+
+    private fun getExteriorImagesList(): ArrayList<String> {
+        val exteriorList = shootViewModel.shootList.value?.filter {
+            it.image_category == "Exterior"
+        }
+
+        val s = exteriorList?.map {
+            it.capturedImage
+        }
+
+        return s as ArrayList<String>
+    }
+
     /**
      * Check for the permissions
      */

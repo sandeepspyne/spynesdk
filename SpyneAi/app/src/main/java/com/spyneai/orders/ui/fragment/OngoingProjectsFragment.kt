@@ -31,10 +31,12 @@ class OngoingProjectsFragment : BaseFragment<MyOrdersViewModel, FragmentOngoingP
     val status = "ongoing"
     var refreshData = true
     lateinit var handler: Handler
-    lateinit var runnable: Runnable
+    private var runnable: Runnable? = null
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        handler = Handler()
 
         binding!!.rvMyOngoingProjects.apply {
             layoutManager =
@@ -100,16 +102,24 @@ class OngoingProjectsFragment : BaseFragment<MyOrdersViewModel, FragmentOngoingP
     }
 
     fun repeatRefreshData(){
-        viewModel.getProjects(Utilities.getPreference(requireContext(), AppConstants.AUTH_KEY).toString(), status)
-        handler = Handler()
-        runnable = Runnable {
-            if (refreshData)
-                repeatRefreshData()  }
-        handler.postDelayed(runnable,15000)
+        try {
+            viewModel.getProjects(Utilities.getPreference(requireContext(), AppConstants.AUTH_KEY).toString(), status)
+            runnable = Runnable {
+                if (refreshData)
+                    repeatRefreshData()
+            }
+            if (runnable != null)
+                handler.postDelayed(runnable!!,15000)
+        }catch (e : IllegalArgumentException){
+            e.printStackTrace()
+        }catch (e : Exception){
+            e.printStackTrace()
+        }
     }
 
     override fun onPause() {
-        handler.removeCallbacks(runnable)
+        if (runnable != null)
+            handler.removeCallbacks(runnable!!)
         super.onPause()
     }
 

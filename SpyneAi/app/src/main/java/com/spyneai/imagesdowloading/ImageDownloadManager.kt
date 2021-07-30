@@ -47,13 +47,11 @@ class ImageDownloadManager(var task : DownloadTask, var listener : Listener) {
     }
     //Download
     private fun downloadWithHighQuality(imageFile: String,imageName : String) {
-//        val FILENAME_FORMAT = "yyyy-MM-dd-HH-mm-ss-SSS"
-//
-//        val imageName: String = "Spyne" + SimpleDateFormat(
-//            FILENAME_FORMAT, Locale.US
-//        ).format(System.currentTimeMillis()) + ".png"
 
-        val imageName = imageName+".jpg"
+
+        var imageName = imageName
+        if (imageName.length > 4 && imageName.takeLast(4) != ".jpg")
+            imageName += ".jpg"
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R){
             path_save_photos = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS).toString() + File.separator + R.string.app_name;

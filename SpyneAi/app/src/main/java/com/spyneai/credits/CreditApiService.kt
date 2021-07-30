@@ -36,12 +36,13 @@ interface CreditApiService {
         @Query("creditAvailable") creditAvailable: String
     ): Call<CreditPurchaseLogRes>?
 
-    @GET("credit/update-total-credit")
+    @FormUrlEncoded
+    @PUT("v2/credit/update")
     fun updatePurchasedCredit(
-        @Query("userId") userId: String,
-        @Query("creditAlloted") creditAlloted : Int,
-        @Query("creditUsed") creditUsed: String,
-        @Query("creditAvailable") creditAvailable: Int
+        @Field("auth_key") userId: String,
+        @Field("credit_alotted") creditAlloted : Int,
+        @Field("credit_used") creditUsed: String,
+        @Field("credit_available") creditAvailable: Int
     ): Call<UpdatePurchaseCreditRes>?
 
     @GET("download-history")

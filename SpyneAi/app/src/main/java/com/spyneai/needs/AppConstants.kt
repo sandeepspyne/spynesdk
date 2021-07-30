@@ -1,6 +1,7 @@
 package com.spyneai.needs
 
 object AppConstants {
+    val IS_360: String? = "IS_360"
     val LIST_IMAGE_NAME = "LIST_IMAGE_NAME"
     val tokenId: String = "tokenId"
     val CREDITS_MESSAGE = "CREDITS_MESSAGE"

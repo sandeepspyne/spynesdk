@@ -17,6 +17,7 @@
         tools:text="Project-001"
         android:text="Project-001"
         android:maxLines="1"
+        android:visibility="gone"
         android:imeOptions="actionDone"
         android:inputType="text"
         android:fontFamily="@font/poppins_regular"

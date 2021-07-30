@@ -158,21 +158,21 @@
             android:id="@+id/ivBottomLeft"/>
 
         <ImageView
-            android:layout_width="@dimen/dp_60"
-            android:layout_height="@dimen/dp_60"
+            android:layout_width="@dimen/dp_100"
+            android:layout_height="@dimen/dp_100"
             android:layout_gravity="center"
             android:id="@+id/ivGryroRing"
             android:src="@drawable/ic_gyro_ring"/>
 
         <TextView
-            android:layout_width="48dp"
+            android:layout_width="@dimen/dp_50"
             android:layout_height="0.5dp"
             android:layout_gravity="center"
             android:id="@+id/tvCenter"
             android:background="@color/black"/>
 
         <ImageView
-            android:layout_width="@dimen/dp_25"
+            android:layout_width="@dimen/dp_30"
             android:layout_height="3dp"
             android:background="@drawable/bg_gyro_error"
             android:id="@+id/tvLevelIndicator"
