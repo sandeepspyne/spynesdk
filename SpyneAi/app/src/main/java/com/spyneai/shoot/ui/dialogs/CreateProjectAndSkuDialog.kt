@@ -26,21 +26,28 @@ class CreateProjectAndSkuDialog : BaseDialogFragment<ShootViewModel,DialogCreate
         dialog?.setCancelable(false)
 
         binding.btnSubmit.setOnClickListener {
-            when {
-                binding.etVinNumber.text.toString().isEmpty() -> {
-                    if (getString(R.string.app_name) == "Sweep.ie"){
-                        binding.etVinNumber.error = "Please enter vehicle number"
-                    }else{
-                        binding.etVinNumber.error = "Please enter any unique number"
-                    }
+            if (binding.etVinNumber.text.toString().isEmpty()) {
+                if (getString(R.string.app_name) == "Sweep.ie"){
+                    binding.etVinNumber.error = "Please enter vehicle number"
+                }else{
+                    binding.etVinNumber.error = "Please enter any unique number"
+                }
+            }else if(binding.etVinNumber.text.toString().contains("[!\"#$%&'()*+,-./:;\\\\<=>?@\\[\\]^_`{|}~]".toRegex())) {
+                binding.etVinNumber.error = "Special characters not allowed"
 
-                }
-                else -> {
-                    createProject(binding.etVinNumber.text.toString().trim(),binding.etVinNumber.text.toString().trim())
-                }
+            }else{
+                createProject(
+                    removeWhiteSpace(binding.etVinNumber.text.toString()),
+                    removeWhiteSpace(binding.etVinNumber.text.toString())
+                )
             }
+
         }
     }
+
+    private fun removeWhiteSpace(toString: String) = toString.replace("\\s".toRegex(), "")
+
+
 
     private fun createProject(projectName : String,skuName : String) {
         viewModel.createProject(

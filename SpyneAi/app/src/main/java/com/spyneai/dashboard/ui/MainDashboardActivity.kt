@@ -2,6 +2,7 @@ package com.spyneai.dashboard.ui
 
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import android.view.ViewGroup
 import android.widget.Button
 import androidx.appcompat.app.AppCompatActivity
@@ -28,12 +29,20 @@ import kotlinx.android.synthetic.main.activity_show_images.*
 class MainDashboardActivity : AppCompatActivity() {
 
     private lateinit var binding : ActivityDashboardMainBinding
+    private var TAG = "MainDashboardActivity"
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityDashboardMainBinding.inflate(layoutInflater)
         val view = binding.root
         setContentView(view)
+
+        Log.d(TAG, "onCreate: "+check("sandeep singh"))
+        Log.d(TAG, "onCreate: "+check("sandeep singh 1 2 3"))
+
+        Log.d(TAG, "onCreate: "+check("sandeep singh &"))
+        Log.d(TAG, "onCreate: -----------------------------------")
+        Log.d(TAG, "onCreate: "+check("sandeepsingh123"))
 
 
         if (intent.getBooleanExtra("show_ongoing",false)){
@@ -80,6 +89,8 @@ class MainDashboardActivity : AppCompatActivity() {
             viewModel.creditsMessage.value = intent.getStringExtra(AppConstants.CREDITS_MESSAGE)
         }
     }
+
+    private fun check(string: String) : Boolean = string.contains("[!\"#$%&'()*+,-./:;\\\\<=>?@\\[\\]^_`{|}~]".toRegex())
 
 
     override fun onResume() {
