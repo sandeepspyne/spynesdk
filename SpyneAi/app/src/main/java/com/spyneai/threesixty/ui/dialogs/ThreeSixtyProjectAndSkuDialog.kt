@@ -29,11 +29,20 @@ class ThreeSixtyProjectAndSkuDialog : BaseDialogFragment<ThreeSixtyViewModel, Di
         binding.btnSubmit.setOnClickListener {
             if (binding.etVinNumber.text.toString().isEmpty()) {
                 binding.etVinNumber.error = "Please enter any unique number"
+            }else if(binding.etVinNumber.text.toString().contains("[!\"#$%&'()*+,-./:;\\\\<=>?@\\[\\]^_`{|}~]".toRegex())) {
+                binding.etVinNumber.error = "Special characters not allowed"
+
             }else{
-                createProject(binding.etVinNumber.text.toString(),binding.etVinNumber.text.toString())
+                createProject(
+                    removeWhiteSpace(binding.etVinNumber.text.toString()),
+                    removeWhiteSpace(binding.etVinNumber.text.toString())
+                )
             }
         }
     }
+
+    private fun removeWhiteSpace(toString: String) = toString.replace("\\s".toRegex(), "")
+
 
     private fun createProject(projectName : String,skuName : String) {
         viewModel.createProject(

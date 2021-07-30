@@ -70,7 +70,6 @@ class CreditManager {
 
     fun reduceCredit(creditReduced : Int,skuId : String,context: Context) {
 
-
         var request = RetrofitCreditClient("https://www.clippr.ai/api/v4/").buildService(CreditApiService::class.java)
 
         var call = request.reduceCredit(Utilities.getPreference(context,AppConstants.TOKEN_ID)!!.toString(),creditReduced.toString(),"TaD1VC1Ko",skuId)

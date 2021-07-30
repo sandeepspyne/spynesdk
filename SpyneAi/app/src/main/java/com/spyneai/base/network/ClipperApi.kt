@@ -87,7 +87,8 @@ interface ClipperApi {
     suspend fun processSku(
         @Field("auth_key") authKey : String,
         @Field("sku_id") skuId : String,
-        @Field("background_id") backgroundId : String
+        @Field("background_id") backgroundId : String,
+        @Field("is_360") is360 : Boolean
     ) : ProcessSkuRes
 
 
@@ -126,9 +127,10 @@ interface ClipperApi {
 
     @GET("v2/sku/updateTotalFrames")
     suspend fun updateTotalFrames(
+        @Query("auth_key") authKey : String,
         @Query("sku_id") skuId : String,
-        @Query("total_frames") totalFrames : String,
-        @Query("auth_key") authKey : String
+        @Query("total_frames") totalFrames : String
+
     ) : UpdateTotalFramesRes
 
     @GET("v2/project/getDetailsProject")
@@ -167,6 +169,13 @@ interface ClipperApi {
         @Field("credit_reduce") creditReduce:String,
         @Field("enterprise_id") enterpriseId: String,
         @Field("sku_id") skuId: String
+    ): ReduceCreditResponse
+
+    @FormUrlEncoded
+    @PUT("v2/credit/reduce-credit")
+    suspend fun reduceCredit(
+        @Field("auth_key") authKey : String,
+        @Field("credit_reduce") creditReduce:String
     ): ReduceCreditResponse
 
     @FormUrlEncoded

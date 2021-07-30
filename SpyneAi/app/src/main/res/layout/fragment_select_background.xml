@@ -444,6 +444,32 @@
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/dp_20"
+                android:layout_marginEnd="@dimen/dp_10"
+                android:layout_marginTop="@dimen/dp_10"
+                android:fontFamily="@font/bold"
+                android:id="@+id/tv360"
+
+                android:text="Generate 360"
+                android:textColor="@color/black"
+                android:textSize="@dimen/sp_16" />
+
+            <CheckBox
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/dp_20"
+                android:text="Enable"
+                android:checked="true"
+                android:id="@+id/cb360"
+                android:fontFamily="@font/poppins_medium"
+                android:textSize="@dimen/sp_16"
+                android:textColor="@color/black"
+                android:paddingLeft="@dimen/dp_5"/>
+
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
                 android:layout_marginStart="@dimen/dp_10"
                 android:layout_marginEnd="@dimen/dp_10"
                 android:layout_marginTop="@dimen/dp_10"
@@ -473,7 +499,7 @@
                 android:fontFamily="@font/medium"
                 android:gravity="center"
                 android:textAllCaps="false"
-                android:text="@string/create_shoots"
+                android:text="Continue"
                 android:textColor="@color/white"
                 android:textSize="@dimen/sp_20"
                 android:enabled="false"/>

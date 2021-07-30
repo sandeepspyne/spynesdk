@@ -34,6 +34,7 @@ import retrofit2.Response
 class WalletDashboardFragment :
     BaseFragment<DashboardViewModel, WalletDashboardFragmentBinding>()  {
 
+    private var call: Call<CreditDetailsResponse>? = null
     private var availableCredits = 0
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -60,8 +61,6 @@ class WalletDashboardFragment :
         }
 
 
-
-
         binding.flAddCredits.setOnClickListener {
             val intent = Intent(requireContext(), CreditPlansActivity::class.java)
             intent.putExtra("from_wallet",true)
@@ -78,7 +77,7 @@ class WalletDashboardFragment :
         binding.shimmer.startShimmer()
 
         val request = RetrofitClients.buildService(APiService::class.java)
-        val call = request.userCreditsDetails(
+        call = request.userCreditsDetails(
             Utilities.getPreference(requireContext(), AppConstants.AUTH_KEY).toString()
         )
 
@@ -105,7 +104,6 @@ class WalletDashboardFragment :
                         binding.tvCredits.setTextColor(ContextCompat.getColor(requireContext(),R.color.available_credits))
                         binding.tvCredits.text = CreditUtils.getFormattedNumber(response.body()!!.data.creditAvailable)
                     }
-
 
                     Utilities.savePrefrence(
                         requireContext(),
@@ -136,14 +134,24 @@ class WalletDashboardFragment :
                 }
             }
             override fun onFailure(call: Call<CreditDetailsResponse>, t: Throwable) {
-                Toast.makeText(
-                    requireContext(),
-                    "Server not responding!!!",
-                    Toast.LENGTH_SHORT
-                ).show()
+                if (!call.isCanceled){
+                    Toast.makeText(
+                        requireContext(),
+                        "Server not responding!!!",
+                        Toast.LENGTH_SHORT
+                    ).show()
+                }
             }
         })
 
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+
+        if(call!= null && call!!.isExecuted) {
+            call!!.cancel()
+        }
     }
 
     override fun getViewModel() = DashboardViewModel::class.java

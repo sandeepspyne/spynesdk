@@ -9,6 +9,7 @@ import com.spyneai.needs.AppConstants
 import com.spyneai.shoot.data.ProcessViewModel
 import com.spyneai.shoot.data.model.Sku
 import com.spyneai.shoot.ui.SelectBackgroundFragment
+import com.spyneai.shoot.ui.RegularShootSummaryFragment
 import com.spyneai.shoot.ui.dialogs.ShootExitDialog
 
 class ProcessActivity : AppCompatActivity() {
@@ -29,6 +30,9 @@ class ProcessActivity : AppCompatActivity() {
         processViewModel.interiorMiscShootsCount = intent.getIntExtra("interior_misc_count",0)
         processViewModel.categoryName = intent.getStringExtra(AppConstants.CATEGORY_NAME)
 
+        if (processViewModel.categoryName == "Automobiles" || processViewModel.categoryName == "Bikes")
+            processViewModel.frontFramesList = intent.getStringArrayListExtra("exterior_images_list")!!
+
         if (intent.getBooleanExtra("process_sku",true)){
             supportFragmentManager.beginTransaction()
                 .add(R.id.flContainer, SelectBackgroundFragment())
@@ -45,10 +49,28 @@ class ProcessActivity : AppCompatActivity() {
                     .commit()
             }
         })
+
+        processViewModel.addRegularShootSummaryFragment.observe(this,{
+            if (it) {
+                // add select background fragment
+                supportFragmentManager.beginTransaction()
+                    .add(R.id.flContainer, RegularShootSummaryFragment())
+                    .addToBackStack("RegularShootSummaryFragment")
+                    .commit()
+
+                processViewModel.addRegularShootSummaryFragment.value = false
+            }
+        })
     }
 
     override fun onBackPressed() {
-        if (processViewModel.startTimer.value == null || !processViewModel.startTimer.value!!)
-            ShootExitDialog().show(supportFragmentManager,"ShootExitDialog")
+        if (processViewModel.isRegularShootSummaryActive) {
+            processViewModel.isRegularShootSummaryActive = false
+            super.onBackPressed()
+        }else{
+            if (processViewModel.startTimer.value == null || !processViewModel.startTimer.value!!)
+                ShootExitDialog().show(supportFragmentManager,"ShootExitDialog")
+        }
+
     }
 }

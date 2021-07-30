@@ -27,11 +27,13 @@ class CompletedProjectsFragment : BaseFragment<MyOrdersViewModel, FragmentComple
     val status = "completed"
     var refreshData = true
     lateinit var handler: Handler
-    lateinit var runnable: Runnable
+    private var runnable: Runnable? = null
     lateinit var completedProjectList: ArrayList<GetProjectsResponse.Project_data>
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        handler = Handler()
 
         binding!!.rvMyCompletedProjects.apply {
             layoutManager =
@@ -45,11 +47,9 @@ class CompletedProjectsFragment : BaseFragment<MyOrdersViewModel, FragmentComple
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
 
-
         binding.shimmerCompletedSKU.startShimmer()
 
         completedProjectList = ArrayList()
-
 
         repeatRefreshData()
         log("Completed SKUs(auth key): "+ Utilities.getPreference(requireContext(), AppConstants.AUTH_KEY))
@@ -94,26 +94,31 @@ class CompletedProjectsFragment : BaseFragment<MyOrdersViewModel, FragmentComple
                             handleApiError(it)
                         }
                     }
-
                 }
             }
         )
     }
 
     fun repeatRefreshData(){
-        viewModel.getCompletedProjects(Utilities.getPreference(requireContext(), AppConstants.AUTH_KEY).toString(), status)
-        handler = Handler()
-        runnable = Runnable {
-            if (refreshData)
-                repeatRefreshData()  }
-        handler.postDelayed(runnable,15000)
+        try {
+            viewModel.getCompletedProjects(Utilities.getPreference(requireContext(), AppConstants.AUTH_KEY).toString(), status)
+            runnable = Runnable {
+                if (refreshData)
+                    repeatRefreshData()  }
+            if (runnable != null)
+                handler.postDelayed(runnable!!,15000)
+        }catch (e : IllegalArgumentException){
+            e.printStackTrace()
+        }catch (e : Exception){
+            e.printStackTrace()
+        }
     }
 
     override fun onPause() {
-        handler.removeCallbacks(runnable)
+        if (runnable != null)
+            handler.removeCallbacks(runnable!!)
         super.onPause()
     }
-
     override fun getViewModel() = MyOrdersViewModel::class.java
     override fun getFragmentBinding(
         inflater: LayoutInflater,

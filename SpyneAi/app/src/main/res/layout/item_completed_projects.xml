@@ -60,15 +60,17 @@
 
     <TextView
         android:id="@+id/tvProjectName"
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
         tools:text="Project- 001"
         android:textColor="@color/black"
         android:textSize="14sp"
-        android:maxLength="16"
         android:fontFamily="@font/poppins_medium"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintLeft_toRightOf="@+id/cvThumbnail"
+        app:layout_constraintRight_toLeftOf="@id/tvDate"
+        android:ellipsize="end"
+        android:paddingRight="@dimen/dp_3"
         android:layout_marginTop="@dimen/dp_8"
         android:layout_marginLeft="@dimen/dp_8" />
 

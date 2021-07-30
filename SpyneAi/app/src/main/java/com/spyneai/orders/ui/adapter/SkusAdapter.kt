@@ -46,7 +46,7 @@ class SkusAdapter(
 
     override fun onBindViewHolder(holder: SkusAdapter.ViewHolder, position: Int) {
 
-        if (skuList[position].paid.equals("true"))
+        if (skuList[position].paid)
             holder.tvPaid.visibility = View.VISIBLE
 
         holder.tvCategory.text = skuList[position].category
@@ -86,6 +86,7 @@ class SkusAdapter(
             intent.putExtra(AppConstants.SKU_ID, skuList[position].sku_id)
             intent.putExtra("is_paid",skuList[position].paid)
             intent.putExtra(AppConstants.IMAGE_TYPE,skuList[position].category)
+            intent.putExtra(AppConstants.IS_360,skuList[position].is360)
             context.startActivity(intent)
         }
 

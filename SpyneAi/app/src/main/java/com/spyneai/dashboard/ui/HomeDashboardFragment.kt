@@ -49,7 +49,6 @@ import com.spyneai.shoot.ui.StartShootActivity
 import com.spyneai.shoot.ui.base.ShootActivity
 import com.spyneai.shoot.ui.base.ShootPortraitActivity
 import com.spyneai.shoot.utils.log
-import java.io.IOException
 
 
 class HomeDashboardFragment :
@@ -66,7 +65,7 @@ class HomeDashboardFragment :
     lateinit var ongoingProjectList: ArrayList<GetProjectsResponse.Project_data>
 
     lateinit var handler: Handler
-    lateinit var runnable: Runnable
+    private var runnable: Runnable? = null
 
     var tutorialVideosList = intArrayOf(R.drawable.ic_tv1, R.drawable.ic_tv2)
 
@@ -88,8 +87,10 @@ class HomeDashboardFragment :
     private val MY_REQUEST_CODE: Int = 1
     lateinit var PACKAGE_NAME: String
 
-    override fun onActivityCreated(savedInstanceState: Bundle?) {
-        super.onActivityCreated(savedInstanceState)
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        handler = Handler()
 
         tokenId = Utilities.getPreference(requireContext(), AppConstants.TOKEN_ID).toString()
         email = Utilities.getPreference(requireContext(), AppConstants.EMAIL_ID).toString()
@@ -143,16 +144,9 @@ class HomeDashboardFragment :
     }
 
     private fun getOngoingOrders() {
-        log(
-            "Completed SKUs(auth key): " + Utilities.getPreference(
-                requireContext(),
-                AppConstants.AUTH_KEY
-            )
-        )
+        log("Completed SKUs(auth key): "+ Utilities.getPreference(requireContext(), AppConstants.AUTH_KEY))
 
-        viewModel.getProjects(
-            Utilities.getPreference(requireContext(), AppConstants.AUTH_KEY).toString(), "ongoing"
-        )
+        viewModel.getProjects(Utilities.getPreference(requireContext(), AppConstants.AUTH_KEY).toString(), "ongoing")
 
         viewModel.getProjectsResponse.observe(
             viewLifecycleOwner, Observer {
@@ -218,19 +212,9 @@ class HomeDashboardFragment :
 
     private fun getCompletedOrders() {
 
-        viewModel.getCompletedProjects(
-            Utilities.getPreference(
-                requireContext(),
-                AppConstants.AUTH_KEY
-            ).toString(), "completed"
-        )
+        viewModel.getCompletedProjects(Utilities.getPreference(requireContext(), AppConstants.AUTH_KEY).toString(), "completed")
 
-        log(
-            "Completed SKUs(auth key): " + Utilities.getPreference(
-                requireContext(),
-                AppConstants.AUTH_KEY
-            )
-        )
+        log("Completed SKUs(auth key): "+ Utilities.getPreference(requireContext(), AppConstants.AUTH_KEY))
         viewModel.getCompletedProjectsResponse.observe(
             viewLifecycleOwner, Observer {
                 when (it) {
@@ -308,11 +292,7 @@ class HomeDashboardFragment :
                         object : CategoriesDashboardAdapter.BtnClickListener {
                             override fun onBtnClick(position: Int) {
 
-                                Utilities.savePrefrence(
-                                    requireContext(),
-                                    AppConstants.CATEGORY_ID,
-                                    it.value.data[position].prod_cat_id
-                                )
+                                Utilities.savePrefrence(requireContext(), AppConstants.CATEGORY_ID, it.value.data[position].prod_cat_id)
 
                                 catId = it.value.data[position].prod_cat_id
                                 displayName = it.value.data[position].prod_cat_name
@@ -320,10 +300,9 @@ class HomeDashboardFragment :
                                 description = it.value.data[position].description
                                 colorCode = it.value.data[position].color_code
 
-                                when (position) {
+                                when(position){
                                     0 -> {
-                                        val intent =
-                                            Intent(requireContext(), StartShootActivity::class.java)
+                                        val intent = Intent(requireContext(), StartShootActivity::class.java)
                                         intent.putExtra(
                                             AppConstants.CATEGORY_NAME,
                                             displayName
@@ -344,8 +323,7 @@ class HomeDashboardFragment :
                                         startActivity(intent)
                                     }
                                     1 -> {
-                                        val intent =
-                                            Intent(requireContext(), ShootActivity::class.java)
+                                        val intent = Intent(requireContext(), ShootActivity::class.java)
                                         intent.putExtra(
                                             AppConstants.CATEGORY_NAME,
                                             displayName
@@ -366,11 +344,8 @@ class HomeDashboardFragment :
                                         startActivity(intent)
                                     }
 
-                                    2, 3 -> {
-                                        val intent = Intent(
-                                            requireContext(),
-                                            ShootPortraitActivity::class.java
-                                        )
+                                    2,3 -> {
+                                        val intent = Intent(requireContext(), ShootPortraitActivity::class.java)
                                         intent.putExtra(
                                             AppConstants.CATEGORY_NAME,
                                             displayName
@@ -391,11 +366,11 @@ class HomeDashboardFragment :
                                         startActivity(intent)
                                     }
                                     else -> {
-                                        Toast.makeText(
-                                            requireContext(),
-                                            "Coming Soon !",
-                                            Toast.LENGTH_SHORT
-                                        ).show()
+                                    Toast.makeText(
+                                        requireContext(),
+                                        "Coming Soon !",
+                                        Toast.LENGTH_SHORT
+                                    ).show()
                                     }
                                 }
 
@@ -443,20 +418,30 @@ class HomeDashboardFragment :
         }
     }
 
-    private fun repeatRefreshData() {
+    fun repeatRefreshData(){
         try {
             getOngoingOrders()
             getCompletedOrders()
-            handler = Handler()
             runnable = Runnable {
                 if (refreshData)
-                    repeatRefreshData()
-            }
-            handler.postDelayed(runnable, 15000)
-        } catch (e: IOException) {
-            log("Exception" + e.localizedMessage)
+                    repeatRefreshData()  }
+            if (runnable != null)
+                handler.postDelayed(runnable!!,15000)
+        }catch (e : IllegalArgumentException){
+            e.printStackTrace()
+        }catch (e : Exception){
+            e.printStackTrace()
         }
     }
+
+    override fun onPause() {
+        if (runnable != null)
+            handler.removeCallbacks(runnable!!)
+        super.onPause()
+    }
+
+
+
 
     private fun setSliderRecycler() {
 
@@ -612,10 +597,7 @@ class HomeDashboardFragment :
         }
     }
 
-    override fun onPause() {
-        handler.removeCallbacks(runnable)
-        super.onPause()
-    }
+
 
     override fun onResume() {
         super.onResume()
@@ -649,7 +631,7 @@ class HomeDashboardFragment :
                     Toast.LENGTH_SHORT
                 ).show()
 
-                log("MY_APP\", \"Update flow failed! Result code: " + resultCode)
+                log("MY_APP\", \"Update flow failed! Result code: "+resultCode)
                 // If the update is cancelled or fails,
                 // you can request to start the update again.
             }

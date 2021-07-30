@@ -45,13 +45,28 @@ class SelectBackgroundFragment : BaseFragment<ProcessViewModel,FragmentSelectBac
             requireActivity().onBackPressed()
         }
 
+
+        binding.cb360.setOnCheckedChangeListener { buttonView, isChecked ->
+            if (isChecked)
+                binding.tvGenerateGif.text = "Continue"
+            else
+                binding.tvGenerateGif.text = "Generate Output"
+        }
+
+
+
         binding.tvGenerateGif.setOnClickListener {
             //update total frame if user clicked interior and misc
             if (viewModel.interiorMiscShootsCount > 0)
                 updateTotalFrames()
 
-            //process image call
-            processSku()
+            if (binding.cb360.isChecked){
+                viewModel.backgroundSelect = backgroundSelect
+                viewModel.addRegularShootSummaryFragment.value = true
+            }else{
+                //process image call
+                processSku()
+            }
         }
     }
 
@@ -120,7 +135,6 @@ class SelectBackgroundFragment : BaseFragment<ProcessViewModel,FragmentSelectBac
                         .error(R.mipmap.defaults) // show error drawable if the image is not a gif
                         .into(binding.imageViewGif)
 
-
                     //showPreviewCar()
                 }
             })
@@ -137,7 +151,6 @@ class SelectBackgroundFragment : BaseFragment<ProcessViewModel,FragmentSelectBac
     private fun updateTotalFrames() {
         val totalFrames = viewModel.exteriorAngles.value?.plus(viewModel.interiorMiscShootsCount)
 
-
         viewModel.updateCarTotalFrames(
             Utilities.getPreference(requireContext(),AppConstants.AUTH_KEY).toString(),
             viewModel.sku.value?.skuId!!,
@@ -148,14 +161,14 @@ class SelectBackgroundFragment : BaseFragment<ProcessViewModel,FragmentSelectBac
     private fun processSku() {
         viewModel.processSku(
             Utilities.getPreference(requireContext(),AppConstants.AUTH_KEY).toString(),
-        viewModel.sku.value?.skuId!!,
-        backgroundSelect)
+            viewModel.sku.value?.skuId!!,
+            backgroundSelect,
+            false)
 
         log("Process sku started")
         log("Auth key: "+Utilities.getPreference(requireContext(),AppConstants.AUTH_KEY).toString())
         log("Sku Id: : "+viewModel.sku.value?.skuId!!)
         log("Background Id: : "+backgroundSelect)
-
 
         viewModel.processSkuRes.observe(viewLifecycleOwner,{
             when(it) {

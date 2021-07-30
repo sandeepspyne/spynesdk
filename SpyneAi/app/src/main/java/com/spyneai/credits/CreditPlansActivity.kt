@@ -15,6 +15,7 @@ import com.spyneai.credits.fragments.CreditPaymentFailedFragment
 import com.spyneai.credits.fragments.CreditPyamentSuccessFragment
 import com.spyneai.credits.model.*
 import com.spyneai.databinding.ActivityCreditPlansBinding
+import com.spyneai.interfaces.RetrofitClients
 import com.spyneai.needs.AppConstants
 import com.spyneai.needs.Utilities
 import kotlinx.coroutines.Dispatchers
@@ -325,9 +326,9 @@ class CreditPlansActivity : AppCompatActivity(),CreditsPlandAdapter.Listener,
         var creditAvailable = lastSelectedItem!!.credits + intent.getIntExtra("credit_available",0)
 
 
-        var call = RetrofitCreditClient("https://www.spyne.ai/").buildService(CreditApiService::class.java)
-            .updatePurchasedCredit(Utilities.getPreference(this,AppConstants.TOKEN_ID)!!.toString(),
-                lastSelectedItem!!.credits,Utilities.getPreference(this,AppConstants.CREDIT_USED)!!.toString(),creditAvailable)
+        var call = RetrofitClients.buildService(CreditApiService::class.java)
+            .updatePurchasedCredit(Utilities.getPreference(this,AppConstants.AUTH_KEY)!!.toString(),
+                lastSelectedItem!!.credits,Utilities.getPreference(this,AppConstants.CREDIT_USED)!!.toString(),lastSelectedItem!!.credits)
 
         call?.enqueue(object : Callback<UpdatePurchaseCreditRes>{
             override fun onResponse(

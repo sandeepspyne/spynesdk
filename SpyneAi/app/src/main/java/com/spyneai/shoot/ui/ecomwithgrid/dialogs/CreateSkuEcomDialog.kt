@@ -31,17 +31,22 @@ class CreateSkuEcomDialog : BaseDialogFragment<ShootViewModel, CreateSkuEcomDial
                 binding.etSkuName.text.toString().isEmpty() -> {
                     binding.etSkuName.error = "Please enter product name"
                 }
+                binding.etSkuName.text.toString().contains("[!\"#$%&'()*+,-./:;\\\\<=>?@\\[\\]^_`{|}~]".toRegex()) -> {
+                    binding.etSkuName.error = "Special characters not allowed"
+                }
                 else -> {
                     log("create sku started")
                     log("project id: "+viewModel.projectId.value.toString())
                     log("sku name: "+binding.etSkuName.text.toString())
                     createSku(
-                        viewModel.projectId.value.toString(), binding.etSkuName.text.toString()
+                        viewModel.projectId.value.toString(), removeWhiteSpace(binding.etSkuName.text.toString())
                     )
                 }
             }
         }
     }
+
+    private fun removeWhiteSpace(toString: String) = toString.replace("\\s".toRegex(), "")
 
 
     private fun createSku(projectId: String, skuName: String) {

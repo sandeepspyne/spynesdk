@@ -116,6 +116,10 @@ class CameraFragment : BaseFragment<ShootViewModel, FragmentCameraBinding>(), Pi
             if (it) binding.tvSkipShoot?.visibility = View.VISIBLE
         })
 
+        viewModel.hideLeveler.observe(viewLifecycleOwner,{
+            if (it)  binding.flLevelIndicator.visibility = View.GONE
+        })
+
         viewModel.isSubCategoryConfirmed.observe(viewLifecycleOwner,{
             if (it)  binding.flLevelIndicator.visibility = View.VISIBLE
         })

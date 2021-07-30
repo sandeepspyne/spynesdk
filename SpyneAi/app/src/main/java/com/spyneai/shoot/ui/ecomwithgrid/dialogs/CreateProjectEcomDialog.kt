@@ -30,24 +30,36 @@ class CreateProjectEcomDialog :
         dialog?.setCancelable(false)
 
         binding.btnProceed.setOnClickListener {
+
             when {
-                binding.etProjectName.text.toString().isEmpty() -> binding.etProjectName.error =
-                    "Please enter project name"
+                binding.etProjectName.text.toString().isEmpty() -> {
+                    binding.etProjectName.error =
+                        "Please enter project name"
+                }
+                binding.etProjectName.text.toString().contains("[!\"#$%&'()*+,-./:;\\\\<=>?@\\[\\]^_`{|}~]".toRegex()) -> {
+                    binding.etProjectName.error = "Special characters not allowed"
+                }
                 binding.etSkuName.text.toString().isEmpty() -> {
                     binding.etSkuName.error = "Please enter product name"
+                }
+                binding.etSkuName.text.toString().contains("[!\"#$%&'()*+,-./:;\\\\<=>?@\\[\\]^_`{|}~]".toRegex()) -> {
+                    binding.etSkuName.error = "Special characters not allowed"
                 }
                 else -> {
                     log("create project started")
                     log("project name: "+binding.etProjectName.text.toString())
                     log("sku name: "+binding.etSkuName.text.toString())
                     createProject(
-                        binding.etProjectName.text.toString(),
-                        binding.etSkuName.text.toString()
+                        removeWhiteSpace( binding.etProjectName.text.toString()),
+                        removeWhiteSpace(binding.etSkuName.text.toString())
                     )
                 }
             }
         }
     }
+
+    private fun removeWhiteSpace(toString: String) = toString.replace("\\s".toRegex(), "")
+
 
     private fun createProject(projectName: String, skuName: String) {
         viewModel.createProject(
