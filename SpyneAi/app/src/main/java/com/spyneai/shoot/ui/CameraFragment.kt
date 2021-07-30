@@ -121,7 +121,7 @@ class CameraFragment : BaseFragment<ShootViewModel, FragmentCameraBinding>(), Pi
         })
 
         viewModel.isSubCategoryConfirmed.observe(viewLifecycleOwner,{
-            if (it)  binding.flLevelIndicator.visibility = View.VISIBLE
+            if (it && getString(R.string.app_name) != "Karvi.com")  binding.flLevelIndicator.visibility = View.VISIBLE
         })
 
         viewModel.hideLeveler.observe(viewLifecycleOwner,{
@@ -592,6 +592,9 @@ class CameraFragment : BaseFragment<ShootViewModel, FragmentCameraBinding>(), Pi
     }
 
     private fun addShootItem(capturedImage: String) {
+        if (viewModel.categoryDetails.value?.imageType == "Exterior")
+            viewModel.isSubCategoryConfirmed.value = true
+
         if (viewModel.shootList.value == null)
             viewModel.shootList.value = ArrayList()
 
