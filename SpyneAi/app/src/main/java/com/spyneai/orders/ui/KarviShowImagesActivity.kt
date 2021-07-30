@@ -319,24 +319,4 @@ class KarviShowImagesActivity : AppCompatActivity() {
         dialog.show()
     }
 
-    var viewListener = object : ViewListener {
-        override fun setViewForPosition(position: Int): View? {
-            val customView: View = layoutInflater.inflate(R.layout.view_images, null)
-            val ivBefore : ImageView = customView.findViewById(R.id.ivBefore)
-            val ivAfter : ImageView = customView.findViewById(R.id.ivAfter)
-
-            Glide.with(this@KarviShowImagesActivity) // replace with 'this' if it's in activity
-                .load(imageList[position])
-                .diskCacheStrategy(DiskCacheStrategy.RESOURCE)
-                .error(R.mipmap.defaults) // show error drawable if the image is not a gif
-                .into(ivBefore)
-            Glide.with(this@KarviShowImagesActivity) // replace with 'this' if it's in activity
-                .load(imageListAfter[position])
-                .diskCacheStrategy(DiskCacheStrategy.RESOURCE)
-                .error(R.mipmap.defaults) // show error drawable if the image is not a gif
-                .into(ivAfter)
-
-            return customView
-        }
-    }
 }

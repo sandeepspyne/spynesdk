@@ -33,6 +33,7 @@ class MyCompletedProjectsAdapter(
         val tvDate: TextView = view.findViewById(R.id.tvDate)
         val tvPaid: TextView = view.findViewById(R.id.tvPaid)
         val ivThumbnail: ImageView = view.findViewById(R.id.ivThumbnail)
+        val ivDownloadSKU: ImageView = view.findViewById(R.id.ivDownloadSKU)
         val cvMain: CardView = view.findViewById(R.id.cvMain)
 
     }
@@ -48,6 +49,8 @@ class MyCompletedProjectsAdapter(
 
     override fun onBindViewHolder(holder: MyCompletedProjectsAdapter.ViewHolder, position: Int) {
 
+        if (context.getString(R.string.app_name) == "Karvi.com")
+            holder.ivDownloadSKU.visibility = View.INVISIBLE
 
         if (getProjectList[position].sub_category == "360_exterior"
             || getProjectList[position].sub_category.equals("360_interior")

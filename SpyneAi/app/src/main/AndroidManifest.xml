@@ -39,6 +39,8 @@
         android:theme="@style/Theme.SpyneAi"
         android:usesCleartextTraffic="true"
         tools:targetApi="m">
+        <activity android:name=".orders.ui.KarviShowImagesActivity"
+            android:screenOrientation="portrait"/>
         <activity android:name=".orders.ui.activity.ShowRawImagesActivity"></activity>
         <activity android:name=".orders.ui.activity.OngoingSkusActivity" />
 
