@@ -21,8 +21,8 @@ android {
         applicationId "com.spyneai"
         minSdkVersion 21
         targetSdkVersion 30
-        versionCode 46
-        versionName "2.58"
+        versionCode 47
+        versionName "2.59"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
 
