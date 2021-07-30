@@ -103,12 +103,18 @@ class CompletedProjectsFragment : BaseFragment<MyOrdersViewModel, FragmentComple
     }
 
     fun repeatRefreshData(){
-        viewModel.getCompletedProjects(Utilities.getPreference(requireContext(), AppConstants.AUTH_KEY).toString(), status)
-        runnable = Runnable {
-            if (refreshData)
-                repeatRefreshData()  }
-        if (runnable != null)
-        handler.postDelayed(runnable!!,15000)
+        try {
+            viewModel.getCompletedProjects(Utilities.getPreference(requireContext(), AppConstants.AUTH_KEY).toString(), status)
+            runnable = Runnable {
+                if (refreshData)
+                    repeatRefreshData()  }
+            if (runnable != null)
+                handler.postDelayed(runnable!!,15000)
+        }catch (e : IllegalArgumentException){
+            e.printStackTrace()
+        }catch (e : Exception){
+            e.printStackTrace()
+        }
     }
 
     override fun onPause() {
