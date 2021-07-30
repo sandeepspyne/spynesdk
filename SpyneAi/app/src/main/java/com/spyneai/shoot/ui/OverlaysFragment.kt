@@ -338,6 +338,13 @@ class OverlaysFragment : BaseFragment<ShootViewModel,FragmentOverlaysBinding>(),
     }
 
     private fun startInteriorShots() {
+
+
+
+
+
+
+
         binding.rvSubcategories?.visibility = View.VISIBLE
 
         viewModel.subCategoriesResponse.observe(viewLifecycleOwner,{
