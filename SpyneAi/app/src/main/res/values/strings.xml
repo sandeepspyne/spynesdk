@@ -160,7 +160,7 @@
 
     <string name="start_new_shoot">Start a new shoot</string>
 
-    <string name="ongoing_projects">Ongoing projects</string>
+    <string name="ongoing_projects">Ongoing Projects</string>
 
     <string name="your_orders">Your Orders</string>
     <string name="end_shoot">End Shoot</string>
@@ -214,4 +214,6 @@
     <string name="car_subcategory">Select your car\'s sub-category</string>
     <string name="go_to_home">Go to home</string>
 
+
+    <string name="terms_and_conditions_url">https://www.spyne.ai/terms-service</string>
 </resources>

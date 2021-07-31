@@ -112,13 +112,15 @@ class OverlaysFragment : BaseFragment<ShootViewModel,FragmentOverlaysBinding>(),
                 intSubcategorySelection()
             }
         })
-
     }
 
     private fun initAngles() {
-        viewModel.exterirorAngles.value = 8
+       when(getString(R.string.app_name)){
+           "Cars 24" ->  viewModel.exterirorAngles.value = 5
+           else ->  viewModel.exterirorAngles.value = 8
+       }
 
-        if (getString(R.string.app_name) != "Karvi.com"){
+        if (getString(R.string.app_name) != "Karvi.com" && getString(R.string.app_name) != "Cars 24"){
             binding.tvShoot?.setOnClickListener {
                 AngleSelectionDialog().show(requireActivity().supportFragmentManager, "AngleSelectionDialog")
             }

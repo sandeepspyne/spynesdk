@@ -84,6 +84,7 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
                 android:padding="@dimen/dp_10"
+                android:id="@+id/rlSingup"
                 android:layout_marginRight="@dimen/dp_25"
                 android:layout_marginLeft="@dimen/dp_25">
 

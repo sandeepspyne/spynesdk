@@ -1,11 +1,13 @@
 package com.spyneai.loginsignup.activity
 
+import android.content.ActivityNotFoundException
 import android.content.Intent
-import androidx.appcompat.app.AppCompatActivity
+import android.net.Uri
 import android.os.Bundle
 import android.view.View
 import android.widget.ArrayAdapter
 import android.widget.Toast
+import androidx.appcompat.app.AppCompatActivity
 import com.posthog.android.Properties
 import com.spyneai.R
 import com.spyneai.activity.SignInUsingOtpActivity
@@ -15,21 +17,20 @@ import com.spyneai.captureIdentity
 import com.spyneai.dashboard.ui.MainDashboardActivity
 import com.spyneai.dashboard.ui.WhiteLabelConstants
 import com.spyneai.interfaces.MyAPIService
-import com.spyneai.interfaces.RetrofitClientSpyneAi
 import com.spyneai.interfaces.RetrofitClients
 import com.spyneai.loginsignup.models.GetCountriesResponse
-import com.spyneai.loginsignup.models.SignupBody
 import com.spyneai.loginsignup.models.SignupResponse
 import com.spyneai.needs.AppConstants
 import com.spyneai.needs.Utilities
-import com.spyneai.shoot.utils.log
 import com.spyneai.posthog.Events
+import com.spyneai.shoot.utils.log
 import kotlinx.android.synthetic.main.activity_login.*
 import kotlinx.android.synthetic.main.activity_sign_in_using_otp.*
 import kotlinx.android.synthetic.main.activity_sign_up.*
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
+
 
 class SignUpActivity : AppCompatActivity() {
 
@@ -62,18 +63,18 @@ class SignUpActivity : AppCompatActivity() {
                 call: Call<GetCountriesResponse>,
                 response: Response<GetCountriesResponse>
             ) {
-                if (response.isSuccessful){
+                if (response.isSuccessful) {
 
                     var countriesData = response.body()
 
-                    if (countriesData?.status == 200 && (countriesData.data !=null && countriesData.data.size > 0)){
-                        for (item in countriesData.data){
+                    if (countriesData?.status == 200 && (countriesData.data != null && countriesData.data.size > 0)) {
+                        for (item in countriesData.data) {
                             countriesList.add(item.name)
                         }
 
                         setData(countriesList)
                     }
-                }else{
+                } else {
                     setSpinner()
                 }
             }
@@ -108,7 +109,7 @@ class SignUpActivity : AppCompatActivity() {
             } else if (et_business_name.text.isNullOrEmpty()) {
                 et_business_name.error = "PLease enter business/your name"
             }else if (counties_spinner.selectedItemPosition == 0){
-                Toast.makeText(this,"Please select your country",Toast.LENGTH_LONG).show()
+                Toast.makeText(this, "Please select your country", Toast.LENGTH_LONG).show()
             }
             else {
                 signUp(
@@ -136,6 +137,18 @@ class SignUpActivity : AppCompatActivity() {
             val intent = Intent(this, SignInUsingOtpActivity::class.java)
             startActivity(intent)
         }
+
+        tv_terms.setOnClickListener {
+            try {
+                startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(getString(R.string.terms_and_conditions_url))))
+            } catch (e: ActivityNotFoundException) {
+                Toast.makeText(
+                    this, "No application can handle this request."
+                            + " Please install a webbrowser", Toast.LENGTH_LONG
+                ).show()
+                e.printStackTrace()
+            }
+        }
     }
 
     private fun signUp(email: String, password: String, name: String, country: String) {
@@ -146,7 +159,7 @@ class SignUpActivity : AppCompatActivity() {
             this["country"] = country
         }
 
-        captureEvent(Events.SIGNUP_INTIATED,properties)
+        captureEvent(Events.SIGNUP_INTIATED, properties)
         Utilities.showProgressDialog(this)
 
         val call = RetrofitClients.buildService(MyAPIService::class.java)
@@ -160,7 +173,7 @@ class SignUpActivity : AppCompatActivity() {
                 Utilities.hideProgressDialog()
                 if (response.isSuccessful && response.body() != null) {
                     var signUpResponse = response.body()
-                    when(signUpResponse?.status){
+                    when (signUpResponse?.status) {
                         200 -> {
                             Toast.makeText(
                                 this@SignUpActivity,
@@ -169,24 +182,32 @@ class SignUpActivity : AppCompatActivity() {
                             ).show()
 
                             Utilities.savePrefrence(
-                                this@SignUpActivity,AppConstants.AUTH_KEY,
-                                response.body()!!.auth_token)
+                                this@SignUpActivity, AppConstants.AUTH_KEY,
+                                response.body()!!.auth_token
+                            )
 
                             properties.apply {
                                 this["user_id"] = signUpResponse.userId
                             }
 
-                            captureEvent(Events.SIGNUP_SUCCEED,properties)
-                            captureIdentity(signUpResponse.userId,properties)
-                            log("User name(savePrefrence): "+response.body()!!.userName)
-                            log("User Email(savePrefrence): "+response.body()!!.emailId)
-                            log("Auth token(savePrefrence): "+response.body()!!.auth_token)
-                            log("User Id(savePrefrence): "+response.body()!!.userId)
+                            captureEvent(Events.SIGNUP_SUCCEED, properties)
+                            captureIdentity(signUpResponse.userId, properties)
+                            log("User name(savePrefrence): " + response.body()!!.userName)
+                            log("User Email(savePrefrence): " + response.body()!!.emailId)
+                            log("Auth token(savePrefrence): " + response.body()!!.auth_token)
+                            log("User Id(savePrefrence): " + response.body()!!.userId)
 
-                            val intent = Intent(this@SignUpActivity, MainDashboardActivity::class.java)
-                            intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
-                            intent.putExtra(AppConstants.IS_NEW_USER,true)
-                            intent.putExtra(AppConstants.CREDITS_MESSAGE,signUpResponse.displayMessage)
+                            val intent = Intent(
+                                this@SignUpActivity,
+                                MainDashboardActivity::class.java
+                            )
+                            intent.flags =
+                                Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+                            intent.putExtra(AppConstants.IS_NEW_USER, true)
+                            intent.putExtra(
+                                AppConstants.CREDITS_MESSAGE,
+                                signUpResponse.displayMessage
+                            )
                             startActivity(intent)
 
                             tvLogin.isClickable = true
@@ -205,7 +226,11 @@ class SignUpActivity : AppCompatActivity() {
                             tv_terms.isClickable = true
                             tv_sign_in_using_otp.isClickable = true
 
-                            captureFailureEvent(Events.SIGNUP_FAILED,properties,signUpResponse.message)
+                            captureFailureEvent(
+                                Events.SIGNUP_FAILED,
+                                properties,
+                                signUpResponse.message
+                            )
                         }
 
                         else -> {
@@ -219,10 +244,14 @@ class SignUpActivity : AppCompatActivity() {
                             tv_terms.isClickable = true
                             tv_sign_in_using_otp.isClickable = true
 
-                            captureFailureEvent(Events.SIGNUP_FAILED,properties,"Server not responding")
+                            captureFailureEvent(
+                                Events.SIGNUP_FAILED,
+                                properties,
+                                "Server not responding"
+                            )
                         }
                     }
-                }else{
+                } else {
                     Toast.makeText(
                         applicationContext,
                         "Server not responding!, Please try again later",
@@ -233,10 +262,11 @@ class SignUpActivity : AppCompatActivity() {
                     tv_signUp.isClickable = true
                     tv_terms.isClickable = true
                     tv_sign_in_using_otp.isClickable = true
-                    captureFailureEvent(Events.SIGNUP_FAILED,properties,"Server not responding")
+                    captureFailureEvent(Events.SIGNUP_FAILED, properties, "Server not responding")
                 }
 
             }
+
             override fun onFailure(call: Call<SignupResponse>, t: Throwable) {
                 Utilities.hideProgressDialog()
                 Toast.makeText(
@@ -249,7 +279,7 @@ class SignUpActivity : AppCompatActivity() {
                 tv_terms.isClickable = true
                 tv_sign_in_using_otp.isClickable = true
 
-                captureFailureEvent(Events.SIGNUP_FAILED,properties,t?.localizedMessage)
+                captureFailureEvent(Events.SIGNUP_FAILED, properties, t?.localizedMessage)
             }
         })
     }

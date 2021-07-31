@@ -45,4 +45,12 @@ class ProcessRepository : BaseRepository() {
         clipperApi.reduceCredit(userId, creditReduce)
     }
 
+    suspend fun updateDownloadStatus(
+        userId : String,
+        skuId: String,
+        enterpriseId: String,
+        downloadHd: Boolean
+    )= safeApiCall {
+        clipperApi.updateDownloadStatus(userId,skuId, enterpriseId, downloadHd)
+    }
 }

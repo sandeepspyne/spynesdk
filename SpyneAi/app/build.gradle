@@ -102,6 +102,13 @@ android {
             versionName "1.6"
         }
 
+        cars24 {
+            dimension 'version'
+            applicationId "com.spyneai.cars24"
+            versionCode 1
+            versionName "1.0.0"
+        }
+
 
     }
     sourceSets {
@@ -113,6 +120,14 @@ android {
         olacabs {
             java {
                 srcDirs 'src/olacabs/java'
+            }
+        }
+        cars24 {
+            java {
+                srcDirs 'src/cars24/java'
+            }
+            res {
+                srcDirs 'src/cars24/res'
             }
         }
     }
@@ -259,7 +274,4 @@ dependencies {
 
     //post hog
     implementation 'com.posthog.android:posthog:1.+'
-
-    //Razorpay
-    implementation 'com.razorpay:checkout:1.6.6'
 }

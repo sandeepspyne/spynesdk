@@ -1,5 +1,6 @@
 package com.spyneai.activity
 
+import android.content.ActivityNotFoundException
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
@@ -22,7 +23,9 @@ import com.spyneai.model.login.LoginResponse
 import com.spyneai.needs.AppConstants
 import com.spyneai.needs.Utilities
 import com.spyneai.posthog.Events
+import kotlinx.android.synthetic.main.activity_login.*
 import kotlinx.android.synthetic.main.activity_sign_in_using_otp.*
+import kotlinx.android.synthetic.main.activity_sign_in_using_otp.tvTerms
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -77,11 +80,18 @@ class SignInUsingOtpActivity : AppCompatActivity() {
 
         })
 
-        tvTerms.setOnClickListener(View.OnClickListener {
-            val browserIntent = Intent(Intent.ACTION_VIEW,
-                Uri.parse("https://www.spyne.ai/terms-service"))
-            startActivity(browserIntent)
-        })
+        tvTerms.setOnClickListener {
+            try {
+                startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(getString(R.string.terms_and_conditions_url))))
+            } catch (e: ActivityNotFoundException) {
+                Toast.makeText(
+                    this, "No application can handle this request."
+                            + " Please install a webbrowser", Toast.LENGTH_LONG
+                ).show()
+                e.printStackTrace()
+            }
+        }
+
 
         etEmail.addTextChangedListener(object : TextWatcher {
             override fun afterTextChanged(s: Editable) {

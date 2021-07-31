@@ -5,6 +5,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import com.posthog.android.Properties
+import com.spyneai.R
 import com.spyneai.base.BaseDialogFragment
 import com.spyneai.base.network.Resource
 import com.spyneai.captureEvent
@@ -32,10 +33,21 @@ class ThreeSixtyProjectAndSkuDialog : BaseDialogFragment<ThreeSixtyViewModel, Di
 
         binding.btnSubmit.setOnClickListener {
             if (binding.etVinNumber.text.toString().isEmpty()) {
-                binding.etVinNumber.error = "Please enter any unique number"
+                if (getString(R.string.app_name) == "Sweep.ie"){
+                    binding.etVinNumber.error = "Please enter vehicle number"
+                }else{
+                    binding.etVinNumber.error = "Please enter any unique number"
+                }
+            }else if(binding.etVinNumber.text.toString().contains("[!\"#$%&'()*+,-./:;\\\\<=>?@\\[\\]^_`{|}~]".toRegex())) {
+                binding.etVinNumber.error = "Special characters not allowed"
+
             }else{
-                createProject(binding.etVinNumber.text.toString(),binding.etVinNumber.text.toString())
+                createProject(
+                    removeWhiteSpace(binding.etVinNumber.text.toString()),
+                    removeWhiteSpace(binding.etVinNumber.text.toString())
+                )
             }
+
         }
     }
 
@@ -76,6 +88,9 @@ class ThreeSixtyProjectAndSkuDialog : BaseDialogFragment<ThreeSixtyViewModel, Di
             }
         })
     }
+
+    private fun removeWhiteSpace(toString: String) = toString.replace("\\s".toRegex(), "")
+
 
     private fun createSku(projectId: String, prod_sub_cat_id : String) {
         viewModel.createSku(

@@ -55,18 +55,20 @@ class ConfirmReshootDialog : BaseDialogFragment<ShootViewModel, DialogConfirmRes
                 this["project_id"] = viewModel.shootData.value?.project_id
                 this["image_type"] = viewModel.shootData.value?.image_category
             }
+
             requireContext().captureEvent(
                 Events.CONFIRMED,
                 properties)
 
             viewModel.isCameraButtonClickable = true
+
             when(viewModel.categoryDetails.value?.imageType) {
                 "Exterior" -> {
                     uploadImages()
 
                     if (viewModel.shootNumber.value  == viewModel.exterirorAngles.value?.minus(1)){
                         dismiss()
-                        viewModel.showInteriorDialog.value = true
+                        checkInteriorShootStatus()
                     }else{
                         viewModel.shootNumber.value = viewModel.shootNumber.value!! + 1
                         dismiss()
@@ -78,7 +80,7 @@ class ConfirmReshootDialog : BaseDialogFragment<ShootViewModel, DialogConfirmRes
                     uploadImages()
 
                     if (viewModel.interiorShootNumber.value  == viewModel.interiorAngles.value?.minus(1)){
-                        viewModel.showMiscDialog.value = true
+                        checkMiscShootStatus()
                         dismiss()
                     }else{
                         viewModel.interiorShootNumber.value = viewModel.interiorShootNumber.value!! + 1
@@ -113,7 +115,6 @@ class ConfirmReshootDialog : BaseDialogFragment<ShootViewModel, DialogConfirmRes
                         .into(binding.ivCapturedImage)
 
                     if (viewModel.categoryDetails.value?.imageType == "Exterior"){
-
                         val overlay = it.value.data[viewModel.shootNumber.value!!].display_thumbnail
 
                         Glide.with(requireContext())
@@ -123,7 +124,6 @@ class ConfirmReshootDialog : BaseDialogFragment<ShootViewModel, DialogConfirmRes
                             .into(binding.ivCaptured2)
 
                         setOverlay(binding.ivCaptured2,overlay)
-
                     }else{
                        binding.flAfter.visibility = View.GONE
                     }
@@ -132,11 +132,8 @@ class ConfirmReshootDialog : BaseDialogFragment<ShootViewModel, DialogConfirmRes
            }
        })
     }
-    private fun uploadImages() {
-//        viewModel.uploadImageWithWorkManager(
-//            viewModel.shootData.value!!
-//        )
 
+    private fun uploadImages() {
         viewLifecycleOwner.lifecycleScope.launch {
             viewModel.
             insertImage(viewModel.shootData.value!!)
@@ -160,16 +157,6 @@ class ConfirmReshootDialog : BaseDialogFragment<ShootViewModel, DialogConfirmRes
                     var ow = it?.overlayWidth
                     var oh = it?.overlayHeight
 
-
-                    Log.d(TAG, "onGlobalLayout: "+prw)
-                    Log.d(TAG, "onGlobalLayout: "+prh)
-
-                    Log.d(TAG, "onGlobalLayout: "+ow)
-                    Log.d(TAG, "onGlobalLayout: "+oh)
-
-                    Log.d(TAG, "onGlobalLayout: "+view.width)
-                    Log.d(TAG, "onGlobalLayout: "+view.height)
-
                     var newW =
                         ow!!.toFloat().div(prw!!.toFloat()).times(view.width)
                     var newH =
@@ -189,6 +176,49 @@ class ConfirmReshootDialog : BaseDialogFragment<ShootViewModel, DialogConfirmRes
                 }
             }
         })
+    }
+
+    private fun checkInteriorShootStatus() {
+        viewModel.subCategoriesResponse.observe(viewLifecycleOwner, {
+            when (it) {
+                is Resource.Success -> {
+                    when {
+                        it.value.interior.isNotEmpty() -> {
+                            viewModel.showInteriorDialog.value = true
+                        }
+                        it.value.miscellaneous.isNotEmpty() -> {
+                            viewModel.showMiscDialog.value = true
+                        }
+                        else -> {
+                            viewModel.selectBackground.value = true
+                        }
+                    }
+                }
+                else -> { }
+            }
+        })
+
+
+    }
+
+    private fun checkMiscShootStatus() {
+        viewModel.subCategoriesResponse.observe(viewLifecycleOwner, {
+            when (it) {
+                is Resource.Success -> {
+                    when {
+                        it.value.miscellaneous.isNotEmpty() -> {
+                            viewModel.showMiscDialog.value = true
+                        }
+                        else -> {
+                            viewModel.selectBackground.value = true
+                        }
+                    }
+                }
+                else -> { }
+            }
+        })
+
+
     }
 
 

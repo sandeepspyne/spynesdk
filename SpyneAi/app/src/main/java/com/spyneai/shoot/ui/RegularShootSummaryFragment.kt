@@ -1,6 +1,5 @@
 package com.spyneai.shoot.ui
 
-import android.content.Intent
 import android.graphics.drawable.Drawable
 import android.os.Bundle
 import android.os.Handler
@@ -22,10 +21,10 @@ import com.spyneai.base.BaseFragment
 import com.spyneai.base.network.Resource
 import com.spyneai.captureEvent
 import com.spyneai.captureFailureEvent
-import com.spyneai.credits.CreditPlansActivity
 import com.spyneai.dashboard.ui.WhiteLabelConstants
 import com.spyneai.dashboard.ui.handleApiError
 import com.spyneai.databinding.FragmentRegularShootSummaryBinding
+import com.spyneai.fragment.TopUpFragment
 import com.spyneai.needs.AppConstants
 import com.spyneai.needs.Utilities
 import com.spyneai.posthog.Events
@@ -63,16 +62,14 @@ class RegularShootSummaryFragment  : BaseFragment<ProcessViewModel, FragmentRegu
         binding.tvTotalCost.text = viewModel.exteriorAngles.value.toString()
 
         observeReduceCredits()
+        observepaidStatus()
 
         binding.tvGenerateGif.setOnClickListener {
             reduceCredits(true)
         }
 
         binding.tvTopUp.setOnClickListener {
-            var intent = Intent(requireContext(), CreditPlansActivity::class.java)
-            intent.putExtra("from_wallet",false)
-            intent.putExtra("credit_available",availableCredits)
-            startActivity(intent)
+            TopUpFragment().show(requireActivity().supportFragmentManager,"TopUpFragment")
         }
     }
 
@@ -289,12 +286,38 @@ class RegularShootSummaryFragment  : BaseFragment<ProcessViewModel, FragmentRegu
         viewModel.reduceCreditResponse.observe(viewLifecycleOwner,{
             when(it) {
                 is Resource.Success -> {
-                    processSku(false)
+                    updatePaidStatus(false)
                 }
 
                 is Resource.Failure -> {
                     Utilities.hideProgressDialog()
                     handleApiError(it) { reduceCredits(true) }
+                }
+            }
+        })
+    }
+    private fun updatePaidStatus(showLoader : Boolean) {
+        if (showLoader)
+            Utilities.showProgressDialog(requireContext())
+
+        viewModel.updateDownloadStatus(
+            Utilities.getPreference(requireContext(), AppConstants.TOKEN_ID).toString(),
+            viewModel.sku.value?.skuId!!,
+            WhiteLabelConstants.ENTERPRISE_ID,
+            true
+        )
+    }
+
+    private fun observepaidStatus() {
+        viewModel.downloadHDRes.observe(viewLifecycleOwner,{
+            when(it) {
+                is Resource.Success -> {
+                    processSku(false)
+                }
+
+                is Resource.Failure -> {
+                    Utilities.hideProgressDialog()
+                    handleApiError(it) { updatePaidStatus(true) }
                 }
             }
         })

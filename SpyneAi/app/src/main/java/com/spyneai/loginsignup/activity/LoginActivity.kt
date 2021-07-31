@@ -1,6 +1,8 @@
 package com.spyneai.loginsignup.activity
 
+import android.content.ActivityNotFoundException
 import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
 import android.text.InputType
 import android.view.View
@@ -37,6 +39,12 @@ class LoginActivity : AppCompatActivity() {
         setContentView(R.layout.activity_login)
 
         et_loginPassword.setInputType(InputType.TYPE_CLASS_TEXT or InputType.TYPE_TEXT_VARIATION_PASSWORD)
+
+        when(getString(R.string.app_name)){
+            "Karvi.com" -> rlSingup.visibility = View.GONE
+            else ->{}
+        }
+
         listeners()
     }
 
@@ -75,6 +83,21 @@ class LoginActivity : AppCompatActivity() {
             val intent = Intent(this, ForgotPasswordActivity::class.java)
             startActivity(intent)
         }
+
+        tvterms.setOnClickListener {
+            try {
+                startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(getString(R.string.terms_and_conditions_url))))
+            } catch (e: ActivityNotFoundException) {
+                Toast.makeText(
+                    this, "No application can handle this request."
+                            + " Please install a webbrowser", Toast.LENGTH_LONG
+                ).show()
+                e.printStackTrace()
+            }
+        }
+
+
+
     }
 
     private fun login(email: String, password: String) {

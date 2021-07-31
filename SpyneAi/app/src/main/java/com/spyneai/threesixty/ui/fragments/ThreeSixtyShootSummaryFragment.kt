@@ -1,6 +1,5 @@
 package com.spyneai.threesixty.ui.fragments
 
-import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -10,10 +9,10 @@ import com.bumptech.glide.Glide
 import com.spyneai.R
 import com.spyneai.base.BaseFragment
 import com.spyneai.base.network.Resource
-import com.spyneai.credits.CreditPlansActivity
 import com.spyneai.dashboard.ui.WhiteLabelConstants
 import com.spyneai.dashboard.ui.handleApiError
 import com.spyneai.databinding.Fragment360ShotSummaryBinding
+import com.spyneai.fragment.TopUpFragment
 import com.spyneai.needs.AppConstants
 import com.spyneai.needs.Utilities
 import com.spyneai.threesixty.data.ThreeSixtyViewModel
@@ -44,9 +43,7 @@ class ThreeSixtyShootSummaryFragment : BaseFragment<ThreeSixtyViewModel, Fragmen
         }
 
         binding.tvTopUp.setOnClickListener {
-            var intent = Intent(requireContext(), CreditPlansActivity::class.java)
-            intent.putExtra("credit_available",availableCredits)
-            startActivity(intent)
+            TopUpFragment().show(requireActivity().supportFragmentManager,"TopUpFragment")
         }
 
         binding.btnProceed.setOnClickListener {
@@ -103,7 +100,7 @@ class ThreeSixtyShootSummaryFragment : BaseFragment<ThreeSixtyViewModel, Fragmen
         viewModel.updateDownloadStatus(
             Utilities.getPreference(requireContext(), AppConstants.TOKEN_ID).toString(),
             viewModel.videoDetails.skuId!!,
-            "TaD1VC1Ko",
+            WhiteLabelConstants.ENTERPRISE_ID,
             true
         )
     }

@@ -53,24 +53,24 @@ class HomeDashboardFragment :
 
         lisners()
 
-        viewModel.getCategories(Utilities.getPreference(requireContext(),AppConstants.AUTH_KEY).toString())
-        viewModel.categoriesResponse.observe(viewLifecycleOwner, Observer {
-            when(it){
-                is Resource.Success -> {
-                    requireContext().captureEvent(Events.GOT_CATEGORIES, Properties())
-
-                }
-                is Resource.Loading -> {
-
-                }
-                is Resource.Failure -> {
-                    requireContext().captureFailureEvent(Events.GET_CATEGORIES_FAILED, Properties(),
-                        it.errorMessage!!)
-
-                    handleApiError(it)
-                }
-            }
-        })
+//        viewModel.getCategories(Utilities.getPreference(requireContext(),AppConstants.AUTH_KEY).toString())
+//        viewModel.categoriesResponse.observe(viewLifecycleOwner, Observer {
+//            when(it){
+//                is Resource.Success -> {
+//                    requireContext().captureEvent(Events.GOT_CATEGORIES, Properties())
+//
+//                }
+//                is Resource.Loading -> {
+//
+//                }
+//                is Resource.Failure -> {
+//                    requireContext().captureFailureEvent(Events.GET_CATEGORIES_FAILED, Properties(),
+//                        it.errorMessage!!)
+//
+//                    handleApiError(it)
+//                }
+//            }
+//        })
     }
 
 

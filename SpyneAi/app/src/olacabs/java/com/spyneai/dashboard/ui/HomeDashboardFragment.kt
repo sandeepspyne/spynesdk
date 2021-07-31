@@ -44,61 +44,8 @@ class HomeDashboardFragment :
         tokenId = Utilities.getPreference(requireContext(), AppConstants.TOKEN_ID).toString()
         email = Utilities.getPreference(requireContext(), AppConstants.EMAIL_ID).toString()
 
-        if (viewModel.isNewUser.value == true){
-                when(getString(R.string.app_name)){
-                    "Sweep.ie","Travo Photos","Travo Photos" -> showFreeCreditDialog(viewModel.creditsMessage.value.toString())
-                }
-            viewModel.isNewUser.value = false
-        }
 
         lisners()
-
-//        viewModel.getCategories(Utilities.getPreference(requireContext(), AppConstants.AUTH_KEY).toString())
-//        viewModel.categoriesResponse.observe(viewLifecycleOwner, Observer {
-//            when(it){
-//                is Resource.Sucess -> {
-//                    requireContext().captureEvent(Events.GOT_CATEGORIES, Properties())
-//
-//                }
-//                is Resource.Loading -> {
-//
-//                }
-//                is Resource.Failure -> {
-//                    requireContext().captureFailureEvent(
-//                        Events.GET_CATEGORIES_FAILED, Properties(),
-//                        it.errorMessage!!)
-//
-//                    handleApiError(it)
-//                }
-//            }
-//        })
-    }
-
-
-
-
-    private fun showFreeCreditDialog(message: String) {
-        val dialog = Dialog(requireContext())
-        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE)
-        dialog.setCancelable(true)
-
-        var dialogView = LayoutInflater.from(requireContext()).inflate(R.layout.free_credit_dialog, null)
-        var tvMessage: TextView = dialogView.findViewById(R.id.tvSkuNameDialog)
-        tvMessage.text = message
-
-        dialog.setContentView(dialogView)
-
-        dialog.getWindow()?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT));
-        val llOk: LinearLayout = dialog.findViewById(R.id.llOk)
-
-
-        llOk.setOnClickListener(View.OnClickListener {
-
-            dialog.dismiss()
-
-        })
-        dialog.show()
-
     }
 
     private fun lisners(){

@@ -52,6 +52,11 @@ class ProcessViewModel : ViewModel() {
     val reduceCreditResponse: LiveData<Resource<ReduceCreditResponse>>
         get() = _reduceCreditResponse
 
+    private val _downloadHDRes : MutableLiveData<Resource<DownloadHDRes>> = MutableLiveData()
+    val downloadHDRes: LiveData<Resource<DownloadHDRes>>
+        get() = _downloadHDRes
+
+
     fun getBackgroundGifCars(
         category: RequestBody,
         auth_key: RequestBody,
@@ -73,6 +78,21 @@ class ProcessViewModel : ViewModel() {
                 )
                 _carGifRes.value =  Resource.Success(CarsBackgroundRes(carGifList,"Success",200))
             }
+
+            "Cars 24" -> {
+                val carGifList = ArrayList<CarsBackgroundRes.Data>()
+                carGifList.add(
+                    CarsBackgroundRes.Data(
+                        "Hot Krypton",
+                        "https://storage.googleapis.com/spyne-website/static/website-themes/clippr/gifV2/970.gif",
+                        1,
+                        "970",
+                        "https://storage.googleapis.com/spyne-website/static/website-themes/clippr/comp_backgroundV2/970.png"
+                    )
+                )
+                _carGifRes.value =  Resource.Success(CarsBackgroundRes(carGifList,"Success",200))
+            }
+
             "Ola Cabs" -> {
                 val carGifList = ArrayList<CarsBackgroundRes.Data>()
                 carGifList.add(
@@ -152,6 +172,16 @@ class ProcessViewModel : ViewModel() {
     ) = viewModelScope.launch {
         _reduceCreditResponse.value = Resource.Loading
         _reduceCreditResponse.value = repository.reduceCredit(userId,creditReduce)
+    }
+
+    fun updateDownloadStatus(
+        userId : String,
+        skuId: String,
+        enterpriseId: String,
+        downloadHd: Boolean
+    ) = viewModelScope.launch {
+        _downloadHDRes.value = Resource.Loading
+        _downloadHDRes.value = repository.updateDownloadStatus(userId,skuId, enterpriseId, downloadHd)
     }
 
 }

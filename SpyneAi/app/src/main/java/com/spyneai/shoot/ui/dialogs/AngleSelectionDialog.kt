@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import com.spyneai.R
 import com.spyneai.base.BaseDialogFragment
 import com.spyneai.databinding.DialogAngleSelectionBinding
 import com.spyneai.shoot.data.ShootViewModel
@@ -17,13 +18,16 @@ class AngleSelectionDialog : BaseDialogFragment<ShootViewModel,DialogAngleSelect
     }
 
     private fun showOptions() {
-        val valuesShoots = arrayOf("8 Angles", "12 Angles","16 Angles","24 Angles","36 Angles",)
+        val valuesShoots = when(getString(R.string.app_name)){
+            "Cars 24" -> arrayOf("5 Angles")
+            else -> arrayOf("8 Angles", "12 Angles","16 Angles","24 Angles","36 Angles")
+        }
 
         val lastSelectedAngles = viewModel.getSelectedAngles()
         var newSelectedAngles = viewModel.getSelectedAngles()
 
         when(viewModel.getSelectedAngles()){
-            8 -> binding.npShoots.minValue = 0
+            8,5 -> binding.npShoots.minValue = 0
             12 -> binding.npShoots.minValue = 1
             16 -> binding.npShoots.minValue = 2
             24 -> binding.npShoots.minValue = 3
@@ -36,6 +40,7 @@ class AngleSelectionDialog : BaseDialogFragment<ShootViewModel,DialogAngleSelect
 
         binding.npShoots.setOnValueChangedListener { _, _, newVal ->
            when(valuesShoots[newVal]) {
+               "5 Angles" -> newSelectedAngles = 5
                "8 Angles" -> newSelectedAngles = 8
                "12 Angles" -> newSelectedAngles = 12
                "16 Angles" -> newSelectedAngles = 16
@@ -46,7 +51,6 @@ class AngleSelectionDialog : BaseDialogFragment<ShootViewModel,DialogAngleSelect
 
         binding.tvProceed.setOnClickListener {
             if (lastSelectedAngles != newSelectedAngles)
-                //isSubcatgoryConfirmed = false
                 viewModel.exterirorAngles.value = newSelectedAngles
                     dismiss()
         }
