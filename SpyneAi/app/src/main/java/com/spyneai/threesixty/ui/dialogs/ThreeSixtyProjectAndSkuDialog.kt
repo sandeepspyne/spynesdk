@@ -47,7 +47,6 @@ class ThreeSixtyProjectAndSkuDialog : BaseDialogFragment<ThreeSixtyViewModel, Di
                     removeWhiteSpace(binding.etVinNumber.text.toString())
                 )
             }
-
         }
     }
 

@@ -83,7 +83,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
-                android:padding="@dimen/dp_10"
+               android:paddingTop="@dimen/dp_10"
+                android:paddingLeft="@dimen/dp_10"
                 android:id="@+id/rlSingup"
                 android:layout_marginRight="@dimen/dp_25"
                 android:layout_marginLeft="@dimen/dp_25">
@@ -113,6 +114,7 @@
                 android:text="@string/forgot_password"
                 android:fontFamily="@font/light"
                 android:textColor="@color/primary"
+                android:layout_marginTop="@dimen/dp_10"
                 android:layout_alignParentRight="true"
                 android:textSize="@dimen/sp_13"/>
 
