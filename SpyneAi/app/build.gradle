@@ -70,8 +70,8 @@ android {
         sweepCars {
             dimension 'version'
             applicationId "com.spyneai.sweepcars"
-            versionCode 4
-            versionName "2.4"
+            versionCode 5
+            versionName "2.5"
         }
 
         trustedCars {

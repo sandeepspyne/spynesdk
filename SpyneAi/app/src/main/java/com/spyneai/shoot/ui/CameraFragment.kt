@@ -30,6 +30,7 @@ import com.posthog.android.Properties
 import com.spyneai.R
 import com.spyneai.analyzer.LuminosityAnalyzer
 import com.spyneai.base.BaseFragment
+import com.spyneai.base.network.Resource
 import com.spyneai.camera2.ShootDimensions
 import com.spyneai.captureEvent
 import com.spyneai.captureFailureEvent
@@ -135,7 +136,7 @@ class CameraFragment : BaseFragment<ShootViewModel, FragmentCameraBinding>(), Pi
                             1
                         )
                     ) {
-                        viewModel.showMiscDialog.value = true
+                        checkMiscShootStatus()
                     } else {
                         viewModel.interiorShootNumber.value =
                             viewModel.interiorShootNumber.value!! + 1
@@ -151,6 +152,26 @@ class CameraFragment : BaseFragment<ShootViewModel, FragmentCameraBinding>(), Pi
                 }
             }
         }
+    }
+
+    private fun checkMiscShootStatus() {
+        viewModel.subCategoriesResponse.observe(viewLifecycleOwner, {
+            when (it) {
+                is Resource.Success -> {
+                    when {
+                        it.value.miscellaneous.isNotEmpty() -> {
+                            viewModel.showMiscDialog.value = true
+                        }
+                        else -> {
+                            viewModel.selectBackground.value = true
+                        }
+                    }
+                }
+                else -> { }
+            }
+        })
+
+
     }
 
     override fun onResume() {

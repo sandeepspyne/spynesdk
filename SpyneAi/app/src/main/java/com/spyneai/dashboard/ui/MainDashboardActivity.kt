@@ -57,13 +57,14 @@ class MainDashboardActivity : AppCompatActivity() {
                 R.id.homeDashboardFragment->setCurrentFragment(firstFragment)
 
                 R.id.shootActivity-> {
-                    var intent : Intent? = null
-                    intent = if (getString(R.string.app_name) == "Ola Cabs") Intent(this,
-                        StartShootActivity::class.java) else Intent(this, ShootActivity::class.java)
+                    var intent =
+                        when(getString(R.string.app_name)) {
+                        "Ola Cabs","Sweep.ie","Cars 24","Trusted Cars","Travo Photos" ->  Intent(this, StartShootActivity::class.java)
+                            else -> Intent(this, ShootActivity::class.java)
+                    }
 
                     intent.putExtra(AppConstants.CATEGORY_ID,AppConstants.CARS_CATEGORY_ID)
                     intent.putExtra(AppConstants.CATEGORY_NAME,"Automobiles")
-
                     startActivity(intent)
                 }
                 R.id.completedOrdersFragment-> {
