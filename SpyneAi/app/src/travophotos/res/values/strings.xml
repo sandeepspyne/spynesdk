@@ -198,14 +198,14 @@
     <string name="forgot_password_mail">Enter the email address to reset your password. <br/> You may need to check your spam folder.</string>
     <string name="forgot_password_dialog">Link sent successfully.<br /> Please check your email.</string>
     <string name="send_link">Send Link</string>
-    <string name="sign_up_here">New to Spyne?&#160; <font color='#FF7700'><b>Sign up here</b></font></string>
+    <string name="sign_up_here">New to Travo Photos?&#160; <font color='#FF7700'><b>Sign up here</b></font></string>
     <string name="sign_in">Sign in with OTP</string>
     <string name="sign_up">Sign up </string>
 
 
     <string name="login">Login</string>
     <string name="login_with_password">Login with Password</string>
-    <string name="login_here">Seem like you are already a Spyne User?&#160; <font color='#FF7700'><b>Login here</b></font></string>
+    <string name="login_here">Already a Travo Photos User?&#160; <font color='#FF7700'><b>Login here</b></font></string>
     <string name="hello">Greetings!</string>
 
     <string name="please">Please sign in to continue</string>
