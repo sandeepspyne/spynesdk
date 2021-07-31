@@ -77,8 +77,8 @@ android {
         trustedCars {
             dimension 'version'
             applicationId "com.spyneai.trustedCars"
-            versionCode 1
-            versionName "1.0.0"
+            versionCode 3
+            versionName "2.1"
         }
 
         karvi {

@@ -28,4 +28,10 @@
     //bottom navigation
     <string name="home">Home</string>
     <string name="order_now">Orders</string>
+
+    <string name="sign_up_here">New to Trusted Cars?&#160; <font color='#FF7700'><b>Sign up here</b></font></string>
+
+
+    <string name="login_here">Already a Trusted Cars User?&#160; <font color='#FF7700'><b>Login here</b></font></string>
+
 </resources>

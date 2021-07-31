@@ -59,7 +59,7 @@ class MainDashboardActivity : AppCompatActivity() {
                 R.id.shootActivity-> {
                     var intent =
                         when(getString(R.string.app_name)) {
-                        "Ola Cabs","Sweep.ie","Cars 24","Trusted Cars","Travo Photos" ->  Intent(this, StartShootActivity::class.java)
+                        "Ola Cabs","Sweep.ei","Cars 24","Trusted cars","Travo Photos" ->  Intent(this, StartShootActivity::class.java)
                             else -> Intent(this, ShootActivity::class.java)
                     }
 

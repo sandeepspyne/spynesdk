@@ -23,7 +23,6 @@ import com.spyneai.captureEvent
 import com.spyneai.captureFailureEvent
 import com.spyneai.dashboard.data.DashboardViewModel
 import com.spyneai.databinding.HomeDashboardFragmentBinding
-import com.spyneai.extras.BeforeAfterActivity
 import com.spyneai.fragment.TopUpFragment
 import com.spyneai.needs.AppConstants
 import com.spyneai.needs.Utilities
@@ -57,7 +56,7 @@ class HomeDashboardFragment :
         viewModel.getCategories(Utilities.getPreference(requireContext(),AppConstants.AUTH_KEY).toString())
         viewModel.categoriesResponse.observe(viewLifecycleOwner, Observer {
             when(it){
-                is Resource.Sucess -> {
+                is Resource.Success -> {
                     requireContext().captureEvent(Events.GOT_CATEGORIES, Properties())
 
                 }
@@ -68,59 +67,14 @@ class HomeDashboardFragment :
                     requireContext().captureFailureEvent(Events.GET_CATEGORIES_FAILED, Properties(),
                         it.errorMessage!!)
 
-                    handleApiError(it)
+                    //handleApiError(it)
                 }
             }
         })
     }
 
 
-    private fun startBeforeAfter() {
-        val intent = Intent(requireContext(), BeforeAfterActivity::class.java)
-        intent.putExtra(
-            AppConstants.CATEGORY_NAME,
-            displayName
-        )
-        intent.putExtra(
-            AppConstants.CATEGORY_ID,
-            catId
-        )
-        intent.putExtra(
-            AppConstants.IMAGE_URL,
-            displayThumbnail
-        )
-        intent.putExtra(
-            AppConstants.DESCRIPTION,
-            description
-        )
-        intent.putExtra(AppConstants.COLOR, colorCode)
-        startActivity(intent)
-    }
 
-
-    private fun showFreeCreditDialog(message: String) {
-        val dialog = Dialog(requireContext())
-        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE)
-        dialog.setCancelable(true)
-
-        var dialogView = LayoutInflater.from(requireContext()).inflate(R.layout.free_credit_dialog, null)
-        var tvMessage: TextView = dialogView.findViewById(R.id.tvSkuNameDialog)
-        tvMessage.text = message
-
-        dialog.setContentView(dialogView)
-
-        dialog.getWindow()?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT));
-        val llOk: LinearLayout = dialog.findViewById(R.id.llOk)
-
-
-        llOk.setOnClickListener(View.OnClickListener {
-
-            dialog.dismiss()
-
-        })
-        dialog.show()
-
-    }
 
     private fun lisners(){
         binding.ivWallet.setOnClickListener {
