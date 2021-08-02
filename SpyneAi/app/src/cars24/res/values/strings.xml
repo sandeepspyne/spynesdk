@@ -34,4 +34,5 @@
     <string name="sign_up_here">New to Cars24?&#160; <font color='#FF7700'><b>Sign up here</b></font></string>
     <string name="login_here">Seem like you are already a Cars24 User?&#160; <font color='#FF7700'><b>Login here</b></font></string>
 
+    <string name="capture_upto">Capture upto 5 Exterior Images</string>
 </resources>

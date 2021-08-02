@@ -216,4 +216,5 @@
 
 
     <string name="terms_and_conditions_url">https://www.spyne.ai/terms-service</string>
+    <string name="capture_upto">Capture upto 36 Exterior Images</string>
 </resources>

@@ -27,8 +27,6 @@ import com.spyneai.imagesdowloading.ImageDownloadingService
 import com.spyneai.needs.AppConstants
 import com.spyneai.needs.Utilities
 import kotlinx.android.synthetic.main.activity_downloading.*
-import kotlinx.android.synthetic.main.activity_order_summary2.*
-import kotlinx.android.synthetic.main.activity_show_images.*
 import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode
@@ -93,6 +91,8 @@ class DownloadingActivity : AppCompatActivity() {
         ivBack.setOnClickListener {
             onBackPressed()
         }
+
+        iv_home.setOnClickListener { gotoHome() }
     }
 
     private fun setPermissions() {
@@ -250,7 +250,6 @@ class DownloadingActivity : AppCompatActivity() {
     }
 
     override fun onBackPressed() {
-
     }
 
     private fun scanFile(path: String) {
@@ -298,6 +297,7 @@ class DownloadingActivity : AppCompatActivity() {
 
     fun addFeedbackFragment() {
 
+        iv_home.visibility = View.VISIBLE
 
         supportFragmentManager.beginTransaction()
             .add(R.id.fl_container, FeedbackSubmittedFragment())
