@@ -47,19 +47,17 @@ class DownloadingActivity : AppCompatActivity() {
     var price: Int = 0
     var path_save_photos: String = ""
     lateinit var file: File
+    var backpressEnabled = false
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_downloading)
 
-        PRDownloader.initialize(getApplicationContext());
-        val config = PRDownloaderConfig.newBuilder()
-            .setDatabaseEnabled(true)
-            .build()
-        PRDownloader.initialize(getApplicationContext(), config)
-
         AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
+
+        if (Utilities.getPreference(this, AppConstants.DOWNLOAD_TYPE).equals("watermark"))
+            backpressEnabled = true
 
         listWatermark = ArrayList<String>()
         listHdQuality = ArrayList<String>()
@@ -129,7 +127,7 @@ class DownloadingActivity : AppCompatActivity() {
             tvIncreaseSale.visibility = View.VISIBLE
             llButton.visibility = View.VISIBLE
             tvButtonText.setText("Download HD Images")
-            downloadWaterMark()
+            startDownloading(true,listWatermark,false)
         } else if (Utilities.getPreference(this, AppConstants.DOWNLOAD_TYPE).equals("hd")) {
             ivBack.visibility = View.INVISIBLE
             llButton.visibility = View.VISIBLE
@@ -137,7 +135,7 @@ class DownloadingActivity : AppCompatActivity() {
             tvButtonText.setText("Go to Home")
 
             if (intent.getBooleanExtra(AppConstants.IS_DOWNLOADED_BEFORE,false)){
-                startDownloading()
+                startDownloading(true,listHdQuality,true)
             }else{
                 if (Utilities.getPreference(this, AppConstants.CREDIT_AVAILABLE)!!
                         .toInt() >= Utilities.getPreference(
@@ -157,7 +155,7 @@ class DownloadingActivity : AppCompatActivity() {
                         tvDownloading.visibility = View.GONE
                     }else{
                         //start service
-                        startDownloading()
+                        startDownloading(false,listHdQuality,true)
                     }
                 }else{
                     Toast.makeText(this,"Not enough credits available",Toast.LENGTH_LONG).show()
@@ -166,90 +164,24 @@ class DownloadingActivity : AppCompatActivity() {
         }
     }
 
-    private fun startDownloading() {
+    private fun startDownloading(isDownloaded : Boolean,imageList : ArrayList<String>,isHd : Boolean) {
         var imageDownloadingServiceIntent = Intent(this,ImageDownloadingService::class.java)
         imageDownloadingServiceIntent.action = "START"
-        imageDownloadingServiceIntent.putExtra(AppConstants.LIST_HD_QUALITY,listHdQuality)
+        imageDownloadingServiceIntent.putExtra(AppConstants.LIST_HD_QUALITY,imageList)
         imageDownloadingServiceIntent.putExtra(AppConstants.LIST_IMAGE_NAME,imageName)
         imageDownloadingServiceIntent.putExtra(AppConstants.SKU_NAME,intent.getStringExtra(AppConstants.SKU_NAME))
         imageDownloadingServiceIntent.putExtra(AppConstants.SKU_ID,intent.getStringExtra(AppConstants.SKU_ID))
         imageDownloadingServiceIntent.putExtra(AppConstants.IMAGE_TYPE,intent.getStringExtra(AppConstants.IMAGE_TYPE))
         imageDownloadingServiceIntent.putExtra(AppConstants.CREDIT_REMAINING,remaningCredit)
         imageDownloadingServiceIntent.putExtra(AppConstants.PRICE,price)
-        imageDownloadingServiceIntent.putExtra(AppConstants.IS_DOWNLOADED_BEFORE,intent.getBooleanExtra(AppConstants.IS_DOWNLOADED_BEFORE,false))
+        imageDownloadingServiceIntent.putExtra(AppConstants.IS_DOWNLOADED_BEFORE,isDownloaded)
+        imageDownloadingServiceIntent.putExtra(AppConstants.IS_HD,isHd)
         ContextCompat.startForegroundService(this, imageDownloadingServiceIntent)
     }
 
-    private fun downloadWaterMark() {
-        if (listWatermark.size > 0 && listWatermark != null) {
-            for (i in 0 until listWatermark.size) {
-                if (listWatermark[i] == null){
-                    Toast.makeText(this, "Watermark images are null.", Toast.LENGTH_SHORT).show()
-                    tvDownloadFailed.visibility = View.VISIBLE
-                    tvDownloadCompleted.visibility = View.GONE
-                    tvDownloading.visibility = View.GONE
-                } else{
-                    downloadWithWaterMark(listWatermark[i])
-                }
-            }
-        }
-    }
-
-
-    private fun downloadWithWaterMark(imageFile: String?) {
-        downloadCount++
-        val FILENAME_FORMAT = "yyyy-MM-dd-HH-mm-ss-SSS"
-
-        val imageName: String = "Spyne" + SimpleDateFormat(
-            FILENAME_FORMAT, Locale.US
-        ).format(System.currentTimeMillis()) + ".png"
-
-
-
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R){
-            path_save_photos = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS).toString() + File.separator + this.getResources().getString(R.string.app_name)
-        }else{
-            path_save_photos = Environment.getExternalStorageDirectory().getAbsolutePath() +
-                    File.separator +
-                    this.getResources().getString(R.string.app_name)
-        }
-
-        file = File(path_save_photos)
-
-        PRDownloader.download(
-            imageFile,
-            path_save_photos,
-            imageName
-        )
-            .build()
-
-            .start(object : OnDownloadListener {
-                override fun onDownloadComplete() {
-
-                    scanFile(file.absolutePath+"/"+imageName)
-
-                    if (downloadCount == listWatermark.size)
-                        Toast.makeText(this@DownloadingActivity, "Download Completed", Toast.LENGTH_SHORT).show()
-
-                    refreshGallery(file.getAbsolutePath(), this@DownloadingActivity)
-
-                    tvDownloading.visibility = View.GONE
-                    tvDownloadCompleted.visibility = View.VISIBLE
-                    downloadCount = 0
-                }
-
-                override fun onError(error: com.downloader.Error?) {
-                    if (downloadCount == listHdQuality.size) {
-                        Toast.makeText(
-                            this@DownloadingActivity,
-                            "Download Failed", Toast.LENGTH_SHORT
-                        ).show()
-                    }
-                }
-            })
-    }
-
     override fun onBackPressed() {
+        if (backpressEnabled)
+            super.onBackPressed()
     }
 
     private fun scanFile(path: String) {

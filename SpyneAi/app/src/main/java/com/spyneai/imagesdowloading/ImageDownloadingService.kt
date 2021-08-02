@@ -66,6 +66,7 @@ class ImageDownloadingService : Service(),ImageDownloadManager.Listener {
         task.creditsToReduce = intent.getIntExtra(AppConstants.PRICE, 0)
         task.price = intent.getIntExtra(AppConstants.PRICE, 10)
         task.isDownloadedBefore = intent.getBooleanExtra(AppConstants.IS_DOWNLOADED_BEFORE,false)
+        task.isHd = intent.getBooleanExtra(AppConstants.IS_HD,false)
 
         //task.isDownloadedBefore = false
 
@@ -89,21 +90,25 @@ class ImageDownloadingService : Service(),ImageDownloadManager.Listener {
         tasksInProgress.forEach {
 
             if (it.isCompleted) {
-                createCompletedNotification()
+                createCompletedNotification(it.isHd)
 
             } else if (it.isFailure) {
-                createFailureNotification()
+                createFailureNotification(it.isHd)
             } else
-                createOngoingNotificaiton()
+                createOngoingNotificaiton(it.isHd)
         }
         if (tasksInProgress.filter { !it.isCompleted || !it.isFailure }.isEmpty()) {
             stopService()
         }
     }
 
-    private fun createOngoingNotificaiton() {
+    private fun createOngoingNotificaiton(hd: Boolean) {
         var notificationId = (0..999999).random()
-        val text: String = "HD images downloading in progress..."
+        val text = if (hd)
+            "HD images downloading in progress..."
+        else
+            "Watermark images downloading in progress..."
+
         var notification = createNotification(text, true)
 
         notificationManager.notify(notificationId, notification)
@@ -111,20 +116,27 @@ class ImageDownloadingService : Service(),ImageDownloadManager.Listener {
 
     }
 
-    private fun createCompletedNotification() {
+    private fun createCompletedNotification(hd: Boolean) {
         captureEvent("Download Completed", Properties())
 
-        var notification = createNotification("HD images downloaded! Check in your gallery", false)
+        var notification = if (hd)
+            createNotification("HD images downloaded! Check in your gallery", false)
+        else
+            createNotification("Watermark images downloaded! Check in your gallery", false)
         notificationManager.notify((0..999999).random(), notification)
     }
 
-    private fun createFailureNotification() {
+    private fun createFailureNotification(hd: Boolean) {
         captureEvent("Download Failed", Properties())
 
-        var notification = createNotification(
+        var notification = if (hd) createNotification(
             "HD images downloading failed! please try again",
             false
-        )
+        )else
+            createNotification(
+                "Watermark images downloading failed! please try again",
+                false
+            )
 
         notificationManager.notify((0..999999).random(), notification)
     }

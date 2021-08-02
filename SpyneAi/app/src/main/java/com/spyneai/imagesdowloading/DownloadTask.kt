@@ -20,4 +20,5 @@ class DownloadTask {
     var imageNameList = ArrayList<String>()
     var failureNotified = false
     var imageDir : String = ""
+    var isHd = false
 }

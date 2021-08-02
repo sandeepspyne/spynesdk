@@ -55,7 +55,16 @@ class ImageDownloadManager(var task : DownloadTask, var listener : Listener) {
 
         var imageName = imageName
         if (imageName.length > 4 && imageName.takeLast(4) != ".jpg")
-            imageName += ".jpg"
+        {
+            imageName += if (task.isHd)
+                ".jpg"
+            else
+                "_watermark.jpg"
+        }else {
+            if (!task.isHd  && imageName.length > 4)
+                imageName = imageName.dropLast(4) + "_watermark.jpg"
+        }
+
 
 
 

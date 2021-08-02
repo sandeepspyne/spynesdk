@@ -60,16 +60,18 @@ class MyOngoingProjectAdapter(
             holder.llThreeSixty.visibility = View.GONE
         }
 
-        if (getProjectList[position].sub_category.equals("360_interior")
-            || getProjectList[position].sub_category.equals("360_exterior")
-            || getProjectList[position].category.equals("cat_d8R14zUNx")
+        if (getProjectList[position].category.equals("cat_d8R14zUNx")
             || getProjectList[position].category.equals("cat_Ujt0kuFxY")
             || getProjectList[position].category.equals("cat_Ujt0kuFxX")
             || getProjectList[position].category.equals("E-Commerce")
             || getProjectList[position].category.equals("Footwear")
             || getProjectList[position].category.equals("Bikes")
-        )
+        ){
             holder.tvImageCount.visibility = View.INVISIBLE
+        }else{
+            holder.tvImageCount.visibility = View.VISIBLE
+        }
+
 
 
         try {

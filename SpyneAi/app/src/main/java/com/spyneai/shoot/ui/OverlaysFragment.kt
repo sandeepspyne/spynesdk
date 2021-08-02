@@ -60,8 +60,8 @@ class OverlaysFragment : BaseFragment<ShootViewModel,FragmentOverlaysBinding>(),
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        initShootHint()
-
+      if (viewModel.sku.value?.skuId == null)
+          initShootHint()
 
         //observe new image clicked
         viewModel.shootList.observe(viewLifecycleOwner, {

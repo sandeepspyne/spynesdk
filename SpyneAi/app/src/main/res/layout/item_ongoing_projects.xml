@@ -284,10 +284,10 @@
             android:gravity="center">
 
             <ImageView
-                android:layout_width="24dp"
-                android:layout_height="16dp"
-                android:src="@drawable/ic_uploaded"
-                android:layout_gravity="center_horizontal"/>
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:src="@drawable/ic_uploaded" />
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"

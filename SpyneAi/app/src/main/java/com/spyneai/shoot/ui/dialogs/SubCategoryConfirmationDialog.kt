@@ -75,7 +75,7 @@ class SubCategoryConfirmationDialog : BaseDialogFragment<ShootViewModel, DialogS
                     sku?.totalImages = viewModel.exterirorAngles.value
 
                     viewModel.sku.value = sku
-                    viewModel.isSubCategoryConfirmed.value = true
+                   // viewModel.isSubCategoryConfirmed.value = true
 
                     //add sku to local database
                     viewModel.insertSku(sku!!)

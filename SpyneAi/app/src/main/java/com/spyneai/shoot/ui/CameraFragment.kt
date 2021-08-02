@@ -34,6 +34,7 @@ import com.spyneai.base.network.Resource
 import com.spyneai.camera2.ShootDimensions
 import com.spyneai.captureEvent
 import com.spyneai.captureFailureEvent
+import com.spyneai.dashboard.ui.handleApiError
 import com.spyneai.databinding.FragmentCameraBinding
 import com.spyneai.needs.AppConstants
 import com.spyneai.needs.Utilities
@@ -117,12 +118,7 @@ class CameraFragment : BaseFragment<ShootViewModel, FragmentCameraBinding>(), Pi
         })
 
         viewModel.showLeveler.observe(viewLifecycleOwner,{
-            if (it && getString(R.string.app_name) == "Karvi.com")
                 binding.flLevelIndicator.visibility = View.VISIBLE
-        })
-
-        viewModel.isSubCategoryConfirmed.observe(viewLifecycleOwner,{
-            if (it && getString(R.string.app_name) != "Karvi.com")  binding.flLevelIndicator.visibility = View.VISIBLE
         })
 
         viewModel.hideLeveler.observe(viewLifecycleOwner,{
@@ -207,21 +203,81 @@ class CameraFragment : BaseFragment<ShootViewModel, FragmentCameraBinding>(), Pi
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
 
+
         binding.cameraCaptureButton?.setOnClickListener {
-            if ((viewModel.isSubCategoryConfirmed.value == null || viewModel.isSubCategoryConfirmed.value == false) &&
-               getString(R.string.app_name) != "Karvi.com"
-            ) {
-                SubCategoryConfirmationDialog().show(
-                    requireFragmentManager(),
-                    "SubCategoryConfirmationDialog"
-                )
-            } else {
-                if (viewModel.isCameraButtonClickable) {
-                    takePhoto()
-                    log("shoot image button clicked")
-                    viewModel.isCameraButtonClickable = false
+            if (viewModel.shootList.value == null){
+                viewModel.createProjectRes.observe(viewLifecycleOwner,{
+            when(it){
+                is Resource.Success -> {
+                    val subCategory =  viewModel.subCategory.value
+                    createSku(it.value.project_id, subCategory?.prod_sub_cat_id.toString())
+                }
+                else -> {}
+            }
+        })
+            }else{
+                captureImage()
+            }
+        }
+    }
+
+
+  private fun createSku(projectId: String, prod_sub_cat_id : String) {
+      Utilities.showProgressDialog(requireContext())
+
+        viewModel.createSku(
+            Utilities.getPreference(requireContext(),AppConstants.AUTH_KEY).toString(),projectId,
+            requireActivity().intent.getStringExtra(AppConstants.CATEGORY_ID).toString(),
+            prod_sub_cat_id!!,
+            viewModel.sku.value?.skuName.toString(),
+            viewModel.exterirorAngles.value!!
+        )
+
+        viewModel.createSkuRes.observe(viewLifecycleOwner,{
+            when(it) {
+                is Resource.Success -> {
+                    Utilities.hideProgressDialog()
+
+                    requireContext().captureEvent(
+                        Events.CREATE_SKU,
+                        Properties().putValue("sku_name",viewModel.sku.value?.skuName.toString())
+                            .putValue("project_id",projectId)
+                            .putValue("prod_sub_cat_id",prod_sub_cat_id)
+                            .putValue("angles",viewModel.exterirorAngles.value!!))
+
+
+                    val sku = viewModel.sku.value
+                    sku?.skuId = it.value.sku_id
+                    sku?.totalImages = viewModel.exterirorAngles.value
+
+                    viewModel.sku.value = sku
+
+
+                    //add sku to local database
+                    viewModel.insertSku(sku!!)
+
+                    captureImage()
+
+                }
+
+
+                is Resource.Failure -> {
+                    requireContext().captureFailureEvent(Events.CREATE_SKU_FAILED, Properties(),
+                        it.errorMessage!!
+                    )
+                    Utilities.hideProgressDialog()
+                    handleApiError(it) {createSku(projectId,prod_sub_cat_id)}
                 }
             }
+        })
+    }
+
+
+    private fun captureImage() {
+        if (viewModel.isCameraButtonClickable) {
+            takePhoto()
+            log("shoot image button clicked")
+            viewModel.isCameraButtonClickable = false
         }
     }
 
@@ -476,7 +532,7 @@ class CameraFragment : BaseFragment<ShootViewModel, FragmentCameraBinding>(), Pi
             System.arraycopy(event.values, 0, magnetometerReading, 0, magnetometerReading.size)
         }
 
-        if (viewModel.isSubCategoryConfirmed.value == true || viewModel.showLeveler.value == true)
+        if (viewModel.showLeveler.value == true)
             updateOrientationAngles()
 
     }
@@ -613,9 +669,6 @@ class CameraFragment : BaseFragment<ShootViewModel, FragmentCameraBinding>(), Pi
     }
 
     private fun addShootItem(capturedImage: String) {
-        if (viewModel.categoryDetails.value?.imageType == "Exterior")
-            viewModel.isSubCategoryConfirmed.value = true
-
         if (viewModel.shootList.value == null)
             viewModel.shootList.value = ArrayList()
 
