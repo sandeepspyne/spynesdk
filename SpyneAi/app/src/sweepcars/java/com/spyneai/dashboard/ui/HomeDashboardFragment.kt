@@ -78,9 +78,14 @@ class HomeDashboardFragment :
 
 
     private fun lisners(){
-        binding.ivWallet.setOnClickListener {
-            TopUpFragment().show(requireActivity().supportFragmentManager,"TopUpFragment")
+        if (getString(R.string.app_name) == "Sweep.ei"){
+            binding.ivWallet.visibility = View.GONE
+        }else {
+            binding.ivWallet.setOnClickListener {
+                TopUpFragment().show(requireActivity().supportFragmentManager,"TopUpFragment")
+            }
         }
+
 
         binding.llCompleted.setOnClickListener {
             val intent = Intent(requireContext(), CompletedProjectsActivity::class.java)

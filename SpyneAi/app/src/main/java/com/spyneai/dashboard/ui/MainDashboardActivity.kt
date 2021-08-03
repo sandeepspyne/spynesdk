@@ -45,6 +45,7 @@ class MainDashboardActivity : AppCompatActivity() {
         val viewModel = ViewModelProvider(this, ViewModelFactory()).get(DashboardViewModel::class.java)
 
         val firstFragment=HomeDashboardFragment()
+        val SecondFragment=WalletDashboardFragment()
         val thirdFragment=LogoutDashBoardFragment()
 
         //save category id and name
@@ -71,6 +72,7 @@ class MainDashboardActivity : AppCompatActivity() {
                     val intent = Intent(this, MyOrdersActivity::class.java)
                     startActivity(intent)
                 }
+               // R.id.wallet->setCurrentFragment(SecondFragment)
                 R.id.logoutDashBoardFragment->setCurrentFragment(thirdFragment)
 
             }
@@ -97,5 +99,11 @@ class MainDashboardActivity : AppCompatActivity() {
             commit()
         }
 
+    override fun onBackPressed() {
+       if (binding.bottomNavigation.selectedItemId != R.id.homeDashboardFragment)
+           binding.bottomNavigation.selectedItemId = R.id.homeDashboardFragment
+        else
+         super.onBackPressed()
+    }
 
 }

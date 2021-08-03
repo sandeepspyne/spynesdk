@@ -16,11 +16,11 @@ import android.util.DisplayMetrics
 import android.util.Log
 import android.view.*
 import android.view.animation.AccelerateInterpolator
-import android.widget.FrameLayout
-import android.widget.ImageView
-import android.widget.Toast
+import android.widget.*
+import androidx.appcompat.widget.AppCompatSeekBar
 import androidx.camera.core.*
 import androidx.camera.lifecycle.ProcessCameraProvider
+import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.ContextCompat
 import androidx.core.net.toFile
 import androidx.work.await
@@ -96,6 +96,7 @@ class CameraFragment : BaseFragment<ShootViewModel, FragmentCameraBinding>(), Pi
     private val orientationAngles = FloatArray(3)
 
     private var cameraControl : CameraControl? = null
+    private var cameraInfo : CameraInfo? = null
     private var handler : Handler? = null
 
 
@@ -126,7 +127,7 @@ class CameraFragment : BaseFragment<ShootViewModel, FragmentCameraBinding>(), Pi
         })
 
         viewModel.showLeveler.observe(viewLifecycleOwner, {
-            //if (it && haveGyrometer) binding.flLevelIndicator.visibility = View.VISIBLE
+            if (it && haveGyrometer) binding.flLevelIndicator.visibility = View.VISIBLE
         })
 
         viewModel.hideLeveler.observe(viewLifecycleOwner, {
@@ -393,6 +394,8 @@ class CameraFragment : BaseFragment<ShootViewModel, FragmentCameraBinding>(), Pi
                 )
 
                 cameraControl = camera.cameraControl
+
+                cameraInfo = camera.cameraInfo
 
                 binding.viewFinder.setOnTouchListener(this)
 
@@ -818,6 +821,7 @@ class CameraFragment : BaseFragment<ShootViewModel, FragmentCameraBinding>(), Pi
         addShootItem(path!!)
     }
 
+    @SuppressLint("UnsafeOptInUsageError")
     override fun onTouch(v: View?, event: MotionEvent?): Boolean {
         when (event!!.action) {
             MotionEvent.ACTION_DOWN -> return true
@@ -841,17 +845,72 @@ class CameraFragment : BaseFragment<ShootViewModel, FragmentCameraBinding>(), Pi
                     val layout =
                         LayoutInflater.from(requireContext()).inflate(R.layout.item_focus, null)
                     val ivFocus: ImageView = layout.findViewById(R.id.ivFocus)
+                    //val tvExposure: TextView = layout.findViewById(R.id.tvExposure)
 
-                    binding.flTapToFocus?.removeAllViews()
+                    val rightSeekBar: SeekBar =
+                        LayoutInflater.from(requireContext())
+                            .inflate(R.layout.item_exposure, null) as SeekBar
 
-                    val width = (50 * resources.displayMetrics.density).toInt()
-                    val height = (50 * resources.displayMetrics.density).toInt()
+                    var seekClicked = false
+                    val seekWidth = (30 * resources.displayMetrics.density).toInt()
 
-                    Log.d(TAG, "onTouch: " + event.x + " " + event.y + " " + point.size)
-                    Log.d(TAG, "onTouch: "+viewModel.shootDimensions.value?.previewWidth!!)
-                    Log.d(TAG, "onTouch: "+width)
+                    val width = (70 * resources.displayMetrics.density).toInt()
+                    val height = (80 * resources.displayMetrics.density).toInt()
 
                     val params = FrameLayout.LayoutParams(width, height)
+                    var seekParams =
+                        FrameLayout.LayoutParams(seekWidth, FrameLayout.LayoutParams.WRAP_CONTENT)
+
+                    if (cameraInfo?.exposureState?.isExposureCompensationSupported == true) {
+                        val exposureState = cameraInfo?.exposureState
+
+                        rightSeekBar.max = exposureState?.exposureCompensationRange?.upper?.times(10)!!
+
+                        rightSeekBar.incrementProgressBy(1)
+                        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.N) {
+                            rightSeekBar.setProgress(exposureState?.exposureCompensationIndex?.times(10)!!,false)
+                        }
+
+                        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
+                            rightSeekBar.min = exposureState?.exposureCompensationRange?.lower?.times(10)!!
+                        }
+
+                        //rightSeekBar.min = exposureState?.exposureCompensationRange?.lower!!
+
+                        rightSeekBar?.setOnSeekBarChangeListener(object :
+                            SeekBar.OnSeekBarChangeListener {
+                            override fun onProgressChanged(
+                                seek: SeekBar,
+                                progress: Int, fromUser: Boolean
+                            ) {
+                                if (!seekClicked){
+                                    seekClicked = true
+                                    seekParams.width = (150 * resources.displayMetrics.density).toInt()
+                                    seekParams.leftMargin = params.leftMargin + width/5
+                                    rightSeekBar.layoutParams = seekParams
+                                }
+
+                                ivFocus.animate().cancel()
+                                rightSeekBar.animate().cancel()
+
+                               cameraControl!!.setExposureCompensationIndex(progress.times(0.10).roundToInt())
+                                //tvExposure.text = progress.times(0.10).roundToInt().toString()
+                                // write custom code for progress is changed
+                            }
+
+                            override fun onStartTrackingTouch(seek: SeekBar) {
+                                // write custom code for progress is started
+                            }
+
+                            override fun onStopTrackingTouch(seek: SeekBar) {
+                                startFadeAnimation(ivFocus,rightSeekBar)
+                            }
+                        })
+                    }else{
+                        rightSeekBar.visibility = View.GONE
+                    }
+
+                    binding.flTapToFocus?.removeAllViews()
 
                     params.leftMargin = when {
                         event.x.roundToInt() - width / 2 <= width -> 5
@@ -869,20 +928,17 @@ class CameraFragment : BaseFragment<ShootViewModel, FragmentCameraBinding>(), Pi
                         else -> event.y.roundToInt() - height / 2
                     }
 
-
                     ivFocus.layoutParams = params
 
-                    binding.flTapToFocus?.addView(ivFocus)
 
-                    handler?.removeCallbacksAndMessages(null)
+                    seekParams.leftMargin = params.leftMargin + width
+                    seekParams.topMargin = params.topMargin + height / 3
+                    rightSeekBar.layoutParams = seekParams
 
-                    handler?.postDelayed({
-                        ivFocus.animate().alpha(0f).setDuration(1000)
-                            .setInterpolator(AccelerateInterpolator()).start()
-                    }, 1500)
+                    binding.flTapToFocus?.addView(layout)
+                    binding.flTapToFocus?.addView(rightSeekBar)
 
-                    Log.d(TAG, "onTouch: " + listenable.isCancelled)
-                    Log.d(TAG, "onTouch: " + listenable.isDone)
+                   startFadeAnimation(ivFocus,rightSeekBar)
                 }
 
                 return true
@@ -891,6 +947,17 @@ class CameraFragment : BaseFragment<ShootViewModel, FragmentCameraBinding>(), Pi
                 return false
         }
         return true
+    }
+
+    private fun startFadeAnimation(ivFocus : ImageView, rightSeekBar : SeekBar) {
+        handler?.removeCallbacksAndMessages(null)
+
+        handler?.postDelayed({
+            ivFocus.animate().alpha(0f).setDuration(1000)
+                .setInterpolator(AccelerateInterpolator()).start()
+            rightSeekBar.animate().alpha(0f).setDuration(1000)
+                .setInterpolator(AccelerateInterpolator()).start()
+        }, 1500)
     }
 
     private suspend fun listenerFocusResult(listenable: ListenableFuture<FocusMeteringResult>) {

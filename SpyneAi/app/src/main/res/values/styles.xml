@@ -31,4 +31,10 @@
         <item name="fontFamily">@font/poppins_medium</item>
     </style>
 
+    <style name="CustomSeekbar" parent="Widget.AppCompat.SeekBar">
+        <item name="colorAccent">#1D5368</item>
+        <item name="android:width">30dp</item>
+        <item name="android:height">30dp</item>
+    </style>
+
 </resources>

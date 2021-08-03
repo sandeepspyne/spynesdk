@@ -17,6 +17,8 @@ class StartShootActivity : AppCompatActivity() {
         binding = ActivityStartShootBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
+        binding.ivBack.setOnClickListener { onBackPressed() }
+
         binding.flShootNow.setOnClickListener{
             val intent = Intent(this, ShootActivity::class.java)
 

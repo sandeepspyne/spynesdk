@@ -2,6 +2,7 @@ package com.spyneai.dashboard.ui
 
 import android.app.ActionBar
 import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -33,6 +34,7 @@ import retrofit2.Response
 class WalletDashboardFragment :
     BaseFragment<DashboardViewModel, WalletDashboardFragmentBinding>()  {
 
+    private var call: Call<CreditDetailsResponse>? = null
     private var availableCredits = 0
 
 
@@ -64,10 +66,24 @@ class WalletDashboardFragment :
 
 
         binding.flAddCredits.setOnClickListener {
-//            val intent = Intent(requireContext(), CreditPlansActivity::class.java)
-//            intent.putExtra("from_wallet",true)
-//            intent.putExtra("credit_available",availableCredits)
-//            startActivity(intent)
+            when(getString(R.string.app_name)){
+                "Sweep.ei" -> {
+                    val selectorIntent = Intent(Intent.ACTION_SENDTO)
+                    selectorIntent.data = Uri.parse("mailto:")
+                    val emailIntent = Intent(Intent.ACTION_SEND)
+                    emailIntent.putExtra(Intent.EXTRA_EMAIL, arrayOf("photos@sweep.ie"))
+                    emailIntent.putExtra(Intent.EXTRA_SUBJECT, "Credit Request")
+                    emailIntent.putExtra(Intent.EXTRA_TEXT, Utilities.getPreference(requireContext(),AppConstants.USER_EMAIL).toString()+" is requesting 100 credits.")
+                    emailIntent.selector = selectorIntent
+
+                    requireContext().startActivity(
+                        Intent.createChooser(
+                            emailIntent,
+                            "Send Credits Request To Sweep Photos"
+                        )
+                    )
+                }
+            }
         }
 
         fetchUserCreditDetails()
@@ -79,7 +95,7 @@ class WalletDashboardFragment :
         binding.shimmer.startShimmer()
 
         val request = RetrofitClients.buildService(APiService::class.java)
-        val call = request.userCreditsDetails(
+        call = request.userCreditsDetails(
             Utilities.getPreference(requireContext(), AppConstants.AUTH_KEY).toString()
         )
 
@@ -137,11 +153,13 @@ class WalletDashboardFragment :
                 }
             }
             override fun onFailure(call: Call<CreditDetailsResponse>, t: Throwable) {
-                Toast.makeText(
-                    requireContext(),
-                    "Server not responding!!!",
-                    Toast.LENGTH_SHORT
-                ).show()
+                if (!call.isCanceled){
+                    Toast.makeText(
+                        requireContext(),
+                        "Server not responding!!!",
+                        Toast.LENGTH_SHORT
+                    ).show()
+                }
             }
         })
 
@@ -157,6 +175,8 @@ class WalletDashboardFragment :
     override fun onDestroyView() {
         super.onDestroyView()
        // _binding = null
+        if (call != null)
+            call!!.cancel()
     }
 
 }

@@ -20,15 +20,14 @@
             android:src="@drawable/back"
             android:padding="@dimen/dp_15"
             app:tint="@color/black"
-            android:id="@+id/iv_back"
-            android:visibility="invisible"/>
+            android:id="@+id/iv_back" />
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:id="@+id/tv_tittle"
             android:layout_gravity="center"
-            android:text="My Projects"
+            android:text="@string/my_projcts"
             android:fontFamily="@font/poppins_semibold"
             android:textColor="@color/primary"
             android:textSize="16sp"/>
