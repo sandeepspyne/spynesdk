@@ -7,6 +7,6 @@
     android:layout_marginLeft="@dimen/dp_10"
     android:thumb="@drawable/exposure_thumb"
     android:rotation="270"
-    android:progressTint="@color/primary"
+    android:progressTint="@color/sub_cat_selection"
     android:max="40"
     android:min="-40" />

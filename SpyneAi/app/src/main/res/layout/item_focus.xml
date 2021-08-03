@@ -12,7 +12,7 @@
         android:adjustViewBounds="true"
         android:scaleType="fitXY"
         android:src="@drawable/ic_noun_exposure"
-        app:tint="@color/primary" />
+        app:tint="@color/sub_cat_selection" />
 
 <!--<androidx.constraintlayout.widget.ConstraintLayout-->
 <!--    xmlns:android="http://schemas.android.com/apk/res/android"-->
