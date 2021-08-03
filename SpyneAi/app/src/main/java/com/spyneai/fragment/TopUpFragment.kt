@@ -1,7 +1,9 @@
 package com.spyneai.fragment
 
+import android.content.Intent
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
+import android.net.Uri
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -15,7 +17,6 @@ import com.spyneai.captureFailureEvent
 import com.spyneai.credits.CreditUtils
 import com.spyneai.databinding.DialogTopUpBinding
 import com.spyneai.interfaces.APiService
-import com.spyneai.interfaces.RetrofitClientSpyneAi
 import com.spyneai.interfaces.RetrofitClients
 import com.spyneai.model.credit.CreditDetailsResponse
 import com.spyneai.needs.AppConstants
@@ -51,10 +52,35 @@ class TopUpFragment: DialogFragment() {
             dismiss()
         }
 
-        if (getString(R.string.app_name) == "Karvi.com"){
-            binding.tvReqCredit.visibility = View.GONE
-            binding.tvSendRequest.visibility = View.GONE
+        when(getString(R.string.app_name)){
+            "Karvi.com" -> {
+                binding.tvReqCredit.visibility = View.GONE
+                binding.tvSendRequest.visibility = View.GONE
+            }
+
+            "Sweep.ei" -> {
+                binding.tvSendRequest.setOnClickListener {
+
+                    val selectorIntent = Intent(Intent.ACTION_SENDTO)
+                    selectorIntent.data = Uri.parse("mailto:")
+                    val emailIntent = Intent(Intent.ACTION_SEND)
+                    emailIntent.putExtra(Intent.EXTRA_EMAIL, arrayOf("photos@sweep.ie"))
+                    emailIntent.putExtra(Intent.EXTRA_SUBJECT, "Credit Request")
+                    emailIntent.putExtra(Intent.EXTRA_TEXT, Utilities.getPreference(requireContext(),AppConstants.USER_EMAIL).toString()+" is requesting 100 credits.")
+                    emailIntent.selector = selectorIntent
+
+                    requireContext().startActivity(
+                        Intent.createChooser(
+                            emailIntent,
+                            "Send Credits Request To Sweep Photos"
+                        )
+                    )
+
+                    dismiss()
+                }
+            }
         }
+
 
         fetchUserCreditDetails()
     }
@@ -89,10 +115,11 @@ class TopUpFragment: DialogFragment() {
 
                     availableCredits = response.body()?.data?.credit_available!!
 
-                    if (response.body()?.data?.credit_available.toString() == "0"){
+                    if (response.body()?.data?.credit_available.toString() == "0") {
                         binding.tvCreditsRemaining.text = "0 Credits Remaining"
-                    }else{
-                        binding.tvCreditsRemaining.text = CreditUtils.getFormattedNumber(response.body()!!.data.credit_available) + " Credits Remaining"
+                    } else {
+                        binding.tvCreditsRemaining.text =
+                            CreditUtils.getFormattedNumber(response.body()!!.data.credit_available) + " Credits Remaining"
                     }
 
                     try {
@@ -113,7 +140,7 @@ class TopUpFragment: DialogFragment() {
                             AppConstants.CREDIT_USED,
                             response.body()?.data?.credit_used.toString()
                         )
-                    }catch (e : IllegalStateException){
+                    } catch (e: IllegalStateException) {
                         e.printStackTrace()
                     }
 
@@ -133,13 +160,17 @@ class TopUpFragment: DialogFragment() {
 
     private fun onError() {
         try {
-            requireContext().captureFailureEvent("Wallet Credits Fetch Failed", Properties(),"Server not responding")
+            requireContext().captureFailureEvent(
+                "Wallet Credits Fetch Failed",
+                Properties(),
+                "Server not responding"
+            )
             Toast.makeText(
                 requireContext(),
                 "Server not responding!!!",
                 Toast.LENGTH_SHORT
             ).show()
-        }catch (e : IllegalStateException){
+        }catch (e: IllegalStateException){
             e.printStackTrace()
         }
     }

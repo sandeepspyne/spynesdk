@@ -67,14 +67,10 @@ class CreateProjectAndSkuDialog : BaseDialogFragment<ShootViewModel,DialogCreate
                         sku.skuName = skuName
                         viewModel.sku.value = sku
                         val subCategory =  viewModel.subCategory.value
-                        if (getString(R.string.app_name) != "Karvi.com"){
-                            Utilities.hideProgressDialog()
-                            //notify project created
-                            viewModel.isProjectCreated.value = true
-                            dismiss()
-                        }else{
-                            createSku(it.value.project_id, subCategory?.prod_sub_cat_id.toString())
-                        }
+                        Utilities.hideProgressDialog()
+                        //notify project created
+                        viewModel.isProjectCreated.value = true
+                        dismiss()
 
                     }
 

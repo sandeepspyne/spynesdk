@@ -70,8 +70,8 @@ android {
         sweepCars {
             dimension 'version'
             applicationId "com.spyneai.sweepcars"
-            versionCode 5
-            versionName "2.5"
+            versionCode 6
+            versionName "2.6"
         }
 
         trustedCars {
@@ -84,8 +84,8 @@ android {
         karvi {
             dimension 'version'
             applicationId "com.spyneai.karvi"
-            versionCode 7
-            versionName "3.7"
+            versionCode 8
+            versionName "3.8"
         }
 
         travophotos {

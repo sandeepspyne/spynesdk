@@ -14,16 +14,17 @@ import android.os.*
 import android.provider.MediaStore
 import android.util.DisplayMetrics
 import android.util.Log
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
-import android.view.ViewTreeObserver
+import android.view.*
 import android.view.animation.AccelerateInterpolator
+import android.widget.FrameLayout
+import android.widget.ImageView
 import android.widget.Toast
 import androidx.camera.core.*
 import androidx.camera.lifecycle.ProcessCameraProvider
 import androidx.core.content.ContextCompat
 import androidx.core.net.toFile
+import androidx.work.await
+import com.google.common.util.concurrent.ListenableFuture
 import com.hbisoft.pickit.PickiT
 import com.hbisoft.pickit.PickiTCallbacks
 import com.posthog.android.Properties
@@ -41,9 +42,11 @@ import com.spyneai.needs.Utilities
 import com.spyneai.posthog.Events
 import com.spyneai.shoot.data.ShootViewModel
 import com.spyneai.shoot.data.model.ShootData
-import com.spyneai.shoot.ui.dialogs.SubCategoryConfirmationDialog
 import com.spyneai.shoot.utils.ThreadExecutor
 import com.spyneai.shoot.utils.log
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.coroutineScope
+import kotlinx.coroutines.withContext
 import java.io.File
 import java.util.*
 import java.util.concurrent.ExecutionException
@@ -57,7 +60,7 @@ import kotlin.math.roundToInt
 
 
 class CameraFragment : BaseFragment<ShootViewModel, FragmentCameraBinding>(), PickiTCallbacks,
-    SensorEventListener {
+    SensorEventListener,View.OnTouchListener {
     private var imageCapture: ImageCapture? = null
 
     private var imageAnalyzer: ImageAnalysis? = null
@@ -70,6 +73,7 @@ class CameraFragment : BaseFragment<ShootViewModel, FragmentCameraBinding>(), Pi
     // Selector showing which camera is selected (front or back)
     private var lensFacing = CameraSelector.DEFAULT_BACK_CAMERA
     lateinit var file : File
+    var haveGyrometer = false
 
     companion object {
         private const val RATIO_4_3_VALUE = 4.0 / 3.0 // aspect ratio 4x3
@@ -91,6 +95,9 @@ class CameraFragment : BaseFragment<ShootViewModel, FragmentCameraBinding>(), Pi
     private val rotationMatrix = FloatArray(9)
     private val orientationAngles = FloatArray(3)
 
+    private var cameraControl : CameraControl? = null
+    private var handler : Handler? = null
+
 
     var gravity = FloatArray(3)
 
@@ -100,8 +107,9 @@ class CameraFragment : BaseFragment<ShootViewModel, FragmentCameraBinding>(), Pi
         mSensorManager = requireActivity().getSystemService(Context.SENSOR_SERVICE) as SensorManager
         mAccelerometer = mSensorManager.getDefaultSensor(Sensor.TYPE_MAGNETIC_FIELD)
 
+        handler = Handler()
 
-        Handler(Looper.getMainLooper()).postDelayed({
+        handler!!.postDelayed({
             startCamera()
         }, 300)
 
@@ -117,12 +125,12 @@ class CameraFragment : BaseFragment<ShootViewModel, FragmentCameraBinding>(), Pi
             if (it) binding.tvSkipShoot?.visibility = View.VISIBLE
         })
 
-        viewModel.showLeveler.observe(viewLifecycleOwner,{
-                binding.flLevelIndicator.visibility = View.VISIBLE
+        viewModel.showLeveler.observe(viewLifecycleOwner, {
+            //if (it && haveGyrometer) binding.flLevelIndicator.visibility = View.VISIBLE
         })
 
-        viewModel.hideLeveler.observe(viewLifecycleOwner,{
-            if (it)  binding.flLevelIndicator.visibility = View.GONE
+        viewModel.hideLeveler.observe(viewLifecycleOwner, {
+            if (it) binding.flLevelIndicator.visibility = View.GONE
         })
 
         binding.tvSkipShoot?.setOnClickListener {
@@ -163,7 +171,8 @@ class CameraFragment : BaseFragment<ShootViewModel, FragmentCameraBinding>(), Pi
                         }
                     }
                 }
-                else -> { }
+                else -> {
+                }
             }
         })
 
@@ -173,10 +182,10 @@ class CameraFragment : BaseFragment<ShootViewModel, FragmentCameraBinding>(), Pi
     override fun onResume() {
         super.onResume()
 
-        getPreviewDimensions(binding.ivGryroRing!!,1)
-        getPreviewDimensions(binding.tvCenter!!,2)
+        getPreviewDimensions(binding.ivGryroRing!!, 1)
+        getPreviewDimensions(binding.tvCenter!!, 2)
 
-        mSensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER)?.also { accelerometer ->
+        val mAccelerometer = mSensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER)?.also { accelerometer ->
             mSensorManager.registerListener(
                 this,
                 accelerometer,
@@ -184,7 +193,12 @@ class CameraFragment : BaseFragment<ShootViewModel, FragmentCameraBinding>(), Pi
                 SensorManager.SENSOR_DELAY_UI
             )
         }
-        mSensorManager.getDefaultSensor(Sensor.TYPE_MAGNETIC_FIELD)?.also { magneticField ->
+
+        if (mAccelerometer != null)
+            haveGyrometer = true
+
+
+        val magneticField = mSensorManager.getDefaultSensor(Sensor.TYPE_MAGNETIC_FIELD)?.also { magneticField ->
             mSensorManager.registerListener(
                 this,
                 magneticField,
@@ -192,6 +206,9 @@ class CameraFragment : BaseFragment<ShootViewModel, FragmentCameraBinding>(), Pi
                 SensorManager.SENSOR_DELAY_UI
             )
         }
+
+        if (magneticField != null)
+            haveGyrometer = true
     }
 
     override fun onDestroy() {
@@ -206,15 +223,16 @@ class CameraFragment : BaseFragment<ShootViewModel, FragmentCameraBinding>(), Pi
 
         binding.cameraCaptureButton?.setOnClickListener {
             if (viewModel.shootList.value == null){
-                viewModel.createProjectRes.observe(viewLifecycleOwner,{
-            when(it){
-                is Resource.Success -> {
-                    val subCategory =  viewModel.subCategory.value
-                    createSku(it.value.project_id, subCategory?.prod_sub_cat_id.toString())
-                }
-                else -> {}
-            }
-        })
+                viewModel.createProjectRes.observe(viewLifecycleOwner, {
+                    when (it) {
+                        is Resource.Success -> {
+                            val subCategory = viewModel.subCategory.value
+                            createSku(it.value.project_id, subCategory?.prod_sub_cat_id.toString())
+                        }
+                        else -> {
+                        }
+                    }
+                })
             }else{
                 captureImage()
             }
@@ -222,28 +240,28 @@ class CameraFragment : BaseFragment<ShootViewModel, FragmentCameraBinding>(), Pi
     }
 
 
-  private fun createSku(projectId: String, prod_sub_cat_id : String) {
+  private fun createSku(projectId: String, prod_sub_cat_id: String) {
       Utilities.showProgressDialog(requireContext())
+      viewModel.isCameraButtonClickable = false
 
         viewModel.createSku(
-            Utilities.getPreference(requireContext(),AppConstants.AUTH_KEY).toString(),projectId,
+            Utilities.getPreference(requireContext(), AppConstants.AUTH_KEY).toString(), projectId,
             requireActivity().intent.getStringExtra(AppConstants.CATEGORY_ID).toString(),
             prod_sub_cat_id!!,
             viewModel.sku.value?.skuName.toString(),
             viewModel.exterirorAngles.value!!
         )
 
-        viewModel.createSkuRes.observe(viewLifecycleOwner,{
-            when(it) {
+        viewModel.createSkuRes.observe(viewLifecycleOwner, {
+            when (it) {
                 is Resource.Success -> {
-                    Utilities.hideProgressDialog()
-
                     requireContext().captureEvent(
                         Events.CREATE_SKU,
-                        Properties().putValue("sku_name",viewModel.sku.value?.skuName.toString())
-                            .putValue("project_id",projectId)
-                            .putValue("prod_sub_cat_id",prod_sub_cat_id)
-                            .putValue("angles",viewModel.exterirorAngles.value!!))
+                        Properties().putValue("sku_name", viewModel.sku.value?.skuName.toString())
+                            .putValue("project_id", projectId)
+                            .putValue("prod_sub_cat_id", prod_sub_cat_id)
+                            .putValue("angles", viewModel.exterirorAngles.value!!)
+                    )
 
 
                     val sku = viewModel.sku.value
@@ -251,22 +269,25 @@ class CameraFragment : BaseFragment<ShootViewModel, FragmentCameraBinding>(), Pi
                     sku?.totalImages = viewModel.exterirorAngles.value
 
                     viewModel.sku.value = sku
+                    viewModel.isSubCategoryConfirmed.value = true
 
 
                     //add sku to local database
                     viewModel.insertSku(sku!!)
 
+                    viewModel.isCameraButtonClickable = true
                     captureImage()
-
                 }
 
 
                 is Resource.Failure -> {
-                    requireContext().captureFailureEvent(Events.CREATE_SKU_FAILED, Properties(),
+                    viewModel.isCameraButtonClickable = true
+                    requireContext().captureFailureEvent(
+                        Events.CREATE_SKU_FAILED, Properties(),
                         it.errorMessage!!
                     )
                     Utilities.hideProgressDialog()
-                    handleApiError(it) {createSku(projectId,prod_sub_cat_id)}
+                    handleApiError(it) { createSku(projectId, prod_sub_cat_id) }
                 }
             }
         })
@@ -365,11 +386,15 @@ class CameraFragment : BaseFragment<ShootViewModel, FragmentCameraBinding>(), Pi
             cameraProvider.unbindAll()
             try {
                 // Bind use cases to camera
-                cameraProvider.bindToLifecycle(
+                val camera = cameraProvider.bindToLifecycle(
                     viewLifecycleOwner,
                     cameraSelector,
                     useCaseGroup
                 )
+
+                cameraControl = camera.cameraControl
+
+                binding.viewFinder.setOnTouchListener(this)
 
                 if (viewModel.shootDimensions.value == null ||
                     viewModel.shootDimensions.value?.previewHeight == 0
@@ -439,7 +464,7 @@ class CameraFragment : BaseFragment<ShootViewModel, FragmentCameraBinding>(), Pi
 
             when(viewModel.categoryDetails.value?.imageType) {
                 "Exterior" -> {
-                    viewModel.categoryDetails.value?.imageType!!+"_"+size
+                    viewModel.categoryDetails.value?.imageType!! + "_" + size
                 }
                 "Interior" -> {
 
@@ -447,10 +472,12 @@ class CameraFragment : BaseFragment<ShootViewModel, FragmentCameraBinding>(), Pi
                         it.image_category == "Interior"
                     }
 
-                    if (interiorList == null){
-                        viewModel.categoryDetails.value?.imageType!!+"_1"
-                    }else{
-                        viewModel.categoryDetails.value?.imageType!!+"_"+interiorList.size.plus(1)
+                    if (interiorList == null) {
+                        viewModel.categoryDetails.value?.imageType!! + "_1"
+                    } else {
+                        viewModel.categoryDetails.value?.imageType!! + "_" + interiorList.size.plus(
+                            1
+                        )
                     }
                 }
                 "Focus Shoot" -> {
@@ -458,10 +485,10 @@ class CameraFragment : BaseFragment<ShootViewModel, FragmentCameraBinding>(), Pi
                         it.image_category == "Focus Shoot"
                     }
 
-                    if (miscList == null){
-                        "Miscellaneous"+"_1"
-                    }else{
-                        "Miscellaneous_"+miscList.size.plus(1)
+                    if (miscList == null) {
+                        "Miscellaneous" + "_1"
+                    } else {
+                        "Miscellaneous_" + miscList.size.plus(1)
                     }
                 }
                 else -> {System.currentTimeMillis().toString()}
@@ -499,6 +526,9 @@ class CameraFragment : BaseFragment<ShootViewModel, FragmentCameraBinding>(), Pi
                 override fun onError(exc: ImageCaptureException) {
                     viewModel.isCameraButtonClickable = true
                     log("Photo capture failed: " + exc.message)
+
+                    Utilities.hideProgressDialog()
+
                     requireContext().captureFailureEvent(
                         Events.IMAGE_CAPRURE_FAILED,
                         Properties(),
@@ -508,10 +538,10 @@ class CameraFragment : BaseFragment<ShootViewModel, FragmentCameraBinding>(), Pi
 
                 override fun onImageSaved(output: ImageCapture.OutputFileResults) {
                     // This function is called if capture is successfully completed
-                    if (output.savedUri == null){
+                    if (output.savedUri == null) {
                         if (file != null)
                             addShootItem(file.path)
-                    }else {
+                    } else {
                         try {
                             var file = output.savedUri!!.toFile()
                             addShootItem(file.path)
@@ -556,8 +586,12 @@ class CameraFragment : BaseFragment<ShootViewModel, FragmentCameraBinding>(), Pi
 
         val diff = Math.toDegrees(orientationAngles[2].toDouble()) - roll
 
-        val movearrow = abs(Math.toDegrees(orientationAngles[2].toDouble()).roundToInt()) -  abs(roll.roundToInt()) >= 1
-        val rotatedarrow = abs(Math.toDegrees(orientationAngles[1].toDouble()).roundToInt()) -  abs(pitch.roundToInt()) >= 1
+        val movearrow = abs(Math.toDegrees(orientationAngles[2].toDouble()).roundToInt()) -  abs(
+            roll.roundToInt()
+        ) >= 1
+        val rotatedarrow = abs(Math.toDegrees(orientationAngles[1].toDouble()).roundToInt()) -  abs(
+            pitch.roundToInt()
+        ) >= 1
 
         pitch = Math.toDegrees(orientationAngles[1].toDouble())
         roll = Math.toDegrees(orientationAngles[2].toDouble())
@@ -573,24 +607,80 @@ class CameraFragment : BaseFragment<ShootViewModel, FragmentCameraBinding>(), Pi
 
             binding.tvLevelIndicator?.rotation = 0f
 
-            binding.ivTopLeft?.setColorFilter(ContextCompat.getColor(requireContext(), R.color.gyro_in_level))
-            binding.ivBottomLeft?.setColorFilter(ContextCompat.getColor(requireContext(), R.color.gyro_in_level))
+            binding.ivTopLeft?.setColorFilter(
+                ContextCompat.getColor(
+                    requireContext(),
+                    R.color.gyro_in_level
+                )
+            )
+            binding.ivBottomLeft?.setColorFilter(
+                ContextCompat.getColor(
+                    requireContext(),
+                    R.color.gyro_in_level
+                )
+            )
 
-            binding.ivGryroRing?.setColorFilter(ContextCompat.getColor(requireContext(), R.color.gyro_in_level))
-            binding.tvLevelIndicator?.background = ContextCompat.getDrawable(requireContext(), R.drawable.bg_gyro_level)
+            binding.ivGryroRing?.setColorFilter(
+                ContextCompat.getColor(
+                    requireContext(),
+                    R.color.gyro_in_level
+                )
+            )
+            binding.tvLevelIndicator?.background = ContextCompat.getDrawable(
+                requireContext(),
+                R.drawable.bg_gyro_level
+            )
 
-            binding.ivTopRight?.setColorFilter(ContextCompat.getColor(requireContext(), R.color.gyro_in_level))
-            binding.ivBottomRight?.setColorFilter(ContextCompat.getColor(requireContext(), R.color.gyro_in_level))
+            binding.ivTopRight?.setColorFilter(
+                ContextCompat.getColor(
+                    requireContext(),
+                    R.color.gyro_in_level
+                )
+            )
+            binding.ivBottomRight?.setColorFilter(
+                ContextCompat.getColor(
+                    requireContext(),
+                    R.color.gyro_in_level
+                )
+            )
 
         }else{
-            binding.ivTopLeft?.setColorFilter(ContextCompat.getColor(requireContext(), R.color.gyro_error_level))
-            binding.ivBottomLeft?.setColorFilter(ContextCompat.getColor(requireContext(), R.color.gyro_error_level))
+            binding.ivTopLeft?.setColorFilter(
+                ContextCompat.getColor(
+                    requireContext(),
+                    R.color.gyro_error_level
+                )
+            )
+            binding.ivBottomLeft?.setColorFilter(
+                ContextCompat.getColor(
+                    requireContext(),
+                    R.color.gyro_error_level
+                )
+            )
 
-            binding.ivGryroRing?.setColorFilter(ContextCompat.getColor(requireContext(), R.color.gyro_error_level))
-            binding.tvLevelIndicator?.background = ContextCompat.getDrawable(requireContext(), R.drawable.bg_gyro_error)
+            binding.ivGryroRing?.setColorFilter(
+                ContextCompat.getColor(
+                    requireContext(),
+                    R.color.gyro_error_level
+                )
+            )
+            binding.tvLevelIndicator?.background = ContextCompat.getDrawable(
+                requireContext(),
+                R.drawable.bg_gyro_error
+            )
 
-            binding.ivTopRight?.setColorFilter(ContextCompat.getColor(requireContext(), R.color.gyro_error_level))
-            binding.ivBottomRight?.setColorFilter(ContextCompat.getColor(requireContext(), R.color.gyro_error_level))
+            binding.ivTopRight?.setColorFilter(
+                ContextCompat.getColor(
+                    requireContext(),
+                    R.color.gyro_error_level
+                )
+            )
+            binding.ivBottomRight?.setColorFilter(
+                ContextCompat.getColor(
+                    requireContext(),
+                    R.color.gyro_error_level
+                )
+            )
 
             if (movearrow)
                 moveArrow(roll)
@@ -645,7 +735,7 @@ class CameraFragment : BaseFragment<ShootViewModel, FragmentCameraBinding>(), Pi
             override fun onGlobalLayout() {
                 view.viewTreeObserver.removeOnGlobalLayoutListener(this)
 
-                when(type) {
+                when (type) {
                     0 -> {
                         val shootDimensions = ShootDimensions()
                         shootDimensions.previewWidth = view.width
@@ -669,15 +759,23 @@ class CameraFragment : BaseFragment<ShootViewModel, FragmentCameraBinding>(), Pi
     }
 
     private fun addShootItem(capturedImage: String) {
-        if (viewModel.shootList.value == null)
+        if (viewModel.shootList.value == null){
+            Utilities.hideProgressDialog()
+            Utilities.hideProgressDialog()
             viewModel.shootList.value = ArrayList()
+        }
 
-        viewModel.shootList.value!!.add(ShootData(capturedImage,
-            viewModel.sku.value?.projectId!!,
-            viewModel.sku.value?.skuId!!,
-            viewModel.categoryDetails.value?.imageType!!,
-            Utilities.getPreference(requireContext(),AppConstants.AUTH_KEY).toString(),
-            viewModel.shootList.value!!.size.plus(1)))
+
+        viewModel.shootList.value!!.add(
+            ShootData(
+                capturedImage,
+                viewModel.sku.value?.projectId!!,
+                viewModel.sku.value?.skuId!!,
+                viewModel.categoryDetails.value?.imageType!!,
+                Utilities.getPreference(requireContext(), AppConstants.AUTH_KEY).toString(),
+                viewModel.shootList.value!!.size.plus(1)
+            )
+        )
 
         viewModel.shootList.value = viewModel.shootList.value
 
@@ -719,5 +817,88 @@ class CameraFragment : BaseFragment<ShootViewModel, FragmentCameraBinding>(), Pi
     ) {
         addShootItem(path!!)
     }
+
+    override fun onTouch(v: View?, event: MotionEvent?): Boolean {
+        when (event!!.action) {
+            MotionEvent.ACTION_DOWN -> return true
+
+            MotionEvent.ACTION_UP -> {
+                // Get the MeteringPointFactory from PreviewView
+                val factory = binding.viewFinder.getMeteringPointFactory()
+
+                // Create a MeteringPoint from the tap coordinates
+                val point = factory.createPoint(event.x, event.y)
+
+
+                // Create a MeteringAction from the MeteringPoint, you can configure it to specify the metering mode
+                val action = FocusMeteringAction.Builder(point).build()
+
+                // Trigger the focus and metering. The method returns a ListenableFuture since the operation
+                // is asynchronous. You can use it get notified when the focus is successful or if it fails.
+                if (cameraControl != null) {
+                    val listenable = cameraControl!!.startFocusAndMetering(action)
+
+                    val layout =
+                        LayoutInflater.from(requireContext()).inflate(R.layout.item_focus, null)
+                    val ivFocus: ImageView = layout.findViewById(R.id.ivFocus)
+
+                    binding.flTapToFocus?.removeAllViews()
+
+                    val width = (50 * resources.displayMetrics.density).toInt()
+                    val height = (50 * resources.displayMetrics.density).toInt()
+
+                    Log.d(TAG, "onTouch: " + event.x + " " + event.y + " " + point.size)
+                    Log.d(TAG, "onTouch: "+viewModel.shootDimensions.value?.previewWidth!!)
+                    Log.d(TAG, "onTouch: "+width)
+
+                    val params = FrameLayout.LayoutParams(width, height)
+
+                    params.leftMargin = when {
+                        event.x.roundToInt() - width / 2 <= width -> 5
+                        event.x.roundToInt() - width / 2 + width >= viewModel.shootDimensions.value?.previewWidth!! -> {
+                            viewModel.shootDimensions.value?.previewWidth!! - width + 15
+                        }
+                        else -> event.x.roundToInt() - width / 2
+                    }
+
+                    params.topMargin = when {
+                        event.y.roundToInt() - height / 2 <= width -> 5
+                        event.y.roundToInt() - height / 2 >= viewModel.shootDimensions.value?.previewHeight!! -> {
+                            viewModel.shootDimensions.value?.previewHeight!! - height
+                        }
+                        else -> event.y.roundToInt() - height / 2
+                    }
+
+
+                    ivFocus.layoutParams = params
+
+                    binding.flTapToFocus?.addView(ivFocus)
+
+                    handler?.removeCallbacksAndMessages(null)
+
+                    handler?.postDelayed({
+                        ivFocus.animate().alpha(0f).setDuration(1000)
+                            .setInterpolator(AccelerateInterpolator()).start()
+                    }, 1500)
+
+                    Log.d(TAG, "onTouch: " + listenable.isCancelled)
+                    Log.d(TAG, "onTouch: " + listenable.isDone)
+                }
+
+                return true
+            }
+            else ->                 // Unhandled event.
+                return false
+        }
+        return true
+    }
+
+    private suspend fun listenerFocusResult(listenable: ListenableFuture<FocusMeteringResult>) {
+        listenable.await()
+
+        Log.d(TAG, "listenerFocusResult: "+listenable.isDone)
+        Log.d(TAG, "listenerFocusResult: "+listenable.isCancelled)
+    }
+
 
 }
