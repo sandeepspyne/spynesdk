@@ -74,6 +74,7 @@ class CameraFragment : BaseFragment<ShootViewModel, FragmentCameraBinding>(), Pi
     private var lensFacing = CameraSelector.DEFAULT_BACK_CAMERA
     lateinit var file : File
     var haveGyrometer = false
+    var isSensorAvaliable = false
 
     companion object {
         private const val RATIO_4_3_VALUE = 4.0 / 3.0 // aspect ratio 4x3
@@ -127,7 +128,7 @@ class CameraFragment : BaseFragment<ShootViewModel, FragmentCameraBinding>(), Pi
         })
 
         viewModel.showLeveler.observe(viewLifecycleOwner, {
-            if (it && haveGyrometer) binding.flLevelIndicator.visibility = View.VISIBLE
+            if (it && isSensorAvaliable) binding.flLevelIndicator.visibility = View.VISIBLE
         })
 
         viewModel.hideLeveler.observe(viewLifecycleOwner, {
@@ -561,13 +562,24 @@ class CameraFragment : BaseFragment<ShootViewModel, FragmentCameraBinding>(), Pi
 
         if (event?.sensor?.type == Sensor.TYPE_ACCELEROMETER) {
             System.arraycopy(event.values, 0, accelerometerReading, 0, accelerometerReading.size)
+            isSensorAvaliable  = true
         } else if (event?.sensor?.type == Sensor.TYPE_MAGNETIC_FIELD) {
             System.arraycopy(event.values, 0, magnetometerReading, 0, magnetometerReading.size)
+            isSensorAvaliable  = true
         }
 
-        if (viewModel.showLeveler.value == true)
-            updateOrientationAngles()
+//        if (event?.sensor?.type == Sensor.TYPE_ACCELEROMETER && event?.sensor?.type == Sensor.TYPE_MAGNETIC_FIELD){
+//
+//        }else{
+//            isSensorAvaliable = false
+//        }
 
+        if (isSensorAvaliable) {
+            if (viewModel.showLeveler.value == true)
+                updateOrientationAngles()
+        }else{
+            binding.flLevelIndicator.visibility = View.GONE
+        }
     }
 
     fun updateOrientationAngles() {
@@ -957,7 +969,7 @@ class CameraFragment : BaseFragment<ShootViewModel, FragmentCameraBinding>(), Pi
                 .setInterpolator(AccelerateInterpolator()).start()
             rightSeekBar.animate().alpha(0f).setDuration(1000)
                 .setInterpolator(AccelerateInterpolator()).start()
-        }, 1500)
+        }, 2000)
     }
 
     private suspend fun listenerFocusResult(listenable: ListenableFuture<FocusMeteringResult>) {
