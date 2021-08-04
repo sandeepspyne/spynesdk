@@ -25,8 +25,6 @@ class CreateProjectEcomDialog :
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-
-
         dialog?.setCancelable(false)
 
         binding.btnProceed.setOnClickListener {

@@ -32,6 +32,8 @@ class ShootViewModel : ViewModel(){
 
     val isSensorAvaliable : MutableLiveData<Boolean> = MutableLiveData()
 
+    val skuNumber : MutableLiveData<Int> = MutableLiveData()
+
 
 
     val totalSkuCaptured : MutableLiveData<String> = MutableLiveData()
