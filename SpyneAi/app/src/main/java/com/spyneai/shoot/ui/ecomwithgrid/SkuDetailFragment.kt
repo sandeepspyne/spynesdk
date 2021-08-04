@@ -112,6 +112,7 @@ class SkuDetailFragment : BaseFragment<ShootViewModel, FragmentSkuDetailBinding>
             viewModel.shootList.value?.clear()
             val intent = Intent(activity, ShootPortraitActivity::class.java)
             intent.putExtra("project_id", viewModel.sku.value?.projectId);
+            intent.putExtra("skuNumber", viewModel.skuNumber.value?.plus(1)!!);
             startActivity(intent)
 
         }

@@ -46,6 +46,12 @@ class ShootPortraitActivity : AppCompatActivity() {
             WindowManager.LayoutParams.FLAG_FULLSCREEN)
 
         val shootViewModel = ViewModelProvider(this, ViewModelFactory()).get(ShootViewModel::class.java)
+        shootViewModel.skuNumber.value = 1
+        try {
+            shootViewModel.skuNumber.value = intent.getIntExtra("skuNumber", 1)
+        }catch (e: Exception){
+
+        }
 
         val categoryDetails = CategoryDetails()
 

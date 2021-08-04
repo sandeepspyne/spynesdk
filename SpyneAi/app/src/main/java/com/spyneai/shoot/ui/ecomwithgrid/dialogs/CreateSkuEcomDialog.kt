@@ -27,7 +27,6 @@ class CreateSkuEcomDialog : BaseDialogFragment<ShootViewModel, CreateSkuEcomDial
         super.onViewCreated(view, savedInstanceState)
 
         dialog?.setCancelable(false)
-        viewModel.skuNumber.value = viewModel.skuNumber.value?.plus(1)
         binding.etSkuName.setText("sku"+viewModel.skuNumber.value)
 
         binding.btnProceed.setOnClickListener {
