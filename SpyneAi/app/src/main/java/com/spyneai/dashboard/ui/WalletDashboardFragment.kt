@@ -59,7 +59,6 @@ class WalletDashboardFragment :
                 binding.tvUserEmail.setLayoutParams(params)
 
             }
-
         }
 
 

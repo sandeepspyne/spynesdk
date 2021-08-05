@@ -16,6 +16,7 @@ import com.spyneai.captureFailureEvent
 import com.spyneai.captureIdentity
 import com.spyneai.dashboard.ui.MainDashboardActivity
 import com.spyneai.dashboard.ui.WhiteLabelConstants
+import com.spyneai.databinding.ActivityLoginBinding
 import com.spyneai.interfaces.MyAPIService
 
 import com.spyneai.interfaces.RetrofitClientSpyneAi
@@ -26,22 +27,25 @@ import com.spyneai.needs.AppConstants
 import com.spyneai.needs.Utilities
 import com.spyneai.shoot.utils.log
 import com.spyneai.posthog.Events
-import kotlinx.android.synthetic.main.activity_login.*
-import kotlinx.android.synthetic.main.activity_sign_in_using_otp.*
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 
 
 class LoginActivity : AppCompatActivity() {
+    
+    lateinit var binding : ActivityLoginBinding
+    
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_login)
+        
+        binding = ActivityLoginBinding.inflate(layoutInflater)
+        setContentView(binding.root)
 
-        et_loginPassword.setInputType(InputType.TYPE_CLASS_TEXT or InputType.TYPE_TEXT_VARIATION_PASSWORD)
+        binding.etLoginPassword.setInputType(InputType.TYPE_CLASS_TEXT or InputType.TYPE_TEXT_VARIATION_PASSWORD)
 
         when(getString(R.string.app_name)){
-            "Karvi.com" -> rlSingup.visibility = View.GONE
+            "Karvi.com" -> binding.rlSingup.visibility = View.GONE
             else ->{}
         }
 
@@ -49,42 +53,43 @@ class LoginActivity : AppCompatActivity() {
     }
 
     private fun listeners() {
-        bt_login.setOnClickListener {
-            if (!et_loginEmail.text.toString().trim().isEmpty() && !et_loginPassword.text.toString()
-                    .trim().isEmpty()
-                && Utilities.isValidEmail(et_loginEmail.text.toString().trim())
-            ) {
-                login(et_loginEmail.text.toString().trim(), et_loginPassword.text.toString().trim())
-                bt_login.isClickable = false
-                tvSignup.isClickable = false
-                tvForgotPassword.isClickable = false
-                bt_sign_in_using_otp.isClickable = false
-                tvterms.isClickable = false
-                tvError.visibility = View.GONE
-            } else
-                tvError.visibility = View.VISIBLE
-            bt_login.isClickable = true
-            tvSignup.isClickable = true
-            tvForgotPassword.isClickable = true
-            bt_sign_in_using_otp.isClickable = true
-            tvterms.isClickable = true
+        binding.btLogin.setOnClickListener {
+
+            when {
+                binding.etLoginEmail.text.toString().isEmpty() -> {
+                    binding.etLoginEmail.error = "Please enter email id"
+                }
+                binding.etLoginPassword.text.toString().isEmpty() -> {
+                    binding.etLoginPassword.error = "Please enter password"
+                }
+                else -> {
+                    login(binding.etLoginEmail.text.toString().trim(), binding.etLoginPassword.text.toString().trim())
+                    binding.btLogin.isClickable = false
+                    binding.tvSignup.isClickable = false
+                    binding.tvForgotPassword.isClickable = false
+                    binding.btSignInUsingOtp.isClickable = false
+                    binding.tvterms.isClickable = false
+                }
+            }
         }
-        tvSignup.setOnClickListener {
+
+
+        binding.tvSignup.setOnClickListener {
             val intent = Intent(this, SignUpActivity::class.java)
             startActivity(intent)
         }
 
-        bt_sign_in_using_otp.setOnClickListener {
+        binding.btSignInUsingOtp.setOnClickListener {
             val intent = Intent(this, SignInUsingOtpActivity::class.java)
             startActivity(intent)
         }
 
-        tvForgotPassword.setOnClickListener {
+        binding.tvForgotPassword.setOnClickListener {
             val intent = Intent(this, ForgotPasswordActivity::class.java)
             startActivity(intent)
         }
 
-        tvterms.setOnClickListener {
+        binding.tvterms.setOnClickListener {
             try {
                 startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(getString(R.string.terms_and_conditions_url))))
             } catch (e: ActivityNotFoundException) {
@@ -127,11 +132,11 @@ class LoginActivity : AppCompatActivity() {
                             response.body()!!.message,
                             Toast.LENGTH_SHORT
                         ).show()
-                        bt_login.isClickable = true
-                        tvSignup.isClickable = true
-                        tvForgotPassword.isClickable = true
-                        bt_sign_in_using_otp.isClickable = true
-                        tvterms.isClickable = true
+                        binding.btLogin.isClickable = true
+                         binding.tvSignup.isClickable = true
+                         binding.tvForgotPassword.isClickable = true
+                        binding.btSignInUsingOtp.isClickable = true
+                        binding.tvterms.isClickable = true
                     } else if (loginResponse?.status == 200) {
 
                         Toast.makeText(this@LoginActivity, "Login successful", Toast.LENGTH_SHORT)
@@ -152,11 +157,11 @@ class LoginActivity : AppCompatActivity() {
                         captureIdentity(loginResponse.user_id,properties)
 
 
-                        bt_login.isClickable = true
-                        tvSignup.isClickable = true
-                        tvForgotPassword.isClickable = true
-                        bt_sign_in_using_otp.isClickable = true
-                        tvterms.isClickable = true
+                        binding.btLogin.isClickable = true
+                         binding.tvSignup.isClickable = true
+                         binding.tvForgotPassword.isClickable = true
+                        binding.btSignInUsingOtp.isClickable = true
+                        binding.tvterms.isClickable = true
 
                         val intent = Intent(this@LoginActivity, MainDashboardActivity::class.java)
                         intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
@@ -166,11 +171,11 @@ class LoginActivity : AppCompatActivity() {
                 } else {
                     val error = response.errorBody().toString()
                     Toast.makeText(this@LoginActivity, error, Toast.LENGTH_SHORT).show()
-                    bt_login.isClickable = true
-                    tvSignup.isClickable = true
-                    tvForgotPassword.isClickable = true
-                    bt_sign_in_using_otp.isClickable = true
-                    tvterms.isClickable = true
+                    binding.btLogin.isClickable = true
+                     binding.tvSignup.isClickable = true
+                     binding.tvForgotPassword.isClickable = true
+                    binding.btSignInUsingOtp.isClickable = true
+                    binding.tvterms.isClickable = true
                     captureFailureEvent(Events.LOGIN_FAILED,properties,error)
                 }
             }
@@ -183,11 +188,11 @@ class LoginActivity : AppCompatActivity() {
                     "Server not responding!, Please try again later",
                     Toast.LENGTH_SHORT
                 ).show()
-                bt_login.isClickable = true
-                tvSignup.isClickable = true
-                tvForgotPassword.isClickable = true
-                bt_sign_in_using_otp.isClickable = true
-                tvterms.isClickable = true
+                binding.btLogin.isClickable = true
+                 binding.tvSignup.isClickable = true
+                 binding.tvForgotPassword.isClickable = true
+                binding.btSignInUsingOtp.isClickable = true
+                binding.tvterms.isClickable = true
             }
         })
 

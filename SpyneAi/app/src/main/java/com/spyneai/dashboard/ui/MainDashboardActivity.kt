@@ -60,7 +60,7 @@ class MainDashboardActivity : AppCompatActivity() {
                 R.id.shootActivity-> {
                     var intent =
                         when(getString(R.string.app_name)) {
-                        "Ola Cabs","Sweep.ei","Cars 24","Trusted cars","Travo Photos" ->  Intent(this, StartShootActivity::class.java)
+                        "Ola Cabs","Cars 24","Trusted cars","Travo Photos" ->  Intent(this, StartShootActivity::class.java)
                             else -> Intent(this, ShootActivity::class.java)
                     }
 
@@ -72,7 +72,7 @@ class MainDashboardActivity : AppCompatActivity() {
                     val intent = Intent(this, MyOrdersActivity::class.java)
                     startActivity(intent)
                 }
-               // R.id.wallet->setCurrentFragment(SecondFragment)
+                R.id.wallet->setCurrentFragment(SecondFragment)
                 R.id.logoutDashBoardFragment->setCurrentFragment(thirdFragment)
 
             }

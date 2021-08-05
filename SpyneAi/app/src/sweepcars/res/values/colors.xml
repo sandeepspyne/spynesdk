@@ -1,11 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <color name="primary">#3268F6</color>
-    <color name="secondary">#000000</color>
+    <color name="secondary">#f7145e</color>
     <color name="splash_bg">#ffffff</color>
     <color name="accent">#F07E54</color>
     <color name="order_completed">#40CE4E</color>
 
     <color name="bottom_nav_selected">#3067f4</color>
     <color name="bottom_nav_unselected">#000000</color>
+
+    <color name="light">#3268F6</color>
 </resources>

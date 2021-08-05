@@ -41,8 +41,40 @@ class CreateProjectAndSkuDialog : BaseDialogFragment<ShootViewModel,DialogCreate
                     removeWhiteSpace(binding.etVinNumber.text.toString())
                 )
             }
-
         }
+
+        viewModel.createProjectRes.observe(viewLifecycleOwner,{
+            when(it){
+                is Resource.Success -> {
+                    requireContext().captureEvent(
+                        Events.CREATE_PROJECT,
+                        Properties().putValue("project_name",removeWhiteSpace(binding.etVinNumber.text.toString())))
+
+                    val sku = Sku()
+                    sku.projectId = it.value.project_id
+                    sku.skuName = removeWhiteSpace(binding.etVinNumber.text.toString())
+                    viewModel.sku.value = sku
+                    Utilities.hideProgressDialog()
+                    //notify project created
+                    viewModel.isProjectCreated.value = true
+                    dismiss()
+
+                }
+                is Resource.Loading -> Utilities.showProgressDialog(requireContext())
+
+                is Resource.Failure -> {
+                    Utilities.hideProgressDialog()
+
+                    requireContext().captureFailureEvent(Events.CREATE_PROJECT_FAILED, Properties(),
+                        it.errorMessage!!
+                    )
+                    handleApiError(it) { createProject(
+                        removeWhiteSpace(binding.etVinNumber.text.toString()),
+                        removeWhiteSpace(binding.etVinNumber.text.toString())
+                    )}
+                }
+            }
+        })
     }
 
     private fun removeWhiteSpace(toString: String) = toString.replace("\\s".toRegex(), "")
@@ -55,38 +87,7 @@ class CreateProjectAndSkuDialog : BaseDialogFragment<ShootViewModel,DialogCreate
             projectName,
             requireActivity().intent.getStringExtra(AppConstants.CATEGORY_ID).toString())
 
-        viewModel.createProjectRes.observe(viewLifecycleOwner,{
-            when(it){
-                    is Resource.Success -> {
-                        requireContext().captureEvent(
-                            Events.CREATE_PROJECT,
-                            Properties().putValue("project_name",projectName))
 
-                        val sku = Sku()
-                        sku.projectId = it.value.project_id
-                        sku.skuName = skuName
-                        viewModel.sku.value = sku
-                        val subCategory =  viewModel.subCategory.value
-                        Utilities.hideProgressDialog()
-                        //notify project created
-                        viewModel.isProjectCreated.value = true
-                        dismiss()
-
-                    }
-
-                    is Resource.Loading -> {
-                        Utilities.showProgressDialog(requireContext())
-                    }
-
-                    is Resource.Failure -> {
-                        requireContext().captureFailureEvent(Events.CREATE_PROJECT_FAILED, Properties(),
-                            it.errorMessage!!
-                        )
-                        Utilities.hideProgressDialog()
-                        handleApiError(it)
-                    }
-            }
-        })
     }
 
     private fun createSku(projectId: String, prod_sub_cat_id : String) {

@@ -17,10 +17,8 @@ import android.util.Log
 import android.view.*
 import android.view.animation.AccelerateInterpolator
 import android.widget.*
-import androidx.appcompat.widget.AppCompatSeekBar
 import androidx.camera.core.*
 import androidx.camera.lifecycle.ProcessCameraProvider
-import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.ContextCompat
 import androidx.core.net.toFile
 import androidx.work.await
@@ -29,7 +27,6 @@ import com.hbisoft.pickit.PickiT
 import com.hbisoft.pickit.PickiTCallbacks
 import com.posthog.android.Properties
 import com.spyneai.R
-import com.spyneai.analyzer.LuminosityAnalyzer
 import com.spyneai.base.BaseFragment
 import com.spyneai.base.network.Resource
 import com.spyneai.camera2.ShootDimensions
@@ -42,11 +39,7 @@ import com.spyneai.needs.Utilities
 import com.spyneai.posthog.Events
 import com.spyneai.shoot.data.ShootViewModel
 import com.spyneai.shoot.data.model.ShootData
-import com.spyneai.shoot.utils.ThreadExecutor
 import com.spyneai.shoot.utils.log
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.coroutineScope
-import kotlinx.coroutines.withContext
 import java.io.File
 import java.util.*
 import java.util.concurrent.ExecutionException
@@ -330,19 +323,33 @@ class CameraFragment : BaseFragment<ShootViewModel, FragmentCameraBinding>(), Pi
             }
 
             // The display information
-            val metrics = DisplayMetrics().also { binding.viewFinder.display.getRealMetrics(it) }
+             //val metrics = DisplayMetrics().also { binding.viewFinder.display.getRealMetrics(it) }
             // The ratio for the output image and preview
-            val aspectRatio = aspectRatio(metrics.widthPixels, metrics.heightPixels)
+            var height = 0
+            var width = 0
+            val displayMetrics = DisplayMetrics()
+            if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.R) {
+                requireContext().display?.getRealMetrics(displayMetrics)
+                height = displayMetrics.heightPixels
+                width = displayMetrics.widthPixels
+
+            }else{
+                requireActivity().windowManager.defaultDisplay.getMetrics(displayMetrics)
+                height = displayMetrics.heightPixels
+                width = displayMetrics.widthPixels
+            }
+             val aspectRatio = aspectRatio(width, height)
             // The display rotation
-            val rotation = binding.viewFinder.display.rotation
+            //val rotation = binding.viewFinder.display.rotation
+
 
             val localCameraProvider = cameraProvider
                 ?: throw IllegalStateException("Camera initialization failed.")
 
             // Preview
             val preview = Preview.Builder()
-//                .setTargetAspectRatio(aspectRatio) // set the camera aspect ratio
-                .setTargetRotation(rotation) // set the camera rotation
+                .setTargetAspectRatio(aspectRatio) // set the camera aspect ratio
+                //   .setTargetRotation(rotation) // set the camera rotation
                 .build()
                 .also {
                     it.setSurfaceProvider(binding.viewFinder.surfaceProvider)
@@ -355,7 +362,7 @@ class CameraFragment : BaseFragment<ShootViewModel, FragmentCameraBinding>(), Pi
                 .setCaptureMode(ImageCapture.CAPTURE_MODE_MAXIMIZE_QUALITY)
                 .setFlashMode(flashMode)
                 .setTargetAspectRatio(aspectRatio) // set the capture aspect ratio
-                .setTargetRotation(rotation) // set the capture rotation
+                // .setTargetRotation(rotation) // set the capture rotation
                 .build()
 
             val useCaseGroup = UseCaseGroup.Builder()
@@ -365,19 +372,19 @@ class CameraFragment : BaseFragment<ShootViewModel, FragmentCameraBinding>(), Pi
                 .build()
 
             // The Configuration of image analyzing
-            imageAnalyzer = ImageAnalysis.Builder()
-                .setTargetAspectRatio(aspectRatio) // set the analyzer aspect ratio
-                .setTargetRotation(rotation) // set the analyzer rotation
-                .setBackpressureStrategy(ImageAnalysis.STRATEGY_KEEP_ONLY_LATEST) // in our analysis, we care about the latest image
-                .build()
-                .apply {
-                    // Use a worker thread for image analysis to prevent glitches
-                    val analyzerThread = HandlerThread("LuminosityAnalysis").apply { start() }
-                    setAnalyzer(
-                        ThreadExecutor(Handler(analyzerThread.looper)),
-                        LuminosityAnalyzer()
-                    )
-                }
+//            imageAnalyzer = ImageAnalysis.Builder()
+//                .setTargetAspectRatio(aspectRatio) // set the analyzer aspect ratio
+//                .setTargetRotation(rotation) // set the analyzer rotation
+//                .setBackpressureStrategy(ImageAnalysis.STRATEGY_KEEP_ONLY_LATEST) // in our analysis, we care about the latest image
+//                .build()
+//                .apply {
+//                    // Use a worker thread for image analysis to prevent glitches
+//                    val analyzerThread = HandlerThread("LuminosityAnalysis").apply { start() }
+//                    setAnalyzer(
+//                        ThreadExecutor(Handler(analyzerThread.looper)),
+//                        LuminosityAnalyzer()
+//                    )
+//                }
 
 
             // Select back camera as a default
@@ -876,15 +883,23 @@ class CameraFragment : BaseFragment<ShootViewModel, FragmentCameraBinding>(), Pi
                     if (cameraInfo?.exposureState?.isExposureCompensationSupported == true) {
                         val exposureState = cameraInfo?.exposureState
 
-                        rightSeekBar.max = exposureState?.exposureCompensationRange?.upper?.times(10)!!
+                        rightSeekBar.max =
+                            exposureState?.exposureCompensationRange?.upper?.times(10)!!
 
                         rightSeekBar.incrementProgressBy(1)
                         if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.N) {
-                            rightSeekBar.setProgress(exposureState?.exposureCompensationIndex?.times(10)!!,false)
+                            rightSeekBar.setProgress(
+                                exposureState?.exposureCompensationIndex?.times(
+                                    10
+                                )!!, false
+                            )
                         }
 
                         if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
-                            rightSeekBar.min = exposureState?.exposureCompensationRange?.lower?.times(10)!!
+                            rightSeekBar.min =
+                                exposureState?.exposureCompensationRange?.lower?.times(
+                                    10
+                                )!!
                         }
 
                         //rightSeekBar.min = exposureState?.exposureCompensationRange?.lower!!
@@ -895,17 +910,20 @@ class CameraFragment : BaseFragment<ShootViewModel, FragmentCameraBinding>(), Pi
                                 seek: SeekBar,
                                 progress: Int, fromUser: Boolean
                             ) {
-                                if (!seekClicked){
+                                if (!seekClicked) {
                                     seekClicked = true
-                                    seekParams.width = (150 * resources.displayMetrics.density).toInt()
-                                    seekParams.leftMargin = params.leftMargin + width/5
+                                    seekParams.width =
+                                        (150 * resources.displayMetrics.density).toInt()
+                                    seekParams.leftMargin = params.leftMargin + width / 5
                                     rightSeekBar.layoutParams = seekParams
                                 }
 
                                 ivFocus.animate().cancel()
                                 rightSeekBar.animate().cancel()
 
-                               cameraControl!!.setExposureCompensationIndex(progress.times(0.10).roundToInt())
+                                cameraControl!!.setExposureCompensationIndex(
+                                    progress.times(0.10).roundToInt()
+                                )
                                 //tvExposure.text = progress.times(0.10).roundToInt().toString()
                                 // write custom code for progress is changed
                             }
@@ -915,10 +933,10 @@ class CameraFragment : BaseFragment<ShootViewModel, FragmentCameraBinding>(), Pi
                             }
 
                             override fun onStopTrackingTouch(seek: SeekBar) {
-                                startFadeAnimation(ivFocus,rightSeekBar)
+                                startFadeAnimation(ivFocus, rightSeekBar)
                             }
                         })
-                    }else{
+                    } else {
                         rightSeekBar.visibility = View.GONE
                     }
 
@@ -950,7 +968,7 @@ class CameraFragment : BaseFragment<ShootViewModel, FragmentCameraBinding>(), Pi
                     binding.flTapToFocus?.addView(layout)
                     binding.flTapToFocus?.addView(rightSeekBar)
 
-                   startFadeAnimation(ivFocus,rightSeekBar)
+                    startFadeAnimation(ivFocus, rightSeekBar)
                 }
 
                 return true
@@ -961,7 +979,7 @@ class CameraFragment : BaseFragment<ShootViewModel, FragmentCameraBinding>(), Pi
         return true
     }
 
-    private fun startFadeAnimation(ivFocus : ImageView, rightSeekBar : SeekBar) {
+    private fun startFadeAnimation(ivFocus: ImageView, rightSeekBar: SeekBar) {
         handler?.removeCallbacksAndMessages(null)
 
         handler?.postDelayed({
@@ -975,8 +993,8 @@ class CameraFragment : BaseFragment<ShootViewModel, FragmentCameraBinding>(), Pi
     private suspend fun listenerFocusResult(listenable: ListenableFuture<FocusMeteringResult>) {
         listenable.await()
 
-        Log.d(TAG, "listenerFocusResult: "+listenable.isDone)
-        Log.d(TAG, "listenerFocusResult: "+listenable.isCancelled)
+        Log.d(TAG, "listenerFocusResult: " + listenable.isDone)
+        Log.d(TAG, "listenerFocusResult: " + listenable.isCancelled)
     }
 
 

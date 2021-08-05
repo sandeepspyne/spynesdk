@@ -121,19 +121,6 @@
             </RelativeLayout>
 
             <TextView
-                android:id="@+id/tvError"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="@string/please_enter_email_password"
-                android:fontFamily="@font/light"
-                android:gravity="center"
-                android:visibility="gone"
-                android:layout_margin="@dimen/dp_10"
-                android:textColor="@color/errorcolor"
-                android:textSize="@dimen/sp_13"/>
-
-
-            <TextView
                 android:id="@+id/tv_email_instead"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"

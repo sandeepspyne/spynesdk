@@ -46,19 +46,20 @@ class SelectBackgroundFragment : BaseFragment<ProcessViewModel,FragmentSelectBac
         }
 
 
-        if (getString(R.string.app_name) == "Karvi.com"){
-            binding.cb360.visibility = View.GONE
-            binding.tv360.visibility = View.GONE
-            binding.tvGenerateGif.text = "Generate Output"
-        }else{
-            binding.cb360.setOnCheckedChangeListener { buttonView, isChecked ->
-                if (isChecked)
-                    binding.tvGenerateGif.text = "Continue"
-                else
-                    binding.tvGenerateGif.text = "Generate Output"
+        when(getString(R.string.app_name)) {
+            "Karvi.com","Sweep.ei" -> {
+                binding.cb360.visibility = View.GONE
+                binding.tv360.visibility = View.GONE
+                binding.tvGenerateGif.text = "Generate Output"
+            }else -> {
+                binding.cb360.setOnCheckedChangeListener { buttonView, isChecked ->
+                    if (isChecked)
+                        binding.tvGenerateGif.text = "Continue"
+                    else
+                        binding.tvGenerateGif.text = "Generate Output"
+                }
             }
         }
-
 
 
         binding.tvGenerateGif.setOnClickListener {
@@ -66,16 +67,18 @@ class SelectBackgroundFragment : BaseFragment<ProcessViewModel,FragmentSelectBac
             if (viewModel.interiorMiscShootsCount > 0)
                 updateTotalFrames()
 
-            if (getString(R.string.app_name) == "Karvi.com") {
-                //process image call
-                processSku()
-            }else{
+            when(getString(R.string.app_name)) {
+                "Karvi.com","Sweep.ei" -> {
+                    //process image call
+                    processSku()
+                }else -> {
                 if (binding.cb360.isChecked){
                     viewModel.backgroundSelect = backgroundSelect
                     viewModel.addRegularShootSummaryFragment.value = true
                 }else{
-                    //process image call
-                    processSku()
+                        //process image call
+                        processSku()
+                    }
                 }
             }
         }

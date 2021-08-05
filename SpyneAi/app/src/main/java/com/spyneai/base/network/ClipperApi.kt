@@ -61,13 +61,13 @@ interface ClipperApi {
                             @Query("no_of_frames") frames : String,) : OverlaysResponse
 
     @FormUrlEncoded
-    @POST("v2/project/create")
+    @POST("v2/project/create/v2")
     suspend fun createProject(@Field("auth_key") authKey : String,
                               @Field("project_name") projectName : String,
                               @Field("prod_cat_id") prodCatId : String) : CreateProjectRes
 
     @FormUrlEncoded
-    @POST("v2/sku/create")
+    @POST("v2/sku/create/v2")
     suspend fun createSku(@Field("auth_key") authKey : String,
                           @Field("project_id") projectId : String,
                           @Field("prod_cat_id") prodCatId : String,
