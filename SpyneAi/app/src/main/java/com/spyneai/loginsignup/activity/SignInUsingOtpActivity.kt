@@ -62,7 +62,7 @@ class SignInUsingOtpActivity : AppCompatActivity() {
                     binding.etEmail.error = "Please eneter email id"
                 }
 
-                Utilities.isValidEmail(binding.etEmail.text.toString().trim()) -> {
+                !Utilities.isValidEmail(binding.etEmail.text.toString().trim()) -> {
                     binding.etEmail.error = "Please enter valid email id"
                 }
 
