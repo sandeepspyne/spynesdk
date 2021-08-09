@@ -457,7 +457,7 @@ class CameraFragment : BaseFragment<ShootViewModel, FragmentCameraBinding>(), Pi
             System.arraycopy(event.values, 0, magnetometerReading, 0, magnetometerReading.size)
         }
 
-        if (mSensorManager.getDefaultSensor(Sensor.TYPE_MAGNETIC_FIELD) != null) {
+        if (mSensorManager.getDefaultSensor(Sensor.TYPE_MAGNETIC_FIELD) != null && mSensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER) != null) {
             viewModel.isSensorAvaliable.value = true
         } else {
             viewModel.isSensorAvaliable.value = false

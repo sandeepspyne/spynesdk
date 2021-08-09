@@ -34,7 +34,9 @@ class ShootViewModel : ViewModel(){
 
     val skuNumber : MutableLiveData<Int> = MutableLiveData()
 
+    val isSubCategorySelected : MutableLiveData<Boolean> = MutableLiveData()
 
+    val isSubCatAngleConfirmed : MutableLiveData<Boolean> = MutableLiveData()
 
     val totalSkuCaptured : MutableLiveData<String> = MutableLiveData()
     val totalImageCaptured : MutableLiveData<String> = MutableLiveData()
@@ -77,6 +79,8 @@ class ShootViewModel : ViewModel(){
     val isProjectCreated : MutableLiveData<Boolean> = MutableLiveData()
     val isProjectCreatedEcom : MutableLiveData<Boolean> = MutableLiveData()
     val isSkuCreated : MutableLiveData<Boolean> = MutableLiveData()
+
+    var isHintShowen : MutableLiveData<Boolean> = MutableLiveData()
 
     val subCategoryId : MutableLiveData<String> = MutableLiveData()
     val exterirorAngles: MutableLiveData<Int> = MutableLiveData()

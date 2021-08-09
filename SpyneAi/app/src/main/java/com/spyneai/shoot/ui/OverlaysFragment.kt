@@ -60,6 +60,7 @@ class OverlaysFragment : BaseFragment<ShootViewModel,FragmentOverlaysBinding>(),
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        if (viewModel.showVin.value == null )
         initShootHint()
 
         //observe new image clicked
@@ -76,6 +77,7 @@ class OverlaysFragment : BaseFragment<ShootViewModel,FragmentOverlaysBinding>(),
         viewModel.showInteriorDialog.observe(viewLifecycleOwner,{
             if (it) {
                 binding.imgOverlay?.visibility = View.GONE
+                if (viewModel.startInteriorShots.value == null)
                 initInteriorShots()
 
                 viewModel.startMiscShots.observe(viewLifecycleOwner,{
@@ -98,6 +100,7 @@ class OverlaysFragment : BaseFragment<ShootViewModel,FragmentOverlaysBinding>(),
         ShootHintDialog().show(requireActivity().supportFragmentManager, "ShootHintDialog")
 
         viewModel.showVin.observe(viewLifecycleOwner,{
+            if (viewModel.isProjectCreated.value == null)
             if (it) initProjectDialog()
         })
     }
@@ -107,6 +110,7 @@ class OverlaysFragment : BaseFragment<ShootViewModel,FragmentOverlaysBinding>(),
 
         viewModel.isProjectCreated.observe(viewLifecycleOwner,{
             if (it) {
+                if (viewModel.isSubCategoryConfirmed.value == null)
                 intSubcategorySelection()
             }
         })
@@ -132,7 +136,10 @@ class OverlaysFragment : BaseFragment<ShootViewModel,FragmentOverlaysBinding>(),
 
     private fun initProgressFrames() {
         //update this shoot number
+        if (viewModel.shootList.value.isNullOrEmpty())
         viewModel.shootNumber.value = 0
+        else
+            viewModel.shootNumber.value = viewModel.shootList.value!!.size
 
         progressAdapter = ShootProgressAdapter(
             requireContext(),
@@ -238,12 +245,6 @@ class OverlaysFragment : BaseFragment<ShootViewModel,FragmentOverlaysBinding>(),
                         it.value.data as ArrayList<NewSubCatResponse.Data>
                     subCategoriesAdapter.notifyDataSetChanged()
 
-
-                    //set default angles on sub cat response
-                    initAngles()
-                    initProgressFrames()
-                    observeOverlays()
-
                     binding.clSubcatSelectionOverlay?.visibility = View.VISIBLE
 
                     when(viewModel.categoryDetails.value?.categoryName){
@@ -261,6 +262,15 @@ class OverlaysFragment : BaseFragment<ShootViewModel,FragmentOverlaysBinding>(),
                 }
             }
         })
+
+        if(viewModel.isSubCategorySelected.value == true){
+            //set default angles on sub cat response
+            initAngles()
+            if (viewModel.startInteriorShots == null){
+                initProgressFrames()
+                observeOverlays()
+            }
+        }
 
 
         viewModel.shootNumber.observe(viewLifecycleOwner, {
@@ -450,6 +460,8 @@ class OverlaysFragment : BaseFragment<ShootViewModel,FragmentOverlaysBinding>(),
 
             subCategoriesAdapter.selectionEnabled = true
             subCategoriesAdapter.notifyDataSetChanged()
+
+            viewModel.isSubCategorySelected.value = true
 
             getOverlays()
         }

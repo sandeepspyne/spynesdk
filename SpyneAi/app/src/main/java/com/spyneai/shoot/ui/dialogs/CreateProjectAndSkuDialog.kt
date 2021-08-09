@@ -85,9 +85,6 @@ class CreateProjectAndSkuDialog : BaseDialogFragment<ShootViewModel, DialogCreat
         })
 
     }
-
-
-
     override fun getViewModel() = ShootViewModel::class.java
 
     override fun getFragmentBinding(
