@@ -95,17 +95,17 @@
     },
     {
       "client_info": {
-        "mobilesdk_app_id": "1:796517407311:android:266b145dd48d938fe4a83a",
+        "mobilesdk_app_id": "1:796517407311:android:6326ecf0f58dabc9e4a83a",
         "android_client_info": {
-          "package_name": "com.spyneai.karvi.debug"
+          "package_name": "com.spyneai.karvi"
         }
       },
       "oauth_client": [
         {
-          "client_id": "796517407311-aohdjuvlrqt33v56u0sj90o4826vargd.apps.googleusercontent.com",
+          "client_id": "796517407311-9us7m9pc51olli6ml00apvq7cppv4q4t.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
-            "package_name": "com.spyneai.karvi.debug",
+            "package_name": "com.spyneai.karvi",
             "certificate_hash": "719d4dc215a5de7f06f7a9b7cb88efc221978c30"
           }
         },
@@ -139,17 +139,17 @@
     },
     {
       "client_info": {
-        "mobilesdk_app_id": "1:796517407311:android:40a9eebefef9cb97e4a83a",
+        "mobilesdk_app_id": "1:796517407311:android:266b145dd48d938fe4a83a",
         "android_client_info": {
-          "package_name": "com.spyneai.karvi.release"
+          "package_name": "com.spyneai.karvi.debug"
         }
       },
       "oauth_client": [
         {
-          "client_id": "796517407311-554tgbh62i9j66k273rvngku9nttl0q5.apps.googleusercontent.com",
+          "client_id": "796517407311-aohdjuvlrqt33v56u0sj90o4826vargd.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
-            "package_name": "com.spyneai.karvi.release",
+            "package_name": "com.spyneai.karvi.debug",
             "certificate_hash": "719d4dc215a5de7f06f7a9b7cb88efc221978c30"
           }
         },
@@ -505,6 +505,42 @@
             "certificate_hash": "719d4dc215a5de7f06f7a9b7cb88efc221978c30"
           }
         },
+        {
+          "client_id": "796517407311-rtrqq3c76ujrhmhb3u1e63mfbhmhdeju.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCZYh2OqdLAr8r5kGU1pJPsqlW2TH_k_Do"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "796517407311-rtrqq3c76ujrhmhb3u1e63mfbhmhdeju.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "796517407311-a7eg68f3hlagr00ovebmqc48fpakl0bb.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.whitelabeltest.ai"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:796517407311:android:deb9cdc1ec24623ae4a83a",
+        "android_client_info": {
+          "package_name": "com.spyneai.yallamotors.debug"
+        }
+      },
+      "oauth_client": [
         {
           "client_id": "796517407311-rtrqq3c76ujrhmhb3u1e63mfbhmhdeju.apps.googleusercontent.com",
           "client_type": 3

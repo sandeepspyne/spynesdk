@@ -15,6 +15,7 @@ import com.spyneai.R
 import com.spyneai.captureEvent
 import com.spyneai.captureFailureEvent
 import com.spyneai.credits.CreditUtils
+import com.spyneai.dashboard.ui.WhiteLabelConstants
 import com.spyneai.databinding.DialogTopUpBinding
 import com.spyneai.interfaces.APiService
 import com.spyneai.interfaces.RetrofitClients
@@ -53,7 +54,7 @@ class TopUpFragment: DialogFragment() {
         }
 
         when(getString(R.string.app_name)){
-            "Karvi.com" -> {
+            "Karvi.com","Yalla Motors","Travo Photos" -> {
                 binding.tvReqCredit.visibility = View.GONE
                 binding.tvSendRequest.visibility = View.GONE
             }

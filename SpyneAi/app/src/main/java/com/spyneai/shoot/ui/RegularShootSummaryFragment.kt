@@ -68,8 +68,14 @@ class RegularShootSummaryFragment  : BaseFragment<ProcessViewModel, FragmentRegu
             reduceCredits(true)
         }
 
-        binding.tvTopUp.setOnClickListener {
-            TopUpFragment().show(requireActivity().supportFragmentManager,"TopUpFragment")
+        when(getString(R.string.app_name)){
+            "Yalla Motors","Travo Photos" -> binding.tvTopUp.visibility = View.GONE
+
+            else-> {
+                binding.tvTopUp.setOnClickListener {
+                    TopUpFragment().show(requireActivity().supportFragmentManager,"TopUpFragment")
+                }
+            }
         }
     }
 

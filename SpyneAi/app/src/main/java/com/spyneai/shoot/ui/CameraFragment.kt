@@ -92,7 +92,7 @@ class CameraFragment : BaseFragment<ShootViewModel, FragmentCameraBinding>(), Pi
     private var cameraControl : CameraControl? = null
     private var cameraInfo : CameraInfo? = null
     private var handler : Handler? = null
-
+    private var isGyroOnCorrectAngle = false
 
     var gravity = FloatArray(3)
 
@@ -170,8 +170,6 @@ class CameraFragment : BaseFragment<ShootViewModel, FragmentCameraBinding>(), Pi
                 }
             }
         })
-
-
     }
 
     override fun onResume() {
@@ -189,10 +187,6 @@ class CameraFragment : BaseFragment<ShootViewModel, FragmentCameraBinding>(), Pi
             )
         }
 
-        if (mAccelerometer != null)
-            haveGyrometer = true
-
-
         val magneticField = mSensorManager.getDefaultSensor(Sensor.TYPE_MAGNETIC_FIELD)?.also { magneticField ->
             mSensorManager.registerListener(
                 this,
@@ -202,8 +196,8 @@ class CameraFragment : BaseFragment<ShootViewModel, FragmentCameraBinding>(), Pi
             )
         }
 
-        if (magneticField != null)
-            haveGyrometer = true
+        if (mAccelerometer != null && magneticField != null)
+            isSensorAvaliable = true
     }
 
     override fun onDestroy() {
@@ -216,22 +210,62 @@ class CameraFragment : BaseFragment<ShootViewModel, FragmentCameraBinding>(), Pi
         super.onActivityCreated(savedInstanceState)
 
 
-        binding.cameraCaptureButton?.setOnClickListener {
-            if (viewModel.shootList.value == null){
-                viewModel.createProjectRes.observe(viewLifecycleOwner, {
-                    when (it) {
-                        is Resource.Success -> {
-                            val subCategory = viewModel.subCategory.value
-                            createSku(it.value.project_id, subCategory?.prod_sub_cat_id.toString())
-                        }
-                        else -> {
-                        }
+        if (getString(R.string.app_name) == "Cars 24"){
+            binding.cameraCaptureButton?.setOnClickListener {
+                if (viewModel.shootList.value == null){
+                    if (binding.flLevelIndicator.visibility == View.VISIBLE){
+                        if (isGyroOnCorrectAngle)
+                            viewModel.createProjectRes.observe(viewLifecycleOwner, {
+                                when (it) {
+                                    is Resource.Success -> {
+                                        val subCategory = viewModel.subCategory.value
+                                        createSku(it.value.project_id, subCategory?.prod_sub_cat_id.toString())
+                                    }
+                                    else -> {
+                                    }
+                                }
+                            })
+                    }else {
+                        viewModel.createProjectRes.observe(viewLifecycleOwner, {
+                            when (it) {
+                                is Resource.Success -> {
+                                    val subCategory = viewModel.subCategory.value
+                                    createSku(it.value.project_id, subCategory?.prod_sub_cat_id.toString())
+                                }
+                                else -> {
+                                }
+                            }
+                        })
                     }
-                })
-            }else{
-                captureImage()
+                }else{
+                    if (binding.flLevelIndicator.visibility == View.VISIBLE){
+                        if (isGyroOnCorrectAngle)
+                            captureImage()
+                    }else{
+                        captureImage()
+                    }
+                }
+            }
+        }else{
+            binding.cameraCaptureButton?.setOnClickListener {
+                if (viewModel.shootList.value == null){
+                    viewModel.createProjectRes.observe(viewLifecycleOwner, {
+                        when (it) {
+                            is Resource.Success -> {
+                                val subCategory = viewModel.subCategory.value
+                                createSku(it.value.project_id, subCategory?.prod_sub_cat_id.toString())
+                            }
+                            else -> {
+                            }
+                        }
+                    })
+                }else{
+                    captureImage()
+                }
             }
         }
+
+
     }
 
 
@@ -442,13 +476,6 @@ class CameraFragment : BaseFragment<ShootViewModel, FragmentCameraBinding>(), Pi
         // Get a stable reference of the modifiable image capture use case
         val imageCapture = imageCapture ?: return
 
-//        val photoFile = File(
-//            outputDirectory,
-//            SimpleDateFormat(FILENAME_FORMAT, Locale.US
-//            ).format(System.currentTimeMillis()) + ".jpg")
-//
-//        // Create output options object which contains file + metadata
-//        val outputOptions = ImageCapture.OutputFileOptions.Builder(photoFile).build()
 
         // Setup image capture metadata
         val metadata = ImageCapture.Metadata().apply {
@@ -569,21 +596,12 @@ class CameraFragment : BaseFragment<ShootViewModel, FragmentCameraBinding>(), Pi
 
         if (event?.sensor?.type == Sensor.TYPE_ACCELEROMETER) {
             System.arraycopy(event.values, 0, accelerometerReading, 0, accelerometerReading.size)
-            isSensorAvaliable  = true
         } else if (event?.sensor?.type == Sensor.TYPE_MAGNETIC_FIELD) {
             System.arraycopy(event.values, 0, magnetometerReading, 0, magnetometerReading.size)
-            isSensorAvaliable  = true
         }
 
-//        if (event?.sensor?.type == Sensor.TYPE_ACCELEROMETER && event?.sensor?.type == Sensor.TYPE_MAGNETIC_FIELD){
-//
-//        }else{
-//            isSensorAvaliable = false
-//        }
-
-        if (isSensorAvaliable) {
-            if (viewModel.showLeveler.value == true)
-                updateOrientationAngles()
+        if (isSensorAvaliable && viewModel.showLeveler.value == true) {
+            updateOrientationAngles()
         }else{
             binding.flLevelIndicator.visibility = View.GONE
         }
@@ -620,6 +638,8 @@ class CameraFragment : BaseFragment<ShootViewModel, FragmentCameraBinding>(), Pi
 
 
         if ((roll >= -100 && roll <=-80) && (pitch >= -5 && pitch <= 5)){
+
+            isGyroOnCorrectAngle = true
 
             binding
                 .tvLevelIndicator
@@ -667,6 +687,9 @@ class CameraFragment : BaseFragment<ShootViewModel, FragmentCameraBinding>(), Pi
             )
 
         }else{
+
+            isGyroOnCorrectAngle = false
+
             binding.ivTopLeft?.setColorFilter(
                 ContextCompat.getColor(
                     requireContext(),
@@ -988,13 +1011,6 @@ class CameraFragment : BaseFragment<ShootViewModel, FragmentCameraBinding>(), Pi
             rightSeekBar.animate().alpha(0f).setDuration(1000)
                 .setInterpolator(AccelerateInterpolator()).start()
         }, 2000)
-    }
-
-    private suspend fun listenerFocusResult(listenable: ListenableFuture<FocusMeteringResult>) {
-        listenable.await()
-
-        Log.d(TAG, "listenerFocusResult: " + listenable.isDone)
-        Log.d(TAG, "listenerFocusResult: " + listenable.isCancelled)
     }
 
 

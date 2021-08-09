@@ -14,6 +14,7 @@ import com.spyneai.needs.AppConstants
 import com.spyneai.needs.Utilities
 
 import com.spyneai.dashboard.ui.MainDashboardActivity
+import com.spyneai.dashboard.ui.WhiteLabelConstants
 import com.spyneai.loginsignup.activity.LoginActivity
 import okhttp3.OkHttpClient
 
@@ -22,6 +23,7 @@ class SplashActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
         window.setFlags(
             WindowManager.LayoutParams.FLAG_FULLSCREEN,
             WindowManager.LayoutParams.FLAG_FULLSCREEN
@@ -40,7 +42,7 @@ class SplashActivity : AppCompatActivity() {
                 var intent : Intent? = null
 
                 intent = when(getString(R.string.app_name)) {
-                    "Karvi.com","Ola Cabs","Sweep.ei" ->  Intent(this,
+                    "Karvi.com","Ola Cabs","Sweep.ei","Yalla Motors" ->  Intent(this,
                         LoginActivity::class.java)
 
                     else -> Intent(this, OnboardingsActivity::class.java)

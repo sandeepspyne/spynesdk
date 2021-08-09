@@ -42,8 +42,14 @@ class ThreeSixtyShootSummaryFragment : BaseFragment<ThreeSixtyViewModel, Fragmen
             viewModel.title.value = "Change Fidelity"
         }
 
-        binding.tvTopUp.setOnClickListener {
-            TopUpFragment().show(requireActivity().supportFragmentManager,"TopUpFragment")
+        when(getString(R.string.app_name)){
+            "Yalla Motors","Travo Photos"-> binding.tvTopUp.visibility = View.GONE
+
+            else-> {
+                binding.tvTopUp.setOnClickListener {
+                    TopUpFragment().show(requireActivity().supportFragmentManager,"TopUpFragment")
+                }
+            }
         }
 
         binding.btnProceed.setOnClickListener {

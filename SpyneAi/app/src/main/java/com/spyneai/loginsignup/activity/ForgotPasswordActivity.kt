@@ -1,9 +1,11 @@
 package com.spyneai.loginsignup.activity
 
 import android.app.Dialog
+import android.content.ActivityNotFoundException
 import android.content.Intent
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
+import android.net.Uri
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -23,7 +25,6 @@ import com.spyneai.loginsignup.models.ForgotPasswordResponse
 import com.spyneai.needs.Utilities
 import com.spyneai.posthog.Events
 import kotlinx.android.synthetic.main.activity_forgot_password.*
-import kotlinx.android.synthetic.main.activity_login.*
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -35,7 +36,6 @@ class ForgotPasswordActivity : AppCompatActivity() {
         setContentView(R.layout.activity_forgot_password)
 
         listners()
-
     }
 
     private fun listners(){
@@ -52,6 +52,18 @@ class ForgotPasswordActivity : AppCompatActivity() {
             val intent = Intent(this, LoginActivity::class.java)
             intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
             startActivity(intent)
+        }
+
+        tvterms.setOnClickListener {
+            try {
+                startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(getString(R.string.terms_and_conditions_url))))
+            } catch (e: ActivityNotFoundException) {
+                Toast.makeText(
+                    this, "No application can handle this request."
+                            + " Please install a web browser", Toast.LENGTH_LONG
+                ).show()
+                e.printStackTrace()
+            }
         }
     }
 

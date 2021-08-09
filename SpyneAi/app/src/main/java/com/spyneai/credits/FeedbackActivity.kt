@@ -87,6 +87,7 @@ class FeedbackActivity : AppCompatActivity() {
         imm.hideSoftInputFromWindow(binding.etComment.getWindowToken(), 0)
 
         binding.progressBar.visibility = View.GONE
+        binding.ivBack.visibility = View.GONE
         binding.ivHome.visibility = View.VISIBLE
         backPressAllowed = false
 

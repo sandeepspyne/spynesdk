@@ -16,11 +16,11 @@ import android.provider.MediaStore
 import android.util.DisplayMetrics
 import android.util.Log
 import android.util.Size
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
-import android.view.ViewTreeObserver
+import android.view.*
 import android.view.animation.AccelerateInterpolator
+import android.widget.FrameLayout
+import android.widget.ImageView
+import android.widget.SeekBar
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.camera.core.*
@@ -34,6 +34,7 @@ import com.hbisoft.pickit.PickiT
 import com.hbisoft.pickit.PickiTCallbacks
 import com.spyneai.R
 import com.spyneai.base.BaseFragment
+import com.spyneai.camera2.ShootDimensions
 import com.spyneai.databinding.FragmentRecordVideoBinding
 import com.spyneai.needs.AppConstants
 import com.spyneai.threesixty.data.ThreeSixtyViewModel
@@ -47,7 +48,7 @@ import kotlin.math.roundToInt
 import kotlin.properties.Delegates
 
 class RecordVideoFragment : BaseFragment<ThreeSixtyViewModel,FragmentRecordVideoBinding>(),
-    PickiTCallbacks, SensorEventListener {
+    PickiTCallbacks, SensorEventListener,View.OnTouchListener {
 
 
     companion object {
@@ -86,6 +87,10 @@ class RecordVideoFragment : BaseFragment<ThreeSixtyViewModel,FragmentRecordVideo
     private var cameraProvider: ProcessCameraProvider? = null
     private var preview: Preview? = null
     private var videoCapture: VideoCapture? = null
+
+    private var cameraControl : CameraControl? = null
+    private var cameraInfo : CameraInfo? = null
+    private var handler : Handler? = null
 
 
     // Selector showing which camera is selected (front or back)
@@ -150,6 +155,7 @@ class RecordVideoFragment : BaseFragment<ThreeSixtyViewModel,FragmentRecordVideo
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        handler = Handler()
         pickiT = PickiT(requireContext(), this, requireActivity())
 
         mSensorManager = requireActivity().getSystemService(Context.SENSOR_SERVICE) as SensorManager
@@ -364,7 +370,18 @@ class RecordVideoFragment : BaseFragment<ThreeSixtyViewModel,FragmentRecordVideo
                 // Attach the viewfinder's surface provider to preview use case
                 preview?.setSurfaceProvider(viewFinder.surfaceProvider)
 
-               
+
+                cameraControl = camera!!.cameraControl
+
+                cameraInfo = camera!!.cameraInfo
+
+                binding.viewFinder.setOnTouchListener(this)
+
+                if (viewModel.shootDimensions.value == null ||
+                    viewModel.shootDimensions.value?.previewHeight == 0
+                ) {
+                    getPreviewDimensions(binding.viewFinder, false,true)
+                }
 
             } catch (e: Exception) {
                 Log.e(TAG, "Failed to bind use cases", e)
@@ -577,30 +594,8 @@ class RecordVideoFragment : BaseFragment<ThreeSixtyViewModel,FragmentRecordVideo
     override fun onResume() {
         super.onResume()
 
-        // Get updates from the accelerometer and magnetometer at a constant rate.
-        // To make batch operations more efficient and reduce power consumption,
-        // provide support for delaying updates to the application.
-        //
-        // In this example, the sensor reporting delay is small enough such that
-        // the application receives an update before the system checks the sensor
-        // readings again.
-//        mSensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER)?.also { accelerometer ->
-//            mSensorManager.registerListener(
-//                this,
-//                accelerometer,
-//                500
-//            )
-//        }
-//        mSensorManager.getDefaultSensor(Sensor.TYPE_MAGNETIC_FIELD)?.also { magneticField ->
-//            mSensorManager.registerListener(
-//                this,
-//                magneticField,
-//                500
-//            )
-//        }
-
-        getPreviewDimensions(binding.ivGryroRing,true)
-        getPreviewDimensions(binding.tvCenter,false)
+        getPreviewDimensions(binding.ivGryroRing,true,false)
+        getPreviewDimensions(binding.tvCenter,false,false)
 
         mSensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER)?.also { accelerometer ->
             mSensorManager.registerListener(
@@ -625,22 +620,182 @@ class RecordVideoFragment : BaseFragment<ThreeSixtyViewModel,FragmentRecordVideo
         super.onDestroy()
     }
 
-    private fun getPreviewDimensions(view: View,isRing : Boolean) {
+    private fun getPreviewDimensions(view: View,isRing : Boolean,isPreview : Boolean) {
         view.viewTreeObserver.addOnGlobalLayoutListener(object :
             ViewTreeObserver.OnGlobalLayoutListener {
             override fun onGlobalLayout() {
                 view.viewTreeObserver.removeOnGlobalLayoutListener(this)
 
-                if (isRing) {
-                    topConstraint = view.top
-                    bottomConstraint = topConstraint + view.height
-                } else {
-                    centerPosition = view.top
-                }
+                when {
+                    isRing -> {
+                        topConstraint = view.top
+                        bottomConstraint = topConstraint + view.height
+                    }
 
+                    isPreview -> {
+                        val shootDimensions = ShootDimensions()
+                        shootDimensions.previewWidth = view.width
+                        shootDimensions.previewHeight = view.height
+
+                        viewModel.shootDimensions.value = shootDimensions
+                    }
+
+                    else -> {
+                        centerPosition = view.top
+                    }
+                }
             }
         })
     }
 
+    @SuppressLint("UnsafeOptInUsageError")
+    override fun onTouch(v: View?, event: MotionEvent?): Boolean {
+        when (event!!.action) {
+            MotionEvent.ACTION_DOWN -> return true
+
+            MotionEvent.ACTION_UP -> {
+                // Get the MeteringPointFactory from PreviewView
+                val factory = binding.viewFinder.getMeteringPointFactory()
+
+                // Create a MeteringPoint from the tap coordinates
+                val point = factory.createPoint(event.x, event.y)
+
+
+                // Create a MeteringAction from the MeteringPoint, you can configure it to specify the metering mode
+                val action = FocusMeteringAction.Builder(point).build()
+
+                // Trigger the focus and metering. The method returns a ListenableFuture since the operation
+                // is asynchronous. You can use it get notified when the focus is successful or if it fails.
+                if (cameraControl != null) {
+                    val listenable = cameraControl!!.startFocusAndMetering(action)
+
+                    val layout =
+                        LayoutInflater.from(requireContext()).inflate(R.layout.item_focus, null)
+                    val ivFocus: ImageView = layout.findViewById(R.id.ivFocus)
+                    //val tvExposure: TextView = layout.findViewById(R.id.tvExposure)
+
+                    val rightSeekBar: SeekBar =
+                        LayoutInflater.from(requireContext())
+                            .inflate(R.layout.item_exposure, null) as SeekBar
+
+                    var seekClicked = false
+                    val seekWidth = (30 * resources.displayMetrics.density).toInt()
+
+                    val width = (70 * resources.displayMetrics.density).toInt()
+                    val height = (80 * resources.displayMetrics.density).toInt()
+
+                    val params = FrameLayout.LayoutParams(width, height)
+                    var seekParams =
+                        FrameLayout.LayoutParams(seekWidth, FrameLayout.LayoutParams.WRAP_CONTENT)
+
+                    if (cameraInfo?.exposureState?.isExposureCompensationSupported == true) {
+                        val exposureState = cameraInfo?.exposureState
+
+                        rightSeekBar.max =
+                            exposureState?.exposureCompensationRange?.upper?.times(10)!!
+
+                        rightSeekBar.incrementProgressBy(1)
+                        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.N) {
+                            rightSeekBar.setProgress(
+                                exposureState?.exposureCompensationIndex?.times(
+                                    10
+                                )!!, false
+                            )
+                        }
+
+                        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
+                            rightSeekBar.min =
+                                exposureState?.exposureCompensationRange?.lower?.times(
+                                    10
+                                )!!
+                        }
+
+                        //rightSeekBar.min = exposureState?.exposureCompensationRange?.lower!!
+
+                        rightSeekBar?.setOnSeekBarChangeListener(object :
+                            SeekBar.OnSeekBarChangeListener {
+                            override fun onProgressChanged(
+                                seek: SeekBar,
+                                progress: Int, fromUser: Boolean
+                            ) {
+                                if (!seekClicked) {
+                                    seekClicked = true
+                                    seekParams.width =
+                                        (150 * resources.displayMetrics.density).toInt()
+                                    seekParams.leftMargin = params.leftMargin + width / 5
+                                    rightSeekBar.layoutParams = seekParams
+                                }
+
+                                ivFocus.animate().cancel()
+                                rightSeekBar.animate().cancel()
+
+                                cameraControl!!.setExposureCompensationIndex(
+                                    progress.times(0.10).roundToInt()
+                                )
+                                //tvExposure.text = progress.times(0.10).roundToInt().toString()
+                                // write custom code for progress is changed
+                            }
+
+                            override fun onStartTrackingTouch(seek: SeekBar) {
+                                // write custom code for progress is started
+                            }
+
+                            override fun onStopTrackingTouch(seek: SeekBar) {
+                                startFadeAnimation(ivFocus, rightSeekBar)
+                            }
+                        })
+                    } else {
+                        rightSeekBar.visibility = View.GONE
+                    }
+
+                    binding.flTapToFocus?.removeAllViews()
+
+                    params.leftMargin = when {
+                        event.x.roundToInt() - width / 2 <= width -> 5
+                        event.x.roundToInt() - width / 2 + width >= viewModel.shootDimensions.value?.previewWidth!! -> {
+                            viewModel.shootDimensions.value?.previewWidth!! - width + 15
+                        }
+                        else -> event.x.roundToInt() - width / 2
+                    }
+
+                    params.topMargin = when {
+                        event.y.roundToInt() - height / 2 <= width -> 5
+                        event.y.roundToInt() - height / 2 >= viewModel.shootDimensions.value?.previewHeight!! -> {
+                            viewModel.shootDimensions.value?.previewHeight!! - height
+                        }
+                        else -> event.y.roundToInt() - height / 2
+                    }
+
+                    ivFocus.layoutParams = params
+
+
+                    seekParams.leftMargin = params.leftMargin + width
+                    seekParams.topMargin = params.topMargin + height / 3
+                    rightSeekBar.layoutParams = seekParams
+
+                    binding.flTapToFocus?.addView(layout)
+                    binding.flTapToFocus?.addView(rightSeekBar)
+
+                    startFadeAnimation(ivFocus, rightSeekBar)
+                }
+
+                return true
+            }
+            else ->                 // Unhandled event.
+                return false
+        }
+        return true
+    }
+
+    private fun startFadeAnimation(ivFocus: ImageView, rightSeekBar: SeekBar) {
+        handler?.removeCallbacksAndMessages(null)
+
+        handler?.postDelayed({
+            ivFocus.animate().alpha(0f).setDuration(1000)
+                .setInterpolator(AccelerateInterpolator()).start()
+            rightSeekBar.animate().alpha(0f).setDuration(1000)
+                .setInterpolator(AccelerateInterpolator()).start()
+        }, 2000)
+    }
 
 }

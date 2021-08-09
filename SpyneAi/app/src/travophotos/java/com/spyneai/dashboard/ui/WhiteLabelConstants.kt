@@ -1,6 +1,6 @@
 package com.spyneai.dashboard.ui
 
 object WhiteLabelConstants {
-    val API_KEY: String = "7049d63e-7c63-4f3d-9ba6-79c655999254"
-    val ENTERPRISE_ID: String = "ANY6VQZRD"
+    val API_KEY: String = "bc025eee-6dec-4575-818a-f9f5d044449d"
+    val ENTERPRISE_ID: String = "29WOUQHN1"
 }

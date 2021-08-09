@@ -11,7 +11,13 @@ import android.view.ViewGroup
 import android.view.Window
 import android.widget.LinearLayout
 import android.widget.TextView
+import android.widget.Toast
+import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Observer
+import com.google.android.play.core.appupdate.AppUpdateManager
+import com.google.android.play.core.appupdate.AppUpdateManagerFactory
+import com.google.android.play.core.install.model.AppUpdateType
+import com.google.android.play.core.install.model.UpdateAvailability
 import com.posthog.android.Properties
 import com.spyneai.R
 import com.spyneai.activity.CompletedProjectsActivity
@@ -33,78 +39,95 @@ class HomeDashboardFragment :
     BaseFragment<DashboardViewModel, HomeDashboardFragmentBinding>() {
 
     lateinit var btnlistener: CategoriesDashboardAdapter.BtnClickListener
-
-    var categoryPosition: Int = 0
     lateinit var tokenId: String
     lateinit var email: String
-
     lateinit var catId: String
     lateinit var displayName: String
     lateinit var displayThumbnail: String
     lateinit var description: String
-    lateinit var colorCode: String
+    lateinit var appUpdateManager: AppUpdateManager
+    private val MY_REQUEST_CODE: Int = 1
+    lateinit var PACKAGE_NAME: String
 
-
-    override fun onActivityCreated(savedInstanceState: Bundle?) {
-        super.onActivityCreated(savedInstanceState)
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
 
         tokenId = Utilities.getPreference(requireContext(), AppConstants.TOKEN_ID).toString()
         email = Utilities.getPreference(requireContext(), AppConstants.EMAIL_ID).toString()
 
         binding.ivWallet.visibility = View.GONE
 
-        if (viewModel.isNewUser.value == true && getString(R.string.app_name) != "Karvi.com"){
-            showFreeCreditDialog(viewModel.creditsMessage.value.toString())
-            viewModel.isNewUser.value = false
-        }
+        PACKAGE_NAME = requireContext().packageName.toString()
+        appUpdateManager = AppUpdateManagerFactory.create(requireContext())
 
         lisners()
 
-        viewModel.getCategories(Utilities.getPreference(requireContext(),AppConstants.AUTH_KEY).toString())
-        viewModel.categoriesResponse.observe(viewLifecycleOwner, Observer {
-            when(it){
-                is Resource.Success -> {
-                    requireContext().captureEvent(Events.GOT_CATEGORIES, Properties())
+        if (PACKAGE_NAME == "com.spyneai.karvi")
+            autoUpdates()
 
-                }
-                is Resource.Loading -> {
+    }
 
-                }
-                is Resource.Failure -> {
-                    requireContext().captureFailureEvent(Events.GET_CATEGORIES_FAILED, Properties(),
-                        it.errorMessage!!)
+    private fun autoUpdates() {
 
-                    handleApiError(it)
+        val appUpdateInfoTask = appUpdateManager.appUpdateInfo
+        appUpdateInfoTask.addOnSuccessListener { appUpdateInfo ->
+            if (appUpdateInfo.updateAvailability() == UpdateAvailability.UPDATE_AVAILABLE
+                && appUpdateInfo.isUpdateTypeAllowed(AppUpdateType.IMMEDIATE)
+            ) {
+
+                // Request the update.
+                appUpdateManager.startUpdateFlowForResult(
+                    // Pass the intent that is returned by 'getAppUpdateInfo()'.
+                    appUpdateInfo,
+                    // Or 'AppUpdateType.FLEXIBLE' for flexible updates.
+                    AppUpdateType.IMMEDIATE,
+                    // The current activity making the update request.
+                    requireActivity(),
+                    // Include a request code to later monitor this update request.
+                    MY_REQUEST_CODE
+                )
+            }
+        }
+    }
+
+    override fun onResume() {
+        super.onResume()
+
+        appUpdateManager
+            .appUpdateInfo
+            .addOnSuccessListener { appUpdateInfo ->
+                if (appUpdateInfo.updateAvailability()
+                    == UpdateAvailability.DEVELOPER_TRIGGERED_UPDATE_IN_PROGRESS
+                ) {
+                    // If an in-app update is already running, resume the update.
+                    appUpdateManager.startUpdateFlowForResult(
+                        appUpdateInfo,
+                        AppUpdateType.IMMEDIATE,
+                        requireActivity(),
+                        MY_REQUEST_CODE
+                    )
                 }
             }
-        })
     }
 
 
-
-    private fun showFreeCreditDialog(message: String) {
-        val dialog = Dialog(requireContext())
-        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE)
-        dialog.setCancelable(true)
-
-        var dialogView = LayoutInflater.from(requireContext()).inflate(R.layout.free_credit_dialog, null)
-        var tvMessage: TextView = dialogView.findViewById(R.id.tvSkuNameDialog)
-        tvMessage.text = message
-
-        dialog.setContentView(dialogView)
-
-        dialog.getWindow()?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT));
-        val llOk: LinearLayout = dialog.findViewById(R.id.llOk)
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        if (requestCode == MY_REQUEST_CODE) {
+            if (resultCode != AppCompatActivity.RESULT_OK) {
+                activity?.moveTaskToBack(true)
+                activity?.finish()
+                Toast.makeText(
+                    requireContext(),
+                    "Update flow failed!" + requestCode,
+                    Toast.LENGTH_SHORT
+                ).show()
 
 
-        llOk.setOnClickListener(View.OnClickListener {
-
-            dialog.dismiss()
-
-        })
-        dialog.show()
-
+            }
+        }
     }
+    
 
     private fun lisners(){
         binding.ivWallet.setOnClickListener {

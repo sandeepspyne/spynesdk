@@ -4,6 +4,7 @@ import android.content.Intent
 import android.graphics.Paint
 import android.os.Build
 import android.os.Bundle
+import android.view.View
 import android.widget.Toast
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
@@ -122,9 +123,17 @@ class OrderSummary2Activity : AppCompatActivity() {
             }
         }
 
-        tvTopUp.setOnClickListener {
-            TopUpFragment().show(supportFragmentManager,"TopUpFragment")
+        when(getString(R.string.app_name)){
+            "Yalla Motors","Travo Photos" -> tvTopUp.visibility = View.GONE
+
+            else-> {
+                tvTopUp.setOnClickListener {
+                    TopUpFragment().show(supportFragmentManager,"TopUpFragment")
+                }
+            }
         }
+
+
 
         imgBack.setOnClickListener {
             onBackPressed()
