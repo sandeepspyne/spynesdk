@@ -7,6 +7,7 @@ import android.view.ViewGroup
 import com.spyneai.base.BaseDialogFragment
 import com.spyneai.databinding.DialogAngleSelectionBinding
 import com.spyneai.shoot.data.ShootViewModel
+import com.spyneai.shoot.utils.shoot
 
 class AngleSelectionDialog : BaseDialogFragment<ShootViewModel,DialogAngleSelectionBinding>() {
 
@@ -53,6 +54,7 @@ class AngleSelectionDialog : BaseDialogFragment<ShootViewModel,DialogAngleSelect
         binding.tvProceed.setOnClickListener {
             if (lastSelectedAngles != newSelectedAngles)
                 //isSubcatgoryConfirmed = false
+                    shoot("angle selected- "+newSelectedAngles)
                 viewModel.exterirorAngles.value = newSelectedAngles
                     dismiss()
         }

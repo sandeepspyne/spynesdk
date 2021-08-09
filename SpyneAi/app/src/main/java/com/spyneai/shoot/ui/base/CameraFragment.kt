@@ -449,7 +449,6 @@ class CameraFragment : BaseFragment<ShootViewModel, FragmentCameraBinding>(), Pi
 
     override fun onSensorChanged(event: SensorEvent?) {
         //Get Rotation Vector Sensor Values
-        log("onSensorChanged called")
 
         if (event?.sensor?.type == Sensor.TYPE_ACCELEROMETER) {
             System.arraycopy(event.values, 0, accelerometerReading, 0, accelerometerReading.size)
