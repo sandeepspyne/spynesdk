@@ -190,6 +190,9 @@ class SelectBackgroundFragment : BaseFragment<ProcessViewModel,FragmentSelectBac
                 is Resource.Loading -> Utilities.showProgressDialog(requireContext())
 
                 is Resource.Success -> {
+                    //update processed state
+                    viewModel.updateIsProcessed(viewModel.sku.value!!.skuId!!)
+
                     Utilities.hideProgressDialog()
                     requireContext().captureEvent(
                         Events.PROCESS,

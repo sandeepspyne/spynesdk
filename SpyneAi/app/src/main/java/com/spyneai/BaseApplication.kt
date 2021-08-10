@@ -7,12 +7,16 @@ import android.content.Intent
 import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AppCompatDelegate
+import androidx.work.*
 import com.google.android.play.core.appupdate.AppUpdateManager
 import com.google.android.play.core.appupdate.AppUpdateManagerFactory
 import com.google.android.play.core.install.model.AppUpdateType
 import com.google.android.play.core.install.model.UpdateAvailability
 import com.google.firebase.crashlytics.FirebaseCrashlytics
 import com.posthog.android.PostHog
+import com.spyneai.shoot.workmanager.ProcessSkuWorker
+import com.spyneai.shoot.workmanager.RecursiveProcessSkuWorker
+import java.util.concurrent.TimeUnit
 
 @SuppressLint("StaticFieldLeak")
 class BaseApplication : Application() {
@@ -47,7 +51,21 @@ class BaseApplication : Application() {
         // Set the initialized instance as a globally accessible instance.
         PostHog.setSingletonInstance(posthog)
 
+        //prcess periodic worker
+        val constraints: Constraints = Constraints.Builder()
+            .setRequiredNetworkType(NetworkType.CONNECTED)
+            .build()
 
+        val longWorkRequest = PeriodicWorkRequestBuilder<ProcessSkuWorker>(
+            10, TimeUnit.MINUTES)
+            .addTag("Periodic Processing Worker")
+
+
+        WorkManager.getInstance(context)
+            .enqueue(
+                longWorkRequest
+                    .setConstraints(constraints)
+                    .build())
     }
 
 

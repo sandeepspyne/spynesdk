@@ -18,5 +18,7 @@ object ShootContract {
         const val COLUMN_NAME_DEALERSHIP_LOG = "dealership_logo"
         const val COLUMN_NAME_PROCESS_SKU = "process_sku"
         const val COLUMN_NAME_PROJECT_ID = "project_id"
+        const val COLUMN_NAME_IS_PROCESSED = "is_processed"
+        const val COLUMN_NAME_IS_360 = "is_360"
     }
 }

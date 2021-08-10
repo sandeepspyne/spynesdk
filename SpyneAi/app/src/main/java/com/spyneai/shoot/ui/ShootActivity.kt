@@ -76,12 +76,10 @@ class ShootActivity : AppCompatActivity() {
             permissionRequest.launch(permissions.toTypedArray())
         }
 
-
         shootViewModel.selectBackground.observe(this, {
             if (it) {
                 // start process activity
                 val intent = Intent(this, ProcessActivity::class.java)
-
 
                 intent.apply {
                     this.putExtra("sku_id", shootViewModel.sku.value?.skuId)

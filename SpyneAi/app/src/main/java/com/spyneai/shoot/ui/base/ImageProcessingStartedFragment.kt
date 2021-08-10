@@ -21,6 +21,8 @@ class ImageProcessingStartedFragment : BaseFragment<ProcessViewModel, FragmentIm
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+
+
 //        if (requireActivity().intent.getBooleanExtra("process_sku",true)) {
 //            //load gif
 //            Glide.with(this).asGif().load(R.raw.image_processing_started)
