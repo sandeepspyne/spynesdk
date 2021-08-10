@@ -5,6 +5,7 @@ import android.content.Intent
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.FrameLayout
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.cardview.widget.CardView
@@ -34,6 +35,11 @@ class SkusAdapter(
         val ivDownloadSKU: ImageView = view.findViewById(R.id.ivDownloadSKU)
         val cvMain: CardView = view.findViewById(R.id.cvMain)
 
+        val flCategory: FrameLayout = view.findViewById(R.id.flCategory)
+        val flImages: FrameLayout = view.findViewById(R.id.flImages)
+        val tvCategories: TextView = view.findViewById(R.id.tvCategories)
+        val tvImage: TextView = view.findViewById(R.id.tvImage)
+
     }
 
     override fun onCreateViewHolder(
@@ -62,9 +68,21 @@ class SkusAdapter(
 
         }
 
-        holder.tvCategory.text = skuList[position].category
+        if (context.getString(R.string.app_name) == "Sweep.ei"){
+            holder.apply {
+                tvCategory.visibility = View.INVISIBLE
+                flCategory.visibility = View.INVISIBLE
+                flImages.visibility = View.INVISIBLE
+                tvCategories.visibility = View.INVISIBLE
+                tvImage.visibility = View.INVISIBLE
+            }
+        }else{
+            holder.tvCategory.text = skuList[position].category
+            holder.tvImages.text = skuList[position].total_images.toString()
+        }
+
         holder.tvSkuName.text = skuList[position].sku_name
-        holder.tvImages.text = skuList[position].total_images.toString()
+        holder.tvDate.text = skuList[position].created_on
 
 
         if (context.getString(R.string.app_name) == "Karvi.com"){

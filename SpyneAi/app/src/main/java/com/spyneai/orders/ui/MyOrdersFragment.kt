@@ -5,6 +5,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import com.google.android.material.tabs.TabLayoutMediator
+import com.spyneai.R
 import com.spyneai.base.BaseFragment
 import com.spyneai.dashboard.data.DashboardViewModel
 import com.spyneai.databinding.FragmentMyOrdersBinding
@@ -30,7 +31,7 @@ class MyOrdersFragment : BaseFragment<DashboardViewModel, FragmentMyOrdersBindin
 
         TabLayoutMediator(binding.tabLayout, binding.viewPager) { tab, position ->
             if (position == 0){
-                tab.text = "OnGoing"
+                tab.text = getString(R.string.ongoing)
             }else{
                 tab.text = "Completed"
             }

@@ -5,10 +5,7 @@ import android.content.Intent
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.ImageView
-import android.widget.LinearLayout
-import android.widget.TextView
-import android.widget.Toast
+import android.widget.*
 import androidx.cardview.widget.CardView
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
@@ -35,6 +32,12 @@ class MyCompletedProjectsAdapter(
         val ivThumbnail: ImageView = view.findViewById(R.id.ivThumbnail)
         val ivDownloadSKU: ImageView = view.findViewById(R.id.ivDownloadSKU)
         val cvMain: CardView = view.findViewById(R.id.cvMain)
+        val flCategory: FrameLayout = view.findViewById(R.id.flCategory)
+        val flSkus: FrameLayout = view.findViewById(R.id.flSkus)
+        val flImages: FrameLayout = view.findViewById(R.id.flImages)
+        val tvCategories: TextView = view.findViewById(R.id.tvCategories)
+        val tvSku: TextView = view.findViewById(R.id.tvSku)
+        val tvImage: TextView = view.findViewById(R.id.tvImage)
 
     }
 
@@ -52,14 +55,33 @@ class MyCompletedProjectsAdapter(
         if (context.getString(R.string.app_name) == "Karvi.com")
             holder.ivDownloadSKU.visibility = View.INVISIBLE
 
-        if (getProjectList[position].sub_category == "360_exterior"
-            || getProjectList[position].sub_category.equals("360_interior")
-        ){
-            holder.llThreeSixty.visibility = View.VISIBLE
-            holder.tvCategory.text = "Automobiles"
+        if (context.getString(R.string.app_name) == "Sweep.ei"){
+            holder.apply {
+                tvCategory.visibility = View.INVISIBLE
+                tvSkus.visibility = View.INVISIBLE
+                tvSkus.visibility = View.INVISIBLE
+                flCategory.visibility = View.INVISIBLE
+                flSkus.visibility = View.INVISIBLE
+                flImages.visibility = View.INVISIBLE
+                tvCategories.visibility = View.INVISIBLE
+                tvSku.visibility = View.INVISIBLE
+                tvImage.visibility = View.INVISIBLE
+                //ivDownloadSKU.visibility = View.INVISIBLE
+            }
         }else{
-            holder.tvCategory.text = getProjectList[position].category
-            holder.llThreeSixty.visibility = View.GONE
+            if (getProjectList[position].sub_category == "360_exterior"
+                || getProjectList[position].sub_category.equals("360_interior")
+            ){
+                holder.llThreeSixty.visibility = View.VISIBLE
+                holder.tvCategory.text = "Automobiles"
+            }else{
+                holder.tvCategory.text = getProjectList[position].category
+                holder.llThreeSixty.visibility = View.GONE
+            }
+
+
+            holder.tvSkus.text = getProjectList[position].total_sku.toString()
+            holder.tvImages.text = getProjectList[position].total_images.toString()
         }
 
         try {
@@ -99,11 +121,8 @@ class MyCompletedProjectsAdapter(
             e.printStackTrace()
         }
 
-        holder.tvProjectName.text = getProjectList[position].project_name
-        holder.tvSkus.text = getProjectList[position].total_sku.toString()
         holder.tvDate.text = getProjectList[position].created_on
-        holder.tvImages.text = getProjectList[position].total_images.toString()
-
+        holder.tvProjectName.text = getProjectList[position].project_name
         holder.cvMain.setOnClickListener {
             viewModel.position.value = position
             viewModel.projectItemClicked.value = true

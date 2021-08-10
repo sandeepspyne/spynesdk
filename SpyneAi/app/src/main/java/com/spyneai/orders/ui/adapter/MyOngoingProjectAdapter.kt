@@ -5,10 +5,7 @@ import android.content.Intent
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.ImageView
-import android.widget.LinearLayout
-import android.widget.TextView
-import android.widget.Toast
+import android.widget.*
 import androidx.cardview.widget.CardView
 import androidx.recyclerview.widget.RecyclerView
 import com.airbnb.lottie.LottieAnimationView
@@ -36,6 +33,13 @@ class MyOngoingProjectAdapter(
         val lottieProgressCircle: LottieAnimationView = view.findViewById(R.id.lottieProgressCircle)
         val llUploaded: LinearLayout = view.findViewById(R.id.llUploaded)
         val cvMain: CardView = view.findViewById(R.id.cvMain)
+        val flAnimationContainer: FrameLayout = view.findViewById(R.id.flAnimationContainer)
+        val flCategory: FrameLayout = view.findViewById(R.id.flCategory)
+        val flSkus: FrameLayout = view.findViewById(R.id.flSkus)
+        val flImages: FrameLayout = view.findViewById(R.id.flImages)
+        val tvCategories: TextView = view.findViewById(R.id.tvCategories)
+        val tvSku: TextView = view.findViewById(R.id.tvSku)
+        val tvImage: TextView = view.findViewById(R.id.tvImage)
 
     }
 
@@ -60,19 +64,50 @@ class MyOngoingProjectAdapter(
             holder.llThreeSixty.visibility = View.GONE
         }
 
-        if (getProjectList[position].category.equals("cat_d8R14zUNx")
-            || getProjectList[position].category.equals("cat_Ujt0kuFxY")
-            || getProjectList[position].category.equals("cat_Ujt0kuFxX")
-            || getProjectList[position].category.equals("E-Commerce")
-            || getProjectList[position].category.equals("Footwear")
-            || getProjectList[position].category.equals("Bikes")
-        ){
-            holder.tvImageCount.visibility = View.INVISIBLE
+        if (context.getString(R.string.app_name) == "Sweep.ei"){
+            holder.apply {
+                tvCategory.visibility = View.INVISIBLE
+                tvSkus.visibility = View.INVISIBLE
+                tvSkus.visibility = View.INVISIBLE
+                flCategory.visibility = View.INVISIBLE
+                flSkus.visibility = View.INVISIBLE
+                flImages.visibility = View.INVISIBLE
+                tvCategories.visibility = View.INVISIBLE
+                tvSku.visibility = View.INVISIBLE
+                tvImage.visibility = View.INVISIBLE
+            }
         }else{
-            holder.tvImageCount.visibility = View.VISIBLE
+            if (getProjectList[position].category.equals("cat_d8R14zUNx")
+                || getProjectList[position].category.equals("cat_Ujt0kuFxY")
+                || getProjectList[position].category.equals("cat_Ujt0kuFxX")
+                || getProjectList[position].category.equals("E-Commerce")
+                || getProjectList[position].category.equals("Footwear")
+                || getProjectList[position].category.equals("Bikes")
+            ){
+                holder.tvImageCount.visibility = View.INVISIBLE
+            }else{
+                holder.tvImageCount.visibility = View.VISIBLE
+            }
+
+
+
+            if (getProjectList[position].status.equals("Uploaded")) {
+                holder.tvImageCount.visibility = View.INVISIBLE
+                holder.lottieProgressCircle.visibility = View.INVISIBLE
+                holder.llUploaded.visibility = View.VISIBLE
+            }
+
+
+            holder.tvSkus.text = getProjectList[position].total_sku.toString()
+            holder.tvImages.text = getProjectList[position].total_images.toString()
         }
 
+        holder.tvImageCount.text =
+            getProjectList[position].processed_images.toString() + "/" + getProjectList[position].total_images.toString()
 
+
+        holder.tvProjectName.text = getProjectList[position].project_name
+        holder.tvDate.text = getProjectList[position].created_on
 
         try {
             if (getProjectList[position].sku[0].images.isNullOrEmpty()) {
@@ -111,20 +146,6 @@ class MyOngoingProjectAdapter(
             e.printStackTrace()
         }
 
-
-        if (getProjectList[position].status.equals("Uploaded")) {
-            holder.tvImageCount.visibility = View.INVISIBLE
-            holder.lottieProgressCircle.visibility = View.INVISIBLE
-            holder.llUploaded.visibility = View.VISIBLE
-        }
-
-        holder.tvProjectName.text = getProjectList[position].project_name
-        holder.tvSkus.text = getProjectList[position].total_sku.toString()
-        holder.tvDate.text = getProjectList[position].created_on
-        holder.tvImages.text = getProjectList[position].total_images.toString()
-
-        holder.tvImageCount.text =
-            getProjectList[position].processed_images.toString() + "/" + getProjectList[position].total_images.toString()
 
         holder.cvMain.setOnClickListener {
 

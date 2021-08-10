@@ -116,7 +116,8 @@
             android:layout_width="@dimen/dp_12"
             android:layout_height="@dimen/dp_12"
             android:layout_gravity="center"
-            android:src="@drawable/ic_category" />
+            android:src="@drawable/ic_category"
+            app:tint="@color/primary" />
     </FrameLayout>
 
     <TextView
@@ -163,7 +164,8 @@
             android:layout_width="@dimen/dp_12"
             android:layout_height="@dimen/dp_12"
             android:layout_gravity="center"
-            android:src="@drawable/ic_skus" />
+            android:src="@drawable/ic_skus"
+            app:tint="@color/primary"/>
 
     </FrameLayout>
 
@@ -213,7 +215,8 @@
             android:layout_width="@dimen/dp_12"
             android:layout_height="@dimen/dp_12"
             android:layout_gravity="center"
-            android:src="@drawable/ic_images" />
+            android:src="@drawable/ic_images"
+            app:tint="@color/primary"/>
 
     </FrameLayout>
 
@@ -229,23 +232,24 @@
         app:layout_constraintLeft_toRightOf="@+id/flSkus"
         app:layout_constraintTop_toTopOf="@+id/flImages" />
 
-    <TextView
-        android:id="@+id/tvImages"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginLeft="9dp"
-        android:fontFamily="@font/poppins_medium"
-        android:textColor="@color/categories_text"
-        android:textSize="@dimen/dp_12"
-        android:maxLength="8"
-        app:layout_constraintLeft_toRightOf="@+id/tvImage"
-        app:layout_constraintTop_toTopOf="@+id/flImages"
-        tools:text="100" />
+        <TextView
+            android:id="@+id/tvImages"
+            android:layout_width="10dp"
+            android:layout_height="14dp"
+            android:layout_marginLeft="9dp"
+            android:fontFamily="@font/poppins_medium"
+            android:maxLength="8"
+            android:textColor="@color/categories_text"
+            android:textSize="@dimen/dp_12"
+            app:layout_constraintLeft_toRightOf="@+id/tvImage"
+            app:layout_constraintTop_toTopOf="@+id/flImages"
+            tools:text="100" />
 
     <FrameLayout
         android:layout_width="45dp"
         android:layout_height="45dp"
         android:layout_margin="13dp"
+        android:id="@+id/flAnimationContainer"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintRight_toRightOf="parent">
 

@@ -70,8 +70,8 @@ android {
         sweepCars {
             dimension 'version'
             applicationId "com.spyneai.sweepcars"
-            versionCode 10
-            versionName "3.0"
+            versionCode 12
+            versionName "3.2"
         }
 
         trustedCars {
@@ -98,8 +98,8 @@ android {
         olacabs {
             dimension 'version'
             applicationId "com.spyneai.olacabs"
-            versionCode 8
-            versionName "1.8"
+            versionCode 9
+            versionName "1.9"
         }
 
         cars24 {
