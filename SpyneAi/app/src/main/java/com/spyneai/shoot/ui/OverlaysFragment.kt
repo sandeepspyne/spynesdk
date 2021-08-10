@@ -62,7 +62,7 @@ class OverlaysFragment : BaseFragment<ShootViewModel, FragmentOverlaysBinding>()
         //observe new image clicked
         viewModel.shootList.observe(viewLifecycleOwner, {
             try {
-                if (showDialog && !it.isNullOrEmpty()) {
+                if (viewModel.showConfirmReshootDialog.value == true && !it.isNullOrEmpty()) {
                     shoot("confirm reshoot dialog called")
                     shoot("shootList sine(no. of images)- " + it.size)
                     showImageConfirmDialog(it.get(it.size - 1))
@@ -172,7 +172,6 @@ class OverlaysFragment : BaseFragment<ShootViewModel, FragmentOverlaysBinding>()
         //update progress list
         viewModel.exterirorAngles.observe(viewLifecycleOwner, {
             binding.tvShoot?.text = "Angles 1/${viewModel.getSelectedAngles()}"
-
             initProgressFrames()
             if (viewModel.subCategory.value?.prod_cat_id != null)
                 getOverlays()
@@ -248,8 +247,9 @@ class OverlaysFragment : BaseFragment<ShootViewModel, FragmentOverlaysBinding>()
                 }
             })
 
+            if (viewModel.iniProgressFrame.value == null)
             progressAdapter.updateList(viewModel.shootNumber.value!!)
-            shoot("updateList in progress adapter called")
+            shoot("updateList in progress adapter called- "+viewModel.shootNumber.value!!)
         })
 
     }
@@ -315,8 +315,8 @@ class OverlaysFragment : BaseFragment<ShootViewModel, FragmentOverlaysBinding>()
                     }
                 }
                 is Resource.Loading -> {
-                    Utilities.showProgressDialog(requireContext())
-                    shoot("show progress dialog(subCatResponse)")
+//                    Utilities.showProgressDialog(requireContext())
+//                    shoot("show progress dialog(subCatResponse)")
                 }
                 is Resource.Failure -> {
                     requireContext().captureFailureEvent(
@@ -475,6 +475,7 @@ class OverlaysFragment : BaseFragment<ShootViewModel, FragmentOverlaysBinding>()
                 progressAdapter.updateList(viewModel.getShootProgressList(viewModel.interiorAngles.value!!, viewModel.interiorShootNumber.value!!))
             else
                 progressAdapter.updateList(viewModel.interiorShootNumber.value!!)
+            shoot("updateList in progress adapter called- "+viewModel.interiorShootNumber.value!!)
         })
     }
 
@@ -549,6 +550,7 @@ class OverlaysFragment : BaseFragment<ShootViewModel, FragmentOverlaysBinding>()
                 progressAdapter.updateList(viewModel.getShootProgressList(viewModel.miscAngles.value!!, viewModel.miscShootNumber.value!!))
             else
                 progressAdapter.updateList(viewModel.miscShootNumber.value!!)
+            shoot("updateList in progress adapter called- "+viewModel.miscShootNumber.value!!)
         })
     }
 
@@ -590,6 +592,12 @@ class OverlaysFragment : BaseFragment<ShootViewModel, FragmentOverlaysBinding>()
                 viewModel.shootDimensions.value = shootDimensions
             }
         })
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        Utilities.hideProgressDialog()
+        viewModel.showConfirmReshootDialog.value = false
     }
 
 

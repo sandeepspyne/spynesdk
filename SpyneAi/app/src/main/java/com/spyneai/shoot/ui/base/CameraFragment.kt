@@ -183,6 +183,7 @@ class CameraFragment : BaseFragment<ShootViewModel, FragmentCameraBinding>(), Pi
         super.onActivityCreated(savedInstanceState)
 
         binding.cameraCaptureButton?.setOnClickListener {
+            viewModel.showConfirmReshootDialog.value = true
             if ((viewModel.isSubCategoryConfirmed.value == null || viewModel.isSubCategoryConfirmed.value == false) &&
                 (viewModel.categoryDetails.value?.categoryName == "Automobiles" ||
                         viewModel.categoryDetails.value?.categoryName == "Bikes")

@@ -41,6 +41,8 @@ class ShootViewModel : ViewModel(){
     val totalSkuCaptured : MutableLiveData<String> = MutableLiveData()
     val totalImageCaptured : MutableLiveData<String> = MutableLiveData()
 
+    val iniProgressFrame : MutableLiveData<Boolean> = MutableLiveData()
+
     val subCatName : MutableLiveData<String> = MutableLiveData()
 
     val shootList: MutableLiveData<ArrayList<ShootData>> = MutableLiveData()
@@ -86,6 +88,8 @@ class ShootViewModel : ViewModel(){
     val exterirorAngles: MutableLiveData<Int> = MutableLiveData()
     val shootNumber: MutableLiveData<Int> = MutableLiveData()
     val shootData : MutableLiveData<ShootData> =  MutableLiveData()
+
+    val showConfirmReshootDialog : MutableLiveData<Boolean> = MutableLiveData()
 
     //interior and misc shots
     val showInteriorDialog : MutableLiveData<Boolean> = MutableLiveData()

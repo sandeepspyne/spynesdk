@@ -60,6 +60,12 @@ class AngleSelectionDialog : BaseDialogFragment<ShootViewModel,DialogAngleSelect
         }
     }
 
+    override fun onStop() {
+        super.onStop()
+        shoot("onStop called(angleSlectionDialog-> dismissAllowingStateLoss)")
+        dismissAllowingStateLoss()
+    }
+
     override fun getViewModel() = ShootViewModel::class.java
 
     override fun getFragmentBinding(

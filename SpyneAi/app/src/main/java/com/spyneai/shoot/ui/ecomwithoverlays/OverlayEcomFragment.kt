@@ -276,6 +276,7 @@ class OverlayEcomFragment : BaseFragment<ShootViewModel, FragmentOverlayEcomBind
             })
 
             progressAdapter.updateList(viewModel.shootNumber.value!!)
+
         })
 
     }

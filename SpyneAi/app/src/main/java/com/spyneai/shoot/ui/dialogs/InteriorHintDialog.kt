@@ -10,6 +10,7 @@ import com.spyneai.base.BaseDialogFragment
 import com.spyneai.databinding.DialogInteriorHintBinding
 import com.spyneai.databinding.DialogShootHintBinding
 import com.spyneai.shoot.data.ShootViewModel
+import com.spyneai.shoot.utils.shoot
 
 class InteriorHintDialog : BaseDialogFragment<ShootViewModel, DialogInteriorHintBinding>() {
 
@@ -20,13 +21,21 @@ class InteriorHintDialog : BaseDialogFragment<ShootViewModel, DialogInteriorHint
 
         binding.tvSkip.setOnClickListener {
             viewModel.showMiscDialog.value = true
+            viewModel.iniProgressFrame.value = false
             dismiss()
         }
 
         binding.tvShootNowInterior.setOnClickListener {
+            viewModel.iniProgressFrame.value = false
             viewModel.startInteriorShots.value = true
             dismiss()
         }
+    }
+
+    override fun onStop() {
+        super.onStop()
+        shoot("onStop called(interiorHintDiaog-> dismissAllowingStateLoss)")
+        dismissAllowingStateLoss()
     }
 
 

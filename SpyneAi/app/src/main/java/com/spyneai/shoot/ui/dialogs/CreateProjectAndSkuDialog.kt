@@ -18,6 +18,7 @@ import com.spyneai.needs.Utilities
 import com.spyneai.posthog.Events
 import com.spyneai.shoot.data.ShootViewModel
 import com.spyneai.shoot.data.model.Sku
+import com.spyneai.shoot.utils.shoot
 
 class CreateProjectAndSkuDialog : BaseDialogFragment<ShootViewModel, DialogCreateProjectAndSkuBinding>() {
 
@@ -85,6 +86,13 @@ class CreateProjectAndSkuDialog : BaseDialogFragment<ShootViewModel, DialogCreat
         })
 
     }
+
+    override fun onStop() {
+        super.onStop()
+        shoot("onStop called(createProjectAndSkuDialog-> dismissAllowingStateLoss)")
+        dismissAllowingStateLoss()
+    }
+
     override fun getViewModel() = ShootViewModel::class.java
 
     override fun getFragmentBinding(

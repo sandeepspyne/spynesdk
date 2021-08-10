@@ -12,6 +12,7 @@ import com.spyneai.base.network.Resource
 import com.spyneai.dashboard.response.NewSubCatResponse
 import com.spyneai.databinding.DialogFocusedHintBinding
 import com.spyneai.shoot.data.ShootViewModel
+import com.spyneai.shoot.utils.shoot
 
 class MiscShotsDialog : BaseDialogFragment<ShootViewModel, DialogFocusedHintBinding>() {
 
@@ -63,6 +64,12 @@ class MiscShotsDialog : BaseDialogFragment<ShootViewModel, DialogFocusedHintBind
         Glide.with(requireContext())
             .load(url)
             .into(imageView)
+    }
+
+    override fun onStop() {
+        super.onStop()
+        shoot("onStop called(miscShotsDialog-> dismissAllowingStateLoss)")
+        dismissAllowingStateLoss()
     }
 
     override fun getViewModel() = ShootViewModel::class.java

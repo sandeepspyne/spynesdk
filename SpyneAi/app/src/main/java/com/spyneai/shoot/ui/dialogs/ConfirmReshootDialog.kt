@@ -17,6 +17,7 @@ import com.spyneai.dashboard.response.NewSubCatResponse
 import com.spyneai.databinding.DialogConfirmReshootBinding
 import com.spyneai.posthog.Events
 import com.spyneai.shoot.data.ShootViewModel
+import com.spyneai.shoot.utils.shoot
 import kotlinx.coroutines.launch
 import java.io.File
 
@@ -224,6 +225,12 @@ class ConfirmReshootDialog : BaseDialogFragment<ShootViewModel, DialogConfirmRes
         })
 
 
+    }
+
+    override fun onStop() {
+        super.onStop()
+        shoot("onStop called(confirmReshootDialog-> dismissAllowingStateLoss)")
+        dismissAllowingStateLoss()
     }
 
     override fun getViewModel() = ShootViewModel::class.java
