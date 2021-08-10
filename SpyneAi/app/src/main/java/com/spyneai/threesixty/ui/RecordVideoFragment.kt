@@ -7,10 +7,13 @@ import android.content.ContentValues
 import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
+import android.graphics.ImageFormat
 import android.hardware.Sensor
 import android.hardware.SensorEvent
 import android.hardware.SensorEventListener
 import android.hardware.SensorManager
+import android.hardware.camera2.CameraCharacteristics
+import android.hardware.camera2.CameraManager
 import android.os.*
 import android.provider.MediaStore
 import android.util.DisplayMetrics
@@ -41,13 +44,11 @@ import com.spyneai.threesixty.data.ThreeSixtyViewModel
 import com.spyneai.toggleButton
 import java.io.File
 import java.util.concurrent.TimeUnit
-import kotlin.math.abs
-import kotlin.math.max
-import kotlin.math.min
-import kotlin.math.roundToInt
+import kotlin.math.*
 import kotlin.properties.Delegates
 
-class RecordVideoFragment : BaseFragment<ThreeSixtyViewModel,FragmentRecordVideoBinding>(),
+
+class RecordVideoFragment : BaseFragment<ThreeSixtyViewModel, FragmentRecordVideoBinding>(),
     PickiTCallbacks, SensorEventListener,View.OnTouchListener {
 
 
@@ -172,9 +173,14 @@ class RecordVideoFragment : BaseFragment<ThreeSixtyViewModel,FragmentRecordVideo
             }
         }, 300)
 
-        viewModel.enableRecording.observe(viewLifecycleOwner,{
+        viewModel.enableRecording.observe(viewLifecycleOwner, {
             if (it) {
-                binding.btnRecordVideo.setImageDrawable(ContextCompat.getDrawable(requireContext(),R.drawable.bg_record_button_enabled))
+                binding.btnRecordVideo.setImageDrawable(
+                    ContextCompat.getDrawable(
+                        requireContext(),
+                        R.drawable.bg_record_button_enabled
+                    )
+                )
 
                 binding.flLevelIndicator.visibility = View.VISIBLE
 
@@ -235,8 +241,12 @@ class RecordVideoFragment : BaseFragment<ThreeSixtyViewModel,FragmentRecordVideo
 
         val diff = Math.toDegrees(orientationAngles[2].toDouble()) - roll
 
-        val movearrow = abs(Math.toDegrees(orientationAngles[2].toDouble()).roundToInt()) -  abs(roll.roundToInt()) >= 1
-        val rotatedarrow = abs(Math.toDegrees(orientationAngles[1].toDouble()).roundToInt()) -  abs(pitch.roundToInt()) >= 1
+        val movearrow = abs(Math.toDegrees(orientationAngles[2].toDouble()).roundToInt()) -  abs(
+            roll.roundToInt()
+        ) >= 1
+        val rotatedarrow = abs(Math.toDegrees(orientationAngles[1].toDouble()).roundToInt()) -  abs(
+            pitch.roundToInt()
+        ) >= 1
 
         pitch = Math.toDegrees(orientationAngles[1].toDouble())
         roll = Math.toDegrees(orientationAngles[2].toDouble())
@@ -252,27 +262,83 @@ class RecordVideoFragment : BaseFragment<ThreeSixtyViewModel,FragmentRecordVideo
 
             binding.tvLevelIndicator.rotation = 0f
 
-            binding.ivTopLeft.setColorFilter(ContextCompat.getColor(requireContext(), R.color.gyro_in_level))
-            binding.ivBottomLeft.setColorFilter(ContextCompat.getColor(requireContext(), R.color.gyro_in_level))
+            binding.ivTopLeft.setColorFilter(
+                ContextCompat.getColor(
+                    requireContext(),
+                    R.color.gyro_in_level
+                )
+            )
+            binding.ivBottomLeft.setColorFilter(
+                ContextCompat.getColor(
+                    requireContext(),
+                    R.color.gyro_in_level
+                )
+            )
 
-            binding.ivGryroRing.setColorFilter(ContextCompat.getColor(requireContext(), R.color.gyro_in_level))
-            binding.tvLevelIndicator.background = ContextCompat.getDrawable(requireContext(), R.drawable.bg_gyro_level)
+            binding.ivGryroRing.setColorFilter(
+                ContextCompat.getColor(
+                    requireContext(),
+                    R.color.gyro_in_level
+                )
+            )
+            binding.tvLevelIndicator.background = ContextCompat.getDrawable(
+                requireContext(),
+                R.drawable.bg_gyro_level
+            )
 
-            binding.ivTopRight.setColorFilter(ContextCompat.getColor(requireContext(), R.color.gyro_in_level))
-            binding.ivBottomRight.setColorFilter(ContextCompat.getColor(requireContext(), R.color.gyro_in_level))
+            binding.ivTopRight.setColorFilter(
+                ContextCompat.getColor(
+                    requireContext(),
+                    R.color.gyro_in_level
+                )
+            )
+            binding.ivBottomRight.setColorFilter(
+                ContextCompat.getColor(
+                    requireContext(),
+                    R.color.gyro_in_level
+                )
+            )
 
             binding.tvWarning.visibility = View.GONE
         }else{
 
             binding.tvWarning.visibility = View.VISIBLE
-            binding.ivTopLeft.setColorFilter(ContextCompat.getColor(requireContext(), R.color.gyro_error_level))
-            binding.ivBottomLeft.setColorFilter(ContextCompat.getColor(requireContext(), R.color.gyro_error_level))
+            binding.ivTopLeft.setColorFilter(
+                ContextCompat.getColor(
+                    requireContext(),
+                    R.color.gyro_error_level
+                )
+            )
+            binding.ivBottomLeft.setColorFilter(
+                ContextCompat.getColor(
+                    requireContext(),
+                    R.color.gyro_error_level
+                )
+            )
 
-            binding.ivGryroRing.setColorFilter(ContextCompat.getColor(requireContext(), R.color.gyro_error_level))
-            binding.tvLevelIndicator.background = ContextCompat.getDrawable(requireContext(), R.drawable.bg_gyro_error)
+            binding.ivGryroRing.setColorFilter(
+                ContextCompat.getColor(
+                    requireContext(),
+                    R.color.gyro_error_level
+                )
+            )
+            binding.tvLevelIndicator.background = ContextCompat.getDrawable(
+                requireContext(),
+                R.drawable.bg_gyro_error
+            )
 
-            binding.ivTopRight.setColorFilter(ContextCompat.getColor(requireContext(), R.color.gyro_error_level))
-            binding.ivBottomRight.setColorFilter(ContextCompat.getColor(requireContext(), R.color.gyro_error_level))
+            binding.ivTopRight.setColorFilter(
+                ContextCompat.getColor(
+                    requireContext(),
+                    R.color.gyro_error_level
+                )
+            )
+            binding.ivBottomRight.setColorFilter(
+                ContextCompat.getColor(
+                    requireContext(),
+                    R.color.gyro_error_level
+                )
+            )
 
             if (movearrow)
                 moveArrow(roll)
@@ -336,24 +402,53 @@ class RecordVideoFragment : BaseFragment<ThreeSixtyViewModel,FragmentRecordVideo
             // The ratio for the output image and preview
             val aspectRatio = aspectRatio(metrics.widthPixels, metrics.heightPixels)
             // The display rotation
+
             val rotation = viewFinder.display.rotation
 
             val localCameraProvider = cameraProvider
                 ?: throw IllegalStateException("Camera initialization failed.")
 
+
+            val cm =
+                requireActivity().getSystemService(android.content.Context.CAMERA_SERVICE) as CameraManager
+
+
+            var size = Size(1920, 1080)
+
+            if (cm.cameraIdList != null && cm.cameraIdList.size > 1) {
+                val characteristics: CameraCharacteristics =
+                    cm.getCameraCharacteristics("1")
+
+                val configs = characteristics.get(
+                    CameraCharacteristics.SCALER_STREAM_CONFIGURATION_MAP
+                )
+
+                val s = configs?.getOutputSizes(ImageFormat.JPEG)
+
+                s?.forEach {
+                    Log.d(TAG, "startCamera: "+it)
+                    //size = if (size.width < it.width) it else size
+                }
+
+            }
+
+            Log.d(TAG, "startCamera: " + size.width + " " + size.height)
+
             // The Configuration of camera preview
             preview = Preview.Builder()
-                // .setTargetResolution(Size(640,480))
-                .setTargetAspectRatio(aspectRatio) // set the camera aspect ratio
+                // .setTargetResolution(size)
+                //.setTargetAspectRatio(aspectRatio) // set the camera aspect ratio
                 .setTargetRotation(rotation) // set the camera rotation
                 .build()
 
             val videoCaptureConfig =
                 VideoCapture.DEFAULT_CONFIG.config // default config for video capture
             // The Configuration of video capture
+
             videoCapture = VideoCapture.Builder()
                 //.fromConfig(videoCaptureConfig)
-                .setTargetResolution(Size(480,360))
+                //.setTargetResolution(Size(480, 360))
+                .setTargetResolution(size)
                 .build()
 
             localCameraProvider.unbindAll() // unbind the use-cases before rebinding them
@@ -380,7 +475,7 @@ class RecordVideoFragment : BaseFragment<ThreeSixtyViewModel,FragmentRecordVideo
                 if (viewModel.shootDimensions.value == null ||
                     viewModel.shootDimensions.value?.previewHeight == 0
                 ) {
-                    getPreviewDimensions(binding.viewFinder, false,true)
+                    getPreviewDimensions(binding.viewFinder, false, true)
                 }
 
             } catch (e: Exception) {
@@ -433,7 +528,12 @@ class RecordVideoFragment : BaseFragment<ThreeSixtyViewModel,FragmentRecordVideo
         if (!isRecording) {
             binding.tvStart.visibility = View.GONE
 
-            binding.btnRecordVideo.setImageDrawable(ContextCompat.getDrawable(requireContext(),R.drawable.ic_stop_video))
+            binding.btnRecordVideo.setImageDrawable(
+                ContextCompat.getDrawable(
+                    requireContext(),
+                    R.drawable.ic_stop_video
+                )
+            )
             //animateRecord.start()
 
             //start record timer && enable button click && flash button
@@ -469,7 +569,7 @@ class RecordVideoFragment : BaseFragment<ThreeSixtyViewModel,FragmentRecordVideo
                                 try {
                                     var file = uri.toFile()
                                     startNextActivity(file.path)
-                                }catch (ex : IllegalArgumentException){
+                                } catch (ex: IllegalArgumentException) {
                                     pickiT?.getPath(uri, Build.VERSION.SDK_INT)
                                 }
                             }
@@ -565,6 +665,7 @@ class RecordVideoFragment : BaseFragment<ThreeSixtyViewModel,FragmentRecordVideo
     }
 
     private fun startNextActivity(videoPath: String) {
+        Log.d(TAG, "startNextActivity: "+videoPath)
         stopTimer = true
         binding.tvTimer.visibility = View.GONE
         binding.tvTimer.text = "00:00"
@@ -575,27 +676,32 @@ class RecordVideoFragment : BaseFragment<ThreeSixtyViewModel,FragmentRecordVideo
             TrimActivity::class.java
         )
 
-        trimIntent.putExtra("src_path",videoPath)
-        trimIntent.putExtra("sku_id",viewModel.videoDetails.skuId)
-        trimIntent.putExtra("sku_name",viewModel.videoDetails.skuName)
-        trimIntent.putExtra("project_id",viewModel.videoDetails.projectId)
-        trimIntent.putExtra(AppConstants.CATEGORY_NAME,viewModel.videoDetails.categoryName)
-        trimIntent.putExtra(AppConstants.CATEGORY_ID,viewModel.videoDetails.categoryId)
-        trimIntent.putExtra("frames",viewModel.videoDetails.frames)
-        trimIntent.putExtra("shoot_mode",intent?.getIntExtra("shoot_mode",0))
+        trimIntent.putExtra("src_path", videoPath)
+        trimIntent.putExtra("sku_id", viewModel.videoDetails.skuId)
+        trimIntent.putExtra("sku_name", viewModel.videoDetails.skuName)
+        trimIntent.putExtra("project_id", viewModel.videoDetails.projectId)
+        trimIntent.putExtra(AppConstants.CATEGORY_NAME, viewModel.videoDetails.categoryName)
+        trimIntent.putExtra(AppConstants.CATEGORY_ID, viewModel.videoDetails.categoryId)
+        trimIntent.putExtra("frames", viewModel.videoDetails.frames)
+        trimIntent.putExtra("shoot_mode", intent?.getIntExtra("shoot_mode", 0))
 
         startActivity(trimIntent)
 
         binding.tvStart.text = "Start"
-        binding.btnRecordVideo.setImageDrawable(ContextCompat.getDrawable(requireContext(),R.drawable.bg_record_button_enabled))
+        binding.btnRecordVideo.setImageDrawable(
+            ContextCompat.getDrawable(
+                requireContext(),
+                R.drawable.bg_record_button_enabled
+            )
+        )
         isRecording = !isRecording
     }
 
     override fun onResume() {
         super.onResume()
 
-        getPreviewDimensions(binding.ivGryroRing,true,false)
-        getPreviewDimensions(binding.tvCenter,false,false)
+        getPreviewDimensions(binding.ivGryroRing, true, false)
+        getPreviewDimensions(binding.tvCenter, false, false)
 
         mSensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER)?.also { accelerometer ->
             mSensorManager.registerListener(
@@ -620,7 +726,7 @@ class RecordVideoFragment : BaseFragment<ThreeSixtyViewModel,FragmentRecordVideo
         super.onDestroy()
     }
 
-    private fun getPreviewDimensions(view: View,isRing : Boolean,isPreview : Boolean) {
+    private fun getPreviewDimensions(view: View, isRing: Boolean, isPreview: Boolean) {
         view.viewTreeObserver.addOnGlobalLayoutListener(object :
             ViewTreeObserver.OnGlobalLayoutListener {
             override fun onGlobalLayout() {

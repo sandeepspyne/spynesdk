@@ -5,6 +5,7 @@ import com.spyneai.base.network.ServerException
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import retrofit2.HttpException
+import java.io.IOException
 
 abstract class BaseRepository {
 
@@ -25,6 +26,7 @@ abstract class BaseRepository {
                     is HttpException -> {
                         Resource.Failure(false, throwable.code(), throwable.response()?.errorBody().toString())
                     }
+
 
                     else -> {
                         Resource.Failure(true, null, "Please check your internet connection")
