@@ -180,13 +180,16 @@ class ShootViewModel : ViewModel(){
     fun getSelectedAngles() = exterirorAngles.value
 
 
-    fun getShootProgressList(angles: Int): ArrayList<ShootProgress> {
+    fun getShootProgressList(angles: Int, selectedAngles: Int): ArrayList<ShootProgress> {
         val shootProgressList = ArrayList<ShootProgress>()
         shootProgressList.add(ShootProgress(true))
 
-        for (i in 1 until angles)
-            shootProgressList.add(ShootProgress(false))
-
+        for (i in 1 until angles){
+            if (i <= selectedAngles)
+            shootProgressList.add(ShootProgress(true))
+            else
+                shootProgressList.add(ShootProgress(false))
+        }
         return shootProgressList
     }
 

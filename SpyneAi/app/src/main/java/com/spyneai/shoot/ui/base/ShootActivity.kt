@@ -20,11 +20,13 @@ import com.spyneai.shoot.data.model.CategoryDetails
 import com.spyneai.shoot.data.model.Sku
 import com.spyneai.shoot.ui.OverlaysFragment
 import com.spyneai.shoot.ui.dialogs.ShootExitDialog
+import com.spyneai.shoot.ui.dialogs.ShootHintDialog
 import com.spyneai.shoot.ui.ecomwithgrid.GridEcomFragment
 import com.spyneai.shoot.ui.ecomwithgrid.ProjectDetailFragment
 import com.spyneai.shoot.ui.ecomwithgrid.SkuDetailFragment
 import com.spyneai.shoot.ui.ecomwithoverlays.OverlayEcomFragment
 import com.spyneai.shoot.utils.log
+import com.spyneai.shoot.utils.shoot
 import java.io.File
 
 
@@ -42,6 +44,9 @@ class ShootActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        shoot("onCreate called(shoot activity)")
+
         window.setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
             WindowManager.LayoutParams.FLAG_FULLSCREEN)
 
@@ -176,6 +181,36 @@ class ShootActivity : AppCompatActivity() {
                 }
             }
         })
+    }
+
+    override fun onStart() {
+        super.onStart()
+        shoot("onStart called(shhot activity)")
+    }
+
+    override fun onResume() {
+        super.onResume()
+        shoot("onResume called(shoot activity)")
+    }
+
+    override fun onPause() {
+        super.onPause()
+        shoot("onPause called(shoot activity)")
+    }
+
+    override fun onStop() {
+        super.onStop()
+        shoot("onStop called(shoot activity)")
+    }
+
+    override fun onRestart() {
+        super.onRestart()
+        shoot("onRestart called(shoot activity)")
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        shoot("onDistroy called(shoot activity)")
     }
 
     private fun getInteriorMiscCount(): Int {

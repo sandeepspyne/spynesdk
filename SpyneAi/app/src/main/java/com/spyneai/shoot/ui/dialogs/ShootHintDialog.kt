@@ -10,6 +10,7 @@ import com.spyneai.base.BaseDialogFragment
 import com.spyneai.databinding.DialogCreateProjectAndSkuBinding
 import com.spyneai.databinding.DialogShootHintBinding
 import com.spyneai.shoot.data.ShootViewModel
+import com.spyneai.shoot.utils.shoot
 
 class ShootHintDialog : BaseDialogFragment<ShootViewModel, DialogShootHintBinding>() {
 
@@ -33,6 +34,7 @@ class ShootHintDialog : BaseDialogFragment<ShootViewModel, DialogShootHintBindin
 
 
     override fun getViewModel() = ShootViewModel::class.java
+
 
     override fun getFragmentBinding(
         inflater: LayoutInflater,

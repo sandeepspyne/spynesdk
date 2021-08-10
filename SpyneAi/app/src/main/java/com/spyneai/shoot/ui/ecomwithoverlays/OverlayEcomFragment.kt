@@ -221,7 +221,7 @@ class OverlayEcomFragment : BaseFragment<ShootViewModel, FragmentOverlayEcomBind
 
         progressAdapter = ShootProgressAdapter(
             requireContext(),
-            viewModel.getShootProgressList(frames))
+            viewModel.getShootProgressList(frames, viewModel.shootNumber.value!!))
 
         binding.rvProgress.apply {
             this?.layoutManager =
