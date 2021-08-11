@@ -203,14 +203,18 @@ class ShowImagesActivity : AppCompatActivity(),View.OnTouchListener,View.OnClick
             )
         })
 
-        tvDownloadFree.setOnClickListener {
-            Utilities.savePrefrence(this, AppConstants.DOWNLOAD_TYPE, "watermark")
-            val downloadIntent = Intent(this, DownloadingActivity::class.java)
-            downloadIntent.putExtra(AppConstants.LIST_WATERMARK, imageListWaterMark)
-            downloadIntent.putExtra(AppConstants.LIST_HD_QUALITY, listHdQuality)
-            downloadIntent.putExtra(AppConstants.LIST_IMAGE_NAME, imageNameList)
-            downloadIntent.putExtra("is_paid",intent.getBooleanExtra("is_paid",false))
-            startActivity(downloadIntent)
+        if (getString(R.string.app_name) == "Sweep.ei"){
+            tvDownloadFree.visibility = View.GONE
+        }else {
+            tvDownloadFree.setOnClickListener {
+                Utilities.savePrefrence(this, AppConstants.DOWNLOAD_TYPE, "watermark")
+                val downloadIntent = Intent(this, DownloadingActivity::class.java)
+                downloadIntent.putExtra(AppConstants.LIST_WATERMARK, imageListWaterMark)
+                downloadIntent.putExtra(AppConstants.LIST_HD_QUALITY, listHdQuality)
+                downloadIntent.putExtra(AppConstants.LIST_IMAGE_NAME, imageNameList)
+                downloadIntent.putExtra("is_paid",intent.getBooleanExtra("is_paid",false))
+                startActivity(downloadIntent)
+            }
         }
 
         llDownloadHdImages.setOnClickListener {
