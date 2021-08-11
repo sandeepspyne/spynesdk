@@ -19,6 +19,8 @@ class MiscShotsDialog : BaseDialogFragment<ShootViewModel, DialogFocusedHintBind
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        viewModel.startInteriorShoot.value = false
+
         dialog?.setCancelable(false)
 
 
@@ -66,11 +68,15 @@ class MiscShotsDialog : BaseDialogFragment<ShootViewModel, DialogFocusedHintBind
             .into(imageView)
     }
 
-    override fun onStop() {
-        super.onStop()
-        shoot("onStop called(miscShotsDialog-> dismissAllowingStateLoss)")
+    fun removeDialog(){
         dismissAllowingStateLoss()
     }
+
+//    override fun onStop() {
+//        super.onStop()
+//        shoot("onStop called(miscShotsDialog-> dismissAllowingStateLoss)")
+//        dismissAllowingStateLoss()
+//    }
 
     override fun getViewModel() = ShootViewModel::class.java
 

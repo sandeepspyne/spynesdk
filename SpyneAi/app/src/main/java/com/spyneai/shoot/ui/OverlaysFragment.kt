@@ -131,11 +131,12 @@ class OverlaysFragment : BaseFragment<ShootViewModel, FragmentOverlaysBinding>()
 
     private fun observeStartInteriorShoot() {
         viewModel.startInteriorShots.observe(viewLifecycleOwner, {
-            if (it) startInteriorShots()
+            if (it && viewModel.startInteriorShoot.value == null)
+                startInteriorShots()
         })
     }
 
-    private fun observeStartMiscShoots(){
+    private fun observeStartMiscShoots() {
         viewModel.startMiscShots.observe(viewLifecycleOwner, {
             if (it)
                 startMiscShots()
@@ -172,7 +173,11 @@ class OverlaysFragment : BaseFragment<ShootViewModel, FragmentOverlaysBinding>()
         //update progress list
         viewModel.exterirorAngles.observe(viewLifecycleOwner, {
             binding.tvShoot?.text = "Angles 1/${viewModel.getSelectedAngles()}"
-            initProgressFrames()
+            if (viewModel.shootList.value.isNullOrEmpty())
+                initProgressFrames()
+            else if (viewModel.shootList.value?.size!! < viewModel.getSelectedAngles()!!)
+                initProgressFrames()
+
             if (viewModel.subCategory.value?.prod_cat_id != null)
                 getOverlays()
         })
@@ -189,7 +194,10 @@ class OverlaysFragment : BaseFragment<ShootViewModel, FragmentOverlaysBinding>()
         }
         progressAdapter = ShootProgressAdapter(
             requireContext(),
-            viewModel.getShootProgressList(viewModel.exterirorAngles.value!!, viewModel.shootNumber.value!!)
+            viewModel.getShootProgressList(
+                viewModel.exterirorAngles.value!!,
+                viewModel.shootNumber.value!!
+            )
         )
 
         binding.rvProgress.apply {
@@ -246,10 +254,8 @@ class OverlaysFragment : BaseFragment<ShootViewModel, FragmentOverlaysBinding>()
                     }
                 }
             })
-
-            if (viewModel.iniProgressFrame.value == null)
             progressAdapter.updateList(viewModel.shootNumber.value!!)
-            shoot("updateList in progress adapter called- "+viewModel.shootNumber.value!!)
+            shoot("updateList in progress adapter called- " + viewModel.shootNumber.value!!)
         })
 
     }
@@ -425,6 +431,7 @@ class OverlaysFragment : BaseFragment<ShootViewModel, FragmentOverlaysBinding>()
 
     private fun startInteriorShots() {
         binding.rvSubcategories?.visibility = View.VISIBLE
+        binding.imgOverlay.visibility = View.INVISIBLE
 
         viewModel.subCategoriesResponse.observe(viewLifecycleOwner, {
             when (it) {
@@ -438,8 +445,8 @@ class OverlaysFragment : BaseFragment<ShootViewModel, FragmentOverlaysBinding>()
                     //set interior angles value
                     if (!myInteriorShootList.isNullOrEmpty()) {
                         viewModel.interiorShootNumber.value = myInteriorShootList.size - 1
-                        interiorList.get(myInteriorShootList.size-1).isSelected = true
-                    }else
+                        interiorList.get(myInteriorShootList.size - 1).isSelected = true
+                    } else
                         viewModel.interiorShootNumber.value = 0
 
                     viewModel.interiorAngles.value = interiorList.size
@@ -471,11 +478,30 @@ class OverlaysFragment : BaseFragment<ShootViewModel, FragmentOverlaysBinding>()
             interiorAdapter.notifyDataSetChanged()
             binding.rvSubcategories?.scrollToPosition(viewModel.interiorShootNumber.value!!)
 
+            progressAdapter = ShootProgressAdapter(
+                requireContext(),
+                viewModel.getShootProgressList(
+                    viewModel.interiorAngles.value!!,
+                    viewModel.interiorShootNumber.value!!
+                )
+            )
+
+            binding.rvProgress.apply {
+                this?.layoutManager =
+                    LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
+                this?.adapter = progressAdapter
+            }
+
             if (viewModel.interiorShootNumber.value!! == 0)
-                progressAdapter.updateList(viewModel.getShootProgressList(viewModel.interiorAngles.value!!, viewModel.interiorShootNumber.value!!))
+                progressAdapter.updateList(
+                    viewModel.getShootProgressList(
+                        viewModel.interiorAngles.value!!,
+                        viewModel.interiorShootNumber.value!!
+                    )
+                )
             else
                 progressAdapter.updateList(viewModel.interiorShootNumber.value!!)
-            shoot("updateList in progress adapter called- "+viewModel.interiorShootNumber.value!!)
+            shoot("updateList in progress adapter called- " + viewModel.interiorShootNumber.value!!)
         })
     }
 
@@ -497,6 +523,7 @@ class OverlaysFragment : BaseFragment<ShootViewModel, FragmentOverlaysBinding>()
 
     private fun startMiscShots() {
         binding.rvSubcategories?.visibility = View.VISIBLE
+        binding.imgOverlay.visibility = View.INVISIBLE
 
         viewModel.subCategoriesResponse.observe(viewLifecycleOwner, {
             when (it) {
@@ -510,8 +537,8 @@ class OverlaysFragment : BaseFragment<ShootViewModel, FragmentOverlaysBinding>()
                     //set interior angles value
                     if (!myMiscShootList.isNullOrEmpty()) {
                         viewModel.miscShootNumber.value = myMiscShootList.size - 1
-                        miscList.get(myMiscShootList.size-1).isSelected = true
-                    }else
+                        miscList.get(myMiscShootList.size - 1).isSelected = true
+                    } else
                         viewModel.miscShootNumber.value = 0
 
                     viewModel.miscAngles.value = miscList.size
@@ -547,10 +574,15 @@ class OverlaysFragment : BaseFragment<ShootViewModel, FragmentOverlaysBinding>()
             binding.rvSubcategories?.scrollToPosition(viewModel.miscShootNumber.value!!)
 
             if (viewModel.miscShootNumber.value!! == 0)
-                progressAdapter.updateList(viewModel.getShootProgressList(viewModel.miscAngles.value!!, viewModel.miscShootNumber.value!!))
+                progressAdapter.updateList(
+                    viewModel.getShootProgressList(
+                        viewModel.miscAngles.value!!,
+                        viewModel.miscShootNumber.value!!
+                    )
+                )
             else
                 progressAdapter.updateList(viewModel.miscShootNumber.value!!)
-            shoot("updateList in progress adapter called- "+viewModel.miscShootNumber.value!!)
+            shoot("updateList in progress adapter called- " + viewModel.miscShootNumber.value!!)
         })
     }
 
@@ -594,8 +626,19 @@ class OverlaysFragment : BaseFragment<ShootViewModel, FragmentOverlaysBinding>()
         })
     }
 
+    override fun onPause() {
+        super.onPause()
+        shoot("onPause called(overlay fragment)")
+    }
+
+    override fun onStop() {
+        super.onStop()
+        shoot("onStop called(overlay fragment)")
+    }
+
     override fun onDestroy() {
         super.onDestroy()
+        shoot("onDestroy called(overlay fragment)")
         Utilities.hideProgressDialog()
         viewModel.showConfirmReshootDialog.value = false
     }

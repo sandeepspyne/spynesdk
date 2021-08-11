@@ -14,6 +14,7 @@ import com.spyneai.camera2.ShootDimensions
 import com.spyneai.dashboard.response.NewSubCatResponse
 import com.spyneai.orders.data.response.GetProjectsResponse
 import com.spyneai.shoot.data.model.*
+import com.spyneai.shoot.response.SkuProcessStateResponse
 import com.spyneai.shoot.workmanager.FrameUpdateWorker
 import com.spyneai.shoot.workmanager.OverlaysPreloadWorker
 import com.spyneai.shoot.workmanager.RecursiveImageWorker
@@ -38,6 +39,8 @@ class ShootViewModel : ViewModel(){
 
     val isSubCatAngleConfirmed : MutableLiveData<Boolean> = MutableLiveData()
 
+    val startInteriorShoot : MutableLiveData<Boolean> = MutableLiveData()
+
     val totalSkuCaptured : MutableLiveData<String> = MutableLiveData()
     val totalImageCaptured : MutableLiveData<String> = MutableLiveData()
 
@@ -54,6 +57,10 @@ class ShootViewModel : ViewModel(){
     private val _projectDetailResponse: MutableLiveData<Resource<ProjectDetailResponse>> = MutableLiveData()
     val projectDetailResponse: LiveData<Resource<ProjectDetailResponse>>
         get() = _projectDetailResponse
+
+    private val _skuProcessStateResponse: MutableLiveData<Resource<SkuProcessStateResponse>> = MutableLiveData()
+    val skuProcessStateResponse: LiveData<Resource<SkuProcessStateResponse>>
+        get() = _skuProcessStateResponse
 
     private val _updateTotalFramesRes : MutableLiveData<Resource<UpdateTotalFramesRes>> = MutableLiveData()
     val updateTotalFramesRes: LiveData<Resource<UpdateTotalFramesRes>>
@@ -252,6 +259,13 @@ class ShootViewModel : ViewModel(){
     ) = viewModelScope.launch {
         _createProjectRes.value = Resource.Loading
         _createProjectRes.value = repository.createProject(authKey, projectName, prodCatId)
+    }
+
+    fun skuProcessState(
+        auth_key: String, project_id: String
+    ) = viewModelScope.launch {
+        _skuProcessStateResponse.value = Resource.Loading
+        _skuProcessStateResponse.value = repository.skuProcessState(auth_key, project_id)
     }
 
     fun createSku(authKey: String,projectId : String

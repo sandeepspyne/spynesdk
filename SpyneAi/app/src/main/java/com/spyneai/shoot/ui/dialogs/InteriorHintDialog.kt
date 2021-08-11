@@ -32,11 +32,11 @@ class InteriorHintDialog : BaseDialogFragment<ShootViewModel, DialogInteriorHint
         }
     }
 
-    override fun onStop() {
-        super.onStop()
-        shoot("onStop called(interiorHintDiaog-> dismissAllowingStateLoss)")
-        dismissAllowingStateLoss()
-    }
+//    override fun onStop() {
+//        super.onStop()
+//        shoot("onStop called(interiorHintDiaog-> dismissAllowingStateLoss)")
+//        dismissAllowingStateLoss()
+//    }
 
 
     override fun getViewModel() = ShootViewModel::class.java

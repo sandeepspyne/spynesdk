@@ -1,6 +1,7 @@
 package com.spyneai.shoot.ui.dialogs
 
 import android.content.Context
+import android.content.DialogInterface
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -87,9 +88,21 @@ class CreateProjectAndSkuDialog : BaseDialogFragment<ShootViewModel, DialogCreat
 
     }
 
-    override fun onStop() {
-        super.onStop()
-        shoot("onStop called(createProjectAndSkuDialog-> dismissAllowingStateLoss)")
+//    override fun onStop() {
+//        super.onStop()
+//        shoot("onStop called(createProjectAndSkuDialog-> dismissAllowingStateLoss)")
+//        dismissAllowingStateLoss()
+//    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        shoot("onDestroy called(shootHintDialog)")
+        dismissAllowingStateLoss()
+        dismiss()
+    }
+
+    override fun onDismiss(dialog: DialogInterface) {
+        super.onDismiss(dialog)
         dismissAllowingStateLoss()
     }
 

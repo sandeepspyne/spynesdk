@@ -14,6 +14,8 @@ import com.spyneai.needs.AppConstants
 import com.spyneai.needs.Utilities
 import com.spyneai.shoot.adapters.ProjectDetailAdapter
 import com.spyneai.shoot.data.ShootViewModel
+import com.spyneai.shoot.utils.log
+import com.spyneai.shoot.utils.shoot
 
 class ProjectDetailFragment : BaseFragment<ShootViewModel, FragmentProjectDetailBinding>() {
 
@@ -29,6 +31,8 @@ class ProjectDetailFragment : BaseFragment<ShootViewModel, FragmentProjectDetail
 
         binding.btHome.setOnClickListener {
            requireContext().gotoHome()
+            viewModel.skuProcessState(Utilities.getPreference(requireContext(), AppConstants.AUTH_KEY).toString(), viewModel.sku.value?.projectId.toString())
+            log("skuProcessState called")
         }
 
         viewModel.projectDetailResponse.observe(viewLifecycleOwner, {

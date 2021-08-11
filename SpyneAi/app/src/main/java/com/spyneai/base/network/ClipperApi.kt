@@ -9,6 +9,7 @@ import com.spyneai.model.credit.CreditDetailsResponse
 import com.spyneai.model.projects.CompletedProjectResponse
 import com.spyneai.orders.data.response.*
 import com.spyneai.shoot.data.model.*
+import com.spyneai.shoot.response.SkuProcessStateResponse
 import com.spyneai.threesixty.data.response.ProcessThreeSixtyRes
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
@@ -61,13 +62,13 @@ interface ClipperApi {
                             @Query("no_of_frames") frames : String,) : OverlaysResponse
 
     @FormUrlEncoded
-    @POST("v2/project/create")
+    @POST("v2/project/create/v2")
     suspend fun createProject(@Field("auth_key") authKey : String,
                               @Field("project_name") projectName : String,
                               @Field("prod_cat_id") prodCatId : String) : CreateProjectRes
 
     @FormUrlEncoded
-    @POST("v2/sku/create")
+    @POST("v2/sku/create/v2")
     suspend fun createSku(@Field("auth_key") authKey : String,
                           @Field("project_id") projectId : String,
                           @Field("prod_cat_id") prodCatId : String,
@@ -185,5 +186,12 @@ interface ClipperApi {
                              @Field("enterprise_id") enterpriseId: String,
                              @Field("download_hd") downloadHd: Boolean
     ): DownloadHDRes
+
+    @FormUrlEncoded
+    @POST("v2/sku/skuProcessStatus")
+    suspend fun skuProcessState(
+        @Field("auth_key") auth_key: String?,
+        @Field("project_id") project_id: String?,
+    ): SkuProcessStateResponse
 
 }

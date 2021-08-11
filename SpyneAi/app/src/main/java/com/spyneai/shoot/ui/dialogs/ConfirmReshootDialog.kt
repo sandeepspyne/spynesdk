@@ -227,11 +227,11 @@ class ConfirmReshootDialog : BaseDialogFragment<ShootViewModel, DialogConfirmRes
 
     }
 
-    override fun onStop() {
-        super.onStop()
-        shoot("onStop called(confirmReshootDialog-> dismissAllowingStateLoss)")
-        dismissAllowingStateLoss()
-    }
+//    override fun onStop() {
+//        super.onStop()
+//        shoot("onStop called(confirmReshootDialog-> dismissAllowingStateLoss)")
+//        dismissAllowingStateLoss()
+//    }
 
     override fun getViewModel() = ShootViewModel::class.java
 

@@ -59,6 +59,12 @@ class ShootRepository : BaseRepository() {
     ) = safeApiCall{
         clipperApi.updateTotalFrames(authKey,skuId,totalFrames)
     }
+    suspend fun skuProcessState(
+        auth_key: String,
+        project_id:  String
+    ) = safeApiCall{
+        clipperApi.skuProcessState(auth_key, project_id)
+    }
 
 
 
