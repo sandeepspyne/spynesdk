@@ -599,6 +599,7 @@ class OverlaysFragment : BaseFragment<ShootViewModel, FragmentOverlaysBinding>()
             shoot("get overlays called")
 
             viewModel.isSubCategorySelected.value = true
+            viewModel.showLeveler.value = true
             shoot("isSubCategorySelected is true")
         }
     }

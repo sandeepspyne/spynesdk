@@ -69,6 +69,10 @@ class ProcessViewModel : ViewModel() {
 
     fun processSku(authKey : String,skuId : String, backgroundId : String,is360 : Boolean)
             = viewModelScope.launch {
+
+        //queue process request
+        localRepository.queueProcessRequest(sku.value?.skuId!!, backgroundId,is360)
+
         _processSkuRes.value = Resource.Loading
         _processSkuRes.value = repository.processSku(authKey, skuId, backgroundId,is360)
     }
@@ -77,7 +81,7 @@ class ProcessViewModel : ViewModel() {
         if (localRepository.isImagesUploaded(sku.value?.skuId!!)){
             processSku.value = true
         }else{
-            localRepository.queueProcessRequest(sku.value?.skuId!!, backgroundSelect)
+            //localRepository.queueProcessRequest(sku.value?.skuId!!, backgroundSelect)
             skuQueued.value =  true
         }
     }
@@ -126,5 +130,9 @@ class ProcessViewModel : ViewModel() {
     ) = viewModelScope.launch {
         _downloadHDRes.value = Resource.Loading
         _downloadHDRes.value = repository.updateDownloadStatus(userId,skuId, enterpriseId, downloadHd)
+    }
+
+    fun updateIsProcessed(skuId: String) {
+        localRepository.updateIsProcessed(skuId)
     }
 }

@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<SeekBar
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="@dimen/dp_150"
+    android:layout_height="wrap_content"
+    android:id="@+id/rightSeekBar"
+    android:layout_marginLeft="@dimen/dp_10"
+    android:thumb="@drawable/exposure_thumb"
+    android:rotation="270"
+    android:progressTint="@color/primary"
+    android:max="40"
+    android:min="-40" />

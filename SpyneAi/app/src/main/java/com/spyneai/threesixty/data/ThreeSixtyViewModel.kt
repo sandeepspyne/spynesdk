@@ -5,6 +5,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.spyneai.base.network.Resource
+import com.spyneai.camera2.ShootDimensions
 import com.spyneai.credits.model.DownloadHDRes
 import com.spyneai.credits.model.ReduceCreditResponse
 import com.spyneai.model.credit.CreditDetailsResponse
@@ -31,6 +32,7 @@ class ThreeSixtyViewModel : ViewModel() {
 
     val isProjectCreated : MutableLiveData<Boolean> = MutableLiveData()
 
+    val shootDimensions : MutableLiveData<ShootDimensions> = MutableLiveData()
     val enableRecording :  MutableLiveData<Boolean> = MutableLiveData()
 
 

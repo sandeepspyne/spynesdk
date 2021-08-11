@@ -68,6 +68,8 @@ class SelectBackgroundFragment : BaseFragment<ProcessViewModel,FragmentSelectBac
                 processSku()
             }
         }
+
+        observeProcessSku()
     }
 
     fun getBackgorund() {
@@ -170,12 +172,17 @@ class SelectBackgroundFragment : BaseFragment<ProcessViewModel,FragmentSelectBac
         log("Sku Id: : "+viewModel.sku.value?.skuId!!)
         log("Background Id: : "+backgroundSelect)
 
+    }
+
+    private fun observeProcessSku() {
         viewModel.processSkuRes.observe(viewLifecycleOwner,{
             when(it) {
-                is Resource.Loading -> Utilities.showProgressDialog(requireContext())
-
                 is Resource.Success -> {
+                    //update processed state
+                    viewModel.updateIsProcessed(viewModel.sku.value!!.skuId!!)
+
                     Utilities.hideProgressDialog()
+
                     requireContext().captureEvent(
                         Events.PROCESS,
                         Properties().putValue("sku_id", viewModel.sku.value?.skuId!!)
@@ -185,6 +192,7 @@ class SelectBackgroundFragment : BaseFragment<ProcessViewModel,FragmentSelectBac
                 }
                 is Resource.Failure -> {
                     Utilities.hideProgressDialog()
+
                     requireContext().captureFailureEvent(
                         Events.PROCESS_FAILED,
                         Properties().putValue("sku_id",viewModel.sku.value?.skuId!!),
