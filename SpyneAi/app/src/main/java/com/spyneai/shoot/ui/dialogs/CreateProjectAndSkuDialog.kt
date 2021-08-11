@@ -34,29 +34,34 @@ class CreateProjectAndSkuDialog : BaseDialogFragment<ShootViewModel, DialogCreat
                 binding.etVinNumber.error = "Special characters not allowed"
 
             }else{
-                createProject(
-                    removeWhiteSpace(binding.etVinNumber.text.toString()),
-                    removeWhiteSpace(binding.etVinNumber.text.toString())
-                )
+                createProject()
             }
         }
+
+        observeProjectResponse()
     }
 
     private fun removeWhiteSpace(toString: String) = toString.replace("\\s".toRegex(), "")
 
-    private fun createProject(projectName: String, skuName: String) {
+    private fun createProject() {
+
+        Utilities.showProgressDialog(requireContext())
+
         viewModel.createProject(
             Utilities.getPreference(requireContext(), AppConstants.AUTH_KEY).toString(),
-            projectName,
+            removeWhiteSpace(binding.etVinNumber.text.toString()),
             viewModel.categoryDetails.value?.categoryId.toString()
         )
 
+    }
+
+    private fun observeProjectResponse() {
         viewModel.createProjectRes.observe(viewLifecycleOwner, {
             when (it) {
                 is Resource.Success -> {
                     requireContext().captureEvent(
                         Events.CREATE_PROJECT,
-                        Properties().putValue("project_name", projectName)
+                        Properties().putValue("project_name",  removeWhiteSpace(binding.etVinNumber.text.toString()))
                     )
 
                     Utilities.hideProgressDialog()
@@ -64,28 +69,22 @@ class CreateProjectAndSkuDialog : BaseDialogFragment<ShootViewModel, DialogCreat
                     viewModel.isProjectCreated.value = true
                     val sku = Sku()
                     sku.projectId = it.value.project_id
-                    sku.skuName = skuName
+                    sku.skuName =  removeWhiteSpace(binding.etVinNumber.text.toString())
                     viewModel.sku.value = sku
 
                     dismiss()
                 }
 
-                is Resource.Loading -> {
-                    Utilities.showProgressDialog(requireContext())
-                }
-
                 is Resource.Failure -> {
-                    dismiss()
                     requireContext().captureFailureEvent(
                         Events.CREATE_PROJECT_FAILED, Properties(),
                         it.errorMessage!!
                     )
                     Utilities.hideProgressDialog()
-                    handleApiError(it)
+                    handleApiError(it) { createProject()}
                 }
             }
         })
-
     }
 
 //    override fun onStop() {
