@@ -71,6 +71,8 @@ object Events {
     val GET_BACKGROUND = "Android Got Background"
     val TOTAL_FRAMES_UPDATED = "Android Total Frames Updated"
     val TOTAL_FRAMES_UPDATE_FAILED = "Android Total Frames Update Failed"
+    val PROJECT_STATE_UPDATE_FAILED = "Android Project State Update Failed"
+    val PROJECT_STATE_UPDATED = "Android Project State Updated"
     val GET_BACKGROUND_FAILED = "Android Get Background Failed"
     val PROCESS = "Android Process Completed"
     val PROCESS_FAILED = "Android Process Failed"

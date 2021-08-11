@@ -162,6 +162,7 @@ class ShootPortraitActivity : AppCompatActivity() {
 
                 intent.apply {
                     this.putExtra("sku_id", shootViewModel.sku.value?.skuId)
+                    this.putExtra("project_id", shootViewModel.sku.value?.projectId)
                     this.putExtra("exterior_angles", shootViewModel.exterirorAngles.value)
                     startActivity(this)
                 }

@@ -15,6 +15,7 @@ import com.spyneai.shoot.data.model.CarsBackgroundRes
 import com.spyneai.shoot.data.model.ProcessSkuRes
 import com.spyneai.shoot.data.model.Sku
 import com.spyneai.shoot.workmanager.FrameUpdateWorker
+import com.spyneai.shoot.workmanager.ProjectStateUpdateWorker
 import kotlinx.coroutines.launch
 import okhttp3.RequestBody
 
@@ -134,5 +135,26 @@ class ProcessViewModel : ViewModel() {
 
     fun updateIsProcessed(skuId: String) {
         localRepository.updateIsProcessed(skuId)
+    }
+
+    fun updateProjectState(authKey: String,projectId : String) {
+        val data = Data.Builder()
+            .putString("auth_key", authKey)
+            .putString("project_id", projectId)
+
+
+        val constraints: Constraints = Constraints.Builder()
+            .setRequiredNetworkType(NetworkType.CONNECTED)
+            .build()
+
+        val longWorkRequest = OneTimeWorkRequest.Builder(ProjectStateUpdateWorker::class.java)
+            .addTag("Project State Update")
+
+        WorkManager.getInstance(BaseApplication.getContext())
+            .enqueue(
+                longWorkRequest
+                    .setConstraints(constraints)
+                    .setInputData(data.build())
+                    .build())
     }
 }

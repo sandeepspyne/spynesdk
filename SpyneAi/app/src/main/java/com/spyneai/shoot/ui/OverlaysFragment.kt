@@ -67,6 +67,9 @@ class OverlaysFragment : BaseFragment<ShootViewModel, FragmentOverlaysBinding>()
                     shoot("shootList sine(no. of images)- " + it.size)
                     showImageConfirmDialog(it.get(it.size - 1))
                 }
+                else {
+                    var s = ""
+                }
             } catch (e: Exception) {
                 e.printStackTrace()
             }

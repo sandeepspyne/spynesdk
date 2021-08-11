@@ -174,6 +174,7 @@ class ShootActivity : AppCompatActivity() {
                 intent.apply {
                     this.putExtra(AppConstants.CATEGORY_NAME, categoryDetails.categoryName)
                     this.putExtra("sku_id", shootViewModel.sku.value?.skuId)
+                    this.putExtra("project_id", shootViewModel.sku.value?.projectId)
                     this.putExtra("exterior_angles", shootViewModel.exterirorAngles.value)
                     this.putExtra("process_sku",shootViewModel.processSku)
                     this.putExtra("interior_misc_count",getInteriorMiscCount())

@@ -207,41 +207,23 @@ class CameraFragment : BaseFragment<ShootViewModel, FragmentCameraBinding>(), Pi
         super.onActivityCreated(savedInstanceState)
 
 
-        if (getString(R.string.app_name) == "Cars 24"){
-            binding.cameraCaptureButton?.setOnClickListener {
-                viewModel.showConfirmReshootDialog.value = true
 
-                if (viewModel.shootList.value == null){
-                    viewModel.createProjectRes.observe(viewLifecycleOwner, {
-                        when (it) {
-                            is Resource.Success -> {
-                                val subCategory = viewModel.subCategory.value
-                                createSku(it.value.project_id, subCategory?.prod_sub_cat_id.toString())
-                            }
-                            else -> {
-                            }
+        binding.cameraCaptureButton?.setOnClickListener {
+            viewModel.showConfirmReshootDialog.value = true
+
+            if (viewModel.shootList.value == null){
+                viewModel.createProjectRes.observe(viewLifecycleOwner, {
+                    when (it) {
+                        is Resource.Success -> {
+                            val subCategory = viewModel.subCategory.value
+                            createSku(it.value.project_id, subCategory?.prod_sub_cat_id.toString())
                         }
-                    })
-                }else{
-                    captureImage()
-                }
-            }
-        }else{
-            binding.cameraCaptureButton?.setOnClickListener {
-                if (viewModel.shootList.value == null){
-                    viewModel.createProjectRes.observe(viewLifecycleOwner, {
-                        when (it) {
-                            is Resource.Success -> {
-                                val subCategory = viewModel.subCategory.value
-                                createSku(it.value.project_id, subCategory?.prod_sub_cat_id.toString())
-                            }
-                            else -> {
-                            }
+                        else -> {
                         }
-                    })
-                }else{
-                    captureImage()
-                }
+                    }
+                })
+            }else{
+                captureImage()
             }
         }
 
