@@ -27,6 +27,7 @@ import com.spyneai.base.network.Resource
 import com.spyneai.captureEvent
 import com.spyneai.captureFailureEvent
 import com.spyneai.dashboard.response.NewSubCatResponse
+import com.spyneai.dashboard.ui.WhiteLabelConstants
 import com.spyneai.dashboard.ui.handleApiError
 import com.spyneai.databinding.FragmentOverlaysBinding
 import com.spyneai.needs.AppConstants
@@ -120,7 +121,7 @@ class OverlaysFragment : BaseFragment<ShootViewModel,FragmentOverlaysBinding>(),
            else ->  viewModel.exterirorAngles.value = 8
        }
 
-        if (getString(R.string.app_name) != "Karvi.com" && getString(R.string.app_name) != "Cars 24"){
+        if (getString(R.string.app_name) != WhiteLabelConstants.KARVI && getString(R.string.app_name) != "Cars 24"){
             binding.tvShoot?.setOnClickListener {
                 AngleSelectionDialog().show(requireActivity().supportFragmentManager, "AngleSelectionDialog")
             }

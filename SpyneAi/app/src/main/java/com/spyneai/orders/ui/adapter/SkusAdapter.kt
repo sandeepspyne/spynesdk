@@ -12,6 +12,7 @@ import androidx.cardview.widget.CardView
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.spyneai.R
+import com.spyneai.dashboard.ui.WhiteLabelConstants
 import com.spyneai.needs.AppConstants
 import com.spyneai.needs.Utilities
 import com.spyneai.orders.data.response.GetProjectsResponse
@@ -85,7 +86,7 @@ class SkusAdapter(
         holder.tvDate.text = skuList[position].created_on
 
 
-        if (context.getString(R.string.app_name) == "Karvi.com"){
+        if (context.getString(R.string.app_name) == WhiteLabelConstants.KARVI){
             holder.ivDownloadSKU.visibility = View.INVISIBLE
 
             holder.cvMain.setOnClickListener {

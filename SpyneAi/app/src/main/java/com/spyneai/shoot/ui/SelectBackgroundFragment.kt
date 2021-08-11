@@ -48,7 +48,7 @@ class SelectBackgroundFragment : BaseFragment<ProcessViewModel,FragmentSelectBac
 
 
         when(getString(R.string.app_name)) {
-            "Karvi.com","Sweep.ei" -> {
+            WhiteLabelConstants.KARVI,"Sweep.ei" -> {
                 binding.cb360.visibility = View.GONE
                 binding.tv360.visibility = View.GONE
                 binding.tvGenerateGif.text = "Generate Output"
@@ -69,7 +69,7 @@ class SelectBackgroundFragment : BaseFragment<ProcessViewModel,FragmentSelectBac
                 updateTotalFrames()
 
             when(getString(R.string.app_name)) {
-                "Karvi.com","Sweep.ei" -> {
+                WhiteLabelConstants.KARVI,"Sweep.ei" -> {
                     //process image call
                     processSku()
                 }else -> {

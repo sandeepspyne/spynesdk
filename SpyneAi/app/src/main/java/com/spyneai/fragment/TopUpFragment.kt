@@ -54,7 +54,7 @@ class TopUpFragment: DialogFragment() {
         }
 
         when(getString(R.string.app_name)){
-            "Karvi.com","Yalla Motors","Travo Photos" -> {
+            WhiteLabelConstants.KARVI,"Yalla Motors","Travo Photos" -> {
                 binding.tvReqCredit.visibility = View.GONE
                 binding.tvSendRequest.visibility = View.GONE
             }

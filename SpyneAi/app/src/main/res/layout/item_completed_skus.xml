@@ -179,8 +179,8 @@
 
         <ImageView
             android:id="@+id/ivDownloadSKU"
-            android:layout_width="8dp"
-            android:layout_height="13dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:layout_margin="13dp"
             android:src="@drawable/ic_download_sku"
             app:layout_constraintBottom_toBottomOf="parent"
