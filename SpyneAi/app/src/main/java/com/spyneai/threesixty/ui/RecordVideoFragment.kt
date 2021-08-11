@@ -470,7 +470,7 @@ class RecordVideoFragment : BaseFragment<ThreeSixtyViewModel, FragmentRecordVide
 
                 cameraInfo = camera!!.cameraInfo
 
-                binding.viewFinder.setOnTouchListener(this)
+               // binding.viewFinder.setOnTouchListener(this)
 
                 if (viewModel.shootDimensions.value == null ||
                     viewModel.shootDimensions.value?.previewHeight == 0
