@@ -47,12 +47,15 @@ class CreateSkuEcomDialog : BaseDialogFragment<ShootViewModel, CreateSkuEcomDial
                 }
             }
         }
+
+        observCreateSku()
     }
 
     private fun removeWhiteSpace(toString: String) = toString.replace("\\s".toRegex(), "")
 
 
     private fun createSku(projectId: String, skuName: String) {
+        Utilities.showProgressDialog(requireContext())
 
         viewModel.createSku(
             Utilities.getPreference(requireContext(), AppConstants.AUTH_KEY).toString(),
@@ -62,7 +65,9 @@ class CreateSkuEcomDialog : BaseDialogFragment<ShootViewModel, CreateSkuEcomDial
             skuName,
             0
         )
+    }
 
+    private fun observCreateSku() {
         viewModel.createSkuRes.observe(viewLifecycleOwner, {
             when (it) {
                 is Resource.Success -> {
@@ -71,7 +76,7 @@ class CreateSkuEcomDialog : BaseDialogFragment<ShootViewModel, CreateSkuEcomDial
                     requireContext().captureEvent(
                         Events.CREATE_SKU,
                         Properties().putValue("sku_name", viewModel.sku.value?.skuName.toString())
-                            .putValue("project_id", projectId)
+                            .putValue("project_id", viewModel.sku.value?.projectId)
                             .putValue("prod_sub_cat_id", "")
                     )
 
@@ -80,14 +85,10 @@ class CreateSkuEcomDialog : BaseDialogFragment<ShootViewModel, CreateSkuEcomDial
                     log("sku id created sucess")
                     log("sku id: "+it.value.sku_id)
                     sku?.skuId = it.value.sku_id
-                    sku?.projectId = projectId
-                    sku?.skuName = skuName
+                    sku?.skuName = removeWhiteSpace(binding.etSkuName.text.toString())
 
-                    log("sssskkkkuuu: "+skuName)
 
                     viewModel.sku.value = sku
-
-                    log("sssskkkkuuu: "+viewModel.sku.value?.skuName)
 
                     //viewModel.isSubCategoryConfirmed.value = true
 
@@ -98,9 +99,7 @@ class CreateSkuEcomDialog : BaseDialogFragment<ShootViewModel, CreateSkuEcomDial
                     dismiss()
                 }
 
-                is Resource.Loading -> {
-                    Utilities.showProgressDialog(requireContext())
-                }
+
 
                 is Resource.Failure -> {
                     Utilities.hideProgressDialog()
@@ -108,7 +107,12 @@ class CreateSkuEcomDialog : BaseDialogFragment<ShootViewModel, CreateSkuEcomDial
                         Events.CREATE_SKU_FAILED, Properties(),
                         it.errorMessage!!
                     )
-                    handleApiError(it)
+                    handleApiError(it) {
+                        createSku(
+                            viewModel.projectId.value.toString(),
+                            removeWhiteSpace(binding.etSkuName.text.toString())
+                        )
+                    }
                 }
             }
         })

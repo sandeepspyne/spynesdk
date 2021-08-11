@@ -18,6 +18,7 @@ import com.spyneai.posthog.Events
 import com.spyneai.shoot.data.ShootViewModel
 import com.spyneai.shoot.data.model.Sku
 import com.spyneai.shoot.utils.log
+import kotlinx.android.synthetic.main.activity_credit_plans.*
 
 class CreateProjectEcomDialog :
     BaseDialogFragment<ShootViewModel, CreateProjectEcomDialogBinding>() {
@@ -47,31 +48,35 @@ class CreateProjectEcomDialog :
                     log("create project started")
                     log("project name: "+binding.etProjectName.text.toString())
                     log("sku name: "+binding.etSkuName.text.toString())
-                    createProject(
-                        removeWhiteSpace( binding.etProjectName.text.toString()),
-                        removeWhiteSpace(binding.etSkuName.text.toString())
-                    )
+                    createProject()
                 }
             }
         }
+
+        observeCreateProject()
+        observeCreateSku()
     }
 
     private fun removeWhiteSpace(toString: String) = toString.replace("\\s".toRegex(), "")
 
 
-    private fun createProject(projectName: String, skuName: String) {
+    private fun createProject() {
+        Utilities.showProgressDialog(requireContext())
+
         viewModel.createProject(
             Utilities.getPreference(requireContext(), AppConstants.AUTH_KEY).toString(),
-            projectName,
+            removeWhiteSpace(binding.etProjectName.text.toString()),
             requireActivity().intent.getStringExtra(AppConstants.CATEGORY_ID).toString()
         )
+    }
 
+    private fun observeCreateProject() {
         viewModel.createProjectRes.observe(viewLifecycleOwner, {
             when (it) {
                 is Resource.Success -> {
                     requireContext().captureEvent(
                         Events.CREATE_PROJECT,
-                        Properties().putValue("project_name", projectName)
+                        Properties().putValue("project_name", removeWhiteSpace( binding.etProjectName.text.toString()))
                     )
 
                     //notify project created
@@ -81,33 +86,30 @@ class CreateProjectEcomDialog :
                     log("project id: "+it.value.project_id)
                     sku.projectId = it.value.project_id
                     Utilities.savePrefrence(requireContext(), AppConstants.PROJECT_ID, it.value.project_id)
-                    sku.skuName = skuName
+                    sku.skuName = removeWhiteSpace(binding.etSkuName.text.toString())
                     viewModel.sku.value = sku
 
                     log("create sku started")
-                    createSku(it.value.project_id, skuName)
-                }
-
-                is Resource.Loading -> {
-//                    Utilities.showProgressDialog(requireContext())
+                    createSku(it.value.project_id, removeWhiteSpace(binding.etSkuName.text.toString()),false)
                 }
 
                 is Resource.Failure -> {
-                    dismiss()
                     log("create project id failed")
                     requireContext().captureFailureEvent(
                         Events.CREATE_PROJECT_FAILED, Properties(),
                         it.errorMessage!!
                     )
                     Utilities.hideProgressDialog()
-                    handleApiError(it)
+                    handleApiError(it) {createProject()}
                 }
             }
         })
-
     }
 
-    private fun createSku(projectId: String, skuName: String) {
+    private fun createSku(projectId: String, skuName: String,showDialog: Boolean) {
+        if (showDialog)
+            Utilities.showProgressDialog(requireContext())
+
         viewModel.createSku(
             Utilities.getPreference(requireContext(), AppConstants.AUTH_KEY).toString(),
             projectId,
@@ -116,7 +118,9 @@ class CreateProjectEcomDialog :
             skuName,
             0
         )
+    }
 
+    private fun observeCreateSku() {
         viewModel.createSkuRes.observe(viewLifecycleOwner, {
             when (it) {
                 is Resource.Success -> {
@@ -125,7 +129,7 @@ class CreateProjectEcomDialog :
                     requireContext().captureEvent(
                         Events.CREATE_SKU,
                         Properties().putValue("sku_name", viewModel.sku.value?.skuName.toString())
-                            .putValue("project_id", projectId)
+                            .putValue("project_id", viewModel.sku.value?.projectId)
                             .putValue("prod_sub_cat_id", "")
                     )
 
@@ -134,7 +138,7 @@ class CreateProjectEcomDialog :
                     sku?.skuId = it.value.sku_id
                     log("sku id created")
                     log("sku id: "+it.value.sku_id)
-                    sku?.skuName = skuName
+                    sku?.skuName = removeWhiteSpace(binding.etSkuName.text.toString())
                     viewModel.sku.value = sku
                     viewModel.isSkuCreated.value = true
 
@@ -143,13 +147,8 @@ class CreateProjectEcomDialog :
                     dismiss()
                 }
 
-                is Resource.Loading -> {
-                    Utilities.showProgressDialog(requireContext())
-
-                }
 
                 is Resource.Failure -> {
-                    dismiss()
                     log("create sku id failed")
                     Utilities.hideProgressDialog()
                     requireContext().captureFailureEvent(
@@ -157,7 +156,9 @@ class CreateProjectEcomDialog :
                         it.errorMessage!!
                     )
 
-                    handleApiError(it)
+                    handleApiError(it) {createSku(viewModel.sku.value?.projectId!!,
+                        removeWhiteSpace(binding.etSkuName.text.toString()),
+                        true)}
                 }
             }
         })
