@@ -90,7 +90,6 @@ class CameraFragment : BaseFragment<ShootViewModel, FragmentCameraBinding>(), Pi
     private var cameraControl : CameraControl? = null
     private var cameraInfo : CameraInfo? = null
     private var handler : Handler? = null
-    private var isGyroOnCorrectAngle = false
 
     var gravity = FloatArray(3)
 
@@ -210,38 +209,21 @@ class CameraFragment : BaseFragment<ShootViewModel, FragmentCameraBinding>(), Pi
 
         if (getString(R.string.app_name) == "Cars 24"){
             binding.cameraCaptureButton?.setOnClickListener {
+                viewModel.showConfirmReshootDialog.value = true
+
                 if (viewModel.shootList.value == null){
-                    if (binding.flLevelIndicator.visibility == View.VISIBLE){
-                        if (isGyroOnCorrectAngle)
-                            viewModel.createProjectRes.observe(viewLifecycleOwner, {
-                                when (it) {
-                                    is Resource.Success -> {
-                                        val subCategory = viewModel.subCategory.value
-                                        createSku(it.value.project_id, subCategory?.prod_sub_cat_id.toString())
-                                    }
-                                    else -> {
-                                    }
-                                }
-                            })
-                    }else {
-                        viewModel.createProjectRes.observe(viewLifecycleOwner, {
-                            when (it) {
-                                is Resource.Success -> {
-                                    val subCategory = viewModel.subCategory.value
-                                    createSku(it.value.project_id, subCategory?.prod_sub_cat_id.toString())
-                                }
-                                else -> {
-                                }
+                    viewModel.createProjectRes.observe(viewLifecycleOwner, {
+                        when (it) {
+                            is Resource.Success -> {
+                                val subCategory = viewModel.subCategory.value
+                                createSku(it.value.project_id, subCategory?.prod_sub_cat_id.toString())
                             }
-                        })
-                    }
+                            else -> {
+                            }
+                        }
+                    })
                 }else{
-                    if (binding.flLevelIndicator.visibility == View.VISIBLE){
-                        if (isGyroOnCorrectAngle)
-                            captureImage()
-                    }else{
-                        captureImage()
-                    }
+                    captureImage()
                 }
             }
         }else{
@@ -574,6 +556,8 @@ class CameraFragment : BaseFragment<ShootViewModel, FragmentCameraBinding>(), Pi
 
                 override fun onImageSaved(output: ImageCapture.OutputFileResults) {
                     // This function is called if capture is successfully completed
+                    viewModel.isCameraButtonClickable = true
+
                     if (output.savedUri == null) {
                         if (file != null)
                             addShootItem(file.path)
@@ -636,9 +620,6 @@ class CameraFragment : BaseFragment<ShootViewModel, FragmentCameraBinding>(), Pi
 
 
         if ((roll >= -100 && roll <=-80) && (pitch >= -5 && pitch <= 5)){
-
-            isGyroOnCorrectAngle = true
-
             binding
                 .tvLevelIndicator
                 ?.animate()
@@ -685,8 +666,6 @@ class CameraFragment : BaseFragment<ShootViewModel, FragmentCameraBinding>(), Pi
             )
 
         }else{
-
-            isGyroOnCorrectAngle = false
 
             binding.ivTopLeft?.setColorFilter(
                 ContextCompat.getColor(
@@ -807,7 +786,6 @@ class CameraFragment : BaseFragment<ShootViewModel, FragmentCameraBinding>(), Pi
             Utilities.hideProgressDialog()
             viewModel.shootList.value = ArrayList()
         }
-
 
         viewModel.shootList.value!!.add(
             ShootData(
