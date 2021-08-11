@@ -211,20 +211,27 @@ class CameraFragment : BaseFragment<ShootViewModel, FragmentCameraBinding>(), Pi
         binding.cameraCaptureButton?.setOnClickListener {
             viewModel.showConfirmReshootDialog.value = true
 
+
             if (viewModel.shootList.value == null){
-                viewModel.createProjectRes.observe(viewLifecycleOwner, {
-                    when (it) {
-                        is Resource.Success -> {
-                            val subCategory = viewModel.subCategory.value
-                            createSku(it.value.project_id, subCategory?.prod_sub_cat_id.toString())
+                if (viewModel.categoryDetails.value?.categoryName == "Automobiles" ||
+                    viewModel.categoryDetails.value?.categoryName == "Bikes") {
+                    viewModel.createProjectRes.observe(viewLifecycleOwner, {
+                        when (it) {
+                            is Resource.Success -> {
+                                val subCategory = viewModel.subCategory.value
+                                createSku(it.value.project_id, subCategory?.prod_sub_cat_id.toString())
+                            }
+                            else -> {
+                            }
                         }
-                        else -> {
-                        }
-                    }
-                })
-            }else{
+                    })
+                }else {
+                    captureImage()
+                }
+            }else {
                 captureImage()
             }
+
         }
 
 
