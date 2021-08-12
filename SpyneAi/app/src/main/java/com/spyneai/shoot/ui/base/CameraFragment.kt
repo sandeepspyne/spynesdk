@@ -123,7 +123,12 @@ class CameraFragment : BaseFragment<ShootViewModel, FragmentCameraBinding>(), Pi
         })
 
         viewModel.showLeveler.observe(viewLifecycleOwner, {
-            if (it && isSensorAvaliable) binding.flLevelIndicator.visibility = View.VISIBLE
+            if (it && isSensorAvaliable) {
+                binding.flLevelIndicator.visibility = View.VISIBLE
+
+                getPreviewDimensions(binding.ivGryroRing!!, 1)
+                getPreviewDimensions(binding.tvCenter!!, 2)
+            }
         })
 
         viewModel.hideLeveler.observe(viewLifecycleOwner, {
@@ -176,9 +181,6 @@ class CameraFragment : BaseFragment<ShootViewModel, FragmentCameraBinding>(), Pi
 
     override fun onResume() {
         super.onResume()
-
-        getPreviewDimensions(binding.ivGryroRing!!, 1)
-        getPreviewDimensions(binding.tvCenter!!, 2)
 
         val mAccelerometer = mSensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER)?.also { accelerometer ->
             mSensorManager.registerListener(
