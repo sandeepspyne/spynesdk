@@ -14,6 +14,7 @@ import com.spyneai.camera2.ShootDimensions
 import com.spyneai.dashboard.response.NewSubCatResponse
 import com.spyneai.orders.data.response.GetProjectsResponse
 import com.spyneai.shoot.data.model.*
+import com.spyneai.shoot.response.SkuProcessStateResponse
 import com.spyneai.shoot.workmanager.FrameUpdateWorker
 import com.spyneai.shoot.workmanager.OverlaysPreloadWorker
 import com.spyneai.shoot.workmanager.RecursiveImageWorker
@@ -30,10 +31,20 @@ class ShootViewModel : ViewModel(){
     var processSku : Boolean = true
      var isStopCaptureClickable = false
 
+    val isSensorAvaliable : MutableLiveData<Boolean> = MutableLiveData()
 
+    val skuNumber : MutableLiveData<Int> = MutableLiveData()
+
+    val isSubCategorySelected : MutableLiveData<Boolean> = MutableLiveData()
+
+    val isSubCatAngleConfirmed : MutableLiveData<Boolean> = MutableLiveData()
+
+    val startInteriorShoot : MutableLiveData<Boolean> = MutableLiveData()
 
     val totalSkuCaptured : MutableLiveData<String> = MutableLiveData()
     val totalImageCaptured : MutableLiveData<String> = MutableLiveData()
+
+    val iniProgressFrame : MutableLiveData<Boolean> = MutableLiveData()
 
     val subCatName : MutableLiveData<String> = MutableLiveData()
 
@@ -46,6 +57,10 @@ class ShootViewModel : ViewModel(){
     private val _projectDetailResponse: MutableLiveData<Resource<ProjectDetailResponse>> = MutableLiveData()
     val projectDetailResponse: LiveData<Resource<ProjectDetailResponse>>
         get() = _projectDetailResponse
+
+    private val _skuProcessStateResponse: MutableLiveData<Resource<SkuProcessStateResponse>> = MutableLiveData()
+    val skuProcessStateResponse: LiveData<Resource<SkuProcessStateResponse>>
+        get() = _skuProcessStateResponse
 
     private val _updateTotalFramesRes : MutableLiveData<Resource<UpdateTotalFramesRes>> = MutableLiveData()
     val updateTotalFramesRes: LiveData<Resource<UpdateTotalFramesRes>>
@@ -69,21 +84,24 @@ class ShootViewModel : ViewModel(){
     val subCategory : MutableLiveData<NewSubCatResponse.Data> = MutableLiveData()
     var categoryDetails : MutableLiveData<CategoryDetails> = MutableLiveData()
     val isSubCategoryConfirmed : MutableLiveData<Boolean> = MutableLiveData()
-    val hideLeveler : MutableLiveData<Boolean> = MutableLiveData()
     val showVin : MutableLiveData<Boolean> = MutableLiveData()
     val isProjectCreated : MutableLiveData<Boolean> = MutableLiveData()
-    val showLeveler : MutableLiveData<Boolean> = MutableLiveData()
     val isProjectCreatedEcom : MutableLiveData<Boolean> = MutableLiveData()
     val isSkuCreated : MutableLiveData<Boolean> = MutableLiveData()
+    val showLeveler : MutableLiveData<Boolean> = MutableLiveData()
+    var isHintShowen : MutableLiveData<Boolean> = MutableLiveData()
 
     val subCategoryId : MutableLiveData<String> = MutableLiveData()
     val exterirorAngles: MutableLiveData<Int> = MutableLiveData()
     val shootNumber: MutableLiveData<Int> = MutableLiveData()
     val shootData : MutableLiveData<ShootData> =  MutableLiveData()
 
+    val showConfirmReshootDialog : MutableLiveData<Boolean> = MutableLiveData()
+
     //interior and misc shots
     val showInteriorDialog : MutableLiveData<Boolean> = MutableLiveData()
     val startInteriorShots : MutableLiveData<Boolean> = MutableLiveData()
+    val hideLeveler : MutableLiveData<Boolean> = MutableLiveData()
     val showMiscDialog : MutableLiveData<Boolean> = MutableLiveData()
     val startMiscShots : MutableLiveData<Boolean> = MutableLiveData()
     val selectBackground : MutableLiveData<Boolean> = MutableLiveData()
@@ -173,13 +191,16 @@ class ShootViewModel : ViewModel(){
     fun getSelectedAngles() = exterirorAngles.value
 
 
-    fun getShootProgressList(angles: Int): ArrayList<ShootProgress> {
+    fun getShootProgressList(angles: Int, selectedAngles: Int): ArrayList<ShootProgress> {
         val shootProgressList = ArrayList<ShootProgress>()
         shootProgressList.add(ShootProgress(true))
 
-        for (i in 1 until angles)
-            shootProgressList.add(ShootProgress(false))
-
+        for (i in 1 until angles){
+            if (i <= selectedAngles)
+            shootProgressList.add(ShootProgress(true))
+            else
+                shootProgressList.add(ShootProgress(false))
+        }
         return shootProgressList
     }
 
@@ -238,6 +259,13 @@ class ShootViewModel : ViewModel(){
     ) = viewModelScope.launch {
         _createProjectRes.value = Resource.Loading
         _createProjectRes.value = repository.createProject(authKey, projectName, prodCatId)
+    }
+
+    fun skuProcessState(
+        auth_key: String, project_id: String
+    ) = viewModelScope.launch {
+        _skuProcessStateResponse.value = Resource.Loading
+        _skuProcessStateResponse.value = repository.skuProcessState(auth_key, project_id)
     }
 
     fun createSku(authKey: String,projectId : String

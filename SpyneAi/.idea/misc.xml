@@ -14,13 +14,19 @@
         <entry key="app/src/main/res/layout/activity_downloading.xml" value="0.17572463768115942" />
         <entry key="app/src/main/res/layout/activity_shoot_portrait.xml" value="0.2037037037037037" />
         <entry key="app/src/main/res/layout/activity_show_images.xml" value="0.17572463768115942" />
+        <entry key="app/src/main/res/layout/activity_show_sku_project.xml" value="0.2037037037037037" />
         <entry key="app/src/main/res/layout/activity_splash.xml" value="0.17572463768115942" />
         <entry key="app/src/main/res/layout/dashboard_categories_shimmer.xml" value="0.2037037037037037" />
         <entry key="app/src/main/res/layout/dashboard_completed_shimmer.xml" value="0.2037037037037037" />
         <entry key="app/src/main/res/layout/dialog_progress.xml" value="0.17572463768115942" />
         <entry key="app/src/main/res/layout/fragment_camera.xml" value="0.17572463768115942" />
+        <entry key="app/src/main/res/layout/fragment_grid_ecom.xml" value="0.2037037037037037" />
+        <entry key="app/src/main/res/layout/fragment_project_detail.xml" value="0.2037037037037037" />
         <entry key="app/src/main/res/layout/fragment_record_video.xml" value="0.17572463768115942" />
+        <entry key="app/src/main/res/layout/fragment_select_marketplace.xml" value="0.2037037037037037" />
+        <entry key="app/src/main/res/layout/fragment_sku_detail.xml" value="0.2037037037037037" />
         <entry key="app/src/main/res/layout/home_dashboard_fragment.xml" value="0.17572463768115942" />
+        <entry key="app/src/main/res/layout/item_captured_image.xml" value="0.2037037037037037" />
         <entry key="app/src/main/res/layout/item_exposure.xml" value="0.17572463768115942" />
         <entry key="app/src/main/res/layout/item_focus.xml" value="0.17572463768115942" />
       </map>
