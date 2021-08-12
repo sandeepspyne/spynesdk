@@ -43,7 +43,7 @@
             android:textColor="@color/black_varient"
             android:maxLines="1"
             android:textSize="@dimen/sp_18"
-            android:hint="Ex. Amazon 16 Feb"
+            android:hint="Enter project name"
             android:layout_marginLeft="@dimen/dp_20"/>
 
     </LinearLayout>
@@ -81,7 +81,7 @@
             android:maxLines="1"
             android:textSize="@dimen/sp_18"
             android:textColor="@color/black_varient"
-            android:hint="Ex: Kashmiri Apples Basket"
+            android:text="sku1"
             android:layout_marginLeft="@dimen/dp_20"/>
 
     </LinearLayout>
