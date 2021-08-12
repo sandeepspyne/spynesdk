@@ -78,7 +78,7 @@ class HomeDashboardFragment :
 
 
     private fun lisners(){
-        if (getString(R.string.app_name) == "Sweep.ei"){
+        if (getString(R.string.app_name) == AppConstants.SWEEP){
             binding.ivWallet.visibility = View.GONE
         }else {
             binding.ivWallet.setOnClickListener {

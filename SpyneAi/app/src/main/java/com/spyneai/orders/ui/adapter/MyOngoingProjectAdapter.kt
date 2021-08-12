@@ -11,6 +11,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.airbnb.lottie.LottieAnimationView
 import com.bumptech.glide.Glide
 import com.spyneai.R
+import com.spyneai.needs.AppConstants
 import com.spyneai.orders.data.response.GetProjectsResponse
 import com.spyneai.orders.data.viewmodel.MyOrdersViewModel
 import com.spyneai.orders.ui.activity.OngoingSkusActivity
@@ -64,7 +65,7 @@ class MyOngoingProjectAdapter(
             holder.llThreeSixty.visibility = View.GONE
         }
 
-        if (context.getString(R.string.app_name) == "Sweep.ei"){
+        if (context.getString(R.string.app_name) == AppConstants.SWEEP){
             holder.apply {
                 tvCategory.visibility = View.INVISIBLE
                 tvSkus.visibility = View.INVISIBLE

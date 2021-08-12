@@ -44,7 +44,7 @@ class MainDashboardActivity : AppCompatActivity() {
 
         val viewModel = ViewModelProvider(this, ViewModelFactory()).get(DashboardViewModel::class.java)
 
-        val firstFragment=HomeDashboardFragment()
+        val firstFragment= HomeDashboardFragment()
         val SecondFragment=WalletDashboardFragment()
         val thirdFragment=LogoutDashBoardFragment()
 
@@ -60,7 +60,7 @@ class MainDashboardActivity : AppCompatActivity() {
                 R.id.shootActivity-> {
                     var intent =
                         when(getString(R.string.app_name)) {
-                        "Ola Cabs",WhiteLabelConstants.CARS24,WhiteLabelConstants.CARS24_INDIA,"Trusted cars","Travo Photos","Yalla Motors","Spyne Hiring" ->  Intent(this, StartShootActivity::class.java)
+                        "Ola Cabs",AppConstants.CARS24,AppConstants.CARS24_INDIA,"Trusted cars","Travo Photos","Yalla Motors","Spyne Hiring" ->  Intent(this, StartShootActivity::class.java)
                             else -> Intent(this, ShootActivity::class.java)
                     }
 
@@ -72,7 +72,7 @@ class MainDashboardActivity : AppCompatActivity() {
                     val intent = Intent(this, MyOrdersActivity::class.java)
                     startActivity(intent)
                 }
-                //R.id.wallet->setCurrentFragment(SecondFragment)
+                R.id.wallet->setCurrentFragment(SecondFragment)
                 R.id.logoutDashBoardFragment->setCurrentFragment(thirdFragment)
 
             }

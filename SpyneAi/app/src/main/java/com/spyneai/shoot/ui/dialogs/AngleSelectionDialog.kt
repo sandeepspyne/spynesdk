@@ -8,6 +8,7 @@ import com.spyneai.R
 import com.spyneai.base.BaseDialogFragment
 import com.spyneai.dashboard.ui.WhiteLabelConstants
 import com.spyneai.databinding.DialogAngleSelectionBinding
+import com.spyneai.needs.AppConstants
 import com.spyneai.shoot.data.ShootViewModel
 
 class AngleSelectionDialog : BaseDialogFragment<ShootViewModel,DialogAngleSelectionBinding>() {
@@ -20,7 +21,7 @@ class AngleSelectionDialog : BaseDialogFragment<ShootViewModel,DialogAngleSelect
 
     private fun showOptions() {
         val valuesShoots = when(getString(R.string.app_name)){
-            WhiteLabelConstants.CARS24_INDIA,WhiteLabelConstants.CARS24 -> arrayOf("5 Angles")
+            AppConstants.CARS24_INDIA,AppConstants.CARS24 -> arrayOf("5 Angles")
             else -> arrayOf("8 Angles", "12 Angles","16 Angles","24 Angles","36 Angles")
         }
 

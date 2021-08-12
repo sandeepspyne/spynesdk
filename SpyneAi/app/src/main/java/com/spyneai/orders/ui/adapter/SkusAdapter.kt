@@ -69,7 +69,7 @@ class SkusAdapter(
 
         }
 
-        if (context.getString(R.string.app_name) == "Sweep.ei"){
+        if (context.getString(R.string.app_name) == AppConstants.SWEEP){
             holder.apply {
                 tvCategory.visibility = View.INVISIBLE
                 flCategory.visibility = View.INVISIBLE
@@ -86,7 +86,7 @@ class SkusAdapter(
         holder.tvDate.text = skuList[position].created_on
 
 
-        if (context.getString(R.string.app_name) == WhiteLabelConstants.KARVI){
+        if (context.getString(R.string.app_name) == AppConstants.KARVI){
             holder.ivDownloadSKU.visibility = View.INVISIBLE
 
             holder.cvMain.setOnClickListener {

@@ -54,12 +54,12 @@ class TopUpFragment: DialogFragment() {
         }
 
         when(getString(R.string.app_name)){
-            WhiteLabelConstants.KARVI,"Yalla Motors","Travo Photos" -> {
+            AppConstants.KARVI,"Yalla Motors","Travo Photos" -> {
                 binding.tvReqCredit.visibility = View.GONE
                 binding.tvSendRequest.visibility = View.GONE
             }
 
-            "Sweep.ei" -> {
+            AppConstants.SWEEP -> {
                 binding.tvSendRequest.setOnClickListener {
 
                     val selectorIntent = Intent(Intent.ACTION_SENDTO)

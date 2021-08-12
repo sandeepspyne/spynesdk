@@ -9,9 +9,11 @@
         <entry key="app/src/main/res/layout/activity_downloading.xml" value="0.17572463768115942" />
         <entry key="app/src/main/res/layout/activity_show_images.xml" value="0.17572463768115942" />
         <entry key="app/src/main/res/layout/activity_splash.xml" value="0.17572463768115942" />
+        <entry key="app/src/main/res/layout/activity_three_sixty_intro.xml" value="0.17572463768115942" />
         <entry key="app/src/main/res/layout/dialog_progress.xml" value="0.17572463768115942" />
         <entry key="app/src/main/res/layout/fragment_camera.xml" value="0.17572463768115942" />
         <entry key="app/src/main/res/layout/fragment_record_video.xml" value="0.17572463768115942" />
+        <entry key="app/src/main/res/layout/fragment_select_background.xml" value="0.15070921985815602" />
         <entry key="app/src/main/res/layout/home_dashboard_fragment.xml" value="0.17572463768115942" />
         <entry key="app/src/main/res/layout/item_exposure.xml" value="0.17572463768115942" />
         <entry key="app/src/main/res/layout/item_focus.xml" value="0.17572463768115942" />

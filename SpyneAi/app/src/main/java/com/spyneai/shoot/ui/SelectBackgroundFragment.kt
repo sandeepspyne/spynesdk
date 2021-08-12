@@ -48,11 +48,19 @@ class SelectBackgroundFragment : BaseFragment<ProcessViewModel,FragmentSelectBac
 
 
         when(getString(R.string.app_name)) {
-            WhiteLabelConstants.KARVI,"Sweep.ei" -> {
+            AppConstants.KARVI -> {
                 binding.cb360.visibility = View.GONE
                 binding.tv360.visibility = View.GONE
                 binding.tvGenerateGif.text = "Generate Output"
-            }else -> {
+            }
+            AppConstants.SWEEP -> {
+                binding.tvSample.visibility = View.INVISIBLE
+                binding.imageViewGif.visibility = View.INVISIBLE
+                binding.cb360.visibility = View.GONE
+                binding.tv360.visibility = View.GONE
+                binding.tvGenerateGif.text = "Generate Output"
+            }
+            else -> {
                 binding.cb360.setOnCheckedChangeListener { buttonView, isChecked ->
                     if (isChecked)
                         binding.tvGenerateGif.text = "Continue"
@@ -69,7 +77,7 @@ class SelectBackgroundFragment : BaseFragment<ProcessViewModel,FragmentSelectBac
                 updateTotalFrames()
 
             when(getString(R.string.app_name)) {
-                WhiteLabelConstants.KARVI,"Sweep.ei" -> {
+                AppConstants.KARVI,AppConstants.SWEEP -> {
                     //process image call
                     processSku()
                 }else -> {

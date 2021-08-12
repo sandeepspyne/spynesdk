@@ -108,7 +108,7 @@ class CameraFragment : BaseFragment<ShootViewModel, FragmentCameraBinding>(), Pi
         mAccelerometer = mSensorManager.getDefaultSensor(Sensor.TYPE_MAGNETIC_FIELD)
 
 
-        if (getString(R.string.app_name) == WhiteLabelConstants.KARVI){
+        if (getString(R.string.app_name) == AppConstants.KARVI){
             tiltUpperBound = -95
             tiltLowerBound = -85
         }
@@ -132,7 +132,11 @@ class CameraFragment : BaseFragment<ShootViewModel, FragmentCameraBinding>(), Pi
         })
 
         viewModel.showLeveler.observe(viewLifecycleOwner, {
-            if (it && isSensorAvaliable) binding.flLevelIndicator.visibility = View.VISIBLE
+            if (it && isSensorAvaliable) {
+                getPreviewDimensions(binding.ivGryroRing!!, 1)
+                getPreviewDimensions(binding.tvCenter!!, 2)
+                binding.flLevelIndicator.visibility = View.VISIBLE
+            }
         })
 
         viewModel.hideLeveler.observe(viewLifecycleOwner, {
@@ -186,9 +190,6 @@ class CameraFragment : BaseFragment<ShootViewModel, FragmentCameraBinding>(), Pi
     override fun onResume() {
         super.onResume()
 
-        getPreviewDimensions(binding.ivGryroRing!!, 1)
-        getPreviewDimensions(binding.tvCenter!!, 2)
-
         val mAccelerometer = mSensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER)?.also { accelerometer ->
             mSensorManager.registerListener(
                 this,
@@ -222,7 +223,7 @@ class CameraFragment : BaseFragment<ShootViewModel, FragmentCameraBinding>(), Pi
 
 
         when(getString(R.string.app_name)) {
-            WhiteLabelConstants.KARVI,WhiteLabelConstants.CARS24,WhiteLabelConstants.CARS24_INDIA -> {
+            AppConstants.KARVI,AppConstants.CARS24,AppConstants.CARS24_INDIA -> {
                 binding.cameraCaptureButton?.setOnClickListener {
                     if (viewModel.shootList.value == null){
                         if (binding.flLevelIndicator.visibility == View.VISIBLE){
@@ -652,11 +653,7 @@ class CameraFragment : BaseFragment<ShootViewModel, FragmentCameraBinding>(), Pi
         roll = Math.toDegrees(orientationAngles[2].toDouble())
 
 
-        Log.d(TAG, "updateOrientationAngles: "+roll)
-        Log.d(TAG, "updateOrientationAngles: "+pitch)
-        Log.d(TAG, "updateOrientationAngles: -------------------------------")
-
-       if (getString(R.string.app_name) == WhiteLabelConstants.KARVI){
+       if (getString(R.string.app_name) == AppConstants.KARVI){
            if ((roll >= -95 && roll <= -85) && (pitch >= -5 && pitch <= 5)){
 
                isGyroOnCorrectAngle = true
@@ -875,9 +872,17 @@ class CameraFragment : BaseFragment<ShootViewModel, FragmentCameraBinding>(), Pi
     private fun moveArrow(roll: Double) {
         var newRoll = roll + 90
 
+        Log.d(TAG, "moveArrow: "+newRoll)
+        Log.d(TAG, "moveArrow: "+centerPosition.plus(newRoll))
+        Log.d(TAG, "moveArrow: "+centerPosition.plus(bottomConstraint))
+        Log.d(TAG, "moveArrow: -------------"+newRoll)
+
         if (newRoll > 0 && (centerPosition + newRoll) < bottomConstraint){
 
-            newRoll -= 0
+           // newRoll -= 0
+
+            Log.d(TAG, "moveArrow: "+newRoll)
+
             binding
                 .tvLevelIndicator
                 ?.animate()
@@ -887,7 +892,8 @@ class CameraFragment : BaseFragment<ShootViewModel, FragmentCameraBinding>(), Pi
 
         if (newRoll < 0 && (centerPosition - newRoll) > topConstraint) {
 
-            newRoll += 0
+
+           // newRoll += 0
 
             binding
                 .tvLevelIndicator

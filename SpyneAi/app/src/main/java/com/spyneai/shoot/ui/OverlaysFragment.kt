@@ -27,7 +27,6 @@ import com.spyneai.base.network.Resource
 import com.spyneai.captureEvent
 import com.spyneai.captureFailureEvent
 import com.spyneai.dashboard.response.NewSubCatResponse
-import com.spyneai.dashboard.ui.WhiteLabelConstants
 import com.spyneai.dashboard.ui.handleApiError
 import com.spyneai.databinding.FragmentOverlaysBinding
 import com.spyneai.needs.AppConstants
@@ -117,14 +116,14 @@ class OverlaysFragment : BaseFragment<ShootViewModel,FragmentOverlaysBinding>(),
 
     private fun initAngles() {
        when(getString(R.string.app_name)){
-           WhiteLabelConstants.CARS24,WhiteLabelConstants.CARS24_INDIA ->  viewModel.exterirorAngles.value = 5
+           AppConstants.CARS24,AppConstants.CARS24_INDIA ->  viewModel.exterirorAngles.value = 5
            else ->  {
                viewModel.exterirorAngles.value = 8
            }
        }
 
         when(getString(R.string.app_name)) {
-            WhiteLabelConstants.KARVI,WhiteLabelConstants.CARS24_INDIA,WhiteLabelConstants.CARS24 -> {}
+            AppConstants.KARVI,AppConstants.CARS24_INDIA,AppConstants.CARS24 -> {}
             else -> {
                 binding.tvShoot?.setOnClickListener {
                     AngleSelectionDialog().show(requireActivity().supportFragmentManager, "AngleSelectionDialog")

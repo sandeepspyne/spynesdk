@@ -45,7 +45,7 @@ class LoginActivity : AppCompatActivity() {
         binding.etLoginPassword.setInputType(InputType.TYPE_CLASS_TEXT or InputType.TYPE_TEXT_VARIATION_PASSWORD)
 
         when(getString(R.string.app_name)){
-            WhiteLabelConstants.KARVI -> binding.rlSingup.visibility = View.GONE
+            AppConstants.KARVI -> binding.rlSingup.visibility = View.GONE
             else ->{}
         }
 

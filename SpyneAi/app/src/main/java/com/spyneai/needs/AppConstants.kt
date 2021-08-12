@@ -110,6 +110,11 @@ object AppConstants {
 
 
 
+    //app names
+    val KARVI = "Karvi Studio"
+    val CARS24_INDIA = "Cars24 India"
+    val CARS24= "Cars24"
+    val SWEEP= "Sweep.ei"
 
 
 

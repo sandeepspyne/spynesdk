@@ -66,7 +66,7 @@ class WalletDashboardFragment :
 
         binding.flAddCredits.setOnClickListener {
             when(getString(R.string.app_name)){
-                "Sweep.ei" -> {
+                AppConstants.SWEEP -> {
                     val selectorIntent = Intent(Intent.ACTION_SENDTO)
                     selectorIntent.data = Uri.parse("mailto:")
                     val emailIntent = Intent(Intent.ACTION_SEND)

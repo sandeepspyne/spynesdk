@@ -203,7 +203,7 @@ class ShowImagesActivity : AppCompatActivity(),View.OnTouchListener,View.OnClick
             )
         })
 
-        if (getString(R.string.app_name) == "Sweep.ei"){
+        if (getString(R.string.app_name) == AppConstants.SWEEP){
             tvDownloadFree.visibility = View.GONE
         }else {
             tvDownloadFree.setOnClickListener {

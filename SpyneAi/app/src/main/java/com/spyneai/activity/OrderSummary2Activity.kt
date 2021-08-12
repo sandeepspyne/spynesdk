@@ -124,7 +124,7 @@ class OrderSummary2Activity : AppCompatActivity() {
         }
 
         when(getString(R.string.app_name)){
-            "Yalla Motors","Travo Photos","Sweep.ei" -> tvTopUp.visibility = View.GONE
+            "Yalla Motors","Travo Photos",AppConstants.SWEEP -> tvTopUp.visibility = View.GONE
 
             else-> {
                 tvTopUp.setOnClickListener {
