@@ -129,6 +129,20 @@ android {
             versionCode 4
             versionName "1.3"
         }
+
+        flipkart {
+            dimension 'version'
+            applicationId "com.spyneai.flipkart"
+            versionCode 1
+            versionName "1.0"
+        }
+
+        amazon {
+            dimension 'version'
+            applicationId "com.spyneai.amazon"
+            versionCode 1
+            versionName "1.0"
+        }
     }
     sourceSets {
         sweepCars {
@@ -168,6 +182,14 @@ android {
             }
             res {
                 srcDirs 'src/cars24india/res'
+            }
+        }
+        flipkart {
+            java {
+                srcDirs 'src/flipkart/java', 'src/flipkart/res'
+            }
+            res {
+                srcDirs 'src/flipkart/res'
             }
         }
     }

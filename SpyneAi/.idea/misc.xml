@@ -3,12 +3,20 @@
   <component name="DesignSurface">
     <option name="filePathToZoomLevelMap">
       <map>
+        <entry key="app/src/flipkart/res/layout/home_dashboard_fragment.xml" value="0.18" />
+        <entry key="app/src/main/res/drawable/bg_get_started.xml" value="0.24444444444444444" />
+        <entry key="app/src/main/res/drawable/bg_view.xml" value="0.24444444444444444" />
         <entry key="app/src/main/res/drawable/exposure_thumb.xml" value="0.3260416666666667" />
         <entry key="app/src/main/res/drawable/ic_noun_exposure.xml" value="0.3260416666666667" />
+        <entry key="app/src/main/res/drawable/ic_slider_next.xml" value="0.24444444444444444" />
+        <entry key="app/src/main/res/drawable/ic_slider_previous.xml" value="0.24444444444444444" />
         <entry key="app/src/main/res/layout-land/fragment_camera.xml" value="0.20208333333333334" />
         <entry key="app/src/main/res/layout/activity_downloading.xml" value="0.17572463768115942" />
+        <entry key="app/src/main/res/layout/activity_shoot_portrait.xml" value="0.2037037037037037" />
         <entry key="app/src/main/res/layout/activity_show_images.xml" value="0.17572463768115942" />
         <entry key="app/src/main/res/layout/activity_splash.xml" value="0.17572463768115942" />
+        <entry key="app/src/main/res/layout/dashboard_categories_shimmer.xml" value="0.2037037037037037" />
+        <entry key="app/src/main/res/layout/dashboard_completed_shimmer.xml" value="0.2037037037037037" />
         <entry key="app/src/main/res/layout/dialog_progress.xml" value="0.17572463768115942" />
         <entry key="app/src/main/res/layout/fragment_camera.xml" value="0.17572463768115942" />
         <entry key="app/src/main/res/layout/fragment_record_video.xml" value="0.17572463768115942" />
@@ -18,7 +26,7 @@
       </map>
     </option>
   </component>
-  <component name="ProjectRootManager" version="2" languageLevel="JDK_11" default="true" project-jdk-name="JDK" project-jdk-type="JavaSDK">
+  <component name="ProjectRootManager" version="2" languageLevel="JDK_1_8" default="true" project-jdk-name="1.8" project-jdk-type="JavaSDK">
     <output url="file://$PROJECT_DIR$/build/classes" />
   </component>
   <component name="ProjectType">

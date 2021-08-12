@@ -2,28 +2,18 @@ package com.spyneai.dashboard.ui
 
 import android.content.Intent
 import android.os.Bundle
-import android.util.Log
-import android.view.ViewGroup
-import android.widget.Button
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
-import androidx.navigation.NavController
-import androidx.navigation.fragment.NavHostFragment
-import androidx.navigation.ui.NavigationUI
-import androidx.navigation.ui.setupWithNavController
 import com.spyneai.R
-import com.spyneai.activity.CategoriesActivity
 import com.spyneai.dashboard.data.DashboardViewModel
 import com.spyneai.dashboard.ui.base.ViewModelFactory
 import com.spyneai.databinding.ActivityDashboardMainBinding
 import com.spyneai.needs.AppConstants
 import com.spyneai.needs.Utilities
 import com.spyneai.orders.ui.MyOrdersActivity
-import com.spyneai.orders.ui.MyOrdersFragment
-import com.spyneai.shoot.ui.ShootActivity
+import com.spyneai.shoot.ui.base.ShootActivity
 import com.spyneai.shoot.ui.StartShootActivity
-import kotlinx.android.synthetic.main.activity_show_images.*
 
 
 class MainDashboardActivity : AppCompatActivity() {

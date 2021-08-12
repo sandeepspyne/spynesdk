@@ -5,6 +5,7 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import com.spyneai.databinding.ActivityStartShootBinding
 import com.spyneai.needs.AppConstants
+import com.spyneai.shoot.ui.base.ShootActivity
 import com.spyneai.threesixty.ui.ThreeSixtyIntroActivity
 
 class StartShootActivity : AppCompatActivity() {

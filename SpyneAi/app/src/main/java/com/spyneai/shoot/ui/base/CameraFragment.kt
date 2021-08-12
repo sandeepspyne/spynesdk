@@ -1,4 +1,4 @@
-package com.spyneai.shoot.ui
+package com.spyneai.shoot.ui.base
 
 import android.annotation.SuppressLint
 import android.app.Activity
@@ -21,8 +21,6 @@ import androidx.camera.core.*
 import androidx.camera.lifecycle.ProcessCameraProvider
 import androidx.core.content.ContextCompat
 import androidx.core.net.toFile
-import androidx.work.await
-import com.google.common.util.concurrent.ListenableFuture
 import com.hbisoft.pickit.PickiT
 import com.hbisoft.pickit.PickiTCallbacks
 import com.posthog.android.Properties
