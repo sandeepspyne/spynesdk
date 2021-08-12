@@ -47,6 +47,7 @@ import com.spyneai.orders.data.response.GetProjectsResponse
 import com.spyneai.posthog.Events
 import com.spyneai.shoot.ui.base.ShootActivity
 import com.spyneai.shoot.ui.StartShootActivity
+import com.spyneai.shoot.ui.base.ShootPortraitActivity
 import com.spyneai.shoot.utils.log
 
 
@@ -96,7 +97,7 @@ class HomeDashboardFragment :
         appUpdateManager = AppUpdateManagerFactory.create(requireContext())
 
 
-        if (PACKAGE_NAME.equals("com.spyneai.debug")) {
+        if (PACKAGE_NAME.equals("com.spyneai.flipkart.debug")) {
             newUserCreditDialog()
             repeatRefreshData()
             setSliderRecycler()
@@ -296,50 +297,50 @@ class HomeDashboardFragment :
                                 colorCode = it.value.data[position].color_code
 
                                 when(position){
-                                    0 -> {
-                                        val intent = Intent(requireContext(), StartShootActivity::class.java)
-                                        intent.putExtra(
-                                            AppConstants.CATEGORY_NAME,
-                                            displayName
-                                        )
-                                        intent.putExtra(
-                                            AppConstants.CATEGORY_ID,
-                                            catId
-                                        )
-                                        intent.putExtra(
-                                            AppConstants.IMAGE_URL,
-                                            displayThumbnail
-                                        )
-                                        intent.putExtra(
-                                            AppConstants.DESCRIPTION,
-                                            description
-                                        )
-                                        intent.putExtra(AppConstants.COLOR, colorCode)
-                                        startActivity(intent)
-                                    }
-                                    1 -> {
-                                        val intent = Intent(requireContext(), ShootActivity::class.java)
-                                        intent.putExtra(
-                                            AppConstants.CATEGORY_NAME,
-                                            displayName
-                                        )
-                                        intent.putExtra(
-                                            AppConstants.CATEGORY_ID,
-                                            catId
-                                        )
-                                        intent.putExtra(
-                                            AppConstants.IMAGE_URL,
-                                            displayThumbnail
-                                        )
-                                        intent.putExtra(
-                                            AppConstants.DESCRIPTION,
-                                            description
-                                        )
-                                        intent.putExtra(AppConstants.COLOR, colorCode)
-                                        startActivity(intent)
-                                    }
+//                                    0 -> {
+//                                        val intent = Intent(requireContext(), StartShootActivity::class.java)
+//                                        intent.putExtra(
+//                                            AppConstants.CATEGORY_NAME,
+//                                            displayName
+//                                        )
+//                                        intent.putExtra(
+//                                            AppConstants.CATEGORY_ID,
+//                                            catId
+//                                        )
+//                                        intent.putExtra(
+//                                            AppConstants.IMAGE_URL,
+//                                            displayThumbnail
+//                                        )
+//                                        intent.putExtra(
+//                                            AppConstants.DESCRIPTION,
+//                                            description
+//                                        )
+//                                        intent.putExtra(AppConstants.COLOR, colorCode)
+//                                        startActivity(intent)
+//                                    }
+//                                    1 -> {
+//                                        val intent = Intent(requireContext(), ShootActivity::class.java)
+//                                        intent.putExtra(
+//                                            AppConstants.CATEGORY_NAME,
+//                                            displayName
+//                                        )
+//                                        intent.putExtra(
+//                                            AppConstants.CATEGORY_ID,
+//                                            catId
+//                                        )
+//                                        intent.putExtra(
+//                                            AppConstants.IMAGE_URL,
+//                                            displayThumbnail
+//                                        )
+//                                        intent.putExtra(
+//                                            AppConstants.DESCRIPTION,
+//                                            description
+//                                        )
+//                                        intent.putExtra(AppConstants.COLOR, colorCode)
+//                                        startActivity(intent)
+//                                    }
 
-                                    2,3 -> {
+                                    0 -> {
                                         val intent = Intent(requireContext(), ShootPortraitActivity::class.java)
                                         intent.putExtra(
                                             AppConstants.CATEGORY_NAME,
@@ -455,22 +456,11 @@ class HomeDashboardFragment :
         binding.ivBanner.setBeforeImage(
             ContextCompat.getDrawable(
                 requireContext(),
-                R.drawable.car_before
+                R.drawable.footwear_before
             )
-        ).setAfterImage(ContextCompat.getDrawable(requireContext(), R.drawable.car_after))
+        ).setAfterImage(ContextCompat.getDrawable(requireContext(), R.drawable.footwear_after))
         binding.ivNext.setOnClickListener {
             val tab: TabLayout.Tab = binding.tbDashboard.getTabAt(1)!!
-            tab.select()
-            binding.ivBanner.setBeforeImage(
-                ContextCompat.getDrawable(
-                    requireContext(),
-                    R.drawable.footwear_before
-                )
-            ).setAfterImage(ContextCompat.getDrawable(requireContext(), R.drawable.footwear_after))
-        }
-
-        binding.ivPrevious.setOnClickListener {
-            val tab: TabLayout.Tab = binding.tbDashboard.getTabAt(0)!!
             tab.select()
             binding.ivBanner.setBeforeImage(
                 ContextCompat.getDrawable(
@@ -480,21 +470,20 @@ class HomeDashboardFragment :
             ).setAfterImage(ContextCompat.getDrawable(requireContext(), R.drawable.car_after))
         }
 
+        binding.ivPrevious.setOnClickListener {
+            val tab: TabLayout.Tab = binding.tbDashboard.getTabAt(0)!!
+            tab.select()
+            binding.ivBanner.setBeforeImage(
+                ContextCompat.getDrawable(
+                    requireContext(),
+                    R.drawable.footwear_before
+                )
+            ).setAfterImage(ContextCompat.getDrawable(requireContext(), R.drawable.footwear_after))
+        }
+
         tabLayout.addOnTabSelectedListener(object : TabLayout.OnTabSelectedListener {
             override fun onTabSelected(tab: TabLayout.Tab?) {
                 if (tab?.position == 0)
-                    binding.ivBanner.setBeforeImage(
-                        ContextCompat.getDrawable(
-                            requireContext(),
-                            R.drawable.car_before
-                        )
-                    ).setAfterImage(
-                        ContextCompat.getDrawable(
-                            requireContext(),
-                            R.drawable.car_after
-                        )
-                    )
-                else
                     binding.ivBanner.setBeforeImage(
                         ContextCompat.getDrawable(
                             requireContext(),
@@ -504,6 +493,18 @@ class HomeDashboardFragment :
                         ContextCompat.getDrawable(
                             requireContext(),
                             R.drawable.footwear_after
+                        )
+                    )
+                else
+                    binding.ivBanner.setBeforeImage(
+                        ContextCompat.getDrawable(
+                            requireContext(),
+                            R.drawable.car_before
+                        )
+                    ).setAfterImage(
+                        ContextCompat.getDrawable(
+                            requireContext(),
+                            R.drawable.car_after
                         )
                     )
             }

@@ -11,3 +11,7 @@ val Any.TAG: String
 fun log(msg: String) {
     Log.d("TESTING", msg)
 }
+
+fun shoot(msg: String){
+    Log.d("TESTINGCAMERA", msg)
+}

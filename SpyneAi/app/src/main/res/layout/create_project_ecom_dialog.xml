@@ -21,7 +21,7 @@
         app:layout_constraintTop_toTopOf="parent"
         android:layout_marginLeft="45dp"
         android:layout_marginTop="@dimen/dp_30"/>
-    
+
     <LinearLayout
         android:id="@+id/llProjectName"
         android:layout_width="0dp"
@@ -33,7 +33,7 @@
         app:layout_constraintRight_toRightOf="parent"
         android:gravity="center"
         android:background="@drawable/bg_edit">
-        
+
         <EditText
             android:id="@+id/etProjectName"
             android:layout_width="match_parent"
@@ -45,7 +45,7 @@
             android:textSize="@dimen/sp_18"
             android:hint="Ex. Amazon 16 Feb"
             android:layout_marginLeft="@dimen/dp_20"/>
-        
+
     </LinearLayout>
 
     <TextView

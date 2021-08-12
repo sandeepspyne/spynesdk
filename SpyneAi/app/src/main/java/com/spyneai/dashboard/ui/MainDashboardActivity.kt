@@ -62,7 +62,7 @@ class MainDashboardActivity : AppCompatActivity() {
                     val intent = Intent(this, MyOrdersActivity::class.java)
                     startActivity(intent)
                 }
-                //R.id.wallet->setCurrentFragment(SecondFragment)
+                R.id.wallet->setCurrentFragment(SecondFragment)
                 R.id.logoutDashBoardFragment->setCurrentFragment(thirdFragment)
 
             }
