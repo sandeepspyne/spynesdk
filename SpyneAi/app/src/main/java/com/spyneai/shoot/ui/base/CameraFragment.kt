@@ -4,14 +4,18 @@ import android.content.ContentValues
 import android.content.ContentValues.TAG
 import android.content.Context
 import android.content.pm.ActivityInfo
+import android.graphics.ImageFormat
 import android.hardware.Sensor
 import android.hardware.SensorEvent
 import android.hardware.SensorEventListener
 import android.hardware.SensorManager
+import android.hardware.camera2.CameraCharacteristics
+import android.hardware.camera2.CameraManager
 import android.os.*
 import android.provider.MediaStore
 import android.util.DisplayMetrics
 import android.util.Log
+import android.util.Size
 import android.view.*
 import android.view.animation.AccelerateInterpolator
 import android.widget.*
@@ -38,6 +42,7 @@ import com.spyneai.posthog.Events
 import com.spyneai.shoot.data.ShootViewModel
 import com.spyneai.shoot.data.model.ShootData
 import com.spyneai.shoot.utils.log
+import com.spyneai.threesixty.ui.RecordVideoFragment
 import java.io.File
 import java.util.*
 import java.util.concurrent.ExecutionException
@@ -325,8 +330,8 @@ class CameraFragment : BaseFragment<ShootViewModel, FragmentCameraBinding>(), Pi
                 return@addListener
             }
 
-            // The display information
-            //val metrics = DisplayMetrics().also { binding.viewFinder.display.getRealMetrics(it) }
+             //The display information
+            val metrics = DisplayMetrics().also { binding.viewFinder.display.getRealMetrics(it) }
             // The ratio for the output image and preview
             var height = 0
             var width = 0
@@ -341,9 +346,11 @@ class CameraFragment : BaseFragment<ShootViewModel, FragmentCameraBinding>(), Pi
                 height = displayMetrics.heightPixels
                 width = displayMetrics.widthPixels
             }
+
+
             val aspectRatio = aspectRatio(width, height)
             // The display rotation
-            //val rotation = binding.viewFinder.display.rotation
+            val rotation = binding.viewFinder.display.rotation
 
 
             val localCameraProvider = cameraProvider
@@ -351,8 +358,9 @@ class CameraFragment : BaseFragment<ShootViewModel, FragmentCameraBinding>(), Pi
 
             // Preview
             val preview = Preview.Builder()
+                //.setTargetResolution(Size(1920,1080))
                 .setTargetAspectRatio(aspectRatio) // set the camera aspect ratio
-                //   .setTargetRotation(rotation) // set the camera rotation
+                   .setTargetRotation(rotation) // set the camera rotation
                 .build()
                 .also {
                     it.setSurfaceProvider(binding.viewFinder.surfaceProvider)
@@ -361,12 +369,45 @@ class CameraFragment : BaseFragment<ShootViewModel, FragmentCameraBinding>(), Pi
             //for exact image cropping
             val viewPort = binding.viewFinder?.viewPort
 
-            imageCapture = ImageCapture.Builder()
-                .setCaptureMode(ImageCapture.CAPTURE_MODE_MAXIMIZE_QUALITY)
-                .setFlashMode(flashMode)
-                .setTargetAspectRatio(aspectRatio) // set the capture aspect ratio
-                // .setTargetRotation(rotation) // set the capture rotation
-                .build()
+            if (viewModel.categoryDetails.value?.categoryName == "Automobiles" ||
+                viewModel.categoryDetails.value?.categoryName == "Bikes") {
+
+                val cm =
+                    requireActivity().getSystemService(android.content.Context.CAMERA_SERVICE) as CameraManager
+
+
+                var size = Size(1920, 1080)
+
+                if (cm.cameraIdList != null && cm.cameraIdList.size > 1) {
+                    val characteristics: CameraCharacteristics =
+                        cm.getCameraCharacteristics("1")
+
+                    val configs = characteristics.get(
+                        CameraCharacteristics.SCALER_STREAM_CONFIGURATION_MAP
+                    )
+
+                    val s = configs?.getOutputSizes(ImageFormat.JPEG)
+
+                    s?.forEach {
+                        size = if (size.width < it.width) it else size
+                    }
+
+                }
+
+                imageCapture = ImageCapture.Builder()
+                    .setCaptureMode(ImageCapture.CAPTURE_MODE_MAXIMIZE_QUALITY)
+                    .setFlashMode(flashMode)
+                    .setTargetResolution(size) // set the capture aspect ratio
+                    .setTargetRotation(rotation) // set the capture rotation
+                    .build()
+            }else{
+                imageCapture = ImageCapture.Builder()
+                    .setCaptureMode(ImageCapture.CAPTURE_MODE_MAXIMIZE_QUALITY)
+                    .setFlashMode(flashMode)
+                    .setTargetAspectRatio(aspectRatio) // set the capture aspect ratio
+                    .setTargetRotation(rotation) // set the capture rotation
+                    .build()
+            }
 
             val useCaseGroup = UseCaseGroup.Builder()
                 .addUseCase(preview)
