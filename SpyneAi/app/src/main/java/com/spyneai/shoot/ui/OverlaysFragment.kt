@@ -117,13 +117,18 @@ class OverlaysFragment : BaseFragment<ShootViewModel,FragmentOverlaysBinding>(),
 
     private fun initAngles() {
        when(getString(R.string.app_name)){
-           "Cars 24" ->  viewModel.exterirorAngles.value = 5
-           else ->  viewModel.exterirorAngles.value = 8
+           WhiteLabelConstants.CARS24,WhiteLabelConstants.CARS24_INDIA ->  viewModel.exterirorAngles.value = 5
+           else ->  {
+               viewModel.exterirorAngles.value = 8
+           }
        }
 
-        if (getString(R.string.app_name) != WhiteLabelConstants.KARVI && getString(R.string.app_name) != "Cars 24"){
-            binding.tvShoot?.setOnClickListener {
-                AngleSelectionDialog().show(requireActivity().supportFragmentManager, "AngleSelectionDialog")
+        when(getString(R.string.app_name)) {
+            WhiteLabelConstants.KARVI,WhiteLabelConstants.CARS24_INDIA,WhiteLabelConstants.CARS24 -> {}
+            else -> {
+                binding.tvShoot?.setOnClickListener {
+                    AngleSelectionDialog().show(requireActivity().supportFragmentManager, "AngleSelectionDialog")
+                }
             }
         }
 

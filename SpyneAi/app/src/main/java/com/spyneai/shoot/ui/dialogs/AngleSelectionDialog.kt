@@ -6,6 +6,7 @@ import android.view.View
 import android.view.ViewGroup
 import com.spyneai.R
 import com.spyneai.base.BaseDialogFragment
+import com.spyneai.dashboard.ui.WhiteLabelConstants
 import com.spyneai.databinding.DialogAngleSelectionBinding
 import com.spyneai.shoot.data.ShootViewModel
 
@@ -19,7 +20,7 @@ class AngleSelectionDialog : BaseDialogFragment<ShootViewModel,DialogAngleSelect
 
     private fun showOptions() {
         val valuesShoots = when(getString(R.string.app_name)){
-            "Cars 24" -> arrayOf("5 Angles")
+            WhiteLabelConstants.CARS24_INDIA,WhiteLabelConstants.CARS24 -> arrayOf("5 Angles")
             else -> arrayOf("8 Angles", "12 Angles","16 Angles","24 Angles","36 Angles")
         }
 
