@@ -19,7 +19,7 @@ import com.spyneai.shoot.ui.ecomwithgrid.dialogs.EndProjectDialog
 import com.spyneai.shoot.utils.log
 
 
-class SkuDetailFragment : BaseFragment<ShootViewModel, FragmentSkuDetailBinding>() {
+class SkuDetailFragment : BaseFragment<ShootViewModel, FragmenttvEndProjectSkuDetailBinding>() {
 
     lateinit var skuImageAdapter: SkuImageAdapter
     var totalSkuImages = 0

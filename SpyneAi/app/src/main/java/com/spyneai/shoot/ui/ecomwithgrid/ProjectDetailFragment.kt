@@ -26,7 +26,7 @@ class ProjectDetailFragment : BaseFragment<ShootViewModel, FragmentProjectDetail
 
         viewModel.getProjectDetail(
             Utilities.getPreference(requireContext(), AppConstants.AUTH_KEY).toString(),
-            viewModel.sku.value?.projectId.toString()
+            viewModel.projectId.toString()
         )
 
         binding.btHome.setOnClickListener {
