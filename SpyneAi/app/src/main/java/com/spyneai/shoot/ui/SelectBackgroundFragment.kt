@@ -184,6 +184,12 @@ class SelectBackgroundFragment : BaseFragment<ProcessViewModel,FragmentSelectBac
     }
 
     private fun processSku() {
+        requireContext().captureEvent(
+            Events.PROCESS_INITIATED,
+            Properties().putValue("sku_id", viewModel.sku.value?.skuId!!)
+                .putValue("background_id",backgroundSelect)
+        )
+
         Utilities.showProgressDialog(requireContext())
 
         viewModel.processSku(

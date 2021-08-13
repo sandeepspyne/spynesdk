@@ -72,6 +72,8 @@ object Events {
     val TOTAL_FRAMES_UPDATED = "Android Total Frames Updated"
     val TOTAL_FRAMES_UPDATE_FAILED = "Android Total Frames Update Failed"
     val GET_BACKGROUND_FAILED = "Android Get Background Failed"
+    val PROCESS_INITIATED = "Android Process Initiated"
+    val PROCESS_INITIATED_BY_WORKER = "Android Process Initiated By Worker"
     val PROCESS = "Android Process Completed"
     val PROCESS_FAILED = "Android Process Failed"
     val SHOOT_QUEUED = "Android Shoot Queued"

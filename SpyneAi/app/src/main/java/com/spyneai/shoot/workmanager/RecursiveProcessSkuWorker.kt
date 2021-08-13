@@ -49,6 +49,17 @@ class RecursiveProcessSkuWorker(private val appContext: Context, workerParams: W
             val backgroundId = image.backgroundId
 
             if (backgroundId != null){
+                val properties = Properties()
+                properties.apply {
+                    this["sku_id"] = skuId
+                    this["background_id"] = backgroundId
+                }
+
+                appContext.captureEvent(
+                        Events.PROCESS_INITIATED_BY_WORKER,
+                        properties)
+
+
                 val authKey =
                     Utilities.getPreference(appContext, AppConstants.AUTH_KEY).toString()
 

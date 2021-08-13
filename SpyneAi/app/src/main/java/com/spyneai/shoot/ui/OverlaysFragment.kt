@@ -60,6 +60,8 @@ class OverlaysFragment : BaseFragment<ShootViewModel,FragmentOverlaysBinding>(),
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+
+
       if (viewModel.sku.value?.skuId == null)
           initShootHint()
 
@@ -281,9 +283,13 @@ class OverlaysFragment : BaseFragment<ShootViewModel,FragmentOverlaysBinding>(),
             tvSkuName?.visibility = View.VISIBLE
             tvAngleName?.visibility = View.VISIBLE
             llProgress?.visibility = View.VISIBLE
-            imgOverlay?.visibility = View.VISIBLE
             tvSkuName?.text = viewModel.sku.value?.skuName
         }
+
+        if (getString(R.string.app_name) == AppConstants.KARVI)
+            binding.imgOverlay.visibility = View.GONE
+        else
+            binding.imgOverlay.visibility = View.VISIBLE
     }
 
     private fun getOverlays() {

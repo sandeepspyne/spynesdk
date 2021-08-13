@@ -8,10 +8,12 @@ import androidx.lifecycle.lifecycleScope
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.posthog.android.Properties
+import com.spyneai.R
 import com.spyneai.base.BaseDialogFragment
 import com.spyneai.base.network.Resource
 import com.spyneai.captureEvent
 import com.spyneai.databinding.DialogConfirmReshootBinding
+import com.spyneai.needs.AppConstants
 import com.spyneai.posthog.Events
 import com.spyneai.shoot.data.ShootViewModel
 import kotlinx.coroutines.launch
@@ -23,6 +25,8 @@ class ConfirmReshootDialog : BaseDialogFragment<ShootViewModel, DialogConfirmRes
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+
 
         isCancelable = false
 
@@ -123,7 +127,11 @@ class ConfirmReshootDialog : BaseDialogFragment<ShootViewModel, DialogConfirmRes
                             .skipMemoryCache(true)
                             .into(binding.ivCaptured2)
 
-                        setOverlay(binding.ivCaptured2,overlay)
+                        if (getString(R.string.app_name) == AppConstants.KARVI)
+                            binding.ivCapturedOverlay.visibility = View.GONE
+                        else
+                            setOverlay(binding.ivCaptured2,overlay)
+
                     }else{
                        binding.flAfter.visibility = View.GONE
                     }
