@@ -25,6 +25,7 @@ import com.spyneai.shoot.ui.ecomwithgrid.GridEcomFragment
 import com.spyneai.shoot.ui.ecomwithgrid.ProjectDetailFragment
 import com.spyneai.shoot.ui.ecomwithgrid.SkuDetailFragment
 import com.spyneai.shoot.ui.ecomwithoverlays.OverlayEcomFragment
+import com.spyneai.shoot.utils.log
 import java.io.File
 
 class ShootPortraitActivity : AppCompatActivity() {
@@ -112,7 +113,7 @@ class ShootPortraitActivity : AppCompatActivity() {
                 shootViewModel.projectId.value = intent.getStringExtra("project_id")
                 val sku = Sku()
                 sku?.projectId = shootViewModel.projectId.value
-                shootViewModel.categoryDetails.value?.imageType = ""
+                shootViewModel.categoryDetails.value?.imageType = "footwear"
                 shootViewModel.sku.value = sku
             } catch (e: Exception) {
                 e.printStackTrace()

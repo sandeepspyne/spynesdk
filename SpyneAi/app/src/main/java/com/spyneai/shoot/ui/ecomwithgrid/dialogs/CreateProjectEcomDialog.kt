@@ -85,6 +85,7 @@ class CreateProjectEcomDialog :
                     log("project id created")
                     log("project id: "+it.value.project_id)
                     sku.projectId = it.value.project_id
+                    viewModel.projectId.value = it.value.project_id
                     Utilities.savePrefrence(requireContext(), AppConstants.PROJECT_ID, it.value.project_id)
                     sku.skuName = removeWhiteSpace(binding.etSkuName.text.toString())
                     viewModel.sku.value = sku

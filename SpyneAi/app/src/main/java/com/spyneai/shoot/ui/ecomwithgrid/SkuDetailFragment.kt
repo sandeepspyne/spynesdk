@@ -35,29 +35,29 @@ class SkuDetailFragment : BaseFragment<ShootViewModel, FragmentSkuDetailBinding>
 
         viewModel.getProjectDetail(
             Utilities.getPreference(requireContext(), AppConstants.AUTH_KEY).toString(),
-            viewModel.sku.value?.projectId.toString()
+            viewModel.projectId.value!!
         )
 
-       viewModel.projectDetailResponse.observe(viewLifecycleOwner, {
-           when (it) {
-               is Resource.Success -> {
-                   Utilities.hideProgressDialog()
-                   viewModel.totalSkuCaptured.value = it.value.data.total_sku.toString()
-                   viewModel.totalImageCaptured.value = it.value.data.total_images.toString()
+        viewModel.projectDetailResponse.observe(viewLifecycleOwner, {
+            when (it) {
+                is Resource.Success -> {
+                    Utilities.hideProgressDialog()
+                    viewModel.totalSkuCaptured.value = it.value.data.total_sku.toString()
+                    viewModel.totalImageCaptured.value = it.value.data.total_images.toString()
 
-                   binding.tvTotalSkuCaptured.text = it.value.data.total_sku.toString()
+                    binding.tvTotalSkuCaptured.text = it.value.data.total_sku.toString()
 
 
-               }
-               is Resource.Loading -> {
+                }
+                is Resource.Loading -> {
 
-               }
-               is Resource.Failure -> {
-                   Utilities.hideProgressDialog()
-                   handleApiError(it)
-               }
-           }
-       })
+                }
+                is Resource.Failure -> {
+                    Utilities.hideProgressDialog()
+                    handleApiError(it)
+                }
+            }
+        })
 
         viewModel.updateTotalFramesRes.observe(viewLifecycleOwner, {
             when (it) {
@@ -84,7 +84,7 @@ class SkuDetailFragment : BaseFragment<ShootViewModel, FragmentSkuDetailBinding>
 
                 totalSkuImages = it.size
 
-                    binding.tvTotalImageCaptured.text = it.size.toString()
+                binding.tvTotalImageCaptured.text = it.size.toString()
 
 
                 skuImageAdapter = SkuImageAdapter(
@@ -111,7 +111,7 @@ class SkuDetailFragment : BaseFragment<ShootViewModel, FragmentSkuDetailBinding>
             viewModel.updateTotalFrames(viewModel.sku.value?.skuId.toString(), totalSkuImages.toString(), Utilities.getPreference(requireContext(), AppConstants.AUTH_KEY).toString())
             viewModel.shootList.value?.clear()
             val intent = Intent(activity, ShootPortraitActivity::class.java)
-            intent.putExtra("project_id", viewModel.sku.value?.projectId);
+            intent.putExtra("project_id", viewModel.projectId.value);
             intent.putExtra("skuNumber", viewModel.skuNumber.value?.plus(1)!!);
             startActivity(intent)
 

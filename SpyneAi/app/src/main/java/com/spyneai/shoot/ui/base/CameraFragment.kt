@@ -256,7 +256,13 @@ class CameraFragment : BaseFragment<ShootViewModel, FragmentCameraBinding>(), Pi
                         }
                     }
                 }
-            }else -> {
+            }
+            "Flipkart" -> {
+                binding.cameraCaptureButton?.setOnClickListener {
+                    captureImage()
+                }
+            }else
+             -> {
                 binding.cameraCaptureButton?.setOnClickListener {
                 if (viewModel.shootList.value == null){
                     viewModel.createProjectRes.observe(viewLifecycleOwner, {
@@ -936,7 +942,7 @@ class CameraFragment : BaseFragment<ShootViewModel, FragmentCameraBinding>(), Pi
         viewModel.shootList.value!!.add(
             ShootData(
                 capturedImage,
-                viewModel.sku.value?.projectId!!,
+                viewModel.projectId.value!!,
                 viewModel.sku.value?.skuId!!,
                 viewModel.categoryDetails.value?.imageType!!,
                 Utilities.getPreference(requireContext(), AppConstants.AUTH_KEY).toString(),
@@ -948,7 +954,7 @@ class CameraFragment : BaseFragment<ShootViewModel, FragmentCameraBinding>(), Pi
 
         val properties = Properties()
         properties.apply {
-            this["project_id"] = viewModel.sku.value?.projectId!!
+            this["project_id"] = viewModel.projectId.value!!
             this["sku_id"] = viewModel.sku.value?.skuId!!
             this["image_type"] = viewModel.categoryDetails.value?.imageType!!
         }

@@ -30,7 +30,7 @@ class ProjectDetailFragment : BaseFragment<ShootViewModel, FragmentProjectDetail
         )
 
         binding.btHome.setOnClickListener {
-           requireContext().gotoHome()
+            requireContext().gotoHome()
             viewModel.skuProcessState(Utilities.getPreference(requireContext(), AppConstants.AUTH_KEY).toString(), viewModel.sku.value?.projectId.toString())
             log("skuProcessState called")
         }
