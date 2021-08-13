@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">Cars24 India</string>
+    <string name="app_name">Cars24 (B2C) Cataloging</string>
 
     //On Boarding
     <string name="slide_one_title">Shoot</string>

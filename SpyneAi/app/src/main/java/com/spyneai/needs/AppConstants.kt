@@ -112,8 +112,8 @@ object AppConstants {
 
     //app names
     val KARVI = "Karvi Studio"
-    val CARS24_INDIA = "Cars24 India"
-    val CARS24= "Cars24"
+    val CARS24_INDIA = "Cars24 (B2C) Cataloging"
+    val CARS24= "Cars 24 Cataloging"
     val SWEEP= "Sweep.ei"
 
 
