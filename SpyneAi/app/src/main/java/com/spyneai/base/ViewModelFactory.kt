@@ -3,6 +3,7 @@ package com.spyneai.dashboard.ui.base
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import com.spyneai.dashboard.data.DashboardViewModel
+import com.spyneai.draft.data.DraftViewModel
 import com.spyneai.orders.data.viewmodel.MyOrdersViewModel
 import com.spyneai.processedimages.ui.data.ProcessedViewModel
 import com.spyneai.shoot.data.ProcessViewModel
@@ -19,6 +20,7 @@ class ViewModelFactory() : ViewModelProvider.NewInstanceFactory() {
             modelClass.isAssignableFrom(MyOrdersViewModel::class.java) -> MyOrdersViewModel() as T
             modelClass.isAssignableFrom(ProcessedViewModel::class.java) -> ProcessedViewModel() as T
             modelClass.isAssignableFrom(ThreeSixtyViewModel::class.java) -> ThreeSixtyViewModel() as T
+            modelClass.isAssignableFrom(DraftViewModel::class.java) -> DraftViewModel() as T
             else -> throw IllegalArgumentException("ViewModelClass not found")
         }
     }

@@ -6,10 +6,37 @@
         <entry key="app/src/main/res/drawable/exposure_thumb.xml" value="0.3260416666666667" />
         <entry key="app/src/main/res/drawable/ic_noun_exposure.xml" value="0.3260416666666667" />
         <entry key="app/src/main/res/layout-land/fragment_camera.xml" value="0.20208333333333334" />
+        <entry key="app/src/main/res/layout/activity_completed_skus.xml" value="0.17572463768115942" />
+        <entry key="app/src/main/res/layout/activity_downloading.xml" value="0.17572463768115942" />
+        <entry key="app/src/main/res/layout/activity_draft_sku_details.xml" value="0.29583333333333334" />
+        <entry key="app/src/main/res/layout/activity_draft_skus.xml" value="0.17572463768115942" />
+        <entry key="app/src/main/res/layout/activity_my_orders.xml" value="0.3098958333333333" />
+        <entry key="app/src/main/res/layout/activity_order.xml" value="0.17572463768115942" />
+        <entry key="app/src/main/res/layout/activity_show_images.xml" value="0.17572463768115942" />
+        <entry key="app/src/main/res/layout/activity_splash.xml" value="0.17572463768115942" />
+        <entry key="app/src/main/res/layout/activity_three_sixty_intro.xml" value="0.17572463768115942" />
+        <entry key="app/src/main/res/layout/completed_ongoing_sku_simmer.xml" value="0.17572463768115942" />
+        <entry key="app/src/main/res/layout/dialog_progress.xml" value="0.17572463768115942" />
         <entry key="app/src/main/res/layout/fragment_camera.xml" value="0.17572463768115942" />
+        <entry key="app/src/main/res/layout/fragment_completed_projects.xml" value="0.17572463768115942" />
+        <entry key="app/src/main/res/layout/fragment_draft_details.xml" value="0.17572463768115942" />
+        <entry key="app/src/main/res/layout/fragment_draft_projects.xml" value="0.17572463768115942" />
+        <entry key="app/src/main/res/layout/fragment_draft_sku_details.xml" value="0.17572463768115942" />
+        <entry key="app/src/main/res/layout/fragment_processed_images.xml" value="0.17572463768115942" />
         <entry key="app/src/main/res/layout/fragment_record_video.xml" value="0.17572463768115942" />
+        <entry key="app/src/main/res/layout/fragment_select_background.xml" value="0.15070921985815602" />
+        <entry key="app/src/main/res/layout/home_dashboard_fragment.xml" value="0.17572463768115942" />
+        <entry key="app/src/main/res/layout/item_completed_projects.xml" value="0.17572463768115942" />
+        <entry key="app/src/main/res/layout/item_completed_skus.xml" value="0.15896739130434784" />
+        <entry key="app/src/main/res/layout/item_draft_images.xml" value="0.25" />
+        <entry key="app/src/main/res/layout/item_draft_project.xml" value="0.335" />
+        <entry key="app/src/main/res/layout/item_draft_sku.xml" value="0.335" />
         <entry key="app/src/main/res/layout/item_exposure.xml" value="0.17572463768115942" />
         <entry key="app/src/main/res/layout/item_focus.xml" value="0.17572463768115942" />
+        <entry key="app/src/main/res/layout/item_processed_image.xml" value="0.3098958333333333" />
+        <entry key="app/src/main/res/layout/item_sku_deatils_shimmer.xml" value="0.17572463768115942" />
+        <entry key="app/src/main/res/layout/row_replaced_images.xml" value="0.17572463768115942" />
+        <entry key="app/src/main/res/layout/row_replaced_images_interior.xml" value="0.17572463768115942" />
       </map>
     </option>
   </component>
