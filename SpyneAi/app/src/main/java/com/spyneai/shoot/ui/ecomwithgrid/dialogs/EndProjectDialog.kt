@@ -22,7 +22,7 @@ class EndProjectDialog : BaseDialogFragment<ShootViewModel, EndProjectDialogBind
 
         viewModel.getProjectDetail(
             Utilities.getPreference(requireContext(), AppConstants.AUTH_KEY).toString(),
-            viewModel.projectId!!.toString()
+            viewModel.projectId.value.toString()
         )
 
         viewModel.projectDetailResponse.observe(viewLifecycleOwner, {

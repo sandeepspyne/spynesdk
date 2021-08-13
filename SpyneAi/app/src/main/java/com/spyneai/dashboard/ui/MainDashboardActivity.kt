@@ -14,6 +14,7 @@ import com.spyneai.needs.Utilities
 import com.spyneai.orders.ui.MyOrdersActivity
 import com.spyneai.shoot.ui.base.ShootActivity
 import com.spyneai.shoot.ui.StartShootActivity
+import com.spyneai.shoot.ui.base.ShootPortraitActivity
 
 
 class MainDashboardActivity : AppCompatActivity() {
@@ -48,15 +49,33 @@ class MainDashboardActivity : AppCompatActivity() {
                 R.id.homeDashboardFragment->setCurrentFragment(firstFragment)
 
                 R.id.shootActivity-> {
-                    var intent =
+
                         when(getString(R.string.app_name)) {
-                        "Ola Cabs",WhiteLabelConstants.CARS24,WhiteLabelConstants.CARS24_INDIA,"Trusted cars","Travo Photos","Yalla Motors","Spyne Hiring" ->  Intent(this, StartShootActivity::class.java)
-                            else -> Intent(this, ShootActivity::class.java)
+                        "Ola Cabs",WhiteLabelConstants.CARS24,WhiteLabelConstants.CARS24_INDIA,
+                        "Trusted cars","Travo Photos","Yalla Motors","Spyne Hiring" -> {
+                            var intent = Intent(this, StartShootActivity::class.java)
+                            intent.putExtra(AppConstants.CATEGORY_ID,AppConstants.CARS_CATEGORY_ID)
+                            intent.putExtra(AppConstants.CATEGORY_NAME,"Automobiles")
+                            startActivity(intent)
+
+                        } "Flipkart" -> {
+                            var intent = Intent(this, ShootPortraitActivity::class.java)
+                            intent.putExtra(AppConstants.CATEGORY_ID,AppConstants.FOOTWEAR_CATEGORY_ID)
+                            intent.putExtra(AppConstants.CATEGORY_NAME,"Footwear")
+                            Utilities.savePrefrence(this@MainDashboardActivity, AppConstants.CATEGORY_ID, AppConstants.FOOTWEAR_CATEGORY_ID)
+                            Utilities.savePrefrence(this@MainDashboardActivity, AppConstants.CATEGORY_NAME, "Footwear")
+                            startActivity(intent)
+
+                            }
+                            else ->{
+                                var intent = Intent(this, ShootActivity::class.java)
+                                intent.putExtra(AppConstants.CATEGORY_ID,AppConstants.CARS_CATEGORY_ID)
+                                intent.putExtra(AppConstants.CATEGORY_NAME,"Automobiles")
+                                startActivity(intent)
+                          }
+
                     }
 
-                    intent.putExtra(AppConstants.CATEGORY_ID,AppConstants.CARS_CATEGORY_ID)
-                    intent.putExtra(AppConstants.CATEGORY_NAME,"Automobiles")
-                    startActivity(intent)
                 }
                 R.id.completedOrdersFragment-> {
                     val intent = Intent(this, MyOrdersActivity::class.java)
