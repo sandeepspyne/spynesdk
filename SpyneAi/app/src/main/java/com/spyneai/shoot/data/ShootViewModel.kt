@@ -70,7 +70,7 @@ class ShootViewModel : ViewModel(){
     val overlaysResponse: LiveData<Resource<OverlaysResponse>>
         get() = _overlaysResponse
 
-    private val _createProjectRes : MutableLiveData<Resource<CreateProjectRes>> = MutableLiveData()
+    var _createProjectRes : MutableLiveData<Resource<CreateProjectRes>> = MutableLiveData()
     val createProjectRes: LiveData<Resource<CreateProjectRes>>
         get() = _createProjectRes
 

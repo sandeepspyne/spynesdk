@@ -38,6 +38,7 @@ class ConfirmReshootDialog : BaseDialogFragment<ShootViewModel, DialogConfirmRes
                 this["project_id"] = viewModel.shootData.value?.project_id
                 this["image_type"] = viewModel.shootData.value?.image_category
             }
+
             requireContext().captureEvent(
                 Events.RESHOOT,
                 properties)

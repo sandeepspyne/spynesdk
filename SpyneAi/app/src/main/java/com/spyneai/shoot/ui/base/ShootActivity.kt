@@ -14,19 +14,19 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.ViewModelProvider
 import com.spyneai.R
+import com.spyneai.base.network.Resource
 import com.spyneai.dashboard.ui.base.ViewModelFactory
 import com.spyneai.needs.AppConstants
 import com.spyneai.shoot.data.ShootViewModel
 import com.spyneai.shoot.data.model.CategoryDetails
+import com.spyneai.shoot.data.model.CreateProjectRes
 import com.spyneai.shoot.data.model.Sku
 import com.spyneai.shoot.ui.OverlaysFragment
 import com.spyneai.shoot.ui.dialogs.ShootExitDialog
-import com.spyneai.shoot.ui.dialogs.ShootHintDialog
 import com.spyneai.shoot.ui.ecomwithgrid.GridEcomFragment
 import com.spyneai.shoot.ui.ecomwithgrid.ProjectDetailFragment
 import com.spyneai.shoot.ui.ecomwithgrid.SkuDetailFragment
 import com.spyneai.shoot.ui.ecomwithoverlays.OverlayEcomFragment
-import com.spyneai.shoot.utils.log
 import com.spyneai.shoot.utils.shoot
 import java.io.File
 
@@ -54,6 +54,9 @@ class ShootActivity : AppCompatActivity() {
         setContentView(R.layout.activity_shoot)
 
         shootViewModel = ViewModelProvider(this, ViewModelFactory()).get(ShootViewModel::class.java)
+
+        if (intent.getBooleanExtra("from_drafts",false))
+            setUpDraftsData()
 
         val categoryDetails = CategoryDetails()
 
@@ -183,6 +186,16 @@ class ShootActivity : AppCompatActivity() {
                 }
             }
         })
+    }
+
+    private fun setUpDraftsData() {
+        shootViewModel.showVin.value = true
+        shootViewModel.isProjectCreated.value = true
+        shootViewModel._createProjectRes.value = Resource.Success(CreateProjectRes(
+            "",
+            intent.getStringExtra("project_id")!!,
+            200
+        ))
     }
 
     override fun onStart() {
