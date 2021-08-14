@@ -31,6 +31,7 @@ class ShootViewModel : ViewModel(){
     var processSku : Boolean = true
      var isStopCaptureClickable = false
 
+    var fromDrafts = false
     val isSensorAvaliable : MutableLiveData<Boolean> = MutableLiveData()
 
     val skuNumber : MutableLiveData<Int> = MutableLiveData()
@@ -66,7 +67,7 @@ class ShootViewModel : ViewModel(){
     val updateTotalFramesRes: LiveData<Resource<UpdateTotalFramesRes>>
         get() = _updateTotalFramesRes
 
-    private val _overlaysResponse: MutableLiveData<Resource<OverlaysResponse>> = MutableLiveData()
+    private var _overlaysResponse: MutableLiveData<Resource<OverlaysResponse>> = MutableLiveData()
     val overlaysResponse: LiveData<Resource<OverlaysResponse>>
         get() = _overlaysResponse
 
@@ -81,7 +82,7 @@ class ShootViewModel : ViewModel(){
 
     val shootDimensions : MutableLiveData<ShootDimensions> = MutableLiveData()
     val sku : MutableLiveData<Sku> = MutableLiveData()
-    val subCategory : MutableLiveData<NewSubCatResponse.Data> = MutableLiveData()
+    var subCategory : MutableLiveData<NewSubCatResponse.Data> = MutableLiveData()
     var categoryDetails : MutableLiveData<CategoryDetails> = MutableLiveData()
     val isSubCategoryConfirmed : MutableLiveData<Boolean> = MutableLiveData()
     val showVin : MutableLiveData<Boolean> = MutableLiveData()

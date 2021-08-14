@@ -22,17 +22,72 @@ import com.spyneai.orders.data.response.ImagesOfSkuRes
 import com.spyneai.posthog.Events
 import com.spyneai.processedimages.ui.BikeOrderSummaryActivity
 import com.spyneai.processedimages.ui.adapter.ProcessedImagesAdapter
+import com.spyneai.shoot.ui.base.ShootActivity
 
 class DraftSkuDetailsFragment : BaseFragment<DraftViewModel, FragmentDraftSkuDetailsBinding>() {
+
+    private var exterior = ArrayList<ImagesOfSkuRes.Data>()
+    private var interiorList = ArrayList<ImagesOfSkuRes.Data>()
+    private var miscList = ArrayList<ImagesOfSkuRes.Data>()
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        getSkuDetails()
+
+        observeSkuDeatils()
+
+        val intent = requireActivity().intent
+
+        binding.btnContinueShoot.setOnClickListener{
+            Intent(
+                context,
+                ShootActivity::class.java
+            ).apply {
+                putExtra(AppConstants.FROM_DRAFTS, true)
+                putExtra(AppConstants.CATEGORY_ID, "cat_d8R14zUNE")
+                putExtra(AppConstants.PROJECT_ID, intent.getStringExtra(AppConstants.PROJECT_ID))
+                putExtra(AppConstants.SUB_CAT_ID, intent.getStringExtra(AppConstants.SUB_CAT_ID))
+                putExtra(AppConstants.SUB_CAT_NAME,intent.getStringExtra(AppConstants.SUB_CAT_NAME))
+                putExtra(AppConstants.CATEGORY_NAME, intent.getStringExtra(AppConstants.CATEGORY_NAME))
+                putExtra(AppConstants.SKU_NAME, intent.getStringExtra(AppConstants.SKU_NAME))
+                putExtra(AppConstants.SKU_CREATED, true)
+                putExtra(AppConstants.SKU_ID, intent.getStringExtra(AppConstants.SKU_ID))
+                putExtra(AppConstants.EXTERIOR_ANGLES, intent.getIntExtra(AppConstants.EXTERIOR_ANGLES,0))
+                putExtra(AppConstants.RESUME_EXTERIOR, resumeExterior())
+                putExtra(AppConstants.EXTERIOR_ANGLES, intent.getIntExtra(AppConstants.EXTERIOR_ANGLES,0))
+                putExtra(AppConstants.RESUME_EXTERIOR, resumeExterior())
+                putExtra(AppConstants.EXTERIOR_SIZE, exterior.size)
+                putExtra(AppConstants.RESUME_INTERIOR, resumeInterior())
+                putExtra(AppConstants.INTERIOR_SIZE, interiorList.size)
+                putExtra(AppConstants.RESUME_MISC, resumeMisc())
+                putExtra(AppConstants.MISC_SIZE, miscList.size)
+                putExtra("is_paid",false)
+                putExtra(AppConstants.IMAGE_TYPE,intent.getStringExtra(AppConstants.IMAGE_TYPE))
+                putExtra(AppConstants.IS_360,intent.getStringExtra(AppConstants.IS_360))
+                startActivity(this)
+            }
+        }
+    }
+
+    private fun resumeMisc() = miscList.size > 0
+
+    private fun resumeInterior() = !resumeExterior() && !resumeMisc()
+
+    private fun resumeExterior() = exterior.size != requireActivity().intent.getIntExtra(AppConstants.EXTERIOR_ANGLES,0)
+
+
+    private fun getSkuDetails() {
+        binding.shimmerCompletedSKU.visibility = View.VISIBLE
+        binding.shimmerCompletedSKU.startShimmer()
+
         viewModel.getImagesOfSku(
             Utilities.getPreference(requireContext(), AppConstants.AUTH_KEY).toString(),
-           requireActivity().intent.getStringExtra("sku_id")!!
+            requireActivity().intent.getStringExtra(AppConstants.SKU_ID)!!
         )
+    }
 
+    private  fun observeSkuDeatils() {
         viewModel.imagesOfSkuRes.observe(viewLifecycleOwner,{
             when(it) {
                 is Resource.Success -> {
@@ -40,14 +95,13 @@ class DraftSkuDetailsFragment : BaseFragment<DraftViewModel, FragmentDraftSkuDet
                     binding.shimmerCompletedSKU.visibility = View.GONE
                     binding.nsv.visibility = View.VISIBLE
 
-
                     var imageList = ArrayList<String>()
 
                     if (!it.value.data.isNullOrEmpty()) {
 
                         val list = it.value.data
 
-                        val exterior = list?.filter {
+                        exterior = list?.filter {
                             it.image_category == "Exterior"
                         } as ArrayList
 
@@ -59,7 +113,7 @@ class DraftSkuDetailsFragment : BaseFragment<DraftViewModel, FragmentDraftSkuDet
                             }
                         }
 
-                        val interiorList = list?.filter {
+                        interiorList = list?.filter {
                             it.image_category == "Interior"
                         } as ArrayList
 
@@ -71,7 +125,7 @@ class DraftSkuDetailsFragment : BaseFragment<DraftViewModel, FragmentDraftSkuDet
                             }
                         }
 
-                        val miscList = list?.filter {
+                        miscList = list?.filter {
                             it.image_category == "Focus Shoot"
                         } as ArrayList
 
@@ -82,6 +136,8 @@ class DraftSkuDetailsFragment : BaseFragment<DraftViewModel, FragmentDraftSkuDet
                                 adapter = DraftImagesAdapter(requireContext(),miscList)
                             }
                         }
+
+                        binding.flContinueShoot.visibility = View.VISIBLE
                     }
 
                     it.value.data.forEach {
@@ -97,7 +153,12 @@ class DraftSkuDetailsFragment : BaseFragment<DraftViewModel, FragmentDraftSkuDet
                         Events.GET_COMPLETED_ORDERS_FAILED, Properties(),
                         it.errorMessage!!
                     )
-                    handleApiError(it)
+                    if (it.errorCode == 404){
+                        binding.flContinueShoot.visibility = View.VISIBLE
+                    }else{
+                        handleApiError(it) { getSkuDetails() }
+                    }
+
                 }
             }
         })

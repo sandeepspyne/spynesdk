@@ -103,9 +103,23 @@ object AppConstants {
 
     val  IS_NEW_USER: String = "isNewUser"
 
-    val  PROJECT_ID: String = "projectId"
 
+
+
+    //drafts constants
+    val  FROM_DRAFTS: String = "fromDrafts"
+    val  PROJECT_ID: String = "projectId"
     val  PROJECT_NAME: String = "projectName"
+    val  SKU_CREATED: String = "skuCreated"
+    val  EXTERIOR_ANGLES: String = "exteriorAngles"
+    val SUB_CAT_NAME : String = "SUB_CAT_NAME"
+    val RESUME_EXTERIOR = "RESUME_EXTERIOR"
+    val EXTERIOR_SIZE = "EXTERIOR_SIZE"
+    val MISC_SIZE = "MISC_SIZE"
+    val INTERIOR_SIZE = "INTERIOR_SIZE"
+    val RESUME_INTERIOR = "RESUME_INTERIOR"
+    val RESUME_MISC = "RESUME_MISC"
+
 
 
 

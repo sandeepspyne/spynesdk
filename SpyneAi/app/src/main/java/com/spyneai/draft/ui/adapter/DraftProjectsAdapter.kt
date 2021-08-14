@@ -113,11 +113,12 @@ class DraftProjectsAdapter(
                 if (draftsList[position].sku.isNullOrEmpty()){
                     Intent(context, ShootActivity::class.java)
                         .apply {
-                            putExtra("from_drafts", true)
+                            putExtra(AppConstants.FROM_DRAFTS, true)
                             putExtra(AppConstants.CATEGORY_ID, "cat_d8R14zUNE")
                             putExtra(AppConstants.CATEGORY_NAME, draftsList[position].category)
-                            putExtra("project_id", draftsList[position].project_id)
-                            putExtra("sku_crated", false)
+                            putExtra(AppConstants.PROJECT_ID, draftsList[position].project_id)
+                            putExtra(AppConstants.SKU_NAME, draftsList[position].project_name)
+                            putExtra(AppConstants.SKU_CREATED, false)
                             context.startActivity(this)
                         }
                     //Toast.makeText(context, "No SKU data found", Toast.LENGTH_SHORT).show()

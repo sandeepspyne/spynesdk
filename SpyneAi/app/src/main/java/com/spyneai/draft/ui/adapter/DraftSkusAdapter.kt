@@ -20,9 +20,11 @@ import com.spyneai.orders.data.viewmodel.MyOrdersViewModel
 import com.spyneai.orders.ui.adapter.SkusAdapter
 import com.spyneai.processedimages.ui.BikeImagesActivity
 import com.spyneai.processedimages.ui.ShowImagesActivity
+import com.spyneai.shoot.ui.base.ShootActivity
 
 class DraftSkusAdapter (
     val context: Context,
+    val projectId : String,
     val skuList: ArrayList<GetProjectsResponse.Sku>
 ) : RecyclerView.Adapter<DraftSkusAdapter.ViewHolder>() {
 
@@ -68,16 +70,26 @@ class DraftSkusAdapter (
                 skuList[position].sku_id
             )
 
-            val intent = Intent(
+           Intent(
                 context,
                 DraftSkuDetailsActivity::class.java
-            )
+            ).apply {
+                putExtra(AppConstants.FROM_DRAFTS, true)
+               putExtra(AppConstants.PROJECT_ID, projectId)
+                putExtra(AppConstants.CATEGORY_ID, "cat_d8R14zUNE")
+                putExtra(AppConstants.SUB_CAT_ID,"prod_seY3vxhATCH")
+                putExtra(AppConstants.SUB_CAT_NAME,skuList[position].category)
+                putExtra(AppConstants.CATEGORY_NAME, "Automobiles")
+                putExtra(AppConstants.SKU_NAME, skuList[position].sku_name)
+                putExtra(AppConstants.SKU_CREATED, false)
+                putExtra(AppConstants.SKU_ID, skuList[position].sku_id)
+                putExtra(AppConstants.EXTERIOR_ANGLES, 8)
+                putExtra("is_paid",skuList[position].paid)
+                putExtra(AppConstants.IMAGE_TYPE,skuList[position].category)
+                putExtra(AppConstants.IS_360,skuList[position].is360)
+                context.startActivity(this)
+            }
 
-            intent.putExtra(AppConstants.SKU_ID, skuList[position].sku_id)
-            intent.putExtra("is_paid",skuList[position].paid)
-            intent.putExtra(AppConstants.IMAGE_TYPE,skuList[position].category)
-            intent.putExtra(AppConstants.IS_360,skuList[position].is360)
-            context.startActivity(intent)
         }
 
 

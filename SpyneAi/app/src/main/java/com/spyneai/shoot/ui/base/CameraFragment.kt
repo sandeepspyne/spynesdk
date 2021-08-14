@@ -246,6 +246,8 @@ class CameraFragment : BaseFragment<ShootViewModel, FragmentCameraBinding>(), Pi
 
 
     private fun createSku(projectId: String, prod_sub_cat_id: String) {
+
+        var s = ""
         Utilities.showProgressDialog(requireContext())
         viewModel.isCameraButtonClickable = false
 

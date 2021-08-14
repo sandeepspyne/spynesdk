@@ -15,8 +15,10 @@ import androidx.core.content.ContextCompat
 import androidx.lifecycle.ViewModelProvider
 import com.spyneai.R
 import com.spyneai.base.network.Resource
+import com.spyneai.dashboard.response.NewSubCatResponse
 import com.spyneai.dashboard.ui.base.ViewModelFactory
 import com.spyneai.needs.AppConstants
+import com.spyneai.needs.Utilities
 import com.spyneai.shoot.data.ShootViewModel
 import com.spyneai.shoot.data.model.CategoryDetails
 import com.spyneai.shoot.data.model.CreateProjectRes
@@ -55,7 +57,7 @@ class ShootActivity : AppCompatActivity() {
 
         shootViewModel = ViewModelProvider(this, ViewModelFactory()).get(ShootViewModel::class.java)
 
-        if (intent.getBooleanExtra("from_drafts",false))
+        if (intent.getBooleanExtra(AppConstants.FROM_DRAFTS,false))
             setUpDraftsData()
 
         val categoryDetails = CategoryDetails()
@@ -189,13 +191,59 @@ class ShootActivity : AppCompatActivity() {
     }
 
     private fun setUpDraftsData() {
+        shootViewModel.fromDrafts = true
         shootViewModel.showVin.value = true
         shootViewModel.isProjectCreated.value = true
+
         shootViewModel._createProjectRes.value = Resource.Success(CreateProjectRes(
             "",
-            intent.getStringExtra("project_id")!!,
+            intent.getStringExtra(AppConstants.PROJECT_ID)!!,
             200
         ))
+
+        //set sku data
+        val sku = Sku()
+        sku.projectId = intent.getStringExtra(AppConstants.PROJECT_ID)
+        sku.skuName = intent.getStringExtra(AppConstants.SKU_NAME)
+        sku.categoryName = shootViewModel.categoryDetails.value?.categoryName
+
+        shootViewModel.sku.value = sku
+
+        if (intent.getBooleanExtra(AppConstants.SKU_CREATED,false)) {
+            shootViewModel.getSubCategories(
+                Utilities.getPreference(this, AppConstants.AUTH_KEY).toString(),
+                intent.getStringExtra(AppConstants.CATEGORY_ID).toString()
+            )
+
+            shootViewModel.sku.value!!.skuId = intent.getStringExtra(AppConstants.SKU_ID)
+
+            //fetch overlays
+            shootViewModel.isSubCategoryConfirmed.value = true
+            shootViewModel.subCategory.value = getSubcategoryResponse()
+
+            shootViewModel.getOverlays(
+                Utilities.getPreference(this,AppConstants.AUTH_KEY).toString(),
+                intent.getStringExtra(AppConstants.CATEGORY_ID)!!,
+                intent.getStringExtra(AppConstants.SUB_CAT_ID)!!,
+                intent.getIntExtra(AppConstants.EXTERIOR_ANGLES,0).toString(),
+            )
+        }
+
+    }
+
+    private fun getSubcategoryResponse(): NewSubCatResponse.Data? {
+        return NewSubCatResponse.Data(
+            1,
+            "",
+            "",
+            "",
+            1,
+            1,
+            intent.getStringExtra(AppConstants.CATEGORY_ID)!!,
+            intent.getStringExtra(AppConstants.SUB_CAT_ID)!!,
+            intent.getStringExtra(AppConstants.SUB_CAT_NAME)!!,
+            ""
+        )
     }
 
     override fun onStart() {
