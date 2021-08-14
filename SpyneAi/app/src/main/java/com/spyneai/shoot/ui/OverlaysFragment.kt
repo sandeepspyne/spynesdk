@@ -46,9 +46,9 @@ class OverlaysFragment : BaseFragment<ShootViewModel, FragmentOverlaysBinding>()
     NewSubCategoriesAdapter.BtnClickListener {
 
     lateinit var subCategoriesAdapter: NewSubCategoriesAdapter
-    lateinit var progressAdapter: ShootProgressAdapter
+    var progressAdapter: ShootProgressAdapter? = null
     var interiorAdapter: InteriorAdapter? = null
-    lateinit var miscAdapter: MiscAdapter
+    var miscAdapter: MiscAdapter? = null
     private var showDialog = true
     var pos = 0
 
@@ -78,16 +78,13 @@ class OverlaysFragment : BaseFragment<ShootViewModel, FragmentOverlaysBinding>()
                 binding.imgOverlay?.visibility = View.GONE
                 if (viewModel.startInteriorShots.value == null)
                     initInteriorShots()
-
-                viewModel.startMiscShots.observe(viewLifecycleOwner, {
-                })
             }
         })
 
         viewModel.isSubCategoryConfirmed.observe(viewLifecycleOwner, {
             //disable angle selection click
             binding.tvShoot?.isClickable = false
-            if (it) binding.rvSubcategories?.visibility = View.INVISIBLE
+            if (it && !viewModel.fromDrafts) binding.rvSubcategories?.visibility = View.INVISIBLE
         })
 
         observeIsProjectCreated()
@@ -209,40 +206,78 @@ class OverlaysFragment : BaseFragment<ShootViewModel, FragmentOverlaysBinding>()
                                             viewModel.showInteriorDialog.value = true
                                         }
                                         else -> {
-                                            if (interiorAdapter == null)
-                                                if (interiorAdapter == null)
+                                            viewModel.startInteriorShots.value = true
+                                            viewModel.interiorAngles.value =  it.value.interior.size
+
+                                            if (interiorAdapter == null) {
                                                     interiorAdapter = InteriorAdapter(requireContext(),
                                                         it.value.interior as ArrayList<NewSubCatResponse.Interior>
                                                     )
-                                            viewModel.interiorAngles.value =  it.value.interior.size
-                                            viewModel.interiorShootNumber.value = requireActivity().intent.getIntExtra(AppConstants.INTERIOR_SIZE,0)
 
-                                            startInteriorShots()
+                                                    binding.rvSubcategories.apply {
+                                                        layoutManager = LinearLayoutManager(requireContext())
+                                                        this?.adapter = interiorAdapter
+                                                    }
+                                                }
+
+                                            viewModel.interiorShootNumber.value = requireActivity().intent.getIntExtra(AppConstants.INTERIOR_SIZE,0)
                                         }
                                     }
-                                }
-                                else -> {
-                                    var s = ""
                                 }
                             }
                         }
                     )
 
                 }
-                intent.getIntExtra(AppConstants.MISC_SIZE,0) > 0 -> {
+                intent.getBooleanExtra(AppConstants.RESUME_MISC,false) -> {
                     binding.tvShoot?.isClickable = false
 
                     viewModel.subCategoriesResponse.observe(
                         viewLifecycleOwner,{
                             when(it) {
                                 is Resource.Success -> {
-                                    if (intent.getIntExtra(AppConstants.MISC_SIZE,0) ==
-                                            it.value.miscellaneous.size) {
-                                        //select background
-                                        viewModel.selectBackground.value = true
-                                    }else {
-                                        //resume misc shoot
-                                        startMiscShots()
+                                    when {
+                                        intent.getIntExtra(AppConstants.MISC_SIZE,0) ==
+                                                it.value.miscellaneous.size -> {
+                                            //select background
+                                            viewModel.selectBackground.value = true
+                                        }
+                                        intent.getIntExtra(AppConstants.MISC_SIZE,0) ==
+                                                0 -> {
+                                            viewModel.showMiscDialog.value = true
+                                        }
+                                        else -> {
+                                            viewModel.startMiscShots.value = true
+                                            viewModel.miscAngles.value =  it.value.miscellaneous.size
+
+                                            if (progressAdapter == null) {
+                                                progressAdapter = ShootProgressAdapter(
+                                                    requireContext(),
+                                                    viewModel.getShootProgressList(
+                                                        viewModel.miscAngles.value!!,
+                                                        intent.getIntExtra(AppConstants.MISC_SIZE,0)
+                                                    )
+                                                )
+
+                                                binding.rvProgress.apply {
+                                                    layoutManager = LinearLayoutManager(requireContext(),LinearLayoutManager.HORIZONTAL,false)
+                                                    this?.adapter = progressAdapter
+                                                }
+                                            }
+
+                                            if (miscAdapter == null) {
+                                                miscAdapter = MiscAdapter(requireContext(),
+                                                    it.value.miscellaneous as ArrayList<NewSubCatResponse.Miscellaneous>
+                                                )
+
+                                                binding.rvSubcategories.apply {
+                                                    layoutManager = LinearLayoutManager(requireContext())
+                                                    this?.adapter = miscAdapter
+                                                }
+                                            }
+
+                                            viewModel.miscShootNumber.value = requireActivity().intent.getIntExtra(AppConstants.MISC_SIZE,0)
+                                        }
                                     }
                                 }
                                 else -> {}
@@ -250,6 +285,7 @@ class OverlaysFragment : BaseFragment<ShootViewModel, FragmentOverlaysBinding>()
                         }
                     )
                 }
+
             }
            }else {
             if (viewModel.shootList.value.isNullOrEmpty()) {
@@ -327,7 +363,7 @@ class OverlaysFragment : BaseFragment<ShootViewModel, FragmentOverlaysBinding>()
                     }
                 }
             })
-            progressAdapter.updateList(viewModel.shootNumber.value!!)
+            progressAdapter!!.updateList(viewModel.shootNumber.value!!)
             shoot("updateList in progress adapter called- " + viewModel.shootNumber.value!!)
         })
     }
@@ -446,7 +482,6 @@ class OverlaysFragment : BaseFragment<ShootViewModel, FragmentOverlaysBinding>()
                     viewModel.shootNumber.value = intent.getIntExtra(AppConstants.EXTERIOR_SIZE,0)
                 }else -> {
                     binding.imgOverlay.visibility = View.GONE
-                    binding.tvAngleName?.visibility = View.GONE
                 }
 
             }
@@ -547,6 +582,7 @@ class OverlaysFragment : BaseFragment<ShootViewModel, FragmentOverlaysBinding>()
                     interiorAdapter = InteriorAdapter(requireContext(), interiorList)
 
                     binding.rvSubcategories.apply {
+                        layoutManager = LinearLayoutManager(requireContext())
                         this?.adapter = interiorAdapter
                     }
                     //change image type
@@ -556,8 +592,6 @@ class OverlaysFragment : BaseFragment<ShootViewModel, FragmentOverlaysBinding>()
                 }
             }
         })
-
-
 
         viewModel.interiorShootNumber.observe(viewLifecycleOwner, {
             binding.tvAngleName?.text =
@@ -588,14 +622,14 @@ class OverlaysFragment : BaseFragment<ShootViewModel, FragmentOverlaysBinding>()
             }
 
             if (viewModel.interiorShootNumber.value!! == 0)
-                progressAdapter.updateList(
+                progressAdapter!!.updateList(
                     viewModel.getShootProgressList(
                         viewModel.interiorAngles.value!!,
                         viewModel.interiorShootNumber.value!!
                     )
                 )
             else
-                progressAdapter.updateList(viewModel.interiorShootNumber.value!!)
+                progressAdapter!!.updateList(viewModel.interiorShootNumber.value!!)
             shoot("updateList in progress adapter called- " + viewModel.interiorShootNumber.value!!)
         })
     }
@@ -625,16 +659,20 @@ class OverlaysFragment : BaseFragment<ShootViewModel, FragmentOverlaysBinding>()
                 is Resource.Success -> {
                     val miscList = it.value.miscellaneous
 
-                    val myMiscShootList = viewModel.shootList.value?.filter {
-                        it.image_category == "Focus Shoot"
-                    }
+                   if (viewModel.fromDrafts) {
 
-                    //set interior angles value
-                    if (!myMiscShootList.isNullOrEmpty()) {
-                        viewModel.miscShootNumber.value = myMiscShootList.size - 1
-                        miscList.get(myMiscShootList.size - 1).isSelected = true
-                    } else
-                        viewModel.miscShootNumber.value = 0
+                   }else {
+                       val myMiscShootList = viewModel.shootList.value?.filter {
+                           it.image_category == "Focus Shoot"
+                       }
+
+                       //set interior angles value
+                       if (!myMiscShootList.isNullOrEmpty()) {
+                           viewModel.miscShootNumber.value = myMiscShootList.size - 1
+                           miscList.get(myMiscShootList.size - 1).isSelected = true
+                       } else
+                           viewModel.miscShootNumber.value = 0
+                   }
 
                     viewModel.miscAngles.value = miscList.size
 
@@ -657,26 +695,26 @@ class OverlaysFragment : BaseFragment<ShootViewModel, FragmentOverlaysBinding>()
 
         viewModel.miscShootNumber.observe(viewLifecycleOwner, {
             binding.tvAngleName?.text =
-                miscAdapter.miscList[viewModel.miscShootNumber.value!!].display_name
+                miscAdapter?.miscList!![viewModel.miscShootNumber.value!!].display_name
             binding.tvShoot?.text =
                 "Angles ${viewModel.miscShootNumber.value!! + 1}/${viewModel.miscAngles.value}"
 
             if (viewModel.miscShootNumber.value!! != 0)
-                miscAdapter.miscList[viewModel.miscShootNumber.value!! - 1].isSelected = false
+                miscAdapter?.miscList!![viewModel.miscShootNumber.value!! - 1].isSelected = false
 
-            miscAdapter.miscList[viewModel.miscShootNumber.value!!].isSelected = true
-            miscAdapter.notifyDataSetChanged()
+            miscAdapter!!.miscList[viewModel.miscShootNumber.value!!].isSelected = true
+            miscAdapter!!.notifyDataSetChanged()
             binding.rvSubcategories?.scrollToPosition(viewModel.miscShootNumber.value!!)
 
             if (viewModel.miscShootNumber.value!! == 0)
-                progressAdapter.updateList(
+                progressAdapter!!.updateList(
                     viewModel.getShootProgressList(
                         viewModel.miscAngles.value!!,
                         viewModel.miscShootNumber.value!!
                     )
                 )
             else
-                progressAdapter.updateList(viewModel.miscShootNumber.value!!)
+                progressAdapter!!.updateList(viewModel.miscShootNumber.value!!)
             shoot("updateList in progress adapter called- " + viewModel.miscShootNumber.value!!)
         })
     }

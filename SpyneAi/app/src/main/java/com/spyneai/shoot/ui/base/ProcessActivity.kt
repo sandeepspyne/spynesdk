@@ -31,8 +31,8 @@ class ProcessActivity : AppCompatActivity() {
         processViewModel.interiorMiscShootsCount = intent.getIntExtra("interior_misc_count",0)
         processViewModel.categoryName = intent.getStringExtra(AppConstants.CATEGORY_NAME)
 
-        if (processViewModel.categoryName == "Automobiles" || processViewModel.categoryName == "Bikes")
-            processViewModel.frontFramesList = intent.getStringArrayListExtra("exterior_images_list")!!
+//        if (processViewModel.categoryName == "Automobiles" || processViewModel.categoryName == "Bikes")
+//            processViewModel.frontFramesList = intent.getStringArrayListExtra("exterior_images_list")!!
 
         if (intent.getBooleanExtra("process_sku",true)){
             supportFragmentManager.beginTransaction()

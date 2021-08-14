@@ -183,7 +183,7 @@ class ShootActivity : AppCompatActivity() {
                     this.putExtra("exterior_angles", shootViewModel.exterirorAngles.value)
                     this.putExtra("process_sku",shootViewModel.processSku)
                     this.putExtra("interior_misc_count",getInteriorMiscCount())
-                    this.putStringArrayListExtra("exterior_images_list",getExteriorImagesList())
+                    //this.putStringArrayListExtra("exterior_images_list",getExteriorImagesList())
                     startActivity(this)
                 }
             }
