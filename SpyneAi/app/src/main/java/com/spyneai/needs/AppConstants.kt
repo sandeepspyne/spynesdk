@@ -5,6 +5,7 @@ object AppConstants {
     val IS_360: String? = "IS_360"
     val CARS_CATEGORY_ID = "cat_d8R14zUNE"
     val FOOTWEAR_CATEGORY_ID = "cat_Ujt0kuFxX"
+    val ECOM_CATEGORY_ID = "cat_Ujt0kuFxY"
     val LIST_IMAGE_NAME = "LIST_IMAGE_NAME"
     val tokenId: String = "tokenId"
     val CREDITS_MESSAGE = "CREDITS_MESSAGE"

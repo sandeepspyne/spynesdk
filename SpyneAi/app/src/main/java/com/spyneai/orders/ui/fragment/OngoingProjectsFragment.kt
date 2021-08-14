@@ -109,7 +109,7 @@ class OngoingProjectsFragment : BaseFragment<MyOrdersViewModel, FragmentOngoingP
                    repeatRefreshData()
            }
            if (runnable != null)
-               handler.postDelayed(runnable!!,15000)
+               handler.postDelayed(runnable!!,10000)
        }catch (e : IllegalArgumentException){
            e.printStackTrace()
        }catch (e : Exception){

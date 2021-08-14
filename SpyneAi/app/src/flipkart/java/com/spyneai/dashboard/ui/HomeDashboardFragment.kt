@@ -289,6 +289,7 @@ class HomeDashboardFragment :
                             override fun onBtnClick(position: Int) {
 
                                 Utilities.savePrefrence(requireContext(), AppConstants.CATEGORY_ID, it.value.data[position].prod_cat_id)
+                                Utilities.savePrefrence(requireContext(), AppConstants.CATEGORY_NAME, it.value.data[position].prod_cat_name)
 
                                 catId = it.value.data[position].prod_cat_id
                                 displayName = it.value.data[position].prod_cat_name
@@ -340,7 +341,7 @@ class HomeDashboardFragment :
 //                                        startActivity(intent)
 //                                    }
 
-                                    0 -> {
+                                    0, 1 -> {
                                         val intent = Intent(requireContext(), ShootPortraitActivity::class.java)
                                         intent.putExtra(
                                             AppConstants.CATEGORY_NAME,
@@ -422,7 +423,7 @@ class HomeDashboardFragment :
                 if (refreshData)
                     repeatRefreshData()  }
             if (runnable != null)
-                handler.postDelayed(runnable!!,15000)
+                handler.postDelayed(runnable!!,10000)
         }catch (e : IllegalArgumentException){
             e.printStackTrace()
         }catch (e : Exception){

@@ -60,10 +60,17 @@ class MainDashboardActivity : AppCompatActivity() {
 
                         } "Flipkart" -> {
                             var intent = Intent(this, ShootPortraitActivity::class.java)
-                            intent.putExtra(AppConstants.CATEGORY_ID,AppConstants.FOOTWEAR_CATEGORY_ID)
-                            intent.putExtra(AppConstants.CATEGORY_NAME,"Footwear")
-                            Utilities.savePrefrence(this@MainDashboardActivity, AppConstants.CATEGORY_ID, AppConstants.FOOTWEAR_CATEGORY_ID)
-                            Utilities.savePrefrence(this@MainDashboardActivity, AppConstants.CATEGORY_NAME, "Footwear")
+                            if (Utilities.getPreference(this@MainDashboardActivity, AppConstants.CATEGORY_NAME).equals("Footwear")){
+                                intent.putExtra(AppConstants.CATEGORY_ID,AppConstants.FOOTWEAR_CATEGORY_ID)
+                                intent.putExtra(AppConstants.CATEGORY_NAME,"Footwear")
+                                Utilities.savePrefrence(this@MainDashboardActivity, AppConstants.CATEGORY_ID, AppConstants.FOOTWEAR_CATEGORY_ID)
+                                Utilities.savePrefrence(this@MainDashboardActivity, AppConstants.CATEGORY_NAME, "Footwear")
+                            }else if(Utilities.getPreference(this@MainDashboardActivity, AppConstants.CATEGORY_NAME).equals("E-Commerce")){
+                                intent.putExtra(AppConstants.CATEGORY_ID,AppConstants.ECOM_CATEGORY_ID)
+                                intent.putExtra(AppConstants.CATEGORY_NAME,"E-Commerce")
+                                Utilities.savePrefrence(this@MainDashboardActivity, AppConstants.CATEGORY_ID, AppConstants.ECOM_CATEGORY_ID)
+                                Utilities.savePrefrence(this@MainDashboardActivity, AppConstants.CATEGORY_NAME, "E-Commerce")
+                            }
                             startActivity(intent)
 
                             }
