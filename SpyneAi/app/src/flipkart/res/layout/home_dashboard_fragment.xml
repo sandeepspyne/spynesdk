@@ -27,7 +27,7 @@
                 android:layout_gravity="center"
                 android:layout_width="@dimen/dp_50"
                 android:layout_height="@dimen/dp_50"
-                android:src="@mipmap/app_logo" />
+                android:src="@drawable/app_logo" />
         </androidx.appcompat.widget.Toolbar>
 
         <View
@@ -125,20 +125,21 @@
                 android:id="@+id/btGetStarted"
                 android:layout_width="112dp"
                 android:layout_height="30dp"
+                android:layout_alignParentRight="true"
+                android:layout_centerInParent="true"
+                android:layout_marginStart="@dimen/dp_20"
+                android:layout_marginTop="@dimen/dp_20"
+                android:layout_marginEnd="@dimen/dp_20"
+                android:layout_marginRight="13dp"
+                android:layout_marginBottom="@dimen/dp_20"
+                android:background="@drawable/bg_get_started"
+                android:elevation="@dimen/dp_5"
+                android:fontFamily="@font/bold"
+                android:gravity="center"
                 android:text="@string/get_started_"
                 android:textAllCaps="false"
                 android:textColor="@color/primary"
-                android:layout_alignParentRight="true"
-                android:layout_marginRight="13dp"
-                android:gravity="center"
-                android:elevation="@dimen/dp_5"
-                android:fontFamily="@font/bold"
-                android:layout_margin="@dimen/dp_20"
-                android:layout_marginStart="@dimen/dp_5"
-                android:layout_marginEnd="@dimen/dp_5"
-                android:background="@drawable/bg_get_started"
-                android:textSize="@dimen/sp_12"
-                android:layout_centerInParent="true"/>
+                android:textSize="@dimen/sp_12" />
 
 
 
