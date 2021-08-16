@@ -20,6 +20,7 @@ import com.spyneai.shoot.utils.shoot
 class ProjectDetailFragment : BaseFragment<ShootViewModel, FragmentProjectDetailBinding>() {
 
     lateinit var projectDetailAdapter: ProjectDetailAdapter
+    var refreshData = true
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)

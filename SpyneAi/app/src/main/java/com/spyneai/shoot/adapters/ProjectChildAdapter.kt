@@ -35,7 +35,7 @@ class ProjectChildAdapter(
         try {
             Glide.with(context)
                 .load(projectList[position].input_lres)
-                .error(R.mipmap.defaults)
+                .error(R.drawable.ic_uploading)
                 .into(viewHolder.ivSkuImages)
         }catch (e: Exception){
 
