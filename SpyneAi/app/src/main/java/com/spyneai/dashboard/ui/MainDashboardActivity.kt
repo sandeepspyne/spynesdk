@@ -60,7 +60,7 @@ class MainDashboardActivity : AppCompatActivity() {
                             startActivity(intent)
 
                         }
-                            "Flipkart" -> {
+                            "Flipkart", "Udaan" -> {
 //                            var intent = Intent(this, ShootPortraitActivity::class.java)
 //                            if (Utilities.getPreference(this@MainDashboardActivity, AppConstants.CATEGORY_NAME).equals("Footwear")){
 //                                intent.putExtra(AppConstants.CATEGORY_ID,AppConstants.FOOTWEAR_CATEGORY_ID)

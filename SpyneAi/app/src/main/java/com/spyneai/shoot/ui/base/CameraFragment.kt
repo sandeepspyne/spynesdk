@@ -257,7 +257,7 @@ class CameraFragment : BaseFragment<ShootViewModel, FragmentCameraBinding>(), Pi
                     }
                 }
             }
-            "Flipkart" -> {
+            "Flipkart", "Udaan" -> {
                 binding.cameraCaptureButton?.setOnClickListener {
                     captureImage()
                 }
@@ -281,12 +281,7 @@ class CameraFragment : BaseFragment<ShootViewModel, FragmentCameraBinding>(), Pi
             }
             }
         }
-
-
-
-
     }
-
 
   private fun createSku(projectId: String, prod_sub_cat_id: String) {
       Utilities.showProgressDialog(requireContext())
