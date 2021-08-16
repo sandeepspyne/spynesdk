@@ -1,6 +1,7 @@
 package com.spyneai.shoot.ui.ecomwithgrid
 
 import android.os.Bundle
+import android.os.Handler
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -21,21 +22,24 @@ class ProjectDetailFragment : BaseFragment<ShootViewModel, FragmentProjectDetail
 
     lateinit var projectDetailAdapter: ProjectDetailAdapter
     var refreshData = true
+    lateinit var handler: Handler
+    private var runnable: Runnable? = null
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        viewModel.getProjectDetail(
-            Utilities.getPreference(requireContext(), AppConstants.AUTH_KEY).toString(),
-            viewModel.projectId.value.toString()
-        )
+        handler = Handler()
 
         binding.btHome.setOnClickListener {
             requireContext().gotoHome()
             viewModel.skuProcessState(Utilities.getPreference(requireContext(), AppConstants.AUTH_KEY).toString(), viewModel.sku.value?.projectId.toString())
             log("skuProcessState called")
         }
+    }
 
+    override fun onActivityCreated(savedInstanceState: Bundle?) {
+        super.onActivityCreated(savedInstanceState)
+        repeatRefreshData()
         viewModel.projectDetailResponse.observe(viewLifecycleOwner, {
             when (it) {
                 is Resource.Success -> {
@@ -67,7 +71,31 @@ class ProjectDetailFragment : BaseFragment<ShootViewModel, FragmentProjectDetail
                 }
             }
         })
+    }
 
+    fun repeatRefreshData(){
+        try {
+            viewModel.getProjectDetail(
+                Utilities.getPreference(requireContext(), AppConstants.AUTH_KEY).toString(),
+                viewModel.projectId.value.toString()
+            )
+            runnable = Runnable {
+                if (refreshData)
+                    repeatRefreshData()
+            }
+            if (runnable != null)
+                handler.postDelayed(runnable!!,15000)
+        }catch (e : IllegalArgumentException){
+            e.printStackTrace()
+        }catch (e : Exception){
+            e.printStackTrace()
+        }
+    }
+
+    override fun onPause() {
+        if (runnable != null)
+            handler.removeCallbacks(runnable!!)
+        super.onPause()
     }
 
     override fun getViewModel() = ShootViewModel::class.java

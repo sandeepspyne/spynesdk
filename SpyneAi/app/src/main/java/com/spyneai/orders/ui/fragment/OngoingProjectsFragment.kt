@@ -50,9 +50,7 @@ class OngoingProjectsFragment : BaseFragment<MyOrdersViewModel, FragmentOngoingP
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
 
-
         binding.shimmerCompletedSKU.startShimmer()
-
         repeatRefreshData()
 
         log("Completed SKUs(auth key): "+ Utilities.getPreference(requireContext(), AppConstants.AUTH_KEY))

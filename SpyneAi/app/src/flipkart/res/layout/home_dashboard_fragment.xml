@@ -154,7 +154,7 @@
             app:layout_constraintEnd_toEndOf="@+id/flSlider"
             app:layout_constraintTop_toTopOf="@+id/flSlider"
             app:layout_constraintBottom_toBottomOf="@+id/flSlider"
-            android:backgroundTint="@color/iv_light"
+            android:backgroundTint="@color/primary_light"
             android:padding="@dimen/dp_10" />
 
         <ImageButton
@@ -165,7 +165,7 @@
             app:layout_constraintStart_toStartOf="@+id/flSlider"
             app:layout_constraintTop_toTopOf="@+id/flSlider"
             app:layout_constraintBottom_toBottomOf="@+id/flSlider"
-            android:backgroundTint="@color/iv_light"
+            android:backgroundTint="@color/primary_light"
             android:padding="@dimen/dp_10"
             ></ImageButton>
 

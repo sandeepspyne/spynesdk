@@ -75,7 +75,7 @@ class ShowRawImagesActivity : AppCompatActivity() {
                             imageList.clear()
                             imageList.addAll(it.value.data.project_data[projectPosition].sku[position].images)
                             skuName.text = it.value.data.project_data[projectPosition].sku[position].sku_name
-                            tvTotalImages.text = it.value.data.project_data[projectPosition].sku.size.toString()
+                            tvTotalImages.text = it.value.data.project_data[projectPosition].sku[position].images.size.toString()
 
                             rawImagesAdapter = RawImagesAdapter(
                                 this,
