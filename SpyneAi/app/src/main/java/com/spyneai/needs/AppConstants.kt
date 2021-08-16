@@ -119,6 +119,7 @@ object AppConstants {
     val INTERIOR_SIZE = "INTERIOR_SIZE"
     val RESUME_INTERIOR = "RESUME_INTERIOR"
     val RESUME_MISC = "RESUME_MISC"
+    val FROM_LOCAL_DB = "FROM_LOCAL_DB"
 
 
 

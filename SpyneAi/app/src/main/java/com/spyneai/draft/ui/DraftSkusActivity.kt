@@ -14,6 +14,7 @@ import com.spyneai.captureFailureEvent
 import com.spyneai.dashboard.ui.base.ViewModelFactory
 import com.spyneai.draft.data.DraftViewModel
 import com.spyneai.draft.ui.adapter.DraftSkusAdapter
+import com.spyneai.draft.ui.adapter.LocalSkusAdapter
 import com.spyneai.needs.AppConstants
 import com.spyneai.needs.Utilities
 import com.spyneai.orders.data.response.GetProjectsResponse
@@ -25,12 +26,7 @@ import kotlinx.android.synthetic.main.activity_completed_skus.*
 
 class DraftSkusActivity : AppCompatActivity() {
     lateinit var viewModel: DraftViewModel
-
     lateinit var skusAdapter: DraftSkusAdapter
-    val status = "completed"
-    var refreshData = true
-    lateinit var handler: Handler
-    lateinit var runnable: Runnable
     lateinit var skuList: ArrayList<GetProjectsResponse.Sku>
     var position = 0
     
@@ -54,67 +50,79 @@ class DraftSkusActivity : AppCompatActivity() {
                 )
         }
 
-        skuList = ArrayList<GetProjectsResponse.Sku>()
-
+        skuList = ArrayList()
 
         shimmerCompletedSKU.startShimmer()
 
-        viewModel.getDrafts(
-            Utilities.getPreference(this, AppConstants.AUTH_KEY).toString()
-        )
+        if (intent.getBooleanExtra(AppConstants.FROM_LOCAL_DB,false)){
+            val skusList = viewModel.getSkusByProjectId(intent.getStringExtra(AppConstants.PROJECT_ID)!!)
+            val localSkusAdapter = LocalSkusAdapter(this,skusList)
+
+            tvProjectName.text = intent.getStringExtra(AppConstants.PROJECT_NAME)
+            tvTotalSku.text =  skusList.size.toString()
+
+            shimmerCompletedSKU.stopShimmer()
+            shimmerCompletedSKU.visibility = View.GONE
+            rvSkus.visibility = View.VISIBLE
+
+            rvSkus.adapter = localSkusAdapter
+        }else {
+            viewModel.getDrafts(
+                Utilities.getPreference(this, AppConstants.AUTH_KEY).toString()
+            )
 
 
-        log("Completed SKUs(auth key): " + Utilities.getPreference(this, AppConstants.AUTH_KEY))
-        viewModel.draftResponse.observe(
-            this,  {
-                when (it) {
-                    is Resource.Success -> {
-                        shimmerCompletedSKU.stopShimmer()
-                        shimmerCompletedSKU.visibility = View.GONE
-                        rvSkus.visibility = View.VISIBLE
+            log("Completed SKUs(auth key): " + Utilities.getPreference(this, AppConstants.AUTH_KEY))
+            viewModel.draftResponse.observe(
+                this,  {
+                    when (it) {
+                        is Resource.Success -> {
+                            shimmerCompletedSKU.stopShimmer()
+                            shimmerCompletedSKU.visibility = View.GONE
+                            rvSkus.visibility = View.VISIBLE
 
-                        if (it.value.data.project_data.isNullOrEmpty())
-                            refreshData = false
+                            if (it.value.data.project_data.isNullOrEmpty())
 
-                        if (it.value.data != null) {
-                            skuList.clear()
-                            skuList.addAll(it.value.data.project_data[position].sku)
-                            tvProjectName.text = it.value.data.project_data[position].project_name
-                            tvTotalSku.text = it.value.data.project_data[position].sku.size.toString()
+                                if (it.value.data != null) {
+                                    skuList.clear()
+                                    skuList.addAll(it.value.data.project_data[position].sku)
+                                    tvProjectName.text = it.value.data.project_data[position].project_name
+                                    tvTotalSku.text = it.value.data.project_data[position].sku.size.toString()
 
-                            skusAdapter = DraftSkusAdapter(
-                                this,
-                                it.value.data.project_data[position].project_id,
-                                skuList
-                            )
+                                    skusAdapter = DraftSkusAdapter(
+                                        this,
+                                        it.value.data.project_data[position].project_id,
+                                        skuList
+                                    )
 
-                            val layoutManager: RecyclerView.LayoutManager =
-                                LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false)
-                            rvSkus.setLayoutManager(layoutManager)
-                            rvSkus.setAdapter(skusAdapter)
+                                    val layoutManager: RecyclerView.LayoutManager =
+                                        LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false)
+                                    rvSkus.setLayoutManager(layoutManager)
+                                    rvSkus.setAdapter(skusAdapter)
+                                }
                         }
-                    }
-                    is Resource.Loading -> {
-
-                    }
-                    is Resource.Failure -> {
-                        refreshData = false
-                        shimmerCompletedSKU.stopShimmer()
-                        shimmerCompletedSKU.visibility = View.GONE
-
-                        if (it.errorCode == 404) {
-                            rvSkus.visibility = View.GONE
-                        } else {
-                            this.captureFailureEvent(
-                                Events.GET_COMPLETED_ORDERS_FAILED, Properties(),
-                                it.errorMessage!!
-                            )
+                        is Resource.Loading -> {
 
                         }
-                    }
+                        is Resource.Failure -> {
+                            shimmerCompletedSKU.stopShimmer()
+                            shimmerCompletedSKU.visibility = View.GONE
 
+                            if (it.errorCode == 404) {
+                                rvSkus.visibility = View.GONE
+                            } else {
+                                this.captureFailureEvent(
+                                    Events.GET_COMPLETED_ORDERS_FAILED, Properties(),
+                                    it.errorMessage!!
+                                )
+
+                            }
+                        }
+
+                    }
                 }
-            }
-        )
+            )
+        }
+
     }
 }

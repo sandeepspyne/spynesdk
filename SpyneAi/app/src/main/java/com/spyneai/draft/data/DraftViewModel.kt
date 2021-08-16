@@ -10,12 +10,14 @@ import com.spyneai.orders.data.response.GetOngoingSkusResponse
 import com.spyneai.orders.data.response.GetProjectsResponse
 import com.spyneai.orders.data.response.ImagesOfSkuRes
 import com.spyneai.processedimages.ui.data.ProcessedRepository
+import com.spyneai.shoot.data.ShootLocalRepository
 import com.spyneai.shoot.data.ShootRepository
 import kotlinx.coroutines.launch
 
 class DraftViewModel : ViewModel() {
     private val repository = MyOrdersRepository()
     private val processedRepository = ProcessedRepository()
+    private val localRepository = ShootLocalRepository()
 
     private val _draftResponse: MutableLiveData<Resource<GetProjectsResponse>> = MutableLiveData()
     val draftResponse: LiveData<Resource<GetProjectsResponse>>
@@ -31,6 +33,9 @@ class DraftViewModel : ViewModel() {
         _draftResponse.value = Resource.Loading
         _draftResponse.value = repository.getProjects(tokenId, "Draft")
     }
+
+    fun getDraftsFromLocal() = localRepository.getDraftProjects()
+    fun getSkusByProjectId(projectId : String) = localRepository.getSkusByProjectId(projectId)
 
     fun getImagesOfSku(
         authKey: String,

@@ -18,6 +18,7 @@ import com.spyneai.needs.AppConstants
 import com.spyneai.needs.Utilities
 import com.spyneai.posthog.Events
 import com.spyneai.shoot.data.ShootViewModel
+import com.spyneai.shoot.data.model.Project
 import com.spyneai.shoot.data.model.Sku
 import com.spyneai.shoot.utils.shoot
 
@@ -63,6 +64,15 @@ class CreateProjectAndSkuDialog : BaseDialogFragment<ShootViewModel, DialogCreat
                         Events.CREATE_PROJECT,
                         Properties().putValue("project_name",  removeWhiteSpace(binding.etVinNumber.text.toString()))
                     )
+
+                    //save project to local db
+                    val project = Project()
+                    project.projectName = removeWhiteSpace(binding.etVinNumber.text.toString())
+                    project.createdOn = System.currentTimeMillis()
+                    project.categoryId = viewModel.categoryDetails.value?.categoryId
+                    project.categoryName = viewModel.categoryDetails.value?.categoryName
+                    project.projectId = it.value.project_id
+                    viewModel.insertProject(project)
 
                     Utilities.hideProgressDialog()
                     //notify project created

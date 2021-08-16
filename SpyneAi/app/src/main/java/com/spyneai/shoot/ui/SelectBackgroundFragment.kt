@@ -72,19 +72,19 @@ class SelectBackgroundFragment : BaseFragment<ProcessViewModel,FragmentSelectBac
         observeProcessSku()
     }
 
-    fun getBackgorund() {
+    private fun getBackground() {
         val category =
             Utilities.getPreference(requireContext(), AppConstants.CATEGORY_NAME)!!.toRequestBody(MultipartBody.FORM)
 
-        val auth_key =
+        val authKey =
             Utilities.getPreference(requireContext(), AppConstants.AUTH_KEY)!!.toRequestBody(MultipartBody.FORM)
 
-        viewModel.getBackgroundGifCars(category, auth_key)
+        viewModel.getBackgroundGifCars(category, authKey)
     }
 
     private fun initSelectBackground() {
 
-        getBackgorund()
+        getBackground()
 
         viewModel.carGifRes.observe(viewLifecycleOwner,{
             when(it) {
@@ -114,7 +114,7 @@ class SelectBackgroundFragment : BaseFragment<ProcessViewModel,FragmentSelectBac
                     requireContext().captureFailureEvent(Events.GET_BACKGROUND_FAILED, Properties(),
                         it.errorMessage!!
                     )
-                    handleApiError(it) { getBackgorund() }
+                    handleApiError(it) { getBackground() }
                 }
 
                 is Resource.Loading -> binding.shimmer.startShimmer()
@@ -179,7 +179,7 @@ class SelectBackgroundFragment : BaseFragment<ProcessViewModel,FragmentSelectBac
             when(it) {
                 is Resource.Success -> {
                     //update processed state
-                    viewModel.updateIsProcessed(viewModel.sku.value!!.skuId!!)
+                    viewModel.updateIsProcessed(viewModel.sku.value!!.projectId!!,viewModel.sku.value!!.skuId!!)
 
                     Utilities.hideProgressDialog()
 

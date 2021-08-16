@@ -23,15 +23,15 @@ data class GetProjectsResponse(
         @SerializedName("status") val status : String,
         @SerializedName("created_on") val created_on : String,
         @SerializedName("category") val category : String,
+        @SerializedName("category_id") val categoryId : String,
         @SerializedName("sub_category") val sub_category : String,
+        @SerializedName("sub_category_id") val subCategoryId : String,
         @SerializedName("processed_images") val processed_images : Int,
         @SerializedName("total_images") val total_images : Int,
         @SerializedName("sku") val sku : List<Sku>
     )
 
     data class Sku(
-
-
 
         @SerializedName("sku_id") val sku_id: String,
         @SerializedName("created_on") val created_on: String,
@@ -42,6 +42,8 @@ data class GetProjectsResponse(
         @SerializedName("total_images") val total_images: Int,
         @SerializedName("processed_images") val processed_images: Int,
         @SerializedName("category") val category: String,
+        @SerializedName("category_id") val categoryId: String,
+        @SerializedName("Exterior_clicks") val exteriorClicks: Int,
         @SerializedName("images") val images: List<Images>,
         @SerializedName("is_360") val is360: Boolean,
     )

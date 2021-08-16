@@ -133,8 +133,8 @@ class ProcessViewModel : ViewModel() {
         _downloadHDRes.value = repository.updateDownloadStatus(userId,skuId, enterpriseId, downloadHd)
     }
 
-    fun updateIsProcessed(skuId: String) {
-        localRepository.updateIsProcessed(skuId)
+    fun updateIsProcessed(projectId: String,skuId: String) {
+        localRepository.updateIsProcessed(projectId,skuId)
     }
 
     fun updateProjectState(authKey: String,projectId : String) {

@@ -475,6 +475,7 @@ class OverlaysFragment : BaseFragment<ShootViewModel, FragmentOverlaysBinding>()
         if (viewModel.fromDrafts){
             viewModel.isSubCategorySelected.value = true
             viewModel.shootList.value = ArrayList()
+            viewModel.shootNumber.value = 0
 
             when{
                 intent.getBooleanExtra(AppConstants.RESUME_EXTERIOR,false) -> {

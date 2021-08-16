@@ -284,6 +284,9 @@ class ShootViewModel : ViewModel(){
         localRepository.updateTotalImageCount(skuId)
     }
 
+    fun insertProject(project: Project) {
+        localRepository.insertProject(project)
+    }
 
 
 }

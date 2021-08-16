@@ -14,29 +14,38 @@ import com.spyneai.dashboard.ui.handleApiError
 import com.spyneai.databinding.FragmentDraftProjectsBinding
 import com.spyneai.draft.data.DraftViewModel
 import com.spyneai.draft.ui.adapter.DraftProjectsAdapter
+import com.spyneai.draft.ui.adapter.LocalDraftProjectsAdapter
 import com.spyneai.needs.AppConstants
 import com.spyneai.needs.Utilities
 import com.spyneai.orders.data.response.GetProjectsResponse
 import com.spyneai.posthog.Events
+import com.spyneai.shoot.data.model.Project
 
 class DraftProjectsFragment : BaseFragment<DraftViewModel, FragmentDraftProjectsBinding>() {
 
     lateinit var draftProjectsAdapter: DraftProjectsAdapter
+    lateinit var localDraftProjectsAdapter : LocalDraftProjectsAdapter
     lateinit var completedProjectList: ArrayList<GetProjectsResponse.Project_data>
+    lateinit var draftProjectList: ArrayList<Project>
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
         completedProjectList = ArrayList()
+        draftProjectList = ArrayList()
 
         draftProjectsAdapter = DraftProjectsAdapter(
             requireContext(),
             completedProjectList
         )
 
+        localDraftProjectsAdapter = LocalDraftProjectsAdapter(
+            requireContext(),
+            draftProjectList
+        )
+
         val layoutManager: RecyclerView.LayoutManager = LinearLayoutManager(requireContext(), LinearLayoutManager.VERTICAL, false)
-        binding.rvDraftProjects.setLayoutManager(layoutManager)
-        binding.rvDraftProjects.setAdapter(draftProjectsAdapter)
+        binding.rvDraftProjects.layoutManager = layoutManager
 
         viewModel.getDrafts(Utilities.getPreference(requireContext(), AppConstants.AUTH_KEY).toString())
 
@@ -48,17 +57,28 @@ class DraftProjectsFragment : BaseFragment<DraftViewModel, FragmentDraftProjects
                         binding.shimmerCompletedSKU.visibility = View.GONE
                         binding.rvDraftProjects.visibility = View.VISIBLE
 
-
                         if (it.value.data != null){
-                            completedProjectList.clear()
-                            completedProjectList.addAll(it.value.data.project_data)
-                            draftProjectsAdapter.notifyDataSetChanged()
+                            val localDraftList = viewModel.getDraftsFromLocal()
+
+                            if (it.value.data.project_data.size == localDraftList.size) {
+                                draftProjectList.clear()
+                                draftProjectList.addAll(viewModel.getDraftsFromLocal())
+                                binding.rvDraftProjects.adapter = localDraftProjectsAdapter
+                                localDraftProjectsAdapter.notifyDataSetChanged()
+                            }else {
+                                completedProjectList.clear()
+                                completedProjectList.addAll(it.value.data.project_data)
+                                binding.rvDraftProjects.adapter = draftProjectsAdapter
+                                draftProjectsAdapter.notifyDataSetChanged()
+                            }
+
                         }
                     }
 
                     is Resource.Failure -> {
                         binding.shimmerCompletedSKU.stopShimmer()
                         binding.shimmerCompletedSKU.visibility = View.GONE
+                        binding.rvDraftProjects.visibility = View.VISIBLE
 
                         if (it.errorCode == 404){
                             binding.rvDraftProjects.visibility = View.GONE
