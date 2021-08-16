@@ -143,6 +143,13 @@ android {
             versionCode 1
             versionName "1.0"
         }
+
+        udaan {
+            dimension 'version'
+            applicationId "com.spyneai.udaan"
+            versionCode 1
+            versionName "1.0"
+        }
     }
     sourceSets {
         sweepCars {
@@ -190,6 +197,11 @@ android {
             }
             res {
                 srcDirs 'src/flipkart/res'
+            }
+        }
+        udaan {
+            java {
+                srcDirs 'src/udaan/java'
             }
         }
     }

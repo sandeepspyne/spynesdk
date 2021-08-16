@@ -36,7 +36,7 @@ class MainDashboardActivity : AppCompatActivity() {
 
         val viewModel = ViewModelProvider(this, ViewModelFactory()).get(DashboardViewModel::class.java)
 
-        val firstFragment=HomeDashboardFragment()
+        val firstFragment= HomeDashboardFragment()
         val SecondFragment=WalletDashboardFragment()
         val thirdFragment=LogoutDashBoardFragment()
 
@@ -52,7 +52,7 @@ class MainDashboardActivity : AppCompatActivity() {
                 R.id.shootActivity-> {
 
                         when(getString(R.string.app_name)) {
-                        "Ola Cabs",WhiteLabelConstants.CARS24,WhiteLabelConstants.CARS24_INDIA,
+                        "Ola Cabs", WhiteLabelConstants.CARS24,WhiteLabelConstants.CARS24_INDIA,
                         "Trusted cars","Travo Photos","Yalla Motors","Spyne Hiring" -> {
                             var intent = Intent(this, StartShootActivity::class.java)
                             intent.putExtra(AppConstants.CATEGORY_ID,AppConstants.CARS_CATEGORY_ID)
