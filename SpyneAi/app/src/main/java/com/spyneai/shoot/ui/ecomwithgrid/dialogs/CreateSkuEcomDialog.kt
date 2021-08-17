@@ -60,7 +60,7 @@ class CreateSkuEcomDialog : BaseDialogFragment<ShootViewModel, CreateSkuEcomDial
         viewModel.createSku(
             Utilities.getPreference(requireContext(), AppConstants.AUTH_KEY).toString(),
             projectId,
-            requireActivity().intent.getStringExtra(AppConstants.CATEGORY_ID).toString(),
+            Utilities.getPreference(requireContext(), AppConstants.CATEGORY_ID).toString(),
             "",
             skuName,
             0

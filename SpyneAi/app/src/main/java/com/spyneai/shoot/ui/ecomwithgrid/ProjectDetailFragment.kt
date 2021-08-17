@@ -32,9 +32,13 @@ class ProjectDetailFragment : BaseFragment<ShootViewModel, FragmentProjectDetail
 
         binding.btHome.setOnClickListener {
             requireContext().gotoHome()
-            viewModel.skuProcessState(Utilities.getPreference(requireContext(), AppConstants.AUTH_KEY).toString(), viewModel.sku.value?.projectId.toString())
+            viewModel.skuProcessState(Utilities.getPreference(requireContext(), AppConstants.AUTH_KEY).toString(),
+                viewModel.projectId.value.toString())
+            log("auth key- "+Utilities.getPreference(requireContext(), AppConstants.AUTH_KEY).toString())
+            log("project id- "+viewModel.projectId.value)
             log("skuProcessState called")
         }
+
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
