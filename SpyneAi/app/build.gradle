@@ -143,6 +143,12 @@ android {
             versionCode 1
             versionName "1.0"
         }
+        lal10 {
+            dimension 'version'
+            applicationId "com.spyneai.lal10"
+            versionCode 1
+            versionName "1.0"
+        }
 
         udaan {
             dimension 'version'
