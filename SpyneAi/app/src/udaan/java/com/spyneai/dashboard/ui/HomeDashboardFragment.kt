@@ -97,7 +97,7 @@ class HomeDashboardFragment :
         appUpdateManager = AppUpdateManagerFactory.create(requireContext())
 
 
-        if (PACKAGE_NAME.equals("com.spyneai.flipkart.debug")) {
+        if (PACKAGE_NAME.equals("com.spyneai.udaan.debug")) {
             newUserCreditDialog()
             repeatRefreshData()
             setSliderRecycler()
