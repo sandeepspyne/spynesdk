@@ -14,11 +14,13 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.ViewModelProvider
 import com.spyneai.R
+import com.spyneai.base.network.Resource
 import com.spyneai.dashboard.ui.base.ViewModelFactory
 import com.spyneai.needs.AppConstants
 import com.spyneai.needs.Utilities
 import com.spyneai.shoot.data.ShootViewModel
 import com.spyneai.shoot.data.model.CategoryDetails
+import com.spyneai.shoot.data.model.CreateProjectRes
 import com.spyneai.shoot.data.model.Sku
 import com.spyneai.shoot.ui.OverlaysFragment
 import com.spyneai.shoot.ui.dialogs.ShootExitDialog
@@ -37,6 +39,7 @@ class ShootPortraitActivity : AppCompatActivity() {
     lateinit var overlayEcomFragment: OverlayEcomFragment
     lateinit var skuDetailFragment: SkuDetailFragment
     lateinit var projectDetailFragment: ProjectDetailFragment
+    lateinit var shootViewModel : ShootViewModel
     val TAG = "ShootPortraitActivity"
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -46,13 +49,15 @@ class ShootPortraitActivity : AppCompatActivity() {
         window.setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
             WindowManager.LayoutParams.FLAG_FULLSCREEN)
 
-        val shootViewModel = ViewModelProvider(this, ViewModelFactory()).get(ShootViewModel::class.java)
+        shootViewModel = ViewModelProvider(this, ViewModelFactory()).get(ShootViewModel::class.java)
         shootViewModel.skuNumber.value = 1
         try {
             shootViewModel.skuNumber.value = intent.getIntExtra("skuNumber", 1)
         }catch (e: Exception){
-
         }
+
+        if (intent.getBooleanExtra(AppConstants.FROM_DRAFTS,false))
+            setUpDraftsData()
 
         val categoryDetails = CategoryDetails()
 
@@ -168,6 +173,28 @@ class ShootPortraitActivity : AppCompatActivity() {
                 }
             }
         })
+    }
+
+    private fun setUpDraftsData() {
+        shootViewModel.fromDrafts = true
+        shootViewModel.showVin.value = true
+        shootViewModel.isProjectCreated.value = true
+
+        shootViewModel._createProjectRes.value = Resource.Success(
+            CreateProjectRes(
+            "",
+            intent.getStringExtra(AppConstants.PROJECT_ID)!!,
+            200
+        )
+        )
+
+        //set sku data
+        val sku = Sku()
+        sku.projectId = intent.getStringExtra(AppConstants.PROJECT_ID)
+        sku.skuName = intent.getStringExtra(AppConstants.SKU_NAME)
+        sku.categoryName = shootViewModel.categoryDetails.value?.categoryName
+
+        shootViewModel.sku.value = sku
     }
 
     /**

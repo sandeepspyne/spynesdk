@@ -124,6 +124,10 @@ class CameraFragment : BaseFragment<ShootViewModel, FragmentCameraBinding>(), Pi
 
         viewModel.showLeveler.observe(viewLifecycleOwner, {
             if (it && isSensorAvaliable) {
+                if (viewModel.categoryDetails.value?.categoryName == "Footwear" ||
+                    viewModel.categoryDetails.value?.categoryName == "E-Commerce")
+                        binding.tvLevelIndicator.visibility = View.GONE
+
                 binding.flLevelIndicator.visibility = View.VISIBLE
 
                 getPreviewDimensions(binding.ivGryroRing!!, 1)
@@ -656,103 +660,213 @@ class CameraFragment : BaseFragment<ShootViewModel, FragmentCameraBinding>(), Pi
         pitch = Math.toDegrees(orientationAngles[1].toDouble())
         roll = Math.toDegrees(orientationAngles[2].toDouble())
 
+        Log.d(TAG, "updateOrientationAngles: "+roll)
+        Log.d(TAG, "updateOrientationAngles: "+pitch)
+        Log.d(TAG, "updateOrientationAngles: "+"-------------------------------")
 
-        if ((roll >= -100 && roll <=-80) && (pitch >= -5 && pitch <= 5)){
-            binding
-                .tvLevelIndicator
-                ?.animate()
-                ?.translationY(0f)
-                ?.setInterpolator(AccelerateInterpolator())?.duration = 0
+       // binding.tvPitchRoll!!.text = roll.roundToInt().toString()+"****"+pitch.roundToInt().toString()
 
-            binding.tvLevelIndicator?.rotation = 0f
 
-            binding.ivTopLeft?.setColorFilter(
-                ContextCompat.getColor(
-                    requireContext(),
-                    R.color.gyro_in_level
+        if (viewModel.categoryDetails.value?.categoryName == "Footwear" ||
+            viewModel.categoryDetails.value?.categoryName == "E-Commerce") {
+            if ((roll <= -30 && roll >=-60) && (pitch <= -80 && pitch >= -90)
+                ||
+                (roll <= 0 && roll >=-5) && ((pitch.roundToInt() == 0 || pitch.roundToInt() == -0) ||
+                        pitch.roundToInt() <= -5 || pitch.roundToInt() >= -10)){
+                binding
+                    .tvLevelIndicator
+                    ?.animate()
+                    ?.translationY(0f)
+                    ?.setInterpolator(AccelerateInterpolator())?.duration = 0
+
+                binding.tvLevelIndicator?.rotation = 0f
+
+                binding.ivTopLeft?.setColorFilter(
+                    ContextCompat.getColor(
+                        requireContext(),
+                        R.color.gyro_in_level
+                    )
                 )
-            )
-            binding.ivBottomLeft?.setColorFilter(
-                ContextCompat.getColor(
-                    requireContext(),
-                    R.color.gyro_in_level
+                binding.ivBottomLeft?.setColorFilter(
+                    ContextCompat.getColor(
+                        requireContext(),
+                        R.color.gyro_in_level
+                    )
                 )
-            )
 
-            binding.ivGryroRing?.setColorFilter(
-                ContextCompat.getColor(
-                    requireContext(),
-                    R.color.gyro_in_level
+                binding.ivGryroRing?.setColorFilter(
+                    ContextCompat.getColor(
+                        requireContext(),
+                        R.color.gyro_in_level
+                    )
                 )
-            )
-            binding.tvLevelIndicator?.background = ContextCompat.getDrawable(
-                requireContext(),
-                R.drawable.bg_gyro_level
-            )
+                binding.tvLevelIndicator?.background = ContextCompat.getDrawable(
+                    requireContext(),
+                    R.drawable.bg_gyro_level
+                )
 
-            binding.ivTopRight?.setColorFilter(
-                ContextCompat.getColor(
-                    requireContext(),
-                    R.color.gyro_in_level
+                binding.ivTopRight?.setColorFilter(
+                    ContextCompat.getColor(
+                        requireContext(),
+                        R.color.gyro_in_level
+                    )
                 )
-            )
-            binding.ivBottomRight?.setColorFilter(
-                ContextCompat.getColor(
-                    requireContext(),
-                    R.color.gyro_in_level
+                binding.ivBottomRight?.setColorFilter(
+                    ContextCompat.getColor(
+                        requireContext(),
+                        R.color.gyro_in_level
+                    )
                 )
-            )
 
-        }else{
+            }else{
 
-            binding.ivTopLeft?.setColorFilter(
-                ContextCompat.getColor(
-                    requireContext(),
-                    R.color.gyro_error_level
+                binding.ivTopLeft?.setColorFilter(
+                    ContextCompat.getColor(
+                        requireContext(),
+                        R.color.gyro_error_level
+                    )
                 )
-            )
-            binding.ivBottomLeft?.setColorFilter(
-                ContextCompat.getColor(
-                    requireContext(),
-                    R.color.gyro_error_level
+                binding.ivBottomLeft?.setColorFilter(
+                    ContextCompat.getColor(
+                        requireContext(),
+                        R.color.gyro_error_level
+                    )
                 )
-            )
 
-            binding.ivGryroRing?.setColorFilter(
-                ContextCompat.getColor(
-                    requireContext(),
-                    R.color.gyro_error_level
+                binding.ivGryroRing?.setColorFilter(
+                    ContextCompat.getColor(
+                        requireContext(),
+                        R.color.gyro_error_level
+                    )
                 )
-            )
-            binding.tvLevelIndicator?.background = ContextCompat.getDrawable(
-                requireContext(),
-                R.drawable.bg_gyro_error
-            )
-
-            binding.ivTopRight?.setColorFilter(
-                ContextCompat.getColor(
+                binding.tvLevelIndicator?.background = ContextCompat.getDrawable(
                     requireContext(),
-                    R.color.gyro_error_level
+                    R.drawable.bg_gyro_error
                 )
-            )
-            binding.ivBottomRight?.setColorFilter(
-                ContextCompat.getColor(
-                    requireContext(),
-                    R.color.gyro_error_level
+
+                binding.ivTopRight?.setColorFilter(
+                    ContextCompat.getColor(
+                        requireContext(),
+                        R.color.gyro_error_level
+                    )
                 )
-            )
+                binding.ivBottomRight?.setColorFilter(
+                    ContextCompat.getColor(
+                        requireContext(),
+                        R.color.gyro_error_level
+                    )
+                )
 
-            if (movearrow)
-                moveArrow(roll)
+                if (movearrow)
+                    moveArrow(roll)
 
-            if (rotatedarrow){
-                if (pitch > 0){
-                    rotateArrow(pitch.minus(0).roundToInt())
-                }else{
-                    rotateArrow(pitch.plus(0).roundToInt())
+                if (rotatedarrow){
+                    if (pitch > 0){
+                        rotateArrow(pitch.minus(0).roundToInt())
+                    }else{
+                        rotateArrow(pitch.plus(0).roundToInt())
+                    }
                 }
-            }
 
+            }
+        }else {
+            if ((roll >= -100 && roll <=-80) && (pitch >= -5 && pitch <= 5)){
+                binding
+                    .tvLevelIndicator
+                    ?.animate()
+                    ?.translationY(0f)
+                    ?.setInterpolator(AccelerateInterpolator())?.duration = 0
+
+                binding.tvLevelIndicator?.rotation = 0f
+
+                binding.ivTopLeft?.setColorFilter(
+                    ContextCompat.getColor(
+                        requireContext(),
+                        R.color.gyro_in_level
+                    )
+                )
+                binding.ivBottomLeft?.setColorFilter(
+                    ContextCompat.getColor(
+                        requireContext(),
+                        R.color.gyro_in_level
+                    )
+                )
+
+                binding.ivGryroRing?.setColorFilter(
+                    ContextCompat.getColor(
+                        requireContext(),
+                        R.color.gyro_in_level
+                    )
+                )
+                binding.tvLevelIndicator?.background = ContextCompat.getDrawable(
+                    requireContext(),
+                    R.drawable.bg_gyro_level
+                )
+
+                binding.ivTopRight?.setColorFilter(
+                    ContextCompat.getColor(
+                        requireContext(),
+                        R.color.gyro_in_level
+                    )
+                )
+                binding.ivBottomRight?.setColorFilter(
+                    ContextCompat.getColor(
+                        requireContext(),
+                        R.color.gyro_in_level
+                    )
+                )
+
+            }else{
+
+                binding.ivTopLeft?.setColorFilter(
+                    ContextCompat.getColor(
+                        requireContext(),
+                        R.color.gyro_error_level
+                    )
+                )
+                binding.ivBottomLeft?.setColorFilter(
+                    ContextCompat.getColor(
+                        requireContext(),
+                        R.color.gyro_error_level
+                    )
+                )
+
+                binding.ivGryroRing?.setColorFilter(
+                    ContextCompat.getColor(
+                        requireContext(),
+                        R.color.gyro_error_level
+                    )
+                )
+                binding.tvLevelIndicator?.background = ContextCompat.getDrawable(
+                    requireContext(),
+                    R.drawable.bg_gyro_error
+                )
+
+                binding.ivTopRight?.setColorFilter(
+                    ContextCompat.getColor(
+                        requireContext(),
+                        R.color.gyro_error_level
+                    )
+                )
+                binding.ivBottomRight?.setColorFilter(
+                    ContextCompat.getColor(
+                        requireContext(),
+                        R.color.gyro_error_level
+                    )
+                )
+
+                if (movearrow)
+                    moveArrow(roll)
+
+                if (rotatedarrow){
+                    if (pitch > 0){
+                        rotateArrow(pitch.minus(0).roundToInt())
+                    }else{
+                        rotateArrow(pitch.plus(0).roundToInt())
+                    }
+                }
+
+            }
         }
     }
 

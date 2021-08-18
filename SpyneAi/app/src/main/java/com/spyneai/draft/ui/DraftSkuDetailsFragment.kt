@@ -26,6 +26,8 @@ import com.spyneai.processedimages.ui.adapter.ProcessedImagesAdapter
 import com.spyneai.shoot.data.model.Image
 import com.spyneai.shoot.ui.base.ProcessActivity
 import com.spyneai.shoot.ui.base.ShootActivity
+import com.spyneai.shoot.ui.base.ShootPortraitActivity
+import kotlinx.android.synthetic.main.activity_credit_plans.*
 
 class DraftSkuDetailsFragment : BaseFragment<DraftViewModel, FragmentDraftSkuDetailsBinding>() {
 
@@ -109,10 +111,25 @@ class DraftSkuDetailsFragment : BaseFragment<DraftViewModel, FragmentDraftSkuDet
 
 
         binding.btnContinueShoot.setOnClickListener{
-            val shootIntent = Intent(
-                context,
-                ShootActivity::class.java
-            ).apply {
+            var shootIntent : Intent? = null
+
+            when(intent.getStringExtra(AppConstants.CATEGORY_NAME)){
+                "Automobiles","Bikes" -> {
+                    shootIntent = Intent(
+                        context,
+                        ShootActivity::class.java)
+                }
+
+                "Footwear" -> {
+                    shootIntent = Intent(
+                        context,
+                        ShootPortraitActivity::class.java)
+                }
+
+                else -> {}
+            }
+
+            shootIntent?.apply {
                 putExtra(AppConstants.FROM_DRAFTS, true)
                 putExtra(AppConstants.CATEGORY_NAME, intent.getStringExtra(AppConstants.CATEGORY_NAME))
                 putExtra(AppConstants.CATEGORY_ID, intent.getStringExtra(AppConstants.CATEGORY_ID))
@@ -132,13 +149,13 @@ class DraftSkuDetailsFragment : BaseFragment<DraftViewModel, FragmentDraftSkuDet
             }
 
             if (requireActivity().intent.getBooleanExtra(AppConstants.FROM_LOCAL_DB,false)){
-                shootIntent.apply {
+                shootIntent?.apply {
                     putExtra(AppConstants.EXTERIOR_SIZE, localExterior.size)
                     putExtra(AppConstants.INTERIOR_SIZE, localInteriorList.size)
                     putExtra(AppConstants.MISC_SIZE, localMiscList.size)
                 }
             }else {
-               shootIntent.apply {
+               shootIntent?.apply {
                    putExtra(AppConstants.EXTERIOR_SIZE, exterior.size)
                    putExtra(AppConstants.INTERIOR_SIZE, interiorList.size)
                    putExtra(AppConstants.MISC_SIZE, miscList.size)

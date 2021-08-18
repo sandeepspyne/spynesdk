@@ -80,41 +80,6 @@ class OverlayEcomFragment : BaseFragment<ShootViewModel, FragmentOverlayEcomBind
             }
         })
 
-
-//        binding.ivEndProject.setOnClickListener {
-//            if (viewModel.isStopCaptureClickable)
-//                viewModel.stopShoot.value = true
-//        }
-
-
-        //observe new image clicked
-//        viewModel.shootList.observe(viewLifecycleOwner, {
-//            try {
-//                if (showDialog && !it.isNullOrEmpty()) {
-//                    capturedImageList = ArrayList<String>()
-//                    position = it.size - 1
-//                    capturedImageList.clear()
-//                    for (i in 0..(it.size - 1))
-//                        (capturedImageList as ArrayList).add(it[i].capturedImage)
-//                    initCapturedImages()
-//                    showImageConfirmDialog(it.get(it.size - 1))
-//                    log("call showImageConfirmDialog")
-//                }
-//            } catch (e: Exception) {
-//                e.printStackTrace()
-//            }
-//        })
-
-        // set sku name
-//        viewModel.isSkuCreated.observe(viewLifecycleOwner, {
-//            if (it) {
-//                binding.tvSkuName?.text = viewModel.sku.value?.skuName
-//                binding.tvSkuName.visibility = View.VISIBLE
-//                log("sku name set to text view: "+viewModel.sku.value?.skuName)
-//                viewModel.isSkuCreated.value = false
-//            }
-//        })
-
         viewModel.overlaysResponse.observe(viewLifecycleOwner,{ it ->
             when(it){
                 is Resource.Success -> {
