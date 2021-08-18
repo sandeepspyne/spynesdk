@@ -25,6 +25,8 @@ import com.spyneai.shoot.ui.base.ShootActivity
 class DraftSkusAdapter (
     val context: Context,
     val projectId : String,
+    val categoryName : String,
+    val categoryId : String,
     val skuList: ArrayList<GetProjectsResponse.Sku>
 ) : RecyclerView.Adapter<DraftSkusAdapter.ViewHolder>() {
 
@@ -74,19 +76,24 @@ class DraftSkusAdapter (
                 context,
                 DraftSkuDetailsActivity::class.java
             ).apply {
-                putExtra(AppConstants.FROM_DRAFTS, true)
-               putExtra(AppConstants.PROJECT_ID, projectId)
-                putExtra(AppConstants.CATEGORY_ID, "cat_d8R14zUNE")
-                putExtra(AppConstants.SUB_CAT_ID,"prod_seY3vxhATCH")
-                putExtra(AppConstants.SUB_CAT_NAME,skuList[position].category)
-                putExtra(AppConstants.CATEGORY_NAME, "Automobiles")
-                putExtra(AppConstants.SKU_NAME, skuList[position].sku_name)
-                putExtra(AppConstants.SKU_CREATED, false)
-                putExtra(AppConstants.SKU_ID, skuList[position].sku_id)
-                putExtra(AppConstants.EXTERIOR_ANGLES, 8)
-                putExtra("is_paid",skuList[position].paid)
-                putExtra(AppConstants.IMAGE_TYPE,skuList[position].category)
-                putExtra(AppConstants.IS_360,skuList[position].is360)
+               putExtra(AppConstants.FROM_LOCAL_DB, true)
+               putExtra(AppConstants.FROM_DRAFTS, true)
+               putExtra(AppConstants.PROJECT_ID,projectId)
+               putExtra(AppConstants.CATEGORY_NAME, categoryName)
+               putExtra(AppConstants.CATEGORY_ID, categoryId)
+               putExtra(AppConstants.SUB_CAT_ID,skuList[position].categoryId)
+               putExtra(AppConstants.SUB_CAT_NAME,skuList[position].category)
+               putExtra(AppConstants.SKU_NAME, skuList[position].sku_name)
+               putExtra(AppConstants.PROJECT_NAME, skuList[position].sku_name)
+               putExtra(AppConstants.SKU_COUNT, skuList.size)
+               putExtra(AppConstants.SKU_CREATED, false)
+               putExtra(AppConstants.SKU_ID, skuList[position].sku_name)
+               putExtra(AppConstants.EXTERIOR_ANGLES, skuList[position].exteriorClicks)
+               //putExtra("is_paid",skuList[position].paid)
+               //putExtra(AppConstants.IMAGE_TYPE,skuList[position].category)
+               putExtra(AppConstants.IS_360,skuList[position].is360)
+               context.startActivity(this)
+
                 context.startActivity(this)
             }
 

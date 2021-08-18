@@ -92,6 +92,8 @@ class DraftSkusActivity : AppCompatActivity() {
                                     skusAdapter = DraftSkusAdapter(
                                         this,
                                         it.value.data.project_data[position].project_id,
+                                        it.value.data.project_data[position].categoryId,
+                                        it.value.data.project_data[position].category,
                                         skuList
                                     )
 

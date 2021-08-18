@@ -210,6 +210,7 @@ class ShootActivity : AppCompatActivity() {
         shootViewModel.sku.value = sku
 
         if (intent.getBooleanExtra(AppConstants.SKU_CREATED,false)) {
+            shootViewModel.exterirorAngles.value = intent.getIntExtra(AppConstants.EXTERIOR_ANGLES,0)
             shootViewModel.getSubCategories(
                 Utilities.getPreference(this, AppConstants.AUTH_KEY).toString(),
                 intent.getStringExtra(AppConstants.CATEGORY_ID).toString()
@@ -227,6 +228,8 @@ class ShootActivity : AppCompatActivity() {
                 intent.getStringExtra(AppConstants.SUB_CAT_ID)!!,
                 intent.getIntExtra(AppConstants.EXTERIOR_ANGLES,0).toString(),
             )
+
+            var s = ""
         }
 
     }
@@ -352,6 +355,9 @@ class ShootActivity : AppCompatActivity() {
     }
 
     override fun onBackPressed() {
-        ShootExitDialog().show(supportFragmentManager,"ShootExitDialog")
+        if (intent.getBooleanExtra(AppConstants.FROM_DRAFTS,false))
+            ShootExitDialog().show(supportFragmentManager,"ShootExitDialog")
+        else
+            ShootExitDialog().show(supportFragmentManager,"ShootExitDialog")
     }
 }

@@ -145,12 +145,14 @@
                 android:fontFamily="@font/medium"
                 android:layout_margin="@dimen/dp_10"
                 android:gravity="center"
-                android:textSize="@dimen/sp_16" />
+                android:textSize="@dimen/sp_16"
+                android:visibility="gone"/>
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/rvExteriorImage"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_margin="@dimen/dp_10"/>
+                android:layout_margin="@dimen/dp_10"
+                android:visibility="gone"/>
 
             <TextView
                 android:id="@+id/tvInterior"
@@ -160,12 +162,14 @@
                 android:textColor="@color/primary"
                 android:fontFamily="@font/medium"
                 android:gravity="center"
-                android:textSize="@dimen/sp_16" />
+                android:textSize="@dimen/sp_16"
+                android:visibility="gone"/>
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/rvInteriors"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_margin="@dimen/dp_10"/>
+                android:layout_margin="@dimen/dp_10"
+                android:visibility="gone"/>
 
             <TextView
                 android:id="@+id/tvFocused"
@@ -175,13 +179,15 @@
                 android:textColor="@color/primary"
                 android:fontFamily="@font/medium"
                 android:gravity="center"
-                android:textSize="@dimen/sp_16" />
+                android:textSize="@dimen/sp_16"
+                android:visibility="gone"/>
 
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/rvFocused"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_margin="@dimen/dp_10"/>
+                android:layout_margin="@dimen/dp_10"
+                android:visibility="gone"/>
 
         </LinearLayout>
 
@@ -220,7 +226,8 @@
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         android:background="@color/white"
-        android:id="@+id/flContinueShoot">
+        android:id="@+id/flContinueShoot"
+        android:visibility="gone">
         <com.google.android.material.button.MaterialButton
             android:layout_width="match_parent"
             android:layout_height="wrap_content"

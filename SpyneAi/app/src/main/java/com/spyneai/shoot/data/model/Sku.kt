@@ -17,4 +17,5 @@ class Sku {
     var processSku : Int = 0
     var backgroundId : String? = null
     var is360 : Int = 0
+    var thumbnail : String? = null
 }

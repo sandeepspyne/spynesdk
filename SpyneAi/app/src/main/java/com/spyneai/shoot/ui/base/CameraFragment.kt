@@ -219,9 +219,10 @@ class CameraFragment : BaseFragment<ShootViewModel, FragmentCameraBinding>(), Pi
             viewModel.showConfirmReshootDialog.value = true
 
 
-            if (viewModel.shootList.value.isNullOrEmpty()){
-                if (viewModel.categoryDetails.value?.categoryName == "Automobiles" ||
-                    viewModel.categoryDetails.value?.categoryName == "Bikes") {
+            if (viewModel.shootList.value == null){
+                if ((viewModel.categoryDetails.value?.categoryName == "Automobiles" ||
+                            viewModel.categoryDetails.value?.categoryName == "Bikes")
+                    && !requireActivity().intent.getBooleanExtra(AppConstants.SKU_CREATED,false)) {
                     viewModel.createProjectRes.observe(viewLifecycleOwner, {
                         when (it) {
                             is Resource.Success -> {
@@ -238,10 +239,7 @@ class CameraFragment : BaseFragment<ShootViewModel, FragmentCameraBinding>(), Pi
             }else {
                 captureImage()
             }
-
         }
-
-
     }
 
 

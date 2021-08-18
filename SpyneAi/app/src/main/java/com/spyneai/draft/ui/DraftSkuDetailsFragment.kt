@@ -16,12 +16,15 @@ import com.spyneai.databinding.FragmentDraftProjectsBinding
 import com.spyneai.databinding.FragmentDraftSkuDetailsBinding
 import com.spyneai.draft.data.DraftViewModel
 import com.spyneai.draft.ui.adapter.DraftImagesAdapter
+import com.spyneai.draft.ui.adapter.LocalDraftImagesAdapter
 import com.spyneai.needs.AppConstants
 import com.spyneai.needs.Utilities
 import com.spyneai.orders.data.response.ImagesOfSkuRes
 import com.spyneai.posthog.Events
 import com.spyneai.processedimages.ui.BikeOrderSummaryActivity
 import com.spyneai.processedimages.ui.adapter.ProcessedImagesAdapter
+import com.spyneai.shoot.data.model.Image
+import com.spyneai.shoot.ui.base.ProcessActivity
 import com.spyneai.shoot.ui.base.ShootActivity
 
 class DraftSkuDetailsFragment : BaseFragment<DraftViewModel, FragmentDraftSkuDetailsBinding>() {
@@ -30,53 +33,230 @@ class DraftSkuDetailsFragment : BaseFragment<DraftViewModel, FragmentDraftSkuDet
     private var interiorList = ArrayList<ImagesOfSkuRes.Data>()
     private var miscList = ArrayList<ImagesOfSkuRes.Data>()
 
+    private var localExterior = ArrayList<Image>()
+    private var localInteriorList = ArrayList<Image>()
+    private var localMiscList = ArrayList<Image>()
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        getSkuDetails()
 
-        observeSkuDeatils()
-
+        binding.ivBack.setOnClickListener {
+            requireActivity().onBackPressed()
+        }
         val intent = requireActivity().intent
 
+        binding.tvProjectName.text =intent.getStringExtra(AppConstants.PROJECT_NAME)
+        
+
+            if (intent.getBooleanExtra(AppConstants.FROM_LOCAL_DB,false)){
+            binding.shimmerCompletedSKU.stopShimmer()
+            binding.shimmerCompletedSKU.visibility = View.GONE
+            binding.nsv.visibility = View.VISIBLE
+
+            val list = viewModel.getImagesbySkuId(intent.getStringExtra(AppConstants.SKU_ID)!!)
+
+                binding.tvTotalSku.text = list.size.toString()
+
+            if (!list.isNullOrEmpty()) {
+
+                localExterior = list?.filter {
+                    it.categoryName == "Exterior"
+                } as ArrayList
+
+                if (localExterior.size > 0) {
+                    binding.tvExterior.visibility = View.VISIBLE
+                    binding.rvExteriorImage.visibility = View.VISIBLE
+                    binding.rvExteriorImage.apply {
+                        layoutManager = GridLayoutManager(requireContext(),2,LinearLayoutManager.VERTICAL,false)
+                        adapter = LocalDraftImagesAdapter(requireContext(),localExterior)
+                    }
+                }
+
+                localInteriorList = list?.filter {
+                    it.categoryName == "Interior"
+                } as ArrayList
+
+                if (localInteriorList.size > 0) {
+                    binding.tvInterior.visibility = View.VISIBLE
+                    binding.rvInteriors.visibility = View.VISIBLE
+                    binding.rvInteriors.apply {
+                        layoutManager = GridLayoutManager(requireContext(),2,LinearLayoutManager.VERTICAL,false)
+                        adapter = LocalDraftImagesAdapter(requireContext(),localInteriorList)
+                    }
+                }
+
+                localMiscList = list?.filter {
+                    it.categoryName == "Focus Shoot"
+                } as ArrayList
+
+                if (localMiscList.size > 0) {
+                    binding.tvFocused.visibility = View.VISIBLE
+                    binding.rvFocused.visibility = View.VISIBLE
+                    binding.rvFocused.apply {
+                        layoutManager = GridLayoutManager(requireContext(),2,LinearLayoutManager.VERTICAL,false)
+                        adapter = LocalDraftImagesAdapter(requireContext(),localMiscList)
+                    }
+                }
+            }
+
+                binding.flContinueShoot.visibility = View.VISIBLE
+        }else {
+            getSkuDetails()
+
+            observeSkuDeatils()
+        }
+
+
         binding.btnContinueShoot.setOnClickListener{
-            Intent(
+            val shootIntent = Intent(
                 context,
                 ShootActivity::class.java
             ).apply {
                 putExtra(AppConstants.FROM_DRAFTS, true)
-                putExtra(AppConstants.CATEGORY_ID, "cat_d8R14zUNE")
-                putExtra(AppConstants.PROJECT_ID, intent.getStringExtra(AppConstants.PROJECT_ID))
-                putExtra(AppConstants.SUB_CAT_ID, intent.getStringExtra(AppConstants.SUB_CAT_ID))
-                putExtra(AppConstants.SUB_CAT_NAME,intent.getStringExtra(AppConstants.SUB_CAT_NAME))
                 putExtra(AppConstants.CATEGORY_NAME, intent.getStringExtra(AppConstants.CATEGORY_NAME))
+                putExtra(AppConstants.CATEGORY_ID, intent.getStringExtra(AppConstants.CATEGORY_ID))
+                putExtra(AppConstants.SUB_CAT_NAME,intent.getStringExtra(AppConstants.SUB_CAT_NAME))
+                putExtra(AppConstants.SUB_CAT_ID, intent.getStringExtra(AppConstants.SUB_CAT_ID))
+                putExtra(AppConstants.PROJECT_ID, intent.getStringExtra(AppConstants.PROJECT_ID))
                 putExtra(AppConstants.SKU_NAME, intent.getStringExtra(AppConstants.SKU_NAME))
                 putExtra(AppConstants.SKU_CREATED, true)
                 putExtra(AppConstants.SKU_ID, intent.getStringExtra(AppConstants.SKU_ID))
                 putExtra(AppConstants.EXTERIOR_ANGLES, intent.getIntExtra(AppConstants.EXTERIOR_ANGLES,0))
                 putExtra(AppConstants.RESUME_EXTERIOR, resumeExterior())
-                putExtra(AppConstants.EXTERIOR_ANGLES, intent.getIntExtra(AppConstants.EXTERIOR_ANGLES,0))
-                putExtra(AppConstants.RESUME_EXTERIOR, resumeExterior())
-                putExtra(AppConstants.EXTERIOR_SIZE, exterior.size)
                 putExtra(AppConstants.RESUME_INTERIOR, resumeInterior())
-                putExtra(AppConstants.INTERIOR_SIZE, interiorList.size)
                 putExtra(AppConstants.RESUME_MISC, resumeMisc())
-                putExtra(AppConstants.MISC_SIZE, miscList.size)
                 putExtra("is_paid",false)
                 putExtra(AppConstants.IMAGE_TYPE,intent.getStringExtra(AppConstants.IMAGE_TYPE))
                 putExtra(AppConstants.IS_360,intent.getStringExtra(AppConstants.IS_360))
-                startActivity(this)
             }
+
+            if (requireActivity().intent.getBooleanExtra(AppConstants.FROM_LOCAL_DB,false)){
+                shootIntent.apply {
+                    putExtra(AppConstants.EXTERIOR_SIZE, localExterior.size)
+                    putExtra(AppConstants.INTERIOR_SIZE, localInteriorList.size)
+                    putExtra(AppConstants.MISC_SIZE, localMiscList.size)
+                }
+            }else {
+               shootIntent.apply {
+                   putExtra(AppConstants.EXTERIOR_SIZE, exterior.size)
+                   putExtra(AppConstants.INTERIOR_SIZE, interiorList.size)
+                   putExtra(AppConstants.MISC_SIZE, miscList.size)
+               }
+            }
+
+            if (resumeMisc()){
+                checkMiscSize(intent)
+                observeMisc(intent)
+            }else {
+                startActivity(shootIntent)
+            }
+        }
+
+    }
+
+    private fun checkMiscSize(intent: Intent) {
+        Utilities.showProgressDialog(requireContext())
+        viewModel.getSubCategories(
+            Utilities.getPreference(requireContext(), AppConstants.AUTH_KEY).toString(),
+            intent.getStringExtra(AppConstants.CATEGORY_ID).toString()
+        )
+    }
+
+    private fun observeMisc(intent: Intent) {
+        viewModel.subCategoriesResponse.observe(viewLifecycleOwner,{
+            when(it) {
+                is Resource.Success -> {
+                    Utilities.hideProgressDialog()
+
+                    if (requireActivity().intent.getBooleanExtra(AppConstants.FROM_LOCAL_DB,false)){
+                        if (it.value.miscellaneous.size == localMiscList.size) {
+                            //start procss activity
+                            startProcessActivty(intent,localInteriorList.size.plus(localMiscList.size))
+                        }else {
+                            startActivity(intent)
+                        }
+                    }else {
+                        if (it.value.miscellaneous.size == miscList.size) {
+                            startProcessActivty(intent,interiorList.size.plus(miscList.size))
+                        }else {
+                            startActivity(intent)
+                        }
+                    }
+
+                }
+
+                is Resource.Failure -> {
+                    Utilities.hideProgressDialog()
+                    handleApiError(it) {checkMiscSize(intent)}
+                }
+            }
+        })
+    }
+
+    private fun startProcessActivty(intent: Intent,count : Int) {
+        val processIntent = Intent(requireContext(), ProcessActivity::class.java)
+
+        processIntent.apply {
+            putExtra(AppConstants.CATEGORY_NAME, intent.getStringExtra(AppConstants.CATEGORY_NAME))
+            putExtra("sku_id", intent.getStringExtra(AppConstants.SKU_ID))
+            putExtra("project_id", intent.getStringExtra(AppConstants.PROJECT_ID))
+            putExtra("exterior_angles", intent.getStringExtra(AppConstants.EXTERIOR_ANGLES))
+            this.putStringArrayListExtra("exterior_images_list",getExteriorImagesList())
+        }
+
+        when(intent.getStringExtra(AppConstants.CATEGORY_NAME)) {
+            "Automobiles" -> {
+                processIntent.putExtra("process_sku", true)
+                processIntent.putExtra("interior_misc_count",count)
+            }
+            else -> {
+                processIntent.putExtra("process_sku", false)
+                processIntent.putExtra("interior_misc_count",count)
+            }
+        }
+
+        startActivity(processIntent)
+    }
+
+    private fun getExteriorImagesList(): java.util.ArrayList<String> {
+
+        if (requireActivity().intent.getBooleanExtra(AppConstants.FROM_LOCAL_DB,false)) {
+            val s = localExterior?.map {
+                it.imagePath
+            }
+
+            return s as ArrayList<String>
+        }else {
+            val s = exterior?.map {
+                it.image_category
+            }
+
+            return s as ArrayList<String>
+        }
+
+    }
+
+    private fun resumeMisc() : Boolean {
+        return if (requireActivity().intent.getBooleanExtra(AppConstants.FROM_LOCAL_DB,false)){
+            localMiscList.size > 0
+        }else {
+            miscList.size > 0
         }
     }
 
-    private fun resumeMisc() = miscList.size > 0
-
     private fun resumeInterior() = !resumeExterior() && !resumeMisc()
 
-    private fun resumeExterior() = exterior.size != requireActivity().intent.getIntExtra(AppConstants.EXTERIOR_ANGLES,0)
+    private fun resumeExterior() : Boolean {
+        return if (requireActivity().intent.getBooleanExtra(AppConstants.FROM_LOCAL_DB,false)){
+            localExterior.size != requireActivity().intent.getIntExtra(AppConstants.EXTERIOR_ANGLES,0)
+                    && (localInteriorList.isEmpty() && localMiscList.isEmpty())
 
-
+        }else {
+            exterior.size != requireActivity().intent.getIntExtra(AppConstants.EXTERIOR_ANGLES,0)
+                    && (interiorList.isEmpty() && miscList.isEmpty())
+        }
+    }
     private fun getSkuDetails() {
         binding.shimmerCompletedSKU.visibility = View.VISIBLE
         binding.shimmerCompletedSKU.startShimmer()
@@ -95,11 +275,15 @@ class DraftSkuDetailsFragment : BaseFragment<DraftViewModel, FragmentDraftSkuDet
                     binding.shimmerCompletedSKU.visibility = View.GONE
                     binding.nsv.visibility = View.VISIBLE
 
+                    binding.flContinueShoot.visibility = View.VISIBLE
+
+
                     var imageList = ArrayList<String>()
 
                     if (!it.value.data.isNullOrEmpty()) {
 
                         val list = it.value.data
+                        binding.tvTotalSku.text = list.size.toString()
 
                         exterior = list?.filter {
                             it.image_category == "Exterior"
@@ -137,7 +321,8 @@ class DraftSkuDetailsFragment : BaseFragment<DraftViewModel, FragmentDraftSkuDet
                             }
                         }
 
-                        binding.flContinueShoot.visibility = View.VISIBLE
+                    }else {
+                        binding.tvTotalSku.text = "0"
                     }
 
                     it.value.data.forEach {

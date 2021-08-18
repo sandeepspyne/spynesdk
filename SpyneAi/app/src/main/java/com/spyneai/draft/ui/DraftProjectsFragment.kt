@@ -71,7 +71,6 @@ class DraftProjectsFragment : BaseFragment<DraftViewModel, FragmentDraftProjects
                                 binding.rvDraftProjects.adapter = draftProjectsAdapter
                                 draftProjectsAdapter.notifyDataSetChanged()
                             }
-
                         }
                     }
 

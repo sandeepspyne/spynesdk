@@ -181,6 +181,7 @@
             android:src="@drawable/ic_saved"
             android:id="@+id/ivSaved"
             android:layout_marginBottom="@dimen/dp_3"
+            app:layout_constraintTop_toBottomOf="@+id/tvCategory"
             app:layout_constraintBottom_toTopOf="@id/tvSaved"
             app:layout_constraintRight_toRightOf="@id/tvSaved"
             app:layout_constraintLeft_toLeftOf="@id/tvSaved" />

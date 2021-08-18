@@ -18,6 +18,7 @@ import com.spyneai.orders.data.response.GetProjectsResponse
 import com.spyneai.shoot.data.model.Project
 import com.spyneai.shoot.ui.base.ShootActivity
 import com.spyneai.threesixty.ui.ThreeSixtyExteriorActivity
+import com.spyneai.toDate
 
 class LocalDraftProjectsAdapter(
 val context: Context,
@@ -69,7 +70,7 @@ val draftsList: List<Project>
 
         holder.tvProjectName.text = draftsList[position].projectName
         holder.tvSkus.text = draftsList[position].skus.toString()
-        holder.tvDate.text = draftsList[position].createdOn.toString()
+        holder.tvDate.text = draftsList[position].createdOn?.toDate()
         holder.tvImages.text = draftsList[position].images.toString()
 
         holder.cvMain.setOnClickListener {

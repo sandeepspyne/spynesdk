@@ -16,6 +16,7 @@ import com.spyneai.needs.AppConstants
 import com.spyneai.needs.Utilities
 import com.spyneai.orders.data.response.GetProjectsResponse
 import com.spyneai.shoot.data.model.Sku
+import com.spyneai.toDate
 
 class LocalSkusAdapter (
     val context: Context,
@@ -43,19 +44,16 @@ class LocalSkusAdapter (
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         holder.tvCategory.text = skuList[position].categoryName
 
-//        try {
-//            Glide.with(context) // replace with 'this' if it's in activity
-//                .load(skuList[position].images[0].input_lres)
-//                .error(R.mipmap.defaults) // show error drawable if the image is not a gif
-//                .into(holder.ivThumbnail)
-//
-//        }catch (e: Exception){
-//
-//        }
+        if (skuList[position].thumbnail != null) {
+            Glide.with(context) // replace with 'this' if it's in activity
+                .load(skuList[position].thumbnail)
+                .error(R.mipmap.defaults) // show error drawable if the image is not a gif
+                .into(holder.ivThumbnail)
+        }
 
         holder.tvSkuName.text = skuList[position].skuName
-        //holder.tvImages.text = skuList[position].total_images.toString()
-
+        holder.tvImages.text = skuList[position].totalImages.toString()
+        holder.tvDate.text = skuList[position].createdOn?.toDate()
 
         holder.cvMain.setOnClickListener {
             Utilities.savePrefrence(
@@ -68,6 +66,7 @@ class LocalSkusAdapter (
                 context,
                 DraftSkuDetailsActivity::class.java
             ).apply {
+                putExtra(AppConstants.FROM_LOCAL_DB, true)
                 putExtra(AppConstants.FROM_DRAFTS, true)
                 putExtra(AppConstants.PROJECT_ID, skuList[position].projectId)
                 putExtra(AppConstants.CATEGORY_ID, skuList[position].categoryId)
@@ -75,6 +74,8 @@ class LocalSkusAdapter (
                 putExtra(AppConstants.SUB_CAT_NAME,skuList[position].subcategoryName)
                 putExtra(AppConstants.CATEGORY_NAME, skuList[position].categoryName)
                 putExtra(AppConstants.SKU_NAME, skuList[position].skuName)
+                putExtra(AppConstants.PROJECT_NAME, skuList[position].skuName)
+                putExtra(AppConstants.SKU_COUNT, skuList.size)
                 putExtra(AppConstants.SKU_CREATED, false)
                 putExtra(AppConstants.SKU_ID, skuList[position].skuId)
                 putExtra(AppConstants.EXTERIOR_ANGLES, skuList[position].exteriorAngles)

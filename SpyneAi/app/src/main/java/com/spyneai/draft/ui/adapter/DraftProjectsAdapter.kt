@@ -114,7 +114,7 @@ class DraftProjectsAdapter(
                     Intent(context, ShootActivity::class.java)
                         .apply {
                             putExtra(AppConstants.FROM_DRAFTS, true)
-                            putExtra(AppConstants.CATEGORY_ID, "cat_d8R14zUNE")
+                            putExtra(AppConstants.CATEGORY_ID, draftsList[position].categoryId)
                             putExtra(AppConstants.CATEGORY_NAME, draftsList[position].category)
                             putExtra(AppConstants.PROJECT_ID, draftsList[position].project_id)
                             putExtra(AppConstants.SKU_NAME, draftsList[position].project_name)
@@ -126,6 +126,9 @@ class DraftProjectsAdapter(
                     Intent(context, DraftSkusActivity::class.java)
                         .apply {
                             putExtra("position", position)
+                            putExtra(AppConstants.FROM_LOCAL_DB, true)
+                            putExtra(AppConstants.PROJECT_NAME, draftsList[position].project_name)
+                            putExtra(AppConstants.PROJECT_ID, draftsList[position].project_id)
                             context.startActivity(this)
                         }
                 }

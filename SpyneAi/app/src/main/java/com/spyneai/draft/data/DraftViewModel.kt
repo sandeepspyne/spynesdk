@@ -5,6 +5,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.spyneai.base.network.Resource
+import com.spyneai.dashboard.response.NewSubCatResponse
 import com.spyneai.orders.data.repository.MyOrdersRepository
 import com.spyneai.orders.data.response.GetOngoingSkusResponse
 import com.spyneai.orders.data.response.GetProjectsResponse
@@ -16,6 +17,7 @@ import kotlinx.coroutines.launch
 
 class DraftViewModel : ViewModel() {
     private val repository = MyOrdersRepository()
+    private val shootRepository = ShootRepository()
     private val processedRepository = ProcessedRepository()
     private val localRepository = ShootLocalRepository()
 
@@ -36,6 +38,7 @@ class DraftViewModel : ViewModel() {
 
     fun getDraftsFromLocal() = localRepository.getDraftProjects()
     fun getSkusByProjectId(projectId : String) = localRepository.getSkusByProjectId(projectId)
+    fun getImagesbySkuId(skuId: String) = localRepository.getImagesBySkuId(skuId)
 
     fun getImagesOfSku(
         authKey: String,
@@ -43,5 +46,16 @@ class DraftViewModel : ViewModel() {
     ) = viewModelScope.launch {
         _imagesOfSkuRes.value = Resource.Loading
         _imagesOfSkuRes.value = processedRepository.getImagesOfSku(authKey, skuId)
+    }
+
+    private val _subCategoriesResponse: MutableLiveData<Resource<NewSubCatResponse>> = MutableLiveData()
+    val subCategoriesResponse: LiveData<Resource<NewSubCatResponse>>
+        get() = _subCategoriesResponse
+
+    fun getSubCategories(
+        authKey: String, prodId: String
+    ) = viewModelScope.launch {
+        _subCategoriesResponse.value = Resource.Loading
+        _subCategoriesResponse.value = shootRepository.getSubCategories(authKey, prodId)
     }
 }

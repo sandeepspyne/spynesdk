@@ -60,6 +60,7 @@ class DBHelper (context: Context) : SQLiteOpenHelper(context, DATABASE_NAME, nul
                 "${Images.COLUMN_NAME_CATEGORY_NAME} TEXT," +
                 "${Images.COLUMN_NAME_IMAGE_PATH} TEXT," +
                 "${Images.COLUMN_NAME_IMAGE_SEQUENCE} INTEGER," +
+                "${Images.COLUMN_NAME_IS_UPLOADED} INTEGER," +
                 "${Images.TABLE_NAME} TEXT)"
 
         private const val CREATE_PROJECTS_TABLE =  "CREATE TABLE ${Projects.TABLE_NAME} (" +

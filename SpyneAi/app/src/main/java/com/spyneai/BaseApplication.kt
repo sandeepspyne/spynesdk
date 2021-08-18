@@ -61,11 +61,11 @@ class BaseApplication : Application() {
             .addTag("Periodic Processing Worker")
 
 
-        WorkManager.getInstance(context)
-            .enqueue(
-                longWorkRequest
-                    .setConstraints(constraints)
-                    .build())
+//        WorkManager.getInstance(context)
+//            .enqueue(
+//                longWorkRequest
+//                    .setConstraints(constraints)
+//                    .build())
     }
 
 

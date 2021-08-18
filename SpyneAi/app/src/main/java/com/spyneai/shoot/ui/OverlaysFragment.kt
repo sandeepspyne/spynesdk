@@ -84,7 +84,9 @@ class OverlaysFragment : BaseFragment<ShootViewModel, FragmentOverlaysBinding>()
         viewModel.isSubCategoryConfirmed.observe(viewLifecycleOwner, {
             //disable angle selection click
             binding.tvShoot?.isClickable = false
-            if (it && !viewModel.fromDrafts) binding.rvSubcategories?.visibility = View.INVISIBLE
+            if (it && !viewModel.fromDrafts) {
+                binding.rvSubcategories?.visibility = View.INVISIBLE
+            }
         })
 
         observeIsProjectCreated()
@@ -114,6 +116,7 @@ class OverlaysFragment : BaseFragment<ShootViewModel, FragmentOverlaysBinding>()
                 if (viewModel.isSubCategoryConfirmed.value == null) {
                     shoot("init subCategory called")
                     intSubcategorySelection()
+                    //observeOverlays()
                 } else {
                     //set default angles on sub cat response
                     shoot("initangles, initProgressFrames, and and observe overlays called")
@@ -185,10 +188,12 @@ class OverlaysFragment : BaseFragment<ShootViewModel, FragmentOverlaysBinding>()
         //update this shoot number
         if (viewModel.fromDrafts){
             val intent = requireActivity().intent
+            viewModel.shootNumber.value = requireActivity().intent.getIntExtra(AppConstants.EXTERIOR_SIZE,0)
 
             when {
                 intent.getBooleanExtra(AppConstants.RESUME_EXTERIOR,false) -> {
                     viewModel.shootNumber.value = requireActivity().intent.getIntExtra(AppConstants.EXTERIOR_SIZE,0)
+                    startExteriroShot()
                 }
                 intent.getBooleanExtra(AppConstants.RESUME_INTERIOR,false) -> {
                     binding.tvShoot?.isClickable = false
@@ -285,7 +290,6 @@ class OverlaysFragment : BaseFragment<ShootViewModel, FragmentOverlaysBinding>()
                         }
                     )
                 }
-
             }
            }else {
             if (viewModel.shootList.value.isNullOrEmpty()) {
@@ -474,15 +478,22 @@ class OverlaysFragment : BaseFragment<ShootViewModel, FragmentOverlaysBinding>()
 
         if (viewModel.fromDrafts){
             viewModel.isSubCategorySelected.value = true
-            viewModel.shootList.value = ArrayList()
+          //  viewModel.shootList.value = ArrayList()
             viewModel.shootNumber.value = 0
 
             when{
                 intent.getBooleanExtra(AppConstants.RESUME_EXTERIOR,false) -> {
                     viewModel.showLeveler.value = true
                     viewModel.shootNumber.value = intent.getIntExtra(AppConstants.EXTERIOR_SIZE,0)
-                }else -> {
+                }
+                intent.getBooleanExtra(AppConstants.RESUME_INTERIOR,false) -> {
                     binding.imgOverlay.visibility = View.GONE
+                }
+                intent.getBooleanExtra(AppConstants.RESUME_MISC,false) -> {
+                    binding.imgOverlay.visibility = View.GONE
+                }
+                else -> {
+
                 }
 
             }
@@ -551,7 +562,6 @@ class OverlaysFragment : BaseFragment<ShootViewModel, FragmentOverlaysBinding>()
         viewModel.hideLeveler.value = true
 
         InteriorHintDialog().show(requireActivity().supportFragmentManager, "InteriorHintDialog")
-
     }
 
     private fun startInteriorShots() {
@@ -564,7 +574,7 @@ class OverlaysFragment : BaseFragment<ShootViewModel, FragmentOverlaysBinding>()
                     val interiorList = it.value.interior as ArrayList<NewSubCatResponse.Interior>
 
                     if (viewModel.fromDrafts){
-
+                        viewModel.interiorShootNumber.value = requireActivity().intent.getIntExtra(AppConstants.INTERIOR_SIZE,0)
                     }else {
                         val myInteriorShootList = viewModel.shootList.value?.filter {
                             it.image_category == "Interior"
@@ -661,7 +671,8 @@ class OverlaysFragment : BaseFragment<ShootViewModel, FragmentOverlaysBinding>()
                     val miscList = it.value.miscellaneous
 
                    if (viewModel.fromDrafts) {
-
+                       viewModel.miscAngles.value =  it.value.miscellaneous.size
+                       viewModel.miscShootNumber.value = requireActivity().intent.getIntExtra(AppConstants.MISC_SIZE,0)
                    }else {
                        val myMiscShootList = viewModel.shootList.value?.filter {
                            it.image_category == "Focus Shoot"
@@ -683,6 +694,7 @@ class OverlaysFragment : BaseFragment<ShootViewModel, FragmentOverlaysBinding>()
                     )
 
                     binding.rvSubcategories.apply {
+                        layoutManager = LinearLayoutManager(requireContext(),LinearLayoutManager.VERTICAL,false)
                         this?.adapter = miscAdapter
                     }
 
@@ -708,12 +720,29 @@ class OverlaysFragment : BaseFragment<ShootViewModel, FragmentOverlaysBinding>()
             binding.rvSubcategories?.scrollToPosition(viewModel.miscShootNumber.value!!)
 
             if (viewModel.miscShootNumber.value!! == 0)
-                progressAdapter!!.updateList(
-                    viewModel.getShootProgressList(
-                        viewModel.miscAngles.value!!,
-                        viewModel.miscShootNumber.value!!
+                if (progressAdapter == null) {
+                    progressAdapter = ShootProgressAdapter(
+                        requireContext(),
+                        viewModel.getShootProgressList(
+                            viewModel.miscAngles.value!!,
+                            requireActivity().intent.getIntExtra(AppConstants.MISC_SIZE,0)
+                        )
                     )
-                )
+
+                    binding.rvProgress.apply {
+                        layoutManager = LinearLayoutManager(requireContext(),LinearLayoutManager.HORIZONTAL,false)
+                        this?.adapter = progressAdapter
+                    }
+
+                }else {
+                    progressAdapter!!.updateList(
+                        viewModel.getShootProgressList(
+                            viewModel.miscAngles.value!!,
+                            viewModel.miscShootNumber.value!!
+                        )
+                    )
+                }
+
             else
                 progressAdapter!!.updateList(viewModel.miscShootNumber.value!!)
             shoot("updateList in progress adapter called- " + viewModel.miscShootNumber.value!!)
@@ -734,6 +763,9 @@ class OverlaysFragment : BaseFragment<ShootViewModel, FragmentOverlaysBinding>()
 
             viewModel.isSubCategorySelected.value = true
             viewModel.showLeveler.value = true
+
+            if (viewModel.fromDrafts)
+                startExteriroShot()
             shoot("isSubCategorySelected is true")
         }
     }
