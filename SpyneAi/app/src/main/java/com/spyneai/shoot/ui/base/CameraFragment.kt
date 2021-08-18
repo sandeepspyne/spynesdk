@@ -672,12 +672,12 @@ class CameraFragment : BaseFragment<ShootViewModel, FragmentCameraBinding>(), Pi
         Log.d(TAG, "updateOrientationAngles: "+pitch)
         Log.d(TAG, "updateOrientationAngles: "+"-------------------------------")
 
-        // binding.tvPitchRoll!!.text = roll.roundToInt().toString()+"**"+pitch.roundToInt().toString()
+         binding.tvPitchRoll!!.text = roll.roundToInt().toString()+"**"+pitch.roundToInt().toString()
 
 
         if (viewModel.categoryDetails.value?.categoryName == "Footwear" ||
             viewModel.categoryDetails.value?.categoryName == "E-Commerce") {
-            if ((roll <= -30 && roll >=-60) && (pitch <= -80 && pitch >= -90)
+            if ((roll <= -160 && roll >= -185) && (pitch <= -80 && pitch >= -95)
                 ||
                 (roll <= 0 && roll >=-5) && ((pitch.roundToInt() == 0 || pitch.roundToInt() == -0) ||
                         pitch.roundToInt() <= -5 || pitch.roundToInt() >= -10)){
