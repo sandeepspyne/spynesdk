@@ -29,7 +29,6 @@ class SkuDetailFragment : BaseFragment<ShootViewModel, FragmentSkuDetailBinding>
 
         if (Utilities.getPreference(requireContext(), AppConstants.CATEGORY_NAME).equals("Footwear")){
             binding.ivAddAngle.visibility = View.GONE
-            binding.tvAddAngle.visibility = View.GONE
         }
 
         viewModel.getProjectDetail(
@@ -109,7 +108,8 @@ class SkuDetailFragment : BaseFragment<ShootViewModel, FragmentSkuDetailBinding>
             viewModel.shootList.value?.clear()
             val intent = Intent(activity, ShootPortraitActivity::class.java)
             intent.putExtra("project_id", viewModel.sku.value?.projectId);
-            intent.putExtra("skuNumber", viewModel.skuNumber.value?.plus(1)!!);
+            intent.putExtra("skuNumber", viewModel.skuNumber.value?.plus(1)!!)
+            intent.putExtra(AppConstants.CATEGORY_NAME,"E-Commerce")
             startActivity(intent)
 
         }

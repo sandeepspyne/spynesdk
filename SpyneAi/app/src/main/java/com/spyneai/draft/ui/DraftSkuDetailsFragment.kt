@@ -67,7 +67,8 @@ class DraftSkuDetailsFragment : BaseFragment<DraftViewModel, FragmentDraftSkuDet
                         it.categoryName == "Exterior"
                     } as ArrayList
                 }else {
-                    localExterior = list as ArrayList
+                    localExterior = list
+                    binding.tvExterior.visibility = View.GONE
                 }
 
                 if (localExterior.size > 0) {
@@ -124,7 +125,7 @@ class DraftSkuDetailsFragment : BaseFragment<DraftViewModel, FragmentDraftSkuDet
                         ShootActivity::class.java)
                 }
 
-                "Footwear" -> {
+                "Footwear","E-Commerce" -> {
                     shootIntent = Intent(
                         context,
                         ShootPortraitActivity::class.java)

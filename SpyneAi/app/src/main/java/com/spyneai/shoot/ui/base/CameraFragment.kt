@@ -929,6 +929,7 @@ class CameraFragment : BaseFragment<ShootViewModel, FragmentCameraBinding>(), Pi
     }
 
     private fun addShootItem(capturedImage: String) {
+        viewModel.showDialog = true
         if (viewModel.shootList.value == null){
             Utilities.hideProgressDialog()
             Utilities.hideProgressDialog()

@@ -81,7 +81,7 @@ class CreateSkuEcomDialog : BaseDialogFragment<ShootViewModel, CreateSkuEcomDial
                     )
 
                     //notify sku created
-                    val sku = Sku()
+                    val sku = viewModel.sku.value
                     log("sku id created sucess")
                     log("sku id: "+it.value.sku_id)
                     sku?.skuId = it.value.sku_id

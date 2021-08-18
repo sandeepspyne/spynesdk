@@ -103,6 +103,10 @@ class ShootPortraitActivity : AppCompatActivity() {
                 val sku = Sku()
                 sku?.projectId = shootViewModel.projectId.value
                 shootViewModel.categoryDetails.value?.imageType = "Ecom"
+                sku.skuName = intent.getStringExtra(AppConstants.SKU_NAME)
+                sku.skuId = intent.getStringExtra(AppConstants.SKU_ID)
+                sku.categoryName = shootViewModel.categoryDetails.value?.categoryName
+
                 shootViewModel.sku.value = sku
             } catch (e: Exception) {
                 e.printStackTrace()
@@ -201,46 +205,68 @@ class ShootPortraitActivity : AppCompatActivity() {
         sku.categoryName = shootViewModel.categoryDetails.value?.categoryName
 
         shootViewModel.sku.value = sku
+        shootViewModel.isSkuCreated.value = true
 
-        if (intent.getIntExtra(AppConstants.EXTERIOR_ANGLES,0) != 0){
-            //sub category selected
-            shootViewModel.subCatName.value = intent.getStringExtra(AppConstants.SUB_CAT_NAME)
+        if (intent.getStringExtra(AppConstants.CATEGORY_NAME) == "Footwear"){
+            if (intent.getIntExtra(AppConstants.EXTERIOR_ANGLES,0) != 0){
+                //sub category selected
+                shootViewModel.subCatName.value = intent.getStringExtra(AppConstants.SUB_CAT_NAME)
 
-            shootViewModel.subCategory.value = NewSubCatResponse.Data(
-                1,
-                "",
-                "",
-                "",
-                1,
-                1,
-                intent.getStringExtra(AppConstants.CATEGORY_ID)!!,
-                intent.getStringExtra(AppConstants.SUB_CAT_ID)!!,
-                intent.getStringExtra(AppConstants.SUB_CAT_NAME)!!,
-                ""
-            )
+                shootViewModel.subCategory.value = NewSubCatResponse.Data(
+                    1,
+                    "",
+                    "",
+                    "",
+                    1,
+                    1,
+                    intent.getStringExtra(AppConstants.CATEGORY_ID)!!,
+                    intent.getStringExtra(AppConstants.SUB_CAT_ID)!!,
+                    intent.getStringExtra(AppConstants.SUB_CAT_NAME)!!,
+                    ""
+                )
 
-            shootViewModel.isSubCategoryConfirmed.value = true
+                shootViewModel.isSubCategoryConfirmed.value = true
 
-            if (intent.getIntExtra(AppConstants.EXTERIOR_ANGLES,0) == intent.getIntExtra(AppConstants.EXTERIOR_SIZE,0)){
-                val list = shootViewModel.getImagesbySkuId(shootViewModel.sku.value?.skuId!!)
+                if (intent.getIntExtra(AppConstants.EXTERIOR_ANGLES,0) == intent.getIntExtra(AppConstants.EXTERIOR_SIZE,0)){
+                    val list = shootViewModel.getImagesbySkuId(shootViewModel.sku.value?.skuId!!)
 
-                shootViewModel.shootList.value = ArrayList()
+                    shootViewModel.shootList.value = ArrayList()
 
 
-                for(image in list){
-                    shootViewModel.shootList.value!!.add(
-                        ShootData(image.imagePath!!,
-                            image.projectId!!,
-                            image.skuId!!,
-                        "",
-                            Utilities.getPreference(this,AppConstants.AUTH_KEY).toString(),
-                        0)
-                    )
+                    for(image in list){
+                        shootViewModel.shootList.value!!.add(
+                            ShootData(image.imagePath!!,
+                                image.projectId!!,
+                                image.skuId!!,
+                                "",
+                                Utilities.getPreference(this,AppConstants.AUTH_KEY).toString(),
+                                0)
+                        )
+                    }
+
+                    shootViewModel.stopShoot.value = true
                 }
 
-                shootViewModel.stopShoot.value = true
+            }
+        }else {
+            shootViewModel.isSubCategoryConfirmed.value = true
+            //set total clicked images
+            val list = shootViewModel.getImagesbySkuId(shootViewModel.sku.value?.skuId!!)
+
+            shootViewModel.shootList.value = ArrayList()
+
+            for(image in list){
+                shootViewModel.shootList.value!!.add(
+                    ShootData(image.imagePath!!,
+                        image.projectId!!,
+                        image.skuId!!,
+                        "",
+                        Utilities.getPreference(this,AppConstants.AUTH_KEY).toString(),
+                        0)
+                )
             }
 
+            shootViewModel.showDialog = false
         }
     }
 

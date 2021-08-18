@@ -33,6 +33,7 @@ class ShootViewModel : ViewModel(){
 
     var fromDrafts = false
     val isSensorAvaliable : MutableLiveData<Boolean> = MutableLiveData()
+    var showDialog = true
 
     val skuNumber : MutableLiveData<Int> = MutableLiveData()
 
