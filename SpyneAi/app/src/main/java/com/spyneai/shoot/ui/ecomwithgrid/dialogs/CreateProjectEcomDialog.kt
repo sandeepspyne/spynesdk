@@ -54,8 +54,10 @@ class CreateProjectEcomDialog :
             }
         }
 
-        observeCreateProject()
-        observeCreateSku()
+        if (!viewModel.fromDrafts) {
+            observeCreateProject()
+            observeCreateSku()
+        }
     }
 
     private fun removeWhiteSpace(toString: String) = toString.replace("\\s".toRegex(), "")

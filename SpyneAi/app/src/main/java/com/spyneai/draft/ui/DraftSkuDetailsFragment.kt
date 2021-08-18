@@ -62,9 +62,13 @@ class DraftSkuDetailsFragment : BaseFragment<DraftViewModel, FragmentDraftSkuDet
 
             if (!list.isNullOrEmpty()) {
 
-                localExterior = list?.filter {
-                    it.categoryName == "Exterior"
-                } as ArrayList
+                if (intent.getStringExtra(AppConstants.CATEGORY_NAME) == "Automobiles"){
+                    localExterior = list?.filter {
+                        it.categoryName == "Exterior"
+                    } as ArrayList
+                }else {
+                    localExterior = list as ArrayList
+                }
 
                 if (localExterior.size > 0) {
                     binding.tvExterior.visibility = View.VISIBLE

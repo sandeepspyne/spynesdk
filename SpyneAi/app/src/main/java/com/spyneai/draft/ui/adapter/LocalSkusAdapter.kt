@@ -62,7 +62,7 @@ class LocalSkusAdapter (
                 skuList[position].skuId
             )
 
-            Intent(
+            val draftIntent = Intent(
                 context,
                 DraftSkuDetailsActivity::class.java
             ).apply {
@@ -78,12 +78,21 @@ class LocalSkusAdapter (
                 putExtra(AppConstants.SKU_COUNT, skuList.size)
                 putExtra(AppConstants.SKU_CREATED, false)
                 putExtra(AppConstants.SKU_ID, skuList[position].skuId)
-                putExtra(AppConstants.EXTERIOR_ANGLES, skuList[position].exteriorAngles)
                 //putExtra("is_paid",skuList[position].paid)
                 //putExtra(AppConstants.IMAGE_TYPE,skuList[position].category)
                 putExtra(AppConstants.IS_360,skuList[position].is360)
-                context.startActivity(this)
             }
+
+            when(skuList[position].subcategoryId){
+                "prod_4CW50lj2sNMCS" ->  draftIntent.putExtra(AppConstants.EXTERIOR_ANGLES, 5)
+                "prod_4CW50lj2sNMF" ->  draftIntent.putExtra(AppConstants.EXTERIOR_ANGLES, 6)
+                else -> {
+                    draftIntent.putExtra(AppConstants.EXTERIOR_ANGLES, skuList[position].exteriorAngles)
+                }
+
+            }
+
+            context.startActivity(draftIntent)
 
         }
 

@@ -30,7 +30,6 @@ class SkuDetailFragment : BaseFragment<ShootViewModel, FragmentSkuDetailBinding>
         if (Utilities.getPreference(requireContext(), AppConstants.CATEGORY_NAME).equals("Footwear")){
             binding.ivAddAngle.visibility = View.GONE
             binding.tvAddAngle.visibility = View.GONE
-
         }
 
         viewModel.getProjectDetail(
@@ -46,8 +45,6 @@ class SkuDetailFragment : BaseFragment<ShootViewModel, FragmentSkuDetailBinding>
                    viewModel.totalImageCaptured.value = it.value.data.total_images.toString()
 
                    binding.tvTotalSkuCaptured.text = it.value.data.total_sku.toString()
-
-
                }
                is Resource.Loading -> {
 

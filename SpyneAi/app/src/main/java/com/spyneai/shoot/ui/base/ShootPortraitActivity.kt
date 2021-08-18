@@ -15,12 +15,14 @@ import androidx.core.content.ContextCompat
 import androidx.lifecycle.ViewModelProvider
 import com.spyneai.R
 import com.spyneai.base.network.Resource
+import com.spyneai.dashboard.response.NewSubCatResponse
 import com.spyneai.dashboard.ui.base.ViewModelFactory
 import com.spyneai.needs.AppConstants
 import com.spyneai.needs.Utilities
 import com.spyneai.shoot.data.ShootViewModel
 import com.spyneai.shoot.data.model.CategoryDetails
 import com.spyneai.shoot.data.model.CreateProjectRes
+import com.spyneai.shoot.data.model.ShootData
 import com.spyneai.shoot.data.model.Sku
 import com.spyneai.shoot.ui.OverlaysFragment
 import com.spyneai.shoot.ui.dialogs.ShootExitDialog
@@ -119,6 +121,9 @@ class ShootPortraitActivity : AppCompatActivity() {
                 shootViewModel.projectId.value = intent.getStringExtra("project_id")
                 val sku = Sku()
                 sku?.projectId = shootViewModel.projectId.value
+                sku.skuName = intent.getStringExtra(AppConstants.SKU_NAME)
+                sku.skuId = intent.getStringExtra(AppConstants.SKU_ID)
+                sku.categoryName = shootViewModel.categoryDetails.value?.categoryName
                 shootViewModel.categoryDetails.value?.imageType = ""
                 shootViewModel.sku.value = sku
             } catch (e: Exception) {
@@ -179,22 +184,64 @@ class ShootPortraitActivity : AppCompatActivity() {
         shootViewModel.fromDrafts = true
         shootViewModel.showVin.value = true
         shootViewModel.isProjectCreated.value = true
+        shootViewModel.projectId.value =  intent.getStringExtra(AppConstants.PROJECT_ID)!!
 
         shootViewModel._createProjectRes.value = Resource.Success(
             CreateProjectRes(
             "",
             intent.getStringExtra(AppConstants.PROJECT_ID)!!,
-            200
-        )
+            200)
         )
 
         //set sku data
         val sku = Sku()
         sku.projectId = intent.getStringExtra(AppConstants.PROJECT_ID)
         sku.skuName = intent.getStringExtra(AppConstants.SKU_NAME)
+        sku.skuId = intent.getStringExtra(AppConstants.SKU_ID)
         sku.categoryName = shootViewModel.categoryDetails.value?.categoryName
 
         shootViewModel.sku.value = sku
+
+        if (intent.getIntExtra(AppConstants.EXTERIOR_ANGLES,0) != 0){
+            //sub category selected
+            shootViewModel.subCatName.value = intent.getStringExtra(AppConstants.SUB_CAT_NAME)
+
+            shootViewModel.subCategory.value = NewSubCatResponse.Data(
+                1,
+                "",
+                "",
+                "",
+                1,
+                1,
+                intent.getStringExtra(AppConstants.CATEGORY_ID)!!,
+                intent.getStringExtra(AppConstants.SUB_CAT_ID)!!,
+                intent.getStringExtra(AppConstants.SUB_CAT_NAME)!!,
+                ""
+            )
+
+            shootViewModel.isSubCategoryConfirmed.value = true
+
+            if (intent.getIntExtra(AppConstants.EXTERIOR_ANGLES,0) == intent.getIntExtra(AppConstants.EXTERIOR_SIZE,0)){
+                val list = shootViewModel.getImagesbySkuId(shootViewModel.sku.value?.skuId!!)
+
+                shootViewModel.shootList.value = ArrayList()
+
+
+                for(image in list){
+                    shootViewModel.shootList.value!!.add(
+                        ShootData(image.imagePath!!,
+                            image.projectId!!,
+                            image.skuId!!,
+                        "",
+                            Utilities.getPreference(this,AppConstants.AUTH_KEY).toString(),
+                        0)
+                    )
+                }
+
+                shootViewModel.stopShoot.value = true
+            }
+
+        }
     }
 
     /**

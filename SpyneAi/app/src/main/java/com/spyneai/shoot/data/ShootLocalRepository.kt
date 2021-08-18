@@ -659,6 +659,33 @@ class ShootLocalRepository {
         return sku
     }
 
+    fun updateSubcategoryId(skuId : String,subCategoryId : String,subCategoryName: String) {
+        val values = ContentValues().apply {
+            put(
+                ShootContract.ShootEntry.COLUMN_NAME_SUB_CATEGORY_ID,
+                subCategoryId
+            )
+            put(
+                ShootContract.ShootEntry.COLUMN_NAME_SUB_CATEGORY_NAME,
+                subCategoryName
+            )
+        }
+
+        val selection = "${ShootContract.ShootEntry.COLUMN_NAME_SKU_ID} LIKE ?"
+
+        val selectionArgs = arrayOf(skuId)
+
+
+        val count = dbWritable.update(
+            ShootContract.ShootEntry.TABLE_NAME,
+            values,
+            selection,
+            selectionArgs)
+
+
+
+    }
+
     fun processSku(skuId: String) : Boolean {
         val sku = getUploadedAndTotalImagesCount(skuId)
         return sku.uploadedImages == sku.totalImages && sku.processSku == 1

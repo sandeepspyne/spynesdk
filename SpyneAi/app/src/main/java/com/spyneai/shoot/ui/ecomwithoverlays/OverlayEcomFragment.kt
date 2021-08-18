@@ -54,7 +54,6 @@ class OverlayEcomFragment : BaseFragment<ShootViewModel, FragmentOverlayEcomBind
     lateinit var progressAdapter: ShootProgressAdapter
     var pos = 0
 
-
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
@@ -63,9 +62,25 @@ class OverlayEcomFragment : BaseFragment<ShootViewModel, FragmentOverlayEcomBind
             initProjectDialog()
             log("project and SKU dialog shown")
         }
-
         else {
-            initSkuDialog()
+            if (viewModel.fromDrafts){
+                when {
+                    requireActivity().intent.getIntExtra(AppConstants.EXTERIOR_ANGLES,0)
+                            == requireActivity().intent.getIntExtra(AppConstants.EXTERIOR_SIZE,0) -> {
+
+                    }
+                    viewModel.subCatName.value != null -> {
+                        intSubcategorySelection(false)
+                        getOverlays()
+                        binding.llCapture.visibility = View.VISIBLE
+                    }
+                    else -> intSubcategorySelection(true)
+                }
+            }else {
+                initSkuDialog()
+            }
+
+
             log("SKU dialog shown")
         }
 
@@ -73,7 +88,16 @@ class OverlayEcomFragment : BaseFragment<ShootViewModel, FragmentOverlayEcomBind
         viewModel.shootList.observe(viewLifecycleOwner, {
             try {
                 if (showDialog && !it.isNullOrEmpty()){
-                    showImageConfirmDialog(it.get(it.size - 1))
+                    if (viewModel.fromDrafts){
+                        if (requireActivity().intent.getIntExtra(AppConstants.EXTERIOR_SIZE,0) != null
+                            &&
+                            requireActivity().intent.getIntExtra(AppConstants.EXTERIOR_SIZE,0) !=
+                            requireActivity().intent.getIntExtra(AppConstants.EXTERIOR_ANGLES,0)){
+                            showImageConfirmDialog(it.get(it.size - 1))
+                        }
+                    }else {
+                        showImageConfirmDialog(it.get(it.size - 1))
+                    }
                 }
             }catch (e : Exception){
                 e.printStackTrace()
@@ -87,7 +111,12 @@ class OverlayEcomFragment : BaseFragment<ShootViewModel, FragmentOverlayEcomBind
                         Events.GET_OVERLAYS,
                         Properties().putValue("angles",it.value.data.size))
 
-                    binding.tvShoot?.text = "1/${it.value.data.size}"
+                    if (viewModel.fromDrafts){
+                        binding.tvShoot?.text = "${requireActivity().intent.getIntExtra(AppConstants.EXTERIOR_SIZE,0).plus(1)}/${it.value.data.size}"
+                    }else {
+                        binding.tvShoot?.text = "1/${it.value.data.size}"
+
+                    }
 
                     Utilities.hideProgressDialog()
                     binding.clSubcatSelectionOverlay?.visibility = View.GONE
@@ -111,10 +140,12 @@ class OverlayEcomFragment : BaseFragment<ShootViewModel, FragmentOverlayEcomBind
             binding.tvShoot?.isClickable = false
             if (it) binding.rvSubcategories?.visibility = View.INVISIBLE
         })
-
-
     }
-    private fun intSubcategorySelection() {
+
+    private fun intSubcategorySelection(showDialog : Boolean) {
+        if (showDialog)
+            Utilities.showProgressDialog(requireContext())
+
         subCategoriesAdapter = NewSubCategoriesAdapter(
             requireContext(),
             null,
@@ -159,13 +190,17 @@ class OverlayEcomFragment : BaseFragment<ShootViewModel, FragmentOverlayEcomBind
                     //set default angles on sub cat response
 //                    initProgressFrames()
 
-                    binding.clSubcatSelectionOverlay?.visibility = View.VISIBLE
+                    if (viewModel.fromDrafts){
+                        binding.rvSubcategories.visibility = View.INVISIBLE
+                    }else {
+                        binding.clSubcatSelectionOverlay?.visibility = View.VISIBLE
+                    }
+
 
                     when(viewModel.categoryDetails.value?.categoryName){
                         "Footwear" -> binding.tvSubCategory?.text = getString(R.string.footwear_subcategory)
                     }
                 }
-                is Resource.Loading ->  Utilities.showProgressDialog(requireContext())
 
                 is Resource.Failure -> {
                     requireContext().captureFailureEvent(
@@ -181,8 +216,12 @@ class OverlayEcomFragment : BaseFragment<ShootViewModel, FragmentOverlayEcomBind
 
 
     private fun initProgressFrames(frames: Int) {
-        //update this shoot number
-        viewModel.shootNumber.value = 0
+
+      //  update this shoot number
+        if (viewModel.fromDrafts)
+            viewModel.shootNumber.value = requireActivity().intent.getIntExtra(AppConstants.EXTERIOR_SIZE,0)
+        else
+            viewModel.shootNumber.value = 0
 
         progressAdapter = ShootProgressAdapter(
             requireContext(),
@@ -266,7 +305,7 @@ class OverlayEcomFragment : BaseFragment<ShootViewModel, FragmentOverlayEcomBind
         CreateSkuEcomDialog().show(requireFragmentManager(), "CreateSkuEcomDialog")
         viewModel.isSkuCreated.observe(viewLifecycleOwner,{
             if (it) {
-                intSubcategorySelection()
+                intSubcategorySelection(true)
             }
         })
     }
@@ -275,7 +314,7 @@ class OverlayEcomFragment : BaseFragment<ShootViewModel, FragmentOverlayEcomBind
         CreateProjectEcomDialog().show(requireFragmentManager(), "CreateProjectEcomDialog")
         viewModel.isSkuCreated.observe(viewLifecycleOwner,{
             if (it) {
-                intSubcategorySelection()
+                intSubcategorySelection(true)
             }
         })
     }
@@ -295,7 +334,7 @@ class OverlayEcomFragment : BaseFragment<ShootViewModel, FragmentOverlayEcomBind
             subCategoriesAdapter.notifyDataSetChanged()
 
             viewModel.subCatName.value = data.sub_cat_name
-
+            viewModel.showLeveler.value = true
 
             getOverlays()
 
@@ -303,7 +342,6 @@ class OverlayEcomFragment : BaseFragment<ShootViewModel, FragmentOverlayEcomBind
     }
 
     private fun getOverlays() {
-
         var frames = 0
         if (viewModel.subCatName.value.equals("Men Formal"))
             frames = 6
@@ -314,7 +352,6 @@ class OverlayEcomFragment : BaseFragment<ShootViewModel, FragmentOverlayEcomBind
 
         initProgressFrames(frames)
 
-
         viewModel.subCategory.value?.let {
             viewModel.getOverlays(
                 Utilities.getPreference(requireContext(),AppConstants.AUTH_KEY).toString(),
@@ -322,6 +359,9 @@ class OverlayEcomFragment : BaseFragment<ShootViewModel, FragmentOverlayEcomBind
                 it.prod_sub_cat_id!!,
                 frames.toString()
             )
+
+            //update subcategor id
+            viewModel.updateSubcategoryId(it.prod_sub_cat_id,viewModel.subCatName.value!!)
 
             requireContext().captureEvent(
                 Events.GET_OVERLAYS_INTIATED,

@@ -108,7 +108,7 @@ object AppConstants {
 
     //drafts constants
     val  FROM_DRAFTS: String = "fromDrafts"
-    val  PROJECT_ID: String = "projectId"
+    val  PROJECT_ID: String = "project_id"
     val  PROJECT_NAME: String = "projectName"
     val  SKU_CREATED: String = "skuCreated"
     val  EXTERIOR_ANGLES: String = "exteriorAngles"

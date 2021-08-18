@@ -660,11 +660,7 @@ class CameraFragment : BaseFragment<ShootViewModel, FragmentCameraBinding>(), Pi
         pitch = Math.toDegrees(orientationAngles[1].toDouble())
         roll = Math.toDegrees(orientationAngles[2].toDouble())
 
-        Log.d(TAG, "updateOrientationAngles: "+roll)
-        Log.d(TAG, "updateOrientationAngles: "+pitch)
-        Log.d(TAG, "updateOrientationAngles: "+"-------------------------------")
-
-       // binding.tvPitchRoll!!.text = roll.roundToInt().toString()+"****"+pitch.roundToInt().toString()
+      //  binding.tvPitchRoll!!.text = roll.roundToInt().toString()+"****"+pitch.roundToInt().toString()
 
 
         if (viewModel.categoryDetails.value?.categoryName == "Footwear" ||
