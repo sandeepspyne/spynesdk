@@ -126,7 +126,6 @@ class CreateProjectEcomDialog :
             when (it) {
                 is Resource.Success -> {
                     Utilities.hideProgressDialog()
-
                     requireContext().captureEvent(
                         Events.CREATE_SKU,
                         Properties().putValue("sku_name", viewModel.sku.value?.skuName.toString())
@@ -142,6 +141,7 @@ class CreateProjectEcomDialog :
                     sku?.skuName = removeWhiteSpace(binding.etSkuName.text.toString())
                     viewModel.sku.value = sku
                     viewModel.isSkuCreated.value = true
+                    viewModel.showLeveler.value = true
 
                     //add sku to local database
 //                    viewModel.insertSku(sku!!)

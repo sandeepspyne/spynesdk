@@ -97,6 +97,8 @@ class CameraFragment : BaseFragment<ShootViewModel, FragmentCameraBinding>(), Pi
     private var handler : Handler? = null
     private var isGyroOnCorrectAngle = false
 
+    private var filename = ""
+
     var gravity = FloatArray(3)
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -130,7 +132,12 @@ class CameraFragment : BaseFragment<ShootViewModel, FragmentCameraBinding>(), Pi
         })
 
         viewModel.showLeveler.observe(viewLifecycleOwner, {
-            if (it && isSensorAvaliable) binding.flLevelIndicator.visibility = View.VISIBLE
+            if (it && isSensorAvaliable){
+                if (viewModel.categoryDetails.value?.categoryName == "Footwear" ||
+                    viewModel.categoryDetails.value?.categoryName == "E-Commerce")
+                    binding.tvLevelIndicator.visibility = View.GONE
+                binding.flLevelIndicator.visibility = View.VISIBLE
+            }
         })
 
         viewModel.hideLeveler.observe(viewLifecycleOwner, {
@@ -506,46 +513,57 @@ class CameraFragment : BaseFragment<ShootViewModel, FragmentCameraBinding>(), Pi
             }
         }
 
-        var filename  = viewModel.sku.value?.skuName +"_"+viewModel.sku.value?.skuId+"_"
+        if (viewModel.categoryDetails.value?.categoryName == "Automobiles"){
+            filename  = viewModel.sku.value?.skuName +"_"+viewModel.sku.value?.skuId+"_"
 
-        filename += if (viewModel.shootList.value == null)
-            viewModel.categoryDetails.value?.imageType!!+"_1"
-        else{
-            val size = viewModel.shootList.value!!.size.plus(1)
-            val list = viewModel.shootList.value
+            filename += if (viewModel.shootList.value == null)
+                viewModel.categoryDetails.value?.imageType!!+"_1"
+            else{
+                val size = viewModel.shootList.value!!.size.plus(1)
+                val list = viewModel.shootList.value
 
-            when(viewModel.categoryDetails.value?.imageType) {
-                "Exterior" -> {
-                    viewModel.categoryDetails.value?.imageType!! + "_" + size
+                when(viewModel.categoryDetails.value?.imageType) {
+                    "Exterior" -> {
+                        viewModel.categoryDetails.value?.imageType!! + "_" + size
+                    }
+                    "Interior" -> {
+
+                        val interiorList = list?.filter {
+                            it.image_category == "Interior"
+                        }
+
+                        if (interiorList == null) {
+                            viewModel.categoryDetails.value?.imageType!! + "_1"
+                        } else {
+                            viewModel.categoryDetails.value?.imageType!! + "_" + interiorList.size.plus(
+                                1
+                            )
+                        }
+                    }
+                    "Focus Shoot" -> {
+                        val miscList = list?.filter {
+                            it.image_category == "Focus Shoot"
+                        }
+
+                        if (miscList == null) {
+                            "Miscellaneous" + "_1"
+                        } else {
+                            "Miscellaneous_" + miscList.size.plus(1)
+                        }
+                    }
+                    else -> {System.currentTimeMillis().toString()}
                 }
-                "Interior" -> {
-
-                    val interiorList = list?.filter {
-                        it.image_category == "Interior"
-                    }
-
-                    if (interiorList == null) {
-                        viewModel.categoryDetails.value?.imageType!! + "_1"
-                    } else {
-                        viewModel.categoryDetails.value?.imageType!! + "_" + interiorList.size.plus(
-                            1
-                        )
-                    }
-                }
-                "Focus Shoot" -> {
-                    val miscList = list?.filter {
-                        it.image_category == "Focus Shoot"
-                    }
-
-                    if (miscList == null) {
-                        "Miscellaneous" + "_1"
-                    } else {
-                        "Miscellaneous_" + miscList.size.plus(1)
-                    }
-                }
-                else -> {System.currentTimeMillis().toString()}
             }
+        } else{
+            filename  = viewModel.sku.value?.skuName +"_"
+
+            filename += if (viewModel.shootList.value == null) {
+                "1"
+            } else{
+                filename = viewModel.shootList.value!!.size.plus(1).toString()
         }
+        }
+
 
         // Options fot the output image file
         val outputOptions = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
