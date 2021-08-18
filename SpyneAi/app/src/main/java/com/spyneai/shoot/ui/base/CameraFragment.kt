@@ -512,8 +512,6 @@ class CameraFragment : BaseFragment<ShootViewModel, FragmentCameraBinding>(), Pi
                 "${Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DCIM)}/Spyne/"
             }
         }
-
-        if (viewModel.categoryDetails.value?.categoryName == "Automobiles"){
             filename  = viewModel.sku.value?.skuName +"_"+viewModel.sku.value?.skuId+"_"
 
             filename += if (viewModel.shootList.value == null)
@@ -554,15 +552,6 @@ class CameraFragment : BaseFragment<ShootViewModel, FragmentCameraBinding>(), Pi
                     else -> {System.currentTimeMillis().toString()}
                 }
             }
-        } else{
-            filename  = viewModel.sku.value?.skuName +"_"
-
-            filename += if (viewModel.shootList.value == null) {
-                "1"
-            } else{
-                filename = viewModel.shootList.value!!.size.plus(1).toString()
-        }
-        }
 
 
         // Options fot the output image file
@@ -672,14 +661,17 @@ class CameraFragment : BaseFragment<ShootViewModel, FragmentCameraBinding>(), Pi
         Log.d(TAG, "updateOrientationAngles: "+pitch)
         Log.d(TAG, "updateOrientationAngles: "+"-------------------------------")
 
-//         binding.tvPitchRoll!!.text = roll.roundToInt().toString()+"**"+pitch.roundToInt().toString()
+         binding.tvPitchRoll!!.text = roll.roundToInt().toString()+"**"+pitch.roundToInt().toString()
+
+        log("roll: "+roll.roundToInt().toString())
+        log("pitch: "+pitch.roundToInt().toString())
 
 
         if (viewModel.categoryDetails.value?.categoryName == "Footwear" ||
             viewModel.categoryDetails.value?.categoryName == "E-Commerce") {
-            if ((roll <= -160 && roll >= -185) && (pitch <= -80 && pitch >= -95)
+            if ((roll.roundToInt() <= -160 && roll.roundToInt() >= -185) && (pitch <= -80 && pitch >= -90)
                 ||
-                (roll <= 0 && roll >=-5) && ((pitch.roundToInt() == 0 || pitch.roundToInt() == -0) ||
+                (roll.roundToInt() <= 0 && roll.roundToInt() >=-5) && ((pitch.roundToInt() == 0 || pitch.roundToInt() == -0) ||
                         pitch.roundToInt() <= -5 || pitch.roundToInt() >= -10)){
                 binding
                     .tvLevelIndicator
