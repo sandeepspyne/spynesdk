@@ -55,7 +55,6 @@ class OverlaysFragment : BaseFragment<ShootViewModel, FragmentOverlaysBinding>()
         super.onViewCreated(view, savedInstanceState)
 
 
-
       if (viewModel.showVin.value == null) {
             shoot("shoot hint called")
             initShootHint()
