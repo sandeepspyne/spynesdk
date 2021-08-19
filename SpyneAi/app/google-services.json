@@ -539,6 +539,42 @@
     },
     {
       "client_info": {
+        "mobilesdk_app_id": "1:796517407311:android:c2579b6e66c60436e4a83a",
+        "android_client_info": {
+          "package_name": "com.spyneai.swiggy.debug"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "796517407311-rtrqq3c76ujrhmhb3u1e63mfbhmhdeju.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCZYh2OqdLAr8r5kGU1pJPsqlW2TH_k_Do"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "796517407311-rtrqq3c76ujrhmhb3u1e63mfbhmhdeju.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "796517407311-a7eg68f3hlagr00ovebmqc48fpakl0bb.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.whitelabeltest.ai"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
         "mobilesdk_app_id": "1:796517407311:android:55978538bbe4de1fe4a83a",
         "android_client_info": {
           "package_name": "com.spyneai.travophotos.debug"

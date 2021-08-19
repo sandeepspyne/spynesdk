@@ -277,7 +277,7 @@ class CameraFragment : BaseFragment<ShootViewModel, FragmentCameraBinding>(), Pi
                     }
                 }
             }
-            "Flipkart", "Udaan", "Lal10", "Amazon" -> {
+            "Flipkart", "Udaan", "Lal10", "Amazon", "Swiggy" -> {
                 binding.cameraCaptureButton?.setOnClickListener {
                     captureImage()
                 }
