@@ -49,7 +49,8 @@ class DraftSkusAdapter (
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        holder.tvCategory.text = skuList[position].category
+        holder.tvCategory.text = categoryName
+        holder.tvDate.text = skuList[position].created_on
 
         try {
             Glide.with(context) // replace with 'this' if it's in activity
@@ -76,7 +77,7 @@ class DraftSkusAdapter (
                 context,
                 DraftSkuDetailsActivity::class.java
             ).apply {
-               putExtra(AppConstants.FROM_LOCAL_DB, true)
+               putExtra(AppConstants.FROM_LOCAL_DB, false)
                putExtra(AppConstants.FROM_DRAFTS, true)
                putExtra(AppConstants.PROJECT_ID,projectId)
                putExtra(AppConstants.CATEGORY_NAME, categoryName)
@@ -87,7 +88,7 @@ class DraftSkusAdapter (
                putExtra(AppConstants.PROJECT_NAME, skuList[position].sku_name)
                putExtra(AppConstants.SKU_COUNT, skuList.size)
                putExtra(AppConstants.SKU_CREATED, false)
-               putExtra(AppConstants.SKU_ID, skuList[position].sku_name)
+               putExtra(AppConstants.SKU_ID, skuList[position].sku_id)
                putExtra(AppConstants.EXTERIOR_ANGLES, skuList[position].exteriorClicks)
                //putExtra("is_paid",skuList[position].paid)
                //putExtra(AppConstants.IMAGE_TYPE,skuList[position].category)

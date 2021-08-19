@@ -103,9 +103,12 @@ class DraftProjectsAdapter(
 
         holder.cvMain.setOnClickListener {
             if (draftsList[position].sub_category.equals("360_interior") || draftsList[position].sub_category.equals("360_exterior")){
-                Intent(context, ThreeSixtyExteriorActivity::class.java)
+                Intent(context, DraftSkusActivity::class.java)
                     .apply {
-                        putExtra("sku_id",draftsList[position].sku[0].sku_id)
+                        putExtra("position", position)
+                        putExtra(AppConstants.FROM_LOCAL_DB, false)
+                        putExtra(AppConstants.PROJECT_NAME, draftsList[position].project_name)
+                        putExtra(AppConstants.PROJECT_ID, draftsList[position].project_id)
                         context.startActivity(this)
                     }
             }else{
@@ -126,7 +129,7 @@ class DraftProjectsAdapter(
                     Intent(context, DraftSkusActivity::class.java)
                         .apply {
                             putExtra("position", position)
-                            putExtra(AppConstants.FROM_LOCAL_DB, true)
+                            putExtra(AppConstants.FROM_LOCAL_DB, false)
                             putExtra(AppConstants.PROJECT_NAME, draftsList[position].project_name)
                             putExtra(AppConstants.PROJECT_ID, draftsList[position].project_id)
                             context.startActivity(this)

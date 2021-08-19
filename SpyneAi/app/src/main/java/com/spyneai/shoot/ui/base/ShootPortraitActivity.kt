@@ -251,21 +251,39 @@ class ShootPortraitActivity : AppCompatActivity() {
         }else {
             shootViewModel.showDialog = false
             shootViewModel.isSubCategoryConfirmed.value = true
-            //set total clicked images
-            val list = shootViewModel.getImagesbySkuId(shootViewModel.sku.value?.skuId!!)
 
             shootViewModel.shootList.value = ArrayList()
 
-            for(image in list){
-                shootViewModel.shootList.value!!.add(
-                    ShootData(image.imagePath!!,
-                        image.projectId!!,
-                        image.skuId!!,
-                        "",
-                        Utilities.getPreference(this,AppConstants.AUTH_KEY).toString(),
-                        0)
-                )
+            //set total clicked images
+            val list = shootViewModel.getImagesbySkuId(shootViewModel.sku.value?.skuId!!)
+
+            if (intent.getBooleanExtra(AppConstants.FROM_LOCAL_DB,false)){
+                for(image in list){
+                    shootViewModel.shootList.value!!.add(
+                        ShootData(image.imagePath!!,
+                            image.projectId!!,
+                            image.skuId!!,
+                            "",
+                            Utilities.getPreference(this,AppConstants.AUTH_KEY).toString(),
+                            0)
+                    )
+                }
+            }else {
+                val list = intent.getStringArrayListExtra(AppConstants.EXTERIOR_LIST)
+
+                for(image in list!!){
+                    shootViewModel.shootList.value!!.add(
+                        ShootData(image,
+                            intent.getStringExtra(AppConstants.PROJECT_ID)!!,
+                            intent.getStringExtra(AppConstants.SKU_ID)!!,
+                            "",
+                            Utilities.getPreference(this,AppConstants.AUTH_KEY).toString(),
+                            0)
+                    )
+                }
             }
+
+
 
         }
     }

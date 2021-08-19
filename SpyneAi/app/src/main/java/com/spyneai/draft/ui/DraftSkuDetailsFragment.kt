@@ -156,16 +156,27 @@ class DraftSkuDetailsFragment : BaseFragment<DraftViewModel, FragmentDraftSkuDet
 
             if (requireActivity().intent.getBooleanExtra(AppConstants.FROM_LOCAL_DB,false)){
                 shootIntent?.apply {
+                    putExtra(AppConstants.FROM_LOCAL_DB, true)
                     putExtra(AppConstants.EXTERIOR_SIZE, localExterior.size)
                     putExtra(AppConstants.INTERIOR_SIZE, localInteriorList.size)
                     putExtra(AppConstants.MISC_SIZE, localMiscList.size)
                 }
             }else {
+                val s = exterior?.map {
+                    it.input_image_hres_url
+                } as ArrayList<String>
+
+                val ss = ""
+
                shootIntent?.apply {
+                   putExtra(AppConstants.FROM_LOCAL_DB, false)
                    putExtra(AppConstants.EXTERIOR_SIZE, exterior.size)
+                //   putStringArrayListExtra(AppConstants.EXTERIOR_LIST, s)
                    putExtra(AppConstants.INTERIOR_SIZE, interiorList.size)
                    putExtra(AppConstants.MISC_SIZE, miscList.size)
+                   putExtra(AppConstants.MISC_SIZE, exterior)
                }
+
             }
 
             Utilities.savePrefrence(requireContext(),AppConstants.CATEGORY_NAME,intent.getStringExtra(AppConstants.CATEGORY_NAME))
@@ -312,11 +323,21 @@ class DraftSkuDetailsFragment : BaseFragment<DraftViewModel, FragmentDraftSkuDet
                         val list = it.value.data
                         binding.tvTotalSku.text = list.size.toString()
 
-                        exterior = list?.filter {
-                            it.image_category == "Exterior"
-                        } as ArrayList
+                        exterior = when(requireActivity().intent.getStringExtra(AppConstants.CATEGORY_NAME)) {
+                            "E-Commerce" -> {
+                                list as ArrayList
+                            } else -> {
+                                list?.filter {
+                                    it.image_category == "Exterior"
+                                } as ArrayList
+
+                            }
+                        }
+
+                        var s = ""
 
                         if (exterior.size > 0) {
+                            binding.rvExteriorImage.visibility = View.VISIBLE
                             binding.tvExterior.visibility = View.VISIBLE
                             binding.rvExteriorImage.apply {
                                 layoutManager = GridLayoutManager(requireContext(),2,LinearLayoutManager.VERTICAL,false)
@@ -329,6 +350,7 @@ class DraftSkuDetailsFragment : BaseFragment<DraftViewModel, FragmentDraftSkuDet
                         } as ArrayList
 
                         if (interiorList.size > 0) {
+                            binding.rvInteriors.visibility = View.VISIBLE
                             binding.tvInterior.visibility = View.VISIBLE
                             binding.rvInteriors.apply {
                                 layoutManager = GridLayoutManager(requireContext(),2,LinearLayoutManager.VERTICAL,false)
@@ -341,6 +363,7 @@ class DraftSkuDetailsFragment : BaseFragment<DraftViewModel, FragmentDraftSkuDet
                         } as ArrayList
 
                         if (miscList.size > 0) {
+                            binding.rvFocused.visibility = View.VISIBLE
                             binding.tvFocused.visibility = View.VISIBLE
                             binding.rvFocused.apply {
                                 layoutManager = GridLayoutManager(requireContext(),2,LinearLayoutManager.VERTICAL,false)

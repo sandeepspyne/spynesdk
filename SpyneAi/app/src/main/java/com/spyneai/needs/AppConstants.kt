@@ -121,6 +121,8 @@ object AppConstants {
     val RESUME_MISC = "RESUME_MISC"
     val FROM_LOCAL_DB = "FROM_LOCAL_DB"
 
+    val EXTERIOR_LIST = "EXTERIOR_LIST"
+
 
 
 

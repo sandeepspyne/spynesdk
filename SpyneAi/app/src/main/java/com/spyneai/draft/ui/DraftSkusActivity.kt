@@ -81,7 +81,7 @@ class DraftSkusActivity : AppCompatActivity() {
                             shimmerCompletedSKU.visibility = View.GONE
                             rvSkus.visibility = View.VISIBLE
 
-                            if (it.value.data.project_data.isNullOrEmpty())
+                            if (!it.value.data.project_data.isNullOrEmpty())
 
                                 if (it.value.data != null) {
                                     skuList.clear()
@@ -92,8 +92,8 @@ class DraftSkusActivity : AppCompatActivity() {
                                     skusAdapter = DraftSkusAdapter(
                                         this,
                                         it.value.data.project_data[position].project_id,
-                                        it.value.data.project_data[position].categoryId,
                                         it.value.data.project_data[position].category,
+                                        it.value.data.project_data[position].categoryId,
                                         skuList
                                     )
 
