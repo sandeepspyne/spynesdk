@@ -54,6 +54,7 @@ class CreateProjectAndSkuDialog : BaseDialogFragment<ShootViewModel,DialogCreate
                     sku.projectId = it.value.project_id
                     sku.skuName = removeWhiteSpace(binding.etVinNumber.text.toString())
                     viewModel.sku.value = sku
+                    viewModel.projectId.value = it.value.project_id
                     Utilities.hideProgressDialog()
                     //notify project created
                     viewModel.isProjectCreated.value = true
