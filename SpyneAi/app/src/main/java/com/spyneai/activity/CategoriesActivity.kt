@@ -17,8 +17,9 @@ import com.spyneai.interfaces.RetrofitClients
 
 import com.spyneai.needs.AppConstants
 import com.spyneai.needs.Utilities
-import com.spyneai.shoot.ui.ShootActivity
+import com.spyneai.shoot.ui.base.ShootActivity
 import com.spyneai.shoot.ui.StartShootActivity
+import com.spyneai.shoot.ui.base.ShootPortraitActivity
 
 import kotlinx.android.synthetic.main.activity_categories.*
 import retrofit2.Call
@@ -76,29 +77,32 @@ class CategoriesActivity : AppCompatActivity(){
                     override fun onBtnClick(position: Int) {
                         Log.e("position cat", position.toString())
                         when(position) {
-                            0 -> {
-                            Utilities.savePrefrence(
-                                this@CategoriesActivity,
-                                AppConstants.CATEGORY_NAME,
-                                categoriesResponseList[position].prod_cat_name
-                            )
-
-                            val intent = Intent(this@CategoriesActivity, StartShootActivity::class.java)
-                            intent.putExtra(AppConstants.CATEGORY_ID,categoriesResponseList[position].prod_cat_id)
-                            intent.putExtra(AppConstants.CATEGORY_NAME,categoriesResponseList[position].prod_cat_name)
-                            intent.putExtra(AppConstants.IMAGE_URL,categoriesResponseList[position].display_thumbnail)
-                            intent.putExtra(AppConstants.DESCRIPTION,categoriesResponseList[position].description)
-                            intent.putExtra(AppConstants.COLOR,categoriesResponseList[position].color_code)
-                            startActivity(intent)
-                            }
-                                1 -> {
+//                            0 -> {
+//                            Utilities.savePrefrence(
+//                                this@CategoriesActivity,
+//                                AppConstants.CATEGORY_NAME,
+//                                categoriesResponseList[position].prod_cat_name
+//                            )
+//
+//                            val intent = Intent(this@CategoriesActivity, StartShootActivity::class.java)
+//                            intent.putExtra(AppConstants.CATEGORY_ID,categoriesResponseList[position].prod_cat_id)
+//                            intent.putExtra(AppConstants.CATEGORY_NAME,categoriesResponseList[position].prod_cat_name)
+//                            intent.putExtra(AppConstants.IMAGE_URL,categoriesResponseList[position].display_thumbnail)
+//                            intent.putExtra(AppConstants.DESCRIPTION,categoriesResponseList[position].description)
+//                            intent.putExtra(AppConstants.COLOR,categoriesResponseList[position].color_code)
+//                            startActivity(intent)
+//                            }
+                                0, 1 -> {
                                 Utilities.savePrefrence(
                                     this@CategoriesActivity,
                                     AppConstants.CATEGORY_NAME,
                                     categoriesResponseList[position].prod_cat_name
                                 )
 
-                                val intent = Intent(this@CategoriesActivity, ShootActivity::class.java)
+                                    Utilities.savePrefrence(this@CategoriesActivity, AppConstants.CATEGORY_ID, categoriesResponseList[position].prod_cat_id)
+                                    Utilities.savePrefrence(this@CategoriesActivity, AppConstants.CATEGORY_NAME, categoriesResponseList[position].prod_cat_name)
+
+                                val intent = Intent(this@CategoriesActivity, ShootPortraitActivity::class.java)
                                 intent.putExtra(AppConstants.CATEGORY_ID,categoriesResponseList[position].prod_cat_id)
                                 intent.putExtra(AppConstants.CATEGORY_NAME,categoriesResponseList[position].prod_cat_name)
                                 intent.putExtra(AppConstants.IMAGE_URL,categoriesResponseList[position].display_thumbnail)

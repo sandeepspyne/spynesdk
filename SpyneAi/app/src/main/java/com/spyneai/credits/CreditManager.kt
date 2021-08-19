@@ -6,6 +6,7 @@ import android.widget.Toast
 import com.spyneai.credits.model.DownloadHDRes
 import com.spyneai.credits.model.ReduceCreditResponse
 import com.spyneai.dashboard.ui.WhiteLabelConstants
+
 import com.spyneai.interfaces.APiService
 import com.spyneai.interfaces.RetrofitClients
 import com.spyneai.model.credit.UpdateCreditResponse
@@ -104,7 +105,8 @@ class CreditManager {
     private fun updateCreditOnServer(context: Context, skuId: String) {
 
         var call = RetrofitCreditClient("https://www.clippr.ai/api/v4/").buildService(CreditApiService::class.java)
-            .updateDownloadStatus(Utilities.getPreference(context,AppConstants.TOKEN_ID)!!.toString(),skuId,WhiteLabelConstants.ENTERPRISE_ID,true)
+            .updateDownloadStatus(Utilities.getPreference(context,AppConstants.TOKEN_ID)!!.toString(),skuId,
+                WhiteLabelConstants.ENTERPRISE_ID,true)
 
             call?.enqueue(object : Callback<DownloadHDRes> {
                 override fun onResponse(

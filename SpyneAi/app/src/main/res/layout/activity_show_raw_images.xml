@@ -95,14 +95,14 @@
             android:id="@+id/tvTotalImage"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textSize="@dimen/sp_14"
-            android:fontFamily="@font/poppins_medium"
-            tools:text="5"
             android:layout_alignParentRight="true"
-            android:textColor="@color/primary"
-            android:layout_marginRight="17dp"
             android:layout_marginTop="16dp"
-            android:layout_marginBottom="16dp"/>
+            android:layout_marginRight="17dp"
+            android:layout_marginBottom="16dp"
+            android:fontFamily="@font/poppins_medium"
+            android:textColor="@color/primary"
+            android:textSize="@dimen/sp_14"
+            tools:text="5" />
 
         <TextView
             android:id="@+id/tvImages"

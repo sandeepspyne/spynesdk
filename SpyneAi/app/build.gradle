@@ -129,6 +129,33 @@ android {
             versionCode 5
             versionName "1.4"
         }
+
+        flipkart {
+            dimension 'version'
+            applicationId "com.spyneai.flipkart"
+            versionCode 1
+            versionName "1.0"
+        }
+
+        amazon {
+            dimension 'version'
+            applicationId "com.spyneai.amazon"
+            versionCode 1
+            versionName "1.0"
+        }
+        lal10 {
+            dimension 'version'
+            applicationId "com.spyneai.lal10"
+            versionCode 1
+            versionName "1.0"
+        }
+
+        udaan {
+            dimension 'version'
+            applicationId "com.spyneai.udaan"
+            versionCode 2
+            versionName "1.1"
+        }
     }
     sourceSets {
         sweepCars {
@@ -168,6 +195,19 @@ android {
             }
             res {
                 srcDirs 'src/cars24india/res'
+            }
+        }
+        flipkart {
+            java {
+                srcDirs 'src/flipkart/java', 'src/flipkart/res'
+            }
+            res {
+                srcDirs 'src/flipkart/res'
+            }
+        }
+        udaan {
+            java {
+                srcDirs 'src/udaan/java'
             }
         }
     }

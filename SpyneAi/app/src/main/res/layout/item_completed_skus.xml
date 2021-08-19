@@ -94,11 +94,11 @@
             android:background="@color/primary_light" />
 
         <ImageView
-            android:layout_width="@dimen/dp_12"
-            android:layout_height="@dimen/dp_12"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
             android:layout_gravity="center"
-            app:tint="@color/primary"
-            android:src="@drawable/ic_category"/>
+            android:src="@drawable/ic_category"
+            app:tint="@color/primary" />
     </FrameLayout>
 
     <TextView
@@ -182,7 +182,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_margin="13dp"
-            android:src="@drawable/ic_download_sku"
+            android:src="@drawable/ic_next"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintRight_toRightOf="parent"
             app:tint="@color/primary" />

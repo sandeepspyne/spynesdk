@@ -53,5 +53,8 @@
     <color name="start_shoot_text">#343434</color>
     <color name="three_sixty_features_text">#333333</color>
 
+    <color name="primary_dark">#223263</color>
+    <color name="iv_light">#90FFAB40</color>
+
 
 </resources>

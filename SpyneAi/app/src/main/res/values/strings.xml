@@ -217,6 +217,16 @@
 
     <string name="terms_and_conditions_url">https://www.spyne.ai/terms-service</string>
 
+    <string name="create_professional_automobile">Create Professional\n<br />Pictures in a Single Click using AI</string>
+
     <string name="capture_upto">Capture upto 36 Exterior Images</string>
     <string name="my_projcts">My Projects</string>
+
+    <string name="get_started_">Get Started</string>
+    <string name="on_going_shoots">On-going Shoots</string>
+    <string name="view_all">View All</string>
+    <string name="completed_shoots">Completed Shoots</string>
+    <string name="explore_categories">Explore Categories</string>
+    <string name="tutorial_videos">Tutorial Videos</string>
+
 </resources>

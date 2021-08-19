@@ -116,11 +116,11 @@
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:id="@+id/flLevelIndicator"
+        android:visibility="invisible"
+        app:layout_constraintBottom_toTopOf="@+id/rlCapturedImage"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        android:visibility="invisible"
-        app:layout_constraintBottom_toTopOf="@+id/llCapture"
+        app:layout_constraintTop_toBottomOf="@+id/viewCamera"
         android:layout_margin="@dimen/dp_20">
 
         <ImageView
@@ -172,7 +172,29 @@
             android:src="@drawable/ic_bottom_right"
             android:layout_gravity="right|bottom"
             android:id="@+id/ivBottomRight"/>
-
-
     </FrameLayout>
+
+    <FrameLayout
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:id="@+id/flTapToFocus"
+        app:layout_constraintBottom_toTopOf="@+id/rlCapturedImage"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/viewCamera"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent">
+    </FrameLayout>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        android:textSize="@dimen/sp_20"
+        android:textColor="@color/primary"
+        android:id="@+id/tvPitchRoll"
+        android:text="Sandeep Singh"/>
+
 </androidx.constraintlayout.widget.ConstraintLayout>

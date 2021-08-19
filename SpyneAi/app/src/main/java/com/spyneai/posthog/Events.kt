@@ -89,5 +89,9 @@ object Events {
     val GET_360_SUBCATRGORIES_FAILED = "Get Subcategories 360 Failed"
 
 
+    val PROJECT_STATE_UPDATE_FAILED = "Android Project State Update Failed"
+    val PROJECT_STATE_UPDATED = "Android Project State Updated"
+
+
 
 }

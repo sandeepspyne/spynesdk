@@ -24,7 +24,7 @@
             android:layout_width="@dimen/dp_65"
             android:layout_height="@dimen/dp_65"
             android:layout_gravity="center"
-            android:src="@mipmap/defaults"
+            android:src="@drawable/ic_uploading"
             android:scaleType="centerCrop"/>
 
     </androidx.cardview.widget.CardView>

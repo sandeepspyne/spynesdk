@@ -11,7 +11,9 @@ import com.spyneai.R
 import com.spyneai.shoot.data.model.ProjectDetailResponse
 
 class ProjectChildAdapter(
-    val context: Context, var projectList: ArrayList<ProjectDetailResponse.Images>
+    val context: Context,
+    var projectList: ArrayList<ProjectDetailResponse.Images>,
+    val totalImages: Int
 )
     : RecyclerView.Adapter<ProjectChildAdapter.ViewHolder>() {
 
@@ -30,13 +32,18 @@ class ProjectChildAdapter(
 
     override fun onBindViewHolder(viewHolder: ViewHolder, position: Int) {
 
-        Glide.with(context).load(
-            projectList[position].input_lres)
-            .into(viewHolder.ivSkuImages)
+        try {
+            Glide.with(context)
+                .load(projectList[position].input_lres)
+                .error(R.drawable.ic_uploading)
+                .into(viewHolder.ivSkuImages)
+        }catch (e: Exception){
+
+        }
     }
 
     // Return the size of your data set (invoked by the layout manager)
-    override fun getItemCount() = if (projectList == null) 0 else projectList.size
+    override fun getItemCount() = if (totalImages == null) 0 else totalImages
 
 
 }

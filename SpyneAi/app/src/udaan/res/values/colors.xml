@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="primary">#D73C46</color>
+    <color name="primary_light">#32D73C46</color>
+    <color name="secondary">#000000</color>
+    <color name="splash_bg">#ffffff</color>
+    <color name="accent">#F07E54</color>
+    <color name="order_completed">#D73C46</color>
+
+    <color name="light">#D73C46</color>
+
+    <color name="bottom_nav_selected">#D73C46</color>
+    <color name="bottom_nav_unselected">#000000</color>
+
+    <color name="sub_cat_selection">#D73C46</color>
+</resources>
