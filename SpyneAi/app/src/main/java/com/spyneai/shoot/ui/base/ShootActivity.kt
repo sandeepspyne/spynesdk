@@ -169,7 +169,6 @@ class ShootActivity : AppCompatActivity() {
             if (it) {
                 // start process activity
                 val intent = Intent(this, ProcessActivity::class.java)
-
                 intent.apply {
                     this.putExtra(AppConstants.CATEGORY_NAME, categoryDetails.categoryName)
                     this.putExtra("sku_id", shootViewModel.sku.value?.skuId)
@@ -233,6 +232,15 @@ class ShootActivity : AppCompatActivity() {
 
         if (miscList != null)
             total+= miscList.size
+
+        if (getString(R.string.app_name) == AppConstants.OLA_CABS) {
+            val interior360List = list?.filter {
+                it.image_category == "360int"
+            }
+
+            if (interior360List != null)
+                total+= interior360List.size
+        }
 
         return total
     }

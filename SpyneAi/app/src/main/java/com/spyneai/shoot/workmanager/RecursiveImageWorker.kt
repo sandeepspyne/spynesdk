@@ -82,10 +82,22 @@ class RecursiveImageWorker(private val appContext: Context, workerParams: Worker
             val requestFile =
                 File(image.imagePath).asRequestBody("multipart/form-data".toMediaTypeOrNull())
 
+            val fileName = if (image.categoryName == "360int") {
+                image.skuName + "_" + image.skuId + "_360int_1"
+            }else {
+                File(image.imagePath)!!.name
+            }
+
+            if (image.categoryName == "360int"){
+                val s = ""
+            }
+
+
+
             imageFile =
                 MultipartBody.Part.createFormData(
                     "image",
-                    File(image.imagePath)!!.name,
+                    fileName,
                     requestFile
                 )
 

@@ -43,6 +43,7 @@ class ShootViewModel : ViewModel(){
 
     val totalSkuCaptured : MutableLiveData<String> = MutableLiveData()
     val totalImageCaptured : MutableLiveData<String> = MutableLiveData()
+    val show360InteriorDialog : MutableLiveData<Boolean> = MutableLiveData()
 
     val iniProgressFrame : MutableLiveData<Boolean> = MutableLiveData()
 
@@ -213,6 +214,8 @@ class ShootViewModel : ViewModel(){
         image.categoryName = shootData.image_category
         image.imagePath = shootData.capturedImage
         image.sequence = shootData.sequence
+
+         image.skuName = sku.value?.skuName
 
         localRepository.insertImage(image)
 

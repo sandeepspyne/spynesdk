@@ -19,6 +19,7 @@ class ShootLocalRepository {
     fun insertImage(image : Image) {
         val values = ContentValues().apply {
             put(Images.COLUMN_NAME_PROJECT_ID, image.projectId)
+            put(Images.COLUMN_NAME_SKU_NAME, image.skuName)
             put(Images.COLUMN_NAME_SKU_ID, image.skuId)
             put(Images.COLUMN_NAME_CATEGORY_NAME, image.categoryName)
             put(Images.COLUMN_NAME_IMAGE_PATH, image.imagePath)
@@ -34,6 +35,7 @@ class ShootLocalRepository {
         val projection = arrayOf(
             BaseColumns._ID,
             Images.COLUMN_NAME_PROJECT_ID,
+            Images.COLUMN_NAME_SKU_NAME,
             Images.COLUMN_NAME_SKU_ID,
             Images.COLUMN_NAME_CATEGORY_NAME,
             Images.COLUMN_NAME_IMAGE_PATH,
@@ -63,6 +65,7 @@ class ShootLocalRepository {
             while (moveToNext()) {
                 val itemId = getLong(getColumnIndexOrThrow(BaseColumns._ID))
                 val projectId = getString(getColumnIndexOrThrow(Images.COLUMN_NAME_PROJECT_ID))
+                val skuName = getString(getColumnIndexOrThrow(Images.COLUMN_NAME_SKU_NAME))
                 val skuId = getString(getColumnIndexOrThrow(Images.COLUMN_NAME_SKU_ID))
                 val categoryName = getString(getColumnIndexOrThrow(Images.COLUMN_NAME_CATEGORY_NAME))
                 val imagePath = getString(getColumnIndexOrThrow(Images.COLUMN_NAME_IMAGE_PATH))
@@ -70,6 +73,7 @@ class ShootLocalRepository {
 
                 image.itemId = itemId
                 image.projectId = projectId
+                image.skuName = skuName
                 image.skuId = skuId
                 image.categoryName = categoryName
                 image.imagePath = imagePath

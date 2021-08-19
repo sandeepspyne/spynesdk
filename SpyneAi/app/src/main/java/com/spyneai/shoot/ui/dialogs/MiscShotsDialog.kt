@@ -6,11 +6,13 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import com.bumptech.glide.Glide
+import com.spyneai.R
 
 import com.spyneai.base.BaseDialogFragment
 import com.spyneai.base.network.Resource
 import com.spyneai.dashboard.response.NewSubCatResponse
 import com.spyneai.databinding.DialogFocusedHintBinding
+import com.spyneai.needs.AppConstants
 import com.spyneai.shoot.data.ShootViewModel
 
 class MiscShotsDialog : BaseDialogFragment<ShootViewModel, DialogFocusedHintBinding>() {
@@ -20,13 +22,12 @@ class MiscShotsDialog : BaseDialogFragment<ShootViewModel, DialogFocusedHintBind
 
         dialog?.setCancelable(false)
 
-
        if (viewModel.categoryDetails.value?.categoryName != "Automobiles") {
            setSampleImages()
        }
 
         binding.tvSkipFocused.setOnClickListener {
-            viewModel.selectBackground.value = true
+            selectBackground()
             dismiss()
         }
 
@@ -36,11 +37,18 @@ class MiscShotsDialog : BaseDialogFragment<ShootViewModel, DialogFocusedHintBind
         }
     }
 
+    private fun selectBackground() {
+        if(getString(R.string.app_name) == AppConstants.OLA_CABS)
+            viewModel.show360InteriorDialog.value = true
+        else
+            viewModel.selectBackground.value = true
+    }
+
     private fun setSampleImages() {
         viewModel.subCategoriesResponse.observe(viewLifecycleOwner,{
             when(it) {
                 is Resource.Success -> {
-                    //filter miscshots
+                    //filter misc shots
                     val filteredList: List<NewSubCatResponse.Miscellaneous> = it.value.miscellaneous.filter {
                         it.prod_sub_cat_id ==  viewModel.subCategory.value?.prod_sub_cat_id
                     }

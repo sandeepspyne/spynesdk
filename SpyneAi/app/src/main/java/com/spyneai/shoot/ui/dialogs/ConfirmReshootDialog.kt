@@ -97,7 +97,7 @@ class ConfirmReshootDialog : BaseDialogFragment<ShootViewModel, DialogConfirmRes
                     uploadImages()
 
                     if (viewModel.miscShootNumber.value  == viewModel.miscAngles.value?.minus(1)){
-                        viewModel.selectBackground.value = true
+                        selectBackground()
                         dismiss()
                     }else{
                         viewModel.miscShootNumber.value = viewModel.miscShootNumber.value!! + 1
@@ -198,7 +198,7 @@ class ConfirmReshootDialog : BaseDialogFragment<ShootViewModel, DialogConfirmRes
                             viewModel.showMiscDialog.value = true
                         }
                         else -> {
-                            viewModel.selectBackground.value = true
+                            selectBackground()
                         }
                     }
                 }
@@ -218,14 +218,20 @@ class ConfirmReshootDialog : BaseDialogFragment<ShootViewModel, DialogConfirmRes
                             viewModel.showMiscDialog.value = true
                         }
                         else -> {
-                            viewModel.selectBackground.value = true
+                            selectBackground()
                         }
                     }
                 }
                 else -> { }
             }
         })
+    }
 
+    private fun selectBackground() {
+        if(getString(R.string.app_name) == AppConstants.OLA_CABS)
+            viewModel.show360InteriorDialog.value = true
+        else
+            viewModel.selectBackground.value = true
 
     }
 

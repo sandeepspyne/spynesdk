@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <TextView
+        android:id="@+id/tvSkipShoot"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:layout_gravity="right"
+        android:drawablePadding="@dimen/dp_5"
+        android:fontFamily="@font/bold"
+        android:text="@string/skip"
+        android:textColor="@color/primary"
+        android:textSize="@dimen/sp_12"
+        android:visibility="invisible"
+        android:layout_margin="@dimen/dp_8"
+        android:drawableTint="@color/primary"
+        app:drawableEndCompat="@mipmap/skip" />
+
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="@dimen/dp_10"
+        android:layout_gravity="center"
+        android:padding="@dimen/dp_10"
+        android:gravity="center">
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="360° Interior Image Upload"
+            android:gravity="center"
+            android:fontFamily="@font/medium"
+            android:textSize="@dimen/sp_14"
+            android:textColor="@color/primary"
+            android:layout_gravity="center"
+            android:layout_marginTop="@dimen/dp_5"
+            android:id="@+id/tvSkuNameDialog"/>
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Uplaod 360 view image of the car from your device
+jpg/jpeg/png formats accepted"
+            android:layout_gravity="center"
+            android:gravity="center"
+            android:textColor="@color/black"
+            android:textSize="@dimen/sp_12"
+            android:fontFamily="@font/poppins_regular"
+            android:layout_marginBottom="@dimen/dp_40"
+            android:layout_marginTop="@dimen/dp_10"
+            android:id="@+id/tvDescription"/>
+
+        <ImageView
+            android:layout_width="208dp"
+            android:layout_height="117dp"
+            android:id="@+id/ivSelectedImage"
+            android:layout_marginBottom="@dimen/dp_20"
+            android:layout_marginTop="@dimen/dp_10"
+            android:visibility="gone"/>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center">
+            <TextView
+                android:id="@+id/tvSkip"
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:layout_height="wrap_content"
+                android:text="@string/skip"
+                android:padding="@dimen/dp_5"
+                android:gravity="center"
+                android:textColor="@color/primary"
+                android:fontFamily="@font/medium"
+                android:textSize="@dimen/sp_15"
+                android:layout_margin="@dimen/dp_5"
+                android:background="@drawable/bg_skip"
+                android:textAllCaps="false"/>
+
+            <TextView
+                android:id="@+id/tvUpload"
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:layout_height="wrap_content"
+                android:text="Select"
+                android:padding="@dimen/dp_5"
+                android:gravity="center"
+                android:layout_margin="@dimen/dp_5"
+                android:textColor="@color/white"
+                android:fontFamily="@font/medium"
+                android:textSize="@dimen/sp_15"
+                android:background="@drawable/bg_rectangle_button_ripple"
+                android:textAllCaps="false"/>
+        </LinearLayout>
+
+    </LinearLayout>
+
+</FrameLayout>

@@ -10,6 +10,7 @@ import com.spyneai.base.BaseDialogFragment
 import com.spyneai.base.network.Resource
 import com.spyneai.databinding.DialogInteriorHintBinding
 import com.spyneai.databinding.DialogShootHintBinding
+import com.spyneai.needs.AppConstants
 import com.spyneai.shoot.data.ShootViewModel
 
 class InteriorHintDialog : BaseDialogFragment<ShootViewModel, DialogInteriorHintBinding>() {
@@ -39,7 +40,7 @@ class InteriorHintDialog : BaseDialogFragment<ShootViewModel, DialogInteriorHint
                             viewModel.showMiscDialog.value = true
                         }
                         else -> {
-                            viewModel.selectBackground.value = true
+                            selectBackground()
                         }
                     }
                 }
@@ -47,7 +48,13 @@ class InteriorHintDialog : BaseDialogFragment<ShootViewModel, DialogInteriorHint
             }
         })
 
+    }
 
+    private fun selectBackground() {
+        if(getString(R.string.app_name) == AppConstants.OLA_CABS)
+            viewModel.show360InteriorDialog.value = true
+        else
+            viewModel.selectBackground.value = true
     }
 
 

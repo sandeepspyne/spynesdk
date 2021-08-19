@@ -166,7 +166,7 @@ class CameraFragment : BaseFragment<ShootViewModel, FragmentCameraBinding>(), Pi
 
                 "Focus Shoot" -> {
                     if (viewModel.miscShootNumber.value == viewModel.miscAngles.value?.minus(1)) {
-                        viewModel.selectBackground.value = true
+                       selectBackground()
                     } else {
                         viewModel.miscShootNumber.value = viewModel.miscShootNumber.value!! + 1
                     }
@@ -184,7 +184,7 @@ class CameraFragment : BaseFragment<ShootViewModel, FragmentCameraBinding>(), Pi
                             viewModel.showMiscDialog.value = true
                         }
                         else -> {
-                            viewModel.selectBackground.value = true
+                            selectBackground()
                         }
                     }
                 }
@@ -192,6 +192,13 @@ class CameraFragment : BaseFragment<ShootViewModel, FragmentCameraBinding>(), Pi
                 }
             }
         })
+    }
+
+    private fun selectBackground() {
+        if(getString(R.string.app_name) == AppConstants.OLA_CABS)
+            viewModel.show360InteriorDialog.value = true
+        else
+            viewModel.selectBackground.value = true
     }
 
     override fun onResume() {
@@ -533,7 +540,6 @@ class CameraFragment : BaseFragment<ShootViewModel, FragmentCameraBinding>(), Pi
         // Get a stable reference of the modifiable image capture use case
         val imageCapture = imageCapture ?: return
 
-
         // Setup image capture metadata
         val metadata = ImageCapture.Metadata().apply {
             // Mirror image when using the front camera
@@ -590,7 +596,6 @@ class CameraFragment : BaseFragment<ShootViewModel, FragmentCameraBinding>(), Pi
                 }
             }
         }
-
 
         // Options fot the output image file
         val outputOptions = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
@@ -1091,7 +1096,6 @@ class CameraFragment : BaseFragment<ShootViewModel, FragmentCameraBinding>(), Pi
             Utilities.hideProgressDialog()
             viewModel.shootList.value = ArrayList()
         }
-
 
         viewModel.shootList.value!!.add(
             ShootData(
