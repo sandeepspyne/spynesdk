@@ -65,6 +65,7 @@ class OverlayEcomFragment : BaseFragment<ShootViewModel, FragmentOverlayEcomBind
         else {
             if (viewModel.fromDrafts){
                 when {
+                    requireActivity().intent.getIntExtra(AppConstants.EXTERIOR_ANGLES,0) != 0 &&
                     requireActivity().intent.getIntExtra(AppConstants.EXTERIOR_ANGLES,0)
                             == requireActivity().intent.getIntExtra(AppConstants.EXTERIOR_SIZE,0) -> {
 
@@ -190,7 +191,7 @@ class OverlayEcomFragment : BaseFragment<ShootViewModel, FragmentOverlayEcomBind
                     //set default angles on sub cat response
 //                    initProgressFrames()
 
-                    if (viewModel.fromDrafts){
+                    if (viewModel.fromDrafts && viewModel.subCatName.value != null){
                         binding.rvSubcategories.visibility = View.INVISIBLE
                     }else {
                         binding.clSubcatSelectionOverlay?.visibility = View.VISIBLE

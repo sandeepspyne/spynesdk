@@ -158,8 +158,8 @@ class CreateProjectEcomDialog :
                     sku?.exteriorAngles = viewModel.exterirorAngles.value
 
                     viewModel.sku.value = sku
-                    viewModel.isSubCategoryConfirmed.value = true
-                    viewModel.showLeveler.value = true
+                    viewModel.isSkuCreated.value = true
+                    //viewModel.isSubCategoryConfirmed.value = true
 
                     //add sku to local database
                     viewModel.insertSku(sku!!)

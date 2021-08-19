@@ -68,11 +68,12 @@ class DraftSkuDetailsFragment : BaseFragment<DraftViewModel, FragmentDraftSkuDet
                     } as ArrayList
                 }else {
                     localExterior = list
-                    binding.tvExterior.visibility = View.GONE
                 }
 
                 if (localExterior.size > 0) {
-                    binding.tvExterior.visibility = View.VISIBLE
+                    if (intent.getStringExtra(AppConstants.CATEGORY_NAME) == "Automobiles")
+                        binding.tvExterior.visibility = View.VISIBLE
+
                     binding.rvExteriorImage.visibility = View.VISIBLE
                     binding.rvExteriorImage.apply {
                         layoutManager = GridLayoutManager(requireContext(),2,LinearLayoutManager.VERTICAL,false)
@@ -166,6 +167,10 @@ class DraftSkuDetailsFragment : BaseFragment<DraftViewModel, FragmentDraftSkuDet
                    putExtra(AppConstants.MISC_SIZE, miscList.size)
                }
             }
+
+            Utilities.savePrefrence(requireContext(),AppConstants.CATEGORY_NAME,intent.getStringExtra(AppConstants.CATEGORY_NAME))
+            Utilities.savePrefrence(requireContext(),AppConstants.CATEGORY_ID,intent.getStringExtra(AppConstants.CATEGORY_ID))
+
 
             if (resumeMisc()){
                 checkMiscSize(intent)

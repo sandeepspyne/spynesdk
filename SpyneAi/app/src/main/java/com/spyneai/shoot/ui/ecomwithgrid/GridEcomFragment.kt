@@ -34,12 +34,14 @@ class GridEcomFragment : BaseFragment<ShootViewModel, FragmentGridEcomBinding>()
         }
 
         else {
-           if (viewModel.isSkuCreated.value == null)
-               initSkuDialog()
-            else {
-                var s = ""
+            if (viewModel.fromDrafts){
+                if (viewModel.isSkuCreated.value == null
+                    && viewModel.isSubCategoryConfirmed.value == null)
+                    initSkuDialog()
+            }else {
+                if (viewModel.isSkuCreated.value == null)
+                    initSkuDialog()
             }
-            log("SKU dialog shown")
         }
 
         binding.ivEndProject.setOnClickListener {

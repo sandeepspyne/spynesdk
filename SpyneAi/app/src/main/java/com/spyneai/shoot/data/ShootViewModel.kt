@@ -295,5 +295,6 @@ class ShootViewModel : ViewModel(){
 
     fun getImagesbySkuId(skuId: String) = localRepository.getImagesBySkuId(skuId)
 
+    fun  updateProjectStatus(projectId: String) = localRepository.updateProjectStatus(projectId)
 
 }

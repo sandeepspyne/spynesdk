@@ -21,8 +21,6 @@ import com.spyneai.shoot.utils.log
 
 class CreateSkuEcomDialog : BaseDialogFragment<ShootViewModel, CreateSkuEcomDialogBinding>() {
 
-    val gourav = "fdf"
-
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
@@ -81,19 +79,28 @@ class CreateSkuEcomDialog : BaseDialogFragment<ShootViewModel, CreateSkuEcomDial
                     )
 
                     //notify sku created
+                    //notify project created
                     val sku = viewModel.sku.value
-                    log("sku id created sucess")
-                    log("sku id: "+it.value.sku_id)
                     sku?.skuId = it.value.sku_id
                     sku?.skuName = removeWhiteSpace(binding.etSkuName.text.toString())
-
+                    sku?.projectId = viewModel.sku.value?.projectId
+                    sku?.createdOn = System.currentTimeMillis()
+                    sku?.totalImages = viewModel.exterirorAngles.value
+                    sku?.categoryName = viewModel.categoryDetails.value?.categoryName
+                    sku?.categoryId = viewModel.categoryDetails.value?.categoryId
+                    sku?.subcategoryName = viewModel.subCategory.value?.sub_cat_name
+                    sku?.subcategoryId = viewModel.subCategory.value?.prod_sub_cat_id
+                    sku?.exteriorAngles = viewModel.exterirorAngles.value
 
                     viewModel.sku.value = sku
-
-                    //viewModel.isSubCategoryConfirmed.value = true
-
                     viewModel.isSkuCreated.value = true
                     viewModel.showLeveler.value = true
+
+                    //add sku to local database
+                    viewModel.insertSku(sku!!)
+                    //viewModel.isSubCategoryConfirmed.value = true
+
+
 
                     //add sku to local database
 //                    viewModel.insertSku(sku!!)

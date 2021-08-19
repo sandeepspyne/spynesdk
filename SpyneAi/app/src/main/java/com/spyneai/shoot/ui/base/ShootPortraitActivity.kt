@@ -205,10 +205,10 @@ class ShootPortraitActivity : AppCompatActivity() {
         sku.categoryName = shootViewModel.categoryDetails.value?.categoryName
 
         shootViewModel.sku.value = sku
-        shootViewModel.isSkuCreated.value = true
 
         if (intent.getStringExtra(AppConstants.CATEGORY_NAME) == "Footwear"){
             if (intent.getIntExtra(AppConstants.EXTERIOR_ANGLES,0) != 0){
+                shootViewModel.isSkuCreated.value = true
                 //sub category selected
                 shootViewModel.subCatName.value = intent.getStringExtra(AppConstants.SUB_CAT_NAME)
 
@@ -249,6 +249,7 @@ class ShootPortraitActivity : AppCompatActivity() {
 
             }
         }else {
+            shootViewModel.showDialog = false
             shootViewModel.isSubCategoryConfirmed.value = true
             //set total clicked images
             val list = shootViewModel.getImagesbySkuId(shootViewModel.sku.value?.skuId!!)
@@ -266,7 +267,6 @@ class ShootPortraitActivity : AppCompatActivity() {
                 )
             }
 
-            shootViewModel.showDialog = false
         }
     }
 
