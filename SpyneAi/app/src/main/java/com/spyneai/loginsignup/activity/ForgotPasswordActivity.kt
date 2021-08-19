@@ -56,7 +56,7 @@ class ForgotPasswordActivity : AppCompatActivity() {
 
         tvterms.setOnClickListener {
             try {
-                startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(getString(R.string.terms_and_conditions_url))))
+                startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(getString(R.string.terms_and_conditions_url_swiggy))))
             } catch (e: ActivityNotFoundException) {
                 Toast.makeText(
                     this, "No application can handle this request."
