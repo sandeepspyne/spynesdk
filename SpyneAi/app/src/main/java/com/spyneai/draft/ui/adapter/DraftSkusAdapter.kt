@@ -21,6 +21,7 @@ import com.spyneai.orders.ui.adapter.SkusAdapter
 import com.spyneai.processedimages.ui.BikeImagesActivity
 import com.spyneai.processedimages.ui.ShowImagesActivity
 import com.spyneai.shoot.ui.base.ShootActivity
+import com.spyneai.threesixty.ui.ThreeSixtyActivity
 
 class DraftSkusAdapter (
     val context: Context,
@@ -62,6 +63,14 @@ class DraftSkusAdapter (
 
         }
 
+        if (skuList[position].categoryId == "360_exterior"
+            || skuList[position].categoryId.equals("360_interior")
+        ){
+            Glide.with(context)
+                .load(R.drawable.three_sixty_thumbnail)
+                .into(holder.ivThumbnail)
+        }
+
         holder.tvSkuName.text = skuList[position].sku_name
         holder.tvImages.text = skuList[position].total_images.toString()
 
@@ -73,30 +82,58 @@ class DraftSkusAdapter (
                 skuList[position].sku_id
             )
 
-           Intent(
-                context,
-                DraftSkuDetailsActivity::class.java
-            ).apply {
-               putExtra(AppConstants.FROM_LOCAL_DB, false)
-               putExtra(AppConstants.FROM_DRAFTS, true)
-               putExtra(AppConstants.PROJECT_ID,projectId)
-               putExtra(AppConstants.CATEGORY_NAME, categoryName)
-               putExtra(AppConstants.CATEGORY_ID, categoryId)
-               putExtra(AppConstants.SUB_CAT_ID,skuList[position].categoryId)
-               putExtra(AppConstants.SUB_CAT_NAME,skuList[position].category)
-               putExtra(AppConstants.SKU_NAME, skuList[position].sku_name)
-               putExtra(AppConstants.PROJECT_NAME, skuList[position].sku_name)
-               putExtra(AppConstants.SKU_COUNT, skuList.size)
-               putExtra(AppConstants.SKU_CREATED, false)
-               putExtra(AppConstants.SKU_ID, skuList[position].sku_id)
-               putExtra(AppConstants.EXTERIOR_ANGLES, skuList[position].exteriorClicks)
-               //putExtra("is_paid",skuList[position].paid)
-               //putExtra(AppConstants.IMAGE_TYPE,skuList[position].category)
-               putExtra(AppConstants.IS_360,skuList[position].is360)
-               context.startActivity(this)
+            if (skuList[position].categoryId == "360_exterior"){
+                val threeeSixtyIntent = Intent(
+                    context,
+                    ThreeSixtyActivity::class.java
+                ).apply {
+                    putExtra(AppConstants.FROM_LOCAL_DB, true)
+                    putExtra(AppConstants.FROM_DRAFTS, true)
+                    putExtra(AppConstants.PROJECT_ID, projectId)
+                    putExtra(AppConstants.CATEGORY_ID, categoryId)
+                    putExtra(AppConstants.SUB_CAT_ID,skuList[position].categoryId)
+                    putExtra(AppConstants.SUB_CAT_NAME,skuList[position].category)
+                    putExtra(AppConstants.CATEGORY_NAME, categoryName)
+                    putExtra(AppConstants.SKU_NAME, skuList[position].sku_name)
+                    putExtra(AppConstants.PROJECT_NAME, skuList[position].sku_name)
+                    putExtra(AppConstants.SKU_COUNT, skuList.size)
+                    putExtra(AppConstants.SKU_CREATED, false)
+                    putExtra(AppConstants.SKU_ID, skuList[position].sku_id)
+                    putExtra(AppConstants.EXTERIOR_ANGLES, skuList[position].exteriorClicks)
+                    //putExtra("is_paid",skuList[position].paid)
+                    //putExtra(AppConstants.IMAGE_TYPE,skuList[position].category)
+                    putExtra(AppConstants.IS_360,skuList[position].is360)
+                }
 
-                context.startActivity(this)
+                context.startActivity(threeeSixtyIntent)
+            }else {
+                Intent(
+                    context,
+                    DraftSkuDetailsActivity::class.java
+                ).apply {
+                    putExtra(AppConstants.FROM_LOCAL_DB, false)
+                    putExtra(AppConstants.FROM_DRAFTS, true)
+                    putExtra(AppConstants.PROJECT_ID,projectId)
+                    putExtra(AppConstants.CATEGORY_NAME, categoryName)
+                    putExtra(AppConstants.CATEGORY_ID, categoryId)
+                    putExtra(AppConstants.SUB_CAT_ID,skuList[position].categoryId)
+                    putExtra(AppConstants.SUB_CAT_NAME,skuList[position].category)
+                    putExtra(AppConstants.SKU_NAME, skuList[position].sku_name)
+                    putExtra(AppConstants.PROJECT_NAME, skuList[position].sku_name)
+                    putExtra(AppConstants.SKU_COUNT, skuList.size)
+                    putExtra(AppConstants.SKU_CREATED, false)
+                    putExtra(AppConstants.SKU_ID, skuList[position].sku_id)
+                    putExtra(AppConstants.EXTERIOR_ANGLES, skuList[position].exteriorClicks)
+                    //putExtra("is_paid",skuList[position].paid)
+                    //putExtra(AppConstants.IMAGE_TYPE,skuList[position].category)
+                    putExtra(AppConstants.IS_360,skuList[position].is360)
+                    context.startActivity(this)
+
+                    context.startActivity(this)
+                }
             }
+
+
 
         }
 
