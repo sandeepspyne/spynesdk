@@ -60,17 +60,17 @@ class DraftProjectsFragment : BaseFragment<DraftViewModel, FragmentDraftProjects
                         if (it.value.data != null){
                             val localDraftList = viewModel.getDraftsFromLocal()
 
-//                            if (it.value.data.project_data.size == localDraftList.size) {
-//                                draftProjectList.clear()
-//                                draftProjectList.addAll(viewModel.getDraftsFromLocal())
-//                                binding.rvDraftProjects.adapter = localDraftProjectsAdapter
-//                                localDraftProjectsAdapter.notifyDataSetChanged()
-//                            }else {
+                            if (it.value.data.project_data.size == localDraftList.size) {
+                                draftProjectList.clear()
+                                draftProjectList.addAll(viewModel.getDraftsFromLocal())
+                                binding.rvDraftProjects.adapter = localDraftProjectsAdapter
+                                localDraftProjectsAdapter.notifyDataSetChanged()
+                            }else {
                                 completedProjectList.clear()
                                 completedProjectList.addAll(it.value.data.project_data)
                                 binding.rvDraftProjects.adapter = draftProjectsAdapter
                                 draftProjectsAdapter.notifyDataSetChanged()
-                          //  }
+                            }
                         }
                     }
 

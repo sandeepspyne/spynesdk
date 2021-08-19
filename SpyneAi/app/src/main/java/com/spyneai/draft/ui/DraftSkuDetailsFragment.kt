@@ -142,6 +142,7 @@ class DraftSkuDetailsFragment : BaseFragment<DraftViewModel, FragmentDraftSkuDet
                 putExtra(AppConstants.SUB_CAT_ID, intent.getStringExtra(AppConstants.SUB_CAT_ID))
                 putExtra(AppConstants.PROJECT_ID, intent.getStringExtra(AppConstants.PROJECT_ID))
                 putExtra(AppConstants.SKU_NAME, intent.getStringExtra(AppConstants.SKU_NAME))
+                putExtra(AppConstants.SKU_COUNT, intent.getIntExtra(AppConstants.SKU_COUNT,0))
                 putExtra(AppConstants.SKU_CREATED, true)
                 putExtra(AppConstants.SKU_ID, intent.getStringExtra(AppConstants.SKU_ID))
                 putExtra(AppConstants.EXTERIOR_ANGLES, intent.getIntExtra(AppConstants.EXTERIOR_ANGLES,0))

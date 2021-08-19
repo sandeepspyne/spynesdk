@@ -47,7 +47,6 @@ class OverlayEcomFragment : BaseFragment<ShootViewModel, FragmentOverlayEcomBind
     NewSubCategoriesAdapter.BtnClickListener {
 
 
-    private var showDialog = true
     lateinit var capturedImageList: ArrayList<String>
     var position = 1
     lateinit var subCategoriesAdapter: NewSubCategoriesAdapter
@@ -88,17 +87,8 @@ class OverlayEcomFragment : BaseFragment<ShootViewModel, FragmentOverlayEcomBind
         //observe new image clicked
         viewModel.shootList.observe(viewLifecycleOwner, {
             try {
-                if (showDialog && !it.isNullOrEmpty()){
-                    if (viewModel.fromDrafts){
-                        if (requireActivity().intent.getIntExtra(AppConstants.EXTERIOR_SIZE,0) != null
-                            &&
-                            requireActivity().intent.getIntExtra(AppConstants.EXTERIOR_SIZE,0) !=
-                            requireActivity().intent.getIntExtra(AppConstants.EXTERIOR_ANGLES,0)){
-                            showImageConfirmDialog(it.get(it.size - 1))
-                        }
-                    }else {
-                        showImageConfirmDialog(it.get(it.size - 1))
-                    }
+                if (viewModel.showDialog && !it.isNullOrEmpty()){
+                    showImageConfirmDialog(it.get(it.size - 1))
                 }
             }catch (e : Exception){
                 e.printStackTrace()

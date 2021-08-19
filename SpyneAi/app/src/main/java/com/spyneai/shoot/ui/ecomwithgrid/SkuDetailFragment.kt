@@ -108,8 +108,17 @@ class SkuDetailFragment : BaseFragment<ShootViewModel, FragmentSkuDetailBinding>
             viewModel.shootList.value?.clear()
             val intent = Intent(activity, ShootPortraitActivity::class.java)
             intent.putExtra("project_id", viewModel.sku.value?.projectId);
-            intent.putExtra("skuNumber", viewModel.skuNumber.value?.plus(1)!!)
-            intent.putExtra(AppConstants.CATEGORY_NAME,"E-Commerce")
+
+            intent.putExtra(AppConstants.CATEGORY_NAME,viewModel.categoryDetails.value?.categoryName)
+            intent.putExtra(AppConstants.CATEGORY_ID,viewModel.categoryDetails.value?.categoryId)
+
+            if (viewModel.fromDrafts){
+                intent.putExtra(AppConstants.SKU_COUNT, requireActivity().intent.getIntExtra(AppConstants.SKU_COUNT,0).plus(1))
+                intent.putExtra("skuNumber", requireActivity().intent.getIntExtra(AppConstants.SKU_COUNT,0).plus(1))
+            }
+            else
+                intent.putExtra("skuNumber", viewModel.skuNumber.value?.plus(1)!!)
+
             startActivity(intent)
 
         }

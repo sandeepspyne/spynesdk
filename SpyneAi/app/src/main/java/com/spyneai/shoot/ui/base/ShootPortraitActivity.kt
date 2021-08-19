@@ -59,7 +59,7 @@ class ShootPortraitActivity : AppCompatActivity() {
         }
 
         if (intent.getBooleanExtra(AppConstants.FROM_DRAFTS,false))
-            setUpDraftsData()
+                    setUpDraftsData()
 
         val categoryDetails = CategoryDetails()
 
@@ -228,6 +228,7 @@ class ShootPortraitActivity : AppCompatActivity() {
                 shootViewModel.isSubCategoryConfirmed.value = true
 
                 if (intent.getIntExtra(AppConstants.EXTERIOR_ANGLES,0) == intent.getIntExtra(AppConstants.EXTERIOR_SIZE,0)){
+                    shootViewModel.showDialog = false
                     val list = shootViewModel.getImagesbySkuId(shootViewModel.sku.value?.skuId!!)
 
                     shootViewModel.shootList.value = ArrayList()

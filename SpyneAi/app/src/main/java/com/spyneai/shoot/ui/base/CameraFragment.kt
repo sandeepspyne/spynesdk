@@ -222,7 +222,6 @@ class CameraFragment : BaseFragment<ShootViewModel, FragmentCameraBinding>(), Pi
         binding.cameraCaptureButton?.setOnClickListener {
             viewModel.showConfirmReshootDialog.value = true
 
-
             if (viewModel.shootList.value == null){
                 if ((viewModel.categoryDetails.value?.categoryName == "Automobiles" ||
                             viewModel.categoryDetails.value?.categoryName == "Bikes")
