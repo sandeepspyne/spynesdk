@@ -11,6 +11,7 @@ import com.posthog.android.Properties
 import com.spyneai.base.BaseFragment
 import com.spyneai.base.network.Resource
 import com.spyneai.captureFailureEvent
+import com.spyneai.dashboard.response.NewSubCatResponse
 import com.spyneai.dashboard.ui.handleApiError
 import com.spyneai.databinding.FragmentDraftProjectsBinding
 import com.spyneai.databinding.FragmentDraftSkuDetailsBinding
@@ -207,6 +208,14 @@ class DraftSkuDetailsFragment : BaseFragment<DraftViewModel, FragmentDraftSkuDet
                     Utilities.hideProgressDialog()
 
                     if (requireActivity().intent.getBooleanExtra(AppConstants.FROM_LOCAL_DB,false)){
+                        if (requireActivity().intent.getStringExtra(AppConstants.CATEGORY_NAME) == "Bikes") {
+                            val filteredList: List<NewSubCatResponse.Miscellaneous> = it.value.miscellaneous.filter {
+                                it.prod_sub_cat_id ==  requireActivity().intent.getStringExtra(AppConstants.SUB_CAT_ID)
+                            }
+
+                            it.value.miscellaneous = filteredList
+                        }
+
                         if (it.value.miscellaneous.size == localMiscList.size) {
                             //start procss activity
                             startProcessActivty(intent,localInteriorList.size.plus(localMiscList.size))

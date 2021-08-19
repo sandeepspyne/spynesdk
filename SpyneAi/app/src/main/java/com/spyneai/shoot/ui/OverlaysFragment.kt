@@ -253,6 +253,14 @@ class OverlaysFragment : BaseFragment<ShootViewModel, FragmentOverlaysBinding>()
                                         }
                                         else -> {
                                             viewModel.startMiscShots.value = true
+                                            if (viewModel.categoryDetails.value?.categoryName == "Bikes") {
+                                                val filteredList: List<NewSubCatResponse.Miscellaneous> = it.value.miscellaneous.filter {
+                                                    it.prod_sub_cat_id ==   viewModel.subCategory.value?.prod_sub_cat_id
+                                                }
+
+                                                it.value.miscellaneous = filteredList
+                                            }
+
                                             viewModel.miscAngles.value =  it.value.miscellaneous.size
 
                                             if (progressAdapter == null) {
@@ -668,11 +676,21 @@ class OverlaysFragment : BaseFragment<ShootViewModel, FragmentOverlaysBinding>()
         viewModel.subCategoriesResponse.observe(viewLifecycleOwner, {
             when (it) {
                 is Resource.Success -> {
-                    val miscList = it.value.miscellaneous
+                    var miscList = it.value.miscellaneous
 
                    if (viewModel.fromDrafts) {
                        viewModel.miscAngles.value =  it.value.miscellaneous.size
                        viewModel.miscShootNumber.value = requireActivity().intent.getIntExtra(AppConstants.MISC_SIZE,0)
+
+                       if (viewModel.categoryDetails.value?.categoryName == "Bikes") {
+                           val filteredList: List<NewSubCatResponse.Miscellaneous> = it.value.miscellaneous.filter {
+                               it.prod_sub_cat_id ==   viewModel.subCategory.value?.prod_sub_cat_id
+                           }
+
+                           it.value.miscellaneous = filteredList
+                           miscList = it.value.miscellaneous
+                       }
+
                    }else {
                        val myMiscShootList = viewModel.shootList.value?.filter {
                            it.image_category == "Focus Shoot"

@@ -27,8 +27,9 @@ class SkuDetailFragment : BaseFragment<ShootViewModel, FragmentSkuDetailBinding>
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        if (Utilities.getPreference(requireContext(), AppConstants.CATEGORY_NAME).equals("Footwear")){
-            binding.ivAddAngle.visibility = View.GONE
+        if (viewModel.categoryDetails.value?.categoryName.equals("E-Commerce")){
+            binding.ivAddAngle.visibility = View.INVISIBLE
+            binding.tvAddAngle.visibility = View.INVISIBLE
         }
 
         viewModel.getProjectDetail(
@@ -141,6 +142,15 @@ class SkuDetailFragment : BaseFragment<ShootViewModel, FragmentSkuDetailBinding>
 
 
 
+    }
+
+    override fun onResume() {
+        super.onResume()
+
+        if (viewModel.categoryDetails.value?.categoryName.equals("E-Commerce")){
+            binding.ivAddAngle.visibility = View.VISIBLE
+            binding.tvAddAngle.visibility = View.VISIBLE
+        }
     }
 
 

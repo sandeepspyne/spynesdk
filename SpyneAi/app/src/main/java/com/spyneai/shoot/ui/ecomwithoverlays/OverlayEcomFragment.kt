@@ -56,7 +56,6 @@ class OverlayEcomFragment : BaseFragment<ShootViewModel, FragmentOverlayEcomBind
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-
         if (viewModel.projectId.value == null){
             initProjectDialog()
             log("project and SKU dialog shown")
@@ -79,8 +78,6 @@ class OverlayEcomFragment : BaseFragment<ShootViewModel, FragmentOverlayEcomBind
             }else {
                 initSkuDialog()
             }
-
-
             log("SKU dialog shown")
         }
 

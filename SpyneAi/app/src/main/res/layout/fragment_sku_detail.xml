@@ -151,6 +151,7 @@
         app:layout_constraintLeft_toLeftOf="parent"
         android:layout_marginBottom="@dimen/dp_20"
         android:textColor="@color/primary"
+        android:visibility="invisible"
         android:textSize="@dimen/sp_14"
         android:layout_marginTop="@dimen/dp_20"
         android:layout_marginLeft="35dp"/>
@@ -160,6 +161,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:src="@drawable/ic_add_angle"
+        android:visibility="invisible"
         app:layout_constraintLeft_toRightOf="@+id/tvAddAngle"
         app:layout_constraintTop_toTopOf="@+id/tvAddAngle"
         app:layout_constraintBottom_toBottomOf="@+id/tvAddAngle"

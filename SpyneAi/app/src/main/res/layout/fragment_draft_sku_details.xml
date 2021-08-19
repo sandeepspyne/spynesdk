@@ -152,6 +152,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="10dp"
+                android:scrollbars="none"
+                android:nestedScrollingEnabled="true"
                 android:paddingBottom="@dimen/dp_50"
                 android:layout_marginLeft="20dp"
                 android:layout_marginRight="@dimen/dp_20"
@@ -175,6 +177,7 @@
             <GridView
                 android:id="@+id/rvInteriors"
                 android:layout_width="match_parent"
+                android:nestedScrollingEnabled="true"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="10dp"
                 android:paddingBottom="@dimen/dp_50"
@@ -183,6 +186,7 @@
                 android:clipToPadding="false"
                 android:verticalSpacing="10dp"
                 android:visibility="gone"
+                android:scrollbars="none"
                 android:horizontalSpacing="10dp"
                 android:stretchMode="columnWidth"
                 android:numColumns="2"/>
@@ -209,6 +213,8 @@
                 android:clipToPadding="false"
                 android:verticalSpacing="10dp"
                 android:visibility="gone"
+                android:scrollbars="none"
+                android:nestedScrollingEnabled="true"
                 android:horizontalSpacing="10dp"
                 android:stretchMode="columnWidth"
                 android:numColumns="2"/>

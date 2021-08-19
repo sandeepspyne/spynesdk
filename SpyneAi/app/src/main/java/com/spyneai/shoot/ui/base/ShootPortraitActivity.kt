@@ -284,8 +284,6 @@ class ShootPortraitActivity : AppCompatActivity() {
                 }
             }
 
-
-
         }
     }
 
