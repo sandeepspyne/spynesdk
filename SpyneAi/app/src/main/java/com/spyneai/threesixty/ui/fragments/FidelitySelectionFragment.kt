@@ -76,7 +76,7 @@ class FidelitySelectionFragment : BaseFragment<ThreeSixtyViewModel, FragmentFide
                     .apply {
                         putExtra(AppConstants.CATEGORY_NAME,videoDetails.categoryName)
                         putExtra(AppConstants.CATEGORY_ID,videoDetails.categoryId)
-                        putExtra("frames",videoDetails.frames)
+                        putExtra(AppConstants.EXTERIOR_ANGLES,videoDetails.frames)
                         startActivity(this)
                     }
 

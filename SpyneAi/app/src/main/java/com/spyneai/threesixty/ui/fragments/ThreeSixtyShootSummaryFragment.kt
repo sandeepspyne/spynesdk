@@ -156,6 +156,9 @@ class ThreeSixtyShootSummaryFragment : BaseFragment<ThreeSixtyViewModel, Fragmen
         viewModel.process360Res.observe(viewLifecycleOwner,{
             when(it) {
                 is Resource.Success -> {
+                    //update project status
+                    viewModel.updateProjectStatus(viewModel.videoDetails.projectId!!)
+
                     Utilities.hideProgressDialog()
                     Navigation.findNavController(binding.btnProceed)
                         .navigate(R.id.action_threeSixtyShootSummaryFragment_to_videoProcessingStartedFragment)

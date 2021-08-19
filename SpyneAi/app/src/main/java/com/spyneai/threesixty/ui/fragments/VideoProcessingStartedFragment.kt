@@ -15,7 +15,7 @@ import com.spyneai.databinding.Fragment360ShotSummaryBinding
 import com.spyneai.databinding.FragmentVideoProcessingStartedBinding
 import com.spyneai.gotoHome
 import com.spyneai.threesixty.data.ThreeSixtyViewModel
-import com.spyneai.threesixty.ui.ThreeSixtyActivity
+
 
 class VideoProcessingStartedFragment :  BaseFragment<ThreeSixtyViewModel, FragmentVideoProcessingStartedBinding>() {
 

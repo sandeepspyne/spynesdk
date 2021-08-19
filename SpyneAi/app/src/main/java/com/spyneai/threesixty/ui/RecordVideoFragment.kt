@@ -75,7 +75,10 @@ class RecordVideoFragment : BaseFragment<ThreeSixtyViewModel, FragmentRecordVide
 
         private var stopTimer = false
         private lateinit var fragmentList: ArrayList<Fragment>
+
     }
+
+    var isSensorAvaliable = false
 
     private val permissionRequest = registerForActivityResult(ActivityResultContracts.RequestMultiplePermissions()) { permissions ->
         if (permissions.all { it.value }) {
@@ -182,7 +185,12 @@ class RecordVideoFragment : BaseFragment<ThreeSixtyViewModel, FragmentRecordVide
                     )
                 )
 
-                binding.flLevelIndicator.visibility = View.VISIBLE
+                if (isSensorAvaliable) {
+                    getPreviewDimensions(binding.ivGryroRing, true, false)
+                    getPreviewDimensions(binding.tvCenter, false, false)
+                    binding.flLevelIndicator.visibility = View.VISIBLE
+                }
+
 
                 binding.btnFlash.visibility = View.VISIBLE
 
@@ -699,10 +707,7 @@ class RecordVideoFragment : BaseFragment<ThreeSixtyViewModel, FragmentRecordVide
     override fun onResume() {
         super.onResume()
 
-        getPreviewDimensions(binding.ivGryroRing, true, false)
-        getPreviewDimensions(binding.tvCenter, false, false)
-
-        mSensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER)?.also { accelerometer ->
+        val mAccelerometer = mSensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER)?.also { accelerometer ->
             mSensorManager.registerListener(
                 this,
                 accelerometer,
@@ -710,7 +715,8 @@ class RecordVideoFragment : BaseFragment<ThreeSixtyViewModel, FragmentRecordVide
                 SensorManager.SENSOR_DELAY_UI
             )
         }
-        mSensorManager.getDefaultSensor(Sensor.TYPE_MAGNETIC_FIELD)?.also { magneticField ->
+
+        val magneticField = mSensorManager.getDefaultSensor(Sensor.TYPE_MAGNETIC_FIELD)?.also { magneticField ->
             mSensorManager.registerListener(
                 this,
                 magneticField,
@@ -718,6 +724,12 @@ class RecordVideoFragment : BaseFragment<ThreeSixtyViewModel, FragmentRecordVide
                 SensorManager.SENSOR_DELAY_UI
             )
         }
+
+        if (mAccelerometer != null && magneticField != null)
+            isSensorAvaliable = true
+
+        if (viewModel.fromDrafts)
+            viewModel.enableRecording.value = true
     }
 
     override fun onDestroy() {

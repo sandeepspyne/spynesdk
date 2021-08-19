@@ -173,8 +173,8 @@ class DraftSkuDetailsFragment : BaseFragment<DraftViewModel, FragmentDraftSkuDet
 
 
             if (resumeMisc()){
-                checkMiscSize(intent)
-                observeMisc(intent)
+                checkMiscSize(shootIntent!!)
+                observeMisc(shootIntent)
             }else {
                 startActivity(shootIntent)
             }

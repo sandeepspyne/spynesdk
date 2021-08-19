@@ -9,10 +9,9 @@ import com.spyneai.camera2.ShootDimensions
 import com.spyneai.credits.model.DownloadHDRes
 import com.spyneai.credits.model.ReduceCreditResponse
 import com.spyneai.model.credit.CreditDetailsResponse
+import com.spyneai.shoot.data.ShootLocalRepository
 import com.spyneai.shoot.data.ShootRepository
-import com.spyneai.shoot.data.model.CarsBackgroundRes
-import com.spyneai.shoot.data.model.CreateProjectRes
-import com.spyneai.shoot.data.model.CreateSkuRes
+import com.spyneai.shoot.data.model.*
 import com.spyneai.threesixty.data.model.VideoDetails
 import com.spyneai.threesixty.data.response.ProcessThreeSixtyRes
 import kotlinx.coroutines.launch
@@ -22,7 +21,9 @@ class ThreeSixtyViewModel : ViewModel() {
 
     private val repository = ShootRepository()
     private val threeSixtyRepository = ThreeSixtyRepository()
+    private val localRepository = ShootLocalRepository()
 
+    var fromDrafts  = false
     val isDemoClicked: MutableLiveData<Boolean> = MutableLiveData()
     val isFramesUpdated: MutableLiveData<Boolean> = MutableLiveData()
     val title : MutableLiveData<String> = MutableLiveData()
@@ -129,5 +130,14 @@ class ThreeSixtyViewModel : ViewModel() {
         _downloadHDRes.value = threeSixtyRepository.updateDownloadStatus(userId,skuId, enterpriseId, downloadHd)
     }
 
+    fun insertProject(project: Project) {
+        localRepository.insertProject(project)
+    }
+
+    fun insertSku(sku: Sku) {
+        localRepository.insertSku(sku)
+    }
+
+    fun  updateProjectStatus(projectId: String) = localRepository.updateProjectStatus(projectId)
 
 }

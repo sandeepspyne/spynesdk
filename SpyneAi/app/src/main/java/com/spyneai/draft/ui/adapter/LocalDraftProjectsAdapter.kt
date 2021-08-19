@@ -75,11 +75,14 @@ val draftsList: List<Project>
 
         holder.cvMain.setOnClickListener {
             if (draftsList[position].subCategoryName.equals("360_interior") || draftsList[position].subCategoryName.equals("360_exterior")){
-//                Intent(context, ThreeSixtyExteriorActivity::class.java)
-//                    .apply {
-//                        putExtra("sku_id",draftsList[position].s)
-//                        context.startActivity(this)
-//                    }
+                Intent(context, DraftSkusActivity::class.java)
+                    .apply {
+                        putExtra("position", position)
+                        putExtra(AppConstants.FROM_LOCAL_DB, true)
+                        putExtra(AppConstants.PROJECT_NAME, draftsList[position].projectName)
+                        putExtra(AppConstants.PROJECT_ID, draftsList[position].projectId)
+                        context.startActivity(this)
+                    }
             }else{
 
                 if (draftsList[position].skus == 0){
