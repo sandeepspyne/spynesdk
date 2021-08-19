@@ -4,7 +4,9 @@ import android.content.Context
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.BaseAdapter
 import android.widget.ImageView
+import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.spyneai.R
@@ -14,36 +16,35 @@ import com.spyneai.shoot.data.model.Image
 class LocalDraftImagesAdapter(
     val context: Context,
     val imageList: ArrayList<Image>
-) : RecyclerView.Adapter<LocalDraftImagesAdapter.ViewHolder>() {
-
-    /**
-     * Provide a reference to the type of views that you are using
-     * (custom ViewHolder).
-     */
-    class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
-        val ivProcessed: ImageView = view.findViewById(R.id.ivProcessed)
+) : BaseAdapter() {
+    override fun getCount(): Int {
+        return imageList.size
     }
 
-
-    override fun onCreateViewHolder(
-        viewGroup: ViewGroup,
-        viewType: Int
-    ): ViewHolder {
-        // Create a new view, which defines the UI of the list item
-
-        val view =  LayoutInflater.from(context)
-            .inflate(R.layout.item_draft_images, viewGroup, false)
-
-        return ViewHolder(view)
+    override fun getItem(position: Int): Any? {
+        return imageList.get(position)
     }
 
-    override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-
-        Glide.with(context) // replace with 'this' if it's in activity
-            .load(imageList[position].imagePath)
-            .error(R.mipmap.defaults) // show error drawable if the image is not a gif
-            .into(holder.ivProcessed)
+    override fun getItemId(position: Int): Long {
+        return position.toLong()
     }
 
-    override fun getItemCount() = imageList.size
+    override fun getView(position: Int, convertView: View?, parent: ViewGroup?): View {
+        val view: View = View.inflate(context, R.layout.item_raw_images,null)
+        val ivRaw = view.findViewById<TextView>(R.id.ivRaw) as ImageView
+
+        try {
+            Glide.with(context) // replace with 'this' if it's in activity
+                .load(imageList[position].imagePath)
+                .error(R.mipmap.defaults) // show error drawable if the image is not a gif
+                .into(ivRaw)
+
+        }catch (e: Exception){
+
+        }
+
+
+
+        return view
+    }
 }

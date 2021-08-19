@@ -76,8 +76,7 @@ class DraftSkuDetailsFragment : BaseFragment<DraftViewModel, FragmentDraftSkuDet
 
                     binding.rvExteriorImage.visibility = View.VISIBLE
                     binding.rvExteriorImage.apply {
-                        layoutManager = GridLayoutManager(requireContext(),2,LinearLayoutManager.VERTICAL,false)
-                        adapter = LocalDraftImagesAdapter(requireContext(),localExterior)
+                          adapter = LocalDraftImagesAdapter(requireContext(),localExterior)
                     }
                 }
 
@@ -89,8 +88,7 @@ class DraftSkuDetailsFragment : BaseFragment<DraftViewModel, FragmentDraftSkuDet
                     binding.tvInterior.visibility = View.VISIBLE
                     binding.rvInteriors.visibility = View.VISIBLE
                     binding.rvInteriors.apply {
-                        layoutManager = GridLayoutManager(requireContext(),2,LinearLayoutManager.VERTICAL,false)
-                        adapter = LocalDraftImagesAdapter(requireContext(),localInteriorList)
+                         adapter = LocalDraftImagesAdapter(requireContext(),localInteriorList)
                     }
                 }
 
@@ -102,7 +100,6 @@ class DraftSkuDetailsFragment : BaseFragment<DraftViewModel, FragmentDraftSkuDet
                     binding.tvFocused.visibility = View.VISIBLE
                     binding.rvFocused.visibility = View.VISIBLE
                     binding.rvFocused.apply {
-                        layoutManager = GridLayoutManager(requireContext(),2,LinearLayoutManager.VERTICAL,false)
                         adapter = LocalDraftImagesAdapter(requireContext(),localMiscList)
                     }
                 }
@@ -132,7 +129,9 @@ class DraftSkuDetailsFragment : BaseFragment<DraftViewModel, FragmentDraftSkuDet
                         ShootPortraitActivity::class.java)
                 }
 
-                else -> {}
+                else -> {
+                    var s = ""
+                }
             }
 
             shootIntent?.apply {
@@ -162,19 +161,18 @@ class DraftSkuDetailsFragment : BaseFragment<DraftViewModel, FragmentDraftSkuDet
                     putExtra(AppConstants.MISC_SIZE, localMiscList.size)
                 }
             }else {
+
                 val s = exterior?.map {
                     it.input_image_hres_url
                 } as ArrayList<String>
 
-                val ss = ""
 
                shootIntent?.apply {
                    putExtra(AppConstants.FROM_LOCAL_DB, false)
                    putExtra(AppConstants.EXTERIOR_SIZE, exterior.size)
-                //   putStringArrayListExtra(AppConstants.EXTERIOR_LIST, s)
+                   putStringArrayListExtra(AppConstants.EXTERIOR_LIST, s)
                    putExtra(AppConstants.INTERIOR_SIZE, interiorList.size)
                    putExtra(AppConstants.MISC_SIZE, miscList.size)
-                   putExtra(AppConstants.MISC_SIZE, exterior)
                }
 
             }
@@ -324,7 +322,7 @@ class DraftSkuDetailsFragment : BaseFragment<DraftViewModel, FragmentDraftSkuDet
                         binding.tvTotalSku.text = list.size.toString()
 
                         exterior = when(requireActivity().intent.getStringExtra(AppConstants.CATEGORY_NAME)) {
-                            "E-Commerce" -> {
+                            "E-Commerce","Footwear" -> {
                                 list as ArrayList
                             } else -> {
                                 list?.filter {
@@ -334,14 +332,13 @@ class DraftSkuDetailsFragment : BaseFragment<DraftViewModel, FragmentDraftSkuDet
                             }
                         }
 
-                        var s = ""
-
                         if (exterior.size > 0) {
+                            if (requireActivity().intent.getStringExtra(AppConstants.CATEGORY_NAME) == "Automobiles")
+                                binding.tvExterior.visibility = View.VISIBLE
+
                             binding.rvExteriorImage.visibility = View.VISIBLE
-                            binding.tvExterior.visibility = View.VISIBLE
                             binding.rvExteriorImage.apply {
-                                layoutManager = GridLayoutManager(requireContext(),2,LinearLayoutManager.VERTICAL,false)
-                                adapter = DraftImagesAdapter(requireContext(),exterior)
+                                    adapter = DraftImagesAdapter(requireContext(),exterior)
                             }
                         }
 
@@ -353,7 +350,6 @@ class DraftSkuDetailsFragment : BaseFragment<DraftViewModel, FragmentDraftSkuDet
                             binding.rvInteriors.visibility = View.VISIBLE
                             binding.tvInterior.visibility = View.VISIBLE
                             binding.rvInteriors.apply {
-                                layoutManager = GridLayoutManager(requireContext(),2,LinearLayoutManager.VERTICAL,false)
                                 adapter = DraftImagesAdapter(requireContext(),interiorList)
                             }
                         }
@@ -366,8 +362,7 @@ class DraftSkuDetailsFragment : BaseFragment<DraftViewModel, FragmentDraftSkuDet
                             binding.rvFocused.visibility = View.VISIBLE
                             binding.tvFocused.visibility = View.VISIBLE
                             binding.rvFocused.apply {
-                                layoutManager = GridLayoutManager(requireContext(),2,LinearLayoutManager.VERTICAL,false)
-                                adapter = DraftImagesAdapter(requireContext(),miscList)
+                                   adapter = DraftImagesAdapter(requireContext(),miscList)
                             }
                         }
 
