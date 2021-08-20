@@ -30,7 +30,6 @@ import com.spyneai.base.network.Resource
 import com.spyneai.camera2.ShootDimensions
 import com.spyneai.captureEvent
 import com.spyneai.captureFailureEvent
-import com.spyneai.dashboard.ui.WhiteLabelConstants
 import com.spyneai.dashboard.ui.handleApiError
 import com.spyneai.databinding.FragmentCameraBinding
 import com.spyneai.needs.AppConstants
@@ -531,7 +530,9 @@ class CameraFragment : BaseFragment<ShootViewModel, FragmentCameraBinding>(), Pi
 
     private fun takePhoto() {
         // Get a stable reference of the modifiable image capture use case
-        val imageCapture = imageCapture ?: return
+        val imageCapture1 = imageCapture ?: return
+
+        val hi = "hi"
 
 
         // Setup image capture metadata
@@ -616,7 +617,7 @@ class CameraFragment : BaseFragment<ShootViewModel, FragmentCameraBinding>(), Pi
 
         // Set up image capture listener, which is triggered after photo has
         // been taken
-        imageCapture.takePicture(
+        imageCapture1.takePicture(
             outputOptions,
             ContextCompat.getMainExecutor(requireContext()),
             object : ImageCapture.OnImageSavedCallback {
@@ -625,6 +626,7 @@ class CameraFragment : BaseFragment<ShootViewModel, FragmentCameraBinding>(), Pi
                     log("Photo capture failed: " + exc.message)
 
                     Utilities.hideProgressDialog()
+                    Toast.makeText(requireContext(), "Image capture failed", Toast.LENGTH_SHORT).show()
 
                     requireContext().captureFailureEvent(
                         Events.IMAGE_CAPRURE_FAILED,
@@ -803,12 +805,9 @@ class CameraFragment : BaseFragment<ShootViewModel, FragmentCameraBinding>(), Pi
                 }
             }
 
-            "Footwear", "E-Commerce" -> {
-                if ((roll.roundToInt() <= -160 && roll.roundToInt() >= -185) && (pitch <= -80 && pitch >= -90)
-                    ||
-                    (roll.roundToInt() <= 0 && roll.roundToInt() >= -5) && ((pitch.roundToInt() == 0 || pitch.roundToInt() == -0) ||
-                            pitch.roundToInt() <= -5 || pitch.roundToInt() >= -10)
-                ) {
+            "Flipkart", "Udaan", "Amazon", "Lal10", "Swiggy" -> {
+                if ((pitch.roundToInt() == 0 || (pitch.roundToInt() <= -0 && pitch.roundToInt() >= -3)) ||
+                    pitch.roundToInt() <= -82 && pitch.roundToInt() >= -88) {
                     binding
                         .tvLevelIndicator
                         ?.animate()
