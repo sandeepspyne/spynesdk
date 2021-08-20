@@ -788,7 +788,7 @@ class CameraFragment : BaseFragment<ShootViewModel, FragmentCameraBinding>(), Pi
                     )
 
                     if (movearrow)
-                        moveArrow(roll)
+                        moveArrow(roll + 90)
 
                     if (rotatedarrow) {
                         if (pitch > 0) {
@@ -895,8 +895,15 @@ class CameraFragment : BaseFragment<ShootViewModel, FragmentCameraBinding>(), Pi
                         )
                     )
 
-                    if (movearrow)
-                        moveArrow(pitch)
+                    if (movearrow) {
+                        if (Math.toDegrees(orientationAngles[0].toDouble()).roundToInt() >= 0){
+                            moveArrow(pitch + 85)
+                        }else {
+                            moveArrow((pitch + 85).unaryMinus())
+                        }
+
+                    }
+
 
 //                    if (rotatedarrow) {
 //                        rotateArrow(roll.roundToInt())
@@ -990,7 +997,7 @@ class CameraFragment : BaseFragment<ShootViewModel, FragmentCameraBinding>(), Pi
                 )
 
                 if (movearrow)
-                    moveArrow(roll)
+                    moveArrow(roll + 90)
 
                 if (rotatedarrow) {
                     if (pitch > 0) {
@@ -1013,22 +1020,8 @@ class CameraFragment : BaseFragment<ShootViewModel, FragmentCameraBinding>(), Pi
     override fun onAccuracyChanged(sensor: Sensor?, accuracy: Int) {
     }
 
-    private fun moveArrow(roll: Double) {
-        var newRoll = 0
-        newRoll = when(viewModel.categoryDetails.value?.categoryName){
-            "Automobiles","Bikes" -> (roll + 90).roundToInt()
-            else-> (roll + 85).roundToInt()
-        }
-
-        Log.d(TAG, "moveArrow: "+roll)
-        Log.d(TAG, "moveArrow: "+newRoll)
-        Log.d(TAG, "moveArrow: ----------------------")
+    private fun moveArrow(newRoll: Double) {
         if (newRoll > 0 && (centerPosition + newRoll) < bottomConstraint) {
-
-            // newRoll -= 0
-
-            Log.d(TAG, "moveArrow: " + newRoll)
-
             binding
                 .tvLevelIndicator
                 ?.animate()
@@ -1037,10 +1030,6 @@ class CameraFragment : BaseFragment<ShootViewModel, FragmentCameraBinding>(), Pi
         }
 
         if (newRoll < 0 && (centerPosition - newRoll) > topConstraint) {
-
-
-            // newRoll += 0
-
             binding
                 .tvLevelIndicator
                 ?.animate()
