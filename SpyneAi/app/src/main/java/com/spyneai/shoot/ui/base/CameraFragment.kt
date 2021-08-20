@@ -51,6 +51,10 @@ import kotlin.math.min
 import kotlin.math.roundToInt
 import android.media.MediaActionSound
 import android.util.Size
+import com.google.android.play.core.splitinstall.g
+
+
+
 
 
 class CameraFragment : BaseFragment<ShootViewModel, FragmentCameraBinding>(), PickiTCallbacks,
@@ -685,6 +689,8 @@ class CameraFragment : BaseFragment<ShootViewModel, FragmentCameraBinding>(), Pi
 
         val diff = Math.toDegrees(orientationAngles[2].toDouble()) - roll
 
+
+
         val movearrow = abs(Math.toDegrees(orientationAngles[2].toDouble()).roundToInt()) - abs(
             roll.roundToInt()
         ) >= 1
@@ -695,7 +701,10 @@ class CameraFragment : BaseFragment<ShootViewModel, FragmentCameraBinding>(), Pi
         pitch = Math.toDegrees(orientationAngles[1].toDouble())
         roll = Math.toDegrees(orientationAngles[2].toDouble())
 
-        binding.tvPitchRoll?.text = pitch.roundToInt().toString()+"****"+roll.roundToInt()+"****"+Math.toDegrees(orientationAngles[0].toDouble()).roundToInt()
+
+       // binding.tvPitchRoll?.text = pitch.roundToInt().toString()+"****"+roll.roundToInt()+"****"+Math.toDegrees(orientationAngles[0].toDouble()).roundToInt()
+
+        binding.tvPitchRoll?.text = pitch.roundToInt().toString()+"****"+ abs(roll.roundToInt())
 
 
         when(getString(R.string.app_name)) {
@@ -896,10 +905,10 @@ class CameraFragment : BaseFragment<ShootViewModel, FragmentCameraBinding>(), Pi
                     )
 
                     if (movearrow) {
-                        if (Math.toDegrees(orientationAngles[0].toDouble()).roundToInt() >= 0){
-                            moveArrow(pitch + 85)
-                        }else {
+                        if (abs(roll.roundToInt()) < 100){
                             moveArrow((pitch + 85).unaryMinus())
+                        }else {
+                            moveArrow(pitch + 85)
                         }
 
                     }

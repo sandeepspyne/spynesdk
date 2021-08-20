@@ -131,11 +131,7 @@ class SkuDetailFragment : BaseFragment<ShootViewModel, FragmentSkuDetailBinding>
 
     }
 
-    private fun initCapturedImages() {
 
-
-
-    }
 
 
     override fun getViewModel() = ShootViewModel::class.java
