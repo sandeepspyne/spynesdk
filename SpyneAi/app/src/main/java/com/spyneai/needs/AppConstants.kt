@@ -118,6 +118,7 @@ object AppConstants {
     val CARS24= "Cars 24 Cataloging"
     val SWEEP= "Sweep.ei"
     val OLA_CABS = "Ola Cabs"
+    val UDAAN = "Udaan"
 
 
 

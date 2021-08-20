@@ -135,11 +135,6 @@ class CameraFragment : BaseFragment<ShootViewModel, FragmentCameraBinding>(), Pi
 
         viewModel.showLeveler.observe(viewLifecycleOwner, {
             if (it && isSensorAvaliable) {
-                if (viewModel.categoryDetails.value?.categoryName == "Footwear" ||
-                    viewModel.categoryDetails.value?.categoryName == "E-Commerce"
-                )
-                    binding.tvLevelIndicator.visibility = View.GONE
-
                 getPreviewDimensions(binding.ivGryroRing!!, 1)
                 getPreviewDimensions(binding.tvCenter!!, 2)
                 binding.flLevelIndicator.visibility = View.VISIBLE
@@ -700,10 +695,8 @@ class CameraFragment : BaseFragment<ShootViewModel, FragmentCameraBinding>(), Pi
         pitch = Math.toDegrees(orientationAngles[1].toDouble())
         roll = Math.toDegrees(orientationAngles[2].toDouble())
 
+        binding.tvPitchRoll?.text = pitch.roundToInt().toString()+"****"+roll.roundToInt()+"****"+Math.toDegrees(orientationAngles[0].toDouble()).roundToInt()
 
-        Log.d(TAG, "updateOrientationAngles: " + roll)
-        Log.d(TAG, "updateOrientationAngles: " + pitch)
-        Log.d(TAG, "updateOrientationAngles: -------------------------------")
 
         when(getString(R.string.app_name)) {
             AppConstants.KARVI -> {
@@ -808,12 +801,16 @@ class CameraFragment : BaseFragment<ShootViewModel, FragmentCameraBinding>(), Pi
                 }
             }
 
-            "Footwear", "E-Commerce" -> {
-                if ((roll.roundToInt() <= -160 && roll.roundToInt() >= -185) && (pitch <= -80 && pitch >= -90)
-                    ||
-                    (roll.roundToInt() <= 0 && roll.roundToInt() >= -5) && ((pitch.roundToInt() == 0 || pitch.roundToInt() == -0) ||
-                            pitch.roundToInt() <= -5 || pitch.roundToInt() >= -10)
-                ) {
+            AppConstants.UDAAN, "E-Commerce" -> {
+                //hide moving line
+                if (pitch.roundToInt() == 0 || (pitch.roundToInt() <= -0 && pitch.roundToInt() >= -3))
+                    binding.tvLevelIndicator.visibility = View.GONE
+                else
+                    binding.tvLevelIndicator.visibility = View.VISIBLE
+
+                if ((pitch.roundToInt() == 0 || (pitch.roundToInt() <= -0 && pitch.roundToInt() >= -3)) ||
+                        pitch.roundToInt() <= -82 && pitch.roundToInt() >= -88) {
+
                     binding
                         .tvLevelIndicator
                         ?.animate()
@@ -899,15 +896,11 @@ class CameraFragment : BaseFragment<ShootViewModel, FragmentCameraBinding>(), Pi
                     )
 
                     if (movearrow)
-                        moveArrow(roll)
+                        moveArrow(pitch)
 
-                    if (rotatedarrow) {
-                        if (pitch > 0) {
-                            rotateArrow(pitch.minus(0).roundToInt())
-                        } else {
-                            rotateArrow(pitch.plus(0).roundToInt())
-                        }
-                    }
+//                    if (rotatedarrow) {
+//                        rotateArrow(roll.roundToInt())
+//                    }
 
                 }
             }else -> {
@@ -1021,13 +1014,15 @@ class CameraFragment : BaseFragment<ShootViewModel, FragmentCameraBinding>(), Pi
     }
 
     private fun moveArrow(roll: Double) {
-        var newRoll = roll + 90
+        var newRoll = 0
+        newRoll = when(viewModel.categoryDetails.value?.categoryName){
+            "Automobiles","Bikes" -> (roll + 90).roundToInt()
+            else-> (roll + 85).roundToInt()
+        }
 
-        Log.d(TAG, "moveArrow: " + newRoll)
-        Log.d(TAG, "moveArrow: " + centerPosition.plus(newRoll))
-        Log.d(TAG, "moveArrow: " + centerPosition.plus(bottomConstraint))
-        Log.d(TAG, "moveArrow: -------------" + newRoll)
-
+        Log.d(TAG, "moveArrow: "+roll)
+        Log.d(TAG, "moveArrow: "+newRoll)
+        Log.d(TAG, "moveArrow: ----------------------")
         if (newRoll > 0 && (centerPosition + newRoll) < bottomConstraint) {
 
             // newRoll -= 0

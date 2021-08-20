@@ -88,12 +88,6 @@ class RecursiveImageWorker(private val appContext: Context, workerParams: Worker
                 File(image.imagePath)!!.name
             }
 
-            if (image.categoryName == "360int"){
-                val s = ""
-            }
-
-
-
             imageFile =
                 MultipartBody.Part.createFormData(
                     "image",
