@@ -702,9 +702,9 @@ class CameraFragment : BaseFragment<ShootViewModel, FragmentCameraBinding>(), Pi
         roll = Math.toDegrees(orientationAngles[2].toDouble())
 
 
-       // binding.tvPitchRoll?.text = pitch.roundToInt().toString()+"****"+roll.roundToInt()+"****"+Math.toDegrees(orientationAngles[0].toDouble()).roundToInt()
+       binding.tvPitchRoll?.text = pitch.roundToInt().toString()+"****"+roll.roundToInt()+"****"+Math.toDegrees(orientationAngles[0].toDouble()).roundToInt()
 
-        binding.tvPitchRoll?.text = pitch.roundToInt().toString()+"****"+ abs(roll.roundToInt())
+       // binding.tvPitchRoll?.text = pitch.roundToInt().toString()+"****"+ abs(roll.roundToInt())
 
 
         when(getString(R.string.app_name)) {
