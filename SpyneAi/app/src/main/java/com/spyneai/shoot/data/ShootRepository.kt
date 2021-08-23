@@ -66,6 +66,15 @@ class ShootRepository : BaseRepository() {
         clipperApi.skuProcessState(auth_key, project_id)
     }
 
+    suspend fun checkUploadStatus(
+        auth_key: String,
+        sku_id:  String,
+        image_category:  String,
+        frame_seq_no:  Int
+    ) = safeApiCall{
+        clipperApi.checkUploadStatus(auth_key, sku_id,image_category,frame_seq_no)
+    }
+
 
 
 }

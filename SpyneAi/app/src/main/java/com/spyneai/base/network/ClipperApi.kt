@@ -10,6 +10,7 @@ import com.spyneai.model.projects.CompletedProjectResponse
 import com.spyneai.orders.data.response.*
 import com.spyneai.shoot.data.model.*
 import com.spyneai.shoot.response.SkuProcessStateResponse
+import com.spyneai.shoot.response.UploadStatusRes
 import com.spyneai.threesixty.data.response.ProcessThreeSixtyRes
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
@@ -199,5 +200,16 @@ interface ClipperApi {
         @Field("auth_key") auth_key: String?,
         @Field("project_id") project_id: String?,
     ): SkuProcessStateResponse
+
+
+    @FormUrlEncoded
+    @POST("v4/image/image-upload-check")
+    suspend fun checkUploadStatus(
+        @Field("auth_key") auth_key: String,
+        @Field("sku_id") sku_id: String,
+        @Field("image_category") image_category: String,
+        @Field("frame_seq_no") frame_seq_no: Int,
+    ): UploadStatusRes
+
 
 }

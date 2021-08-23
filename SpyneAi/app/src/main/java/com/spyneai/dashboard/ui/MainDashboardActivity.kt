@@ -7,15 +7,13 @@ import android.os.Build
 import android.os.Bundle
 import android.os.Environment
 import android.util.Log
-import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
-import androidx.work.Data
-import androidx.work.OneTimeWorkRequest
-import androidx.work.WorkManager
+import androidx.lifecycle.lifecycleScope
+import androidx.work.*
 import com.spyneai.BaseApplication
 import com.spyneai.R
 import com.spyneai.activity.CategoriesActivity
@@ -25,20 +23,16 @@ import com.spyneai.databinding.ActivityDashboardMainBinding
 import com.spyneai.needs.AppConstants
 import com.spyneai.needs.Utilities
 import com.spyneai.orders.ui.MyOrdersActivity
-import com.spyneai.service.log
 import com.spyneai.shoot.data.FilesRepository
 import com.spyneai.shoot.ui.base.ShootActivity
 import com.spyneai.shoot.ui.StartShootActivity
-import com.spyneai.shoot.ui.base.ShootPortraitActivity
-import com.spyneai.shoot.workmanager.ManualUploadWorker
-import com.spyneai.shoot.workmanager.StoreImageFilesWorker
+import com.spyneai.shoot.workmanager.manual.StoreImageFilesWorker
 import java.io.File
-import android.view.View
 
 import com.google.android.material.snackbar.Snackbar
-
-
-
+import com.spyneai.shoot.workmanager.RecursiveImageWorker
+import com.spyneai.shoot.workmanager.manual.ManualUploadWorker
+import kotlinx.coroutines.launch
 
 
 class MainDashboardActivity : AppCompatActivity() {
@@ -201,6 +195,44 @@ class MainDashboardActivity : AppCompatActivity() {
                 longWorkRequest
                     .setInputData(data)
                     .build())
+
+        //manual upload worker not running
+        lifecycleScope.launch{
+            startManualUploadWorker()
+        }
+    }
+
+    private suspend fun startManualUploadWorker() {
+        //check if long running worker is alive
+        val workManager = WorkManager.getInstance(BaseApplication.getContext())
+
+        val workQuery = WorkQuery.Builder
+            .fromTags(listOf("Manual Long Running Worker"))
+            .addStates(listOf(WorkInfo.State.BLOCKED, WorkInfo.State.ENQUEUED, WorkInfo.State.RUNNING))
+            .build()
+
+        val workInfos = workManager.getWorkInfos(workQuery).await()
+
+        Log.d(TAG, "insertImage: "+workInfos.size)
+
+        if (workInfos.size > 0) {
+            com.spyneai.shoot.utils.log("alive : ")
+        } else {
+            com.spyneai.shoot.utils.log("not found : start new")
+            //start long running worker
+            val constraints: Constraints = Constraints.Builder()
+                .setRequiredNetworkType(NetworkType.CONNECTED)
+                .build()
+
+            val longWorkRequest = OneTimeWorkRequest.Builder(ManualUploadWorker::class.java)
+                .addTag("Manual Long Running Worker")
+
+            WorkManager.getInstance(BaseApplication.getContext())
+                .enqueue(
+                    longWorkRequest
+                        .setConstraints(constraints)
+                        .build())
+        }
     }
 
 

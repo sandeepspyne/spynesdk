@@ -1,19 +1,11 @@
-package com.spyneai.shoot.workmanager
+package com.spyneai.shoot.workmanager.manual
 
 import android.content.Context
 import android.os.Build
 import android.os.Environment
 import android.util.Log
 import androidx.work.*
-import com.posthog.android.Properties
-import com.spyneai.BaseApplication
-import com.spyneai.captureEvent
-import com.spyneai.captureFailureEvent
-import com.spyneai.db.ImageFiles
 import com.spyneai.shoot.data.FilesRepository
-import com.spyneai.shoot.data.ShootLocalRepository
-import com.spyneai.shoot.data.ShootRepository
-import com.spyneai.shoot.data.model.Image
 import com.spyneai.shoot.data.model.ImageFile
 import java.io.File
 
