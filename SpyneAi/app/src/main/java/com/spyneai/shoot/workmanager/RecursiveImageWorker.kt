@@ -51,14 +51,11 @@ class RecursiveImageWorker(private val appContext: Context, workerParams: Worker
             if (image.itemId != null)
                 localRepository.skipImage(image.itemId!!,-1)
 
-            captureEvent(Events.UPLOAD_FAILED,image,false,"Image upload limit  reached")
+            captureEvent(Events.UPLOAD_FAILED,image,false,"Image upload limit reached")
             return failure()
         }
 
-
-
         if (image.itemId != null){
-
             if (image.imagePath != null){
                 if (!File(image.imagePath!!).exists()){
                     localRepository.deleteImage(image.itemId!!)
@@ -77,6 +74,9 @@ class RecursiveImageWorker(private val appContext: Context, workerParams: Worker
 
             val authKey =
                 Utilities.getPreference(appContext,AppConstants.AUTH_KEY).toString().toRequestBody(MultipartBody.FORM)
+
+//            val authKey =
+//                "Sandeep singh".toRequestBody(MultipartBody.FORM)
 
             var imageFile: MultipartBody.Part? = null
             val requestFile =
