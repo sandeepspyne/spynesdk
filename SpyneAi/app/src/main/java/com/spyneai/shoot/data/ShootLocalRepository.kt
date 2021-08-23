@@ -629,11 +629,11 @@ class ShootLocalRepository {
         com.spyneai.shoot.utils.log("deleteImage : "+count)
     }
 
-    fun skipImage(itemId: Long) {
+    fun skipImage(itemId: Long,skip : Int) {
         val projectValues = ContentValues().apply {
             put(
                 Images.COLUMN_NAME_IS_UPLOADED,
-                -1
+                skip
             )
         }
 
@@ -793,13 +793,34 @@ class ShootLocalRepository {
         // Which row to update, based on the title
         val selection = "${ShootContract.ShootEntry.COLUMN_NAME_SKU_ID} LIKE ?"
 
-
         val selectionArgs = arrayOf(skuId)
-
 
 
         val count = dbWritable.update(
             ShootContract.ShootEntry.TABLE_NAME,
+            values,
+            selection,
+            selectionArgs)
+
+
+        com.spyneai.shoot.utils.log("Upload count(update): "+count)
+    }
+
+    fun updateSkipedImages() {
+        val values = ContentValues().apply {
+            put(
+                Images.COLUMN_NAME_IS_UPLOADED,
+                -1
+            )
+        }
+
+        // Which row to update, based on the title
+        val selection = "${Images.COLUMN_NAME_IS_UPLOADED} LIKE ?"
+
+        val selectionArgs = arrayOf("-2")
+
+        val count = dbWritable.update(
+            Images.TABLE_NAME,
             values,
             selection,
             selectionArgs)

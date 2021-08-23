@@ -49,7 +49,7 @@ class RecursiveImageWorker(private val appContext: Context, workerParams: Worker
 
         if (runAttemptCount > 4) {
             if (image.itemId != null)
-                localRepository.skipImage(image.itemId!!)
+                localRepository.skipImage(image.itemId!!,-1)
 
             captureEvent(Events.UPLOAD_FAILED,image,false,"Image upload limit  reached")
             return failure()

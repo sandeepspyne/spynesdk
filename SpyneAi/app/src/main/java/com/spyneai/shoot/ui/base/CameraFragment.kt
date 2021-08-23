@@ -345,7 +345,14 @@ class CameraFragment : BaseFragment<ShootViewModel, FragmentCameraBinding>(), Pi
 
                     val sku = viewModel.sku.value
                     sku?.skuId = it.value.sku_id
+                    sku?.projectId = projectId
+                    sku?.createdOn = System.currentTimeMillis()
                     sku?.totalImages = viewModel.exterirorAngles.value
+                    sku?.categoryName = viewModel.categoryDetails.value?.categoryName
+                    sku?.categoryId = viewModel.categoryDetails.value?.categoryId
+                    sku?.subcategoryName = viewModel.subCategory.value?.sub_cat_name
+                    sku?.subcategoryId = prod_sub_cat_id
+                    sku?.exteriorAngles = viewModel.exterirorAngles.value
 
                     viewModel.sku.value = sku
                     viewModel.isSubCategoryConfirmed.value = true

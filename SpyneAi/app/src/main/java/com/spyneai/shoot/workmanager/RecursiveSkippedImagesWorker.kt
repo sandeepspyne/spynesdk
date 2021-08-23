@@ -31,8 +31,9 @@ class RecursiveSkippedImagesWorker(private val appContext: Context, workerParams
         val image = localRepository.getOldestSkippedImage()
 
         if (runAttemptCount > 4) {
+            //skip with value -2 to move worker on next image
             if (image.itemId != null)
-                localRepository.skipImage(image.itemId!!)
+                localRepository.skipImage(image.itemId!!,-2)
 
             captureEvent(Events.SKIPPED_UPLOAD_FAILED,image,false,"Image upload limit  reached")
             return Result.failure()
@@ -101,6 +102,9 @@ class RecursiveSkippedImagesWorker(private val appContext: Context, workerParams
 
             return Result.success()
         }else{
+            //update status of skipped images -2 to -1 to retry again
+                localRepository.updateSkipedImages()
+
             return Result.success()
         }
     }
