@@ -139,6 +139,12 @@ interface ClipperApi {
         @Query("status") status: String
     ) : GetProjectsResponse
 
+    @GET("v3/project/getDetailsProject")
+    suspend fun getDrafts(
+        @Query("auth_key") authKey: String,
+        @Query("status") status: String
+    ) : GetProjectsResponse
+
 
     @Multipart
     @POST("v2/video/upload_two")

@@ -45,6 +45,8 @@ data class GetProjectsResponse(
         @SerializedName("processed_images") val processed_images: Int,
         @SerializedName("category") val category: String,
         @SerializedName("category_id") val categoryId: String,
+        @SerializedName("sub_category") val subCategory: String,
+        @SerializedName("sub_category_id") val subCategoryId: String,
         @SerializedName("Exterior_clicks") val exteriorClicks: Int,
         @SerializedName("images") val images: List<Images>,
         @SerializedName("is_360") val is360: Boolean,
