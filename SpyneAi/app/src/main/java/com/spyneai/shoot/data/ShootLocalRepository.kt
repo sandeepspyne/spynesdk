@@ -18,7 +18,6 @@ class ShootLocalRepository {
     private val dbReadable = DBHelper(BaseApplication.getContext()).readableDatabase
     private val TAG = "ShootLocalRepository"
 
-
     fun insertProject(project : Project) {
         val values = ContentValues().apply {
             put(Projects.COLUMN_NAME_PROJECT_NAME, project.projectName)
@@ -806,7 +805,7 @@ class ShootLocalRepository {
         com.spyneai.shoot.utils.log("Upload count(update): "+count)
     }
 
-    fun updateSkipedImages() {
+    fun updateSkipedImages() : Int {
         val values = ContentValues().apply {
             put(
                 Images.COLUMN_NAME_IS_UPLOADED,
@@ -826,7 +825,7 @@ class ShootLocalRepository {
             selectionArgs)
 
 
-        com.spyneai.shoot.utils.log("Upload count(update): "+count)
+       return count
     }
 
     fun updateProjectStatus(projectId : String) {

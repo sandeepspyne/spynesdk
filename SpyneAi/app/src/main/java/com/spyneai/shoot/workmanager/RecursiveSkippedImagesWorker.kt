@@ -1,6 +1,7 @@
 package com.spyneai.shoot.workmanager
 
 import android.content.Context
+import android.util.Log
 import androidx.work.*
 import com.posthog.android.Properties
 import com.spyneai.BaseApplication
@@ -22,7 +23,7 @@ import java.io.File
 class RecursiveSkippedImagesWorker(private val appContext: Context, workerParams: WorkerParameters) :
     CoroutineWorker(appContext, workerParams) {
 
-    val TAG = "RecursiveImageWorker"
+    val TAG = "RecursiveSkippedImagesWorker"
     val localRepository = ShootLocalRepository()
     val shootRepository = ShootRepository()
 
@@ -32,8 +33,11 @@ class RecursiveSkippedImagesWorker(private val appContext: Context, workerParams
 
         if (runAttemptCount > 4) {
             //skip with value -2 to move worker on next image
-            if (image.itemId != null)
+            if (image.itemId != null){
                 localRepository.skipImage(image.itemId!!,-2)
+                startNextUpload(image.itemId!!,false)
+            }
+
 
             captureEvent(Events.SKIPPED_UPLOAD_FAILED,image,false,"Image upload limit  reached")
             return Result.failure()
@@ -86,7 +90,7 @@ class RecursiveSkippedImagesWorker(private val appContext: Context, workerParams
             when(response){
                 is Resource.Success -> {
                     captureEvent(Events.SKIPED_UPLOADED,image,true,null)
-                    startNextUpload(image.itemId!!)
+                    startNextUpload(image.itemId!!,true)
                     return Result.success()
                 }
 
@@ -103,7 +107,10 @@ class RecursiveSkippedImagesWorker(private val appContext: Context, workerParams
             return Result.success()
         }else{
             //update status of skipped images -2 to -1 to retry again
-                localRepository.updateSkipedImages()
+            val count = localRepository.updateSkipedImages()
+
+            if (count > 0)
+                startWorker()
 
             return Result.success()
         }
@@ -129,12 +136,17 @@ class RecursiveSkippedImagesWorker(private val appContext: Context, workerParams
         }
     }
 
-    private fun startNextUpload(itemId: Long) {
+    private fun startNextUpload(itemId: Long,uploaded : Boolean) {
         com.spyneai.shoot.utils.log("next upload started")
         com.spyneai.shoot.utils.log("image to delete $itemId")
         //remove uploaded item from database
-        localRepository.deleteImage(itemId)
+        if (uploaded)
+            localRepository.deleteImage(itemId)
 
+        startWorker()
+    }
+
+    private fun startWorker() {
         val constraints: Constraints = Constraints.Builder()
             .setRequiredNetworkType(NetworkType.CONNECTED)
             .build()

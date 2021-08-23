@@ -11,6 +11,7 @@ class DBHelper (context: Context) : SQLiteOpenHelper(context, DATABASE_NAME, nul
         db.execSQL(CREATE_PROJECTS_TABLE)
         db.execSQL(SQL_CREATE_ENTRIES)
         db.execSQL(CREATE_IMAGES_TABLE)
+        db.execSQL(CREATE_IMAGES_FILES_TABLE)
     }
     override fun onUpgrade(db: SQLiteDatabase, oldVersion: Int, newVersion: Int) {
         // This database is only a cache for online data, so its upgrade policy is
@@ -18,6 +19,7 @@ class DBHelper (context: Context) : SQLiteOpenHelper(context, DATABASE_NAME, nul
         db.execSQL(SQL_DELETE_PROJECTS)
         db.execSQL(SQL_DELETE_ENTRIES)
         db.execSQL(SQL_DELETE_IMAGES)
+        db.execSQL(SQL_DELETE_IMAGE_FILES)
         onCreate(db)
     }
     override fun onDowngrade(db: SQLiteDatabase, oldVersion: Int, newVersion: Int) {
@@ -25,7 +27,7 @@ class DBHelper (context: Context) : SQLiteOpenHelper(context, DATABASE_NAME, nul
     }
     companion object {
         // If you change the database schema, you must increment the database version.
-        const val DATABASE_VERSION = 7
+        const val DATABASE_VERSION = 8
         const val DATABASE_NAME = "Shoot.db"
 
         private const val SQL_CREATE_ENTRIES =
@@ -76,9 +78,20 @@ class DBHelper (context: Context) : SQLiteOpenHelper(context, DATABASE_NAME, nul
                 "${Projects.COLUMN_NAME_PROJECT_ID} TEXT," +
                 "${Projects.COLUMN_NAME_STATUS} TEXT)"
 
+        private const val CREATE_IMAGES_FILES_TABLE =  "CREATE TABLE ${ImageFiles.TABLE_NAME} (" +
+                "${BaseColumns._ID} INTEGER PRIMARY KEY," +
+                "${ImageFiles.COLUMN_NAME_SKU_ID} TEXT," +
+                "${ImageFiles.COLUMN_NAME_SKU_NAME} TEXT," +
+                "${ImageFiles.COLUMN_NAME_CATEGORY_NAME} TEXT," +
+                "${ImageFiles.COLUMN_NAME_IMAGE_PATH} TEXT NOT NULL UNIQUE," +
+                "${ImageFiles.COLUMN_NAME_IMAGE_SEQUENCE} INTEGER," +
+                "${ImageFiles.COLUMN_NAME_IS_UPLOADED} INTEGER," +
+                "${ImageFiles.TABLE_NAME} TEXT)"
+
 
         private const val SQL_DELETE_PROJECTS = "DROP TABLE IF EXISTS ${Projects.TABLE_NAME}"
         private const val SQL_DELETE_ENTRIES = "DROP TABLE IF EXISTS ${ShootContract.ShootEntry.TABLE_NAME}"
         private const val SQL_DELETE_IMAGES = "DROP TABLE IF EXISTS ${Images.TABLE_NAME}"
+        private const val SQL_DELETE_IMAGE_FILES = "DROP TABLE IF EXISTS ${ImageFiles.TABLE_NAME}"
     }
 }

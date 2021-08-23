@@ -44,9 +44,10 @@ class HomeDashboardFragment :
         tokenId = Utilities.getPreference(requireContext(), AppConstants.TOKEN_ID).toString()
         email = Utilities.getPreference(requireContext(), AppConstants.EMAIL_ID).toString()
 
-
         lisners()
     }
+
+
 
     private fun lisners(){
         binding.ivWallet.setOnClickListener {

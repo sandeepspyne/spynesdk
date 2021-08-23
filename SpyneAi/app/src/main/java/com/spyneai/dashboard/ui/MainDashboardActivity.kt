@@ -1,10 +1,22 @@
 package com.spyneai.dashboard.ui
 
+import android.Manifest
 import android.content.Intent
+import android.content.pm.PackageManager
+import android.os.Build
 import android.os.Bundle
+import android.os.Environment
+import android.util.Log
+import android.widget.Toast
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
+import androidx.work.Data
+import androidx.work.OneTimeWorkRequest
+import androidx.work.WorkManager
+import com.spyneai.BaseApplication
 import com.spyneai.R
 import com.spyneai.activity.CategoriesActivity
 import com.spyneai.dashboard.data.DashboardViewModel
@@ -13,9 +25,20 @@ import com.spyneai.databinding.ActivityDashboardMainBinding
 import com.spyneai.needs.AppConstants
 import com.spyneai.needs.Utilities
 import com.spyneai.orders.ui.MyOrdersActivity
+import com.spyneai.service.log
+import com.spyneai.shoot.data.FilesRepository
 import com.spyneai.shoot.ui.base.ShootActivity
 import com.spyneai.shoot.ui.StartShootActivity
 import com.spyneai.shoot.ui.base.ShootPortraitActivity
+import com.spyneai.shoot.workmanager.ManualUploadWorker
+import com.spyneai.shoot.workmanager.StoreImageFilesWorker
+import java.io.File
+import android.view.View
+
+import com.google.android.material.snackbar.Snackbar
+
+
+
 
 
 class MainDashboardActivity : AppCompatActivity() {
@@ -104,13 +127,87 @@ class MainDashboardActivity : AppCompatActivity() {
             viewModel.isNewUser.value = intent.getBooleanExtra(AppConstants.IS_NEW_USER,false)
             viewModel.creditsMessage.value = intent.getStringExtra(AppConstants.CREDITS_MESSAGE)
         }
+
+        if (getString(R.string.app_name) == AppConstants.OLA_CABS){
+            if (allPermissionsGranted()) {
+                onPermissionGranted()
+            } else {
+                permissionRequest.launch(permissions.toTypedArray())
+            }
+        }
     }
 
+    private val permissions = mutableListOf(
+        Manifest.permission.READ_EXTERNAL_STORAGE
+    ).apply {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+            add(Manifest.permission.ACCESS_MEDIA_LOCATION)
+        }
+    }
+
+    private val permissionRequest = registerForActivityResult(ActivityResultContracts.RequestMultiplePermissions()) { permissions ->
+        if (permissions.all { it.value }) {
+            onPermissionGranted()
+        } else {
+            Snackbar.make(binding.root, "App cannot work without permission", Snackbar.LENGTH_INDEFINITE)
+                .setAction("Allow") {
+                   requestPermi()
+                }
+                .setActionTextColor(ContextCompat.getColor(this,R.color.primary))
+                .show()
+        }
+    }
+
+    private fun requestPermi() {
+        permissionRequest.launch(permissions.toTypedArray())
+    }
+
+    protected fun allPermissionsGranted() = permissions.all {
+        ContextCompat.checkSelfPermission(this, it) == PackageManager.PERMISSION_GRANTED
+    }
+
+
+    open fun onPermissionGranted(){
+        var path = ""
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+            path = "${Environment.DIRECTORY_DCIM}/Spyne"
+        } else {
+            path = "${Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DCIM)}/Spyne"
+        }
+
+        //get list of images
+        val files = File(path).listFiles()
+        val filesList = ArrayList<String>()
+
+        files.forEach {
+            if (it != null)
+                filesList.add(it.name)
+        }
+
+        filesList.forEach {
+            Log.d(TAG, "onPermissionGranted: "+it)
+        }
+
+        val longWorkRequest = OneTimeWorkRequest.Builder(StoreImageFilesWorker::class.java)
+            .addTag("Skipped Images Long Running Worker")
+
+        val data = Data.Builder()
+           // .putStringArray("files",filesList.toTypedArray())
+            .putInt("position",0)
+            .build()
+
+        WorkManager.getInstance(BaseApplication.getContext())
+            .enqueue(
+                longWorkRequest
+                    .setInputData(data)
+                    .build())
+    }
 
 
     override fun onResume() {
         super.onResume()
 
+        FilesRepository().getAllImages()
        binding.bottomNavigation.selectedItemId = R.id.homeDashboardFragment
     }
 

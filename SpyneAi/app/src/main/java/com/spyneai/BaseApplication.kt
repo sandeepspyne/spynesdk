@@ -16,6 +16,7 @@ import com.google.firebase.crashlytics.FirebaseCrashlytics
 import com.posthog.android.PostHog
 import com.spyneai.shoot.workmanager.ProcessSkuWorker
 import com.spyneai.shoot.workmanager.RecursiveProcessSkuWorker
+import com.spyneai.shoot.workmanager.RecursiveSkippedImagesWorker
 import java.util.concurrent.TimeUnit
 
 @SuppressLint("StaticFieldLeak")
@@ -66,12 +67,16 @@ class BaseApplication : Application() {
                     .setConstraints(constraints)
                     .build())
 
+        val recursiveWorkRequest = PeriodicWorkRequestBuilder<RecursiveSkippedImagesWorker>(
+            6, TimeUnit.HOURS)
+            .addTag("Periodic Processing Worker")
 
-//        WorkManager.getInstance(context)
-//            .enqueue(
-//                longWorkRequest
-//                    .setConstraints(constraints)
-//                    .build())
+        WorkManager.getInstance(context)
+            .enqueue(
+                recursiveWorkRequest
+                    .setConstraints(constraints)
+                    .build())
+
     }
 
 

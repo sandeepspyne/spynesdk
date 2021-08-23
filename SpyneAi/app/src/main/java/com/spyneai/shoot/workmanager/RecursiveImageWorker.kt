@@ -45,13 +45,19 @@ class RecursiveImageWorker(private val appContext: Context, workerParams: Worker
 
     override suspend fun doWork(): Result {
 
+        Log.d(TAG, "doWork: start "+runAttemptCount)
+
         val image = localRepository.getOldestImage()
 
         if (runAttemptCount > 4) {
-            if (image.itemId != null)
+            if (image.itemId != null){
                 localRepository.skipImage(image.itemId!!,-1)
+                startNextUpload(image.itemId!!,false)
+            }
 
+            Log.d(TAG, "doWork: failure limit")
             captureEvent(Events.UPLOAD_FAILED,image,false,"Image upload limit reached")
+
             return failure()
         }
 
@@ -75,9 +81,6 @@ class RecursiveImageWorker(private val appContext: Context, workerParams: Worker
             val authKey =
                 Utilities.getPreference(appContext,AppConstants.AUTH_KEY).toString().toRequestBody(MultipartBody.FORM)
 
-//            val authKey =
-//                "Sandeep singh".toRequestBody(MultipartBody.FORM)
-
             var imageFile: MultipartBody.Part? = null
             val requestFile =
                 File(image.imagePath).asRequestBody("multipart/form-data".toMediaTypeOrNull())
@@ -100,12 +103,14 @@ class RecursiveImageWorker(private val appContext: Context, workerParams: Worker
 
             when(response){
                 is Resource.Success -> {
+                    Log.d(TAG, "doWork: success")
                     captureEvent(Events.UPLOADED,image,true,null)
-                    startNextUpload(image.itemId!!)
+                    startNextUpload(image.itemId!!,true)
                     return success()
                 }
 
                 is Resource.Failure -> {
+                    Log.d(TAG, "doWork: failure")
                     if(response.errorMessage == null){
                         captureEvent(Events.UPLOAD_FAILED,image,false,response.errorCode.toString()+": Http exception from server")
                     }else {
@@ -117,6 +122,7 @@ class RecursiveImageWorker(private val appContext: Context, workerParams: Worker
 
             return success()
         }else{
+            Log.d(TAG, "doWork: start skip worker")
             //start skipped images worker
                 startSkippedImagesWorker()
 
@@ -159,11 +165,12 @@ class RecursiveImageWorker(private val appContext: Context, workerParams: Worker
         }
     }
 
-    private fun startNextUpload(itemId: Long) {
+    private fun startNextUpload(itemId: Long,uploaded : Boolean) {
         com.spyneai.shoot.utils.log("next upload started")
         com.spyneai.shoot.utils.log("image to delete $itemId")
         //remove uploaded item from database
-        localRepository.deleteImage(itemId)
+        if (uploaded)
+            localRepository.deleteImage(itemId)
 
             val constraints: Constraints = Constraints.Builder()
                 .setRequiredNetworkType(NetworkType.CONNECTED)
