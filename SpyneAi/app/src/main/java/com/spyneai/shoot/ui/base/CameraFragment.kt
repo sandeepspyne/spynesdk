@@ -30,7 +30,6 @@ import com.spyneai.base.network.Resource
 import com.spyneai.camera2.ShootDimensions
 import com.spyneai.captureEvent
 import com.spyneai.captureFailureEvent
-import com.spyneai.dashboard.ui.WhiteLabelConstants
 import com.spyneai.dashboard.ui.handleApiError
 import com.spyneai.databinding.FragmentCameraBinding
 import com.spyneai.needs.AppConstants
@@ -537,7 +536,9 @@ class CameraFragment : BaseFragment<ShootViewModel, FragmentCameraBinding>(), Pi
 
     private fun takePhoto() {
         // Get a stable reference of the modifiable image capture use case
-        val imageCapture = imageCapture ?: return
+        val imageCapture1 = imageCapture ?: return
+
+        val hi = "hi"
 
         // Setup image capture metadata
         val metadata = ImageCapture.Metadata().apply {
@@ -620,7 +621,7 @@ class CameraFragment : BaseFragment<ShootViewModel, FragmentCameraBinding>(), Pi
 
         // Set up image capture listener, which is triggered after photo has
         // been taken
-        imageCapture.takePicture(
+        imageCapture1.takePicture(
             outputOptions,
             ContextCompat.getMainExecutor(requireContext()),
             object : ImageCapture.OnImageSavedCallback {
@@ -629,6 +630,7 @@ class CameraFragment : BaseFragment<ShootViewModel, FragmentCameraBinding>(), Pi
                     log("Photo capture failed: " + exc.message)
 
                     Utilities.hideProgressDialog()
+                    Toast.makeText(requireContext(), "Image capture failed", Toast.LENGTH_SHORT).show()
 
                     requireContext().captureFailureEvent(
                         Events.IMAGE_CAPRURE_FAILED,
@@ -702,7 +704,7 @@ class CameraFragment : BaseFragment<ShootViewModel, FragmentCameraBinding>(), Pi
         roll = Math.toDegrees(orientationAngles[2].toDouble())
 
 
-       binding.tvPitchRoll?.text = pitch.roundToInt().toString()+"****"+roll.roundToInt()+"****"+Math.toDegrees(orientationAngles[0].toDouble()).roundToInt()
+       //binding.tvPitchRoll?.text = pitch.roundToInt().toString()+"****"+roll.roundToInt()+"****"+Math.toDegrees(orientationAngles[0].toDouble()).roundToInt()
 
        // binding.tvPitchRoll?.text = pitch.roundToInt().toString()+"****"+ abs(roll.roundToInt())
 
@@ -810,7 +812,7 @@ class CameraFragment : BaseFragment<ShootViewModel, FragmentCameraBinding>(), Pi
                 }
             }
 
-            AppConstants.UDAAN, "E-Commerce" -> {
+            AppConstants.UDAAN,"Flipkart", "Udaan", "Amazon", "Lal10", "Swiggy" -> {
                 //hide moving line
                 if (pitch.roundToInt() == 0 || (pitch.roundToInt() <= -0 && pitch.roundToInt() >= -3))
                     binding.tvLevelIndicator.visibility = View.GONE
