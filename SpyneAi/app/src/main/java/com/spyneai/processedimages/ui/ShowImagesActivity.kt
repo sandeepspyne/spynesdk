@@ -451,7 +451,7 @@ class ShowImagesActivity : AppCompatActivity(),View.OnTouchListener,View.OnClick
                     sv_front.visibility = View.GONE
 
                     //show images and set listener
-                   cl_front.visibility = View.VISIBLE
+                    cl_front.visibility = View.VISIBLE
 
                     return false
                 }

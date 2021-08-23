@@ -42,7 +42,6 @@ class ThreeSixtyBackgroundFragment : BaseFragment<ThreeSixtyViewModel, Fragment3
 
         initSelectBackground()
 
-
         binding.btnContinue.setOnClickListener {
 
             //set background id

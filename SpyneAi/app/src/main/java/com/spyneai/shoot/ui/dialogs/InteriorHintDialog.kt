@@ -12,6 +12,7 @@ import com.spyneai.databinding.DialogInteriorHintBinding
 import com.spyneai.databinding.DialogShootHintBinding
 import com.spyneai.needs.AppConstants
 import com.spyneai.shoot.data.ShootViewModel
+import com.spyneai.shoot.utils.shoot
 
 class InteriorHintDialog : BaseDialogFragment<ShootViewModel, DialogInteriorHintBinding>() {
 
@@ -21,11 +22,14 @@ class InteriorHintDialog : BaseDialogFragment<ShootViewModel, DialogInteriorHint
         dialog?.setCancelable(false)
 
         binding.tvSkip.setOnClickListener {
+            viewModel.showMiscDialog.value = true
+            viewModel.iniProgressFrame.value = false
           checkMiscShootStatus()
             dismiss()
         }
 
         binding.tvShootNowInterior.setOnClickListener {
+            viewModel.iniProgressFrame.value = false
             viewModel.startInteriorShots.value = true
             dismiss()
         }

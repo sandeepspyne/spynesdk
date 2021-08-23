@@ -35,7 +35,8 @@ class SubcategoriesFragment : BaseFragment<ThreeSixtyViewModel,FragmentSubcatego
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        initShootHint()
+       if (!viewModel.fromDrafts)
+           initShootHint()
     }
 
     private fun initShootHint() {

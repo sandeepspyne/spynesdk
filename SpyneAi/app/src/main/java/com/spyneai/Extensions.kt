@@ -17,6 +17,8 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import java.text.SimpleDateFormat
+import java.util.*
 
 fun Context.gotoHome(){
     val intent = Intent(this, MainDashboardActivity::class.java)
@@ -73,4 +75,10 @@ fun ImageButton.toggleButton(
             setImageResource(secondIcon)
         }
     }
+}
+
+fun Long.toDate() : String {
+    val sdf = SimpleDateFormat("dd MMM, yyyy")
+    val netDate = Date(this)
+    return sdf.format(netDate)
 }

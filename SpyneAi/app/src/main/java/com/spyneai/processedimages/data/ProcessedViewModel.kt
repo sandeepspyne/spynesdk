@@ -25,6 +25,5 @@ class ProcessedViewModel : ViewModel() {
     ) = viewModelScope.launch {
         _imagesOfSkuRes.value = Resource.Loading
         _imagesOfSkuRes.value = repository.getImagesOfSku(authKey, skuId)
-
     }
 }

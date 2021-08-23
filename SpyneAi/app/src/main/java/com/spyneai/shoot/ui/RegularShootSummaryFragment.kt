@@ -43,7 +43,7 @@ class RegularShootSummaryFragment  : BaseFragment<ProcessViewModel, FragmentRegu
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        setup360View()
+        //setup360View()
 
         getUserCredits()
         observeCredits()
@@ -51,9 +51,9 @@ class RegularShootSummaryFragment  : BaseFragment<ProcessViewModel, FragmentRegu
         binding.ivBackGif.setOnClickListener {
             viewModel.isRegularShootSummaryActive = false
             requireActivity().supportFragmentManager
-            .beginTransaction()
-            .remove(this)
-            .commit()
+                .beginTransaction()
+                .remove(this)
+                .commit()
         }
 
         binding.tvNoOfImages.text = viewModel.exteriorAngles.value?.plus(viewModel.interiorMiscShootsCount).toString()
@@ -361,7 +361,7 @@ class RegularShootSummaryFragment  : BaseFragment<ProcessViewModel, FragmentRegu
             Utilities.getPreference(requireContext(),AppConstants.AUTH_KEY).toString(),
             viewModel.sku.value?.skuId!!,
             viewModel.backgroundSelect!!,
-        true)
+            true)
 
         log("Process sku started")
         log("Auth key: "+Utilities.getPreference(requireContext(),AppConstants.AUTH_KEY).toString())

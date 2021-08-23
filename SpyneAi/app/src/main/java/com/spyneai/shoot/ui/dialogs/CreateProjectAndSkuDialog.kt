@@ -1,5 +1,7 @@
 package com.spyneai.shoot.ui.dialogs
 
+import android.content.Context
+import android.content.DialogInterface
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -16,7 +18,9 @@ import com.spyneai.needs.AppConstants
 import com.spyneai.needs.Utilities
 import com.spyneai.posthog.Events
 import com.spyneai.shoot.data.ShootViewModel
+import com.spyneai.shoot.data.model.Project
 import com.spyneai.shoot.data.model.Sku
+import com.spyneai.shoot.utils.shoot
 
 class CreateProjectAndSkuDialog : BaseDialogFragment<ShootViewModel,DialogCreateProjectAndSkuBinding>() {
 
@@ -36,91 +40,58 @@ class CreateProjectAndSkuDialog : BaseDialogFragment<ShootViewModel,DialogCreate
                 binding.etVinNumber.error = "Special characters not allowed"
 
             }else{
-                createProject(
-                    removeWhiteSpace(binding.etVinNumber.text.toString()),
-                    removeWhiteSpace(binding.etVinNumber.text.toString())
-                )
+                createProject()
             }
         }
 
-        viewModel.createProjectRes.observe(viewLifecycleOwner,{
-            when(it){
-                is Resource.Success -> {
-                    requireContext().captureEvent(
-                        Events.CREATE_PROJECT,
-                        Properties().putValue("project_name",removeWhiteSpace(binding.etVinNumber.text.toString())))
-
-                    val sku = Sku()
-                    sku.projectId = it.value.project_id
-                    sku.skuName = removeWhiteSpace(binding.etVinNumber.text.toString())
-                    viewModel.sku.value = sku
-                    viewModel.projectId.value = it.value.project_id
-                    Utilities.hideProgressDialog()
-                    //notify project created
-                    viewModel.isProjectCreated.value = true
-                    dismiss()
-
-                }
-                is Resource.Loading -> Utilities.showProgressDialog(requireContext())
-
-                is Resource.Failure -> {
-                    Utilities.hideProgressDialog()
-
-                    requireContext().captureFailureEvent(Events.CREATE_PROJECT_FAILED, Properties(),
-                        it.errorMessage!!
-                    )
-                    handleApiError(it) { createProject(
-                        removeWhiteSpace(binding.etVinNumber.text.toString()),
-                        removeWhiteSpace(binding.etVinNumber.text.toString())
-                    )}
-                }
-            }
-        })
+        observeProjectResponse()
     }
 
     private fun removeWhiteSpace(toString: String) = toString.replace("\\s".toRegex(), "")
 
+    private fun createProject() {
 
+        Utilities.showProgressDialog(requireContext())
 
-    private fun createProject(projectName : String,skuName : String) {
         viewModel.createProject(
             Utilities.getPreference(requireContext(),AppConstants.AUTH_KEY).toString(),
-            projectName,
+            removeWhiteSpace(binding.etVinNumber.text.toString()),
             requireActivity().intent.getStringExtra(AppConstants.CATEGORY_ID).toString())
 
 
     }
 
-    private fun createSku(projectId: String, prod_sub_cat_id : String) {
-        viewModel.createSku(
-            Utilities.getPreference(requireContext(),AppConstants.AUTH_KEY).toString(),projectId,
-            requireActivity().intent.getStringExtra(AppConstants.CATEGORY_ID).toString(),
-            prod_sub_cat_id!!,
-            viewModel.sku.value?.skuName.toString(),
-            8
-        )
 
-        viewModel.createSkuRes.observe(viewLifecycleOwner,{
+    private fun observeProjectResponse() {
+        viewModel.createProjectRes.observe(viewLifecycleOwner,{
             when(it) {
                 is Resource.Success -> {
                     requireContext().captureEvent(
-                        Events.CREATE_SKU,
-                        Properties().putValue("sku_name",viewModel.sku.value?.skuName.toString())
-                            .putValue("project_id",projectId)
-                            .putValue("prod_sub_cat_id",prod_sub_cat_id))
+                        Events.CREATE_PROJECT,
+                        Properties().putValue("project_name",  removeWhiteSpace(binding.etVinNumber.text.toString()))
+                    )
+
+                    //save project to local db
+                    val project = Project()
+                    project.projectName = removeWhiteSpace(binding.etVinNumber.text.toString())
+                    project.createdOn = System.currentTimeMillis()
+                    project.categoryId = viewModel.categoryDetails.value?.categoryId
+                    project.categoryName = viewModel.categoryDetails.value?.categoryName
+                    project.projectId = it.value.project_id
+                    viewModel.insertProject(project)
 
                     Utilities.hideProgressDialog()
-                    val sku = viewModel.sku.value
-                    sku?.skuId = it.value.sku_id
-                    sku?.totalImages = 8
-
+                    val sku = Sku()
+                    sku.projectId = it.value.project_id
+                    sku.skuName = removeWhiteSpace(binding.etVinNumber.text.toString())
                     viewModel.sku.value = sku
-                    //notify project created
-                    viewModel.isProjectCreated.value = true
 
-
+                    viewModel.projectId.value = it.value.project_id
                     //add sku to local database
                     viewModel.insertSku(sku!!)
+
+                    //notify project created
+                    viewModel.isProjectCreated.value = true
                     dismiss()
                 }
 
@@ -129,10 +100,28 @@ class CreateProjectAndSkuDialog : BaseDialogFragment<ShootViewModel,DialogCreate
                         it.errorMessage!!
                     )
                     Utilities.hideProgressDialog()
-                    handleApiError(it)
+                    handleApiError(it) { createProject()}
                 }
             }
         })
+    }
+
+//    override fun onStop() {
+//        super.onStop()
+//        shoot("onStop called(createProjectAndSkuDialog-> dismissAllowingStateLoss)")
+//        dismissAllowingStateLoss()
+//    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        shoot("onDestroy called(shootHintDialog)")
+        dismissAllowingStateLoss()
+        dismiss()
+    }
+
+    override fun onDismiss(dialog: DialogInterface) {
+        super.onDismiss(dialog)
+        dismissAllowingStateLoss()
     }
 
     override fun getViewModel() = ShootViewModel::class.java

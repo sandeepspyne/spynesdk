@@ -1,5 +1,6 @@
 package com.spyneai.shoot.ui.base
 
+import CameraFragment
 import android.Manifest
 import android.content.Context
 import android.content.Intent
@@ -13,11 +14,15 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.ViewModelProvider
 import com.spyneai.R
+import com.spyneai.base.network.Resource
+import com.spyneai.dashboard.response.NewSubCatResponse
 import com.spyneai.dashboard.ui.base.ViewModelFactory
 import com.spyneai.needs.AppConstants
 import com.spyneai.needs.Utilities
 import com.spyneai.shoot.data.ShootViewModel
 import com.spyneai.shoot.data.model.CategoryDetails
+import com.spyneai.shoot.data.model.CreateProjectRes
+import com.spyneai.shoot.data.model.ShootData
 import com.spyneai.shoot.data.model.Sku
 import com.spyneai.shoot.ui.OverlaysFragment
 import com.spyneai.shoot.ui.dialogs.ShootExitDialog
@@ -36,6 +41,7 @@ class ShootPortraitActivity : AppCompatActivity() {
     lateinit var overlayEcomFragment: OverlayEcomFragment
     lateinit var skuDetailFragment: SkuDetailFragment
     lateinit var projectDetailFragment: ProjectDetailFragment
+    lateinit var shootViewModel : ShootViewModel
     val TAG = "ShootPortraitActivity"
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -45,13 +51,15 @@ class ShootPortraitActivity : AppCompatActivity() {
         window.setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
             WindowManager.LayoutParams.FLAG_FULLSCREEN)
 
-        val shootViewModel = ViewModelProvider(this, ViewModelFactory()).get(ShootViewModel::class.java)
+        shootViewModel = ViewModelProvider(this, ViewModelFactory()).get(ShootViewModel::class.java)
         shootViewModel.skuNumber.value = 1
         try {
             shootViewModel.skuNumber.value = intent.getIntExtra("skuNumber", 1)
         }catch (e: Exception){
-
         }
+
+        if (intent.getBooleanExtra(AppConstants.FROM_DRAFTS,false))
+                    setUpDraftsData()
 
         val categoryDetails = CategoryDetails()
 
@@ -95,6 +103,10 @@ class ShootPortraitActivity : AppCompatActivity() {
                 val sku = Sku()
                 sku?.projectId = shootViewModel.projectId.value
                 shootViewModel.categoryDetails.value?.imageType = "Ecom"
+                sku.skuName = intent.getStringExtra(AppConstants.SKU_NAME)
+                sku.skuId = intent.getStringExtra(AppConstants.SKU_ID)
+                sku.categoryName = shootViewModel.categoryDetails.value?.categoryName
+
                 shootViewModel.sku.value = sku
             } catch (e: Exception) {
                 e.printStackTrace()
@@ -113,6 +125,9 @@ class ShootPortraitActivity : AppCompatActivity() {
                 shootViewModel.projectId.value = intent.getStringExtra("project_id")
                 val sku = Sku()
                 sku?.projectId = shootViewModel.projectId.value
+                sku.skuName = intent.getStringExtra(AppConstants.SKU_NAME)
+                sku.skuId = intent.getStringExtra(AppConstants.SKU_ID)
+                sku.categoryName = shootViewModel.categoryDetails.value?.categoryName
                 shootViewModel.categoryDetails.value?.imageType = "footwear"
                 shootViewModel.sku.value = sku
             } catch (e: Exception) {
@@ -167,6 +182,109 @@ class ShootPortraitActivity : AppCompatActivity() {
                 }
             }
         })
+    }
+
+    private fun setUpDraftsData() {
+        shootViewModel.fromDrafts = true
+        shootViewModel.showVin.value = true
+        shootViewModel.isProjectCreated.value = true
+        shootViewModel.projectId.value =  intent.getStringExtra(AppConstants.PROJECT_ID)!!
+
+        shootViewModel._createProjectRes.value = Resource.Success(
+            CreateProjectRes(
+            "",
+            intent.getStringExtra(AppConstants.PROJECT_ID)!!,
+            200)
+        )
+
+        //set sku data
+        val sku = Sku()
+        sku.projectId = intent.getStringExtra(AppConstants.PROJECT_ID)
+        sku.skuName = intent.getStringExtra(AppConstants.SKU_NAME)
+        sku.skuId = intent.getStringExtra(AppConstants.SKU_ID)
+        sku.categoryName = shootViewModel.categoryDetails.value?.categoryName
+
+        shootViewModel.sku.value = sku
+
+        if (intent.getStringExtra(AppConstants.CATEGORY_NAME) == "Footwear"){
+            if (intent.getIntExtra(AppConstants.EXTERIOR_ANGLES,0) != 0){
+                shootViewModel.isSkuCreated.value = true
+                //sub category selected
+                shootViewModel.subCatName.value = intent.getStringExtra(AppConstants.SUB_CAT_NAME)
+
+                shootViewModel.subCategory.value = NewSubCatResponse.Data(
+                    1,
+                    "",
+                    "",
+                    "",
+                    1,
+                    1,
+                    intent.getStringExtra(AppConstants.CATEGORY_ID)!!,
+                    intent.getStringExtra(AppConstants.SUB_CAT_ID)!!,
+                    intent.getStringExtra(AppConstants.SUB_CAT_NAME)!!,
+                    ""
+                )
+
+                shootViewModel.isSubCategoryConfirmed.value = true
+
+                if (intent.getIntExtra(AppConstants.EXTERIOR_ANGLES,0) == intent.getIntExtra(AppConstants.EXTERIOR_SIZE,0)){
+                    shootViewModel.showDialog = false
+                    val list = shootViewModel.getImagesbySkuId(shootViewModel.sku.value?.skuId!!)
+
+                    shootViewModel.shootList.value = ArrayList()
+
+
+                    for(image in list){
+                        shootViewModel.shootList.value!!.add(
+                            ShootData(image.imagePath!!,
+                                image.projectId!!,
+                                image.skuId!!,
+                                "",
+                                Utilities.getPreference(this,AppConstants.AUTH_KEY).toString(),
+                                0)
+                        )
+                    }
+
+                    shootViewModel.stopShoot.value = true
+                }
+
+            }
+        }else {
+            shootViewModel.showDialog = false
+            shootViewModel.isSubCategoryConfirmed.value = true
+
+            shootViewModel.shootList.value = ArrayList()
+
+            //set total clicked images
+            val list = shootViewModel.getImagesbySkuId(shootViewModel.sku.value?.skuId!!)
+
+            if (intent.getBooleanExtra(AppConstants.FROM_LOCAL_DB,false)){
+                for(image in list){
+                    shootViewModel.shootList.value!!.add(
+                        ShootData(image.imagePath!!,
+                            image.projectId!!,
+                            image.skuId!!,
+                            "",
+                            Utilities.getPreference(this,AppConstants.AUTH_KEY).toString(),
+                            0)
+                    )
+                }
+            }else {
+                val list = intent.getStringArrayListExtra(AppConstants.EXTERIOR_LIST)
+
+                for(image in list!!){
+                    shootViewModel.shootList.value!!.add(
+                        ShootData(image,
+                            intent.getStringExtra(AppConstants.PROJECT_ID)!!,
+                            intent.getStringExtra(AppConstants.SKU_ID)!!,
+                            "",
+                            Utilities.getPreference(this,AppConstants.AUTH_KEY).toString(),
+                            0)
+                    )
+                }
+            }
+
+        }
     }
 
     /**

@@ -59,6 +59,9 @@ class SkusAdapter(
         else
             holder.tvPaid.visibility = View.GONE
 
+        holder.tvCategory.text = skuList[position].category
+
+
         try {
             Glide.with(context) // replace with 'this' if it's in activity
                 .load(skuList[position].images[0].input_lres)

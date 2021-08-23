@@ -4,5 +4,5 @@
         android:height="@dimen/dp_20"
         android:width="@dimen/dp_20"
         />
-    <solid android:color="@color/sub_cat_selection"/>
+    <solid android:color="@color/primary"/>
 </shape>

@@ -47,11 +47,9 @@ class CompletedProjectsFragment : BaseFragment<MyOrdersViewModel, FragmentComple
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
 
-
         binding.shimmerCompletedSKU.startShimmer()
 
         completedProjectList = ArrayList()
-
 
         repeatRefreshData()
         log("Completed SKUs(auth key): "+ Utilities.getPreference(requireContext(), AppConstants.AUTH_KEY))
@@ -96,7 +94,6 @@ class CompletedProjectsFragment : BaseFragment<MyOrdersViewModel, FragmentComple
                             handleApiError(it)
                         }
                     }
-
                 }
             }
         )
@@ -122,7 +119,6 @@ class CompletedProjectsFragment : BaseFragment<MyOrdersViewModel, FragmentComple
             handler.removeCallbacks(runnable!!)
         super.onPause()
     }
-
     override fun getViewModel() = MyOrdersViewModel::class.java
     override fun getFragmentBinding(
         inflater: LayoutInflater,

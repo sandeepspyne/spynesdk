@@ -16,6 +16,7 @@ import com.spyneai.needs.AppConstants
 import com.spyneai.needs.Utilities
 import com.spyneai.posthog.Events
 import com.spyneai.shoot.data.ShootViewModel
+import com.spyneai.shoot.data.model.Project
 import com.spyneai.shoot.data.model.Sku
 import com.spyneai.threesixty.data.ThreeSixtyViewModel
 
@@ -26,13 +27,13 @@ class ThreeSixtyProjectAndSkuDialog : BaseDialogFragment<ThreeSixtyViewModel, Di
 
         dialog?.setCancelable(false)
 
-        binding.apply {
-            etProjectName.visibility = View.GONE
-            ivEditProjectName.visibility = View.GONE
-        }
 
         binding.btnSubmit.setOnClickListener {
             if (binding.etVinNumber.text.toString().isEmpty()) {
+                binding.etVinNumber.error = "Please enter any unique number"
+            }else if(binding.etVinNumber.text.toString().contains("[!\"#$%&'()*+,-./:;\\\\<=>?@\\[\\]^_`{|}~]".toRegex())) {
+                binding.etVinNumber.error = "Special characters not allowed"
+
                 if (getString(R.string.app_name) == "Sweep.ie"){
                     binding.etVinNumber.error = "Please enter vehicle number"
                 }else{
@@ -49,6 +50,9 @@ class ThreeSixtyProjectAndSkuDialog : BaseDialogFragment<ThreeSixtyViewModel, Di
             }
         }
     }
+
+    private fun removeWhiteSpace(toString: String) = toString.replace("\\s".toRegex(), "")
+
 
     private fun createProject(projectName : String,skuName : String) {
         viewModel.createProject(
@@ -67,6 +71,15 @@ class ThreeSixtyProjectAndSkuDialog : BaseDialogFragment<ThreeSixtyViewModel, Di
                         projectId = it.value.project_id
                         this.skuName = skuName
                     }
+
+                    val project = Project()
+                    project.projectName = removeWhiteSpace(binding.etVinNumber.text.toString())
+                    project.createdOn = System.currentTimeMillis()
+                    project.categoryId = viewModel.videoDetails.categoryId
+                    project.categoryName = viewModel.videoDetails.categoryName
+                    project.projectId = it.value.project_id
+
+                    viewModel.insertProject(project)
 
                     createSku(it.value.project_id,viewModel.videoDetails.type)
                 }
@@ -87,8 +100,6 @@ class ThreeSixtyProjectAndSkuDialog : BaseDialogFragment<ThreeSixtyViewModel, Di
             }
         })
     }
-
-    private fun removeWhiteSpace(toString: String) = toString.replace("\\s".toRegex(), "")
 
 
     private fun createSku(projectId: String, prod_sub_cat_id : String) {
@@ -113,6 +124,23 @@ class ThreeSixtyProjectAndSkuDialog : BaseDialogFragment<ThreeSixtyViewModel, Di
                     viewModel.videoDetails.apply {
                         skuId = it.value.sku_id
                     }
+
+                    val sku = Sku()
+                    sku?.skuId = it.value.sku_id
+                    sku?.skuName = viewModel.videoDetails.skuName
+                    sku?.projectId = projectId
+                    sku?.createdOn = System.currentTimeMillis()
+                    sku?.totalImages = viewModel.videoDetails.frames
+                    sku?.categoryName = viewModel.videoDetails.categoryName
+                    sku?.categoryId = viewModel.videoDetails.categoryId
+                    sku?.subcategoryName = "360_exterior"
+                    sku?.subcategoryId = "360_exterior"
+                    sku?.exteriorAngles = viewModel.videoDetails.frames
+
+
+
+                    //add sku to local database
+                    viewModel.insertSku(sku!!)
 
 
                     //notify project created

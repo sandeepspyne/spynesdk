@@ -130,7 +130,7 @@
     <string name="download_failed"><u> Download Failed</u></string>
 
     <string name="total_images_clicked"><u>Total Images Clicked</u></string>
-    <string name="total_exterior_clicked"><u>Total Exterior Images</u></string>
+
     <string name="credits_available"><u>Credits Available</u></string>
     <string name="top_up_2"><u>(Top Up)</u></string>
 
@@ -198,8 +198,7 @@
     <string name="message_no_permissions">The app cannot work without permissions</string>
 
 
-    <string name="session_expired">Session Expired. Please <b>log in</b> again.</string>
-    <string name="change_fidelity"><u>Change Fidelity</u></string>
+
     <string name="sku_name_hint">Enter Any Unique Car ID</string>
 
     <string name="do_you_need_footwear_overlayes">Do you need footwear overlays?</string>
@@ -221,6 +220,10 @@
 
     <string name="capture_upto">Capture upto 36 Exterior Images</string>
     <string name="my_projcts">My Projects</string>
+
+    <string name="session_expired">Session Expired. Please <b>log in</b> again.</string>
+    <string name="change_fidelity"><u>Change Fidelity</u></string>
+    <string name="total_exterior_clicked">Total Exterior Images</string>
 
     <string name="get_started_">Get Started</string>
     <string name="on_going_shoots">On-going Shoots</string>

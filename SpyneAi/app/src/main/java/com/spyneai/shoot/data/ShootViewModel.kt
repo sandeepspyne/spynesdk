@@ -31,7 +31,10 @@ class ShootViewModel : ViewModel(){
     var processSku : Boolean = true
      var isStopCaptureClickable = false
 
+    var fromDrafts = false
     val isSensorAvaliable : MutableLiveData<Boolean> = MutableLiveData()
+    var showDialog = true
+    var miscDialogShowed = false
 
     val skuNumber : MutableLiveData<Int> = MutableLiveData()
 
@@ -46,6 +49,7 @@ class ShootViewModel : ViewModel(){
     val show360InteriorDialog : MutableLiveData<Boolean> = MutableLiveData()
 
     val iniProgressFrame : MutableLiveData<Boolean> = MutableLiveData()
+
 
     val subCatName : MutableLiveData<String> = MutableLiveData()
 
@@ -67,11 +71,11 @@ class ShootViewModel : ViewModel(){
     val updateTotalFramesRes: LiveData<Resource<UpdateTotalFramesRes>>
         get() = _updateTotalFramesRes
 
-    private val _overlaysResponse: MutableLiveData<Resource<OverlaysResponse>> = MutableLiveData()
+    private var _overlaysResponse: MutableLiveData<Resource<OverlaysResponse>> = MutableLiveData()
     val overlaysResponse: LiveData<Resource<OverlaysResponse>>
         get() = _overlaysResponse
 
-    private val _createProjectRes : MutableLiveData<Resource<CreateProjectRes>> = MutableLiveData()
+    var _createProjectRes : MutableLiveData<Resource<CreateProjectRes>> = MutableLiveData()
     val createProjectRes: LiveData<Resource<CreateProjectRes>>
         get() = _createProjectRes
 
@@ -82,7 +86,7 @@ class ShootViewModel : ViewModel(){
 
     val shootDimensions : MutableLiveData<ShootDimensions> = MutableLiveData()
     val sku : MutableLiveData<Sku> = MutableLiveData()
-    val subCategory : MutableLiveData<NewSubCatResponse.Data> = MutableLiveData()
+    var subCategory : MutableLiveData<NewSubCatResponse.Data> = MutableLiveData()
     var categoryDetails : MutableLiveData<CategoryDetails> = MutableLiveData()
     val isSubCategoryConfirmed : MutableLiveData<Boolean> = MutableLiveData()
     val showVin : MutableLiveData<Boolean> = MutableLiveData()
@@ -286,6 +290,16 @@ class ShootViewModel : ViewModel(){
         localRepository.updateTotalImageCount(skuId)
     }
 
+    fun insertProject(project: Project) {
+        localRepository.insertProject(project)
+    }
 
+    fun updateSubcategoryId(subcategoryId: String,subcategoryName: String) {
+        localRepository.updateSubcategoryId(sku.value?.skuId!!,subcategoryId,subcategoryName)
+    }
+
+    fun getImagesbySkuId(skuId: String) = localRepository.getImagesBySkuId(skuId)
+
+    fun  updateProjectStatus(projectId: String) = localRepository.updateProjectStatus(projectId)
 
 }

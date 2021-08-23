@@ -30,12 +30,12 @@
         android:layout_width="40dp"
         android:layout_height="0dp"
         android:padding="@dimen/dp_10"
+        android:visibility="gone"
         android:id="@+id/ivEditProjectName"
         android:src="@drawable/ic_edit_project_name"
         app:layout_constraintTop_toTopOf="@id/etProjectName"
         app:layout_constraintBottom_toBottomOf="@id/etProjectName"
-        app:layout_constraintLeft_toRightOf="@id/etProjectName"
-        app:tint="@color/primary" />
+        app:layout_constraintLeft_toRightOf="@id/etProjectName"/>
 
     <TextView
         android:layout_width="0dp"
@@ -45,6 +45,7 @@
         app:layout_constraintLeft_toLeftOf="@id/etProjectName"
         app:layout_constraintBottom_toTopOf="@id/iv"
         android:background="@color/black"
+        android:visibility="gone"
         app:layout_constraintRight_toRightOf="@id/etProjectName"/>
 
     <ImageView
@@ -53,12 +54,13 @@
         android:id="@+id/iv"
         android:src="@drawable/ic_vin"
         android:scaleType="fitXY"
+
         android:paddingRight="@dimen/dp_40"
         android:paddingLeft="@dimen/dp_40"
-        app:layout_constraintTop_toBottomOf="@id/tvLin"
+        app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
-        android:layout_marginTop="@dimen/dp_20"/>
+        android:layout_marginTop="@dimen/dp_25"/>
 
     <TextView
         android:layout_width="0dp"

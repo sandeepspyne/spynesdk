@@ -67,6 +67,8 @@ class HomeDashboardFragment :
     lateinit var handler: Handler
     private var runnable: Runnable? = null
 
+    var tutorialVideosList = intArrayOf(R.drawable.ic_tv1, R.drawable.ic_tv2)
+
     lateinit var tutorialVideosAdapter: TutorialVideosAdapter
 
     var categoryPosition: Int = 0
@@ -423,7 +425,7 @@ class HomeDashboardFragment :
                 if (refreshData)
                     repeatRefreshData()  }
             if (runnable != null)
-                handler.postDelayed(runnable!!,10000)
+                handler.postDelayed(runnable!!,15000)
         }catch (e : IllegalArgumentException){
             e.printStackTrace()
         }catch (e : Exception){

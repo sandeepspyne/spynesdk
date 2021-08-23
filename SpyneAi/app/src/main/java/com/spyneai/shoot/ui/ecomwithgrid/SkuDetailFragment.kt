@@ -27,10 +27,9 @@ class SkuDetailFragment : BaseFragment<ShootViewModel, FragmentSkuDetailBinding>
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        if (Utilities.getPreference(requireContext(), AppConstants.CATEGORY_NAME).equals("Footwear")){
-            binding.ivAddAngle.visibility = View.GONE
-            binding.tvAddAngle.visibility = View.GONE
-
+        if (viewModel.categoryDetails.value?.categoryName.equals("E-Commerce")){
+            binding.ivAddAngle.visibility = View.INVISIBLE
+            binding.tvAddAngle.visibility = View.INVISIBLE
         }
 
         viewModel.getProjectDetail(
@@ -46,9 +45,9 @@ class SkuDetailFragment : BaseFragment<ShootViewModel, FragmentSkuDetailBinding>
                     viewModel.totalImageCaptured.value = it.value.data.total_images.toString()
 
                     binding.tvTotalSkuCaptured.text = it.value.data.total_sku.toString()
+}
 
 
-                }
                 is Resource.Loading -> {
 
                 }
@@ -113,6 +112,16 @@ class SkuDetailFragment : BaseFragment<ShootViewModel, FragmentSkuDetailBinding>
             val intent = Intent(activity, ShootPortraitActivity::class.java)
             intent.putExtra("project_id", viewModel.projectId.value);
             intent.putExtra("skuNumber", viewModel.skuNumber.value?.plus(1)!!);
+
+            intent.putExtra(AppConstants.CATEGORY_NAME,viewModel.categoryDetails.value?.categoryName)
+            intent.putExtra(AppConstants.CATEGORY_ID,viewModel.categoryDetails.value?.categoryId)
+
+            if (viewModel.fromDrafts){
+                intent.putExtra(AppConstants.SKU_COUNT, requireActivity().intent.getIntExtra(AppConstants.SKU_COUNT,0).plus(1))
+                intent.putExtra("skuNumber", requireActivity().intent.getIntExtra(AppConstants.SKU_COUNT,0).plus(1))
+            }
+            else
+                intent.putExtra("skuNumber", viewModel.skuNumber.value?.plus(1)!!)
             startActivity(intent)
 
         }
@@ -132,6 +141,15 @@ class SkuDetailFragment : BaseFragment<ShootViewModel, FragmentSkuDetailBinding>
     }
 
 
+
+    override fun onResume() {
+        super.onResume()
+
+        if (viewModel.categoryDetails.value?.categoryName.equals("E-Commerce")){
+            binding.ivAddAngle.visibility = View.VISIBLE
+            binding.tvAddAngle.visibility = View.VISIBLE
+        }
+    }
 
 
     override fun getViewModel() = ShootViewModel::class.java

@@ -65,6 +65,13 @@ class BaseApplication : Application() {
                 longWorkRequest
                     .setConstraints(constraints)
                     .build())
+
+
+//        WorkManager.getInstance(context)
+//            .enqueue(
+//                longWorkRequest
+//                    .setConstraints(constraints)
+//                    .build())
     }
 
 

@@ -72,7 +72,6 @@ class CreditManager {
 
     fun reduceCredit(creditReduced : Int,skuId : String,context: Context) {
 
-
         var request = RetrofitClients.buildService(CreditApiService::class.java)
 
         var call = request.reduceCredit(Utilities.getPreference(context,AppConstants.AUTH_KEY)!!.toString(),creditReduced.toString())

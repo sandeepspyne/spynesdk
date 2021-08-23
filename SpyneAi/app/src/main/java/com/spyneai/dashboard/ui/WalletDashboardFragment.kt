@@ -62,8 +62,6 @@ class WalletDashboardFragment :
         }
 
 
-
-
         binding.flAddCredits.setOnClickListener {
             when(getString(R.string.app_name)){
                 AppConstants.SWEEP -> {
@@ -122,7 +120,6 @@ class WalletDashboardFragment :
                         binding.tvCredits.text = CreditUtils.getFormattedNumber(response.body()!!.data.credit_available)
                     }
 
-
                     Utilities.savePrefrence(
                         requireContext(),
                         AppConstants.CREDIT_ALLOTED,
@@ -162,6 +159,14 @@ class WalletDashboardFragment :
             }
         })
 
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+
+        if(call!= null && call!!.isExecuted) {
+            call!!.cancel()
+        }
     }
 
     override fun getViewModel() = DashboardViewModel::class.java

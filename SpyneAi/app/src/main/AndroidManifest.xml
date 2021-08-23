@@ -39,15 +39,21 @@
         android:theme="@style/Theme.SpyneAi"
         android:usesCleartextTraffic="true"
         tools:targetApi="m">
-        <activity android:name=".orders.ui.activity.ShowRawImagesActivity"></activity>
+        <activity
+            android:name=".draft.ui.DraftSkuDetailsActivity"
+            android:exported="true" />
+        <activity
+            android:name=".draft.ui.DraftSkusActivity"
+            android:exported="true" />
+        <activity android:name=".orders.ui.activity.ShowRawImagesActivity" />
         <activity android:name=".orders.ui.activity.OngoingSkusActivity" />
         <activity
             android:name=".threesixty.TiltTestActivity"
             android:screenOrientation="landscape" />
-        <activity android:name=".processedimages.ui.ProcessedImageActivity"></activity>
+        <activity android:name=".processedimages.ui.ProcessedImageActivity" />
         <activity
             android:name=".threesixty.TiltTestActivity"
-            android:screenOrientation="landscape"></activity>
+            android:screenOrientation="landscape" />
         <activity
             android:name=".threesixty.SensorTestActivity"
             android:screenOrientation="landscape" />

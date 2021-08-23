@@ -17,8 +17,6 @@ class ThreeSixtyIntroFragment : BaseFragment<ThreeSixtyViewModel,Fragment360Intr
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-       // setupTabLayout()
-
         binding.ivFidelity.getSettings().setJavaScriptEnabled(true)
 
         binding.ivFidelity.loadUrl("https://www.spyne.ai/shoots/shoot?skuId=hotstone")

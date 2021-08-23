@@ -47,11 +47,6 @@ class ImageDownloadManager(var task : DownloadTask, var listener : Listener) {
     }
     //Download
     private fun downloadWithHighQuality(imageFile: String,imageName : String) {
-//        val FILENAME_FORMAT = "yyyy-MM-dd-HH-mm-ss-SSS"
-//
-//        val imageName: String = "Spyne" + SimpleDateFormat(
-//            FILENAME_FORMAT, Locale.US
-//        ).format(System.currentTimeMillis()) + ".png"
 
         var imageName = imageName
         if (imageName.length > 4 && imageName.takeLast(4) != ".jpg")

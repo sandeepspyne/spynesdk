@@ -9,11 +9,13 @@ import com.spyneai.BaseApplication
 import com.spyneai.base.network.Resource
 import com.spyneai.credits.model.DownloadHDRes
 import com.spyneai.credits.model.ReduceCreditResponse
+import com.spyneai.model.carbackgroundgif.CarBackgrounGifResponse
 import com.spyneai.model.credit.CreditDetailsResponse
 import com.spyneai.shoot.data.model.CarsBackgroundRes
 import com.spyneai.shoot.data.model.ProcessSkuRes
 import com.spyneai.shoot.data.model.Sku
 import com.spyneai.shoot.workmanager.FrameUpdateWorker
+import com.spyneai.shoot.workmanager.ProjectStateUpdateWorker
 import kotlinx.coroutines.launch
 import okhttp3.RequestBody
 
@@ -30,10 +32,12 @@ class ProcessViewModel : ViewModel() {
     val skuQueued : MutableLiveData<Boolean> = MutableLiveData()
     var addRegularShootSummaryFragment : MutableLiveData<Boolean> = MutableLiveData()
     var backgroundSelect : String? = null
+
     var frontFramesList = ArrayList<String>()
     var isRegularShootSummaryActive = false
 
     var interiorMiscShootsCount = 0
+
 
     val _carGifRes : MutableLiveData<Resource<CarsBackgroundRes>> = MutableLiveData()
     val carGifRes: LiveData<Resource<CarsBackgroundRes>>
@@ -56,11 +60,9 @@ class ProcessViewModel : ViewModel() {
     val downloadHDRes: LiveData<Resource<DownloadHDRes>>
         get() = _downloadHDRes
 
-
     fun getBackgroundGifCars(
         category: RequestBody,
-        auth_key: RequestBody,
-        appName : String
+        auth_key: RequestBody
     ) = viewModelScope.launch {
         _carGifRes.value = Resource.Loading
         _carGifRes.value = repository.getBackgroundGifCars(category, auth_key)
@@ -132,8 +134,28 @@ class ProcessViewModel : ViewModel() {
         _downloadHDRes.value = repository.updateDownloadStatus(userId,skuId, enterpriseId, downloadHd)
     }
 
-    fun updateIsProcessed(skuId: String) {
-        localRepository.updateIsProcessed(skuId)
+    fun updateIsProcessed(projectId: String,skuId: String) {
+        localRepository.updateIsProcessed(projectId,skuId)
     }
 
+    fun updateProjectState(authKey: String,projectId : String) {
+        val data = Data.Builder()
+            .putString("auth_key", authKey)
+            .putString("project_id", projectId)
+
+
+        val constraints: Constraints = Constraints.Builder()
+            .setRequiredNetworkType(NetworkType.CONNECTED)
+            .build()
+
+        val longWorkRequest = OneTimeWorkRequest.Builder(ProjectStateUpdateWorker::class.java)
+            .addTag("Project State Update")
+
+        WorkManager.getInstance(BaseApplication.getContext())
+            .enqueue(
+                longWorkRequest
+                    .setConstraints(constraints)
+                    .setInputData(data.build())
+                    .build())
+    }
 }

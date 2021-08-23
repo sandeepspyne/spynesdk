@@ -53,4 +53,5 @@ class ProcessRepository : BaseRepository() {
     )= safeApiCall {
         clipperApi.updateDownloadStatus(userId,skuId, enterpriseId, downloadHd)
     }
+
 }

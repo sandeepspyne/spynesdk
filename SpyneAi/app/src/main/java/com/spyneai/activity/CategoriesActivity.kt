@@ -110,25 +110,25 @@ class CategoriesActivity : AppCompatActivity(){
                                 intent.putExtra(AppConstants.COLOR,categoriesResponseList[position].color_code)
                                 startActivity(intent)
                             }
-//                            2 -> {
-//                                Utilities.savePrefrence(
-//                                    this@CategoriesActivity,
-//                                    AppConstants.CATEGORY_NAME,
-//                                    categoriesResponseList[position].prod_cat_name
-//                                )
-//
-//                                val intent = Intent(this@CategoriesActivity, ShootActivity::class.java)
-//                                intent.putExtra(AppConstants.CATEGORY_ID,categoriesResponseList[position].prod_cat_id)
-//                                intent.putExtra(AppConstants.CATEGORY_NAME,categoriesResponseList[position].prod_cat_name)
-//                                intent.putExtra(AppConstants.IMAGE_URL,categoriesResponseList[position].display_thumbnail)
-//                                intent.putExtra(AppConstants.DESCRIPTION,categoriesResponseList[position].description)
-//                                intent.putExtra(AppConstants.COLOR,categoriesResponseList[position].color_code)
-//                                startActivity(intent)
-//                            }
+                            2,3 -> {
+                                Utilities.savePrefrence(
+                                    this@CategoriesActivity,
+                                    AppConstants.CATEGORY_NAME,
+                                    categoriesResponseList[position].prod_cat_name
+                                )
+
+                                val intent = Intent(this@CategoriesActivity, ShootPortraitActivity::class.java)
+                                intent.putExtra(AppConstants.CATEGORY_ID,categoriesResponseList[position].prod_cat_id)
+                                intent.putExtra(AppConstants.CATEGORY_NAME,categoriesResponseList[position].prod_cat_name)
+                                intent.putExtra(AppConstants.IMAGE_URL,categoriesResponseList[position].display_thumbnail)
+                                intent.putExtra(AppConstants.DESCRIPTION,categoriesResponseList[position].description)
+                                intent.putExtra(AppConstants.COLOR,categoriesResponseList[position].color_code)
+                                startActivity(intent)
+                            }
                             else ->{
                                 Toast.makeText(this@CategoriesActivity,
                                     "Coming Soon !",
-                                    Toast.LENGTH_SHORT).show() 
+                                    Toast.LENGTH_SHORT).show()
                             }
                         }
                         

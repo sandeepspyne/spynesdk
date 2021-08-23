@@ -31,7 +31,9 @@ class ProjectDetailFragment : BaseFragment<ShootViewModel, FragmentProjectDetail
         handler = Handler()
 
         binding.btHome.setOnClickListener {
-            requireContext().gotoHome()
+           requireContext().gotoHome()
+         //   viewModel.skuProcessState(Utilities.getPreference(requireContext(), AppConstants.AUTH_KEY).toString(), viewModel.sku.value?.projectId.toString())
+            log("skuProcessState called")
             viewModel.skuProcessState(Utilities.getPreference(requireContext(), AppConstants.AUTH_KEY).toString(),
                 viewModel.projectId.value.toString())
             log("auth key- "+Utilities.getPreference(requireContext(), AppConstants.AUTH_KEY).toString())

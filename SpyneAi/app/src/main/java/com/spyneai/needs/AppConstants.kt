@@ -1,8 +1,8 @@
 package com.spyneai.needs
 
 object AppConstants {
-    val IS_HD: String? = "IS_HD"
     val IS_360: String? = "IS_360"
+    val IS_HD: String? = "IS_HD"
     val CARS_CATEGORY_ID = "cat_d8R14zUNE"
     val FOOTWEAR_CATEGORY_ID = "cat_Ujt0kuFxX"
     val ECOM_CATEGORY_ID = "cat_Ujt0kuFxY"
@@ -106,9 +106,26 @@ object AppConstants {
 
     val  IS_NEW_USER: String = "isNewUser"
 
-    val  PROJECT_ID: String = "projectId"
 
+
+
+    //drafts constants
+    val  FROM_DRAFTS: String = "fromDrafts"
+    val  PROJECT_ID: String = "project_id"
     val  PROJECT_NAME: String = "projectName"
+    val  SKU_CREATED: String = "skuCreated"
+    val  EXTERIOR_ANGLES: String = "exteriorAngles"
+    val SUB_CAT_NAME : String = "SUB_CAT_NAME"
+    val RESUME_EXTERIOR = "RESUME_EXTERIOR"
+    val EXTERIOR_SIZE = "EXTERIOR_SIZE"
+    val MISC_SIZE = "MISC_SIZE"
+    val INTERIOR_SIZE = "INTERIOR_SIZE"
+    val RESUME_INTERIOR = "RESUME_INTERIOR"
+    val RESUME_MISC = "RESUME_MISC"
+    val FROM_LOCAL_DB = "FROM_LOCAL_DB"
+
+    val EXTERIOR_LIST = "EXTERIOR_LIST"
+
 
 
 

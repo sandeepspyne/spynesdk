@@ -16,6 +16,7 @@ import com.spyneai.databinding.DialogConfirmReshootBinding
 import com.spyneai.needs.AppConstants
 import com.spyneai.posthog.Events
 import com.spyneai.shoot.data.ShootViewModel
+import com.spyneai.shoot.utils.shoot
 import kotlinx.coroutines.launch
 import java.io.File
 
@@ -38,6 +39,7 @@ class ConfirmReshootDialog : BaseDialogFragment<ShootViewModel, DialogConfirmRes
                 this["project_id"] = viewModel.shootData.value?.project_id
                 this["image_type"] = viewModel.shootData.value?.image_category
             }
+
             requireContext().captureEvent(
                 Events.RESHOOT,
                 properties)
@@ -232,9 +234,14 @@ class ConfirmReshootDialog : BaseDialogFragment<ShootViewModel, DialogConfirmRes
             viewModel.show360InteriorDialog.value = true
         else
             viewModel.selectBackground.value = true
-
     }
 
+
+//    override fun onStop() {
+//        super.onStop()
+//        shoot("onStop called(confirmReshootDialog-> dismissAllowingStateLoss)")
+//        dismissAllowingStateLoss()
+//    }
 
     override fun getViewModel() = ShootViewModel::class.java
 

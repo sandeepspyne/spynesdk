@@ -85,29 +85,32 @@ class SelectBackgroundFragment : BaseFragment<ProcessViewModel,FragmentSelectBac
                     viewModel.backgroundSelect = backgroundSelect
                     viewModel.addRegularShootSummaryFragment.value = true
                 }else{
-                        //process image call
-                        processSku()
-                    }
+                    //process image call
+                    processSku()
+                }
                 }
             }
         }
 
-        observeProcessSku()
-    }
 
-    fun getBackgorund() {
+        observeProcessSku()
+        }
+
+
+
+    private fun getBackground() {
         val category =
             Utilities.getPreference(requireContext(), AppConstants.CATEGORY_NAME)!!.toRequestBody(MultipartBody.FORM)
 
-        val auth_key =
+        val authKey =
             Utilities.getPreference(requireContext(), AppConstants.AUTH_KEY)!!.toRequestBody(MultipartBody.FORM)
 
-        viewModel.getBackgroundGifCars(category, auth_key,getString(R.string.app_name))
+        viewModel.getBackgroundGifCars(category, authKey)
     }
 
     private fun initSelectBackground() {
 
-        getBackgorund()
+        getBackground()
 
         viewModel.carGifRes.observe(viewLifecycleOwner,{
             when(it) {
@@ -137,7 +140,7 @@ class SelectBackgroundFragment : BaseFragment<ProcessViewModel,FragmentSelectBac
                     requireContext().captureFailureEvent(Events.GET_BACKGROUND_FAILED, Properties(),
                         it.errorMessage!!
                     )
-                    handleApiError(it) { getBackgorund() }
+                    handleApiError(it) { getBackground() }
                 }
 
                 is Resource.Loading -> binding.shimmer.startShimmer()
@@ -194,8 +197,8 @@ class SelectBackgroundFragment : BaseFragment<ProcessViewModel,FragmentSelectBac
 
         viewModel.processSku(
             Utilities.getPreference(requireContext(),AppConstants.AUTH_KEY).toString(),
-        viewModel.sku.value?.skuId!!,
-        backgroundSelect,
+            viewModel.sku.value?.skuId!!,
+            backgroundSelect,
         false)
 
         log("Process sku started")
@@ -209,7 +212,7 @@ class SelectBackgroundFragment : BaseFragment<ProcessViewModel,FragmentSelectBac
             when(it) {
                 is Resource.Success -> {
                     //update processed state
-                    viewModel.updateIsProcessed(viewModel.sku.value!!.skuId!!)
+                    viewModel.updateIsProcessed(viewModel.sku.value!!.projectId!!,viewModel.sku.value!!.skuId!!)
 
                     Utilities.hideProgressDialog()
 

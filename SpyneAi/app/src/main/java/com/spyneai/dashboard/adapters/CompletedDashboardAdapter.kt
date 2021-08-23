@@ -52,12 +52,40 @@ class CompletedDashboardAdapter(
 
 
         try {
-            Glide.with(context)
-                .load(completedProjectList[position].sku[0].images[0].input_lres)
-                .error(R.mipmap.defaults) // show error drawable if the image is not a gif
-                .into(holder.ivImage)
-        }catch (e: Exception){
+            if (completedProjectList[position].sku[0].images.isNullOrEmpty()) {
+                if (completedProjectList[position].sub_category == "360_exterior"
+                    || completedProjectList[position].sub_category.equals("360_interior")){
+                    Glide.with(context)
+                        .load(R.drawable.three_sixty_thumbnail)
+                        .into(holder.ivImage)
+                }else {
+                    Glide.with(context)
+                        .load(R.mipmap.defaults)
+                        .into(holder.ivImage)
+                }
+            }else {
+                if (completedProjectList[position].sku[0].images[0].input_lres == null){
+                    if (completedProjectList[position].sub_category == "360_exterior"
+                        || completedProjectList[position].sub_category.equals("360_interior")){
+                        Glide.with(context)
+                            .load(R.drawable.three_sixty_thumbnail)
+                            .into(holder.ivImage)
+                    }else {
+                        Glide.with(context)
+                            .load(R.mipmap.defaults)
+                            .into(holder.ivImage)
+                    }
+                }else{
+                    Glide.with(context) // replace with 'this' if it's in activity
+                        .load(completedProjectList[position].sku[0].images[0].input_lres)
+                        .into(holder.ivImage)
+                }
 
+            }
+        }catch (e : Exception){
+            e.printStackTrace()
+        }catch (e : IndexOutOfBoundsException){
+            e.printStackTrace()
         }
 
         holder.clBackground.setOnClickListener{

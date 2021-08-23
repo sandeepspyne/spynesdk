@@ -18,7 +18,7 @@ import java.util.ArrayList
 
 class GridEcomFragment : BaseFragment<ShootViewModel, FragmentGridEcomBinding>() {
 
-    private var showDialog = true
+
     lateinit var capturedImageAdapter: CapturedImageAdapter
     lateinit var capturedImageList: ArrayList<String>
     var position = 1
@@ -34,27 +34,39 @@ class GridEcomFragment : BaseFragment<ShootViewModel, FragmentGridEcomBinding>()
         }
 
         else {
-            initSkuDialog()
-            log("SKU dialog shown")
+            if (viewModel.fromDrafts){
+                if (viewModel.isSkuCreated.value == null
+                    && viewModel.isSubCategoryConfirmed.value == null)
+                    initSkuDialog()
+            }else {
+                if (viewModel.isSkuCreated.value == null)
+                    initSkuDialog()
+            }
         }
 
         binding.ivEndProject.setOnClickListener {
-            if (viewModel.isStopCaptureClickable)
-            viewModel.stopShoot.value = true
+            if (viewModel.fromDrafts){
+                viewModel.stopShoot.value = true
+            }else {
+                if (viewModel.isStopCaptureClickable)
+                    viewModel.stopShoot.value = true
+            }
         }
 
 
         //observe new image clicked
         viewModel.shootList.observe(viewLifecycleOwner, {
             try {
-                if (showDialog && !it.isNullOrEmpty()) {
+                if (!it.isNullOrEmpty()) {
                     capturedImageList = ArrayList<String>()
                     position = it.size - 1
                     capturedImageList.clear()
                     for (i in 0..(it.size - 1))
                         (capturedImageList as ArrayList).add(it[i].capturedImage)
                     initCapturedImages()
-                    showImageConfirmDialog(it.get(it.size - 1))
+
+                    if (viewModel.showDialog)
+                        showImageConfirmDialog(it.get(it.size - 1))
                     log("call showImageConfirmDialog")
                 }
             } catch (e: Exception) {

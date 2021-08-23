@@ -14,11 +14,14 @@ import com.spyneai.dashboard.response.NewSubCatResponse
 import com.spyneai.databinding.DialogFocusedHintBinding
 import com.spyneai.needs.AppConstants
 import com.spyneai.shoot.data.ShootViewModel
+import com.spyneai.shoot.utils.shoot
 
 class MiscShotsDialog : BaseDialogFragment<ShootViewModel, DialogFocusedHintBinding>() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        viewModel.startInteriorShoot.value = false
 
         dialog?.setCancelable(false)
 
@@ -72,6 +75,13 @@ class MiscShotsDialog : BaseDialogFragment<ShootViewModel, DialogFocusedHintBind
             .load(url)
             .into(imageView)
     }
+
+
+//    override fun onStop() {
+//        super.onStop()
+//        shoot("onStop called(miscShotsDialog-> dismissAllowingStateLoss)")
+//        dismissAllowingStateLoss()
+//    }
 
     override fun getViewModel() = ShootViewModel::class.java
 

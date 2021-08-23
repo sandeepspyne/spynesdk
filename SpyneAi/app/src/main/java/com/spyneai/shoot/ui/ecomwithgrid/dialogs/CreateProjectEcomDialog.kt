@@ -16,6 +16,7 @@ import com.spyneai.needs.AppConstants
 import com.spyneai.needs.Utilities
 import com.spyneai.posthog.Events
 import com.spyneai.shoot.data.ShootViewModel
+import com.spyneai.shoot.data.model.Project
 import com.spyneai.shoot.data.model.Sku
 import com.spyneai.shoot.utils.log
 import kotlinx.android.synthetic.main.activity_credit_plans.*
@@ -53,8 +54,10 @@ class CreateProjectEcomDialog :
             }
         }
 
-        observeCreateProject()
-        observeCreateSku()
+        if (!viewModel.fromDrafts) {
+            observeCreateProject()
+            observeCreateSku()
+        }
     }
 
     private fun removeWhiteSpace(toString: String) = toString.replace("\\s".toRegex(), "")
@@ -78,6 +81,15 @@ class CreateProjectEcomDialog :
                         Events.CREATE_PROJECT,
                         Properties().putValue("project_name", removeWhiteSpace( binding.etProjectName.text.toString()))
                     )
+
+                    //save project to local db
+                    val project = Project()
+                    project.projectName = removeWhiteSpace(binding.etProjectName.text.toString())
+                    project.createdOn = System.currentTimeMillis()
+                    project.categoryId = viewModel.categoryDetails.value?.categoryId
+                    project.categoryName = viewModel.categoryDetails.value?.categoryName
+                    project.projectId = it.value.project_id
+                    viewModel.insertProject(project)
 
                     //notify project created
                     viewModel.isProjectCreated.value = true
@@ -136,15 +148,26 @@ class CreateProjectEcomDialog :
                     //notify project created
                     val sku = viewModel.sku.value
                     sku?.skuId = it.value.sku_id
+                    sku?.projectId = viewModel.sku.value?.projectId
+                    sku?.createdOn = System.currentTimeMillis()
+                    sku?.totalImages = viewModel.exterirorAngles.value
+                    sku?.categoryName = viewModel.categoryDetails.value?.categoryName
+                    sku?.categoryId = viewModel.categoryDetails.value?.categoryId
+                    sku?.subcategoryName = viewModel.subCategory.value?.sub_cat_name
+                    sku?.subcategoryId = viewModel.subCategory.value?.prod_sub_cat_id
+                    sku?.exteriorAngles = viewModel.exterirorAngles.value
+
                     log("sku id created")
                     log("sku id: "+it.value.sku_id)
                     sku?.skuName = removeWhiteSpace(binding.etSkuName.text.toString())
                     viewModel.sku.value = sku
                     viewModel.isSkuCreated.value = true
+                    //viewModel.isSubCategoryConfirmed.value = true
                     viewModel.showLeveler.value = true
 
                     //add sku to local database
-//                    viewModel.insertSku(sku!!)
+                    viewModel.insertSku(sku!!)
+
                     dismiss()
                 }
 

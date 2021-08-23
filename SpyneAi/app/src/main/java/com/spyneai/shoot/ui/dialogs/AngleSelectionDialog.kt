@@ -10,6 +10,7 @@ import com.spyneai.dashboard.ui.WhiteLabelConstants
 import com.spyneai.databinding.DialogAngleSelectionBinding
 import com.spyneai.needs.AppConstants
 import com.spyneai.shoot.data.ShootViewModel
+import com.spyneai.shoot.utils.shoot
 
 class AngleSelectionDialog : BaseDialogFragment<ShootViewModel,DialogAngleSelectionBinding>() {
 
@@ -53,9 +54,17 @@ class AngleSelectionDialog : BaseDialogFragment<ShootViewModel,DialogAngleSelect
 
         binding.tvProceed.setOnClickListener {
             if (lastSelectedAngles != newSelectedAngles)
+                //isSubcatgoryConfirmed = false
+                    shoot("angle selected- "+newSelectedAngles)
                 viewModel.exterirorAngles.value = newSelectedAngles
                     dismiss()
         }
+    }
+
+    override fun onStop() {
+        super.onStop()
+        shoot("onStop called(angleSlectionDialog-> dismissAllowingStateLoss)")
+        dismissAllowingStateLoss()
     }
 
     override fun getViewModel() = ShootViewModel::class.java
