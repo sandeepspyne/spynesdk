@@ -15,21 +15,37 @@
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toTopOf="parent" >
 
-        <TextView
-            android:id="@+id/tvSkipShoot"
+        <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:id="@+id/llSkip"
             android:visibility="invisible"
-            android:layout_alignParentRight="true"
-            android:layout_marginTop="@dimen/dp_10"
-            android:layout_marginRight="@dimen/dp_10"
-            android:drawablePadding="@dimen/dp_5"
-            android:fontFamily="@font/bold"
-            android:text="@string/skip"
-            android:textColor="@color/primary"
-            android:textSize="@dimen/sp_16"
-            android:drawableTint="@color/primary"
-            app:drawableEndCompat="@mipmap/skip" />
+            android:layout_alignParentRight="true">
+
+            <TextView
+                android:id="@+id/tvSkipShoot"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:layout_gravity="center"
+                android:drawablePadding="@dimen/dp_5"
+                android:fontFamily="@font/bold"
+                android:text="@string/skip"
+                android:textColor="@color/primary"
+                android:textSize="@dimen/sp_16"
+                />
+
+            <ImageView
+                android:layout_width="@dimen/dp_15"
+                android:layout_height="@dimen/dp_15"
+                android:src="@drawable/skip"
+                android:layout_gravity="center"
+                android:layout_marginLeft="@dimen/dp_2"
+                app:tint="@color/primary" />
+
+        </LinearLayout>
+
 
     </RelativeLayout>
 

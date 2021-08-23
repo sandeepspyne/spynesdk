@@ -33,7 +33,7 @@ class DraftViewModel : ViewModel() {
         tokenId: String
     ) = viewModelScope.launch {
         _draftResponse.value = Resource.Loading
-        _draftResponse.value = repository.getProjects(tokenId, "Draft")
+        _draftResponse.value = repository.getDrafts(tokenId, "Draft")
     }
 
     fun getDraftsFromLocal() = localRepository.getDraftProjects()

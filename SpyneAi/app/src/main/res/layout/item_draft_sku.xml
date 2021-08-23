@@ -97,7 +97,8 @@
                 android:layout_width="@dimen/dp_12"
                 android:layout_height="@dimen/dp_12"
                 android:layout_gravity="center"
-                android:src="@drawable/ic_category"/>
+                android:src="@drawable/ic_category"
+                app:tint="@color/primary" />
         </FrameLayout>
 
         <TextView
@@ -146,6 +147,7 @@
                 android:layout_width="@dimen/dp_12"
                 android:layout_height="@dimen/dp_12"
                 android:layout_gravity="center"
+                app:tint="@color/primary"
                 android:src="@drawable/ic_images"/>
 
         </FrameLayout>
@@ -181,6 +183,7 @@
             android:src="@drawable/ic_saved"
             android:id="@+id/ivSaved"
             android:layout_marginBottom="@dimen/dp_3"
+            app:tint="@color/primary"
             app:layout_constraintTop_toBottomOf="@+id/tvCategory"
             app:layout_constraintBottom_toTopOf="@id/tvSaved"
             app:layout_constraintRight_toRightOf="@id/tvSaved"

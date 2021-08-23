@@ -32,6 +32,15 @@ class MyOrdersRepository : BaseRepository() {
         clipperApi.getProjects(tokenId, status)
     }
 
+    suspend fun getDrafts(
+        tokenId: String,
+        status: String
+    ) = safeApiCall{
+        clipperApi.getDrafts(tokenId, status)
+    }
+
+
+
 
 
 

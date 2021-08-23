@@ -50,7 +50,7 @@ class DraftSkusAdapter (
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        holder.tvCategory.text = skuList[position].category
+        holder.tvCategory.text = skuList[position].subCategory
         holder.tvDate.text = skuList[position].created_on
 
         try {
@@ -90,7 +90,7 @@ class DraftSkusAdapter (
                     putExtra(AppConstants.FROM_LOCAL_DB, true)
                     putExtra(AppConstants.FROM_DRAFTS, true)
                     putExtra(AppConstants.PROJECT_ID, projectId)
-                    putExtra(AppConstants.CATEGORY_ID, skuList[position].category)
+                    putExtra(AppConstants.CATEGORY_ID, skuList[position].categoryId)
                     putExtra(AppConstants.SUB_CAT_ID,skuList[position].subCategoryId)
                     putExtra(AppConstants.SUB_CAT_NAME,skuList[position].subCategory)
                     putExtra(AppConstants.CATEGORY_NAME, skuList[position].category)

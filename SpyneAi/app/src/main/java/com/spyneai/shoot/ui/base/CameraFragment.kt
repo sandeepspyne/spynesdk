@@ -127,11 +127,11 @@ class CameraFragment : BaseFragment<ShootViewModel, FragmentCameraBinding>(), Pi
         pickIt = PickiT(requireContext(), this, requireActivity())
 
         viewModel.startInteriorShots.observe(viewLifecycleOwner, {
-            if (it) binding.tvSkipShoot?.visibility = View.VISIBLE
+            if (it) binding.llSkip?.visibility = View.VISIBLE
         })
 
         viewModel.startMiscShots.observe(viewLifecycleOwner, {
-            if (it) binding.tvSkipShoot?.visibility = View.VISIBLE
+            if (it) binding.llSkip?.visibility = View.VISIBLE
         })
 
         viewModel.showLeveler.observe(viewLifecycleOwner, {

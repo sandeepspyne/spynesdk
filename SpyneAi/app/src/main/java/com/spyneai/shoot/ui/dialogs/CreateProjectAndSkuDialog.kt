@@ -87,8 +87,8 @@ class CreateProjectAndSkuDialog : BaseDialogFragment<ShootViewModel,DialogCreate
                     viewModel.sku.value = sku
 
                     viewModel.projectId.value = it.value.project_id
-                    //add sku to local database
-                    viewModel.insertSku(sku!!)
+//                    //add sku to local database
+//                    viewModel.insertSku(sku!!)
 
                     //notify project created
                     viewModel.isProjectCreated.value = true

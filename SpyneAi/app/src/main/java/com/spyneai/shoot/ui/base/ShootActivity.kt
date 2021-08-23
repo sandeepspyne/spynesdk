@@ -319,7 +319,7 @@ class ShootActivity : AppCompatActivity() {
             it.capturedImage
         }
 
-        return s as ArrayList<String>
+        return if (s == null) ArrayList() else s as ArrayList<String>
     }
 
     /**

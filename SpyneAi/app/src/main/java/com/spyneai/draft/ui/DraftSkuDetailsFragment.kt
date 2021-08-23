@@ -8,6 +8,7 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.posthog.android.Properties
+import com.spyneai.R
 import com.spyneai.base.BaseFragment
 import com.spyneai.base.network.Resource
 import com.spyneai.captureFailureEvent
@@ -34,10 +35,12 @@ class DraftSkuDetailsFragment : BaseFragment<DraftViewModel, FragmentDraftSkuDet
     private var exterior = ArrayList<ImagesOfSkuRes.Data>()
     private var interiorList = ArrayList<ImagesOfSkuRes.Data>()
     private var miscList = ArrayList<ImagesOfSkuRes.Data>()
+    private var threeSixtyInteriorList = ArrayList<ImagesOfSkuRes.Data>()
 
     private var localExterior = ArrayList<Image>()
     private var localInteriorList = ArrayList<Image>()
     private var localMiscList = ArrayList<Image>()
+    private var localThreeSixtyInteriorList = ArrayList<Image>()
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -49,7 +52,6 @@ class DraftSkuDetailsFragment : BaseFragment<DraftViewModel, FragmentDraftSkuDet
         val intent = requireActivity().intent
 
         binding.tvProjectName.text =intent.getStringExtra(AppConstants.PROJECT_NAME)
-        
 
             if (intent.getBooleanExtra(AppConstants.FROM_LOCAL_DB,false)){
             binding.shimmerCompletedSKU.stopShimmer()
@@ -75,6 +77,7 @@ class DraftSkuDetailsFragment : BaseFragment<DraftViewModel, FragmentDraftSkuDet
                         binding.tvExterior.visibility = View.VISIBLE
 
                     binding.rvExteriorImage.visibility = View.VISIBLE
+
                     binding.rvExteriorImage.apply {
                           adapter = LocalDraftImagesAdapter(requireContext(),localExterior)
                     }
@@ -103,6 +106,12 @@ class DraftSkuDetailsFragment : BaseFragment<DraftViewModel, FragmentDraftSkuDet
                         adapter = LocalDraftImagesAdapter(requireContext(),localMiscList)
                     }
                 }
+
+//                if (getString(R.string.app_name) == AppConstants.OLA_CABS) {
+//                    localThreeSixtyInteriorList = list?.filter {
+//                        it.categoryName == "360int"
+//                    } as ArrayList
+//                }
             }
 
                 binding.flContinueShoot.visibility = View.VISIBLE
@@ -130,7 +139,6 @@ class DraftSkuDetailsFragment : BaseFragment<DraftViewModel, FragmentDraftSkuDet
                 }
 
                 else -> {
-                    var s = ""
                 }
             }
 
@@ -175,7 +183,6 @@ class DraftSkuDetailsFragment : BaseFragment<DraftViewModel, FragmentDraftSkuDet
                    putExtra(AppConstants.INTERIOR_SIZE, interiorList.size)
                    putExtra(AppConstants.MISC_SIZE, miscList.size)
                }
-
             }
 
             Utilities.savePrefrence(requireContext(),AppConstants.CATEGORY_NAME,intent.getStringExtra(AppConstants.CATEGORY_NAME))
@@ -189,7 +196,6 @@ class DraftSkuDetailsFragment : BaseFragment<DraftViewModel, FragmentDraftSkuDet
                 startActivity(shootIntent)
             }
         }
-
     }
 
     private fun checkMiscSize(intent: Intent) {
@@ -375,6 +381,11 @@ class DraftSkuDetailsFragment : BaseFragment<DraftViewModel, FragmentDraftSkuDet
                             }
                         }
 
+//                        if (getString(R.string.app_name) == AppConstants.OLA_CABS){
+//                            threeSixtyInteriorList = list?.filter {
+//                                it.image_category == "360int"
+//                            } as ArrayList
+//                        }
                     }else {
                         binding.tvTotalSku.text = "0"
                     }

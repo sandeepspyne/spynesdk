@@ -504,6 +504,7 @@ class OverlaysFragment : BaseFragment<ShootViewModel, FragmentOverlaysBinding>()
                 intent.getBooleanExtra(AppConstants.RESUME_EXTERIOR,false) -> {
                     viewModel.showLeveler.value = true
                     viewModel.shootNumber.value = intent.getIntExtra(AppConstants.EXTERIOR_SIZE,0)
+                    binding.imgOverlay.visibility = View.VISIBLE
                 }
                 intent.getBooleanExtra(AppConstants.RESUME_INTERIOR,false) -> {
                     binding.imgOverlay.visibility = View.GONE
