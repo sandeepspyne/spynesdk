@@ -1,42 +1,25 @@
 package com.spyneai.shoot.workmanager
 
 import android.content.Context
-import android.os.Handler
-import android.util.Log
-
 import androidx.work.*
-import androidx.work.ListenableWorker.Result.*
-import com.google.common.util.concurrent.ListenableFuture
 import com.posthog.android.Properties
 import com.spyneai.BaseApplication
-import com.spyneai.base.network.ClipperApi
 import com.spyneai.base.network.Resource
-import com.spyneai.base.network.ServerException
 import com.spyneai.captureEvent
 import com.spyneai.captureFailureEvent
-import com.spyneai.interfaces.RetrofitClients
 import com.spyneai.needs.AppConstants
 import com.spyneai.needs.Utilities
 import com.spyneai.posthog.Events
 import com.spyneai.shoot.data.ShootLocalRepository
 import com.spyneai.shoot.data.ShootRepository
 import com.spyneai.shoot.data.model.Image
-import com.spyneai.shoot.data.model.UploadImageResponse
-import kotlinx.coroutines.Deferred
-import kotlinx.coroutines.async
-import kotlinx.coroutines.coroutineScope
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.MultipartBody
 import okhttp3.RequestBody.Companion.asRequestBody
 import okhttp3.RequestBody.Companion.toRequestBody
-import okhttp3.internal.wait
-import retrofit2.HttpException
-import retrofit2.Response
 import java.io.File
-import java.io.IOException
 
-
-class RecursiveImageWorker(private val appContext: Context, workerParams: WorkerParameters) :
+class RecursiveSkippedImagesWorker(private val appContext: Context, workerParams: WorkerParameters) :
     CoroutineWorker(appContext, workerParams) {
 
     val TAG = "RecursiveImageWorker"
@@ -45,14 +28,14 @@ class RecursiveImageWorker(private val appContext: Context, workerParams: Worker
 
     override suspend fun doWork(): Result {
 
-        val image = localRepository.getOldestImage()
+        val image = localRepository.getOldestSkippedImage()
 
         if (runAttemptCount > 4) {
             if (image.itemId != null)
                 localRepository.skipImage(image.itemId!!)
 
-            captureEvent(Events.UPLOAD_FAILED,image,false,"Image upload limit  reached")
-            return failure()
+            captureEvent(Events.SKIPPED_UPLOAD_FAILED,image,false,"Image upload limit  reached")
+            return Result.failure()
         }
 
 
@@ -62,8 +45,8 @@ class RecursiveImageWorker(private val appContext: Context, workerParams: Worker
             if (image.imagePath != null){
                 if (!File(image.imagePath!!).exists()){
                     localRepository.deleteImage(image.itemId!!)
-                    captureEvent(Events.UPLOAD_FAILED,image,false,"Image file got deleted by user")
-                    return failure()
+                    captureEvent(Events.SKIPPED_UPLOAD_FAILED,image,false,"Image file got deleted by user")
+                    return Result.failure()
                 }
             }
 
@@ -76,7 +59,8 @@ class RecursiveImageWorker(private val appContext: Context, workerParams: Worker
                 image.categoryName?.toRequestBody(MultipartBody.FORM)
 
             val authKey =
-                Utilities.getPreference(appContext,AppConstants.AUTH_KEY).toString().toRequestBody(MultipartBody.FORM)
+                Utilities.getPreference(appContext, AppConstants.AUTH_KEY).toString().toRequestBody(
+                    MultipartBody.FORM)
 
             var imageFile: MultipartBody.Part? = null
             val requestFile =
@@ -100,46 +84,28 @@ class RecursiveImageWorker(private val appContext: Context, workerParams: Worker
 
             when(response){
                 is Resource.Success -> {
-                    captureEvent(Events.UPLOADED,image,true,null)
+                    captureEvent(Events.SKIPED_UPLOADED,image,true,null)
                     startNextUpload(image.itemId!!)
-                    return success()
+                    return Result.success()
                 }
 
                 is Resource.Failure -> {
                     if(response.errorMessage == null){
-                        captureEvent(Events.UPLOAD_FAILED,image,false,response.errorCode.toString()+": Http exception from server")
+                        captureEvent(Events.SKIPPED_UPLOAD_FAILED,image,false,response.errorCode.toString()+": Http exception from server")
                     }else {
-                        captureEvent(Events.UPLOAD_FAILED,image,false,response.errorCode.toString()+": "+response.errorMessage)
+                        captureEvent(Events.SKIPPED_UPLOAD_FAILED,image,false,response.errorCode.toString()+": "+response.errorMessage)
                     }
-                    return retry()
+                    return Result.retry()
                 }
             }
 
-            return success()
+            return Result.success()
         }else{
-            //start skipped images worker
-                startSkippedImagesWorker()
-
-            return success()
+            return Result.success()
         }
     }
 
-    private fun startSkippedImagesWorker() {
-        val constraints: Constraints = Constraints.Builder()
-            .setRequiredNetworkType(NetworkType.CONNECTED)
-            .build()
-
-        val longWorkRequest = OneTimeWorkRequest.Builder(RecursiveSkippedImagesWorker::class.java)
-            .addTag("Skipped Images Long Running Worker")
-
-        WorkManager.getInstance(BaseApplication.getContext())
-            .enqueue(
-                longWorkRequest
-                    .setConstraints(constraints)
-                    .build())
-    }
-
-    private fun captureEvent(eventName : String,image : Image,isSuccess : Boolean,error: String?) {
+    private fun captureEvent(eventName : String, image : Image, isSuccess : Boolean, error: String?) {
         val properties = Properties()
         properties.apply {
             this["sku_id"] = image.skuId
@@ -165,17 +131,17 @@ class RecursiveImageWorker(private val appContext: Context, workerParams: Worker
         //remove uploaded item from database
         localRepository.deleteImage(itemId)
 
-            val constraints: Constraints = Constraints.Builder()
-                .setRequiredNetworkType(NetworkType.CONNECTED)
-                .build()
+        val constraints: Constraints = Constraints.Builder()
+            .setRequiredNetworkType(NetworkType.CONNECTED)
+            .build()
 
-            val longWorkRequest = OneTimeWorkRequest.Builder(RecursiveImageWorker::class.java)
-                .addTag("Long Running Worker")
+        val longWorkRequest = OneTimeWorkRequest.Builder(RecursiveSkippedImagesWorker::class.java)
+            .addTag("Skipped Images Long Running Worker")
 
-            WorkManager.getInstance(BaseApplication.getContext())
-                .enqueue(
-                    longWorkRequest
-                        .setConstraints(constraints)
-                        .build())
+        WorkManager.getInstance(BaseApplication.getContext())
+            .enqueue(
+                longWorkRequest
+                    .setConstraints(constraints)
+                    .build())
     }
 }

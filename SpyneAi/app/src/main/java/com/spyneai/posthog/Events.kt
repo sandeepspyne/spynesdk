@@ -67,6 +67,8 @@ object Events {
     val CONFIRMED = "Android Confirmed"
     val RESHOOT = "Android Reshoot"
     val UPLOADED = "Android Uploaded"
+    val SKIPED_UPLOADED = "Android Skiped Uploaded"
+    val SKIPPED_UPLOAD_FAILED = "Android Skipped Upload Failed"
     val UPLOAD_FAILED = "Android Upload Failed"
     val GET_BACKGROUND = "Android Got Background"
     val TOTAL_FRAMES_UPDATED = "Android Total Frames Updated"
