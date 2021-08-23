@@ -30,7 +30,6 @@ import com.spyneai.base.network.Resource
 import com.spyneai.camera2.ShootDimensions
 import com.spyneai.captureEvent
 import com.spyneai.captureFailureEvent
-import com.spyneai.dashboard.ui.WhiteLabelConstants
 import com.spyneai.dashboard.ui.handleApiError
 import com.spyneai.databinding.FragmentCameraBinding
 import com.spyneai.needs.AppConstants
@@ -50,6 +49,8 @@ import kotlin.math.max
 import kotlin.math.min
 import kotlin.math.roundToInt
 import android.media.MediaActionSound
+import android.util.Size
+import com.google.android.play.core.splitinstall.g
 
 
 
@@ -137,11 +138,6 @@ class CameraFragment : BaseFragment<ShootViewModel, FragmentCameraBinding>(), Pi
 
         viewModel.showLeveler.observe(viewLifecycleOwner, {
             if (it && isSensorAvaliable) {
-                if (viewModel.categoryDetails.value?.categoryName == "Footwear" ||
-                    viewModel.categoryDetails.value?.categoryName == "E-Commerce"
-                )
-                    binding.tvLevelIndicator.visibility = View.GONE
-
                 getPreviewDimensions(binding.ivGryroRing!!, 1)
                 getPreviewDimensions(binding.tvCenter!!, 2)
                 binding.flLevelIndicator.visibility = View.VISIBLE
@@ -168,7 +164,7 @@ class CameraFragment : BaseFragment<ShootViewModel, FragmentCameraBinding>(), Pi
 
                 "Focus Shoot" -> {
                     if (viewModel.miscShootNumber.value == viewModel.miscAngles.value?.minus(1)) {
-                        viewModel.selectBackground.value = true
+                        selectBackground()
                     } else {
                         viewModel.miscShootNumber.value = viewModel.miscShootNumber.value!! + 1
                     }
@@ -186,7 +182,7 @@ class CameraFragment : BaseFragment<ShootViewModel, FragmentCameraBinding>(), Pi
                             viewModel.showMiscDialog.value = true
                         }
                         else -> {
-                            viewModel.selectBackground.value = true
+                            selectBackground()
                         }
                     }
                 }
@@ -194,6 +190,11 @@ class CameraFragment : BaseFragment<ShootViewModel, FragmentCameraBinding>(), Pi
                 }
             }
         })
+    }
+
+    private fun selectBackground() {
+
+            viewModel.selectBackground.value = true
     }
 
     override fun onResume() {
@@ -236,45 +237,7 @@ class CameraFragment : BaseFragment<ShootViewModel, FragmentCameraBinding>(), Pi
         when (getString(R.string.app_name)) {
             AppConstants.KARVI, AppConstants.CARS24, AppConstants.CARS24_INDIA -> {
                 binding.cameraCaptureButton?.setOnClickListener {
-                    if (viewModel.shootList.value == null) {
-                        if (binding.flLevelIndicator.visibility == View.VISIBLE) {
-                            if (isGyroOnCorrectAngle)
-                                viewModel.createProjectRes.observe(viewLifecycleOwner, {
-                                    when (it) {
-                                        is Resource.Success -> {
-                                            val subCategory = viewModel.subCategory.value
-                                            createSku(
-                                                it.value.project_id,
-                                                subCategory?.prod_sub_cat_id.toString()
-                                            )
-                                        }
-                                        else -> {
-                                        }
-                                    }
-                                })
-                        } else {
-                            viewModel.createProjectRes.observe(viewLifecycleOwner, {
-                                when (it) {
-                                    is Resource.Success -> {
-                                        val subCategory = viewModel.subCategory.value
-                                        createSku(
-                                            it.value.project_id,
-                                            subCategory?.prod_sub_cat_id.toString()
-                                        )
-                                    }
-                                    else -> {
-                                    }
-                                }
-                            })
-                        }
-                    } else {
-                        if (binding.flLevelIndicator.visibility == View.VISIBLE) {
-                            if (isGyroOnCorrectAngle)
-                                captureImage()
-                        } else {
-                            captureImage()
-                        }
-                    }
+                    onCaptureButtonClick()
                 }
             }
             "Flipkart", "Udaan", "Lal10", "Amazon", "Swiggy" -> {
@@ -303,6 +266,48 @@ class CameraFragment : BaseFragment<ShootViewModel, FragmentCameraBinding>(), Pi
                         captureImage()
                     }
                 }
+            }
+        }
+    }
+
+    private fun onCaptureButtonClick() {
+        if (viewModel.shootList.value == null) {
+            if (binding.flLevelIndicator.visibility == View.VISIBLE) {
+                if (isGyroOnCorrectAngle)
+                    viewModel.createProjectRes.observe(viewLifecycleOwner, {
+                        when (it) {
+                            is Resource.Success -> {
+                                val subCategory = viewModel.subCategory.value
+                                createSku(
+                                    it.value.project_id,
+                                    subCategory?.prod_sub_cat_id.toString()
+                                )
+                            }
+                            else -> {
+                            }
+                        }
+                    })
+            } else {
+                viewModel.createProjectRes.observe(viewLifecycleOwner, {
+                    when (it) {
+                        is Resource.Success -> {
+                            val subCategory = viewModel.subCategory.value
+                            createSku(
+                                it.value.project_id,
+                                subCategory?.prod_sub_cat_id.toString()
+                            )
+                        }
+                        else -> {
+                        }
+                    }
+                })
+            }
+        } else {
+            if (binding.flLevelIndicator.visibility == View.VISIBLE) {
+                if (isGyroOnCorrectAngle)
+                    captureImage()
+            } else {
+                captureImage()
             }
         }
     }
@@ -419,23 +424,40 @@ class CameraFragment : BaseFragment<ShootViewModel, FragmentCameraBinding>(), Pi
                 ?: throw IllegalStateException("Camera initialization failed.")
 
             // Preview
-            val preview = Preview.Builder()
-                .setTargetAspectRatio(aspectRatio) // set the camera aspect ratio
-                //   .setTargetRotation(rotation) // set the camera rotation
-                .build()
-                .also {
-                    it.setSurfaceProvider(binding.viewFinder.surfaceProvider)
-                }
+            val preview = if (getString(R.string.app_name) == AppConstants.KARVI) {
+                Preview.Builder()
+                    .setTargetResolution(Size(1024,768))
+                    .build()
+                    .also {
+                        it.setSurfaceProvider(binding.viewFinder.surfaceProvider)
+                    }
+            }else {
+                Preview.Builder()
+                    .setTargetAspectRatio(aspectRatio) // set the camera aspect ratio
+                    //   .setTargetRotation(rotation) // set the camera rotation
+                    .build()
+                    .also {
+                        it.setSurfaceProvider(binding.viewFinder.surfaceProvider)
+                    }
+            }
 
             //for exact image cropping
             val viewPort = binding.viewFinder?.viewPort
 
-            imageCapture = ImageCapture.Builder()
-                .setCaptureMode(ImageCapture.CAPTURE_MODE_MAXIMIZE_QUALITY)
-                .setFlashMode(flashMode)
-                .setTargetAspectRatio(aspectRatio) // set the capture aspect ratio
-                // .setTargetRotation(rotation) // set the capture rotation
-                .build()
+            imageCapture = if (getString(R.string.app_name) == AppConstants.KARVI) {
+                ImageCapture.Builder()
+                    .setCaptureMode(ImageCapture.CAPTURE_MODE_MAXIMIZE_QUALITY)
+                    .setFlashMode(flashMode)
+                    .setTargetResolution(Size(1024,768))
+                    .build()
+            }else {
+                ImageCapture.Builder()
+                    .setCaptureMode(ImageCapture.CAPTURE_MODE_MAXIMIZE_QUALITY)
+                    .setFlashMode(flashMode)
+                    .setTargetAspectRatio(aspectRatio) // set the capture aspect ratio
+                    // .setTargetRotation(rotation) // set the capture rotation
+                    .build()
+            }
 
             val useCaseGroup = UseCaseGroup.Builder()
                 .addUseCase(preview)
@@ -512,8 +534,9 @@ class CameraFragment : BaseFragment<ShootViewModel, FragmentCameraBinding>(), Pi
 
     private fun takePhoto() {
         // Get a stable reference of the modifiable image capture use case
-        val imageCapture = imageCapture ?: return
+        val imageCapture1 = imageCapture ?: return
 
+        val hi = "hi"
 
         // Setup image capture metadata
         val metadata = ImageCapture.Metadata().apply {
@@ -572,7 +595,6 @@ class CameraFragment : BaseFragment<ShootViewModel, FragmentCameraBinding>(), Pi
             }
         }
 
-
         // Options fot the output image file
         val outputOptions = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
             val contentValues = ContentValues().apply {
@@ -597,7 +619,7 @@ class CameraFragment : BaseFragment<ShootViewModel, FragmentCameraBinding>(), Pi
 
         // Set up image capture listener, which is triggered after photo has
         // been taken
-        imageCapture.takePicture(
+        imageCapture1.takePicture(
             outputOptions,
             ContextCompat.getMainExecutor(requireContext()),
             object : ImageCapture.OnImageSavedCallback {
@@ -606,6 +628,7 @@ class CameraFragment : BaseFragment<ShootViewModel, FragmentCameraBinding>(), Pi
                     log("Photo capture failed: " + exc.message)
 
                     Utilities.hideProgressDialog()
+                    Toast.makeText(requireContext(), "Image capture failed", Toast.LENGTH_SHORT).show()
 
                     requireContext().captureFailureEvent(
                         Events.IMAGE_CAPRURE_FAILED,
@@ -666,6 +689,8 @@ class CameraFragment : BaseFragment<ShootViewModel, FragmentCameraBinding>(), Pi
 
         val diff = Math.toDegrees(orientationAngles[2].toDouble()) - roll
 
+
+
         val movearrow = abs(Math.toDegrees(orientationAngles[2].toDouble()).roundToInt()) - abs(
             roll.roundToInt()
         ) >= 1
@@ -677,222 +702,324 @@ class CameraFragment : BaseFragment<ShootViewModel, FragmentCameraBinding>(), Pi
         roll = Math.toDegrees(orientationAngles[2].toDouble())
 
 
-        Log.d(TAG, "updateOrientationAngles: " + roll)
-        Log.d(TAG, "updateOrientationAngles: " + pitch)
-        Log.d(TAG, "updateOrientationAngles: -------------------------------")
+        //binding.tvPitchRoll?.text = pitch.roundToInt().toString()+"****"+roll.roundToInt()+"****"+Math.toDegrees(orientationAngles[0].toDouble()).roundToInt()
 
-        if (getString(R.string.app_name) == WhiteLabelConstants.KARVI) {
-            if ((roll >= -95 && roll <= -85) && (pitch >= -5 && pitch <= 5)) {
-
-                log("roll: " + roll.roundToInt().toString())
-                log("pitch: " + pitch.roundToInt().toString())
+        // binding.tvPitchRoll?.text = pitch.roundToInt().toString()+"****"+ abs(roll.roundToInt())
 
 
-                if (viewModel.categoryDetails.value?.categoryName == "Footwear" ||
-                    viewModel.categoryDetails.value?.categoryName == "E-Commerce"
-                ) {
-                    if ((roll.roundToInt() <= -160 && roll.roundToInt() >= -185) && (pitch <= -80 && pitch >= -90)
-                        ||
-                        (roll.roundToInt() <= 0 && roll.roundToInt() >= -5) && ((pitch.roundToInt() == 0 || pitch.roundToInt() == -0) ||
-                                pitch.roundToInt() <= -5 || pitch.roundToInt() >= -10)
-                    ) {
-                        binding
-                            .tvLevelIndicator
-                            ?.animate()
-                            ?.translationY(0f)
-                            ?.setInterpolator(AccelerateInterpolator())?.duration = 0
+        when(getString(R.string.app_name)) {
+            AppConstants.KARVI -> {
+                if ((roll >= -95 && roll <= -85) && (pitch >= -5 && pitch <= 5)) {
+                    isGyroOnCorrectAngle = true
+                    binding
+                        .tvLevelIndicator
+                        ?.animate()
+                        ?.translationY(0f)
+                        ?.setInterpolator(AccelerateInterpolator())?.duration = 0
 
-                        binding.tvLevelIndicator?.rotation = 0f
+                    binding.tvLevelIndicator?.rotation = 0f
 
-                        binding.ivTopLeft?.setColorFilter(
-                            ContextCompat.getColor(
-                                requireContext(),
-                                R.color.gyro_in_level
-                            )
-                        )
-                        binding.ivBottomLeft?.setColorFilter(
-                            ContextCompat.getColor(
-                                requireContext(),
-                                R.color.gyro_in_level
-                            )
-                        )
-
-                        binding.ivGryroRing?.setColorFilter(
-                            ContextCompat.getColor(
-                                requireContext(),
-                                R.color.gyro_in_level
-                            )
-                        )
-                        binding.tvLevelIndicator?.background = ContextCompat.getDrawable(
+                    binding.ivTopLeft?.setColorFilter(
+                        ContextCompat.getColor(
                             requireContext(),
-                            R.drawable.bg_gyro_level
+                            R.color.gyro_in_level
                         )
-
-                        binding.ivTopRight?.setColorFilter(
-                            ContextCompat.getColor(
-                                requireContext(),
-                                R.color.gyro_in_level
-                            )
-                        )
-                        binding.ivBottomRight?.setColorFilter(
-                            ContextCompat.getColor(
-                                requireContext(),
-                                R.color.gyro_in_level
-                            )
-                        )
-
-                    } else {
-
-                        binding.ivTopLeft?.setColorFilter(
-                            ContextCompat.getColor(
-                                requireContext(),
-                                R.color.gyro_error_level
-                            )
-                        )
-                        binding.ivBottomLeft?.setColorFilter(
-                            ContextCompat.getColor(
-                                requireContext(),
-                                R.color.gyro_error_level
-                            )
-                        )
-
-                        binding.ivGryroRing?.setColorFilter(
-                            ContextCompat.getColor(
-                                requireContext(),
-                                R.color.gyro_error_level
-                            )
-                        )
-                        binding.tvLevelIndicator?.background = ContextCompat.getDrawable(
+                    )
+                    binding.ivBottomLeft?.setColorFilter(
+                        ContextCompat.getColor(
                             requireContext(),
-                            R.drawable.bg_gyro_error
+                            R.color.gyro_in_level
                         )
+                    )
 
-                        binding.ivTopRight?.setColorFilter(
-                            ContextCompat.getColor(
-                                requireContext(),
-                                R.color.gyro_error_level
-                            )
+                    binding.ivGryroRing?.setColorFilter(
+                        ContextCompat.getColor(
+                            requireContext(),
+                            R.color.gyro_in_level
                         )
-                        binding.ivBottomRight?.setColorFilter(
-                            ContextCompat.getColor(
-                                requireContext(),
-                                R.color.gyro_error_level
-                            )
+                    )
+                    binding.tvLevelIndicator?.background = ContextCompat.getDrawable(
+                        requireContext(),
+                        R.drawable.bg_gyro_level
+                    )
+
+                    binding.ivTopRight?.setColorFilter(
+                        ContextCompat.getColor(
+                            requireContext(),
+                            R.color.gyro_in_level
                         )
+                    )
+                    binding.ivBottomRight?.setColorFilter(
+                        ContextCompat.getColor(
+                            requireContext(),
+                            R.color.gyro_in_level
+                        )
+                    )
 
-                        if (movearrow)
-                            moveArrow(roll)
-
-                        if (rotatedarrow) {
-                            if (pitch > 0) {
-                                rotateArrow(pitch.minus(0).roundToInt())
-                            } else {
-                                rotateArrow(pitch.plus(0).roundToInt())
-                            }
-                        }
-
-                    }
                 } else {
-                    if ((roll >= -100 && roll <= -80) && (pitch >= -5 && pitch <= 5)) {
-                        binding
-                            .tvLevelIndicator
-                            ?.animate()
-                            ?.translationY(0f)
-                            ?.setInterpolator(AccelerateInterpolator())?.duration = 0
+                    isGyroOnCorrectAngle = false
 
-                        binding.tvLevelIndicator?.rotation = 0f
-
-                        binding.ivTopLeft?.setColorFilter(
-                            ContextCompat.getColor(
-                                requireContext(),
-                                R.color.gyro_in_level
-                            )
-                        )
-                        binding.ivBottomLeft?.setColorFilter(
-                            ContextCompat.getColor(
-                                requireContext(),
-                                R.color.gyro_in_level
-                            )
-                        )
-
-                        binding.ivGryroRing?.setColorFilter(
-                            ContextCompat.getColor(
-                                requireContext(),
-                                R.color.gyro_in_level
-                            )
-                        )
-                        binding.tvLevelIndicator?.background = ContextCompat.getDrawable(
+                    binding.ivTopLeft?.setColorFilter(
+                        ContextCompat.getColor(
                             requireContext(),
-                            R.drawable.bg_gyro_level
+                            R.color.gyro_error_level
                         )
-
-                        binding.ivTopRight?.setColorFilter(
-                            ContextCompat.getColor(
-                                requireContext(),
-                                R.color.gyro_in_level
-                            )
-                        )
-                        binding.ivBottomRight?.setColorFilter(
-                            ContextCompat.getColor(
-                                requireContext(),
-                                R.color.gyro_in_level
-                            )
-                        )
-
-                    } else {
-
-                        binding.ivTopLeft?.setColorFilter(
-                            ContextCompat.getColor(
-                                requireContext(),
-                                R.color.gyro_error_level
-                            )
-                        )
-                        binding.ivBottomLeft?.setColorFilter(
-                            ContextCompat.getColor(
-                                requireContext(),
-                                R.color.gyro_error_level
-                            )
-                        )
-
-                        binding.ivGryroRing?.setColorFilter(
-                            ContextCompat.getColor(
-                                requireContext(),
-                                R.color.gyro_error_level
-                            )
-                        )
-                        binding.tvLevelIndicator?.background = ContextCompat.getDrawable(
+                    )
+                    binding.ivBottomLeft?.setColorFilter(
+                        ContextCompat.getColor(
                             requireContext(),
-                            R.drawable.bg_gyro_error
+                            R.color.gyro_error_level
                         )
+                    )
 
-                        binding.ivTopRight?.setColorFilter(
-                            ContextCompat.getColor(
-                                requireContext(),
-                                R.color.gyro_error_level
-                            )
+                    binding.ivGryroRing?.setColorFilter(
+                        ContextCompat.getColor(
+                            requireContext(),
+                            R.color.gyro_error_level
                         )
-                        binding.ivBottomRight?.setColorFilter(
-                            ContextCompat.getColor(
-                                requireContext(),
-                                R.color.gyro_error_level
-                            )
+                    )
+                    binding.tvLevelIndicator?.background = ContextCompat.getDrawable(
+                        requireContext(),
+                        R.drawable.bg_gyro_error
+                    )
+
+                    binding.ivTopRight?.setColorFilter(
+                        ContextCompat.getColor(
+                            requireContext(),
+                            R.color.gyro_error_level
                         )
+                    )
+                    binding.ivBottomRight?.setColorFilter(
+                        ContextCompat.getColor(
+                            requireContext(),
+                            R.color.gyro_error_level
+                        )
+                    )
 
-                        if (movearrow)
-                            moveArrow(roll)
+                    if (movearrow)
+                        moveArrow(roll + 90)
 
-                        if (rotatedarrow) {
-                            if (pitch > 0) {
-                                rotateArrow(pitch.minus(0).roundToInt())
-                            } else {
-                                rotateArrow(pitch.plus(0).roundToInt())
-                            }
+                    if (rotatedarrow) {
+                        if (pitch > 0) {
+                            rotateArrow(pitch.minus(0).roundToInt())
+                        } else {
+                            rotateArrow(pitch.plus(0).roundToInt())
                         }
-
                     }
+
                 }
             }
+
+            "Flipkart", "Udaan", "Amazon", "Lal10", "Swiggy" -> {
+                //hide moving line
+                if (pitch.roundToInt() == 0 || (pitch.roundToInt() <= -0 && pitch.roundToInt() >= -3))
+                    binding.tvLevelIndicator.visibility = View.GONE
+                else
+                    binding.tvLevelIndicator.visibility = View.VISIBLE
+
+                if ((pitch.roundToInt() == 0 || (pitch.roundToInt() <= -0 && pitch.roundToInt() >= -3)) ||
+                    pitch.roundToInt() <= -82 && pitch.roundToInt() >= -88) {
+
+                    binding
+                        .tvLevelIndicator
+                        ?.animate()
+                        ?.translationY(0f)
+                        ?.setInterpolator(AccelerateInterpolator())?.duration = 0
+
+                    binding.tvLevelIndicator?.rotation = 0f
+
+                    binding.ivTopLeft?.setColorFilter(
+                        ContextCompat.getColor(
+                            requireContext(),
+                            R.color.gyro_in_level
+                        )
+                    )
+                    binding.ivBottomLeft?.setColorFilter(
+                        ContextCompat.getColor(
+                            requireContext(),
+                            R.color.gyro_in_level
+                        )
+                    )
+
+                    binding.ivGryroRing?.setColorFilter(
+                        ContextCompat.getColor(
+                            requireContext(),
+                            R.color.gyro_in_level
+                        )
+                    )
+                    binding.tvLevelIndicator?.background = ContextCompat.getDrawable(
+                        requireContext(),
+                        R.drawable.bg_gyro_level
+                    )
+
+                    binding.ivTopRight?.setColorFilter(
+                        ContextCompat.getColor(
+                            requireContext(),
+                            R.color.gyro_in_level
+                        )
+                    )
+                    binding.ivBottomRight?.setColorFilter(
+                        ContextCompat.getColor(
+                            requireContext(),
+                            R.color.gyro_in_level
+                        )
+                    )
+
+                } else {
+
+                    binding.ivTopLeft?.setColorFilter(
+                        ContextCompat.getColor(
+                            requireContext(),
+                            R.color.gyro_error_level
+                        )
+                    )
+                    binding.ivBottomLeft?.setColorFilter(
+                        ContextCompat.getColor(
+                            requireContext(),
+                            R.color.gyro_error_level
+                        )
+                    )
+
+                    binding.ivGryroRing?.setColorFilter(
+                        ContextCompat.getColor(
+                            requireContext(),
+                            R.color.gyro_error_level
+                        )
+                    )
+                    binding.tvLevelIndicator?.background = ContextCompat.getDrawable(
+                        requireContext(),
+                        R.drawable.bg_gyro_error
+                    )
+
+                    binding.ivTopRight?.setColorFilter(
+                        ContextCompat.getColor(
+                            requireContext(),
+                            R.color.gyro_error_level
+                        )
+                    )
+                    binding.ivBottomRight?.setColorFilter(
+                        ContextCompat.getColor(
+                            requireContext(),
+                            R.color.gyro_error_level
+                        )
+                    )
+
+                    if (movearrow) {
+                        if (abs(roll.roundToInt()) < 100){
+                            moveArrow((pitch + 85).unaryMinus())
+                        }else {
+                            moveArrow(pitch + 85)
+                        }
+
+                    }
+
+
+//                    if (rotatedarrow) {
+//                        rotateArrow(roll.roundToInt())
+//                    }
+
+                }
+            }else -> {
+            if ((roll >= -100 && roll <= -80) && (pitch >= -5 && pitch <= 5)) {
+                binding
+                    .tvLevelIndicator
+                    ?.animate()
+                    ?.translationY(0f)
+                    ?.setInterpolator(AccelerateInterpolator())?.duration = 0
+
+                binding.tvLevelIndicator?.rotation = 0f
+
+                binding.ivTopLeft?.setColorFilter(
+                    ContextCompat.getColor(
+                        requireContext(),
+                        R.color.gyro_in_level
+                    )
+                )
+                binding.ivBottomLeft?.setColorFilter(
+                    ContextCompat.getColor(
+                        requireContext(),
+                        R.color.gyro_in_level
+                    )
+                )
+
+                binding.ivGryroRing?.setColorFilter(
+                    ContextCompat.getColor(
+                        requireContext(),
+                        R.color.gyro_in_level
+                    )
+                )
+                binding.tvLevelIndicator?.background = ContextCompat.getDrawable(
+                    requireContext(),
+                    R.drawable.bg_gyro_level
+                )
+
+                binding.ivTopRight?.setColorFilter(
+                    ContextCompat.getColor(
+                        requireContext(),
+                        R.color.gyro_in_level
+                    )
+                )
+                binding.ivBottomRight?.setColorFilter(
+                    ContextCompat.getColor(
+                        requireContext(),
+                        R.color.gyro_in_level
+                    )
+                )
+
+            } else {
+
+                binding.ivTopLeft?.setColorFilter(
+                    ContextCompat.getColor(
+                        requireContext(),
+                        R.color.gyro_error_level
+                    )
+                )
+                binding.ivBottomLeft?.setColorFilter(
+                    ContextCompat.getColor(
+                        requireContext(),
+                        R.color.gyro_error_level
+                    )
+                )
+
+                binding.ivGryroRing?.setColorFilter(
+                    ContextCompat.getColor(
+                        requireContext(),
+                        R.color.gyro_error_level
+                    )
+                )
+                binding.tvLevelIndicator?.background = ContextCompat.getDrawable(
+                    requireContext(),
+                    R.drawable.bg_gyro_error
+                )
+
+                binding.ivTopRight?.setColorFilter(
+                    ContextCompat.getColor(
+                        requireContext(),
+                        R.color.gyro_error_level
+                    )
+                )
+                binding.ivBottomRight?.setColorFilter(
+                    ContextCompat.getColor(
+                        requireContext(),
+                        R.color.gyro_error_level
+                    )
+                )
+
+                if (movearrow)
+                    moveArrow(roll + 90)
+
+                if (rotatedarrow) {
+                    if (pitch > 0) {
+                        rotateArrow(pitch.minus(0).roundToInt())
+                    } else {
+                        rotateArrow(pitch.plus(0).roundToInt())
+                    }
+                }
+
+            }
         }
+        }
+
     }
 
     private fun rotateArrow(roundToInt: Int) {
@@ -902,20 +1029,8 @@ class CameraFragment : BaseFragment<ShootViewModel, FragmentCameraBinding>(), Pi
     override fun onAccuracyChanged(sensor: Sensor?, accuracy: Int) {
     }
 
-    private fun moveArrow(roll: Double) {
-        var newRoll = roll + 90
-
-        Log.d(TAG, "moveArrow: " + newRoll)
-        Log.d(TAG, "moveArrow: " + centerPosition.plus(newRoll))
-        Log.d(TAG, "moveArrow: " + centerPosition.plus(bottomConstraint))
-        Log.d(TAG, "moveArrow: -------------" + newRoll)
-
+    private fun moveArrow(newRoll: Double) {
         if (newRoll > 0 && (centerPosition + newRoll) < bottomConstraint) {
-
-            // newRoll -= 0
-
-            Log.d(TAG, "moveArrow: " + newRoll)
-
             binding
                 .tvLevelIndicator
                 ?.animate()
@@ -924,10 +1039,6 @@ class CameraFragment : BaseFragment<ShootViewModel, FragmentCameraBinding>(), Pi
         }
 
         if (newRoll < 0 && (centerPosition - newRoll) > topConstraint) {
-
-
-            // newRoll += 0
-
             binding
                 .tvLevelIndicator
                 ?.animate()
@@ -967,6 +1078,8 @@ class CameraFragment : BaseFragment<ShootViewModel, FragmentCameraBinding>(), Pi
     }
 
     private fun addShootItem(capturedImage: String) {
+        viewModel.showConfirmReshootDialog.value = true
+
         //play shutter sound
         val sound = MediaActionSound()
         sound.play(MediaActionSound.SHUTTER_CLICK)
@@ -976,7 +1089,6 @@ class CameraFragment : BaseFragment<ShootViewModel, FragmentCameraBinding>(), Pi
             Utilities.hideProgressDialog()
             viewModel.shootList.value = ArrayList()
         }
-
 
         viewModel.shootList.value!!.add(
             ShootData(
@@ -1183,6 +1295,7 @@ class CameraFragment : BaseFragment<ShootViewModel, FragmentCameraBinding>(), Pi
                 .setInterpolator(AccelerateInterpolator()).start()
         }, 2000)
     }
+
 }
 
 
