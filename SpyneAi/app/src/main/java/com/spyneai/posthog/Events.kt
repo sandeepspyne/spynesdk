@@ -70,7 +70,7 @@ object Events {
     val CHECK_UPLOAD_STATUS = "Android Got Upload Status"
     val CHECK_UPLOAD_STATUS_FAILED = "Android Check Upload Status Failed"
     val ALREADY_UPLOAD_STATUS = "Android Image Already Uploaded"
-    val ALREADY_NOT_UPLOAD_STATUS = "Android Image Not Uploaded"
+    val ALREADY_NOT_UPLOAD_STATUS = "Android Image Already Not Uploaded"
     val MANUALLY_UPLOADED = "Android Image Manually Uploaded"
     val SKIPED_UPLOADED = "Android Skiped Uploaded"
     val MANUAL_SKIPED_UPLOADED = "Android Manual Skiped Uploaded"

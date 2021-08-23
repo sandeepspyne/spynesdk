@@ -81,9 +81,18 @@ class DraftSkusActivity : AppCompatActivity() {
                             shimmerCompletedSKU.visibility = View.GONE
                             rvSkus.visibility = View.VISIBLE
 
-                            if (!it.value.data.project_data.isNullOrEmpty())
+                            if (!it.value.data.project_data.isNullOrEmpty()) {
+                                val localSkuList = viewModel.getSkusByProjectId(intent.getStringExtra(AppConstants.PROJECT_ID)!!)
 
-                                if (it.value.data != null) {
+                                if (localSkuList.size >= it.value.data.project_data[position].sku.size) {
+                                    val skusList = viewModel.getSkusByProjectId(intent.getStringExtra(AppConstants.PROJECT_ID)!!)
+                                    val localSkusAdapter = LocalSkusAdapter(this,skusList)
+
+                                    tvProjectName.text = intent.getStringExtra(AppConstants.PROJECT_NAME)
+                                    tvTotalSku.text =  skusList.size.toString()
+
+                                    rvSkus.adapter = localSkusAdapter
+                                }else {
                                     skuList.clear()
                                     skuList.addAll(it.value.data.project_data[position].sku)
                                     tvProjectName.text = it.value.data.project_data[position].project_name
@@ -102,6 +111,9 @@ class DraftSkusActivity : AppCompatActivity() {
                                     rvSkus.setLayoutManager(layoutManager)
                                     rvSkus.setAdapter(skusAdapter)
                                 }
+
+                            }
+
                         }
                         is Resource.Loading -> {
 

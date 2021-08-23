@@ -122,6 +122,7 @@ class RecursiveSkippedImagesWorker(private val appContext: Context, workerParams
             this["sku_id"] = image.skuId
             this["project_id"] = image.projectId
             this["image_type"] = image.categoryName
+            this["sequence"] = image.sequence
         }
 
         if (isSuccess) {

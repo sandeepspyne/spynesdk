@@ -240,7 +240,7 @@ class ShootViewModel : ViewModel(){
             } else {
              com.spyneai.shoot.utils.log("not found : start new")
                 //start long running worker
-                startLongRunningWorker()
+                //startLongRunningWorker()
             }
 
     }

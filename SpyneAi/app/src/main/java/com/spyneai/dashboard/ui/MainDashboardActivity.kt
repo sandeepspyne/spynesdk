@@ -162,78 +162,15 @@ class MainDashboardActivity : AppCompatActivity() {
 
 
     open fun onPermissionGranted(){
-        var path = ""
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-            path = "${Environment.DIRECTORY_DCIM}/Spyne"
-        } else {
-            path = "${Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DCIM)}/Spyne"
-        }
-
-        //get list of images
-        val files = File(path).listFiles()
-        val filesList = ArrayList<String>()
-
-        files.forEach {
-            if (it != null)
-                filesList.add(it.name)
-        }
-
-        filesList.forEach {
-            Log.d(TAG, "onPermissionGranted: "+it)
-        }
-
-        val longWorkRequest = OneTimeWorkRequest.Builder(StoreImageFilesWorker::class.java)
-            .addTag("Skipped Images Long Running Worker")
-
-        val data = Data.Builder()
-           // .putStringArray("files",filesList.toTypedArray())
-            .putInt("position",0)
-            .build()
+        val storeWorkRequest = OneTimeWorkRequest.Builder(StoreImageFilesWorker::class.java)
 
         WorkManager.getInstance(BaseApplication.getContext())
             .enqueue(
-                longWorkRequest
-                    .setInputData(data)
+                storeWorkRequest
                     .build())
-
-        //manual upload worker not running
-        lifecycleScope.launch{
-            startManualUploadWorker()
-        }
     }
 
-    private suspend fun startManualUploadWorker() {
-        //check if long running worker is alive
-        val workManager = WorkManager.getInstance(BaseApplication.getContext())
 
-        val workQuery = WorkQuery.Builder
-            .fromTags(listOf("Manual Long Running Worker"))
-            .addStates(listOf(WorkInfo.State.BLOCKED, WorkInfo.State.ENQUEUED, WorkInfo.State.RUNNING))
-            .build()
-
-        val workInfos = workManager.getWorkInfos(workQuery).await()
-
-        Log.d(TAG, "insertImage: "+workInfos.size)
-
-        if (workInfos.size > 0) {
-            com.spyneai.shoot.utils.log("alive : ")
-        } else {
-            com.spyneai.shoot.utils.log("not found : start new")
-            //start long running worker
-            val constraints: Constraints = Constraints.Builder()
-                .setRequiredNetworkType(NetworkType.CONNECTED)
-                .build()
-
-            val longWorkRequest = OneTimeWorkRequest.Builder(ManualUploadWorker::class.java)
-                .addTag("Manual Long Running Worker")
-
-            WorkManager.getInstance(BaseApplication.getContext())
-                .enqueue(
-                    longWorkRequest
-                        .setConstraints(constraints)
-                        .build())
-        }
-    }
 
 
     override fun onResume() {

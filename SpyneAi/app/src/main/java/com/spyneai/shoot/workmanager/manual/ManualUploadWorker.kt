@@ -80,6 +80,7 @@ class ManualUploadWorker (private val appContext: Context, workerParams: WorkerP
                     if (uploadStatuRes.value.data.upload){
                         //start next image
                         captureEvent(Events.ALREADY_UPLOAD_STATUS,image,true,null)
+                        startNextUpload(image.itemId!!,true)
                     }else {
                         captureEvent(Events.ALREADY_NOT_UPLOAD_STATUS,image,true,null)
                         //make upload call
@@ -173,6 +174,7 @@ class ManualUploadWorker (private val appContext: Context, workerParams: WorkerP
             this["sku_id"] = image.skuId
             this["project_id"] = image.projectId
             this["image_type"] = image.categoryName
+            this["sequence"] = image.sequence
         }
 
         if (isSuccess) {
