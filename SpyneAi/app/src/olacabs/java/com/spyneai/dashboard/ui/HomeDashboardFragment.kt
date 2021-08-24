@@ -18,6 +18,7 @@ import com.spyneai.adapter.CategoriesDashboardAdapter
 import com.spyneai.base.BaseFragment
 import com.spyneai.dashboard.data.DashboardViewModel
 import com.spyneai.databinding.HomeDashboardFragmentBinding
+import com.spyneai.draft.ui.DraftsActivity
 import com.spyneai.fragment.TopUpFragment
 import com.spyneai.needs.AppConstants
 import com.spyneai.needs.Utilities
@@ -52,6 +53,11 @@ class HomeDashboardFragment :
     private fun lisners(){
         binding.ivWallet.setOnClickListener {
             TopUpFragment().show(requireActivity().supportFragmentManager,"TopUpFragment")
+        }
+
+        binding.llDrafts.setOnClickListener {
+            val intent = Intent(requireContext(), DraftsActivity::class.java)
+            startActivity(intent)
         }
 
         binding.llCompleted.setOnClickListener {

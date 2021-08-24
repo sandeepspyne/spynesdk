@@ -40,6 +40,9 @@
         android:usesCleartextTraffic="true"
         tools:targetApi="m">
         <activity
+            android:name=".draft.ui.DraftsActivity"
+            android:exported="true" />
+        <activity
             android:name=".draft.ui.DraftSkuDetailsActivity"
             android:exported="true" />
         <activity

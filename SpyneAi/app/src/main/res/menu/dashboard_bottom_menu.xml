@@ -13,7 +13,7 @@
 
     <item
         android:id="@+id/completedOrdersFragment"
-        android:title="Orders"
+        android:title="Projects"
         android:icon="@drawable/ic_orders"></item>
 
     <item

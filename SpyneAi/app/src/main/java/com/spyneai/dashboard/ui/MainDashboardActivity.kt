@@ -164,10 +164,10 @@ class MainDashboardActivity : AppCompatActivity() {
     open fun onPermissionGranted(){
         val storeWorkRequest = OneTimeWorkRequest.Builder(StoreImageFilesWorker::class.java)
 
-        WorkManager.getInstance(BaseApplication.getContext())
-            .enqueue(
-                storeWorkRequest
-                    .build())
+//        WorkManager.getInstance(BaseApplication.getContext())
+//            .enqueue(
+//                storeWorkRequest
+//                    .build())
     }
 
 

@@ -18,10 +18,11 @@ class StoreImageFilesWorker (private val appContext: Context, workerParams: Work
 
 
     override suspend fun doWork(): Result {
+
         val path = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-            "${Environment.DIRECTORY_DCIM}/Spyne_Test"
+            "${Environment.DIRECTORY_DCIM}/Spyne"
         } else {
-            "${Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DCIM)}/Spyne_Test"
+            "${Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DCIM)}/Spyne"
         }
 
         //get list of images

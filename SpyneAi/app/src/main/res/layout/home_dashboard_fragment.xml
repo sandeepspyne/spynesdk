@@ -93,6 +93,58 @@
                                 android:orientation="horizontal"
                                 android:gravity="center"
                                 android:padding="@dimen/dp_10"
+                                android:id="@+id/llDrafts"
+                                android:background="@drawable/bg_edit_button_white">
+                                <ImageView
+                                    android:layout_width="50dp"
+                                    android:layout_height="50dp"
+                                    android:adjustViewBounds="true"
+                                    android:src="@drawable/on_going"
+                                    android:layout_margin="@dimen/dp_10" />
+                                <TextView
+                                    android:id="@+id/tvDrafts"
+                                    android:layout_width="0dp"
+                                    android:layout_weight="1"
+                                    android:layout_height="wrap_content"
+                                    android:padding="@dimen/dp_10"
+                                    android:gravity="center"
+                                    android:textColor="@color/primary"
+                                    android:textStyle="bold"
+                                    android:fontFamily="@font/medium"
+                                    android:textSize="@dimen/sp_16"
+                                    android:layout_margin="@dimen/dp_10"
+                                    android:text="@string/drafts" />
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:padding="@dimen/dp_10"
+                                    android:gravity="center"
+                                    android:visibility="invisible"
+                                    android:textColor="@color/white"
+                                    android:textStyle="bold"
+                                    android:fontFamily="@font/medium"
+                                    android:textSize="@dimen/sp_13"
+                                    android:layout_margin="@dimen/dp_10"
+                                    android:text="10" />
+
+                            </LinearLayout>
+                        </androidx.cardview.widget.CardView>
+
+                        <androidx.cardview.widget.CardView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:orientation="vertical"
+                            android:layout_margin="@dimen/dp_10"
+                            android:elevation="@dimen/dp_5"
+                            app:cardCornerRadius="@dimen/dp_5"
+                            android:gravity="center">
+
+                            <LinearLayout
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:orientation="horizontal"
+                                android:gravity="center"
+                                android:padding="@dimen/dp_10"
                                 android:id="@+id/ll_ongoing"
                                 android:background="@drawable/bg_edit_button_white">
                                 <ImageView
