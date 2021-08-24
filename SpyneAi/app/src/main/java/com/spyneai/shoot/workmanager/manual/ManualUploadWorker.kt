@@ -27,7 +27,7 @@ import java.io.File
 class ManualUploadWorker (private val appContext: Context, workerParams: WorkerParameters) :
     CoroutineWorker(appContext, workerParams) {
 
-    val TAG = "RecursiveImageWorker"
+    val TAG = "ManualImageWorker"
     val filesRepository = FilesRepository()
     val shootRepository = ShootRepository()
 
@@ -58,7 +58,6 @@ class ManualUploadWorker (private val appContext: Context, workerParams: WorkerP
                 }
             }
 
-
             val authKey =
                 Utilities.getPreference(appContext, AppConstants.AUTH_KEY).toString()
 
@@ -79,6 +78,7 @@ class ManualUploadWorker (private val appContext: Context, workerParams: WorkerP
                         //start next image
                         captureEvent(Events.ALREADY_UPLOAD_STATUS,image,true,null)
                         startNextUpload(image.itemId!!,true)
+                        return Result.success()
                     }else {
                         captureEvent(Events.ALREADY_NOT_UPLOAD_STATUS,image,true,null)
                         //make upload call
@@ -98,6 +98,7 @@ class ManualUploadWorker (private val appContext: Context, workerParams: WorkerP
                                 fileName,
                                 requestFile
                             )
+
 
                         var response = shootRepository.uploadImage(
                             uploadStatuRes.value.data.projectId.toRequestBody(MultipartBody.FORM),

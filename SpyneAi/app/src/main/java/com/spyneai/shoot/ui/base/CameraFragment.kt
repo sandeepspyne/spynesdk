@@ -1,3 +1,4 @@
+import android.R.attr
 import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.ContentValues
@@ -55,6 +56,10 @@ import kotlin.math.roundToInt
 import android.media.MediaActionSound
 import android.util.Size
 import com.google.android.play.core.splitinstall.g
+import android.R.attr.orientation
+
+
+
 
 
 
@@ -84,6 +89,7 @@ class CameraFragment : BaseFragment<ShootViewModel, FragmentCameraBinding>(), Pi
 
     private var pitch = 0.0
     var roll = 0.0
+    var azimuth = 0.0
     private var centerPosition = 0
     private var topConstraint = 0
     private var bottomConstraint = 0
@@ -741,21 +747,26 @@ class CameraFragment : BaseFragment<ShootViewModel, FragmentCameraBinding>(), Pi
 
         //binding.tvAzimuth.text = "Azimuth ${Math.toDegrees(orientationAngles[0].toDouble())}"
 
-        val diff = Math.toDegrees(orientationAngles[2].toDouble()) - roll
-
-
         val movearrow = abs(Math.toDegrees(orientationAngles[2].toDouble()).roundToInt()) - abs(
             roll.roundToInt()
         ) >= 1
+
         val rotatedarrow = abs(Math.toDegrees(orientationAngles[1].toDouble()).roundToInt()) - abs(
             pitch.roundToInt()
         ) >= 1
 
+//        val pRotate = abs((orientationAngles[0] * 180 / Math.PI.toFloat()).toDouble()).roundToInt() - abs(
+//            azimuth.roundToInt()
+//        ) >= 1
+
         pitch = Math.toDegrees(orientationAngles[1].toDouble())
         roll = Math.toDegrees(orientationAngles[2].toDouble())
+        //azimuth = (orientationAngles[0] * 180 / Math.PI.toFloat()).toDouble()
 
-        //  binding.tvPitchRoll!!.text = roll.roundToInt().toString()+"****"+pitch.roundToInt().toString()
-
+//        binding.tvPitchRoll.apply {
+//            this?.visibility = View.VISIBLE
+//            this?.text = roll.toString()
+//        }
 
         when (getString(R.string.app_name)) {
             AppConstants.KARVI -> {
@@ -863,7 +874,7 @@ class CameraFragment : BaseFragment<ShootViewModel, FragmentCameraBinding>(), Pi
             AppConstants.UDAAN, "Flipkart", "Udaan", "Amazon", "Lal10", "Swiggy" -> {
                 //hide moving line
                 if (pitch.roundToInt() == 0 || (pitch.roundToInt() <= -0 && pitch.roundToInt() >= -3))
-                    binding.tvLevelIndicator.visibility = View.GONE
+                   // binding.tvLevelIndicator.visibility = View.GONE
                 else
                     binding.tvLevelIndicator.visibility = View.VISIBLE
 
@@ -871,11 +882,11 @@ class CameraFragment : BaseFragment<ShootViewModel, FragmentCameraBinding>(), Pi
                     pitch.roundToInt() <= -82 && pitch.roundToInt() >= -88
                 ) {
 
-                    binding
-                        .tvLevelIndicator
-                        ?.animate()
-                        ?.translationY(0f)
-                        ?.setInterpolator(AccelerateInterpolator())?.duration = 0
+//                    binding
+//                        .tvLevelIndicator
+//                        ?.animate()
+//                        ?.translationY(0f)
+//                        ?.setInterpolator(AccelerateInterpolator())?.duration = 0
 
                     binding.tvLevelIndicator?.rotation = 0f
 
@@ -964,9 +975,12 @@ class CameraFragment : BaseFragment<ShootViewModel, FragmentCameraBinding>(), Pi
 
                     }
 
-
-//                    if (rotatedarrow) {
-//                        rotateArrow(roll.roundToInt())
+//                    if (pRotate){
+//                        if (azimuth >= 0){
+//                            rotateArrow((azimuth - 90).roundToInt())
+//                        }else {
+//                            rotateArrow((azimuth + 90).roundToInt())
+//                        }
 //                    }
 
                 }
@@ -1077,8 +1091,9 @@ class CameraFragment : BaseFragment<ShootViewModel, FragmentCameraBinding>(), Pi
     }
 
       private fun rotateArrow(roundToInt: Int) {
+          Log.d(TAG, "rotateArrow: "+roundToInt)
                         binding.tvLevelIndicator?.rotation = roundToInt.toFloat()
-                    }
+      }
 
                     override fun onAccuracyChanged(sensor: Sensor?, accuracy: Int) {
                 }

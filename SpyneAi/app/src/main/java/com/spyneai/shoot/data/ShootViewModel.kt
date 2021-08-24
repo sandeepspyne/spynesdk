@@ -23,7 +23,6 @@ import java.util.*
 import java.util.concurrent.TimeUnit
 
 class ShootViewModel : ViewModel(){
-
     private val TAG = "ShootViewModel"
     private val repository = ShootRepository()
     private val localRepository = ShootLocalRepository()
@@ -34,7 +33,7 @@ class ShootViewModel : ViewModel(){
 
     var onVolumeKeyPressed : MutableLiveData<Boolean> = MutableLiveData()
     var fromDrafts = false
-    val isSensorAvaliable : MutableLiveData<Boolean> = MutableLiveData()
+    val isSensorAvailable : MutableLiveData<Boolean> = MutableLiveData()
     var showDialog = true
     var miscDialogShowed = false
 
@@ -242,7 +241,7 @@ class ShootViewModel : ViewModel(){
             } else {
              com.spyneai.shoot.utils.log("not found : start new")
                 //start long running worker
-                startLongRunningWorker()
+               // startLongRunningWorker()
             }
 
     }

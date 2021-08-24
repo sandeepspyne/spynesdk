@@ -61,11 +61,11 @@ class BaseApplication : Application() {
             2, TimeUnit.HOURS)
             .addTag("Periodic Processing Worker")
 
-        WorkManager.getInstance(context)
-            .enqueue(
-                longWorkRequest
-                    .setConstraints(constraints)
-                    .build())
+//        WorkManager.getInstance(context)
+//            .enqueue(
+//                longWorkRequest
+//                    .setConstraints(constraints)
+//                    .build())
 
         val recursiveWorkRequest = PeriodicWorkRequestBuilder<RecursiveSkippedImagesWorker>(
             6, TimeUnit.HOURS)
