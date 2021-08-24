@@ -118,7 +118,10 @@ class CameraFragment : BaseFragment<ShootViewModel, FragmentCameraBinding>(), Pi
 
         handler = Handler()
 
+        val activity: Activity? = activity
+
         handler!!.postDelayed({
+            if (activity!=null)
             startCamera()
         }, 300)
 

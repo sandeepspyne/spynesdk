@@ -1,5 +1,6 @@
 package com.spyneai.shoot.ui
 
+import android.content.Context
 import android.content.res.Configuration
 import android.graphics.drawable.Drawable
 import android.os.Bundle
@@ -40,6 +41,10 @@ import com.spyneai.shoot.utils.shoot
 import kotlinx.coroutines.launch
 import java.util.*
 import kotlin.collections.ArrayList
+import com.iceteck.silicompressorr.videocompression.MediaController.mContext
+
+
+
 
 
 class OverlaysFragment : BaseFragment<ShootViewModel, FragmentOverlaysBinding>(),
@@ -54,7 +59,6 @@ class OverlaysFragment : BaseFragment<ShootViewModel, FragmentOverlaysBinding>()
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
 
       if (viewModel.showVin.value == null) {
             shoot("shoot hint called")
@@ -101,7 +105,9 @@ class OverlaysFragment : BaseFragment<ShootViewModel, FragmentOverlaysBinding>()
         observeStartMiscShoots()
 
         viewModel.show360InteriorDialog.observe(viewLifecycleOwner,{
-            if (it)  ThreeSixtyInteriorHintDialog().show(requireActivity().supportFragmentManager, "ThreeSixtyInteriorHintDialog")
+            if (it)
+                if (viewModel.interior360Dialog.value == null)
+                ThreeSixtyInteriorHintDialog().show(requireActivity().supportFragmentManager, "ThreeSixtyInteriorHintDialog")
         })
     }
 
@@ -170,7 +176,7 @@ class OverlaysFragment : BaseFragment<ShootViewModel, FragmentOverlaysBinding>()
            when(getString(R.string.app_name)){
                AppConstants.CARS24,AppConstants.CARS24_INDIA ->  viewModel.exterirorAngles.value = 5
                else ->  {
-                   viewModel.exterirorAngles.value = 8
+                   viewModel.exterirorAngles.value = 4
                }
            }
        }
@@ -178,12 +184,16 @@ class OverlaysFragment : BaseFragment<ShootViewModel, FragmentOverlaysBinding>()
         when(getString(R.string.app_name)) {
             AppConstants.KARVI,AppConstants.CARS24_INDIA,AppConstants.CARS24 -> {}
             else -> {
-                binding.tvShoot?.setOnClickListener {
-                    AngleSelectionDialog().show(
-                requireActivity().supportFragmentManager,
-                "AngleSelectionDialog"
-            )
-                }
+                if (viewModel.startInteriorShots.value == true || viewModel.startMiscShots.value == true){
+                    binding.tvShoot?.isClickable == false }
+                    binding.tvShoot?.setOnClickListener {
+                        AngleSelectionDialog().show(
+                            requireActivity().supportFragmentManager,
+                            "AngleSelectionDialog"
+                        )
+                    }
+
+
             }
         }
 
@@ -496,6 +506,8 @@ class OverlaysFragment : BaseFragment<ShootViewModel, FragmentOverlaysBinding>()
             llProgress?.visibility = View.VISIBLE
             tvSkuName?.text = viewModel.sku.value?.skuName
             binding.imgOverlay.visibility = View.VISIBLE
+            if (viewModel.startInteriorShots.value == true || viewModel.startMiscShots.value == true)
+                binding.imgOverlay.visibility = View.INVISIBLE
         }
 
         val intent = requireActivity().intent
@@ -510,6 +522,8 @@ class OverlaysFragment : BaseFragment<ShootViewModel, FragmentOverlaysBinding>()
                     viewModel.showLeveler.value = true
                     viewModel.shootNumber.value = intent.getIntExtra(AppConstants.EXTERIOR_SIZE,0)
                     binding.imgOverlay.visibility = View.VISIBLE
+                    if (viewModel.startInteriorShots.value == true || viewModel.startMiscShots.value == true)
+                        binding.imgOverlay.visibility = View.INVISIBLE
                 }
                 intent.getBooleanExtra(AppConstants.RESUME_INTERIOR,false) -> {
                     binding.imgOverlay.visibility = View.GONE
@@ -592,6 +606,7 @@ class OverlaysFragment : BaseFragment<ShootViewModel, FragmentOverlaysBinding>()
 
     private fun startInteriorShots() {
         binding.rvSubcategories?.visibility = View.VISIBLE
+        binding.tvShoot.isClickable = false
         binding.imgOverlay.visibility = View.INVISIBLE
 
         viewModel.subCategoriesResponse.observe(viewLifecycleOwner, {
