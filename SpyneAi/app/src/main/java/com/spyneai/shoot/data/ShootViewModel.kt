@@ -20,6 +20,7 @@ import com.spyneai.shoot.workmanager.OverlaysPreloadWorker
 import com.spyneai.shoot.workmanager.RecursiveImageWorker
 import kotlinx.coroutines.launch
 import java.util.*
+import java.util.concurrent.TimeUnit
 
 class ShootViewModel : ViewModel(){
 
@@ -214,6 +215,8 @@ class ShootViewModel : ViewModel(){
         image.imagePath = shootData.capturedImage
         image.sequence = shootData.sequence
 
+         image.skuName = sku.value?.skuName
+
         localRepository.insertImage(image)
 
         //check if long running worker is alive
@@ -245,6 +248,10 @@ class ShootViewModel : ViewModel(){
 
         val longWorkRequest = OneTimeWorkRequest.Builder(RecursiveImageWorker::class.java)
             .addTag("Long Running Worker")
+            .setBackoffCriteria(
+                BackoffPolicy.LINEAR,
+                OneTimeWorkRequest.MIN_BACKOFF_MILLIS,
+                TimeUnit.MILLISECONDS)
 
         WorkManager.getInstance(BaseApplication.getContext())
             .enqueue(

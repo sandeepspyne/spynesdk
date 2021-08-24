@@ -26,10 +26,11 @@ class ShootRepository : BaseRepository() {
         sku_id: RequestBody,
         image_category: RequestBody,
         auth_key: RequestBody,
+        upload_type: RequestBody,
         sequenceNo : Int,
         image: MultipartBody.Part
     ) = safeApiCall {
-        clipperApi.uploadImage(project_id, sku_id, image_category, auth_key, sequenceNo,image)
+        clipperApi.uploadImage(project_id, sku_id, image_category, auth_key, upload_type,sequenceNo,image)
     }
 
     suspend fun createProject(authKey: String,projectName : String,

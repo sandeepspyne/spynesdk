@@ -25,6 +25,7 @@ interface ClipperApi {
         @Part("sku_id") sku_id: RequestBody?,
         @Part("image_category") image_category: RequestBody?,
         @Part("auth_key") auth_key: RequestBody?,
+        @Part("upload_type") upload_type: RequestBody?,
         @Part("frame_seq_no") frame_seq_no: Int,
         @Part file: MultipartBody.Part
     ): UploadImageResponse

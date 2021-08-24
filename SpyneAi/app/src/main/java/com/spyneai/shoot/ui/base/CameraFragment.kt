@@ -818,7 +818,8 @@ class CameraFragment : BaseFragment<ShootViewModel, FragmentCameraBinding>(), Pi
                     binding.tvLevelIndicator.visibility = View.VISIBLE
 
                 if ((pitch.roundToInt() == 0 || (pitch.roundToInt() <= -0 && pitch.roundToInt() >= -3)) ||
-                    pitch.roundToInt() <= -82 && pitch.roundToInt() >= -88) {
+                    pitch.roundToInt() <= -82 && pitch.roundToInt() >= -88 ||
+                    pitch.roundToInt() <= -40 && pitch.roundToInt() >= -45) {
 
                     binding
                         .tvLevelIndicator

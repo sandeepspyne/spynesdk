@@ -61,6 +61,7 @@
         <entry key="app/src/main/res/layout/rv_parent_projects.xml" value="0.19722222222222222" />
         <entry key="app/src/main/res/menu/dashboard_bottom_menu.xml" value="0.14427083333333332" />
         <entry key="app/src/sweepcars/res/menu/dashboard_bottom_menu.xml" value="0.2037037037037037" />
+        <entry key="app/src/swiggy/res/menu/dashboard_bottom_menu.xml" value="0.19814814814814816" />
         <entry key="app/src/udaan/res/layout/home_dashboard_fragment.xml" value="0.19722222222222222" />
       </map>
     </option>
