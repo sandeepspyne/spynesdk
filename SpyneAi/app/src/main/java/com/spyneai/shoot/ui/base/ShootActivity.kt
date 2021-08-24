@@ -213,6 +213,7 @@ class ShootActivity : AppCompatActivity() {
 
         if (intent.getBooleanExtra(AppConstants.SKU_CREATED,false)) {
             shootViewModel.exterirorAngles.value = intent.getIntExtra(AppConstants.EXTERIOR_ANGLES,0)
+
             shootViewModel.getSubCategories(
                 Utilities.getPreference(this, AppConstants.AUTH_KEY).toString(),
                 intent.getStringExtra(AppConstants.CATEGORY_ID).toString()

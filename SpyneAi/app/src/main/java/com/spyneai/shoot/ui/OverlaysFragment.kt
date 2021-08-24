@@ -85,7 +85,7 @@ class OverlaysFragment : BaseFragment<ShootViewModel, FragmentOverlaysBinding>()
         viewModel.isSubCategoryConfirmed.observe(viewLifecycleOwner, {
             //disable angle selection click
             binding.tvShoot?.isClickable = false
-            if (it && !viewModel.fromDrafts) {
+            if (it) {
                 binding.rvSubcategories?.visibility = View.INVISIBLE
             }
         })
@@ -165,7 +165,14 @@ class OverlaysFragment : BaseFragment<ShootViewModel, FragmentOverlaysBinding>()
 
     private fun initAngles() {
        if (viewModel.fromDrafts){
-           viewModel.exterirorAngles.value = requireActivity().intent.getIntExtra(AppConstants.EXTERIOR_ANGLES,0)
+           if (requireActivity().intent.getIntExtra(AppConstants.EXTERIOR_SIZE,0) == 0){
+               if (getString(R.string.app_name) == AppConstants.CARS24_INDIA ||
+                   getString(R.string.app_name) == AppConstants.CARS24){
+                   viewModel.exterirorAngles.value = 5
+               }else {
+                   viewModel.exterirorAngles.value = 8
+               }
+           }
        }else{
            when(getString(R.string.app_name)){
                AppConstants.CARS24,AppConstants.CARS24_INDIA ->  viewModel.exterirorAngles.value = 5
@@ -494,9 +501,12 @@ class OverlaysFragment : BaseFragment<ShootViewModel, FragmentOverlaysBinding>()
             tvSkuName?.visibility = View.VISIBLE
             tvAngleName?.visibility = View.VISIBLE
             llProgress?.visibility = View.VISIBLE
+            imgOverlay?.visibility = View.VISIBLE
             tvSkuName?.text = viewModel.sku.value?.skuName
-            binding.imgOverlay.visibility = View.VISIBLE
         }
+
+        if (getString(R.string.app_name) == AppConstants.KARVI)
+            binding.imgOverlay.visibility = View.GONE
 
         val intent = requireActivity().intent
 
@@ -509,7 +519,9 @@ class OverlaysFragment : BaseFragment<ShootViewModel, FragmentOverlaysBinding>()
                 intent.getBooleanExtra(AppConstants.RESUME_EXTERIOR,false) -> {
                     viewModel.showLeveler.value = true
                     viewModel.shootNumber.value = intent.getIntExtra(AppConstants.EXTERIOR_SIZE,0)
-                    binding.imgOverlay.visibility = View.VISIBLE
+
+                    if (getString(R.string.app_name) != AppConstants.KARVI)
+                        binding.imgOverlay.visibility = View.VISIBLE
                 }
                 intent.getBooleanExtra(AppConstants.RESUME_INTERIOR,false) -> {
                     binding.imgOverlay.visibility = View.GONE
