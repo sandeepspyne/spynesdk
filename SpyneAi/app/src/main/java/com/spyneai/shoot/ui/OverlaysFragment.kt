@@ -578,7 +578,7 @@ class OverlaysFragment : BaseFragment<ShootViewModel, FragmentOverlaysBinding>()
                     )
                     Utilities.hideProgressDialog()
                     shoot("show progress dialog(overlays response failure)")
-                    handleApiError(it)
+                    handleApiError(it) {getOverlays()}
                 }
             }
         })

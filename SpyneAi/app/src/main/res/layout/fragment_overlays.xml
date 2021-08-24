@@ -163,7 +163,6 @@
         app:layout_constraintBottom_toTopOf="@+id/rvSubcategories"
         android:layout_width="0dp"
         android:layout_height="0dp"
-        android:src="@mipmap/defaults"
         android:layout_marginTop="@dimen/dp_100"
         android:layout_marginLeft="@dimen/dp_50"
         android:layout_marginRight="@dimen/dp_50"
