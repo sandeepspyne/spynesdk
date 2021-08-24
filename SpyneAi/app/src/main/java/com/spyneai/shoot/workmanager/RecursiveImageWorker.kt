@@ -34,6 +34,7 @@ import retrofit2.HttpException
 import retrofit2.Response
 import java.io.File
 import java.io.IOException
+import java.util.concurrent.TimeUnit
 
 
 class RecursiveImageWorker(private val appContext: Context, workerParams: WorkerParameters) :
@@ -99,7 +100,7 @@ class RecursiveImageWorker(private val appContext: Context, workerParams: Worker
                 )
 
             var response = shootRepository.uploadImage(projectId!!,
-                skuId!!, imageCategory!!,authKey, image.sequence!!,imageFile)
+                skuId!!, imageCategory!!,authKey, "Direct".toRequestBody(MultipartBody.FORM),image.sequence!!,imageFile)
 
             when(response){
                 is Resource.Success -> {
@@ -179,6 +180,10 @@ class RecursiveImageWorker(private val appContext: Context, workerParams: Worker
 
             val longWorkRequest = OneTimeWorkRequest.Builder(RecursiveImageWorker::class.java)
                 .addTag("Long Running Worker")
+                .setBackoffCriteria(
+                    BackoffPolicy.LINEAR,
+                    OneTimeWorkRequest.MIN_BACKOFF_MILLIS,
+                    TimeUnit.MILLISECONDS)
 
             WorkManager.getInstance(BaseApplication.getContext())
                 .enqueue(

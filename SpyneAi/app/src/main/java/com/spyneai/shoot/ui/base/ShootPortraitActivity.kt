@@ -345,6 +345,10 @@ class ShootPortraitActivity : AppCompatActivity() {
                         shootViewModel.onVolumeKeyPressed.value = !shootViewModel.onVolumeKeyPressed.value!!
                 }
             }
+
+            KeyEvent.KEYCODE_BACK -> {
+                onBackPressed()
+            }
         }
         return true
     }

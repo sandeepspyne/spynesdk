@@ -102,6 +102,7 @@ class ManualSkippedImageWorker (private val appContext: Context, workerParams: W
                             image.skuId!!.toRequestBody(MultipartBody.FORM),
                             image.categoryName!!.toRequestBody(MultipartBody.FORM),
                             authKey.toRequestBody(MultipartBody.FORM),
+                            "Retry".toRequestBody(MultipartBody.FORM),
                             image.sequence!!,
                             imageFile)
 

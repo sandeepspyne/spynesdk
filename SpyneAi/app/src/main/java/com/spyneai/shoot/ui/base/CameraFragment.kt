@@ -581,9 +581,9 @@ class CameraFragment : BaseFragment<ShootViewModel, FragmentCameraBinding>(), Pi
         // The Folder location where all the files will be stored
         val outputDirectory: String by lazy {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-                "${Environment.DIRECTORY_DCIM}/Spyne/"
+                "${Environment.DIRECTORY_DCIM}/Spyne_Test/"
             } else {
-                "${Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DCIM)}/Spyne/"
+                "${Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DCIM)}/Spyne_Test/"
             }
         }
         filename = viewModel.sku.value?.skuName + "_" + viewModel.sku.value?.skuId + "_"

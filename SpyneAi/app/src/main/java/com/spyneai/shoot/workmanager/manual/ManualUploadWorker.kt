@@ -18,8 +18,6 @@ import com.spyneai.shoot.data.ShootLocalRepository
 import com.spyneai.shoot.data.ShootRepository
 import com.spyneai.shoot.data.model.Image
 import com.spyneai.shoot.data.model.ImageFile
-import com.spyneai.shoot.workmanager.RecursiveImageWorker
-import com.spyneai.shoot.workmanager.RecursiveSkippedImagesWorker
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.MultipartBody
 import okhttp3.RequestBody.Companion.asRequestBody
@@ -106,6 +104,7 @@ class ManualUploadWorker (private val appContext: Context, workerParams: WorkerP
                             image.skuId!!.toRequestBody(MultipartBody.FORM),
                            image.categoryName!!.toRequestBody(MultipartBody.FORM),
                             authKey.toRequestBody(MultipartBody.FORM),
+                            "Retry".toRequestBody(MultipartBody.FORM),
                             image.sequence!!,
                             imageFile)
 

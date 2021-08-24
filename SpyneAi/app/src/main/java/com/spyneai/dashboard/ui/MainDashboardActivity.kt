@@ -32,9 +32,7 @@ import com.spyneai.shoot.workmanager.manual.StoreImageFilesWorker
 import java.io.File
 
 import com.google.android.material.snackbar.Snackbar
-import com.spyneai.shoot.workmanager.RecursiveImageWorker
-import com.spyneai.shoot.workmanager.manual.ManualUploadWorker
-import kotlinx.coroutines.launch
+
 
 
 class MainDashboardActivity : AppCompatActivity() {

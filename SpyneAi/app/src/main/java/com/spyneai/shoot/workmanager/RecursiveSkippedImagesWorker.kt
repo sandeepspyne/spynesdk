@@ -85,7 +85,7 @@ class RecursiveSkippedImagesWorker(private val appContext: Context, workerParams
                 )
 
             var response = shootRepository.uploadImage(projectId!!,
-                skuId!!, imageCategory!!,authKey, image.sequence!!,imageFile)
+                skuId!!, imageCategory!!,authKey, "Retry".toRequestBody(MultipartBody.FORM),image.sequence!!,imageFile)
 
             when(response){
                 is Resource.Success -> {
