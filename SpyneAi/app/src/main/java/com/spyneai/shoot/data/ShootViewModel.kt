@@ -31,6 +31,7 @@ class ShootViewModel : ViewModel(){
     var processSku : Boolean = true
      var isStopCaptureClickable = false
 
+    var onVolumeKeyPressed : MutableLiveData<Boolean> = MutableLiveData()
     var fromDrafts = false
     val isSensorAvaliable : MutableLiveData<Boolean> = MutableLiveData()
     var showDialog = true
@@ -240,7 +241,7 @@ class ShootViewModel : ViewModel(){
             } else {
              com.spyneai.shoot.utils.log("not found : start new")
                 //start long running worker
-                //startLongRunningWorker()
+                startLongRunningWorker()
             }
 
     }

@@ -174,6 +174,20 @@ class CameraFragment : BaseFragment<ShootViewModel, FragmentCameraBinding>(), Pi
                 }
             }
         }
+
+        viewModel.onVolumeKeyPressed.observe(viewLifecycleOwner,{
+            when(viewModel.categoryDetails.value?.categoryName){
+                "Automobiles","Footwear" -> {
+                    if (viewModel.subCategory.value?.prod_sub_cat_id != null)
+                        onCaptureClick()
+                }
+
+                "E-Commerce" -> {
+                    if (viewModel.sku.value?.skuId != null)
+                        onCaptureClick()
+                }
+            }
+        })
     }
 
     private fun checkMiscShootStatus() {
@@ -239,38 +253,38 @@ class CameraFragment : BaseFragment<ShootViewModel, FragmentCameraBinding>(), Pi
         super.onActivityCreated(savedInstanceState)
 
 
+        binding.cameraCaptureButton.setOnClickListener {
+            onCaptureClick()
+        }
+    }
+
+    private fun onCaptureClick() {
         when (getString(R.string.app_name)) {
             AppConstants.KARVI, AppConstants.CARS24, AppConstants.CARS24_INDIA -> {
-                binding.cameraCaptureButton?.setOnClickListener {
-                    onCaptureButtonClick()
-                }
+                onCaptureButtonClick()
             }
             "Flipkart", "Udaan", "Lal10", "Amazon" -> {
-                binding.cameraCaptureButton?.setOnClickListener {
-                    captureImage()
-                }
+                captureImage()
             }
-            else
-            -> {
-                binding.cameraCaptureButton?.setOnClickListener {
-                    if (viewModel.shootList.value == null
-                        && !requireActivity().intent.getBooleanExtra(AppConstants.SKU_CREATED,false)) {
-                        viewModel.createProjectRes.observe(viewLifecycleOwner, {
-                            when (it) {
-                                is Resource.Success -> {
-                                    val subCategory = viewModel.subCategory.value
-                                    createSku(
-                                        it.value.project_id,
-                                        subCategory?.prod_sub_cat_id.toString()
-                                    )
-                                }
-                                else -> {
-                                }
+            else -> {
+                if (viewModel.shootList.value == null
+                    && !requireActivity().intent.getBooleanExtra(AppConstants.SKU_CREATED,false))
+                {
+                    viewModel.createProjectRes.observe(viewLifecycleOwner, {
+                        when (it) {
+                            is Resource.Success -> {
+                                val subCategory = viewModel.subCategory.value
+                                createSku(
+                                    it.value.project_id,
+                                    subCategory?.prod_sub_cat_id.toString()
+                                )
                             }
-                        })
-                    } else {
-                        captureImage()
-                    }
+                            else -> {
+                            }
+                        }
+                    })
+                } else {
+                    captureImage()
                 }
             }
         }
@@ -1335,6 +1349,7 @@ class CameraFragment : BaseFragment<ShootViewModel, FragmentCameraBinding>(), Pi
                                 .setInterpolator(AccelerateInterpolator()).start()
                         }, 2000)
                     }
+
 }
 
 

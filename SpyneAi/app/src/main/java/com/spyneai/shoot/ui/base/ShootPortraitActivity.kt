@@ -8,6 +8,7 @@ import android.content.pm.PackageManager
 import android.os.Build
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.view.KeyEvent
 import android.view.WindowManager
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
@@ -329,5 +330,22 @@ class ShootPortraitActivity : AppCompatActivity() {
 
     override fun onBackPressed() {
         ShootExitDialog().show(supportFragmentManager,"ShootExitDialog")
+    }
+
+    // 1. onKeyDown is a boolean function, which returns the state of the KeyEvent.
+    // 4. This code can be used to check if the device responds to any Key.
+    override fun onKeyDown(keyCode: Int, event: KeyEvent?): Boolean {
+
+        when (keyCode) {
+            KeyEvent.KEYCODE_VOLUME_DOWN -> {
+                if (event?.repeatCount == 0){
+                    if (shootViewModel.onVolumeKeyPressed.value == null)
+                        shootViewModel.onVolumeKeyPressed.value = true
+                    else
+                        shootViewModel.onVolumeKeyPressed.value = !shootViewModel.onVolumeKeyPressed.value!!
+                }
+            }
+        }
+        return true
     }
 }
