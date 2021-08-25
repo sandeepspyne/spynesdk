@@ -458,10 +458,11 @@ class CameraFragment : BaseFragment<ShootViewModel, FragmentCameraBinding>(), Pi
                 width = displayMetrics.widthPixels
 
             } else {
+                if (requireActivity() != null){
                 requireActivity().windowManager.defaultDisplay.getMetrics(displayMetrics)
                 height = displayMetrics.heightPixels
                 width = displayMetrics.widthPixels
-            }
+            }}
             val aspectRatio = aspectRatio(width, height)
             // The display rotation
             //val rotation = binding.viewFinder.display.rotation
