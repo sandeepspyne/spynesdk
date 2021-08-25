@@ -1,17 +1,13 @@
-import android.R.attr
 import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.ContentValues
 import android.content.ContentValues.TAG
 import android.content.Context
 import android.content.pm.ActivityInfo
-import android.graphics.ImageFormat
 import android.hardware.Sensor
 import android.hardware.SensorEvent
 import android.hardware.SensorEventListener
 import android.hardware.SensorManager
-import android.hardware.camera2.CameraCharacteristics
-import android.hardware.camera2.CameraManager
 import android.os.*
 import android.provider.MediaStore
 import android.util.DisplayMetrics
@@ -23,8 +19,6 @@ import androidx.camera.core.*
 import androidx.camera.lifecycle.ProcessCameraProvider
 import androidx.core.content.ContextCompat
 import androidx.core.net.toFile
-import androidx.work.await
-import com.google.common.util.concurrent.ListenableFuture
 import com.hbisoft.pickit.PickiT
 import com.hbisoft.pickit.PickiTCallbacks
 import com.posthog.android.Properties
@@ -42,7 +36,6 @@ import com.spyneai.posthog.Events
 import com.spyneai.shoot.data.ShootViewModel
 import com.spyneai.shoot.data.model.ShootData
 import com.spyneai.shoot.utils.log
-import com.spyneai.threesixty.ui.RecordVideoFragment
 import java.io.File
 import java.util.*
 import java.util.concurrent.ExecutionException
@@ -55,19 +48,11 @@ import kotlin.math.min
 import kotlin.math.roundToInt
 import android.media.MediaActionSound
 import android.util.Size
-import com.google.android.play.core.splitinstall.g
 import com.spyneai.shoot.utils.shoot
-import android.R.attr.orientation
-
-
-
-
-
-
 
 
 class CameraFragment : BaseFragment<ShootViewModel, FragmentCameraBinding>(), PickiTCallbacks,
-    SensorEventListener,View.OnTouchListener {
+    SensorEventListener, View.OnTouchListener {
     private var imageCapture: ImageCapture? = null
 
     private var imageAnalyzer: ImageAnalysis? = null
@@ -108,10 +93,10 @@ class CameraFragment : BaseFragment<ShootViewModel, FragmentCameraBinding>(), Pi
     private val rotationMatrix = FloatArray(9)
     private val orientationAngles = FloatArray(3)
 
-    private var cameraControl : CameraControl? = null
-    private var cameraInfo : CameraInfo? = null
-    private var handler : Handler? = null
-     private var isGyroOnCorrectAngle = false
+    private var cameraControl: CameraControl? = null
+    private var cameraInfo: CameraInfo? = null
+    private var handler: Handler? = null
+    private var isGyroOnCorrectAngle = false
 
     private var filename = ""
 
@@ -142,8 +127,8 @@ class CameraFragment : BaseFragment<ShootViewModel, FragmentCameraBinding>(), Pi
         val activity: Activity? = activity
 
         handler!!.postDelayed({
-            if (activity!=null)
-            startCamera()
+            if (activity != null)
+                startCamera()
         }, 300)
 
         cameraExecutor = Executors.newSingleThreadExecutor()
@@ -161,8 +146,9 @@ class CameraFragment : BaseFragment<ShootViewModel, FragmentCameraBinding>(), Pi
         viewModel.showLeveler.observe(viewLifecycleOwner, {
             if (it && isSensorAvaliable) {
                 if (viewModel.categoryDetails.value?.categoryName == "Footwear" ||
-                    viewModel.categoryDetails.value?.categoryName == "E-Commerce")
-                        binding.tvLevelIndicator.visibility = View.GONE
+                    viewModel.categoryDetails.value?.categoryName == "E-Commerce"
+                )
+                    binding.tvLevelIndicator.visibility = View.GONE
 
                 binding.flLevelIndicator.visibility = View.VISIBLE
 
@@ -191,7 +177,7 @@ class CameraFragment : BaseFragment<ShootViewModel, FragmentCameraBinding>(), Pi
 
                 "Focus Shoot" -> {
                     if (viewModel.miscShootNumber.value == viewModel.miscAngles.value?.minus(1)) {
-                       selectBackground()
+                        selectBackground()
                     } else {
                         viewModel.miscShootNumber.value = viewModel.miscShootNumber.value!! + 1
                     }
@@ -199,9 +185,9 @@ class CameraFragment : BaseFragment<ShootViewModel, FragmentCameraBinding>(), Pi
             }
         }
 
-        viewModel.onVolumeKeyPressed.observe(viewLifecycleOwner,{
-            when(viewModel.categoryDetails.value?.categoryName){
-                "Automobiles","Footwear" -> {
+        viewModel.onVolumeKeyPressed.observe(viewLifecycleOwner, {
+            when (viewModel.categoryDetails.value?.categoryName) {
+                "Automobiles", "Footwear" -> {
                     if (viewModel.subCategory.value?.prod_sub_cat_id != null)
                         onCaptureClick()
                 }
@@ -234,7 +220,7 @@ class CameraFragment : BaseFragment<ShootViewModel, FragmentCameraBinding>(), Pi
     }
 
     private fun selectBackground() {
-        if(getString(R.string.app_name) == AppConstants.OLA_CABS)
+        if (getString(R.string.app_name) == AppConstants.OLA_CABS)
             viewModel.show360InteriorDialog.value = true
         else
             viewModel.selectBackground.value = true
@@ -274,7 +260,6 @@ class CameraFragment : BaseFragment<ShootViewModel, FragmentCameraBinding>(), Pi
         super.onDestroy()
     }
 
-
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
 
@@ -289,74 +274,74 @@ class CameraFragment : BaseFragment<ShootViewModel, FragmentCameraBinding>(), Pi
     private fun onCaptureClick() {
         when (getString(R.string.app_name)) {
             AppConstants.KARVI, AppConstants.CARS24, AppConstants.CARS24_INDIA -> {
-                onCaptureButtonClick()
-            }
-            "Flipkart", "Udaan", "Lal10", "Amazon" -> {
-                captureImage()
-            }
-            else -> {
-                if (viewModel.shootList.value == null
-                    && !requireActivity().intent.getBooleanExtra(AppConstants.SKU_CREATED,false))
-                {
-                    viewModel.createProjectRes.observe(viewLifecycleOwner, {
-                        when (it) {
-                            is Resource.Success -> {
-                                val subCategory = viewModel.subCategory.value
-                                createSku(
-                                    it.value.project_id,
-                                    subCategory?.prod_sub_cat_id.toString()
-                                )
-                            }
-                            else -> {
-                            }
+                binding.cameraCaptureButton?.setOnClickListener {
+                    if (viewModel.shootList.value == null) {
+                        if (binding.flLevelIndicator.visibility == View.VISIBLE) {
+                            if (isGyroOnCorrectAngle)
+                                viewModel.createProjectRes.observe(viewLifecycleOwner, {
+                                    when (it) {
+                                        is Resource.Success -> {
+                                            val subCategory = viewModel.subCategory.value
+                                            createSku(
+                                                it.value.project_id,
+                                                subCategory?.prod_sub_cat_id.toString()
+                                            )
+                                        }
+                                        else -> {
+                                        }
+                                    }
+                                })
+                        } else {
+                            viewModel.createProjectRes.observe(viewLifecycleOwner, {
+                                when (it) {
+                                    is Resource.Success -> {
+                                        val subCategory = viewModel.subCategory.value
+                                        createSku(
+                                            it.value.project_id,
+                                            subCategory?.prod_sub_cat_id.toString()
+                                        )
+                                    }
+                                    else -> {
+                                    }
+                                }
+                            })
                         }
-                    })
-                } else {
+                    } else {
+                        if (binding.flLevelIndicator.visibility == View.VISIBLE) {
+                            if (isGyroOnCorrectAngle)
+                                captureImage()
+                        } else {
+                            captureImage()
+                        }
+                    }
+                }
+            }
+            "Flipkart", "Udaan", "Lal10", "Amazon", "Swiggy" -> {
+                binding.cameraCaptureButton?.setOnClickListener {
                     captureImage()
                 }
             }
-        }
-    }
-
-    private fun onCaptureButtonClick() {
-        if (viewModel.shootList.value == null
-            && !requireActivity().intent.getBooleanExtra(AppConstants.SKU_CREATED,false)) {
-            if (binding.flLevelIndicator.visibility == View.VISIBLE) {
-                if (isGyroOnCorrectAngle)
-                    viewModel.createProjectRes.observe(viewLifecycleOwner, {
-                        when (it) {
-                            is Resource.Success -> {
-                                val subCategory = viewModel.subCategory.value
-                                createSku(
-                                    it.value.project_id,
-                                    subCategory?.prod_sub_cat_id.toString()
-                                )
+            else
+            -> {
+                binding.cameraCaptureButton?.setOnClickListener {
+                    if (viewModel.shootList.value == null) {
+                        viewModel.createProjectRes.observe(viewLifecycleOwner, {
+                            when (it) {
+                                is Resource.Success -> {
+                                    val subCategory = viewModel.subCategory.value
+                                    createSku(
+                                        it.value.project_id,
+                                        subCategory?.prod_sub_cat_id.toString()
+                                    )
+                                }
+                                else -> {
+                                }
                             }
-                            else -> {
-                            }
-                        }
-                    })
-            } else {
-                viewModel.createProjectRes.observe(viewLifecycleOwner, {
-                    when (it) {
-                        is Resource.Success -> {
-                            val subCategory = viewModel.subCategory.value
-                            createSku(
-                                it.value.project_id,
-                                subCategory?.prod_sub_cat_id.toString()
-                            )
-                        }
-                        else -> {
-                        }
+                        })
+                    } else {
+                        captureImage()
                     }
-                })
-            }
-        } else {
-            if (binding.flLevelIndicator.visibility == View.VISIBLE) {
-                if (isGyroOnCorrectAngle)
-                    captureImage()
-            } else {
-                captureImage()
+                }
             }
         }
     }
@@ -421,7 +406,6 @@ class CameraFragment : BaseFragment<ShootViewModel, FragmentCameraBinding>(), Pi
         })
     }
 
-
     private fun captureImage() {
         if (viewModel.isCameraButtonClickable) {
             takePhoto()
@@ -467,11 +451,12 @@ class CameraFragment : BaseFragment<ShootViewModel, FragmentCameraBinding>(), Pi
                 width = displayMetrics.widthPixels
 
             } else {
-                if (requireActivity() != null){
-                requireActivity().windowManager.defaultDisplay.getMetrics(displayMetrics)
-                height = displayMetrics.heightPixels
-                width = displayMetrics.widthPixels
-            }}
+                if (requireActivity() != null) {
+                    requireActivity().windowManager.defaultDisplay.getMetrics(displayMetrics)
+                    height = displayMetrics.heightPixels
+                    width = displayMetrics.widthPixels
+                }
+            }
             val aspectRatio = aspectRatio(width, height)
             // The display rotation
             //val rotation = binding.viewFinder.display.rotation
@@ -483,12 +468,20 @@ class CameraFragment : BaseFragment<ShootViewModel, FragmentCameraBinding>(), Pi
             // Preview
             val preview = if (getString(R.string.app_name) == AppConstants.KARVI) {
                 Preview.Builder()
-                    .setTargetResolution(Size(1024,768))
+                    .setTargetResolution(Size(1024, 768))
                     .build()
                     .also {
                         it.setSurfaceProvider(binding.viewFinder.surfaceProvider)
                     }
-            }else {
+            } else if (getString(R.string.app_name) == "Swiggy") {
+                Preview.Builder()
+                    .setTargetAspectRatio(aspectRatio) // set the camera aspect ratio
+                    //   .setTargetRotation(rotation) // set the camera rotation
+                    .build()
+                    .also {
+                        it.setSurfaceProvider(binding.viewFinder.surfaceProvider)
+                    }
+            } else {
                 Preview.Builder()
                     .setTargetAspectRatio(aspectRatio) // set the camera aspect ratio
                     //   .setTargetRotation(rotation) // set the camera rotation
@@ -505,9 +498,9 @@ class CameraFragment : BaseFragment<ShootViewModel, FragmentCameraBinding>(), Pi
                 ImageCapture.Builder()
                     .setCaptureMode(ImageCapture.CAPTURE_MODE_MAXIMIZE_QUALITY)
                     .setFlashMode(flashMode)
-                    .setTargetResolution(Size(1024,768))
+                    .setTargetResolution(Size(1024, 768))
                     .build()
-            }else {
+            } else {
                 ImageCapture.Builder()
                     .setCaptureMode(ImageCapture.CAPTURE_MODE_MAXIMIZE_QUALITY)
                     .setFlashMode(flashMode)
@@ -586,21 +579,16 @@ class CameraFragment : BaseFragment<ShootViewModel, FragmentCameraBinding>(), Pi
         if (abs(previewRatio - RATIO_4_3_VALUE) <= abs(previewRatio - RATIO_16_9_VALUE)) {
             return AspectRatio.RATIO_4_3
         }
+        if (getString(R.string.app_name) == "Swiggy")
+            return AspectRatio.RATIO_4_3
+
         return AspectRatio.RATIO_16_9
     }
-
 
     private fun takePhoto() {
         // Get a stable reference of the modifiable image capture use case
         val imageCapture1 = imageCapture ?: return
 
-//        val photoFile = File(
-//            outputDirectory,
-//            SimpleDateFormat(FILENAME_FORMAT, Locale.US
-//            ).format(System.currentTimeMillis()) + ".jpg")
-//
-//        // Create output options object which contains file + metadata
-//        val outputOptions = ImageCapture.OutputFileOptions.Builder(photoFile).build()
 
         // Setup image capture metadata
         val metadata = ImageCapture.Metadata().apply {
@@ -618,13 +606,17 @@ class CameraFragment : BaseFragment<ShootViewModel, FragmentCameraBinding>(), Pi
         }
         filename = viewModel.sku.value?.skuName + "_" + viewModel.sku.value?.skuId + "_"
 
-        if (viewModel.fromDrafts){
+        if (viewModel.fromDrafts) {
             filename += when (viewModel.categoryDetails.value?.imageType) {
                 "Exterior" -> {
-                    viewModel.categoryDetails.value?.imageType!! + "_" + viewModel.shootNumber.value?.plus(1)
+                    viewModel.categoryDetails.value?.imageType!! + "_" + viewModel.shootNumber.value?.plus(
+                        1
+                    )
                 }
                 "Interior" -> {
-                    viewModel.categoryDetails.value?.imageType!! + "_" + viewModel.interiorShootNumber.value?.plus(1)
+                    viewModel.categoryDetails.value?.imageType!! + "_" + viewModel.interiorShootNumber.value?.plus(
+                        1
+                    )
                 }
                 "Focus Shoot" -> {
                     "Miscellaneous_" + viewModel.miscShootNumber.value?.plus(1)
@@ -633,9 +625,9 @@ class CameraFragment : BaseFragment<ShootViewModel, FragmentCameraBinding>(), Pi
                     System.currentTimeMillis().toString()
                 }
             }
-        }else {
+        } else {
             filename += if (viewModel.shootList.value == null)
-                viewModel.categoryDetails.value?.imageType+"_1"
+                viewModel.categoryDetails.value?.imageType + "_1"
             else {
                 val size = viewModel.shootList.value!!.size.plus(1)
                 val list = viewModel.shootList.value
@@ -676,7 +668,6 @@ class CameraFragment : BaseFragment<ShootViewModel, FragmentCameraBinding>(), Pi
             }
         }
 
-
         // Options fot the output image file
         val outputOptions = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
             val contentValues = ContentValues().apply {
@@ -710,7 +701,6 @@ class CameraFragment : BaseFragment<ShootViewModel, FragmentCameraBinding>(), Pi
                     log("Photo capture failed: " + exc.message)
 
                     Utilities.hideProgressDialog()
-                    Toast.makeText(requireContext(), "Image capture failed", Toast.LENGTH_SHORT).show()
 
                     requireContext().captureFailureEvent(
                         Events.IMAGE_CAPRURE_FAILED,
@@ -796,90 +786,11 @@ class CameraFragment : BaseFragment<ShootViewModel, FragmentCameraBinding>(), Pi
             AppConstants.KARVI -> {
                 if ((roll >= -95 && roll <= -85) && (pitch >= -5 && pitch <= 5)) {
                     isGyroOnCorrectAngle = true
-                    binding
-                        .tvLevelIndicator
-                        ?.animate()
-                        ?.translationY(0f)
-                        ?.setInterpolator(AccelerateInterpolator())?.duration = 0
-
-                    binding.tvLevelIndicator?.rotation = 0f
-
-                    binding.ivTopLeft?.setColorFilter(
-                        ContextCompat.getColor(
-                            requireContext(),
-                            R.color.gyro_in_level
-                        )
-                    )
-                    binding.ivBottomLeft?.setColorFilter(
-                        ContextCompat.getColor(
-                            requireContext(),
-                            R.color.gyro_in_level
-                        )
-                    )
-
-                    binding.ivGryroRing?.setColorFilter(
-                        ContextCompat.getColor(
-                            requireContext(),
-                            R.color.gyro_in_level
-                        )
-                    )
-                    binding.tvLevelIndicator?.background = ContextCompat.getDrawable(
-                        requireContext(),
-                        R.drawable.bg_gyro_level
-                    )
-
-                    binding.ivTopRight?.setColorFilter(
-                        ContextCompat.getColor(
-                            requireContext(),
-                            R.color.gyro_in_level
-                        )
-                    )
-                    binding.ivBottomRight?.setColorFilter(
-                        ContextCompat.getColor(
-                            requireContext(),
-                            R.color.gyro_in_level
-                        )
-                    )
+                    gyroMeterOnLevel(true)
 
                 } else {
                     isGyroOnCorrectAngle = false
-
-                    binding.ivTopLeft?.setColorFilter(
-                        ContextCompat.getColor(
-                            requireContext(),
-                            R.color.gyro_error_level
-                        )
-                    )
-                    binding.ivBottomLeft?.setColorFilter(
-                        ContextCompat.getColor(
-                            requireContext(),
-                            R.color.gyro_error_level
-                        )
-                    )
-
-                    binding.ivGryroRing?.setColorFilter(
-                        ContextCompat.getColor(
-                            requireContext(),
-                            R.color.gyro_error_level
-                        )
-                    )
-                    binding.tvLevelIndicator?.background = ContextCompat.getDrawable(
-                        requireContext(),
-                        R.drawable.bg_gyro_error
-                    )
-
-                    binding.ivTopRight?.setColorFilter(
-                        ContextCompat.getColor(
-                            requireContext(),
-                            R.color.gyro_error_level
-                        )
-                    )
-                    binding.ivBottomRight?.setColorFilter(
-                        ContextCompat.getColor(
-                            requireContext(),
-                            R.color.gyro_error_level
-                        )
-                    )
+                    gyroMeterOffLevel()
 
                     if (movearrow)
                         moveArrow(roll + 90)
@@ -891,104 +802,28 @@ class CameraFragment : BaseFragment<ShootViewModel, FragmentCameraBinding>(), Pi
                             rotateArrow(pitch.plus(0).roundToInt())
                         }
                     }
-
                 }
             }
 
             AppConstants.UDAAN, "Flipkart", "Udaan", "Amazon", "Lal10", "Swiggy" -> {
                 //hide moving line
                 if (pitch.roundToInt() == 0 || (pitch.roundToInt() <= -0 && pitch.roundToInt() >= -3))
-                   // binding.tvLevelIndicator.visibility = View.GONE
+                    binding.tvLevelIndicator.visibility = View.GONE
                 else
                     binding.tvLevelIndicator.visibility = View.VISIBLE
 
                 if ((pitch.roundToInt() == 0 || (pitch.roundToInt() <= -0 && pitch.roundToInt() >= -3)) ||
-                    pitch.roundToInt() <= -82 && pitch.roundToInt() >= -88
+                    pitch.roundToInt() <= -82 && pitch.roundToInt() >= -88 ||
+                    (pitch.roundToInt() <= -40 && pitch.roundToInt() >= -45) && abs(roll.roundToInt()) < 100
                 ) {
-
-//                    binding
-//                        .tvLevelIndicator
-//                        ?.animate()
-//                        ?.translationY(0f)
-//                        ?.setInterpolator(AccelerateInterpolator())?.duration = 0
-
-                    binding.tvLevelIndicator?.rotation = 0f
-
-                    binding.ivTopLeft?.setColorFilter(
-                        ContextCompat.getColor(
-                            requireContext(),
-                            R.color.gyro_in_level
-                        )
-                    )
-                    binding.ivBottomLeft?.setColorFilter(
-                        ContextCompat.getColor(
-                            requireContext(),
-                            R.color.gyro_in_level
-                        )
-                    )
-
-                    binding.ivGryroRing?.setColorFilter(
-                        ContextCompat.getColor(
-                            requireContext(),
-                            R.color.gyro_in_level
-                        )
-                    )
-                    binding.tvLevelIndicator?.background = ContextCompat.getDrawable(
-                        requireContext(),
-                        R.drawable.bg_gyro_level
-                    )
-
-                    binding.ivTopRight?.setColorFilter(
-                        ContextCompat.getColor(
-                            requireContext(),
-                            R.color.gyro_in_level
-                        )
-                    )
-                    binding.ivBottomRight?.setColorFilter(
-                        ContextCompat.getColor(
-                            requireContext(),
-                            R.color.gyro_in_level
-                        )
-                    )
-
+                    if (pitch.roundToInt() == 0 || (pitch.roundToInt() <= -0 && pitch.roundToInt() >= -3))
+                        gyroMeterOnLevel(false)
+                    else if (pitch.roundToInt() <= -40 && pitch.roundToInt() >= -45)
+                        gyroMeterOnLevel(false)
+                    else
+                        gyroMeterOnLevel(true)
                 } else {
-
-                    binding.ivTopLeft?.setColorFilter(
-                        ContextCompat.getColor(
-                            requireContext(),
-                            R.color.gyro_error_level
-                        )
-                    )
-                    binding.ivBottomLeft?.setColorFilter(
-                        ContextCompat.getColor(
-                            requireContext(),
-                            R.color.gyro_error_level
-                        )
-                    )
-
-                    binding.ivGryroRing?.setColorFilter(
-                        ContextCompat.getColor(
-                            requireContext(),
-                            R.color.gyro_error_level
-                        )
-                    )
-                    binding.tvLevelIndicator?.background = ContextCompat.getDrawable(
-                        requireContext(),
-                        R.drawable.bg_gyro_error
-                    )
-
-                    binding.ivTopRight?.setColorFilter(
-                        ContextCompat.getColor(
-                            requireContext(),
-                            R.color.gyro_error_level
-                        )
-                    )
-                    binding.ivBottomRight?.setColorFilter(
-                        ContextCompat.getColor(
-                            requireContext(),
-                            R.color.gyro_error_level
-                        )
-                    )
+                   gyroMeterOffLevel()
 
                     if (movearrow) {
                         if (abs(roll.roundToInt()) < 100) {
@@ -998,102 +833,13 @@ class CameraFragment : BaseFragment<ShootViewModel, FragmentCameraBinding>(), Pi
                         }
 
                     }
-
-//                    if (pRotate){
-//                        if (azimuth >= 0){
-//                            rotateArrow((azimuth - 90).roundToInt())
-//                        }else {
-//                            rotateArrow((azimuth + 90).roundToInt())
-//                        }
-//                    }
-
                 }
             }
             else -> {
                 if ((roll >= -100 && roll <= -80) && (pitch >= -5 && pitch <= 5)) {
-                    binding
-                        .tvLevelIndicator
-                        ?.animate()
-                        ?.translationY(0f)
-                        ?.setInterpolator(AccelerateInterpolator())?.duration = 0
-
-                    binding.tvLevelIndicator?.rotation = 0f
-
-                    binding.ivTopLeft?.setColorFilter(
-                        ContextCompat.getColor(
-                            requireContext(),
-                            R.color.gyro_in_level
-                        )
-                    )
-                    binding.ivBottomLeft?.setColorFilter(
-                        ContextCompat.getColor(
-                            requireContext(),
-                            R.color.gyro_in_level
-                        )
-                    )
-
-                    binding.ivGryroRing?.setColorFilter(
-                        ContextCompat.getColor(
-                            requireContext(),
-                            R.color.gyro_in_level
-                        )
-                    )
-                    binding.tvLevelIndicator?.background = ContextCompat.getDrawable(
-                        requireContext(),
-                        R.drawable.bg_gyro_level
-                    )
-
-                    binding.ivTopRight?.setColorFilter(
-                        ContextCompat.getColor(
-                            requireContext(),
-                            R.color.gyro_in_level
-                        )
-                    )
-                    binding.ivBottomRight?.setColorFilter(
-                        ContextCompat.getColor(
-                            requireContext(),
-                            R.color.gyro_in_level
-                        )
-                    )
-
+                    gyroMeterOnLevel(true)
                 } else {
-
-                    binding.ivTopLeft?.setColorFilter(
-                        ContextCompat.getColor(
-                            requireContext(),
-                            R.color.gyro_error_level
-                        )
-                    )
-                    binding.ivBottomLeft?.setColorFilter(
-                        ContextCompat.getColor(
-                            requireContext(),
-                            R.color.gyro_error_level
-                        )
-                    )
-
-                    binding.ivGryroRing?.setColorFilter(
-                        ContextCompat.getColor(
-                            requireContext(),
-                            R.color.gyro_error_level
-                        )
-                    )
-                    binding.tvLevelIndicator?.background = ContextCompat.getDrawable(
-                        requireContext(),
-                        R.drawable.bg_gyro_error
-                    )
-
-                    binding.ivTopRight?.setColorFilter(
-                        ContextCompat.getColor(
-                            requireContext(),
-                            R.color.gyro_error_level
-                        )
-                    )
-                    binding.ivBottomRight?.setColorFilter(
-                        ContextCompat.getColor(
-                            requireContext(),
-                            R.color.gyro_error_level
-                        )
-                    )
+                    gyroMeterOffLevel()
 
                     if (movearrow)
                         moveArrow(roll + 90)
@@ -1105,22 +851,107 @@ class CameraFragment : BaseFragment<ShootViewModel, FragmentCameraBinding>(), Pi
                             rotateArrow(pitch.plus(0).roundToInt())
                         }
                     }
-
                 }
-
             }
-
-
         }
     }
 
-      private fun rotateArrow(roundToInt: Int) {
-          Log.d(TAG, "rotateArrow: "+roundToInt)
-                        binding.tvLevelIndicator?.rotation = roundToInt.toFloat()
-      }
+    private fun gyroMeterOffLevel() {
+        binding.ivTopLeft?.setColorFilter(
+            ContextCompat.getColor(
+                requireContext(),
+                R.color.gyro_error_level
+            )
+        )
+        binding.ivBottomLeft?.setColorFilter(
+            ContextCompat.getColor(
+                requireContext(),
+                R.color.gyro_error_level
+            )
+        )
 
-                    override fun onAccuracyChanged(sensor: Sensor?, accuracy: Int) {
-                }
+        binding.ivGryroRing?.setColorFilter(
+            ContextCompat.getColor(
+                requireContext(),
+                R.color.gyro_error_level
+            )
+        )
+        binding.tvLevelIndicator?.background = ContextCompat.getDrawable(
+            requireContext(),
+            R.drawable.bg_gyro_error
+        )
+
+        binding.ivTopRight?.setColorFilter(
+            ContextCompat.getColor(
+                requireContext(),
+                R.color.gyro_error_level
+            )
+        )
+        binding.ivBottomRight?.setColorFilter(
+            ContextCompat.getColor(
+                requireContext(),
+                R.color.gyro_error_level
+            )
+        )
+    }
+
+    private fun gyroMeterOnLevel(removeAnimation : Boolean) {
+       if (removeAnimation) {
+           binding
+               .tvLevelIndicator
+               ?.animate()
+               ?.translationY(0f)
+               ?.setInterpolator(AccelerateInterpolator())?.duration = 0
+       }
+
+
+        binding.tvLevelIndicator?.rotation = 0f
+
+        binding.ivTopLeft?.setColorFilter(
+            ContextCompat.getColor(
+                requireContext(),
+                R.color.gyro_in_level
+            )
+        )
+        binding.ivBottomLeft?.setColorFilter(
+            ContextCompat.getColor(
+                requireContext(),
+                R.color.gyro_in_level
+            )
+        )
+
+        binding.ivGryroRing?.setColorFilter(
+            ContextCompat.getColor(
+                requireContext(),
+                R.color.gyro_in_level
+            )
+        )
+        binding.tvLevelIndicator?.background = ContextCompat.getDrawable(
+            requireContext(),
+            R.drawable.bg_gyro_level
+        )
+
+        binding.ivTopRight?.setColorFilter(
+            ContextCompat.getColor(
+                requireContext(),
+                R.color.gyro_in_level
+            )
+        )
+        binding.ivBottomRight?.setColorFilter(
+            ContextCompat.getColor(
+                requireContext(),
+                R.color.gyro_in_level
+            )
+        )
+    }
+
+    private fun rotateArrow(roundToInt: Int) {
+        Log.d(TAG, "rotateArrow: " + roundToInt)
+        binding.tvLevelIndicator?.rotation = roundToInt.toFloat()
+    }
+
+    override fun onAccuracyChanged(sensor: Sensor?, accuracy: Int) {
+    }
 
     private fun moveArrow(newRoll: Double) {
         if (newRoll > 0 && (centerPosition + newRoll) < bottomConstraint) {
@@ -1140,254 +971,253 @@ class CameraFragment : BaseFragment<ShootViewModel, FragmentCameraBinding>(), Pi
         }
     }
 
+    private fun getPreviewDimensions(view: View, type: Int) {
+        view.viewTreeObserver.addOnGlobalLayoutListener(object :
+            ViewTreeObserver.OnGlobalLayoutListener {
+            override fun onGlobalLayout() {
+                view.viewTreeObserver.removeOnGlobalLayoutListener(this)
 
-                    private fun getPreviewDimensions(view: View, type: Int) {
-                        view.viewTreeObserver.addOnGlobalLayoutListener(object :
-                            ViewTreeObserver.OnGlobalLayoutListener {
-                            override fun onGlobalLayout() {
-                                view.viewTreeObserver.removeOnGlobalLayoutListener(this)
+                when (type) {
+                    0 -> {
+                        val shootDimensions = ShootDimensions()
+                        shootDimensions.previewWidth = view.width
+                        shootDimensions.previewHeight = view.height
 
-                                when (type) {
-                                    0 -> {
-                                        val shootDimensions = ShootDimensions()
-                                        shootDimensions.previewWidth = view.width
-                                        shootDimensions.previewHeight = view.height
-
-                                        viewModel.shootDimensions.value = shootDimensions
-                                    }
-
-                                    1 -> {
-                                        topConstraint = view.top
-                                        bottomConstraint = topConstraint + view.height
-                                    }
-
-                                    2 -> {
-                                        centerPosition = view.top
-                                    }
-                                }
-
-                            }
-                        })
+                        viewModel.shootDimensions.value = shootDimensions
                     }
 
-                    private fun addShootItem(capturedImage: String) {
-                        viewModel.showConfirmReshootDialog.value = true
+                    1 -> {
+                        topConstraint = view.top
+                        bottomConstraint = topConstraint + view.height
+                    }
 
-                        //play shutter sound
-                        val sound = MediaActionSound()
-                        sound.play(MediaActionSound.SHUTTER_CLICK)
+                    2 -> {
+                        centerPosition = view.top
+                    }
+                }
 
-                        if (viewModel.shootList.value == null) {
-                            Utilities.hideProgressDialog()
-                            Utilities.hideProgressDialog()
-                            viewModel.shootList.value = ArrayList()
-                        }
+            }
+        })
+    }
 
-                        viewModel.shootList.value!!.add(
-                            ShootData(
-                                capturedImage,
-                                viewModel.projectId.value!!,
-                                viewModel.sku.value?.skuId!!,
-                                viewModel.categoryDetails.value?.imageType!!,
-                                Utilities.getPreference(requireContext(), AppConstants.AUTH_KEY).toString(),
-                                viewModel.shootList.value!!.size.plus(1)
-                            )
+    private fun addShootItem(capturedImage: String) {
+        viewModel.showConfirmReshootDialog.value = true
+
+        //play shutter sound
+        val sound = MediaActionSound()
+        sound.play(MediaActionSound.SHUTTER_CLICK)
+
+        if (viewModel.shootList.value == null) {
+            Utilities.hideProgressDialog()
+            Utilities.hideProgressDialog()
+            viewModel.shootList.value = ArrayList()
+        }
+
+        viewModel.shootList.value!!.add(
+            ShootData(
+                capturedImage,
+                viewModel.projectId.value!!,
+                viewModel.sku.value?.skuId!!,
+                viewModel.categoryDetails.value?.imageType!!,
+                Utilities.getPreference(requireContext(), AppConstants.AUTH_KEY).toString(),
+                viewModel.shootList.value!!.size.plus(1)
+            )
+        )
+
+        viewModel.shootList.value = viewModel.shootList.value
+
+        val properties = Properties()
+        properties.apply {
+            this["project_id"] = viewModel.projectId.value!!
+            this["sku_id"] = viewModel.sku.value?.skuId!!
+            this["image_type"] = viewModel.categoryDetails.value?.imageType!!
+        }
+
+        requireContext().captureEvent(Events.IMAGE_CAPTURED, properties)
+    }
+
+    override fun getViewModel() = ShootViewModel::class.java
+
+    override fun getFragmentBinding(
+        inflater: LayoutInflater,
+        container: ViewGroup?
+    ) = FragmentCameraBinding.inflate(inflater, container, false)
+
+    override fun PickiTonUriReturned() {
+
+    }
+
+    override fun PickiTonStartListener() {
+
+    }
+
+    override fun PickiTonProgressUpdate(progress: Int) {
+
+    }
+
+    override fun PickiTonCompleteListener(
+        path: String?,
+        wasDriveFile: Boolean,
+        wasUnknownProvider: Boolean,
+        wasSuccessful: Boolean,
+        Reason: String?
+    ) {
+        addShootItem(path!!)
+    }
+
+    @SuppressLint("UnsafeOptInUsageError")
+    override fun onTouch(v: View?, event: MotionEvent?): Boolean {
+        when (event!!.action) {
+            MotionEvent.ACTION_DOWN -> return true
+
+            MotionEvent.ACTION_UP -> {
+                // Get the MeteringPointFactory from PreviewView
+                val factory = binding.viewFinder.getMeteringPointFactory()
+
+                // Create a MeteringPoint from the tap coordinates
+                val point = factory.createPoint(event.x, event.y)
+
+
+                // Create a MeteringAction from the MeteringPoint, you can configure it to specify the metering mode
+                val action = FocusMeteringAction.Builder(point).build()
+
+                // Trigger the focus and metering. The method returns a ListenableFuture since the operation
+                // is asynchronous. You can use it get notified when the focus is successful or if it fails.
+                if (cameraControl != null) {
+                    val listenable = cameraControl!!.startFocusAndMetering(action)
+
+                    val layout =
+                        LayoutInflater.from(requireContext())
+                            .inflate(R.layout.item_focus, null)
+                    val ivFocus: ImageView = layout.findViewById(R.id.ivFocus)
+                    //val tvExposure: TextView = layout.findViewById(R.id.tvExposure)
+
+                    val rightSeekBar: SeekBar =
+                        LayoutInflater.from(requireContext())
+                            .inflate(R.layout.item_exposure, null) as SeekBar
+
+                    var seekClicked = false
+                    val seekWidth = (30 * resources.displayMetrics.density).toInt()
+
+                    val width = (70 * resources.displayMetrics.density).toInt()
+                    val height = (80 * resources.displayMetrics.density).toInt()
+
+                    val params = FrameLayout.LayoutParams(width, height)
+                    var seekParams =
+                        FrameLayout.LayoutParams(
+                            seekWidth,
+                            FrameLayout.LayoutParams.WRAP_CONTENT
                         )
 
-                        viewModel.shootList.value = viewModel.shootList.value
+                    if (cameraInfo?.exposureState?.isExposureCompensationSupported == true) {
+                        val exposureState = cameraInfo?.exposureState
 
-                        val properties = Properties()
-                        properties.apply {
-                            this["project_id"] = viewModel.projectId.value!!
-                            this["sku_id"] = viewModel.sku.value?.skuId!!
-                            this["image_type"] = viewModel.categoryDetails.value?.imageType!!
+                        rightSeekBar.max =
+                            exposureState?.exposureCompensationRange?.upper?.times(10)!!
+
+                        rightSeekBar.incrementProgressBy(1)
+                        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.N) {
+                            rightSeekBar.setProgress(
+                                exposureState?.exposureCompensationIndex?.times(
+                                    10
+                                )!!, false
+                            )
                         }
 
-                        requireContext().captureEvent(Events.IMAGE_CAPTURED, properties)
-                    }
+                        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
+                            rightSeekBar.min =
+                                exposureState?.exposureCompensationRange?.lower?.times(
+                                    10
+                                )!!
+                        }
 
-                    override fun getViewModel() = ShootViewModel::class.java
+                        //rightSeekBar.min = exposureState?.exposureCompensationRange?.lower!!
 
-                    override fun getFragmentBinding(
-                        inflater: LayoutInflater,
-                        container: ViewGroup?
-                        ) = FragmentCameraBinding.inflate(inflater, container, false)
-
-                    override fun PickiTonUriReturned() {
-
-                    }
-
-                    override fun PickiTonStartListener() {
-
-                    }
-
-                    override fun PickiTonProgressUpdate(progress: Int) {
-
-                    }
-
-                    override fun PickiTonCompleteListener(
-                        path: String?,
-                wasDriveFile: Boolean,
-                wasUnknownProvider: Boolean,
-                wasSuccessful: Boolean,
-                Reason: String?
-                        ) {
-                        addShootItem(path!!)
-                    }
-
-                    @SuppressLint("UnsafeOptInUsageError")
-                    override fun onTouch(v: View?, event: MotionEvent?): Boolean {
-                        when (event!!.action) {
-                            MotionEvent.ACTION_DOWN -> return true
-
-                            MotionEvent.ACTION_UP -> {
-                                // Get the MeteringPointFactory from PreviewView
-                                val factory = binding.viewFinder.getMeteringPointFactory()
-
-                                // Create a MeteringPoint from the tap coordinates
-                                val point = factory.createPoint(event.x, event.y)
-
-
-                                // Create a MeteringAction from the MeteringPoint, you can configure it to specify the metering mode
-                                val action = FocusMeteringAction.Builder(point).build()
-
-                                // Trigger the focus and metering. The method returns a ListenableFuture since the operation
-                                // is asynchronous. You can use it get notified when the focus is successful or if it fails.
-                                if (cameraControl != null) {
-                                    val listenable = cameraControl!!.startFocusAndMetering(action)
-
-                                    val layout =
-                                        LayoutInflater.from(requireContext())
-                                            .inflate(R.layout.item_focus, null)
-                                    val ivFocus: ImageView = layout.findViewById(R.id.ivFocus)
-                                    //val tvExposure: TextView = layout.findViewById(R.id.tvExposure)
-
-                                    val rightSeekBar: SeekBar =
-                                        LayoutInflater.from(requireContext())
-                                            .inflate(R.layout.item_exposure, null) as SeekBar
-
-                                    var seekClicked = false
-                                    val seekWidth = (30 * resources.displayMetrics.density).toInt()
-
-                                    val width = (70 * resources.displayMetrics.density).toInt()
-                                    val height = (80 * resources.displayMetrics.density).toInt()
-
-                                    val params = FrameLayout.LayoutParams(width, height)
-                                    var seekParams =
-                                        FrameLayout.LayoutParams(
-                                            seekWidth,
-                                            FrameLayout.LayoutParams.WRAP_CONTENT
-                                        )
-
-                                    if (cameraInfo?.exposureState?.isExposureCompensationSupported == true) {
-                                        val exposureState = cameraInfo?.exposureState
-
-                                        rightSeekBar.max =
-                                            exposureState?.exposureCompensationRange?.upper?.times(10)!!
-
-                                        rightSeekBar.incrementProgressBy(1)
-                                        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.N) {
-                                            rightSeekBar.setProgress(
-                                                exposureState?.exposureCompensationIndex?.times(
-                                                    10
-                                                )!!, false
-                                            )
-                                        }
-
-                                        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
-                                            rightSeekBar.min =
-                                                exposureState?.exposureCompensationRange?.lower?.times(
-                                                    10
-                                                )!!
-                                        }
-
-                                        //rightSeekBar.min = exposureState?.exposureCompensationRange?.lower!!
-
-                                        rightSeekBar?.setOnSeekBarChangeListener(object :
-                                            SeekBar.OnSeekBarChangeListener {
-                                            override fun onProgressChanged(
-                                                seek: SeekBar,
-                                                progress: Int, fromUser: Boolean
-                                            ) {
-                                                if (!seekClicked) {
-                                                    seekClicked = true
-                                                    seekParams.width =
-                                                        (150 * resources.displayMetrics.density).toInt()
-                                                    seekParams.leftMargin = params.leftMargin + width / 5
-                                                    rightSeekBar.layoutParams = seekParams
-                                                }
-
-                                                ivFocus.animate().cancel()
-                                                rightSeekBar.animate().cancel()
-
-                                                cameraControl!!.setExposureCompensationIndex(
-                                                    progress.times(0.10).roundToInt()
-                                                )
-                                                //tvExposure.text = progress.times(0.10).roundToInt().toString()
-                                                // write custom code for progress is changed
-                                            }
-
-                                            override fun onStartTrackingTouch(seek: SeekBar) {
-                                                // write custom code for progress is started
-                                            }
-
-                                            override fun onStopTrackingTouch(seek: SeekBar) {
-                                                startFadeAnimation(ivFocus, rightSeekBar)
-                                            }
-                                        })
-                                    } else {
-                                        rightSeekBar.visibility = View.GONE
-                                    }
-
-                                    binding.flTapToFocus?.removeAllViews()
-
-                                    params.leftMargin = when {
-                                        event.x.roundToInt() - width / 2 <= width -> 5
-                                        event.x.roundToInt() - width / 2 + width >= viewModel.shootDimensions.value?.previewWidth!! -> {
-                                            viewModel.shootDimensions.value?.previewWidth!! - width + 15
-                                        }
-                                        else -> event.x.roundToInt() - width / 2
-                                    }
-
-                                    params.topMargin = when {
-                                        event.y.roundToInt() - height / 2 <= width -> 5
-                                        event.y.roundToInt() - height / 2 >= viewModel.shootDimensions.value?.previewHeight!! -> {
-                                            viewModel.shootDimensions.value?.previewHeight!! - height
-                                        }
-                                        else -> event.y.roundToInt() - height / 2
-                                    }
-
-                                    ivFocus.layoutParams = params
-
-
-                                    seekParams.leftMargin = params.leftMargin + width
-                                    seekParams.topMargin = params.topMargin + height / 3
+                        rightSeekBar?.setOnSeekBarChangeListener(object :
+                            SeekBar.OnSeekBarChangeListener {
+                            override fun onProgressChanged(
+                                seek: SeekBar,
+                                progress: Int, fromUser: Boolean
+                            ) {
+                                if (!seekClicked) {
+                                    seekClicked = true
+                                    seekParams.width =
+                                        (150 * resources.displayMetrics.density).toInt()
+                                    seekParams.leftMargin = params.leftMargin + width / 5
                                     rightSeekBar.layoutParams = seekParams
-
-                                    binding.flTapToFocus?.addView(layout)
-                                    binding.flTapToFocus?.addView(rightSeekBar)
-
-                                    startFadeAnimation(ivFocus, rightSeekBar)
                                 }
 
-                                return true
+                                ivFocus.animate().cancel()
+                                rightSeekBar.animate().cancel()
+
+                                cameraControl!!.setExposureCompensationIndex(
+                                    progress.times(0.10).roundToInt()
+                                )
+                                //tvExposure.text = progress.times(0.10).roundToInt().toString()
+                                // write custom code for progress is changed
                             }
-                            else ->                 // Unhandled event.
-                                return false
-                        }
-                        return true
+
+                            override fun onStartTrackingTouch(seek: SeekBar) {
+                                // write custom code for progress is started
+                            }
+
+                            override fun onStopTrackingTouch(seek: SeekBar) {
+                                startFadeAnimation(ivFocus, rightSeekBar)
+                            }
+                        })
+                    } else {
+                        rightSeekBar.visibility = View.GONE
                     }
+
+                    binding.flTapToFocus?.removeAllViews()
+
+                    params.leftMargin = when {
+                        event.x.roundToInt() - width / 2 <= width -> 5
+                        event.x.roundToInt() - width / 2 + width >= viewModel.shootDimensions.value?.previewWidth!! -> {
+                            viewModel.shootDimensions.value?.previewWidth!! - width + 15
+                        }
+                        else -> event.x.roundToInt() - width / 2
+                    }
+
+                    params.topMargin = when {
+                        event.y.roundToInt() - height / 2 <= width -> 5
+                        event.y.roundToInt() - height / 2 >= viewModel.shootDimensions.value?.previewHeight!! -> {
+                            viewModel.shootDimensions.value?.previewHeight!! - height
+                        }
+                        else -> event.y.roundToInt() - height / 2
+                    }
+
+                    ivFocus.layoutParams = params
+
+
+                    seekParams.leftMargin = params.leftMargin + width
+                    seekParams.topMargin = params.topMargin + height / 3
+                    rightSeekBar.layoutParams = seekParams
+
+                    binding.flTapToFocus?.addView(layout)
+                    binding.flTapToFocus?.addView(rightSeekBar)
+
+                    startFadeAnimation(ivFocus, rightSeekBar)
+                }
+
+                return true
+            }
+            else ->                 // Unhandled event.
+                return false
+        }
+        return true
+    }
 
     private fun startFadeAnimation(ivFocus: ImageView, rightSeekBar: SeekBar) {
-                        handler?.removeCallbacksAndMessages(null)
+        handler?.removeCallbacksAndMessages(null)
 
-                        handler?.postDelayed({
-                            ivFocus.animate().alpha(0f).setDuration(1000)
-                                .setInterpolator(AccelerateInterpolator()).start()
-                            rightSeekBar.animate().alpha(0f).setDuration(1000)
-                                .setInterpolator(AccelerateInterpolator()).start()
-                        }, 2000)
-                    }
+        handler?.postDelayed({
+            ivFocus.animate().alpha(0f).setDuration(1000)
+                .setInterpolator(AccelerateInterpolator()).start()
+            rightSeekBar.animate().alpha(0f).setDuration(1000)
+                .setInterpolator(AccelerateInterpolator()).start()
+        }, 2000)
+    }
 
     override fun onStart() {
         super.onStart()
@@ -1408,7 +1238,6 @@ class CameraFragment : BaseFragment<ShootViewModel, FragmentCameraBinding>(), Pi
         super.onSaveInstanceState(outState)
         shoot("onSaveInstanceState called(camera fragment)")
     }
-
 }
 
 

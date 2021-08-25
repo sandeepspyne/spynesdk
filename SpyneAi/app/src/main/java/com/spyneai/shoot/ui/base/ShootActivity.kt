@@ -99,7 +99,7 @@ class ShootActivity : AppCompatActivity() {
                 }
             }
 
-            "E-Commerce" -> {
+            "E-Commerce", "Food & Beverages" -> {
                 shootViewModel.processSku = false
                 if(savedInstanceState == null) { // initial transaction should be wrapped like this
                     supportFragmentManager.beginTransaction()

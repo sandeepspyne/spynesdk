@@ -77,21 +77,7 @@ class MainDashboardActivity : AppCompatActivity() {
                             startActivity(intent)
 
                         }
-                            "Flipkart", "Udaan", "Lal10", "Amazon" -> {
-//                            var intent = Intent(this, ShootPortraitActivity::class.java)
-//                            if (Utilities.getPreference(this@MainDashboardActivity, AppConstants.CATEGORY_NAME).equals("Footwear")){
-//                                intent.putExtra(AppConstants.CATEGORY_ID,AppConstants.FOOTWEAR_CATEGORY_ID)
-//                                intent.putExtra(AppConstants.CATEGORY_NAME,"Footwear")
-//                                Utilities.savePrefrence(this@MainDashboardActivity, AppConstants.CATEGORY_ID, AppConstants.FOOTWEAR_CATEGORY_ID)
-//                                Utilities.savePrefrence(this@MainDashboardActivity, AppConstants.CATEGORY_NAME, "Footwear")
-//                            }else if(Utilities.getPreference(this@MainDashboardActivity, AppConstants.CATEGORY_NAME).equals("E-Commerce")){
-//                                intent.putExtra(AppConstants.CATEGORY_ID,AppConstants.ECOM_CATEGORY_ID)
-//                                intent.putExtra(AppConstants.CATEGORY_NAME,"E-Commerce")
-//                                Utilities.savePrefrence(this@MainDashboardActivity, AppConstants.CATEGORY_ID, AppConstants.ECOM_CATEGORY_ID)
-//                                Utilities.savePrefrence(this@MainDashboardActivity, AppConstants.CATEGORY_NAME, "E-Commerce")
-//                            }
-//                            startActivity(intent)
-
+                            "Flipkart", "Udaan", "Lal10", "Amazon", "Swiggy" -> {
                                 val intent = Intent(this@MainDashboardActivity, CategoriesActivity::class.java)
                                 startActivity(intent)
 
@@ -110,7 +96,7 @@ class MainDashboardActivity : AppCompatActivity() {
                     val intent = Intent(this, MyOrdersActivity::class.java)
                     startActivity(intent)
                 }
-               // R.id.wallet->setCurrentFragment(SecondFragment)
+                R.id.wallet->setCurrentFragment(SecondFragment)
                 R.id.logoutDashBoardFragment->setCurrentFragment(thirdFragment)
 
             }

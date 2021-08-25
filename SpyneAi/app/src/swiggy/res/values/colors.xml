@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="primary">#FC791A</color>
+    <color name="primary_light">#34FC791A</color>
+    <color name="secondary">#E4E4E4</color>
+    <color name="splash_bg">#ffffff</color>
+    <color name="accent">#F07E54</color>
+    <color name="order_completed">#FC791A</color>
+    <color name="red">#ef233c</color>
+
+    <color name="light">#FC791A</color>
+
+    <color name="bottom_nav_selected">#FC791A</color>
+    <color name="bottom_nav_unselected">#000000</color>
+
+    <color name="sub_cat_selection">#FC791A</color>
+</resources>

@@ -90,7 +90,7 @@ class ShootPortraitActivity : AppCompatActivity() {
                     .add(R.id.flCamerFragment, overlaysFragment)
                     .commitAllowingStateLoss()
             }
-        }else if (Utilities.getPreference(this, AppConstants.CATEGORY_NAME).equals("E-Commerce")){
+        }else if (Utilities.getPreference(this, AppConstants.CATEGORY_NAME).equals("E-Commerce") || Utilities.getPreference(this, AppConstants.CATEGORY_NAME).equals("Food & Beverages")){
             if(savedInstanceState == null) { // initial transaction should be wrapped like this
                 supportFragmentManager.beginTransaction()
                     .add(R.id.flCamerFragment, cameraFragment)
@@ -113,7 +113,8 @@ class ShootPortraitActivity : AppCompatActivity() {
                 e.printStackTrace()
             }
 
-        }else if (Utilities.getPreference(this, AppConstants.CATEGORY_NAME).equals("Footwear")){
+        }
+        else if (Utilities.getPreference(this, AppConstants.CATEGORY_NAME).equals("Footwear")){
             shootViewModel.processSku = false
             if(savedInstanceState == null) { // initial transaction should be wrapped like this
                 supportFragmentManager.beginTransaction()

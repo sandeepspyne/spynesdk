@@ -29,7 +29,7 @@
     <color name="credit_plan_selected">#F0EEEE</color>
     <color name="green">#40CE4E</color>
     <color name="zero_credits">#FF1F1F</color>
-    <color name="red">#FF1F1F</color>
+    <color name="red">#FF0000</color>
     <color name="available_credits">#33AF38</color>
 
     <color name="black_varient">#424242</color>
