@@ -31,6 +31,7 @@ class MiscShotsDialog : BaseDialogFragment<ShootViewModel, DialogFocusedHintBind
 
         binding.tvSkipFocused.setOnClickListener {
             selectBackground()
+            viewModel.startMiscShots.value = true
             dismiss()
         }
 

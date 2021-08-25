@@ -48,6 +48,7 @@ class ShootViewModel : ViewModel(){
     val totalSkuCaptured : MutableLiveData<String> = MutableLiveData()
     val totalImageCaptured : MutableLiveData<String> = MutableLiveData()
     val show360InteriorDialog : MutableLiveData<Boolean> = MutableLiveData()
+    val interior360Dialog : MutableLiveData<Boolean> = MutableLiveData()
 
     val iniProgressFrame : MutableLiveData<Boolean> = MutableLiveData()
 

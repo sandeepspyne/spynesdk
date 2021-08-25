@@ -1,5 +1,6 @@
 package com.spyneai.shoot.ui
 
+import android.content.Context
 import android.content.res.Configuration
 import android.graphics.drawable.Drawable
 import android.os.Bundle
@@ -40,6 +41,8 @@ import com.spyneai.shoot.utils.shoot
 import kotlinx.coroutines.launch
 import java.util.*
 import kotlin.collections.ArrayList
+import com.iceteck.silicompressorr.videocompression.MediaController.mContext
+import com.spyneai.shoot.utils.log
 
 
 class OverlaysFragment : BaseFragment<ShootViewModel, FragmentOverlaysBinding>(),
@@ -52,9 +55,24 @@ class OverlaysFragment : BaseFragment<ShootViewModel, FragmentOverlaysBinding>()
     private var showDialog = true
     var pos = 0
 
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        shoot("onCreate called(overlay fragment)")
+    }
+
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
+        return super.onCreateView(inflater, container, savedInstanceState)
+        shoot("onCreateView called(overlay fragment)")
+    }
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        shoot("onViewCreated called(overlay fragment)")
 
       if (viewModel.showVin.value == null) {
             shoot("shoot hint called")
@@ -101,7 +119,9 @@ class OverlaysFragment : BaseFragment<ShootViewModel, FragmentOverlaysBinding>()
         observeStartMiscShoots()
 
         viewModel.show360InteriorDialog.observe(viewLifecycleOwner,{
-            if (it)  ThreeSixtyInteriorHintDialog().show(requireActivity().supportFragmentManager, "ThreeSixtyInteriorHintDialog")
+            if (it)
+                if (viewModel.interior360Dialog.value == null)
+                ThreeSixtyInteriorHintDialog().show(requireActivity().supportFragmentManager, "ThreeSixtyInteriorHintDialog")
         })
     }
 
@@ -177,7 +197,7 @@ class OverlaysFragment : BaseFragment<ShootViewModel, FragmentOverlaysBinding>()
            when(getString(R.string.app_name)){
                AppConstants.CARS24,AppConstants.CARS24_INDIA ->  viewModel.exterirorAngles.value = 5
                else ->  {
-                   viewModel.exterirorAngles.value = 8
+                   viewModel.exterirorAngles.value = 4
                }
            }
        }
@@ -185,12 +205,13 @@ class OverlaysFragment : BaseFragment<ShootViewModel, FragmentOverlaysBinding>()
         when(getString(R.string.app_name)) {
             AppConstants.KARVI,AppConstants.CARS24_INDIA,AppConstants.CARS24 -> {}
             else -> {
-                binding.tvShoot?.setOnClickListener {
-                    AngleSelectionDialog().show(
-                requireActivity().supportFragmentManager,
-                "AngleSelectionDialog"
-            )
-                }
+                    binding.tvShoot?.setOnClickListener {
+                        if ((viewModel.startInteriorShots.value != true || viewModel.startMiscShots.value != true )&& viewModel.sku.value?.skuId == null)
+                        AngleSelectionDialog().show(requireActivity().supportFragmentManager, "AngleSelectionDialog"
+                        )
+                    }
+
+
             }
         }
 
@@ -503,6 +524,9 @@ class OverlaysFragment : BaseFragment<ShootViewModel, FragmentOverlaysBinding>()
             llProgress?.visibility = View.VISIBLE
             imgOverlay?.visibility = View.VISIBLE
             tvSkuName?.text = viewModel.sku.value?.skuName
+            binding.imgOverlay.visibility = View.VISIBLE
+            if (viewModel.startInteriorShots.value == true || viewModel.startMiscShots.value == true)
+                binding.imgOverlay.visibility = View.INVISIBLE
         }
 
         if (getString(R.string.app_name) == AppConstants.KARVI)
@@ -522,6 +546,8 @@ class OverlaysFragment : BaseFragment<ShootViewModel, FragmentOverlaysBinding>()
 
                     if (getString(R.string.app_name) != AppConstants.KARVI)
                         binding.imgOverlay.visibility = View.VISIBLE
+                    if (viewModel.startInteriorShots.value == true || viewModel.startMiscShots.value == true)
+                        binding.imgOverlay.visibility = View.INVISIBLE
                 }
                 intent.getBooleanExtra(AppConstants.RESUME_INTERIOR,false) -> {
                     binding.imgOverlay.visibility = View.GONE
@@ -604,6 +630,7 @@ class OverlaysFragment : BaseFragment<ShootViewModel, FragmentOverlaysBinding>()
 
     private fun startInteriorShots() {
         binding.rvSubcategories?.visibility = View.VISIBLE
+        binding.tvShoot.isClickable = false
         binding.imgOverlay.visibility = View.INVISIBLE
 
         viewModel.subCategoriesResponse.observe(viewLifecycleOwner, {
@@ -724,7 +751,8 @@ class OverlaysFragment : BaseFragment<ShootViewModel, FragmentOverlaysBinding>()
                            miscList = it.value.miscellaneous
                        }
 
-                   }else {
+                   }
+                   else {
                        val myMiscShootList = viewModel.shootList.value?.filter {
                            it.image_category == "Focus Shoot"
                        }
@@ -769,7 +797,7 @@ class OverlaysFragment : BaseFragment<ShootViewModel, FragmentOverlaysBinding>()
             miscAdapter!!.notifyDataSetChanged()
             binding.rvSubcategories?.scrollToPosition(viewModel.miscShootNumber.value!!)
 
-            if (viewModel.miscShootNumber.value!! == 0)
+            if (viewModel.miscShootNumber.value!! == 0){
                 if (progressAdapter == null) {
                     progressAdapter = ShootProgressAdapter(
                         requireContext(),
@@ -792,11 +820,22 @@ class OverlaysFragment : BaseFragment<ShootViewModel, FragmentOverlaysBinding>()
                         )
                     )
                 }
-
-            else
+            } else {
+                if (progressAdapter == null){
+                    progressAdapter = ShootProgressAdapter(
+                        requireContext(),
+                        viewModel.getShootProgressList(
+                            viewModel.miscAngles.value!!,
+                            viewModel.miscShootNumber.value!!)
+                        )
+                    binding.rvProgress.apply {
+                        layoutManager = LinearLayoutManager(requireContext(),LinearLayoutManager.HORIZONTAL,false)
+                        this?.adapter = progressAdapter
+                    }
+                }
                 progressAdapter!!.updateList(viewModel.miscShootNumber.value!!)
-            shoot("updateList in progress adapter called- " + viewModel.miscShootNumber.value!!)
-        })
+                shoot("updateList in progress adapter called- " + viewModel.miscShootNumber.value!!)
+            }})
     }
 
     override fun onBtnClick(position: Int, data: NewSubCatResponse.Data) {
@@ -843,6 +882,16 @@ class OverlaysFragment : BaseFragment<ShootViewModel, FragmentOverlaysBinding>()
         })
     }
 
+    override fun onViewStateRestored(savedInstanceState: Bundle?) {
+        super.onViewStateRestored(savedInstanceState)
+        shoot("onViewStateRestored called(overlay fragment)")
+    }
+
+    override fun onStart() {
+        super.onStart()
+        shoot("onStart called(overlay fragment)")
+    }
+
     override fun onPause() {
         super.onPause()
         shoot("onPause called(overlay fragment)")
@@ -851,6 +900,21 @@ class OverlaysFragment : BaseFragment<ShootViewModel, FragmentOverlaysBinding>()
     override fun onStop() {
         super.onStop()
         shoot("onStop called(overlay fragment)")
+    }
+
+    override fun onSaveInstanceState(outState: Bundle) {
+        super.onSaveInstanceState(outState)
+        shoot("onSaveInstanceState called(overlay fragment)")
+    }
+
+    override fun onResume() {
+        super.onResume()
+        shoot("onResume called(overlay fragment)")
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        shoot("onDestroyView called(overlay fragment)")
     }
 
     override fun onDestroy() {

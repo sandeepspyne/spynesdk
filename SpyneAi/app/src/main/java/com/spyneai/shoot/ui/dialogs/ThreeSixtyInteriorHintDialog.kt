@@ -67,12 +67,14 @@ class ThreeSixtyInteriorHintDialog : BaseDialogFragment<ShootViewModel, Dialog36
         isCancelable = false
 
         binding.tvSkipShoot.setOnClickListener {
+            viewModel.interior360Dialog.value = true
             dismiss()
             viewModel.selectBackground.value = true
         }
 
         binding.tvSkip.setOnClickListener {
             if (binding.tvSkip.text.toString() == "Skip") {
+                viewModel.interior360Dialog.value = true
                 dismiss()
                 viewModel.selectBackground.value = true
             }else {
@@ -88,6 +90,7 @@ class ThreeSixtyInteriorHintDialog : BaseDialogFragment<ShootViewModel, Dialog36
                 intent.type = "image/*"
                 startForResult.launch(intent)
             }else {
+                viewModel.interior360Dialog.value = true
                 //add image for upload
                 dismiss()
                 viewLifecycleOwner.lifecycleScope.launch {

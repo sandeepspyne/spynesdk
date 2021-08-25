@@ -24,6 +24,7 @@ class InteriorHintDialog : BaseDialogFragment<ShootViewModel, DialogInteriorHint
         binding.tvSkip.setOnClickListener {
             viewModel.showMiscDialog.value = true
             viewModel.iniProgressFrame.value = false
+            viewModel.startInteriorShots.value = true
           checkMiscShootStatus()
             dismiss()
         }
