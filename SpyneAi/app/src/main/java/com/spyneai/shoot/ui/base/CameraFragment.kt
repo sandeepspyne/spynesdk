@@ -55,9 +55,7 @@ import kotlin.math.roundToInt
 import android.media.MediaActionSound
 import android.util.Size
 import com.google.android.play.core.splitinstall.g
-
-
-
+import com.spyneai.shoot.utils.shoot
 
 
 class CameraFragment : BaseFragment<ShootViewModel, FragmentCameraBinding>(), PickiTCallbacks,
@@ -109,6 +107,20 @@ class CameraFragment : BaseFragment<ShootViewModel, FragmentCameraBinding>(), Pi
     private var filename = ""
 
     var gravity = FloatArray(3)
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        shoot("onCreate called(camera fragment)")
+    }
+
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
+        return super.onCreateView(inflater, container, savedInstanceState)
+        shoot("onCreateView called(camera fragment)")
+    }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -221,6 +233,7 @@ class CameraFragment : BaseFragment<ShootViewModel, FragmentCameraBinding>(), Pi
 
     override fun onResume() {
         super.onResume()
+        shoot("onResume called(camera fragment)")
 
         val mAccelerometer =
             mSensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER)?.also { accelerometer ->
@@ -248,12 +261,15 @@ class CameraFragment : BaseFragment<ShootViewModel, FragmentCameraBinding>(), Pi
 
     override fun onDestroy() {
         mSensorManager.unregisterListener(this)
+        shoot("onDistroy called(overlay fragment)")
         super.onDestroy()
     }
 
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
+
+        shoot("onActivityCreated called(overlay fragment)")
 
 
         binding.cameraCaptureButton.setOnClickListener {
@@ -548,6 +564,7 @@ class CameraFragment : BaseFragment<ShootViewModel, FragmentCameraBinding>(), Pi
 
     override fun onDestroyView() {
         super.onDestroyView()
+        shoot("onDestroyView called(overlay fragment)")
 
         // Shut down our background executor
         cameraExecutor.shutdown()
@@ -1352,6 +1369,26 @@ class CameraFragment : BaseFragment<ShootViewModel, FragmentCameraBinding>(), Pi
                                 .setInterpolator(AccelerateInterpolator()).start()
                         }, 2000)
                     }
+
+    override fun onStart() {
+        super.onStart()
+        shoot("onStart called(camera fragment)")
+    }
+
+    override fun onPause() {
+        super.onPause()
+        shoot("onPause called(camera fragment)")
+    }
+
+    override fun onStop() {
+        super.onStop()
+        shoot("onStop called(camera fragment)")
+    }
+
+    override fun onSaveInstanceState(outState: Bundle) {
+        super.onSaveInstanceState(outState)
+        shoot("onSaveInstanceState called(camera fragment)")
+    }
 
 }
 
