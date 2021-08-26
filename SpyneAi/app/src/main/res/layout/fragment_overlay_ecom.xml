@@ -163,10 +163,11 @@
             android:text="Select your car's sub-category"
             android:textColor="@color/white"
             android:fontFamily="@font/bold"
-            android:textSize="@dimen/sp_12"
+            android:textSize="@dimen/sp_14"
             android:layout_marginTop="@dimen/dp_15"
             android:layout_marginRight="@dimen/dp_7"
             app:layout_constraintTop_toTopOf="@id/iv_arrow"
+            app:layout_constraintRight_toRightOf="parent"
             app:layout_constraintLeft_toRightOf="@+id/iv_arrow"/>
     </androidx.constraintlayout.widget.ConstraintLayout>
 

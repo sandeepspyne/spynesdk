@@ -206,7 +206,9 @@ class OverlaysFragment : BaseFragment<ShootViewModel, FragmentOverlaysBinding>()
             AppConstants.KARVI,AppConstants.CARS24_INDIA,AppConstants.CARS24 -> {}
             else -> {
                     binding.tvShoot?.setOnClickListener {
-                        if ((viewModel.startInteriorShots.value != true || viewModel.startMiscShots.value != true )&& viewModel.sku.value?.skuId == null)
+                        if ((viewModel.startInteriorShots.value != true || viewModel.startMiscShots.value != true )
+                            &&
+                            viewModel.sku.value?.skuId == null)
                         AngleSelectionDialog().show(requireActivity().supportFragmentManager, "AngleSelectionDialog"
                         )
                     }

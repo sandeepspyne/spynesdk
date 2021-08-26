@@ -245,7 +245,6 @@ class ShootViewModel : ViewModel(){
                 //start long running worker
                 startLongRunningWorker()
             }
-
     }
 
     fun startLongRunningWorker() {

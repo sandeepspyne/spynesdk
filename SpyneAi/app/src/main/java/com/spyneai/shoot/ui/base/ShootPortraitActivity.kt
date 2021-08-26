@@ -130,7 +130,7 @@ class ShootPortraitActivity : AppCompatActivity() {
                 sku.skuName = intent.getStringExtra(AppConstants.SKU_NAME)
                 sku.skuId = intent.getStringExtra(AppConstants.SKU_ID)
                 sku.categoryName = shootViewModel.categoryDetails.value?.categoryName
-                shootViewModel.categoryDetails.value?.imageType = "footwear"
+                shootViewModel.categoryDetails.value?.imageType = "Footwear"
                 shootViewModel.sku.value = sku
             } catch (e: Exception) {
                 e.printStackTrace()
@@ -204,7 +204,8 @@ class ShootPortraitActivity : AppCompatActivity() {
         sku.projectId = intent.getStringExtra(AppConstants.PROJECT_ID)
         sku.skuName = intent.getStringExtra(AppConstants.SKU_NAME)
         sku.skuId = intent.getStringExtra(AppConstants.SKU_ID)
-        sku.categoryName = shootViewModel.categoryDetails.value?.categoryName
+        sku.categoryName = intent.getStringExtra(AppConstants.CATEGORY_NAME)
+        sku.categoryId = intent.getStringExtra(AppConstants.CATEGORY_ID)
 
         shootViewModel.sku.value = sku
 

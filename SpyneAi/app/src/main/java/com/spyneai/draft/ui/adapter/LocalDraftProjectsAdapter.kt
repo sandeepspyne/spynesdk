@@ -17,6 +17,7 @@ import com.spyneai.needs.AppConstants
 import com.spyneai.orders.data.response.GetProjectsResponse
 import com.spyneai.shoot.data.model.Project
 import com.spyneai.shoot.ui.base.ShootActivity
+import com.spyneai.shoot.ui.base.ShootPortraitActivity
 import com.spyneai.threesixty.ui.ThreeSixtyExteriorActivity
 import com.spyneai.toDate
 
@@ -100,8 +101,17 @@ val draftsList: List<Project>
                     }
 
                     draftsList[position].categoryName == "Footwear" &&
-                            draftsList[position].categoryName == "Footwear"-> {
-
+                            draftsList[position].subCategoryName == null-> {
+                        Intent(context, ShootPortraitActivity::class.java)
+                            .apply {
+                                putExtra(AppConstants.FROM_DRAFTS, true)
+                                putExtra(AppConstants.CATEGORY_ID, draftsList[position].categoryId)
+                                putExtra(AppConstants.CATEGORY_NAME, draftsList[position].categoryName)
+                                putExtra(AppConstants.PROJECT_ID, draftsList[position].projectId)
+                                putExtra(AppConstants.SKU_NAME, draftsList[position].projectName)
+                                putExtra(AppConstants.SKU_CREATED, true)
+                                context.startActivity(this)
+                            }
                     }
 
                     else -> {

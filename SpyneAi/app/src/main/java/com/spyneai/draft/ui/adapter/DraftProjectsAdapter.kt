@@ -112,7 +112,6 @@ class DraftProjectsAdapter(
                         context.startActivity(this)
                     }
             }else{
-
                 if (draftsList[position].sku.isNullOrEmpty()){
                     Intent(context, ShootActivity::class.java)
                         .apply {
@@ -124,8 +123,8 @@ class DraftProjectsAdapter(
                             putExtra(AppConstants.SKU_CREATED, false)
                             context.startActivity(this)
                         }
-                    //Toast.makeText(context, "No SKU data found", Toast.LENGTH_SHORT).show()
-                }else{
+                }
+                else{
                     Intent(context, DraftSkusActivity::class.java)
                         .apply {
                             putExtra("position", position)

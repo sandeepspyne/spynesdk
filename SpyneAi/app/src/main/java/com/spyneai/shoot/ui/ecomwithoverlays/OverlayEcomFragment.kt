@@ -66,7 +66,7 @@ class OverlayEcomFragment : BaseFragment<ShootViewModel, FragmentOverlayEcomBind
                     requireActivity().intent.getIntExtra(AppConstants.EXTERIOR_ANGLES,0) != 0 &&
                     requireActivity().intent.getIntExtra(AppConstants.EXTERIOR_ANGLES,0)
                             == requireActivity().intent.getIntExtra(AppConstants.EXTERIOR_SIZE,0) -> {
-
+var s = ""
                     }
                     viewModel.subCatName.value != null -> {
                         intSubcategorySelection(false)
@@ -186,7 +186,7 @@ class OverlayEcomFragment : BaseFragment<ShootViewModel, FragmentOverlayEcomBind
 
 
                     when(viewModel.categoryDetails.value?.categoryName){
-                       // "Footwear" -> binding.tvSubCategory?.text = getString(R.string.footwear_subcategory)
+                        "Footwear" -> binding.tvSubCategory?.text = getString(R.string.footwear_subcategory)
                     }
                 }
 
