@@ -15,6 +15,7 @@ import com.spyneai.dashboard.response.NewSubCatResponse
 import com.spyneai.orders.data.response.GetProjectsResponse
 import com.spyneai.shoot.data.model.*
 import com.spyneai.shoot.response.SkuProcessStateResponse
+import com.spyneai.shoot.workmanager.FootwearSubcatUpdateWorker
 import com.spyneai.shoot.workmanager.FrameUpdateWorker
 import com.spyneai.shoot.workmanager.OverlaysPreloadWorker
 import com.spyneai.shoot.workmanager.RecursiveImageWorker
@@ -242,7 +243,7 @@ class ShootViewModel : ViewModel(){
             } else {
              com.spyneai.shoot.utils.log("not found : start new")
                 //start long running worker
-               // startLongRunningWorker()
+                startLongRunningWorker()
             }
 
     }
@@ -307,5 +308,31 @@ class ShootViewModel : ViewModel(){
     fun getImagesbySkuId(skuId: String) = localRepository.getImagesBySkuId(skuId)
 
     fun  updateProjectStatus(projectId: String) = localRepository.updateProjectStatus(projectId)
+
+    fun updateFootwearSubcategory() {
+        val constraints: Constraints = Constraints.Builder()
+            .setRequiredNetworkType(NetworkType.CONNECTED)
+            .build()
+
+        val data = Data.Builder()
+            .putString("sku_id", sku.value?.skuId)
+            .putInt("initial_image_count", exterirorAngles.value!!)
+            .putString("sub_cat_id", subCategory.value?.prod_sub_cat_id)
+            .build()
+
+        val updateWorkRequest = OneTimeWorkRequest.Builder(FootwearSubcatUpdateWorker::class.java)
+            .addTag("Footwear Subcat Update Worker")
+            .setBackoffCriteria(
+                BackoffPolicy.LINEAR,
+                OneTimeWorkRequest.MIN_BACKOFF_MILLIS,
+                TimeUnit.MILLISECONDS)
+
+        WorkManager.getInstance(BaseApplication.getContext())
+            .enqueue(
+                updateWorkRequest
+                    .setConstraints(constraints)
+                    .setInputData(data)
+                    .build())
+    }
 
 }

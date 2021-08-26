@@ -197,7 +197,7 @@ class OverlaysFragment : BaseFragment<ShootViewModel, FragmentOverlaysBinding>()
            when(getString(R.string.app_name)){
                AppConstants.CARS24,AppConstants.CARS24_INDIA ->  viewModel.exterirorAngles.value = 5
                else ->  {
-                   viewModel.exterirorAngles.value = 4
+                   viewModel.exterirorAngles.value = 8
                }
            }
        }

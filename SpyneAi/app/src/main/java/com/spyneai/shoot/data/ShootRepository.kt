@@ -76,6 +76,14 @@ class ShootRepository : BaseRepository() {
         clipperApi.checkUploadStatus(auth_key, sku_id,image_category,frame_seq_no)
     }
 
+    suspend fun updateFootwearSubcategory(
+        authKey: String,
+        skuId:  String,
+        initialImageCount:  Int,
+        subCatId:  String
+    ) = safeApiCall{
+        clipperApi.updateFootwearSubcategory(authKey, skuId, initialImageCount, subCatId)
+    }
 
 
 }

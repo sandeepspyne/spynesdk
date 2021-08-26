@@ -32,18 +32,7 @@ class RecursiveProcessSkuWorker(private val appContext: Context, workerParams: W
 
         val image = localRepository.getLastSku()
 
-        if (runAttemptCount > 4) {
-            if (image.itemId != null)
-               // localRepository.deleteImage(image.itemId!!)
-
-            //captureEvent(Events.UPLOAD_FAILED,image,false,"Image upload limit  reached")
-            return Result.failure()
-        }
-
-
         if (image.itemId != null){
-
-            com.spyneai.shoot.utils.log("image selected "+image.itemId + " "+image.skuId)
 
             val skuId = image.skuId
             val backgroundId = image.backgroundId

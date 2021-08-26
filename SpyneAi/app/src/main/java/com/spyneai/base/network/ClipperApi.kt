@@ -135,7 +135,7 @@ interface ClipperApi {
         @Query("total_frames") totalFrames : String
     ) : UpdateTotalFramesRes
 
-    @GET("v2/project/getDetailsProject")
+    @GET("v3/project/getDetailsProject")
     suspend fun getProjects(
         @Query("auth_key") authKey: String,
         @Query("status") status: String
@@ -211,6 +211,15 @@ interface ClipperApi {
         @Field("image_category") image_category: String,
         @Field("frame_seq_no") frame_seq_no: Int,
     ): UploadStatusRes
+
+    @FormUrlEncoded
+    @PATCH("v2/sku/update-iim")
+    suspend fun updateFootwearSubcategory(
+        @Field("auth_key") authKey: String,
+        @Field("sku_id") skuId: String,
+        @Field("initial_image_count") initialImageCount: Int,
+        @Field("sub_cat_id") subCatId: String,
+    ): UpdateFootwearSubcatRes
 
 
 }

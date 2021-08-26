@@ -58,21 +58,25 @@ class BaseApplication : Application() {
             .build()
 
         val longWorkRequest = PeriodicWorkRequestBuilder<ProcessSkuWorker>(
-            2, TimeUnit.HOURS)
+            4, TimeUnit.HOURS)
             .addTag("Periodic Processing Worker")
 
-//        WorkManager.getInstance(context)
-//            .enqueue(
-//                longWorkRequest
-//                    .setConstraints(constraints)
-//                    .build())
+        WorkManager.getInstance(context)
+            .enqueueUniquePeriodicWork(
+                "Process Unique",
+                ExistingPeriodicWorkPolicy.KEEP,
+                longWorkRequest
+                    .setConstraints(constraints)
+                    .build())
 
         val recursiveWorkRequest = PeriodicWorkRequestBuilder<RecursiveSkippedImagesWorker>(
             6, TimeUnit.HOURS)
             .addTag("Skipped Images Long Running Worker")
 
         WorkManager.getInstance(context)
-            .enqueue(
+            .enqueueUniquePeriodicWork(
+                "Upload Skipped Images Unique",
+                ExistingPeriodicWorkPolicy.KEEP,
                 recursiveWorkRequest
                     .setConstraints(constraints)
                     .build())

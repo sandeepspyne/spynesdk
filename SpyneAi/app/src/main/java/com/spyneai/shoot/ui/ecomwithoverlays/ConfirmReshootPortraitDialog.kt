@@ -55,8 +55,12 @@ class ConfirmReshootPortraitDialog : BaseDialogFragment<ShootViewModel, ConfirmR
                 Events.CONFIRMED,
                 properties)
 
-            viewModel.isCameraButtonClickable = true
+            if (viewModel.categoryDetails.value?.categoryName == "Footwear"
+                && viewModel.shootNumber.value == 0)
+                    viewModel.updateFootwearSubcategory()
 
+
+            viewModel.isCameraButtonClickable = true
                     uploadImages()
                     if (viewModel.shootNumber.value == viewModel.exterirorAngles.value?.minus(1)) {
                         dismiss()

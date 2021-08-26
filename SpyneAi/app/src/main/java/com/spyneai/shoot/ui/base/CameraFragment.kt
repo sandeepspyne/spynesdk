@@ -4,10 +4,13 @@ import android.content.ContentValues
 import android.content.ContentValues.TAG
 import android.content.Context
 import android.content.pm.ActivityInfo
+import android.graphics.ImageFormat
 import android.hardware.Sensor
 import android.hardware.SensorEvent
 import android.hardware.SensorEventListener
 import android.hardware.SensorManager
+import android.hardware.camera2.CameraCharacteristics
+import android.hardware.camera2.CameraManager
 import android.os.*
 import android.provider.MediaStore
 import android.util.DisplayMetrics
@@ -190,6 +193,9 @@ class CameraFragment : BaseFragment<ShootViewModel, FragmentCameraBinding>(), Pi
                 "Automobiles", "Footwear" -> {
                     if (viewModel.subCategory.value?.prod_sub_cat_id != null)
                         onCaptureClick()
+                    else {
+                        var s = ""
+                    }
                 }
 
                 "E-Commerce" -> {
@@ -274,24 +280,10 @@ class CameraFragment : BaseFragment<ShootViewModel, FragmentCameraBinding>(), Pi
     private fun onCaptureClick() {
         when (getString(R.string.app_name)) {
             AppConstants.KARVI, AppConstants.CARS24, AppConstants.CARS24_INDIA -> {
-                binding.cameraCaptureButton?.setOnClickListener {
-                    if (viewModel.shootList.value == null) {
-                        if (binding.flLevelIndicator.visibility == View.VISIBLE) {
-                            if (isGyroOnCorrectAngle)
-                                viewModel.createProjectRes.observe(viewLifecycleOwner, {
-                                    when (it) {
-                                        is Resource.Success -> {
-                                            val subCategory = viewModel.subCategory.value
-                                            createSku(
-                                                it.value.project_id,
-                                                subCategory?.prod_sub_cat_id.toString()
-                                            )
-                                        }
-                                        else -> {
-                                        }
-                                    }
-                                })
-                        } else {
+                if (viewModel.shootList.value == null
+                    && !requireActivity().intent.getBooleanExtra(AppConstants.SKU_CREATED,false)) {
+                    if (binding.flLevelIndicator.visibility == View.VISIBLE) {
+                        if (isGyroOnCorrectAngle)
                             viewModel.createProjectRes.observe(viewLifecycleOwner, {
                                 when (it) {
                                     is Resource.Success -> {
@@ -305,26 +297,7 @@ class CameraFragment : BaseFragment<ShootViewModel, FragmentCameraBinding>(), Pi
                                     }
                                 }
                             })
-                        }
                     } else {
-                        if (binding.flLevelIndicator.visibility == View.VISIBLE) {
-                            if (isGyroOnCorrectAngle)
-                                captureImage()
-                        } else {
-                            captureImage()
-                        }
-                    }
-                }
-            }
-            "Flipkart", "Udaan", "Lal10", "Amazon", "Swiggy" -> {
-                binding.cameraCaptureButton?.setOnClickListener {
-                    captureImage()
-                }
-            }
-            else
-            -> {
-                binding.cameraCaptureButton?.setOnClickListener {
-                    if (viewModel.shootList.value == null) {
                         viewModel.createProjectRes.observe(viewLifecycleOwner, {
                             when (it) {
                                 is Resource.Success -> {
@@ -338,9 +311,37 @@ class CameraFragment : BaseFragment<ShootViewModel, FragmentCameraBinding>(), Pi
                                 }
                             }
                         })
+                    }
+                } else {
+                    if (binding.flLevelIndicator.visibility == View.VISIBLE) {
+                        if (isGyroOnCorrectAngle)
+                            captureImage()
                     } else {
                         captureImage()
                     }
+                }
+            }
+            "Flipkart", "Udaan", "Lal10", "Amazon", "Swiggy" -> {
+                captureImage()
+            }
+            else
+            -> {
+                if (viewModel.shootList.value == null) {
+                    viewModel.createProjectRes.observe(viewLifecycleOwner, {
+                        when (it) {
+                            is Resource.Success -> {
+                                val subCategory = viewModel.subCategory.value
+                                createSku(
+                                    it.value.project_id,
+                                    subCategory?.prod_sub_cat_id.toString()
+                                )
+                            }
+                            else -> {
+                            }
+                        }
+                    })
+                } else {
+                    captureImage()
                 }
             }
         }
@@ -464,31 +465,72 @@ class CameraFragment : BaseFragment<ShootViewModel, FragmentCameraBinding>(), Pi
 
             val localCameraProvider = cameraProvider
                 ?: throw IllegalStateException("Camera initialization failed.")
+            var size = Size(1024,768)
+            if (getString(R.string.app_name) == AppConstants.KARVI){
+                if (requireActivity() != null){
+                    val cm = requireActivity().getSystemService(android.content.Context.CAMERA_SERVICE) as CameraManager
 
+                    if (cm.cameraIdList != null && cm.cameraIdList.size > 1) {
+                    val characteristics: CameraCharacteristics =
+                        cm.getCameraCharacteristics("1")
+
+                    val configs = characteristics.get(
+                        CameraCharacteristics.SCALER_STREAM_CONFIGURATION_MAP
+                    )
+
+                    val s = configs?.getOutputSizes(ImageFormat.JPEG)
+
+                        var minimumWidth = 1024
+
+                    s?.forEach {
+                        if (it != null){
+                            if (minimumWidth == 1024 && it.width >= minimumWidth){
+                                minimumWidth = it.width
+                                size = it
+                                Log.d(TAG, "startCamera: "+it)
+                            }else {
+                                if (it.width > 1024 && it.width <= minimumWidth){
+                                    minimumWidth = it.width
+                                    size = it
+                                }
+                            }
+                        }
+                    }
+                        Log.d(TAG, "startCamera: ----------------")
+                        Log.d(TAG, "startCamera: "+size)
+                }
+           }
+
+            }
             // Preview
-            val preview = if (getString(R.string.app_name) == AppConstants.KARVI) {
-                Preview.Builder()
-                    .setTargetResolution(Size(1024, 768))
-                    .build()
-                    .also {
-                        it.setSurfaceProvider(binding.viewFinder.surfaceProvider)
-                    }
-            } else if (getString(R.string.app_name) == "Swiggy") {
-                Preview.Builder()
-                    .setTargetAspectRatio(aspectRatio) // set the camera aspect ratio
-                    //   .setTargetRotation(rotation) // set the camera rotation
-                    .build()
-                    .also {
-                        it.setSurfaceProvider(binding.viewFinder.surfaceProvider)
-                    }
-            } else {
-                Preview.Builder()
-                    .setTargetAspectRatio(aspectRatio) // set the camera aspect ratio
-                    //   .setTargetRotation(rotation) // set the camera rotation
-                    .build()
-                    .also {
-                        it.setSurfaceProvider(binding.viewFinder.surfaceProvider)
-                    }
+            val preview = when {
+                getString(R.string.app_name) == AppConstants.KARVI -> {
+                    Preview.Builder()
+                        //.setTargetAspectRatio(aspectRatio)
+                        .setTargetResolution(size)
+                        .build()
+                        .also {
+                            it.setSurfaceProvider(binding.viewFinder.surfaceProvider)
+                        }
+                }
+                getString(R.string.app_name) == "Swiggy" -> {
+                    Preview.Builder()
+                        .setTargetAspectRatio(aspectRatio) // set the camera aspect ratio
+                        //   .setTargetRotation(rotation) // set the camera rotation
+                        .build()
+                        .also {
+                            it.setSurfaceProvider(binding.viewFinder.surfaceProvider)
+                        }
+                }
+                else -> {
+                    Preview.Builder()
+                        .setTargetAspectRatio(aspectRatio) // set the camera aspect ratio
+                        //   .setTargetRotation(rotation) // set the camera rotation
+                        .build()
+                        .also {
+                            it.setSurfaceProvider(binding.viewFinder.surfaceProvider)
+                        }
+                }
             }
 
             //for exact image cropping
@@ -498,7 +540,7 @@ class CameraFragment : BaseFragment<ShootViewModel, FragmentCameraBinding>(), Pi
                 ImageCapture.Builder()
                     .setCaptureMode(ImageCapture.CAPTURE_MODE_MAXIMIZE_QUALITY)
                     .setFlashMode(flashMode)
-                    .setTargetResolution(Size(1024, 768))
+                    .setTargetResolution(size)
                     .build()
             } else {
                 ImageCapture.Builder()
@@ -515,20 +557,17 @@ class CameraFragment : BaseFragment<ShootViewModel, FragmentCameraBinding>(), Pi
                 .setViewPort(viewPort!!)
                 .build()
 
-            // The Configuration of image analyzing
-//            imageAnalyzer = ImageAnalysis.Builder()
-//                .setTargetAspectRatio(aspectRatio) // set the analyzer aspect ratio
-//                .setTargetRotation(rotation) // set the analyzer rotation
-//                .setBackpressureStrategy(ImageAnalysis.STRATEGY_KEEP_ONLY_LATEST) // in our analysis, we care about the latest image
-//                .build()
-//                .apply {
-//                    // Use a worker thread for image analysis to prevent glitches
-//                    val analyzerThread = HandlerThread("LuminosityAnalysis").apply { start() }
-//                    setAnalyzer(
-//                        ThreadExecutor(Handler(analyzerThread.looper)),
-//                        LuminosityAnalyzer()
-//                    )
-//                }
+          //   The Configuration of image analyzing
+            imageAnalyzer = if (getString(R.string.app_name) == AppConstants.KARVI) {
+                ImageAnalysis.Builder()
+                    .setTargetResolution(size)
+                    .build()
+            }else {
+                ImageAnalysis.Builder()
+                    .setTargetAspectRatio(aspectRatio) // set the analyzer aspect ratio
+                    .build()
+            }
+
 
 
             // Select back camera as a default
@@ -579,7 +618,8 @@ class CameraFragment : BaseFragment<ShootViewModel, FragmentCameraBinding>(), Pi
         if (abs(previewRatio - RATIO_4_3_VALUE) <= abs(previewRatio - RATIO_16_9_VALUE)) {
             return AspectRatio.RATIO_4_3
         }
-        if (getString(R.string.app_name) == "Swiggy")
+        if (getString(R.string.app_name) == "Swiggy" ||
+            getString(R.string.app_name) == AppConstants.KARVI)
             return AspectRatio.RATIO_4_3
 
         return AspectRatio.RATIO_16_9
@@ -769,17 +809,14 @@ class CameraFragment : BaseFragment<ShootViewModel, FragmentCameraBinding>(), Pi
             pitch.roundToInt()
         ) >= 1
 
-//        val pRotate = abs((orientationAngles[0] * 180 / Math.PI.toFloat()).toDouble()).roundToInt() - abs(
-//            azimuth.roundToInt()
-//        ) >= 1
 
         pitch = Math.toDegrees(orientationAngles[1].toDouble())
         roll = Math.toDegrees(orientationAngles[2].toDouble())
-        //azimuth = (orientationAngles[0] * 180 / Math.PI.toFloat()).toDouble()
+        azimuth = (orientationAngles[0] * 180 / Math.PI.toFloat()).toDouble()
 
 //        binding.tvPitchRoll.apply {
 //            this?.visibility = View.VISIBLE
-//            this?.text = roll.toString()
+//            this?.text = "roll "+orientationAngles[2].roundToInt().toString()+"pitch "+orientationAngles[1].roundToInt().toString()
 //        }
 
         when (getString(R.string.app_name)) {
@@ -831,7 +868,14 @@ class CameraFragment : BaseFragment<ShootViewModel, FragmentCameraBinding>(), Pi
                         } else {
                             moveArrow(pitch + 85)
                         }
+                    }
 
+                    if (orientationAngles[2].roundToInt() == 1 || orientationAngles[2].roundToInt() == -1){
+                        if (orientationAngles[2].roundToInt() == 1) {
+                            rotateArrow((pitch + 85).unaryMinus().roundToInt())
+                        } else {
+                            rotateArrow((pitch + 85).roundToInt())
+                        }
                     }
                 }
             }
@@ -946,7 +990,6 @@ class CameraFragment : BaseFragment<ShootViewModel, FragmentCameraBinding>(), Pi
     }
 
     private fun rotateArrow(roundToInt: Int) {
-        Log.d(TAG, "rotateArrow: " + roundToInt)
         binding.tvLevelIndicator?.rotation = roundToInt.toFloat()
     }
 

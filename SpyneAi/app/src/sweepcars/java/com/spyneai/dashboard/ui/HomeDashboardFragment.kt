@@ -11,7 +11,13 @@ import android.view.ViewGroup
 import android.view.Window
 import android.widget.LinearLayout
 import android.widget.TextView
+import android.widget.Toast
+import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Observer
+import com.google.android.play.core.appupdate.AppUpdateManager
+import com.google.android.play.core.appupdate.AppUpdateManagerFactory
+import com.google.android.play.core.install.model.AppUpdateType
+import com.google.android.play.core.install.model.UpdateAvailability
 import com.posthog.android.Properties
 import com.spyneai.R
 import com.spyneai.activity.CompletedProjectsActivity
@@ -23,6 +29,7 @@ import com.spyneai.captureEvent
 import com.spyneai.captureFailureEvent
 import com.spyneai.dashboard.data.DashboardViewModel
 import com.spyneai.databinding.HomeDashboardFragmentBinding
+import com.spyneai.draft.ui.DraftsActivity
 import com.spyneai.fragment.TopUpFragment
 import com.spyneai.needs.AppConstants
 import com.spyneai.needs.Utilities
@@ -44,6 +51,10 @@ class HomeDashboardFragment :
     lateinit var description: String
     lateinit var colorCode: String
 
+    lateinit var appUpdateManager: AppUpdateManager
+    private val MY_REQUEST_CODE: Int = 1
+    lateinit var PACKAGE_NAME: String
+
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
@@ -51,26 +62,74 @@ class HomeDashboardFragment :
         tokenId = Utilities.getPreference(requireContext(), AppConstants.TOKEN_ID).toString()
         email = Utilities.getPreference(requireContext(), AppConstants.EMAIL_ID).toString()
 
-        lisners()
+        PACKAGE_NAME = requireContext().packageName.toString()
+        appUpdateManager = AppUpdateManagerFactory.create(requireContext())
 
-//        viewModel.getCategories(Utilities.getPreference(requireContext(),AppConstants.AUTH_KEY).toString())
-//        viewModel.categoriesResponse.observe(viewLifecycleOwner, Observer {
-//            when(it){
-//                is Resource.Success -> {
-//                    requireContext().captureEvent(Events.GOT_CATEGORIES, Properties())
-//
-//                }
-//                is Resource.Loading -> {
-//
-//                }
-//                is Resource.Failure -> {
-//                    requireContext().captureFailureEvent(Events.GET_CATEGORIES_FAILED, Properties(),
-//                        it.errorMessage!!)
-//
-//                    handleApiError(it)
-//                }
-//            }
-//        })
+        if (PACKAGE_NAME == "com.spyneai.sweepcars")
+            autoUpdates()
+
+        lisners()
+    }
+
+    private fun autoUpdates() {
+
+        val appUpdateInfoTask = appUpdateManager.appUpdateInfo
+        appUpdateInfoTask.addOnSuccessListener { appUpdateInfo ->
+            if (appUpdateInfo.updateAvailability() == UpdateAvailability.UPDATE_AVAILABLE
+                && appUpdateInfo.isUpdateTypeAllowed(AppUpdateType.IMMEDIATE)
+            ) {
+
+                // Request the update.
+                appUpdateManager.startUpdateFlowForResult(
+                    // Pass the intent that is returned by 'getAppUpdateInfo()'.
+                    appUpdateInfo,
+                    // Or 'AppUpdateType.FLEXIBLE' for flexible updates.
+                    AppUpdateType.IMMEDIATE,
+                    // The current activity making the update request.
+                    requireActivity(),
+                    // Include a request code to later monitor this update request.
+                    MY_REQUEST_CODE
+                )
+            }
+        }
+    }
+
+    override fun onResume() {
+        super.onResume()
+
+        appUpdateManager
+            .appUpdateInfo
+            .addOnSuccessListener { appUpdateInfo ->
+                if (appUpdateInfo.updateAvailability()
+                    == UpdateAvailability.DEVELOPER_TRIGGERED_UPDATE_IN_PROGRESS
+                ) {
+                    // If an in-app update is already running, resume the update.
+                    appUpdateManager.startUpdateFlowForResult(
+                        appUpdateInfo,
+                        AppUpdateType.IMMEDIATE,
+                        requireActivity(),
+                        MY_REQUEST_CODE
+                    )
+                }
+            }
+    }
+
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        if (requestCode == MY_REQUEST_CODE) {
+            if (resultCode != AppCompatActivity.RESULT_OK) {
+                activity?.moveTaskToBack(true)
+                activity?.finish()
+                Toast.makeText(
+                    requireContext(),
+                    "Update flow failed!" + requestCode,
+                    Toast.LENGTH_SHORT
+                ).show()
+
+
+            }
+        }
     }
 
 
@@ -86,6 +145,10 @@ class HomeDashboardFragment :
             }
         }
 
+        binding.llDrafts.setOnClickListener {
+            val intent = Intent(requireContext(), DraftsActivity::class.java)
+            startActivity(intent)
+        }
 
         binding.llCompleted.setOnClickListener {
             val intent = Intent(requireContext(), CompletedProjectsActivity::class.java)

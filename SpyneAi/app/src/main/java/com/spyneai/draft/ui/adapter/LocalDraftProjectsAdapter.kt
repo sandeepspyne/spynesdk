@@ -85,18 +85,26 @@ val draftsList: List<Project>
                     }
             }else{
 
-                if (draftsList[position].skus == 0){
-                    Intent(context, ShootActivity::class.java)
-                        .apply {
-                            putExtra(AppConstants.FROM_DRAFTS, true)
-                            putExtra(AppConstants.CATEGORY_ID, draftsList[position].categoryId)
-                            putExtra(AppConstants.CATEGORY_NAME, draftsList[position].categoryName)
-                            putExtra(AppConstants.PROJECT_ID, draftsList[position].projectId)
-                            putExtra(AppConstants.SKU_NAME, draftsList[position].projectName)
-                            putExtra(AppConstants.SKU_CREATED, false)
-                            context.startActivity(this)
-                        }
-                }else{
+                when {
+                    draftsList[position].skus == 0 -> {
+                        Intent(context, ShootActivity::class.java)
+                            .apply {
+                                putExtra(AppConstants.FROM_DRAFTS, true)
+                                putExtra(AppConstants.CATEGORY_ID, draftsList[position].categoryId)
+                                putExtra(AppConstants.CATEGORY_NAME, draftsList[position].categoryName)
+                                putExtra(AppConstants.PROJECT_ID, draftsList[position].projectId)
+                                putExtra(AppConstants.SKU_NAME, draftsList[position].projectName)
+                                putExtra(AppConstants.SKU_CREATED, false)
+                                context.startActivity(this)
+                            }
+                    }
+
+                    draftsList[position].categoryName == "Footwear" &&
+                            draftsList[position].categoryName == "Footwear"-> {
+
+                    }
+
+                    else -> {
                     Intent(context, DraftSkusActivity::class.java)
                         .apply {
                             putExtra("position", position)
@@ -105,7 +113,9 @@ val draftsList: List<Project>
                             putExtra(AppConstants.PROJECT_ID, draftsList[position].projectId)
                             context.startActivity(this)
                         }
+                    }
                 }
+
             }
         }
     }

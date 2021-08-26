@@ -88,6 +88,9 @@ object Events {
     val PROCESS_FAILED = "Android Process Failed"
     val SHOOT_QUEUED = "Android Shoot Queued"
 
+    val FOOTWAER_SUBCAT_UPDATED = "Android Footwear Subcat Updated"
+    val FOOTWAER_SUBCAT_UPDATE_FAILED = "Android Footwear Subcat Update Failed"
+
 
     //360
     val SHOW_360_HINT = "Show 360 Hint"
