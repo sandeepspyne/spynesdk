@@ -1,13 +1,18 @@
 package com.spyneai.dashboard.ui
 
 import android.Manifest
+import android.content.ContentValues
 import android.content.Intent
 import android.content.pm.PackageManager
+import android.graphics.ImageFormat
+import android.hardware.camera2.CameraCharacteristics
+import android.hardware.camera2.CameraManager
 import android.os.Build
 import android.os.Bundle
 import android.os.Environment
 import android.util.Log
 import android.view.KeyEvent
+import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
 import android.widget.Toast
@@ -38,6 +43,7 @@ import com.posthog.android.Properties
 import com.spyneai.captureEvent
 import com.spyneai.orders.ui.MyOrdersFragment
 import com.spyneai.posthog.Events
+import com.spyneai.shoot.ui.dialogs.ResolutionNotSupportedFragment
 
 
 class MainDashboardActivity : AppCompatActivity() {
@@ -68,41 +74,83 @@ class MainDashboardActivity : AppCompatActivity() {
         Utilities.savePrefrence(this,AppConstants.CATEGORY_NAME,"Automobiles")
 
 
-        binding.fab.setOnClickListener {
-            val intent = Intent(this, CategoriesActivity::class.java)
-            startActivity(intent)
+        when(getString(R.string.app_name)) {
+            AppConstants.SPYNE_AI -> {
+                binding.fab.setOnClickListener {
+                    val intent = Intent(this, CategoriesActivity::class.java)
+                    startActivity(intent)
+                }
+            }else -> {
+                binding.fab.visibility = View.GONE
+            }
         }
+
 
         binding.bottomNavigation.setOnNavigationItemSelectedListener {
             when(it.itemId){
                 R.id.homeDashboardFragment->setCurrentFragment(firstFragment)
 
-//                R.id.shootActivity-> {
-//
-//                        when(getString(R.string.app_name)) {
-//                        "Ola Cabs", AppConstants.CARS24,AppConstants.CARS24_INDIA,
-//                        "Trusted cars","Travo Photos","Yalla Motors","Spyne Hiring" -> {
-//                            var intent = Intent(this, StartShootActivity::class.java)
-//                            intent.putExtra(AppConstants.CATEGORY_ID,AppConstants.CARS_CATEGORY_ID)
-//                            intent.putExtra(AppConstants.CATEGORY_NAME,"Automobiles")
-//                            startActivity(intent)
-//
-//                        }
-//                            "Flipkart", "Udaan", "Lal10", "Amazon", "Swiggy" -> {
-//                                val intent = Intent(this@MainDashboardActivity, CategoriesActivity::class.java)
-//                                startActivity(intent)
-//
-//                            }
-//                            else ->{
-//                                var intent = Intent(this, ShootActivity::class.java)
-//                                intent.putExtra(AppConstants.CATEGORY_ID,AppConstants.CARS_CATEGORY_ID)
-//                                intent.putExtra(AppConstants.CATEGORY_NAME,"Automobiles")
-//                                startActivity(intent)
-//                          }
-//
-//                    }
-//
-//                }
+                R.id.shootActivity-> {
+                    when(getString(R.string.app_name)) {
+                        "Ola Cabs", AppConstants.CARS24,AppConstants.CARS24_INDIA,
+                        "Trusted cars","Travo Photos","Yalla Motors","Spyne Hiring" -> {
+                            var intent = Intent(this, StartShootActivity::class.java)
+                            intent.putExtra(AppConstants.CATEGORY_ID,AppConstants.CARS_CATEGORY_ID)
+                            intent.putExtra(AppConstants.CATEGORY_NAME,"Automobiles")
+                            startActivity(intent)
+
+                        }
+
+                        AppConstants.KARVI -> {
+                            val cm = getSystemService(android.content.Context.CAMERA_SERVICE) as CameraManager
+
+                            if (cm.cameraIdList != null && cm.cameraIdList.size > 1) {
+                                val characteristics: CameraCharacteristics =
+                                    cm.getCameraCharacteristics("1")
+
+                                val configs = characteristics.get(
+                                    CameraCharacteristics.SCALER_STREAM_CONFIGURATION_MAP
+                                )
+
+                                val s = configs?.getOutputSizes(ImageFormat.JPEG)
+
+                                var resolutionSupported = false
+
+                                s?.forEach { it ->
+                                    if (!resolutionSupported && it != null) {
+                                        if (it.width == 1024 && it.height == 768)
+                                            resolutionSupported = true
+                                    }
+                                }
+
+                                if (resolutionSupported) {
+                                    var intent = Intent(this, ShootActivity::class.java)
+                                    intent.putExtra(AppConstants.CATEGORY_ID,AppConstants.CARS_CATEGORY_ID)
+                                    intent.putExtra(AppConstants.CATEGORY_NAME,"Automobiles")
+                                    startActivity(intent)
+                                }else {
+                                    //resolution not supported
+                                    ResolutionNotSupportedFragment().show(supportFragmentManager,"ResolutionNotSupportedFragment")
+                                }
+                            }else {
+                                //resolution not supported
+                                ResolutionNotSupportedFragment().show(supportFragmentManager,"ResolutionNotSupportedFragment")
+                            }
+                        }
+
+                        "Flipkart", "Udaan", "Lal10", "Amazon", "Swiggy" -> {
+                            val intent = Intent(this@MainDashboardActivity, CategoriesActivity::class.java)
+                                startActivity(intent)
+                            }
+                        else ->{
+                            var intent = Intent(this, ShootActivity::class.java)
+                            intent.putExtra(AppConstants.CATEGORY_ID,AppConstants.CARS_CATEGORY_ID)
+                            intent.putExtra(AppConstants.CATEGORY_NAME,"Automobiles")
+                            startActivity(intent)
+                        }
+                    }
+                }
+
                 R.id.completedOrdersFragment-> {
                    if (getString(R.string.app_name) == AppConstants.SPYNE_AI)
                        setCurrentFragment(myOrdersFragment)
@@ -112,7 +160,7 @@ class MainDashboardActivity : AppCompatActivity() {
                    }
 
                 }
-                R.id.wallet->setCurrentFragment(SecondFragment)
+               // R.id.wallet->setCurrentFragment(SecondFragment)
                 R.id.logoutDashBoardFragment->setCurrentFragment(thirdFragment)
 
             }

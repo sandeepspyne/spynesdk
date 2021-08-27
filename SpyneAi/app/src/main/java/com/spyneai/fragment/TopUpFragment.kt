@@ -175,4 +175,9 @@ class TopUpFragment: DialogFragment() {
             e.printStackTrace()
         }
     }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
+    }
 }

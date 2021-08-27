@@ -15,10 +15,12 @@ import com.bumptech.glide.Glide
 import com.spyneai.R
 import com.spyneai.draft.ui.DraftSkusActivity
 import com.spyneai.needs.AppConstants
+import com.spyneai.needs.Utilities
 import com.spyneai.orders.data.response.GetProjectsResponse
 import com.spyneai.orders.data.viewmodel.MyOrdersViewModel
 import com.spyneai.orders.ui.activity.CompletedSkusActivity
 import com.spyneai.shoot.ui.base.ShootActivity
+import com.spyneai.shoot.ui.base.ShootPortraitActivity
 import com.spyneai.threesixty.ui.ThreeSixtyExteriorActivity
 
 class DraftProjectsAdapter(
@@ -112,27 +114,50 @@ class DraftProjectsAdapter(
                         context.startActivity(this)
                     }
             }else{
-                if (draftsList[position].sku.isNullOrEmpty()){
-                    Intent(context, ShootActivity::class.java)
-                        .apply {
-                            putExtra(AppConstants.FROM_DRAFTS, true)
-                            putExtra(AppConstants.CATEGORY_ID, draftsList[position].categoryId)
-                            putExtra(AppConstants.CATEGORY_NAME, draftsList[position].category)
-                            putExtra(AppConstants.PROJECT_ID, draftsList[position].project_id)
-                            putExtra(AppConstants.SKU_NAME, draftsList[position].project_name)
-                            putExtra(AppConstants.SKU_CREATED, false)
-                            context.startActivity(this)
-                        }
-                }
-                else{
-                    Intent(context, DraftSkusActivity::class.java)
-                        .apply {
-                            putExtra("position", position)
-                            putExtra(AppConstants.FROM_LOCAL_DB, false)
-                            putExtra(AppConstants.PROJECT_NAME, draftsList[position].project_name)
-                            putExtra(AppConstants.PROJECT_ID, draftsList[position].project_id)
-                            context.startActivity(this)
-                        }
+                when{
+                    draftsList[position].sku.isNullOrEmpty() -> {
+                        Intent(context, ShootActivity::class.java)
+                            .apply {
+                                putExtra(AppConstants.FROM_DRAFTS, true)
+                                putExtra(AppConstants.CATEGORY_ID, draftsList[position].categoryId)
+                                putExtra(AppConstants.CATEGORY_NAME, draftsList[position].category)
+                                putExtra(AppConstants.PROJECT_ID, draftsList[position].project_id)
+                                putExtra(AppConstants.SKU_NAME, draftsList[position].project_name)
+                                putExtra(AppConstants.SKU_CREATED, false)
+                                context.startActivity(this)
+                            }
+                    }
+
+                    draftsList[position].category == "Footwear" && draftsList[position].sub_category == "" -> {
+                        Utilities.savePrefrence(context, AppConstants.CATEGORY_NAME,draftsList[position].category)
+
+                        Intent(context, ShootPortraitActivity::class.java)
+                            .apply {
+                                putExtra(AppConstants.FROM_DRAFTS, true)
+                                putExtra(AppConstants.CATEGORY_NAME, draftsList[position].category)
+                                putExtra(AppConstants.CATEGORY_ID, draftsList[position].categoryId)
+                                putExtra(AppConstants.PROJECT_ID, draftsList[position].project_id)
+                                putExtra(AppConstants.SKU_NAME, draftsList[position].project_name)
+                                putExtra(AppConstants.SUB_CAT_NAME,draftsList[position].sub_category)
+                                putExtra(AppConstants.SUB_CAT_ID, draftsList[position].subCategoryId)
+                                putExtra(AppConstants.SKU_CREATED, true)
+                                putExtra(AppConstants.FROM_DRAFTS, true)
+                                putExtra(AppConstants.SKU_ID, draftsList[position].sku[0].sku_id)
+                                context.startActivity(this)
+                            }
+
+                    }
+
+                    else -> {
+                        Intent(context, DraftSkusActivity::class.java)
+                            .apply {
+                                putExtra("position", position)
+                                putExtra(AppConstants.FROM_LOCAL_DB, false)
+                                putExtra(AppConstants.PROJECT_NAME, draftsList[position].project_name)
+                                putExtra(AppConstants.PROJECT_ID, draftsList[position].project_id)
+                                context.startActivity(this)
+                            }
+                    }
                 }
             }
         }

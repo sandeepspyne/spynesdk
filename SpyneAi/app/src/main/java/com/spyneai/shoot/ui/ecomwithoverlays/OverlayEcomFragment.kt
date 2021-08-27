@@ -66,14 +66,16 @@ class OverlayEcomFragment : BaseFragment<ShootViewModel, FragmentOverlayEcomBind
                     requireActivity().intent.getIntExtra(AppConstants.EXTERIOR_ANGLES,0) != 0 &&
                     requireActivity().intent.getIntExtra(AppConstants.EXTERIOR_ANGLES,0)
                             == requireActivity().intent.getIntExtra(AppConstants.EXTERIOR_SIZE,0) -> {
-var s = ""
-                    }
+
+                            }
                     viewModel.subCatName.value != null -> {
                         intSubcategorySelection(false)
                         getOverlays()
                         binding.llCapture.visibility = View.VISIBLE
                     }
-                    else -> intSubcategorySelection(true)
+                    else -> {
+                        intSubcategorySelection(true)
+                    }
                 }
             }else {
                 initSkuDialog()
@@ -160,7 +162,7 @@ var s = ""
 
         viewModel.getSubCategories(
             Utilities.getPreference(requireContext(), AppConstants.AUTH_KEY).toString(),
-            Utilities.getPreference(requireContext(), AppConstants.CATEGORY_ID).toString()
+            viewModel.categoryDetails.value?.categoryId!!
         )
 
         viewModel.subCategoriesResponse.observe(viewLifecycleOwner, {
@@ -180,13 +182,13 @@ var s = ""
 
                     if (viewModel.fromDrafts && viewModel.subCatName.value != null){
                         binding.rvSubcategories.visibility = View.INVISIBLE
+                        viewModel.showLeveler.value = true
                     }else {
                         binding.clSubcatSelectionOverlay?.visibility = View.VISIBLE
                     }
 
-
                     when(viewModel.categoryDetails.value?.categoryName){
-                       // "Footwear" -> binding.tvSubCategory?.text = getString(R.string.footwear_subcategory)
+                        "Footwear" -> binding.tvSubCategory?.text = getString(R.string.footwear_subcategory)
                     }
                 }
 
@@ -360,13 +362,10 @@ var s = ""
         viewModel.subCategory.value?.let {
             viewModel.getOverlays(
                 Utilities.getPreference(requireContext(),AppConstants.AUTH_KEY).toString(),
-                Utilities.getPreference(requireContext(), AppConstants.CATEGORY_ID).toString(),
+               viewModel.categoryDetails.value?.categoryId!!,
                 it.prod_sub_cat_id!!,
                 frames.toString()
             )
-
-            //update subcategor id
-            viewModel.updateSubcategoryId(it.prod_sub_cat_id,viewModel.subCatName.value!!)
 
             requireContext().captureEvent(
                 Events.GET_OVERLAYS_INTIATED,

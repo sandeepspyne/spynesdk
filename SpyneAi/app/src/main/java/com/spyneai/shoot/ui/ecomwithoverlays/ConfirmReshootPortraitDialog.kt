@@ -56,8 +56,12 @@ class ConfirmReshootPortraitDialog : BaseDialogFragment<ShootViewModel, ConfirmR
                 properties)
 
             if (viewModel.categoryDetails.value?.categoryName == "Footwear"
-                && viewModel.shootNumber.value == 0)
-                    viewModel.updateFootwearSubcategory()
+                && viewModel.shootNumber.value == 0) {
+                viewModel.updateFootwearSubcategory()
+                //update subcategor id
+                viewModel.updateSubcategoryId(viewModel.subCategory.value?.prod_sub_cat_id!!,viewModel.subCatName.value!!)
+            }
+
 
 
             viewModel.isCameraButtonClickable = true

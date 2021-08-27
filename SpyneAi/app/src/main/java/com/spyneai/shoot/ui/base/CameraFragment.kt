@@ -466,43 +466,8 @@ class CameraFragment : BaseFragment<ShootViewModel, FragmentCameraBinding>(), Pi
 
             val localCameraProvider = cameraProvider
                 ?: throw IllegalStateException("Camera initialization failed.")
-            var size = Size(1024,768)
-            if (getString(R.string.app_name) == AppConstants.KARVI){
-                if (requireActivity() != null){
-                    val cm = requireActivity().getSystemService(android.content.Context.CAMERA_SERVICE) as CameraManager
+            var size = Size(824,618)
 
-                    if (cm.cameraIdList != null && cm.cameraIdList.size > 1) {
-                    val characteristics: CameraCharacteristics =
-                        cm.getCameraCharacteristics("1")
-
-                    val configs = characteristics.get(
-                        CameraCharacteristics.SCALER_STREAM_CONFIGURATION_MAP
-                    )
-
-                    val s = configs?.getOutputSizes(ImageFormat.JPEG)
-
-                        var minimumWidth = 1024
-
-                    s?.forEach {
-                        if (it != null){
-                            if (minimumWidth == 1024 && it.width >= minimumWidth){
-                                minimumWidth = it.width
-                                size = it
-                                Log.d(TAG, "startCamera: "+it)
-                            }else {
-                                if (it.width > 1024 && it.width <= minimumWidth){
-                                    minimumWidth = it.width
-                                    size = it
-                                }
-                            }
-                        }
-                    }
-                        Log.d(TAG, "startCamera: ----------------")
-                        Log.d(TAG, "startCamera: "+size)
-                }
-           }
-
-            }
             // Preview
             val preview = when {
                 getString(R.string.app_name) == AppConstants.KARVI -> {
@@ -552,11 +517,18 @@ class CameraFragment : BaseFragment<ShootViewModel, FragmentCameraBinding>(), Pi
                     .build()
             }
 
-            val useCaseGroup = UseCaseGroup.Builder()
-                .addUseCase(preview)
-                .addUseCase(imageCapture!!)
-                .setViewPort(viewPort!!)
-                .build()
+            val useCaseGroup = if (getString(R.string.app_name) == AppConstants.KARVI){
+                UseCaseGroup.Builder()
+                    .addUseCase(preview)
+                    .addUseCase(imageCapture!!)
+                    .build()
+            }else {
+                UseCaseGroup.Builder()
+                    .addUseCase(preview)
+                    .addUseCase(imageCapture!!)
+                    .setViewPort(viewPort!!)
+                    .build()
+            }
 
           //   The Configuration of image analyzing
             imageAnalyzer = if (getString(R.string.app_name) == AppConstants.KARVI) {
@@ -568,8 +540,6 @@ class CameraFragment : BaseFragment<ShootViewModel, FragmentCameraBinding>(), Pi
                     .setTargetAspectRatio(aspectRatio) // set the analyzer aspect ratio
                     .build()
             }
-
-
 
             // Select back camera as a default
             val cameraSelector = CameraSelector.DEFAULT_BACK_CAMERA

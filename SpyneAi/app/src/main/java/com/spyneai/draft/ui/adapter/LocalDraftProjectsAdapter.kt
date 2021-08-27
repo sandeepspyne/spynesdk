@@ -100,19 +100,19 @@ val draftsList: List<Project>
                             }
                     }
 
-                    draftsList[position].categoryName == "Footwear" &&
-                            draftsList[position].subCategoryName == null-> {
-                        Intent(context, ShootPortraitActivity::class.java)
-                            .apply {
-                                putExtra(AppConstants.FROM_DRAFTS, true)
-                                putExtra(AppConstants.CATEGORY_ID, draftsList[position].categoryId)
-                                putExtra(AppConstants.CATEGORY_NAME, draftsList[position].categoryName)
-                                putExtra(AppConstants.PROJECT_ID, draftsList[position].projectId)
-                                putExtra(AppConstants.SKU_NAME, draftsList[position].projectName)
-                                putExtra(AppConstants.SKU_CREATED, true)
-                                context.startActivity(this)
-                            }
-                    }
+//                    draftsList[position].categoryName == "Footwear" &&
+//                            draftsList[position].subCategoryName == null-> {
+//                        Intent(context, ShootPortraitActivity::class.java)
+//                            .apply {
+//                                putExtra(AppConstants.FROM_DRAFTS, true)
+//                                putExtra(AppConstants.CATEGORY_ID, draftsList[position].categoryId)
+//                                putExtra(AppConstants.CATEGORY_NAME, draftsList[position].categoryName)
+//                                putExtra(AppConstants.PROJECT_ID, draftsList[position].projectId)
+//                                putExtra(AppConstants.SKU_NAME, draftsList[position].projectName)
+//                                putExtra(AppConstants.SKU_CREATED, true)
+//                                context.startActivity(this)
+//                            }
+//                    }
 
                     else -> {
                     Intent(context, DraftSkusActivity::class.java)

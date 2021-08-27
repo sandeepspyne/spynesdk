@@ -41,6 +41,7 @@ class GridEcomFragment : BaseFragment<ShootViewModel, FragmentGridEcomBinding>()
             }else {
                 if (viewModel.isSkuCreated.value == null)
                     initSkuDialog()
+
             }
         }
 
@@ -106,6 +107,18 @@ class GridEcomFragment : BaseFragment<ShootViewModel, FragmentGridEcomBinding>()
         }
 
 
+    }
+
+    override fun onResume() {
+        super.onResume()
+
+        if (viewModel.fromDrafts){
+            if (viewModel.showLeveler.value == null || viewModel.showLeveler.value == false){
+                viewModel.showLeveler.value = true
+                viewModel.showDialog = true
+            }
+
+        }
     }
 
     private fun initSkuDialog() {

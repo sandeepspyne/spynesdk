@@ -22,7 +22,7 @@
         <entry key="app/src/main/res/layout-land/fragment_camera.xml" value="0.20208333333333334" />
         <entry key="app/src/main/res/layout/activity_completed_skus.xml" value="0.17572463768115942" />
         <entry key="app/src/main/res/layout/activity_credit_plans.xml" value="0.30512820512820515" />
-        <entry key="app/src/main/res/layout/activity_dashboard_main.xml" value="0.30512820512820515" />
+        <entry key="app/src/main/res/layout/activity_dashboard_main.xml" value="0.25" />
         <entry key="app/src/main/res/layout/activity_downloading.xml" value="0.17572463768115942" />
         <entry key="app/src/main/res/layout/activity_draft_sku_details.xml" value="0.29583333333333334" />
         <entry key="app/src/main/res/layout/activity_draft_skus.xml" value="0.17572463768115942" />
@@ -53,6 +53,9 @@
         <entry key="app/src/main/res/layout/dialog_focused_hint.xml" value="0.30512820512820515" />
         <entry key="app/src/main/res/layout/dialog_interior_hint.xml" value="0.3098958333333333" />
         <entry key="app/src/main/res/layout/dialog_progress.xml" value="0.17572463768115942" />
+        <entry key="app/src/main/res/layout/dialog_resolution_not_supported.xml" value="0.30512820512820515" />
+        <entry key="app/src/main/res/layout/dialog_shoot_hint.xml" value="0.30512820512820515" />
+        <entry key="app/src/main/res/layout/dialog_top_up.xml" value="0.30512820512820515" />
         <entry key="app/src/main/res/layout/fragment_camera.xml" value="0.22" />
         <entry key="app/src/main/res/layout/fragment_completed_projects.xml" value="0.17572463768115942" />
         <entry key="app/src/main/res/layout/fragment_credit_payment_failed.xml" value="0.30512820512820515" />

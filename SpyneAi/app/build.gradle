@@ -93,8 +93,8 @@ android {
         karvi {
             dimension 'version'
             applicationId "com.spyneai.karvi"
-            versionCode 14
-            versionName "4.3"
+            versionCode 15
+            versionName "4.4"
         }
 
         travophotos {

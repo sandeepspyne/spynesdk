@@ -43,7 +43,11 @@ class LocalSkusAdapter (
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        holder.tvCategory.text = skuList[position].subcategoryName
+        if (skuList[position].subcategoryName == "" || skuList[position].subcategoryName == null)
+            holder.tvCategory.text = skuList[position].categoryName
+        else
+            holder.tvCategory.text = skuList[position].subcategoryName
+
 
         if (skuList[position].thumbnail != null) {
             Glide.with(context) // replace with 'this' if it's in activity

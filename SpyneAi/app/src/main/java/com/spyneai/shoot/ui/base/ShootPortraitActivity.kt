@@ -70,6 +70,9 @@ class ShootPortraitActivity : AppCompatActivity() {
             gifList =  intent.getStringExtra(AppConstants.GIF_LIST)
         }
 
+        Utilities.savePrefrence(this,AppConstants.CATEGORY_ID,categoryDetails.categoryId)
+        Utilities.savePrefrence(this,AppConstants.CATEGORY_NAME,categoryDetails.categoryName)
+
         shootViewModel.categoryDetails.value = categoryDetails
 
         when(shootViewModel.categoryDetails.value?.categoryName) {
@@ -255,6 +258,7 @@ class ShootPortraitActivity : AppCompatActivity() {
         }else {
             shootViewModel.showDialog = false
             shootViewModel.isSubCategoryConfirmed.value = true
+            shootViewModel.isSkuCreated.value = true
 
             shootViewModel.shootList.value = ArrayList()
 
