@@ -5,6 +5,7 @@
       <map>
         <entry key="../../../../../../layout/custom_preview.xml" value="0.33645833333333336" />
         <entry key="../../../Library/Android/sdk/platforms/android-30/data/res/layout/simple_spinner_dropdown_item.xml" value="0.20833333333333334" />
+        <entry key="app/src/lal10/res/layout/home_dashboard_fragment.xml" value="0.30512820512820515" />
         <entry key="app/src/main/res/drawable/exposure_thumb.xml" value="0.3260416666666667" />
         <entry key="app/src/main/res/drawable/ic_noun_exposure.xml" value="0.3260416666666667" />
         <entry key="app/src/main/res/drawable/ic_slider_next.xml" value="0.24444444444444444" />
@@ -22,6 +23,7 @@
         <entry key="app/src/main/res/layout/activity_forgot_password.xml" value="0.20833333333333334" />
         <entry key="app/src/main/res/layout/activity_login.xml" value="0.20833333333333334" />
         <entry key="app/src/main/res/layout/activity_my_orders.xml" value="0.3098958333333333" />
+        <entry key="app/src/main/res/layout/activity_onboard_one.xml" value="0.16770833333333332" />
         <entry key="app/src/main/res/layout/activity_order.xml" value="0.17572463768115942" />
         <entry key="app/src/main/res/layout/activity_show_images.xml" value="0.17572463768115942" />
         <entry key="app/src/main/res/layout/activity_show_raw_images.xml" value="0.3098958333333333" />
@@ -67,6 +69,7 @@
         <entry key="app/src/main/res/layout/row_replaced_images_interior.xml" value="0.17572463768115942" />
         <entry key="app/src/main/res/menu/dashboard_bottom_menu.xml" value="0.30512820512820515" />
         <entry key="app/src/olacabs/res/mipmap-anydpi-v26/skip.xml" value="0.19537037037037036" />
+        <entry key="app/src/spyne/res/layout/home_dashboard_fragment.xml" value="0.30512820512820515" />
         <entry key="app/src/sweepcars/res/layout/home_dashboard_fragment.xml" value="0.165" />
         <entry key="app/src/sweepcars/res/mipmap-anydpi-v26/app_ic.xml" value="0.18385416666666668" />
         <entry key="app/src/sweepcars/res/mipmap-anydpi-v26/app_ic_round.xml" value="0.18385416666666668" />

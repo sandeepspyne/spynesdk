@@ -66,7 +66,16 @@ android {
 
         automobileMain {
         }
+
         //automobiles
+        spyne {
+            dimension 'version'
+            applicationId "com.spyneai"
+            versionCode 49
+            versionName "2.60"
+        }
+
+
         sweepCars {
             dimension 'version'
             applicationId "com.spyneai.sweepcars"
@@ -214,6 +223,11 @@ android {
         udaan {
             java {
                 srcDirs 'src/udaan/java'
+            }
+        }
+        spyne {
+            java {
+                srcDirs 'src/spyne/java'
             }
         }
     }
