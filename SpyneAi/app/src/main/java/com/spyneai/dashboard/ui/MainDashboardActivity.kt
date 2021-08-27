@@ -36,6 +36,7 @@ import java.io.File
 import com.google.android.material.snackbar.Snackbar
 import com.posthog.android.Properties
 import com.spyneai.captureEvent
+import com.spyneai.orders.ui.MyOrdersFragment
 import com.spyneai.posthog.Events
 
 
@@ -59,6 +60,7 @@ class MainDashboardActivity : AppCompatActivity() {
 
         val firstFragment= HomeDashboardFragment()
         val SecondFragment=WalletDashboardFragment()
+        val myOrdersFragment= MyOrdersFragment()
         val thirdFragment=LogoutDashBoardFragment()
 
         //save category id and name
@@ -66,41 +68,51 @@ class MainDashboardActivity : AppCompatActivity() {
         Utilities.savePrefrence(this,AppConstants.CATEGORY_NAME,"Automobiles")
 
 
+        binding.fab.setOnClickListener {
+            val intent = Intent(this, CategoriesActivity::class.java)
+            startActivity(intent)
+        }
+
         binding.bottomNavigation.setOnNavigationItemSelectedListener {
             when(it.itemId){
                 R.id.homeDashboardFragment->setCurrentFragment(firstFragment)
 
-                R.id.shootActivity-> {
-
-                        when(getString(R.string.app_name)) {
-                        "Ola Cabs", AppConstants.CARS24,AppConstants.CARS24_INDIA,
-                        "Trusted cars","Travo Photos","Yalla Motors","Spyne Hiring" -> {
-                            var intent = Intent(this, StartShootActivity::class.java)
-                            intent.putExtra(AppConstants.CATEGORY_ID,AppConstants.CARS_CATEGORY_ID)
-                            intent.putExtra(AppConstants.CATEGORY_NAME,"Automobiles")
-                            startActivity(intent)
-
-                        }
-                            "Flipkart", "Udaan", "Lal10", "Amazon", "Swiggy" -> {
-                                val intent = Intent(this@MainDashboardActivity, CategoriesActivity::class.java)
-                                startActivity(intent)
-
-                            }
-                            else ->{
-                                var intent = Intent(this, ShootActivity::class.java)
-                                intent.putExtra(AppConstants.CATEGORY_ID,AppConstants.CARS_CATEGORY_ID)
-                                intent.putExtra(AppConstants.CATEGORY_NAME,"Automobiles")
-                                startActivity(intent)
-                          }
-
-                    }
-
-                }
+//                R.id.shootActivity-> {
+//
+//                        when(getString(R.string.app_name)) {
+//                        "Ola Cabs", AppConstants.CARS24,AppConstants.CARS24_INDIA,
+//                        "Trusted cars","Travo Photos","Yalla Motors","Spyne Hiring" -> {
+//                            var intent = Intent(this, StartShootActivity::class.java)
+//                            intent.putExtra(AppConstants.CATEGORY_ID,AppConstants.CARS_CATEGORY_ID)
+//                            intent.putExtra(AppConstants.CATEGORY_NAME,"Automobiles")
+//                            startActivity(intent)
+//
+//                        }
+//                            "Flipkart", "Udaan", "Lal10", "Amazon", "Swiggy" -> {
+//                                val intent = Intent(this@MainDashboardActivity, CategoriesActivity::class.java)
+//                                startActivity(intent)
+//
+//                            }
+//                            else ->{
+//                                var intent = Intent(this, ShootActivity::class.java)
+//                                intent.putExtra(AppConstants.CATEGORY_ID,AppConstants.CARS_CATEGORY_ID)
+//                                intent.putExtra(AppConstants.CATEGORY_NAME,"Automobiles")
+//                                startActivity(intent)
+//                          }
+//
+//                    }
+//
+//                }
                 R.id.completedOrdersFragment-> {
-                    val intent = Intent(this, MyOrdersActivity::class.java)
-                    startActivity(intent)
+                   if (getString(R.string.app_name) == AppConstants.SPYNE_AI)
+                       setCurrentFragment(myOrdersFragment)
+                   else{
+                       val intent = Intent(this, MyOrdersActivity::class.java)
+                       startActivity(intent)
+                   }
+
                 }
-                //R.id.wallet->setCurrentFragment(SecondFragment)
+                R.id.wallet->setCurrentFragment(SecondFragment)
                 R.id.logoutDashBoardFragment->setCurrentFragment(thirdFragment)
 
             }

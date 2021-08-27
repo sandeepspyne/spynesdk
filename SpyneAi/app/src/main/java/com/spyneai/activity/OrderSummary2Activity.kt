@@ -13,6 +13,7 @@ import com.bumptech.glide.Glide
 import com.downloader.PRDownloader
 import com.downloader.PRDownloaderConfig
 import com.spyneai.R
+import com.spyneai.credits.CreditPlansActivity
 import com.spyneai.fragment.TopUpFragment
 
 import com.spyneai.gotoHome
@@ -128,7 +129,13 @@ class OrderSummary2Activity : AppCompatActivity() {
 
             else-> {
                 tvTopUp.setOnClickListener {
-                    TopUpFragment().show(supportFragmentManager,"TopUpFragment")
+                    if (getString(R.string.app_name) == AppConstants.SPYNE_AI){
+                        var intent = Intent(this, CreditPlansActivity::class.java)
+                        intent.putExtra("credit_available",availableCredits)
+                        startActivity(intent)
+                    }else {
+                        TopUpFragment().show(supportFragmentManager,"TopUpFragment")
+                    }
                 }
             }
         }

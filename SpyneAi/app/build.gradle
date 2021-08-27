@@ -71,8 +71,8 @@ android {
         spyne {
             dimension 'version'
             applicationId "com.spyneai"
-            versionCode 49
-            versionName "2.60"
+            versionCode 50
+            versionName "2.61"
         }
 
 
@@ -374,4 +374,7 @@ dependencies {
 
     //post hog
     implementation 'com.posthog.android:posthog:1.+'
+
+    //Razorpay
+    implementation 'com.razorpay:checkout:1.6.6'
 }

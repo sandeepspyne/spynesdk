@@ -136,6 +136,7 @@ object AppConstants {
     val SWEEP= "Sweep.ei"
     val OLA_CABS = "Ola Cabs"
     val UDAAN = "Udaan"
+    val SPYNE_AI = "Spyne AI"
 
 
 
