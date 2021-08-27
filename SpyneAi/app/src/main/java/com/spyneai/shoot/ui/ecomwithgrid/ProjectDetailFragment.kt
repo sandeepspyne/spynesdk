@@ -5,6 +5,7 @@ import android.os.Handler
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.spyneai.base.BaseFragment
 import com.spyneai.base.network.Resource
@@ -31,9 +32,6 @@ class ProjectDetailFragment : BaseFragment<ShootViewModel, FragmentProjectDetail
         handler = Handler()
 
         binding.btHome.setOnClickListener {
-           requireContext().gotoHome()
-         //   viewModel.skuProcessState(Utilities.getPreference(requireContext(), AppConstants.AUTH_KEY).toString(), viewModel.sku.value?.projectId.toString())
-            log("skuProcessState called")
             viewModel.skuProcessState(Utilities.getPreference(requireContext(), AppConstants.AUTH_KEY).toString(),
                 viewModel.projectId.value.toString())
             log("auth key- "+Utilities.getPreference(requireContext(), AppConstants.AUTH_KEY).toString())
@@ -41,7 +39,23 @@ class ProjectDetailFragment : BaseFragment<ShootViewModel, FragmentProjectDetail
             log("skuProcessState called")
         }
 
+        viewModel.skuProcessStateResponse.observe(viewLifecycleOwner, {
+            when (it) {
+                is Resource.Success -> {
+                    Utilities.hideProgressDialog()
+                    requireContext().gotoHome()
+                }
+
+                is Resource.Failure -> {
+                    Utilities.hideProgressDialog()
+                    handleApiError(it)
+                }
+            }
+        })
+
+
     }
+
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)

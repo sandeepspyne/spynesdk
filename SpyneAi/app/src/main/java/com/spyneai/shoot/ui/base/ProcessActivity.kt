@@ -5,6 +5,7 @@ import android.os.Bundle
 import androidx.lifecycle.ViewModelProvider
 import com.spyneai.R
 import com.spyneai.dashboard.ui.base.ViewModelFactory
+import com.spyneai.needs.AppConstants
 import com.spyneai.shoot.data.ProcessViewModel
 import com.spyneai.shoot.data.model.Sku
 import com.spyneai.shoot.ui.SelectBackgroundFragment
@@ -29,7 +30,7 @@ class ProcessActivity : AppCompatActivity() {
         processViewModel.exteriorAngles.value =  intent.getIntExtra("exterior_angles",0)
         processViewModel.interiorMiscShootsCount = intent.getIntExtra("interior_misc_count",0)
         processViewModel.frontFramesList = intent.getStringArrayListExtra("exterior_images_list")!!
-       // processViewModel.categoryName = intent.getStringExtra(AppConstants.CATEGORY_NAME)
+        processViewModel.categoryName = intent.getStringExtra(AppConstants.CATEGORY_NAME)
 
 //        if (processViewModel.categoryName == "Automobiles" || processViewModel.categoryName == "Bikes")
 //            processViewModel.frontFramesList = intent.getStringArrayListExtra("exterior_images_list")!!

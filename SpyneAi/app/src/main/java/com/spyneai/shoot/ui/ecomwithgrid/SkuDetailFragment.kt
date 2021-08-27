@@ -127,9 +127,11 @@ class SkuDetailFragment : BaseFragment<ShootViewModel, FragmentSkuDetailBinding>
         }
 
         binding.ivAddAngle.setOnClickListener {
+            if (viewModel.categoryDetails.value?.categoryName.equals("E-Commerce") || viewModel.categoryDetails.value?.categoryName.equals("Food & Beverages"))
             viewModel.addMoreAngle.value = true
         }
         binding.tvAddAngle.setOnClickListener {
+            if (viewModel.categoryDetails.value?.categoryName.equals("E-Commerce") || viewModel.categoryDetails.value?.categoryName.equals("Food & Beverages"))
             viewModel.addMoreAngle.value = true
         }
 

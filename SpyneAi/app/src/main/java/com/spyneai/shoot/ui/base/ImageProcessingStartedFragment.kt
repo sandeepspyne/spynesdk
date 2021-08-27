@@ -35,11 +35,28 @@ class ImageProcessingStartedFragment : BaseFragment<ProcessViewModel, FragmentIm
             requireContext().gotoHome()
         }
 
+        if (viewModel.categoryName == "Bikes"){
+            if (viewModel.interiorMiscShootsCount > 0)
+                updateTotalFrames()
+
+            viewModel.updateProjectState(
+                Utilities.getPreference(requireContext(),AppConstants.AUTH_KEY).toString(),
+                viewModel.sku.value?.projectId!!
+            )
+        }
+
 
 
     }
+    private fun updateTotalFrames() {
+        val totalFrames = viewModel.exteriorAngles.value?.plus(viewModel.interiorMiscShootsCount)
 
-
+        viewModel.updateCarTotalFrames(
+            Utilities.getPreference(requireContext(),AppConstants.AUTH_KEY).toString(),
+            viewModel.sku.value?.skuId!!,
+            totalFrames.toString()
+        )
+    }
 
     override fun getViewModel() = ProcessViewModel::class.java
 

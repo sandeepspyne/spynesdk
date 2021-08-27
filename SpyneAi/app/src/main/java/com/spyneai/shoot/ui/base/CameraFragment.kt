@@ -324,6 +324,27 @@ class CameraFragment : BaseFragment<ShootViewModel, FragmentCameraBinding>(), Pi
             "Flipkart", "Udaan", "Lal10", "Amazon", "Swiggy" -> {
                 captureImage()
             }
+            AppConstants.SPYNE_AI -> {
+                if (viewModel.shootList.value == null){
+                    if (viewModel.categoryDetails.value?.categoryName == "Automobiles" ||
+                        viewModel.categoryDetails.value?.categoryName == "Bikes") {
+                        viewModel.createProjectRes.observe(viewLifecycleOwner, {
+                            when (it) {
+                                is Resource.Success -> {
+                                    val subCategory = viewModel.subCategory.value
+                                    createSku(it.value.project_id, subCategory?.prod_sub_cat_id.toString())
+                                }
+                                else -> {
+                                }
+                            }
+                        })
+                    }else {
+                        captureImage()
+                    }
+                }else {
+                    captureImage()
+                }
+            }
             else
             -> {
                 if (viewModel.shootList.value == null
@@ -670,6 +691,21 @@ class CameraFragment : BaseFragment<ShootViewModel, FragmentCameraBinding>(), Pi
                 "Focus Shoot" -> {
                     "Miscellaneous_" + viewModel.miscShootNumber.value?.plus(1)
                 }
+                "Footwear" -> {
+                    viewModel.categoryDetails.value?.imageType!! + "_" + viewModel.shootNumber.value?.plus(
+                        1
+                    )
+                }
+                 "Food & Beverages" -> {
+                    viewModel.categoryDetails.value?.imageType!! + "_" + viewModel.shootNumber.value?.plus(
+                        1
+                    )
+                }
+                 "E-Commerce" -> {
+                    viewModel.categoryDetails.value?.imageType!! + "_" + viewModel.shootNumber.value?.plus(
+                        1
+                    )
+                }
                 else -> {
                     System.currentTimeMillis().toString()
                 }
@@ -710,6 +746,21 @@ class CameraFragment : BaseFragment<ShootViewModel, FragmentCameraBinding>(), Pi
                             "Miscellaneous_" + miscList.size.plus(1)
                         }
                     }
+                    "Footwear" -> {
+                    viewModel.categoryDetails.value?.imageType!! + "_" + viewModel.shootNumber.value?.plus(
+                        1
+                    )
+                }
+                 "Food & Beverages" -> {
+                    viewModel.categoryDetails.value?.imageType!! + "_" + viewModel.shootNumber.value?.plus(
+                        1
+                    )
+                }
+                 "E-Commerce" -> {
+                    viewModel.categoryDetails.value?.imageType!! + "_" + viewModel.shootNumber.value?.plus(
+                        1
+                    )
+                }
                     else -> {
                         System.currentTimeMillis().toString()
                     }
@@ -888,6 +939,65 @@ class CameraFragment : BaseFragment<ShootViewModel, FragmentCameraBinding>(), Pi
                     }
                 }
             }
+            AppConstants.SPYNE_AI -> {
+                when (viewModel.categoryDetails.value?.categoryName){
+                    "Automobiles", "Bikes" ->{
+                        if ((roll >= -100 && roll <= -80) && (pitch >= -5 && pitch <= 5)) {
+                            gyroMeterOnLevel(true)
+                        } else {
+                            gyroMeterOffLevel()
+
+                            if (movearrow)
+                                moveArrow(roll + 90)
+
+                            if (rotatedarrow) {
+                                if (pitch > 0) {
+                                    rotateArrow(pitch.minus(0).roundToInt())
+                                } else {
+                                    rotateArrow(pitch.plus(0).roundToInt())
+                                }
+                            }
+                        }
+                    }
+
+                else ->{
+                    //hide moving line
+                    if (pitch.roundToInt() == 0 || (pitch.roundToInt() <= -0 && pitch.roundToInt() >= -3))
+                        binding.tvLevelIndicator.visibility = View.GONE
+                    else
+                        binding.tvLevelIndicator.visibility = View.VISIBLE
+
+                    if ((pitch.roundToInt() == 0 || (pitch.roundToInt() <= -0 && pitch.roundToInt() >= -3)) ||
+                        pitch.roundToInt() <= -82 && pitch.roundToInt() >= -88 ||
+                        (pitch.roundToInt() <= -40 && pitch.roundToInt() >= -45) && abs(roll.roundToInt()) < 100
+                    ) {
+                        if (pitch.roundToInt() == 0 || (pitch.roundToInt() <= -0 && pitch.roundToInt() >= -3))
+                            gyroMeterOnLevel(false)
+                        else if (pitch.roundToInt() <= -40 && pitch.roundToInt() >= -45)
+                            gyroMeterOnLevel(false)
+                        else
+                            gyroMeterOnLevel(true)
+                    } else {
+                        gyroMeterOffLevel()
+
+                        if (movearrow) {
+                            if (abs(roll.roundToInt()) < 100) {
+                                moveArrow((pitch + 85).unaryMinus())
+                            } else {
+                                moveArrow(pitch + 85)
+                            }
+                        }
+
+                        if (orientationAngles[2].roundToInt() == 1 || orientationAngles[2].roundToInt() == -1){
+                            if (orientationAngles[2].roundToInt() == 1) {
+                                rotateArrow((pitch + 85).unaryMinus().roundToInt())
+                            } else {
+                                rotateArrow((pitch + 85).roundToInt())
+                            }
+                        }
+                    }
+                }
+            }}
             else -> {
                 if ((roll >= -100 && roll <= -80) && (pitch >= -5 && pitch <= 5)) {
                     gyroMeterOnLevel(true)

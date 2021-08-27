@@ -90,7 +90,7 @@ class ShootPortraitActivity : AppCompatActivity() {
                     .add(R.id.flCamerFragment, overlaysFragment)
                     .commitAllowingStateLoss()
             }
-        }else if (Utilities.getPreference(this, AppConstants.CATEGORY_NAME).equals("E-Commerce") || Utilities.getPreference(this, AppConstants.CATEGORY_NAME).equals("Food & Beverages")){
+        }else if (Utilities.getPreference(this, AppConstants.CATEGORY_NAME).equals("E-Commerce") ){
             if(savedInstanceState == null) { // initial transaction should be wrapped like this
                 supportFragmentManager.beginTransaction()
                     .add(R.id.flCamerFragment, cameraFragment)
@@ -103,7 +103,7 @@ class ShootPortraitActivity : AppCompatActivity() {
                 shootViewModel.projectId.value = intent.getStringExtra("project_id")
                 val sku = Sku()
                 sku?.projectId = shootViewModel.projectId.value
-                shootViewModel.categoryDetails.value?.imageType = "Ecom"
+                shootViewModel.categoryDetails.value?.imageType = "E-Commerce"
                 sku.skuName = intent.getStringExtra(AppConstants.SKU_NAME)
                 sku.skuId = intent.getStringExtra(AppConstants.SKU_ID)
                 sku.categoryName = shootViewModel.categoryDetails.value?.categoryName
@@ -113,6 +113,28 @@ class ShootPortraitActivity : AppCompatActivity() {
                 e.printStackTrace()
             }
 
+        } else if (Utilities.getPreference(this, AppConstants.CATEGORY_NAME).equals("Food & Beverages")){
+            if(savedInstanceState == null) { // initial transaction should be wrapped like this
+                supportFragmentManager.beginTransaction()
+                    .add(R.id.flCamerFragment, cameraFragment)
+                    .add(R.id.flCamerFragment, gridEcomFragment)
+                    .commitAllowingStateLoss()
+            }
+
+            try {
+                val intent = intent
+                shootViewModel.projectId.value = intent.getStringExtra("project_id")
+                val sku = Sku()
+                sku?.projectId = shootViewModel.projectId.value
+                shootViewModel.categoryDetails.value?.imageType = "Food & Beverages"
+                sku.skuName = intent.getStringExtra(AppConstants.SKU_NAME)
+                sku.skuId = intent.getStringExtra(AppConstants.SKU_ID)
+                sku.categoryName = shootViewModel.categoryDetails.value?.categoryName
+
+                shootViewModel.sku.value = sku
+            } catch (e: Exception) {
+                e.printStackTrace()
+            }
         }
         else if (Utilities.getPreference(this, AppConstants.CATEGORY_NAME).equals("Footwear")){
             shootViewModel.processSku = false
@@ -177,6 +199,7 @@ class ShootPortraitActivity : AppCompatActivity() {
                 val intent = Intent(this, ProcessActivity::class.java)
 
                 intent.apply {
+                    this.putExtra(AppConstants.CATEGORY_NAME, categoryDetails.categoryName)
                     this.putExtra("sku_id", shootViewModel.sku.value?.skuId)
                     this.putExtra("project_id", shootViewModel.sku.value?.projectId)
                     this.putExtra("exterior_angles", shootViewModel.exterirorAngles.value)
