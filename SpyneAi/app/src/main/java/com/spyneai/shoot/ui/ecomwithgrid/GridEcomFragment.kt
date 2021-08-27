@@ -82,6 +82,9 @@ class GridEcomFragment : BaseFragment<ShootViewModel, FragmentGridEcomBinding>()
                 binding.tvSkuName.visibility = View.VISIBLE
                 log("sku name set to text view: "+viewModel.sku.value?.skuName)
                 viewModel.isSkuCreated.value = false
+
+                if (!viewModel.fromDrafts)
+                    viewModel.shootNumber.value = 0
             }
         })
 

@@ -6,21 +6,19 @@
         <entry key="../../../../../../layout/custom_preview.xml" value="0.33645833333333336" />
         <entry key="../../../Library/Android/sdk/platforms/android-30/data/res/layout/simple_spinner_dropdown_item.xml" value="0.20833333333333334" />
         <entry key="app/src/lal10/res/layout/home_dashboard_fragment.xml" value="0.30512820512820515" />
-        <entry key="app/src/main/res/drawable/bg_round_black_button.xml" value="0.21296296296296297" />
         <entry key="app/src/main/res/drawable/exposure_thumb.xml" value="0.3260416666666667" />
-        <entry key="app/src/main/res/drawable/ic_indicator.xml" value="0.21296296296296297" />
         <entry key="app/src/main/res/drawable/ic_noun_exposure.xml" value="0.3260416666666667" />
-        <entry key="app/src/main/res/drawable/ic_slide_one.xml" value="0.21296296296296297" />
+        <entry key="app/src/main/res/drawable/ic_shoot.xml" value="0.24166666666666667" />
         <entry key="app/src/main/res/drawable/ic_slider_next.xml" value="0.24444444444444444" />
         <entry key="app/src/main/res/drawable/ic_slider_previous.xml" value="0.24444444444444444" />
         <entry key="app/src/main/res/drawable/ic_sliderline.xml" value="0.21481481481481482" />
         <entry key="app/src/main/res/drawable/ic_top_left.xml" value="0.2490740740740741" />
         <entry key="app/src/main/res/drawable/ic_uploaded.xml" value="0.24444444444444444" />
         <entry key="app/src/main/res/drawable/ic_uploading.xml" value="0.24444444444444444" />
-        <entry key="app/src/main/res/drawable/nav_background.xml" value="0.21296296296296297" />
-        <entry key="app/src/main/res/drawable/tab_selector.xml" value="0.21296296296296297" />
+        <entry key="app/src/main/res/drawable/nav_background.xml" value="0.24166666666666667" />
         <entry key="app/src/main/res/layout-land/fragment_camera.xml" value="0.20208333333333334" />
         <entry key="app/src/main/res/layout/activity_completed_skus.xml" value="0.17572463768115942" />
+        <entry key="app/src/main/res/layout/activity_dashboard_main.xml" value="0.20092592592592592" />
         <entry key="app/src/main/res/layout/activity_credit_plans.xml" value="0.30512820512820515" />
         <entry key="app/src/main/res/layout/activity_dashboard_main.xml" value="0.25" />
         <entry key="app/src/main/res/layout/activity_downloading.xml" value="0.17572463768115942" />
@@ -31,9 +29,6 @@
         <entry key="app/src/main/res/layout/activity_login.xml" value="0.20833333333333334" />
         <entry key="app/src/main/res/layout/activity_my_orders.xml" value="0.3098958333333333" />
         <entry key="app/src/main/res/layout/activity_onboard_one.xml" value="0.16770833333333332" />
-        <entry key="app/src/main/res/layout/activity_onboard_three.xml" value="0.165" />
-        <entry key="app/src/main/res/layout/activity_onboard_two.xml" value="0.1" />
-        <entry key="app/src/main/res/layout/activity_onboardings.xml" value="0.30512820512820515" />
         <entry key="app/src/main/res/layout/activity_order.xml" value="0.17572463768115942" />
         <entry key="app/src/main/res/layout/activity_show_images.xml" value="0.17572463768115942" />
         <entry key="app/src/main/res/layout/activity_show_raw_images.xml" value="0.3098958333333333" />
@@ -41,7 +36,7 @@
         <entry key="app/src/main/res/layout/activity_sign_up.xml" value="0.20833333333333334" />
         <entry key="app/src/main/res/layout/activity_splash.xml" value="0.17572463768115942" />
         <entry key="app/src/main/res/layout/activity_three_sixty_intro.xml" value="0.17572463768115942" />
-        <entry key="app/src/main/res/layout/activity_wallet.xml" value="0.30512820512820515" />
+        <entry key="app/src/main/res/layout/activity_youtube_video_player.xml" value="0.1935185185185185" />
         <entry key="app/src/main/res/layout/completed_ongoing_sku_simmer.xml" value="0.17572463768115942" />
         <entry key="app/src/main/res/layout/confirm_reshoot_ecom_dialog.xml" value="0.19074074074074074" />
         <entry key="app/src/main/res/layout/create_project_ecom_dialog.xml" value="0.2037037037037037" />
@@ -58,7 +53,6 @@
         <entry key="app/src/main/res/layout/dialog_top_up.xml" value="0.30512820512820515" />
         <entry key="app/src/main/res/layout/fragment_camera.xml" value="0.22" />
         <entry key="app/src/main/res/layout/fragment_completed_projects.xml" value="0.17572463768115942" />
-        <entry key="app/src/main/res/layout/fragment_credit_payment_failed.xml" value="0.30512820512820515" />
         <entry key="app/src/main/res/layout/fragment_draft_details.xml" value="0.17572463768115942" />
         <entry key="app/src/main/res/layout/fragment_draft_projects.xml" value="0.17572463768115942" />
         <entry key="app/src/main/res/layout/fragment_draft_sku_details.xml" value="0.17572463768115942" />
@@ -82,17 +76,16 @@
         <entry key="app/src/main/res/layout/item_sku_images.xml" value="0.30512820512820515" />
         <entry key="app/src/main/res/layout/row_replaced_images.xml" value="0.17572463768115942" />
         <entry key="app/src/main/res/layout/row_replaced_images_interior.xml" value="0.17572463768115942" />
+        <entry key="app/src/main/res/layout/wallet_dashboard_fragment.xml" value="0.19722222222222222" />
         <entry key="app/src/main/res/menu/dashboard_bottom_menu.xml" value="0.30512820512820515" />
         <entry key="app/src/olacabs/res/mipmap-anydpi-v26/skip.xml" value="0.19537037037037036" />
-        <entry key="app/src/spyne/res/drawable/tab_selector.xml" value="0.21296296296296297" />
-        <entry key="app/src/spyne/res/layout/activity_dashboard_main.xml" value="0.165" />
+        <entry key="app/src/spyne/res/layout/activity_dashboard_main.xml" value="0.25" />
         <entry key="app/src/spyne/res/layout/home_dashboard_fragment.xml" value="0.30512820512820515" />
-        <entry key="app/src/spyne/res/menu/dashboard_bottom_menu.xml" value="0.30512820512820515" />
+        <entry key="app/src/spyne/res/menu/dashboard_bottom_menu.xml" value="0.20092592592592592" />
         <entry key="app/src/sweepcars/res/layout/home_dashboard_fragment.xml" value="0.165" />
         <entry key="app/src/sweepcars/res/mipmap-anydpi-v26/app_ic.xml" value="0.18385416666666668" />
         <entry key="app/src/sweepcars/res/mipmap-anydpi-v26/app_ic_round.xml" value="0.18385416666666668" />
         <entry key="app/src/swiggy/res/menu/dashboard_bottom_menu.xml" value="0.19814814814814816" />
-        <entry key="app/src/travophotos/res/drawable/ic_indicator.xml" value="0.21296296296296297" />
       </map>
     </option>
   </component>

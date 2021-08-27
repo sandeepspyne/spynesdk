@@ -19,7 +19,10 @@ class ShootHintDialog : BaseDialogFragment<ShootViewModel, DialogShootHintBindin
 
         dialog?.setCancelable(false)
 
-        Glide.with(this).asGif().load(R.raw.before_shoot).into(binding.ivBeforeShootGif)
+        when(viewModel.categoryDetails.value?.categoryName){
+            "Bikes" ->  Glide.with(this).asGif().load(R.raw.bikes_intro).into(binding.ivBeforeShootGif)
+            else ->   Glide.with(this).asGif().load(R.raw.before_shoot).into(binding.ivBeforeShootGif)
+        }
 
         binding.btContinue.setOnClickListener {
             viewModel.showVin.value = true

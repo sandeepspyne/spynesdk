@@ -64,6 +64,8 @@ class ConfirmReshootEcomDialog :
         }
 
         binding.btConfirmImage.setOnClickListener {
+            viewModel.shootNumber.value = viewModel.shootNumber.value?.plus(1)
+
             viewModel.isStopCaptureClickable = true
             val properties = Properties()
             properties.apply {

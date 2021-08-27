@@ -106,7 +106,7 @@ class ShootPortraitActivity : AppCompatActivity() {
                 shootViewModel.projectId.value = intent.getStringExtra("project_id")
                 val sku = Sku()
                 sku?.projectId = shootViewModel.projectId.value
-                shootViewModel.categoryDetails.value?.imageType = "Ecom"
+                shootViewModel.categoryDetails.value?.imageType = "E-Commerce"
                 sku.skuName = intent.getStringExtra(AppConstants.SKU_NAME)
                 sku.skuId = intent.getStringExtra(AppConstants.SKU_ID)
                 sku.categoryName = shootViewModel.categoryDetails.value?.categoryName
@@ -266,6 +266,7 @@ class ShootPortraitActivity : AppCompatActivity() {
             val list = shootViewModel.getImagesbySkuId(shootViewModel.sku.value?.skuId!!)
 
             if (intent.getBooleanExtra(AppConstants.FROM_LOCAL_DB,false)){
+                shootViewModel.shootNumber.value = list.size
                 for(image in list){
                     shootViewModel.shootList.value!!.add(
                         ShootData(image.imagePath!!,
@@ -278,6 +279,8 @@ class ShootPortraitActivity : AppCompatActivity() {
                 }
             }else {
                 val list = intent.getStringArrayListExtra(AppConstants.EXTERIOR_LIST)
+
+                shootViewModel.shootNumber.value = list?.size
 
                 for(image in list!!){
                     shootViewModel.shootList.value!!.add(

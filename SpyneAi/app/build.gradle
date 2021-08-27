@@ -24,6 +24,7 @@ android {
         versionCode 48
         versionName "2.60"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+        signingConfig signingConfigs.debug
     }
 
     buildTypes {

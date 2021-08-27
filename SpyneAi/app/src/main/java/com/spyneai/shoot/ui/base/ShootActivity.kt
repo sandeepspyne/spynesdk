@@ -99,7 +99,7 @@ class ShootActivity : AppCompatActivity() {
                 }
             }
 
-            "E-Commerce", "Food & Beverages" -> {
+            "E-Commerce" -> {
                 shootViewModel.processSku = false
                 if(savedInstanceState == null) { // initial transaction should be wrapped like this
                     supportFragmentManager.beginTransaction()
@@ -112,7 +112,26 @@ class ShootActivity : AppCompatActivity() {
                     shootViewModel.projectId.value = intent.getStringExtra("project_id")
                     val sku = Sku()
                     sku?.projectId = shootViewModel.projectId.value
-                    shootViewModel.categoryDetails.value?.imageType = "ecom"
+                    shootViewModel.categoryDetails.value?.imageType = "E-Commerce"
+                    shootViewModel.sku.value = sku
+                } catch (e: Exception) {
+                    e.printStackTrace()
+                }
+            }
+            "Food & Beverages" ->{
+                shootViewModel.processSku = false
+                if(savedInstanceState == null) { // initial transaction should be wrapped like this
+                    supportFragmentManager.beginTransaction()
+                        .add(R.id.flCamerFragment, cameraFragment)
+                        .add(R.id.flCamerFragment, gridEcomFragment)
+                        .commitAllowingStateLoss()
+                }
+                try {
+                    val intent = intent
+                    shootViewModel.projectId.value = intent.getStringExtra("project_id")
+                    val sku = Sku()
+                    sku?.projectId = shootViewModel.projectId.value
+                    shootViewModel.categoryDetails.value?.imageType = "Food & Beverages"
                     shootViewModel.sku.value = sku
                 } catch (e: Exception) {
                     e.printStackTrace()
@@ -132,7 +151,7 @@ class ShootActivity : AppCompatActivity() {
                     shootViewModel.projectId.value = intent.getStringExtra("project_id")
                     val sku = Sku()
                     sku?.projectId = shootViewModel.projectId.value
-                    shootViewModel.categoryDetails.value?.imageType = "footwear"
+                    shootViewModel.categoryDetails.value?.imageType = "Footwear"
                     shootViewModel.sku.value = sku
                 } catch (e: Exception) {
                     e.printStackTrace()

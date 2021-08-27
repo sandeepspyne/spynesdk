@@ -100,6 +100,7 @@ class CreateSkuEcomDialog : BaseDialogFragment<ShootViewModel, CreateSkuEcomDial
 
                     //add sku to local database
                     viewModel.insertSku(sku!!)
+
                     //viewModel.isSubCategoryConfirmed.value = true
 
 
