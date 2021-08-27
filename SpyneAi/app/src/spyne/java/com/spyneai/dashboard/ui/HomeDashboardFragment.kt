@@ -87,6 +87,8 @@ class HomeDashboardFragment :
     private val MY_REQUEST_CODE: Int = 1
     lateinit var PACKAGE_NAME: String
 
+    var tutorialVideosList = intArrayOf(R.drawable.ic_tv1, R.drawable.ic_tv2)
+
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -103,7 +105,7 @@ class HomeDashboardFragment :
             newUserCreditDialog()
             repeatRefreshData()
             setSliderRecycler()
-           // showTutorialVideos()
+            showTutorialVideos()
             lisners()
             welcomeHomeText()
             getCategories()
@@ -523,38 +525,38 @@ class HomeDashboardFragment :
     }
 
 
-//    private fun showTutorialVideos() {
-//        tutorialVideosAdapter = TutorialVideosAdapter(requireContext(),
-//            tutorialVideosList,
-//            object : TutorialVideosAdapter.BtnClickListener {
-//                override fun onBtnClick(position: Int) {
-//                    if (position == 0) {
-//                        val intent =
-//                            Intent(requireContext(), YoutubeVideoPlayerActivity::class.java)
-//                        intent.putExtra(
-//                            AppConstants.VIDEO_URL,
-//                            "https://storage.googleapis.com/spyne-cliq/spyne-cliq/AboutVideo/car_spyne.mp4"
-//                        )
-//                        startActivity(intent)
-//                    } else {
-//                        val intent =
-//                            Intent(requireContext(), YoutubeVideoPlayerActivity::class.java)
-//                        intent.putExtra(
-//                            AppConstants.VIDEO_URL,
-//                            "https://storage.googleapis.com/spyne-cliq/spyne-cliq/AboutVideo/footwear_spyne.mp4"
-//                        )
-//                        startActivity(intent)
-//                    }
-//
-//                }
-//            }
-//        )
-//
-//        val layoutManager: RecyclerView.LayoutManager =
-//            LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
-//        binding.rvTutorialVideos.setLayoutManager(layoutManager)
-//        binding.rvTutorialVideos.setAdapter(tutorialVideosAdapter)
-//    }
+    private fun showTutorialVideos() {
+        tutorialVideosAdapter = TutorialVideosAdapter(requireContext(),
+            tutorialVideosList,
+            object : TutorialVideosAdapter.BtnClickListener {
+                override fun onBtnClick(position: Int) {
+                    if (position == 0) {
+                        val intent =
+                            Intent(requireContext(), YoutubeVideoPlayerActivity::class.java)
+                        intent.putExtra(
+                            AppConstants.VIDEO_URL,
+                            "https://storage.googleapis.com/spyne-cliq/spyne-cliq/AboutVideo/car_spyne.mp4"
+                        )
+                        startActivity(intent)
+                    } else {
+                        val intent =
+                            Intent(requireContext(), YoutubeVideoPlayerActivity::class.java)
+                        intent.putExtra(
+                            AppConstants.VIDEO_URL,
+                            "https://storage.googleapis.com/spyne-cliq/spyne-cliq/AboutVideo/footwear_spyne.mp4"
+                        )
+                        startActivity(intent)
+                    }
+
+                }
+            }
+        )
+
+        val layoutManager: RecyclerView.LayoutManager =
+            LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
+        binding.rvTutorialVideos.setLayoutManager(layoutManager)
+        binding.rvTutorialVideos.setAdapter(tutorialVideosAdapter)
+    }
 
     private fun showFreeCreditDialog(message: String) {
         val dialog = Dialog(requireContext())
