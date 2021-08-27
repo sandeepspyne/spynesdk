@@ -106,5 +106,27 @@ object Events {
     val PROJECT_STATE_UPDATED = "Android Project State Updated"
 
 
+    val PERMISSIONS_GRANTED = "Read Permission Granted"
+    val PERMISSIONS_DENIED = "Read Permission Denied"
+    val FILE_READ_WORKED_INTIATED = "File Read Worker Initiated"
+    val FILE_READ_WORKER_STARTED = "File Read Worker Started"
+    val FILE_REAED_FINISHED = "File Read Worker Finished"
+    val MANUAL_WORKER_ALREADY_RUNNING = "Manual Upload Already Running"
+    val MANUAL_WORKER_INITIATED = "Manual Upload Initiated"
+    val MANUAL_UPLAOD_STRATED = "Manual Upload Started"
+    val MANUAL_SKIPPED_UPLAOD_STRATED = "Manual Skipped Upload Started"
+    val RECURSIVE_UPLOAD_STRATED = "Recursive Upload Started"
+    val RECURSIVE_SKIPPED_UPLAOD_STRATED = "Recursive Skipped Upload Started"
+
+    val OVERLAY_LOAD_FIALED = "Overlay Load Failed"
+    val OVERLAY_CAMERA_FIALED = "Camera Failed"
+    val OVERLAY_LOADED = "Overlay Loaded"
+
+    val FILE_SIZE = "File Size Condition False"
+    val FILES_NULL = "File Null"
+
+    val RECURSIVE_UPLOAD_ALREADY_RUNNING = "Recursive Upload Already Running"
+    val RECURSIVE_UPLOAD_INTIATED = "Recursive Upload Initiated"
+
 
 }

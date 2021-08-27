@@ -326,7 +326,8 @@ class CameraFragment : BaseFragment<ShootViewModel, FragmentCameraBinding>(), Pi
             }
             else
             -> {
-                if (viewModel.shootList.value == null) {
+                if (viewModel.shootList.value == null
+                    && !requireActivity().intent.getBooleanExtra(AppConstants.SKU_CREATED,false)) {
                     viewModel.createProjectRes.observe(viewLifecycleOwner, {
                         when (it) {
                             is Resource.Success -> {
@@ -598,6 +599,14 @@ class CameraFragment : BaseFragment<ShootViewModel, FragmentCameraBinding>(), Pi
                 }
             } catch (exc: Exception) {
                 Log.e(TAG, "Use case binding failed", exc)
+                val properties =  Properties()
+                properties["error"] = exc?.localizedMessage
+                properties["category"] = viewModel.categoryDetails.value?.categoryName
+
+                requireContext().captureEvent(
+                    Events.OVERLAY_CAMERA_FIALED,
+                    properties
+                )
             }
 
         }, ContextCompat.getMainExecutor(requireContext()))

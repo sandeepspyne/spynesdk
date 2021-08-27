@@ -34,7 +34,9 @@ import com.spyneai.shoot.workmanager.manual.StoreImageFilesWorker
 import java.io.File
 
 import com.google.android.material.snackbar.Snackbar
-
+import com.posthog.android.Properties
+import com.spyneai.captureEvent
+import com.spyneai.posthog.Events
 
 
 class MainDashboardActivity : AppCompatActivity() {
@@ -98,7 +100,7 @@ class MainDashboardActivity : AppCompatActivity() {
                     val intent = Intent(this, MyOrdersActivity::class.java)
                     startActivity(intent)
                 }
-                R.id.wallet->setCurrentFragment(SecondFragment)
+                //R.id.wallet->setCurrentFragment(SecondFragment)
                 R.id.logoutDashBoardFragment->setCurrentFragment(thirdFragment)
 
             }
@@ -130,7 +132,9 @@ class MainDashboardActivity : AppCompatActivity() {
     private val permissionRequest = registerForActivityResult(ActivityResultContracts.RequestMultiplePermissions()) { permissions ->
         if (permissions.all { it.value }) {
             onPermissionGranted()
+            capture(Events.PERMISSIONS_GRANTED)
         } else {
+            capture(Events.PERMISSIONS_DENIED)
             Snackbar.make(binding.root, "App cannot work without permission", Snackbar.LENGTH_INDEFINITE)
                 .setAction("Allow") {
                    requestPermi()
@@ -138,6 +142,17 @@ class MainDashboardActivity : AppCompatActivity() {
                 .setActionTextColor(ContextCompat.getColor(this,R.color.primary))
                 .show()
         }
+    }
+
+    private fun capture(eventName : String) {
+        val properties = Properties()
+        properties.apply {
+            this["email"] = Utilities.getPreference(this@MainDashboardActivity,AppConstants.EMAIL_ID).toString()
+        }
+
+        captureEvent(
+            eventName,
+            properties)
     }
 
     private fun requestPermi() {
@@ -150,6 +165,7 @@ class MainDashboardActivity : AppCompatActivity() {
 
 
     open fun onPermissionGranted(){
+        capture(Events.FILE_READ_WORKED_INTIATED)
         val storeWorkRequest = OneTimeWorkRequest.Builder(StoreImageFilesWorker::class.java)
 
         WorkManager.getInstance(BaseApplication.getContext())
@@ -157,8 +173,6 @@ class MainDashboardActivity : AppCompatActivity() {
                 storeWorkRequest
                     .build())
     }
-
-
 
 
     override fun onResume() {

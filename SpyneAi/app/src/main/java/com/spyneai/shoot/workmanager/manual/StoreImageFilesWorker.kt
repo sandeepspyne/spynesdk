@@ -5,7 +5,12 @@ import android.os.Build
 import android.os.Environment
 import android.util.Log
 import androidx.work.*
+import com.posthog.android.Properties
 import com.spyneai.BaseApplication
+import com.spyneai.captureEvent
+import com.spyneai.needs.AppConstants
+import com.spyneai.needs.Utilities
+import com.spyneai.posthog.Events
 import com.spyneai.shoot.data.FilesRepository
 import com.spyneai.shoot.data.model.ImageFile
 import java.io.File
@@ -18,6 +23,8 @@ class StoreImageFilesWorker (private val appContext: Context, workerParams: Work
 
 
     override suspend fun doWork(): Result {
+
+        capture(Events.FILE_READ_WORKER_STARTED)
 
         val path = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
             "${Environment.DIRECTORY_DCIM}/Spyne"
@@ -48,19 +55,34 @@ class StoreImageFilesWorker (private val appContext: Context, workerParams: Work
                Log.d(TAG, "doWork: "+i)
 
                if (i == files.size - 1){
-                   startManualUploadWorker()
+                   startManualUploadWorker(files.size)
                    return Result.success()
+               }else {
+                   capture(Events.FILE_SIZE)
                }
 
            }
        }
 
         if (files != null)
-        startManualUploadWorker()
+            startManualUploadWorker(files.size)
+        else
+            capture(Events.FILES_NULL)
+
         return Result.success()
     }
 
-    private suspend fun startManualUploadWorker() {
+    private suspend fun startManualUploadWorker(fileSize : Int) {
+        val properties = Properties()
+        properties.apply {
+            this["email"] = Utilities.getPreference(appContext, AppConstants.EMAIL_ID).toString()
+            this["files_count"] = fileSize
+        }
+
+        appContext.captureEvent(
+            Events.FILE_REAED_FINISHED,
+            properties)
+
         //check if long running worker is alive
         val workManager = WorkManager.getInstance(BaseApplication.getContext())
 
@@ -74,8 +96,10 @@ class StoreImageFilesWorker (private val appContext: Context, workerParams: Work
         Log.d(TAG, "insertImage: "+workInfos.size)
 
         if (workInfos.size > 0) {
+            capture(Events.MANUAL_WORKER_ALREADY_RUNNING)
             com.spyneai.shoot.utils.log("alive : ")
         } else {
+            capture(Events.MANUAL_WORKER_INITIATED)
             com.spyneai.shoot.utils.log("not found : start new")
             //start long running worker
             val constraints: Constraints = Constraints.Builder()
@@ -91,5 +115,17 @@ class StoreImageFilesWorker (private val appContext: Context, workerParams: Work
                         .setConstraints(constraints)
                         .build())
         }
+    }
+
+    private fun capture(eventName : String) {
+        val properties = Properties()
+        properties.apply {
+            this["email"] = Utilities.getPreference(appContext, AppConstants.EMAIL_ID).toString()
+            this["retry_count"] = runAttemptCount
+        }
+
+        appContext.captureEvent(
+            eventName,
+            properties)
     }
 }

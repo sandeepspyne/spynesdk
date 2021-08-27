@@ -7,12 +7,17 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.work.*
+import com.posthog.android.Properties
 import com.spyneai.BaseApplication
 import com.spyneai.base.network.Resource
 import com.spyneai.camera2.OverlaysResponse
 import com.spyneai.camera2.ShootDimensions
+import com.spyneai.captureEvent
 import com.spyneai.dashboard.response.NewSubCatResponse
+import com.spyneai.needs.AppConstants
+import com.spyneai.needs.Utilities
 import com.spyneai.orders.data.response.GetProjectsResponse
+import com.spyneai.posthog.Events
 import com.spyneai.shoot.data.model.*
 import com.spyneai.shoot.response.SkuProcessStateResponse
 import com.spyneai.shoot.workmanager.FootwearSubcatUpdateWorker
@@ -195,9 +200,7 @@ class ShootViewModel : ViewModel(){
         _updateTotalFramesRes.value = repository.updateTotalFrames(skuId, totalFrames, authKey)
     }
 
-
     fun getSelectedAngles() = exterirorAngles.value
-
 
     fun getShootProgressList(angles: Int, selectedAngles: Int): ArrayList<ShootProgress> {
         val shootProgressList = ArrayList<ShootProgress>()
@@ -211,8 +214,6 @@ class ShootViewModel : ViewModel(){
         }
         return shootProgressList
     }
-
-
 
      suspend fun insertImage(shootData: ShootData) {
         val image = Image()
@@ -238,11 +239,25 @@ class ShootViewModel : ViewModel(){
 
          Log.d(TAG, "insertImage: "+workInfos.size)
 
+         val properties = Properties()
+         properties.apply {
+             this["email"] = Utilities.getPreference(BaseApplication.getContext(), AppConstants.EMAIL_ID).toString()
+         }
+
          if (workInfos.size > 0) {
              com.spyneai.shoot.utils.log("alive : ")
+
+
+             BaseApplication.getContext().captureEvent(
+                 Events.RECURSIVE_UPLOAD_ALREADY_RUNNING,
+                 properties)
+
             } else {
              com.spyneai.shoot.utils.log("not found : start new")
                 //start long running worker
+             BaseApplication.getContext().captureEvent(
+                 Events.RECURSIVE_UPLOAD_INTIATED,
+                 properties)
                 startLongRunningWorker()
             }
     }

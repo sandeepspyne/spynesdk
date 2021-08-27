@@ -186,7 +186,7 @@ var s = ""
 
 
                     when(viewModel.categoryDetails.value?.categoryName){
-                        "Footwear" -> binding.tvSubCategory?.text = getString(R.string.footwear_subcategory)
+                       // "Footwear" -> binding.tvSubCategory?.text = getString(R.string.footwear_subcategory)
                     }
                 }
 
@@ -244,6 +244,15 @@ var s = ""
                                     target: Target<Drawable>?,
                                     isFirstResource: Boolean
                                 ): Boolean {
+                                    val properties =  Properties()
+                                    properties.put("category",viewModel.categoryDetails.value?.categoryName)
+                                    properties.put("error", e?.localizedMessage)
+
+                                    requireContext().captureEvent(
+                                        Events.OVERLAY_LOAD_FIALED,
+                                        properties
+                                    )
+
                                     return false
                                 }
 
@@ -254,6 +263,14 @@ var s = ""
                                     dataSource: DataSource?,
                                     isFirstResource: Boolean
                                 ): Boolean {
+                                    val properties =  Properties()
+                                    properties.put("category",viewModel.categoryDetails.value?.categoryName)
+
+                                    requireContext().captureEvent(
+                                        Events.OVERLAY_LOADED,
+                                        properties
+                                    )
+
                                     getPreviewDimensions(binding.imgOverlay!!)
                                     return false
                                 }

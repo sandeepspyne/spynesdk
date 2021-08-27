@@ -29,6 +29,8 @@ class RecursiveSkippedImagesWorker(private val appContext: Context, workerParams
 
     override suspend fun doWork(): Result {
 
+        capture(Events.RECURSIVE_SKIPPED_UPLAOD_STRATED,runAttemptCount)
+
         val image = localRepository.getOldestSkippedImage()
 
         if (runAttemptCount > 4) {
@@ -123,6 +125,7 @@ class RecursiveSkippedImagesWorker(private val appContext: Context, workerParams
             this["project_id"] = image.projectId
             this["image_type"] = image.categoryName
             this["sequence"] = image.sequence
+            this["retry_count"] = runAttemptCount
         }
 
         if (isSuccess) {
@@ -160,5 +163,17 @@ class RecursiveSkippedImagesWorker(private val appContext: Context, workerParams
                 longWorkRequest
                     .setConstraints(constraints)
                     .build())
+    }
+
+    private fun capture(eventName : String,retryAttempt : Int) {
+        val properties = Properties()
+        properties.apply {
+            this["email"] = Utilities.getPreference(appContext, AppConstants.EMAIL_ID).toString()
+            this["retry_count"] = retryAttempt
+        }
+
+        appContext.captureEvent(
+            eventName,
+            properties)
     }
 }

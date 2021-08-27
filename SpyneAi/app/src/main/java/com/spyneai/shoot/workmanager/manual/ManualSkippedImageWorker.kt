@@ -31,6 +31,8 @@ class ManualSkippedImageWorker (private val appContext: Context, workerParams: W
 
     override suspend fun doWork(): Result {
 
+        capture(Events.MANUAL_SKIPPED_UPLAOD_STRATED)
+
         val image = fileRepository.getOldestSkippedImage()
 
         if (runAttemptCount > 4) {
@@ -157,6 +159,7 @@ class ManualSkippedImageWorker (private val appContext: Context, workerParams: W
             this["project_id"] = image.projectId
             this["image_type"] = image.categoryName
             this["sequence"] = image.sequence
+            this["retry_count"] = runAttemptCount
         }
 
         if (isSuccess) {
@@ -194,5 +197,17 @@ class ManualSkippedImageWorker (private val appContext: Context, workerParams: W
                 longWorkRequest
                     .setConstraints(constraints)
                     .build())
+    }
+
+    private fun capture(eventName : String) {
+        val properties = Properties()
+        properties.apply {
+            this["email"] = Utilities.getPreference(appContext, AppConstants.EMAIL_ID).toString()
+            this["this[\"retry_count\"] = runAttemptCount"] = runAttemptCount
+        }
+
+        appContext.captureEvent(
+            eventName,
+            properties)
     }
 }

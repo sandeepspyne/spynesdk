@@ -46,7 +46,8 @@ class RecursiveImageWorker(private val appContext: Context, workerParams: Worker
 
     override suspend fun doWork(): Result {
 
-        Log.d(TAG, "doWork: start "+runAttemptCount)
+
+        capture(Events.RECURSIVE_UPLOAD_STRATED,runAttemptCount)
 
         val image = localRepository.getOldestImage()
 
@@ -99,8 +100,10 @@ class RecursiveImageWorker(private val appContext: Context, workerParams: Worker
                     requestFile
                 )
 
+            val uploadType = if (runAttemptCount == 0) "Direct" else "Retry"
+
             var response = shootRepository.uploadImage(projectId!!,
-                skuId!!, imageCategory!!,authKey, "Direct".toRequestBody(MultipartBody.FORM),image.sequence!!,imageFile)
+                skuId!!, imageCategory!!,authKey, uploadType.toRequestBody(MultipartBody.FORM),image.sequence!!,imageFile)
 
             when(response){
                 is Resource.Success -> {
@@ -153,6 +156,7 @@ class RecursiveImageWorker(private val appContext: Context, workerParams: Worker
             this["project_id"] = image.projectId
             this["image_type"] = image.categoryName
             this["sequence"] = image.sequence
+            this["retry_count"] = runAttemptCount
         }
 
         if (isSuccess) {
@@ -191,4 +195,17 @@ class RecursiveImageWorker(private val appContext: Context, workerParams: Worker
                         .setConstraints(constraints)
                         .build())
     }
+
+    private fun capture(eventName : String,retryAttempt : Int) {
+        val properties = Properties()
+        properties.apply {
+            this["email"] = Utilities.getPreference(appContext, AppConstants.EMAIL_ID).toString()
+            this["retry_count"] = retryAttempt
+        }
+
+        appContext.captureEvent(
+            eventName,
+            properties)
+    }
+
 }

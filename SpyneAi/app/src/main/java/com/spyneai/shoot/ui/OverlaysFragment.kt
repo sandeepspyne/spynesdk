@@ -398,6 +398,15 @@ class OverlaysFragment : BaseFragment<ShootViewModel, FragmentOverlaysBinding>()
                                     target: Target<Drawable>?,
                                     isFirstResource: Boolean
                                 ): Boolean {
+                                    val properties =  Properties()
+                                    properties["name"] = name
+                                    properties["error"] = e?.localizedMessage
+                                    properties["category"] = viewModel.categoryDetails.value?.categoryName
+
+                                    requireContext().captureEvent(
+                                        Events.OVERLAY_LOAD_FIALED,
+                                        properties
+                                    )
                                     return false
                                 }
 
@@ -408,6 +417,15 @@ class OverlaysFragment : BaseFragment<ShootViewModel, FragmentOverlaysBinding>()
                                     dataSource: DataSource?,
                                     isFirstResource: Boolean
                                 ): Boolean {
+                                    val properties =  Properties()
+                                    properties["name"] = name
+                                    properties["category"] = viewModel.categoryDetails.value?.categoryName
+
+                                    requireContext().captureEvent(
+                                        Events.OVERLAY_LOADED,
+                                        properties
+                                    )
+
                                     getPreviewDimensions(binding.imgOverlay!!)
                                     return false
                                 }

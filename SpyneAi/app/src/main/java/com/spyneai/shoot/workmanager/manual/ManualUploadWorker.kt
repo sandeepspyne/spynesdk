@@ -32,8 +32,7 @@ class ManualUploadWorker (private val appContext: Context, workerParams: WorkerP
     val shootRepository = ShootRepository()
 
     override suspend fun doWork(): Result {
-
-        Log.d(TAG, "doWork: start "+runAttemptCount)
+        capture(Events.MANUAL_UPLAOD_STRATED)
 
         val image = filesRepository.getOldestImage()
 
@@ -43,8 +42,7 @@ class ManualUploadWorker (private val appContext: Context, workerParams: WorkerP
                 startNextUpload(image.itemId!!,false)
             }
 
-            Log.d(TAG, "doWork: failure limit")
-            captureEvent(Events.MANUAL_UPLOAD_FAILED,image,false,"Image upload limit reached")
+           captureEvent(Events.MANUAL_UPLOAD_FAILED,image,false,"Image upload limit reached")
 
             return Result.failure()
         }
@@ -175,6 +173,7 @@ class ManualUploadWorker (private val appContext: Context, workerParams: WorkerP
             this["project_id"] = image.projectId
             this["image_type"] = image.categoryName
             this["sequence"] = image.sequence
+            this["retry_count"] = runAttemptCount
         }
 
         if (isSuccess) {
@@ -208,5 +207,17 @@ class ManualUploadWorker (private val appContext: Context, workerParams: WorkerP
                 longWorkRequest
                     .setConstraints(constraints)
                     .build())
+    }
+
+    private fun capture(eventName : String) {
+        val properties = Properties()
+        properties.apply {
+            this["email"] = Utilities.getPreference(appContext, AppConstants.EMAIL_ID).toString()
+            this["this[\"retry_count\"] = runAttemptCount"] = runAttemptCount
+        }
+
+        appContext.captureEvent(
+            eventName,
+            properties)
     }
 }
