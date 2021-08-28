@@ -27,7 +27,7 @@ class StoreImageFilesWorker (private val appContext: Context, workerParams: Work
         capture(Events.FILE_READ_WORKER_STARTED)
 
         val path = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-            "${Environment.DIRECTORY_DCIM}/Spyne"
+            "/storage/emulated/0/DCIM/Spyne"
         } else {
             "${Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DCIM)}/Spyne"
         }
@@ -55,10 +55,9 @@ class StoreImageFilesWorker (private val appContext: Context, workerParams: Work
                Log.d(TAG, "doWork: "+i)
 
                if (i == files.size - 1){
+                   capture(Events.FILE_SIZE)
                    startManualUploadWorker(files.size)
                    return Result.success()
-               }else {
-                   capture(Events.FILE_SIZE)
                }
 
            }
