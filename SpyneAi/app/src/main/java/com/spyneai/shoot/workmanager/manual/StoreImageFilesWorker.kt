@@ -94,7 +94,7 @@ class StoreImageFilesWorker (private val appContext: Context, workerParams: Work
 
         val workQuery = WorkQuery.Builder
             .fromTags(listOf("Manual Long Running Worker"))
-            .addStates(listOf(WorkInfo.State.BLOCKED, WorkInfo.State.ENQUEUED, WorkInfo.State.RUNNING))
+            .addStates(listOf(WorkInfo.State.BLOCKED, WorkInfo.State.ENQUEUED, WorkInfo.State.RUNNING,WorkInfo.State.CANCELLED))
             .build()
 
         val workInfos = workManager.getWorkInfos(workQuery).await()

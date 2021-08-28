@@ -14,7 +14,7 @@ class ProcessSkuWorker(private val appContext: Context, workerParams: WorkerPara
 
         val workQuery = WorkQuery.Builder
             .fromTags(listOf("Recursive Processing Worker"))
-            .addStates(listOf(WorkInfo.State.BLOCKED, WorkInfo.State.ENQUEUED,WorkInfo.State.RUNNING))
+            .addStates(listOf(WorkInfo.State.BLOCKED, WorkInfo.State.ENQUEUED,WorkInfo.State.RUNNING,WorkInfo.State.CANCELLED))
             .build()
 
         val workInfos = workManager.getWorkInfos(workQuery).await()
