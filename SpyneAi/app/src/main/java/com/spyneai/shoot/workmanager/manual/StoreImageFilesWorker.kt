@@ -36,31 +36,38 @@ class StoreImageFilesWorker (private val appContext: Context, workerParams: Work
         val files = File(path).listFiles()
 
        if (files != null){
-           for (i in files.indices){
-               if (files[i] != null){
-                   val fileName = files[i].name
+          try {
+              for (i in files.indices){
+                  if (files[i] != null){
+                      val fileName = files[i].name
 
-                   val properties =  fileName.split("_")
+                      val properties =  fileName.split("_")
 
-                   if (properties.size == 4){
-                       val imageFile = ImageFile()
-                       imageFile.skuName = properties[0]
-                       imageFile.skuId = properties[1]
-                       imageFile.categoryName = properties[2]
-                       imageFile.sequence = properties[3].substringBefore(".").toInt()
-                       imageFile.imagePath = files[i].path
-                       localRepository.insertImageFile(imageFile)
-                   }
-               }
-               Log.d(TAG, "doWork: "+i)
+                      if (properties.size == 4){
+                          val imageFile = ImageFile()
+                          imageFile.skuName = properties[0]
+                          imageFile.skuId = properties[1]
+                          imageFile.categoryName = properties[2]
+                          imageFile.sequence = properties[3].substringBefore(".")
+                          imageFile.imagePath = files[i].path
+                          localRepository.insertImageFile(imageFile)
+                      }
+                  }
+                  Log.d(TAG, "doWork: "+i)
 
-               if (i == files.size - 1){
-                   capture(Events.FILE_SIZE)
-                   startManualUploadWorker(files.size)
-                   return Result.success()
-               }
+                  if (i == files.size - 1){
+                      capture(Events.FILE_SIZE)
+                      startManualUploadWorker(files.size)
+                      return Result.success()
+                  }
 
-           }
+              }
+          }catch (e : Exception){
+              val properties = Properties()
+              properties.put("error",e.localizedMessage)
+
+              appContext.captureEvent("FileNameError",properties)
+          }
        }
 
         if (files != null)

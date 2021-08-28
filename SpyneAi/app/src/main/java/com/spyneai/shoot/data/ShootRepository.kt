@@ -27,7 +27,7 @@ class ShootRepository : BaseRepository() {
         image_category: RequestBody,
         auth_key: RequestBody,
         upload_type: RequestBody,
-        sequenceNo : Int,
+        sequenceNo : String,
         image: MultipartBody.Part
     ) = safeApiCall {
         clipperApi.uploadImage(project_id, sku_id, image_category, auth_key, upload_type,sequenceNo,image)
@@ -71,7 +71,7 @@ class ShootRepository : BaseRepository() {
         auth_key: String,
         sku_id:  String,
         image_category:  String,
-        frame_seq_no:  Int
+        frame_seq_no:  String
     ) = safeApiCall{
         clipperApi.checkUploadStatus(auth_key, sku_id,image_category,frame_seq_no)
     }

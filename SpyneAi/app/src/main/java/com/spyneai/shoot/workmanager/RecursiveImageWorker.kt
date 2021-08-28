@@ -103,7 +103,7 @@ class RecursiveImageWorker(private val appContext: Context, workerParams: Worker
             val uploadType = if (runAttemptCount == 0) "Direct" else "Retry"
 
             var response = shootRepository.uploadImage(projectId!!,
-                skuId!!, imageCategory!!,authKey, uploadType.toRequestBody(MultipartBody.FORM),image.sequence!!,imageFile)
+                skuId!!, imageCategory!!,authKey, uploadType.toRequestBody(MultipartBody.FORM),image.sequence.toString(),imageFile)
 
             when(response){
                 is Resource.Success -> {

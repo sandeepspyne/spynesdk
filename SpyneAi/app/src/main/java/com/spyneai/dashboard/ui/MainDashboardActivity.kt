@@ -44,6 +44,9 @@ import com.spyneai.captureEvent
 import com.spyneai.orders.ui.MyOrdersFragment
 import com.spyneai.posthog.Events
 import com.spyneai.shoot.ui.dialogs.ResolutionNotSupportedFragment
+import com.spyneai.shoot.workmanager.ProcessSkuWorker
+import com.spyneai.shoot.workmanager.RecursiveSkippedImagesWorker
+import java.util.concurrent.TimeUnit
 
 
 class MainDashboardActivity : AppCompatActivity() {
@@ -226,12 +229,15 @@ class MainDashboardActivity : AppCompatActivity() {
 
     open fun onPermissionGranted(){
         capture(Events.FILE_READ_WORKED_INTIATED)
+
         val storeWorkRequest = OneTimeWorkRequest.Builder(StoreImageFilesWorker::class.java)
+            .addTag("StoreImageFiles  Worker")
 
         WorkManager.getInstance(BaseApplication.getContext())
             .enqueue(
                 storeWorkRequest
                     .build())
+
     }
 
 

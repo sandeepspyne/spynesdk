@@ -122,7 +122,7 @@ object Events {
     val OVERLAY_CAMERA_FIALED = "Camera Failed"
     val OVERLAY_LOADED = "Overlay Loaded"
 
-    val FILE_SIZE = "File Size Condition False"
+    val FILE_SIZE = "File Size"
     val FILES_NULL = "File Null"
 
     val RECURSIVE_UPLOAD_ALREADY_RUNNING = "Recursive Upload Already Running"

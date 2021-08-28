@@ -27,7 +27,7 @@ interface ClipperApi {
         @Part("image_category") image_category: RequestBody?,
         @Part("auth_key") auth_key: RequestBody?,
         @Part("upload_type") upload_type: RequestBody?,
-        @Part("frame_seq_no") frame_seq_no: Int,
+        @Part("frame_seq_no") frame_seq_no: String,
         @Part file: MultipartBody.Part
     ): UploadImageResponse
 
@@ -209,7 +209,7 @@ interface ClipperApi {
         @Field("auth_key") auth_key: String,
         @Field("sku_id") sku_id: String,
         @Field("image_category") image_category: String,
-        @Field("frame_seq_no") frame_seq_no: Int,
+        @Field("frame_seq_no") frame_seq_no: String,
     ): UploadStatusRes
 
     @FormUrlEncoded

@@ -88,7 +88,7 @@ class FilesRepository {
                 val skuId = getString(getColumnIndexOrThrow(ImageFiles.COLUMN_NAME_SKU_ID))
                 val categoryName = getString(getColumnIndexOrThrow(ImageFiles.COLUMN_NAME_CATEGORY_NAME))
                 val imagePath = getString(getColumnIndexOrThrow(ImageFiles.COLUMN_NAME_IMAGE_PATH))
-                val sequence = getInt(getColumnIndexOrThrow(ImageFiles.COLUMN_NAME_IMAGE_SEQUENCE))
+                val sequence = getString(getColumnIndexOrThrow(ImageFiles.COLUMN_NAME_IMAGE_SEQUENCE))
 
                 image.itemId = itemId
                 image.skuName = skuName
@@ -189,7 +189,7 @@ class FilesRepository {
                 image.skuId = skuId
                 image.categoryName = categoryName
                 image.imagePath = imagePath
-                image.sequence = sequence
+                image.sequence = sequence.toString()
             }
         }
 

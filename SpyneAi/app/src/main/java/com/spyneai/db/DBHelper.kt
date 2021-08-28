@@ -84,7 +84,7 @@ class DBHelper (context: Context) : SQLiteOpenHelper(context, DATABASE_NAME, nul
                 "${ImageFiles.COLUMN_NAME_SKU_NAME} TEXT," +
                 "${ImageFiles.COLUMN_NAME_CATEGORY_NAME} TEXT," +
                 "${ImageFiles.COLUMN_NAME_IMAGE_PATH} TEXT NOT NULL UNIQUE," +
-                "${ImageFiles.COLUMN_NAME_IMAGE_SEQUENCE} INTEGER," +
+                "${ImageFiles.COLUMN_NAME_IMAGE_SEQUENCE} TEXT," +
                 "${ImageFiles.COLUMN_NAME_IS_UPLOADED} INTEGER," +
                 "${ImageFiles.TABLE_NAME} TEXT)"
 

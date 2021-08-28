@@ -6,6 +6,6 @@ class ImageFile {
     var skuName : String? = null
     var categoryName : String? = null
     var imagePath : String? = null
-    var sequence : Int? = null
+    var sequence : String? = null
     var projectId : String? = null
 }

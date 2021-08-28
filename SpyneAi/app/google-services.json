@@ -415,17 +415,17 @@
     },
     {
       "client_info": {
-        "mobilesdk_app_id": "1:796517407311:android:f8d03c5a086a1376e4a83a",
+        "mobilesdk_app_id": "1:796517407311:android:a6dbd5cf0831b0e9e4a83a",
         "android_client_info": {
-          "package_name": "com.spyneai.olacabs.debug"
+          "package_name": "com.spyneai.olacabs"
         }
       },
       "oauth_client": [
         {
-          "client_id": "796517407311-5gckagjvtik6h3nda89qghio5nv1osdh.apps.googleusercontent.com",
+          "client_id": "796517407311-pri9qt9nsqivh6dsraeca45eo5n1udd8.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
-            "package_name": "com.spyneai.olacabs.debug",
+            "package_name": "com.spyneai.olacabs",
             "certificate_hash": "719d4dc215a5de7f06f7a9b7cb88efc221978c30"
           }
         },
@@ -459,17 +459,17 @@
     },
     {
       "client_info": {
-        "mobilesdk_app_id": "1:796517407311:android:84adb2d269331b9de4a83a",
+        "mobilesdk_app_id": "1:796517407311:android:f8d03c5a086a1376e4a83a",
         "android_client_info": {
-          "package_name": "com.spyneai.olacabs.release"
+          "package_name": "com.spyneai.olacabs.debug"
         }
       },
       "oauth_client": [
         {
-          "client_id": "796517407311-bi370hifespijj19vmsiv6rs1rt97asg.apps.googleusercontent.com",
+          "client_id": "796517407311-5gckagjvtik6h3nda89qghio5nv1osdh.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
-            "package_name": "com.spyneai.olacabs.release",
+            "package_name": "com.spyneai.olacabs.debug",
             "certificate_hash": "719d4dc215a5de7f06f7a9b7cb88efc221978c30"
           }
         },
