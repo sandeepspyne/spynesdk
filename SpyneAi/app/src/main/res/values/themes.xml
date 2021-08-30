@@ -1,7 +1,8 @@
 <resources xmlns:tools="http://schemas.android.com/tools">
     <!-- Base application theme. -->
-    <style name="Theme.SpyneAi" parent="Theme.MaterialComponents.Light.NoActionBar">
+    <style name="Theme.Fab_Bottom_app_bar" parent="Theme.MaterialComponents.Light.NoActionBar">
         <!-- Primary brand color. -->
+        <item name="contentInsetStart">0dp</item>
         <item name="colorPrimary">@color/primary</item>
         <item name="colorPrimaryVariant">@color/light</item>
         <item name="colorOnPrimary">@color/white</item>

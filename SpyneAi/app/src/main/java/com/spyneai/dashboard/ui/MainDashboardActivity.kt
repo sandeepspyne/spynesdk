@@ -67,10 +67,10 @@ class MainDashboardActivity : AppCompatActivity() {
 
         val viewModel = ViewModelProvider(this, ViewModelFactory()).get(DashboardViewModel::class.java)
 
-        val firstFragment= HomeDashboardFragment()
-        val SecondFragment=WalletDashboardFragment()
+        val firstFragment= com.spyneai.dashboard.ui.HomeDashboardFragment()
+        val SecondFragment= com.spyneai.dashboard.ui.WalletDashboardFragment()
         val myOrdersFragment= MyOrdersFragment()
-        val thirdFragment=LogoutDashBoardFragment()
+        val thirdFragment= com.spyneai.dashboard.ui.LogoutDashBoardFragment()
 
         //save category id and name
         Utilities.savePrefrence(this,AppConstants.CATEGORY_ID,AppConstants.CARS_CATEGORY_ID)
@@ -163,7 +163,7 @@ class MainDashboardActivity : AppCompatActivity() {
                    }
 
                 }
-              //  R.id.wallet->setCurrentFragment(SecondFragment)
+                R.id.wallet->setCurrentFragment(SecondFragment)
                 R.id.logoutDashBoardFragment->setCurrentFragment(thirdFragment)
 
             }

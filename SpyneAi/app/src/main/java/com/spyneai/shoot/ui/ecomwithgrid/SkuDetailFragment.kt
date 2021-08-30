@@ -5,13 +5,17 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.recyclerview.widget.GridLayoutManager
+import com.posthog.android.Properties
 import com.spyneai.base.BaseFragment
 import com.spyneai.base.network.Resource
+import com.spyneai.captureFailureEvent
 import com.spyneai.dashboard.ui.handleApiError
 import com.spyneai.databinding.FragmentSkuDetailBinding
 import com.spyneai.needs.AppConstants
 import com.spyneai.needs.Utilities
+import com.spyneai.posthog.Events
 import com.spyneai.shoot.adapters.SkuImageAdapter
 import com.spyneai.shoot.data.ShootViewModel
 import com.spyneai.shoot.ui.base.ShootPortraitActivity
@@ -108,23 +112,11 @@ class SkuDetailFragment : BaseFragment<ShootViewModel, FragmentSkuDetailBinding>
             log("totalFrames: " +viewModel.shootList.value?.size.toString())
             log("authKey: " +Utilities.getPreference(requireContext(), AppConstants.AUTH_KEY).toString())
             viewModel.updateTotalFrames(viewModel.sku.value?.skuId.toString(), totalSkuImages.toString(), Utilities.getPreference(requireContext(), AppConstants.AUTH_KEY).toString())
-            viewModel.shootList.value?.clear()
-            val intent = Intent(activity, ShootPortraitActivity::class.java)
-            intent.putExtra("project_id", viewModel.projectId.value);
-            intent.putExtra("skuNumber", viewModel.skuNumber.value?.plus(1)!!);
+           observeUpdateTotalFrames()
 
-            intent.putExtra(AppConstants.CATEGORY_NAME,viewModel.categoryDetails.value?.categoryName)
-            intent.putExtra(AppConstants.CATEGORY_ID,viewModel.categoryDetails.value?.categoryId)
-
-            if (viewModel.fromDrafts){
-                intent.putExtra(AppConstants.SKU_COUNT, requireActivity().intent.getIntExtra(AppConstants.SKU_COUNT,0).plus(1))
-                intent.putExtra("skuNumber", requireActivity().intent.getIntExtra(AppConstants.SKU_COUNT,0).plus(1))
-            }
-            else
-                intent.putExtra("skuNumber", viewModel.skuNumber.value?.plus(1)!!)
-            startActivity(intent)
 
         }
+
 
         binding.ivAddAngle.setOnClickListener {
             if (viewModel.categoryDetails.value?.categoryName.equals("E-Commerce") || viewModel.categoryDetails.value?.categoryName.equals("Food & Beverages"))
@@ -137,9 +129,65 @@ class SkuDetailFragment : BaseFragment<ShootViewModel, FragmentSkuDetailBinding>
 
         binding.tvEndProject.setOnClickListener {
             viewModel.updateTotalFrames(viewModel.sku.value?.skuId.toString(), totalSkuImages.toString(), Utilities.getPreference(requireContext(), AppConstants.AUTH_KEY).toString())
-            EndProjectDialog().show(requireFragmentManager(), "EndProjectDialog")
+            viewModel.updateTotalFramesRes.observe(viewLifecycleOwner,{
+                when(it) {
+                    is Resource.Success -> {
+                        Toast.makeText(requireContext(), "updateTotalFrames sucess", Toast.LENGTH_SHORT).show()
+                        EndProjectDialog().show(requireFragmentManager(), "EndProjectDialog")
+                    }
+
+                    is Resource.Failure -> {
+                        requireContext().captureFailureEvent(
+                            Events.GET_BACKGROUND_FAILED, Properties(),
+                            it.errorMessage!!
+                        )
+                        handleApiError(it) {}
+                    }
+
+                    is Resource.Loading -> {
+
+                    }
+                }
+            })
         }
 
+    }
+
+    private fun observeUpdateTotalFrames(){
+        viewModel.updateTotalFramesRes.observe(viewLifecycleOwner,{
+            when(it) {
+                is Resource.Success -> {
+                    Toast.makeText(requireContext(), "updateTotalFrames sucess", Toast.LENGTH_SHORT).show()
+                    viewModel.shootList.value?.clear()
+                    val intent = Intent(activity, ShootPortraitActivity::class.java)
+                    intent.putExtra("project_id", viewModel.projectId.value);
+                    intent.putExtra("skuNumber", viewModel.skuNumber.value?.plus(1)!!);
+
+                    intent.putExtra(AppConstants.CATEGORY_NAME,viewModel.categoryDetails.value?.categoryName)
+                    intent.putExtra(AppConstants.CATEGORY_ID,viewModel.categoryDetails.value?.categoryId)
+
+                    if (viewModel.fromDrafts){
+                        intent.putExtra(AppConstants.SKU_COUNT, requireActivity().intent.getIntExtra(AppConstants.SKU_COUNT,0).plus(1))
+                        intent.putExtra("skuNumber", requireActivity().intent.getIntExtra(AppConstants.SKU_COUNT,0).plus(1))
+                    }
+                    else
+                        intent.putExtra("skuNumber", viewModel.skuNumber.value?.plus(1)!!)
+                    startActivity(intent)
+                }
+
+                is Resource.Failure -> {
+                    requireContext().captureFailureEvent(
+                        Events.GET_BACKGROUND_FAILED, Properties(),
+                        it.errorMessage!!
+                    )
+                    handleApiError(it) {}
+                }
+
+                is Resource.Loading -> {
+
+                }
+            }
+        })
     }
 
 

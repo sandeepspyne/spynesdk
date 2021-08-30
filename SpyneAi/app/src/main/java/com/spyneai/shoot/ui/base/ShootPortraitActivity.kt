@@ -6,12 +6,12 @@ import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.os.Build
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.KeyEvent
 import android.view.WindowManager
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.ViewModelProvider
 import com.spyneai.R
@@ -26,12 +26,12 @@ import com.spyneai.shoot.data.model.CreateProjectRes
 import com.spyneai.shoot.data.model.ShootData
 import com.spyneai.shoot.data.model.Sku
 import com.spyneai.shoot.ui.OverlaysFragment
+import com.spyneai.shoot.ui.SelectBackgroundFragment
 import com.spyneai.shoot.ui.dialogs.ShootExitDialog
 import com.spyneai.shoot.ui.ecomwithgrid.GridEcomFragment
 import com.spyneai.shoot.ui.ecomwithgrid.ProjectDetailFragment
 import com.spyneai.shoot.ui.ecomwithgrid.SkuDetailFragment
 import com.spyneai.shoot.ui.ecomwithoverlays.OverlayEcomFragment
-import com.spyneai.shoot.utils.log
 import java.io.File
 
 class ShootPortraitActivity : AppCompatActivity() {
@@ -42,6 +42,7 @@ class ShootPortraitActivity : AppCompatActivity() {
     lateinit var overlayEcomFragment: OverlayEcomFragment
     lateinit var skuDetailFragment: SkuDetailFragment
     lateinit var projectDetailFragment: ProjectDetailFragment
+    lateinit var selectBackgroundFragment: SelectBackgroundFragment
     lateinit var shootViewModel : ShootViewModel
     val TAG = "ShootPortraitActivity"
 
@@ -85,6 +86,7 @@ class ShootPortraitActivity : AppCompatActivity() {
         skuDetailFragment = SkuDetailFragment()
         projectDetailFragment = ProjectDetailFragment()
         overlayEcomFragment = OverlayEcomFragment()
+        selectBackgroundFragment = SelectBackgroundFragment()
 
         if (Utilities.getPreference(this, AppConstants.CATEGORY_NAME).equals("Automobiles")){
             if(savedInstanceState == null) { // initial transaction should be wrapped like this
@@ -165,6 +167,19 @@ class ShootPortraitActivity : AppCompatActivity() {
                 supportFragmentManager.beginTransaction().remove(gridEcomFragment).commit()
                 supportFragmentManager.beginTransaction()
                     .add(R.id.flCamerFragment, projectDetailFragment)
+                    .commit()
+            }
+        })
+
+        shootViewModel.showFoodBackground.observe(this,{
+            if(it){
+                window.clearFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN)
+                supportFragmentManager.beginTransaction().remove(skuDetailFragment).commit()
+                supportFragmentManager.beginTransaction().remove(projectDetailFragment).commit()
+                supportFragmentManager.beginTransaction().remove(cameraFragment).commit()
+                supportFragmentManager.beginTransaction().remove(gridEcomFragment).commit()
+                supportFragmentManager.beginTransaction()
+                    .add(R.id.flCamerFragment, selectBackgroundFragment)
                     .commit()
             }
         })

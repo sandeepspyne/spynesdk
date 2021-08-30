@@ -12,14 +12,7 @@ import com.spyneai.needs.Utilities
 import com.spyneai.posthog.Events
 import com.spyneai.shoot.data.ProcessRepository
 import com.spyneai.shoot.data.ShootLocalRepository
-import com.spyneai.shoot.data.ShootRepository
-import com.spyneai.shoot.data.model.Image
 import com.spyneai.shoot.data.model.Sku
-import okhttp3.MediaType.Companion.toMediaTypeOrNull
-import okhttp3.MultipartBody
-import okhttp3.RequestBody.Companion.asRequestBody
-import okhttp3.RequestBody.Companion.toRequestBody
-import java.io.File
 
 class RecursiveProcessSkuWorker(private val appContext: Context, workerParams: WorkerParameters) :
     CoroutineWorker(appContext, workerParams) {
@@ -102,8 +95,7 @@ class RecursiveProcessSkuWorker(private val appContext: Context, workerParams: W
     }
 
     private fun startNextUpload(itemId: Sku) {
-        com.spyneai.shoot.utils.log("next upload started")
-        com.spyneai.shoot.utils.log("image to delete $itemId")
+
         //remove uploaded item from database
         localRepository.updateIsProcessed(itemId.projectId!!,itemId.skuId!!)
 

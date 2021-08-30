@@ -9,11 +9,11 @@ import com.spyneai.BaseApplication
 import com.spyneai.base.network.Resource
 import com.spyneai.credits.model.DownloadHDRes
 import com.spyneai.credits.model.ReduceCreditResponse
-import com.spyneai.model.carbackgroundgif.CarBackgrounGifResponse
 import com.spyneai.model.credit.CreditDetailsResponse
 import com.spyneai.shoot.data.model.CarsBackgroundRes
 import com.spyneai.shoot.data.model.ProcessSkuRes
 import com.spyneai.shoot.data.model.Sku
+import com.spyneai.shoot.response.SkuProcessStateResponse
 import com.spyneai.shoot.workmanager.FrameUpdateWorker
 import com.spyneai.shoot.workmanager.ProjectStateUpdateWorker
 import kotlinx.coroutines.launch
@@ -32,6 +32,8 @@ class ProcessViewModel : ViewModel() {
     val skuQueued : MutableLiveData<Boolean> = MutableLiveData()
     var addRegularShootSummaryFragment : MutableLiveData<Boolean> = MutableLiveData()
     var backgroundSelect : String? = null
+
+    val projectId: MutableLiveData<String> = MutableLiveData()
 
     var frontFramesList = ArrayList<String>()
     var isRegularShootSummaryActive = false
@@ -61,6 +63,10 @@ class ProcessViewModel : ViewModel() {
     private val _downloadHDRes : MutableLiveData<Resource<DownloadHDRes>> = MutableLiveData()
     val downloadHDRes: LiveData<Resource<DownloadHDRes>>
         get() = _downloadHDRes
+
+    private val _skuProcessStateWithBgResponse: MutableLiveData<Resource<SkuProcessStateResponse>> = MutableLiveData()
+    val skuProcessStateWithBgResponse: LiveData<Resource<SkuProcessStateResponse>>
+        get() = _skuProcessStateWithBgResponse
 
     fun getBackgroundGifCars(
         category: RequestBody,
@@ -138,6 +144,13 @@ class ProcessViewModel : ViewModel() {
 
     fun updateIsProcessed(projectId: String,skuId: String) {
         localRepository.updateIsProcessed(projectId,skuId)
+    }
+
+    fun skuProcessStateWithBackgroundid(
+        auth_key: String, project_id: String, background_id: String
+    ) = viewModelScope.launch {
+        _skuProcessStateWithBgResponse.value = Resource.Loading
+        _skuProcessStateWithBgResponse.value = repository.skuProcessStateWithBackgroundId(auth_key, project_id, background_id)
     }
 
     fun updateProjectState(authKey: String,projectId : String) {

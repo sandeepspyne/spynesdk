@@ -2,6 +2,7 @@ package com.spyneai.shoot.data
 
 import com.spyneai.base.BaseRepository
 import com.spyneai.base.network.ClipperApiClient
+import com.spyneai.base.network.ClipperApiStagingClient
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
 
@@ -9,6 +10,7 @@ import okhttp3.RequestBody
 class ShootRepository : BaseRepository() {
 
     private var clipperApi = ClipperApiClient().getClient()
+    private var clipperStagingApi = ClipperApiStagingClient().getClient()
 
     suspend fun getSubCategories(
         authKey : String,prodId : String
@@ -28,9 +30,22 @@ class ShootRepository : BaseRepository() {
         auth_key: RequestBody,
         upload_type: RequestBody,
         sequenceNo : String,
-        image: MultipartBody.Part
+        image: MultipartBody.Part,
     ) = safeApiCall {
         clipperApi.uploadImage(project_id, sku_id, image_category, auth_key, upload_type,sequenceNo,image)
+    }
+
+    suspend fun uploadImageWithAngle(
+        project_id: RequestBody,
+        sku_id: RequestBody,
+        image_category: RequestBody,
+        auth_key: RequestBody,
+        upload_type: RequestBody,
+        sequenceNo : String,
+        angle : Int,
+        image: MultipartBody.Part,
+    ) = safeApiCall {
+        clipperStagingApi.uploadImageWithAngle(project_id, sku_id, image_category, auth_key, upload_type,sequenceNo, angle, image)
     }
 
     suspend fun createProject(authKey: String,projectName : String,
@@ -62,7 +77,7 @@ class ShootRepository : BaseRepository() {
     }
     suspend fun skuProcessState(
         auth_key: String,
-        project_id:  String
+        project_id:  String,
     ) = safeApiCall{
         clipperApi.skuProcessState(auth_key, project_id)
     }

@@ -1,6 +1,5 @@
 package com.spyneai.shoot.data
 
-import android.content.Context
 import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
@@ -16,66 +15,67 @@ import com.spyneai.captureEvent
 import com.spyneai.dashboard.response.NewSubCatResponse
 import com.spyneai.needs.AppConstants
 import com.spyneai.needs.Utilities
-import com.spyneai.orders.data.response.GetProjectsResponse
 import com.spyneai.posthog.Events
 import com.spyneai.shoot.data.model.*
 import com.spyneai.shoot.response.SkuProcessStateResponse
 import com.spyneai.shoot.workmanager.FootwearSubcatUpdateWorker
-import com.spyneai.shoot.workmanager.FrameUpdateWorker
 import com.spyneai.shoot.workmanager.OverlaysPreloadWorker
 import com.spyneai.shoot.workmanager.RecursiveImageWorker
 import kotlinx.coroutines.launch
-import java.util.*
 import java.util.concurrent.TimeUnit
 
-class ShootViewModel : ViewModel(){
+class ShootViewModel : ViewModel() {
     private val TAG = "ShootViewModel"
     private val repository = ShootRepository()
     private val localRepository = ShootLocalRepository()
 
-     var isCameraButtonClickable = true
-    var processSku : Boolean = true
-     var isStopCaptureClickable = false
+    var isCameraButtonClickable = true
+    var processSku: Boolean = true
+    var isStopCaptureClickable = false
 
-    var onVolumeKeyPressed : MutableLiveData<Boolean> = MutableLiveData()
+    var onVolumeKeyPressed: MutableLiveData<Boolean> = MutableLiveData()
     var fromDrafts = false
-    val isSensorAvailable : MutableLiveData<Boolean> = MutableLiveData()
+    val isSensorAvailable: MutableLiveData<Boolean> = MutableLiveData()
     var showDialog = true
     var miscDialogShowed = false
 
-    val skuNumber : MutableLiveData<Int> = MutableLiveData()
+    val skuNumber: MutableLiveData<Int> = MutableLiveData()
 
-    val isSubCategorySelected : MutableLiveData<Boolean> = MutableLiveData()
+    val isSubCategorySelected: MutableLiveData<Boolean> = MutableLiveData()
 
-    val isSubCatAngleConfirmed : MutableLiveData<Boolean> = MutableLiveData()
+    val isSubCatAngleConfirmed: MutableLiveData<Boolean> = MutableLiveData()
 
-    val startInteriorShoot : MutableLiveData<Boolean> = MutableLiveData()
+    val startInteriorShoot: MutableLiveData<Boolean> = MutableLiveData()
 
-    val totalSkuCaptured : MutableLiveData<String> = MutableLiveData()
-    val totalImageCaptured : MutableLiveData<String> = MutableLiveData()
-    val show360InteriorDialog : MutableLiveData<Boolean> = MutableLiveData()
-    val interior360Dialog : MutableLiveData<Boolean> = MutableLiveData()
+    val totalSkuCaptured: MutableLiveData<String> = MutableLiveData()
+    val totalImageCaptured: MutableLiveData<String> = MutableLiveData()
+    val show360InteriorDialog: MutableLiveData<Boolean> = MutableLiveData()
+    val interior360Dialog: MutableLiveData<Boolean> = MutableLiveData()
 
-    val iniProgressFrame : MutableLiveData<Boolean> = MutableLiveData()
+    val iniProgressFrame: MutableLiveData<Boolean> = MutableLiveData()
 
 
-    val subCatName : MutableLiveData<String> = MutableLiveData()
+    val subCatName: MutableLiveData<String> = MutableLiveData()
 
     val shootList: MutableLiveData<ArrayList<ShootData>> = MutableLiveData()
 
-    private val _subCategoriesResponse: MutableLiveData<Resource<NewSubCatResponse>> = MutableLiveData()
+    private val _subCategoriesResponse: MutableLiveData<Resource<NewSubCatResponse>> =
+        MutableLiveData()
     val subCategoriesResponse: LiveData<Resource<NewSubCatResponse>>
         get() = _subCategoriesResponse
 
-    private val _projectDetailResponse: MutableLiveData<Resource<ProjectDetailResponse>> = MutableLiveData()
+    private val _projectDetailResponse: MutableLiveData<Resource<ProjectDetailResponse>> =
+        MutableLiveData()
     val projectDetailResponse: LiveData<Resource<ProjectDetailResponse>>
         get() = _projectDetailResponse
 
-    private val _skuProcessStateResponse: MutableLiveData<Resource<SkuProcessStateResponse>> = MutableLiveData()
+    private val _skuProcessStateResponse: MutableLiveData<Resource<SkuProcessStateResponse>> =
+        MutableLiveData()
     val skuProcessStateResponse: LiveData<Resource<SkuProcessStateResponse>>
         get() = _skuProcessStateResponse
 
-    private val _updateTotalFramesRes : MutableLiveData<Resource<UpdateTotalFramesRes>> = MutableLiveData()
+    private val _updateTotalFramesRes: MutableLiveData<Resource<UpdateTotalFramesRes>> =
+        MutableLiveData()
     val updateTotalFramesRes: LiveData<Resource<UpdateTotalFramesRes>>
         get() = _updateTotalFramesRes
 
@@ -83,46 +83,46 @@ class ShootViewModel : ViewModel(){
     val overlaysResponse: LiveData<Resource<OverlaysResponse>>
         get() = _overlaysResponse
 
-    var _createProjectRes : MutableLiveData<Resource<CreateProjectRes>> = MutableLiveData()
+    var _createProjectRes: MutableLiveData<Resource<CreateProjectRes>> = MutableLiveData()
     val createProjectRes: LiveData<Resource<CreateProjectRes>>
         get() = _createProjectRes
 
-    private val _createSkuRes : MutableLiveData<Resource<CreateSkuRes>> = MutableLiveData()
+    private val _createSkuRes: MutableLiveData<Resource<CreateSkuRes>> = MutableLiveData()
     val createSkuRes: LiveData<Resource<CreateSkuRes>>
         get() = _createSkuRes
 
 
-    val shootDimensions : MutableLiveData<ShootDimensions> = MutableLiveData()
-    val sku : MutableLiveData<Sku> = MutableLiveData()
-    var subCategory : MutableLiveData<NewSubCatResponse.Data> = MutableLiveData()
-    var categoryDetails : MutableLiveData<CategoryDetails> = MutableLiveData()
-    val isSubCategoryConfirmed : MutableLiveData<Boolean> = MutableLiveData()
-    val showVin : MutableLiveData<Boolean> = MutableLiveData()
-    val isProjectCreated : MutableLiveData<Boolean> = MutableLiveData()
-    val isProjectCreatedEcom : MutableLiveData<Boolean> = MutableLiveData()
-    val isSkuCreated : MutableLiveData<Boolean> = MutableLiveData()
-    val showLeveler : MutableLiveData<Boolean> = MutableLiveData()
-    var isHintShowen : MutableLiveData<Boolean> = MutableLiveData()
+    val shootDimensions: MutableLiveData<ShootDimensions> = MutableLiveData()
+    val sku: MutableLiveData<Sku> = MutableLiveData()
+    var subCategory: MutableLiveData<NewSubCatResponse.Data> = MutableLiveData()
+    var categoryDetails: MutableLiveData<CategoryDetails> = MutableLiveData()
+    val isSubCategoryConfirmed: MutableLiveData<Boolean> = MutableLiveData()
+    val showVin: MutableLiveData<Boolean> = MutableLiveData()
+    val isProjectCreated: MutableLiveData<Boolean> = MutableLiveData()
+    val isProjectCreatedEcom: MutableLiveData<Boolean> = MutableLiveData()
+    val isSkuCreated: MutableLiveData<Boolean> = MutableLiveData()
+    val showLeveler: MutableLiveData<Boolean> = MutableLiveData()
+    var isHintShowen: MutableLiveData<Boolean> = MutableLiveData()
 
-    val subCategoryId : MutableLiveData<String> = MutableLiveData()
+    val subCategoryId: MutableLiveData<String> = MutableLiveData()
     val exterirorAngles: MutableLiveData<Int> = MutableLiveData()
     val shootNumber: MutableLiveData<Int> = MutableLiveData()
-    val shootData : MutableLiveData<ShootData> =  MutableLiveData()
+    val shootData: MutableLiveData<ShootData> = MutableLiveData()
 
-    val showConfirmReshootDialog : MutableLiveData<Boolean> = MutableLiveData()
+    val showConfirmReshootDialog: MutableLiveData<Boolean> = MutableLiveData()
 
     //interior and misc shots
-    val showInteriorDialog : MutableLiveData<Boolean> = MutableLiveData()
-    val startInteriorShots : MutableLiveData<Boolean> = MutableLiveData()
-    val hideLeveler : MutableLiveData<Boolean> = MutableLiveData()
-    val showMiscDialog : MutableLiveData<Boolean> = MutableLiveData()
-    val startMiscShots : MutableLiveData<Boolean> = MutableLiveData()
-    val selectBackground : MutableLiveData<Boolean> = MutableLiveData()
-    val stopShoot : MutableLiveData<Boolean> = MutableLiveData()
-    val showProjectDetail : MutableLiveData<Boolean> = MutableLiveData()
+    val showInteriorDialog: MutableLiveData<Boolean> = MutableLiveData()
+    val startInteriorShots: MutableLiveData<Boolean> = MutableLiveData()
+    val hideLeveler: MutableLiveData<Boolean> = MutableLiveData()
+    val showMiscDialog: MutableLiveData<Boolean> = MutableLiveData()
+    val startMiscShots: MutableLiveData<Boolean> = MutableLiveData()
+    val selectBackground: MutableLiveData<Boolean> = MutableLiveData()
+    val stopShoot: MutableLiveData<Boolean> = MutableLiveData()
+    val showProjectDetail: MutableLiveData<Boolean> = MutableLiveData()
 
 
-    val interiorAngles : MutableLiveData<Int> = MutableLiveData()
+    val interiorAngles: MutableLiveData<Int> = MutableLiveData()
     val interiorShootNumber: MutableLiveData<Int> = MutableLiveData()
     val miscAngles: MutableLiveData<Int> = MutableLiveData()
     val miscShootNumber: MutableLiveData<Int> = MutableLiveData()
@@ -131,8 +131,9 @@ class ShootViewModel : ViewModel(){
 
     val reshootCapturedImage: MutableLiveData<Boolean> = MutableLiveData()
     val projectId: MutableLiveData<String> = MutableLiveData()
+    val showFoodBackground: MutableLiveData<Boolean> = MutableLiveData()
 
-    val addMoreAngle : MutableLiveData<Boolean> = MutableLiveData()
+    val addMoreAngle: MutableLiveData<Boolean> = MutableLiveData()
 
 
     fun getSubCategories(
@@ -151,13 +152,20 @@ class ShootViewModel : ViewModel(){
     }
 
 
-    suspend fun preloadOverlays(overlays : List<String>) {
+    suspend fun preloadOverlays(overlays: List<String>) {
         //check if preload worker is alive
         val workManager = WorkManager.getInstance(BaseApplication.getContext())
 
         val workQuery = WorkQuery.Builder
             .fromTags(listOf("Preload Overlays"))
-            .addStates(listOf(WorkInfo.State.BLOCKED, WorkInfo.State.ENQUEUED,WorkInfo.State.RUNNING,WorkInfo.State.CANCELLED))
+            .addStates(
+                listOf(
+                    WorkInfo.State.BLOCKED,
+                    WorkInfo.State.ENQUEUED,
+                    WorkInfo.State.RUNNING,
+                    WorkInfo.State.CANCELLED
+                )
+            )
             .build()
 
         val workInfos = workManager.getWorkInfos(workQuery).await()
@@ -165,26 +173,27 @@ class ShootViewModel : ViewModel(){
         if (workInfos.size > 0) {
             // stop worker
             startPreloadWorker(overlays)
-        }else{
+        } else {
             startPreloadWorker(overlays)
         }
     }
 
-    private fun startPreloadWorker(overlays : List<String>) {
+    private fun startPreloadWorker(overlays: List<String>) {
         val data = Data.Builder()
-            .putStringArray("overlays",overlays.toTypedArray())
-            .putInt("position",0)
+            .putStringArray("overlays", overlays.toTypedArray())
+            .putInt("position", 0)
             .build()
 
         val constraints: Constraints = Constraints.Builder()
             .setRequiredNetworkType(NetworkType.CONNECTED)
             .build()
 
-        val overlayPreloadWorkRequest = OneTimeWorkRequest.Builder(OverlaysPreloadWorker::class.java)
-            .addTag("Preload Overlays")
-            .setConstraints(constraints)
-            .setInputData(data)
-            .build()
+        val overlayPreloadWorkRequest =
+            OneTimeWorkRequest.Builder(OverlaysPreloadWorker::class.java)
+                .addTag("Preload Overlays")
+                .setConstraints(constraints)
+                .setInputData(data)
+                .build()
 
         WorkManager.getInstance(BaseApplication.getContext())
             .enqueue(overlayPreloadWorkRequest)
@@ -195,10 +204,11 @@ class ShootViewModel : ViewModel(){
         _projectDetailResponse.value = repository.getProjectDetail(authKey, projectId)
     }
 
-    fun updateTotalFrames(skuId: String, totalFrames:  String, authKey:  String) = viewModelScope.launch {
-        _updateTotalFramesRes.value = Resource.Loading
-        _updateTotalFramesRes.value = repository.updateTotalFrames(skuId, totalFrames, authKey)
-    }
+    fun updateTotalFrames(skuId: String, totalFrames: String, authKey: String) =
+        viewModelScope.launch {
+            _updateTotalFramesRes.value = Resource.Loading
+            _updateTotalFramesRes.value = repository.updateTotalFrames(skuId, totalFrames, authKey)
+        }
 
     fun getSelectedAngles() = exterirorAngles.value
 
@@ -206,60 +216,72 @@ class ShootViewModel : ViewModel(){
         val shootProgressList = ArrayList<ShootProgress>()
         shootProgressList.add(ShootProgress(true))
 
-        for (i in 1 until angles){
+        for (i in 1 until angles) {
             if (i <= selectedAngles)
-            shootProgressList.add(ShootProgress(true))
+                shootProgressList.add(ShootProgress(true))
             else
                 shootProgressList.add(ShootProgress(false))
         }
         return shootProgressList
     }
 
-     suspend fun insertImage(shootData: ShootData) {
+    suspend fun insertImage(shootData: ShootData) {
         val image = Image()
         image.projectId = shootData.project_id
         image.skuId = shootData.sku_id
         image.categoryName = shootData.image_category
         image.imagePath = shootData.capturedImage
         image.sequence = shootData.sequence
-
-         image.skuName = sku.value?.skuName
+        image.skuName = sku.value?.skuName
+        image.angle = shootData.angle
 
         localRepository.insertImage(image)
+//        startLongRunningWorker()
 
         //check if long running worker is alive
-         val workManager = WorkManager.getInstance(BaseApplication.getContext())
+        val workManager = WorkManager.getInstance(BaseApplication.getContext())
 
-         val workQuery = WorkQuery.Builder
-             .fromTags(listOf("Long Running Worker"))
-             .addStates(listOf(WorkInfo.State.BLOCKED, WorkInfo.State.ENQUEUED,WorkInfo.State.RUNNING,WorkInfo.State.CANCELLED))
-             .build()
+        val workQuery = WorkQuery.Builder
+            .fromTags(listOf("Long Running Worker"))
+            .addStates(
+                listOf(
+                    WorkInfo.State.BLOCKED,
+                    WorkInfo.State.ENQUEUED,
+                    WorkInfo.State.RUNNING,
+                    WorkInfo.State.CANCELLED
+                )
+            )
+            .build()
 
-         val workInfos = workManager.getWorkInfos(workQuery).await()
+        val workInfos = workManager.getWorkInfos(workQuery).await()
 
-         Log.d(TAG, "insertImage: "+workInfos.size)
+        Log.d(TAG, "insertImage: " + workInfos.size)
 
-         val properties = Properties()
-         properties.apply {
-             this["email"] = Utilities.getPreference(BaseApplication.getContext(), AppConstants.EMAIL_ID).toString()
-         }
+        val properties = Properties()
+        properties.apply {
+            this["email"] =
+                Utilities.getPreference(BaseApplication.getContext(), AppConstants.EMAIL_ID)
+                    .toString()
+        }
 
-         if (workInfos.size > 0) {
-             com.spyneai.shoot.utils.log("alive : ")
+        if (workInfos.size > 0) {
+            com.spyneai.shoot.utils.log("alive : ")
 
 
-             BaseApplication.getContext().captureEvent(
-                 Events.RECURSIVE_UPLOAD_ALREADY_RUNNING,
-                 properties)
+            BaseApplication.getContext().captureEvent(
+                Events.RECURSIVE_UPLOAD_ALREADY_RUNNING,
+                properties
+            )
 
-            } else {
-             com.spyneai.shoot.utils.log("not found : start new")
-                //start long running worker
-             BaseApplication.getContext().captureEvent(
-                 Events.RECURSIVE_UPLOAD_INTIATED,
-                 properties)
-                startLongRunningWorker()
-            }
+        } else {
+            com.spyneai.shoot.utils.log("not found : start new")
+            //start long running worker
+            BaseApplication.getContext().captureEvent(
+                Events.RECURSIVE_UPLOAD_INTIATED,
+                properties
+            )
+            startLongRunningWorker()
+        }
     }
 
     fun startLongRunningWorker() {
@@ -272,13 +294,21 @@ class ShootViewModel : ViewModel(){
             .setBackoffCriteria(
                 BackoffPolicy.LINEAR,
                 OneTimeWorkRequest.MIN_BACKOFF_MILLIS,
-                TimeUnit.MILLISECONDS)
+                TimeUnit.MILLISECONDS
+            )
+//                WorkManager.getInstance(BaseApplication.getContext())
+//            .enqueueUniqueWork("abc", ExistingWorkPolicy.KEEP,
+//                longWorkRequest
+//                    .setConstraints(constraints)
+//                    .build()
+//            )
 
         WorkManager.getInstance(BaseApplication.getContext())
             .enqueue(
                 longWorkRequest
                     .setConstraints(constraints)
-                    .build())
+                    .build()
+            )
     }
 
 
@@ -296,11 +326,14 @@ class ShootViewModel : ViewModel(){
         _skuProcessStateResponse.value = repository.skuProcessState(auth_key, project_id)
     }
 
-    fun createSku(authKey: String,projectId : String
-                  ,prodCatId : String,prodSubCatId : String,
-                  skuName : String,totalFrames : Int) = viewModelScope.launch {
+
+    fun createSku(
+        authKey: String, projectId: String, prodCatId: String, prodSubCatId: String,
+        skuName: String, totalFrames: Int
+    ) = viewModelScope.launch {
         _createSkuRes.value = Resource.Loading
-        _createSkuRes.value = repository.createSku(authKey, projectId, prodCatId, prodSubCatId, skuName,totalFrames)
+        _createSkuRes.value =
+            repository.createSku(authKey, projectId, prodCatId, prodSubCatId, skuName, totalFrames)
     }
 
     fun insertSku(sku: Sku) {
@@ -315,13 +348,13 @@ class ShootViewModel : ViewModel(){
         localRepository.insertProject(project)
     }
 
-    fun updateSubcategoryId(subcategoryId: String,subcategoryName: String) {
-        localRepository.updateSubcategoryId(sku.value?.skuId!!,subcategoryId,subcategoryName)
+    fun updateSubcategoryId(subcategoryId: String, subcategoryName: String) {
+        localRepository.updateSubcategoryId(sku.value?.skuId!!, subcategoryId, subcategoryName)
     }
 
     fun getImagesbySkuId(skuId: String) = localRepository.getImagesBySkuId(skuId)
 
-    fun  updateProjectStatus(projectId: String) = localRepository.updateProjectStatus(projectId)
+    fun updateProjectStatus(projectId: String) = localRepository.updateProjectStatus(projectId)
 
     fun updateFootwearSubcategory() {
         val constraints: Constraints = Constraints.Builder()
@@ -339,14 +372,16 @@ class ShootViewModel : ViewModel(){
             .setBackoffCriteria(
                 BackoffPolicy.LINEAR,
                 OneTimeWorkRequest.MIN_BACKOFF_MILLIS,
-                TimeUnit.MILLISECONDS)
+                TimeUnit.MILLISECONDS
+            )
 
         WorkManager.getInstance(BaseApplication.getContext())
             .enqueue(
                 updateWorkRequest
                     .setConstraints(constraints)
                     .setInputData(data)
-                    .build())
+                    .build()
+            )
     }
 
 }

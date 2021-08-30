@@ -12,6 +12,7 @@ data class UploadImageResponse(
         val input_image_hres_url: String,
         val output_image_hres_url: String,
         val output_image_lres_url: String,
-        val status: String
+        val status: String,
+        val angle: Int
     )
 }

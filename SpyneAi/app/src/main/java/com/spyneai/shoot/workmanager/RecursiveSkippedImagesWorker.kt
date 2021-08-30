@@ -1,16 +1,17 @@
 package com.spyneai.shoot.workmanager
 
 import android.content.Context
-import android.util.Log
 import androidx.work.*
 import com.posthog.android.Properties
 import com.spyneai.BaseApplication
+import com.spyneai.R
 import com.spyneai.base.network.Resource
 import com.spyneai.captureEvent
 import com.spyneai.captureFailureEvent
 import com.spyneai.needs.AppConstants
 import com.spyneai.needs.Utilities
 import com.spyneai.posthog.Events
+import com.spyneai.service.log
 import com.spyneai.shoot.data.ShootLocalRepository
 import com.spyneai.shoot.data.ShootRepository
 import com.spyneai.shoot.data.model.Image
@@ -85,18 +86,42 @@ class RecursiveSkippedImagesWorker(private val appContext: Context, workerParams
                     fileName,
                     requestFile
                 )
+            val uploadType = "Retry"
 
-            var response = shootRepository.uploadImage(projectId!!,
-                skuId!!, imageCategory!!,authKey, "Retry".toRequestBody(MultipartBody.FORM),image.sequence.toString(),imageFile)
+            log("angle: "+image.angle)
+
+            var response = if (appContext.getString(R.string.app_name) == AppConstants.SWIGGY)
+                shootRepository.uploadImageWithAngle(
+                    projectId!!,
+                    skuId!!,
+                    imageCategory!!,
+                    authKey,
+                    uploadType.toRequestBody(MultipartBody.FORM),
+                    image.sequence.toString(),
+                    image.angle!!,
+                    imageFile
+                )
+        else
+                shootRepository.uploadImage(
+                    projectId!!,
+                    skuId!!,
+                    imageCategory!!,
+                    authKey,
+                    uploadType.toRequestBody(MultipartBody.FORM),
+                    image.sequence.toString(),
+                    imageFile
+                )
 
             when(response){
                 is Resource.Success -> {
+                    log("upload image sucess")
                     captureEvent(Events.SKIPED_UPLOADED,image,true,null)
                     startNextUpload(image.itemId!!,true)
                     return Result.success()
                 }
 
                 is Resource.Failure -> {
+                    log("upload image failed")
                     if(response.errorMessage == null){
                         captureEvent(Events.SKIPPED_UPLOAD_FAILED,image,false,response.errorCode.toString()+": Http exception from server")
                     }else {
@@ -141,8 +166,6 @@ class RecursiveSkippedImagesWorker(private val appContext: Context, workerParams
     }
 
     private fun startNextUpload(itemId: Long,uploaded : Boolean) {
-        com.spyneai.shoot.utils.log("next upload started")
-        com.spyneai.shoot.utils.log("image to delete $itemId")
         //remove uploaded item from database
         if (uploaded)
             localRepository.deleteImage(itemId)

@@ -25,8 +25,8 @@ import com.spyneai.shoot.data.model.CategoryDetails
 import com.spyneai.shoot.data.model.CreateProjectRes
 import com.spyneai.shoot.data.model.Sku
 import com.spyneai.shoot.ui.OverlaysFragment
+import com.spyneai.shoot.ui.SelectBackgroundFragment
 import com.spyneai.shoot.ui.dialogs.ShootExitDialog
-import com.spyneai.shoot.ui.dialogs.ShootHintDialog
 import com.spyneai.shoot.ui.ecomwithgrid.GridEcomFragment
 import com.spyneai.shoot.ui.ecomwithgrid.ProjectDetailFragment
 import com.spyneai.shoot.ui.ecomwithgrid.SkuDetailFragment
@@ -43,6 +43,7 @@ class ShootActivity : AppCompatActivity() {
     lateinit var overlayEcomFragment: OverlayEcomFragment
     lateinit var skuDetailFragment: SkuDetailFragment
     lateinit var projectDetailFragment: ProjectDetailFragment
+    lateinit var selectBackgroundFragment: SelectBackgroundFragment
     lateinit var shootViewModel : ShootViewModel
     val TAG = "ShootActivity"
 
@@ -78,6 +79,7 @@ class ShootActivity : AppCompatActivity() {
         skuDetailFragment = SkuDetailFragment()
         projectDetailFragment = ProjectDetailFragment()
         overlayEcomFragment = OverlayEcomFragment()
+        selectBackgroundFragment = SelectBackgroundFragment()
 
         when(shootViewModel.categoryDetails.value?.categoryName) {
             "Automobiles" -> {
@@ -183,6 +185,19 @@ class ShootActivity : AppCompatActivity() {
                 supportFragmentManager.beginTransaction().remove(gridEcomFragment).commit()
                 supportFragmentManager.beginTransaction()
                     .add(R.id.flCamerFragment, projectDetailFragment)
+                    .commit()
+            }
+        })
+
+        shootViewModel.showFoodBackground.observe(this,{
+            if(it){
+                window.clearFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN)
+                supportFragmentManager.beginTransaction().remove(skuDetailFragment).commit()
+                supportFragmentManager.beginTransaction().remove(projectDetailFragment).commit()
+                supportFragmentManager.beginTransaction().remove(cameraFragment).commit()
+                supportFragmentManager.beginTransaction().remove(gridEcomFragment).commit()
+                supportFragmentManager.beginTransaction()
+                    .add(R.id.flCamerFragment, selectBackgroundFragment)
                     .commit()
             }
         })

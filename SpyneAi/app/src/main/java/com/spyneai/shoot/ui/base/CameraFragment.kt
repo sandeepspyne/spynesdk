@@ -1,20 +1,20 @@
+
 import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.ContentValues
 import android.content.ContentValues.TAG
 import android.content.Context
 import android.content.pm.ActivityInfo
-import android.graphics.ImageFormat
 import android.hardware.Sensor
 import android.hardware.SensorEvent
 import android.hardware.SensorEventListener
 import android.hardware.SensorManager
-import android.hardware.camera2.CameraCharacteristics
-import android.hardware.camera2.CameraManager
+import android.media.MediaActionSound
 import android.os.*
 import android.provider.MediaStore
 import android.util.DisplayMetrics
 import android.util.Log
+import android.util.Size
 import android.view.*
 import android.view.animation.AccelerateInterpolator
 import android.widget.*
@@ -39,6 +39,7 @@ import com.spyneai.posthog.Events
 import com.spyneai.shoot.data.ShootViewModel
 import com.spyneai.shoot.data.model.ShootData
 import com.spyneai.shoot.utils.log
+import com.spyneai.shoot.utils.shoot
 import java.io.File
 import java.util.*
 import java.util.concurrent.ExecutionException
@@ -49,9 +50,6 @@ import kotlin.math.abs
 import kotlin.math.max
 import kotlin.math.min
 import kotlin.math.roundToInt
-import android.media.MediaActionSound
-import android.util.Size
-import com.spyneai.shoot.utils.shoot
 
 
 class CameraFragment : BaseFragment<ShootViewModel, FragmentCameraBinding>(), PickiTCallbacks,
@@ -102,6 +100,8 @@ class CameraFragment : BaseFragment<ShootViewModel, FragmentCameraBinding>(), Pi
     private var isGyroOnCorrectAngle = false
 
     private var filename = ""
+
+    private var cameraAngle = 45
 
     var gravity = FloatArray(3)
 
@@ -321,8 +321,16 @@ class CameraFragment : BaseFragment<ShootViewModel, FragmentCameraBinding>(), Pi
                     }
                 }
             }
-            "Flipkart", "Udaan", "Lal10", "Amazon", "Swiggy" -> {
+            "Flipkart", "Udaan", "Lal10", "Amazon" -> {
                 captureImage()
+            }
+            AppConstants.SWIGGY -> {
+                if (binding.flLevelIndicator.visibility == View.VISIBLE) {
+                    if (isGyroOnCorrectAngle)
+                        captureImage()
+                }else{
+                    captureImage()
+                }
             }
             AppConstants.SPYNE_AI -> {
                 if (viewModel.shootList.value == null){
@@ -529,7 +537,15 @@ class CameraFragment : BaseFragment<ShootViewModel, FragmentCameraBinding>(), Pi
                     .setFlashMode(flashMode)
                     .setTargetResolution(size)
                     .build()
-            } else {
+            } else if (getString(R.string.app_name) == AppConstants.SWIGGY) {
+                ImageCapture.Builder()
+                    .setCaptureMode(ImageCapture.CAPTURE_MODE_MAXIMIZE_QUALITY)
+                    .setFlashMode(flashMode)
+                    .setTargetAspectRatio(aspectRatio) // set the capture aspect ratio
+                    // .setTargetRotation(rotation) // set the capture rotation
+                    .build()
+            }
+            else {
                 ImageCapture.Builder()
                     .setCaptureMode(ImageCapture.CAPTURE_MODE_MAXIMIZE_QUALITY)
                     .setFlashMode(flashMode)
@@ -872,7 +888,7 @@ class CameraFragment : BaseFragment<ShootViewModel, FragmentCameraBinding>(), Pi
                 }
             }
 
-            AppConstants.UDAAN, "Flipkart", "Udaan", "Amazon", "Lal10", "Swiggy" -> {
+            AppConstants.UDAAN, "Flipkart", "Udaan", "Amazon", "Lal10" -> {
                 //hide moving line
                 if (pitch.roundToInt() == 0 || (pitch.roundToInt() <= -0 && pitch.roundToInt() >= -3))
                     binding.tvLevelIndicator.visibility = View.GONE
@@ -891,6 +907,50 @@ class CameraFragment : BaseFragment<ShootViewModel, FragmentCameraBinding>(), Pi
                         gyroMeterOnLevel(true)
                 } else {
                    gyroMeterOffLevel()
+
+                    if (movearrow) {
+                        if (abs(roll.roundToInt()) < 100) {
+                            moveArrow((pitch + 85).unaryMinus())
+                        } else {
+                            moveArrow(pitch + 85)
+                        }
+                    }
+
+                    if (orientationAngles[2].roundToInt() == 1 || orientationAngles[2].roundToInt() == -1){
+                        if (orientationAngles[2].roundToInt() == 1) {
+                            rotateArrow((pitch + 85).unaryMinus().roundToInt())
+                        } else {
+                            rotateArrow((pitch + 85).roundToInt())
+                        }
+                    }
+                }
+            }
+            AppConstants.SWIGGY -> {
+                //hide moving line
+                if (pitch.roundToInt() == 0 || (pitch.roundToInt() <= -0 && pitch.roundToInt() >= -3))
+                    binding.tvLevelIndicator.visibility = View.GONE
+                else
+                    binding.tvLevelIndicator.visibility = View.VISIBLE
+
+                if ((pitch.roundToInt() == 0 || (pitch.roundToInt() <= -0 && pitch.roundToInt() >= -3)) ||
+                    pitch.roundToInt() <= -82 && pitch.roundToInt() >= -88 ||
+                    (pitch.roundToInt() <= -40 && pitch.roundToInt() >= -45) && abs(roll.roundToInt()) < 100
+                )
+                {
+                    isGyroOnCorrectAngle = true
+                    if (pitch.roundToInt() == 0 || (pitch.roundToInt() <= -0 && pitch.roundToInt() >= -3)){
+                        cameraAngle = 0
+                        gyroMeterOnLevel(false)
+                    }
+                    else if (pitch.roundToInt() <= -40 && pitch.roundToInt() >= -45) {
+                        cameraAngle = 45
+                        gyroMeterOnLevel(false)
+                    }else{
+                        cameraAngle = 90
+                        gyroMeterOnLevel(true)}
+                } else {
+                    isGyroOnCorrectAngle = false
+                    gyroMeterOffLevel()
 
                     if (movearrow) {
                         if (abs(roll.roundToInt()) < 100) {
@@ -1152,7 +1212,8 @@ class CameraFragment : BaseFragment<ShootViewModel, FragmentCameraBinding>(), Pi
                 viewModel.sku.value?.skuId!!,
                 viewModel.categoryDetails.value?.imageType!!,
                 Utilities.getPreference(requireContext(), AppConstants.AUTH_KEY).toString(),
-                viewModel.shootList.value!!.size.plus(1)
+                viewModel.shootList.value!!.size.plus(1),
+                cameraAngle
             )
         )
 

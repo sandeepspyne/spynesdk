@@ -25,7 +25,7 @@ open class BaseApiClient<Api>(val BASE_URL: String, api: Class<Api>){
                     client.addInterceptor(logging)
                 }
             }
-               .addInterceptor(ResponseInterceptor())
+               .addInterceptor(com.spyneai.base.network.ResponseInterceptor())
                 .readTimeout(4, TimeUnit.MINUTES)
                 .writeTimeout(4, TimeUnit.MINUTES)
                 .connectTimeout(4, TimeUnit.MINUTES)

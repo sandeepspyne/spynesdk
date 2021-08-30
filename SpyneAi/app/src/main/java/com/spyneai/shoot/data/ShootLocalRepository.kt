@@ -2,15 +2,14 @@ package com.spyneai.shoot.data
 
 import android.content.ContentValues
 import android.provider.BaseColumns
-import android.util.Log
 import com.spyneai.BaseApplication
-import com.spyneai.shoot.data.model.Sku
 import com.spyneai.db.DBHelper
 import com.spyneai.db.Images
 import com.spyneai.db.Projects
 import com.spyneai.db.ShootContract
 import com.spyneai.shoot.data.model.Image
 import com.spyneai.shoot.data.model.Project
+import com.spyneai.shoot.data.model.Sku
 
 class ShootLocalRepository {
 
@@ -388,6 +387,7 @@ class ShootLocalRepository {
             put(Images.COLUMN_NAME_IMAGE_PATH, image.imagePath)
             put(Images.COLUMN_NAME_IMAGE_SEQUENCE, image.sequence)
             put(Images.COLUMN_NAME_IS_UPLOADED, 0)
+            put(Images.COLUMN_NAME_IMAGE_ANGLE, image.angle)
         }
 
         val newRowId = dbWritable?.insert(Images.TABLE_NAME, null, values)
@@ -603,7 +603,6 @@ class ShootLocalRepository {
             projectSelection,
             projectSelectionArgs)
 
-        com.spyneai.shoot.utils.log("Upload count(update): "+projectCount)
     }
 
     fun deleteImage(itemId: Long) {
@@ -802,7 +801,6 @@ class ShootLocalRepository {
             selectionArgs)
 
 
-        com.spyneai.shoot.utils.log("Upload count(update): "+count)
     }
 
     fun updateSkipedImages() : Int {
@@ -846,7 +844,6 @@ class ShootLocalRepository {
             projectSelection,
             projectSelectionArgs)
 
-        com.spyneai.shoot.utils.log("Upload count(update): "+projectCount)
 
     }
 
@@ -871,7 +868,6 @@ class ShootLocalRepository {
             selection,
             selectionArgs)
 
-        com.spyneai.shoot.utils.log("Upload count(update): "+uploadCount)
     }
 
     fun updateTotalImageCount(skuId : String) {

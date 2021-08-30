@@ -1,8 +1,6 @@
 package com.spyneai.shoot.workmanager.manual
 
 import android.content.Context
-import android.os.Build
-import android.os.Environment
 import android.util.Log
 import androidx.work.*
 import com.posthog.android.Properties
@@ -14,9 +12,7 @@ import com.spyneai.needs.AppConstants
 import com.spyneai.needs.Utilities
 import com.spyneai.posthog.Events
 import com.spyneai.shoot.data.FilesRepository
-import com.spyneai.shoot.data.ShootLocalRepository
 import com.spyneai.shoot.data.ShootRepository
-import com.spyneai.shoot.data.model.Image
 import com.spyneai.shoot.data.model.ImageFile
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.MultipartBody
@@ -189,8 +185,6 @@ class ManualUploadWorker (private val appContext: Context, workerParams: WorkerP
     }
 
     private fun startNextUpload(itemId: Long,uploaded : Boolean) {
-        com.spyneai.shoot.utils.log("next upload started")
-        com.spyneai.shoot.utils.log("image to delete $itemId")
         //remove uploaded item from database
         if (uploaded)
             filesRepository.deleteImage(itemId)

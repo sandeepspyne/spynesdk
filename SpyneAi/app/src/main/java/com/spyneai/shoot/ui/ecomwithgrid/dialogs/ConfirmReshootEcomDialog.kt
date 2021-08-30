@@ -1,7 +1,5 @@
 package com.spyneai.shoot.ui.ecomwithgrid.dialogs
 
-import android.content.Intent
-import android.net.Uri
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -90,6 +88,8 @@ class ConfirmReshootEcomDialog :
             dismiss()
         }
     }
+
+
 
     override fun onResume() {
         super.onResume()

@@ -5,6 +5,7 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
@@ -14,10 +15,10 @@ import com.spyneai.base.BaseFragment
 import com.spyneai.base.network.Resource
 import com.spyneai.captureEvent
 import com.spyneai.captureFailureEvent
-import com.spyneai.dashboard.ui.WhiteLabelConstants
 import com.spyneai.dashboard.ui.enable
 import com.spyneai.dashboard.ui.handleApiError
 import com.spyneai.databinding.FragmentSelectBackgroundBinding
+import com.spyneai.gotoHome
 import com.spyneai.needs.AppConstants
 import com.spyneai.needs.Utilities
 import com.spyneai.posthog.Events
@@ -60,6 +61,11 @@ class SelectBackgroundFragment : BaseFragment<ProcessViewModel,FragmentSelectBac
                 binding.tv360.visibility = View.GONE
                 binding.tvGenerateGif.text = "Generate Output"
             }
+            AppConstants.SWIGGY -> {
+                binding.cb360.visibility = View.GONE
+                binding.tv360.visibility = View.GONE
+                binding.tvGenerateGif.text = "Generate Output"
+            }
             else -> {
                 binding.cb360.setOnCheckedChangeListener { buttonView, isChecked ->
                     if (isChecked)
@@ -80,7 +86,11 @@ class SelectBackgroundFragment : BaseFragment<ProcessViewModel,FragmentSelectBac
                 AppConstants.KARVI,AppConstants.SWEEP -> {
                     //process image call
                     processSku()
-                }else -> {
+                }
+                AppConstants.SWIGGY -> {
+                   processFoodImage()
+                }
+                else -> {
                 if (binding.cb360.isChecked){
                     viewModel.backgroundSelect = backgroundSelect
                     viewModel.addRegularShootSummaryFragment.value = true
@@ -96,16 +106,55 @@ class SelectBackgroundFragment : BaseFragment<ProcessViewModel,FragmentSelectBac
         observeProcessSku()
         }
 
+    private fun processFoodImage(){
+        viewModel.skuProcessStateWithBackgroundid(Utilities.getPreference(requireContext(), AppConstants.AUTH_KEY).toString(),
+            viewModel.projectId.value.toString(), backgroundSelect)
+        log("auth key- "+Utilities.getPreference(requireContext(), AppConstants.AUTH_KEY).toString())
+        log("project id- "+viewModel.projectId.value)
+        log("skuProcessState called")
+
+        viewModel.skuProcessStateWithBgResponse.observe(viewLifecycleOwner,{
+            when(it) {
+                is Resource.Success -> {
+                    Toast.makeText(requireContext(), "skuProcessState sucess", Toast.LENGTH_SHORT).show()
+                    Utilities.hideProgressDialog()
+                    requireContext().gotoHome()
+                }
+
+                is Resource.Failure -> {
+                    requireContext().captureFailureEvent(Events.GET_BACKGROUND_FAILED, Properties(),
+                        it.errorMessage!!
+                    )
+                    handleApiError(it) { getBackground() }
+                }
+
+                is Resource.Loading -> binding.shimmer.startShimmer()
+            }
+        })
+
+
+    }
+
 
 
     private fun getBackground() {
-        val category =
-            Utilities.getPreference(requireContext(), AppConstants.CATEGORY_NAME)!!.toRequestBody(MultipartBody.FORM)
 
-        val authKey =
-            Utilities.getPreference(requireContext(), AppConstants.AUTH_KEY)!!.toRequestBody(MultipartBody.FORM)
+        when(getString(R.string.app_name)) {
+        AppConstants.SWIGGY -> {
+            Toast.makeText(requireContext(), "Get background Food", Toast.LENGTH_SHORT).show()
+            val category = "Food".toRequestBody(MultipartBody.FORM)
+            val authKey =
+                Utilities.getPreference(requireContext(), AppConstants.AUTH_KEY)!!.toRequestBody(MultipartBody.FORM)
 
-        viewModel.getBackgroundGifCars(category, authKey)
+            viewModel.getBackgroundGifCars(category, authKey)
+        }   else -> {
+            val category = Utilities.getPreference(requireContext(), AppConstants.CATEGORY_NAME)!!.toRequestBody(MultipartBody.FORM)
+            val authKey =
+                Utilities.getPreference(requireContext(), AppConstants.AUTH_KEY)!!.toRequestBody(MultipartBody.FORM)
+
+            viewModel.getBackgroundGifCars(category, authKey)
+        }
+        }
     }
 
     private fun initSelectBackground() {
