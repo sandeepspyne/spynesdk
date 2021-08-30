@@ -6,12 +6,18 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import com.bumptech.glide.Glide
+import com.posthog.android.Properties
 import com.spyneai.R
 import com.spyneai.base.BaseFragment
+import com.spyneai.base.network.Resource
+import com.spyneai.captureEvent
+import com.spyneai.captureFailureEvent
+import com.spyneai.dashboard.ui.handleApiError
 import com.spyneai.databinding.FragmentImageProcessingStartedBinding
 import com.spyneai.gotoHome
 import com.spyneai.needs.AppConstants
 import com.spyneai.needs.Utilities
+import com.spyneai.posthog.Events
 import com.spyneai.shoot.data.ProcessViewModel
 
 
@@ -35,6 +41,13 @@ class ImageProcessingStartedFragment : BaseFragment<ProcessViewModel, FragmentIm
             requireContext().gotoHome()
         }
 
+        observeTotalFrameUpdate()
+
+    }
+
+    override fun onResume() {
+        super.onResume()
+
         if (viewModel.categoryName == "Bikes"){
             if (viewModel.interiorMiscShootsCount > 0)
                 updateTotalFrames()
@@ -44,10 +57,43 @@ class ImageProcessingStartedFragment : BaseFragment<ProcessViewModel, FragmentIm
                 viewModel.sku.value?.projectId!!
             )
         }
-
-
-
     }
+
+    private fun observeTotalFrameUpdate() {
+        viewModel.updateTotalFramesRes.observe(viewLifecycleOwner,{
+            when(it) {
+                is Resource.Success -> {
+                    val properties = Properties()
+                    properties.apply {
+                        this["sku_id"] = viewModel.sku.value?.skuId!!
+                        this["total_frames"] = viewModel.exteriorAngles.value?.plus(viewModel.interiorMiscShootsCount)
+                    }
+
+                    requireContext().captureEvent(Events.TOTAL_FRAMES_UPDATED,properties)
+
+                    Utilities.hideProgressDialog()
+                }
+
+                is Resource.Failure -> {
+                    Utilities.hideProgressDialog()
+
+                    val properties = Properties()
+                    properties.apply {
+                        this["sku_id"] = viewModel.sku.value?.skuId!!
+                        this["total_frames"] = viewModel.exteriorAngles.value?.plus(viewModel.interiorMiscShootsCount)
+                    }
+
+                    requireContext().captureFailureEvent(
+                        Events.TOTAL_FRAMES_UPDATE_FAILED,properties,
+                        it.errorMessage!!)
+
+                    handleApiError(it) { updateTotalFrames()}
+                }
+            }
+        })
+    }
+
+
     private fun updateTotalFrames() {
         val totalFrames = viewModel.exteriorAngles.value?.plus(viewModel.interiorMiscShootsCount)
 

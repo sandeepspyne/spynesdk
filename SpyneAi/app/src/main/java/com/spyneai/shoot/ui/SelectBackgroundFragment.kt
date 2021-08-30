@@ -75,27 +75,32 @@ class SelectBackgroundFragment : BaseFragment<ProcessViewModel,FragmentSelectBac
             //update total frame if user clicked interior and misc
             if (viewModel.interiorMiscShootsCount > 0)
                 updateTotalFrames()
-
-            when(getString(R.string.app_name)) {
-                AppConstants.KARVI,AppConstants.SWEEP -> {
-                    //process image call
-                    processSku()
-                }else -> {
-                if (binding.cb360.isChecked){
-                    viewModel.backgroundSelect = backgroundSelect
-                    viewModel.addRegularShootSummaryFragment.value = true
-                }else{
-                    //process image call
-                    processSku()
-                }
-                }
+            else{
+                processRequest()
             }
         }
 
-
+        observeTotalFrameUpdate()
         observeProcessSku()
-        }
 
+    }
+
+    private fun processRequest() {
+        when(getString(R.string.app_name)) {
+            AppConstants.KARVI,AppConstants.SWEEP -> {
+                //process image call
+                processSku()
+            }else -> {
+            if (binding.cb360.isChecked){
+                viewModel.backgroundSelect = backgroundSelect
+                viewModel.addRegularShootSummaryFragment.value = true
+            }else{
+                //process image call
+                processSku()
+            }
+            }
+        }
+    }
 
 
     private fun getBackground() {
@@ -177,6 +182,7 @@ class SelectBackgroundFragment : BaseFragment<ProcessViewModel,FragmentSelectBac
     }
 
     private fun updateTotalFrames() {
+        Utilities.showProgressDialog(requireContext())
         val totalFrames = viewModel.exteriorAngles.value?.plus(viewModel.interiorMiscShootsCount)
 
         viewModel.updateCarTotalFrames(
@@ -184,6 +190,41 @@ class SelectBackgroundFragment : BaseFragment<ProcessViewModel,FragmentSelectBac
             viewModel.sku.value?.skuId!!,
             totalFrames.toString()
         )
+    }
+
+    private fun observeTotalFrameUpdate() {
+        viewModel.updateTotalFramesRes.observe(viewLifecycleOwner,{
+            when(it) {
+                is Resource.Success -> {
+                    val properties = Properties()
+                    properties.apply {
+                        this["sku_id"] = viewModel.sku.value?.skuId!!
+                        this["total_frames"] = viewModel.exteriorAngles.value?.plus(viewModel.interiorMiscShootsCount)
+                    }
+
+                    requireContext().captureEvent(Events.TOTAL_FRAMES_UPDATED,properties)
+
+                    Utilities.hideProgressDialog()
+                    processRequest()
+                }
+
+                is Resource.Failure -> {
+                    Utilities.hideProgressDialog()
+
+                    val properties = Properties()
+                    properties.apply {
+                        this["sku_id"] = viewModel.sku.value?.skuId!!
+                        this["total_frames"] = viewModel.exteriorAngles.value?.plus(viewModel.interiorMiscShootsCount)
+                    }
+
+                    requireContext().captureFailureEvent(
+                        Events.TOTAL_FRAMES_UPDATE_FAILED,properties,
+                        it.errorMessage!!)
+
+                    handleApiError(it) { updateTotalFrames()}
+                }
+            }
+        })
     }
 
     private fun processSku() {

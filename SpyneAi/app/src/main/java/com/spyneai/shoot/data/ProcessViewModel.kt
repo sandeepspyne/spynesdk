@@ -9,12 +9,11 @@ import com.spyneai.BaseApplication
 import com.spyneai.base.network.Resource
 import com.spyneai.credits.model.DownloadHDRes
 import com.spyneai.credits.model.ReduceCreditResponse
-import com.spyneai.model.carbackgroundgif.CarBackgrounGifResponse
 import com.spyneai.model.credit.CreditDetailsResponse
 import com.spyneai.shoot.data.model.CarsBackgroundRes
 import com.spyneai.shoot.data.model.ProcessSkuRes
 import com.spyneai.shoot.data.model.Sku
-import com.spyneai.shoot.workmanager.FrameUpdateWorker
+import com.spyneai.shoot.data.model.UpdateTotalFramesRes
 import com.spyneai.shoot.workmanager.ProjectStateUpdateWorker
 import kotlinx.coroutines.launch
 import okhttp3.RequestBody
@@ -62,6 +61,10 @@ class ProcessViewModel : ViewModel() {
     val downloadHDRes: LiveData<Resource<DownloadHDRes>>
         get() = _downloadHDRes
 
+    private val _updateTotalFramesRes : MutableLiveData<Resource<UpdateTotalFramesRes>> = MutableLiveData()
+    val updateTotalFramesRes: LiveData<Resource<UpdateTotalFramesRes>>
+        get() = _updateTotalFramesRes
+
     fun getBackgroundGifCars(
         category: RequestBody,
         auth_key: RequestBody
@@ -90,25 +93,10 @@ class ProcessViewModel : ViewModel() {
         }
     }
 
-    fun updateCarTotalFrames(authKey: String,skuId: String,totalFrames: String) {
-        val data = Data.Builder()
-            .putString("auth_key", authKey)
-            .putString("sku_id", skuId)
-            .putString("total_frames", totalFrames)
-
-        val constraints: Constraints = Constraints.Builder()
-            .setRequiredNetworkType(NetworkType.CONNECTED)
-            .build()
-
-        val longWorkRequest = OneTimeWorkRequest.Builder(FrameUpdateWorker::class.java)
-            .addTag("Total Frames Update")
-
-        WorkManager.getInstance(BaseApplication.getContext())
-            .enqueue(
-                longWorkRequest
-                    .setConstraints(constraints)
-                    .setInputData(data.build())
-                    .build())
+    fun updateCarTotalFrames(authKey: String,skuId: String,totalFrames: String)
+    = viewModelScope.launch {
+        _updateTotalFramesRes.value = Resource.Loading
+        _updateTotalFramesRes.value = repository.updateTotalFrames(authKey, skuId,totalFrames)
     }
 
     fun getUserCredits(

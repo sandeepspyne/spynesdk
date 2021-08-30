@@ -6,12 +6,16 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.GridLayoutManager
+import com.posthog.android.Properties
 import com.spyneai.base.BaseFragment
 import com.spyneai.base.network.Resource
+import com.spyneai.captureEvent
+import com.spyneai.captureFailureEvent
 import com.spyneai.dashboard.ui.handleApiError
 import com.spyneai.databinding.FragmentSkuDetailBinding
 import com.spyneai.needs.AppConstants
 import com.spyneai.needs.Utilities
+import com.spyneai.posthog.Events
 import com.spyneai.shoot.adapters.SkuImageAdapter
 import com.spyneai.shoot.data.ShootViewModel
 import com.spyneai.shoot.ui.base.ShootPortraitActivity
@@ -23,6 +27,7 @@ class SkuDetailFragment : BaseFragment<ShootViewModel, FragmentSkuDetailBinding>
 
     lateinit var skuImageAdapter: SkuImageAdapter
     var totalSkuImages = 0
+    var endProject = false
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -77,7 +82,6 @@ class SkuDetailFragment : BaseFragment<ShootViewModel, FragmentSkuDetailBinding>
             }
         })
 
-
         viewModel.shootList.observe(viewLifecycleOwner, {
             try {
 
@@ -107,7 +111,73 @@ class SkuDetailFragment : BaseFragment<ShootViewModel, FragmentSkuDetailBinding>
             log("skuId: " +viewModel.sku.value?.skuId.toString())
             log("totalFrames: " +viewModel.shootList.value?.size.toString())
             log("authKey: " +Utilities.getPreference(requireContext(), AppConstants.AUTH_KEY).toString())
-            viewModel.updateTotalFrames(viewModel.sku.value?.skuId.toString(), totalSkuImages.toString(), Utilities.getPreference(requireContext(), AppConstants.AUTH_KEY).toString())
+            endProject = false
+            updateTotalFrames()
+        }
+
+        binding.ivAddAngle.setOnClickListener {
+            viewModel.addMoreAngle.value = true
+        }
+        binding.tvAddAngle.setOnClickListener {
+            viewModel.addMoreAngle.value = true
+        }
+
+        binding.tvEndProject.setOnClickListener {
+            endProject = true
+            updateTotalFrames()
+        }
+
+        observeTotalFrameUpdate()
+    }
+
+    private fun updateTotalFrames() {
+        Utilities.showProgressDialog(requireContext())
+        viewModel.updateTotalFrames(
+            viewModel.sku.value?.skuId.toString(),
+            totalSkuImages.toString(),
+            Utilities.getPreference(requireContext(), AppConstants.AUTH_KEY).toString()
+        )
+    }
+
+    private fun observeTotalFrameUpdate() {
+        viewModel.updateTotalFramesRes.observe(viewLifecycleOwner,{
+            when(it) {
+                is Resource.Success -> {
+                    val properties = Properties()
+                    properties.apply {
+                        this["sku_id"] = viewModel.sku.value?.skuId!!
+                        this["total_frames"] = totalSkuImages.toString()
+                    }
+
+                    requireContext().captureEvent(Events.TOTAL_FRAMES_UPDATED,properties)
+
+                    Utilities.hideProgressDialog()
+                    processRequest()
+                }
+
+                is Resource.Failure -> {
+                    Utilities.hideProgressDialog()
+
+                    val properties = Properties()
+                    properties.apply {
+                        this["sku_id"] = viewModel.sku.value?.skuId!!
+                        this["total_frames"] = totalSkuImages.toString()
+                    }
+
+                    requireContext().captureFailureEvent(
+                        Events.TOTAL_FRAMES_UPDATE_FAILED,properties,
+                        it.errorMessage!!)
+
+                    handleApiError(it) { updateTotalFrames()}
+                }
+            }
+        })
+    }
+
+    private fun processRequest() {
+        if (endProject){
+            EndProjectDialog().show(requireFragmentManager(), "EndProjectDialog")
+        }else {
             viewModel.shootList.value?.clear()
             val intent = Intent(activity, ShootPortraitActivity::class.java)
             intent.putExtra("project_id", viewModel.projectId.value);
@@ -122,24 +192,9 @@ class SkuDetailFragment : BaseFragment<ShootViewModel, FragmentSkuDetailBinding>
             }
             else
                 intent.putExtra("skuNumber", viewModel.skuNumber.value?.plus(1)!!)
+
             startActivity(intent)
-
         }
-
-        binding.ivAddAngle.setOnClickListener {
-            if (viewModel.categoryDetails.value?.categoryName.equals("E-Commerce") || viewModel.categoryDetails.value?.categoryName.equals("Food & Beverages"))
-            viewModel.addMoreAngle.value = true
-        }
-        binding.tvAddAngle.setOnClickListener {
-            if (viewModel.categoryDetails.value?.categoryName.equals("E-Commerce") || viewModel.categoryDetails.value?.categoryName.equals("Food & Beverages"))
-            viewModel.addMoreAngle.value = true
-        }
-
-        binding.tvEndProject.setOnClickListener {
-            viewModel.updateTotalFrames(viewModel.sku.value?.skuId.toString(), totalSkuImages.toString(), Utilities.getPreference(requireContext(), AppConstants.AUTH_KEY).toString())
-            EndProjectDialog().show(requireFragmentManager(), "EndProjectDialog")
-        }
-
     }
 
 
