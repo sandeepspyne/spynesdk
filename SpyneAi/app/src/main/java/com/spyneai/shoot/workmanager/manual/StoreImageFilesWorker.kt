@@ -102,25 +102,48 @@ class StoreImageFilesWorker (private val appContext: Context, workerParams: Work
         Log.d(TAG, "insertImage: "+workInfos.size)
 
         if (workInfos.size > 0) {
+            repeat(workInfos.size) {
+                when(workInfos[it].state){
+                    WorkInfo.State.BLOCKED -> {
+                        BaseApplication.getContext().captureEvent(
+                            Events.BLOCKED_WORKER_START_EXCEPTION,
+                            Properties().putValue
+                                ("name","Recursive Manual Upload Worker"))
+                        start()
+                    }
+
+                    WorkInfo.State.CANCELLED -> {
+                        BaseApplication.getContext().captureEvent(
+                            Events.CANCELLED_WORKER_START_EXCEPTION,
+                            Properties().putValue
+                                ("name","Recursive Manual Upload Worker"))
+                        start()
+                    }
+                }
+            }
             capture(Events.MANUAL_WORKER_ALREADY_RUNNING)
             com.spyneai.shoot.utils.log("alive : ")
         } else {
             capture(Events.MANUAL_WORKER_INITIATED)
             com.spyneai.shoot.utils.log("not found : start new")
             //start long running worker
-            val constraints: Constraints = Constraints.Builder()
-                .setRequiredNetworkType(NetworkType.CONNECTED)
-                .build()
-
-            val longWorkRequest = OneTimeWorkRequest.Builder(ManualUploadWorker::class.java)
-                .addTag("Manual Long Running Worker")
-
-            WorkManager.getInstance(BaseApplication.getContext())
-                .enqueue(
-                    longWorkRequest
-                        .setConstraints(constraints)
-                        .build())
+            start()
         }
+    }
+
+    private fun start() {
+        val constraints: Constraints = Constraints.Builder()
+            .setRequiredNetworkType(NetworkType.CONNECTED)
+            .build()
+
+        val longWorkRequest = OneTimeWorkRequest.Builder(ManualUploadWorker::class.java)
+            .addTag("Manual Long Running Worker")
+
+        WorkManager.getInstance(BaseApplication.getContext())
+            .enqueue(
+                longWorkRequest
+                    .setConstraints(constraints)
+                    .build())
     }
 
     private fun capture(eventName : String) {

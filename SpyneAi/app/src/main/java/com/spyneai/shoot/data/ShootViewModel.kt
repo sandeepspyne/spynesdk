@@ -247,6 +247,30 @@ class ShootViewModel : ViewModel(){
          if (workInfos.size > 0) {
              com.spyneai.shoot.utils.log("alive : ")
 
+             try {
+                 repeat(workInfos.size) {
+                     when(workInfos[it].state){
+                         WorkInfo.State.BLOCKED -> {
+                             BaseApplication.getContext().captureEvent(
+                                 Events.BLOCKED_WORKER_START_EXCEPTION,
+                                 Properties().putValue
+                             ("name","Recursive Upload"))
+                            startLongRunningWorker()
+                         }
+
+                         WorkInfo.State.CANCELLED -> {
+                             BaseApplication.getContext().captureEvent(
+                                 Events.CANCELLED_WORKER_START_EXCEPTION,
+                                 Properties().putValue
+                                     ("name","Recursive Upload"))
+                             startLongRunningWorker()
+                         }
+                     }
+                 }
+
+             }catch (e : Exception){
+
+             }
 
              BaseApplication.getContext().captureEvent(
                  Events.RECURSIVE_UPLOAD_ALREADY_RUNNING,

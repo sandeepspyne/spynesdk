@@ -128,5 +128,8 @@ object Events {
     val RECURSIVE_UPLOAD_ALREADY_RUNNING = "Recursive Upload Already Running"
     val RECURSIVE_UPLOAD_INTIATED = "Recursive Upload Initiated"
 
+    val BLOCKED_WORKER_START_EXCEPTION = "START BLOCKED WORKER"
+    val CANCELLED_WORKER_START_EXCEPTION = "START CANCELLED WORKER"
+
 
 }
