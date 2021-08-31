@@ -1,3 +1,5 @@
+package com.spyneai.shoot.ui.base
+
 import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.ContentValues
@@ -51,6 +53,7 @@ import kotlin.math.min
 import kotlin.math.roundToInt
 import android.media.MediaActionSound
 import android.util.Size
+import com.spyneai.shoot.ui.dialogs.ThreeSixtyInteriorHintDialog
 import com.spyneai.shoot.utils.shoot
 
 
@@ -121,6 +124,8 @@ class CameraFragment : BaseFragment<ShootViewModel, FragmentCameraBinding>(), Pi
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+
 
         mSensorManager = requireActivity().getSystemService(Context.SENSOR_SERVICE) as SensorManager
         mAccelerometer = mSensorManager.getDefaultSensor(Sensor.TYPE_MAGNETIC_FIELD)
@@ -737,6 +742,10 @@ class CameraFragment : BaseFragment<ShootViewModel, FragmentCameraBinding>(), Pi
                 }
             }
         }
+
+        //delete file if exist already
+        if (File(filename).exists())
+            File(filename).delete()
 
         // Options fot the output image file
         val outputOptions = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {

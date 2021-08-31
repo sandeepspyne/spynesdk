@@ -67,14 +67,14 @@ class ThreeSixtyInteriorHintDialog : BaseDialogFragment<ShootViewModel, Dialog36
         isCancelable = false
 
         binding.tvSkipShoot.setOnClickListener {
-            viewModel.interior360Dialog.value = true
+           // viewModel.interior360Dialog.value = true
             dismiss()
             viewModel.selectBackground.value = true
         }
 
         binding.tvSkip.setOnClickListener {
             if (binding.tvSkip.text.toString() == "Skip") {
-                viewModel.interior360Dialog.value = true
+               // viewModel.interior360Dialog.value = true
                 dismiss()
                 viewModel.selectBackground.value = true
             }else {
@@ -90,9 +90,12 @@ class ThreeSixtyInteriorHintDialog : BaseDialogFragment<ShootViewModel, Dialog36
                 intent.type = "image/*"
                 startForResult.launch(intent)
             }else {
-                viewModel.interior360Dialog.value = true
+               // viewModel.interior360Dialog.value = true
+                viewModel.threeSixtyInteriorSelected = true
+
                 //add image for upload
-                dismiss()
+
+                val sequenceNumber = viewModel.shootList.value?.size?.plus(1)
                 viewLifecycleOwner.lifecycleScope.launch {
                     viewModel.
                     insertImage(ShootData(
@@ -101,9 +104,11 @@ class ThreeSixtyInteriorHintDialog : BaseDialogFragment<ShootViewModel, Dialog36
                         viewModel.sku.value?.skuId!!,
                         "360int",
                         Utilities.getPreference(requireContext(),AppConstants.AUTH_KEY).toString(),
-                        1
+                        sequenceNumber!!
                     ))
                 }
+
+                dismiss()
 
                 viewModel.selectBackground.value = true
             }

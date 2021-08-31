@@ -14,6 +14,7 @@ import com.google.android.play.core.install.model.AppUpdateType
 import com.google.android.play.core.install.model.UpdateAvailability
 import com.google.firebase.crashlytics.FirebaseCrashlytics
 import com.posthog.android.PostHog
+import com.spyneai.shoot.workmanager.ParentRecursiveWorker
 import com.spyneai.shoot.workmanager.ProcessSkuWorker
 import com.spyneai.shoot.workmanager.RecursiveProcessSkuWorker
 import com.spyneai.shoot.workmanager.RecursiveSkippedImagesWorker
@@ -52,10 +53,25 @@ class BaseApplication : Application() {
         // Set the initialized instance as a globally accessible instance.
         PostHog.setSingletonInstance(posthog)
 
+
+
         //prcess periodic worker
         val constraints: Constraints = Constraints.Builder()
             .setRequiredNetworkType(NetworkType.CONNECTED)
             .build()
+
+        val recursiveParentWorkRequest = PeriodicWorkRequestBuilder<ParentRecursiveWorker>(
+            15, TimeUnit.MINUTES)
+            .addTag("Long Running Parent Worker")
+
+        WorkManager.getInstance(context)
+            .enqueueUniquePeriodicWork(
+                "Long Running Parent Worker",
+                ExistingPeriodicWorkPolicy.KEEP,
+                recursiveParentWorkRequest
+                    .setConstraints(constraints)
+                    .build())
+
 
         val longWorkRequest = PeriodicWorkRequestBuilder<ProcessSkuWorker>(
             6, TimeUnit.HOURS)
@@ -80,6 +96,7 @@ class BaseApplication : Application() {
                 recursiveWorkRequest
                     .setConstraints(constraints)
                     .build())
+
 
     }
 

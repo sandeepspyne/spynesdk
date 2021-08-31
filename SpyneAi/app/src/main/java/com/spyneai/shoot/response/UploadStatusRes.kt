@@ -8,7 +8,7 @@ class UploadStatusRes(
     @SerializedName("data") val data: Data
 ){
     data class Data(
-        @SerializedName("message")
+        @SerializedName("upload")
         val upload: Boolean,
         @SerializedName("project_id")
         val projectId: String

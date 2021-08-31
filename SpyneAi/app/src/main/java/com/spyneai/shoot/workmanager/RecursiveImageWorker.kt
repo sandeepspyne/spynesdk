@@ -22,6 +22,7 @@ import com.spyneai.shoot.data.ShootLocalRepository
 import com.spyneai.shoot.data.ShootRepository
 import com.spyneai.shoot.data.model.Image
 import com.spyneai.shoot.data.model.UploadImageResponse
+import com.spyneai.shoot.utils.log
 import kotlinx.coroutines.Deferred
 import kotlinx.coroutines.async
 import kotlinx.coroutines.coroutineScope
@@ -93,6 +94,8 @@ class RecursiveImageWorker(private val appContext: Context, workerParams: Worker
                 File(image.imagePath)!!.name
             }
 
+            log("Image Name "+fileName)
+
             imageFile =
                 MultipartBody.Part.createFormData(
                     "image",
@@ -103,7 +106,7 @@ class RecursiveImageWorker(private val appContext: Context, workerParams: Worker
             val uploadType = if (runAttemptCount == 0) "Direct" else "Retry"
 
             var response = shootRepository.uploadImage(projectId!!,
-                skuId!!, imageCategory!!,authKey, uploadType.toRequestBody(MultipartBody.FORM),image.sequence.toString(),imageFile)
+                skuId!!, imageCategory!!,authKey, uploadType.toRequestBody(MultipartBody.FORM),image.sequence!!,imageFile)
 
             when(response){
                 is Resource.Success -> {

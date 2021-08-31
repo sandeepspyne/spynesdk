@@ -1,6 +1,6 @@
 package com.spyneai.shoot.ui.base
 
-import CameraFragment
+
 import android.Manifest
 import android.content.Context
 import android.content.Intent
@@ -14,12 +14,19 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.ViewModelProvider
+import androidx.work.WorkInfo
+import androidx.work.WorkManager
+import androidx.work.WorkQuery
+import com.posthog.android.Properties
+import com.spyneai.BaseApplication
 import com.spyneai.R
 import com.spyneai.base.network.Resource
+import com.spyneai.captureEvent
 import com.spyneai.dashboard.response.NewSubCatResponse
 import com.spyneai.dashboard.ui.base.ViewModelFactory
 import com.spyneai.needs.AppConstants
 import com.spyneai.needs.Utilities
+import com.spyneai.posthog.Events
 import com.spyneai.shoot.data.ShootViewModel
 import com.spyneai.shoot.data.model.CategoryDetails
 import com.spyneai.shoot.data.model.CreateProjectRes
@@ -319,13 +326,9 @@ class ShootActivity : AppCompatActivity() {
         if (miscList != null)
             total+= miscList.size
 
-        if (getString(R.string.app_name) == AppConstants.OLA_CABS) {
-            val interior360List = list?.filter {
-                it.image_category == "360int"
-            }
-
-            if (interior360List != null)
-                total+= interior360List.size
+        if (getString(R.string.app_name) == AppConstants.OLA_CABS
+            && shootViewModel.threeSixtyInteriorSelected) {
+            total+= 1
         }
 
         return total

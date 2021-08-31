@@ -74,7 +74,7 @@ class RecursiveSkippedImagesWorker(private val appContext: Context, workerParams
                 File(image.imagePath).asRequestBody("multipart/form-data".toMediaTypeOrNull())
 
             val fileName = if (image.categoryName == "360int") {
-                image.skuName + "_" + image.skuId + "_360int_1"
+                image.skuName + "_" + image.skuId + "_360int_"+image.sequence
             }else {
                 File(image.imagePath)!!.name
             }
@@ -87,7 +87,7 @@ class RecursiveSkippedImagesWorker(private val appContext: Context, workerParams
                 )
 
             var response = shootRepository.uploadImage(projectId!!,
-                skuId!!, imageCategory!!,authKey, "Retry".toRequestBody(MultipartBody.FORM),image.sequence.toString(),imageFile)
+                skuId!!, imageCategory!!,authKey, "Retry".toRequestBody(MultipartBody.FORM),image.sequence!!,imageFile)
 
             when(response){
                 is Resource.Success -> {

@@ -31,6 +31,8 @@ import okhttp3.RequestBody.Companion.toRequestBody
 
 class SelectBackgroundFragment : BaseFragment<ProcessViewModel,FragmentSelectBackgroundBinding>() {
 
+    val TAG = "SelectBackgroundFragment"
+
     lateinit var carBackgroundGifList: ArrayList<CarsBackgroundRes.Data>
     var backgroundSelect: String = ""
     lateinit var carbackgroundsAdapter: NewCarBackgroundAdapter
@@ -184,6 +186,9 @@ class SelectBackgroundFragment : BaseFragment<ProcessViewModel,FragmentSelectBac
     private fun updateTotalFrames() {
         Utilities.showProgressDialog(requireContext())
         val totalFrames = viewModel.exteriorAngles.value?.plus(viewModel.interiorMiscShootsCount)
+
+        log("Update Total Frames: "+totalFrames)
+
 
         viewModel.updateCarTotalFrames(
             Utilities.getPreference(requireContext(),AppConstants.AUTH_KEY).toString(),

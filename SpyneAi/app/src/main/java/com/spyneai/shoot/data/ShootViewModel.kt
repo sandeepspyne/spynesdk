@@ -20,6 +20,7 @@ import com.spyneai.shoot.data.model.*
 import com.spyneai.shoot.response.SkuProcessStateResponse
 import com.spyneai.shoot.workmanager.FootwearSubcatUpdateWorker
 import com.spyneai.shoot.workmanager.OverlaysPreloadWorker
+import com.spyneai.shoot.workmanager.ParentRecursiveWorker
 import com.spyneai.shoot.workmanager.RecursiveImageWorker
 import kotlinx.coroutines.launch
 import java.util.*
@@ -34,6 +35,7 @@ class ShootViewModel : ViewModel(){
     var processSku : Boolean = true
      var isStopCaptureClickable = false
 
+    var threeSixtyInteriorSelected = false
     var onVolumeKeyPressed : MutableLiveData<Boolean> = MutableLiveData()
     var fromDrafts = false
     val isSensorAvailable : MutableLiveData<Boolean> = MutableLiveData()
@@ -224,63 +226,26 @@ class ShootViewModel : ViewModel(){
 
         localRepository.insertImage(image)
 
-        //check if long running worker is alive
-         val workManager = WorkManager.getInstance(BaseApplication.getContext())
+         startLongRunningWorker()
+    }
 
-         val workQuery = WorkQuery.Builder
-             .fromTags(listOf("Long Running Worker"))
-             .addStates(listOf(WorkInfo.State.BLOCKED, WorkInfo.State.ENQUEUED,WorkInfo.State.RUNNING,WorkInfo.State.CANCELLED))
-             .build()
+    fun startLongRunningParentWorker() {
+        val constraints: Constraints = Constraints.Builder()
+            .setRequiredNetworkType(NetworkType.CONNECTED)
+            .build()
 
-         val workInfos = workManager.getWorkInfos(workQuery).await()
+        val longWorkRequest = OneTimeWorkRequest.Builder(ParentRecursiveWorker::class.java)
+            .addTag("Long Running Parent Worker")
+            .setBackoffCriteria(
+                BackoffPolicy.LINEAR,
+                OneTimeWorkRequest.MIN_BACKOFF_MILLIS,
+                TimeUnit.MILLISECONDS)
 
-         Log.d(TAG, "insertImage: "+workInfos.size)
-
-         val properties = Properties()
-         properties.apply {
-             this["email"] = Utilities.getPreference(BaseApplication.getContext(), AppConstants.EMAIL_ID).toString()
-         }
-
-         if (workInfos.size > 0) {
-             com.spyneai.shoot.utils.log("alive : ")
-
-             try {
-                 repeat(workInfos.size) {
-                     when(workInfos[it].state){
-                         WorkInfo.State.BLOCKED -> {
-                             BaseApplication.getContext().captureEvent(
-                                 Events.BLOCKED_WORKER_START_EXCEPTION,
-                                 Properties().putValue
-                             ("name","Recursive Upload"))
-                            startLongRunningWorker()
-                         }
-
-                         WorkInfo.State.CANCELLED -> {
-                             BaseApplication.getContext().captureEvent(
-                                 Events.CANCELLED_WORKER_START_EXCEPTION,
-                                 Properties().putValue
-                                     ("name","Recursive Upload"))
-                             startLongRunningWorker()
-                         }
-                     }
-                 }
-
-             }catch (e : Exception){
-
-             }
-
-             BaseApplication.getContext().captureEvent(
-                 Events.RECURSIVE_UPLOAD_ALREADY_RUNNING,
-                 properties)
-
-            } else {
-             com.spyneai.shoot.utils.log("not found : start new")
-                //start long running worker
-             BaseApplication.getContext().captureEvent(
-                 Events.RECURSIVE_UPLOAD_INTIATED,
-                 properties)
-                startLongRunningWorker()
-            }
+        WorkManager.getInstance(BaseApplication.getContext())
+            .enqueue(
+                longWorkRequest
+                    .setConstraints(constraints)
+                    .build())
     }
 
     fun startLongRunningWorker() {
@@ -303,7 +268,8 @@ class ShootViewModel : ViewModel(){
     }
 
 
-    fun createProject(
+
+                fun createProject(
         authKey: String, projectName: String, prodCatId: String
     ) = viewModelScope.launch {
         _createProjectRes.value = Resource.Loading

@@ -6,10 +6,12 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.work.*
 import com.spyneai.BaseApplication
+import com.spyneai.R
 import com.spyneai.base.network.Resource
 import com.spyneai.credits.model.DownloadHDRes
 import com.spyneai.credits.model.ReduceCreditResponse
 import com.spyneai.model.credit.CreditDetailsResponse
+import com.spyneai.needs.AppConstants
 import com.spyneai.shoot.data.model.CarsBackgroundRes
 import com.spyneai.shoot.data.model.ProcessSkuRes
 import com.spyneai.shoot.data.model.Sku
@@ -70,7 +72,24 @@ class ProcessViewModel : ViewModel() {
         auth_key: RequestBody
     ) = viewModelScope.launch {
         _carGifRes.value = Resource.Loading
-        _carGifRes.value = repository.getBackgroundGifCars(category, auth_key)
+        when(BaseApplication.getContext().getString(R.string.app_name)){
+            AppConstants.SPYNE_AI -> {
+                val list = ArrayList<CarsBackgroundRes.Data>()
+
+                list.add(CarsBackgroundRes.Data("Xyz",
+                "https://storage.googleapis.com/spyne/AI/raw/1892526c-72c9-4331-8ede-dec5f72cf52e.png",
+                1,
+                "2222",
+                "https://storage.googleapis.com/spyne/AI/raw/1892526c-72c9-4331-8ede-dec5f72cf52e.png"))
+
+
+                val response = CarsBackgroundRes(list,"Got Background",200)
+                _carGifRes.value = Resource.Success(response)
+
+            }else -> {
+            _carGifRes.value = repository.getBackgroundGifCars(category, auth_key)
+            }
+        }
 
     }
 

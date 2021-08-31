@@ -5,9 +5,13 @@ import android.util.Log
 import android.view.*
 import android.widget.FrameLayout
 import androidx.lifecycle.lifecycleScope
+import androidx.work.WorkInfo
+import androidx.work.WorkManager
+import androidx.work.WorkQuery
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.posthog.android.Properties
+import com.spyneai.BaseApplication
 import com.spyneai.R
 import com.spyneai.base.BaseDialogFragment
 import com.spyneai.base.network.Resource

@@ -97,6 +97,7 @@ class ManualUploadWorker (private val appContext: Context, workerParams: WorkerP
                                 requestFile
                             )
 
+                        val seqenceNo = image.sequence!!.toInt()
 
                         var response = shootRepository.uploadImage(
                             uploadStatuRes.value.data.projectId.toRequestBody(MultipartBody.FORM),
@@ -104,7 +105,7 @@ class ManualUploadWorker (private val appContext: Context, workerParams: WorkerP
                            image.categoryName!!.toRequestBody(MultipartBody.FORM),
                             authKey.toRequestBody(MultipartBody.FORM),
                             "Retry".toRequestBody(MultipartBody.FORM),
-                            image.sequence!!,
+                            seqenceNo,
                             imageFile)
 
                         when(response){
