@@ -133,7 +133,7 @@ class ShootActivity : AppCompatActivity() {
                     shootViewModel.projectId.value = intent.getStringExtra("project_id")
                     val sku = Sku()
                     sku?.projectId = shootViewModel.projectId.value
-                    shootViewModel.categoryDetails.value?.imageType = "Food & Beverages"
+                    shootViewModel.categoryDetails.value?.imageType = "Food"
                     shootViewModel.sku.value = sku
                 } catch (e: Exception) {
                     e.printStackTrace()

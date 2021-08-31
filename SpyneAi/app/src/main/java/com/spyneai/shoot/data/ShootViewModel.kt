@@ -14,7 +14,7 @@ import com.spyneai.shoot.data.model.*
 import com.spyneai.shoot.response.SkuProcessStateResponse
 import com.spyneai.shoot.workmanager.FootwearSubcatUpdateWorker
 import com.spyneai.shoot.workmanager.OverlaysPreloadWorker
-import com.spyneai.shoot.workmanager.RecursiveImageWorker
+import com.spyneai.shoot.workmanager.ParentRecursiveWorker
 import kotlinx.coroutines.launch
 import java.util.concurrent.TimeUnit
 
@@ -233,33 +233,13 @@ class ShootViewModel : ViewModel() {
             startLongRunningWorker()
     }
 
-//    fun startLongRunningWorker() {
-//        val constraints: Constraints = Constraints.Builder()
-//            .setRequiredNetworkType(NetworkType.CONNECTED)
-//            .build()
-//
-//        val longWorkRequest = OneTimeWorkRequest.Builder(ParentRecursiveWorker::class.java)
-//            .addTag("Long Running Parent Worker")
-//            .setBackoffCriteria(
-//                BackoffPolicy.LINEAR,
-//                OneTimeWorkRequest.MIN_BACKOFF_MILLIS,
-//                TimeUnit.MILLISECONDS)
-//
-//        WorkManager.getInstance(BaseApplication.getContext())
-//            .enqueue(
-//                longWorkRequest
-//                    .setConstraints(constraints)
-//                    .build())
-//    }
-
-
     fun startLongRunningWorker() {
         val constraints: Constraints = Constraints.Builder()
             .setRequiredNetworkType(NetworkType.CONNECTED)
             .build()
 
-        val longWorkRequest = OneTimeWorkRequest.Builder(RecursiveImageWorker::class.java)
-            .addTag("Long Running Worker")
+        val longWorkRequest = OneTimeWorkRequest.Builder(ParentRecursiveWorker::class.java)
+            .addTag("Long Running Parent Worker")
             .setBackoffCriteria(
                 BackoffPolicy.LINEAR,
                 OneTimeWorkRequest.MIN_BACKOFF_MILLIS,
@@ -271,6 +251,26 @@ class ShootViewModel : ViewModel() {
                     .setConstraints(constraints)
                     .build())
     }
+
+
+//    fun startLongRunningWorker() {
+//        val constraints: Constraints = Constraints.Builder()
+//            .setRequiredNetworkType(NetworkType.CONNECTED)
+//            .build()
+//
+//        val longWorkRequest = OneTimeWorkRequest.Builder(RecursiveImageWorker::class.java)
+//            .addTag("Long Running Worker")
+//            .setBackoffCriteria(
+//                BackoffPolicy.LINEAR,
+//                OneTimeWorkRequest.MIN_BACKOFF_MILLIS,
+//                TimeUnit.MILLISECONDS)
+//
+//        WorkManager.getInstance(BaseApplication.getContext())
+//            .enqueue(
+//                longWorkRequest
+//                    .setConstraints(constraints)
+//                    .build())
+//    }
 
 
     fun createProject(

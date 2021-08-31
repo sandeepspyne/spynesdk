@@ -4,17 +4,12 @@ import android.content.Intent
 import android.os.Bundle
 import android.os.Handler
 import android.view.WindowManager
-import android.view.animation.AnimationUtils
 import androidx.appcompat.app.AppCompatActivity
-import androidx.appcompat.app.AppCompatDelegate
-import com.google.firebase.crashlytics.FirebaseCrashlytics
 import com.spyneai.R
+import com.spyneai.dashboard.ui.MainDashboardActivity
+import com.spyneai.loginsignup.activity.LoginActivity
 import com.spyneai.needs.AppConstants
 import com.spyneai.needs.Utilities
-import com.spyneai.dashboard.ui.MainDashboardActivity
-import com.spyneai.dashboard.ui.WhiteLabelConstants
-import com.spyneai.loginsignup.activity.LoginActivity
-import okhttp3.OkHttpClient
 
 
 class SplashActivity : AppCompatActivity() {
@@ -37,11 +32,15 @@ class SplashActivity : AppCompatActivity() {
     private fun setSplash() {
         Handler().postDelayed({
             if (Utilities.getPreference(this, AppConstants.AUTH_KEY).isNullOrEmpty()) {
-                var intent : Intent? = null
+                var intent: Intent? = null
 
-                intent = when(getString(R.string.app_name)) {
-                    AppConstants.KARVI, AppConstants.CARS24,AppConstants.CARS24_INDIA,"Ola Cabs",AppConstants.SWEEP,"Yalla Motors","Spyne Hiring" ->  Intent(this,
-                        LoginActivity::class.java)
+                intent = when (getString(R.string.app_name)) {
+                    AppConstants.KARVI, AppConstants.CARS24, AppConstants.CARS24_INDIA, "Ola Cabs",
+                    AppConstants.SWEEP, "Yalla Motors", "Spyne Hiring", AppConstants.SWIGGY
+                    -> Intent(
+                        this,
+                        LoginActivity::class.java
+                    )
 
                     else -> Intent(this, OnboardingsActivity::class.java)
                 }

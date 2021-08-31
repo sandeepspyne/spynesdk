@@ -1,7 +1,6 @@
 package com.spyneai.dashboard.ui
 
 import android.Manifest
-import android.content.ContentValues
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.graphics.ImageFormat
@@ -9,44 +8,32 @@ import android.hardware.camera2.CameraCharacteristics
 import android.hardware.camera2.CameraManager
 import android.os.Build
 import android.os.Bundle
-import android.os.Environment
-import android.util.Log
-import android.view.KeyEvent
 import android.view.View
-import android.view.ViewGroup
-import android.widget.Button
-import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.lifecycleScope
 import androidx.work.*
+import com.google.android.material.snackbar.Snackbar
+import com.posthog.android.Properties
 import com.spyneai.BaseApplication
 import com.spyneai.R
 import com.spyneai.activity.CategoriesActivity
+import com.spyneai.captureEvent
 import com.spyneai.dashboard.data.DashboardViewModel
 import com.spyneai.dashboard.ui.base.ViewModelFactory
 import com.spyneai.databinding.ActivityDashboardMainBinding
 import com.spyneai.needs.AppConstants
 import com.spyneai.needs.Utilities
 import com.spyneai.orders.ui.MyOrdersActivity
-import com.spyneai.shoot.data.FilesRepository
-import com.spyneai.shoot.ui.base.ShootActivity
-import com.spyneai.shoot.ui.StartShootActivity
-import com.spyneai.shoot.workmanager.manual.StoreImageFilesWorker
-import java.io.File
-
-import com.google.android.material.snackbar.Snackbar
-import com.posthog.android.Properties
-import com.spyneai.captureEvent
 import com.spyneai.orders.ui.MyOrdersFragment
 import com.spyneai.posthog.Events
+import com.spyneai.shoot.data.FilesRepository
+import com.spyneai.shoot.ui.StartShootActivity
+import com.spyneai.shoot.ui.base.ShootActivity
 import com.spyneai.shoot.ui.dialogs.ResolutionNotSupportedFragment
-import com.spyneai.shoot.workmanager.ProcessSkuWorker
-import com.spyneai.shoot.workmanager.RecursiveSkippedImagesWorker
-import java.util.concurrent.TimeUnit
+import com.spyneai.shoot.workmanager.manual.StoreImageFilesWorker
 
 
 class MainDashboardActivity : AppCompatActivity() {
@@ -101,7 +88,10 @@ class MainDashboardActivity : AppCompatActivity() {
                             intent.putExtra(AppConstants.CATEGORY_ID,AppConstants.CARS_CATEGORY_ID)
                             intent.putExtra(AppConstants.CATEGORY_NAME,"Automobiles")
                             startActivity(intent)
-
+                        }
+                        AppConstants.SWIGGY -> {
+                            val intent = Intent(this, CategoriesActivity::class.java)
+                            startActivity(intent)
                         }
 
                         AppConstants.KARVI -> {

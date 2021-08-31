@@ -41,7 +41,7 @@ class ShootRepository : BaseRepository() {
         image_category: RequestBody,
         auth_key: RequestBody,
         upload_type: RequestBody,
-        sequenceNo : String,
+        sequenceNo : Int,
         angle : Int,
         image: MultipartBody.Part,
     ) = safeApiCall {

@@ -403,7 +403,8 @@ class ShootLocalRepository {
             Images.COLUMN_NAME_SKU_ID,
             Images.COLUMN_NAME_CATEGORY_NAME,
             Images.COLUMN_NAME_IMAGE_PATH,
-            Images.COLUMN_NAME_IMAGE_SEQUENCE)
+            Images.COLUMN_NAME_IMAGE_SEQUENCE,
+            Images.COLUMN_NAME_IMAGE_ANGLE)
 
         // Filter results WHERE "title" = 'My Title'
          val selection = "${Images.COLUMN_NAME_IS_UPLOADED} = ?"
@@ -434,6 +435,7 @@ class ShootLocalRepository {
                 val categoryName = getString(getColumnIndexOrThrow(Images.COLUMN_NAME_CATEGORY_NAME))
                 val imagePath = getString(getColumnIndexOrThrow(Images.COLUMN_NAME_IMAGE_PATH))
                 val sequence = getInt(getColumnIndexOrThrow(Images.COLUMN_NAME_IMAGE_SEQUENCE))
+                val angle = getInt(getColumnIndexOrThrow(Images.COLUMN_NAME_IMAGE_ANGLE))
 
                 image.itemId = itemId
                 image.projectId = projectId
@@ -442,6 +444,7 @@ class ShootLocalRepository {
                 image.categoryName = categoryName
                 image.imagePath = imagePath
                 image.sequence = sequence
+                image.angle = angle
             }
         }
 

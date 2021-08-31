@@ -6,7 +6,6 @@ import androidx.work.*
 import androidx.work.ListenableWorker.Result.*
 import com.posthog.android.Properties
 import com.spyneai.BaseApplication
-import com.spyneai.R
 import com.spyneai.base.network.Resource
 import com.spyneai.captureEvent
 import com.spyneai.captureFailureEvent
@@ -98,25 +97,17 @@ class RecursiveImageWorker(private val appContext: Context, workerParams: Worker
 
             log("angle: "+image.angle)
 
-            var response = if (appContext.getString(R.string.app_name) == AppConstants.SWIGGY)
-                shootRepository.uploadImageWithAngle(
+            var response = shootRepository.uploadImageWithAngle(
                     projectId!!,
                     skuId!!,
                     imageCategory!!,
                     authKey,
                     uploadType.toRequestBody(MultipartBody.FORM),
-                    image.sequence.toString(),
+                    image.sequence!!,
                     image.angle!!,
-                    imageFile)
-            else
-                shootRepository.uploadImage(
-                    projectId!!,
-                    skuId!!,
-                    imageCategory!!,
-                    authKey,
-                    uploadType.toRequestBody(MultipartBody.FORM),
-                    image.sequence.toString(),
-                    imageFile)
+                    imageFile
+                )
+
             when (response) {
                 is Resource.Success -> {
                     log("upload image sucess")

@@ -14,18 +14,15 @@ import com.spyneai.adapter.CategoriesAdapter
 import com.spyneai.dashboard.response.NewCategoriesResponse
 import com.spyneai.interfaces.APiService
 import com.spyneai.interfaces.RetrofitClients
-
 import com.spyneai.needs.AppConstants
 import com.spyneai.needs.Utilities
-import com.spyneai.shoot.ui.base.ShootActivity
 import com.spyneai.shoot.ui.StartShootActivity
+import com.spyneai.shoot.ui.base.ShootActivity
 import com.spyneai.shoot.ui.base.ShootPortraitActivity
-
 import kotlinx.android.synthetic.main.activity_categories.*
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
-import kotlin.collections.ArrayList
 
 class CategoriesActivity : AppCompatActivity(){
     lateinit var categoriesResponseList : ArrayList<NewCategoriesResponse.Data>
@@ -77,22 +74,13 @@ class CategoriesActivity : AppCompatActivity(){
                     override fun onBtnClick(position: Int) {
                         Log.e("position cat", position.toString())
                         when(position) {
-//                            0 -> {
-//                            Utilities.savePrefrence(
-//                                this@CategoriesActivity,
-//                                AppConstants.CATEGORY_NAME,
-//                                categoriesResponseList[position].prod_cat_name
-//                            )
-//
-//                            val intent = Intent(this@CategoriesActivity, StartShootActivity::class.java)
-//                            intent.putExtra(AppConstants.CATEGORY_ID,categoriesResponseList[position].prod_cat_id)
-//                            intent.putExtra(AppConstants.CATEGORY_NAME,categoriesResponseList[position].prod_cat_name)
-//                            intent.putExtra(AppConstants.IMAGE_URL,categoriesResponseList[position].display_thumbnail)
-//                            intent.putExtra(AppConstants.DESCRIPTION,categoriesResponseList[position].description)
-//                            intent.putExtra(AppConstants.COLOR,categoriesResponseList[position].color_code)
-//                            startActivity(intent)
-//                            }
                                 0-> {
+                                    var intent : Intent
+                                    if (getString(R.string.app_name) == AppConstants.SWIGGY){
+                                         intent = Intent(this@CategoriesActivity, ShootPortraitActivity::class.java)
+                                    }else{
+                                         intent = Intent(this@CategoriesActivity, StartShootActivity::class.java)
+                                    }
                                 Utilities.savePrefrence(
                                     this@CategoriesActivity,
                                     AppConstants.CATEGORY_NAME,
@@ -102,7 +90,7 @@ class CategoriesActivity : AppCompatActivity(){
                                     Utilities.savePrefrence(this@CategoriesActivity, AppConstants.CATEGORY_ID, categoriesResponseList[position].prod_cat_id)
                                     Utilities.savePrefrence(this@CategoriesActivity, AppConstants.CATEGORY_NAME, categoriesResponseList[position].prod_cat_name)
 
-                                val intent = Intent(this@CategoriesActivity, StartShootActivity::class.java)
+
                                 intent.putExtra(AppConstants.CATEGORY_ID,categoriesResponseList[position].prod_cat_id)
                                 intent.putExtra(AppConstants.CATEGORY_NAME,categoriesResponseList[position].prod_cat_name)
                                 intent.putExtra(AppConstants.IMAGE_URL,categoriesResponseList[position].display_thumbnail)

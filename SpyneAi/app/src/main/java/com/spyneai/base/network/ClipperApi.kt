@@ -42,7 +42,7 @@ interface ClipperApi {
         @Part("image_category") image_category: RequestBody?,
         @Part("auth_key") auth_key: RequestBody?,
         @Part("upload_type") upload_type: RequestBody?,
-        @Part("frame_seq_no") frame_seq_no: String,
+        @Part("frame_seq_no") frame_seq_no: Int,
         @Part("angle") angle: Int,
         @Part file: MultipartBody.Part
     ): UploadImageResponse

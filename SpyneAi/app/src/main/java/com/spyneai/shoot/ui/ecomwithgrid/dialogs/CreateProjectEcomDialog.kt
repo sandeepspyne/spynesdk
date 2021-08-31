@@ -5,19 +5,16 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.WindowManager
-import androidx.lifecycle.ViewModelProvider
 import com.posthog.android.Properties
 import com.spyneai.base.BaseDialogFragment
 import com.spyneai.base.network.Resource
 import com.spyneai.captureEvent
 import com.spyneai.captureFailureEvent
-import com.spyneai.dashboard.ui.base.ViewModelFactory
 import com.spyneai.dashboard.ui.handleApiError
 import com.spyneai.databinding.CreateProjectEcomDialogBinding
 import com.spyneai.needs.AppConstants
 import com.spyneai.needs.Utilities
 import com.spyneai.posthog.Events
-import com.spyneai.shoot.data.ProcessViewModel
 import com.spyneai.shoot.data.ShootViewModel
 import com.spyneai.shoot.data.model.Project
 import com.spyneai.shoot.data.model.Sku
@@ -26,12 +23,9 @@ import com.spyneai.shoot.utils.log
 class CreateProjectEcomDialog :
     BaseDialogFragment<ShootViewModel, CreateProjectEcomDialogBinding>() {
 
-    lateinit var processViewModel : ProcessViewModel
-
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        processViewModel = ViewModelProvider(this, ViewModelFactory()).get(ProcessViewModel::class.java)
 
         dialog?.setCancelable(false)
 
@@ -104,7 +98,6 @@ class CreateProjectEcomDialog :
                     log("project id: "+it.value.project_id)
                     sku.projectId = it.value.project_id
                     viewModel.projectId.value = it.value.project_id
-                    processViewModel.projectId.value = it.value.project_id
                     Utilities.savePrefrence(requireContext(), AppConstants.PROJECT_ID, it.value.project_id)
                     sku.skuName = removeWhiteSpace(binding.etSkuName.text.toString())
                     viewModel.sku.value = sku

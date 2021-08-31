@@ -97,7 +97,7 @@ class RecursiveSkippedImagesWorker(private val appContext: Context, workerParams
                     imageCategory!!,
                     authKey,
                     uploadType.toRequestBody(MultipartBody.FORM),
-                    image.sequence.toString(),
+                    image.sequence!!,
                     image.angle!!,
                     imageFile
                 )
