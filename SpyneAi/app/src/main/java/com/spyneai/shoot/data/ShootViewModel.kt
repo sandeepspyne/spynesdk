@@ -1,5 +1,6 @@
 package com.spyneai.shoot.data
 
+import android.content.Intent
 import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
@@ -16,6 +17,9 @@ import com.spyneai.dashboard.response.NewSubCatResponse
 import com.spyneai.needs.AppConstants
 import com.spyneai.needs.Utilities
 import com.spyneai.posthog.Events
+import com.spyneai.service.Actions
+import com.spyneai.service.ProcessImagesService
+import com.spyneai.service.getServiceState
 import com.spyneai.shoot.data.model.*
 import com.spyneai.shoot.response.SkuProcessStateResponse
 import com.spyneai.shoot.workmanager.FootwearSubcatUpdateWorker
@@ -225,8 +229,6 @@ class ShootViewModel : ViewModel(){
          image.skuName = sku.value?.skuName
 
         localRepository.insertImage(image)
-
-         startLongRunningWorker()
     }
 
     fun startLongRunningParentWorker() {
@@ -248,24 +250,7 @@ class ShootViewModel : ViewModel(){
                     .build())
     }
 
-    fun startLongRunningWorker() {
-        val constraints: Constraints = Constraints.Builder()
-            .setRequiredNetworkType(NetworkType.CONNECTED)
-            .build()
 
-        val longWorkRequest = OneTimeWorkRequest.Builder(RecursiveImageWorker::class.java)
-            .addTag("Long Running Worker")
-            .setBackoffCriteria(
-                BackoffPolicy.LINEAR,
-                OneTimeWorkRequest.MIN_BACKOFF_MILLIS,
-                TimeUnit.MILLISECONDS)
-
-        WorkManager.getInstance(BaseApplication.getContext())
-            .enqueue(
-                longWorkRequest
-                    .setConstraints(constraints)
-                    .build())
-    }
 
 
 

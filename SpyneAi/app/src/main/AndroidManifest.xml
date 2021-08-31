@@ -167,6 +167,12 @@
             android:exported="true"
             android:stopWithTask="false" />
 
+        <service
+            android:name=".service.ImageUploadingService"
+            android:enabled="true"
+            android:exported="true"
+            android:stopWithTask="false" />
+
         <receiver
             android:name=".service.StartReceiver"
             android:enabled="true">

@@ -1,9 +1,12 @@
 package com.spyneai.shoot.ui.dialogs
 
+import android.content.Intent
+import android.os.Build
 import android.os.Bundle
 import android.util.Log
 import android.view.*
 import android.widget.FrameLayout
+import androidx.core.content.ContextCompat
 import androidx.lifecycle.lifecycleScope
 import androidx.work.WorkInfo
 import androidx.work.WorkManager
@@ -19,10 +22,14 @@ import com.spyneai.captureEvent
 import com.spyneai.databinding.DialogConfirmReshootBinding
 import com.spyneai.needs.AppConstants
 import com.spyneai.posthog.Events
+import com.spyneai.service.*
 import com.spyneai.shoot.data.ShootViewModel
 import com.spyneai.shoot.utils.shoot
 import kotlinx.coroutines.launch
 import java.io.File
+import android.app.ActivityManager
+import android.content.Context
+
 
 class ConfirmReshootDialog : BaseDialogFragment<ShootViewModel, DialogConfirmReshootBinding>() {
 
@@ -30,8 +37,6 @@ class ConfirmReshootDialog : BaseDialogFragment<ShootViewModel, DialogConfirmRes
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
-
 
         isCancelable = false
 
@@ -152,6 +157,33 @@ class ConfirmReshootDialog : BaseDialogFragment<ShootViewModel, DialogConfirmRes
             viewModel.
             insertImage(viewModel.shootData.value!!)
         }
+
+
+        var action = Actions.START
+        if (getServiceState(requireContext()) == com.spyneai.service.ServiceState.STOPPED && action == Actions.STOP)
+            return
+
+        val serviceIntent = Intent(requireContext(), ImageUploadingService::class.java)
+        serviceIntent.action = action.name
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            log("Starting the service in >=26 Mode")
+            ContextCompat.startForegroundService(requireContext(), serviceIntent)
+            return
+        } else {
+            log("Starting the service in < 26 Mode")
+            requireActivity().startService(serviceIntent)
+        }
+    }
+
+    private fun isMyServiceRunning(serviceClass: Class<*>): Boolean {
+        val manager = requireActivity().getSystemService(Context.ACTIVITY_SERVICE) as ActivityManager
+        for (service in manager.getRunningServices(Int.MAX_VALUE)) {
+            if (serviceClass.name == service.service.className) {
+                return true
+            }
+        }
+        return false
     }
 
     fun updateTotalImages() {

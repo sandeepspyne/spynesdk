@@ -15,3 +15,7 @@ fun log(msg: String) {
 fun shoot(msg: String){
     Log.d("TESTINGCAMERA", msg)
 }
+
+fun logUpload(msg : String){
+    Log.d("UPLOAD", msg)
+}

@@ -3,8 +3,11 @@ package com.spyneai
 import android.animation.Animator
 import android.animation.AnimatorListenerAdapter
 import android.app.Activity
+import android.app.ActivityManager
 import android.content.Context
 import android.content.Intent
+import android.net.ConnectivityManager
+import android.net.NetworkInfo
 import com.posthog.android.Properties
 import android.widget.ImageButton
 import androidx.annotation.DrawableRes
@@ -81,4 +84,20 @@ fun Long.toDate() : String {
     val sdf = SimpleDateFormat("dd MMM, yyyy")
     val netDate = Date(this)
     return sdf.format(netDate)
+}
+
+fun Context.isMyServiceRunning(serviceClass: Class<*>): Boolean {
+    val manager = getSystemService(Context.ACTIVITY_SERVICE) as ActivityManager
+    for (service in manager.getRunningServices(Int.MAX_VALUE)) {
+        if (serviceClass.name == service.service.className) {
+            return true
+        }
+    }
+    return false
+}
+
+fun Context.isInternetActive() : Boolean {
+    val cm = getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
+    val activeNetwork: NetworkInfo? = cm.activeNetworkInfo
+    return activeNetwork?.isConnectedOrConnecting == true
 }
