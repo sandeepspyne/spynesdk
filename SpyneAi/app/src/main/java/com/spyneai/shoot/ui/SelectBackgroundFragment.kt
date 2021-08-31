@@ -22,6 +22,7 @@ import com.spyneai.gotoHome
 import com.spyneai.needs.AppConstants
 import com.spyneai.needs.Utilities
 import com.spyneai.posthog.Events
+import com.spyneai.shoot.adapters.FoodBackgroundAdapter
 import com.spyneai.shoot.adapters.NewCarBackgroundAdapter
 import com.spyneai.shoot.data.ProcessViewModel
 import com.spyneai.shoot.data.model.CarsBackgroundRes
@@ -33,15 +34,32 @@ import okhttp3.RequestBody.Companion.toRequestBody
 class SelectBackgroundFragment : BaseFragment<ProcessViewModel,FragmentSelectBackgroundBinding>() {
 
     lateinit var carBackgroundGifList: ArrayList<CarsBackgroundRes.Data>
+   lateinit var foodBackgroundList : ArrayList<String>
     var backgroundSelect: String = ""
     lateinit var carbackgroundsAdapter: NewCarBackgroundAdapter
+    lateinit var foodBackgroundAdapter: FoodBackgroundAdapter
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
         carBackgroundGifList = ArrayList()
+        foodBackgroundList = ArrayList()
+        foodBackgroundList.add("https://storage.googleapis.com/spyne/AI/raw/1892526c-72c9-4331-8ede-dec5f72cf52e.png")
+        foodBackgroundList.add("https://storage.googleapis.com/spyne/AI/raw/5a2f8ef2-ecd8-4d35-b747-fcb1b08223cd.jpg")
+        foodBackgroundList.add("https://storage.googleapis.com/spyne/AI/raw/72cbc0ea-3373-4312-99ba-4ef69de4384e.jpg")
+        foodBackgroundList.add("https://storage.googleapis.com/spyne/AI/raw/72cbc0ea-3373-4312-99ba-4ef69de4384e.jpg")
+        foodBackgroundList.add("https://storage.googleapis.com/spyne/AI/raw/72cbc0ea-3373-4312-99ba-4ef69de4384e.jpg")
+
+//        when(getString(R.string.app_name)) {
+//            AppConstants.SWIGGY ->
+//                setBackgroundFood()
+//             else ->
+//                 initSelectBackground()
+//        }
 
         initSelectBackground()
+
+
 
         binding.ivBackGif.setOnClickListener {
             requireActivity().onBackPressed()
@@ -135,7 +153,72 @@ class SelectBackgroundFragment : BaseFragment<ProcessViewModel,FragmentSelectBac
 
     }
 
+    private fun setBackgroundFood(){
+        binding.shimmer.stopShimmer()
+        binding.shimmer.visibility = View.GONE
+        foodBackgroundAdapter = FoodBackgroundAdapter(requireContext(),
+            foodBackgroundList , 0,
+            object : FoodBackgroundAdapter.BtnClickListener {
+                override fun onBtnClick(position: Int) {
+                    Log.e("position preview", position.toString())
+                    //if (position<carBackgroundList.size)
+                    when(position){
+                        0 ->{
+                            backgroundSelect = "111"
+                            foodBackgroundAdapter.notifyDataSetChanged()
+                            Glide.with(requireContext()) // replace with 'this' if it's in activity
+                                .load("https://storage.googleapis.com/spyne/AI/raw/9261811d-d93f-4f10-9cbb-f20b95aff18e.png")
+                                .error(R.mipmap.defaults) // show error drawable if the image is not a gif
+                                .into(binding.imageViewGif)
+                            Toast.makeText(requireContext(), "backgroundID" +backgroundSelect, Toast.LENGTH_SHORT).show()
+                        }
+                            1 -> {
+                                backgroundSelect = "222"
+                                foodBackgroundAdapter.notifyDataSetChanged()
+                                Glide.with(requireContext()) // replace with 'this' if it's in activity
+                                    .load("https://storage.googleapis.com/spyne/AI/raw/84292221-14ec-4d5d-88ea-1cf96030454c.png")
+                                    .error(R.mipmap.defaults) // show error drawable if the image is not a gif
+                                    .into(binding.imageViewGif)
+                                Toast.makeText(requireContext(), "backgroundID" +backgroundSelect, Toast.LENGTH_SHORT).show()
+                            }
+                        2 -> {
+                            backgroundSelect = "333"
+                            foodBackgroundAdapter.notifyDataSetChanged()
+                            Glide.with(requireContext()) // replace with 'this' if it's in activity
+                                .load("https://storage.googleapis.com/spyne/AI/raw/f2ef1db7-500b-4b05-8bd5-6645fe1dc2b1.png")
+                                .error(R.mipmap.defaults) // show error drawable if the image is not a gif
+                                .into(binding.imageViewGif)
+                            Toast.makeText(requireContext(), "backgroundID" +backgroundSelect, Toast.LENGTH_SHORT).show()
+                        } else -> {
+                        backgroundSelect = "444"
+                        foodBackgroundAdapter.notifyDataSetChanged()
+                        Glide.with(requireContext()) // replace with 'this' if it's in activity
+                            .load("https://storage.googleapis.com/spyne/AI/raw/9261811d-d93f-4f10-9cbb-f20b95aff18e.png")
+                            .error(R.mipmap.defaults) // show error drawable if the image is not a gif
+                            .into(binding.imageViewGif)
+                        Toast.makeText(requireContext(), "backgroundID" +backgroundSelect, Toast.LENGTH_SHORT).show()
+                        }
+                    }
 
+                    Glide.with(requireContext()) // replace with 'this' if it's in activity
+                        .load("https://storage.googleapis.com/spyne/AI/raw/9261811d-d93f-4f10-9cbb-f20b95aff18e.png")
+                        .error(R.mipmap.defaults) // show error drawable if the image is not a gif
+                        .into(binding.imageViewGif)
+
+
+
+                    //showPreviewCar()
+                }
+            })
+        val layoutManager: RecyclerView.LayoutManager =
+            LinearLayoutManager(
+                requireContext(),
+                LinearLayoutManager.HORIZONTAL, false
+            )
+
+        binding.rvBackgroundsCars.setLayoutManager(layoutManager)
+        binding.rvBackgroundsCars.setAdapter(foodBackgroundAdapter)
+    }
 
     private fun getBackground() {
 

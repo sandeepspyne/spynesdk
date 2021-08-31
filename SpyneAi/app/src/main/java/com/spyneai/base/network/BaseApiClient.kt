@@ -7,7 +7,8 @@ import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import java.util.concurrent.TimeUnit
 
-open class BaseApiClient<Api>(val BASE_URL: String, api: Class<Api>){
+open class
+BaseApiClient<Api>(val BASE_URL: String, api: Class<Api>){
 
     var builder: Api
 

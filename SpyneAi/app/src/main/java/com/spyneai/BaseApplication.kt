@@ -3,19 +3,12 @@ package com.spyneai
 import android.annotation.SuppressLint
 import android.app.Application
 import android.content.Context
-import android.content.Intent
-import android.util.Log
-import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.work.*
-import com.google.android.play.core.appupdate.AppUpdateManager
-import com.google.android.play.core.appupdate.AppUpdateManagerFactory
-import com.google.android.play.core.install.model.AppUpdateType
-import com.google.android.play.core.install.model.UpdateAvailability
 import com.google.firebase.crashlytics.FirebaseCrashlytics
 import com.posthog.android.PostHog
+import com.spyneai.shoot.workmanager.ParentRecursiveWorker
 import com.spyneai.shoot.workmanager.ProcessSkuWorker
-import com.spyneai.shoot.workmanager.RecursiveProcessSkuWorker
 import com.spyneai.shoot.workmanager.RecursiveSkippedImagesWorker
 import java.util.concurrent.TimeUnit
 
@@ -56,6 +49,18 @@ class BaseApplication : Application() {
         val constraints: Constraints = Constraints.Builder()
             .setRequiredNetworkType(NetworkType.CONNECTED)
             .build()
+
+        val recursiveParentWorkRequest = PeriodicWorkRequestBuilder<ParentRecursiveWorker>(
+            15, TimeUnit.MINUTES)
+            .addTag("Long Running Parent Worker")
+
+        WorkManager.getInstance(context)
+            .enqueueUniquePeriodicWork(
+                "Long Running Parent Worker",
+                ExistingPeriodicWorkPolicy.KEEP,
+                recursiveParentWorkRequest
+                    .setConstraints(constraints)
+                    .build())
 
         val longWorkRequest = PeriodicWorkRequestBuilder<ProcessSkuWorker>(
             6, TimeUnit.HOURS)

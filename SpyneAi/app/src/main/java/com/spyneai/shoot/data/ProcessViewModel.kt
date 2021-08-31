@@ -6,10 +6,12 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.work.*
 import com.spyneai.BaseApplication
+import com.spyneai.R
 import com.spyneai.base.network.Resource
 import com.spyneai.credits.model.DownloadHDRes
 import com.spyneai.credits.model.ReduceCreditResponse
 import com.spyneai.model.credit.CreditDetailsResponse
+import com.spyneai.needs.AppConstants
 import com.spyneai.shoot.data.model.CarsBackgroundRes
 import com.spyneai.shoot.data.model.ProcessSkuRes
 import com.spyneai.shoot.data.model.Sku
@@ -73,7 +75,38 @@ class ProcessViewModel : ViewModel() {
         auth_key: RequestBody
     ) = viewModelScope.launch {
         _carGifRes.value = Resource.Loading
-        _carGifRes.value = repository.getBackgroundGifCars(category, auth_key)
+        when(BaseApplication.getContext().getString(R.string.app_name)){
+            AppConstants.SWIGGY -> {
+                val list = ArrayList<CarsBackgroundRes.Data>()
+
+                list.add(CarsBackgroundRes.Data("Rustic White",
+                    "https://storage.googleapis.com/spyne/AI/raw/72cbc0ea-3373-4312-99ba-4ef69de4384e.jpg",
+                    1,
+                    "11001",
+                    "https://storage.googleapis.com/spyne/AI/raw/b972331d-5a82-46bf-b347-007962ce9158.png"))
+
+
+                list.add(CarsBackgroundRes.Data("Colonial Blue",
+                    "https://storage.googleapis.com/spyne/AI/raw/5a2f8ef2-ecd8-4d35-b747-fcb1b08223cd.jpg",
+                    1,
+                    "12001",
+                    "https://storage.googleapis.com/spyne/AI/raw/74a28609-218e-4ed8-9d6f-24e869b1beeb.png"))
+
+
+                list.add(CarsBackgroundRes.Data("Boho Chic",
+                    "https://storage.googleapis.com/spyne/AI/raw/1892526c-72c9-4331-8ede-dec5f72cf52e.png",
+                    1,
+                    "13001",
+                    "https://storage.googleapis.com/spyne/AI/raw/865b7582-3ca0-4119-93be-9ab7f76554cb.png"))
+
+
+                val response = CarsBackgroundRes(list,"Got Background",200)
+                _carGifRes.value = Resource.Success(response)
+
+            }else -> {
+            _carGifRes.value = repository.getBackgroundGifCars(category, auth_key)
+        }
+        }
 
     }
 

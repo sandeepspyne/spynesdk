@@ -60,7 +60,7 @@ class ProcessRepository : BaseRepository() {
         project_id:  String,
         background_id:  String
     ) = safeApiCall{
-        clipperStagingApi.skuProcessStateWithBackgroundId(auth_key, project_id, background_id)
+        clipperApi.skuProcessStateWithBackgroundId(auth_key, project_id, background_id)
     }
 
 }

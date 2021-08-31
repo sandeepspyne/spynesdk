@@ -1,21 +1,15 @@
 package com.spyneai.shoot.data
 
-import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.work.*
-import com.posthog.android.Properties
 import com.spyneai.BaseApplication
 import com.spyneai.base.network.Resource
 import com.spyneai.camera2.OverlaysResponse
 import com.spyneai.camera2.ShootDimensions
-import com.spyneai.captureEvent
 import com.spyneai.dashboard.response.NewSubCatResponse
-import com.spyneai.needs.AppConstants
-import com.spyneai.needs.Utilities
-import com.spyneai.posthog.Events
 import com.spyneai.shoot.data.model.*
 import com.spyneai.shoot.response.SkuProcessStateResponse
 import com.spyneai.shoot.workmanager.FootwearSubcatUpdateWorker
@@ -236,53 +230,28 @@ class ShootViewModel : ViewModel() {
         image.angle = shootData.angle
 
         localRepository.insertImage(image)
-//        startLongRunningWorker()
-
-        //check if long running worker is alive
-        val workManager = WorkManager.getInstance(BaseApplication.getContext())
-
-        val workQuery = WorkQuery.Builder
-            .fromTags(listOf("Long Running Worker"))
-            .addStates(
-                listOf(
-                    WorkInfo.State.BLOCKED,
-                    WorkInfo.State.ENQUEUED,
-                    WorkInfo.State.RUNNING,
-                    WorkInfo.State.CANCELLED
-                )
-            )
-            .build()
-
-        val workInfos = workManager.getWorkInfos(workQuery).await()
-
-        Log.d(TAG, "insertImage: " + workInfos.size)
-
-        val properties = Properties()
-        properties.apply {
-            this["email"] =
-                Utilities.getPreference(BaseApplication.getContext(), AppConstants.EMAIL_ID)
-                    .toString()
-        }
-
-        if (workInfos.size > 0) {
-            com.spyneai.shoot.utils.log("alive : ")
-
-
-            BaseApplication.getContext().captureEvent(
-                Events.RECURSIVE_UPLOAD_ALREADY_RUNNING,
-                properties
-            )
-
-        } else {
-            com.spyneai.shoot.utils.log("not found : start new")
-            //start long running worker
-            BaseApplication.getContext().captureEvent(
-                Events.RECURSIVE_UPLOAD_INTIATED,
-                properties
-            )
             startLongRunningWorker()
-        }
     }
+
+//    fun startLongRunningWorker() {
+//        val constraints: Constraints = Constraints.Builder()
+//            .setRequiredNetworkType(NetworkType.CONNECTED)
+//            .build()
+//
+//        val longWorkRequest = OneTimeWorkRequest.Builder(ParentRecursiveWorker::class.java)
+//            .addTag("Long Running Parent Worker")
+//            .setBackoffCriteria(
+//                BackoffPolicy.LINEAR,
+//                OneTimeWorkRequest.MIN_BACKOFF_MILLIS,
+//                TimeUnit.MILLISECONDS)
+//
+//        WorkManager.getInstance(BaseApplication.getContext())
+//            .enqueue(
+//                longWorkRequest
+//                    .setConstraints(constraints)
+//                    .build())
+//    }
+
 
     fun startLongRunningWorker() {
         val constraints: Constraints = Constraints.Builder()
@@ -294,21 +263,13 @@ class ShootViewModel : ViewModel() {
             .setBackoffCriteria(
                 BackoffPolicy.LINEAR,
                 OneTimeWorkRequest.MIN_BACKOFF_MILLIS,
-                TimeUnit.MILLISECONDS
-            )
-//                WorkManager.getInstance(BaseApplication.getContext())
-//            .enqueueUniqueWork("abc", ExistingWorkPolicy.KEEP,
-//                longWorkRequest
-//                    .setConstraints(constraints)
-//                    .build()
-//            )
+                TimeUnit.MILLISECONDS)
 
         WorkManager.getInstance(BaseApplication.getContext())
             .enqueue(
                 longWorkRequest
                     .setConstraints(constraints)
-                    .build()
-            )
+                    .build())
     }
 
 
