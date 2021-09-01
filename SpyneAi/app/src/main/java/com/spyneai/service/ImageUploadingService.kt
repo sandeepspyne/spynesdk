@@ -5,10 +5,6 @@ import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.graphics.Color
-import android.os.Binder
-import android.os.Build
-import android.os.IBinder
-import android.os.PowerManager
 import android.widget.Toast
 import com.spyneai.R
 import com.spyneai.activity.CompletedProjectsActivity
@@ -22,6 +18,7 @@ import android.content.IntentFilter
 import android.icu.text.CaseMap
 import android.net.ConnectivityManager
 import android.net.NetworkInfo
+import android.os.*
 import androidx.core.content.ContextCompat
 import com.spyneai.captureEvent
 import com.spyneai.isInternetActive
@@ -131,23 +128,9 @@ class ImageUploadingService : Service(), ImageUploader.Listener {
             notificationManager.createNotificationChannel(channel)
         }
 
-        var pendingIntent: PendingIntent? = null
-
-        if (text.equals("Image processing in progress...")){
-            pendingIntent =
-                Intent(this, OngoingOrdersActivity::class.java).let { notificationIntent ->
-                    PendingIntent.getActivity(this, 0, notificationIntent, 0)
-                }
-        }else if (text.equals("Image processing completed")){
-            Intent(this, CompletedProjectsActivity::class.java).let { notificationIntent ->
-                PendingIntent.getActivity(this, 0, notificationIntent, 0)
-            }
-        }else{
-            Intent(this, MainDashboardActivity::class.java).let { notificationIntent ->
-                PendingIntent.getActivity(this, 0, notificationIntent, 0)
-            }
+        var pendingIntent: PendingIntent = Intent(this, MainDashboardActivity::class.java).let { notificationIntent ->
+            PendingIntent.getActivity(this, 0, notificationIntent, 0)
         }
-
 
         builder =
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) Notification.Builder(
@@ -178,7 +161,7 @@ class ImageUploadingService : Service(), ImageUploader.Listener {
                 }
             }
 
-            stopForeground(true)
+            stopForeground(false)
             stopSelf()
 
         } catch (e: Exception) {
@@ -191,7 +174,8 @@ class ImageUploadingService : Service(), ImageUploader.Listener {
     override fun inProgress(task: Image) {
         currentImage = task
         logUpload("in progress "+task.imagePath)
-        val title = "Uploading "+task.skuName+"("+task.categoryName+"-"+task.sequence+")"
+        val category = if (task.categoryName == "Focus Shoot") "Miscellaneous" else task.categoryName
+        val title = "Uploading "+task.skuName+"("+category+"-"+task.sequence+")"
         val internet = if (isInternetActive()) "Active" else "Disconnected"
         val content = "Internet Connection: "+internet
         var notification = createNotification(title,content, true)
@@ -202,6 +186,30 @@ class ImageUploadingService : Service(), ImageUploader.Listener {
 
     override fun onUploaded(task: Image) {
         uploadRunning = false
+
+        var title = "Image Uploaded"
+        if (currentImage != null){
+            val category = if (currentImage?.categoryName == "Focus Shoot") "Miscellaneous" else currentImage?.categoryName
+            title = "Last Uploaded "+currentImage?.skuName+"("+category+"-"+currentImage?.sequence+")"
+            logUpload("uploaded "+currentImage?.imagePath)
+        }
+
+        val internet = if (isInternetActive()) "Active" else "Disconnected"
+        val content = "Internet Connection: "+internet
+        var notification = createNotification(title,content, true)
+
+        notificationManager.notify(notificationId, notification)
+
+        //update notification after five minutes
+        Handler(Looper.getMainLooper()).postDelayed({
+            val title = "All Images Uploaded "
+            val internet = if (isInternetActive()) "Active" else "Disconnected"
+            val content = "Internet Connection: "+internet
+            var notification = createNotification(title,content, false)
+
+            notificationManager.notify(notificationId, notification)
+            stopService()
+        },180000)
     }
 
     override fun onUploadFail(task: Image) {
@@ -212,7 +220,11 @@ class ImageUploadingService : Service(), ImageUploader.Listener {
         logUpload("onConnectionLost")
         uploadRunning = false
 
-        val title = if (currentImage == null) "Uploading Paused" else "Uploading Paused On "+currentImage?.skuName+"("+currentImage?.categoryName+"-"+currentImage?.sequence+")"
+        val title = if (currentImage == null) "Uploading Paused"
+        else {
+            val category = if (currentImage?.categoryName == "Focus Shoot") "Miscellaneous" else currentImage?.categoryName
+            "Uploading Paused On "+currentImage?.skuName+"("+category+"-"+currentImage?.sequence+")"
+        }
         val content = "Internet Connection: Disconnected"
         var notification = createNotification(title,content, true)
 

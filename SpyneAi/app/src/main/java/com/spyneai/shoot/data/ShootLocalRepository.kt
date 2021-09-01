@@ -383,7 +383,7 @@ class ShootLocalRepository {
     fun insertImage(image : Image) {
         val values = ContentValues().apply {
             put(Images.COLUMN_NAME_PROJECT_ID, image.projectId)
-            put(Images.COLUMN_NAME_SKU_NAME, image.skuName)
+            put(Images.COLUMN_NAME_SKU_NAME, image.skuName?.uppercase())
             put(Images.COLUMN_NAME_SKU_ID, image.skuId)
             put(Images.COLUMN_NAME_CATEGORY_NAME, image.categoryName)
             put(Images.COLUMN_NAME_IMAGE_PATH, image.imagePath)
@@ -556,7 +556,7 @@ class ShootLocalRepository {
         val values = ContentValues().apply {
             put(ShootContract.ShootEntry.COLUMN_NAME_CREATED_ON, sku.createdOn)
             put(ShootContract.ShootEntry.COLUMN_NAME_PROJECT_NAME, sku.projectName)
-            put(ShootContract.ShootEntry.COLUMN_NAME_SKU_NAME, sku.skuName)
+            put(ShootContract.ShootEntry.COLUMN_NAME_SKU_NAME, sku.skuName?.uppercase())
             put(ShootContract.ShootEntry.COLUMN_NAME_EXTERIOR_ANGLES, sku.exteriorAngles)
             put(ShootContract.ShootEntry.COLUMN_NAME_CATEGORY_NAME, sku.categoryName)
             put(ShootContract.ShootEntry.COLUMN_NAME_CATEGORY_ID, sku.categoryId)

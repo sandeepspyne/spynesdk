@@ -43,7 +43,7 @@ class ShootRepository : BaseRepository() {
                           ,prodCatId : String,prodSubCatId : String,
                           skuName : String,total_frames : Int
     ) = safeApiCall {
-        clipperApi.createSku(authKey, projectId, prodCatId, prodSubCatId, skuName,total_frames)
+        clipperApi.createSku(authKey, projectId, prodCatId, prodSubCatId, skuName.uppercase(),total_frames)
     }
 
     suspend fun getProjectDetail(
