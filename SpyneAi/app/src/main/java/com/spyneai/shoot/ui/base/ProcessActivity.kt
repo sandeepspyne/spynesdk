@@ -2,6 +2,7 @@ package com.spyneai.shoot.ui.base
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.util.Log
 import androidx.lifecycle.ViewModelProvider
 import com.spyneai.R
 import com.spyneai.dashboard.ui.base.ViewModelFactory
@@ -14,6 +15,7 @@ import com.spyneai.shoot.ui.dialogs.ShootExitDialog
 
 class ProcessActivity : AppCompatActivity() {
 
+    val TAG = "ProcessActivity"
     lateinit var processViewModel : ProcessViewModel
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -31,6 +33,10 @@ class ProcessActivity : AppCompatActivity() {
         processViewModel.interiorMiscShootsCount = intent.getIntExtra("interior_misc_count",0)
         processViewModel.frontFramesList = intent.getStringArrayListExtra("exterior_images_list")!!
         processViewModel.categoryName = intent.getStringExtra(AppConstants.CATEGORY_NAME)
+
+        Log.d(TAG, "onCreate: "+processViewModel.exteriorAngles.value)
+        Log.d(TAG, "onCreate: "+processViewModel.interiorMiscShootsCount)
+
 
 //        if (processViewModel.categoryName == "Automobiles" || processViewModel.categoryName == "Bikes")
 //            processViewModel.frontFramesList = intent.getStringArrayListExtra("exterior_images_list")!!

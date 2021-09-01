@@ -116,6 +116,7 @@ class LocalSkusAdapter (
                     putExtra(AppConstants.SKU_COUNT, skuList.size)
                     putExtra(AppConstants.SKU_CREATED, false)
                     putExtra(AppConstants.SKU_ID, skuList[position].skuId)
+                    putExtra(AppConstants.EXTERIOR_ANGLES, skuList[position].exteriorAngles)
                     //putExtra("is_paid",skuList[position].paid)
                     //putExtra(AppConstants.IMAGE_TYPE,skuList[position].category)
                     putExtra(AppConstants.IS_360,skuList[position].is360)

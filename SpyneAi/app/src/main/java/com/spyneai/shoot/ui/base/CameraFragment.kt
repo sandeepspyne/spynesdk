@@ -776,7 +776,7 @@ class CameraFragment : BaseFragment<ShootViewModel, FragmentCameraBinding>(), Pi
         }
 
         //delete file if exist already
-        if (File(filename).exists())
+        if (File("/storage/emulated/0/DCIM/Spyne/"+filename+".jpg").exists())
             File(filename).delete()
 
         // Options fot the output image file

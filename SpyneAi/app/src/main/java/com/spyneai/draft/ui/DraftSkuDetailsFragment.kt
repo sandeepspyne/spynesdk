@@ -2,6 +2,7 @@ package com.spyneai.draft.ui
 
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -42,6 +43,8 @@ class DraftSkuDetailsFragment : BaseFragment<DraftViewModel, FragmentDraftSkuDet
     private var localMiscList = ArrayList<Image>()
     private var localThreeSixtyInteriorList = ArrayList<Image>()
 
+    val TAG = "DraftSkuDetailsFragment"
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
@@ -63,7 +66,6 @@ class DraftSkuDetailsFragment : BaseFragment<DraftViewModel, FragmentDraftSkuDet
                 binding.tvTotalSku.text = list.size.toString()
 
             if (!list.isNullOrEmpty()) {
-
                 if (intent.getStringExtra(AppConstants.CATEGORY_NAME) == "Automobiles"){
                     localExterior = list?.filter {
                         it.categoryName == "Exterior"
@@ -107,11 +109,11 @@ class DraftSkuDetailsFragment : BaseFragment<DraftViewModel, FragmentDraftSkuDet
                     }
                 }
 
-//                if (getString(R.string.app_name) == AppConstants.OLA_CABS) {
-//                    localThreeSixtyInteriorList = list?.filter {
-//                        it.categoryName == "360int"
-//                    } as ArrayList
-//                }
+                if (getString(R.string.app_name) == AppConstants.OLA_CABS) {
+                    localThreeSixtyInteriorList = list?.filter {
+                        it.categoryName == "360int"
+                    } as ArrayList
+                }
             }
 
                 binding.flContinueShoot.visibility = View.VISIBLE
@@ -159,7 +161,7 @@ class DraftSkuDetailsFragment : BaseFragment<DraftViewModel, FragmentDraftSkuDet
                 putExtra(AppConstants.RESUME_MISC, resumeMisc())
                 putExtra("is_paid",false)
                 putExtra(AppConstants.IMAGE_TYPE,intent.getStringExtra(AppConstants.IMAGE_TYPE))
-                putExtra(AppConstants.IS_360,intent.getStringExtra(AppConstants.IS_360))
+                putExtra(AppConstants.IS_360,intent.getIntExtra(AppConstants.IS_360,0))
             }
 
             if (requireActivity().intent.getBooleanExtra(AppConstants.FROM_LOCAL_DB,false)){
@@ -189,12 +191,29 @@ class DraftSkuDetailsFragment : BaseFragment<DraftViewModel, FragmentDraftSkuDet
             Utilities.savePrefrence(requireContext(),AppConstants.CATEGORY_ID,intent.getStringExtra(AppConstants.CATEGORY_ID))
 
 
-            if (resumeMisc()){
-                checkMiscSize(shootIntent!!)
-                observeMisc(shootIntent)
-            }else {
-                startActivity(shootIntent)
+            if (getString(R.string.app_name) == AppConstants.OLA_CABS){
+                if (threeSixtyIntSelected()){
+                    Log.d(TAG, "onViewCreated: "+"Three Sixty Selected")
+                    startProcessActivty(shootIntent!!,localInteriorList.size
+                        .plus(localMiscList.size)
+                        .plus(localThreeSixtyInteriorList.size))
+                }else{
+                    if (resumeMisc()){
+                        checkMiscSize(shootIntent!!)
+                        observeMisc(shootIntent)
+                    }else {
+                        startActivity(shootIntent)
+                    }
+                }
+            }else{
+                if (resumeMisc()){
+                    checkMiscSize(shootIntent!!)
+                    observeMisc(shootIntent)
+                }else {
+                    startActivity(shootIntent)
+                }
             }
+
         }
     }
 
@@ -221,12 +240,13 @@ class DraftSkuDetailsFragment : BaseFragment<DraftViewModel, FragmentDraftSkuDet
                             it.value.miscellaneous = filteredList
                         }
 
-                        if (it.value.miscellaneous.size == localMiscList.size) {
-                            //start procss activity
-                            startProcessActivty(intent,localInteriorList.size.plus(localMiscList.size))
-                        }else {
-                            startActivity(intent)
-                        }
+                            if (it.value.miscellaneous.size == localMiscList.size) {
+                                //start procss activity
+                                startProcessActivty(intent,localInteriorList.size.plus(localMiscList.size))
+                            }else {
+                                startActivity(intent)
+                            }
+
                     }else {
                         if (it.value.miscellaneous.size == miscList.size) {
                             startProcessActivty(intent,interiorList.size.plus(miscList.size))
@@ -246,13 +266,14 @@ class DraftSkuDetailsFragment : BaseFragment<DraftViewModel, FragmentDraftSkuDet
     }
 
     private fun startProcessActivty(intent: Intent,count : Int) {
+        Log.d(TAG, "onViewCreated: "+intent.getIntExtra(AppConstants.EXTERIOR_ANGLES,0))
         val processIntent = Intent(requireContext(), ProcessActivity::class.java)
 
         processIntent.apply {
             putExtra(AppConstants.CATEGORY_NAME, intent.getStringExtra(AppConstants.CATEGORY_NAME))
             putExtra("sku_id", intent.getStringExtra(AppConstants.SKU_ID))
             putExtra("project_id", intent.getStringExtra(AppConstants.PROJECT_ID))
-            putExtra("exterior_angles", intent.getStringExtra(AppConstants.EXTERIOR_ANGLES))
+            putExtra("exterior_angles", intent.getIntExtra(AppConstants.EXTERIOR_ANGLES,0))
             this.putStringArrayListExtra("exterior_images_list",getExteriorImagesList())
         }
 
@@ -295,6 +316,16 @@ class DraftSkuDetailsFragment : BaseFragment<DraftViewModel, FragmentDraftSkuDet
             miscList.size > 0
         }
     }
+
+    private fun threeSixtyIntSelected() : Boolean {
+        return if (requireActivity().intent.getBooleanExtra(AppConstants.FROM_LOCAL_DB,false)){
+            localThreeSixtyInteriorList.size > 0
+        }else {
+            threeSixtyInteriorList.size > 0
+        }
+    }
+
+
 
     private fun resumeInterior() = !resumeExterior() && !resumeMisc()
 
@@ -381,11 +412,11 @@ class DraftSkuDetailsFragment : BaseFragment<DraftViewModel, FragmentDraftSkuDet
                             }
                         }
 
-//                        if (getString(R.string.app_name) == AppConstants.OLA_CABS){
-//                            threeSixtyInteriorList = list?.filter {
-//                                it.image_category == "360int"
-//                            } as ArrayList
-//                        }
+                        if (getString(R.string.app_name) == AppConstants.OLA_CABS){
+                            threeSixtyInteriorList = list?.filter {
+                                it.image_category == "360int"
+                            } as ArrayList
+                        }
                     }else {
                         binding.tvTotalSku.text = "0"
                     }
