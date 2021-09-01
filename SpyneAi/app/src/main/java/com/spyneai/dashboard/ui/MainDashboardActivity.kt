@@ -167,7 +167,6 @@ class MainDashboardActivity : AppCompatActivity() {
                        val intent = Intent(this, MyOrdersActivity::class.java)
                        startActivity(intent)
                    }
-
                 }
               //  R.id.wallet->setCurrentFragment(SecondFragment)
                 R.id.logoutDashBoardFragment->setCurrentFragment(thirdFragment)
@@ -234,20 +233,30 @@ class MainDashboardActivity : AppCompatActivity() {
 
 
     open fun onPermissionGranted(){
+        Log.d(TAG, "onPermissionGranted: "+Utilities.getPreference(this,AppConstants.CANCEL_ALL_WROKERS))
+        if (Utilities.getPreference(this,AppConstants.CANCEL_ALL_WROKERS) == ""){
+            WorkManager.getInstance(this).cancelAllWorkByTag("StoreImageFiles  Worker")
+            WorkManager.getInstance(this).cancelAllWorkByTag("Manual Long Running Worker")
+            WorkManager.getInstance(this).cancelAllWorkByTag("Manual Skipped Images Long Running Worker")
+            WorkManager.getInstance(this).cancelAllWorkByTag("Long Running Worker")
+            WorkManager.getInstance(this).cancelAllWorkByTag("Skipped Images Long Running Worker")
+
+            Utilities.savePrefrence(this,AppConstants.CANCEL_ALL_WROKERS,"Cancelled")
+        }
+
         capture(Events.FILE_READ_WORKED_INTIATED)
 
         val storeWorkRequest = OneTimeWorkRequest.Builder(StoreImageFilesWorker::class.java)
             .addTag("StoreImageFiles  Worker")
 
-        WorkManager.getInstance(this).cancelAllWorkByTag("StoreImageFiles  Worker")
-        WorkManager.getInstance(this).cancelAllWorkByTag("Long Running Worker")
-        WorkManager.getInstance(this).cancelAllWorkByTag("Skipped Images Long Running Worker")
-        WorkManager.getInstance(this).cancelAllWorkByTag("Manual Long Running Worker")
-        WorkManager.getInstance(this).cancelAllWorkByTag("Manual Skipped Images Long Running Worker")
+        WorkManager.getInstance(BaseApplication.getContext())
+            .enqueue(
+                storeWorkRequest
+                    .build())
 
         //cancel main recursive worker
+        //start service if have pending images
 
-      //  start service if have pending images
         val shootLocalRepository = ShootLocalRepository()
         if (shootLocalRepository.getOldestImage().itemId != null
             || shootLocalRepository.getOldestSkippedImage().itemId != null){
@@ -277,13 +286,6 @@ class MainDashboardActivity : AppCompatActivity() {
 
             captureEvent(Events.SERVICE_STARTED,properties)
         }
-
-
-//        WorkManager.getInstance(BaseApplication.getContext())
-//            .enqueue(
-//                storeWorkRequest
-//                    .build())
-
     }
 
 

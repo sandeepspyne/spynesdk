@@ -13,6 +13,7 @@ import com.spyneai.needs.Utilities
 import com.spyneai.posthog.Events
 import com.spyneai.shoot.data.FilesRepository
 import com.spyneai.shoot.data.model.ImageFile
+import com.spyneai.shoot.utils.logManualUpload
 import java.io.File
 
 class StoreImageFilesWorker (private val appContext: Context, workerParams: WorkerParameters) :
@@ -24,6 +25,7 @@ class StoreImageFilesWorker (private val appContext: Context, workerParams: Work
 
     override suspend fun doWork(): Result {
 
+        logManualUpload("StoreImageFilesWorker Started")
         capture(Events.FILE_READ_WORKER_STARTED)
 
         val path = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
@@ -53,7 +55,7 @@ class StoreImageFilesWorker (private val appContext: Context, workerParams: Work
                           localRepository.insertImageFile(imageFile)
                       }
                   }
-                  Log.d(TAG, "doWork: "+i)
+                  logManualUpload("StoreImageFilesWorker "+i)
 
                   if (i == files.size - 1){
                       capture(Events.FILE_SIZE)
@@ -99,7 +101,6 @@ class StoreImageFilesWorker (private val appContext: Context, workerParams: Work
 
         val workInfos = workManager.getWorkInfos(workQuery).await()
 
-        Log.d(TAG, "insertImage: "+workInfos.size)
 
         if (workInfos.size > 0) {
             repeat(workInfos.size) {
@@ -132,6 +133,9 @@ class StoreImageFilesWorker (private val appContext: Context, workerParams: Work
     }
 
     private fun start() {
+
+        logManualUpload("StoreImageFilesWorker Manual Long Running Started")
+
         val constraints: Constraints = Constraints.Builder()
             .setRequiredNetworkType(NetworkType.CONNECTED)
             .build()

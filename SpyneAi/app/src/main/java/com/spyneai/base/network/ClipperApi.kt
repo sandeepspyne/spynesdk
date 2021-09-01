@@ -216,12 +216,10 @@ interface ClipperApi {
 
 
     @FormUrlEncoded
-    @POST("v4/image/image-upload-check")
+    @POST("v4/image/image-upload-check-v2")
     suspend fun checkUploadStatus(
         @Field("auth_key") auth_key: String,
-        @Field("sku_id") sku_id: String,
-        @Field("image_category") image_category: String,
-        @Field("frame_seq_no") frame_seq_no: String,
+        @Field("image_name") image_name: String,
     ): UploadStatusRes
 
     @FormUrlEncoded

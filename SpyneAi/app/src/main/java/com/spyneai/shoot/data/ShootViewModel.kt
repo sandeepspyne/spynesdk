@@ -14,6 +14,7 @@ import com.spyneai.shoot.data.model.*
 import com.spyneai.shoot.response.SkuProcessStateResponse
 import com.spyneai.shoot.workmanager.FootwearSubcatUpdateWorker
 import com.spyneai.shoot.workmanager.OverlaysPreloadWorker
+import com.spyneai.shoot.workmanager.RecursiveImageWorker
 import kotlinx.coroutines.launch
 import java.util.*
 import java.util.concurrent.TimeUnit
@@ -206,7 +207,7 @@ class ShootViewModel : ViewModel(){
         return shootProgressList
     }
 
-     suspend fun insertImage(shootData: ShootData) {
+    fun insertImage(shootData: ShootData) {
         val image = Image()
         image.projectId = shootData.project_id
         image.skuId = shootData.sku_id
@@ -217,8 +218,8 @@ class ShootViewModel : ViewModel(){
          image.skuName = sku.value?.skuName
 
         localRepository.insertImage(image)
-    }
 
+    }
 
     fun createProject(
         authKey: String, projectName: String, prodCatId: String

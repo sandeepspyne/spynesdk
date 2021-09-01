@@ -11,6 +11,12 @@ class UploadStatusRes(
         @SerializedName("upload")
         val upload: Boolean,
         @SerializedName("project_id")
-        val projectId: String
+        val projectId: String,
+        @SerializedName("sku_id")
+        val skuId: String,
+        @SerializedName("sequence")
+        val sequence: Int,
+        @SerializedName("image_category")
+        val imageCategory: String
     )
 }

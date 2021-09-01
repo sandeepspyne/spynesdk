@@ -28,8 +28,6 @@ class ProcessImagesService() : Service(), Listener {
     lateinit var builder: Notification.Builder
 
 
-
-
     companion object {
         var tasksInProgress = ArrayList<Task>()
     }

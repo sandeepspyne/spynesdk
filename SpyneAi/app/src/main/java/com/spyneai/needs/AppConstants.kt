@@ -141,6 +141,8 @@ object AppConstants {
     val REGULAR = "REGULAR"
     val SKIPPED = "SKIPPED"
 
+    val CANCEL_ALL_WROKERS = "CANCEL_ALL_WROKERS"
+
 
 
 }

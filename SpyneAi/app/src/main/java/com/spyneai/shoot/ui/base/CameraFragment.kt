@@ -779,7 +779,7 @@ class CameraFragment : BaseFragment<ShootViewModel, FragmentCameraBinding>(), Pi
         if (File("/storage/emulated/0/DCIM/Spyne/"+filename+".jpg").exists())
             File("/storage/emulated/0/DCIM/Spyne/"+filename+".jpg").delete()
 
-        // Options fot the output image file
+//        // Options fot the output image file
         val outputOptions = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
             val contentValues = ContentValues().apply {
                 put(MediaStore.MediaColumns.DISPLAY_NAME, filename)
@@ -800,6 +800,7 @@ class CameraFragment : BaseFragment<ShootViewModel, FragmentCameraBinding>(), Pi
 
             ImageCapture.OutputFileOptions.Builder(file)
         }.setMetadata(metadata).build()
+
 
         // Set up image capture listener, which is triggered after photo has
         // been taken

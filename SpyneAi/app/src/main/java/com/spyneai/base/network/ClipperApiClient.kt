@@ -1,4 +1,4 @@
 package com.spyneai.base.network
 
-class ClipperApiClient : BaseApiClient<ClipperApi>("https://www.clippr.ai/api/", ClipperApi::class.java) {
+class ClipperApiClient : BaseApiClient<ClipperApi>("http://35.197.148.111/api/", ClipperApi::class.java) {
 }

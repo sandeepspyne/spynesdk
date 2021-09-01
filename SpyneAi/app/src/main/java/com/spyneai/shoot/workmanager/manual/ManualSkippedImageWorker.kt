@@ -16,6 +16,7 @@ import com.spyneai.shoot.data.ShootLocalRepository
 import com.spyneai.shoot.data.ShootRepository
 import com.spyneai.shoot.data.model.Image
 import com.spyneai.shoot.data.model.ImageFile
+import com.spyneai.shoot.utils.logManualUpload
 import com.spyneai.shoot.workmanager.RecursiveSkippedImagesWorker
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.MultipartBody
@@ -33,11 +34,13 @@ class ManualSkippedImageWorker (private val appContext: Context, workerParams: W
 
         capture(Events.MANUAL_SKIPPED_UPLAOD_STRATED)
 
+        logManualUpload("Manual upload skipped started")
         val image = fileRepository.getOldestSkippedImage()
 
         if (runAttemptCount > 4) {
             //skip with value -2 to move worker on next image
             if (image.itemId != null){
+                logManualUpload("Manual upload skipped again")
                 fileRepository.skipImage(image.itemId!!,-2)
                 startNextUpload(image.itemId!!,false)
             }
@@ -65,13 +68,12 @@ class ManualSkippedImageWorker (private val appContext: Context, workerParams: W
             //check upload status
             var uploadStatuRes = shootRepository.checkUploadStatus(
                 authKey,
-                image.skuId!!,
-                image.categoryName!!,
-                image.sequence!!
+                File(image.imagePath).name
             )
 
             when(uploadStatuRes) {
                 is Resource.Success -> {
+                    logManualUpload("Manual upload skipped got uplaod check")
                     image.projectId = uploadStatuRes.value.data.projectId
                     captureEvent(Events.CHECK_UPLOAD_STATUS,image,true,null)
 
@@ -99,27 +101,27 @@ class ManualSkippedImageWorker (private val appContext: Context, workerParams: W
                                 requestFile
                             )
 
-                        val seqenceNo = image.sequence!!.toInt()
 
                         var response = shootRepository.uploadImage(
                             uploadStatuRes.value.data.projectId.toRequestBody(MultipartBody.FORM),
-                            image.skuId!!.toRequestBody(MultipartBody.FORM),
-                            image.categoryName!!.toRequestBody(MultipartBody.FORM),
+                            uploadStatuRes.value.data.skuId.toRequestBody(MultipartBody.FORM),
+                            uploadStatuRes.value.data.imageCategory.toRequestBody(MultipartBody.FORM),
                             authKey.toRequestBody(MultipartBody.FORM),
                             "Retry".toRequestBody(MultipartBody.FORM),
-                            seqenceNo,
+                            uploadStatuRes.value.data.sequence,
                             imageFile)
 
                         when(response){
                             is Resource.Success -> {
 
+                                logManualUpload("Manual upload skipped suucess")
                                 captureEvent(Events.MANUAL_SKIPED_UPLOADED,image,true,null)
                                 startNextUpload(image.itemId!!,true)
                                 return Result.success()
                             }
 
                             is Resource.Failure -> {
-
+                                logManualUpload("Manual upload skipped failure")
                                 if(response.errorMessage == null){
                                     captureEvent(Events.MANUAL_SKIPPED_UPLOAD_FAILED,image,false,response.errorCode.toString()+": Http exception from server")
                                 }else {
@@ -133,6 +135,7 @@ class ManualSkippedImageWorker (private val appContext: Context, workerParams: W
                 }
 
                 is Resource.Failure -> {
+                    logManualUpload("Manual upload skipped failed uplaod check "+uploadStatuRes.errorMessage)
                     if(uploadStatuRes.errorMessage == null){
                         captureEvent(Events.CHECK_UPLOAD_STATUS_FAILED,image,false,uploadStatuRes.errorCode.toString()+": Http exception from server")
                     }else {

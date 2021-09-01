@@ -670,6 +670,8 @@ class OverlaysFragment : BaseFragment<ShootViewModel, FragmentOverlaysBinding>()
     }
 
     private fun startInteriorShots() {
+        viewModel.isCameraButtonClickable = true
+
         binding.rvSubcategories?.visibility = View.VISIBLE
         binding.tvShoot.isClickable = false
         binding.imgOverlay.visibility = View.INVISIBLE
@@ -767,10 +769,11 @@ class OverlaysFragment : BaseFragment<ShootViewModel, FragmentOverlaysBinding>()
             MiscShotsDialog().show(requireActivity().supportFragmentManager, "MiscShotsDialog")
             viewModel.miscDialogShowed = true
         }
-
     }
 
     private fun startMiscShots() {
+        viewModel.isCameraButtonClickable = true
+
         binding.rvSubcategories?.visibility = View.VISIBLE
         binding.imgOverlay.visibility = View.INVISIBLE
 

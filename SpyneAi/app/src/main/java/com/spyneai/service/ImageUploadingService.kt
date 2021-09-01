@@ -100,7 +100,7 @@ class ImageUploadingService : Service(), ImageUploader.Listener {
     }
 
     private fun createOngoingNotificaiton() {
-        notificationId = (0..999999).random()
+        notificationId = 100
         val title = getString(R.string.app_name)
         val text = "Image uploading in progress..."
         var notification = createNotification(title,text, true)

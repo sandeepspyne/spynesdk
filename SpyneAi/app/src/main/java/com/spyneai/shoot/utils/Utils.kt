@@ -19,3 +19,7 @@ fun shoot(msg: String){
 fun logUpload(msg : String){
     Log.d("UPLOAD", msg)
 }
+
+fun logManualUpload(msg: String){
+    Log.d("Manual Upload", msg)
+}

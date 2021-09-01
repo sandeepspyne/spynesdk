@@ -18,6 +18,7 @@ import com.spyneai.shoot.data.ShootLocalRepository
 import com.spyneai.shoot.data.ShootRepository
 import com.spyneai.shoot.data.model.Image
 import com.spyneai.shoot.data.model.ImageFile
+import com.spyneai.shoot.utils.logManualUpload
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.MultipartBody
 import okhttp3.RequestBody.Companion.asRequestBody
@@ -38,6 +39,7 @@ class ManualUploadWorker (private val appContext: Context, workerParams: WorkerP
 
         if (runAttemptCount > 4) {
             if (image.itemId != null){
+                logManualUpload("Manual upload skipped")
                 filesRepository.skipImage(image.itemId!!,-1)
                 startNextUpload(image.itemId!!,false)
             }
@@ -62,13 +64,13 @@ class ManualUploadWorker (private val appContext: Context, workerParams: WorkerP
             //check upload status
             var uploadStatuRes = shootRepository.checkUploadStatus(
                 authKey,
-                image.skuId!!,
-                image.categoryName!!,
-                image.sequence!!
+                File(image.imagePath).name,
             )
 
             when(uploadStatuRes) {
                 is Resource.Success -> {
+
+                    logManualUpload("Check Status success "+uploadStatuRes.value.data.upload)
                     image.projectId = uploadStatuRes.value.data.projectId
                     captureEvent(Events.CHECK_UPLOAD_STATUS,image,true,null)
 
@@ -97,27 +99,25 @@ class ManualUploadWorker (private val appContext: Context, workerParams: WorkerP
                                 requestFile
                             )
 
-                        val seqenceNo = image.sequence!!.toInt()
-
                         var response = shootRepository.uploadImage(
                             uploadStatuRes.value.data.projectId.toRequestBody(MultipartBody.FORM),
-                            image.skuId!!.toRequestBody(MultipartBody.FORM),
-                           image.categoryName!!.toRequestBody(MultipartBody.FORM),
+                            uploadStatuRes.value.data.skuId.toRequestBody(MultipartBody.FORM),
+                            uploadStatuRes.value.data.imageCategory.toRequestBody(MultipartBody.FORM),
                             authKey.toRequestBody(MultipartBody.FORM),
                             "Retry".toRequestBody(MultipartBody.FORM),
-                            seqenceNo,
+                            uploadStatuRes.value.data.sequence,
                             imageFile)
 
                         when(response){
                             is Resource.Success -> {
-                                Log.d(TAG, "doWork: success")
+                                logManualUpload("Manual upload success")
                                 captureEvent(Events.MANUALLY_UPLOADED,image,true,null)
                                 startNextUpload(image.itemId!!,true)
                                 return Result.success()
                             }
 
                             is Resource.Failure -> {
-                                Log.d(TAG, "doWork: failure")
+                                logManualUpload("Manual upload failed")
                                 if(response.errorMessage == null){
                                     captureEvent(Events.MANUAL_UPLOAD_FAILED,image,false,response.errorCode.toString()+": Http exception from server")
                                 }else {
@@ -131,6 +131,7 @@ class ManualUploadWorker (private val appContext: Context, workerParams: WorkerP
                 }
 
                 is Resource.Failure -> {
+                    logManualUpload("Check Status failed "+ uploadStatuRes.errorMessage)
                     if(uploadStatuRes.errorMessage == null){
                         captureEvent(Events.CHECK_UPLOAD_STATUS_FAILED,image,false,uploadStatuRes.errorCode.toString()+": Http exception from server")
                     }else {
@@ -141,7 +142,6 @@ class ManualUploadWorker (private val appContext: Context, workerParams: WorkerP
             }
 
             com.spyneai.shoot.utils.log("image selected "+image.itemId + " "+image.imagePath)
-
             return Result.success()
         }else{
             Log.d(TAG, "doWork: start skip worker")
