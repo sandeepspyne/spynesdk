@@ -8,6 +8,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.ViewTreeObserver
+import androidx.core.content.ContextCompat
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.bumptech.glide.Glide
@@ -18,6 +19,7 @@ import com.bumptech.glide.request.RequestListener
 import com.bumptech.glide.request.RequestOptions
 import com.bumptech.glide.request.target.Target
 import com.bumptech.glide.signature.ObjectKey
+import com.google.android.material.snackbar.Snackbar
 import com.posthog.android.Properties
 import com.spyneai.R
 import com.spyneai.base.BaseFragment
@@ -54,6 +56,7 @@ class OverlaysFragment : BaseFragment<ShootViewModel, FragmentOverlaysBinding>()
     var miscAdapter: MiscAdapter? = null
     private var showDialog = true
     var pos = 0
+    var snackbar : Snackbar? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -385,7 +388,21 @@ class OverlaysFragment : BaseFragment<ShootViewModel, FragmentOverlaysBinding>()
 
                         binding.tvAngleName?.text = name
 
-                        val requestOptions = RequestOptions()
+                        loadOverlay(name,overlay)
+
+                    }
+                    else -> {
+                    }
+                }
+            })
+            progressAdapter!!.updateList(viewModel.shootNumber.value!!)
+            shoot("updateList in progress adapter called- " + viewModel.shootNumber.value!!)
+        })
+    }
+
+    private fun loadOverlay(name : String,overlay : String) {
+
+        val requestOptions = RequestOptions()
                             .diskCacheStrategy(DiskCacheStrategy.ALL)
                             .signature(ObjectKey(overlay))
 
@@ -407,6 +424,14 @@ class OverlaysFragment : BaseFragment<ShootViewModel, FragmentOverlaysBinding>()
                                         Events.OVERLAY_LOAD_FIALED,
                                         properties
                                     )
+
+                                    snackbar = Snackbar.make(binding.root, "Overlay Failed to load", Snackbar.LENGTH_INDEFINITE)
+                                        .setAction("Retry") {
+                                            loadOverlay(name,overlay)
+                                        }
+                                        .setActionTextColor(ContextCompat.getColor(requireContext(),R.color.primary))
+
+                                    snackbar?.show()
                                     return false
                                 }
 
@@ -417,6 +442,10 @@ class OverlaysFragment : BaseFragment<ShootViewModel, FragmentOverlaysBinding>()
                                     dataSource: DataSource?,
                                     isFirstResource: Boolean
                                 ): Boolean {
+
+                                   if (snackbar != null)
+                                       snackbar?.dismiss()
+
                                     val properties =  Properties()
                                     properties["name"] = name
                                     properties["category"] = viewModel.categoryDetails.value?.categoryName
@@ -434,14 +463,6 @@ class OverlaysFragment : BaseFragment<ShootViewModel, FragmentOverlaysBinding>()
                             .apply(requestOptions)
                             .into(binding.imgOverlay!!)
 
-                    }
-                    else -> {
-                    }
-                }
-            })
-            progressAdapter!!.updateList(viewModel.shootNumber.value!!)
-            shoot("updateList in progress adapter called- " + viewModel.shootNumber.value!!)
-        })
     }
 
     private fun intSubcategorySelection() {
@@ -609,9 +630,9 @@ class OverlaysFragment : BaseFragment<ShootViewModel, FragmentOverlaysBinding>()
                     //pre load overlays
                     val overlaysList = it.value.data.map { it.display_thumbnail }
 
-                    viewLifecycleOwner.lifecycleScope.launch {
-                        viewModel.preloadOverlays(overlaysList)
-                    }
+//                    viewLifecycleOwner.lifecycleScope.launch {
+//                        viewModel.preloadOverlays(overlaysList)
+//                    }
 
                     requireContext().captureEvent(
                         Events.GET_OVERLAYS,

@@ -62,7 +62,6 @@ class DraftSkuDetailsFragment : BaseFragment<DraftViewModel, FragmentDraftSkuDet
             binding.nsv.visibility = View.VISIBLE
 
             val list = viewModel.getImagesbySkuId(intent.getStringExtra(AppConstants.SKU_ID)!!)
-
                 binding.tvTotalSku.text = list.size.toString()
 
             if (!list.isNullOrEmpty()) {

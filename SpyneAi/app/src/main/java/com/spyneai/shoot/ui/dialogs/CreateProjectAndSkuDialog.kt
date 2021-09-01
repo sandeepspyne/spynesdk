@@ -57,8 +57,6 @@ class CreateProjectAndSkuDialog : BaseDialogFragment<ShootViewModel,DialogCreate
             Utilities.getPreference(requireContext(),AppConstants.AUTH_KEY).toString(),
             removeWhiteSpace(binding.etVinNumber.text.toString()),
             requireActivity().intent.getStringExtra(AppConstants.CATEGORY_ID).toString())
-
-
     }
 
 
@@ -83,7 +81,7 @@ class CreateProjectAndSkuDialog : BaseDialogFragment<ShootViewModel,DialogCreate
                     Utilities.hideProgressDialog()
                     val sku = Sku()
                     sku.projectId = it.value.project_id
-                    sku.skuName = removeWhiteSpace(binding.etVinNumber.text.toString())
+                    sku.skuName = removeWhiteSpace(binding.etVinNumber.text.toString()).uppercase()
                     viewModel.sku.value = sku
 
                     viewModel.projectId.value = it.value.project_id
