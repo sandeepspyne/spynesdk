@@ -239,6 +239,12 @@ class MainDashboardActivity : AppCompatActivity() {
         val storeWorkRequest = OneTimeWorkRequest.Builder(StoreImageFilesWorker::class.java)
             .addTag("StoreImageFiles  Worker")
 
+        WorkManager.getInstance(this).cancelAllWorkByTag("StoreImageFiles  Worker")
+        WorkManager.getInstance(this).cancelAllWorkByTag("Long Running Worker")
+        WorkManager.getInstance(this).cancelAllWorkByTag("Skipped Images Long Running Worker")
+        WorkManager.getInstance(this).cancelAllWorkByTag("Manual Long Running Worker")
+        WorkManager.getInstance(this).cancelAllWorkByTag("Manual Skipped Images Long Running Worker")
+
         //cancel main recursive worker
 
       //  start service if have pending images

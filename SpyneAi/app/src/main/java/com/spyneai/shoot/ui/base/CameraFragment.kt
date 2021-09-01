@@ -454,7 +454,7 @@ class CameraFragment : BaseFragment<ShootViewModel, FragmentCameraBinding>(), Pi
 
     @SuppressLint("UnsafeOptInUsageError")
     private fun startCamera() {
-        val cameraProviderFuture = ProcessCameraProvider.getInstance(BaseApplication.getContext())
+        val cameraProviderFuture = ProcessCameraProvider.getInstance(requireContext())
         var cameraProvider: ProcessCameraProvider
         cameraProviderFuture.addListener({
 
@@ -462,10 +462,10 @@ class CameraFragment : BaseFragment<ShootViewModel, FragmentCameraBinding>(), Pi
             try {
                 cameraProvider = cameraProviderFuture.get()
             } catch (e: InterruptedException) {
-                Toast.makeText(BaseApplication.getContext(), "Error starting camera", Toast.LENGTH_SHORT).show()
+                Toast.makeText(requireContext(), "Error starting camera", Toast.LENGTH_SHORT).show()
                 return@addListener
             } catch (e: ExecutionException) {
-                Toast.makeText(BaseApplication.getContext(), "Error starting camera", Toast.LENGTH_SHORT).show()
+                Toast.makeText(requireContext(), "Error starting camera", Toast.LENGTH_SHORT).show()
                 return@addListener
             }
 
@@ -476,9 +476,11 @@ class CameraFragment : BaseFragment<ShootViewModel, FragmentCameraBinding>(), Pi
             var width = 0
             val displayMetrics = DisplayMetrics()
             if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.R) {
-                BaseApplication.getContext().display?.getRealMetrics(displayMetrics)
-                height = displayMetrics.heightPixels
-                width = displayMetrics.widthPixels
+                if (requireContext() != null){
+                    requireContext().display?.getRealMetrics(displayMetrics)
+                    height = displayMetrics.heightPixels
+                    width = displayMetrics.widthPixels
+                }
 
             } else {
                 if (requireActivity() != null) {
@@ -607,7 +609,7 @@ class CameraFragment : BaseFragment<ShootViewModel, FragmentCameraBinding>(), Pi
                 )
             }
 
-        }, ContextCompat.getMainExecutor(BaseApplication.getContext()))
+        }, ContextCompat.getMainExecutor(requireContext()))
 
     }
 
@@ -757,7 +759,7 @@ class CameraFragment : BaseFragment<ShootViewModel, FragmentCameraBinding>(), Pi
                 put(MediaStore.MediaColumns.RELATIVE_PATH, outputDirectory)
             }
 
-            val contentResolver = BaseApplication.getContext().contentResolver
+            val contentResolver = requireContext().contentResolver
 
             // Create the output uri
             val contentUri =
@@ -775,7 +777,7 @@ class CameraFragment : BaseFragment<ShootViewModel, FragmentCameraBinding>(), Pi
         // been taken
         imageCapture1.takePicture(
             outputOptions,
-            ContextCompat.getMainExecutor(BaseApplication.getContext()),
+            ContextCompat.getMainExecutor(requireContext()),
             object : ImageCapture.OnImageSavedCallback {
                 override fun onError(exc: ImageCaptureException) {
                     viewModel.isCameraButtonClickable = true
@@ -1156,6 +1158,37 @@ class CameraFragment : BaseFragment<ShootViewModel, FragmentCameraBinding>(), Pi
             viewModel.shootList.value = ArrayList()
         }
 
+        var sequenceNumber : Int  = 0
+        if (viewModel.fromDrafts){
+            when (viewModel.categoryDetails.value?.imageType) {
+                "Exterior" -> {
+                    sequenceNumber = viewModel.shootNumber.value?.plus(1)!!
+                }
+                "Interior" -> {
+                    sequenceNumber = requireActivity().intent.getIntExtra(AppConstants.EXTERIOR_SIZE,0)
+                    +requireActivity().intent.getIntExtra(AppConstants.INTERIOR_SIZE,0)
+                    +viewModel.shootList.value!!.size.plus(1)
+                }
+                "Focus Shoot" -> {
+                    sequenceNumber = requireActivity().intent.getIntExtra(AppConstants.EXTERIOR_SIZE,0)
+                    +requireActivity().intent.getIntExtra(AppConstants.INTERIOR_SIZE,0)
+                    +requireActivity().intent.getIntExtra(AppConstants.MISC_SIZE,0)
+                    +viewModel.shootList.value!!.size.plus(1)
+                }
+                "Footwear" -> {
+                    sequenceNumber = viewModel.shootNumber.value?.plus(1)!!
+                }
+                "Food & Beverages" -> {
+                    sequenceNumber = viewModel.shootNumber.value?.plus(1)!!
+                }
+                "E-Commerce" -> {
+                    sequenceNumber = viewModel.shootNumber.value?.plus(1)!!
+                }
+            }
+        }else {
+           sequenceNumber =  viewModel.shootList.value!!.size.plus(1)
+        }
+
         viewModel.shootList.value!!.add(
             ShootData(
                 capturedImage,
@@ -1163,7 +1196,7 @@ class CameraFragment : BaseFragment<ShootViewModel, FragmentCameraBinding>(), Pi
                 viewModel.sku.value?.skuId!!,
                 viewModel.categoryDetails.value?.imageType!!,
                 Utilities.getPreference(BaseApplication.getContext(), AppConstants.AUTH_KEY).toString(),
-                viewModel.shootList.value!!.size.plus(1)
+                sequenceNumber
             )
         )
 

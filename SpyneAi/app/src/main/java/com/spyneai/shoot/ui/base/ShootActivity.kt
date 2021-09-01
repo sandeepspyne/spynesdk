@@ -7,6 +7,7 @@ import android.content.Intent
 import android.content.pm.PackageManager
 import android.os.Build
 import android.os.Bundle
+import android.util.Log
 import android.view.KeyEvent
 import android.view.WindowManager
 import android.widget.Toast
@@ -315,21 +316,28 @@ class ShootActivity : AppCompatActivity() {
             it.image_category == "Interior"
         }
 
-        if (interiorList != null)
-            total = interiorList.size
-
-
         val miscList = list?.filter {
             it.image_category == "Focus Shoot"
         }
 
+        if (interiorList != null)
+            total = interiorList.size
+
+
         if (miscList != null)
             total+= miscList.size
+
+        if (shootViewModel.fromDrafts){
+            total+= intent.getIntExtra(AppConstants.INTERIOR_SIZE,0)
+            total+= intent.getIntExtra(AppConstants.MISC_SIZE,0)
+        }
 
         if (getString(R.string.app_name) == AppConstants.OLA_CABS
             && shootViewModel.threeSixtyInteriorSelected) {
             total+= 1
         }
+
+        Log.d(TAG, "getInteriorMiscCount: "+total)
 
         return total
     }

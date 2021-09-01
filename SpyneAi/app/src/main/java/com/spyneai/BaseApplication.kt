@@ -51,23 +51,10 @@ class BaseApplication : Application() {
         PostHog.setSingletonInstance(posthog)
 
 
-
-        //prcess periodic worker
+        //process periodic worker
         val constraints: Constraints = Constraints.Builder()
             .setRequiredNetworkType(NetworkType.CONNECTED)
             .build()
-
-        val recursiveParentWorkRequest = PeriodicWorkRequestBuilder<ParentRecursiveWorker>(
-            15, TimeUnit.MINUTES)
-            .addTag("Long Running Parent Worker")
-
-        WorkManager.getInstance(context)
-            .enqueueUniquePeriodicWork(
-                "Long Running Parent Worker",
-                ExistingPeriodicWorkPolicy.KEEP,
-                recursiveParentWorkRequest
-                    .setConstraints(constraints)
-                    .build())
 
 
         val longWorkRequest = PeriodicWorkRequestBuilder<ProcessSkuWorker>(
@@ -79,18 +66,6 @@ class BaseApplication : Application() {
                 "Process Unique",
                 ExistingPeriodicWorkPolicy.KEEP,
                 longWorkRequest
-                    .setConstraints(constraints)
-                    .build())
-
-        val recursiveWorkRequest = PeriodicWorkRequestBuilder<RecursiveSkippedImagesWorker>(
-            6, TimeUnit.HOURS)
-            .addTag("Skipped Images Long Running Worker")
-
-        WorkManager.getInstance(context)
-            .enqueueUniquePeriodicWork(
-                "Upload Skipped Images Unique",
-                ExistingPeriodicWorkPolicy.KEEP,
-                recursiveWorkRequest
                     .setConstraints(constraints)
                     .build())
 
