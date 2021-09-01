@@ -96,7 +96,7 @@ class ImageUploader(val context: Context,
                        File(image.imagePath).asRequestBody("multipart/form-data".toMediaTypeOrNull())
 
                    val fileName = if (image.categoryName == "360int") {
-                       image.skuName + "_" + image.skuId + "_360int_"+image.sequence
+                       image.skuName + "_" + image.skuId + "_360int_"+image.sequence+".jpg"
                    }else {
                        File(image.imagePath)!!.name
                    }
@@ -112,8 +112,13 @@ class ImageUploader(val context: Context,
 
                     val uploadType = if (retryCount == 0) "Direct" else "Retry"
 
-                   var response = shootRepository.uploadImage(projectId!!,
-                       skuId!!, imageCategory!!,authKey, uploadType.toRequestBody(MultipartBody.FORM),image.sequence!!,imageFile)
+                   var response = if (image.categoryName == "360int"){
+                       shootRepository.uploadImage(projectId!!,
+                           skuId!!, imageCategory!!,authKey, uploadType.toRequestBody(MultipartBody.FORM),image.sequence!!,imageFile)
+                   }else {
+                       shootRepository.uploadImage(projectId!!,
+                           skuId!!, imageCategory!!,authKey, uploadType.toRequestBody(MultipartBody.FORM),image.sequence!!,imageFile)
+                   }
 
                    when(response){
                        is Resource.Success -> {

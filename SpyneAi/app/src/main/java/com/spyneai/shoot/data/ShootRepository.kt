@@ -2,6 +2,7 @@ package com.spyneai.shoot.data
 
 import com.spyneai.base.BaseRepository
 import com.spyneai.base.network.ClipperApiClient
+import com.spyneai.base.network.DebugApiClient
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
 
@@ -9,6 +10,7 @@ import okhttp3.RequestBody
 class ShootRepository : BaseRepository() {
 
     private var clipperApi = ClipperApiClient().getClient()
+    private var debugApi = DebugApiClient().getClient()
 
     suspend fun getSubCategories(
         authKey : String,prodId : String
@@ -32,6 +34,19 @@ class ShootRepository : BaseRepository() {
     ) = safeApiCall {
         clipperApi.uploadImage(project_id, sku_id, image_category, auth_key, upload_type,sequenceNo,image)
     }
+
+    suspend fun uploadDebugImage(
+        project_id: RequestBody,
+        sku_id: RequestBody,
+        image_category: RequestBody,
+        auth_key: RequestBody,
+        upload_type: RequestBody,
+        sequenceNo : Int,
+        image: MultipartBody.Part
+    ) = safeApiCall {
+        debugApi.uploadDebugImage(project_id, sku_id, image_category, auth_key, upload_type,sequenceNo,image)
+    }
+
 
     suspend fun createProject(authKey: String,projectName : String,
                               prodCatId : String

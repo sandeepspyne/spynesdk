@@ -56,6 +56,7 @@ import android.util.Size
 import com.spyneai.BaseApplication
 import com.spyneai.shoot.ui.dialogs.ThreeSixtyInteriorHintDialog
 import com.spyneai.shoot.utils.shoot
+import kotlinx.android.synthetic.main.activity_credit_plans.*
 
 
 class CameraFragment : BaseFragment<ShootViewModel, FragmentCameraBinding>(), PickiTCallbacks,
@@ -437,6 +438,8 @@ class CameraFragment : BaseFragment<ShootViewModel, FragmentCameraBinding>(), Pi
     }
 
     private fun captureImage() {
+        //ThreeSixtyInteriorHintDialog().show(requireActivity().supportFragmentManager,"ThreeSixtyInteriorHintDialog")
+
         if (viewModel.isCameraButtonClickable) {
             takePhoto()
             log("shoot image button clicked")
@@ -663,12 +666,37 @@ class CameraFragment : BaseFragment<ShootViewModel, FragmentCameraBinding>(), Pi
                     )
                 }
                 "Interior" -> {
-                    viewModel.categoryDetails.value?.imageType!! + "_" + viewModel.interiorShootNumber.value?.plus(
-                        1
-                    )
+                    val list = viewModel.shootList.value
+
+                    val interiorList = list?.filter {
+                        it.image_category == "Interior"
+                    }
+
+                    if (interiorList == null){
+                        viewModel.categoryDetails.value?.imageType!! + "_" +
+                                requireActivity().intent.getIntExtra(AppConstants.INTERIOR_SIZE,0).plus(1)
+                    }else {
+                        viewModel.categoryDetails.value?.imageType!! + "_" +
+                                requireActivity().intent.getIntExtra(AppConstants.INTERIOR_SIZE,0)
+                                    .plus(interiorList.size.plus(1))
+                    }
+
                 }
                 "Focus Shoot" -> {
-                    "Miscellaneous_" + viewModel.miscShootNumber.value?.plus(1)
+                    val list = viewModel.shootList.value
+
+                    val miscList = list?.filter {
+                        it.image_category == "Focus Shoot"
+                    }
+
+                    if (miscList == null){
+                        "Miscellaneous_" +
+                                requireActivity().intent.getIntExtra(AppConstants.MISC_SIZE,0).plus(1)
+                    }else {
+                        "Miscellaneous_" +
+                                requireActivity().intent.getIntExtra(AppConstants.MISC_SIZE,0)
+                                    .plus(miscList.size.plus(1))
+                    }
                 }
                 "Footwear" -> {
                     viewModel.categoryDetails.value?.imageType!! + "_" + viewModel.shootNumber.value?.plus(
@@ -1166,14 +1194,21 @@ class CameraFragment : BaseFragment<ShootViewModel, FragmentCameraBinding>(), Pi
                 }
                 "Interior" -> {
                     sequenceNumber = requireActivity().intent.getIntExtra(AppConstants.EXTERIOR_SIZE,0)
-                    +requireActivity().intent.getIntExtra(AppConstants.INTERIOR_SIZE,0)
-                    +viewModel.shootList.value!!.size.plus(1)
+                        .plus(requireActivity().intent.getIntExtra(AppConstants.INTERIOR_SIZE,0))
+                        .plus(viewModel.shootList.value!!.size.plus(1))
+
+                    Log.d(TAG, "addShootItem: "+requireActivity().intent.getIntExtra(AppConstants.EXTERIOR_SIZE,0))
+                    Log.d(TAG, "addShootItem: "+requireActivity().intent.getIntExtra(AppConstants.INTERIOR_SIZE,0))
+                    Log.d(TAG, "addShootItem: "+viewModel.shootList.value!!.size.plus(1))
+                    Log.d(TAG, "addShootItem: "+sequenceNumber)
                 }
                 "Focus Shoot" -> {
                     sequenceNumber = requireActivity().intent.getIntExtra(AppConstants.EXTERIOR_SIZE,0)
-                    +requireActivity().intent.getIntExtra(AppConstants.INTERIOR_SIZE,0)
-                    +requireActivity().intent.getIntExtra(AppConstants.MISC_SIZE,0)
-                    +viewModel.shootList.value!!.size.plus(1)
+                        .plus(requireActivity().intent.getIntExtra(AppConstants.INTERIOR_SIZE,0))
+                        .plus(requireActivity().intent.getIntExtra(AppConstants.MISC_SIZE,0))
+                        .plus(viewModel.shootList.value!!.size.plus(1))
+
+                    Log.d(TAG, "addShootItem: "+sequenceNumber)
                 }
                 "Footwear" -> {
                     sequenceNumber = viewModel.shootNumber.value?.plus(1)!!

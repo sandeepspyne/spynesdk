@@ -101,10 +101,11 @@ class ThreeSixtyInteriorHintDialog : BaseDialogFragment<ShootViewModel, Dialog36
                 //add image for upload
 
                 val sequenceNumber = if (viewModel.fromDrafts){
-                    requireActivity().intent.getIntExtra(AppConstants.EXTERIOR_SIZE,0)+
-                            requireActivity().intent.getIntExtra(AppConstants.INTERIOR_SIZE,0)+
-                            requireActivity().intent.getIntExtra(AppConstants.MISC_SIZE,0)
-                            +viewModel.shootList.value!!.size.plus(1)
+                    requireActivity().intent.getIntExtra(AppConstants.EXTERIOR_SIZE,0)
+                        .plus(requireActivity().intent.getIntExtra(AppConstants.INTERIOR_SIZE,0))
+                        .plus(requireActivity().intent.getIntExtra(AppConstants.MISC_SIZE,0))
+                        .plus(viewModel.shootList.value!!.size.plus(1))
+
                 }else {
                     viewModel.shootList.value?.size?.plus(1)
                 }

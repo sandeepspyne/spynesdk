@@ -33,6 +33,18 @@ interface ClipperApi {
 
     @Multipart
     @POST("v2/image/upload")
+    suspend fun uploadDebugImage(
+        @Part("project_id") project_id: RequestBody?,
+        @Part("sku_id") sku_id: RequestBody?,
+        @Part("image_category") image_category: RequestBody?,
+        @Part("auth_key") auth_key: RequestBody?,
+        @Part("upload_type") upload_type: RequestBody?,
+        @Part("frame_seq_no") frame_seq_no: Int,
+        @Part file: MultipartBody.Part
+    ): UploadImageResponse
+
+    @Multipart
+    @POST("v2/image/upload")
     fun uploadImageInWorker(
         @Part("project_id") project_id: RequestBody?,
         @Part("sku_id") sku_id: RequestBody?,
@@ -220,6 +232,8 @@ interface ClipperApi {
         @Field("initial_image_count") initialImageCount: Int,
         @Field("sub_cat_id") subCatId: String,
     ): UpdateFootwearSubcatRes
+
+
 
 
 }
