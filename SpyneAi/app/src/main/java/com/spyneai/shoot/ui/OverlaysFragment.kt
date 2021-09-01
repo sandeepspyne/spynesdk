@@ -630,9 +630,9 @@ class OverlaysFragment : BaseFragment<ShootViewModel, FragmentOverlaysBinding>()
                     //pre load overlays
                     val overlaysList = it.value.data.map { it.display_thumbnail }
 
-//                    viewLifecycleOwner.lifecycleScope.launch {
-//                        viewModel.preloadOverlays(overlaysList)
-//                    }
+                    viewLifecycleOwner.lifecycleScope.launch {
+                        viewModel.preloadOverlays(overlaysList)
+                    }
 
                     requireContext().captureEvent(
                         Events.GET_OVERLAYS,
