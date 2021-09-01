@@ -83,9 +83,9 @@ class ImageUploadingService : Service(), ImageUploader.Listener {
         log("using an intent with action $action")
 
         when (action) {
-            Actions.START.name,Actions.RUNNING.name -> {
+            Actions.START.name -> {
                 if (!uploadRunning)
-                    resumeUpload()
+                    resumeUpload("onStartCommand")
             }
             Actions.STOP.name -> stopService()
             else -> error("No action in the received intent")
@@ -105,6 +105,7 @@ class ImageUploadingService : Service(), ImageUploader.Listener {
         val text = "Image uploading in progress..."
         var notification = createNotification(title,text, true)
 
+        logUpload("createOngoingNotificaiton "+notificationId)
         notificationManager.notify(notificationId, notification)
         startForeground(notificationId, notification)
     }
@@ -121,8 +122,7 @@ class ImageUploadingService : Service(), ImageUploader.Listener {
                 it.description = "Process Images Service channel"
                 it.enableLights(true)
                 it.lightColor = Color.RED
-                it.enableVibration(true)
-                it.vibrationPattern = longArrayOf(100, 200, 300, 400, 500, 400, 300, 200, 400)
+                it.enableVibration(false)
                 it
             }
             notificationManager.createNotificationChannel(channel)
@@ -146,6 +146,7 @@ class ImageUploadingService : Service(), ImageUploader.Listener {
             .setSmallIcon(R.mipmap.app_logo)
             .setOngoing(isOngoing)
             .setAutoCancel(isOngoing)
+            .setOnlyAlertOnce(true)
             .setPriority(Notification.PRIORITY_HIGH) // for under android 26 compatibility
             .build()
 
@@ -180,6 +181,7 @@ class ImageUploadingService : Service(), ImageUploader.Listener {
         val content = "Internet Connection: "+internet
         var notification = createNotification(title,content, true)
 
+        logUpload("inProgress "+notificationId)
         notificationManager.notify(notificationId, notification)
        uploadRunning = true
     }
@@ -198,6 +200,7 @@ class ImageUploadingService : Service(), ImageUploader.Listener {
         val content = "Internet Connection: "+internet
         var notification = createNotification(title,content, true)
 
+        logUpload("onUploaded last "+notificationId)
         notificationManager.notify(notificationId, notification)
 
         //update notification after five minutes
@@ -207,6 +210,7 @@ class ImageUploadingService : Service(), ImageUploader.Listener {
             val content = "Internet Connection: "+internet
             var notification = createNotification(title,content, false)
 
+            logUpload("onUploaded all "+notificationId)
             notificationManager.notify(notificationId, notification)
             stopService()
         },180000)
@@ -228,6 +232,7 @@ class ImageUploadingService : Service(), ImageUploader.Listener {
         val content = "Internet Connection: Disconnected"
         var notification = createNotification(title,content, true)
 
+        logUpload("onConnectionLost "+notificationId)
         notificationManager.notify(notificationId, notification)
     }
 
@@ -244,16 +249,20 @@ class ImageUploadingService : Service(), ImageUploader.Listener {
                 val image = ShootLocalRepository().getOldestImage()
 
                 if (image.itemId != null && !uploadRunning){
+                    uploadRunning = true
                     logUpload(image.itemId.toString()+" "+uploadRunning)
                     // we have pending images, resume upload
-                    resumeUpload()
+                    resumeUpload("onReceive")
                 }
             }
         }
     }
 
-    private fun resumeUpload() {
-        logUpload("RESUME UPLOAD")
+    private fun resumeUpload(type : String) {
+        logUpload("RESUME UPLOAD "+type)
+
+        uploadRunning = true
+
         if (imageUploader == null)
             imageUploader = ImageUploader(this,
                 ShootLocalRepository(),

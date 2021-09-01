@@ -241,7 +241,7 @@ class MainDashboardActivity : AppCompatActivity() {
 
         //cancel main recursive worker
 
-        //start service if have pending images
+      //  start service if have pending images
         val shootLocalRepository = ShootLocalRepository()
         if (shootLocalRepository.getOldestImage().itemId != null
             || shootLocalRepository.getOldestSkippedImage().itemId != null){

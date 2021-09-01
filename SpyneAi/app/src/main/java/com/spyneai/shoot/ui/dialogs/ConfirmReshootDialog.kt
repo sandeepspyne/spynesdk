@@ -158,6 +158,10 @@ class ConfirmReshootDialog : BaseDialogFragment<ShootViewModel, DialogConfirmRes
             insertImage(viewModel.shootData.value!!)
         }
 
+        startService()
+    }
+
+    private fun startService() {
         var action = Actions.START
         if (getServiceState(requireContext()) == com.spyneai.service.ServiceState.STOPPED && action == Actions.STOP)
             return
