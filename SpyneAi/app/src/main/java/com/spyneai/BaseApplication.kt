@@ -14,10 +14,7 @@ import com.google.android.play.core.install.model.AppUpdateType
 import com.google.android.play.core.install.model.UpdateAvailability
 import com.google.firebase.crashlytics.FirebaseCrashlytics
 import com.posthog.android.PostHog
-import com.spyneai.shoot.workmanager.ParentRecursiveWorker
-import com.spyneai.shoot.workmanager.ProcessSkuWorker
-import com.spyneai.shoot.workmanager.RecursiveProcessSkuWorker
-import com.spyneai.shoot.workmanager.RecursiveSkippedImagesWorker
+import com.spyneai.shoot.workmanager.*
 import java.util.concurrent.TimeUnit
 
 @SuppressLint("StaticFieldLeak")
@@ -97,6 +94,22 @@ class BaseApplication : Application() {
                     .setConstraints(constraints)
                     .build())
 
+        val repeatInternal = 30L
+        val flexInterval = 25L
+        val workerTag = "InternetWorker"
+
+
+        PeriodicWorkRequest
+            .Builder(InternetWorker::class.java, repeatInternal,
+                TimeUnit.MINUTES, flexInterval, TimeUnit.MINUTES)
+            .setConstraints(
+                Constraints.Builder()
+                    .setRequiredNetworkType(NetworkType.CONNECTED)
+                    .build())
+            .build()
+            .also {
+                WorkManager.getInstance(context).enqueueUniquePeriodicWork(workerTag, ExistingPeriodicWorkPolicy.REPLACE, it)
+            }
 
     }
 

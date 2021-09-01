@@ -138,6 +138,9 @@ object AppConstants {
     val UDAAN = "Udaan"
     val SPYNE_AI = "SpyneAI"
 
+    val REGULAR = "REGULAR"
+    val SKIPPED = "SKIPPED"
+
 
 
 }

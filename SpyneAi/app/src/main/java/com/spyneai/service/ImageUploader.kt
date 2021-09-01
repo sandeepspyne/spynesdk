@@ -42,29 +42,46 @@ class ImageUploader(val context: Context,
 
 
     fun start() {
-        selectLastImageAndUpload()
+        selectLastImageAndUpload(AppConstants.REGULAR,0)
     }
 
-    private fun selectLastImageAndUpload() {
+    private fun selectLastImageAndUpload(imageType : String,retryCount : Int) {
 
        if (context.isInternetActive()){
            GlobalScope.launch(Dispatchers.Default) {
 
-               val image = localRepository.getOldestImage()
-
-               //uploading enqueued
-               listener.inProgress(image)
+               var skipFlag = -1
+               val image = if (imageType == AppConstants.REGULAR){
+                   localRepository.getOldestImage()
+               } else{
+                   skipFlag = -2
+                   localRepository.getOldestSkippedImage()
+               }
 
                if (image.itemId != null){
-                   logUpload("Upload Started "+image.itemId)
+                   //uploading enqueued
+                   listener.inProgress(image)
+
+                   if (retryCount > 4) {
+                       if (image.itemId != null){
+
+                           localRepository.skipImage(image.itemId!!,skipFlag)
+                           startNextUpload(image.itemId!!,false,imageType)
+                       }
+                       captureEvent(Events.UPLOAD_FAILED,image,false,"Image upload limit reached")
+                       logUpload("Upload Skipped Retry Limit Reached")
+                       return@launch
+                   }
 
                    if (image.imagePath != null){
                        if (!File(image.imagePath!!).exists()){
                            localRepository.deleteImage(image.itemId!!)
                            captureEvent(Events.UPLOAD_FAILED,image,false,"Image file got deleted by user")
-//                        return ListenableWorker.Result.failure()
+                            startNextUpload(image.itemId!!,true,imageType)
                        }
                    }
+
+                   logUpload("Upload Started "+imageType+" "+image.itemId)
 
                    val projectId = image.projectId?.toRequestBody(MultipartBody.FORM)
 
@@ -72,15 +89,14 @@ class ImageUploader(val context: Context,
                    val imageCategory =
                        image.categoryName?.toRequestBody(MultipartBody.FORM)
 
-                   val authKey =
-                       Utilities.getPreference(context, AppConstants.AUTH_KEY).toString().toRequestBody(MultipartBody.FORM)
+                   val authKey = Utilities.getPreference(context, AppConstants.AUTH_KEY).toString().toRequestBody(MultipartBody.FORM)
 
                    var imageFile: MultipartBody.Part? = null
                    val requestFile =
                        File(image.imagePath).asRequestBody("multipart/form-data".toMediaTypeOrNull())
 
                    val fileName = if (image.categoryName == "360int") {
-                       image.skuName + "_" + image.skuId + "_360int_1"
+                       image.skuName + "_" + image.skuId + "_360int_"+image.sequence
                    }else {
                        File(image.imagePath)!!.name
                    }
@@ -94,15 +110,15 @@ class ImageUploader(val context: Context,
                            requestFile
                        )
 
-                   // val uploadType = if (runAttemptCount == 0) "Direct" else "Retry"
+                    val uploadType = if (retryCount == 0) "Direct" else "Retry"
 
                    var response = shootRepository.uploadImage(projectId!!,
-                       skuId!!, imageCategory!!,authKey, "Direct".toRequestBody(MultipartBody.FORM),image.sequence!!,imageFile)
+                       skuId!!, imageCategory!!,authKey, uploadType.toRequestBody(MultipartBody.FORM),image.sequence!!,imageFile)
 
                    when(response){
                        is Resource.Success -> {
                            captureEvent(Events.UPLOADED,image,true,null)
-                           startNextUpload(image.itemId!!,true)
+                           startNextUpload(image.itemId!!,true,imageType)
                        }
 
                        is Resource.Failure -> {
@@ -112,16 +128,36 @@ class ImageUploader(val context: Context,
                            }else {
                                captureEvent(Events.UPLOAD_FAILED,image,false,response.errorCode.toString()+": "+response.errorMessage)
                            }
-                           selectLastImageAndUpload()
+
+                           selectLastImageAndUpload(imageType,retryCount+1)
                        }
                    }
 
                }else{
                    logUpload("All Images uploaded")
-                   //start skipped images worker
-                   // startSkippedImagesWorker()
+                   if (imageType == AppConstants.REGULAR){
+                       //start skipped images worker
+                       logUpload("Start Skipped Images uploaded")
+                      selectLastImageAndUpload(AppConstants.SKIPPED,0)
+                   }else{
+                       //make second time skipped images elligible for upload
+                       val count = localRepository.updateSkipedImages()
 
-                   listener.onUploaded(image)
+                       //check if we don"t have any new image clicked while uploading skipped images
+                      if (localRepository.getOldestImage().itemId == null){
+                          if (count > 0){
+                              //upload double skipped images if we don't have any new image
+                              selectLastImageAndUpload(AppConstants.SKIPPED,0)
+                          }
+                          else
+                              listener.onUploaded(image)
+                      } else{
+                          //upload images clicked while service uploading skipped images
+                          selectLastImageAndUpload(AppConstants.REGULAR,0)
+                      }
+
+                   }
+
                }
            }
        }else {
@@ -129,13 +165,13 @@ class ImageUploader(val context: Context,
        }
     }
 
-    private fun startNextUpload(itemId: Long,uploaded : Boolean) {
+    private fun startNextUpload(itemId: Long,uploaded : Boolean,imageType : String) {
        logUpload("Start next upload "+uploaded)
         //remove uploaded item from database
         if (uploaded)
             localRepository.deleteImage(itemId)
 
-        selectLastImageAndUpload()
+        selectLastImageAndUpload(imageType,0)
     }
 
     private fun captureEvent(eventName : String, image : Image, isSuccess : Boolean, error: String?) {

@@ -102,8 +102,6 @@ class RecursiveProcessSkuWorker(private val appContext: Context, workerParams: W
     }
 
     private fun startNextUpload(itemId: Sku) {
-        com.spyneai.shoot.utils.log("next upload started")
-        com.spyneai.shoot.utils.log("image to delete $itemId")
         //remove uploaded item from database
         localRepository.updateIsProcessed(itemId.projectId!!,itemId.skuId!!)
 

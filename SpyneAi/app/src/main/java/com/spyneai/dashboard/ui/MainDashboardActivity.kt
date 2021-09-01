@@ -233,10 +233,10 @@ class MainDashboardActivity : AppCompatActivity() {
         val storeWorkRequest = OneTimeWorkRequest.Builder(StoreImageFilesWorker::class.java)
             .addTag("StoreImageFiles  Worker")
 
-        WorkManager.getInstance(BaseApplication.getContext())
-            .enqueue(
-                storeWorkRequest
-                    .build())
+//        WorkManager.getInstance(BaseApplication.getContext())
+//            .enqueue(
+//                storeWorkRequest
+//                    .build())
 
     }
 

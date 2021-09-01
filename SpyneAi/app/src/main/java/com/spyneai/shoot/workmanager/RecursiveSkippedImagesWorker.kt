@@ -141,8 +141,6 @@ class RecursiveSkippedImagesWorker(private val appContext: Context, workerParams
     }
 
     private fun startNextUpload(itemId: Long,uploaded : Boolean) {
-        com.spyneai.shoot.utils.log("next upload started")
-        com.spyneai.shoot.utils.log("image to delete $itemId")
         //remove uploaded item from database
         if (uploaded)
             localRepository.deleteImage(itemId)

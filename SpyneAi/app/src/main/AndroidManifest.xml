@@ -181,6 +181,12 @@
             </intent-filter>
         </receiver>
 
+        <receiver android:name=".service.ExplicitConnectionReceiver" >
+            <intent-filter>
+                <action android:name="android.net.conn.CONNECTIVITY_CHANGE" />
+            </intent-filter>
+        </receiver>
+
         <activity
             android:name=".activity.OnboardingsActivity"
             android:screenOrientation="portrait" />

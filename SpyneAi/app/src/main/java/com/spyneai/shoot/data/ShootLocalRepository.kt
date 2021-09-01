@@ -11,6 +11,7 @@ import com.spyneai.db.Projects
 import com.spyneai.db.ShootContract
 import com.spyneai.shoot.data.model.Image
 import com.spyneai.shoot.data.model.Project
+import com.spyneai.shoot.utils.logUpload
 
 class ShootLocalRepository {
 
@@ -647,6 +648,7 @@ class ShootLocalRepository {
             selection,
             selectionArgs)
 
+        logUpload("Image Skipped "+skip+" "+count)
         com.spyneai.shoot.utils.log("deleteImage : "+count)
     }
 

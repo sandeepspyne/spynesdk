@@ -19,12 +19,15 @@ import com.spyneai.shoot.data.ShootLocalRepository
 import com.spyneai.shoot.data.ShootRepository
 import com.spyneai.shoot.data.model.Image
 import android.content.IntentFilter
+import android.icu.text.CaseMap
 import android.net.ConnectivityManager
 import android.net.NetworkInfo
 import androidx.core.content.ContextCompat
+import com.spyneai.captureEvent
 import com.spyneai.isInternetActive
 import com.spyneai.isMyServiceRunning
 import com.spyneai.shoot.utils.logUpload
+import java.io.File
 
 
 class ImageUploadingService : Service(), ImageUploader.Listener {
@@ -37,6 +40,9 @@ class ImageUploadingService : Service(), ImageUploader.Listener {
     var uploadRunning = false
     var isConnected = false
     private var imageUploader : ImageUploader? = null
+    private var notificationId = 0
+    val notificationChannelId = "PROCESSING SERVICE CHANNEL"
+    var currentImage : Image? = null
 
 
     override fun onDestroy() {
@@ -97,17 +103,16 @@ class ImageUploadingService : Service(), ImageUploader.Listener {
     }
 
     private fun createOngoingNotificaiton() {
-        var notificationId = (0..999999).random()
-        val text: String = "Image processing in progress..."
-        var notification = createNotification(text, true)
+        notificationId = (0..999999).random()
+        val title = getString(R.string.app_name)
+        val text = "Image uploading in progress..."
+        var notification = createNotification(title,text, true)
 
         notificationManager.notify(notificationId, notification)
         startForeground(notificationId, notification)
-
     }
 
-    private fun createNotification(text: String, isOngoing: Boolean): Notification {
-        val notificationChannelId = "PROCESSING SERVICE CHANNEL"
+    private fun createNotification(title: String,text: String, isOngoing: Boolean): Notification {
         // depending on the Android API that we're dealing with we will have
         // to use a specific method to create the notification
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
@@ -152,7 +157,7 @@ class ImageUploadingService : Service(), ImageUploader.Listener {
                 Notification.Builder(this)
 
         return builder
-            .setContentTitle("Spyne")
+            .setContentTitle(title)
             .setContentText(text)
             .setContentIntent(pendingIntent)
             .setSmallIcon(R.mipmap.app_logo)
@@ -184,6 +189,14 @@ class ImageUploadingService : Service(), ImageUploader.Listener {
     }
 
     override fun inProgress(task: Image) {
+        currentImage = task
+        logUpload("in progress "+task.imagePath)
+        val title = "Uploading "+task.skuName+"("+task.categoryName+"-"+task.sequence+")"
+        val internet = if (isInternetActive()) "Active" else "Disconnected"
+        val content = "Internet Connection: "+internet
+        var notification = createNotification(title,content, true)
+
+        notificationManager.notify(notificationId, notification)
        uploadRunning = true
     }
 
@@ -198,6 +211,12 @@ class ImageUploadingService : Service(), ImageUploader.Listener {
     override fun onConnectionLost() {
         logUpload("onConnectionLost")
         uploadRunning = false
+
+        val title = if (currentImage == null) "Uploading Paused" else "Uploading Paused On "+currentImage?.skuName+"("+currentImage?.categoryName+"-"+currentImage?.sequence+")"
+        val content = "Internet Connection: Disconnected"
+        var notification = createNotification(title,content, true)
+
+        notificationManager.notify(notificationId, notification)
     }
 
     inner class InternetConnectionReceiver : BroadcastReceiver(){
@@ -207,10 +226,10 @@ class ImageUploadingService : Service(), ImageUploader.Listener {
 
             logUpload("Connection changed "+isConnected)
 
+
             if (isConnected == true){
                 //if any image pending in upload
                 val image = ShootLocalRepository().getOldestImage()
-
 
                 if (image.itemId != null && !uploadRunning){
                     logUpload(image.itemId.toString()+" "+uploadRunning)
