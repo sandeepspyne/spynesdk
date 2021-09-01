@@ -231,30 +231,9 @@ class ShootViewModel : ViewModel(){
         localRepository.insertImage(image)
     }
 
-    fun startLongRunningParentWorker() {
-        val constraints: Constraints = Constraints.Builder()
-            .setRequiredNetworkType(NetworkType.CONNECTED)
-            .build()
-
-        val longWorkRequest = OneTimeWorkRequest.Builder(ParentRecursiveWorker::class.java)
-            .addTag("Long Running Parent Worker")
-            .setBackoffCriteria(
-                BackoffPolicy.LINEAR,
-                OneTimeWorkRequest.MIN_BACKOFF_MILLIS,
-                TimeUnit.MILLISECONDS)
-
-        WorkManager.getInstance(BaseApplication.getContext())
-            .enqueue(
-                longWorkRequest
-                    .setConstraints(constraints)
-                    .build())
-    }
 
 
-
-
-
-                fun createProject(
+    fun createProject(
         authKey: String, projectName: String, prodCatId: String
     ) = viewModelScope.launch {
         _createProjectRes.value = Resource.Loading

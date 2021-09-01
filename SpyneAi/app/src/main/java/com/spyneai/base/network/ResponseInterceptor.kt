@@ -1,8 +1,13 @@
 package com.spyneai.base.network
 
 import android.util.Log
+import com.posthog.android.Properties
+import com.spyneai.BaseApplication
+import com.spyneai.captureEvent
+import com.spyneai.posthog.Events
 import okhttp3.*
 import okhttp3.ResponseBody.Companion.toResponseBody
+import org.json.JSONException
 import org.json.JSONObject
 import retrofit2.HttpException
 import java.io.IOException
@@ -17,17 +22,26 @@ class ResponseInterceptor : Interceptor {
             val body = response.body
             val bodyString = body!!.string()
             val contentType: MediaType? = body!!.contentType()
-            val json = JSONObject(bodyString)
-           // Log.d("ResponseInterceptor", "intercept: " + json)
+            var finalResponse : Response? = null
+            try {
+                val json = JSONObject(bodyString)
+                // Log.d("ResponseInterceptor", "intercept: " + json)
 
-            var finalResponse = response.newBuilder().body(bodyString.toResponseBody(contentType)).build()
+                 finalResponse = response.newBuilder().body(bodyString.toResponseBody(contentType)).build()
 
-
-            if (json.has("status") && json.getInt("status") != 200) {
-                throw ServerException(json.getInt("status"),json.getString("message"))
+                if (json.has("status") && json.getInt("status") != 200) {
+                    throw ServerException(json.getInt("status"),json.getString("message"))
+                }
+            }catch (e : JSONException){
+                val properties = Properties()
+                    .apply {
+                        put("api",response.request.url)
+                    }
+                BaseApplication.getContext()
+                    .captureEvent(Events.JSON_RESPONSE,properties)
             }
 
-            return finalResponse
+            return finalResponse!!
         }
 
 

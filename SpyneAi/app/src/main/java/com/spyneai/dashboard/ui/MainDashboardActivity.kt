@@ -41,8 +41,14 @@ import java.io.File
 import com.google.android.material.snackbar.Snackbar
 import com.posthog.android.Properties
 import com.spyneai.captureEvent
+import com.spyneai.isMyServiceRunning
 import com.spyneai.orders.ui.MyOrdersFragment
 import com.spyneai.posthog.Events
+import com.spyneai.service.Actions
+import com.spyneai.service.ImageUploadingService
+import com.spyneai.service.getServiceState
+import com.spyneai.service.log
+import com.spyneai.shoot.data.ShootLocalRepository
 import com.spyneai.shoot.ui.dialogs.ResolutionNotSupportedFragment
 import com.spyneai.shoot.workmanager.ProcessSkuWorker
 import com.spyneai.shoot.workmanager.RecursiveSkippedImagesWorker
@@ -232,6 +238,40 @@ class MainDashboardActivity : AppCompatActivity() {
 
         val storeWorkRequest = OneTimeWorkRequest.Builder(StoreImageFilesWorker::class.java)
             .addTag("StoreImageFiles  Worker")
+
+        //cancel main recursive worker
+
+        //start service if have pending images
+        val shootLocalRepository = ShootLocalRepository()
+        if (shootLocalRepository.getOldestImage().itemId != null
+            || shootLocalRepository.getOldestSkippedImage().itemId != null){
+
+            var action = Actions.START
+            if (getServiceState(this) == com.spyneai.service.ServiceState.STOPPED && action == Actions.STOP)
+                return
+
+            val serviceIntent = Intent(this, ImageUploadingService::class.java)
+            serviceIntent.action = action.name
+
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                log("Starting the service in >=26 Mode")
+                ContextCompat.startForegroundService(this, serviceIntent)
+                return
+            } else {
+                log("Starting the service in < 26 Mode")
+                startService(serviceIntent)
+            }
+
+            val properties = Properties()
+                .apply {
+                    put("service_state","Started")
+                    put("email",Utilities.getPreference(this@MainDashboardActivity,AppConstants.EMAIL_ID).toString())
+                    put("medium","Main Actity")
+                }
+
+            captureEvent(Events.SERVICE_STARTED,properties)
+        }
+
 
 //        WorkManager.getInstance(BaseApplication.getContext())
 //            .enqueue(

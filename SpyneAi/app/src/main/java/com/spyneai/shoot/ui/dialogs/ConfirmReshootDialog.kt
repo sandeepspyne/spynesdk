@@ -158,7 +158,6 @@ class ConfirmReshootDialog : BaseDialogFragment<ShootViewModel, DialogConfirmRes
             insertImage(viewModel.shootData.value!!)
         }
 
-
         var action = Actions.START
         if (getServiceState(requireContext()) == com.spyneai.service.ServiceState.STOPPED && action == Actions.STOP)
             return
@@ -176,15 +175,6 @@ class ConfirmReshootDialog : BaseDialogFragment<ShootViewModel, DialogConfirmRes
         }
     }
 
-    private fun isMyServiceRunning(serviceClass: Class<*>): Boolean {
-        val manager = requireActivity().getSystemService(Context.ACTIVITY_SERVICE) as ActivityManager
-        for (service in manager.getRunningServices(Int.MAX_VALUE)) {
-            if (serviceClass.name == service.service.className) {
-                return true
-            }
-        }
-        return false
-    }
 
     fun updateTotalImages() {
         viewModel.updateTotalImages(viewModel.sku.value?.skuId!!)
@@ -272,12 +262,6 @@ class ConfirmReshootDialog : BaseDialogFragment<ShootViewModel, DialogConfirmRes
             viewModel.selectBackground.value = true
     }
 
-
-//    override fun onStop() {
-//        super.onStop()
-//        shoot("onStop called(confirmReshootDialog-> dismissAllowingStateLoss)")
-//        dismissAllowingStateLoss()
-//    }
 
     override fun getViewModel() = ShootViewModel::class.java
 
