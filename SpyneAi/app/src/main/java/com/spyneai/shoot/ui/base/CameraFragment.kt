@@ -53,6 +53,7 @@ import kotlin.math.min
 import kotlin.math.roundToInt
 import android.media.MediaActionSound
 import android.util.Size
+import com.spyneai.BaseApplication
 import com.spyneai.shoot.ui.dialogs.ThreeSixtyInteriorHintDialog
 import com.spyneai.shoot.utils.shoot
 
@@ -144,6 +145,7 @@ class CameraFragment : BaseFragment<ShootViewModel, FragmentCameraBinding>(), Pi
         pickIt = PickiT(requireContext(), this, requireActivity())
 
         viewModel.startInteriorShots.observe(viewLifecycleOwner, {
+
             if (it) binding.llSkip?.visibility = View.VISIBLE
         })
 
@@ -379,7 +381,7 @@ class CameraFragment : BaseFragment<ShootViewModel, FragmentCameraBinding>(), Pi
         viewModel.isCameraButtonClickable = false
 
         viewModel.createSku(
-            Utilities.getPreference(requireContext(), AppConstants.AUTH_KEY).toString(), projectId,
+            Utilities.getPreference(BaseApplication.getContext(), AppConstants.AUTH_KEY).toString(), projectId,
             requireActivity().intent.getStringExtra(AppConstants.CATEGORY_ID).toString(),
             prod_sub_cat_id!!,
             viewModel.sku.value?.skuName.toString(),
@@ -389,7 +391,7 @@ class CameraFragment : BaseFragment<ShootViewModel, FragmentCameraBinding>(), Pi
         viewModel.createSkuRes.observe(viewLifecycleOwner, {
             when (it) {
                 is Resource.Success -> {
-                    requireContext().captureEvent(
+                    BaseApplication.getContext().captureEvent(
                         Events.CREATE_SKU,
                         Properties().putValue("sku_name", viewModel.sku.value?.skuName.toString())
                             .putValue("project_id", projectId)
@@ -423,7 +425,7 @@ class CameraFragment : BaseFragment<ShootViewModel, FragmentCameraBinding>(), Pi
 
                 is Resource.Failure -> {
                     viewModel.isCameraButtonClickable = true
-                    requireContext().captureFailureEvent(
+                    BaseApplication.getContext().captureFailureEvent(
                         Events.CREATE_SKU_FAILED, Properties(),
                         it.errorMessage!!
                     )
@@ -452,7 +454,7 @@ class CameraFragment : BaseFragment<ShootViewModel, FragmentCameraBinding>(), Pi
 
     @SuppressLint("UnsafeOptInUsageError")
     private fun startCamera() {
-        val cameraProviderFuture = ProcessCameraProvider.getInstance(requireContext())
+        val cameraProviderFuture = ProcessCameraProvider.getInstance(BaseApplication.getContext())
         var cameraProvider: ProcessCameraProvider
         cameraProviderFuture.addListener({
 
@@ -460,10 +462,10 @@ class CameraFragment : BaseFragment<ShootViewModel, FragmentCameraBinding>(), Pi
             try {
                 cameraProvider = cameraProviderFuture.get()
             } catch (e: InterruptedException) {
-                Toast.makeText(requireContext(), "Error starting camera", Toast.LENGTH_SHORT).show()
+                Toast.makeText(BaseApplication.getContext(), "Error starting camera", Toast.LENGTH_SHORT).show()
                 return@addListener
             } catch (e: ExecutionException) {
-                Toast.makeText(requireContext(), "Error starting camera", Toast.LENGTH_SHORT).show()
+                Toast.makeText(BaseApplication.getContext(), "Error starting camera", Toast.LENGTH_SHORT).show()
                 return@addListener
             }
 
@@ -474,7 +476,7 @@ class CameraFragment : BaseFragment<ShootViewModel, FragmentCameraBinding>(), Pi
             var width = 0
             val displayMetrics = DisplayMetrics()
             if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.R) {
-                requireContext().display?.getRealMetrics(displayMetrics)
+                BaseApplication.getContext().display?.getRealMetrics(displayMetrics)
                 height = displayMetrics.heightPixels
                 width = displayMetrics.widthPixels
 
@@ -599,13 +601,13 @@ class CameraFragment : BaseFragment<ShootViewModel, FragmentCameraBinding>(), Pi
                 properties["error"] = exc?.localizedMessage
                 properties["category"] = viewModel.categoryDetails.value?.categoryName
 
-                requireContext().captureEvent(
+                BaseApplication.getContext().captureEvent(
                     Events.OVERLAY_CAMERA_FIALED,
                     properties
                 )
             }
 
-        }, ContextCompat.getMainExecutor(requireContext()))
+        }, ContextCompat.getMainExecutor(BaseApplication.getContext()))
 
     }
 
@@ -755,7 +757,7 @@ class CameraFragment : BaseFragment<ShootViewModel, FragmentCameraBinding>(), Pi
                 put(MediaStore.MediaColumns.RELATIVE_PATH, outputDirectory)
             }
 
-            val contentResolver = requireContext().contentResolver
+            val contentResolver = BaseApplication.getContext().contentResolver
 
             // Create the output uri
             val contentUri =
@@ -773,7 +775,7 @@ class CameraFragment : BaseFragment<ShootViewModel, FragmentCameraBinding>(), Pi
         // been taken
         imageCapture1.takePicture(
             outputOptions,
-            ContextCompat.getMainExecutor(requireContext()),
+            ContextCompat.getMainExecutor(BaseApplication.getContext()),
             object : ImageCapture.OnImageSavedCallback {
                 override fun onError(exc: ImageCaptureException) {
                     viewModel.isCameraButtonClickable = true
@@ -781,7 +783,7 @@ class CameraFragment : BaseFragment<ShootViewModel, FragmentCameraBinding>(), Pi
 
                     Utilities.hideProgressDialog()
 
-                    requireContext().captureFailureEvent(
+                    BaseApplication.getContext().captureFailureEvent(
                         Events.IMAGE_CAPRURE_FAILED,
                         Properties(),
                         exc.localizedMessage
@@ -1001,37 +1003,37 @@ class CameraFragment : BaseFragment<ShootViewModel, FragmentCameraBinding>(), Pi
     private fun gyroMeterOffLevel() {
         binding.ivTopLeft?.setColorFilter(
             ContextCompat.getColor(
-                requireContext(),
+                BaseApplication.getContext(),
                 R.color.gyro_error_level
             )
         )
         binding.ivBottomLeft?.setColorFilter(
             ContextCompat.getColor(
-                requireContext(),
+                BaseApplication.getContext(),
                 R.color.gyro_error_level
             )
         )
 
         binding.ivGryroRing?.setColorFilter(
             ContextCompat.getColor(
-                requireContext(),
+                BaseApplication.getContext(),
                 R.color.gyro_error_level
             )
         )
         binding.tvLevelIndicator?.background = ContextCompat.getDrawable(
-            requireContext(),
+            BaseApplication.getContext(),
             R.drawable.bg_gyro_error
         )
 
         binding.ivTopRight?.setColorFilter(
             ContextCompat.getColor(
-                requireContext(),
+                BaseApplication.getContext(),
                 R.color.gyro_error_level
             )
         )
         binding.ivBottomRight?.setColorFilter(
             ContextCompat.getColor(
-                requireContext(),
+                BaseApplication.getContext(),
                 R.color.gyro_error_level
             )
         )
@@ -1051,37 +1053,37 @@ class CameraFragment : BaseFragment<ShootViewModel, FragmentCameraBinding>(), Pi
 
         binding.ivTopLeft?.setColorFilter(
             ContextCompat.getColor(
-                requireContext(),
+                BaseApplication.getContext(),
                 R.color.gyro_in_level
             )
         )
         binding.ivBottomLeft?.setColorFilter(
             ContextCompat.getColor(
-                requireContext(),
+                BaseApplication.getContext(),
                 R.color.gyro_in_level
             )
         )
 
         binding.ivGryroRing?.setColorFilter(
             ContextCompat.getColor(
-                requireContext(),
+                BaseApplication.getContext(),
                 R.color.gyro_in_level
             )
         )
         binding.tvLevelIndicator?.background = ContextCompat.getDrawable(
-            requireContext(),
+            BaseApplication.getContext(),
             R.drawable.bg_gyro_level
         )
 
         binding.ivTopRight?.setColorFilter(
             ContextCompat.getColor(
-                requireContext(),
+                BaseApplication.getContext(),
                 R.color.gyro_in_level
             )
         )
         binding.ivBottomRight?.setColorFilter(
             ContextCompat.getColor(
-                requireContext(),
+                BaseApplication.getContext(),
                 R.color.gyro_in_level
             )
         )
@@ -1160,7 +1162,7 @@ class CameraFragment : BaseFragment<ShootViewModel, FragmentCameraBinding>(), Pi
                 viewModel.projectId.value!!,
                 viewModel.sku.value?.skuId!!,
                 viewModel.categoryDetails.value?.imageType!!,
-                Utilities.getPreference(requireContext(), AppConstants.AUTH_KEY).toString(),
+                Utilities.getPreference(BaseApplication.getContext(), AppConstants.AUTH_KEY).toString(),
                 viewModel.shootList.value!!.size.plus(1)
             )
         )
@@ -1174,7 +1176,7 @@ class CameraFragment : BaseFragment<ShootViewModel, FragmentCameraBinding>(), Pi
             this["image_type"] = viewModel.categoryDetails.value?.imageType!!
         }
 
-        requireContext().captureEvent(Events.IMAGE_CAPTURED, properties)
+        BaseApplication.getContext().captureEvent(Events.IMAGE_CAPTURED, properties)
     }
 
     override fun getViewModel() = ShootViewModel::class.java

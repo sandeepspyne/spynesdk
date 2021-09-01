@@ -232,7 +232,6 @@ class ShootViewModel : ViewModel(){
     }
 
 
-
     fun createProject(
         authKey: String, projectName: String, prodCatId: String
     ) = viewModelScope.launch {
