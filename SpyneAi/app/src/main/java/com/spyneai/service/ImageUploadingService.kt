@@ -145,7 +145,7 @@ class ImageUploadingService : Service(), ImageUploader.Listener {
             .setContentIntent(pendingIntent)
             .setSmallIcon(R.mipmap.app_logo)
             .setOngoing(isOngoing)
-            .setOnlyAlertOnce(true)
+            .setAutoCancel(isOngoing)
             .setPriority(Notification.PRIORITY_HIGH) // for under android 26 compatibility
             .build()
 
