@@ -55,6 +55,8 @@ class MyOngoingProjectAdapter(
 
     override fun onBindViewHolder(holder: MyOngoingProjectAdapter.ViewHolder, position: Int) {
 
+
+
         if (getProjectList[position].sub_category == "360_exterior"
             || getProjectList[position].sub_category.equals("360_interior")
         ) {
@@ -133,15 +135,14 @@ class MyOngoingProjectAdapter(
                 holder.lottieProgressCircle.visibility = View.INVISIBLE
                 holder.llUploaded.visibility = View.VISIBLE
             }
-
-
-            holder.tvSkus.text = getProjectList[position].total_sku.toString()
-            holder.tvImages.text = getProjectList[position].total_images.toString()
         }
+
+        holder.tvSkus.text = getProjectList[position].total_sku.toString()
 
         holder.tvImageCount.text =
             getProjectList[position].processed_images.toString() + "/" + getProjectList[position].total_images.toString()
 
+        holder.tvImages.text = getProjectList[position].total_images.toString()
 
         holder.tvProjectName.text = getProjectList[position].project_name
         holder.tvDate.text = getProjectList[position].created_on
