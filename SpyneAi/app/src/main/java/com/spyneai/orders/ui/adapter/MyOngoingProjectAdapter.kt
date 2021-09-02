@@ -129,7 +129,6 @@ class MyOngoingProjectAdapter(
             e.printStackTrace()
         }
 
-
             if (getProjectList[position].status.equals("Uploaded")) {
                 holder.tvImageCount.visibility = View.INVISIBLE
                 holder.lottieProgressCircle.visibility = View.INVISIBLE
@@ -139,10 +138,10 @@ class MyOngoingProjectAdapter(
 
         holder.tvSkus.text = getProjectList[position].total_sku.toString()
 
+        holder.tvImages.text = getProjectList[position].total_images.toString()
+
         holder.tvImageCount.text =
             getProjectList[position].processed_images.toString() + "/" + getProjectList[position].total_images.toString()
-
-        holder.tvImages.text = getProjectList[position].total_images.toString()
 
         holder.tvProjectName.text = getProjectList[position].project_name
         holder.tvDate.text = getProjectList[position].created_on
