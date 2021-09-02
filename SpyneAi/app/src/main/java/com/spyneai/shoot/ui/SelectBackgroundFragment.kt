@@ -25,6 +25,7 @@ import com.spyneai.shoot.adapters.NewCarBackgroundAdapter
 import com.spyneai.shoot.data.ProcessViewModel
 import com.spyneai.shoot.data.model.CarsBackgroundRes
 import com.spyneai.shoot.utils.log
+import kotlinx.android.synthetic.main.activity_credit_plans.*
 import okhttp3.MultipartBody
 import okhttp3.RequestBody.Companion.toRequestBody
 
@@ -78,7 +79,7 @@ class SelectBackgroundFragment : BaseFragment<ProcessViewModel,FragmentSelectBac
             if (viewModel.interiorMiscShootsCount > 0)
                 updateTotalFrames()
             else{
-                processRequest()
+                processRequest(true)
             }
         }
 
@@ -87,18 +88,18 @@ class SelectBackgroundFragment : BaseFragment<ProcessViewModel,FragmentSelectBac
 
     }
 
-    private fun processRequest() {
+    private fun processRequest(showDialog : Boolean) {
         when(getString(R.string.app_name)) {
             AppConstants.KARVI,AppConstants.SWEEP -> {
                 //process image call
-                processSku()
+                processSku(showDialog)
             }else -> {
             if (binding.cb360.isChecked){
                 viewModel.backgroundSelect = backgroundSelect
                 viewModel.addRegularShootSummaryFragment.value = true
             }else{
                 //process image call
-                processSku()
+                processSku(showDialog)
             }
             }
         }
@@ -208,9 +209,7 @@ class SelectBackgroundFragment : BaseFragment<ProcessViewModel,FragmentSelectBac
                     }
 
                     requireContext().captureEvent(Events.TOTAL_FRAMES_UPDATED,properties)
-
-                    Utilities.hideProgressDialog()
-                    processRequest()
+                    processRequest(false)
                 }
 
                 is Resource.Failure -> {
@@ -232,14 +231,15 @@ class SelectBackgroundFragment : BaseFragment<ProcessViewModel,FragmentSelectBac
         })
     }
 
-    private fun processSku() {
+    private fun processSku(showDialog : Boolean) {
+        if (showDialog)
+            Utilities.showProgressDialog(requireContext())
+
         requireContext().captureEvent(
             Events.PROCESS_INITIATED,
             Properties().putValue("sku_id", viewModel.sku.value?.skuId!!)
                 .putValue("background_id",backgroundSelect)
         )
-
-        Utilities.showProgressDialog(requireContext())
 
         viewModel.processSku(
             Utilities.getPreference(requireContext(),AppConstants.AUTH_KEY).toString(),
@@ -277,7 +277,7 @@ class SelectBackgroundFragment : BaseFragment<ProcessViewModel,FragmentSelectBac
                         Properties().putValue("sku_id",viewModel.sku.value?.skuId!!),
                         it.errorMessage!!)
 
-                    handleApiError(it) { processSku()}
+                    handleApiError(it) { processSku(true)}
                 }
             }
         })

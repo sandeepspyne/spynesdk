@@ -133,7 +133,7 @@ class MainDashboardActivity : AppCompatActivity() {
 
                                 val s = configs?.getOutputSizes(ImageFormat.JPEG)
 
-                                var resolutionSupported = false
+                                var resolutionSupported = true
 
                                 s?.forEach { it ->
                                     if (!resolutionSupported && it != null) {
@@ -190,12 +190,10 @@ class MainDashboardActivity : AppCompatActivity() {
             viewModel.creditsMessage.value = intent.getStringExtra(AppConstants.CREDITS_MESSAGE)
         }
 
-        if (getString(R.string.app_name) == AppConstants.OLA_CABS){
-            if (allPermissionsGranted()) {
-                onPermissionGranted()
-            } else {
-                permissionRequest.launch(permissions.toTypedArray())
-            }
+        if (allPermissionsGranted()) {
+            onPermissionGranted()
+        } else {
+            permissionRequest.launch(permissions.toTypedArray())
         }
     }
 

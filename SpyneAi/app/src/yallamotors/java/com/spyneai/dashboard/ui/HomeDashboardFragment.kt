@@ -23,6 +23,7 @@ import com.spyneai.captureEvent
 import com.spyneai.captureFailureEvent
 import com.spyneai.dashboard.data.DashboardViewModel
 import com.spyneai.databinding.HomeDashboardFragmentBinding
+import com.spyneai.draft.ui.DraftsActivity
 import com.spyneai.fragment.TopUpFragment
 import com.spyneai.needs.AppConstants
 import com.spyneai.needs.Utilities
@@ -54,35 +55,14 @@ class HomeDashboardFragment :
         lisners()
     }
 
-
-
-    private fun showFreeCreditDialog(message: String) {
-        val dialog = Dialog(requireContext())
-        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE)
-        dialog.setCancelable(true)
-
-        var dialogView = LayoutInflater.from(requireContext()).inflate(R.layout.free_credit_dialog, null)
-        var tvMessage: TextView = dialogView.findViewById(R.id.tvSkuNameDialog)
-        tvMessage.text = message
-
-        dialog.setContentView(dialogView)
-
-        dialog.getWindow()?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT));
-        val llOk: LinearLayout = dialog.findViewById(R.id.llOk)
-
-
-        llOk.setOnClickListener(View.OnClickListener {
-
-            dialog.dismiss()
-
-        })
-        dialog.show()
-
-    }
-
     private fun lisners(){
         binding.ivWallet.setOnClickListener {
             TopUpFragment().show(requireActivity().supportFragmentManager,"TopUpFragment")
+        }
+
+        binding.llDrafts.setOnClickListener {
+            val intent = Intent(requireContext(), DraftsActivity::class.java)
+            startActivity(intent)
         }
 
         binding.llCompleted.setOnClickListener {

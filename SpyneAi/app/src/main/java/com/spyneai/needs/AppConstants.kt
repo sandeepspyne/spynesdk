@@ -134,8 +134,17 @@ object AppConstants {
     val CARS24_INDIA = "Cars24 (B2C) Cataloging"
     val CARS24= "Cars 24 Cataloging"
     val SWEEP= "Sweep.ei"
+    val TRUSTED_CARS= "Trusted Cars"
+    val TRAVO_PHOTOS= "Travo Photos"
+    val YALLA_MOTOS= "Yalla Motors"
     val OLA_CABS = "Ola Cabs"
+
+
     val UDAAN = "Udaan"
+    val SWIGGY = "Swiggy"
+    val FLIPKART = "Flipkart"
+    val AMAZON = "Amazon"
+
     val SPYNE_AI = "SpyneAI"
 
     val REGULAR = "REGULAR"

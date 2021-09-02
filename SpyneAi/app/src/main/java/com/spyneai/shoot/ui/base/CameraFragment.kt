@@ -287,7 +287,13 @@ class CameraFragment : BaseFragment<ShootViewModel, FragmentCameraBinding>(), Pi
 
     private fun onCaptureClick() {
         when (getString(R.string.app_name)) {
-            AppConstants.KARVI, AppConstants.CARS24, AppConstants.CARS24_INDIA -> {
+            AppConstants.KARVI,
+            AppConstants.CARS24,
+            AppConstants.CARS24_INDIA,
+            AppConstants.SWEEP,
+            AppConstants.TRUSTED_CARS,
+            AppConstants.TRAVO_PHOTOS,
+            AppConstants.YALLA_MOTOS-> {
                 if (viewModel.shootList.value == null
                     && !requireActivity().intent.getBooleanExtra(AppConstants.SKU_CREATED,false)) {
                     if (binding.flLevelIndicator.visibility == View.VISIBLE) {
@@ -329,8 +335,17 @@ class CameraFragment : BaseFragment<ShootViewModel, FragmentCameraBinding>(), Pi
                     }
                 }
             }
-            "Flipkart", "Udaan", "Lal10", "Amazon", "Swiggy" -> {
-                captureImage()
+            AppConstants.FLIPKART,
+            AppConstants.UDAAN,
+            AppConstants.LAL_10,
+            AppConstants.AMAZON,
+            AppConstants.SWIGGY -> {
+                if (binding.flLevelIndicator.visibility == View.VISIBLE) {
+                    if (isGyroOnCorrectAngle)
+                        captureImage()
+                } else {
+                    captureImage()
+                }
             }
             AppConstants.SPYNE_AI -> {
                 if (viewModel.shootList.value == null){
@@ -882,19 +897,12 @@ class CameraFragment : BaseFragment<ShootViewModel, FragmentCameraBinding>(), Pi
         roll = Math.toDegrees(orientationAngles[2].toDouble())
         azimuth = (orientationAngles[0] * 180 / Math.PI.toFloat()).toDouble()
 
-//        binding.tvPitchRoll.apply {
-//            this?.visibility = View.VISIBLE
-//            this?.text = "roll "+orientationAngles[2].roundToInt().toString()+"pitch "+orientationAngles[1].roundToInt().toString()
-//        }
-
         when (getString(R.string.app_name)) {
             AppConstants.KARVI -> {
                 if ((roll >= -95 && roll <= -85) && (pitch >= -5 && pitch <= 5)) {
-                    isGyroOnCorrectAngle = true
                     gyroMeterOnLevel(true)
 
                 } else {
-                    isGyroOnCorrectAngle = false
                     gyroMeterOffLevel()
 
                     if (movearrow)
@@ -910,7 +918,11 @@ class CameraFragment : BaseFragment<ShootViewModel, FragmentCameraBinding>(), Pi
                 }
             }
 
-            AppConstants.UDAAN, "Flipkart", "Udaan", "Amazon", "Lal10", "Swiggy" -> {
+            AppConstants.UDAAN,
+            AppConstants.FLIPKART,
+            AppConstants.AMAZON,
+            AppConstants.LAL_10,
+            AppConstants.SWIGGY -> {
                 //hide moving line
                 if (pitch.roundToInt() == 0 || (pitch.roundToInt() <= -0 && pitch.roundToInt() >= -3))
                     binding.tvLevelIndicator.visibility = View.GONE
@@ -1028,6 +1040,7 @@ class CameraFragment : BaseFragment<ShootViewModel, FragmentCameraBinding>(), Pi
     }
 
     private fun gyroMeterOffLevel() {
+        isGyroOnCorrectAngle = false
         binding.ivTopLeft?.setColorFilter(
             ContextCompat.getColor(
                 BaseApplication.getContext(),
@@ -1067,6 +1080,7 @@ class CameraFragment : BaseFragment<ShootViewModel, FragmentCameraBinding>(), Pi
     }
 
     private fun gyroMeterOnLevel(removeAnimation : Boolean) {
+        isGyroOnCorrectAngle = true
        if (removeAnimation) {
            binding
                .tvLevelIndicator
