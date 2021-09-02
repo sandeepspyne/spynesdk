@@ -143,7 +143,7 @@ class ImageUploadingService : Service(), ImageUploader.Listener {
             .setContentTitle(title)
             .setContentText(text)
             .setContentIntent(pendingIntent)
-            .setSmallIcon(R.mipmap.app_logo)
+            .setSmallIcon(R.drawable.app_logo)
             .setOngoing(isOngoing)
             .setAutoCancel(isOngoing)
             .setOnlyAlertOnce(true)
@@ -154,7 +154,6 @@ class ImageUploadingService : Service(), ImageUploader.Listener {
 
     private fun stopService() {
         log("Stopping the foreground service")
-        Toast.makeText(this, "Service stopping", Toast.LENGTH_SHORT).show()
         try {
             wakeLock?.let {
                 if (it.isHeld) {

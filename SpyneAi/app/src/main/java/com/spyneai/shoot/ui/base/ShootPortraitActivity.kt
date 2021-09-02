@@ -6,12 +6,12 @@ import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.os.Build
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.KeyEvent
 import android.view.WindowManager
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.ViewModelProvider
 import com.spyneai.R
@@ -31,7 +31,6 @@ import com.spyneai.shoot.ui.ecomwithgrid.GridEcomFragment
 import com.spyneai.shoot.ui.ecomwithgrid.ProjectDetailFragment
 import com.spyneai.shoot.ui.ecomwithgrid.SkuDetailFragment
 import com.spyneai.shoot.ui.ecomwithoverlays.OverlayEcomFragment
-import com.spyneai.shoot.utils.log
 import java.io.File
 
 class ShootPortraitActivity : AppCompatActivity() {
@@ -60,7 +59,7 @@ class ShootPortraitActivity : AppCompatActivity() {
         }
 
         if (intent.getBooleanExtra(AppConstants.FROM_DRAFTS,false))
-                    setUpDraftsData()
+            setUpDraftsData()
 
         val categoryDetails = CategoryDetails()
 
@@ -93,7 +92,7 @@ class ShootPortraitActivity : AppCompatActivity() {
                     .add(R.id.flCamerFragment, overlaysFragment)
                     .commitAllowingStateLoss()
             }
-        }else if (Utilities.getPreference(this, AppConstants.CATEGORY_NAME).equals("E-Commerce") || Utilities.getPreference(this, AppConstants.CATEGORY_NAME).equals("Food & Beverages")){
+        }else if (Utilities.getPreference(this, AppConstants.CATEGORY_NAME).equals("E-Commerce")){
             if(savedInstanceState == null) { // initial transaction should be wrapped like this
                 supportFragmentManager.beginTransaction()
                     .add(R.id.flCamerFragment, cameraFragment)
@@ -106,7 +105,31 @@ class ShootPortraitActivity : AppCompatActivity() {
                 shootViewModel.projectId.value = intent.getStringExtra("project_id")
                 val sku = Sku()
                 sku?.projectId = shootViewModel.projectId.value
-                shootViewModel.categoryDetails.value?.imageType = "E-Commerce"
+                shootViewModel.categoryDetails.value?.imageType = "Ecom"
+                sku.skuName = intent.getStringExtra(AppConstants.SKU_NAME)
+                sku.skuId = intent.getStringExtra(AppConstants.SKU_ID)
+                sku.categoryName = shootViewModel.categoryDetails.value?.categoryName
+
+                shootViewModel.sku.value = sku
+            } catch (e: Exception) {
+                e.printStackTrace()
+            }
+
+        }
+        else if (Utilities.getPreference(this, AppConstants.CATEGORY_NAME).equals("Food & Beverages")){
+            if(savedInstanceState == null) { // initial transaction should be wrapped like this
+                supportFragmentManager.beginTransaction()
+                    .add(R.id.flCamerFragment, cameraFragment)
+                    .add(R.id.flCamerFragment, gridEcomFragment)
+                    .commitAllowingStateLoss()
+            }
+
+            try {
+                val intent = intent
+                shootViewModel.projectId.value = intent.getStringExtra("project_id")
+                val sku = Sku()
+                sku?.projectId = shootViewModel.projectId.value
+                shootViewModel.categoryDetails.value?.imageType = "Food & Beverages"
                 sku.skuName = intent.getStringExtra(AppConstants.SKU_NAME)
                 sku.skuId = intent.getStringExtra(AppConstants.SKU_ID)
                 sku.categoryName = shootViewModel.categoryDetails.value?.categoryName
@@ -197,9 +220,9 @@ class ShootPortraitActivity : AppCompatActivity() {
 
         shootViewModel._createProjectRes.value = Resource.Success(
             CreateProjectRes(
-            "",
-            intent.getStringExtra(AppConstants.PROJECT_ID)!!,
-            200)
+                "",
+                intent.getStringExtra(AppConstants.PROJECT_ID)!!,
+                200)
         )
 
         //set sku data

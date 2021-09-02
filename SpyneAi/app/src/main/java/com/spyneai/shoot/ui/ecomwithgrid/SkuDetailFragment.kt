@@ -131,7 +131,6 @@ class SkuDetailFragment : BaseFragment<ShootViewModel, FragmentSkuDetailBinding>
     }
 
     private fun updateTotalFrames() {
-        Utilities.showProgressDialog(requireContext())
         viewModel.updateTotalFrames(
             viewModel.sku.value?.skuId.toString(),
             totalSkuImages.toString(),
