@@ -96,7 +96,7 @@ class SignInUsingOtpActivity : AppCompatActivity() {
         Utilities.showProgressDialog(this)
 
         val request = RetrofitClients.buildService(MyAPIService::class.java)
-        val call = request.loginEmailApp(binding.etEmail.text.toString().trim(), WhiteLabelConstants.API_KEY,"Android")
+        val call = request.loginEmailApp(binding.etEmail.text.toString().trim(), WhiteLabelConstants.API_KEY)
 //        val call = request.loginEmailApp(etEmail.text.toString(),"value")
 
         call?.enqueue(object : Callback<LoginResponse> {

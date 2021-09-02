@@ -95,14 +95,14 @@ interface MyAPIService {
     @POST("v2/user/validate-otp")
     fun postOtp(@Field("email_id") email_id : String,
                 @Field("api_key") apiKey : String,
-                @Field("otp") otp : String):
+                @Field("otp") otp : String,
+        @Field("source") source : String):
             Call<OtpResponse>?
 
     @FormUrlEncoded
     @POST("v2/user/request-otp")
     fun loginEmailApp(@Field("email_id") email_id : String,
-                      @Field("api_key") apiKey : String,
-                      @Field("source") source : String):
+                      @Field("api_key") apiKey : String):
             Call<LoginResponse>?
 
 

@@ -379,7 +379,7 @@ public class OtpActivity : AppCompatActivity() {
         val request = RetrofitClients.buildService(MyAPIService::class.java)
         val call = request.postOtp(Utilities.getPreference(this, AppConstants.EMAIL_ID).toString(),
             WhiteLabelConstants.API_KEY,
-            otpEntered)
+            otpEntered,"Android")
 
         call?.enqueue(object : Callback<OtpResponse> {
             override fun onResponse(call: Call<OtpResponse>, response: Response<OtpResponse>) {
@@ -446,7 +446,8 @@ public class OtpActivity : AppCompatActivity() {
         val loginRequest = LoginRequest(Utilities.getPreference(this, AppConstants.EMAIL_ID).toString());
 
         val request = RetrofitClient.buildService(MyAPIService::class.java)
-        val call = request.loginEmailApp(Utilities.getPreference(this, AppConstants.EMAIL_ID).toString(),WhiteLabelConstants.API_KEY,"Android")
+        val call = request.loginEmailApp(Utilities.getPreference(this, AppConstants.EMAIL_ID).toString(),
+            WhiteLabelConstants.API_KEY)
 
         call?.enqueue(object : Callback<LoginResponse>{
             override fun onResponse(call: Call<LoginResponse>, response: Response<LoginResponse>) {
