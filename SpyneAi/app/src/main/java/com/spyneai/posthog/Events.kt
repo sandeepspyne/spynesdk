@@ -112,6 +112,7 @@ object Events {
     val PERMISSIONS_DENIED = "Read Permission Denied"
     val FILE_READ_WORKED_INTIATED = "File Read Worker Initiated"
     val FILE_READ_WORKED_NOT_INTIATED = "File Read False"
+    val FILE_FOLDER_UPLOAD_FALSE = "Folder Upload False"
     val FILE_READ_WORKER_STARTED = "File Read Worker Started"
     val FILE_REAED_FINISHED = "File Read Worker Finished"
     val MANUAL_WORKER_ALREADY_RUNNING = "Manual Upload Already Running"

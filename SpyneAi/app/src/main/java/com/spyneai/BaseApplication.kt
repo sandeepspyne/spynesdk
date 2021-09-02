@@ -73,17 +73,17 @@ class BaseApplication : Application() {
         val flexInterval = 25L
         val workerTag = "InternetWorker"
 
-//        PeriodicWorkRequest
-//            .Builder(InternetWorker::class.java, repeatInternal,
-//                TimeUnit.MINUTES, flexInterval, TimeUnit.MINUTES)
-//            .setConstraints(
-//                Constraints.Builder()
-//                    .setRequiredNetworkType(NetworkType.CONNECTED)
-//                    .build())
-//            .build()
-//            .also {
-//                WorkManager.getInstance(context).enqueueUniquePeriodicWork(workerTag, ExistingPeriodicWorkPolicy.REPLACE, it)
-//            }
+        PeriodicWorkRequest
+            .Builder(InternetWorker::class.java, repeatInternal,
+                TimeUnit.MINUTES, flexInterval, TimeUnit.MINUTES)
+            .setConstraints(
+                Constraints.Builder()
+                    .setRequiredNetworkType(NetworkType.CONNECTED)
+                    .build())
+            .build()
+            .also {
+                WorkManager.getInstance(context).enqueueUniquePeriodicWork(workerTag, ExistingPeriodicWorkPolicy.REPLACE, it)
+            }
 
     }
 

@@ -254,10 +254,6 @@ class MainDashboardActivity : AppCompatActivity() {
             Utilities.savePrefrence(this,AppConstants.CANCEL_ALL_WROKERS,"Cancelled")
         }
 
-        checkFolderUpload()
-        //cancel main recursive worker
-        //start service if have pending images
-
         val shootLocalRepository = ShootLocalRepository()
         if (shootLocalRepository.getOldestImage().itemId != null
             || shootLocalRepository.getOldestSkippedImage().itemId != null){
@@ -287,6 +283,10 @@ class MainDashboardActivity : AppCompatActivity() {
 
             captureEvent(Events.SERVICE_STARTED,properties)
         }
+
+        checkFolderUpload()
+        //cancel main recursive worker
+        //start service if have pending images
     }
 
     private fun checkFolderUpload() {
@@ -317,7 +317,7 @@ class MainDashboardActivity : AppCompatActivity() {
                                     storeWorkRequest
                                         .build())
                         }else {
-                            capture(Events.FILE_READ_WORKED_NOT_INTIATED)
+                            capture(Events.FILE_FOLDER_UPLOAD_FALSE)
                         }
                     }else {
                         val properties = Properties()
