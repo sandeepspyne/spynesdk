@@ -98,7 +98,6 @@ class HomeDashboardFragment :
 
 
         if (PACKAGE_NAME.equals("com.spyneai.lal10.debug")) {
-            newUserCreditDialog()
             repeatRefreshData()
             setSliderRecycler()
             lisners()
@@ -128,8 +127,6 @@ class HomeDashboardFragment :
                     MY_REQUEST_CODE
                 )
             } else {
-
-                newUserCreditDialog()
                 repeatRefreshData()
                 setSliderRecycler()
                 lisners()
@@ -199,12 +196,7 @@ class HomeDashboardFragment :
         )
     }
 
-    private fun newUserCreditDialog() {
-        if (viewModel.isNewUser.value == true) {
-            showFreeCreditDialog(viewModel.creditsMessage.value.toString())
-            viewModel.isNewUser.value = false
-        }
-    }
+
 
     private fun getCompletedOrders() {
 
@@ -516,31 +508,6 @@ class HomeDashboardFragment :
             override fun onTabReselected(tab: TabLayout.Tab?) {
             }
         })
-
-    }
-
-    private fun showFreeCreditDialog(message: String) {
-        val dialog = Dialog(requireContext())
-        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE)
-        dialog.setCancelable(true)
-
-        var dialogView =
-            LayoutInflater.from(requireContext()).inflate(R.layout.free_credit_dialog, null)
-        var tvMessage: TextView = dialogView.findViewById(R.id.tvSkuNameDialog)
-        tvMessage.text = message
-
-        dialog.setContentView(dialogView)
-
-        dialog.getWindow()?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT));
-        val llOk: LinearLayout = dialog.findViewById(R.id.llOk)
-
-
-        llOk.setOnClickListener(View.OnClickListener {
-
-            dialog.dismiss()
-
-        })
-        dialog.show()
 
     }
 

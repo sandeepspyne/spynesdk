@@ -40,7 +40,9 @@ class SplashActivity : AppCompatActivity() {
                 var intent : Intent? = null
 
                 intent = when(getString(R.string.app_name)) {
-                    AppConstants.KARVI, AppConstants.CARS24,AppConstants.CARS24_INDIA,"Ola Cabs",AppConstants.SWEEP,"Yalla Motors","Spyne Hiring" ->  Intent(this,
+                    AppConstants.KARVI, AppConstants.CARS24,AppConstants.CARS24_INDIA,"Ola Cabs",
+                    AppConstants.SWEEP,"Yalla Motors","Spyne Hiring",
+                    AppConstants.LAL_10->  Intent(this,
                         LoginActivity::class.java)
 
                     else -> Intent(this, OnboardingsActivity::class.java)

@@ -98,11 +98,21 @@ class CategoriesActivity : AppCompatActivity(){
                                     AppConstants.CATEGORY_NAME,
                                     categoriesResponseList[position].prod_cat_name
                                 )
-
                                     Utilities.savePrefrence(this@CategoriesActivity, AppConstants.CATEGORY_ID, categoriesResponseList[position].prod_cat_id)
                                     Utilities.savePrefrence(this@CategoriesActivity, AppConstants.CATEGORY_NAME, categoriesResponseList[position].prod_cat_name)
 
-                                val intent = Intent(this@CategoriesActivity, StartShootActivity::class.java)
+                                    val intent = when (categoriesResponseList[position].prod_cat_name) {
+                                        "Automobiles" -> {
+                                            Intent(this@CategoriesActivity, StartShootActivity::class.java)
+                                        }
+                                        "E-Commerce","Footwear" -> {
+                                            Intent(this@CategoriesActivity, ShootPortraitActivity::class.java)
+                                        }
+                                        else -> {
+                                            Intent(this@CategoriesActivity, ShootActivity::class.java)
+                                        }
+                                    }
+
                                 intent.putExtra(AppConstants.CATEGORY_ID,categoriesResponseList[position].prod_cat_id)
                                 intent.putExtra(AppConstants.CATEGORY_NAME,categoriesResponseList[position].prod_cat_name)
                                 intent.putExtra(AppConstants.IMAGE_URL,categoriesResponseList[position].display_thumbnail)

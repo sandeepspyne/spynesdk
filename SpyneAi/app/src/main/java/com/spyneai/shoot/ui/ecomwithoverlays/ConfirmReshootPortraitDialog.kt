@@ -1,9 +1,12 @@
 package com.spyneai.shoot.ui.ecomwithoverlays
 
+import android.content.Intent
+import android.os.Build
 import android.os.Bundle
 import android.util.Log
 import android.view.*
 import android.widget.FrameLayout
+import androidx.core.content.ContextCompat
 import androidx.lifecycle.lifecycleScope
 import com.bumptech.glide.Glide
 import com.posthog.android.Properties
@@ -12,6 +15,9 @@ import com.spyneai.base.network.Resource
 import com.spyneai.captureEvent
 import com.spyneai.databinding.ConfirmReshootPortraitDialogBinding
 import com.spyneai.posthog.Events
+import com.spyneai.service.Actions
+import com.spyneai.service.ImageUploadingService
+import com.spyneai.service.getServiceState
 import com.spyneai.shoot.data.ShootViewModel
 import kotlinx.coroutines.launch
 
@@ -105,14 +111,30 @@ class ConfirmReshootPortraitDialog : BaseDialogFragment<ShootViewModel, ConfirmR
         })
     }
 
-    private fun uploadImages() {
-//        viewModel.uploadImageWithWorkManager(
-//            requireContext(),
-//            viewModel.shootData.value!!
-//        )
 
+    private fun uploadImages() {
         viewLifecycleOwner.lifecycleScope.launch {
             viewModel.insertImage(viewModel.shootData.value!!)
+        }
+
+        startService()
+    }
+
+    private fun startService() {
+        var action = Actions.START
+        if (getServiceState(requireContext()) == com.spyneai.service.ServiceState.STOPPED && action == Actions.STOP)
+            return
+
+        val serviceIntent = Intent(requireContext(), ImageUploadingService::class.java)
+        serviceIntent.action = action.name
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            com.spyneai.service.log("Starting the service in >=26 Mode")
+            ContextCompat.startForegroundService(requireContext(), serviceIntent)
+            return
+        } else {
+            com.spyneai.service.log("Starting the service in < 26 Mode")
+            requireActivity().startService(serviceIntent)
         }
     }
 
