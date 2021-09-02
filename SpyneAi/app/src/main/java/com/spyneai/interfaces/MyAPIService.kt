@@ -74,7 +74,8 @@ interface MyAPIService {
                @Field("password") password : String,
                @Field("strategy") strategy : String,
                @Field("user_name") user_name : String,
-               @Field("country") country : String):
+               @Field("country") country : String,
+               @Field("source") source : String):
 
             Call<SignupResponse>?
 
@@ -100,7 +101,8 @@ interface MyAPIService {
     @FormUrlEncoded
     @POST("v2/user/request-otp")
     fun loginEmailApp(@Field("email_id") email_id : String,
-                      @Field("api_key") apiKey : String):
+                      @Field("api_key") apiKey : String,
+                      @Field("source") source : String):
             Call<LoginResponse>?
 
 

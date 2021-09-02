@@ -446,7 +446,7 @@ public class OtpActivity : AppCompatActivity() {
         val loginRequest = LoginRequest(Utilities.getPreference(this, AppConstants.EMAIL_ID).toString());
 
         val request = RetrofitClient.buildService(MyAPIService::class.java)
-        val call = request.loginEmailApp(Utilities.getPreference(this, AppConstants.EMAIL_ID).toString(),WhiteLabelConstants.API_KEY)
+        val call = request.loginEmailApp(Utilities.getPreference(this, AppConstants.EMAIL_ID).toString(),WhiteLabelConstants.API_KEY,"Android")
 
         call?.enqueue(object : Callback<LoginResponse>{
             override fun onResponse(call: Call<LoginResponse>, response: Response<LoginResponse>) {

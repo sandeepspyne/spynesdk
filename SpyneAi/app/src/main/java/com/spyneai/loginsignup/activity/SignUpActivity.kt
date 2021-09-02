@@ -163,7 +163,7 @@ class SignUpActivity : AppCompatActivity() {
         Utilities.showProgressDialog(this)
 
         val call = RetrofitClients.buildService(MyAPIService::class.java)
-            .signUp(WhiteLabelConstants.API_KEY, email, password, "PASSWORD", name, country)
+            .signUp(WhiteLabelConstants.API_KEY, email, password, "PASSWORD", name, country,"Android")
 
         call?.enqueue(object : Callback<SignupResponse> {
             override fun onResponse(
