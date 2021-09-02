@@ -68,7 +68,7 @@ class ImageUploader(val context: Context,
                            localRepository.skipImage(image.itemId!!,skipFlag)
                            startNextUpload(image.itemId!!,false,imageType)
                        }
-                       captureEvent(Events.UPLOAD_FAILED,image,false,"Image upload limit reached")
+                       captureEvent(Events.UPLOAD_FAILED_SERVICE,image,false,"Image upload limit reached")
                        logUpload("Upload Skipped Retry Limit Reached")
                        return@launch
                    }
@@ -76,7 +76,7 @@ class ImageUploader(val context: Context,
                    if (image.imagePath != null){
                        if (!File(image.imagePath!!).exists()){
                            localRepository.deleteImage(image.itemId!!)
-                           captureEvent(Events.UPLOAD_FAILED,image,false,"Image file got deleted by user")
+                           captureEvent(Events.UPLOAD_FAILED_SERVICE,image,false,"Image file got deleted by user")
                             startNextUpload(image.itemId!!,true,imageType)
                        }
                    }
@@ -122,16 +122,16 @@ class ImageUploader(val context: Context,
 
                    when(response){
                        is Resource.Success -> {
-                           captureEvent(Events.UPLOADED,image,true,null)
+                           captureEvent(Events.UPLOADED_SERVICE,image,true,null)
                            startNextUpload(image.itemId!!,true,imageType)
                        }
 
                        is Resource.Failure -> {
                           logUpload("Upload error "+response.errorCode.toString()+" "+response.errorMessage)
                            if(response.errorMessage == null){
-                               captureEvent(Events.UPLOAD_FAILED,image,false,response.errorCode.toString()+": Http exception from server")
+                               captureEvent(Events.UPLOAD_FAILED_SERVICE,image,false,response.errorCode.toString()+": Http exception from server")
                            }else {
-                               captureEvent(Events.UPLOAD_FAILED,image,false,response.errorCode.toString()+": "+response.errorMessage)
+                               captureEvent(Events.UPLOAD_FAILED_SERVICE,image,false,response.errorCode.toString()+": "+response.errorMessage)
                            }
 
                            selectLastImageAndUpload(imageType,retryCount+1)
