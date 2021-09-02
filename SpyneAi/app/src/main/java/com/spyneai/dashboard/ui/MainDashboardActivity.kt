@@ -40,7 +40,11 @@ import java.io.File
 
 import com.google.android.material.snackbar.Snackbar
 import com.posthog.android.Properties
+import com.spyneai.base.network.ClipperApi
 import com.spyneai.captureEvent
+import com.spyneai.downloadsku.FetchBulkResponseV2
+import com.spyneai.interfaces.APiService
+import com.spyneai.interfaces.RetrofitClients
 import com.spyneai.isMyServiceRunning
 import com.spyneai.orders.ui.MyOrdersFragment
 import com.spyneai.posthog.Events
@@ -49,9 +53,15 @@ import com.spyneai.service.ImageUploadingService
 import com.spyneai.service.getServiceState
 import com.spyneai.service.log
 import com.spyneai.shoot.data.ShootLocalRepository
+import com.spyneai.shoot.response.UploadFolderRes
 import com.spyneai.shoot.ui.dialogs.ResolutionNotSupportedFragment
 import com.spyneai.shoot.workmanager.ProcessSkuWorker
 import com.spyneai.shoot.workmanager.RecursiveSkippedImagesWorker
+import okhttp3.MultipartBody
+import okhttp3.RequestBody
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
 import java.util.concurrent.TimeUnit
 
 
@@ -244,16 +254,7 @@ class MainDashboardActivity : AppCompatActivity() {
             Utilities.savePrefrence(this,AppConstants.CANCEL_ALL_WROKERS,"Cancelled")
         }
 
-        capture(Events.FILE_READ_WORKED_INTIATED)
-
-        val storeWorkRequest = OneTimeWorkRequest.Builder(StoreImageFilesWorker::class.java)
-            .addTag("StoreImageFiles  Worker")
-
-        WorkManager.getInstance(BaseApplication.getContext())
-            .enqueue(
-                storeWorkRequest
-                    .build())
-
+        checkFolderUpload()
         //cancel main recursive worker
         //start service if have pending images
 
@@ -286,6 +287,87 @@ class MainDashboardActivity : AppCompatActivity() {
 
             captureEvent(Events.SERVICE_STARTED,properties)
         }
+    }
+
+    private fun checkFolderUpload() {
+        Utilities.showProgressDialog(this)
+
+        val request = RetrofitClients.buildService(ClipperApi::class.java)
+        val authKey = Utilities.getPreference(this, AppConstants.AUTH_KEY).toString()
+
+        val call = request.uploadFolder(authKey)
+
+        call.enqueue(object : Callback<UploadFolderRes>{
+            override fun onResponse(
+                call: Call<UploadFolderRes>,
+                response: Response<UploadFolderRes>
+            ) {
+
+                Utilities.hideProgressDialog()
+                if (response.isSuccessful){
+                    if (response.body()?.status == 200){
+                        if (response.body()?.data?.isFolderUpload == 1){
+                            capture(Events.FILE_READ_WORKED_INTIATED)
+
+                            val storeWorkRequest = OneTimeWorkRequest.Builder(StoreImageFilesWorker::class.java)
+                                .addTag("StoreImageFiles  Worker")
+
+                            WorkManager.getInstance(BaseApplication.getContext())
+                                .enqueue(
+                                    storeWorkRequest
+                                        .build())
+                        }else {
+                            capture(Events.FILE_READ_WORKED_NOT_INTIATED)
+                        }
+                    }else {
+                        val properties = Properties()
+                        properties.apply {
+                            this["email"] = Utilities.getPreference(this@MainDashboardActivity,AppConstants.EMAIL_ID).toString()
+                            this["error"] = response.body()?.message
+                        }
+
+                        captureEvent(
+                            Events.CHECK_FOLDER_API_FAILED,
+                            properties)
+                    }
+                }else {
+                    val properties = Properties()
+                    properties.apply {
+                        this["email"] = Utilities.getPreference(this@MainDashboardActivity,AppConstants.EMAIL_ID).toString()
+                        this["error"] = response.errorBody().toString()
+                    }
+
+                    captureEvent(
+                        Events.CHECK_FOLDER_API_FAILED,
+                        properties)
+                }
+            }
+
+            override fun onFailure(call: Call<UploadFolderRes>, t: Throwable) {
+                val properties = Properties()
+                properties.apply {
+                    this["email"] = Utilities.getPreference(this@MainDashboardActivity,AppConstants.EMAIL_ID).toString()
+                    this["error"] = t.localizedMessage
+                }
+
+                captureEvent(
+                    Events.CHECK_FOLDER_API_FAILED,
+                    properties)
+
+                Utilities.hideProgressDialog()
+                folderCheckError(t.localizedMessage)
+            }
+        })
+    }
+
+
+    private fun folderCheckError(error : String) {
+        Snackbar.make(binding.root, error, Snackbar.LENGTH_INDEFINITE)
+            .setAction("Allow") {
+                checkFolderUpload()
+            }
+            .setActionTextColor(ContextCompat.getColor(this,R.color.primary))
+            .show()
     }
 
 

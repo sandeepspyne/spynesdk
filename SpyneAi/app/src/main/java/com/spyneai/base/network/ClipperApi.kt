@@ -10,6 +10,7 @@ import com.spyneai.model.projects.CompletedProjectResponse
 import com.spyneai.orders.data.response.*
 import com.spyneai.shoot.data.model.*
 import com.spyneai.shoot.response.SkuProcessStateResponse
+import com.spyneai.shoot.response.UploadFolderRes
 import com.spyneai.shoot.response.UploadStatusRes
 import com.spyneai.threesixty.data.response.ProcessThreeSixtyRes
 import okhttp3.MultipartBody
@@ -232,6 +233,9 @@ interface ClipperApi {
     ): UpdateFootwearSubcatRes
 
 
+    @GET("v4/image/upload-folder-check")
+    fun uploadFolder(@Query(
+        "auth_key") authKey : String) : Call<UploadFolderRes>
 
 
 }
