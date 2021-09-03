@@ -2,12 +2,13 @@ package com.spyneai.shoot.data
 
 import com.spyneai.base.BaseRepository
 import com.spyneai.base.network.ClipperApiClient
-import com.spyneai.shoot.data.model.CarsBackgroundRes
+import com.spyneai.base.network.ClipperApiStagingClient
 import okhttp3.RequestBody
 
 class ProcessRepository : BaseRepository() {
 
     private var clipperApi = ClipperApiClient().getClient()
+    private var clipperStagingApi = ClipperApiStagingClient().getClient()
 
 
     suspend fun getBackgroundGifCars(
@@ -52,6 +53,14 @@ class ProcessRepository : BaseRepository() {
         downloadHd: Boolean
     )= safeApiCall {
         clipperApi.updateDownloadStatus(userId,skuId, enterpriseId, downloadHd)
+    }
+
+    suspend fun skuProcessStateWithBackgroundId(
+        auth_key: String,
+        project_id:  String,
+        background_id:  String
+    ) = safeApiCall{
+        clipperApi.skuProcessStateWithBackgroundId(auth_key, project_id, background_id)
     }
 
 }

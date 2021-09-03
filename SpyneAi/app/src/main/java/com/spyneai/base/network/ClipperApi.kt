@@ -7,7 +7,10 @@ import com.spyneai.dashboard.response.NewCategoriesResponse
 import com.spyneai.dashboard.response.NewSubCatResponse
 import com.spyneai.model.credit.CreditDetailsResponse
 import com.spyneai.model.projects.CompletedProjectResponse
-import com.spyneai.orders.data.response.*
+import com.spyneai.orders.data.response.CompletedSKUsResponse
+import com.spyneai.orders.data.response.GetOngoingSkusResponse
+import com.spyneai.orders.data.response.GetProjectsResponse
+import com.spyneai.orders.data.response.ImagesOfSkuRes
 import com.spyneai.shoot.data.model.*
 import com.spyneai.shoot.response.SkuProcessStateResponse
 import com.spyneai.shoot.response.UploadFolderRes
@@ -41,6 +44,19 @@ interface ClipperApi {
         @Part("auth_key") auth_key: RequestBody?,
         @Part("upload_type") upload_type: RequestBody?,
         @Part("frame_seq_no") frame_seq_no: Int,
+        @Part file: MultipartBody.Part
+    ): UploadImageResponse
+
+    @Multipart
+    @POST("v2/image/upload")
+    suspend fun uploadImageWithAngle(
+        @Part("project_id") project_id: RequestBody?,
+        @Part("sku_id") sku_id: RequestBody?,
+        @Part("image_category") image_category: RequestBody?,
+        @Part("auth_key") auth_key: RequestBody?,
+        @Part("upload_type") upload_type: RequestBody?,
+        @Part("frame_seq_no") frame_seq_no: Int,
+        @Part("angle") angle: Int,
         @Part file: MultipartBody.Part
     ): UploadImageResponse
 
@@ -213,6 +229,14 @@ interface ClipperApi {
     suspend fun skuProcessState(
         @Field("auth_key") auth_key: String?,
         @Field("project_id") project_id: String?,
+    ): SkuProcessStateResponse
+
+    @FormUrlEncoded
+    @POST("v2/sku/skuProcessStatus")
+    suspend fun skuProcessStateWithBackgroundId(
+        @Field("auth_key") auth_key: String?,
+        @Field("project_id") project_id: String?,
+        @Field("background_id") background_id: String?,
     ): SkuProcessStateResponse
 
 

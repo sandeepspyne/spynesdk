@@ -1,6 +1,7 @@
 package com.spyneai.shoot.ui.base
 
 
+import CameraFragment
 import android.Manifest
 import android.content.Context
 import android.content.Intent
@@ -26,6 +27,7 @@ import com.spyneai.shoot.data.model.CreateProjectRes
 import com.spyneai.shoot.data.model.ShootData
 import com.spyneai.shoot.data.model.Sku
 import com.spyneai.shoot.ui.OverlaysFragment
+import com.spyneai.shoot.ui.SelectBackgroundFragment
 import com.spyneai.shoot.ui.dialogs.ShootExitDialog
 import com.spyneai.shoot.ui.ecomwithgrid.GridEcomFragment
 import com.spyneai.shoot.ui.ecomwithgrid.ProjectDetailFragment
@@ -41,6 +43,7 @@ class ShootPortraitActivity : AppCompatActivity() {
     lateinit var overlayEcomFragment: OverlayEcomFragment
     lateinit var skuDetailFragment: SkuDetailFragment
     lateinit var projectDetailFragment: ProjectDetailFragment
+    lateinit var selectBackgroundFragment: SelectBackgroundFragment
     lateinit var shootViewModel : ShootViewModel
     val TAG = "ShootPortraitActivity"
 
@@ -84,6 +87,7 @@ class ShootPortraitActivity : AppCompatActivity() {
         skuDetailFragment = SkuDetailFragment()
         projectDetailFragment = ProjectDetailFragment()
         overlayEcomFragment = OverlayEcomFragment()
+        selectBackgroundFragment = SelectBackgroundFragment()
 
         if (Utilities.getPreference(this, AppConstants.CATEGORY_NAME).equals("Automobiles")){
             if(savedInstanceState == null) { // initial transaction should be wrapped like this
@@ -130,6 +134,30 @@ class ShootPortraitActivity : AppCompatActivity() {
                 val sku = Sku()
                 sku?.projectId = shootViewModel.projectId.value
                 shootViewModel.categoryDetails.value?.imageType = "Food & Beverages"
+                sku.skuName = intent.getStringExtra(AppConstants.SKU_NAME)
+                sku.skuId = intent.getStringExtra(AppConstants.SKU_ID)
+                sku.categoryName = shootViewModel.categoryDetails.value?.categoryName
+
+                shootViewModel.sku.value = sku
+            } catch (e: Exception) {
+                e.printStackTrace()
+            }
+
+        }
+        else if (Utilities.getPreference(this, AppConstants.CATEGORY_NAME).equals("Food & Beverages")){
+            if(savedInstanceState == null) { // initial transaction should be wrapped like this
+                supportFragmentManager.beginTransaction()
+                    .add(R.id.flCamerFragment, cameraFragment)
+                    .add(R.id.flCamerFragment, gridEcomFragment)
+                    .commitAllowingStateLoss()
+            }
+
+            try {
+                val intent = intent
+                shootViewModel.projectId.value = intent.getStringExtra("project_id")
+                val sku = Sku()
+                sku?.projectId = shootViewModel.projectId.value
+                shootViewModel.categoryDetails.value?.imageType = "Food"
                 sku.skuName = intent.getStringExtra(AppConstants.SKU_NAME)
                 sku.skuId = intent.getStringExtra(AppConstants.SKU_ID)
                 sku.categoryName = shootViewModel.categoryDetails.value?.categoryName
@@ -188,6 +216,22 @@ class ShootPortraitActivity : AppCompatActivity() {
                 supportFragmentManager.beginTransaction().remove(gridEcomFragment).commit()
                 supportFragmentManager.beginTransaction()
                     .add(R.id.flCamerFragment, projectDetailFragment)
+                    .commit()
+            }
+        })
+
+        shootViewModel.showFoodBackground.observe(this,{
+            if(it){
+                val bundle = Bundle()
+                bundle.putString(AppConstants.PROJECT_ID,shootViewModel.sku.value?.projectId)
+                selectBackgroundFragment.arguments = bundle
+                window.clearFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN)
+                supportFragmentManager.beginTransaction().remove(skuDetailFragment).commit()
+                supportFragmentManager.beginTransaction().remove(projectDetailFragment).commit()
+                supportFragmentManager.beginTransaction().remove(cameraFragment).commit()
+                supportFragmentManager.beginTransaction().remove(gridEcomFragment).commit()
+                supportFragmentManager.beginTransaction()
+                    .add(R.id.flCamerFragment, selectBackgroundFragment)
                     .commit()
             }
         })

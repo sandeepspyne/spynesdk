@@ -27,7 +27,7 @@ class DBHelper (context: Context) : SQLiteOpenHelper(context, DATABASE_NAME, nul
     }
     companion object {
         // If you change the database schema, you must increment the database version.
-        const val DATABASE_VERSION = 8
+        const val DATABASE_VERSION = 9
         const val DATABASE_NAME = "Shoot.db"
 
         private const val SQL_CREATE_ENTRIES =
@@ -63,6 +63,7 @@ class DBHelper (context: Context) : SQLiteOpenHelper(context, DATABASE_NAME, nul
                 "${Images.COLUMN_NAME_CATEGORY_NAME} TEXT," +
                 "${Images.COLUMN_NAME_IMAGE_PATH} TEXT," +
                 "${Images.COLUMN_NAME_IMAGE_SEQUENCE} INTEGER," +
+                "${Images.COLUMN_NAME_IMAGE_ANGLE} INTEGER," +
                 "${Images.COLUMN_NAME_IS_UPLOADED} INTEGER," +
                 "${Images.TABLE_NAME} TEXT)"
 

@@ -5,6 +5,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.recyclerview.widget.GridLayoutManager
 import com.posthog.android.Properties
 import com.spyneai.base.BaseFragment
@@ -177,42 +178,100 @@ class SkuDetailFragment : BaseFragment<ShootViewModel, FragmentSkuDetailBinding>
         if (endProject){
             EndProjectDialog().show(requireFragmentManager(), "EndProjectDialog")
         }else {
-            viewModel.shootList.value?.clear()
-            val intent = Intent(activity, ShootPortraitActivity::class.java)
-            intent.putExtra("project_id", viewModel.projectId.value);
-            intent.putExtra("skuNumber", viewModel.skuNumber.value?.plus(1)!!);
+           observeUpdateTotalFrames()
 
-            intent.putExtra(AppConstants.CATEGORY_NAME,viewModel.categoryDetails.value?.categoryName)
-            intent.putExtra(AppConstants.CATEGORY_ID,viewModel.categoryDetails.value?.categoryId)
 
-            if (viewModel.fromDrafts){
-                intent.putExtra(AppConstants.SKU_COUNT, requireActivity().intent.getIntExtra(AppConstants.SKU_COUNT,0).plus(1))
-                intent.putExtra("skuNumber", requireActivity().intent.getIntExtra(AppConstants.SKU_COUNT,0).plus(1))
+        }
+
+
+        binding.ivAddAngle.setOnClickListener {
+            if (viewModel.categoryDetails.value?.categoryName.equals("E-Commerce") || viewModel.categoryDetails.value?.categoryName.equals("Food & Beverages"))
+            viewModel.addMoreAngle.value = true
+        }
+        binding.tvAddAngle.setOnClickListener {
+            if (viewModel.categoryDetails.value?.categoryName.equals("E-Commerce") || viewModel.categoryDetails.value?.categoryName.equals("Food & Beverages"))
+            viewModel.addMoreAngle.value = true
+        }
+
+        binding.tvEndProject.setOnClickListener {
+            viewModel.updateTotalFrames(viewModel.sku.value?.skuId.toString(), totalSkuImages.toString(), Utilities.getPreference(requireContext(), AppConstants.AUTH_KEY).toString())
+            viewModel.updateTotalFramesRes.observe(viewLifecycleOwner,{
+                when(it) {
+                    is Resource.Success -> {
+                        Toast.makeText(requireContext(), "updateTotalFrames sucess", Toast.LENGTH_SHORT).show()
+                        EndProjectDialog().show(requireFragmentManager(), "EndProjectDialog")
+                    }
+
+                    is Resource.Failure -> {
+                        requireContext().captureFailureEvent(
+                            Events.GET_BACKGROUND_FAILED, Properties(),
+                            it.errorMessage!!
+                        )
+                        handleApiError(it) {}
+                    }
+
+                    is Resource.Loading -> {
+
+                    }
+                }
+            })
+        }
+
+    }
+
+    private fun observeUpdateTotalFrames(){
+        viewModel.updateTotalFramesRes.observe(viewLifecycleOwner,{
+            when(it) {
+                is Resource.Success -> {
+                    Toast.makeText(requireContext(), "updateTotalFrames sucess", Toast.LENGTH_SHORT).show()
+                    viewModel.shootList.value?.clear()
+                    val intent = Intent(activity, ShootPortraitActivity::class.java)
+                    intent.putExtra("project_id", viewModel.projectId.value);
+                    intent.putExtra("skuNumber", viewModel.skuNumber.value?.plus(1)!!);
+
+                    intent.putExtra(AppConstants.CATEGORY_NAME,viewModel.categoryDetails.value?.categoryName)
+                    intent.putExtra(AppConstants.CATEGORY_ID,viewModel.categoryDetails.value?.categoryId)
+
+                    if (viewModel.fromDrafts){
+                        intent.putExtra(AppConstants.SKU_COUNT, requireActivity().intent.getIntExtra(AppConstants.SKU_COUNT,0).plus(1))
+                        intent.putExtra("skuNumber", requireActivity().intent.getIntExtra(AppConstants.SKU_COUNT,0).plus(1))
+                    }
+                    else
+                        intent.putExtra("skuNumber", viewModel.skuNumber.value?.plus(1)!!)
+                    startActivity(intent)
+                }
+
+                is Resource.Failure -> {
+                    requireContext().captureFailureEvent(
+                        Events.GET_BACKGROUND_FAILED, Properties(),
+                        it.errorMessage!!
+                    )
+                    handleApiError(it) {}
+                }
+
+                is Resource.Loading -> {
+
+                }
             }
-            else
-                intent.putExtra("skuNumber", viewModel.skuNumber.value?.plus(1)!!)
-
-            startActivity(intent)
-        }
+        })
     }
 
 
+            override fun onResume() {
+                super.onResume()
 
-    override fun onResume() {
-        super.onResume()
+                if (viewModel.categoryDetails.value?.categoryName.equals("E-Commerce")){
+                    binding.ivAddAngle.visibility = View.VISIBLE
+                    binding.tvAddAngle.visibility = View.VISIBLE
+                }
+            }
 
-        if (viewModel.categoryDetails.value?.categoryName.equals("E-Commerce")){
-            binding.ivAddAngle.visibility = View.VISIBLE
-            binding.tvAddAngle.visibility = View.VISIBLE
+
+            override fun getViewModel() = ShootViewModel::class.java
+
+            override fun getFragmentBinding(
+                inflater: LayoutInflater,
+                container: ViewGroup?
+            ) = FragmentSkuDetailBinding.inflate(inflater, container, false)
+
         }
-    }
-
-
-    override fun getViewModel() = ShootViewModel::class.java
-
-    override fun getFragmentBinding(
-        inflater: LayoutInflater,
-        container: ViewGroup?
-    ) = FragmentSkuDetailBinding.inflate(inflater, container, false)
-
-}

@@ -8,4 +8,5 @@ class Image {
     var categoryName : String? = null
     var imagePath : String? = null
     var sequence : Int? = null
+    var angle : Int? = null
 }

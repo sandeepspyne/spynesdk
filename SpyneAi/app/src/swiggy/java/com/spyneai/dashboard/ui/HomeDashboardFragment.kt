@@ -45,8 +45,6 @@ import com.spyneai.needs.AppConstants
 import com.spyneai.needs.Utilities
 import com.spyneai.orders.data.response.GetProjectsResponse
 import com.spyneai.posthog.Events
-import com.spyneai.shoot.ui.base.ShootActivity
-import com.spyneai.shoot.ui.StartShootActivity
 import com.spyneai.shoot.ui.base.ShootPortraitActivity
 import com.spyneai.shoot.utils.log
 
@@ -450,72 +448,15 @@ class HomeDashboardFragment :
 
         tabLayout = binding.tbDashboard
         tabLayout.addTab(tabLayout.newTab());
-        tabLayout.addTab(tabLayout.newTab());
+//        tabLayout.addTab(tabLayout.newTab());
 
 
         binding.ivBanner.setBeforeImage(
             ContextCompat.getDrawable(
                 requireContext(),
-                R.drawable.footwear_before
+                R.drawable.food_before
             )
-        ).setAfterImage(ContextCompat.getDrawable(requireContext(), R.drawable.footwear_after))
-        binding.ivNext.setOnClickListener {
-            val tab: TabLayout.Tab = binding.tbDashboard.getTabAt(1)!!
-            tab.select()
-            binding.ivBanner.setBeforeImage(
-                ContextCompat.getDrawable(
-                    requireContext(),
-                    R.drawable.car_before
-                )
-            ).setAfterImage(ContextCompat.getDrawable(requireContext(), R.drawable.car_after))
-        }
-
-        binding.ivPrevious.setOnClickListener {
-            val tab: TabLayout.Tab = binding.tbDashboard.getTabAt(0)!!
-            tab.select()
-            binding.ivBanner.setBeforeImage(
-                ContextCompat.getDrawable(
-                    requireContext(),
-                    R.drawable.footwear_before
-                )
-            ).setAfterImage(ContextCompat.getDrawable(requireContext(), R.drawable.footwear_after))
-        }
-
-        tabLayout.addOnTabSelectedListener(object : TabLayout.OnTabSelectedListener {
-            override fun onTabSelected(tab: TabLayout.Tab?) {
-                if (tab?.position == 0)
-                    binding.ivBanner.setBeforeImage(
-                        ContextCompat.getDrawable(
-                            requireContext(),
-                            R.drawable.footwear_before
-                        )
-                    ).setAfterImage(
-                        ContextCompat.getDrawable(
-                            requireContext(),
-                            R.drawable.footwear_after
-                        )
-                    )
-                else
-                    binding.ivBanner.setBeforeImage(
-                        ContextCompat.getDrawable(
-                            requireContext(),
-                            R.drawable.car_before
-                        )
-                    ).setAfterImage(
-                        ContextCompat.getDrawable(
-                            requireContext(),
-                            R.drawable.car_after
-                        )
-                    )
-            }
-
-            override fun onTabUnselected(tab: TabLayout.Tab?) {
-            }
-
-            override fun onTabReselected(tab: TabLayout.Tab?) {
-            }
-        })
-
+        ).setAfterImage(ContextCompat.getDrawable(requireContext(), R.drawable.food_after))
     }
 
     private fun showFreeCreditDialog(message: String) {
