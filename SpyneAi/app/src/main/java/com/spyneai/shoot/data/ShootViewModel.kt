@@ -10,11 +10,11 @@ import com.spyneai.base.network.Resource
 import com.spyneai.camera2.OverlaysResponse
 import com.spyneai.camera2.ShootDimensions
 import com.spyneai.dashboard.response.NewSubCatResponse
+import com.spyneai.needs.AppConstants
+import com.spyneai.needs.Utilities
 import com.spyneai.shoot.data.model.*
 import com.spyneai.shoot.response.SkuProcessStateResponse
-import com.spyneai.shoot.workmanager.FootwearSubcatUpdateWorker
 import com.spyneai.shoot.workmanager.OverlaysPreloadWorker
-import com.spyneai.shoot.workmanager.RecursiveImageWorker
 import kotlinx.coroutines.launch
 import java.util.*
 import java.util.concurrent.TimeUnit
@@ -82,6 +82,12 @@ class ShootViewModel : ViewModel(){
     private val _createSkuRes : MutableLiveData<Resource<CreateSkuRes>> = MutableLiveData()
     val createSkuRes: LiveData<Resource<CreateSkuRes>>
         get() = _createSkuRes
+
+    private val _updateFootwearSubcatRes : MutableLiveData<Resource<UpdateFootwearSubcatRes>> = MutableLiveData()
+    val updateFootwearSubcatRes: LiveData<Resource<UpdateFootwearSubcatRes>>
+        get() = _updateFootwearSubcatRes
+
+
 
 
     val shootDimensions : MutableLiveData<ShootDimensions> = MutableLiveData()
@@ -262,30 +268,15 @@ class ShootViewModel : ViewModel(){
 
     fun  updateProjectStatus(projectId: String) = localRepository.updateProjectStatus(projectId)
 
-    fun updateFootwearSubcategory() {
-        val constraints: Constraints = Constraints.Builder()
-            .setRequiredNetworkType(NetworkType.CONNECTED)
-            .build()
 
-        val data = Data.Builder()
-            .putString("sku_id", sku.value?.skuId)
-            .putInt("initial_image_count", exterirorAngles.value!!)
-            .putString("sub_cat_id", subCategory.value?.prod_sub_cat_id)
-            .build()
-
-        val updateWorkRequest = OneTimeWorkRequest.Builder(FootwearSubcatUpdateWorker::class.java)
-            .addTag("Footwear Subcat Update Worker")
-            .setBackoffCriteria(
-                BackoffPolicy.LINEAR,
-                OneTimeWorkRequest.MIN_BACKOFF_MILLIS,
-                TimeUnit.MILLISECONDS)
-
-        WorkManager.getInstance(BaseApplication.getContext())
-            .enqueue(
-                updateWorkRequest
-                    .setConstraints(constraints)
-                    .setInputData(data)
-                    .build())
+    fun updateFootwearSubcategory(
+    ) = viewModelScope.launch {
+        _updateFootwearSubcatRes.value = Resource.Loading
+        _updateFootwearSubcatRes.value = repository.updateFootwearSubcategory(
+            Utilities.getPreference(BaseApplication.getContext(),AppConstants.AUTH_KEY).toString(),
+            sku.value?.skuId!!,
+            exterirorAngles.value!!,
+            subCategory.value?.prod_sub_cat_id!!)
     }
 
 }

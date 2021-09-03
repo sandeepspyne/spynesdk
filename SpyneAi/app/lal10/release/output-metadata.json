@@ -1,0 +1,20 @@
+{
+  "version": 3,
+  "artifactType": {
+    "type": "APK",
+    "kind": "Directory"
+  },
+  "applicationId": "com.spyneai.lal10",
+  "variantName": "lal10Release",
+  "elements": [
+    {
+      "type": "SINGLE",
+      "filters": [],
+      "attributes": [],
+      "versionCode": 2,
+      "versionName": "1.1",
+      "outputFile": "app-lal10-release.apk"
+    }
+  ],
+  "elementType": "File"
+}

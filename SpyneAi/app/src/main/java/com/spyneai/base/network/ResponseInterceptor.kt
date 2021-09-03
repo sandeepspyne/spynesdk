@@ -22,6 +22,7 @@ class ResponseInterceptor : Interceptor {
             val body = response.body
             val bodyString = body!!.string()
             val contentType: MediaType? = body!!.contentType()
+
             var finalResponse : Response? = null
             try {
                 val json = JSONObject(bodyString)
@@ -36,6 +37,7 @@ class ResponseInterceptor : Interceptor {
                 val properties = Properties()
                     .apply {
                         put("api",response.request.url)
+                        put("response",bodyString)
                     }
                 BaseApplication.getContext()
                     .captureEvent(Events.JSON_RESPONSE,properties)

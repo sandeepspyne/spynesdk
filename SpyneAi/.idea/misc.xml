@@ -5,7 +5,10 @@
       <map>
         <entry key="../../../../../../layout/custom_preview.xml" value="0.33645833333333336" />
         <entry key="../../../Library/Android/sdk/platforms/android-30/data/res/layout/simple_spinner_dropdown_item.xml" value="0.20833333333333334" />
+        <entry key="app/src/amazon/res/mipmap-anydpi-v26/app_ic_round.xml" value="0.3175925925925926" />
+        <entry key="app/src/flipkart/res/mipmap-anydpi-v26/app_ic.xml" value="0.3175925925925926" />
         <entry key="app/src/lal10/res/layout/home_dashboard_fragment.xml" value="0.30512820512820515" />
+        <entry key="app/src/lal10/res/mipmap-anydpi-v26/app_ic.xml" value="0.18385416666666668" />
         <entry key="app/src/main/res/drawable/exposure_thumb.xml" value="0.3260416666666667" />
         <entry key="app/src/main/res/drawable/ic_noun_exposure.xml" value="0.3260416666666667" />
         <entry key="app/src/main/res/drawable/ic_shoot.xml" value="0.24166666666666667" />
@@ -86,6 +89,7 @@
         <entry key="app/src/sweepcars/res/mipmap-anydpi-v26/app_ic.xml" value="0.18385416666666668" />
         <entry key="app/src/sweepcars/res/mipmap-anydpi-v26/app_ic_round.xml" value="0.18385416666666668" />
         <entry key="app/src/swiggy/res/menu/dashboard_bottom_menu.xml" value="0.19814814814814816" />
+        <entry key="app/src/udaan/res/mipmap-anydpi-v26/app_ic.xml" value="0.16979166666666667" />
       </map>
     </option>
   </component>

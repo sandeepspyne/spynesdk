@@ -298,33 +298,9 @@ class CameraFragment : BaseFragment<ShootViewModel, FragmentCameraBinding>(), Pi
                     && !requireActivity().intent.getBooleanExtra(AppConstants.SKU_CREATED,false)) {
                     if (binding.flLevelIndicator.visibility == View.VISIBLE) {
                         if (isGyroOnCorrectAngle)
-                            viewModel.createProjectRes.observe(viewLifecycleOwner, {
-                                when (it) {
-                                    is Resource.Success -> {
-                                        val subCategory = viewModel.subCategory.value
-                                        createSku(
-                                            it.value.project_id,
-                                            subCategory?.prod_sub_cat_id.toString()
-                                        )
-                                    }
-                                    else -> {
-                                    }
-                                }
-                            })
+                            getProjectDetails()
                     } else {
-                        viewModel.createProjectRes.observe(viewLifecycleOwner, {
-                            when (it) {
-                                is Resource.Success -> {
-                                    val subCategory = viewModel.subCategory.value
-                                    createSku(
-                                        it.value.project_id,
-                                        subCategory?.prod_sub_cat_id.toString()
-                                    )
-                                }
-                                else -> {
-                                }
-                            }
-                        })
+                        getProjectDetails()
                     }
                 } else {
                     if (binding.flLevelIndicator.visibility == View.VISIBLE) {
@@ -348,21 +324,24 @@ class CameraFragment : BaseFragment<ShootViewModel, FragmentCameraBinding>(), Pi
                 }
             }
             AppConstants.SPYNE_AI -> {
-                if (viewModel.shootList.value == null){
+                if (viewModel.shootList.value == null
+                    && !requireActivity().intent.getBooleanExtra(AppConstants.SKU_CREATED,false)){
                     if (viewModel.categoryDetails.value?.categoryName == "Automobiles" ||
                         viewModel.categoryDetails.value?.categoryName == "Bikes") {
-                        viewModel.createProjectRes.observe(viewLifecycleOwner, {
-                            when (it) {
-                                is Resource.Success -> {
-                                    val subCategory = viewModel.subCategory.value
-                                    createSku(it.value.project_id, subCategory?.prod_sub_cat_id.toString())
-                                }
-                                else -> {
-                                }
+                        if (binding.flLevelIndicator.visibility == View.VISIBLE){
+                            if (isGyroOnCorrectAngle){
+                                getProjectDetails()
                             }
-                        })
+                        }else {
+                            getProjectDetails()
+                        }
                     }else {
-                        captureImage()
+                        if (binding.flLevelIndicator.visibility == View.VISIBLE){
+                            if (isGyroOnCorrectAngle)
+                                captureImage()
+                        }else{
+                            captureImage()
+                        }
                     }
                 }else {
                     captureImage()
@@ -372,7 +351,17 @@ class CameraFragment : BaseFragment<ShootViewModel, FragmentCameraBinding>(), Pi
             -> {
                 if (viewModel.shootList.value == null
                     && !requireActivity().intent.getBooleanExtra(AppConstants.SKU_CREATED,false)) {
-                    viewModel.createProjectRes.observe(viewLifecycleOwner, {
+                    getProjectDetails()
+                } else {
+                    captureImage()
+                }
+            }
+        }
+    }
+
+
+    private fun getProjectDetails() {
+        viewModel.createProjectRes.observe(viewLifecycleOwner, {
                         when (it) {
                             is Resource.Success -> {
                                 val subCategory = viewModel.subCategory.value
@@ -385,11 +374,6 @@ class CameraFragment : BaseFragment<ShootViewModel, FragmentCameraBinding>(), Pi
                             }
                         }
                     })
-                } else {
-                    captureImage()
-                }
-            }
-        }
     }
 
     private fun createSku(projectId: String, prod_sub_cat_id: String) {

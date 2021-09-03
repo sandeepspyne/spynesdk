@@ -143,28 +143,28 @@ android {
         flipkart {
             dimension 'version'
             applicationId "com.spyneai.flipkart"
-            versionCode 1
-            versionName "1.0"
+            versionCode 2
+            versionName "1.1"
         }
 
         amazon {
             dimension 'version'
             applicationId "com.spyneai.amazon"
-            versionCode 1
-            versionName "1.0"
+            versionCode 2
+            versionName "1.1"
         }
         lal10 {
             dimension 'version'
             applicationId "com.spyneai.lal10"
-            versionCode 1
-            versionName "1.0"
+            versionCode 2
+            versionName "1.1"
         }
 
         udaan {
             dimension 'version'
             applicationId "com.spyneai.udaan"
-            versionCode 2
-            versionName "1.1"
+            versionCode 3
+            versionName "1.2"
         }
         swiggy {
             dimension 'version'

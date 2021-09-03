@@ -8,6 +8,7 @@ import kotlinx.coroutines.withContext
 import retrofit2.HttpException
 import java.io.IOException
 import java.lang.IllegalStateException
+import java.net.SocketTimeoutException
 
 abstract class BaseRepository {
 
@@ -27,6 +28,14 @@ abstract class BaseRepository {
 
                     is HttpException -> {
                         Resource.Failure(false, throwable.code(), throwable.response()?.errorBody().toString())
+                    }
+
+                    is JsonSyntaxException -> {
+                        Resource.Failure(false, throwable.hashCode(), throwable.message)
+                    }
+
+                    is SocketTimeoutException -> {
+                        Resource.Failure(false, throwable.hashCode(), throwable.message)
                     }
 
                     is JsonSyntaxException -> {

@@ -13,7 +13,9 @@ import com.posthog.android.Properties
 import com.spyneai.base.BaseDialogFragment
 import com.spyneai.base.network.Resource
 import com.spyneai.captureEvent
+import com.spyneai.dashboard.ui.handleApiError
 import com.spyneai.databinding.ConfirmReshootPortraitDialogBinding
+import com.spyneai.needs.Utilities
 import com.spyneai.posthog.Events
 import com.spyneai.service.Actions
 import com.spyneai.service.ImageUploadingService
@@ -63,24 +65,13 @@ class ConfirmReshootPortraitDialog : BaseDialogFragment<ShootViewModel, ConfirmR
 
             if (viewModel.categoryDetails.value?.categoryName == "Footwear"
                 && viewModel.shootNumber.value == 0) {
-                viewModel.updateFootwearSubcategory()
-                //update subcategor id
+                callUpdateSubcat()
+                observeupdateFootwarSubcat()
+                //update subcategory id
                 viewModel.updateSubcategoryId(viewModel.subCategory.value?.prod_sub_cat_id!!,viewModel.subCatName.value!!)
+            }else {
+                onImageConfirmed()
             }
-
-
-
-            viewModel.isCameraButtonClickable = true
-                    uploadImages()
-                    if (viewModel.shootNumber.value == viewModel.exterirorAngles.value?.minus(1)) {
-                        dismiss()
-                        Log.d(TAG, "onViewCreated: "+"checkInteriorShootStatus")
-                        viewModel.stopShoot.value = true
-                    } else {
-                        viewModel.shootNumber.value = viewModel.shootNumber.value!! + 1
-                        dismiss()
-                    }
-
         }
 
         viewModel.overlaysResponse.observe(viewLifecycleOwner,{
@@ -102,15 +93,45 @@ class ConfirmReshootPortraitDialog : BaseDialogFragment<ShootViewModel, ConfirmR
                         .load(overlay)
                         .into(binding.ivCapturedOverlay)
 
-//                        setOverlay(binding.ivCaptured2,overlay)
-
-
                 }
                 else -> {}
             }
         })
     }
 
+    private fun callUpdateSubcat() {
+        Utilities.showProgressDialog(requireContext())
+        viewModel.updateFootwearSubcategory()
+    }
+
+    private fun onImageConfirmed() {
+        viewModel.isCameraButtonClickable = true
+        uploadImages()
+        if (viewModel.shootNumber.value == viewModel.exterirorAngles.value?.minus(1)) {
+            dismiss()
+            Log.d(TAG, "onViewCreated: "+"checkInteriorShootStatus")
+            viewModel.stopShoot.value = true
+        } else {
+            viewModel.shootNumber.value = viewModel.shootNumber.value!! + 1
+            dismiss()
+        }
+    }
+
+    private fun observeupdateFootwarSubcat(){
+        viewModel.updateFootwearSubcatRes.observe(viewLifecycleOwner,{
+            when(it){
+                is Resource.Success -> {
+                    Utilities.hideProgressDialog()
+                    onImageConfirmed()
+                }
+
+                is Resource.Failure -> {
+                    Utilities.hideProgressDialog()
+                    handleApiError(it) {callUpdateSubcat() }
+                }
+            }
+        })
+    }
 
     private fun uploadImages() {
         viewLifecycleOwner.lifecycleScope.launch {
