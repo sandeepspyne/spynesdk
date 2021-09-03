@@ -27,7 +27,6 @@ import com.spyneai.shoot.adapters.NewCarBackgroundAdapter
 import com.spyneai.shoot.data.ProcessViewModel
 import com.spyneai.shoot.data.model.CarsBackgroundRes
 import com.spyneai.shoot.utils.log
-import kotlinx.android.synthetic.main.activity_credit_plans.*
 import okhttp3.MultipartBody
 import okhttp3.RequestBody.Companion.toRequestBody
 
@@ -112,6 +111,7 @@ class SelectBackgroundFragment : BaseFragment<ProcessViewModel, FragmentSelectBa
                 processSku(showDialog)
             }AppConstants.SWIGGY -> {
                     processFoodImage()
+            Utilities.showProgressDialog(requireContext())
                 }else -> {
             if (binding.cb360.isChecked){
                 viewModel.backgroundSelect = backgroundSelect
@@ -142,23 +142,21 @@ class SelectBackgroundFragment : BaseFragment<ProcessViewModel, FragmentSelectBa
         )
         log("project id- " + viewModel.projectId.value)
         log("skuProcessState called")
-
-        binding.tvGenerateGif.isCheckable = false
     }
 
     private fun observeFoodProcess() {
         viewModel.skuProcessStateWithBgResponse.observe(viewLifecycleOwner, {
             when (it) {
                 is Resource.Success -> {
+                    Utilities.hideProgressDialog()
                     Toast.makeText(requireContext(), "skuProcessState sucess", Toast.LENGTH_SHORT)
                         .show()
                     Utilities.hideProgressDialog()
                     requireContext().gotoHome()
-                    binding.tvGenerateGif.isCheckable = true
                 }
 
                 is Resource.Failure -> {
-                    binding.tvGenerateGif.isCheckable = true
+                    Utilities.hideProgressDialog()
                     binding.shimmer.stopShimmer()
                     requireContext().captureFailureEvent(
                         Events.GET_BACKGROUND_FAILED, Properties(),
