@@ -76,6 +76,7 @@ class MainDashboardActivity : AppCompatActivity() {
         val view = binding.root
         setContentView(view)
 
+
         if (intent.getBooleanExtra("show_ongoing",false)){
             val intent = Intent(this, MyOrdersActivity::class.java)
             startActivity(intent)
@@ -178,7 +179,7 @@ class MainDashboardActivity : AppCompatActivity() {
                        startActivity(intent)
                    }
                 }
-                //R.id.wallet->setCurrentFragment(SecondFragment)
+                R.id.wallet->setCurrentFragment(SecondFragment)
                 R.id.logoutDashBoardFragment->setCurrentFragment(thirdFragment)
 
             }

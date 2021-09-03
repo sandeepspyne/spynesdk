@@ -1,0 +1,20 @@
+{
+  "version": 3,
+  "artifactType": {
+    "type": "APK",
+    "kind": "Directory"
+  },
+  "applicationId": "com.spyneai.cars24",
+  "variantName": "cars24Release",
+  "elements": [
+    {
+      "type": "SINGLE",
+      "filters": [],
+      "attributes": [],
+      "versionCode": 3,
+      "versionName": "1.2",
+      "outputFile": "app-cars24-release.apk"
+    }
+  ],
+  "elementType": "File"
+}

@@ -51,12 +51,100 @@
     },
     {
       "client_info": {
+        "mobilesdk_app_id": "1:796517407311:android:d142f51b8c3841c9e4a83a",
+        "android_client_info": {
+          "package_name": "com.spyneai.amazon"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "796517407311-ou2unghrg0838aufovh3jfeud59hdbfu.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.spyneai.amazon",
+            "certificate_hash": "719d4dc215a5de7f06f7a9b7cb88efc221978c30"
+          }
+        },
+        {
+          "client_id": "796517407311-rtrqq3c76ujrhmhb3u1e63mfbhmhdeju.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCZYh2OqdLAr8r5kGU1pJPsqlW2TH_k_Do"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "796517407311-rtrqq3c76ujrhmhb3u1e63mfbhmhdeju.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "796517407311-a7eg68f3hlagr00ovebmqc48fpakl0bb.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.whitelabeltest.ai"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
         "mobilesdk_app_id": "1:796517407311:android:9b55eb86afe88d41e4a83a",
         "android_client_info": {
           "package_name": "com.spyneai.amazon.debug"
         }
       },
       "oauth_client": [
+        {
+          "client_id": "796517407311-rtrqq3c76ujrhmhb3u1e63mfbhmhdeju.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCZYh2OqdLAr8r5kGU1pJPsqlW2TH_k_Do"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "796517407311-rtrqq3c76ujrhmhb3u1e63mfbhmhdeju.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "796517407311-a7eg68f3hlagr00ovebmqc48fpakl0bb.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.whitelabeltest.ai"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:796517407311:android:6d55a55b71ee2ff1e4a83a",
+        "android_client_info": {
+          "package_name": "com.spyneai.cars24"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "796517407311-btleh71q86ff06tfp2vvfd4moqceg0s0.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.spyneai.cars24",
+            "certificate_hash": "719d4dc215a5de7f06f7a9b7cb88efc221978c30"
+          }
+        },
         {
           "client_id": "796517407311-rtrqq3c76ujrhmhb3u1e63mfbhmhdeju.apps.googleusercontent.com",
           "client_type": 3
@@ -131,17 +219,17 @@
     },
     {
       "client_info": {
-        "mobilesdk_app_id": "1:796517407311:android:c0f191b4f462db63e4a83a",
+        "mobilesdk_app_id": "1:796517407311:android:c5fd715ded128914e4a83a",
         "android_client_info": {
-          "package_name": "com.spyneai.cars24.release"
+          "package_name": "com.spyneai.cars24india"
         }
       },
       "oauth_client": [
         {
-          "client_id": "796517407311-5q3n95okjij5m7ji66s2i7lui47bh5k9.apps.googleusercontent.com",
+          "client_id": "796517407311-57q7uo02j8jin4pml2602uanb1eu28f5.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
-            "package_name": "com.spyneai.cars24.release",
+            "package_name": "com.spyneai.cars24india",
             "certificate_hash": "719d4dc215a5de7f06f7a9b7cb88efc221978c30"
           }
         },
@@ -222,6 +310,50 @@
           "client_type": 1,
           "android_info": {
             "package_name": "com.spyneai.debug",
+            "certificate_hash": "719d4dc215a5de7f06f7a9b7cb88efc221978c30"
+          }
+        },
+        {
+          "client_id": "796517407311-rtrqq3c76ujrhmhb3u1e63mfbhmhdeju.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCZYh2OqdLAr8r5kGU1pJPsqlW2TH_k_Do"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "796517407311-rtrqq3c76ujrhmhb3u1e63mfbhmhdeju.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "796517407311-a7eg68f3hlagr00ovebmqc48fpakl0bb.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.whitelabeltest.ai"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:796517407311:android:f43d817f55d6d729e4a83a",
+        "android_client_info": {
+          "package_name": "com.spyneai.flipkart"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "796517407311-su2jbjd37e5i1haie9v1ig4ktet917c1.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.spyneai.flipkart",
             "certificate_hash": "719d4dc215a5de7f06f7a9b7cb88efc221978c30"
           }
         },
@@ -346,6 +478,50 @@
           "client_type": 1,
           "android_info": {
             "package_name": "com.spyneai.karvi.debug",
+            "certificate_hash": "719d4dc215a5de7f06f7a9b7cb88efc221978c30"
+          }
+        },
+        {
+          "client_id": "796517407311-rtrqq3c76ujrhmhb3u1e63mfbhmhdeju.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCZYh2OqdLAr8r5kGU1pJPsqlW2TH_k_Do"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "796517407311-rtrqq3c76ujrhmhb3u1e63mfbhmhdeju.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "796517407311-a7eg68f3hlagr00ovebmqc48fpakl0bb.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.whitelabeltest.ai"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:796517407311:android:04192f63cc69587ee4a83a",
+        "android_client_info": {
+          "package_name": "com.spyneai.lal10"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "796517407311-kvkhb1je0a65cv43eigqndsu1dg27srk.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.spyneai.lal10",
             "certificate_hash": "719d4dc215a5de7f06f7a9b7cb88efc221978c30"
           }
         },
@@ -627,17 +803,17 @@
     },
     {
       "client_info": {
-        "mobilesdk_app_id": "1:796517407311:android:18bb699a644669dfe4a83a",
+        "mobilesdk_app_id": "1:796517407311:android:e70f738e10b757a7e4a83a",
         "android_client_info": {
-          "package_name": "com.spyneai.sweepcars.release"
+          "package_name": "com.spyneai.swiggy"
         }
       },
       "oauth_client": [
         {
-          "client_id": "796517407311-11tmneltscj2ejfvchilt1jnqvggg6lo.apps.googleusercontent.com",
+          "client_id": "796517407311-iepl6favjm16lo2ru2onuqtgbhuqk5al.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
-            "package_name": "com.spyneai.sweepcars.release",
+            "package_name": "com.spyneai.swiggy",
             "certificate_hash": "719d4dc215a5de7f06f7a9b7cb88efc221978c30"
           }
         },
@@ -677,6 +853,50 @@
         }
       },
       "oauth_client": [
+        {
+          "client_id": "796517407311-rtrqq3c76ujrhmhb3u1e63mfbhmhdeju.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCZYh2OqdLAr8r5kGU1pJPsqlW2TH_k_Do"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "796517407311-rtrqq3c76ujrhmhb3u1e63mfbhmhdeju.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "796517407311-a7eg68f3hlagr00ovebmqc48fpakl0bb.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.whitelabeltest.ai"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:796517407311:android:53b5974f072b306ae4a83a",
+        "android_client_info": {
+          "package_name": "com.spyneai.travophotos"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "796517407311-oo49iaf0515m7o4kqop0iil93l8opihb.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.spyneai.travophotos",
+            "certificate_hash": "719d4dc215a5de7f06f7a9b7cb88efc221978c30"
+          }
+        },
         {
           "client_id": "796517407311-rtrqq3c76ujrhmhb3u1e63mfbhmhdeju.apps.googleusercontent.com",
           "client_type": 3
@@ -751,17 +971,17 @@
     },
     {
       "client_info": {
-        "mobilesdk_app_id": "1:796517407311:android:1bd554ba0e511203e4a83a",
+        "mobilesdk_app_id": "1:796517407311:android:c4ce65ffea522256e4a83a",
         "android_client_info": {
-          "package_name": "com.spyneai.travophotos.release"
+          "package_name": "com.spyneai.trustedCars"
         }
       },
       "oauth_client": [
         {
-          "client_id": "796517407311-8dtrcdiqfuki8omg1j332dm1qt2275k8.apps.googleusercontent.com",
+          "client_id": "796517407311-idsjb4um8e30lhacr1k1j65j3tpadfl0.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
-            "package_name": "com.spyneai.travophotos.release",
+            "package_name": "com.spyneai.trustedCars",
             "certificate_hash": "719d4dc215a5de7f06f7a9b7cb88efc221978c30"
           }
         },
@@ -839,17 +1059,17 @@
     },
     {
       "client_info": {
-        "mobilesdk_app_id": "1:796517407311:android:31c41e5b32bb65efe4a83a",
+        "mobilesdk_app_id": "1:796517407311:android:064a04da256184a8e4a83a",
         "android_client_info": {
-          "package_name": "com.spyneai.trustedCars.release"
+          "package_name": "com.spyneai.udaan"
         }
       },
       "oauth_client": [
         {
-          "client_id": "796517407311-0eiqqmdlal83d23e5v3mvbf7cl6gp0b2.apps.googleusercontent.com",
+          "client_id": "796517407311-6bs35ge8asjdfis1vcsnsv43n0pad7j1.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
-            "package_name": "com.spyneai.trustedCars.release",
+            "package_name": "com.spyneai.udaan",
             "certificate_hash": "719d4dc215a5de7f06f7a9b7cb88efc221978c30"
           }
         },
@@ -889,6 +1109,50 @@
         }
       },
       "oauth_client": [
+        {
+          "client_id": "796517407311-rtrqq3c76ujrhmhb3u1e63mfbhmhdeju.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCZYh2OqdLAr8r5kGU1pJPsqlW2TH_k_Do"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "796517407311-rtrqq3c76ujrhmhb3u1e63mfbhmhdeju.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "796517407311-a7eg68f3hlagr00ovebmqc48fpakl0bb.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.whitelabeltest.ai"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:796517407311:android:844145fdf46fbeb9e4a83a",
+        "android_client_info": {
+          "package_name": "com.spyneai.yallamotors"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "796517407311-vq4spsvrsq9ihq8frgcun97g8ffapher.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.spyneai.yallamotors",
+            "certificate_hash": "719d4dc215a5de7f06f7a9b7cb88efc221978c30"
+          }
+        },
         {
           "client_id": "796517407311-rtrqq3c76ujrhmhb3u1e63mfbhmhdeju.apps.googleusercontent.com",
           "client_type": 3

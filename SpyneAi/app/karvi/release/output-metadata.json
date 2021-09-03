@@ -1,18 +1,20 @@
 {
-  "version": 2,
+  "version": 3,
   "artifactType": {
     "type": "APK",
     "kind": "Directory"
   },
   "applicationId": "com.spyneai.karvi",
-  "variantName": "processKarviReleaseResources",
+  "variantName": "karviRelease",
   "elements": [
     {
       "type": "SINGLE",
       "filters": [],
-      "versionCode": 9,
-      "versionName": "3.8",
+      "attributes": [],
+      "versionCode": 16,
+      "versionName": "4.5",
       "outputFile": "app-karvi-release.apk"
     }
-  ]
+  ],
+  "elementType": "File"
 }

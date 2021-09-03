@@ -80,29 +80,29 @@ android {
         sweepCars {
             dimension 'version'
             applicationId "com.spyneai.sweepcars"
-            versionCode 13
-            versionName "3.4"
+            versionCode 14
+            versionName "3.5"
         }
 
         trustedCars {
             dimension 'version'
             applicationId "com.spyneai.trustedCars"
-            versionCode 4
-            versionName "2.2"
+            versionCode 5
+            versionName "2.3"
         }
 
         karvi {
             dimension 'version'
             applicationId "com.spyneai.karvi"
-            versionCode 15
-            versionName "4.4"
+            versionCode 16
+            versionName "4.5"
         }
 
         travophotos {
             dimension 'version'
             applicationId "com.spyneai.travophotos"
-            versionCode 5
-            versionName "2.3"
+            versionCode 6
+            versionName "2.4"
         }
 
         olacabs {
@@ -115,15 +115,15 @@ android {
         cars24 {
             dimension 'version'
             applicationId "com.spyneai.cars24"
-            versionCode 2
-            versionName "1.1"
+            versionCode 3
+            versionName "1.2"
         }
 
         yallamotors {
             dimension 'version'
             applicationId "com.spyneai.yallamotors"
             versionCode 1
-            versionName "1.0"
+            versionName "1.1"
         }
 
         spynehiring {
@@ -136,8 +136,8 @@ android {
         cars24india {
             dimension 'version'
             applicationId "com.spyneai.cars24india"
-            versionCode 5
-            versionName "1.4"
+            versionCode 6
+            versionName "1.5"
         }
         //ecom
         flipkart {

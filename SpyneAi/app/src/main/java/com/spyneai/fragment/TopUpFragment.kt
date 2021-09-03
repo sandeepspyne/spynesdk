@@ -29,7 +29,7 @@ import retrofit2.Response
 class TopUpFragment: DialogFragment() {
 
     private var _binding : DialogTopUpBinding? = null
-    private val binding get() = _binding!!
+    private val binding get() = _binding
     private var availableCredits = 0
     private var retry = 0
 
@@ -43,24 +43,24 @@ class TopUpFragment: DialogFragment() {
 
         isCancelable = false
 
-        return binding.root
+        return binding?.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        binding.ivClose.setOnClickListener {
+        binding?.ivClose?.setOnClickListener {
             dismiss()
         }
 
         when(getString(R.string.app_name)){
             AppConstants.KARVI,"Yalla Motors","Travo Photos" -> {
-                binding.tvReqCredit.visibility = View.GONE
-                binding.tvSendRequest.visibility = View.GONE
+                binding?.tvReqCredit?.visibility = View.GONE
+                binding?.tvSendRequest?.visibility = View.GONE
             }
 
             AppConstants.SWEEP -> {
-                binding.tvSendRequest.setOnClickListener {
+                binding?.tvSendRequest?.setOnClickListener {
 
                     val selectorIntent = Intent(Intent.ACTION_SENDTO)
                     selectorIntent.data = Uri.parse("mailto:")
@@ -95,7 +95,7 @@ class TopUpFragment: DialogFragment() {
 
     private fun fetchUserCreditDetails(){
 
-        binding.shimmer.startShimmer()
+        binding?.shimmer?.startShimmer()
 
         val request = RetrofitClients.buildService(APiService::class.java)
         val call = request.userCreditsDetails(
@@ -108,18 +108,18 @@ class TopUpFragment: DialogFragment() {
                 response: Response<CreditDetailsResponse>
             ) {
                 Utilities.hideProgressDialog()
-                binding.shimmer.startShimmer()
+                binding?.shimmer?.startShimmer()
 
                 if (response.isSuccessful) {
-                    binding.shimmer.visibility = View.GONE
-                    binding.tvCreditsRemaining.visibility = View.VISIBLE
+                    binding?.shimmer?.visibility = View.GONE
+                    binding?.tvCreditsRemaining?.visibility = View.VISIBLE
 
                     availableCredits = response.body()?.data?.credit_available!!
 
                     if (response.body()?.data?.credit_available.toString() == "0") {
-                        binding.tvCreditsRemaining.text = "0 Credits Remaining"
+                        binding?.tvCreditsRemaining?.text = "0 Credits Remaining"
                     } else {
-                        binding.tvCreditsRemaining.text =
+                        binding?.tvCreditsRemaining?.text =
                             CreditUtils.getFormattedNumber(response.body()!!.data.credit_available) + " Credits Remaining"
                     }
 
@@ -152,7 +152,7 @@ class TopUpFragment: DialogFragment() {
             }
 
             override fun onFailure(call: Call<CreditDetailsResponse>, t: Throwable) {
-                binding.shimmer.startShimmer()
+                binding?.shimmer?.startShimmer()
                 onError()
             }
         })

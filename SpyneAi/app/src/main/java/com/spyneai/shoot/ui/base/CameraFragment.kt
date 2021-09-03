@@ -823,6 +823,8 @@ class CameraFragment : BaseFragment<ShootViewModel, FragmentCameraBinding>(), Pi
                     viewModel.isCameraButtonClickable = true
                     log("Photo capture failed: " + exc.message)
 
+                    Toast.makeText(requireContext(),"Photo capture failed: "+exc.message,Toast.LENGTH_LONG).show()
+
                     Utilities.hideProgressDialog()
 
                     BaseApplication.getContext().captureFailureEvent(
@@ -833,9 +835,6 @@ class CameraFragment : BaseFragment<ShootViewModel, FragmentCameraBinding>(), Pi
                 }
 
                 override fun onImageSaved(output: ImageCapture.OutputFileResults) {
-                    // This function is called if capture is successfully completed
-                    viewModel.isCameraButtonClickable = true
-
                     if (output.savedUri == null) {
                         if (file != null)
                             addShootItem(file.path)
