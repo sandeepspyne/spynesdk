@@ -3,10 +3,9 @@ package com.spyneai.service
 import android.content.Context
 import androidx.work.*
 import com.posthog.android.Properties
+import com.spyneai.*
+import com.spyneai.R
 import com.spyneai.base.network.Resource
-import com.spyneai.captureEvent
-import com.spyneai.captureFailureEvent
-import com.spyneai.isInternetActive
 import com.spyneai.needs.AppConstants
 import com.spyneai.needs.Utilities
 import com.spyneai.posthog.Events
@@ -103,18 +102,31 @@ class ImageUploader(val context: Context,
                    var response = if (image.categoryName == "360int"){
                        shootRepository.uploadImage(projectId!!,
                            skuId!!, imageCategory!!,authKey, uploadType.toRequestBody(MultipartBody.FORM),image.sequence!!,imageFile)
-                   }else {
+                   }else if (BaseApplication.getContext().getString(R.string.app_name) == AppConstants.SWIGGY){
+                       shootRepository.uploadImageWithAngle(
+                           projectId!!,
+                           skuId!!,
+                           imageCategory!!,
+                           authKey,
+                           uploadType.toRequestBody(MultipartBody.FORM),
+                           image.sequence!!,
+                           image.angle!!,
+                           imageFile
+                       )
+                   } else {
                        shootRepository.uploadImage(projectId!!,
                            skuId!!, imageCategory!!,authKey, uploadType.toRequestBody(MultipartBody.FORM),image.sequence!!,imageFile)
                    }
 
                    when(response){
                        is Resource.Success -> {
+                           log("Image upload sucess. image angle: "+image.angle)
                            captureEvent(Events.UPLOADED_SERVICE,image,true,null)
                            startNextUpload(image.itemId!!,true,imageType)
                        }
 
                        is Resource.Failure -> {
+                           log("Image upload failed")
                           logUpload("Upload error "+response.errorCode.toString()+" "+response.errorMessage)
                            if(response.errorMessage == null){
                                captureEvent(Events.UPLOAD_FAILED_SERVICE,image,false,response.errorCode.toString()+": Http exception from server")

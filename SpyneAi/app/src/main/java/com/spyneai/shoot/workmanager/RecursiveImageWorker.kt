@@ -2,16 +2,19 @@ package com.spyneai.shoot.workmanager
 
 import android.content.Context
 import android.util.Log
+import android.widget.Toast
 import androidx.work.*
 import androidx.work.ListenableWorker.Result.*
 import com.posthog.android.Properties
 import com.spyneai.BaseApplication
+import com.spyneai.R
 import com.spyneai.base.network.Resource
 import com.spyneai.captureEvent
 import com.spyneai.captureFailureEvent
 import com.spyneai.needs.AppConstants
 import com.spyneai.needs.Utilities
 import com.spyneai.posthog.Events
+import com.spyneai.service.log
 import com.spyneai.shoot.data.ShootLocalRepository
 import com.spyneai.shoot.data.ShootRepository
 import com.spyneai.shoot.data.model.Image
@@ -96,7 +99,8 @@ class RecursiveImageWorker(private val appContext: Context, workerParams: Worker
             val uploadType = if (runAttemptCount == 0) "Direct" else "Retry"
 
 
-            var response = shootRepository.uploadImageWithAngle(
+            var response = if (appContext.getString(R.string.app_name) == AppConstants.SWIGGY)
+                shootRepository.uploadImageWithAngle(
                     projectId!!,
                     skuId!!,
                     imageCategory!!,
@@ -106,9 +110,20 @@ class RecursiveImageWorker(private val appContext: Context, workerParams: Worker
                     image.angle!!,
                     imageFile
                 )
+            else
+                shootRepository.uploadImage(
+                    projectId!!,
+                    skuId!!,
+                    imageCategory!!,
+                    authKey,
+                    uploadType.toRequestBody(MultipartBody.FORM),
+                    image.sequence!!,
+                    imageFile
+                )
 
             when (response) {
                 is Resource.Success -> {
+                    log("Image upload sucess. image angle: "+image.angle)
                     Log.d(TAG, "doWork: success")
                     captureEvent(Events.UPLOADED, image, true, null)
                     startNextUpload(image.itemId!!, true)
@@ -116,6 +131,7 @@ class RecursiveImageWorker(private val appContext: Context, workerParams: Worker
                 }
 
                 is Resource.Failure -> {
+                    Toast.makeText(BaseApplication.getContext(), "Image upload failed.", Toast.LENGTH_SHORT).show()
                     Log.d(TAG, "doWork: failure")
                     if (response.errorMessage == null) {
                         captureEvent(

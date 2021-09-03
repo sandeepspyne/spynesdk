@@ -925,8 +925,7 @@ class CameraFragment : BaseFragment<ShootViewModel, FragmentCameraBinding>(), Pi
             AppConstants.UDAAN,
             AppConstants.FLIPKART,
             AppConstants.AMAZON,
-            AppConstants.LAL_10,
-            AppConstants.SWIGGY -> {
+            AppConstants.LAL_10-> {
                 //hide moving line
                 if (pitch.roundToInt() == 0 || (pitch.roundToInt() <= -0 && pitch.roundToInt() >= -3))
                     binding.tvLevelIndicator.visibility = View.GONE
@@ -1282,6 +1281,7 @@ class CameraFragment : BaseFragment<ShootViewModel, FragmentCameraBinding>(), Pi
         }else {
            sequenceNumber =  viewModel.shootList.value!!.size.plus(1)
         }
+
 
         viewModel.shootList.value!!.add(
             ShootData(

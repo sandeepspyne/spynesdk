@@ -1,6 +1,7 @@
 package com.spyneai.shoot.workmanager
 
 import android.content.Context
+import android.widget.Toast
 import androidx.work.*
 import com.posthog.android.Properties
 import com.spyneai.BaseApplication
@@ -114,7 +115,7 @@ class RecursiveSkippedImagesWorker(private val appContext: Context, workerParams
 
             when(response){
                 is Resource.Success -> {
-                    log("upload image sucess")
+                    log("Image upload sucess. image angle: "+image.angle)
                     captureEvent(Events.SKIPED_UPLOADED,image,true,null)
                     startNextUpload(image.itemId!!,true)
                     return Result.success()
@@ -122,6 +123,7 @@ class RecursiveSkippedImagesWorker(private val appContext: Context, workerParams
 
                 is Resource.Failure -> {
                     log("upload image failed")
+                    Toast.makeText(BaseApplication.getContext(), "Image upload sucess.", Toast.LENGTH_SHORT).show()
                     if(response.errorMessage == null){
                         captureEvent(Events.SKIPPED_UPLOAD_FAILED,image,false,response.errorCode.toString()+": Http exception from server")
                     }else {

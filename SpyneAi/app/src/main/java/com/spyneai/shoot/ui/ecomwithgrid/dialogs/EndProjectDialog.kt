@@ -55,9 +55,9 @@ class EndProjectDialog : BaseDialogFragment<ShootViewModel, EndProjectDialogBind
         }
 
         binding.btYes.setOnClickListener {
-            dismiss()
             viewModel.updateProjectStatus(viewModel.sku.value?.projectId!!)
             viewModel.showProjectDetail.value = true
+            dismiss()
         }
 
         binding.ivCloseDialog.setOnClickListener {
