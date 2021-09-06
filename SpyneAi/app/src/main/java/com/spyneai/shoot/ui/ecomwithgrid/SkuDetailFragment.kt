@@ -5,7 +5,6 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
 import androidx.recyclerview.widget.GridLayoutManager
 import com.posthog.android.Properties
 import com.spyneai.base.BaseFragment
@@ -198,7 +197,6 @@ class SkuDetailFragment : BaseFragment<ShootViewModel, FragmentSkuDetailBinding>
             viewModel.updateTotalFramesRes.observe(viewLifecycleOwner,{
                 when(it) {
                     is Resource.Success -> {
-                        Toast.makeText(requireContext(), "updateTotalFrames sucess", Toast.LENGTH_SHORT).show()
                         EndProjectDialog().show(requireFragmentManager(), "EndProjectDialog")
                     }
 
@@ -223,7 +221,6 @@ class SkuDetailFragment : BaseFragment<ShootViewModel, FragmentSkuDetailBinding>
         viewModel.updateTotalFramesRes.observe(viewLifecycleOwner,{
             when(it) {
                 is Resource.Success -> {
-                    Toast.makeText(requireContext(), "updateTotalFrames sucess", Toast.LENGTH_SHORT).show()
                     viewModel.shootList.value?.clear()
                     val intent = Intent(activity, ShootPortraitActivity::class.java)
                     intent.putExtra("project_id", viewModel.projectId.value);

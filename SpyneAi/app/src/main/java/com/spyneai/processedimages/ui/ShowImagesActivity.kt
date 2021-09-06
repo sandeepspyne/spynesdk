@@ -12,6 +12,7 @@ import android.view.Window
 import android.view.WindowManager
 import android.widget.ImageView
 import android.widget.Toast
+import androidx.annotation.Nullable
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.core.app.NotificationCompat
@@ -22,7 +23,9 @@ import com.bumptech.glide.Glide
 import com.bumptech.glide.load.DataSource
 import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.bumptech.glide.load.engine.GlideException
+import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions
 import com.bumptech.glide.request.RequestListener
+import com.bumptech.glide.request.RequestOptions
 import com.bumptech.glide.request.target.Target
 import com.downloader.*
 import com.spyneai.R
@@ -528,15 +531,75 @@ class ShowImagesActivity : AppCompatActivity(),View.OnTouchListener,View.OnClick
         override fun setViewForPosition(position: Int): View? {
             val customView: View = layoutInflater.inflate(R.layout.view_images, null)
 
-            Glide.with(this@ShowImagesActivity) // replace with 'this' if it's in activity
+
+            Glide.with(this@ShowImagesActivity)
                 .load(imageList[position])
-                .diskCacheStrategy(DiskCacheStrategy.RESOURCE)
-                .error(R.mipmap.defaults) // show error drawable if the image is not a gif
+                .apply(
+                    RequestOptions()
+                        .error(com.spyneai.R.mipmap.defaults)
+                        .centerCrop()
+                )
+                .listener(object : RequestListener<Drawable?> {
+                    override fun onLoadFailed(
+                        @Nullable e: GlideException?,
+                        model: Any,
+                        target: Target<Drawable?>,
+                        isFirstResource: Boolean
+                    ): Boolean {
+                        //on load failed
+                        return false
+                    }
+
+                    override fun onResourceReady(
+                        resource: Drawable?,
+                        model: Any,
+                        target: Target<Drawable?>,
+                        dataSource: DataSource,
+                        isFirstResource: Boolean
+                    ): Boolean {
+                        //on load success
+                        return false
+                    }
+                })
+                .transition(DrawableTransitionOptions.withCrossFade())
                 .into(customView.ivBefore)
+
             Glide.with(this@ShowImagesActivity) // replace with 'this' if it's in activity
                 .load(imageListAfter[position])
                 .diskCacheStrategy(DiskCacheStrategy.RESOURCE)
                 .error(R.mipmap.defaults) // show error drawable if the image is not a gif
+                .into(customView.ivAfter)
+
+            Glide.with(this@ShowImagesActivity)
+                .load(imageListAfter[position])
+                .apply(
+                    RequestOptions()
+                        .error(com.spyneai.R.mipmap.defaults)
+                        .centerCrop()
+                )
+                .listener(object : RequestListener<Drawable?> {
+                    override fun onLoadFailed(
+                        @Nullable e: GlideException?,
+                        model: Any,
+                        target: Target<Drawable?>,
+                        isFirstResource: Boolean
+                    ): Boolean {
+                        //on load failed
+                        return false
+                    }
+
+                    override fun onResourceReady(
+                        resource: Drawable?,
+                        model: Any,
+                        target: Target<Drawable?>,
+                        dataSource: DataSource,
+                        isFirstResource: Boolean
+                    ): Boolean {
+                        //on load success
+                        return false
+                    }
+                })
+                .transition(DrawableTransitionOptions.withCrossFade())
                 .into(customView.ivAfter)
 
             return customView

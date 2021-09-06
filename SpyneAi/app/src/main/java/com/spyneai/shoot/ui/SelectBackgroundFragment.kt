@@ -5,7 +5,6 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
@@ -149,8 +148,7 @@ class SelectBackgroundFragment : BaseFragment<ProcessViewModel, FragmentSelectBa
             when (it) {
                 is Resource.Success -> {
                     Utilities.hideProgressDialog()
-                    Toast.makeText(requireContext(), "skuProcessState sucess", Toast.LENGTH_SHORT)
-                        .show()
+
                     Utilities.hideProgressDialog()
                     requireContext().gotoHome()
                 }
@@ -172,7 +170,6 @@ class SelectBackgroundFragment : BaseFragment<ProcessViewModel, FragmentSelectBa
 
         when (getString(R.string.app_name)) {
             AppConstants.SWIGGY -> {
-                Toast.makeText(requireContext(), "Get background Food", Toast.LENGTH_SHORT).show()
                 val category = "Food".toRequestBody(MultipartBody.FORM)
                 val authKey =
                     Utilities.getPreference(requireContext(), AppConstants.AUTH_KEY)!!
