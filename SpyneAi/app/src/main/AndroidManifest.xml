@@ -50,16 +50,9 @@
             android:exported="true" />
         <activity android:name=".orders.ui.activity.ShowRawImagesActivity" />
         <activity android:name=".orders.ui.activity.OngoingSkusActivity" />
-        <activity
-            android:name=".threesixty.TiltTestActivity"
-            android:screenOrientation="landscape" />
+
         <activity android:name=".processedimages.ui.ProcessedImageActivity" />
-        <activity
-            android:name=".threesixty.TiltTestActivity"
-            android:screenOrientation="landscape" />
-        <activity
-            android:name=".threesixty.SensorTestActivity"
-            android:screenOrientation="landscape" />
+
         <activity android:name=".orders.ui.activity.CompletedSkusActivity" />
         <activity
             android:name=".threesixty.ui.ThreeSixtyExteriorActivity"
@@ -77,9 +70,7 @@
             android:name=".threesixty.ui.ThreeSixtyActivity"
             android:configChanges="screenLayout|keyboardHidden"
             android:screenOrientation="landscape" />
-        <activity android:name=".processedimages.ui.BikeOrderSummaryActivity" />
-        <activity android:name=".RecylerviewTestActivity" />
-        <activity android:name=".processedimages.ui.BikeImagesActivity" />
+
         <activity
             android:name=".shoot.ui.base.ShootPortraitActivity"
             android:configChanges="screenLayout|keyboardHidden"
@@ -110,17 +101,11 @@
         <activity
             android:name=".credits.CreditPlansActivity"
             android:screenOrientation="portrait" />
-        <activity
-            android:name=".credits.LowCreditsActivity"
-            android:screenOrientation="portrait" />
+
         <activity
             android:name=".credits.WalletActivity"
             android:screenOrientation="portrait" />
-        <activity android:name=".videorecording.ThreeSixtyViewTestActivity" />
-        <activity android:name=".videorecording.VideoUploadHandlerActivity" />
-        <activity
-            android:name=".videorecording.ThreeSixtyInteriorViewActivity"
-            android:launchMode="singleTop" />
+
         <activity
             android:name=".activity.OngoingOrdersActivity"
             android:launchMode="singleTask"
@@ -129,22 +114,14 @@
             android:name=".activity.YourOrdersActivity"
             android:launchMode="singleTask"
             android:screenOrientation="portrait" />
-        <activity android:name=".videorecording.ProcessVideoTimerActivity" />
 
         <service
             android:name=".imagesdowloading.ImageDownloadingService"
             android:enabled="true"
             android:exported="false" />
-        <service
-            android:name=".videorecording.service.UploadVideoService"
-            android:enabled="true"
-            android:exported="false" />
 
-        <activity android:name=".videorecording.SpinViewActivity" />
-        <activity android:name=".videorecording.SaveTrimmedVideoActivity" />
-        <activity
-            android:name=".videorecording.RecordVideoActivity"
-            android:screenOrientation="landscape" />
+
+
 
         <receiver
             android:name=".service.StartReceiver"
@@ -173,13 +150,6 @@
             android:exported="true"
             android:stopWithTask="false" />
 
-        <receiver
-            android:name=".service.StartReceiver"
-            android:enabled="true">
-            <intent-filter>
-                <action android:name="android.intent.action.BOOT_COMPLETED" />
-            </intent-filter>
-        </receiver>
 
         <receiver android:name=".service.ExplicitConnectionReceiver" >
             <intent-filter>
@@ -217,9 +187,7 @@
         <activity
             android:name=".activity.CompletedActivity"
             android:screenOrientation="portrait" />
-        <activity
-            android:name=".extras.BeforeAfterActivity"
-            android:screenOrientation="portrait" />
+
         <activity
             android:name=".activity.OnboardOneActivity"
             android:screenOrientation="portrait" />
@@ -229,12 +197,7 @@
         <activity
             android:name=".extras.OnboardTwoActivity"
             android:screenOrientation="portrait" />
-        <activity
-            android:name=".activity.DashboardActivity"
-            android:screenOrientation="portrait" />
-        <activity
-            android:name=".activity.PaymentActivity"
-            android:screenOrientation="portrait" />
+
         <activity
             android:name=".activity.ShootSelectionActivity"
             android:screenOrientation="portrait" />
@@ -328,8 +291,6 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".videorecording.ThreeSixtyViewActivity" />
-        <activity android:name=".videorecording.TrimVideoActivity" />
 
         <meta-data
             android:name="com.razorpay.ApiKey"

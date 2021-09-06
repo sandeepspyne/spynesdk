@@ -37,6 +37,7 @@
         <entry key="app/src/main/res/layout/activity_sign_in_using_otp.xml" value="0.20833333333333334" />
         <entry key="app/src/main/res/layout/activity_sign_up.xml" value="0.20833333333333334" />
         <entry key="app/src/main/res/layout/activity_splash.xml" value="0.17572463768115942" />
+        <entry key="app/src/main/res/layout/activity_start_shoot.xml" value="0.2851851851851852" />
         <entry key="app/src/main/res/layout/activity_three_sixty_intro.xml" value="0.17572463768115942" />
         <entry key="app/src/main/res/layout/activity_youtube_video_player.xml" value="0.1935185185185185" />
         <entry key="app/src/main/res/layout/completed_ongoing_sku_simmer.xml" value="0.17572463768115942" />
@@ -73,12 +74,14 @@
         <entry key="app/src/main/res/layout/item_draft_sku.xml" value="0.25" />
         <entry key="app/src/main/res/layout/item_exposure.xml" value="0.17572463768115942" />
         <entry key="app/src/main/res/layout/item_focus.xml" value="0.17572463768115942" />
+        <entry key="app/src/main/res/layout/item_my_ongoing_orders.xml" value="0.2851851851851852" />
         <entry key="app/src/main/res/layout/item_ongoing_projects.xml" value="0.27685185185185185" />
         <entry key="app/src/main/res/layout/item_processed_image.xml" value="0.3098958333333333" />
         <entry key="app/src/main/res/layout/item_sku_deatils_shimmer.xml" value="0.17572463768115942" />
         <entry key="app/src/main/res/layout/item_sku_images.xml" value="0.30512820512820515" />
         <entry key="app/src/main/res/layout/row_replaced_images.xml" value="0.17572463768115942" />
         <entry key="app/src/main/res/layout/row_replaced_images_interior.xml" value="0.17572463768115942" />
+        <entry key="app/src/main/res/layout/rv_ongoing_projects.xml" value="0.2851851851851852" />
         <entry key="app/src/main/res/layout/wallet_dashboard_fragment.xml" value="0.19722222222222222" />
         <entry key="app/src/main/res/menu/dashboard_bottom_menu.xml" value="0.30512820512820515" />
         <entry key="app/src/olacabs/res/mipmap-anydpi-v26/skip.xml" value="0.19537037037037036" />

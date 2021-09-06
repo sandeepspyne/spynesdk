@@ -111,8 +111,14 @@ class MainDashboardActivity : AppCompatActivity() {
 
                 R.id.shootActivity-> {
                     when(getString(R.string.app_name)) {
-                        "Ola Cabs", AppConstants.CARS24,AppConstants.CARS24_INDIA,
-                        "Trusted cars","Travo Photos","Yalla Motors","Spyne Hiring" -> {
+                        "Ola Cabs",
+                        AppConstants.CARS24,
+                        AppConstants.CARS24_INDIA,
+                        "Trusted cars",
+                        "Travo Photos",
+                        "Yalla Motors",
+                        "Spyne Hiring",
+                        AppConstants.AUTO_MOSER-> {
                             var intent = Intent(this, StartShootActivity::class.java)
                             intent.putExtra(AppConstants.CATEGORY_ID,AppConstants.CARS_CATEGORY_ID)
                             intent.putExtra(AppConstants.CATEGORY_NAME,"Automobiles")
@@ -178,9 +184,8 @@ class MainDashboardActivity : AppCompatActivity() {
                        startActivity(intent)
                    }
                 }
-                R.id.wallet->setCurrentFragment(SecondFragment)
+               // R.id.wallet->setCurrentFragment(SecondFragment)
                 R.id.logoutDashBoardFragment->setCurrentFragment(thirdFragment)
-
             }
             true
         }
@@ -361,7 +366,7 @@ class MainDashboardActivity : AppCompatActivity() {
 
     private fun folderCheckError(error : String) {
         Snackbar.make(binding.root, error, Snackbar.LENGTH_INDEFINITE)
-            .setAction("Allow") {
+            .setAction("Retry") {
                 checkFolderUpload()
             }
             .setActionTextColor(ContextCompat.getColor(this,R.color.primary))

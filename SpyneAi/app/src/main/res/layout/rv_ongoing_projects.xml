@@ -82,11 +82,11 @@
     <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:layout_toEndOf="@+id/llImage"
+        android:layout_gravity="center_vertical"
         android:layout_marginStart="@dimen/dp_10"
+        android:layout_toEndOf="@+id/llImage"
 
-        android:layout_gravity="center_vertical">
+        android:orientation="vertical">
 
         <TextView
             android:id="@+id/tvCatName"
@@ -96,7 +96,7 @@
             android:hint="Cat. Name"
             android:textColor="@color/primary"
             android:textColorHint="@color/primary"
-            android:textSize="@dimen/sp_20"/>
+            android:textSize="@dimen/sp_20" />
 
         <TextView
             android:id="@+id/tvTotalImages"
@@ -107,32 +107,33 @@
             android:textColor="@color/black"
             android:textColorHint="@color/black"
             android:textSize="@dimen/dp_12" />
+
         <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="@dimen/dp_30"
-            android:orientation="horizontal"
-            android:gravity="center">
-
-        <TextView
-            android:id="@+id/tvImageProcessing"
-            android:layout_width="wrap_content"
-            android:layout_height="@dimen/dp_20"
-            android:fontFamily="@font/medium"
-            android:hint="image processing started"
-            android:textColor="@color/black"
-            android:textColorHint="@color/black"
-            android:textSize="@dimen/dp_12"/>
+            android:gravity="center"
+            android:orientation="horizontal">
 
             <TextView
-                android:visibility="gone"
+                android:id="@+id/tvImageProcessing"
+                android:layout_width="wrap_content"
+                android:layout_height="@dimen/dp_20"
+                android:fontFamily="@font/medium"
+                android:hint="image processing started"
+                android:textColor="@color/black"
+                android:textColorHint="@color/black"
+                android:textSize="@dimen/dp_12" />
+
+            <TextView
                 android:id="@+id/tvDots"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="....."
                 android:fontFamily="@font/medium"
+                android:text="....."
                 android:textColor="@color/black"
                 android:textColorHint="@color/black"
-                android:textSize="@dimen/dp_12"/>
+                android:textSize="@dimen/dp_12"
+                android:visibility="gone" />
 
         </LinearLayout>
 

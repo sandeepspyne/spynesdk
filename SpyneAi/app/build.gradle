@@ -139,6 +139,15 @@ android {
             versionCode 6
             versionName "1.5"
         }
+
+        automoser {
+            dimension 'version'
+            applicationId "com.spyneai.automoser"
+            versionCode 1
+            versionName "1.0"
+        }
+
+
         //ecom
         flipkart {
             dimension 'version'
@@ -229,6 +238,11 @@ android {
         spyne {
             java {
                 srcDirs 'src/spyne/java'
+            }
+        }
+        automoser {
+            java {
+                srcDirs 'src/automoser/java'
             }
         }
     }

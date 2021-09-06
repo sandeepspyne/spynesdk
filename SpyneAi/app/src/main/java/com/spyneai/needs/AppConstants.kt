@@ -138,6 +138,7 @@ object AppConstants {
     val TRAVO_PHOTOS= "Travo Photos"
     val YALLA_MOTOS= "Yalla Motors"
     val OLA_CABS = "Ola Cabs"
+    val AUTO_MOSER = "Automoser"
 
 
     val UDAAN = "Udaan"
