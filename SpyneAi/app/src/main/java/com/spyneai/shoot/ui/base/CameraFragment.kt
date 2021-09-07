@@ -975,15 +975,18 @@ class CameraFragment : BaseFragment<ShootViewModel, FragmentCameraBinding>(), Pi
                 )
                 {
                     isGyroOnCorrectAngle = true
+                    //angle 90
                     if (pitch.roundToInt() == 0 || (pitch.roundToInt() <= -0 && pitch.roundToInt() >= -3)){
-                        cameraAngle = 0
+                        cameraAngle = 90
                         gyroMeterOnLevel(false)
                     }
+                    //angle 45
                     else if (pitch.roundToInt() <= -40 && pitch.roundToInt() >= -45) {
                         cameraAngle = 45
                         gyroMeterOnLevel(false)
+                        // angle 0
                     }else{
-                        cameraAngle = 90
+                        cameraAngle = 0
                         gyroMeterOnLevel(true)}
                 } else {
                     isGyroOnCorrectAngle = false
