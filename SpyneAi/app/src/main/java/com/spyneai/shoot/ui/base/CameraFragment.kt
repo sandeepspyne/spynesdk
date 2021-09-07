@@ -169,7 +169,9 @@ class CameraFragment : BaseFragment<ShootViewModel, FragmentCameraBinding>(), Pi
         })
 
         viewModel.hideLeveler.observe(viewLifecycleOwner, {
-            if (it) binding.flLevelIndicator.visibility = View.GONE
+            if (it) {
+                binding.flLevelIndicator.visibility = View.GONE
+            }
         })
 
         binding.tvSkipShoot?.setOnClickListener {

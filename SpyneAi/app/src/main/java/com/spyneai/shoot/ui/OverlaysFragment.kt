@@ -674,6 +674,7 @@ class OverlaysFragment : BaseFragment<ShootViewModel, FragmentOverlaysBinding>()
         binding.rvSubcategories?.visibility = View.VISIBLE
         binding.tvShoot.isClickable = false
         binding.imgOverlay.visibility = View.INVISIBLE
+        viewModel.hideLeveler.value = true
 
         viewModel.subCategoriesResponse.observe(viewLifecycleOwner, {
             when (it) {
@@ -775,6 +776,7 @@ class OverlaysFragment : BaseFragment<ShootViewModel, FragmentOverlaysBinding>()
 
         binding.rvSubcategories?.visibility = View.VISIBLE
         binding.imgOverlay.visibility = View.INVISIBLE
+        viewModel.hideLeveler.value = true
 
         viewModel.subCategoriesResponse.observe(viewLifecycleOwner, {
             when (it) {
