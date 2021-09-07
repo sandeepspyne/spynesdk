@@ -85,11 +85,10 @@ class DraftSkusActivity : AppCompatActivity() {
                                 val localSkuList = viewModel.getSkusByProjectId(intent.getStringExtra(AppConstants.PROJECT_ID)!!)
 
                                 if (localSkuList.size >= it.value.data.project_data[position].sku.size) {
-                                    val skusList = viewModel.getSkusByProjectId(intent.getStringExtra(AppConstants.PROJECT_ID)!!)
-                                    val localSkusAdapter = LocalSkusAdapter(this,skusList)
+                                    val localSkusAdapter = LocalSkusAdapter(this,localSkuList)
 
                                     tvProjectName.text = intent.getStringExtra(AppConstants.PROJECT_NAME)
-                                    tvTotalSku.text =  skusList.size.toString()
+                                    tvTotalSku.text =  localSkuList.size.toString()
 
                                     rvSkus.adapter = localSkusAdapter
                                 }else {

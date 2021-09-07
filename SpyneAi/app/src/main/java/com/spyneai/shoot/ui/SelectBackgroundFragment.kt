@@ -190,7 +190,7 @@ class SelectBackgroundFragment : BaseFragment<ProcessViewModel,FragmentSelectBac
         Utilities.showProgressDialog(requireContext())
         val totalFrames = viewModel.exteriorAngles.value?.plus(viewModel.interiorMiscShootsCount)
 
-        Log.d(TAG, "updateTotalFrames: "+totalFrames)
+        Log.d(TAG, "updateTotalFrames: "+viewModel.exteriorAngles.value)
 
 
         viewModel.updateCarTotalFrames(
