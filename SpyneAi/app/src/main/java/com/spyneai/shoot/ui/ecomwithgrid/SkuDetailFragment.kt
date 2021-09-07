@@ -128,6 +128,10 @@ class SkuDetailFragment : BaseFragment<ShootViewModel, FragmentSkuDetailBinding>
         }
 
         observeTotalFrameUpdate()
+
+        binding.ivBackGif.setOnClickListener {
+            requireActivity().onBackPressed()
+        }
     }
 
     private fun updateTotalFrames() {

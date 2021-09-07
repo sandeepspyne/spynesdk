@@ -72,6 +72,10 @@ class ProjectDetailFragment : BaseFragment<ShootViewModel, FragmentProjectDetail
             }
         })
 
+        binding.ivBackGif.setOnClickListener {
+            requireActivity().onBackPressed()
+        }
+
 
     }
 

@@ -15,8 +15,8 @@ import com.spyneai.needs.AppConstants
 import com.spyneai.shoot.data.model.CarsBackgroundRes
 import com.spyneai.shoot.data.model.ProcessSkuRes
 import com.spyneai.shoot.data.model.Sku
-import com.spyneai.shoot.response.SkuProcessStateResponse
 import com.spyneai.shoot.data.model.UpdateTotalFramesRes
+import com.spyneai.shoot.response.SkuProcessStateResponse
 import com.spyneai.shoot.workmanager.ProjectStateUpdateWorker
 import kotlinx.coroutines.launch
 import okhttp3.RequestBody
@@ -101,7 +101,7 @@ class ProcessViewModel : ViewModel() {
                     "https://storage.googleapis.com/spyne/AI/raw/1892526c-72c9-4331-8ede-dec5f72cf52e.png",
                     1,
                     "13001",
-                    "https://storage.googleapis.com/spyne/AI/raw/865b7582-3ca0-4119-93be-9ab7f76554cb.png"))
+                    "https://storage.googleapis.com/spyne-website/Food%20Backgrounds/Rustic%20White%20-%200.jpg"))
 
 
                 val response = CarsBackgroundRes(list,"Got Background",200)
