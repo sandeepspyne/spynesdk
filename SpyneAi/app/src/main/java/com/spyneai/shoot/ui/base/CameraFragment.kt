@@ -551,17 +551,20 @@ class CameraFragment : BaseFragment<ShootViewModel, FragmentCameraBinding>(), Pi
                     .build()
             }
 
-            val useCaseGroup = if (getString(R.string.app_name) == AppConstants.KARVI){
-                UseCaseGroup.Builder()
-                    .addUseCase(preview)
-                    .addUseCase(imageCapture!!)
-                    .build()
-            }else {
-                UseCaseGroup.Builder()
-                    .addUseCase(preview)
-                    .addUseCase(imageCapture!!)
-                    .setViewPort(viewPort!!)
-                    .build()
+            val useCaseGroup = when(getString(R.string.app_name)) {
+                AppConstants.KARVI -> {
+                    UseCaseGroup.Builder()
+                        .addUseCase(preview)
+                        .addUseCase(imageCapture!!)
+                        .build()
+                }
+                else -> {
+                    UseCaseGroup.Builder()
+                        .addUseCase(preview)
+                        .addUseCase(imageCapture!!)
+                        .setViewPort(viewPort!!)
+                        .build()
+                }
             }
 
           //   The Configuration of image analyzing

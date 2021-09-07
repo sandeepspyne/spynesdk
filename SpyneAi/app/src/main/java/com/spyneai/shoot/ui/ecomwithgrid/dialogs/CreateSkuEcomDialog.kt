@@ -12,6 +12,7 @@ import com.spyneai.captureEvent
 import com.spyneai.captureFailureEvent
 import com.spyneai.dashboard.ui.handleApiError
 import com.spyneai.databinding.CreateSkuEcomDialogBinding
+import com.spyneai.gotoHome
 import com.spyneai.needs.AppConstants
 import com.spyneai.needs.Utilities
 import com.spyneai.posthog.Events
@@ -21,13 +22,15 @@ import com.spyneai.shoot.utils.log
 
 class CreateSkuEcomDialog : BaseDialogFragment<ShootViewModel, CreateSkuEcomDialogBinding>() {
 
-    val gourav = "fdf"
-
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
         dialog?.setCancelable(false)
         binding.etSkuName.setText("sku"+viewModel.skuNumber.value)
+
+        binding.ivClose.setOnClickListener {
+            requireContext().gotoHome()
+        }
 
         binding.btnProceed.setOnClickListener {
             when {

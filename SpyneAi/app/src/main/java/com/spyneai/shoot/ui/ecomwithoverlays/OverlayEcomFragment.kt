@@ -120,7 +120,7 @@ class OverlayEcomFragment : BaseFragment<ShootViewModel, FragmentOverlayEcomBind
                         it.errorMessage!!
                     )
                     Utilities.hideProgressDialog()
-                    handleApiError(it)
+                    handleApiError(it) {getOverlays()}
                 }
             }
         })
@@ -188,7 +188,7 @@ class OverlayEcomFragment : BaseFragment<ShootViewModel, FragmentOverlayEcomBind
                     }
 
                     when(viewModel.categoryDetails.value?.categoryName){
-                      //  "Footwear" -> binding.tvSubCategory?.text = getString(R.string.footwear_subcategory)
+                        "Footwear" -> binding.tvSubCategory?.text = getString(R.string.footwear_subcategory)
                     }
                 }
 

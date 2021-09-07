@@ -29,6 +29,10 @@ class CreateProjectEcomDialog :
 
         dialog?.setCancelable(false)
 
+        binding.ivClose.setOnClickListener {
+            requireActivity().finish()
+        }
+
         binding.btnProceed.setOnClickListener {
 
             when {
