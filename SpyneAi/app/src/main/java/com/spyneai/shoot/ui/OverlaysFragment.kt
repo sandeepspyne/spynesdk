@@ -182,7 +182,6 @@ class OverlaysFragment : BaseFragment<ShootViewModel, FragmentOverlaysBinding>()
             requireActivity().supportFragmentManager,
             "CreateProjectAndSkuDialog"
         )
-
     }
 
 
@@ -192,11 +191,13 @@ class OverlaysFragment : BaseFragment<ShootViewModel, FragmentOverlaysBinding>()
                viewModel.exterirorAngles.value = requireActivity().intent.getIntExtra(AppConstants.EXTERIOR_ANGLES,0)
            }
        }else{
-           when(getString(R.string.app_name)){
-               AppConstants.CARS24,AppConstants.CARS24_INDIA ->  viewModel.exterirorAngles.value = 5
-               else ->  {
-                   viewModel.exterirorAngles.value = 8
-               }
+           if (!viewModel.fromDrafts){
+               when(getString(R.string.app_name)){
+                AppConstants.CARS24,AppConstants.CARS24_INDIA ->  viewModel.exterirorAngles.value = 5
+                    else ->  {
+                        viewModel.exterirorAngles.value = 8
+                    }
+                }
            }
        }
 

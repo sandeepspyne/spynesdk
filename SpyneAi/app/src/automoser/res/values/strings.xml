@@ -31,8 +31,8 @@
 
     <string name="terms_and_conditions_url">https://dasautohaus.it/de/datenschutzrichtlinie/</string>
 
-    <string name="sign_up_here">New to Cars24?&#160; <font color='#cd2f2a'><b>Sign up here</b></font></string>
-    <string name="login_here">Seem like you are already a Cars24 User?&#160; <font color='#cd2f2a'><b>Login here</b></font></string>
+    <string name="sign_up_here">New to Automoser?&#160; <font color='#cd2f2a'><b>Sign up here</b></font></string>
+    <string name="login_here">Seem like you are already a Automoser User?&#160; <font color='#cd2f2a'><b>Login here</b></font></string>
 
     <string name="capture_upto">Capture upto 36 Exterior Images</string>
 </resources>
