@@ -1,68 +1,45 @@
 package com.spyneai.dashboard.ui
 
 import android.Manifest
-import android.content.ContentValues
 import android.content.Intent
 import android.content.pm.PackageManager
-import android.graphics.ImageFormat
-import android.hardware.camera2.CameraCharacteristics
-import android.hardware.camera2.CameraManager
 import android.os.Build
 import android.os.Bundle
-import android.os.Environment
 import android.util.Log
-import android.view.KeyEvent
 import android.view.View
-import android.view.ViewGroup
-import android.widget.Button
-import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.lifecycleScope
 import androidx.work.*
+import com.google.android.material.snackbar.Snackbar
+import com.posthog.android.Properties
 import com.spyneai.BaseApplication
 import com.spyneai.R
 import com.spyneai.activity.CategoriesActivity
+import com.spyneai.base.network.ClipperApi
+import com.spyneai.captureEvent
 import com.spyneai.dashboard.data.DashboardViewModel
 import com.spyneai.dashboard.ui.base.ViewModelFactory
 import com.spyneai.databinding.ActivityDashboardMainBinding
+import com.spyneai.interfaces.RetrofitClients
 import com.spyneai.needs.AppConstants
 import com.spyneai.needs.Utilities
 import com.spyneai.orders.ui.MyOrdersActivity
-import com.spyneai.shoot.data.FilesRepository
-import com.spyneai.shoot.ui.base.ShootActivity
-import com.spyneai.shoot.ui.StartShootActivity
-import com.spyneai.shoot.workmanager.manual.StoreImageFilesWorker
-import java.io.File
-
-import com.google.android.material.snackbar.Snackbar
-import com.posthog.android.Properties
-import com.spyneai.base.network.ClipperApi
-import com.spyneai.captureEvent
-import com.spyneai.downloadsku.FetchBulkResponseV2
-import com.spyneai.interfaces.APiService
-import com.spyneai.interfaces.RetrofitClients
-import com.spyneai.isMyServiceRunning
 import com.spyneai.orders.ui.MyOrdersFragment
 import com.spyneai.posthog.Events
 import com.spyneai.service.Actions
 import com.spyneai.service.ImageUploadingService
 import com.spyneai.service.getServiceState
 import com.spyneai.service.log
+import com.spyneai.shoot.data.FilesRepository
 import com.spyneai.shoot.data.ShootLocalRepository
 import com.spyneai.shoot.response.UploadFolderRes
-import com.spyneai.shoot.ui.dialogs.ResolutionNotSupportedFragment
-import com.spyneai.shoot.workmanager.ProcessSkuWorker
-import com.spyneai.shoot.workmanager.RecursiveSkippedImagesWorker
-import okhttp3.MultipartBody
-import okhttp3.RequestBody
+import com.spyneai.shoot.workmanager.manual.StoreImageFilesWorker
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
-import java.util.concurrent.TimeUnit
 
 
 class MainDashboardActivity : AppCompatActivity() {
@@ -80,6 +57,8 @@ class MainDashboardActivity : AppCompatActivity() {
             val intent = Intent(this, MyOrdersActivity::class.java)
             startActivity(intent)
         }
+
+        binding.bottomNavigation.background = null
 
         val viewModel = ViewModelProvider(this, ViewModelFactory()).get(DashboardViewModel::class.java)
 
@@ -109,72 +88,72 @@ class MainDashboardActivity : AppCompatActivity() {
             when(it.itemId){
                 R.id.homeDashboardFragment->setCurrentFragment(firstFragment)
 
-                R.id.shootActivity-> {
-                    when(getString(R.string.app_name)) {
-                        "Ola Cabs",
-                        AppConstants.CARS24,
-                        AppConstants.CARS24_INDIA,
-                        "Trusted cars",
-                        "Travo Photos",
-                        "Yalla Motors",
-                        "Spyne Hiring",
-                        AppConstants.AUTO_MOSER-> {
-                            var intent = Intent(this, StartShootActivity::class.java)
-                            intent.putExtra(AppConstants.CATEGORY_ID,AppConstants.CARS_CATEGORY_ID)
-                            intent.putExtra(AppConstants.CATEGORY_NAME,"Automobiles")
-                            startActivity(intent)
-
-                        }
-
-                        AppConstants.KARVI -> {
-                            val cm = getSystemService(android.content.Context.CAMERA_SERVICE) as CameraManager
-
-                            if (cm.cameraIdList != null && cm.cameraIdList.size > 1) {
-                                val characteristics: CameraCharacteristics =
-                                    cm.getCameraCharacteristics("1")
-
-                                val configs = characteristics.get(
-                                    CameraCharacteristics.SCALER_STREAM_CONFIGURATION_MAP
-                                )
-
-                                val s = configs?.getOutputSizes(ImageFormat.JPEG)
-
-                                var resolutionSupported = true
-
-                                s?.forEach { it ->
-                                    if (!resolutionSupported && it != null) {
-                                        if (it.width == 1024 && it.height == 768)
-                                            resolutionSupported = true
-                                    }
-                                }
-
-                                if (resolutionSupported) {
-                                    var intent = Intent(this, ShootActivity::class.java)
-                                    intent.putExtra(AppConstants.CATEGORY_ID,AppConstants.CARS_CATEGORY_ID)
-                                    intent.putExtra(AppConstants.CATEGORY_NAME,"Automobiles")
-                                    startActivity(intent)
-                                }else {
-                                    //resolution not supported
-                                    ResolutionNotSupportedFragment().show(supportFragmentManager,"ResolutionNotSupportedFragment")
-                                }
-                            }else {
-                                //resolution not supported
-                                ResolutionNotSupportedFragment().show(supportFragmentManager,"ResolutionNotSupportedFragment")
-                            }
-                        }
-
-                        "Flipkart", "Udaan", "Lal10", "Amazon", "Swiggy" -> {
-                            val intent = Intent(this@MainDashboardActivity, CategoriesActivity::class.java)
-                                startActivity(intent)
-                            }
-                        else ->{
-                            var intent = Intent(this, ShootActivity::class.java)
-                            intent.putExtra(AppConstants.CATEGORY_ID,AppConstants.CARS_CATEGORY_ID)
-                            intent.putExtra(AppConstants.CATEGORY_NAME,"Automobiles")
-                            startActivity(intent)
-                        }
-                    }
-                }
+//                R.id.shootActivity-> {
+//                    when(getString(R.string.app_name)) {
+//                        "Ola Cabs",
+//                        AppConstants.CARS24,
+//                        AppConstants.CARS24_INDIA,
+//                        "Trusted cars",
+//                        "Travo Photos",
+//                        "Yalla Motors",
+//                        "Spyne Hiring",
+//                        AppConstants.AUTO_MOSER-> {
+//                            var intent = Intent(this, StartShootActivity::class.java)
+//                            intent.putExtra(AppConstants.CATEGORY_ID,AppConstants.CARS_CATEGORY_ID)
+//                            intent.putExtra(AppConstants.CATEGORY_NAME,"Automobiles")
+//                            startActivity(intent)
+//
+//                        }
+//
+//                        AppConstants.KARVI -> {
+//                            val cm = getSystemService(android.content.Context.CAMERA_SERVICE) as CameraManager
+//
+//                            if (cm.cameraIdList != null && cm.cameraIdList.size > 1) {
+//                                val characteristics: CameraCharacteristics =
+//                                    cm.getCameraCharacteristics("1")
+//
+//                                val configs = characteristics.get(
+//                                    CameraCharacteristics.SCALER_STREAM_CONFIGURATION_MAP
+//                                )
+//
+//                                val s = configs?.getOutputSizes(ImageFormat.JPEG)
+//
+//                                var resolutionSupported = true
+//
+//                                s?.forEach { it ->
+//                                    if (!resolutionSupported && it != null) {
+//                                        if (it.width == 1024 && it.height == 768)
+//                                            resolutionSupported = true
+//                                    }
+//                                }
+//
+//                                if (resolutionSupported) {
+//                                    var intent = Intent(this, ShootActivity::class.java)
+//                                    intent.putExtra(AppConstants.CATEGORY_ID,AppConstants.CARS_CATEGORY_ID)
+//                                    intent.putExtra(AppConstants.CATEGORY_NAME,"Automobiles")
+//                                    startActivity(intent)
+//                                }else {
+//                                    //resolution not supported
+//                                    ResolutionNotSupportedFragment().show(supportFragmentManager,"ResolutionNotSupportedFragment")
+//                                }
+//                            }else {
+//                                //resolution not supported
+//                                ResolutionNotSupportedFragment().show(supportFragmentManager,"ResolutionNotSupportedFragment")
+//                            }
+//                        }
+//
+//                        "Flipkart", "Udaan", "Lal10", "Amazon", "Swiggy" -> {
+//                            val intent = Intent(this@MainDashboardActivity, CategoriesActivity::class.java)
+//                                startActivity(intent)
+//                            }
+//                        else ->{
+//                            var intent = Intent(this, ShootActivity::class.java)
+//                            intent.putExtra(AppConstants.CATEGORY_ID,AppConstants.CARS_CATEGORY_ID)
+//                            intent.putExtra(AppConstants.CATEGORY_NAME,"Automobiles")
+//                            startActivity(intent)
+//                        }
+//                    }
+//                }
 
                 R.id.completedOrdersFragment-> {
                    if (getString(R.string.app_name) == AppConstants.SPYNE_AI)
