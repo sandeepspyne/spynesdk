@@ -72,25 +72,7 @@ class ProcessViewModel : ViewModel() {
         auth_key: RequestBody
     ) = viewModelScope.launch {
         _carGifRes.value = Resource.Loading
-        when(BaseApplication.getContext().getString(R.string.app_name)){
-            AppConstants.SPYNE_AI -> {
-                val list = ArrayList<CarsBackgroundRes.Data>()
-
-                list.add(CarsBackgroundRes.Data("Xyz",
-                "https://storage.googleapis.com/spyne/AI/raw/1892526c-72c9-4331-8ede-dec5f72cf52e.png",
-                1,
-                "2222",
-                "https://storage.googleapis.com/spyne/AI/raw/1892526c-72c9-4331-8ede-dec5f72cf52e.png"))
-
-
-                val response = CarsBackgroundRes(list,"Got Background",200)
-                _carGifRes.value = Resource.Success(response)
-
-            }else -> {
-            _carGifRes.value = repository.getBackgroundGifCars(category, auth_key)
-            }
-        }
-
+        _carGifRes.value = repository.getBackgroundGifCars(category, auth_key)
     }
 
     fun processSku(authKey : String,skuId : String, backgroundId : String,is360 : Boolean)
