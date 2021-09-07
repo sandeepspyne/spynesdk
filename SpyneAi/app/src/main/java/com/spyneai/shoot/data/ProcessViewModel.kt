@@ -87,7 +87,7 @@ class ProcessViewModel : ViewModel() {
                     "https://storage.googleapis.com/spyne/AI/raw/72cbc0ea-3373-4312-99ba-4ef69de4384e.jpg",
                     1,
                     "11001",
-                    "https://storage.googleapis.com/spyne/AI/raw/b972331d-5a82-46bf-b347-007962ce9158.png"))
+                    "https://storage.googleapis.com/spyne-website/Food%20Backgrounds/Rustic%20White%20-%200.jpg"))
 
 
                 list.add(CarsBackgroundRes.Data("Colonial Blue",
@@ -101,7 +101,7 @@ class ProcessViewModel : ViewModel() {
                     "https://storage.googleapis.com/spyne/AI/raw/1892526c-72c9-4331-8ede-dec5f72cf52e.png",
                     1,
                     "13001",
-                    "https://storage.googleapis.com/spyne-website/Food%20Backgrounds/Rustic%20White%20-%200.jpg"))
+                    "https://storage.googleapis.com/spyne/AI/raw/b972331d-5a82-46bf-b347-007962ce9158.png"))
 
 
                 val response = CarsBackgroundRes(list,"Got Background",200)

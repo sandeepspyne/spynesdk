@@ -21,9 +21,7 @@ import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.DataSource
-import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.bumptech.glide.load.engine.GlideException
-import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions
 import com.bumptech.glide.request.RequestListener
 import com.bumptech.glide.request.RequestOptions
 import com.bumptech.glide.request.target.Target
@@ -537,7 +535,6 @@ class ShowImagesActivity : AppCompatActivity(),View.OnTouchListener,View.OnClick
                 .apply(
                     RequestOptions()
                         .error(com.spyneai.R.mipmap.defaults)
-                        .centerCrop()
                 )
                 .listener(object : RequestListener<Drawable?> {
                     override fun onLoadFailed(
@@ -561,21 +558,19 @@ class ShowImagesActivity : AppCompatActivity(),View.OnTouchListener,View.OnClick
                         return false
                     }
                 })
-                .transition(DrawableTransitionOptions.withCrossFade())
                 .into(customView.ivBefore)
 
-            Glide.with(this@ShowImagesActivity) // replace with 'this' if it's in activity
-                .load(imageListAfter[position])
-                .diskCacheStrategy(DiskCacheStrategy.RESOURCE)
-                .error(R.mipmap.defaults) // show error drawable if the image is not a gif
-                .into(customView.ivAfter)
+//            Glide.with(this@ShowImagesActivity) // replace with 'this' if it's in activity
+//                .load(imageListAfter[position])
+//                .diskCacheStrategy(DiskCacheStrategy.RESOURCE)
+//                .error(R.mipmap.defaults) // show error drawable if the image is not a gif
+//                .into(customView.ivAfter)
 
             Glide.with(this@ShowImagesActivity)
                 .load(imageListAfter[position])
                 .apply(
                     RequestOptions()
                         .error(com.spyneai.R.mipmap.defaults)
-                        .centerCrop()
                 )
                 .listener(object : RequestListener<Drawable?> {
                     override fun onLoadFailed(
@@ -599,7 +594,6 @@ class ShowImagesActivity : AppCompatActivity(),View.OnTouchListener,View.OnClick
                         return false
                     }
                 })
-                .transition(DrawableTransitionOptions.withCrossFade())
                 .into(customView.ivAfter)
 
             return customView

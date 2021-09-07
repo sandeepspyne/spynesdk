@@ -75,7 +75,7 @@ public class ShowReplacedImagesAdapter(
             .apply(
                 RequestOptions()
                     .error(com.spyneai.R.mipmap.defaults)
-                    .centerCrop()
+
             )
             .listener(object : RequestListener<Drawable?> {
                 override fun onLoadFailed(
@@ -113,7 +113,6 @@ public class ShowReplacedImagesAdapter(
             .apply(
                 RequestOptions()
                     .error(com.spyneai.R.mipmap.defaults)
-                    .centerCrop()
             )
             .listener(object : RequestListener<Drawable?> {
                 override fun onLoadFailed(

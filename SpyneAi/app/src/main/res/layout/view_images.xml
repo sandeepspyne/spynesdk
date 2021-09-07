@@ -35,7 +35,7 @@
                 android:layout_width="match_parent"
                 android:src="@mipmap/defaults"
                 android:layout_gravity="center"
-                android:layout_height="wrap_content" />
+                android:layout_height="@dimen/dp_300" />
         </androidx.cardview.widget.CardView>
 
     </LinearLayout>
@@ -67,7 +67,7 @@
                 android:layout_width="match_parent"
                 android:src="@mipmap/defaults"
                 android:layout_gravity="center"
-                android:layout_height="wrap_content" />
+                android:layout_height="@dimen/dp_300" />
         </androidx.cardview.widget.CardView>
 
 
