@@ -1,5 +1,6 @@
 package com.spyneai.shoot.ui
 
+import android.annotation.SuppressLint
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -32,11 +33,12 @@ import okhttp3.RequestBody.Companion.toRequestBody
 
 class SelectBackgroundFragment : BaseFragment<ProcessViewModel,FragmentSelectBackgroundBinding>() {
 
-    val TAG = "SelectBackgroundFragment"
+    val TAG = "Background Fragment"
 
     lateinit var carBackgroundGifList: ArrayList<CarsBackgroundRes.Data>
     var backgroundSelect: String = ""
     lateinit var carbackgroundsAdapter: NewCarBackgroundAdapter
+
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -85,7 +87,6 @@ class SelectBackgroundFragment : BaseFragment<ProcessViewModel,FragmentSelectBac
 
         observeTotalFrameUpdate()
         observeProcessSku()
-
     }
 
     private fun processRequest(showDialog : Boolean) {
@@ -94,13 +95,13 @@ class SelectBackgroundFragment : BaseFragment<ProcessViewModel,FragmentSelectBac
                 //process image call
                 processSku(showDialog)
             }else -> {
-            if (binding.cb360.isChecked){
-                viewModel.backgroundSelect = backgroundSelect
-                viewModel.addRegularShootSummaryFragment.value = true
-            }else{
-                //process image call
-                processSku(showDialog)
-            }
+                if (binding.cb360.isChecked){
+                    viewModel.backgroundSelect = backgroundSelect
+                    viewModel.addRegularShootSummaryFragment.value = true
+                }else{
+                    //process image call
+                    processSku(showDialog)
+                }
             }
         }
     }
@@ -184,11 +185,12 @@ class SelectBackgroundFragment : BaseFragment<ProcessViewModel,FragmentSelectBac
         binding.rvBackgroundsCars.setAdapter(carbackgroundsAdapter)
     }
 
+
     private fun updateTotalFrames() {
         Utilities.showProgressDialog(requireContext())
         val totalFrames = viewModel.exteriorAngles.value?.plus(viewModel.interiorMiscShootsCount)
 
-        log("Update Total Frames: "+totalFrames)
+        Log.d(TAG, "updateTotalFrames: "+totalFrames)
 
 
         viewModel.updateCarTotalFrames(
@@ -202,6 +204,8 @@ class SelectBackgroundFragment : BaseFragment<ProcessViewModel,FragmentSelectBac
         viewModel.updateTotalFramesRes.observe(viewLifecycleOwner,{
             when(it) {
                 is Resource.Success -> {
+                    Utilities.hideProgressDialog()
+
                     val properties = Properties()
                     properties.apply {
                         this["sku_id"] = viewModel.sku.value?.skuId!!

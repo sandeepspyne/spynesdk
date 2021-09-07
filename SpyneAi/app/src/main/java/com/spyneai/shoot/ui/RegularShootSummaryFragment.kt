@@ -275,6 +275,7 @@ class RegularShootSummaryFragment  : BaseFragment<ProcessViewModel, FragmentRegu
     }
 
     private fun getUserCredits() {
+        Utilities.showProgressDialog(requireContext())
         viewModel.getUserCredits(Utilities.getPreference(requireContext(), AppConstants.AUTH_KEY).toString())
     }
 
@@ -302,6 +303,7 @@ class RegularShootSummaryFragment  : BaseFragment<ProcessViewModel, FragmentRegu
             }
         })
     }
+
     private fun updatePaidStatus(showLoader : Boolean) {
         if (showLoader)
             Utilities.showProgressDialog(requireContext())
@@ -345,8 +347,6 @@ class RegularShootSummaryFragment  : BaseFragment<ProcessViewModel, FragmentRegu
                     Utilities.hideProgressDialog()
                     handleApiError(it) { getUserCredits() }
                 }
-
-                is Resource.Loading -> Utilities.showProgressDialog(requireContext())
             }
         })
     }

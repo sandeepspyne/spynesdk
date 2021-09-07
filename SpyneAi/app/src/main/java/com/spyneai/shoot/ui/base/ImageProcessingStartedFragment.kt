@@ -41,7 +41,7 @@ class ImageProcessingStartedFragment : BaseFragment<ProcessViewModel, FragmentIm
             requireContext().gotoHome()
         }
 
-        observeTotalFrameUpdate()
+
 
     }
 
@@ -49,8 +49,11 @@ class ImageProcessingStartedFragment : BaseFragment<ProcessViewModel, FragmentIm
         super.onResume()
 
         if (viewModel.categoryName == "Bikes"){
-            if (viewModel.interiorMiscShootsCount > 0)
+            if (viewModel.interiorMiscShootsCount > 0){
+                observeTotalFrameUpdate()
                 updateTotalFrames()
+            }
+
 
             viewModel.updateProjectState(
                 Utilities.getPreference(requireContext(),AppConstants.AUTH_KEY).toString(),
@@ -95,6 +98,8 @@ class ImageProcessingStartedFragment : BaseFragment<ProcessViewModel, FragmentIm
 
 
     private fun updateTotalFrames() {
+        Utilities.showProgressDialog(requireContext())
+
         val totalFrames = viewModel.exteriorAngles.value?.plus(viewModel.interiorMiscShootsCount)
 
         viewModel.updateCarTotalFrames(
