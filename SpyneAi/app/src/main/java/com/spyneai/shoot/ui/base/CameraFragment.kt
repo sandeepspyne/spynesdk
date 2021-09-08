@@ -6,17 +6,16 @@ import android.content.ContentValues
 import android.content.ContentValues.TAG
 import android.content.Context
 import android.content.pm.ActivityInfo
-import android.graphics.ImageFormat
 import android.hardware.Sensor
 import android.hardware.SensorEvent
 import android.hardware.SensorEventListener
 import android.hardware.SensorManager
-import android.hardware.camera2.CameraCharacteristics
-import android.hardware.camera2.CameraManager
+import android.media.MediaActionSound
 import android.os.*
 import android.provider.MediaStore
 import android.util.DisplayMetrics
 import android.util.Log
+import android.util.Size
 import android.view.*
 import android.view.animation.AccelerateInterpolator
 import android.widget.*
@@ -27,6 +26,7 @@ import androidx.core.net.toFile
 import com.hbisoft.pickit.PickiT
 import com.hbisoft.pickit.PickiTCallbacks
 import com.posthog.android.Properties
+import com.spyneai.BaseApplication
 import com.spyneai.R
 import com.spyneai.base.BaseFragment
 import com.spyneai.base.network.Resource
@@ -41,6 +41,8 @@ import com.spyneai.posthog.Events
 import com.spyneai.shoot.data.ShootViewModel
 import com.spyneai.shoot.data.model.ShootData
 import com.spyneai.shoot.utils.log
+import com.spyneai.shoot.utils.shoot
+import kotlinx.android.synthetic.main.activity_credit_plans.*
 import java.io.File
 import java.util.*
 import java.util.concurrent.ExecutionException
@@ -51,12 +53,6 @@ import kotlin.math.abs
 import kotlin.math.max
 import kotlin.math.min
 import kotlin.math.roundToInt
-import android.media.MediaActionSound
-import android.util.Size
-import com.spyneai.BaseApplication
-import com.spyneai.shoot.ui.dialogs.ThreeSixtyInteriorHintDialog
-import com.spyneai.shoot.utils.shoot
-import kotlinx.android.synthetic.main.activity_credit_plans.*
 
 
 class CameraFragment : BaseFragment<ShootViewModel, FragmentCameraBinding>(), PickiTCallbacks,
@@ -346,6 +342,7 @@ class CameraFragment : BaseFragment<ShootViewModel, FragmentCameraBinding>(), Pi
                         }
                     }
                 }else {
+                    if(isGyroOnCorrectAngle)
                     captureImage()
                 }
             }
@@ -421,6 +418,7 @@ class CameraFragment : BaseFragment<ShootViewModel, FragmentCameraBinding>(), Pi
                     viewModel.insertSku(sku!!)
 
                     viewModel.isCameraButtonClickable = true
+                    if(isGyroOnCorrectAngle)
                     captureImage()
                 }
 

@@ -72,7 +72,7 @@ android {
         spyne {
             dimension 'version'
             applicationId "com.spyneai"
-            versionCode 50
+            versionCode 49
             versionName "2.61"
         }
 
