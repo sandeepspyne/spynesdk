@@ -5,14 +5,13 @@
       <map>
         <entry key="../../../../../../layout/custom_preview.xml" value="0.33645833333333336" />
         <entry key="../../../Library/Android/sdk/platforms/android-30/data/res/layout/simple_spinner_dropdown_item.xml" value="0.20833333333333334" />
-        <entry key="app/src/amazon/res/layout/home_dashboard_fragment.xml" value="0.3098958333333333" />
         <entry key="app/src/amazon/res/mipmap-anydpi-v26/app_ic_round.xml" value="0.3175925925925926" />
-        <entry key="app/src/flipkart/res/layout/home_dashboard_fragment.xml" value="0.3098958333333333" />
-        <entry key="app/src/flipkart/res/menu/dashboard_bottom_menu.xml" value="0.3098958333333333" />
         <entry key="app/src/flipkart/res/mipmap-anydpi-v26/app_ic.xml" value="0.3175925925925926" />
         <entry key="app/src/lal10/res/layout/home_dashboard_fragment.xml" value="0.30512820512820515" />
         <entry key="app/src/lal10/res/mipmap-anydpi-v26/app_ic.xml" value="0.18385416666666668" />
+        <entry key="app/src/main/res/drawable/default_dot.xml" value="0.24722222222222223" />
         <entry key="app/src/main/res/drawable/exposure_thumb.xml" value="0.3260416666666667" />
+        <entry key="app/src/main/res/drawable/ic_indicator.xml" value="0.24722222222222223" />
         <entry key="app/src/main/res/drawable/ic_noun_exposure.xml" value="0.3260416666666667" />
         <entry key="app/src/main/res/drawable/ic_shoot.xml" value="0.24166666666666667" />
         <entry key="app/src/main/res/drawable/ic_slider_next.xml" value="0.24444444444444444" />
@@ -22,7 +21,9 @@
         <entry key="app/src/main/res/drawable/ic_uploaded.xml" value="0.24444444444444444" />
         <entry key="app/src/main/res/drawable/ic_uploading.xml" value="0.24444444444444444" />
         <entry key="app/src/main/res/drawable/nav_background.xml" value="0.24166666666666667" />
+        <entry key="app/src/main/res/drawable/tab_selector.xml" value="0.24722222222222223" />
         <entry key="app/src/main/res/layout-land/fragment_camera.xml" value="0.20208333333333334" />
+        <entry key="app/src/main/res/layout/activity_categories.xml" value="0.2064814814814815" />
         <entry key="app/src/main/res/layout/activity_completed_skus.xml" value="0.17572463768115942" />
         <entry key="app/src/main/res/layout/activity_credit_plans.xml" value="0.30512820512820515" />
         <entry key="app/src/main/res/layout/activity_dashboard_main.xml" value="0.25" />
@@ -96,6 +97,16 @@
         <entry key="app/src/sweepcars/res/mipmap-anydpi-v26/app_ic.xml" value="0.18385416666666668" />
         <entry key="app/src/sweepcars/res/mipmap-anydpi-v26/app_ic_round.xml" value="0.18385416666666668" />
         <entry key="app/src/swiggy/res/menu/dashboard_bottom_menu.xml" value="0.19814814814814816" />
+        <entry key="app/src/swiggyinstamart/res/drawable/app_ic_background.xml" value="0.25092592592592594" />
+        <entry key="app/src/swiggyinstamart/res/drawable/ic_launcher_background.xml" value="0.24722222222222223" />
+        <entry key="app/src/swiggyinstamart/res/layout/home_dashboard_fragment.xml" value="0.2064814814814815" />
+        <entry key="app/src/swiggyinstamart/res/menu/dashboard_bottom_menu.xml" value="0.2101851851851852" />
+        <entry key="app/src/swiggyinstamart/res/mipmap-anydpi-v26/app_ic.xml" value="0.24722222222222223" />
+        <entry key="app/src/swiggyinstamart/res/mipmap-anydpi-v26/app_ic_round.xml" value="0.24722222222222223" />
+        <entry key="app/src/swiggyinstamart/res/mipmap-anydpi-v26/ic_launcher.xml" value="0.24722222222222223" />
+        <entry key="app/src/swiggyinstamart/res/mipmap-anydpi-v26/ic_launcher_round.xml" value="0.24722222222222223" />
+        <entry key="app/src/swiggyinstamartDebug/res/mipmap-anydpi-v26/ic_launcher.xml" value="0.109375" />
+        <entry key="app/src/swiggyinstamartDebug/res/mipmap-anydpi-v26/ic_launcher_round.xml" value="0.109375" />
         <entry key="app/src/udaan/res/mipmap-anydpi-v26/app_ic.xml" value="0.16979166666666667" />
       </map>
     </option>

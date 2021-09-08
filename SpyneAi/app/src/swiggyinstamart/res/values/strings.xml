@@ -1,0 +1,245 @@
+<resources>
+    <string name="app_name">Swiggy Instamart</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="hello">Greetings!</string>
+
+    <string name="please">Please sign in to continue</string>
+    <string name="please_signup">Please sign up to continue</string>
+    <string name="use_email">Use Email Instead</string>
+    <string name="sign_in">Sign in with OTP</string>
+    <string name="login">Login</string>
+    <string name="login_with_password">Login with Password</string>
+    <string name="sign_up">Sign up </string>
+    <string name="send_link">Send Link</string>
+    <string name="or">OR</string>
+    <string name="by"><![CDATA[By continuing you agree to our ]]></string>
+    <string name="terms">Terms &amp; Policies</string>
+    <string name="edit">Edit</string>
+    <string name="get_started">Let\'s get started</string>
+    <string name="enter">Enter the 6-digit \none time password just sent to</string>
+    <string name="did_not">Didn\'t receive the OTP?</string>
+    <string name="resend">Resend</string>
+    <string name="submit_otp">Submit OTP</string>
+    <string name="submit">Submit</string>
+    <string name="continue_with_this_shoot">Continue with this shoot</string>
+    <string name="ok">OK</string>
+    <string name="channels">Channels</string>
+    <string name="backgrounds">Backgrounds</string>
+    <string name="hdr">HDR</string>
+    <string name="before">Before</string>
+    <string name="after">After</string>
+    <string name="shoot_now">Shoot Now</string>
+    <string name="order">Order Now</string>
+    <string name="preview_order">Proceed To Order</string>
+    <string name="your_sku">Your SKUs</string>
+    <string name="report_issue">Report Issue</string>
+    <string name="add_sku">Add SKUs</string>
+    <string name="completed">Completed</string>
+    <string name="no_data">No marketplaces</string>
+    <string name="no_datas">No Backgrounds</string>
+    <string name="demo_sku">Demo Skus</string>
+    <string name="order_now">Order Now</string>
+    <string name="shoot_selection">Shoot Selection</string>
+    <string name="sku_names">Sku Name</string>
+    <string name="sku">Sku:</string>
+    <string name="total_cost">Total Cost</string>
+    <string name="total_images">Total Images Clicked</string>
+    <string name="available_download">Available for download</string>
+    <string name="select_marketplace">Select Marketplace</string>
+    <string name="confirm">Confirm</string>
+    <string name="no_reshoot">Reshoot</string>
+    <string name="start_shooting">Start Shooting</string>
+    <string name="ongoing">On-Going</string>
+    <string name="failed">Failed</string>
+    <string name="categories_selection">Category Selection</string>
+    <string name="footwear">Footwear</string>
+    <string name="automobile">Automobile</string>
+    <string name="home">Home</string>
+    <string name="logout">Logout</string>
+    <string name="dealership">DealerShip Logo</string>
+    <string name="no_completed">Completed orders\nwill appear here</string>
+    <string name="no_ongoing">On-going orders\nwill appear here</string>
+    <string name="our_work">Our Work</string>
+    <string name="upload_logo">Upload Logo</string>
+    <string name="the_otp">The OTP is incorrect. Please try again.</string>
+    <string name="please_enter_email">Please enter a valid email Id</string>
+    <string name="please_enter_email_password">Please enter a valid Email Id OR Password</string>
+    <string name="start_order">Start Order</string>
+    <string name="submitted">Submitted</string>
+    <string name="add">Add</string>
+    <string name="api_key_razorpay">rzp_test_o5vheFMPXkCBrp</string>
+    <string name="are_you">Are you sure you want to delete this SKU?</string>
+    <string name="no">No</string>
+    <string name="yes">Yes</string>
+    <string name="exit_demo_button">Exit Demo Mode</string>
+    <string name="exits">Are you sure you want to exit this shoot?</string>
+    <string name="exits_demo">Demo mode is available for the first two backgrounds only. To unlock this background please exit demo mode.</string>
+    <string name="email">Your Email Id</string>
+    <string name="order_summary">Order Summary</string>
+    <string name="category">Category - </string>
+    <string name="total_skus">Total SKU</string>
+    <string name="selected_backgrounds">Selected Backgrounds</string>
+    <string name="dealership_logo">Dealership Logo</string>
+    <string name="top_up"><u>Top UP</u></string>
+    <string name="buy_credits">Buy 10 Credits</string>
+    <string name="request_on_whatsapp">Request On WhatsApp</string>
+    <string name="your_gif">Your GIF</string>
+    <string name="choose_shoots">Choose Shots</string>
+    <string name="proceed">Proceed</string>
+    <string name="select_backgrounds">Select Background</string>
+    <string name="select_output">Sample 360° Output</string>
+    <string name="create_shoots">Generate Output</string>
+    <string name="your_sent">Your 360° Shot was sent at</string>
+    <string name="view_all_images">View all images</string>
+    <string name="reach_out">Reach out to us !</string>
+    <string name="whatsapp">WhatsApp</string>
+    <string name="completed_projects">Completed Projects</string>
+    <string name="your_images">Your Images</string>
+    <string name="processing">Processing</string>
+    <string name="your_photos">Your photos were sent at</string>
+
+    <string name="demo">Demo</string>
+    <string name="sedan">Sedan</string>
+    <string name="hatchbacks">Hatchbacks</string>
+    <string name="suv">SUV</string>
+
+    <string name="view_spin">View 360° Spin Shot</string>
+    <string name="continues">Continue</string>
+
+
+    <string name="your_360_shots">Your Images are almost ready</string>
+    <string name="no_internet">Server Not Responding</string>
+    <string name="retry">Retry</string>
+    <string name="more_angles">(More angles coming soon)</string>
+    <string name="we_recommend">(1/2) Interior Shots</string>
+    <string name="skip">Skip</string>
+    <string name="apply_reflection">Apply auto exposure</string>
+    <string name="window_reflection">Window reflection style</string>
+    <string name="transparent">Transparent</string>
+    <string name="original">Original</string>
+    <string name="exterior">Exterior</string>
+    <string name="interior">Interior</string>
+    <string name="have_look"><u>Have a look</u></string>
+
+    <string name="download_hd_images"><u>Download HD Images</u></string>
+    <string name="download_free"><u>Download Free (Watermarked)</u></string>
+
+    <string name="downloading...."><u>Downloading....</u></string>
+    <string name="download_completed"><u> Download Completed</u></string>
+    <string name="download_failed"><u> Download Failed</u></string>
+
+    <string name="total_images_clicked"><u>Total Images Clicked</u></string>
+    <string name="total_exterior_clicked"><u>Total Exterior Images</u></string>
+    <string name="credits_available"><u>Credits Available</u></string>
+    <string name="top_up_2"><u>(Top Up)</u></string>
+
+    <string name="sku_id"><u>SKU ID</u></string>
+
+    <string name="images"><u>Images</u></string>
+
+    <string name="credits"><u>Credits</u></string>
+
+    <string name="increase_online_sale"><u>Increase Online Sales for your products by \n<br />uploading visually stunning images on \n<br />Marketplaces
+
+</u></string>
+
+    <string name="choose_marketplace">Choose Marketplace</string>
+    <string name="choose_background_colour">Choose background colour</string>
+    <string name="sample_output_image">Sample  Output Image</string>
+    <string name="choose_background">Then choose the background color</string>
+
+
+    <string name="free_credits">10 Credits has been added to \n<br />your account</string>
+
+    <string name="forgot_password_dialog">Link sent successfully.\n<br /> Please check your email.</string>
+
+
+    <string name="we_recommend_focused">(2/2) Miscellaneous Shots</string>
+    <string name="focused">Miscellaneous</string>
+
+    <string name="start_new_shoot">Start a new shoot</string>
+
+    <string name="ongoing_projects">Ongoing Projects</string>
+
+    <string name="your_orders">Your Orders</string>
+    <string name="end_shoot">End Shoot</string>
+    <string name="end_shoots">Are you sure you really want to end shoot now?</string>
+
+    <string name="preview">Preview</string>
+    <string name="place_order">Start Processing</string>
+    <string name="images_will_be_lost">Your Images will be lost. Are you sure you want to leave this page?</string>
+
+
+    <string name="dealership_popup">Logo will be displayed on the \n<br /><b>number plates</b> and on <b>corner</b> \n<br />of image</string>
+
+
+    <string name="select_corner">Select corner to display logo</string>
+
+    <string name="top_left">Top Left</string>
+    <string name="top_right">Top Right</string>
+    <string name="bottom_left">Bottom Left</string>
+    <string name="bottom_right">Bottom Right</string>
+
+
+    <string name="sign_up_here">New to Swiggy Instamart?&#160; <font color='#892352'><b>Sign up here</b></font></string>
+
+    <string name="logout_dialog_text">Are you sure you want to <b>log out.</b></string>
+
+    <string name="login_here">Already a Flipkart User?&#160; <font color='#892352'><b>Login here</b></font></string>
+    <string name="shoot_outdoor">Shoot&#160; <font color='#892352'><b>Outdoors</b></font>&#160;to avoid irregular reflections</string>
+    <string name="forgot_password">Forgot password?</string>
+
+    <string name="forgot_password_mail">Enter the email address to reset your password. \n<br /> You may need to check your spam folder.</string>
+    <string name="enter_vin">Please enter the Vehicle Identification Number (VIN)</string>
+    <string name="vin_number">VIN</string>
+
+
+    <string name="message_no_permissions">The app cannot work without permissions</string>
+
+
+    <string name="session_expired">Session Expired. Please <b>log in</b> again.</string>
+    <string name="change_fidelity"><u>Change Fidelity</u></string>
+    <string name="sku_name_hint">Enter Any Unique Car ID</string>
+
+    <string name="do_you_need_footwear_overlayes">Do you need footwear overlays?</string>
+    <string name="bikes">Bikes</string>
+    <string name="project_name">Project Name</string>
+    <string name="project_name_">Project Name -</string>
+    <string name="end_project">Are you sure you want to end this project?</string>
+    <string name="submit_and_process">Submit and Process this Project</string>
+    <string name="city">City(optional)</string>
+    <string name="city_">City -</string>
+    <string name="new_project">New Project</string>
+    <string name="car_subcategory">Select your car\'s sub-category</string>
+    <string name="go_to_home">Go to home</string>
+
+
+    <string name="terms_and_conditions_url">https://www.spyne.ai/terms-service</string>
+
+    <string name="create_professional_automobile">Create Professional\n<br />Pictures in a Single Click using AI</string>
+
+    <string name="capture_upto">Capture upto 36 Exterior Images</string>
+    <string name="my_projcts">My Projects</string>
+
+    <string name="get_started_">Get Started</string>
+    <string name="on_going_shoots">On-going Shoots</string>
+    <string name="view_all">View All</string>
+    <string name="completed_shoots">Completed Shoots</string>
+    <string name="explore_categories">Explore Categories</string>
+    <string name="tutorial_videos">Tutorial Videos</string>
+
+    //On Boarding
+    <string name="slide_one_title">Shoot</string>
+    <string name="slide_one_description">Snap edit and sell your cars\nthrough Store Camera</string>
+    <string name="slide_two_title">Edit</string>
+    <string name="slide_two_description">You have access to everything you need for taking fantastic
+        product photos.
+</string>
+    <string name="slide_three_tittle">Free Credits</string>
+    <string name="slide_three_description">Enjoy Free Credits on Signup</string>
+
+    <string name="footwear_subcategory">Select your footwear\'s sub-category</string>
+    <string name="bike_subcategory">Select your bike\'s sub-category</string>
+
+</resources>

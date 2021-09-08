@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "474618449420",
+    "project_id": "swiggyinstamart-5112d",
+    "storage_bucket": "swiggyinstamart-5112d.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:474618449420:android:f33f148f6ac92132e4e829",
+        "android_client_info": {
+          "package_name": "com.spyneai.swiggyinstamart.debug"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "474618449420-npgv54cncc3mks02u77n7rqs2j4g4s39.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyB0HlaQ1jxvksa_iaFS5TOp31vG84I_69I"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "474618449420-npgv54cncc3mks02u77n7rqs2j4g4s39.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
