@@ -101,3 +101,19 @@ fun Context.isInternetActive() : Boolean {
     val activeNetwork: NetworkInfo? = cm.activeNetworkInfo
     return activeNetwork?.isConnectedOrConnecting == true
 }
+
+fun Context.getNetworkName() : String {
+    val cm = getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
+    val wifi: NetworkInfo? = cm.getNetworkInfo(ConnectivityManager.TYPE_WIFI)
+    val mobile: NetworkInfo? = cm.getNetworkInfo(ConnectivityManager.TYPE_MOBILE)
+
+    var type = "None"
+
+    if (wifi != null && wifi.isConnected)
+        type = "Wi-Fi"
+
+    if (mobile != null && mobile.isConnected)
+        type = "Mobile"
+
+    return type
+}

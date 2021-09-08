@@ -1,9 +1,11 @@
 package com.spyneai.shoot.workmanager.manual
 
 import android.content.Context
+import android.content.Intent
 import android.os.Build
 import android.os.Environment
 import android.util.Log
+import androidx.core.content.ContextCompat
 import androidx.work.*
 import com.posthog.android.Properties
 import com.spyneai.BaseApplication
@@ -11,7 +13,13 @@ import com.spyneai.captureEvent
 import com.spyneai.needs.AppConstants
 import com.spyneai.needs.Utilities
 import com.spyneai.posthog.Events
+import com.spyneai.service.Actions
+import com.spyneai.service.ImageUploadingService
+import com.spyneai.service.getServiceState
+import com.spyneai.service.log
+import com.spyneai.service.manual.ManualUploadService
 import com.spyneai.shoot.data.FilesRepository
+import com.spyneai.shoot.data.ShootLocalRepository
 import com.spyneai.shoot.data.model.ImageFile
 import com.spyneai.shoot.utils.logManualUpload
 import java.io.File
@@ -36,11 +44,13 @@ class StoreImageFilesWorker (private val appContext: Context, workerParams: Work
 
         //get list of images
         val files = File(path).listFiles()
+        val filesPathList = ArrayList<String>()
 
        if (files != null){
           try {
               for (i in files.indices){
                   if (files[i] != null){
+                      filesPathList.add(files[i].path)
                       val fileName = files[i].name
 
                       val properties =  fileName.split("_")
@@ -59,10 +69,9 @@ class StoreImageFilesWorker (private val appContext: Context, workerParams: Work
 
                   if (i == files.size - 1){
                       capture(Events.FILE_SIZE)
-                      startManualUploadWorker(files.size)
+                      startManualUploadWorker(files.size,filesPathList)
                       return Result.success()
                   }
-
               }
           }catch (e : Exception){
               val properties = Properties()
@@ -73,14 +82,14 @@ class StoreImageFilesWorker (private val appContext: Context, workerParams: Work
        }
 
         if (files != null)
-            startManualUploadWorker(files.size)
+            startManualUploadWorker(files.size,filesPathList)
         else
             capture(Events.FILES_NULL)
 
         return Result.success()
     }
 
-    private suspend fun startManualUploadWorker(fileSize : Int) {
+    private  fun startManualUploadWorker(fileSize : Int,filesPathList : ArrayList<String>) {
         val properties = Properties()
         properties.apply {
             this["email"] = Utilities.getPreference(appContext, AppConstants.EMAIL_ID).toString()
@@ -91,63 +100,46 @@ class StoreImageFilesWorker (private val appContext: Context, workerParams: Work
             Events.FILE_REAED_FINISHED,
             properties)
 
-        //check if long running worker is alive
-        val workManager = WorkManager.getInstance(BaseApplication.getContext())
+        //send all data to server
 
-        val workQuery = WorkQuery.Builder
-            .fromTags(listOf("Manual Long Running Worker"))
-            .addStates(listOf(WorkInfo.State.BLOCKED, WorkInfo.State.ENQUEUED, WorkInfo.State.RUNNING,WorkInfo.State.CANCELLED))
-            .build()
-
-        val workInfos = workManager.getWorkInfos(workQuery).await()
-
-
-        if (workInfos.size > 0) {
-            repeat(workInfos.size) {
-                when(workInfos[it].state){
-                    WorkInfo.State.BLOCKED -> {
-                        BaseApplication.getContext().captureEvent(
-                            Events.BLOCKED_WORKER_START_EXCEPTION,
-                            Properties().putValue
-                                ("name","Recursive Manual Upload Worker"))
-                        start()
-                    }
-
-                    WorkInfo.State.CANCELLED -> {
-                        BaseApplication.getContext().captureEvent(
-                            Events.CANCELLED_WORKER_START_EXCEPTION,
-                            Properties().putValue
-                                ("name","Recursive Manual Upload Worker"))
-                        start()
-                    }
-                }
-            }
-            capture(Events.MANUAL_WORKER_ALREADY_RUNNING)
-            com.spyneai.shoot.utils.log("alive : ")
-        } else {
-            capture(Events.MANUAL_WORKER_INITIATED)
-            com.spyneai.shoot.utils.log("not found : start new")
-            //start long running worker
-            start()
-        }
+        start()
     }
 
     private fun start() {
 
         logManualUpload("StoreImageFilesWorker Manual Long Running Started")
 
-        val constraints: Constraints = Constraints.Builder()
-            .setRequiredNetworkType(NetworkType.CONNECTED)
-            .build()
+        //start manual upload service
 
-        val longWorkRequest = OneTimeWorkRequest.Builder(ManualUploadWorker::class.java)
-            .addTag("Manual Long Running Worker")
+        val filesRepository = FilesRepository()
+        if (filesRepository.getOldestImage().itemId != null
+            || filesRepository.getOldestSkippedImage().itemId != null){
 
-        WorkManager.getInstance(BaseApplication.getContext())
-            .enqueue(
-                longWorkRequest
-                    .setConstraints(constraints)
-                    .build())
+            var action = Actions.START
+            if (getServiceState(appContext) == com.spyneai.service.ServiceState.STOPPED && action == Actions.STOP)
+                return
+
+            val serviceIntent = Intent(appContext, ManualUploadService::class.java)
+            serviceIntent.action = action.name
+
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                log("Starting the service in >=26 Mode")
+                ContextCompat.startForegroundService(appContext, serviceIntent)
+                return
+            } else {
+                log("Starting the service in < 26 Mode")
+                appContext.startService(serviceIntent)
+            }
+
+            val properties = Properties()
+                .apply {
+                    put("service_state","Started")
+                    put("email",Utilities.getPreference(appContext,AppConstants.EMAIL_ID).toString())
+                    put("medium","Main Actity")
+                }
+
+            appContext.captureEvent(Events.SERVICE_STARTED,properties)
+        }
     }
 
     private fun capture(eventName : String) {

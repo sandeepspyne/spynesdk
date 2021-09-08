@@ -152,6 +152,7 @@ object AppConstants {
     val SKIPPED = "SKIPPED"
 
     val CANCEL_ALL_WROKERS = "CANCEL_ALL_WROKERS"
+    val START_FILES_WORKER = "START_FILES_WORKER"
     val LAL_10 = "Lal10"
 
 

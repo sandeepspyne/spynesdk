@@ -3,6 +3,9 @@ package com.spyneai.dashboard.ui
 import android.Manifest
 import android.content.Intent
 import android.content.pm.PackageManager
+import android.graphics.ImageFormat
+import android.hardware.camera2.CameraCharacteristics
+import android.hardware.camera2.CameraManager
 import android.os.Build
 import android.os.Bundle
 import android.util.Log
@@ -36,6 +39,9 @@ import com.spyneai.service.log
 import com.spyneai.shoot.data.FilesRepository
 import com.spyneai.shoot.data.ShootLocalRepository
 import com.spyneai.shoot.response.UploadFolderRes
+import com.spyneai.shoot.ui.StartShootActivity
+import com.spyneai.shoot.ui.base.ShootActivity
+import com.spyneai.shoot.ui.dialogs.ResolutionNotSupportedFragment
 import com.spyneai.shoot.workmanager.manual.StoreImageFilesWorker
 import retrofit2.Call
 import retrofit2.Callback
@@ -88,72 +94,72 @@ class MainDashboardActivity : AppCompatActivity() {
             when(it.itemId){
                 R.id.homeDashboardFragment->setCurrentFragment(firstFragment)
 
-//                R.id.shootActivity-> {
-//                    when(getString(R.string.app_name)) {
-//                        "Ola Cabs",
-//                        AppConstants.CARS24,
-//                        AppConstants.CARS24_INDIA,
-//                        "Trusted cars",
-//                        "Travo Photos",
-//                        "Yalla Motors",
-//                        "Spyne Hiring",
-//                        AppConstants.AUTO_MOSER-> {
-//                            var intent = Intent(this, StartShootActivity::class.java)
-//                            intent.putExtra(AppConstants.CATEGORY_ID,AppConstants.CARS_CATEGORY_ID)
-//                            intent.putExtra(AppConstants.CATEGORY_NAME,"Automobiles")
-//                            startActivity(intent)
-//
-//                        }
-//
-//                        AppConstants.KARVI -> {
-//                            val cm = getSystemService(android.content.Context.CAMERA_SERVICE) as CameraManager
-//
-//                            if (cm.cameraIdList != null && cm.cameraIdList.size > 1) {
-//                                val characteristics: CameraCharacteristics =
-//                                    cm.getCameraCharacteristics("1")
-//
-//                                val configs = characteristics.get(
-//                                    CameraCharacteristics.SCALER_STREAM_CONFIGURATION_MAP
-//                                )
-//
-//                                val s = configs?.getOutputSizes(ImageFormat.JPEG)
-//
-//                                var resolutionSupported = true
-//
-//                                s?.forEach { it ->
-//                                    if (!resolutionSupported && it != null) {
-//                                        if (it.width == 1024 && it.height == 768)
-//                                            resolutionSupported = true
-//                                    }
-//                                }
-//
-//                                if (resolutionSupported) {
-//                                    var intent = Intent(this, ShootActivity::class.java)
-//                                    intent.putExtra(AppConstants.CATEGORY_ID,AppConstants.CARS_CATEGORY_ID)
-//                                    intent.putExtra(AppConstants.CATEGORY_NAME,"Automobiles")
-//                                    startActivity(intent)
-//                                }else {
-//                                    //resolution not supported
-//                                    ResolutionNotSupportedFragment().show(supportFragmentManager,"ResolutionNotSupportedFragment")
-//                                }
-//                            }else {
-//                                //resolution not supported
-//                                ResolutionNotSupportedFragment().show(supportFragmentManager,"ResolutionNotSupportedFragment")
-//                            }
-//                        }
-//
-//                        "Flipkart", "Udaan", "Lal10", "Amazon", "Swiggy" -> {
-//                            val intent = Intent(this@MainDashboardActivity, CategoriesActivity::class.java)
-//                                startActivity(intent)
-//                            }
-//                        else ->{
-//                            var intent = Intent(this, ShootActivity::class.java)
-//                            intent.putExtra(AppConstants.CATEGORY_ID,AppConstants.CARS_CATEGORY_ID)
-//                            intent.putExtra(AppConstants.CATEGORY_NAME,"Automobiles")
-//                            startActivity(intent)
-//                        }
-//                    }
-//                }
+                R.id.shootActivity-> {
+                    when(getString(R.string.app_name)) {
+                        "Ola Cabs",
+                        AppConstants.CARS24,
+                        AppConstants.CARS24_INDIA,
+                        "Trusted cars",
+                        "Travo Photos",
+                        "Yalla Motors",
+                        "Spyne Hiring",
+                        AppConstants.AUTO_MOSER-> {
+                            var intent = Intent(this, StartShootActivity::class.java)
+                            intent.putExtra(AppConstants.CATEGORY_ID,AppConstants.CARS_CATEGORY_ID)
+                            intent.putExtra(AppConstants.CATEGORY_NAME,"Automobiles")
+                            startActivity(intent)
+
+                        }
+
+                        AppConstants.KARVI -> {
+                            val cm = getSystemService(android.content.Context.CAMERA_SERVICE) as CameraManager
+
+                            if (cm.cameraIdList != null && cm.cameraIdList.size > 1) {
+                                val characteristics: CameraCharacteristics =
+                                    cm.getCameraCharacteristics("1")
+
+                                val configs = characteristics.get(
+                                    CameraCharacteristics.SCALER_STREAM_CONFIGURATION_MAP
+                                )
+
+                                val s = configs?.getOutputSizes(ImageFormat.JPEG)
+
+                                var resolutionSupported = true
+
+                                s?.forEach { it ->
+                                    if (!resolutionSupported && it != null) {
+                                        if (it.width == 1024 && it.height == 768)
+                                            resolutionSupported = true
+                                    }
+                                }
+
+                                if (resolutionSupported) {
+                                    var intent = Intent(this, ShootActivity::class.java)
+                                    intent.putExtra(AppConstants.CATEGORY_ID,AppConstants.CARS_CATEGORY_ID)
+                                    intent.putExtra(AppConstants.CATEGORY_NAME,"Automobiles")
+                                    startActivity(intent)
+                                }else {
+                                    //resolution not supported
+                                    ResolutionNotSupportedFragment().show(supportFragmentManager,"ResolutionNotSupportedFragment")
+                                }
+                            }else {
+                                //resolution not supported
+                                ResolutionNotSupportedFragment().show(supportFragmentManager,"ResolutionNotSupportedFragment")
+                            }
+                        }
+
+                        "Flipkart", "Udaan", "Lal10", "Amazon", "Swiggy" -> {
+                            val intent = Intent(this@MainDashboardActivity, CategoriesActivity::class.java)
+                                startActivity(intent)
+                            }
+                        else ->{
+                            var intent = Intent(this, ShootActivity::class.java)
+                            intent.putExtra(AppConstants.CATEGORY_ID,AppConstants.CARS_CATEGORY_ID)
+                            intent.putExtra(AppConstants.CATEGORY_NAME,"Automobiles")
+                            startActivity(intent)
+                        }
+                    }
+                }
 
                 R.id.completedOrdersFragment-> {
                    if (getString(R.string.app_name) == AppConstants.SPYNE_AI)
@@ -163,7 +169,7 @@ class MainDashboardActivity : AppCompatActivity() {
                        startActivity(intent)
                    }
                 }
-                R.id.wallet->setCurrentFragment(SecondFragment)
+                //R.id.wallet->setCurrentFragment(SecondFragment)
                 R.id.logoutDashBoardFragment->setCurrentFragment(thirdFragment)
             }
             true
@@ -227,13 +233,7 @@ class MainDashboardActivity : AppCompatActivity() {
     open fun onPermissionGranted(){
         Log.d(TAG, "onPermissionGranted: "+Utilities.getPreference(this,AppConstants.CANCEL_ALL_WROKERS))
         if (Utilities.getPreference(this,AppConstants.CANCEL_ALL_WROKERS) == ""){
-            WorkManager.getInstance(this).cancelAllWorkByTag("StoreImageFiles  Worker")
-            WorkManager.getInstance(this).cancelAllWorkByTag("Manual Long Running Worker")
-            WorkManager.getInstance(this).cancelAllWorkByTag("Manual Skipped Images Long Running Worker")
-            WorkManager.getInstance(this).cancelAllWorkByTag("Long Running Worker")
-            WorkManager.getInstance(this).cancelAllWorkByTag("Skipped Images Long Running Worker")
-
-            Utilities.savePrefrence(this,AppConstants.CANCEL_ALL_WROKERS,"Cancelled")
+            cancelAllWorkers()
         }
 
         val shootLocalRepository = ShootLocalRepository()
@@ -271,6 +271,17 @@ class MainDashboardActivity : AppCompatActivity() {
         //start service if have pending images
     }
 
+    private fun cancelAllWorkers(){
+        //cancel all workers
+        WorkManager.getInstance(this).cancelAllWorkByTag("StoreImageFiles  Worker")
+        WorkManager.getInstance(this).cancelAllWorkByTag("Manual Long Running Worker")
+        WorkManager.getInstance(this).cancelAllWorkByTag("Manual Skipped Images Long Running Worker")
+        WorkManager.getInstance(this).cancelAllWorkByTag("Long Running Worker")
+        WorkManager.getInstance(this).cancelAllWorkByTag("Skipped Images Long Running Worker")
+
+        Utilities.savePrefrence(this,AppConstants.CANCEL_ALL_WROKERS,"Cancelled")
+    }
+
     private fun checkFolderUpload() {
         Utilities.showProgressDialog(this)
 
@@ -289,15 +300,19 @@ class MainDashboardActivity : AppCompatActivity() {
                 if (response.isSuccessful){
                     if (response.body()?.status == 200){
                         if (response.body()?.data?.isFolderUpload == 1){
-                            capture(Events.FILE_READ_WORKED_INTIATED)
+                            if (Utilities.getPreference(this@MainDashboardActivity,AppConstants.START_FILES_WORKER) == ""){
+                                capture(Events.FILE_READ_WORKED_INTIATED)
 
-                            val storeWorkRequest = OneTimeWorkRequest.Builder(StoreImageFilesWorker::class.java)
-                                .addTag("StoreImageFiles  Worker")
+                                val storeWorkRequest = OneTimeWorkRequest.Builder(StoreImageFilesWorker::class.java)
+                                    .addTag("StoreImageFiles  Worker")
 
-                            WorkManager.getInstance(BaseApplication.getContext())
-                                .enqueue(
-                                    storeWorkRequest
-                                        .build())
+                                WorkManager.getInstance(BaseApplication.getContext())
+                                    .enqueue(
+                                        storeWorkRequest
+                                            .build())
+                            }else {
+                                capture(Events.FILE_WORKER_ALREADY_INTIATED)
+                            }
                         }else {
                             capture(Events.FILE_FOLDER_UPLOAD_FALSE)
                         }
@@ -342,7 +357,6 @@ class MainDashboardActivity : AppCompatActivity() {
         })
     }
 
-
     private fun folderCheckError(error : String) {
         Snackbar.make(binding.root, error, Snackbar.LENGTH_INDEFINITE)
             .setAction("Retry") {
@@ -351,7 +365,6 @@ class MainDashboardActivity : AppCompatActivity() {
             .setActionTextColor(ContextCompat.getColor(this,R.color.primary))
             .show()
     }
-
 
     override fun onResume() {
         super.onResume()
