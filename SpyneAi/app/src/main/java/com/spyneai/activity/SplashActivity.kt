@@ -44,8 +44,16 @@ class SplashActivity : AppCompatActivity() {
         val versionName: String = BuildConfig.VERSION_NAME
         val networkCarrier = getNetworkName()
 
+        Utilities.savePrefrence(this,AppConstants.DEVICE_ID,deviceId)
+        Utilities.savePrefrence(this,AppConstants.DEVICE_MANUFACTURER,manufacturer)
+        Utilities.savePrefrence(this,AppConstants.MODEL,model)
+        Utilities.savePrefrence(this,AppConstants.OS_VERSION,version.toString())
+        Utilities.savePrefrence(this,AppConstants.APP_VERSION,versionName)
+        Utilities.savePrefrence(this,AppConstants.APP_VERSION_CODE,versionCode.toString())
+        Utilities.savePrefrence(this,AppConstants.NETWORK_TYPE,networkCarrier)
+        Utilities.savePrefrence(this,AppConstants.DEVICE_ID,deviceId)
 
-        Log.d(TAG, "onCreate: "+deviceId+"-"+manufacturer+"-"+model+"-"+version+"-"+versionCode+"-"+"-"+versionName+"-"+networkCarrier)
+
         setSplash()
     }
 

@@ -20,6 +20,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import org.json.JSONObject
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -116,4 +117,32 @@ fun Context.getNetworkName() : String {
         type = "Mobile"
 
     return type
+}
+
+fun getRequestHeaderData() : JSONObject {
+    val headerData = JSONObject()
+
+    headerData.put("device_manufacturer",Utilities.getPreference(
+        BaseApplication.getContext(),AppConstants.DEVICE_MANUFACTURER))
+
+    headerData.put("model",Utilities.getPreference(
+        BaseApplication.getContext(),AppConstants.MODEL))
+
+    headerData.put("os_version",Utilities.getPreference(
+        BaseApplication.getContext(),AppConstants.OS_VERSION))
+
+    headerData.put("app_version",Utilities.getPreference(
+        BaseApplication.getContext(),AppConstants.APP_VERSION))
+
+    headerData.put("app_version_code",Utilities.getPreference(
+        BaseApplication.getContext(),AppConstants.APP_VERSION_CODE))
+
+
+    headerData.put("network_type",Utilities.getPreference(
+        BaseApplication.getContext(),AppConstants.NETWORK_TYPE))
+
+    headerData.put("device_id",Utilities.getPreference(
+        BaseApplication.getContext(),AppConstants.DEVICE_ID))
+
+    return headerData
 }
