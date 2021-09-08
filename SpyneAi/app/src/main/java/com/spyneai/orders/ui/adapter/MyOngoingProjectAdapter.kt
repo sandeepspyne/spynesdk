@@ -78,6 +78,7 @@ class MyOngoingProjectAdapter(
                 tvCategories.visibility = View.INVISIBLE
                 tvSku.visibility = View.INVISIBLE
                 tvImage.visibility = View.INVISIBLE
+                tvImages.visibility = View.INVISIBLE
             }
         }else{
             if (getProjectList[position].category.equals("cat_d8R14zUNx")
