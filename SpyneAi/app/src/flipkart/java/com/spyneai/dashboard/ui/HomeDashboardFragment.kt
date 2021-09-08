@@ -67,9 +67,6 @@ class HomeDashboardFragment :
     lateinit var handler: Handler
     private var runnable: Runnable? = null
 
-    var tutorialVideosList = intArrayOf(R.drawable.ic_tv1, R.drawable.ic_tv2)
-
-    lateinit var tutorialVideosAdapter: TutorialVideosAdapter
 
     var categoryPosition: Int = 0
     lateinit var tokenId: String

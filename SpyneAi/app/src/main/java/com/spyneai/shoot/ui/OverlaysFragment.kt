@@ -188,8 +188,19 @@ class OverlaysFragment : BaseFragment<ShootViewModel, FragmentOverlaysBinding>()
     private fun initAngles() {
        if (viewModel.fromDrafts){
            if (requireActivity().intent.getIntExtra(AppConstants.EXTERIOR_SIZE,0) == 0){
-               viewModel.exterirorAngles.value = requireActivity().intent.getIntExtra(AppConstants.EXTERIOR_ANGLES,0)
-           }
+               if (requireActivity().intent.getIntExtra(AppConstants.EXTERIOR_ANGLES,0) == 0){
+                   when(getString(R.string.app_name)){
+                       AppConstants.CARS24,AppConstants.CARS24_INDIA ->
+                           viewModel.exterirorAngles.value = 5
+                       else ->  {
+                           viewModel.exterirorAngles.value = 8
+                       }
+                   }
+               }else{
+                   viewModel.exterirorAngles.value = requireActivity().intent.getIntExtra(AppConstants.EXTERIOR_ANGLES,0)
+
+               }
+              }
        }else{
            if (!viewModel.fromDrafts){
                when(getString(R.string.app_name)){
