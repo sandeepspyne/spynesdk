@@ -342,8 +342,12 @@ class CameraFragment : BaseFragment<ShootViewModel, FragmentCameraBinding>(), Pi
                         }
                     }
                 }else {
-                    if(isGyroOnCorrectAngle)
-                    captureImage()
+                    if (binding.flLevelIndicator.visibility == View.VISIBLE){
+                        if (isGyroOnCorrectAngle)
+                            captureImage()
+                    }else{
+                        captureImage()
+                    }
                 }
             }
             else
@@ -418,7 +422,6 @@ class CameraFragment : BaseFragment<ShootViewModel, FragmentCameraBinding>(), Pi
                     viewModel.insertSku(sku!!)
 
                     viewModel.isCameraButtonClickable = true
-                    if(isGyroOnCorrectAngle)
                     captureImage()
                 }
 
