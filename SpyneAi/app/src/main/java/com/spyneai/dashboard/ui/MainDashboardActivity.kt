@@ -281,7 +281,7 @@ class MainDashboardActivity : AppCompatActivity() {
             cancelAllWorkers()
         }
 
-       // startUploadService()
+        startUploadService()
 
         checkFolderUpload()
     }
