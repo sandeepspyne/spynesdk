@@ -121,14 +121,25 @@
             android:layout_marginRight="@dimen/dp_25"
             android:layout_marginLeft="@dimen/dp_25">
 
+            <TextView
+                android:id="@+id/tvAlreadyLogin"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentLeft="true"
+                android:fontFamily="@font/light"
+                android:textSize="@dimen/sp_13"
+                android:textColor="@color/black"/>
+
 
             <TextView
                 android:id="@+id/tvLogin"
-                android:layout_width="match_parent"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/login_here"
-                android:layout_alignParentLeft="true"
+                android:layout_marginLeft="@dimen/dp_5"
+                android:layout_toRightOf="@+id/tvAlreadyLogin"
                 android:fontFamily="@font/light"
+                android:text="@string/login_here"
+                android:textColor="@color/primary"
                 android:textSize="@dimen/sp_13" />
 
         </RelativeLayout>
@@ -230,6 +241,7 @@
             android:textColor="@color/light"
             android:text="@string/terms"
             android:fontFamily="@font/light"
+            android:layout_marginLeft="@dimen/dp_2"
             android:gravity="center|bottom"
             android:textSize="12sp"/>
     </LinearLayout>

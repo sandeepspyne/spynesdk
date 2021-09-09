@@ -14,20 +14,16 @@ import com.spyneai.activity.SignInUsingOtpActivity
 import com.spyneai.captureEvent
 import com.spyneai.captureFailureEvent
 import com.spyneai.captureIdentity
-
 import com.spyneai.dashboard.ui.MainDashboardActivity
 import com.spyneai.dashboard.ui.WhiteLabelConstants
 import com.spyneai.databinding.ActivityLoginBinding
 import com.spyneai.interfaces.MyAPIService
-
-import com.spyneai.interfaces.RetrofitClientSpyneAi
 import com.spyneai.interfaces.RetrofitClients
-import com.spyneai.loginsignup.models.LoginEmailPasswordBody
 import com.spyneai.loginsignup.models.LoginEmailPasswordResponse
 import com.spyneai.needs.AppConstants
 import com.spyneai.needs.Utilities
-import com.spyneai.shoot.utils.log
 import com.spyneai.posthog.Events
+import com.spyneai.shoot.utils.log
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -49,6 +45,8 @@ class LoginActivity : AppCompatActivity() {
             AppConstants.KARVI -> binding.rlSingup.visibility = View.GONE
             else ->{}
         }
+
+        binding.tvNewToApp.text = "New to " + getString(R.string.app_name) + "?"
 
         listeners()
     }
@@ -92,7 +90,7 @@ class LoginActivity : AppCompatActivity() {
 
         binding.tvterms.setOnClickListener {
             try {
-                startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(getString(R.string.terms_and_conditions_url_swiggy))))
+                startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(getString(R.string.terms_and_conditions_url))))
             } catch (e: ActivityNotFoundException) {
                 Toast.makeText(
                     this, "No application can handle this request."

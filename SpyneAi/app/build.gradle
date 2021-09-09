@@ -172,8 +172,8 @@ android {
         udaan {
             dimension 'version'
             applicationId "com.spyneai.udaan"
-            versionCode 3
-            versionName "1.2"
+            versionCode 4
+            versionName "1.3"
         }
         swiggy {
             dimension 'version'

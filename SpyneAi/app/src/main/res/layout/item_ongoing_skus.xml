@@ -97,7 +97,7 @@
                 android:layout_width="@dimen/dp_12"
                 android:layout_height="@dimen/dp_12"
                 android:layout_gravity="center"
-                android:src="@drawable/ic_category"/>
+                android:src="@drawable/ic_category" />
         </FrameLayout>
 
         <TextView

@@ -96,16 +96,19 @@ class HomeDashboardFragment :
         PACKAGE_NAME = requireContext().getPackageName().toString()
         appUpdateManager = AppUpdateManagerFactory.create(requireContext())
 
+        welcomeHomeText()
+        getCategories()
+        newUserCreditDialog()
+        repeatRefreshData()
+        setSliderRecycler()
+        lisners()
 
-        if (PACKAGE_NAME.equals("com.spyneai.udaan.debug")) {
-            newUserCreditDialog()
-            repeatRefreshData()
-            setSliderRecycler()
-            lisners()
-            welcomeHomeText()
-            getCategories()
-        } else
-            autoUpdates()
+
+
+//        if (PACKAGE_NAME.equals("com.spyneai.udaan") || PACKAGE_NAME.equals("com.spyneai.udaan.debug")) {
+//
+//        } else
+//            autoUpdates()
     }
 
     private fun autoUpdates() {

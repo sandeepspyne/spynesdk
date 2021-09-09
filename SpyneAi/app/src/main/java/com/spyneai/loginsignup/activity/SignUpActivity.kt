@@ -52,6 +52,7 @@ class SignUpActivity : AppCompatActivity() {
 
         setSpinner()
         listeners()
+        tvAlreadyLogin.text = "Already a "+ getString(R.string.app_name) + " user?"
     }
 
     private fun setSpinner() {
@@ -140,7 +141,7 @@ class SignUpActivity : AppCompatActivity() {
 
         tv_terms.setOnClickListener {
             try {
-                startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(getString(R.string.terms_and_conditions_url_swiggy))))
+                startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(getString(R.string.terms_and_conditions_url))))
             } catch (e: ActivityNotFoundException) {
                 Toast.makeText(
                     this, "No application can handle this request."
