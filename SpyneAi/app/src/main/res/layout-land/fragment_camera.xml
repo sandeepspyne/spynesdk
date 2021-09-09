@@ -99,7 +99,7 @@
                     android:drawablePadding="@dimen/dp_5"
                     android:fontFamily="@font/bold"
                     android:text="@string/skip"
-                    android:textColor="@color/primary"
+                    android:textColor="@color/secondary"
                     android:textSize="@dimen/sp_16"
                     />
 
@@ -109,7 +109,7 @@
                     android:src="@drawable/skip"
                     android:layout_gravity="center"
                     android:layout_marginLeft="@dimen/dp_2"
-                    app:tint="@color/primary" />
+                    app:tint="@color/secondary" />
 
             </LinearLayout>
 

@@ -124,7 +124,7 @@ class MainDashboardActivity : AppCompatActivity() {
 
                                 val s = configs?.getOutputSizes(ImageFormat.JPEG)
 
-                                var resolutionSupported = true
+                                var resolutionSupported = false
 
                                 s?.forEach { it ->
                                     if (!resolutionSupported && it != null) {
@@ -169,7 +169,7 @@ class MainDashboardActivity : AppCompatActivity() {
                        startActivity(intent)
                    }
                 }
-                R.id.wallet->setCurrentFragment(SecondFragment)
+               // R.id.wallet->setCurrentFragment(SecondFragment)
                 R.id.logoutDashBoardFragment->setCurrentFragment(thirdFragment)
             }
             true

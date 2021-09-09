@@ -23,16 +23,17 @@ class ResponseInterceptor : Interceptor {
             val bodyString = body!!.string()
             val contentType: MediaType? = body!!.contentType()
 
-            var finalResponse : Response? = null
             try {
                 val json = JSONObject(bodyString)
                 // Log.d("ResponseInterceptor", "intercept: " + json)
 
-                 finalResponse = response.newBuilder().body(bodyString.toResponseBody(contentType)).build()
+                 val finalResponse = response.newBuilder().body(bodyString.toResponseBody(contentType)).build()
 
                 if (json.has("status") && json.getInt("status") != 200) {
                     throw ServerException(json.getInt("status"),json.getString("message"))
                 }
+
+                return finalResponse
             }catch (e : JSONException){
                 val properties = Properties()
                     .apply {
@@ -43,11 +44,10 @@ class ResponseInterceptor : Interceptor {
                     .captureEvent(Events.JSON_RESPONSE,properties)
             }
 
-            return finalResponse!!
+            return response.newBuilder().body(bodyString.toResponseBody(contentType)).build()
         }
 
 
         return response
-
     }
 }
