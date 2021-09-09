@@ -2,7 +2,7 @@
 <resources>
     <color name="primary">#C02423</color>
     <color name="primary_light">#34C02423</color>
-    <color name="secondary">#FDF84B</color>
+    <color name="secondary">#EE5235</color>
     <color name="splash_bg">#ffffff</color>
     <color name="accent">#F07E54</color>
     <color name="order_completed">#566DED</color>

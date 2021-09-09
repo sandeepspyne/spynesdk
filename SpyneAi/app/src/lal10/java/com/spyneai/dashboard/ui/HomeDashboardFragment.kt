@@ -97,14 +97,14 @@ class HomeDashboardFragment :
         appUpdateManager = AppUpdateManagerFactory.create(requireContext())
 
 
-        if (PACKAGE_NAME.equals("com.spyneai.lal10.debug")) {
+//        if (PACKAGE_NAME.equals("com.spyneai.lal10.debug")) {
             repeatRefreshData()
             setSliderRecycler()
             lisners()
             welcomeHomeText()
             getCategories()
-        } else
-            autoUpdates()
+//        } else
+//            autoUpdates()
     }
 
     private fun autoUpdates() {
