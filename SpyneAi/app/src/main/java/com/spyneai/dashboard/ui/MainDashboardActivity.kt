@@ -38,13 +38,17 @@ import com.spyneai.service.Actions
 import com.spyneai.service.ImageUploadingService
 import com.spyneai.service.getServiceState
 import com.spyneai.service.log
+import com.spyneai.service.manual.StoreImageFiles
 import com.spyneai.shoot.data.FilesRepository
 import com.spyneai.shoot.data.ShootLocalRepository
+import com.spyneai.shoot.data.ShootRepository
 import com.spyneai.shoot.response.UploadFolderRes
 import com.spyneai.shoot.ui.StartShootActivity
 import com.spyneai.shoot.ui.base.ShootActivity
 import com.spyneai.shoot.ui.dialogs.ResolutionNotSupportedFragment
 import com.spyneai.shoot.workmanager.manual.StoreImageFilesWorker
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -201,7 +205,6 @@ class MainDashboardActivity : AppCompatActivity() {
                 BuildConfig.VERSION_NAME
             )
         }
-
     }
 
     private fun observeAppVersion() {
@@ -347,13 +350,19 @@ class MainDashboardActivity : AppCompatActivity() {
                             if (Utilities.getPreference(this@MainDashboardActivity,AppConstants.START_FILES_WORKER) == ""){
                                 capture(Events.FILE_READ_WORKED_INTIATED)
 
-                                val storeWorkRequest = OneTimeWorkRequest.Builder(StoreImageFilesWorker::class.java)
-                                    .addTag("StoreImageFiles  Worker")
-
-                                WorkManager.getInstance(BaseApplication.getContext())
-                                    .enqueue(
-                                        storeWorkRequest
-                                            .build())
+                                GlobalScope.launch {
+                                    StoreImageFiles(this@MainDashboardActivity,
+                                        ShootRepository(),
+                                        FilesRepository()
+                                    ).startWork()
+                                }
+//                                val storeWorkRequest = OneTimeWorkRequest.Builder(StoreImageFilesWorker::class.java)
+//                                    .addTag("StoreImageFiles  Worker")
+//
+//                                WorkManager.getInstance(BaseApplication.getContext())
+//                                    .enqueue(
+//                                        storeWorkRequest
+//                                            .build())
                             }else {
                                 capture(Events.FILE_WORKER_ALREADY_INTIATED)
                             }
