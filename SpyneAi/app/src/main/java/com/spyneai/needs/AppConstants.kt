@@ -143,6 +143,7 @@ object AppConstants {
 
     val UDAAN = "Udaan"
     val SWIGGY = "Swiggy"
+    val SWIGGYINSTAMART = "Swiggy Instamart"
     val FLIPKART = "Flipkart"
     val AMAZON = "Amazon"
 

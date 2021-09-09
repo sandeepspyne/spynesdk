@@ -182,11 +182,11 @@
     <string name="bottom_right">Bottom Right</string>
 
 
-    <string name="sign_up_here">New to Spyne?&#160; <font color='#FF7700'><b>Sign up here</b></font></string>
+    <string name="sign_up_here"><b>Sign up here</b></string>
 
     <string name="logout_dialog_text">Are you sure you want to <b>log out.</b></string>
 
-    <string name="login_here">Seem like you are already a Spyne User?&#160; <font color='#FF7700'><b>Login here</b></font></string>
+    <string name="login_here"><b>Login here</b></string>
     <string name="shoot_outdoor">Shoot&#160; <font color='#FF7700'><b>Outdoors</b></font>&#160;to avoid irregular reflections</string>
     <string name="forgot_password">Forgot password?</string>
 

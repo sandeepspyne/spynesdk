@@ -321,4 +321,7 @@
     <string name="vin_number">VIN</string>
     <string name="vin_hint">Enter Number</string>
 
+    <string name="sign_up_here"><b>Sign up here</b></string>
+    <string name="login_here"><b>Login here</b></string>
+
 </resources>

@@ -31,8 +31,7 @@
 
     <string name="terms_and_conditions_url">https://uae.yallamotor.com/terms-of-service</string>
 
-    <string name="sign_up_here">New to Yalla Motors?&#160; <font color='#E7442C'><b>Sign up here</b></font></string>
-    <string name="login_here">Already a Yalla Motors User?&#160; <font color='#E7442C'><b>Login here</b></font></string>
-
+    <string name="sign_up_here"><b>Sign up here</b></string>
+    <string name="login_here"><b>Login here</b></string>
     <string name="capture_upto">Capture upto 36 Exterior Images</string>
 </resources>

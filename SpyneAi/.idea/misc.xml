@@ -12,11 +12,13 @@
         <entry key="app/src/main/res/drawable/bg_round_black_button.xml" value="0.24444444444444444" />
         <entry key="app/src/main/res/drawable/bg_round_button_ripple.xml" value="0.24444444444444444" />
         <entry key="app/src/main/res/drawable/default_dot.xml" value="0.24722222222222223" />
+        <entry key="app/src/main/res/drawable/default_dot.xml" value="0.24722222222222223" />
         <entry key="app/src/main/res/drawable/exposure_thumb.xml" value="0.3260416666666667" />
         <entry key="app/src/main/res/drawable/ic_category.xml" value="0.24444444444444444" />
         <entry key="app/src/main/res/drawable/ic_images.xml" value="0.24444444444444444" />
         <entry key="app/src/main/res/drawable/ic_indicator.xml" value="0.24722222222222223" />
         <entry key="app/src/main/res/drawable/ic_next.xml" value="0.24444444444444444" />
+        <entry key="app/src/main/res/drawable/ic_indicator.xml" value="0.24722222222222223" />
         <entry key="app/src/main/res/drawable/ic_noun_exposure.xml" value="0.3260416666666667" />
         <entry key="app/src/main/res/drawable/ic_shoot.xml" value="0.24166666666666667" />
         <entry key="app/src/main/res/drawable/ic_slider_next.xml" value="0.24444444444444444" />
@@ -114,6 +116,16 @@
         <entry key="app/src/swiggyinstamartDebug/res/mipmap-anydpi-v26/ic_launcher.xml" value="0.109375" />
         <entry key="app/src/swiggyinstamartDebug/res/mipmap-anydpi-v26/ic_launcher_round.xml" value="0.109375" />
         <entry key="app/src/udaan/res/layout/home_dashboard_fragment.xml" value="0.2037037037037037" />
+        <entry key="app/src/swiggyinstamart/res/drawable/app_ic_background.xml" value="0.25092592592592594" />
+        <entry key="app/src/swiggyinstamart/res/drawable/ic_launcher_background.xml" value="0.24722222222222223" />
+        <entry key="app/src/swiggyinstamart/res/layout/home_dashboard_fragment.xml" value="0.2064814814814815" />
+        <entry key="app/src/swiggyinstamart/res/menu/dashboard_bottom_menu.xml" value="0.2101851851851852" />
+        <entry key="app/src/swiggyinstamart/res/mipmap-anydpi-v26/app_ic.xml" value="0.24722222222222223" />
+        <entry key="app/src/swiggyinstamart/res/mipmap-anydpi-v26/app_ic_round.xml" value="0.24722222222222223" />
+        <entry key="app/src/swiggyinstamart/res/mipmap-anydpi-v26/ic_launcher.xml" value="0.24722222222222223" />
+        <entry key="app/src/swiggyinstamart/res/mipmap-anydpi-v26/ic_launcher_round.xml" value="0.24722222222222223" />
+        <entry key="app/src/swiggyinstamartDebug/res/mipmap-anydpi-v26/ic_launcher.xml" value="0.109375" />
+        <entry key="app/src/swiggyinstamartDebug/res/mipmap-anydpi-v26/ic_launcher_round.xml" value="0.109375" />
         <entry key="app/src/udaan/res/mipmap-anydpi-v26/app_ic.xml" value="0.16979166666666667" />
       </map>
     </option>
