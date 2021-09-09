@@ -501,7 +501,7 @@ class CameraFragment : BaseFragment<ShootViewModel, FragmentCameraBinding>(), Pi
 
             val localCameraProvider = cameraProvider
                 ?: throw IllegalStateException("Camera initialization failed.")
-            var size = Size(824,618)
+            var size = Size(1024,768)
 
             // Preview
             val preview = when {
