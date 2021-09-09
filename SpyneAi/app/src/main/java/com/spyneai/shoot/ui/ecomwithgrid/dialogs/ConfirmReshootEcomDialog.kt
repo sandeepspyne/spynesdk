@@ -59,7 +59,6 @@ class ConfirmReshootEcomDialog :
             //remove last item from shoot list
             viewModel.shootList.value?.removeAt(viewModel.shootList.value!!.size - 1)
 
-
             dismiss()
         }
 

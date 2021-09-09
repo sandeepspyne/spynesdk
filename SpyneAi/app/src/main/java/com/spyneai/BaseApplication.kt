@@ -3,18 +3,14 @@ package com.spyneai
 import android.annotation.SuppressLint
 import android.app.Application
 import android.content.Context
-import android.content.Intent
-import android.util.Log
-import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.work.*
-import com.google.android.play.core.appupdate.AppUpdateManager
-import com.google.android.play.core.appupdate.AppUpdateManagerFactory
-import com.google.android.play.core.install.model.AppUpdateType
-import com.google.android.play.core.install.model.UpdateAvailability
 import com.google.firebase.crashlytics.FirebaseCrashlytics
 import com.posthog.android.PostHog
 import com.spyneai.shoot.workmanager.*
+import com.spyneai.shoot.workmanager.ParentRecursiveWorker
+import com.spyneai.shoot.workmanager.ProcessSkuWorker
+import com.spyneai.shoot.workmanager.RecursiveSkippedImagesWorker
 import java.util.concurrent.TimeUnit
 
 @SuppressLint("StaticFieldLeak")
@@ -55,7 +51,6 @@ class BaseApplication : Application() {
         val constraints: Constraints = Constraints.Builder()
             .setRequiredNetworkType(NetworkType.CONNECTED)
             .build()
-
 
         val longWorkRequest = PeriodicWorkRequestBuilder<ProcessSkuWorker>(
             6, TimeUnit.HOURS)

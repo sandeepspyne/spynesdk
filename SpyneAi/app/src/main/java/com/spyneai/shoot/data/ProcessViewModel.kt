@@ -16,6 +16,7 @@ import com.spyneai.shoot.data.model.CarsBackgroundRes
 import com.spyneai.shoot.data.model.ProcessSkuRes
 import com.spyneai.shoot.data.model.Sku
 import com.spyneai.shoot.data.model.UpdateTotalFramesRes
+import com.spyneai.shoot.response.SkuProcessStateResponse
 import com.spyneai.shoot.workmanager.ProjectStateUpdateWorker
 import kotlinx.coroutines.launch
 import okhttp3.RequestBody
@@ -33,6 +34,8 @@ class ProcessViewModel : ViewModel() {
     val skuQueued : MutableLiveData<Boolean> = MutableLiveData()
     var addRegularShootSummaryFragment : MutableLiveData<Boolean> = MutableLiveData()
     var backgroundSelect : String? = null
+
+    val projectId: MutableLiveData<String> = MutableLiveData()
 
     var frontFramesList = ArrayList<String>()
     var isRegularShootSummaryActive = false
@@ -63,6 +66,10 @@ class ProcessViewModel : ViewModel() {
     val downloadHDRes: LiveData<Resource<DownloadHDRes>>
         get() = _downloadHDRes
 
+    private val _skuProcessStateWithBgResponse: MutableLiveData<Resource<SkuProcessStateResponse>> = MutableLiveData()
+    val skuProcessStateWithBgResponse: LiveData<Resource<SkuProcessStateResponse>>
+        get() = _skuProcessStateWithBgResponse
+
     private val _updateTotalFramesRes : MutableLiveData<Resource<UpdateTotalFramesRes>> = MutableLiveData()
     val updateTotalFramesRes: LiveData<Resource<UpdateTotalFramesRes>>
         get() = _updateTotalFramesRes
@@ -72,6 +79,41 @@ class ProcessViewModel : ViewModel() {
         auth_key: RequestBody
     ) = viewModelScope.launch {
         _carGifRes.value = Resource.Loading
+        when(BaseApplication.getContext().getString(R.string.app_name)){
+            AppConstants.SWIGGY -> {
+                val list = ArrayList<CarsBackgroundRes.Data>()
+
+                list.add(CarsBackgroundRes.Data("Rustic White",
+                    "https://storage.googleapis.com/spyne/AI/raw/72cbc0ea-3373-4312-99ba-4ef69de4384e.jpg",
+                    1,
+                    "11001",
+                    "https://storage.googleapis.com/spyne-website/Food%20Backgrounds/Rustic%20White%20-%200.jpg"))
+
+
+                list.add(CarsBackgroundRes.Data("Colonial Blue",
+                    "https://storage.googleapis.com/spyne/AI/raw/5a2f8ef2-ecd8-4d35-b747-fcb1b08223cd.jpg",
+                    1,
+                    "12001",
+                    "https://storage.googleapis.com/spyne/AI/raw/74a28609-218e-4ed8-9d6f-24e869b1beeb.png"))
+
+
+                list.add(CarsBackgroundRes.Data("Boho Chic",
+                    "https://storage.googleapis.com/spyne/AI/raw/1892526c-72c9-4331-8ede-dec5f72cf52e.png",
+                    1,
+                    "13001",
+                    "https://storage.googleapis.com/spyne/AI/raw/b972331d-5a82-46bf-b347-007962ce9158.png"))
+
+
+                val response = CarsBackgroundRes(list,"Got Background",200)
+                _carGifRes.value = Resource.Success(response)
+
+            }
+
+            else -> {
+            _carGifRes.value = repository.getBackgroundGifCars(category, auth_key)
+        }
+        }
+
         _carGifRes.value = repository.getBackgroundGifCars(category, auth_key)
     }
 
@@ -127,6 +169,13 @@ class ProcessViewModel : ViewModel() {
 
     fun updateIsProcessed(projectId: String,skuId: String) {
         localRepository.updateIsProcessed(projectId,skuId)
+    }
+
+    fun skuProcessStateWithBackgroundid(
+        auth_key: String, project_id: String, background_id: String
+    ) = viewModelScope.launch {
+        _skuProcessStateWithBgResponse.value = Resource.Loading
+        _skuProcessStateWithBgResponse.value = repository.skuProcessStateWithBackgroundId(auth_key, project_id, background_id)
     }
 
     fun updateProjectState(authKey: String,projectId : String) {

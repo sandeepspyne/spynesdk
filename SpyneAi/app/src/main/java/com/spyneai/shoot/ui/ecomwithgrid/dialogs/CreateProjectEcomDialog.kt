@@ -19,13 +19,13 @@ import com.spyneai.shoot.data.ShootViewModel
 import com.spyneai.shoot.data.model.Project
 import com.spyneai.shoot.data.model.Sku
 import com.spyneai.shoot.utils.log
-import kotlinx.android.synthetic.main.activity_credit_plans.*
 
 class CreateProjectEcomDialog :
     BaseDialogFragment<ShootViewModel, CreateProjectEcomDialogBinding>() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
 
         dialog?.setCancelable(false)
 

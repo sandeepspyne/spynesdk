@@ -3,7 +3,7 @@
   <component name="DesignSurface">
     <option name="filePathToZoomLevelMap">
       <map>
-        <entry key="../../../../../../layout/custom_preview.xml" value="0.33645833333333336" />
+        <entry key="../../../../../../layout/custom_preview.xml" value="0.25" />
         <entry key="../../../Library/Android/sdk/platforms/android-30/data/res/layout/simple_spinner_dropdown_item.xml" value="0.20833333333333334" />
         <entry key="app/src/amazon/res/mipmap-anydpi-v26/app_ic_round.xml" value="0.3175925925925926" />
         <entry key="app/src/flipkart/res/mipmap-anydpi-v26/app_ic.xml" value="0.3175925925925926" />
@@ -51,6 +51,7 @@
         <entry key="app/src/main/res/layout/activity_start_shoot.xml" value="0.2851851851851852" />
         <entry key="app/src/main/res/layout/activity_three_sixty_intro.xml" value="0.17572463768115942" />
         <entry key="app/src/main/res/layout/activity_youtube_video_player.xml" value="0.1935185185185185" />
+        <entry key="app/src/main/res/layout/car_channel.xml" value="0.19166666666666668" />
         <entry key="app/src/main/res/layout/completed_ongoing_sku_simmer.xml" value="0.17572463768115942" />
         <entry key="app/src/main/res/layout/confirm_reshoot_ecom_dialog.xml" value="0.19074074074074074" />
         <entry key="app/src/main/res/layout/create_project_ecom_dialog.xml" value="0.2037037037037037" />
@@ -58,6 +59,7 @@
         <entry key="app/src/main/res/layout/dashboard_categories_shimmer.xml" value="0.2037037037037037" />
         <entry key="app/src/main/res/layout/dashboard_completed_shimmer.xml" value="0.2037037037037037" />
         <entry key="app/src/main/res/layout/dialog_360_interior.xml" value="0.25" />
+        <entry key="app/src/main/res/layout/dialog_angle_selection.xml" value="0.21666666666666667" />
         <entry key="app/src/main/res/layout/dialog_confirm_reshoot.xml" value="0.19074074074074074" />
         <entry key="app/src/main/res/layout/dialog_create_project_and_sku.xml" value="0.30512820512820515" />
         <entry key="app/src/main/res/layout/dialog_focused_hint.xml" value="0.30512820512820515" />
@@ -65,19 +67,23 @@
         <entry key="app/src/main/res/layout/dialog_progress.xml" value="0.17572463768115942" />
         <entry key="app/src/main/res/layout/dialog_resolution_not_supported.xml" value="0.30512820512820515" />
         <entry key="app/src/main/res/layout/dialog_shoot_hint.xml" value="0.30512820512820515" />
+        <entry key="app/src/main/res/layout/dialog_show_images.xml" value="0.21666666666666667" />
         <entry key="app/src/main/res/layout/dialog_top_up.xml" value="0.30512820512820515" />
         <entry key="app/src/main/res/layout/fragment_camera.xml" value="0.22" />
         <entry key="app/src/main/res/layout/fragment_completed_projects.xml" value="0.17572463768115942" />
+        <entry key="app/src/main/res/layout/fragment_completed_skus.xml" value="0.19907407407407407" />
         <entry key="app/src/main/res/layout/fragment_draft_details.xml" value="0.17572463768115942" />
         <entry key="app/src/main/res/layout/fragment_draft_projects.xml" value="0.17572463768115942" />
         <entry key="app/src/main/res/layout/fragment_draft_sku_details.xml" value="0.17572463768115942" />
         <entry key="app/src/main/res/layout/fragment_overlay_ecom.xml" value="0.165" />
         <entry key="app/src/main/res/layout/fragment_overlays.xml" value="0.22" />
         <entry key="app/src/main/res/layout/fragment_processed_images.xml" value="0.17572463768115942" />
+        <entry key="app/src/main/res/layout/fragment_project_detail.xml" value="0.19166666666666668" />
         <entry key="app/src/main/res/layout/fragment_record_video.xml" value="0.17572463768115942" />
         <entry key="app/src/main/res/layout/fragment_select_background.xml" value="0.15070921985815602" />
         <entry key="app/src/main/res/layout/fragment_select_marketplace.xml" value="0.2037037037037037" />
         <entry key="app/src/main/res/layout/fragment_sku_detail.xml" value="0.3098958333333333" />
+        <entry key="app/src/main/res/layout/fragment_subcategories.xml" value="0.21666666666666667" />
         <entry key="app/src/main/res/layout/home_dashboard_fragment.xml" value="0.17572463768115942" />
         <entry key="app/src/main/res/layout/item_completed_projects.xml" value="0.17572463768115942" />
         <entry key="app/src/main/res/layout/item_completed_skus.xml" value="0.15896739130434784" />
@@ -95,10 +101,13 @@
         <entry key="app/src/main/res/layout/row_replaced_images.xml" value="0.17572463768115942" />
         <entry key="app/src/main/res/layout/row_replaced_images_interior.xml" value="0.17572463768115942" />
         <entry key="app/src/main/res/layout/rv_ongoing_projects.xml" value="0.2851851851851852" />
+        <entry key="app/src/main/res/layout/rv_child_projects.xml" value="0.21666666666666667" />
+        <entry key="app/src/main/res/layout/rv_parent_projects.xml" value="0.21666666666666667" />
+        <entry key="app/src/main/res/layout/view_images.xml" value="0.21666666666666667" />
         <entry key="app/src/main/res/layout/wallet_dashboard_fragment.xml" value="0.19722222222222222" />
         <entry key="app/src/main/res/menu/dashboard_bottom_menu.xml" value="0.30512820512820515" />
         <entry key="app/src/olacabs/res/mipmap-anydpi-v26/skip.xml" value="0.19537037037037036" />
-        <entry key="app/src/spyne/res/layout/activity_dashboard_main.xml" value="0.25" />
+        <entry key="app/src/spyne/res/layout/activity_dashboard_main.xml" value="0.22" />
         <entry key="app/src/spyne/res/layout/home_dashboard_fragment.xml" value="0.30512820512820515" />
         <entry key="app/src/spyne/res/menu/dashboard_bottom_menu.xml" value="0.20092592592592592" />
         <entry key="app/src/sweepcars/res/layout/home_dashboard_fragment.xml" value="0.165" />

@@ -51,7 +51,6 @@
             <ImageView
                 android:id="@+id/imgAfterReplaced"
                 android:layout_width="match_parent"
-                android:src="@mipmap/defaults"
                 android:scaleType="centerCrop"
                 android:layout_gravity="center"
                 android:layout_height="@dimen/dp_100" />

@@ -36,7 +36,7 @@
         android:requestLegacyExternalStorage="true"
         android:roundIcon="@mipmap/app_ic"
         android:supportsRtl="true"
-        android:theme="@style/Theme.SpyneAi"
+        android:theme="@style/Theme.Fab_Bottom_app_bar"
         android:usesCleartextTraffic="true"
         tools:targetApi="m">
         <activity

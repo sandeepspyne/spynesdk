@@ -1,18 +1,11 @@
 package com.spyneai.service
 
 import android.content.Context
-import android.util.Log
 import androidx.work.*
 import com.posthog.android.Properties
-import com.spyneai.BaseApplication
+import com.spyneai.*
+import com.spyneai.R
 import com.spyneai.base.network.Resource
-import com.spyneai.captureEvent
-import com.spyneai.captureFailureEvent
-import com.spyneai.interfaces.APiService
-import com.spyneai.interfaces.RetrofitClients
-import com.spyneai.isInternetActive
-import com.spyneai.model.processImageService.Task
-import com.spyneai.model.upload.UploadResponse
 import com.spyneai.needs.AppConstants
 import com.spyneai.needs.Utilities
 import com.spyneai.posthog.Events
@@ -20,20 +13,14 @@ import com.spyneai.shoot.data.ShootLocalRepository
 import com.spyneai.shoot.data.ShootRepository
 import com.spyneai.shoot.data.model.Image
 import com.spyneai.shoot.utils.logUpload
-import com.spyneai.shoot.workmanager.RecursiveImageWorker
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.MultipartBody
-import okhttp3.RequestBody
 import okhttp3.RequestBody.Companion.asRequestBody
 import okhttp3.RequestBody.Companion.toRequestBody
-import retrofit2.Call
-import retrofit2.Callback
-import retrofit2.Response
 import java.io.File
-import java.util.concurrent.TimeUnit
 
 class ImageUploader(val context: Context,
                     val localRepository : ShootLocalRepository,
@@ -115,18 +102,31 @@ class ImageUploader(val context: Context,
                    var response = if (image.categoryName == "360int"){
                        shootRepository.uploadImage(projectId!!,
                            skuId!!, imageCategory!!,authKey, uploadType.toRequestBody(MultipartBody.FORM),image.sequence!!,imageFile)
-                   }else {
+                   }else if (BaseApplication.getContext().getString(R.string.app_name) == AppConstants.SWIGGY){
+                       shootRepository.uploadImageWithAngle(
+                           projectId!!,
+                           skuId!!,
+                           imageCategory!!,
+                           authKey,
+                           uploadType.toRequestBody(MultipartBody.FORM),
+                           image.sequence!!,
+                           image.angle!!,
+                           imageFile
+                       )
+                   } else {
                        shootRepository.uploadImage(projectId!!,
                            skuId!!, imageCategory!!,authKey, uploadType.toRequestBody(MultipartBody.FORM),image.sequence!!,imageFile)
                    }
 
                    when(response){
                        is Resource.Success -> {
+                           log("Image upload sucess. image angle: "+image.angle)
                            captureEvent(Events.UPLOADED_SERVICE,image,true,null)
                            startNextUpload(image.itemId!!,true,imageType)
                        }
 
                        is Resource.Failure -> {
+                           log("Image upload failed")
                           logUpload("Upload error "+response.errorCode.toString()+" "+response.errorMessage)
                            if(response.errorMessage == null){
                                captureEvent(Events.UPLOAD_FAILED_SERVICE,image,false,response.errorCode.toString()+": Http exception from server")

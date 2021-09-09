@@ -5,8 +5,8 @@ import android.os.Handler
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.spyneai.R
 import com.spyneai.base.BaseFragment
 import com.spyneai.base.network.Resource
 import com.spyneai.dashboard.ui.handleApiError
@@ -17,7 +17,6 @@ import com.spyneai.needs.Utilities
 import com.spyneai.shoot.adapters.ProjectDetailAdapter
 import com.spyneai.shoot.data.ShootViewModel
 import com.spyneai.shoot.utils.log
-import com.spyneai.shoot.utils.shoot
 
 class ProjectDetailFragment : BaseFragment<ShootViewModel, FragmentProjectDetailBinding>() {
 
@@ -31,12 +30,32 @@ class ProjectDetailFragment : BaseFragment<ShootViewModel, FragmentProjectDetail
 
         handler = Handler()
 
+        when (getString(R.string.app_name)) {
+            AppConstants.SWIGGY -> {
+                binding.btHome.text = "Select Background"
+            }
+        }
+
         binding.btHome.setOnClickListener {
-            viewModel.skuProcessState(Utilities.getPreference(requireContext(), AppConstants.AUTH_KEY).toString(),
-                viewModel.projectId.value.toString())
-            log("auth key- "+Utilities.getPreference(requireContext(), AppConstants.AUTH_KEY).toString())
-            log("project id- "+viewModel.projectId.value)
-            log("skuProcessState called")
+            when (viewModel.categoryDetails.value?.categoryName) {
+                "Food & Beverages" -> {
+                    viewModel.showFoodBackground.value = true
+                }
+                else -> {
+                    viewModel.skuProcessState(
+                        Utilities.getPreference(requireContext(), AppConstants.AUTH_KEY).toString(),
+                        viewModel.projectId.value.toString()
+                    )
+                    log(
+                        "auth key- " + Utilities.getPreference(
+                            requireContext(),
+                            AppConstants.AUTH_KEY
+                        ).toString()
+                    )
+                    log("project id- " + viewModel.projectId.value)
+                    log("skuProcessState called")
+                }
+            }
         }
 
         viewModel.skuProcessStateResponse.observe(viewLifecycleOwner, {
@@ -52,6 +71,10 @@ class ProjectDetailFragment : BaseFragment<ShootViewModel, FragmentProjectDetail
                 }
             }
         })
+
+        binding.ivBackGif.setOnClickListener {
+            requireActivity().onBackPressed()
+        }
 
 
     }
@@ -77,7 +100,11 @@ class ProjectDetailFragment : BaseFragment<ShootViewModel, FragmentProjectDetail
 
                     binding.rvParentProjects.apply {
                         this?.layoutManager =
-                            LinearLayoutManager(requireContext(), LinearLayoutManager.VERTICAL, false)
+                            LinearLayoutManager(
+                                requireContext(),
+                                LinearLayoutManager.VERTICAL,
+                                false
+                            )
                         this?.adapter = projectDetailAdapter
                     }
 
@@ -93,7 +120,7 @@ class ProjectDetailFragment : BaseFragment<ShootViewModel, FragmentProjectDetail
         })
     }
 
-    fun repeatRefreshData(){
+    fun repeatRefreshData() {
         try {
             viewModel.getProjectDetail(
                 Utilities.getPreference(requireContext(), AppConstants.AUTH_KEY).toString(),
@@ -104,10 +131,10 @@ class ProjectDetailFragment : BaseFragment<ShootViewModel, FragmentProjectDetail
                     repeatRefreshData()
             }
             if (runnable != null)
-                handler.postDelayed(runnable!!,15000)
-        }catch (e : IllegalArgumentException){
+                handler.postDelayed(runnable!!, 15000)
+        } catch (e: IllegalArgumentException) {
             e.printStackTrace()
-        }catch (e : Exception){
+        } catch (e: Exception) {
             e.printStackTrace()
         }
     }
