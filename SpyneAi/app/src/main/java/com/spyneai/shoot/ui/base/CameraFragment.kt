@@ -170,6 +170,12 @@ class CameraFragment : BaseFragment<ShootViewModel, FragmentCameraBinding>(), Pi
             }
         })
 
+        if (getString(R.string.app_name) == AppConstants.KARVI){
+            binding.tvSkipShoot.setTextColor(ContextCompat.getColor(requireContext(),R.color.secondary))
+            binding.ivSkip?.setColorFilter(ContextCompat.getColor(requireContext(), R.color.secondary),
+                android.graphics.PorterDuff.Mode.MULTIPLY);
+        }
+
         binding.tvSkipShoot?.setOnClickListener {
             when (viewModel.categoryDetails.value?.imageType) {
                 "Interior" -> {
