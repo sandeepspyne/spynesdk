@@ -98,5 +98,12 @@ class ShootRepository : BaseRepository() {
         clipperApi.updateFootwearSubcategory(authKey, skuId, initialImageCount, subCatId)
     }
 
+    suspend fun sendFilesData(
+        authKey: String,
+        data : String
+    ) = safeApiCall {
+        clipperApi.sendFilesData(authKey,data)
+    }
+
 
 }

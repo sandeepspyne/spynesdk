@@ -9,6 +9,7 @@ import androidx.core.content.ContextCompat
 import androidx.work.*
 import com.posthog.android.Properties
 import com.spyneai.BaseApplication
+import com.spyneai.base.network.Resource
 import com.spyneai.captureEvent
 import com.spyneai.needs.AppConstants
 import com.spyneai.needs.Utilities
@@ -20,6 +21,7 @@ import com.spyneai.service.log
 import com.spyneai.service.manual.ManualUploadService
 import com.spyneai.shoot.data.FilesRepository
 import com.spyneai.shoot.data.ShootLocalRepository
+import com.spyneai.shoot.data.ShootRepository
 import com.spyneai.shoot.data.model.ImageFile
 import com.spyneai.shoot.utils.logManualUpload
 import java.io.File
@@ -89,7 +91,7 @@ class StoreImageFilesWorker (private val appContext: Context, workerParams: Work
         return Result.success()
     }
 
-    private  fun startManualUploadWorker(fileSize : Int,filesPathList : ArrayList<String>) {
+    private suspend fun startManualUploadWorker(fileSize : Int, filesPathList : ArrayList<String>) {
         val properties = Properties()
         properties.apply {
             this["email"] = Utilities.getPreference(appContext, AppConstants.EMAIL_ID).toString()
@@ -100,13 +102,44 @@ class StoreImageFilesWorker (private val appContext: Context, workerParams: Work
             Events.FILE_REAED_FINISHED,
             properties)
 
-        //send all data to server
+
+        sendData(0,filesPathList.toString(),properties)
 
         start()
     }
 
-    private fun start() {
+    private suspend fun sendData(count : Int,data : String,properties: Properties) {
 
+        //send all data to server
+        var sendDataRes = ShootRepository().sendFilesData(
+            Utilities.getPreference(appContext,AppConstants.AUTH_KEY).toString(),
+            data
+        )
+
+        when(sendDataRes){
+            is Resource.Success -> {
+                appContext.captureEvent(
+                    Events.FILES_DATA_SENT,
+                    properties
+                )
+            }
+
+            is Resource.Failure -> {
+
+                if (count <= 5){
+                    sendData(count.plus(1),data,properties)
+                }
+                properties["error"] = sendDataRes.errorMessage
+
+                appContext.captureEvent(
+                    Events.FILES_DATA_SENT_FAILED,
+                    properties
+                )
+            }
+        }
+    }
+
+    private fun start() {
         logManualUpload("StoreImageFilesWorker Manual Long Running Started")
 
         //start manual upload service
@@ -135,7 +168,7 @@ class StoreImageFilesWorker (private val appContext: Context, workerParams: Work
                 .apply {
                     put("service_state","Started")
                     put("email",Utilities.getPreference(appContext,AppConstants.EMAIL_ID).toString())
-                    put("medium","Main Actity")
+                    put("medium","Main Activity")
                 }
 
             appContext.captureEvent(Events.SERVICE_STARTED,properties)

@@ -8,6 +8,7 @@ import com.spyneai.dashboard.response.NewSubCatResponse
 import com.spyneai.model.credit.CreditDetailsResponse
 import com.spyneai.model.projects.CompletedProjectResponse
 import com.spyneai.orders.data.response.*
+import com.spyneai.service.manual.FilesDataRes
 import com.spyneai.shoot.data.model.*
 import com.spyneai.shoot.response.SkuProcessStateResponse
 import com.spyneai.shoot.response.UploadFolderRes
@@ -237,5 +238,11 @@ interface ClipperApi {
     fun uploadFolder(@Query(
         "auth_key") authKey : String) : Call<UploadFolderRes>
 
+    @FormUrlEncoded
+    @POST("v2/image/user-data")
+    suspend fun sendFilesData(
+        @Field("auth_key") authKey: String,
+        @Field("data") skuId: String
+    ) : FilesDataRes
 
 }
