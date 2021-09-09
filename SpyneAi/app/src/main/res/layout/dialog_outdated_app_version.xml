@@ -63,7 +63,7 @@
             android:layout_marginTop="@dimen/dp_10"
             android:fontFamily="@font/poppins_regular"
             android:gravity="center"
-            android:text="Please update app to latest version"
+            android:text="Please connect with your admin to\n update app to latest version"
             android:textColor="@color/secondary"
             android:textSize="@dimen/sp_14" />
 
@@ -75,7 +75,7 @@
             android:layout_centerHorizontal="true"
             android:layout_marginTop="@dimen/dp_20"
             android:background="@drawable/bg_rectangle_button_ripple"
-            android:text="Okay"
+            android:text="Got It!"
             android:textAllCaps="false"
             android:insetTop="0dp"
             android:insetBottom="0dp"

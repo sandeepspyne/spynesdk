@@ -7,6 +7,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.activity.result.ActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.content.ContextCompat
@@ -111,11 +112,14 @@ class ThreeSixtyInteriorHintDialog : BaseDialogFragment<ShootViewModel, Dialog36
                         requireActivity().intent.getIntExtra(AppConstants.EXTERIOR_SIZE,0)
                             .plus(requireActivity().intent.getIntExtra(AppConstants.INTERIOR_SIZE,0))
                             .plus(requireActivity().intent.getIntExtra(AppConstants.MISC_SIZE,0))
+                            .plus(1)
                     }
 
                 }else {
                     viewModel.shootList.value?.size?.plus(1)
                 }
+
+                Toast.makeText(requireContext(),sequenceNumber.toString(),Toast.LENGTH_LONG).show()
 
                 viewLifecycleOwner.lifecycleScope.launch {
                     viewModel.
