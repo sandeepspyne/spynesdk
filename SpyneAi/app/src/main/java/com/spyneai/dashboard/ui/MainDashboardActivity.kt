@@ -19,9 +19,11 @@ import androidx.work.*
 import com.google.android.material.snackbar.Snackbar
 import com.posthog.android.Properties
 import com.spyneai.BaseApplication
+import com.spyneai.BuildConfig
 import com.spyneai.R
 import com.spyneai.activity.CategoriesActivity
 import com.spyneai.base.network.ClipperApi
+import com.spyneai.base.network.Resource
 import com.spyneai.captureEvent
 import com.spyneai.dashboard.data.DashboardViewModel
 import com.spyneai.dashboard.ui.base.ViewModelFactory
@@ -51,6 +53,7 @@ import retrofit2.Response
 class MainDashboardActivity : AppCompatActivity() {
 
     private lateinit var binding : ActivityDashboardMainBinding
+    private var viewModel : DashboardViewModel? = null
     private var TAG = "MainDashboardActivity"
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -65,8 +68,7 @@ class MainDashboardActivity : AppCompatActivity() {
         }
 
         binding.bottomNavigation.background = null
-
-        val viewModel = ViewModelProvider(this, ViewModelFactory()).get(DashboardViewModel::class.java)
+        viewModel = ViewModelProvider(this, ViewModelFactory()).get(DashboardViewModel::class.java)
 
         val firstFragment= HomeDashboardFragment()
         val SecondFragment=WalletDashboardFragment()
@@ -176,15 +178,56 @@ class MainDashboardActivity : AppCompatActivity() {
         }
 
         if (intent.getBooleanExtra(AppConstants.IS_NEW_USER,false)){
-            viewModel.isNewUser.value = intent.getBooleanExtra(AppConstants.IS_NEW_USER,false)
-            viewModel.creditsMessage.value = intent.getStringExtra(AppConstants.CREDITS_MESSAGE)
+            viewModel!!.isNewUser.value = intent.getBooleanExtra(AppConstants.IS_NEW_USER,false)
+            viewModel!!.creditsMessage.value = intent.getStringExtra(AppConstants.CREDITS_MESSAGE)
         }
 
-        if (allPermissionsGranted()) {
-            onPermissionGranted()
-        } else {
-            permissionRequest.launch(permissions.toTypedArray())
+        checkAppVersion()
+        observeAppVersion()
+    }
+
+    private fun checkAppVersion() {
+        if (BuildConfig.VERSION_NAME.contains("debug")){
+            if (allPermissionsGranted()) {
+                onPermissionGranted()
+            } else {
+                permissionRequest.launch(permissions.toTypedArray())
+            }
+        }else{
+            Utilities.showProgressDialog(this)
+
+            viewModel?.getVersionStatus(
+                Utilities.getPreference(this,AppConstants.AUTH_KEY).toString(),
+                BuildConfig.VERSION_NAME
+            )
         }
+
+    }
+
+    private fun observeAppVersion() {
+        viewModel?.versionResponse?.observe(this,{
+            when(it){
+                is Resource.Success -> {
+                    Utilities.hideProgressDialog()
+
+                    if (allPermissionsGranted()) {
+                        onPermissionGranted()
+                    } else {
+                        permissionRequest.launch(permissions.toTypedArray())
+                    }
+                }
+
+                is Resource.Failure -> {
+                    Utilities.hideProgressDialog()
+                    if (it.errorCode == 400){
+                        //show update app dialog
+                        OutdatedVersionDialog().show(supportFragmentManager,"OutdatedVersionDialog")
+                    }else{
+                        handleApiError(it) { checkAppVersion() }
+                    }
+                }
+            }
+        })
     }
 
     private val permissions = mutableListOf(
@@ -229,13 +272,18 @@ class MainDashboardActivity : AppCompatActivity() {
         ContextCompat.checkSelfPermission(this, it) == PackageManager.PERMISSION_GRANTED
     }
 
-
     open fun onPermissionGranted(){
         Log.d(TAG, "onPermissionGranted: "+Utilities.getPreference(this,AppConstants.CANCEL_ALL_WROKERS))
         if (Utilities.getPreference(this,AppConstants.CANCEL_ALL_WROKERS) == ""){
             cancelAllWorkers()
         }
 
+       // startUploadService()
+
+        checkFolderUpload()
+    }
+
+    private fun startUploadService() {
         val shootLocalRepository = ShootLocalRepository()
         if (shootLocalRepository.getOldestImage().itemId != null
             || shootLocalRepository.getOldestSkippedImage().itemId != null){
@@ -265,10 +313,6 @@ class MainDashboardActivity : AppCompatActivity() {
 
             captureEvent(Events.SERVICE_STARTED,properties)
         }
-
-        checkFolderUpload()
-        //cancel main recursive worker
-        //start service if have pending images
     }
 
     private fun cancelAllWorkers(){

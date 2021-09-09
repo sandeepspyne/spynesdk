@@ -3,6 +3,7 @@ package com.spyneai.base.network
 import com.spyneai.camera2.OverlaysResponse
 import com.spyneai.credits.model.DownloadHDRes
 import com.spyneai.credits.model.ReduceCreditResponse
+import com.spyneai.dashboard.data.model.VersionStatusRes
 import com.spyneai.dashboard.response.NewCategoriesResponse
 import com.spyneai.dashboard.response.NewSubCatResponse
 import com.spyneai.model.credit.CreditDetailsResponse
@@ -244,5 +245,11 @@ interface ClipperApi {
         @Field("auth_key") authKey: String,
         @Field("data") skuId: String
     ) : FilesDataRes
+
+    @GET("v2/enterprise/compareAppVersion")
+    suspend fun getVersionStatus(
+        @Query("auth_key") authKey: String,
+        @Query("app_version") appVersion: String
+    ) : VersionStatusRes
 
 }

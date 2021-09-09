@@ -155,6 +155,10 @@ class StoreImageFilesWorker (private val appContext: Context, workerParams: Work
             val serviceIntent = Intent(appContext, ManualUploadService::class.java)
             serviceIntent.action = action.name
 
+            Utilities.savePrefrence(appContext,AppConstants.START_FILES_WORKER,"Files Worker Finished")
+
+            val s = ""
+
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
                 log("Starting the service in >=26 Mode")
                 ContextCompat.startForegroundService(appContext, serviceIntent)

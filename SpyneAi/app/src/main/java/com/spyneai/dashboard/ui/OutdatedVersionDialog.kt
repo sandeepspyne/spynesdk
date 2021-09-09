@@ -1,23 +1,18 @@
-package com.spyneai.shoot.ui.dialogs
+package com.spyneai.dashboard.ui
 
-import android.content.Intent
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
-import android.net.Uri
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.DialogFragment
-import com.spyneai.R
+import com.spyneai.databinding.DialogOutdatedAppVersionBinding
 import com.spyneai.databinding.DialogResolutionNotSupportedBinding
-import com.spyneai.databinding.DialogTopUpBinding
-import com.spyneai.needs.AppConstants
-import com.spyneai.needs.Utilities
 
-class ResolutionNotSupportedFragment : DialogFragment() {
+class OutdatedVersionDialog : DialogFragment() {
 
-    private var _binding : DialogResolutionNotSupportedBinding? = null
+    private var _binding : DialogOutdatedAppVersionBinding? = null
     private val binding get() = _binding
 
 
@@ -27,7 +22,7 @@ class ResolutionNotSupportedFragment : DialogFragment() {
         savedInstanceState: Bundle?
     ): View? {
         // Inflate the layout for this fragment
-        _binding = DialogResolutionNotSupportedBinding.inflate(inflater, container, false)
+        _binding = DialogOutdatedAppVersionBinding.inflate(inflater, container, false)
 
         isCancelable = false
 
@@ -38,11 +33,11 @@ class ResolutionNotSupportedFragment : DialogFragment() {
         super.onViewCreated(view, savedInstanceState)
 
         binding?.ivClose?.setOnClickListener {
-            dismiss()
+            requireActivity().finish()
         }
 
         binding?.tvOKay?.setOnClickListener {
-            dismiss()
+            requireActivity().finish()
         }
 
     }
