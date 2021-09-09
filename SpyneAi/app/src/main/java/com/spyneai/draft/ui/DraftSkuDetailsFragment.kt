@@ -193,7 +193,8 @@ class DraftSkuDetailsFragment : BaseFragment<DraftViewModel, FragmentDraftSkuDet
             if (getString(R.string.app_name) == AppConstants.OLA_CABS){
                 if (threeSixtyIntSelected()){
                     Log.d(TAG, "onViewCreated: "+"Three Sixty Selected")
-                    startProcessActivty(shootIntent!!,localInteriorList.size
+                    startProcessActivty(shootIntent!!,
+                        localInteriorList.size
                         .plus(localMiscList.size)
                         .plus(localThreeSixtyInteriorList.size))
                 }else{
@@ -245,7 +246,6 @@ class DraftSkuDetailsFragment : BaseFragment<DraftViewModel, FragmentDraftSkuDet
                             }else {
                                 startActivity(intent)
                             }
-
                     }else {
                         if (it.value.miscellaneous.size == miscList.size) {
                             startProcessActivty(intent,interiorList.size.plus(miscList.size))
@@ -291,7 +291,6 @@ class DraftSkuDetailsFragment : BaseFragment<DraftViewModel, FragmentDraftSkuDet
     }
 
     private fun getExteriorImagesList(): java.util.ArrayList<String> {
-
         if (requireActivity().intent.getBooleanExtra(AppConstants.FROM_LOCAL_DB,false)) {
             val s = localExterior?.map {
                 it.imagePath

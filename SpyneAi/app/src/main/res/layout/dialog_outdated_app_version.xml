@@ -29,8 +29,7 @@
             android:layout_marginTop="@dimen/dp_5"
             android:layout_marginEnd="@dimen/dp_5"
             android:layout_marginBottom="@dimen/dp_5"
-            android:src="@drawable/ic_close"
-            app:tint="@color/primary"></ImageView>
+            android:src="@drawable/ic_close"></ImageView>
 
         <ImageView
             android:id="@+id/ivCoins"
@@ -39,7 +38,7 @@
             android:layout_centerHorizontal="true"
             android:layout_marginTop="@dimen/dp_15"
             android:src="@drawable/device_not_supported"
-            app:tint="@color/primary" />
+            app:tint="@color/secondary" />
 
 
         <TextView
@@ -49,23 +48,41 @@
             android:layout_below="@+id/ivCoins"
             android:layout_centerHorizontal="true"
             android:layout_marginTop="@dimen/dp_20"
-            android:fontFamily="@font/medium"
+            android:fontFamily="@font/poppins_medium"
             android:gravity="center"
-            android:text="Outdated version!\n\nplease update app to latest version"
-            android:textColor="@color/primary"
-            android:textSize="@dimen/sp_16" />
+            android:text="Outdated version!"
+            android:textColor="@color/secondary"
+            android:textSize="@dimen/sp_18" />
 
-        <Button
+        <TextView
+            android:id="@+id/tvDescription"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/tvReqCredit"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="@dimen/dp_10"
+            android:fontFamily="@font/poppins_regular"
+            android:gravity="center"
+            android:text="Please update app to latest version"
+            android:textColor="@color/secondary"
+            android:textSize="@dimen/sp_14" />
+
+        <com.google.android.material.button.MaterialButton
             android:id="@+id/tvOKay"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_below="@id/tvReqCredit"
+            android:layout_below="@id/tvDescription"
             android:layout_centerHorizontal="true"
-            android:layout_marginTop="@dimen/dp_15"
+            android:layout_marginTop="@dimen/dp_20"
             android:background="@drawable/bg_rectangle_button_ripple"
             android:text="Okay"
             android:textAllCaps="false"
-            android:visibility="visible" />
+            android:insetTop="0dp"
+            android:insetBottom="0dp"
+            android:paddingLeft="@dimen/dp_50"
+            android:paddingRight="@dimen/dp_50"
+            android:visibility="visible"
+            android:layout_marginBottom="@dimen/dp_20"/>
 
     </RelativeLayout>
 

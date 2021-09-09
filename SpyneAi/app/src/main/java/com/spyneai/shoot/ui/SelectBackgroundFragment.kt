@@ -58,6 +58,7 @@ class SelectBackgroundFragment : BaseFragment<ProcessViewModel,FragmentSelectBac
                 binding.tv360.visibility = View.GONE
                 binding.tvGenerateGif.text = "Generate Output"
             }
+
             AppConstants.SWEEP -> {
                 binding.tvSample.visibility = View.INVISIBLE
                 binding.imageViewGif.visibility = View.INVISIBLE
