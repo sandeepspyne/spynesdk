@@ -6,6 +6,7 @@ import android.app.Activity
 import android.app.ActivityManager
 import android.content.Context
 import android.content.Intent
+import android.content.res.ColorStateList
 import android.graphics.ImageFormat
 import android.hardware.camera2.CameraCharacteristics
 import android.hardware.camera2.CameraManager
@@ -13,7 +14,11 @@ import android.net.ConnectivityManager
 import android.net.NetworkInfo
 import com.posthog.android.Properties
 import android.widget.ImageButton
+import android.widget.ImageView
+import androidx.annotation.ColorRes
 import androidx.annotation.DrawableRes
+import androidx.core.content.ContextCompat
+import androidx.core.widget.ImageViewCompat
 import com.spyneai.dashboard.ui.MainDashboardActivity
 import com.spyneai.loginsignup.activity.LoginActivity
 import com.spyneai.needs.AppConstants
@@ -110,7 +115,7 @@ fun Context.isInternetActive() : Boolean {
 fun Context.isResolutionSupported() : Boolean {
     val cm = getSystemService(Context.CAMERA_SERVICE) as CameraManager
 
-    var resolutionSupported = false
+    var resolutionSupported = true
 
     if (cm.cameraIdList != null && cm.cameraIdList.size > 1) {
         val characteristics: CameraCharacteristics =

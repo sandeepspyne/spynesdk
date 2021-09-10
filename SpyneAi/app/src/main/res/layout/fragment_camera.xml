@@ -43,7 +43,7 @@
                 android:id="@+id/ivSkip"
                 android:layout_gravity="center"
                 android:layout_marginLeft="@dimen/dp_2"
-                app:tint="@color/secondary" />
+                app:tint="@color/primary" />
 
         </LinearLayout>
 

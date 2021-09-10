@@ -5,6 +5,7 @@ import android.content.ContentValues
 import android.content.ContentValues.TAG
 import android.content.Context
 import android.content.pm.ActivityInfo
+import android.graphics.PorterDuff
 import android.hardware.Sensor
 import android.hardware.SensorEvent
 import android.hardware.SensorEventListener
@@ -25,13 +26,11 @@ import androidx.core.net.toFile
 import com.hbisoft.pickit.PickiT
 import com.hbisoft.pickit.PickiTCallbacks
 import com.posthog.android.Properties
-import com.spyneai.BaseApplication
+import com.spyneai.*
 import com.spyneai.R
 import com.spyneai.base.BaseFragment
 import com.spyneai.base.network.Resource
 import com.spyneai.camera2.ShootDimensions
-import com.spyneai.captureEvent
-import com.spyneai.captureFailureEvent
 import com.spyneai.dashboard.ui.handleApiError
 import com.spyneai.databinding.FragmentCameraBinding
 import com.spyneai.needs.AppConstants
@@ -173,9 +172,10 @@ class CameraFragment : BaseFragment<ShootViewModel, FragmentCameraBinding>(), Pi
 
         if (getString(R.string.app_name) == AppConstants.KARVI){
             binding.tvSkipShoot.setTextColor(ContextCompat.getColor(requireContext(),R.color.secondary))
-         //   binding.ivSkip?.setColorFilter(ContextCompat.getColor(requireContext(), R.color.secondary), android.graphics.PorterDuff.Mode.MULTIPLY)
+            binding.ivSkip?.setColorFilter(
+                ContextCompat.getColor(requireContext(), R.color.secondary),
+                PorterDuff.Mode.SRC_IN)
         }
-
         binding.tvSkipShoot?.setOnClickListener {
             when (viewModel.categoryDetails.value?.imageType) {
                 "Interior" -> {
