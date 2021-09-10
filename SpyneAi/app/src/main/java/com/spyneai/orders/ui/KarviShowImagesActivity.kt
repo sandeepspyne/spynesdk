@@ -2,6 +2,9 @@ package com.spyneai.orders.ui
 
 import android.app.Dialog
 import android.content.Intent
+import android.graphics.ImageFormat
+import android.hardware.camera2.CameraCharacteristics
+import android.hardware.camera2.CameraManager
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
@@ -26,6 +29,7 @@ import com.spyneai.needs.ScrollingLinearLayoutManager
 import com.spyneai.needs.Utilities
 import com.spyneai.orders.ui.adapter.KarviImagesAdapter
 import com.spyneai.shoot.ui.base.ShootActivity
+import com.spyneai.shoot.ui.dialogs.ResolutionNotSupportedFragment
 import com.spyneai.shoot.utils.log
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
@@ -102,13 +106,54 @@ class KarviShowImagesActivity : AppCompatActivity() {
 
 
         binding.llStartNewShoot.setOnClickListener {
-            val intent = Intent(this, ShootActivity::class.java)
-            intent.putExtra(AppConstants.CATEGORY_ID, AppConstants.CARS_CATEGORY_ID)
-            intent.putExtra(AppConstants.CATEGORY_NAME,"Automobiles")
-            startActivity(intent)
+            when(getString(R.string.app_name)){
+                AppConstants.KARVI -> {
+                    val cm = getSystemService(android.content.Context.CAMERA_SERVICE) as CameraManager
+
+                    if (cm.cameraIdList != null && cm.cameraIdList.size > 1) {
+                        val characteristics: CameraCharacteristics =
+                            cm.getCameraCharacteristics("1")
+
+                        val configs = characteristics.get(
+                            CameraCharacteristics.SCALER_STREAM_CONFIGURATION_MAP
+                        )
+
+                        val s = configs?.getOutputSizes(ImageFormat.JPEG)
+
+                        var resolutionSupported = false
+
+                        s?.forEach { it ->
+                            if (!resolutionSupported && it != null) {
+                                if (it.width == 1024 && it.height == 768)
+                                    resolutionSupported = true
+                            }
+                        }
+
+                        if (resolutionSupported) {
+                            startShoot()
+                        }else {
+                            //resolution not supported
+                            ResolutionNotSupportedFragment().show(supportFragmentManager,"ResolutionNotSupportedFragment")
+                        }
+                    }else {
+                        //resolution not supported
+                        ResolutionNotSupportedFragment().show(supportFragmentManager,"ResolutionNotSupportedFragment")
+                    }
+                }
+
+                else -> {
+                    startShoot()
+                }
+            }
         }
     }
 
+    private fun startShoot() {
+        val intent = Intent(this, ShootActivity::class.java)
+        intent.putExtra(AppConstants.CATEGORY_ID, AppConstants.CARS_CATEGORY_ID)
+        intent.putExtra(AppConstants.CATEGORY_NAME,"Automobiles")
+        startActivity(intent)
+    }
 
     private fun setBulkImages() {
         Utilities.showProgressDialog(this)

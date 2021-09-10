@@ -138,6 +138,9 @@
             android:name=".activity.DownloadingActivity"
             android:screenOrientation="portrait" />
 
+        <activity android:name=".orders.ui.KarviShowImagesActivity"
+            android:screenOrientation="portrait"/>
+
         <service
             android:name=".service.ProcessImagesService"
             android:enabled="true"
