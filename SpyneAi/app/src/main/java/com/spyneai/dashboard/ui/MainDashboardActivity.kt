@@ -109,7 +109,6 @@ class MainDashboardActivity : AppCompatActivity() {
                             intent.putExtra(AppConstants.CATEGORY_ID,AppConstants.CARS_CATEGORY_ID)
                             intent.putExtra(AppConstants.CATEGORY_NAME,"Automobiles")
                             startActivity(intent)
-
                         }
 
                         AppConstants.KARVI -> {

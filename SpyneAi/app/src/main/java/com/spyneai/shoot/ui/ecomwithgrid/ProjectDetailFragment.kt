@@ -92,8 +92,6 @@ class ProjectDetailFragment : BaseFragment<ShootViewModel, FragmentProjectDetail
         binding.ivBackGif.setOnClickListener {
             requireActivity().onBackPressed()
         }
-
-
     }
 
     private fun processWithoutBackgroundId() {
@@ -114,7 +112,6 @@ class ProjectDetailFragment : BaseFragment<ShootViewModel, FragmentProjectDetail
             5000
         )
     }
-
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
@@ -143,11 +140,8 @@ class ProjectDetailFragment : BaseFragment<ShootViewModel, FragmentProjectDetail
                             )
                         this?.adapter = projectDetailAdapter
                     }
-
                 }
-                is Resource.Loading -> {
 
-                }
                 is Resource.Failure -> {
                     Utilities.hideProgressDialog()
                     handleApiError(it)
