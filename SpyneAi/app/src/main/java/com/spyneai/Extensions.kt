@@ -115,7 +115,7 @@ fun Context.isInternetActive() : Boolean {
 fun Context.isResolutionSupported() : Boolean {
     val cm = getSystemService(Context.CAMERA_SERVICE) as CameraManager
 
-    var resolutionSupported = true
+    var resolutionSupported = false
 
     if (cm.cameraIdList != null && cm.cameraIdList.size > 1) {
         val characteristics: CameraCharacteristics =

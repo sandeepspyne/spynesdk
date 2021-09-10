@@ -94,7 +94,7 @@ android {
         karvi {
             dimension 'version'
             applicationId "com.spyneai.karvi"
-            versionCode 19
+            versionCode 22
             versionName "4.8"
         }
 
