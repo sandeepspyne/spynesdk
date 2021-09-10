@@ -41,7 +41,7 @@ class SignUpActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_sign_up)
 //set countries spinner
-        countriesList.add("Select Your Country")
+        countriesList.add(getString(R.string.select_country))
         spinnerAdapter = ArrayAdapter<String>(
             this,
             android.R.layout.simple_spinner_dropdown_item,
@@ -52,7 +52,9 @@ class SignUpActivity : AppCompatActivity() {
 
         setSpinner()
         listeners()
-        tvAlreadyLogin.text = "Already a "+ getString(R.string.app_name) + " user?"
+        //tvAlreadyLogin.text = "Already a "+ getString(R.string.app_name) + " user?"
+        val appName = getString(R.string.app_name)
+        tvAlreadyLogin.text = getString(R.string.already_a_user,appName)
     }
 
     private fun setSpinner() {

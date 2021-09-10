@@ -1,6 +1,7 @@
 package com.spyneai.activity
 
 import android.content.Intent
+import android.content.res.Configuration
 import android.os.Bundle
 import android.os.Handler
 import android.view.WindowManager
@@ -10,6 +11,7 @@ import com.spyneai.dashboard.ui.MainDashboardActivity
 import com.spyneai.loginsignup.activity.LoginActivity
 import com.spyneai.needs.AppConstants
 import com.spyneai.needs.Utilities
+import java.util.*
 
 
 class SplashActivity : AppCompatActivity() {
@@ -23,6 +25,13 @@ class SplashActivity : AppCompatActivity() {
         )
 
         setContentView(R.layout.activity_splash)
+
+
+        val locale = Locale("de")
+        Locale.setDefault(locale)
+        val config = Configuration()
+        config.locale = locale
+        resources.updateConfiguration(config, resources.displayMetrics)
 
         setSplash()
     }

@@ -24,6 +24,7 @@ class ResponseInterceptor : Interceptor {
             val contentType: MediaType? = body!!.contentType()
 
             try {
+
                 val json = JSONObject(bodyString)
                 // Log.d("ResponseInterceptor", "intercept: " + json)
 

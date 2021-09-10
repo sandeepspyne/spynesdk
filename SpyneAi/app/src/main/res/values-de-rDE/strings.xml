@@ -1,18 +1,21 @@
 <resources>
-    <string name="app_name" translatable="false">SpyneAI</string>
+    <string name="app_name" translatable="false">Automoser</string>
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
-    <string name="hello">Greetings!</string>
+    <string name="hello">Willkommen!</string>
+    <string name="enter_email">E-Mail eingeben</string>
+    <string name="enter_password">Passwort eingeben</string>
+    <string name="new_to_app">Neu bei AutoFotoApp?</string>
 
-    <string name="please">Please sign in to continue</string>
-    <string name="please_signup">Please sign up to continue</string>
+    <string name="please">Bitte anmelden, um fortzufahren</string>
+    <string name="please_signup">Bitte melden Sie sich an, um fortzufahren</string>
     <string name="use_email">Use Email Instead</string>
-    <string name="sign_in">Sign in with OTP</string>
+    <string name="sign_in">Anmelden mit Einmal-Passwort (OTP)</string>
     <string name="login">Login</string>
-    <string name="login_with_password">Login with Password</string>
-    <string name="sign_up">Sign up </string>
+    <string name="login_with_password">Mit Passwort anmelden</string>
+    <string name="sign_up">Anmelden </string>
     <string name="send_link">Send Link</string>
-    <string name="or">OR</string>
+    <string name="or">ODER</string>
     <string name="by"><![CDATA[By continuing you agree to our ]]></string>
     <string name="terms">Terms &amp; Policies</string>
     <string name="edit">Edit</string>
@@ -21,21 +24,21 @@
     <string name="did_not">Didn\'t receive the OTP?</string>
     <string name="resend">Resend</string>
     <string name="submit_otp">Submit OTP</string>
-    <string name="submit">Submit</string>
+    <string name="submit">Bestätigen</string>
     <string name="continue_with_this_shoot">Continue with this shoot</string>
     <string name="ok">OK</string>
     <string name="channels">Channels</string>
-    <string name="backgrounds">Backgrounds</string>
+    <string name="backgrounds">Fuss Innenraum</string>
     <string name="hdr">HDR</string>
     <string name="before">Before</string>
     <string name="after">After</string>
-    <string name="shoot_now">Shoot Now</string>
+    <string name="shoot_now">Jetzt fotografieren</string>
     <string name="order">Order Now</string>
     <string name="preview_order">Proceed To Order</string>
     <string name="your_sku">Your SKUs</string>
     <string name="report_issue">Report Issue</string>
     <string name="add_sku">Add SKUs</string>
-    <string name="completed">Completed</string>
+    <string name="completed">Abgeschlossen</string>
     <string name="no_data">No marketplaces</string>
     <string name="no_datas">No Backgrounds</string>
     <string name="demo_sku">Demo Skus</string>
@@ -43,25 +46,25 @@
     <string name="shoot_selection">Shoot Selection</string>
     <string name="sku_names">Sku Name</string>
     <string name="sku">Sku:</string>
-    <string name="total_cost">Total Cost</string>
+    <string name="total_cost">Gesamtpreis</string>
     <string name="total_images">Total Images Clicked</string>
     <string name="available_download">Available for download</string>
     <string name="select_marketplace">Select Marketplace</string>
     <string name="confirm">Confirm</string>
     <string name="no_reshoot">Reshoot</string>
     <string name="start_shooting">Start Shooting</string>
-    <string name="ongoing">On-Going</string>
-    <string name="drafts">Drafts</string>
+    <string name="ongoing">In Bearbeitung</string>
+    <string name="drafts">Entwürfe</string>
     <string name="failed">Failed</string>
     <string name="categories_selection">Category Selection</string>
     <string name="footwear">Footwear</string>
-    <string name="automobile">Automobile</string>
+    <string name="automobile">Fahrzeuge</string>
     <string name="home">Home</string>
-    <string name="logout">Logout</string>
+    <string name="logout">Abmelden</string>
     <string name="dealership">DealerShip Logo</string>
     <string name="no_completed">Completed orders\nwill appear here</string>
     <string name="no_ongoing">On-going orders\nwill appear here</string>
-    <string name="our_work">Our Work</string>
+    <string name="our_work">Das können wir</string>
     <string name="upload_logo">Upload Logo</string>
     <string name="the_otp">The OTP is incorrect. Please try again.</string>
     <string name="please_enter_email">Please enter a valid email Id</string>
@@ -82,13 +85,13 @@
     <string name="total_skus">Total SKU</string>
     <string name="selected_backgrounds">Selected Backgrounds</string>
     <string name="dealership_logo">Dealership Logo</string>
-    <string name="top_up"><u>Top UP</u></string>
+    <string name="top_up"><u>Credits aufladen</u></string>
     <string name="buy_credits">Buy 10 Credits</string>
     <string name="request_on_whatsapp">Request On WhatsApp</string>
     <string name="your_gif">Your GIF</string>
     <string name="choose_shoots">Choose Shots</string>
     <string name="proceed">Proceed</string>
-    <string name="select_backgrounds">Select Background</string>
+    <string name="select_backgrounds">Einzelner Innenraum</string>
     <string name="select_output">Sample 360° Output</string>
     <string name="create_shoots">Generate Output</string>
     <string name="your_sent">Your 360° Shot was sent at</string>
@@ -106,7 +109,7 @@
     <string name="suv">SUV</string>
 
     <string name="view_spin">View 360° Spin Shot</string>
-    <string name="continues">Continue</string>
+    <string name="continues">fortsetzen</string>
 
 
     <string name="your_360_shots">Your Images are almost ready</string>
@@ -132,8 +135,9 @@
 
     <string name="total_images_clicked"><u>Total Images Clicked</u></string>
 
-    <string name="credits_available"><u>Credits Available</u></string>
-    <string name="top_up_2"><u>(Top Up)</u></string>
+    <string name="credits_available"><u>Guthaben Credits</u></string>
+    <string name="credits_remaining">Verfügbare Credits</string>
+    <string name="top_up_2"><u>(Credits aufladen</u></string>
 
     <string name="sku_id"><u>SKU ID</u></string>
 
@@ -184,13 +188,13 @@
     <string name="bottom_right">Bottom Right</string>
 
 
-    <string name="sign_up_here"><b>Sign up here</b></string>
+    <string name="sign_up_here"><b>Hier anmelden</b></string>
 
     <string name="logout_dialog_text">Are you sure you want to <b>log out.</b></string>
 
-    <string name="login_here"><b>Login here</b></string>
-    <string name="shoot_outdoor">Shoot&#160; <font color='#FF7700'><b>Outdoors</b></font>&#160;to avoid irregular reflections</string>
-    <string name="forgot_password">Forgot password?</string>
+    <string name="login_here"><b>Login</b></string>
+    <string name="shoot_outdoor">Fotografiere im&#160; <font color='#FF7700'><b>Außenbereich</b></font>&#160;tum Spiegelungen zu vermeiden </string>
+    <string name="forgot_password">Passwort vergessen?</string>
 
     <string name="forgot_password_mail">Enter the email address to reset your password. \n<br /> You may need to check your spam folder.</string>
     <string name="enter_vin">Please enter the Vehicle Identification Number (VIN)</string>
@@ -200,7 +204,7 @@
     <string name="message_no_permissions">The app cannot work without permissions</string>
 
 
-    <string name="sku_name_hint">Enter Any Unique Car ID</string>
+    <string name="sku_name_hint">Auto benennen</string>
 
     <string name="do_you_need_footwear_overlayes">Do you need footwear overlays?</string>
     <string name="bikes">Bikes</string>
@@ -211,7 +215,7 @@
     <string name="city">City(optional)</string>
     <string name="city_">City -</string>
     <string name="new_project">New Project</string>
-    <string name="car_subcategory">Select your car\'s sub-category</string>
+    <string name="car_subcategory">Fahrzeugtyp auswählen</string>
     <string name="footwear_subcategory">Select your footwear\'s sub-category</string>
     <string name="go_to_home">Go to home</string>
 
@@ -220,8 +224,8 @@
 
     <string name="create_professional_automobile">Create Professional\n<br />Pictures in a Single Click using AI</string>
 
-    <string name="capture_upto">Capture upto 36 Exterior Images</string>
-    <string name="my_projcts">My Projects</string>
+    <string name="capture_upto">Erfasse bis zu 36 Außenaufnahmen</string>
+    <string name="my_projcts">Mein Projekte</string>
 
     <string name="session_expired">Session Expired. Please <b>log in</b> again.</string>
     <string name="change_fidelity"><u>Change Fidelity</u></string>
@@ -233,30 +237,28 @@
     <string name="completed_shoots">Completed Shoots</string>
     <string name="explore_categories">Explore Categories</string>
     <string name="tutorial_videos">Tutorial Videos</string>
-    <string name="enter_email">Enter Email</string>
-    <string name="enter_password">Enter Password</string>
-    <string name="new_to_app">New to SpyneAI</string>
-    <string name="create_password">Create Password</string>
-    <string name="enter_business_name">Enter Business/Your Name</string>
 
-    <string name="shoot">Shoot</string>
-    <string name="credits_remaining">Verfügbare Credits</string>
-    <string name="request_to_add_credits">Request to Add Credits</string>
-    <string name="send_request">Send Request</string>
-    <string name="try_new_feature">Try our New\nFeature</string>
-    <string name="get_three_sixty_view">Get 360° video out in few\nminutes with the power of AI</string>
-    <string name="shoot_summary">Shoot Summary</string>
-    <string name="enable">Enable</string>
-    <string name="generate_three_sixty">Generate 360</string>
-    <string name="select_country">Select Your Country</string>
+    <string name="create_password">Passwort erstellen</string>
+    <string name="enter_business_name">Geben Sie Ihr Unternehmen/Ihren Namen ein</string>
 
-    <string name="already_a_user">Already a %1$s user?</string>
-    <string name="new_to">New to %1$s</string>
-    <string name="projects">Projects</string>
-    <string name="shoot_all_angles">Shoot all angle images and 360 \nvideo of your car for better \nreselling on leading marketplaces</string>
-    <string name="image_shoot">Image Shoot</string>
-    <string name="explore">Explore</string>
+    <string name="shoot">Foto</string>
+    <string name="request_to_add_credits">Credits aufladen</string>
+    <string name="send_request">Anfrage versenden</string>
+
+    <string name="try_new_feature">Teste unsere neue Funktion</string>
+    <string name="get_three_sixty_view">Erstelle 360° Videos in wenigen\nMinuten mit Hilfe von modernster\n Technik</string>
+    <string name="shoot_summary">Zusammenfassung der Aufnahmen </string>
+    <string name="enable">aktivieren</string>
+    <string name="generate_three_sixty">360 Ansicht</string>
+    <string name="select_country">Wähle dein Land</string>
+    <string name="already_a_user">Schon ein %1$s Benutzerin?</string>
+    <string name="new_to">Neu für %1$s</string>
+    <string name="projects">Projekte</string>
+    <string name="shoot_all_angles">Verkaufe deine Autos schneller \nund besser mit einer 360° Ansicht und \nprofessionellen Bildern</string>
+    <string name="image_shoot">Bild aufnehmen</string>
+    <string name="explore">Entdecken</string>
     <string name="beta">Beta</string>
+
 
 
 </resources>
