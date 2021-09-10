@@ -126,7 +126,7 @@ class SelectBackgroundFragment : BaseFragment<ProcessViewModel, FragmentSelectBa
 
         viewModel.skuProcessStateWithBackgroundid(
             Utilities.getPreference(requireContext(), AppConstants.AUTH_KEY).toString(),
-            arguments?.getString(AppConstants.PROJECT_ID)!!, backgroundSelect
+            arguments?.getString(AppConstants.PROJECT_ID)!!, backgroundSelect.toInt()
         )
         log(
             "auth key- " + Utilities.getPreference(requireContext(), AppConstants.AUTH_KEY)

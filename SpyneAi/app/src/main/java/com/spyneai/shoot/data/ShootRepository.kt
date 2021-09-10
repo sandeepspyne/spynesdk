@@ -98,5 +98,14 @@ class ShootRepository : BaseRepository() {
         clipperApi.updateFootwearSubcategory(authKey, skuId, initialImageCount, subCatId)
     }
 
+    suspend fun skuProcessStateWithBackgroundId(
+        auth_key: String,
+        project_id:  String,
+        background_id:  Int
+    ) = safeApiCall{
+        clipperApi.skuProcessStateWithBackgroundId(auth_key, project_id, background_id)
+    }
+
+
 
 }

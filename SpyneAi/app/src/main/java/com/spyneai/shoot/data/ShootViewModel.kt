@@ -137,6 +137,10 @@ class ShootViewModel : ViewModel() {
 
     val addMoreAngle: MutableLiveData<Boolean> = MutableLiveData()
 
+    private val _skuProcessStateWithBgResponse: MutableLiveData<Resource<SkuProcessStateResponse>> = MutableLiveData()
+    val skuProcessStateWithBgResponse: LiveData<Resource<SkuProcessStateResponse>>
+        get() = _skuProcessStateWithBgResponse
+
 
     fun getSubCategories(
         authKey: String, prodId: String
@@ -293,6 +297,13 @@ class ShootViewModel : ViewModel() {
     ) = viewModelScope.launch {
         _skuProcessStateResponse.value = Resource.Loading
         _skuProcessStateResponse.value = repository.skuProcessState(auth_key, project_id)
+    }
+
+    fun skuProcessStateWithBackgroundid(
+        auth_key: String, project_id: String, background_id: Int
+    ) = viewModelScope.launch {
+        _skuProcessStateWithBgResponse.value = Resource.Loading
+        _skuProcessStateWithBgResponse.value = repository.skuProcessStateWithBackgroundId(auth_key, project_id, background_id)
     }
 
 

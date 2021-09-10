@@ -228,7 +228,7 @@ interface ClipperApi {
     @POST("v2/sku/skuProcessStatus")
     suspend fun skuProcessState(
         @Field("auth_key") auth_key: String?,
-        @Field("project_id") project_id: String?,
+        @Field("project_id") project_id: String?
     ): SkuProcessStateResponse
 
     @FormUrlEncoded
@@ -236,7 +236,7 @@ interface ClipperApi {
     suspend fun skuProcessStateWithBackgroundId(
         @Field("auth_key") auth_key: String?,
         @Field("project_id") project_id: String?,
-        @Field("background_id") background_id: String?,
+        @Field("background_id") background_id: Int?,
     ): SkuProcessStateResponse
 
 

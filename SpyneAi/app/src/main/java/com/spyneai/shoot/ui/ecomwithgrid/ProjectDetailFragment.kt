@@ -42,10 +42,13 @@ class ProjectDetailFragment : BaseFragment<ShootViewModel, FragmentProjectDetail
                     viewModel.showFoodBackground.value = true
                 }
                 else -> {
-                    viewModel.skuProcessState(
-                        Utilities.getPreference(requireContext(), AppConstants.AUTH_KEY).toString(),
-                        viewModel.projectId.value.toString()
-                    )
+                    when(getString(R.string.app_name)){
+                        AppConstants.SWIGGYINSTAMART -> {
+                            processWithBackgroundId()
+                        }else -> {
+                            processWithoutBackgroundId()
+                        }
+                    }
                     log(
                         "auth key- " + Utilities.getPreference(
                             requireContext(),
@@ -72,11 +75,44 @@ class ProjectDetailFragment : BaseFragment<ShootViewModel, FragmentProjectDetail
             }
         })
 
+        viewModel.skuProcessStateWithBgResponse.observe(viewLifecycleOwner, {
+            when (it) {
+                is Resource.Success -> {
+                    Utilities.hideProgressDialog()
+                    requireContext().gotoHome()
+                }
+
+                is Resource.Failure -> {
+                    Utilities.hideProgressDialog()
+                    handleApiError(it)
+                }
+            }
+        })
+
         binding.ivBackGif.setOnClickListener {
             requireActivity().onBackPressed()
         }
 
 
+    }
+
+    private fun processWithoutBackgroundId() {
+        Utilities.showProgressDialog(requireContext())
+
+        viewModel.skuProcessState(
+            Utilities.getPreference(requireContext(), AppConstants.AUTH_KEY).toString(),
+            viewModel.projectId.value.toString()
+        )
+    }
+
+    private fun processWithBackgroundId() {
+        Utilities.showProgressDialog(requireContext())
+
+        viewModel.skuProcessStateWithBackgroundid(
+            Utilities.getPreference(requireContext(), AppConstants.AUTH_KEY).toString(),
+            viewModel.projectId.value.toString(),
+            5000
+        )
     }
 
 
