@@ -20,6 +20,7 @@ import com.spyneai.databinding.FragmentDraftSkuDetailsBinding
 import com.spyneai.draft.data.DraftViewModel
 import com.spyneai.draft.ui.adapter.DraftImagesAdapter
 import com.spyneai.draft.ui.adapter.LocalDraftImagesAdapter
+import com.spyneai.isResolutionSupported
 import com.spyneai.needs.AppConstants
 import com.spyneai.needs.Utilities
 import com.spyneai.orders.data.response.ImagesOfSkuRes
@@ -29,6 +30,7 @@ import com.spyneai.shoot.data.model.Image
 import com.spyneai.shoot.ui.base.ProcessActivity
 import com.spyneai.shoot.ui.base.ShootActivity
 import com.spyneai.shoot.ui.base.ShootPortraitActivity
+import com.spyneai.shoot.ui.dialogs.ResolutionNotSupportedFragment
 import kotlinx.android.synthetic.main.activity_credit_plans.*
 
 class DraftSkuDetailsFragment : BaseFragment<DraftViewModel, FragmentDraftSkuDetailsBinding>() {
@@ -42,6 +44,7 @@ class DraftSkuDetailsFragment : BaseFragment<DraftViewModel, FragmentDraftSkuDet
     private var localInteriorList = ArrayList<Image>()
     private var localMiscList = ArrayList<Image>()
     private var localThreeSixtyInteriorList = ArrayList<Image>()
+    private lateinit var intent : Intent
 
     val TAG = "DraftSkuDetailsFragment"
 
@@ -52,7 +55,8 @@ class DraftSkuDetailsFragment : BaseFragment<DraftViewModel, FragmentDraftSkuDet
         binding.ivBack.setOnClickListener {
             requireActivity().onBackPressed()
         }
-        val intent = requireActivity().intent
+
+        intent = requireActivity().intent
 
         binding.tvProjectName.text =intent.getStringExtra(AppConstants.PROJECT_NAME)
 
@@ -124,86 +128,97 @@ class DraftSkuDetailsFragment : BaseFragment<DraftViewModel, FragmentDraftSkuDet
 
 
         binding.btnContinueShoot.setOnClickListener{
-            var shootIntent : Intent? = null
-
-            when(intent.getStringExtra(AppConstants.CATEGORY_NAME)){
-                "Automobiles","Bikes" -> {
-                    shootIntent = Intent(
-                        context,
-                        ShootActivity::class.java)
-                }
-
-                "Footwear","E-Commerce" -> {
-                    shootIntent = Intent(
-                        context,
-                        ShootPortraitActivity::class.java)
-                }
-
-                else -> {
+            when(getString(R.string.app_name)) {
+                AppConstants.KARVI -> {
+                    if (requireContext().isResolutionSupported()){
+                        onResumeClick()
+                    }else{
+                        //resolution not supported
+                        ResolutionNotSupportedFragment().show(
+                            requireActivity().supportFragmentManager,
+                            "ResolutionNotSupportedFragment"
+                        )
+                    }
+                }else -> {
+                    onResumeClick()
                 }
             }
+        }
+    }
+
+    private fun onResumeClick() {
+        var shootIntent : Intent? = null
+
+        when(intent.getStringExtra(AppConstants.CATEGORY_NAME)){
+            "Automobiles","Bikes" -> {
+                shootIntent = Intent(
+                    context,
+                    ShootActivity::class.java)
+            }
+
+            "Footwear","E-Commerce" -> {
+                shootIntent = Intent(
+                    context,
+                    ShootPortraitActivity::class.java)
+            }
+
+            else -> {
+            }
+        }
+
+        shootIntent?.apply {
+            putExtra(AppConstants.FROM_DRAFTS, true)
+            putExtra(AppConstants.CATEGORY_NAME, intent.getStringExtra(AppConstants.CATEGORY_NAME))
+            putExtra(AppConstants.CATEGORY_ID, intent.getStringExtra(AppConstants.CATEGORY_ID))
+            putExtra(AppConstants.SUB_CAT_NAME,intent.getStringExtra(AppConstants.SUB_CAT_NAME))
+            putExtra(AppConstants.SUB_CAT_ID, intent.getStringExtra(AppConstants.SUB_CAT_ID))
+            putExtra(AppConstants.PROJECT_ID, intent.getStringExtra(AppConstants.PROJECT_ID))
+            putExtra(AppConstants.SKU_NAME, intent.getStringExtra(AppConstants.SKU_NAME))
+            putExtra(AppConstants.SKU_COUNT, intent.getIntExtra(AppConstants.SKU_COUNT,0))
+            putExtra(AppConstants.SKU_CREATED, true)
+            putExtra(AppConstants.SKU_ID, intent.getStringExtra(AppConstants.SKU_ID))
+            putExtra(AppConstants.EXTERIOR_ANGLES, intent.getIntExtra(AppConstants.EXTERIOR_ANGLES,0))
+            putExtra(AppConstants.RESUME_EXTERIOR, resumeExterior())
+            putExtra(AppConstants.RESUME_INTERIOR, resumeInterior())
+            putExtra(AppConstants.RESUME_MISC, resumeMisc())
+            putExtra("is_paid",false)
+            putExtra(AppConstants.IMAGE_TYPE,intent.getStringExtra(AppConstants.IMAGE_TYPE))
+            putExtra(AppConstants.IS_360,intent.getIntExtra(AppConstants.IS_360,0))
+        }
+
+        if (requireActivity().intent.getBooleanExtra(AppConstants.FROM_LOCAL_DB,false)){
+            shootIntent?.apply {
+                putExtra(AppConstants.FROM_LOCAL_DB, true)
+                putExtra(AppConstants.EXTERIOR_SIZE, localExterior.size)
+                putExtra(AppConstants.INTERIOR_SIZE, localInteriorList.size)
+                putExtra(AppConstants.MISC_SIZE, localMiscList.size)
+            }
+        }else {
+
+            val s = exterior?.map {
+                it.input_image_hres_url
+            } as ArrayList<String>
+
 
             shootIntent?.apply {
-                putExtra(AppConstants.FROM_DRAFTS, true)
-                putExtra(AppConstants.CATEGORY_NAME, intent.getStringExtra(AppConstants.CATEGORY_NAME))
-                putExtra(AppConstants.CATEGORY_ID, intent.getStringExtra(AppConstants.CATEGORY_ID))
-                putExtra(AppConstants.SUB_CAT_NAME,intent.getStringExtra(AppConstants.SUB_CAT_NAME))
-                putExtra(AppConstants.SUB_CAT_ID, intent.getStringExtra(AppConstants.SUB_CAT_ID))
-                putExtra(AppConstants.PROJECT_ID, intent.getStringExtra(AppConstants.PROJECT_ID))
-                putExtra(AppConstants.SKU_NAME, intent.getStringExtra(AppConstants.SKU_NAME))
-                putExtra(AppConstants.SKU_COUNT, intent.getIntExtra(AppConstants.SKU_COUNT,0))
-                putExtra(AppConstants.SKU_CREATED, true)
-                putExtra(AppConstants.SKU_ID, intent.getStringExtra(AppConstants.SKU_ID))
-                putExtra(AppConstants.EXTERIOR_ANGLES, intent.getIntExtra(AppConstants.EXTERIOR_ANGLES,0))
-                putExtra(AppConstants.RESUME_EXTERIOR, resumeExterior())
-                putExtra(AppConstants.RESUME_INTERIOR, resumeInterior())
-                putExtra(AppConstants.RESUME_MISC, resumeMisc())
-                putExtra("is_paid",false)
-                putExtra(AppConstants.IMAGE_TYPE,intent.getStringExtra(AppConstants.IMAGE_TYPE))
-                putExtra(AppConstants.IS_360,intent.getIntExtra(AppConstants.IS_360,0))
+                putExtra(AppConstants.FROM_LOCAL_DB, false)
+                putExtra(AppConstants.EXTERIOR_SIZE, exterior.size)
+                putStringArrayListExtra(AppConstants.EXTERIOR_LIST, s)
+                putExtra(AppConstants.INTERIOR_SIZE, interiorList.size)
+                putExtra(AppConstants.MISC_SIZE, miscList.size)
             }
+        }
 
-            if (requireActivity().intent.getBooleanExtra(AppConstants.FROM_LOCAL_DB,false)){
-                shootIntent?.apply {
-                    putExtra(AppConstants.FROM_LOCAL_DB, true)
-                    putExtra(AppConstants.EXTERIOR_SIZE, localExterior.size)
-                    putExtra(AppConstants.INTERIOR_SIZE, localInteriorList.size)
-                    putExtra(AppConstants.MISC_SIZE, localMiscList.size)
-                }
-            }else {
-
-                val s = exterior?.map {
-                    it.input_image_hres_url
-                } as ArrayList<String>
+        Utilities.savePrefrence(requireContext(),AppConstants.CATEGORY_NAME,intent.getStringExtra(AppConstants.CATEGORY_NAME))
+        Utilities.savePrefrence(requireContext(),AppConstants.CATEGORY_ID,intent.getStringExtra(AppConstants.CATEGORY_ID))
 
 
-               shootIntent?.apply {
-                   putExtra(AppConstants.FROM_LOCAL_DB, false)
-                   putExtra(AppConstants.EXTERIOR_SIZE, exterior.size)
-                   putStringArrayListExtra(AppConstants.EXTERIOR_LIST, s)
-                   putExtra(AppConstants.INTERIOR_SIZE, interiorList.size)
-                   putExtra(AppConstants.MISC_SIZE, miscList.size)
-               }
-            }
-
-            Utilities.savePrefrence(requireContext(),AppConstants.CATEGORY_NAME,intent.getStringExtra(AppConstants.CATEGORY_NAME))
-            Utilities.savePrefrence(requireContext(),AppConstants.CATEGORY_ID,intent.getStringExtra(AppConstants.CATEGORY_ID))
-
-
-            if (getString(R.string.app_name) == AppConstants.OLA_CABS){
-                if (threeSixtyIntSelected()){
-                    Log.d(TAG, "onViewCreated: "+"Three Sixty Selected")
-                    startProcessActivty(shootIntent!!,localInteriorList.size
-                        .plus(localMiscList.size)
-                        .plus(localThreeSixtyInteriorList.size))
-                }else{
-                    if (resumeMisc()){
-                        checkMiscSize(shootIntent!!)
-                        observeMisc(shootIntent)
-                    }else {
-                        startActivity(shootIntent)
-                    }
-                }
+        if (getString(R.string.app_name) == AppConstants.OLA_CABS){
+            if (threeSixtyIntSelected()){
+                Log.d(TAG, "onViewCreated: "+"Three Sixty Selected")
+                startProcessActivty(shootIntent!!,localInteriorList.size
+                    .plus(localMiscList.size)
+                    .plus(localThreeSixtyInteriorList.size))
             }else{
                 if (resumeMisc()){
                     checkMiscSize(shootIntent!!)
@@ -212,7 +227,13 @@ class DraftSkuDetailsFragment : BaseFragment<DraftViewModel, FragmentDraftSkuDet
                     startActivity(shootIntent)
                 }
             }
-
+        }else{
+            if (resumeMisc()){
+                checkMiscSize(shootIntent!!)
+                observeMisc(shootIntent)
+            }else {
+                startActivity(shootIntent)
+            }
         }
     }
 

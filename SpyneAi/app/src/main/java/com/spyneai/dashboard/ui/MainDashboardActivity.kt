@@ -27,6 +27,7 @@ import com.spyneai.dashboard.data.DashboardViewModel
 import com.spyneai.dashboard.ui.base.ViewModelFactory
 import com.spyneai.databinding.ActivityDashboardMainBinding
 import com.spyneai.interfaces.RetrofitClients
+import com.spyneai.isResolutionSupported
 import com.spyneai.needs.AppConstants
 import com.spyneai.needs.Utilities
 import com.spyneai.orders.ui.MyOrdersActivity
@@ -112,36 +113,11 @@ class MainDashboardActivity : AppCompatActivity() {
                         }
 
                         AppConstants.KARVI -> {
-                            val cm = getSystemService(android.content.Context.CAMERA_SERVICE) as CameraManager
-
-                            if (cm.cameraIdList != null && cm.cameraIdList.size > 1) {
-                                val characteristics: CameraCharacteristics =
-                                    cm.getCameraCharacteristics("1")
-
-                                val configs = characteristics.get(
-                                    CameraCharacteristics.SCALER_STREAM_CONFIGURATION_MAP
-                                )
-
-                                val s = configs?.getOutputSizes(ImageFormat.JPEG)
-
-                                var resolutionSupported = false
-
-                                s?.forEach { it ->
-                                    if (!resolutionSupported && it != null) {
-                                        if (it.width == 1024 && it.height == 768)
-                                            resolutionSupported = true
-                                    }
-                                }
-
-                                if (resolutionSupported) {
-                                    var intent = Intent(this, ShootActivity::class.java)
-                                    intent.putExtra(AppConstants.CATEGORY_ID,AppConstants.CARS_CATEGORY_ID)
-                                    intent.putExtra(AppConstants.CATEGORY_NAME,"Automobiles")
-                                    startActivity(intent)
-                                }else {
-                                    //resolution not supported
-                                    ResolutionNotSupportedFragment().show(supportFragmentManager,"ResolutionNotSupportedFragment")
-                                }
+                            if (isResolutionSupported()) {
+                                var intent = Intent(this, ShootActivity::class.java)
+                                intent.putExtra(AppConstants.CATEGORY_ID,AppConstants.CARS_CATEGORY_ID)
+                                intent.putExtra(AppConstants.CATEGORY_NAME,"Automobiles")
+                                startActivity(intent)
                             }else {
                                 //resolution not supported
                                 ResolutionNotSupportedFragment().show(supportFragmentManager,"ResolutionNotSupportedFragment")

@@ -6,6 +6,9 @@ import android.app.Activity
 import android.app.ActivityManager
 import android.content.Context
 import android.content.Intent
+import android.graphics.ImageFormat
+import android.hardware.camera2.CameraCharacteristics
+import android.hardware.camera2.CameraManager
 import android.net.ConnectivityManager
 import android.net.NetworkInfo
 import com.posthog.android.Properties
@@ -16,6 +19,8 @@ import com.spyneai.loginsignup.activity.LoginActivity
 import com.spyneai.needs.AppConstants
 import com.spyneai.needs.Utilities
 import com.spyneai.posthog.Events
+import com.spyneai.shoot.ui.base.ShootActivity
+import com.spyneai.shoot.ui.dialogs.ResolutionNotSupportedFragment
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.delay
@@ -100,4 +105,31 @@ fun Context.isInternetActive() : Boolean {
     val cm = getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
     val activeNetwork: NetworkInfo? = cm.activeNetworkInfo
     return activeNetwork?.isConnectedOrConnecting == true
+}
+
+fun Context.isResolutionSupported() : Boolean {
+    val cm = getSystemService(Context.CAMERA_SERVICE) as CameraManager
+
+    var resolutionSupported = false
+
+    if (cm.cameraIdList != null && cm.cameraIdList.size > 1) {
+        val characteristics: CameraCharacteristics =
+            cm.getCameraCharacteristics("1")
+
+        val configs = characteristics.get(
+            CameraCharacteristics.SCALER_STREAM_CONFIGURATION_MAP
+        )
+
+        val s = configs?.getOutputSizes(ImageFormat.JPEG)
+
+
+        s?.forEach { it ->
+            if (!resolutionSupported && it != null) {
+                if (it.width == 1024 && it.height == 768)
+                    resolutionSupported = true
+            }
+        }
+    }
+
+    return resolutionSupported
 }

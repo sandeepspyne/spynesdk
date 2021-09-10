@@ -36,22 +36,14 @@ class SelectBackgroundFragment : BaseFragment<ProcessViewModel, FragmentSelectBa
     val TAG = "Background Fragment"
 
     lateinit var carBackgroundGifList: ArrayList<CarsBackgroundRes.Data>
-    lateinit var foodBackgroundList: ArrayList<String>
     var backgroundSelect: String = ""
     lateinit var carbackgroundsAdapter: NewCarBackgroundAdapter
-    lateinit var foodBackgroundAdapter: FoodBackgroundAdapter
 
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
         carBackgroundGifList = ArrayList()
-        foodBackgroundList = ArrayList()
-        foodBackgroundList.add("https://storage.googleapis.com/spyne/AI/raw/1892526c-72c9-4331-8ede-dec5f72cf52e.png")
-        foodBackgroundList.add("https://storage.googleapis.com/spyne/AI/raw/5a2f8ef2-ecd8-4d35-b747-fcb1b08223cd.jpg")
-        foodBackgroundList.add("https://storage.googleapis.com/spyne/AI/raw/72cbc0ea-3373-4312-99ba-4ef69de4384e.jpg")
-        foodBackgroundList.add("https://storage.googleapis.com/spyne/AI/raw/72cbc0ea-3373-4312-99ba-4ef69de4384e.jpg")
-        foodBackgroundList.add("https://storage.googleapis.com/spyne/AI/raw/72cbc0ea-3373-4312-99ba-4ef69de4384e.jpg")
 
         initSelectBackground()
 
@@ -213,8 +205,11 @@ class SelectBackgroundFragment : BaseFragment<ProcessViewModel, FragmentSelectBa
 
                     backgroundSelect = response.data[0].imageId.toString()
 
-                    for (i in 0..response.data.size - 1)
-                        (carBackgroundGifList).add(response.data[i])
+                    carBackgroundGifList.clear()
+                    for (element in response.data){
+                        carBackgroundGifList.add(element)
+                    }
+
 
                     setBackgroundsCar()
                 }
@@ -234,10 +229,9 @@ class SelectBackgroundFragment : BaseFragment<ProcessViewModel, FragmentSelectBa
 
     private fun setBackgroundsCar() {
         carbackgroundsAdapter = NewCarBackgroundAdapter(requireContext(),
-            carBackgroundGifList as ArrayList<CarsBackgroundRes.Data>, 0,
+            carBackgroundGifList, 0,
             object : NewCarBackgroundAdapter.BtnClickListener {
                 override fun onBtnClick(position: Int) {
-                    Log.e("position preview", position.toString())
                     //if (position<carBackgroundList.size)
                     backgroundSelect = carBackgroundGifList[position].imageId.toString()
                     carbackgroundsAdapter.notifyDataSetChanged()

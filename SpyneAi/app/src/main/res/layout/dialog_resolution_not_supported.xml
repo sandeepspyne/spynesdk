@@ -46,7 +46,7 @@
             android:layout_marginTop="@dimen/dp_20"
             android:fontFamily="@font/medium"
             android:gravity="center"
-            android:text="Resolution not supported!\n\nplease try using the app with another phone"
+            android:text="Resolution not supported!\n\nPlease try using the app with another phone"
             android:textColor="@color/secondary"
             android:textSize="@dimen/sp_16" />
 
