@@ -612,6 +612,12 @@ class CameraFragment : BaseFragment<ShootViewModel, FragmentCameraBinding>(), Pi
 
                 cameraInfo = camera.cameraInfo
 
+                val currentZoomRatio = cameraInfo?.zoomState?.value?.zoomRatio ?: 0F
+                when (viewModel.categoryDetails.value?.categoryName) {
+                    "E-Commerce" ->{
+                        cameraControl?.setZoomRatio(currentZoomRatio * 1.5F)
+                    }
+                }
                 binding.viewFinder.setOnTouchListener(this)
 
                 if (viewModel.shootDimensions.value == null ||
