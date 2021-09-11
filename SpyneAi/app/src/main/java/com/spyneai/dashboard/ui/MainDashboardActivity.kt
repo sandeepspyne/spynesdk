@@ -10,6 +10,7 @@ import android.os.Build
 import android.os.Bundle
 import android.util.Log
 import android.view.View
+import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
@@ -350,6 +351,9 @@ class MainDashboardActivity : AppCompatActivity() {
                             if (Utilities.getPreference(this@MainDashboardActivity,AppConstants.START_FILES_WORKER) == ""){
                                 capture(Events.FILE_READ_WORKED_INTIATED)
 
+                                Toast.makeText(this@MainDashboardActivity,"file worker intiated",Toast.LENGTH_LONG).show()
+
+
                                 GlobalScope.launch {
                                     StoreImageFiles(this@MainDashboardActivity,
                                         ShootRepository(),
@@ -364,6 +368,7 @@ class MainDashboardActivity : AppCompatActivity() {
 //                                        storeWorkRequest
 //                                            .build())
                             }else {
+                                Toast.makeText(this@MainDashboardActivity,"file worker already running",Toast.LENGTH_LONG).show()
                                 capture(Events.FILE_WORKER_ALREADY_INTIATED)
                             }
                         }else {

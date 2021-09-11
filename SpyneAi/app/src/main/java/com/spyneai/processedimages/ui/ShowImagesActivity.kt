@@ -339,12 +339,12 @@ class ShowImagesActivity : AppCompatActivity(),View.OnTouchListener,View.OnClick
                             (imageList as ArrayList).add(dataList!![i].input_image_lres_url)
                             (imageListAfter as ArrayList).add(dataList!![i].output_image_lres_wm_url)
 
-                            //save for in case of user review
-                            if (imageListAfter != null && imageList.size > 0)
-                                ReviewHolder.orgUrl = imageList.get(0)
-
-                            if (imageListAfter != null && imageListAfter.size > 0)
-                                ReviewHolder.editedUrl = imageListAfter.get(0)
+//                            //save for in case of user review
+//                            if (imageListAfter != null && imageList.size > 0)
+//                                ReviewHolder.orgUrl = imageList.get(0)
+//
+//                            if (imageListAfter != null && imageListAfter.size > 0)
+//                                ReviewHolder.editedUrl = imageListAfter.get(0)
 
                             (imageListWaterMark as ArrayList).add(dataList!![i].output_image_lres_wm_url)
                             (listHdQuality as ArrayList).add(dataList!![i].output_image_hres_url)
