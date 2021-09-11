@@ -719,7 +719,7 @@ class CameraFragment : BaseFragment<ShootViewModel, FragmentCameraBinding>(), Pi
                         1
                     )
                 }
-                 "E-Commerce" -> {
+                 "Ecom" -> {
                     viewModel.categoryDetails.value?.imageType!! + "_" + viewModel.shootNumber.value?.plus(
                         1
                     )
@@ -774,7 +774,7 @@ class CameraFragment : BaseFragment<ShootViewModel, FragmentCameraBinding>(), Pi
                         1
                     )
                 }
-                 "E-Commerce" -> {
+                 "Ecom" -> {
                     viewModel.categoryDetails.value?.imageType!! + "_" + viewModel.shootNumber.value?.plus(
                         1
                     )

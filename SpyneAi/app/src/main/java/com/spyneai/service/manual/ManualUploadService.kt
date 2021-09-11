@@ -7,12 +7,18 @@ import android.content.Intent
 import android.content.IntentFilter
 import android.graphics.Color
 import android.os.*
+import android.widget.Toast
+import com.posthog.android.Properties
+import com.spyneai.BaseApplication
 import com.spyneai.R
+import com.spyneai.captureEvent
 import com.spyneai.dashboard.ui.MainDashboardActivity
 import com.spyneai.isInternetActive
+import com.spyneai.needs.AppConstants
+import com.spyneai.needs.Utilities
+import com.spyneai.posthog.Events
 import com.spyneai.service.*
 import com.spyneai.shoot.data.FilesRepository
-import com.spyneai.shoot.data.ShootLocalRepository
 import com.spyneai.shoot.data.ShootRepository
 import com.spyneai.shoot.data.model.ImageFile
 import com.spyneai.shoot.utils.logUpload
@@ -41,6 +47,15 @@ class ManualUploadService: Service(), ManualImageUploader.Listener {
     override fun onCreate() {
         super.onCreate()
         setServiceState(this, ServiceState.STARTED)
+
+        val properties = Properties()
+            .apply {
+                put("service_state","Started")
+                put("email", Utilities.getPreference(BaseApplication.getContext(), AppConstants.EMAIL_ID).toString())
+                put("medium","Main Activity")
+            }
+
+        captureEvent(Events.MANUAL_SERVICE_STARTED,properties)
 
         //register internet connection receiver
         this.receiver = InternetConnectionReceiver()
@@ -235,7 +250,7 @@ class ManualUploadService: Service(), ManualImageUploader.Listener {
 
             if (isConnected == true){
                 //if any image pending in upload
-                val image = ShootLocalRepository().getOldestImage()
+                val image = FilesRepository().getOldestImage()
 
                 if (image.itemId != null && !uploadRunning){
                     uploadRunning = true

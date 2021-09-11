@@ -4,6 +4,7 @@ import android.content.Context
 import android.content.Intent
 import android.os.Build
 import android.os.Environment
+import android.widget.Toast
 import androidx.core.content.ContextCompat
 import androidx.work.ListenableWorker
 import com.posthog.android.Properties
@@ -154,7 +155,6 @@ class StoreImageFiles(val appContext: Context,
 
             Utilities.savePrefrence(appContext, AppConstants.START_FILES_WORKER,"Files Worker Finished")
 
-            val s = ""
 
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
                 log("Starting the service in >=26 Mode")
@@ -164,15 +164,6 @@ class StoreImageFiles(val appContext: Context,
                 log("Starting the service in < 26 Mode")
                 appContext.startService(serviceIntent)
             }
-
-            val properties = Properties()
-                .apply {
-                    put("service_state","Started")
-                    put("email", Utilities.getPreference(appContext, AppConstants.EMAIL_ID).toString())
-                    put("medium","Main Activity")
-                }
-
-            appContext.captureEvent(Events.SERVICE_STARTED,properties)
         }
     }
 

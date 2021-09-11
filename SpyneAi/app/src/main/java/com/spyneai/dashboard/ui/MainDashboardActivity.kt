@@ -349,9 +349,7 @@ class MainDashboardActivity : AppCompatActivity() {
                     if (response.body()?.status == 200){
                         if (response.body()?.data?.isFolderUpload == 1){
                             if (Utilities.getPreference(this@MainDashboardActivity,AppConstants.START_FILES_WORKER) == ""){
-                                capture(Events.FILE_READ_WORKED_INTIATED)
 
-                                Toast.makeText(this@MainDashboardActivity,"file worker intiated",Toast.LENGTH_LONG).show()
 
 
                                 GlobalScope.launch {
@@ -360,6 +358,9 @@ class MainDashboardActivity : AppCompatActivity() {
                                         FilesRepository()
                                     ).startWork()
                                 }
+
+                                capture(Events.FILE_READ_WORKED_INTIATED)
+
 //                                val storeWorkRequest = OneTimeWorkRequest.Builder(StoreImageFilesWorker::class.java)
 //                                    .addTag("StoreImageFiles  Worker")
 //

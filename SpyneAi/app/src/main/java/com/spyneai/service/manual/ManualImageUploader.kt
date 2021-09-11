@@ -11,9 +11,7 @@ import com.spyneai.needs.AppConstants
 import com.spyneai.needs.Utilities
 import com.spyneai.posthog.Events
 import com.spyneai.shoot.data.FilesRepository
-import com.spyneai.shoot.data.ShootLocalRepository
 import com.spyneai.shoot.data.ShootRepository
-import com.spyneai.shoot.data.model.Image
 import com.spyneai.shoot.data.model.ImageFile
 import com.spyneai.shoot.utils.logManualUpload
 import com.spyneai.shoot.utils.logUpload
