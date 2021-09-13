@@ -83,7 +83,6 @@ class ConfirmReshootDialog : BaseDialogFragment<ShootViewModel, DialogConfirmRes
 
                     if (viewModel.shootNumber.value  == viewModel.exterirorAngles.value?.minus(1)){
                         dismiss()
-                        viewModel.isCameraButtonClickable = false
                         checkInteriorShootStatus()
                     }else{
                         viewModel.shootNumber.value = viewModel.shootNumber.value!! + 1

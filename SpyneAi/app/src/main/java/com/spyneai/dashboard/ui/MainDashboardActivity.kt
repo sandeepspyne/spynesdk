@@ -326,6 +326,8 @@ class MainDashboardActivity : AppCompatActivity() {
         WorkManager.getInstance(this).cancelAllWorkByTag("Manual Skipped Images Long Running Worker")
         WorkManager.getInstance(this).cancelAllWorkByTag("Long Running Worker")
         WorkManager.getInstance(this).cancelAllWorkByTag("Skipped Images Long Running Worker")
+        WorkManager.getInstance(this).cancelAllWorkByTag("Periodic Processing Worker")
+
 
         Utilities.savePrefrence(this,AppConstants.CANCEL_ALL_WROKERS,"Cancelled")
     }

@@ -58,7 +58,7 @@ class BaseApplication : Application() {
 
 
         val longWorkRequest = PeriodicWorkRequestBuilder<ProcessSkuWorker>(
-            6, TimeUnit.HOURS)
+            12, TimeUnit.HOURS)
             .addTag("Periodic Processing Worker")
 
         WorkManager.getInstance(context)
