@@ -801,12 +801,12 @@ class CameraFragment : BaseFragment<ShootViewModel, FragmentCameraBinding>(), Pi
                             1
                         )
                     }
-                    "Food & Beverages" -> {
+                    "Food" -> {
                         viewModel.categoryDetails.value?.imageType!! + "_" + viewModel.shootNumber.value?.plus(
                             1
                         )
                     }
-                    "E-Commerce" -> {
+                    "Ecom" -> {
                         viewModel.categoryDetails.value?.imageType!! + "_" + viewModel.shootNumber.value?.plus(
                             1
                         )
