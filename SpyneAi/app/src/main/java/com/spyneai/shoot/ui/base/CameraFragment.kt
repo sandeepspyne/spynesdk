@@ -988,7 +988,7 @@ class CameraFragment : BaseFragment<ShootViewModel, FragmentCameraBinding>(), Pi
                         }
                     }
                 }
-            }
+            }*/
             AppConstants.SWIGGY -> {
                 //hide moving line
                 if (pitch.roundToInt() == 0 || (pitch.roundToInt() <= -0 && pitch.roundToInt() >= -3))
@@ -1035,7 +1035,7 @@ class CameraFragment : BaseFragment<ShootViewModel, FragmentCameraBinding>(), Pi
                         }
                     }
                 }
-            }*/
+            }
             AppConstants.SPYNE_AI -> {
                 when (viewModel.categoryDetails.value?.categoryName) {
                     "Automobiles", "Bikes" -> {
