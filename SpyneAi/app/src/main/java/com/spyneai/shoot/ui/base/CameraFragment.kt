@@ -291,6 +291,7 @@ class CameraFragment : BaseFragment<ShootViewModel, FragmentCameraBinding>(), Pi
     private fun onCaptureClick() {
         when (getString(R.string.app_name)) {
             AppConstants.KARVI,
+            AppConstants.OLA_CABS,
             AppConstants.CARS24,
             AppConstants.CARS24_INDIA,
             AppConstants.SWEEP,
@@ -407,7 +408,6 @@ class CameraFragment : BaseFragment<ShootViewModel, FragmentCameraBinding>(), Pi
                             .putValue("angles", viewModel.exterirorAngles.value!!)
                     )
 
-
                     val sku = viewModel.sku.value
                     sku?.skuId = it.value.sku_id
                     sku?.projectId = projectId
@@ -421,7 +421,6 @@ class CameraFragment : BaseFragment<ShootViewModel, FragmentCameraBinding>(), Pi
 
                     viewModel.sku.value = sku
                     viewModel.isSubCategoryConfirmed.value = true
-
 
                     //add sku to local database
                     viewModel.insertSku(sku!!)
@@ -506,7 +505,7 @@ class CameraFragment : BaseFragment<ShootViewModel, FragmentCameraBinding>(), Pi
 
             val localCameraProvider = cameraProvider
                 ?: throw IllegalStateException("Camera initialization failed.")
-            var size = Size(824,618)
+            var size = Size(1024,758)
 
             // Preview
             val preview = when {
@@ -1179,6 +1178,8 @@ class CameraFragment : BaseFragment<ShootViewModel, FragmentCameraBinding>(), Pi
     }
 
     private fun addShootItem(capturedImage: String) {
+        Log.d(TAG, "addShootItem: "+capturedImage)
+
         viewModel.showConfirmReshootDialog.value = true
 
         //play shutter sound
