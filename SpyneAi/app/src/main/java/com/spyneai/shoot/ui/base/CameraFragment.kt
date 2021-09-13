@@ -621,18 +621,20 @@ class CameraFragment : BaseFragment<ShootViewModel, FragmentCameraBinding>(), Pi
 
                 cameraInfo = camera.cameraInfo
 
-                val currentZoomRatio = cameraInfo?.zoomState?.value?.zoomRatio ?: 0F
+                var currentZoomRatio = cameraInfo?.zoomState?.value?.zoomRatio ?: 0F
+                Toast.makeText(requireContext(), "current zoom ratio- "+currentZoomRatio, Toast.LENGTH_SHORT).show()
                 when (viewModel.categoryDetails.value?.categoryName) {
                     "E-Commerce" -> {
+                        if (currentZoomRatio == 1.0F)
                         cameraControl?.setZoomRatio(currentZoomRatio * 1.5F)
-                        Toast.makeText(requireContext(), "current zoom ratio- "+currentZoomRatio, Toast.LENGTH_SHORT).show()
                     }
                     "Food & Beverages" -> {
+                        if (currentZoomRatio == 1.0F)
                         cameraControl?.setZoomRatio(currentZoomRatio * 1.2F)
-                        Toast.makeText(requireContext(), "current zoom ratio- "+currentZoomRatio, Toast.LENGTH_SHORT).show()
                     }
-
                 }
+                Toast.makeText(requireContext(), "updated zoom ratio- "+cameraInfo?.zoomState?.value?.zoomRatio, Toast.LENGTH_LONG).show()
+
                 binding.viewFinder.setOnTouchListener(this)
 
                 if (viewModel.shootDimensions.value == null ||

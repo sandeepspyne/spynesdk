@@ -354,7 +354,7 @@ class ShowImagesActivity : AppCompatActivity(),View.OnTouchListener,View.OnClick
                             )
 
                             hideData(0)
-                        } else  if (dataList!![i].image_category.equals("Food") || dataList!![i].image_category.equals("Food & Beverages")) {
+                        } else  if (dataList!![i].image_category.equals("Food") || dataList!![i].image_category.equals("Food & Beverages") || dataList!![i].image_category.equals("E-Commerce")) {
                             Category = dataList!![i].image_category
                             (imageList as ArrayList).add(dataList!![i].input_image_lres_url)
                             (imageListAfter as ArrayList).add(dataList!![i].output_image_lres_wm_url)

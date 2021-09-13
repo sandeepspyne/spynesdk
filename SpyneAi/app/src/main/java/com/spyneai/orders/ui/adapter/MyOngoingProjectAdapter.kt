@@ -88,7 +88,12 @@ class MyOngoingProjectAdapter(
                 || getProjectList[position].category.equals("Footwear")
                 || getProjectList[position].category.equals("Bikes")
             ){
-                holder.tvImageCount.visibility = View.INVISIBLE
+                when (context.getString(R.string.app_name)){
+                    AppConstants.SWIGGYINSTAMART ->
+                        holder.tvImageCount.visibility = View.VISIBLE
+                    else ->
+                        holder.tvImageCount.visibility = View.INVISIBLE
+                }
             }else{
                 holder.tvImageCount.visibility = View.VISIBLE
             }
@@ -131,9 +136,17 @@ class MyOngoingProjectAdapter(
         }
 
             if (getProjectList[position].status.equals("Uploaded")) {
-                holder.tvImageCount.visibility = View.INVISIBLE
-                holder.lottieProgressCircle.visibility = View.INVISIBLE
-                holder.llUploaded.visibility = View.VISIBLE
+                when (context.getString(R.string.app_name)) {
+                    AppConstants.SWIGGYINSTAMART ->{
+                        holder.tvImageCount.visibility = View.VISIBLE
+                        holder.lottieProgressCircle.visibility = View.VISIBLE
+                        holder.llUploaded.visibility = View.INVISIBLE
+                    } else -> {
+                    holder.tvImageCount.visibility = View.INVISIBLE
+                    holder.lottieProgressCircle.visibility = View.INVISIBLE
+                    holder.llUploaded.visibility = View.VISIBLE
+                    }
+                }
             }
         }
 
