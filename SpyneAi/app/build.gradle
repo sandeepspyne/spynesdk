@@ -186,7 +186,7 @@ android {
             dimension 'version'
             applicationId "com.spyneai.swiggyinstamart"
             versionCode 2
-            versionName "1.1"
+            versionName "1.1.1"
         }
     }
     sourceSets {
