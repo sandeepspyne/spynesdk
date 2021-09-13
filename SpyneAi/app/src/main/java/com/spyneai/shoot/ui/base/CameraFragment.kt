@@ -949,11 +949,10 @@ class CameraFragment : BaseFragment<ShootViewModel, FragmentCameraBinding>(), Pi
                 }
             }
 
-            AppConstants.UDAAN,
+           /* AppConstants.UDAAN,
             AppConstants.FLIPKART,
             AppConstants.AMAZON,
-            AppConstants.LAL_10,
-            AppConstants.SWIGGYINSTAMART -> {
+            AppConstants.LAL_10 -> {
                 //hide moving line
                 if (pitch.roundToInt() == 0 || (pitch.roundToInt() <= -0 && pitch.roundToInt() >= -3))
                     binding.tvLevelIndicator.visibility = View.GONE
@@ -1036,7 +1035,7 @@ class CameraFragment : BaseFragment<ShootViewModel, FragmentCameraBinding>(), Pi
                         }
                     }
                 }
-            }
+            }*/
             AppConstants.SPYNE_AI -> {
                 when (viewModel.categoryDetails.value?.categoryName) {
                     "Automobiles", "Bikes" -> {
@@ -1093,6 +1092,44 @@ class CameraFragment : BaseFragment<ShootViewModel, FragmentCameraBinding>(), Pi
                                     rotateArrow((pitch + 85).roundToInt())
                                 }
                             }
+                        }
+                    }
+                }
+            }
+            AppConstants.SWIGGYINSTAMART,
+            AppConstants.UDAAN,
+            AppConstants.FLIPKART,
+            AppConstants.AMAZON,
+            AppConstants.LAL_10 -> {
+                //hide moving line
+                if (pitch.roundToInt() == 0 || (pitch.roundToInt() <= -0 && pitch.roundToInt() >= -3))
+                    binding.tvLevelIndicator.visibility = View.GONE
+                else
+                    binding.tvLevelIndicator.visibility = View.VISIBLE
+
+                if ((pitch.roundToInt() == 0 || (pitch.roundToInt() <= -0 && pitch.roundToInt() >= -3)) ||
+                    pitch.roundToInt() <= -82 && pitch.roundToInt() >= -88) {
+
+                    if (pitch.roundToInt() == 0 || (pitch.roundToInt() <= -0 && pitch.roundToInt() >= -3))
+                        gyroMeterOnLevel(false)
+                    else
+                        gyroMeterOnLevel(true)
+                } else {
+                    gyroMeterOffLevel()
+
+                    if (movearrow) {
+                        if (abs(roll.roundToInt()) < 100) {
+                            moveArrow((pitch + 85).unaryMinus())
+                        } else {
+                            moveArrow(pitch + 85)
+                        }
+                    }
+
+                    if (orientationAngles[2].roundToInt() == 1 || orientationAngles[2].roundToInt() == -1) {
+                        if (orientationAngles[2].roundToInt() == 1) {
+                            rotateArrow((pitch + 85).unaryMinus().roundToInt())
+                        } else {
+                            rotateArrow((pitch + 85).roundToInt())
                         }
                     }
                 }
