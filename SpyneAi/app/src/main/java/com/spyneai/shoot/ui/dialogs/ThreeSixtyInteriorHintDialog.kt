@@ -119,8 +119,6 @@ class ThreeSixtyInteriorHintDialog : BaseDialogFragment<ShootViewModel, Dialog36
                     viewModel.shootList.value?.size?.plus(1)
                 }
 
-                Toast.makeText(requireContext(),sequenceNumber.toString(),Toast.LENGTH_LONG).show()
-
                 viewLifecycleOwner.lifecycleScope.launch {
                     viewModel.
                     insertImage(ShootData(
