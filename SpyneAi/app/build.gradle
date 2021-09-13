@@ -137,7 +137,7 @@ android {
             dimension 'version'
             applicationId "com.spyneai.cars24india"
             versionCode 6
-            versionName "1.5"
+            versionName "1.6"
         }
 
         automoser {
