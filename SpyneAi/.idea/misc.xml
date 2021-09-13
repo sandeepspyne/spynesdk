@@ -5,20 +5,10 @@
       <map>
         <entry key="../../../../../../layout/custom_preview.xml" value="0.25" />
         <entry key="../../../Library/Android/sdk/platforms/android-30/data/res/layout/simple_spinner_dropdown_item.xml" value="0.20833333333333334" />
-        <entry key="app/src/amazon/res/mipmap-anydpi-v26/app_ic_round.xml" value="0.3175925925925926" />
-        <entry key="app/src/flipkart/res/mipmap-anydpi-v26/app_ic.xml" value="0.3175925925925926" />
+        <entry key="app/src/amazon/res/mipmap-anydpi-v26/app_ic.xml" value="0.109375" />
+        <entry key="app/src/amazon/res/mipmap-anydpi-v26/app_ic_round.xml" value="0.109375" />
         <entry key="app/src/lal10/res/layout/home_dashboard_fragment.xml" value="0.30512820512820515" />
-        <entry key="app/src/lal10/res/mipmap-anydpi-v26/app_ic.xml" value="0.18385416666666668" />
-        <entry key="app/src/main/res/drawable/bg_round_black_button.xml" value="0.24444444444444444" />
-        <entry key="app/src/main/res/drawable/bg_round_button_ripple.xml" value="0.24444444444444444" />
-        <entry key="app/src/main/res/drawable/default_dot.xml" value="0.24722222222222223" />
-        <entry key="app/src/main/res/drawable/default_dot.xml" value="0.24722222222222223" />
         <entry key="app/src/main/res/drawable/exposure_thumb.xml" value="0.3260416666666667" />
-        <entry key="app/src/main/res/drawable/ic_category.xml" value="0.24444444444444444" />
-        <entry key="app/src/main/res/drawable/ic_images.xml" value="0.24444444444444444" />
-        <entry key="app/src/main/res/drawable/ic_indicator.xml" value="0.24722222222222223" />
-        <entry key="app/src/main/res/drawable/ic_next.xml" value="0.24444444444444444" />
-        <entry key="app/src/main/res/drawable/ic_indicator.xml" value="0.24722222222222223" />
         <entry key="app/src/main/res/drawable/ic_noun_exposure.xml" value="0.3260416666666667" />
         <entry key="app/src/main/res/drawable/ic_shoot.xml" value="0.24166666666666667" />
         <entry key="app/src/main/res/drawable/ic_slider_next.xml" value="0.24444444444444444" />
@@ -28,9 +18,7 @@
         <entry key="app/src/main/res/drawable/ic_uploaded.xml" value="0.24444444444444444" />
         <entry key="app/src/main/res/drawable/ic_uploading.xml" value="0.24444444444444444" />
         <entry key="app/src/main/res/drawable/nav_background.xml" value="0.24166666666666667" />
-        <entry key="app/src/main/res/drawable/tab_selector.xml" value="0.24722222222222223" />
         <entry key="app/src/main/res/layout-land/fragment_camera.xml" value="0.20208333333333334" />
-        <entry key="app/src/main/res/layout/activity_categories.xml" value="0.2064814814814815" />
         <entry key="app/src/main/res/layout/activity_completed_skus.xml" value="0.17572463768115942" />
         <entry key="app/src/main/res/layout/activity_credit_plans.xml" value="0.30512820512820515" />
         <entry key="app/src/main/res/layout/activity_dashboard_main.xml" value="0.25" />
@@ -46,16 +34,14 @@
         <entry key="app/src/main/res/layout/activity_show_images.xml" value="0.17572463768115942" />
         <entry key="app/src/main/res/layout/activity_show_raw_images.xml" value="0.3098958333333333" />
         <entry key="app/src/main/res/layout/activity_sign_in_using_otp.xml" value="0.20833333333333334" />
-        <entry key="app/src/main/res/layout/activity_sign_up.xml" value="0.10460556049057927" />
+        <entry key="app/src/main/res/layout/activity_sign_up.xml" value="0.20833333333333334" />
         <entry key="app/src/main/res/layout/activity_splash.xml" value="0.17572463768115942" />
-        <entry key="app/src/main/res/layout/activity_start_shoot.xml" value="0.2851851851851852" />
         <entry key="app/src/main/res/layout/activity_three_sixty_intro.xml" value="0.17572463768115942" />
         <entry key="app/src/main/res/layout/activity_youtube_video_player.xml" value="0.1935185185185185" />
         <entry key="app/src/main/res/layout/car_channel.xml" value="0.19166666666666668" />
         <entry key="app/src/main/res/layout/completed_ongoing_sku_simmer.xml" value="0.17572463768115942" />
         <entry key="app/src/main/res/layout/confirm_reshoot_ecom_dialog.xml" value="0.19074074074074074" />
         <entry key="app/src/main/res/layout/create_project_ecom_dialog.xml" value="0.2037037037037037" />
-        <entry key="app/src/main/res/layout/create_sku_ecom_dialog.xml" value="0.3098958333333333" />
         <entry key="app/src/main/res/layout/dashboard_categories_shimmer.xml" value="0.2037037037037037" />
         <entry key="app/src/main/res/layout/dashboard_completed_shimmer.xml" value="0.2037037037037037" />
         <entry key="app/src/main/res/layout/dialog_360_interior.xml" value="0.25" />
@@ -92,15 +78,12 @@
         <entry key="app/src/main/res/layout/item_draft_sku.xml" value="0.25" />
         <entry key="app/src/main/res/layout/item_exposure.xml" value="0.17572463768115942" />
         <entry key="app/src/main/res/layout/item_focus.xml" value="0.17572463768115942" />
-        <entry key="app/src/main/res/layout/item_my_ongoing_orders.xml" value="0.2851851851851852" />
         <entry key="app/src/main/res/layout/item_ongoing_projects.xml" value="0.27685185185185185" />
-        <entry key="app/src/main/res/layout/item_ongoing_skus.xml" value="0.2037037037037037" />
         <entry key="app/src/main/res/layout/item_processed_image.xml" value="0.3098958333333333" />
         <entry key="app/src/main/res/layout/item_sku_deatils_shimmer.xml" value="0.17572463768115942" />
         <entry key="app/src/main/res/layout/item_sku_images.xml" value="0.30512820512820515" />
         <entry key="app/src/main/res/layout/row_replaced_images.xml" value="0.17572463768115942" />
         <entry key="app/src/main/res/layout/row_replaced_images_interior.xml" value="0.17572463768115942" />
-        <entry key="app/src/main/res/layout/rv_ongoing_projects.xml" value="0.2851851851851852" />
         <entry key="app/src/main/res/layout/rv_child_projects.xml" value="0.21666666666666667" />
         <entry key="app/src/main/res/layout/rv_parent_projects.xml" value="0.21666666666666667" />
         <entry key="app/src/main/res/layout/view_images.xml" value="0.21666666666666667" />
@@ -114,28 +97,6 @@
         <entry key="app/src/sweepcars/res/mipmap-anydpi-v26/app_ic.xml" value="0.18385416666666668" />
         <entry key="app/src/sweepcars/res/mipmap-anydpi-v26/app_ic_round.xml" value="0.18385416666666668" />
         <entry key="app/src/swiggy/res/menu/dashboard_bottom_menu.xml" value="0.19814814814814816" />
-        <entry key="app/src/swiggyinstamart/res/drawable/app_ic_background.xml" value="0.25092592592592594" />
-        <entry key="app/src/swiggyinstamart/res/drawable/ic_launcher_background.xml" value="0.24722222222222223" />
-        <entry key="app/src/swiggyinstamart/res/layout/home_dashboard_fragment.xml" value="0.2064814814814815" />
-        <entry key="app/src/swiggyinstamart/res/menu/dashboard_bottom_menu.xml" value="0.2101851851851852" />
-        <entry key="app/src/swiggyinstamart/res/mipmap-anydpi-v26/app_ic.xml" value="0.24722222222222223" />
-        <entry key="app/src/swiggyinstamart/res/mipmap-anydpi-v26/app_ic_round.xml" value="0.24722222222222223" />
-        <entry key="app/src/swiggyinstamart/res/mipmap-anydpi-v26/ic_launcher.xml" value="0.24722222222222223" />
-        <entry key="app/src/swiggyinstamart/res/mipmap-anydpi-v26/ic_launcher_round.xml" value="0.24722222222222223" />
-        <entry key="app/src/swiggyinstamartDebug/res/mipmap-anydpi-v26/ic_launcher.xml" value="0.109375" />
-        <entry key="app/src/swiggyinstamartDebug/res/mipmap-anydpi-v26/ic_launcher_round.xml" value="0.109375" />
-        <entry key="app/src/udaan/res/layout/home_dashboard_fragment.xml" value="0.2037037037037037" />
-        <entry key="app/src/swiggyinstamart/res/drawable/app_ic_background.xml" value="0.25092592592592594" />
-        <entry key="app/src/swiggyinstamart/res/drawable/ic_launcher_background.xml" value="0.24722222222222223" />
-        <entry key="app/src/swiggyinstamart/res/layout/home_dashboard_fragment.xml" value="0.2064814814814815" />
-        <entry key="app/src/swiggyinstamart/res/menu/dashboard_bottom_menu.xml" value="0.2101851851851852" />
-        <entry key="app/src/swiggyinstamart/res/mipmap-anydpi-v26/app_ic.xml" value="0.24722222222222223" />
-        <entry key="app/src/swiggyinstamart/res/mipmap-anydpi-v26/app_ic_round.xml" value="0.24722222222222223" />
-        <entry key="app/src/swiggyinstamart/res/mipmap-anydpi-v26/ic_launcher.xml" value="0.24722222222222223" />
-        <entry key="app/src/swiggyinstamart/res/mipmap-anydpi-v26/ic_launcher_round.xml" value="0.24722222222222223" />
-        <entry key="app/src/swiggyinstamartDebug/res/mipmap-anydpi-v26/ic_launcher.xml" value="0.109375" />
-        <entry key="app/src/swiggyinstamartDebug/res/mipmap-anydpi-v26/ic_launcher_round.xml" value="0.109375" />
-        <entry key="app/src/udaan/res/mipmap-anydpi-v26/app_ic.xml" value="0.16979166666666667" />
       </map>
     </option>
   </component>

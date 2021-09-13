@@ -97,15 +97,15 @@ class HomeDashboardFragment :
         appUpdateManager = AppUpdateManagerFactory.create(requireContext())
 
 
-        if (PACKAGE_NAME.equals("com.spyneai.amazon.debug")) {
+//        if (PACKAGE_NAME.equals("com.spyneai.amazon.debug")) {
             newUserCreditDialog()
             repeatRefreshData()
             setSliderRecycler()
             lisners()
             welcomeHomeText()
             getCategories()
-        } else
-            autoUpdates()
+//        } else
+//            autoUpdates()
     }
 
     private fun autoUpdates() {
