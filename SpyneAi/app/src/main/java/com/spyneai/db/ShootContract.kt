@@ -25,6 +25,7 @@ object ShootContract {
         const val COLUMN_NAME_PROCESS_SKU = "process_sku"
         const val COLUMN_NAME_PROJECT_ID = "project_id"
         const val COLUMN_NAME_EXTERIOR_ANGLES = "exterior_angles"
+        const val COLUMN_NAME_THREE_SIXTY_FRAMES = "frames"
         const val COLUMN_NAME_IS_PROCESSED = "is_processed"
         const val COLUMN_NAME_IS_360 = "is_360"
     }

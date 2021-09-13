@@ -12,14 +12,19 @@ class DBHelper (context: Context) : SQLiteOpenHelper(context, DATABASE_NAME, nul
         db.execSQL(SQL_CREATE_ENTRIES)
         db.execSQL(CREATE_IMAGES_TABLE)
         db.execSQL(CREATE_IMAGES_FILES_TABLE)
+        db.execSQL(CREATE_VIDEOS_TABLE)
     }
     override fun onUpgrade(db: SQLiteDatabase, oldVersion: Int, newVersion: Int) {
         // This database is only a cache for online data, so its upgrade policy is
         // to simply to discard the data and start over
-        db.execSQL(SQL_DELETE_PROJECTS)
-        db.execSQL(SQL_DELETE_ENTRIES)
-        db.execSQL(SQL_DELETE_IMAGES)
-        db.execSQL(SQL_DELETE_IMAGE_FILES)
+        if (newVersion == 9){
+            db.execSQL(DATABASE_ALTER_SKU_TABLE)
+        }else {
+            db.execSQL(SQL_DELETE_PROJECTS)
+            db.execSQL(SQL_DELETE_ENTRIES)
+            db.execSQL(SQL_DELETE_IMAGES)
+            db.execSQL(SQL_DELETE_IMAGE_FILES)
+        }
         onCreate(db)
     }
     override fun onDowngrade(db: SQLiteDatabase, oldVersion: Int, newVersion: Int) {
@@ -29,6 +34,9 @@ class DBHelper (context: Context) : SQLiteOpenHelper(context, DATABASE_NAME, nul
         // If you change the database schema, you must increment the database version.
         const val DATABASE_VERSION = 9
         const val DATABASE_NAME = "Shoot.db"
+
+        private val DATABASE_ALTER_SKU_TABLE = ("ALTER TABLE "
+                + ShootContract.ShootEntry.TABLE_NAME) + " ADD COLUMN " + ShootContract.ShootEntry.COLUMN_NAME_THREE_SIXTY_FRAMES + " INTEGER;"
 
         private const val SQL_CREATE_ENTRIES =
             "CREATE TABLE ${ShootContract.ShootEntry.TABLE_NAME} (" +
@@ -88,6 +96,20 @@ class DBHelper (context: Context) : SQLiteOpenHelper(context, DATABASE_NAME, nul
                 "${ImageFiles.COLUMN_NAME_IMAGE_SEQUENCE} TEXT," +
                 "${ImageFiles.COLUMN_NAME_IS_UPLOADED} INTEGER," +
                 "${ImageFiles.TABLE_NAME} TEXT)"
+
+        private const val CREATE_VIDEOS_TABLE =  "CREATE TABLE ${Videos.TABLE_NAME} (" +
+                "${BaseColumns._ID} INTEGER PRIMARY KEY," +
+                "${Videos.COLUMN_NAME_PROJECT_ID} TEXT," +
+                "${Videos.COLUMN_NAME_SKU_NAME} TEXT," +
+                "${Videos.COLUMN_NAME_SKU_ID} TEXT," +
+                "${Videos.COLUMN_NAME_TYPE} TEXT," +
+                "${Videos.COLUMN_NAME_CATEGORY_NAME} TEXT," +
+                "${Videos.COLUMN_NAME_CATEGORY_SUBCATEGORY_NAME} TEXT NOT NULL UNIQUE," +
+                "${Videos.COLUMN_NAME_VIDEO_PATH} TEXT," +
+                "${Videos.COLUMN_NAME_FRAMES} INTEGER," +
+                "${Videos.COLUMN_NAME_BACKGROUND_ID} TEXT," +
+                "${Videos.COLUMN_NAME_IS_UPLOADED} INTEGER," +
+                "${Videos.TABLE_NAME} TEXT)"
 
 
         private const val SQL_DELETE_PROJECTS = "DROP TABLE IF EXISTS ${Projects.TABLE_NAME}"
