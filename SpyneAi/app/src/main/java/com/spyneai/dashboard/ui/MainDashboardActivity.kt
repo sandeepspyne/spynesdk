@@ -47,7 +47,6 @@ import com.spyneai.shoot.response.UploadFolderRes
 import com.spyneai.shoot.ui.StartShootActivity
 import com.spyneai.shoot.ui.base.ShootActivity
 import com.spyneai.shoot.ui.dialogs.ResolutionNotSupportedFragment
-import com.spyneai.shoot.workmanager.manual.StoreImageFilesWorker
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import retrofit2.Call
@@ -278,12 +277,9 @@ class MainDashboardActivity : AppCompatActivity() {
 
     open fun onPermissionGranted(){
         Log.d(TAG, "onPermissionGranted: "+Utilities.getPreference(this,AppConstants.CANCEL_ALL_WROKERS))
-        if (Utilities.getPreference(this,AppConstants.CANCEL_ALL_WROKERS) == ""){
-            cancelAllWorkers()
-        }
+        cancelAllWorkers()
 
         startUploadService()
-
         checkFolderUpload()
     }
 
@@ -328,7 +324,6 @@ class MainDashboardActivity : AppCompatActivity() {
         WorkManager.getInstance(this).cancelAllWorkByTag("Skipped Images Long Running Worker")
         WorkManager.getInstance(this).cancelAllWorkByTag("Periodic Processing Worker")
         WorkManager.getInstance(this).cancelAllWorkByTag("InternetWorker")
-
 
         Utilities.savePrefrence(this,AppConstants.CANCEL_ALL_WROKERS,"Cancelled")
     }
