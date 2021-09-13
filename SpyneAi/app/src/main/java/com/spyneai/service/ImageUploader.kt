@@ -60,13 +60,13 @@ class ImageUploader(val context: Context,
                        return@launch
                    }
 
-                   if (image.imagePath != null){
-                       if (!File(image.imagePath!!).exists()){
-                           localRepository.deleteImage(image.itemId!!)
-                           captureEvent(Events.UPLOAD_FAILED_SERVICE,image,false,"Image file got deleted by user")
-                            startNextUpload(image.itemId!!,true,imageType)
-                       }
-                   }
+//                   if (image.imagePath != null){
+//                       if (!File(image.imagePath!!).exists()){
+//                           localRepository.deleteImage(image.itemId!!)
+//                           captureEvent(Events.UPLOAD_FAILED_SERVICE,image,false,"Image file got deleted by user")
+//                            startNextUpload(image.itemId!!,true,imageType)
+//                       }
+//                   }
 
                    logUpload("Upload Started "+imageType+" "+image.itemId)
 

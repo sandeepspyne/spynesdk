@@ -18,7 +18,7 @@ import com.spyneai.needs.Utilities
 class ResolutionNotSupportedFragment : DialogFragment() {
 
     private var _binding : DialogResolutionNotSupportedBinding? = null
-    private val binding get() = _binding!!
+    private val binding get() = _binding
 
 
     override fun onCreateView(
@@ -31,17 +31,17 @@ class ResolutionNotSupportedFragment : DialogFragment() {
 
         isCancelable = false
 
-        return binding.root
+        return binding?.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        binding.ivClose.setOnClickListener {
+        binding?.ivClose?.setOnClickListener {
             dismiss()
         }
 
-        binding.tvOKay.setOnClickListener {
+        binding?.tvOKay?.setOnClickListener {
             dismiss()
         }
 

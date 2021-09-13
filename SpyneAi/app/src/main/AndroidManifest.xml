@@ -142,13 +142,13 @@
             android:screenOrientation="portrait"/>
 
         <service
-            android:name=".service.ProcessImagesService"
+            android:name=".service.ImageUploadingService"
             android:enabled="true"
             android:exported="true"
             android:stopWithTask="false" />
 
         <service
-            android:name=".service.ImageUploadingService"
+            android:name=".service.manual.ManualUploadService"
             android:enabled="true"
             android:exported="true"
             android:stopWithTask="false" />

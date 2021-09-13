@@ -3,6 +3,7 @@ package com.spyneai.dashboard.ui
 import android.app.Activity
 import android.content.Intent
 import android.view.View
+import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import com.google.android.material.snackbar.Snackbar
 import com.spyneai.base.network.Resource
@@ -54,6 +55,25 @@ fun Fragment.handleApiError(
         else -> {
             val error = failure.errorMessage
             requireView().snackbar(error!!,retry)
+        }
+    }
+}
+
+fun AppCompatActivity.handleApiError(
+    failure: Resource.Failure,
+    retry: (() -> Unit)? = null
+) {
+    when {
+        failure.isNetworkError -> window.decorView.rootView.snackbar(
+            failure.errorMessage!!,
+            retry
+        )
+        failure.errorCode == 401 -> {
+            InvalidAuthDialog().show(supportFragmentManager, "InvalidAuthDialog")
+        }
+        else -> {
+            val error = failure.errorMessage
+            window.decorView.rootView.snackbar(error!!,retry)
         }
     }
 }

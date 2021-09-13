@@ -576,8 +576,12 @@ class OverlaysFragment : BaseFragment<ShootViewModel, FragmentOverlaysBinding>()
             if (viewModel.startInteriorShots.value == true || viewModel.startMiscShots.value == true)
                 binding.imgOverlay.visibility = View.INVISIBLE
 
-            if (viewModel.sku.value?.skuId != null && viewModel.categoryDetails.value?.imageType == "Exterior")
+//            if (viewModel.sku.value?.skuId != null && viewModel.categoryDetails.value?.imageType == "Exterior")
+//                viewModel.showLeveler.value = true
+
+            if (viewModel.categoryDetails.value?.imageType == "Exterior")
                 viewModel.showLeveler.value = true
+
         }
 
         if (getString(R.string.app_name) == AppConstants.KARVI)

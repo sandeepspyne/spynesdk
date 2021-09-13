@@ -53,7 +53,7 @@ class BaseApplication : Application() {
             .build()
 
         val longWorkRequest = PeriodicWorkRequestBuilder<ProcessSkuWorker>(
-            6, TimeUnit.HOURS)
+            12, TimeUnit.HOURS)
             .addTag("Periodic Processing Worker")
 
         WorkManager.getInstance(context)
@@ -64,21 +64,21 @@ class BaseApplication : Application() {
                     .setConstraints(constraints)
                     .build())
 
-        val repeatInternal = 30L
-        val flexInterval = 25L
-        val workerTag = "InternetWorker"
-
-        PeriodicWorkRequest
-            .Builder(InternetWorker::class.java, repeatInternal,
-                TimeUnit.MINUTES, flexInterval, TimeUnit.MINUTES)
-            .setConstraints(
-                Constraints.Builder()
-                    .setRequiredNetworkType(NetworkType.CONNECTED)
-                    .build())
-            .build()
-            .also {
-                WorkManager.getInstance(context).enqueueUniquePeriodicWork(workerTag, ExistingPeriodicWorkPolicy.REPLACE, it)
-            }
+//        val repeatInternal = 30L
+//        val flexInterval = 25L
+//        val workerTag = "InternetWorker"
+//
+//        PeriodicWorkRequest
+//            .Builder(InternetWorker::class.java, repeatInternal,
+//                TimeUnit.MINUTES, flexInterval, TimeUnit.MINUTES)
+//            .setConstraints(
+//                Constraints.Builder()
+//                    .setRequiredNetworkType(NetworkType.CONNECTED)
+//                    .build())
+//            .build()
+//            .also {
+//                WorkManager.getInstance(context).enqueueUniquePeriodicWork(workerTag, ExistingPeriodicWorkPolicy.REPLACE, it)
+//            }
 
     }
 

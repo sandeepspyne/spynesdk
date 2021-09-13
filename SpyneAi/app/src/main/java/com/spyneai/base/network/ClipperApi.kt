@@ -3,6 +3,7 @@ package com.spyneai.base.network
 import com.spyneai.camera2.OverlaysResponse
 import com.spyneai.credits.model.DownloadHDRes
 import com.spyneai.credits.model.ReduceCreditResponse
+import com.spyneai.dashboard.data.model.VersionStatusRes
 import com.spyneai.dashboard.response.NewCategoriesResponse
 import com.spyneai.dashboard.response.NewSubCatResponse
 import com.spyneai.model.credit.CreditDetailsResponse
@@ -11,6 +12,8 @@ import com.spyneai.orders.data.response.CompletedSKUsResponse
 import com.spyneai.orders.data.response.GetOngoingSkusResponse
 import com.spyneai.orders.data.response.GetProjectsResponse
 import com.spyneai.orders.data.response.ImagesOfSkuRes
+import com.spyneai.orders.data.response.*
+import com.spyneai.service.manual.FilesDataRes
 import com.spyneai.shoot.data.model.*
 import com.spyneai.shoot.response.SkuProcessStateResponse
 import com.spyneai.shoot.response.UploadFolderRes
@@ -261,5 +264,17 @@ interface ClipperApi {
     fun uploadFolder(@Query(
         "auth_key") authKey : String) : Call<UploadFolderRes>
 
+    @FormUrlEncoded
+    @POST("v2/image/user-data")
+    suspend fun sendFilesData(
+        @Field("auth_key") authKey: String,
+        @Field("data") skuId: String
+    ) : FilesDataRes
+
+    @GET("v2/enterprise/compareAppVersion")
+    suspend fun getVersionStatus(
+        @Query("auth_key") authKey: String,
+        @Query("app_version") appVersion: String
+    ) : VersionStatusRes
 
 }

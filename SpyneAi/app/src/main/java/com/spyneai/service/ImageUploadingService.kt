@@ -41,7 +41,6 @@ class ImageUploadingService : Service(), ImageUploader.Listener {
     val notificationChannelId = "PROCESSING SERVICE CHANNEL"
     var currentImage : Image? = null
 
-
     override fun onDestroy() {
         super.onDestroy()
         if (receiver != null)

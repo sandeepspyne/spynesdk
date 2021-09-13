@@ -30,6 +30,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import org.json.JSONObject
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -110,6 +111,50 @@ fun Context.isInternetActive() : Boolean {
     val cm = getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
     val activeNetwork: NetworkInfo? = cm.activeNetworkInfo
     return activeNetwork?.isConnectedOrConnecting == true
+}
+
+fun Context.getNetworkName() : String {
+    val cm = getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
+    val wifi: NetworkInfo? = cm.getNetworkInfo(ConnectivityManager.TYPE_WIFI)
+    val mobile: NetworkInfo? = cm.getNetworkInfo(ConnectivityManager.TYPE_MOBILE)
+
+    var type = "None"
+
+    if (wifi != null && wifi.isConnected)
+        type = "Wi-Fi"
+
+    if (mobile != null && mobile.isConnected)
+        type = "Mobile"
+
+    return type
+}
+
+fun getRequestHeaderData() : JSONObject {
+    val headerData = JSONObject()
+
+    headerData.put("device_manufacturer",Utilities.getPreference(
+        BaseApplication.getContext(),AppConstants.DEVICE_MANUFACTURER))
+
+    headerData.put("model",Utilities.getPreference(
+        BaseApplication.getContext(),AppConstants.MODEL))
+
+    headerData.put("os_version",Utilities.getPreference(
+        BaseApplication.getContext(),AppConstants.OS_VERSION))
+
+    headerData.put("app_version",Utilities.getPreference(
+        BaseApplication.getContext(),AppConstants.APP_VERSION))
+
+    headerData.put("app_version_code",Utilities.getPreference(
+        BaseApplication.getContext(),AppConstants.APP_VERSION_CODE))
+
+
+    headerData.put("network_type",Utilities.getPreference(
+        BaseApplication.getContext(),AppConstants.NETWORK_TYPE))
+
+    headerData.put("device_id",Utilities.getPreference(
+        BaseApplication.getContext(),AppConstants.DEVICE_ID))
+
+    return headerData
 }
 
 fun Context.isResolutionSupported() : Boolean {
