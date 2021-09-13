@@ -193,8 +193,6 @@ class MainDashboardActivity : AppCompatActivity() {
 
     private fun checkAppVersion() {
         if (BuildConfig.VERSION_NAME.contains("debug")){
-            Utilities.showProgressDialog(this)
-
             if (allPermissionsGranted()) {
                 onPermissionGranted()
             } else {
@@ -348,6 +346,7 @@ class MainDashboardActivity : AppCompatActivity() {
             ) {
 
                 Utilities.hideProgressDialog()
+
                 if (response.isSuccessful){
                     if (response.body()?.status == 200){
                         if (response.body()?.data?.isFolderUpload == 1){
@@ -394,6 +393,8 @@ class MainDashboardActivity : AppCompatActivity() {
             }
 
             override fun onFailure(call: Call<UploadFolderRes>, t: Throwable) {
+                Utilities.hideProgressDialog()
+
                 val properties = Properties()
                 properties.apply {
                     this["email"] = Utilities.getPreference(this@MainDashboardActivity,AppConstants.EMAIL_ID).toString()
@@ -404,7 +405,7 @@ class MainDashboardActivity : AppCompatActivity() {
                     Events.CHECK_FOLDER_API_FAILED,
                     properties)
 
-                Utilities.hideProgressDialog()
+
                 folderCheckError(t.localizedMessage)
             }
         })

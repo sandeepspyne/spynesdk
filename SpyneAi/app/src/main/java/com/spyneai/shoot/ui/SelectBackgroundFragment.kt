@@ -53,7 +53,9 @@ class SelectBackgroundFragment : BaseFragment<ProcessViewModel,FragmentSelectBac
 
 
         when(getString(R.string.app_name)) {
-            AppConstants.KARVI -> {
+            AppConstants.KARVI,
+            AppConstants.CARS24_INDIA,
+            AppConstants.CARS24-> {
                 binding.cb360.visibility = View.GONE
                 binding.tv360.visibility = View.GONE
                 binding.tvGenerateGif.text = "Generate Output"
@@ -92,7 +94,10 @@ class SelectBackgroundFragment : BaseFragment<ProcessViewModel,FragmentSelectBac
 
     private fun processRequest(showDialog : Boolean) {
         when(getString(R.string.app_name)) {
-            AppConstants.KARVI,AppConstants.SWEEP -> {
+            AppConstants.KARVI,
+            AppConstants.SWEEP,
+            AppConstants.CARS24,
+            AppConstants.CARS24_INDIA-> {
                 //process image call
                 processSku(showDialog)
             }else -> {
