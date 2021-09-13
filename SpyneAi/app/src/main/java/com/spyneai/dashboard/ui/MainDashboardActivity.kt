@@ -193,6 +193,8 @@ class MainDashboardActivity : AppCompatActivity() {
 
     private fun checkAppVersion() {
         if (BuildConfig.VERSION_NAME.contains("debug")){
+            Utilities.showProgressDialog(this)
+
             if (allPermissionsGranted()) {
                 onPermissionGranted()
             } else {

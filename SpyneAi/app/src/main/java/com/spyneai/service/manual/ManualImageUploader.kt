@@ -92,7 +92,6 @@ class ManualImageUploader(val context: Context,
                                 //start next image
                                 captureEvent(Events.ALREADY_UPLOAD_STATUS,image,true,null)
                                 startNextUpload(image.itemId!!,true,imageType)
-
                             }else {
                                 captureEvent(Events.ALREADY_NOT_UPLOAD_STATUS,image,true,null)
                                 //make upload call
