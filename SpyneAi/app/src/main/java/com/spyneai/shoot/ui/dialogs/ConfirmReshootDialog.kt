@@ -82,8 +82,9 @@ class ConfirmReshootDialog : BaseDialogFragment<ShootViewModel, DialogConfirmRes
                     uploadImages()
 
                     if (viewModel.shootNumber.value  == viewModel.exterirorAngles.value?.minus(1)){
-                        dismiss()
                         checkInteriorShootStatus()
+                        viewModel.isCameraButtonClickable = false
+                        dismiss()
                     }else{
                         viewModel.shootNumber.value = viewModel.shootNumber.value!! + 1
                         dismiss()
@@ -180,7 +181,6 @@ class ConfirmReshootDialog : BaseDialogFragment<ShootViewModel, DialogConfirmRes
         }
     }
 
-
     fun updateTotalImages() {
         viewModel.updateTotalImages(viewModel.sku.value?.skuId!!)
     }
@@ -266,7 +266,6 @@ class ConfirmReshootDialog : BaseDialogFragment<ShootViewModel, DialogConfirmRes
         else
             viewModel.selectBackground.value = true
     }
-
 
     override fun getViewModel() = ShootViewModel::class.java
 

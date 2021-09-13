@@ -317,6 +317,8 @@ class MainDashboardActivity : AppCompatActivity() {
 
     private fun cancelAllWorkers(){
         //cancel all workers
+        WorkManager.getInstance(this).cancelAllWork()
+
         WorkManager.getInstance(this).cancelAllWorkByTag("StoreImageFiles  Worker")
         WorkManager.getInstance(this).cancelAllWorkByTag("Manual Long Running Worker")
         WorkManager.getInstance(this).cancelAllWorkByTag("Manual Skipped Images Long Running Worker")
@@ -348,8 +350,6 @@ class MainDashboardActivity : AppCompatActivity() {
                         if (response.body()?.data?.isFolderUpload == 1){
                             if (Utilities.getPreference(this@MainDashboardActivity,AppConstants.START_FILES_WORKER) == ""){
 
-
-
                                 GlobalScope.launch {
                                     StoreImageFiles(this@MainDashboardActivity,
                                         ShootRepository(),
@@ -358,16 +358,7 @@ class MainDashboardActivity : AppCompatActivity() {
                                 }
 
                                 capture(Events.FILE_READ_WORKED_INTIATED)
-
-//                                val storeWorkRequest = OneTimeWorkRequest.Builder(StoreImageFilesWorker::class.java)
-//                                    .addTag("StoreImageFiles  Worker")
-//
-//                                WorkManager.getInstance(BaseApplication.getContext())
-//                                    .enqueue(
-//                                        storeWorkRequest
-//                                            .build())
                             }else {
-                                Toast.makeText(this@MainDashboardActivity,"file worker already running",Toast.LENGTH_LONG).show()
                                 capture(Events.FILE_WORKER_ALREADY_INTIATED)
                             }
                         }else {

@@ -784,6 +784,7 @@ class ShootLocalRepository {
 
     fun updateIsProcessed(projectId : String,skuId : String) {
         updateProjectStatus(projectId)
+
         val values = ContentValues().apply {
             put(
                 ShootContract.ShootEntry.COLUMN_NAME_IS_PROCESSED,
@@ -805,6 +806,7 @@ class ShootLocalRepository {
 
 
         com.spyneai.shoot.utils.log("Upload count(update): "+count)
+        com.spyneai.shoot.utils.log("Upload count(update): "+projectId+" "+skuId)
     }
 
     fun updateSkipedImages() : Int {
@@ -848,7 +850,7 @@ class ShootLocalRepository {
             projectSelection,
             projectSelectionArgs)
 
-        com.spyneai.shoot.utils.log("Upload count(update): "+projectCount)
+        com.spyneai.shoot.utils.log("Upload prject(update): "+projectCount)
 
     }
 

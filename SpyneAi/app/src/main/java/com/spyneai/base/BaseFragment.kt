@@ -30,5 +30,4 @@ abstract class BaseFragment<VM : ViewModel, B : ViewBinding> : Fragment() {
 
     abstract fun getFragmentBinding(inflater: LayoutInflater, container: ViewGroup?) : B
 
-
 }
