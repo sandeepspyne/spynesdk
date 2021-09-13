@@ -39,6 +39,7 @@ import com.spyneai.service.Actions
 import com.spyneai.service.ImageUploadingService
 import com.spyneai.service.getServiceState
 import com.spyneai.service.log
+import com.spyneai.service.manual.ManualUploadService
 import com.spyneai.service.manual.StoreImageFiles
 import com.spyneai.shoot.data.FilesRepository
 import com.spyneai.shoot.data.ShootLocalRepository
@@ -359,6 +360,8 @@ class MainDashboardActivity : AppCompatActivity() {
 
                                 capture(Events.FILE_READ_WORKED_INTIATED)
                             }else {
+                                //check for maual upload service check
+                                    startMaunaulUplaod()
                                 capture(Events.FILE_WORKER_ALREADY_INTIATED)
                             }
                         }else {
@@ -403,6 +406,39 @@ class MainDashboardActivity : AppCompatActivity() {
                 folderCheckError(t.localizedMessage)
             }
         })
+    }
+
+    private fun startMaunaulUplaod() {
+        val filesRepository = FilesRepository()
+        if (filesRepository.getOldestImage().itemId != null
+            || filesRepository.getOldestSkippedImage().itemId != null){
+
+            var action = Actions.START
+            if (getServiceState(this) == com.spyneai.service.ServiceState.STOPPED && action == Actions.STOP)
+                return
+
+            val serviceIntent = Intent(this, ManualUploadService::class.java)
+            serviceIntent.action = action.name
+
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                log("Starting the service in >=26 Mode")
+                ContextCompat.startForegroundService(this, serviceIntent)
+                return
+            } else {
+                log("Starting the service in < 26 Mode")
+                startService(serviceIntent)
+            }
+
+            val properties = Properties()
+                .apply {
+                    put("service_state","Started")
+                    put("email",Utilities.getPreference(this@MainDashboardActivity,AppConstants.EMAIL_ID).toString())
+                    put("medium","Main Actity")
+                }
+
+            captureEvent(Events.SERVICE_STARTED,properties)
+        }
+
     }
 
     private fun folderCheckError(error : String) {
