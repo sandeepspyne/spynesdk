@@ -234,5 +234,7 @@
     <string name="explore_categories">Explore Categories</string>
     <string name="tutorial_videos">Tutorial Videos</string>
     <string name="image_category">Image Category</string>
+    <string name="additionl_settings">Additional Notes</string>
+    <string name="add_text_here">Add Test Here</string>
 
 </resources>

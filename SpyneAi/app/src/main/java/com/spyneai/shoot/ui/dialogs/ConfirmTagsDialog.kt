@@ -167,7 +167,14 @@ class ConfirmTagsDialog : BaseDialogFragment<ShootViewModel, DialogConfirmTagsBi
 
     private fun setTagsData() {
         when(viewModel.categoryDetails.value?.imageType){
-            "Exterior" ->{
+            "Exterior" -> {
+                val layout = LayoutInflater.from(requireContext()).inflate(R.layout.item_tag_notes,null)
+                //val itemBinding = ItemTagsSpinnerBinding.bind(layout)
+
+                binding.llTagsContainer.addView(layout)
+            }
+
+            "Interior" ->{
                 repeat(3){
                     //inflate layout
                     val layout = LayoutInflater.from(requireContext()).inflate(R.layout.item_tags_spinner,null)
@@ -249,12 +256,8 @@ class ConfirmTagsDialog : BaseDialogFragment<ShootViewModel, DialogConfirmTagsBi
 
                     var equlizerOverlayMargin = (9.5 * resources.displayMetrics.density).toInt()
 
-                    var params = ConstraintLayout.LayoutParams(newW.toInt(), newH.toInt())
-                    params.bottomToBottom = ConstraintSet.PARENT_ID;
-                    params.endToEnd = ConstraintSet.PARENT_ID;
-                    params.startToStart = ConstraintSet.PARENT_ID;
-                    params.topToTop = ConstraintSet.PARENT_ID;
-                   // params. = Gravity.CENTER
+                    var params = FrameLayout.LayoutParams(newW.toInt(), newH.toInt())
+                    params.gravity = Gravity.CENTER
                     params.topMargin = equlizerOverlayMargin
 
                     binding.ivOverlay.layoutParams = params
