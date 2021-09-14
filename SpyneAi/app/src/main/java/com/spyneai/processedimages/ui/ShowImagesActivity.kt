@@ -164,11 +164,13 @@ class ShowImagesActivity : AppCompatActivity(),View.OnTouchListener,View.OnClick
             tvYourEmailIdReplaced.visibility = View.VISIBLE
             tvViewGif.visibility = View.GONE
             tvInterior.visibility = View.GONE
+            tvFocused.visibility = View.GONE
 //            llDownloads.visibility = View.VISIBLE
         } else {
             tvYourEmailIdReplaced.visibility = View.GONE
             tvViewGif.visibility = View.GONE
             tvInterior.visibility = View.GONE
+            tvFocused.visibility = View.GONE
 //            llDownloads.visibility = View.GONE
         }
     }

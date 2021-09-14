@@ -126,8 +126,6 @@ class ProcessViewModel : ViewModel() {
                 _carGifRes.value = repository.getBackgroundGifCars(category, auth_key)
             }
         }
-
-//        _carGifRes.value = repository.getBackgroundGifCars(category, auth_key)
     }
 
     fun processSku(authKey: String, skuId: String, backgroundId: String, is360: Boolean) =
