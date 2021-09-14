@@ -233,5 +233,6 @@
     <string name="completed_shoots">Completed Shoots</string>
     <string name="explore_categories">Explore Categories</string>
     <string name="tutorial_videos">Tutorial Videos</string>
+    <string name="image_category">Image Category</string>
 
 </resources>
