@@ -61,9 +61,10 @@ class ThreeSixtyRepository : BaseRepository() {
 
     suspend fun reduceCredit(
         userId : String,
-        creditReduce:String
+        creditReduce:String,
+        skuId: String
     )= safeApiCall {
-        clipperApi.reduceCredit(userId, creditReduce)
+        clipperApi.reduceCredit(userId, creditReduce,skuId)
     }
 
     suspend fun updateDownloadStatus(

@@ -110,11 +110,9 @@ class ProcessViewModel : ViewModel() {
             }
 
             else -> {
-            _carGifRes.value = repository.getBackgroundGifCars(category, auth_key)
+                _carGifRes.value = repository.getBackgroundGifCars(category, auth_key)
+            }
         }
-        }
-
-        _carGifRes.value = repository.getBackgroundGifCars(category, auth_key)
     }
 
     fun processSku(authKey : String,skuId : String, backgroundId : String,is360 : Boolean)
@@ -151,10 +149,11 @@ class ProcessViewModel : ViewModel() {
 
     fun reduceCredit(
         userId : String,
-        creditReduce:String
+        creditReduce:String,
+        skuId: String
     ) = viewModelScope.launch {
         _reduceCreditResponse.value = Resource.Loading
-        _reduceCreditResponse.value = repository.reduceCredit(userId,creditReduce)
+        _reduceCreditResponse.value = repository.reduceCredit(userId,creditReduce,skuId)
     }
 
     fun updateDownloadStatus(

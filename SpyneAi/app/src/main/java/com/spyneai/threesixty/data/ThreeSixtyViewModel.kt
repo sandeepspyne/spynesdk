@@ -155,10 +155,11 @@ class ThreeSixtyViewModel : ViewModel() {
 
     fun reduceCredit(
         userId : String,
-        creditReduce:String
+        creditReduce:String,
+        skuId: String
     ) = viewModelScope.launch {
         _reduceCreditResponse.value = Resource.Loading
-        _reduceCreditResponse.value = threeSixtyRepository.reduceCredit(userId,creditReduce)
+        _reduceCreditResponse.value = threeSixtyRepository.reduceCredit(userId,creditReduce,skuId)
     }
 
     fun updateDownloadStatus(

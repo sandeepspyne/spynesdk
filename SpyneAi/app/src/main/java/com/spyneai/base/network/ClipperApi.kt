@@ -203,20 +203,13 @@ interface ClipperApi {
 
 
     @FormUrlEncoded
-    @PUT("v4/reduce-credit")
-    suspend fun reduceCredit(
-        @Field("user_id") userId : String,
-        @Field("credit_reduce") creditReduce:String,
-        @Field("enterprise_id") enterpriseId: String,
-        @Field("sku_id") skuId: String
-    ): ReduceCreditResponse
-
-
-    @FormUrlEncoded
-    @PUT("v2/credit/reduce-credit")
+    @PUT("v2/credit/reduce-user-credit")
     suspend fun reduceCredit(
         @Field("auth_key") authKey : String,
-        @Field("credit_reduce") creditReduce:String
+        @Field("credit_reduce") creditReduce:String,
+        @Field("sku_id") skuId : String,
+        @Field("source") source : String = "App",
+        @Field("image_id") imageId : String = ""
     ): ReduceCreditResponse
 
     @FormUrlEncoded

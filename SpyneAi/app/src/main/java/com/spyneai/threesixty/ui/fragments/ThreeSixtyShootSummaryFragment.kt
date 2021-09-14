@@ -79,7 +79,8 @@ class ThreeSixtyShootSummaryFragment : BaseFragment<ThreeSixtyViewModel, Fragmen
 
         viewModel.reduceCredit(
             Utilities.getPreference(requireContext(), AppConstants.AUTH_KEY).toString(),
-            viewModel.videoDetails.frames.toString()
+            viewModel.videoDetails.frames.toString(),
+            viewModel.videoDetails.skuId.toString()
         )
     }
 
