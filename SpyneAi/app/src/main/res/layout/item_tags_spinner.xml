@@ -9,7 +9,7 @@
         android:layout_height="wrap_content"
         android:id="@+id/tvTitle"
         app:layout_constraintLeft_toLeftOf="parent"
-       app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
         android:text="Imperfection Location"
         app:layout_constraintRight_toLeftOf="@id/tvImageCategory"
         android:textColor="@color/tags_title_color"
