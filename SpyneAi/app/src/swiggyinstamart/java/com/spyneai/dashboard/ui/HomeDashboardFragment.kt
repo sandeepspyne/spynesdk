@@ -93,15 +93,15 @@ class HomeDashboardFragment :
         appUpdateManager = AppUpdateManagerFactory.create(requireContext())
 
 
-        if (PACKAGE_NAME.equals("com.spyneai.swiggyinstamart.debug")) {
-            newUserCreditDialog()
+//        if (PACKAGE_NAME.equals("com.spyneai.swiggyinstamart.debug")) {
+//            newUserCreditDialog()
             repeatRefreshData()
             setSliderRecycler()
             lisners()
             welcomeHomeText()
             getCategories()
-        } else
-            autoUpdates()
+//        } else
+//            autoUpdates()
     }
 
     private fun autoUpdates() {

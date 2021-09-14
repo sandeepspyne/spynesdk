@@ -1,3 +1,4 @@
+
 import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.ContentValues
@@ -16,6 +17,7 @@ import android.util.DisplayMetrics
 import android.util.Log
 import android.util.Size
 import android.view.*
+import android.view.Surface.ROTATION_90
 import android.view.animation.AccelerateInterpolator
 import android.widget.*
 import androidx.camera.core.*
@@ -68,6 +70,7 @@ class CameraFragment : BaseFragment<ShootViewModel, FragmentCameraBinding>(), Pi
     lateinit var file: File
     var haveGyrometer = false
     var isSensorAvaliable = false
+    var rotation = 0
 
     companion object {
         private const val RATIO_4_3_VALUE = 4.0 / 3.0 // aspect ratio 4x3
@@ -554,6 +557,25 @@ class CameraFragment : BaseFragment<ShootViewModel, FragmentCameraBinding>(), Pi
             //for exact image cropping
             val viewPort = binding.viewFinder?.viewPort
 
+//            var orientationEventListener = object : OrientationEventListener(requireContext()) {
+//                override fun onOrientationChanged(orientation: Int) {
+//                    // Monitors orientation values to determine the target rotation value
+//                    rotation = if (orientation >= 45 && orientation < 135) {
+//                        Toast.makeText(requireContext(), "orintation- "+orientation, Toast.LENGTH_SHORT).show()
+//                        Surface.ROTATION_270
+//                    } else if (orientation >= 135 && orientation < 225) {
+//                        Toast.makeText(requireContext(), "orintation- "+orientation, Toast.LENGTH_SHORT).show()
+//                        Surface.ROTATION_180
+//                    } else if (orientation >= 225 && orientation < 315) {
+//                        Toast.makeText(requireContext(), "orintation- "+orientation, Toast.LENGTH_SHORT).show()
+//                        Surface.ROTATION_90
+//                    } else {
+//                        Toast.makeText(requireContext(), "orintation- "+orientation, Toast.LENGTH_SHORT).show()
+//                        Surface.ROTATION_0
+//                    }
+//                }
+//            }
+
             imageCapture = if (getString(R.string.app_name) == AppConstants.KARVI) {
                 ImageCapture.Builder()
                     .setCaptureMode(ImageCapture.CAPTURE_MODE_MAXIMIZE_QUALITY)
@@ -564,14 +586,18 @@ class CameraFragment : BaseFragment<ShootViewModel, FragmentCameraBinding>(), Pi
                 ImageCapture.Builder()
                     .setCaptureMode(ImageCapture.CAPTURE_MODE_MAXIMIZE_QUALITY)
                     .setFlashMode(flashMode)
-                    .setTargetAspectRatio(aspectRatio) // set the capture aspect ratio
+                    .setTargetAspectRatio(aspectRatio)
+                    .setTargetRotation(ROTATION_90)
+                    // set the capture aspect ratio
                     // .setTargetRotation(rotation) // set the capture rotation
                     .build()
             } else {
                 ImageCapture.Builder()
                     .setCaptureMode(ImageCapture.CAPTURE_MODE_MAXIMIZE_QUALITY)
                     .setFlashMode(flashMode)
-                    .setTargetAspectRatio(aspectRatio) // set the capture aspect ratio
+                    .setTargetAspectRatio(aspectRatio)
+                    .setTargetRotation(ROTATION_90)
+                    // set the capture aspect ratio
                     // .setTargetRotation(rotation) // set the capture rotation
                     .build()
             }
@@ -619,7 +645,12 @@ class CameraFragment : BaseFragment<ShootViewModel, FragmentCameraBinding>(), Pi
 
                 cameraControl = camera.cameraControl
 
+
+
                 cameraInfo = camera.cameraInfo
+
+//                val rotation = cameraInfo!!.sensorRotationDegrees
+//                Toast.makeText(requireContext(), "rotation- "+rotation, Toast.LENGTH_SHORT).show()
 
                 var currentZoomRatio = cameraInfo?.zoomState?.value?.zoomRatio ?: 0F
                 when (viewModel.categoryDetails.value?.categoryName) {
