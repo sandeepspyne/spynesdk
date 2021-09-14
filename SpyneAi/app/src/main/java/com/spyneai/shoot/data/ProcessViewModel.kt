@@ -28,12 +28,12 @@ class ProcessViewModel : ViewModel() {
 
     val exteriorAngles: MutableLiveData<Int> = MutableLiveData()
 
-    val sku : MutableLiveData<Sku> = MutableLiveData()
-    val startTimer : MutableLiveData<Boolean> = MutableLiveData()
-    val processSku : MutableLiveData<Boolean> = MutableLiveData()
-    val skuQueued : MutableLiveData<Boolean> = MutableLiveData()
-    var addRegularShootSummaryFragment : MutableLiveData<Boolean> = MutableLiveData()
-    var backgroundSelect : String? = null
+    val sku: MutableLiveData<Sku> = MutableLiveData()
+    val startTimer: MutableLiveData<Boolean> = MutableLiveData()
+    val processSku: MutableLiveData<Boolean> = MutableLiveData()
+    val skuQueued: MutableLiveData<Boolean> = MutableLiveData()
+    var addRegularShootSummaryFragment: MutableLiveData<Boolean> = MutableLiveData()
+    var backgroundSelect: String? = null
 
     val projectId: MutableLiveData<String> = MutableLiveData()
 
@@ -42,35 +42,39 @@ class ProcessViewModel : ViewModel() {
 
     var interiorMiscShootsCount = 0
 
-    var categoryName : String? = null
+    var categoryName: String? = null
 
 
-    val _carGifRes : MutableLiveData<Resource<CarsBackgroundRes>> = MutableLiveData()
+    val _carGifRes: MutableLiveData<Resource<CarsBackgroundRes>> = MutableLiveData()
     val carGifRes: LiveData<Resource<CarsBackgroundRes>>
         get() = _carGifRes
 
-    private val _processSkuRes : MutableLiveData<Resource<ProcessSkuRes>> = MutableLiveData()
+    private val _processSkuRes: MutableLiveData<Resource<ProcessSkuRes>> = MutableLiveData()
     val processSkuRes: LiveData<Resource<ProcessSkuRes>>
         get() = _processSkuRes
 
-    private val _userCreditsRes : MutableLiveData<Resource<CreditDetailsResponse>> = MutableLiveData()
+    private val _userCreditsRes: MutableLiveData<Resource<CreditDetailsResponse>> =
+        MutableLiveData()
     val userCreditsRes: LiveData<Resource<CreditDetailsResponse>>
         get() = _userCreditsRes
 
 
-    private val _reduceCreditResponse : MutableLiveData<Resource<ReduceCreditResponse>> = MutableLiveData()
+    private val _reduceCreditResponse: MutableLiveData<Resource<ReduceCreditResponse>> =
+        MutableLiveData()
     val reduceCreditResponse: LiveData<Resource<ReduceCreditResponse>>
         get() = _reduceCreditResponse
 
-    private val _downloadHDRes : MutableLiveData<Resource<DownloadHDRes>> = MutableLiveData()
+    private val _downloadHDRes: MutableLiveData<Resource<DownloadHDRes>> = MutableLiveData()
     val downloadHDRes: LiveData<Resource<DownloadHDRes>>
         get() = _downloadHDRes
 
-    private val _skuProcessStateWithBgResponse: MutableLiveData<Resource<SkuProcessStateResponse>> = MutableLiveData()
+    private val _skuProcessStateWithBgResponse: MutableLiveData<Resource<SkuProcessStateResponse>> =
+        MutableLiveData()
     val skuProcessStateWithBgResponse: LiveData<Resource<SkuProcessStateResponse>>
         get() = _skuProcessStateWithBgResponse
 
-    private val _updateTotalFramesRes : MutableLiveData<Resource<UpdateTotalFramesRes>> = MutableLiveData()
+    private val _updateTotalFramesRes: MutableLiveData<Resource<UpdateTotalFramesRes>> =
+        MutableLiveData()
     val updateTotalFramesRes: LiveData<Resource<UpdateTotalFramesRes>>
         get() = _updateTotalFramesRes
 
@@ -79,106 +83,117 @@ class ProcessViewModel : ViewModel() {
         auth_key: RequestBody
     ) = viewModelScope.launch {
         _carGifRes.value = Resource.Loading
-        when(BaseApplication.getContext().getString(R.string.app_name)){
+        when (BaseApplication.getContext().getString(R.string.app_name)) {
             AppConstants.SWIGGY -> {
                 val list = ArrayList<CarsBackgroundRes.Data>()
 
-                list.add(CarsBackgroundRes.Data("Rustic White",
-                    "https://storage.googleapis.com/spyne/AI/raw/72cbc0ea-3373-4312-99ba-4ef69de4384e.jpg",
-                    1,
-                    "11001",
-                    "https://storage.googleapis.com/spyne-website/Food%20Backgrounds/Rustic%20White%20-%200.jpg"))
+                list.add(
+                    CarsBackgroundRes.Data(
+                        "Rustic White",
+                        "https://storage.googleapis.com/spyne/AI/raw/72cbc0ea-3373-4312-99ba-4ef69de4384e.jpg",
+                        1,
+                        "11001",
+                        "https://storage.googleapis.com/spyne-website/Food%20Backgrounds/Rustic%20White%20-%200.jpg"
+                    )
+                )
 
 
-                list.add(CarsBackgroundRes.Data("Colonial Blue",
-                    "https://storage.googleapis.com/spyne/AI/raw/5a2f8ef2-ecd8-4d35-b747-fcb1b08223cd.jpg",
-                    1,
-                    "12001",
-                    "https://storage.googleapis.com/spyne/AI/raw/74a28609-218e-4ed8-9d6f-24e869b1beeb.png"))
+                list.add(
+                    CarsBackgroundRes.Data(
+                        "Colonial Blue",
+                        "https://storage.googleapis.com/spyne/AI/raw/5a2f8ef2-ecd8-4d35-b747-fcb1b08223cd.jpg",
+                        1,
+                        "12001",
+                        "https://storage.googleapis.com/spyne/AI/raw/74a28609-218e-4ed8-9d6f-24e869b1beeb.png"
+                    )
+                )
 
 
-                list.add(CarsBackgroundRes.Data("Boho Chic",
-                    "https://storage.googleapis.com/spyne/AI/raw/1892526c-72c9-4331-8ede-dec5f72cf52e.png",
-                    1,
-                    "13001",
-                    "https://storage.googleapis.com/spyne/AI/raw/b972331d-5a82-46bf-b347-007962ce9158.png"))
+                list.add(
+                    CarsBackgroundRes.Data(
+                        "Boho Chic",
+                        "https://storage.googleapis.com/spyne/AI/raw/1892526c-72c9-4331-8ede-dec5f72cf52e.png",
+                        1,
+                        "13001",
+                        "https://storage.googleapis.com/spyne/AI/raw/b972331d-5a82-46bf-b347-007962ce9158.png"
+                    )
+                )
 
-
-                val response = CarsBackgroundRes(list,"Got Background",200)
+                val response = CarsBackgroundRes(list, "Got Background", 200)
                 _carGifRes.value = Resource.Success(response)
-
             }
-
             else -> {
-            _carGifRes.value = repository.getBackgroundGifCars(category, auth_key)
-        }
+                _carGifRes.value = repository.getBackgroundGifCars(category, auth_key)
+            }
         }
 
-        _carGifRes.value = repository.getBackgroundGifCars(category, auth_key)
+//        _carGifRes.value = repository.getBackgroundGifCars(category, auth_key)
     }
 
-    fun processSku(authKey : String,skuId : String, backgroundId : String,is360 : Boolean)
-            = viewModelScope.launch {
+    fun processSku(authKey: String, skuId: String, backgroundId: String, is360: Boolean) =
+        viewModelScope.launch {
 
-        //queue process request
-        localRepository.queueProcessRequest(sku.value?.skuId!!, backgroundId,is360)
+            //queue process request
+            localRepository.queueProcessRequest(sku.value?.skuId!!, backgroundId, is360)
 
-        _processSkuRes.value = Resource.Loading
-        _processSkuRes.value = repository.processSku(authKey, skuId, backgroundId,is360)
-    }
+            _processSkuRes.value = Resource.Loading
+            _processSkuRes.value = repository.processSku(authKey, skuId, backgroundId, is360)
+        }
 
     fun checkImagesUploadStatus(backgroundSelect: String) {
-        if (localRepository.isImagesUploaded(sku.value?.skuId!!)){
+        if (localRepository.isImagesUploaded(sku.value?.skuId!!)) {
             processSku.value = true
-        }else{
-           // localRepository.queueProcessRequest(sku.value?.skuId!!, backgroundSelect)
-            skuQueued.value =  true
+        } else {
+            // localRepository.queueProcessRequest(sku.value?.skuId!!, backgroundSelect)
+            skuQueued.value = true
         }
     }
 
-    fun updateCarTotalFrames(authKey: String,skuId: String,totalFrames: String)
-    = viewModelScope.launch {
-        _updateTotalFramesRes.value = Resource.Loading
-        _updateTotalFramesRes.value = repository.updateTotalFrames(authKey, skuId,totalFrames)
-    }
+    fun updateCarTotalFrames(authKey: String, skuId: String, totalFrames: String) =
+        viewModelScope.launch {
+            _updateTotalFramesRes.value = Resource.Loading
+            _updateTotalFramesRes.value = repository.updateTotalFrames(authKey, skuId, totalFrames)
+        }
 
     fun getUserCredits(
-        userId : String
+        userId: String
     ) = viewModelScope.launch {
         _userCreditsRes.value = Resource.Loading
         _userCreditsRes.value = repository.getUserCredits(userId)
     }
 
     fun reduceCredit(
-        userId : String,
-        creditReduce:String
+        userId: String,
+        creditReduce: String
     ) = viewModelScope.launch {
         _reduceCreditResponse.value = Resource.Loading
-        _reduceCreditResponse.value = repository.reduceCredit(userId,creditReduce)
+        _reduceCreditResponse.value = repository.reduceCredit(userId, creditReduce)
     }
 
     fun updateDownloadStatus(
-        userId : String,
+        userId: String,
         skuId: String,
         enterpriseId: String,
         downloadHd: Boolean
     ) = viewModelScope.launch {
         _downloadHDRes.value = Resource.Loading
-        _downloadHDRes.value = repository.updateDownloadStatus(userId,skuId, enterpriseId, downloadHd)
+        _downloadHDRes.value =
+            repository.updateDownloadStatus(userId, skuId, enterpriseId, downloadHd)
     }
 
-    fun updateIsProcessed(projectId: String,skuId: String) {
-        localRepository.updateIsProcessed(projectId,skuId)
+    fun updateIsProcessed(projectId: String, skuId: String) {
+        localRepository.updateIsProcessed(projectId, skuId)
     }
 
     fun skuProcessStateWithBackgroundid(
         auth_key: String, project_id: String, background_id: Int
     ) = viewModelScope.launch {
         _skuProcessStateWithBgResponse.value = Resource.Loading
-        _skuProcessStateWithBgResponse.value = repository.skuProcessStateWithBackgroundId(auth_key, project_id, background_id)
+        _skuProcessStateWithBgResponse.value =
+            repository.skuProcessStateWithBackgroundId(auth_key, project_id, background_id)
     }
 
-    fun updateProjectState(authKey: String,projectId : String) {
+    fun updateProjectState(authKey: String, projectId: String) {
         val data = Data.Builder()
             .putString("auth_key", authKey)
             .putString("project_id", projectId)
@@ -196,6 +211,7 @@ class ProcessViewModel : ViewModel() {
                 longWorkRequest
                     .setConstraints(constraints)
                     .setInputData(data.build())
-                    .build())
+                    .build()
+            )
     }
 }
