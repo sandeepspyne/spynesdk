@@ -512,14 +512,21 @@ class CameraFragment : BaseFragment<ShootViewModel, FragmentCameraBinding>(), Pi
 
             val localCameraProvider = cameraProvider
                 ?: throw IllegalStateException("Camera initialization failed.")
-            var size = Size(1024,758)
 
             // Preview
             val preview = when {
                 getString(R.string.app_name) == AppConstants.KARVI -> {
-                    Preview.Builder()
-                        //.setTargetAspectRatio(aspectRatio)
-                        .setTargetResolution(size)
+                    var size = requireContext().getBestResolution()
+
+                    val s = ""
+                    val builder = Preview.Builder()
+                    if (size != null){
+                        builder.setTargetResolution(size)
+                    }else{
+                        builder.setTargetAspectRatio(aspectRatio)
+                    }
+
+                    builder
                         .build()
                         .also {
                             it.setSurfaceProvider(binding.viewFinder.surfaceProvider)
@@ -545,15 +552,21 @@ class CameraFragment : BaseFragment<ShootViewModel, FragmentCameraBinding>(), Pi
                 }
             }
 
-            //for exact image cropping
-            val viewPort = binding.viewFinder?.viewPort
+
 
             imageCapture = if (getString(R.string.app_name) == AppConstants.KARVI) {
-                ImageCapture.Builder()
+                val builder = ImageCapture.Builder()
                     .setCaptureMode(ImageCapture.CAPTURE_MODE_MAXIMIZE_QUALITY)
                     .setFlashMode(flashMode)
-                    .setTargetResolution(size)
-                    .build()
+
+                var size = requireContext().getBestResolution()
+                if (size != null){
+                    builder.setTargetResolution(size)
+                }else{
+                    builder.setTargetAspectRatio(aspectRatio)
+                }
+
+                builder.build()
             } else if (getString(R.string.app_name) == AppConstants.SWIGGY) {
                 ImageCapture.Builder()
                     .setCaptureMode(ImageCapture.CAPTURE_MODE_MAXIMIZE_QUALITY)
@@ -571,32 +584,25 @@ class CameraFragment : BaseFragment<ShootViewModel, FragmentCameraBinding>(), Pi
                     .build()
             }
 
-            val useCaseGroup = when(getString(R.string.app_name)) {
-                AppConstants.KARVI -> {
-                    UseCaseGroup.Builder()
-                        .addUseCase(preview)
-                        .addUseCase(imageCapture!!)
-                        .build()
-                }
-                else -> {
-                    UseCaseGroup.Builder()
-                        .addUseCase(preview)
-                        .addUseCase(imageCapture!!)
-                        .setViewPort(viewPort!!)
-                        .build()
-                }
-            }
+            //for exact image cropping
+            val viewPort = binding.viewFinder?.viewPort
+
+            val useCaseGroup = UseCaseGroup.Builder()
+                .addUseCase(preview)
+                .addUseCase(imageCapture!!)
+                .setViewPort(viewPort!!)
+                .build()
 
           //   The Configuration of image analyzing
-            imageAnalyzer = if (getString(R.string.app_name) == AppConstants.KARVI) {
-                ImageAnalysis.Builder()
-                    .setTargetResolution(size)
-                    .build()
-            }else {
-                ImageAnalysis.Builder()
-                    .setTargetAspectRatio(aspectRatio) // set the analyzer aspect ratio
-                    .build()
-            }
+//            imageAnalyzer = if (getString(R.string.app_name) == AppConstants.KARVI) {
+//                ImageAnalysis.Builder()
+//                    .setTargetResolution(size)
+//                    .build()
+//            }else {
+//                ImageAnalysis.Builder()
+//                    .setTargetAspectRatio(aspectRatio) // set the analyzer aspect ratio
+//                    .build()
+//            }
 
             // Select back camera as a default
             val cameraSelector = CameraSelector.DEFAULT_BACK_CAMERA

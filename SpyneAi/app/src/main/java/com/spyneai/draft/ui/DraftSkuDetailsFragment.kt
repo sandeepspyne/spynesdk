@@ -128,21 +128,7 @@ class DraftSkuDetailsFragment : BaseFragment<DraftViewModel, FragmentDraftSkuDet
 
 
         binding.btnContinueShoot.setOnClickListener{
-            when(getString(R.string.app_name)) {
-                AppConstants.KARVI -> {
-                    if (requireContext().isResolutionSupported()){
-                        onResumeClick()
-                    }else{
-                        //resolution not supported
-                        ResolutionNotSupportedFragment().show(
-                            requireActivity().supportFragmentManager,
-                            "ResolutionNotSupportedFragment"
-                        )
-                    }
-                }else -> {
-                    onResumeClick()
-                }
-            }
+            onResumeClick()
         }
     }
 

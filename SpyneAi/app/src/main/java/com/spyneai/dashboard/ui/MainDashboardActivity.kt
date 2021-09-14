@@ -119,15 +119,10 @@ class MainDashboardActivity : AppCompatActivity() {
                         }
 
                         AppConstants.KARVI -> {
-                            if (isResolutionSupported()) {
-                                var intent = Intent(this, ShootActivity::class.java)
-                                intent.putExtra(AppConstants.CATEGORY_ID,AppConstants.CARS_CATEGORY_ID)
-                                intent.putExtra(AppConstants.CATEGORY_NAME,"Automobiles")
-                                startActivity(intent)
-                            }else {
-                                //resolution not supported
-                                ResolutionNotSupportedFragment().show(supportFragmentManager,"ResolutionNotSupportedFragment")
-                            }
+                            var intent = Intent(this, ShootActivity::class.java)
+                            intent.putExtra(AppConstants.CATEGORY_ID,AppConstants.CARS_CATEGORY_ID)
+                            intent.putExtra(AppConstants.CATEGORY_NAME,"Automobiles")
+                            startActivity(intent)
                         }
 
                         "Flipkart", "Udaan", "Lal10", "Amazon", "Swiggy", AppConstants.SWIGGYINSTAMART -> {
