@@ -389,6 +389,7 @@ class ShootLocalRepository {
             put(Images.COLUMN_NAME_IMAGE_SEQUENCE, image.sequence)
             put(Images.COLUMN_NAME_IS_UPLOADED, 0)
             put(Images.COLUMN_NAME_IMAGE_ANGLE, image.angle)
+            put(Images.COLUMN_NAME_IMAGE_META, image.meta)
         }
 
         val newRowId = dbWritable?.insert(Images.TABLE_NAME, null, values)
@@ -405,7 +406,8 @@ class ShootLocalRepository {
             Images.COLUMN_NAME_CATEGORY_NAME,
             Images.COLUMN_NAME_IMAGE_PATH,
             Images.COLUMN_NAME_IMAGE_SEQUENCE,
-            Images.COLUMN_NAME_IMAGE_ANGLE)
+            Images.COLUMN_NAME_IMAGE_ANGLE,
+            Images.COLUMN_NAME_IMAGE_META)
 
         // Filter results WHERE "title" = 'My Title'
          val selection = "${Images.COLUMN_NAME_IS_UPLOADED} = ?"
@@ -437,6 +439,7 @@ class ShootLocalRepository {
                 val imagePath = getString(getColumnIndexOrThrow(Images.COLUMN_NAME_IMAGE_PATH))
                 val sequence = getInt(getColumnIndexOrThrow(Images.COLUMN_NAME_IMAGE_SEQUENCE))
                 val angle = getInt(getColumnIndexOrThrow(Images.COLUMN_NAME_IMAGE_ANGLE))
+                val meta = getString(getColumnIndexOrThrow(Images.COLUMN_NAME_IMAGE_META))
 
                 image.itemId = itemId
                 image.projectId = projectId
@@ -446,6 +449,7 @@ class ShootLocalRepository {
                 image.imagePath = imagePath
                 image.sequence = sequence
                 image.angle = angle
+                image.meta = meta
             }
         }
 
@@ -460,7 +464,9 @@ class ShootLocalRepository {
             Images.COLUMN_NAME_SKU_ID,
             Images.COLUMN_NAME_CATEGORY_NAME,
             Images.COLUMN_NAME_IMAGE_PATH,
-            Images.COLUMN_NAME_IMAGE_SEQUENCE)
+            Images.COLUMN_NAME_IMAGE_SEQUENCE,
+            Images.COLUMN_NAME_IMAGE_ANGLE,
+            Images.COLUMN_NAME_IMAGE_META)
 
         // Filter results WHERE "title" = 'My Title'
         val selection = "${Images.COLUMN_NAME_IS_UPLOADED} = ?"
@@ -491,6 +497,8 @@ class ShootLocalRepository {
                 val categoryName = getString(getColumnIndexOrThrow(Images.COLUMN_NAME_CATEGORY_NAME))
                 val imagePath = getString(getColumnIndexOrThrow(Images.COLUMN_NAME_IMAGE_PATH))
                 val sequence = getInt(getColumnIndexOrThrow(Images.COLUMN_NAME_IMAGE_SEQUENCE))
+                val angle = getInt(getColumnIndexOrThrow(Images.COLUMN_NAME_IMAGE_ANGLE))
+                val meta = getString(getColumnIndexOrThrow(Images.COLUMN_NAME_IMAGE_META))
 
                 image.itemId = itemId
                 image.projectId = projectId
@@ -499,6 +507,8 @@ class ShootLocalRepository {
                 image.categoryName = categoryName
                 image.imagePath = imagePath
                 image.sequence = sequence
+                image.angle = angle
+                image.meta = meta
             }
         }
 

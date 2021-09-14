@@ -13,22 +13,31 @@ class DBHelper (context: Context) : SQLiteOpenHelper(context, DATABASE_NAME, nul
         db.execSQL(CREATE_IMAGES_TABLE)
         db.execSQL(CREATE_IMAGES_FILES_TABLE)
     }
+
     override fun onUpgrade(db: SQLiteDatabase, oldVersion: Int, newVersion: Int) {
         // This database is only a cache for online data, so its upgrade policy is
         // to simply to discard the data and start over
-        db.execSQL(SQL_DELETE_PROJECTS)
-        db.execSQL(SQL_DELETE_ENTRIES)
-        db.execSQL(SQL_DELETE_IMAGES)
-        db.execSQL(SQL_DELETE_IMAGE_FILES)
-        onCreate(db)
+        if (newVersion == 9){
+            db.execSQL(DATABASE_ALTER_SKU_TABLE)
+        }else {
+            db.execSQL(SQL_DELETE_PROJECTS)
+            db.execSQL(SQL_DELETE_ENTRIES)
+            db.execSQL(SQL_DELETE_IMAGES)
+            db.execSQL(SQL_DELETE_IMAGE_FILES)
+        }
     }
+
     override fun onDowngrade(db: SQLiteDatabase, oldVersion: Int, newVersion: Int) {
         onUpgrade(db, oldVersion, newVersion)
     }
+
     companion object {
         // If you change the database schema, you must increment the database version.
-        const val DATABASE_VERSION = 8
+        const val DATABASE_VERSION = 9
         const val DATABASE_NAME = "Shoot.db"
+
+        private val DATABASE_ALTER_SKU_TABLE = ("ALTER TABLE "
+                + Images.TABLE_NAME) + " ADD COLUMN " + Images.COLUMN_NAME_IMAGE_META + " TEXT;"
 
         private const val SQL_CREATE_ENTRIES =
             "CREATE TABLE ${ShootContract.ShootEntry.TABLE_NAME} (" +
@@ -65,7 +74,10 @@ class DBHelper (context: Context) : SQLiteOpenHelper(context, DATABASE_NAME, nul
                 "${Images.COLUMN_NAME_IMAGE_SEQUENCE} INTEGER," +
                 "${Images.COLUMN_NAME_IMAGE_ANGLE} INTEGER," +
                 "${Images.COLUMN_NAME_IS_UPLOADED} INTEGER," +
+                "${Images.COLUMN_NAME_IMAGE_META} TEXT," +
                 "${Images.TABLE_NAME} TEXT)"
+
+
 
         private const val CREATE_PROJECTS_TABLE =  "CREATE TABLE ${Projects.TABLE_NAME} (" +
                 "${BaseColumns._ID} INTEGER PRIMARY KEY," +

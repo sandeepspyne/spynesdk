@@ -34,11 +34,13 @@ import android.widget.ArrayAdapter
 import androidx.constraintlayout.widget.ConstraintSet
 import com.spyneai.databinding.ItemTagsSpinnerBinding
 import kotlinx.android.synthetic.main.activity_sign_up.*
+import org.json.JSONObject
 
 
 class ConfirmTagsDialog : BaseDialogFragment<ShootViewModel, DialogConfirmTagsBinding>() {
 
     val TAG = "ConfirmTagsDialog"
+    var exteriorMeta : String = "sandeep singh"
 
     override fun onStart() {
         super.onStart()
@@ -59,6 +61,7 @@ class ConfirmTagsDialog : BaseDialogFragment<ShootViewModel, DialogConfirmTagsBi
 
         binding.btReshootImage.setOnClickListener{
             viewModel.isCameraButtonClickable = true
+
             val properties = Properties()
             properties.apply {
                 this["sku_id"] = viewModel.shootData.value?.sku_id
@@ -70,11 +73,6 @@ class ConfirmTagsDialog : BaseDialogFragment<ShootViewModel, DialogConfirmTagsBi
                 Events.RESHOOT,
                 properties)
 
-//            val file = File(viewModel.shootList.value?.get(viewModel.shootList.value!!.size - 1)?.capturedImage)
-//
-//            if (file.exists())
-//                file.delete()
-
             //remove last item from shoot list
             viewModel.shootList.value?.removeAt(viewModel.shootList.value!!.size - 1)
             dismiss()
@@ -82,6 +80,7 @@ class ConfirmTagsDialog : BaseDialogFragment<ShootViewModel, DialogConfirmTagsBi
 
         binding.btConfirmImage.setOnClickListener {
             val properties = Properties()
+
             properties.apply {
                 this["sku_id"] = viewModel.shootData.value?.sku_id
                 this["project_id"] = viewModel.shootData.value?.project_id
@@ -96,7 +95,7 @@ class ConfirmTagsDialog : BaseDialogFragment<ShootViewModel, DialogConfirmTagsBi
 
             when(viewModel.categoryDetails.value?.imageType) {
                 "Exterior" -> {
-                    uploadImages()
+                    uploadImages(exteriorMeta)
 
                     if (viewModel.shootNumber.value  == viewModel.exterirorAngles.value?.minus(1)){
                         checkInteriorShootStatus()
@@ -110,7 +109,7 @@ class ConfirmTagsDialog : BaseDialogFragment<ShootViewModel, DialogConfirmTagsBi
 
                 "Interior" -> {
                     updateTotalImages()
-                    uploadImages()
+                    uploadImages("")
 
                     if (viewModel.interiorShootNumber.value  == viewModel.interiorAngles.value?.minus(1)){
                         viewModel.isCameraButtonClickable = false
@@ -124,7 +123,7 @@ class ConfirmTagsDialog : BaseDialogFragment<ShootViewModel, DialogConfirmTagsBi
 
                 "Focus Shoot" -> {
                     updateTotalImages()
-                    uploadImages()
+                    uploadImages("")
 
                     if (viewModel.miscShootNumber.value  == viewModel.miscAngles.value?.minus(1)){
                         selectBackground()
@@ -205,7 +204,9 @@ class ConfirmTagsDialog : BaseDialogFragment<ShootViewModel, DialogConfirmTagsBi
         }
     }
 
-    private fun uploadImages() {
+    private fun uploadImages(meta : String) {
+        viewModel.shootData.value?.meta = meta
+
         viewLifecycleOwner.lifecycleScope.launch {
             viewModel.
             insertImage(viewModel.shootData.value!!)
@@ -289,8 +290,6 @@ class ConfirmTagsDialog : BaseDialogFragment<ShootViewModel, DialogConfirmTagsBi
                 else -> { }
             }
         })
-
-
     }
 
     private fun checkMiscShootStatus() {

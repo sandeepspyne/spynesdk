@@ -9,5 +9,6 @@ data class ShootData(
     @SerializedName("image_category") val image_category: String,
     @SerializedName("auth_key") val auth_key: String,
     val sequence: Int = 0,
-    val angle: Int = 0
+    val angle: Int = 0,
+    var meta: String = ""
     )

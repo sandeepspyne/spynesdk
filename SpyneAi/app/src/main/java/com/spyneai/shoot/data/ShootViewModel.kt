@@ -240,6 +240,7 @@ class ShootViewModel : ViewModel() {
         image.sequence = shootData.sequence
         image.skuName = sku.value?.skuName
         image.angle = shootData.angle
+        image.meta = shootData.meta
 
         localRepository.insertImage(image)
 
