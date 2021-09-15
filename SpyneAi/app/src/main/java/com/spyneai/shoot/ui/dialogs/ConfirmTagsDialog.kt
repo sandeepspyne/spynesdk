@@ -43,7 +43,8 @@ import org.json.JSONObject
 class ConfirmTagsDialog : BaseDialogFragment<ShootViewModel, DialogConfirmTagsBinding>() {
 
     val TAG = "ConfirmTagsDialog"
-    private val bindingMap = HashMap<String, HashMap<String,ViewBinding>>()
+    private val bindingMap = HashMap<String, HashMap<String,ArrayList<ViewBinding>>>()
+    private lateinit var inflator : LayoutInflater
 
     override fun onStart() {
         super.onStart()
@@ -57,6 +58,8 @@ class ConfirmTagsDialog : BaseDialogFragment<ShootViewModel, DialogConfirmTagsBi
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        inflator = LayoutInflater.from(requireContext())
 
         isCancelable = false
 
@@ -100,42 +103,49 @@ class ConfirmTagsDialog : BaseDialogFragment<ShootViewModel, DialogConfirmTagsBi
 
             when(viewModel.categoryDetails.value?.imageType) {
                 "Exterior" -> {
-                    uploadImages()
+                    if (tagsValid()){
+                        uploadImages()
 
-                    if (viewModel.shootNumber.value  == viewModel.exterirorAngles.value?.minus(1)){
-                        checkInteriorShootStatus()
-                        viewModel.isCameraButtonClickable = false
-                        dismiss()
-                    }else{
-                        viewModel.shootNumber.value = viewModel.shootNumber.value!! + 1
-                        dismiss()
+                        if (viewModel.shootNumber.value  == viewModel.exterirorAngles.value?.minus(1)){
+                            checkInteriorShootStatus()
+                            viewModel.isCameraButtonClickable = false
+                            dismiss()
+                        }else{
+                            viewModel.shootNumber.value = viewModel.shootNumber.value!! + 1
+                            dismiss()
+                        }
                     }
+
                 }
 
                 "Interior" -> {
-                    updateTotalImages()
-                    uploadImages()
+                    if (tagsValid()){
+                        updateTotalImages()
+                        uploadImages()
 
-                    if (viewModel.interiorShootNumber.value  == viewModel.interiorAngles.value?.minus(1)){
-                        viewModel.isCameraButtonClickable = false
-                        checkMiscShootStatus()
-                        dismiss()
-                    }else{
-                        viewModel.interiorShootNumber.value = viewModel.interiorShootNumber.value!! + 1
-                        dismiss()
+                        if (viewModel.interiorShootNumber.value  == viewModel.interiorAngles.value?.minus(1)){
+                            viewModel.isCameraButtonClickable = false
+                            checkMiscShootStatus()
+                            dismiss()
+                        }else{
+                            viewModel.interiorShootNumber.value = viewModel.interiorShootNumber.value!! + 1
+                            dismiss()
+                        }
                     }
                 }
 
                 "Focus Shoot" -> {
-                    updateTotalImages()
-                    uploadImages()
+                    if (tagsValid()){
+                        updateTotalImages()
+                        uploadImages()
 
-                    if (viewModel.miscShootNumber.value  == viewModel.miscAngles.value?.minus(1)){
-                        selectBackground()
-                        dismiss()
-                    }else{
-                        viewModel.miscShootNumber.value = viewModel.miscShootNumber.value!! + 1
-                        dismiss()
+                        if (viewModel.miscShootNumber.value  == viewModel.miscAngles.value?.minus(1)){
+                            selectBackground()
+                            dismiss()
+                        }else{
+                            viewModel.miscShootNumber.value = viewModel.miscShootNumber.value!! + 1
+                            dismiss()
+                        }
                     }
                 }
             }
@@ -164,12 +174,12 @@ class ConfirmTagsDialog : BaseDialogFragment<ShootViewModel, DialogConfirmTagsBi
             }
 
             "Interior" -> {
-                val name = overlayRes.data[viewModel.interiorShootNumber.value!!].angle_name
+                val name = overlayRes.data[viewModel.interiorShootNumber.value!!].display_name
                 binding.tvName.text = name
             }
 
             "Focus Shoot" -> {
-                val name = overlayRes.data[viewModel.miscShootNumber.value!!].angle_name
+                val name = overlayRes.data[viewModel.miscShootNumber.value!!].display_name
                 binding.tvName.text = name
             }
         }
@@ -179,58 +189,105 @@ class ConfirmTagsDialog : BaseDialogFragment<ShootViewModel, DialogConfirmTagsBi
         val response =  (viewModel.subCategoriesResponse.value as Resource.Success).value
 
         when(viewModel.categoryDetails.value?.imageType){
-            "Exterior","Interior" -> {
-                binding.llSpinners.visibility = View.GONE
-                binding.clNotes.visibility = View.VISIBLE
+            "Exterior" -> {
+               val tags = response.tags.exterior
+
+                tags?.forEach {
+                    addBinding(
+                        viewModel.categoryDetails.value!!.imageType!!,
+                        it.fieldType,
+                        getItemBinding(it.fieldType,it.fieldName,it.enumValues)
+                    )
+                }
             }
 
-            "Focus Shoot" -> {
-                binding.llSpinners.visibility = View.VISIBLE
-                binding.clNotes.visibility = View.VISIBLE
+            "Interior" -> {
+                val tags = response.tags.exterior
 
-                val tags = response.tags.focusShoot
-
-                tags.forEachIndexed { index, focusShoot ->
-
-                    val countriesList = ArrayList<String>()
-                    countriesList.add("Select")
-                    countriesList.addAll(focusShoot.enumValues)
-
-                    val spinnerAdapter = ArrayAdapter(
-                        requireContext(),
-                        R.layout.item_tags_spinner_text,
-                        countriesList
+                tags?.forEach {
+                    addBinding(
+                        viewModel.categoryDetails.value!!.imageType!!,
+                        it.fieldType,
+                        getItemBinding(it.fieldType,it.fieldName,it.enumValues)
                     )
-
-                    when(index){
-                        0 -> {
-                            binding.tvLocation.text = focusShoot.fieldName
-                            binding.spLocation.adapter = spinnerAdapter
-                        }
-
-                        1-> {
-                            binding.tvType.text = focusShoot.fieldName
-                            binding.spType.adapter = spinnerAdapter
-                        }
-
-                        2 -> {
-                            binding.tvSeverity.text = focusShoot.fieldName
-                            binding.spSeverity.adapter = spinnerAdapter
-                        }
-                    }
                 }
             }
 
 
+            "Focus Shoot" -> {
+                val tags = response.tags.focusShoot
+
+                tags?.forEach {
+                    addBinding(
+                        viewModel.categoryDetails.value!!.imageType!!,
+                        it.fieldType,
+                        getItemBinding(it.fieldType,it.fieldName,it.enumValues)
+                    )
+                }
+            }
         }
 
     }
 
-    private fun addBinding(category: String,filedType : String,binding : ViewBinding) {
-        if (bindingMap[category] == null)
-            bindingMap[category] = HashMap()
+    private fun getItemBinding(fieldType: String,fieldName : String,list : List<String>): ViewBinding {
+        var tempBinding : ViewBinding? = null
 
-        bindingMap[category]?.put(filedType,binding)
+        when(fieldType){
+            "dropdown" -> {
+                val layout = inflator.inflate(R.layout.item_tags_spinner,null)
+                val itemBinding = ItemTagsSpinnerBinding.bind(layout)
+
+                itemBinding.tvTitle.text = fieldName
+
+                val dataList = ArrayList<String>()
+                dataList.add("Select")
+
+                list.forEach {
+                    dataList.add(it)
+                }
+
+                val spinnerAdapter = ArrayAdapter(
+                    requireContext(),
+                    R.layout.item_tags_spinner_text,
+                    dataList
+                )
+
+                itemBinding.spinner.adapter = spinnerAdapter
+
+                tempBinding = itemBinding
+                binding.llTagsContainer.addView(layout)
+            }
+
+            "multiText" -> {
+                val layout = inflator.inflate(R.layout.item_tag_notes,null)
+                val itemBinding = ItemTagNotesBinding.bind(layout)
+
+                tempBinding = itemBinding
+                binding.llTagsContainer.addView(layout)
+            }
+        }
+
+        return tempBinding!!
+    }
+
+    private fun addBinding(category: String,filedType : String,binding : ViewBinding) {
+        if (bindingMap[category] == null){
+            bindingMap[category] = HashMap()
+        }
+
+        if (bindingMap[category]?.get(filedType) == null){
+            val map = bindingMap[category]
+            map!![filedType] = ArrayList()
+        }
+
+        val list = bindingMap[category]?.get(filedType)
+
+        list?.add(binding)
+
+        bindingMap[category]?.put(
+            filedType,
+            list!!
+        )
     }
 
     private fun uploadImages() {
@@ -245,36 +302,50 @@ class ConfirmTagsDialog : BaseDialogFragment<ShootViewModel, DialogConfirmTagsBi
     }
 
     private fun getMetaValue(): String {
-        var meta = ""
-        val response =  (viewModel.subCategoriesResponse.value as Resource.Success).value
         val json = JSONObject()
 
-        when(viewModel.categoryDetails.value?.imageType){
-            "Exterior","Interior" -> {
-                if (binding.etNotes.toString().isNotEmpty()){
-                    json.put("notes",binding.etNotes.text.toString())
-                    meta = json.toString()
+        val map = bindingMap.get(viewModel.categoryDetails.value?.imageType)
+
+        map?.keys?.forEachIndexed { index, type ->
+            when(type) {
+                "dropdown" -> {
+                    val list = map[type]
+
+                    list?.forEachIndexed { index, viewBinding ->
+                        val binding = viewBinding as ItemTagsSpinnerBinding
+
+                        if (binding.spinner.selectedItemPosition != 0)
+                            json.put(
+                                getTagKey(binding.tvTitle.text.toString()),
+                            binding.spinner.selectedItem.toString())
+                    }
                 }
-            }
 
-            "Focus Shoot" -> {
-                if (binding.spLocation.selectedItemPosition != 0)
-                    json.put("imperfection_location",binding.spLocation.selectedItem.toString())
+                "multiText" -> {
+                    val list = map[type]
 
-                if (binding.spType.selectedItemPosition != 0)
-                    json.put("imperfection_type",binding.spType.selectedItem.toString())
+                    list?.forEachIndexed { index, viewBinding ->
+                        val binding = viewBinding as ItemTagNotesBinding
 
-                if (binding.spSeverity.selectedItemPosition != 0)
-                    json.put("imperfection_severity",binding.spSeverity.selectedItem.toString())
-
-                if (binding.etNotes.toString().isNotEmpty())
-                    json.put("notes",binding.etNotes.text.toString())
-
-                meta = json.toString()
+                        if (binding.tvNotes.text.toString().isNotEmpty())
+                            json.put(
+                                getTagKey(binding.tvNotes.text.toString()),
+                                binding.etNotes.text.toString())
+                    }
+                }
             }
         }
 
-        return meta
+        return json.toString()
+    }
+
+    private fun getTagKey(text: String): String {
+        return when(text) {
+            "Imperfection location" -> "imperfection_location"
+            "Imperfection type" -> "imperfection_type"
+            "Imperfection Severity" -> "imperfection_severity"
+            else -> "notes"
+        }
     }
 
     private fun startService() {
@@ -391,24 +462,122 @@ class ConfirmTagsDialog : BaseDialogFragment<ShootViewModel, DialogConfirmTagsBi
             viewModel.selectBackground.value = true
     }
 
-    private fun tagsVaild() : Boolean {
-
-
-        when(viewModel.categoryDetails.value?.imageType){
+    private fun tagsValid() : Boolean {
+        val response =  (viewModel.subCategoriesResponse.value as Resource.Success).value
+        var isValidTag = true
+        when(viewModel.categoryDetails.value?.imageType) {
             "Exterior" -> {
+                val map = bindingMap.get(viewModel.categoryDetails.value?.imageType)
 
+                map?.keys?.forEachIndexed { index, type ->
+                    when(type) {
+                        "dropdown" -> {
+                            val list = map[type]
+
+                            list?.forEachIndexed { index, viewBinding ->
+                                if (response.tags.exterior.get(index).isRequired){
+                                    val binding = viewBinding as ItemTagsSpinnerBinding
+                                    if (binding.spinner.selectedItemPosition != 0){
+                                        isValidTag = false
+                                    }
+                                }
+
+                            }
+                        }
+
+                        "multiText" -> {
+                            val list = map[type]
+
+                            list?.forEachIndexed { index, viewBinding ->
+                                val s = ""
+                                if (response.tags.exterior.get(index).isRequired){
+                                    val binding = viewBinding as ItemTagNotesBinding
+                                    if (binding.etNotes.text.toString().isEmpty()){
+                                        binding.etNotes.error = "Please enter notes"
+                                        isValidTag = false
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
             }
 
             "Interior" -> {
+                val map = bindingMap.get(viewModel.categoryDetails.value?.imageType)
 
+                map?.keys?.forEachIndexed { index, type ->
+                    when(type) {
+                        "dropdown" -> {
+                            val list = map[type]
+
+                            list?.forEachIndexed { index, viewBinding ->
+                                if (response.tags.interior.get(index).isRequired){
+                                    val binding = viewBinding as ItemTagsSpinnerBinding
+                                    if (binding.spinner.selectedItemPosition != 0){
+                                        isValidTag = false
+                                    }
+                                }
+
+                            }
+                        }
+
+                        "multiText" -> {
+                            val list = map[type]
+
+                            list?.forEachIndexed { index, viewBinding ->
+                                if (response.tags.interior.get(index).isRequired){
+                                    val binding = viewBinding as ItemTagNotesBinding
+                                    if (binding.etNotes.text.toString().isEmpty()){
+                                        binding.etNotes.error = "Please enter notes"
+                                        isValidTag = false
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
             }
 
-            "Focus Shoot" -> {
+            "Focused" -> {
+                val map = bindingMap.get(viewModel.categoryDetails.value?.imageType)
 
+                map?.keys?.forEachIndexed { index, type ->
+                    when(type) {
+                        "dropdown" -> {
+                            val list = map[type]
+
+                            list?.forEachIndexed { index, viewBinding ->
+                                if (response.tags.focusShoot.get(index).isRequired){
+                                    val binding = viewBinding as ItemTagsSpinnerBinding
+                                    if (binding.spinner.selectedItemPosition != 0){
+                                        isValidTag = false
+                                    }
+                                }
+                            }
+                        }
+
+                        "multiText" -> {
+                            val list = map[type]
+
+                            list?.forEachIndexed { index, viewBinding ->
+                                if (response.tags.focusShoot.get(index).isRequired){
+                                    val binding = viewBinding as ItemTagNotesBinding
+                                    if (binding.etNotes.text.toString().isEmpty()){
+                                        binding.etNotes.error = "Please enter notes"
+                                        isValidTag = false
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
             }
         }
 
-        return false
+
+        val s = ""
+        return isValidTag
     }
 
     override fun getViewModel() = ShootViewModel::class.java

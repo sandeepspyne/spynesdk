@@ -144,7 +144,6 @@ class ImageUploader(val context: Context,
                            selectLastImageAndUpload(imageType,retryCount+1)
                        }
                    }
-
                }else{
                    logUpload("All Images uploaded")
                    if (imageType == AppConstants.REGULAR){
@@ -167,9 +166,7 @@ class ImageUploader(val context: Context,
                           //upload images clicked while service uploading skipped images
                           selectLastImageAndUpload(AppConstants.REGULAR,0)
                       }
-
                    }
-
                }
            }
        }else {
