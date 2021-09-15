@@ -59,6 +59,16 @@
 
     </androidx.appcompat.widget.Toolbar>
 
+    <androidx.camera.view.PreviewView
+        android:id="@+id/viewFinder"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:visibility="invisible"
+        app:layout_constraintDimensionRatio="3:4"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/my_toolbar" />
+
 
     <LinearLayout
         android:id="@+id/llCapture"
@@ -121,21 +131,22 @@
    <RelativeLayout
        android:id="@+id/rlCapturedImages"
        android:layout_width="match_parent"
-       android:layout_height="125dp"
-       android:background="@color/black"
+       android:layout_height="0dp"
+       android:background="@color/transparent"
        app:layout_constraintLeft_toLeftOf="parent"
        app:layout_constraintRight_toRightOf="parent"
-       app:layout_constraintBottom_toTopOf="@+id/llCapture">
+       app:layout_constraintBottom_toTopOf="@+id/llCapture"
+       app:layout_constraintTop_toBottomOf="@+id/viewFinder">
 
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/rvCapturedImages"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintBottom_toTopOf="parent"
-        app:layout_constraintTop_toBottomOf="parent"
-        android:background="@color/black"/>
+       <androidx.recyclerview.widget.RecyclerView
+           android:id="@+id/rvCapturedImages"
+           android:layout_width="match_parent"
+           android:layout_height="wrap_content"
+           android:background="@color/black"
+           app:layout_constraintBottom_toTopOf="parent"
+           app:layout_constraintLeft_toLeftOf="parent"
+           app:layout_constraintRight_toRightOf="parent"
+           app:layout_constraintTop_toBottomOf="parent" />
 
    </RelativeLayout>
 

@@ -42,6 +42,8 @@ class ShootViewModel : ViewModel() {
     val isSubCatAngleConfirmed: MutableLiveData<Boolean> = MutableLiveData()
 
     val startInteriorShoot: MutableLiveData<Boolean> = MutableLiveData()
+    val begin: MutableLiveData<Long> = MutableLiveData()
+    val end: MutableLiveData<Long> = MutableLiveData()
 
     val totalSkuCaptured: MutableLiveData<String> = MutableLiveData()
     val totalImageCaptured: MutableLiveData<String> = MutableLiveData()

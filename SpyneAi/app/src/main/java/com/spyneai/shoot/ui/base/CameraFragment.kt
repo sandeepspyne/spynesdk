@@ -71,6 +71,9 @@ class CameraFragment : BaseFragment<ShootViewModel, FragmentCameraBinding>(), Pi
     var haveGyrometer = false
     var isSensorAvaliable = false
     var rotation = 0
+    var end : Long = 0
+    var begin : Long = 0
+    var mid : Long = 0
 
     companion object {
         private const val RATIO_4_3_VALUE = 4.0 / 3.0 // aspect ratio 4x3
@@ -536,8 +539,8 @@ class CameraFragment : BaseFragment<ShootViewModel, FragmentCameraBinding>(), Pi
                 }
                 getString(R.string.app_name) == "Swiggy" -> {
                     Preview.Builder()
-                        .setTargetAspectRatio(aspectRatio) // set the camera aspect ratio
-                        //   .setTargetRotation(rotation) // set the camera rotation
+//                        .setTargetAspectRatio(aspectRatio) // set the camera aspect ratio
+                        .setTargetAspectRatio(AspectRatio.RATIO_4_3)
                         .build()
                         .also {
                             it.setSurfaceProvider(binding.viewFinder.surfaceProvider)
@@ -545,8 +548,8 @@ class CameraFragment : BaseFragment<ShootViewModel, FragmentCameraBinding>(), Pi
                 }
                 else -> {
                     Preview.Builder()
-                        .setTargetAspectRatio(aspectRatio) // set the camera aspect ratio
-                        //   .setTargetRotation(rotation) // set the camera rotation
+//                        .setTargetAspectRatio(aspectRatio) // set the camera aspect ratio
+                        .setTargetAspectRatio(AspectRatio.RATIO_4_3)
                         .build()
                         .also {
                             it.setSurfaceProvider(binding.viewFinder.surfaceProvider)
@@ -556,25 +559,6 @@ class CameraFragment : BaseFragment<ShootViewModel, FragmentCameraBinding>(), Pi
 
             //for exact image cropping
             val viewPort = binding.viewFinder?.viewPort
-
-//            var orientationEventListener = object : OrientationEventListener(requireContext()) {
-//                override fun onOrientationChanged(orientation: Int) {
-//                    // Monitors orientation values to determine the target rotation value
-//                    rotation = if (orientation >= 45 && orientation < 135) {
-//                        Toast.makeText(requireContext(), "orintation- "+orientation, Toast.LENGTH_SHORT).show()
-//                        Surface.ROTATION_270
-//                    } else if (orientation >= 135 && orientation < 225) {
-//                        Toast.makeText(requireContext(), "orintation- "+orientation, Toast.LENGTH_SHORT).show()
-//                        Surface.ROTATION_180
-//                    } else if (orientation >= 225 && orientation < 315) {
-//                        Toast.makeText(requireContext(), "orintation- "+orientation, Toast.LENGTH_SHORT).show()
-//                        Surface.ROTATION_90
-//                    } else {
-//                        Toast.makeText(requireContext(), "orintation- "+orientation, Toast.LENGTH_SHORT).show()
-//                        Surface.ROTATION_0
-//                    }
-//                }
-//            }
 
             imageCapture = if (getString(R.string.app_name) == AppConstants.KARVI) {
                 ImageCapture.Builder()
@@ -586,7 +570,7 @@ class CameraFragment : BaseFragment<ShootViewModel, FragmentCameraBinding>(), Pi
                 ImageCapture.Builder()
                     .setCaptureMode(ImageCapture.CAPTURE_MODE_MAXIMIZE_QUALITY)
                     .setFlashMode(flashMode)
-                    .setTargetAspectRatio(aspectRatio)
+                    .setTargetAspectRatio(AspectRatio.RATIO_4_3)
                     .setTargetRotation(ROTATION_90)
                     // set the capture aspect ratio
                     // .setTargetRotation(rotation) // set the capture rotation
@@ -595,7 +579,7 @@ class CameraFragment : BaseFragment<ShootViewModel, FragmentCameraBinding>(), Pi
                 ImageCapture.Builder()
                     .setCaptureMode(ImageCapture.CAPTURE_MODE_MAXIMIZE_QUALITY)
                     .setFlashMode(flashMode)
-                    .setTargetAspectRatio(aspectRatio)
+                    .setTargetAspectRatio(AspectRatio.RATIO_4_3)
                     .setTargetRotation(ROTATION_90)
                     // set the capture aspect ratio
                     // .setTargetRotation(rotation) // set the capture rotation
@@ -613,7 +597,7 @@ class CameraFragment : BaseFragment<ShootViewModel, FragmentCameraBinding>(), Pi
                     UseCaseGroup.Builder()
                         .addUseCase(preview)
                         .addUseCase(imageCapture!!)
-                        .setViewPort(viewPort!!)
+//                        .setViewPort(viewPort!!)
                         .build()
                 }
             }
@@ -710,6 +694,8 @@ class CameraFragment : BaseFragment<ShootViewModel, FragmentCameraBinding>(), Pi
     }
 
     private fun takePhoto() {
+        begin = System.currentTimeMillis()
+        viewModel.begin.value = begin
         // Get a stable reference of the modifiable image capture use case
         val imageCapture1 = imageCapture ?: return
 
@@ -900,9 +886,17 @@ class CameraFragment : BaseFragment<ShootViewModel, FragmentCameraBinding>(), Pi
                 override fun onImageSaved(output: ImageCapture.OutputFileResults) {
                     if (output.savedUri == null) {
                         if (file != null)
+                            mid = System.currentTimeMillis()
+                        val difference = (mid - begin)/1000.toFloat()
+                        Toast.makeText(requireContext(), "image clicked- "+difference, Toast.LENGTH_LONG).show()
+                        log("onImageSaved- "+difference)
                             addShootItem(file.path)
                     } else {
                         try {
+                            mid = System.currentTimeMillis()
+                            val difference = (mid - begin)/1000.toFloat()
+                            Toast.makeText(requireContext(), "image clicked- "+difference, Toast.LENGTH_LONG).show()
+                            log("onImageSaved2- "+difference)
                             var file = output.savedUri!!.toFile()
                             addShootItem(file.path)
                         } catch (ex: IllegalArgumentException) {
@@ -1332,6 +1326,10 @@ class CameraFragment : BaseFragment<ShootViewModel, FragmentCameraBinding>(), Pi
     }
 
     private fun addShootItem(capturedImage: String) {
+        end = System.currentTimeMillis()
+        val difference = (end - begin)/1000.toFloat()
+        Toast.makeText(requireContext(), "addShootIteamCalled- "+difference, Toast.LENGTH_LONG).show()
+        log("addShootIteamCalled- "+difference)
         viewModel.showConfirmReshootDialog.value = true
 
         //play shutter sound
