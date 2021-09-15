@@ -7,6 +7,7 @@ import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
 import android.os.Handler
+import android.text.TextUtils.replace
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -16,6 +17,7 @@ import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
+import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -94,16 +96,15 @@ class HomeDashboardFragment :
         PACKAGE_NAME = requireContext().getPackageName().toString()
         appUpdateManager = AppUpdateManagerFactory.create(requireContext())
 
-
-        if (PACKAGE_NAME.equals("com.spyneai.swiggy.debug")) {
+//        if (PACKAGE_NAME.equals("com.spyneai.swiggy.debug")) {
 //            newUserCreditDialog()
             repeatRefreshData()
             setSliderRecycler()
             lisners()
             welcomeHomeText()
             getCategories()
-        } else
-            autoUpdates()
+//        } else
+//            autoUpdates()
     }
 
     private fun autoUpdates() {

@@ -2,7 +2,6 @@ package com.spyneai.orders.ui.fragment
 
 import android.os.Bundle
 import android.os.Handler
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -10,17 +9,14 @@ import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.posthog.android.Properties
-import com.spyneai.R
 import com.spyneai.base.BaseFragment
 import com.spyneai.base.network.Resource
 import com.spyneai.captureFailureEvent
 import com.spyneai.dashboard.ui.handleApiError
-import com.spyneai.databinding.FragmentOngoingOrdersBinding
 import com.spyneai.databinding.FragmentOngoingProjectsBinding
 import com.spyneai.needs.AppConstants
 import com.spyneai.needs.Utilities
 import com.spyneai.orders.data.viewmodel.MyOrdersViewModel
-import com.spyneai.orders.ui.adapter.MyCompletedProjectsAdapter
 import com.spyneai.orders.ui.adapter.MyOngoingProjectAdapter
 import com.spyneai.posthog.Events
 import com.spyneai.shoot.utils.log
@@ -37,6 +33,11 @@ class OngoingProjectsFragment : BaseFragment<MyOrdersViewModel, FragmentOngoingP
         super.onViewCreated(view, savedInstanceState)
 
         handler = Handler()
+
+        binding.swiperefreshOngoing.setOnRefreshListener {
+            repeatRefreshData()
+            binding.swiperefreshOngoing.isRefreshing = false
+        }
 
         binding!!.rvMyOngoingProjects.apply {
             layoutManager =
@@ -107,7 +108,7 @@ class OngoingProjectsFragment : BaseFragment<MyOrdersViewModel, FragmentOngoingP
                     repeatRefreshData()
             }
             if (runnable != null)
-                handler.postDelayed(runnable!!,15000)
+                handler.postDelayed(runnable!!,10000)
         }catch (e : IllegalArgumentException){
             e.printStackTrace()
         }catch (e : Exception){

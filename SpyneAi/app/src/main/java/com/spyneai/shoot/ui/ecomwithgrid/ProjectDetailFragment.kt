@@ -30,6 +30,11 @@ class ProjectDetailFragment : BaseFragment<ShootViewModel, FragmentProjectDetail
 
         handler = Handler()
 
+//        binding.swiperefreshProject.setOnRefreshListener {
+//            repeatRefreshData()
+//            binding.swiperefreshProject.isRefreshing = false
+//        }
+
         when (getString(R.string.app_name)) {
             AppConstants.SWIGGY -> {
                 binding.btHome.text = "Select Background"
