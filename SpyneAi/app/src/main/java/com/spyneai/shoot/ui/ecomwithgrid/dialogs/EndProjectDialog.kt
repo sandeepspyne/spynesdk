@@ -11,6 +11,7 @@ import com.spyneai.databinding.EndProjectDialogBinding
 import com.spyneai.needs.AppConstants
 import com.spyneai.needs.Utilities
 import com.spyneai.shoot.data.ShootViewModel
+import com.spyneai.shoot.utils.log
 
 
 class EndProjectDialog : BaseDialogFragment<ShootViewModel, EndProjectDialogBinding>() {
@@ -36,8 +37,6 @@ class EndProjectDialog : BaseDialogFragment<ShootViewModel, EndProjectDialogBind
                     binding.tvTotalSkuCaptured.text = it.value.data.total_sku.toString()
                     binding.tvTotalImageCaptured.text = it.value.data.total_images.toString()
 
-
-
                 }
                 is Resource.Loading -> {
 
@@ -52,18 +51,27 @@ class EndProjectDialog : BaseDialogFragment<ShootViewModel, EndProjectDialogBind
 
         binding.btNo.setOnClickListener {
             dismiss()
+            log("end project dialog dismiss- NO")
         }
 
         binding.btYes.setOnClickListener {
             viewModel.updateProjectStatus(viewModel.sku.value?.projectId!!)
             viewModel.showProjectDetail.value = true
             dismiss()
+            log("end project dialog dismiss- Yes")
         }
 
         binding.ivCloseDialog.setOnClickListener {
             dismiss()
+            log("end project dialog dismiss- Image")
         }
 
+    }
+
+    override fun onStop() {
+        super.onStop()
+        log("onStop(EndProjectDialog) called")
+        dismissAllowingStateLoss()
     }
 
 

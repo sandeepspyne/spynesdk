@@ -182,6 +182,7 @@ class SkuDetailFragment : BaseFragment<ShootViewModel, FragmentSkuDetailBinding>
 
     private fun processRequest() {
         if (endProject) {
+            log("end project dialog called")
             EndProjectDialog().show(requireFragmentManager(), "EndProjectDialog")
         } else {
             observeUpdateTotalFrames()
@@ -204,34 +205,6 @@ class SkuDetailFragment : BaseFragment<ShootViewModel, FragmentSkuDetailBinding>
             )
                 viewModel.addMoreAngle.value = true
         }
-
-        binding.tvEndProject.setOnClickListener {
-            viewModel.updateTotalFrames(
-                viewModel.sku.value?.skuId.toString(),
-                totalSkuImages.toString(),
-                Utilities.getPreference(requireContext(), AppConstants.AUTH_KEY).toString()
-            )
-            viewModel.updateTotalFramesRes.observe(viewLifecycleOwner, {
-                when (it) {
-                    is Resource.Success -> {
-                        EndProjectDialog().show(requireFragmentManager(), "EndProjectDialog")
-                    }
-
-                    is Resource.Failure -> {
-                        requireContext().captureFailureEvent(
-                            Events.GET_BACKGROUND_FAILED, Properties(),
-                            it.errorMessage!!
-                        )
-                        handleApiError(it) {}
-                    }
-
-                    is Resource.Loading -> {
-
-                    }
-                }
-            })
-        }
-
     }
 
     private fun observeUpdateTotalFrames() {
