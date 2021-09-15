@@ -151,15 +151,27 @@ class ConfirmTagsDialog : BaseDialogFragment<ShootViewModel, DialogConfirmTagsBi
             .skipMemoryCache(true)
             .into(binding.ivClicked)
 
-        if (viewModel.categoryDetails.value?.imageType == "Exterior"){
-            val overlay = overlayRes.data[viewModel.shootNumber.value!!].display_thumbnail
-            val name = overlayRes.data[viewModel.shootNumber.value!!].display_name
-            binding.tvName.text = name
+        when(viewModel.categoryDetails.value?.imageType) {
+            "Exterior" -> {
+                val overlay = overlayRes.data[viewModel.shootNumber.value!!].display_thumbnail
+                val name = overlayRes.data[viewModel.shootNumber.value!!].display_name
+                binding.tvName.text = name
 
-            if (getString(R.string.app_name) == AppConstants.KARVI)
-                binding.ivOverlay.visibility = View.GONE
-            else
-                setOverlay(binding.ivOverlay,overlay)
+                if (getString(R.string.app_name) == AppConstants.KARVI)
+                    binding.ivOverlay.visibility = View.GONE
+                else
+                    setOverlay(binding.ivOverlay,overlay)
+            }
+
+            "Interior" -> {
+                val name = overlayRes.data[viewModel.interiorShootNumber.value!!].angle_name
+                binding.tvName.text = name
+            }
+
+            "Focus Shoot" -> {
+                val name = overlayRes.data[viewModel.miscShootNumber.value!!].angle_name
+                binding.tvName.text = name
+            }
         }
     }
 
@@ -167,80 +179,49 @@ class ConfirmTagsDialog : BaseDialogFragment<ShootViewModel, DialogConfirmTagsBi
         val response =  (viewModel.subCategoriesResponse.value as Resource.Success).value
 
         when(viewModel.categoryDetails.value?.imageType){
-            "Exterior" -> {
-                val tags = response.tags.exterior
+            "Exterior","Interior" -> {
+                binding.llSpinners.visibility = View.GONE
+                binding.clNotes.visibility = View.VISIBLE
+            }
 
-                tags.forEach {tag ->
-                    when(tag.fieldType){
-                        "dropdown" -> {
-                            val layout = LayoutInflater.from(requireContext()).inflate(
-                                R.layout.item_tags_spinner,
-                                null
-                            )
-                            val itemBinding = ItemTagsSpinnerBinding.bind(layout)
-                            //add binding to map
-                            addBinding("Exterior","dropdown",itemBinding)
+            "Focus Shoot" -> {
+                binding.llSpinners.visibility = View.VISIBLE
+                binding.clNotes.visibility = View.VISIBLE
 
-                            itemBinding.tvTitle.text = tag.fieldName
+                val tags = response.tags.focusShoot
 
-                            val countriesList = ArrayList<String>()
-                            countriesList.add("Select")
-                            countriesList.addAll(tag.enumValues)
+                tags.forEachIndexed { index, focusShoot ->
 
-                            val spinnerAdapter = ArrayAdapter(
-                                requireContext(),
-                                R.layout.item_tags_spinner_text,
-                                countriesList
-                            )
+                    val countriesList = ArrayList<String>()
+                    countriesList.add("Select")
+                    countriesList.addAll(focusShoot.enumValues)
 
-                            itemBinding.tvImageCategory.adapter = spinnerAdapter
-                            binding.llTagsContainer.addView(layout)
+                    val spinnerAdapter = ArrayAdapter(
+                        requireContext(),
+                        R.layout.item_tags_spinner_text,
+                        countriesList
+                    )
+
+                    when(index){
+                        0 -> {
+                            binding.tvLocation.text = focusShoot.fieldName
+                            binding.spLocation.adapter = spinnerAdapter
                         }
 
-                        "multiText" -> {
-                            val multiText = LayoutInflater.from(requireContext()).inflate(
-                                R.layout.item_tag_notes,
-                                null
-                            )
-
-                            val itemTagsBinding = ItemTagNotesBinding.bind(multiText)
-                            addBinding("Exterior","multiText",itemTagsBinding)
-
-                            binding.llTagsContainer.addView(multiText)
+                        1-> {
+                            binding.tvType.text = focusShoot.fieldName
+                            binding.spType.adapter = spinnerAdapter
                         }
 
+                        2 -> {
+                            binding.tvSeverity.text = focusShoot.fieldName
+                            binding.spSeverity.adapter = spinnerAdapter
+                        }
                     }
                 }
             }
 
-            "Interior" ->{
-                repeat(3){
-                    //inflate layout
-                    val layout = LayoutInflater.from(requireContext()).inflate(R.layout.item_tags_spinner,null)
-                    val itemBinding = ItemTagsSpinnerBinding.bind(layout)
 
-                    itemBinding.tvTitle.text = "Sandeep Singh"
-
-                    var countriesList = ArrayList<String>()
-                    countriesList.add("Select")
-                    countriesList.add("Front Bumper")
-                    countriesList.add("Right Running Board")
-                    countriesList.add("Left Running Board")
-                    countriesList.add("Bonnet")
-
-                    val spinnerAdapter = ArrayAdapter(
-                        requireContext(),
-                        android.R.layout.simple_spinner_dropdown_item,
-                        countriesList
-                    )
-
-                    spinnerAdapter.addAll(countriesList)
-
-                    itemBinding.tvImageCategory.adapter = spinnerAdapter
-
-                    binding.llTagsContainer.addView(layout)
-                }
-            }
         }
 
     }
@@ -266,33 +247,30 @@ class ConfirmTagsDialog : BaseDialogFragment<ShootViewModel, DialogConfirmTagsBi
     private fun getMetaValue(): String {
         var meta = ""
         val response =  (viewModel.subCategoriesResponse.value as Resource.Success).value
+        val json = JSONObject()
 
         when(viewModel.categoryDetails.value?.imageType){
-            "Exterior" -> {
-                bindingMap["Exterior"]?.let {
-                    it.keys.forEach {key ->
-                        when(key){
-                            "dropdown" -> {
-
-                            }
-
-                            "multiText" -> {
-                                val multiTextBinding = it[key] as ItemTagNotesBinding
-                                val json = JSONObject()
-                                json.put("notes",multiTextBinding.etNotes.text.toString())
-                                meta = json.toString()
-                            }
-                        }
-                    }
+            "Exterior","Interior" -> {
+                if (binding.etNotes.toString().isNotEmpty()){
+                    json.put("notes",binding.etNotes.text.toString())
+                    meta = json.toString()
                 }
             }
 
-            "Interior" -> {
-
-            }
-
             "Focus Shoot" -> {
+                if (binding.spLocation.selectedItemPosition != 0)
+                    json.put("imperfection_location",binding.spLocation.selectedItem.toString())
 
+                if (binding.spType.selectedItemPosition != 0)
+                    json.put("imperfection_type",binding.spType.selectedItem.toString())
+
+                if (binding.spSeverity.selectedItemPosition != 0)
+                    json.put("imperfection_severity",binding.spSeverity.selectedItem.toString())
+
+                if (binding.etNotes.toString().isNotEmpty())
+                    json.put("notes",binding.etNotes.text.toString())
+
+                meta = json.toString()
             }
         }
 

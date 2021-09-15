@@ -48,7 +48,9 @@ data class NewSubCatResponse(
         @SerializedName("Exterior")
         val exterior: List<Exterior>,
         @SerializedName("Focus Shoot")
-        val focusShoot: List<FocusShoot>
+        val focusShoot: List<FocusShoot>,
+        @SerializedName("Interior")
+        val interior: List<Interior>
     ) {
         data class Exterior(
             @SerializedName("default_value")
@@ -64,6 +66,19 @@ data class NewSubCatResponse(
         )
 
         data class FocusShoot(
+            @SerializedName("default_value")
+            val defaultValue: String,
+            @SerializedName("enum_values")
+            val enumValues: List<String>,
+            @SerializedName("field_name")
+            val fieldName: String,
+            @SerializedName("field_type")
+            val fieldType: String,
+            @SerializedName("is_required")
+            val isRequired: Boolean
+        )
+
+        data class Interior(
             @SerializedName("default_value")
             val defaultValue: String,
             @SerializedName("enum_values")
