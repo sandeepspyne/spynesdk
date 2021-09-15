@@ -32,8 +32,10 @@ import android.util.Log
 
 import android.view.ViewGroup
 import android.widget.ArrayAdapter
+import android.widget.Toast
 import androidx.constraintlayout.widget.ConstraintSet
 import androidx.viewbinding.ViewBinding
+import com.spyneai.dashboard.response.NewSubCatResponse
 import com.spyneai.databinding.ItemTagNotesBinding
 import com.spyneai.databinding.ItemTagsSpinnerBinding
 import kotlinx.android.synthetic.main.activity_sign_up.*
@@ -477,8 +479,10 @@ class ConfirmTagsDialog : BaseDialogFragment<ShootViewModel, DialogConfirmTagsBi
                             list?.forEachIndexed { index, viewBinding ->
                                 if (response.tags.exterior.get(index).isRequired){
                                     val binding = viewBinding as ItemTagsSpinnerBinding
-                                    if (binding.spinner.selectedItemPosition != 0){
+                                    if (binding.spinner.selectedItemPosition == 0){
+                                        showErrorToast(response.tags.exterior.get(index).fieldName)
                                         isValidTag = false
+                                        return isValidTag
                                     }
                                 }
 
@@ -489,7 +493,6 @@ class ConfirmTagsDialog : BaseDialogFragment<ShootViewModel, DialogConfirmTagsBi
                             val list = map[type]
 
                             list?.forEachIndexed { index, viewBinding ->
-                                val s = ""
                                 if (response.tags.exterior.get(index).isRequired){
                                     val binding = viewBinding as ItemTagNotesBinding
                                     if (binding.etNotes.text.toString().isEmpty()){
@@ -514,11 +517,12 @@ class ConfirmTagsDialog : BaseDialogFragment<ShootViewModel, DialogConfirmTagsBi
                             list?.forEachIndexed { index, viewBinding ->
                                 if (response.tags.interior.get(index).isRequired){
                                     val binding = viewBinding as ItemTagsSpinnerBinding
-                                    if (binding.spinner.selectedItemPosition != 0){
+                                    if (binding.spinner.selectedItemPosition == 0){
+                                        showErrorToast(response.tags.interior.get(index).fieldName)
                                         isValidTag = false
+                                        return isValidTag
                                     }
                                 }
-
                             }
                         }
 
@@ -531,6 +535,7 @@ class ConfirmTagsDialog : BaseDialogFragment<ShootViewModel, DialogConfirmTagsBi
                                     if (binding.etNotes.text.toString().isEmpty()){
                                         binding.etNotes.error = "Please enter notes"
                                         isValidTag = false
+                                        return isValidTag
                                     }
                                 }
                             }
@@ -539,7 +544,7 @@ class ConfirmTagsDialog : BaseDialogFragment<ShootViewModel, DialogConfirmTagsBi
                 }
             }
 
-            "Focused" -> {
+            "Focus Shoot" -> {
                 val map = bindingMap.get(viewModel.categoryDetails.value?.imageType)
 
                 map?.keys?.forEachIndexed { index, type ->
@@ -548,10 +553,13 @@ class ConfirmTagsDialog : BaseDialogFragment<ShootViewModel, DialogConfirmTagsBi
                             val list = map[type]
 
                             list?.forEachIndexed { index, viewBinding ->
+                                val s = ""
                                 if (response.tags.focusShoot.get(index).isRequired){
                                     val binding = viewBinding as ItemTagsSpinnerBinding
-                                    if (binding.spinner.selectedItemPosition != 0){
+                                    if (binding.spinner.selectedItemPosition == 0){
+                                        showErrorToast(response.tags.focusShoot.get(index).fieldName)
                                         isValidTag = false
+                                        return isValidTag
                                     }
                                 }
                             }
@@ -561,7 +569,7 @@ class ConfirmTagsDialog : BaseDialogFragment<ShootViewModel, DialogConfirmTagsBi
                             val list = map[type]
 
                             list?.forEachIndexed { index, viewBinding ->
-                                if (response.tags.focusShoot.get(index).isRequired){
+                                if (isRequired(response.tags.focusShoot,"multiText")){
                                     val binding = viewBinding as ItemTagNotesBinding
                                     if (binding.etNotes.text.toString().isEmpty()){
                                         binding.etNotes.error = "Please enter notes"
@@ -576,8 +584,32 @@ class ConfirmTagsDialog : BaseDialogFragment<ShootViewModel, DialogConfirmTagsBi
         }
 
 
-        val s = ""
         return isValidTag
+    }
+
+    private fun isRequired(
+        focusShoot: List<NewSubCatResponse.Tags.FocusShoot>,
+        type: String
+    ): Boolean {
+        var isRequired = false
+
+        focusShoot.forEach {
+            if (it.fieldType == type && it.isRequired)
+                isRequired = true
+        }
+
+        return isRequired
+    }
+
+    private fun showErrorToast(fieldName: String) {
+        val text = when(fieldName) {
+            "Imperfection location" -> "Please select imperfection location"
+            "Imperfection type" -> "Please select imperfection type"
+            "Imperfection Severity" -> "Please select imperfection severity"
+            else -> "notes"
+        }
+
+        Toast.makeText(requireContext(),text,Toast.LENGTH_LONG).show()
     }
 
     override fun getViewModel() = ShootViewModel::class.java
