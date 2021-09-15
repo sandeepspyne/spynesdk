@@ -1079,6 +1079,25 @@ class CameraFragment : BaseFragment<ShootViewModel, FragmentCameraBinding>(), Pi
                     }
                 }
             }}
+            AppConstants.CARS24_INDIA,
+            AppConstants.CARS24-> {
+                if ((roll >= -100 && roll <= -80) && (pitch >= -3 && pitch <= 3)) {
+                    gyroMeterOnLevel(true)
+                } else {
+                    gyroMeterOffLevel()
+
+                    if (movearrow)
+                        moveArrow(roll + 90)
+
+                    if (rotatedarrow) {
+                        if (pitch > 0) {
+                            rotateArrow(pitch.minus(0).roundToInt())
+                        } else {
+                            rotateArrow(pitch.plus(0).roundToInt())
+                        }
+                    }
+                }
+            }
             else -> {
                 if ((roll >= -100 && roll <= -80) && (pitch >= -5 && pitch <= 5)) {
                     gyroMeterOnLevel(true)
