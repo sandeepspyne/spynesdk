@@ -98,12 +98,13 @@ class ImageUploader(val context: Context,
                        )
 
                     val uploadType = if (retryCount == 0) "Direct" else "Retry"
+                   val meta = if (image.meta == null) "".toRequestBody(MultipartBody.FORM) else image.meta?.toRequestBody(MultipartBody.FORM)
 
                    var response = if (image.categoryName == "360int"){
                        shootRepository.uploadImage(projectId!!,
                            skuId!!, imageCategory!!,authKey, uploadType.toRequestBody(MultipartBody.FORM),
                            image.sequence!!,
-                           image.meta.toRequestBody(MultipartBody.FORM),
+                           meta!!,
                            imageFile)
                    }else if (BaseApplication.getContext().getString(R.string.app_name) == AppConstants.SWIGGY){
                        shootRepository.uploadImageWithAngle(
@@ -120,7 +121,7 @@ class ImageUploader(val context: Context,
                        shootRepository.uploadImage(projectId!!,
                            skuId!!, imageCategory!!,authKey, uploadType.toRequestBody(MultipartBody.FORM),
                            image.sequence!!,
-                           image.meta.toRequestBody(MultipartBody.FORM),
+                           meta!!,
                            imageFile)
                    }
 
