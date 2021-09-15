@@ -28,10 +28,13 @@ import com.spyneai.service.log
 import com.spyneai.shoot.data.ShootViewModel
 import kotlinx.coroutines.launch
 import android.graphics.drawable.ColorDrawable
+import android.util.Log
 
 import android.view.ViewGroup
 import android.widget.ArrayAdapter
 import androidx.constraintlayout.widget.ConstraintSet
+import androidx.viewbinding.ViewBinding
+import com.spyneai.databinding.ItemTagNotesBinding
 import com.spyneai.databinding.ItemTagsSpinnerBinding
 import kotlinx.android.synthetic.main.activity_sign_up.*
 import org.json.JSONObject
@@ -40,7 +43,7 @@ import org.json.JSONObject
 class ConfirmTagsDialog : BaseDialogFragment<ShootViewModel, DialogConfirmTagsBinding>() {
 
     val TAG = "ConfirmTagsDialog"
-    var exteriorMeta : String = "sandeep singh"
+    private val bindingMap = HashMap<String, HashMap<String,ViewBinding>>()
 
     override fun onStart() {
         super.onStart()
@@ -56,6 +59,8 @@ class ConfirmTagsDialog : BaseDialogFragment<ShootViewModel, DialogConfirmTagsBi
         super.onViewCreated(view, savedInstanceState)
 
         isCancelable = false
+
+        binding.tvImageCategory.text = viewModel.categoryDetails.value?.imageType
 
         setTagsData()
 
@@ -95,7 +100,7 @@ class ConfirmTagsDialog : BaseDialogFragment<ShootViewModel, DialogConfirmTagsBi
 
             when(viewModel.categoryDetails.value?.imageType) {
                 "Exterior" -> {
-                    uploadImages(exteriorMeta)
+                    uploadImages()
 
                     if (viewModel.shootNumber.value  == viewModel.exterirorAngles.value?.minus(1)){
                         checkInteriorShootStatus()
@@ -109,7 +114,7 @@ class ConfirmTagsDialog : BaseDialogFragment<ShootViewModel, DialogConfirmTagsBi
 
                 "Interior" -> {
                     updateTotalImages()
-                    uploadImages("")
+                    uploadImages()
 
                     if (viewModel.interiorShootNumber.value  == viewModel.interiorAngles.value?.minus(1)){
                         viewModel.isCameraButtonClickable = false
@@ -123,7 +128,7 @@ class ConfirmTagsDialog : BaseDialogFragment<ShootViewModel, DialogConfirmTagsBi
 
                 "Focus Shoot" -> {
                     updateTotalImages()
-                    uploadImages("")
+                    uploadImages()
 
                     if (viewModel.miscShootNumber.value  == viewModel.miscAngles.value?.minus(1)){
                         selectBackground()
@@ -136,41 +141,76 @@ class ConfirmTagsDialog : BaseDialogFragment<ShootViewModel, DialogConfirmTagsBi
             }
         }
 
-        viewModel.overlaysResponse.observe(viewLifecycleOwner,{
-            when(it){
-                is Resource.Success -> {
-                    val uri = viewModel.shootData.value?.capturedImage
+        val overlayRes = (viewModel.overlaysResponse.value as Resource.Success).value
 
-                    Glide.with(requireContext())
-                        .load(uri)
-                        .diskCacheStrategy(DiskCacheStrategy.NONE)
-                        .skipMemoryCache(true)
-                        .into(binding.ivClicked)
+        val uri = viewModel.shootData.value?.capturedImage
 
+        Glide.with(requireContext())
+            .load(uri)
+            .diskCacheStrategy(DiskCacheStrategy.NONE)
+            .skipMemoryCache(true)
+            .into(binding.ivClicked)
 
-                    if (viewModel.categoryDetails.value?.imageType == "Exterior"){
-                        val overlay = it.value.data[viewModel.shootNumber.value!!].display_thumbnail
-                        val name = it.value.data[viewModel.shootNumber.value!!].display_name
-                        binding.tvName.text = name
+        if (viewModel.categoryDetails.value?.imageType == "Exterior"){
+            val overlay = overlayRes.data[viewModel.shootNumber.value!!].display_thumbnail
+            val name = overlayRes.data[viewModel.shootNumber.value!!].display_name
+            binding.tvName.text = name
 
-                        if (getString(R.string.app_name) == AppConstants.KARVI)
-                            binding.ivOverlay.visibility = View.GONE
-                        else
-                            setOverlay(binding.ivOverlay,overlay)
-                    }
-                }
-                else -> {}
-            }
-        })
+            if (getString(R.string.app_name) == AppConstants.KARVI)
+                binding.ivOverlay.visibility = View.GONE
+            else
+                setOverlay(binding.ivOverlay,overlay)
+        }
     }
 
     private fun setTagsData() {
+        val response =  (viewModel.subCategoriesResponse.value as Resource.Success).value
+
         when(viewModel.categoryDetails.value?.imageType){
             "Exterior" -> {
-                val layout = LayoutInflater.from(requireContext()).inflate(R.layout.item_tag_notes,null)
-                //val itemBinding = ItemTagsSpinnerBinding.bind(layout)
+                val tags = response.tags.exterior
 
-                binding.llTagsContainer.addView(layout)
+                tags.forEach {tag ->
+                    when(tag.fieldType){
+                        "dropdown" -> {
+                            val layout = LayoutInflater.from(requireContext()).inflate(
+                                R.layout.item_tags_spinner,
+                                null
+                            )
+                            val itemBinding = ItemTagsSpinnerBinding.bind(layout)
+                            //add binding to map
+                            addBinding("Exterior","dropdown",itemBinding)
+
+                            itemBinding.tvTitle.text = tag.fieldName
+
+                            val countriesList = ArrayList<String>()
+                            countriesList.add("Select")
+                            countriesList.addAll(tag.enumValues)
+
+                            val spinnerAdapter = ArrayAdapter(
+                                requireContext(),
+                                R.layout.item_tags_spinner_text,
+                                countriesList
+                            )
+
+                            itemBinding.tvImageCategory.adapter = spinnerAdapter
+                            binding.llTagsContainer.addView(layout)
+                        }
+
+                        "multiText" -> {
+                            val multiText = LayoutInflater.from(requireContext()).inflate(
+                                R.layout.item_tag_notes,
+                                null
+                            )
+
+                            val itemTagsBinding = ItemTagNotesBinding.bind(multiText)
+                            addBinding("Exterior","multiText",itemTagsBinding)
+
+                            binding.llTagsContainer.addView(multiText)
+                        }
+
+                    }
+                }
             }
 
             "Interior" ->{
@@ -202,10 +242,18 @@ class ConfirmTagsDialog : BaseDialogFragment<ShootViewModel, DialogConfirmTagsBi
                 }
             }
         }
+
     }
 
-    private fun uploadImages(meta : String) {
-        viewModel.shootData.value?.meta = meta
+    private fun addBinding(category: String,filedType : String,binding : ViewBinding) {
+        if (bindingMap[category] == null)
+            bindingMap[category] = HashMap()
+
+        bindingMap[category]?.put(filedType,binding)
+    }
+
+    private fun uploadImages() {
+        viewModel.shootData.value?.meta = getMetaValue()
 
         viewLifecycleOwner.lifecycleScope.launch {
             viewModel.
@@ -213,6 +261,42 @@ class ConfirmTagsDialog : BaseDialogFragment<ShootViewModel, DialogConfirmTagsBi
         }
 
         startService()
+    }
+
+    private fun getMetaValue(): String {
+        var meta = ""
+        val response =  (viewModel.subCategoriesResponse.value as Resource.Success).value
+
+        when(viewModel.categoryDetails.value?.imageType){
+            "Exterior" -> {
+                bindingMap["Exterior"]?.let {
+                    it.keys.forEach {key ->
+                        when(key){
+                            "dropdown" -> {
+
+                            }
+
+                            "multiText" -> {
+                                val multiTextBinding = it[key] as ItemTagNotesBinding
+                                val json = JSONObject()
+                                json.put("notes",multiTextBinding.etNotes.text.toString())
+                                meta = json.toString()
+                            }
+                        }
+                    }
+                }
+            }
+
+            "Interior" -> {
+
+            }
+
+            "Focus Shoot" -> {
+
+            }
+        }
+
+        return meta
     }
 
     private fun startService() {
@@ -250,10 +334,21 @@ class ConfirmTagsDialog : BaseDialogFragment<ShootViewModel, DialogConfirmTagsBi
                     var ow = it?.overlayWidth
                     var oh = it?.overlayHeight
 
+
                     var newW =
                         ow!!.toFloat().div(prw!!.toFloat()).times(view.width)
                     var newH =
                         oh!!.toFloat().div(prh!!.toFloat()).times(view.height)
+
+//                    Log.d(TAG, "onGlobalLayout: "+it?.previewWidth)
+//                    Log.d(TAG, "onGlobalLayout: "+it?.previewHeight)
+//                    Log.d(TAG, "onGlobalLayout: "+it?.overlayWidth)
+//                    Log.d(TAG, "onGlobalLayout: "+it?.overlayHeight)
+//                    Log.d(TAG, "onGlobalLayout: "+view.width)
+//                    Log.d(TAG, "onGlobalLayout: "+view.height)
+//                    Log.d(TAG, "onGlobalLayout: "+overlay)
+//                    Log.d(TAG, "onGlobalLayout: "+newW)
+//                    Log.d(TAG, "onGlobalLayout: "+newH)
 
                     var equlizerOverlayMargin = (9.5 * resources.displayMetrics.density).toInt()
 
@@ -266,6 +361,7 @@ class ConfirmTagsDialog : BaseDialogFragment<ShootViewModel, DialogConfirmTagsBi
                     Glide.with(requireContext())
                         .load(overlay)
                         .into(binding.ivOverlay)
+
                 }
             }
         })
@@ -315,6 +411,26 @@ class ConfirmTagsDialog : BaseDialogFragment<ShootViewModel, DialogConfirmTagsBi
             viewModel.show360InteriorDialog.value = true
         else
             viewModel.selectBackground.value = true
+    }
+
+    private fun tagsVaild() : Boolean {
+
+
+        when(viewModel.categoryDetails.value?.imageType){
+            "Exterior" -> {
+
+            }
+
+            "Interior" -> {
+
+            }
+
+            "Focus Shoot" -> {
+
+            }
+        }
+
+        return false
     }
 
     override fun getViewModel() = ShootViewModel::class.java

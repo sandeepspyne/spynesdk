@@ -101,7 +101,10 @@ class ImageUploader(val context: Context,
 
                    var response = if (image.categoryName == "360int"){
                        shootRepository.uploadImage(projectId!!,
-                           skuId!!, imageCategory!!,authKey, uploadType.toRequestBody(MultipartBody.FORM),image.sequence!!,imageFile)
+                           skuId!!, imageCategory!!,authKey, uploadType.toRequestBody(MultipartBody.FORM),
+                           image.sequence!!,
+                           image.meta.toRequestBody(MultipartBody.FORM),
+                           imageFile)
                    }else if (BaseApplication.getContext().getString(R.string.app_name) == AppConstants.SWIGGY){
                        shootRepository.uploadImageWithAngle(
                            projectId!!,
@@ -115,7 +118,10 @@ class ImageUploader(val context: Context,
                        )
                    } else {
                        shootRepository.uploadImage(projectId!!,
-                           skuId!!, imageCategory!!,authKey, uploadType.toRequestBody(MultipartBody.FORM),image.sequence!!,imageFile)
+                           skuId!!, imageCategory!!,authKey, uploadType.toRequestBody(MultipartBody.FORM),
+                           image.sequence!!,
+                           image.meta.toRequestBody(MultipartBody.FORM),
+                           imageFile)
                    }
 
                    when(response){

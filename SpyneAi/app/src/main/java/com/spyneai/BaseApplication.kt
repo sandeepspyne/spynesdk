@@ -7,11 +7,6 @@ import androidx.appcompat.app.AppCompatDelegate
 import androidx.work.*
 import com.google.firebase.crashlytics.FirebaseCrashlytics
 import com.posthog.android.PostHog
-import com.spyneai.shoot.workmanager.*
-import com.spyneai.shoot.workmanager.ParentRecursiveWorker
-import com.spyneai.shoot.workmanager.ProcessSkuWorker
-import com.spyneai.shoot.workmanager.RecursiveSkippedImagesWorker
-import java.util.concurrent.TimeUnit
 
 @SuppressLint("StaticFieldLeak")
 class BaseApplication : Application() {
@@ -52,17 +47,17 @@ class BaseApplication : Application() {
             .setRequiredNetworkType(NetworkType.CONNECTED)
             .build()
 
-        val longWorkRequest = PeriodicWorkRequestBuilder<ProcessSkuWorker>(
-            12, TimeUnit.HOURS)
-            .addTag("Periodic Processing Worker")
-
-        WorkManager.getInstance(context)
-            .enqueueUniquePeriodicWork(
-                "Process Unique",
-                ExistingPeriodicWorkPolicy.KEEP,
-                longWorkRequest
-                    .setConstraints(constraints)
-                    .build())
+//        val longWorkRequest = PeriodicWorkRequestBuilder<ProcessSkuWorker>(
+//            12, TimeUnit.HOURS)
+//            .addTag("Periodic Processing Worker")
+//
+//        WorkManager.getInstance(context)
+//            .enqueueUniquePeriodicWork(
+//                "Process Unique",
+//                ExistingPeriodicWorkPolicy.KEEP,
+//                longWorkRequest
+//                    .setConstraints(constraints)
+//                    .build())
 
 //        val repeatInternal = 30L
 //        val flexInterval = 25L

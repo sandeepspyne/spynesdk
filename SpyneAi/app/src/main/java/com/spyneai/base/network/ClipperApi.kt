@@ -35,6 +35,7 @@ interface ClipperApi {
         @Part("auth_key") auth_key: RequestBody?,
         @Part("upload_type") upload_type: RequestBody?,
         @Part("frame_seq_no") frame_seq_no: Int,
+        @Part("tags") tags: RequestBody,
         @Part file: MultipartBody.Part
     ): UploadImageResponse
 
@@ -83,7 +84,7 @@ interface ClipperApi {
     suspend fun getCategories(@Query(
         "auth_key") authKey : String): NewCategoriesResponse
 
-    @GET("v2/prod/sub/fetch")
+    @GET("v2/prod/sub/fetch/v2")
     suspend fun getSubCategories(
         @Query("auth_key") authKey : String,
         @Query("prod_id") prodId : String

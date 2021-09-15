@@ -1,11 +1,17 @@
 package com.spyneai.dashboard.response
 
+import com.google.gson.annotations.SerializedName
+
+
+
 data class NewSubCatResponse(
     val `data`: List<Data>,
     val interior: List<Interior>,
     val message: String,
     var miscellaneous: List<Miscellaneous>,
-    val status: Int
+    val status: Int,
+    @SerializedName("tags")
+    val tags: Tags
 ) {
     data class Data(
         val active: Int,
@@ -23,6 +29,10 @@ data class NewSubCatResponse(
     data class Interior(
         val display_name: String,
         val display_thumbnail: String,
+        @SerializedName("prod_cat_id")
+        val prodCatId: String,
+        @SerializedName("prod_sub_cat_id")
+        val prodSubCatId: String,
         var isSelected : Boolean = false
     )
 
@@ -33,4 +43,37 @@ data class NewSubCatResponse(
         val prod_sub_cat_id: String,
         var isSelected : Boolean = false
     )
+
+    data class Tags(
+        @SerializedName("Exterior")
+        val exterior: List<Exterior>,
+        @SerializedName("Focus Shoot")
+        val focusShoot: List<FocusShoot>
+    ) {
+        data class Exterior(
+            @SerializedName("default_value")
+            val defaultValue: String,
+            @SerializedName("enum_values")
+            val enumValues: List<String>,
+            @SerializedName("field_name")
+            val fieldName: String,
+            @SerializedName("field_type")
+            val fieldType: String,
+            @SerializedName("is_required")
+            val isRequired: Boolean
+        )
+
+        data class FocusShoot(
+            @SerializedName("default_value")
+            val defaultValue: String,
+            @SerializedName("enum_values")
+            val enumValues: List<String>,
+            @SerializedName("field_name")
+            val fieldName: String,
+            @SerializedName("field_type")
+            val fieldType: String,
+            @SerializedName("is_required")
+            val isRequired: Boolean
+        )
+    }
 }

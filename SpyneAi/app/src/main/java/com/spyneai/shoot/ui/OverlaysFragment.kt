@@ -4,6 +4,7 @@ import android.content.Context
 import android.content.res.Configuration
 import android.graphics.drawable.Drawable
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -50,6 +51,7 @@ import com.spyneai.shoot.utils.log
 class OverlaysFragment : BaseFragment<ShootViewModel, FragmentOverlaysBinding>(),
     NewSubCategoriesAdapter.BtnClickListener {
 
+    val TAG = "OverlaysFragment"
     lateinit var subCategoriesAdapter: NewSubCategoriesAdapter
     var progressAdapter: ShootProgressAdapter? = null
     var interiorAdapter: InteriorAdapter? = null
@@ -125,6 +127,14 @@ class OverlaysFragment : BaseFragment<ShootViewModel, FragmentOverlaysBinding>()
             if (it)
                 if (viewModel.interior360Dialog.value == null)
                 ThreeSixtyInteriorHintDialog().show(requireActivity().supportFragmentManager, "ThreeSixtyInteriorHintDialog")
+        })
+
+        observeShootDimesions()
+    }
+
+    private fun observeShootDimesions() {
+        viewModel.shootDimensions.observe(viewLifecycleOwner,{
+            getPreviewDimensions(binding.imgOverlay)
         })
     }
 
@@ -396,7 +406,6 @@ class OverlaysFragment : BaseFragment<ShootViewModel, FragmentOverlaysBinding>()
                         binding.tvAngleName?.text = name
 
                         loadOverlay(name,overlay)
-
                     }
                     else -> {
                     }
@@ -941,6 +950,11 @@ class OverlaysFragment : BaseFragment<ShootViewModel, FragmentOverlaysBinding>()
                 val shootDimensions = viewModel.shootDimensions.value
                 shootDimensions?.overlayWidth = view.width
                 shootDimensions?.overlayHeight = view.height
+
+                Log.d(TAG, "onGlobalLayout: "+view.width)
+                Log.d(TAG, "onGlobalLayout: "+view.height)
+                Log.d(TAG, "onGlobalLayout: "+shootDimensions?.overlayWidth)
+                Log.d(TAG, "onGlobalLayout: "+shootDimensions?.overlayWidth)
 
                 viewModel.shootDimensions.value = shootDimensions
             }

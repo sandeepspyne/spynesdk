@@ -19,6 +19,7 @@ class DBHelper (context: Context) : SQLiteOpenHelper(context, DATABASE_NAME, nul
         // to simply to discard the data and start over
         if (newVersion == 9){
             db.execSQL(DATABASE_ALTER_SKU_TABLE)
+            db.execSQL(DATABASE_ALTER_IMAGE_TABLE)
         }else {
             db.execSQL(SQL_DELETE_PROJECTS)
             db.execSQL(SQL_DELETE_ENTRIES)
@@ -38,6 +39,9 @@ class DBHelper (context: Context) : SQLiteOpenHelper(context, DATABASE_NAME, nul
 
         private val DATABASE_ALTER_SKU_TABLE = ("ALTER TABLE "
                 + Images.TABLE_NAME) + " ADD COLUMN " + Images.COLUMN_NAME_IMAGE_META + " TEXT;"
+
+        private val DATABASE_ALTER_IMAGE_TABLE = ("ALTER TABLE "
+                + Images.TABLE_NAME) + " ADD COLUMN " + Images.COLUMN_NAME_IMAGE_ANGLE + " INTEGER;"
 
         private const val SQL_CREATE_ENTRIES =
             "CREATE TABLE ${ShootContract.ShootEntry.TABLE_NAME} (" +
