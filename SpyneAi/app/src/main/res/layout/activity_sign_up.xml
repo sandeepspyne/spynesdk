@@ -49,7 +49,6 @@
                 android:inputType="text"
                 android:maxLines="1"
                 android:textSize="15sp"
-                android:maxLength="30"
                 android:fontFamily="@font/light"
                 android:hint="Enter Email" />
         </LinearLayout>
@@ -72,7 +71,6 @@
                 android:inputType="textPassword"
                 android:maxLines="1"
                 android:textSize="15sp"
-                android:maxLength="30"
                 android:fontFamily="@font/light"
                 android:hint="Create Password" />
         </LinearLayout>
@@ -94,7 +92,6 @@
                 android:inputType="text"
                 android:maxLines="1"
                 android:textSize="15sp"
-                android:maxLength="30"
                 android:fontFamily="@font/light"
                 android:hint="Enter Business/Your Name" />
         </LinearLayout>

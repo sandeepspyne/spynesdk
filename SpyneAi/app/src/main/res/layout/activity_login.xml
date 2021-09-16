@@ -75,7 +75,6 @@
                     android:inputType="text"
                     android:maxLines="1"
                     android:textSize="15sp"
-                    android:maxLength="30"
                     android:fontFamily="@font/light"
                     android:hint="Enter Password" />
             </LinearLayout>
@@ -167,6 +166,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal"
+                android:id="@+id/llOr"
                 android:layout_margin="20dp"
                 android:gravity="center">
                 <View

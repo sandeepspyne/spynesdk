@@ -50,7 +50,6 @@
                 android:inputType="text"
                 android:maxLines="1"
                 android:textSize="15sp"
-                android:maxLength="30"
                 android:fontFamily="@font/light"
                 android:hint="Your Email Id" />
         </LinearLayout>
