@@ -16,13 +16,14 @@ interface CreditApiService {
     fun createOrder(@Body body: CreateOrderBody)
     : Call<CreateOrderResponse>?
 
-
-
     @FormUrlEncoded
-    @PUT("v2/credit/reduce-credit")
+    @PUT("v2/credit/reduce-user-credit")
     fun reduceCredit(
         @Field("auth_key") authKey : String,
-        @Field("credit_reduce") creditReduce:String
+        @Field("credit_reduce") creditReduce:String,
+        @Field("sku_id") skuId : String,
+        @Field("source") source : String = "App",
+        @Field("image_id") imageId : String = ""
     ): Call<ReduceCreditResponse>?
 
 
@@ -44,12 +45,6 @@ interface CreditApiService {
         @Field("credit_available") creditAvailable: Int
     ): Call<UpdatePurchaseCreditRes>?
 
-    @GET("download-history")
-    fun getHDDownloadStatus(
-        @Query("user_id") userId: String,
-        @Query("sku_id") skuId : String,
-        @Query("enterprise_id") enterpriseId: String = "TaD1VC1Ko"
-    ) : Call<DownloadHDRes>?
 
     @FormUrlEncoded
     @POST("update-download-status")

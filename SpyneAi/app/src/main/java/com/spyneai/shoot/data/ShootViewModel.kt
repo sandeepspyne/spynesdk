@@ -15,7 +15,6 @@ import com.spyneai.needs.Utilities
 import com.spyneai.shoot.data.model.*
 import com.spyneai.shoot.response.SkuProcessStateResponse
 import com.spyneai.shoot.workmanager.OverlaysPreloadWorker
-import com.spyneai.shoot.workmanager.ParentRecursiveWorker
 import kotlinx.coroutines.launch
 import java.util.concurrent.TimeUnit
 
@@ -240,50 +239,10 @@ class ShootViewModel : ViewModel() {
         image.sequence = shootData.sequence
         image.skuName = sku.value?.skuName
         image.angle = shootData.angle
+        image.meta = shootData.meta
 
         localRepository.insertImage(image)
-
     }
-
-    fun startLongRunningWorker() {
-        val constraints: Constraints = Constraints.Builder()
-            .setRequiredNetworkType(NetworkType.CONNECTED)
-            .build()
-
-        val longWorkRequest = OneTimeWorkRequest.Builder(ParentRecursiveWorker::class.java)
-            .addTag("Long Running Parent Worker")
-            .setBackoffCriteria(
-                BackoffPolicy.LINEAR,
-                OneTimeWorkRequest.MIN_BACKOFF_MILLIS,
-                TimeUnit.MILLISECONDS)
-
-        WorkManager.getInstance(BaseApplication.getContext())
-            .enqueue(
-                longWorkRequest
-                    .setConstraints(constraints)
-                    .build())
-    }
-
-
-//    fun startLongRunningWorker() {
-//        val constraints: Constraints = Constraints.Builder()
-//            .setRequiredNetworkType(NetworkType.CONNECTED)
-//            .build()
-//
-//        val longWorkRequest = OneTimeWorkRequest.Builder(RecursiveImageWorker::class.java)
-//            .addTag("Long Running Worker")
-//            .setBackoffCriteria(
-//                BackoffPolicy.LINEAR,
-//                OneTimeWorkRequest.MIN_BACKOFF_MILLIS,
-//                TimeUnit.MILLISECONDS)
-//
-//        WorkManager.getInstance(BaseApplication.getContext())
-//            .enqueue(
-//                longWorkRequest
-//                    .setConstraints(constraints)
-//                    .build())
-//    }
-
 
     fun createProject(
         authKey: String, projectName: String, prodCatId: String

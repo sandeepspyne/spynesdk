@@ -22,6 +22,7 @@ class ThreeSixtyViewModel : ViewModel() {
     private val repository = ShootRepository()
     private val threeSixtyRepository = ThreeSixtyRepository()
     private val localRepository = ShootLocalRepository()
+    private val videoRepository = VideoLocalRepository()
 
     var fromDrafts  = false
     val isDemoClicked: MutableLiveData<Boolean> = MutableLiveData()
@@ -155,10 +156,11 @@ class ThreeSixtyViewModel : ViewModel() {
 
     fun reduceCredit(
         userId : String,
-        creditReduce:String
+        creditReduce:String,
+        skuId: String
     ) = viewModelScope.launch {
         _reduceCreditResponse.value = Resource.Loading
-        _reduceCreditResponse.value = threeSixtyRepository.reduceCredit(userId,creditReduce)
+        _reduceCreditResponse.value = threeSixtyRepository.reduceCredit(userId,creditReduce,skuId)
     }
 
     fun updateDownloadStatus(
@@ -179,6 +181,17 @@ class ThreeSixtyViewModel : ViewModel() {
         localRepository.insertSku(sku)
     }
 
-    fun  updateProjectStatus(projectId: String) = localRepository.updateProjectStatus(projectId)
+    fun updateProjectStatus(projectId: String) = localRepository.updateProjectStatus(projectId)
 
+    fun insertVideo(video: VideoDetails) {
+            videoRepository.insertVideo(video)
+    }
+
+    fun updateVideoPath() {
+        videoRepository.addVideoPath(videoDetails.skuId!!,videoDetails.videoPath!!)
+    }
+
+    fun updateVideoBackgroundId() {
+        videoRepository.addBackgroundId(videoDetails.skuId!!,videoDetails.videoPath!!)
+    }
 }

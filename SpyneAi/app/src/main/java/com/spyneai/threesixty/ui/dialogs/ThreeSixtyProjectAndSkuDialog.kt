@@ -19,6 +19,7 @@ import com.spyneai.shoot.data.ShootViewModel
 import com.spyneai.shoot.data.model.Project
 import com.spyneai.shoot.data.model.Sku
 import com.spyneai.threesixty.data.ThreeSixtyViewModel
+import com.spyneai.threesixty.data.model.VideoDetails
 
 class ThreeSixtyProjectAndSkuDialog : BaseDialogFragment<ThreeSixtyViewModel, DialogCreateProjectAndSkuBinding>() {
 
@@ -135,17 +136,25 @@ class ThreeSixtyProjectAndSkuDialog : BaseDialogFragment<ThreeSixtyViewModel, Di
                     sku?.categoryId = viewModel.videoDetails.categoryId
                     sku?.subcategoryName = "360_exterior"
                     sku?.subcategoryId = "360_exterior"
-                    sku?.exteriorAngles = viewModel.videoDetails.frames
-
-
+                    sku?.threeSixtyFrames = viewModel.videoDetails.frames
 
                     //add sku to local database
                     viewModel.insertSku(sku!!)
 
+                    val video = VideoDetails()
+                    video?.projectId = projectId
+                    video?.skuName = viewModel.videoDetails.skuName
+                    video?.skuId = it.value.sku_id
+                    video?.type = "360_exterior"
+                    video?.categoryName = viewModel.videoDetails.categoryName
+                    video?.categoryId = viewModel.videoDetails.categoryId
+                    video?.subCategory = "360_exterior"
+                    video?.frames = viewModel.videoDetails.frames
+
+                    viewModel.insertVideo(video)
 
                     //notify project created
                     viewModel.isProjectCreated.value = true
-
                     dismiss()
                 }
 

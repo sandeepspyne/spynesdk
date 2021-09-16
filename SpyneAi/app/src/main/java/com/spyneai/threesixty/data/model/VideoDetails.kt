@@ -1,6 +1,7 @@
 package com.spyneai.threesixty.data.model
 
 class VideoDetails {
+    var itemId : Long? = null
     var projectId : String? = null
     var skuName : String? = null
     var skuId : String? = null

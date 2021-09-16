@@ -56,13 +56,13 @@ class ProcessSkuWorker(private val appContext: Context, workerParams: WorkerPara
             .setRequiredNetworkType(NetworkType.CONNECTED)
             .build()
 
-        val longWorkRequest = OneTimeWorkRequest.Builder(RecursiveProcessSkuWorker::class.java)
-            .addTag("Recursive Processing Worker")
-
-        WorkManager.getInstance(BaseApplication.getContext())
-            .enqueue(
-                longWorkRequest
-                    .setConstraints(constraints)
-                    .build())
+//        val longWorkRequest = OneTimeWorkRequest.Builder(RecursiveProcessSkuWorker::class.java)
+//            .addTag("Recursive Processing Worker")
+//
+//        WorkManager.getInstance(BaseApplication.getContext())
+//            .enqueue(
+//                longWorkRequest
+//                    .setConstraints(constraints)
+//                    .build())
     }
 }

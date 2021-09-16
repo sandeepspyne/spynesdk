@@ -285,7 +285,8 @@ class RegularShootSummaryFragment  : BaseFragment<ProcessViewModel, FragmentRegu
 
         viewModel.reduceCredit(
             Utilities.getPreference(requireContext(), AppConstants.AUTH_KEY).toString(),
-            viewModel.exteriorAngles.value.toString()
+            viewModel.exteriorAngles.value.toString(),
+            viewModel.sku.value?.skuId.toString()
         )
     }
 

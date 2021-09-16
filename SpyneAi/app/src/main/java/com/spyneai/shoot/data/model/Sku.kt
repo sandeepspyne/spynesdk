@@ -18,4 +18,5 @@ class Sku {
         var backgroundId : String? = null
         var is360 : Int = 0
     var thumbnail : String? = null
+    var threeSixtyFrames : Int? =null
 }

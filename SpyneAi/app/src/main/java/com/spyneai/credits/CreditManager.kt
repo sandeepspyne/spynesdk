@@ -74,7 +74,11 @@ class CreditManager {
 
         var request = RetrofitClients.buildService(CreditApiService::class.java)
 
-        var call = request.reduceCredit(Utilities.getPreference(context,AppConstants.AUTH_KEY)!!.toString(),creditReduced.toString())
+        var call = request.reduceCredit(
+            Utilities.getPreference(context,AppConstants.AUTH_KEY)!!.toString(),
+            creditReduced.toString(),
+            skuId
+        )
 
         call?.enqueue(object : Callback<ReduceCreditResponse> {
             override fun onResponse(

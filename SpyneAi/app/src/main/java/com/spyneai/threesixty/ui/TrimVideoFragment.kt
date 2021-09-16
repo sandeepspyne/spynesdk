@@ -276,6 +276,9 @@ class TrimVideoFragment : BaseFragment<ThreeSixtyViewModel,FragmentTrimVideoBind
     private fun startNextActivity(path: String) {
         viewModel.videoDetails.videoPath = path
 
+        //update video path
+        viewModel.updateVideoPath()
+
         Log.d(TAG, "startNextActivity: "+path)
        // viewModel.videoDetails.videoPath = "/storage/emulated/0/Download/IMG_1061.MOV"
         Navigation.findNavController(binding.btnConfirm)

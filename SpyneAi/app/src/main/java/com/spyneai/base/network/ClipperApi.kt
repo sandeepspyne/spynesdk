@@ -35,6 +35,7 @@ interface ClipperApi {
         @Part("auth_key") auth_key: RequestBody?,
         @Part("upload_type") upload_type: RequestBody?,
         @Part("frame_seq_no") frame_seq_no: Int,
+        @Part("tags") tags: RequestBody,
         @Part file: MultipartBody.Part
     ): UploadImageResponse
 
@@ -83,7 +84,7 @@ interface ClipperApi {
     suspend fun getCategories(@Query(
         "auth_key") authKey : String): NewCategoriesResponse
 
-    @GET("v2/prod/sub/fetch")
+    @GET("v2/prod/sub/fetch/v2")
     suspend fun getSubCategories(
         @Query("auth_key") authKey : String,
         @Query("prod_id") prodId : String
@@ -203,20 +204,13 @@ interface ClipperApi {
 
 
     @FormUrlEncoded
-    @PUT("v4/reduce-credit")
-    suspend fun reduceCredit(
-        @Field("user_id") userId : String,
-        @Field("credit_reduce") creditReduce:String,
-        @Field("enterprise_id") enterpriseId: String,
-        @Field("sku_id") skuId: String
-    ): ReduceCreditResponse
-
-
-    @FormUrlEncoded
-    @PUT("v2/credit/reduce-credit")
+    @PUT("v2/credit/reduce-user-credit")
     suspend fun reduceCredit(
         @Field("auth_key") authKey : String,
-        @Field("credit_reduce") creditReduce:String
+        @Field("credit_reduce") creditReduce:String,
+        @Field("sku_id") skuId : String,
+        @Field("source") source : String = "App",
+        @Field("image_id") imageId : String = ""
     ): ReduceCreditResponse
 
     @FormUrlEncoded
