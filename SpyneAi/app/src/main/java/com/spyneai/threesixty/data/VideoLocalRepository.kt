@@ -5,6 +5,8 @@ import android.provider.BaseColumns
 import android.util.Log
 import com.spyneai.BaseApplication
 import com.spyneai.db.DBHelper
+import com.spyneai.db.Projects
+import com.spyneai.db.ShootContract
 import com.spyneai.db.Videos
 
 import com.spyneai.threesixty.data.model.VideoDetails
@@ -90,8 +92,7 @@ class VideoLocalRepository {
             Videos.COLUMN_NAME_CATEGORY_SUBCATEGORY_NAME,
             Videos.COLUMN_NAME_VIDEO_PATH,
             Videos.COLUMN_NAME_FRAMES,
-            Videos.COLUMN_NAME_BACKGROUND_ID,
-            Videos.COLUMN_NAME_IS_UPLOADED)
+            Videos.COLUMN_NAME_BACKGROUND_ID)
 
         // Filter results WHERE "title" = 'My Title'
         val selection = "${Videos.COLUMN_NAME_IS_UPLOADED} = ?"
@@ -112,7 +113,6 @@ class VideoLocalRepository {
         )
 
         val video = VideoDetails()
-
 
         with(cursor) {
             while (moveToNext()) {
@@ -137,6 +137,8 @@ class VideoLocalRepository {
                 video.videoPath = videoPath
                 video.frames = frames
                 video.backgroundId = backgroundId
+
+                val s = ""
             }
         }
 
@@ -253,7 +255,10 @@ class VideoLocalRepository {
         return count
     }
 
-    fun markUploaded(itemId: Long) {
+    fun markUploaded(videoDetails: VideoDetails) {
+        //update project status to ongoing
+        updateProjectStatus(videoDetails.projectId!!)
+
         val projectValues = ContentValues().apply {
             put(
                 Videos.COLUMN_NAME_IS_UPLOADED,
@@ -264,7 +269,7 @@ class VideoLocalRepository {
         // Which row to update, based on the title
         val selection = "${BaseColumns._ID} LIKE ?"
 
-        val selectionArgs = arrayOf(itemId.toString())
+        val selectionArgs = arrayOf(videoDetails.itemId.toString())
 
         val count = dbWritable.update(
             Videos.TABLE_NAME,
@@ -273,5 +278,27 @@ class VideoLocalRepository {
             selectionArgs)
 
         Log.d(TAG, "markUploaded: "+count)
+    }
+
+    fun updateProjectStatus(projectId : String) {
+        val projectValues = ContentValues().apply {
+            put(
+                Projects.COLUMN_NAME_STATUS,
+                "Ongoing"
+            )
+        }
+
+        val projectSelection = "${ShootContract.ShootEntry.COLUMN_NAME_PROJECT_ID} LIKE ?"
+
+        val projectSelectionArgs = arrayOf(projectId)
+
+        val projectCount = dbWritable.update(
+            Projects.TABLE_NAME,
+            projectValues,
+            projectSelection,
+            projectSelectionArgs)
+
+        com.spyneai.shoot.utils.log("Upload prject(update): "+projectCount)
+
     }
 }

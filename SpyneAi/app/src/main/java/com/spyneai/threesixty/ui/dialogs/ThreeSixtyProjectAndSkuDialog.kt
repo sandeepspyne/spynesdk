@@ -23,6 +23,10 @@ import com.spyneai.threesixty.data.model.VideoDetails
 
 class ThreeSixtyProjectAndSkuDialog : BaseDialogFragment<ThreeSixtyViewModel, DialogCreateProjectAndSkuBinding>() {
 
+    private var projectId = ""
+    private var prod_sub_cat_id = ""
+    private var sku = ""
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
@@ -50,27 +54,35 @@ class ThreeSixtyProjectAndSkuDialog : BaseDialogFragment<ThreeSixtyViewModel, Di
                 )
             }
         }
+
+        observeCreateProject()
+        observeSku()
     }
 
     private fun removeWhiteSpace(toString: String) = toString.replace("\\s".toRegex(), "")
 
 
     private fun createProject(projectName : String,skuName : String) {
+        this.sku = skuName
+        Utilities.showProgressDialog(requireContext())
+
         viewModel.createProject(
             Utilities.getPreference(requireContext(), AppConstants.AUTH_KEY).toString(),
             projectName,
             viewModel.videoDetails.categoryId!!)
+    }
 
+    private fun observeCreateProject() {
         viewModel.createProjectRes.observe(viewLifecycleOwner,{
             when(it){
                 is Resource.Success -> {
                     requireContext().captureEvent(
                         Events.CREATE_360_PROJECT,
-                        Properties().putValue("project_name",projectName))
+                        Properties().putValue("project_name",removeWhiteSpace(binding.etVinNumber.text.toString())))
 
                     viewModel.videoDetails.apply {
                         projectId = it.value.project_id
-                        this.skuName = skuName
+                        this.skuName = sku
                     }
 
                     val project = Project()
@@ -82,35 +94,42 @@ class ThreeSixtyProjectAndSkuDialog : BaseDialogFragment<ThreeSixtyViewModel, Di
 
                     viewModel.insertProject(project)
 
-                    createSku(it.value.project_id,viewModel.videoDetails.type)
+                    createSku(it.value.project_id,viewModel.videoDetails.type,false)
                 }
 
-                is Resource.Loading -> {
-                    Utilities.showProgressDialog(requireContext())
-                }
 
                 is Resource.Failure -> {
-                    dismiss()
                     requireContext().captureFailureEvent(
                         Events.CREATE_360_PROJECT_FAILED, Properties(),
                         it.errorMessage!!
                     )
                     Utilities.hideProgressDialog()
-                    handleApiError(it)
+                    handleApiError(it) { createProject(
+                        removeWhiteSpace(binding.etVinNumber.text.toString()),
+                        removeWhiteSpace(binding.etVinNumber.text.toString())
+                    )}
                 }
             }
         })
     }
 
 
-    private fun createSku(projectId: String, prod_sub_cat_id : String) {
+    private fun createSku(projectId: String, prod_sub_cat_id : String,showDialog : Boolean) {
+        if (showDialog)
+            Utilities.showProgressDialog(requireContext())
+
+        this.projectId = projectId
+        this.prod_sub_cat_id = prod_sub_cat_id
+
         viewModel.createSku(
             Utilities.getPreference(requireContext(),AppConstants.AUTH_KEY).toString(),projectId,
             requireActivity().intent.getStringExtra(AppConstants.CATEGORY_ID).toString(),
             "360_exterior",
             viewModel.videoDetails.skuName.toString()
         )
+    }
 
+    private fun observeSku() {
         viewModel.createSkuRes.observe(viewLifecycleOwner,{
             when(it) {
                 is Resource.Success -> {
@@ -163,7 +182,7 @@ class ThreeSixtyProjectAndSkuDialog : BaseDialogFragment<ThreeSixtyViewModel, Di
                         it.errorMessage!!
                     )
                     Utilities.hideProgressDialog()
-                    handleApiError(it)
+                    handleApiError(it) {createSku(projectId,prod_sub_cat_id,true)}
                 }
             }
         })

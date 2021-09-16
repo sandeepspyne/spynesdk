@@ -172,7 +172,6 @@ class VideoUploadService : Service(), VideoUploader.Listener {
 
         var title = "Video Uploaded"
         if (currentVideo != null){
-            val category = if (currentVideo?.categoryName == "Focus Shoot") "Miscellaneous" else currentVideo?.categoryName
             title = "Last Uploaded "+currentVideo?.skuName
             logUpload("uploaded "+currentVideo?.videoPath)
         }

@@ -192,6 +192,6 @@ class ThreeSixtyViewModel : ViewModel() {
     }
 
     fun updateVideoBackgroundId() {
-        videoRepository.addBackgroundId(videoDetails.skuId!!,videoDetails.videoPath!!)
+        videoRepository.addBackgroundId(videoDetails.skuId!!,videoDetails.backgroundId!!)
     }
 }

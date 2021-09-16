@@ -43,6 +43,8 @@ class VideoUploader(val context: Context,
                     localRepository.getOldestSkippedVideo()
                 }
 
+                val s = ""
+
                 if (video.itemId != null){
                     //uploading enqueued
                     listener.inProgress(video)
@@ -51,7 +53,7 @@ class VideoUploader(val context: Context,
                         if (video.itemId != null){
 
                             localRepository.skipVideo(video.itemId!!,skipFlag)
-                            startNextUpload(video.itemId!!,false,imageType)
+                            startNextUpload(video,false,imageType)
                         }
                         captureEvent(Events.UPLOAD_FAILED_SERVICE,video,false,"Image upload limit reached")
                         logUpload("Upload Skipped Retry Limit Reached")
@@ -76,7 +78,7 @@ class VideoUploader(val context: Context,
                     when(response){
                         is Resource.Success -> {
                             captureEvent(Events.UPLOADED_SERVICE,video,true,null)
-                            startNextUpload(video.itemId!!,true,imageType)
+                            startNextUpload(video,true,imageType)
                         }
 
                         is Resource.Failure -> {
@@ -121,7 +123,7 @@ class VideoUploader(val context: Context,
         }
     }
 
-    private fun startNextUpload(itemId: Long,uploaded : Boolean,imageType : String) {
+    private fun startNextUpload(itemId: VideoDetails,uploaded : Boolean,imageType : String) {
         logUpload("Start next upload "+uploaded)
         //remove uploaded item from database
         if (uploaded)

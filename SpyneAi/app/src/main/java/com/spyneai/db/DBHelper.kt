@@ -21,6 +21,7 @@ class DBHelper (context: Context) : SQLiteOpenHelper(context, DATABASE_NAME, nul
         if (newVersion == 9){
             db.execSQL(DATABASE_ALTER_SKU_TABLE)
             db.execSQL(DATABASE_ALTER_IMAGE_TABLE)
+            db.execSQL(DATABASE_ALTER_SKU)
         }else {
             db.execSQL(SQL_DELETE_PROJECTS)
             db.execSQL(SQL_DELETE_ENTRIES)
@@ -41,8 +42,12 @@ class DBHelper (context: Context) : SQLiteOpenHelper(context, DATABASE_NAME, nul
         private val DATABASE_ALTER_SKU_TABLE = ("ALTER TABLE "
                 + Images.TABLE_NAME) + " ADD COLUMN " + Images.COLUMN_NAME_IMAGE_META + " TEXT;"
 
+        private val DATABASE_ALTER_SKU = ("ALTER TABLE "
+                + ShootContract.ShootEntry.TABLE_NAME) + " ADD COLUMN " + ShootContract.ShootEntry.COLUMN_NAME_THREE_SIXTY_FRAMES + " INTEGER;"
+
         private val DATABASE_ALTER_IMAGE_TABLE = ("ALTER TABLE "
                 + Images.TABLE_NAME) + " ADD COLUMN " + Images.COLUMN_NAME_IMAGE_ANGLE + " INTEGER;"
+
 
         private const val SQL_CREATE_ENTRIES =
             "CREATE TABLE ${ShootContract.ShootEntry.TABLE_NAME} (" +
@@ -67,6 +72,7 @@ class DBHelper (context: Context) : SQLiteOpenHelper(context, DATABASE_NAME, nul
                     "${ShootContract.ShootEntry.COLUMN_NAME_PROCESS_SKU} INTEGER," +
                     "${ShootContract.ShootEntry.COLUMN_NAME_IS_PROCESSED} INTEGER," +
                     "${ShootContract.ShootEntry.COLUMN_NAME_IS_360} INTEGER," +
+                    "${ShootContract.ShootEntry.COLUMN_NAME_THREE_SIXTY_FRAMES} INTEGER," +
                     "${ShootContract.ShootEntry.TABLE_NAME} TEXT)"
 
         private const val CREATE_IMAGES_TABLE =  "CREATE TABLE ${Images.TABLE_NAME} (" +
@@ -113,8 +119,8 @@ class DBHelper (context: Context) : SQLiteOpenHelper(context, DATABASE_NAME, nul
                 "${Videos.COLUMN_NAME_SKU_ID} TEXT," +
                 "${Videos.COLUMN_NAME_TYPE} TEXT," +
                 "${Videos.COLUMN_NAME_CATEGORY_NAME} TEXT," +
-                "${Videos.COLUMN_NAME_CATEGORY_SUBCATEGORY_NAME} TEXT NOT NULL UNIQUE," +
-                "${Videos.COLUMN_NAME_VIDEO_PATH} TEXT," +
+                "${Videos.COLUMN_NAME_CATEGORY_SUBCATEGORY_NAME} TEXT," +
+                "${Videos.COLUMN_NAME_VIDEO_PATH} TEXT NOT NULL UNIQUE," +
                 "${Videos.COLUMN_NAME_FRAMES} INTEGER," +
                 "${Videos.COLUMN_NAME_BACKGROUND_ID} TEXT," +
                 "${Videos.COLUMN_NAME_IS_UPLOADED} INTEGER," +

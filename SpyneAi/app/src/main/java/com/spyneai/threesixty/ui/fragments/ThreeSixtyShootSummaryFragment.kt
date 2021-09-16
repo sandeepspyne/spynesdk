@@ -123,6 +123,7 @@ class ThreeSixtyShootSummaryFragment : BaseFragment<ThreeSixtyViewModel, Fragmen
         viewModel.downloadHDRes.observe(viewLifecycleOwner,{
             when(it) {
                 is Resource.Success -> {
+                    Utilities.hideProgressDialog()
                     processSku(false)
                 }
 
@@ -161,6 +162,12 @@ class ThreeSixtyShootSummaryFragment : BaseFragment<ThreeSixtyViewModel, Fragmen
         viewModel.updateVideoBackgroundId()
 
         startService()
+
+        Navigation.findNavController(binding.btnProceed)
+            .navigate(R.id.action_threeSixtyShootSummaryFragment_to_videoProcessingStartedFragment)
+
+        viewModel.title.value = "Processing Started"
+        viewModel.processingStarted.value = true
 
 //        if (showLoader)
 //            Utilities.showProgressDialog(requireContext())
