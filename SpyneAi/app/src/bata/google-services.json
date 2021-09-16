@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "295414585122",
+    "project_id": "bata-156a5",
+    "storage_bucket": "bata-156a5.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:295414585122:android:2ba3160d0548afa565377b",
+        "android_client_info": {
+          "package_name": "com.spyneai.bata.debug"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "295414585122-em0e60m9l8u160gdgn6121qeu7gb62ge.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyD07fyF4Rts4A-bdIhooqU_QMAEhNoVJSg"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "295414585122-em0e60m9l8u160gdgn6121qeu7gb62ge.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

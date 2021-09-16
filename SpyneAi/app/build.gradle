@@ -188,6 +188,13 @@ android {
             versionCode 7
             versionName "1.6"
         }
+
+        bata {
+            dimension 'version'
+            applicationId "com.spyneai.bata"
+            versionCode 1
+            versionName "1.0"
+        }
     }
     sourceSets {
         sweepCars {

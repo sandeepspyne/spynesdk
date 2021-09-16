@@ -120,7 +120,7 @@ class MainDashboardActivity : AppCompatActivity() {
                             }
                         }
 
-                        "Flipkart", "Udaan", "Lal10", "Amazon", "Swiggy", AppConstants.SWIGGYINSTAMART -> {
+                        "Flipkart", "Udaan", "Lal10", "Amazon", "Swiggy", AppConstants.SWIGGYINSTAMART, AppConstants.BATA -> {
                             val intent = Intent(this@MainDashboardActivity, CategoriesActivity::class.java)
                                 startActivity(intent)
                             }
