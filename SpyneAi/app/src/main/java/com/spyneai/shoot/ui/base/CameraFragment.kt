@@ -1,4 +1,3 @@
-
 import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.ContentValues
@@ -71,9 +70,9 @@ class CameraFragment : BaseFragment<ShootViewModel, FragmentCameraBinding>(), Pi
     var haveGyrometer = false
     var isSensorAvaliable = false
     var rotation = 0
-    var end : Long = 0
-    var begin : Long = 0
-    var mid : Long = 0
+    var end: Long = 0
+    var begin: Long = 0
+    var mid: Long = 0
 
     companion object {
         private const val RATIO_4_3_VALUE = 4.0 / 3.0 // aspect ratio 4x3
@@ -527,19 +526,27 @@ class CameraFragment : BaseFragment<ShootViewModel, FragmentCameraBinding>(), Pi
             var size = Size(1024, 768)
 
             // Preview
-            val preview = when {
-                getString(R.string.app_name) == AppConstants.KARVI -> {
-                    Preview.Builder()
-                        //.setTargetAspectRatio(aspectRatio)
-                        .setTargetResolution(size)
-                        .build()
-                        .also {
-                            it.setSurfaceProvider(binding.viewFinder.surfaceProvider)
-                        }
+            val preview = when (viewModel.categoryDetails.value?.categoryName) {
+                "Automobiles", "Bikes" -> {
+                    if (getString(R.string.app_name) == AppConstants.KARVI) {
+                        Preview.Builder()
+                            .setTargetAspectRatio(aspectRatio)
+                            .setTargetResolution(size)
+                            .build()
+                            .also {
+                                it.setSurfaceProvider(binding.viewFinder.surfaceProvider)
+                            }
+                    } else {
+                        Preview.Builder()
+                            .setTargetAspectRatio(AspectRatio.RATIO_16_9)
+                            .build()
+                            .also {
+                                it.setSurfaceProvider(binding.viewFinder.surfaceProvider)
+                            }
+                    }
                 }
-                getString(R.string.app_name) == "Swiggy" -> {
+                "E-Commerce", "Food & Beverages", "Footwear" -> {
                     Preview.Builder()
-//                        .setTargetAspectRatio(aspectRatio) // set the camera aspect ratio
                         .setTargetAspectRatio(AspectRatio.RATIO_4_3)
                         .build()
                         .also {
@@ -548,7 +555,6 @@ class CameraFragment : BaseFragment<ShootViewModel, FragmentCameraBinding>(), Pi
                 }
                 else -> {
                     Preview.Builder()
-//                        .setTargetAspectRatio(aspectRatio) // set the camera aspect ratio
                         .setTargetAspectRatio(AspectRatio.RATIO_4_3)
                         .build()
                         .also {
@@ -560,58 +566,71 @@ class CameraFragment : BaseFragment<ShootViewModel, FragmentCameraBinding>(), Pi
             //for exact image cropping
             val viewPort = binding.viewFinder?.viewPort
 
-            imageCapture = if (getString(R.string.app_name) == AppConstants.KARVI) {
-                ImageCapture.Builder()
-                    .setCaptureMode(ImageCapture.CAPTURE_MODE_MAXIMIZE_QUALITY)
-                    .setFlashMode(flashMode)
-                    .setTargetResolution(size)
-                    .build()
-            } else if (getString(R.string.app_name) == AppConstants.SWIGGY) {
-                ImageCapture.Builder()
-                    .setCaptureMode(ImageCapture.CAPTURE_MODE_MAXIMIZE_QUALITY)
-                    .setFlashMode(flashMode)
-                    .setTargetAspectRatio(AspectRatio.RATIO_4_3)
-                    .setTargetRotation(ROTATION_90)
-                    // set the capture aspect ratio
-                    // .setTargetRotation(rotation) // set the capture rotation
-                    .build()
-            } else {
-                ImageCapture.Builder()
-                    .setCaptureMode(ImageCapture.CAPTURE_MODE_MAXIMIZE_QUALITY)
-                    .setFlashMode(flashMode)
-                    .setTargetAspectRatio(AspectRatio.RATIO_4_3)
-                    .setTargetRotation(ROTATION_90)
-                    // set the capture aspect ratio
-                    // .setTargetRotation(rotation) // set the capture rotation
-                    .build()
-            }
-
-            val useCaseGroup = when (getString(R.string.app_name)) {
-                AppConstants.KARVI -> {
-                    UseCaseGroup.Builder()
-                        .addUseCase(preview)
-                        .addUseCase(imageCapture!!)
+            imageCapture = when (viewModel.categoryDetails.value?.categoryName) {
+                "Automobiles", "Bikes" -> {
+                    if (getString(R.string.app_name) == AppConstants.KARVI) {
+                        ImageCapture.Builder()
+                            .setCaptureMode(ImageCapture.CAPTURE_MODE_MAXIMIZE_QUALITY)
+                            .setFlashMode(flashMode)
+                            .setTargetResolution(size)
+                            .build()
+                    } else {
+                        ImageCapture.Builder()
+                            .setCaptureMode(ImageCapture.CAPTURE_MODE_MAXIMIZE_QUALITY)
+                            .setFlashMode(flashMode)
+                            .setTargetAspectRatio(AspectRatio.RATIO_16_9)
+                            .build()
+                    }
+                }
+                "E-Commerce", "Food & Beverages", "Footwear" -> {
+                    ImageCapture.Builder()
+                        .setCaptureMode(ImageCapture.CAPTURE_MODE_MAXIMIZE_QUALITY)
+                        .setFlashMode(flashMode)
+                        .setTargetAspectRatio(AspectRatio.RATIO_4_3)
+                        .setTargetRotation(ROTATION_90)
                         .build()
                 }
                 else -> {
-                    UseCaseGroup.Builder()
-                        .addUseCase(preview)
-                        .addUseCase(imageCapture!!)
-//                        .setViewPort(viewPort!!)
+                    ImageCapture.Builder()
+                        .setCaptureMode(ImageCapture.CAPTURE_MODE_MAXIMIZE_QUALITY)
+                        .setFlashMode(flashMode)
+                        .setTargetAspectRatio(AspectRatio.RATIO_4_3)
+                        .setTargetRotation(ROTATION_90)
                         .build()
                 }
             }
 
+            val useCaseGroup = UseCaseGroup.Builder()
+                .addUseCase(preview)
+                .addUseCase(imageCapture!!)
+                .build()
+
             //   The Configuration of image analyzing
-            imageAnalyzer = if (getString(R.string.app_name) == AppConstants.KARVI) {
+            imageAnalyzer = when(viewModel.categoryDetails.value?.categoryName){
+                "Automobiles", "Bikes" -> {
+                    if (getString(R.string.app_name) == AppConstants.KARVI) {
                 ImageAnalysis.Builder()
                     .setTargetResolution(size)
                     .build()
             } else {
                 ImageAnalysis.Builder()
-                    .setTargetAspectRatio(aspectRatio) // set the analyzer aspect ratio
+                    .setTargetAspectRatio(AspectRatio.RATIO_16_9)
                     .build()
             }
+                }
+                "E-Commerce", "Food & Beverages", "Footwear" -> {
+                    ImageAnalysis.Builder()
+                        .setTargetAspectRatio(AspectRatio.RATIO_4_3)
+                        .build()
+                }
+
+                else -> {
+                    ImageAnalysis.Builder()
+                        .setTargetAspectRatio(AspectRatio.RATIO_4_3)
+                        .build()
+            }
+            }
+
 
             // Select back camera as a default
             val cameraSelector = CameraSelector.DEFAULT_BACK_CAMERA
@@ -640,11 +659,11 @@ class CameraFragment : BaseFragment<ShootViewModel, FragmentCameraBinding>(), Pi
                 when (viewModel.categoryDetails.value?.categoryName) {
                     "E-Commerce" -> {
                         if (currentZoomRatio == 1.0F)
-                        cameraControl?.setZoomRatio(currentZoomRatio * 1.5F)
+                            cameraControl?.setZoomRatio(currentZoomRatio * 1.5F)
                     }
                     "Food & Beverages" -> {
                         if (currentZoomRatio == 1.0F)
-                        cameraControl?.setZoomRatio(currentZoomRatio * 1.2F)
+                            cameraControl?.setZoomRatio(currentZoomRatio * 1.2F)
                     }
                 }
                 binding.viewFinder.setOnTouchListener(this)
@@ -887,16 +906,24 @@ class CameraFragment : BaseFragment<ShootViewModel, FragmentCameraBinding>(), Pi
                     if (output.savedUri == null) {
                         if (file != null)
                             mid = System.currentTimeMillis()
-                        val difference = (mid - begin)/1000.toFloat()
-                        Toast.makeText(requireContext(), "image clicked- "+difference, Toast.LENGTH_LONG).show()
-                        log("onImageSaved- "+difference)
-                            addShootItem(file.path)
+                        val difference = (mid - begin) / 1000.toFloat()
+                        Toast.makeText(
+                            requireContext(),
+                            "image clicked- " + difference,
+                            Toast.LENGTH_LONG
+                        ).show()
+                        log("onImageSaved- " + difference)
+                        addShootItem(file.path)
                     } else {
                         try {
                             mid = System.currentTimeMillis()
-                            val difference = (mid - begin)/1000.toFloat()
-                            Toast.makeText(requireContext(), "image clicked- "+difference, Toast.LENGTH_LONG).show()
-                            log("onImageSaved2- "+difference)
+                            val difference = (mid - begin) / 1000.toFloat()
+                            Toast.makeText(
+                                requireContext(),
+                                "image clicked- " + difference,
+                                Toast.LENGTH_LONG
+                            ).show()
+                            log("onImageSaved2- " + difference)
                             var file = output.savedUri!!.toFile()
                             addShootItem(file.path)
                         } catch (ex: IllegalArgumentException) {
@@ -974,46 +1001,46 @@ class CameraFragment : BaseFragment<ShootViewModel, FragmentCameraBinding>(), Pi
                 }
             }
 
-           /* AppConstants.UDAAN,
-            AppConstants.FLIPKART,
-            AppConstants.AMAZON,
-            AppConstants.LAL_10 -> {
-                //hide moving line
-                if (pitch.roundToInt() == 0 || (pitch.roundToInt() <= -0 && pitch.roundToInt() >= -3))
-                    binding.tvLevelIndicator.visibility = View.GONE
-                else
-                    binding.tvLevelIndicator.visibility = View.VISIBLE
+            /* AppConstants.UDAAN,
+             AppConstants.FLIPKART,
+             AppConstants.AMAZON,
+             AppConstants.LAL_10 -> {
+                 //hide moving line
+                 if (pitch.roundToInt() == 0 || (pitch.roundToInt() <= -0 && pitch.roundToInt() >= -3))
+                     binding.tvLevelIndicator.visibility = View.GONE
+                 else
+                     binding.tvLevelIndicator.visibility = View.VISIBLE
 
-                if ((pitch.roundToInt() == 0 || (pitch.roundToInt() <= -0 && pitch.roundToInt() >= -3)) ||
-                    pitch.roundToInt() <= -82 && pitch.roundToInt() >= -88 ||
-                    (pitch.roundToInt() <= -40 && pitch.roundToInt() >= -45) && abs(roll.roundToInt()) < 100
-                ) {
-                    if (pitch.roundToInt() == 0 || (pitch.roundToInt() <= -0 && pitch.roundToInt() >= -3))
-                        gyroMeterOnLevel(false)
-                    else if (pitch.roundToInt() <= -40 && pitch.roundToInt() >= -45)
-                        gyroMeterOnLevel(false)
-                    else
-                        gyroMeterOnLevel(true)
-                } else {
-                    gyroMeterOffLevel()
+                 if ((pitch.roundToInt() == 0 || (pitch.roundToInt() <= -0 && pitch.roundToInt() >= -3)) ||
+                     pitch.roundToInt() <= -82 && pitch.roundToInt() >= -88 ||
+                     (pitch.roundToInt() <= -40 && pitch.roundToInt() >= -45) && abs(roll.roundToInt()) < 100
+                 ) {
+                     if (pitch.roundToInt() == 0 || (pitch.roundToInt() <= -0 && pitch.roundToInt() >= -3))
+                         gyroMeterOnLevel(false)
+                     else if (pitch.roundToInt() <= -40 && pitch.roundToInt() >= -45)
+                         gyroMeterOnLevel(false)
+                     else
+                         gyroMeterOnLevel(true)
+                 } else {
+                     gyroMeterOffLevel()
 
-                    if (movearrow) {
-                        if (abs(roll.roundToInt()) < 100) {
-                            moveArrow((pitch + 85).unaryMinus())
-                        } else {
-                            moveArrow(pitch + 85)
-                        }
-                    }
+                     if (movearrow) {
+                         if (abs(roll.roundToInt()) < 100) {
+                             moveArrow((pitch + 85).unaryMinus())
+                         } else {
+                             moveArrow(pitch + 85)
+                         }
+                     }
 
-                    if (orientationAngles[2].roundToInt() == 1 || orientationAngles[2].roundToInt() == -1) {
-                        if (orientationAngles[2].roundToInt() == 1) {
-                            rotateArrow((pitch + 85).unaryMinus().roundToInt())
-                        } else {
-                            rotateArrow((pitch + 85).roundToInt())
-                        }
-                    }
-                }
-            }*/
+                     if (orientationAngles[2].roundToInt() == 1 || orientationAngles[2].roundToInt() == -1) {
+                         if (orientationAngles[2].roundToInt() == 1) {
+                             rotateArrow((pitch + 85).unaryMinus().roundToInt())
+                         } else {
+                             rotateArrow((pitch + 85).roundToInt())
+                         }
+                     }
+                 }
+             }*/
             AppConstants.SWIGGY -> {
                 //hide moving line
                 if (pitch.roundToInt() == 0 || (pitch.roundToInt() <= -0 && pitch.roundToInt() >= -3))
@@ -1133,7 +1160,8 @@ class CameraFragment : BaseFragment<ShootViewModel, FragmentCameraBinding>(), Pi
                     binding.tvLevelIndicator.visibility = View.VISIBLE
 
                 if ((pitch.roundToInt() == 0 || (pitch.roundToInt() <= -0 && pitch.roundToInt() >= -3)) ||
-                    pitch.roundToInt() <= -82 && pitch.roundToInt() >= -88) {
+                    pitch.roundToInt() <= -82 && pitch.roundToInt() >= -88
+                ) {
 
                     if (pitch.roundToInt() == 0 || (pitch.roundToInt() <= -0 && pitch.roundToInt() >= -3))
                         gyroMeterOnLevel(false)
@@ -1327,9 +1355,10 @@ class CameraFragment : BaseFragment<ShootViewModel, FragmentCameraBinding>(), Pi
 
     private fun addShootItem(capturedImage: String) {
         end = System.currentTimeMillis()
-        val difference = (end - begin)/1000.toFloat()
-        Toast.makeText(requireContext(), "addShootIteamCalled- "+difference, Toast.LENGTH_LONG).show()
-        log("addShootIteamCalled- "+difference)
+        val difference = (end - begin) / 1000.toFloat()
+        Toast.makeText(requireContext(), "addShootIteamCalled- " + difference, Toast.LENGTH_LONG)
+            .show()
+        log("addShootIteamCalled- " + difference)
         viewModel.showConfirmReshootDialog.value = true
 
         //play shutter sound

@@ -73,14 +73,15 @@
     <LinearLayout
         android:id="@+id/llCapture"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="0dp"
         android:layout_gravity="end|center"
         android:gravity="center"
         android:orientation="horizontal"
         android:padding="@dimen/dp_10"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent">
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/viewFinder">
 
         <LinearLayout
             android:layout_width="0dp"
@@ -131,18 +132,18 @@
    <RelativeLayout
        android:id="@+id/rlCapturedImages"
        android:layout_width="match_parent"
-       android:layout_height="0dp"
+       android:layout_height="wrap_content"
        android:background="@color/transparent"
        app:layout_constraintLeft_toLeftOf="parent"
        app:layout_constraintRight_toRightOf="parent"
-       app:layout_constraintBottom_toTopOf="@+id/llCapture"
-       app:layout_constraintTop_toBottomOf="@+id/viewFinder">
+       app:layout_constraintBottom_toBottomOf="@+id/viewFinder"
+       android:visibility="gone">
 
        <androidx.recyclerview.widget.RecyclerView
            android:id="@+id/rvCapturedImages"
            android:layout_width="match_parent"
            android:layout_height="wrap_content"
-           android:background="@color/black"
+           android:background="@color/transparent"
            app:layout_constraintBottom_toTopOf="parent"
            app:layout_constraintLeft_toLeftOf="parent"
            app:layout_constraintRight_toRightOf="parent"
@@ -157,7 +158,7 @@
         android:alpha="0.5"
         android:background="@android:color/white"
         android:elevation="2dp"
-        app:layout_constraintBottom_toTopOf="@+id/rlCapturedImages"
+        app:layout_constraintBottom_toTopOf="@+id/llCapture"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.33"
         app:layout_constraintStart_toStartOf="parent"
@@ -170,7 +171,7 @@
         android:alpha="0.5"
         android:background="@android:color/white"
         android:elevation="2dp"
-        app:layout_constraintBottom_toTopOf="@+id/rlCapturedImages"
+        app:layout_constraintBottom_toTopOf="@+id/llCapture"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.66"
         app:layout_constraintStart_toStartOf="parent"
@@ -183,7 +184,7 @@
         android:alpha="0.5"
         android:background="@android:color/white"
         android:elevation="2dp"
-        app:layout_constraintBottom_toTopOf="@+id/rlCapturedImages"
+        app:layout_constraintBottom_toTopOf="@+id/llCapture"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/my_toolbar"
@@ -196,7 +197,7 @@
         android:alpha="0.5"
         android:background="@android:color/white"
         android:elevation="2dp"
-        app:layout_constraintBottom_toTopOf="@+id/rlCapturedImages"
+        app:layout_constraintBottom_toTopOf="@+id/llCapture"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/my_toolbar"

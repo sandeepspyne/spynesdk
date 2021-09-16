@@ -3,18 +3,15 @@ package com.spyneai.shoot.ui.dialogs
 import android.content.Intent
 import android.os.Build
 import android.os.Bundle
-import android.util.Log
-import android.view.*
-import android.widget.FrameLayout
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
+import android.view.ViewTreeObserver
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.lifecycleScope
-import androidx.work.WorkInfo
-import androidx.work.WorkManager
-import androidx.work.WorkQuery
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.posthog.android.Properties
-import com.spyneai.BaseApplication
 import com.spyneai.R
 import com.spyneai.base.BaseDialogFragment
 import com.spyneai.base.network.Resource
@@ -22,13 +19,12 @@ import com.spyneai.captureEvent
 import com.spyneai.databinding.DialogConfirmReshootBinding
 import com.spyneai.needs.AppConstants
 import com.spyneai.posthog.Events
-import com.spyneai.service.*
+import com.spyneai.service.Actions
+import com.spyneai.service.ImageUploadingService
+import com.spyneai.service.getServiceState
+import com.spyneai.service.log
 import com.spyneai.shoot.data.ShootViewModel
-import com.spyneai.shoot.utils.shoot
 import kotlinx.coroutines.launch
-import java.io.File
-import android.app.ActivityManager
-import android.content.Context
 
 
 class ConfirmReshootDialog : BaseDialogFragment<ShootViewModel, DialogConfirmReshootBinding>() {
@@ -146,7 +142,7 @@ class ConfirmReshootDialog : BaseDialogFragment<ShootViewModel, DialogConfirmRes
                             setOverlay(binding.ivCaptured2,overlay)
 
                     }else{
-                       binding.flAfter.visibility = View.GONE
+                       binding.clAfter.visibility = View.GONE
                     }
                }
                else -> {}
@@ -192,29 +188,31 @@ class ConfirmReshootDialog : BaseDialogFragment<ShootViewModel, DialogConfirmRes
             override fun onGlobalLayout() {
                 view.viewTreeObserver.removeOnGlobalLayoutListener(this)
 
+                Glide.with(requireContext())
+                    .load(overlay)
+                    .into(binding.ivCapturedOverlay)
+
                 viewModel.shootDimensions.value.let {
-                    var prw = it?.previewWidth
-                    var prh = it?.previewHeight
+//                    var prw = it?.previewWidth
+//                    var prh = it?.previewHeight
+//
+//                    var ow = it?.overlayWidth
+//                    var oh = it?.overlayHeight
+//
+//                    var newW =
+//                        ow!!.toFloat().div(prw!!.toFloat()).times(view.width)
+//                    var newH =
+//                        oh!!.toFloat().div(prh!!.toFloat()).times(view.height)
+//
+//                    var equlizerOverlayMargin = (9.5 * resources.displayMetrics.density).toInt()
+//
+//                    var params = FrameLayout.LayoutParams(newW.toInt(), newH.toInt())
+//                    params.gravity = Gravity.CENTER
+//                    params.topMargin = equlizerOverlayMargin
+//
+//                    binding.ivCapturedOverlay.layoutParams = params
 
-                    var ow = it?.overlayWidth
-                    var oh = it?.overlayHeight
 
-                    var newW =
-                        ow!!.toFloat().div(prw!!.toFloat()).times(view.width)
-                    var newH =
-                        oh!!.toFloat().div(prh!!.toFloat()).times(view.height)
-
-                    var equlizerOverlayMargin = (9.5 * resources.displayMetrics.density).toInt()
-
-                    var params = FrameLayout.LayoutParams(newW.toInt(), newH.toInt())
-                    params.gravity = Gravity.CENTER
-                    params.topMargin = equlizerOverlayMargin
-
-                    binding.ivCapturedOverlay.layoutParams = params
-
-                    Glide.with(requireContext())
-                        .load(overlay)
-                        .into(binding.ivCapturedOverlay)
                 }
             }
         })
