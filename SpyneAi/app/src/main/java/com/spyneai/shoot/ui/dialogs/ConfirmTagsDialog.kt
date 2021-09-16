@@ -32,6 +32,7 @@ import android.util.Log
 
 import android.view.ViewGroup
 import android.widget.ArrayAdapter
+import android.widget.EditText
 import android.widget.Toast
 import androidx.constraintlayout.widget.ConstraintSet
 import androidx.viewbinding.ViewBinding
@@ -45,7 +46,7 @@ import org.json.JSONObject
 class ConfirmTagsDialog : BaseDialogFragment<ShootViewModel, DialogConfirmTagsBinding>() {
 
     val TAG = "ConfirmTagsDialog"
-    private val bindingMap = HashMap<String, HashMap<String,ArrayList<ViewBinding>>>()
+    private val bindingMap = HashMap<String, ArrayList<ViewBinding>>()
     private lateinit var inflator : LayoutInflater
 
     override fun onStart() {
@@ -176,12 +177,14 @@ class ConfirmTagsDialog : BaseDialogFragment<ShootViewModel, DialogConfirmTagsBi
             }
 
             "Interior" -> {
-                val name = overlayRes.data[viewModel.interiorShootNumber.value!!].display_name
+                val subCatResponse = (viewModel.subCategoriesResponse.value as Resource.Success).value
+                val name = subCatResponse.interior[viewModel.interiorShootNumber.value!!].display_name
                 binding.tvName.text = name
             }
 
             "Focus Shoot" -> {
-                val name = overlayRes.data[viewModel.miscShootNumber.value!!].display_name
+                val subCatResponse = (viewModel.subCategoriesResponse.value as Resource.Success).value
+                val name = subCatResponse.miscellaneous[viewModel.miscShootNumber.value!!].display_name
                 binding.tvName.text = name
             }
         }
@@ -274,22 +277,12 @@ class ConfirmTagsDialog : BaseDialogFragment<ShootViewModel, DialogConfirmTagsBi
 
     private fun addBinding(category: String,filedType : String,binding : ViewBinding) {
         if (bindingMap[category] == null){
-            bindingMap[category] = HashMap()
+            bindingMap[category] = ArrayList()
         }
 
-        if (bindingMap[category]?.get(filedType) == null){
-            val map = bindingMap[category]
-            map!![filedType] = ArrayList()
-        }
-
-        val list = bindingMap[category]?.get(filedType)
+        val list = bindingMap[category]
 
         list?.add(binding)
-
-        bindingMap[category]?.put(
-            filedType,
-            list!!
-        )
     }
 
     private fun uploadImages() {
@@ -306,45 +299,32 @@ class ConfirmTagsDialog : BaseDialogFragment<ShootViewModel, DialogConfirmTagsBi
     private fun getMetaValue(): String {
         val json = JSONObject()
 
-        val map = bindingMap.get(viewModel.categoryDetails.value?.imageType)
+        val bindingList = bindingMap[viewModel.categoryDetails.value?.imageType]
 
-        map?.keys?.forEachIndexed { index, type ->
-            when(type) {
-                "dropdown" -> {
-                    val list = map[type]
-
-                    list?.forEachIndexed { index, viewBinding ->
-                        val binding = viewBinding as ItemTagsSpinnerBinding
-
-                        if (binding.spinner.selectedItemPosition != 0)
-                            json.put(
-                                getTagKey(binding.tvTitle.text.toString()),
-                            binding.spinner.selectedItem.toString())
-                    }
+        bindingList?.forEach {viewBinding ->
+            when(viewBinding){
+                is ItemTagsSpinnerBinding -> {
+                    if (viewBinding.spinner.selectedItemPosition != 0)
+                        json.put(
+                            getTagKey(viewBinding.tvTitle.text.toString()),
+                            viewBinding.spinner.selectedItem.toString())
                 }
 
-                "multiText" -> {
-                    val list = map[type]
-
-                    list?.forEachIndexed { index, viewBinding ->
-                        val binding = viewBinding as ItemTagNotesBinding
-
-                        if (binding.tvNotes.text.toString().isNotEmpty())
-                            json.put(
-                                getTagKey(binding.tvNotes.text.toString()),
-                                binding.etNotes.text.toString())
-                    }
+                is ItemTagNotesBinding -> {
+                    if (viewBinding.tvNotes.text.toString().isNotEmpty())
+                        json.put(
+                            getTagKey(viewBinding.tvNotes.text.toString()),
+                            viewBinding.etNotes.text.toString())
                 }
             }
         }
-
         return json.toString()
     }
 
     private fun getTagKey(text: String): String {
         return when(text) {
-            "Imperfection location" -> "imperfection_location"
-            "Imperfection type" -> "imperfection_type"
+            "Imperfection Location" -> "imperfection_location"
+            "Imperfection Type" -> "imperfection_type"
             "Imperfection Severity" -> "imperfection_severity"
             else -> "notes"
         }
@@ -469,74 +449,53 @@ class ConfirmTagsDialog : BaseDialogFragment<ShootViewModel, DialogConfirmTagsBi
         var isValidTag = true
         when(viewModel.categoryDetails.value?.imageType) {
             "Exterior" -> {
-                val map = bindingMap.get(viewModel.categoryDetails.value?.imageType)
+                val bindingList = bindingMap[viewModel.categoryDetails.value?.imageType]
 
-                map?.keys?.forEachIndexed { index, type ->
-                    when(type) {
-                        "dropdown" -> {
-                            val list = map[type]
-
-                            list?.forEach {viewBinding ->
-                                if (response.tags.exterior.get(index).isRequired){
-                                    val binding = viewBinding as ItemTagsSpinnerBinding
-                                    if (binding.spinner.selectedItemPosition == 0){
-                                        showErrorToast(response.tags.exterior.get(index).fieldName)
-                                        isValidTag = false
-                                        return isValidTag
-                                    }
+                bindingList?.forEachIndexed { index, viewBinding ->
+                    when(viewBinding){
+                        is ItemTagsSpinnerBinding -> {
+                            if (response.tags.exterior[index].isRequired){
+                                if (viewBinding.spinner.selectedItemPosition == 0){
+                                    showErrorToast(response.tags.exterior.get(index).fieldName)
+                                    isValidTag = false
+                                    return isValidTag
                                 }
-
                             }
                         }
 
-                        "multiText" -> {
-                            val list = map[type]
-
-                            list?.forEach {viewBinding ->
-                                if (response.tags.exterior.get(index).isRequired){
-                                    val binding = viewBinding as ItemTagNotesBinding
-                                    if (binding.etNotes.text.toString().isEmpty()){
-                                        binding.etNotes.error = "Please enter notes"
-                                        isValidTag = false
-                                    }
+                        is ItemTagNotesBinding -> {
+                            if (response.tags.exterior[index].isRequired){
+                                if (viewBinding.etNotes.text.toString().isEmpty()){
+                                    notesError(viewBinding.etNotes)
+                                    isValidTag = false
                                 }
                             }
                         }
                     }
                 }
+
             }
 
             "Interior" -> {
-                val map = bindingMap.get(viewModel.categoryDetails.value?.imageType)
+                val bindingList = bindingMap[viewModel.categoryDetails.value?.imageType]
 
-                map?.keys?.forEachIndexed { topIndex, type ->
-                    when(type) {
-                        "dropdown" -> {
-                            val list = map[type]
-
-                            list?.forEach {viewBinding ->
-                                if (response.tags.interior.get(topIndex).isRequired){
-                                    val binding = viewBinding as ItemTagsSpinnerBinding
-                                    if (binding.spinner.selectedItemPosition == 0){
-                                        showErrorToast(response.tags.interior.get(topIndex).fieldName)
-                                        isValidTag = false
-                                        return isValidTag
-                                    }
+                bindingList?.forEachIndexed { index, viewBinding ->
+                    when(viewBinding){
+                        is ItemTagsSpinnerBinding -> {
+                            if (response.tags.interior[index].isRequired){
+                                if (viewBinding.spinner.selectedItemPosition == 0){
+                                    showErrorToast(response.tags.exterior.get(index).fieldName)
+                                    isValidTag = false
+                                    return isValidTag
                                 }
                             }
                         }
 
-                        "multiText" -> {
-                            val list = map[type]
-
-                            list?.forEach {viewBinding ->
-                                if (response.tags.interior.get(topIndex).isRequired){
-                                    val binding = viewBinding as ItemTagNotesBinding
-                                    if (binding.etNotes.text.toString().isEmpty()){
-                                        binding.etNotes.error = "Please enter notes"
-                                        isValidTag = false
-                                        return isValidTag
-                                    }
+                        is ItemTagNotesBinding -> {
+                            if (response.tags.interior[index].isRequired){
+                                if (viewBinding.etNotes.text.toString().isEmpty()){
+                                    notesError(viewBinding.etNotes)
+                                    isValidTag = false
                                 }
                             }
                         }
@@ -545,36 +504,29 @@ class ConfirmTagsDialog : BaseDialogFragment<ShootViewModel, DialogConfirmTagsBi
             }
 
             "Focus Shoot" -> {
-                val map = bindingMap.get(viewModel.categoryDetails.value?.imageType)
+                val bindingList = bindingMap.get(viewModel.categoryDetails.value?.imageType)
 
-                map?.keys?.forEachIndexed { topIndex, type ->
-                    when(type) {
-                        "dropdown" -> {
-                            val list = map[type]
+                val s = ""
 
-
-                            list?.forEach {viewBinding ->
-                                if (response.tags.focusShoot.get(topIndex).isRequired){
-                                    val binding = viewBinding as ItemTagsSpinnerBinding
-                                    if (binding.spinner.selectedItemPosition == 0){
-                                        showErrorToast(response.tags.focusShoot.get(topIndex).fieldName)
-                                        isValidTag = false
-                                        return isValidTag
-                                    }
+                bindingList?.forEachIndexed { index, viewBinding ->
+                    when(viewBinding){
+                        is ItemTagsSpinnerBinding -> {
+                            val s = ""
+                            if (response.tags.focusShoot[index].isRequired){
+                                if (viewBinding.spinner.selectedItemPosition == 0){
+                                    showErrorToast(response.tags.focusShoot.get(index).fieldName)
+                                    isValidTag = false
+                                    return isValidTag
                                 }
                             }
                         }
 
-                        "multiText" -> {
-                            val list = map[type]
-
-                            list?.forEach {viewBinding ->
-                                if (response.tags.focusShoot.get(topIndex).isRequired){
-                                    val binding = viewBinding as ItemTagNotesBinding
-                                    if (binding.etNotes.text.toString().isEmpty()){
-                                        binding.etNotes.error = "Please enter notes"
-                                        isValidTag = false
-                                    }
+                        is ItemTagNotesBinding -> {
+                            val s =  ""
+                            if (response.tags.focusShoot[index].isRequired){
+                                if (viewBinding.etNotes.text.toString().isEmpty()){
+                                    notesError(viewBinding.etNotes)
+                                    isValidTag = false
                                 }
                             }
                         }
@@ -587,24 +539,15 @@ class ConfirmTagsDialog : BaseDialogFragment<ShootViewModel, DialogConfirmTagsBi
         return isValidTag
     }
 
-//    private fun isRequired(
-//        focusShoot: List<NewSubCatResponse.Tags.FocusShoot>,
-//        type: String
-//    ): Boolean {
-//        var isRequired = false
-//
-//        focusShoot.forEach {
-//            if (it.fieldType == type && it.isRequired)
-//                isRequired = true
-//        }
-//
-//        return isRequired
-//    }
+    private fun notesError(editText : EditText){
+        editText.error = "Please enter notes"
+        Toast.makeText(requireContext(),"Please enter notes",Toast.LENGTH_LONG).show()
+    }
 
     private fun showErrorToast(fieldName: String) {
         val text = when(fieldName) {
-            "Imperfection location" -> "Please select imperfection location"
-            "Imperfection type" -> "Please select imperfection type"
+            "Imperfection Location" -> "Please select imperfection location"
+            "Imperfection Type" -> "Please select imperfection type"
             "Imperfection Severity" -> "Please select imperfection severity"
             else -> "notes"
         }

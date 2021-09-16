@@ -32,6 +32,7 @@
         <entry key="app/src/main/res/drawable/ic_uploading.xml" value="0.24444444444444444" />
         <entry key="app/src/main/res/drawable/nav_background.xml" value="0.24166666666666667" />
         <entry key="app/src/main/res/layout-land/fragment_camera.xml" value="0.20208333333333334" />
+        <entry key="app/src/main/res/layout-land/fragment_overlays.xml" value="0.16979166666666667" />
         <entry key="app/src/main/res/layout/activity_completed_skus.xml" value="0.17572463768115942" />
         <entry key="app/src/main/res/layout/activity_credit_plans.xml" value="0.30512820512820515" />
         <entry key="app/src/main/res/layout/activity_dashboard_main.xml" value="0.25" />
