@@ -153,6 +153,12 @@
             android:exported="true"
             android:stopWithTask="false" />
 
+        <service
+            android:name=".threesixty.data.VideoUploadService"
+            android:enabled="true"
+            android:exported="true"
+            android:stopWithTask="false" />
+
 
         <receiver android:name=".service.ExplicitConnectionReceiver" >
             <intent-filter>
