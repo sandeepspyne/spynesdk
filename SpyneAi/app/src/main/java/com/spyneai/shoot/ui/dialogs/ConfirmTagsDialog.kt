@@ -476,7 +476,7 @@ class ConfirmTagsDialog : BaseDialogFragment<ShootViewModel, DialogConfirmTagsBi
                         "dropdown" -> {
                             val list = map[type]
 
-                            list?.forEachIndexed { index, viewBinding ->
+                            list?.forEach {viewBinding ->
                                 if (response.tags.exterior.get(index).isRequired){
                                     val binding = viewBinding as ItemTagsSpinnerBinding
                                     if (binding.spinner.selectedItemPosition == 0){
@@ -492,7 +492,7 @@ class ConfirmTagsDialog : BaseDialogFragment<ShootViewModel, DialogConfirmTagsBi
                         "multiText" -> {
                             val list = map[type]
 
-                            list?.forEachIndexed { index, viewBinding ->
+                            list?.forEach {viewBinding ->
                                 if (response.tags.exterior.get(index).isRequired){
                                     val binding = viewBinding as ItemTagNotesBinding
                                     if (binding.etNotes.text.toString().isEmpty()){
@@ -509,16 +509,16 @@ class ConfirmTagsDialog : BaseDialogFragment<ShootViewModel, DialogConfirmTagsBi
             "Interior" -> {
                 val map = bindingMap.get(viewModel.categoryDetails.value?.imageType)
 
-                map?.keys?.forEachIndexed { index, type ->
+                map?.keys?.forEachIndexed { topIndex, type ->
                     when(type) {
                         "dropdown" -> {
                             val list = map[type]
 
-                            list?.forEachIndexed { index, viewBinding ->
-                                if (response.tags.interior.get(index).isRequired){
+                            list?.forEach {viewBinding ->
+                                if (response.tags.interior.get(topIndex).isRequired){
                                     val binding = viewBinding as ItemTagsSpinnerBinding
                                     if (binding.spinner.selectedItemPosition == 0){
-                                        showErrorToast(response.tags.interior.get(index).fieldName)
+                                        showErrorToast(response.tags.interior.get(topIndex).fieldName)
                                         isValidTag = false
                                         return isValidTag
                                     }
@@ -529,8 +529,8 @@ class ConfirmTagsDialog : BaseDialogFragment<ShootViewModel, DialogConfirmTagsBi
                         "multiText" -> {
                             val list = map[type]
 
-                            list?.forEachIndexed { index, viewBinding ->
-                                if (response.tags.interior.get(index).isRequired){
+                            list?.forEach {viewBinding ->
+                                if (response.tags.interior.get(topIndex).isRequired){
                                     val binding = viewBinding as ItemTagNotesBinding
                                     if (binding.etNotes.text.toString().isEmpty()){
                                         binding.etNotes.error = "Please enter notes"
@@ -547,17 +547,17 @@ class ConfirmTagsDialog : BaseDialogFragment<ShootViewModel, DialogConfirmTagsBi
             "Focus Shoot" -> {
                 val map = bindingMap.get(viewModel.categoryDetails.value?.imageType)
 
-                map?.keys?.forEachIndexed { index, type ->
+                map?.keys?.forEachIndexed { topIndex, type ->
                     when(type) {
                         "dropdown" -> {
                             val list = map[type]
 
-                            list?.forEachIndexed { index, viewBinding ->
-                                val s = ""
-                                if (response.tags.focusShoot.get(index).isRequired){
+
+                            list?.forEach {viewBinding ->
+                                if (response.tags.focusShoot.get(topIndex).isRequired){
                                     val binding = viewBinding as ItemTagsSpinnerBinding
                                     if (binding.spinner.selectedItemPosition == 0){
-                                        showErrorToast(response.tags.focusShoot.get(index).fieldName)
+                                        showErrorToast(response.tags.focusShoot.get(topIndex).fieldName)
                                         isValidTag = false
                                         return isValidTag
                                     }
@@ -568,8 +568,8 @@ class ConfirmTagsDialog : BaseDialogFragment<ShootViewModel, DialogConfirmTagsBi
                         "multiText" -> {
                             val list = map[type]
 
-                            list?.forEachIndexed { index, viewBinding ->
-                                if (isRequired(response.tags.focusShoot,"multiText")){
+                            list?.forEach {viewBinding ->
+                                if (response.tags.focusShoot.get(topIndex).isRequired){
                                     val binding = viewBinding as ItemTagNotesBinding
                                     if (binding.etNotes.text.toString().isEmpty()){
                                         binding.etNotes.error = "Please enter notes"
@@ -587,19 +587,19 @@ class ConfirmTagsDialog : BaseDialogFragment<ShootViewModel, DialogConfirmTagsBi
         return isValidTag
     }
 
-    private fun isRequired(
-        focusShoot: List<NewSubCatResponse.Tags.FocusShoot>,
-        type: String
-    ): Boolean {
-        var isRequired = false
-
-        focusShoot.forEach {
-            if (it.fieldType == type && it.isRequired)
-                isRequired = true
-        }
-
-        return isRequired
-    }
+//    private fun isRequired(
+//        focusShoot: List<NewSubCatResponse.Tags.FocusShoot>,
+//        type: String
+//    ): Boolean {
+//        var isRequired = false
+//
+//        focusShoot.forEach {
+//            if (it.fieldType == type && it.isRequired)
+//                isRequired = true
+//        }
+//
+//        return isRequired
+//    }
 
     private fun showErrorToast(fieldName: String) {
         val text = when(fieldName) {
