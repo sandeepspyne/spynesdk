@@ -45,8 +45,6 @@ import com.spyneai.needs.AppConstants
 import com.spyneai.needs.Utilities
 import com.spyneai.orders.data.response.GetProjectsResponse
 import com.spyneai.posthog.Events
-import com.spyneai.shoot.ui.base.ShootActivity
-import com.spyneai.shoot.ui.StartShootActivity
 import com.spyneai.shoot.ui.base.ShootPortraitActivity
 import com.spyneai.shoot.utils.log
 
@@ -98,7 +96,7 @@ class HomeDashboardFragment :
 
 
 //        if (PACKAGE_NAME.equals("com.spyneai.amazon.debug")) {
-        newUserCreditDialog()
+//        newUserCreditDialog()
         repeatRefreshData()
         setSliderRecycler()
         lisners()

@@ -93,7 +93,6 @@ class ConfirmReshootPortraitDialog : BaseDialogFragment<ShootViewModel, ConfirmR
                             .load(uri)
                             .into(binding.ivCaptured2)
 
-                    binding.ivCapturedOverlay.setRotation(90F)
 
                     Glide.with(requireContext())
                         .load(overlay)

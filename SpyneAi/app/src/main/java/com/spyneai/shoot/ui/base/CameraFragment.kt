@@ -908,22 +908,12 @@ class CameraFragment : BaseFragment<ShootViewModel, FragmentCameraBinding>(), Pi
                         if (file != null)
                             mid = System.currentTimeMillis()
                         val difference = (mid - begin) / 1000.toFloat()
-                        Toast.makeText(
-                            requireContext(),
-                            "image clicked- " + difference,
-                            Toast.LENGTH_LONG
-                        ).show()
                         log("onImageSaved- " + difference)
                         addShootItem(file.path)
                     } else {
                         try {
                             mid = System.currentTimeMillis()
                             val difference = (mid - begin) / 1000.toFloat()
-                            Toast.makeText(
-                                requireContext(),
-                                "image clicked- " + difference,
-                                Toast.LENGTH_LONG
-                            ).show()
                             log("onImageSaved2- " + difference)
                             var file = output.savedUri!!.toFile()
                             addShootItem(file.path)
@@ -1358,8 +1348,6 @@ class CameraFragment : BaseFragment<ShootViewModel, FragmentCameraBinding>(), Pi
     private fun addShootItem(capturedImage: String) {
         end = System.currentTimeMillis()
         val difference = (end - begin) / 1000.toFloat()
-        Toast.makeText(requireContext(), "addShootIteamCalled- " + difference, Toast.LENGTH_LONG)
-            .show()
         log("addShootIteamCalled- " + difference)
         viewModel.showConfirmReshootDialog.value = true
 

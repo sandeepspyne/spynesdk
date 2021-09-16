@@ -8,10 +8,10 @@
     <color name="order_completed">#E00117</color>
     <color name="red">#E00117</color>
 
-    <color name="light">#FC791A</color>
+    <color name="light">#E00117</color>
 
-    <color name="bottom_nav_selected">#FC791A</color>
+    <color name="bottom_nav_selected">#E00117</color>
     <color name="bottom_nav_unselected">#000000</color>
 
-    <color name="sub_cat_selection">#FC791A</color>
+    <color name="sub_cat_selection">#E00117</color>
 </resources>
