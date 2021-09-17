@@ -134,6 +134,7 @@ class ShootViewModel : ViewModel() {
     var overlayRightMargin = 0
 
     val reshootCapturedImage: MutableLiveData<Boolean> = MutableLiveData()
+    val confirmCapturedImage: MutableLiveData<Boolean> = MutableLiveData()
     val projectId: MutableLiveData<String> = MutableLiveData()
     val showFoodBackground: MutableLiveData<Boolean> = MutableLiveData()
 

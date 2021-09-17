@@ -7,7 +7,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.WindowManager
-import android.widget.Toast
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.lifecycleScope
 import com.bumptech.glide.Glide
@@ -38,7 +37,6 @@ class ConfirmReshootEcomDialog :
 
         viewModel.end.value = System.currentTimeMillis()
         val difference = (viewModel.end.value!! - viewModel.begin.value!!)/1000.toFloat()
-        Toast.makeText(requireContext(), "dialog- "+difference, Toast.LENGTH_LONG).show()
         log("dialog- "+difference)
 
         Glide.with(requireContext())
@@ -68,6 +66,7 @@ class ConfirmReshootEcomDialog :
         }
 
         binding.btConfirmImage.setOnClickListener {
+            viewModel.confirmCapturedImage.value = true
             viewModel.shootNumber.value = viewModel.shootNumber.value?.plus(1)
 
             viewModel.isStopCaptureClickable = true

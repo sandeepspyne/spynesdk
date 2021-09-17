@@ -94,6 +94,12 @@ class GridEcomFragment : BaseFragment<ShootViewModel, FragmentGridEcomBinding>()
             }
         })
 
+        viewModel.confirmCapturedImage.observe(viewLifecycleOwner,{
+            if (it){
+                binding.tvImageCount.text = viewModel.shootList.value!!.size.toString()
+            }
+        })
+
     }
 
 
