@@ -90,10 +90,10 @@ class ProcessViewModel : ViewModel() {
                 list.add(
                     CarsBackgroundRes.Data(
                         "Rustic White",
-                        "https://storage.googleapis.com/spyne/AI/raw/72cbc0ea-3373-4312-99ba-4ef69de4384e.jpg",
+                        "https://storage.googleapis.com/spyne-website/Food%20Backgrounds/Rustic%20White%20-%200.jpg",
                         1,
                         "11001",
-                        "https://storage.googleapis.com/spyne-website/Food%20Backgrounds/Rustic%20White%20-%200.jpg"
+                        "https://storage.googleapis.com/spyne-website/Food%20Backgrounds/Rustic%20White%20-%2090.jpg"
                     )
                 )
 
@@ -101,10 +101,10 @@ class ProcessViewModel : ViewModel() {
                 list.add(
                     CarsBackgroundRes.Data(
                         "Colonial Blue",
-                        "https://storage.googleapis.com/spyne/AI/raw/5a2f8ef2-ecd8-4d35-b747-fcb1b08223cd.jpg",
+                        "https://storage.googleapis.com/spyne-website/Food%20Backgrounds/Colonial%20blue%20-%200.jpg",
                         1,
                         "12001",
-                        "https://storage.googleapis.com/spyne/AI/raw/74a28609-218e-4ed8-9d6f-24e869b1beeb.png"
+                        "https://storage.googleapis.com/spyne-website/Food%20Backgrounds/Colonial%20Blue%20-%2090.jpg"
                     )
                 )
 
@@ -112,10 +112,10 @@ class ProcessViewModel : ViewModel() {
                 list.add(
                     CarsBackgroundRes.Data(
                         "Boho Chic",
-                        "https://storage.googleapis.com/spyne/AI/raw/1892526c-72c9-4331-8ede-dec5f72cf52e.png",
+                        "https://storage.googleapis.com/spyne-website/Food%20Backgrounds/%20Boho%20Chic%20-%200.jpg",
                         1,
                         "13001",
-                        "https://storage.googleapis.com/spyne/AI/raw/b972331d-5a82-46bf-b347-007962ce9158.png"
+                        "https://storage.googleapis.com/spyne-website/Food%20Backgrounds/Boho%20Chic%20-%2090.jpg"
                     )
                 )
 
