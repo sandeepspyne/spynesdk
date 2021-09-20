@@ -5,9 +5,11 @@
       <map>
         <entry key="app/src/flipkartgrocery/res/drawable/ic_launcher_background.xml" value="0.24166666666666667" />
         <entry key="app/src/flipkartgrocery/res/layout/home_dashboard_fragment.xml" value="0.2578125" />
+        <entry key="app/src/main/res/layout/activity_forgot_password.xml" value="0.2578125" />
         <entry key="app/src/main/res/layout/activity_login.xml" value="0.8509803921568627" />
         <entry key="app/src/main/res/layout/activity_onboard_one.xml" value="0.1328125" />
         <entry key="app/src/main/res/layout/activity_sign_in_using_otp.xml" value="0.2578125" />
+        <entry key="app/src/main/res/layout/activity_sign_up.xml" value="0.2578125" />
         <entry key="app/src/main/res/layout/home_dashboard_fragment.xml" value="0.2578125" />
       </map>
     </option>
