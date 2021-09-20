@@ -18,10 +18,14 @@ import com.spyneai.shoot.data.model.*
 import com.spyneai.shoot.response.SkuProcessStateResponse
 import com.spyneai.shoot.response.UploadFolderRes
 import com.spyneai.shoot.response.UploadStatusRes
+import com.spyneai.threesixty.data.model.VideoPreSignedRes
 import com.spyneai.threesixty.data.response.ProcessThreeSixtyRes
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
+import okhttp3.ResponseBody
 import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
 import retrofit2.http.*
 
 interface ClipperApi {
@@ -197,11 +201,30 @@ interface ClipperApi {
         @Part("video_url") videoUrl: RequestBody? = null,
     ) : ProcessThreeSixtyRes
 
+
+    @POST("v3/video/video-upload")
+    suspend fun getVideoPreSignedUrl(
+        @Field("auth_key") authKey : String,
+        @Field("project_id") projectId:String,
+        @Field("sku_id") skuId : String,
+        @Field("category") category : String,
+        @Field("total_frames_no") totalFrames: Int,
+        @Field("video_name") videoName : String,
+        @Field("background_id") backgroundId : Int? = null
+    ) : VideoPreSignedRes
+
+    @Multipart
+    @PUT
+    suspend fun uploadVideo(
+        @Header("content_type") contentType: String,
+        @Url uploadUrl: String,
+        @Part file: MultipartBody.Part
+    ): ResponseBody
+
     @GET("v2/credit/fetch")
     suspend fun userCreditsDetails(
         @Query("auth_key") userId: String
     ): CreditDetailsResponse
-
 
     @FormUrlEncoded
     @PUT("v2/credit/reduce-user-credit")

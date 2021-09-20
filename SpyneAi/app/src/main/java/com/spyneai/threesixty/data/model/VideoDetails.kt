@@ -14,5 +14,8 @@ class VideoDetails {
     var frames : Int = 0
     var backgroundId : String? = null
     var sample360 : String? = null
+    var isUploaded : Int? = 0
     var isStatusUpdate : Int? = 0
+    var preSignedUrl : String? = null
+    var videoId : String? = null
 }

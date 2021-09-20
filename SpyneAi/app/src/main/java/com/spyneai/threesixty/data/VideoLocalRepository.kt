@@ -94,7 +94,10 @@ class VideoLocalRepository {
             Videos.COLUMN_NAME_VIDEO_PATH,
             Videos.COLUMN_NAME_FRAMES,
             Videos.COLUMN_NAME_BACKGROUND_ID,
-            Videos.COLUMN_NAME_IS_STATUS_UPDATED)
+            Videos.COLUMN_NAME_IS_UPLOADED,
+            Videos.COLUMN_NAME_IS_STATUS_UPDATED,
+            Videos.COLUMN_NAME_PRE_SIGNED_URL,
+            Videos.COLUMN_NAME_VIDEO_ID)
 
         // Filter results WHERE "title" = 'My Title'
         val selection = "${Videos.COLUMN_NAME_IS_UPLOADED} = ? OR ${Videos.COLUMN_NAME_IS_STATUS_UPDATED} = ?"
@@ -128,7 +131,10 @@ class VideoLocalRepository {
                 val videoPath = getString(getColumnIndexOrThrow(Videos.COLUMN_NAME_VIDEO_PATH))
                 val frames = getInt(getColumnIndexOrThrow(Videos.COLUMN_NAME_FRAMES))
                 val backgroundId = getString(getColumnIndexOrThrow(Videos.COLUMN_NAME_BACKGROUND_ID))
+                val isUploaded = getInt(getColumnIndexOrThrow(Videos.COLUMN_NAME_IS_UPLOADED))
                 val isStatusUpdated = getInt(getColumnIndexOrThrow(Videos.COLUMN_NAME_IS_STATUS_UPDATED))
+                val preSignedUrl = getString(getColumnIndexOrThrow(Videos.COLUMN_NAME_PRE_SIGNED_URL))
+                val videoId = getString(getColumnIndexOrThrow(Videos.COLUMN_NAME_VIDEO_ID))
 
                 video.itemId = itemId
                 video.projectId = projectId
@@ -140,7 +146,10 @@ class VideoLocalRepository {
                 video.videoPath = videoPath
                 video.frames = frames
                 video.backgroundId = backgroundId
+                video.isUploaded = isUploaded
                 video.isStatusUpdate = isStatusUpdated
+                video.preSignedUrl = preSignedUrl
+                video.videoId = videoId
             }
         }
 
@@ -160,7 +169,9 @@ class VideoLocalRepository {
             Videos.COLUMN_NAME_FRAMES,
             Videos.COLUMN_NAME_BACKGROUND_ID,
             Videos.COLUMN_NAME_IS_UPLOADED,
-        Videos.COLUMN_NAME_IS_STATUS_UPDATED)
+            Videos.COLUMN_NAME_IS_STATUS_UPDATED,
+            Videos.COLUMN_NAME_PRE_SIGNED_URL,
+            Videos.COLUMN_NAME_VIDEO_ID)
 
         // Filter results WHERE "title" = 'My Title'
         val selection = "${Videos.COLUMN_NAME_IS_UPLOADED} = ?"
@@ -196,6 +207,9 @@ class VideoLocalRepository {
                 val frames = getInt(getColumnIndexOrThrow(Videos.COLUMN_NAME_FRAMES))
                 val backgroundId = getString(getColumnIndexOrThrow(Videos.COLUMN_NAME_BACKGROUND_ID))
                 val isStatusUpdated = getInt(getColumnIndexOrThrow(Videos.COLUMN_NAME_IS_STATUS_UPDATED))
+                val isUploaded = getInt(getColumnIndexOrThrow(Videos.COLUMN_NAME_IS_UPLOADED))
+                val preSignedUrl = getString(getColumnIndexOrThrow(Videos.COLUMN_NAME_PRE_SIGNED_URL))
+                val videoId = getString(getColumnIndexOrThrow(Videos.COLUMN_NAME_VIDEO_ID))
 
                 video.itemId = itemId
                 video.projectId = projectId
@@ -207,7 +221,10 @@ class VideoLocalRepository {
                 video.videoPath = videoPath
                 video.frames = frames
                 video.backgroundId = backgroundId
+                video.isUploaded
                 video.isStatusUpdate = isStatusUpdated
+                video.preSignedUrl = preSignedUrl
+                video.videoId = videoId
             }
         }
 
@@ -260,6 +277,32 @@ class VideoLocalRepository {
         return count
     }
 
+    fun addPreSignedUrl(itemId: Long,presignedUrl: String, videoId: String) {
+        val projectValues = ContentValues().apply {
+            put(
+                Videos.COLUMN_NAME_PRE_SIGNED_URL,
+                presignedUrl
+            )
+            put(
+                Videos.COLUMN_NAME_VIDEO_ID,
+                videoId
+            )
+        }
+
+        // Which row to update, based on the title
+        val selection = "${BaseColumns._ID} LIKE ?"
+
+        val selectionArgs = arrayOf(itemId.toString())
+
+        val count = dbWritable.update(
+            Videos.TABLE_NAME,
+            projectValues,
+            selection,
+            selectionArgs)
+
+        Log.d(TAG, "addPreSignedUrl: "+count)
+    }
+
     fun markUploaded(videoDetails: VideoDetails) {
         //update project status to ongoing
         updateProjectStatus(videoDetails.projectId!!)
@@ -269,6 +312,27 @@ class VideoLocalRepository {
                 Videos.COLUMN_NAME_IS_UPLOADED,
                 1
             )
+        }
+
+        // Which row to update, based on the title
+        val selection = "${BaseColumns._ID} LIKE ?"
+
+        val selectionArgs = arrayOf(videoDetails.itemId.toString())
+
+        val count = dbWritable.update(
+            Videos.TABLE_NAME,
+            projectValues,
+            selection,
+            selectionArgs)
+
+        Log.d(TAG, "markUploaded: "+count)
+    }
+
+    fun markStatusUploaded(videoDetails: VideoDetails) {
+        //update project status to ongoing
+        updateProjectStatus(videoDetails.projectId!!)
+
+        val projectValues = ContentValues().apply {
             put(
                 Videos.COLUMN_NAME_IS_STATUS_UPDATED,
                 1

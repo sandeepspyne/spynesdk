@@ -125,6 +125,8 @@ class DBHelper (context: Context) : SQLiteOpenHelper(context, DATABASE_NAME, nul
                 "${Videos.COLUMN_NAME_BACKGROUND_ID} TEXT," +
                 "${Videos.COLUMN_NAME_IS_UPLOADED} INTEGER," +
                 "${Videos.COLUMN_NAME_IS_STATUS_UPDATED} INTEGER," +
+                "${Videos.COLUMN_NAME_PRE_SIGNED_URL} TEXT," +
+                "${Videos.COLUMN_NAME_VIDEO_ID} TEXT," +
                 "${Videos.TABLE_NAME} TEXT)"
 
 
