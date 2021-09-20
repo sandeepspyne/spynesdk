@@ -124,6 +124,7 @@ class DBHelper (context: Context) : SQLiteOpenHelper(context, DATABASE_NAME, nul
                 "${Videos.COLUMN_NAME_FRAMES} INTEGER," +
                 "${Videos.COLUMN_NAME_BACKGROUND_ID} TEXT," +
                 "${Videos.COLUMN_NAME_IS_UPLOADED} INTEGER," +
+                "${Videos.COLUMN_NAME_IS_STATUS_UPDATED} INTEGER," +
                 "${Videos.TABLE_NAME} TEXT)"
 
 

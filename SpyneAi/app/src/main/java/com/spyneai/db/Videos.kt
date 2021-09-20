@@ -14,4 +14,5 @@ object Videos : BaseColumns {
     const val COLUMN_NAME_FRAMES = "frames"
     const val COLUMN_NAME_BACKGROUND_ID = "background_id"
     const val COLUMN_NAME_IS_UPLOADED = "is_uploaded"
+    const val COLUMN_NAME_IS_STATUS_UPDATED = "is_status_updated"
 }

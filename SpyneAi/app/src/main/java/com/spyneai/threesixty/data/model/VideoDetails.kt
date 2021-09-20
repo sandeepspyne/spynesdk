@@ -14,4 +14,5 @@ class VideoDetails {
     var frames : Int = 0
     var backgroundId : String? = null
     var sample360 : String? = null
+    var isStatusUpdate : Int? = 0
 }

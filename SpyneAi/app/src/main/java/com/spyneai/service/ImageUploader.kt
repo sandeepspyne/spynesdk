@@ -97,7 +97,7 @@ class ImageUploader(val context: Context,
                            requestFile
                        )
 
-                    val uploadType = if (retryCount == 0) "Direct" else "Retry"
+                   val uploadType = if (retryCount == 0) "Direct" else "Retry"
                    val meta = if (image.meta == null) "".toRequestBody(MultipartBody.FORM) else image.meta?.toRequestBody(MultipartBody.FORM)
 
                    var response = if (image.categoryName == "360int"){

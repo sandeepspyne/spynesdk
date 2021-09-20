@@ -29,6 +29,7 @@ class VideoLocalRepository {
             put(Videos.COLUMN_NAME_FRAMES, video.frames)
             put(Videos.COLUMN_NAME_BACKGROUND_ID, "")
             put(Videos.COLUMN_NAME_IS_UPLOADED, 0)
+            put(Videos.COLUMN_NAME_IS_STATUS_UPDATED, 0)
         }
 
         val newRowId = dbWritable?.insert(Videos.TABLE_NAME, null, values)
@@ -92,11 +93,12 @@ class VideoLocalRepository {
             Videos.COLUMN_NAME_CATEGORY_SUBCATEGORY_NAME,
             Videos.COLUMN_NAME_VIDEO_PATH,
             Videos.COLUMN_NAME_FRAMES,
-            Videos.COLUMN_NAME_BACKGROUND_ID)
+            Videos.COLUMN_NAME_BACKGROUND_ID,
+            Videos.COLUMN_NAME_IS_STATUS_UPDATED)
 
         // Filter results WHERE "title" = 'My Title'
-        val selection = "${Videos.COLUMN_NAME_IS_UPLOADED} = ?"
-        val projectSelectionArgs = arrayOf("0")
+        val selection = "${Videos.COLUMN_NAME_IS_UPLOADED} = ? OR ${Videos.COLUMN_NAME_IS_STATUS_UPDATED} = ?"
+        val projectSelectionArgs = arrayOf("0","0")
 
         // How you want the results sorted in the resulting Cursor
         val sortOrder = "${BaseColumns._ID} ASC"
@@ -126,6 +128,7 @@ class VideoLocalRepository {
                 val videoPath = getString(getColumnIndexOrThrow(Videos.COLUMN_NAME_VIDEO_PATH))
                 val frames = getInt(getColumnIndexOrThrow(Videos.COLUMN_NAME_FRAMES))
                 val backgroundId = getString(getColumnIndexOrThrow(Videos.COLUMN_NAME_BACKGROUND_ID))
+                val isStatusUpdated = getInt(getColumnIndexOrThrow(Videos.COLUMN_NAME_IS_STATUS_UPDATED))
 
                 video.itemId = itemId
                 video.projectId = projectId
@@ -137,8 +140,7 @@ class VideoLocalRepository {
                 video.videoPath = videoPath
                 video.frames = frames
                 video.backgroundId = backgroundId
-
-                val s = ""
+                video.isStatusUpdate = isStatusUpdated
             }
         }
 
@@ -157,7 +159,8 @@ class VideoLocalRepository {
             Videos.COLUMN_NAME_VIDEO_PATH,
             Videos.COLUMN_NAME_FRAMES,
             Videos.COLUMN_NAME_BACKGROUND_ID,
-            Videos.COLUMN_NAME_IS_UPLOADED)
+            Videos.COLUMN_NAME_IS_UPLOADED,
+        Videos.COLUMN_NAME_IS_STATUS_UPDATED)
 
         // Filter results WHERE "title" = 'My Title'
         val selection = "${Videos.COLUMN_NAME_IS_UPLOADED} = ?"
@@ -192,6 +195,7 @@ class VideoLocalRepository {
                 val videoPath = getString(getColumnIndexOrThrow(Videos.COLUMN_NAME_VIDEO_PATH))
                 val frames = getInt(getColumnIndexOrThrow(Videos.COLUMN_NAME_FRAMES))
                 val backgroundId = getString(getColumnIndexOrThrow(Videos.COLUMN_NAME_BACKGROUND_ID))
+                val isStatusUpdated = getInt(getColumnIndexOrThrow(Videos.COLUMN_NAME_IS_STATUS_UPDATED))
 
                 video.itemId = itemId
                 video.projectId = projectId
@@ -203,6 +207,7 @@ class VideoLocalRepository {
                 video.videoPath = videoPath
                 video.frames = frames
                 video.backgroundId = backgroundId
+                video.isStatusUpdate = isStatusUpdated
             }
         }
 
@@ -262,6 +267,10 @@ class VideoLocalRepository {
         val projectValues = ContentValues().apply {
             put(
                 Videos.COLUMN_NAME_IS_UPLOADED,
+                1
+            )
+            put(
+                Videos.COLUMN_NAME_IS_STATUS_UPDATED,
                 1
             )
         }
