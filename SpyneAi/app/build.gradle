@@ -188,6 +188,13 @@ android {
             versionCode 1
             versionName "1.0"
         }
+
+        sellanycar {
+            dimension 'version'
+            applicationId "com.spyneai.sellanycar"
+            versionCode 1
+            versionName "1.0"
+        }
     }
     sourceSets {
         sweepCars {

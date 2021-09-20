@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "292661959249",
+    "project_id": "sell-any-car-88862",
+    "storage_bucket": "sell-any-car-88862.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:292661959249:android:80d33231624b801e3df670",
+        "android_client_info": {
+          "package_name": "com.spyneai.sellanycar.debug"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "292661959249-mqdoiu19ei6140pscro7i1df60e6f09r.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBtfndE8LIHO6x-yTMrDtjXLWm40mz8H0A"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "292661959249-mqdoiu19ei6140pscro7i1df60e6f09r.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

@@ -303,6 +303,7 @@ class CameraFragment : BaseFragment<ShootViewModel, FragmentCameraBinding>(), Pi
             AppConstants.SWEEP,
             AppConstants.TRUSTED_CARS,
             AppConstants.TRAVO_PHOTOS,
+            AppConstants.SELL_ANY_CAR,
             AppConstants.YALLA_MOTOS-> {
                 if (viewModel.shootList.value == null
                     && !requireActivity().intent.getBooleanExtra(AppConstants.SKU_CREATED,false)) {
@@ -1020,7 +1021,7 @@ class CameraFragment : BaseFragment<ShootViewModel, FragmentCameraBinding>(), Pi
                     }
                 }
             }
-            AppConstants.SPYNE_AI -> {
+            AppConstants.SPYNE_AI, AppConstants.SELL_ANY_CAR -> {
                 when (viewModel.categoryDetails.value?.categoryName){
                     "Automobiles", "Bikes" ->{
                         if ((roll >= -100 && roll <= -80) && (pitch >= -5 && pitch <= 5)) {
