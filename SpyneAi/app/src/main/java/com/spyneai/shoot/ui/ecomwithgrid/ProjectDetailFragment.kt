@@ -48,7 +48,7 @@ class ProjectDetailFragment : BaseFragment<ShootViewModel, FragmentProjectDetail
                 }
                 else -> {
                     when(getString(R.string.app_name)){
-                        AppConstants.SWIGGYINSTAMART -> {
+                        AppConstants.SWIGGYINSTAMART, AppConstants.FLIPKART_GROCERY -> {
                             processWithBackgroundId()
                         }else -> {
                             processWithoutBackgroundId()

@@ -332,7 +332,8 @@ class CameraFragment : BaseFragment<ShootViewModel, FragmentCameraBinding>(), Pi
             AppConstants.AMAZON,
             AppConstants.SWIGGY,
             AppConstants.SWIGGYINSTAMART,
-            AppConstants.BATA -> {
+            AppConstants.BATA,
+            AppConstants.FLIPKART_GROCERY-> {
                 if (binding.flLevelIndicator.visibility == View.VISIBLE) {
                     if (isGyroOnCorrectAngle)
                         captureImage()
@@ -1144,7 +1145,8 @@ class CameraFragment : BaseFragment<ShootViewModel, FragmentCameraBinding>(), Pi
             AppConstants.FLIPKART,
             AppConstants.AMAZON,
             AppConstants.LAL_10,
-            AppConstants.BATA -> {
+            AppConstants.BATA,
+            AppConstants.FLIPKART_GROCERY -> {
                 //hide moving line
                 if (pitch.roundToInt() == 0 || (pitch.roundToInt() <= -0 && pitch.roundToInt() >= -3))
                     binding.tvLevelIndicator.visibility = View.GONE

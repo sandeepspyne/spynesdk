@@ -82,6 +82,7 @@
         <activity android:name=".dashboard.ui.YoutubeVideoPlayerActivity" />
         <activity
             android:name=".dashboard.ui.MainDashboardActivity"
+            android:launchMode="singleTop"
             android:screenOrientation="portrait" />
         <activity
             android:name=".loginsignup.activity.ForgotPasswordActivity"

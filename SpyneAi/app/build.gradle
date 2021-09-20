@@ -195,6 +195,13 @@ android {
             versionCode 1
             versionName "1.1"
         }
+
+        flipkartgrocery {
+            dimension 'version'
+            applicationId "com.spyneai.flipkartgrocery"
+            versionCode 1
+            versionName "1.0"
+        }
     }
     sourceSets {
         sweepCars {

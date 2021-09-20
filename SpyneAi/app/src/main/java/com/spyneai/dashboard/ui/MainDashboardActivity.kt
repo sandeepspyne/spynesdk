@@ -44,6 +44,9 @@ import com.spyneai.shoot.workmanager.manual.StoreImageFilesWorker
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
+import android.view.ViewGroup
+import android.widget.Button
+import java.lang.RuntimeException
 
 
 class MainDashboardActivity : AppCompatActivity() {
@@ -120,7 +123,7 @@ class MainDashboardActivity : AppCompatActivity() {
                             }
                         }
 
-                        "Flipkart", "Udaan", "Lal10", "Amazon", "Swiggy", AppConstants.SWIGGYINSTAMART, AppConstants.BATA -> {
+                        "Flipkart", "Udaan", "Lal10", "Amazon", "Swiggy", AppConstants.SWIGGYINSTAMART, AppConstants.BATA, AppConstants.FLIPKART_GROCERY -> {
                             val intent = Intent(this@MainDashboardActivity, CategoriesActivity::class.java)
                                 startActivity(intent)
                             }

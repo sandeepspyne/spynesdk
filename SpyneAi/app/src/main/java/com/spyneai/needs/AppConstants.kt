@@ -139,6 +139,7 @@ object AppConstants {
     val YALLA_MOTOS= "Yalla Motors"
     val OLA_CABS = "Ola Cabs"
     val AUTO_MOSER = "Automoser"
+    val FLIPKART_GROCERY = "Flipkart Grocery"
 
 
     val UDAAN = "Udaan"
