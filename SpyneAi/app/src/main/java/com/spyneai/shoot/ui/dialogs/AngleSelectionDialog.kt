@@ -23,7 +23,7 @@ class AngleSelectionDialog : BaseDialogFragment<ShootViewModel,DialogAngleSelect
     private fun showOptions() {
         val valuesShoots = when(getString(R.string.app_name)){
             AppConstants.CARS24_INDIA,AppConstants.CARS24 -> arrayOf("5 Angles")
-            AppConstants.SELL_ANY_CAR -> arrayOf("4 Angles")
+            AppConstants.SELL_ANY_CAR -> arrayOf("4 Angles", "36 Angles")
             else -> arrayOf("8 Angles", "12 Angles","16 Angles","24 Angles","36 Angles")
         }
 
@@ -35,11 +35,7 @@ class AngleSelectionDialog : BaseDialogFragment<ShootViewModel,DialogAngleSelect
             AppConstants.SELL_ANY_CAR->{
                 when(viewModel.getSelectedAngles()){
                     4 -> binding.npShoots.minValue = 0
-                    8 -> binding.npShoots.minValue = 1
-                    12 -> binding.npShoots.minValue = 2
-                    16 -> binding.npShoots.minValue = 3
-                    24 -> binding.npShoots.minValue = 4
-                    36 -> binding.npShoots.minValue = 5
+                    36 -> binding.npShoots.minValue = 1
                 }
             } else -> {
             when(viewModel.getSelectedAngles()){

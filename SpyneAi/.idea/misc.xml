@@ -10,7 +10,12 @@
         <entry key="app/src/main/res/layout/activity_onboard_one.xml" value="0.1328125" />
         <entry key="app/src/main/res/layout/activity_sign_in_using_otp.xml" value="0.2578125" />
         <entry key="app/src/main/res/layout/activity_sign_up.xml" value="0.2578125" />
+        <entry key="app/src/main/res/layout/dialog_angle_selection.xml" value="0.2578125" />
+        <entry key="app/src/main/res/layout/dialog_confirm_tags.xml" value="0.2578125" />
+        <entry key="app/src/main/res/layout/fragment_overlay_ecom.xml" value="0.19722222222222222" />
         <entry key="app/src/main/res/layout/home_dashboard_fragment.xml" value="0.2578125" />
+        <entry key="app/src/main/res/layout/item_tags_spinner.xml" value="0.2578125" />
+        <entry key="app/src/main/res/layout/item_tags_spinner_text.xml" value="0.2578125" />
         <entry key="app/src/sellanycar/res/drawable/app_ic_background.xml" value="0.24166666666666667" />
       </map>
     </option>

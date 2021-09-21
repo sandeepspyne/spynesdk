@@ -218,7 +218,7 @@ class OverlaysFragment : BaseFragment<ShootViewModel, FragmentOverlaysBinding>()
        }
 
         when(getString(R.string.app_name)) {
-            AppConstants.KARVI,AppConstants.CARS24_INDIA,AppConstants.CARS24, AppConstants.SELL_ANY_CAR -> {}
+            AppConstants.KARVI,AppConstants.CARS24_INDIA,AppConstants.CARS24 -> {}
             else -> {
                     binding.tvShoot?.setOnClickListener {
                         if ((viewModel.startInteriorShots.value != true || viewModel.startMiscShots.value != true )
