@@ -1,5 +1,6 @@
 package com.spyneai.threesixty.ui.fragments
 
+import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -24,6 +25,7 @@ import com.spyneai.needs.Utilities
 import com.spyneai.posthog.Events
 import com.spyneai.shoot.adapters.NewCarBackgroundAdapter
 import com.spyneai.shoot.data.model.CarsBackgroundRes
+import com.spyneai.shoot.ui.base.ShootActivity
 import com.spyneai.threesixty.data.ThreeSixtyViewModel
 import okhttp3.MultipartBody
 import okhttp3.RequestBody.Companion.toRequestBody
@@ -41,6 +43,32 @@ class ThreeSixtyBackgroundFragment : BaseFragment<ThreeSixtyViewModel, Fragment3
         carBackgroundGifList = ArrayList()
 
         initSelectBackground()
+
+        binding.flShootNow.setOnClickListener{
+            val intent = Intent(requireContext(), ShootActivity::class.java)
+
+            intent.putExtra(
+                AppConstants.CATEGORY_NAME,
+                "Automobiles")
+
+            intent.putExtra(
+                AppConstants.CATEGORY_ID,
+                AppConstants.CARS_CATEGORY_ID)
+
+            intent.putExtra(
+                AppConstants.PROJECT_ID,
+                viewModel.videoDetails.projectId)
+
+            intent.putExtra(
+                AppConstants.SKU_ID,
+                viewModel.videoDetails.skuId)
+
+            intent.putExtra(
+                AppConstants.FROM_VIDEO,
+                true)
+
+            startActivity(intent)
+        }
 
         binding.btnContinue.setOnClickListener {
 

@@ -117,7 +117,10 @@ interface ClipperApi {
                           @Field("prod_cat_id") prodCatId : String,
                           @Field("prod_sub_cat_id") prodSubCatId : String,
                           @Field("sku_name") skuName : String,
-                          @Field("total_frames") totalFrames : Int) : CreateSkuRes
+                          @Field("total_frames") totalFrames : Int,
+                          @Field("images") images : Int,
+                          @Field("videos") videos : Int
+    ) : CreateSkuRes
 
     @Multipart
     @POST("v2/backgrounds/fetchEnterpriseBgs")

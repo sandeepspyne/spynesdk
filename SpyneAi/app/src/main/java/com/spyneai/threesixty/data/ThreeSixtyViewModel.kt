@@ -84,7 +84,9 @@ class ThreeSixtyViewModel : ViewModel() {
             prodCatId,
             prodSubCatId,
             skuName,
-            0
+            0,
+            0,
+            1
         )
     }
 

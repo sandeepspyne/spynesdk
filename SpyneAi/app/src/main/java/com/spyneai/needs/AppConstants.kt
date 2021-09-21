@@ -164,6 +164,8 @@ object AppConstants {
     val MODEL = "MODEL"
     val APP_VERSION_CODE = "APP_VERSION_CODE"
 
+    val FROM_VIDEO = "FROM_VIDEO"
+
 
 
 }

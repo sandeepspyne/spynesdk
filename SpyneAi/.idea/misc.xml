@@ -70,6 +70,7 @@
         <entry key="app/src/main/res/layout/dialog_resolution_not_supported.xml" value="0.30512820512820515" />
         <entry key="app/src/main/res/layout/dialog_shoot_hint.xml" value="0.30512820512820515" />
         <entry key="app/src/main/res/layout/dialog_top_up.xml" value="0.30512820512820515" />
+        <entry key="app/src/main/res/layout/fragment_360_background.xml" value="0.24351851851851852" />
         <entry key="app/src/main/res/layout/fragment_camera.xml" value="0.22" />
         <entry key="app/src/main/res/layout/fragment_completed_projects.xml" value="0.17572463768115942" />
         <entry key="app/src/main/res/layout/fragment_draft_details.xml" value="0.17572463768115942" />

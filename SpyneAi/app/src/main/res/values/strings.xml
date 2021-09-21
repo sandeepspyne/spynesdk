@@ -236,5 +236,7 @@
     <string name="image_category">Image Category</string>
     <string name="additionl_settings">Additional Notes</string>
     <string name="add_text_here">Add Text Here</string>
+    <string name="continue_shoot">Continue Shoot</string>
+    <string name="shoot_images">Shoot Images</string>
 
 </resources>
