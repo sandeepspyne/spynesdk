@@ -261,51 +261,35 @@ class MainDashboardActivity : AppCompatActivity() {
     }
 
     private fun startUploadService() {
-        var action = Actions.START
-        if (getServiceState(this) == com.spyneai.service.ServiceState.STOPPED && action == Actions.STOP)
-            return
+        val shootLocalRepository = ShootLocalRepository()
+        if (shootLocalRepository.getOldestImage().itemId != null
+            || shootLocalRepository.getOldestSkippedImage().itemId != null){
 
-        val serviceIntent = Intent(this, VideoUploadService::class.java)
-        serviceIntent.action = action.name
+            var action = Actions.START
+            if (getServiceState(this) == com.spyneai.service.ServiceState.STOPPED && action == Actions.STOP)
+                return
 
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            log("Starting the service in >=26 Mode")
-            ContextCompat.startForegroundService(this, serviceIntent)
-            return
-        } else {
-            log("Starting the service in < 26 Mode")
-            startService(serviceIntent)
+            val serviceIntent = Intent(this, ImageUploadingService::class.java)
+            serviceIntent.action = action.name
+
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                log("Starting the service in >=26 Mode")
+                ContextCompat.startForegroundService(this, serviceIntent)
+                return
+            } else {
+                log("Starting the service in < 26 Mode")
+                startService(serviceIntent)
+            }
+
+            val properties = Properties()
+                .apply {
+                    put("service_state","Started")
+                    put("email",Utilities.getPreference(this@MainDashboardActivity,AppConstants.EMAIL_ID).toString())
+                    put("medium","Main Actity")
+                }
+
+            captureEvent(Events.SERVICE_STARTED,properties)
         }
-
-//        val shootLocalRepository = ShootLocalRepository()
-//        if (shootLocalRepository.getOldestImage().itemId != null
-//            || shootLocalRepository.getOldestSkippedImage().itemId != null){
-//
-//            var action = Actions.START
-//            if (getServiceState(this) == com.spyneai.service.ServiceState.STOPPED && action == Actions.STOP)
-//                return
-//
-//            val serviceIntent = Intent(this, ImageUploadingService::class.java)
-//            serviceIntent.action = action.name
-//
-//            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-//                log("Starting the service in >=26 Mode")
-//                ContextCompat.startForegroundService(this, serviceIntent)
-//                return
-//            } else {
-//                log("Starting the service in < 26 Mode")
-//                startService(serviceIntent)
-//            }
-//
-//            val properties = Properties()
-//                .apply {
-//                    put("service_state","Started")
-//                    put("email",Utilities.getPreference(this@MainDashboardActivity,AppConstants.EMAIL_ID).toString())
-//                    put("medium","Main Actity")
-//                }
-//
-//            captureEvent(Events.SERVICE_STARTED,properties)
-//        }
     }
 
     private fun cancelAllWorkers(){

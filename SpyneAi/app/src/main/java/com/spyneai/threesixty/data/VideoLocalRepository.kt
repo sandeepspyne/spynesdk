@@ -277,22 +277,22 @@ class VideoLocalRepository {
         return count
     }
 
-    fun addPreSignedUrl(itemId: Long,presignedUrl: String, videoId: String) {
+    fun addPreSignedUrl(videoDetails: VideoDetails) {
         val projectValues = ContentValues().apply {
             put(
                 Videos.COLUMN_NAME_PRE_SIGNED_URL,
-                presignedUrl
+                videoDetails.preSignedUrl
             )
             put(
                 Videos.COLUMN_NAME_VIDEO_ID,
-                videoId
+                videoDetails.videoId
             )
         }
 
         // Which row to update, based on the title
         val selection = "${BaseColumns._ID} LIKE ?"
 
-        val selectionArgs = arrayOf(itemId.toString())
+        val selectionArgs = arrayOf(videoDetails.itemId.toString())
 
         val count = dbWritable.update(
             Videos.TABLE_NAME,

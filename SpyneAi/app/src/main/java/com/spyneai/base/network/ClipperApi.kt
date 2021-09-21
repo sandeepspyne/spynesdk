@@ -1,5 +1,6 @@
 package com.spyneai.base.network
 
+import com.spyneai.BaseApplication
 import com.spyneai.camera2.OverlaysResponse
 import com.spyneai.credits.model.DownloadHDRes
 import com.spyneai.credits.model.ReduceCreditResponse
@@ -8,6 +9,8 @@ import com.spyneai.dashboard.response.NewCategoriesResponse
 import com.spyneai.dashboard.response.NewSubCatResponse
 import com.spyneai.model.credit.CreditDetailsResponse
 import com.spyneai.model.projects.CompletedProjectResponse
+import com.spyneai.needs.AppConstants
+import com.spyneai.needs.Utilities
 import com.spyneai.orders.data.response.CompletedSKUsResponse
 import com.spyneai.orders.data.response.GetOngoingSkusResponse
 import com.spyneai.orders.data.response.GetProjectsResponse
@@ -20,6 +23,7 @@ import com.spyneai.shoot.response.UploadFolderRes
 import com.spyneai.shoot.response.UploadStatusRes
 import com.spyneai.threesixty.data.model.VideoPreSignedRes
 import com.spyneai.threesixty.data.response.ProcessThreeSixtyRes
+import com.spyneai.threesixty.data.response.VideoUploadedRes
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
 import okhttp3.ResponseBody
@@ -211,7 +215,7 @@ interface ClipperApi {
         @Field("sub_category") sub_category : String,
         @Field("total_frames_no") totalFrames: Int,
         @Field("video_name") videoName : String,
-        @Field("background_id") backgroundId : Int? = null
+        @Field("background_id") backgroundId : String? = null
     ) : VideoPreSignedRes
 
 
@@ -221,6 +225,15 @@ interface ClipperApi {
         @Url uploadUrl: String,
         @Body file: RequestBody
     ): Call<ResponseBody>
+
+    @FormUrlEncoded
+    @PUT("v3/video/video-mark")
+    suspend fun setStatusUploaded(
+        @Field("video_id") videoId : String,
+        @Field("auth_key") authKey : String = Utilities.getPreference(BaseApplication.getContext(),AppConstants.AUTH_KEY).toString()
+    ) : VideoUploadedRes
+
+
 
     @GET("v2/credit/fetch")
     suspend fun userCreditsDetails(

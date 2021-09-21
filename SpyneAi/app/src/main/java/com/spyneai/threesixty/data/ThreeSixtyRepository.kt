@@ -55,7 +55,7 @@ class ThreeSixtyRepository : BaseRepository() {
             preSignedVideoBody.projectId,
             preSignedVideoBody.skuId,
             preSignedVideoBody.category,
-            preSignedVideoBody.category,
+            preSignedVideoBody.categoryId,
             preSignedVideoBody.totalFrames,
             preSignedVideoBody.videoName,
             preSignedVideoBody.backgroundId
@@ -73,6 +73,12 @@ class ThreeSixtyRepository : BaseRepository() {
 //            file
 //        )
 //    }
+
+    suspend fun setStatusUploaded(
+        videoId: String
+    ) = safeApiCall {
+        clipperApi.setStatusUploaded(videoId)
+    }
 
     suspend fun getBackgroundGifCars(
         category: RequestBody,
