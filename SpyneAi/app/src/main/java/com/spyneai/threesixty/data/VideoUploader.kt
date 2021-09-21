@@ -1,15 +1,20 @@
 package com.spyneai.threesixty.data
 
 import android.content.Context
+import android.util.Log
 import androidx.core.net.toUri
 import com.posthog.android.Properties
 import com.spyneai.*
+import com.spyneai.base.network.ClipperApi
 import com.spyneai.base.network.Resource
+import com.spyneai.dashboard.ui.WhiteLabelConstants
+import com.spyneai.interfaces.APiService
+import com.spyneai.interfaces.GcpClient
+import com.spyneai.interfaces.RetrofitClients
 import com.spyneai.needs.AppConstants
 import com.spyneai.needs.Utilities
 import com.spyneai.posthog.Events
 import com.spyneai.service.log
-import com.spyneai.shoot.utils.logUpload
 import com.spyneai.threesixty.data.model.PreSignedVideoBody
 import com.spyneai.threesixty.data.model.VideoDetails
 import kotlinx.coroutines.Dispatchers
@@ -20,8 +25,14 @@ import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.MultipartBody
 import java.io.File
 import okhttp3.MultipartBody.Part.Companion.create
-import okhttp3.RequestBody
+
 import okhttp3.RequestBody.Companion.asRequestBody
+import okhttp3.ResponseBody
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
+import retrofit2.Retrofit
+import java.io.InputStream
 
 
 class VideoUploader(val context: Context,
@@ -58,13 +69,12 @@ class VideoUploader(val context: Context,
                             startNextUpload(video,false,imageType)
                         }
                         captureEvent(Events.UPLOAD_FAILED_SERVICE,video,false,"Image upload limit reached")
-                        logUpload("Upload Skipped Retry Limit Reached")
                         return@launch
                     }
 
-                    logUpload("Upload Started "+imageType+" "+video.itemId)
-
                     val authKey = Utilities.getPreference(context, AppConstants.AUTH_KEY).toString()
+
+                    val s = ""
 
                     if (video.isUploaded == 0){
                         //upload video
@@ -74,6 +84,7 @@ class VideoUploader(val context: Context,
                                 video.projectId!!,
                                 video.skuId!!,
                                 video.categoryName,
+                                AppConstants.CARS_CATEGORY_ID,
                                 video.frames,
                                 File(video.videoPath).name,
                                 video.backgroundId?.toInt()!!
@@ -84,7 +95,7 @@ class VideoUploader(val context: Context,
                             is Resource.Success -> {
                                 captureEvent(Events.UPLOADED_SERVICE,video,true,null)
                                 uploadVideoWithPreSignedUrl(
-                                    video.itemId!!,
+                                    video,
                                     response.value.data.presignedUrl,
                                     response.value.data.videoId
                                 )
@@ -105,31 +116,27 @@ class VideoUploader(val context: Context,
                         //set sku status to uploaded
                     }
 
-                    var response = threeSixtyRepository.process360(authKey,video)
-
-                    when(response){
-                        is Resource.Success -> {
-                            captureEvent(Events.UPLOADED_SERVICE,video,true,null)
-                            startNextUpload(video,true,imageType)
-                        }
-
-                        is Resource.Failure -> {
-                            log("Image upload failed")
-                            logUpload("Upload error "+response.errorCode.toString()+" "+response.errorMessage)
-                            if(response.errorMessage == null){
-                                captureEvent(Events.UPLOAD_FAILED_SERVICE,video,false,response.errorCode.toString()+": Http exception from server")
-                            }else {
-                                captureEvent(Events.UPLOAD_FAILED_SERVICE,video,false,response.errorCode.toString()+": "+response.errorMessage)
-                            }
-
-                            selectLastImageAndUpload(imageType,retryCount+1)
-                        }
-                    }
+//                    var response = threeSixtyRepository.process360(authKey,video)
+//
+//                    when(response){
+//                        is Resource.Success -> {
+//                            captureEvent(Events.UPLOADED_SERVICE,video,true,null)
+//                            startNextUpload(video,true,imageType)
+//                        }
+//
+//                        is Resource.Failure -> {
+//                            if(response.errorMessage == null){
+//                                captureEvent(Events.UPLOAD_FAILED_SERVICE,video,false,response.errorCode.toString()+": Http exception from server")
+//                            }else {
+//                                captureEvent(Events.UPLOAD_FAILED_SERVICE,video,false,response.errorCode.toString()+": "+response.errorMessage)
+//                            }
+//
+//                            selectLastImageAndUpload(imageType,retryCount+1)
+//                        }
+//                    }
                 }else{
-                    logUpload("All Images uploaded")
                     if (imageType == AppConstants.REGULAR){
                         //start skipped images worker
-                        logUpload("Start Skipped Images uploaded")
                         selectLastImageAndUpload(AppConstants.SKIPPED,0)
                     }else{
                         //make second time skipped images elligible for upload
@@ -155,34 +162,52 @@ class VideoUploader(val context: Context,
         }
     }
 
-    private suspend fun uploadVideoWithPreSignedUrl(itemId : Long, presignedUrl: String, videoId: String) {
+    private fun uploadVideoWithPreSignedUrl(video: VideoDetails, presignedUrl: String, videoId: String) {
         //save presigned url to data base
         localRepository.addPreSignedUrl(
-            itemId,
+            video.itemId!!,
             presignedUrl,
             videoId
         )
 
-        val file: File = File("")
+
+//        val MEDIA_TYPE_MARKDOWN = MediaType.parse("text/x-markdown; charset=utf-8")
+//
+//        val inputStream: InputStream = File(video.videoPath).inputStream()
+//
+//        val requestBody: RequestBody = RequestBodyUtil.create(MEDIA_TYPE_MARKDOWN, inputStream)
+
 
         // create RequestBody instance from file
         val requestFile =
-            File("").asRequestBody("multipart/form-data".toMediaTypeOrNull())
+            File(video.videoPath).asRequestBody("text/x-markdown; charset=utf-8".toMediaTypeOrNull())
 
-        val body = create(requestFile)
+       // val body = create(requestFile)
 
         //upload video with presigned url
-        val uploadVideo = threeSixtyRepository.uploadVideo(
+        val request = GcpClient.buildService(ClipperApi::class.java)
+
+        val call = request.uploadVideo(
             "application/octet-stream",
-            "sandeep singh",
-            body
-        )
+            presignedUrl,
+            requestFile
+            )
 
+        call.enqueue(object : Callback<ResponseBody>{
+            override fun onResponse(call: Call<ResponseBody>, response: Response<ResponseBody>) {
+                Log.d("VideoUploader", "onResponse: "+response.code())
+                localRepository.markUploaded(video)
+                localRepository.markStatusUploaded(video)
+            }
 
+            override fun onFailure(call: Call<ResponseBody>, t: Throwable) {
+                Log.d("VideoUploader", "onFailure: "+t.message)
+            }
+
+        })
     }
 
     private fun startNextUpload(itemId: VideoDetails,uploaded : Boolean,imageType : String) {
-        logUpload("Start next upload "+uploaded)
         //remove uploaded item from database
         if (uploaded)
             localRepository.markUploaded(itemId)

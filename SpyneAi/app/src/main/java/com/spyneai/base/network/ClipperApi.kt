@@ -201,25 +201,26 @@ interface ClipperApi {
         @Part("video_url") videoUrl: RequestBody? = null,
     ) : ProcessThreeSixtyRes
 
-
+    @FormUrlEncoded
     @POST("v3/video/video-upload")
     suspend fun getVideoPreSignedUrl(
         @Field("auth_key") authKey : String,
         @Field("project_id") projectId:String,
         @Field("sku_id") skuId : String,
         @Field("category") category : String,
+        @Field("sub_category") sub_category : String,
         @Field("total_frames_no") totalFrames: Int,
         @Field("video_name") videoName : String,
         @Field("background_id") backgroundId : Int? = null
     ) : VideoPreSignedRes
 
-    @Multipart
+
     @PUT
-    suspend fun uploadVideo(
-        @Header("content_type") contentType: String,
+    fun uploadVideo(
+        @Header("content-type") contentType: String,
         @Url uploadUrl: String,
-        @Part file: MultipartBody.Part
-    ): ResponseBody
+        @Body file: RequestBody
+    ): Call<ResponseBody>
 
     @GET("v2/credit/fetch")
     suspend fun userCreditsDetails(

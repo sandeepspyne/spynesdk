@@ -5,6 +5,7 @@ data class PreSignedVideoBody(
     val projectId : String,
     val skuId : String,
     val category : String,
+    val subcategory : String,
     val totalFrames : Int,
     val videoName : String,
     val backgroundId : Int

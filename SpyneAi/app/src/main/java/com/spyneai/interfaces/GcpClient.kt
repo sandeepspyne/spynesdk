@@ -1,6 +1,5 @@
 package com.spyneai.interfaces
 
-
 import com.google.gson.GsonBuilder
 import com.spyneai.BuildConfig
 import okhttp3.OkHttpClient
@@ -9,9 +8,9 @@ import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import java.util.concurrent.TimeUnit
 
-object RetrofitClients {
+object GcpClient {
 
-    private const val BASE_URL = "http://35.187.232.242/api/"
+    private const val BASE_URL = "https://storage.googleapis.com"
     private const val STAGING_URL = "http://34.87.119.10/api/"
 
     private val client = OkHttpClient.Builder()

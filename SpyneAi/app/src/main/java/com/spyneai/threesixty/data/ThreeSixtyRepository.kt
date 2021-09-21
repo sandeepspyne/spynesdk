@@ -55,23 +55,24 @@ class ThreeSixtyRepository : BaseRepository() {
             preSignedVideoBody.projectId,
             preSignedVideoBody.skuId,
             preSignedVideoBody.category,
+            preSignedVideoBody.category,
             preSignedVideoBody.totalFrames,
             preSignedVideoBody.videoName,
             preSignedVideoBody.backgroundId
         )
     }
 
-    suspend fun uploadVideo(
-        contentType : String,
-        url : String,
-        file : MultipartBody.Part
-    ) = safeApiCall {
-        clipperApi.uploadVideo(
-            contentType,
-            url,
-            file
-        )
-    }
+//    suspend fun uploadVideo(
+//        contentType : String,
+//        url : String,
+//        file : MultipartBody.Part
+//    ) = safeApiCall {
+//        clipperApi.uploadVideo(
+//            contentType,
+//            url,
+//            file
+//        )
+//    }
 
     suspend fun getBackgroundGifCars(
         category: RequestBody,
