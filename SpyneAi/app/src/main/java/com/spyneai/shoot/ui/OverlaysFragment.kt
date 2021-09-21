@@ -192,6 +192,8 @@ class OverlaysFragment : BaseFragment<ShootViewModel, FragmentOverlaysBinding>()
                    when(getString(R.string.app_name)){
                        AppConstants.CARS24,AppConstants.CARS24_INDIA ->
                            viewModel.exterirorAngles.value = 5
+                       AppConstants.SELL_ANY_CAR ->
+                           viewModel.exterirorAngles.value = 4
                        else ->  {
                            viewModel.exterirorAngles.value = 8
                        }
@@ -204,7 +206,10 @@ class OverlaysFragment : BaseFragment<ShootViewModel, FragmentOverlaysBinding>()
        }else{
            if (!viewModel.fromDrafts){
                when(getString(R.string.app_name)){
-                AppConstants.CARS24,AppConstants.CARS24_INDIA ->  viewModel.exterirorAngles.value = 5
+                AppConstants.CARS24,AppConstants.CARS24_INDIA ->
+                    viewModel.exterirorAngles.value = 5
+                   AppConstants.SELL_ANY_CAR ->
+                       viewModel.exterirorAngles.value = 4
                     else ->  {
                         viewModel.exterirorAngles.value = 8
                     }
@@ -213,7 +218,7 @@ class OverlaysFragment : BaseFragment<ShootViewModel, FragmentOverlaysBinding>()
        }
 
         when(getString(R.string.app_name)) {
-            AppConstants.KARVI,AppConstants.CARS24_INDIA,AppConstants.CARS24 -> {}
+            AppConstants.KARVI,AppConstants.CARS24_INDIA,AppConstants.CARS24, AppConstants.SELL_ANY_CAR -> {}
             else -> {
                     binding.tvShoot?.setOnClickListener {
                         if ((viewModel.startInteriorShots.value != true || viewModel.startMiscShots.value != true )
