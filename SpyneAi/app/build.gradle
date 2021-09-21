@@ -192,8 +192,8 @@ android {
         sellanycar {
             dimension 'version'
             applicationId "com.spyneai.sellanycar"
-            versionCode 1
-            versionName "1.1"
+            versionCode 3
+            versionName "1.2"
         }
     }
     sourceSets {
