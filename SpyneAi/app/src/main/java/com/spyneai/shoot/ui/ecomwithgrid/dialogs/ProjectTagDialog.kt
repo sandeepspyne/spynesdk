@@ -1,14 +1,17 @@
 package com.spyneai.shoot.ui.ecomwithgrid.dialogs
 
 import android.app.Dialog
+import android.content.res.Resources
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
+import android.util.TypedValue
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.WindowManager
 import android.widget.EditText
+import android.widget.LinearLayout
 import android.widget.Toast
 import androidx.viewbinding.ViewBinding
 import com.posthog.android.Properties
@@ -95,9 +98,22 @@ class ProjectTagDialog : BaseDialogFragment<ShootViewModel, ProjectTagDialogBind
         layout.forEach {
             when(it.field_type){
                 "edit_text" -> {
-                    val layout = inflator.inflate(R.layout.item_project_edittext,binding.llContainer)
+                    val layout = inflator.inflate(R.layout.item_project_edittext, null)
                     val itemBinding = ItemProjectEdittextBinding.bind(layout)
                     itemBinding.et.hint = it.hint
+                    val dip = 15f
+                    val r: Resources = resources
+                    val px = TypedValue.applyDimension(
+                        TypedValue.COMPLEX_UNIT_DIP,
+                        dip,
+                        r.displayMetrics
+                    )
+                    val params = LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT,LinearLayout.LayoutParams.WRAP_CONTENT)
+                    params.topMargin = px.toInt()
+
+
+
+                    layout.layoutParams = params
 
                     binding.llContainer.addView(layout)
                     bindingList.add(itemBinding)

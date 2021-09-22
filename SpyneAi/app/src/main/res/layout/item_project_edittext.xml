@@ -6,7 +6,6 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:gravity="center"
-    android:layout_marginTop="@dimen/dp_15"
     android:background="@drawable/bg_edit">
 <EditText
     android:id="@+id/et"
