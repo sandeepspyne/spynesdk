@@ -14,6 +14,7 @@ import com.spyneai.needs.AppConstants
 import com.spyneai.needs.Utilities
 import com.spyneai.shoot.data.model.*
 import com.spyneai.shoot.response.SkuProcessStateResponse
+import com.spyneai.shoot.response.UpdateVideoSkuRes
 import com.spyneai.shoot.workmanager.OverlaysPreloadWorker
 import kotlinx.coroutines.launch
 import java.util.concurrent.TimeUnit
@@ -30,6 +31,7 @@ class ShootViewModel : ViewModel() {
     var threeSixtyInteriorSelected = false
     var onVolumeKeyPressed: MutableLiveData<Boolean> = MutableLiveData()
     var fromDrafts = false
+    var fromVideo = false
     val isSensorAvailable: MutableLiveData<Boolean> = MutableLiveData()
     var showDialog = true
     var miscDialogShowed = false
@@ -86,10 +88,13 @@ class ShootViewModel : ViewModel() {
     val createSkuRes: LiveData<Resource<CreateSkuRes>>
         get() = _createSkuRes
 
+    private val _updateVideoSkuRes: MutableLiveData<Resource<UpdateVideoSkuRes>> = MutableLiveData()
+    val updateVideoSkuRes: LiveData<Resource<UpdateVideoSkuRes>>
+        get() = _updateVideoSkuRes
+
     private val _updateFootwearSubcatRes : MutableLiveData<Resource<UpdateFootwearSubcatRes>> = MutableLiveData()
     val updateFootwearSubcatRes: LiveData<Resource<UpdateFootwearSubcatRes>>
         get() = _updateFootwearSubcatRes
-
 
 
 
@@ -275,6 +280,15 @@ class ShootViewModel : ViewModel() {
             repository.createSku(authKey, projectId, prodCatId, prodSubCatId, skuName, totalFrames,1,0)
     }
 
+    fun updateVideoSku(
+        skuId: String,
+        prodSubCatId : String,
+        initialImageCount: Int
+    ) = viewModelScope.launch {
+        _updateVideoSkuRes.value = Resource.Loading
+        _updateVideoSkuRes.value = repository.updateVideoSku(skuId,prodSubCatId,initialImageCount)
+    }
+
     fun insertSku(sku: Sku) {
         localRepository.insertSku(sku)
     }
@@ -305,6 +319,10 @@ class ShootViewModel : ViewModel() {
             exterirorAngles.value!!,
             subCategory.value?.prod_sub_cat_id!!
             )
+    }
+
+    fun updateVideoSkuLocally(sku: Sku) {
+        localRepository.updateVideoSkuLocally(sku)
     }
 
 }

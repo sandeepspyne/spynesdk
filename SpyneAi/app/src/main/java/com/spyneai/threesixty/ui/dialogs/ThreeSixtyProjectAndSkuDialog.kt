@@ -97,7 +97,6 @@ class ThreeSixtyProjectAndSkuDialog : BaseDialogFragment<ThreeSixtyViewModel, Di
                     createSku(it.value.project_id,viewModel.videoDetails.type,false)
                 }
 
-
                 is Resource.Failure -> {
                     requireContext().captureFailureEvent(
                         Events.CREATE_360_PROJECT_FAILED, Properties(),
@@ -113,7 +112,6 @@ class ThreeSixtyProjectAndSkuDialog : BaseDialogFragment<ThreeSixtyViewModel, Di
         })
     }
 
-
     private fun createSku(projectId: String, prod_sub_cat_id : String,showDialog : Boolean) {
         if (showDialog)
             Utilities.showProgressDialog(requireContext())
@@ -124,7 +122,7 @@ class ThreeSixtyProjectAndSkuDialog : BaseDialogFragment<ThreeSixtyViewModel, Di
         viewModel.createSku(
             Utilities.getPreference(requireContext(),AppConstants.AUTH_KEY).toString(),projectId,
             requireActivity().intent.getStringExtra(AppConstants.CATEGORY_ID).toString(),
-            "360_exterior",
+            requireActivity().intent.getStringExtra(AppConstants.CATEGORY_ID).toString(),
             viewModel.videoDetails.skuName.toString()
         )
     }
@@ -153,8 +151,8 @@ class ThreeSixtyProjectAndSkuDialog : BaseDialogFragment<ThreeSixtyViewModel, Di
                     sku?.totalImages = viewModel.videoDetails.frames
                     sku?.categoryName = viewModel.videoDetails.categoryName
                     sku?.categoryId = viewModel.videoDetails.categoryId
-                    sku?.subcategoryName = "360_exterior"
-                    sku?.subcategoryId = "360_exterior"
+                    sku?.subcategoryName = viewModel.videoDetails.categoryId!!
+                    sku?.subcategoryId = viewModel.videoDetails.categoryId!!
                     sku?.threeSixtyFrames = viewModel.videoDetails.frames
 
                     //add sku to local database
@@ -167,7 +165,7 @@ class ThreeSixtyProjectAndSkuDialog : BaseDialogFragment<ThreeSixtyViewModel, Di
                     video?.type = "360_exterior"
                     video?.categoryName = viewModel.videoDetails.categoryName
                     video?.categoryId = viewModel.videoDetails.categoryId
-                    video?.subCategory = "360_exterior"
+                    video?.subCategory = viewModel.videoDetails.categoryId!!
                     video?.frames = viewModel.videoDetails.frames
 
                     viewModel.insertVideo(video)

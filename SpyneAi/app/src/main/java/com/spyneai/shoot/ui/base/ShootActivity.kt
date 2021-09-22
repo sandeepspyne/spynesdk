@@ -231,6 +231,7 @@ class ShootActivity : AppCompatActivity() {
     }
 
     private fun setUpVideoShoot() {
+        shootViewModel.fromVideo = true
         shootViewModel.showVin.value = true
         shootViewModel.isProjectCreated.value = true
         shootViewModel.projectId.value = intent.getStringExtra(AppConstants.PROJECT_ID)

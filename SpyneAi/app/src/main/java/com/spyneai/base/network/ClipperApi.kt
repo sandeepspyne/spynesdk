@@ -19,6 +19,7 @@ import com.spyneai.orders.data.response.*
 import com.spyneai.service.manual.FilesDataRes
 import com.spyneai.shoot.data.model.*
 import com.spyneai.shoot.response.SkuProcessStateResponse
+import com.spyneai.shoot.response.UpdateVideoSkuRes
 import com.spyneai.shoot.response.UploadFolderRes
 import com.spyneai.shoot.response.UploadStatusRes
 import com.spyneai.threesixty.data.model.VideoPreSignedRes
@@ -121,6 +122,16 @@ interface ClipperApi {
                           @Field("images") images : Int,
                           @Field("videos") videos : Int
     ) : CreateSkuRes
+
+    @FormUrlEncoded
+    @POST("v3/video/videoimages-update")
+    suspend fun updateVideoSku(
+        @Field("sku_id") skuId : String,
+        @Field("prod_sub_cat_id") prodSubCatId : String,
+        @Field("initial_image_count") initialImageCount : Int,
+        @Field("auth_key") authKey : String = Utilities.getPreference(BaseApplication.getContext(),AppConstants.AUTH_KEY).toString(),
+        @Field("images") images : Int = 1
+    ) : UpdateVideoSkuRes
 
     @Multipart
     @POST("v2/backgrounds/fetchEnterpriseBgs")

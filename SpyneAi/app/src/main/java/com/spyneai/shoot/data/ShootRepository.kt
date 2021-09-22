@@ -66,6 +66,18 @@ class ShootRepository : BaseRepository() {
         videos)
     }
 
+    suspend fun updateVideoSku(
+        skuId: String,
+        prodSubCatId : String,
+        initialImageCount: Int
+    )= safeApiCall {
+        clipperApi.updateVideoSku(
+            skuId,
+            prodSubCatId,
+            initialImageCount
+        )
+    }
+
     suspend fun getProjectDetail(
         tokenId: String,
         projectId:  String

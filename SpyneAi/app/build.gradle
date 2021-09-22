@@ -109,7 +109,7 @@ android {
             dimension 'version'
             applicationId "com.spyneai.olacabs"
             versionCode 16
-            versionName "2.6"
+            versionName "2.7"
         }
 
         cars24 {

@@ -166,6 +166,8 @@ object AppConstants {
 
     val FROM_VIDEO = "FROM_VIDEO"
 
+    val VIDEO_PATH = "VIDEO_PATH"
+
 
 
 }

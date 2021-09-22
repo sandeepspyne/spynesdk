@@ -84,7 +84,7 @@ class ThreeSixtyViewModel : ViewModel() {
             prodCatId,
             prodSubCatId,
             skuName,
-            0,
+            videoDetails.frames,
             0,
             1
         )

@@ -71,7 +71,6 @@ class DraftSkusActivity : AppCompatActivity() {
                 Utilities.getPreference(this, AppConstants.AUTH_KEY).toString()
             )
 
-
             log("Completed SKUs(auth key): " + Utilities.getPreference(this, AppConstants.AUTH_KEY))
             viewModel.draftResponse.observe(
                 this,  {
@@ -110,9 +109,7 @@ class DraftSkusActivity : AppCompatActivity() {
                                     rvSkus.setLayoutManager(layoutManager)
                                     rvSkus.setAdapter(skusAdapter)
                                 }
-
                             }
-
                         }
                         is Resource.Loading -> {
 

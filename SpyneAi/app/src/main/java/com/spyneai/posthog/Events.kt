@@ -62,6 +62,9 @@ object Events {
     val CREATE_SKU = "Android Create SKU"
     val CREATE_SKU_FAILED = "Android Create SKU Failed"
 
+    val VIDEO_SKU_UPDATED = "Video SKU Updated"
+    val VIDEO_SKU_UPDATE_FAILED = "Video SKU update Failed"
+
     val IMAGE_CAPTURED = "Android Image Captured"
     val IMAGE_CAPRURE_FAILED = "Android Image Capture Failed"
     val CONFIRMED = "Android Confirmed"

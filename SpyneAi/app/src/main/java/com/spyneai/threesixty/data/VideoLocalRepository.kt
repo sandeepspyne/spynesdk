@@ -372,6 +372,69 @@ class VideoLocalRepository {
             projectSelectionArgs)
 
         com.spyneai.shoot.utils.log("Upload prject(update): "+projectCount)
+    }
 
+    fun getVideoPath(skuId: String) : String? {
+        val projection = arrayOf(
+            BaseColumns._ID,
+            Videos.COLUMN_NAME_VIDEO_PATH)
+
+        // Filter results WHERE "title" = 'My Title'
+        val selection = "${Videos.COLUMN_NAME_SKU_ID} = ?"
+        val projectSelectionArgs = arrayOf(skuId)
+
+        val cursor = dbReadable.query(
+            Videos.TABLE_NAME,   // The table to query
+            projection,             // The array of columns to return (pass null to get all)
+            selection,              // The columns for the WHERE clause
+            projectSelectionArgs,          // The values for the WHERE clause
+            null,                   // don't group the rows
+            null,                   // don't filter by row groups
+            null
+        )
+
+        var videoPath : String? = null
+
+
+        with(cursor) {
+            while (moveToNext()) {
+                val itemId = getLong(getColumnIndexOrThrow(BaseColumns._ID))
+                videoPath = getString(getColumnIndexOrThrow(Videos.COLUMN_NAME_VIDEO_PATH))
+            }
+        }
+
+        return videoPath
+    }
+
+    fun getVideoId(skuId: String) : String? {
+        val projection = arrayOf(
+            BaseColumns._ID,
+            Videos.COLUMN_NAME_VIDEO_ID)
+
+        // Filter results WHERE "title" = 'My Title'
+        val selection = "${Videos.COLUMN_NAME_SKU_ID} = ?"
+        val projectSelectionArgs = arrayOf(skuId)
+
+        val cursor = dbReadable.query(
+            Videos.TABLE_NAME,   // The table to query
+            projection,             // The array of columns to return (pass null to get all)
+            selection,              // The columns for the WHERE clause
+            projectSelectionArgs,          // The values for the WHERE clause
+            null,                   // don't group the rows
+            null,                   // don't filter by row groups
+            null
+        )
+
+        var videoId : String? = null
+
+
+        with(cursor) {
+            while (moveToNext()) {
+                val itemId = getLong(getColumnIndexOrThrow(BaseColumns._ID))
+                videoId = getString(getColumnIndexOrThrow(Videos.COLUMN_NAME_VIDEO_ID))
+            }
+        }
+
+        return videoId
     }
 }

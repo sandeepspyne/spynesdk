@@ -1,12 +1,14 @@
 package com.spyneai.threesixty.ui.fragments
 
 import android.content.Intent
+import android.os.Build
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
+import androidx.core.content.ContextCompat
 import androidx.navigation.Navigation
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -23,10 +25,14 @@ import com.spyneai.databinding.Fragment360BackgroundBinding
 import com.spyneai.needs.AppConstants
 import com.spyneai.needs.Utilities
 import com.spyneai.posthog.Events
+import com.spyneai.service.Actions
+import com.spyneai.service.getServiceState
+import com.spyneai.service.log
 import com.spyneai.shoot.adapters.NewCarBackgroundAdapter
 import com.spyneai.shoot.data.model.CarsBackgroundRes
 import com.spyneai.shoot.ui.base.ShootActivity
 import com.spyneai.threesixty.data.ThreeSixtyViewModel
+import com.spyneai.threesixty.data.VideoUploadService
 import okhttp3.MultipartBody
 import okhttp3.RequestBody.Companion.toRequestBody
 
@@ -45,27 +51,19 @@ class ThreeSixtyBackgroundFragment : BaseFragment<ThreeSixtyViewModel, Fragment3
         initSelectBackground()
 
         binding.flShootNow.setOnClickListener{
+
+            startService()
+
             val intent = Intent(requireContext(), ShootActivity::class.java)
 
-            intent.putExtra(
-                AppConstants.CATEGORY_NAME,
-                "Automobiles")
-
-            intent.putExtra(
-                AppConstants.CATEGORY_ID,
-                AppConstants.CARS_CATEGORY_ID)
-
-            intent.putExtra(
-                AppConstants.PROJECT_ID,
-                viewModel.videoDetails.projectId)
-
-            intent.putExtra(
-                AppConstants.SKU_ID,
-                viewModel.videoDetails.skuId)
-
-            intent.putExtra(
-                AppConstants.FROM_VIDEO,
-                true)
+            intent.apply {
+                putExtra(AppConstants.CATEGORY_NAME, "Automobiles")
+                putExtra(AppConstants.CATEGORY_ID, AppConstants.CARS_CATEGORY_ID)
+                putExtra(AppConstants.PROJECT_ID, viewModel.videoDetails.projectId)
+                putExtra(AppConstants.SKU_ID, viewModel.videoDetails.skuId)
+                putExtra(AppConstants.SKU_NAME, viewModel.videoDetails.skuName)
+                putExtra(AppConstants.FROM_VIDEO, true)
+            }
 
             startActivity(intent)
         }
@@ -168,6 +166,24 @@ class ThreeSixtyBackgroundFragment : BaseFragment<ThreeSixtyViewModel, Fragment3
 
         binding.rvBackgroundsCars.setLayoutManager(layoutManager)
         binding.rvBackgroundsCars.setAdapter(carbackgroundsAdapter)
+    }
+
+    private fun startService() {
+        var action = Actions.START
+        if (getServiceState(requireContext()) == com.spyneai.service.ServiceState.STOPPED && action == Actions.STOP)
+            return
+
+        val serviceIntent = Intent(requireContext(), VideoUploadService::class.java)
+        serviceIntent.action = action.name
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            log("Starting the service in >=26 Mode")
+            ContextCompat.startForegroundService(requireContext(), serviceIntent)
+            return
+        } else {
+            log("Starting the service in < 26 Mode")
+            requireActivity().startService(serviceIntent)
+        }
     }
 
 

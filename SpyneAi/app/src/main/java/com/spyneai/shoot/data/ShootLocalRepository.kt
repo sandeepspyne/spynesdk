@@ -2,6 +2,7 @@ package com.spyneai.shoot.data
 
 import android.content.ContentValues
 import android.provider.BaseColumns
+import android.util.Log
 import com.spyneai.BaseApplication
 import com.spyneai.db.DBHelper
 import com.spyneai.db.Images
@@ -783,6 +784,37 @@ class ShootLocalRepository {
 
 
 
+    }
+
+    fun updateVideoSkuLocally(sku : Sku) {
+        val values = ContentValues().apply {
+            put(
+                ShootContract.ShootEntry.COLUMN_NAME_SUB_CATEGORY_ID,
+                sku.subcategoryId
+            )
+            put(
+                ShootContract.ShootEntry.COLUMN_NAME_SUB_CATEGORY_NAME,
+                sku.subcategoryName
+            )
+
+            put(
+                ShootContract.ShootEntry.COLUMN_NAME_EXTERIOR_ANGLES,
+                sku.exteriorAngles
+            )
+        }
+
+        val selection = "${ShootContract.ShootEntry.COLUMN_NAME_SKU_ID} LIKE ?"
+
+        val selectionArgs = arrayOf(sku.skuId)
+
+
+        val count = dbWritable.update(
+            ShootContract.ShootEntry.TABLE_NAME,
+            values,
+            selection,
+            selectionArgs)
+
+        Log.d(TAG, "updateVideoSkuLocally: "+count)
     }
 
     fun processSku(skuId: String) : Boolean {

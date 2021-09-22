@@ -19,7 +19,7 @@ class VideoUploadService : Service(), VideoUploader.Listener {
     lateinit var notificationManager: NotificationManager
     lateinit var channel: NotificationChannel
     lateinit var builder: Notification.Builder
-    private var receiver: InternetConnectionReceiver? = null
+    private var receiver: VideoConnectionReceiver? = null
     var uploadRunning = false
     var isConnected = false
     private var imageUploader : VideoUploader? = null
@@ -38,7 +38,7 @@ class VideoUploadService : Service(), VideoUploader.Listener {
         setServiceState(this, ServiceState.STARTED)
 
         //register internet connection receiver
-        this.receiver = InternetConnectionReceiver()
+        this.receiver = VideoConnectionReceiver()
         val filter = IntentFilter()
         filter.addAction("android.net.conn.CONNECTIVITY_CHANGE")
         this.registerReceiver(receiver, filter)
@@ -216,7 +216,7 @@ class VideoUploadService : Service(), VideoUploader.Listener {
         notificationManager.notify(notificationId, notification)
     }
 
-    inner class InternetConnectionReceiver : BroadcastReceiver(){
+    inner class VideoConnectionReceiver : BroadcastReceiver(){
         override fun onReceive(context: Context?, intent: Intent?) {
 
             val isConnected = context?.isInternetActive()
