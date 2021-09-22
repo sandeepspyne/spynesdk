@@ -17,6 +17,7 @@ import com.spyneai.shoot.response.SkuProcessStateResponse
 import com.spyneai.shoot.workmanager.OverlaysPreloadWorker
 import com.spyneai.shoot.workmanager.ParentRecursiveWorker
 import kotlinx.coroutines.launch
+import org.json.JSONObject
 import java.util.concurrent.TimeUnit
 
 class ShootViewModel : ViewModel() {
@@ -289,10 +290,11 @@ class ShootViewModel : ViewModel() {
 
 
     fun createProject(
-        authKey: String, projectName: String, prodCatId: String
+        authKey: String, projectName: String, prodCatId: String,
+        dynamicLayout : JSONObject? = null
     ) = viewModelScope.launch {
         _createProjectRes.value = Resource.Loading
-        _createProjectRes.value = repository.createProject(authKey, projectName, prodCatId)
+        _createProjectRes.value = repository.createProject(authKey, projectName, prodCatId,dynamicLayout)
     }
 
     fun skuProcessState(

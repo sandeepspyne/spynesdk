@@ -3,14 +3,27 @@
   <component name="DesignSurface">
     <option name="filePathToZoomLevelMap">
       <map>
+        <entry key="../../../../../../layout/custom_preview.xml" value="0.21574074074074073" />
         <entry key="app/src/flipkartgrocery/res/drawable/ic_launcher_background.xml" value="0.24166666666666667" />
         <entry key="app/src/flipkartgrocery/res/layout/home_dashboard_fragment.xml" value="0.2578125" />
+        <entry key="app/src/main/res/drawable/bg_edit.xml" value="0.2175925925925926" />
         <entry key="app/src/main/res/layout/activity_forgot_password.xml" value="0.2578125" />
         <entry key="app/src/main/res/layout/activity_login.xml" value="0.8509803921568627" />
         <entry key="app/src/main/res/layout/activity_onboard_one.xml" value="0.1328125" />
         <entry key="app/src/main/res/layout/activity_sign_in_using_otp.xml" value="0.2578125" />
         <entry key="app/src/main/res/layout/activity_sign_up.xml" value="0.2578125" />
+        <entry key="app/src/main/res/layout/confirm_reshoot_ecom_dialog.xml" value="0.25384615384615383" />
+        <entry key="app/src/main/res/layout/create_project_ecom_dialog.xml" value="0.25384615384615383" />
+        <entry key="app/src/main/res/layout/dialog_angle_selection.xml" value="0.2578125" />
+        <entry key="app/src/main/res/layout/dialog_confirm_tags.xml" value="0.2578125" />
+        <entry key="app/src/main/res/layout/fragment_overlay_ecom.xml" value="0.19722222222222222" />
         <entry key="app/src/main/res/layout/home_dashboard_fragment.xml" value="0.2578125" />
+        <entry key="app/src/main/res/layout/item_project_edittext.xml" value="0.25384615384615383" />
+        <entry key="app/src/main/res/layout/item_tags_spinner.xml" value="0.2578125" />
+        <entry key="app/src/main/res/layout/item_tags_spinner_text.xml" value="0.2578125" />
+        <entry key="app/src/main/res/layout/project_tag_dialog.xml" value="0.25384615384615383" />
+        <entry key="app/src/sellanycar/res/drawable/app_ic_background.xml" value="0.24166666666666667" />
+        <entry key="app/src/swiggy/res/menu/dashboard_bottom_menu.xml" value="0.25384615384615383" />
       </map>
     </option>
   </component>

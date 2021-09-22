@@ -5,6 +5,7 @@ import com.spyneai.base.network.ClipperApiClient
 import com.spyneai.base.network.ClipperApiStagingClient
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
+import org.json.JSONObject
 
 
 class ShootRepository : BaseRepository() {
@@ -48,10 +49,12 @@ class ShootRepository : BaseRepository() {
         clipperApi.uploadImageWithAngle(project_id, sku_id, image_category, auth_key, upload_type,sequenceNo, angle, image)
     }
 
-    suspend fun createProject(authKey: String,projectName : String,
-                              prodCatId : String
+    suspend fun createProject(authKey: String
+                              ,projectName : String,
+                              prodCatId : String,
+                              dynamicLayout : JSONObject? = null
     ) = safeApiCall {
-        clipperApi.createProject(authKey, projectName, prodCatId)
+        clipperApi.createProject(authKey, projectName, prodCatId,dynamicLayout)
     }
 
     suspend fun createSku(authKey: String,projectId : String

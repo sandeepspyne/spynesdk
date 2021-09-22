@@ -18,6 +18,7 @@ import com.spyneai.shoot.response.UploadStatusRes
 import com.spyneai.threesixty.data.response.ProcessThreeSixtyRes
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
+import org.json.JSONObject
 import retrofit2.Call
 import retrofit2.http.*
 
@@ -96,7 +97,8 @@ interface ClipperApi {
     @POST("v2/project/create/v2")
     suspend fun createProject(@Field("auth_key") authKey : String,
                               @Field("project_name") projectName : String,
-                              @Field("prod_cat_id") prodCatId : String) : CreateProjectRes
+                              @Field("prod_cat_id") prodCatId : String,
+                              @Field("dynamic_layout") dynamic_layout: JSONObject? = null) : CreateProjectRes
 
     @FormUrlEncoded
     @POST("v2/sku/create/v2")
