@@ -173,6 +173,4 @@ object AppConstants {
 
     val MINIMUM_VIDEO_DURATION = 30
 
-
-
 }
