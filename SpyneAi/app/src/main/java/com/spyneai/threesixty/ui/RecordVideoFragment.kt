@@ -680,7 +680,7 @@ class RecordVideoFragment : BaseFragment<ThreeSixtyViewModel, FragmentRecordVide
         Log.d(TAG, "startNextActivity: "+duration)
         Log.d(TAG, "startNextActivity: "+videoPath)
 
-        if (duration >= 0){
+        if (duration >= AppConstants.MINIMUM_VIDEO_DURATION){
             stopTimer = true
             binding.tvTimer.visibility = View.GONE
             binding.tvTimer.text = "00:00"
