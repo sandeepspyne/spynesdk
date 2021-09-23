@@ -10,13 +10,12 @@ import androidx.appcompat.app.AppCompatActivity
 import com.spyneai.R
 import com.spyneai.dashboard.ui.MainDashboardActivity
 import com.spyneai.loginsignup.activity.LoginActivity
-import okhttp3.OkHttpClient
 import android.os.Build
-import android.util.Log
 import com.spyneai.BuildConfig
 import com.spyneai.getNetworkName
 import com.spyneai.needs.AppConstants
 import com.spyneai.needs.Utilities
+import com.spyneai.onboarding.SelectLanguageActivity
 import java.util.*
 
 
@@ -34,14 +33,7 @@ class SplashActivity : AppCompatActivity() {
 
         setContentView(R.layout.activity_splash)
 
-<<<<<<< HEAD
 
-        val locale = Locale("de")
-        Locale.setDefault(locale)
-        val config = Configuration()
-        config.locale = locale
-        resources.updateConfiguration(config, resources.displayMetrics)
-=======
         val deviceId = Settings.Secure.getString(contentResolver, Settings.Secure.ANDROID_ID)
         val manufacturer = Build.MANUFACTURER
         val model = Build.MODEL
@@ -59,7 +51,6 @@ class SplashActivity : AppCompatActivity() {
         Utilities.savePrefrence(this,AppConstants.NETWORK_TYPE,networkCarrier)
         Utilities.savePrefrence(this,AppConstants.DEVICE_ID,deviceId)
 
->>>>>>> dev_sandeep_white_label_v2
 
         setSplash()
     }
@@ -72,8 +63,9 @@ class SplashActivity : AppCompatActivity() {
                 var intent: Intent? = null
 
                 intent = when(getString(R.string.app_name)) {
-                    AppConstants.SPYNE_AI->  Intent(this,
-                        OnboardingsActivity::class.java)
+                    AppConstants.SPYNE_AI->  Intent(this, OnboardingsActivity::class.java)
+
+                    AppConstants.AUTO_MOSER -> Intent(this, SelectLanguageActivity::class.java)
 
                     else -> Intent(this, LoginActivity::class.java)
                 }

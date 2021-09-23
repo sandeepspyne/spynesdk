@@ -131,7 +131,7 @@
             android:textColor="@color/primary"
             app:layout_constraintLeft_toRightOf="@+id/flCategory"
             app:layout_constraintTop_toTopOf="@+id/flCategory"
-            android:text="Category :"
+            android:text="@string/category_label"
             android:layout_marginLeft="9dp"/>
 
         <TextView
@@ -180,7 +180,7 @@
             android:textColor="@color/primary"
             app:layout_constraintLeft_toRightOf="@+id/flSkus"
             app:layout_constraintTop_toTopOf="@+id/flSkus"
-            android:text="Skus :"
+            android:text="@string/skus_label"
             android:layout_marginLeft="9dp"/>
 
         <TextView
@@ -231,7 +231,7 @@
             android:textColor="@color/primary"
             app:layout_constraintLeft_toRightOf="@+id/flSkus"
             app:layout_constraintTop_toTopOf="@+id/flImages"
-            android:text="Images :"
+            android:text="@string/image_label"
             android:layout_marginLeft="9dp"/>
 
         <TextView
@@ -263,7 +263,7 @@
             android:layout_height="wrap_content"
             app:layout_constraintTop_toTopOf="@+id/tvImages"
             app:layout_constraintRight_toRightOf="parent"
-            android:text="Saved"
+            android:text="@string/saved"
             android:id="@+id/tvSaved"
             android:layout_marginTop="@dimen/dp_3"
             android:layout_marginRight="@dimen/dp_20"

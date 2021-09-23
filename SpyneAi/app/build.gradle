@@ -10,6 +10,8 @@ apply plugin: 'com.google.firebase.crashlytics'
 //apply plugin: 'kotlin-kapt'
 
 android {
+
+
     lintOptions {
         checkReleaseBuilds false
     }

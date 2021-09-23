@@ -18,20 +18,20 @@
     <string name="or">ODER</string>
     <string name="by"><![CDATA[By continuing you agree to our ]]></string>
     <string name="terms">Terms &amp; Policies</string>
-    <string name="edit">Edit</string>
+    <string name="edit">Bearbeiten</string>
     <string name="get_started">Let\'s get started</string>
     <string name="enter">Enter the 6-digit \none time password just sent to</string>
     <string name="did_not">Didn\'t receive the OTP?</string>
     <string name="resend">Resend</string>
     <string name="submit_otp">Submit OTP</string>
     <string name="submit">Bestätigen</string>
-    <string name="continue_with_this_shoot">Continue with this shoot</string>
+    <string name="continue_with_this_shoot">Weiter mit diesem Shooting</string>
     <string name="ok">OK</string>
     <string name="channels">Channels</string>
     <string name="backgrounds">Fuss Innenraum</string>
     <string name="hdr">HDR</string>
-    <string name="before">Before</string>
-    <string name="after">After</string>
+    <string name="before">Vorher</string>
+    <string name="after">Nach</string>
     <string name="shoot_now">Jetzt fotografieren</string>
     <string name="order">Order Now</string>
     <string name="preview_order">Proceed To Order</string>
@@ -50,13 +50,13 @@
     <string name="total_images">Total Images Clicked</string>
     <string name="available_download">Available for download</string>
     <string name="select_marketplace">Select Marketplace</string>
-    <string name="confirm">Confirm</string>
-    <string name="no_reshoot">Reshoot</string>
+    <string name="confirm">Bestätigen Sie</string>
+    <string name="no_reshoot">Erneut aufnehmen</string>
     <string name="start_shooting">Start Shooting</string>
     <string name="ongoing">In Bearbeitung</string>
     <string name="drafts">Entwürfe</string>
     <string name="failed">Failed</string>
-    <string name="categories_selection">Category Selection</string>
+    <string name="categories_selection">Kategorieauswahl</string>
     <string name="footwear">Footwear</string>
     <string name="automobile">Fahrzeuge</string>
     <string name="home">Home</string>
@@ -80,9 +80,9 @@
     <string name="exits">Are you sure you want to exit this shoot?</string>
     <string name="exits_demo">Demo mode is available for the first two backgrounds only. To unlock this background please exit demo mode.</string>
     <string name="email">Your Email Id</string>
-    <string name="order_summary">Order Summary</string>
-    <string name="category">Category - </string>
-    <string name="total_skus">Total SKU</string>
+    <string name="order_summary">Bestellübersicht</string>
+    <string name="category">Kategorie - </string>
+    <string name="total_skus">Gesamt SKU</string>
     <string name="selected_backgrounds">Selected Backgrounds</string>
     <string name="dealership_logo">Dealership Logo</string>
     <string name="top_up"><u>Credits aufladen</u></string>
@@ -98,10 +98,10 @@
     <string name="view_all_images">View all images</string>
     <string name="reach_out">Reach out to us !</string>
     <string name="whatsapp">WhatsApp</string>
-    <string name="completed_projects">Completed Projects</string>
-    <string name="your_images">Your Images</string>
-    <string name="processing">Processing</string>
-    <string name="your_photos">Your photos were sent at</string>
+    <string name="completed_projects">Fertige Projekte</string>
+    <string name="your_images">Ihre Bilder</string>
+    <string name="processing">wird bearbeitet</string>
+    <string name="your_photos">Ihre Fotos wurden gesendet an</string>
 
     <string name="demo">Demo</string>
     <string name="sedan">Sedan</string>
@@ -124,16 +124,16 @@
     <string name="original">Original</string>
     <string name="exterior">Exterior</string>
     <string name="interior">Interior</string>
-    <string name="have_look"><u>Have a look</u></string>
+    <string name="have_look"><u>Guck mal</u></string>
 
-    <string name="download_hd_images"><u>Download HD Images</u></string>
-    <string name="download_free"><u>Download Free (Watermarked)</u></string>
+    <string name="download_hd_images"><u>HD-Bilder herunterladen</u></string>
+    <string name="download_free"><u>Kostenlos herunterladen (mit Wasserzeichen)</u></string>
 
-    <string name="downloading...."><u>Downloading....</u></string>
-    <string name="download_completed"><u> Download Completed</u></string>
-    <string name="download_failed"><u> Download Failed</u></string>
+    <string name="downloading...."><u>wird heruntergeladen....</u></string>
+    <string name="download_completed"><u>Herunterladen abgeschlossen</u></string>
+    <string name="download_failed"><u> Herunterladen fehlgeschlagen</u></string>
 
-    <string name="total_images_clicked"><u>Total Images Clicked</u></string>
+    <string name="total_images_clicked"><u>Geklickte Bilder insgesamt</u></string>
 
     <string name="credits_available"><u>Guthaben Credits</u></string>
     <string name="credits_remaining">Verfügbare Credits</string>
@@ -141,46 +141,46 @@
 
     <string name="sku_id"><u>SKU ID</u></string>
 
-    <string name="images"><u>Images</u></string>
+    <string name="images"><u>Bilder</u></string>
 
     <string name="credits"><u>Credits</u></string>
 
-    <string name="increase_online_sale"><u>Increase Online Sales for your products by \n<br />uploading visually stunning images on \n<br />Marketplaces
+    <string name="increase_online_sale"><u>Steigern Sie den Online-Umsatz für Ihre Produkte um \n<br />Hochladen visuell beeindruckender Bilder auf \n<br />Marktplätze
 
 </u></string>
 
-    <string name="choose_marketplace">Choose Marketplace</string>
-    <string name="choose_background_colour">Choose background colour</string>
-    <string name="sample_output_image">Sample  Output Image</string>
-    <string name="choose_background">Then choose the background color</string>
+    <string name="choose_marketplace">Marktplatz auswählen</string>
+    <string name="choose_background_colour">Hintergrundfarbe wählen</string>
+    <string name="sample_output_image">Beispielausgabebild</string>
+    <string name="choose_background">Dann wähle die Hintergrundfarbe</string>
 
 
-    <string name="free_credits">10 Credits has been added to \n<br />your account</string>
+    <string name="free_credits">10 Credits wurden \n<br />Ihrem Konto</string> hinzugefügt
 
-    <string name="forgot_password_dialog">Link sent successfully.\n<br /> Please check your email.</string>
-
-
-    <string name="we_recommend_focused">(2/2) Miscellaneous Shots</string>
-    <string name="focused">Miscellaneous</string>
-
-    <string name="start_new_shoot">Start a new shoot</string>
-
-    <string name="ongoing_projects">Ongoing Projects</string>
-    <string name="draft_projects">Draft Projects</string>
-
-    <string name="your_orders">Your Orders</string>
-    <string name="end_shoot">End Shoot</string>
-    <string name="end_shoots">Are you sure you really want to end shoot now?</string>
-
-    <string name="preview">Preview</string>
-    <string name="place_order">Start Processing</string>
-    <string name="images_will_be_lost">Your Images will be lost. Are you sure you want to leave this page?</string>
+    <string name="forgot_password_dialog">Link erfolgreich gesendet.\n<br /> Bitte überprüfen Sie Ihre E-Mail.</string>
 
 
-    <string name="dealership_popup">Logo will be displayed on the \n<br /><b>number plates</b> and on <b>corner</b> \n<br />of image</string>
+    <string name="we_recommend_focused">(2/2) Verschiedene Aufnahmen</string>
+    <string name="focused">Sonstiges</string>
+
+    <string name="start_new_shoot">Starte ein neues Shooting</string>
+
+    <string name="ongoing_projects">Laufende Projekte</string>
+    <string name="draft_projects">Entwürfe von Projekten</string>
+
+    <string name="your_orders">Ihre Bestellungen</string>
+    <string name="end_shoot">Shooting beenden</string>
+    <string name="end_shoots">Möchtest du das Shooting jetzt wirklich beenden?</string>
+
+    <string name="preview">Vorschau</string>
+    <string name="place_order">Verarbeitung starten</string>
+    <string name="images_will_be_lost">Ihre Bilder gehen verloren. Möchten Sie diese Seite wirklich verlassen?</string>
 
 
-    <string name="select_corner">Select corner to display logo</string>
+    <string name="dealership_popup">Logo wird auf den \n<br /><b>Nummernschildern</b> und <b>Ecke</b> \n<br />des Bildes</string>
+
+
+    <string name="select_corner">Ecke auswählen, um das Logo anzuzeigen</string>
 
     <string name="top_left">Top Left</string>
     <string name="top_right">Top Right</string>
@@ -196,47 +196,47 @@
     <string name="shoot_outdoor">Fotografiere im&#160; <font color='#FF7700'><b>Außenbereich</b></font>&#160;tum Spiegelungen zu vermeiden </string>
     <string name="forgot_password">Passwort vergessen?</string>
 
-    <string name="forgot_password_mail">Enter the email address to reset your password. \n<br /> You may need to check your spam folder.</string>
-    <string name="enter_vin">Please enter the Vehicle Identification Number (VIN)</string>
-    <string name="vin_number">VIN</string>
+    <string name="forgot_password_mail">Geben Sie die E-Mail-Adresse ein, um Ihr Passwort zurückzusetzen. \n<br />Sie müssen möglicherweise Ihren Spam-Ordner überprüfen.</string>
+    <string name="enter_vin">Bitte geben Sie die Fahrgestellnummer (VIN) ein</string>
+    <string name="vin_number">FIN</string>
 
 
-    <string name="message_no_permissions">The app cannot work without permissions</string>
+    <string name="message_no_permissions">Die App kann ohne Berechtigungen nicht funktionieren</string>
 
 
     <string name="sku_name_hint">Auto benennen</string>
 
-    <string name="do_you_need_footwear_overlayes">Do you need footwear overlays?</string>
-    <string name="bikes">Bikes</string>
-    <string name="project_name">Project Name</string>
-    <string name="project_name_">Project Name -</string>
-    <string name="end_project">Are you sure you want to end this project?</string>
-    <string name="submit_and_process">Submit and Process this Project</string>
-    <string name="city">City(optional)</string>
-    <string name="city_">City -</string>
-    <string name="new_project">New Project</string>
+    <string name="do_you_need_footwear_overlayes">Brauchst du Schuhüberzüge?</string>
+    <string name="bikes">Fahrräder</string>
+    <string name="project_name">Projektname</string>
+    <string name="project_name_">Projektname -</string>
+    <string name="end_project">Möchten Sie dieses Projekt wirklich beenden?</string>
+    <string name="submit_and_process">Dieses Projekt einreichen und verarbeiten</string>
+    <string name="city">Stadt(optional)</string>
+    <string name="city_">Stadt -</string>
+    <string name="new_project">Neues Projekt</string>
     <string name="car_subcategory">Fahrzeugtyp auswählen</string>
-    <string name="footwear_subcategory">Select your footwear\'s sub-category</string>
-    <string name="go_to_home">Go to home</string>
+    <string name="footwear_subcategory">Wählen Sie die Unterkategorie Ihrer Schuhe</string>
+    <string name="go_to_home">Nach Hause gehen</string>
 
 
     <string name="terms_and_conditions_url_swiggy">https://www.swiggy.com/terms-and-conditions</string>
 
-    <string name="create_professional_automobile">Create Professional\n<br />Pictures in a Single Click using AI</string>
+    <string name="create_professional_automobile">Professionelle\n<br />Bilder mit einem einzigen Klick mit KI erstellen</string>
 
     <string name="capture_upto">Erfasse bis zu 36 Außenaufnahmen</string>
-    <string name="my_projcts">Mein Projekte</string>
+    <string name="my_projcts">Meine Projekte</string>
 
-    <string name="session_expired">Session Expired. Please <b>log in</b> again.</string>
-    <string name="change_fidelity"><u>Change Fidelity</u></string>
-    <string name="total_exterior_clicked">Total Exterior Images</string>
+    <string name="session_expired">Sitzung abgelaufen. Bitte <b>melden Sie sich erneut</b> an.</string>
+    <string name="change_fidelity"><u>Fidelity ändern</u></string>
+    <string name="total_exterior_clicked">Außenaufnahmen insgesamt</string>
 
-    <string name="get_started_">Get Started</string>
-    <string name="on_going_shoots">On-going Shoots</string>
-    <string name="view_all">View All</string>
-    <string name="completed_shoots">Completed Shoots</string>
-    <string name="explore_categories">Explore Categories</string>
-    <string name="tutorial_videos">Tutorial Videos</string>
+    <string name="get_started_">Erste Schritte</string>
+    <string name="on_going_shoots">Laufende Shootings</string>
+    <string name="view_all">Alle anzeigen</string>
+    <string name="completed_shoots">Abgeschlossene Shootings</string>
+    <string name="explore_categories">Kategorien erkunden</string>
+    <string name="tutorial_videos">Tutorial-Videos</string>
 
     <string name="create_password">Passwort erstellen</string>
     <string name="enter_business_name">Geben Sie Ihr Unternehmen/Ihren Namen ein</string>
@@ -251,14 +251,35 @@
     <string name="enable">aktivieren</string>
     <string name="generate_three_sixty">360 Ansicht</string>
     <string name="select_country">Wähle dein Land</string>
-    <string name="already_a_user">Schon ein %1$s Benutzerin?</string>
-    <string name="new_to">Neu für %1$s</string>
-    <string name="projects">Projekte</string>
-    <string name="shoot_all_angles">Verkaufe deine Autos schneller \nund besser mit einer 360° Ansicht und \nprofessionellen Bildern</string>
-    <string name="image_shoot">Bild aufnehmen</string>
-    <string name="explore">Entdecken</string>
-    <string name="beta">Beta</string>
 
+    <string name="already_a_user">Bereits ein %1$s Benutzer?</string>
+    <string name="new_to">Neu bei %1$s</string>
+    <string name="projects">Projekte</string>
+    <string name="shoot_all_angles">Schießen Sie alle Winkelbilder und ein 360°-Video Ihres Autos für einen besseren \nWiederverkauf auf führenden Marktplätzen</string>
+    <string name="image_shoot">Bildaufnahme</string>
+    <string name="explore">Erkunden</string>
+    <string name="Germany">Deutschland</string>
+    <string name="Italy">Italien</string>
+    <string name="beta">Beta</string>
+    <string name="image_category">Bildkategorie</string>
+    <string name="additionl_settings">Zusätzliche Hinweise</string>
+    <string name="add_text_here">Text hier hinzufügen</string>
+    <string name="continue_shoot">Aufnahme fortsetzen</string>
+    <string name="shoot_images">Bilder aufnehmen</string>
+    <string name="Select_Language">Sprache auswählen</string>
+    <string name="category_label">Kategorie:</string>
+    <string name="image_label">Bilder:</string>
+    <string name="saved">Gespeichert</string>
+    <string name="skus_label">Skus:</string>
+    <string name="total_SKUs">"Gesamt-SKUs "</string>
+    <string name="shoot_360">schießen 360</string>
+    <string name="buy_now">Kaufe jetzt</string>
+    <string name="credit_packs">Credit-Pakete</string>
+    <string name="image_credit">1 Bild = 1 Credit</string>
+    <string name="full_resolution_images_at_lowest_cost">Bilder in voller Auflösung zu niedrigsten Kosten</string>
+    <string name="_image">/Bild</string>
+    <string name="describe_your_issue_or_idea">Beschreiben Sie Ihr Problem oder Ihre Idee....</string>
+    <string name="do_you_have">Haben Sie einen Vorschlag oder haben Sie einen Fehler gefunden?\n Bitte teilen Sie uns dies im Feld unten mit.</string>
 
 
 </resources>

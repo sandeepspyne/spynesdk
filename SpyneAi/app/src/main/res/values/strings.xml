@@ -233,7 +233,7 @@
     <string name="completed_shoots">Completed Shoots</string>
     <string name="explore_categories">Explore Categories</string>
     <string name="tutorial_videos">Tutorial Videos</string>
-<<<<<<< HEAD
+
     <string name="enter_email">Enter Email</string>
     <string name="enter_password">Enter Password</string>
     <string name="new_to_app">New to SpyneAI</string>
@@ -257,14 +257,27 @@
     <string name="shoot_all_angles">Shoot all angle images and 360 \nvideo of your car for better \nreselling on leading marketplaces</string>
     <string name="image_shoot">Image Shoot</string>
     <string name="explore">Explore</string>
+    <string name="Germany">Germany</string>
+    <string name="Italy">Italy</string>
     <string name="beta">Beta</string>
-
-=======
     <string name="image_category">Image Category</string>
     <string name="additionl_settings">Additional Notes</string>
     <string name="add_text_here">Add Text Here</string>
     <string name="continue_shoot">Continue Shoot</string>
     <string name="shoot_images">Shoot Images</string>
->>>>>>> dev_sandeep_white_label_v2
+    <string name="Select_Language">Select Language</string>
+    <string name="category_label">Category :</string>
+    <string name="image_label">Images :</string>
+    <string name="saved">Saved</string>
+    <string name="skus_label">Skus :</string>
+    <string name="total_SKUs">"Total SKUs "</string>
+    <string name="shoot_360">Shoot 360</string>
+    <string name="buy_now">Buy Now</string>
+    <string name="credit_packs">Credit Packs</string>
+    <string name="full_resolution_images_at_lowest_cost">Full Resolution Images at\nLowest Cost</string>
+    <string name="image_credit">1 Image = 1 Credit</string>
+    <string name="_image">/image</string>
+    <string name="describe_your_issue_or_idea">Describe your issue or idea....</string>
+    <string name="do_you_have">Do you have any suggestion or found some bug?\n please let us know in the field below.</string>
 
 </resources>

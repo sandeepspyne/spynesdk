@@ -3,6 +3,7 @@ package com.spyneai.dashboard.ui
 import android.Manifest
 import android.content.Intent
 import android.content.pm.PackageManager
+import android.content.res.Configuration
 import android.os.Build
 import android.os.Bundle
 import android.util.Log
@@ -51,9 +52,7 @@ import kotlinx.coroutines.launch
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
-import android.view.ViewGroup
-import android.widget.Button
-import java.lang.RuntimeException
+import java.util.*
 
 
 class MainDashboardActivity : AppCompatActivity() {
@@ -67,6 +66,12 @@ class MainDashboardActivity : AppCompatActivity() {
         binding = ActivityDashboardMainBinding.inflate(layoutInflater)
         val view = binding.root
         setContentView(view)
+
+        val locale = Locale("de")
+        Locale.setDefault(locale)
+        val config = Configuration()
+        config.locale = locale
+        resources.updateConfiguration(config, resources.displayMetrics)
 
         if (intent.getBooleanExtra("show_ongoing",false)){
             val intent = Intent(this, MyOrdersActivity::class.java)
