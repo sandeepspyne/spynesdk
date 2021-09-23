@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_margin="@dimen/dp_10"
+    android:padding="@dimen/dp_10"
+    android:gravity="center"
+    xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/video_duration"
+        android:gravity="center"
+        android:fontFamily="@font/medium"
+        android:textSize="@dimen/sp_16"
+        android:textColor="@color/black"
+        android:layout_margin="@dimen/dp_10"
+        android:id="@+id/tvSkuNameDialog"/>
+
+    <TextView
+        android:id="@+id/tvReshoot"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/no_reshoot"
+        android:gravity="center"
+        android:layout_marginTop="@dimen/dp_20"
+        android:paddingLeft="@dimen/dp_100"
+        android:paddingRight="@dimen/dp_100"
+        android:paddingTop="@dimen/dp_7"
+        android:paddingBottom="@dimen/dp_7"
+        android:textColor="@color/white"
+        android:fontFamily="@font/medium"
+        android:textSize="@dimen/sp_15"
+        android:background="@drawable/bg_rectangle_button_ripple"
+        android:textAllCaps="false"/>
+
+</LinearLayout>

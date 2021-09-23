@@ -40,6 +40,7 @@ import java.io.File
 import java.io.IOException
 import java.nio.ByteBuffer
 import java.util.*
+import com.spyneai.getVideoDuration
 
 class TrimVideoFragment : BaseFragment<ThreeSixtyViewModel,FragmentTrimVideoBinding>(),SeekListener {
 
@@ -151,7 +152,7 @@ class TrimVideoFragment : BaseFragment<ThreeSixtyViewModel,FragmentTrimVideoBind
         try {
             uri = Uri.parse(viewModel.videoDetails.videoPath)
 
-            totalDuration = getDuration(requireActivity(), uri)
+            totalDuration = requireContext().getVideoDuration(uri)
             imagePlayPause!!.setOnClickListener { v: View? -> onVideoClicked() }
             Objects.requireNonNull(playerView!!.videoSurfaceView)!!
                 .setOnClickListener { v: View? -> onVideoClicked() }
@@ -182,19 +183,7 @@ class TrimVideoFragment : BaseFragment<ThreeSixtyViewModel,FragmentTrimVideoBind
         }
     }
 
-    fun getDuration(context: Activity?, videoPath: Uri?): Long {
-        try {
-            val retriever = MediaMetadataRetriever()
-            retriever.setDataSource(context, videoPath)
-            val time = retriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_DURATION)
-            val timeInMillisec = time!!.toLong()
-            retriever.release()
-            return timeInMillisec / 1000
-        } catch (e: java.lang.Exception) {
-            e.printStackTrace()
-        }
-        return 0
-    }
+
 
     private fun buildMediaSource() {
         try {

@@ -16,7 +16,10 @@
         <entry key="app/src/main/res/layout/create_project_ecom_dialog.xml" value="0.25384615384615383" />
         <entry key="app/src/main/res/layout/dialog_angle_selection.xml" value="0.2578125" />
         <entry key="app/src/main/res/layout/dialog_confirm_tags.xml" value="0.2578125" />
+        <entry key="app/src/main/res/layout/dialog_exit.xml" value="0.30512820512820515" />
+        <entry key="app/src/main/res/layout/dialog_video_duration.xml" value="0.30512820512820515" />
         <entry key="app/src/main/res/layout/fragment_overlay_ecom.xml" value="0.19722222222222222" />
+        <entry key="app/src/main/res/layout/fragment_select_background.xml" value="0.25277777777777777" />
         <entry key="app/src/main/res/layout/home_dashboard_fragment.xml" value="0.2578125" />
         <entry key="app/src/main/res/layout/item_project_edittext.xml" value="0.25384615384615383" />
         <entry key="app/src/main/res/layout/item_tags_spinner.xml" value="0.2578125" />

@@ -33,6 +33,7 @@ import androidx.core.animation.doOnCancel
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.core.net.toFile
+import androidx.core.net.toUri
 import androidx.fragment.app.Fragment
 import com.hbisoft.pickit.PickiT
 import com.hbisoft.pickit.PickiTCallbacks
@@ -40,8 +41,10 @@ import com.spyneai.R
 import com.spyneai.base.BaseFragment
 import com.spyneai.camera2.ShootDimensions
 import com.spyneai.databinding.FragmentRecordVideoBinding
+import com.spyneai.getVideoDuration
 import com.spyneai.needs.AppConstants
 import com.spyneai.threesixty.data.ThreeSixtyViewModel
+import com.spyneai.threesixty.ui.dialogs.VideoDurationDialog
 import com.spyneai.toggleButton
 import java.io.File
 import java.util.concurrent.TimeUnit
@@ -672,39 +675,56 @@ class RecordVideoFragment : BaseFragment<ThreeSixtyViewModel, FragmentRecordVide
     }
 
     private fun startNextActivity(videoPath: String) {
+        val duration = requireContext().getVideoDuration(File(videoPath).toUri())
+
+        Log.d(TAG, "startNextActivity: "+duration)
         Log.d(TAG, "startNextActivity: "+videoPath)
-        stopTimer = true
-        binding.tvTimer.visibility = View.GONE
-        binding.tvTimer.text = "00:00"
 
+        if (duration >= 30){
+            stopTimer = true
+            binding.tvTimer.visibility = View.GONE
+            binding.tvTimer.text = "00:00"
 
-        try {
-            val trimIntent = Intent(
-                requireContext(),
-                TrimActivity::class.java
-            )
+            try {
+                val trimIntent = Intent(
+                    requireContext(),
+                    TrimActivity::class.java
+                )
 
-            trimIntent.putExtra("src_path", videoPath)
-            trimIntent.putExtra("sku_id", viewModel.videoDetails.skuId)
-            trimIntent.putExtra("sku_name", viewModel.videoDetails.skuName)
-            trimIntent.putExtra("project_id", viewModel.videoDetails.projectId)
-            trimIntent.putExtra(AppConstants.CATEGORY_NAME, viewModel.videoDetails.categoryName)
-            trimIntent.putExtra(AppConstants.CATEGORY_ID, viewModel.videoDetails.categoryId)
-            trimIntent.putExtra("frames", viewModel.videoDetails.frames)
-            trimIntent.putExtra("shoot_mode", intent?.getIntExtra("shoot_mode", 0))
+                trimIntent.putExtra("src_path", videoPath)
+                trimIntent.putExtra("sku_id", viewModel.videoDetails.skuId)
+                trimIntent.putExtra("sku_name", viewModel.videoDetails.skuName)
+                trimIntent.putExtra("project_id", viewModel.videoDetails.projectId)
+                trimIntent.putExtra(AppConstants.CATEGORY_NAME, viewModel.videoDetails.categoryName)
+                trimIntent.putExtra(AppConstants.CATEGORY_ID, viewModel.videoDetails.categoryId)
+                trimIntent.putExtra("frames", viewModel.videoDetails.frames)
+                trimIntent.putExtra("shoot_mode", intent?.getIntExtra("shoot_mode", 0))
 
-            startActivity(trimIntent)
+                startActivity(trimIntent)
 
-            binding.tvStart.text = "Start"
+                binding.tvStart.text = "Start"
+                binding.btnRecordVideo.setImageDrawable(
+                    ContextCompat.getDrawable(
+                        requireContext(),
+                        R.drawable.bg_record_button_enabled
+                    )
+                )
+                isRecording = !isRecording
+            }catch (e : Exception){
+
+            }
+        }else {
+            VideoDurationDialog().show(requireActivity().supportFragmentManager,"VideoDurationDialog")
+
             binding.btnRecordVideo.setImageDrawable(
                 ContextCompat.getDrawable(
                     requireContext(),
                     R.drawable.bg_record_button_enabled
                 )
             )
-            isRecording = !isRecording
-        }catch (e : Exception){
 
+            binding.tvStart.visibility = View.VISIBLE
+            binding.tvStart.text = "Start"
         }
     }
 
