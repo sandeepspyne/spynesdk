@@ -78,7 +78,7 @@ class ProjectTagDialog : BaseDialogFragment<ShootViewModel, ProjectTagDialogBind
 
         setTagsData()
 
-        binding.btnContinue.setOnClickListener {
+        binding.btnProceed.setOnClickListener {
             when {
                 binding.etProjectName.text.toString().isEmpty() -> {
                     binding.etProjectName.error =
@@ -94,18 +94,11 @@ class ProjectTagDialog : BaseDialogFragment<ShootViewModel, ProjectTagDialogBind
                     binding.etSkuName.error = "Special characters not allowed"
                 }
                 else -> {
-                    val imm =
-                        requireActivity().getSystemService(Activity.INPUT_METHOD_SERVICE) as InputMethodManager
-                        imm?.hideSoftInputFromWindow(view.windowToken, 0)
-                    crossfade()
+                    if (isValid()){
+                        createProject()
+                    }
 
                 }
-            }
-        }
-
-        binding.btnProceed.setOnClickListener {
-            if (isValid()){
-                createProject()
             }
         }
 
@@ -124,9 +117,9 @@ class ProjectTagDialog : BaseDialogFragment<ShootViewModel, ProjectTagDialogBind
                 "edit_text" -> {
                     val layout = inflator.inflate(R.layout.item_project_edittext, null)
                     val itemBinding = ItemProjectEdittextBinding.bind(layout)
-                    itemBinding.et.hint = it.hint
-                    itemBinding.tvProjectName.text = it.field_name
-                    val dip = 15f
+//                    itemBinding.et.hint = it.hint
+                    itemBinding.llProjectName.hint = it.hint
+                    val dip = 10f
                     val r: Resources = resources
                     val px = TypedValue.applyDimension(
                         TypedValue.COMPLEX_UNIT_DIP,
@@ -236,12 +229,7 @@ class ProjectTagDialog : BaseDialogFragment<ShootViewModel, ProjectTagDialogBind
                     )
 
                     Utilities.hideProgressDialog()
-                    handleApiError(it) {
-                        val imm =
-                            requireActivity().getSystemService(Activity.INPUT_METHOD_SERVICE) as InputMethodManager
-                        imm?.hideSoftInputFromWindow(view?.windowToken, 0)
-                        crossfade2()
-                        createProject()}
+                    handleApiError(it) { createProject()}
                 }
             }
         })
@@ -319,7 +307,6 @@ class ProjectTagDialog : BaseDialogFragment<ShootViewModel, ProjectTagDialogBind
 
     private fun requiredError(editText : EditText, fieldName : String){
         editText.error = "please enter " +fieldName
-        Toast.makeText(requireContext(),"please enter " +fieldName,Toast.LENGTH_LONG).show()
     }
 
     private fun removeWhiteSpace(toString: String) = toString.replace("\\s".toRegex(), "")
@@ -334,59 +321,9 @@ class ProjectTagDialog : BaseDialogFragment<ShootViewModel, ProjectTagDialogBind
         );
     }
 
-    private fun crossfade() {
-        binding.groupRID.apply {
-            // Set the content view to 0% opacity but visible, so that it is visible
-            // (but fully transparent) during the animation.
-            alpha = 0f
-            visibility = View.VISIBLE
 
-            // Animate the content view to 100% opacity, and clear any animation
-            // listener set on the view.
-            animate()
-                .alpha(1f)
-                .setDuration(shortAnimationDuration.toLong())
-                .setListener(null)
-        }
-        // Animate the loading view to 0% opacity. After the animation ends,
-        // set its visibility to GONE as an optimization step (it won't
-        // participate in layout passes, etc.)
-        binding.groupProjectSku.animate()
-            .alpha(0f)
-            .setDuration(shortAnimationDuration.toLong())
-            .setListener(object : AnimatorListenerAdapter() {
-                override fun onAnimationEnd(animation: Animator) {
-                    binding.groupProjectSku.visibility = View.GONE
-                }
-            })
-    }
 
-    private fun crossfade2() {
-        binding.groupProjectSku.apply {
-            // Set the content view to 0% opacity but visible, so that it is visible
-            // (but fully transparent) during the animation.
-            alpha = 0f
-            visibility = View.VISIBLE
 
-            // Animate the content view to 100% opacity, and clear any animation
-            // listener set on the view.
-            animate()
-                .alpha(1f)
-                .setDuration(shortAnimationDuration.toLong())
-                .setListener(null)
-        }
-        // Animate the loading view to 0% opacity. After the animation ends,
-        // set its visibility to GONE as an optimization step (it won't
-        // participate in layout passes, etc.)
-        binding.groupRID.animate()
-            .alpha(0f)
-            .setDuration(shortAnimationDuration.toLong())
-            .setListener(object : AnimatorListenerAdapter() {
-                override fun onAnimationEnd(animation: Animator) {
-                    binding.groupProjectSku.visibility = View.GONE
-                }
-            })
-    }
 
     override fun getViewModel() = ShootViewModel::class.java
 

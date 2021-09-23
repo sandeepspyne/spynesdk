@@ -358,42 +358,44 @@ class ConfirmTagsDialog : BaseDialogFragment<ShootViewModel, DialogConfirmTagsBi
             override fun onGlobalLayout() {
                 view.viewTreeObserver.removeOnGlobalLayoutListener(this)
 
-                viewModel.shootDimensions.value.let {
-                    var prw = it?.previewWidth
-                    var prh = it?.previewHeight
+                Glide.with(requireContext())
+                    .load(overlay)
+                    .into(binding.ivOverlay)
 
-                    var ow = it?.overlayWidth
-                    var oh = it?.overlayHeight
-
-
-                    var newW =
-                        ow!!.toFloat().div(prw!!.toFloat()).times(view.width)
-                    var newH =
-                        oh!!.toFloat().div(prh!!.toFloat()).times(view.height)
-
-//                    Log.d(TAG, "onGlobalLayout: "+it?.previewWidth)
-//                    Log.d(TAG, "onGlobalLayout: "+it?.previewHeight)
-//                    Log.d(TAG, "onGlobalLayout: "+it?.overlayWidth)
-//                    Log.d(TAG, "onGlobalLayout: "+it?.overlayHeight)
-//                    Log.d(TAG, "onGlobalLayout: "+view.width)
-//                    Log.d(TAG, "onGlobalLayout: "+view.height)
-//                    Log.d(TAG, "onGlobalLayout: "+overlay)
-//                    Log.d(TAG, "onGlobalLayout: "+newW)
-//                    Log.d(TAG, "onGlobalLayout: "+newH)
-
-                    var equlizerOverlayMargin = (9.5 * resources.displayMetrics.density).toInt()
-
-                    var params = FrameLayout.LayoutParams(newW.toInt(), newH.toInt())
-                    params.gravity = Gravity.CENTER
-                    params.topMargin = equlizerOverlayMargin
-
-                    binding.ivOverlay.layoutParams = params
-
-                    Glide.with(requireContext())
-                        .load(overlay)
-                        .into(binding.ivOverlay)
-
-                }
+//                viewModel.shootDimensions.value.let {
+//                    var prw = it?.previewWidth
+//                    var prh = it?.previewHeight
+//
+//                    var ow = it?.overlayWidth
+//                    var oh = it?.overlayHeight
+//
+//
+//                    var newW =
+//                        ow!!.toFloat().div(prw!!.toFloat()).times(view.width)
+//                    var newH =
+//                        oh!!.toFloat().div(prh!!.toFloat()).times(view.height)
+//
+////                    Log.d(TAG, "onGlobalLayout: "+it?.previewWidth)
+////                    Log.d(TAG, "onGlobalLayout: "+it?.previewHeight)
+////                    Log.d(TAG, "onGlobalLayout: "+it?.overlayWidth)
+////                    Log.d(TAG, "onGlobalLayout: "+it?.overlayHeight)
+////                    Log.d(TAG, "onGlobalLayout: "+view.width)
+////                    Log.d(TAG, "onGlobalLayout: "+view.height)
+////                    Log.d(TAG, "onGlobalLayout: "+overlay)
+////                    Log.d(TAG, "onGlobalLayout: "+newW)
+////                    Log.d(TAG, "onGlobalLayout: "+newH)
+//
+//                    var equlizerOverlayMargin = (9.5 * resources.displayMetrics.density).toInt()
+//
+//                    var params = FrameLayout.LayoutParams(newW.toInt(), newH.toInt())
+//                    params.gravity = Gravity.CENTER
+//                    params.topMargin = equlizerOverlayMargin
+//
+//                    binding.ivOverlay.layoutParams = params
+//
+//
+//
+//                }
             }
         })
     }
