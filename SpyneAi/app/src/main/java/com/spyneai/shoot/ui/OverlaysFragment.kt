@@ -934,15 +934,20 @@ class OverlaysFragment : BaseFragment<ShootViewModel, FragmentOverlaysBinding>()
 
     private fun showImageConfirmDialog(shootData: ShootData) {
         viewModel.shootData.value = shootData
-        ConfirmTagsDialog().show(
-            requireActivity().supportFragmentManager,
+        when(getString(R.string.app_name)){
+            AppConstants.OLA_CABS -> {
+                ConfirmTagsDialog().show(
+                    requireActivity().supportFragmentManager,
+                    "ConfirmTagsDialog")
+            }else -> {
+            ConfirmReshootDialog().show(
+                requireActivity().supportFragmentManager,
             "ConfirmReshootDialog"
         )
+            }
+        }
 
-//        ConfirmReshootDialog().show(
-//            requireActivity().supportFragmentManager,
-//            "ConfirmReshootDialog"
-//        )
+
     }
 
     private fun getPreviewDimensions(view: View) {

@@ -7,9 +7,6 @@ import android.os.Build
 import android.os.Bundle
 import android.util.Log
 import android.view.View
-import android.view.ViewGroup
-import android.widget.Button
-import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
@@ -150,7 +147,7 @@ class MainDashboardActivity : AppCompatActivity() {
                        startActivity(intent)
                    }
                 }
-                R.id.wallet->setCurrentFragment(SecondFragment)
+                //R.id.wallet->setCurrentFragment(SecondFragment)
                 R.id.logoutDashBoardFragment->setCurrentFragment(thirdFragment)
             }
             true
