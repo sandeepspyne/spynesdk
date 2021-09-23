@@ -110,7 +110,7 @@
         android:textColor="@color/primary"
         app:layout_constraintLeft_toRightOf="@+id/flCategory"
         app:layout_constraintTop_toTopOf="@+id/flCategory"
-        android:text="Category :"
+        android:text="@string/category_label"
         android:layout_marginLeft="9dp"/>
 
     <TextView
@@ -161,7 +161,7 @@
         android:textColor="@color/primary"
         app:layout_constraintLeft_toRightOf="@+id/flImages"
         app:layout_constraintTop_toTopOf="@+id/flImages"
-        android:text="Images :"
+        android:text="@string/image_label"
         android:layout_marginLeft="9dp"/>
 
     <TextView

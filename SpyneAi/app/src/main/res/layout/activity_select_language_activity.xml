@@ -30,6 +30,7 @@
         android:layout_width="match_parent"
         android:layout_height="@dimen/tool_bar_height"
         android:gravity="center"
+        android:id="@+id/llEnglish"
         android:paddingHorizontal="@dimen/dp_10"
         android:orientation="horizontal">
 

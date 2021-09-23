@@ -7,6 +7,8 @@ import android.os.Bundle
 import com.spyneai.R
 import com.spyneai.databinding.ActivitySelectLanguageActivityBinding
 import com.spyneai.loginsignup.activity.LoginActivity
+import com.spyneai.needs.AppConstants
+import com.spyneai.needs.Utilities
 import java.util.*
 
 class SelectLanguageActivity : AppCompatActivity() {
@@ -19,13 +21,27 @@ class SelectLanguageActivity : AppCompatActivity() {
         val view = binding.root
         setContentView(view)
 
+        binding.llEnglish.setOnClickListener {
+            Intent(this,LoginActivity::class.java)
+                    .apply {
+                        startActivity(this)
+                    }
+        }
+
         binding.llGermany.setOnClickListener {
             onLanguageSelected("de")
+        }
+
+        binding.llItly.setOnClickListener {
+            onLanguageSelected("IT")
         }
 
     }
 
     private fun onLanguageSelected(locale: String) {
+
+        Utilities.savePrefrence(this, AppConstants.LOCALE,locale)
+
         val locale = Locale(locale)
         Locale.setDefault(locale)
         val config = Configuration()
