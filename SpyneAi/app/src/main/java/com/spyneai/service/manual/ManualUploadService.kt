@@ -247,7 +247,6 @@ class ManualUploadService: Service(), ManualImageUploader.Listener {
 
             logUpload("Connection changed "+isConnected)
 
-
             if (isConnected == true){
                 //if any image pending in upload
                 val image = FilesRepository().getOldestImage()

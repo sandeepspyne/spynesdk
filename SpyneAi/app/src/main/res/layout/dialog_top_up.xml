@@ -13,85 +13,88 @@
         android:id="@+id/lldialog"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:gravity="center"
-        android:padding="@dimen/dp_10"
-        android:layout_margin="@dimen/dp_10"
+        android:layout_marginStart="@dimen/dp_10"
+        android:layout_marginTop="@dimen/dp_10"
+        android:layout_marginEnd="@dimen/dp_10"
+        android:layout_marginBottom="@dimen/dp_10"
         android:background="@drawable/bg_channel"
         android:elevation="@dimen/dp_10"
-        android:orientation="vertical">
+        android:gravity="center"
+        android:orientation="vertical"
+        android:padding="@dimen/dp_10">
 
         <ImageView
             android:id="@+id/ivClose"
             android:layout_width="@dimen/dp_15"
             android:layout_height="@dimen/dp_15"
-            android:src="@drawable/ic_close"
             android:layout_alignParentRight="true"
-            android:layout_margin="@dimen/dp_5"></ImageView>
+            android:layout_margin="@dimen/dp_5"
+            android:src="@drawable/ic_close"></ImageView>
 
         <ImageView
             android:id="@+id/ivCoins"
             android:layout_width="@dimen/dp_100"
             android:layout_height="@dimen/dp_100"
-            android:layout_marginTop="@dimen/dp_15"
             android:layout_centerHorizontal="true"
+            android:layout_marginTop="@dimen/dp_15"
             android:src="@drawable/coins"
             app:tint="@color/primary" />
 
         <com.facebook.shimmer.ShimmerFrameLayout
+            android:id="@+id/shimmer"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:id="@+id/shimmer"
             android:layout_below="@+id/ivCoins"
-            android:layout_marginTop="@dimen/dp_20"
-            android:layout_centerHorizontal="true">
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="@dimen/dp_20">
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="2,565.00 credit"
-                android:textColor="@color/shimmer_background"
                 android:background="@color/shimmer_background"
                 android:fontFamily="@font/medium"
-                android:textSize="26sp"/>
+                android:text="2,565.00 credit"
+                android:textColor="@color/shimmer_background"
+                android:textSize="26sp" />
 
         </com.facebook.shimmer.ShimmerFrameLayout>
 
         <TextView
+            android:id="@+id/tv_credits_remaining"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
             android:layout_below="@+id/ivCoins"
             android:layout_centerHorizontal="true"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/dp_20"
-            android:gravity="center"
             android:fontFamily="@font/medium"
-            android:textSize="@dimen/sp_16"
+            android:gravity="center"
             android:textColor="@color/secondary"
-            android:id="@+id/tv_credits_remaining"/>
+            android:textSize="@dimen/sp_16" />
 
         <TextView
-            android:layout_below="@+id/tv_credits_remaining"
-            android:layout_centerHorizontal="true"
+            android:id="@+id/tvReqCredit"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Request to add credits"
+            android:layout_below="@+id/tv_credits_remaining"
+            android:layout_centerHorizontal="true"
             android:layout_marginTop="@dimen/dp_20"
-            android:gravity="center"
             android:fontFamily="@font/medium"
-            android:textSize="@dimen/sp_16"
+            android:gravity="center"
+            android:text="@string/request_to_add"
             android:textColor="@color/secondary"
-            android:id="@+id/tvReqCredit"/>
+            android:textSize="@dimen/sp_16" />
 
         <Button
+            android:id="@+id/tvSendRequest"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:id="@+id/tvSendRequest"
             android:layout_below="@id/tvReqCredit"
             android:layout_centerHorizontal="true"
-            android:text="Send Request"
-            android:textAllCaps="false"
-            android:visibility="visible"
+            android:layout_marginTop="@dimen/dp_15"
             android:background="@drawable/bg_rectangle_button_ripple"
-            android:layout_marginTop="@dimen/dp_15"/>
+            android:text="@string/send_request"
+            android:textAllCaps="false"
+            android:visibility="visible" />
 
     </RelativeLayout>
 

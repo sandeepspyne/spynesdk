@@ -16,18 +16,15 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.work.*
 import com.google.android.material.snackbar.Snackbar
 import com.posthog.android.Properties
-import com.spyneai.BaseApplication
-import com.spyneai.BuildConfig
+import com.spyneai.*
 import com.spyneai.R
 import com.spyneai.activity.CategoriesActivity
 import com.spyneai.base.network.ClipperApi
 import com.spyneai.base.network.Resource
-import com.spyneai.captureEvent
 import com.spyneai.dashboard.data.DashboardViewModel
 import com.spyneai.dashboard.ui.base.ViewModelFactory
 import com.spyneai.databinding.ActivityDashboardMainBinding
 import com.spyneai.interfaces.RetrofitClients
-import com.spyneai.isResolutionSupported
 import com.spyneai.needs.AppConstants
 import com.spyneai.needs.Utilities
 import com.spyneai.orders.ui.MyOrdersActivity
@@ -67,11 +64,7 @@ class MainDashboardActivity : AppCompatActivity() {
         val view = binding.root
         setContentView(view)
 
-        val locale = Locale("de")
-        Locale.setDefault(locale)
-        val config = Configuration()
-        config.locale = locale
-        resources.updateConfiguration(config, resources.displayMetrics)
+        setLocale()
 
         if (intent.getBooleanExtra("show_ongoing",false)){
             val intent = Intent(this, MyOrdersActivity::class.java)
@@ -225,7 +218,7 @@ class MainDashboardActivity : AppCompatActivity() {
         } else {
             capture(Events.PERMISSIONS_DENIED)
             Snackbar.make(binding.root, "App cannot work without permission", Snackbar.LENGTH_INDEFINITE)
-                .setAction("Allow") {
+                .setAction(getString(R.string.allow)) {
                    requestPermi()
                 }
                 .setActionTextColor(ContextCompat.getColor(this,R.color.primary))

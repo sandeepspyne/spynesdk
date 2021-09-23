@@ -241,7 +241,7 @@
     <string name="enter_business_name">Enter Business/Your Name</string>
 
     <string name="shoot">Shoot</string>
-    <string name="credits_remaining">Verfügbare Credits</string>
+    <string name="credits_remaining">Credits Remaining</string>
     <string name="request_to_add_credits">Request to Add Credits</string>
     <string name="send_request">Send Request</string>
     <string name="try_new_feature">Try our New\nFeature</string>
@@ -279,5 +279,27 @@
     <string name="_image">/image</string>
     <string name="describe_your_issue_or_idea">Describe your issue or idea....</string>
     <string name="do_you_have">Do you have any suggestion or found some bug?\n please let us know in the field below.</string>
+    <string name="total_images_label">Total Images</string>
+    <string name="resume_shoot">Resume Shoot</string>
+    <string name="start_shoot">Start Shoot</string>
+    <string name="angles">Angles</string>
+    <string name="contiune">Continue</string>
+    <string name="request_to_add">Request to add credits</string>
+    <string name="generate_output">Generate Output</string>
+    <string name="sample_output">Sample Output</string>
+    <string name="image_uploading_in_progess">Image uploading in progress...</string>
+    <string name="upload">Uploading </string>
+    <string name="active">Active</string>
+    <string name="disconnected">Disconnected</string>
+    <string name="image_uploaded">Image Uploaded</string>
+    <string name="miscellanous">Miscellaneous</string>
+    <string name="last_uploaded">Last Uploaded </string>
+    <string name="internet_connection">Internet Connection: Disconnected</string>
+    <string name="uploading_paused_on">Uploading Paused On </string>
+    <string name="uploading_paused">Uploading Paused</string>
+    <string name="innter_connection_label">Internet Connection: </string>
+    <string name="all_uploaded">All Images Uploaded </string>
+    <string name="allow">Allow</string>
+    <string name="select_car_subcategory">Select your car\'s sub-category</string>
 
 </resources>

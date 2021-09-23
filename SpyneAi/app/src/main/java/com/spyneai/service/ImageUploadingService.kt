@@ -101,7 +101,7 @@ class ImageUploadingService : Service(), ImageUploader.Listener {
     private fun createOngoingNotificaiton() {
         notificationId = 100
         val title = getString(R.string.app_name)
-        val text = "Image uploading in progress..."
+        val text = getString(R.string.image_uploading_in_progess)
         var notification = createNotification(title,text, true)
 
         logUpload("createOngoingNotificaiton "+notificationId)
@@ -173,10 +173,10 @@ class ImageUploadingService : Service(), ImageUploader.Listener {
     override fun inProgress(task: Image) {
         currentImage = task
         logUpload("in progress "+task.imagePath)
-        val category = if (task.categoryName == "Focus Shoot") "Miscellaneous" else task.categoryName
-        val title = "Uploading "+task.skuName+"("+category+"-"+task.sequence+")"
-        val internet = if (isInternetActive()) "Active" else "Disconnected"
-        val content = "Internet Connection: "+internet
+        val category = if (task.categoryName == "Focus Shoot") getString(R.string.miscellanous) else task.categoryName
+        val title = getString(R.string.upload)+task.skuName+"("+category+"-"+task.sequence+")"
+        val internet = if (isInternetActive()) getString(R.string.active) else getString(R.string.disconnected)
+        val content = getString(R.string.innter_connection_label)+internet
         var notification = createNotification(title,content, true)
 
         logUpload("inProgress "+notificationId)
@@ -187,15 +187,15 @@ class ImageUploadingService : Service(), ImageUploader.Listener {
     override fun onUploaded(task: Image) {
         uploadRunning = false
 
-        var title = "Image Uploaded"
+        var title = getString(R.string.image_uploaded)
         if (currentImage != null){
-            val category = if (currentImage?.categoryName == "Focus Shoot") "Miscellaneous" else currentImage?.categoryName
-            title = "Last Uploaded "+currentImage?.skuName+"("+category+"-"+currentImage?.sequence+")"
+            val category = if (currentImage?.categoryName == "Focus Shoot") getString(R.string.miscellanous) else currentImage?.categoryName
+            title = getString(R.string.last_uploaded)+currentImage?.skuName+"("+category+"-"+currentImage?.sequence+")"
             logUpload("uploaded "+currentImage?.imagePath)
         }
 
-        val internet = if (isInternetActive()) "Active" else "Disconnected"
-        val content = "Internet Connection: "+internet
+        val internet = if (isInternetActive()) getString(R.string.active) else getString(R.string.disconnected)
+        val content = getString(R.string.innter_connection_label)+internet
         var notification = createNotification(title,content, true)
 
         logUpload("onUploaded last "+notificationId)
@@ -203,9 +203,9 @@ class ImageUploadingService : Service(), ImageUploader.Listener {
 
         //update notification after five minutes
         Handler(Looper.getMainLooper()).postDelayed({
-            val title = "All Images Uploaded "
-            val internet = if (isInternetActive()) "Active" else "Disconnected"
-            val content = "Internet Connection: "+internet
+            val title = getString(R.string.all_uploaded)
+            val internet = if (isInternetActive()) getString(R.string.active) else getString(R.string.disconnected)
+            val content = getString(R.string.innter_connection_label)+internet
             var notification = createNotification(title,content, false)
 
             logUpload("onUploaded all "+notificationId)
@@ -222,12 +222,12 @@ class ImageUploadingService : Service(), ImageUploader.Listener {
         logUpload("onConnectionLost")
         uploadRunning = false
 
-        val title = if (currentImage == null) "Uploading Paused"
+        val title = if (currentImage == null) getString(R.string.uploading_paused)
         else {
-            val category = if (currentImage?.categoryName == "Focus Shoot") "Miscellaneous" else currentImage?.categoryName
-            "Uploading Paused On "+currentImage?.skuName+"("+category+"-"+currentImage?.sequence+")"
+            val category = if (currentImage?.categoryName == "Focus Shoot") getString(R.string.miscellanous) else currentImage?.categoryName
+            getString(R.string.uploading_paused_on)+currentImage?.skuName+"("+category+"-"+currentImage?.sequence+")"
         }
-        val content = "Internet Connection: Disconnected"
+        val content = getString(R.string.internet_connection)
         var notification = createNotification(title,content, true)
 
         logUpload("onConnectionLost "+notificationId)

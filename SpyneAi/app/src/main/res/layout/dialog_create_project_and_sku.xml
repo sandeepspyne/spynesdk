@@ -110,7 +110,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/btnSubmit"
-        android:text="Submit"
+        android:text="@string/submit"
         android:textAllCaps="false"
         android:insetTop="@dimen/dp_3"
         android:insetBottom="@dimen/dp_3"

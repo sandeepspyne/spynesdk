@@ -7,6 +7,7 @@ import android.app.ActivityManager
 import android.content.Context
 import android.content.Intent
 import android.content.res.ColorStateList
+import android.content.res.Configuration
 import android.graphics.ImageFormat
 import android.hardware.camera2.CameraCharacteristics
 import android.hardware.camera2.CameraManager
@@ -230,5 +231,12 @@ fun Context.getBestResolution() : Size? {
         }
 
     }
+}
 
+fun Context.setLocale() {
+    val locale = Locale(Utilities.getPreference(this,AppConstants.LOCALE))
+    Locale.setDefault(locale)
+    val config = Configuration()
+    config.locale = locale
+    resources.updateConfiguration(config, resources.displayMetrics)
 }

@@ -500,7 +500,7 @@
                 android:fontFamily="@font/medium"
                 android:gravity="center"
                 android:textAllCaps="false"
-                android:text="Continue"
+                android:text="@string/contiune"
                 android:textColor="@color/white"
                 android:textSize="@dimen/sp_20"
                 android:enabled="false"/>

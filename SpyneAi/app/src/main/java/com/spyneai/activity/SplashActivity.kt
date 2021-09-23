@@ -52,6 +52,8 @@ class SplashActivity : AppCompatActivity() {
         Utilities.savePrefrence(this,AppConstants.DEVICE_ID,deviceId)
 
 
+        Utilities.savePrefrence(this,AppConstants.LOCALE,"de")
+
         setSplash()
     }
 
