@@ -1,5 +1,7 @@
 package com.spyneai.shoot.ui.ecomwithgrid.dialogs
 
+import android.animation.Animator
+import android.animation.AnimatorListenerAdapter
 import android.app.Dialog
 import android.content.res.Resources
 import android.graphics.Color
@@ -10,11 +12,14 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.WindowManager
+import android.view.inputmethod.InputMethodManager
 import android.widget.EditText
 import android.widget.LinearLayout
 import android.widget.Toast
+import androidx.core.view.ViewCompat.animate
 import androidx.viewbinding.ViewBinding
 import com.posthog.android.Properties
+import com.posthog.android.internal.Utils.getSystemService
 import com.spyneai.R
 import com.spyneai.base.BaseDialogFragment
 import com.spyneai.base.network.Resource
@@ -33,19 +38,24 @@ import com.spyneai.shoot.data.model.Sku
 import com.spyneai.shoot.utils.log
 import kotlinx.android.synthetic.main.item_project_edittext.*
 import org.json.JSONObject
+import android.app.Activity
+
+
+
 
 class ProjectTagDialog : BaseDialogFragment<ShootViewModel, ProjectTagDialogBinding>() {
 
     private val bindingList = ArrayList<ViewBinding>()
     private lateinit var inflator : LayoutInflater
     private val data = JSONObject()
+    private var shortAnimationDuration: Int = 0
 
     override fun onStart() {
         super.onStart()
         val dialog: Dialog? = dialog
         if (dialog != null) {
             dialog.getWindow()
-                ?.setLayout(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT)
+                ?.setLayout(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT)
             dialog.getWindow()?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
         }
     }
@@ -61,9 +71,14 @@ class ProjectTagDialog : BaseDialogFragment<ShootViewModel, ProjectTagDialogBind
             requireActivity().finish()
         }
 
+        binding.llContainer.visibility = View.GONE
+        binding.btnProceed.visibility = View.GONE
+
+        shortAnimationDuration = resources.getInteger(android.R.integer.config_shortAnimTime)
+
         setTagsData()
 
-        binding.btnProceed.setOnClickListener {
+        binding.btnContinue.setOnClickListener {
             when {
                 binding.etProjectName.text.toString().isEmpty() -> {
                     binding.etProjectName.error =
@@ -79,12 +94,21 @@ class ProjectTagDialog : BaseDialogFragment<ShootViewModel, ProjectTagDialogBind
                     binding.etSkuName.error = "Special characters not allowed"
                 }
                 else -> {
-                    if (isValid()){
-                        createProject()
-                    }
+                    val imm =
+                        requireActivity().getSystemService(Activity.INPUT_METHOD_SERVICE) as InputMethodManager
+                        imm?.hideSoftInputFromWindow(view.windowToken, 0)
+                    crossfade()
+
                 }
             }
         }
+
+        binding.btnProceed.setOnClickListener {
+            if (isValid()){
+                createProject()
+            }
+        }
+
         if (!viewModel.fromDrafts) {
             observeCreateProject()
             observeCreateSku()
@@ -101,6 +125,7 @@ class ProjectTagDialog : BaseDialogFragment<ShootViewModel, ProjectTagDialogBind
                     val layout = inflator.inflate(R.layout.item_project_edittext, null)
                     val itemBinding = ItemProjectEdittextBinding.bind(layout)
                     itemBinding.et.hint = it.hint
+                    itemBinding.tvProjectName.text = it.field_name
                     val dip = 15f
                     val r: Resources = resources
                     val px = TypedValue.applyDimension(
@@ -209,8 +234,14 @@ class ProjectTagDialog : BaseDialogFragment<ShootViewModel, ProjectTagDialogBind
                         Events.CREATE_PROJECT_FAILED, Properties(),
                         it.errorMessage!!
                     )
+
                     Utilities.hideProgressDialog()
-                    handleApiError(it) {createProject()}
+                    handleApiError(it) {
+                        val imm =
+                            requireActivity().getSystemService(Activity.INPUT_METHOD_SERVICE) as InputMethodManager
+                        imm?.hideSoftInputFromWindow(view?.windowToken, 0)
+                        crossfade2()
+                        createProject()}
                 }
             }
         })
@@ -301,6 +332,60 @@ class ProjectTagDialog : BaseDialogFragment<ShootViewModel, ProjectTagDialogBind
             WindowManager.LayoutParams.MATCH_PARENT,
             WindowManager.LayoutParams.WRAP_CONTENT
         );
+    }
+
+    private fun crossfade() {
+        binding.groupRID.apply {
+            // Set the content view to 0% opacity but visible, so that it is visible
+            // (but fully transparent) during the animation.
+            alpha = 0f
+            visibility = View.VISIBLE
+
+            // Animate the content view to 100% opacity, and clear any animation
+            // listener set on the view.
+            animate()
+                .alpha(1f)
+                .setDuration(shortAnimationDuration.toLong())
+                .setListener(null)
+        }
+        // Animate the loading view to 0% opacity. After the animation ends,
+        // set its visibility to GONE as an optimization step (it won't
+        // participate in layout passes, etc.)
+        binding.groupProjectSku.animate()
+            .alpha(0f)
+            .setDuration(shortAnimationDuration.toLong())
+            .setListener(object : AnimatorListenerAdapter() {
+                override fun onAnimationEnd(animation: Animator) {
+                    binding.groupProjectSku.visibility = View.GONE
+                }
+            })
+    }
+
+    private fun crossfade2() {
+        binding.groupProjectSku.apply {
+            // Set the content view to 0% opacity but visible, so that it is visible
+            // (but fully transparent) during the animation.
+            alpha = 0f
+            visibility = View.VISIBLE
+
+            // Animate the content view to 100% opacity, and clear any animation
+            // listener set on the view.
+            animate()
+                .alpha(1f)
+                .setDuration(shortAnimationDuration.toLong())
+                .setListener(null)
+        }
+        // Animate the loading view to 0% opacity. After the animation ends,
+        // set its visibility to GONE as an optimization step (it won't
+        // participate in layout passes, etc.)
+        binding.groupRID.animate()
+            .alpha(0f)
+            .setDuration(shortAnimationDuration.toLong())
+            .setListener(object : AnimatorListenerAdapter() {
+                override fun onAnimationEnd(animation: Animator) {
+                    binding.groupProjectSku.visibility = View.GONE
+                }
+            })
     }
 
     override fun getViewModel() = ShootViewModel::class.java
