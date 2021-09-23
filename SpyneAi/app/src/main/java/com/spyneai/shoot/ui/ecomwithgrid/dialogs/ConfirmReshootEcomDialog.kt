@@ -1,7 +1,6 @@
 package com.spyneai.shoot.ui.ecomwithgrid.dialogs
 
 import android.content.Intent
-import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -22,7 +21,6 @@ import com.spyneai.service.getServiceState
 import com.spyneai.shoot.data.ShootViewModel
 import com.spyneai.shoot.utils.log
 import kotlinx.coroutines.launch
-import java.io.File
 
 
 class ConfirmReshootEcomDialog :
@@ -35,6 +33,11 @@ class ConfirmReshootEcomDialog :
         dialog?.setCancelable(false)
 
         val uri = viewModel.shootData.value?.capturedImage
+        binding.ivCapturedImage.setRotation(90F)
+
+        viewModel.end.value = System.currentTimeMillis()
+        val difference = (viewModel.end.value!! - viewModel.begin.value!!)/1000.toFloat()
+        log("dialog- "+difference)
 
         Glide.with(requireContext())
             .load(uri)
@@ -63,6 +66,7 @@ class ConfirmReshootEcomDialog :
         }
 
         binding.btConfirmImage.setOnClickListener {
+            viewModel.confirmCapturedImage.value = true
             viewModel.shootNumber.value = viewModel.shootNumber.value?.plus(1)
 
             viewModel.isStopCaptureClickable = true

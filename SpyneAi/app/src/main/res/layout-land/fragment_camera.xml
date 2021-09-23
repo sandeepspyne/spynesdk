@@ -4,35 +4,26 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@android:color/transparent">
-
-    <View
-        android:id="@+id/viewCamera"
-        android:layout_width="@dimen/dp_100"
-        android:layout_height="match_parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintLeft_toLeftOf="parent"
-        android:background="@color/black"/>
+    android:background="@android:color/black">
 
     <androidx.camera.view.PreviewView
         android:id="@+id/viewFinder"
         android:layout_width="0dp"
         android:layout_height="0dp"
+        app:layout_constraintDimensionRatio="16:9"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintRight_toLeftOf="@+id/llCapture"
-        app:layout_constraintLeft_toRightOf="@+id/viewCamera"
+        app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
     <LinearLayout
         android:id="@+id/llCapture"
-        android:layout_width="@dimen/dp_100"
+        android:layout_width="0dp"
         android:layout_height="match_parent"
         android:layout_gravity="end|center"
         android:padding="@dimen/dp_10"
-        android:background="@color/black"
         android:orientation="vertical"
         android:gravity="center"
+        android:background="@color/transparents"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintRight_toRightOf="parent">
@@ -124,8 +115,8 @@
         android:layout_height="0dp"
         android:id="@+id/flLevelIndicator"
         android:visibility="invisible"
-        app:layout_constraintRight_toLeftOf="@+id/llCapture"
-        app:layout_constraintLeft_toRightOf="@+id/viewCamera"
+        app:layout_constraintLeft_toLeftOf="@+id/viewFinder"
+        app:layout_constraintRight_toRightOf="@+id/viewFinder"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"
         android:layout_margin="@dimen/dp_20">
@@ -186,8 +177,8 @@
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:id="@+id/flTapToFocus"
-        app:layout_constraintRight_toLeftOf="@+id/llCapture"
-        app:layout_constraintLeft_toRightOf="@+id/viewCamera"
+        app:layout_constraintLeft_toLeftOf="@+id/viewFinder"
+        app:layout_constraintRight_toRightOf="@+id/viewFinder"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintBottom_toBottomOf="parent">
 

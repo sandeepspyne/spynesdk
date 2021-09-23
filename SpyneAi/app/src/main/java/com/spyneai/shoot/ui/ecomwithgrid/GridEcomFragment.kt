@@ -13,8 +13,9 @@ import com.spyneai.shoot.data.model.ShootData
 import com.spyneai.shoot.ui.ecomwithgrid.dialogs.ConfirmReshootEcomDialog
 import com.spyneai.shoot.ui.ecomwithgrid.dialogs.CreateProjectEcomDialog
 import com.spyneai.shoot.ui.ecomwithgrid.dialogs.CreateSkuEcomDialog
+import com.spyneai.shoot.ui.ecomwithgrid.dialogs.ProjectTagDialog
 import com.spyneai.shoot.utils.log
-import java.util.ArrayList
+import java.util.*
 
 class GridEcomFragment : BaseFragment<ShootViewModel, FragmentGridEcomBinding>() {
 
@@ -94,6 +95,12 @@ class GridEcomFragment : BaseFragment<ShootViewModel, FragmentGridEcomBinding>()
             }
         })
 
+        viewModel.confirmCapturedImage.observe(viewLifecycleOwner,{
+            if (it){
+                binding.tvImageCount.text = viewModel.shootList.value!!.size.toString()
+            }
+        })
+
     }
 
 
@@ -129,7 +136,7 @@ class GridEcomFragment : BaseFragment<ShootViewModel, FragmentGridEcomBinding>()
     }
 
     private fun initProjectDialog() {
-        CreateProjectEcomDialog().show(requireFragmentManager(), "CreateProjectEcomDialog")
+        ProjectTagDialog().show(requireFragmentManager(), "CreateProjectEcomDialog")
     }
 
     private fun showImageConfirmDialog(shootData: ShootData) {

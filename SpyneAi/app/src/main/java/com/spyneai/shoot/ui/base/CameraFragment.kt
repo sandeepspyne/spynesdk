@@ -1,4 +1,3 @@
-
 import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.ContentValues
@@ -17,6 +16,7 @@ import android.util.DisplayMetrics
 import android.util.Log
 import android.util.Size
 import android.view.*
+import android.view.Surface.ROTATION_90
 import android.view.animation.AccelerateInterpolator
 import android.widget.*
 import androidx.camera.core.*
@@ -70,6 +70,10 @@ class CameraFragment : BaseFragment<ShootViewModel, FragmentCameraBinding>(), Pi
     lateinit var file: File
     var haveGyrometer = false
     var isSensorAvaliable = false
+    var rotation = 0
+    var end: Long = 0
+    var begin: Long = 0
+    var mid: Long = 0
 
     companion object {
         private const val RATIO_4_3_VALUE = 4.0 / 3.0 // aspect ratio 4x3
@@ -180,7 +184,8 @@ class CameraFragment : BaseFragment<ShootViewModel, FragmentCameraBinding>(), Pi
             binding.tvSkipShoot.setTextColor(ContextCompat.getColor(requireContext(),R.color.secondary))
             binding.ivSkip?.setColorFilter(
                 ContextCompat.getColor(requireContext(), R.color.secondary),
-                PorterDuff.Mode.SRC_IN)
+                PorterDuff.Mode.SRC_IN
+            )
         }
         binding.tvSkipShoot?.setOnClickListener {
             when (viewModel.categoryDetails.value?.imageType) {
@@ -303,9 +308,10 @@ class CameraFragment : BaseFragment<ShootViewModel, FragmentCameraBinding>(), Pi
             AppConstants.TRUSTED_CARS,
             AppConstants.TRAVO_PHOTOS,
             AppConstants.SELL_ANY_CAR,
-            AppConstants.YALLA_MOTOS-> {
+            AppConstants.YALLA_MOTOS -> {
                 if (viewModel.shootList.value == null
-                    && !requireActivity().intent.getBooleanExtra(AppConstants.SKU_CREATED,false)) {
+                    && !requireActivity().intent.getBooleanExtra(AppConstants.SKU_CREATED, false)
+                ) {
                     if (binding.flLevelIndicator.visibility == View.VISIBLE) {
                         if (isGyroOnCorrectAngle)
                             getProjectDetails()
@@ -326,7 +332,9 @@ class CameraFragment : BaseFragment<ShootViewModel, FragmentCameraBinding>(), Pi
             AppConstants.LAL_10,
             AppConstants.AMAZON,
             AppConstants.SWIGGY,
-            AppConstants.SWIGGYINSTAMART-> {
+            AppConstants.SWIGGYINSTAMART,
+            AppConstants.BATA,
+            AppConstants.FLIPKART_GROCERY-> {
                 if (binding.flLevelIndicator.visibility == View.VISIBLE) {
                     if (isGyroOnCorrectAngle)
                         captureImage()
@@ -336,29 +344,31 @@ class CameraFragment : BaseFragment<ShootViewModel, FragmentCameraBinding>(), Pi
             }
             AppConstants.SPYNE_AI -> {
                 if (viewModel.shootList.value == null
-                    && !requireActivity().intent.getBooleanExtra(AppConstants.SKU_CREATED,false)){
+                    && !requireActivity().intent.getBooleanExtra(AppConstants.SKU_CREATED, false)
+                ) {
                     if (viewModel.categoryDetails.value?.categoryName == "Automobiles" ||
-                        viewModel.categoryDetails.value?.categoryName == "Bikes") {
-                        if (binding.flLevelIndicator.visibility == View.VISIBLE){
-                            if (isGyroOnCorrectAngle){
+                        viewModel.categoryDetails.value?.categoryName == "Bikes"
+                    ) {
+                        if (binding.flLevelIndicator.visibility == View.VISIBLE) {
+                            if (isGyroOnCorrectAngle) {
                                 getProjectDetails()
                             }
-                        }else {
+                        } else {
                             getProjectDetails()
                         }
-                    }else {
-                        if (binding.flLevelIndicator.visibility == View.VISIBLE){
+                    } else {
+                        if (binding.flLevelIndicator.visibility == View.VISIBLE) {
                             if (isGyroOnCorrectAngle)
                                 captureImage()
-                        }else{
+                        } else {
                             captureImage()
                         }
                     }
-                }else {
-                    if (binding.flLevelIndicator.visibility == View.VISIBLE){
+                } else {
+                    if (binding.flLevelIndicator.visibility == View.VISIBLE) {
                         if (isGyroOnCorrectAngle)
                             captureImage()
-                    }else{
+                    } else {
                         captureImage()
                     }
                 }
@@ -366,7 +376,8 @@ class CameraFragment : BaseFragment<ShootViewModel, FragmentCameraBinding>(), Pi
             else
             -> {
                 if (viewModel.shootList.value == null
-                    && !requireActivity().intent.getBooleanExtra(AppConstants.SKU_CREATED,false)) {
+                    && !requireActivity().intent.getBooleanExtra(AppConstants.SKU_CREATED, false)
+                ) {
                     getProjectDetails()
                 } else {
                     captureImage()
@@ -460,7 +471,8 @@ class CameraFragment : BaseFragment<ShootViewModel, FragmentCameraBinding>(), Pi
         viewModel.isCameraButtonClickable = false
 
         viewModel.createSku(
-            Utilities.getPreference(BaseApplication.getContext(), AppConstants.AUTH_KEY).toString(), projectId,
+            Utilities.getPreference(BaseApplication.getContext(), AppConstants.AUTH_KEY).toString(),
+            projectId,
             requireActivity().intent.getStringExtra(AppConstants.CATEGORY_ID).toString(),
             prod_sub_cat_id!!,
             viewModel.sku.value?.skuName.toString(),
@@ -555,7 +567,7 @@ class CameraFragment : BaseFragment<ShootViewModel, FragmentCameraBinding>(), Pi
             var width = 0
             val displayMetrics = DisplayMetrics()
             if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.R) {
-                if (requireContext() != null){
+                if (requireContext() != null) {
                     requireContext().display?.getRealMetrics(displayMetrics)
                     height = displayMetrics.heightPixels
                     width = displayMetrics.widthPixels
@@ -575,30 +587,31 @@ class CameraFragment : BaseFragment<ShootViewModel, FragmentCameraBinding>(), Pi
 
             val localCameraProvider = cameraProvider
                 ?: throw IllegalStateException("Camera initialization failed.")
+            var size = Size(1024, 768)
 
             // Preview
-            val preview = when {
-                getString(R.string.app_name) == AppConstants.KARVI -> {
-                    var size = requireContext().getBestResolution()
-
-                    val s = ""
-                    val builder = Preview.Builder()
-                    if (size != null){
-                        builder.setTargetResolution(size)
-                    }else{
-                        builder.setTargetAspectRatio(aspectRatio)
+            val preview = when (viewModel.categoryDetails.value?.categoryName) {
+                "Automobiles", "Bikes" -> {
+                    if (getString(R.string.app_name) == AppConstants.KARVI) {
+                        Preview.Builder()
+                            .setTargetAspectRatio(aspectRatio)
+                            .setTargetResolution(size)
+                            .build()
+                            .also {
+                                it.setSurfaceProvider(binding.viewFinder.surfaceProvider)
+                            }
+                    } else {
+                        Preview.Builder()
+                            .setTargetAspectRatio(AspectRatio.RATIO_16_9)
+                            .build()
+                            .also {
+                                it.setSurfaceProvider(binding.viewFinder.surfaceProvider)
+                            }
                     }
-
-                    builder
-                        .build()
-                        .also {
-                            it.setSurfaceProvider(binding.viewFinder.surfaceProvider)
-                        }
                 }
-                getString(R.string.app_name) == "Swiggy" -> {
+                "E-Commerce", "Food & Beverages", "Footwear" -> {
                     Preview.Builder()
-                        .setTargetAspectRatio(aspectRatio) // set the camera aspect ratio
-                        //   .setTargetRotation(rotation) // set the camera rotation
+                        .setTargetAspectRatio(AspectRatio.RATIO_4_3)
                         .build()
                         .also {
                             it.setSurfaceProvider(binding.viewFinder.surfaceProvider)
@@ -606,8 +619,7 @@ class CameraFragment : BaseFragment<ShootViewModel, FragmentCameraBinding>(), Pi
                 }
                 else -> {
                     Preview.Builder()
-                        .setTargetAspectRatio(aspectRatio) // set the camera aspect ratio
-                        //   .setTargetRotation(rotation) // set the camera rotation
+                        .setTargetAspectRatio(AspectRatio.RATIO_4_3)
                         .build()
                         .also {
                             it.setSurfaceProvider(binding.viewFinder.surfaceProvider)
@@ -617,55 +629,70 @@ class CameraFragment : BaseFragment<ShootViewModel, FragmentCameraBinding>(), Pi
 
 
 
-            imageCapture = if (getString(R.string.app_name) == AppConstants.KARVI) {
-                val builder = ImageCapture.Builder()
-                    .setCaptureMode(ImageCapture.CAPTURE_MODE_MAXIMIZE_QUALITY)
-                    .setFlashMode(flashMode)
-
-                var size = requireContext().getBestResolution()
-                if (size != null){
-                    builder.setTargetResolution(size)
-                }else{
-                    builder.setTargetAspectRatio(aspectRatio)
+            imageCapture = when (viewModel.categoryDetails.value?.categoryName) {
+                "Automobiles", "Bikes" -> {
+                    if (getString(R.string.app_name) == AppConstants.KARVI) {
+                        ImageCapture.Builder()
+                            .setCaptureMode(ImageCapture.CAPTURE_MODE_MAXIMIZE_QUALITY)
+                            .setFlashMode(flashMode)
+                            .setTargetResolution(size)
+                            .build()
+                    } else {
+                        ImageCapture.Builder()
+                            .setCaptureMode(ImageCapture.CAPTURE_MODE_MAXIMIZE_QUALITY)
+                            .setFlashMode(flashMode)
+                            .setTargetAspectRatio(AspectRatio.RATIO_16_9)
+                            .build()
+                    }
                 }
-
-                builder.build()
-            } else if (getString(R.string.app_name) == AppConstants.SWIGGY) {
-                ImageCapture.Builder()
-                    .setCaptureMode(ImageCapture.CAPTURE_MODE_MAXIMIZE_QUALITY)
-                    .setFlashMode(flashMode)
-                    .setTargetAspectRatio(aspectRatio) // set the capture aspect ratio
-                    // .setTargetRotation(rotation) // set the capture rotation
-                    .build()
+                "E-Commerce", "Food & Beverages", "Footwear" -> {
+                    ImageCapture.Builder()
+                        .setCaptureMode(ImageCapture.CAPTURE_MODE_MAXIMIZE_QUALITY)
+                        .setFlashMode(flashMode)
+                        .setTargetAspectRatio(AspectRatio.RATIO_4_3)
+                        .setTargetRotation(ROTATION_90)
+                        .build()
+                }
+                else -> {
+                    ImageCapture.Builder()
+                        .setCaptureMode(ImageCapture.CAPTURE_MODE_MAXIMIZE_QUALITY)
+                        .setFlashMode(flashMode)
+                        .setTargetAspectRatio(AspectRatio.RATIO_4_3)
+                        .setTargetRotation(ROTATION_90)
+                        .build()
+                }
             }
-            else {
-                ImageCapture.Builder()
-                    .setCaptureMode(ImageCapture.CAPTURE_MODE_MAXIMIZE_QUALITY)
-                    .setFlashMode(flashMode)
-                    .setTargetAspectRatio(aspectRatio) // set the capture aspect ratio
-                    // .setTargetRotation(rotation) // set the capture rotation
-                    .build()
-            }
-
-            //for exact image cropping
-            val viewPort = binding.viewFinder?.viewPort
 
             val useCaseGroup = UseCaseGroup.Builder()
                 .addUseCase(preview)
                 .addUseCase(imageCapture!!)
-                .setViewPort(viewPort!!)
                 .build()
 
-          //   The Configuration of image analyzing
-//            imageAnalyzer = if (getString(R.string.app_name) == AppConstants.KARVI) {
+            //   The Configuration of image analyzing
+//            imageAnalyzer = when(viewModel.categoryDetails.value?.categoryName){
+                "Automobiles", "Bikes" -> {
+                    if (getString(R.string.app_name) == AppConstants.KARVI) {
 //                ImageAnalysis.Builder()
 //                    .setTargetResolution(size)
 //                    .build()
-//            }else {
+//            } else {
 //                ImageAnalysis.Builder()
-//                    .setTargetAspectRatio(aspectRatio) // set the analyzer aspect ratio
+//                    .setTargetAspectRatio(AspectRatio.RATIO_16_9)
 //                    .build()
 //            }
+                }
+                "E-Commerce", "Food & Beverages", "Footwear" -> {
+                    ImageAnalysis.Builder()
+                        .setTargetAspectRatio(AspectRatio.RATIO_4_3)
+                        .build()
+                }
+
+                else -> {
+                    ImageAnalysis.Builder()
+                        .setTargetAspectRatio(AspectRatio.RATIO_4_3)
+                        .build()
+            }
+            }
 
             // Select back camera as a default
             val cameraSelector = CameraSelector.DEFAULT_BACK_CAMERA
@@ -683,8 +710,24 @@ class CameraFragment : BaseFragment<ShootViewModel, FragmentCameraBinding>(), Pi
 
                 cameraControl = camera.cameraControl
 
+
+
                 cameraInfo = camera.cameraInfo
 
+//                val rotation = cameraInfo!!.sensorRotationDegrees
+//                Toast.makeText(requireContext(), "rotation- "+rotation, Toast.LENGTH_SHORT).show()
+
+                var currentZoomRatio = cameraInfo?.zoomState?.value?.zoomRatio ?: 0F
+                when (viewModel.categoryDetails.value?.categoryName) {
+                    "E-Commerce" -> {
+                        if (currentZoomRatio == 1.0F)
+                            cameraControl?.setZoomRatio(currentZoomRatio * 1.5F)
+                    }
+                    "Food & Beverages" -> {
+                        if (currentZoomRatio == 1.0F)
+                            cameraControl?.setZoomRatio(currentZoomRatio * 1.2F)
+                    }
+                }
                 binding.viewFinder.setOnTouchListener(this)
 
                 if (viewModel.shootDimensions.value == null ||
@@ -695,7 +738,7 @@ class CameraFragment : BaseFragment<ShootViewModel, FragmentCameraBinding>(), Pi
                 }
             } catch (exc: Exception) {
                 Log.e(TAG, "Use case binding failed", exc)
-                val properties =  Properties()
+                val properties = Properties()
                 properties["error"] = exc?.localizedMessage
                 properties["category"] = viewModel.categoryDetails.value?.categoryName
 
@@ -724,13 +767,16 @@ class CameraFragment : BaseFragment<ShootViewModel, FragmentCameraBinding>(), Pi
             return AspectRatio.RATIO_4_3
         }
         if (getString(R.string.app_name) == "Swiggy" ||
-            getString(R.string.app_name) == AppConstants.KARVI)
+            getString(R.string.app_name) == AppConstants.KARVI
+        )
             return AspectRatio.RATIO_4_3
 
         return AspectRatio.RATIO_16_9
     }
 
     private fun takePhoto() {
+        begin = System.currentTimeMillis()
+        viewModel.begin.value = begin
         // Get a stable reference of the modifiable image capture use case
         val imageCapture1 = imageCapture ?: return
 
@@ -765,12 +811,13 @@ class CameraFragment : BaseFragment<ShootViewModel, FragmentCameraBinding>(), Pi
                         it.image_category == "Interior"
                     }
 
-                    if (interiorList == null){
+                    if (interiorList == null) {
                         viewModel.categoryDetails.value?.imageType!! + "_" +
-                                requireActivity().intent.getIntExtra(AppConstants.INTERIOR_SIZE,0).plus(1)
-                    }else {
+                                requireActivity().intent.getIntExtra(AppConstants.INTERIOR_SIZE, 0)
+                                    .plus(1)
+                    } else {
                         viewModel.categoryDetails.value?.imageType!! + "_" +
-                                requireActivity().intent.getIntExtra(AppConstants.INTERIOR_SIZE,0)
+                                requireActivity().intent.getIntExtra(AppConstants.INTERIOR_SIZE, 0)
                                     .plus(interiorList.size.plus(1))
                     }
 
@@ -782,12 +829,13 @@ class CameraFragment : BaseFragment<ShootViewModel, FragmentCameraBinding>(), Pi
                         it.image_category == "Focus Shoot"
                     }
 
-                    if (miscList == null){
+                    if (miscList == null) {
                         "Miscellaneous_" +
-                                requireActivity().intent.getIntExtra(AppConstants.MISC_SIZE,0).plus(1)
-                    }else {
+                                requireActivity().intent.getIntExtra(AppConstants.MISC_SIZE, 0)
+                                    .plus(1)
+                    } else {
                         "Miscellaneous_" +
-                                requireActivity().intent.getIntExtra(AppConstants.MISC_SIZE,0)
+                                requireActivity().intent.getIntExtra(AppConstants.MISC_SIZE, 0)
                                     .plus(miscList.size.plus(1))
                     }
                 }
@@ -796,12 +844,12 @@ class CameraFragment : BaseFragment<ShootViewModel, FragmentCameraBinding>(), Pi
                         1
                     )
                 }
-                 "Food & Beverages" -> {
+                "Food & Beverages" -> {
                     viewModel.categoryDetails.value?.imageType!! + "_" + viewModel.shootNumber.value?.plus(
                         1
                     )
                 }
-                 "Ecom" -> {
+                "Ecom" -> {
                     viewModel.categoryDetails.value?.imageType!! + "_" + viewModel.shootNumber.value?.plus(
                         1
                     )
@@ -847,20 +895,20 @@ class CameraFragment : BaseFragment<ShootViewModel, FragmentCameraBinding>(), Pi
                         }
                     }
                     "Footwear" -> {
-                    viewModel.categoryDetails.value?.imageType!! + "_" + viewModel.shootNumber.value?.plus(
-                        1
-                    )
-                }
-                 "Food & Beverages" -> {
-                    viewModel.categoryDetails.value?.imageType!! + "_" + viewModel.shootNumber.value?.plus(
-                        1
-                    )
-                }
-                 "Ecom" -> {
-                    viewModel.categoryDetails.value?.imageType!! + "_" + viewModel.shootNumber.value?.plus(
-                        1
-                    )
-                }
+                        viewModel.categoryDetails.value?.imageType!! + "_" + viewModel.shootNumber.value?.plus(
+                            1
+                        )
+                    }
+                    "Food" -> {
+                        viewModel.categoryDetails.value?.imageType!! + "_" + viewModel.shootNumber.value?.plus(
+                            1
+                        )
+                    }
+                    "Ecom" -> {
+                        viewModel.categoryDetails.value?.imageType!! + "_" + viewModel.shootNumber.value?.plus(
+                            1
+                        )
+                    }
                     else -> {
                         System.currentTimeMillis().toString()
                     }
@@ -901,7 +949,11 @@ class CameraFragment : BaseFragment<ShootViewModel, FragmentCameraBinding>(), Pi
                     viewModel.isCameraButtonClickable = true
                     log("Photo capture failed: " + exc.message)
 
-                    Toast.makeText(requireContext(),"Photo capture failed: "+exc.message,Toast.LENGTH_LONG).show()
+                    Toast.makeText(
+                        requireContext(),
+                        "Photo capture failed: " + exc.message,
+                        Toast.LENGTH_LONG
+                    ).show()
 
                     Utilities.hideProgressDialog()
 
@@ -915,9 +967,15 @@ class CameraFragment : BaseFragment<ShootViewModel, FragmentCameraBinding>(), Pi
                 override fun onImageSaved(output: ImageCapture.OutputFileResults) {
                     if (output.savedUri == null) {
                         if (file != null)
-                            addShootItem(file.path)
+                            mid = System.currentTimeMillis()
+                        val difference = (mid - begin) / 1000.toFloat()
+                        log("onImageSaved- " + difference)
+                        addShootItem(file.path)
                     } else {
                         try {
+                            mid = System.currentTimeMillis()
+                            val difference = (mid - begin) / 1000.toFloat()
+                            log("onImageSaved2- " + difference)
                             var file = output.savedUri!!.toFile()
                             addShootItem(file.path)
                         } catch (ex: IllegalArgumentException) {
@@ -995,47 +1053,46 @@ class CameraFragment : BaseFragment<ShootViewModel, FragmentCameraBinding>(), Pi
                 }
             }
 
-            AppConstants.UDAAN,
-            AppConstants.FLIPKART,
-            AppConstants.AMAZON,
-            AppConstants.LAL_10,
-            AppConstants.SWIGGYINSTAMART -> {
-                //hide moving line
-                if (pitch.roundToInt() == 0 || (pitch.roundToInt() <= -0 && pitch.roundToInt() >= -3))
-                    binding.tvLevelIndicator.visibility = View.GONE
-                else
-                    binding.tvLevelIndicator.visibility = View.VISIBLE
+            /* AppConstants.UDAAN,
+             AppConstants.FLIPKART,
+             AppConstants.AMAZON,
+             AppConstants.LAL_10 -> {
+                 //hide moving line
+                 if (pitch.roundToInt() == 0 || (pitch.roundToInt() <= -0 && pitch.roundToInt() >= -3))
+                     binding.tvLevelIndicator.visibility = View.GONE
+                 else
+                     binding.tvLevelIndicator.visibility = View.VISIBLE
 
-                if ((pitch.roundToInt() == 0 || (pitch.roundToInt() <= -0 && pitch.roundToInt() >= -3)) ||
-                    pitch.roundToInt() <= -82 && pitch.roundToInt() >= -88 ||
-                    (pitch.roundToInt() <= -40 && pitch.roundToInt() >= -45) && abs(roll.roundToInt()) < 100
-                ) {
-                    if (pitch.roundToInt() == 0 || (pitch.roundToInt() <= -0 && pitch.roundToInt() >= -3))
-                        gyroMeterOnLevel(false)
-                    else if (pitch.roundToInt() <= -40 && pitch.roundToInt() >= -45)
-                        gyroMeterOnLevel(false)
-                    else
-                        gyroMeterOnLevel(true)
-                } else {
-                   gyroMeterOffLevel()
+                 if ((pitch.roundToInt() == 0 || (pitch.roundToInt() <= -0 && pitch.roundToInt() >= -3)) ||
+                     pitch.roundToInt() <= -82 && pitch.roundToInt() >= -88 ||
+                     (pitch.roundToInt() <= -40 && pitch.roundToInt() >= -45) && abs(roll.roundToInt()) < 100
+                 ) {
+                     if (pitch.roundToInt() == 0 || (pitch.roundToInt() <= -0 && pitch.roundToInt() >= -3))
+                         gyroMeterOnLevel(false)
+                     else if (pitch.roundToInt() <= -40 && pitch.roundToInt() >= -45)
+                         gyroMeterOnLevel(false)
+                     else
+                         gyroMeterOnLevel(true)
+                 } else {
+                     gyroMeterOffLevel()
 
-                    if (movearrow) {
-                        if (abs(roll.roundToInt()) < 100) {
-                            moveArrow((pitch + 85).unaryMinus())
-                        } else {
-                            moveArrow(pitch + 85)
-                        }
-                    }
+                     if (movearrow) {
+                         if (abs(roll.roundToInt()) < 100) {
+                             moveArrow((pitch + 85).unaryMinus())
+                         } else {
+                             moveArrow(pitch + 85)
+                         }
+                     }
 
-                    if (orientationAngles[2].roundToInt() == 1 || orientationAngles[2].roundToInt() == -1){
-                        if (orientationAngles[2].roundToInt() == 1) {
-                            rotateArrow((pitch + 85).unaryMinus().roundToInt())
-                        } else {
-                            rotateArrow((pitch + 85).roundToInt())
-                        }
-                    }
-                }
-            }
+                     if (orientationAngles[2].roundToInt() == 1 || orientationAngles[2].roundToInt() == -1) {
+                         if (orientationAngles[2].roundToInt() == 1) {
+                             rotateArrow((pitch + 85).unaryMinus().roundToInt())
+                         } else {
+                             rotateArrow((pitch + 85).roundToInt())
+                         }
+                     }
+                 }
+             }*/
             AppConstants.SWIGGY -> {
                 //hide moving line
                 if (pitch.roundToInt() == 0 || (pitch.roundToInt() <= -0 && pitch.roundToInt() >= -3))
@@ -1046,11 +1103,10 @@ class CameraFragment : BaseFragment<ShootViewModel, FragmentCameraBinding>(), Pi
                 if ((pitch.roundToInt() == 0 || (pitch.roundToInt() <= -0 && pitch.roundToInt() >= -3)) ||
                     pitch.roundToInt() <= -82 && pitch.roundToInt() >= -88 ||
                     (pitch.roundToInt() <= -40 && pitch.roundToInt() >= -45) && abs(roll.roundToInt()) < 100
-                )
-                {
+                ) {
                     isGyroOnCorrectAngle = true
                     //angle 90
-                    if (pitch.roundToInt() == 0 || (pitch.roundToInt() <= -0 && pitch.roundToInt() >= -3)){
+                    if (pitch.roundToInt() == 0 || (pitch.roundToInt() <= -0 && pitch.roundToInt() >= -3)) {
                         cameraAngle = 90
                         gyroMeterOnLevel(false)
                     }
@@ -1059,9 +1115,10 @@ class CameraFragment : BaseFragment<ShootViewModel, FragmentCameraBinding>(), Pi
                         cameraAngle = 45
                         gyroMeterOnLevel(false)
                         // angle 0
-                    }else{
+                    } else {
                         cameraAngle = 0
-                        gyroMeterOnLevel(true)}
+                        gyroMeterOnLevel(true)
+                    }
                 } else {
                     isGyroOnCorrectAngle = false
                     gyroMeterOffLevel()
@@ -1074,7 +1131,7 @@ class CameraFragment : BaseFragment<ShootViewModel, FragmentCameraBinding>(), Pi
                         }
                     }
 
-                    if (orientationAngles[2].roundToInt() == 1 || orientationAngles[2].roundToInt() == -1){
+                    if (orientationAngles[2].roundToInt() == 1 || orientationAngles[2].roundToInt() == -1) {
                         if (orientationAngles[2].roundToInt() == 1) {
                             rotateArrow((pitch + 85).unaryMinus().roundToInt())
                         } else {
@@ -1084,8 +1141,8 @@ class CameraFragment : BaseFragment<ShootViewModel, FragmentCameraBinding>(), Pi
                 }
             }
             AppConstants.SPYNE_AI, AppConstants.SELL_ANY_CAR -> {
-                when (viewModel.categoryDetails.value?.categoryName){
-                    "Automobiles", "Bikes" ->{
+                when (viewModel.categoryDetails.value?.categoryName) {
+                    "Automobiles", "Bikes" -> {
                         if ((roll >= -100 && roll <= -80) && (pitch >= -5 && pitch <= 5)) {
                             gyroMeterOnLevel(true)
                         } else {
@@ -1104,33 +1161,76 @@ class CameraFragment : BaseFragment<ShootViewModel, FragmentCameraBinding>(), Pi
                         }
                     }
 
-                else ->{
-                    //hide moving line
-                    if (pitch.roundToInt() == 0 || (pitch.roundToInt() <= -0 && pitch.roundToInt() >= -3))
-                        binding.tvLevelIndicator.visibility = View.GONE
-                    else
-                        binding.tvLevelIndicator.visibility = View.VISIBLE
-
-                    if ((pitch.roundToInt() == 0 || (pitch.roundToInt() <= -0 && pitch.roundToInt() >= -3)) ||
-                        pitch.roundToInt() <= -82 && pitch.roundToInt() >= -88 ||
-                        (pitch.roundToInt() <= -40 && pitch.roundToInt() >= -45) && abs(roll.roundToInt()) < 100
-                    ) {
+                    else -> {
+                        //hide moving line
                         if (pitch.roundToInt() == 0 || (pitch.roundToInt() <= -0 && pitch.roundToInt() >= -3))
-                            gyroMeterOnLevel(false)
-                        else if (pitch.roundToInt() <= -40 && pitch.roundToInt() >= -45)
-                            gyroMeterOnLevel(false)
+                            binding.tvLevelIndicator.visibility = View.GONE
                         else
-                            gyroMeterOnLevel(true)
-                    } else {
-                        gyroMeterOffLevel()
+                            binding.tvLevelIndicator.visibility = View.VISIBLE
 
-                        if (movearrow) {
-                            if (abs(roll.roundToInt()) < 100) {
-                                moveArrow((pitch + 85).unaryMinus())
-                            } else {
-                                moveArrow(pitch + 85)
+                        if ((pitch.roundToInt() == 0 || (pitch.roundToInt() <= -0 && pitch.roundToInt() >= -3)) ||
+                            pitch.roundToInt() <= -82 && pitch.roundToInt() >= -88 ||
+                            (pitch.roundToInt() <= -40 && pitch.roundToInt() >= -45) && abs(roll.roundToInt()) < 100
+                        ) {
+                            if (pitch.roundToInt() == 0 || (pitch.roundToInt() <= -0 && pitch.roundToInt() >= -3))
+                                gyroMeterOnLevel(false)
+                            else if (pitch.roundToInt() <= -40 && pitch.roundToInt() >= -45)
+                                gyroMeterOnLevel(false)
+                            else
+                                gyroMeterOnLevel(true)
+                        } else {
+                            gyroMeterOffLevel()
+
+                            if (movearrow) {
+                                if (abs(roll.roundToInt()) < 100) {
+                                    moveArrow((pitch + 85).unaryMinus())
+                                } else {
+                                    moveArrow(pitch + 85)
+                                }
+                            }
+
+                            if (orientationAngles[2].roundToInt() == 1 || orientationAngles[2].roundToInt() == -1) {
+                                if (orientationAngles[2].roundToInt() == 1) {
+                                    rotateArrow((pitch + 85).unaryMinus().roundToInt())
+                                } else {
+                                    rotateArrow((pitch + 85).roundToInt())
+                                }
                             }
                         }
+                    }
+                }
+            }
+            AppConstants.SWIGGYINSTAMART,
+            AppConstants.UDAAN,
+            AppConstants.FLIPKART,
+            AppConstants.AMAZON,
+            AppConstants.LAL_10,
+            AppConstants.BATA,
+            AppConstants.FLIPKART_GROCERY -> {
+                //hide moving line
+                if (pitch.roundToInt() == 0 || (pitch.roundToInt() <= -0 && pitch.roundToInt() >= -3))
+                    binding.tvLevelIndicator.visibility = View.GONE
+                else
+                    binding.tvLevelIndicator.visibility = View.VISIBLE
+
+                if ((pitch.roundToInt() == 0 || (pitch.roundToInt() <= -0 && pitch.roundToInt() >= -3)) ||
+                    pitch.roundToInt() <= -82 && pitch.roundToInt() >= -88
+                ) {
+
+                    if (pitch.roundToInt() == 0 || (pitch.roundToInt() <= -0 && pitch.roundToInt() >= -3))
+                        gyroMeterOnLevel(false)
+                    else
+                        gyroMeterOnLevel(true)
+                } else {
+                    gyroMeterOffLevel()
+
+                    if (movearrow) {
+                        if (abs(roll.roundToInt()) < 100) {
+                            moveArrow((pitch + 85).unaryMinus())
+                        } else {
+                            moveArrow(pitch + 85)
+                        }
+                    }
 
                         if (orientationAngles[2].roundToInt() == 1 || orientationAngles[2].roundToInt() == -1){
                             if (orientationAngles[2].roundToInt() == 1) {
@@ -1222,15 +1322,15 @@ class CameraFragment : BaseFragment<ShootViewModel, FragmentCameraBinding>(), Pi
         )
     }
 
-    private fun gyroMeterOnLevel(removeAnimation : Boolean) {
+    private fun gyroMeterOnLevel(removeAnimation: Boolean) {
         isGyroOnCorrectAngle = true
-       if (removeAnimation) {
-           binding
-               .tvLevelIndicator
-               ?.animate()
-               ?.translationY(0f)
-               ?.setInterpolator(AccelerateInterpolator())?.duration = 0
-       }
+        if (removeAnimation) {
+            binding
+                .tvLevelIndicator
+                ?.animate()
+                ?.translationY(0f)
+                ?.setInterpolator(AccelerateInterpolator())?.duration = 0
+        }
 
 
         binding.tvLevelIndicator?.rotation = 0f
@@ -1328,8 +1428,9 @@ class CameraFragment : BaseFragment<ShootViewModel, FragmentCameraBinding>(), Pi
     }
 
     private fun addShootItem(capturedImage: String) {
-        Log.d(TAG, "addShootItem: "+capturedImage)
-
+        end = System.currentTimeMillis()
+        val difference = (end - begin) / 1000.toFloat()
+        log("addShootIteamCalled- " + difference)
         viewModel.showConfirmReshootDialog.value = true
 
         //play shutter sound
@@ -1342,29 +1443,53 @@ class CameraFragment : BaseFragment<ShootViewModel, FragmentCameraBinding>(), Pi
             viewModel.shootList.value = ArrayList()
         }
 
-        var sequenceNumber : Int  = 0
-        if (viewModel.fromDrafts){
+        var sequenceNumber: Int = 0
+        if (viewModel.fromDrafts) {
             when (viewModel.categoryDetails.value?.imageType) {
                 "Exterior" -> {
                     sequenceNumber = viewModel.shootNumber.value?.plus(1)!!
                 }
                 "Interior" -> {
-                    sequenceNumber = requireActivity().intent.getIntExtra(AppConstants.EXTERIOR_SIZE,0)
-                        .plus(requireActivity().intent.getIntExtra(AppConstants.INTERIOR_SIZE,0))
-                        .plus(viewModel.shootList.value!!.size.plus(1))
+                    sequenceNumber =
+                        requireActivity().intent.getIntExtra(AppConstants.EXTERIOR_SIZE, 0)
+                            .plus(
+                                requireActivity().intent.getIntExtra(
+                                    AppConstants.INTERIOR_SIZE,
+                                    0
+                                )
+                            )
+                            .plus(viewModel.shootList.value!!.size.plus(1))
 
-                    Log.d(TAG, "addShootItem: "+requireActivity().intent.getIntExtra(AppConstants.EXTERIOR_SIZE,0))
-                    Log.d(TAG, "addShootItem: "+requireActivity().intent.getIntExtra(AppConstants.INTERIOR_SIZE,0))
-                    Log.d(TAG, "addShootItem: "+viewModel.shootList.value!!.size.plus(1))
-                    Log.d(TAG, "addShootItem: "+sequenceNumber)
+                    Log.d(
+                        TAG,
+                        "addShootItem: " + requireActivity().intent.getIntExtra(
+                            AppConstants.EXTERIOR_SIZE,
+                            0
+                        )
+                    )
+                    Log.d(
+                        TAG,
+                        "addShootItem: " + requireActivity().intent.getIntExtra(
+                            AppConstants.INTERIOR_SIZE,
+                            0
+                        )
+                    )
+                    Log.d(TAG, "addShootItem: " + viewModel.shootList.value!!.size.plus(1))
+                    Log.d(TAG, "addShootItem: " + sequenceNumber)
                 }
                 "Focus Shoot" -> {
-                    sequenceNumber = requireActivity().intent.getIntExtra(AppConstants.EXTERIOR_SIZE,0)
-                        .plus(requireActivity().intent.getIntExtra(AppConstants.INTERIOR_SIZE,0))
-                        .plus(requireActivity().intent.getIntExtra(AppConstants.MISC_SIZE,0))
-                        .plus(viewModel.shootList.value!!.size.plus(1))
+                    sequenceNumber =
+                        requireActivity().intent.getIntExtra(AppConstants.EXTERIOR_SIZE, 0)
+                            .plus(
+                                requireActivity().intent.getIntExtra(
+                                    AppConstants.INTERIOR_SIZE,
+                                    0
+                                )
+                            )
+                            .plus(requireActivity().intent.getIntExtra(AppConstants.MISC_SIZE, 0))
+                            .plus(viewModel.shootList.value!!.size.plus(1))
 
-                    Log.d(TAG, "addShootItem: "+sequenceNumber)
+                    Log.d(TAG, "addShootItem: " + sequenceNumber)
                 }
                 "Footwear" -> {
                     sequenceNumber = viewModel.shootNumber.value?.plus(1)!!
@@ -1376,8 +1501,8 @@ class CameraFragment : BaseFragment<ShootViewModel, FragmentCameraBinding>(), Pi
                     sequenceNumber = viewModel.shootNumber.value?.plus(1)!!
                 }
             }
-        }else {
-           sequenceNumber =  viewModel.shootList.value!!.size.plus(1)
+        } else {
+            sequenceNumber = viewModel.shootList.value!!.size.plus(1)
         }
 
 
@@ -1387,7 +1512,8 @@ class CameraFragment : BaseFragment<ShootViewModel, FragmentCameraBinding>(), Pi
                 viewModel.projectId.value!!,
                 viewModel.sku.value?.skuId!!,
                 viewModel.categoryDetails.value?.imageType!!,
-                Utilities.getPreference(BaseApplication.getContext(), AppConstants.AUTH_KEY).toString(),
+                Utilities.getPreference(BaseApplication.getContext(), AppConstants.AUTH_KEY)
+                    .toString(),
                 sequenceNumber,
                 cameraAngle
             )

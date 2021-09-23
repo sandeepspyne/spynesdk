@@ -5,6 +5,13 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools">
 
+    <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        android:id="@+id/swiperefreshOngoing"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+
     <androidx.recyclerview.widget.RecyclerView
         android:visibility="gone"
         android:layout_width="match_parent"
@@ -16,6 +23,9 @@
         android:paddingBottom="@dimen/dp_100"
         android:clipToPadding="false"
         tools:listitem="@layout/item_my_completed_orders"/>
+
+    </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
+
 
     <com.facebook.shimmer.ShimmerFrameLayout
         android:layout_width="match_parent"

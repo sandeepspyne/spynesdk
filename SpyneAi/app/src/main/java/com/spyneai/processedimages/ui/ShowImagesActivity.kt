@@ -164,11 +164,13 @@ class ShowImagesActivity : AppCompatActivity(),View.OnTouchListener,View.OnClick
             tvYourEmailIdReplaced.visibility = View.VISIBLE
             tvViewGif.visibility = View.GONE
             tvInterior.visibility = View.GONE
+            tvFocused.visibility = View.GONE
 //            llDownloads.visibility = View.VISIBLE
         } else {
             tvYourEmailIdReplaced.visibility = View.GONE
             tvViewGif.visibility = View.GONE
             tvInterior.visibility = View.GONE
+            tvFocused.visibility = View.GONE
 //            llDownloads.visibility = View.GONE
         }
     }
@@ -354,7 +356,7 @@ class ShowImagesActivity : AppCompatActivity(),View.OnTouchListener,View.OnClick
                             )
 
                             hideData(0)
-                        } else  if (dataList!![i].image_category.equals("Food") || dataList!![i].image_category.equals("Food & Beverages")) {
+                        } else  if (dataList!![i].image_category.equals("Food") || dataList!![i].image_category.equals("Food & Beverages") || dataList!![i].image_category.equals("E-Commerce")) {
                             Category = dataList!![i].image_category
                             (imageList as ArrayList).add(dataList!![i].input_image_lres_url)
                             (imageListAfter as ArrayList).add(dataList!![i].output_image_lres_wm_url)

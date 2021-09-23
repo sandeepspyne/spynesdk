@@ -17,6 +17,7 @@ import com.spyneai.shoot.response.SkuProcessStateResponse
 import com.spyneai.shoot.response.UpdateVideoSkuRes
 import com.spyneai.shoot.workmanager.OverlaysPreloadWorker
 import kotlinx.coroutines.launch
+import org.json.JSONObject
 import java.util.concurrent.TimeUnit
 
 class ShootViewModel : ViewModel() {
@@ -43,6 +44,8 @@ class ShootViewModel : ViewModel() {
     val isSubCatAngleConfirmed: MutableLiveData<Boolean> = MutableLiveData()
 
     val startInteriorShoot: MutableLiveData<Boolean> = MutableLiveData()
+    val begin: MutableLiveData<Long> = MutableLiveData()
+    val end: MutableLiveData<Long> = MutableLiveData()
 
     val totalSkuCaptured: MutableLiveData<String> = MutableLiveData()
     val totalImageCaptured: MutableLiveData<String> = MutableLiveData()
@@ -136,6 +139,7 @@ class ShootViewModel : ViewModel() {
     var overlayRightMargin = 0
 
     val reshootCapturedImage: MutableLiveData<Boolean> = MutableLiveData()
+    val confirmCapturedImage: MutableLiveData<Boolean> = MutableLiveData()
     val projectId: MutableLiveData<String> = MutableLiveData()
     val showFoodBackground: MutableLiveData<Boolean> = MutableLiveData()
 
@@ -250,10 +254,11 @@ class ShootViewModel : ViewModel() {
     }
 
     fun createProject(
-        authKey: String, projectName: String, prodCatId: String
+        authKey: String, projectName: String, prodCatId: String,
+        dynamicLayout : JSONObject? = null
     ) = viewModelScope.launch {
         _createProjectRes.value = Resource.Loading
-        _createProjectRes.value = repository.createProject(authKey, projectName, prodCatId)
+        _createProjectRes.value = repository.createProject(authKey, projectName, prodCatId,dynamicLayout)
     }
 
     fun skuProcessState(

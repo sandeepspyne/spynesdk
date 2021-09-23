@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@android:color/transparent">
+    android:background="@android:color/black">
 
     <RelativeLayout
         android:id="@+id/viewCamera"
@@ -52,9 +52,9 @@
 
     <androidx.camera.view.PreviewView
         android:id="@+id/viewFinder"
-        android:layout_width="0dp"
+        android:layout_width="match_parent"
         android:layout_height="0dp"
-        app:layout_constraintBottom_toTopOf="@+id/rlCapturedImage"
+        app:layout_constraintDimensionRatio="3:4"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/viewCamera" />
@@ -62,24 +62,24 @@
     <RelativeLayout
         android:id="@+id/rlCapturedImage"
         android:layout_width="match_parent"
-        android:layout_height="125dp"
+        android:layout_height="wrap_content"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintBottom_toTopOf="@+id/llCapture"
-        android:background="@color/black"></RelativeLayout>
+        android:background="@color/transparent"
+        app:layout_constraintBottom_toBottomOf="@+id/viewFinder"/>
 
     <LinearLayout
         android:id="@+id/llCapture"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_gravity="end|center"
+        android:layout_height="0dp"
         android:background="@color/black"
         android:gravity="center"
         android:orientation="horizontal"
         android:padding="@dimen/dp_10"
-        app:layout_constraintBottom_toBottomOf="parent"
+
         app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent">
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent">
 
         <LinearLayout
             android:layout_width="0dp"

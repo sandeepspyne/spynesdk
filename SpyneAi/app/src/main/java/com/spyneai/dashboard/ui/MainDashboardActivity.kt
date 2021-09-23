@@ -3,9 +3,6 @@ package com.spyneai.dashboard.ui
 import android.Manifest
 import android.content.Intent
 import android.content.pm.PackageManager
-import android.graphics.ImageFormat
-import android.hardware.camera2.CameraCharacteristics
-import android.hardware.camera2.CameraManager
 import android.os.Build
 import android.os.Bundle
 import android.util.Log
@@ -57,6 +54,9 @@ import kotlinx.coroutines.launch
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
+import android.view.ViewGroup
+import android.widget.Button
+import java.lang.RuntimeException
 
 
 class MainDashboardActivity : AppCompatActivity() {
@@ -129,7 +129,7 @@ class MainDashboardActivity : AppCompatActivity() {
                             startActivity(intent)
                         }
 
-                        "Flipkart", "Udaan", "Lal10", "Amazon", "Swiggy", AppConstants.SWIGGYINSTAMART -> {
+                        "Flipkart", "Udaan", "Lal10", "Amazon", "Swiggy", AppConstants.SWIGGYINSTAMART, AppConstants.BATA, AppConstants.FLIPKART_GROCERY -> {
                             val intent = Intent(this@MainDashboardActivity, CategoriesActivity::class.java)
                                 startActivity(intent)
                             }
@@ -150,7 +150,7 @@ class MainDashboardActivity : AppCompatActivity() {
                        startActivity(intent)
                    }
                 }
-               // R.id.wallet->setCurrentFragment(SecondFragment)
+                R.id.wallet->setCurrentFragment(SecondFragment)
                 R.id.logoutDashBoardFragment->setCurrentFragment(thirdFragment)
             }
             true

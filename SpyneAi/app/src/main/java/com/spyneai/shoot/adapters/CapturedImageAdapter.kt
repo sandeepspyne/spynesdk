@@ -38,6 +38,7 @@ class CapturedImageAdapter(
 
     override fun onBindViewHolder(viewHolder: ViewHolder, position: Int) {
         viewHolder.tvImageCount.text = (position + 1).toString()
+        viewHolder.ivCapturedImage.setRotation(90F)
         Glide.with(context).load(
                     shootList[position])
             .into(viewHolder.ivCapturedImage)

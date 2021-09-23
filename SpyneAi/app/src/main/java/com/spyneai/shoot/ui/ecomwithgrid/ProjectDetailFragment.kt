@@ -30,6 +30,11 @@ class ProjectDetailFragment : BaseFragment<ShootViewModel, FragmentProjectDetail
 
         handler = Handler()
 
+//        binding.swiperefreshProject.setOnRefreshListener {
+//            repeatRefreshData()
+//            binding.swiperefreshProject.isRefreshing = false
+//        }
+
         when (getString(R.string.app_name)) {
             AppConstants.SWIGGY -> {
                 binding.btHome.text = "Select Background"
@@ -43,7 +48,7 @@ class ProjectDetailFragment : BaseFragment<ShootViewModel, FragmentProjectDetail
                 }
                 else -> {
                     when(getString(R.string.app_name)){
-                        AppConstants.SWIGGYINSTAMART -> {
+                        AppConstants.SWIGGYINSTAMART, AppConstants.FLIPKART_GROCERY -> {
                             processWithBackgroundId()
                         }else -> {
                             processWithoutBackgroundId()

@@ -10,8 +10,8 @@ import com.spyneai.db.Projects
 import com.spyneai.db.ShootContract
 import com.spyneai.shoot.data.model.Image
 import com.spyneai.shoot.data.model.Project
-import com.spyneai.shoot.utils.logUpload
 import com.spyneai.shoot.data.model.Sku
+import com.spyneai.shoot.utils.logUpload
 
 class ShootLocalRepository {
 
@@ -465,6 +465,7 @@ class ShootLocalRepository {
             Images.COLUMN_NAME_SKU_ID,
             Images.COLUMN_NAME_CATEGORY_NAME,
             Images.COLUMN_NAME_IMAGE_PATH,
+            Images.COLUMN_NAME_IMAGE_ANGLE,
             Images.COLUMN_NAME_IMAGE_SEQUENCE,
             Images.COLUMN_NAME_IMAGE_ANGLE,
             Images.COLUMN_NAME_IMAGE_META)

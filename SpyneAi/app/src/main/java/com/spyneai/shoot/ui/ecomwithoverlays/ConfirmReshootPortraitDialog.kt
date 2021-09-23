@@ -5,7 +5,6 @@ import android.os.Build
 import android.os.Bundle
 import android.util.Log
 import android.view.*
-import android.widget.FrameLayout
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.lifecycleScope
 import com.bumptech.glide.Glide
@@ -79,15 +78,20 @@ class ConfirmReshootPortraitDialog : BaseDialogFragment<ShootViewModel, ConfirmR
                 is Resource.Success -> {
                     val uri = viewModel.shootData.value?.capturedImage
 
+                    binding.ivCapturedImage.setRotation(90F)
+
                     Glide.with(requireContext())
                         .load(uri)
                         .into(binding.ivCapturedImage)
 
                         val overlay = it.value.data[viewModel.shootNumber.value!!].display_thumbnail
 
+                    binding.ivCaptured2.setRotation(90F)
+
                         Glide.with(requireContext())
                             .load(uri)
                             .into(binding.ivCaptured2)
+
 
                     Glide.with(requireContext())
                         .load(overlay)
@@ -165,40 +169,42 @@ class ConfirmReshootPortraitDialog : BaseDialogFragment<ShootViewModel, ConfirmR
             override fun onGlobalLayout() {
                 view.viewTreeObserver.removeOnGlobalLayoutListener(this)
 
+                Glide.with(requireContext())
+                    .load(overlay)
+                    .into(binding.ivCapturedOverlay)
+
                 viewModel.shootDimensions.value.let {
-                    var prw = it?.previewWidth
-                    var prh = it?.previewHeight
+//                    var prw = it?.previewWidth
+//                    var prh = it?.previewHeight
+//
+//                    var ow = it?.overlayWidth
+//                    var oh = it?.overlayHeight
+//
+//
+//                    Log.d(TAG, "onGlobalLayout: "+prw)
+//                    Log.d(TAG, "onGlobalLayout: "+prh)
+//
+//                    Log.d(TAG, "onGlobalLayout: "+ow)
+//                    Log.d(TAG, "onGlobalLayout: "+oh)
+//
+//                    Log.d(TAG, "onGlobalLayout: "+view.width)
+//                    Log.d(TAG, "onGlobalLayout: "+view.height)
+//
+//                    var newW =
+//                        ow!!.toFloat().div(prw!!.toFloat()).times(view.width)
+//                    var newH =
+//                        oh!!.toFloat().div(prh!!.toFloat()).times(view.height)
+//
+//                    var equlizerOverlayMargin = (9.5 * resources.displayMetrics.density).toInt()
+//
+//                    var params = FrameLayout.LayoutParams(newW.toInt(), newH.toInt())
+//                    params.gravity = Gravity.CENTER
+//                    params.leftMargin = equlizerOverlayMargin
+//                    params.rightMargin = equlizerOverlayMargin
+//
+//                    binding.ivCapturedOverlay.layoutParams = params
 
-                    var ow = it?.overlayWidth
-                    var oh = it?.overlayHeight
 
-
-                    Log.d(TAG, "onGlobalLayout: "+prw)
-                    Log.d(TAG, "onGlobalLayout: "+prh)
-
-                    Log.d(TAG, "onGlobalLayout: "+ow)
-                    Log.d(TAG, "onGlobalLayout: "+oh)
-
-                    Log.d(TAG, "onGlobalLayout: "+view.width)
-                    Log.d(TAG, "onGlobalLayout: "+view.height)
-
-                    var newW =
-                        ow!!.toFloat().div(prw!!.toFloat()).times(view.width)
-                    var newH =
-                        oh!!.toFloat().div(prh!!.toFloat()).times(view.height)
-
-                    var equlizerOverlayMargin = (9.5 * resources.displayMetrics.density).toInt()
-
-                    var params = FrameLayout.LayoutParams(newW.toInt(), newH.toInt())
-                    params.gravity = Gravity.CENTER
-                    params.leftMargin = equlizerOverlayMargin
-                    params.rightMargin = equlizerOverlayMargin
-
-                    binding.ivCapturedOverlay.layoutParams = params
-
-                    Glide.with(requireContext())
-                        .load(overlay)
-                        .into(binding.ivCapturedOverlay)
                 }
             }
         })

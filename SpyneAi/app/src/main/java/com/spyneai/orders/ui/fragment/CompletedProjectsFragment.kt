@@ -35,6 +35,11 @@ class CompletedProjectsFragment : BaseFragment<MyOrdersViewModel, FragmentComple
 
         handler = Handler()
 
+        binding.swiperefreshCompleted.setOnRefreshListener {
+            repeatRefreshData()
+            binding.swiperefreshCompleted.isRefreshing = false
+        }
+
         binding!!.rvMyCompletedProjects.apply {
             layoutManager =
                 LinearLayoutManager(

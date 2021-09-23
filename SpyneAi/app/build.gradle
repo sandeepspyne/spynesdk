@@ -152,15 +152,15 @@ android {
         flipkart {
             dimension 'version'
             applicationId "com.spyneai.flipkart"
-            versionCode 4
-            versionName "1.3"
+            versionCode 5
+            versionName "1.4"
         }
 
         amazon {
             dimension 'version'
             applicationId "com.spyneai.amazon"
-            versionCode 3
-            versionName "1.2"
+            versionCode 4
+            versionName "1.3.1"
         }
         lal10 {
             dimension 'version'
@@ -178,15 +178,29 @@ android {
         swiggy {
             dimension 'version'
             applicationId "com.spyneai.swiggy"
-            versionCode 3
-            versionName "1.2"
+            versionCode 7
+            versionName "1.6"
         }
 
         swiggyinstamart {
             dimension 'version'
             applicationId "com.spyneai.swiggyinstamart"
+            versionCode 8
+            versionName "1.7"
+        }
+
+        bata {
+            dimension 'version'
+            applicationId "com.spyneai.bata"
             versionCode 1
-            versionName "1.0"
+            versionName "1.1"
+        }
+
+        flipkartgrocery {
+            dimension 'version'
+            applicationId "com.spyneai.flipkartgrocery"
+            versionCode 1
+            versionName "1.1"
         }
 
         sellanycar {
@@ -406,6 +420,12 @@ dependencies {
 
     //Razorpay
     implementation 'com.razorpay:checkout:1.6.6'
+
+    //swiperefresh
+    implementation("androidx.swiperefreshlayout:swiperefreshlayout:1.1.0")
+
+    //gson
+        implementation 'com.google.code.gson:gson:2.8.8'
 
     //leaks
    // debugImplementation 'com.squareup.leakcanary:leakcanary-android:2.7'

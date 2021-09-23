@@ -6,8 +6,6 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.recyclerview.widget.GridLayoutManager
-import androidx.recyclerview.widget.LinearLayoutManager
 import com.posthog.android.Properties
 import com.spyneai.R
 import com.spyneai.base.BaseFragment
@@ -15,7 +13,6 @@ import com.spyneai.base.network.Resource
 import com.spyneai.captureFailureEvent
 import com.spyneai.dashboard.response.NewSubCatResponse
 import com.spyneai.dashboard.ui.handleApiError
-import com.spyneai.databinding.FragmentDraftProjectsBinding
 import com.spyneai.databinding.FragmentDraftSkuDetailsBinding
 import com.spyneai.draft.data.DraftViewModel
 import com.spyneai.draft.ui.adapter.DraftImagesAdapter
@@ -25,13 +22,11 @@ import com.spyneai.needs.AppConstants
 import com.spyneai.needs.Utilities
 import com.spyneai.orders.data.response.ImagesOfSkuRes
 import com.spyneai.posthog.Events
-import com.spyneai.processedimages.ui.adapter.ProcessedImagesAdapter
 import com.spyneai.shoot.data.model.Image
 import com.spyneai.shoot.ui.base.ProcessActivity
 import com.spyneai.shoot.ui.base.ShootActivity
 import com.spyneai.shoot.ui.base.ShootPortraitActivity
 import com.spyneai.shoot.ui.dialogs.ResolutionNotSupportedFragment
-import kotlinx.android.synthetic.main.activity_credit_plans.*
 
 class DraftSkuDetailsFragment : BaseFragment<DraftViewModel, FragmentDraftSkuDetailsBinding>() {
 
@@ -142,7 +137,7 @@ class DraftSkuDetailsFragment : BaseFragment<DraftViewModel, FragmentDraftSkuDet
                     ShootActivity::class.java)
             }
 
-            "Footwear","E-Commerce" -> {
+            "Footwear","E-Commerce", "Food & Beverages" -> {
                 shootIntent = Intent(
                     context,
                     ShootPortraitActivity::class.java)

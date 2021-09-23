@@ -10,7 +10,7 @@ import com.bumptech.glide.Glide
 import com.spyneai.R
 import com.spyneai.shoot.data.ShootViewModel
 import com.spyneai.shoot.data.model.ShootData
-import java.util.ArrayList
+import java.util.*
 
 class SkuImageAdapter(
     val context: Context, private var shootList: ArrayList<ShootData>
@@ -34,6 +34,7 @@ class SkuImageAdapter(
     }
 
     override fun onBindViewHolder(viewHolder: ViewHolder, position: Int) {
+        viewHolder.ivCapturedImage.setRotation(90F)
         Glide.with(context).load(
             shootList[position].capturedImage)
             .into(viewHolder.ivCapturedImage)
