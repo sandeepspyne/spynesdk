@@ -9,6 +9,7 @@ import retrofit2.HttpException
 import java.io.IOException
 import java.lang.IllegalStateException
 import java.net.SocketTimeoutException
+import javax.net.ssl.SSLHandshakeException
 
 abstract class BaseRepository {
 
@@ -38,7 +39,7 @@ abstract class BaseRepository {
                         Resource.Failure(false, throwable.hashCode(), throwable.message)
                     }
 
-                    is JsonSyntaxException -> {
+                    is SSLHandshakeException -> {
                         Resource.Failure(false, throwable.hashCode(), throwable.message)
                     }
 

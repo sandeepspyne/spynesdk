@@ -32,6 +32,7 @@ import com.spyneai.R
 import com.spyneai.base.BaseFragment
 import com.spyneai.databinding.FragmentRecordVideoBinding
 import com.spyneai.databinding.FragmentTrimVideoBinding
+import com.spyneai.needs.AppConstants
 import com.spyneai.threesixty.data.ThreeSixtyViewModel
 import com.spyneai.videorecording.TrimmerUtils
 import com.spyneai.videorecording.listener.SeekListener
@@ -90,19 +91,39 @@ class TrimVideoFragment : BaseFragment<ThreeSixtyViewModel,FragmentTrimVideoBind
         txtStartDuration = binding.txtStartDuration
         txtEndDuration = binding.txtEndDuration
 
-        seekHandler = Handler()
-        
-        initPlayer()
+        if (requireActivity().intent.getBooleanExtra(AppConstants.FROM_VIDEO,false))
+            setUpDrafts()
+        else {
+            seekHandler = Handler()
 
-        setDataInView()
+            initPlayer()
 
-        binding.btnReshoot.setOnClickListener {
-            requireActivity().finish()
+            setDataInView()
+
+            binding.btnReshoot.setOnClickListener {
+                requireActivity().finish()
+            }
+
+            binding.btnConfirm.setOnClickListener {
+                trimVideo()
+            }
+        }
+    }
+
+    private fun setUpDrafts() {
+        val intent = requireActivity().intent
+        viewModel.fromDrafts = true
+
+        viewModel.videoDetails.apply {
+            projectId = intent.getStringExtra(AppConstants.PROJECT_ID)
+            skuName = intent.getStringExtra(AppConstants.SKU_NAME)
+            skuId = intent.getStringExtra(AppConstants.SKU_ID)
+            categoryId = intent.getStringExtra(AppConstants.CATEGORY_ID)
+            categoryName = intent.getStringExtra(AppConstants.CATEGORY_NAME)!!
+            frames =  intent.getIntExtra(AppConstants.EXTERIOR_ANGLES,0)
         }
 
-        binding.btnConfirm.setOnClickListener {
-            trimVideo()
-        }
+        startNextActivity(intent.getStringExtra(AppConstants.VIDEO_PATH)!!)
     }
     
     /**
@@ -276,8 +297,9 @@ class TrimVideoFragment : BaseFragment<ThreeSixtyViewModel,FragmentTrimVideoBind
     private fun startNextActivity(path: String) {
         viewModel.videoDetails.videoPath = path
 
-        Log.d(TAG, "startNextActivity: "+path)
-       // viewModel.videoDetails.videoPath = "/storage/emulated/0/Download/IMG_1061.MOV"
+        //update video path
+        viewModel.updateVideoPath()
+
         Navigation.findNavController(binding.btnConfirm)
             .navigate(R.id.action_trimVideoFragment_to_threeSixtyBackgroundFragment)
 

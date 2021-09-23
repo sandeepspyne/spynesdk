@@ -4,6 +4,7 @@ import android.content.Context
 import android.content.res.Configuration
 import android.graphics.drawable.Drawable
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -50,6 +51,7 @@ import com.spyneai.shoot.utils.log
 class OverlaysFragment : BaseFragment<ShootViewModel, FragmentOverlaysBinding>(),
     NewSubCategoriesAdapter.BtnClickListener {
 
+    val TAG = "OverlaysFragment"
     lateinit var subCategoriesAdapter: NewSubCategoriesAdapter
     var progressAdapter: ShootProgressAdapter? = null
     var interiorAdapter: InteriorAdapter? = null
@@ -126,6 +128,14 @@ class OverlaysFragment : BaseFragment<ShootViewModel, FragmentOverlaysBinding>()
                 if (viewModel.interior360Dialog.value == null)
                 ThreeSixtyInteriorHintDialog().show(requireActivity().supportFragmentManager, "ThreeSixtyInteriorHintDialog")
         })
+
+        observeShootDimesions()
+    }
+
+    private fun observeShootDimesions() {
+        viewModel.shootDimensions.observe(viewLifecycleOwner,{
+            getPreviewDimensions(binding.imgOverlay)
+        })
     }
 
     private fun observeShowVin() {
@@ -200,7 +210,6 @@ class OverlaysFragment : BaseFragment<ShootViewModel, FragmentOverlaysBinding>()
                    }
                }else{
                    viewModel.exterirorAngles.value = requireActivity().intent.getIntExtra(AppConstants.EXTERIOR_ANGLES,0)
-
                }
               }
        }else{
@@ -401,7 +410,6 @@ class OverlaysFragment : BaseFragment<ShootViewModel, FragmentOverlaysBinding>()
                         binding.tvAngleName?.text = name
 
                         loadOverlay(name,overlay)
-
                     }
                     else -> {
                     }
@@ -926,10 +934,15 @@ class OverlaysFragment : BaseFragment<ShootViewModel, FragmentOverlaysBinding>()
 
     private fun showImageConfirmDialog(shootData: ShootData) {
         viewModel.shootData.value = shootData
-        ConfirmReshootDialog().show(
+        ConfirmTagsDialog().show(
             requireActivity().supportFragmentManager,
             "ConfirmReshootDialog"
         )
+
+//        ConfirmReshootDialog().show(
+//            requireActivity().supportFragmentManager,
+//            "ConfirmReshootDialog"
+//        )
     }
 
     private fun getPreviewDimensions(view: View) {
@@ -941,6 +954,11 @@ class OverlaysFragment : BaseFragment<ShootViewModel, FragmentOverlaysBinding>()
                 val shootDimensions = viewModel.shootDimensions.value
                 shootDimensions?.overlayWidth = view.width
                 shootDimensions?.overlayHeight = view.height
+
+                Log.d(TAG, "onGlobalLayout: "+view.width)
+                Log.d(TAG, "onGlobalLayout: "+view.height)
+                Log.d(TAG, "onGlobalLayout: "+shootDimensions?.overlayWidth)
+                Log.d(TAG, "onGlobalLayout: "+shootDimensions?.overlayWidth)
 
                 viewModel.shootDimensions.value = shootDimensions
             }

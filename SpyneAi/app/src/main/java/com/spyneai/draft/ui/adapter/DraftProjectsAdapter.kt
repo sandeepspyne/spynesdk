@@ -38,7 +38,6 @@ class DraftProjectsAdapter(
         val tvPaid: TextView = view.findViewById(R.id.tvPaid)
         val ivThumbnail: ImageView = view.findViewById(R.id.ivThumbnail)
         val cvMain: CardView = view.findViewById(R.id.cvMain)
-
     }
 
     override fun onCreateViewHolder(
@@ -52,20 +51,17 @@ class DraftProjectsAdapter(
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
 
-        if (draftsList[position].sub_category == "360_exterior"
-            || draftsList[position].sub_category.equals("360_interior")
-        ){
+        if (draftsList[position].categoryId == draftsList[position].subCategoryId){
             holder.llThreeSixty.visibility = View.VISIBLE
             holder.tvCategory.text = "Automobiles"
-        }else{
+        }else {
             holder.tvCategory.text = draftsList[position].category
             holder.llThreeSixty.visibility = View.GONE
         }
 
         try {
             if (draftsList[position].sku[0].images.isNullOrEmpty()) {
-                if (draftsList[position].sub_category == "360_exterior"
-                    || draftsList[position].sub_category.equals("360_interior")){
+                if (draftsList[position].categoryId == draftsList[position].subCategoryId){
                     Glide.with(context)
                         .load(R.drawable.three_sixty_thumbnail)
                         .into(holder.ivThumbnail)
@@ -76,8 +72,7 @@ class DraftProjectsAdapter(
                 }
             }else {
                 if (draftsList[position].sku[0].images[0].input_lres == null){
-                    if (draftsList[position].sub_category == "360_exterior"
-                        || draftsList[position].sub_category.equals("360_interior")){
+                    if (draftsList[position].categoryId == draftsList[position].subCategoryId){
                         Glide.with(context)
                             .load(R.drawable.three_sixty_thumbnail)
                             .into(holder.ivThumbnail)
@@ -104,7 +99,7 @@ class DraftProjectsAdapter(
         holder.tvImages.text = draftsList[position].total_images.toString()
 
         holder.cvMain.setOnClickListener {
-            if (draftsList[position].sub_category.equals("360_interior") || draftsList[position].sub_category.equals("360_exterior")){
+            if (draftsList[position].categoryId == draftsList[position].subCategoryId){
                 Intent(context, DraftSkusActivity::class.java)
                     .apply {
                         putExtra("position", position)

@@ -12,4 +12,5 @@ object Images : BaseColumns {
     const val COLUMN_NAME_IMAGE_SEQUENCE = "image_sequence"
     const val COLUMN_NAME_IS_UPLOADED = "is_uploaded"
     const val COLUMN_NAME_IMAGE_ANGLE = "angle"
+    const val COLUMN_NAME_IMAGE_META = "image_meta"
 }

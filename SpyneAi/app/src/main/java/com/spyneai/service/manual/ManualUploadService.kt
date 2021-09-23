@@ -29,7 +29,7 @@ class ManualUploadService: Service(), ManualImageUploader.Listener {
     lateinit var notificationManager: NotificationManager
     lateinit var channel: NotificationChannel
     lateinit var builder: Notification.Builder
-    private var receiver: InternetConnectionReceiver? = null
+    private var receiver: ManualConnectionReceiver? = null
     var uploadRunning = false
     var isConnected = false
     private var imageUploader : ManualImageUploader? = null
@@ -58,7 +58,7 @@ class ManualUploadService: Service(), ManualImageUploader.Listener {
         captureEvent(Events.MANUAL_SERVICE_STARTED,properties)
 
         //register internet connection receiver
-        this.receiver = InternetConnectionReceiver()
+        this.receiver = ManualConnectionReceiver()
         val filter = IntentFilter()
         filter.addAction("android.net.conn.CONNECTIVITY_CHANGE")
         this.registerReceiver(receiver, filter)
@@ -240,7 +240,7 @@ class ManualUploadService: Service(), ManualImageUploader.Listener {
         notificationManager.notify(notificationId, notification)
     }
 
-    inner class InternetConnectionReceiver : BroadcastReceiver(){
+    inner class ManualConnectionReceiver : BroadcastReceiver(){
         override fun onReceive(context: Context?, intent: Intent?) {
 
             val isConnected = context?.isInternetActive()

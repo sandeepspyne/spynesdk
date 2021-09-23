@@ -55,6 +55,8 @@
 
     <color name="primary_dark">#223263</color>
     <color name="iv_light">#90FFAB40</color>
+    
+    <color name="tags_title_color">#616161</color>
 
 
 </resources>

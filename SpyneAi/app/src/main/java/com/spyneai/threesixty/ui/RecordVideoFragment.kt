@@ -678,30 +678,34 @@ class RecordVideoFragment : BaseFragment<ThreeSixtyViewModel, FragmentRecordVide
         binding.tvTimer.text = "00:00"
 
 
-        val trimIntent = Intent(
-            requireContext(),
-            TrimActivity::class.java
-        )
-
-        trimIntent.putExtra("src_path", videoPath)
-        trimIntent.putExtra("sku_id", viewModel.videoDetails.skuId)
-        trimIntent.putExtra("sku_name", viewModel.videoDetails.skuName)
-        trimIntent.putExtra("project_id", viewModel.videoDetails.projectId)
-        trimIntent.putExtra(AppConstants.CATEGORY_NAME, viewModel.videoDetails.categoryName)
-        trimIntent.putExtra(AppConstants.CATEGORY_ID, viewModel.videoDetails.categoryId)
-        trimIntent.putExtra("frames", viewModel.videoDetails.frames)
-        trimIntent.putExtra("shoot_mode", intent?.getIntExtra("shoot_mode", 0))
-
-        startActivity(trimIntent)
-
-        binding.tvStart.text = "Start"
-        binding.btnRecordVideo.setImageDrawable(
-            ContextCompat.getDrawable(
+        try {
+            val trimIntent = Intent(
                 requireContext(),
-                R.drawable.bg_record_button_enabled
+                TrimActivity::class.java
             )
-        )
-        isRecording = !isRecording
+
+            trimIntent.putExtra("src_path", videoPath)
+            trimIntent.putExtra("sku_id", viewModel.videoDetails.skuId)
+            trimIntent.putExtra("sku_name", viewModel.videoDetails.skuName)
+            trimIntent.putExtra("project_id", viewModel.videoDetails.projectId)
+            trimIntent.putExtra(AppConstants.CATEGORY_NAME, viewModel.videoDetails.categoryName)
+            trimIntent.putExtra(AppConstants.CATEGORY_ID, viewModel.videoDetails.categoryId)
+            trimIntent.putExtra("frames", viewModel.videoDetails.frames)
+            trimIntent.putExtra("shoot_mode", intent?.getIntExtra("shoot_mode", 0))
+
+            startActivity(trimIntent)
+
+            binding.tvStart.text = "Start"
+            binding.btnRecordVideo.setImageDrawable(
+                ContextCompat.getDrawable(
+                    requireContext(),
+                    R.drawable.bg_record_button_enabled
+                )
+            )
+            isRecording = !isRecording
+        }catch (e : Exception){
+
+        }
     }
 
     override fun onResume() {

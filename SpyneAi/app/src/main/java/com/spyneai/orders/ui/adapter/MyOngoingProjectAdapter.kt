@@ -57,9 +57,7 @@ class MyOngoingProjectAdapter(
 
 
 
-        if (getProjectList[position].sub_category == "360_exterior"
-            || getProjectList[position].sub_category.equals("360_interior")
-        ) {
+        if (getProjectList[position].categoryId == getProjectList[position].subCategoryId) {
             holder.llThreeSixty.visibility = View.VISIBLE
             holder.tvCategory.text = "Automobiles"
         } else {
@@ -93,43 +91,6 @@ class MyOngoingProjectAdapter(
                 holder.tvImageCount.visibility = View.VISIBLE
             }
 
-        try {
-            if (getProjectList[position].sku[0].images.isNullOrEmpty()) {
-                if (getProjectList[position].sub_category == "360_exterior"
-                    || getProjectList[position].sub_category.equals("360_interior")){
-                    Glide.with(context)
-                        .load(R.drawable.three_sixty_thumbnail)
-                        .into(holder.ivThumbnail)
-                }else {
-                    Glide.with(context)
-                        .load(R.mipmap.defaults)
-                        .into(holder.ivThumbnail)
-                }
-            }else {
-                if (getProjectList[position].sku[0].images[0].input_lres == null){
-                    if (getProjectList[position].sub_category == "360_exterior"
-                        || getProjectList[position].sub_category.equals("360_interior")){
-                        Glide.with(context)
-                            .load(R.drawable.three_sixty_thumbnail)
-                            .into(holder.ivThumbnail)
-                    }else {
-                        Glide.with(context)
-                            .load(R.mipmap.defaults)
-                            .into(holder.ivThumbnail)
-                    }
-                }else{
-                    Glide.with(context) // replace with 'this' if it's in activity
-                        .load(getProjectList[position].sku[0].images[0].input_lres)
-                        .into(holder.ivThumbnail)
-                }
-
-            }
-        }catch (e : Exception){
-            e.printStackTrace()
-        }catch (e : IndexOutOfBoundsException){
-            e.printStackTrace()
-        }
-
             if (getProjectList[position].status.equals("Uploaded")) {
                 holder.tvImageCount.visibility = View.INVISIBLE
                 holder.lottieProgressCircle.visibility = View.INVISIBLE
@@ -149,8 +110,7 @@ class MyOngoingProjectAdapter(
 
         try {
             if (getProjectList[position].sku[0].images.isNullOrEmpty()) {
-                if (getProjectList[position].sub_category == "360_exterior"
-                    || getProjectList[position].sub_category.equals("360_interior")){
+                if (getProjectList[position].categoryId == getProjectList[position].subCategoryId){
                     Glide.with(context)
                         .load(R.drawable.three_sixty_thumbnail)
                         .into(holder.ivThumbnail)
@@ -161,8 +121,7 @@ class MyOngoingProjectAdapter(
                 }
             }else {
                 if (getProjectList[position].sku[0].images[0].input_lres == null){
-                    if (getProjectList[position].sub_category == "360_exterior"
-                        || getProjectList[position].sub_category.equals("360_interior")){
+                    if (getProjectList[position].categoryId == getProjectList[position].subCategoryId){
                         Glide.with(context)
                             .load(R.drawable.three_sixty_thumbnail)
                             .into(holder.ivThumbnail)

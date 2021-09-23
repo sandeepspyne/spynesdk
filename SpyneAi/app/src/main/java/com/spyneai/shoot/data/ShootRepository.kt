@@ -30,9 +30,10 @@ class ShootRepository : BaseRepository() {
         auth_key: RequestBody,
         upload_type: RequestBody,
         sequenceNo : Int,
+        tags: RequestBody,
         image: MultipartBody.Part,
     ) = safeApiCall {
-        clipperApi.uploadImage(project_id, sku_id, image_category, auth_key, upload_type,sequenceNo,image)
+        clipperApi.uploadImage(project_id, sku_id, image_category, auth_key, upload_type,sequenceNo,tags,image)
     }
 
     suspend fun uploadImageWithAngle(
@@ -56,9 +57,25 @@ class ShootRepository : BaseRepository() {
 
     suspend fun createSku(authKey: String,projectId : String
                           ,prodCatId : String,prodSubCatId : String,
-                          skuName : String,total_frames : Int
+                          skuName : String,total_frames : Int,
+                          images : Int, videos : Int
     ) = safeApiCall {
-        clipperApi.createSku(authKey, projectId, prodCatId, prodSubCatId, skuName.uppercase(),total_frames)
+        clipperApi.createSku(authKey, projectId, prodCatId, prodSubCatId, skuName.uppercase(),
+            total_frames,
+        images,
+        videos)
+    }
+
+    suspend fun updateVideoSku(
+        skuId: String,
+        prodSubCatId : String,
+        initialImageCount: Int
+    )= safeApiCall {
+        clipperApi.updateVideoSku(
+            skuId,
+            prodSubCatId,
+            initialImageCount
+        )
     }
 
     suspend fun getProjectDetail(

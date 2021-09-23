@@ -62,6 +62,9 @@ object Events {
     val CREATE_SKU = "Android Create SKU"
     val CREATE_SKU_FAILED = "Android Create SKU Failed"
 
+    val VIDEO_SKU_UPDATED = "Video SKU Updated"
+    val VIDEO_SKU_UPDATE_FAILED = "Video SKU update Failed"
+
     val IMAGE_CAPTURED = "Android Image Captured"
     val IMAGE_CAPRURE_FAILED = "Android Image Capture Failed"
     val CONFIRMED = "Android Confirmed"
@@ -146,6 +149,15 @@ object Events {
 
     val FILES_DATA_SENT = "FILES_DATA_SENT"
     val FILES_DATA_SENT_FAILED = "FILES_DATA_SENT_FAILED"
+
+    val GET_PRESIGNED_VIDEO_URL_FAILED = "GET_PRESIGNED_VIDEO_URL_FAILED"
+    val GOT_PRESIGNED_VIDEO_URL = "GOT_PRESIGNED_VIDEO_URL"
+
+    val VIDEO_UPLOADED_TO_GCP = "VIDEO_UPLOADED_TO_GCP"
+    val VIDEO_UPLOAD_TO_GCP_FAILED = "VIDEO_UPLOAD_TO_GCP_FAILED"
+
+    val MARK_VIDEO_UPLOADED_FAILED = "MARK_VIDEO_UPLOADED_FAILED"
+    val MARKED_VIDEO_UPLOADED = "MARKED_VIDEO_UPLOADED"
 
 
 }

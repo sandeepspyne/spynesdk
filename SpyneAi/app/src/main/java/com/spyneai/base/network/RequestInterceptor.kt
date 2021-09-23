@@ -19,6 +19,8 @@ class RequestInterceptor: Interceptor {
             .addHeader("device_details", getRequestHeaderData().toString())
             .build()
 
+        val s = ""
+
         return chain.proceed(request)
     }
 }

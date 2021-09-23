@@ -65,6 +65,9 @@ class ShootActivity : AppCompatActivity() {
         if (intent.getBooleanExtra(AppConstants.FROM_DRAFTS,false))
             setUpDraftsData()
 
+        if (intent.getBooleanExtra(AppConstants.FROM_VIDEO,false))
+            setUpVideoShoot()
+
         val categoryDetails = CategoryDetails()
 
         categoryDetails.apply {
@@ -225,6 +228,19 @@ class ShootActivity : AppCompatActivity() {
                 }
             }
         })
+    }
+
+    private fun setUpVideoShoot() {
+        shootViewModel.fromVideo = true
+        shootViewModel.showVin.value = true
+        shootViewModel.isProjectCreated.value = true
+        shootViewModel.projectId.value = intent.getStringExtra(AppConstants.PROJECT_ID)
+
+        shootViewModel._createProjectRes.value = Resource.Success(CreateProjectRes(
+            "",
+            intent.getStringExtra(AppConstants.PROJECT_ID)!!,
+            200
+        ))
     }
 
     private fun setUpDraftsData() {

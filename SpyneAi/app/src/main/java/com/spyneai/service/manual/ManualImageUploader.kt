@@ -119,6 +119,7 @@ class ManualImageUploader(val context: Context,
                                     authKey.toRequestBody(MultipartBody.FORM),
                                     "Retry".toRequestBody(MultipartBody.FORM),
                                     uploadStatuRes.value.data.sequence,
+                                    "".toRequestBody(MultipartBody.FORM),
                                     imageFile)
 
                                 when(response){
