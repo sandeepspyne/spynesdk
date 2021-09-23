@@ -21,7 +21,9 @@ import com.spyneai.orders.ui.adapter.SkusAdapter
 
 import com.spyneai.processedimages.ui.ShowImagesActivity
 import com.spyneai.shoot.ui.base.ShootActivity
+import com.spyneai.threesixty.data.VideoLocalRepository
 import com.spyneai.threesixty.ui.ThreeSixtyActivity
+import com.spyneai.threesixty.ui.TrimActivity
 
 class DraftSkusAdapter (
     val context: Context,
@@ -63,9 +65,8 @@ class DraftSkusAdapter (
 
         }
 
-        if (skuList[position].categoryId == "360_exterior"
-            || skuList[position].categoryId.equals("360_interior")
-        ){
+        if (skuList[position].categoryId == skuList[position].subCategoryId)
+        {
             Glide.with(context)
                 .load(R.drawable.three_sixty_thumbnail)
                 .into(holder.ivThumbnail)
@@ -82,13 +83,26 @@ class DraftSkusAdapter (
                 skuList[position].sku_id
             )
 
-            if (skuList[position].categoryId == "360_exterior"){
-                val threeeSixtyIntent = Intent(
-                    context,
-                    ThreeSixtyActivity::class.java
-                ).apply {
-                    putExtra(AppConstants.FROM_LOCAL_DB, true)
+            if (skuList[position].categoryId == skuList[position].subCategoryId){
+                val videoPath = VideoLocalRepository().getVideoPath(skuList[position].sku_id)
+
+                val intent = when{
+                    skuList[position].videoId != null -> {
+                        Intent(context, ShootActivity::class.java)
+                    }
+                    videoPath != null && videoPath != "" -> {
+                        Intent(context, TrimActivity::class.java)
+                    }
+                    else -> {
+                        Intent(context, ThreeSixtyActivity::class.java)
+                    }
+                }
+
+
+                intent.apply {
+                    putExtra(AppConstants.FROM_LOCAL_DB, false)
                     putExtra(AppConstants.FROM_DRAFTS, true)
+                    putExtra(AppConstants.FROM_VIDEO, true)
                     putExtra(AppConstants.PROJECT_ID, projectId)
                     putExtra(AppConstants.CATEGORY_ID, skuList[position].categoryId)
                     putExtra(AppConstants.SUB_CAT_ID,skuList[position].subCategoryId)
@@ -103,9 +117,10 @@ class DraftSkusAdapter (
                     //putExtra("is_paid",skuList[position].paid)
                     //putExtra(AppConstants.IMAGE_TYPE,skuList[position].category)
                     putExtra(AppConstants.IS_360,skuList[position].is360)
+                    putExtra(AppConstants.VIDEO_PATH,videoPath)
                 }
 
-                context.startActivity(threeeSixtyIntent)
+                context.startActivity(intent)
             }else {
                 Intent(
                     context,
@@ -128,16 +143,9 @@ class DraftSkusAdapter (
                     //putExtra(AppConstants.IMAGE_TYPE,skuList[position].category)
                     putExtra(AppConstants.IS_360,skuList[position].is360)
                     context.startActivity(this)
-
-                    context.startActivity(this)
                 }
             }
-
-
-
         }
-
-
     }
 
     override fun getItemCount(): Int {

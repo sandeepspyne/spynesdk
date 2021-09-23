@@ -60,13 +60,13 @@ class ImageUploader(val context: Context,
                        return@launch
                    }
 
-                   if (image.imagePath != null){
-                       if (!File(image.imagePath!!).exists()){
-                           localRepository.deleteImage(image.itemId!!)
-                           captureEvent(Events.UPLOAD_FAILED_SERVICE,image,false,"Image file got deleted by user")
-                            startNextUpload(image.itemId!!,true,imageType)
-                       }
-                   }
+//                   if (image.imagePath != null){
+//                       if (!File(image.imagePath!!).exists()){
+//                           localRepository.deleteImage(image.itemId!!)
+//                           captureEvent(Events.UPLOAD_FAILED_SERVICE,image,false,"Image file got deleted by user")
+//                            startNextUpload(image.itemId!!,true,imageType)
+//                       }
+//                   }
 
                    logUpload("Upload Started "+imageType+" "+image.itemId)
 
@@ -97,11 +97,15 @@ class ImageUploader(val context: Context,
                            requestFile
                        )
 
-                    val uploadType = if (retryCount == 0) "Direct" else "Retry"
+                   val uploadType = if (retryCount == 0) "Direct" else "Retry"
+                   val meta = if (image.meta == null) "".toRequestBody(MultipartBody.FORM) else image.meta?.toRequestBody(MultipartBody.FORM)
 
                    var response = if (image.categoryName == "360int"){
                        shootRepository.uploadImage(projectId!!,
-                           skuId!!, imageCategory!!,authKey, uploadType.toRequestBody(MultipartBody.FORM),image.sequence!!,imageFile)
+                           skuId!!, imageCategory!!,authKey, uploadType.toRequestBody(MultipartBody.FORM),
+                           image.sequence!!,
+                           meta!!,
+                           imageFile)
                    }else if (BaseApplication.getContext().getString(R.string.app_name) == AppConstants.SWIGGY){
                        shootRepository.uploadImageWithAngle(
                            projectId!!,
@@ -115,7 +119,10 @@ class ImageUploader(val context: Context,
                        )
                    } else {
                        shootRepository.uploadImage(projectId!!,
-                           skuId!!, imageCategory!!,authKey, uploadType.toRequestBody(MultipartBody.FORM),image.sequence!!,imageFile)
+                           skuId!!, imageCategory!!,authKey, uploadType.toRequestBody(MultipartBody.FORM),
+                           image.sequence!!,
+                           meta!!,
+                           imageFile)
                    }
 
                    when(response){
@@ -137,7 +144,6 @@ class ImageUploader(val context: Context,
                            selectLastImageAndUpload(imageType,retryCount+1)
                        }
                    }
-
                }else{
                    logUpload("All Images uploaded")
                    if (imageType == AppConstants.REGULAR){
@@ -160,9 +166,7 @@ class ImageUploader(val context: Context,
                           //upload images clicked while service uploading skipped images
                           selectLastImageAndUpload(AppConstants.REGULAR,0)
                       }
-
                    }
-
                }
            }
        }else {

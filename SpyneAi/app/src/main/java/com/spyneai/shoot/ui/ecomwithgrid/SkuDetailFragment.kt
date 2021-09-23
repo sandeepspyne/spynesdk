@@ -32,9 +32,11 @@ class SkuDetailFragment : BaseFragment<ShootViewModel, FragmentSkuDetailBinding>
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        if (viewModel.categoryDetails.value?.categoryName.equals("E-Commerce")){
-            binding.ivAddAngle.visibility = View.INVISIBLE
-            binding.tvAddAngle.visibility = View.INVISIBLE
+        when (viewModel.categoryDetails.value?.categoryName) {
+            "Footwear" -> {
+                binding.ivAddAngle.visibility = View.INVISIBLE
+                binding.tvAddAngle.visibility = View.INVISIBLE
+            }
         }
 
         viewModel.getProjectDetail(
@@ -50,7 +52,7 @@ class SkuDetailFragment : BaseFragment<ShootViewModel, FragmentSkuDetailBinding>
                     viewModel.totalImageCaptured.value = it.value.data.total_images.toString()
 
                     binding.tvTotalSkuCaptured.text = it.value.data.total_sku.toString()
-}
+                }
 
 
                 is Resource.Loading -> {
@@ -67,7 +69,7 @@ class SkuDetailFragment : BaseFragment<ShootViewModel, FragmentSkuDetailBinding>
             when (it) {
                 is Resource.Success -> {
                     Utilities.hideProgressDialog()
-                    log("update total images for sku("+viewModel.sku.value?.skuId.toString()+"): "+totalSkuImages.toString())
+                    log("update total images for sku(" + viewModel.sku.value?.skuId.toString() + "): " + totalSkuImages.toString())
 
                 }
                 is Resource.Loading -> {
@@ -75,7 +77,7 @@ class SkuDetailFragment : BaseFragment<ShootViewModel, FragmentSkuDetailBinding>
 
                 }
                 is Resource.Failure -> {
-                    log("update total images for sku("+viewModel.sku.value?.skuId.toString()+") failed")
+                    log("update total images for sku(" + viewModel.sku.value?.skuId.toString() + ") failed")
                     Utilities.hideProgressDialog()
                     handleApiError(it)
                 }
@@ -97,7 +99,7 @@ class SkuDetailFragment : BaseFragment<ShootViewModel, FragmentSkuDetailBinding>
 
                 binding.rvSkuImages.apply {
                     this?.layoutManager =
-                        GridLayoutManager(requireContext(),  3)
+                        GridLayoutManager(requireContext(), 3)
                     this?.adapter = skuImageAdapter
                 }
 
@@ -107,18 +109,18 @@ class SkuDetailFragment : BaseFragment<ShootViewModel, FragmentSkuDetailBinding>
         })
 
         binding.btNextSku.setOnClickListener {
-            log("update total frames" )
-            log("skuId: " +viewModel.sku.value?.skuId.toString())
-            log("totalFrames: " +viewModel.shootList.value?.size.toString())
-            log("authKey: " +Utilities.getPreference(requireContext(), AppConstants.AUTH_KEY).toString())
+            log("update total frames")
+            log("skuId: " + viewModel.sku.value?.skuId.toString())
+            log("totalFrames: " + viewModel.shootList.value?.size.toString())
+            log(
+                "authKey: " + Utilities.getPreference(requireContext(), AppConstants.AUTH_KEY)
+                    .toString()
+            )
             endProject = false
             updateTotalFrames()
         }
 
         binding.ivAddAngle.setOnClickListener {
-            viewModel.addMoreAngle.value = true
-        }
-        binding.tvAddAngle.setOnClickListener {
             viewModel.addMoreAngle.value = true
         }
 
@@ -143,8 +145,8 @@ class SkuDetailFragment : BaseFragment<ShootViewModel, FragmentSkuDetailBinding>
     }
 
     private fun observeTotalFrameUpdate() {
-        viewModel.updateTotalFramesRes.observe(viewLifecycleOwner,{
-            when(it) {
+        viewModel.updateTotalFramesRes.observe(viewLifecycleOwner, {
+            when (it) {
                 is Resource.Success -> {
                     val properties = Properties()
                     properties.apply {
@@ -152,7 +154,7 @@ class SkuDetailFragment : BaseFragment<ShootViewModel, FragmentSkuDetailBinding>
                         this["total_frames"] = totalSkuImages.toString()
                     }
 
-                    requireContext().captureEvent(Events.TOTAL_FRAMES_UPDATED,properties)
+                    requireContext().captureEvent(Events.TOTAL_FRAMES_UPDATED, properties)
 
                     Utilities.hideProgressDialog()
                     processRequest()
@@ -168,76 +170,71 @@ class SkuDetailFragment : BaseFragment<ShootViewModel, FragmentSkuDetailBinding>
                     }
 
                     requireContext().captureFailureEvent(
-                        Events.TOTAL_FRAMES_UPDATE_FAILED,properties,
-                        it.errorMessage!!)
+                        Events.TOTAL_FRAMES_UPDATE_FAILED, properties,
+                        it.errorMessage!!
+                    )
 
-                    handleApiError(it) { updateTotalFrames()}
+                    handleApiError(it) { updateTotalFrames() }
                 }
             }
         })
     }
 
     private fun processRequest() {
-        if (endProject){
+        if (endProject) {
+            log("end project dialog called")
             EndProjectDialog().show(requireFragmentManager(), "EndProjectDialog")
-        }else {
-           observeUpdateTotalFrames()
+        } else {
+            observeUpdateTotalFrames()
 
 
         }
 
 
         binding.ivAddAngle.setOnClickListener {
-            if (viewModel.categoryDetails.value?.categoryName.equals("E-Commerce") || viewModel.categoryDetails.value?.categoryName.equals("Food & Beverages"))
-            viewModel.addMoreAngle.value = true
+            if (viewModel.categoryDetails.value?.categoryName.equals("E-Commerce") || viewModel.categoryDetails.value?.categoryName.equals(
+                    "Food & Beverages"
+                )
+            )
+                viewModel.addMoreAngle.value = true
         }
         binding.tvAddAngle.setOnClickListener {
-            if (viewModel.categoryDetails.value?.categoryName.equals("E-Commerce") || viewModel.categoryDetails.value?.categoryName.equals("Food & Beverages"))
-            viewModel.addMoreAngle.value = true
+            if (viewModel.categoryDetails.value?.categoryName.equals("E-Commerce") || viewModel.categoryDetails.value?.categoryName.equals(
+                    "Food & Beverages"
+                )
+            )
+                viewModel.addMoreAngle.value = true
         }
-
-        binding.tvEndProject.setOnClickListener {
-            viewModel.updateTotalFrames(viewModel.sku.value?.skuId.toString(), totalSkuImages.toString(), Utilities.getPreference(requireContext(), AppConstants.AUTH_KEY).toString())
-            viewModel.updateTotalFramesRes.observe(viewLifecycleOwner,{
-                when(it) {
-                    is Resource.Success -> {
-                        EndProjectDialog().show(requireFragmentManager(), "EndProjectDialog")
-                    }
-
-                    is Resource.Failure -> {
-                        requireContext().captureFailureEvent(
-                            Events.GET_BACKGROUND_FAILED, Properties(),
-                            it.errorMessage!!
-                        )
-                        handleApiError(it) {}
-                    }
-
-                    is Resource.Loading -> {
-
-                    }
-                }
-            })
-        }
-
     }
 
-    private fun observeUpdateTotalFrames(){
-        viewModel.updateTotalFramesRes.observe(viewLifecycleOwner,{
-            when(it) {
+    private fun observeUpdateTotalFrames() {
+        viewModel.updateTotalFramesRes.observe(viewLifecycleOwner, {
+            when (it) {
                 is Resource.Success -> {
                     viewModel.shootList.value?.clear()
                     val intent = Intent(activity, ShootPortraitActivity::class.java)
                     intent.putExtra("project_id", viewModel.projectId.value);
                     intent.putExtra("skuNumber", viewModel.skuNumber.value?.plus(1)!!);
 
-                    intent.putExtra(AppConstants.CATEGORY_NAME,viewModel.categoryDetails.value?.categoryName)
-                    intent.putExtra(AppConstants.CATEGORY_ID,viewModel.categoryDetails.value?.categoryId)
+                    intent.putExtra(
+                        AppConstants.CATEGORY_NAME,
+                        viewModel.categoryDetails.value?.categoryName
+                    )
+                    intent.putExtra(
+                        AppConstants.CATEGORY_ID,
+                        viewModel.categoryDetails.value?.categoryId
+                    )
 
-                    if (viewModel.fromDrafts){
-                        intent.putExtra(AppConstants.SKU_COUNT, requireActivity().intent.getIntExtra(AppConstants.SKU_COUNT,0).plus(1))
-                        intent.putExtra("skuNumber", requireActivity().intent.getIntExtra(AppConstants.SKU_COUNT,0).plus(1))
-                    }
-                    else
+                    if (viewModel.fromDrafts) {
+                        intent.putExtra(
+                            AppConstants.SKU_COUNT,
+                            requireActivity().intent.getIntExtra(AppConstants.SKU_COUNT, 0).plus(1)
+                        )
+                        intent.putExtra(
+                            "skuNumber",
+                            requireActivity().intent.getIntExtra(AppConstants.SKU_COUNT, 0).plus(1)
+                        )
+                    } else
                         intent.putExtra("skuNumber", viewModel.skuNumber.value?.plus(1)!!)
                     startActivity(intent)
                 }
@@ -258,21 +255,21 @@ class SkuDetailFragment : BaseFragment<ShootViewModel, FragmentSkuDetailBinding>
     }
 
 
-            override fun onResume() {
-                super.onResume()
+    override fun onResume() {
+        super.onResume()
 
-                if (viewModel.categoryDetails.value?.categoryName.equals("E-Commerce")){
-                    binding.ivAddAngle.visibility = View.VISIBLE
-                    binding.tvAddAngle.visibility = View.VISIBLE
-                }
-            }
-
-
-            override fun getViewModel() = ShootViewModel::class.java
-
-            override fun getFragmentBinding(
-                inflater: LayoutInflater,
-                container: ViewGroup?
-            ) = FragmentSkuDetailBinding.inflate(inflater, container, false)
-
+        if (viewModel.categoryDetails.value?.categoryName.equals("E-Commerce")) {
+            binding.ivAddAngle.visibility = View.VISIBLE
+            binding.tvAddAngle.visibility = View.VISIBLE
         }
+    }
+
+
+    override fun getViewModel() = ShootViewModel::class.java
+
+    override fun getFragmentBinding(
+        inflater: LayoutInflater,
+        container: ViewGroup?
+    ) = FragmentSkuDetailBinding.inflate(inflater, container, false)
+
+}

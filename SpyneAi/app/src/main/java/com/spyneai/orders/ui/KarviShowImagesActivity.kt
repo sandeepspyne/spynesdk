@@ -107,19 +107,7 @@ class KarviShowImagesActivity : AppCompatActivity() {
 
 
         binding.llStartNewShoot.setOnClickListener {
-            when(getString(R.string.app_name)){
-                AppConstants.KARVI -> {
-                    if (isResolutionSupported()) {
-                        startShoot()
-                    }else {
-                        //resolution not supported
-                        ResolutionNotSupportedFragment().show(supportFragmentManager,"ResolutionNotSupportedFragment")
-                    }
-                }
-                else -> {
-                    startShoot()
-                }
-            }
+            startShoot()
         }
     }
 

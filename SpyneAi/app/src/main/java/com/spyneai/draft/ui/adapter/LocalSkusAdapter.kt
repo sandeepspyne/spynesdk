@@ -16,7 +16,10 @@ import com.spyneai.needs.AppConstants
 import com.spyneai.needs.Utilities
 import com.spyneai.orders.data.response.GetProjectsResponse
 import com.spyneai.shoot.data.model.Sku
+import com.spyneai.shoot.ui.base.ShootActivity
+import com.spyneai.threesixty.data.VideoLocalRepository
 import com.spyneai.threesixty.ui.ThreeSixtyActivity
+import com.spyneai.threesixty.ui.TrimActivity
 import com.spyneai.toDate
 
 class LocalSkusAdapter (
@@ -48,6 +51,9 @@ class LocalSkusAdapter (
         else
             holder.tvCategory.text = skuList[position].subcategoryName
 
+        if (skuList[position].categoryId == skuList[position].subcategoryId)
+            holder.tvCategory.text = "Automobiles"
+
 
         if (skuList[position].thumbnail != null) {
             Glide.with(context) // replace with 'this' if it's in activity
@@ -56,9 +62,8 @@ class LocalSkusAdapter (
                 .into(holder.ivThumbnail)
         }
 
-        if (skuList[position].subcategoryId == "360_exterior"
-            || skuList[position].subcategoryId.equals("360_interior")
-        ){
+        if (skuList[position].categoryId == skuList[position].subcategoryId)
+        {
             Glide.with(context)
                 .load(R.drawable.three_sixty_thumbnail)
                 .into(holder.ivThumbnail)
@@ -75,15 +80,27 @@ class LocalSkusAdapter (
                 skuList[position].skuId
             )
 
-            if (skuList[position].subcategoryId == "360_exterior"){
-                val threeeSixtyIntent = Intent(
-                    context,
-                    ThreeSixtyActivity::class.java
-                ).apply {
+            if (skuList[position].categoryId == skuList[position].subcategoryId){
+                val videoPath = VideoLocalRepository().getVideoPath(skuList[position].skuId!!)
+
+                val intent = when{
+                    VideoLocalRepository().getVideoId(skuList[position].skuId!!) != null -> {
+                        Intent(context, ShootActivity::class.java)
+                    }
+                    videoPath != null && videoPath != "" -> {
+                        Intent(context, TrimActivity::class.java)
+                    }
+                    else -> {
+                        Intent(context, ThreeSixtyActivity::class.java)
+                    }
+                }
+
+                intent.apply {
+                    putExtra(AppConstants.FROM_VIDEO, true)
                     putExtra(AppConstants.FROM_LOCAL_DB, true)
                     putExtra(AppConstants.FROM_DRAFTS, true)
-                    putExtra(AppConstants.PROJECT_ID, skuList[position].projectId)
                     putExtra(AppConstants.CATEGORY_ID, skuList[position].categoryId)
+                    putExtra(AppConstants.PROJECT_ID, skuList[position].projectId)
                     putExtra(AppConstants.SUB_CAT_ID,skuList[position].subcategoryId)
                     putExtra(AppConstants.SUB_CAT_NAME,skuList[position].subcategoryName)
                     putExtra(AppConstants.CATEGORY_NAME, skuList[position].categoryName)
@@ -96,9 +113,10 @@ class LocalSkusAdapter (
                     //putExtra("is_paid",skuList[position].paid)
                     //putExtra(AppConstants.IMAGE_TYPE,skuList[position].category)
                     putExtra(AppConstants.IS_360,skuList[position].is360)
+                    putExtra(AppConstants.VIDEO_PATH,videoPath)
                 }
 
-                context.startActivity(threeeSixtyIntent)
+                context.startActivity(intent)
             }else {
                 val draftIntent = Intent(
                     context,

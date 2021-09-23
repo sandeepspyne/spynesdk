@@ -2,6 +2,8 @@
 <resources>
     <color name="primary">#DCE224</color>
     <color name="secondary">#000000</color>
+
+    <color name="description">#787575</color>
     <color name="splash_bg">#ffffff</color>
     <color name="accent">#F07E54</color>
     <color name="order_completed">#566DED</color>

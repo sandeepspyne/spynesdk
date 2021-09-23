@@ -14,9 +14,10 @@ import com.spyneai.needs.AppConstants
 import com.spyneai.needs.Utilities
 import com.spyneai.shoot.data.model.*
 import com.spyneai.shoot.response.SkuProcessStateResponse
+import com.spyneai.shoot.response.UpdateVideoSkuRes
 import com.spyneai.shoot.workmanager.OverlaysPreloadWorker
-import com.spyneai.shoot.workmanager.ParentRecursiveWorker
 import kotlinx.coroutines.launch
+import org.json.JSONObject
 import java.util.concurrent.TimeUnit
 
 class ShootViewModel : ViewModel() {
@@ -31,6 +32,7 @@ class ShootViewModel : ViewModel() {
     var threeSixtyInteriorSelected = false
     var onVolumeKeyPressed: MutableLiveData<Boolean> = MutableLiveData()
     var fromDrafts = false
+    var fromVideo = false
     val isSensorAvailable: MutableLiveData<Boolean> = MutableLiveData()
     var showDialog = true
     var miscDialogShowed = false
@@ -42,6 +44,8 @@ class ShootViewModel : ViewModel() {
     val isSubCatAngleConfirmed: MutableLiveData<Boolean> = MutableLiveData()
 
     val startInteriorShoot: MutableLiveData<Boolean> = MutableLiveData()
+    val begin: MutableLiveData<Long> = MutableLiveData()
+    val end: MutableLiveData<Long> = MutableLiveData()
 
     val totalSkuCaptured: MutableLiveData<String> = MutableLiveData()
     val totalImageCaptured: MutableLiveData<String> = MutableLiveData()
@@ -87,10 +91,13 @@ class ShootViewModel : ViewModel() {
     val createSkuRes: LiveData<Resource<CreateSkuRes>>
         get() = _createSkuRes
 
+    private val _updateVideoSkuRes: MutableLiveData<Resource<UpdateVideoSkuRes>> = MutableLiveData()
+    val updateVideoSkuRes: LiveData<Resource<UpdateVideoSkuRes>>
+        get() = _updateVideoSkuRes
+
     private val _updateFootwearSubcatRes : MutableLiveData<Resource<UpdateFootwearSubcatRes>> = MutableLiveData()
     val updateFootwearSubcatRes: LiveData<Resource<UpdateFootwearSubcatRes>>
         get() = _updateFootwearSubcatRes
-
 
 
 
@@ -132,6 +139,7 @@ class ShootViewModel : ViewModel() {
     var overlayRightMargin = 0
 
     val reshootCapturedImage: MutableLiveData<Boolean> = MutableLiveData()
+    val confirmCapturedImage: MutableLiveData<Boolean> = MutableLiveData()
     val projectId: MutableLiveData<String> = MutableLiveData()
     val showFoodBackground: MutableLiveData<Boolean> = MutableLiveData()
 
@@ -240,56 +248,17 @@ class ShootViewModel : ViewModel() {
         image.sequence = shootData.sequence
         image.skuName = sku.value?.skuName
         image.angle = shootData.angle
+        image.meta = shootData.meta
 
         localRepository.insertImage(image)
-
     }
-
-    fun startLongRunningWorker() {
-        val constraints: Constraints = Constraints.Builder()
-            .setRequiredNetworkType(NetworkType.CONNECTED)
-            .build()
-
-        val longWorkRequest = OneTimeWorkRequest.Builder(ParentRecursiveWorker::class.java)
-            .addTag("Long Running Parent Worker")
-            .setBackoffCriteria(
-                BackoffPolicy.LINEAR,
-                OneTimeWorkRequest.MIN_BACKOFF_MILLIS,
-                TimeUnit.MILLISECONDS)
-
-        WorkManager.getInstance(BaseApplication.getContext())
-            .enqueue(
-                longWorkRequest
-                    .setConstraints(constraints)
-                    .build())
-    }
-
-
-//    fun startLongRunningWorker() {
-//        val constraints: Constraints = Constraints.Builder()
-//            .setRequiredNetworkType(NetworkType.CONNECTED)
-//            .build()
-//
-//        val longWorkRequest = OneTimeWorkRequest.Builder(RecursiveImageWorker::class.java)
-//            .addTag("Long Running Worker")
-//            .setBackoffCriteria(
-//                BackoffPolicy.LINEAR,
-//                OneTimeWorkRequest.MIN_BACKOFF_MILLIS,
-//                TimeUnit.MILLISECONDS)
-//
-//        WorkManager.getInstance(BaseApplication.getContext())
-//            .enqueue(
-//                longWorkRequest
-//                    .setConstraints(constraints)
-//                    .build())
-//    }
-
 
     fun createProject(
-        authKey: String, projectName: String, prodCatId: String
+        authKey: String, projectName: String, prodCatId: String,
+        dynamicLayout : JSONObject? = null
     ) = viewModelScope.launch {
         _createProjectRes.value = Resource.Loading
-        _createProjectRes.value = repository.createProject(authKey, projectName, prodCatId)
+        _createProjectRes.value = repository.createProject(authKey, projectName, prodCatId,dynamicLayout)
     }
 
     fun skuProcessState(
@@ -313,7 +282,16 @@ class ShootViewModel : ViewModel() {
     ) = viewModelScope.launch {
         _createSkuRes.value = Resource.Loading
         _createSkuRes.value =
-            repository.createSku(authKey, projectId, prodCatId, prodSubCatId, skuName, totalFrames)
+            repository.createSku(authKey, projectId, prodCatId, prodSubCatId, skuName, totalFrames,1,0)
+    }
+
+    fun updateVideoSku(
+        skuId: String,
+        prodSubCatId : String,
+        initialImageCount: Int
+    ) = viewModelScope.launch {
+        _updateVideoSkuRes.value = Resource.Loading
+        _updateVideoSkuRes.value = repository.updateVideoSku(skuId,prodSubCatId,initialImageCount)
     }
 
     fun insertSku(sku: Sku) {
@@ -346,6 +324,10 @@ class ShootViewModel : ViewModel() {
             exterirorAngles.value!!,
             subCategory.value?.prod_sub_cat_id!!
             )
+    }
+
+    fun updateVideoSkuLocally(sku: Sku) {
+        localRepository.updateVideoSkuLocally(sku)
     }
 
 }

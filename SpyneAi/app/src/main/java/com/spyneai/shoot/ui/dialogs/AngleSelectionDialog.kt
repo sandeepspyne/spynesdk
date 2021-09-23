@@ -23,18 +23,29 @@ class AngleSelectionDialog : BaseDialogFragment<ShootViewModel,DialogAngleSelect
     private fun showOptions() {
         val valuesShoots = when(getString(R.string.app_name)){
             AppConstants.CARS24_INDIA,AppConstants.CARS24 -> arrayOf("5 Angles")
+            AppConstants.SELL_ANY_CAR -> arrayOf("4 Angles", "36 Angles")
             else -> arrayOf("8 Angles", "12 Angles","16 Angles","24 Angles","36 Angles")
         }
 
         val lastSelectedAngles = viewModel.getSelectedAngles()
         var newSelectedAngles = viewModel.getSelectedAngles()
 
-        when(viewModel.getSelectedAngles()){
-            8,5 -> binding.npShoots.minValue = 0
-            12 -> binding.npShoots.minValue = 1
-            16 -> binding.npShoots.minValue = 2
-            24 -> binding.npShoots.minValue = 3
-            36 -> binding.npShoots.minValue = 4
+
+        when(getString(R.string.app_name)){
+            AppConstants.SELL_ANY_CAR->{
+                when(viewModel.getSelectedAngles()){
+                    4 -> binding.npShoots.minValue = 0
+                    36 -> binding.npShoots.minValue = 1
+                }
+            } else -> {
+            when(viewModel.getSelectedAngles()){
+                8,5 -> binding.npShoots.minValue = 0
+                12 -> binding.npShoots.minValue = 1
+                16 -> binding.npShoots.minValue = 2
+                24 -> binding.npShoots.minValue = 3
+                36 -> binding.npShoots.minValue = 4
+            }
+        }
         }
 
         binding.npShoots.minValue = 0
@@ -43,6 +54,7 @@ class AngleSelectionDialog : BaseDialogFragment<ShootViewModel,DialogAngleSelect
 
         binding.npShoots.setOnValueChangedListener { _, _, newVal ->
            when(valuesShoots[newVal]) {
+               "4 Angles" -> newSelectedAngles = 4
                "5 Angles" -> newSelectedAngles = 5
                "8 Angles" -> newSelectedAngles = 8
                "12 Angles" -> newSelectedAngles = 12

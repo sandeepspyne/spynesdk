@@ -37,4 +37,11 @@ class DashboardRepository() : BaseRepository() {
         clipperApi.getProjects(tokenId, status)
     }
 
+    suspend fun getVersionStatus(
+        authKey: String,
+        version : String
+    )= safeApiCall {
+        clipperApi.getVersionStatus(authKey,version)
+    }
+
 }

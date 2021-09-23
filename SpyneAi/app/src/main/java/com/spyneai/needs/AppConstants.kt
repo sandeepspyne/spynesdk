@@ -139,11 +139,14 @@ object AppConstants {
     val YALLA_MOTOS= "Yalla Motors"
     val OLA_CABS = "Ola Cabs"
     val AUTO_MOSER = "Automoser"
+    val SELL_ANY_CAR = "Sell any Car"
+    val FLIPKART_GROCERY = "Flipkart Grocery"
 
 
     val UDAAN = "Udaan"
     val SWIGGY = "Swiggy"
     val SWIGGYINSTAMART = "Swiggy Instamart"
+    val BATA = "Bata"
     val FLIPKART = "Flipkart"
     val AMAZON = "Amazon"
 
@@ -153,7 +156,20 @@ object AppConstants {
     val SKIPPED = "SKIPPED"
 
     val CANCEL_ALL_WROKERS = "CANCEL_ALL_WROKERS"
+    val START_FILES_WORKER = "START_FILES_WORKER"
     val LAL_10 = "Lal10"
+    val DEVICE_MANUFACTURER = "DEVICE_MANUFACTURER"
+    val OS_VERSION = "OS_VERSION"
+    val APP_VERSION = "APP_VERSION"
+    val DEVICE_NAME = "DEVICE_NAME"
+    val NETWORK_TYPE = "NETWORK_TYPE"
+    val DEVICE_ID = "DEVICE_ID"
+    val MODEL = "MODEL"
+    val APP_VERSION_CODE = "APP_VERSION_CODE"
+
+    val FROM_VIDEO = "FROM_VIDEO"
+
+    val VIDEO_PATH = "VIDEO_PATH"
 
 
 

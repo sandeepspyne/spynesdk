@@ -2,6 +2,7 @@ package com.spyneai.shoot.data
 
 import android.content.ContentValues
 import android.provider.BaseColumns
+import android.util.Log
 import com.spyneai.BaseApplication
 import com.spyneai.db.DBHelper
 import com.spyneai.db.Images
@@ -9,8 +10,8 @@ import com.spyneai.db.Projects
 import com.spyneai.db.ShootContract
 import com.spyneai.shoot.data.model.Image
 import com.spyneai.shoot.data.model.Project
-import com.spyneai.shoot.utils.logUpload
 import com.spyneai.shoot.data.model.Sku
+import com.spyneai.shoot.utils.logUpload
 
 class ShootLocalRepository {
 
@@ -389,6 +390,7 @@ class ShootLocalRepository {
             put(Images.COLUMN_NAME_IMAGE_SEQUENCE, image.sequence)
             put(Images.COLUMN_NAME_IS_UPLOADED, 0)
             put(Images.COLUMN_NAME_IMAGE_ANGLE, image.angle)
+            put(Images.COLUMN_NAME_IMAGE_META, image.meta)
         }
 
         val newRowId = dbWritable?.insert(Images.TABLE_NAME, null, values)
@@ -405,7 +407,8 @@ class ShootLocalRepository {
             Images.COLUMN_NAME_CATEGORY_NAME,
             Images.COLUMN_NAME_IMAGE_PATH,
             Images.COLUMN_NAME_IMAGE_SEQUENCE,
-            Images.COLUMN_NAME_IMAGE_ANGLE)
+            Images.COLUMN_NAME_IMAGE_ANGLE,
+            Images.COLUMN_NAME_IMAGE_META)
 
         // Filter results WHERE "title" = 'My Title'
          val selection = "${Images.COLUMN_NAME_IS_UPLOADED} = ?"
@@ -437,6 +440,7 @@ class ShootLocalRepository {
                 val imagePath = getString(getColumnIndexOrThrow(Images.COLUMN_NAME_IMAGE_PATH))
                 val sequence = getInt(getColumnIndexOrThrow(Images.COLUMN_NAME_IMAGE_SEQUENCE))
                 val angle = getInt(getColumnIndexOrThrow(Images.COLUMN_NAME_IMAGE_ANGLE))
+                val meta = getString(getColumnIndexOrThrow(Images.COLUMN_NAME_IMAGE_META))
 
                 image.itemId = itemId
                 image.projectId = projectId
@@ -446,6 +450,7 @@ class ShootLocalRepository {
                 image.imagePath = imagePath
                 image.sequence = sequence
                 image.angle = angle
+                image.meta = meta
             }
         }
 
@@ -460,7 +465,10 @@ class ShootLocalRepository {
             Images.COLUMN_NAME_SKU_ID,
             Images.COLUMN_NAME_CATEGORY_NAME,
             Images.COLUMN_NAME_IMAGE_PATH,
-            Images.COLUMN_NAME_IMAGE_SEQUENCE)
+            Images.COLUMN_NAME_IMAGE_ANGLE,
+            Images.COLUMN_NAME_IMAGE_SEQUENCE,
+            Images.COLUMN_NAME_IMAGE_ANGLE,
+            Images.COLUMN_NAME_IMAGE_META)
 
         // Filter results WHERE "title" = 'My Title'
         val selection = "${Images.COLUMN_NAME_IS_UPLOADED} = ?"
@@ -491,6 +499,8 @@ class ShootLocalRepository {
                 val categoryName = getString(getColumnIndexOrThrow(Images.COLUMN_NAME_CATEGORY_NAME))
                 val imagePath = getString(getColumnIndexOrThrow(Images.COLUMN_NAME_IMAGE_PATH))
                 val sequence = getInt(getColumnIndexOrThrow(Images.COLUMN_NAME_IMAGE_SEQUENCE))
+                val angle = getInt(getColumnIndexOrThrow(Images.COLUMN_NAME_IMAGE_ANGLE))
+                val meta = getString(getColumnIndexOrThrow(Images.COLUMN_NAME_IMAGE_META))
 
                 image.itemId = itemId
                 image.projectId = projectId
@@ -499,6 +509,8 @@ class ShootLocalRepository {
                 image.categoryName = categoryName
                 image.imagePath = imagePath
                 image.sequence = sequence
+                image.angle = angle
+                image.meta = meta
             }
         }
 
@@ -571,6 +583,7 @@ class ShootLocalRepository {
             put(ShootContract.ShootEntry.COLUMN_NAME_UPLOADED_IMAGES, 0)
             put(ShootContract.ShootEntry.COLUMN_NAME_PROCESS_SKU, 0)
             put(ShootContract.ShootEntry.COLUMN_NAME_IS_PROCESSED, -1)
+            put(ShootContract.ShootEntry.COLUMN_NAME_THREE_SIXTY_FRAMES, sku.threeSixtyFrames)
         }
 
         val newRowId = dbWritable?.insert(ShootContract.ShootEntry.TABLE_NAME, null, values)
@@ -774,6 +787,37 @@ class ShootLocalRepository {
 
     }
 
+    fun updateVideoSkuLocally(sku : Sku) {
+        val values = ContentValues().apply {
+            put(
+                ShootContract.ShootEntry.COLUMN_NAME_SUB_CATEGORY_ID,
+                sku.subcategoryId
+            )
+            put(
+                ShootContract.ShootEntry.COLUMN_NAME_SUB_CATEGORY_NAME,
+                sku.subcategoryName
+            )
+
+            put(
+                ShootContract.ShootEntry.COLUMN_NAME_EXTERIOR_ANGLES,
+                sku.exteriorAngles
+            )
+        }
+
+        val selection = "${ShootContract.ShootEntry.COLUMN_NAME_SKU_ID} LIKE ?"
+
+        val selectionArgs = arrayOf(sku.skuId)
+
+
+        val count = dbWritable.update(
+            ShootContract.ShootEntry.TABLE_NAME,
+            values,
+            selection,
+            selectionArgs)
+
+        Log.d(TAG, "updateVideoSkuLocally: "+count)
+    }
+
     fun processSku(skuId: String) : Boolean {
         val sku = getUploadedAndTotalImagesCount(skuId)
         return sku.uploadedImages == sku.totalImages && sku.processSku == 1
@@ -786,6 +830,7 @@ class ShootLocalRepository {
 
     fun updateIsProcessed(projectId : String,skuId : String) {
         updateProjectStatus(projectId)
+
         val values = ContentValues().apply {
             put(
                 ShootContract.ShootEntry.COLUMN_NAME_IS_PROCESSED,
@@ -806,6 +851,8 @@ class ShootLocalRepository {
             selectionArgs)
 
 
+        com.spyneai.shoot.utils.log("Upload count(update): "+count)
+        com.spyneai.shoot.utils.log("Upload count(update): "+projectId+" "+skuId)
     }
 
     fun updateSkipedImages() : Int {
@@ -849,6 +896,7 @@ class ShootLocalRepository {
             projectSelection,
             projectSelectionArgs)
 
+        com.spyneai.shoot.utils.log("Upload prject(update): "+projectCount)
 
     }
 

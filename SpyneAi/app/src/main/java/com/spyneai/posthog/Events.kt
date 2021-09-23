@@ -62,6 +62,9 @@ object Events {
     val CREATE_SKU = "Android Create SKU"
     val CREATE_SKU_FAILED = "Android Create SKU Failed"
 
+    val VIDEO_SKU_UPDATED = "Video SKU Updated"
+    val VIDEO_SKU_UPDATE_FAILED = "Video SKU update Failed"
+
     val IMAGE_CAPTURED = "Android Image Captured"
     val IMAGE_CAPRURE_FAILED = "Android Image Capture Failed"
     val CONFIRMED = "Android Confirmed"
@@ -113,6 +116,7 @@ object Events {
     val FILE_READ_WORKED_INTIATED = "File Read Worker Initiated"
     val FILE_READ_WORKED_NOT_INTIATED = "File Read False"
     val FILE_FOLDER_UPLOAD_FALSE = "Folder Upload False"
+    val FILE_WORKER_ALREADY_INTIATED = "Folder Upload False"
     val FILE_READ_WORKER_STARTED = "File Read Worker Started"
     val FILE_REAED_FINISHED = "File Read Worker Finished"
     val MANUAL_WORKER_ALREADY_RUNNING = "Manual Upload Already Running"
@@ -136,11 +140,24 @@ object Events {
     val CANCELLED_WORKER_START_EXCEPTION = "START CANCELLED WORKER"
 
     val SERVICE_STARTED = "SERVICE_STARTED"
+    val MANUAL_SERVICE_STARTED = "MANUAL_SERVICE_STARTED"
     val SERVICE_ALREADY_RUNNING = "SERVICE_ALREADY_RUNNING"
 
     val JSON_RESPONSE = "JSON_RESPONSE"
 
     val CHECK_FOLDER_API_FAILED = "CHECK_FOLDER_API_FAILED"
+
+    val FILES_DATA_SENT = "FILES_DATA_SENT"
+    val FILES_DATA_SENT_FAILED = "FILES_DATA_SENT_FAILED"
+
+    val GET_PRESIGNED_VIDEO_URL_FAILED = "GET_PRESIGNED_VIDEO_URL_FAILED"
+    val GOT_PRESIGNED_VIDEO_URL = "GOT_PRESIGNED_VIDEO_URL"
+
+    val VIDEO_UPLOADED_TO_GCP = "VIDEO_UPLOADED_TO_GCP"
+    val VIDEO_UPLOAD_TO_GCP_FAILED = "VIDEO_UPLOAD_TO_GCP_FAILED"
+
+    val MARK_VIDEO_UPLOADED_FAILED = "MARK_VIDEO_UPLOADED_FAILED"
+    val MARKED_VIDEO_UPLOADED = "MARKED_VIDEO_UPLOADED"
 
 
 }

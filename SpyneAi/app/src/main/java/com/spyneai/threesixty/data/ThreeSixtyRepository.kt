@@ -3,6 +3,7 @@ package com.spyneai.threesixty.data
 import com.spyneai.base.BaseRepository
 import com.spyneai.base.network.ClipperApiClient
 import com.spyneai.base.network.SpyneAiApiClient
+import com.spyneai.threesixty.data.model.PreSignedVideoBody
 import com.spyneai.threesixty.data.model.VideoDetails
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.MultipartBody
@@ -46,6 +47,39 @@ class ThreeSixtyRepository : BaseRepository() {
         )
     }
 
+    suspend fun getVideoPreSignedUrl(
+        preSignedVideoBody : PreSignedVideoBody
+    )= safeApiCall {
+        clipperApi.getVideoPreSignedUrl(
+            preSignedVideoBody.authKey,
+            preSignedVideoBody.projectId,
+            preSignedVideoBody.skuId,
+            preSignedVideoBody.category,
+            preSignedVideoBody.categoryId,
+            preSignedVideoBody.totalFrames,
+            preSignedVideoBody.videoName,
+            preSignedVideoBody.backgroundId
+        )
+    }
+
+//    suspend fun uploadVideo(
+//        contentType : String,
+//        url : String,
+//        file : MultipartBody.Part
+//    ) = safeApiCall {
+//        clipperApi.uploadVideo(
+//            contentType,
+//            url,
+//            file
+//        )
+//    }
+
+    suspend fun setStatusUploaded(
+        videoId: String
+    ) = safeApiCall {
+        clipperApi.setStatusUploaded(videoId)
+    }
+
     suspend fun getBackgroundGifCars(
         category: RequestBody,
         auth_key: RequestBody
@@ -61,9 +95,10 @@ class ThreeSixtyRepository : BaseRepository() {
 
     suspend fun reduceCredit(
         userId : String,
-        creditReduce:String
+        creditReduce:String,
+        skuId: String
     )= safeApiCall {
-        clipperApi.reduceCredit(userId, creditReduce)
+        clipperApi.reduceCredit(userId, creditReduce,skuId)
     }
 
     suspend fun updateDownloadStatus(

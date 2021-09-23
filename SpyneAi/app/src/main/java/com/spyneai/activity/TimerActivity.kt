@@ -20,7 +20,6 @@ import com.spyneai.model.sku.Photos
 import com.spyneai.needs.AppConstants
 import com.spyneai.needs.Utilities
 import com.spyneai.service.Actions
-import com.spyneai.service.ProcessImagesService
 import com.spyneai.service.getServiceState
 import com.spyneai.service.log
 import kotlinx.android.synthetic.main.activity_timer.*
@@ -188,57 +187,7 @@ class TimerActivity : AppCompatActivity() {
     }
 
     private fun actionOnService(action: Actions) {
-        if (getServiceState(this) == com.spyneai.service.ServiceState.STOPPED && action == Actions.STOP)
-            return
-        val serviceIntent = Intent(this@TimerActivity, ProcessImagesService::class.java)
-        serviceIntent.putExtra(AppConstants.BG_ID, backgroundSelect)
-        serviceIntent.putExtra(AppConstants.ALL_IMAGE_LIST, imageFileList)
-        serviceIntent.putExtra(AppConstants.ALL_FRAME_LIST, imageFileListFrames)
-        serviceIntent.putExtra(AppConstants.ALL_INTERIOR_IMAGE_LIST, imageInteriorFileList)
-        serviceIntent.putExtra(AppConstants.ALL_INTERIOR_FRAME_LIST, imageInteriorFileListFrames)
-        serviceIntent.putExtra(AppConstants.ALL_FOCUSED_IMAGE_LIST, imageFocusedFileList)
-        serviceIntent.putExtra(AppConstants.ALL_FOCUSED_FRAME_LIST, imageFocusedFileListFrames)
-        serviceIntent.putExtra(AppConstants.CATEGORY_NAME, catName)
-        serviceIntent.putExtra(AppConstants.MARKETPLACE_ID, marketplaceId)
-        serviceIntent.putExtra(AppConstants.BACKGROUND_COLOUR, backgroundColour)
-        serviceIntent.putExtra(
-            AppConstants.SKU_NAME,
-            Utilities.getPreference(this, AppConstants.SKU_NAME)
-        )
-        serviceIntent.putExtra(
-            AppConstants.SKU_ID,
-            Utilities.getPreference(this, AppConstants.SKU_ID)
-        )
-        serviceIntent.putExtra(
-            AppConstants.SHOOT_ID,
-            Utilities.getPreference(this, AppConstants.SHOOT_ID)
-        )
-        serviceIntent.putExtra(
-            AppConstants.TOKEN_ID,
-            Utilities.getPreference(this, AppConstants.TOKEN_ID)
-        )
-        serviceIntent.putExtra(
-            AppConstants.WINDOWS,
-            Utilities.getPreference(this, AppConstants.WINDOWS)
-        )
-        serviceIntent.putExtra(
-            AppConstants.EXPOSURES,
-            Utilities.getPreference(this, AppConstants.EXPOSURES)
-        )
 
-        serviceIntent.putExtra(AppConstants.DEALERSHIP_LOGO, dealershipLogo)
-        serviceIntent.putExtra(AppConstants.CORNER_POSITION, cornerPosition)
-
-        serviceIntent.action = action.name
-
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            log("Starting the service in >=26 Mode")
-            ContextCompat.startForegroundService(this@TimerActivity, serviceIntent)
-            return
-        } else {
-            log("Starting the service in < 26 Mode")
-            startService(serviceIntent)
-        }
 
     }
 

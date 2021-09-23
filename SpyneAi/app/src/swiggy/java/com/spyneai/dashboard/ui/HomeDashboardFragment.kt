@@ -7,6 +7,7 @@ import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
 import android.os.Handler
+import android.text.TextUtils.replace
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -16,6 +17,7 @@ import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
+import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -25,6 +27,7 @@ import com.google.android.play.core.appupdate.AppUpdateManagerFactory
 import com.google.android.play.core.install.model.AppUpdateType
 import com.google.android.play.core.install.model.UpdateAvailability
 import com.google.android.play.core.ktx.startUpdateFlowForResult
+import com.google.gson.Gson
 import com.posthog.android.Properties
 import com.spyneai.R
 import com.spyneai.activity.CategoriesActivity
@@ -39,12 +42,14 @@ import com.spyneai.dashboard.adapters.CompletedDashboardAdapter
 import com.spyneai.dashboard.adapters.OngoingDashboardAdapter
 import com.spyneai.dashboard.adapters.TutorialVideosAdapter
 import com.spyneai.dashboard.data.DashboardViewModel
+import com.spyneai.dashboard.data.model.LayoutHolder
 import com.spyneai.dashboard.response.NewCategoriesResponse
 import com.spyneai.databinding.HomeDashboardFragmentBinding
 import com.spyneai.needs.AppConstants
 import com.spyneai.needs.Utilities
 import com.spyneai.orders.data.response.GetProjectsResponse
 import com.spyneai.posthog.Events
+import com.spyneai.shoot.data.model.ProjectDetailResponse
 import com.spyneai.shoot.ui.base.ShootPortraitActivity
 import com.spyneai.shoot.utils.log
 
@@ -94,16 +99,15 @@ class HomeDashboardFragment :
         PACKAGE_NAME = requireContext().getPackageName().toString()
         appUpdateManager = AppUpdateManagerFactory.create(requireContext())
 
-
-        if (PACKAGE_NAME.equals("com.spyneai.swiggy.debug")) {
+//        if (PACKAGE_NAME.equals("com.spyneai.swiggy.debug")) {
 //            newUserCreditDialog()
             repeatRefreshData()
             setSliderRecycler()
             lisners()
             welcomeHomeText()
             getCategories()
-        } else
-            autoUpdates()
+//        } else
+//            autoUpdates()
     }
 
     private fun autoUpdates() {
@@ -274,6 +278,9 @@ class HomeDashboardFragment :
         viewModel.categoriesResponse.observe(viewLifecycleOwner, Observer {
             when (it) {
                 is Resource.Success -> {
+
+                    LayoutHolder.data = it.value.data
+
                     requireContext().captureEvent(Events.GOT_CATEGORIES, Properties())
 
                     binding.shimmerCategories.stopShimmer()
@@ -340,6 +347,7 @@ class HomeDashboardFragment :
 
                                     0, 1 -> {
                                         val intent = Intent(requireContext(), ShootPortraitActivity::class.java)
+                                        val gson = Gson()
                                         intent.putExtra(
                                             AppConstants.CATEGORY_NAME,
                                             displayName

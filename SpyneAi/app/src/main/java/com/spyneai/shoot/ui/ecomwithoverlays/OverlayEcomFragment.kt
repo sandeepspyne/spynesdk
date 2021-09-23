@@ -3,7 +3,6 @@ package com.spyneai.shoot.ui.ecomwithoverlays
 import android.content.res.Configuration
 import android.graphics.drawable.Drawable
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -30,18 +29,14 @@ import com.spyneai.needs.AppConstants
 import com.spyneai.needs.Utilities
 import com.spyneai.posthog.Events
 import com.spyneai.shoot.adapter.ShootProgressAdapter
-import com.spyneai.shoot.adapters.CapturedImageAdapter
 import com.spyneai.shoot.adapters.NewSubCategoriesAdapter
 import com.spyneai.shoot.data.ShootViewModel
 import com.spyneai.shoot.data.model.ShootData
-import com.spyneai.shoot.ui.dialogs.AngleSelectionDialog
-import com.spyneai.shoot.ui.dialogs.ConfirmReshootDialog
-import com.spyneai.shoot.ui.ecomwithgrid.dialogs.ConfirmReshootEcomDialog
 import com.spyneai.shoot.ui.ecomwithgrid.dialogs.CreateProjectEcomDialog
 import com.spyneai.shoot.ui.ecomwithgrid.dialogs.CreateSkuEcomDialog
 import com.spyneai.shoot.utils.log
 import kotlinx.android.synthetic.main.fragment_overlays.*
-import java.util.ArrayList
+import java.util.*
 
 class OverlayEcomFragment : BaseFragment<ShootViewModel, FragmentOverlayEcomBinding>(),
     NewSubCategoriesAdapter.BtnClickListener {
@@ -128,7 +123,7 @@ class OverlayEcomFragment : BaseFragment<ShootViewModel, FragmentOverlayEcomBind
         viewModel.isSubCategoryConfirmed.observe(viewLifecycleOwner,{
             //disable angle selection click
             binding.tvShoot?.isClickable = false
-            if (it) binding.rvSubcategories?.visibility = View.INVISIBLE
+            if (it) binding.rvSubcategories?.visibility = View.GONE
         })
     }
 
@@ -181,7 +176,7 @@ class OverlayEcomFragment : BaseFragment<ShootViewModel, FragmentOverlayEcomBind
 //                    initProgressFrames()
 
                     if (viewModel.fromDrafts && viewModel.subCatName.value != null){
-                        binding.rvSubcategories.visibility = View.INVISIBLE
+                        binding.rvSubcategories.visibility = View.GONE
                         viewModel.showLeveler.value = true
                     }else {
                         binding.clSubcatSelectionOverlay?.visibility = View.VISIBLE

@@ -9,4 +9,5 @@ class Image {
     var imagePath : String? = null
     var sequence : Int? = null
     var angle : Int? = null
+    var meta : String? = null
 }

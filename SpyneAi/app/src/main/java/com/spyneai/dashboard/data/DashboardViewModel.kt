@@ -8,14 +8,17 @@ import androidx.lifecycle.viewModelScope
 import com.spyneai.dashboard.data.repository.DashboardRepository
 import kotlinx.coroutines.launch
 import com.spyneai.base.network.Resource
+import com.spyneai.dashboard.data.model.VersionStatusRes
 import com.spyneai.dashboard.response.NewCategoriesResponse
 import com.spyneai.orders.data.response.CompletedSKUsResponse
 import com.spyneai.orders.data.response.GetOngoingSkusResponse
 import com.spyneai.orders.data.response.GetProjectsResponse
+import com.spyneai.shoot.data.ShootRepository
 
 class DashboardViewModel() : ViewModel() {
 
     private val repository = DashboardRepository()
+
 
     private val _categoriesResponse: MutableLiveData<Resource<NewCategoriesResponse>> = MutableLiveData()
     val categoriesResponse: LiveData<Resource<NewCategoriesResponse>>
@@ -28,6 +31,10 @@ class DashboardViewModel() : ViewModel() {
     private val _completedSkusResponse: MutableLiveData<Resource<CompletedSKUsResponse>> = MutableLiveData()
     val completedSkusResponse: LiveData<Resource<CompletedSKUsResponse>>
         get() = _completedSkusResponse
+
+    private val _versionResponse: MutableLiveData<Resource<VersionStatusRes>> = MutableLiveData()
+    val versionResponse: LiveData<Resource<VersionStatusRes>>
+        get() = _versionResponse
 
     val isNewUser: MutableLiveData<Boolean> = MutableLiveData()
     val creditsMessage: MutableLiveData<String> = MutableLiveData()
@@ -66,7 +73,6 @@ class DashboardViewModel() : ViewModel() {
     ) = viewModelScope.launch {
         _getProjectsResponse.value = Resource.Loading
         _getProjectsResponse.value = repository.getProjects(tokenId, status)
-
     }
 
     private val _getCompletedProjectsResponse: MutableLiveData<Resource<GetProjectsResponse>> = MutableLiveData()
@@ -78,8 +84,17 @@ class DashboardViewModel() : ViewModel() {
     ) = viewModelScope.launch {
         _getCompletedProjectsResponse.value = Resource.Loading
         _getCompletedProjectsResponse.value = repository.getProjects(tokenId, status)
-
     }
+
+    fun getVersionStatus(
+        authKey: String,
+        appVersion: String
+    ) = viewModelScope.launch {
+        _versionResponse.value = Resource.Loading
+        _versionResponse.value = repository.getVersionStatus(authKey, appVersion)
+    }
+
+
 
 
 }

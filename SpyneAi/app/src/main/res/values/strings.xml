@@ -216,7 +216,7 @@
     <string name="go_to_home">Go to home</string>
 
 
-    <string name="terms_and_conditions_url_swiggy">https://www.swiggy.com/terms-and-conditions</string>
+    <string name="terms_and_conditions_url_swiggy">https://www.flipkart.com/pages/privacypolicy</string>
 
     <string name="create_professional_automobile">Create Professional\n<br />Pictures in a Single Click using AI</string>
 
@@ -233,6 +233,7 @@
     <string name="completed_shoots">Completed Shoots</string>
     <string name="explore_categories">Explore Categories</string>
     <string name="tutorial_videos">Tutorial Videos</string>
+<<<<<<< HEAD
     <string name="enter_email">Enter Email</string>
     <string name="enter_password">Enter Password</string>
     <string name="new_to_app">New to SpyneAI</string>
@@ -258,5 +259,12 @@
     <string name="explore">Explore</string>
     <string name="beta">Beta</string>
 
+=======
+    <string name="image_category">Image Category</string>
+    <string name="additionl_settings">Additional Notes</string>
+    <string name="add_text_here">Add Text Here</string>
+    <string name="continue_shoot">Continue Shoot</string>
+    <string name="shoot_images">Shoot Images</string>
+>>>>>>> dev_sandeep_white_label_v2
 
 </resources>

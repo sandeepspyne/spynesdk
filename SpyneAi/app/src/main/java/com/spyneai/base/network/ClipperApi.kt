@@ -1,24 +1,37 @@
 package com.spyneai.base.network
 
+import com.spyneai.BaseApplication
 import com.spyneai.camera2.OverlaysResponse
 import com.spyneai.credits.model.DownloadHDRes
 import com.spyneai.credits.model.ReduceCreditResponse
+import com.spyneai.dashboard.data.model.VersionStatusRes
 import com.spyneai.dashboard.response.NewCategoriesResponse
 import com.spyneai.dashboard.response.NewSubCatResponse
 import com.spyneai.model.credit.CreditDetailsResponse
 import com.spyneai.model.projects.CompletedProjectResponse
+import com.spyneai.needs.AppConstants
+import com.spyneai.needs.Utilities
 import com.spyneai.orders.data.response.CompletedSKUsResponse
 import com.spyneai.orders.data.response.GetOngoingSkusResponse
 import com.spyneai.orders.data.response.GetProjectsResponse
 import com.spyneai.orders.data.response.ImagesOfSkuRes
+import com.spyneai.orders.data.response.*
+import com.spyneai.service.manual.FilesDataRes
 import com.spyneai.shoot.data.model.*
 import com.spyneai.shoot.response.SkuProcessStateResponse
+import com.spyneai.shoot.response.UpdateVideoSkuRes
 import com.spyneai.shoot.response.UploadFolderRes
 import com.spyneai.shoot.response.UploadStatusRes
+import com.spyneai.threesixty.data.model.VideoPreSignedRes
 import com.spyneai.threesixty.data.response.ProcessThreeSixtyRes
+import com.spyneai.threesixty.data.response.VideoUploadedRes
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
+import org.json.JSONObject
+import okhttp3.ResponseBody
 import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
 import retrofit2.http.*
 
 interface ClipperApi {
@@ -32,6 +45,7 @@ interface ClipperApi {
         @Part("auth_key") auth_key: RequestBody?,
         @Part("upload_type") upload_type: RequestBody?,
         @Part("frame_seq_no") frame_seq_no: Int,
+        @Part("tags") tags: RequestBody,
         @Part file: MultipartBody.Part
     ): UploadImageResponse
 
@@ -80,7 +94,7 @@ interface ClipperApi {
     suspend fun getCategories(@Query(
         "auth_key") authKey : String): NewCategoriesResponse
 
-    @GET("v2/prod/sub/fetch")
+    @GET("v2/prod/sub/fetch/v2")
     suspend fun getSubCategories(
         @Query("auth_key") authKey : String,
         @Query("prod_id") prodId : String
@@ -96,7 +110,8 @@ interface ClipperApi {
     @POST("v2/project/create/v2")
     suspend fun createProject(@Field("auth_key") authKey : String,
                               @Field("project_name") projectName : String,
-                              @Field("prod_cat_id") prodCatId : String) : CreateProjectRes
+                              @Field("prod_cat_id") prodCatId : String,
+                              @Field("dynamic_layout") dynamic_layout: JSONObject? = null) : CreateProjectRes
 
     @FormUrlEncoded
     @POST("v2/sku/create/v2")
@@ -105,7 +120,20 @@ interface ClipperApi {
                           @Field("prod_cat_id") prodCatId : String,
                           @Field("prod_sub_cat_id") prodSubCatId : String,
                           @Field("sku_name") skuName : String,
-                          @Field("total_frames") totalFrames : Int) : CreateSkuRes
+                          @Field("total_frames") totalFrames : Int,
+                          @Field("images") images : Int,
+                          @Field("videos") videos : Int
+    ) : CreateSkuRes
+
+    @FormUrlEncoded
+    @POST("v3/video/videoimages-update")
+    suspend fun updateVideoSku(
+        @Field("sku_id") skuId : String,
+        @Field("prod_sub_cat_id") prodSubCatId : String,
+        @Field("initial_image_count") initialImageCount : Int,
+        @Field("auth_key") authKey : String = Utilities.getPreference(BaseApplication.getContext(),AppConstants.AUTH_KEY).toString(),
+        @Field("images") images : Int = 1
+    ) : UpdateVideoSkuRes
 
     @Multipart
     @POST("v2/backgrounds/fetchEnterpriseBgs")
@@ -193,27 +221,49 @@ interface ClipperApi {
         @Part("video_url") videoUrl: RequestBody? = null,
     ) : ProcessThreeSixtyRes
 
+    @FormUrlEncoded
+    @POST("v3/video/video-upload")
+    suspend fun getVideoPreSignedUrl(
+        @Field("auth_key") authKey : String,
+        @Field("project_id") projectId:String,
+        @Field("sku_id") skuId : String,
+        @Field("category") category : String,
+        @Field("sub_category") sub_category : String,
+        @Field("total_frames_no") totalFrames: Int,
+        @Field("video_name") videoName : String,
+        @Field("background_id") backgroundId : String? = null
+    ) : VideoPreSignedRes
+
+
+    @PUT
+    fun uploadVideo(
+        @Header("content-type") contentType: String,
+        @Url uploadUrl: String,
+        @Body file: RequestBody
+    ): Call<ResponseBody>
+
+    @FormUrlEncoded
+    @PUT("v3/video/video-mark")
+    suspend fun setStatusUploaded(
+        @Field("video_id") videoId : String,
+        @Field("auth_key") authKey : String = Utilities.getPreference(BaseApplication.getContext(),AppConstants.AUTH_KEY).toString()
+    ) : VideoUploadedRes
+
+
+
     @GET("v2/credit/fetch")
     suspend fun userCreditsDetails(
         @Query("auth_key") userId: String
     ): CreditDetailsResponse
 
-
     @FormUrlEncoded
-    @PUT("v4/reduce-credit")
-    suspend fun reduceCredit(
-        @Field("user_id") userId : String,
-        @Field("credit_reduce") creditReduce:String,
-        @Field("enterprise_id") enterpriseId: String,
-        @Field("sku_id") skuId: String
-    ): ReduceCreditResponse
-
-
-    @FormUrlEncoded
-    @PUT("v2/credit/reduce-credit")
+    @PUT("v2/credit/reduce-user-credit")
     suspend fun reduceCredit(
         @Field("auth_key") authKey : String,
-        @Field("credit_reduce") creditReduce:String
+        @Field("credit_reduce") creditReduce:String,
+        @Field("sku_id") skuId : String,
+        @Field("source") source : String = "App",
+        @Field("image_id") imageId : String = ""
     ): ReduceCreditResponse
 
     @FormUrlEncoded
@@ -261,5 +311,17 @@ interface ClipperApi {
     fun uploadFolder(@Query(
         "auth_key") authKey : String) : Call<UploadFolderRes>
 
+    @FormUrlEncoded
+    @POST("v2/image/user-data")
+    suspend fun sendFilesData(
+        @Field("auth_key") authKey: String,
+        @Field("data") skuId: String
+    ) : FilesDataRes
+
+    @GET("v2/enterprise/compareAppVersion")
+    suspend fun getVersionStatus(
+        @Query("auth_key") authKey: String,
+        @Query("app_version") appVersion: String
+    ) : VersionStatusRes
 
 }

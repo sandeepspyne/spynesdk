@@ -69,7 +69,6 @@
         app:layout_constraintStart_toStartOf="@id/flRecord"
         app:layout_constraintTop_toBottomOf="@id/flRecord" />
 
-
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -87,8 +86,6 @@
         android:paddingRight="12dp"
         android:paddingTop="5dp"
         android:paddingBottom="5dp" />
-
-
 
     <ImageView
         android:layout_width="56dp"

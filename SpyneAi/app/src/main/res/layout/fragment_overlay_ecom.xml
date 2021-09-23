@@ -1,122 +1,100 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    tools:context=".shoot.ui.OverlaysFragment"
-    android:background="@android:color/transparent">
+    android:background="@color/transparent"
+    tools:context=".shoot.ui.OverlaysFragment">
 
 
     <androidx.appcompat.widget.Toolbar
         android:id="@+id/my_toolbar"
         android:layout_width="match_parent"
         android:layout_height="?attr/actionBarSize"
-        android:background="?attr/colorPrimary"
+        android:background="@color/black"
         android:elevation="@dimen/dp_5"
-        android:backgroundTint="@color/black"
         android:theme="@style/ThemeOverlay.AppCompat.Light"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toTopOf="parent" >
+        app:layout_constraintTop_toTopOf="parent">
+
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="?attr/actionBarSize"
-            android:foregroundGravity="center"
-            >
+            android:foregroundGravity="center">
+
             <ImageView
                 android:id="@+id/ivBackCompleted"
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
+                android:layout_alignParentLeft="true"
                 android:src="@drawable/back"
                 android:visibility="invisible"
-                android:layout_alignParentLeft="true"
                 app:tint="@color/black" />
 
             <TextView
                 android:id="@+id/tvSkuName"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_centerInParent="true"
                 android:background="@drawable/bg_edit"
                 android:fontFamily="@font/medium"
-                android:maxLines="1"
                 android:maxLength="20"
-                tools:text="sku-name"
-                android:layout_centerInParent="true"
+                android:maxLines="1"
+                android:padding="@dimen/dp_5"
                 android:textColor="@color/white"
                 android:textSize="@dimen/sp_13"
-                android:padding="@dimen/dp_5"
-                android:visibility="invisible"/>
+                android:visibility="invisible"
+                tools:text="sku-name" />
 
 
         </RelativeLayout>
 
     </androidx.appcompat.widget.Toolbar>
 
-    <LinearLayout
-        android:id="@+id/llCapture"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="@null"
-        android:visibility="gone"
-        android:padding="@dimen/dp_10"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent">
-
-        <ImageView
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:visibility="invisible"
-            android:elevation="2dp"
-            android:src="@drawable/click_effect" />
-
-    </LinearLayout>
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rvSubcategories"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:background="@null"
+        app:layout_constraintBottom_toBottomOf="@+id/viewFinder"
         app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintBottom_toTopOf="@+id/llCapture"
-        android:padding="@dimen/dp_10"
-        android:background="@color/black"/>
+        app:layout_constraintRight_toRightOf="parent" />
 
 
     <LinearLayout
+        android:id="@+id/llProgress"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintBottom_toTopOf="@+id/rvSubcategories"
-        android:id="@+id/llProgress"
-        android:layout_margin="@dimen/dp_15"
         android:orientation="horizontal"
-        android:visibility="invisible">
+        android:visibility="invisible"
+        app:layout_constraintBottom_toTopOf="@+id/rvSubcategories"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent">
 
         <LinearLayout
+            android:id="@+id/ll_angles"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginLeft="@dimen/dp_10"
-            android:id="@+id/ll_angles"
             android:background="@drawable/bg_shoot_anlges">
 
             <TextView
                 android:id="@+id/tvShoot"
                 android:layout_width="wrap_content"
-                tools:text="Angles 1/4"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
                 android:fontFamily="@font/bold"
                 android:gravity="center"
                 android:paddingLeft="@dimen/dp_10"
-                android:paddingRight="@dimen/dp_10"
                 android:paddingTop="@dimen/dp_5"
+                android:paddingRight="@dimen/dp_10"
                 android:paddingBottom="@dimen/dp_5"
                 android:textColor="@color/primary"
-                android:textSize="@dimen/sp_13" />
+                android:textSize="@dimen/sp_13"
+                tools:text="Angles 1/4" />
 
         </LinearLayout>
 
@@ -132,61 +110,96 @@
 
 
     <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/clSubcatSelectionOverlay"
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:background="#e6000000"
-        android:id="@+id/clSubcatSelectionOverlay"
         android:clickable="true"
         android:visibility="gone"
+        app:layout_constraintBottom_toTopOf="@+id/rvSubcategories"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintBottom_toTopOf="@+id/rvSubcategories"
         app:layout_constraintTop_toTopOf="parent">
 
         <ImageView
+            android:id="@+id/iv_arrow"
             android:layout_width="100dp"
             android:layout_height="70dp"
-            android:id="@+id/iv_arrow"
+            android:layout_marginLeft="@dimen/dp_40"
             android:layout_marginTop="@dimen/dp_40"
             android:layout_marginBottom="@dimen/dp_40"
             android:adjustViewBounds="true"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintLeft_toLeftOf="parent"
-            android:src="@drawable/ic_subcat_selection"
             android:rotation="-90"
-            android:layout_marginLeft="@dimen/dp_40"/>
+            android:src="@drawable/ic_subcat_selection"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintLeft_toLeftOf="parent" />
 
         <TextView
             android:id="@+id/tvSubCategory"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Select your car's sub-category"
-            android:textColor="@color/white"
-            android:fontFamily="@font/bold"
-            android:textSize="@dimen/sp_14"
             android:layout_marginTop="@dimen/dp_15"
             android:layout_marginRight="@dimen/dp_7"
-            app:layout_constraintTop_toTopOf="@id/iv_arrow"
+            android:fontFamily="@font/bold"
+            android:text="Select your car's sub-category"
+            android:textColor="@color/white"
+            android:textSize="@dimen/sp_14"
+            app:layout_constraintLeft_toRightOf="@+id/iv_arrow"
             app:layout_constraintRight_toRightOf="parent"
-            app:layout_constraintLeft_toRightOf="@+id/iv_arrow"/>
+            app:layout_constraintTop_toTopOf="@id/iv_arrow" />
     </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <androidx.camera.view.PreviewView
+        android:id="@+id/viewFinder"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:visibility="invisible"
+        app:layout_constraintDimensionRatio="3:4"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/my_toolbar" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/viewFinder"
+        android:background="@color/black"
+        android:orientation="horizontal"/>
 
     <ImageView
         android:id="@+id/imgOverlay"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:contentDescription="@string/app_name"
+        android:visibility="invisible"
+        app:layout_constraintBottom_toBottomOf="@+id/viewFinder"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintBottom_toTopOf="@+id/rvSubcategories"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        android:src="@mipmap/defaults"
-        android:layout_marginTop="@dimen/dp_100"
-        android:layout_marginLeft="@dimen/dp_50"
-        android:layout_marginRight="@dimen/dp_50"
-        android:layout_marginBottom="@dimen/dp_50"
-        android:contentDescription="@string/app_name"
-        android:visibility="invisible"/>
+        app:layout_constraintTop_toTopOf="@+id/viewFinder" />
 
+
+    <LinearLayout
+        android:id="@+id/llCapture"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/black"
+        android:padding="@dimen/dp_10"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent">
+
+        <ImageView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:elevation="2dp"
+            android:src="@drawable/click_effect" />
+
+    </LinearLayout>
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

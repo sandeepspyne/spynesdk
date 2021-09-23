@@ -1,9 +1,12 @@
 package com.spyneai.threesixty.ui.fragments
 
+import android.content.Intent
+import android.os.Build
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.content.ContextCompat
 import androidx.navigation.Navigation
 import com.bumptech.glide.Glide
 import com.spyneai.R
@@ -15,7 +18,11 @@ import com.spyneai.databinding.Fragment360ShotSummaryBinding
 import com.spyneai.fragment.TopUpFragment
 import com.spyneai.needs.AppConstants
 import com.spyneai.needs.Utilities
+import com.spyneai.service.Actions
+import com.spyneai.service.getServiceState
+import com.spyneai.service.log
 import com.spyneai.threesixty.data.ThreeSixtyViewModel
+import com.spyneai.threesixty.data.VideoUploadService
 
 class ThreeSixtyShootSummaryFragment : BaseFragment<ThreeSixtyViewModel, Fragment360ShotSummaryBinding>() {
 
@@ -79,7 +86,8 @@ class ThreeSixtyShootSummaryFragment : BaseFragment<ThreeSixtyViewModel, Fragmen
 
         viewModel.reduceCredit(
             Utilities.getPreference(requireContext(), AppConstants.AUTH_KEY).toString(),
-            viewModel.videoDetails.frames.toString()
+            viewModel.videoDetails.frames.toString(),
+            viewModel.videoDetails.skuId.toString()
         )
     }
 
@@ -115,6 +123,7 @@ class ThreeSixtyShootSummaryFragment : BaseFragment<ThreeSixtyViewModel, Fragmen
         viewModel.downloadHDRes.observe(viewLifecycleOwner,{
             when(it) {
                 is Resource.Success -> {
+                    Utilities.hideProgressDialog()
                     processSku(false)
                 }
 
@@ -149,31 +158,60 @@ class ThreeSixtyShootSummaryFragment : BaseFragment<ThreeSixtyViewModel, Fragmen
     }
 
     private fun processSku(showLoader : Boolean) {
-        if (showLoader)
-            Utilities.showProgressDialog(requireContext())
+        //update video background id
+        viewModel.updateVideoBackgroundId()
 
-        viewModel.process360(
-            Utilities.getPreference(requireContext(), AppConstants.AUTH_KEY).toString())
+        startService()
 
-        viewModel.process360Res.observe(viewLifecycleOwner,{
-            when(it) {
-                is Resource.Success -> {
-                    //update project status
-                    viewModel.updateProjectStatus(viewModel.videoDetails.projectId!!)
+        Navigation.findNavController(binding.btnProceed)
+            .navigate(R.id.action_threeSixtyShootSummaryFragment_to_videoProcessingStartedFragment)
 
-                    Utilities.hideProgressDialog()
-                    Navigation.findNavController(binding.btnProceed)
-                        .navigate(R.id.action_threeSixtyShootSummaryFragment_to_videoProcessingStartedFragment)
+        viewModel.title.value = "Processing Started"
+        viewModel.processingStarted.value = true
 
-                    viewModel.title.value = "Processing Started"
-                    viewModel.processingStarted.value = true
-                }
-                is Resource.Failure -> {
-                    Utilities.hideProgressDialog()
-                    handleApiError(it) {processSku(true)}
-                }
-            }
-        })
+//        if (showLoader)
+//            Utilities.showProgressDialog(requireContext())
+//
+//        viewModel.process360(
+//            Utilities.getPreference(requireContext(), AppConstants.AUTH_KEY).toString())
+//
+//        viewModel.process360Res.observe(viewLifecycleOwner,{
+//            when(it) {
+//                is Resource.Success -> {
+//                    //update project status
+//                    viewModel.updateProjectStatus(viewModel.videoDetails.projectId!!)
+//
+//                    Utilities.hideProgressDialog()
+//                    Navigation.findNavController(binding.btnProceed)
+//                        .navigate(R.id.action_threeSixtyShootSummaryFragment_to_videoProcessingStartedFragment)
+//
+//                    viewModel.title.value = "Processing Started"
+//                    viewModel.processingStarted.value = true
+//                }
+//                is Resource.Failure -> {
+//                    Utilities.hideProgressDialog()
+//                    handleApiError(it) {processSku(true)}
+//                }
+//            }
+//        })
+    }
+
+    private fun startService() {
+        var action = Actions.START
+        if (getServiceState(requireContext()) == com.spyneai.service.ServiceState.STOPPED && action == Actions.STOP)
+            return
+
+        val serviceIntent = Intent(requireContext(), VideoUploadService::class.java)
+        serviceIntent.action = action.name
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            log("Starting the service in >=26 Mode")
+            ContextCompat.startForegroundService(requireContext(), serviceIntent)
+            return
+        } else {
+            log("Starting the service in < 26 Mode")
+            requireActivity().startService(serviceIntent)
+        }
     }
 
     override fun getViewModel() = ThreeSixtyViewModel::class.java

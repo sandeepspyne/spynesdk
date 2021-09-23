@@ -12,12 +12,15 @@ import android.hardware.camera2.CameraCharacteristics
 import android.hardware.camera2.CameraManager
 import android.net.ConnectivityManager
 import android.net.NetworkInfo
+import android.util.Log
+import android.util.Size
 import com.posthog.android.Properties
 import android.widget.ImageButton
 import android.widget.ImageView
 import androidx.annotation.ColorRes
 import androidx.annotation.DrawableRes
 import androidx.core.content.ContextCompat
+import androidx.core.content.ContextCompat.getSystemService
 import androidx.core.widget.ImageViewCompat
 import com.spyneai.dashboard.ui.MainDashboardActivity
 import com.spyneai.loginsignup.activity.LoginActivity
@@ -30,8 +33,11 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import okhttp3.internal.filterList
+import org.json.JSONObject
 import java.text.SimpleDateFormat
 import java.util.*
+import kotlin.collections.ArrayList
 
 fun Context.gotoHome(){
     val intent = Intent(this, MainDashboardActivity::class.java)
@@ -112,23 +118,57 @@ fun Context.isInternetActive() : Boolean {
     return activeNetwork?.isConnectedOrConnecting == true
 }
 
-fun Context.isResolutionSupported() : Boolean {
-    val cm = getSystemService(Context.CAMERA_SERVICE) as CameraManager
+fun Context.getNetworkName() : String {
+    val cm = getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
+    val wifi: NetworkInfo? = cm.getNetworkInfo(ConnectivityManager.TYPE_WIFI)
+    val mobile: NetworkInfo? = cm.getNetworkInfo(ConnectivityManager.TYPE_MOBILE)
 
+    var type = "None"
+
+    if (wifi != null && wifi.isConnected)
+        type = "Wi-Fi"
+
+    if (mobile != null && mobile.isConnected)
+        type = "Mobile"
+
+    return type
+}
+
+fun getRequestHeaderData() : JSONObject {
+    val headerData = JSONObject()
+
+    headerData.put("device_manufacturer",Utilities.getPreference(
+        BaseApplication.getContext(),AppConstants.DEVICE_MANUFACTURER))
+
+    headerData.put("model",Utilities.getPreference(
+        BaseApplication.getContext(),AppConstants.MODEL))
+
+    headerData.put("os_version",Utilities.getPreference(
+        BaseApplication.getContext(),AppConstants.OS_VERSION))
+
+    headerData.put("app_version",Utilities.getPreference(
+        BaseApplication.getContext(),AppConstants.APP_VERSION))
+
+    headerData.put("app_version_code",Utilities.getPreference(
+        BaseApplication.getContext(),AppConstants.APP_VERSION_CODE))
+
+
+    headerData.put("network_type",Utilities.getPreference(
+        BaseApplication.getContext(),AppConstants.NETWORK_TYPE))
+
+    headerData.put("device_id",Utilities.getPreference(
+        BaseApplication.getContext(),AppConstants.DEVICE_ID))
+
+    return headerData
+}
+
+fun Context.isResolutionSupported() : Boolean {
     var resolutionSupported = false
 
-    if (cm.cameraIdList != null && cm.cameraIdList.size > 1) {
-        val characteristics: CameraCharacteristics =
-            cm.getCameraCharacteristics("1")
+    val resList = getResolutionList()
 
-        val configs = characteristics.get(
-            CameraCharacteristics.SCALER_STREAM_CONFIGURATION_MAP
-        )
-
-        val s = configs?.getOutputSizes(ImageFormat.JPEG)
-
-
-        s?.forEach { it ->
+    if (resList != null){
+        resList?.forEach { it ->
             if (!resolutionSupported && it != null) {
                 if (it.width == 1024 && it.height == 768)
                     resolutionSupported = true
@@ -137,4 +177,58 @@ fun Context.isResolutionSupported() : Boolean {
     }
 
     return resolutionSupported
+}
+
+fun Context.getResolutionList(): Array<out Size>? {
+    val cm = getSystemService(Context.CAMERA_SERVICE) as CameraManager
+
+    return if (cm.cameraIdList != null && cm.cameraIdList.size > 1) {
+        val characteristics: CameraCharacteristics =
+            cm.getCameraCharacteristics("1")
+
+        val configs = characteristics.get(
+            CameraCharacteristics.SCALER_STREAM_CONFIGURATION_MAP
+        )
+
+        configs?.getOutputSizes(ImageFormat.JPEG)
+    }else{
+        null
+    }
+}
+
+fun Context.getBestResolution() : Size? {
+    if (isResolutionSupported())
+        return Size(1024,768)
+    else{
+        val resList = getResolutionList()
+
+        if (resList == null)
+            return null
+        else{
+            val fourByThreeList = ArrayList<Size>()
+
+            resList.forEach {
+                Log.d("Extensions", "getBestResolution: "+it.width.toFloat().div(it.height.toFloat()))
+                if (it.width.toFloat().div(it.height.toFloat()) == 1.3333334f
+                    || it.width.toFloat().div(it.height.toFloat()) == 1.3333333f){
+                    fourByThreeList.add(it)
+                }
+            }
+
+            if (fourByThreeList.isEmpty())
+                return null
+            else{
+                var max = fourByThreeList[0]
+
+                fourByThreeList.forEach {
+                    if (it.width > max.width && it.height>max.height)
+                        max = it
+                }
+
+                return max
+            }
+        }
+
+    }
+
 }

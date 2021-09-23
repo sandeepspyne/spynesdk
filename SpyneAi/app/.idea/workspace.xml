@@ -1,0 +1,217 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="AndroidLayouts">
+    <shared>
+      <config />
+    </shared>
+  </component>
+  <component name="AutoImportSettings">
+    <option name="autoReloadType" value="NONE" />
+  </component>
+  <component name="ChangeListManager">
+    <list default="true" id="c6d86b5f-c7d6-4272-9eee-ff1fe56c6ef7" name="Default Changelist" comment="">
+      <change beforePath="$PROJECT_DIR$/../.idea/.gitignore" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../.idea/codeStyles/Project.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../.idea/codeStyles/codeStyleConfig.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../.idea/compiler.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../.idea/dictionaries/spyne_1.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../.idea/gradle.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../.idea/inspectionProfiles/Project_Default.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../.idea/jarRepositories.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../.idea/libraries 2/Gradle__androidx_versionedparcelable_versionedparcelable_1_1_0_aar.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../.idea/libraries 2/Gradle__androidx_viewpager2_viewpager2_1_0_0_aar.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../.idea/libraries 2/Gradle__androidx_viewpager_viewpager_1_0_0_aar.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../.idea/libraries 2/Gradle__androidx_work_work_runtime_2_5_0_aar.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../.idea/libraries 2/Gradle__com_facebook_shimmer_shimmer_0_5_0_aar.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../.idea/libraries 2/Gradle__com_github_antonKozyriatskyi_CircularProgressIndicator_1_3_0_aar.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../.idea/libraries 2/Gradle__com_github_bumptech_glide_annotations_4_11_0.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../.idea/libraries 2/Gradle__com_github_bumptech_glide_disklrucache_4_11_0.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../.idea/libraries 2/Gradle__com_github_bumptech_glide_gifdecoder_4_11_0_aar.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../.idea/libraries 2/Gradle__com_github_bumptech_glide_glide_4_11_0_aar.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../.idea/libraries 2/Gradle__com_github_chhatrasal09_CoachMark_v0_1_aar.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../.idea/libraries 2/Gradle__com_github_davidpizarro_pickerui_1_0_1_aar.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../.idea/libraries 2/Gradle__com_google_android_gms_play_services_ads_identifier_17_0_0_aar.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../.idea/libraries 2/Gradle__com_google_android_gms_play_services_auth_17_0_0_aar.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../.idea/libraries 2/Gradle__com_google_android_gms_play_services_auth_api_phone_17_1_0_aar.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../.idea/libraries 2/Gradle__com_google_android_gms_play_services_auth_base_17_0_0_aar.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../.idea/libraries 2/Gradle__com_google_android_gms_play_services_base_17_6_0_aar.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../.idea/libraries 2/Gradle__com_google_android_gms_play_services_basement_17_6_0_aar.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../.idea/libraries 2/Gradle__com_google_android_gms_play_services_measurement_18_0_0_aar.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../.idea/libraries 2/Gradle__com_google_android_gms_play_services_measurement_api_18_0_0_aar.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../.idea/libraries 2/Gradle__com_google_android_gms_play_services_measurement_base_18_0_0_aar.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../.idea/libraries 2/Gradle__com_google_android_gms_play_services_measurement_impl_18_0_0_aar.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../.idea/libraries 2/Gradle__com_google_android_gms_play_services_measurement_sdk_18_0_0_aar.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../.idea/libraries 2/Gradle__com_google_android_gms_play_services_measurement_sdk_api_18_0_0_aar.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../.idea/libraries 2/Gradle__com_google_android_gms_play_services_stats_17_0_0_aar.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../.idea/libraries 2/Gradle__com_google_android_gms_play_services_tasks_17_2_1_aar.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../.idea/libraries 2/Gradle__com_google_android_material_material_1_3_0_aar.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../.idea/libraries 2/Gradle__com_google_code_findbugs_jsr305_2_0_1.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../.idea/libraries 2/Gradle__com_google_code_gson_gson_2_8_5.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../.idea/libraries 2/Gradle__com_google_firebase_firebase_analytics_18_0_0_aar.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../.idea/libraries 2/Gradle__com_google_firebase_firebase_analytics_ktx_18_0_0_aar.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../.idea/libraries 2/Gradle__com_google_firebase_firebase_annotations_16_0_0.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../.idea/libraries 2/Gradle__com_google_firebase_firebase_common_19_5_0_aar.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../.idea/libraries 2/Gradle__com_google_firebase_firebase_common_ktx_19_5_0_aar.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../.idea/libraries 2/Gradle__com_google_firebase_firebase_components_16_1_0_aar.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../.idea/libraries 2/Gradle__com_google_firebase_firebase_installations_16_3_5_aar.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../.idea/libraries 2/Gradle__com_google_firebase_firebase_installations_interop_16_0_1_aar.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../.idea/libraries 2/Gradle__com_google_firebase_firebase_measurement_connector_18_0_0_aar.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../.idea/libraries 2/Gradle__com_google_guava_listenablefuture_1_0.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../.idea/libraries 2/Gradle__com_iceteck_silicompressorr_silicompressor_2_2_4_aar.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../.idea/libraries 2/Gradle__com_mikhaellopez_circularimageview_4_2_0_aar.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../.idea/libraries 2/Gradle__com_razorpay_checkout_1_6_5_aar.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../.idea/libraries 2/Gradle__com_squareup_javawriter_2_1_1.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../.idea/libraries 2/Gradle__com_squareup_okhttp3_okhttp_3_14_9.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../.idea/libraries 2/Gradle__com_squareup_okio_okio_1_17_2.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../.idea/libraries 2/Gradle__com_squareup_retrofit2_converter_gson_2_9_0.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../.idea/libraries 2/Gradle__com_squareup_retrofit2_retrofit_2_9_0.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../.idea/libraries 2/Gradle__com_synnapps_carouselview_0_1_5_aar.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../.idea/libraries 2/Gradle__id_zelory_compressor_3_0_0_aar.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../.idea/libraries 2/Gradle__javax_inject_javax_inject_1.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../.idea/libraries 2/Gradle__junit_junit_4_12.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../.idea/libraries 2/Gradle__junit_junit_4_13_2.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../.idea/libraries 2/Gradle__org_hamcrest_hamcrest_core_1_3.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../.idea/libraries 2/Gradle__org_hamcrest_hamcrest_integration_1_3.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../.idea/libraries 2/Gradle__org_hamcrest_hamcrest_library_1_3.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../.idea/libraries 2/Gradle__org_jetbrains_annotations_13_0.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../.idea/libraries 2/Gradle__org_jetbrains_kotlin_kotlin_android_extensions_runtime_1_4_20.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../.idea/libraries 2/Gradle__org_jetbrains_kotlin_kotlin_stdlib_1_4_20.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../.idea/libraries 2/Gradle__org_jetbrains_kotlin_kotlin_stdlib_common_1_4_20.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../.idea/libraries 2/Gradle__org_jetbrains_kotlin_kotlin_stdlib_jdk7_1_3_72.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../.idea/libraries 2/Gradle__org_jetbrains_kotlinx_kotlinx_coroutines_android_1_4_1.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../.idea/libraries 2/Gradle__org_jetbrains_kotlinx_kotlinx_coroutines_core_jvm_1_4_1.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../.idea/misc.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../.idea/vcs.xml" beforeDir="false" />
+    </list>
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="ExecutionTargetManager" SELECTED_TARGET="device_and_snapshot_combo_box_target[]" />
+  <component name="ExternalProjectsData">
+    <projectState path="$PROJECT_DIR$">
+      <ProjectState />
+    </projectState>
+  </component>
+  <component name="ExternalProjectsManager">
+    <system id="GRADLE">
+      <state>
+        <projects_view>
+          <tree_state>
+            <expand />
+            <select />
+          </tree_state>
+        </projects_view>
+      </state>
+    </system>
+  </component>
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$/../.." />
+  </component>
+  <component name="GitSEFilterConfiguration">
+    <file-type-list>
+      <filtered-out-file-type name="LOCAL_BRANCH" />
+      <filtered-out-file-type name="REMOTE_BRANCH" />
+      <filtered-out-file-type name="TAG" />
+      <filtered-out-file-type name="COMMIT_BY_MESSAGE" />
+    </file-type-list>
+  </component>
+  <component name="ProjectId" id="1xkG7lgyvfFINxXPX46LdtQ0Epl" />
+  <component name="ProjectLevelVcsManager" settingsEditedManually="true" />
+  <component name="ProjectViewState">
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showLibraryContents" value="true" />
+  </component>
+  <component name="PropertiesComponent">
+    <property name="RunOnceActivity.OpenProjectViewOnStart" value="true" />
+    <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
+    <property name="com.intellij.openapi.externalSystem.service.settings.ExternalSystemGroupConfigurable" value="ALL" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$" />
+    <property name="memory.settings.postsync.last.time.stamp" value="1632118370221" />
+    <property name="settings.editor.selected.configurable" value="reference.settingsdialog.project.gradle" />
+  </component>
+  <component name="RunManager">
+    <configuration name="app" type="AndroidRunConfigurationType" factoryName="Android App">
+      <module name="SpyneAi.app" />
+      <option name="DEPLOY" value="true" />
+      <option name="DEPLOY_APK_FROM_BUNDLE" value="false" />
+      <option name="DEPLOY_AS_INSTANT" value="false" />
+      <option name="ARTIFACT_NAME" value="" />
+      <option name="PM_INSTALL_OPTIONS" value="" />
+      <option name="ALL_USERS" value="false" />
+      <option name="ALWAYS_INSTALL_WITH_PM" value="false" />
+      <option name="DYNAMIC_FEATURES_DISABLED_LIST" value="" />
+      <option name="ACTIVITY_EXTRA_FLAGS" value="" />
+      <option name="MODE" value="default_activity" />
+      <option name="CLEAR_LOGCAT" value="false" />
+      <option name="SHOW_LOGCAT_AUTOMATICALLY" value="false" />
+      <option name="SKIP_NOOP_APK_INSTALLATIONS" value="true" />
+      <option name="FORCE_STOP_RUNNING_APP" value="true" />
+      <option name="TARGET_SELECTION_MODE" value="DEVICE_AND_SNAPSHOT_COMBO_BOX" />
+      <option name="SELECTED_CLOUD_MATRIX_CONFIGURATION_ID" value="-1" />
+      <option name="SELECTED_CLOUD_MATRIX_PROJECT_ID" value="" />
+      <option name="DEBUGGER_TYPE" value="Auto" />
+      <Auto>
+        <option name="USE_JAVA_AWARE_DEBUGGER" value="false" />
+        <option name="SHOW_STATIC_VARS" value="true" />
+        <option name="WORKING_DIR" value="" />
+        <option name="TARGET_LOGGING_CHANNELS" value="lldb process:gdb-remote packets" />
+        <option name="SHOW_OPTIMIZED_WARNING" value="true" />
+      </Auto>
+      <Hybrid>
+        <option name="USE_JAVA_AWARE_DEBUGGER" value="false" />
+        <option name="SHOW_STATIC_VARS" value="true" />
+        <option name="WORKING_DIR" value="" />
+        <option name="TARGET_LOGGING_CHANNELS" value="lldb process:gdb-remote packets" />
+        <option name="SHOW_OPTIMIZED_WARNING" value="true" />
+      </Hybrid>
+      <Java />
+      <Native>
+        <option name="USE_JAVA_AWARE_DEBUGGER" value="false" />
+        <option name="SHOW_STATIC_VARS" value="true" />
+        <option name="WORKING_DIR" value="" />
+        <option name="TARGET_LOGGING_CHANNELS" value="lldb process:gdb-remote packets" />
+        <option name="SHOW_OPTIMIZED_WARNING" value="true" />
+      </Native>
+      <Profilers>
+        <option name="ADVANCED_PROFILING_ENABLED" value="false" />
+        <option name="STARTUP_PROFILING_ENABLED" value="false" />
+        <option name="STARTUP_CPU_PROFILING_ENABLED" value="false" />
+        <option name="STARTUP_CPU_PROFILING_CONFIGURATION_NAME" value="Sample Java Methods" />
+        <option name="STARTUP_NATIVE_MEMORY_PROFILING_ENABLED" value="false" />
+        <option name="NATIVE_MEMORY_SAMPLE_RATE_BYTES" value="2048" />
+      </Profilers>
+      <option name="DEEP_LINK" value="" />
+      <option name="ACTIVITY_CLASS" value="" />
+      <option name="SEARCH_ACTIVITY_IN_GLOBAL_SCOPE" value="false" />
+      <option name="SKIP_ACTIVITY_VALIDATION" value="false" />
+      <method v="2">
+        <option name="Android.Gradle.BeforeRunTask" enabled="true" />
+      </method>
+    </configuration>
+  </component>
+  <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="c6d86b5f-c7d6-4272-9eee-ff1fe56c6ef7" name="Default Changelist" comment="" />
+      <created>1630891508264</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1630891508264</updated>
+    </task>
+    <servers />
+  </component>
+  <component name="Vcs.Log.Tabs.Properties">
+    <option name="TAB_STATES">
+      <map>
+        <entry key="MAIN">
+          <value>
+            <State />
+          </value>
+        </entry>
+      </map>
+    </option>
+    <option name="oldMeFiltersMigrated" value="true" />
+  </component>
+</project>
