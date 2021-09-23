@@ -1,7 +1,5 @@
 package com.spyneai.shoot.ui.ecomwithgrid.dialogs
 
-import android.animation.Animator
-import android.animation.AnimatorListenerAdapter
 import android.app.Dialog
 import android.content.res.Resources
 import android.graphics.Color
@@ -12,14 +10,10 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.WindowManager
-import android.view.inputmethod.InputMethodManager
 import android.widget.EditText
 import android.widget.LinearLayout
-import android.widget.Toast
-import androidx.core.view.ViewCompat.animate
 import androidx.viewbinding.ViewBinding
 import com.posthog.android.Properties
-import com.posthog.android.internal.Utils.getSystemService
 import com.spyneai.R
 import com.spyneai.base.BaseDialogFragment
 import com.spyneai.base.network.Resource
@@ -36,12 +30,7 @@ import com.spyneai.shoot.data.ShootViewModel
 import com.spyneai.shoot.data.model.Project
 import com.spyneai.shoot.data.model.Sku
 import com.spyneai.shoot.utils.log
-import kotlinx.android.synthetic.main.item_project_edittext.*
 import org.json.JSONObject
-import android.app.Activity
-
-
-
 
 class ProjectTagDialog : BaseDialogFragment<ShootViewModel, ProjectTagDialogBinding>() {
 
@@ -55,7 +44,7 @@ class ProjectTagDialog : BaseDialogFragment<ShootViewModel, ProjectTagDialogBind
         val dialog: Dialog? = dialog
         if (dialog != null) {
             dialog.getWindow()
-                ?.setLayout(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT)
+                ?.setLayout(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT)
             dialog.getWindow()?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
         }
     }
@@ -75,6 +64,10 @@ class ProjectTagDialog : BaseDialogFragment<ShootViewModel, ProjectTagDialogBind
         binding.btnProceed.visibility = View.GONE
 
         shortAnimationDuration = resources.getInteger(android.R.integer.config_shortAnimTime)
+
+        binding.etProjectName.setText(viewModel.dafault_project.value)
+        binding.etSkuName.setText(viewModel.dafault_sku.value)
+
 
         setTagsData()
 
@@ -110,6 +103,10 @@ class ProjectTagDialog : BaseDialogFragment<ShootViewModel, ProjectTagDialogBind
 
     private fun setTagsData(){
         val data = LayoutHolder.data
+        if (data.isNullOrEmpty()){
+            return
+        }
+
         val layout = data!![0].dynamic_layout.project_dialog
 
         layout.forEach {
@@ -320,10 +317,6 @@ class ProjectTagDialog : BaseDialogFragment<ShootViewModel, ProjectTagDialogBind
             WindowManager.LayoutParams.WRAP_CONTENT
         );
     }
-
-
-
-
 
     override fun getViewModel() = ShootViewModel::class.java
 

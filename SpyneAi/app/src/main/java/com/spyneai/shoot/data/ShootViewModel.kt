@@ -41,6 +41,9 @@ class ShootViewModel : ViewModel() {
 
     val isSubCategorySelected: MutableLiveData<Boolean> = MutableLiveData()
 
+    val dafault_project: MutableLiveData<String> = MutableLiveData()
+    val dafault_sku: MutableLiveData<String> = MutableLiveData()
+
     val isSubCatAngleConfirmed: MutableLiveData<Boolean> = MutableLiveData()
 
     val startInteriorShoot: MutableLiveData<Boolean> = MutableLiveData()
@@ -63,6 +66,11 @@ class ShootViewModel : ViewModel() {
         MutableLiveData()
     val subCategoriesResponse: LiveData<Resource<NewSubCatResponse>>
         get() = _subCategoriesResponse
+
+    private val _getProjectNameResponse: MutableLiveData<Resource<GetProjectNameResponse>> =
+        MutableLiveData()
+    val getProjectNameResponse: LiveData<Resource<GetProjectNameResponse>>
+        get() = _getProjectNameResponse
 
     private val _projectDetailResponse: MutableLiveData<Resource<ProjectDetailResponse>> =
         MutableLiveData()
@@ -155,6 +163,13 @@ class ShootViewModel : ViewModel() {
     ) = viewModelScope.launch {
         _subCategoriesResponse.value = Resource.Loading
         _subCategoriesResponse.value = repository.getSubCategories(authKey, prodId)
+    }
+
+    fun getProjectName(
+        authKey: String
+    ) = viewModelScope.launch {
+        _getProjectNameResponse.value = Resource.Loading
+        _getProjectNameResponse.value = repository.getProjectName(authKey)
     }
 
     fun getOverlays(

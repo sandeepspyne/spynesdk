@@ -7,19 +7,20 @@
 
     <com.google.android.material.textfield.TextInputLayout
         android:id="@+id/llProjectName"
-        android:layout_width="match_parent"
-        android:layout_height="55dp"
+        android:layout_width="0dp"
+        android:layout_height="50dp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"
         tools:ignore="MissingConstraints"
         android:background="@drawable/bg_edit_text"
+        app:layout_constraintEnd_toEndOf="parent"
         app:boxStrokeWidth="0dp"
         app:boxStrokeWidthFocused="0dp">
 
         <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/et"
             android:layout_width="match_parent"
-            android:layout_height="55dp"
+            android:layout_height="match_parent"
             android:background="@drawable/bg_edit"
             android:inputType="text"
             android:textColor="@color/black_varient"

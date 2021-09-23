@@ -5,11 +5,21 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.posthog.android.Properties
 import com.spyneai.base.BaseFragment
+import com.spyneai.base.network.Resource
+import com.spyneai.captureEvent
+import com.spyneai.captureFailureEvent
+import com.spyneai.dashboard.ui.handleApiError
 import com.spyneai.databinding.FragmentGridEcomBinding
+import com.spyneai.needs.AppConstants
+import com.spyneai.needs.Utilities
+import com.spyneai.posthog.Events
 import com.spyneai.shoot.adapters.CapturedImageAdapter
 import com.spyneai.shoot.data.ShootViewModel
+import com.spyneai.shoot.data.model.Project
 import com.spyneai.shoot.data.model.ShootData
+import com.spyneai.shoot.data.model.Sku
 import com.spyneai.shoot.ui.ecomwithgrid.dialogs.ConfirmReshootEcomDialog
 import com.spyneai.shoot.ui.ecomwithgrid.dialogs.CreateProjectEcomDialog
 import com.spyneai.shoot.ui.ecomwithgrid.dialogs.CreateSkuEcomDialog
@@ -29,11 +39,11 @@ class GridEcomFragment : BaseFragment<ShootViewModel, FragmentGridEcomBinding>()
         super.onViewCreated(view, savedInstanceState)
 
 
-        if (viewModel.projectId.value == null){
-            initProjectDialog()
-            log("project and SKU dialog shown")
-        }
 
+
+        if (viewModel.projectId.value == null){
+            getProjectName()
+        }
         else {
             if (viewModel.fromDrafts){
                 if (viewModel.isSkuCreated.value == null
@@ -98,6 +108,42 @@ class GridEcomFragment : BaseFragment<ShootViewModel, FragmentGridEcomBinding>()
         viewModel.confirmCapturedImage.observe(viewLifecycleOwner,{
             if (it){
                 binding.tvImageCount.text = viewModel.shootList.value!!.size.toString()
+            }
+        })
+
+    }
+
+    private fun getProjectName(){
+
+        viewModel.getProjectName(Utilities.getPreference(requireContext(), AppConstants.AUTH_KEY).toString())
+
+        viewModel.getProjectNameResponse.observe(viewLifecycleOwner, {
+            when (it) {
+                is Resource.Success -> {
+
+                    Utilities.hideProgressDialog()
+
+                    viewModel.dafault_project.value = it.value.data.dafault_project
+                    viewModel.dafault_sku.value = it.value.data.dafault_sku
+                    initProjectDialog()
+                    log("project and SKU dialog shown")
+                }
+
+                is Resource.Loading -> {
+                    Utilities.showProgressDialog(requireContext())
+                }
+
+                is Resource.Failure -> {
+                    Utilities.hideProgressDialog()
+                    log("get project name failed")
+                    requireContext().captureFailureEvent(
+                        Events.CREATE_PROJECT_FAILED, Properties(),
+                        it.errorMessage!!
+                    )
+
+                    Utilities.hideProgressDialog()
+                    handleApiError(it) { getProjectName()}
+                }
             }
         })
 

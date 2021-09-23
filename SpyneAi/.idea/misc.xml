@@ -25,10 +25,11 @@
         <entry key="app/src/main/res/layout/fragment_overlay_ecom.xml" value="0.19722222222222222" />
         <entry key="app/src/main/res/layout/fragment_overlays.xml" value="0.2578125" />
         <entry key="app/src/main/res/layout/home_dashboard_fragment.xml" value="0.2578125" />
+        <entry key="app/src/main/res/layout/item_processed_image.xml" value="0.2578125" />
         <entry key="app/src/main/res/layout/item_project_edittext.xml" value="0.25384615384615383" />
         <entry key="app/src/main/res/layout/item_tags_spinner.xml" value="0.2578125" />
         <entry key="app/src/main/res/layout/item_tags_spinner_text.xml" value="0.2578125" />
-        <entry key="app/src/main/res/layout/project_tag_dialog.xml" value="0.25384615384615383" />
+        <entry key="app/src/main/res/layout/project_tag_dialog.xml" value="0.22" />
         <entry key="app/src/sellanycar/res/drawable/app_ic_background.xml" value="0.24166666666666667" />
         <entry key="app/src/swiggy/res/layout/home_dashboard_fragment.xml" value="0.2578125" />
         <entry key="app/src/swiggy/res/menu/dashboard_bottom_menu.xml" value="0.25384615384615383" />

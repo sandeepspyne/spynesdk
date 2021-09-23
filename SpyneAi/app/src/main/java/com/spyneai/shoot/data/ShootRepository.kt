@@ -135,4 +135,11 @@ class ShootRepository : BaseRepository() {
     }
 
 
+    suspend fun getProjectName(
+        authKey : String
+    ) = safeApiCall {
+        clipperApi.getProjectName(authKey)
+    }
+
+
 }

@@ -324,4 +324,10 @@ interface ClipperApi {
         @Query("app_version") appVersion: String
     ) : VersionStatusRes
 
+
+    @GET("v2/user/project-sku-data")
+    suspend fun getProjectName(
+        @Query("auth_key") authKey : String,
+    ): GetProjectNameResponse
+
 }
