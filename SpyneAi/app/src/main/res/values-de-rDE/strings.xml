@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name" translatable="false">Automoser</string>
+    <string name="app_name" translatable="false">AutoFoto</string>
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="hello">Willkommen!</string>
@@ -299,7 +299,7 @@
     <string name="internet_connection">Internetverbindung: Getrennt</string>
     <string name="uploading_paused_on">Upload angehalten am </string>
     <string name="uploading_paused">Upload angehalten</string>
-    <string name="inner_connection_label">Internetverbindung: </string>
+<!--    <string name="inner_connection_label">Internetverbindung: </string>-->
     <string name="all_uploaded">Alle Bilder hochgeladen </string>
     <string name="allow">Zulassen</string>
     <string name="select_car_subcategory">Wählen Sie die Unterkategorie Ihres Autos</string>

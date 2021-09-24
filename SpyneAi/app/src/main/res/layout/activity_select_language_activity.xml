@@ -13,8 +13,9 @@
   <ImageView
       android:id="@+id/ivLogoSpyne"
       android:src="@drawable/logo_splash"
-      android:layout_width="wrap_content"
+      android:layout_width="@dimen/dp_100"
       android:adjustViewBounds="true"
+      android:layout_marginTop="@dimen/dp_20"
       android:layout_height="@dimen/dp_100" />
 
 
@@ -23,7 +24,7 @@
       android:layout_height="wrap_content"
       android:orientation="vertical"
       android:layout_marginTop="@dimen/tool_bar_height"
-      android:background="@drawable/bg_select_lang">
+      android:background="@drawable/bg_select_lang_ripple">
 
 
     <LinearLayout
@@ -39,6 +40,7 @@
           android:layout_height="wrap_content"
           android:textSize="@dimen/sp_16"
           android:layout_weight="1"
+          android:fontFamily="@font/poppins_medium"
           android:textColor="@color/primary"
           android:text="English">
       </TextView>
@@ -62,6 +64,7 @@
       android:layout_height="@dimen/tool_bar_height"
       android:gravity="center"
       android:id="@+id/llGermany"
+
       android:paddingHorizontal="@dimen/dp_10"
       android:orientation="horizontal">
 
@@ -70,6 +73,7 @@
         android:layout_height="wrap_content"
         android:textSize="@dimen/sp_16"
         android:layout_weight="1"
+        android:fontFamily="@font/poppins_medium"
         android:textColor="@color/primary"
         android:text="@string/Germany">
     </TextView>
@@ -101,6 +105,7 @@
         android:textSize="@dimen/sp_16"
         android:layout_weight="1"
         android:text="@string/Italy"
+        android:fontFamily="@font/poppins_medium"
         android:textColor="@color/primary">
     </TextView>
     <ImageView

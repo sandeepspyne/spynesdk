@@ -3,7 +3,6 @@ package com.spyneai.dashboard.ui
 import android.Manifest
 import android.content.Intent
 import android.content.pm.PackageManager
-import android.content.res.Configuration
 import android.os.Build
 import android.os.Bundle
 import android.util.Log
@@ -42,8 +41,6 @@ import com.spyneai.shoot.data.ShootRepository
 import com.spyneai.shoot.response.UploadFolderRes
 import com.spyneai.shoot.ui.StartShootActivity
 import com.spyneai.shoot.ui.base.ShootActivity
-import com.spyneai.shoot.ui.dialogs.ResolutionNotSupportedFragment
-import com.spyneai.threesixty.data.VideoUploadService
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import retrofit2.Call
@@ -110,7 +107,7 @@ class MainDashboardActivity : AppCompatActivity() {
                         "Travo Photos",
                         "Yalla Motors",
                         "Spyne Hiring",
-                        AppConstants.AUTO_MOSER-> {
+                        AppConstants.AUTO_FOTO-> {
                             var intent = Intent(this, StartShootActivity::class.java)
                             intent.putExtra(AppConstants.CATEGORY_ID,AppConstants.CARS_CATEGORY_ID)
                             intent.putExtra(AppConstants.CATEGORY_NAME,"Automobiles")

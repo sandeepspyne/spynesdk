@@ -1,0 +1,307 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name" translatable="false">AutoFoto</string>
+
+    <string name="hello_blank_fragment">Ciao frammento vuoto</string>
+    <string name="hello">Benvenuti!</string>
+
+        <string name="Please">Accedi per continuare</string>
+        <string name="Please_signup">Registrati per continuare</string>
+        <string name="use_email">Usa invece l\'e-mail</string>
+    <string name="sign_in">Accedi con OTP</string>
+    <string name="login">Accedi</string>
+    <string name="login_with_password">Accedi con password</string>
+    <string name="sign_up">Registrati</string>
+    <string name="send_link">Invia collegamento</string>
+    <string name="or">o</string>
+    <string name="by"><![CDATA[Continuando accetti il ​​nostro ]]></string>
+    <string name="terms">Termini e condizioni</string>
+    <string name="edit">Modifica</string>
+    <string name="get_started">Cominciamo</string>
+    <string name="enter">Inserisci la password di 6 cifre \none time appena inviata a</string>
+    <string name="did_not">Non hai ricevuto l\'OTP?</string>
+    <string name="resend">Reinvia</string>
+    <string name="submit_otp">Invia OTP</string>
+    <string name="submit">Conferma</string>
+    <string name="continue_with_this_shoot">Continua con questa ripresa</string>
+    <string name="ok">OK</string>
+    <string name="channels">Canali</string>
+    <string name="backgrounds">Sfondi</string>
+    <string name="hdr">HDR</string>
+    <string name="before">Prima</string>
+    <string name="after">Dopo</string>
+    <string name="shoot_now">Scatta ora</string>
+    <string name="order">Ordina ora</string>
+        <string name="preview_order">Procedi all\'ordine</string>
+    <string name="your_sku">I tuoi SKU</string>
+    <string name="report_issue">Segnala problema</string>
+    <string name="add_sku">Aggiungi SKU</string>
+    <string name="completed">Completato</string>
+    <string name="no_data">Nessun mercato</string>
+    <string name="no_datas">Nessun sfondo</string>
+    <string name="demo_sku">Sku demo</string>
+    <string name="order_now">Ordina ora</string>
+    <string name="shoot_selection">Selezione di riprese</string>
+    <string name="sku_names">Nome Sku</string>
+    <string name="sku">Sku:</string>
+    <string name="total_cost">Costo totale</string>
+    <string name="total_images">Totale immagini cliccate</string>
+    <string name="available_download">Disponibile per il download</string>
+    <string name="select_marketplace">Seleziona mercato</string>
+    <string name="confirm">Conferma</string>
+    <string name="no_reshoot">Ripara</string>
+    <string name="start_shooting">Inizia a scattare</string>
+    <string name="ongoing">In corso</string>
+    <string name="drafts">Bozze</string>
+    <string name="failed">Fallito</string>
+    <string name="categories_selection">Selezione categoria</string>
+    <string name="footwear">Calzature</string>
+    <string name="automobile">Autovetture:</string>
+    <string name="home">Home</string>
+    <string name="logout">Logout</string>
+    <string name="dealership">Logo della nave del rivenditore</string>
+    <string name="no_completed">Gli ordini completati\nappariranno qui</string>
+    <string name="no_ongoing">Gli ordini in corso\nappariranno qui</string>
+    <string name="our_work">Questo riusciamo a fare</string>
+    <string name="upload_logo">Carica logo</string>
+        <string name="the_otp">L\'OTP non è corretto. Riprova.</string>
+    <string name="please_enter_email">Inserire indirizzo e-mail</string>
+    <string name="please_enter_email_password">Inserisci un ID e-mail valido OPPURE una password</string>
+    <string name="start_order">Inizia ordine</string>
+    <string name="submitted">Inviato</string>
+    <string name="add">Aggiungi</string>
+
+    <string name="api_key_razorpay">rzp_test_o5vheFMPXkCBrp</string>
+    <string name="are_you">Sei sicuro di voler eliminare questo SKU?</string>
+    <string name="no">No</string>
+    <string name="yes">Sì</string>
+    <string name="exit_demo_button">Esci dalla modalità demo</string>
+    <string name="exits">Sei sicuro di voler uscire da questa ripresa?</string>
+    <string name="exits_demo">La modalità demo è disponibile solo per i primi due sfondi. Per sbloccare questo sfondo esci dalla modalità demo.</string>
+    <string name="email">Il tuo ID email</string>
+        <string name="order_summary">Riepilogo dell\'ordine</string>
+    <string name="category">Categoria - </string>
+    <string name="total_skus">SKU totale</string>
+    <string name="selected_backgrounds">Sfondi selezionati</string>
+    <string name="dealership_logo">Logo concessionario</string>
+    <string name="top_up"><u>Ricarica</u></string>
+    <string name="buy_credits">Acquista 10 crediti</string>
+    <string name="request_on_whatsapp">Richiesta su WhatsApp</string>
+    <string name="your_gif">La tua GIF</string>
+    <string name="choose_shoots">Scegli scatti</string>
+    <string name="proceed">Prossimo</string>
+    <string name="select_backgrounds">Seleziona lo sfondo</string>
+    <string name="select_output">Esempio di output a 360°</string>
+    <string name="create_shoots">Genera output</string>
+    <string name="your_sent">Il tuo scatto a 360° è stato inviato a</string>
+    <string name="view_all_images">Visualizza tutte le immagini</string>
+    <string name="reach_out">Contattaci!</string>
+    <string name="whatsapp">WhatsApp</string>
+    <string name="completed_projects">Progetti completati</string>
+    <string name="your_images">Le tue immagini</string>
+    <string name="processing">Elaborazione</string>
+    <string name="your_photos">Le tue foto sono state inviate a</string>
+
+    <string name="demo">Demo</string>
+    <string name="sedan">berlina</string>
+    <string name="hatchbacks">Hatchback</string>
+    <string name="suv">SUV</string>
+
+    <string name="view_spin">Visualizza tiro a 360°</string>
+    <string name="continues">Continua</string>
+
+
+    <string name="your_360_shots">Le tue immagini sono quasi pronte</string>
+    <string name="no_internet">Server non risponde</string>
+    <string name="retry">Riprova</string>
+    <string name="more_angles">(Altri angoli in arrivo)</string>
+    <string name="we_recommend">(1/2) Scatti interni</string>
+    <string name="skip">Salta</string>
+    <string name="apply_reflection">Applica esposizione automatica</string>
+    <string name="window_reflection">Stile di riflessione della finestra</string>
+    <string name="transparent">Trasparente</string>
+    <string name="original">Originale</string>
+    <string name="exterior">Esterno</string>
+    <string name="interior">Interno</string>
+    <string name="have_look"><u>Dai un\'occhiata</u></string>
+
+    <string name="download_hd_images"><u>Scarica immagini HD</u></string>
+    <string name="download_free"><u>Scarica gratuitamente (con filigrana)</u></string>
+
+    <string name="downloading...."><u>Download in corso...</u></string>
+    <string name="download_completed"><u> Download completato</u></string>
+    <string name="download_failed"><u> Download non riuscito</u></string>
+
+    <string name="total_images_clicked"><u>Totale immagini cliccate</u></string>
+
+    <string name="credits_available"><u>Crediti disponibili</u></string>
+    <string name="top_up_2"><u>(Ricarica)</u></string>
+
+    <string name="sku_id"><u>ID SKU</u></string>
+
+    <string name="images"><u>Immagini</u></string>
+
+    <string name="credits"><u>Credits</u></string>
+
+    <string name="increase_online_sale"><u>Aumenta le vendite online dei tuoi prodotti \n<br />caricando immagini visivamente sbalorditive su \n<br />Marketplaces
+
+</u></string>
+
+    <string name="choose_marketplace">Scegli Marketplace</string>
+    <string name="choose_background_colour">Scegli il colore di sfondo</string>
+    <string name="sample_output_image">Immagine di output di esempio</string>
+    <string name="choose_background">Quindi scegli il colore di sfondo</string>
+
+    <string name="free_credits">10 crediti sono stati aggiunti al \n<br />tuo account</string>
+
+    <string name="forgot_password_dialog">Link inviato con successo.\n<br /> Controlla la tua email.</string>
+
+
+    <string name="we_recommend_focused">(2/2) Scatti vari</string>
+    <string name="focused">Varie</string>
+
+    <string name="start_new_shoot">Inizia una nuova ripresa</string>
+
+    <string name="ongoing_projects">Progetti in corso</string>
+    <string name="draft_projects">Bozza progetti</string>
+
+    <string name="your_orders">I tuoi ordini</string>
+    <string name="end_shoot">Termina ripresa</string>
+    <string name="end_shoots">Sei sicuro di voler davvero terminare le riprese ora?</string>
+
+    <string name="preview">Anteprima</string>
+    <string name="place_order">Avvia elaborazione</string>
+    <string name="images_will_be_lost">Le tue immagini andranno perse. Sei sicuro di voler lasciare questa pagina?</string>
+
+
+    <string name="dealership_popup">Il logo verrà visualizzato sulle \n<br /><b>targhe portanumeri</b> e sull\'<b>angolo</b> \n<br />dell\'immagine</string >
+
+
+        <string name="select_corner">Seleziona l\'angolo per visualizzare il logo</string>
+
+    <string name="top_left">In alto a sinistra</string>
+    <string name="top_right">In alto a destra</string>
+    <string name="bottom_left">In basso a sinistra</string>
+    <string name="bottom_right">In basso a destra</string>
+
+
+    <string name="sign_up_here"><b>Iscriviti qui</b></string>
+
+    <string name="logout_dialog_text">Sei sicuro di voler <b>disconnettersi.</b></string>
+
+    <string name="login_here"><b>Accedi qui</b></string>
+    <string name="shoot_outdoor">Spara&#160; <font color='#FF7700'><b>All\'aperto</b></font>&#160;per evitare riflessi irregolari</string>
+    <string name="forgot_password">Hai dimenticato la password?</string>
+
+        <string name="forgot_password_mail">Inserisci l\'indirizzo email per reimpostare la password. \n<br /> Potrebbe essere necessario controllare la cartella spam.</string>
+       
+    <string name="enter_vin">Numero veicolo</string>
+    <string name="vin_number">VIN</string>
+
+
+        <string name="message_no_permissions">L\'app non può funzionare senza autorizzazioni</string>
+
+
+    <string name="sku_name_hint">Inserisci qualsiasi ID auto univoco</string>
+
+    <string name="do_you_need_footwear_overlayes">Hai bisogno di copriscarpe?</string>
+    <string name="bikes">Biciclette</string>
+    <string name="project_name">Nome progetto</string>
+    <string name="project_name_">Nome progetto -</string>
+    <string name="end_project">Sei sicuro di voler terminare questo progetto?</string>
+    <string name="submit_and_process">Invia ed elabora questo progetto</string>
+    <string name="city">Città (opzionale)</string>
+    <string name="city_">Città -</string>
+    <string name="new_project">Nuovo progetto</string>
+    <string name="car_subcategory">Seleziona la sottocategoria della tua auto</string>
+    <string name="footwear_subcategory">Seleziona la sottocategoria delle tue calzature</string>
+    <string name="go_to_home">Vai a casa</string>
+
+
+    <string name="terms_and_conditions_url_swiggy">https://www.flipkart.com/pages/privacypolicy</string>
+
+    <string name="create_professional_automobile">Crea immagini professionali\n<br />con un solo clic utilizzando l\'intelligenza artificiale</string>
+
+    <string name="capture_upto">Cattura fino a 36 immagini esterne</string>
+    <string name="my_projcts">I miei progetti</string>
+
+    <string name="session_expired">Sessione scaduta. Per favore <b>accedi</b> di nuovo.</string>
+    <string name="change_fidelity"><u>Cambia fedeltà</u></string>
+    <string name="total_exterior_clicked">Totale Immagini Esterne</string>
+
+    <string name="get_started_">Inizia</string>
+    <string name="on_going_shoots">Tiri in corso</string>
+    <string name="view_all">Visualizza tutto</string>
+    <string name="completed_shoots">Scatti completati</string>
+    <string name="explore_categories">Esplora categorie</string>
+    <string name="tutorial_videos">Video tutorial</string>
+
+    <string name="enter_email">Inserisci e-mail</string>
+    <string name="enter_password">Inserire password</string>
+    <string name="new_to_app">Nuovo su AutoFotoApp?</string>
+    <string name="create_password">Crea password</string>
+    <string name="enter_business_name">Inserisci attività/il tuo nome</string>
+
+    <string name="shoot">Foto</string>
+    <string name="credits_remaining">Crediti rimasti</string>
+    <string name="request_to_add_credits">Ricarica crediti</string>
+    <string name="send_request">Invia richiesta</string>
+    <string name="try_new_feature">Prova la nostra nuova funzione:</string>
+    <string name="get_three_sixty_view">Ottieni video a 360°\n in pochi minuti con tecnolgia avanzata</string>
+    <string name="shoot_summary">Riepilogo del tiroe</string>
+    <string name="enable">Abilita</string>
+    <string name="generate_three_sixty">Genera 360</string>
+    <string name="select_country">Seleziona il tuo Paese</string>
+
+    <string name="already_a_user">Sei già un utente %1$s?</string>
+    <string name="new_to">Nuovo in %1$s</string>
+    <string name="projects">Progetti</string>
+    <string name="shoot_all_angles">Vendi le tue auto più veloce e meglio con una vista 360° \ne foto professionali.</string>
+    <string name="image_shoot">Scatta immagine</string>
+    <string name="explore">Esplora</string>
+    <string name="Germany">Germania</string>
+    <string name="Italy">Italia</string>
+    <string name="beta">Beta</string>
+
+    <string name="image_category">Categoria immagine</string>
+    <string name="additionl_settings">Note aggiuntive</string>
+    <string name="add_text_here">Aggiungi testo qui</string>
+    <string name="continue_shoot">Continua a scattare</string>
+    <string name="shoot_images">Scatta immagini</string>
+    <string name="Select_Language">Seleziona lingua</string>
+    <string name="category_label">Categoria:</string>
+    <string name="image_label">Immagini:</string>
+    <string name="saved">Salvato</string>
+    <string name="skus_label">Skus:</string>
+    <string name="total_SKUs">"SKU totali "</string>
+    <string name="shoot_360">Spara 360</string>
+    <string name="buy_now">Acquista ora</string>
+    <string name="credit_packs">Pacchetti di crediti</string>
+    <string name="full_resolution_images_at_lowest_cost">Immagini a piena risoluzione al\ncosto più basso</string>
+    <string name="image_credit">1 immagine = 1 credito</string>
+    <string name="_image">/image</string>
+    <string name="describe_your_issue_or_idea">Descrivi il tuo problema o idea....</string>
+    <string name="do_you_have">Hai qualche suggerimento o hai trovato qualche bug?\n faccelo sapere nel campo sottostante.</string>
+    <string name="total_images_label">Immagini totali</string>
+    <string name="resume_shoot">Riprendi riprese</string>
+    <string name="start_shoot">Inizia a sparare</string>
+    <string name="angles">viste</string>
+    <string name="contiune">Continua</string>
+    <string name="request_to_add">Richiesta di aggiungere crediti</string>
+    <string name="generate_output">Genera output</string>
+    <string name="sample_output">Esempio di output</string>
+    <string name="image_uploading_in_progess">Caricamento immagine in corso...</string>
+    <string name="upload">Caricamento </string>
+    <string name="active">Attivo</string>
+    <string name="disconnected">Disconnesso</string>
+    <string name="image_uploaded">Immagine caricata</string>
+    <string name="miscellanous">Varie</string>
+    <string name="last_uploaded">Ultimo caricamento</string>
+    <string name="internet_connection">Connessione Internet: disconnessa</string>
+    <string name="uploading_paused_on">Caricamento in pausa il </string>
+    <string name="uploading_paused">Caricamento in pausa</string>
+    <string name="innter_connection_label">Connessione Internet: </string>
+    <string name="all_uploaded">Tutte le immagini caricate</string>
+    <string name="allow">Consenti</string>
+    <string name="select_car_subcategory">Seleziona la categoria della vettura</string>
+</resources>

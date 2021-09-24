@@ -1,7 +1,6 @@
 package com.spyneai.activity
 
 import android.content.Intent
-import android.content.res.Configuration
 import android.os.Bundle
 import android.os.Handler
 import android.provider.Settings
@@ -16,7 +15,6 @@ import com.spyneai.getNetworkName
 import com.spyneai.needs.AppConstants
 import com.spyneai.needs.Utilities
 import com.spyneai.onboarding.SelectLanguageActivity
-import java.util.*
 
 
 class SplashActivity : AppCompatActivity() {
@@ -65,7 +63,7 @@ class SplashActivity : AppCompatActivity() {
                 intent = when(getString(R.string.app_name)) {
                     AppConstants.SPYNE_AI->  Intent(this, OnboardingsActivity::class.java)
 
-                    AppConstants.AUTO_MOSER -> Intent(this, SelectLanguageActivity::class.java)
+                    AppConstants.AUTO_FOTO -> Intent(this, SelectLanguageActivity::class.java)
 
                     else -> Intent(this, LoginActivity::class.java)
                 }

@@ -4,6 +4,7 @@ import android.content.Intent
 import android.content.res.Configuration
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.widget.Toast
 import com.spyneai.R
 import com.spyneai.databinding.ActivitySelectLanguageActivityBinding
 import com.spyneai.loginsignup.activity.LoginActivity
@@ -22,10 +23,7 @@ class SelectLanguageActivity : AppCompatActivity() {
         setContentView(view)
 
         binding.llEnglish.setOnClickListener {
-            Intent(this,LoginActivity::class.java)
-                    .apply {
-                        startActivity(this)
-                    }
+            onLanguageSelected("en")
         }
 
         binding.llGermany.setOnClickListener {
@@ -52,5 +50,7 @@ class SelectLanguageActivity : AppCompatActivity() {
             .apply {
                 startActivity(this)
             }
+
+        finish()
     }
 }
