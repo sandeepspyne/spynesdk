@@ -10,8 +10,10 @@ import android.content.res.ColorStateList
 import android.graphics.ImageFormat
 import android.hardware.camera2.CameraCharacteristics
 import android.hardware.camera2.CameraManager
+import android.media.MediaMetadataRetriever
 import android.net.ConnectivityManager
 import android.net.NetworkInfo
+import android.net.Uri
 import android.util.Log
 import android.util.Size
 import com.posthog.android.Properties
@@ -44,6 +46,7 @@ fun Context.gotoHome(){
     intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
     startActivity(intent)
 }
+
 fun Context.gotoLogin(){
     this.captureEvent(Events.LOG_OUT, Properties())
 
@@ -198,37 +201,56 @@ fun Context.getResolutionList(): Array<out Size>? {
 
 fun Context.getBestResolution() : Size? {
     if (isResolutionSupported())
-        return Size(1024,768)
-    else{
+        return Size(1024, 768)
+    else {
         val resList = getResolutionList()
 
         if (resList == null)
             return null
-        else{
+        else {
             val fourByThreeList = ArrayList<Size>()
 
             resList.forEach {
-                Log.d("Extensions", "getBestResolution: "+it.width.toFloat().div(it.height.toFloat()))
+                Log.d(
+                    "Extensions",
+                    "getBestResolution: " + it.width.toFloat().div(it.height.toFloat())
+                )
                 if (it.width.toFloat().div(it.height.toFloat()) == 1.3333334f
-                    || it.width.toFloat().div(it.height.toFloat()) == 1.3333333f){
+                    || it.width.toFloat().div(it.height.toFloat()) == 1.3333333f
+                ) {
                     fourByThreeList.add(it)
                 }
             }
 
             if (fourByThreeList.isEmpty())
                 return null
-            else{
+            else {
                 var max = fourByThreeList[0]
 
                 fourByThreeList.forEach {
-                    if (it.width > max.width && it.height>max.height)
+                    if (it.width > max.width && it.height > max.height)
                         max = it
                 }
 
                 return max
             }
         }
-
     }
-
 }
+
+fun Context.getVideoDuration(videoPath: Uri?) : Long {
+    try {
+        val retriever = MediaMetadataRetriever()
+        retriever.setDataSource(this, videoPath)
+        val time = retriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_DURATION)
+        val timeInMillisec = time!!.toLong()
+        retriever.release()
+        return timeInMillisec / 1000
+    } catch (e: java.lang.Exception) {
+        e.printStackTrace()
+    }
+    return 0
+}
+
+
+

@@ -150,6 +150,9 @@ class VideoLocalRepository {
                 video.isStatusUpdate = isStatusUpdated
                 video.preSignedUrl = preSignedUrl
                 video.videoId = videoId
+
+                if (videoPath == "")
+                    video.itemId = null
             }
         }
 
@@ -225,6 +228,9 @@ class VideoLocalRepository {
                 video.isStatusUpdate = isStatusUpdated
                 video.preSignedUrl = preSignedUrl
                 video.videoId = videoId
+
+                if (videoPath == "")
+                    video.itemId = null
             }
         }
 

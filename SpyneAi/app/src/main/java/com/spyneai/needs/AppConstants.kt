@@ -171,6 +171,6 @@ object AppConstants {
 
     val VIDEO_PATH = "VIDEO_PATH"
 
-
+    val MINIMUM_VIDEO_DURATION = 30
 
 }
