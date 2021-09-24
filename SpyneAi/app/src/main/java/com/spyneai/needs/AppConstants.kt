@@ -128,8 +128,6 @@ object AppConstants {
     val EXTERIOR_LIST = "EXTERIOR_LIST"
 
 
-
-
     //app names
     val KARVI = "Karvi Studio"
     val CARS24_INDIA = "Cars24 (B2C) Cataloging"
@@ -139,7 +137,7 @@ object AppConstants {
     val TRAVO_PHOTOS= "Travo Photos"
     val YALLA_MOTOS= "Yalla Motors"
     val OLA_CABS = "Ola Cabs"
-    val AUTO_FOTO = "AutoFoto"
+    val AUTO_FOTO = "AutoFotoApp"
     val SELL_ANY_CAR = "Sell any Car"
     val FLIPKART_GROCERY = "Flipkart Grocery"
 

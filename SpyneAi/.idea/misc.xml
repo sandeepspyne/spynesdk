@@ -26,6 +26,7 @@
         <entry key="app/src/main/res/layout/dialog_confirm_tags.xml" value="0.2578125" />
         <entry key="app/src/main/res/layout/dialog_create_project_and_sku.xml" value="0.25277777777777777" />
         <entry key="app/src/main/res/layout/dialog_exit.xml" value="0.30512820512820515" />
+        <entry key="app/src/main/res/layout/dialog_interior_hint.xml" value="0.25277777777777777" />
         <entry key="app/src/main/res/layout/dialog_top_up.xml" value="0.25277777777777777" />
         <entry key="app/src/main/res/layout/dialog_video_duration.xml" value="0.30512820512820515" />
         <entry key="app/src/main/res/layout/fragment_draft_sku_details.xml" value="0.25277777777777777" />
