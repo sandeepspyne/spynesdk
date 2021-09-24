@@ -57,7 +57,7 @@ class MyOngoingProjectAdapter(
 
 
 
-        if (getProjectList[position].categoryId == getProjectList[position].subCategoryId) {
+        if (getProjectList[position].categoryId == AppConstants.CARS_CATEGORY_ID && (getProjectList[position].categoryId == getProjectList[position].subCategoryId)) {
             holder.llThreeSixty.visibility = View.VISIBLE
             holder.tvCategory.text = "Automobiles"
         } else {

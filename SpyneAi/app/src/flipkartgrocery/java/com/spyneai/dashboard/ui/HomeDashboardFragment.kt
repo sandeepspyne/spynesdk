@@ -38,6 +38,7 @@ import com.spyneai.captureFailureEvent
 import com.spyneai.dashboard.adapters.CompletedDashboardAdapter
 import com.spyneai.dashboard.adapters.OngoingDashboardAdapter
 import com.spyneai.dashboard.data.DashboardViewModel
+import com.spyneai.dashboard.data.model.LayoutHolder
 import com.spyneai.dashboard.response.NewCategoriesResponse
 import com.spyneai.databinding.HomeDashboardFragmentBinding
 import com.spyneai.needs.AppConstants
@@ -95,11 +96,11 @@ class HomeDashboardFragment :
 
 //        if (PACKAGE_NAME.equals("com.spyneai.flipkartgrocery.debug")) {
 //            newUserCreditDialog()
-            repeatRefreshData()
-            setSliderRecycler()
-            lisners()
-            welcomeHomeText()
-            getCategories()
+        repeatRefreshData()
+        setSliderRecycler()
+        lisners()
+        welcomeHomeText()
+        getCategories()
 //        } else
 //            autoUpdates()
     }
@@ -136,9 +137,16 @@ class HomeDashboardFragment :
     }
 
     private fun getOngoingOrders() {
-        log("Completed SKUs(auth key): "+ Utilities.getPreference(requireContext(), AppConstants.AUTH_KEY))
+        log(
+            "Completed SKUs(auth key): " + Utilities.getPreference(
+                requireContext(),
+                AppConstants.AUTH_KEY
+            )
+        )
 
-        viewModel.getProjects(Utilities.getPreference(requireContext(), AppConstants.AUTH_KEY).toString(), "ongoing")
+        viewModel.getProjects(
+            Utilities.getPreference(requireContext(), AppConstants.AUTH_KEY).toString(), "ongoing"
+        )
 
         viewModel.getProjectsResponse.observe(
             viewLifecycleOwner, Observer {
@@ -204,9 +212,19 @@ class HomeDashboardFragment :
 
     private fun getCompletedOrders() {
 
-        viewModel.getCompletedProjects(Utilities.getPreference(requireContext(), AppConstants.AUTH_KEY).toString(), "completed")
+        viewModel.getCompletedProjects(
+            Utilities.getPreference(
+                requireContext(),
+                AppConstants.AUTH_KEY
+            ).toString(), "completed"
+        )
 
-        log("Completed SKUs(auth key): "+ Utilities.getPreference(requireContext(), AppConstants.AUTH_KEY))
+        log(
+            "Completed SKUs(auth key): " + Utilities.getPreference(
+                requireContext(),
+                AppConstants.AUTH_KEY
+            )
+        )
         viewModel.getCompletedProjectsResponse.observe(
             viewLifecycleOwner, Observer {
                 when (it) {
@@ -284,8 +302,19 @@ class HomeDashboardFragment :
                         object : CategoriesDashboardAdapter.BtnClickListener {
                             override fun onBtnClick(position: Int) {
 
-                                Utilities.savePrefrence(requireContext(), AppConstants.CATEGORY_ID, it.value.data[position].prod_cat_id)
-                                Utilities.savePrefrence(requireContext(), AppConstants.CATEGORY_NAME, it.value.data[position].prod_cat_name)
+                                LayoutHolder.data = it.value.data
+                                LayoutHolder.categoryPosition = position
+
+                                Utilities.savePrefrence(
+                                    requireContext(),
+                                    AppConstants.CATEGORY_ID,
+                                    it.value.data[position].prod_cat_id
+                                )
+                                Utilities.savePrefrence(
+                                    requireContext(),
+                                    AppConstants.CATEGORY_NAME,
+                                    it.value.data[position].prod_cat_name
+                                )
 
                                 catId = it.value.data[position].prod_cat_id
                                 displayName = it.value.data[position].prod_cat_name
@@ -293,7 +322,7 @@ class HomeDashboardFragment :
                                 description = it.value.data[position].description
                                 colorCode = it.value.data[position].color_code
 
-                                when(position){
+                                when (position) {
 //                                    0 -> {
 //                                        val intent = Intent(requireContext(), StartShootActivity::class.java)
 //                                        intent.putExtra(
@@ -338,7 +367,10 @@ class HomeDashboardFragment :
 //                                    }
 
                                     0, 1 -> {
-                                        val intent = Intent(requireContext(), ShootPortraitActivity::class.java)
+                                        val intent = Intent(
+                                            requireContext(),
+                                            ShootPortraitActivity::class.java
+                                        )
                                         intent.putExtra(
                                             AppConstants.CATEGORY_NAME,
                                             displayName
@@ -411,18 +443,19 @@ class HomeDashboardFragment :
         }
     }
 
-    fun repeatRefreshData(){
+    fun repeatRefreshData() {
         try {
             getOngoingOrders()
             getCompletedOrders()
             runnable = Runnable {
                 if (refreshData)
-                    repeatRefreshData()  }
+                    repeatRefreshData()
+            }
             if (runnable != null)
-                handler.postDelayed(runnable!!,15000)
-        }catch (e : IllegalArgumentException){
+                handler.postDelayed(runnable!!, 15000)
+        } catch (e: IllegalArgumentException) {
             e.printStackTrace()
-        }catch (e : Exception){
+        } catch (e: Exception) {
             e.printStackTrace()
         }
     }
@@ -432,8 +465,6 @@ class HomeDashboardFragment :
             handler.removeCallbacks(runnable!!)
         super.onPause()
     }
-
-
 
 
     private fun setSliderRecycler() {
@@ -557,7 +588,6 @@ class HomeDashboardFragment :
     }
 
 
-
     override fun onResume() {
         super.onResume()
 
@@ -590,7 +620,7 @@ class HomeDashboardFragment :
                     Toast.LENGTH_SHORT
                 ).show()
 
-                log("MY_APP\", \"Update flow failed! Result code: "+resultCode)
+                log("MY_APP\", \"Update flow failed! Result code: " + resultCode)
                 // If the update is cancelled or fails,
                 // you can request to start the update again.
             }

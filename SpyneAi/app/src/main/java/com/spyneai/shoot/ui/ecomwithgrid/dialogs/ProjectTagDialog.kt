@@ -13,6 +13,7 @@ import android.view.WindowManager
 import android.widget.EditText
 import android.widget.LinearLayout
 import androidx.viewbinding.ViewBinding
+import com.bumptech.glide.Glide
 import com.posthog.android.Properties
 import com.spyneai.R
 import com.spyneai.base.BaseDialogFragment
@@ -139,6 +140,14 @@ class ProjectTagDialog : BaseDialogFragment<ShootViewModel, ProjectTagDialogBind
 
     private fun isValid() : Boolean {
        var isValid = true
+
+        try {
+            if (LayoutHolder.data!![LayoutHolder.categoryPosition].dynamic_layout.project_dialog.isNullOrEmpty())
+                return isValid
+        }catch (e: Exception){
+            return isValid
+        }
+
 
         val layout = LayoutHolder.data!![0].dynamic_layout.project_dialog
 

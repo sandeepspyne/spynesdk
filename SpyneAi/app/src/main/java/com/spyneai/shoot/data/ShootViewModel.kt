@@ -41,6 +41,8 @@ class ShootViewModel : ViewModel() {
 
     val isSubCategorySelected: MutableLiveData<Boolean> = MutableLiveData()
 
+    val categoryPosition: MutableLiveData<Int> = MutableLiveData()
+
     val dafault_project: MutableLiveData<String> = MutableLiveData()
     val dafault_sku: MutableLiveData<String> = MutableLiveData()
 

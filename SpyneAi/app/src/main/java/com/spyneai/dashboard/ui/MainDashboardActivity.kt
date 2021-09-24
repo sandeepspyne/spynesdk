@@ -58,8 +58,8 @@ import java.lang.RuntimeException
 
 class MainDashboardActivity : AppCompatActivity() {
 
-    private lateinit var binding : ActivityDashboardMainBinding
-    private var viewModel : DashboardViewModel? = null
+    private lateinit var binding: ActivityDashboardMainBinding
+    private var viewModel: DashboardViewModel? = null
     private var TAG = "MainDashboardActivity"
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -68,7 +68,7 @@ class MainDashboardActivity : AppCompatActivity() {
         val view = binding.root
         setContentView(view)
 
-        if (intent.getBooleanExtra("show_ongoing",false)){
+        if (intent.getBooleanExtra("show_ongoing", false)) {
             val intent = Intent(this, MyOrdersActivity::class.java)
             startActivity(intent)
         }
@@ -76,85 +76,87 @@ class MainDashboardActivity : AppCompatActivity() {
         binding.bottomNavigation.background = null
         viewModel = ViewModelProvider(this, ViewModelFactory()).get(DashboardViewModel::class.java)
 
-        val firstFragment= HomeDashboardFragment()
-        val SecondFragment=WalletDashboardFragment()
-        val myOrdersFragment= MyOrdersFragment()
-        val thirdFragment=LogoutDashBoardFragment()
+        val firstFragment = HomeDashboardFragment()
+        val SecondFragment = WalletDashboardFragment()
+        val myOrdersFragment = MyOrdersFragment()
+        val thirdFragment = LogoutDashBoardFragment()
 
         //save category id and name
-        Utilities.savePrefrence(this,AppConstants.CATEGORY_ID,AppConstants.CARS_CATEGORY_ID)
-        Utilities.savePrefrence(this,AppConstants.CATEGORY_NAME,"Automobiles")
+        Utilities.savePrefrence(this, AppConstants.CATEGORY_ID, AppConstants.CARS_CATEGORY_ID)
+        Utilities.savePrefrence(this, AppConstants.CATEGORY_NAME, "Automobiles")
 
 
-        when(getString(R.string.app_name)) {
+        when (getString(R.string.app_name)) {
             AppConstants.SPYNE_AI -> {
                 binding.fab.setOnClickListener {
                     val intent = Intent(this, CategoriesActivity::class.java)
                     startActivity(intent)
                 }
-            }else -> {
+            }
+            else -> {
                 binding.fab.visibility = View.GONE
             }
         }
 
 
         binding.bottomNavigation.setOnNavigationItemSelectedListener {
-            when(it.itemId){
-                R.id.homeDashboardFragment->setCurrentFragment(firstFragment)
+            when (it.itemId) {
+                R.id.homeDashboardFragment -> setCurrentFragment(firstFragment)
 
-                R.id.shootActivity-> {
-                    when(getString(R.string.app_name)) {
+                R.id.shootActivity -> {
+                    when (getString(R.string.app_name)) {
                         "Ola Cabs",
                         AppConstants.CARS24,
                         AppConstants.CARS24_INDIA,
-                            AppConstants.SELL_ANY_CAR,
+                        AppConstants.SELL_ANY_CAR,
                         "Trusted cars",
                         "Travo Photos",
                         "Yalla Motors",
                         "Spyne Hiring",
-                        AppConstants.AUTO_MOSER-> {
+                        AppConstants.AUTO_MOSER -> {
                             var intent = Intent(this, StartShootActivity::class.java)
-                            intent.putExtra(AppConstants.CATEGORY_ID,AppConstants.CARS_CATEGORY_ID)
-                            intent.putExtra(AppConstants.CATEGORY_NAME,"Automobiles")
+                            intent.putExtra(AppConstants.CATEGORY_ID, AppConstants.CARS_CATEGORY_ID)
+                            intent.putExtra(AppConstants.CATEGORY_NAME, "Automobiles")
                             startActivity(intent)
                         }
 
                         AppConstants.KARVI -> {
                             var intent = Intent(this, ShootActivity::class.java)
-                            intent.putExtra(AppConstants.CATEGORY_ID,AppConstants.CARS_CATEGORY_ID)
-                            intent.putExtra(AppConstants.CATEGORY_NAME,"Automobiles")
+                            intent.putExtra(AppConstants.CATEGORY_ID, AppConstants.CARS_CATEGORY_ID)
+                            intent.putExtra(AppConstants.CATEGORY_NAME, "Automobiles")
                             startActivity(intent)
                         }
 
                         "Flipkart", "Udaan", "Lal10", "Amazon", "Swiggy", AppConstants.SWIGGYINSTAMART, AppConstants.BATA, AppConstants.FLIPKART_GROCERY -> {
-                            val intent = Intent(this@MainDashboardActivity, CategoriesActivity::class.java)
-                                startActivity(intent)
-                            }
-                        else ->{
+                            val intent =
+                                Intent(this@MainDashboardActivity, CategoriesActivity::class.java)
+                            startActivity(intent)
+                        }
+                        else -> {
                             var intent = Intent(this, ShootActivity::class.java)
-                            intent.putExtra(AppConstants.CATEGORY_ID,AppConstants.CARS_CATEGORY_ID)
-                            intent.putExtra(AppConstants.CATEGORY_NAME,"Automobiles")
+                            intent.putExtra(AppConstants.CATEGORY_ID, AppConstants.CARS_CATEGORY_ID)
+                            intent.putExtra(AppConstants.CATEGORY_NAME, "Automobiles")
                             startActivity(intent)
                         }
                     }
                 }
 
-                R.id.completedOrdersFragment-> {
-                   if (getString(R.string.app_name) == AppConstants.SPYNE_AI)
-                       setCurrentFragment(myOrdersFragment)
-                   else{
-                       val intent = Intent(this, MyOrdersActivity::class.java)
-                       startActivity(intent)
-                   }
+                R.id.completedOrdersFragment -> {
+                    if (getString(R.string.app_name) == AppConstants.SPYNE_AI)
+                        setCurrentFragment(myOrdersFragment)
+                    else {
+                        val intent = Intent(this, MyOrdersActivity::class.java)
+                        startActivity(intent)
+                    }
                 }
-                //R.id.wallet->setCurrentFragment(SecondFragment)
-                R.id.logoutDashBoardFragment->setCurrentFragment(thirdFragment)
+                R.id.wallet -> setCurrentFragment(SecondFragment)
+                R.id.logoutDashBoardFragment -> setCurrentFragment(thirdFragment)
             }
             true
         }
 
-        if (intent.getBooleanExtra(AppConstants.IS_NEW_USER,false)){
-            viewModel!!.isNewUser.value = intent.getBooleanExtra(AppConstants.IS_NEW_USER,false)
+        if (intent.getBooleanExtra(AppConstants.IS_NEW_USER, false)) {
+            viewModel!!.isNewUser.value = intent.getBooleanExtra(AppConstants.IS_NEW_USER, false)
             viewModel!!.creditsMessage.value = intent.getStringExtra(AppConstants.CREDITS_MESSAGE)
         }
 
@@ -163,25 +165,25 @@ class MainDashboardActivity : AppCompatActivity() {
     }
 
     private fun checkAppVersion() {
-        if (BuildConfig.VERSION_NAME.contains("debug")){
+        if (BuildConfig.VERSION_NAME.contains("debug")) {
             if (allPermissionsGranted()) {
                 onPermissionGranted()
             } else {
                 permissionRequest.launch(permissions.toTypedArray())
             }
-        }else{
+        } else {
             Utilities.showProgressDialog(this)
 
             viewModel?.getVersionStatus(
-                Utilities.getPreference(this,AppConstants.AUTH_KEY).toString(),
+                Utilities.getPreference(this, AppConstants.AUTH_KEY).toString(),
                 BuildConfig.VERSION_NAME
             )
         }
     }
 
     private fun observeAppVersion() {
-        viewModel?.versionResponse?.observe(this,{
-            when(it){
+        viewModel?.versionResponse?.observe(this, {
+            when (it) {
                 is Resource.Success -> {
                     Utilities.hideProgressDialog()
 
@@ -194,10 +196,13 @@ class MainDashboardActivity : AppCompatActivity() {
 
                 is Resource.Failure -> {
                     Utilities.hideProgressDialog()
-                    if (it.errorCode == 400){
+                    if (it.errorCode == 400) {
                         //show update app dialog
-                        OutdatedVersionDialog().show(supportFragmentManager,"OutdatedVersionDialog")
-                    }else{
+                        OutdatedVersionDialog().show(
+                            supportFragmentManager,
+                            "OutdatedVersionDialog"
+                        )
+                    } else {
                         handleApiError(it) { checkAppVersion() }
                     }
                 }
@@ -213,30 +218,38 @@ class MainDashboardActivity : AppCompatActivity() {
         }
     }
 
-    private val permissionRequest = registerForActivityResult(ActivityResultContracts.RequestMultiplePermissions()) { permissions ->
-        if (permissions.all { it.value }) {
-            onPermissionGranted()
-            capture(Events.PERMISSIONS_GRANTED)
-        } else {
-            capture(Events.PERMISSIONS_DENIED)
-            Snackbar.make(binding.root, "App cannot work without permission", Snackbar.LENGTH_INDEFINITE)
-                .setAction("Allow") {
-                   requestPermi()
-                }
-                .setActionTextColor(ContextCompat.getColor(this,R.color.primary))
-                .show()
+    private val permissionRequest =
+        registerForActivityResult(ActivityResultContracts.RequestMultiplePermissions()) { permissions ->
+            if (permissions.all { it.value }) {
+                onPermissionGranted()
+                capture(Events.PERMISSIONS_GRANTED)
+            } else {
+                capture(Events.PERMISSIONS_DENIED)
+                Snackbar.make(
+                    binding.root,
+                    "App cannot work without permission",
+                    Snackbar.LENGTH_INDEFINITE
+                )
+                    .setAction("Allow") {
+                        requestPermi()
+                    }
+                    .setActionTextColor(ContextCompat.getColor(this, R.color.primary))
+                    .show()
+            }
         }
-    }
 
-    private fun capture(eventName : String) {
+    private fun capture(eventName: String) {
         val properties = Properties()
         properties.apply {
-            this["email"] = Utilities.getPreference(this@MainDashboardActivity,AppConstants.EMAIL_ID).toString()
+            this["email"] =
+                Utilities.getPreference(this@MainDashboardActivity, AppConstants.EMAIL_ID)
+                    .toString()
         }
 
         captureEvent(
             eventName,
-            properties)
+            properties
+        )
     }
 
     private fun requestPermi() {
@@ -247,8 +260,11 @@ class MainDashboardActivity : AppCompatActivity() {
         ContextCompat.checkSelfPermission(this, it) == PackageManager.PERMISSION_GRANTED
     }
 
-    open fun onPermissionGranted(){
-        Log.d(TAG, "onPermissionGranted: "+Utilities.getPreference(this,AppConstants.CANCEL_ALL_WROKERS))
+    open fun onPermissionGranted() {
+        Log.d(
+            TAG,
+            "onPermissionGranted: " + Utilities.getPreference(this, AppConstants.CANCEL_ALL_WROKERS)
+        )
         cancelAllWorkers()
 
         startUploadService()
@@ -258,7 +274,8 @@ class MainDashboardActivity : AppCompatActivity() {
     private fun startUploadService() {
         val shootLocalRepository = ShootLocalRepository()
         if (shootLocalRepository.getOldestImage().itemId != null
-            || shootLocalRepository.getOldestSkippedImage().itemId != null){
+            || shootLocalRepository.getOldestSkippedImage().itemId != null
+        ) {
 
             var action = Actions.START
             if (getServiceState(this) == com.spyneai.service.ServiceState.STOPPED && action == Actions.STOP)
@@ -278,28 +295,33 @@ class MainDashboardActivity : AppCompatActivity() {
 
             val properties = Properties()
                 .apply {
-                    put("service_state","Started")
-                    put("email",Utilities.getPreference(this@MainDashboardActivity,AppConstants.EMAIL_ID).toString())
-                    put("medium","Main Actity")
+                    put("service_state", "Started")
+                    put(
+                        "email",
+                        Utilities.getPreference(this@MainDashboardActivity, AppConstants.EMAIL_ID)
+                            .toString()
+                    )
+                    put("medium", "Main Actity")
                 }
 
-            captureEvent(Events.SERVICE_STARTED,properties)
+            captureEvent(Events.SERVICE_STARTED, properties)
         }
     }
 
-    private fun cancelAllWorkers(){
+    private fun cancelAllWorkers() {
         //cancel all workers
         WorkManager.getInstance(this).cancelAllWork()
 
         WorkManager.getInstance(this).cancelAllWorkByTag("StoreImageFiles  Worker")
         WorkManager.getInstance(this).cancelAllWorkByTag("Manual Long Running Worker")
-        WorkManager.getInstance(this).cancelAllWorkByTag("Manual Skipped Images Long Running Worker")
+        WorkManager.getInstance(this)
+            .cancelAllWorkByTag("Manual Skipped Images Long Running Worker")
         WorkManager.getInstance(this).cancelAllWorkByTag("Long Running Worker")
         WorkManager.getInstance(this).cancelAllWorkByTag("Skipped Images Long Running Worker")
         WorkManager.getInstance(this).cancelAllWorkByTag("Periodic Processing Worker")
         WorkManager.getInstance(this).cancelAllWorkByTag("InternetWorker")
 
-        Utilities.savePrefrence(this,AppConstants.CANCEL_ALL_WROKERS,"Cancelled")
+        Utilities.savePrefrence(this, AppConstants.CANCEL_ALL_WROKERS, "Cancelled")
     }
 
     private fun checkFolderUpload() {
@@ -310,7 +332,7 @@ class MainDashboardActivity : AppCompatActivity() {
 
         val call = request.uploadFolder(authKey)
 
-        call.enqueue(object : Callback<UploadFolderRes>{
+        call.enqueue(object : Callback<UploadFolderRes> {
             override fun onResponse(
                 call: Call<UploadFolderRes>,
                 response: Response<UploadFolderRes>
@@ -318,48 +340,61 @@ class MainDashboardActivity : AppCompatActivity() {
 
                 Utilities.hideProgressDialog()
 
-                if (response.isSuccessful){
-                    if (response.body()?.status == 200){
-                        if (response.body()?.data?.isFolderUpload == 1){
-                            if (Utilities.getPreference(this@MainDashboardActivity,AppConstants.START_FILES_WORKER) == ""){
+                if (response.isSuccessful) {
+                    if (response.body()?.status == 200) {
+                        if (response.body()?.data?.isFolderUpload == 1) {
+                            if (Utilities.getPreference(
+                                    this@MainDashboardActivity,
+                                    AppConstants.START_FILES_WORKER
+                                ) == ""
+                            ) {
 
                                 GlobalScope.launch {
-                                    StoreImageFiles(this@MainDashboardActivity,
+                                    StoreImageFiles(
+                                        this@MainDashboardActivity,
                                         ShootRepository(),
                                         FilesRepository()
                                     ).startWork()
                                 }
 
                                 capture(Events.FILE_READ_WORKED_INTIATED)
-                            }else {
+                            } else {
                                 //check for maual upload service check
-                                    startMaunaulUplaod()
+                                startMaunaulUplaod()
                                 capture(Events.FILE_WORKER_ALREADY_INTIATED)
                             }
-                        }else {
+                        } else {
                             capture(Events.FILE_FOLDER_UPLOAD_FALSE)
                         }
-                    }else {
+                    } else {
                         val properties = Properties()
                         properties.apply {
-                            this["email"] = Utilities.getPreference(this@MainDashboardActivity,AppConstants.EMAIL_ID).toString()
+                            this["email"] = Utilities.getPreference(
+                                this@MainDashboardActivity,
+                                AppConstants.EMAIL_ID
+                            ).toString()
                             this["error"] = response.body()?.message
                         }
 
                         captureEvent(
                             Events.CHECK_FOLDER_API_FAILED,
-                            properties)
+                            properties
+                        )
                     }
-                }else {
+                } else {
                     val properties = Properties()
                     properties.apply {
-                        this["email"] = Utilities.getPreference(this@MainDashboardActivity,AppConstants.EMAIL_ID).toString()
+                        this["email"] = Utilities.getPreference(
+                            this@MainDashboardActivity,
+                            AppConstants.EMAIL_ID
+                        ).toString()
                         this["error"] = response.errorBody().toString()
                     }
 
                     captureEvent(
                         Events.CHECK_FOLDER_API_FAILED,
-                        properties)
+                        properties
+                    )
                 }
             }
 
@@ -368,13 +403,16 @@ class MainDashboardActivity : AppCompatActivity() {
 
                 val properties = Properties()
                 properties.apply {
-                    this["email"] = Utilities.getPreference(this@MainDashboardActivity,AppConstants.EMAIL_ID).toString()
+                    this["email"] =
+                        Utilities.getPreference(this@MainDashboardActivity, AppConstants.EMAIL_ID)
+                            .toString()
                     this["error"] = t.localizedMessage
                 }
 
                 captureEvent(
                     Events.CHECK_FOLDER_API_FAILED,
-                    properties)
+                    properties
+                )
 
 
                 folderCheckError(t.localizedMessage)
@@ -385,7 +423,8 @@ class MainDashboardActivity : AppCompatActivity() {
     private fun startMaunaulUplaod() {
         val filesRepository = FilesRepository()
         if (filesRepository.getOldestImage().itemId != null
-            || filesRepository.getOldestSkippedImage().itemId != null){
+            || filesRepository.getOldestSkippedImage().itemId != null
+        ) {
 
             var action = Actions.START
             if (getServiceState(this) == com.spyneai.service.ServiceState.STOPPED && action == Actions.STOP)
@@ -405,22 +444,26 @@ class MainDashboardActivity : AppCompatActivity() {
 
             val properties = Properties()
                 .apply {
-                    put("service_state","Started")
-                    put("email",Utilities.getPreference(this@MainDashboardActivity,AppConstants.EMAIL_ID).toString())
-                    put("medium","Main Actity")
+                    put("service_state", "Started")
+                    put(
+                        "email",
+                        Utilities.getPreference(this@MainDashboardActivity, AppConstants.EMAIL_ID)
+                            .toString()
+                    )
+                    put("medium", "Main Actity")
                 }
 
-            captureEvent(Events.SERVICE_STARTED,properties)
+            captureEvent(Events.SERVICE_STARTED, properties)
         }
 
     }
 
-    private fun folderCheckError(error : String) {
+    private fun folderCheckError(error: String) {
         Snackbar.make(binding.root, error, Snackbar.LENGTH_INDEFINITE)
             .setAction("Retry") {
                 checkFolderUpload()
             }
-            .setActionTextColor(ContextCompat.getColor(this,R.color.primary))
+            .setActionTextColor(ContextCompat.getColor(this, R.color.primary))
             .show()
     }
 
@@ -428,19 +471,19 @@ class MainDashboardActivity : AppCompatActivity() {
         super.onResume()
 
         FilesRepository().getAllImages()
-       binding.bottomNavigation.selectedItemId = R.id.homeDashboardFragment
+        binding.bottomNavigation.selectedItemId = R.id.homeDashboardFragment
     }
 
-    private fun setCurrentFragment(fragment: Fragment)=
+    private fun setCurrentFragment(fragment: Fragment) =
         supportFragmentManager.beginTransaction().apply {
-            replace(binding.flContainer.id,fragment)
+            replace(binding.flContainer.id, fragment)
             commit()
         }
 
     override fun onBackPressed() {
-       if (binding.bottomNavigation.selectedItemId != R.id.homeDashboardFragment)
-           binding.bottomNavigation.selectedItemId = R.id.homeDashboardFragment
+        if (binding.bottomNavigation.selectedItemId != R.id.homeDashboardFragment)
+            binding.bottomNavigation.selectedItemId = R.id.homeDashboardFragment
         else
-         super.onBackPressed()
+            super.onBackPressed()
     }
 }

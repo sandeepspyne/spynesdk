@@ -11,6 +11,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.spyneai.R
 import com.spyneai.adapter.CategoriesAdapter
+import com.spyneai.dashboard.data.model.LayoutHolder
 import com.spyneai.dashboard.response.NewCategoriesResponse
 import com.spyneai.interfaces.APiService
 import com.spyneai.interfaces.RetrofitClients
@@ -73,6 +74,7 @@ class CategoriesActivity : AppCompatActivity(){
                 object : CategoriesAdapter.BtnClickListener {
                     override fun onBtnClick(position: Int) {
                         Log.e("position cat", position.toString())
+                        LayoutHolder.categoryPosition = position
                         when(position) {
                                 0-> {
                                     var intent : Intent
