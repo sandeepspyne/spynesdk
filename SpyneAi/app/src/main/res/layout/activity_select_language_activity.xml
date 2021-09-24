@@ -1,0 +1,121 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:gravity="center_horizontal"
+    android:orientation="vertical"
+    android:layout_marginTop="@dimen/tool_bar_height"
+    android:padding="@dimen/dp_10"
+    android:background="@color/splash_bg">
+
+  <ImageView
+      android:id="@+id/ivLogoSpyne"
+      android:src="@drawable/logo_splash"
+      android:layout_width="@dimen/dp_100"
+      android:adjustViewBounds="true"
+      android:layout_marginTop="@dimen/dp_20"
+      android:layout_height="@dimen/dp_100" />
+
+
+  <LinearLayout
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:orientation="vertical"
+      android:layout_marginTop="@dimen/tool_bar_height"
+      android:background="@drawable/bg_select_lang_ripple">
+
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/tool_bar_height"
+        android:gravity="center"
+        android:id="@+id/llEnglish"
+        android:paddingHorizontal="@dimen/dp_10"
+        android:orientation="horizontal">
+
+      <TextView
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:textSize="@dimen/sp_16"
+          android:layout_weight="1"
+          android:fontFamily="@font/poppins_medium"
+          android:textColor="@color/primary"
+          android:text="English">
+      </TextView>
+
+      <ImageView
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:src="@drawable/back"
+          android:rotation="180"
+          app:tint="@color/primary" />
+    </LinearLayout>
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="0.5dp"
+        android:background="@color/accent"
+        ></TextView>
+
+  <LinearLayout
+      android:layout_width="match_parent"
+      android:layout_height="@dimen/tool_bar_height"
+      android:gravity="center"
+      android:id="@+id/llGermany"
+
+      android:paddingHorizontal="@dimen/dp_10"
+      android:orientation="horizontal">
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="@dimen/sp_16"
+        android:layout_weight="1"
+        android:fontFamily="@font/poppins_medium"
+        android:textColor="@color/primary"
+        android:text="@string/Germany">
+    </TextView>
+
+    <ImageView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/back"
+        android:rotation="180"
+        app:tint="@color/primary" />
+  </LinearLayout>
+
+  <TextView
+      android:layout_width="match_parent"
+      android:layout_height="0.5dp"
+      android:background="@color/accent"
+      ></TextView>
+  <LinearLayout
+      android:layout_width="match_parent"
+      android:layout_height="@dimen/tool_bar_height"
+      android:gravity="center"
+      android:padding="@dimen/dp_10"
+      android:id="@+id/llItly"
+      android:orientation="horizontal">
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="@dimen/sp_16"
+        android:layout_weight="1"
+        android:text="@string/Italy"
+        android:fontFamily="@font/poppins_medium"
+        android:textColor="@color/primary">
+    </TextView>
+    <ImageView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/back"
+        android:rotation="180"
+        app:tint="@color/primary"></ImageView>
+  </LinearLayout>
+
+  </LinearLayout>
+
+</LinearLayout>

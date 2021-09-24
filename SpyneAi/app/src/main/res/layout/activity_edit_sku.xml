@@ -60,7 +60,7 @@
             android:textStyle="bold"
             android:fontFamily="@font/bold"
             android:textSize="@dimen/sp_16"
-            android:text="Sku Name"/>
+            android:text="@string/sku_names"/>
         <ImageView
             android:id="@+id/ivDeleteSkus"
             android:layout_width="wrap_content"

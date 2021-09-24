@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    package="com.spyneai">
+    package="com.spyneai" >
 
     <uses-feature android:name="android.hardware.camera.any" />
 
@@ -21,7 +21,6 @@
     <uses-permission
         android:name="android.permission.WRITE_EXTERNAL_STORAGE"
         tools:ignore="ScopedStorage" />
-    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" /> <!-- Needed only if your app targets Android 5.0 (API level 21) or higher. -->
     <uses-feature android:name="android.hardware.location.gps" />
 
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" /> <!-- <uses-permission android:name="android.permission.MANAGE_EXTERNAL_STORAGE" tools:ignore="ScopedStorage" /> -->
@@ -38,7 +37,9 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.Fab_Bottom_app_bar"
         android:usesCleartextTraffic="true"
-        tools:targetApi="m">
+        tools:targetApi="m" >
+        <activity android:name=".onboarding.SelectLanguageActivity" >
+        </activity>
         <activity
             android:name=".draft.ui.DraftsActivity"
             android:exported="true" />
@@ -50,9 +51,7 @@
             android:exported="true" />
         <activity android:name=".orders.ui.activity.ShowRawImagesActivity" />
         <activity android:name=".orders.ui.activity.OngoingSkusActivity" />
-
         <activity android:name=".processedimages.ui.ProcessedImageActivity" />
-
         <activity android:name=".orders.ui.activity.CompletedSkusActivity" />
         <activity
             android:name=".threesixty.ui.ThreeSixtyExteriorActivity"
@@ -70,7 +69,6 @@
             android:name=".threesixty.ui.ThreeSixtyActivity"
             android:configChanges="screenLayout|keyboardHidden"
             android:screenOrientation="landscape" />
-
         <activity
             android:name=".shoot.ui.base.ShootPortraitActivity"
             android:configChanges="screenLayout|keyboardHidden"
@@ -102,11 +100,9 @@
         <activity
             android:name=".credits.CreditPlansActivity"
             android:screenOrientation="portrait" />
-
         <activity
             android:name=".credits.WalletActivity"
             android:screenOrientation="portrait" />
-
         <activity
             android:name=".activity.OngoingOrdersActivity"
             android:launchMode="singleTask"
@@ -121,12 +117,9 @@
             android:enabled="true"
             android:exported="false" />
 
-
-
-
         <receiver
             android:name=".service.StartReceiver"
-            android:enabled="true">
+            android:enabled="true" >
             <intent-filter>
                 <action android:name="android.intent.action.BOOT_COMPLETED" />
             </intent-filter>
@@ -138,28 +131,25 @@
         <activity
             android:name=".activity.DownloadingActivity"
             android:screenOrientation="portrait" />
-
-        <activity android:name=".orders.ui.KarviShowImagesActivity"
-            android:screenOrientation="portrait"/>
+        <activity
+            android:name=".orders.ui.KarviShowImagesActivity"
+            android:screenOrientation="portrait" />
 
         <service
             android:name=".service.ImageUploadingService"
             android:enabled="true"
             android:exported="true"
             android:stopWithTask="false" />
-
         <service
             android:name=".service.manual.ManualUploadService"
             android:enabled="true"
             android:exported="true"
             android:stopWithTask="false" />
-
         <service
             android:name=".threesixty.data.VideoUploadService"
             android:enabled="true"
             android:exported="true"
             android:stopWithTask="false" />
-
 
         <receiver android:name=".service.ExplicitConnectionReceiver" >
             <intent-filter>
@@ -197,7 +187,6 @@
         <activity
             android:name=".activity.CompletedActivity"
             android:screenOrientation="portrait" />
-
         <activity
             android:name=".activity.OnboardOneActivity"
             android:screenOrientation="portrait" />
@@ -207,7 +196,6 @@
         <activity
             android:name=".extras.OnboardTwoActivity"
             android:screenOrientation="portrait" />
-
         <activity
             android:name=".activity.ShootSelectionActivity"
             android:screenOrientation="portrait" />
@@ -294,7 +282,7 @@
             android:screenOrientation="portrait" />
         <activity
             android:name=".activity.SplashActivity"
-            android:screenOrientation="portrait">
+            android:screenOrientation="portrait" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 

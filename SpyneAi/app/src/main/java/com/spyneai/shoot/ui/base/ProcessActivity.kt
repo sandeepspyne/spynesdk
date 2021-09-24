@@ -7,6 +7,7 @@ import androidx.lifecycle.ViewModelProvider
 import com.spyneai.R
 import com.spyneai.dashboard.ui.base.ViewModelFactory
 import com.spyneai.needs.AppConstants
+import com.spyneai.setLocale
 import com.spyneai.shoot.data.ProcessViewModel
 import com.spyneai.shoot.data.model.Sku
 import com.spyneai.shoot.ui.SelectBackgroundFragment
@@ -21,6 +22,8 @@ class ProcessActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_process)
+
+        setLocale()
 
         processViewModel = ViewModelProvider(this, ViewModelFactory()).get(ProcessViewModel::class.java)
 

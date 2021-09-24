@@ -9,13 +9,12 @@ import androidx.appcompat.app.AppCompatActivity
 import com.spyneai.R
 import com.spyneai.dashboard.ui.MainDashboardActivity
 import com.spyneai.loginsignup.activity.LoginActivity
-import okhttp3.OkHttpClient
 import android.os.Build
-import android.util.Log
 import com.spyneai.BuildConfig
 import com.spyneai.getNetworkName
 import com.spyneai.needs.AppConstants
 import com.spyneai.needs.Utilities
+import com.spyneai.onboarding.SelectLanguageActivity
 
 
 class SplashActivity : AppCompatActivity() {
@@ -31,6 +30,7 @@ class SplashActivity : AppCompatActivity() {
         )
 
         setContentView(R.layout.activity_splash)
+
 
         val deviceId = Settings.Secure.getString(contentResolver, Settings.Secure.ANDROID_ID)
         val manufacturer = Build.MANUFACTURER
@@ -61,8 +61,9 @@ class SplashActivity : AppCompatActivity() {
                 var intent: Intent? = null
 
                 intent = when(getString(R.string.app_name)) {
-                    AppConstants.SPYNE_AI->  Intent(this,
-                        OnboardingsActivity::class.java)
+                    AppConstants.SPYNE_AI->  Intent(this, OnboardingsActivity::class.java)
+
+                    AppConstants.AUTO_FOTO -> Intent(this, SelectLanguageActivity::class.java)
 
                     else -> Intent(this, LoginActivity::class.java)
                 }

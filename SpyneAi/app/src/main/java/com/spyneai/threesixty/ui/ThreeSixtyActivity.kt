@@ -7,6 +7,7 @@ import androidx.lifecycle.ViewModelProvider
 import com.spyneai.dashboard.ui.base.ViewModelFactory
 import com.spyneai.databinding.ActivityThreeSixtyBinding
 import com.spyneai.needs.AppConstants
+import com.spyneai.setLocale
 import com.spyneai.shoot.ui.dialogs.ShootExitDialog
 import com.spyneai.threesixty.data.ThreeSixtyViewModel
 
@@ -17,6 +18,8 @@ class ThreeSixtyActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        setLocale()
 
         window.setFlags(
             WindowManager.LayoutParams.FLAG_FULLSCREEN,

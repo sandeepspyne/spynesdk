@@ -450,7 +450,7 @@
                 android:fontFamily="@font/bold"
                 android:id="@+id/tv360"
 
-                android:text="Generate 360"
+                android:text="@string/generate_three_sixty"
                 android:textColor="@color/black"
                 android:textSize="@dimen/sp_16" />
 
@@ -458,7 +458,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="@dimen/dp_20"
-                android:text="Enable"
+                android:text="@string/enable"
                 android:checked="true"
                 android:id="@+id/cb360"
                 android:fontFamily="@font/poppins_medium"
@@ -500,7 +500,7 @@
                 android:fontFamily="@font/medium"
                 android:gravity="center"
                 android:textAllCaps="false"
-                android:text="Continue"
+                android:text="@string/contiune"
                 android:textColor="@color/white"
                 android:textSize="@dimen/sp_20"
                 android:enabled="false"/>

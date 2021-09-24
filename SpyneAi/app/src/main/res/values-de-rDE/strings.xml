@@ -1,0 +1,308 @@
+<resources>
+    <string name="app_name" translatable="false">AutoFotoApp</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="hello">Willkommen!</string>
+    <string name="enter_email">E-Mail eingeben</string>
+    <string name="enter_password">Passwort eingeben</string>
+    <string name="new_to_app">Neu bei AutoFotoApp?</string>
+
+    <string name="please">Bitte anmelden, um fortzufahren</string>
+    <string name="please_signup">Bitte melden Sie sich an, um fortzufahren</string>
+    <string name="use_email">Use Email Instead</string>
+    <string name="sign_in">Anmelden mit Einmal-Passwort (OTP)</string>
+    <string name="login">Login</string>
+    <string name="login_with_password">Mit Passwort anmelden</string>
+    <string name="sign_up">Anmelden </string>
+    <string name="send_link">Send Link</string>
+    <string name="or">ODER</string>
+    <string name="by"><![CDATA[Indem du fortfährst, stimmst du unseren zu ]]></string>
+    <string name="terms">Terms &amp; Policies</string>
+    <string name="edit">Bearbeiten</string>
+    <string name="get_started">Let\'s get started</string>
+    <string name="enter">Enter the 6-digit \none time password just sent to</string>
+    <string name="did_not">Didn\'t receive the OTP?</string>
+    <string name="resend">Erneut senden</string>
+    <string name="submit_otp">OTP senden</string>
+    <string name="submit">Bestätigen</string>
+    <string name="continue_with_this_shoot">Weiter mit diesem Shooting</string>
+    <string name="ok">OK</string>
+    <string name="channels">Kanäle</string>
+    <string name="backgrounds">Fuss Innenraum</string>
+    <string name="hdr">HDR</string>
+    <string name="before">Vorher</string>
+    <string name="after">Nach</string>
+    <string name="shoot_now">Jetzt fotografieren</string>
+    <string name="order">Order Now</string>
+    <string name="preview_order">Proceed To Order</string>
+    <string name="your_sku">Your SKUs</string>
+    <string name="report_issue">Report Issue</string>
+    <string name="add_sku">Add SKUs</string>
+    <string name="completed">Abgeschlossen</string>
+    <string name="no_data">No marketplaces</string>
+    <string name="no_datas">No Backgrounds</string>
+    <string name="demo_sku">Demo Skus</string>
+    <string name="order_now">Order Now</string>
+    <string name="shoot_selection">Shoot Selection</string>
+    <string name="sku_names">Sku Name</string>
+    <string name="sku">Sku:</string>
+    <string name="total_cost">Gesamtpreis</string>
+    <string name="total_images">Total Images Clicked</string>
+    <string name="available_download">Available for download</string>
+    <string name="select_marketplace">Select Marketplace</string>
+    <string name="confirm">Bestätigen Sie</string>
+    <string name="no_reshoot">Erneut aufnehmen</string>
+    <string name="start_shooting">Start Shooting</string>
+    <string name="ongoing">In Bearbeitung</string>
+    <string name="drafts">Entwürfe</string>
+    <string name="failed">Failed</string>
+    <string name="categories_selection">Kategorieauswahl</string>
+    <string name="footwear">Footwear</string>
+    <string name="automobile">Fahrzeuge</string>
+    <string name="home">Heim</string>
+    <string name="logout">Abmelden</string>
+    <string name="dealership">DealerShip Logo</string>
+    <string name="no_completed">Completed orders\nwill appear here</string>
+    <string name="no_ongoing">On-going orders\nwill appear here</string>
+    <string name="our_work">Das können wir</string>
+    <string name="upload_logo">Upload Logo</string>
+    <string name="the_otp">The OTP is incorrect. Please try again.</string>
+    <string name="please_enter_email">Please enter a valid email Id</string>
+    <string name="please_enter_email_password">Please enter a valid Email Id OR Password</string>
+    <string name="start_order">Start Order</string>
+    <string name="submitted">Submitted</string>
+    <string name="add">Add</string>
+    <string name="api_key_razorpay">rzp_test_o5vheFMPXkCBrp</string>
+    <string name="are_you">Möchten Sie diese SKU wirklich löschen?</string>
+    <string name="no">Nein</string>
+    <string name="yes">Ja</string>
+    <string name="exit_demo_button">Demomodus beenden</string>
+    <string name="exits">Möchtest du dieses Shooting wirklich beenden?</string>
+    <string name="exits_demo">Der Demo-Modus ist nur für die ersten beiden Hintergründe verfügbar. Um diesen Hintergrund freizuschalten, verlassen Sie bitte den Demo-Modus.</string>
+    <string name="email">Ihre E-Mail-ID</string>
+    <string name="order_summary">Bestellübersicht</string>
+    <string name="category">Kategorie - </string>
+    <string name="total_skus">Gesamt-SKU</string>
+    <string name="selected_backgrounds">Ausgewählte Hintergründe</string>
+    <string name="dealership_logo">Händlerlogo</string>
+    <string name="top_up"><u>Guthaben aufladen</u></string>
+    <string name="buy_credits">10 Credits kaufen</string>
+    <string name="request_on_whatsapp">Anfrage auf WhatsApp</string>
+    <string name="your_gif">Dein GIF</string>
+    <string name="choose_shoots">Schüsse auswählen</string>
+    <string name="proceed">Weiter</string>
+    <string name="select_backgrounds">Einzelner Innenraum</string>
+    <string name="select_output">Beispiel 360°-Ausgabe</string>
+    <string name="create_shoots">Ausgabe generieren</string>
+    <string name="your_sent">Deine 360°-Aufnahme wurde gesendet an</string>
+    <string name="view_all_images">Alle Bilder anzeigen</string>
+    <string name="reach_out">Kontaktieren Sie uns!</string>
+    <string name="whatsapp">WhatsApp</string>
+    <string name="completed_projects">Fertige Projekte</string>
+    <string name="your_images">Ihre Bilder</string>
+    <string name="processing">wird bearbeitet</string>
+    <string name="your_photos">Ihre Fotos wurden gesendet an</string>
+
+    <string name="demo">Demo</string>
+    <string name="sedan">Sedan</string>
+    <string name="hatchbacks">Hatchbacks</string>
+    <string name="suv">SUV</string>
+
+    <string name="view_spin">View 360° Spin Shot</string>
+    <string name="continues">fortsetzen</string>
+
+
+    <string name="your_360_shots">Deine Bilder sind fast fertig</string>
+    <string name="no_internet">Server antwortet nicht</string>
+    <string name="retry">Wiederholen</string>
+    <string name="more_angles">(Weitere Winkel folgen in Kürze)</string>
+    <string name="we_recommend">(1/2) Innenaufnahmen</string>
+    <string name="skip">Überspringen</string>
+    <string name="apply_reflection">Automatische Belichtung anwenden</string>
+    <string name="window_reflection">Fensterreflexionsstil</string>
+    <string name="transparent">Transparent</string>
+    <string name="original">Original</string>
+    <string name="exterior">Außen</string>
+    <string name="interior">Innere</string>
+    <string name="have_look"><u>Guck mal</u></string>
+
+    <string name="download_hd_images"><u>HD-Bilder herunterladen</u></string>
+    <string name="download_free"><u>Kostenlos herunterladen (mit Wasserzeichen)</u></string>
+
+    <string name="downloading...."><u>wird heruntergeladen....</u></string>
+    <string name="download_completed"><u>Herunterladen abgeschlossen</u></string>
+    <string name="download_failed"><u> Herunterladen fehlgeschlagen</u></string>
+
+    <string name="total_images_clicked"><u>Geklickte Bilder insgesamt</u></string>
+
+    <string name="credits_available"><u>Guthaben Credits</u></string>
+    <string name="credits_remaining">Verfügbare Credits</string>
+    <string name="top_up_2"><u>(Credits aufladen</u></string>
+
+    <string name="sku_id"><u>SKU ID</u></string>
+
+    <string name="images"><u>Bilder</u></string>
+
+    <string name="credits"><u>Credits</u></string>
+
+    <string name="increase_online_sale"><u>Steigern Sie den Online-Umsatz für Ihre Produkte um \n<br />Hochladen visuell beeindruckender Bilder auf \n<br />Marktplätze
+
+</u></string>
+
+    <string name="choose_marketplace">Marktplatz auswählen</string>
+    <string name="choose_background_colour">Hintergrundfarbe wählen</string>
+    <string name="sample_output_image">Beispielausgabebild</string>
+    <string name="choose_background">Dann wähle die Hintergrundfarbe</string>
+
+
+    <string name="free_credits">10 Credits wurden \n<br />Ihrem Konto</string> hinzugefügt
+
+    <string name="forgot_password_dialog">Link erfolgreich gesendet.\n<br /> Bitte überprüfen Sie Ihre E-Mail.</string>
+
+
+    <string name="we_recommend_focused">(2/2) Verschiedene Aufnahmen</string>
+    <string name="focused">Sonstiges</string>
+
+    <string name="start_new_shoot">Starte ein neues Shooting</string>
+
+    <string name="ongoing_projects">Laufende Projekte</string>
+    <string name="draft_projects">Entwürfe von Projekten</string>
+
+    <string name="your_orders">Ihre Bestellungen</string>
+    <string name="end_shoot">Shooting beenden</string>
+    <string name="end_shoots">Möchtest du das Shooting jetzt wirklich beenden?</string>
+
+    <string name="preview">Vorschau</string>
+    <string name="place_order">Verarbeitung starten</string>
+    <string name="images_will_be_lost">Ihre Bilder gehen verloren. Möchten Sie diese Seite wirklich verlassen?</string>
+
+
+    <string name="dealership_popup">Logo wird auf den \n<br /><b>Nummernschildern</b> und <b>Ecke</b> \n<br />des Bildes</string>
+
+
+    <string name="select_corner">Ecke auswählen, um das Logo anzuzeigen</string>
+
+    <string name="top_left">Oben links</string>
+    <string name="top_right">Oben rechts</string>
+    <string name="bottom_left">Unten links</string>
+    <string name="bottom_right">Unten rechts</string>
+
+
+    <string name="sign_up_here"><b>Hier anmelden</b></string>
+
+    <string name="logout_dialog_text">Bist du sicher, dass du das willst <b>Ausloggen.</b></string>
+
+    <string name="login_here"><b>Login</b></string>
+    <string name="shoot_outdoor">Fotografiere im&#160; <font color='#FF7700'><b>Außenbereich</b></font>&#160;tum Spiegelungen zu vermeiden </string>
+    <string name="forgot_password">Passwort vergessen?</string>
+
+    <string name="forgot_password_mail">Geben Sie die E-Mail-Adresse ein, um Ihr Passwort zurückzusetzen. \n<br />Sie müssen möglicherweise Ihren Spam-Ordner überprüfen.</string>
+    <string name="enter_vin">Bitte geben Sie die Fahrgestellnummer (VIN) ein</string>
+    <string name="vin_number">FIN</string>
+
+
+    <string name="message_no_permissions">Die App kann ohne Berechtigungen nicht funktionieren</string>
+
+
+    <string name="sku_name_hint">Auto benennen</string>
+
+    <string name="do_you_need_footwear_overlayes">Brauchst du Schuhüberzüge?</string>
+    <string name="bikes">Fahrräder</string>
+    <string name="project_name">Projektname</string>
+    <string name="project_name_">Projektname -</string>
+    <string name="end_project">Möchten Sie dieses Projekt wirklich beenden?</string>
+    <string name="submit_and_process">Dieses Projekt einreichen und verarbeiten</string>
+    <string name="city">Stadt(optional)</string>
+    <string name="city_">Stadt -</string>
+    <string name="new_project">Neues Projekt</string>
+    <string name="car_subcategory">Fahrzeugtyp auswählen</string>
+    <string name="footwear_subcategory">Wählen Sie die Unterkategorie Ihrer Schuhe</string>
+    <string name="go_to_home">Nach Hause gehen</string>
+
+
+    <string name="terms_and_conditions_url_swiggy">https://www.swiggy.com/terms-and-conditions</string>
+
+    <string name="create_professional_automobile">Professionelle\n<br />Bilder mit einem einzigen Klick mit KI erstellen</string>
+
+    <string name="capture_upto">Erfasse bis zu 36 Außenaufnahmen</string>
+    <string name="my_projcts">Meine Projekte</string>
+
+    <string name="session_expired">Sitzung abgelaufen. Bitte <b>melden Sie sich erneut</b> an.</string>
+    <string name="change_fidelity"><u>Fidelity ändern</u></string>
+    <string name="total_exterior_clicked">Außenaufnahmen insgesamt</string>
+
+    <string name="get_started_">Erste Schritte</string>
+    <string name="on_going_shoots">Laufende Shootings</string>
+    <string name="view_all">Alle anzeigen</string>
+    <string name="completed_shoots">Abgeschlossene Shootings</string>
+    <string name="explore_categories">Kategorien erkunden</string>
+    <string name="tutorial_videos">Tutorial-Videos</string>
+
+    <string name="create_password">Passwort erstellen</string>
+    <string name="enter_business_name">Geben Sie Ihr Unternehmen/Ihren Namen ein</string>
+
+    <string name="shoot">Foto</string>
+    <string name="request_to_add_credits">Credits aufladen</string>
+    <string name="send_request">Anfrage versenden</string>
+
+    <string name="try_new_feature">Teste unsere neue Funktion</string>
+    <string name="get_three_sixty_view">Erstelle 360° Videos in wenigen\nMinuten mit Hilfe von modernster\n Technik</string>
+    <string name="shoot_summary">Zusammenfassung der Aufnahmen </string>
+    <string name="enable">aktivieren</string>
+    <string name="generate_three_sixty">360 Ansicht</string>
+    <string name="select_country">Wähle dein Land</string>
+
+    <string name="already_a_user">Bereits ein %1$s Benutzer?</string>
+    <string name="new_to">Neu bei %1$s</string>
+    <string name="projects">Projekte</string>
+    <string name="shoot_all_angles">Schießen Sie alle Winkelbilder und ein 360°-Video Ihres Autos für einen besseren \nWiederverkauf auf führenden Marktplätzen</string>
+    <string name="image_shoot">Bildaufnahme</string>
+    <string name="explore">Erkunden</string>
+    <string name="Germany">Deutschland</string>
+    <string name="Italy">Italien</string>
+    <string name="beta">Beta</string>
+    <string name="image_category">Bildkategorie</string>
+    <string name="additionl_settings">Zusätzliche Hinweise</string>
+    <string name="add_text_here">Text hier hinzufügen</string>
+    <string name="continue_shoot">Aufnahme fortsetzen</string>
+    <string name="shoot_images">Bilder aufnehmen</string>
+    <string name="Select_Language">Sprache auswählen</string>
+    <string name="category_label">Kategorie:</string>
+    <string name="image_label">Bilder:</string>
+    <string name="saved">Gespeichert</string>
+    <string name="skus_label">Skus:</string>
+    <string name="total_SKUs">"Gesamt-SKUs "</string>
+    <string name="shoot_360">schießen 360</string>
+    <string name="buy_now">Kaufe jetzt</string>
+    <string name="credit_packs">Credit-Pakete</string>
+    <string name="image_credit">1 Bild = 1 Credit</string>
+    <string name="full_resolution_images_at_lowest_cost">Bilder in voller Auflösung zu niedrigsten Kosten</string>
+    <string name="_image">/Bild</string>
+    <string name="describe_your_issue_or_idea">Beschreiben Sie Ihr Problem oder Ihre Idee....</string>
+    <string name="do_you_have">Haben Sie einen Vorschlag oder haben Sie einen Fehler gefunden?\n Bitte teilen Sie uns dies im Feld unten mit.</string>
+    <string name="total_images_label">Bilder insgesamt</string>
+    <string name="resume_shoot">Aufnahme fortsetzen</string>
+    <string name="start_shoot">Shooting starten</string>
+    <string name="angles">Winkel</string>
+    <string name="contiune">Weiter</string>
+    <string name="request_to_add">Anfrage zum Hinzufügen von Credits</string>
+    <string name="generate_output">Ausgabe generieren</string>
+    <string name="sample_output">Beispielausgabe</string>
+
+    <string name="image_uploading_in_progess">Bild wird hochgeladen...</string>
+    <string name="upload">Hochladen </string>
+    <string name="active">Aktiv</string>
+    <string name="disconnected">Getrennt</string>
+    <string name="image_uploaded">Bild hochgeladen</string>
+    <string name="miscellanous">Sonstiges</string>
+    <string name="last_uploaded">Zuletzt hochgeladen </string>
+    <string name="internet_connection">Internetverbindung: Getrennt</string>
+    <string name="uploading_paused_on">Upload angehalten am </string>
+    <string name="uploading_paused">Upload angehalten</string>
+<!--    <string name="inner_connection_label">Internetverbindung: </string>-->
+    <string name="all_uploaded">Alle Bilder hochgeladen </string>
+    <string name="allow">Zulassen</string>
+    <string name="select_car_subcategory">Wählen Sie die Unterkategorie Ihres Autos</string>
+    <string name="no_magnato_meter">Ihr Gerät hat kein Magnetometer!\n\nBitte verwenden Sie ein anderes Mobilgerät</string>
+
+</resources>

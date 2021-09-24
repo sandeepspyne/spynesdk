@@ -243,7 +243,7 @@ class OverlaysFragment : BaseFragment<ShootViewModel, FragmentOverlaysBinding>()
 
         //update progress list
         viewModel.exterirorAngles.observe(viewLifecycleOwner, {
-            binding.tvShoot?.text = "Angles 1/${viewModel.getSelectedAngles()}"
+            binding.tvShoot?.text = getString(R.string.angles)+" 1/${viewModel.getSelectedAngles()}"
             if (viewModel.shootList.value.isNullOrEmpty())
                 initProgressFrames()
             else if (viewModel.shootList.value?.size!! < viewModel.getSelectedAngles()!!)

@@ -21,6 +21,7 @@ import com.spyneai.dashboard.response.NewSubCatResponse
 import com.spyneai.dashboard.ui.base.ViewModelFactory
 import com.spyneai.needs.AppConstants
 import com.spyneai.needs.Utilities
+import com.spyneai.setLocale
 import com.spyneai.shoot.data.ShootViewModel
 import com.spyneai.shoot.data.model.CategoryDetails
 import com.spyneai.shoot.data.model.CreateProjectRes
@@ -50,6 +51,8 @@ class ShootPortraitActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_shoot_portrait)
+
+        setLocale()
 
         window.setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
             WindowManager.LayoutParams.FLAG_FULLSCREEN)

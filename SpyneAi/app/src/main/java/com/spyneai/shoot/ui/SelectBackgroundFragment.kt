@@ -58,7 +58,7 @@ class SelectBackgroundFragment : BaseFragment<ProcessViewModel, FragmentSelectBa
             AppConstants.CARS24-> {
                 binding.cb360.visibility = View.GONE
                 binding.tv360.visibility = View.GONE
-                binding.tvGenerateGif.text = "Generate Output"
+                binding.tvGenerateGif.text = getString(R.string.generate_output)
             }
 
             AppConstants.SWEEP -> {
@@ -66,20 +66,20 @@ class SelectBackgroundFragment : BaseFragment<ProcessViewModel, FragmentSelectBa
                 binding.imageViewGif.visibility = View.INVISIBLE
                 binding.cb360.visibility = View.GONE
                 binding.tv360.visibility = View.GONE
-                binding.tvGenerateGif.text = "Generate Output"
+                binding.tvGenerateGif.text = getString(R.string.generate_output)
             }
             AppConstants.SWIGGY -> {
                 binding.cb360.visibility = View.GONE
                 binding.tv360.visibility = View.GONE
-                binding.tvGenerateGif.text = "Generate Output"
-                binding.tvSample.text = "Sample Output"
+                binding.tvGenerateGif.text = getString(R.string.generate_output)
+                binding.tvSample.text = getString(R.string.sample_output)
             }
             else -> {
                 binding.cb360.setOnCheckedChangeListener { buttonView, isChecked ->
                     if (isChecked)
-                        binding.tvGenerateGif.text = "Continue"
+                        binding.tvGenerateGif.text = getString(R.string.contiune)
                     else
-                        binding.tvGenerateGif.text = "Generate Output"
+                        binding.tvGenerateGif.text = getString(R.string.generate_output)
                 }
             }
         }

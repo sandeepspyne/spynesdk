@@ -28,11 +28,13 @@
             android:layout_width="@dimen/dp_80"
             android:layout_height="@dimen/dp_70"
             android:layout_margin="@dimen/dp_10"
+            android:id="@+id/ivOne"
             android:src="@mipmap/interior_demo1"/>
         <ImageView
             android:layout_width="@dimen/dp_80"
             android:layout_height="@dimen/dp_70"
             android:layout_margin="@dimen/dp_10"
+            android:id="@+id/ivTwo"
             android:src="@mipmap/idemo2"/>
     </LinearLayout>
     <LinearLayout
@@ -44,11 +46,13 @@
             android:layout_width="@dimen/dp_80"
             android:layout_height="@dimen/dp_70"
             android:layout_margin="@dimen/dp_10"
+            android:id="@+id/ivThree"
             android:src="@mipmap/idemo3"/>
         <ImageView
             android:layout_width="@dimen/dp_80"
             android:layout_height="@dimen/dp_70"
             android:layout_margin="@dimen/dp_10"
+            android:id="@+id/ivFour"
             android:src="@mipmap/idemo4"/>
     </LinearLayout>
 
@@ -69,6 +73,7 @@
             android:fontFamily="@font/medium"
             android:textSize="@dimen/sp_15"
             android:layout_margin="@dimen/dp_5"
+            android:maxLines="1"
             android:background="@drawable/bg_skip"
             android:textAllCaps="false"/>
 
@@ -79,6 +84,7 @@
             android:layout_height="wrap_content"
             android:text="@string/shoot_now"
             android:padding="@dimen/dp_5"
+            android:maxLines="1"
             android:gravity="center"
             android:layout_margin="@dimen/dp_5"
             android:textColor="@color/white"

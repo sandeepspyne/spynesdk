@@ -28,7 +28,7 @@
             android:layout_height="wrap_content"
             android:id="@+id/tv_tittle"
             android:layout_gravity="center"
-            android:text="Start Shoot"
+            android:text="@string/start_shoot"
             android:fontFamily="@font/poppins_semibold"
             android:textColor="@color/black"
             android:textSize="16sp"/>
@@ -53,27 +53,27 @@
 
 
                <TextView
+                   android:id="@+id/tv_automobiles"
                    android:layout_width="wrap_content"
                    android:layout_height="wrap_content"
-                   android:text="Automobiles"
-                   android:id="@+id/tv_automobiles"
-                   android:textColor="#343434"
+                   android:layout_marginLeft="20dp"
                    android:layout_marginTop="27dp"
-                   android:textSize="@dimen/sp_18"
                    android:fontFamily="@font/poppins_medium"
-                   android:layout_marginLeft="20dp"/>
+                   android:text="@string/automobile"
+                   android:textColor="#343434"
+                   android:textSize="@dimen/sp_18" />
 
 
                <TextView
                    android:layout_width="wrap_content"
                    android:layout_height="wrap_content"
-                   android:textColor="@color/black"
-                   android:text="Shoot all angle images and 360 \nvideo of your car for better \nreselling on leading marketplaces"
                    android:layout_below="@id/tv_automobiles"
+                   android:layout_marginLeft="20dp"
                    android:layout_marginTop="5dp"
-                   android:textSize="12sp"
                    android:fontFamily="@font/poppins_regular"
-                   android:layout_marginLeft="20dp" />
+                   android:text="@string/shoot_all_angles"
+                   android:textColor="@color/black"
+                   android:textSize="12sp" />
 
 
                <ImageView
@@ -94,7 +94,7 @@
                app:layout_constraintLeft_toLeftOf="parent"
                app:layout_constraintRight_toRightOf="parent"
                app:layout_constraintTop_toBottomOf="@id/rl_automobiles"
-               android:text="Image Shoot"
+               android:text="@string/image_shoot"
                android:id="@+id/tvImageShoot"
                android:textColor="@color/start_shoot_text"
                android:fontFamily="@font/poppins_medium"
@@ -186,7 +186,7 @@
            <TextView
                android:layout_width="wrap_content"
                android:layout_height="wrap_content"
-               android:text="Try our New\nFeature"
+               android:text="@string/try_new_feature"
                app:layout_constraintTop_toTopOf="@id/ivExploreThreeSixty"
                app:layout_constraintBottom_toBottomOf="@id/ivExploreThreeSixty"
                app:layout_constraintLeft_toLeftOf="@id/ivExploreThreeSixty"
@@ -198,7 +198,7 @@
            <TextView
                android:layout_width="wrap_content"
                android:layout_height="wrap_content"
-               android:text="Get 360° video out in few\nminutes with the power of AI"
+               android:text="@string/get_three_sixty_view"
                app:layout_constraintBottom_toBottomOf="@id/ivExploreThreeSixty"
                app:layout_constraintLeft_toLeftOf="@id/ivExploreThreeSixty"
                android:layout_marginLeft="@dimen/dp_10"
@@ -209,7 +209,7 @@
            <TextView
                android:layout_width="wrap_content"
                android:layout_height="wrap_content"
-               android:text="Explore"
+               android:text="@string/explore"
                android:id="@+id/tvExplore"
                app:layout_constraintBottom_toBottomOf="@id/ivExploreThreeSixty"
                app:layout_constraintRight_toRightOf="@id/ivExploreThreeSixty"

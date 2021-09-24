@@ -68,14 +68,14 @@
             android:id="@+id/tvProject"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textSize="@dimen/sp_14"
-            android:fontFamily="@font/poppins_medium"
-            android:text="Project Name"
-            android:textColor="@color/categories_text"
+            android:layout_alignParentLeft="true"
             android:layout_marginLeft="17dp"
             android:layout_marginTop="16dp"
-            android:layout_alignParentLeft="true"
-            android:layout_marginBottom="16dp"/>
+            android:layout_marginBottom="16dp"
+            android:fontFamily="@font/poppins_medium"
+            android:text="@string/project_name"
+            android:textColor="@color/categories_text"
+            android:textSize="@dimen/sp_14" />
 
         <TextView
             android:id="@+id/tvProjectName"
@@ -112,7 +112,7 @@
             android:layout_marginRight="13dp"
             android:layout_toLeftOf="@+id/tvTotalSku"
             android:fontFamily="@font/poppins_medium"
-            android:text="Total Images "
+            android:text="@string/total_images_label"
             android:textColor="@color/categories_text"
             android:textSize="@dimen/sp_14" />
 
@@ -261,7 +261,7 @@
         <com.google.android.material.button.MaterialButton
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Resume Shoot"
+            android:text="@string/resume_shoot"
             android:textAllCaps="false"
             android:id="@+id/btnContinueShoot"
             android:textSize="@dimen/sp_14"

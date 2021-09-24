@@ -42,6 +42,7 @@ import com.spyneai.model.skumap.UpdateSkuResponse
 import com.spyneai.needs.AppConstants
 import com.spyneai.needs.ScrollingLinearLayoutManager
 import com.spyneai.needs.Utilities
+import com.spyneai.setLocale
 import com.spyneai.shoot.utils.log
 import com.spyneai.videorecording.fragments.DialogEmbedCode
 import com.spyneai.videorecording.model.TSVParams
@@ -89,6 +90,7 @@ class ShowImagesActivity : AppCompatActivity(),View.OnTouchListener,View.OnClick
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_show_images)
 
+        setLocale()
         AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
 
         frontFramesList = ArrayList()

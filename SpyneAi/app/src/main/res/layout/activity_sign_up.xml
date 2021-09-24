@@ -50,7 +50,7 @@
                 android:maxLines="1"
                 android:textSize="15sp"
                 android:fontFamily="@font/light"
-                android:hint="Enter Email" />
+                android:hint="@string/enter_email" />
         </LinearLayout>
 
         <LinearLayout
@@ -72,7 +72,7 @@
                 android:maxLines="1"
                 android:textSize="15sp"
                 android:fontFamily="@font/light"
-                android:hint="Create Password" />
+                android:hint="@string/create_password" />
         </LinearLayout>
 
         <LinearLayout
@@ -93,7 +93,7 @@
                 android:maxLines="1"
                 android:textSize="15sp"
                 android:fontFamily="@font/light"
-                android:hint="Enter Business/Your Name" />
+                android:hint="@string/enter_business_name" />
         </LinearLayout>
 
         <LinearLayout
@@ -125,6 +125,7 @@
                 android:layout_alignParentLeft="true"
                 android:fontFamily="@font/light"
                 android:textSize="@dimen/sp_13"
+                android:text="@string/already_a_user"
                 android:textColor="@color/black"/>
 
 

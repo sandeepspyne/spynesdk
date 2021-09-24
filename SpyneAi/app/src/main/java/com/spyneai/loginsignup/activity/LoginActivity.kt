@@ -24,6 +24,7 @@ import com.spyneai.needs.AppConstants
 import com.spyneai.needs.Utilities
 import com.spyneai.posthog.Events
 import com.spyneai.shoot.utils.log
+import kotlinx.android.synthetic.main.activity_sign_up.*
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -52,7 +53,8 @@ class LoginActivity : AppCompatActivity() {
             else ->{}
         }
 
-        binding.tvNewToApp.text = "New to " + getString(R.string.app_name) + "?"
+        val appName = getString(R.string.app_name)
+        binding.tvNewToApp.text = getString(R.string.new_to,appName)
 
         listeners()
     }

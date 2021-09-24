@@ -15,18 +15,15 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.work.*
 import com.google.android.material.snackbar.Snackbar
 import com.posthog.android.Properties
-import com.spyneai.BaseApplication
-import com.spyneai.BuildConfig
+import com.spyneai.*
 import com.spyneai.R
 import com.spyneai.activity.CategoriesActivity
 import com.spyneai.base.network.ClipperApi
 import com.spyneai.base.network.Resource
-import com.spyneai.captureEvent
 import com.spyneai.dashboard.data.DashboardViewModel
 import com.spyneai.dashboard.ui.base.ViewModelFactory
 import com.spyneai.databinding.ActivityDashboardMainBinding
 import com.spyneai.interfaces.RetrofitClients
-import com.spyneai.isResolutionSupported
 import com.spyneai.needs.AppConstants
 import com.spyneai.needs.Utilities
 import com.spyneai.orders.ui.MyOrdersActivity
@@ -44,16 +41,13 @@ import com.spyneai.shoot.data.ShootRepository
 import com.spyneai.shoot.response.UploadFolderRes
 import com.spyneai.shoot.ui.StartShootActivity
 import com.spyneai.shoot.ui.base.ShootActivity
-import com.spyneai.shoot.ui.dialogs.ResolutionNotSupportedFragment
-import com.spyneai.threesixty.data.VideoUploadService
+import com.spyneai.shoot.ui.dialogs.NoMagnaotoMeterDialog
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
-import android.view.ViewGroup
-import android.widget.Button
-import java.lang.RuntimeException
+import java.util.*
 
 
 class MainDashboardActivity : AppCompatActivity() {
@@ -67,6 +61,8 @@ class MainDashboardActivity : AppCompatActivity() {
         binding = ActivityDashboardMainBinding.inflate(layoutInflater)
         val view = binding.root
         setContentView(view)
+
+        setLocale()
 
         if (intent.getBooleanExtra("show_ongoing",false)){
             val intent = Intent(this, MyOrdersActivity::class.java)
@@ -103,7 +99,8 @@ class MainDashboardActivity : AppCompatActivity() {
                 R.id.homeDashboardFragment->setCurrentFragment(firstFragment)
 
                 R.id.shootActivity-> {
-                    when(getString(R.string.app_name)) {
+                    if (isMagnatoMeterAvailable()){
+                        when(getString(R.string.app_name)) {
                         "Ola Cabs",
                         AppConstants.CARS24,
                         AppConstants.CARS24_INDIA,
@@ -112,7 +109,7 @@ class MainDashboardActivity : AppCompatActivity() {
                         "Travo Photos",
                         "Yalla Motors",
                         "Spyne Hiring",
-                        AppConstants.AUTO_MOSER-> {
+                        AppConstants.AUTO_FOTO-> {
                             var intent = Intent(this, StartShootActivity::class.java)
                             intent.putExtra(AppConstants.CATEGORY_ID,AppConstants.CARS_CATEGORY_ID)
                             intent.putExtra(AppConstants.CATEGORY_NAME,"Automobiles")
@@ -136,6 +133,9 @@ class MainDashboardActivity : AppCompatActivity() {
                             intent.putExtra(AppConstants.CATEGORY_NAME,"Automobiles")
                             startActivity(intent)
                         }
+                    }
+                    }else {
+                        NoMagnaotoMeterDialog().show(supportFragmentManager,"NoMagnaotoMeterDialog")
                     }
                 }
 
@@ -220,7 +220,7 @@ class MainDashboardActivity : AppCompatActivity() {
         } else {
             capture(Events.PERMISSIONS_DENIED)
             Snackbar.make(binding.root, "App cannot work without permission", Snackbar.LENGTH_INDEFINITE)
-                .setAction("Allow") {
+                .setAction(getString(R.string.allow)) {
                    requestPermi()
                 }
                 .setActionTextColor(ContextCompat.getColor(this,R.color.primary))

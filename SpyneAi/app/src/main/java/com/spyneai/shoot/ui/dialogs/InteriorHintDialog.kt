@@ -4,10 +4,12 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageView
 import com.bumptech.glide.Glide
 import com.spyneai.R
 import com.spyneai.base.BaseDialogFragment
 import com.spyneai.base.network.Resource
+import com.spyneai.dashboard.response.NewSubCatResponse
 import com.spyneai.databinding.DialogInteriorHintBinding
 import com.spyneai.databinding.DialogShootHintBinding
 import com.spyneai.needs.AppConstants
@@ -20,6 +22,8 @@ class InteriorHintDialog : BaseDialogFragment<ShootViewModel, DialogInteriorHint
         super.onViewCreated(view, savedInstanceState)
 
         dialog?.setCancelable(false)
+
+        changePhotos()
 
         binding.tvSkip.setOnClickListener {
             viewModel.showMiscDialog.value = true
@@ -36,23 +40,38 @@ class InteriorHintDialog : BaseDialogFragment<ShootViewModel, DialogInteriorHint
         }
     }
 
-    private fun checkMiscShootStatus() {
-        viewModel.subCategoriesResponse.observe(viewLifecycleOwner, {
-            when (it) {
-                is Resource.Success -> {
-                    when {
-                        it.value.miscellaneous.isNotEmpty() -> {
-                            viewModel.showMiscDialog.value = true
-                        }
-                        else -> {
-                            selectBackground()
-                        }
-                    }
-                }
-                else -> { }
-            }
-        })
+    private fun changePhotos() {
+        when(getString(R.string.app_name)){
+            AppConstants.AUTO_FOTO -> {
+                val subCategoriesResponse = (viewModel.subCategoriesResponse.value as Resource.Success).value
 
+                if (subCategoriesResponse.interior.isNullOrEmpty() && subCategoriesResponse.interior.size >= 4){
+                    setImage(binding.ivOne,subCategoriesResponse.interior[0].display_thumbnail)
+                    setImage(binding.ivTwo,subCategoriesResponse.interior[1].display_thumbnail)
+                    setImage(binding.ivThree,subCategoriesResponse.interior[2].display_thumbnail)
+                    setImage(binding.ivFour,subCategoriesResponse.interior[3].display_thumbnail)
+                }
+            }
+        }
+    }
+
+    private fun setImage(ivOne: ImageView, interior: String) {
+        Glide.with(requireContext())
+            .load(interior)
+            .into(ivOne)
+    }
+
+    private fun checkMiscShootStatus() {
+        val subCategoriesResponse = (viewModel.subCategoriesResponse.value as Resource.Success).value
+
+        when {
+            subCategoriesResponse.miscellaneous.isNotEmpty() -> {
+                viewModel.showMiscDialog.value = true
+            }
+            else -> {
+                selectBackground()
+            }
+        }
     }
 
     private fun selectBackground() {

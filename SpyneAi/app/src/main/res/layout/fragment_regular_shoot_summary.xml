@@ -37,7 +37,7 @@
                 android:layout_height="match_parent"
                 android:fontFamily="@font/bold"
                 android:gravity="center"
-                android:text="Shoot Summary"
+                android:text="@string/shoot_summary"
                 android:textColor="@color/black"
                 android:textSize="@dimen/sp_16"
                 android:textStyle="bold" />

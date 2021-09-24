@@ -54,7 +54,7 @@
                     android:maxLines="1"
                     android:textSize="15sp"
                     android:fontFamily="@font/light"
-                    android:hint="Enter Email" />
+                    android:hint="@string/enter_email" />
             </LinearLayout>
 
             <LinearLayout
@@ -76,7 +76,7 @@
                     android:maxLines="1"
                     android:textSize="15sp"
                     android:fontFamily="@font/light"
-                    android:hint="Enter Password" />
+                    android:hint="@string/enter_password" />
             </LinearLayout>
             <RelativeLayout
                 android:layout_width="match_parent"
@@ -95,6 +95,7 @@
                     android:layout_alignParentLeft="true"
                     android:fontFamily="@font/light"
                     android:textSize="@dimen/sp_13"
+                    android:text="@string/new_to_app"
                     android:textColor="@color/black"/>
 
                 <TextView

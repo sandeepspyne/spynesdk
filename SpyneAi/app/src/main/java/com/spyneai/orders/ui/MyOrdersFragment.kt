@@ -31,9 +31,9 @@ class MyOrdersFragment : BaseFragment<DashboardViewModel, FragmentMyOrdersBindin
 
         TabLayoutMediator(binding.tabLayout, binding.viewPager) { tab, position ->
             when (position) {
-                0 -> tab.text = "Drafts"
+                0 -> tab.text = getString(R.string.drafts)
                 1 -> tab.text = getString(R.string.ongoing)
-                else -> tab.text = "Completed"
+                else -> tab.text = getString(R.string.completed)
             }
         }.attach()
     }

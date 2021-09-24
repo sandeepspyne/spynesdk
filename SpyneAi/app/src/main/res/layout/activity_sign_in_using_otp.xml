@@ -51,7 +51,7 @@
                 android:maxLines="1"
                 android:textSize="15sp"
                 android:fontFamily="@font/light"
-                android:hint="Your Email Id" />
+                android:hint="@string/enter_email" />
         </LinearLayout>
 
         <TextView
