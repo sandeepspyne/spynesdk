@@ -61,6 +61,8 @@ data class NewSubCatResponse(
             val fieldName: String,
             @SerializedName("field_type")
             val fieldType: String,
+            @SerializedName("field_id")
+            val fieldId: String,
             @SerializedName("is_required")
             val isRequired: Boolean
         )
@@ -74,6 +76,8 @@ data class NewSubCatResponse(
             val fieldName: String,
             @SerializedName("field_type")
             val fieldType: String,
+            @SerializedName("field_id")
+            val fieldId: String,
             @SerializedName("is_required")
             val isRequired: Boolean
         )
@@ -87,6 +91,8 @@ data class NewSubCatResponse(
             val fieldName: String,
             @SerializedName("field_type")
             val fieldType: String,
+            @SerializedName("field_id")
+            val fieldId: String,
             @SerializedName("is_required")
             val isRequired: Boolean
         )

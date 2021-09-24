@@ -301,33 +301,46 @@ class ConfirmTagsDialog : BaseDialogFragment<ShootViewModel, DialogConfirmTagsBi
 
         val bindingList = bindingMap[viewModel.categoryDetails.value?.imageType]
 
-        bindingList?.forEach {viewBinding ->
+
+        bindingList?.forEachIndexed { index, viewBinding ->
             when(viewBinding){
                 is ItemTagsSpinnerBinding -> {
                     if (viewBinding.spinner.selectedItemPosition != 0)
                         json.put(
-                            getTagKey(viewBinding.tvTitle.text.toString()),
+                            getTagKey(index),
                             viewBinding.spinner.selectedItem.toString())
                 }
 
                 is ItemTagNotesBinding -> {
                     if (viewBinding.tvNotes.text.toString().isNotEmpty())
                         json.put(
-                            getTagKey(viewBinding.tvNotes.text.toString()),
+                            getTagKey(index),
                             viewBinding.etNotes.text.toString())
                 }
             }
         }
+
         return json.toString()
     }
 
-    private fun getTagKey(text: String): String {
-        return when(text) {
-            "Imperfection Location" -> "imperfection_location"
-            "Imperfection Type" -> "imperfection_type"
-            "Imperfection Severity" -> "imperfection_severity"
-            else -> "notes"
+    private fun getTagKey(index: Int): String {
+
+        val response =  (viewModel.subCategoriesResponse.value as Resource.Success).value
+
+        when(viewModel.categoryDetails.value?.imageType) {
+            "Exterior" -> {
+                return response.tags.exterior[index].fieldId
+            }
+            "Interior" -> {
+                return response.tags.interior[index].fieldId
+            }
+            "Focus Shoot" -> {
+                return response.tags.focusShoot[index].fieldId
+            }
+            else -> {}
         }
+
+        return ""
     }
 
     private fun startService() {
