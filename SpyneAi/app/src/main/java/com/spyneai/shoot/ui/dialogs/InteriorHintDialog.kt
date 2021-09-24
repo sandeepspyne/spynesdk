@@ -1,10 +1,12 @@
 package com.spyneai.shoot.ui.dialogs
 
+import android.graphics.drawable.Drawable
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
+import androidx.core.content.ContextCompat
 import com.bumptech.glide.Glide
 import com.spyneai.R
 import com.spyneai.base.BaseDialogFragment
@@ -15,6 +17,7 @@ import com.spyneai.databinding.DialogShootHintBinding
 import com.spyneai.needs.AppConstants
 import com.spyneai.shoot.data.ShootViewModel
 import com.spyneai.shoot.utils.shoot
+import kotlinx.android.synthetic.main.dialog_create_project_and_sku.*
 
 class InteriorHintDialog : BaseDialogFragment<ShootViewModel, DialogInteriorHintBinding>() {
 
@@ -45,17 +48,29 @@ class InteriorHintDialog : BaseDialogFragment<ShootViewModel, DialogInteriorHint
             AppConstants.AUTO_FOTO -> {
                 val subCategoriesResponse = (viewModel.subCategoriesResponse.value as Resource.Success).value
 
-                if (subCategoriesResponse.interior.isNullOrEmpty() && subCategoriesResponse.interior.size >= 4){
+                if (!subCategoriesResponse.interior.isNullOrEmpty() && subCategoriesResponse.interior.size >= 4){
                     setImage(binding.ivOne,subCategoriesResponse.interior[0].display_thumbnail)
                     setImage(binding.ivTwo,subCategoriesResponse.interior[1].display_thumbnail)
                     setImage(binding.ivThree,subCategoriesResponse.interior[2].display_thumbnail)
                     setImage(binding.ivFour,subCategoriesResponse.interior[3].display_thumbnail)
                 }
+            }else -> {
+                setImageWithDrawable(binding.ivOne,R.mipmap.interior_demo1)
+                setImageWithDrawable(binding.ivTwo,R.mipmap.idemo2)
+                setImageWithDrawable(binding.ivThree,R.mipmap.idemo3)
+                setImageWithDrawable(binding.ivFour,R.mipmap.idemo4)
             }
         }
     }
 
+    private fun setImageWithDrawable(ivOne: ImageView, interior: Int) {
+        Glide.with(requireContext())
+            .load(interior)
+            .into(ivOne)
+    }
+
     private fun setImage(ivOne: ImageView, interior: String) {
+        val s = ""
         Glide.with(requireContext())
             .load(interior)
             .into(ivOne)

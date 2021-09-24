@@ -28,14 +28,12 @@
             android:layout_width="@dimen/dp_80"
             android:layout_height="@dimen/dp_70"
             android:layout_margin="@dimen/dp_10"
-            android:id="@+id/ivOne"
-            android:src="@mipmap/interior_demo1"/>
+            android:id="@+id/ivOne" />
         <ImageView
             android:layout_width="@dimen/dp_80"
             android:layout_height="@dimen/dp_70"
             android:layout_margin="@dimen/dp_10"
-            android:id="@+id/ivTwo"
-            android:src="@mipmap/idemo2"/>
+            android:id="@+id/ivTwo" />
     </LinearLayout>
     <LinearLayout
         android:layout_width="match_parent"

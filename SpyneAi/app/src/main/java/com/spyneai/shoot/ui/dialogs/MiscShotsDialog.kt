@@ -29,6 +29,10 @@ class MiscShotsDialog : BaseDialogFragment<ShootViewModel, DialogFocusedHintBind
            setSampleImages()
        }
 
+        if (getString(R.string.app_name) == AppConstants.AUTO_FOTO){
+            changePhotos()
+        }
+
         binding.tvSkipFocused.setOnClickListener {
             selectBackground()
             viewModel.startMiscShots.value = true
@@ -39,6 +43,28 @@ class MiscShotsDialog : BaseDialogFragment<ShootViewModel, DialogFocusedHintBind
             viewModel.startMiscShots.value = true
             dismiss()
         }
+    }
+
+    private fun changePhotos() {
+        when(getString(R.string.app_name)){
+            AppConstants.AUTO_FOTO -> {
+                val subCategoriesResponse = (viewModel.subCategoriesResponse.value as Resource.Success).value
+
+                if (!subCategoriesResponse.interior.isNullOrEmpty() && subCategoriesResponse.interior.size >= 4){
+                    setImage(binding.ivFirst,subCategoriesResponse.miscellaneous[0].display_thumbnail)
+                    setImage(binding.ivSecond,subCategoriesResponse.miscellaneous[1].display_thumbnail)
+                    setImage(binding.ivThird,subCategoriesResponse.miscellaneous[2].display_thumbnail)
+                    setImage(binding.ivFourth,subCategoriesResponse.miscellaneous[3].display_thumbnail)
+                }
+            }else -> { }
+        }
+    }
+
+    private fun setImage(ivOne: ImageView, interior: String) {
+        val s = ""
+        Glide.with(requireContext())
+            .load(interior)
+            .into(ivOne)
     }
 
     private fun selectBackground() {
