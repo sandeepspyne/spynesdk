@@ -41,6 +41,7 @@ import com.spyneai.shoot.data.ShootRepository
 import com.spyneai.shoot.response.UploadFolderRes
 import com.spyneai.shoot.ui.StartShootActivity
 import com.spyneai.shoot.ui.base.ShootActivity
+import com.spyneai.shoot.ui.dialogs.NoMagnaotoMeterDialog
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import retrofit2.Call
@@ -98,7 +99,8 @@ class MainDashboardActivity : AppCompatActivity() {
                 R.id.homeDashboardFragment->setCurrentFragment(firstFragment)
 
                 R.id.shootActivity-> {
-                    when(getString(R.string.app_name)) {
+                    if (isMagnatoMeterAvailable()){
+                        when(getString(R.string.app_name)) {
                         "Ola Cabs",
                         AppConstants.CARS24,
                         AppConstants.CARS24_INDIA,
@@ -131,6 +133,9 @@ class MainDashboardActivity : AppCompatActivity() {
                             intent.putExtra(AppConstants.CATEGORY_NAME,"Automobiles")
                             startActivity(intent)
                         }
+                    }
+                    }else {
+                        NoMagnaotoMeterDialog().show(supportFragmentManager,"NoMagnaotoMeterDialog")
                     }
                 }
 

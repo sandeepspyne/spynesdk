@@ -17,6 +17,7 @@ import com.spyneai.databinding.FragmentDraftSkuDetailsBinding
 import com.spyneai.draft.data.DraftViewModel
 import com.spyneai.draft.ui.adapter.DraftImagesAdapter
 import com.spyneai.draft.ui.adapter.LocalDraftImagesAdapter
+import com.spyneai.isMagnatoMeterAvailable
 import com.spyneai.isResolutionSupported
 import com.spyneai.needs.AppConstants
 import com.spyneai.needs.Utilities
@@ -26,6 +27,7 @@ import com.spyneai.shoot.data.model.Image
 import com.spyneai.shoot.ui.base.ProcessActivity
 import com.spyneai.shoot.ui.base.ShootActivity
 import com.spyneai.shoot.ui.base.ShootPortraitActivity
+import com.spyneai.shoot.ui.dialogs.NoMagnaotoMeterDialog
 import com.spyneai.shoot.ui.dialogs.ResolutionNotSupportedFragment
 
 class DraftSkuDetailsFragment : BaseFragment<DraftViewModel, FragmentDraftSkuDetailsBinding>() {
@@ -121,9 +123,12 @@ class DraftSkuDetailsFragment : BaseFragment<DraftViewModel, FragmentDraftSkuDet
             observeSkuDeatils()
         }
 
-
         binding.btnContinueShoot.setOnClickListener{
-            onResumeClick()
+            if (requireContext().isMagnatoMeterAvailable()){
+                onResumeClick()
+            }else {
+                NoMagnaotoMeterDialog().show(requireActivity().supportFragmentManager,"NoMagnaotoMeterDialog")
+            }
         }
     }
 

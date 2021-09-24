@@ -14,11 +14,13 @@ import com.spyneai.adapter.CategoriesAdapter
 import com.spyneai.dashboard.response.NewCategoriesResponse
 import com.spyneai.interfaces.APiService
 import com.spyneai.interfaces.RetrofitClients
+import com.spyneai.isMagnatoMeterAvailable
 import com.spyneai.needs.AppConstants
 import com.spyneai.needs.Utilities
 import com.spyneai.shoot.ui.StartShootActivity
 import com.spyneai.shoot.ui.base.ShootActivity
 import com.spyneai.shoot.ui.base.ShootPortraitActivity
+import com.spyneai.shoot.ui.dialogs.NoMagnaotoMeterDialog
 import kotlinx.android.synthetic.main.activity_categories.*
 import retrofit2.Call
 import retrofit2.Callback
@@ -73,94 +75,96 @@ class CategoriesActivity : AppCompatActivity(){
                 object : CategoriesAdapter.BtnClickListener {
                     override fun onBtnClick(position: Int) {
                         Log.e("position cat", position.toString())
-                        when(position) {
-                                0-> {
-                                    var intent : Intent
-                                    if (getString(R.string.app_name) == AppConstants.SWIGGY){
-                                         intent = Intent(this@CategoriesActivity, ShootPortraitActivity::class.java)
-                                    }else{
-                                         intent = Intent(this@CategoriesActivity, StartShootActivity::class.java)
-                                    }
-                                Utilities.savePrefrence(
-                                    this@CategoriesActivity,
-                                    AppConstants.CATEGORY_NAME,
-                                    categoriesResponseList[position].prod_cat_name
-                                )
-                                    Utilities.savePrefrence(this@CategoriesActivity, AppConstants.CATEGORY_ID, categoriesResponseList[position].prod_cat_id)
-                                    Utilities.savePrefrence(this@CategoriesActivity, AppConstants.CATEGORY_NAME, categoriesResponseList[position].prod_cat_name)
+                       if (isMagnatoMeterAvailable()){
+                           when(position) {
+                               0-> {
+                                   var intent : Intent
+                                   if (getString(R.string.app_name) == AppConstants.SWIGGY){
+                                       intent = Intent(this@CategoriesActivity, ShootPortraitActivity::class.java)
+                                   }else{
+                                       intent = Intent(this@CategoriesActivity, StartShootActivity::class.java)
+                                   }
+                                   Utilities.savePrefrence(
+                                       this@CategoriesActivity,
+                                       AppConstants.CATEGORY_NAME,
+                                       categoriesResponseList[position].prod_cat_name
+                                   )
+                                   Utilities.savePrefrence(this@CategoriesActivity, AppConstants.CATEGORY_ID, categoriesResponseList[position].prod_cat_id)
+                                   Utilities.savePrefrence(this@CategoriesActivity, AppConstants.CATEGORY_NAME, categoriesResponseList[position].prod_cat_name)
 
-                                     intent = when (categoriesResponseList[position].prod_cat_name) {
-                                        "Automobiles" -> {
-                                            Intent(this@CategoriesActivity, StartShootActivity::class.java)
-                                        }
-                                        "E-Commerce","Footwear", "Food & Beverages" -> {
-                                            Intent(this@CategoriesActivity, ShootPortraitActivity::class.java)
-                                        }
-                                        else -> {
-                                            Intent(this@CategoriesActivity, ShootActivity::class.java)
-                                        }
-                                    }
+                                   intent = when (categoriesResponseList[position].prod_cat_name) {
+                                       "Automobiles" -> {
+                                           Intent(this@CategoriesActivity, StartShootActivity::class.java)
+                                       }
+                                       "E-Commerce","Footwear", "Food & Beverages" -> {
+                                           Intent(this@CategoriesActivity, ShootPortraitActivity::class.java)
+                                       }
+                                       else -> {
+                                           Intent(this@CategoriesActivity, ShootActivity::class.java)
+                                       }
+                                   }
 
-                                intent.putExtra(AppConstants.CATEGORY_ID,categoriesResponseList[position].prod_cat_id)
-                                intent.putExtra(AppConstants.CATEGORY_NAME,categoriesResponseList[position].prod_cat_name)
-                                intent.putExtra(AppConstants.IMAGE_URL,categoriesResponseList[position].display_thumbnail)
-                                intent.putExtra(AppConstants.DESCRIPTION,categoriesResponseList[position].description)
-                                intent.putExtra(AppConstants.COLOR,categoriesResponseList[position].color_code)
-                                startActivity(intent)
-                            }
-                            1 -> {
-                                Utilities.savePrefrence(
-                                    this@CategoriesActivity,
-                                    AppConstants.CATEGORY_NAME,
-                                    categoriesResponseList[position].prod_cat_name
-                                )
+                                   intent.putExtra(AppConstants.CATEGORY_ID,categoriesResponseList[position].prod_cat_id)
+                                   intent.putExtra(AppConstants.CATEGORY_NAME,categoriesResponseList[position].prod_cat_name)
+                                   intent.putExtra(AppConstants.IMAGE_URL,categoriesResponseList[position].display_thumbnail)
+                                   intent.putExtra(AppConstants.DESCRIPTION,categoriesResponseList[position].description)
+                                   intent.putExtra(AppConstants.COLOR,categoriesResponseList[position].color_code)
+                                   startActivity(intent)
+                               }
+                               1 -> {
+                                   Utilities.savePrefrence(
+                                       this@CategoriesActivity,
+                                       AppConstants.CATEGORY_NAME,
+                                       categoriesResponseList[position].prod_cat_name
+                                   )
 
-                                Utilities.savePrefrence(this@CategoriesActivity, AppConstants.CATEGORY_ID, categoriesResponseList[position].prod_cat_id)
-                                Utilities.savePrefrence(this@CategoriesActivity, AppConstants.CATEGORY_NAME, categoriesResponseList[position].prod_cat_name)
+                                   Utilities.savePrefrence(this@CategoriesActivity, AppConstants.CATEGORY_ID, categoriesResponseList[position].prod_cat_id)
+                                   Utilities.savePrefrence(this@CategoriesActivity, AppConstants.CATEGORY_NAME, categoriesResponseList[position].prod_cat_name)
 
-                                val intent = when (categoriesResponseList[position].prod_cat_name) {
-                                    "Automobiles" -> {
-                                        Intent(this@CategoriesActivity, StartShootActivity::class.java)
-                                    }
-                                    "E-Commerce","Footwear" -> {
-                                        Intent(this@CategoriesActivity, ShootPortraitActivity::class.java)
-                                    }
-                                    else -> {
-                                        Intent(this@CategoriesActivity, ShootActivity::class.java)
-                                    }
-                                }
+                                   val intent = when (categoriesResponseList[position].prod_cat_name) {
+                                       "Automobiles" -> {
+                                           Intent(this@CategoriesActivity, StartShootActivity::class.java)
+                                       }
+                                       "E-Commerce","Footwear" -> {
+                                           Intent(this@CategoriesActivity, ShootPortraitActivity::class.java)
+                                       }
+                                       else -> {
+                                           Intent(this@CategoriesActivity, ShootActivity::class.java)
+                                       }
+                                   }
 
-                                intent.putExtra(AppConstants.CATEGORY_ID,categoriesResponseList[position].prod_cat_id)
-                                intent.putExtra(AppConstants.CATEGORY_NAME,categoriesResponseList[position].prod_cat_name)
-                                intent.putExtra(AppConstants.IMAGE_URL,categoriesResponseList[position].display_thumbnail)
-                                intent.putExtra(AppConstants.DESCRIPTION,categoriesResponseList[position].description)
-                                intent.putExtra(AppConstants.COLOR,categoriesResponseList[position].color_code)
-                                startActivity(intent)
-                            }
-                            2,3 -> {
-                                Utilities.savePrefrence(
-                                    this@CategoriesActivity,
-                                    AppConstants.CATEGORY_NAME,
-                                    categoriesResponseList[position].prod_cat_name
-                                )
+                                   intent.putExtra(AppConstants.CATEGORY_ID,categoriesResponseList[position].prod_cat_id)
+                                   intent.putExtra(AppConstants.CATEGORY_NAME,categoriesResponseList[position].prod_cat_name)
+                                   intent.putExtra(AppConstants.IMAGE_URL,categoriesResponseList[position].display_thumbnail)
+                                   intent.putExtra(AppConstants.DESCRIPTION,categoriesResponseList[position].description)
+                                   intent.putExtra(AppConstants.COLOR,categoriesResponseList[position].color_code)
+                                   startActivity(intent)
+                               }
+                               2,3 -> {
+                                   Utilities.savePrefrence(
+                                       this@CategoriesActivity,
+                                       AppConstants.CATEGORY_NAME,
+                                       categoriesResponseList[position].prod_cat_name
+                                   )
 
-                                val intent = Intent(this@CategoriesActivity, ShootPortraitActivity::class.java)
+                                   val intent = Intent(this@CategoriesActivity, ShootPortraitActivity::class.java)
 
-                                intent.putExtra(AppConstants.CATEGORY_ID,categoriesResponseList[position].prod_cat_id)
-                                intent.putExtra(AppConstants.CATEGORY_NAME,categoriesResponseList[position].prod_cat_name)
-                                intent.putExtra(AppConstants.IMAGE_URL,categoriesResponseList[position].display_thumbnail)
-                                intent.putExtra(AppConstants.DESCRIPTION,categoriesResponseList[position].description)
-                                intent.putExtra(AppConstants.COLOR,categoriesResponseList[position].color_code)
-                                startActivity(intent)
-                            }
-                            else ->{
-                                Toast.makeText(this@CategoriesActivity,
-                                    "Coming Soon !",
-                                    Toast.LENGTH_SHORT).show()
-                            }
-                        }
-                        
-                            
+                                   intent.putExtra(AppConstants.CATEGORY_ID,categoriesResponseList[position].prod_cat_id)
+                                   intent.putExtra(AppConstants.CATEGORY_NAME,categoriesResponseList[position].prod_cat_name)
+                                   intent.putExtra(AppConstants.IMAGE_URL,categoriesResponseList[position].display_thumbnail)
+                                   intent.putExtra(AppConstants.DESCRIPTION,categoriesResponseList[position].description)
+                                   intent.putExtra(AppConstants.COLOR,categoriesResponseList[position].color_code)
+                                   startActivity(intent)
+                               }
+                               else ->{
+                                   Toast.makeText(this@CategoriesActivity,
+                                       "Coming Soon !",
+                                       Toast.LENGTH_SHORT).show()
+                               }
+                           }
+                       }else {
+                           NoMagnaotoMeterDialog().show(supportFragmentManager,"NoMagnaotoMeterDialog")
+                       }
                     }
                 },before,after)
 

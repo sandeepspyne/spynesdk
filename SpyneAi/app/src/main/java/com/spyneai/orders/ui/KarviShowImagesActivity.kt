@@ -24,12 +24,14 @@ import com.spyneai.downloadsku.FetchBulkResponseV2
 import com.spyneai.gotoHome
 import com.spyneai.interfaces.APiService
 import com.spyneai.interfaces.RetrofitClients
+import com.spyneai.isMagnatoMeterAvailable
 import com.spyneai.isResolutionSupported
 import com.spyneai.needs.AppConstants
 import com.spyneai.needs.ScrollingLinearLayoutManager
 import com.spyneai.needs.Utilities
 import com.spyneai.orders.ui.adapter.KarviImagesAdapter
 import com.spyneai.shoot.ui.base.ShootActivity
+import com.spyneai.shoot.ui.dialogs.NoMagnaotoMeterDialog
 import com.spyneai.shoot.ui.dialogs.ResolutionNotSupportedFragment
 import com.spyneai.shoot.utils.log
 import okhttp3.MultipartBody
@@ -107,7 +109,11 @@ class KarviShowImagesActivity : AppCompatActivity() {
 
 
         binding.llStartNewShoot.setOnClickListener {
-            startShoot()
+            if (isMagnatoMeterAvailable()){
+                startShoot()
+            }else {
+                NoMagnaotoMeterDialog().show(supportFragmentManager,"NoMagnaotoMeterDialog")
+            }
         }
     }
 

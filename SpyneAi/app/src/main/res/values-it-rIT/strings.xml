@@ -304,4 +304,5 @@
     <string name="all_uploaded">Tutte le immagini caricate</string>
     <string name="allow">Consenti</string>
     <string name="select_car_subcategory">Seleziona la categoria della vettura</string>
+    <string name="no_magnato_meter">Il tuo dispositivo non ha un magnetometro!\n\nUtilizza un altro dispositivo mobile</string>
 </resources>

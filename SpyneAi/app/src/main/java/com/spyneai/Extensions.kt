@@ -9,6 +9,8 @@ import android.content.Intent
 import android.content.res.ColorStateList
 import android.content.res.Configuration
 import android.graphics.ImageFormat
+import android.hardware.Sensor
+import android.hardware.SensorManager
 import android.hardware.camera2.CameraCharacteristics
 import android.hardware.camera2.CameraManager
 import android.net.ConnectivityManager
@@ -239,4 +241,14 @@ fun Context.setLocale() {
     val config = Configuration()
     config.locale = locale
     resources.updateConfiguration(config, resources.displayMetrics)
+}
+
+fun Context.isMagnatoMeterAvailable() : Boolean {
+    val mSensorManager = getSystemService(Context.SENSOR_SERVICE) as SensorManager
+
+    val mAccelerometer = mSensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER)
+
+    val magneticField = mSensorManager.getDefaultSensor(Sensor.TYPE_MAGNETIC_FIELD)
+
+    return mAccelerometer != null && magneticField != null
 }

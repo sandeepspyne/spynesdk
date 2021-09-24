@@ -303,5 +303,6 @@
     <string name="all_uploaded">Alle Bilder hochgeladen </string>
     <string name="allow">Zulassen</string>
     <string name="select_car_subcategory">Wählen Sie die Unterkategorie Ihres Autos</string>
+    <string name="no_magnato_meter">Ihr Gerät hat kein Magnetometer!\n\nBitte verwenden Sie ein anderes Mobilgerät</string>
 
 </resources>
