@@ -240,7 +240,7 @@ fun Context.getBestResolution() : Size? {
         }
     }
 }
-<<<<<<< HEAD
+
 
 fun Context.getVideoDuration(videoPath: Uri?) : Long {
     try {
@@ -254,7 +254,8 @@ fun Context.getVideoDuration(videoPath: Uri?) : Long {
         e.printStackTrace()
     }
     return 0
-=======
+}
+
 
 fun Context.setLocale() {
     val locale = Locale(Utilities.getPreference(this,AppConstants.LOCALE))
@@ -272,7 +273,6 @@ fun Context.isMagnatoMeterAvailable() : Boolean {
     val magneticField = mSensorManager.getDefaultSensor(Sensor.TYPE_MAGNETIC_FIELD)
 
     return mAccelerometer != null && magneticField != null
->>>>>>> dev_sandeep_multi_lang
 }
 
 

@@ -58,5 +58,7 @@
     
     <color name="tags_title_color">#616161</color>
 
+    <color name="select_lang">#F3CECD</color>
+
 
 </resources>

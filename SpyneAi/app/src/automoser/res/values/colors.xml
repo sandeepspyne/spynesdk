@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <color name="primary">#cd2f2a</color>
-    <color name="select_lang">#F3CECD</color>
     <color name="secondary">#000000</color>
     <color name="splash_bg">#ffffff</color>
     <color name="accent">#F07E54</color>
