@@ -1,0 +1,141 @@
+package com.spyneai.shoot.ui
+
+import android.content.res.Configuration
+import android.os.Bundle
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
+import android.widget.Toast
+import androidx.recyclerview.widget.LinearLayoutManager
+import com.posthog.android.Properties
+import com.spyneai.base.BaseFragment
+import com.spyneai.base.OnItemClickListener
+import com.spyneai.base.network.Resource
+import com.spyneai.captureEvent
+import com.spyneai.captureFailureEvent
+import com.spyneai.dashboard.response.NewSubCatResponse
+import com.spyneai.dashboard.ui.handleApiError
+import com.spyneai.databinding.FragmentCreateProjectBinding
+import com.spyneai.databinding.FragmentSelectSubcategoryAndAngleBinding
+import com.spyneai.needs.AppConstants
+import com.spyneai.needs.Utilities
+import com.spyneai.posthog.Events
+import com.spyneai.shoot.adapters.NewSubCategoriesAdapter
+import com.spyneai.shoot.adapters.SubcatAndAngleAdapter
+import com.spyneai.shoot.data.ShootViewModel
+import com.spyneai.shoot.utils.shoot
+
+class SubCategoryAndAngleFragment : BaseFragment<ShootViewModel,FragmentSelectSubcategoryAndAngleBinding>(),
+    OnItemClickListener {
+
+
+    var subcatAndAngleAdapter : SubcatAndAngleAdapter? = null
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+
+        observeIsProjectCreated()
+        observeSubcategories()
+
+    }
+
+    private fun observeIsProjectCreated() {
+        viewModel.isProjectCreated.observe(viewLifecycleOwner, {
+            if (it) {
+                if (viewModel.isSubCategoryConfirmed.value == null) {
+                    shoot("init subCategory called")
+                    getSubcategories()
+                } else {
+//                    //set default angles on sub cat response
+//                    shoot("initangles, initProgressFrames, and and observe overlays called")
+//                    initAngles()
+////                    if (viewModel.startInteriorShots.value == null){
+//                    observeOverlays()
+////                    }
+                }
+            }
+        })
+    }
+
+    private fun getSubcategories() {
+        if (requireActivity().intent.getBooleanExtra("from_drafts",false))
+            Utilities.showProgressDialog(requireContext())
+
+        viewModel.getSubCategories(
+            Utilities.getPreference(requireContext(), AppConstants.AUTH_KEY).toString(),
+            requireActivity().intent.getStringExtra(AppConstants.CATEGORY_ID).toString()
+        )
+
+
+//
+//        viewModel.isSubCategorySelected.observe(viewLifecycleOwner, {
+//            if (viewModel.isSubCategorySelected.value == true){
+//                //set default angles on sub cat response
+//                shoot("initangles, initProgressFrames, and and observe overlays called")
+//                initAngles()
+////                    if (viewModel.startInteriorShots.value == null){
+//                initProgressFrames()
+//                observeOverlays()
+////                    }
+//            }
+//        })
+
+//        viewModel.shootNumber.observe(viewLifecycleOwner, {
+//            binding.tvShoot?.text = "Angles $it/${viewModel.getSelectedAngles()}"
+//        })
+    }
+
+    fun observeSubcategories() {
+        viewModel.subCategoriesResponse.observe(viewLifecycleOwner, {
+            when (it) {
+                is Resource.Success -> {
+                    requireContext().captureEvent(
+                        Events.GET_SUBCATEGORIES,
+                        Properties()
+                    )
+
+                    Utilities.hideProgressDialog()
+
+                    subcatAndAngleAdapter = SubcatAndAngleAdapter(it.value.data,this)
+
+                    binding.rv.apply {
+                        layoutManager = LinearLayoutManager(requireContext(),LinearLayoutManager.VERTICAL,false)
+                        adapter = subcatAndAngleAdapter
+                    }
+
+//                    initAngles()
+//                    observeOverlays()
+
+
+                }
+                is Resource.Failure -> {
+                    requireContext().captureFailureEvent(
+                        Events.GET_SUBCATRGORIES_FAILED, Properties(),
+                        it.errorMessage!!
+                    )
+                    Utilities.hideProgressDialog()
+                    handleApiError(it) { getSubcategories() }
+                }
+            }
+        })
+    }
+
+    override fun getViewModel() = ShootViewModel::class.java
+
+    override fun getFragmentBinding(
+        inflater: LayoutInflater,
+        container: ViewGroup?
+    ) = FragmentSelectSubcategoryAndAngleBinding.inflate(inflater, container, false)
+
+    override fun onItemClick(view: View, position: Int, data: Any?) {
+        when(data){
+            is NewSubCatResponse.Data -> {
+                initAngles()
+            }
+        }
+    }
+
+    private fun initAngles() {
+
+    }
+}

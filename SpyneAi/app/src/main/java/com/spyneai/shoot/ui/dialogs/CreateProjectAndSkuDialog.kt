@@ -104,11 +104,6 @@ class CreateProjectAndSkuDialog : BaseDialogFragment<ShootViewModel,DialogCreate
         })
     }
 
-//    override fun onStop() {
-//        super.onStop()
-//        shoot("onStop called(createProjectAndSkuDialog-> dismissAllowingStateLoss)")
-//        dismissAllowingStateLoss()
-//    }
 
     override fun onDestroy() {
         super.onDestroy()

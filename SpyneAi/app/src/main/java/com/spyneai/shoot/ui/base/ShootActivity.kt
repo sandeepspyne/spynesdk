@@ -27,8 +27,10 @@ import com.spyneai.shoot.data.ShootViewModel
 import com.spyneai.shoot.data.model.CategoryDetails
 import com.spyneai.shoot.data.model.CreateProjectRes
 import com.spyneai.shoot.data.model.Sku
+import com.spyneai.shoot.ui.CreateProjectFragment
 import com.spyneai.shoot.ui.OverlaysFragment
 import com.spyneai.shoot.ui.SelectBackgroundFragment
+import com.spyneai.shoot.ui.SubCategoryAndAngleFragment
 import com.spyneai.shoot.ui.dialogs.ShootExitDialog
 import com.spyneai.shoot.ui.ecomwithgrid.GridEcomFragment
 import com.spyneai.shoot.ui.ecomwithgrid.ProjectDetailFragment
@@ -83,6 +85,8 @@ class ShootActivity : AppCompatActivity() {
 
         cameraFragment = CameraFragment()
         overlaysFragment = OverlaysFragment()
+
+
         gridEcomFragment = GridEcomFragment()
         skuDetailFragment = SkuDetailFragment()
         projectDetailFragment = ProjectDetailFragment()
@@ -96,6 +100,7 @@ class ShootActivity : AppCompatActivity() {
                     supportFragmentManager.beginTransaction()
                         .add(R.id.flCamerFragment, cameraFragment)
                         .add(R.id.flCamerFragment, overlaysFragment)
+                        .add(R.id.flCamerFragment,CreateProjectFragment())
                         .commitAllowingStateLoss()
                 }
             }
@@ -231,7 +236,22 @@ class ShootActivity : AppCompatActivity() {
                 }
             }
         })
+
+        observeProjectCreated()
     }
+
+    private fun observeProjectCreated() {
+        shootViewModel.isProjectCreated.observe(
+            this,{
+                if (it){
+                    supportFragmentManager.beginTransaction()
+                        .add(R.id.flCamerFragment,SubCategoryAndAngleFragment())
+                        .commit()
+                }
+            }
+        )
+    }
+
 
     private fun setUpVideoShoot() {
         shootViewModel.fromVideo = true

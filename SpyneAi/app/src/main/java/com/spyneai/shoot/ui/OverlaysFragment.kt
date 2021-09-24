@@ -79,11 +79,6 @@ class OverlaysFragment : BaseFragment<ShootViewModel, FragmentOverlaysBinding>()
 
         shoot("onViewCreated called(overlay fragment)")
 
-      if (viewModel.showVin.value == null) {
-            shoot("shoot hint called")
-            initShootHint()
-        }
-
         //observe new image clicked
         viewModel.shootList.observe(viewLifecycleOwner, {
             try {
@@ -113,11 +108,7 @@ class OverlaysFragment : BaseFragment<ShootViewModel, FragmentOverlaysBinding>()
             }
         })
 
-        observeIsProjectCreated()
-
         observerMiscShots()
-
-        observeShowVin()
 
         observeStartInteriorShoot()
 
@@ -138,33 +129,9 @@ class OverlaysFragment : BaseFragment<ShootViewModel, FragmentOverlaysBinding>()
         })
     }
 
-    private fun observeShowVin() {
-        viewModel.showVin.observe(viewLifecycleOwner, {
-            if (viewModel.isProjectCreated.value == null)
-                if (it) {
-                    initProjectDialog()
-                    shoot("create project called")
-                }
-        })
-    }
 
-    private fun observeIsProjectCreated() {
-        viewModel.isProjectCreated.observe(viewLifecycleOwner, {
-            if (it) {
-                if (viewModel.isSubCategoryConfirmed.value == null) {
-                    shoot("init subCategory called")
-                    intSubcategorySelection()
-                } else {
-                    //set default angles on sub cat response
-                    shoot("initangles, initProgressFrames, and and observe overlays called")
-                    initAngles()
-//                    if (viewModel.startInteriorShots.value == null){
-                    observeOverlays()
-//                    }
-                }
-            }
-        })
-    }
+
+
 
     private fun observeStartInteriorShoot() {
         viewModel.startInteriorShots.observe(viewLifecycleOwner, {
@@ -180,19 +147,9 @@ class OverlaysFragment : BaseFragment<ShootViewModel, FragmentOverlaysBinding>()
         })
     }
 
-    private fun initShootHint() {
-        requireContext().captureEvent(Events.SHOW_HINT, Properties())
-        ShootHintDialog().show(requireActivity().supportFragmentManager, "ShootHintDialog")
-
-    }
 
 
-    private fun initProjectDialog() {
-        CreateProjectAndSkuDialog().show(
-            requireActivity().supportFragmentManager,
-            "CreateProjectAndSkuDialog"
-        )
-    }
+
 
 
     private fun initAngles() {
@@ -485,97 +442,6 @@ class OverlaysFragment : BaseFragment<ShootViewModel, FragmentOverlaysBinding>()
 
     }
 
-    private fun intSubcategorySelection() {
-        if (requireActivity().intent.getBooleanExtra("from_drafts",false))
-            Utilities.showProgressDialog(requireContext())
-
-        subCategoriesAdapter = NewSubCategoriesAdapter(
-            requireContext(),
-            null,
-            pos,
-            this
-        )
-
-        if (getResources().getConfiguration().orientation === Configuration.ORIENTATION_LANDSCAPE) {
-            binding.rvSubcategories.apply {
-                this?.layoutManager = LinearLayoutManager(requireContext())
-                this?.adapter = subCategoriesAdapter
-            }
-
-        } else if (getResources().getConfiguration().orientation === Configuration.ORIENTATION_PORTRAIT) {
-            binding.rvSubcategories.apply {
-                this?.layoutManager = LinearLayoutManager(
-                    requireContext(),
-                    LinearLayoutManager.HORIZONTAL,
-                    false
-                )
-                this?.adapter = subCategoriesAdapter
-            }
-
-        }
-
-
-        viewModel.getSubCategories(
-            Utilities.getPreference(requireContext(), AppConstants.AUTH_KEY).toString(),
-            requireActivity().intent.getStringExtra(AppConstants.CATEGORY_ID).toString()
-        )
-
-        viewModel.subCategoriesResponse.observe(viewLifecycleOwner, {
-            when (it) {
-                is Resource.Success -> {
-                    requireContext().captureEvent(
-                        Events.GET_SUBCATEGORIES,
-                        Properties()
-                    )
-
-                    //set default angles on sub cat response
-                    shoot("initangles, initProgressFrames, and and observe overlays called")
-                    initAngles()
-//                    if (viewModel.startInteriorShots.value == null){
-                    observeOverlays()
-//                    }
-
-                    Utilities.hideProgressDialog()
-                    shoot("hide progress dialog(subCatResponse sucess)")
-                    subCategoriesAdapter.subCategoriesList =
-                        it.value.data as ArrayList<NewSubCatResponse.Data>
-                    subCategoriesAdapter.notifyDataSetChanged()
-
-                    binding.clSubcatSelectionOverlay?.visibility = View.VISIBLE
-
-                    when (viewModel.categoryDetails.value?.categoryName) {
-//                        "Bikes" -> binding.tvSubCategory?.text =
-//                            getString(R.string.bike_subcategory)
-                    }
-                }
-                is Resource.Failure -> {
-                    requireContext().captureFailureEvent(
-                        Events.GET_SUBCATRGORIES_FAILED, Properties(),
-                        it.errorMessage!!
-                    )
-                    Utilities.hideProgressDialog()
-                    shoot("hide progress dialog(subCatResponse failur)")
-                    handleApiError(it)
-                }
-            }
-        })
-//
-//        viewModel.isSubCategorySelected.observe(viewLifecycleOwner, {
-//            if (viewModel.isSubCategorySelected.value == true){
-//                //set default angles on sub cat response
-//                shoot("initangles, initProgressFrames, and and observe overlays called")
-//                initAngles()
-////                    if (viewModel.startInteriorShots.value == null){
-//                initProgressFrames()
-//                observeOverlays()
-////                    }
-//            }
-//        })
-
-        viewModel.shootNumber.observe(viewLifecycleOwner, {
-            binding.tvShoot?.text = "Angles $it/${viewModel.getSelectedAngles()}"
-        })
-    }
 
 
     private fun showViews() {

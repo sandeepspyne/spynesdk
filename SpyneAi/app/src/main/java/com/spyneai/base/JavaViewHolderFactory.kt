@@ -4,6 +4,7 @@ import android.view.View
 import androidx.recyclerview.widget.RecyclerView
 import com.spyneai.OngoingTestHolder
 import com.spyneai.R
+import com.spyneai.shoot.holders.SubcategoryHolder
 
 
 object JavaViewHolderFactory {
@@ -11,6 +12,7 @@ object JavaViewHolderFactory {
     fun create(view: View, viewType: Int, listener: OnItemClickListener): RecyclerView.ViewHolder {
         return when (viewType) {
             R.layout.item_ongoing_test -> OngoingTestHolder(view, listener)
+            R.layout.item_subcategories -> SubcategoryHolder(view, listener)
 //            R.layout.item_home_grid -> TopicViewHolder(view, listener)
 //            R.layout.item_home_row_topic -> HomeRowTopicHolder(view, listener)
 //            R.layout.item_home_row_response -> HomeRowResponseHolder(view, listener)

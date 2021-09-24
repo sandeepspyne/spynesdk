@@ -7,22 +7,12 @@
         <entry key="app/src/flipkartgrocery/res/drawable/ic_launcher_background.xml" value="0.24166666666666667" />
         <entry key="app/src/flipkartgrocery/res/layout/home_dashboard_fragment.xml" value="0.2578125" />
         <entry key="app/src/main/res/drawable/bg_edit.xml" value="0.2175925925925926" />
-<<<<<<< HEAD
-<<<<<<< HEAD
-        <entry key="app/src/main/res/drawable/bg_edit_text.xml" value="0.19722222222222222" />
-        <entry key="app/src/main/res/layout-land/fragment_camera.xml" value="0.165625" />
-        <entry key="app/src/main/res/layout-land/fragment_overlays.xml" value="0.165625" />
-=======
-        <entry key="app/src/main/res/layout/activity_background_add.xml" value="0.30512820512820515" />
->>>>>>> dev_sandeep_360_exterior_fixes
-=======
         <entry key="app/src/main/res/drawable/bg_rectangle_button_ripple.xml" value="0.2935185185185185" />
         <entry key="app/src/main/res/drawable/bg_select_lang.xml" value="0.2935185185185185" />
         <entry key="app/src/main/res/drawable/bg_select_lang_ripple.xml" value="0.2935185185185185" />
         <entry key="app/src/main/res/layout/activity_background_add.xml" value="0.30512820512820515" />
         <entry key="app/src/main/res/layout/activity_dashboard_main.xml" value="0.25277777777777777" />
         <entry key="app/src/main/res/layout/activity_draft_sku_details.xml" value="0.25277777777777777" />
->>>>>>> dev_sandeep_multi_lang
         <entry key="app/src/main/res/layout/activity_forgot_password.xml" value="0.2578125" />
         <entry key="app/src/main/res/layout/activity_login.xml" value="0.25" />
         <entry key="app/src/main/res/layout/activity_onboard_one.xml" value="0.1328125" />
@@ -32,29 +22,8 @@
         <entry key="app/src/main/res/layout/activity_start_shoot.xml" value="0.25277777777777777" />
         <entry key="app/src/main/res/layout/confirm_reshoot_ecom_dialog.xml" value="0.25384615384615383" />
         <entry key="app/src/main/res/layout/create_project_ecom_dialog.xml" value="0.25384615384615383" />
-        <entry key="app/src/main/res/layout/create_sku_ecom_dialog.xml" value="0.2578125" />
         <entry key="app/src/main/res/layout/dialog_angle_selection.xml" value="0.2578125" />
-        <entry key="app/src/main/res/layout/dialog_confirm_reshoot.xml" value="0.18888888888888888" />
         <entry key="app/src/main/res/layout/dialog_confirm_tags.xml" value="0.2578125" />
-<<<<<<< HEAD
-<<<<<<< HEAD
-        <entry key="app/src/main/res/layout/fragment_camera.xml" value="0.18888888888888888" />
-        <entry key="app/src/main/res/layout/fragment_overlay_ecom.xml" value="0.19722222222222222" />
-        <entry key="app/src/main/res/layout/fragment_overlays.xml" value="0.2578125" />
-=======
-        <entry key="app/src/main/res/layout/dialog_exit.xml" value="0.30512820512820515" />
-        <entry key="app/src/main/res/layout/dialog_video_duration.xml" value="0.30512820512820515" />
-        <entry key="app/src/main/res/layout/fragment_overlay_ecom.xml" value="0.19722222222222222" />
-        <entry key="app/src/main/res/layout/fragment_record_video.xml" value="0.25277777777777777" />
-        <entry key="app/src/main/res/layout/fragment_select_background.xml" value="0.25277777777777777" />
->>>>>>> dev_sandeep_360_exterior_fixes
-        <entry key="app/src/main/res/layout/home_dashboard_fragment.xml" value="0.2578125" />
-        <entry key="app/src/main/res/layout/item_processed_image.xml" value="0.2578125" />
-        <entry key="app/src/main/res/layout/item_project_edittext.xml" value="0.25384615384615383" />
-        <entry key="app/src/main/res/layout/item_tags_spinner.xml" value="0.2578125" />
-        <entry key="app/src/main/res/layout/item_tags_spinner_text.xml" value="0.2578125" />
-        <entry key="app/src/main/res/layout/project_tag_dialog.xml" value="0.22" />
-=======
         <entry key="app/src/main/res/layout/dialog_create_project_and_sku.xml" value="0.25277777777777777" />
         <entry key="app/src/main/res/layout/dialog_exit.xml" value="0.30512820512820515" />
         <entry key="app/src/main/res/layout/dialog_interior_hint.xml" value="0.25277777777777777" />
@@ -62,6 +31,7 @@
         <entry key="app/src/main/res/layout/dialog_resolution_not_supported.xml" value="0.25277777777777777" />
         <entry key="app/src/main/res/layout/dialog_top_up.xml" value="0.25277777777777777" />
         <entry key="app/src/main/res/layout/dialog_video_duration.xml" value="0.30512820512820515" />
+        <entry key="app/src/main/res/layout/fragment_create_project.xml" value="0.25833333333333336" />
         <entry key="app/src/main/res/layout/fragment_draft_sku_details.xml" value="0.25277777777777777" />
         <entry key="app/src/main/res/layout/fragment_image_processing_started.xml" value="0.3098958333333333" />
         <entry key="app/src/main/res/layout/fragment_ongoing_projects.xml" value="0.3098958333333333" />
@@ -69,6 +39,7 @@
         <entry key="app/src/main/res/layout/fragment_overlays.xml" value="0.25277777777777777" />
         <entry key="app/src/main/res/layout/fragment_record_video.xml" value="0.25277777777777777" />
         <entry key="app/src/main/res/layout/fragment_select_background.xml" value="0.25277777777777777" />
+        <entry key="app/src/main/res/layout/fragment_select_subcategory_and_angle.xml" value="0.25" />
         <entry key="app/src/main/res/layout/fragment_sku_detail.xml" value="0.25277777777777777" />
         <entry key="app/src/main/res/layout/home_dashboard_fragment.xml" value="0.2578125" />
         <entry key="app/src/main/res/layout/item_completed_projects.xml" value="0.25277777777777777" />
@@ -76,15 +47,15 @@
         <entry key="app/src/main/res/layout/item_draft_sku.xml" value="0.25277777777777777" />
         <entry key="app/src/main/res/layout/item_ongoing_projects.xml" value="0.25277777777777777" />
         <entry key="app/src/main/res/layout/item_project_edittext.xml" value="0.25384615384615383" />
+        <entry key="app/src/main/res/layout/item_subcategories.xml" value="0.3098958333333333" />
         <entry key="app/src/main/res/layout/item_tags_spinner.xml" value="0.2578125" />
         <entry key="app/src/main/res/layout/item_tags_spinner_text.xml" value="0.2578125" />
         <entry key="app/src/main/res/layout/logout_dialog.xml" value="0.3098958333333333" />
         <entry key="app/src/main/res/layout/project_tag_dialog.xml" value="0.25384615384615383" />
         <entry key="app/src/main/res/layout/row_sku.xml" value="0.3098958333333333" />
+        <entry key="app/src/main/res/layout/sub_categories.xml" value="0.3098958333333333" />
         <entry key="app/src/main/res/menu/dashboard_bottom_menu.xml" value="0.25277777777777777" />
->>>>>>> dev_sandeep_multi_lang
         <entry key="app/src/sellanycar/res/drawable/app_ic_background.xml" value="0.24166666666666667" />
-        <entry key="app/src/swiggy/res/layout/home_dashboard_fragment.xml" value="0.2578125" />
         <entry key="app/src/swiggy/res/menu/dashboard_bottom_menu.xml" value="0.25384615384615383" />
       </map>
     </option>
