@@ -15,6 +15,7 @@
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toTopOf="parent" >
 
+
         <TextView
             android:id="@+id/tvAngleValue"
             android:layout_width="wrap_content"
@@ -24,6 +25,7 @@
             android:maxLines="1"
             android:maxLength="5"
             tools:text="Angle"
+            android:visibility="invisible"
             android:layout_marginRight="@dimen/dp_15"
             android:layout_centerInParent="true"
             android:layout_alignParentRight="true"
@@ -36,19 +38,18 @@
             android:id="@+id/tvAngleRed"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_centerInParent="true"
+            android:layout_marginRight="@dimen/dp_15"
             android:background="@drawable/bg_gyro_error"
             android:fontFamily="@font/poppins_bold"
-            android:maxLines="1"
             android:maxLength="5"
-            tools:text="45"
-            android:visibility="invisible"
-            android:layout_marginRight="@dimen/dp_15"
-            android:layout_centerInParent="true"
-            android:layout_alignParentRight="true"
+            android:maxLines="1"
             android:padding="@dimen/dp_8"
             android:textColor="@color/white"
             android:textSize="@dimen/sp_13"
-            />
+            android:visibility="invisible"
+            tools:text="45" />
 
 
 
@@ -221,15 +222,16 @@ android:rotation="180"
             android:layout_height="@dimen/dp_100"
             android:layout_gravity="center"
             android:id="@+id/ivGryroRing"
+            android:visibility="gone"
             android:src="@drawable/ic_gyro_ring"/>
 
 
         <TextView
-            android:layout_width="@dimen/dp_50"
-            android:layout_height="0.5dp"
+            android:layout_width="@dimen/dp_80"
+            android:layout_height="1dp"
             android:layout_gravity="center"
             android:id="@+id/tvCenter"
-            android:background="@color/black"/>
+            android:background="@color/white"/>
 
         <ImageView
             android:layout_width="@dimen/dp_30"

@@ -1091,33 +1091,31 @@ class CameraFragment : BaseFragment<ShootViewModel, FragmentCameraBinding>(), Pi
 
                 // angle name
                 if (pitch.roundToInt() == 0 || (pitch.roundToInt() <= -0 && pitch.roundToInt() >= -3))
-                    angle = 90
+                    angle = 0
 
                 if (pitch.roundToInt() <= -82 && pitch.roundToInt() >= -88)
-                    angle = 0
+                    angle = 90
 
                 if ((pitch.roundToInt() <= -40 && pitch.roundToInt() >= -45) && abs(roll.roundToInt()) < 100)
                     angle = 45
 
                 when (angle) {
-                    90 -> {
+                    0 -> {
                         binding.tvAngleValue!!.visibility = View.VISIBLE
-                        binding.tvAngleValue!!.text = "90" + "\u00B0"
+                        binding.tvAngleValue!!.text = "0" + "\u00B0"
                     }
                     45 -> {
                         binding.tvAngleValue!!.visibility = View.VISIBLE
                         binding.tvAngleValue!!.text = "45" + "\u00B0"
                     }
-                    0 -> {
+                    90 -> {
                         binding.tvAngleValue!!.visibility = View.VISIBLE
-                        binding.tvAngleValue!!.text = "0" + "\u00B0"
+                        binding.tvAngleValue!!.text = "90" + "\u00B0"
                     }
                     else -> {
                         binding.tvAngleValue!!.visibility = View.INVISIBLE
                     }
                 }
-
-
                 // upcoming angles
                 if (pitch.roundToInt() <= -3 && pitch.roundToInt() >= -8) {
                     // going from 90 to 45
@@ -1183,7 +1181,7 @@ class CameraFragment : BaseFragment<ShootViewModel, FragmentCameraBinding>(), Pi
                     isGyroOnCorrectAngle = true
                     //angle 90
                     if (pitch.roundToInt() == 0 || (pitch.roundToInt() <= -0 && pitch.roundToInt() >= -3)) {
-                        cameraAngle = 90
+                        cameraAngle = 0
                         gyroMeterOnLevel(false)
                     }
                     //angle 45
@@ -1192,7 +1190,7 @@ class CameraFragment : BaseFragment<ShootViewModel, FragmentCameraBinding>(), Pi
                         gyroMeterOnLevel(false)
                         // angle 0
                     } else {
-                        cameraAngle = 0
+                        cameraAngle = 90
                         gyroMeterOnLevel(true)
                     }
 
@@ -1200,7 +1198,7 @@ class CameraFragment : BaseFragment<ShootViewModel, FragmentCameraBinding>(), Pi
                     binding.tvAngleValue!!.visibility = View.INVISIBLE
                     isGyroOnCorrectAngle = false
                     binding.tvAngleRed!!.visibility = View.VISIBLE
-                    val gyroAngle = (pitch.roundToInt() + 90)
+                    val gyroAngle = (-pitch.roundToInt())
 
                     binding.tvAngleRed!!.text = gyroAngle.toString() + "\u00B0"
                     gyroMeterOffLevel()

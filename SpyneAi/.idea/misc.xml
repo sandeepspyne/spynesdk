@@ -33,6 +33,7 @@
         <entry key="app/src/main/res/layout/fragment_grid_ecom.xml" value="0.2578125" />
         <entry key="app/src/main/res/layout/fragment_overlay_ecom.xml" value="0.19722222222222222" />
         <entry key="app/src/main/res/layout/fragment_overlays.xml" value="0.2578125" />
+        <entry key="app/src/main/res/layout/fragment_select_background.xml" value="0.2578125" />
         <entry key="app/src/main/res/layout/home_dashboard_fragment.xml" value="0.2578125" />
         <entry key="app/src/main/res/layout/item_processed_image.xml" value="0.2578125" />
         <entry key="app/src/main/res/layout/item_project_edittext.xml" value="0.25384615384615383" />
