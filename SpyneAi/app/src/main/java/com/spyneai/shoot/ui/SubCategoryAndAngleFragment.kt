@@ -6,8 +6,10 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
+import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.posthog.android.Properties
+import com.spyneai.R
 import com.spyneai.base.BaseFragment
 import com.spyneai.base.OnItemClickListener
 import com.spyneai.base.network.Resource
@@ -23,6 +25,7 @@ import com.spyneai.posthog.Events
 import com.spyneai.shoot.adapters.NewSubCategoriesAdapter
 import com.spyneai.shoot.adapters.SubcatAndAngleAdapter
 import com.spyneai.shoot.data.ShootViewModel
+import com.spyneai.shoot.ui.dialogs.AngleSelectionDialog
 import com.spyneai.shoot.utils.shoot
 
 class SubCategoryAndAngleFragment : BaseFragment<ShootViewModel,FragmentSelectSubcategoryAndAngleBinding>(),
@@ -34,9 +37,11 @@ class SubCategoryAndAngleFragment : BaseFragment<ShootViewModel,FragmentSelectSu
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        observeIsProjectCreated()
-        observeSubcategories()
+        viewModel.getSubCategories.observe(viewLifecycleOwner,{
+            getSubcategories()
+        })
 
+        observeSubcategories()
     }
 
     private fun observeIsProjectCreated() {
@@ -58,8 +63,9 @@ class SubCategoryAndAngleFragment : BaseFragment<ShootViewModel,FragmentSelectSu
     }
 
     private fun getSubcategories() {
-        if (requireActivity().intent.getBooleanExtra("from_drafts",false))
-            Utilities.showProgressDialog(requireContext())
+//        Utilities.showProgressDialog(requireContext())
+
+        binding.shimmer.startShimmer()
 
         viewModel.getSubCategories(
             Utilities.getPreference(requireContext(), AppConstants.AUTH_KEY).toString(),
@@ -94,7 +100,10 @@ class SubCategoryAndAngleFragment : BaseFragment<ShootViewModel,FragmentSelectSu
                         Properties()
                     )
 
-                    Utilities.hideProgressDialog()
+                    binding.apply {
+                        shimmer.stopShimmer()
+                        shimmer.visibility = View.INVISIBLE
+                    }
 
                     subcatAndAngleAdapter = SubcatAndAngleAdapter(it.value.data,this)
 
@@ -106,14 +115,14 @@ class SubCategoryAndAngleFragment : BaseFragment<ShootViewModel,FragmentSelectSu
 //                    initAngles()
 //                    observeOverlays()
 
-
                 }
                 is Resource.Failure -> {
                     requireContext().captureFailureEvent(
                         Events.GET_SUBCATRGORIES_FAILED, Properties(),
                         it.errorMessage!!
                     )
-                    Utilities.hideProgressDialog()
+                    binding.shimmer.stopShimmer()
+
                     handleApiError(it) { getSubcategories() }
                 }
             }
@@ -130,12 +139,23 @@ class SubCategoryAndAngleFragment : BaseFragment<ShootViewModel,FragmentSelectSu
     override fun onItemClick(view: View, position: Int, data: Any?) {
         when(data){
             is NewSubCatResponse.Data -> {
-                initAngles()
+                viewModel.subCategory.value = data
+                selectAngles()
             }
         }
     }
 
-    private fun initAngles() {
+    private fun selectAngles() {
+       // viewModel.selectAngles.value = true
+        binding.clRoot.setBackgroundColor(ContextCompat.getColor(requireContext(),R.color.transparent))
+
+        binding.apply {
+            ivArrow.visibility = View.GONE
+            tvDescription.visibility = View.INVISIBLE
+            rv.visibility = View.INVISIBLE
+        }
+
+        AngleSelectionDialog().show(requireActivity().supportFragmentManager, "AngleSelectionDialog")
 
     }
 }

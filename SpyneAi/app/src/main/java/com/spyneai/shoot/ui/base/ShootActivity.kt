@@ -27,10 +27,7 @@ import com.spyneai.shoot.data.ShootViewModel
 import com.spyneai.shoot.data.model.CategoryDetails
 import com.spyneai.shoot.data.model.CreateProjectRes
 import com.spyneai.shoot.data.model.Sku
-import com.spyneai.shoot.ui.CreateProjectFragment
-import com.spyneai.shoot.ui.OverlaysFragment
-import com.spyneai.shoot.ui.SelectBackgroundFragment
-import com.spyneai.shoot.ui.SubCategoryAndAngleFragment
+import com.spyneai.shoot.ui.*
 import com.spyneai.shoot.ui.dialogs.ShootExitDialog
 import com.spyneai.shoot.ui.ecomwithgrid.GridEcomFragment
 import com.spyneai.shoot.ui.ecomwithgrid.ProjectDetailFragment
@@ -50,6 +47,8 @@ class ShootActivity : AppCompatActivity() {
     lateinit var projectDetailFragment: ProjectDetailFragment
     lateinit var selectBackgroundFragment: SelectBackgroundFragment
     lateinit var shootViewModel : ShootViewModel
+    lateinit var subCategoryAndAngleFragment: SubCategoryAndAngleFragment
+    lateinit var angleSelectionFragment: AngleSelectionFragment
     val TAG = "ShootActivity"
 
 
@@ -86,12 +85,13 @@ class ShootActivity : AppCompatActivity() {
         cameraFragment = CameraFragment()
         overlaysFragment = OverlaysFragment()
 
-
         gridEcomFragment = GridEcomFragment()
         skuDetailFragment = SkuDetailFragment()
         projectDetailFragment = ProjectDetailFragment()
         overlayEcomFragment = OverlayEcomFragment()
         selectBackgroundFragment = SelectBackgroundFragment()
+        subCategoryAndAngleFragment = SubCategoryAndAngleFragment()
+        angleSelectionFragment = AngleSelectionFragment()
 
         when(shootViewModel.categoryDetails.value?.categoryName) {
             "Automobiles" -> {
@@ -101,7 +101,7 @@ class ShootActivity : AppCompatActivity() {
                         .add(R.id.flCamerFragment, cameraFragment)
                         .add(R.id.flCamerFragment, overlaysFragment)
                         .add(R.id.flCamerFragment,CreateProjectFragment())
-                        .commitAllowingStateLoss()
+                        .commit()
                 }
             }
             "Bikes" -> {
@@ -238,16 +238,22 @@ class ShootActivity : AppCompatActivity() {
         })
 
         observeProjectCreated()
+
+        shootViewModel.selectAngles.observe(this,{
+            supportFragmentManager.beginTransaction()
+                .remove(subCategoryAndAngleFragment)
+                .add(R.id.flCamerFragment,AngleSelectionFragment())
+                .commit()
+        })
     }
 
     private fun observeProjectCreated() {
-        shootViewModel.isProjectCreated.observe(
+        //add subcat selection fragment
+        shootViewModel.getSubCategories.observe(
             this,{
-                if (it){
-                    supportFragmentManager.beginTransaction()
-                        .add(R.id.flCamerFragment,SubCategoryAndAngleFragment())
-                        .commit()
-                }
+                supportFragmentManager.beginTransaction()
+                    .add(R.id.flCamerFragment,SubCategoryAndAngleFragment())
+                    .commit()
             }
         )
     }

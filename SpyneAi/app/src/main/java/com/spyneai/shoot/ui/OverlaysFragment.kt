@@ -121,6 +121,10 @@ class OverlaysFragment : BaseFragment<ShootViewModel, FragmentOverlaysBinding>()
         })
 
         observeShootDimesions()
+
+        viewModel.isSkuCreated.observe(viewLifecycleOwner,{
+            initAngles()
+        })
     }
 
     private fun observeShootDimesions() {
@@ -190,7 +194,7 @@ class OverlaysFragment : BaseFragment<ShootViewModel, FragmentOverlaysBinding>()
                         if ((viewModel.startInteriorShots.value != true || viewModel.startMiscShots.value != true )
                             &&
                             viewModel.sku.value?.skuId == null)
-                        AngleSelectionDialog().show(requireActivity().supportFragmentManager, "AngleSelectionDialog"
+                            AngleSelectionDialog().show(requireActivity().supportFragmentManager, "AngleSelectionDialog"
                         )
                     }
 
@@ -200,10 +204,10 @@ class OverlaysFragment : BaseFragment<ShootViewModel, FragmentOverlaysBinding>()
 
         //update progress list
         viewModel.exterirorAngles.observe(viewLifecycleOwner, {
-            binding.tvShoot?.text = getString(R.string.angles)+" 1/${viewModel.getSelectedAngles()}"
+            binding.tvShoot?.text = getString(R.string.angles)+" 1/${viewModel.getSelectedAngles(getString(R.string.app_name))}"
             if (viewModel.shootList.value.isNullOrEmpty())
                 initProgressFrames()
-            else if (viewModel.shootList.value?.size!! < viewModel.getSelectedAngles()!!)
+            else if (viewModel.shootList.value?.size!! < viewModel.getSelectedAngles(getString(R.string.app_name))!!)
                 initProgressFrames()
 
             if (viewModel.subCategory.value?.prod_cat_id != null)
@@ -356,7 +360,7 @@ class OverlaysFragment : BaseFragment<ShootViewModel, FragmentOverlaysBinding>()
 
         viewModel.shootNumber.observe(viewLifecycleOwner, {
             binding.tvShoot?.text =
-                "Angles ${viewModel.shootNumber.value!! + 1}/${viewModel.getSelectedAngles()}"
+                "Angles ${viewModel.shootNumber.value!! + 1}/${viewModel.getSelectedAngles(getString(R.string.app_name))}"
 
             viewModel.overlaysResponse.observe(viewLifecycleOwner, {
                 when (it) {

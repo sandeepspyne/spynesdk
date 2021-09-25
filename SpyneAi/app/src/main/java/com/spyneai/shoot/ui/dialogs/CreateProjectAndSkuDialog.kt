@@ -17,6 +17,7 @@ import com.spyneai.databinding.DialogCreateProjectAndSkuBinding
 import com.spyneai.needs.AppConstants
 import com.spyneai.needs.Utilities
 import com.spyneai.posthog.Events
+import com.spyneai.removeWhiteSpace
 import com.spyneai.shoot.data.ShootViewModel
 import com.spyneai.shoot.data.model.Project
 import com.spyneai.shoot.data.model.Sku
@@ -47,7 +48,7 @@ class CreateProjectAndSkuDialog : BaseDialogFragment<ShootViewModel,DialogCreate
         observeProjectResponse()
     }
 
-    private fun removeWhiteSpace(toString: String) = toString.replace("\\s".toRegex(), "")
+
 
     private fun createProject() {
 
@@ -61,9 +62,13 @@ class CreateProjectAndSkuDialog : BaseDialogFragment<ShootViewModel,DialogCreate
 
 
     private fun observeProjectResponse() {
+
+        val s = ""
         viewModel.createProjectRes.observe(viewLifecycleOwner,{
             when(it) {
                 is Resource.Success -> {
+                    Utilities.hideProgressDialog()
+
                     requireContext().captureEvent(
                         Events.CREATE_PROJECT,
                         Properties().putValue("project_name",  removeWhiteSpace(binding.etVinNumber.text.toString()))
@@ -78,18 +83,16 @@ class CreateProjectAndSkuDialog : BaseDialogFragment<ShootViewModel,DialogCreate
                     project.projectId = it.value.project_id
                     viewModel.insertProject(project)
 
-                    Utilities.hideProgressDialog()
                     val sku = Sku()
                     sku.projectId = it.value.project_id
                     sku.skuName = removeWhiteSpace(binding.etVinNumber.text.toString()).uppercase()
                     viewModel.sku.value = sku
 
                     viewModel.projectId.value = it.value.project_id
-//                    //add sku to local database
-//                    viewModel.insertSku(sku!!)
 
                     //notify project created
                     viewModel.isProjectCreated.value = true
+                    viewModel.getSubCategories.value = true
                     dismiss()
                 }
 

@@ -26,10 +26,10 @@ class ShootHintDialog : BaseDialogFragment<ShootViewModel, DialogShootHintBindin
 
         binding.btContinue.setOnClickListener {
             viewModel.showVin.value = true
-            viewModel.isHintShowen.value = true
             dismiss()
         }
     }
+
 
     override fun onDismiss(dialog: DialogInterface) {
         super.onDismiss(dialog)

@@ -20,27 +20,18 @@ class CreateProjectFragment : BaseFragment<ShootViewModel, FragmentCreateProject
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        if (viewModel.showVin.value == null) {
-            shoot("shoot hint called")
-            initShootHint()
-        }
+        viewModel.showHint.observe(viewLifecycleOwner,{
+                initShootHint()
+        })
+
+        viewModel.showVin.observe(viewLifecycleOwner,{
+            initProjectDialog()
+        })
     }
 
     private fun initShootHint() {
         requireContext().captureEvent(Events.SHOW_HINT, Properties())
         ShootHintDialog().show(requireActivity().supportFragmentManager, "ShootHintDialog")
-
-        observeShowVin()
-    }
-
-    private fun observeShowVin() {
-        viewModel.showVin.observe(viewLifecycleOwner, {
-            if (viewModel.isProjectCreated.value == null)
-                if (it) {
-                    initProjectDialog()
-                    shoot("create project called")
-                }
-        })
     }
 
     private fun initProjectDialog() {

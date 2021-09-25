@@ -719,13 +719,13 @@ class Camera2Activity : AppCompatActivity() {
         // Set up the listener for take photo button
         camera_capture_button.setOnClickListener {
             if (!isSubcatgoryConfirmed){
-                var dialog = SubCategoryConfirmationDialog()
-
-                var arguments =  Bundle()
-                arguments.putString("subcat_name", selectedSubCategory)
-                arguments.putString("subcat_image", selectedSubcategoryImage)
-
-                dialog.arguments = arguments
+//                var dialog = SubCategoryConfirmationDialog()
+//
+//                var arguments =  Bundle()
+//                arguments.putString("subcat_name", selectedSubCategory)
+//                arguments.putString("subcat_image", selectedSubcategoryImage)
+//
+//                dialog.arguments = arguments
 
                 //dialog.show(supportFragmentManager, "SubCategoryConfirmationDialog")
 

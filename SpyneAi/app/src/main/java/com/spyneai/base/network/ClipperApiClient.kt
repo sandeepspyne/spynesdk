@@ -1,4 +1,6 @@
 package com.spyneai.base.network
 
-class ClipperApiClient : BaseApiClient<ClipperApi>("http://35.240.170.119/api/", ClipperApi::class.java) {
+import com.spyneai.needs.AppConstants
+
+class ClipperApiClient : BaseApiClient<ClipperApi>(AppConstants.BASE_URL, ClipperApi::class.java) {
 }

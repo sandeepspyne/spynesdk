@@ -4,11 +4,19 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import com.posthog.android.Properties
+import com.spyneai.BaseApplication
 import com.spyneai.R
 import com.spyneai.base.BaseDialogFragment
+import com.spyneai.base.network.Resource
+import com.spyneai.captureEvent
+import com.spyneai.captureFailureEvent
 import com.spyneai.dashboard.ui.WhiteLabelConstants
+import com.spyneai.dashboard.ui.handleApiError
 import com.spyneai.databinding.DialogAngleSelectionBinding
 import com.spyneai.needs.AppConstants
+import com.spyneai.needs.Utilities
+import com.spyneai.posthog.Events
 import com.spyneai.shoot.data.ShootViewModel
 import com.spyneai.shoot.utils.shoot
 
@@ -16,7 +24,9 @@ class AngleSelectionDialog : BaseDialogFragment<ShootViewModel,DialogAngleSelect
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        
+
+        isCancelable = false
+
         showOptions()
     }
 
@@ -27,18 +37,18 @@ class AngleSelectionDialog : BaseDialogFragment<ShootViewModel,DialogAngleSelect
             else -> arrayOf("8 Angles", "12 Angles","16 Angles","24 Angles","36 Angles")
         }
 
-        val lastSelectedAngles = viewModel.getSelectedAngles()
-        var newSelectedAngles = viewModel.getSelectedAngles()
+        val lastSelectedAngles = viewModel.getSelectedAngles(getString(R.string.app_name))
+        var newSelectedAngles = viewModel.getSelectedAngles(getString(R.string.app_name))
 
 
         when(getString(R.string.app_name)){
             AppConstants.SELL_ANY_CAR->{
-                when(viewModel.getSelectedAngles()){
+                when(viewModel.getSelectedAngles(getString(R.string.app_name))){
                     4 -> binding.npShoots.minValue = 0
                     36 -> binding.npShoots.minValue = 1
                 }
             } else -> {
-            when(viewModel.getSelectedAngles()){
+            when(viewModel.getSelectedAngles(getString(R.string.app_name))){
                 8,5 -> binding.npShoots.minValue = 0
                 12 -> binding.npShoots.minValue = 1
                 16 -> binding.npShoots.minValue = 2
@@ -65,12 +75,75 @@ class AngleSelectionDialog : BaseDialogFragment<ShootViewModel,DialogAngleSelect
         }
 
         binding.tvProceed.setOnClickListener {
-            if (lastSelectedAngles != newSelectedAngles)
-                //isSubcatgoryConfirmed = false
-                    shoot("angle selected- "+newSelectedAngles)
-                viewModel.exterirorAngles.value = newSelectedAngles
-                    dismiss()
+            viewModel.exterirorAngles.value = newSelectedAngles
+
+            //create sku
+            val createProjectRes = (viewModel.createProjectRes.value as Resource.Success).value
+
+            createSku(
+                createProjectRes.project_id,
+                viewModel.subCategory.value?.prod_sub_cat_id!!
+            )
         }
+    }
+
+    private fun createSku(projectId: String, prod_sub_cat_id: String) {
+        Utilities.showProgressDialog(requireContext())
+
+        viewModel.createSku(
+            Utilities.getPreference(BaseApplication.getContext(), AppConstants.AUTH_KEY).toString(),
+            projectId,
+            requireActivity().intent.getStringExtra(AppConstants.CATEGORY_ID).toString(),
+            prod_sub_cat_id!!,
+            viewModel.sku.value?.skuName.toString(),
+            viewModel.exterirorAngles.value!!
+        )
+
+        viewModel.createSkuRes.observe(viewLifecycleOwner, {
+            when (it) {
+                is Resource.Success -> {
+                    Utilities.hideProgressDialog()
+
+                    BaseApplication.getContext().captureEvent(
+                        Events.CREATE_SKU,
+                        Properties().putValue("sku_name", viewModel.sku.value?.skuName.toString())
+                            .putValue("project_id", projectId)
+                            .putValue("prod_sub_cat_id", prod_sub_cat_id)
+                            .putValue("angles", viewModel.exterirorAngles.value!!)
+                    )
+
+                    val sku = viewModel.sku.value
+                    sku?.skuId = it.value.sku_id
+                    sku?.projectId = projectId
+                    sku?.createdOn = System.currentTimeMillis()
+                    sku?.totalImages = viewModel.exterirorAngles.value
+                    sku?.categoryName = viewModel.categoryDetails.value?.categoryName
+                    sku?.categoryId = viewModel.categoryDetails.value?.categoryId
+                    sku?.subcategoryName = viewModel.subCategory.value?.sub_cat_name
+                    sku?.subcategoryId = prod_sub_cat_id
+                    sku?.exteriorAngles = viewModel.exterirorAngles.value
+
+                    viewModel.sku.value = sku
+                    viewModel.isSubCategoryConfirmed.value = true
+                    viewModel.isSkuCreated.value = true
+
+                    //add sku to local database
+                    viewModel.insertSku(sku!!)
+                    dismiss()
+                }
+
+
+                is Resource.Failure -> {
+                    viewModel.isCameraButtonClickable = true
+                    BaseApplication.getContext().captureFailureEvent(
+                        Events.CREATE_SKU_FAILED, Properties(),
+                        it.errorMessage!!
+                    )
+                    Utilities.hideProgressDialog()
+                    handleApiError(it) { createSku(projectId, prod_sub_cat_id) }
+                }
+            }
+        })
     }
 
     override fun onStop() {

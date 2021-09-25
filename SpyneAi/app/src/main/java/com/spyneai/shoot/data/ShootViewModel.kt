@@ -25,6 +25,10 @@ class ShootViewModel : ViewModel() {
     private val repository = ShootRepository()
     private val localRepository = ShootLocalRepository()
 
+
+
+    val showHint : MutableLiveData<Boolean> = MutableLiveData()
+
     var isCameraButtonClickable = true
     var processSku: Boolean = true
     var isStopCaptureClickable = false
@@ -61,6 +65,8 @@ class ShootViewModel : ViewModel() {
     val subCatName: MutableLiveData<String> = MutableLiveData()
 
     val shootList: MutableLiveData<ArrayList<ShootData>> = MutableLiveData()
+
+
 
     private val _subCategoriesResponse: MutableLiveData<Resource<NewSubCatResponse>> =
         MutableLiveData()
@@ -239,7 +245,17 @@ class ShootViewModel : ViewModel() {
             _updateTotalFramesRes.value = repository.updateTotalFrames(skuId, totalFrames, authKey)
         }
 
-    fun getSelectedAngles() = exterirorAngles.value
+    fun getSelectedAngles(appName : String) : Int{
+         if (exterirorAngles.value == null){
+            return when(appName){
+                AppConstants.CARS24,AppConstants.CARS24_INDIA -> 5
+                AppConstants.SELL_ANY_CAR -> 4
+                else -> 8
+            }
+        }else {
+            return exterirorAngles.value!!
+        }
+    }
 
     fun getShootProgressList(angles: Int, selectedAngles: Int): ArrayList<ShootProgress> {
         val shootProgressList = ArrayList<ShootProgress>()
@@ -343,6 +359,23 @@ class ShootViewModel : ViewModel() {
 
     fun updateVideoSkuLocally(sku: Sku) {
         localRepository.updateVideoSkuLocally(sku)
+    }
+
+
+    val getSubCategories = MutableLiveData<Boolean>()
+    val selectAngles = MutableLiveData<Boolean>()
+
+    init {
+        if (showVin.value == null) {
+            showHint.value = true
+        }
+
+        if (showVin.value != null && isProjectCreated.value == null)
+            showVin.value = true
+
+        if (isProjectCreated.value == true)
+            getSubCategories.value = true
+
     }
 
 }

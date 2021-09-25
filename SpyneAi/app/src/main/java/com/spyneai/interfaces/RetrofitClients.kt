@@ -3,6 +3,7 @@ package com.spyneai.interfaces
 
 import com.google.gson.GsonBuilder
 import com.spyneai.BuildConfig
+import com.spyneai.needs.AppConstants
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
@@ -10,9 +11,6 @@ import retrofit2.converter.gson.GsonConverterFactory
 import java.util.concurrent.TimeUnit
 
 object RetrofitClients {
-
-    private const val BASE_URL = "http://35.240.170.119/api/"
-    private const val STAGING_URL = "http://34.87.119.10/api/"
 
     private val client = OkHttpClient.Builder()
         .readTimeout(10, TimeUnit.MINUTES)
@@ -29,7 +27,7 @@ object RetrofitClients {
 
 
     private val retrofit = Retrofit.Builder()
-        .baseUrl(BASE_URL)
+        .baseUrl(AppConstants.BASE_URL)
         .client(client)
         .addConverterFactory(
             GsonConverterFactory.create(

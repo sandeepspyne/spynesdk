@@ -1,6 +1,7 @@
 package com.spyneai.needs
 
 object AppConstants {
+    val BASE_URL = "https://www.clippr.ai/api/"
     val LOCALE = "LOCALE"
     val IS_360: String? = "IS_360"
     val IS_HD: String? = "IS_HD"
