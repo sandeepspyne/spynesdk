@@ -177,7 +177,7 @@ class CameraFragment : BaseFragment<ShootViewModel, FragmentCameraBinding>(), Pi
         })
 
         if (getString(R.string.app_name) == AppConstants.KARVI) {
-            binding.tvSkipShoot.setTextColor(
+            binding.tvSkipShoot!!.setTextColor(
                 ContextCompat.getColor(
                     requireContext(),
                     R.color.secondary
@@ -190,7 +190,7 @@ class CameraFragment : BaseFragment<ShootViewModel, FragmentCameraBinding>(), Pi
         }
 
         if (getString(R.string.app_name) == AppConstants.KARVI) {
-            binding.tvSkipShoot.setTextColor(
+            binding.tvSkipShoot!!.setTextColor(
                 ContextCompat.getColor(
                     requireContext(),
                     R.color.secondary
@@ -1101,19 +1101,19 @@ class CameraFragment : BaseFragment<ShootViewModel, FragmentCameraBinding>(), Pi
 
                 when (angle) {
                     90 -> {
-                        binding.tvAngle!!.visibility = View.VISIBLE
-                        binding.tvAngle!!.text = "90"
+                        binding.tvAngleValue!!.visibility = View.VISIBLE
+                        binding.tvAngleValue!!.text = "90" + "\u00B0"
                     }
                     45 -> {
-                        binding.tvAngle!!.visibility = View.VISIBLE
-                        binding.tvAngle!!.text = "45"
+                        binding.tvAngleValue!!.visibility = View.VISIBLE
+                        binding.tvAngleValue!!.text = "45" + "\u00B0"
                     }
                     0 -> {
-                        binding.tvAngle!!.visibility = View.VISIBLE
-                        binding.tvAngle!!.text = "0"
+                        binding.tvAngleValue!!.visibility = View.VISIBLE
+                        binding.tvAngleValue!!.text = "0" + "\u00B0"
                     }
                     else -> {
-                        binding.tvAngle!!.visibility = View.INVISIBLE
+                        binding.tvAngleValue!!.visibility = View.INVISIBLE
                     }
                 }
 
@@ -1122,7 +1122,6 @@ class CameraFragment : BaseFragment<ShootViewModel, FragmentCameraBinding>(), Pi
                 if (pitch.roundToInt() <= -3 && pitch.roundToInt() >= -8) {
                     // going from 90 to 45
                     upcomingAngle = 45
-
                 }
                 if (pitch.roundToInt() <= -78 && pitch.roundToInt() >= -82) {
                     // going from 0 to 45
@@ -1144,31 +1143,28 @@ class CameraFragment : BaseFragment<ShootViewModel, FragmentCameraBinding>(), Pi
                     45 -> {
                         binding.lottieDownArrow!!.visibility = View.VISIBLE
                         binding.lottieUpArrow!!.visibility = View.VISIBLE
-                        binding.tvUpcomingAngle1!!.visibility = View.VISIBLE
-                        binding.tvUpcomingAngle2!!.visibility = View.VISIBLE
-                        binding.tvUpcomingAngle1!!.text = "45"
-                        binding.tvUpcomingAngle2!!.text = "90"
+//                        binding.tvUpcomingAngle1!!.visibility = View.VISIBLE
+//                        binding.tvUpcomingAngle2!!.visibility = View.VISIBLE
+//                        binding.tvUpcomingAngle1!!.text = "45"
+//                        binding.tvUpcomingAngle2!!.text = "90"
                     }
                     0 -> {
                         binding.lottieDownArrow!!.visibility = View.VISIBLE
                         binding.lottieUpArrow!!.visibility = View.VISIBLE
-                        binding.tvUpcomingAngle1!!.visibility = View.VISIBLE
-                        binding.tvUpcomingAngle2!!.visibility = View.VISIBLE
-                        binding.tvUpcomingAngle1!!.text = "0"
-                        binding.tvUpcomingAngle2!!.text = "45"
+//                        binding.tvUpcomingAngle1!!.visibility = View.VISIBLE
+//                        binding.tvUpcomingAngle2!!.visibility = View.VISIBLE
+//                        binding.tvUpcomingAngle1!!.text = "0"
+//                        binding.tvUpcomingAngle2!!.text = "45"
                     }
                     50 ->{
                         binding.lottieDownArrow!!.visibility = View.VISIBLE
                         binding.lottieUpArrow!!.visibility = View.VISIBLE
-                        binding.tvUpcomingAngle1!!.visibility = View.VISIBLE
-                        binding.tvUpcomingAngle2!!.visibility = View.VISIBLE
-                        binding.tvUpcomingAngle1!!.text = "90"
-                        binding.tvUpcomingAngle2!!.text = "45"
+//                        binding.tvUpcomingAngle1!!.visibility = View.VISIBLE
+//                        binding.tvUpcomingAngle2!!.visibility = View.VISIBLE
+//                        binding.tvUpcomingAngle1!!.text = "90"
+//                        binding.tvUpcomingAngle2!!.text = "45"
                     }
-
                 }
-
-
                 //hide moving line
                 if (pitch.roundToInt() == 0 || (pitch.roundToInt() <= -0 && pitch.roundToInt() >= -3))
                     binding.tvLevelIndicator.visibility = View.GONE
@@ -1183,6 +1179,7 @@ class CameraFragment : BaseFragment<ShootViewModel, FragmentCameraBinding>(), Pi
                     binding.lottieUpArrow!!.visibility = View.INVISIBLE
                     binding.tvUpcomingAngle1!!.visibility = View.INVISIBLE
                     binding.tvUpcomingAngle2!!.visibility = View.INVISIBLE
+                    binding.tvAngleRed!!.visibility = View.INVISIBLE
                     isGyroOnCorrectAngle = true
                     //angle 90
                     if (pitch.roundToInt() == 0 || (pitch.roundToInt() <= -0 && pitch.roundToInt() >= -3)) {
@@ -1200,8 +1197,12 @@ class CameraFragment : BaseFragment<ShootViewModel, FragmentCameraBinding>(), Pi
                     }
 
                 } else {
-                    binding.tvAngle!!.visibility = View.INVISIBLE
+                    binding.tvAngleValue!!.visibility = View.INVISIBLE
                     isGyroOnCorrectAngle = false
+                    binding.tvAngleRed!!.visibility = View.VISIBLE
+                    val gyroAngle = (pitch.roundToInt() + 90)
+
+                    binding.tvAngleRed!!.text = gyroAngle.toString() + "\u00B0"
                     gyroMeterOffLevel()
 
                     if (movearrow) {

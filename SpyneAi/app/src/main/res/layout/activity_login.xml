@@ -29,7 +29,7 @@
                 android:layout_height="wrap_content"
                 android:text="@string/please"
                 android:textColor="#484848"
-                android:fontFamily="@font/light"
+                android:fontFamily="@font/poppins_light"
                 android:gravity="center"
                 android:layout_marginBottom="30dp"
                 android:textSize="@dimen/sp_13"/>
