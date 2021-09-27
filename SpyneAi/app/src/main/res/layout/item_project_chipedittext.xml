@@ -18,6 +18,7 @@
         android:id="@+id/chipGroup"
         android:layout_width="match_parent"
         android:layout_height="@dimen/dp_50"
+        android:scrollbars="none"
         />
 
 
