@@ -51,10 +51,10 @@ class DraftProjectsAdapter(
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
 
-        if (draftsList[position].categoryId == draftsList[position].subCategoryId){
+        if (draftsList[position].categoryId == AppConstants.CARS_CATEGORY_ID && (draftsList[position].categoryId == draftsList[position].subCategoryId)) {
             holder.llThreeSixty.visibility = View.VISIBLE
             holder.tvCategory.text = "Automobiles"
-        }else {
+        } else {
             holder.tvCategory.text = draftsList[position].category
             holder.llThreeSixty.visibility = View.GONE
         }
