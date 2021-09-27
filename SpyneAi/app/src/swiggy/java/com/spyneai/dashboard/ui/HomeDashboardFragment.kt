@@ -280,6 +280,9 @@ class HomeDashboardFragment :
             when (it) {
                 is Resource.Success -> {
 
+                    if (it.value.data.size == 1)
+                    Utilities.savePrefrence(requireContext(), AppConstants.CATEGORY_NAME, it.value.data[0].prod_cat_name)
+
                     LayoutHolder.data = it.value.data
                     requireContext().captureEvent(Events.GOT_CATEGORIES, Properties())
 

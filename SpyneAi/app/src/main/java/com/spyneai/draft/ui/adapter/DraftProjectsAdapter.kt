@@ -61,22 +61,30 @@ class DraftProjectsAdapter(
 
         try {
             if (draftsList[position].sku[0].images.isNullOrEmpty()) {
-                if (draftsList[position].categoryId == draftsList[position].subCategoryId){
+                if (draftsList[position].categoryId == AppConstants.CARS_CATEGORY_ID && (draftsList[position].categoryId == draftsList[position].subCategoryId)) {
                     Glide.with(context)
                         .load(R.drawable.three_sixty_thumbnail)
                         .into(holder.ivThumbnail)
-                }else {
+                }else if (Utilities.getPreference(context, AppConstants.CATEGORY_NAME).equals("Food & Beverages")) {
+                    Glide.with(context)
+                        .load(R.drawable.ic_food_thumbnail_draft)
+                        .into(holder.ivThumbnail)
+                } else{
                     Glide.with(context)
                         .load(R.mipmap.defaults)
                         .into(holder.ivThumbnail)
                 }
             }else {
                 if (draftsList[position].sku[0].images[0].input_lres == null){
-                    if (draftsList[position].categoryId == draftsList[position].subCategoryId){
+                    if (draftsList[position].categoryId == AppConstants.CARS_CATEGORY_ID && (draftsList[position].categoryId == draftsList[position].subCategoryId)) {
                         Glide.with(context)
                             .load(R.drawable.three_sixty_thumbnail)
                             .into(holder.ivThumbnail)
-                    }else {
+                    }else if (Utilities.getPreference(context, AppConstants.CATEGORY_NAME).equals("Food & Beverages")) {
+                        Glide.with(context)
+                            .load(R.drawable.ic_food_thumbnail_draft)
+                            .into(holder.ivThumbnail)
+                    } else{
                         Glide.with(context)
                             .load(R.mipmap.defaults)
                             .into(holder.ivThumbnail)

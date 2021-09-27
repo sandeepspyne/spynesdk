@@ -13,7 +13,10 @@
         <entry key="app/src/main/res/drawable/bg_gyro_error.xml" value="0.19537037037037036" />
         <entry key="app/src/main/res/drawable/bg_gyro_in.xml" value="0.19537037037037036" />
         <entry key="app/src/main/res/drawable/bg_gyro_red.xml" value="0.19537037037037036" />
+        <entry key="app/src/main/res/drawable/bg_one_corner.xml" value="0.2" />
         <entry key="app/src/main/res/drawable/chip.xml" value="0.1925925925925926" />
+        <entry key="app/src/main/res/drawable/ic_360.xml" value="0.2" />
+        <entry key="app/src/main/res/drawable/ic_food_thumbnail_draft.xml" value="0.2" />
         <entry key="app/src/main/res/layout-land/fragment_camera.xml" value="0.165625" />
         <entry key="app/src/main/res/layout-land/fragment_overlays.xml" value="0.165625" />
         <entry key="app/src/main/res/layout/activity_forgot_password.xml" value="0.2578125" />
@@ -40,6 +43,7 @@
         <entry key="app/src/main/res/layout/item_draft_project.xml" value="0.2578125" />
         <entry key="app/src/main/res/layout/item_ongoing_projects.xml" value="0.2578125" />
         <entry key="app/src/main/res/layout/item_processed_image.xml" value="0.2578125" />
+        <entry key="app/src/main/res/layout/item_project_chipedittext.xml" value="0.22" />
         <entry key="app/src/main/res/layout/item_project_edittext.xml" value="0.25384615384615383" />
         <entry key="app/src/main/res/layout/item_tags_spinner.xml" value="0.2578125" />
         <entry key="app/src/main/res/layout/item_tags_spinner_text.xml" value="0.2578125" />
