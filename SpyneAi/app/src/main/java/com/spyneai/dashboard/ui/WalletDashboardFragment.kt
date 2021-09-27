@@ -31,8 +31,7 @@ import retrofit2.Callback
 import retrofit2.Response
 
 
-class WalletDashboardFragment :
-    BaseFragment<DashboardViewModel, WalletDashboardFragmentBinding>()  {
+class WalletDashboardFragment : BaseFragment<DashboardViewModel, WalletDashboardFragmentBinding>()  {
 
     private var call: Call<CreditDetailsResponse>? = null
     private var availableCredits = 0

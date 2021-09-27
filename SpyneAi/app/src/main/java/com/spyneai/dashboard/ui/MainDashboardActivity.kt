@@ -23,6 +23,7 @@ import com.spyneai.base.network.Resource
 import com.spyneai.dashboard.data.DashboardViewModel
 import com.spyneai.dashboard.ui.base.ViewModelFactory
 import com.spyneai.databinding.ActivityDashboardMainBinding
+import com.spyneai.fragment.PreferenceFragment
 import com.spyneai.interfaces.RetrofitClients
 import com.spyneai.needs.AppConstants
 import com.spyneai.needs.Utilities
@@ -77,7 +78,7 @@ class MainDashboardActivity : AppCompatActivity() {
         val firstFragment= HomeDashboardFragment()
         val SecondFragment=WalletDashboardFragment()
         val myOrdersFragment= MyOrdersFragment()
-        val thirdFragment=LogoutDashBoardFragment()
+        val thirdFragment=PreferenceFragment()
 
         //save category id and name
         Utilities.savePrefrence(this,AppConstants.CATEGORY_ID,AppConstants.CARS_CATEGORY_ID)

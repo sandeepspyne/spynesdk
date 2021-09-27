@@ -1,6 +1,8 @@
 package com.spyneai.needs
 
 object AppConstants {
+    val STATUS_PROJECT_NAME: String="STATUS_PROJECT_NAME"
+
     val LOCALE = "LOCALE"
     val IS_360: String? = "IS_360"
     val IS_HD: String? = "IS_HD"

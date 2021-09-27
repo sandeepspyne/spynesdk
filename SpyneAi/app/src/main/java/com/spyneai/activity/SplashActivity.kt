@@ -10,6 +10,7 @@ import com.spyneai.R
 import com.spyneai.dashboard.ui.MainDashboardActivity
 import com.spyneai.loginsignup.activity.LoginActivity
 import android.os.Build
+import android.util.Log
 import com.spyneai.BuildConfig
 import com.spyneai.getNetworkName
 import com.spyneai.needs.AppConstants
@@ -50,6 +51,16 @@ class SplashActivity : AppCompatActivity() {
         Utilities.savePrefrence(this,AppConstants.DEVICE_ID,deviceId)
 
 
+
+        if(Utilities.getPreference(this, AppConstants.STATUS_PROJECT_NAME).isNullOrEmpty()){
+
+            Utilities.savePrefrence(this,AppConstants.STATUS_PROJECT_NAME,"true")
+
+
+
+        }
+
+
         setSplash()
     }
 
@@ -75,6 +86,8 @@ class SplashActivity : AppCompatActivity() {
                 intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
                 startActivity(intent)
             }
+
+
         }, 3000)
     }
 }
