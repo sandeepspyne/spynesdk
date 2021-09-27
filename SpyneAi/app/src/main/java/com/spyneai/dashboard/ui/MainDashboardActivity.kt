@@ -254,7 +254,7 @@ class MainDashboardActivity : AppCompatActivity() {
         cancelAllWorkers()
 
         startUploadService()
-        startVideoUploadService()
+       // startVideoUploadService()
         checkFolderUpload()
     }
 

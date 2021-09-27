@@ -22,11 +22,13 @@ import android.util.Size
 import com.posthog.android.Properties
 import android.widget.ImageButton
 import android.widget.ImageView
+import android.widget.Toast
 import androidx.annotation.ColorRes
 import androidx.annotation.DrawableRes
 import androidx.core.content.ContextCompat
 import androidx.core.content.ContextCompat.getSystemService
 import androidx.core.widget.ImageViewCompat
+import androidx.fragment.app.Fragment
 import com.spyneai.dashboard.ui.MainDashboardActivity
 import com.spyneai.loginsignup.activity.LoginActivity
 import com.spyneai.needs.AppConstants
@@ -273,6 +275,10 @@ fun Context.isMagnatoMeterAvailable() : Boolean {
     val magneticField = mSensorManager.getDefaultSensor(Sensor.TYPE_MAGNETIC_FIELD)
 
     return mAccelerometer != null && magneticField != null
+}
+
+fun Fragment.showToast(message : String){
+    Toast.makeText(requireContext(),message,Toast.LENGTH_LONG).show()
 }
 
 

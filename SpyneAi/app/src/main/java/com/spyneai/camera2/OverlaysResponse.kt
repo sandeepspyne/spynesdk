@@ -20,6 +20,9 @@ data class OverlaysResponse(
         val prod_cat_id: String,
         val prod_sub_cat_id: String,
         val type: String,
-        val updated_at: String
+        val updated_at: String,
+        var isSelected : Boolean = false,
+        var imageClicked : Boolean = false,
+        var imagePath : String
     )
 }

@@ -362,8 +362,90 @@ class ShootViewModel : ViewModel() {
     }
 
 
+    fun getFileName(): String {
+        val overlayRes = (overlaysResponse.value as Resource.Success).value
+        val size = shootList.value!!.size.plus(1)
+        val list = shootList.value
+
+        return when (categoryDetails.value?.imageType) {
+            "Exterior" -> {
+                categoryDetails.value?.imageType!! + "_" + size
+            }
+            "Interior" -> {
+                val interiorList = list?.filter {
+                    it.image_category == "Interior"
+                }
+
+                if (interiorList == null) {
+                   categoryDetails.value?.imageType!! + "_1"
+                } else {
+                    categoryDetails.value?.imageType!! + "_" + interiorList.size.plus(
+                        1
+                    )
+                }
+            }
+            "Focus Shoot" -> {
+                val miscList = list?.filter {
+                    it.image_category == "Focus Shoot"
+                }
+
+                if (miscList == null) {
+                    "Miscellaneous" + "_1"
+                } else {
+                    "Miscellaneous_" + miscList.size.plus(1)
+                }
+            }
+            "Footwear" -> {
+                categoryDetails.value?.imageType!! + "_" + shootNumber.value?.plus(
+                    1
+                )
+            }
+            "Food" -> {
+                categoryDetails.value?.imageType!! + "_" + shootNumber.value?.plus(
+                    1
+                )
+            }
+            "Ecom" -> {
+                categoryDetails.value?.imageType!! + "_" + shootNumber.value?.plus(
+                    1
+                )
+            }
+            else -> {
+                System.currentTimeMillis().toString()
+            }
+        }
+    }
+
+    fun getSequenceNumber(): Int {
+        val overlayRes = (overlaysResponse.value as Resource.Success).value
+
+        if (categoryDetails.value?.imageType == "Exterior")
+            return overlayRes.data.indexOf(selectedOverlay).plus(1)
+        else
+            return shootList.value!!.size.plus(1)
+    }
+
+    fun getOnImageConfirmed(): Boolean {
+        return if (onImageConfirmed.value == null) true
+        else !onImageConfirmed.value!!
+    }
+
+    fun getOverlay(): String {
+        val overlayRes = (overlaysResponse.value as Resource.Success).value
+        return overlayRes.data[overlayRes.data.indexOf(selectedOverlay)].display_thumbnail
+    }
+
+    fun getName() : String {
+        val overlayRes = (overlaysResponse.value as Resource.Success).value
+        return overlayRes.data[overlayRes.data.indexOf(selectedOverlay)].display_name
+    }
+
+
+    var selectedOverlay : OverlaysResponse.Data? = null
     val getSubCategories = MutableLiveData<Boolean>()
     val selectAngles = MutableLiveData<Boolean>()
+    val fetchOverlays = MutableLiveData<Boolean>()
+    val onImageConfirmed = MutableLiveData<Boolean>()
 
     init {
         if (showVin.value == null) {

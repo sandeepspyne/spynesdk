@@ -73,6 +73,7 @@ class ConfirmReshootDialog : BaseDialogFragment<ShootViewModel, DialogConfirmRes
 
             viewModel.isCameraButtonClickable = true
 
+
             when(viewModel.categoryDetails.value?.imageType) {
                 "Exterior" -> {
                     uploadImages()

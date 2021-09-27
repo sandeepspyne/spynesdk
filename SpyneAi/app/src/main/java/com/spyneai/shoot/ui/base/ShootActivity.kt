@@ -3,6 +3,7 @@ package com.spyneai.shoot.ui.base
 
 import CameraFragment
 import android.Manifest
+import android.app.Fragment
 import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
@@ -40,7 +41,7 @@ import java.io.File
 class ShootActivity : AppCompatActivity() {
 
     lateinit var cameraFragment: CameraFragment
-    lateinit var overlaysFragment: OverlaysFragment
+    lateinit var overlaysFragment: FragmentOverlaysVTwo
     lateinit var gridEcomFragment: GridEcomFragment
     lateinit var overlayEcomFragment: OverlayEcomFragment
     lateinit var skuDetailFragment: SkuDetailFragment
@@ -83,7 +84,7 @@ class ShootActivity : AppCompatActivity() {
         shootViewModel.categoryDetails.value = categoryDetails
 
         cameraFragment = CameraFragment()
-        overlaysFragment = OverlaysFragment()
+        overlaysFragment = FragmentOverlaysVTwo()
 
         gridEcomFragment = GridEcomFragment()
         skuDetailFragment = SkuDetailFragment()

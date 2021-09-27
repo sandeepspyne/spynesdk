@@ -99,6 +99,8 @@ class AngleSelectionDialog : BaseDialogFragment<ShootViewModel,DialogAngleSelect
             viewModel.exterirorAngles.value!!
         )
 
+        val s = ""
+
         viewModel.createSkuRes.observe(viewLifecycleOwner, {
             when (it) {
                 is Resource.Success -> {
@@ -126,9 +128,13 @@ class AngleSelectionDialog : BaseDialogFragment<ShootViewModel,DialogAngleSelect
                     viewModel.sku.value = sku
                     viewModel.isSubCategoryConfirmed.value = true
                     viewModel.isSkuCreated.value = true
+                    viewModel.showLeveler.value = true
+                    viewModel.fetchOverlays.value = true
 
                     //add sku to local database
                     viewModel.insertSku(sku!!)
+
+                    val s = ""
                     dismiss()
                 }
 
