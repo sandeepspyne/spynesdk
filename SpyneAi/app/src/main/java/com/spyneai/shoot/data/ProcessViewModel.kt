@@ -83,49 +83,7 @@ class ProcessViewModel : ViewModel() {
         auth_key: RequestBody
     ) = viewModelScope.launch {
         _carGifRes.value = Resource.Loading
-        when (BaseApplication.getContext().getString(R.string.app_name)) {
-            AppConstants.SWIGGY -> {
-                val list = ArrayList<CarsBackgroundRes.Data>()
-
-                list.add(
-                    CarsBackgroundRes.Data(
-                        "Rustic White",
-                        "https://storage.googleapis.com/spyne-website/Food%20Backgrounds/Rustic%20White%20-%200.jpg",
-                        1,
-                        "11001",
-                        "https://storage.googleapis.com/spyne-website/Food%20Backgrounds/Rustic%20White%20-%2090.jpg"
-                    )
-                )
-
-
-                list.add(
-                    CarsBackgroundRes.Data(
-                        "Colonial Blue",
-                        "https://storage.googleapis.com/spyne-website/Food%20Backgrounds/Colonial%20blue%20-%200.jpg",
-                        1,
-                        "12001",
-                        "https://storage.googleapis.com/spyne-website/Food%20Backgrounds/Colonial%20Blue%20-%2090.jpg"
-                    )
-                )
-
-
-                list.add(
-                    CarsBackgroundRes.Data(
-                        "Boho Chic",
-                        "https://storage.googleapis.com/spyne-website/Food%20Backgrounds/%20Boho%20Chic%20-%200.jpg",
-                        1,
-                        "13001",
-                        "https://storage.googleapis.com/spyne-website/Food%20Backgrounds/Boho%20Chic%20-%2090.jpg"
-                    )
-                )
-
-                val response = CarsBackgroundRes(list, "Got Background", 200)
-                _carGifRes.value = Resource.Success(response)
-            }
-            else -> {
                 _carGifRes.value = repository.getBackgroundGifCars(category, auth_key)
-            }
-        }
     }
 
     fun processSku(authKey: String, skuId: String, backgroundId: String, is360: Boolean) =
