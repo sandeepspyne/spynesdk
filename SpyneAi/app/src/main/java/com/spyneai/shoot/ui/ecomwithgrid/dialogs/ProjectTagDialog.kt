@@ -204,6 +204,7 @@ class ProjectTagDialog : BaseDialogFragment<ShootViewModel, ProjectTagDialogBind
         chip.isChipIconVisible = false
         chip.isCloseIconVisible = true
         chip.isClickable = true
+        if (chip.text.length>1)
         binding.chipGroup.addView(chip as View)
         chip.setOnCloseIconClickListener {
             binding.chipGroup.removeView(chip as View)
