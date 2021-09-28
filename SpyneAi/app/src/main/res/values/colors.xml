@@ -18,6 +18,8 @@
     <color name="credit_success">#40CE4E</color>
 
     <color name="dark_blue">#3F3D56</color>
+    <color name="tint">#262424</color>
+    <color name="light_grey">#D5D5D5</color>
 
 
     <color name="categories_text">#4F4F4F</color>

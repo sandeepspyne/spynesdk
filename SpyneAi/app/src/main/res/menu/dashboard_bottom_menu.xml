@@ -18,7 +18,7 @@
 
     <item
         android:id="@+id/logoutDashBoardFragment"
-        android:title="@string/logout"
+        android:title="@string/profile"
         android:icon="@drawable/logout"></item>
 
 </menu>
