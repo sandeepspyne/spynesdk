@@ -1,5 +1,6 @@
 package com.spyneai.shoot.holders
 
+import android.util.Log
 import android.view.View
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
@@ -22,6 +23,7 @@ class OverlaysHolder(
 
     var listener: OnItemClickListener? = null
     var binding : ItemOverlaysBinding? = null
+    val TAG = "OverlaysHolder"
 
     init {
         binding = ItemOverlaysBinding.bind(itemView)
@@ -29,8 +31,11 @@ class OverlaysHolder(
     }
 
     override fun bind(data: OverlaysResponse.Data) {
+        //set sequence number as per adapter position
+        data.sequenceNumber = adapterPosition
+
         binding.apply {
-            this?.tvName?.text = data.angle_name
+            this?.tvName?.text = data.display_name
         }
 
         if (data.isSelected)
@@ -39,6 +44,7 @@ class OverlaysHolder(
             binding?.flOverlay?.background = ContextCompat.getDrawable(BaseApplication.getContext(),R.drawable.bg_overlay)
 
         if (data.imageClicked){
+            Log.d(TAG, "bind: "+data.imagePath)
             Glide.with(itemView)
                 .load(data.imagePath)
                 .diskCacheStrategy(DiskCacheStrategy.NONE)
@@ -52,7 +58,6 @@ class OverlaysHolder(
         }
 
         binding?.flOverlay?.setOnClickListener {
-            val s = ""
             listener?.onItemClick(
                 it,
                 adapterPosition,

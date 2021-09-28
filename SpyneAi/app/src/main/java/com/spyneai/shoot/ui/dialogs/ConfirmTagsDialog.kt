@@ -120,7 +120,7 @@ class ConfirmTagsDialog : BaseDialogFragment<ShootViewModel, DialogConfirmTagsBi
                             viewModel.isCameraButtonClickable = false
                             dismiss()
                         } else {
-                            viewModel.shootNumber.value = viewModel.shootNumber.value!! + 1
+                            viewModel.shootNumber.value = viewModel.shootList.value?.size
                             dismiss()
                         }
                     }
@@ -163,7 +163,6 @@ class ConfirmTagsDialog : BaseDialogFragment<ShootViewModel, DialogConfirmTagsBi
                 }
             }
         }
-
 
         val uri = viewModel.shootData.value?.capturedImage
 

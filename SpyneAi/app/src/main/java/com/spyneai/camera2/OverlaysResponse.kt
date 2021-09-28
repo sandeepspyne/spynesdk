@@ -23,6 +23,7 @@ data class OverlaysResponse(
         val updated_at: String,
         var isSelected : Boolean = false,
         var imageClicked : Boolean = false,
-        var imagePath : String
+        var imagePath : String,
+        var sequenceNumber : Int
     )
 }

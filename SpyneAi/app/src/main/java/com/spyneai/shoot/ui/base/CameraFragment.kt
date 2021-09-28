@@ -699,11 +699,7 @@ class CameraFragment : BaseFragment<ShootViewModel, FragmentCameraBinding>(), Pi
                 }
             }
         } else {
-            filename += if (viewModel.shootList.value == null)
-                viewModel.categoryDetails.value?.imageType + "_1"
-            else {
-                viewModel.getFileName()
-            }
+            filename += viewModel.getFileName()
         }
 
         Log.d(TAG, "takePhoto: "+filename)
@@ -1297,17 +1293,30 @@ class CameraFragment : BaseFragment<ShootViewModel, FragmentCameraBinding>(), Pi
             sequenceNumber = viewModel.getSequenceNumber()
         }
 
-        viewModel.shootList.value!!.add(
-            ShootData(
-                capturedImage,
-                viewModel.projectId.value!!,
-                viewModel.sku.value?.skuId!!,
-                viewModel.categoryDetails.value?.imageType!!,
-                Utilities.getPreference(BaseApplication.getContext(), AppConstants.AUTH_KEY).toString(),
-                sequenceNumber,
-                cameraAngle
-            )
+        val s = ""
+
+        val shootData = ShootData(
+            capturedImage,
+            viewModel.projectId.value!!,
+            viewModel.sku.value?.skuId!!,
+            viewModel.categoryDetails.value?.imageType!!,
+            Utilities.getPreference(BaseApplication.getContext(), AppConstants.AUTH_KEY).toString(),
+            sequenceNumber,
+            cameraAngle
         )
+
+        Log.d(TAG, "addShootItem: "+sequenceNumber)
+
+        val item = viewModel.shootList.value!!.firstOrNull {
+            it.sequence == sequenceNumber
+        }
+
+        if (item != null){
+            item.capturedImage = capturedImage
+            item.angle = cameraAngle
+        }else {
+            viewModel.shootList.value!!.add(shootData)
+        }
 
         viewModel.shootList.value = viewModel.shootList.value
 

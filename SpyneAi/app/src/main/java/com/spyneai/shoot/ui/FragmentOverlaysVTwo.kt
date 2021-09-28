@@ -76,7 +76,6 @@ class FragmentOverlaysVTwo : BaseFragment<ShootViewModel, FragmentOverlaysV2Bind
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
         shoot("onViewCreated called(overlay fragment)")
 
         //observe new image clicked
@@ -85,9 +84,11 @@ class FragmentOverlaysVTwo : BaseFragment<ShootViewModel, FragmentOverlaysV2Bind
                 if (viewModel.showConfirmReshootDialog.value == true && !it.isNullOrEmpty()) {
                     shoot("confirm reshoot dialog called")
                     shoot("shootList sine(no. of images)- " + it.size)
-                    showImageConfirmDialog(it.get(it.size - 1))
+                    val element = viewModel.getCurrentShoot()
+                    showImageConfirmDialog(element!!)
                 }
             } catch (e: Exception) {
+                Log.d(TAG, "onViewCreated: "+e.localizedMessage)
                 e.printStackTrace()
             }
         })
@@ -133,31 +134,41 @@ class FragmentOverlaysVTwo : BaseFragment<ShootViewModel, FragmentOverlaysV2Bind
 
         viewModel.onImageConfirmed.observe(viewLifecycleOwner,{
             if (viewModel.shootList.value != null){
-                val overlayRes = (viewModel.overlaysResponse.value as Resource.Success).value
-
                 val list = overlaysAdapter.listItems as List<OverlaysResponse.Data>
 
-                val element = list.firstOrNull {
-                    it.isSelected
-                }
+                val position = viewModel.sequence
 
-                if (element != null){
-                    val position = list.indexOf(element)
+                list[position].isSelected = false
+                list[position].imageClicked = true
+                list[position].imagePath = viewModel.getCurrentShoot()!!.capturedImage
 
-                    list[position].isSelected = false
-                    list[position].imageClicked = true
-                    list[position].imagePath = viewModel.shootList.value!![viewModel.shootList.value!!.size.minus(1)].capturedImage
+                Log.d(TAG, "onViewCreated: "+position)
+                Log.d(TAG, "onViewCreated: "+list[position].imagePath)
 
-                    Log.d(TAG, "onViewCreated: "+position)
-                    Log.d(TAG, "onViewCreated: "+list[position].imagePath)
-
-                    if (position != list.size.minus(1))
-                        list[position.plus(1)].isSelected = true
+                if (position != list.size.minus(1)){
+                    list[position.plus(1)].isSelected = true
+                    viewModel.sequence = position.plus(1)
 
                     overlaysAdapter.notifyItemChanged(position)
                     overlaysAdapter.notifyItemChanged(position.plus(1))
                     binding.rvSubcategories.scrollToPosition(position)
+
+                }else {
+                    val element = list.firstOrNull {
+                        !it.isSelected
+                    }
+
+                    if (element != null){
+                        element?.isSelected = true
+                        viewModel.sequence = element?.sequenceNumber!!
+                        overlaysAdapter.notifyItemChanged(viewModel.sequence)
+                        binding.rvSubcategories.scrollToPosition(viewModel.sequence)
+
+                        Log.d(TAG, "onItemClick: "+viewModel.sequence)
+                    }
                 }
+
+
             }
         })
     }
@@ -364,7 +375,7 @@ class FragmentOverlaysVTwo : BaseFragment<ShootViewModel, FragmentOverlaysV2Bind
 
         viewModel.shootNumber.observe(viewLifecycleOwner, {
             binding.tvShoot?.text =
-                "Angles ${viewModel.shootNumber.value!! + 1}/${viewModel.getSelectedAngles(getString(
+                "Angles ${viewModel.sequence.plus(1)}/${viewModel.getSelectedAngles(getString(
                     R.string.app_name))}"
 
             viewModel.overlaysResponse.observe(viewLifecycleOwner, {
@@ -781,7 +792,6 @@ class FragmentOverlaysVTwo : BaseFragment<ShootViewModel, FragmentOverlaysV2Bind
                 shootDimensions?.overlayWidth = view.width
                 shootDimensions?.overlayHeight = view.height
 
-
                 viewModel.shootDimensions.value = shootDimensions
             }
         })
@@ -841,6 +851,11 @@ class FragmentOverlaysVTwo : BaseFragment<ShootViewModel, FragmentOverlaysV2Bind
         when(data){
             is OverlaysResponse.Data -> {
 
+                if (data.imageClicked){
+                    ReclickDialog().show(requireActivity().supportFragmentManager,"ReclickDialog")
+                }
+
+                viewModel.sequence = position
                 val list = overlaysAdapter.listItems as List<OverlaysResponse.Data>
 
                 val element = list.firstOrNull {

@@ -362,14 +362,16 @@ class ShootViewModel : ViewModel() {
     }
 
 
+
+
     fun getFileName(): String {
-        val overlayRes = (overlaysResponse.value as Resource.Success).value
-        val size = shootList.value!!.size.plus(1)
+//        val overlayRes = (overlaysResponse.value as Resource.Success).value
+//        val size = shootList.value!!.size.plus(1)
         val list = shootList.value
 
         return when (categoryDetails.value?.imageType) {
             "Exterior" -> {
-                categoryDetails.value?.imageType!! + "_" + size
+                categoryDetails.value?.imageType!! + "_" + sequence.plus(1)
             }
             "Interior" -> {
                 val interiorList = list?.filter {
@@ -417,10 +419,8 @@ class ShootViewModel : ViewModel() {
     }
 
     fun getSequenceNumber(): Int {
-        val overlayRes = (overlaysResponse.value as Resource.Success).value
-
         if (categoryDetails.value?.imageType == "Exterior")
-            return overlayRes.data.indexOf(selectedOverlay).plus(1)
+            return sequence.plus(1)
         else
             return shootList.value!!.size.plus(1)
     }
@@ -441,6 +441,7 @@ class ShootViewModel : ViewModel() {
     }
 
 
+    var sequence = 0
     var selectedOverlay : OverlaysResponse.Data? = null
     val getSubCategories = MutableLiveData<Boolean>()
     val selectAngles = MutableLiveData<Boolean>()
@@ -458,6 +459,10 @@ class ShootViewModel : ViewModel() {
         if (isProjectCreated.value == true)
             getSubCategories.value = true
 
+    }
+
+    fun getCurrentShoot() = shootList.value?.first {
+        it.sequence == sequence.plus(1)
     }
 
 }
