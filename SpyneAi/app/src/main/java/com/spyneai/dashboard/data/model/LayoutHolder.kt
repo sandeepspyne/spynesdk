@@ -6,5 +6,6 @@ import com.spyneai.dashboard.response.NewCategoriesResponse
 class LayoutHolder {
     companion object{
         var data : List<NewCategoriesResponse.Data>? = null
+        var categoryPosition = 0
     }
 }

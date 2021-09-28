@@ -57,7 +57,7 @@ class MyOngoingProjectAdapter(
 
 
 
-        if (getProjectList[position].categoryId == getProjectList[position].subCategoryId) {
+        if (getProjectList[position].categoryId == AppConstants.CARS_CATEGORY_ID && (getProjectList[position].categoryId == getProjectList[position].subCategoryId)) {
             holder.llThreeSixty.visibility = View.VISIBLE
             holder.tvCategory.text = "Automobiles"
         } else {
@@ -123,7 +123,7 @@ class MyOngoingProjectAdapter(
 
         try {
             if (getProjectList[position].sku[0].images.isNullOrEmpty()) {
-                if (getProjectList[position].categoryId == getProjectList[position].subCategoryId){
+                if (getProjectList[position].categoryId == AppConstants.CARS_CATEGORY_ID && (getProjectList[position].categoryId == getProjectList[position].subCategoryId)){
                     Glide.with(context)
                         .load(R.drawable.three_sixty_thumbnail)
                         .into(holder.ivThumbnail)
@@ -134,7 +134,7 @@ class MyOngoingProjectAdapter(
                 }
             }else {
                 if (getProjectList[position].sku[0].images[0].input_lres == null){
-                    if (getProjectList[position].categoryId == getProjectList[position].subCategoryId){
+                    if (getProjectList[position].categoryId == AppConstants.CARS_CATEGORY_ID && (getProjectList[position].categoryId == getProjectList[position].subCategoryId)){
                         Glide.with(context)
                             .load(R.drawable.three_sixty_thumbnail)
                             .into(holder.ivThumbnail)

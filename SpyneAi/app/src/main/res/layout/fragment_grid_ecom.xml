@@ -11,7 +11,7 @@
         android:id="@+id/my_toolbar"
         android:layout_width="match_parent"
         android:layout_height="?attr/actionBarSize"
-        android:background="?attr/colorPrimary"
+        android:background="@null"
         android:elevation="@dimen/dp_5"
         android:backgroundTint="@color/black"
         android:theme="@style/ThemeOverlay.AppCompat.Light"
@@ -38,14 +38,14 @@
                 android:layout_centerInParent="true"
                 android:background="@drawable/bg_edit"
                 android:fontFamily="@font/medium"
-                android:maxLines="1"
                 android:maxLength="20"
-                tools:text="sku-name"
-                android:padding="@dimen/dp_5"
+                android:maxLines="1"
+                android:padding="@dimen/dp_8"
                 android:textColor="@color/white"
                 android:textColorHint="@color/white"
                 android:textSize="@dimen/sp_13"
-                android:visibility="invisible"/>
+                android:visibility="invisible"
+                tools:text="sku-name" />
 
             <ImageView
                 android:layout_width="wrap_content"

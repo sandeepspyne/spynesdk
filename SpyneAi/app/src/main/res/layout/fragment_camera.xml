@@ -15,37 +15,42 @@
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toTopOf="parent" >
 
-        <LinearLayout
+
+        <TextView
+            android:id="@+id/tvAngleValue"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:id="@+id/llSkip"
+            android:background="@drawable/bg_gyro_in"
+            android:fontFamily="@font/poppins_bold"
+            android:maxLines="1"
+            android:maxLength="5"
+            tools:text="Angle"
             android:visibility="invisible"
-            android:layout_alignParentRight="true">
+            android:layout_marginRight="@dimen/dp_15"
+            android:layout_centerInParent="true"
+            android:layout_alignParentRight="true"
+            android:padding="@dimen/dp_8"
+            android:textColor="@color/white"
+            android:textSize="@dimen/sp_13"
+        />
 
-            <TextView
-                android:id="@+id/tvSkipShoot"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:gravity="center"
-                android:layout_gravity="center"
-                android:drawablePadding="@dimen/dp_5"
-                android:fontFamily="@font/bold"
-                android:text="@string/skip"
-                android:textColor="@color/primary"
-                android:textSize="@dimen/sp_16"
-                />
+        <TextView
+            android:id="@+id/tvAngleRed"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_centerInParent="true"
+            android:layout_marginRight="@dimen/dp_15"
+            android:background="@drawable/bg_gyro_error"
+            android:fontFamily="@font/poppins_bold"
+            android:maxLength="5"
+            android:maxLines="1"
+            android:padding="@dimen/dp_8"
+            android:textColor="@color/white"
+            android:textSize="@dimen/sp_13"
+            android:visibility="invisible"
+            tools:text="45" />
 
-            <ImageView
-                android:layout_width="@dimen/dp_15"
-                android:layout_height="@dimen/dp_15"
-                android:src="@drawable/skip"
-                android:id="@+id/ivSkip"
-                android:layout_gravity="center"
-                android:layout_marginLeft="@dimen/dp_2"
-                app:tint="@color/primary" />
-
-        </LinearLayout>
 
 
     </RelativeLayout>
@@ -129,6 +134,64 @@
         </LinearLayout>
     </LinearLayout>
 
+
+    <com.airbnb.lottie.LottieAnimationView
+        android:id="@+id/lottieUpArrow"
+        android:layout_width="55dp"
+        android:layout_height="55dp"
+        android:visibility="invisible"
+        android:layout_alignParentRight="true"
+        app:lottie_autoPlay="true"
+        app:lottie_rawRes="@raw/down_arrow"
+        app:lottie_loop="true"
+android:rotation="180"
+        app:layout_constraintStart_toStartOf="@+id/flLevelIndicator"
+        app:layout_constraintEnd_toEndOf="@+id/flLevelIndicator"
+        app:layout_constraintTop_toTopOf="@+id/flLevelIndicator"/>
+
+
+    <TextView
+        android:id="@+id/tvUpcomingAngle1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        tools:text="90"
+        android:visibility="invisible"
+        android:layout_gravity="center"
+        android:fontFamily="@font/bold"
+        android:textColor="@color/gyro_error_level"
+        android:textSize="@dimen/dp_20"
+        app:layout_constraintStart_toStartOf="@+id/flLevelIndicator"
+        app:layout_constraintEnd_toEndOf="@+id/flLevelIndicator"
+        app:layout_constraintTop_toBottomOf="@+id/lottieUpArrow" />
+
+    <com.airbnb.lottie.LottieAnimationView
+        android:id="@+id/lottieDownArrow"
+        android:layout_width="55dp"
+        android:layout_height="55dp"
+        android:visibility="invisible"
+        android:layout_alignParentRight="true"
+        app:lottie_autoPlay="true"
+        app:lottie_rawRes="@raw/down_arrow"
+        app:lottie_loop="true"
+
+        app:layout_constraintStart_toStartOf="@+id/flLevelIndicator"
+        app:layout_constraintEnd_toEndOf="@+id/flLevelIndicator"
+        app:layout_constraintBottom_toBottomOf="@+id/flLevelIndicator"/>
+
+    <TextView
+        android:id="@+id/tvUpcomingAngle2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        tools:text="90"
+        android:visibility="invisible"
+        android:layout_gravity="center"
+        android:fontFamily="@font/bold"
+        android:textColor="@color/gyro_error_level"
+        android:textSize="@dimen/dp_20"
+        app:layout_constraintStart_toStartOf="@+id/flLevelIndicator"
+        app:layout_constraintEnd_toEndOf="@+id/flLevelIndicator"
+        app:layout_constraintBottom_toTopOf="@+id/lottieDownArrow" />
+
     <FrameLayout
         android:layout_width="0dp"
         android:layout_height="0dp"
@@ -159,14 +222,16 @@
             android:layout_height="@dimen/dp_100"
             android:layout_gravity="center"
             android:id="@+id/ivGryroRing"
+            android:visibility="gone"
             android:src="@drawable/ic_gyro_ring"/>
 
+
         <TextView
-            android:layout_width="@dimen/dp_50"
-            android:layout_height="0.5dp"
+            android:layout_width="@dimen/dp_80"
+            android:layout_height="1dp"
             android:layout_gravity="center"
             android:id="@+id/tvCenter"
-            android:background="@color/black"/>
+            android:background="@color/white"/>
 
         <ImageView
             android:layout_width="@dimen/dp_30"

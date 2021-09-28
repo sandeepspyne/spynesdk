@@ -208,7 +208,7 @@ class SelectBackgroundFragment : BaseFragment<ProcessViewModel, FragmentSelectBa
                         .error(R.mipmap.defaults) // show error drawable if the image is not a gif
                         .into(binding.imageViewGif)
 
-                    backgroundSelect = response.data[0].imageId.toString()
+                    backgroundSelect = response.data[0].imageId
 
                     carBackgroundGifList.clear()
                     for (element in response.data){
@@ -238,7 +238,7 @@ class SelectBackgroundFragment : BaseFragment<ProcessViewModel, FragmentSelectBa
             object : NewCarBackgroundAdapter.BtnClickListener {
                 override fun onBtnClick(position: Int) {
                     //if (position<carBackgroundList.size)
-                    backgroundSelect = carBackgroundGifList[position].imageId.toString()
+                    backgroundSelect = carBackgroundGifList[position].imageId
                     carbackgroundsAdapter.notifyDataSetChanged()
 
                     Glide.with(requireContext()) // replace with 'this' if it's in activity

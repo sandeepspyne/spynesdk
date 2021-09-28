@@ -38,6 +38,7 @@ import com.spyneai.captureFailureEvent
 import com.spyneai.dashboard.adapters.CompletedDashboardAdapter
 import com.spyneai.dashboard.adapters.OngoingDashboardAdapter
 import com.spyneai.dashboard.data.DashboardViewModel
+import com.spyneai.dashboard.data.model.LayoutHolder
 import com.spyneai.dashboard.response.NewCategoriesResponse
 import com.spyneai.databinding.HomeDashboardFragmentBinding
 import com.spyneai.needs.AppConstants
@@ -283,6 +284,10 @@ class HomeDashboardFragment :
                         it.value.data as ArrayList<NewCategoriesResponse.Data>,
                         object : CategoriesDashboardAdapter.BtnClickListener {
                             override fun onBtnClick(position: Int) {
+
+
+                                LayoutHolder.data = it.value.data
+                                LayoutHolder.categoryPosition = position
 
                                 Utilities.savePrefrence(requireContext(), AppConstants.CATEGORY_ID, it.value.data[position].prod_cat_id)
                                 Utilities.savePrefrence(requireContext(), AppConstants.CATEGORY_NAME, it.value.data[position].prod_cat_name)

@@ -54,7 +54,12 @@ class NewCarBackgroundAdapter(val context: Context,
 
         val list: List<String> = channelList[position].bgName.trim().split("\\s+".toRegex())
 
-        viewHolder.tvCarBgName.text = list[0]+"\n"+list[1]
+        if (list.size == 1)
+            viewHolder.tvCarBgName.text = list[0]
+        else
+            viewHolder.tvCarBgName.text = list[0]+"\n"+list[1]
+
+
 
         mClickListener = btnlistener
 /*

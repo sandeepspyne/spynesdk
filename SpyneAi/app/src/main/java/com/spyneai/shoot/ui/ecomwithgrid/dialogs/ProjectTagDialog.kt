@@ -1,3 +1,8 @@
+
+
+
+
+
 package com.spyneai.shoot.ui.ecomwithgrid.dialogs
 
 import android.app.Dialog
@@ -5,6 +10,8 @@ import android.content.res.Resources
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
+import android.text.Editable
+import android.text.TextWatcher
 import android.util.TypedValue
 import android.view.LayoutInflater
 import android.view.View
@@ -12,7 +19,12 @@ import android.view.ViewGroup
 import android.view.WindowManager
 import android.widget.EditText
 import android.widget.LinearLayout
+import androidx.core.view.children
+import androidx.core.view.forEach
+import androidx.core.view.forEachIndexed
+import androidx.core.widget.addTextChangedListener
 import androidx.viewbinding.ViewBinding
+import com.google.android.material.chip.Chip
 import com.posthog.android.Properties
 import com.spyneai.R
 import com.spyneai.base.BaseDialogFragment
@@ -21,6 +33,7 @@ import com.spyneai.captureEvent
 import com.spyneai.captureFailureEvent
 import com.spyneai.dashboard.data.model.LayoutHolder
 import com.spyneai.dashboard.ui.handleApiError
+import com.spyneai.databinding.ItemProjectChipedittextBinding
 import com.spyneai.databinding.ItemProjectEdittextBinding
 import com.spyneai.databinding.ProjectTagDialogBinding
 import com.spyneai.needs.AppConstants
@@ -30,6 +43,8 @@ import com.spyneai.shoot.data.ShootViewModel
 import com.spyneai.shoot.data.model.Project
 import com.spyneai.shoot.data.model.Sku
 import com.spyneai.shoot.utils.log
+import kotlinx.android.synthetic.main.item_project_chipedittext.view.*
+import org.json.JSONArray
 import org.json.JSONObject
 
 class ProjectTagDialog : BaseDialogFragment<ShootViewModel, ProjectTagDialogBinding>() {
@@ -110,8 +125,8 @@ class ProjectTagDialog : BaseDialogFragment<ShootViewModel, ProjectTagDialogBind
         val layout = data!![0].dynamic_layout.project_dialog
 
         layout.forEach {
-            when(it.field_type){
-                "edit_text" -> {
+            when(it.field_name){
+                "Restaurant ID", "Restaurant Name" -> {
                     val layout = inflator.inflate(R.layout.item_project_edittext, null)
                     val itemBinding = ItemProjectEdittextBinding.bind(layout)
 //                    itemBinding.et.hint = it.hint
@@ -133,12 +148,81 @@ class ProjectTagDialog : BaseDialogFragment<ShootViewModel, ProjectTagDialogBind
                     binding.llContainer.addView(layout)
                     bindingList.add(itemBinding)
                 }
+                "Child Restaurant ID" -> {
+                    val layout = inflator.inflate(R.layout.item_project_chipedittext, null)
+                    val itemBinding = ItemProjectChipedittextBinding.bind(layout)
+//                    itemBinding.et.hint = it.hint
+                    itemBinding.llProjectName.hint = it.hint
+
+                    itemBinding.et.addTextChangedListener(object : TextWatcher {
+                        override fun afterTextChanged(s: Editable?) {
+                        }
+
+                        override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
+                        }
+
+                        override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+                            if (s != null && s.isEmpty()) {
+                                return
+                            }
+                            if (s?.last() == ',' || s?.last() == ' ' ) {
+                                val childRID = s.toString().substringBefore(",")
+                                addChip(itemBinding, childRID)
+                                itemBinding.et.text!!.clear()
+
+//                            mainTagAutoCompleteTextView.text = null
+                                // mainTagAutoCompleteTextView.removeTextChangedListener(this)
+                            }
+                        }
+                    })
+
+                    val dip = 10f
+                    val r: Resources = resources
+                    val px = TypedValue.applyDimension(
+                        TypedValue.COMPLEX_UNIT_DIP,
+                        dip,
+                        r.displayMetrics
+                    )
+                    val params = LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT,LinearLayout.LayoutParams.WRAP_CONTENT)
+                    params.topMargin = px.toInt()
+
+
+
+                    layout.layoutParams = params
+
+                    binding.llContainer.addView(layout)
+                    bindingList.add(itemBinding)
+                }
             }
         }
     }
 
+    private fun addChip(binding: ItemProjectChipedittextBinding, text: String){
+        binding.scrollView.visibility = View.VISIBLE
+        val chip = Chip(requireContext())
+        chip.text = text
+        chip.isChipIconVisible = false
+        chip.isCloseIconVisible = true
+        chip.isClickable = true
+        if (chip.text.length>1)
+        binding.chipGroup.addView(chip as View)
+        chip.setOnCloseIconClickListener {
+            binding.chipGroup.removeView(chip as View)
+            if (binding.chipGroup.childCount == 0)
+                binding.scrollView.visibility = View.GONE
+        }
+    }
+
     private fun isValid() : Boolean {
-       var isValid = true
+        var isValid = true
+
+        try {
+            if (LayoutHolder.data!![LayoutHolder.categoryPosition].dynamic_layout.project_dialog.isNullOrEmpty())
+                return isValid
+        }catch (e: Exception){
+            return isValid
+        }
+
 
         val layout = LayoutHolder.data!![0].dynamic_layout.project_dialog
 
@@ -163,6 +247,33 @@ class ProjectTagDialog : BaseDialogFragment<ShootViewModel, ProjectTagDialogBind
                     }
                     else{
                         data.put(layout[index].field_id,it.et.text.toString())
+                    }
+                }
+                is ItemProjectChipedittextBinding -> {
+                    if (layout[index].is_required){
+                        if (it.et.text.toString().isEmpty()){
+                            requiredError(it.et, layout[index].field_name)
+                            return !isValid
+                        }
+                        else {
+
+                            var array = JSONArray()
+
+                            it.chipGroup.forEachIndexed { index, view ->
+                                val chip = it.chipGroup.getChildAt(index) as Chip
+                                array.put(chip.text)
+                            }
+                            data.put(layout[index].field_id, array)
+                        }
+                    }
+                    else{
+                        var array = JSONArray()
+
+                        it.chipGroup.forEachIndexed { index, view ->
+                            val chip = it.chipGroup.getChildAt(index) as Chip
+                            array.put(chip.text)
+                        }
+                        data.put(layout[index].field_id, array)
                     }
                 }
                 else -> {
