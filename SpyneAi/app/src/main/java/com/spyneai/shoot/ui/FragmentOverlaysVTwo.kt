@@ -141,6 +141,7 @@ class FragmentOverlaysVTwo : BaseFragment<ShootViewModel, FragmentOverlaysV2Bind
                 list[position].isSelected = false
                 list[position].imageClicked = true
                 list[position].imagePath = viewModel.getCurrentShoot()!!.capturedImage
+                overlaysAdapter.notifyItemChanged(position)
 
                 Log.d(TAG, "onViewCreated: "+position)
                 Log.d(TAG, "onViewCreated: "+list[position].imagePath)
@@ -149,7 +150,6 @@ class FragmentOverlaysVTwo : BaseFragment<ShootViewModel, FragmentOverlaysV2Bind
                     list[position.plus(1)].isSelected = true
                     viewModel.sequence = position.plus(1)
 
-                    overlaysAdapter.notifyItemChanged(position)
                     overlaysAdapter.notifyItemChanged(position.plus(1))
                     binding.rvSubcategories.scrollToPosition(position)
 
