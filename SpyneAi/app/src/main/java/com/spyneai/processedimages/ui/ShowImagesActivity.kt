@@ -91,6 +91,7 @@ class ShowImagesActivity : AppCompatActivity(),View.OnTouchListener,View.OnClick
         setContentView(R.layout.activity_show_images)
 
         setLocale()
+
         AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
 
         frontFramesList = ArrayList()
@@ -603,9 +604,6 @@ class ShowImagesActivity : AppCompatActivity(),View.OnTouchListener,View.OnClick
             return customView
         }
     }
-
-
-
 
     override fun onTouch(v: View?, event: MotionEvent?): Boolean {
 
