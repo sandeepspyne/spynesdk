@@ -126,6 +126,14 @@ class ShootRepository : BaseRepository() {
         clipperApi.skuProcessStateWithBackgroundId(auth_key, project_id, background_id)
     }
 
+    suspend fun skuProcessStateWithShadowOption(
+        auth_key: String,
+        project_id:  String,
+        shadow:  String
+    ) = safeApiCall{
+        clipperApi.skuProcessStateWithShadowOption(auth_key, project_id, shadow)
+    }
+
 
     suspend fun sendFilesData(
         authKey: String,

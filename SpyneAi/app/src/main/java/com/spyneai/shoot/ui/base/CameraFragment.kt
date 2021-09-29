@@ -348,6 +348,7 @@ class CameraFragment : BaseFragment<ShootViewModel, FragmentCameraBinding>(), Pi
             AppConstants.SWIGGY,
             AppConstants.SWIGGYINSTAMART,
             AppConstants.BATA,
+                AppConstants.EBAY,
             AppConstants.FLIPKART_GROCERY -> {
                 if (binding.flLevelIndicator.visibility == View.VISIBLE) {
                     if (isGyroOnCorrectAngle)
@@ -1087,7 +1088,7 @@ class CameraFragment : BaseFragment<ShootViewModel, FragmentCameraBinding>(), Pi
                      }
                  }
              }*/
-            AppConstants.SWIGGY -> {
+            AppConstants.SWIGGY, AppConstants.EBAY -> {
 
                 // angle name
                 if (pitch.roundToInt() == 0 || (pitch.roundToInt() <= -0 && pitch.roundToInt() >= -3))

@@ -126,6 +126,13 @@ class ProjectTagDialog : BaseDialogFragment<ShootViewModel, ProjectTagDialogBind
         if (data.isNullOrEmpty()) {
             return
         }
+        when (getString(R.string.app_name)) {
+            AppConstants.SWIGGY -> {
+
+            } else -> {
+                return
+            }
+        }
 
         val layout = data!![LayoutHolder.categoryPosition].dynamic_layout.project_dialog
 

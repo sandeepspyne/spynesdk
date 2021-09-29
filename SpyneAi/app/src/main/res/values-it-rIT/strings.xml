@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name" translatable="false">Swiggy</string>
+    <string name="app_name" translatable="false">Ebay</string>
 
     <string name="hello_blank_fragment">Ciao frammento vuoto</string>
     <string name="hello">Benvenuti!</string>

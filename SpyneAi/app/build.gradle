@@ -211,6 +211,13 @@ android {
             versionCode 3
             versionName "1.2"
         }
+
+        ebay {
+            dimension 'version'
+            applicationId "com.spyneai.ebay"
+            versionCode 1
+            versionName "1.0"
+        }
     }
     sourceSets {
         sweepCars {

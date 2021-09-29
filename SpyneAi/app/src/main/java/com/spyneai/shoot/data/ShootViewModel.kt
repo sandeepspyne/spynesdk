@@ -160,6 +160,12 @@ class ShootViewModel : ViewModel() {
         get() = _skuProcessStateWithBgResponse
 
 
+    private val _skuProcessStateWithShadowResponse: MutableLiveData<Resource<SkuProcessStateResponse>> =
+        MutableLiveData()
+    val skuProcessStateWithShadowResponse: LiveData<Resource<SkuProcessStateResponse>>
+        get() = _skuProcessStateWithShadowResponse
+
+
     fun getSubCategories(
         authKey: String, prodId: String
     ) = viewModelScope.launch {
@@ -290,6 +296,13 @@ class ShootViewModel : ViewModel() {
     ) = viewModelScope.launch {
         _skuProcessStateWithBgResponse.value = Resource.Loading
         _skuProcessStateWithBgResponse.value = repository.skuProcessStateWithBackgroundId(auth_key, project_id, background_id)
+    }
+
+    fun skuProcessStateWithShadowOption(
+        auth_key: String, project_id: String, shadow: String
+    ) = viewModelScope.launch {
+        _skuProcessStateWithShadowResponse.value = Resource.Loading
+        _skuProcessStateWithShadowResponse.value = repository.skuProcessStateWithShadowOption(auth_key, project_id, shadow)
     }
 
 
