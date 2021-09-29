@@ -4,6 +4,9 @@ import android.content.Context
 import android.database.sqlite.SQLiteDatabase
 import android.database.sqlite.SQLiteOpenHelper
 import android.provider.BaseColumns
+import com.posthog.android.Properties
+import com.spyneai.BaseApplication
+import com.spyneai.captureEvent
 
 class DBHelper (context: Context) : SQLiteOpenHelper(context, DATABASE_NAME, null, DATABASE_VERSION) {
 
@@ -18,7 +21,19 @@ class DBHelper (context: Context) : SQLiteOpenHelper(context, DATABASE_NAME, nul
     override fun onUpgrade(db: SQLiteDatabase, oldVersion: Int, newVersion: Int) {
         // This database is only a cache for online data, so its upgrade policy is
         // to simply to discard the data and start over
+        BaseApplication.getContext().captureEvent(
+            "DB_VERSION",
+            Properties()
+                .putValue("old_version",oldVersion)
+                .putValue("new_version",newVersion)
+        )
         if (newVersion == 9){
+//            db.execSQL(SQL_DELETE_PROJECTS)
+//            db.execSQL(SQL_DELETE_ENTRIES)
+//            db.execSQL(SQL_DELETE_IMAGES)
+//            db.execSQL(SQL_DELETE_IMAGE_FILES)
+//            db.execSQL(CREATE_VIDEOS_TABLE)
+
             db.execSQL(DATABASE_ALTER_SKU_TABLE)
             db.execSQL(DATABASE_ALTER_IMAGE_TABLE)
             db.execSQL(DATABASE_ALTER_SKU)
@@ -27,6 +42,7 @@ class DBHelper (context: Context) : SQLiteOpenHelper(context, DATABASE_NAME, nul
             db.execSQL(SQL_DELETE_ENTRIES)
             db.execSQL(SQL_DELETE_IMAGES)
             db.execSQL(SQL_DELETE_IMAGE_FILES)
+            db.execSQL(CREATE_VIDEOS_TABLE)
         }
     }
 
@@ -36,7 +52,7 @@ class DBHelper (context: Context) : SQLiteOpenHelper(context, DATABASE_NAME, nul
 
     companion object {
         // If you change the database schema, you must increment the database version.
-        const val DATABASE_VERSION = 9
+        const val DATABASE_VERSION = 11
         const val DATABASE_NAME = "Shoot.db"
 
         private val DATABASE_ALTER_SKU_TABLE = ("ALTER TABLE "
