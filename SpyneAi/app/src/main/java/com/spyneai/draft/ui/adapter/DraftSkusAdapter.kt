@@ -89,7 +89,7 @@ class DraftSkusAdapter (
                 skuList[position].sku_id
             )
 
-            if (skuList[position].categoryId == skuList[position].subCategoryId){
+            if (skuList[position].categoryId == AppConstants.CARS_CATEGORY_ID && (skuList[position].categoryId == skuList[position].subCategoryId)) {
                 val videoPath = VideoLocalRepository().getVideoPath(skuList[position].sku_id)
 
                 val intent = when{
