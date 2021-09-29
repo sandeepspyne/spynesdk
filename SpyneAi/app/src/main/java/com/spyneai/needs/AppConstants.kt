@@ -1,6 +1,7 @@
 package com.spyneai.needs
 
 object AppConstants {
+    val BASE_URL: String = "http://35.240.170.119/api/"
     val STATUS_PROJECT_NAME: String="STATUS_PROJECT_NAME"
 
     val LOCALE = "LOCALE"
@@ -172,6 +173,6 @@ object AppConstants {
 
     val VIDEO_PATH = "VIDEO_PATH"
 
-    val MINIMUM_VIDEO_DURATION = 30
+    val MINIMUM_VIDEO_DURATION = 2
 
 }
