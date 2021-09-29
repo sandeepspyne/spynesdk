@@ -50,23 +50,34 @@ class ThreeSixtyBackgroundFragment : BaseFragment<ThreeSixtyViewModel, Fragment3
 
         initSelectBackground()
 
-        binding.flShootNow.setOnClickListener{
+       when(getString(R.string.app_name)){
+           AppConstants.OLA_CABS -> {
+               binding.apply {
+                   tvContinueShoot.visibility = View.VISIBLE
+                   llOr.visibility = View.VISIBLE
+                   flShootNow.visibility = View.VISIBLE
+               }
+               binding.flShootNow.setOnClickListener{
 
-            startService()
+                   startService()
 
-            val intent = Intent(requireContext(), ShootActivity::class.java)
+                   val intent = Intent(requireContext(), ShootActivity::class.java)
 
-            intent.apply {
-                putExtra(AppConstants.CATEGORY_NAME, "Automobiles")
-                putExtra(AppConstants.CATEGORY_ID, AppConstants.CARS_CATEGORY_ID)
-                putExtra(AppConstants.PROJECT_ID, viewModel.videoDetails.projectId)
-                putExtra(AppConstants.SKU_ID, viewModel.videoDetails.skuId)
-                putExtra(AppConstants.SKU_NAME, viewModel.videoDetails.skuName)
-                putExtra(AppConstants.FROM_VIDEO, true)
-            }
+                   intent.apply {
+                       putExtra(AppConstants.CATEGORY_NAME, "Automobiles")
+                       putExtra(AppConstants.CATEGORY_ID, AppConstants.CARS_CATEGORY_ID)
+                       putExtra(AppConstants.PROJECT_ID, viewModel.videoDetails.projectId)
+                       putExtra(AppConstants.SKU_ID, viewModel.videoDetails.skuId)
+                       putExtra(AppConstants.SKU_NAME, viewModel.videoDetails.skuName)
+                       putExtra(AppConstants.FROM_VIDEO, true)
+                   }
 
-            startActivity(intent)
-        }
+                   startActivity(intent)
+               }
+           }else -> {
+
+           }
+       }
 
         binding.btnContinue.setOnClickListener {
 
