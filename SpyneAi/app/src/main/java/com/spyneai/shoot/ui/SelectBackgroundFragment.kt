@@ -46,7 +46,6 @@ class SelectBackgroundFragment : BaseFragment<ProcessViewModel, FragmentSelectBa
         initSelectBackground()
 
 
-
         binding.ivBackGif.setOnClickListener {
             requireActivity().onBackPressed()
         }
@@ -84,6 +83,13 @@ class SelectBackgroundFragment : BaseFragment<ProcessViewModel, FragmentSelectBa
             }
         }
 
+        if (viewModel.fromVideo){
+            binding.cb360.visibility = View.GONE
+            binding.tv360.visibility = View.GONE
+            binding.tvGenerateGif.text = getString(R.string.generate_output)
+        }
+
+
 
         binding.tvGenerateGif.setOnClickListener {
             //update total frame if user clicked interior and misc
@@ -110,7 +116,7 @@ class SelectBackgroundFragment : BaseFragment<ProcessViewModel, FragmentSelectBa
                     processFoodImage()
             Utilities.showProgressDialog(requireContext())
                 }else -> {
-                if (binding.cb360.isChecked){
+                if (binding.cb360.visibility == View.VISIBLE && binding.cb360.isChecked){
                     viewModel.backgroundSelect = backgroundSelect
                     viewModel.addRegularShootSummaryFragment.value = true
                 }else{
@@ -120,14 +126,12 @@ class SelectBackgroundFragment : BaseFragment<ProcessViewModel, FragmentSelectBa
             }
         }
 
-
         observeProcessSku()
         observeFoodProcess()
     }
 
     private fun processFoodImage() {
         binding.shimmer.startShimmer()
-
 
         viewModel.skuProcessStateWithBackgroundid(
             Utilities.getPreference(requireContext(), AppConstants.AUTH_KEY).toString(),

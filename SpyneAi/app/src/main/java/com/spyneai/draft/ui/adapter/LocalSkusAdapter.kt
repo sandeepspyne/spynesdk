@@ -102,6 +102,10 @@ class LocalSkusAdapter(
                 val intent = when {
                     VideoLocalRepository().getVideoId(skuList[position].skuId!!) != null -> {
                         Intent(context, ShootActivity::class.java)
+                            .apply {
+                                putExtra(AppConstants.FROM_VIDEO,true)
+                                putExtra(AppConstants.TOTAL_FRAME,skuList[position].threeSixtyFrames)
+                            }
                     }
                     videoPath != null && videoPath != "" -> {
                         Intent(context, TrimActivity::class.java)
@@ -166,6 +170,13 @@ class LocalSkusAdapter(
                         )
                     }
 
+                }
+
+                if (skuList[position].threeSixtyFrames != null){
+                    draftIntent.apply {
+                        putExtra(AppConstants.FROM_VIDEO, true)
+                        putExtra(AppConstants.TOTAL_FRAME, skuList[position].threeSixtyFrames)
+                    }
                 }
 
                 context.startActivity(draftIntent)

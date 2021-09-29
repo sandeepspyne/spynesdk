@@ -26,6 +26,7 @@ class ProcessViewModel : ViewModel() {
     private val repository = ProcessRepository()
     private val localRepository = ShootLocalRepository()
 
+    var fromVideo = false
     val exteriorAngles: MutableLiveData<Int> = MutableLiveData()
 
     val sku: MutableLiveData<Sku> = MutableLiveData()

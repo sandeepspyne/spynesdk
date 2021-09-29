@@ -69,6 +69,7 @@ class ThreeSixtyBackgroundFragment : BaseFragment<ThreeSixtyViewModel, Fragment3
                        putExtra(AppConstants.PROJECT_ID, viewModel.videoDetails.projectId)
                        putExtra(AppConstants.SKU_ID, viewModel.videoDetails.skuId)
                        putExtra(AppConstants.SKU_NAME, viewModel.videoDetails.skuName)
+                       putExtra(AppConstants.TOTAL_FRAME, viewModel.videoDetails.frames)
                        putExtra(AppConstants.FROM_VIDEO, true)
                    }
 
