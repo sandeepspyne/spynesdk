@@ -33,6 +33,7 @@ import com.spyneai.base.network.Resource
 import com.spyneai.dashboard.ui.handleApiError
 import com.spyneai.databinding.FragmentBikeImagesBinding
 import com.spyneai.databinding.FragmentProcessedImagesBinding
+import com.spyneai.databinding.ViewImagesBinding
 import com.spyneai.downloadsku.FetchBulkResponseV2
 import com.spyneai.gotoHome
 import com.spyneai.interfaces.APiService
@@ -49,8 +50,6 @@ import com.spyneai.videorecording.fragments.DialogEmbedCode
 import com.spyneai.videorecording.model.TSVParams
 import com.synnapps.carouselview.CarouselView
 import com.synnapps.carouselview.ViewListener
-import kotlinx.android.synthetic.main.activity_show_images.*
-import kotlinx.android.synthetic.main.view_images.view.*
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
 import retrofit2.Call
@@ -92,6 +91,9 @@ class ProcessedImagesFragment : BaseFragment<ProcessedViewModel, FragmentProcess
         super.onViewCreated(view, savedInstanceState)
 
         intent = requireActivity().intent
+
+        viewModel.skuId = intent.getStringExtra(AppConstants.SKU_ID)
+
         frontFramesList = ArrayList()
 
         setBulkImages()
@@ -109,7 +111,7 @@ class ProcessedImagesFragment : BaseFragment<ProcessedViewModel, FragmentProcess
         //checkThreeSixtyInterior()
 
         if (catName.equals("Footwear")) {
-            tvViewGif.visibility = View.GONE
+            binding.tvViewGif.visibility = View.GONE
         }
 
         observeSkuData()
@@ -120,7 +122,11 @@ class ProcessedImagesFragment : BaseFragment<ProcessedViewModel, FragmentProcess
         viewModel.imagesOfSkuRes.observe(viewLifecycleOwner,{
             when(it){
                 is Resource.Success -> {
+                    Utilities.hideProgressDialog()
+
                     var dataList: List<ImagesOfSkuRes.Data> = it.value.data
+
+                    val s = ""
                     for (i in 0..(dataList.size) -1) {
                         if (dataList!![i].image_category.equals("Exterior")) {
                             Category = dataList!![i].image_category
@@ -171,7 +177,7 @@ class ProcessedImagesFragment : BaseFragment<ProcessedViewModel, FragmentProcess
                                 imageListAfter.size.toString()
                             )
 
-                            tvYourEmailIdReplaced.text = "Images"
+                            binding.tvYourEmailIdReplaced.text = "Images"
                             hideData(0)
                         }
 
@@ -217,6 +223,14 @@ class ProcessedImagesFragment : BaseFragment<ProcessedViewModel, FragmentProcess
                             hideData(1)
                         }
                     }
+
+                    //show 360 view
+                    if (intent.getBooleanExtra(AppConstants.IS_360,false))
+                        showThreeSixtyView()
+
+                    showReplacedImagesAdapter.notifyDataSetChanged()
+                    ShowReplacedImagesInteriorAdapter.notifyDataSetChanged()
+                    ShowReplacedImagesFocusedAdapter.notifyDataSetChanged()
                 }
 
                 is Resource.Failure -> {
@@ -230,22 +244,22 @@ class ProcessedImagesFragment : BaseFragment<ProcessedViewModel, FragmentProcess
     private fun hideData(i: Int) {
 
         if (i == 0) {
-            tvYourEmailIdReplaced.visibility = View.VISIBLE
-            tvViewGif.visibility = View.GONE
-            tvInterior.visibility = View.GONE
-            tvFocused.visibility = View.GONE
+            binding.tvYourEmailIdReplaced.visibility = View.VISIBLE
+            binding.tvViewGif.visibility = View.GONE
+            binding.tvInterior.visibility = View.GONE
+            binding.tvFocused.visibility = View.GONE
 //            llDownloads.visibility = View.VISIBLE
         } else {
-            tvYourEmailIdReplaced.visibility = View.GONE
-            tvViewGif.visibility = View.GONE
-            tvInterior.visibility = View.GONE
-            tvFocused.visibility = View.GONE
+            binding.tvYourEmailIdReplaced.visibility = View.GONE
+            binding.tvViewGif.visibility = View.GONE
+            binding.tvInterior.visibility = View.GONE
+            binding.tvFocused.visibility = View.GONE
 //            llDownloads.visibility = View.GONE
         }
     }
 
     private fun setListeners() {
-        tvViewGif.setOnClickListener(View.OnClickListener {
+        binding.tvViewGif.setOnClickListener(View.OnClickListener {
             val intent = Intent(
                 requireContext(),
                 ShowGifActivity::class.java
@@ -253,11 +267,11 @@ class ProcessedImagesFragment : BaseFragment<ProcessedViewModel, FragmentProcess
             startActivity(intent)
         })
 
-        ivBackShowImages.setOnClickListener(View.OnClickListener {
+        binding.ivBackShowImages.setOnClickListener(View.OnClickListener {
             requireActivity().onBackPressed()
         })
 
-        ivHomeShowImages.setOnClickListener(View.OnClickListener {
+        binding.ivHomeShowImages.setOnClickListener(View.OnClickListener {
             requireActivity().gotoHome()
 
             val updateSkuResponseList = ArrayList<UpdateSkuResponse>()
@@ -270,9 +284,9 @@ class ProcessedImagesFragment : BaseFragment<ProcessedViewModel, FragmentProcess
         })
 
         if (getString(R.string.app_name) == AppConstants.SWEEP){
-            tvDownloadFree.visibility = View.GONE
+            binding.tvDownloadFree.visibility = View.GONE
         }else {
-            tvDownloadFree.setOnClickListener {
+            binding.tvDownloadFree.setOnClickListener {
                 Utilities.savePrefrence(requireContext(), AppConstants.DOWNLOAD_TYPE, "watermark")
                 val downloadIntent = Intent(requireContext(), DownloadingActivity::class.java)
                 downloadIntent.putExtra(AppConstants.LIST_WATERMARK, imageListWaterMark)
@@ -283,7 +297,7 @@ class ProcessedImagesFragment : BaseFragment<ProcessedViewModel, FragmentProcess
             }
         }
 
-        llDownloadHdImages.setOnClickListener {
+        binding.llDownloadHdImages.setOnClickListener {
             Utilities.savePrefrence(requireContext(), AppConstants.DOWNLOAD_TYPE, "hd")
             val orderIntent = Intent(requireContext(), OrderSummary2Activity::class.java)
             orderIntent.putExtra(AppConstants.LIST_WATERMARK, imageListWaterMark)
@@ -303,8 +317,8 @@ class ProcessedImagesFragment : BaseFragment<ProcessedViewModel, FragmentProcess
             startActivity(orderIntent)
         }
 
-        ivShare.setOnClickListener(this)
-        ivEmbed.setOnClickListener(this)
+        binding.ivShare.setOnClickListener(this)
+        binding.ivEmbed.setOnClickListener(this)
     }
 
 
@@ -346,7 +360,7 @@ class ProcessedImagesFragment : BaseFragment<ProcessedViewModel, FragmentProcess
                 }
             })
 
-        rvImagesBackgroundRemoved.setLayoutManager(
+        binding.rvImagesBackgroundRemoved.setLayoutManager(
             ScrollingLinearLayoutManager(
                 requireContext(),
                 LinearLayoutManager.VERTICAL,
@@ -354,30 +368,30 @@ class ProcessedImagesFragment : BaseFragment<ProcessedViewModel, FragmentProcess
             )
         )
 
-        rvInteriors.setLayoutManager(
+        binding.rvInteriors.setLayoutManager(
             GridLayoutManager(
                 requireContext(),
                 2
             )
         )
 
-        rvFocused.setLayoutManager(
+        binding.rvFocused.setLayoutManager(
             GridLayoutManager(
                 requireContext(),
                 2
             )
         )
 
-        rvImagesBackgroundRemoved.setAdapter(showReplacedImagesAdapter)
-        rvInteriors.setAdapter(ShowReplacedImagesInteriorAdapter)
-        rvFocused.setAdapter(ShowReplacedImagesFocusedAdapter)
+        binding.rvImagesBackgroundRemoved.setAdapter(showReplacedImagesAdapter)
+        binding.rvInteriors.setAdapter(ShowReplacedImagesInteriorAdapter)
+        binding.rvFocused.setAdapter(ShowReplacedImagesFocusedAdapter)
 
         fetchBulkUpload()
     }
 
     //Fetch bulk data
     private fun fetchBulkUpload() {
-        Utilities.showProgressDialog(requireContext())
+        //Utilities.showProgressDialog(requireContext())
 
         shootId = Utilities.getPreference(requireContext(), AppConstants.SKU_ID)!!
 
@@ -395,14 +409,14 @@ class ProcessedImagesFragment : BaseFragment<ProcessedViewModel, FragmentProcess
     }
 
     private fun showThreeSixtyView() {
-        llThreeSixtyView.visibility = View.VISIBLE
+        binding.llThreeSixtyView.visibility = View.VISIBLE
 
         tsvParamFront = TSVParams()
         tsvParamFront.type = 0
         tsvParamFront.framesList = frontFramesList
         tsvParamFront.mImageIndex = frontFramesList.size / 2
 
-        sv_front.startShimmer()
+        binding.svFront.startShimmer()
 
         preLoadFront(tsvParamFront)
 
@@ -416,12 +430,12 @@ class ProcessedImagesFragment : BaseFragment<ProcessedViewModel, FragmentProcess
                     target: Target<Drawable>?,
                     isFirstResource: Boolean
                 ): Boolean {
-                    iv_front.visibility = View.VISIBLE
-                    sv_front.stopShimmer()
-                    sv_front.visibility = View.GONE
+                    binding.ivFront.visibility = View.VISIBLE
+                    binding.svFront.stopShimmer()
+                    binding.svFront.visibility = View.GONE
 
                     //show images and set listener
-                    cl_front.visibility = View.VISIBLE
+                    binding.clFront.visibility = View.VISIBLE
 
                     return false
                 }
@@ -433,17 +447,17 @@ class ProcessedImagesFragment : BaseFragment<ProcessedViewModel, FragmentProcess
                     dataSource: DataSource?,
                     isFirstResource: Boolean
                 ): Boolean {
-                    iv_front.visibility = View.VISIBLE
-                    sv_front.stopShimmer()
-                    sv_front.visibility = View.GONE
+                    binding.ivFront.visibility = View.VISIBLE
+                    binding.svFront.stopShimmer()
+                    binding.svFront.visibility = View.GONE
 
                     //show images and set listener
-                    cl_front.visibility = View.VISIBLE
+                    binding.clFront.visibility = View.VISIBLE
                     return false
                 }
 
             })
-            .into(iv_front)
+            .into(binding.ivFront)
     }
 
     fun showImagesDialog(position: Int) {
@@ -475,6 +489,7 @@ class ProcessedImagesFragment : BaseFragment<ProcessedViewModel, FragmentProcess
     var viewListener = object : ViewListener {
         override fun setViewForPosition(position: Int): View? {
             val customView: View = layoutInflater.inflate(R.layout.view_images, null)
+            val customBiding = ViewImagesBinding.bind(customView)
 
 
             Glide.with(requireContext())
@@ -505,7 +520,7 @@ class ProcessedImagesFragment : BaseFragment<ProcessedViewModel, FragmentProcess
                         return false
                     }
                 })
-                .into(customView.ivBefore)
+                .into(customBiding.ivBefore)
 
 //            Glide.with(this@ShowImagesActivity) // replace with 'this' if it's in activity
 //                .load(imageListAfter[position])
@@ -541,7 +556,7 @@ class ProcessedImagesFragment : BaseFragment<ProcessedViewModel, FragmentProcess
                         return false
                     }
                 })
-                .into(customView.ivAfter)
+                .into(customBiding.ivAfter)
 
             return customView
         }
@@ -568,14 +583,14 @@ class ProcessedImagesFragment : BaseFragment<ProcessedViewModel, FragmentProcess
                             tsvParamFront.mImageIndex++
                             if (tsvParamFront.mImageIndex >= tsvParamFront.framesList.size) tsvParamFront.mImageIndex = 0
 
-                            loadImage(tsvParamFront,iv_front)
+                            loadImage(tsvParamFront,binding.ivFront)
 
                         }
                         if (tsvParamFront.mEndX - tsvParamFront.mStartX < -8) {
                             tsvParamFront.mImageIndex--
                             if (tsvParamFront.mImageIndex < 0) tsvParamFront.mImageIndex = tsvParamFront.framesList.size - 1
 
-                            loadImage(tsvParamFront,iv_front)
+                            loadImage(tsvParamFront,binding.ivFront)
                         }
                         tsvParamFront.mStartX = event.x.toInt()
                         tsvParamFront.mStartY = event.y.toInt()
@@ -672,7 +687,7 @@ class ProcessedImagesFragment : BaseFragment<ProcessedViewModel, FragmentProcess
 
                         if (index == tsvParams.framesList.size - 1) {
 
-                            iv_front.setOnTouchListener(this@ProcessedImagesFragment)
+                            binding.ivFront.setOnTouchListener(this@ProcessedImagesFragment)
                         }
 
                         return false
@@ -734,7 +749,7 @@ class ProcessedImagesFragment : BaseFragment<ProcessedViewModel, FragmentProcess
                     .into(imageView)
 
 
-                if (iv_front.visibility == View.INVISIBLE)iv_front.visibility = View.VISIBLE
+                if (binding.ivFront.visibility == View.INVISIBLE) binding.ivFront.visibility = View.VISIBLE
             } catch (ex: UninitializedPropertyAccessException) {
                 Log.d(TAG, "loadImage: ex " + tsvParams.type)
                 Log.d(TAG, "loadImage: ex " + ex.localizedMessage)
@@ -744,7 +759,7 @@ class ProcessedImagesFragment : BaseFragment<ProcessedViewModel, FragmentProcess
     }
 
     private fun getSkuImages() {
-        Utilities.showProgressDialog(requireContext())
+       // Utilities.showProgressDialog(requireContext())
 
         viewModel.getImagesOfSku(
             Utilities.getPreference(requireContext(),AppConstants.AUTH_KEY).toString(),

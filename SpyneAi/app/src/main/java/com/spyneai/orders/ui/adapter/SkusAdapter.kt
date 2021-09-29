@@ -18,6 +18,7 @@ import com.spyneai.needs.Utilities
 import com.spyneai.orders.data.response.GetProjectsResponse
 import com.spyneai.orders.data.viewmodel.MyOrdersViewModel
 import com.spyneai.orders.ui.KarviShowImagesActivity
+import com.spyneai.processedimages.ui.ProcessedImageActivity
 import com.spyneai.processedimages.ui.ShowImagesActivity
 
 class SkusAdapter(
@@ -115,7 +116,7 @@ class SkusAdapter(
 
                 val intent = Intent(
                     context,
-                    ShowImagesActivity::class.java
+                    ProcessedImageActivity::class.java
                 )
                 intent.putExtra(AppConstants.SKU_ID, skuList[position].sku_id)
                 intent.putExtra("is_paid",skuList[position].paid)
