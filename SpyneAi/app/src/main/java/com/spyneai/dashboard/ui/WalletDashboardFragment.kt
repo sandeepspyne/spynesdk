@@ -41,6 +41,13 @@ class WalletDashboardFragment : BaseFragment<DashboardViewModel, WalletDashboard
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        when(getString(R.string.app_name)){
+                AppConstants.SWIGGY -> {
+                    binding.flAddCredits.visibility = View.GONE
+                    binding.tvLine.visibility = View.GONE
+                }
+        }
+
         if (Utilities.getPreference(requireContext(), AppConstants.USER_EMAIL).toString() != ""){
             binding.tvUserName.visibility = View.VISIBLE
             binding.tvUserEmail.visibility = View.VISIBLE

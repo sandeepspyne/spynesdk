@@ -8,10 +8,7 @@ import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
 import android.util.TypedValue
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
-import android.view.WindowManager
+import android.view.*
 import android.widget.EditText
 import android.widget.LinearLayout
 import androidx.core.view.children
@@ -41,6 +38,10 @@ import com.spyneai.shoot.utils.log
 import kotlinx.android.synthetic.main.item_project_chipedittext.view.*
 import org.json.JSONArray
 import org.json.JSONObject
+import android.widget.Toast
+
+
+
 
 class ProjectTagDialog : BaseDialogFragment<ShootViewModel, ProjectTagDialogBinding>() {
 
@@ -188,6 +189,7 @@ class ProjectTagDialog : BaseDialogFragment<ShootViewModel, ProjectTagDialogBind
                             }
                         }
                     })
+
 
                     val dip = 10f
                     val r: Resources = resources
