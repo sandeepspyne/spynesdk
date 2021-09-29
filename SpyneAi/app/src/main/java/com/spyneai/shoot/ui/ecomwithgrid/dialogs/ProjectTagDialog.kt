@@ -255,6 +255,15 @@ class ProjectTagDialog : BaseDialogFragment<ShootViewModel, ProjectTagDialogBind
                             requiredError(it.et, layout[index].field_name)
                             return !isValid
                         }
+                        else if (it.chipGroup.childCount == 0){
+                            if (!layout[index].all_caps){
+                                var text = it.et.text.toString()
+                                text = text.lowercase()
+                                data.put(layout[index].field_id, text)
+                            }else{
+                                data.put(layout[index].field_id,it.et.text.toString())
+                            }
+                        }
                         else {
 
                             var array = JSONArray()
@@ -266,7 +275,16 @@ class ProjectTagDialog : BaseDialogFragment<ShootViewModel, ProjectTagDialogBind
                             data.put(layout[index].field_id, array)
                         }
                     }
-                    else{
+                    else if (it.chipGroup.childCount == 0){
+                        if (!layout[index].all_caps){
+                            var text = it.et.text.toString()
+                            text = text.lowercase()
+                            data.put(layout[index].field_id, text)
+                        }else{
+                            data.put(layout[index].field_id,it.et.text.toString())
+                        }
+                    }
+                    else {
                         var array = JSONArray()
 
                         it.chipGroup.forEachIndexed { index, view ->

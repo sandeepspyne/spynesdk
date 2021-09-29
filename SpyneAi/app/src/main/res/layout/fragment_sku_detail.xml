@@ -146,7 +146,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:fontFamily="@font/poppins_medium"
-        android:text="Add Another Angle"
+        android:text="Add Another Images"
         app:layout_constraintTop_toBottomOf="@+id/rvSkuImages"
         app:layout_constraintLeft_toLeftOf="parent"
         android:layout_marginBottom="@dimen/dp_20"
