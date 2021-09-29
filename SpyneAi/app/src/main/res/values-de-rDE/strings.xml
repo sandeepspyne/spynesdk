@@ -33,7 +33,7 @@
     <string name="before">Vorher</string>
     <string name="after">Nach</string>
     <string name="shoot_now">Jetzt fotografieren</string>
-    <string name="order">Order Now</string>
+    <string name="order">Order</string>
     <string name="preview_order">Proceed To Order</string>
     <string name="your_sku">Your SKUs</string>
     <string name="report_issue">Report Issue</string>
@@ -288,6 +288,7 @@
     <string name="request_to_add">Anfrage zum Hinzufügen von Credits</string>
     <string name="generate_output">Ausgabe generieren</string>
     <string name="sample_output">Beispielausgabe</string>
+    <string name="enter_coupon_code">Haben Sie einen Empfehlungscode</string>
 
     <string name="image_uploading_in_progess">Bild wird hochgeladen...</string>
     <string name="upload">Hochladen </string>

@@ -5,6 +5,8 @@
     <string name="hello_blank_fragment">Ciao frammento vuoto</string>
     <string name="hello">Benvenuti!</string>
 
+    <string name="enter_coupon_code">Avere un codice di riferimento</string>
+
     <string name="Please">Accedi per continuare</string>
     <string name="Please_signup">Registrati per continuare</string>
     <string name="use_email">Usa invece l\'e-mail</string>
@@ -31,7 +33,7 @@
     <string name="before">Prima</string>
     <string name="after">Dopo</string>
     <string name="shoot_now">Scatta ora</string>
-    <string name="order">Ordina ora</string>
+    <string name="order">Ordina</string>
         <string name="preview_order">Procedi all\'ordine</string>
     <string name="your_sku">I tuoi SKU</string>
     <string name="report_issue">Segnala problema</string>

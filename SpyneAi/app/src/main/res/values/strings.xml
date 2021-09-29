@@ -30,7 +30,7 @@
     <string name="before">Before</string>
     <string name="after">After</string>
     <string name="shoot_now">Shoot Now</string>
-    <string name="order">Order Now</string>
+    <string name="order">Order</string>
     <string name="preview_order">Proceed To Order</string>
     <string name="your_sku">Your SKUs</string>
     <string name="report_issue">Report Issue</string>
@@ -234,6 +234,8 @@
     <string name="explore_categories">Explore Categories</string>
     <string name="tutorial_videos">Tutorial Videos</string>
 
+    <string name="enter_coupon_code">Have any Referral Code</string>
+
     <string name="enter_email">Enter Email</string>
     <string name="enter_password">Enter Password</string>
     <string name="new_to_app">New to SpyneAI</string>
@@ -311,5 +313,6 @@
     <string name="you_are_logged_in_as">You are logged as:</string>
     <string name="profile">Profile</string>
     <string name="turn_off_switch">Turn off while you have a \n slow internet connection.</string>
+    <string name="wallet">Wallet</string>
 
 </resources>

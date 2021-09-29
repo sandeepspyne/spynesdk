@@ -98,6 +98,7 @@
 
   </LinearLayout>
   <LinearLayout
+      android:id="@+id/llProjectNameSwitch"
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
       android:gravity="center_vertical"
@@ -308,9 +309,9 @@
       android:layout_width="wrap_content"
       android:layout_height="wrap_content"
       android:layout_gravity="center"
+      android:gravity="center"
       android:layout_margin="@dimen/dp_30"
-      android:background="@drawable/bg_rectangle_button_ripple"
-      android:gravity="center">
+      android:background="@drawable/bg_rectangle_button_ripple">
 
     <TextView
         android:layout_width="wrap_content"
