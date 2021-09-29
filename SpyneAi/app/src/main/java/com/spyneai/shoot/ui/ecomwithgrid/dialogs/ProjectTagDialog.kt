@@ -66,6 +66,10 @@ class ProjectTagDialog : BaseDialogFragment<ShootViewModel, ProjectTagDialogBind
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        binding.ivClose.setOnClickListener {
+            requireActivity().finish()
+        }
+
         inflator = LayoutInflater.from(requireContext())
 
         isCancelable = false
@@ -189,7 +193,6 @@ class ProjectTagDialog : BaseDialogFragment<ShootViewModel, ProjectTagDialogBind
                             }
                         }
                     })
-
 
                     val dip = 10f
                     val r: Resources = resources
