@@ -122,7 +122,7 @@ class ProjectTagDialog : BaseDialogFragment<ShootViewModel, ProjectTagDialogBind
             return
         }
 
-        val layout = data!![0].dynamic_layout.project_dialog
+        val layout = data!![LayoutHolder.categoryPosition].dynamic_layout.project_dialog
 
         layout.forEach {
             when (it.field_name) {
