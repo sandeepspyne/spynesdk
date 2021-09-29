@@ -26,15 +26,17 @@
         <entry key="app/src/main/res/layout/activity_camera_preview.xml" value="0.15462962962962962" />
         <entry key="app/src/main/res/layout/activity_dashboard_main.xml" value="0.2" />
         <entry key="app/src/main/res/layout/activity_draft_sku_details.xml" value="0.25277777777777777" />
+        <entry key="app/src/main/res/layout/activity_draft_skus.xml" value="0.2578125" />
         <entry key="app/src/main/res/layout/activity_drafts.xml" value="0.2578125" />
         <entry key="app/src/main/res/layout/activity_forgot_password.xml" value="0.2578125" />
         <entry key="app/src/main/res/layout/activity_login.xml" value="0.25404658867210816" />
         <entry key="app/src/main/res/layout/activity_my_orders.xml" value="0.2578125" />
         <entry key="app/src/main/res/layout/activity_onboard_one.xml" value="0.1328125" />
         <entry key="app/src/main/res/layout/activity_order.xml" value="0.24375" />
-        <entry key="app/src/main/res/layout/activity_select_language_activity.xml" value="0.3098958333333333" />
+        <entry key="app/src/main/res/layout/activity_select_language_activity.xml" value="0.22" />
         <entry key="app/src/main/res/layout/activity_sign_in_using_otp.xml" value="0.2578125" />
         <entry key="app/src/main/res/layout/activity_sign_up.xml" value="0.2578125" />
+        <entry key="app/src/main/res/layout/activity_splash.xml" value="0.2578125" />
         <entry key="app/src/main/res/layout/activity_start_shoot.xml" value="0.25277777777777777" />
         <entry key="app/src/main/res/layout/car_channel.xml" value="0.2578125" />
         <entry key="app/src/main/res/layout/chip.xml" value="0.2578125" />
@@ -50,6 +52,7 @@
         <entry key="app/src/main/res/layout/dialog_top_up.xml" value="0.25277777777777777" />
         <entry key="app/src/main/res/layout/dialog_video_duration.xml" value="0.30512820512820515" />
         <entry key="app/src/main/res/layout/forgot_password_dialog.xml" value="0.2578125" />
+        <entry key="app/src/main/res/layout/fragment_camera.xml" value="0.11041666666666666" />
         <entry key="app/src/main/res/layout/fragment_completed_projects.xml" value="0.2578125" />
         <entry key="app/src/main/res/layout/fragment_create_project.xml" value="0.25833333333333336" />
         <entry key="app/src/main/res/layout/fragment_draft_projects.xml" value="0.2578125" />
@@ -59,6 +62,7 @@
         <entry key="app/src/main/res/layout/fragment_ongoing_projects.xml" value="0.3098958333333333" />
         <entry key="app/src/main/res/layout/fragment_overlay_ecom.xml" value="0.19722222222222222" />
         <entry key="app/src/main/res/layout/fragment_overlays.xml" value="0.25277777777777777" />
+        <entry key="app/src/main/res/layout/fragment_preference.xml" value="0.2578125" />
         <entry key="app/src/main/res/layout/fragment_record_video.xml" value="0.25277777777777777" />
         <entry key="app/src/main/res/layout/fragment_select_background.xml" value="0.2578125" />
         <entry key="app/src/main/res/layout/fragment_select_subcategory_and_angle.xml" value="0.25" />
@@ -82,6 +86,8 @@
         <entry key="app/src/sellanycar/res/drawable/app_ic_background.xml" value="0.24166666666666667" />
         <entry key="app/src/swiggy/res/layout/home_dashboard_fragment.xml" value="0.15462962962962962" />
         <entry key="app/src/swiggy/res/menu/dashboard_bottom_menu.xml" value="0.25384615384615383" />
+        <entry key="app/src/swiggy/res/mipmap-anydpi-v26/app_ic.xml" value="0.19537037037037036" />
+        <entry key="app/src/swiggyDebug/res/mipmap-anydpi-v26/app_ic.xml" value="0.1265625" />
       </map>
     </option>
   </component>

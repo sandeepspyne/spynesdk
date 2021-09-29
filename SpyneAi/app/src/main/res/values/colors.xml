@@ -5,6 +5,7 @@
     <color name="black">#FF000000</color>
 
     <color name="primary">#FF7700</color>
+    <color name="accent">#F07E54</color>
     <color name="primary_light">#1AF69C4C</color>
     <color name="light">#7694ff</color>
     <color name="white">#FFFFFFFF</color>
