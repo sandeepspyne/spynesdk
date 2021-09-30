@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    package="com.spyneai" >
+    package="com.spyneai">
 
     <uses-feature android:name="android.hardware.camera.any" />
 
@@ -21,6 +21,7 @@
     <uses-permission
         android:name="android.permission.WRITE_EXTERNAL_STORAGE"
         tools:ignore="ScopedStorage" />
+
     <uses-feature android:name="android.hardware.location.gps" />
 
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" /> <!-- <uses-permission android:name="android.permission.MANAGE_EXTERNAL_STORAGE" tools:ignore="ScopedStorage" /> -->
@@ -37,9 +38,11 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.Fab_Bottom_app_bar"
         android:usesCleartextTraffic="true"
-        tools:targetApi="m" >
-        <activity android:name=".onboarding.SelectLanguageActivity" >
-        </activity>
+        tools:targetApi="m">
+        <activity
+            android:name=".reshoot.ReshootActivity"
+            android:exported="true" />
+        <activity android:name=".onboarding.SelectLanguageActivity"></activity>
         <activity
             android:name=".draft.ui.DraftsActivity"
             android:exported="true" />
@@ -119,7 +122,7 @@
 
         <receiver
             android:name=".service.StartReceiver"
-            android:enabled="true" >
+            android:enabled="true">
             <intent-filter>
                 <action android:name="android.intent.action.BOOT_COMPLETED" />
             </intent-filter>
@@ -151,7 +154,7 @@
             android:exported="true"
             android:stopWithTask="false" />
 
-        <receiver android:name=".service.ExplicitConnectionReceiver" >
+        <receiver android:name=".service.ExplicitConnectionReceiver">
             <intent-filter>
                 <action android:name="android.net.conn.CONNECTIVITY_CHANGE" />
             </intent-filter>
@@ -282,7 +285,7 @@
             android:screenOrientation="portrait" />
         <activity
             android:name=".activity.SplashActivity"
-            android:screenOrientation="portrait" >
+            android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
