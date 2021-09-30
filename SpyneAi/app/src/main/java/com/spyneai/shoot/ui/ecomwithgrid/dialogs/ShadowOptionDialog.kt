@@ -45,44 +45,44 @@ class ShadowOptionDialog : BaseDialogFragment<ShootViewModel, DialogShadowOption
             }}
 
         binding.btConfirm.setOnClickListener {
-            processWithShadowOption()
+//            processWithShadowOption()
         }
         binding.btSkip.setOnClickListener {
             shadow = "false"
-            processWithShadowOption()
+//            processWithShadowOption()
         }
     }
 
-    private fun processWithShadowOption() {
-        Utilities.showProgressDialog(requireContext())
-
-        viewModel.skuProcessStateWithShadowOption(
-            Utilities.getPreference(requireContext(), AppConstants.AUTH_KEY).toString(),
-            viewModel.projectId.value.toString(),
-            shadow)
-
-
-        viewModel.skuProcessStateWithShadowResponse.observe(viewLifecycleOwner, {
-            when (it) {
-                is Resource.Success -> {
-                    Utilities.hideProgressDialog()
-                    requireContext().gotoHome()
-                }
-
-                is Resource.Failure -> {
-                    log("create project id failed")
-                    requireContext().captureFailureEvent(
-                        Events.SKU_PROCESS_STATE_WITH_SHADOW_FAILED, Properties(),
-                        it.errorMessage!!
-                    )
-
-                    Utilities.hideProgressDialog()
-                    handleApiError(it) { processWithShadowOption() }
-                }
-            }
-        })
-
-    }
+//    private fun processWithShadowOption() {
+//        Utilities.showProgressDialog(requireContext())
+//
+//        viewModel.skuProcessStateWithShadowOption(
+//            Utilities.getPreference(requireContext(), AppConstants.AUTH_KEY).toString(),
+//            viewModel.projectId.value.toString(),
+//            shadow)
+//
+//
+//        viewModel.skuProcessStateWithShadowResponse.observe(viewLifecycleOwner, {
+//            when (it) {
+//                is Resource.Success -> {
+//                    Utilities.hideProgressDialog()
+//                    requireContext().gotoHome()
+//                }
+//
+//                is Resource.Failure -> {
+//                    log("create project id failed")
+//                    requireContext().captureFailureEvent(
+//                        Events.SKU_PROCESS_STATE_WITH_SHADOW_FAILED, Properties(),
+//                        it.errorMessage!!
+//                    )
+//
+//                    Utilities.hideProgressDialog()
+//                    handleApiError(it) { processWithShadowOption() }
+//                }
+//            }
+//        })
+//
+//    }
 
 
     override fun onResume() {

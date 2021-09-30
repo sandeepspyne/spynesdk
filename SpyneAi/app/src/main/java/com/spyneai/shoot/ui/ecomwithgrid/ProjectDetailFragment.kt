@@ -151,6 +151,7 @@ class ProjectDetailFragment : BaseFragment<ShootViewModel, FragmentProjectDetail
         viewModel.skuProcessStateWithShadowOption(
             Utilities.getPreference(requireContext(), AppConstants.AUTH_KEY).toString(),
             viewModel.projectId.value.toString(),
+            5000,
             shadow)
 
 

@@ -299,10 +299,10 @@ class ShootViewModel : ViewModel() {
     }
 
     fun skuProcessStateWithShadowOption(
-        auth_key: String, project_id: String, shadow: String
+        auth_key: String, project_id: String, background_id: Int, shadow: String
     ) = viewModelScope.launch {
         _skuProcessStateWithShadowResponse.value = Resource.Loading
-        _skuProcessStateWithShadowResponse.value = repository.skuProcessStateWithShadowOption(auth_key, project_id, shadow)
+        _skuProcessStateWithShadowResponse.value = repository.skuProcessStateWithShadowOption(auth_key, project_id, background_id, shadow)
     }
 
 

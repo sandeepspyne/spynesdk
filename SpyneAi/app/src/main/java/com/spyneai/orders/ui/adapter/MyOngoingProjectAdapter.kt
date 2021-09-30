@@ -87,7 +87,7 @@ class MyOngoingProjectAdapter(
                 || getProjectList[position].category.equals("Bikes")
             ){
                 when (context.getString(R.string.app_name)){
-                    AppConstants.SWIGGYINSTAMART, AppConstants.FLIPKART_GROCERY ->
+                    AppConstants.SWIGGYINSTAMART, AppConstants.FLIPKART_GROCERY, AppConstants.EBAY ->
                         holder.tvImageCount.visibility = View.VISIBLE
                     else ->
                         holder.tvImageCount.visibility = View.INVISIBLE
@@ -98,7 +98,7 @@ class MyOngoingProjectAdapter(
 
             if (getProjectList[position].status.equals("Uploaded")) {
                 when (context.getString(R.string.app_name)) {
-                    AppConstants.SWIGGYINSTAMART, AppConstants.FLIPKART_GROCERY ->{
+                    AppConstants.SWIGGYINSTAMART, AppConstants.FLIPKART_GROCERY, AppConstants.EBAY ->{
                         holder.tvImageCount.visibility = View.VISIBLE
                         holder.lottieProgressCircle.visibility = View.VISIBLE
                         holder.llUploaded.visibility = View.INVISIBLE

@@ -294,6 +294,7 @@ interface ClipperApi {
     suspend fun skuProcessStateWithShadowOption(
         @Field("auth_key") auth_key: String?,
         @Field("project_id") project_id: String?,
+        @Field("background_id") background_id: Int?,
         @Field("shadow") shadow: String?,
     ): SkuProcessStateResponse
 
