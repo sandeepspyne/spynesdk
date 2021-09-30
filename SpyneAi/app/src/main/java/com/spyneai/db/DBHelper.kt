@@ -27,6 +27,7 @@ class DBHelper (context: Context) : SQLiteOpenHelper(context, DATABASE_NAME, nul
             db.execSQL(SQL_DELETE_ENTRIES)
             db.execSQL(SQL_DELETE_IMAGES)
             db.execSQL(SQL_DELETE_IMAGE_FILES)
+            db.execSQL(CREATE_VIDEOS_TABLE)
         }
     }
 
@@ -36,7 +37,7 @@ class DBHelper (context: Context) : SQLiteOpenHelper(context, DATABASE_NAME, nul
 
     companion object {
         // If you change the database schema, you must increment the database version.
-        const val DATABASE_VERSION = 9
+        const val DATABASE_VERSION = 10
         const val DATABASE_NAME = "Shoot.db"
 
         private val DATABASE_ALTER_SKU_TABLE = ("ALTER TABLE "

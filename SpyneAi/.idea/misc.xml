@@ -17,6 +17,7 @@
         <entry key="app/src/main/res/drawable/bg_select_lang_ripple.xml" value="0.2935185185185185" />
         <entry key="app/src/main/res/layout-land/fragment_camera.xml" value="0.18125" />
         <entry key="app/src/main/res/layout-land/fragment_overlays.xml" value="0.18125" />
+        <entry key="app/src/main/res/layout-land/layout_gyro_view.xml" value="0.2203125" />
         <entry key="app/src/main/res/layout/activity_background_add.xml" value="0.30512820512820515" />
         <entry key="app/src/main/res/layout/activity_dashboard_main.xml" value="0.25277777777777777" />
         <entry key="app/src/main/res/layout/activity_draft_sku_details.xml" value="0.25277777777777777" />
@@ -69,6 +70,7 @@
         <entry key="app/src/main/res/layout/item_subcategories_placeholder.xml" value="0.3098958333333333" />
         <entry key="app/src/main/res/layout/item_tags_spinner.xml" value="0.2578125" />
         <entry key="app/src/main/res/layout/item_tags_spinner_text.xml" value="0.2578125" />
+        <entry key="app/src/main/res/layout/layout_gyro_view.xml" value="0.3098958333333333" />
         <entry key="app/src/main/res/layout/logout_dialog.xml" value="0.3098958333333333" />
         <entry key="app/src/main/res/layout/project_tag_dialog.xml" value="0.25384615384615383" />
         <entry key="app/src/main/res/layout/row_sku.xml" value="0.3098958333333333" />
