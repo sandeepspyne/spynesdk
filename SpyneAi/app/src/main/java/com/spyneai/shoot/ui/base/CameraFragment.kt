@@ -1045,47 +1045,6 @@ class CameraFragment : BaseFragment<ShootViewModel, FragmentCameraBinding>(), Pi
                     }
                 }
             }
-
-            /* AppConstants.UDAAN,
-             AppConstants.FLIPKART,
-             AppConstants.AMAZON,
-             AppConstants.LAL_10 -> {
-                 //hide moving line
-                 if (pitch.roundToInt() == 0 || (pitch.roundToInt() <= -0 && pitch.roundToInt() >= -3))
-                     binding.tvLevelIndicator.visibility = View.GONE
-                 else
-                     binding.tvLevelIndicator.visibility = View.VISIBLE
-
-                 if ((pitch.roundToInt() == 0 || (pitch.roundToInt() <= -0 && pitch.roundToInt() >= -3)) ||
-                     pitch.roundToInt() <= -82 && pitch.roundToInt() >= -88 ||
-                     (pitch.roundToInt() <= -40 && pitch.roundToInt() >= -45) && abs(roll.roundToInt()) < 100
-                 ) {
-                     if (pitch.roundToInt() == 0 || (pitch.roundToInt() <= -0 && pitch.roundToInt() >= -3))
-                         gyroMeterOnLevel(false)
-                     else if (pitch.roundToInt() <= -40 && pitch.roundToInt() >= -45)
-                         gyroMeterOnLevel(false)
-                     else
-                         gyroMeterOnLevel(true)
-                 } else {
-                     gyroMeterOffLevel()
-
-                     if (movearrow) {
-                         if (abs(roll.roundToInt()) < 100) {
-                             moveArrow((pitch + 85).unaryMinus())
-                         } else {
-                             moveArrow(pitch + 85)
-                         }
-                     }
-
-                     if (orientationAngles[2].roundToInt() == 1 || orientationAngles[2].roundToInt() == -1) {
-                         if (orientationAngles[2].roundToInt() == 1) {
-                             rotateArrow((pitch + 85).unaryMinus().roundToInt())
-                         } else {
-                             rotateArrow((pitch + 85).roundToInt())
-                         }
-                     }
-                 }
-             }*/
             AppConstants.SWIGGY -> {
 
                 // angle name
@@ -1140,26 +1099,14 @@ class CameraFragment : BaseFragment<ShootViewModel, FragmentCameraBinding>(), Pi
                     45 -> {
                         binding.lottieDownArrow!!.visibility = View.VISIBLE
                         binding.lottieUpArrow!!.visibility = View.VISIBLE
-//                        binding.tvUpcomingAngle1!!.visibility = View.VISIBLE
-//                        binding.tvUpcomingAngle2!!.visibility = View.VISIBLE
-//                        binding.tvUpcomingAngle1!!.text = "45"
-//                        binding.tvUpcomingAngle2!!.text = "90"
                     }
                     0 -> {
                         binding.lottieDownArrow!!.visibility = View.VISIBLE
                         binding.lottieUpArrow!!.visibility = View.VISIBLE
-//                        binding.tvUpcomingAngle1!!.visibility = View.VISIBLE
-//                        binding.tvUpcomingAngle2!!.visibility = View.VISIBLE
-//                        binding.tvUpcomingAngle1!!.text = "0"
-//                        binding.tvUpcomingAngle2!!.text = "45"
                     }
                     50 ->{
                         binding.lottieDownArrow!!.visibility = View.VISIBLE
                         binding.lottieUpArrow!!.visibility = View.VISIBLE
-//                        binding.tvUpcomingAngle1!!.visibility = View.VISIBLE
-//                        binding.tvUpcomingAngle2!!.visibility = View.VISIBLE
-//                        binding.tvUpcomingAngle1!!.text = "90"
-//                        binding.tvUpcomingAngle2!!.text = "45"
                     }
                 }
                 //hide moving line
@@ -1363,42 +1310,19 @@ class CameraFragment : BaseFragment<ShootViewModel, FragmentCameraBinding>(), Pi
 
     private fun gyroMeterOffLevel() {
         isGyroOnCorrectAngle = false
-        binding.ivTopLeft?.setColorFilter(
-            ContextCompat.getColor(
-                BaseApplication.getContext(),
-                R.color.gyro_error_level
-            )
-        )
-        binding.ivBottomLeft?.setColorFilter(
-            ContextCompat.getColor(
-                BaseApplication.getContext(),
-                R.color.gyro_error_level
-            )
-        )
 
-        binding.ivGryroRing?.setColorFilter(
-            ContextCompat.getColor(
-                BaseApplication.getContext(),
-                R.color.gyro_error_level
-            )
-        )
-        binding.tvLevelIndicator?.background = ContextCompat.getDrawable(
+        val color = ContextCompat.getColor(
             BaseApplication.getContext(),
-            R.drawable.bg_gyro_error
+            R.color.gyro_error_level
         )
-
-        binding.ivTopRight?.setColorFilter(
-            ContextCompat.getColor(
-                BaseApplication.getContext(),
-                R.color.gyro_error_level
-            )
-        )
-        binding.ivBottomRight?.setColorFilter(
-            ContextCompat.getColor(
-                BaseApplication.getContext(),
-                R.color.gyro_error_level
-            )
-        )
+        binding.apply {
+            ivTopLeft?.setColorFilter(color)
+            ivBottomLeft?.setColorFilter(color)
+            ivGryroRing?.setColorFilter(color)
+            tvLevelIndicator?.setColorFilter(color)
+            ivTopRight?.setColorFilter(color)
+            ivBottomRight?.setColorFilter(color)
+        }
     }
 
     private fun gyroMeterOnLevel(removeAnimation: Boolean) {
@@ -1411,45 +1335,20 @@ class CameraFragment : BaseFragment<ShootViewModel, FragmentCameraBinding>(), Pi
                 ?.setInterpolator(AccelerateInterpolator())?.duration = 0
         }
 
-
-        binding.tvLevelIndicator?.rotation = 0f
-
-        binding.ivTopLeft?.setColorFilter(
-            ContextCompat.getColor(
-                BaseApplication.getContext(),
-                R.color.gyro_in_level
-            )
-        )
-        binding.ivBottomLeft?.setColorFilter(
-            ContextCompat.getColor(
-                BaseApplication.getContext(),
-                R.color.gyro_in_level
-            )
-        )
-
-        binding.ivGryroRing?.setColorFilter(
-            ContextCompat.getColor(
-                BaseApplication.getContext(),
-                R.color.gyro_in_level
-            )
-        )
-        binding.tvLevelIndicator?.background = ContextCompat.getDrawable(
+        val color = ContextCompat.getColor(
             BaseApplication.getContext(),
-            R.drawable.bg_gyro_level
+            R.color.gyro_in_level
         )
+        binding.apply {
+            tvLevelIndicator?.rotation = 0f
 
-        binding.ivTopRight?.setColorFilter(
-            ContextCompat.getColor(
-                BaseApplication.getContext(),
-                R.color.gyro_in_level
-            )
-        )
-        binding.ivBottomRight?.setColorFilter(
-            ContextCompat.getColor(
-                BaseApplication.getContext(),
-                R.color.gyro_in_level
-            )
-        )
+            ivTopLeft?.setColorFilter(color)
+            ivBottomLeft?.setColorFilter(color)
+            ivGryroRing?.setColorFilter(color)
+            tvLevelIndicator?.setColorFilter(color)
+            ivTopRight?.setColorFilter(color)
+            ivBottomRight?.setColorFilter(color)
+        }
     }
 
     private fun rotateArrow(roundToInt: Int) {
