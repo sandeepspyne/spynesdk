@@ -11,6 +11,7 @@ import com.spyneai.R
 import com.spyneai.base.BaseFragment
 import com.spyneai.base.network.Resource
 import com.spyneai.captureEvent
+import com.spyneai.captureFailureEvent
 import com.spyneai.dashboard.ui.handleApiError
 import com.spyneai.databinding.FragmentProjectDetailBinding
 import com.spyneai.gotoHome
@@ -28,23 +29,37 @@ class ProjectDetailFragment : BaseFragment<ShootViewModel, FragmentProjectDetail
     var refreshData = true
     lateinit var handler: Handler
     private var runnable: Runnable? = null
+    var shadow = "false"
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
         handler = Handler()
+        binding.tvShadowIs.text = "Shadow is OFF"
 
 //        binding.swiperefreshProject.setOnRefreshListener {
 //            repeatRefreshData()
 //            binding.swiperefreshProject.isRefreshing = false
 //        }
 
+        binding.switchShadowOption.setOnCheckedChangeListener { _, isChecked ->
+            if (isChecked) {
+                shadow = "true"
+                binding.tvShadowIs.text = "Shadow is ON"
+            }
+            else{
+                shadow = "false"
+                binding.tvShadowIs.text = "Shadow is OFF"
+            }
+        }
+
         when (getString(R.string.app_name)) {
             AppConstants.SWIGGY -> {
                 binding.btHome.text = "Select Background"
             }
             AppConstants.EBAY -> {
-                binding.btHome.text = "Proceed"
+                binding.groupShadow.visibility = View.VISIBLE
+                binding.btHome.text = "Generate Output"
             }
         }
 
@@ -60,7 +75,7 @@ class ProjectDetailFragment : BaseFragment<ShootViewModel, FragmentProjectDetail
                         }
                         AppConstants.EBAY -> {
                             requireContext().captureEvent(Events.SHOW_SHADOW_DIALOG, Properties())
-                            ShadowOptionDialog().show(requireActivity().supportFragmentManager, "ShadowOptionDialog")
+                            processWithShadowOption()
                         }else -> {
                             processWithoutBackgroundId()
                         }
@@ -116,7 +131,6 @@ class ProjectDetailFragment : BaseFragment<ShootViewModel, FragmentProjectDetail
 
     private fun processWithoutBackgroundId() {
         Utilities.showProgressDialog(requireContext())
-
         viewModel.skuProcessState(
             Utilities.getPreference(requireContext(), AppConstants.AUTH_KEY).toString(),
             viewModel.projectId.value.toString()
@@ -125,12 +139,41 @@ class ProjectDetailFragment : BaseFragment<ShootViewModel, FragmentProjectDetail
 
     private fun processWithBackgroundId() {
         Utilities.showProgressDialog(requireContext())
-
         viewModel.skuProcessStateWithBackgroundid(
             Utilities.getPreference(requireContext(), AppConstants.AUTH_KEY).toString(),
             viewModel.projectId.value.toString(),
             5000
         )
+    }
+
+    private fun processWithShadowOption() {
+        Utilities.showProgressDialog(requireContext())
+        viewModel.skuProcessStateWithShadowOption(
+            Utilities.getPreference(requireContext(), AppConstants.AUTH_KEY).toString(),
+            viewModel.projectId.value.toString(),
+            shadow)
+
+
+        viewModel.skuProcessStateWithShadowResponse.observe(viewLifecycleOwner, {
+            when (it) {
+                is Resource.Success -> {
+                    Utilities.hideProgressDialog()
+                    requireContext().gotoHome()
+                }
+
+                is Resource.Failure -> {
+                    log("create project id failed")
+                    requireContext().captureFailureEvent(
+                        Events.SKU_PROCESS_STATE_WITH_SHADOW_FAILED, Properties(),
+                        it.errorMessage!!
+                    )
+
+                    Utilities.hideProgressDialog()
+                    handleApiError(it) { processWithShadowOption() }
+                }
+            }
+        })
+
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
