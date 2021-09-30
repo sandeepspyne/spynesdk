@@ -176,7 +176,7 @@ class TapFocusExposure: FrameLayout,View.OnTouchListener{
                     ivFocus.layoutParams = params
 
 
-                    seekParams.leftMargin = params.leftMargin + width
+                    seekParams.leftMargin = params.leftMargin + width + (8 * resources.displayMetrics.density).toInt()
                     seekParams.topMargin = params.topMargin + height / 3
                     rightSeekBar.layoutParams = seekParams
 

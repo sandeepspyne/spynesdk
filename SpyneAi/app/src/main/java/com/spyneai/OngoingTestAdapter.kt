@@ -6,7 +6,10 @@ import com.spyneai.base.GenericAdapter
 import com.spyneai.base.JavaViewHolderFactory
 import com.spyneai.base.OnItemClickListener
 
-class OngoingTestAdapter(list : List<Any>, var listener : OnItemClickListener) : GenericAdapter<Any>(list) {
+class OngoingTestAdapter(
+    list : List<Any>,
+    var listener : OnItemClickListener
+    ) : GenericAdapter<Any>(list) {
 
     override fun getLayoutId(position: Int, obj: Any?): Int {
         return when (obj) {
