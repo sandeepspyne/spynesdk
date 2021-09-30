@@ -603,7 +603,6 @@ class CameraFragment : BaseFragment<ShootViewModel, FragmentCameraBinding>(), Pi
                 "Automobiles", "Bikes" -> {
                     if (getString(R.string.app_name) == AppConstants.KARVI) {
                         Preview.Builder()
-                            .setTargetAspectRatio(aspectRatio)
                             .setTargetResolution(size)
                             .build()
                             .also {
@@ -1309,7 +1308,12 @@ class CameraFragment : BaseFragment<ShootViewModel, FragmentCameraBinding>(), Pi
             ivTopLeft?.setColorFilter(color)
             ivBottomLeft?.setColorFilter(color)
             ivGryroRing?.setColorFilter(color)
-            tvLevelIndicator?.setColorFilter(color)
+
+            tvLevelIndicator?.background = ContextCompat.getDrawable(
+                BaseApplication.getContext(),
+                R.drawable.bg_gyro_error
+            )
+
             ivTopRight?.setColorFilter(color)
             ivBottomRight?.setColorFilter(color)
         }
@@ -1329,13 +1333,19 @@ class CameraFragment : BaseFragment<ShootViewModel, FragmentCameraBinding>(), Pi
             BaseApplication.getContext(),
             R.color.gyro_in_level
         )
+
         binding.apply {
             tvLevelIndicator?.rotation = 0f
 
             ivTopLeft?.setColorFilter(color)
             ivBottomLeft?.setColorFilter(color)
             ivGryroRing?.setColorFilter(color)
-            tvLevelIndicator?.setColorFilter(color)
+
+           tvLevelIndicator?.background = ContextCompat.getDrawable(
+                BaseApplication.getContext(),
+                R.drawable.bg_gyro_level
+            )
+
             ivTopRight?.setColorFilter(color)
             ivBottomRight?.setColorFilter(color)
         }

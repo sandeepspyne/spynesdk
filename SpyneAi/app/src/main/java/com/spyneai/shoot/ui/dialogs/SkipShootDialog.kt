@@ -1,5 +1,8 @@
 package com.spyneai.shoot.ui.dialogs
 
+import android.app.Dialog
+import android.graphics.Color
+import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -50,7 +53,16 @@ class SkipShootDialog : BaseDialogFragment<ShootViewModel, DialogSkipBinding>() 
         }
     }
 
+    override fun onStart() {
+        super.onStart()
+        val dialog: Dialog? = dialog
+        if (dialog != null) {
+            dialog.getWindow()
+                ?.setLayout(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT)
+            dialog.getWindow()?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
 
+        }
+    }
 
 
     override fun getViewModel() = ShootViewModel::class.java
