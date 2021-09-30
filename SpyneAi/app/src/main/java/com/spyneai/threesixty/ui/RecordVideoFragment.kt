@@ -779,6 +779,13 @@ class RecordVideoFragment : BaseFragment<ThreeSixtyViewModel, FragmentRecordVide
                         shootDimensions.previewHeight = view.height
 
                         viewModel.shootDimensions.value = shootDimensions
+
+                        binding.flTapToFocus.init(
+                            binding.viewFinder,
+                            cameraControl!!,
+                            cameraInfo!!,
+                            shootDimensions
+                        )
                     }
 
                     else -> {
