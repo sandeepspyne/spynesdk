@@ -504,8 +504,6 @@ class MainDashboardActivity : AppCompatActivity() {
 
     override fun onResume() {
         super.onResume()
-
-        FilesRepository().getAllImages()
         binding.bottomNavigation.selectedItemId = R.id.homeDashboardFragment
     }
 

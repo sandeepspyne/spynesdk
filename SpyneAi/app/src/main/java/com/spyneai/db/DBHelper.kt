@@ -27,7 +27,7 @@ class DBHelper (context: Context) : SQLiteOpenHelper(context, DATABASE_NAME, nul
             db.execSQL(SQL_DELETE_ENTRIES)
             db.execSQL(SQL_DELETE_IMAGES)
             db.execSQL(SQL_DELETE_IMAGE_FILES)
-            db.execSQL(CREATE_VIDEOS_TABLE)
+            db.execSQL(SQL_DELETE_VIDEO_TABLE)
         }
     }
 
@@ -135,5 +135,6 @@ class DBHelper (context: Context) : SQLiteOpenHelper(context, DATABASE_NAME, nul
         private const val SQL_DELETE_ENTRIES = "DROP TABLE IF EXISTS ${ShootContract.ShootEntry.TABLE_NAME}"
         private const val SQL_DELETE_IMAGES = "DROP TABLE IF EXISTS ${Images.TABLE_NAME}"
         private const val SQL_DELETE_IMAGE_FILES = "DROP TABLE IF EXISTS ${ImageFiles.TABLE_NAME}"
+        private const val SQL_DELETE_VIDEO_TABLE = "DROP TABLE IF EXISTS ${Videos.TABLE_NAME}"
     }
 }
