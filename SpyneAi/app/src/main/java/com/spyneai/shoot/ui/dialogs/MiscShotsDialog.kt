@@ -34,7 +34,7 @@ class MiscShotsDialog : BaseDialogFragment<ShootViewModel, DialogFocusedHintBind
         }
 
         binding.tvSkipFocused.setOnClickListener {
-            selectBackground()
+            viewModel.selectBackground(getString(R.string.app_name))
             viewModel.startMiscShots.value = true
             dismiss()
         }
@@ -67,12 +67,6 @@ class MiscShotsDialog : BaseDialogFragment<ShootViewModel, DialogFocusedHintBind
             .into(ivOne)
     }
 
-    private fun selectBackground() {
-        if(getString(R.string.app_name) == AppConstants.OLA_CABS)
-            viewModel.show360InteriorDialog.value = true
-        else
-            viewModel.selectBackground.value = true
-    }
 
     private fun setSampleImages() {
         viewModel.subCategoriesResponse.observe(viewLifecycleOwner,{

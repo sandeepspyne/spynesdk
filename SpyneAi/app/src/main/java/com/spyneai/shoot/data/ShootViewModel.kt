@@ -6,6 +6,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.work.*
 import com.spyneai.BaseApplication
+import com.spyneai.R
 import com.spyneai.base.network.Resource
 import com.spyneai.camera2.OverlaysResponse
 import com.spyneai.camera2.ShootDimensions
@@ -346,5 +347,26 @@ class ShootViewModel : ViewModel() {
     fun updateVideoSkuLocally(sku: Sku) {
         localRepository.updateVideoSkuLocally(sku)
     }
+
+    fun checkMiscShootStatus(appName : String) {
+        val subCatResponse = (subCategoriesResponse.value as Resource.Success).value
+
+        when {
+            subCatResponse.miscellaneous.isNotEmpty() -> {
+                showMiscDialog.value = true
+            }
+            else -> {
+                selectBackground(appName)
+            }
+        }
+    }
+
+    fun selectBackground(appName : String) {
+        if (appName == AppConstants.OLA_CABS)
+            show360InteriorDialog.value = true
+        else
+            selectBackground.value = true
+    }
+
 
 }

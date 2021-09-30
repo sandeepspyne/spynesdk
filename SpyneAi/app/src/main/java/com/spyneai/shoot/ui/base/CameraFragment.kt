@@ -39,6 +39,7 @@ import com.spyneai.posthog.Events
 import com.spyneai.shoot.data.ShootViewModel
 import com.spyneai.shoot.data.model.ShootData
 import com.spyneai.shoot.data.model.Sku
+import com.spyneai.shoot.ui.dialogs.SkipShootDialog
 import com.spyneai.shoot.utils.log
 import com.spyneai.shoot.utils.shoot
 import kotlinx.android.synthetic.main.activity_credit_plans.*
@@ -202,24 +203,38 @@ class CameraFragment : BaseFragment<ShootViewModel, FragmentCameraBinding>(), Pi
             )
         }
         binding.tvSkipShoot?.setOnClickListener {
-            when (viewModel.categoryDetails.value?.imageType) {
-                "Interior" -> {
-                    if (viewModel.interiorShootNumber.value == viewModel.interiorAngles.value?.minus(
-                            1
-                        )
-                    ) {
-                        checkMiscShootStatus()
-                    } else {
-                        viewModel.interiorShootNumber.value =
-                            viewModel.interiorShootNumber.value!! + 1
-                    }
+            when (getString(R.string.app_name)) {
+                AppConstants.KARVI -> {
+                    SkipShootDialog().show(
+                        requireActivity().supportFragmentManager,
+                        "SkipShootDialog"
+                    )
                 }
+                else -> {
+                    when (viewModel.categoryDetails.value?.imageType) {
+                        "Interior" -> {
+                            if (viewModel.interiorShootNumber.value == viewModel.interiorAngles.value?.minus(
+                                    1
+                                )
+                            ) {
+                                viewModel.checkMiscShootStatus(getString(R.string.app_name))
+                            } else {
+                                viewModel.interiorShootNumber.value =
+                                    viewModel.interiorShootNumber.value!! + 1
+                            }
+                        }
 
-                "Focus Shoot" -> {
-                    if (viewModel.miscShootNumber.value == viewModel.miscAngles.value?.minus(1)) {
-                        selectBackground()
-                    } else {
-                        viewModel.miscShootNumber.value = viewModel.miscShootNumber.value!! + 1
+                        "Focus Shoot" -> {
+                            if (viewModel.miscShootNumber.value == viewModel.miscAngles.value?.minus(
+                                    1
+                                )
+                            ) {
+                                viewModel.selectBackground(getString(R.string.app_name))
+                            } else {
+                                viewModel.miscShootNumber.value =
+                                    viewModel.miscShootNumber.value!! + 1
+                            }
+                        }
                     }
                 }
             }
@@ -243,31 +258,6 @@ class CameraFragment : BaseFragment<ShootViewModel, FragmentCameraBinding>(), Pi
         })
     }
 
-    private fun checkMiscShootStatus() {
-        viewModel.subCategoriesResponse.observe(viewLifecycleOwner, {
-            when (it) {
-                is Resource.Success -> {
-                    when {
-                        it.value.miscellaneous.isNotEmpty() -> {
-                            viewModel.showMiscDialog.value = true
-                        }
-                        else -> {
-                            selectBackground()
-                        }
-                    }
-                }
-                else -> {
-                }
-            }
-        })
-    }
-
-    private fun selectBackground() {
-        if (getString(R.string.app_name) == AppConstants.OLA_CABS)
-            viewModel.show360InteriorDialog.value = true
-        else
-            viewModel.selectBackground.value = true
-    }
 
     override fun onResume() {
         super.onResume()
@@ -1095,7 +1085,7 @@ class CameraFragment : BaseFragment<ShootViewModel, FragmentCameraBinding>(), Pi
                     upcomingAngle = 0
                 }
 
-                when(upcomingAngle){
+                when (upcomingAngle) {
                     45 -> {
                         binding.lottieDownArrow!!.visibility = View.VISIBLE
                         binding.lottieUpArrow!!.visibility = View.VISIBLE
@@ -1104,7 +1094,7 @@ class CameraFragment : BaseFragment<ShootViewModel, FragmentCameraBinding>(), Pi
                         binding.lottieDownArrow!!.visibility = View.VISIBLE
                         binding.lottieUpArrow!!.visibility = View.VISIBLE
                     }
-                    50 ->{
+                    50 -> {
                         binding.lottieDownArrow!!.visibility = View.VISIBLE
                         binding.lottieUpArrow!!.visibility = View.VISIBLE
                     }
@@ -1544,7 +1534,6 @@ class CameraFragment : BaseFragment<ShootViewModel, FragmentCameraBinding>(), Pi
     ) {
         addShootItem(path!!)
     }
-
 
 
     override fun onStart() {
