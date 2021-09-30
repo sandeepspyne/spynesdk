@@ -32,7 +32,7 @@
             android:padding="@dimen/dp_8"
             android:textColor="@color/white"
             android:textSize="@dimen/sp_13"
-        />
+            />
 
         <TextView
             android:id="@+id/tvAngleRed"
@@ -192,7 +192,7 @@
         app:layout_constraintEnd_toEndOf="@+id/flLevelIndicator"
         app:layout_constraintBottom_toTopOf="@+id/lottieDownArrow" />
 
-    <com.spyneai.camera.GyroView
+    <FrameLayout
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:id="@+id/flLevelIndicator"
@@ -203,7 +203,58 @@
         app:layout_constraintTop_toBottomOf="@+id/viewCamera"
         android:layout_margin="@dimen/dp_20">
 
-    </com.spyneai.camera.GyroView>
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/ic_top_left"
+            android:layout_gravity="left"
+            android:id="@+id/ivTopLeft"/>
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/ic_bottom_left"
+            android:layout_gravity="left|bottom"
+            android:id="@+id/ivBottomLeft"/>
+
+        <ImageView
+            android:layout_width="@dimen/dp_100"
+            android:layout_height="@dimen/dp_100"
+            android:layout_gravity="center"
+            android:id="@+id/ivGryroRing"
+            android:visibility="gone"
+            android:src="@drawable/ic_gyro_ring"/>
+
+
+        <TextView
+            android:layout_width="@dimen/dp_80"
+            android:layout_height="1dp"
+            android:layout_gravity="center"
+            android:id="@+id/tvCenter"
+            android:background="@color/white"/>
+
+        <ImageView
+            android:layout_width="@dimen/dp_30"
+            android:layout_height="3dp"
+            android:background="@drawable/bg_gyro_error"
+            android:id="@+id/tvLevelIndicator"
+            android:layout_gravity="center"/>
+
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/ic_top_right"
+            android:layout_gravity="right"
+            android:id="@+id/ivTopRight"/>
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/ic_bottom_right"
+            android:layout_gravity="right|bottom"
+            android:id="@+id/ivBottomRight"/>
+    </FrameLayout>
 
     <com.spyneai.camera.TapFocusExposure
         android:layout_width="0dp"

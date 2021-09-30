@@ -161,7 +161,7 @@ class CameraFragment : BaseFragment<ShootViewModel, FragmentCameraBinding>(), Pi
                 if (viewModel.categoryDetails.value?.categoryName == "Footwear" ||
                     viewModel.categoryDetails.value?.categoryName == "E-Commerce"
                 )
-                    binding.tvLevelIndicator?.visibility = View.GONE
+                    binding.tvLevelIndicator.visibility = View.GONE
 
                 binding.flLevelIndicator.visibility = View.VISIBLE
 
@@ -1363,13 +1363,93 @@ class CameraFragment : BaseFragment<ShootViewModel, FragmentCameraBinding>(), Pi
 
     private fun gyroMeterOffLevel() {
         isGyroOnCorrectAngle = false
-        binding.flLevelIndicator.gyroOffLevel()
+        binding.ivTopLeft?.setColorFilter(
+            ContextCompat.getColor(
+                BaseApplication.getContext(),
+                R.color.gyro_error_level
+            )
+        )
+        binding.ivBottomLeft?.setColorFilter(
+            ContextCompat.getColor(
+                BaseApplication.getContext(),
+                R.color.gyro_error_level
+            )
+        )
+
+        binding.ivGryroRing?.setColorFilter(
+            ContextCompat.getColor(
+                BaseApplication.getContext(),
+                R.color.gyro_error_level
+            )
+        )
+        binding.tvLevelIndicator?.background = ContextCompat.getDrawable(
+            BaseApplication.getContext(),
+            R.drawable.bg_gyro_error
+        )
+
+        binding.ivTopRight?.setColorFilter(
+            ContextCompat.getColor(
+                BaseApplication.getContext(),
+                R.color.gyro_error_level
+            )
+        )
+        binding.ivBottomRight?.setColorFilter(
+            ContextCompat.getColor(
+                BaseApplication.getContext(),
+                R.color.gyro_error_level
+            )
+        )
     }
 
     private fun gyroMeterOnLevel(removeAnimation: Boolean) {
         isGyroOnCorrectAngle = true
+        if (removeAnimation) {
+            binding
+                .tvLevelIndicator
+                ?.animate()
+                ?.translationY(0f)
+                ?.setInterpolator(AccelerateInterpolator())?.duration = 0
+        }
 
-        binding.flLevelIndicator.gyroOnLevel(removeAnimation)
+
+        binding.tvLevelIndicator?.rotation = 0f
+
+        binding.ivTopLeft?.setColorFilter(
+            ContextCompat.getColor(
+                BaseApplication.getContext(),
+                R.color.gyro_in_level
+            )
+        )
+        binding.ivBottomLeft?.setColorFilter(
+            ContextCompat.getColor(
+                BaseApplication.getContext(),
+                R.color.gyro_in_level
+            )
+        )
+
+        binding.ivGryroRing?.setColorFilter(
+            ContextCompat.getColor(
+                BaseApplication.getContext(),
+                R.color.gyro_in_level
+            )
+        )
+        binding.tvLevelIndicator?.background = ContextCompat.getDrawable(
+            BaseApplication.getContext(),
+            R.drawable.bg_gyro_level
+        )
+
+        binding.ivTopRight?.setColorFilter(
+            ContextCompat.getColor(
+                BaseApplication.getContext(),
+                R.color.gyro_in_level
+            )
+        )
+        binding.ivBottomRight?.setColorFilter(
+            ContextCompat.getColor(
+                BaseApplication.getContext(),
+                R.color.gyro_in_level
+            )
+        )
     }
 
     private fun rotateArrow(roundToInt: Int) {
@@ -1411,7 +1491,6 @@ class CameraFragment : BaseFragment<ShootViewModel, FragmentCameraBinding>(), Pi
 
                         viewModel.shootDimensions.value = shootDimensions
 
-                        //init tap focus
                         binding.flTapToFocus.init(
                             binding.viewFinder,
                             cameraControl!!,
@@ -1568,6 +1647,7 @@ class CameraFragment : BaseFragment<ShootViewModel, FragmentCameraBinding>(), Pi
     }
 
 
+
     override fun onStart() {
         super.onStart()
         shoot("onStart called(camera fragment)")
@@ -1588,7 +1668,6 @@ class CameraFragment : BaseFragment<ShootViewModel, FragmentCameraBinding>(), Pi
         shoot("onSaveInstanceState called(camera fragment)")
     }
 }
-
 
 
 

@@ -4,6 +4,7 @@ import android.content.Context
 import android.util.AttributeSet
 import android.util.Log
 import android.view.LayoutInflater
+import android.view.View
 import android.view.animation.AccelerateInterpolator
 import android.widget.FrameLayout
 import androidx.core.content.ContextCompat
@@ -69,4 +70,14 @@ class GyroView : FrameLayout {
             ivBottomRight?.setColorFilter(color)
         }
     }
+
+    fun hideLevelIndicator(){
+        layout.tvLevelIndicator?.visibility = View.GONE
+    }
+
+    fun showLevelIndicator(){
+        layout.tvLevelIndicator?.visibility = View.VISIBLE
+    }
+
+    fun getGyroView() = layout
 }
