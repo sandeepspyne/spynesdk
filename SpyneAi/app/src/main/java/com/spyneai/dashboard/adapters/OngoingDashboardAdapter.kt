@@ -14,6 +14,7 @@ import com.bumptech.glide.Glide
 import com.spyneai.R
 import com.spyneai.activity.OngoingOrdersActivity
 import com.spyneai.orders.data.response.GetProjectsResponse
+import com.spyneai.orders.ui.MyOrdersActivity
 
 class OngoingDashboardAdapter(
     val context: Context,
@@ -83,7 +84,8 @@ class OngoingDashboardAdapter(
 
 
         holder.clBackground.setOnClickListener {
-            val intent = Intent(context, OngoingOrdersActivity::class.java)
+            val intent = Intent(context, MyOrdersActivity::class.java)
+            intent.putExtra("TAB_ID", 1)
             context.startActivity(intent)
         }
 

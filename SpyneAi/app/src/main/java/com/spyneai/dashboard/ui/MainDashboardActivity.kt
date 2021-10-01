@@ -145,8 +145,10 @@ class MainDashboardActivity : AppCompatActivity() {
 //                }
 
                 R.id.completedOrdersFragment -> {
-                    if (getString(R.string.app_name) == AppConstants.SPYNE_AI)
+                    if (getString(R.string.app_name) == AppConstants.SPYNE_AI){
+                        intent.putExtra("TAB_ID",0)
                         setCurrentFragment(myOrdersFragment)
+                    }
                     else {
                         val intent = Intent(this, MyOrdersActivity::class.java)
                         startActivity(intent)

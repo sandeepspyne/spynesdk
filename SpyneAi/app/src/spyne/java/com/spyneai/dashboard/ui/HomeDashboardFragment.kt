@@ -44,6 +44,7 @@ import com.spyneai.databinding.HomeDashboardFragmentBinding
 import com.spyneai.needs.AppConstants
 import com.spyneai.needs.Utilities
 import com.spyneai.orders.data.response.GetProjectsResponse
+import com.spyneai.orders.ui.MyOrdersActivity
 import com.spyneai.posthog.Events
 import com.spyneai.shoot.ui.StartShootActivity
 import com.spyneai.shoot.ui.base.ShootActivity
@@ -585,12 +586,14 @@ class HomeDashboardFragment :
 
     private fun lisners() {
         binding.tvCompletedViewall.setOnClickListener {
-            val intent = Intent(requireContext(), CompletedProjectsActivity::class.java)
+            val intent = Intent(requireContext(), MyOrdersActivity::class.java)
+            intent.putExtra("TAB_ID", 2)
             startActivity(intent)
         }
 
         binding.tvOngoingViewall.setOnClickListener {
-            val intent = Intent(requireContext(), OngoingOrdersActivity::class.java)
+            val intent = Intent(requireContext(), MyOrdersActivity::class.java)
+            intent.putExtra("TAB_ID", 1)
             startActivity(intent)
         }
         binding.btGetStarted.setOnClickListener {
