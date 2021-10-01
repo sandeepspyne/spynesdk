@@ -123,15 +123,8 @@ class ProjectTagDialog : BaseDialogFragment<ShootViewModel, ProjectTagDialogBind
 
     private fun setTagsData() {
         val data = LayoutHolder.data
-        if (data.isNullOrEmpty()) {
+        if (data!![LayoutHolder.categoryPosition].dynamic_layout.project_dialog.isNullOrEmpty()) {
             return
-        }
-        when (getString(R.string.app_name)) {
-            AppConstants.SWIGGY -> {
-
-            } else -> {
-                return
-            }
         }
 
         val layout = data!![LayoutHolder.categoryPosition].dynamic_layout.project_dialog
