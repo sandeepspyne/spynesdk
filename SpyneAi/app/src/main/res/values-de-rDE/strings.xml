@@ -24,7 +24,7 @@
     <string name="did_not">Didn\'t receive the OTP?</string>
     <string name="resend">Erneut senden</string>
     <string name="submit_otp">OTP senden</string>
-    <string name="submit">Bestätigen</string>
+    <string name="submit">Conferma</string>
     <string name="continue_with_this_shoot">Weiter mit diesem Shooting</string>
     <string name="ok">OK</string>
     <string name="channels">Kanäle</string>
@@ -50,7 +50,7 @@
     <string name="total_images">Total Images Clicked</string>
     <string name="available_download">Available for download</string>
     <string name="select_marketplace">Select Marketplace</string>
-    <string name="confirm">Bestätigen Sie</string>
+    <string name="confirm">Conferma Sie</string>
     <string name="no_reshoot">Erneut aufnehmen</string>
     <string name="start_shooting">Start Shooting</string>
     <string name="ongoing">In Bearbeitung</string>
@@ -122,8 +122,8 @@
     <string name="window_reflection">Fensterreflexionsstil</string>
     <string name="transparent">Transparent</string>
     <string name="original">Original</string>
-    <string name="exterior">Außen</string>
-    <string name="interior">Innere</string>
+    <string name="exterior">Außenansicht</string>
+    <string name="interior">Innenansicht</string>
     <string name="have_look"><u>Guck mal</u></string>
 
     <string name="download_hd_images"><u>HD-Bilder herunterladen</u></string>
@@ -228,7 +228,7 @@
     <string name="my_projcts">Meine Projekte</string>
 
     <string name="session_expired">Sitzung abgelaufen. Bitte <b>melden Sie sich erneut</b> an.</string>
-    <string name="change_fidelity"><u>Fidelity ändern</u></string>
+    <string name="change_fidelity"><u>Fidelity Riprendi</u></string>
     <string name="total_exterior_clicked">Außenaufnahmen insgesamt</string>
 
     <string name="get_started_">Erste Schritte</string>
@@ -290,22 +290,22 @@
     <string name="sample_output">Beispielausgabe</string>
 
     <string name="image_uploading_in_progess">Bild wird hochgeladen...</string>
-    <string name="upload">Hochladen </string>
+    <string name="upload">Hochladen von </string>
     <string name="active">Aktiv</string>
     <string name="disconnected">Getrennt</string>
     <string name="image_uploaded">Bild hochgeladen</string>
-    <string name="miscellanous">Sonstiges</string>
+    <string name="miscellanous">Verschiedene</string>
     <string name="last_uploaded">Zuletzt hochgeladen </string>
     <string name="internet_connection">Internetverbindung: Getrennt</string>
     <string name="uploading_paused_on">Upload angehalten am </string>
     <string name="uploading_paused">Upload angehalten</string>
-<!--    <string name="inner_connection_label">Internetverbindung: </string>-->
+    <string name="inner_connection_label">Internetverbindung: </string>
     <string name="all_uploaded">Alle Bilder hochgeladen </string>
     <string name="allow">Zulassen</string>
     <string name="select_car_subcategory">Wählen Sie die Unterkategorie Ihres Autos</string>
     <string name="no_magnato_meter">Ihr Gerät hat kein Magnetometer!\n\nBitte verwenden Sie ein anderes Mobilgerät</string>
     <string name="language">Sprache auswählen</string>
-    <string name="change_password">Passwort ändern</string>
+    <string name="change_password">Passwort Riprendi</string>
     <string name="app_version">App-Version</string>
     <string name="you_are_logged_in_as">Sie sind angemeldet als:</string>
     <string name="profile">Profil</string>

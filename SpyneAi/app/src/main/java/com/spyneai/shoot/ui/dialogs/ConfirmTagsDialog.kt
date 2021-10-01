@@ -301,7 +301,6 @@ class ConfirmTagsDialog : BaseDialogFragment<ShootViewModel, DialogConfirmTagsBi
 
         val bindingList = bindingMap[viewModel.categoryDetails.value?.imageType]
 
-
         bindingList?.forEachIndexed { index, viewBinding ->
             when(viewBinding){
                 is ItemTagsSpinnerBinding -> {
