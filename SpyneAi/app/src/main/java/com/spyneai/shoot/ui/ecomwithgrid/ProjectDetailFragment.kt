@@ -35,7 +35,7 @@ class ProjectDetailFragment : BaseFragment<ShootViewModel, FragmentProjectDetail
         super.onViewCreated(view, savedInstanceState)
 
         handler = Handler()
-        binding.tvShadowIs.text = "Shadow is OFF"
+        binding.tvShadowOption.text = "Shadow is OFF"
 
 //        binding.swiperefreshProject.setOnRefreshListener {
 //            repeatRefreshData()
@@ -45,11 +45,11 @@ class ProjectDetailFragment : BaseFragment<ShootViewModel, FragmentProjectDetail
         binding.switchShadowOption.setOnCheckedChangeListener { _, isChecked ->
             if (isChecked) {
                 shadow = "true"
-                binding.tvShadowIs.text = "Shadow is ON"
+                binding.tvShadowOption.text = "Shadow is ON"
             }
             else{
                 shadow = "false"
-                binding.tvShadowIs.text = "Shadow is OFF"
+                binding.tvShadowOption.text = "Shadow is OFF"
             }
         }
 

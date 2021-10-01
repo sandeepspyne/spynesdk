@@ -69,8 +69,7 @@
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:id="@+id/groupShadow"
-        android:visibility="gone"
-        app:constraint_referenced_ids="switchShadowOption, tvShadowOption, tvShadowIs, llChooseShadow"/>
+        app:constraint_referenced_ids="switchShadowOption, tvShadowOption, llChooseShadow"/>
 
 
 
@@ -89,24 +88,13 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:fontFamily="@font/poppins_bold"
-        android:text="Choose Shadow"
+        tools:text="Shadow is OFF"
         app:layout_constraintBottom_toTopOf="@+id/tvSkuName"
         app:layout_constraintLeft_toLeftOf="@+id/tvTotalImage"
         android:textColor="@color/black"
         android:textSize="@dimen/sp_14"
         android:layout_marginTop="@dimen/dp_20"
-        android:layout_marginBottom="45dp"/>
-
-    <TextView
-        android:id="@+id/tvShadowIs"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:fontFamily="@font/poppins_light"
-        tools:text="Shadow is OFF"
-        app:layout_constraintStart_toStartOf="@+id/tvShadowOption"
-        app:layout_constraintTop_toBottomOf="@+id/tvShadowOption"
-        android:textColor="@color/black"
-        android:textSize="10sp" />
+        android:layout_marginBottom="35dp"/>
 
 
     <LinearLayout
