@@ -19,6 +19,8 @@ class ProcessedViewModel : ViewModel() {
     var skuId : String? = null
     var selectedImageUrl : String? = null
 
+    val reshoot = MutableLiveData<Boolean>()
+
     fun getImagesOfSku(
         authKey: String,
         skuId: String

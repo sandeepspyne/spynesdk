@@ -115,6 +115,10 @@ class ProcessedImagesFragment : BaseFragment<ProcessedViewModel, FragmentProcess
         }
 
         observeSkuData()
+
+        binding.tvReshoot.setOnClickListener {
+            viewModel.reshoot.value = true
+        }
     }
 
     private fun observeSkuData() {

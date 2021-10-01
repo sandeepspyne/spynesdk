@@ -306,6 +306,8 @@
     <string name="select_car_subcategory">Select your car\'s sub-category</string>
     <string name="no_magnato_meter">Your device does not have a Magnetometer!\n\nPlease use another Mobile Device</string>
     <string name="reclick">Are you sure you want to reshoot this angle?</string>
+    <string name="select_to_reshoot">Select Shots to Reshoot</string>
+    <string name="reshoot_specific">Reshoot Specific Angles</string>
 
 
 </resources>
