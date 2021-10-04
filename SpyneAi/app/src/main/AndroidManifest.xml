@@ -40,7 +40,7 @@
         android:usesCleartextTraffic="true"
         tools:targetApi="m">
         <activity
-            android:name=".reshoot.ui.ReshootActivity"
+            android:name=".reshoot.ui.SelectImagesActivity"
             android:exported="true" />
         <activity android:name=".onboarding.SelectLanguageActivity"></activity>
         <activity
@@ -110,10 +110,10 @@
             android:name=".activity.OngoingOrdersActivity"
             android:launchMode="singleTask"
             android:screenOrientation="portrait" />
-        <activity
-            android:name=".activity.YourOrdersActivity"
-            android:launchMode="singleTask"
-            android:screenOrientation="portrait" />
+
+
+        <activity android:name=".reshoot.ui.ReshootActivity"
+            android:screenOrientation="landscape"/>
 
         <service
             android:name=".imagesdowloading.ImageDownloadingService"

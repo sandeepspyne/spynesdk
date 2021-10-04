@@ -3,13 +3,10 @@ package com.spyneai.processedimages.ui
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import androidx.lifecycle.ViewModelProvider
-import com.spyneai.R
 import com.spyneai.dashboard.ui.base.ViewModelFactory
-import com.spyneai.databinding.ActivityDashboardMainBinding
 import com.spyneai.databinding.ActivityProcessedImageBinding
 import com.spyneai.processedimages.ui.data.ProcessedViewModel
-import com.spyneai.reshoot.ui.ReshootFragment
-import com.spyneai.shoot.data.ProcessViewModel
+import com.spyneai.reshoot.ui.SelectImagesFragment
 
 class ProcessedImageActivity : AppCompatActivity() {
 
@@ -31,7 +28,7 @@ class ProcessedImageActivity : AppCompatActivity() {
         processViewModel.reshoot.observe(this,{
             supportFragmentManager
                 .beginTransaction()
-                .add(binding.flContainer.id,ReshootFragment())
+                .add(binding.flContainer.id,SelectImagesFragment())
                 .commit()
         })
     }

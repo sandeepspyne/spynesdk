@@ -1,11 +1,12 @@
 package com.spyneai.reshoot
 
-import android.graphics.Color
 import android.util.Log
 import android.view.View
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
+import com.bumptech.glide.load.engine.DiskCacheStrategy
+import com.spyneai.BaseApplication
 import com.spyneai.R
 import com.spyneai.base.GenericAdapter
 import com.spyneai.base.OnItemClickListener
@@ -13,20 +14,15 @@ import com.spyneai.camera2.OverlaysResponse
 import com.spyneai.databinding.ItemOverlaysBinding
 import com.spyneai.databinding.ItemReshootBinding
 import com.spyneai.orders.data.response.ImagesOfSkuRes
-import com.spyneai.service.log
-
-
-
-
 
 class ReshootHolder(
     itemView: View,
-    listener: OnItemClickListener?)
-    : RecyclerView.ViewHolder(itemView), GenericAdapter.Binder<ImagesOfSkuRes.Data>{
+    listener: OnItemClickListener?
+) : RecyclerView.ViewHolder(itemView), GenericAdapter.Binder<ImagesOfSkuRes.Data>{
 
     var listener: OnItemClickListener? = null
     var binding : ItemReshootBinding? = null
-    val TAG = "ReshootHolder"
+    val TAG = "OverlaysHolder"
 
     init {
         binding = ItemReshootBinding.bind(itemView)
@@ -34,36 +30,42 @@ class ReshootHolder(
     }
 
     override fun bind(data: ImagesOfSkuRes.Data) {
-
-        val color = Integer.toHexString(
-            ContextCompat.getColor(
-                itemView.context,
-                R.color.primary
-            ) and 0x00ffffff
-        )
-
+        //set sequence number as per adapter position
+//        data.sequenceNumber = adapterPosition
+//
+//        binding.apply {
+//            this?.tvName?.text = data.display_name
+//        }
+//
         if (data.isSelected)
-            binding?.clRoot?.setBackgroundColor(Color.parseColor("#36"+color))
+            binding?.flOverlay?.background = ContextCompat.getDrawable(
+                BaseApplication.getContext(),
+                R.drawable.bg_overlay_selected)
         else
-            binding?.clRoot?.setBackgroundColor(Color.parseColor("#1A878787"))
+            binding?.flOverlay?.background = ContextCompat.getDrawable(
+                BaseApplication.getContext(),
+                R.drawable.bg_overlay)
 
-        binding?.cb?.isChecked= data.isSelected
+        if (data.imageClicked){
+            Glide.with(itemView)
+                .load(data.imagePath)
+                .diskCacheStrategy(DiskCacheStrategy.NONE)
+                .skipMemoryCache(true)
+                .into(binding?.ivOverlay!!)
+        }
+//        else {
+//            Glide.with(itemView)
+//                .load(data.display_thumbnail)
+//                .diskCacheStrategy(DiskCacheStrategy.NONE)
+//                .into(binding?.ivOverlay!!)
+//        }
 
-        Glide.with(itemView)
-            .load(data.input_image_hres_url)
-            .into(binding?.ivBefore!!)
-
-        Glide.with(itemView)
-            .load(data.output_image_hres_url)
-            .into(binding?.ivAfter!!)
-
-        binding?.clRoot?.setOnClickListener {
+        binding?.flOverlay?.setOnClickListener {
             listener?.onItemClick(
                 it,
                 adapterPosition,
                 data
             )
         }
-
     }
 }

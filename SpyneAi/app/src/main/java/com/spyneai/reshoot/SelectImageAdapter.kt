@@ -8,7 +8,7 @@ import com.spyneai.base.JavaViewHolderFactory
 import com.spyneai.base.OnItemClickListener
 import com.spyneai.orders.data.response.ImagesOfSkuRes
 
-class ReshootAdapter(
+class SelectImageAdapter(
     list: List<Any>,
     var listener: OnItemClickListener
 ) : GenericAdapter<Any>(list) {
@@ -16,7 +16,7 @@ class ReshootAdapter(
     override fun getLayoutId(position: Int, obj: Any?): Int {
         return when (obj) {
 
-            is ImagesOfSkuRes.Data -> R.layout.item_reshoot
+            is ImagesOfSkuRes.Data -> R.layout.item_select_image
             else -> error("Unknown type: for position: $position")
         }
     }

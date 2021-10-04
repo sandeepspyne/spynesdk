@@ -1293,8 +1293,6 @@ class CameraFragment : BaseFragment<ShootViewModel, FragmentCameraBinding>(), Pi
             sequenceNumber = viewModel.getSequenceNumber()
         }
 
-        val s = ""
-
         val shootData = ShootData(
             capturedImage,
             viewModel.projectId.value!!,

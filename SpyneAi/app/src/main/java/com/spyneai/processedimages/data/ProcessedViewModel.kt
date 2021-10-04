@@ -16,7 +16,9 @@ class ProcessedViewModel : ViewModel() {
     val imagesOfSkuRes: LiveData<Resource<ImagesOfSkuRes>>
         get() = _imagesOfSkuRes
 
+    var projectId : String? = null
     var skuId : String? = null
+    var skuName : String? = null
     var selectedImageUrl : String? = null
 
     val reshoot = MutableLiveData<Boolean>()

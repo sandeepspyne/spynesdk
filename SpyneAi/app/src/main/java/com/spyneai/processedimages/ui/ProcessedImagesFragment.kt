@@ -92,7 +92,9 @@ class ProcessedImagesFragment : BaseFragment<ProcessedViewModel, FragmentProcess
 
         intent = requireActivity().intent
 
+        viewModel.projectId = intent.getStringExtra(AppConstants.PROJECT_ID)
         viewModel.skuId = intent.getStringExtra(AppConstants.SKU_ID)
+        viewModel.skuName = intent.getStringExtra(AppConstants.SKU_NAME)
 
         frontFramesList = ArrayList()
 

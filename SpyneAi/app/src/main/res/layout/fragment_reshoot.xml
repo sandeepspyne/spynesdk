@@ -1,118 +1,175 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:background="@color/white">
+    tools:context=".shoot.ui.OverlaysFragment"
+    android:background="@android:color/transparent">
 
-    <androidx.appcompat.widget.Toolbar
-        android:id="@+id/my_toolbar"
-        android:layout_width="match_parent"
-        android:layout_height="?attr/actionBarSize"
-        android:background="?attr/colorPrimary"
-        android:elevation="@dimen/dp_5"
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="@dimen/dp_10"
+        android:orientation="horizontal"
+        android:id="@+id/llAngles"
+        app:layout_constraintLeft_toRightOf="@id/rvImages"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
-        android:backgroundTint="@color/white"
-        android:theme="@style/ThemeOverlay.AppCompat.Light" >
+        android:background="@drawable/bg_shoot_anlges">
 
-        <FrameLayout
-            android:layout_width="match_parent"
+        <TextView
+            android:id="@+id/tvShoot"
+            android:layout_width="wrap_content"
+            tools:text="Angles 1/4"
             android:layout_height="wrap_content"
-            android:orientation="horizontal">
+            android:layout_gravity="center"
+            android:fontFamily="@font/bold"
+            android:gravity="center"
+            android:paddingLeft="@dimen/dp_10"
+            android:paddingRight="@dimen/dp_10"
+            android:paddingTop="@dimen/dp_5"
+            android:paddingBottom="@dimen/dp_5"
+            android:textColor="@color/primary"
+            android:textSize="@dimen/sp_13" />
 
-            <ImageView
-                android:id="@+id/ivBackShowImages"
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:padding="@dimen/dp_10"
-                android:src="@drawable/back"
-                app:tint="@color/black" />
-
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:text="@string/select_to_reshoot"
-                android:fontFamily="@font/poppins_medium"
-                android:textColor="@color/black"
-                android:gravity="center"
-                android:textStyle="bold"
-                android:textSize="@dimen/sp_16"/>
-        </FrameLayout>
-
-    </androidx.appcompat.widget.Toolbar>
-
-    <TextView
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:text="@string/before"
-        android:id="@+id/tvBefore"
-        android:gravity="center"
-        android:fontFamily="@font/poppins_medium"
-        android:textColor="@color/black"
-        android:textSize="@dimen/sp_12"
-        android:layout_marginTop="@dimen/dp_10"
-        app:layout_constraintTop_toBottomOf="@id/my_toolbar"
-        app:layout_constraintLeft_toLeftOf="@id/rvSkuImages"
-        app:layout_constraintRight_toLeftOf="@id/tvAfter"/>
-
-    <TextView
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:text="@string/after"
-        android:id="@+id/tvAfter"
-        android:gravity="center"
-        android:layout_marginTop="@dimen/dp_10"
-        android:textColor="@color/black"
-        android:textSize="@dimen/sp_12"
-        android:paddingRight="@dimen/dp_50"
-        android:fontFamily="@font/poppins_medium"
-        app:layout_constraintTop_toBottomOf="@id/my_toolbar"
-        app:layout_constraintRight_toRightOf="@id/rvSkuImages"
-        app:layout_constraintLeft_toRightOf="@id/tvBefore"/>
+    </LinearLayout>
 
     <androidx.recyclerview.widget.RecyclerView
-        android:layout_width="match_parent"
+        android:id="@+id/rvImages"
+        android:layout_width="@dimen/dp_80"
         android:layout_height="0dp"
-        android:id="@+id/rvSkuImages"
-        app:layout_constraintTop_toBottomOf="@id/tvBefore"
+        android:paddingTop="@dimen/dp_5"
+        android:background="@color/black"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent" />
+
+    <TextView
+        android:id="@+id/tvSkuName"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="left"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintBottom_toTopOf="@id/flReshoot"
-        android:layout_marginLeft="@dimen/dp_20"
-        android:layout_marginRight="@dimen/dp_20"
+        app:layout_constraintTop_toTopOf="parent" android:background="@drawable/bg_edit"
+        android:fontFamily="@font/medium"
+        android:gravity="center"
+        android:hint="@string/sku_names"
+        android:maxLines="1"
+        android:maxLength="20"
+        tools:text="sku-name"
+        android:layout_marginLeft="@dimen/dp_10"
         android:layout_marginTop="@dimen/dp_10"
-        android:clipToPadding="false"
-        android:paddingBottom="@dimen/dp_20"/>
+        android:padding="@dimen/dp_5"
+        android:textColor="@color/white"
+        android:textColorHint="@color/white"
+        android:textSize="@dimen/sp_13" />
 
-  <FrameLayout
-      android:layout_width="0dp"
-      android:layout_height="wrap_content"
-      app:layout_constraintLeft_toLeftOf="parent"
-      app:layout_constraintRight_toRightOf="parent"
-      app:layout_constraintBottom_toBottomOf="parent"
-      android:background="@color/white"
-      android:id="@+id/flReshoot">
 
-      <com.google.android.material.button.MaterialButton
-          android:id="@+id/btnReshoot"
-          android:layout_width="wrap_content"
-          android:layout_height="wrap_content"
-          android:layout_gravity="center"
-          android:layout_margin="@dimen/dp_20"
-          android:background="@drawable/bg_edit_button"
-          android:fontFamily="@font/poppins_medium"
-          android:gravity="center"
-          android:paddingLeft="@dimen/dp_50"
-          android:paddingRight="@dimen/dp_50"
-          android:textAllCaps="false"
-          android:text="@string/no_reshoot"
-          android:textColor="@color/white"
-          android:textSize="@dimen/sp_20"
-          android:enabled="false"/>
+    <LinearLayout
+        android:id="@+id/llCapture"
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_gravity="end|center"
+        android:padding="@dimen/dp_10"
+        android:orientation="vertical"
+        android:gravity="center"
+        android:visibility="invisible"
+        android:background="@null"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintRight_toRightOf="parent">
 
-  </FrameLayout>
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:layout_height="0dp">
 
+            <com.mikhaellopez.circularimageview.CircularImageView
+                android:id="@+id/ivGallery"
+                android:layout_width="@dimen/dp_50"
+                android:layout_height="@dimen/dp_50"
+                android:gravity="center"
+                android:src="@mipmap/gallery" />
+
+        </LinearLayout>
+
+        <ImageView
+            android:id="@+id/cameraCaptureButton"
+            android:layout_width="wrap_content"
+            android:layout_weight="1"
+            android:src="@drawable/click_effect"
+            android:layout_height="0dp"
+            android:elevation="2dp" />
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:padding="@dimen/dp_5"
+            android:layout_height="0dp">
+
+            <androidx.cardview.widget.CardView
+                android:id="@+id/cardOverlay"
+                android:layout_width="@dimen/dp_50"
+                android:layout_height="@dimen/dp_50"
+                app:cardCornerRadius="@dimen/dp_50"
+                android:visibility="gone">
+                <ImageView
+                    android:id="@+id/ivPreview"
+                    android:layout_width="@dimen/dp_50"
+                    android:layout_height="@dimen/dp_50"
+                    android:fontFamily="@font/bold"
+                    android:gravity="center"
+                    android:elevation="@dimen/dp_5"
+                    android:padding="@dimen/sp_5"
+                    android:background="@drawable/bg_round" />
+            </androidx.cardview.widget.CardView>
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:id="@+id/llSkip"
+                android:visibility="invisible">
+
+                <TextView
+                    android:id="@+id/tvSkipShoot"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
+                    android:layout_gravity="center"
+                    android:drawablePadding="@dimen/dp_5"
+                    android:fontFamily="@font/bold"
+                    android:text="@string/skip"
+                    android:textColor="@color/primary"
+                    android:textSize="@dimen/sp_16"
+                    />
+
+                <ImageView
+                    android:layout_width="@dimen/dp_15"
+                    android:layout_height="@dimen/dp_15"
+                    android:src="@drawable/skip"
+                    android:id="@+id/ivSkip"
+                    android:layout_gravity="center"
+                    app:tint="@color/primary"
+                    android:layout_marginLeft="@dimen/dp_2" />
+
+            </LinearLayout>
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+    <ImageView
+        android:id="@+id/imgOverlay"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintLeft_toRightOf="@id/rvImages"
+        app:layout_constraintRight_toLeftOf="@id/llCapture"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:contentDescription="@string/app_name"
+        android:visibility="invisible" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
