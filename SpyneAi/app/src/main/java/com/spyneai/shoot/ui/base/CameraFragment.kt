@@ -1106,10 +1106,12 @@ class CameraFragment : BaseFragment<ShootViewModel, FragmentCameraBinding>(), Pi
                     0 -> {
                         binding.tvAngleValue!!.visibility = View.VISIBLE
                         binding.tvAngleValue!!.text = "0" + "\u00B0"
+                        binding.groupOverlay!!.visibility = View.GONE
                     }
                     45 -> {
                         binding.tvAngleValue!!.visibility = View.VISIBLE
                         binding.tvAngleValue!!.text = "45" + "\u00B0"
+                        binding.groupOverlay!!.visibility = View.GONE
                     }
                     90 -> {
                         binding.tvAngleValue!!.visibility = View.VISIBLE
@@ -1200,6 +1202,8 @@ class CameraFragment : BaseFragment<ShootViewModel, FragmentCameraBinding>(), Pi
                     }
 
                 } else {
+                    binding.tvAngleValue!!.visibility = View.INVISIBLE
+                    binding.groupOverlay!!.visibility = View.GONE
                     binding.tvAngleValue!!.visibility = View.INVISIBLE
                     isGyroOnCorrectAngle = false
                     binding.tvAngleRed!!.visibility = View.VISIBLE
