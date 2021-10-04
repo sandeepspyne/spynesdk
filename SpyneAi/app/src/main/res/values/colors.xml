@@ -23,6 +23,9 @@
     <color name="light_grey">#D5D5D5</color>
 
 
+    <color name="mask">#60000000</color>
+
+
     <color name="categories_text">#4F4F4F</color>
 
     <color name="credit_deducted">#B3B1B1</color>
