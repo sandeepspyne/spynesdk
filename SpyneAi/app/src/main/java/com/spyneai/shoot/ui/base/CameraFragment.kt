@@ -1090,7 +1090,7 @@ class CameraFragment : BaseFragment<ShootViewModel, FragmentCameraBinding>(), Pi
                      }
                  }
              }*/
-            AppConstants.SWIGGY, AppConstants.EBAY, AppConstants.FLIPKART, AppConstants.UDAAN -> {
+            AppConstants.SWIGGY, AppConstants.EBAY, AppConstants.FLIPKART, AppConstants.UDAAN, AppConstants.AMAZON -> {
 
                 // angle name
                 if (pitch.roundToInt() == 0 || (pitch.roundToInt() <= -0 && pitch.roundToInt() >= -3))
@@ -1284,7 +1284,6 @@ class CameraFragment : BaseFragment<ShootViewModel, FragmentCameraBinding>(), Pi
                 }
             }
             AppConstants.SWIGGYINSTAMART,
-            AppConstants.AMAZON,
             AppConstants.LAL_10,
             AppConstants.BATA,
             AppConstants.FLIPKART_GROCERY -> {
