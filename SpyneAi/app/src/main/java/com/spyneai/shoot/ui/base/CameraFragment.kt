@@ -1026,6 +1026,13 @@ class CameraFragment : BaseFragment<ShootViewModel, FragmentCameraBinding>(), Pi
         roll = Math.toDegrees(orientationAngles[2].toDouble())
         azimuth = (orientationAngles[0] * 180 / Math.PI.toFloat()).toDouble()
 
+
+
+//        binding.tvPitchRoll!!.text = pitch.roundToInt().toString()+ ","+ roll.roundToInt().toString()
+
+
+
+
         when (getString(R.string.app_name)) {
             AppConstants.KARVI -> {
                 if ((roll >= -95 && roll <= -85) && (pitch >= -5 && pitch <= 5)) {
@@ -1087,6 +1094,9 @@ class CameraFragment : BaseFragment<ShootViewModel, FragmentCameraBinding>(), Pi
                      }
                  }
              }*/
+
+
+
             AppConstants.SWIGGY -> {
 
                 // angle name
@@ -1164,21 +1174,28 @@ class CameraFragment : BaseFragment<ShootViewModel, FragmentCameraBinding>(), Pi
                     }
                 }
                 //hide moving line
+
+
                 if (pitch.roundToInt() == 0 || (pitch.roundToInt() <= -0 && pitch.roundToInt() >= -3))
                     binding.tvLevelIndicator.visibility = View.GONE
                 else
                     binding.tvLevelIndicator.visibility = View.VISIBLE
 
+
+
+
                 if ((pitch.roundToInt() == 0 || (pitch.roundToInt() <= -0 && pitch.roundToInt() >= -3)) ||
-                    pitch.roundToInt() <= -82 && pitch.roundToInt() >= -88 ||
-                    (pitch.roundToInt() <= -40 && pitch.roundToInt() >= -45) && abs(roll.roundToInt()) < 100
-                ) {
+                    (pitch.roundToInt() <= -82 && pitch.roundToInt() >= -88) ||
+                    (pitch.roundToInt() <= -40 && pitch.roundToInt() >= -45)) {
                     binding.lottieDownArrow!!.visibility = View.INVISIBLE
                     binding.lottieUpArrow!!.visibility = View.INVISIBLE
                     binding.tvUpcomingAngle1!!.visibility = View.INVISIBLE
                     binding.tvUpcomingAngle2!!.visibility = View.INVISIBLE
                     binding.tvAngleRed!!.visibility = View.INVISIBLE
                     isGyroOnCorrectAngle = true
+
+
+
                     //angle 90
                     if (pitch.roundToInt() == 0 || (pitch.roundToInt() <= -0 && pitch.roundToInt() >= -3)) {
                         cameraAngle = 0
@@ -1188,8 +1205,11 @@ class CameraFragment : BaseFragment<ShootViewModel, FragmentCameraBinding>(), Pi
                     else if (pitch.roundToInt() <= -40 && pitch.roundToInt() >= -45) {
                         cameraAngle = 45
                         gyroMeterOnLevel(false)
-                        // angle 0
-                    } else {
+                    }
+
+
+
+                    else {
                         cameraAngle = 90
                         gyroMeterOnLevel(true)
                     }
@@ -1239,6 +1259,8 @@ class CameraFragment : BaseFragment<ShootViewModel, FragmentCameraBinding>(), Pi
                                 }
                             }
                         }
+
+
                     }
 
                     else -> {
@@ -1248,10 +1270,10 @@ class CameraFragment : BaseFragment<ShootViewModel, FragmentCameraBinding>(), Pi
                         else
                             binding.tvLevelIndicator.visibility = View.VISIBLE
 
-                        if ((pitch.roundToInt() == 0 || (pitch.roundToInt() <= -0 && pitch.roundToInt() >= -3)) ||
-                            pitch.roundToInt() <= -82 && pitch.roundToInt() >= -88 ||
-                            (pitch.roundToInt() <= -40 && pitch.roundToInt() >= -45) && abs(roll.roundToInt()) < 100
-                        ) {
+                        if (((pitch.roundToInt() == 0 || (pitch.roundToInt() <= -0 && pitch.roundToInt() >= -3))
+                                    && (abs(roll.roundToInt()) <= 3 && abs(roll.roundToInt()) >= -3)) ||
+                            (pitch.roundToInt() <= -82 && pitch.roundToInt() >= -88) ||
+                            (pitch.roundToInt() <= -40 && pitch.roundToInt() >= -45) ) {
                             if (pitch.roundToInt() == 0 || (pitch.roundToInt() <= -0 && pitch.roundToInt() >= -3))
                                 gyroMeterOnLevel(false)
                             else if (pitch.roundToInt() <= -40 && pitch.roundToInt() >= -45)
