@@ -366,7 +366,8 @@ class HomeDashboardFragment :
 //                                        startActivity(intent)
 //                                    }
 
-                                    0, 1 -> {
+                                    0, 1, 2 -> {
+
                                         val intent = Intent(
                                             requireContext(),
                                             ShootPortraitActivity::class.java
