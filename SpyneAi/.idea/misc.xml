@@ -6,6 +6,8 @@
         <entry key="../../../../../../layout/custom_preview.xml" value="0.21574074074074073" />
         <entry key="app/src/automoser/res/mipmap-anydpi-v26/app_ic.xml" value="0.1" />
         <entry key="app/src/automoser/res/mipmap-anydpi-v26/app_ic_round.xml" value="0.1" />
+        <entry key="app/src/flipkart/res/menu/dashboard_bottom_menu.xml" value="0.22" />
+        <entry key="app/src/flipkartDebug/res/drawable/app_ic_foreground.xml" value="0.1935185185185185" />
         <entry key="app/src/flipkartDebug/res/mipmap-anydpi-v26/app_ic.xml" value="0.1265625" />
         <entry key="app/src/flipkartgrocery/res/drawable/ic_launcher_background.xml" value="0.24166666666666667" />
         <entry key="app/src/flipkartgrocery/res/layout/home_dashboard_fragment.xml" value="0.2578125" />
@@ -16,6 +18,11 @@
         <entry key="app/src/main/res/drawable/bg_rectangle_button_ripple.xml" value="0.2935185185185185" />
         <entry key="app/src/main/res/drawable/bg_select_lang.xml" value="0.2935185185185185" />
         <entry key="app/src/main/res/drawable/bg_select_lang_ripple.xml" value="0.2935185185185185" />
+        <entry key="app/src/main/res/drawable/ic_home.xml" value="0.1935185185185185" />
+        <entry key="app/src/main/res/drawable/ic_orders.xml" value="0.1962962962962963" />
+        <entry key="app/src/main/res/drawable/ic_shoot.xml" value="0.1935185185185185" />
+        <entry key="app/src/main/res/drawable/ic_wallet.xml" value="0.1935185185185185" />
+        <entry key="app/src/main/res/drawable/profile.xml" value="0.1265625" />
         <entry key="app/src/main/res/layout-land/fragment_camera.xml" value="0.18125" />
         <entry key="app/src/main/res/layout-land/fragment_overlays.xml" value="0.18125" />
         <entry key="app/src/main/res/layout/activity_background_add.xml" value="0.30512820512820515" />
