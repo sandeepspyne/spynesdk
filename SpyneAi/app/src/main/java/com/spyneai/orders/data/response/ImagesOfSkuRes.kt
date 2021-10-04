@@ -26,6 +26,7 @@ data class ImagesOfSkuRes(
         val source: String,
         val status: String,
         val updated_on: String,
-        val user_id: String
+        val user_id: String,
+        var isSelected : Boolean = false
     )
 }

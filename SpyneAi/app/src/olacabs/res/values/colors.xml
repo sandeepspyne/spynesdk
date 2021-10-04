@@ -12,4 +12,5 @@
     <color name="bottom_nav_unselected">#000000</color>
 
     <color name="sub_cat_selection">#566DED</color>
+    <color name="reshoot_selected">#36DCE224</color>
 </resources>

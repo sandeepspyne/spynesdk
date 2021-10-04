@@ -8,11 +8,16 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.spyneai.base.BaseFragment
 import com.spyneai.base.OnItemClickListener
 import com.spyneai.base.network.Resource
+import com.spyneai.camera2.OverlaysResponse
 import com.spyneai.databinding.FragmentReshootBinding
+import com.spyneai.orders.data.response.ImagesOfSkuRes
 import com.spyneai.processedimages.ui.data.ProcessedViewModel
 import com.spyneai.reshoot.ReshootAdapter
+import com.spyneai.shoot.ui.dialogs.ReclickDialog
 
 class ReshootFragment : BaseFragment<ProcessedViewModel,FragmentReshootBinding>(),OnItemClickListener{
+
+    private var reshootAdapter : ReshootAdapter? = null
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -23,9 +28,11 @@ class ReshootFragment : BaseFragment<ProcessedViewModel,FragmentReshootBinding>(
     private fun getImages() {
         val imagesResponse = (viewModel.imagesOfSkuRes.value as Resource.Success).value
 
+        reshootAdapter = ReshootAdapter(imagesResponse.data,this)
+
         binding.rvSkuImages.apply {
             layoutManager = LinearLayoutManager(requireContext(),LinearLayoutManager.VERTICAL,false)
-            adapter = ReshootAdapter(imagesResponse.data,this@ReshootFragment)
+            adapter = reshootAdapter
         }
 
     }
@@ -38,6 +45,12 @@ class ReshootFragment : BaseFragment<ProcessedViewModel,FragmentReshootBinding>(
     ) = FragmentReshootBinding.inflate(inflater, container, false)
 
     override fun onItemClick(view: View, position: Int, data: Any?) {
+       when(data){
+           is ImagesOfSkuRes.Data -> {
+               data.isSelected = !data.isSelected
+               reshootAdapter?.notifyItemChanged(position)
+           }
+       }
 
     }
 }

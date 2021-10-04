@@ -2,21 +2,46 @@
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:background="@color/white">
 
-    <TextView
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:text="@string/select_to_reshoot"
-        android:id="@+id/tvSelectToReshoot"
-        android:gravity="center"
-        android:textColor="@color/primary"
-        android:fontFamily="@font/poppins_medium"
-        android:textSize="@dimen/sp_14"
-        android:layout_marginTop="@dimen/dp_10"
+    <androidx.appcompat.widget.Toolbar
+        android:id="@+id/my_toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        android:background="?attr/colorPrimary"
+        android:elevation="@dimen/dp_5"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"/>
+        app:layout_constraintRight_toRightOf="parent"
+        android:backgroundTint="@color/white"
+        android:theme="@style/ThemeOverlay.AppCompat.Light" >
+
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <ImageView
+                android:id="@+id/ivBackShowImages"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:padding="@dimen/dp_10"
+                android:src="@drawable/back"
+                app:tint="@color/black" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:text="@string/select_to_reshoot"
+                android:fontFamily="@font/poppins_medium"
+                android:textColor="@color/black"
+                android:gravity="center"
+                android:textStyle="bold"
+                android:textSize="@dimen/sp_16"/>
+        </FrameLayout>
+
+    </androidx.appcompat.widget.Toolbar>
 
     <TextView
         android:layout_width="0dp"
@@ -28,7 +53,7 @@
         android:textColor="@color/black"
         android:textSize="@dimen/sp_12"
         android:layout_marginTop="@dimen/dp_10"
-        app:layout_constraintTop_toBottomOf="@id/tvSelectToReshoot"
+        app:layout_constraintTop_toBottomOf="@id/my_toolbar"
         app:layout_constraintLeft_toLeftOf="@id/rvSkuImages"
         app:layout_constraintRight_toLeftOf="@id/tvAfter"/>
 
@@ -41,9 +66,10 @@
         android:layout_marginTop="@dimen/dp_10"
         android:textColor="@color/black"
         android:textSize="@dimen/sp_12"
+        android:paddingRight="@dimen/dp_50"
         android:fontFamily="@font/poppins_medium"
-        app:layout_constraintTop_toBottomOf="@id/tvSelectToReshoot"
-        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/my_toolbar"
+        app:layout_constraintRight_toRightOf="@id/rvSkuImages"
         app:layout_constraintLeft_toRightOf="@id/tvBefore"/>
 
     <androidx.recyclerview.widget.RecyclerView
@@ -55,6 +81,8 @@
         app:layout_constraintRight_toRightOf="parent"
         android:layout_marginLeft="@dimen/dp_20"
         android:layout_marginRight="@dimen/dp_20"
-        android:layout_marginTop="@dimen/dp_10"/>
+        android:layout_marginTop="@dimen/dp_10"
+        android:clipToPadding="false"
+        android:paddingBottom="@dimen/dp_100"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

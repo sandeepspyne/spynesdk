@@ -1,50 +1,142 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.cardview.widget.CardView
+<androidx.constraintlayout.widget.ConstraintLayout
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    app:layout_constraintTop_toTopOf="parent"
-    app:layout_constraintLeft_toLeftOf="parent"
-    app:layout_constraintRight_toRightOf="parent"
-    app:cardCornerRadius="@dimen/dp_5"
-    app:cardBackgroundColor="#1A878787"
-    android:layout_margin="@dimen/dp_10">
+    android:background="#1A878787"
+    android:padding="@dimen/dp_15"
+    android:layout_marginBottom="@dimen/dp_15"
+    android:id="@+id/clRoot">
 
-    <androidx.constraintlayout.widget.ConstraintLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+    <LinearLayout
+        android:layout_width="0dp"
+        android:gravity="center"
+        android:layout_marginStart="@dimen/dp_5"
+        android:layout_marginEnd="@dimen/dp_5"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:id="@+id/llBefore"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toLeftOf="@id/llAfter">
 
-        <ImageView
-            android:layout_width="0dp"
+        <androidx.cardview.widget.CardView
+            android:layout_width="match_parent"
             android:layout_height="@dimen/dp_100"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintLeft_toLeftOf="parent"
-            app:layout_constraintRight_toLeftOf="@id/ivAfter"
-            android:id="@+id/ivBefore"
             android:layout_margin="@dimen/dp_1"
-            android:layout_marginRight="@dimen/dp_3"/>
+            android:elevation="@dimen/dp_10"
+            android:background="@drawable/bg_edit_black_bf"
+            app:cardCornerRadius="@dimen/dp_10">
+            <ImageView
+                android:id="@+id/ivBefore"
+                android:layout_width="match_parent"
+                android:src="@mipmap/defaults"
+                android:layout_gravity="center"
+                android:scaleType="centerCrop"
+                android:layout_height="@dimen/dp_100" />
+        </androidx.cardview.widget.CardView>
 
-        <ImageView
-            android:layout_width="0dp"
-            android:layout_height="0dp"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintLeft_toRightOf="@id/ivBefore"
-            app:layout_constraintRight_toLeftOf="@id/cb"
-            android:id="@+id/ivAfter"
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="0dp"
+        android:layout_weight="1"
+        android:gravity="center"
+        android:layout_marginStart="@dimen/dp_5"
+        android:layout_marginEnd="@dimen/dp_5"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:id="@+id/llAfter"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintLeft_toRightOf="@id/llBefore"
+        app:layout_constraintRight_toLeftOf="@id/flCb">
+        <androidx.cardview.widget.CardView
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/dp_100"
+            android:background="@drawable/bg_edit_black_bf"
             android:layout_margin="@dimen/dp_1"
-            android:layout_marginLeft="@dimen/dp_3"
-            android:layout_marginRight="6dp"/>
+            android:elevation="@dimen/dp_10"
+            app:cardBackgroundColor="@color/white"
+            app:cardCornerRadius="@dimen/dp_10">
+            <ImageView
+                android:id="@+id/ivAfter"
+                android:layout_width="match_parent"
+                android:scaleType="centerCrop"
+                android:layout_gravity="center"
+                android:background="@color/white"
+                android:layout_height="@dimen/dp_100" />
+        </androidx.cardview.widget.CardView>
 
+
+    </LinearLayout>
+
+    <FrameLayout
+        android:layout_width="wrap_content"
+        android:layout_height="0dp"
+        android:id="@+id/flCb"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        android:layout_marginRight="@dimen/dp_5">
         <CheckBox
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="@dimen/dp_30"
+            android:layout_height="@dimen/dp_30"
             android:id="@+id/cb"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintRight_toRightOf="parent"/>
+            android:gravity="center"
+            android:clickable="false"
+            android:focusable="false"
+            android:focusableInTouchMode="false"
+            android:layout_gravity="center"
+            app:buttonTint="@color/primary" />
 
-    </androidx.constraintlayout.widget.ConstraintLayout>
+    </FrameLayout>
 
-</androidx.cardview.widget.CardView>
+</androidx.constraintlayout.widget.ConstraintLayout>
+
+<!--<androidx.cardview.widget.CardView-->
+<!--    xmlns:app="http://schemas.android.com/apk/res-auto"-->
+<!--    xmlns:android="http://schemas.android.com/apk/res/android"-->
+<!--    android:layout_width="match_parent"-->
+<!--    android:layout_height="wrap_content"-->
+<!--    app:layout_constraintTop_toTopOf="parent"-->
+<!--    app:layout_constraintLeft_toLeftOf="parent"-->
+<!--    app:layout_constraintRight_toRightOf="parent"-->
+<!--    app:cardCornerRadius="@dimen/dp_5"-->
+<!--    android:layout_margin="@dimen/dp_10">-->
+
+<!--    <androidx.constraintlayout.widget.ConstraintLayout-->
+<!--        android:layout_width="match_parent"-->
+<!--        android:layout_height="wrap_content"-->
+<!--        android:background="#1A878787"-->
+<!--        android:paddingLeft="@dimen/dp_10">-->
+
+<!--        <ImageView-->
+<!--            android:layout_width="0dp"-->
+<!--            android:layout_height="@dimen/dp_150"-->
+<!--            app:layout_constraintTop_toTopOf="parent"-->
+<!--            app:layout_constraintLeft_toLeftOf="parent"-->
+<!--            app:layout_constraintRight_toLeftOf="@id/ivAfter"-->
+<!--            android:id="@+id/ivBefore"-->
+<!--            android:adjustViewBounds="true"-->
+<!--            android:layout_marginRight="@dimen/dp_3"/>-->
+
+<!--        <ImageView-->
+<!--            android:layout_width="0dp"-->
+<!--            android:layout_height="@dimen/dp_150"-->
+<!--            app:layout_constraintTop_toTopOf="parent"-->
+<!--            app:layout_constraintBottom_toBottomOf="parent"-->
+<!--            app:layout_constraintLeft_toRightOf="@id/ivBefore"-->
+<!--            app:layout_constraintRight_toLeftOf="@id/flCb"-->
+<!--            android:id="@+id/ivAfter"-->
+<!--            android:adjustViewBounds="true"-->
+<!--            android:layout_marginLeft="@dimen/dp_3"-->
+<!--            android:layout_marginRight="6dp"/>-->
+
+<!--        -->
+
+
+<!--    </androidx.constraintlayout.widget.ConstraintLayout>-->
+
+<!--</androidx.cardview.widget.CardView>-->
