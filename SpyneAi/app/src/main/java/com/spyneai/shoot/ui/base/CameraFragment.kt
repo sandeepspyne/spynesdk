@@ -12,6 +12,7 @@ import android.hardware.SensorManager
 import android.media.MediaActionSound
 import android.os.*
 import android.provider.MediaStore
+import android.text.Layout
 import android.util.DisplayMetrics
 import android.util.Log
 import android.util.Size
@@ -52,6 +53,20 @@ import kotlin.math.abs
 import kotlin.math.max
 import kotlin.math.min
 import kotlin.math.roundToInt
+import android.widget.TextView
+
+import android.widget.Toast
+import android.text.Spannable
+
+import android.text.style.AlignmentSpan
+
+import android.text.SpannableString
+
+
+
+
+
+
 
 
 class CameraFragment : BaseFragment<ShootViewModel, FragmentCameraBinding>(), PickiTCallbacks,
@@ -322,23 +337,16 @@ class CameraFragment : BaseFragment<ShootViewModel, FragmentCameraBinding>(), Pi
             AppConstants.TRUSTED_CARS,
             AppConstants.TRAVO_PHOTOS,
             AppConstants.SELL_ANY_CAR,
-            AppConstants.YALLA_MOTOS -> {
-                if (viewModel.shootList.value == null
-                    && !requireActivity().intent.getBooleanExtra(AppConstants.SKU_CREATED, false)
-                ) {
-                    if (binding.flLevelIndicator.visibility == View.VISIBLE) {
-                        if (isGyroOnCorrectAngle)
-                            getProjectDetails()
-                    } else {
+            AppConstants.YALLA_MOTOS,
+            AppConstants.AUTO_FOTO-> {
+                if (isGyroOnCorrectAngle){
+                    if (viewModel.shootList.value == null
+                        && !requireActivity().intent.getBooleanExtra(AppConstants.SKU_CREATED, false))
                         getProjectDetails()
-                    }
-                } else {
-                    if (binding.flLevelIndicator.visibility == View.VISIBLE) {
-                        if (isGyroOnCorrectAngle)
-                            captureImage()
-                    } else {
-                        captureImage()
-                    }
+                    else
+                         captureImage()
+                }else {
+                    showGryroToast()
                 }
             }
             AppConstants.FLIPKART,
@@ -349,55 +357,56 @@ class CameraFragment : BaseFragment<ShootViewModel, FragmentCameraBinding>(), Pi
             AppConstants.SWIGGYINSTAMART,
             AppConstants.BATA,
             AppConstants.FLIPKART_GROCERY -> {
-                if (binding.flLevelIndicator.visibility == View.VISIBLE) {
-                    if (isGyroOnCorrectAngle)
-                        captureImage()
-                } else {
+                if (isGyroOnCorrectAngle)
                     captureImage()
-                }
+                else
+                    showGryroToast()
             }
             AppConstants.SPYNE_AI -> {
-                if (viewModel.shootList.value == null
-                    && !requireActivity().intent.getBooleanExtra(AppConstants.SKU_CREATED, false)
-                ) {
-                    if (viewModel.categoryDetails.value?.categoryName == "Automobiles" ||
-                        viewModel.categoryDetails.value?.categoryName == "Bikes"
-                    ) {
-                        if (binding.flLevelIndicator.visibility == View.VISIBLE) {
-                            if (isGyroOnCorrectAngle) {
-                                getProjectDetails()
-                            }
-                        } else {
+                if (isGyroOnCorrectAngle){
+                    if (viewModel.shootList.value == null
+                        && !requireActivity().intent.getBooleanExtra(AppConstants.SKU_CREATED, false)){
+                        if (viewModel.categoryDetails.value?.categoryName == "Automobiles" ||
+                            viewModel.categoryDetails.value?.categoryName == "Bikes"
+                        ) {
                             getProjectDetails()
-                        }
-                    } else {
-                        if (binding.flLevelIndicator.visibility == View.VISIBLE) {
-                            if (isGyroOnCorrectAngle)
-                                captureImage()
-                        } else {
+                        }else {
                             captureImage()
                         }
-                    }
-                } else {
-                    if (binding.flLevelIndicator.visibility == View.VISIBLE) {
-                        if (isGyroOnCorrectAngle)
-                            captureImage()
-                    } else {
+                    }else{
                         captureImage()
                     }
+                }else {
+                    showGryroToast()
                 }
             }
             else
             -> {
-                if (viewModel.shootList.value == null
+                if (isGyroOnCorrectAngle){
+                    if (viewModel.shootList.value == null
                     && !requireActivity().intent.getBooleanExtra(AppConstants.SKU_CREATED, false)
                 ) {
                     getProjectDetails()
                 } else {
                     captureImage()
                 }
+                }else{
+                    showGryroToast()
+                }
             }
         }
+    }
+
+    private fun showGryroToast(){
+        val text = getString(R.string.level_gryometer)
+        val centeredText: Spannable = SpannableString(text)
+        centeredText.setSpan(
+            AlignmentSpan.Standard(Layout.Alignment.ALIGN_CENTER),
+            0, text.length - 1,
+            Spannable.SPAN_INCLUSIVE_INCLUSIVE
+        )
+
+        Toast.makeText(requireContext(), centeredText, Toast.LENGTH_LONG).show()
     }
 
 
