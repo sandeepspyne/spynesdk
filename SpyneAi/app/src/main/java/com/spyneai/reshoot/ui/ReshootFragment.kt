@@ -5,10 +5,12 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.spyneai.R
 import com.spyneai.base.BaseFragment
 import com.spyneai.base.OnItemClickListener
 import com.spyneai.base.network.Resource
 import com.spyneai.camera2.OverlaysResponse
+import com.spyneai.dashboard.ui.enable
 import com.spyneai.databinding.FragmentReshootBinding
 import com.spyneai.orders.data.response.ImagesOfSkuRes
 import com.spyneai.processedimages.ui.data.ProcessedViewModel
@@ -49,8 +51,22 @@ class ReshootFragment : BaseFragment<ProcessedViewModel,FragmentReshootBinding>(
            is ImagesOfSkuRes.Data -> {
                data.isSelected = !data.isSelected
                reshootAdapter?.notifyItemChanged(position)
+
+               val list = reshootAdapter?.listItems as ArrayList<ImagesOfSkuRes.Data>
+
+               val selectedList = list.filter {
+                   it.isSelected == true
+               }
+
+               if (selectedList.isNullOrEmpty()){
+                   binding.btnReshoot.text = getString(R.string.no_reshoot)
+                   binding.btnReshoot.enable(false)
+               }else {
+                   binding.btnReshoot.text = getString(R.string.no_reshoot)+" "+selectedList.size+" Angles"
+                   binding.btnReshoot.enable(true)
+               }
+
            }
        }
-
     }
 }
