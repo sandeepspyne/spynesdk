@@ -161,8 +161,8 @@ android {
         amazon {
             dimension 'version'
             applicationId "com.spyneai.amazon"
-            versionCode 5
-            versionName "1.4"
+            versionCode 6
+            versionName "1.5"
         }
         lal10 {
             dimension 'version'
