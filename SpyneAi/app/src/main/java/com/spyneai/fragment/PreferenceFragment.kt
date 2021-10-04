@@ -38,7 +38,7 @@ class PreferenceFragment : BaseFragment<DashboardViewModel, FragmentPreferenceBi
             params.setMargins(30, 30, 30, 260)
             params.gravity= Gravity.CENTER_HORIZONTAL;
             binding.llLogout.setLayoutParams(params)
-            Toast.makeText(requireContext(), "running", Toast.LENGTH_SHORT).show()
+//            Toast.makeText(requireContext(), "running", Toast.LENGTH_SHORT).show()
         }
 
         languageList.clear()

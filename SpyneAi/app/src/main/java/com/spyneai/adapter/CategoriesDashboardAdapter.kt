@@ -26,7 +26,7 @@ import kotlinx.android.synthetic.main.row_categories_dashboard.view.*
 
 public class CategoriesDashboardAdapter(
     val context: Context,
-    val categoriesResponseList: ArrayList<NewCategoriesResponse.Data>,
+    var categoriesResponseList: ArrayList<NewCategoriesResponse.Data>,
     val btnlistener: BtnClickListener
 )
     : RecyclerView.Adapter<CategoriesDashboardAdapter.ViewHolder>() {
