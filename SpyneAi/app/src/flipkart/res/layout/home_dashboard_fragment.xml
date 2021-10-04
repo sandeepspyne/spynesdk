@@ -1,0 +1,438 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    tools:context=".dashboard.ui.HomeDashboardFragment">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <androidx.appcompat.widget.Toolbar
+            android:id="@+id/my_toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="?attr/actionBarSize"
+            android:background="?attr/colorPrimary"
+            android:backgroundTint="@color/white"
+            android:theme="@style/ThemeOverlay.AppCompat.Light"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintBottom_toTopOf="@+id/viewToolbar">
+
+            <ImageView
+                android:id="@+id/ivAppLogo"
+                android:layout_gravity="center"
+                android:layout_width="@dimen/dp_50"
+                android:layout_height="@dimen/dp_50"
+                android:src="@drawable/app_logo" />
+        </androidx.appcompat.widget.Toolbar>
+
+        <View
+            android:id="@+id/viewToolbar"
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="@color/line_separator"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/my_toolbar"></View>
+
+        <TextView
+            android:id="@+id/tvWelcomeHome"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textSize="@dimen/sp_22"
+            android:visibility="gone"
+            android:layout_marginLeft="@dimen/dp_10"
+            android:layout_marginTop="@dimen/dp_10"
+            android:textColor="@color/primary_dark"
+            android:fontFamily="@font/medium"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/viewToolbar"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintBottom_toTopOf="@+id/viewWelcome"></TextView>
+
+        <View
+            android:id="@+id/viewWelcome"
+            android:layout_width="43dp"
+            android:visibility="gone"
+            android:layout_height="2dp"
+            app:layout_constraintStart_toStartOf="parent"
+            android:background="@drawable/bg_view"
+            android:layout_marginBottom="@dimen/dp_5"
+            android:layout_marginLeft="@dimen/dp_12"
+            app:layout_constraintTop_toBottomOf="@+id/tvWelcomeHome"
+            app:layout_constraintBottom_toTopOf="@+id/flSlider"></View>
+
+        <!--        <androidx.recyclerview.widget.RecyclerView-->
+        <!--            android:id="@+id/rvSlider"-->
+        <!--            android:layout_width="match_parent"-->
+        <!--            android:layout_height="wrap_content"-->
+        <!--            android:layout_marginTop="@dimen/dp_20"-->
+        <!--            android:layout_marginBottom="@dimen/dp_20"-->
+        <!--            app:layout_constraintStart_toStartOf="parent"-->
+        <!--            app:layout_constraintEnd_toEndOf="parent"-->
+        <!--            app:layout_constraintTop_toBottomOf="@+id/viewWelcome" />-->
+
+        <FrameLayout
+            android:id="@+id/flSlider"
+            android:layout_width="match_parent"
+            android:layout_height="187dp"
+            android:layout_marginBottom="@dimen/dp_20"
+            android:layout_marginTop="@dimen/dp_8"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/viewWelcome">
+
+            <com.github.developer__.BeforeAfterSlider
+                android:id="@+id/ivBanner"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:slider_thumb="@drawable/ic_sliderline" />
+
+        </FrameLayout>
+
+        <RelativeLayout
+            android:id="@+id/rlGetStarted"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:layout_constraintTop_toBottomOf="@+id/flSlider"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintBottom_toTopOf="@+id/tbDashboard"
+            android:background="@color/light"
+            android:gravity="center">
+
+            <TextView
+                android:id="@+id/tvGetStartedText"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentLeft="true"
+                android:layout_centerInParent="true"
+                android:layout_marginStart="13dp"
+                android:layout_marginTop="13dp"
+                android:layout_marginEnd="13dp"
+                android:layout_marginBottom="13dp"
+                android:fontFamily="@font/medium"
+                android:text="@string/create_professional_automobile"
+                android:textColor="@color/white"
+                android:textSize="@dimen/sp_12"></TextView>
+
+            <androidx.appcompat.widget.AppCompatButton
+                android:id="@+id/btGetStarted"
+                android:layout_width="112dp"
+                android:layout_height="30dp"
+                android:layout_alignParentRight="true"
+                android:layout_centerInParent="true"
+                android:layout_marginStart="@dimen/dp_20"
+                android:layout_marginTop="@dimen/dp_20"
+                android:layout_marginEnd="@dimen/dp_20"
+                android:layout_marginRight="13dp"
+                android:layout_marginBottom="@dimen/dp_20"
+                android:background="@drawable/bg_get_started"
+                android:elevation="@dimen/dp_5"
+                android:fontFamily="@font/bold"
+                android:gravity="center"
+                android:text="@string/get_started_"
+                android:textAllCaps="false"
+                android:textColor="@color/primary"
+                android:textSize="@dimen/sp_12" />
+
+
+
+
+        </RelativeLayout>
+
+        <ImageButton
+            android:id="@+id/ivNext"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/ic_slider_next"
+            app:layout_constraintEnd_toEndOf="@+id/flSlider"
+            app:layout_constraintTop_toTopOf="@+id/flSlider"
+            app:layout_constraintBottom_toBottomOf="@+id/flSlider"
+            android:backgroundTint="@color/primary_light"
+            android:padding="@dimen/dp_10" />
+
+        <ImageButton
+            android:id="@+id/ivPrevious"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/ic_slider_previous"
+            app:layout_constraintStart_toStartOf="@+id/flSlider"
+            app:layout_constraintTop_toTopOf="@+id/flSlider"
+            app:layout_constraintBottom_toBottomOf="@+id/flSlider"
+            android:backgroundTint="@color/primary_light"
+            android:padding="@dimen/dp_10"
+            ></ImageButton>
+
+
+
+        <com.google.android.material.tabs.TabLayout
+            android:id="@+id/tbDashboard"
+            android:layout_width="wrap_content"
+            android:layout_height="10dp"
+            android:layout_gravity="center"
+            android:layout_margin="@dimen/dp_10"
+            app:tabBackground="@drawable/tab_selector"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/rlGetStarted"
+            app:tabIndicatorHeight="0dp" />
+
+
+
+        <View
+            android:id="@+id/viewOngoing"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/dp_2"
+            android:background="@color/line_separator"
+            app:layout_constraintTop_toBottomOf="@+id/tbDashboard"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            android:layout_margin="@dimen/dp_10"
+            android:visibility="gone"
+            ></View>
+
+        <RelativeLayout
+            android:id="@+id/rlOngoingShoots"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:layout_constraintTop_toBottomOf="@+id/viewOngoing"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            android:padding="@dimen/dp_10">
+
+            <TextView
+                android:id="@+id/tvOngoingShoots"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/on_going_shoots"
+                android:textSize="@dimen/sp_22"
+                android:textColor="@color/categories_text"
+                android:fontFamily="@font/bold"
+                android:layout_alignParentLeft="true"
+                android:layout_centerInParent="true"
+                ></TextView>
+
+            <TextView
+                android:id="@+id/tvOngoingViewall"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/view_all"
+                android:textSize="@dimen/sp_12"
+                android:textColor="@color/primary"
+                android:fontFamily="@font/medium"
+                android:layout_alignParentRight="true"
+                android:layout_centerInParent="true"></TextView>
+
+        </RelativeLayout>
+
+        <FrameLayout
+            android:id="@+id/flOngoingShoots"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/rlOngoingShoots">
+
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/rvOngoingShoots"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/dp_10"
+                android:layout_marginEnd="@dimen/dp_10"
+                android:visibility="gone"/>
+
+            <com.facebook.shimmer.ShimmerFrameLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/shimmerOngoing">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+
+                    <include layout="@layout/dashboard_completed_shimmer"></include>
+
+                    <include layout="@layout/dashboard_completed_shimmer"></include>
+
+                    <include layout="@layout/dashboard_completed_shimmer"></include>
+
+                    <include layout="@layout/dashboard_completed_shimmer"></include>
+                    <include layout="@layout/dashboard_completed_shimmer"></include>
+
+                </LinearLayout>
+
+            </com.facebook.shimmer.ShimmerFrameLayout>
+
+        </FrameLayout>
+
+        <RelativeLayout
+            android:id="@+id/rlCompletedShoots"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:layout_constraintTop_toBottomOf="@+id/flOngoingShoots"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            android:padding="@dimen/dp_10">
+
+            <TextView
+                android:id="@+id/tvCompletedShoots"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/completed_shoots"
+                android:textSize="@dimen/sp_22"
+                android:textColor="@color/categories_text"
+                android:fontFamily="@font/bold"
+                android:layout_alignParentLeft="true"
+                android:layout_centerInParent="true"
+                ></TextView>
+
+            <TextView
+                android:id="@+id/tvCompletedViewall"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/view_all"
+                android:textSize="@dimen/sp_12"
+                android:textColor="@color/primary"
+                android:fontFamily="@font/medium"
+                android:layout_alignParentRight="true"
+                android:layout_centerInParent="true"></TextView>
+
+        </RelativeLayout>
+
+        <FrameLayout
+            android:id="@+id/flCompletedShoots"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/rlCompletedShoots">
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/rvCompletedShoots"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:visibility="gone"
+                />
+
+            <com.facebook.shimmer.ShimmerFrameLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/shimmerCompleted">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+
+                    <include layout="@layout/dashboard_completed_shimmer"></include>
+
+                    <include layout="@layout/dashboard_completed_shimmer"></include>
+
+                    <include layout="@layout/dashboard_completed_shimmer"></include>
+
+                    <include layout="@layout/dashboard_completed_shimmer"></include>
+                    <include layout="@layout/dashboard_completed_shimmer"></include>
+
+                </LinearLayout>
+
+            </com.facebook.shimmer.ShimmerFrameLayout>
+
+
+            <androidx.constraintlayout.widget.Group
+                android:id="@+id/groupCompletedShoots"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                app:constraint_referenced_ids="rvCompletedShoots, rlCompletedShoots, shimmerCompleted"></androidx.constraintlayout.widget.Group>
+
+        </FrameLayout>
+
+        <View
+            android:id="@+id/viewTutorial"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/dp_2"
+            android:background="@color/line_separator"
+            app:layout_constraintTop_toBottomOf="@+id/flCompletedShoots"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            android:layout_margin="@dimen/dp_10"
+            ></View>
+
+        <TextView
+            android:id="@+id/tvExploreCategories"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/explore_categories"
+            android:textSize="@dimen/sp_22"
+            android:padding="@dimen/dp_10"
+            android:layout_marginTop="@dimen/dp_5"
+            android:textColor="@color/categories_text"
+            android:fontFamily="@font/bold"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/viewTutorial"
+            app:layout_constraintEnd_toEndOf="parent"></TextView>
+
+        <FrameLayout
+            android:id="@+id/flCategories"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/tvExploreCategories"
+            android:paddingBottom="@dimen/dp_100">
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/rvDashboardCategories"
+                android:visibility="gone"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/dp_10"
+                android:layout_marginEnd="@dimen/dp_10" />
+
+            <com.facebook.shimmer.ShimmerFrameLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/dp_10"
+                android:layout_marginEnd="@dimen/dp_10"
+                android:id="@+id/shimmerCategories">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+
+                    <include layout="@layout/dashboard_categories_shimmer"></include>
+
+                    <include layout="@layout/dashboard_categories_shimmer"></include>
+
+                    <include layout="@layout/dashboard_categories_shimmer"></include>
+
+                    <include layout="@layout/dashboard_categories_shimmer"></include>
+                    <include layout="@layout/dashboard_categories_shimmer"></include>
+
+                </LinearLayout>
+
+            </com.facebook.shimmer.ShimmerFrameLayout>
+
+            <androidx.constraintlayout.widget.Group
+                android:id="@+id/groupCategories"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                app:constraint_referenced_ids="tvExploreCategories, rvDashboardCategories, shimmerCategories"></androidx.constraintlayout.widget.Group>
+
+        </FrameLayout>
+
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</ScrollView>

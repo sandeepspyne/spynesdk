@@ -123,8 +123,12 @@ class ProjectTagDialog : BaseDialogFragment<ShootViewModel, ProjectTagDialogBind
 
     private fun setTagsData() {
         val data = LayoutHolder.data
-        if (data!![LayoutHolder.categoryPosition].dynamic_layout.project_dialog.isNullOrEmpty()) {
-            return
+        try {
+            if (data!![LayoutHolder.categoryPosition].dynamic_layout.project_dialog.isNullOrEmpty()) {
+                return
+            }
+        }catch (e: Exception){
+          return
         }
 
         val layout = data!![LayoutHolder.categoryPosition].dynamic_layout.project_dialog

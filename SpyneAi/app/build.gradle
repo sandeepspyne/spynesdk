@@ -154,8 +154,8 @@ android {
         flipkart {
             dimension 'version'
             applicationId "com.spyneai.flipkart"
-            versionCode 5
-            versionName "1.4"
+            versionCode 6
+            versionName "1.6"
         }
 
         amazon {
