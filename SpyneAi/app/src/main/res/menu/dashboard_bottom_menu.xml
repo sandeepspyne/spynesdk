@@ -19,6 +19,6 @@
     <item
         android:id="@+id/logoutDashBoardFragment"
         android:title="@string/profile"
-        android:icon="@drawable/profile2"></item>
+        android:icon="@drawable/profile"></item>
 
 </menu>

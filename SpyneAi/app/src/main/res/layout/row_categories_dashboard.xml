@@ -1,16 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:layout_width="wrap_content"
+    android:layout_width="match_parent"
     android:elevation="@dimen/dp_5"
     android:id="@+id/flCategories"
-    android:layout_margin="@dimen/dp_7"
+    android:layout_gravity="center_horizontal"
+    android:paddingHorizontal="@dimen/dp_7"
+    android:paddingVertical="@dimen/dp_7"
     android:layout_height="wrap_content">
 
     <LinearLayout
         android:id="@+id/llCategories"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
         android:orientation="vertical">
 
     <androidx.cardview.widget.CardView

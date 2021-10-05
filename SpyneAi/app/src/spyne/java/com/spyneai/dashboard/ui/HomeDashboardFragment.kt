@@ -17,6 +17,7 @@ import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.Observer
+import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.tabs.TabLayout
@@ -28,8 +29,6 @@ import com.google.android.play.core.ktx.startUpdateFlowForResult
 import com.posthog.android.Properties
 import com.spyneai.R
 import com.spyneai.activity.CategoriesActivity
-import com.spyneai.activity.CompletedProjectsActivity
-import com.spyneai.activity.OngoingOrdersActivity
 import com.spyneai.adapter.CategoriesDashboardAdapter
 import com.spyneai.base.BaseFragment
 import com.spyneai.base.network.Resource
@@ -44,11 +43,13 @@ import com.spyneai.databinding.HomeDashboardFragmentBinding
 import com.spyneai.needs.AppConstants
 import com.spyneai.needs.Utilities
 import com.spyneai.orders.data.response.GetProjectsResponse
+import com.spyneai.orders.ui.MyOrdersActivity
 import com.spyneai.posthog.Events
 import com.spyneai.shoot.ui.StartShootActivity
 import com.spyneai.shoot.ui.base.ShootActivity
 import com.spyneai.shoot.ui.base.ShootPortraitActivity
 import com.spyneai.shoot.utils.log
+import java.util.stream.Collectors
 
 
 class HomeDashboardFragment :
@@ -56,13 +57,17 @@ class HomeDashboardFragment :
 
     lateinit var btnlistener: CategoriesDashboardAdapter.BtnClickListener
 
-    lateinit var categoriesAdapter: CategoriesDashboardAdapter
+    var categoriesAdapter: CategoriesDashboardAdapter? = null
 
     lateinit var ongoingDashboardAdapter: OngoingDashboardAdapter
 
     lateinit var completedDashboardAdapter: CompletedDashboardAdapter
     lateinit var completedProjectList: ArrayList<GetProjectsResponse.Project_data>
     lateinit var ongoingProjectList: ArrayList<GetProjectsResponse.Project_data>
+    var categoriesList : ArrayList<NewCategoriesResponse.Data>? = null
+    var filteredList = ArrayList<NewCategoriesResponse.Data>()
+
+
 
     lateinit var handler: Handler
     private var runnable: Runnable? = null
@@ -101,10 +106,30 @@ class HomeDashboardFragment :
         appUpdateManager = AppUpdateManagerFactory.create(requireContext())
 
 
+
+
+            binding.tvCatViewall.setOnClickListener {
+                if(binding.tvCatViewall.text=="View All"){
+                    if (categoriesAdapter != null && categoriesList != null){
+                        categoriesAdapter?.categoriesResponseList = categoriesList as ArrayList<NewCategoriesResponse.Data>
+                        categoriesAdapter?.notifyDataSetChanged()
+
+                        binding.tvCatViewall.setText("View Less")
+                    }
+                }else{
+                    categoriesAdapter?.categoriesResponseList = filteredList as ArrayList<NewCategoriesResponse.Data>
+                    categoriesAdapter?.notifyDataSetChanged()
+
+                    binding.tvCatViewall.setText("View All")
+                }
+            }
+
+
+
         if (PACKAGE_NAME.equals("com.spyneai.debug")) {
             newUserCreditDialog()
             repeatRefreshData()
-            setSliderRecycler()
+           setSliderRecycler()
             showTutorialVideos()
             lisners()
             welcomeHomeText()
@@ -289,9 +314,31 @@ class HomeDashboardFragment :
                     binding.shimmerCategories.visibility = View.GONE
                     binding.rvDashboardCategories.visibility = View.VISIBLE
 
-                    categoriesAdapter = CategoriesDashboardAdapter(requireContext(),
-                        it.value.data as ArrayList<NewCategoriesResponse.Data>,
-                        object : CategoriesDashboardAdapter.BtnClickListener {
+
+                    categoriesList = it.value.data as ArrayList<NewCategoriesResponse.Data>
+//                    categoriesList!!.addAll(it.value.data)
+//                    categoriesList!!.addAll(it.value.data)
+
+//                    var filteredList = ArrayList<NewCategoriesResponse.Data>()
+
+                        if (categoriesList!!.size > 9){
+                            for (i in 0..7){
+                                filteredList.add(categoriesList!![i])
+                            }
+                            binding.tvCatViewall.visibility = View.VISIBLE
+
+                        }
+                        else {
+                            filteredList = categoriesList as ArrayList<NewCategoriesResponse.Data>
+                            binding.tvCatViewall.visibility = View.GONE
+                    }
+
+
+
+
+
+                        categoriesAdapter = CategoriesDashboardAdapter(requireContext(),
+                            filteredList!!, object : CategoriesDashboardAdapter.BtnClickListener {
                             override fun onBtnClick(position: Int) {
 
                                 Utilities.savePrefrence(requireContext(), AppConstants.CATEGORY_ID, it.value.data[position].prod_cat_id)
@@ -302,8 +349,8 @@ class HomeDashboardFragment :
                                 description = it.value.data[position].description
                                 colorCode = it.value.data[position].color_code
 
-                                when(position){
-                                    0 -> {
+                                when(catId){
+                                    "cat_d8R14zUNE" -> {
                                         val intent = Intent(requireContext(), StartShootActivity::class.java)
                                         intent.putExtra(
                                             AppConstants.CATEGORY_NAME,
@@ -324,7 +371,7 @@ class HomeDashboardFragment :
                                         intent.putExtra(AppConstants.COLOR, colorCode)
                                         startActivity(intent)
                                     }
-                                    1 -> {
+                                    "cat_d8R14zUNx" -> {
                                         val intent = Intent(requireContext(), ShootActivity::class.java)
                                         intent.putExtra(
                                             AppConstants.CATEGORY_NAME,
@@ -345,8 +392,7 @@ class HomeDashboardFragment :
                                         intent.putExtra(AppConstants.COLOR, colorCode)
                                         startActivity(intent)
                                     }
-
-                                    2,3,4 -> {
+                                    "cat_Ujt0kuFxY","cat_Ujt0kuFxX", "cat_Ujt0kuFxF" -> {
                                         val intent = Intent(requireContext(), ShootPortraitActivity::class.java)
                                         intent.putExtra(
                                             AppConstants.CATEGORY_NAME,
@@ -367,6 +413,7 @@ class HomeDashboardFragment :
                                         intent.putExtra(AppConstants.COLOR, colorCode)
                                         startActivity(intent)
                                     }
+
                                     else -> {
                                         Toast.makeText(
                                             requireContext(),
@@ -379,11 +426,14 @@ class HomeDashboardFragment :
                             }
 
                         })
-                    val layoutManager: RecyclerView.LayoutManager = LinearLayoutManager(
-                        requireContext(),
-                        LinearLayoutManager.HORIZONTAL,
+
+
+
+
+                    val layoutManager: RecyclerView.LayoutManager = GridLayoutManager(
+                        requireContext(), 4)
                         false
-                    )
+
                     binding.rvDashboardCategories.setLayoutManager(layoutManager)
                     binding.rvDashboardCategories.setAdapter(categoriesAdapter)
 //                    categoriesAdapter.notifyDataSetChanged()
@@ -585,12 +635,14 @@ class HomeDashboardFragment :
 
     private fun lisners() {
         binding.tvCompletedViewall.setOnClickListener {
-            val intent = Intent(requireContext(), CompletedProjectsActivity::class.java)
+            val intent = Intent(requireContext(), MyOrdersActivity::class.java)
+            intent.putExtra("TAB_ID", 2)
             startActivity(intent)
         }
 
         binding.tvOngoingViewall.setOnClickListener {
-            val intent = Intent(requireContext(), OngoingOrdersActivity::class.java)
+            val intent = Intent(requireContext(), MyOrdersActivity::class.java)
+            intent.putExtra("TAB_ID", 1)
             startActivity(intent)
         }
         binding.btGetStarted.setOnClickListener {

@@ -3,12 +3,12 @@
 
     <item
         android:id="@+id/homeDashboardFragment"
-        android:title="Home"
+        android:title="@string/home"
         android:icon="@drawable/ic_home"></item>
 
     <item
         android:id="@+id/wallet"
-        android:title="Wallet"
+        android:title="@string/wallet"
         android:icon="@drawable/ic_wallet"></item>
 
     <item
@@ -17,12 +17,12 @@
 
     <item
         android:id="@+id/completedOrdersFragment"
-        android:title="Orders"
+        android:title="@string/order"
         android:icon="@drawable/ic_orders"></item>
 
     <item
         android:id="@+id/logoutDashBoardFragment"
-        android:title="Logout"
-        android:icon="@drawable/logout"></item>
+        android:title="@string/profile"
+        android:icon="@drawable/profile"></item>
 
 </menu>

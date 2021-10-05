@@ -39,7 +39,7 @@ import com.spyneai.shoot.utils.log
 import kotlinx.android.synthetic.main.fragment_overlays.*
 import java.util.*
 
-class OverlayEcomFragment : BaseFragment<ShootViewModel, FragmentOverlayEcomBinding>(),
+class     OverlayEcomFragment : BaseFragment<ShootViewModel, FragmentOverlayEcomBinding>(),
     NewSubCategoriesAdapter.BtnClickListener {
 
 

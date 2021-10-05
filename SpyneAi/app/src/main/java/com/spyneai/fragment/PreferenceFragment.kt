@@ -5,6 +5,9 @@ import android.os.Bundle
 import android.view.*
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
+import android.widget.LinearLayout
+import android.widget.Toast
+import androidx.core.view.isVisible
 import com.spyneai.R
 import com.spyneai.base.BaseFragment
 import com.spyneai.dashboard.data.DashboardViewModel
@@ -27,6 +30,17 @@ class PreferenceFragment : BaseFragment<DashboardViewModel, FragmentPreferenceBi
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+
+        // set llLogout Button Margin only for sypne app
+
+        if (getString(R.string.app_name) == AppConstants.SPYNE_AI){
+            val params: LinearLayout.LayoutParams = LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT)
+            params.setMargins(30, 30, 30, 260)
+            params.gravity= Gravity.CENTER_HORIZONTAL;
+            binding.llLogout.setLayoutParams(params)
+//            Toast.makeText(requireContext(), "running", Toast.LENGTH_SHORT).show()
+        }
+
         languageList.clear()
 
         when(getString(R.string.app_name)) {
@@ -35,7 +49,7 @@ class PreferenceFragment : BaseFragment<DashboardViewModel, FragmentPreferenceBi
                     languageList.add("German")
                     languageList.add("Italy")
                 }
-              else ->languageList.add("English")
+            else ->languageList.add("English")
           }
 
 
@@ -52,6 +66,23 @@ class PreferenceFragment : BaseFragment<DashboardViewModel, FragmentPreferenceBi
                 "de" -> binding.spLanguage.setSelection(1)
                 "IT" -> binding.spLanguage.setSelection(2)
             }
+        }
+
+
+
+        //Project Name Switch Visibility According to App Name
+
+        when(getString(R.string.app_name)) {
+            AppConstants.FLIPKART,
+            AppConstants.UDAAN,
+            AppConstants.LAL_10,
+            AppConstants.AMAZON,
+            AppConstants.SWIGGY -> {
+                binding.llProjectNameSwitch.visibility=View.VISIBLE
+                statusSwitch()
+            }
+            else ->
+                binding.llProjectNameSwitch.visibility=View.GONE
         }
 
 
@@ -92,7 +123,11 @@ class PreferenceFragment : BaseFragment<DashboardViewModel, FragmentPreferenceBi
             }
         }
 
-        statusSwitch()
+
+
+
+
+
 
 
 

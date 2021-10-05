@@ -50,6 +50,12 @@ class SignUpActivity : AppCompatActivity() {
 
         counties_spinner.adapter = spinnerAdapter
 
+        when(getString(R.string.app_name)) {
+            AppConstants.SPYNE_AI -> { llCoupon.visibility = View.VISIBLE
+            }
+            else ->llCoupon.visibility = View.GONE
+        }
+
         setSpinner()
         listeners()
         //tvAlreadyLogin.text = "Already a "+ getString(R.string.app_name) + " user?"
@@ -119,7 +125,8 @@ class SignUpActivity : AppCompatActivity() {
                     et_signupEmail.text.toString().trim(),
                     et_signupPassword.text.toString(),
                     et_business_name.text.toString().trim(),
-                    counties_spinner.selectedItem.toString()
+                    counties_spinner.selectedItem.toString(),
+                    etCoupon.text.toString().trim()
                 )
                 tvEmailError.visibility = View.GONE
                 tvLogin.isClickable = false
@@ -154,19 +161,27 @@ class SignUpActivity : AppCompatActivity() {
         }
     }
 
-    private fun signUp(email: String, password: String, name: String, country: String) {
+    private fun signUp(email: String, password: String, name: String, country: String,coupon: String) {
         val properties = Properties()
         properties.apply {
             this["email"] = email
             this["name"] = name
             this["country"] = country
+            this["coupon"] = coupon
         }
 
         captureEvent(Events.SIGNUP_INTIATED, properties)
         Utilities.showProgressDialog(this)
 
         val call = RetrofitClients.buildService(MyAPIService::class.java)
-            .signUp(WhiteLabelConstants.API_KEY, email, password, "PASSWORD", name, country,"Android")
+            .signUp(WhiteLabelConstants.API_KEY,
+                email,
+                password,
+                "PASSWORD",
+                name,
+                country,
+                "Android",
+                coupon)
 
         call?.enqueue(object : Callback<SignupResponse> {
             override fun onResponse(

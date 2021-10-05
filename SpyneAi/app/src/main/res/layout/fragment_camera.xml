@@ -247,7 +247,6 @@
         app:lottie_autoPlay="true"
         app:lottie_rawRes="@raw/down_arrow"
         app:lottie_loop="true"
-
         app:layout_constraintStart_toStartOf="@+id/flLevelIndicator"
         app:layout_constraintEnd_toEndOf="@+id/flLevelIndicator"
         app:layout_constraintBottom_toBottomOf="@+id/flLevelIndicator"/>
