@@ -53,18 +53,12 @@ class ProjectDetailFragment : BaseFragment<ShootViewModel, FragmentProjectDetail
         }
 
         when (getString(R.string.app_name)) {
-            AppConstants.SWIGGY, AppConstants.SPYNE_AI -> {
-                when (viewModel.categoryDetails.value?.categoryName) {
-                   "Food & Beverages" -> {
-                       binding.btHome.text = "Select Background"
-                   }
-                }
-            }
+
             AppConstants.EBAY -> {
                 binding.groupShadow.visibility = View.VISIBLE
                 binding.btHome.text = "Submit and Process this Project"
             }
-            AppConstants.FLIPKART, AppConstants.UDAAN, AppConstants.AMAZON, AppConstants.SPYNE_AI -> {
+            AppConstants.FLIPKART, AppConstants.UDAAN, AppConstants.AMAZON, AppConstants.SPYNE_AI, AppConstants.SWIGGY -> {
                 when (viewModel.categoryDetails.value?.categoryName) {
                     "Photo Box" -> {
                         binding.groupShadow.visibility = View.VISIBLE

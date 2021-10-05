@@ -314,7 +314,6 @@ class HomeDashboardFragment :
                     binding.shimmerCategories.visibility = View.GONE
                     binding.rvDashboardCategories.visibility = View.VISIBLE
 
-
                     categoriesList = it.value.data as ArrayList<NewCategoriesResponse.Data>
 //                    categoriesList!!.addAll(it.value.data)
 //                    categoriesList!!.addAll(it.value.data)
