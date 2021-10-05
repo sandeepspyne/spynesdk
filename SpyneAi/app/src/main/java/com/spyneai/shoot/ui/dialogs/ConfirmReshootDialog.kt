@@ -121,14 +121,15 @@ class ConfirmReshootDialog : BaseDialogFragment<ShootViewModel, DialogConfirmRes
                 is Resource.Success -> {
                     val uri = viewModel.shootData.value?.capturedImage
 
-                    Glide.with(requireContext())
-                        .load(uri)
-                        .diskCacheStrategy(DiskCacheStrategy.NONE)
-                        .skipMemoryCache(true)
-                        .into(binding.ivCapturedImage)
 
                     if (viewModel.categoryDetails.value?.imageType == "Exterior"){
                         val overlay = it.value.data[viewModel.shootNumber.value!!].display_thumbnail
+
+                        Glide.with(requireContext())
+                            .load(uri)
+                            .diskCacheStrategy(DiskCacheStrategy.NONE)
+                            .skipMemoryCache(true)
+                            .into(binding.ivCapturedImage)
 
                         Glide.with(requireContext())
                             .load(uri)
@@ -142,7 +143,15 @@ class ConfirmReshootDialog : BaseDialogFragment<ShootViewModel, DialogConfirmRes
                             setOverlay(binding.ivCaptured2,overlay)
 
                     }else{
-                       binding.clAfter.visibility = View.GONE
+                        binding.llImperfactions.setBackgroundColor(ContextCompat.getColor(requireContext(),R.color.white))
+
+                        Glide.with(requireContext())
+                            .load(uri)
+                            .diskCacheStrategy(DiskCacheStrategy.NONE)
+                            .skipMemoryCache(true)
+                            .into(binding.iv)
+
+                       binding.llBeforeAfter.visibility = View.INVISIBLE
                     }
                }
                else -> {}
