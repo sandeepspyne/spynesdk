@@ -1280,6 +1280,112 @@ class CameraFragment : BaseFragment<ShootViewModel, FragmentCameraBinding>(), Pi
 
 
                     }
+                    "Food & Beverages", "E-Commerce", "Photo Box"  -> {
+
+                            // angle name
+                            if (pitch.roundToInt() == 0 || (pitch.roundToInt() <= -0 && pitch.roundToInt() >= -3))
+                                angle = 0
+
+                            if (pitch.roundToInt() <= -82 && pitch.roundToInt() >= -88)
+                                angle = 90
+
+                            if ((pitch.roundToInt() <= -40 && pitch.roundToInt() >= -45) && abs(roll.roundToInt()) < 100)
+                                angle = 45
+
+                            when (angle) {
+                                0 -> {
+                                    binding.tvAngleValue!!.visibility = View.VISIBLE
+                                    binding.tvAngleValue!!.text = "0" + "\u00B0"
+                                    binding.groupOverlay!!.visibility = View.GONE
+                                }
+                                45 -> {
+                                    binding.tvAngleValue!!.visibility = View.VISIBLE
+                                    binding.tvAngleValue!!.text = "45" + "\u00B0"
+                                    binding.groupOverlay!!.visibility = View.GONE
+                                }
+                                90 -> {
+                                    binding.tvAngleValue!!.visibility = View.VISIBLE
+                                    binding.tvAngleValue!!.text = "90" + "\u00B0"
+                                    binding.groupOverlay!!.visibility = View.VISIBLE
+                                }
+                                else -> {
+                                    binding.tvAngleValue!!.visibility = View.INVISIBLE
+                                    binding.groupOverlay!!.visibility = View.GONE
+                                }
+                            }
+
+                            //hide moving line
+
+
+                            if (pitch.roundToInt() == 0 || (pitch.roundToInt() <= -0 && pitch.roundToInt() >= -3))
+                                binding.tvLevelIndicator.visibility = View.GONE
+                            else
+                                binding.tvLevelIndicator.visibility = View.VISIBLE
+
+
+
+
+                            if (((pitch.roundToInt() == 0 || (pitch.roundToInt() <= -0 && pitch.roundToInt() >= -3))
+                                        && (abs(roll.roundToInt()) <= 3 && abs(roll.roundToInt()) >= -3)) ||
+                                (pitch.roundToInt() <= -82 && pitch.roundToInt() >= -88) ||
+                                (pitch.roundToInt() <= -40 && pitch.roundToInt() >= -45) ) {
+                                binding.lottieDownArrow!!.visibility = View.INVISIBLE
+                                binding.lottieUpArrow!!.visibility = View.INVISIBLE
+                                binding.tvUpcomingAngle1!!.visibility = View.INVISIBLE
+                                binding.tvUpcomingAngle2!!.visibility = View.INVISIBLE
+                                binding.tvAngleRed!!.visibility = View.INVISIBLE
+                                isGyroOnCorrectAngle = true
+
+
+
+                                //angle 90
+                                if (pitch.roundToInt() == 0 || (pitch.roundToInt() <= -0 && pitch.roundToInt() >= -3)) {
+                                    cameraAngle = 0
+                                    gyroMeterOnLevel(false)
+                                }
+                                //angle 45
+                                else if (pitch.roundToInt() <= -40 && pitch.roundToInt() >= -45) {
+                                    cameraAngle = 45
+                                    gyroMeterOnLevel(false)
+                                }
+
+
+
+                                else {
+                                    cameraAngle = 90
+                                    gyroMeterOnLevel(true)
+                                }
+
+                            } else {
+                                binding.lottieDownArrow!!.visibility = View.VISIBLE
+                                binding.lottieUpArrow!!.visibility = View.VISIBLE
+                                binding.tvAngleValue!!.visibility = View.INVISIBLE
+                                binding.groupOverlay!!.visibility = View.GONE
+                                binding.tvAngleValue!!.visibility = View.INVISIBLE
+                                isGyroOnCorrectAngle = false
+                                binding.tvAngleRed!!.visibility = View.VISIBLE
+                                val gyroAngle = (-pitch.roundToInt())
+
+                                binding.tvAngleRed!!.text = gyroAngle.toString() + "\u00B0"
+                                gyroMeterOffLevel()
+
+                                if (movearrow) {
+                                    if (abs(roll.roundToInt()) < 100) {
+                                        moveArrow((pitch + 85).unaryMinus())
+                                    } else {
+                                        moveArrow(pitch + 85)
+                                    }
+                                }
+
+                                if (orientationAngles[2].roundToInt() == 1 || orientationAngles[2].roundToInt() == -1) {
+                                    if (orientationAngles[2].roundToInt() == 1) {
+                                        rotateArrow((pitch + 85).unaryMinus().roundToInt())
+                                    } else {
+                                        rotateArrow((pitch + 85).roundToInt())
+                                    }
+                                }
+                            }
+                    }
 
                     else -> {
                         //hide moving line

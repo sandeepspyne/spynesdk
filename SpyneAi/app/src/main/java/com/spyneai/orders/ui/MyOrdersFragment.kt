@@ -22,7 +22,6 @@ import com.spyneai.orders.ui.adapter.OrdersSlideAdapter
 class MyOrdersFragment : BaseFragment<DashboardViewModel, FragmentMyOrdersBinding>() {
 
     private var TAG = "MyOrdersFragment"
-
     var tabId = 0
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {

@@ -60,39 +60,7 @@ class ProjectDetailFragment : BaseFragment<ShootViewModel, FragmentProjectDetail
                 binding.groupShadow.visibility = View.VISIBLE
                 binding.btHome.text = "Submit and Process this Project"
             }
-            AppConstants.FLIPKART -> {
-                when (viewModel.categoryDetails.value?.categoryName) {
-                    "Photo Box" -> {
-                        binding.groupShadow.visibility = View.VISIBLE
-                        binding.btHome.text = "Submit and Process this Project"
-                    }
-                    "E-Commerce" -> {
-                        binding.groupShadow.visibility = View.GONE
-                        binding.btHome.text = "Submit Project"
-                    }
-                    "Footwear" -> {
-                        binding.groupShadow.visibility = View.GONE
-                        binding.btHome.text = "Submit Project"
-                    }
-                }
-            }
-            AppConstants.AMAZON -> {
-                when (viewModel.categoryDetails.value?.categoryName) {
-                    "Photo Box" -> {
-                        binding.groupShadow.visibility = View.VISIBLE
-                        binding.btHome.text = "Submit and Process this Project"
-                    }
-                    "E-Commerce" -> {
-                        binding.groupShadow.visibility = View.GONE
-                        binding.btHome.text = "Submit Project"
-                    }
-                    "Footwear" -> {
-                        binding.groupShadow.visibility = View.GONE
-                        binding.btHome.text = "Submit Project"
-                    }
-                }
-            }
-            AppConstants.UDAAN -> {
+            AppConstants.FLIPKART, AppConstants.UDAAN, AppConstants.AMAZON, AppConstants.SPYNE_AI -> {
                 when (viewModel.categoryDetails.value?.categoryName) {
                     "Photo Box" -> {
                         binding.groupShadow.visibility = View.VISIBLE
@@ -124,13 +92,26 @@ class ProjectDetailFragment : BaseFragment<ShootViewModel, FragmentProjectDetail
                             requireContext().captureEvent(Events.SHOW_SHADOW_DIALOG, Properties())
                             processWithShadowOption()
                         }
-                        AppConstants.FLIPKART -> {
+                        AppConstants.FLIPKART, AppConstants.SPYNE_AI -> {
                             when (viewModel.categoryDetails.value?.categoryName) {
                                 "Photo Box" -> {
                                     processWithShadowOption()
                                 }
                                 "E-Commerce" -> {
                                     processWithoutBackgroundId()
+                                }
+                                "Footwear" -> {
+                                    processWithoutBackgroundId()
+                                }
+                            }
+                        }
+                        AppConstants.SPYNE_AI -> {
+                            when (viewModel.categoryDetails.value?.categoryName) {
+                                "Photo Box" -> {
+                                    processWithShadowOption()
+                                }
+                                "E-Commerce" -> {
+                                    processWithShadowOption()
                                 }
                                 "Footwear" -> {
                                     processWithoutBackgroundId()
