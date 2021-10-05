@@ -27,7 +27,7 @@
     <string name="continue_with_this_shoot">Weiter mit diesem Shooting</string>
     <string name="ok">OK</string>
     <string name="channels">Kanäle</string>
-    <string name="backgrounds">Fuss Innenraum</string>
+    <string name="backgrounds">Wähle Hintergrund</string>
     <string name="hdr">HDR</string>
     <string name="before">Vorher</string>
     <string name="after">Nach</string>
@@ -58,7 +58,7 @@
     <string name="categories_selection">Kategorieauswahl</string>
     <string name="footwear">Footwear</string>
     <string name="automobile">Fahrzeuge</string>
-    <string name="home">Heim</string>
+    <string name="home">Home</string>
     <string name="logout">Abmelden</string>
     <string name="dealership">DealerShip Logo</string>
     <string name="no_completed">Completed orders\nwill appear here</string>
@@ -90,7 +90,7 @@
     <string name="your_gif">Dein GIF</string>
     <string name="choose_shoots">Schüsse auswählen</string>
     <string name="proceed">Weiter</string>
-    <string name="select_backgrounds">Einzelner Innenraum</string>
+    <string name="select_backgrounds">Hintergründe</string>
     <string name="select_output">Beispiel 360°-Ausgabe</string>
     <string name="create_shoots">Ausgabe generieren</string>
     <string name="your_sent">Deine 360°-Aufnahme wurde gesendet an</string>
@@ -129,10 +129,10 @@
     <string name="download_free"><u>Kostenlos herunterladen (mit Wasserzeichen)</u></string>
 
     <string name="downloading...."><u>wird heruntergeladen....</u></string>
-    <string name="download_completed"><u>Herunterladen abgeschlossen</u></string>
+    <string name="download_completed"><u>Download Abgeschlossen!</u></string>
     <string name="download_failed"><u> Herunterladen fehlgeschlagen</u></string>
 
-    <string name="total_images_clicked"><u>Geklickte Bilder insgesamt</u></string>
+    <string name="total_images_clicked"><u>Anzahl der Bilder</u></string>
 
     <string name="credits_available"><u>Guthaben Credits</u></string>
     <string name="credits_remaining">Verfügbare Credits</string>
@@ -310,5 +310,5 @@
     <string name="you_are_logged_in_as">Sie sind angemeldet als:</string>
     <string name="profile">Profil</string>
     <string name="turn_off_switch">Schalten Sie es aus, \n während Sie eine langsame \n Internetverbindung haben.</string>
-
+    <string name="rate_this_output">Deine Bewertung:</string>
 </resources>

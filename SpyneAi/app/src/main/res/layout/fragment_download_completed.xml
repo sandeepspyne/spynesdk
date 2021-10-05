@@ -24,7 +24,7 @@
         app:layout_constraintTop_toBottomOf="@id/iv_tick"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
-        android:text="Download Completed!"
+        android:text="@string/download_completed"
         android:fontFamily="@font/medium"
         android:textColor="#232121"
         android:textSize="18sp"
@@ -54,7 +54,7 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Rate this Output : "
+            android:text="@string/rate_this_output"
             android:textColor="#232121"
             android:textSize="15sp"
             android:id="@+id/tv_output"
@@ -79,7 +79,7 @@
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Go to Home"
+        android:text="@string/home"
         android:id="@+id/tv_go_to_home"
         android:textColor="@color/white"
         android:background="@drawable/bg_rectangle_button_ripple"
