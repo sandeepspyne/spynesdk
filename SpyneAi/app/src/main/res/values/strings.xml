@@ -318,4 +318,6 @@
     <string name="skip_image">Are you sure you want to\nskip this angle?</string>
     <string name="rate_this_output">Rate this Output:</string>
 
+    <string name="tv_instructions">(Keep dish above this line)</string>
+
 </resources>

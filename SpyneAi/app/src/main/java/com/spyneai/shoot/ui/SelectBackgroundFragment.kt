@@ -68,7 +68,7 @@ class SelectBackgroundFragment : BaseFragment<ProcessViewModel, FragmentSelectBa
                 binding.tv360.visibility = View.GONE
                 binding.tvGenerateGif.text = getString(R.string.generate_output)
             }
-            AppConstants.SWIGGY -> {
+            AppConstants.SWIGGY, AppConstants.SPYNE_AI -> {
                 binding.cb360.visibility = View.GONE
                 binding.tv360.visibility = View.GONE
                 binding.tvGenerateGif.text = getString(R.string.generate_output)
@@ -167,7 +167,7 @@ class SelectBackgroundFragment : BaseFragment<ProcessViewModel, FragmentSelectBa
     private fun getBackground() {
 
         when (getString(R.string.app_name)) {
-            AppConstants.SWIGGY -> {
+            AppConstants.SWIGGY, AppConstants.SPYNE_AI -> {
                 val category = "Food".toRequestBody(MultipartBody.FORM)
                 val authKey =
                     Utilities.getPreference(requireContext(), AppConstants.AUTH_KEY)!!
@@ -200,7 +200,6 @@ class SelectBackgroundFragment : BaseFragment<ProcessViewModel, FragmentSelectBa
                     binding.shimmer.visibility = View.GONE
                     binding.rvBackgroundsCars.visibility = View.VISIBLE
                     binding.tvGenerateGif.enable(true)
-
 
                     val response = it.value
                     Glide.with(requireContext()) // replace with 'this' if it's in activity

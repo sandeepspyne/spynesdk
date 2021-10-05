@@ -176,11 +176,11 @@ class MainDashboardActivity : AppCompatActivity() {
                     }
                     else {
                         val intent = Intent(this, MyOrdersActivity::class.java)
-                        intent.putExtra("TAB_ID", 0)
+                        intent.putExtra("TAB_ID",0)
                         startActivity(intent)
                     }
                 }
-                // R.id.wallet -> setCurrentFragment(SecondFragment)
+                 R.id.wallet -> setCurrentFragment(SecondFragment)
                 R.id.logoutDashBoardFragment -> setCurrentFragment(thirdFragment)
             }
             true

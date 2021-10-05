@@ -10,6 +10,7 @@
     <color name="white">#FFFFFFFF</color>
     <color name="transparent">#26FFFFFF</color>
     <color name="transparents">#90000000</color>
+    <color name="camera_transparent">#BF000000</color>
     <color name="grey">#979797</color>
     <color name="lightgrey">#DDD8D8</color>
     <color name="errorcolor">#F92C2C</color>
