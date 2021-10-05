@@ -289,6 +289,16 @@ interface ClipperApi {
         @Field("background_id") background_id: Int?,
     ): SkuProcessStateResponse
 
+    @FormUrlEncoded
+    @POST("v2/sku/skuProcessStatus")
+    suspend fun skuProcessStateWithShadowOption(
+        @Field("auth_key") auth_key: String?,
+        @Field("project_id") project_id: String?,
+        @Field("background_id") background_id: Int?,
+        @Field("shadow") shadow: String?,
+    ): SkuProcessStateResponse
+
+
 
     @FormUrlEncoded
     @POST("v4/image/image-upload-check-v2")

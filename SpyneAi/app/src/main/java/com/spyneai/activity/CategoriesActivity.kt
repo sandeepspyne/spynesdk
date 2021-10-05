@@ -98,7 +98,7 @@ class CategoriesActivity : AppCompatActivity(){
                                        "Automobiles" -> {
                                            Intent(this@CategoriesActivity, StartShootActivity::class.java)
                                        }
-                                       "E-Commerce","Footwear", "Food & Beverages" -> {
+                                       "E-Commerce","Footwear", "Food & Beverages", "Photo Box" -> {
                                            Intent(this@CategoriesActivity, ShootPortraitActivity::class.java)
                                        }
                                        else -> {
@@ -127,7 +127,7 @@ class CategoriesActivity : AppCompatActivity(){
                                        "Automobiles" -> {
                                            Intent(this@CategoriesActivity, StartShootActivity::class.java)
                                        }
-                                       "E-Commerce","Footwear" -> {
+                                       "E-Commerce","Footwear", "Food & Beverages", "Photo Box"  -> {
                                            Intent(this@CategoriesActivity, ShootPortraitActivity::class.java)
                                        }
                                        else -> {

@@ -128,6 +128,25 @@ class ShootActivity : AppCompatActivity() {
                     e.printStackTrace()
                 }
             }
+            "Photo Box" -> {
+                shootViewModel.processSku = false
+                if(savedInstanceState == null) { // initial transaction should be wrapped like this
+                    supportFragmentManager.beginTransaction()
+                        .add(R.id.flCamerFragment, cameraFragment)
+                        .add(R.id.flCamerFragment, gridEcomFragment)
+                        .commitAllowingStateLoss()
+                }
+                try {
+                    val intent = intent
+                    shootViewModel.projectId.value = intent.getStringExtra("project_id")
+                    val sku = Sku()
+                    sku?.projectId = shootViewModel.projectId.value
+                    shootViewModel.categoryDetails.value?.imageType = "Ecom"
+                    shootViewModel.sku.value = sku
+                } catch (e: Exception) {
+                    e.printStackTrace()
+                }
+            }
             "Food & Beverages" ->{
                 shootViewModel.processSku = false
                 if(savedInstanceState == null) { // initial transaction should be wrapped like this

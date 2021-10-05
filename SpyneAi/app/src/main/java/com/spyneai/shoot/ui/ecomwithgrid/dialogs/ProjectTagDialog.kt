@@ -8,10 +8,7 @@ import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
 import android.util.TypedValue
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
-import android.view.WindowManager
+import android.view.*
 import android.widget.EditText
 import android.widget.LinearLayout
 import androidx.core.view.children
@@ -41,6 +38,10 @@ import com.spyneai.shoot.utils.log
 import kotlinx.android.synthetic.main.item_project_chipedittext.view.*
 import org.json.JSONArray
 import org.json.JSONObject
+import android.widget.Toast
+
+
+
 
 class ProjectTagDialog : BaseDialogFragment<ShootViewModel, ProjectTagDialogBinding>() {
 
@@ -64,6 +65,10 @@ class ProjectTagDialog : BaseDialogFragment<ShootViewModel, ProjectTagDialogBind
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        binding.ivClose.setOnClickListener {
+            requireActivity().finish()
+        }
 
         inflator = LayoutInflater.from(requireContext())
 
@@ -118,11 +123,15 @@ class ProjectTagDialog : BaseDialogFragment<ShootViewModel, ProjectTagDialogBind
 
     private fun setTagsData() {
         val data = LayoutHolder.data
-        if (data.isNullOrEmpty()) {
-            return
+        try {
+            if (data!![LayoutHolder.categoryPosition].dynamic_layout.project_dialog.isNullOrEmpty()) {
+                return
+            }
+        }catch (e: Exception){
+          return
         }
 
-        val layout = data!![0].dynamic_layout.project_dialog
+        val layout = data!![LayoutHolder.categoryPosition].dynamic_layout.project_dialog
 
         layout.forEach {
             when (it.field_name) {

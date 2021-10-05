@@ -159,7 +159,8 @@ class CameraFragment : BaseFragment<ShootViewModel, FragmentCameraBinding>(), Pi
         viewModel.showLeveler.observe(viewLifecycleOwner, {
             if (it && isSensorAvaliable) {
                 if (viewModel.categoryDetails.value?.categoryName == "Footwear" ||
-                    viewModel.categoryDetails.value?.categoryName == "E-Commerce"
+                    viewModel.categoryDetails.value?.categoryName == "E-Commerce" ||
+                    viewModel.categoryDetails.value?.categoryName == "Photo Box"
                 )
                     binding.tvLevelIndicator.visibility = View.GONE
 
@@ -235,7 +236,7 @@ class CameraFragment : BaseFragment<ShootViewModel, FragmentCameraBinding>(), Pi
                     }
                 }
 
-                "E-Commerce" -> {
+                "E-Commerce", "Photo Box" -> {
                     if (viewModel.sku.value?.skuId != null)
                         onCaptureClick()
                 }
@@ -348,6 +349,7 @@ class CameraFragment : BaseFragment<ShootViewModel, FragmentCameraBinding>(), Pi
             AppConstants.SWIGGY,
             AppConstants.SWIGGYINSTAMART,
             AppConstants.BATA,
+                AppConstants.EBAY,
             AppConstants.FLIPKART_GROCERY -> {
                 if (binding.flLevelIndicator.visibility == View.VISIBLE) {
                     if (isGyroOnCorrectAngle)
@@ -628,7 +630,7 @@ class CameraFragment : BaseFragment<ShootViewModel, FragmentCameraBinding>(), Pi
                             }
                     }
                 }
-                "E-Commerce", "Food & Beverages", "Footwear" -> {
+                "E-Commerce", "Food & Beverages", "Photo Box", "Footwear" -> {
                     Preview.Builder()
                         .setTargetAspectRatio(AspectRatio.RATIO_4_3)
                         .build()
@@ -664,7 +666,7 @@ class CameraFragment : BaseFragment<ShootViewModel, FragmentCameraBinding>(), Pi
                             .build()
                     }
                 }
-                "E-Commerce", "Food & Beverages", "Footwear" -> {
+                "E-Commerce", "Food & Beverages", "Footwear", "Photo Box" -> {
                     ImageCapture.Builder()
                         .setCaptureMode(ImageCapture.CAPTURE_MODE_MAXIMIZE_QUALITY)
                         .setFlashMode(flashMode)
@@ -712,16 +714,17 @@ class CameraFragment : BaseFragment<ShootViewModel, FragmentCameraBinding>(), Pi
 //                Toast.makeText(requireContext(), "rotation- "+rotation, Toast.LENGTH_SHORT).show()
 
                 var currentZoomRatio = cameraInfo?.zoomState?.value?.zoomRatio ?: 0F
-                when (viewModel.categoryDetails.value?.categoryName) {
-                    "E-Commerce" -> {
-                        if (currentZoomRatio == 1.0F)
-                            cameraControl?.setZoomRatio(currentZoomRatio * 1.5F)
-                    }
-                    "Food & Beverages" -> {
-                        if (currentZoomRatio == 1.0F)
-                            cameraControl?.setZoomRatio(currentZoomRatio * 1.2F)
-                    }
-                }
+                cameraControl?.setZoomRatio(currentZoomRatio * 1.3F)
+//                when (viewModel.categoryDetails.value?.categoryName) {
+//                    "E-Commerce" -> {
+//                        if (currentZoomRatio == 1.0F)
+//                            cameraControl?.setZoomRatio(currentZoomRatio * 1.5F)
+//                    }
+//                    "Food & Beverages" -> {
+//                        if (currentZoomRatio == 1.0F)
+//                            cameraControl?.setZoomRatio(currentZoomRatio * 1.2F)
+//                    }
+//                }
                 binding.viewFinder.setOnTouchListener(this)
 
                 if (viewModel.shootDimensions.value == null ||
@@ -1087,7 +1090,7 @@ class CameraFragment : BaseFragment<ShootViewModel, FragmentCameraBinding>(), Pi
                      }
                  }
              }*/
-            AppConstants.SWIGGY -> {
+            AppConstants.SWIGGY, AppConstants.EBAY, AppConstants.FLIPKART, AppConstants.UDAAN, AppConstants.AMAZON -> {
 
                 // angle name
                 if (pitch.roundToInt() == 0 || (pitch.roundToInt() <= -0 && pitch.roundToInt() >= -3))
@@ -1103,17 +1106,21 @@ class CameraFragment : BaseFragment<ShootViewModel, FragmentCameraBinding>(), Pi
                     0 -> {
                         binding.tvAngleValue!!.visibility = View.VISIBLE
                         binding.tvAngleValue!!.text = "0" + "\u00B0"
+                        binding.groupOverlay!!.visibility = View.GONE
                     }
                     45 -> {
                         binding.tvAngleValue!!.visibility = View.VISIBLE
                         binding.tvAngleValue!!.text = "45" + "\u00B0"
+                        binding.groupOverlay!!.visibility = View.GONE
                     }
                     90 -> {
                         binding.tvAngleValue!!.visibility = View.VISIBLE
                         binding.tvAngleValue!!.text = "90" + "\u00B0"
+                        binding.groupOverlay!!.visibility = View.VISIBLE
                     }
                     else -> {
                         binding.tvAngleValue!!.visibility = View.INVISIBLE
+                        binding.groupOverlay!!.visibility = View.GONE
                     }
                 }
                 // upcoming angles
@@ -1195,6 +1202,8 @@ class CameraFragment : BaseFragment<ShootViewModel, FragmentCameraBinding>(), Pi
                     }
 
                 } else {
+                    binding.tvAngleValue!!.visibility = View.INVISIBLE
+                    binding.groupOverlay!!.visibility = View.GONE
                     binding.tvAngleValue!!.visibility = View.INVISIBLE
                     isGyroOnCorrectAngle = false
                     binding.tvAngleRed!!.visibility = View.VISIBLE
@@ -1281,9 +1290,6 @@ class CameraFragment : BaseFragment<ShootViewModel, FragmentCameraBinding>(), Pi
                 }
             }
             AppConstants.SWIGGYINSTAMART,
-            AppConstants.UDAAN,
-            AppConstants.FLIPKART,
-            AppConstants.AMAZON,
             AppConstants.LAL_10,
             AppConstants.BATA,
             AppConstants.FLIPKART_GROCERY -> {

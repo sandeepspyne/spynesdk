@@ -7,6 +7,8 @@ import android.os.Build
 import android.os.Bundle
 import android.util.Log
 import android.view.View
+import android.view.ViewGroup
+import android.widget.Button
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
@@ -64,7 +66,6 @@ class MainDashboardActivity : AppCompatActivity() {
         binding = ActivityDashboardMainBinding.inflate(layoutInflater)
         val view = binding.root
         setContentView(view)
-
         setLocale()
 
         if (intent.getBooleanExtra("show_ongoing", false)) {
@@ -127,7 +128,7 @@ class MainDashboardActivity : AppCompatActivity() {
 //                            startActivity(intent)
 //                        }
 //
-//                        "Flipkart", "Udaan", "Lal10", "Amazon", "Swiggy", AppConstants.SWIGGYINSTAMART, AppConstants.BATA, AppConstants.FLIPKART_GROCERY -> {
+//                        "Flipkart", "Udaan", "Lal10", "Amazon", "Swiggy", AppConstants.SWIGGYINSTAMART, AppConstants.BATA, AppConstants.FLIPKART_GROCERY, AppConstants.EBAY -> {
 //                            val intent =
 //                                Intent(this@MainDashboardActivity, CategoriesActivity::class.java)
 //                            startActivity(intent)

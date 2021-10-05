@@ -6,16 +6,21 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.posthog.android.Properties
 import com.spyneai.R
 import com.spyneai.base.BaseFragment
 import com.spyneai.base.network.Resource
+import com.spyneai.captureEvent
+import com.spyneai.captureFailureEvent
 import com.spyneai.dashboard.ui.handleApiError
 import com.spyneai.databinding.FragmentProjectDetailBinding
 import com.spyneai.gotoHome
 import com.spyneai.needs.AppConstants
 import com.spyneai.needs.Utilities
+import com.spyneai.posthog.Events
 import com.spyneai.shoot.adapters.ProjectDetailAdapter
 import com.spyneai.shoot.data.ShootViewModel
+import com.spyneai.shoot.ui.ecomwithgrid.dialogs.ShadowOptionDialog
 import com.spyneai.shoot.utils.log
 
 class ProjectDetailFragment : BaseFragment<ShootViewModel, FragmentProjectDetailBinding>() {
@@ -24,20 +29,84 @@ class ProjectDetailFragment : BaseFragment<ShootViewModel, FragmentProjectDetail
     var refreshData = true
     lateinit var handler: Handler
     private var runnable: Runnable? = null
+    var shadow = "false"
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
         handler = Handler()
+        binding.tvShadowOption.text = "Shadow is OFF"
 
 //        binding.swiperefreshProject.setOnRefreshListener {
 //            repeatRefreshData()
 //            binding.swiperefreshProject.isRefreshing = false
 //        }
 
+        binding.switchShadowOption.setOnCheckedChangeListener { _, isChecked ->
+            if (isChecked) {
+                shadow = "true"
+                binding.tvShadowOption.text = "Shadow is ON"
+            } else {
+                shadow = "false"
+                binding.tvShadowOption.text = "Shadow is OFF"
+            }
+        }
+
         when (getString(R.string.app_name)) {
             AppConstants.SWIGGY -> {
                 binding.btHome.text = "Select Background"
+            }
+            AppConstants.EBAY -> {
+                binding.groupShadow.visibility = View.VISIBLE
+                binding.btHome.text = "Submit and Process this Project"
+            }
+            AppConstants.FLIPKART -> {
+                when (viewModel.categoryDetails.value?.categoryName) {
+                    "Photo Box" -> {
+                        binding.groupShadow.visibility = View.VISIBLE
+                        binding.btHome.text = "Submit and Process this Project"
+                    }
+                    "E-Commerce" -> {
+                        binding.groupShadow.visibility = View.GONE
+                        binding.btHome.text = "Submit Project"
+                    }
+                    "Footwear" -> {
+                        binding.groupShadow.visibility = View.GONE
+                        binding.btHome.text = "Submit Project"
+                    }
+                }
+            }
+            AppConstants.AMAZON -> {
+                when (viewModel.categoryDetails.value?.categoryName) {
+                    "Photo Box" -> {
+                        binding.groupShadow.visibility = View.VISIBLE
+                        binding.btHome.text = "Submit and Process this Project"
+                    }
+                    "E-Commerce" -> {
+                        binding.groupShadow.visibility = View.GONE
+                        binding.btHome.text = "Submit Project"
+                    }
+                    "Footwear" -> {
+                        binding.groupShadow.visibility = View.GONE
+                        binding.btHome.text = "Submit Project"
+                    }
+                }
+            }
+            AppConstants.UDAAN -> {
+                when (viewModel.categoryDetails.value?.categoryName) {
+                    "Photo Box" -> {
+                        binding.groupShadow.visibility = View.VISIBLE
+                        binding.btHome.text = "Submit and Process this Project"
+                    }
+                    "E-Commerce" -> {
+                        binding.groupShadow.visibility = View.GONE
+                        binding.btHome.text = "Submit Project"
+                    }
+                    "Footwear" -> {
+                        binding.groupShadow.visibility = View.GONE
+                        binding.btHome.text = "Submit Project"
+                    }
+                }
             }
         }
 
@@ -47,10 +116,54 @@ class ProjectDetailFragment : BaseFragment<ShootViewModel, FragmentProjectDetail
                     viewModel.showFoodBackground.value = true
                 }
                 else -> {
-                    when(getString(R.string.app_name)){
+                    when (getString(R.string.app_name)) {
                         AppConstants.SWIGGYINSTAMART, AppConstants.FLIPKART_GROCERY -> {
                             processWithBackgroundId()
-                        }else -> {
+                        }
+                        AppConstants.EBAY -> {
+                            requireContext().captureEvent(Events.SHOW_SHADOW_DIALOG, Properties())
+                            processWithShadowOption()
+                        }
+                        AppConstants.FLIPKART -> {
+                            when (viewModel.categoryDetails.value?.categoryName) {
+                                "Photo Box" -> {
+                                    processWithShadowOption()
+                                }
+                                "E-Commerce" -> {
+                                    processWithoutBackgroundId()
+                                }
+                                "Footwear" -> {
+                                    processWithoutBackgroundId()
+                                }
+                            }
+                        }
+                        AppConstants.AMAZON -> {
+                            when (viewModel.categoryDetails.value?.categoryName) {
+                                "Photo Box" -> {
+                                    processWithShadowOption()
+                                }
+                                "E-Commerce" -> {
+                                    processWithoutBackgroundId()
+                                }
+                                "Footwear" -> {
+                                    processWithoutBackgroundId()
+                                }
+                            }
+                        }
+                        AppConstants.UDAAN -> {
+                            when (viewModel.categoryDetails.value?.categoryName) {
+                                "Photo Box" -> {
+                                    processWithShadowOption()
+                                }
+                                "E-Commerce" -> {
+                                    processWithoutBackgroundId()
+                                }
+                                "Footwear" -> {
+                                    processWithoutBackgroundId()
+                                }
+                            }
+                        }
+                        else -> {
                             processWithoutBackgroundId()
                         }
                     }
@@ -75,7 +188,9 @@ class ProjectDetailFragment : BaseFragment<ShootViewModel, FragmentProjectDetail
 
                 is Resource.Failure -> {
                     Utilities.hideProgressDialog()
-                    handleApiError(it)
+                    handleApiError(it) {
+                        processWithoutBackgroundId()
+                    }
                 }
             }
         })
@@ -89,7 +204,9 @@ class ProjectDetailFragment : BaseFragment<ShootViewModel, FragmentProjectDetail
 
                 is Resource.Failure -> {
                     Utilities.hideProgressDialog()
-                    handleApiError(it)
+                    handleApiError(it) {
+                        processWithBackgroundId()
+                    }
                 }
             }
         })
@@ -101,7 +218,6 @@ class ProjectDetailFragment : BaseFragment<ShootViewModel, FragmentProjectDetail
 
     private fun processWithoutBackgroundId() {
         Utilities.showProgressDialog(requireContext())
-
         viewModel.skuProcessState(
             Utilities.getPreference(requireContext(), AppConstants.AUTH_KEY).toString(),
             viewModel.projectId.value.toString()
@@ -110,12 +226,43 @@ class ProjectDetailFragment : BaseFragment<ShootViewModel, FragmentProjectDetail
 
     private fun processWithBackgroundId() {
         Utilities.showProgressDialog(requireContext())
-
         viewModel.skuProcessStateWithBackgroundid(
             Utilities.getPreference(requireContext(), AppConstants.AUTH_KEY).toString(),
             viewModel.projectId.value.toString(),
             5000
         )
+    }
+
+    private fun processWithShadowOption() {
+        Utilities.showProgressDialog(requireContext())
+        viewModel.skuProcessStateWithShadowOption(
+            Utilities.getPreference(requireContext(), AppConstants.AUTH_KEY).toString(),
+            viewModel.projectId.value.toString(),
+            5000,
+            shadow
+        )
+
+
+        viewModel.skuProcessStateWithShadowResponse.observe(viewLifecycleOwner, {
+            when (it) {
+                is Resource.Success -> {
+                    Utilities.hideProgressDialog()
+                    requireContext().gotoHome()
+                }
+
+                is Resource.Failure -> {
+                    log("create project id failed")
+                    requireContext().captureFailureEvent(
+                        Events.SKU_PROCESS_STATE_WITH_SHADOW_FAILED, Properties(),
+                        it.errorMessage!!
+                    )
+
+                    Utilities.hideProgressDialog()
+                    handleApiError(it) { processWithShadowOption() }
+                }
+            }
+        })
+
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
