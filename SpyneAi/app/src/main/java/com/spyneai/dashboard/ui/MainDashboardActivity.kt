@@ -98,52 +98,76 @@ class MainDashboardActivity : AppCompatActivity() {
             }
         }
 
-
         binding.bottomNavigation.setOnNavigationItemSelectedListener {
+
+            Log.d(TAG, "onCreate: "+getString(R.string.app_name))
+
             when (it.itemId) {
                 R.id.homeDashboardFragment -> setCurrentFragment(firstFragment)
 
-//                R.id.shootActivity -> {
-//                    if (isMagnatoMeterAvailable()){
-//                        when (getString(R.string.app_name)) {
-//                        "Ola Cabs",
-//                        AppConstants.CARS24,
-//                        AppConstants.CARS24_INDIA,
-//                        AppConstants.SELL_ANY_CAR,
-//                        "Trusted cars",
-//                        "Travo Photos",
-//                        "Yalla Motors",
-//                        "Spyne Hiring",
-//                        AppConstants.AUTO_FOTO -> {
-//                            var intent = Intent(this, StartShootActivity::class.java)
-//                            intent.putExtra(AppConstants.CATEGORY_ID, AppConstants.CARS_CATEGORY_ID)
-//                            intent.putExtra(AppConstants.CATEGORY_NAME, "Automobiles")
-//                            startActivity(intent)
-//                        }
-//
-//                        AppConstants.KARVI -> {
-//                            var intent = Intent(this, ShootActivity::class.java)
-//                            intent.putExtra(AppConstants.CATEGORY_ID, AppConstants.CARS_CATEGORY_ID)
-//                            intent.putExtra(AppConstants.CATEGORY_NAME, "Automobiles")
-//                            startActivity(intent)
-//                        }
-//
-//                        "Flipkart", "Udaan", "Lal10", "Amazon", "Swiggy", AppConstants.SWIGGYINSTAMART, AppConstants.BATA, AppConstants.FLIPKART_GROCERY, AppConstants.EBAY -> {
-//                            val intent =
-//                                Intent(this@MainDashboardActivity, CategoriesActivity::class.java)
-//                            startActivity(intent)
-//                        }
-//                        else -> {
-//                            var intent = Intent(this, ShootActivity::class.java)
-//                            intent.putExtra(AppConstants.CATEGORY_ID, AppConstants.CARS_CATEGORY_ID)
-//                            intent.putExtra(AppConstants.CATEGORY_NAME, "Automobiles")
-//                            startActivity(intent)
-//                        }
-//                    }
-//                    }else {
-//                        NoMagnaotoMeterDialog().show(supportFragmentManager,"NoMagnaotoMeterDialog")
-//                    }
-//                }
+                R.id.shootActivity -> {
+                    if (isMagnatoMeterAvailable()) {
+                        when (getString(R.string.app_name)) {
+                            "Ola Cabs",
+                            AppConstants.CARS24,
+                            AppConstants.CARS24_INDIA,
+                            AppConstants.SELL_ANY_CAR,
+                            "Trusted cars",
+                            "Travo Photos",
+                            "Yalla Motors",
+                            "Spyne Hiring",
+                            AppConstants.AUTO_FOTO -> {
+                                var intent = Intent(this, StartShootActivity::class.java)
+                                intent.putExtra(
+                                    AppConstants.CATEGORY_ID,
+                                    AppConstants.CARS_CATEGORY_ID
+                                )
+                                intent.putExtra(AppConstants.CATEGORY_NAME, "Automobiles")
+                                startActivity(intent)
+                            }
+
+                            AppConstants.KARVI -> {
+                                var intent = Intent(this, ShootActivity::class.java)
+                                intent.putExtra(
+                                    AppConstants.CATEGORY_ID,
+                                    AppConstants.CARS_CATEGORY_ID
+                                )
+                                intent.putExtra(AppConstants.CATEGORY_NAME, "Automobiles")
+                                startActivity(intent)
+                            }
+
+                            "Flipkart",
+                            "Udaan",
+                            "Lal10",
+                            "Amazon",
+                            "Swiggy",
+                            AppConstants.SWIGGYINSTAMART,
+                            AppConstants.BATA,
+                            AppConstants.FLIPKART_GROCERY, AppConstants.EBAY -> {
+                                val intent =
+                                    Intent(
+                                        this@MainDashboardActivity,
+                                        CategoriesActivity::class.java
+                                    )
+                                startActivity(intent)
+                            }
+                            else -> {
+                                var intent = Intent(this, ShootActivity::class.java)
+                                intent.putExtra(
+                                    AppConstants.CATEGORY_ID,
+                                    AppConstants.CARS_CATEGORY_ID
+                                )
+                                intent.putExtra(AppConstants.CATEGORY_NAME, "Automobiles")
+                                startActivity(intent)
+                            }
+                        }
+                    } else {
+                        NoMagnaotoMeterDialog().show(
+                            supportFragmentManager,
+                            "NoMagnaotoMeterDialog"
+                        )
+                    }
+                }
 
                 R.id.completedOrdersFragment -> {
                     if (getString(R.string.app_name) == AppConstants.SPYNE_AI)
@@ -153,7 +177,7 @@ class MainDashboardActivity : AppCompatActivity() {
                         startActivity(intent)
                     }
                 }
-                R.id.wallet -> setCurrentFragment(SecondFragment)
+                // R.id.wallet -> setCurrentFragment(SecondFragment)
                 R.id.logoutDashBoardFragment -> setCurrentFragment(thirdFragment)
             }
             true
@@ -270,16 +294,16 @@ class MainDashboardActivity : AppCompatActivity() {
             "onPermissionGranted: " + Utilities.getPreference(this, AppConstants.CANCEL_ALL_WROKERS)
         )
         cancelAllWorkers()
-
         startUploadService()
-        startVideoUploadService()
+
         checkFolderUpload()
     }
 
     private fun startVideoUploadService() {
         val shootLocalRepository = VideoLocalRepository()
         if (shootLocalRepository.getOldestVideo().itemId != null
-            || shootLocalRepository.getOldestSkippedVideo().itemId != null){
+            || shootLocalRepository.getOldestSkippedVideo().itemId != null
+        ) {
 
             var action = Actions.START
             if (getServiceState(this) == com.spyneai.service.ServiceState.STOPPED && action == Actions.STOP)
@@ -299,12 +323,16 @@ class MainDashboardActivity : AppCompatActivity() {
 
             val properties = Properties()
                 .apply {
-                    put("service_state","Started")
-                    put("email",Utilities.getPreference(this@MainDashboardActivity,AppConstants.EMAIL_ID).toString())
-                    put("medium","Main Actity")
+                    put("service_state", "Started")
+                    put(
+                        "email",
+                        Utilities.getPreference(this@MainDashboardActivity, AppConstants.EMAIL_ID)
+                            .toString()
+                    )
+                    put("medium", "Main Actity")
                 }
 
-            captureEvent(Events.VIDEO_SERVICE_STARTED,properties)
+            captureEvent(Events.VIDEO_SERVICE_STARTED, properties)
         }
     }
 
@@ -487,12 +515,11 @@ class MainDashboardActivity : AppCompatActivity() {
                         Utilities.getPreference(this@MainDashboardActivity, AppConstants.EMAIL_ID)
                             .toString()
                     )
-                    put("medium", "Main Actity")
+                    put("medium", "Main Activity")
                 }
 
             captureEvent(Events.SERVICE_STARTED, properties)
         }
-
     }
 
     private fun folderCheckError(error: String) {
@@ -506,8 +533,6 @@ class MainDashboardActivity : AppCompatActivity() {
 
     override fun onResume() {
         super.onResume()
-
-        FilesRepository().getAllImages()
         binding.bottomNavigation.selectedItemId = R.id.homeDashboardFragment
     }
 

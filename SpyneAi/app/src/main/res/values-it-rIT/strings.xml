@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name" translatable="false">Ebay</string>
+    <string name="app_name" translatable="false">AutoFotoApp</string>
 
     <string name="hello_blank_fragment">Ciao frammento vuoto</string>
     <string name="hello">Benvenuti!</string>
@@ -121,8 +121,8 @@
     <string name="window_reflection">Stile di riflessione della finestra</string>
     <string name="transparent">Trasparente</string>
     <string name="original">Originale</string>
-    <string name="exterior">Esterno</string>
-    <string name="interior">Interno</string>
+    <string name="exterior">Vista esterna</string>
+    <string name="interior">Vista interna</string>
     <string name="have_look"><u>Dai un\'occhiata</u></string>
 
     <string name="download_hd_images"><u>Scarica immagini HD</u></string>
@@ -291,7 +291,7 @@
     <string name="generate_output">Genera output</string>
     <string name="sample_output">Esempio di output</string>
     <string name="image_uploading_in_progess">Caricamento immagine in corso...</string>
-    <string name="upload">Caricamento </string>
+    <string name="upload">Caricamento di </string>
     <string name="active">Attivo</string>
     <string name="disconnected">Disconnesso</string>
     <string name="image_uploaded">Immagine caricata</string>

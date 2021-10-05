@@ -1,32 +1,78 @@
 package com.spyneai.db
 
 import android.content.Context
+import android.database.SQLException
 import android.database.sqlite.SQLiteDatabase
 import android.database.sqlite.SQLiteOpenHelper
 import android.provider.BaseColumns
+import android.util.Log
+import com.posthog.android.Properties
+import com.spyneai.BaseApplication
+import com.spyneai.captureEvent
 
-class DBHelper (context: Context) : SQLiteOpenHelper(context, DATABASE_NAME, null, DATABASE_VERSION) {
+class DBHelper(context: Context) :
+    SQLiteOpenHelper(context, DATABASE_NAME, null, DATABASE_VERSION) {
+
+    val TAG = "DBHelper"
 
     override fun onCreate(db: SQLiteDatabase) {
-        db.execSQL(CREATE_PROJECTS_TABLE)
-        db.execSQL(SQL_CREATE_ENTRIES)
-        db.execSQL(CREATE_IMAGES_TABLE)
-        db.execSQL(CREATE_IMAGES_FILES_TABLE)
-        db.execSQL(CREATE_VIDEOS_TABLE)
+        Log.d(TAG, "onCreate: ")
+        BaseApplication.getContext().captureEvent(
+            "DB_VERSION",
+            Properties()
+                .putValue("onCreate", true)
+                .putValue("new_version", db.version)
+        )
+
+        try {
+            db.execSQL(CREATE_PROJECTS_TABLE)
+            db.execSQL(SQL_CREATE_ENTRIES)
+            db.execSQL(CREATE_IMAGES_TABLE)
+            db.execSQL(CREATE_IMAGES_FILES_TABLE)
+            db.execSQL(CREATE_VIDEOS_TABLE)
+        }catch (e : SQLException){
+            BaseApplication.getContext().captureEvent(
+                "DB_VERSION",
+
+                Properties()
+                    .putValue("SQLException", true)
+                    .putValue("message", e.message)
+                    .putValue("localizedMessage", e.localizedMessage)
+
+            )
+        }
+
+
     }
 
     override fun onUpgrade(db: SQLiteDatabase, oldVersion: Int, newVersion: Int) {
         // This database is only a cache for online data, so its upgrade policy is
         // to simply to discard the data and start over
-        if (newVersion == 9){
-            db.execSQL(DATABASE_ALTER_SKU_TABLE)
-            db.execSQL(DATABASE_ALTER_IMAGE_TABLE)
-            db.execSQL(DATABASE_ALTER_SKU)
-        }else {
-            db.execSQL(SQL_DELETE_PROJECTS)
-            db.execSQL(SQL_DELETE_ENTRIES)
-            db.execSQL(SQL_DELETE_IMAGES)
-            db.execSQL(SQL_DELETE_IMAGE_FILES)
+
+        Log.d(TAG, "onUpgrade: "+oldVersion+" "+newVersion)
+
+        when (newVersion) {
+            9 -> {
+                db.execSQL(DATABASE_ALTER_SKU_TABLE)
+                db.execSQL(DATABASE_ALTER_IMAGE_TABLE)
+                db.execSQL(DATABASE_ALTER_SKU)
+            }
+            else -> {
+                BaseApplication.getContext().captureEvent(
+                    "DB_VERSION",
+                    Properties()
+                        .putValue("onUpgrade", true)
+                        .putValue("old_version", oldVersion)
+                        .putValue("new_version", newVersion)
+                )
+                db.execSQL(SQL_DELETE_PROJECTS)
+                db.execSQL(SQL_DELETE_ENTRIES)
+                db.execSQL(SQL_DELETE_IMAGES)
+                db.execSQL(SQL_DELETE_IMAGE_FILES)
+                db.execSQL(SQL_DELETE_VIDEOS_TABLE)
+
+                onCreate(db)
+            }
         }
     }
 
@@ -36,7 +82,7 @@ class DBHelper (context: Context) : SQLiteOpenHelper(context, DATABASE_NAME, nul
 
     companion object {
         // If you change the database schema, you must increment the database version.
-        const val DATABASE_VERSION = 9
+        const val DATABASE_VERSION = 11
         const val DATABASE_NAME = "Shoot.db"
 
         private val DATABASE_ALTER_SKU_TABLE = ("ALTER TABLE "
@@ -75,7 +121,7 @@ class DBHelper (context: Context) : SQLiteOpenHelper(context, DATABASE_NAME, nul
                     "${ShootContract.ShootEntry.COLUMN_NAME_THREE_SIXTY_FRAMES} INTEGER," +
                     "${ShootContract.ShootEntry.TABLE_NAME} TEXT)"
 
-        private const val CREATE_IMAGES_TABLE =  "CREATE TABLE ${Images.TABLE_NAME} (" +
+        private const val CREATE_IMAGES_TABLE = "CREATE TABLE ${Images.TABLE_NAME} (" +
                 "${BaseColumns._ID} INTEGER PRIMARY KEY," +
                 "${Images.COLUMN_NAME_PROJECT_ID} TEXT," +
                 "${Images.COLUMN_NAME_SKU_ID} TEXT," +
@@ -89,8 +135,7 @@ class DBHelper (context: Context) : SQLiteOpenHelper(context, DATABASE_NAME, nul
                 "${Images.TABLE_NAME} TEXT)"
 
 
-
-        private const val CREATE_PROJECTS_TABLE =  "CREATE TABLE ${Projects.TABLE_NAME} (" +
+        private const val CREATE_PROJECTS_TABLE = "CREATE TABLE ${Projects.TABLE_NAME} (" +
                 "${BaseColumns._ID} INTEGER PRIMARY KEY," +
                 "${Projects.COLUMN_NAME_PROJECT_NAME} TEXT," +
                 "${Projects.COLUMN_NAME_CREATED_ON} INTEGER," +
@@ -102,7 +147,7 @@ class DBHelper (context: Context) : SQLiteOpenHelper(context, DATABASE_NAME, nul
                 "${Projects.COLUMN_NAME_PROJECT_ID} TEXT," +
                 "${Projects.COLUMN_NAME_STATUS} TEXT)"
 
-        private const val CREATE_IMAGES_FILES_TABLE =  "CREATE TABLE ${ImageFiles.TABLE_NAME} (" +
+        private const val CREATE_IMAGES_FILES_TABLE = "CREATE TABLE ${ImageFiles.TABLE_NAME} (" +
                 "${BaseColumns._ID} INTEGER PRIMARY KEY," +
                 "${ImageFiles.COLUMN_NAME_SKU_ID} TEXT," +
                 "${ImageFiles.COLUMN_NAME_SKU_NAME} TEXT," +
@@ -112,7 +157,7 @@ class DBHelper (context: Context) : SQLiteOpenHelper(context, DATABASE_NAME, nul
                 "${ImageFiles.COLUMN_NAME_IS_UPLOADED} INTEGER," +
                 "${ImageFiles.TABLE_NAME} TEXT)"
 
-        private const val CREATE_VIDEOS_TABLE =  "CREATE TABLE ${Videos.TABLE_NAME} (" +
+        private const val CREATE_VIDEOS_TABLE = "CREATE TABLE ${Videos.TABLE_NAME} (" +
                 "${BaseColumns._ID} INTEGER PRIMARY KEY," +
                 "${Videos.COLUMN_NAME_PROJECT_ID} TEXT," +
                 "${Videos.COLUMN_NAME_SKU_NAME} TEXT," +
@@ -131,8 +176,10 @@ class DBHelper (context: Context) : SQLiteOpenHelper(context, DATABASE_NAME, nul
 
 
         private const val SQL_DELETE_PROJECTS = "DROP TABLE IF EXISTS ${Projects.TABLE_NAME}"
-        private const val SQL_DELETE_ENTRIES = "DROP TABLE IF EXISTS ${ShootContract.ShootEntry.TABLE_NAME}"
+        private const val SQL_DELETE_ENTRIES =
+            "DROP TABLE IF EXISTS ${ShootContract.ShootEntry.TABLE_NAME}"
         private const val SQL_DELETE_IMAGES = "DROP TABLE IF EXISTS ${Images.TABLE_NAME}"
         private const val SQL_DELETE_IMAGE_FILES = "DROP TABLE IF EXISTS ${ImageFiles.TABLE_NAME}"
+        private const val SQL_DELETE_VIDEOS_TABLE = "DROP TABLE IF EXISTS ${ImageFiles.TABLE_NAME}"
     }
 }

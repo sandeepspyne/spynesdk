@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:id="@+id/flLevelIndicator"
+    android:layout_margin="@dimen/dp_20">
+
+    <ImageView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/ic_top_left"
+        android:layout_gravity="left"
+        android:id="@+id/ivTopLeft"/>
+
+    <ImageView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/ic_bottom_left"
+        android:layout_gravity="left|bottom"
+        android:id="@+id/ivBottomLeft"/>
+
+    <ImageView
+        android:layout_width="@dimen/dp_100"
+        android:layout_height="@dimen/dp_100"
+        android:layout_gravity="center"
+        android:id="@+id/ivGryroRing"
+        android:visibility="gone"
+        android:src="@drawable/ic_gyro_ring"/>
+
+
+    <TextView
+        android:layout_width="@dimen/dp_80"
+        android:layout_height="1dp"
+        android:layout_gravity="center"
+        android:id="@+id/tvCenter"
+        android:background="@color/white"/>
+
+    <ImageView
+        android:layout_width="@dimen/dp_30"
+        android:layout_height="3dp"
+        android:background="@drawable/bg_gyro_error"
+        android:id="@+id/tvLevelIndicator"
+        android:layout_gravity="center"/>
+
+
+    <ImageView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/ic_top_right"
+        android:layout_gravity="right"
+        android:id="@+id/ivTopRight"/>
+
+    <ImageView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/ic_bottom_right"
+        android:layout_gravity="right|bottom"
+        android:id="@+id/ivBottomRight"/>
+</FrameLayout>

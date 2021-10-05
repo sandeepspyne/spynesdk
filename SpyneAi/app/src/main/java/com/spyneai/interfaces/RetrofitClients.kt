@@ -3,6 +3,7 @@ package com.spyneai.interfaces
 
 import com.google.gson.GsonBuilder
 import com.spyneai.BuildConfig
+import com.spyneai.needs.AppConstants
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
@@ -11,7 +12,7 @@ import java.util.concurrent.TimeUnit
 
 object RetrofitClients {
 
-    private const val BASE_URL = "https://www.clippr.ai/api/"
+
     private const val STAGING_URL = "http://34.87.119.10/api/"
 
     private val client = OkHttpClient.Builder()
@@ -29,7 +30,7 @@ object RetrofitClients {
 
 
     private val retrofit = Retrofit.Builder()
-        .baseUrl(BASE_URL)
+        .baseUrl(AppConstants.BASE_URL)
         .client(client)
         .addConverterFactory(
             GsonConverterFactory.create(
@@ -43,7 +44,6 @@ object RetrofitClients {
     fun <T> buildService(service: Class<T>): T {
         return retrofit.create(service)
     }
-
 }
 
 

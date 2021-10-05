@@ -11,11 +11,15 @@ import com.spyneai.dashboard.ui.MainDashboardActivity
 import com.spyneai.loginsignup.activity.LoginActivity
 import android.os.Build
 import android.util.Log
+import com.posthog.android.Properties
 import com.spyneai.BuildConfig
+import com.spyneai.captureEvent
+import com.spyneai.db.DBHelper
 import com.spyneai.getNetworkName
 import com.spyneai.needs.AppConstants
 import com.spyneai.needs.Utilities
 import com.spyneai.onboarding.SelectLanguageActivity
+import com.spyneai.shoot.data.ShootLocalRepository
 
 
 class SplashActivity : AppCompatActivity() {
@@ -32,6 +36,15 @@ class SplashActivity : AppCompatActivity() {
 
         setContentView(R.layout.activity_splash)
 
+
+        val dbVersion = DBHelper(this).writableDatabase.version
+
+        captureEvent(
+            "DB_VERSION",
+            Properties().putValue(
+                "new_version",dbVersion
+            )
+        )
 
         val deviceId = Settings.Secure.getString(contentResolver, Settings.Secure.ANDROID_ID)
         val manufacturer = Build.MANUFACTURER
@@ -50,16 +63,9 @@ class SplashActivity : AppCompatActivity() {
         Utilities.savePrefrence(this,AppConstants.NETWORK_TYPE,networkCarrier)
         Utilities.savePrefrence(this,AppConstants.DEVICE_ID,deviceId)
 
-
-
         if(Utilities.getPreference(this, AppConstants.STATUS_PROJECT_NAME).isNullOrEmpty()){
-
             Utilities.savePrefrence(this,AppConstants.STATUS_PROJECT_NAME,"true")
-
-
-
         }
-
 
         setSplash()
     }
