@@ -312,5 +312,6 @@
     <string name="profile">Profile</string>
     <string name="turn_off_switch">Turn off while you have a \n slow internet connection.</string>
     <string name="level_gryometer">Your gyrometer is red!\nReadjust your phone and click when the gyrometer turns green!</string>
+    <string name="skip_image">Are you sure you want to\nskip this angle?</string>
 
 </resources>
