@@ -326,22 +326,23 @@
                                 android:id="@+id/tvCreditAvailable"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
+                                android:background="@null"
                                 android:fontFamily="@font/medium"
                                 android:text="@string/credits_available"
-                                android:background="@null"
-                                android:textSize="@dimen/sp_16"
-                                android:textColor="@color/black"/>
+                                android:textColor="@color/black"
+                                android:textSize="@dimen/sp_16" />
+
                             <TextView
                                 android:id="@+id/tvTopUp"
-                                android:layout_toRightOf="@+id/tvCreditAvailable"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:fontFamily="@font/medium"
                                 android:layout_marginLeft="@dimen/dp_3"
-                                android:text="@string/top_up_2"
-                                android:textSize="@dimen/sp_16"
+                                android:layout_toRightOf="@+id/tvCreditAvailable"
                                 android:background="@null"
-                                android:textColor="@color/primary"/>
+                                android:fontFamily="@font/medium"
+                                android:text="@string/top_up_2"
+                                android:textColor="@color/primary"
+                                android:textSize="@dimen/sp_16" />
                             <TextView
                                 android:id="@+id/tvCreditsAvailable"
                                 android:layout_width="wrap_content"

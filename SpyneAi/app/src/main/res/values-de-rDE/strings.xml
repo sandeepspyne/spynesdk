@@ -135,7 +135,7 @@
     <string name="total_images_clicked"><u>Anzahl der Bilder</u></string>
 
     <string name="credits_available"><u>Guthaben Credits</u></string>
-    <string name="credits_remaining">Verfügbare Credits</string>
+    <string name="credits_remaining">Guthaben</string>
     <string name="top_up_2"><u>(Credits aufladen</u></string>
 
     <string name="sku_id"><u>SKU ID</u></string>
