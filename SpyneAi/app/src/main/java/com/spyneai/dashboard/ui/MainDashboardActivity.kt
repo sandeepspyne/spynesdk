@@ -176,6 +176,7 @@ class MainDashboardActivity : AppCompatActivity() {
                     }
                     else {
                         val intent = Intent(this, MyOrdersActivity::class.java)
+                        intent.putExtra("TAB_ID", 1)
                         startActivity(intent)
                     }
                 }
