@@ -69,74 +69,53 @@
     <androidx.constraintlayout.widget.Group
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:visibility="gone"
+        android:visibility="invisible"
         android:id="@+id/groupOverlay"
-        app:constraint_referenced_ids="clOverlay, rl1, rl2" />
+        app:constraint_referenced_ids="ivBowl, tvInstructions, viewInstructions, rlInstructions" />
 
+    <ImageView
+        android:id="@+id/ivBowl"
+        android:layout_width="wrap_content"
+        android:layout_height="@dimen/dp_130"
+        app:layout_constraintStart_toStartOf="@+id/viewFinder"
+        app:layout_constraintEnd_toEndOf="@+id/viewFinder"
+        app:layout_constraintBottom_toTopOf="@+id/viewInstructions"
+        android:src="@drawable/ic_bowl"/>
 
-    <androidx.constraintlayout.widget.ConstraintLayout
-        android:id="@+id/clOverlay"
-        android:layout_width="match_parent"
-        android:layout_height="@dimen/dp_300"
-        android:layout_marginTop="@dimen/dp_100"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
-        android:background="@null"
-        app:layout_constraintTop_toBottomOf="@+id/viewCamera">
-
-        <RelativeLayout
-            android:id="@+id/rl3"
-            android:layout_width="0dp"
-            android:layout_height="0dp"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toStartOf="@+id/ivOverlay"
-            app:layout_constraintTop_toTopOf="parent"
-            android:background="@color/mask"
-            app:layout_constraintBottom_toBottomOf="parent"/>
-
-        <RelativeLayout
-            android:id="@+id/rl4"
-            android:layout_width="0dp"
-            android:layout_height="0dp"
-            android:background="@color/mask"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toEndOf="@+id/ivOverlay"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintBottom_toBottomOf="parent"/>
-
-        <ImageView
-            android:id="@+id/ivOverlay"
-            android:layout_width="0dp"
-            android:layout_height="0dp"
-            android:scaleType="fitEnd"
-            android:background="@null"
-            app:layout_constraintDimensionRatio="3:4"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            android:src="@drawable/ic_bowl"
-            app:layout_constraintBottom_toBottomOf="parent"/>
-
-    </androidx.constraintlayout.widget.ConstraintLayout>
-    <RelativeLayout
-        android:id="@+id/rl1"
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:background="@color/mask"
-        app:layout_constraintTop_toTopOf="parent"
+    <TextView
+        android:id="@+id/tvInstructions"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/tv_instructions"
+        android:fontFamily="@font/poppins_medium"
+        android:textColor="@color/white"
+        android:textSize="@dimen/dp_20"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintBottom_toTopOf="@+id/clOverlay"/>
+        android:layout_marginTop="@dimen/dp_5"
+        app:layout_constraintTop_toBottomOf="@+id/viewInstructions" />
+
+    <View
+        android:id="@+id/viewInstructions"
+        android:layout_width="match_parent"
+        android:layout_height="2dp"
+        android:background="@color/primary"
+        app:layout_constraintStart_toStartOf="@+id/viewFinder"
+        app:layout_constraintEnd_toEndOf="@+id/viewFinder"
+        app:layout_constraintBottom_toTopOf="@+id/rlInstructions"/>
+
+
 
     <RelativeLayout
-        android:id="@+id/rl2"
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:background="@color/mask"
-        app:layout_constraintTop_toBottomOf="@+id/clOverlay"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintBottom_toTopOf="@+id/llCapture"/>
+        android:id="@+id/rlInstructions"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:background="@color/camera_transparent"
+        app:layout_constraintStart_toStartOf="@+id/viewFinder"
+        app:layout_constraintEnd_toEndOf="@+id/viewFinder"
+        app:layout_constraintBottom_toBottomOf="@+id/viewFinder" />
+
+
 
     <RelativeLayout
         android:id="@+id/rlCapturedImage"

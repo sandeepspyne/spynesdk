@@ -145,8 +145,6 @@ class CameraFragment : BaseFragment<ShootViewModel, FragmentCameraBinding>(), Pi
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
-
         mSensorManager = requireActivity().getSystemService(Context.SENSOR_SERVICE) as SensorManager
         mAccelerometer = mSensorManager.getDefaultSensor(Sensor.TYPE_MAGNETIC_FIELD)
 
@@ -1053,7 +1051,7 @@ class CameraFragment : BaseFragment<ShootViewModel, FragmentCameraBinding>(), Pi
                     }
                 }
             }
-            AppConstants.SWIGGY, AppConstants.EBAY, AppConstants.FLIPKART, AppConstants.UDAAN, AppConstants.AMAZON -> {
+            AppConstants.SWIGGY -> {
 
                 // angle name
                 if (pitch.roundToInt() == 0 || (pitch.roundToInt() <= -0 && pitch.roundToInt() >= -3))
@@ -1086,41 +1084,7 @@ class CameraFragment : BaseFragment<ShootViewModel, FragmentCameraBinding>(), Pi
                         binding.groupOverlay!!.visibility = View.GONE
                     }
                 }
-                // upcoming angles
-                if (pitch.roundToInt() <= -3 && pitch.roundToInt() >= -8) {
-                    // going from 90 to 45
-                    upcomingAngle = 45
-                }
-                if (pitch.roundToInt() <= -78 && pitch.roundToInt() >= -82) {
-                    // going from 0 to 45
-                    upcomingAngle = 50
-                }
 
-//                if (pitch.roundToInt() <= -35 && pitch.roundToInt() >= -40) {
-//                    log("00000")
-//                    angle = 45
-//                    Toast.makeText(requireContext(), "45", Toast.LENGTH_SHORT).show()
-//                }
-
-                if (pitch.roundToInt() <= -45 && pitch.roundToInt() >= -50) {
-                    // going from 45 to 0
-                    upcomingAngle = 0
-                }
-
-                when (upcomingAngle) {
-                    45 -> {
-                        binding.lottieDownArrow!!.visibility = View.VISIBLE
-                        binding.lottieUpArrow!!.visibility = View.VISIBLE
-                    }
-                    0 -> {
-                        binding.lottieDownArrow!!.visibility = View.VISIBLE
-                        binding.lottieUpArrow!!.visibility = View.VISIBLE
-                    }
-                    50 -> {
-                        binding.lottieDownArrow!!.visibility = View.VISIBLE
-                        binding.lottieUpArrow!!.visibility = View.VISIBLE
-                    }
-                }
                 //hide moving line
 
 
@@ -1164,8 +1128,111 @@ class CameraFragment : BaseFragment<ShootViewModel, FragmentCameraBinding>(), Pi
                     }
 
                 } else {
+                    binding.lottieDownArrow!!.visibility = View.VISIBLE
+                    binding.lottieUpArrow!!.visibility = View.VISIBLE
                     binding.tvAngleValue!!.visibility = View.INVISIBLE
                     binding.groupOverlay!!.visibility = View.GONE
+                    binding.tvAngleValue!!.visibility = View.INVISIBLE
+                    isGyroOnCorrectAngle = false
+                    binding.tvAngleRed!!.visibility = View.VISIBLE
+                    val gyroAngle = (-pitch.roundToInt())
+
+                    binding.tvAngleRed!!.text = gyroAngle.toString() + "\u00B0"
+                    gyroMeterOffLevel()
+
+                    if (movearrow) {
+                        if (abs(roll.roundToInt()) < 100) {
+                            moveArrow((pitch + 85).unaryMinus())
+                        } else {
+                            moveArrow(pitch + 85)
+                        }
+                    }
+
+                    if (orientationAngles[2].roundToInt() == 1 || orientationAngles[2].roundToInt() == -1) {
+                        if (orientationAngles[2].roundToInt() == 1) {
+                            rotateArrow((pitch + 85).unaryMinus().roundToInt())
+                        } else {
+                            rotateArrow((pitch + 85).roundToInt())
+                        }
+                    }
+                }
+            }
+            AppConstants.EBAY, AppConstants.FLIPKART, AppConstants.UDAAN, AppConstants.AMAZON -> {
+
+                // angle name
+                if (pitch.roundToInt() == 0 || (pitch.roundToInt() <= -0 && pitch.roundToInt() >= -3))
+                    angle = 0
+
+                if (pitch.roundToInt() <= -82 && pitch.roundToInt() >= -88)
+                    angle = 90
+
+                if ((pitch.roundToInt() <= -40 && pitch.roundToInt() >= -45) && abs(roll.roundToInt()) < 100)
+                    angle = 45
+
+                when (angle) {
+                    0 -> {
+                        binding.tvAngleValue!!.visibility = View.VISIBLE
+                        binding.tvAngleValue!!.text = "0" + "\u00B0"
+                    }
+                    45 -> {
+                        binding.tvAngleValue!!.visibility = View.VISIBLE
+                        binding.tvAngleValue!!.text = "45" + "\u00B0"
+                    }
+                    90 -> {
+                        binding.tvAngleValue!!.visibility = View.VISIBLE
+                        binding.tvAngleValue!!.text = "90" + "\u00B0"
+                    }
+                    else -> {
+                        binding.tvAngleValue!!.visibility = View.INVISIBLE
+                    }
+                }
+
+                //hide moving line
+
+
+                if (pitch.roundToInt() == 0 || (pitch.roundToInt() <= -0 && pitch.roundToInt() >= -3))
+                    binding.tvLevelIndicator.visibility = View.GONE
+                else
+                    binding.tvLevelIndicator.visibility = View.VISIBLE
+
+
+
+
+                if (((pitch.roundToInt() == 0 || (pitch.roundToInt() <= -0 && pitch.roundToInt() >= -3))
+                            && (abs(roll.roundToInt()) <= 3 && abs(roll.roundToInt()) >= -3)) ||
+                    (pitch.roundToInt() <= -82 && pitch.roundToInt() >= -88) ||
+                    (pitch.roundToInt() <= -40 && pitch.roundToInt() >= -45) ) {
+                    binding.lottieDownArrow!!.visibility = View.INVISIBLE
+                    binding.lottieUpArrow!!.visibility = View.INVISIBLE
+                    binding.tvUpcomingAngle1!!.visibility = View.INVISIBLE
+                    binding.tvUpcomingAngle2!!.visibility = View.INVISIBLE
+                    binding.tvAngleRed!!.visibility = View.INVISIBLE
+                    isGyroOnCorrectAngle = true
+
+
+
+                    //angle 90
+                    if (pitch.roundToInt() == 0 || (pitch.roundToInt() <= -0 && pitch.roundToInt() >= -3)) {
+                        cameraAngle = 0
+                        gyroMeterOnLevel(false)
+                    }
+                    //angle 45
+                    else if (pitch.roundToInt() <= -40 && pitch.roundToInt() >= -45) {
+                        cameraAngle = 45
+                        gyroMeterOnLevel(false)
+                    }
+
+
+
+                    else {
+                        cameraAngle = 90
+                        gyroMeterOnLevel(true)
+                    }
+
+                } else {
+                    binding.lottieDownArrow!!.visibility = View.VISIBLE
+                    binding.lottieUpArrow!!.visibility = View.VISIBLE
+                    binding.tvAngleValue!!.visibility = View.INVISIBLE
                     binding.tvAngleValue!!.visibility = View.INVISIBLE
                     isGyroOnCorrectAngle = false
                     binding.tvAngleRed!!.visibility = View.VISIBLE
@@ -1432,6 +1499,9 @@ class CameraFragment : BaseFragment<ShootViewModel, FragmentCameraBinding>(), Pi
                             cameraInfo!!,
                             shootDimensions
                         )
+
+                        binding.rlInstructions?.layoutParams?.height = (view.height / 100) * 45
+
                     }
 
                     1 -> {

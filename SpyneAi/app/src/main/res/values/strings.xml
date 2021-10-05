@@ -317,4 +317,6 @@
     <string name="level_gryometer">Your gyrometer is red!\nReadjust your phone and click when the gyrometer turns green!</string>
     <string name="skip_image">Are you sure you want to\nskip this angle?</string>
 
+    <string name="tv_instructions">(Keep dish above this line)</string>
+
 </resources>
