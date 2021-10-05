@@ -1,7 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name" translatable="false">AutoFotoApp</string>
-
     <string name="hello_blank_fragment">Ciao frammento vuoto</string>
     <string name="hello">Benvenuti!</string>
 
@@ -47,7 +45,7 @@
     <string name="sku_names">Nome Sku</string>
     <string name="sku">Sku:</string>
     <string name="total_cost">Costo totale</string>
-    <string name="total_images">Totale immagini cliccate</string>
+    <string name="total_images">Immagini totale</string>
     <string name="available_download">Disponibile per il download</string>
     <string name="select_marketplace">Seleziona mercato</string>
     <string name="confirm">Conferma</string>
@@ -131,7 +129,7 @@
     <string name="download_free"><u>Scarica gratuitamente (con filigrana)</u></string>
 
     <string name="downloading...."><u>Download in corso...</u></string>
-    <string name="download_completed"><u> Download completato</u></string>
+    <string name="download_completed">Download completato</string>
     <string name="download_failed"><u> Download non riuscito</u></string>
 
     <string name="total_images_clicked"><u>Totale immagini cliccate</u></string>
@@ -313,4 +311,5 @@
     <string name="you_are_logged_in_as">Hai effettuato l\'accesso come:</string>
     <string name="profile">Profilo</string>
     <string name="turn_off_switch">Spegni quando hai una \n connessione Internet lenta.</string>
+    <string name="rate_this_output">Valuta ora:</string>
 </resources>

@@ -127,7 +127,7 @@
     <string name="download_free"><u>Download Free (Watermarked)</u></string>
 
     <string name="downloading...."><u>Downloading....</u></string>
-    <string name="download_completed"><u> Download Completed</u></string>
+    <string name="download_completed">Download Completed</string>
     <string name="download_failed"><u> Download Failed</u></string>
 
     <string name="total_images_clicked"><u>Total Images Clicked</u></string>
@@ -316,5 +316,6 @@
     <string name="wallet">Wallet</string>
     <string name="level_gryometer">Your gyrometer is red!\nReadjust your phone and click when the gyrometer turns green!</string>
     <string name="skip_image">Are you sure you want to\nskip this angle?</string>
+    <string name="rate_this_output">Rate this Output:</string>
 
 </resources>

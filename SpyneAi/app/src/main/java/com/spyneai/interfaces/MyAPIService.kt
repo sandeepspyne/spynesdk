@@ -74,7 +74,7 @@ interface MyAPIService {
         @Field("email_id") email_id: String,
         @Field("password") password: String,
         @Field("strategy") strategy: String,
-        @Field("user_name") user_name: String,
+        @Field("first_name") user_name: String,
         @Field("country") country: String,
         @Field("source") source: String,
         @Field("coupon_code") couponCode: String

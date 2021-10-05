@@ -330,14 +330,28 @@ class CameraFragment : BaseFragment<ShootViewModel, FragmentCameraBinding>(), Pi
             AppConstants.SELL_ANY_CAR,
             AppConstants.YALLA_MOTOS,
             AppConstants.AUTO_FOTO-> {
-                if (isGyroOnCorrectAngle){
-                    if (viewModel.shootList.value == null
-                        && !requireActivity().intent.getBooleanExtra(AppConstants.SKU_CREATED, false))
-                        getProjectDetails()
-                    else
-                         captureImage()
-                }else {
-                    showGryroToast()
+                if (viewModel.shootList.value == null
+                    && !requireActivity().intent.getBooleanExtra(AppConstants.SKU_CREATED, false)){
+                   if (binding.flLevelIndicator.visibility == View.VISIBLE){
+                       if (isGyroOnCorrectAngle){
+                           getProjectDetails()
+                       }else{
+                           showGryroToast()
+                       }
+                   }else{
+                       getProjectDetails()
+                   }
+                }
+                else{
+                    if (binding.flLevelIndicator.visibility == View.VISIBLE){
+                        if (isGyroOnCorrectAngle){
+                            captureImage()
+                        }else{
+                            showGryroToast()
+                        }
+                    }else{
+                        captureImage()
+                    }
                 }
             }
             AppConstants.FLIPKART,
@@ -349,31 +363,57 @@ class CameraFragment : BaseFragment<ShootViewModel, FragmentCameraBinding>(), Pi
             AppConstants.BATA,
                 AppConstants.EBAY,
             AppConstants.FLIPKART_GROCERY -> {
-                if (isGyroOnCorrectAngle)
+                if (binding.flLevelIndicator.visibility == View.VISIBLE){
+                    if (isGyroOnCorrectAngle){
+                        captureImage()
+                    }else{
+                        showGryroToast()
+                    }
+                }else{
                     captureImage()
-                else
-                    showGryroToast()
+                }
             }
             AppConstants.SPYNE_AI -> {
-                if (isGyroOnCorrectAngle){
-                    if (viewModel.shootList.value == null
-                        && !requireActivity().intent.getBooleanExtra(AppConstants.SKU_CREATED, false)){
-                        if (viewModel.categoryDetails.value?.categoryName == "Automobiles" ||
-                            viewModel.categoryDetails.value?.categoryName == "Bikes"
-                        ) {
+                if (viewModel.shootList.value == null
+                    && !requireActivity().intent.getBooleanExtra(AppConstants.SKU_CREATED, false)){
+                    if (viewModel.categoryDetails.value?.categoryName == "Automobiles" ||
+                        viewModel.categoryDetails.value?.categoryName == "Bikes"
+                    ) {
+                        if (binding.flLevelIndicator.visibility == View.VISIBLE){
+                            if (isGyroOnCorrectAngle){
+                                getProjectDetails()
+                            }else{
+                                showGryroToast()
+                            }
+                        }else{
                             getProjectDetails()
-                        }else {
+                        }
+                    }else {
+                        if (binding.flLevelIndicator.visibility == View.VISIBLE){
+                            if (isGyroOnCorrectAngle){
+                                captureImage()
+                            }else{
+                                showGryroToast()
+                            }
+                        }else{
                             captureImage()
+                        }
+                    }
+
+                }
+                else{
+                    if (binding.flLevelIndicator.visibility == View.VISIBLE){
+                        if (isGyroOnCorrectAngle){
+                            captureImage()
+                        }else{
+                            showGryroToast()
                         }
                     }else{
                         captureImage()
                     }
-                }else {
-                    showGryroToast()
                 }
             }
-            else
-            -> {
+            else -> {
                 if (isGyroOnCorrectAngle){
                     if (viewModel.shootList.value == null
                     && !requireActivity().intent.getBooleanExtra(AppConstants.SKU_CREATED, false)
