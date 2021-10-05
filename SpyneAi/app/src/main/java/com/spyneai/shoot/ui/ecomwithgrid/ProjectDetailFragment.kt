@@ -53,8 +53,12 @@ class ProjectDetailFragment : BaseFragment<ShootViewModel, FragmentProjectDetail
         }
 
         when (getString(R.string.app_name)) {
-            AppConstants.SWIGGY -> {
-                binding.btHome.text = "Select Background"
+            AppConstants.SWIGGY, AppConstants.SPYNE_AI -> {
+                when (viewModel.categoryDetails.value?.categoryName) {
+                   "Food & Beverages" -> {
+                       binding.btHome.text = "Select Background"
+                   }
+                }
             }
             AppConstants.EBAY -> {
                 binding.groupShadow.visibility = View.VISIBLE
@@ -73,6 +77,9 @@ class ProjectDetailFragment : BaseFragment<ShootViewModel, FragmentProjectDetail
                     "Footwear" -> {
                         binding.groupShadow.visibility = View.GONE
                         binding.btHome.text = "Submit Project"
+                    }
+                    "Food & Beverages" -> {
+                        binding.btHome.text = "Select Background"
                     }
                 }
             }
