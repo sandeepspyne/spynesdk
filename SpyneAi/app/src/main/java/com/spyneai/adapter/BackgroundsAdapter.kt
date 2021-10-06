@@ -1,25 +1,17 @@
 package com.spyneai.adapter
 
 import android.content.Context
-import android.content.Intent
 import android.graphics.Color
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.ImageView
 import android.widget.LinearLayout
-import android.widget.TextView
 import androidx.cardview.widget.CardView
 import androidx.recyclerview.widget.RecyclerView
-import com.bumptech.glide.Glide
 import com.spyneai.R
-import com.spyneai.activity.CameraActivity
-import com.spyneai.activity.CameraPreviewActivity
 import com.spyneai.model.channel.BackgroundsResponse
-import com.spyneai.model.channel.Data
-import com.spyneai.needs.AppConstants
 
- class BackgroundsAdapter(val context: Context,
+class BackgroundsAdapter(val context: Context,
                           val backgroundList : ArrayList<BackgroundsResponse>,
                           val btnlistener: BtnClickListener?)
     : RecyclerView.Adapter<BackgroundsAdapter.ViewHolder>() {

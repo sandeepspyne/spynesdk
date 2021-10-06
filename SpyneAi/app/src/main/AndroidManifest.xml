@@ -161,7 +161,7 @@
         </receiver>
 
         <activity
-            android:name=".activity.OnboardingsActivity"
+            android:name=".loginsignup.OnboardingsActivity"
             android:screenOrientation="portrait" />
         <activity
             android:name=".processedimages.ui.ShowImagesActivity"

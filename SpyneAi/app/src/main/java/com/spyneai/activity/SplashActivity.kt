@@ -12,6 +12,7 @@ import com.spyneai.loginsignup.activity.LoginActivity
 import android.os.Build
 import com.spyneai.BuildConfig
 import com.spyneai.getNetworkName
+import com.spyneai.loginsignup.OnboardingsActivity
 import com.spyneai.needs.AppConstants
 import com.spyneai.needs.Utilities
 import com.spyneai.onboarding.SelectLanguageActivity

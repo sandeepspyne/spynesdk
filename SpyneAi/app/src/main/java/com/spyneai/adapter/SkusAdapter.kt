@@ -10,22 +10,13 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
-import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.bumptech.glide.Glide
 import com.spyneai.R
-import com.spyneai.activity.CameraActivity
-import com.spyneai.activity.CameraPreviewActivity
-import com.spyneai.activity.EditSkuActivity
 import com.spyneai.activity.ShootSelectionActivity
-import com.spyneai.model.channel.ChannelsResponse
-import com.spyneai.model.channel.Data
 import com.spyneai.model.order.Photo
 import com.spyneai.model.order.Sku
-import com.spyneai.model.sku.Photos
 import com.spyneai.needs.AppConstants
-import kotlinx.android.synthetic.main.activity_edit_sku.*
 
 class SkusAdapter(val context: Context,
                    val skuList: List<Sku>,

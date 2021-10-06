@@ -12,11 +12,7 @@ import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.spyneai.R
-import com.spyneai.activity.CameraActivity
-import com.spyneai.activity.CameraPreviewActivity
 import com.spyneai.activity.EditSkuActivity
-import com.spyneai.model.channel.ChannelsResponse
-import com.spyneai.model.channel.Data
 import com.spyneai.model.order.Sku
 import com.spyneai.needs.AppConstants
 

@@ -2,7 +2,6 @@ package com.spyneai.adapter
 
 import android.annotation.SuppressLint
 import android.content.Context
-import android.content.Intent
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -12,11 +11,8 @@ import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.spyneai.R
-import com.spyneai.activity.OrderActivity
-import com.spyneai.model.orders.Data
 import com.spyneai.model.orders.Ongoing
 import com.spyneai.needs.AppConstants
-import com.spyneai.needs.Utilities
 
 class MyOrdersOngoingAdapter(val context: Context,
                              val myOrdersOngoingResponse : ArrayList<Ongoing>,

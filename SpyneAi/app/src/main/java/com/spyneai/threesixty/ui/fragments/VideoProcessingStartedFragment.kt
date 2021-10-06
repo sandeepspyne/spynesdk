@@ -7,11 +7,8 @@ import android.view.View
 import android.view.ViewGroup
 import com.bumptech.glide.Glide
 import com.spyneai.R
-import com.spyneai.activity.OngoingOrdersActivity
-import com.spyneai.activity.OrderActivity
 import com.spyneai.base.BaseFragment
 import com.spyneai.dashboard.ui.MainDashboardActivity
-import com.spyneai.databinding.Fragment360ShotSummaryBinding
 import com.spyneai.databinding.FragmentVideoProcessingStartedBinding
 import com.spyneai.gotoHome
 import com.spyneai.threesixty.data.ThreeSixtyViewModel

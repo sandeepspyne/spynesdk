@@ -1,22 +1,14 @@
 package com.spyneai.adapter
 
 import android.content.Context
-import android.content.Intent
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.LinearLayout
-import android.widget.TextView
-import androidx.cardview.widget.CardView
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.spyneai.R
-import com.spyneai.activity.CameraActivity
-import com.spyneai.activity.CameraPreviewActivity
-import com.spyneai.model.channel.ChannelsResponse
-import com.spyneai.model.channel.Data
 import com.spyneai.model.order.MarketPlace
 import com.spyneai.needs.AppConstants
 

@@ -1,4 +1,4 @@
-package com.spyneai.activity
+package com.spyneai.loginsignup
 
 import android.content.Intent
 import android.os.Bundle
@@ -19,7 +19,6 @@ import com.spyneai.fragment.OnboardingThreeFragment
 import com.spyneai.fragment.OnboardingTwoFragment
 import com.spyneai.loginsignup.activity.LoginActivity
 import com.spyneai.posthog.Events
-import com.spyneai.service.log
 import kotlinx.android.synthetic.main.activity_onboardings.*
 
 
