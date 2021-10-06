@@ -150,9 +150,9 @@ class RecordVideoFragment : BaseFragment<ThreeSixtyViewModel, FragmentRecordVide
     // The Folder location where all the files will be stored
     private val outputDirectory: String by lazy {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-            "${Environment.DIRECTORY_DCIM}/Spyne/"
+            "${Environment.DIRECTORY_DCIM}/Spyne360/"
         } else {
-            "${requireActivity().getExternalFilesDir(Environment.DIRECTORY_DCIM)?.path}/Spyne/"
+            "${requireActivity().getExternalFilesDir(Environment.DIRECTORY_DCIM)?.path}/Spyne360/"
         }
     }
 
@@ -530,7 +530,7 @@ class RecordVideoFragment : BaseFragment<ThreeSixtyViewModel, FragmentRecordVide
             }
         } else {
             File(outputDirectory).mkdirs()
-            val file = File("$outputDirectory/${System.currentTimeMillis()}.mp4")
+            val file = File("$outputDirectory/${viewModel.videoDetails.skuName+"_"+viewModel.videoDetails.skuId+"_"+System.currentTimeMillis()}.mp4")
 
             VideoCapture.OutputFileOptions.Builder(file)
         }.build()
