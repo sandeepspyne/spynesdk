@@ -128,7 +128,7 @@ class DraftSkusAdapter (
 
                 context.startActivity(intent)
             }else {
-                Intent(
+                val draftIntent = Intent(
                     context,
                     DraftSkuDetailsActivity::class.java
                 ).apply {
@@ -148,8 +148,16 @@ class DraftSkusAdapter (
                     //putExtra("is_paid",skuList[position].paid)
                     //putExtra(AppConstants.IMAGE_TYPE,skuList[position].category)
                     putExtra(AppConstants.IS_360,skuList[position].is360)
-                    context.startActivity(this)
                 }
+
+                if (!skuList[position].videoId.isNullOrEmpty()){
+                    draftIntent.apply {
+                        putExtra(AppConstants.FROM_VIDEO, true)
+                        putExtra(AppConstants.TOTAL_FRAME, skuList[position].total_images)
+                    }
+                }
+
+                context.startActivity(draftIntent)
             }
         }
     }

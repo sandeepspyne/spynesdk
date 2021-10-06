@@ -486,6 +486,7 @@ class CameraFragment : BaseFragment<ShootViewModel, FragmentCameraBinding>(), Pi
                     )
 
                     val sku = Sku()
+                    sku?.projectId = projectId
                     sku?.skuId = skuId
                     sku?.skuName = skuName
                     sku?.totalImages = viewModel.exterirorAngles.value

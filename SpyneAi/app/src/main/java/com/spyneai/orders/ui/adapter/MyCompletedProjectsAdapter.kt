@@ -71,9 +71,7 @@ class MyCompletedProjectsAdapter(
                 //ivDownloadSKU.visibility = View.INVISIBLE
             }
         }else{
-            if (getProjectList[position].sub_category == "360_exterior"
-                || getProjectList[position].sub_category.equals("360_interior")
-            ){
+            if (getProjectList[position].categoryId == AppConstants.CARS_CATEGORY_ID && (getProjectList[position].categoryId == getProjectList[position].subCategoryId)){
                 holder.llThreeSixty.visibility = View.VISIBLE
                 holder.tvCategory.text = "Automobiles"
             }else{
@@ -88,8 +86,7 @@ class MyCompletedProjectsAdapter(
 
         try {
             if (getProjectList[position].sku[0].images.isNullOrEmpty()) {
-                if (getProjectList[position].sub_category == "360_exterior"
-                    || getProjectList[position].sub_category.equals("360_interior")){
+                if (getProjectList[position].categoryId == AppConstants.CARS_CATEGORY_ID && (getProjectList[position].categoryId == getProjectList[position].subCategoryId)){
                     Glide.with(context)
                         .load(R.drawable.three_sixty_thumbnail)
                         .into(holder.ivThumbnail)
@@ -100,8 +97,7 @@ class MyCompletedProjectsAdapter(
                 }
             }else {
                 if (getProjectList[position].sku[0].images[0].input_lres == null){
-                    if (getProjectList[position].sub_category == "360_exterior"
-                        || getProjectList[position].sub_category.equals("360_interior")){
+                    if (getProjectList[position].categoryId == AppConstants.CARS_CATEGORY_ID && (getProjectList[position].categoryId == getProjectList[position].subCategoryId)){
                         Glide.with(context)
                             .load(R.drawable.three_sixty_thumbnail)
                             .into(holder.ivThumbnail)
@@ -129,7 +125,7 @@ class MyCompletedProjectsAdapter(
             viewModel.position.value = position
             viewModel.projectItemClicked.value = true
 
-            if (getProjectList[position].sub_category.equals("360_interior") || getProjectList[position].sub_category.equals("360_exterior")){
+            if (getProjectList[position].categoryId == AppConstants.CARS_CATEGORY_ID && (getProjectList[position].categoryId == getProjectList[position].subCategoryId)){
                 Intent(context,ThreeSixtyExteriorActivity::class.java)
                     .apply {
                         putExtra("sku_id",getProjectList[position].sku[0].sku_id)

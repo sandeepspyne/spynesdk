@@ -237,8 +237,8 @@ class ShootActivity : AppCompatActivity() {
         shootViewModel.selectBackground.observe(this, {
             if (it) {
                 // start process activity
-                val intent = Intent(this, ProcessActivity::class.java)
-                intent.apply {
+                val processIntent = Intent(this, ProcessActivity::class.java)
+                processIntent.apply {
                     this.putExtra(AppConstants.CATEGORY_NAME, categoryDetails.categoryName)
                     this.putExtra("sku_id", shootViewModel.sku.value?.skuId)
                     this.putExtra("project_id", shootViewModel.sku.value?.projectId)
@@ -246,6 +246,7 @@ class ShootActivity : AppCompatActivity() {
                     this.putExtra("process_sku",shootViewModel.processSku)
                     this.putExtra("interior_misc_count",getInteriorMiscCount())
                     this.putStringArrayListExtra("exterior_images_list",getExteriorImagesList())
+                    this.putExtra(AppConstants.FROM_VIDEO,intent.getBooleanExtra(AppConstants.FROM_VIDEO,false))
                     startActivity(this)
                 }
             }
@@ -382,6 +383,10 @@ class ShootActivity : AppCompatActivity() {
         if (getString(R.string.app_name) == AppConstants.OLA_CABS
             && shootViewModel.threeSixtyInteriorSelected) {
             total+= 1
+        }
+
+        if (intent.getBooleanExtra(AppConstants.FROM_VIDEO,false)){
+            total+= intent.getIntExtra(AppConstants.TOTAL_FRAME,0)
         }
 
         Log.d(TAG, "getInteriorMiscCount: "+total)
