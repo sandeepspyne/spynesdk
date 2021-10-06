@@ -7,7 +7,7 @@ apply plugin: 'com.android.application'
 apply plugin: 'com.google.gms.google-services'
 apply plugin: 'kotlin-android-extensions'
 apply plugin: 'com.google.firebase.crashlytics'
-//apply plugin: 'kotlin-kapt'
+apply plugin: 'kotlin-kapt'
 
 android {
 
@@ -410,9 +410,9 @@ dependencies {
 
     //room
     def room_version = "2.3.0"
+
     implementation("androidx.room:room-runtime:$room_version")
     //annotationProcessor "androidx.room:room-compiler:$room_version"
-   // kapt("androidx.room:room-compiler:$room_version")
     
     // optional - Kotlin Extensions and Coroutines support for Room
     implementation "androidx.room:room-ktx:$room_version"

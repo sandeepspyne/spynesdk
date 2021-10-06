@@ -53,8 +53,6 @@ class TrimView : ConstraintLayout, View.OnTouchListener {
         defStyleAttr
     ) {
 
-//        layout = ViewTrimBinding.inflate(LayoutInflater.from(context))
-
         layout = DataBindingUtil.inflate(
             LayoutInflater.from(context), R.layout.view_trim, this, true
         )
