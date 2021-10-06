@@ -8,7 +8,6 @@ import com.spyneai.base.OnItemClickListener
 import com.spyneai.dashboard.response.NewSubCatResponse
 import com.spyneai.databinding.ItemSubcategoriesBinding
 import com.spyneai.needs.AppConstants
-import com.spyneai.shoot.adapters.NewSubCategoriesAdapter
 
 class SubcategoryHolder(
     itemView: View,

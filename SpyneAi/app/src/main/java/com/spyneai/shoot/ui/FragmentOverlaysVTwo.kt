@@ -7,7 +7,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.ViewTreeObserver
-import android.widget.Toast
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -30,12 +29,10 @@ import com.spyneai.captureEvent
 import com.spyneai.captureFailureEvent
 import com.spyneai.dashboard.response.NewSubCatResponse
 import com.spyneai.dashboard.ui.handleApiError
-import com.spyneai.databinding.FragmentOverlaysBinding
 import com.spyneai.databinding.FragmentOverlaysV2Binding
 import com.spyneai.needs.AppConstants
 import com.spyneai.needs.Utilities
 import com.spyneai.posthog.Events
-import com.spyneai.shoot.adapter.ShootProgressAdapter
 import com.spyneai.shoot.adapters.InteriorAdapter
 import com.spyneai.shoot.adapters.MiscAdapter
 import com.spyneai.shoot.adapters.NewSubCategoriesAdapter
@@ -44,7 +41,6 @@ import com.spyneai.shoot.data.ShootViewModel
 import com.spyneai.shoot.data.model.ShootData
 import com.spyneai.shoot.ui.dialogs.*
 import com.spyneai.shoot.utils.shoot
-import com.spyneai.showToast
 import kotlinx.coroutines.launch
 
 class FragmentOverlaysVTwo : BaseFragment<ShootViewModel, FragmentOverlaysV2Binding>(),

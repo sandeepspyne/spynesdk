@@ -14,11 +14,8 @@ import com.bumptech.glide.Glide
 import com.spyneai.R
 import com.spyneai.draft.ui.DraftSkusActivity
 import com.spyneai.needs.AppConstants
-import com.spyneai.orders.data.response.GetProjectsResponse
 import com.spyneai.shoot.data.model.Project
 import com.spyneai.shoot.ui.base.ShootActivity
-import com.spyneai.shoot.ui.base.ShootPortraitActivity
-import com.spyneai.threesixty.ui.ThreeSixtyExteriorActivity
 import com.spyneai.toDate
 
 class LocalDraftProjectsAdapter(

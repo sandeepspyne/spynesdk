@@ -8,12 +8,10 @@ import com.posthog.android.Properties
 import com.spyneai.base.BaseFragment
 import com.spyneai.captureEvent
 import com.spyneai.databinding.FragmentCreateProjectBinding
-import com.spyneai.databinding.FragmentOverlaysBinding
 import com.spyneai.posthog.Events
 import com.spyneai.shoot.data.ShootViewModel
 import com.spyneai.shoot.ui.dialogs.CreateProjectAndSkuDialog
 import com.spyneai.shoot.ui.dialogs.ShootHintDialog
-import com.spyneai.shoot.utils.shoot
 
 class CreateProjectFragment : BaseFragment<ShootViewModel, FragmentCreateProjectBinding>() {
 

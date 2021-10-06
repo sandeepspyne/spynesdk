@@ -11,7 +11,6 @@ import com.spyneai.base.BaseDialogFragment
 import com.spyneai.base.network.Resource
 import com.spyneai.captureEvent
 import com.spyneai.captureFailureEvent
-import com.spyneai.dashboard.ui.WhiteLabelConstants
 import com.spyneai.dashboard.ui.handleApiError
 import com.spyneai.databinding.DialogAngleSelectionBinding
 import com.spyneai.needs.AppConstants

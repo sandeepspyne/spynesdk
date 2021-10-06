@@ -7,7 +7,6 @@ import com.spyneai.BaseApplication
 import com.spyneai.db.DBHelper
 import com.spyneai.db.ImageFiles
 import com.spyneai.db.Images
-import com.spyneai.shoot.data.model.Image
 import com.spyneai.shoot.data.model.ImageFile
 
 class FilesRepository {

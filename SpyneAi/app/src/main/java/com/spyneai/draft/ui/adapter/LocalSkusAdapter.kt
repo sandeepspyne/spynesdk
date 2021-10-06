@@ -14,7 +14,6 @@ import com.spyneai.R
 import com.spyneai.draft.ui.DraftSkuDetailsActivity
 import com.spyneai.needs.AppConstants
 import com.spyneai.needs.Utilities
-import com.spyneai.orders.data.response.GetProjectsResponse
 import com.spyneai.shoot.data.model.Sku
 import com.spyneai.shoot.ui.base.ShootActivity
 import com.spyneai.threesixty.data.VideoLocalRepository

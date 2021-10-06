@@ -6,8 +6,7 @@
     android:layout_height="wrap_content"
     android:orientation="vertical"
     android:gravity="center"
-    tools:context=".activity.CameraActivity"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
+    tools:context=".activity.CameraActivity">
 
     <FrameLayout
         android:layout_width="@dimen/dp_70"

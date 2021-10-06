@@ -8,7 +8,6 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.posthog.android.Properties
 import com.spyneai.base.BaseFragment
 import com.spyneai.base.network.Resource
-import com.spyneai.captureEvent
 import com.spyneai.captureFailureEvent
 import com.spyneai.dashboard.ui.handleApiError
 import com.spyneai.databinding.FragmentGridEcomBinding
@@ -17,11 +16,8 @@ import com.spyneai.needs.Utilities
 import com.spyneai.posthog.Events
 import com.spyneai.shoot.adapters.CapturedImageAdapter
 import com.spyneai.shoot.data.ShootViewModel
-import com.spyneai.shoot.data.model.Project
 import com.spyneai.shoot.data.model.ShootData
-import com.spyneai.shoot.data.model.Sku
 import com.spyneai.shoot.ui.ecomwithgrid.dialogs.ConfirmReshootEcomDialog
-import com.spyneai.shoot.ui.ecomwithgrid.dialogs.CreateProjectEcomDialog
 import com.spyneai.shoot.ui.ecomwithgrid.dialogs.CreateSkuEcomDialog
 import com.spyneai.shoot.ui.ecomwithgrid.dialogs.ProjectTagDialog
 import com.spyneai.shoot.utils.log

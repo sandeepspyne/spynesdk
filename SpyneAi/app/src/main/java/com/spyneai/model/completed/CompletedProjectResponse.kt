@@ -1,9 +1,6 @@
 package com.spyneai.model.projects
 
 import com.google.gson.annotations.SerializedName
-import com.spyneai.model.dashboard.Payload
-import com.spyneai.model.login.Header
-import com.spyneai.model.login.MsgInfo
 
 data class CompletedProjectResponse(
     @SerializedName("total_frames")

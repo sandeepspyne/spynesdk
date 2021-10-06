@@ -3,13 +3,19 @@ package com.spyneai.shoot.ui.dialogs
 import android.app.Dialog
 import android.content.Intent
 import android.graphics.Color
+import android.graphics.drawable.ColorDrawable
 import android.os.Build
 import android.os.Bundle
-import android.view.*
-import android.widget.FrameLayout
-import androidx.constraintlayout.widget.ConstraintLayout
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
+import android.view.ViewTreeObserver
+import android.widget.ArrayAdapter
+import android.widget.EditText
+import android.widget.Toast
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.lifecycleScope
+import androidx.viewbinding.ViewBinding
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.posthog.android.Properties
@@ -17,8 +23,9 @@ import com.spyneai.R
 import com.spyneai.base.BaseDialogFragment
 import com.spyneai.base.network.Resource
 import com.spyneai.captureEvent
-import com.spyneai.databinding.DialogConfirmReshootBinding
 import com.spyneai.databinding.DialogConfirmTagsBinding
+import com.spyneai.databinding.ItemTagNotesBinding
+import com.spyneai.databinding.ItemTagsSpinnerBinding
 import com.spyneai.needs.AppConstants
 import com.spyneai.posthog.Events
 import com.spyneai.service.Actions
@@ -27,19 +34,6 @@ import com.spyneai.service.getServiceState
 import com.spyneai.service.log
 import com.spyneai.shoot.data.ShootViewModel
 import kotlinx.coroutines.launch
-import android.graphics.drawable.ColorDrawable
-import android.util.Log
-
-import android.view.ViewGroup
-import android.widget.ArrayAdapter
-import android.widget.EditText
-import android.widget.Toast
-import androidx.constraintlayout.widget.ConstraintSet
-import androidx.viewbinding.ViewBinding
-import com.spyneai.dashboard.response.NewSubCatResponse
-import com.spyneai.databinding.ItemTagNotesBinding
-import com.spyneai.databinding.ItemTagsSpinnerBinding
-import kotlinx.android.synthetic.main.activity_sign_up.*
 import org.json.JSONObject
 
 

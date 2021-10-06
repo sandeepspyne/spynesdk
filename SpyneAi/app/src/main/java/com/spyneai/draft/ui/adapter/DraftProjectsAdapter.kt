@@ -8,7 +8,6 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
-import android.widget.Toast
 import androidx.cardview.widget.CardView
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
@@ -17,11 +16,8 @@ import com.spyneai.draft.ui.DraftSkusActivity
 import com.spyneai.needs.AppConstants
 import com.spyneai.needs.Utilities
 import com.spyneai.orders.data.response.GetProjectsResponse
-import com.spyneai.orders.data.viewmodel.MyOrdersViewModel
-import com.spyneai.orders.ui.activity.CompletedSkusActivity
 import com.spyneai.shoot.ui.base.ShootActivity
 import com.spyneai.shoot.ui.base.ShootPortraitActivity
-import com.spyneai.threesixty.ui.ThreeSixtyExteriorActivity
 
 class DraftProjectsAdapter(
     val context: Context,

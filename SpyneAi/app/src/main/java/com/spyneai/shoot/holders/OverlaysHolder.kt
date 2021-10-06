@@ -11,10 +11,7 @@ import com.spyneai.R
 import com.spyneai.base.GenericAdapter
 import com.spyneai.base.OnItemClickListener
 import com.spyneai.camera2.OverlaysResponse
-import com.spyneai.dashboard.response.NewSubCatResponse
 import com.spyneai.databinding.ItemOverlaysBinding
-import com.spyneai.databinding.ItemSubcategoriesBinding
-import com.spyneai.needs.AppConstants
 
 class OverlaysHolder(
     itemView: View,

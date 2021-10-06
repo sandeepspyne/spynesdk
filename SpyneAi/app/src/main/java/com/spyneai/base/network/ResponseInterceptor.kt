@@ -1,16 +1,16 @@
 package com.spyneai.base.network
 
-import android.util.Log
 import com.posthog.android.Properties
 import com.spyneai.BaseApplication
 import com.spyneai.captureEvent
 import com.spyneai.posthog.Events
-import okhttp3.*
+import okhttp3.Interceptor
+import okhttp3.MediaType
+import okhttp3.Request
+import okhttp3.Response
 import okhttp3.ResponseBody.Companion.toResponseBody
 import org.json.JSONException
 import org.json.JSONObject
-import retrofit2.HttpException
-import java.io.IOException
 
 
 class ResponseInterceptor : Interceptor {

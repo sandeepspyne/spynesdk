@@ -1,7 +1,6 @@
 package com.spyneai.shoot.workmanager
 
 import android.content.Context
-import android.util.Log
 import androidx.work.*
 import com.posthog.android.Properties
 import com.spyneai.BaseApplication

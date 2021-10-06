@@ -12,7 +12,6 @@ import android.util.Patterns
 import android.view.Gravity
 import android.view.Window
 import com.bumptech.glide.Glide
-import com.google.android.play.core.internal.e
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import com.spyneai.R

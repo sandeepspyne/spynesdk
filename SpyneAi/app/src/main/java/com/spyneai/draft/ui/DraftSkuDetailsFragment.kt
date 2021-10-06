@@ -18,7 +18,6 @@ import com.spyneai.draft.data.DraftViewModel
 import com.spyneai.draft.ui.adapter.DraftImagesAdapter
 import com.spyneai.draft.ui.adapter.LocalDraftImagesAdapter
 import com.spyneai.isMagnatoMeterAvailable
-import com.spyneai.isResolutionSupported
 import com.spyneai.needs.AppConstants
 import com.spyneai.needs.Utilities
 import com.spyneai.orders.data.response.ImagesOfSkuRes
@@ -28,7 +27,6 @@ import com.spyneai.shoot.ui.base.ProcessActivity
 import com.spyneai.shoot.ui.base.ShootActivity
 import com.spyneai.shoot.ui.base.ShootPortraitActivity
 import com.spyneai.shoot.ui.dialogs.NoMagnaotoMeterDialog
-import com.spyneai.shoot.ui.dialogs.ResolutionNotSupportedFragment
 
 class DraftSkuDetailsFragment : BaseFragment<DraftViewModel, FragmentDraftSkuDetailsBinding>() {
 

@@ -18,7 +18,6 @@ import com.spyneai.shoot.response.UpdateVideoSkuRes
 import com.spyneai.shoot.workmanager.OverlaysPreloadWorker
 import kotlinx.coroutines.launch
 import org.json.JSONObject
-import java.util.concurrent.TimeUnit
 
 class ShootViewModel : ViewModel() {
     private val TAG = "ShootViewModel"

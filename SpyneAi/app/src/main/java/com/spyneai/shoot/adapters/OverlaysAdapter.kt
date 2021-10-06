@@ -7,7 +7,6 @@ import com.spyneai.base.GenericAdapter
 import com.spyneai.base.JavaViewHolderFactory
 import com.spyneai.base.OnItemClickListener
 import com.spyneai.camera2.OverlaysResponse
-import com.spyneai.dashboard.response.NewSubCatResponse
 
 class OverlaysAdapter (
     list: List<Any>,

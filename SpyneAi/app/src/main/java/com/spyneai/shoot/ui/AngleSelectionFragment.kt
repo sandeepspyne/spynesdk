@@ -6,7 +6,6 @@ import android.view.View
 import android.view.ViewGroup
 import com.spyneai.base.BaseFragment
 import com.spyneai.databinding.FragmentAngleSelectionBinding
-import com.spyneai.databinding.FragmentCreateProjectBinding
 import com.spyneai.shoot.data.ShootViewModel
 import com.spyneai.shoot.ui.dialogs.AngleSelectionDialog
 

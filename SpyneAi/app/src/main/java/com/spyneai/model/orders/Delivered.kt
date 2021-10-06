@@ -1,6 +1,5 @@
 package com.spyneai.model.orders
 
-import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
 import com.spyneai.model.order.Sku
 

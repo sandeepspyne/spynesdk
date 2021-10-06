@@ -1,11 +1,9 @@
 package com.spyneai.shoot.ui
 
-import android.content.res.Configuration
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.posthog.android.Properties
@@ -17,12 +15,10 @@ import com.spyneai.captureEvent
 import com.spyneai.captureFailureEvent
 import com.spyneai.dashboard.response.NewSubCatResponse
 import com.spyneai.dashboard.ui.handleApiError
-import com.spyneai.databinding.FragmentCreateProjectBinding
 import com.spyneai.databinding.FragmentSelectSubcategoryAndAngleBinding
 import com.spyneai.needs.AppConstants
 import com.spyneai.needs.Utilities
 import com.spyneai.posthog.Events
-import com.spyneai.shoot.adapters.NewSubCategoriesAdapter
 import com.spyneai.shoot.adapters.SubcatAndAngleAdapter
 import com.spyneai.shoot.data.ShootViewModel
 import com.spyneai.shoot.ui.dialogs.AngleSelectionDialog

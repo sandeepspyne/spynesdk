@@ -1,9 +1,8 @@
 package com.spyneai.shoot.ui
 
 import android.content.Intent
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import com.spyneai.R
+import androidx.appcompat.app.AppCompatActivity
 import com.spyneai.databinding.ActivityStartShootBinding
 import com.spyneai.needs.AppConstants
 import com.spyneai.setLocale

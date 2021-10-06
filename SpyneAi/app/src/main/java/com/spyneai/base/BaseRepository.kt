@@ -6,8 +6,6 @@ import com.spyneai.base.network.ServerException
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import retrofit2.HttpException
-import java.io.IOException
-import java.lang.IllegalStateException
 import java.net.SocketTimeoutException
 import javax.net.ssl.SSLHandshakeException
 

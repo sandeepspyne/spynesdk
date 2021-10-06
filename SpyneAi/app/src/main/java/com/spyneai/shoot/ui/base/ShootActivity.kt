@@ -3,7 +3,6 @@ package com.spyneai.shoot.ui.base
 
 import CameraFragment
 import android.Manifest
-import android.app.Fragment
 import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager

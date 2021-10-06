@@ -1,6 +1,5 @@
 package com.spyneai.shoot.ui.dialogs
 
-import android.content.Context
 import android.content.DialogInterface
 import android.os.Bundle
 import android.view.LayoutInflater

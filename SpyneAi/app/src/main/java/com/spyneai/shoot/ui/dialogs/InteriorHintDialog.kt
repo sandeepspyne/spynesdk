@@ -1,23 +1,17 @@
 package com.spyneai.shoot.ui.dialogs
 
-import android.graphics.drawable.Drawable
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
-import androidx.core.content.ContextCompat
 import com.bumptech.glide.Glide
 import com.spyneai.R
 import com.spyneai.base.BaseDialogFragment
 import com.spyneai.base.network.Resource
-import com.spyneai.dashboard.response.NewSubCatResponse
 import com.spyneai.databinding.DialogInteriorHintBinding
-import com.spyneai.databinding.DialogShootHintBinding
 import com.spyneai.needs.AppConstants
 import com.spyneai.shoot.data.ShootViewModel
-import com.spyneai.shoot.utils.shoot
-import kotlinx.android.synthetic.main.dialog_create_project_and_sku.*
 
 class InteriorHintDialog : BaseDialogFragment<ShootViewModel, DialogInteriorHintBinding>() {
 

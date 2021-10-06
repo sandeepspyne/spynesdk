@@ -1,7 +1,5 @@
 package com.spyneai.shoot.ui
 
-import android.content.Context
-import android.content.res.Configuration
 import android.graphics.drawable.Drawable
 import android.os.Bundle
 import android.util.Log
@@ -42,10 +40,6 @@ import com.spyneai.shoot.data.model.ShootData
 import com.spyneai.shoot.ui.dialogs.*
 import com.spyneai.shoot.utils.shoot
 import kotlinx.coroutines.launch
-import java.util.*
-import kotlin.collections.ArrayList
-import com.iceteck.silicompressorr.videocompression.MediaController.mContext
-import com.spyneai.shoot.utils.log
 
 
 class OverlaysFragment : BaseFragment<ShootViewModel, FragmentOverlaysBinding>(),

@@ -1,7 +1,7 @@
 package com.spyneai.extras
 
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import androidx.appcompat.app.AppCompatActivity
 import com.spyneai.R
 
 class OnboardTwoActivity : AppCompatActivity() {

@@ -5,9 +5,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import com.spyneai.base.BaseDialogFragment
-import com.spyneai.databinding.DialogExitBinding
 import com.spyneai.databinding.DialogReclickBinding
-import com.spyneai.gotoHome
 import com.spyneai.shoot.data.ShootViewModel
 
 class ReclickDialog : BaseDialogFragment<ShootViewModel, DialogReclickBinding>() {
