@@ -26,6 +26,7 @@ import com.spyneai.databinding.HomeDashboardFragmentBinding
 import com.spyneai.fragment.TopUpFragment
 import com.spyneai.needs.AppConstants
 import com.spyneai.needs.Utilities
+import com.spyneai.orders.ui.MyOrdersActivity
 import com.spyneai.posthog.Events
 
 
@@ -74,17 +75,21 @@ class HomeDashboardFragment :
     }
 
     private fun lisners(){
-        binding.ivWallet.setOnClickListener {
-            TopUpFragment().show(requireActivity().supportFragmentManager,"TopUpFragment")
+        binding.llDrafts.setOnClickListener {
+            val intent = Intent(requireContext(), MyOrdersActivity::class.java)
+            intent.putExtra("TAB_ID", 0)
+            startActivity(intent)
         }
 
         binding.llCompleted.setOnClickListener {
-            val intent = Intent(requireContext(), CompletedProjectsActivity::class.java)
+            val intent = Intent(requireContext(), MyOrdersActivity::class.java)
+            intent.putExtra("TAB_ID", 2)
             startActivity(intent)
         }
 
         binding.llOngoing.setOnClickListener {
-            val intent = Intent(requireContext(), OngoingOrdersActivity::class.java)
+            val intent = Intent(requireContext(), MyOrdersActivity::class.java)
+            intent.putExtra("TAB_ID", 1)
             startActivity(intent)
         }
     }
