@@ -635,72 +635,11 @@ class CameraFragment : BaseFragment<ShootViewModel, FragmentCameraBinding>(), Pi
                 "${Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DCIM)}/Spyne/"
             }
         }
-        filename = viewModel.sku.value?.skuName + "_" + viewModel.sku.value?.skuId + "_"
 
-        if (viewModel.fromDrafts) {
-            filename += when (viewModel.categoryDetails.value?.imageType) {
-                "Exterior" -> {
-                    viewModel.categoryDetails.value?.imageType!! + "_" + viewModel.shootNumber.value?.plus(
-                        1
-                    )
-                }
-                "Interior" -> {
-                    val list = viewModel.shootList.value
-
-                    val interiorList = list?.filter {
-                        it.image_category == "Interior"
-                    }
-
-                    if (interiorList == null) {
-                        viewModel.categoryDetails.value?.imageType!! + "_" +
-                                requireActivity().intent.getIntExtra(AppConstants.INTERIOR_SIZE, 0)
-                                    .plus(1)
-                    } else {
-                        viewModel.categoryDetails.value?.imageType!! + "_" +
-                                requireActivity().intent.getIntExtra(AppConstants.INTERIOR_SIZE, 0)
-                                    .plus(interiorList.size.plus(1))
-                    }
-
-                }
-                "Focus Shoot" -> {
-                    val list = viewModel.shootList.value
-
-                    val miscList = list?.filter {
-                        it.image_category == "Focus Shoot"
-                    }
-
-                    if (miscList == null) {
-                        "Miscellaneous_" +
-                                requireActivity().intent.getIntExtra(AppConstants.MISC_SIZE, 0)
-                                    .plus(1)
-                    } else {
-                        "Miscellaneous_" +
-                                requireActivity().intent.getIntExtra(AppConstants.MISC_SIZE, 0)
-                                    .plus(miscList.size.plus(1))
-                    }
-                }
-                "Footwear" -> {
-                    viewModel.categoryDetails.value?.imageType!! + "_" + viewModel.shootNumber.value?.plus(
-                        1
-                    )
-                }
-                "Food & Beverages" -> {
-                    viewModel.categoryDetails.value?.imageType!! + "_" + viewModel.shootNumber.value?.plus(
-                        1
-                    )
-                }
-                "Ecom" -> {
-                    viewModel.categoryDetails.value?.imageType!! + "_" + viewModel.shootNumber.value?.plus(
-                        1
-                    )
-                }
-                else -> {
-                    System.currentTimeMillis().toString()
-                }
-            }
-        } else {
-            filename += viewModel.getFileName()
-        }
+        filename = viewModel.getFileName(
+            requireActivity().intent.getIntExtra(AppConstants.INTERIOR_SIZE, 0),
+            requireActivity().intent.getIntExtra(AppConstants.MISC_SIZE, 0)
+        )
 
         Log.d(TAG, "takePhoto: "+filename)
 

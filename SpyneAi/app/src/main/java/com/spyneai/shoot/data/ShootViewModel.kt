@@ -18,6 +18,7 @@ import com.spyneai.shoot.response.UpdateVideoSkuRes
 import com.spyneai.shoot.workmanager.OverlaysPreloadWorker
 import kotlinx.coroutines.launch
 import org.json.JSONObject
+import java.io.File
 
 class ShootViewModel : ViewModel() {
     private val TAG = "ShootViewModel"
@@ -363,58 +364,21 @@ class ShootViewModel : ViewModel() {
 
 
 
-    fun getFileName(): String {
-//        val overlayRes = (overlaysResponse.value as Resource.Success).value
-//        val size = shootList.value!!.size.plus(1)
-        val list = shootList.value
+    fun getFileName(
+        interiorSize : Int?,
+        miscSize : Int?,
+    ): String {
+        val filePrefix = FileNameManager().getFileName(
+            fromDrafts,
+            categoryDetails.value?.imageType!!,
+            shootNumber.value!!,
+            sequence,
+            shootList.value,
+            interiorSize,
+            miscSize
+        )
 
-        return when (categoryDetails.value?.imageType) {
-            "Exterior" -> {
-                categoryDetails.value?.imageType!! + "_" + sequence.plus(1)
-            }
-            "Interior" -> {
-                val interiorList = list?.filter {
-                    it.image_category == "Interior"
-                }
-
-                if (interiorList == null) {
-                   categoryDetails.value?.imageType!! + "_1"
-                } else {
-                    categoryDetails.value?.imageType!! + "_" + interiorList.size.plus(
-                        1
-                    )
-                }
-            }
-            "Focus Shoot" -> {
-                val miscList = list?.filter {
-                    it.image_category == "Focus Shoot"
-                }
-
-                if (miscList == null) {
-                    "Miscellaneous" + "_1"
-                } else {
-                    "Miscellaneous_" + miscList.size.plus(1)
-                }
-            }
-            "Footwear" -> {
-                categoryDetails.value?.imageType!! + "_" + shootNumber.value?.plus(
-                    1
-                )
-            }
-            "Food" -> {
-                categoryDetails.value?.imageType!! + "_" + shootNumber.value?.plus(
-                    1
-                )
-            }
-            "Ecom" -> {
-                categoryDetails.value?.imageType!! + "_" + shootNumber.value?.plus(
-                    1
-                )
-            }
-            else -> {
-                System.currentTimeMillis().toString()
-            }
-        }
+        return sku.value?.skuName + "_" + sku.value?.skuId + "_"+filePrefix
     }
 
     fun getSequenceNumber(): Int {

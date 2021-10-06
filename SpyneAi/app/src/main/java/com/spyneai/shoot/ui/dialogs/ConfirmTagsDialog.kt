@@ -111,14 +111,14 @@ class ConfirmTagsDialog : BaseDialogFragment<ShootViewModel, DialogConfirmTagsBi
 
                         dismiss()
 
-//                        if (viewModel.shootNumber.value == viewModel.exterirorAngles.value?.minus(1)) {
-//                            checkInteriorShootStatus()
-//                            viewModel.isCameraButtonClickable = false
-//                            dismiss()
-//                        } else {
-//                            viewModel.shootNumber.value = viewModel.shootList.value?.size
-//                            dismiss()
-//                        }
+                        if (viewModel.shootNumber.value == viewModel.exterirorAngles.value?.minus(1)) {
+                            checkInteriorShootStatus()
+                            viewModel.isCameraButtonClickable = false
+                            dismiss()
+                        } else {
+                            viewModel.shootNumber.value = viewModel.shootList.value?.size
+                            dismiss()
+                        }
                     }
 
                 }
@@ -170,12 +170,12 @@ class ConfirmTagsDialog : BaseDialogFragment<ShootViewModel, DialogConfirmTagsBi
 
         when (viewModel.categoryDetails.value?.imageType) {
             "Exterior" -> {
-               // binding.tvName.text = viewModel.getName()
+                binding.tvName.text = viewModel.getName()
 
-//                if (getString(R.string.app_name) == AppConstants.KARVI)
-//                    binding.ivOverlay.visibility = View.GONE
-//                else
-//                    setOverlay(binding.ivOverlay, viewModel.getOverlay())
+                if (getString(R.string.app_name) == AppConstants.KARVI)
+                    binding.ivOverlay.visibility = View.GONE
+                else
+                    setOverlay(binding.ivOverlay, viewModel.getOverlay())
             }
 
             "Interior" -> {

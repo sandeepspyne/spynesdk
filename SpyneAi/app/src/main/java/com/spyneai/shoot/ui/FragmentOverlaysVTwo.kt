@@ -762,6 +762,7 @@ class FragmentOverlaysVTwo : BaseFragment<ShootViewModel, FragmentOverlaysV2Bind
 
     private fun showImageConfirmDialog(shootData: ShootData) {
         viewModel.shootData.value = shootData
+
         when(getString(R.string.app_name)){
             AppConstants.OLA_CABS -> {
                 ConfirmTagsDialog().show(
