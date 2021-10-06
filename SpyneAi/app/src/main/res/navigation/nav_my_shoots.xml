@@ -8,7 +8,7 @@
 
     <fragment
         android:id="@+id/myOrdersFragment2"
-        android:name="com.spyneai.orders.ui.MyOrdersFragment"
+        android:name="com.spyneai.orders.ui.fragment.MyOrdersFragment"
         android:label="MyOrdersFragment" >
         <action
             android:id="@+id/action_myOrdersFragment2_to_completedProjectsFragment2"

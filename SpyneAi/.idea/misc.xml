@@ -68,6 +68,7 @@
         <entry key="app/src/main/res/layout/fragment_image_processing_started.xml" value="0.3098958333333333" />
         <entry key="app/src/main/res/layout/fragment_ongoing_orders.xml" value="0.3098958333333333" />
         <entry key="app/src/main/res/layout/fragment_ongoing_projects.xml" value="0.3098958333333333" />
+        <entry key="app/src/main/res/layout/fragment_ongoing_skus.xml" value="0.3098958333333333" />
         <entry key="app/src/main/res/layout/fragment_orders.xml" value="0.3098958333333333" />
         <entry key="app/src/main/res/layout/fragment_overlay_ecom.xml" value="0.19722222222222222" />
         <entry key="app/src/main/res/layout/fragment_overlays.xml" value="0.25277777777777777" />

@@ -1,4 +1,4 @@
-package com.spyneai.orders.ui
+package com.spyneai.orders.ui.fragment
 
 import android.os.Bundle
 import android.view.LayoutInflater

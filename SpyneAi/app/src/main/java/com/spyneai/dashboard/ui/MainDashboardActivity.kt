@@ -27,7 +27,7 @@ import com.spyneai.interfaces.RetrofitClients
 import com.spyneai.needs.AppConstants
 import com.spyneai.needs.Utilities
 import com.spyneai.orders.ui.MyOrdersActivity
-import com.spyneai.orders.ui.MyOrdersFragment
+import com.spyneai.orders.ui.fragment.MyOrdersFragment
 import com.spyneai.posthog.Events
 import com.spyneai.service.Actions
 import com.spyneai.service.ImageUploadingService
