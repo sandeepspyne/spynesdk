@@ -11,6 +11,7 @@ import com.spyneai.dashboard.ui.MainDashboardActivity
 import com.spyneai.loginsignup.activity.LoginActivity
 import android.os.Build
 import android.util.Log
+import android.view.View
 import com.posthog.android.Properties
 import com.spyneai.BuildConfig
 import com.spyneai.captureEvent
@@ -20,6 +21,7 @@ import com.spyneai.needs.AppConstants
 import com.spyneai.needs.Utilities
 import com.spyneai.onboarding.SelectLanguageActivity
 import com.spyneai.shoot.data.ShootLocalRepository
+import kotlinx.android.synthetic.main.activity_splash.*
 
 
 class SplashActivity : AppCompatActivity() {
@@ -31,11 +33,16 @@ class SplashActivity : AppCompatActivity() {
 
         window.setFlags(
             WindowManager.LayoutParams.FLAG_FULLSCREEN,
-            WindowManager.LayoutParams.FLAG_FULLSCREEN
-        )
-
+            WindowManager.LayoutParams.FLAG_FULLSCREEN)
         setContentView(R.layout.activity_splash)
 
+        when (getString(R.string.app_name)) {
+
+            AppConstants.SPYNE_AI ->{
+                ivPowredBy.visibility = View.INVISIBLE
+            } else -> {
+            ivPowredBy.visibility = View.VISIBLE
+        } }
 
         val dbVersion = DBHelper(this).writableDatabase.version
 

@@ -142,7 +142,7 @@ class CategoriesActivity : AppCompatActivity(){
                                    intent.putExtra(AppConstants.COLOR,categoriesResponseList[position].color_code)
                                    startActivity(intent)
                                }
-                               2,3 -> {
+                               2,3,4 -> {
                                    Utilities.savePrefrence(
                                        this@CategoriesActivity,
                                        AppConstants.CATEGORY_NAME,

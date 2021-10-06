@@ -68,11 +68,26 @@ class SelectBackgroundFragment : BaseFragment<ProcessViewModel, FragmentSelectBa
                 binding.tv360.visibility = View.GONE
                 binding.tvGenerateGif.text = getString(R.string.generate_output)
             }
-            AppConstants.SWIGGY, AppConstants.SPYNE_AI -> {
+            AppConstants.SWIGGY -> {
                 binding.cb360.visibility = View.GONE
                 binding.tv360.visibility = View.GONE
                 binding.tvGenerateGif.text = getString(R.string.generate_output)
                 binding.tvSample.text = getString(R.string.sample_output)
+            }
+            AppConstants.SPYNE_AI -> {
+                if (Utilities.getPreference(requireContext(), AppConstants.CATEGORY_NAME).equals("Food & Beverages")){
+                    binding.cb360.visibility = View.GONE
+                    binding.tv360.visibility = View.GONE
+                    binding.tvGenerateGif.text = getString(R.string.generate_output)
+                    binding.tvSample.text = getString(R.string.sample_output)
+                }else{
+                    binding.cb360.setOnCheckedChangeListener { buttonView, isChecked ->
+                        if (isChecked)
+                            binding.tvGenerateGif.text = getString(R.string.contiune)
+                        else
+                            binding.tvGenerateGif.text = getString(R.string.generate_output)
+                    }
+                }
             }
             else -> {
                 binding.cb360.setOnCheckedChangeListener { buttonView, isChecked ->
@@ -107,9 +122,23 @@ class SelectBackgroundFragment : BaseFragment<ProcessViewModel, FragmentSelectBa
                 //process image call
                 processSku(showDialog)
             }AppConstants.SWIGGY -> {
+
                     processFoodImage()
             Utilities.showProgressDialog(requireContext())
-                }else -> {
+                } AppConstants.SPYNE_AI -> {
+            if (Utilities.getPreference(requireContext(), AppConstants.CATEGORY_NAME).equals("Food & Beverages")){
+                processFoodImage()
+                Utilities.showProgressDialog(requireContext())
+            } else{
+                if (binding.cb360.isChecked){
+                    viewModel.backgroundSelect = backgroundSelect
+                    viewModel.addRegularShootSummaryFragment.value = true
+                }else{
+                    //process image call
+                    processSku(showDialog)
+                }
+            }
+        }else -> {
                 if (binding.cb360.isChecked){
                     viewModel.backgroundSelect = backgroundSelect
                     viewModel.addRegularShootSummaryFragment.value = true
@@ -167,13 +196,32 @@ class SelectBackgroundFragment : BaseFragment<ProcessViewModel, FragmentSelectBa
     private fun getBackground() {
 
         when (getString(R.string.app_name)) {
-            AppConstants.SWIGGY, AppConstants.SPYNE_AI -> {
+            AppConstants.SWIGGY -> {
                 val category = "Food".toRequestBody(MultipartBody.FORM)
                 val authKey =
                     Utilities.getPreference(requireContext(), AppConstants.AUTH_KEY)!!
                         .toRequestBody(MultipartBody.FORM)
 
                 viewModel.getBackgroundGifCars(category, authKey)
+            }
+            AppConstants.SPYNE_AI -> {
+                if (Utilities.getPreference(requireContext(), AppConstants.CATEGORY_NAME).equals("Food & Beverages")){
+                    val category = "Food".toRequestBody(MultipartBody.FORM)
+                    val authKey =
+                        Utilities.getPreference(requireContext(), AppConstants.AUTH_KEY)!!
+                            .toRequestBody(MultipartBody.FORM)
+
+                    viewModel.getBackgroundGifCars(category, authKey)
+                } else {
+                    val category =
+                        Utilities.getPreference(requireContext(), AppConstants.CATEGORY_NAME)!!
+                            .toRequestBody(MultipartBody.FORM)
+                    val authKey =
+                        Utilities.getPreference(requireContext(), AppConstants.AUTH_KEY)!!
+                            .toRequestBody(MultipartBody.FORM)
+
+                    viewModel.getBackgroundGifCars(category, authKey)
+                }
             }
             else -> {
                 val category =

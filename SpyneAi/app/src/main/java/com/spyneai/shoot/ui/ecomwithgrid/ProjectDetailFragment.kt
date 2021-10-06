@@ -54,11 +54,11 @@ class ProjectDetailFragment : BaseFragment<ShootViewModel, FragmentProjectDetail
 
         when (getString(R.string.app_name)) {
 
-            AppConstants.EBAY -> {
+            AppConstants.EBAY, AppConstants.FLIPKART, AppConstants.AMAZON, AppConstants.UDAAN -> {
                 binding.groupShadow.visibility = View.VISIBLE
                 binding.btHome.text = "Submit and Process this Project"
             }
-            AppConstants.FLIPKART, AppConstants.UDAAN, AppConstants.AMAZON, AppConstants.SPYNE_AI, AppConstants.SWIGGY -> {
+            AppConstants.FLIPKART, AppConstants.UDAAN, AppConstants.AMAZON, AppConstants.SWIGGY -> {
                 when (viewModel.categoryDetails.value?.categoryName) {
                     "Photo Box" -> {
                         binding.groupShadow.visibility = View.VISIBLE
@@ -73,6 +73,27 @@ class ProjectDetailFragment : BaseFragment<ShootViewModel, FragmentProjectDetail
                         binding.btHome.text = "Submit Project"
                     }
                     "Food & Beverages" -> {
+                        binding.groupShadow.visibility = View.GONE
+                        binding.btHome.text = "Select Background"
+                    }
+                }
+            }
+            AppConstants.SPYNE_AI -> {
+                when (viewModel.categoryDetails.value?.categoryName) {
+                    "Photo Box" -> {
+                        binding.groupShadow.visibility = View.VISIBLE
+                        binding.btHome.text = "Submit and Process this Project"
+                    }
+                    "E-Commerce" -> {
+                        binding.groupShadow.visibility = View.VISIBLE
+                        binding.btHome.text = "Submit Project"
+                    }
+                    "Footwear" -> {
+                        binding.groupShadow.visibility = View.GONE
+                        binding.btHome.text = "Submit Project"
+                    }
+                    "Food & Beverages" -> {
+                        binding.groupShadow.visibility = View.GONE
                         binding.btHome.text = "Select Background"
                     }
                 }
