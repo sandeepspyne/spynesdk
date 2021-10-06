@@ -30,17 +30,24 @@
         <entry key="app/src/main/res/layout/activity_login.xml" value="0.25" />
         <entry key="app/src/main/res/layout/activity_my_orders.xml" value="0.23981481481481481" />
         <entry key="app/src/main/res/layout/activity_onboard_one.xml" value="0.1328125" />
+        <entry key="app/src/main/res/layout/activity_order_summary2.xml" value="0.3098958333333333" />
         <entry key="app/src/main/res/layout/activity_processed_image.xml" value="0.3098958333333333" />
         <entry key="app/src/main/res/layout/activity_reshoot.xml" value="0.30092592592592593" />
         <entry key="app/src/main/res/layout/activity_select_images.xml" value="0.3098958333333333" />
         <entry key="app/src/main/res/layout/activity_select_language_activity.xml" value="0.3098958333333333" />
+        <entry key="app/src/main/res/layout/activity_shoot_selection.xml" value="0.3098958333333333" />
         <entry key="app/src/main/res/layout/activity_show_images.xml" value="0.18796296296296297" />
         <entry key="app/src/main/res/layout/activity_sign_in_using_otp.xml" value="0.2578125" />
         <entry key="app/src/main/res/layout/activity_sign_up.xml" value="0.2578125" />
+        <entry key="app/src/main/res/layout/activity_splash.xml" value="0.12777777777777777" />
         <entry key="app/src/main/res/layout/activity_start_shoot.xml" value="0.25277777777777777" />
+        <entry key="app/src/main/res/layout/activity_three_sixty.xml" value="0.3098958333333333" />
+        <entry key="app/src/main/res/layout/activity_three_sixty_exterior.xml" value="0.2122090378139279" />
+        <entry key="app/src/main/res/layout/car_channel.xml" value="0.3098958333333333" />
         <entry key="app/src/main/res/layout/confirm_reshoot_ecom_dialog.xml" value="0.25384615384615383" />
         <entry key="app/src/main/res/layout/create_project_ecom_dialog.xml" value="0.25384615384615383" />
         <entry key="app/src/main/res/layout/dialog_angle_selection.xml" value="0.2578125" />
+        <entry key="app/src/main/res/layout/dialog_confirm_reshoot.xml" value="0.1259259259259259" />
         <entry key="app/src/main/res/layout/dialog_confirm_tags.xml" value="0.2578125" />
         <entry key="app/src/main/res/layout/dialog_create_project_and_sku.xml" value="0.25277777777777777" />
         <entry key="app/src/main/res/layout/dialog_exit.xml" value="0.30512820512820515" />
@@ -56,15 +63,18 @@
         <entry key="app/src/main/res/layout/fragment_camera.xml" value="0.1" />
         <entry key="app/src/main/res/layout/fragment_completed_orders.xml" value="0.3098958333333333" />
         <entry key="app/src/main/res/layout/fragment_create_project.xml" value="0.25833333333333336" />
+        <entry key="app/src/main/res/layout/fragment_download_completed.xml" value="0.3098958333333333" />
         <entry key="app/src/main/res/layout/fragment_draft_sku_details.xml" value="0.25277777777777777" />
         <entry key="app/src/main/res/layout/fragment_image_processing_started.xml" value="0.3098958333333333" />
         <entry key="app/src/main/res/layout/fragment_ongoing_orders.xml" value="0.3098958333333333" />
         <entry key="app/src/main/res/layout/fragment_ongoing_projects.xml" value="0.3098958333333333" />
+        <entry key="app/src/main/res/layout/fragment_orders.xml" value="0.3098958333333333" />
         <entry key="app/src/main/res/layout/fragment_overlay_ecom.xml" value="0.19722222222222222" />
         <entry key="app/src/main/res/layout/fragment_overlays.xml" value="0.25277777777777777" />
         <entry key="app/src/main/res/layout/fragment_overlays_v2.xml" value="0.165" />
         <entry key="app/src/main/res/layout/fragment_processed_images.xml" value="0.25" />
         <entry key="app/src/main/res/layout/fragment_record_video.xml" value="0.165" />
+        <entry key="app/src/main/res/layout/fragment_regular_shoot_summary.xml" value="0.18055555555555555" />
         <entry key="app/src/main/res/layout/fragment_reshoot.xml" value="0.165" />
         <entry key="app/src/main/res/layout/fragment_select_background.xml" value="0.25277777777777777" />
         <entry key="app/src/main/res/layout/fragment_select_subcategory_and_angle.xml" value="0.25" />
