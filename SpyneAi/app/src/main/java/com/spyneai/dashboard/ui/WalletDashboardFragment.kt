@@ -19,8 +19,6 @@ import com.spyneai.credits.CreditUtils
 import com.spyneai.dashboard.data.DashboardViewModel
 import com.spyneai.databinding.WalletDashboardFragmentBinding
 import com.spyneai.interfaces.APiService
-import com.spyneai.interfaces.RetrofitClient
-import com.spyneai.interfaces.RetrofitClientSpyneAi
 import com.spyneai.interfaces.RetrofitClients
 import com.spyneai.model.credit.CreditDetailsResponse
 import com.spyneai.needs.AppConstants

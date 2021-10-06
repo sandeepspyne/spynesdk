@@ -2,10 +2,6 @@ package com.spyneai.orders.ui
 
 import android.app.Dialog
 import android.content.Intent
-import android.graphics.ImageFormat
-import android.hardware.camera2.CameraCharacteristics
-import android.hardware.camera2.CameraManager
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
 import android.view.View
@@ -13,6 +9,7 @@ import android.view.Window
 import android.view.WindowManager
 import android.widget.ImageView
 import android.widget.Toast
+import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.core.app.NotificationCompat
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -25,14 +22,12 @@ import com.spyneai.gotoHome
 import com.spyneai.interfaces.APiService
 import com.spyneai.interfaces.RetrofitClients
 import com.spyneai.isMagnatoMeterAvailable
-import com.spyneai.isResolutionSupported
 import com.spyneai.needs.AppConstants
 import com.spyneai.needs.ScrollingLinearLayoutManager
 import com.spyneai.needs.Utilities
 import com.spyneai.orders.ui.adapter.KarviImagesAdapter
 import com.spyneai.shoot.ui.base.ShootActivity
 import com.spyneai.shoot.ui.dialogs.NoMagnaotoMeterDialog
-import com.spyneai.shoot.ui.dialogs.ResolutionNotSupportedFragment
 import com.spyneai.shoot.utils.log
 import okhttp3.MultipartBody
 import okhttp3.RequestBody

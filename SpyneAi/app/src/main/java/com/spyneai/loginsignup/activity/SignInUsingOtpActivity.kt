@@ -4,10 +4,6 @@ import android.content.ActivityNotFoundException
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
-import android.text.Editable
-import android.text.TextWatcher
-import android.util.Log
-import android.view.View
 import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AppCompatDelegate
@@ -16,7 +12,6 @@ import com.spyneai.R
 import com.spyneai.captureEvent
 import com.spyneai.captureFailureEvent
 import com.spyneai.dashboard.ui.WhiteLabelConstants
-import com.spyneai.databinding.ActivityLoginBinding
 import com.spyneai.databinding.ActivitySignInUsingOtpBinding
 import com.spyneai.interfaces.MyAPIService
 import com.spyneai.interfaces.RetrofitClients

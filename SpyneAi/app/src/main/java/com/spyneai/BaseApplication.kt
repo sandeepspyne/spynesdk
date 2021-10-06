@@ -3,12 +3,11 @@ package com.spyneai
 import android.annotation.SuppressLint
 import android.app.Application
 import android.content.Context
-import android.content.res.Configuration
 import androidx.appcompat.app.AppCompatDelegate
-import androidx.work.*
+import androidx.work.Constraints
+import androidx.work.NetworkType
 import com.google.firebase.crashlytics.FirebaseCrashlytics
 import com.posthog.android.PostHog
-import java.util.*
 
 @SuppressLint("StaticFieldLeak")
 class BaseApplication : Application() {

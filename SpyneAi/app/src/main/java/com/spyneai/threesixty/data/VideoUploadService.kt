@@ -10,7 +10,10 @@ import android.os.*
 import com.spyneai.R
 import com.spyneai.dashboard.ui.MainDashboardActivity
 import com.spyneai.isInternetActive
-import com.spyneai.service.*
+import com.spyneai.service.Actions
+import com.spyneai.service.ServiceState
+import com.spyneai.service.log
+import com.spyneai.service.setServiceState
 import com.spyneai.shoot.utils.logUpload
 import com.spyneai.threesixty.data.model.VideoDetails
 

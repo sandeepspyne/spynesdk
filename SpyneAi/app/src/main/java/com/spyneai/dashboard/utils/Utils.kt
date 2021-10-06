@@ -7,7 +7,6 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import com.google.android.material.snackbar.Snackbar
 import com.spyneai.base.network.Resource
-import com.spyneai.captureFailureEvent
 import com.spyneai.logout.InvalidAuthDialog
 
 fun <A : Activity> Activity.startNewActivity(activity: Class<A>) {

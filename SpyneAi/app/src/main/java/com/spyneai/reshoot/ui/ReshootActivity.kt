@@ -1,9 +1,9 @@
 package com.spyneai.reshoot.ui
 
 import CameraFragment
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.WindowManager
+import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModelProvider
 import com.spyneai.R
 import com.spyneai.base.network.Resource
@@ -15,7 +15,6 @@ import com.spyneai.shoot.data.ShootViewModel
 import com.spyneai.shoot.data.model.CategoryDetails
 import com.spyneai.shoot.data.model.CreateProjectRes
 import com.spyneai.shoot.data.model.Sku
-import com.spyneai.shoot.ui.CreateProjectFragment
 
 class ReshootActivity : AppCompatActivity() {
 

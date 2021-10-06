@@ -1,6 +1,5 @@
 package com.spyneai.reshoot
 
-import android.util.Log
 import android.view.View
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
@@ -10,8 +9,6 @@ import com.spyneai.BaseApplication
 import com.spyneai.R
 import com.spyneai.base.GenericAdapter
 import com.spyneai.base.OnItemClickListener
-import com.spyneai.camera2.OverlaysResponse
-import com.spyneai.databinding.ItemOverlaysBinding
 import com.spyneai.databinding.ItemReshootBinding
 import com.spyneai.orders.data.response.ImagesOfSkuRes
 

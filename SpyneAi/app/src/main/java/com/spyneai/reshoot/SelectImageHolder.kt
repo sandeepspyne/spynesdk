@@ -1,7 +1,6 @@
 package com.spyneai.reshoot
 
 import android.graphics.Color
-import android.util.Log
 import android.view.View
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
@@ -9,15 +8,8 @@ import com.bumptech.glide.Glide
 import com.spyneai.R
 import com.spyneai.base.GenericAdapter
 import com.spyneai.base.OnItemClickListener
-import com.spyneai.camera2.OverlaysResponse
-import com.spyneai.databinding.ItemOverlaysBinding
 import com.spyneai.databinding.ItemSelectImageBinding
-
 import com.spyneai.orders.data.response.ImagesOfSkuRes
-import com.spyneai.service.log
-
-
-
 
 
 class SelectImageHolder(

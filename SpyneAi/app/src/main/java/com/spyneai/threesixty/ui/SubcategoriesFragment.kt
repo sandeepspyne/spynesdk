@@ -1,31 +1,18 @@
 package com.spyneai.threesixty.ui
 
-import android.content.res.Configuration
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.recyclerview.widget.LinearLayoutManager
 import com.posthog.android.Properties
-import com.spyneai.R
 import com.spyneai.base.BaseFragment
-import com.spyneai.base.network.Resource
 import com.spyneai.captureEvent
-import com.spyneai.captureFailureEvent
-import com.spyneai.dashboard.response.NewSubCatResponse
-import com.spyneai.dashboard.ui.handleApiError
-import com.spyneai.databinding.FragmentRecordVideoBinding
 import com.spyneai.databinding.FragmentSubcategoriesBinding
-import com.spyneai.needs.AppConstants
-import com.spyneai.needs.Utilities
 import com.spyneai.posthog.Events
 import com.spyneai.shoot.adapters.NewSubCategoriesAdapter
-import com.spyneai.shoot.ui.dialogs.CreateProjectAndSkuDialog
-import com.spyneai.shoot.ui.dialogs.ShootHintDialog
 import com.spyneai.threesixty.data.ThreeSixtyViewModel
 import com.spyneai.threesixty.ui.dialogs.ThreeSixtyExteriorGifDialog
 import com.spyneai.threesixty.ui.dialogs.ThreeSixtyProjectAndSkuDialog
-import java.util.ArrayList
 
 class SubcategoriesFragment : BaseFragment<ThreeSixtyViewModel,FragmentSubcategoriesBinding>(){
 

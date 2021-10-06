@@ -15,10 +15,8 @@ import com.downloader.PRDownloaderConfig
 import com.spyneai.R
 import com.spyneai.credits.CreditPlansActivity
 import com.spyneai.fragment.TopUpFragment
-
 import com.spyneai.gotoHome
 import com.spyneai.interfaces.APiService
-import com.spyneai.interfaces.RetrofitClientSpyneAi
 import com.spyneai.interfaces.RetrofitClients
 import com.spyneai.model.credit.CreditDetailsResponse
 import com.spyneai.needs.AppConstants

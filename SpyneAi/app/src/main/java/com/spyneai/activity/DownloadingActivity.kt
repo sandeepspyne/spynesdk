@@ -6,9 +6,7 @@ import android.content.Intent
 import android.content.pm.PackageManager
 import android.media.MediaScannerConnection
 import android.net.Uri
-import android.os.Build
 import android.os.Bundle
-import android.os.Environment
 import android.util.Log
 import android.view.View
 import android.widget.Toast
@@ -20,7 +18,6 @@ import com.downloader.*
 import com.spyneai.R
 import com.spyneai.credits.fragments.DownloadCompletedFragment
 import com.spyneai.credits.fragments.FeedbackSubmittedFragment
-import com.spyneai.dashboard.ui.MainDashboardActivity
 import com.spyneai.gotoHome
 import com.spyneai.imagesdowloading.HDImagesDownloadedEvent
 import com.spyneai.imagesdowloading.ImageDownloadingService
@@ -31,7 +28,6 @@ import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode
 import java.io.File
-import java.text.SimpleDateFormat
 import java.util.*
 import kotlin.collections.ArrayList
 

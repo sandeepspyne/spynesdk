@@ -4,16 +4,14 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-
-import com.spyneai.dashboard.data.repository.DashboardRepository
-import kotlinx.coroutines.launch
 import com.spyneai.base.network.Resource
 import com.spyneai.dashboard.data.model.VersionStatusRes
+import com.spyneai.dashboard.data.repository.DashboardRepository
 import com.spyneai.dashboard.response.NewCategoriesResponse
 import com.spyneai.orders.data.response.CompletedSKUsResponse
 import com.spyneai.orders.data.response.GetOngoingSkusResponse
 import com.spyneai.orders.data.response.GetProjectsResponse
-import com.spyneai.shoot.data.ShootRepository
+import kotlinx.coroutines.launch
 
 class DashboardViewModel() : ViewModel() {
 

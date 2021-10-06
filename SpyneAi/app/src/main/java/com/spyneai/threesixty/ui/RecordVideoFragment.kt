@@ -1,6 +1,5 @@
 package com.spyneai.threesixty.ui
 
-import com.spyneai.threesixty.ui.TrimActivity
 import android.Manifest
 import android.animation.ObjectAnimator
 import android.annotation.SuppressLint
@@ -48,7 +47,10 @@ import com.spyneai.threesixty.ui.dialogs.VideoDurationDialog
 import com.spyneai.toggleButton
 import java.io.File
 import java.util.concurrent.TimeUnit
-import kotlin.math.*
+import kotlin.math.abs
+import kotlin.math.max
+import kotlin.math.min
+import kotlin.math.roundToInt
 import kotlin.properties.Delegates
 
 

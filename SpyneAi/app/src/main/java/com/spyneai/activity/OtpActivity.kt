@@ -26,8 +26,8 @@ import com.spyneai.model.login.LoginResponse
 import com.spyneai.model.otp.OtpResponse
 import com.spyneai.needs.AppConstants
 import com.spyneai.needs.Utilities
-import com.spyneai.shoot.utils.log
 import com.spyneai.posthog.Events
+import com.spyneai.shoot.utils.log
 import kotlinx.android.synthetic.main.activity_otp.*
 import retrofit2.Call
 import retrofit2.Callback

@@ -11,7 +11,6 @@ import androidx.core.content.ContextCompat
 import com.spyneai.R
 import com.spyneai.databinding.ActivityWalletBinding
 import com.spyneai.interfaces.APiService
-import com.spyneai.interfaces.RetrofitClientSpyneAi
 import com.spyneai.interfaces.RetrofitClients
 import com.spyneai.model.credit.CreditDetailsResponse
 import com.spyneai.needs.AppConstants

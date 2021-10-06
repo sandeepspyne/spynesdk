@@ -2,10 +2,8 @@ package com.spyneai.onboarding
 
 import android.content.Intent
 import android.content.res.Configuration
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.widget.Toast
-import com.spyneai.R
+import androidx.appcompat.app.AppCompatActivity
 import com.spyneai.databinding.ActivitySelectLanguageActivityBinding
 import com.spyneai.loginsignup.activity.LoginActivity
 import com.spyneai.needs.AppConstants

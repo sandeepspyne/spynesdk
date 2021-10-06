@@ -3,12 +3,12 @@ package com.spyneai.threesixty.ui
 import android.content.Context
 import android.graphics.*
 import android.os.Build
-import android.os.Handler
 import android.util.AttributeSet
 import android.util.Log
 import android.view.View
 import android.widget.TextView
-import kotlin.math.*
+import kotlin.math.roundToInt
+
 class MyIndicator @JvmOverloads constructor(context: Context, attrs: AttributeSet? = null) : View(
     context,
     attrs

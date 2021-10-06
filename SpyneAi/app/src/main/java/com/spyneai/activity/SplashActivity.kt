@@ -1,18 +1,18 @@
 package com.spyneai.activity
 
 import android.content.Intent
+import android.os.Build
 import android.os.Bundle
 import android.os.Handler
 import android.provider.Settings
 import android.view.WindowManager
 import androidx.appcompat.app.AppCompatActivity
+import com.spyneai.BuildConfig
 import com.spyneai.R
 import com.spyneai.dashboard.ui.MainDashboardActivity
-import com.spyneai.loginsignup.activity.LoginActivity
-import android.os.Build
-import com.spyneai.BuildConfig
 import com.spyneai.getNetworkName
 import com.spyneai.loginsignup.OnboardingsActivity
+import com.spyneai.loginsignup.activity.LoginActivity
 import com.spyneai.needs.AppConstants
 import com.spyneai.needs.Utilities
 import com.spyneai.onboarding.SelectLanguageActivity

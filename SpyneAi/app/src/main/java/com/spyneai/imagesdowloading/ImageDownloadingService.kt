@@ -15,13 +15,13 @@ import com.posthog.android.Properties
 import com.spyneai.BaseApplication
 import com.spyneai.R
 import com.spyneai.captureEvent
+import com.spyneai.credits.CreditManager
+import com.spyneai.dashboard.ui.MainDashboardActivity
 import com.spyneai.extras.events.ProcessingImagesEvent
 import com.spyneai.needs.AppConstants
 import com.spyneai.service.ServiceState
 import com.spyneai.service.log
 import com.spyneai.service.setServiceState
-import com.spyneai.credits.CreditManager
-import com.spyneai.dashboard.ui.MainDashboardActivity
 import org.greenrobot.eventbus.EventBus
 import java.io.File
 

@@ -33,7 +33,6 @@ import com.spyneai.activity.ShowGifActivity
 import com.spyneai.adapter.ShowReplacedImagesAdapter
 import com.spyneai.adapter.ShowReplacedImagesFocusedAdapter
 import com.spyneai.adapter.ShowReplacedImagesInteriorAdapter
-import com.spyneai.credits.model.ReviewHolder
 import com.spyneai.downloadsku.FetchBulkResponseV2
 import com.spyneai.gotoHome
 import com.spyneai.interfaces.APiService

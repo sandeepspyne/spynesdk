@@ -9,8 +9,6 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.spyneai.R
 import com.spyneai.base.BaseFragment
 import com.spyneai.base.OnItemClickListener
-import com.spyneai.camera2.OverlaysResponse
-import com.spyneai.databinding.FragmentOverlaysV2Binding
 import com.spyneai.databinding.FragmentReshootBinding
 import com.spyneai.needs.AppConstants
 import com.spyneai.orders.data.response.ImagesOfSkuRes
@@ -20,7 +18,6 @@ import com.spyneai.shoot.data.ShootViewModel
 import com.spyneai.shoot.data.model.ShootData
 import com.spyneai.shoot.ui.dialogs.ConfirmReshootDialog
 import com.spyneai.shoot.ui.dialogs.ConfirmTagsDialog
-import com.spyneai.shoot.ui.dialogs.ReclickDialog
 import com.spyneai.shoot.utils.shoot
 
 class ReshootFragment : BaseFragment<ShootViewModel,FragmentReshootBinding>(), OnItemClickListener {

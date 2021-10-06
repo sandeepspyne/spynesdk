@@ -1,32 +1,13 @@
 package com.spyneai.imagesdowloading
 
-import android.content.Context
 import android.os.Build
-import android.os.Bundle
 import android.os.Environment
-import android.os.PersistableBundle
 import android.util.Log
-import android.view.View
-import android.widget.Toast
-import androidx.appcompat.app.AppCompatActivity
-import com.downloader.*
+import com.downloader.OnDownloadListener
+import com.downloader.PRDownloader
 import com.spyneai.BaseApplication
 import com.spyneai.R
-import com.spyneai.interfaces.APiService
-import com.spyneai.interfaces.RetrofitClients
-import com.spyneai.model.credit.UpdateCreditResponse
-import com.spyneai.model.processImageService.Task
-import com.spyneai.needs.AppConstants
-import com.spyneai.needs.Utilities
-import kotlinx.android.synthetic.main.activity_downloading.*
-import okhttp3.MultipartBody
-import okhttp3.RequestBody
-import retrofit2.Call
-import retrofit2.Callback
-import retrofit2.Response
 import java.io.File
-import java.text.SimpleDateFormat
-import java.util.*
 
 class ImageDownloadManager(var task : DownloadTask, var listener : Listener) {
 

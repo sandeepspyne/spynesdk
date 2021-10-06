@@ -4,12 +4,11 @@ import com.spyneai.dashboard.response.NewCategoriesResponse
 import com.spyneai.dashboard.response.NewSubCatResponse
 import com.spyneai.downloadsku.FetchBulkResponseV2
 import com.spyneai.loginsignup.models.SignupResponse
-import com.spyneai.model.ai.*
+import com.spyneai.model.ai.GifFetchResponse
 import com.spyneai.model.credit.CreditDetailsResponse
 import com.spyneai.model.credit.UpdateCreditResponse
 import com.spyneai.model.ordersummary.OrderSummaryResponse
 import com.spyneai.model.projects.CompletedProjectResponse
-
 import okhttp3.RequestBody
 import retrofit2.Call
 import retrofit2.http.*

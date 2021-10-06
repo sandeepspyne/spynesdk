@@ -15,7 +15,6 @@ import com.spyneai.R
 import com.spyneai.captureEvent
 import com.spyneai.captureFailureEvent
 import com.spyneai.credits.CreditUtils
-import com.spyneai.dashboard.ui.WhiteLabelConstants
 import com.spyneai.databinding.DialogTopUpBinding
 import com.spyneai.interfaces.APiService
 import com.spyneai.interfaces.RetrofitClients

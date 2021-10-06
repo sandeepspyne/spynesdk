@@ -15,7 +15,6 @@ import com.spyneai.databinding.DialogCreateProjectAndSkuBinding
 import com.spyneai.needs.AppConstants
 import com.spyneai.needs.Utilities
 import com.spyneai.posthog.Events
-import com.spyneai.shoot.data.ShootViewModel
 import com.spyneai.shoot.data.model.Project
 import com.spyneai.shoot.data.model.Sku
 import com.spyneai.threesixty.data.ThreeSixtyViewModel

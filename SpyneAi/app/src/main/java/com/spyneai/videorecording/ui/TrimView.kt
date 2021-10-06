@@ -10,12 +10,10 @@ import android.view.View
 import android.view.ViewTreeObserver
 import android.widget.ImageView
 import androidx.constraintlayout.widget.ConstraintLayout
-import androidx.core.content.ContextCompat
 import androidx.core.view.marginEnd
 import androidx.core.view.marginRight
 import androidx.core.view.marginStart
 import androidx.databinding.DataBindingUtil
-
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.RequestOptions
 import com.spyneai.R

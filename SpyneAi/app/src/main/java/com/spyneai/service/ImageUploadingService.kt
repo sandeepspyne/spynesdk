@@ -4,27 +4,16 @@ import android.app.*
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
+import android.content.IntentFilter
 import android.graphics.Color
-import android.widget.Toast
+import android.os.*
 import com.spyneai.R
-import com.spyneai.activity.CompletedProjectsActivity
-import com.spyneai.activity.OngoingOrdersActivity
 import com.spyneai.dashboard.ui.MainDashboardActivity
-import com.spyneai.model.processImageService.Task
+import com.spyneai.isInternetActive
 import com.spyneai.shoot.data.ShootLocalRepository
 import com.spyneai.shoot.data.ShootRepository
 import com.spyneai.shoot.data.model.Image
-import android.content.IntentFilter
-import android.icu.text.CaseMap
-import android.net.ConnectivityManager
-import android.net.NetworkInfo
-import android.os.*
-import androidx.core.content.ContextCompat
-import com.spyneai.captureEvent
-import com.spyneai.isInternetActive
-import com.spyneai.isMyServiceRunning
 import com.spyneai.shoot.utils.logUpload
-import java.io.File
 
 
 class ImageUploadingService : Service(), ImageUploader.Listener {

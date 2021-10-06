@@ -8,9 +8,7 @@ import android.os.Handler
 import android.util.Log
 import android.view.*
 import android.widget.ImageView
-import android.widget.Toast
 import androidx.annotation.Nullable
-import androidx.appcompat.app.AppCompatDelegate
 import androidx.core.app.NotificationCompat
 import androidx.core.view.MotionEventCompat
 import androidx.recyclerview.widget.GridLayoutManager
@@ -31,10 +29,8 @@ import com.spyneai.adapter.ShowReplacedImagesInteriorAdapter
 import com.spyneai.base.BaseFragment
 import com.spyneai.base.network.Resource
 import com.spyneai.dashboard.ui.handleApiError
-import com.spyneai.databinding.FragmentBikeImagesBinding
 import com.spyneai.databinding.FragmentProcessedImagesBinding
 import com.spyneai.databinding.ViewImagesBinding
-import com.spyneai.downloadsku.FetchBulkResponseV2
 import com.spyneai.gotoHome
 import com.spyneai.interfaces.APiService
 import com.spyneai.interfaces.RetrofitClients
@@ -44,17 +40,12 @@ import com.spyneai.needs.ScrollingLinearLayoutManager
 import com.spyneai.needs.Utilities
 import com.spyneai.orders.data.response.ImagesOfSkuRes
 import com.spyneai.processedimages.ui.data.ProcessedViewModel
-import com.spyneai.setLocale
-import com.spyneai.shoot.utils.log
 import com.spyneai.videorecording.fragments.DialogEmbedCode
 import com.spyneai.videorecording.model.TSVParams
 import com.synnapps.carouselview.CarouselView
 import com.synnapps.carouselview.ViewListener
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
-import retrofit2.Call
-import retrofit2.Callback
-import retrofit2.Response
 
 class ProcessedImagesFragment : BaseFragment<ProcessedViewModel, FragmentProcessedImagesBinding>(),
     View.OnTouchListener,View.OnClickListener{

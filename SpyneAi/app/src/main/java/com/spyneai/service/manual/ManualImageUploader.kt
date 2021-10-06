@@ -1,7 +1,6 @@
 package com.spyneai.service.manual
 
 import android.content.Context
-import androidx.work.ListenableWorker
 import com.posthog.android.Properties
 import com.spyneai.base.network.Resource
 import com.spyneai.captureEvent

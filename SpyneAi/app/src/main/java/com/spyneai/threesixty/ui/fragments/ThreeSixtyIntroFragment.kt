@@ -5,11 +5,9 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.navigation.Navigation
-import com.google.android.material.tabs.TabLayoutMediator
 import com.spyneai.R
 import com.spyneai.base.BaseFragment
 import com.spyneai.databinding.Fragment360IntroBinding
-import com.spyneai.threesixty.adapters.ThreeSixtySampleAdapter
 import com.spyneai.threesixty.data.ThreeSixtyViewModel
 
 class ThreeSixtyIntroFragment : BaseFragment<ThreeSixtyViewModel,Fragment360IntroBinding>() {

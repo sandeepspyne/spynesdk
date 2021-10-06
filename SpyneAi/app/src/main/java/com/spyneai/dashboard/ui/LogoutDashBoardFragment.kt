@@ -2,14 +2,13 @@ package com.spyneai.dashboard.ui
 
 import android.content.Intent
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.fragment.app.Fragment
 import com.posthog.android.Properties
 import com.spyneai.captureEvent
 import com.spyneai.databinding.LogoutDialogBinding
-import com.spyneai.gotoLogin
 import com.spyneai.loginsignup.activity.LoginActivity
 import com.spyneai.needs.AppConstants
 import com.spyneai.needs.Utilities

@@ -4,9 +4,7 @@ import android.content.Context
 import android.content.Intent
 import android.os.Build
 import android.os.Environment
-import android.widget.Toast
 import androidx.core.content.ContextCompat
-import androidx.work.ListenableWorker
 import com.posthog.android.Properties
 import com.spyneai.base.network.Resource
 import com.spyneai.captureEvent
@@ -17,7 +15,6 @@ import com.spyneai.service.Actions
 import com.spyneai.service.getServiceState
 import com.spyneai.service.log
 import com.spyneai.shoot.data.FilesRepository
-import com.spyneai.shoot.data.ShootLocalRepository
 import com.spyneai.shoot.data.ShootRepository
 import com.spyneai.shoot.data.model.ImageFile
 import com.spyneai.shoot.utils.logManualUpload
