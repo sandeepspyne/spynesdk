@@ -1646,7 +1646,7 @@ class CameraFragment : BaseFragment<ShootViewModel, FragmentCameraBinding>(), Pi
                             shootDimensions
                         )
 
-                        binding.rlInstructions?.layoutParams?.height = (view.height / 100) * 35
+                        binding.rlInstructions?.layoutParams?.height = (view.height / 100) * 45
 
                     }
 
