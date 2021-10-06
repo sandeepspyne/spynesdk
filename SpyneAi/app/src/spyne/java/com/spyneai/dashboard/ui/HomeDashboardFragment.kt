@@ -162,7 +162,7 @@ class HomeDashboardFragment :
                 newUserCreditDialog()
                 repeatRefreshData()
                 setSliderRecycler()
-                //showTutorialVideos()
+                showTutorialVideos()
                 lisners()
                 welcomeHomeText()
                 getCategories()
