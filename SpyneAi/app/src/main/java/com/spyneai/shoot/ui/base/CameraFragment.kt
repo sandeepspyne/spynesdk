@@ -46,6 +46,7 @@ import com.spyneai.shoot.ui.dialogs.SkipShootDialog
 import com.spyneai.shoot.utils.log
 import com.spyneai.shoot.utils.shoot
 import kotlinx.android.synthetic.main.activity_credit_plans.*
+import org.json.JSONObject
 import java.io.File
 import java.util.*
 import java.util.concurrent.ExecutionException
@@ -709,6 +710,11 @@ class CameraFragment : BaseFragment<ShootViewModel, FragmentCameraBinding>(), Pi
             requireActivity().intent.getIntExtra(AppConstants.MISC_SIZE, 0)
         )
 
+        val debugData = JSONObject()
+        debugData.put("roll",roll)
+        debugData.put("pitch",pitch)
+
+
         val shootData = ShootData(
             capturedImage,
             viewModel.projectId.value!!,
@@ -716,7 +722,9 @@ class CameraFragment : BaseFragment<ShootViewModel, FragmentCameraBinding>(), Pi
             viewModel.categoryDetails.value?.imageType!!,
             Utilities.getPreference(BaseApplication.getContext(), AppConstants.AUTH_KEY).toString(),
             sequenceNumber,
-            cameraAngle
+            cameraAngle,
+            filename,
+            debugData.toString()
         )
 
         val item = viewModel.shootList.value!!.firstOrNull {

@@ -394,6 +394,10 @@ class ShootLocalRepository {
             put(Images.COLUMN_NAME_IS_UPLOADED, 0)
             put(Images.COLUMN_NAME_IMAGE_ANGLE, image.angle)
             put(Images.COLUMN_NAME_IMAGE_META, image.meta)
+
+            put(Images.COLUMN_NAME_IMAGE_NAME, image.name)
+            put(Images.COLUMN_NAME_IMAGE_DEBUG_DATA, image.debugData)
+            put(Images.COLUMN_NAME_IS_STATUS_UPDATED, 0)
         }
 
         val newRowId = dbWritable?.insert(Images.TABLE_NAME, null, values)

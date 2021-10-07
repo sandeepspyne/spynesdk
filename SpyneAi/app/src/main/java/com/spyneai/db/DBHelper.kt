@@ -57,6 +57,9 @@ class DBHelper(context: Context) :
                 db.execSQL(DATABASE_ALTER_IMAGE_TABLE)
                 db.execSQL(DATABASE_ALTER_SKU)
             }
+            12 -> {
+                db.execSQL(DATABASE_ALTER_IMAGE_TABLE_FOR_GCP)
+            }
             else -> {
                 BaseApplication.getContext().captureEvent(
                     "DB_VERSION",
@@ -82,7 +85,7 @@ class DBHelper(context: Context) :
 
     companion object {
         // If you change the database schema, you must increment the database version.
-        const val DATABASE_VERSION = 11
+        const val DATABASE_VERSION = 12
         const val DATABASE_NAME = "Shoot.db"
 
         private val DATABASE_ALTER_SKU_TABLE = ("ALTER TABLE "
@@ -94,6 +97,13 @@ class DBHelper(context: Context) :
         private val DATABASE_ALTER_IMAGE_TABLE = ("ALTER TABLE "
                 + Images.TABLE_NAME) + " ADD COLUMN " + Images.COLUMN_NAME_IMAGE_ANGLE + " INTEGER;"
 
+        private val DATABASE_ALTER_IMAGE_TABLE_FOR_GCP = ("ALTER TABLE "
+                + Images.TABLE_NAME) + " ADD " +
+                Images.COLUMN_NAME_IMAGE_NAME + " TEXT"+
+                Images.COLUMN_NAME_IMAGE_PRE_SIGNED_URL + " TEXT"+
+                Images.COLUMN_NAME_IMAGE_ID + " TEXT"+
+                Images.COLUMN_NAME_IMAGE_DEBUG_DATA + " TEXT"+
+                Images.COLUMN_NAME_IS_STATUS_UPDATED + " INTEGER;"
 
         private const val SQL_CREATE_ENTRIES =
             "CREATE TABLE ${ShootContract.ShootEntry.TABLE_NAME} (" +
@@ -132,6 +142,11 @@ class DBHelper(context: Context) :
                 "${Images.COLUMN_NAME_IMAGE_ANGLE} INTEGER," +
                 "${Images.COLUMN_NAME_IS_UPLOADED} INTEGER," +
                 "${Images.COLUMN_NAME_IMAGE_META} TEXT," +
+                "${Images.COLUMN_NAME_IMAGE_NAME} TEXT," +
+                "${Images.COLUMN_NAME_IMAGE_PRE_SIGNED_URL} TEXT," +
+                "${Images.COLUMN_NAME_IMAGE_ID} TEXT," +
+                "${Images.COLUMN_NAME_IMAGE_DEBUG_DATA} TEXT," +
+                "${Images.COLUMN_NAME_IS_STATUS_UPDATED} INTEGER," +
                 "${Images.TABLE_NAME} TEXT)"
 
 

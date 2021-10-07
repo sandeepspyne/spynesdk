@@ -10,5 +10,7 @@ data class ShootData(
     @SerializedName("auth_key") val auth_key: String,
     val sequence: Int = 0,
     var angle: Int = 0,
+    var name : String = "",
+    var debugData : String = "",
     var meta: String = ""
     )

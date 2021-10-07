@@ -288,6 +288,8 @@ class ShootViewModel : ViewModel() {
         image.skuName = sku.value?.skuName
         image.angle = shootData.angle
         image.meta = shootData.meta
+        image.name = shootData.name
+        image.debugData = shootData.debugData
 
         localRepository.insertImage(image)
     }
