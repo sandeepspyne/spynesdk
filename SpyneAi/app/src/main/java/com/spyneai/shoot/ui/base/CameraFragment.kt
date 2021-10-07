@@ -779,6 +779,13 @@ class CameraFragment : BaseFragment<ShootViewModel, FragmentCameraBinding>(), Pi
                         shootDimensions.previewHeight = view.height
 
                         viewModel.shootDimensions.value = shootDimensions
+
+                        binding.flTapToFocus.init(
+                            binding.viewFinder,
+                            cameraControl!!,
+                            cameraInfo!!,
+                            shootDimensions
+                        )
                     }
                 }
 

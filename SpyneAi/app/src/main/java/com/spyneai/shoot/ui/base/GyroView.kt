@@ -402,7 +402,6 @@ class GyroView : FrameLayout {
                         centerPosition = view.top
                     }
                 }
-
             }
         })
     }
