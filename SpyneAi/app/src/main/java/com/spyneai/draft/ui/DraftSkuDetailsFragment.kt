@@ -142,7 +142,7 @@ class DraftSkuDetailsFragment : BaseFragment<DraftViewModel, FragmentDraftSkuDet
                     ShootActivity::class.java)
             }
 
-            "Footwear","E-Commerce", "Food & Beverages" -> {
+            "Footwear","E-Commerce", "Food & Beverages","Photo Box" -> {
                 shootIntent = Intent(
                     context,
                     ShootPortraitActivity::class.java)
