@@ -108,7 +108,8 @@ interface ClipperApi {
     suspend fun createProject(@Field("auth_key") authKey : String,
                               @Field("project_name") projectName : String,
                               @Field("prod_cat_id") prodCatId : String,
-                              @Field("dynamic_layout") dynamic_layout: JSONObject? = null) : CreateProjectRes
+                              @Field("dynamic_layout") dynamic_layout: JSONObject? = null,
+                              @Field("source") source : String = "App_android") : CreateProjectRes
 
     @FormUrlEncoded
     @POST("v2/sku/create/v2")
@@ -119,7 +120,8 @@ interface ClipperApi {
                           @Field("sku_name") skuName : String,
                           @Field("total_frames") totalFrames : Int,
                           @Field("images") images : Int,
-                          @Field("videos") videos : Int
+                          @Field("videos") videos : Int,
+                          @Field("source") source : String = "App_android"
     ) : CreateSkuRes
 
     @FormUrlEncoded
@@ -259,7 +261,7 @@ interface ClipperApi {
         @Field("auth_key") authKey : String,
         @Field("credit_reduce") creditReduce:String,
         @Field("sku_id") skuId : String,
-        @Field("source") source : String = "App",
+        @Field("source") source : String = "App_android",
         @Field("image_id") imageId : String = ""
     ): ReduceCreditResponse
 
