@@ -1170,67 +1170,11 @@ class CameraFragment : BaseFragment<ShootViewModel, FragmentCameraBinding>(), Pi
             viewModel.shootList.value = ArrayList()
         }
 
-        var sequenceNumber: Int = 0
-        if (viewModel.fromDrafts) {
-            when (viewModel.categoryDetails.value?.imageType) {
-                "Exterior" -> {
-                    sequenceNumber = viewModel.shootNumber.value?.plus(1)!!
-                }
-                "Interior" -> {
-                    sequenceNumber =
-                        requireActivity().intent.getIntExtra(AppConstants.EXTERIOR_SIZE, 0)
-                            .plus(
-                                requireActivity().intent.getIntExtra(
-                                    AppConstants.INTERIOR_SIZE,
-                                    0
-                                )
-                            )
-                            .plus(viewModel.shootList.value!!.size.plus(1))
-
-                    Log.d(
-                        TAG,
-                        "addShootItem: " + requireActivity().intent.getIntExtra(
-                            AppConstants.EXTERIOR_SIZE,
-                            0
-                        )
-                    )
-                    Log.d(
-                        TAG,
-                        "addShootItem: " + requireActivity().intent.getIntExtra(
-                            AppConstants.INTERIOR_SIZE,
-                            0
-                        )
-                    )
-                    Log.d(TAG, "addShootItem: " + viewModel.shootList.value!!.size.plus(1))
-                    Log.d(TAG, "addShootItem: " + sequenceNumber)
-                }
-                "Focus Shoot" -> {
-                    sequenceNumber =
-                        requireActivity().intent.getIntExtra(AppConstants.EXTERIOR_SIZE, 0)
-                            .plus(
-                                requireActivity().intent.getIntExtra(
-                                    AppConstants.INTERIOR_SIZE,
-                                    0
-                                )
-                            )
-                            .plus(requireActivity().intent.getIntExtra(AppConstants.MISC_SIZE, 0))
-                            .plus(viewModel.shootList.value!!.size.plus(1))
-
-                    Log.d(TAG, "addShootItem: " + sequenceNumber)
-                }
-                "Footwear" -> {
-                    sequenceNumber = viewModel.shootNumber.value?.plus(1)!!
-                }
-                "Food & Beverages" -> {
-                    sequenceNumber = viewModel.shootNumber.value?.plus(1)!!
-                }
-                "E-Commerce" -> {
-                    sequenceNumber = viewModel.shootNumber.value?.plus(1)!!
-                }
-            }
-        } else {
-            sequenceNumber = viewModel.getSequenceNumber()
-        }
+        var sequenceNumber = viewModel.getSequenceNumber(
+            requireActivity().intent.getIntExtra(AppConstants.EXTERIOR_SIZE, 0),
+            requireActivity().intent.getIntExtra(AppConstants.INTERIOR_SIZE, 0),
+            requireActivity().intent.getIntExtra(AppConstants.MISC_SIZE, 0)
+        )
 
         val shootData = ShootData(
             capturedImage,
@@ -1241,8 +1185,6 @@ class CameraFragment : BaseFragment<ShootViewModel, FragmentCameraBinding>(), Pi
             sequenceNumber,
             cameraAngle
         )
-
-        Log.d(TAG, "addShootItem: "+sequenceNumber)
 
         val item = viewModel.shootList.value!!.firstOrNull {
             it.sequence == sequenceNumber

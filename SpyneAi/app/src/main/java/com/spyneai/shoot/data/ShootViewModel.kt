@@ -381,7 +381,17 @@ class ShootViewModel : ViewModel() {
         return sku.value?.skuName + "_" + sku.value?.skuId + "_"+filePrefix
     }
 
-    fun getSequenceNumber(): Int {
+    fun getSequenceNumber(exteriorSize : Int,interiorSize : Int,miscSize: Int): Int {
+        return SequeneNumberManager().getSequenceNumber(
+            fromDrafts,
+            categoryDetails.value?.imageType!!,
+            shootNumber.value!!,
+            shootList.value?.size!!,
+            exteriorSize,
+            interiorSize,
+            miscSize,
+            sequence
+        )
         if (categoryDetails.value?.imageType == "Exterior")
             return sequence.plus(1)
         else
