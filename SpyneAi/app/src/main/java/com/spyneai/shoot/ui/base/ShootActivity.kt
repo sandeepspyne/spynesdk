@@ -133,6 +133,25 @@ class ShootActivity : AppCompatActivity() {
                     e.printStackTrace()
                 }
             }
+            "Photo Box" -> {
+                shootViewModel.processSku = false
+                if(savedInstanceState == null) { // initial transaction should be wrapped like this
+                    supportFragmentManager.beginTransaction()
+                        .add(R.id.flCamerFragment, cameraFragment)
+                        .add(R.id.flCamerFragment, gridEcomFragment)
+                        .commitAllowingStateLoss()
+                }
+                try {
+                    val intent = intent
+                    shootViewModel.projectId.value = intent.getStringExtra("project_id")
+                    val sku = Sku()
+                    sku?.projectId = shootViewModel.projectId.value
+                    shootViewModel.categoryDetails.value?.imageType = "Ecom"
+                    shootViewModel.sku.value = sku
+                } catch (e: Exception) {
+                    e.printStackTrace()
+                }
+            }
             "Food & Beverages" ->{
                 shootViewModel.processSku = false
                 if(savedInstanceState == null) { // initial transaction should be wrapped like this
@@ -223,8 +242,8 @@ class ShootActivity : AppCompatActivity() {
         shootViewModel.selectBackground.observe(this, {
             if (it) {
                 // start process activity
-                val intent = Intent(this, ProcessActivity::class.java)
-                intent.apply {
+                val processIntent = Intent(this, ProcessActivity::class.java)
+                processIntent.apply {
                     this.putExtra(AppConstants.CATEGORY_NAME, categoryDetails.categoryName)
                     this.putExtra("sku_id", shootViewModel.sku.value?.skuId)
                     this.putExtra("project_id", shootViewModel.sku.value?.projectId)
@@ -232,6 +251,7 @@ class ShootActivity : AppCompatActivity() {
                     this.putExtra("process_sku",shootViewModel.processSku)
                     this.putExtra("interior_misc_count",getInteriorMiscCount())
                     this.putStringArrayListExtra("exterior_images_list",getExteriorImagesList())
+                    this.putExtra(AppConstants.FROM_VIDEO,intent.getBooleanExtra(AppConstants.FROM_VIDEO,false))
                     startActivity(this)
                 }
             }
@@ -389,6 +409,10 @@ class ShootActivity : AppCompatActivity() {
         if (getString(R.string.app_name) == AppConstants.OLA_CABS
             && shootViewModel.threeSixtyInteriorSelected) {
             total+= 1
+        }
+
+        if (intent.getBooleanExtra(AppConstants.FROM_VIDEO,false)){
+            total+= intent.getIntExtra(AppConstants.TOTAL_FRAME,0)
         }
 
         Log.d(TAG, "getInteriorMiscCount: "+total)

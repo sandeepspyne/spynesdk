@@ -427,12 +427,29 @@
 
         </FrameLayout>
 
+        <TextView
+            android:id="@+id/tvCatViewall"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/view_all"
+            android:textSize="@dimen/sp_12"
+            android:textColor="@color/primary"
+            android:fontFamily="@font/medium"
+            android:layout_margin="@dimen/dp_10"
+            app:layout_constraintTop_toBottomOf="@+id/flCategories"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"></TextView>
+
+
+
+
+
         <View
             android:id="@+id/viewCat"
             android:layout_width="match_parent"
             android:layout_height="@dimen/dp_2"
             android:background="@color/line_separator"
-            app:layout_constraintTop_toBottomOf="@+id/flCategories"
+            app:layout_constraintTop_toBottomOf="@+id/tvCatViewall"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             android:layout_margin="@dimen/dp_10"

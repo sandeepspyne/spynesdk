@@ -17,11 +17,17 @@
         app:boxStrokeWidth="0dp"
         app:boxStrokeWidthFocused="0dp">
 
+<!--        <com.google.android.material.chip.Chip-->
+<!--            android:id="@+id/chip"-->
+<!--            android:layout_width="wrap_content"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            android:text="fsdgjkbg"/>-->
+
         <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/et"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:background="@drawable/bg_edit"
+            android:background="@drawable/bg_edit_text"
             android:inputType="text"
             android:textColor="@color/black_varient"
             android:maxLines="1"

@@ -25,7 +25,6 @@
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintLeft_toLeftOf="parent"
             android:layout_marginTop="12dp"
-            app:layout_constraintBottom_toTopOf="@+id/tvPaid"
             android:layout_marginBottom="@dimen/dp_10"
             android:layout_marginLeft="@dimen/dp_8"
             >
@@ -34,7 +33,6 @@
                 android:id="@+id/ivThumbnail"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:src="@mipmap/defaults"
                 android:scaleType="centerCrop"/>
 
         </androidx.cardview.widget.CardView>

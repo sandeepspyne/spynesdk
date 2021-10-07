@@ -94,7 +94,7 @@ class ConfirmReshootDialog : BaseDialogFragment<ShootViewModel, DialogConfirmRes
 
                     if (viewModel.interiorShootNumber.value  == viewModel.interiorAngles.value?.minus(1)){
                         viewModel.isCameraButtonClickable = false
-                        checkMiscShootStatus()
+                        viewModel.checkMiscShootStatus(getString(R.string.app_name))
                         dismiss()
                     }else{
                         viewModel.interiorShootNumber.value = viewModel.interiorShootNumber.value!! + 1
@@ -107,7 +107,7 @@ class ConfirmReshootDialog : BaseDialogFragment<ShootViewModel, DialogConfirmRes
                     uploadImages()
 
                     if (viewModel.miscShootNumber.value  == viewModel.miscAngles.value?.minus(1)){
-                        selectBackground()
+                        viewModel.selectBackground(getString(R.string.app_name))
                         dismiss()
                     }else{
                         viewModel.miscShootNumber.value = viewModel.miscShootNumber.value!! + 1
@@ -122,14 +122,15 @@ class ConfirmReshootDialog : BaseDialogFragment<ShootViewModel, DialogConfirmRes
                 is Resource.Success -> {
                     val uri = viewModel.shootData.value?.capturedImage
 
-                    Glide.with(requireContext())
-                        .load(uri)
-                        .diskCacheStrategy(DiskCacheStrategy.NONE)
-                        .skipMemoryCache(true)
-                        .into(binding.ivCapturedImage)
 
                     if (viewModel.categoryDetails.value?.imageType == "Exterior"){
                         val overlay = it.value.data[viewModel.shootNumber.value!!].display_thumbnail
+
+                        Glide.with(requireContext())
+                            .load(uri)
+                            .diskCacheStrategy(DiskCacheStrategy.NONE)
+                            .skipMemoryCache(true)
+                            .into(binding.ivCapturedImage)
 
                         Glide.with(requireContext())
                             .load(uri)
@@ -143,7 +144,15 @@ class ConfirmReshootDialog : BaseDialogFragment<ShootViewModel, DialogConfirmRes
                             setOverlay(binding.ivCaptured2,overlay)
 
                     }else{
-                       binding.clAfter.visibility = View.GONE
+                        binding.llImperfactions.setBackgroundColor(ContextCompat.getColor(requireContext(),R.color.white))
+
+                        Glide.with(requireContext())
+                            .load(uri)
+                            .diskCacheStrategy(DiskCacheStrategy.NONE)
+                            .skipMemoryCache(true)
+                            .into(binding.iv)
+
+                       binding.llBeforeAfter.visibility = View.INVISIBLE
                     }
                }
                else -> {}
@@ -230,7 +239,7 @@ class ConfirmReshootDialog : BaseDialogFragment<ShootViewModel, DialogConfirmRes
                             viewModel.showMiscDialog.value = true
                         }
                         else -> {
-                            selectBackground()
+                            viewModel.selectBackground(getString(R.string.app_name))
                         }
                     }
                 }
@@ -241,30 +250,7 @@ class ConfirmReshootDialog : BaseDialogFragment<ShootViewModel, DialogConfirmRes
 
     }
 
-    private fun checkMiscShootStatus() {
-        viewModel.subCategoriesResponse.observe(viewLifecycleOwner, {
-            when (it) {
-                is Resource.Success -> {
-                    when {
-                        it.value.miscellaneous.isNotEmpty() -> {
-                            viewModel.showMiscDialog.value = true
-                        }
-                        else -> {
-                            selectBackground()
-                        }
-                    }
-                }
-                else -> { }
-            }
-        })
-    }
 
-    private fun selectBackground() {
-        if(getString(R.string.app_name) == AppConstants.OLA_CABS)
-            viewModel.show360InteriorDialog.value = true
-        else
-            viewModel.selectBackground.value = true
-    }
 
     override fun getViewModel() = ShootViewModel::class.java
 

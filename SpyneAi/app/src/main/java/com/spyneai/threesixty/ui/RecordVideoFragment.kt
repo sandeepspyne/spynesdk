@@ -152,9 +152,9 @@ class RecordVideoFragment : BaseFragment<ThreeSixtyViewModel, FragmentRecordVide
     // The Folder location where all the files will be stored
     private val outputDirectory: String by lazy {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-            "${Environment.DIRECTORY_DCIM}/Spyne/"
+            "${Environment.DIRECTORY_DCIM}/Spyne360/"
         } else {
-            "${requireActivity().getExternalFilesDir(Environment.DIRECTORY_DCIM)?.path}/Spyne/"
+            "${requireActivity().getExternalFilesDir(Environment.DIRECTORY_DCIM)?.path}/Spyne360/"
         }
     }
 
@@ -191,9 +191,7 @@ class RecordVideoFragment : BaseFragment<ThreeSixtyViewModel, FragmentRecordVide
                 )
 
                 if (isSensorAvaliable) {
-                    getPreviewDimensions(binding.ivGryroRing, true, false)
-                    getPreviewDimensions(binding.tvCenter, false, false)
-                    binding.flLevelIndicator.visibility = View.VISIBLE
+                    binding.flLevelIndicator.start(viewModel.videoDetails.categoryName)
                 }
 
 
@@ -264,139 +262,19 @@ class RecordVideoFragment : BaseFragment<ThreeSixtyViewModel, FragmentRecordVide
         pitch = Math.toDegrees(orientationAngles[1].toDouble())
         roll = Math.toDegrees(orientationAngles[2].toDouble())
 
-
-        if ((roll >= -100 && roll <=-80) && (pitch >= -5 && pitch <= 5)){
-
-            binding
-                .tvLevelIndicator
-                .animate()
-                .translationY(0f)
-                .setInterpolator(AccelerateInterpolator()).duration = 0
-
-            binding.tvLevelIndicator.rotation = 0f
-
-            binding.ivTopLeft.setColorFilter(
-                ContextCompat.getColor(
-                    requireContext(),
-                    R.color.gyro_in_level
-                )
-            )
-            binding.ivBottomLeft.setColorFilter(
-                ContextCompat.getColor(
-                    requireContext(),
-                    R.color.gyro_in_level
-                )
-            )
-
-            binding.ivGryroRing.setColorFilter(
-                ContextCompat.getColor(
-                    requireContext(),
-                    R.color.gyro_in_level
-                )
-            )
-            binding.tvLevelIndicator.background = ContextCompat.getDrawable(
-                requireContext(),
-                R.drawable.bg_gyro_level
-            )
-
-            binding.ivTopRight.setColorFilter(
-                ContextCompat.getColor(
-                    requireContext(),
-                    R.color.gyro_in_level
-                )
-            )
-            binding.ivBottomRight.setColorFilter(
-                ContextCompat.getColor(
-                    requireContext(),
-                    R.color.gyro_in_level
-                )
-            )
-
-            binding.tvWarning.visibility = View.GONE
-        }else{
-
-            binding.tvWarning.visibility = View.VISIBLE
-            binding.ivTopLeft.setColorFilter(
-                ContextCompat.getColor(
-                    requireContext(),
-                    R.color.gyro_error_level
-                )
-            )
-            binding.ivBottomLeft.setColorFilter(
-                ContextCompat.getColor(
-                    requireContext(),
-                    R.color.gyro_error_level
-                )
-            )
-
-            binding.ivGryroRing.setColorFilter(
-                ContextCompat.getColor(
-                    requireContext(),
-                    R.color.gyro_error_level
-                )
-            )
-            binding.tvLevelIndicator.background = ContextCompat.getDrawable(
-                requireContext(),
-                R.drawable.bg_gyro_error
-            )
-
-            binding.ivTopRight.setColorFilter(
-                ContextCompat.getColor(
-                    requireContext(),
-                    R.color.gyro_error_level
-                )
-            )
-            binding.ivBottomRight.setColorFilter(
-                ContextCompat.getColor(
-                    requireContext(),
-                    R.color.gyro_error_level
-                )
-            )
-
-            if (movearrow)
-                moveArrow(roll)
-
-            if (rotatedarrow){
-                if (pitch > 0){
-                    rotateArrow(pitch.minus(5).roundToInt())
-                }else{
-                    rotateArrow(pitch.plus(5).roundToInt())
-                }
-            }
-        }
+        binding.flLevelIndicator.updateGryoView(
+            getString(R.string.app_name),
+            roll,
+            pitch,
+            movearrow,
+            rotatedarrow
+        )
     }
 
-    private fun rotateArrow(roundToInt: Int) {
-        binding.tvLevelIndicator.rotation = roundToInt.toFloat()
-    }
 
     override fun onAccuracyChanged(sensor: Sensor?, accuracy: Int) {
     }
 
-    private fun moveArrow(roll: Double) {
-        var newRoll = roll + 90
-
-        if (newRoll > 0 && (centerPosition + newRoll) < bottomConstraint){
-
-            newRoll -= 10
-            binding
-                .tvLevelIndicator
-                .animate()
-                .translationY(newRoll.toFloat())
-                .setInterpolator(AccelerateInterpolator()).duration = 0
-        }
-
-        if (newRoll < 0 && (centerPosition - newRoll) > topConstraint) {
-
-            newRoll += 10
-
-            binding
-                .tvLevelIndicator
-                .animate()
-                .translationY(newRoll.toFloat())
-                .setInterpolator(AccelerateInterpolator()).duration = 0
-        }
-    }
 
     /**
      * Unbinds all the lifecycles from CameraX, then creates new with new parameters
@@ -532,7 +410,7 @@ class RecordVideoFragment : BaseFragment<ThreeSixtyViewModel, FragmentRecordVide
             }
         } else {
             File(outputDirectory).mkdirs()
-            val file = File("$outputDirectory/${System.currentTimeMillis()}.mp4")
+            val file = File("$outputDirectory/${viewModel.videoDetails.skuName+"_"+viewModel.videoDetails.skuId+"_"+System.currentTimeMillis()}.mp4")
 
             VideoCapture.OutputFileOptions.Builder(file)
         }.build()
@@ -781,6 +659,13 @@ class RecordVideoFragment : BaseFragment<ThreeSixtyViewModel, FragmentRecordVide
                         shootDimensions.previewHeight = view.height
 
                         viewModel.shootDimensions.value = shootDimensions
+
+                        binding.flTapToFocus.init(
+                            binding.viewFinder,
+                            cameraControl!!,
+                            cameraInfo!!,
+                            shootDimensions
+                        )
                     }
 
                     else -> {

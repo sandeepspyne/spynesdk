@@ -1,6 +1,7 @@
 package com.spyneai.orders.ui.fragment
 
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -13,8 +14,15 @@ import com.spyneai.orders.ui.adapter.OrdersSlideAdapter
 
 class MyOrdersFragment : BaseFragment<DashboardViewModel, FragmentMyOrdersBinding>() {
 
+    private var TAG = "MyOrdersFragment"
+    var tabId = 0
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+
+        tabId = requireActivity().intent.extras?.get("TAB_ID") as Int
+        Log.d(TAG, "position_id   "+tabId)
 
         binding.ivBack.setOnClickListener {
             requireActivity().onBackPressed()
@@ -36,9 +44,12 @@ class MyOrdersFragment : BaseFragment<DashboardViewModel, FragmentMyOrdersBindin
                 else -> tab.text = getString(R.string.completed)
             }
         }.attach()
+
+        binding.tabLayout.getTabAt(tabId)?.select()
     }
 
     override fun getViewModel() = DashboardViewModel::class.java
+
 
     override fun getFragmentBinding(
         inflater: LayoutInflater,

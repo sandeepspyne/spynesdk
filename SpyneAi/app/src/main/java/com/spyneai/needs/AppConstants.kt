@@ -1,7 +1,9 @@
 package com.spyneai.needs
 
 object AppConstants {
-    val BASE_URL = "https://www.clippr.ai/api/"
+    val BASE_URL: String = "https://www.clippr.ai/api/"
+    val STATUS_PROJECT_NAME: String="STATUS_PROJECT_NAME"
+
     val LOCALE = "LOCALE"
     val IS_360: String? = "IS_360"
     val IS_HD: String? = "IS_HD"
@@ -140,6 +142,7 @@ object AppConstants {
     val OLA_CABS = "Ola Cabs"
     val AUTO_FOTO = "AutoFotoApp"
     val SELL_ANY_CAR = "Sell any Car"
+    val EBAY = "Ebay"
     val FLIPKART_GROCERY = "Flipkart Grocery"
 
 

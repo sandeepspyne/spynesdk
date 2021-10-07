@@ -18,7 +18,6 @@ import com.spyneai.shoot.response.UpdateVideoSkuRes
 import com.spyneai.shoot.workmanager.OverlaysPreloadWorker
 import kotlinx.coroutines.launch
 import org.json.JSONObject
-import java.io.File
 
 class ShootViewModel : ViewModel() {
     private val TAG = "ShootViewModel"
@@ -44,6 +43,8 @@ class ShootViewModel : ViewModel() {
     val skuNumber: MutableLiveData<Int> = MutableLiveData()
 
     val isSubCategorySelected: MutableLiveData<Boolean> = MutableLiveData()
+
+    val categoryPosition: MutableLiveData<Int> = MutableLiveData()
 
     val dafault_project: MutableLiveData<String> = MutableLiveData()
     val dafault_sku: MutableLiveData<String> = MutableLiveData()
@@ -162,6 +163,12 @@ class ShootViewModel : ViewModel() {
     private val _skuProcessStateWithBgResponse: MutableLiveData<Resource<SkuProcessStateResponse>> = MutableLiveData()
     val skuProcessStateWithBgResponse: LiveData<Resource<SkuProcessStateResponse>>
         get() = _skuProcessStateWithBgResponse
+
+
+    private val _skuProcessStateWithShadowResponse: MutableLiveData<Resource<SkuProcessStateResponse>> =
+        MutableLiveData()
+    val skuProcessStateWithShadowResponse: LiveData<Resource<SkuProcessStateResponse>>
+        get() = _skuProcessStateWithShadowResponse
 
 
     fun getSubCategories(
@@ -306,6 +313,13 @@ class ShootViewModel : ViewModel() {
         _skuProcessStateWithBgResponse.value = repository.skuProcessStateWithBackgroundId(auth_key, project_id, background_id)
     }
 
+    fun skuProcessStateWithShadowOption(
+        auth_key: String, project_id: String, background_id: Int, shadow: String
+    ) = viewModelScope.launch {
+        _skuProcessStateWithShadowResponse.value = Resource.Loading
+        _skuProcessStateWithShadowResponse.value = repository.skuProcessStateWithShadowOption(auth_key, project_id, background_id, shadow)
+    }
+
 
     fun createSku(
         authKey: String, projectId: String, prodCatId: String, prodSubCatId: String,
@@ -437,5 +451,26 @@ class ShootViewModel : ViewModel() {
     fun getCurrentShoot() = shootList.value?.first {
         it.sequence == sequence.plus(1)
     }
+
+    fun checkMiscShootStatus(appName : String) {
+        val subCatResponse = (subCategoriesResponse.value as Resource.Success).value
+
+        when {
+            subCatResponse.miscellaneous.isNotEmpty() -> {
+                showMiscDialog.value = true
+            }
+            else -> {
+                selectBackground(appName)
+            }
+        }
+    }
+
+    fun selectBackground(appName : String) {
+        if (appName == AppConstants.OLA_CABS)
+            show360InteriorDialog.value = true
+        else
+            selectBackground.value = true
+    }
+
 
 }

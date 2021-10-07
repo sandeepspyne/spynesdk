@@ -32,13 +32,13 @@ import com.spyneai.shoot.adapter.ShootProgressAdapter
 import com.spyneai.shoot.adapters.NewSubCategoriesAdapter
 import com.spyneai.shoot.data.ShootViewModel
 import com.spyneai.shoot.data.model.ShootData
-import com.spyneai.shoot.ui.ecomwithgrid.dialogs.CreateProjectEcomDialog
 import com.spyneai.shoot.ui.ecomwithgrid.dialogs.CreateSkuEcomDialog
+import com.spyneai.shoot.ui.ecomwithgrid.dialogs.ProjectTagDialog
 import com.spyneai.shoot.utils.log
 import kotlinx.android.synthetic.main.fragment_overlays.*
 import java.util.*
 
-class OverlayEcomFragment : BaseFragment<ShootViewModel, FragmentOverlayEcomBinding>(),
+class     OverlayEcomFragment : BaseFragment<ShootViewModel, FragmentOverlayEcomBinding>(),
     NewSubCategoriesAdapter.BtnClickListener {
 
 
@@ -52,8 +52,10 @@ class OverlayEcomFragment : BaseFragment<ShootViewModel, FragmentOverlayEcomBind
         super.onViewCreated(view, savedInstanceState)
 
         if (viewModel.projectId.value == null){
-            initProjectDialog()
-            log("project and SKU dialog shown")
+            if(Utilities.getPreference(requireContext(), AppConstants.STATUS_PROJECT_NAME).toString() =="true")
+                getProjectName()
+            else
+                initProjectDialog()
         }
         else {
             if (viewModel.fromDrafts){
@@ -199,6 +201,42 @@ class OverlayEcomFragment : BaseFragment<ShootViewModel, FragmentOverlayEcomBind
         })
     }
 
+    private fun getProjectName(){
+
+        viewModel.getProjectName(Utilities.getPreference(requireContext(), AppConstants.AUTH_KEY).toString())
+
+        viewModel.getProjectNameResponse.observe(viewLifecycleOwner, {
+            when (it) {
+                is Resource.Success -> {
+
+                    Utilities.hideProgressDialog()
+
+                    viewModel.dafault_project.value = it.value.data.dafault_project
+                    viewModel.dafault_sku.value = it.value.data.dafault_sku
+                    initProjectDialog()
+                    log("project and SKU dialog shown")
+                }
+
+                is Resource.Loading -> {
+                    Utilities.showProgressDialog(requireContext())
+                }
+
+                is Resource.Failure -> {
+                    Utilities.hideProgressDialog()
+                    log("get project name failed")
+                    requireContext().captureFailureEvent(
+                        Events.CREATE_PROJECT_FAILED, Properties(),
+                        it.errorMessage!!
+                    )
+
+                    Utilities.hideProgressDialog()
+                    handleApiError(it) { getProjectName()}
+                }
+            }
+        })
+
+    }
+
 
     private fun initProgressFrames(frames: Int) {
 
@@ -313,7 +351,7 @@ class OverlayEcomFragment : BaseFragment<ShootViewModel, FragmentOverlayEcomBind
     }
 
     private fun initProjectDialog() {
-        CreateProjectEcomDialog().show(requireFragmentManager(), "CreateProjectEcomDialog")
+        ProjectTagDialog().show(requireFragmentManager(), "ProjectTagDialog")
         viewModel.isSkuCreated.observe(viewLifecycleOwner,{
             if (it) {
                 intSubcategorySelection(true)

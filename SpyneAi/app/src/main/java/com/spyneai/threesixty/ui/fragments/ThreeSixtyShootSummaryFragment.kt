@@ -158,7 +158,53 @@ class ThreeSixtyShootSummaryFragment : BaseFragment<ThreeSixtyViewModel, Fragmen
     }
 
     private fun processSku(showLoader : Boolean) {
+
+        when(getString(R.string.app_name)){
+            AppConstants.OLA_CABS -> {
+                uploadWithService()
+            }else -> {
+            if (showLoader)
+                Utilities.showProgressDialog(requireContext())
+
+                viewModel.process360(
+                    Utilities.getPreference(requireContext(), AppConstants.AUTH_KEY).toString())
+
+                viewModel.process360Res.observe(viewLifecycleOwner,{
+                when(it) {
+                    is Resource.Success -> {
+                        //update project status
+                        viewModel.updateProjectStatus(viewModel.videoDetails.projectId!!)
+
+                        Utilities.hideProgressDialog()
+                        Navigation.findNavController(binding.btnProceed)
+                            .navigate(R.id.action_threeSixtyShootSummaryFragment_to_videoProcessingStartedFragment)
+
+                        viewModel.title.value = "Processing Started"
+                        viewModel.processingStarted.value = true
+                    }
+                    is Resource.Failure -> {
+                        Utilities.hideProgressDialog()
+                        handleApiError(it) {processSku(true)}
+                    }
+                }
+            })
+            }
+        }
+
+
+    }
+
+    private fun uploadWithService(){
         //update video background id
+        viewModel.updateVideoBackgroundId()
+
+        startService()
+
+        Navigation.findNavController(binding.btnProceed)
+            .navigate(R.id.action_threeSixtyShootSummaryFragment_to_videoProcessingStartedFragment)
+
+        viewModel.title.value = "Processing Started"
+        viewModel.processingStarted.value = true
 //        viewModel.updateVideoBackgroundId()
 //
 //        startService()
@@ -169,8 +215,8 @@ class ThreeSixtyShootSummaryFragment : BaseFragment<ThreeSixtyViewModel, Fragmen
 //        viewModel.title.value = "Processing Started"
 //        viewModel.processingStarted.value = true
 
-        if (showLoader)
-            Utilities.showProgressDialog(requireContext())
+//        if (showLoader)
+//            Utilities.showProgressDialog(requireContext())
 
         viewModel.process360(
             Utilities.getPreference(requireContext(), AppConstants.AUTH_KEY).toString())

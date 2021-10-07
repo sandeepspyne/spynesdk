@@ -275,12 +275,15 @@ class HomeDashboardFragment :
         viewModel.getCategories(
             Utilities.getPreference(requireContext(), AppConstants.AUTH_KEY).toString()
         )
+
         viewModel.categoriesResponse.observe(viewLifecycleOwner, Observer {
             when (it) {
                 is Resource.Success -> {
 
-                    LayoutHolder.data = it.value.data
+                    if (it.value.data.size == 1)
+                    Utilities.savePrefrence(requireContext(), AppConstants.CATEGORY_NAME, it.value.data[0].prod_cat_name)
 
+                    LayoutHolder.data = it.value.data
                     requireContext().captureEvent(Events.GOT_CATEGORIES, Properties())
 
                     binding.shimmerCategories.stopShimmer()
@@ -291,6 +294,8 @@ class HomeDashboardFragment :
                         it.value.data as ArrayList<NewCategoriesResponse.Data>,
                         object : CategoriesDashboardAdapter.BtnClickListener {
                             override fun onBtnClick(position: Int) {
+
+                                LayoutHolder.categoryPosition = position
 
                                 Utilities.savePrefrence(requireContext(), AppConstants.CATEGORY_ID, it.value.data[position].prod_cat_id)
                                 Utilities.savePrefrence(requireContext(), AppConstants.CATEGORY_NAME, it.value.data[position].prod_cat_name)

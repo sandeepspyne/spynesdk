@@ -84,6 +84,7 @@ class ShowImagesActivity : AppCompatActivity(),View.OnTouchListener,View.OnClick
     var TAG = "ShowImagesActivity"
 
     var downloadHighQualityCount: Int = 5
+    var element : FetchBulkResponseV2.Data? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -332,6 +333,15 @@ class ShowImagesActivity : AppCompatActivity(),View.OnTouchListener,View.OnClick
                 Utilities.hideProgressDialog()
                 if (response.isSuccessful) {
                     var dataList: List<FetchBulkResponseV2.Data> = response.body()!!.data
+
+                    element = dataList.firstOrNull {
+                        it.image_category == "360_exterior"
+                    }
+
+                    if (element != null){
+                        intent.putExtra(AppConstants.IS_360,true)
+                    }
+
                     for (i in 0..(dataList.size) -1) {
                         if (dataList!![i].image_category.equals("Exterior")) {
                             Category = dataList!![i].image_category
@@ -349,7 +359,9 @@ class ShowImagesActivity : AppCompatActivity(),View.OnTouchListener,View.OnClick
                             (listHdQuality as ArrayList).add(dataList!![i].output_image_hres_url)
 
                             imageNameList.add(dataList[i].image_name)
-                            frontFramesList.add(dataList!![i].output_image_lres_url)
+
+                            if (element == null)
+                                frontFramesList.add(dataList!![i].output_image_lres_url)
 
                             Utilities.savePrefrence(
                                 this@ShowImagesActivity,
@@ -358,7 +370,10 @@ class ShowImagesActivity : AppCompatActivity(),View.OnTouchListener,View.OnClick
                             )
 
                             hideData(0)
-                        } else  if (dataList!![i].image_category.equals("Food") || dataList!![i].image_category.equals("Food & Beverages") || dataList!![i].image_category.equals("E-Commerce")) {
+                        }else if (dataList!![i].image_category.equals("360_exterior")) {
+                            frontFramesList.add(dataList!![i].output_image_lres_url)
+                        }
+                        else  if (dataList!![i].image_category.equals("Food") || dataList!![i].image_category.equals("Food & Beverages") || dataList!![i].image_category.equals("E-Commerce")) {
                             Category = dataList!![i].image_category
                             (imageList as ArrayList).add(dataList!![i].input_image_lres_url)
                             (imageListAfter as ArrayList).add(dataList!![i].output_image_lres_wm_url)
@@ -429,6 +444,8 @@ class ShowImagesActivity : AppCompatActivity(),View.OnTouchListener,View.OnClick
                         }
                     }
                 }
+
+
 
 
                 //show 360 view
@@ -659,11 +676,11 @@ class ShowImagesActivity : AppCompatActivity(),View.OnTouchListener,View.OnClick
         when(v?.id){
 
             R.id.ivEmbed -> {
-                embed(getCode(0))
+                embed(getCode(if(element == null) "Exterior" else "360_exterior"))
             }
 
             R.id.ivShare -> {
-                share(getLink())
+                share(getLink(if(element == null) "Exterior" else "360_exterior"))
             }
 
             R.id.tv_go_to_home -> {
@@ -692,14 +709,13 @@ class ShowImagesActivity : AppCompatActivity(),View.OnTouchListener,View.OnClick
         startActivity(shareIntent)
     }
 
-    private fun getCode(type : Int) : String {
+    private fun getCode(type : String) : String {
         return "<iframe \n" +
-                "  src=\"https://www.spyne.ai/shoots/shoot?skuId="+shootId+"&type=exterior" +
+                "  src=\"https://www.spyne.ai/shoots/shoot?skuId="+shootId+"&type=$type" +
                 "  style=\"border:0; height: 100%; width: 100%;\" framerborder=\"0\"></iframe>"
-
     }
 
-    private fun getLink() = "https://www.spyne.ai/shoots/shoot?skuId="+shootId+"&type=exterior"
+    private fun getLink(type : String) = "https://www.spyne.ai/shoots/shoot?skuId="+shootId+"&type=$type"
 
     private fun preLoadFront(tsvParams: TSVParams) {
         for ((index, url) in tsvParams.framesList.withIndex()) {

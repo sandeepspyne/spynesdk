@@ -38,7 +38,10 @@ class GridEcomFragment : BaseFragment<ShootViewModel, FragmentGridEcomBinding>()
 
 
         if (viewModel.projectId.value == null){
-            getProjectName()
+            if(Utilities.getPreference(requireContext(), AppConstants.STATUS_PROJECT_NAME).toString() =="true")
+                getProjectName()
+            else
+                initProjectDialog()
         }
         else {
             if (viewModel.fromDrafts){

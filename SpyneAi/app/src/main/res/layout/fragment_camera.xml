@@ -3,6 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:tools="http://schemas.android.com/tools"
     android:background="@android:color/black">
 
     <RelativeLayout
@@ -14,37 +15,44 @@
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toTopOf="parent" >
 
-        <LinearLayout
+
+
+
+        <TextView
+            android:id="@+id/tvAngleValue"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:id="@+id/llSkip"
+            android:background="@drawable/bg_gyro_in"
+            android:fontFamily="@font/poppins_bold"
+            android:maxLines="1"
+            android:maxLength="5"
+            tools:text="Angle"
             android:visibility="invisible"
-            android:layout_alignParentRight="true">
+            android:layout_marginRight="@dimen/dp_15"
+            android:layout_centerInParent="true"
+            android:layout_alignParentRight="true"
+            android:padding="@dimen/dp_8"
+            android:textColor="@color/white"
+            android:textSize="@dimen/sp_13"
+            />
 
-            <TextView
-                android:id="@+id/tvSkipShoot"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:gravity="center"
-                android:layout_gravity="center"
-                android:drawablePadding="@dimen/dp_5"
-                android:fontFamily="@font/bold"
-                android:text="@string/skip"
-                android:textColor="@color/primary"
-                android:textSize="@dimen/sp_16"
-                />
+        <TextView
+            android:id="@+id/tvAngleRed"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_centerInParent="true"
+            android:layout_marginRight="@dimen/dp_15"
+            android:background="@drawable/bg_gyro_error"
+            android:fontFamily="@font/poppins_bold"
+            android:maxLength="5"
+            android:maxLines="1"
+            android:padding="@dimen/dp_8"
+            android:textColor="@color/white"
+            android:textSize="@dimen/sp_13"
+            android:visibility="invisible"
+            tools:text="45" />
 
-            <ImageView
-                android:layout_width="@dimen/dp_15"
-                android:layout_height="@dimen/dp_15"
-                android:src="@drawable/skip"
-                android:id="@+id/ivSkip"
-                android:layout_gravity="center"
-                android:layout_marginLeft="@dimen/dp_2"
-                app:tint="@color/primary" />
-
-        </LinearLayout>
 
 
     </RelativeLayout>
@@ -57,6 +65,57 @@
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/viewCamera" />
+
+    <androidx.constraintlayout.widget.Group
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:visibility="invisible"
+        android:id="@+id/groupOverlay"
+        app:constraint_referenced_ids="ivBowl, tvInstructions, viewInstructions, rlInstructions" />
+
+    <ImageView
+        android:id="@+id/ivBowl"
+        android:layout_width="wrap_content"
+        android:layout_height="@dimen/dp_130"
+        app:layout_constraintStart_toStartOf="@+id/viewFinder"
+        app:layout_constraintEnd_toEndOf="@+id/viewFinder"
+        app:layout_constraintBottom_toTopOf="@+id/viewInstructions"
+        android:src="@drawable/ic_bowl"/>
+
+    <TextView
+        android:id="@+id/tvInstructions"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/tv_instructions"
+        android:fontFamily="@font/poppins_medium"
+        android:textColor="@color/white"
+        android:textSize="@dimen/dp_20"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginTop="@dimen/dp_5"
+        app:layout_constraintTop_toBottomOf="@+id/viewInstructions" />
+
+    <View
+        android:id="@+id/viewInstructions"
+        android:layout_width="match_parent"
+        android:layout_height="2dp"
+        android:background="@color/primary"
+        app:layout_constraintStart_toStartOf="@+id/viewFinder"
+        app:layout_constraintEnd_toEndOf="@+id/viewFinder"
+        app:layout_constraintBottom_toTopOf="@+id/rlInstructions"/>
+
+
+
+    <RelativeLayout
+        android:id="@+id/rlInstructions"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:background="@color/camera_transparent"
+        app:layout_constraintStart_toStartOf="@+id/viewFinder"
+        app:layout_constraintEnd_toEndOf="@+id/viewFinder"
+        app:layout_constraintBottom_toBottomOf="@+id/viewFinder" />
+
+
 
     <RelativeLayout
         android:id="@+id/rlCapturedImage"
@@ -128,68 +187,76 @@
         </LinearLayout>
     </LinearLayout>
 
+
+    <com.airbnb.lottie.LottieAnimationView
+        android:id="@+id/lottieUpArrow"
+        android:layout_width="55dp"
+        android:layout_height="55dp"
+        android:visibility="invisible"
+        android:layout_alignParentRight="true"
+        app:lottie_autoPlay="true"
+        app:lottie_rawRes="@raw/down_arrow"
+        app:lottie_loop="true"
+        android:rotation="180"
+        app:layout_constraintStart_toStartOf="@+id/flLevelIndicator"
+        app:layout_constraintEnd_toEndOf="@+id/flLevelIndicator"
+        app:layout_constraintTop_toTopOf="@+id/flLevelIndicator"/>
+
+
+    <TextView
+        android:id="@+id/tvUpcomingAngle1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        tools:text="90"
+        android:visibility="invisible"
+        android:layout_gravity="center"
+        android:fontFamily="@font/bold"
+        android:textColor="@color/gyro_error_level"
+        android:textSize="@dimen/dp_20"
+        app:layout_constraintStart_toStartOf="@+id/flLevelIndicator"
+        app:layout_constraintEnd_toEndOf="@+id/flLevelIndicator"
+        app:layout_constraintTop_toBottomOf="@+id/lottieUpArrow" />
+
+    <com.airbnb.lottie.LottieAnimationView
+        android:id="@+id/lottieDownArrow"
+        android:layout_width="55dp"
+        android:layout_height="55dp"
+        android:visibility="invisible"
+        android:layout_alignParentRight="true"
+        app:lottie_autoPlay="true"
+        app:lottie_rawRes="@raw/down_arrow"
+        app:lottie_loop="true"
+        app:layout_constraintStart_toStartOf="@+id/flLevelIndicator"
+        app:layout_constraintEnd_toEndOf="@+id/flLevelIndicator"
+        app:layout_constraintBottom_toBottomOf="@+id/flLevelIndicator"/>
+
+    <TextView
+        android:id="@+id/tvUpcomingAngle2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        tools:text="90"
+
+        android:layout_gravity="center"
+        android:fontFamily="@font/bold"
+        android:textColor="@color/gyro_error_level"
+        android:textSize="@dimen/dp_20"
+        app:layout_constraintStart_toStartOf="@+id/flLevelIndicator"
+        app:layout_constraintEnd_toEndOf="@+id/flLevelIndicator"
+        app:layout_constraintBottom_toTopOf="@+id/lottieDownArrow" />
+
     <com.spyneai.shoot.ui.base.GyroView
         android:layout_width="0dp"
         android:layout_height="0dp"
-        android:id="@+id/gyroView"
+        android:id="@+id/flLevelIndicator"
         app:layout_constraintBottom_toTopOf="@+id/rlCapturedImage"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/viewCamera"
-        android:layout_margin="@dimen/dp_20">
-
-        <ImageView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:src="@drawable/ic_top_left"
-            android:layout_gravity="left"
-            android:id="@+id/ivTopLeft"/>
-
-        <ImageView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:src="@drawable/ic_bottom_left"
-            android:layout_gravity="left|bottom"
-            android:id="@+id/ivBottomLeft"/>
-
-        <ImageView
-            android:layout_width="@dimen/dp_100"
-            android:layout_height="@dimen/dp_100"
-            android:layout_gravity="center"
-            android:id="@+id/ivGryroRing"
-            android:src="@drawable/ic_gyro_ring"/>
-
-        <TextView
-            android:layout_width="@dimen/dp_50"
-            android:layout_height="0.5dp"
-            android:layout_gravity="center"
-            android:id="@+id/tvCenter"
-            android:background="@color/black"/>
-
-        <ImageView
-            android:layout_width="@dimen/dp_30"
-            android:layout_height="3dp"
-            android:background="@drawable/bg_gyro_error"
-            android:id="@+id/tvLevelIndicator"
-            android:layout_gravity="center"/>
+        android:layout_margin="@dimen/dp_20"/>
 
 
-        <ImageView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:src="@drawable/ic_top_right"
-            android:layout_gravity="right"
-            android:id="@+id/ivTopRight"/>
 
-        <ImageView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:src="@drawable/ic_bottom_right"
-            android:layout_gravity="right|bottom"
-            android:id="@+id/ivBottomRight"/>
-    </com.spyneai.shoot.ui.base.GyroView>
-
-    <FrameLayout
+    <com.spyneai.camera.TapFocusExposure
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:id="@+id/flTapToFocus"
@@ -199,7 +266,7 @@
         app:layout_constraintTop_toBottomOf="@+id/viewCamera"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintBottom_toBottomOf="parent">
-    </FrameLayout>
+    </com.spyneai.camera.TapFocusExposure>
 
     <TextView
         android:layout_width="wrap_content"

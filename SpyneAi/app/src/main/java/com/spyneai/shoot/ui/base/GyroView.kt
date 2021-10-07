@@ -8,10 +8,8 @@ import android.view.ViewTreeObserver
 import android.view.animation.AccelerateInterpolator
 import android.widget.FrameLayout
 import androidx.core.content.ContextCompat
-import androidx.databinding.DataBindingUtil
 import com.spyneai.BaseApplication
 import com.spyneai.R
-import com.spyneai.camera2.ShootDimensions
 import com.spyneai.databinding.GyroViewBinding
 import com.spyneai.needs.AppConstants
 import kotlin.math.abs
@@ -130,6 +128,7 @@ class GyroView : FrameLayout {
                     }
                 }
             }
+
             AppConstants.SPYNE_AI, AppConstants.SELL_ANY_CAR -> {
                 when (cateoryName) {
                     "Automobiles", "Bikes" -> {
@@ -190,6 +189,7 @@ class GyroView : FrameLayout {
                     }
                 }
             }
+
             AppConstants.SWIGGYINSTAMART,
             AppConstants.UDAAN,
             AppConstants.FLIPKART,
@@ -231,6 +231,7 @@ class GyroView : FrameLayout {
                     }
                 }
             }
+
             AppConstants.CARS24_INDIA,
             AppConstants.CARS24 -> {
                 if ((roll >= -100 && roll <= -80) && (pitch >= -3 && pitch <= 3)) {

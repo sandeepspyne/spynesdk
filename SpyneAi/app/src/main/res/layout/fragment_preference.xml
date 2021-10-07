@@ -1,0 +1,338 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+    tools:context=".fragment.PreferenceFragment">
+
+
+  <LinearLayout
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:layout_weight="1"
+      android:orientation="vertical">
+
+  <TextView
+    android:id="@+id/tvUserName"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:text="Name"
+      android:layout_marginTop="@dimen/dp_30"
+      android:textColor="@color/primary"
+      android:paddingHorizontal="@dimen/dp_12"
+    android:layout_gravity="center_vertical"
+      android:fontFamily="@font/poppins_medium"
+    android:textSize="@dimen/sp_18">
+</TextView>
+
+  <LinearLayout
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:layout_marginTop="@dimen/dp_5"
+      android:paddingHorizontal="@dimen/dp_12"
+      android:orientation="horizontal">
+    <ImageView
+        android:layout_width="18dp"
+        android:layout_height="20dp"
+        app:tint="@color/primary"
+        android:backgroundTintMode="@color/tint"
+        android:src="@drawable/mail"></ImageView>
+
+    <TextView
+        android:id="@+id/tvEmail"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="@dimen/dp_10"
+        android:textSize="@dimen/sp_15"
+        android:text="test_spyne@gmail.com"></TextView>
+
+  </LinearLayout>
+
+
+  <TextView
+      android:layout_width="match_parent"
+      android:layout_height="7dp"
+      android:layout_marginTop="@dimen/dp_30"
+      android:background="@color/light_grey"
+
+      ></TextView>
+
+  <LinearLayout
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:layout_marginHorizontal="@dimen/dp_12"
+      android:gravity="center_vertical"
+      android:layout_marginTop="@dimen/dp_30"
+      android:orientation="horizontal">
+    <ImageView
+        android:layout_width="18dp"
+        android:layout_height="20dp"
+        android:backgroundTintMode="@color/tint"
+        app:tint="@color/primary"
+        android:src="@drawable/language"></ImageView>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/language"
+        android:id="@+id/tvLang"
+        android:textColor="@color/primary"
+        android:layout_marginHorizontal="@dimen/dp_10"
+        android:layout_weight="1"
+        android:fontFamily="@font/poppins_medium"
+        android:textSize="@dimen/sp_18"
+        ></TextView>
+
+
+    <Spinner android:id="@+id/spLanguage"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:drawSelectorOnTop="true"
+        android:textSize="@dimen/sp_18"
+        android:backgroundTint="@color/primary"/>
+
+
+
+
+  </LinearLayout>
+  <LinearLayout
+      android:id="@+id/llProjectNameSwitch"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:gravity="center_vertical"
+      android:layout_marginTop="@dimen/dp_30"
+      android:layout_marginHorizontal="@dimen/dp_12"
+      android:orientation="horizontal">
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:gravity="center_vertical"
+        android:orientation="vertical">
+
+      <LinearLayout
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:gravity="center_vertical"
+          android:orientation="horizontal">
+        <ImageView
+            android:layout_width="18dp"
+            android:layout_height="20dp"
+            android:backgroundTintMode="@color/tint"
+            app:tint="@color/primary"
+            android:src="@drawable/project"></ImageView>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/project_name"
+            android:id="@+id/tvProjectName"
+            android:layout_marginHorizontal="@dimen/dp_10"
+            android:layout_weight="1"
+            android:textColor="@color/primary"
+            android:fontFamily="@font/poppins_medium"
+            android:textSize="@dimen/sp_18"
+            ></TextView>
+
+
+      </LinearLayout>
+
+      <TextView
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:textSize="@dimen/sp_15"
+          android:text="@string/turn_off_switch"></TextView>
+
+
+
+    </LinearLayout>
+
+    <Switch
+        android:id="@+id/switchProjectName"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_vertical"
+        android:textStyle="bold"
+
+        ></Switch>
+
+  </LinearLayout>
+
+  <LinearLayout
+      android:id="@+id/llChange_password"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:layout_marginHorizontal="@dimen/dp_20"
+      android:gravity="center_vertical"
+      android:visibility="gone"
+      android:layout_marginTop="@dimen/dp_30"
+      android:orientation="horizontal">
+
+    <ImageView
+        android:layout_width="18dp"
+        android:layout_height="20dp"
+        android:backgroundTintMode="@color/tint"
+        android:src="@drawable/password"
+        app:tint="@color/primary"></ImageView>
+
+    <TextView
+        android:id="@+id/tvPassword"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/change_password"
+        android:textColor="@color/primary"
+        android:layout_marginHorizontal="@dimen/dp_10"
+        android:fontFamily="@font/poppins_medium"
+        android:textSize="@dimen/sp_18"
+        ></TextView>
+
+
+
+
+
+
+  </LinearLayout>
+  <LinearLayout
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+     android:layout_marginHorizontal="@dimen/dp_12"
+      android:gravity="center_vertical"
+      android:layout_marginTop="@dimen/dp_30"
+      android:orientation="vertical">
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:gravity="center_vertical"
+        android:orientation="horizontal">
+      <ImageView
+          android:layout_width="18dp"
+          android:layout_height="20dp"
+          app:tint="@color/primary"
+          android:backgroundTintMode="@color/tint"
+          android:src="@drawable/app"></ImageView>
+
+      <TextView
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:text="@string/app_version"
+          android:id="@+id/tvAppVersionLabel"
+          android:textColor="@color/primary"
+          android:layout_marginHorizontal="@dimen/dp_10"
+          android:layout_weight="1"
+          android:fontFamily="@font/poppins_medium"
+          android:textSize="@dimen/sp_18"
+          ></TextView>
+
+
+    </LinearLayout>
+
+    <TextView
+        android:id="@+id/tvAppVersion"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="@dimen/sp_15"
+        android:text="version 1.2.3"></TextView>
+
+
+
+  </LinearLayout>
+
+<!--  <LinearLayout-->
+<!--      android:id="@+id/llLogout"-->
+<!--      android:layout_width="match_parent"-->
+<!--      android:layout_height="wrap_content"-->
+<!--      android:layout_marginHorizontal="@dimen/dp_20"-->
+<!--      android:gravity="center_vertical"-->
+<!--      android:layout_marginTop="@dimen/dp_30"-->
+<!--      android:orientation="vertical">-->
+
+<!--    <LinearLayout-->
+<!--        android:layout_width="wrap_content"-->
+<!--        android:layout_height="wrap_content"-->
+<!--        android:gravity="center_vertical"-->
+<!--        android:orientation="horizontal">-->
+<!--      <ImageView-->
+<!--          android:layout_width="18dp"-->
+<!--          android:layout_height="20dp"-->
+<!--          app:tint="@color/primary"-->
+<!--          android:backgroundTintMode="@color/tint"-->
+<!--          android:src="@drawable/logout_preference"></ImageView>-->
+
+<!--      <TextView-->
+<!--          android:layout_width="wrap_content"-->
+<!--          android:layout_height="wrap_content"-->
+<!--          android:text="@string/logout"-->
+<!--          android:id="@+id/tvLogout"-->
+<!--          android:layout_marginHorizontal="@dimen/dp_10"-->
+<!--          android:layout_weight="1"-->
+<!--          android:textColor="@color/primary"-->
+<!--          android:fontFamily="@font/poppins_medium"-->
+<!--          android:textSize="@dimen/sp_18"-->
+<!--          ></TextView>-->
+
+
+<!--    </LinearLayout>-->
+<!--    <LinearLayout-->
+<!--        android:layout_width="wrap_content"-->
+<!--        android:layout_height="wrap_content"-->
+<!--        android:orientation="horizontal">-->
+
+<!--      <TextView-->
+<!--          android:layout_width="wrap_content"-->
+<!--          android:layout_height="wrap_content"-->
+<!--          android:textSize="@dimen/sp_15"-->
+<!--          android:id="@+id/tvLogin"-->
+<!--          android:text="@string/you_are_logged_in_as"></TextView>-->
+
+<!--      <TextView-->
+<!--          android:id="@+id/tvLoginAs"-->
+<!--          android:layout_width="wrap_content"-->
+<!--          android:layout_height="wrap_content"-->
+<!--          android:textSize="@dimen/sp_15"-->
+<!--          android:layout_marginLeft="@dimen/dp_5"-->
+<!--          android:text="Name"></TextView>-->
+
+
+<!--    </LinearLayout>-->
+
+
+
+<!--  </LinearLayout>-->
+
+  </LinearLayout>
+
+  <LinearLayout
+      android:id="@+id/llLogout"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:layout_gravity="center"
+      android:gravity="center"
+      android:layout_margin="@dimen/dp_30"
+      android:background="@drawable/bg_rectangle_button_ripple">
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:layout_gravity="center"
+        android:layout_marginStart="@dimen/dp_30"
+        android:layout_marginEnd="@dimen/dp_30"
+        android:fontFamily="@font/medium"
+        android:padding="@dimen/dp_12"
+        android:text="@string/logout"
+        android:textAllCaps="false"
+        android:textColor="@color/white"
+        android:textSize="@dimen/sp_16" />
+
+
+  </LinearLayout>
+
+
+
+
+
+</LinearLayout>
+
+

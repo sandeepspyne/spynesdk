@@ -150,6 +150,13 @@ class DraftSkuDetailsFragment : BaseFragment<DraftViewModel, FragmentDraftSkuDet
             }
         }
 
+        if (intent.getBooleanExtra(AppConstants.FROM_VIDEO,false)){
+            shootIntent?.apply {
+                putExtra(AppConstants.FROM_VIDEO, true)
+                putExtra(AppConstants.TOTAL_FRAME, intent.getIntExtra(AppConstants.TOTAL_FRAME,0))
+            }
+        }
+
         shootIntent?.apply {
             putExtra(AppConstants.FROM_DRAFTS, true)
             putExtra(AppConstants.CATEGORY_NAME, intent.getStringExtra(AppConstants.CATEGORY_NAME))

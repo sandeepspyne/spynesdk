@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_margin="45dp">
+
+    <TextView
+        android:id="@+id/tvShadow"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:fontFamily="@font/poppins_bold"
+        android:text="Shadow Option"
+        android:textColor="@color/black"
+        android:textSize="@dimen/sp_18"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        android:layout_marginTop="35dp"/>
+
+    <TextView
+        android:id="@+id/tvChooseShadow"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:fontFamily="@font/poppins_medium"
+        android:text="Shadow- "
+        android:textColor="@color/black"
+        android:textSize="@dimen/sp_18" />
+
+    <ToggleButton
+        android:id="@+id/tbShadow"
+        android:layout_width="wrap_content"
+        app:layout_constraintTop_toTopOf="@+id/flow"
+        app:layout_constraintStart_toStartOf="@+id/flow"
+        android:background="@color/secondary"
+        android:layout_height="wrap_content"/>
+
+    <androidx.constraintlayout.helper.widget.Flow
+        android:id="@+id/flow"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tvShadow"
+        android:layout_marginTop="@dimen/dp_25"
+        app:flow_wrapMode="chain"
+        app:constraint_referenced_ids="tvChooseShadow, tbShadow"
+        />
+
+
+    <androidx.appcompat.widget.AppCompatButton
+        android:layout_width="230dp"
+        android:layout_height="@dimen/dp_50"
+        android:id="@+id/btConfirm"
+        android:text="Confirm"
+        android:textAllCaps="false"
+        android:fontFamily="@font/poppins_medium"
+        android:background="@drawable/bg_rectangle_button_ripple"
+        android:textColor="@color/white"
+        app:layout_constraintTop_toBottomOf="@+id/flow"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        android:layout_marginBottom="@dimen/dp_15" />
+
+    <androidx.appcompat.widget.AppCompatButton
+        android:layout_width="50dp"
+        android:layout_height="@dimen/dp_50"
+        android:id="@+id/btSkip"
+        android:text="Skip"
+        android:textAllCaps="false"
+        android:fontFamily="@font/poppins_medium"
+        android:textColor="@color/primary"
+        android:background="@null"
+        app:layout_constraintTop_toBottomOf="@+id/btConfirm"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        android:layout_marginBottom="@dimen/dp_15" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

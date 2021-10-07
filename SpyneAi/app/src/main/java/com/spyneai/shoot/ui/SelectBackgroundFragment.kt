@@ -46,7 +46,6 @@ class SelectBackgroundFragment : BaseFragment<ProcessViewModel, FragmentSelectBa
         initSelectBackground()
 
 
-
         binding.ivBackGif.setOnClickListener {
             requireActivity().onBackPressed()
         }
@@ -74,6 +73,21 @@ class SelectBackgroundFragment : BaseFragment<ProcessViewModel, FragmentSelectBa
                 binding.tvGenerateGif.text = getString(R.string.generate_output)
                 binding.tvSample.text = getString(R.string.sample_output)
             }
+            AppConstants.SPYNE_AI -> {
+                if (Utilities.getPreference(requireContext(), AppConstants.CATEGORY_NAME).equals("Food & Beverages")){
+                    binding.cb360.visibility = View.GONE
+                    binding.tv360.visibility = View.GONE
+                    binding.tvGenerateGif.text = getString(R.string.generate_output)
+                    binding.tvSample.text = getString(R.string.sample_output)
+                }else{
+                    binding.cb360.setOnCheckedChangeListener { buttonView, isChecked ->
+                        if (isChecked)
+                            binding.tvGenerateGif.text = getString(R.string.contiune)
+                        else
+                            binding.tvGenerateGif.text = getString(R.string.generate_output)
+                    }
+                }
+            }
             else -> {
                 binding.cb360.setOnCheckedChangeListener { buttonView, isChecked ->
                     if (isChecked)
@@ -83,6 +97,13 @@ class SelectBackgroundFragment : BaseFragment<ProcessViewModel, FragmentSelectBa
                 }
             }
         }
+
+        if (viewModel.fromVideo){
+            binding.cb360.visibility = View.GONE
+            binding.tv360.visibility = View.GONE
+            binding.tvGenerateGif.text = getString(R.string.generate_output)
+        }
+
 
 
         binding.tvGenerateGif.setOnClickListener {
@@ -107,10 +128,24 @@ class SelectBackgroundFragment : BaseFragment<ProcessViewModel, FragmentSelectBa
                 //process image call
                 processSku(showDialog)
             }AppConstants.SWIGGY -> {
+
                     processFoodImage()
             Utilities.showProgressDialog(requireContext())
-                }else -> {
+                } AppConstants.SPYNE_AI -> {
+            if (Utilities.getPreference(requireContext(), AppConstants.CATEGORY_NAME).equals("Food & Beverages")){
+                processFoodImage()
+                Utilities.showProgressDialog(requireContext())
+            } else{
                 if (binding.cb360.isChecked){
+                    viewModel.backgroundSelect = backgroundSelect
+                    viewModel.addRegularShootSummaryFragment.value = true
+                }else{
+                    //process image call
+                    processSku(showDialog)
+                }
+            }
+        }else -> {
+                if (binding.cb360.visibility == View.VISIBLE && binding.cb360.isChecked){
                     viewModel.backgroundSelect = backgroundSelect
                     viewModel.addRegularShootSummaryFragment.value = true
                 }else{
@@ -120,14 +155,12 @@ class SelectBackgroundFragment : BaseFragment<ProcessViewModel, FragmentSelectBa
             }
         }
 
-
         observeProcessSku()
         observeFoodProcess()
     }
 
     private fun processFoodImage() {
         binding.shimmer.startShimmer()
-
 
         viewModel.skuProcessStateWithBackgroundid(
             Utilities.getPreference(requireContext(), AppConstants.AUTH_KEY).toString(),
@@ -175,6 +208,25 @@ class SelectBackgroundFragment : BaseFragment<ProcessViewModel, FragmentSelectBa
 
                 viewModel.getBackgroundGifCars(category, authKey)
             }
+            AppConstants.SPYNE_AI -> {
+                if (Utilities.getPreference(requireContext(), AppConstants.CATEGORY_NAME).equals("Food & Beverages")){
+                    val category = "Food".toRequestBody(MultipartBody.FORM)
+                    val authKey =
+                        Utilities.getPreference(requireContext(), AppConstants.AUTH_KEY)!!
+                            .toRequestBody(MultipartBody.FORM)
+
+                    viewModel.getBackgroundGifCars(category, authKey)
+                } else {
+                    val category =
+                        Utilities.getPreference(requireContext(), AppConstants.CATEGORY_NAME)!!
+                            .toRequestBody(MultipartBody.FORM)
+                    val authKey =
+                        Utilities.getPreference(requireContext(), AppConstants.AUTH_KEY)!!
+                            .toRequestBody(MultipartBody.FORM)
+
+                    viewModel.getBackgroundGifCars(category, authKey)
+                }
+            }
             else -> {
                 val category =
                     Utilities.getPreference(requireContext(), AppConstants.CATEGORY_NAME)!!
@@ -201,14 +253,13 @@ class SelectBackgroundFragment : BaseFragment<ProcessViewModel, FragmentSelectBa
                     binding.rvBackgroundsCars.visibility = View.VISIBLE
                     binding.tvGenerateGif.enable(true)
 
-
                     val response = it.value
                     Glide.with(requireContext()) // replace with 'this' if it's in activity
                         .load(response.data[0].gifUrl)
                         .error(R.mipmap.defaults) // show error drawable if the image is not a gif
                         .into(binding.imageViewGif)
 
-                    backgroundSelect = response.data[0].imageId.toString()
+                    backgroundSelect = response.data[0].imageId
 
                     carBackgroundGifList.clear()
                     for (element in response.data){
@@ -238,7 +289,7 @@ class SelectBackgroundFragment : BaseFragment<ProcessViewModel, FragmentSelectBa
             object : NewCarBackgroundAdapter.BtnClickListener {
                 override fun onBtnClick(position: Int) {
                     //if (position<carBackgroundList.size)
-                    backgroundSelect = carBackgroundGifList[position].imageId.toString()
+                    backgroundSelect = carBackgroundGifList[position].imageId
                     carbackgroundsAdapter.notifyDataSetChanged()
 
                     Glide.with(requireContext()) // replace with 'this' if it's in activity

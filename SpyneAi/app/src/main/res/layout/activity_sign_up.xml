@@ -111,6 +111,28 @@
                 android:layout_height="wrap_content" />
         </LinearLayout>
 
+        <LinearLayout
+            android:id="@+id/llCoupon"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:background="@drawable/bg_edit"
+            android:padding="@dimen/dp_10"
+            android:layout_marginLeft="25dp"
+            android:layout_marginTop="10dp"
+            android:layout_marginRight="25dp">
+            <EditText
+                android:id="@+id/etCoupon"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="@null"
+                android:inputType="text"
+                android:maxLines="1"
+                android:textSize="15sp"
+                android:fontFamily="@font/light"
+                android:hint="@string/enter_coupon_code" />
+        </LinearLayout>
+
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"

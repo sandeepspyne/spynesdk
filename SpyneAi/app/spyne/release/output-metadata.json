@@ -1,5 +1,5 @@
 {
-  "version": 3,
+  "version": 2,
   "artifactType": {
     "type": "APK",
     "kind": "Directory"
@@ -10,11 +10,9 @@
     {
       "type": "SINGLE",
       "filters": [],
-      "attributes": [],
-      "versionCode": 53,
-      "versionName": "2.63",
+      "versionCode": 55,
+      "versionName": "2.65",
       "outputFile": "app-spyne-release.apk"
     }
-  ],
-  "elementType": "File"
+  ]
 }

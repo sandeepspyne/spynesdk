@@ -96,49 +96,7 @@ class ThreeSixtyViewModel : ViewModel() {
         appName : String
     ) = viewModelScope.launch {
         _carGifRes.value = Resource.Loading
-
-        when(appName){
-            "Karvi.com" -> {
-                val carGifList = ArrayList<CarsBackgroundRes.Data>()
-                carGifList.add(
-                    CarsBackgroundRes.Data(
-                        "Radiant Aluminium",
-                        "https://storage.googleapis.com/spyne-website/static/website-themes/clippr/comp_backgroundV2/601_2.png",
-                        1,
-                        "978",
-                        "https://storage.googleapis.com/spyne-website/static/website-themes/clippr/comp_backgroundV2/601_2.png"
-                    )
-                )
-                _carGifRes.value =  Resource.Success(CarsBackgroundRes(carGifList,"Success",200))
-            }
-            "Ola Cabs" -> {
-                val carGifList = ArrayList<CarsBackgroundRes.Data>()
-                carGifList.add(
-                    CarsBackgroundRes.Data(
-                        "Plain Krypton",
-                        "https://storage.googleapis.com/spyne-website/static/website-themes/clippr/comp_backgroundV2/924_2.png",
-                        1,
-                        "924",
-                        "https://storage.googleapis.com/spyne-website/static/website-themes/clippr/comp_backgroundV2/924_2.png"
-                    )
-                )
-
-                carGifList.add(
-                    CarsBackgroundRes.Data(
-                        "Radiant Krypton",
-                        "https://storage.googleapis.com/spyne-website/static/website-themes/clippr/comp_backgroundV2/923_2.png",
-                        1,
-                        "923",
-                        "https://storage.googleapis.com/spyne-website/static/website-themes/clippr/comp_backgroundV2/923_2.png"
-                    )
-                )
-                _carGifRes.value =  Resource.Success(CarsBackgroundRes(carGifList,"Success",200))
-
-            }
-
-            else -> _carGifRes.value = threeSixtyRepository.getBackgroundGifCars(category, auth_key)
-        }
-
+        _carGifRes.value = threeSixtyRepository.getBackgroundGifCars(category, auth_key)
     }
 
 

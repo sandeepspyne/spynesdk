@@ -1,9 +1,5 @@
 package com.spyneai.shoot.data
 
-import android.content.ContentValues
-import android.util.Log
-import com.spyneai.needs.AppConstants
-
 class SequeneNumberManager {
 
     fun getSequenceNumber(

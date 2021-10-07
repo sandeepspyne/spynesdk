@@ -1,0 +1,68 @@
+{
+  "project_info": {
+    "project_number": "60712403087",
+    "project_id": "swiggy-d4e01",
+    "storage_bucket": "swiggy-d4e01.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:60712403087:android:61990153055518cf27f0fa",
+        "android_client_info": {
+          "package_name": "com.spyneai.swiggy"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "60712403087-s0oq2srkiv71k3ve096126n1nnscetsh.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyArKj-Q2aOHszc9YiV1GmhsKWW8iidk6pY"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "60712403087-s0oq2srkiv71k3ve096126n1nnscetsh.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:60712403087:android:7f74bcd6d926f8f227f0fa",
+        "android_client_info": {
+          "package_name": "com.spyneai.swiggy.debug"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "60712403087-s0oq2srkiv71k3ve096126n1nnscetsh.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyArKj-Q2aOHszc9YiV1GmhsKWW8iidk6pY"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "60712403087-s0oq2srkiv71k3ve096126n1nnscetsh.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

@@ -30,13 +30,16 @@ interface MyAPIService {
 
     @FormUrlEncoded
     @POST("v2/user/signup")
-    fun signUp(@Field("api_key") apiKey : String,
-               @Field("email_id") email_id : String,
-               @Field("password") password : String,
-               @Field("strategy") strategy : String,
-               @Field("user_name") user_name : String,
-               @Field("country") country : String,
-               @Field("source") source : String):
+    fun signUp(
+        @Field("api_key") apiKey: String,
+        @Field("email_id") email_id: String,
+        @Field("password") password: String,
+        @Field("strategy") strategy: String,
+        @Field("first_name") user_name: String,
+        @Field("country") country: String,
+        @Field("source") source: String,
+        @Field("coupon_code") couponCode: String
+    ):
 
             Call<SignupResponse>?
 

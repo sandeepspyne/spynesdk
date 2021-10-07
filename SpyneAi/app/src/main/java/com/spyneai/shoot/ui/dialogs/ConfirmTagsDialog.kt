@@ -133,7 +133,7 @@ class ConfirmTagsDialog : BaseDialogFragment<ShootViewModel, DialogConfirmTagsBi
                             )
                         ) {
                             viewModel.isCameraButtonClickable = false
-                            checkMiscShootStatus()
+                            viewModel.checkMiscShootStatus(getString(R.string.app_name))
                             dismiss()
                         } else {
                             viewModel.interiorShootNumber.value =
@@ -149,7 +149,7 @@ class ConfirmTagsDialog : BaseDialogFragment<ShootViewModel, DialogConfirmTagsBi
                         uploadImages()
 
                         if (viewModel.miscShootNumber.value == viewModel.miscAngles.value?.minus(1)) {
-                            selectBackground()
+                            viewModel.selectBackground(getString(R.string.app_name))
                             dismiss()
                         } else {
                             viewModel.miscShootNumber.value = viewModel.miscShootNumber.value!! + 1
@@ -311,7 +311,6 @@ class ConfirmTagsDialog : BaseDialogFragment<ShootViewModel, DialogConfirmTagsBi
 
         val bindingList = bindingMap[viewModel.categoryDetails.value?.imageType]
 
-
         bindingList?.forEachIndexed { index, viewBinding ->
             when (viewBinding) {
                 is ItemTagsSpinnerBinding -> {
@@ -438,7 +437,7 @@ class ConfirmTagsDialog : BaseDialogFragment<ShootViewModel, DialogConfirmTagsBi
                             viewModel.showMiscDialog.value = true
                         }
                         else -> {
-                            selectBackground()
+                            viewModel.selectBackground(getString(R.string.app_name))
                         }
                     }
                 }
@@ -448,31 +447,8 @@ class ConfirmTagsDialog : BaseDialogFragment<ShootViewModel, DialogConfirmTagsBi
         })
     }
 
-    private fun checkMiscShootStatus() {
-        viewModel.subCategoriesResponse.observe(viewLifecycleOwner, {
-            when (it) {
-                is Resource.Success -> {
-                    when {
-                        it.value.miscellaneous.isNotEmpty() -> {
-                            viewModel.showMiscDialog.value = true
-                        }
-                        else -> {
-                            selectBackground()
-                        }
-                    }
-                }
-                else -> {
-                }
-            }
-        })
-    }
 
-    private fun selectBackground() {
-        if (getString(R.string.app_name) == AppConstants.OLA_CABS)
-            viewModel.show360InteriorDialog.value = true
-        else
-            viewModel.selectBackground.value = true
-    }
+
 
     private fun tagsValid(): Boolean {
         val response = (viewModel.subCategoriesResponse.value as Resource.Success).value

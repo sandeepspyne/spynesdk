@@ -5,6 +5,8 @@ import android.content.res.Resources
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
+import android.text.Editable
+import android.text.TextWatcher
 import android.util.TypedValue
 import android.view.LayoutInflater
 import android.view.View
@@ -12,7 +14,9 @@ import android.view.ViewGroup
 import android.view.WindowManager
 import android.widget.EditText
 import android.widget.LinearLayout
+import androidx.core.view.forEachIndexed
 import androidx.viewbinding.ViewBinding
+import com.google.android.material.chip.Chip
 import com.posthog.android.Properties
 import com.spyneai.R
 import com.spyneai.base.BaseDialogFragment
@@ -21,6 +25,7 @@ import com.spyneai.captureEvent
 import com.spyneai.captureFailureEvent
 import com.spyneai.dashboard.data.model.LayoutHolder
 import com.spyneai.dashboard.ui.handleApiError
+import com.spyneai.databinding.ItemProjectChipedittextBinding
 import com.spyneai.databinding.ItemProjectEdittextBinding
 import com.spyneai.databinding.ProjectTagDialogBinding
 import com.spyneai.needs.AppConstants
@@ -30,12 +35,14 @@ import com.spyneai.shoot.data.ShootViewModel
 import com.spyneai.shoot.data.model.Project
 import com.spyneai.shoot.data.model.Sku
 import com.spyneai.shoot.utils.log
+import org.json.JSONArray
 import org.json.JSONObject
+
 
 class ProjectTagDialog : BaseDialogFragment<ShootViewModel, ProjectTagDialogBinding>() {
 
     private val bindingList = ArrayList<ViewBinding>()
-    private lateinit var inflator : LayoutInflater
+    private lateinit var inflator: LayoutInflater
     private val data = JSONObject()
     private var shortAnimationDuration: Int = 0
 
@@ -44,13 +51,20 @@ class ProjectTagDialog : BaseDialogFragment<ShootViewModel, ProjectTagDialogBind
         val dialog: Dialog? = dialog
         if (dialog != null) {
             dialog.getWindow()
-                ?.setLayout(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT)
+                ?.setLayout(
+                    ViewGroup.LayoutParams.MATCH_PARENT,
+                    ViewGroup.LayoutParams.MATCH_PARENT
+                )
             dialog.getWindow()?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
         }
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        binding.ivClose.setOnClickListener {
+            requireActivity().finish()
+        }
 
         inflator = LayoutInflater.from(requireContext())
 
@@ -77,17 +91,19 @@ class ProjectTagDialog : BaseDialogFragment<ShootViewModel, ProjectTagDialogBind
                     binding.etProjectName.error =
                         "Please enter project name"
                 }
-                binding.etProjectName.text.toString().contains("[!\"#$%&'()*+,-./:;\\\\<=>?@\\[\\]^_`{|}~]".toRegex()) -> {
+                binding.etProjectName.text.toString()
+                    .contains("[!\"#$%&'()*+,-./:;\\\\<=>?@\\[\\]^_`{|}~]".toRegex()) -> {
                     binding.etProjectName.error = "Special characters not allowed"
                 }
                 binding.etSkuName.text.toString().isEmpty() -> {
                     binding.etSkuName.error = "Please enter product name"
                 }
-                binding.etSkuName.text.toString().contains("[!\"#$%&'()*+,-./:;\\\\<=>?@\\[\\]^_`{|}~]".toRegex()) -> {
+                binding.etSkuName.text.toString()
+                    .contains("[!\"#$%&'()*+,-./:;\\\\<=>?@\\[\\]^_`{|}~]".toRegex()) -> {
                     binding.etSkuName.error = "Special characters not allowed"
                 }
                 else -> {
-                    if (isValid()){
+                    if (isValid()) {
                         createProject()
                     }
 
@@ -101,17 +117,21 @@ class ProjectTagDialog : BaseDialogFragment<ShootViewModel, ProjectTagDialogBind
         }
     }
 
-    private fun setTagsData(){
+    private fun setTagsData() {
         val data = LayoutHolder.data
-        if (data.isNullOrEmpty()){
-            return
+        try {
+            if (data!![LayoutHolder.categoryPosition].dynamic_layout.project_dialog.isNullOrEmpty()) {
+                return
+            }
+        }catch (e: Exception){
+          return
         }
 
-        val layout = data!![0].dynamic_layout.project_dialog
+        val layout = data!![LayoutHolder.categoryPosition].dynamic_layout.project_dialog
 
         layout.forEach {
-            when(it.field_type){
-                "edit_text" -> {
+            when (it.field_name) {
+                "Restaurant ID", "Restaurant Name" -> {
                     val layout = inflator.inflate(R.layout.item_project_edittext, null)
                     val itemBinding = ItemProjectEdittextBinding.bind(layout)
 //                    itemBinding.et.hint = it.hint
@@ -123,7 +143,68 @@ class ProjectTagDialog : BaseDialogFragment<ShootViewModel, ProjectTagDialogBind
                         dip,
                         r.displayMetrics
                     )
-                    val params = LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT,LinearLayout.LayoutParams.WRAP_CONTENT)
+                    val params = LinearLayout.LayoutParams(
+                        LinearLayout.LayoutParams.MATCH_PARENT,
+                        LinearLayout.LayoutParams.WRAP_CONTENT
+                    )
+                    params.topMargin = px.toInt()
+
+
+
+                    layout.layoutParams = params
+
+                    binding.llContainer.addView(layout)
+                    bindingList.add(itemBinding)
+                }
+                "Child Restaurant ID" -> {
+                    val layout = inflator.inflate(R.layout.item_project_chipedittext, null)
+                    val itemBinding = ItemProjectChipedittextBinding.bind(layout)
+//                    itemBinding.et.hint = it.hint
+                    itemBinding.llProjectName.hint = it.hint
+
+                    itemBinding.et.addTextChangedListener(object : TextWatcher {
+                        override fun afterTextChanged(s: Editable?) {
+                        }
+
+                        override fun beforeTextChanged(
+                            s: CharSequence?,
+                            start: Int,
+                            count: Int,
+                            after: Int
+                        ) {
+                        }
+
+                        override fun onTextChanged(
+                            s: CharSequence?,
+                            start: Int,
+                            before: Int,
+                            count: Int
+                        ) {
+                            if (s != null && s.isEmpty()) {
+                                return
+                            }
+                            if (s?.last() == ',' || s?.last() == ' ') {
+                                val childRID = s.toString().substringBefore(",")
+                                addChip(itemBinding, childRID)
+                                itemBinding.et.text!!.clear()
+
+//                            mainTagAutoCompleteTextView.text = null
+                                // mainTagAutoCompleteTextView.removeTextChangedListener(this)
+                            }
+                        }
+                    })
+
+                    val dip = 10f
+                    val r: Resources = resources
+                    val px = TypedValue.applyDimension(
+                        TypedValue.COMPLEX_UNIT_DIP,
+                        dip,
+                        r.displayMetrics
+                    )
+                    val params = LinearLayout.LayoutParams(
+                        LinearLayout.LayoutParams.MATCH_PARENT,
+                        LinearLayout.LayoutParams.WRAP_CONTENT
+                    )
                     params.topMargin = px.toInt()
 
 
@@ -137,32 +218,95 @@ class ProjectTagDialog : BaseDialogFragment<ShootViewModel, ProjectTagDialogBind
         }
     }
 
-    private fun isValid() : Boolean {
-       var isValid = true
+    private fun addChip(binding: ItemProjectChipedittextBinding, text: String) {
+        binding.scrollView.visibility = View.VISIBLE
+        val chip = Chip(requireContext())
+        chip.text = text
+        chip.isChipIconVisible = false
+        chip.isCloseIconVisible = true
+        chip.isClickable = true
+        if (chip.text.length > 1)
+            binding.chipGroup.addView(chip as View)
+        chip.setOnCloseIconClickListener {
+            binding.chipGroup.removeView(chip as View)
+            if (binding.chipGroup.childCount == 0)
+                binding.scrollView.visibility = View.GONE
+        }
+    }
+
+    private fun isValid(): Boolean {
+        var isValid = true
+
+        try {
+            if (LayoutHolder.data!![LayoutHolder.categoryPosition].dynamic_layout.project_dialog.isNullOrEmpty())
+                return isValid
+        } catch (e: Exception) {
+            return isValid
+        }
+
 
         val layout = LayoutHolder.data!![0].dynamic_layout.project_dialog
 
         bindingList.forEachIndexed { index, it ->
-            when(it){
+            when (it) {
                 is ItemProjectEdittextBinding -> {
-                    if (layout[index].is_required){
-                        if (it.et.text.toString().isEmpty()){
+                    if (layout[index].is_required) {
+                        if (it.et.text.toString().isEmpty()) {
                             requiredError(it.et, layout[index].field_name)
                             return !isValid
-                        }
-                        else {
-                            if (!layout[index].all_caps){
+                        } else {
+                            if (!layout[index].all_caps) {
                                 var text = it.et.text.toString()
                                 text = text.lowercase()
                                 data.put(layout[index].field_id, text)
-                            }else{
-                                data.put(layout[index].field_id,it.et.text.toString())
+                            } else {
+                                data.put(layout[index].field_id, it.et.text.toString())
                             }
 
                         }
+                    } else {
+                        data.put(layout[index].field_id, it.et.text.toString())
                     }
-                    else{
-                        data.put(layout[index].field_id,it.et.text.toString())
+                }
+                is ItemProjectChipedittextBinding -> {
+                    if (layout[index].is_required) {
+                        if (it.et.text.toString().isEmpty()) {
+                            requiredError(it.et, layout[index].field_name)
+                            return !isValid
+                        } else if (it.chipGroup.childCount == 0) {
+                            if (!layout[index].all_caps) {
+                                var text = it.et.text.toString()
+                                text = text.lowercase()
+                                data.put(layout[index].field_id, text)
+                            } else {
+                                data.put(layout[index].field_id, it.et.text.toString())
+                            }
+                        } else {
+
+                            var array = JSONArray()
+
+                            it.chipGroup.forEachIndexed { index, view ->
+                                val chip = it.chipGroup.getChildAt(index) as Chip
+                                array.put(chip.text)
+                            }
+                            data.put(layout[index].field_id, array)
+                        }
+                    } else if (it.chipGroup.childCount == 0) {
+                        if (!layout[index].all_caps) {
+                            var text = it.et.text.toString()
+                            text = text.lowercase()
+                            data.put(layout[index].field_id, text)
+                        } else {
+                            data.put(layout[index].field_id, it.et.text.toString())
+                        }
+                    } else {
+                        var array = JSONArray()
+
+                        it.chipGroup.forEachIndexed { index, view ->
+                            val chip = it.chipGroup.getChildAt(index) as Chip
+                            array.put(chip.text)
+                        }
+                        data.put(layout[index].field_id, array)
                     }
                 }
                 else -> {
@@ -191,7 +335,10 @@ class ProjectTagDialog : BaseDialogFragment<ShootViewModel, ProjectTagDialogBind
                 is Resource.Success -> {
                     requireContext().captureEvent(
                         Events.CREATE_PROJECT,
-                        Properties().putValue("project_name", removeWhiteSpace( binding.etProjectName.text.toString()))
+                        Properties().putValue(
+                            "project_name",
+                            removeWhiteSpace(binding.etProjectName.text.toString())
+                        )
                     )
 
                     //save project to local db
@@ -207,15 +354,23 @@ class ProjectTagDialog : BaseDialogFragment<ShootViewModel, ProjectTagDialogBind
                     viewModel.isProjectCreated.value = true
                     val sku = Sku()
                     log("project id created")
-                    log("project id: "+it.value.project_id)
+                    log("project id: " + it.value.project_id)
                     sku.projectId = it.value.project_id
                     viewModel.projectId.value = it.value.project_id
-                    Utilities.savePrefrence(requireContext(), AppConstants.PROJECT_ID, it.value.project_id)
+                    Utilities.savePrefrence(
+                        requireContext(),
+                        AppConstants.PROJECT_ID,
+                        it.value.project_id
+                    )
                     sku.skuName = removeWhiteSpace(binding.etSkuName.text.toString())
                     viewModel.sku.value = sku
 
                     log("create sku started")
-                    createSku(it.value.project_id, removeWhiteSpace(binding.etSkuName.text.toString()),false)
+                    createSku(
+                        it.value.project_id,
+                        removeWhiteSpace(binding.etSkuName.text.toString()),
+                        false
+                    )
                 }
 
                 is Resource.Failure -> {
@@ -226,13 +381,13 @@ class ProjectTagDialog : BaseDialogFragment<ShootViewModel, ProjectTagDialogBind
                     )
 
                     Utilities.hideProgressDialog()
-                    handleApiError(it) { createProject()}
+                    handleApiError(it) { createProject() }
                 }
             }
         })
     }
 
-    private fun createSku(projectId: String, skuName: String,showDialog: Boolean) {
+    private fun createSku(projectId: String, skuName: String, showDialog: Boolean) {
         if (showDialog)
             Utilities.showProgressDialog(requireContext())
 
@@ -271,7 +426,7 @@ class ProjectTagDialog : BaseDialogFragment<ShootViewModel, ProjectTagDialogBind
                     sku?.exteriorAngles = viewModel.exterirorAngles.value
 
                     log("sku id created")
-                    log("sku id: "+it.value.sku_id)
+                    log("sku id: " + it.value.sku_id)
                     sku?.skuName = removeWhiteSpace(binding.etSkuName.text.toString())
                     viewModel.sku.value = sku
                     viewModel.isSkuCreated.value = true
@@ -293,21 +448,24 @@ class ProjectTagDialog : BaseDialogFragment<ShootViewModel, ProjectTagDialogBind
                         it.errorMessage!!
                     )
 
-                    handleApiError(it) {createSku(viewModel.sku.value?.projectId!!,
-                        removeWhiteSpace(binding.etSkuName.text.toString()),
-                        true)}
+                    handleApiError(it) {
+                        createSku(
+                            viewModel.sku.value?.projectId!!,
+                            removeWhiteSpace(binding.etSkuName.text.toString()),
+                            true
+                        )
+                    }
                 }
             }
         })
     }
 
 
-    private fun requiredError(editText : EditText, fieldName : String){
-        editText.error = "please enter " +fieldName
+    private fun requiredError(editText: EditText, fieldName: String) {
+        editText.error = "please enter " + fieldName
     }
 
     private fun removeWhiteSpace(toString: String) = toString.replace("\\s".toRegex(), "")
-
 
 
     override fun onResume() {
@@ -323,5 +481,5 @@ class ProjectTagDialog : BaseDialogFragment<ShootViewModel, ProjectTagDialogBind
     override fun getFragmentBinding(
         inflater: LayoutInflater,
         container: ViewGroup?
-    )= ProjectTagDialogBinding.inflate(inflater, container, false)
+    ) = ProjectTagDialogBinding.inflate(inflater, container, false)
 }

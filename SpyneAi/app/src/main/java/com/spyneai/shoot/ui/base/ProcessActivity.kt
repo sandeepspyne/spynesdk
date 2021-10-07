@@ -27,6 +27,8 @@ class ProcessActivity : AppCompatActivity() {
 
         processViewModel = ViewModelProvider(this, ViewModelFactory()).get(ProcessViewModel::class.java)
 
+        processViewModel.fromVideo = intent.getBooleanExtra(AppConstants.FROM_VIDEO,false)
+
         val sku = Sku()
         sku.skuId = intent.getStringExtra("sku_id")
         sku.projectId = intent.getStringExtra("project_id")

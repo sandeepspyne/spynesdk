@@ -87,7 +87,8 @@ class DraftSkusActivity : AppCompatActivity() {
                                     tvTotalSku.text =  localSkuList.size.toString()
 
                                     rvSkus.adapter = localSkusAdapter
-                                }else {
+                                }
+                                else {
                                     skuList.clear()
                                     skuList.addAll(it.value.data.project_data[position].sku)
                                     tvProjectName.text = it.value.data.project_data[position].project_name

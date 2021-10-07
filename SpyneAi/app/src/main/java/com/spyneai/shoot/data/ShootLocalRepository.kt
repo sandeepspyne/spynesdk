@@ -229,7 +229,8 @@ class ShootLocalRepository {
             ShootContract.ShootEntry.COLUMN_NAME_EXTERIOR_ANGLES,
             ShootContract.ShootEntry.COLUMN_NAME_BACKGROUND_ID,
             ShootContract.ShootEntry.COLUMN_NAME_IS_360,
-            ShootContract.ShootEntry.COLUMN_NAME_IS_PROCESSED)
+            ShootContract.ShootEntry.COLUMN_NAME_IS_PROCESSED,
+            ShootContract.ShootEntry.COLUMN_NAME_THREE_SIXTY_FRAMES)
 
         // Filter results WHERE "title" = 'My Title'
         val selection = "${ShootContract.ShootEntry.COLUMN_NAME_PROJECT_ID} = ?"
@@ -266,6 +267,7 @@ class ShootLocalRepository {
                 val backgroundId = getString(getColumnIndexOrThrow(ShootContract.ShootEntry.COLUMN_NAME_BACKGROUND_ID))
                 val is360 = getInt(getColumnIndexOrThrow(ShootContract.ShootEntry.COLUMN_NAME_IS_360))
                 val isProcessed = getInt(getColumnIndexOrThrow(ShootContract.ShootEntry.COLUMN_NAME_IS_PROCESSED))
+                val threeSixtyFrames = getInt(getColumnIndexOrThrow(ShootContract.ShootEntry.COLUMN_NAME_THREE_SIXTY_FRAMES))
 
                 val sku = Sku()
                 sku.itemId = itemId
@@ -282,6 +284,7 @@ class ShootLocalRepository {
                 sku.backgroundId = backgroundId
                 sku.is360 = is360
                 sku.isProcessed = isProcessed
+                sku.threeSixtyFrames = threeSixtyFrames
 
                 if (skuId != null) {
                     sku.thumbnail = getSkuThumbnail(skuId)
@@ -808,12 +811,13 @@ class ShootLocalRepository {
 
         val selectionArgs = arrayOf(sku.skuId)
 
-
         val count = dbWritable.update(
             ShootContract.ShootEntry.TABLE_NAME,
             values,
             selection,
             selectionArgs)
+
+        val s = ""
 
         Log.d(TAG, "updateVideoSkuLocally: "+count)
     }

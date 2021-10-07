@@ -1,6 +1,5 @@
 package com.spyneai.shoot.data
 
-import com.spyneai.needs.AppConstants
 import com.spyneai.shoot.data.model.ShootData
 
 class FileNameManager {

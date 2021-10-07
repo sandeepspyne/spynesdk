@@ -51,17 +51,23 @@ class DraftSkusAdapter (
         holder.tvDate.text = skuList[position].created_on
 
         try {
-            Glide.with(context) // replace with 'this' if it's in activity
-                .load(skuList[position].images[0].input_lres)
-                .error(R.mipmap.defaults) // show error drawable if the image is not a gif
-                .into(holder.ivThumbnail)
+            if (Utilities.getPreference(context, AppConstants.CATEGORY_NAME).equals("Food & Beverages")) {
+                Glide.with(context)
+                    .load(R.drawable.ic_food_thumbnail_draft)
+                    .into(holder.ivThumbnail)
+            } else{
+                Glide.with(context) // replace with 'this' if it's in activity
+                    .load(skuList[position].images[0].input_lres)
+                    .error(R.mipmap.defaults) // show error drawable if the image is not a gif
+                    .into(holder.ivThumbnail)
+            }
+
 
         }catch (e: Exception){
 
         }
 
-        if (skuList[position].categoryId == skuList[position].subCategoryId)
-        {
+        if (skuList[position].categoryId == AppConstants.CARS_CATEGORY_ID && (skuList[position].categoryId == skuList[position].subCategoryId)) {
             Glide.with(context)
                 .load(R.drawable.three_sixty_thumbnail)
                 .into(holder.ivThumbnail)
@@ -78,7 +84,7 @@ class DraftSkusAdapter (
                 skuList[position].sku_id
             )
 
-            if (skuList[position].categoryId == skuList[position].subCategoryId){
+            if (skuList[position].categoryId == AppConstants.CARS_CATEGORY_ID && (skuList[position].categoryId == skuList[position].subCategoryId)) {
                 val videoPath = VideoLocalRepository().getVideoPath(skuList[position].sku_id)
 
                 val intent = when{
@@ -117,7 +123,7 @@ class DraftSkusAdapter (
 
                 context.startActivity(intent)
             }else {
-                Intent(
+                val draftIntent = Intent(
                     context,
                     DraftSkuDetailsActivity::class.java
                 ).apply {
@@ -137,8 +143,16 @@ class DraftSkusAdapter (
                     //putExtra("is_paid",skuList[position].paid)
                     //putExtra(AppConstants.IMAGE_TYPE,skuList[position].category)
                     putExtra(AppConstants.IS_360,skuList[position].is360)
-                    context.startActivity(this)
                 }
+
+                if (!skuList[position].videoId.isNullOrEmpty()){
+                    draftIntent.apply {
+                        putExtra(AppConstants.FROM_VIDEO, true)
+                        putExtra(AppConstants.TOTAL_FRAME, skuList[position].total_images)
+                    }
+                }
+
+                context.startActivity(draftIntent)
             }
         }
     }

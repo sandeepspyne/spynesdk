@@ -11,6 +11,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.spyneai.R
 import com.spyneai.adapter.CategoriesAdapter
+import com.spyneai.dashboard.data.model.LayoutHolder
 import com.spyneai.dashboard.response.NewCategoriesResponse
 import com.spyneai.interfaces.APiService
 import com.spyneai.interfaces.RetrofitClients
@@ -75,6 +76,7 @@ class CategoriesActivity : AppCompatActivity(){
                 object : CategoriesAdapter.BtnClickListener {
                     override fun onBtnClick(position: Int) {
                         Log.e("position cat", position.toString())
+                        LayoutHolder.categoryPosition = position
                        if (isMagnatoMeterAvailable()){
                            when(position) {
                                0-> {
@@ -96,7 +98,7 @@ class CategoriesActivity : AppCompatActivity(){
                                        "Automobiles" -> {
                                            Intent(this@CategoriesActivity, StartShootActivity::class.java)
                                        }
-                                       "E-Commerce","Footwear", "Food & Beverages" -> {
+                                       "E-Commerce","Footwear", "Food & Beverages", "Photo Box" -> {
                                            Intent(this@CategoriesActivity, ShootPortraitActivity::class.java)
                                        }
                                        else -> {
@@ -125,7 +127,7 @@ class CategoriesActivity : AppCompatActivity(){
                                        "Automobiles" -> {
                                            Intent(this@CategoriesActivity, StartShootActivity::class.java)
                                        }
-                                       "E-Commerce","Footwear" -> {
+                                       "E-Commerce","Footwear", "Food & Beverages", "Photo Box"  -> {
                                            Intent(this@CategoriesActivity, ShootPortraitActivity::class.java)
                                        }
                                        else -> {
@@ -140,7 +142,7 @@ class CategoriesActivity : AppCompatActivity(){
                                    intent.putExtra(AppConstants.COLOR,categoriesResponseList[position].color_code)
                                    startActivity(intent)
                                }
-                               2,3 -> {
+                               2,3,4 -> {
                                    Utilities.savePrefrence(
                                        this@CategoriesActivity,
                                        AppConstants.CATEGORY_NAME,

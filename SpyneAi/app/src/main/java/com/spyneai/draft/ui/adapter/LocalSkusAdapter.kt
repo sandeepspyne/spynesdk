@@ -21,7 +21,7 @@ import com.spyneai.threesixty.ui.ThreeSixtyActivity
 import com.spyneai.threesixty.ui.TrimActivity
 import com.spyneai.toDate
 
-class LocalSkusAdapter (
+class LocalSkusAdapter(
     val context: Context,
     val skuList: ArrayList<Sku>
 ) : RecyclerView.Adapter<LocalSkusAdapter.ViewHolder>() {
@@ -50,19 +50,35 @@ class LocalSkusAdapter (
         else
             holder.tvCategory.text = skuList[position].subcategoryName
 
-        if (skuList[position].categoryId == skuList[position].subcategoryId)
+        if (skuList[position].categoryId == AppConstants.CARS_CATEGORY_ID && (skuList[position].categoryId == skuList[position].subcategoryId))
             holder.tvCategory.text = "Automobiles"
 
+        try {
 
-        if (skuList[position].thumbnail != null) {
-            Glide.with(context) // replace with 'this' if it's in activity
-                .load(skuList[position].thumbnail)
-                .error(R.mipmap.defaults) // show error drawable if the image is not a gif
-                .into(holder.ivThumbnail)
+            if (skuList[position].thumbnail != null) {
+                Glide.with(context) // replace with 'this' if it's in activity
+                    .load(skuList[position].thumbnail)
+                    .error(R.mipmap.defaults) // show error drawable if the image is not a gif
+                    .into(holder.ivThumbnail)
+            } else {
+                if (Utilities.getPreference(context, AppConstants.CATEGORY_NAME)
+                        .equals("Food & Beverages")
+                ) {
+                    Glide.with(context)
+                        .load(R.drawable.ic_food_thumbnail_draft)
+                        .into(holder.ivThumbnail)
+                } else {
+                    Glide.with(context) // replace with 'this' if it's in activity
+                        .load(R.mipmap.defaults) // show error drawable if the image is not a gif
+                        .into(holder.ivThumbnail)
+                }
+            }
+        } catch (e: Exception) {
+
         }
 
-        if (skuList[position].categoryId == skuList[position].subcategoryId)
-        {
+
+        if (skuList[position].categoryId == AppConstants.CARS_CATEGORY_ID && (skuList[position].categoryId == skuList[position].subcategoryId)) {
             Glide.with(context)
                 .load(R.drawable.three_sixty_thumbnail)
                 .into(holder.ivThumbnail)
@@ -79,12 +95,16 @@ class LocalSkusAdapter (
                 skuList[position].skuId
             )
 
-            if (skuList[position].categoryId == skuList[position].subcategoryId){
+            if (skuList[position].categoryId == skuList[position].subcategoryId) {
                 val videoPath = VideoLocalRepository().getVideoPath(skuList[position].skuId!!)
 
-                val intent = when{
+                val intent = when {
                     VideoLocalRepository().getVideoId(skuList[position].skuId!!) != null -> {
                         Intent(context, ShootActivity::class.java)
+                            .apply {
+                                putExtra(AppConstants.FROM_VIDEO,true)
+                                putExtra(AppConstants.TOTAL_FRAME,skuList[position].threeSixtyFrames)
+                            }
                     }
                     videoPath != null && videoPath != "" -> {
                         Intent(context, TrimActivity::class.java)
@@ -100,8 +120,8 @@ class LocalSkusAdapter (
                     putExtra(AppConstants.FROM_DRAFTS, true)
                     putExtra(AppConstants.CATEGORY_ID, skuList[position].categoryId)
                     putExtra(AppConstants.PROJECT_ID, skuList[position].projectId)
-                    putExtra(AppConstants.SUB_CAT_ID,skuList[position].subcategoryId)
-                    putExtra(AppConstants.SUB_CAT_NAME,skuList[position].subcategoryName)
+                    putExtra(AppConstants.SUB_CAT_ID, skuList[position].subcategoryId)
+                    putExtra(AppConstants.SUB_CAT_NAME, skuList[position].subcategoryName)
                     putExtra(AppConstants.CATEGORY_NAME, skuList[position].categoryName)
                     putExtra(AppConstants.SKU_NAME, skuList[position].skuName)
                     putExtra(AppConstants.PROJECT_NAME, skuList[position].skuName)
@@ -111,12 +131,12 @@ class LocalSkusAdapter (
                     putExtra(AppConstants.EXTERIOR_ANGLES, skuList[position].exteriorAngles)
                     //putExtra("is_paid",skuList[position].paid)
                     //putExtra(AppConstants.IMAGE_TYPE,skuList[position].category)
-                    putExtra(AppConstants.IS_360,skuList[position].is360)
-                    putExtra(AppConstants.VIDEO_PATH,videoPath)
+                    putExtra(AppConstants.IS_360, skuList[position].is360)
+                    putExtra(AppConstants.VIDEO_PATH, videoPath)
                 }
 
                 context.startActivity(intent)
-            }else {
+            } else {
                 val draftIntent = Intent(
                     context,
                     DraftSkuDetailsActivity::class.java
@@ -125,8 +145,8 @@ class LocalSkusAdapter (
                     putExtra(AppConstants.FROM_DRAFTS, true)
                     putExtra(AppConstants.PROJECT_ID, skuList[position].projectId)
                     putExtra(AppConstants.CATEGORY_ID, skuList[position].categoryId)
-                    putExtra(AppConstants.SUB_CAT_ID,skuList[position].subcategoryId)
-                    putExtra(AppConstants.SUB_CAT_NAME,skuList[position].subcategoryName)
+                    putExtra(AppConstants.SUB_CAT_ID, skuList[position].subcategoryId)
+                    putExtra(AppConstants.SUB_CAT_NAME, skuList[position].subcategoryName)
                     putExtra(AppConstants.CATEGORY_NAME, skuList[position].categoryName)
                     putExtra(AppConstants.SKU_NAME, skuList[position].skuName)
                     putExtra(AppConstants.PROJECT_NAME, skuList[position].skuName)
@@ -136,16 +156,26 @@ class LocalSkusAdapter (
                     putExtra(AppConstants.EXTERIOR_ANGLES, skuList[position].exteriorAngles)
                     //putExtra("is_paid",skuList[position].paid)
                     //putExtra(AppConstants.IMAGE_TYPE,skuList[position].category)
-                    putExtra(AppConstants.IS_360,skuList[position].is360)
+                    putExtra(AppConstants.IS_360, skuList[position].is360)
                 }
 
-                when(skuList[position].subcategoryId){
-                    "prod_4CW50lj2sNMCS" ->  draftIntent.putExtra(AppConstants.EXTERIOR_ANGLES, 5)
-                    "prod_4CW50lj2sNMF" ->  draftIntent.putExtra(AppConstants.EXTERIOR_ANGLES, 6)
+                when (skuList[position].subcategoryId) {
+                    "prod_4CW50lj2sNMCS" -> draftIntent.putExtra(AppConstants.EXTERIOR_ANGLES, 5)
+                    "prod_4CW50lj2sNMF" -> draftIntent.putExtra(AppConstants.EXTERIOR_ANGLES, 6)
                     else -> {
-                        draftIntent.putExtra(AppConstants.EXTERIOR_ANGLES, skuList[position].exteriorAngles)
+                        draftIntent.putExtra(
+                            AppConstants.EXTERIOR_ANGLES,
+                            skuList[position].exteriorAngles
+                        )
                     }
 
+                }
+
+                if (skuList[position].threeSixtyFrames != null){
+                    draftIntent.apply {
+                        putExtra(AppConstants.FROM_VIDEO, true)
+                        putExtra(AppConstants.TOTAL_FRAME, skuList[position].threeSixtyFrames)
+                    }
                 }
 
                 context.startActivity(draftIntent)

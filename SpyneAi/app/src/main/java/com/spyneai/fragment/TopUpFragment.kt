@@ -119,7 +119,7 @@ class TopUpFragment: DialogFragment() {
                         binding?.tvCreditsRemaining?.text = "0 "+getString(R.string.credits_remaining)
                     } else {
                         binding?.tvCreditsRemaining?.text =
-                            CreditUtils.getFormattedNumber(response.body()!!.data.credit_available) + " Credits Remaining"
+                            CreditUtils.getFormattedNumber(response.body()!!.data.credit_available) + getString(R.string.credits_remaining)
                     }
 
                     try {

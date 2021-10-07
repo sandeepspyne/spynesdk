@@ -5,17 +5,22 @@ import android.os.Build
 import android.os.Bundle
 import android.os.Handler
 import android.provider.Settings
+import android.view.View
 import android.view.WindowManager
 import androidx.appcompat.app.AppCompatActivity
+import com.posthog.android.Properties
 import com.spyneai.BuildConfig
 import com.spyneai.R
+import com.spyneai.captureEvent
 import com.spyneai.dashboard.ui.MainDashboardActivity
+import com.spyneai.db.DBHelper
 import com.spyneai.getNetworkName
 import com.spyneai.loginsignup.OnboardingsActivity
 import com.spyneai.loginsignup.activity.LoginActivity
 import com.spyneai.needs.AppConstants
 import com.spyneai.needs.Utilities
 import com.spyneai.onboarding.SelectLanguageActivity
+import kotlinx.android.synthetic.main.activity_splash.*
 
 
 class SplashActivity : AppCompatActivity() {
@@ -27,11 +32,25 @@ class SplashActivity : AppCompatActivity() {
 
         window.setFlags(
             WindowManager.LayoutParams.FLAG_FULLSCREEN,
-            WindowManager.LayoutParams.FLAG_FULLSCREEN
-        )
-
+            WindowManager.LayoutParams.FLAG_FULLSCREEN)
         setContentView(R.layout.activity_splash)
 
+        when (getString(R.string.app_name)) {
+
+            AppConstants.SPYNE_AI ->{
+                ivPowredBy.visibility = View.INVISIBLE
+            } else -> {
+            ivPowredBy.visibility = View.VISIBLE
+        } }
+
+        val dbVersion = DBHelper(this).writableDatabase.version
+
+        captureEvent(
+            "DB_VERSION",
+            Properties().putValue(
+                "new_version",dbVersion
+            )
+        )
 
         val deviceId = Settings.Secure.getString(contentResolver, Settings.Secure.ANDROID_ID)
         val manufacturer = Build.MANUFACTURER
@@ -50,6 +69,9 @@ class SplashActivity : AppCompatActivity() {
         Utilities.savePrefrence(this,AppConstants.NETWORK_TYPE,networkCarrier)
         Utilities.savePrefrence(this,AppConstants.DEVICE_ID,deviceId)
 
+        if(Utilities.getPreference(this, AppConstants.STATUS_PROJECT_NAME).isNullOrEmpty()){
+            Utilities.savePrefrence(this,AppConstants.STATUS_PROJECT_NAME,"true")
+        }
 
         setSplash()
     }
@@ -76,6 +98,8 @@ class SplashActivity : AppCompatActivity() {
                 intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
                 startActivity(intent)
             }
+
+
         }, 3000)
     }
 }

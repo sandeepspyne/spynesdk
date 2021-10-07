@@ -19,7 +19,7 @@ import com.spyneai.needs.Utilities
 
 public class CategoriesDashboardAdapter(
     val context: Context,
-    val categoriesResponseList: ArrayList<NewCategoriesResponse.Data>,
+    var categoriesResponseList: ArrayList<NewCategoriesResponse.Data>,
     val btnlistener: BtnClickListener
 )
     : RecyclerView.Adapter<CategoriesDashboardAdapter.ViewHolder>() {
@@ -74,7 +74,6 @@ public class CategoriesDashboardAdapter(
                 AppConstants.BASE_IMAGE_URL +
                         categoriesResponseList[position].display_thumbnail.toString()
         ).into(viewHolder.imgCategory)
-
 
        // viewHolder.imgCategory.setBackgroundColor(Color.parseColor(categoriesResponseList[position].colorCode))
 

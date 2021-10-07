@@ -120,7 +120,7 @@
     <com.spyneai.shoot.ui.base.GyroView
         android:layout_width="0dp"
         android:layout_height="0dp"
-        android:id="@+id/gyroView"
+        android:id="@+id/flLevelIndicator"
         app:layout_constraintLeft_toLeftOf="@+id/viewFinder"
         app:layout_constraintRight_toLeftOf="@+id/llCapture"
         app:layout_constraintTop_toTopOf="parent"
@@ -129,7 +129,7 @@
 
     </com.spyneai.shoot.ui.base.GyroView>
 
-    <FrameLayout
+    <com.spyneai.camera.TapFocusExposure
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:id="@+id/flTapToFocus"
@@ -139,7 +139,7 @@
         app:layout_constraintBottom_toBottomOf="parent">
 
 
-    </FrameLayout>
+    </com.spyneai.camera.TapFocusExposure>
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

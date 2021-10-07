@@ -4,7 +4,8 @@
     android:layout_width="wrap_content"
     android:elevation="@dimen/dp_5"
     android:id="@+id/flCategories"
-    android:layout_margin="@dimen/dp_7"
+    android:paddingHorizontal="@dimen/dp_7"
+    android:paddingVertical="@dimen/dp_7"
     android:layout_height="wrap_content">
 
     <LinearLayout

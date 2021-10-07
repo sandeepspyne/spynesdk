@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name" translatable="false">AutoFotoApp</string>
-
     <string name="hello_blank_fragment">Ciao frammento vuoto</string>
     <string name="hello">Benvenuti!</string>
 
-        <string name="Please">Accedi per continuare</string>
-        <string name="Please_signup">Registrati per continuare</string>
-        <string name="use_email">Usa invece l\'e-mail</string>
+    <string name="enter_coupon_code">Avere un codice di riferimento</string>
+
+    <string name="Please">Accedi per continuare</string>
+    <string name="Please_signup">Registrati per continuare</string>
+    <string name="use_email">Usa invece l\'e-mail</string>
     <string name="sign_in">Accedi con OTP</string>
     <string name="login">Accedi</string>
     <string name="login_with_password">Accedi con password</string>
@@ -31,7 +31,7 @@
     <string name="before">Prima</string>
     <string name="after">Dopo</string>
     <string name="shoot_now">Scatta ora</string>
-    <string name="order">Ordina ora</string>
+    <string name="order">Ordina</string>
         <string name="preview_order">Procedi all\'ordine</string>
     <string name="your_sku">I tuoi SKU</string>
     <string name="report_issue">Segnala problema</string>
@@ -45,7 +45,7 @@
     <string name="sku_names">Nome Sku</string>
     <string name="sku">Sku:</string>
     <string name="total_cost">Costo totale</string>
-    <string name="total_images">Totale immagini cliccate</string>
+    <string name="total_images">Immagini totale</string>
     <string name="available_download">Disponibile per il download</string>
     <string name="select_marketplace">Seleziona mercato</string>
     <string name="confirm">Conferma</string>
@@ -121,15 +121,15 @@
     <string name="window_reflection">Stile di riflessione della finestra</string>
     <string name="transparent">Trasparente</string>
     <string name="original">Originale</string>
-    <string name="exterior">Esterno</string>
-    <string name="interior">Interno</string>
+    <string name="exterior">Vista esterna</string>
+    <string name="interior">Vista interna</string>
     <string name="have_look"><u>Dai un\'occhiata</u></string>
 
     <string name="download_hd_images"><u>Scarica immagini HD</u></string>
     <string name="download_free"><u>Scarica gratuitamente (con filigrana)</u></string>
 
     <string name="downloading...."><u>Download in corso...</u></string>
-    <string name="download_completed"><u> Download completato</u></string>
+    <string name="download_completed">Download completato</string>
     <string name="download_failed"><u> Download non riuscito</u></string>
 
     <string name="total_images_clicked"><u>Totale immagini cliccate</u></string>
@@ -291,7 +291,7 @@
     <string name="generate_output">Genera output</string>
     <string name="sample_output">Esempio di output</string>
     <string name="image_uploading_in_progess">Caricamento immagine in corso...</string>
-    <string name="upload">Caricamento </string>
+    <string name="upload">Caricamento di </string>
     <string name="active">Attivo</string>
     <string name="disconnected">Disconnesso</string>
     <string name="image_uploaded">Immagine caricata</string>
@@ -305,4 +305,11 @@
     <string name="allow">Consenti</string>
     <string name="select_car_subcategory">Seleziona la categoria della vettura</string>
     <string name="no_magnato_meter">Il tuo dispositivo non ha un magnetometro!\n\nUtilizza un altro dispositivo mobile</string>
+    <string name="language">Seleziona la lingua</string>
+    <string name="change_password">Cambia password</string>
+    <string name="app_version">Versione dell\'app</string>
+    <string name="you_are_logged_in_as">Hai effettuato l\'accesso come:</string>
+    <string name="profile">Profilo</string>
+    <string name="turn_off_switch">Spegni quando hai una \n connessione Internet lenta.</string>
+    <string name="rate_this_output">Valuta ora:</string>
 </resources>

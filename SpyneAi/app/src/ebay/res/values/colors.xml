@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="primary">#86B817</color>
+    <color name="primary_light">#3186B817</color>
+    <color name="secondary">#03A9F4</color>
+    <color name="splash_bg">#ffffff</color>
+    <color name="accent">#86B817</color>
+    <color name="order_completed">#86B817</color>
+    <color name="red">#ef233c</color>
+
+
+    <color name="light">#86B817</color>
+
+    <color name="bottom_nav_selected">#86B817</color>
+    <color name="bottom_nav_unselected">#000000</color>
+
+    <color name="sub_cat_selection">#86B817</color>
+</resources>

@@ -29,8 +29,7 @@ import retrofit2.Callback
 import retrofit2.Response
 
 
-class WalletDashboardFragment :
-    BaseFragment<DashboardViewModel, WalletDashboardFragmentBinding>()  {
+class WalletDashboardFragment : BaseFragment<DashboardViewModel, WalletDashboardFragmentBinding>()  {
 
     private var call: Call<CreditDetailsResponse>? = null
     private var availableCredits = 0
@@ -39,6 +38,13 @@ class WalletDashboardFragment :
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        when(getString(R.string.app_name)){
+                AppConstants.SWIGGY -> {
+                    binding.flAddCredits.visibility = View.GONE
+                    binding.tvLine.visibility = View.GONE
+                }
+        }
 
         if (Utilities.getPreference(requireContext(), AppConstants.USER_EMAIL).toString() != ""){
             binding.tvUserName.visibility = View.VISIBLE

@@ -14,6 +14,10 @@ import com.spyneai.draft.ui.DraftsActivity
 import com.spyneai.fragment.TopUpFragment
 import com.spyneai.needs.AppConstants
 import com.spyneai.needs.Utilities
+import com.spyneai.orders.ui.MyOrdersActivity
+import com.spyneai.orders.ui.adapter.OrdersSlideAdapter
+import com.spyneai.posthog.Events
+import com.spyneai.shoot.ui.StartShootActivity
 
 
 class HomeDashboardFragment :
@@ -66,17 +70,21 @@ class HomeDashboardFragment :
         }
 
         binding.llDrafts.setOnClickListener {
-            val intent = Intent(requireContext(), DraftsActivity::class.java)
+            val intent = Intent(requireContext(), MyOrdersActivity::class.java)
+            intent.putExtra("TAB_ID", 0)
             startActivity(intent)
+
         }
 
         binding.llCompleted.setOnClickListener {
-            val intent = Intent(requireContext(), CompletedProjectsActivity::class.java)
+            val intent = Intent(requireContext(), MyOrdersActivity::class.java)
+            intent.putExtra("TAB_ID", 2)
             startActivity(intent)
         }
 
         binding.llOngoing.setOnClickListener {
-            val intent = Intent(requireContext(), OngoingOrdersActivity::class.java)
+            val intent = Intent(requireContext(), MyOrdersActivity::class.java)
+            intent.putExtra("TAB_ID", 1)
             startActivity(intent)
         }
     }

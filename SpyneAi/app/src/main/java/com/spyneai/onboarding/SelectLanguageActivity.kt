@@ -10,7 +10,7 @@ import com.spyneai.needs.AppConstants
 import com.spyneai.needs.Utilities
 import java.util.*
 
-class SelectLanguageActivity : AppCompatActivity() {
+class  SelectLanguageActivity : AppCompatActivity() {
     private lateinit var binding: ActivitySelectLanguageActivityBinding
 
 

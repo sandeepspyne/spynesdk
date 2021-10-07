@@ -243,6 +243,8 @@
     <string name="footwear_subcategory">Select your footwear\'s sub-category</string>
     <string name="bike_subcategory">Select your bike\'s sub-category</string>
 
+    <string name="profile">Profile</string>
+
 
 
 </resources>

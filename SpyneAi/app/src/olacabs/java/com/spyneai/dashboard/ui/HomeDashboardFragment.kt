@@ -1,27 +1,17 @@
 package com.spyneai.dashboard.ui
 
-import android.app.Dialog
 import android.content.Intent
-import android.graphics.Color
-import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
 import android.view.LayoutInflater
-import android.view.View
 import android.view.ViewGroup
-import android.view.Window
-import android.widget.LinearLayout
-import android.widget.TextView
-import com.spyneai.R
-import com.spyneai.activity.CompletedProjectsActivity
-import com.spyneai.activity.OngoingOrdersActivity
 import com.spyneai.adapter.CategoriesDashboardAdapter
 import com.spyneai.base.BaseFragment
 import com.spyneai.dashboard.data.DashboardViewModel
 import com.spyneai.databinding.HomeDashboardFragmentBinding
-import com.spyneai.draft.ui.DraftsActivity
 import com.spyneai.fragment.TopUpFragment
 import com.spyneai.needs.AppConstants
 import com.spyneai.needs.Utilities
+import com.spyneai.orders.ui.MyOrdersActivity
 
 class HomeDashboardFragment :
     BaseFragment<DashboardViewModel, HomeDashboardFragmentBinding>() {
@@ -56,17 +46,20 @@ class HomeDashboardFragment :
         }
 
         binding.llDrafts.setOnClickListener {
-            val intent = Intent(requireContext(), DraftsActivity::class.java)
+            val intent = Intent(requireContext(), MyOrdersActivity::class.java)
+            intent.putExtra("TAB_ID",0)
             startActivity(intent)
         }
 
         binding.llCompleted.setOnClickListener {
-            val intent = Intent(requireContext(), CompletedProjectsActivity::class.java)
+            val intent = Intent(requireContext(), MyOrdersActivity::class.java)
+            intent.putExtra("TAB_ID",2)
             startActivity(intent)
         }
 
         binding.llOngoing.setOnClickListener {
-            val intent = Intent(requireContext(), OngoingOrdersActivity::class.java)
+            val intent = Intent(requireContext(), MyOrdersActivity::class.java)
+            intent.putExtra("TAB_ID",1)
             startActivity(intent)
         }
     }

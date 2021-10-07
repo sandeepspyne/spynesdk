@@ -6,12 +6,10 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.work.*
 import com.spyneai.BaseApplication
-import com.spyneai.R
 import com.spyneai.base.network.Resource
 import com.spyneai.credits.model.DownloadHDRes
 import com.spyneai.credits.model.ReduceCreditResponse
 import com.spyneai.model.credit.CreditDetailsResponse
-import com.spyneai.needs.AppConstants
 import com.spyneai.shoot.data.model.CarsBackgroundRes
 import com.spyneai.shoot.data.model.ProcessSkuRes
 import com.spyneai.shoot.data.model.Sku
@@ -26,6 +24,7 @@ class ProcessViewModel : ViewModel() {
     private val repository = ProcessRepository()
     private val localRepository = ShootLocalRepository()
 
+    var fromVideo = false
     val exteriorAngles: MutableLiveData<Int> = MutableLiveData()
 
     val sku: MutableLiveData<Sku> = MutableLiveData()
@@ -83,49 +82,7 @@ class ProcessViewModel : ViewModel() {
         auth_key: RequestBody
     ) = viewModelScope.launch {
         _carGifRes.value = Resource.Loading
-        when (BaseApplication.getContext().getString(R.string.app_name)) {
-            AppConstants.SWIGGY -> {
-                val list = ArrayList<CarsBackgroundRes.Data>()
-
-                list.add(
-                    CarsBackgroundRes.Data(
-                        "Rustic White",
-                        "https://storage.googleapis.com/spyne-website/Food%20Backgrounds/Rustic%20White%20-%200.jpg",
-                        1,
-                        "11001",
-                        "https://storage.googleapis.com/spyne-website/Food%20Backgrounds/Rustic%20White%20-%2090.jpg"
-                    )
-                )
-
-
-                list.add(
-                    CarsBackgroundRes.Data(
-                        "Colonial Blue",
-                        "https://storage.googleapis.com/spyne-website/Food%20Backgrounds/Colonial%20blue%20-%200.jpg",
-                        1,
-                        "12001",
-                        "https://storage.googleapis.com/spyne-website/Food%20Backgrounds/Colonial%20Blue%20-%2090.jpg"
-                    )
-                )
-
-
-                list.add(
-                    CarsBackgroundRes.Data(
-                        "Boho Chic",
-                        "https://storage.googleapis.com/spyne-website/Food%20Backgrounds/%20Boho%20Chic%20-%200.jpg",
-                        1,
-                        "13001",
-                        "https://storage.googleapis.com/spyne-website/Food%20Backgrounds/Boho%20Chic%20-%2090.jpg"
-                    )
-                )
-
-                val response = CarsBackgroundRes(list, "Got Background", 200)
-                _carGifRes.value = Resource.Success(response)
-            }
-            else -> {
                 _carGifRes.value = repository.getBackgroundGifCars(category, auth_key)
-            }
-        }
     }
 
     fun processSku(authKey: String, skuId: String, backgroundId: String, is360: Boolean) =
