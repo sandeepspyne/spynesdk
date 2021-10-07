@@ -83,9 +83,9 @@ class CameraFragment : BaseFragment<ShootViewModel, FragmentCameraBinding>(), Pi
     private var pitch = 0.0
     var roll = 0.0
     var azimuth = 0.0
-    private var centerPosition = 0
-    private var topConstraint = 0
-    private var bottomConstraint = 0
+//    private var centerPosition = 0
+//    private var topConstraint = 0
+//    private var bottomConstraint = 0
 
     private var tiltUpperBound = -100
     private var tiltLowerBound = -80
@@ -156,21 +156,13 @@ class CameraFragment : BaseFragment<ShootViewModel, FragmentCameraBinding>(), Pi
 
         viewModel.showLeveler.observe(viewLifecycleOwner, {
             if (it && isSensorAvaliable) {
-                if (viewModel.categoryDetails.value?.categoryName == "Footwear" ||
-                    viewModel.categoryDetails.value?.categoryName == "E-Commerce"
-                )
-                    binding.tvLevelIndicator.visibility = View.GONE
-
-                binding.flLevelIndicator.visibility = View.VISIBLE
-
-                getPreviewDimensions(binding.ivGryroRing!!, 1)
-                getPreviewDimensions(binding.tvCenter!!, 2)
+                binding.gyroView.start(viewModel.categoryDetails.value?.categoryName!!)
             }
         })
 
         viewModel.hideLeveler.observe(viewLifecycleOwner, {
             if (it) {
-                binding.flLevelIndicator.visibility = View.GONE
+                binding.gyroView.visibility = View.GONE
             }
         })
 
@@ -574,7 +566,6 @@ class CameraFragment : BaseFragment<ShootViewModel, FragmentCameraBinding>(), Pi
                     viewModel.shootDimensions.value?.previewHeight == 0
                 ) {
                     getPreviewDimensions(binding.viewFinder!!, 0)
-                    getPreviewDimensions(binding.llCapture!!, 3)
                 }
             } catch (exc: Exception) {
                 Log.e(TAG, "Use case binding failed", exc)
@@ -725,7 +716,7 @@ class CameraFragment : BaseFragment<ShootViewModel, FragmentCameraBinding>(), Pi
         if (isSensorAvaliable && viewModel.showLeveler.value == true) {
             updateOrientationAngles()
         } else {
-            binding.flLevelIndicator.visibility = View.GONE
+            binding.gyroView.visibility = View.GONE
         }
     }
 
@@ -759,371 +750,19 @@ class CameraFragment : BaseFragment<ShootViewModel, FragmentCameraBinding>(), Pi
         roll = Math.toDegrees(orientationAngles[2].toDouble())
         azimuth = (orientationAngles[0] * 180 / Math.PI.toFloat()).toDouble()
 
-        when (getString(R.string.app_name)) {
-            AppConstants.KARVI -> {
-                if ((roll >= -95 && roll <= -85) && (pitch >= -5 && pitch <= 5)) {
-                    gyroMeterOnLevel(true)
-
-                } else {
-                    gyroMeterOffLevel()
-
-                    if (movearrow)
-                        moveArrow(roll + 90)
-
-                    if (rotatedarrow) {
-                        if (pitch > 0) {
-                            rotateArrow(pitch.minus(0).roundToInt())
-                        } else {
-                            rotateArrow(pitch.plus(0).roundToInt())
-                        }
-                    }
-                }
-            }
-
-            /* AppConstants.UDAAN,
-             AppConstants.FLIPKART,
-             AppConstants.AMAZON,
-             AppConstants.LAL_10 -> {
-                 //hide moving line
-                 if (pitch.roundToInt() == 0 || (pitch.roundToInt() <= -0 && pitch.roundToInt() >= -3))
-                     binding.tvLevelIndicator.visibility = View.GONE
-                 else
-                     binding.tvLevelIndicator.visibility = View.VISIBLE
-
-                 if ((pitch.roundToInt() == 0 || (pitch.roundToInt() <= -0 && pitch.roundToInt() >= -3)) ||
-                     pitch.roundToInt() <= -82 && pitch.roundToInt() >= -88 ||
-                     (pitch.roundToInt() <= -40 && pitch.roundToInt() >= -45) && abs(roll.roundToInt()) < 100
-                 ) {
-                     if (pitch.roundToInt() == 0 || (pitch.roundToInt() <= -0 && pitch.roundToInt() >= -3))
-                         gyroMeterOnLevel(false)
-                     else if (pitch.roundToInt() <= -40 && pitch.roundToInt() >= -45)
-                         gyroMeterOnLevel(false)
-                     else
-                         gyroMeterOnLevel(true)
-                 } else {
-                     gyroMeterOffLevel()
-
-                     if (movearrow) {
-                         if (abs(roll.roundToInt()) < 100) {
-                             moveArrow((pitch + 85).unaryMinus())
-                         } else {
-                             moveArrow(pitch + 85)
-                         }
-                     }
-
-                     if (orientationAngles[2].roundToInt() == 1 || orientationAngles[2].roundToInt() == -1) {
-                         if (orientationAngles[2].roundToInt() == 1) {
-                             rotateArrow((pitch + 85).unaryMinus().roundToInt())
-                         } else {
-                             rotateArrow((pitch + 85).roundToInt())
-                         }
-                     }
-                 }
-             }*/
-            AppConstants.SWIGGY -> {
-                //hide moving line
-                if (pitch.roundToInt() == 0 || (pitch.roundToInt() <= -0 && pitch.roundToInt() >= -3))
-                    binding.tvLevelIndicator.visibility = View.GONE
-                else
-                    binding.tvLevelIndicator.visibility = View.VISIBLE
-
-                if ((pitch.roundToInt() == 0 || (pitch.roundToInt() <= -0 && pitch.roundToInt() >= -3)) ||
-                    pitch.roundToInt() <= -82 && pitch.roundToInt() >= -88 ||
-                    (pitch.roundToInt() <= -40 && pitch.roundToInt() >= -45) && abs(roll.roundToInt()) < 100
-                ) {
-                    isGyroOnCorrectAngle = true
-                    //angle 90
-                    if (pitch.roundToInt() == 0 || (pitch.roundToInt() <= -0 && pitch.roundToInt() >= -3)) {
-                        cameraAngle = 90
-                        gyroMeterOnLevel(false)
-                    }
-                    //angle 45
-                    else if (pitch.roundToInt() <= -40 && pitch.roundToInt() >= -45) {
-                        cameraAngle = 45
-                        gyroMeterOnLevel(false)
-                        // angle 0
-                    } else {
-                        cameraAngle = 0
-                        gyroMeterOnLevel(true)
-                    }
-                } else {
-                    isGyroOnCorrectAngle = false
-                    gyroMeterOffLevel()
-
-                    if (movearrow) {
-                        if (abs(roll.roundToInt()) < 100) {
-                            moveArrow((pitch + 85).unaryMinus())
-                        } else {
-                            moveArrow(pitch + 85)
-                        }
-                    }
-
-                    if (orientationAngles[2].roundToInt() == 1 || orientationAngles[2].roundToInt() == -1) {
-                        if (orientationAngles[2].roundToInt() == 1) {
-                            rotateArrow((pitch + 85).unaryMinus().roundToInt())
-                        } else {
-                            rotateArrow((pitch + 85).roundToInt())
-                        }
-                    }
-                }
-            }
-            AppConstants.SPYNE_AI, AppConstants.SELL_ANY_CAR -> {
-                when (viewModel.categoryDetails.value?.categoryName) {
-                    "Automobiles", "Bikes" -> {
-                        if ((roll >= -100 && roll <= -80) && (pitch >= -5 && pitch <= 5)) {
-                            gyroMeterOnLevel(true)
-                        } else {
-                            gyroMeterOffLevel()
-
-                            if (movearrow)
-                                moveArrow(roll + 90)
-
-                            if (rotatedarrow) {
-                                if (pitch > 0) {
-                                    rotateArrow(pitch.minus(0).roundToInt())
-                                } else {
-                                    rotateArrow(pitch.plus(0).roundToInt())
-                                }
-                            }
-                        }
-                    }
-
-                    else -> {
-                        //hide moving line
-                        if (pitch.roundToInt() == 0 || (pitch.roundToInt() <= -0 && pitch.roundToInt() >= -3))
-                            binding.tvLevelIndicator.visibility = View.GONE
-                        else
-                            binding.tvLevelIndicator.visibility = View.VISIBLE
-
-                        if ((pitch.roundToInt() == 0 || (pitch.roundToInt() <= -0 && pitch.roundToInt() >= -3)) ||
-                            pitch.roundToInt() <= -82 && pitch.roundToInt() >= -88 ||
-                            (pitch.roundToInt() <= -40 && pitch.roundToInt() >= -45) && abs(roll.roundToInt()) < 100
-                        ) {
-                            if (pitch.roundToInt() == 0 || (pitch.roundToInt() <= -0 && pitch.roundToInt() >= -3))
-                                gyroMeterOnLevel(false)
-                            else if (pitch.roundToInt() <= -40 && pitch.roundToInt() >= -45)
-                                gyroMeterOnLevel(false)
-                            else
-                                gyroMeterOnLevel(true)
-                        } else {
-                            gyroMeterOffLevel()
-
-                            if (movearrow) {
-                                if (abs(roll.roundToInt()) < 100) {
-                                    moveArrow((pitch + 85).unaryMinus())
-                                } else {
-                                    moveArrow(pitch + 85)
-                                }
-                            }
-
-                            if (orientationAngles[2].roundToInt() == 1 || orientationAngles[2].roundToInt() == -1) {
-                                if (orientationAngles[2].roundToInt() == 1) {
-                                    rotateArrow((pitch + 85).unaryMinus().roundToInt())
-                                } else {
-                                    rotateArrow((pitch + 85).roundToInt())
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-            AppConstants.SWIGGYINSTAMART,
-            AppConstants.UDAAN,
-            AppConstants.FLIPKART,
-            AppConstants.AMAZON,
-            AppConstants.LAL_10,
-            AppConstants.BATA,
-            AppConstants.FLIPKART_GROCERY -> {
-                //hide moving line
-                if (pitch.roundToInt() == 0 || (pitch.roundToInt() <= -0 && pitch.roundToInt() >= -3))
-                    binding.tvLevelIndicator.visibility = View.GONE
-                else
-                    binding.tvLevelIndicator.visibility = View.VISIBLE
-
-                if ((pitch.roundToInt() == 0 || (pitch.roundToInt() <= -0 && pitch.roundToInt() >= -3)) ||
-                    pitch.roundToInt() <= -82 && pitch.roundToInt() >= -88
-                ) {
-
-                    if (pitch.roundToInt() == 0 || (pitch.roundToInt() <= -0 && pitch.roundToInt() >= -3))
-                        gyroMeterOnLevel(false)
-                    else
-                        gyroMeterOnLevel(true)
-                } else {
-                    gyroMeterOffLevel()
-
-                    if (movearrow) {
-                        if (abs(roll.roundToInt()) < 100) {
-                            moveArrow((pitch + 85).unaryMinus())
-                        } else {
-                            moveArrow(pitch + 85)
-                        }
-                    }
-
-                    if (orientationAngles[2].roundToInt() == 1 || orientationAngles[2].roundToInt() == -1) {
-                        if (orientationAngles[2].roundToInt() == 1) {
-                            rotateArrow((pitch + 85).unaryMinus().roundToInt())
-                        } else {
-                            rotateArrow((pitch + 85).roundToInt())
-                        }
-                    }
-                }
-            }
-            AppConstants.CARS24_INDIA,
-            AppConstants.CARS24 -> {
-                if ((roll >= -100 && roll <= -80) && (pitch >= -3 && pitch <= 3)) {
-                    gyroMeterOnLevel(true)
-                } else {
-                    gyroMeterOffLevel()
-
-                    if (movearrow)
-                        moveArrow(roll + 90)
-
-                    if (rotatedarrow) {
-                        if (pitch > 0) {
-                            rotateArrow(pitch.minus(0).roundToInt())
-                        } else {
-                            rotateArrow(pitch.plus(0).roundToInt())
-                        }
-                    }
-                }
-            }
-            else -> {
-                if ((roll >= -100 && roll <= -80) && (pitch >= -5 && pitch <= 5)) {
-                    gyroMeterOnLevel(true)
-                } else {
-                    gyroMeterOffLevel()
-
-                    if (movearrow)
-                        moveArrow(roll + 90)
-
-                    if (rotatedarrow) {
-                        if (pitch > 0) {
-                            rotateArrow(pitch.minus(0).roundToInt())
-                        } else {
-                            rotateArrow(pitch.plus(0).roundToInt())
-                        }
-                    }
-                }
-            }
-        }
-    }
-
-
-    private fun gyroMeterOffLevel() {
-        isGyroOnCorrectAngle = false
-        binding.ivTopLeft?.setColorFilter(
-            ContextCompat.getColor(
-                BaseApplication.getContext(),
-                R.color.gyro_error_level
-            )
-        )
-        binding.ivBottomLeft?.setColorFilter(
-            ContextCompat.getColor(
-                BaseApplication.getContext(),
-                R.color.gyro_error_level
-            )
-        )
-
-        binding.ivGryroRing?.setColorFilter(
-            ContextCompat.getColor(
-                BaseApplication.getContext(),
-                R.color.gyro_error_level
-            )
-        )
-        binding.tvLevelIndicator?.background = ContextCompat.getDrawable(
-            BaseApplication.getContext(),
-            R.drawable.bg_gyro_error
-        )
-
-        binding.ivTopRight?.setColorFilter(
-            ContextCompat.getColor(
-                BaseApplication.getContext(),
-                R.color.gyro_error_level
-            )
-        )
-        binding.ivBottomRight?.setColorFilter(
-            ContextCompat.getColor(
-                BaseApplication.getContext(),
-                R.color.gyro_error_level
-            )
+        binding.gyroView.updateGryoView(
+            getString(R.string.app_name),
+            roll,
+            pitch,
+            movearrow,
+            rotatedarrow
         )
     }
 
-    private fun gyroMeterOnLevel(removeAnimation: Boolean) {
-        isGyroOnCorrectAngle = true
-        if (removeAnimation) {
-            binding
-                .tvLevelIndicator
-                ?.animate()
-                ?.translationY(0f)
-                ?.setInterpolator(AccelerateInterpolator())?.duration = 0
-        }
-
-
-        binding.tvLevelIndicator?.rotation = 0f
-
-        binding.ivTopLeft?.setColorFilter(
-            ContextCompat.getColor(
-                BaseApplication.getContext(),
-                R.color.gyro_in_level
-            )
-        )
-        binding.ivBottomLeft?.setColorFilter(
-            ContextCompat.getColor(
-                BaseApplication.getContext(),
-                R.color.gyro_in_level
-            )
-        )
-
-        binding.ivGryroRing?.setColorFilter(
-            ContextCompat.getColor(
-                BaseApplication.getContext(),
-                R.color.gyro_in_level
-            )
-        )
-        binding.tvLevelIndicator?.background = ContextCompat.getDrawable(
-            BaseApplication.getContext(),
-            R.drawable.bg_gyro_level
-        )
-
-        binding.ivTopRight?.setColorFilter(
-            ContextCompat.getColor(
-                BaseApplication.getContext(),
-                R.color.gyro_in_level
-            )
-        )
-        binding.ivBottomRight?.setColorFilter(
-            ContextCompat.getColor(
-                BaseApplication.getContext(),
-                R.color.gyro_in_level
-            )
-        )
-    }
-
-    private fun rotateArrow(roundToInt: Int) {
-        binding.tvLevelIndicator?.rotation = roundToInt.toFloat()
-    }
 
     override fun onAccuracyChanged(sensor: Sensor?, accuracy: Int) {
     }
 
-    private fun moveArrow(newRoll: Double) {
-        if (newRoll > 0 && (centerPosition + newRoll) < bottomConstraint) {
-            binding
-                .tvLevelIndicator
-                ?.animate()
-                ?.translationY(newRoll.toFloat())
-                ?.setInterpolator(AccelerateInterpolator())?.duration = 0
-        }
-
-        if (newRoll < 0 && (centerPosition - newRoll) > topConstraint) {
-            binding
-                .tvLevelIndicator
-                ?.animate()
-                ?.translationY(newRoll.toFloat())
-                ?.setInterpolator(AccelerateInterpolator())?.duration = 0
-        }
-    }
 
     private fun getPreviewDimensions(view: View, type: Int) {
         view.viewTreeObserver.addOnGlobalLayoutListener(object :
@@ -1138,15 +777,6 @@ class CameraFragment : BaseFragment<ShootViewModel, FragmentCameraBinding>(), Pi
                         shootDimensions.previewHeight = view.height
 
                         viewModel.shootDimensions.value = shootDimensions
-                    }
-
-                    1 -> {
-                        topConstraint = view.top
-                        bottomConstraint = topConstraint + view.height
-                    }
-
-                    2 -> {
-                        centerPosition = view.top
                     }
                 }
 

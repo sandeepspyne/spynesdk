@@ -128,11 +128,10 @@
         </LinearLayout>
     </LinearLayout>
 
-    <FrameLayout
+    <com.spyneai.shoot.ui.base.GyroView
         android:layout_width="0dp"
         android:layout_height="0dp"
-        android:id="@+id/flLevelIndicator"
-        android:visibility="invisible"
+        android:id="@+id/gyroView"
         app:layout_constraintBottom_toTopOf="@+id/rlCapturedImage"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
@@ -188,7 +187,7 @@
             android:src="@drawable/ic_bottom_right"
             android:layout_gravity="right|bottom"
             android:id="@+id/ivBottomRight"/>
-    </FrameLayout>
+    </com.spyneai.shoot.ui.base.GyroView>
 
     <FrameLayout
         android:layout_width="0dp"
