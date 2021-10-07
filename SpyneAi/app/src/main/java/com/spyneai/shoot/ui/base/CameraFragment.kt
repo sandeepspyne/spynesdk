@@ -209,31 +209,7 @@ class CameraFragment : BaseFragment<ShootViewModel, FragmentCameraBinding>(), Pi
                     )
                 }
                 else -> {
-                    when (viewModel.categoryDetails.value?.imageType) {
-                        "Interior" -> {
-                            if (viewModel.interiorShootNumber.value == viewModel.interiorAngles.value?.minus(
-                                    1
-                                )
-                            ) {
-                                viewModel.checkMiscShootStatus(getString(R.string.app_name))
-                            } else {
-                                viewModel.interiorShootNumber.value =
-                                    viewModel.interiorShootNumber.value!! + 1
-                            }
-                        }
-
-                        "Focus Shoot" -> {
-                            if (viewModel.miscShootNumber.value == viewModel.miscAngles.value?.minus(
-                                    1
-                                )
-                            ) {
-                                viewModel.selectBackground(getString(R.string.app_name))
-                            } else {
-                                viewModel.miscShootNumber.value =
-                                    viewModel.miscShootNumber.value!! + 1
-                            }
-                        }
-                    }
+                   viewModel.skipImage(getString(R.string.app_name))
                 }
             }
         }
@@ -243,9 +219,6 @@ class CameraFragment : BaseFragment<ShootViewModel, FragmentCameraBinding>(), Pi
                 "Automobiles", "Footwear" -> {
                     if (viewModel.subCategory.value?.prod_sub_cat_id != null)
                         onCaptureClick()
-                    else {
-                        var s = ""
-                    }
                 }
 
                 "E-Commerce", "Photo Box" -> {
@@ -306,85 +279,6 @@ class CameraFragment : BaseFragment<ShootViewModel, FragmentCameraBinding>(), Pi
         )
 
         Toast.makeText(requireContext(), centeredText, Toast.LENGTH_LONG).show()
-    }
-
-
-    private fun getProjectDetails() {
-        val createProjectRes = (viewModel.createProjectRes.value as Resource.Success).value
-
-        if (viewModel.fromVideo) {
-            updateSku(
-                createProjectRes.project_id,
-                requireActivity().intent.getStringExtra(AppConstants.SKU_ID)!!,
-                requireActivity().intent.getStringExtra(AppConstants.SKU_NAME)!!,
-                viewModel.subCategory.value?.prod_sub_cat_id!!
-            )
-        }
-    }
-
-    private fun updateSku(
-        projectId: String,
-        skuId: String,
-        skuName: String,
-        prod_sub_cat_id: String
-    ) {
-        Utilities.showProgressDialog(requireContext())
-
-        viewModel.isCameraButtonClickable = false
-
-        viewModel.updateVideoSku(
-            requireActivity().intent.getStringExtra(AppConstants.SKU_ID)!!,
-            viewModel.subCategory.value?.prod_sub_cat_id!!,
-            viewModel.exterirorAngles.value!!
-        )
-
-        viewModel.updateVideoSkuRes.observe(viewLifecycleOwner, {
-            when (it) {
-                is Resource.Success -> {
-                    BaseApplication.getContext().captureEvent(
-                        Events.VIDEO_SKU_UPDATED,
-                        Properties().putValue("sku_name", viewModel.sku.value?.skuName.toString())
-                            .putValue("project_id", projectId)
-                            .putValue("prod_sub_cat_id", prod_sub_cat_id)
-                            .putValue("angles", viewModel.exterirorAngles.value!!)
-                    )
-
-                    val sku = Sku()
-                    sku?.projectId = projectId
-                    sku?.skuId = skuId
-                    sku?.skuName = skuName
-                    sku?.totalImages = viewModel.exterirorAngles.value
-                    sku?.subcategoryName = viewModel.subCategory.value?.sub_cat_name
-                    sku?.subcategoryId = prod_sub_cat_id
-                    sku?.exteriorAngles = viewModel.exterirorAngles.value
-
-                    viewModel.sku.value = sku
-                    viewModel.isSubCategoryConfirmed.value = true
-
-                    //add sku to local database
-                    viewModel.updateVideoSkuLocally(sku!!)
-
-                    viewModel.isCameraButtonClickable = true
-                    captureImage()
-                }
-
-
-                is Resource.Failure -> {
-                    viewModel.isCameraButtonClickable = true
-                    BaseApplication.getContext().captureFailureEvent(
-                        Events.VIDEO_SKU_UPDATE_FAILED, Properties(),
-                        it.errorMessage!!
-                    )
-                    Utilities.hideProgressDialog()
-                    handleApiError(it) { updateSku(
-                        projectId,
-                        skuId,
-                        skuName,
-                        prod_sub_cat_id
-                    ) }
-                }
-            }
-        })
     }
 
     private fun captureImage() {

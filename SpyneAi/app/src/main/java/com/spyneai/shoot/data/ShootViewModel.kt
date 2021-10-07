@@ -6,6 +6,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.work.*
 import com.spyneai.BaseApplication
+import com.spyneai.R
 import com.spyneai.base.network.Resource
 import com.spyneai.camera2.OverlaysResponse
 import com.spyneai.camera2.ShootDimensions
@@ -470,6 +471,32 @@ class ShootViewModel : ViewModel() {
             show360InteriorDialog.value = true
         else
             selectBackground.value = true
+    }
+
+    fun skipImage(appName: String) {
+        when (categoryDetails.value?.imageType) {
+            "Interior" -> {
+                if (interiorShootNumber.value == interiorAngles.value?.minus(
+                        1
+                    )
+                ) {
+                    checkMiscShootStatus(appName)
+                } else {
+                    interiorShootNumber.value = interiorShootNumber.value!! + 1
+                }
+            }
+
+            "Focus Shoot" -> {
+                if (miscShootNumber.value == miscAngles.value?.minus(
+                        1
+                    )
+                ) {
+                    selectBackground(appName)
+                } else {
+                    miscShootNumber.value = miscShootNumber.value!! + 1
+                }
+            }
+        }
     }
 
 
