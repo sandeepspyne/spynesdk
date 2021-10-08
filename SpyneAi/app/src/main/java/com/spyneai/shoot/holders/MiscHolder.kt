@@ -10,42 +10,46 @@ import com.spyneai.BaseApplication
 import com.spyneai.R
 import com.spyneai.base.GenericAdapter
 import com.spyneai.base.OnItemClickListener
-import com.spyneai.camera2.OverlaysResponse
-import com.spyneai.databinding.ItemOverlaysBinding
+import com.spyneai.dashboard.response.NewSubCatResponse
+import com.spyneai.databinding.ItemInteriorBinding
+import com.spyneai.databinding.ItemMiscellanousBinding
 
-class OverlaysHolder(
+class MiscHolder(
     itemView: View,
     listener: OnItemClickListener?
-) : RecyclerView.ViewHolder(itemView), GenericAdapter.Binder<OverlaysResponse.Data>{
+) : RecyclerView.ViewHolder(itemView), GenericAdapter.Binder<NewSubCatResponse.Interior>{
 
     var listener: OnItemClickListener? = null
-    var binding : ItemOverlaysBinding? = null
+    var binding : ItemMiscellanousBinding? = null
     val TAG = "OverlaysHolder"
 
     init {
-        binding = ItemOverlaysBinding.bind(itemView)
+        binding = ItemMiscellanousBinding.bind(itemView)
         this.listener = listener
     }
 
-    override fun bind(data: OverlaysResponse.Data) {
+    override fun bind(data: NewSubCatResponse.Interior) {
         //set sequence number as per adapter position
-        data.sequenceNumber = adapterPosition
+        // data.sequenceNumber = adapterPosition
 
         binding.apply {
             this?.tvName?.text = data.display_name
         }
 
-        if (data.isSelected)
-        {
-            binding?.flOverlay?.background = ContextCompat.getDrawable(BaseApplication.getContext(),R.drawable.bg_overlay_selected)
+        if (data.isSelected){
+            binding?.flOverlay?.background = ContextCompat.getDrawable(
+                BaseApplication.getContext(),
+                R.drawable.bg_overlay_selected)
+
             listener?.onItemClick(
                 binding?.flOverlay!!,
                 adapterPosition,
-                data
-            )
+                data)
         }
         else
-            binding?.flOverlay?.background = ContextCompat.getDrawable(BaseApplication.getContext(),R.drawable.bg_overlay)
+            binding?.flOverlay?.background = ContextCompat.getDrawable(
+                BaseApplication.getContext(),
+                R.drawable.bg_overlay)
 
         if (data.imageClicked){
             Log.d(TAG, "bind: "+data.imagePath)

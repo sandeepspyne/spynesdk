@@ -588,10 +588,41 @@ class ShootViewModel : ViewModel() {
             }
 
             "Focus Shoot" -> {
+                val list = thumbnails as List<NewSubCatResponse.Miscellaneous>
 
+                val position = sequence
+
+                list[position].isSelected = false
+                list[position].imageClicked = true
+                list[position].imagePath = getCurrentShoot()!!.capturedImage
+
+                notifyItemChanged.value = position
+                //overlaysAdapter.notifyItemChanged(position)
+
+                if (position != list.size.minus(1)){
+                    list[position.plus(1)].isSelected = true
+                    sequence = position.plus(1)
+
+                    notifyItemChanged.value = position.plus(1)
+                    //overlaysAdapter.notifyItemChanged(position.plus(1))
+                    //binding.rvSubcategories.scrollToPosition(position)
+                    scrollView.value = position
+                }else {
+                    val element = list.firstOrNull {
+                        !it.isSelected
+                    }
+
+                    if (element != null){
+                        element?.isSelected = true
+                        sequence = element?.sequenceNumber!!
+                        //overlaysAdapter.notifyItemChanged(sequence)
+                        notifyItemChanged.value = sequence
+                        //binding.rvSubcategories.scrollToPosition(sequence)
+                        scrollView.value = sequence
+                    }
+                }
             }
         }
     }
-
 
 }

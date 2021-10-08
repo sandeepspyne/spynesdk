@@ -81,6 +81,10 @@ class FragmentOverlaysVTwo : BaseFragment<ShootViewModel, FragmentOverlaysV2Bind
                     shoot("confirm reshoot dialog called")
                     shoot("shootList sine(no. of images)- " + it.size)
                     val element = viewModel.getCurrentShoot()
+
+                    Log.d(TAG, "onViewCreated: "+viewModel.overlayId)
+                    Log.d(TAG, "onViewCreated: "+element?.capturedImage)
+                    Log.d(TAG, "onViewCreated: "+element?.overlayId)
                     showImageConfirmDialog(element!!)
                 }
             } catch (e: Exception) {
@@ -882,6 +886,33 @@ class FragmentOverlaysVTwo : BaseFragment<ShootViewModel, FragmentOverlaysV2Bind
                 viewModel.overlayId = data.overlayId
 
                 val list = overlaysAdapter.listItems as List<NewSubCatResponse.Interior>
+
+                val element = list.firstOrNull {
+                    it.isSelected
+                }
+
+                if (element != null && data != element){
+                    viewModel.displayName = data.display_name
+                    viewModel.displayThumbanil = data.display_thumbnail
+                    // viewModel.selectedOverlay = data
+
+                    data.isSelected = true
+                    element.isSelected = false
+                    overlaysAdapter.notifyItemChanged(position)
+                    overlaysAdapter.notifyItemChanged(list.indexOf(element))
+                    binding.rvSubcategories.scrollToPosition(position)
+                }
+            }
+
+            is NewSubCatResponse.Miscellaneous ->{
+                if (data.imageClicked){
+                    ReclickDialog().show(requireActivity().supportFragmentManager,"ReclickDialog")
+                }
+
+                viewModel.sequence = position
+                viewModel.overlayId = data.overlayId
+
+                val list = overlaysAdapter.listItems as List<NewSubCatResponse.Miscellaneous>
 
                 val element = list.firstOrNull {
                     it.isSelected

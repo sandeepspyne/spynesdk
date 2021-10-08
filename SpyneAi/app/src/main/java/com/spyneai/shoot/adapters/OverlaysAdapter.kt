@@ -19,6 +19,7 @@ class OverlaysAdapter (
 
             is OverlaysResponse.Data -> R.layout.item_overlays
             is NewSubCatResponse.Interior -> R.layout.item_interior
+            is NewSubCatResponse.Miscellaneous -> R.layout.item_miscellanous
             else -> error("Unknown type: for position: $position")
         }
     }

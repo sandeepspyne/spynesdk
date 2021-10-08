@@ -12,6 +12,7 @@ import com.spyneai.base.GenericAdapter
 import com.spyneai.base.OnItemClickListener
 import com.spyneai.camera2.OverlaysResponse
 import com.spyneai.dashboard.response.NewSubCatResponse
+import com.spyneai.databinding.ItemInteriorBinding
 import com.spyneai.databinding.ItemOverlaysBinding
 
 class InteriorHolder(
@@ -20,11 +21,11 @@ class InteriorHolder(
 ) : RecyclerView.ViewHolder(itemView), GenericAdapter.Binder<NewSubCatResponse.Interior>{
 
     var listener: OnItemClickListener? = null
-    var binding : ItemOverlaysBinding? = null
+    var binding : ItemInteriorBinding? = null
     val TAG = "OverlaysHolder"
 
     init {
-        binding = ItemOverlaysBinding.bind(itemView)
+        binding = ItemInteriorBinding.bind(itemView)
         this.listener = listener
     }
 
@@ -32,16 +33,20 @@ class InteriorHolder(
         //set sequence number as per adapter position
        // data.sequenceNumber = adapterPosition
 
-        val s = ""
-
         binding.apply {
             this?.tvName?.text = data.display_name
         }
 
-        if (data.isSelected)
+        if (data.isSelected){
             binding?.flOverlay?.background = ContextCompat.getDrawable(
                 BaseApplication.getContext(),
                 R.drawable.bg_overlay_selected)
+
+            listener?.onItemClick(
+                binding?.flOverlay!!,
+                adapterPosition,
+                data)
+        }
         else
             binding?.flOverlay?.background = ContextCompat.getDrawable(
                 BaseApplication.getContext(),
