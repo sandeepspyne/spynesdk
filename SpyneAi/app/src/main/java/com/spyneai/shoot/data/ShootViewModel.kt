@@ -1,5 +1,6 @@
 package com.spyneai.shoot.data
 
+import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -409,10 +410,6 @@ class ShootViewModel : ViewModel() {
             miscSize,
             sequence
         )
-        if (categoryDetails.value?.imageType == "Exterior")
-            return sequence.plus(1)
-        else
-            return shootList.value!!.size.plus(1)
     }
 
     fun getOnImageConfirmed(): Boolean {
@@ -421,18 +418,23 @@ class ShootViewModel : ViewModel() {
     }
 
     fun getOverlay(): String {
-        val overlayRes = (overlaysResponse.value as Resource.Success).value
-        return overlayRes.data[overlayRes.data.indexOf(selectedOverlay)].display_thumbnail
+        return displayThumbanil
+//        val overlayRes = (overlaysResponse.value as Resource.Success).value
+//        return overlayRes.data[overlayRes.data.indexOf(selectedOverlay)].display_thumbnail
     }
 
     fun getName() : String {
-        val overlayRes = (overlaysResponse.value as Resource.Success).value
-        return overlayRes.data[overlayRes.data.indexOf(selectedOverlay)].display_name
+//        val overlayRes = (overlaysResponse.value as Resource.Success).value
+//        return overlayRes.data[overlayRes.data.indexOf(selectedOverlay)].display_name
+        return displayName
     }
 
 
+    var displayName = ""
+    var displayThumbanil = ""
     var sequence = 0
-    var selectedOverlay : OverlaysResponse.Data? = null
+    var overlayId = 0
+   // var selectedOverlay : OverlaysResponse.Data? = null
     val getSubCategories = MutableLiveData<Boolean>()
     val selectAngles = MutableLiveData<Boolean>()
     val fetchOverlays = MutableLiveData<Boolean>()
@@ -452,7 +454,7 @@ class ShootViewModel : ViewModel() {
     }
 
     fun getCurrentShoot() = shootList.value?.first {
-        it.sequence == sequence.plus(1)
+        it.overlayId == overlayId
     }
 
     fun checkMiscShootStatus(appName : String) {
@@ -497,6 +499,96 @@ class ShootViewModel : ViewModel() {
                 } else {
                     miscShootNumber.value = miscShootNumber.value!! + 1
                 }
+            }
+        }
+    }
+
+    fun getList(list : List<Any>): List<Any> {
+        return when(categoryDetails.value?.imageType){
+            "Exterior" -> list as List<OverlaysResponse.Data>
+            else -> list as List<NewSubCatResponse.Interior>
+        }
+    }
+
+    val notifyItemChanged = MutableLiveData<Int>()
+    val scrollView = MutableLiveData<Int>()
+
+    fun setSelectedItem(thumbnails : List<Any>) {
+        when(categoryDetails.value?.imageType){
+            "Exterior" -> {
+                val list = thumbnails as List<OverlaysResponse.Data>
+
+                val position = sequence
+
+                list[position].isSelected = false
+                list[position].imageClicked = true
+                list[position].imagePath = getCurrentShoot()!!.capturedImage
+
+                notifyItemChanged.value = position
+                //overlaysAdapter.notifyItemChanged(position)
+
+                if (position != list.size.minus(1)){
+                    list[position.plus(1)].isSelected = true
+                    sequence = position.plus(1)
+
+                    notifyItemChanged.value = position.plus(1)
+                    //overlaysAdapter.notifyItemChanged(position.plus(1))
+                    //binding.rvSubcategories.scrollToPosition(position)
+                    scrollView.value = position
+                }else {
+                    val element = list.firstOrNull {
+                        !it.isSelected
+                    }
+
+                    if (element != null){
+                        element?.isSelected = true
+                        sequence = element?.sequenceNumber!!
+                        //overlaysAdapter.notifyItemChanged(sequence)
+                        notifyItemChanged.value = sequence
+                        //binding.rvSubcategories.scrollToPosition(sequence)
+                        scrollView.value = sequence
+                    }
+                }
+            }
+
+            "Interior" -> {
+                val list = thumbnails as List<NewSubCatResponse.Interior>
+
+                val position = sequence
+
+                list[position].isSelected = false
+                list[position].imageClicked = true
+                list[position].imagePath = getCurrentShoot()!!.capturedImage
+
+                notifyItemChanged.value = position
+                //overlaysAdapter.notifyItemChanged(position)
+
+                if (position != list.size.minus(1)){
+                    list[position.plus(1)].isSelected = true
+                    sequence = position.plus(1)
+
+                    notifyItemChanged.value = position.plus(1)
+                    //overlaysAdapter.notifyItemChanged(position.plus(1))
+                    //binding.rvSubcategories.scrollToPosition(position)
+                    scrollView.value = position
+                }else {
+                    val element = list.firstOrNull {
+                        !it.isSelected
+                    }
+
+                    if (element != null){
+                        element?.isSelected = true
+                        sequence = element?.sequenceNumber!!
+                        //overlaysAdapter.notifyItemChanged(sequence)
+                        notifyItemChanged.value = sequence
+                        //binding.rvSubcategories.scrollToPosition(sequence)
+                        scrollView.value = sequence
+                    }
+                }
+            }
+
+            "Focus Shoot" -> {
+
             }
         }
     }

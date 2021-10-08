@@ -7,6 +7,7 @@ import com.spyneai.base.GenericAdapter
 import com.spyneai.base.JavaViewHolderFactory
 import com.spyneai.base.OnItemClickListener
 import com.spyneai.camera2.OverlaysResponse
+import com.spyneai.dashboard.response.NewSubCatResponse
 
 class OverlaysAdapter (
     list: List<Any>,
@@ -17,6 +18,7 @@ class OverlaysAdapter (
         return when (obj) {
 
             is OverlaysResponse.Data -> R.layout.item_overlays
+            is NewSubCatResponse.Interior -> R.layout.item_interior
             else -> error("Unknown type: for position: $position")
         }
     }

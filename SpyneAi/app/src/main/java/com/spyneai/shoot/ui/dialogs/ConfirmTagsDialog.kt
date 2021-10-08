@@ -6,6 +6,7 @@ import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
 import android.os.Build
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -161,6 +162,8 @@ class ConfirmTagsDialog : BaseDialogFragment<ShootViewModel, DialogConfirmTagsBi
         }
 
         val uri = viewModel.shootData.value?.capturedImage
+
+        Log.d(TAG, "onViewCreated: "+uri)
 
         Glide.with(requireContext())
             .load(uri)

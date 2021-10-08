@@ -721,6 +721,7 @@ class CameraFragment : BaseFragment<ShootViewModel, FragmentCameraBinding>(), Pi
             viewModel.sku.value?.skuId!!,
             viewModel.categoryDetails.value?.imageType!!,
             Utilities.getPreference(BaseApplication.getContext(), AppConstants.AUTH_KEY).toString(),
+            viewModel.overlayId,
             sequenceNumber,
             cameraAngle,
             filename,

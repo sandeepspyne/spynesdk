@@ -48,8 +48,8 @@ class FragmentOverlaysVTwo : BaseFragment<ShootViewModel, FragmentOverlaysV2Bind
 
     val TAG = "FragmentOverlaysVTwo"
     lateinit var subCategoriesAdapter: NewSubCategoriesAdapter
-    var interiorAdapter: InteriorAdapter? = null
-    var miscAdapter: MiscAdapter? = null
+//    var interiorAdapter: InteriorAdapter? = null
+//    var miscAdapter: MiscAdapter? = null
     private var showDialog = true
     var pos = 0
     var snackbar : Snackbar? = null
@@ -130,42 +130,16 @@ class FragmentOverlaysVTwo : BaseFragment<ShootViewModel, FragmentOverlaysV2Bind
 
         viewModel.onImageConfirmed.observe(viewLifecycleOwner,{
             if (viewModel.shootList.value != null){
-                val list = overlaysAdapter.listItems as List<OverlaysResponse.Data>
-
-                val position = viewModel.sequence
-
-                list[position].isSelected = false
-                list[position].imageClicked = true
-                list[position].imagePath = viewModel.getCurrentShoot()!!.capturedImage
-                overlaysAdapter.notifyItemChanged(position)
-
-                Log.d(TAG, "onViewCreated: "+position)
-                Log.d(TAG, "onViewCreated: "+list[position].imagePath)
-
-                if (position != list.size.minus(1)){
-                    list[position.plus(1)].isSelected = true
-                    viewModel.sequence = position.plus(1)
-
-                    overlaysAdapter.notifyItemChanged(position.plus(1))
-                    binding.rvSubcategories.scrollToPosition(position)
-
-                }else {
-                    val element = list.firstOrNull {
-                        !it.isSelected
-                    }
-
-                    if (element != null){
-                        element?.isSelected = true
-                        viewModel.sequence = element?.sequenceNumber!!
-                        overlaysAdapter.notifyItemChanged(viewModel.sequence)
-                        binding.rvSubcategories.scrollToPosition(viewModel.sequence)
-
-                        Log.d(TAG, "onItemClick: "+viewModel.sequence)
-                    }
-                }
-
-
+                viewModel.setSelectedItem(overlaysAdapter.listItems)
             }
+        })
+
+        viewModel.notifyItemChanged.observe(viewLifecycleOwner,{
+            overlaysAdapter.notifyItemChanged(it)
+        })
+
+        viewModel.scrollView.observe(viewLifecycleOwner,{
+            binding.rvSubcategories.scrollToPosition(it)
         })
     }
 
@@ -281,16 +255,25 @@ class FragmentOverlaysVTwo : BaseFragment<ShootViewModel, FragmentOverlaysV2Bind
                                             viewModel.startInteriorShots.value = true
                                             viewModel.interiorAngles.value =  it.value.interior.size
 
-                                            if (interiorAdapter == null) {
-                                                interiorAdapter = InteriorAdapter(requireContext(),
-                                                    it.value.interior as ArrayList<NewSubCatResponse.Interior>
-                                                )
+                                            val list = it.value.interior
+                                            list[0].isSelected = true
 
-                                                binding.rvSubcategories.apply {
-                                                    layoutManager = LinearLayoutManager(requireContext())
-                                                    this?.adapter = interiorAdapter
-                                                }
-                                            }
+                                            viewModel.displayName = list[0].display_name
+                                            viewModel.displayThumbanil = list[0].display_thumbnail
+
+                                            overlaysAdapter.listItems = list
+                                            overlaysAdapter.notifyDataSetChanged()
+
+//                                            if (interiorAdapter == null) {
+//                                                interiorAdapter = InteriorAdapter(requireContext(),
+//                                                    it.value.interior as ArrayList<NewSubCatResponse.Interior>
+//                                                )
+//
+//                                                binding.rvSubcategories.apply {
+//                                                    layoutManager = LinearLayoutManager(requireContext())
+//                                                    this?.adapter = interiorAdapter
+//                                                }
+//                                            }
 
                                             viewModel.interiorShootNumber.value = requireActivity().intent.getIntExtra(
                                                 AppConstants.INTERIOR_SIZE,0)
@@ -331,17 +314,19 @@ class FragmentOverlaysVTwo : BaseFragment<ShootViewModel, FragmentOverlaysV2Bind
 
                                             viewModel.miscAngles.value =  it.value.miscellaneous.size
 
+                                            overlaysAdapter.listItems = it.value.miscellaneous
+                                            overlaysAdapter.notifyDataSetChanged()
 
-                                            if (miscAdapter == null) {
-                                                miscAdapter = MiscAdapter(requireContext(),
-                                                    it.value.miscellaneous as ArrayList<NewSubCatResponse.Miscellaneous>
-                                                )
-
-                                                binding.rvSubcategories.apply {
-                                                    layoutManager = LinearLayoutManager(requireContext())
-                                                    this?.adapter = miscAdapter
-                                                }
-                                            }
+//                                            if (miscAdapter == null) {
+//                                                miscAdapter = MiscAdapter(requireContext(),
+//                                                    it.value.miscellaneous as ArrayList<NewSubCatResponse.Miscellaneous>
+//                                                )
+//
+//                                                binding.rvSubcategories.apply {
+//                                                    layoutManager = LinearLayoutManager(requireContext())
+//                                                    this?.adapter = miscAdapter
+//                                                }
+//                                            }
 
                                             viewModel.miscShootNumber.value = requireActivity().intent.getIntExtra(
                                                 AppConstants.MISC_SIZE,0)
@@ -544,7 +529,8 @@ class FragmentOverlaysVTwo : BaseFragment<ShootViewModel, FragmentOverlaysV2Bind
                     //set overlays
                     it.value.data[0].isSelected = true
                     overlaysAdapter = OverlaysAdapter(it.value.data,this@FragmentOverlaysVTwo)
-                    viewModel.selectedOverlay = it.value.data[0]
+                    viewModel.displayName = it.value.data[0].display_name
+                    viewModel.displayThumbanil = it.value.data[0].display_thumbnail
 
                     binding.rvSubcategories.apply {
                         visibility = View.VISIBLE
@@ -616,12 +602,22 @@ class FragmentOverlaysVTwo : BaseFragment<ShootViewModel, FragmentOverlaysV2Bind
 
                     viewModel.interiorAngles.value = interiorList.size
 
-                    interiorAdapter = InteriorAdapter(requireContext(), interiorList)
+                    val list = it.value.interior
+                    list[0].isSelected = true
 
-                    binding.rvSubcategories.apply {
-                        layoutManager = LinearLayoutManager(requireContext())
-                        this?.adapter = interiorAdapter
-                    }
+                    viewModel.displayName = list[0].display_name
+                    viewModel.displayThumbanil = list[0].display_thumbnail
+
+                    overlaysAdapter.listItems = list
+                    overlaysAdapter.notifyDataSetChanged()
+
+
+//                    interiorAdapter = InteriorAdapter(requireContext(), interiorList)
+//
+//                    binding.rvSubcategories.apply {
+//                        layoutManager = LinearLayoutManager(requireContext())
+//                        this?.adapter = interiorAdapter
+//                    }
                     //change image type
                     viewModel.categoryDetails.value?.imageType = "Interior"
                 }
@@ -636,13 +632,13 @@ class FragmentOverlaysVTwo : BaseFragment<ShootViewModel, FragmentOverlaysV2Bind
             binding.tvShoot?.text =
                 "Angles ${viewModel.interiorShootNumber.value!! + 1}/${viewModel.interiorAngles.value}"
 
-            if (viewModel.interiorShootNumber.value!! != 0)
-                interiorAdapter!!.interiorList[viewModel.interiorShootNumber.value!! - 1].isSelected =
-                    false
-
-            interiorAdapter!!.interiorList[viewModel.interiorShootNumber.value!!].isSelected = true
-            interiorAdapter!!.notifyDataSetChanged()
-            binding.rvSubcategories?.scrollToPosition(viewModel.interiorShootNumber.value!!)
+//            if (viewModel.interiorShootNumber.value!! != 0)
+//                interiorAdapter!!.interiorList[viewModel.interiorShootNumber.value!! - 1].isSelected =
+//                    false
+//
+//            interiorAdapter!!.interiorList[viewModel.interiorShootNumber.value!!].isSelected = true
+//            interiorAdapter!!.notifyDataSetChanged()
+//            binding.rvSubcategories?.scrollToPosition(viewModel.interiorShootNumber.value!!)
 
         })
     }
@@ -705,17 +701,19 @@ class FragmentOverlaysVTwo : BaseFragment<ShootViewModel, FragmentOverlaysV2Bind
                             viewModel.miscShootNumber.value = 0
                     }
                     viewModel.miscAngles.value = miscList.size
+                    overlaysAdapter.listItems = it.value.miscellaneous
+                    overlaysAdapter.notifyDataSetChanged()
 
-                    miscAdapter = MiscAdapter(
-                        requireContext(),
-                        miscList as ArrayList<NewSubCatResponse.Miscellaneous>
-                    )
-
-                    binding.rvSubcategories.apply {
-                        layoutManager = LinearLayoutManager(requireContext(),
-                            LinearLayoutManager.VERTICAL,false)
-                        this?.adapter = miscAdapter
-                    }
+//                    miscAdapter = MiscAdapter(
+//                        requireContext(),
+//                        miscList as ArrayList<NewSubCatResponse.Miscellaneous>
+//                    )
+//
+//                    binding.rvSubcategories.apply {
+//                        layoutManager = LinearLayoutManager(requireContext(),
+//                            LinearLayoutManager.VERTICAL,false)
+//                        this?.adapter = miscAdapter
+//                    }
 
                     //change image type
                     viewModel.categoryDetails.value?.imageType = "Focus Shoot"
@@ -730,12 +728,12 @@ class FragmentOverlaysVTwo : BaseFragment<ShootViewModel, FragmentOverlaysV2Bind
             binding.tvShoot?.text =
                 "Angles ${viewModel.miscShootNumber.value!! + 1}/${viewModel.miscAngles.value}"
 
-            if (viewModel.miscShootNumber.value!! != 0)
-                miscAdapter?.miscList!![viewModel.miscShootNumber.value!! - 1].isSelected = false
-
-            miscAdapter!!.miscList[viewModel.miscShootNumber.value!!].isSelected = true
-            miscAdapter!!.notifyDataSetChanged()
-            binding.rvSubcategories?.scrollToPosition(viewModel.miscShootNumber.value!!)
+//            if (viewModel.miscShootNumber.value!! != 0)
+//                miscAdapter?.miscList!![viewModel.miscShootNumber.value!! - 1].isSelected = false
+//
+//            miscAdapter!!.miscList[viewModel.miscShootNumber.value!!].isSelected = true
+//            miscAdapter!!.notifyDataSetChanged()
+//            binding.rvSubcategories?.scrollToPosition(viewModel.miscShootNumber.value!!)
         })
     }
 
@@ -762,6 +760,7 @@ class FragmentOverlaysVTwo : BaseFragment<ShootViewModel, FragmentOverlaysV2Bind
 
     private fun showImageConfirmDialog(shootData: ShootData) {
         viewModel.shootData.value = shootData
+        Log.d(TAG, "onViewCreated: "+shootData.capturedImage)
 
         when(getString(R.string.app_name)){
             AppConstants.OLA_CABS -> {
@@ -846,13 +845,14 @@ class FragmentOverlaysVTwo : BaseFragment<ShootViewModel, FragmentOverlaysV2Bind
 
     override fun onItemClick(view: View, position: Int, data: Any?) {
         when(data){
-            is OverlaysResponse.Data -> {
-
+            is OverlaysResponse.Data->{
                 if (data.imageClicked){
                     ReclickDialog().show(requireActivity().supportFragmentManager,"ReclickDialog")
                 }
 
                 viewModel.sequence = position
+                viewModel.overlayId = data.id
+
                 val list = overlaysAdapter.listItems as List<OverlaysResponse.Data>
 
                 val element = list.firstOrNull {
@@ -861,7 +861,36 @@ class FragmentOverlaysVTwo : BaseFragment<ShootViewModel, FragmentOverlaysV2Bind
 
                 if (element != null && data != element){
                     loadOverlay(data.angle_name,data.display_thumbnail)
-                    viewModel.selectedOverlay = data
+                    viewModel.displayName = data.display_name
+                    viewModel.displayThumbanil = data.display_thumbnail
+                   // viewModel.selectedOverlay = data
+
+                    data.isSelected = true
+                    element.isSelected = false
+                    overlaysAdapter.notifyItemChanged(position)
+                    overlaysAdapter.notifyItemChanged(list.indexOf(element))
+                    binding.rvSubcategories.scrollToPosition(position)
+                }
+            }
+
+            is NewSubCatResponse.Interior ->{
+                if (data.imageClicked){
+                    ReclickDialog().show(requireActivity().supportFragmentManager,"ReclickDialog")
+                }
+
+                viewModel.sequence = position
+                viewModel.overlayId = data.overlayId
+
+                val list = overlaysAdapter.listItems as List<NewSubCatResponse.Interior>
+
+                val element = list.firstOrNull {
+                    it.isSelected
+                }
+
+                if (element != null && data != element){
+                    viewModel.displayName = data.display_name
+                    viewModel.displayThumbanil = data.display_thumbnail
+                    // viewModel.selectedOverlay = data
 
                     data.isSelected = true
                     element.isSelected = false
