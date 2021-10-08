@@ -151,8 +151,9 @@ class ImageUploader(val context: Context,
                                selectLastImageAndUpload(imageType,retryCount+1)
                            }
                        }
+                   }else{
+                       setStatusUploaed(image,imageType,retryCount)
                    }
-
 
                }else{
                    logUpload("All Images uploaded")
