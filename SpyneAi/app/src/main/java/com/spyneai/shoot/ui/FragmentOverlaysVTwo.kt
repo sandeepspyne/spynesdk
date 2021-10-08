@@ -589,9 +589,13 @@ class FragmentOverlaysVTwo : BaseFragment<ShootViewModel, FragmentOverlaysV2Bind
     private fun startInteriorShots() {
         viewModel.isCameraButtonClickable = true
 
-        binding.rvSubcategories?.visibility = View.VISIBLE
-        binding.tvShoot.isClickable = false
-        binding.imgOverlay.visibility = View.INVISIBLE
+        binding.apply {
+            tvSkipShoot.text = getString(R.string.miscshoots)
+            rvSubcategories?.visibility = View.VISIBLE
+            tvShoot.isClickable = false
+            imgOverlay.visibility = View.INVISIBLE
+        }
+
         viewModel.hideLeveler.value = true
 
         viewModel.subCategoriesResponse.observe(viewLifecycleOwner, {
@@ -679,6 +683,7 @@ class FragmentOverlaysVTwo : BaseFragment<ShootViewModel, FragmentOverlaysV2Bind
     private fun startMiscShots() {
         viewModel.isCameraButtonClickable = true
 
+        binding.tvSkipShoot.text = getString(R.string.three_sixty_int)
         binding.rvSubcategories?.visibility = View.VISIBLE
         binding.imgOverlay.visibility = View.INVISIBLE
         viewModel.hideLeveler.value = true

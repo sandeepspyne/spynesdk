@@ -480,25 +480,11 @@ class ShootViewModel : ViewModel() {
     fun skipImage(appName: String) {
         when (categoryDetails.value?.imageType) {
             "Interior" -> {
-                if (interiorShootNumber.value == interiorAngles.value?.minus(
-                        1
-                    )
-                ) {
-                    checkMiscShootStatus(appName)
-                } else {
-                    interiorShootNumber.value = interiorShootNumber.value!! + 1
-                }
+                checkMiscShootStatus(appName)
             }
 
             "Focus Shoot" -> {
-                if (miscShootNumber.value == miscAngles.value?.minus(
-                        1
-                    )
-                ) {
-                    selectBackground(appName)
-                } else {
-                    miscShootNumber.value = miscShootNumber.value!! + 1
-                }
+                selectBackground(appName)
             }
         }
     }

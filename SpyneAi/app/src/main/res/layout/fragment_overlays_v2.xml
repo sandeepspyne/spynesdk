@@ -142,10 +142,10 @@
                     android:layout_height="wrap_content"
                     android:gravity="center"
                     android:layout_gravity="center"
-                    android:drawablePadding="@dimen/dp_5"
-                    android:fontFamily="@font/bold"
-                    android:text="@string/skip"
-                    android:textColor="@color/primary"
+                    android:paddingTop="@dimen/dp_10"
+                    android:paddingBottom="@dimen/dp_10"
+                    android:paddingLeft="@dimen/dp_5"
+                    android:paddingRight="@dimen/dp_5"
                     android:textSize="@dimen/sp_16"
                     />
 
@@ -154,6 +154,7 @@
                     android:layout_height="@dimen/dp_15"
                     android:src="@drawable/skip"
                     android:id="@+id/ivSkip"
+                    android:visibility="gone"
                     android:layout_gravity="center"
                     app:tint="@color/primary"
                     android:layout_marginLeft="@dimen/dp_2" />

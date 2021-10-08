@@ -151,12 +151,18 @@ class CameraFragment : BaseFragment<ShootViewModel, FragmentCameraBinding>(), Pi
         pickIt = PickiT(requireContext(), this, requireActivity())
 
         viewModel.startInteriorShots.observe(viewLifecycleOwner, {
-
-            if (it) binding.llSkip?.visibility = View.VISIBLE
+            if (it){
+                 binding.tvSkipShoot?.text = getString(R.string.miscshoots)
+                binding.llSkip?.visibility = View.VISIBLE
+            }
         })
 
         viewModel.startMiscShots.observe(viewLifecycleOwner, {
-            if (it) binding.llSkip?.visibility = View.VISIBLE
+            if (it) {
+                binding.tvSkipShoot?.text = getString(R.string.three_sixty_int)
+                binding.llSkip?.visibility = View.VISIBLE
+            }
+
         })
 
         viewModel.showLeveler.observe(viewLifecycleOwner, {
@@ -182,19 +188,6 @@ class CameraFragment : BaseFragment<ShootViewModel, FragmentCameraBinding>(), Pi
                 ContextCompat.getColor(requireContext(), R.color.secondary),
                 android.graphics.PorterDuff.Mode.MULTIPLY
             );
-        }
-
-        if (getString(R.string.app_name) == AppConstants.KARVI) {
-            binding.tvSkipShoot!!.setTextColor(
-                ContextCompat.getColor(
-                    requireContext(),
-                    R.color.secondary
-                )
-            )
-            binding.ivSkip?.setColorFilter(
-                ContextCompat.getColor(requireContext(), R.color.secondary),
-                PorterDuff.Mode.SRC_IN
-            )
         }
 
         binding.cameraCaptureButton.setOnClickListener {
