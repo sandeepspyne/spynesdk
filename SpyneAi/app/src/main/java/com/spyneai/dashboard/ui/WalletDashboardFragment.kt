@@ -15,6 +15,7 @@ import com.spyneai.R
 import com.spyneai.base.BaseFragment
 import com.spyneai.captureEvent
 import com.spyneai.captureFailureEvent
+import com.spyneai.credits.CreditPlansActivity
 import com.spyneai.credits.CreditUtils
 import com.spyneai.dashboard.data.DashboardViewModel
 import com.spyneai.databinding.WalletDashboardFragmentBinding
@@ -85,6 +86,12 @@ class WalletDashboardFragment : BaseFragment<DashboardViewModel, WalletDashboard
                             "Send Credits Request To Sweep Photos"
                         )
                     )
+                }
+                else -> {
+                    var intent = Intent(requireContext(), CreditPlansActivity::class.java)
+                    intent.putExtra("from_wallet",true)
+                    intent.putExtra("credit_available",availableCredits)
+                    startActivity(intent)
                 }
             }
         }
