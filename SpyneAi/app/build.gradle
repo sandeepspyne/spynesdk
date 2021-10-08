@@ -75,7 +75,7 @@ android {
             dimension 'version'
             applicationId "com.spyneai"
             versionCode 55
-            versionName "2.65"
+            versionName "2.64"
         }
 
 
