@@ -503,13 +503,6 @@ class ShootViewModel : ViewModel() {
         }
     }
 
-    fun getList(list : List<Any>): List<Any> {
-        return when(categoryDetails.value?.imageType){
-            "Exterior" -> list as List<OverlaysResponse.Data>
-            else -> list as List<NewSubCatResponse.Interior>
-        }
-    }
-
     val notifyItemChanged = MutableLiveData<Int>()
     val scrollView = MutableLiveData<Int>()
 
@@ -537,7 +530,7 @@ class ShootViewModel : ViewModel() {
                     scrollView.value = position
                 }else {
                     val element = list.firstOrNull {
-                        !it.isSelected
+                        !it.isSelected && !it.imageClicked
                     }
 
                     if (element != null){
@@ -573,7 +566,7 @@ class ShootViewModel : ViewModel() {
                     scrollView.value = position
                 }else {
                     val element = list.firstOrNull {
-                        !it.isSelected
+                        !it.isSelected && !it.imageClicked
                     }
 
                     if (element != null){
@@ -609,7 +602,7 @@ class ShootViewModel : ViewModel() {
                     scrollView.value = position
                 }else {
                     val element = list.firstOrNull {
-                        !it.isSelected
+                        !it.isSelected && !it.imageClicked
                     }
 
                     if (element != null){

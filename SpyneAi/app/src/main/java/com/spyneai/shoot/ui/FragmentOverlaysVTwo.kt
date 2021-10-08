@@ -37,6 +37,7 @@ import com.spyneai.shoot.adapters.InteriorAdapter
 import com.spyneai.shoot.adapters.MiscAdapter
 import com.spyneai.shoot.adapters.NewSubCategoriesAdapter
 import com.spyneai.shoot.adapters.OverlaysAdapter
+import com.spyneai.shoot.data.OnOverlaySelectionListener
 import com.spyneai.shoot.data.ShootViewModel
 import com.spyneai.shoot.data.model.ShootData
 import com.spyneai.shoot.ui.dialogs.*
@@ -44,7 +45,7 @@ import com.spyneai.shoot.utils.shoot
 import kotlinx.coroutines.launch
 
 class FragmentOverlaysVTwo : BaseFragment<ShootViewModel, FragmentOverlaysV2Binding>(),
-    NewSubCategoriesAdapter.BtnClickListener, OnItemClickListener {
+    NewSubCategoriesAdapter.BtnClickListener, OnItemClickListener, OnOverlaySelectionListener {
 
     val TAG = "FragmentOverlaysVTwo"
     lateinit var subCategoriesAdapter: NewSubCategoriesAdapter
@@ -289,6 +290,7 @@ class FragmentOverlaysVTwo : BaseFragment<ShootViewModel, FragmentOverlaysV2Bind
                     )
 
                 }
+
                 intent.getBooleanExtra(AppConstants.RESUME_MISC,false) -> {
                     binding.tvShoot?.isClickable = false
 
@@ -318,8 +320,15 @@ class FragmentOverlaysVTwo : BaseFragment<ShootViewModel, FragmentOverlaysV2Bind
 
                                             viewModel.miscAngles.value =  it.value.miscellaneous.size
 
-                                            overlaysAdapter.listItems = it.value.miscellaneous
+                                            val list = it.value.miscellaneous
+                                            list[0].isSelected = true
+
+                                            viewModel.displayName = list[0].display_name
+                                            viewModel.displayThumbanil = list[0].display_thumbnail
+
+                                            overlaysAdapter.listItems = list
                                             overlaysAdapter.notifyDataSetChanged()
+
 
 //                                            if (miscAdapter == null) {
 //                                                miscAdapter = MiscAdapter(requireContext(),
@@ -532,7 +541,9 @@ class FragmentOverlaysVTwo : BaseFragment<ShootViewModel, FragmentOverlaysV2Bind
 
                     //set overlays
                     it.value.data[0].isSelected = true
-                    overlaysAdapter = OverlaysAdapter(it.value.data,this@FragmentOverlaysVTwo)
+                    overlaysAdapter = OverlaysAdapter(it.value.data,
+                        this@FragmentOverlaysVTwo,
+                        this@FragmentOverlaysVTwo)
                     viewModel.displayName = it.value.data[0].display_name
                     viewModel.displayThumbanil = it.value.data[0].display_thumbnail
 
@@ -677,8 +688,9 @@ class FragmentOverlaysVTwo : BaseFragment<ShootViewModel, FragmentOverlaysV2Bind
                 is Resource.Success -> {
                     var miscList = it.value.miscellaneous
 
+                    viewModel.miscAngles.value =  it.value.miscellaneous.size
+
                     if (viewModel.fromDrafts) {
-                        viewModel.miscAngles.value =  it.value.miscellaneous.size
                         viewModel.miscShootNumber.value = requireActivity().intent.getIntExtra(
                             AppConstants.MISC_SIZE,0)
 
@@ -688,11 +700,13 @@ class FragmentOverlaysVTwo : BaseFragment<ShootViewModel, FragmentOverlaysV2Bind
                             }
 
                             it.value.miscellaneous = filteredList
-                            miscList = it.value.miscellaneous
+                            viewModel.miscAngles.value =  it.value.miscellaneous.size
+//                            miscList = it.value.miscellaneous
                         }
 
                     }
                     else {
+
                         val myMiscShootList = viewModel.shootList.value?.filter {
                             it.image_category == "Focus Shoot"
                         }
@@ -704,8 +718,14 @@ class FragmentOverlaysVTwo : BaseFragment<ShootViewModel, FragmentOverlaysV2Bind
                         } else
                             viewModel.miscShootNumber.value = 0
                     }
-                    viewModel.miscAngles.value = miscList.size
-                    overlaysAdapter.listItems = it.value.miscellaneous
+
+                    val list = it.value.miscellaneous
+                    list[0].isSelected = true
+
+                    viewModel.displayName = list[0].display_name
+                    viewModel.displayThumbanil = list[0].display_thumbnail
+
+                    overlaysAdapter.listItems = list
                     overlaysAdapter.notifyDataSetChanged()
 
 //                    miscAdapter = MiscAdapter(
@@ -929,6 +949,25 @@ class FragmentOverlaysVTwo : BaseFragment<ShootViewModel, FragmentOverlaysV2Bind
                     overlaysAdapter.notifyItemChanged(list.indexOf(element))
                     binding.rvSubcategories.scrollToPosition(position)
                 }
+            }
+        }
+    }
+
+    override fun onOverlaySelected(view: View, position: Int, data: Any?) {
+        when(data){
+            is OverlaysResponse.Data->{
+                viewModel.sequence = position
+                viewModel.overlayId = data.id
+            }
+
+            is NewSubCatResponse.Interior ->{
+                viewModel.sequence = position
+                viewModel.overlayId = data.overlayId
+            }
+
+            is NewSubCatResponse.Miscellaneous ->{
+                viewModel.sequence = position
+                viewModel.overlayId = data.overlayId
             }
         }
     }

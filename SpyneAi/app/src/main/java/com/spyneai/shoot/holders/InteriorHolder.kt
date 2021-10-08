@@ -14,19 +14,23 @@ import com.spyneai.camera2.OverlaysResponse
 import com.spyneai.dashboard.response.NewSubCatResponse
 import com.spyneai.databinding.ItemInteriorBinding
 import com.spyneai.databinding.ItemOverlaysBinding
+import com.spyneai.shoot.data.OnOverlaySelectionListener
 
 class InteriorHolder(
     itemView: View,
-    listener: OnItemClickListener?
+    listener: OnItemClickListener?,
+    overlaySelectionListener : OnOverlaySelectionListener?
 ) : RecyclerView.ViewHolder(itemView), GenericAdapter.Binder<NewSubCatResponse.Interior>{
 
     var listener: OnItemClickListener? = null
+    var overlaySelectionListener: OnOverlaySelectionListener? = null
     var binding : ItemInteriorBinding? = null
     val TAG = "OverlaysHolder"
 
     init {
         binding = ItemInteriorBinding.bind(itemView)
         this.listener = listener
+        this.overlaySelectionListener = overlaySelectionListener
     }
 
     override fun bind(data: NewSubCatResponse.Interior) {
@@ -42,7 +46,7 @@ class InteriorHolder(
                 BaseApplication.getContext(),
                 R.drawable.bg_overlay_selected)
 
-            listener?.onItemClick(
+            overlaySelectionListener?.onOverlaySelected(
                 binding?.flOverlay!!,
                 adapterPosition,
                 data)

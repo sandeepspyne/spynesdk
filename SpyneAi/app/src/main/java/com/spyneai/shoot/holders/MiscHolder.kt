@@ -13,22 +13,26 @@ import com.spyneai.base.OnItemClickListener
 import com.spyneai.dashboard.response.NewSubCatResponse
 import com.spyneai.databinding.ItemInteriorBinding
 import com.spyneai.databinding.ItemMiscellanousBinding
+import com.spyneai.shoot.data.OnOverlaySelectionListener
 
 class MiscHolder(
     itemView: View,
-    listener: OnItemClickListener?
-) : RecyclerView.ViewHolder(itemView), GenericAdapter.Binder<NewSubCatResponse.Interior>{
+    listener: OnItemClickListener?,
+    overlaySelectionListener : OnOverlaySelectionListener?
+) : RecyclerView.ViewHolder(itemView), GenericAdapter.Binder<NewSubCatResponse.Miscellaneous>{
 
     var listener: OnItemClickListener? = null
+    var overlaySelectionListener: OnOverlaySelectionListener? = null
     var binding : ItemMiscellanousBinding? = null
     val TAG = "OverlaysHolder"
 
     init {
         binding = ItemMiscellanousBinding.bind(itemView)
         this.listener = listener
+        this.overlaySelectionListener = overlaySelectionListener
     }
 
-    override fun bind(data: NewSubCatResponse.Interior) {
+    override fun bind(data: NewSubCatResponse.Miscellaneous) {
         //set sequence number as per adapter position
         // data.sequenceNumber = adapterPosition
 
@@ -41,7 +45,7 @@ class MiscHolder(
                 BaseApplication.getContext(),
                 R.drawable.bg_overlay_selected)
 
-            listener?.onItemClick(
+            overlaySelectionListener?.onOverlaySelected(
                 binding?.flOverlay!!,
                 adapterPosition,
                 data)

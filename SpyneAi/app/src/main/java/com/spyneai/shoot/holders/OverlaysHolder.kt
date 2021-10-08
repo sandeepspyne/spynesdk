@@ -12,19 +12,24 @@ import com.spyneai.base.GenericAdapter
 import com.spyneai.base.OnItemClickListener
 import com.spyneai.camera2.OverlaysResponse
 import com.spyneai.databinding.ItemOverlaysBinding
+import com.spyneai.shoot.data.OnOverlaySelectionListener
 
 class OverlaysHolder(
     itemView: View,
-    listener: OnItemClickListener?
+    listener: OnItemClickListener?,
+    overlaySelectionListener : OnOverlaySelectionListener?
 ) : RecyclerView.ViewHolder(itemView), GenericAdapter.Binder<OverlaysResponse.Data>{
 
     var listener: OnItemClickListener? = null
+    var overlaySelectionListener: OnOverlaySelectionListener? = null
     var binding : ItemOverlaysBinding? = null
+
     val TAG = "OverlaysHolder"
 
     init {
         binding = ItemOverlaysBinding.bind(itemView)
         this.listener = listener
+        this.overlaySelectionListener = overlaySelectionListener
     }
 
     override fun bind(data: OverlaysResponse.Data) {
@@ -38,7 +43,7 @@ class OverlaysHolder(
         if (data.isSelected)
         {
             binding?.flOverlay?.background = ContextCompat.getDrawable(BaseApplication.getContext(),R.drawable.bg_overlay_selected)
-            listener?.onItemClick(
+            overlaySelectionListener?.onOverlaySelected(
                 binding?.flOverlay!!,
                 adapterPosition,
                 data
