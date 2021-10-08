@@ -3,9 +3,16 @@ package com.spyneai.shoot.data
 import com.spyneai.base.BaseRepository
 import com.spyneai.base.network.ClipperApiClient
 import com.spyneai.base.network.ClipperApiStagingClient
+import com.spyneai.needs.AppConstants
+import com.spyneai.needs.Utilities
+import com.spyneai.shoot.data.model.Image
+import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
+import okhttp3.RequestBody.Companion.asRequestBody
+import okhttp3.RequestBody.Companion.toRequestBody
 import org.json.JSONObject
+import java.io.File
 
 
 class ShootRepository : BaseRepository() {
@@ -34,7 +41,50 @@ class ShootRepository : BaseRepository() {
         tags: RequestBody,
         image: MultipartBody.Part,
     ) = safeApiCall {
-        clipperApi.uploadImage(project_id, sku_id, image_category, auth_key, upload_type,sequenceNo,tags,image)
+        clipperApi.uploadImage(
+            project_id,
+            sku_id,
+            image_category,
+            auth_key, upload_type,
+            sequenceNo,
+            tags,
+            image)
+    }
+
+    suspend fun getPreSignedUrl(
+        authKey: String,
+        uploadType : String,
+        image : Image
+    ) = safeApiCall {
+        var imageFile: MultipartBody.Part? = null
+
+        val requestFile =
+            File(image.imagePath).asRequestBody("multipart/form-data".toMediaTypeOrNull())
+
+        val fileName = if (image.categoryName == "360int")
+            image.skuName + "_" + image.skuId + "_360int_"+image.sequence+".jpg"
+        else
+            File(image.imagePath)!!.name
+
+
+        com.spyneai.shoot.utils.log("Image Name " + fileName)
+
+        imageFile = MultipartBody.Part.createFormData("image", fileName, requestFile)
+
+        val meta = if (image.meta == null) "".toRequestBody(MultipartBody.FORM) else image.meta?.toRequestBody(MultipartBody.FORM)
+
+        clipperApi.getPreSignedUrl(
+            authKey.toRequestBody(MultipartBody.FORM),
+            image.projectId?.toRequestBody(MultipartBody.FORM),
+            image.skuId?.toRequestBody(MultipartBody.FORM),
+            image.categoryName?.toRequestBody(MultipartBody.FORM),
+            image.name?.toRequestBody(MultipartBody.FORM),
+            image.overlayId?.toRequestBody(MultipartBody.FORM),
+            uploadType.toRequestBody(MultipartBody.FORM),
+            image.sequence!!,
+            image.isReclick!!,
+            meta!!,
+            imageFile)
     }
 
     suspend fun uploadImageWithAngle(

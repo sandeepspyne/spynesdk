@@ -383,27 +383,6 @@ class ShootLocalRepository {
         return cursor.count
     }
 
-    fun insertImage(image : Image) {
-        val values = ContentValues().apply {
-            put(Images.COLUMN_NAME_PROJECT_ID, image.projectId)
-            put(Images.COLUMN_NAME_SKU_NAME, image.skuName?.uppercase())
-            put(Images.COLUMN_NAME_SKU_ID, image.skuId)
-            put(Images.COLUMN_NAME_CATEGORY_NAME, image.categoryName)
-            put(Images.COLUMN_NAME_IMAGE_PATH, image.imagePath)
-            put(Images.COLUMN_NAME_IMAGE_SEQUENCE, image.sequence)
-            put(Images.COLUMN_NAME_IS_UPLOADED, 0)
-            put(Images.COLUMN_NAME_IMAGE_ANGLE, image.angle)
-            put(Images.COLUMN_NAME_IMAGE_META, image.meta)
-
-            put(Images.COLUMN_NAME_IMAGE_NAME, image.name)
-            put(Images.COLUMN_NAME_IMAGE_DEBUG_DATA, image.debugData)
-            put(Images.COLUMN_NAME_IS_STATUS_UPDATED, 0)
-        }
-
-        val newRowId = dbWritable?.insert(Images.TABLE_NAME, null, values)
-
-        com.spyneai.shoot.utils.log("insertImage: "+newRowId)
-    }
 
     fun getOldestImage() : Image {
         val projection = arrayOf(
@@ -629,50 +608,8 @@ class ShootLocalRepository {
 
     }
 
-    fun deleteImage(itemId: Long) {
-        val projectValues = ContentValues().apply {
-            put(
-                Images.COLUMN_NAME_IS_UPLOADED,
-                1
-            )
-        }
 
-        // Which row to update, based on the title
-        val selection = "${BaseColumns._ID} LIKE ?"
 
-        val selectionArgs = arrayOf(itemId.toString())
-
-        val count = dbWritable.update(
-            Images.TABLE_NAME,
-            projectValues,
-            selection,
-            selectionArgs)
-
-        com.spyneai.shoot.utils.log("deleteImage : "+count)
-    }
-
-    fun skipImage(itemId: Long,skip : Int) {
-        val projectValues = ContentValues().apply {
-            put(
-                Images.COLUMN_NAME_IS_UPLOADED,
-                skip
-            )
-        }
-
-        // Which row to update, based on the title
-        val selection = "${BaseColumns._ID} LIKE ?"
-
-        val selectionArgs = arrayOf(itemId.toString())
-
-        val count = dbWritable.update(
-            Images.TABLE_NAME,
-            projectValues,
-            selection,
-            selectionArgs)
-
-        logUpload("Image Skipped "+skip+" "+count)
-        com.spyneai.shoot.utils.log("deleteImage : "+count)
-    }
 
     fun getLastSku() : Sku {
         // Define a projection that specifies which columns from the database
@@ -863,28 +800,6 @@ class ShootLocalRepository {
         com.spyneai.shoot.utils.log("Upload count(update): "+projectId+" "+skuId)
     }
 
-    fun updateSkipedImages() : Int {
-        val values = ContentValues().apply {
-            put(
-                Images.COLUMN_NAME_IS_UPLOADED,
-                -1
-            )
-        }
-
-        // Which row to update, based on the title
-        val selection = "${Images.COLUMN_NAME_IS_UPLOADED} LIKE ?"
-
-        val selectionArgs = arrayOf("-2")
-
-        val count = dbWritable.update(
-            Images.TABLE_NAME,
-            values,
-            selection,
-            selectionArgs)
-
-
-       return count
-    }
 
     fun updateProjectStatus(projectId : String) {
         val projectValues = ContentValues().apply {

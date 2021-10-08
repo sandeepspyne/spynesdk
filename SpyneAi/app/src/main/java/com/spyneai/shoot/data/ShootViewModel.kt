@@ -25,6 +25,7 @@ class ShootViewModel : ViewModel() {
     private val TAG = "ShootViewModel"
     private val repository = ShootRepository()
     private val localRepository = ShootLocalRepository()
+    private val imageRepository = ImageLocalRepository()
 
 
 
@@ -161,6 +162,7 @@ class ShootViewModel : ViewModel() {
     val showFoodBackground: MutableLiveData<Boolean> = MutableLiveData()
 
     val addMoreAngle: MutableLiveData<Boolean> = MutableLiveData()
+    var isReshoot = false
 
     private val _skuProcessStateWithBgResponse: MutableLiveData<Resource<SkuProcessStateResponse>> = MutableLiveData()
     val skuProcessStateWithBgResponse: LiveData<Resource<SkuProcessStateResponse>>
@@ -286,13 +288,21 @@ class ShootViewModel : ViewModel() {
         image.categoryName = shootData.image_category
         image.imagePath = shootData.capturedImage
         image.sequence = shootData.sequence
+        image.overlayId = overlayId.toString()
         image.skuName = sku.value?.skuName
         image.angle = shootData.angle
         image.meta = shootData.meta
-        image.name = shootData.name
+        image.name = shootData.name+"."+shootData.capturedImage.substringAfter(".")
         image.debugData = shootData.debugData
+        image.isReshoot = if (isReshoot) 1 else 0
 
-        localRepository.insertImage(image)
+        val s = ""
+
+        if (imageRepository.isImageExist(image.skuId!!,image.name!!)){
+            imageRepository.updateImage(image)
+        }else{
+            imageRepository.insertImage(image)
+        }
     }
 
     fun createProject(

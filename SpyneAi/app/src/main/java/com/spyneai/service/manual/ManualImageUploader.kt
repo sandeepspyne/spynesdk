@@ -111,32 +111,32 @@ class ManualImageUploader(val context: Context,
                                         requestFile
                                     )
 
-                                var response = shootRepository.uploadImage(
-                                    uploadStatuRes.value.data.projectId.toRequestBody(MultipartBody.FORM),
-                                    uploadStatuRes.value.data.skuId.toRequestBody(MultipartBody.FORM),
-                                    uploadStatuRes.value.data.imageCategory.toRequestBody(MultipartBody.FORM),
-                                    authKey.toRequestBody(MultipartBody.FORM),
-                                    "Retry".toRequestBody(MultipartBody.FORM),
-                                    uploadStatuRes.value.data.sequence,
-                                    "".toRequestBody(MultipartBody.FORM),
-                                    imageFile)
-
-                                when(response){
-                                    is Resource.Success -> {
-                                        logManualUpload("Manual upload success")
-                                        captureEvent(Events.MANUALLY_UPLOADED,image,true,null)
-                                        startNextUpload(image.itemId!!,true,imageType)
-                                    }
-
-                                    is Resource.Failure -> {
-                                        logManualUpload("Manual upload failed")
-                                        if(response.errorMessage == null){
-                                            captureEvent(Events.MANUAL_UPLOAD_FAILED,image,false,response.errorCode.toString()+": Http exception from server")
-                                        }else {
-                                            captureEvent(Events.MANUAL_UPLOAD_FAILED,image,false,response.errorCode.toString()+": "+response.errorMessage)
-                                        }
-                                    }
-                                }
+//                                var response = shootRepository.uploadImage(
+//                                    uploadStatuRes.value.data.projectId.toRequestBody(MultipartBody.FORM),
+//                                    uploadStatuRes.value.data.skuId.toRequestBody(MultipartBody.FORM),
+//                                    uploadStatuRes.value.data.imageCategory.toRequestBody(MultipartBody.FORM),
+//                                    authKey.toRequestBody(MultipartBody.FORM),
+//                                    "Retry".toRequestBody(MultipartBody.FORM),
+//                                    uploadStatuRes.value.data.sequence,
+//                                    "".toRequestBody(MultipartBody.FORM),
+//                                    imageFile)
+//
+//                                when(response){
+//                                    is Resource.Success -> {
+//                                        logManualUpload("Manual upload success")
+//                                        captureEvent(Events.MANUALLY_UPLOADED,image,true,null)
+//                                        startNextUpload(image.itemId!!,true,imageType)
+//                                    }
+//
+//                                    is Resource.Failure -> {
+//                                        logManualUpload("Manual upload failed")
+//                                        if(response.errorMessage == null){
+//                                            captureEvent(Events.MANUAL_UPLOAD_FAILED,image,false,response.errorCode.toString()+": Http exception from server")
+//                                        }else {
+//                                            captureEvent(Events.MANUAL_UPLOAD_FAILED,image,false,response.errorCode.toString()+": "+response.errorMessage)
+//                                        }
+//                                    }
+//                                }
                             }
                         }
 

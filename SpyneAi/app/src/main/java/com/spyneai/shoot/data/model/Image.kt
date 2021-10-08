@@ -16,6 +16,9 @@ class Image {
     var name : String? = null
     var preSignedUrl : String? = null
     var imageId : String? = null
+    var overlayId : String? = null
     var debugData : String? = null
     var isStatusUpdated : Int? = null
+    var isReclick = 0
+    var isReshoot = 0
 }

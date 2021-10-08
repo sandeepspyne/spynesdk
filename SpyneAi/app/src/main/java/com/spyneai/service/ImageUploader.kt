@@ -9,6 +9,7 @@ import com.spyneai.base.network.Resource
 import com.spyneai.needs.AppConstants
 import com.spyneai.needs.Utilities
 import com.spyneai.posthog.Events
+import com.spyneai.shoot.data.ImageLocalRepository
 import com.spyneai.shoot.data.ShootLocalRepository
 import com.spyneai.shoot.data.ShootRepository
 import com.spyneai.shoot.data.model.Image
@@ -23,7 +24,7 @@ import okhttp3.RequestBody.Companion.toRequestBody
 import java.io.File
 
 class ImageUploader(val context: Context,
-                    val localRepository : ShootLocalRepository,
+                    val localRepository : ImageLocalRepository,
                     val shootRepository: ShootRepository,
                     var listener: Listener) {
 
@@ -39,10 +40,10 @@ class ImageUploader(val context: Context,
 
                var skipFlag = -1
                val image = if (imageType == AppConstants.REGULAR){
-                   localRepository.getOldestImage()
+                   localRepository.getOldestImage("0")
                } else{
                    skipFlag = -2
-                   localRepository.getOldestSkippedImage()
+                   localRepository.getOldestImage("-1")
                }
 
                if (image.itemId != null){
@@ -101,11 +102,11 @@ class ImageUploader(val context: Context,
                    val meta = if (image.meta == null) "".toRequestBody(MultipartBody.FORM) else image.meta?.toRequestBody(MultipartBody.FORM)
 
                    var response = if (image.categoryName == "360int"){
-                       shootRepository.uploadImage(projectId!!,
-                           skuId!!, imageCategory!!,authKey, uploadType.toRequestBody(MultipartBody.FORM),
-                           image.sequence!!,
-                           meta!!,
-                           imageFile)
+                       shootRepository.getPreSignedUrl(
+                           Utilities.getPreference(context, AppConstants.AUTH_KEY).toString(),
+                           uploadType,
+                           image
+                       )
                    }else if (BaseApplication.getContext().getString(R.string.app_name) == AppConstants.SWIGGY){
                        shootRepository.uploadImageWithAngle(
                            projectId!!,
@@ -118,11 +119,11 @@ class ImageUploader(val context: Context,
                            imageFile
                        )
                    } else {
-                       shootRepository.uploadImage(projectId!!,
-                           skuId!!, imageCategory!!,authKey, uploadType.toRequestBody(MultipartBody.FORM),
-                           image.sequence!!,
-                           meta!!,
-                           imageFile)
+                       shootRepository.getPreSignedUrl(
+                           Utilities.getPreference(context, AppConstants.AUTH_KEY).toString(),
+                           uploadType,
+                           image
+                       )
                    }
 
                    when(response){
@@ -155,7 +156,7 @@ class ImageUploader(val context: Context,
                        val count = localRepository.updateSkipedImages()
 
                        //check if we don"t have any new image clicked while uploading skipped images
-                      if (localRepository.getOldestImage().itemId == null){
+                      if (localRepository.getOldestImage("0").itemId == null){
                           if (count > 0){
                               //upload double skipped images if we don't have any new image
                               selectLastImageAndUpload(AppConstants.SKIPPED,0)

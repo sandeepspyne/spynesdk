@@ -48,6 +48,23 @@ interface ClipperApi {
 
     @Multipart
     @POST("v2/image/upload")
+    suspend fun getPreSignedUrl(
+        @Part("auth_key") auth_key: RequestBody?,
+        @Part("project_id") project_id: RequestBody?,
+        @Part("sku_id") sku_id: RequestBody?,
+        @Part("image_category") image_category: RequestBody?,
+        @Part("image_name") image_name: RequestBody?,
+        @Part("overlay_id") overlay_id: RequestBody?,
+        @Part("upload_type") upload_type: RequestBody?,
+        @Part("frame_seq_no") frame_seq_no: Int,
+        @Part("is_reclick") is_reclick: Int,
+        @Part("tags") tags: RequestBody,
+        @Part file: MultipartBody.Part,
+        @Part("source") source : String = "App_android"
+    ): UploadImageResponse
+
+    @Multipart
+    @POST("v2/image/upload")
     suspend fun uploadDebugImage(
         @Part("project_id") project_id: RequestBody?,
         @Part("sku_id") sku_id: RequestBody?,

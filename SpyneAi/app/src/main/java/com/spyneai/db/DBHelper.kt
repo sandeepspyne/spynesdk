@@ -102,7 +102,10 @@ class DBHelper(context: Context) :
                 Images.COLUMN_NAME_IMAGE_NAME + " TEXT"+
                 Images.COLUMN_NAME_IMAGE_PRE_SIGNED_URL + " TEXT"+
                 Images.COLUMN_NAME_IMAGE_ID + " TEXT"+
+                Images.COLUMN_NAME_OVERLAY_ID + " TEXT"+
                 Images.COLUMN_NAME_IMAGE_DEBUG_DATA + " TEXT"+
+                Images.COLUMN_NAME_IS_RE_CLICK + " INTEGER"+
+                Images.COLUMN_NAME_IS_RESHOOT + " INTEGER"+
                 Images.COLUMN_NAME_IS_STATUS_UPDATED + " INTEGER;"
 
         private const val SQL_CREATE_ENTRIES =
@@ -145,8 +148,11 @@ class DBHelper(context: Context) :
                 "${Images.COLUMN_NAME_IMAGE_NAME} TEXT," +
                 "${Images.COLUMN_NAME_IMAGE_PRE_SIGNED_URL} TEXT," +
                 "${Images.COLUMN_NAME_IMAGE_ID} TEXT," +
+                "${Images.COLUMN_NAME_OVERLAY_ID} TEXT," +
                 "${Images.COLUMN_NAME_IMAGE_DEBUG_DATA} TEXT," +
                 "${Images.COLUMN_NAME_IS_STATUS_UPDATED} INTEGER," +
+                "${Images.COLUMN_NAME_IS_RE_CLICK} INTEGER," +
+                "${Images.COLUMN_NAME_IS_RESHOOT} INTEGER," +
                 "${Images.TABLE_NAME} TEXT)"
 
 

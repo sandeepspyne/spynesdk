@@ -20,7 +20,7 @@
         <entry key="app/src/main/res/drawable/bg_skip_dialog.xml" value="0.321025641025641" />
         <entry key="app/src/main/res/drawable/bg_three_sixty_shimmer.xml" value="0.321025641025641" />
         <entry key="app/src/main/res/drawable/exposure_thumb.xml" value="0.2064814814814815" />
-        <entry key="app/src/main/res/layout-land/fragment_camera.xml" value="0.1" />
+        <entry key="app/src/main/res/layout-land/fragment_camera.xml" value="0.165" />
         <entry key="app/src/main/res/layout-land/fragment_overlays.xml" value="0.18125" />
         <entry key="app/src/main/res/layout-land/gyro_view.xml" value="0.2421875" />
         <entry key="app/src/main/res/layout-land/layout_gyro_view.xml" value="0.11235955056179775" />
