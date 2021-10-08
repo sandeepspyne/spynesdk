@@ -46,22 +46,28 @@ interface ClipperApi {
         @Part file: MultipartBody.Part
     ): UploadImageResponse
 
-    @Multipart
+    @FormUrlEncoded
     @POST("v2/image/upload")
     suspend fun getPreSignedUrl(
-        @Part("auth_key") auth_key: RequestBody?,
-        @Part("project_id") project_id: RequestBody?,
-        @Part("sku_id") sku_id: RequestBody?,
-        @Part("image_category") image_category: RequestBody?,
-        @Part("image_name") image_name: RequestBody?,
-        @Part("overlay_id") overlay_id: RequestBody?,
-        @Part("upload_type") upload_type: RequestBody?,
-        @Part("frame_seq_no") frame_seq_no: Int,
-        @Part("is_reclick") is_reclick: Int,
-        @Part("tags") tags: RequestBody,
-        @Part file: MultipartBody.Part,
-        @Part("source") source : String = "App_android"
-    ): UploadImageResponse
+        @Field("auth_key") auth_key: String?,
+        @Field("project_id") project_id: String?,
+        @Field("sku_id") sku_id: String?,
+        @Field("image_category") image_category: String?,
+        @Field("image_name") image_name: String?,
+        @Field("overlay_id") overlay_id: Int?,
+        @Field("upload_type") upload_type: String?,
+        @Field("frame_seq_no") frame_seq_no: Int?,
+        @Field("is_reclick") is_reclick: Boolean?,
+        @Field("tags") tags: String?,
+        @Field("source") source : String = "App_android"
+    ): ImagePreSignedRes
+
+    @FormUrlEncoded
+    @POST("v4/image/mark-done")
+    suspend fun markUploaded(
+        @Field("image_id") imageId: String,
+        @Field("auth_key") authKey : String = Utilities.getPreference(BaseApplication.getContext(),AppConstants.AUTH_KEY).toString()
+    ) : ImagePreSignedRes
 
     @Multipart
     @POST("v2/image/upload")

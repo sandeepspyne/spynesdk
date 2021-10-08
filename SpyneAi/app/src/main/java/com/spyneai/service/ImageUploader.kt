@@ -1,11 +1,14 @@
 package com.spyneai.service
 
 import android.content.Context
+import android.util.Log
 import androidx.work.*
 import com.posthog.android.Properties
 import com.spyneai.*
 import com.spyneai.R
+import com.spyneai.base.network.ClipperApi
 import com.spyneai.base.network.Resource
+import com.spyneai.interfaces.GcpClient
 import com.spyneai.needs.AppConstants
 import com.spyneai.needs.Utilities
 import com.spyneai.posthog.Events
@@ -14,6 +17,7 @@ import com.spyneai.shoot.data.ShootLocalRepository
 import com.spyneai.shoot.data.ShootRepository
 import com.spyneai.shoot.data.model.Image
 import com.spyneai.shoot.utils.logUpload
+import com.spyneai.threesixty.data.model.VideoDetails
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
@@ -21,6 +25,10 @@ import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.MultipartBody
 import okhttp3.RequestBody.Companion.asRequestBody
 import okhttp3.RequestBody.Companion.toRequestBody
+import okhttp3.ResponseBody
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
 import java.io.File
 
 class ImageUploader(val context: Context,
@@ -61,90 +69,91 @@ class ImageUploader(val context: Context,
                        return@launch
                    }
 
-//                   if (image.imagePath != null){
-//                       if (!File(image.imagePath!!).exists()){
-//                           localRepository.deleteImage(image.itemId!!)
-//                           captureEvent(Events.UPLOAD_FAILED_SERVICE,image,false,"Image file got deleted by user")
-//                            startNextUpload(image.itemId!!,true,imageType)
-//                       }
-//                   }
+                   if (image.isUploaded == 0){
+                       val uploadType = if (retryCount == 0) "Direct" else "Retry"
 
-                   logUpload("Upload Started "+imageType+" "+image.itemId)
-
-                   val projectId = image.projectId?.toRequestBody(MultipartBody.FORM)
-
-                   val skuId = image.skuId?.toRequestBody(MultipartBody.FORM)
-                   val imageCategory =
-                       image.categoryName?.toRequestBody(MultipartBody.FORM)
-
-                   val authKey = Utilities.getPreference(context, AppConstants.AUTH_KEY).toString().toRequestBody(MultipartBody.FORM)
-
-                   var imageFile: MultipartBody.Part? = null
-                   val requestFile =
-                       File(image.imagePath).asRequestBody("multipart/form-data".toMediaTypeOrNull())
-
-                   val fileName = if (image.categoryName == "360int") {
-                       image.skuName + "_" + image.skuId + "_360int_"+image.sequence+".jpg"
-                   }else {
-                       File(image.imagePath)!!.name
-                   }
-
-                   com.spyneai.shoot.utils.log("Image Name " + fileName)
-
-                   imageFile =
-                       MultipartBody.Part.createFormData(
-                           "image",
-                           fileName,
-                           requestFile
-                       )
-
-                   val uploadType = if (retryCount == 0) "Direct" else "Retry"
-                   val meta = if (image.meta == null) "".toRequestBody(MultipartBody.FORM) else image.meta?.toRequestBody(MultipartBody.FORM)
-
-                   var response = if (image.categoryName == "360int"){
-                       shootRepository.getPreSignedUrl(
+                       var response = shootRepository.getPreSignedUrl(
                            Utilities.getPreference(context, AppConstants.AUTH_KEY).toString(),
                            uploadType,
                            image
                        )
-                   }else if (BaseApplication.getContext().getString(R.string.app_name) == AppConstants.SWIGGY){
-                       shootRepository.uploadImageWithAngle(
-                           projectId!!,
-                           skuId!!,
-                           imageCategory!!,
-                           authKey,
-                           uploadType.toRequestBody(MultipartBody.FORM),
-                           image.sequence!!,
-                           image.angle!!,
-                           imageFile
-                       )
-                   } else {
-                       shootRepository.getPreSignedUrl(
-                           Utilities.getPreference(context, AppConstants.AUTH_KEY).toString(),
-                           uploadType,
-                           image
-                       )
-                   }
 
-                   when(response){
-                       is Resource.Success -> {
-                           log("Image upload sucess. image angle: "+image.angle)
-                           captureEvent(Events.UPLOADED_SERVICE,image,true,null)
-                           startNextUpload(image.itemId!!,true,imageType)
-                       }
+                       when(response){
+                           is Resource.Success -> {
+                               image.preSignedUrl = response.value.data.presignedUrl
+                               image.imageId = response.value.data.imageId
 
-                       is Resource.Failure -> {
-                           log("Image upload failed")
-                          logUpload("Upload error "+response.errorCode.toString()+" "+response.errorMessage)
-                           if(response.errorMessage == null){
-                               captureEvent(Events.UPLOAD_FAILED_SERVICE,image,false,response.errorCode.toString()+": Http exception from server")
-                           }else {
-                               captureEvent(Events.UPLOAD_FAILED_SERVICE,image,false,response.errorCode.toString()+": "+response.errorMessage)
+                               //captureEvent(Events.GOT_PRESIGNED_VIDEO_URL,video,true,null)
+
+                               localRepository.addPreSignedUrl(
+                                   image
+                               )
+
+                               // create RequestBody instance from file
+                               val requestFile =
+                                   File(image.imagePath).asRequestBody("text/x-markdown; charset=utf-8".toMediaTypeOrNull())
+
+                               //upload video with presigned url
+                               val request = GcpClient.buildService(ClipperApi::class.java)
+
+                               val call = request.uploadVideo(
+                                   "application/octet-stream",
+                                   response.value.data.presignedUrl,
+                                   requestFile
+                               )
+
+                               call.enqueue(object : Callback<ResponseBody> {
+                                   override fun onResponse(call: Call<ResponseBody>, response: Response<ResponseBody>) {
+                                       Log.d("VideoUploader", "onResponse: "+response.code())
+                                       if (response.isSuccessful){
+                                           localRepository.markUploaded(image)
+                                           onVideoUploaded(
+                                               image,
+                                               imageType,
+                                               retryCount
+                                           )
+                                       }else {
+                                           onVideoUploadFailed(
+                                               imageType,
+                                               retryCount,
+                                               image,
+                                               response.errorBody().toString()
+                                           )
+                                       }
+                                   }
+
+                                   override fun onFailure(call: Call<ResponseBody>, t: Throwable) {
+                                       Log.d("VideoUploader", "onFailure: "+t.message)
+                                       onVideoUploadFailed(
+                                           imageType,
+                                           retryCount,
+                                           image,
+                                           t.message
+                                       )
+                                   }
+
+                               })
+
+//                               log("Image upload sucess. image angle: "+image.angle)
+//                               captureEvent(Events.UPLOADED_SERVICE,image,true,null)
+//                               startNextUpload(image.itemId!!,true,imageType)
                            }
 
-                           selectLastImageAndUpload(imageType,retryCount+1)
+                           is Resource.Failure -> {
+                               log("Image upload failed")
+                               logUpload("Upload error "+response.errorCode.toString()+" "+response.errorMessage)
+                               if(response.errorMessage == null){
+                                   captureEvent(Events.UPLOAD_FAILED_SERVICE,image,false,response.errorCode.toString()+": Http exception from server")
+                               }else {
+                                   captureEvent(Events.UPLOAD_FAILED_SERVICE,image,false,response.errorCode.toString()+": "+response.errorMessage)
+                               }
+
+                               selectLastImageAndUpload(imageType,retryCount+1)
+                           }
                        }
                    }
+
+
                }else{
                    logUpload("All Images uploaded")
                    if (imageType == AppConstants.REGULAR){
@@ -173,6 +182,44 @@ class ImageUploader(val context: Context,
        }else {
            listener.onConnectionLost()
        }
+    }
+
+    private fun onVideoUploaded(video: Image, imageType: String, retryCount : Int) {
+        captureEvent(Events.VIDEO_UPLOADED_TO_GCP,video,true,null)
+
+        GlobalScope.launch(Dispatchers.Default) {
+            setStatusUploaed(video,imageType,retryCount)
+        }
+    }
+
+    private fun onVideoUploadFailed(imageType: String,retryCount: Int,video: Image,error: String?) {
+        captureEvent(Events.VIDEO_UPLOAD_TO_GCP_FAILED,video,false,error)
+
+        GlobalScope.launch(Dispatchers.Default) {
+            selectLastImageAndUpload(imageType,retryCount+1)
+        }
+    }
+
+    private suspend fun setStatusUploaed(video: Image,imageType: String,retryCount : Int) {
+        val response = shootRepository.markUploaded(video.imageId!!)
+
+        when(response){
+            is Resource.Success -> {
+                captureEvent(Events.MARKED_VIDEO_UPLOADED,video,true,null)
+                localRepository.markStatusUploaded(video)
+                selectLastImageAndUpload(imageType,0)
+            }
+
+            is Resource.Failure -> {
+                if(response.errorMessage == null){
+                    captureEvent(Events.MARK_VIDEO_UPLOADED_FAILED,video,false,response.errorCode.toString()+": Http exception from server")
+                }else {
+                    captureEvent(Events.MARK_VIDEO_UPLOADED_FAILED,video,false,response.errorCode.toString()+": "+response.errorMessage)
+                }
+
+                selectLastImageAndUpload(imageType,retryCount+1)
+            }
+        }
     }
 
     private fun startNextUpload(itemId: Long,uploaded : Boolean,imageType : String) {

@@ -56,35 +56,26 @@ class ShootRepository : BaseRepository() {
         uploadType : String,
         image : Image
     ) = safeApiCall {
-        var imageFile: MultipartBody.Part? = null
-
-        val requestFile =
-            File(image.imagePath).asRequestBody("multipart/form-data".toMediaTypeOrNull())
-
-        val fileName = if (image.categoryName == "360int")
-            image.skuName + "_" + image.skuId + "_360int_"+image.sequence+".jpg"
-        else
-            File(image.imagePath)!!.name
-
-
-        com.spyneai.shoot.utils.log("Image Name " + fileName)
-
-        imageFile = MultipartBody.Part.createFormData("image", fileName, requestFile)
-
-        val meta = if (image.meta == null) "".toRequestBody(MultipartBody.FORM) else image.meta?.toRequestBody(MultipartBody.FORM)
+        val meta = if (image.meta == null) "" else image.meta
 
         clipperApi.getPreSignedUrl(
-            authKey.toRequestBody(MultipartBody.FORM),
-            image.projectId?.toRequestBody(MultipartBody.FORM),
-            image.skuId?.toRequestBody(MultipartBody.FORM),
-            image.categoryName?.toRequestBody(MultipartBody.FORM),
-            image.name?.toRequestBody(MultipartBody.FORM),
-            image.overlayId?.toRequestBody(MultipartBody.FORM),
-            uploadType.toRequestBody(MultipartBody.FORM),
+            authKey,
+            image.projectId,
+            image.skuId,
+            image.categoryName,
+            image.name,
+            image.overlayId?.toInt(),
+            uploadType,
             image.sequence!!,
-            image.isReclick!!,
-            meta!!,
-            imageFile)
+            image.isReclick != 0,
+            meta!!
+        )
+    }
+
+    suspend fun markUploaded(
+        imageId : String
+    ) = safeApiCall {
+        clipperApi.markUploaded(imageId)
     }
 
     suspend fun uploadImageWithAngle(
