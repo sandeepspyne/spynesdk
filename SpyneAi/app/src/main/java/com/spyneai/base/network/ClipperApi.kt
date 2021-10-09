@@ -148,7 +148,9 @@ interface ClipperApi {
         @Field("auth_key") authKey : String,
         @Field("sku_id") skuId : String,
         @Field("background_id") backgroundId : String,
-        @Field("is_360") is360 : Boolean
+        @Field("is_360") is360 : Boolean,
+        @Field("number_plate_blur") numberPlateBlur : Boolean,
+        @Field("window_correction") windowCorrection : Boolean
     ) : ProcessSkuRes
 
 

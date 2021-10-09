@@ -319,5 +319,7 @@
     <string name="rate_this_output">Rate this Output:</string>
 
     <string name="tv_instructions">(Keep dish above this line)</string>
+    <string name="show_window_reflection">Show Window Reflection</string>
+    <string name="blur_no_plate">Blur Number Plate</string>
 
 </resources>
