@@ -13,6 +13,7 @@ object Images : BaseColumns {
     const val COLUMN_NAME_IS_UPLOADED = "is_uploaded"
     const val COLUMN_NAME_IMAGE_ANGLE = "angle"
     const val COLUMN_NAME_IMAGE_META = "image_meta"
+
     const val COLUMN_NAME_IMAGE_NAME = "image_name"
     const val COLUMN_NAME_IMAGE_PRE_SIGNED_URL = "image_pre_signed_url"
     const val COLUMN_NAME_OVERLAY_ID = "overlay_id"

@@ -58,7 +58,9 @@ interface ClipperApi {
         @Field("upload_type") upload_type: String?,
         @Field("frame_seq_no") frame_seq_no: Int?,
         @Field("is_reclick") is_reclick: Boolean?,
+        @Field("is_reshoot") isReshoot: Boolean?,
         @Field("tags") tags: String?,
+        @Field("angle") angle: Int,
         @Field("source") source : String = "App_android"
     ): ImagePreSignedRes
 

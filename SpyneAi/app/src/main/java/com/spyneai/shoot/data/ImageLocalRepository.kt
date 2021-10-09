@@ -182,7 +182,15 @@ class ImageLocalRepository {
             Images.COLUMN_NAME_IMAGE_PATH,
             Images.COLUMN_NAME_IMAGE_SEQUENCE,
             Images.COLUMN_NAME_IMAGE_ANGLE,
-            Images.COLUMN_NAME_IMAGE_META)
+            Images.COLUMN_NAME_IMAGE_META,
+            Images.COLUMN_NAME_IMAGE_NAME,
+            Images.COLUMN_NAME_IMAGE_PRE_SIGNED_URL,
+            Images.COLUMN_NAME_OVERLAY_ID,
+            Images.COLUMN_NAME_IMAGE_ID,
+            Images.COLUMN_NAME_IMAGE_DEBUG_DATA,
+            Images.COLUMN_NAME_IS_STATUS_UPDATED,
+            Images.COLUMN_NAME_IS_RE_CLICK,
+            Images.COLUMN_NAME_IS_RESHOOT)
 
         // Filter results WHERE "title" = 'My Title'
         val selection = "${Images.COLUMN_NAME_IS_UPLOADED} = ? OR ${Images.COLUMN_NAME_IS_STATUS_UPDATED} = ?"
@@ -216,6 +224,15 @@ class ImageLocalRepository {
                 val angle = getInt(getColumnIndexOrThrow(Images.COLUMN_NAME_IMAGE_ANGLE))
                 val meta = getString(getColumnIndexOrThrow(Images.COLUMN_NAME_IMAGE_META))
 
+                val name = getString(getColumnIndexOrThrow(Images.COLUMN_NAME_IMAGE_NAME))
+                val preSignedUrl = getString(getColumnIndexOrThrow(Images.COLUMN_NAME_IMAGE_PRE_SIGNED_URL))
+                val overlayId = getString(getColumnIndexOrThrow(Images.COLUMN_NAME_OVERLAY_ID))
+                val imageId = getString(getColumnIndexOrThrow(Images.COLUMN_NAME_IMAGE_ID))
+                val debugData = getString(getColumnIndexOrThrow(Images.COLUMN_NAME_IMAGE_DEBUG_DATA))
+                val isStatusUpdated = getInt(getColumnIndexOrThrow(Images.COLUMN_NAME_IS_STATUS_UPDATED))
+                val isReclick = getInt(getColumnIndexOrThrow(Images.COLUMN_NAME_IS_RE_CLICK))
+                val isReshoot = getInt(getColumnIndexOrThrow(Images.COLUMN_NAME_IS_RESHOOT))
+
                 image.itemId = itemId
                 image.projectId = projectId
                 image.skuName = skuName
@@ -225,6 +242,15 @@ class ImageLocalRepository {
                 image.sequence = sequence
                 image.angle = angle
                 image.meta = meta
+
+                image.name = name
+                image.preSignedUrl = preSignedUrl
+                image.overlayId = overlayId
+                image.imageId = imageId
+                image.debugData = debugData
+                image.isStatusUpdated = isStatusUpdated
+                image.isReclick = isReclick
+                image.isReshoot = isReshoot
             }
         }
 

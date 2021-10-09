@@ -68,7 +68,9 @@ class ShootRepository : BaseRepository() {
             uploadType,
             image.sequence!!,
             image.isReclick != 0,
-            meta!!
+            image.isReshoot != 0,
+            meta!!,
+            image.angle!!
         )
     }
 

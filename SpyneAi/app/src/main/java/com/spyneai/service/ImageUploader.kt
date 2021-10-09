@@ -85,9 +85,7 @@ class ImageUploader(val context: Context,
 
                                //captureEvent(Events.GOT_PRESIGNED_VIDEO_URL,video,true,null)
 
-                               localRepository.addPreSignedUrl(
-                                   image
-                               )
+                               localRepository.addPreSignedUrl(image)
 
                                // create RequestBody instance from file
                                val requestFile =
