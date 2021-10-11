@@ -37,7 +37,7 @@ class ProcessViewModel : ViewModel() {
     var backgroundSelect: String? = null
 
     var numberPlateBlur = false
-    var windowCorrection  = false
+    var windowCorrection = false
 
 
 

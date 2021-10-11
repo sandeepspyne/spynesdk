@@ -13,7 +13,7 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="360 Preview"
+            android:text="@string/three_sixty_preview"
             android:id="@+id/tvSelectFidelity"
             app:layout_constraintLeft_toLeftOf="parent"
             android:fontFamily="@font/poppins_medium"
@@ -39,7 +39,7 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Select the 360 exterior Fidelity"
+            android:text="@string/select_the_threesixty_fidelity"
             android:textColor="@color/black"
             android:fontFamily="@font/medium"
             android:id="@+id/tv_image_to_credit"
@@ -64,7 +64,7 @@
             android:textColor="@color/black"
             android:textSize="@dimen/sp_12"
             app:layout_constraintTop_toBottomOf="@id/tv_image_to_credit"
-            android:text="Higher number of frames produce smoother\ntransitions in the 360 view  ">
+            android:text="@string/higher_no_frame">
 
         </TextView>
 
@@ -82,7 +82,7 @@
             android:gravity="center"
             android:layout_marginTop="@dimen/dp_10"
             app:layout_constraintTop_toBottomOf="@id/tvInfo"
-            android:text="Select the number of frames to preview the\nframe rate on a preset example"/>
+            android:text="@string/select_the_no_of_frame"/>
 
 
         <NumberPicker
@@ -110,7 +110,7 @@
             android:textSize="@dimen/sp_14"
             android:textColor="@color/black"
             android:fontFamily="@font/poppins_medium"
-            android:text="1 Credit = 1 Frame"/>
+            android:text="@string/one_credit_one_frame"/>
 
         <com.google.android.material.button.MaterialButton
             android:layout_width="match_parent"
@@ -123,7 +123,7 @@
             android:layout_marginBottom="@dimen/dp_30"
             android:layout_marginLeft="@dimen/dp_20"
             android:layout_marginRight="@dimen/dp_20"
-            android:text="Proceed"
+            android:text="@string/proceed"
             android:textColor="@color/white"
             android:fontFamily="@font/medium"
             android:insetTop="0dp"

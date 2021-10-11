@@ -321,5 +321,19 @@
     <string name="tv_instructions">(Keep dish above this line)</string>
     <string name="show_window_reflection">Show Window Reflection</string>
     <string name="blur_no_plate">Blur Number Plate</string>
+    <string name="how_we_can_improve">How can we improve?</string>
+    <string name="features">Features</string>
+    <string name="embed_directly_to">Embed Directly on your website</string>
+    <string name="shoot_aywhere">Shoot Anywhere</string>
+    <string name="shoot_any_car">Shoot Any Car</string>
+    <string name="video_shoot">Video Shoot</string>
+    <string name="three_sixty_preview">360 Preview</string>
+    <string name="create_high_fidelity">Create high fidelity according to\nyour budget</string>
+    <string name="select_the_threesixty_fidelity">Select the 360 exterior Fidelity</string>
+    <string name="higher_no_frame">"Higher number of frames produce smoother\ntransitions in the 360 view  "</string>
+    <string name="select_the_no_of_frame">Select the number of frames to preview the\nframe rate on a preset example</string>
+    <string name="one_credit_one_frame">1 Credit = 1 Frame</string>
+    <string name="frames">frames</string>
+    <string name="fidelity_selection">Fidelity Selection</string>
 
 </resources>

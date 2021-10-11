@@ -27,7 +27,7 @@
             android:layout_height="wrap_content"
             android:id="@+id/tvTitle"
             android:layout_gravity="center"
-            android:text="Features"
+            android:text="@string/features"
             android:fontFamily="@font/poppins_semibold"
             android:textColor="@color/black"
             android:textSize="16sp"/>
