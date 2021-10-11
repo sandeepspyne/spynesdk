@@ -10,6 +10,7 @@ import android.os.*
 import com.spyneai.R
 import com.spyneai.dashboard.ui.MainDashboardActivity
 import com.spyneai.isInternetActive
+import com.spyneai.shoot.data.ImageLocalRepository
 import com.spyneai.shoot.data.ShootLocalRepository
 import com.spyneai.shoot.data.ShootRepository
 import com.spyneai.shoot.data.model.Image
@@ -252,7 +253,7 @@ class ImageUploadingService : Service(), ImageUploader.Listener {
 
         if (imageUploader == null)
             imageUploader = ImageUploader(this,
-                ShootLocalRepository(),
+                ImageLocalRepository(),
                 ShootRepository(),
                 this
             )

@@ -789,7 +789,10 @@ class FragmentOverlaysVTwo : BaseFragment<ShootViewModel, FragmentOverlaysV2Bind
 
     private fun showImageConfirmDialog(shootData: ShootData) {
         viewModel.shootData.value = shootData
-        Log.d(TAG, "onViewCreated: "+shootData.capturedImage)
+        Log.d(TAG, "onViewCreated: v o id "+viewModel.overlayId)
+        Log.d(TAG, "onViewCreated: o id "+shootData.overlayId)
+        Log.d(TAG, "onViewCreated: path"+shootData.capturedImage)
+
 
         when(getString(R.string.app_name)){
             AppConstants.OLA_CABS -> {
@@ -963,6 +966,8 @@ class FragmentOverlaysVTwo : BaseFragment<ShootViewModel, FragmentOverlaysV2Bind
             is OverlaysResponse.Data->{
                 viewModel.sequence = position
                 viewModel.overlayId = data.id
+
+                Log.d(TAG, "onOverlaySelected: "+data.id)
             }
 
             is NewSubCatResponse.Interior ->{

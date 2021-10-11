@@ -36,6 +36,7 @@ class ImageUploader(val context: Context,
                     val shootRepository: ShootRepository,
                     var listener: Listener) {
 
+    val TAG = "ImageUploader"
 
     fun start() {
         selectLastImageAndUpload(AppConstants.REGULAR,0)
@@ -54,8 +55,17 @@ class ImageUploader(val context: Context,
                    localRepository.getOldestImage("-1")
                }
 
+               val s = ""
+
                if (image.itemId != null){
                    //uploading enqueued
+
+                   Log.d(TAG, "selectLastImageAndUpload: "+retryCount)
+                   Log.d(TAG, "selectLastImageAndUpload: id "+image.itemId)
+                   Log.d(TAG, "selectLastImageAndUpload: reclick "+image.isReclick)
+                   Log.d(TAG, "selectLastImageAndUpload: path "+image.imagePath)
+                   Log.d(TAG, "selectLastImageAndUpload: uploaded "+image.isUploaded)
+                   Log.d(TAG, "selectLastImageAndUpload: status updated "+image.isStatusUpdated)
                    listener.inProgress(image)
 
                    if (retryCount > 4) {
@@ -69,11 +79,10 @@ class ImageUploader(val context: Context,
                        return@launch
                    }
 
-                   if (image.isUploaded == 0){
+                   if (image.isUploaded == 0 || image.isUploaded == -1){
                        val uploadType = if (retryCount == 0) "Direct" else "Retry"
 
                        var response = shootRepository.getPreSignedUrl(
-                           Utilities.getPreference(context, AppConstants.AUTH_KEY).toString(),
                            uploadType,
                            image
                        )
@@ -200,25 +209,26 @@ class ImageUploader(val context: Context,
     }
 
     private suspend fun setStatusUploaed(video: Image,imageType: String,retryCount : Int) {
-        val response = shootRepository.markUploaded(video.imageId!!)
+           val response = shootRepository.markUploaded(video.imageId!!)
 
-        when(response){
-            is Resource.Success -> {
-                captureEvent(Events.MARKED_VIDEO_UPLOADED,video,true,null)
-                localRepository.markStatusUploaded(video)
-                selectLastImageAndUpload(imageType,0)
-            }
+           when(response){
+               is Resource.Success -> {
+                   captureEvent(Events.MARKED_VIDEO_UPLOADED,video,true,null)
+                   localRepository.markStatusUploaded(video)
+                   selectLastImageAndUpload(imageType,0)
+               }
 
-            is Resource.Failure -> {
-                if(response.errorMessage == null){
-                    captureEvent(Events.MARK_VIDEO_UPLOADED_FAILED,video,false,response.errorCode.toString()+": Http exception from server")
-                }else {
-                    captureEvent(Events.MARK_VIDEO_UPLOADED_FAILED,video,false,response.errorCode.toString()+": "+response.errorMessage)
-                }
+               is Resource.Failure -> {
+                   if(response.errorMessage == null){
+                       captureEvent(Events.MARK_VIDEO_UPLOADED_FAILED,video,false,response.errorCode.toString()+": Http exception from server")
+                   }else {
+                       captureEvent(Events.MARK_VIDEO_UPLOADED_FAILED,video,false,response.errorCode.toString()+": "+response.errorMessage)
+                   }
 
-                selectLastImageAndUpload(imageType,retryCount+1)
-            }
-        }
+                   selectLastImageAndUpload(imageType,retryCount+1)
+               }
+           }
+
     }
 
     private fun startNextUpload(itemId: Long,uploaded : Boolean,imageType : String) {

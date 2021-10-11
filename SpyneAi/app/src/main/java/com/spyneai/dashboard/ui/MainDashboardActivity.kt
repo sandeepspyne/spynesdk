@@ -295,9 +295,9 @@ class MainDashboardActivity : AppCompatActivity() {
             "onPermissionGranted: " + Utilities.getPreference(this, AppConstants.CANCEL_ALL_WROKERS)
         )
         cancelAllWorkers()
-        startUploadService()
+      //  startUploadService()
        // startVideoUploadService()
-        checkFolderUpload()
+      //  checkFolderUpload()
     }
 
     private fun startVideoUploadService() {

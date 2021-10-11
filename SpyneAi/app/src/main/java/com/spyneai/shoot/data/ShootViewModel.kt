@@ -523,7 +523,7 @@ class ShootViewModel : ViewModel() {
                     notifyItemChanged.value = position.plus(1)
                     //overlaysAdapter.notifyItemChanged(position.plus(1))
                     //binding.rvSubcategories.scrollToPosition(position)
-                    scrollView.value = position
+                    scrollView.value = position.plus(2)
                 }else {
                     val element = list.firstOrNull {
                         !it.isSelected && !it.imageClicked
@@ -535,7 +535,7 @@ class ShootViewModel : ViewModel() {
                         //overlaysAdapter.notifyItemChanged(sequence)
                         notifyItemChanged.value = sequence
                         //binding.rvSubcategories.scrollToPosition(sequence)
-                        scrollView.value = sequence
+                        scrollView.value = sequence.plus(2)
                     }
                 }
             }
@@ -559,7 +559,7 @@ class ShootViewModel : ViewModel() {
                     notifyItemChanged.value = position.plus(1)
                     //overlaysAdapter.notifyItemChanged(position.plus(1))
                     //binding.rvSubcategories.scrollToPosition(position)
-                    scrollView.value = position
+                    scrollView.value = position.plus(2)
                 }else {
                     val element = list.firstOrNull {
                         !it.isSelected && !it.imageClicked
@@ -571,7 +571,7 @@ class ShootViewModel : ViewModel() {
                         //overlaysAdapter.notifyItemChanged(sequence)
                         notifyItemChanged.value = sequence
                         //binding.rvSubcategories.scrollToPosition(sequence)
-                        scrollView.value = sequence
+                        scrollView.value = sequence.plus(2)
                     }
                 }
             }
@@ -595,7 +595,7 @@ class ShootViewModel : ViewModel() {
                     notifyItemChanged.value = position.plus(1)
                     //overlaysAdapter.notifyItemChanged(position.plus(1))
                     //binding.rvSubcategories.scrollToPosition(position)
-                    scrollView.value = position
+                    scrollView.value = position.plus(2)
                 }else {
                     val element = list.firstOrNull {
                         !it.isSelected && !it.imageClicked
@@ -607,7 +607,7 @@ class ShootViewModel : ViewModel() {
                         //overlaysAdapter.notifyItemChanged(sequence)
                         notifyItemChanged.value = sequence
                         //binding.rvSubcategories.scrollToPosition(sequence)
-                        scrollView.value = sequence
+                        scrollView.value = sequence.plus(2)
                     }
                 }
             }

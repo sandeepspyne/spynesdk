@@ -47,9 +47,8 @@ interface ClipperApi {
     ): UploadImageResponse
 
     @FormUrlEncoded
-    @POST("v2/image/upload")
+    @POST("v4/image/upload")
     suspend fun getPreSignedUrl(
-        @Field("auth_key") auth_key: String?,
         @Field("project_id") project_id: String?,
         @Field("sku_id") sku_id: String?,
         @Field("image_category") image_category: String?,
@@ -60,8 +59,10 @@ interface ClipperApi {
         @Field("is_reclick") is_reclick: Boolean?,
         @Field("is_reshoot") isReshoot: Boolean?,
         @Field("tags") tags: String?,
+        @Field("debug_data") debugData: String?,
         @Field("angle") angle: Int,
-        @Field("source") source : String = "App_android"
+        @Field("source") source : String = "App_android",
+        @Field("auth_key") authKey : String = Utilities.getPreference(BaseApplication.getContext(),AppConstants.AUTH_KEY).toString()
     ): ImagePreSignedRes
 
     @FormUrlEncoded
