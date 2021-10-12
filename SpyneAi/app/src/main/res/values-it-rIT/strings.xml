@@ -129,7 +129,7 @@
     <string name="download_free"><u>Scarica gratuitamente (con filigrana)</u></string>
 
     <string name="downloading...."><u>Download in corso...</u></string>
-    <string name="download_completed">Download completato</string>
+    <string name="download_completed">Download effettuato</string>
     <string name="download_failed"><u> Download non riuscito</u></string>
 
     <string name="total_images_clicked"><u>Totale immagini cliccate</u></string>
@@ -256,7 +256,7 @@
     <string name="already_a_user">Sei già un utente %1$s?</string>
     <string name="new_to">Nuovo in %1$s</string>
     <string name="projects">Progetti</string>
-    <string name="shoot_all_angles">Vendi le tue auto più veloce e meglio con una vista 360° \ne foto professionali.</string>
+    <string name="shoot_all_angles">La soluzione innovativa per la fotografia della tua vettura. \nOttieni un vantaggio di mercato attraverso immagini di qualità.</string>
     <string name="image_shoot">Scatta immagine</string>
     <string name="explore">Esplora</string>
     <string name="Germany">Germania</string>
@@ -285,7 +285,7 @@
     <string name="total_images_label">Immagini totali</string>
     <string name="resume_shoot">Riprendi riprese</string>
     <string name="start_shoot">Inizia a sparare</string>
-    <string name="angles">viste</string>
+    <string name="angles">Angoli </string>
     <string name="contiune">Continua</string>
     <string name="request_to_add">Richiesta di aggiungere crediti</string>
     <string name="generate_output">Genera output</string>
@@ -329,11 +329,12 @@
     <string name="shoot_any_car">Riprendere qualsiasi auto</string>
     <string name="video_shoot">Riprendi video</string>
     <string name="create_high_fidelity">Crea un\'impressione sopra la \nmedia secondo il budget</string>
-    <string name="select_the_threesixty_fidelity">Selezionare la fedeltà esterna a 360</string>
+    <string name="select_the_threesixty_fidelity">Alta qualità</string>
     <string name="higher_no_frame">"Un numero maggiore di fotogrammi produce \ntransizioni più fluide nella vista a 360"</string>
     <string name="select_the_no_of_frame">Seleziona il numero di fotogrammi per pre-vedere il \nframe rate su un esempio preimpostato</string>
     <string name="one_credit_one_frame">1 credito = 1 fotogramma</string>
     <string name="three_sixty_preview">360 Anteprima</string>
     <string name="frames">fotogrammi</string>
     <string name="fidelity_selection">Selezione di fedeltà</string>
+    <string name="angles_one_by_four">Angoli 1/4</string>
 </resources>

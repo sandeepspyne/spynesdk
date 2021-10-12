@@ -5,26 +5,33 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import com.spyneai.R
+import com.spyneai.setLocale
 import com.spyneai.base.BaseDialogFragment
 import com.spyneai.dashboard.ui.WhiteLabelConstants
 import com.spyneai.databinding.DialogAngleSelectionBinding
 import com.spyneai.needs.AppConstants
+import com.spyneai.setLocale
 import com.spyneai.shoot.data.ShootViewModel
 import com.spyneai.shoot.utils.shoot
 
 class AngleSelectionDialog : BaseDialogFragment<ShootViewModel,DialogAngleSelectionBinding>() {
 
+
+
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        
+        refreshTexts()
+
         showOptions()
     }
 
     private fun showOptions() {
+        val angles: String = getString(R.string.angles)
         val valuesShoots = when(getString(R.string.app_name)){
-            AppConstants.CARS24_INDIA,AppConstants.CARS24 -> arrayOf("5 Angles")
-            AppConstants.SELL_ANY_CAR -> arrayOf("4 Angles", "36 Angles")
-            else -> arrayOf("8 Angles", "12 Angles","16 Angles","24 Angles","36 Angles")
+            AppConstants.CARS24_INDIA,AppConstants.CARS24 -> arrayOf("5 "+angles)
+            AppConstants.SELL_ANY_CAR -> arrayOf("4 "+angles, "36 "+angles)
+            else -> arrayOf("8 "+angles, "12 "+angles,"16 "+angles,"24 "+angles,"36 "+angles)
         }
 
         val lastSelectedAngles = viewModel.getSelectedAngles()
@@ -54,13 +61,13 @@ class AngleSelectionDialog : BaseDialogFragment<ShootViewModel,DialogAngleSelect
 
         binding.npShoots.setOnValueChangedListener { _, _, newVal ->
            when(valuesShoots[newVal]) {
-               "4 Angles" -> newSelectedAngles = 4
-               "5 Angles" -> newSelectedAngles = 5
-               "8 Angles" -> newSelectedAngles = 8
-               "12 Angles" -> newSelectedAngles = 12
-               "16 Angles" -> newSelectedAngles = 16
-               "24 Angles" -> newSelectedAngles = 24
-               "36 Angles" -> newSelectedAngles = 36
+               "4 "+angles -> newSelectedAngles = 4
+               "5 "+angles -> newSelectedAngles = 5
+               "8 "+angles -> newSelectedAngles = 8
+               "12 "+angles -> newSelectedAngles = 12
+               "16 "+angles -> newSelectedAngles = 16
+               "24 "+angles -> newSelectedAngles = 24
+               "36 "+angles -> newSelectedAngles = 36
            }
         }
 
@@ -71,6 +78,15 @@ class AngleSelectionDialog : BaseDialogFragment<ShootViewModel,DialogAngleSelect
                 viewModel.exterirorAngles.value = newSelectedAngles
                     dismiss()
         }
+    }
+    private fun refreshTexts() {
+        requireContext().setLocale()
+                binding.tvChooseShot.text = getString(R.string.choose_shoots)
+                binding.tvMoreAngle.text = getString(R.string.more_angles)
+            binding.tvProceed.text = getString(R.string.proceed)
+
+
+
     }
 
     override fun onStop() {

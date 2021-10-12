@@ -46,7 +46,6 @@ class ThreeSixtyIntroFragment : BaseFragment<ThreeSixtyViewModel,Fragment360Intr
             tvVideoShoot.text = getString(R.string.video_shoot)
             tvCreateHigh.text = getString(R.string.create_high_fidelity)
             btnStartClicking.text = getString(R.string.start_shoot)
-//
         }
     }
 

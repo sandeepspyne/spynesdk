@@ -23,7 +23,7 @@
     <string name="did_not">Didn\'t receive the OTP?</string>
     <string name="resend">Erneut senden</string>
     <string name="submit_otp">OTP senden</string>
-    <string name="submit">Conferma</string>
+    <string name="submit">Bestätigen</string>
     <string name="continue_with_this_shoot">Weiter mit diesem Shooting</string>
     <string name="ok">OK</string>
     <string name="channels">Kanäle</string>
@@ -49,7 +49,7 @@
     <string name="total_images">Total Images Clicked</string>
     <string name="available_download">Available for download</string>
     <string name="select_marketplace">Select Marketplace</string>
-    <string name="confirm">Conferma Sie</string>
+    <string name="confirm">Bestätigen</string>
     <string name="no_reshoot">Erneut aufnehmen</string>
     <string name="start_shooting">Start Shooting</string>
     <string name="ongoing">In Bearbeitung</string>
@@ -254,7 +254,7 @@
     <string name="already_a_user">Bereits ein %1$s Benutzer?</string>
     <string name="new_to">Neu bei %1$s</string>
     <string name="projects">Projekte</string>
-    <string name="shoot_all_angles">Schießen Sie alle Winkelbilder und ein 360°-Video Ihres Autos für einen besseren \nWiederverkauf auf führenden Marktplätzen</string>
+    <string name="shoot_all_angles">Die innovative Lösung für Ihre Fahrzeugfotografie. \nErziele einen Marktvorteil durch Qualitätsbilder.</string>
     <string name="image_shoot">Bildaufnahme</string>
     <string name="explore">Entdecken</string>
     <string name="Germany">Deutschland</string>
@@ -282,7 +282,7 @@
     <string name="total_images_label">Bilder insgesamt</string>
     <string name="resume_shoot">Aufnahme fortsetzen</string>
     <string name="start_shoot">Jetzt fotografieren</string>
-    <string name="angles">Winkel</string>
+    <string name="angles">Winkel </string>
     <string name="contiune">Weiter</string>
     <string name="request_to_add">Anfrage zum Hinzufügen von Guthaben</string>
     <string name="generate_output">Ausgabe generieren</string>
@@ -327,7 +327,7 @@
     <string name="shoot_aywhere">Fotografiere überall</string>
     <string name="shoot_any_car">Fotografiere jedes Auto</string>
     <string name="video_shoot">Video aufnehmen</string>
-    <string name="create_high_fidelity">Erzeuge einen überdurschnittlichen \nEindruck je nach Budget</string>
+    <string name="create_high_fidelity">Qualitativ hochwertige Fotografie</string>
     <string name="select_the_threesixty_fidelity">Wählen Sie das 360-Fidelity-Exterieur</string>
     <string name="higher_no_frame">"Eine höhere Anzahl von Bildern erzeugt weichere\nÜbergänge in der 360°-Ansicht"</string>
     <string name="select_the_no_of_frame">Wählen Sie die Anzahl der Frames aus, um die\nFramerate in einem voreingestellten Beispiel anzuzeigen</string>
@@ -335,5 +335,6 @@
     <string name="three_sixty_preview">360-Vorschau</string>
     <string name="frames">Rahmen</string>
     <string name="fidelity_selection">Auswahl der Treue</string>
+    <string name="angles_one_by_four">Winkel 1/4</string>
 
 </resources>

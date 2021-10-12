@@ -314,6 +314,7 @@
       android:background="@drawable/bg_rectangle_button_ripple">
 
     <TextView
+        android:id="@+id/tvLogout"
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
         android:layout_gravity="center"

@@ -45,7 +45,9 @@ import kotlinx.coroutines.launch
 import java.util.*
 import kotlin.collections.ArrayList
 import com.iceteck.silicompressorr.videocompression.MediaController.mContext
+import com.spyneai.setLocale
 import com.spyneai.shoot.utils.log
+import kotlinx.android.synthetic.main.fragment_overlays.*
 
 
 class OverlaysFragment : BaseFragment<ShootViewModel, FragmentOverlaysBinding>(),
@@ -61,6 +63,7 @@ class OverlaysFragment : BaseFragment<ShootViewModel, FragmentOverlaysBinding>()
     var snackbar : Snackbar? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
+
         super.onCreate(savedInstanceState)
         shoot("onCreate called(overlay fragment)")
     }
@@ -70,12 +73,18 @@ class OverlaysFragment : BaseFragment<ShootViewModel, FragmentOverlaysBinding>()
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
+
         return super.onCreateView(inflater, container, savedInstanceState)
         shoot("onCreateView called(overlay fragment)")
+
+        requireContext().setLocale()
+
+
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
 
         shoot("onViewCreated called(overlay fragment)")
 
@@ -399,7 +408,7 @@ class OverlaysFragment : BaseFragment<ShootViewModel, FragmentOverlaysBinding>()
 
         viewModel.shootNumber.observe(viewLifecycleOwner, {
             binding.tvShoot?.text =
-                "Angles ${viewModel.shootNumber.value!! + 1}/${viewModel.getSelectedAngles()}"
+                getString(R.string.angles)+" ${viewModel.shootNumber.value!! + 1}/${viewModel.getSelectedAngles()}"
 
             viewModel.overlaysResponse.observe(viewLifecycleOwner, {
                 when (it) {
@@ -573,7 +582,8 @@ class OverlaysFragment : BaseFragment<ShootViewModel, FragmentOverlaysBinding>()
 //        })
 
         viewModel.shootNumber.observe(viewLifecycleOwner, {
-            binding.tvShoot?.text = "Angles $it/${viewModel.getSelectedAngles()}"
+            val angles: String = getString(R.string.angles)
+            binding.tvShoot?.text = angles +" $it/${viewModel.getSelectedAngles()}"
         })
     }
 
@@ -744,7 +754,7 @@ class OverlaysFragment : BaseFragment<ShootViewModel, FragmentOverlaysBinding>()
             binding.tvAngleName?.text =
                 interiorAdapter?.interiorList!![viewModel.interiorShootNumber.value!!].display_name
             binding.tvShoot?.text =
-                "Angles ${viewModel.interiorShootNumber.value!! + 1}/${viewModel.interiorAngles.value}"
+                getString(R.string.angles)+" ${viewModel.interiorShootNumber.value!! + 1}/${viewModel.interiorAngles.value}"
 
             if (viewModel.interiorShootNumber.value!! != 0)
                 interiorAdapter!!.interiorList[viewModel.interiorShootNumber.value!! - 1].isSelected =
@@ -861,7 +871,7 @@ class OverlaysFragment : BaseFragment<ShootViewModel, FragmentOverlaysBinding>()
             binding.tvAngleName?.text =
                 miscAdapter?.miscList!![viewModel.miscShootNumber.value!!].display_name
             binding.tvShoot?.text =
-                "Angles ${viewModel.miscShootNumber.value!! + 1}/${viewModel.miscAngles.value}"
+                getString(R.string.angles)+" ${viewModel.miscShootNumber.value!! + 1}/${viewModel.miscAngles.value}"
 
             if (viewModel.miscShootNumber.value!! != 0)
                 miscAdapter?.miscList!![viewModel.miscShootNumber.value!! - 1].isSelected = false
