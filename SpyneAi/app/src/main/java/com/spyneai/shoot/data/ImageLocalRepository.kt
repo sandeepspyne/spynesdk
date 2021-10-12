@@ -81,7 +81,7 @@ class ImageLocalRepository {
             put(Images.COLUMN_NAME_IMAGE_PATH,image.imagePath)
             put(Images.COLUMN_NAME_IS_UPLOADED,0)
             put(Images.COLUMN_NAME_IS_STATUS_UPDATED,0)
-            put(Images.COLUMN_NAME_IS_RE_CLICK,1)
+            put(Images.COLUMN_NAME_IS_RE_CLICK,image.isReclick)
             put(Images.COLUMN_NAME_IS_RESHOOT,image.isReshoot)
         }
 

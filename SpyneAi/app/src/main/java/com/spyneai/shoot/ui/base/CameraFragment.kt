@@ -722,13 +722,16 @@ class CameraFragment : BaseFragment<ShootViewModel, FragmentCameraBinding>(), Pi
         )
 
         val item = viewModel.shootList.value!!.firstOrNull {
-                it.sequence == sequenceNumber
+                it.overlayId == viewModel.overlayId
         }
 
         if (item != null){
             item.capturedImage = capturedImage
             item.angle = cameraAngle
-            }else {
+            viewModel.isReclick = true
+            }
+        else {
+            viewModel.isReclick = false
             viewModel.shootList.value!!.add(shootData)
         }
 

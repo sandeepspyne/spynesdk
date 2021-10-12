@@ -167,6 +167,7 @@ class ShootViewModel : ViewModel() {
 
     val addMoreAngle: MutableLiveData<Boolean> = MutableLiveData()
     var isReshoot = false
+    var isReclick = false
 
     private val _skuProcessStateWithBgResponse: MutableLiveData<Resource<SkuProcessStateResponse>> = MutableLiveData()
     val skuProcessStateWithBgResponse: LiveData<Resource<SkuProcessStateResponse>>
@@ -303,8 +304,8 @@ class ShootViewModel : ViewModel() {
         image.name = shootData.name+"."+shootData.capturedImage.substringAfter(".")
         image.debugData = shootData.debugData
         image.isReshoot = if (isReshoot) 1 else 0
+        image.isReclick = if (isReclick) 1 else 0
 
-        val s = ""
 
         if (imageRepository.isImageExist(image.skuId!!,image.name!!)){
             imageRepository.updateImage(image)
