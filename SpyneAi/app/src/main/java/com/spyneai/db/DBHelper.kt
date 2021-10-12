@@ -58,7 +58,14 @@ class DBHelper(context: Context) :
                 db.execSQL(DATABASE_ALTER_SKU)
             }
             12 -> {
-                db.execSQL(DATABASE_ALTER_IMAGE_TABLE_FOR_GCP)
+                db.execSQL(SQL_DELETE_PROJECTS)
+                db.execSQL(SQL_DELETE_ENTRIES)
+                db.execSQL(SQL_DELETE_IMAGES)
+                db.execSQL(SQL_DELETE_IMAGE_FILES)
+                db.execSQL(SQL_DELETE_VIDEOS_TABLE)
+
+                onCreate(db)
+                //db.execSQL(DATABASE_ALTER_IMAGE_TABLE_FOR_GCP)
             }
             else -> {
                 BaseApplication.getContext().captureEvent(

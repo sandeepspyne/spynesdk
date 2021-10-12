@@ -110,7 +110,6 @@ class CameraFragment : BaseFragment<ShootViewModel, FragmentCameraBinding>(), Pi
     private var cameraControl: CameraControl? = null
     private var cameraInfo: CameraInfo? = null
     private var handler: Handler? = null
-    private var isGyroOnCorrectAngle = false
 
     private var filename = ""
 
@@ -159,7 +158,11 @@ class CameraFragment : BaseFragment<ShootViewModel, FragmentCameraBinding>(), Pi
 
         viewModel.startMiscShots.observe(viewLifecycleOwner, {
             if (it) {
-                binding.tvSkipShoot?.text = getString(R.string.three_sixty_int)
+                if (getString(R.string.app_name) == AppConstants.OLA_CABS){
+                    binding.tvSkipShoot?.text = getString(R.string.three_sixty_int)
+                }else{
+                    binding.tvSkipShoot?.text = getString(R.string.end_shoot_karvi)
+                }
                 binding.llSkip?.visibility = View.VISIBLE
             }
 
@@ -197,10 +200,11 @@ class CameraFragment : BaseFragment<ShootViewModel, FragmentCameraBinding>(), Pi
         binding.tvSkipShoot?.setOnClickListener {
             when (getString(R.string.app_name)) {
                 AppConstants.KARVI -> {
-                    SkipShootDialog().show(
-                        requireActivity().supportFragmentManager,
-                        "SkipShootDialog"
-                    )
+                    viewModel.skipImage(getString(R.string.app_name))
+//                    SkipShootDialog().show(
+//                        requireActivity().supportFragmentManager,
+//                        "SkipShootDialog"
+//                    )
                 }
                 else -> {
                    viewModel.skipImage(getString(R.string.app_name))
@@ -260,7 +264,16 @@ class CameraFragment : BaseFragment<ShootViewModel, FragmentCameraBinding>(), Pi
 
 
     private fun onCaptureClick() {
-        captureImage()
+        if (binding.flLevelIndicator.visibility == View.VISIBLE){
+            if (binding.flLevelIndicator.isGyroOnCorrectAngle){
+                captureImage()
+        }else{
+            showGryroToast()
+        }
+        }else{
+            captureImage()
+        }
+
     }
 
     private fun showGryroToast(){

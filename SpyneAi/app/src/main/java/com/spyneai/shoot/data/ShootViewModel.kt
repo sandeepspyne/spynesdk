@@ -459,18 +459,6 @@ class ShootViewModel : ViewModel() {
     val fetchOverlays = MutableLiveData<Boolean>()
     val onImageConfirmed = MutableLiveData<Boolean>()
 
-    init {
-        if (showVin.value == null) {
-            showHint.value = true
-        }
-
-        if (showVin.value != null && isProjectCreated.value == null)
-            showVin.value = true
-
-        if (isProjectCreated.value == true)
-            getSubCategories.value = true
-
-    }
 
     fun getCurrentShoot() = shootList.value?.first {
         it.overlayId == overlayId
@@ -630,4 +618,16 @@ class ShootViewModel : ViewModel() {
         _reshootOverlaysRes.value = repository.getOverlayIds(ids)
     }
 
+    init {
+        if (showVin.value == null) {
+            showHint.value = true
+        }
+
+        if (showVin.value != null && isProjectCreated.value == null)
+            showVin.value = true
+
+        if (isProjectCreated.value == true)
+            getSubCategories.value = true
+
+    }
 }

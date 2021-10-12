@@ -590,7 +590,6 @@ class FragmentOverlaysVTwo : BaseFragment<ShootViewModel, FragmentOverlaysV2Bind
         viewModel.isCameraButtonClickable = true
 
         binding.apply {
-            tvSkipShoot.text = getString(R.string.miscshoots)
             rvSubcategories?.visibility = View.VISIBLE
             tvShoot.isClickable = false
             imgOverlay.visibility = View.INVISIBLE
@@ -684,7 +683,6 @@ class FragmentOverlaysVTwo : BaseFragment<ShootViewModel, FragmentOverlaysV2Bind
     private fun startMiscShots() {
         viewModel.isCameraButtonClickable = true
 
-        binding.tvSkipShoot.text = getString(R.string.three_sixty_int)
         binding.rvSubcategories?.visibility = View.VISIBLE
         binding.imgOverlay.visibility = View.INVISIBLE
         viewModel.hideLeveler.value = true

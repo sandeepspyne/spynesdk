@@ -97,11 +97,14 @@ class ShootActivity : AppCompatActivity() {
             "Automobiles" -> {
                 shootViewModel.processSku = true
                 if(savedInstanceState == null) { // initial transaction should be wrapped like this
-                    supportFragmentManager.beginTransaction()
+                    val transaction = supportFragmentManager.beginTransaction()
                         .add(R.id.flCamerFragment, cameraFragment)
                         .add(R.id.flCamerFragment, overlaysFragment)
-                        .add(R.id.flCamerFragment,CreateProjectFragment())
-                        .commit()
+
+                    if (!intent.getBooleanExtra(AppConstants.FROM_DRAFTS,false))
+                        transaction.add(R.id.flCamerFragment,CreateProjectFragment())
+
+                    transaction.commit()
                 }
             }
             "Bikes" -> {
