@@ -14,4 +14,8 @@ class ReshootDoneActivity : AppCompatActivity() {
             .add(R.id.flContainer, ImageProcessingStartedFragment())
             .commit()
     }
+
+    override fun onBackPressed() {
+
+    }
 }
