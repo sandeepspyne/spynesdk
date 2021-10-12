@@ -288,7 +288,7 @@ class ShootLocalRepository {
 
                 if (skuId != null) {
                     sku.thumbnail = getSkuThumbnail(skuId)
-                    sku.totalImages = getImagesBySkuId(skuId).size
+                    sku.totalImages = ImageLocalRepository().getImagesBySkuId(skuId).size
                 }
 
 
@@ -299,59 +299,7 @@ class ShootLocalRepository {
         return skuList
     }
 
-    fun getImagesBySkuId(skuId: String?):  ArrayList<Image> {
-        val projection = arrayOf(
-            BaseColumns._ID,
-            Images.COLUMN_NAME_PROJECT_ID,
-            Images.COLUMN_NAME_SKU_ID,
-            Images.COLUMN_NAME_CATEGORY_NAME,
-            Images.COLUMN_NAME_IMAGE_PATH,
-            Images.COLUMN_NAME_IMAGE_SEQUENCE)
 
-        // Filter results WHERE "title" = 'My Title'
-        val selection = "${Images.COLUMN_NAME_SKU_ID} = ?"
-        val selectionArgs = arrayOf(skuId)
-
-
-        // How you want the results sorted in the resulting Cursor
-        val sortOrder = "${BaseColumns._ID} ASC"
-
-        val cursor = dbReadable.query(
-            Images.TABLE_NAME,   // The table to query
-            projection,             // The array of columns to return (pass null to get all)
-            selection,              // The columns for the WHERE clause
-            selectionArgs,          // The values for the WHERE clause
-            null,                   // don't group the rows
-            null,                   // don't filter by row groups
-            sortOrder                       // The sort order
-        )
-
-
-        val imagesList = ArrayList<Image>()
-
-        with(cursor) {
-            while (moveToNext()) {
-                val itemId = getLong(getColumnIndexOrThrow(BaseColumns._ID))
-                val projectId = getString(getColumnIndexOrThrow(Images.COLUMN_NAME_PROJECT_ID))
-                val skuId = getString(getColumnIndexOrThrow(Images.COLUMN_NAME_SKU_ID))
-                val categoryName = getString(getColumnIndexOrThrow(Images.COLUMN_NAME_CATEGORY_NAME))
-                val imagePath = getString(getColumnIndexOrThrow(Images.COLUMN_NAME_IMAGE_PATH))
-                val sequence = getInt(getColumnIndexOrThrow(Images.COLUMN_NAME_IMAGE_SEQUENCE))
-
-                val image = Image()
-                image.itemId = itemId
-                image.projectId = projectId
-                image.skuId = skuId
-                image.categoryName = categoryName
-                image.imagePath = imagePath
-                image.sequence = sequence
-
-                imagesList.add(image)
-            }
-        }
-
-        return imagesList
-    }
 
     private fun getImagesByProjectId(projectId: String): Int {
         val projection = arrayOf(

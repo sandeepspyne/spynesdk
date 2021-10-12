@@ -35,6 +35,7 @@ import com.spyneai.needs.Utilities
 import com.spyneai.posthog.Events
 import com.spyneai.shoot.adapters.NewSubCategoriesAdapter
 import com.spyneai.shoot.adapters.OverlaysAdapter
+import com.spyneai.shoot.data.DraftClickedImages
 import com.spyneai.shoot.data.OnOverlaySelectionListener
 import com.spyneai.shoot.data.ShootViewModel
 import com.spyneai.shoot.data.model.ShootData
@@ -126,16 +127,12 @@ class DraftShootFragment : BaseFragment<ShootViewModel, FragmentOverlaysV2Bindin
                 is Resource.Success -> {
                     Utilities.hideProgressDialog()
 
-                    getOverlays()
-                    observeOverlays()
-
                     val subCategoriesResponse = it.value
                     val intent = requireActivity().intent
                     when {
                         intent.getBooleanExtra(AppConstants.RESUME_EXTERIOR,false) -> {
-                            viewModel.shootNumber.value = requireActivity().intent.getIntExtra(
-                                AppConstants.EXTERIOR_SIZE,0)
-                            startExteriroShot()
+                            getOverlays()
+                            observeOverlays()
                         }
                         intent.getBooleanExtra(AppConstants.RESUME_INTERIOR,false) -> {
                             binding.tvShoot?.isClickable = false
@@ -291,7 +288,6 @@ class DraftShootFragment : BaseFragment<ShootViewModel, FragmentOverlaysV2Bindin
                 "Angles ${viewModel.sequence.plus(1)}/${viewModel.getSelectedAngles(getString(
                     R.string.app_name))}"
 
-//            loadOverlay(viewModel.displayName,viewModel.displayName)
         })
     }
 
@@ -437,7 +433,9 @@ class DraftShootFragment : BaseFragment<ShootViewModel, FragmentOverlaysV2Bindin
             when (it) {
                 is Resource.Success -> {
                     Utilities.hideProgressDialog()
-                    Utilities.hideProgressDialog()
+
+                    viewModel.shootNumber.value = requireActivity().intent.getIntExtra(AppConstants.EXTERIOR_SIZE,0)
+                    startExteriroShot()
 
                     //pre load overlays
                     val overlaysList = it.value.data.map { it.display_thumbnail }
@@ -446,13 +444,34 @@ class DraftShootFragment : BaseFragment<ShootViewModel, FragmentOverlaysV2Bindin
                         viewModel.preloadOverlays(overlaysList)
                     }
 
+                    val selctedDraftList = DraftClickedImages.clickedImagesMap
+                    val list = it.value.data
                     //set overlays
-                    it.value.data[0].isSelected = true
-                    overlaysAdapter = OverlaysAdapter(it.value.data,
+                    list.forEachIndexed { index, data ->
+                        if (selctedDraftList.get(data.id.toString()) != null){
+                            list[index].imageClicked = true
+                            list[index].imagePath = selctedDraftList.get(data.id.toString())!!
+                        }
+                    }
+
+                    val notSelected = list.firstOrNull {
+                        !it.isSelected && !it.imageClicked
+                    }
+
+                    if (notSelected != null){
+                        val index = list.indexOf(notSelected)
+
+                        list[index].isSelected = true
+
+                        viewModel.displayName = list[index].display_name
+                        viewModel.displayThumbanil = list[index].display_thumbnail
+
+                    }
+
+                    overlaysAdapter = OverlaysAdapter(list,
                         this@DraftShootFragment,
                         this@DraftShootFragment)
-                    viewModel.displayName = it.value.data[0].display_name
-                    viewModel.displayThumbanil = it.value.data[0].display_thumbnail
+
 
                     binding.rvSubcategories.apply {
                         visibility = View.VISIBLE
@@ -466,7 +485,6 @@ class DraftShootFragment : BaseFragment<ShootViewModel, FragmentOverlaysV2Bindin
                         Properties().putValue("angles", it.value.data.size)
                     )
 
-                    shoot("hide progress dialog(overlays response sucess)")
                     showViews()
                 }
 
@@ -524,14 +542,49 @@ class DraftShootFragment : BaseFragment<ShootViewModel, FragmentOverlaysV2Bindin
         viewModel.interiorAngles.value = interiorList.size
         binding.rvSubcategories.scrollToPosition(0)
 
+        val selctedDraftList = DraftClickedImages.clickedImagesMap
         val list = subCatResponse.interior
-        list[0].isSelected = true
+        //set overlays
+        list.forEachIndexed { index, data ->
+            if (selctedDraftList.get(data.overlayId.toString()) != null){
+                list[index].imageClicked = true
+                list[index].imagePath = selctedDraftList.get(data.overlayId.toString())!!
+            }
+        }
 
-        viewModel.displayName = list[0].display_name
-        viewModel.displayThumbanil = list[0].display_thumbnail
+        val notSelected = list.firstOrNull {
+            !it.isSelected && !it.imageClicked
+        }
 
-        overlaysAdapter.listItems = list
-        overlaysAdapter.notifyDataSetChanged()
+        if (notSelected != null){
+            val index = list.indexOf(notSelected)
+
+            list[index].isSelected = true
+
+            viewModel.displayName = list[index].display_name
+            viewModel.displayThumbanil = list[index].display_thumbnail
+
+        }
+
+        overlaysAdapter = OverlaysAdapter(list,
+            this@DraftShootFragment,
+            this@DraftShootFragment)
+
+        binding.rvSubcategories.apply {
+            visibility = View.VISIBLE
+            layoutManager = LinearLayoutManager(requireContext(),
+                LinearLayoutManager.VERTICAL,false)
+            adapter = overlaysAdapter
+        }
+
+//        val list = subCatResponse.interior
+//        list[0].isSelected = true
+//
+//        viewModel.displayName = list[0].display_name
+//        viewModel.displayThumbanil = list[0].display_thumbnail
+//
+//        overlaysAdapter.listItems = list
+//        overlaysAdapter.notifyDataSetChanged()
 
         //change image type
         viewModel.categoryDetails.value?.imageType = "Interior"
@@ -604,14 +657,47 @@ class DraftShootFragment : BaseFragment<ShootViewModel, FragmentOverlaysV2Bindin
                 viewModel.miscShootNumber.value = 0
         }
 
+        val selctedDraftList = DraftClickedImages.clickedImagesMap
         val list = subCatResponse.miscellaneous
-        list[0].isSelected = true
+        //set overlays
+        list.forEachIndexed { index, data ->
+            if (selctedDraftList.get(data.overlayId.toString()) != null){
+                list[index].imageClicked = true
+                list[index].imagePath = selctedDraftList.get(data.overlayId.toString())!!
+            }
+        }
 
-        viewModel.displayName = list[0].display_name
-        viewModel.displayThumbanil = list[0].display_thumbnail
+        val notSelected = list.firstOrNull {
+            !it.isSelected && !it.imageClicked
+        }
 
-        overlaysAdapter.listItems = list
-        overlaysAdapter.notifyDataSetChanged()
+        if (notSelected != null){
+            val index = list.indexOf(notSelected)
+
+            list[index].isSelected = true
+
+            viewModel.displayName = list[index].display_name
+            viewModel.displayThumbanil = list[index].display_thumbnail
+
+        }
+
+        overlaysAdapter = OverlaysAdapter(list,
+            this@DraftShootFragment,
+            this@DraftShootFragment)
+
+        binding.rvSubcategories.apply {
+            visibility = View.VISIBLE
+            layoutManager = LinearLayoutManager(requireContext(),
+                LinearLayoutManager.VERTICAL,false)
+            adapter = overlaysAdapter
+        }
+//        list[0].isSelected = true
+//
+//        viewModel.displayName = list[0].display_name
+//        viewModel.displayThumbanil = list[0].display_thumbnail
+//
+//        overlaysAdapter.listItems = list
+//        overlaysAdapter.notifyDataSetChanged()
 
         //change image type
         viewModel.categoryDetails.value?.imageType = "Focus Shoot"

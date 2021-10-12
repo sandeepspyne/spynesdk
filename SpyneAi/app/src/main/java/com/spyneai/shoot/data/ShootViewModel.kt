@@ -378,7 +378,7 @@ class ShootViewModel : ViewModel() {
         localRepository.updateSubcategoryId(sku.value?.skuId!!, subcategoryId, subcategoryName)
     }
 
-    fun getImagesbySkuId(skuId: String) = localRepository.getImagesBySkuId(skuId)
+    fun getImagesbySkuId(skuId: String) = imageRepository.getImagesBySkuId(skuId)
 
     fun updateProjectStatus(projectId: String) = localRepository.updateProjectStatus(projectId)
 

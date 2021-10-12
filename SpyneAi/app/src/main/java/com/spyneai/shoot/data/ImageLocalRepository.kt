@@ -173,6 +173,97 @@ class ImageLocalRepository {
 //        return image
 //    }
 
+    fun getImagesBySkuId(skuId: String?):  ArrayList<Image> {
+        val projection = arrayOf(
+            BaseColumns._ID,
+            Images.COLUMN_NAME_PROJECT_ID,
+            Images.COLUMN_NAME_SKU_NAME,
+            Images.COLUMN_NAME_SKU_ID,
+            Images.COLUMN_NAME_CATEGORY_NAME,
+            Images.COLUMN_NAME_IMAGE_PATH,
+            Images.COLUMN_NAME_IMAGE_SEQUENCE,
+            Images.COLUMN_NAME_IMAGE_ANGLE,
+            Images.COLUMN_NAME_IMAGE_META,
+            Images.COLUMN_NAME_IMAGE_NAME,
+            Images.COLUMN_NAME_IMAGE_PRE_SIGNED_URL,
+            Images.COLUMN_NAME_OVERLAY_ID,
+            Images.COLUMN_NAME_IMAGE_ID,
+            Images.COLUMN_NAME_IMAGE_DEBUG_DATA,
+            Images.COLUMN_NAME_IS_UPLOADED,
+            Images.COLUMN_NAME_IS_STATUS_UPDATED,
+            Images.COLUMN_NAME_IS_RE_CLICK,
+            Images.COLUMN_NAME_IS_RESHOOT)
+
+        // Filter results WHERE "title" = 'My Title'
+        val selection = "${Images.COLUMN_NAME_SKU_ID} = ?"
+        val selectionArgs = arrayOf(skuId)
+
+
+        // How you want the results sorted in the resulting Cursor
+        val sortOrder = "${BaseColumns._ID} ASC"
+
+        val cursor = dbReadable.query(
+            Images.TABLE_NAME,   // The table to query
+            projection,             // The array of columns to return (pass null to get all)
+            selection,              // The columns for the WHERE clause
+            selectionArgs,          // The values for the WHERE clause
+            null,                   // don't group the rows
+            null,                   // don't filter by row groups
+            sortOrder                       // The sort order
+        )
+
+
+        val imagesList = ArrayList<Image>()
+
+        with(cursor) {
+            while (moveToNext()) {
+                val itemId = getLong(getColumnIndexOrThrow(BaseColumns._ID))
+                val projectId = getString(getColumnIndexOrThrow(Images.COLUMN_NAME_PROJECT_ID))
+                val skuName = getString(getColumnIndexOrThrow(Images.COLUMN_NAME_SKU_NAME))
+                val skuId = getString(getColumnIndexOrThrow(Images.COLUMN_NAME_SKU_ID))
+                val categoryName = getString(getColumnIndexOrThrow(Images.COLUMN_NAME_CATEGORY_NAME))
+                val imagePath = getString(getColumnIndexOrThrow(Images.COLUMN_NAME_IMAGE_PATH))
+                val sequence = getInt(getColumnIndexOrThrow(Images.COLUMN_NAME_IMAGE_SEQUENCE))
+                val angle = getInt(getColumnIndexOrThrow(Images.COLUMN_NAME_IMAGE_ANGLE))
+                val meta = getString(getColumnIndexOrThrow(Images.COLUMN_NAME_IMAGE_META))
+
+                val name = getString(getColumnIndexOrThrow(Images.COLUMN_NAME_IMAGE_NAME))
+                val preSignedUrl = getString(getColumnIndexOrThrow(Images.COLUMN_NAME_IMAGE_PRE_SIGNED_URL))
+                val overlayId = getString(getColumnIndexOrThrow(Images.COLUMN_NAME_OVERLAY_ID))
+                val imageId = getString(getColumnIndexOrThrow(Images.COLUMN_NAME_IMAGE_ID))
+                val debugData = getString(getColumnIndexOrThrow(Images.COLUMN_NAME_IMAGE_DEBUG_DATA))
+                val isUploaded = getInt(getColumnIndexOrThrow(Images.COLUMN_NAME_IS_UPLOADED))
+                val isStatusUpdated = getInt(getColumnIndexOrThrow(Images.COLUMN_NAME_IS_STATUS_UPDATED))
+                val isReclick = getInt(getColumnIndexOrThrow(Images.COLUMN_NAME_IS_RE_CLICK))
+                val isReshoot = getInt(getColumnIndexOrThrow(Images.COLUMN_NAME_IS_RESHOOT))
+
+                val image = Image()
+                image.itemId = itemId
+                image.projectId = projectId
+                image.skuName = skuName
+                image.skuId = skuId
+                image.categoryName = categoryName
+                image.imagePath = imagePath
+                image.sequence = sequence
+                image.angle = angle
+                image.meta = meta
+                image.name = name
+                image.preSignedUrl = preSignedUrl
+                image.overlayId = overlayId
+                image.imageId = imageId
+                image.debugData = debugData
+                image.isUploaded = isUploaded
+                image.isStatusUpdated = isStatusUpdated
+                image.isReclick = isReclick
+                image.isReshoot = isReshoot
+
+                imagesList.add(image)
+            }
+        }
+
+        return imagesList
+    }
+
     fun getOldestImage(status : String) : Image {
         val projection = arrayOf(
             BaseColumns._ID,
