@@ -3,6 +3,7 @@ package com.spyneai.shoot.ui.dialogs
 import android.content.Intent
 import android.os.Build
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -19,6 +20,7 @@ import com.spyneai.captureEvent
 import com.spyneai.databinding.DialogConfirmReshootBinding
 import com.spyneai.needs.AppConstants
 import com.spyneai.posthog.Events
+import com.spyneai.reshoot.data.SelectedImagesHelper
 import com.spyneai.service.Actions
 import com.spyneai.service.ImageUploadingService
 import com.spyneai.service.getServiceState
@@ -74,7 +76,15 @@ class ConfirmReshootDialog : BaseDialogFragment<ShootViewModel, DialogConfirmRes
             viewModel.isCameraButtonClickable = true
 
             if (viewModel.isReshoot){
+                uploadImages()
+                dismiss()
 
+                if (viewModel.reShootNumber.value == SelectedImagesHelper.selectedImages.length().minus(1)) {
+                    viewModel.reshootCompleted.value = true
+                } else {
+                    viewModel.reShootNumber.value = viewModel.shootList.value?.size
+                    dismiss()
+                }
             }else {
                 when(viewModel.categoryDetails.value?.imageType) {
                     "Exterior" -> {
@@ -117,6 +127,49 @@ class ConfirmReshootDialog : BaseDialogFragment<ShootViewModel, DialogConfirmRes
                         }
                     }
                 }
+            }
+        }
+
+        val uri = viewModel.shootData.value?.capturedImage
+
+        Log.d(TAG, "onViewCreated: "+uri)
+
+        Glide.with(requireContext())
+            .load(uri)
+            .diskCacheStrategy(DiskCacheStrategy.NONE)
+            .skipMemoryCache(true)
+            .into(binding.ivCapturedImage)
+
+
+        when (viewModel.categoryDetails.value?.imageType) {
+            "Exterior" -> {
+                Glide.with(requireContext())
+                    .load(uri)
+                    .diskCacheStrategy(DiskCacheStrategy.NONE)
+                    .skipMemoryCache(true)
+                    .into(binding.ivCaptured2)
+
+                if (getString(R.string.app_name) == AppConstants.KARVI)
+                    binding.ivCapturedOverlay.visibility = View.GONE
+                else
+                    setOverlay(binding.ivCaptured2,viewModel.getOverlay())
+
+//                if (getString(R.string.app_name) == AppConstants.KARVI)
+//                    binding.ivOverlay.visibility = View.GONE
+//                else
+//                    setOverlay(binding.ivOverlay, viewModel.getOverlay())
+            }
+
+            else -> {
+                binding.llImperfactions.setBackgroundColor(ContextCompat.getColor(requireContext(),R.color.white))
+
+                Glide.with(requireContext())
+                    .load(uri)
+                    .diskCacheStrategy(DiskCacheStrategy.NONE)
+                    .skipMemoryCache(true)
+                    .into(binding.iv)
+
+                binding.llBeforeAfter.visibility = View.INVISIBLE
             }
         }
 
