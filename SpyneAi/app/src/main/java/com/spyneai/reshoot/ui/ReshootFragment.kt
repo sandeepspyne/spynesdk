@@ -98,13 +98,13 @@ class ReshootFragment : BaseFragment<ShootViewModel, FragmentReshootBinding>(), 
 
                 } else {
                     val element = list.firstOrNull {
-                        !it.isSelected
+                        !it.isSelected && !it.imageClicked
                     }
 
                     if (element != null) {
                         element?.isSelected = true
                         //viewModel.sequence = element?.sequenceNumber!!
-                        reshootAdapter?.notifyItemChanged(viewModel.sequence)
+                        reshootAdapter?.notifyItemChanged(list.indexOf(element))
                         binding.rvImages.scrollToPosition(viewModel.sequence)
 
                         Log.d(TAG, "onItemClick: " + viewModel.sequence)
@@ -189,7 +189,7 @@ class ReshootFragment : BaseFragment<ShootViewModel, FragmentReshootBinding>(), 
         when (data) {
             is ReshootOverlaysRes.Data -> {
                 viewModel.sequence = position
-                val list = reshootAdapter?.listItems as List<ImagesOfSkuRes.Data>
+                val list = reshootAdapter?.listItems as List<ReshootOverlaysRes.Data>
 
                 val element = list.firstOrNull {
                     it.isSelected

@@ -542,7 +542,7 @@ class ShootViewModel : ViewModel() {
                         element?.isSelected = true
                         sequence = element?.sequenceNumber!!
                         //overlaysAdapter.notifyItemChanged(sequence)
-                        notifyItemChanged.value = sequence
+                        notifyItemChanged.value =  list.indexOf(element)
                         //binding.rvSubcategories.scrollToPosition(sequence)
                         scrollView.value = sequence.plus(2)
                     }
@@ -578,7 +578,7 @@ class ShootViewModel : ViewModel() {
                         element?.isSelected = true
                         sequence = element?.sequenceNumber!!
                         //overlaysAdapter.notifyItemChanged(sequence)
-                        notifyItemChanged.value = sequence
+                        notifyItemChanged.value =  list.indexOf(element)
                         //binding.rvSubcategories.scrollToPosition(sequence)
                         scrollView.value = sequence.plus(2)
                     }
@@ -614,7 +614,7 @@ class ShootViewModel : ViewModel() {
                         element?.isSelected = true
                         sequence = element?.sequenceNumber!!
                         //overlaysAdapter.notifyItemChanged(sequence)
-                        notifyItemChanged.value = sequence
+                        notifyItemChanged.value =  list.indexOf(element)
                         //binding.rvSubcategories.scrollToPosition(sequence)
                         scrollView.value = sequence.plus(2)
                     }
