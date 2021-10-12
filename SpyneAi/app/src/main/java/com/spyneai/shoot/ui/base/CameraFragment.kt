@@ -116,6 +116,7 @@ class CameraFragment : BaseFragment<ShootViewModel, FragmentCameraBinding>(), Pi
     private var cameraAngle = 45
 
     var gravity = FloatArray(3)
+    val TAG = "Camera Fragment"
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -316,9 +317,11 @@ class CameraFragment : BaseFragment<ShootViewModel, FragmentCameraBinding>(), Pi
             try {
                 cameraProvider = cameraProviderFuture.get()
             } catch (e: InterruptedException) {
+                Log.d(TAG, "startCamera: "+e.message)
                 Toast.makeText(requireContext(), "Error starting camera", Toast.LENGTH_SHORT).show()
                 return@addListener
             } catch (e: ExecutionException) {
+                Log.d(TAG, "startCamera: "+e.message)
                 Toast.makeText(requireContext(), "Error starting camera", Toast.LENGTH_SHORT).show()
                 return@addListener
             }
