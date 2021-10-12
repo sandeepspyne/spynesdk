@@ -1,40 +1,64 @@
 package com.spyneai.reshoot.ui
 
+import android.graphics.drawable.Drawable
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.ViewTreeObserver
+import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.bumptech.glide.Glide
+import com.bumptech.glide.load.DataSource
+import com.bumptech.glide.load.engine.DiskCacheStrategy
+import com.bumptech.glide.load.engine.GlideException
+import com.bumptech.glide.request.RequestListener
+import com.bumptech.glide.request.RequestOptions
+import com.bumptech.glide.request.target.Target
+import com.bumptech.glide.signature.ObjectKey
+import com.google.android.material.snackbar.Snackbar
+import com.posthog.android.Properties
 import com.spyneai.R
 import com.spyneai.base.BaseFragment
 import com.spyneai.base.OnItemClickListener
+import com.spyneai.base.network.Resource
+import com.spyneai.camera2.OverlaysResponse
+import com.spyneai.captureEvent
+import com.spyneai.dashboard.response.NewSubCatResponse
+import com.spyneai.dashboard.ui.handleApiError
 import com.spyneai.databinding.FragmentReshootBinding
 import com.spyneai.needs.AppConstants
+import com.spyneai.needs.Utilities
 import com.spyneai.orders.data.response.ImagesOfSkuRes
+import com.spyneai.posthog.Events
 import com.spyneai.reshoot.ReshootAdapter
+import com.spyneai.reshoot.data.ReshootOverlaysRes
 import com.spyneai.reshoot.data.SelectedImagesHelper
+import com.spyneai.shoot.data.OnOverlaySelectionListener
 import com.spyneai.shoot.data.ShootViewModel
 import com.spyneai.shoot.data.model.ShootData
 import com.spyneai.shoot.ui.dialogs.ConfirmReshootDialog
 import com.spyneai.shoot.ui.dialogs.ConfirmTagsDialog
 import com.spyneai.shoot.utils.shoot
 
-class ReshootFragment : BaseFragment<ShootViewModel,FragmentReshootBinding>(), OnItemClickListener {
+class ReshootFragment : BaseFragment<ShootViewModel, FragmentReshootBinding>(), OnItemClickListener,
+    OnOverlaySelectionListener {
 
-    var reshootAdapter : ReshootAdapter? = null
+    var reshootAdapter: ReshootAdapter? = null
+    var snackbar : Snackbar? = null
     val TAG = "ReshootFragment"
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        //set recycler view
-        reshootAdapter = ReshootAdapter(SelectedImagesHelper.selectedImages,this)
+        getOverlayIds()
+        observerOverlayIds()
 
-        binding.rvImages.apply {
-            layoutManager = LinearLayoutManager(requireContext(),LinearLayoutManager.VERTICAL,false)
-            adapter = reshootAdapter
+        binding.apply {
+            tvSkuName.text = viewModel.sku.value?.skuName
         }
+        binding.tvShoot?.text = "Angles 1/${SelectedImagesHelper.selectedImages.length()}"
 
         //observe new image clicked
         viewModel.shootList.observe(viewLifecycleOwner, {
@@ -46,14 +70,14 @@ class ReshootFragment : BaseFragment<ShootViewModel,FragmentReshootBinding>(), O
                     showImageConfirmDialog(element!!)
                 }
             } catch (e: Exception) {
-                Log.d(TAG, "onViewCreated: "+e.localizedMessage)
+                Log.d(TAG, "onViewCreated: " + e.localizedMessage)
                 e.printStackTrace()
             }
         })
 
-        viewModel.onImageConfirmed.observe(viewLifecycleOwner,{
-            if (viewModel.shootList.value != null){
-                val list = reshootAdapter?.listItems as List<ImagesOfSkuRes.Data>
+        viewModel.onImageConfirmed.observe(viewLifecycleOwner, {
+            if (viewModel.shootList.value != null) {
+                val list = reshootAdapter?.listItems as List<ReshootOverlaysRes.Data>
 
                 val position = viewModel.sequence
 
@@ -62,28 +86,28 @@ class ReshootFragment : BaseFragment<ShootViewModel,FragmentReshootBinding>(), O
                 list[position].imagePath = viewModel.getCurrentShoot()!!.capturedImage
                 reshootAdapter?.notifyItemChanged(position)
 
-                Log.d(TAG, "onViewCreated: "+position)
-                Log.d(TAG, "onViewCreated: "+list[position].imagePath)
+                Log.d(TAG, "onViewCreated: " + position)
+                Log.d(TAG, "onViewCreated: " + list[position].imagePath)
 
-                if (position != list.size.minus(1)){
+                if (position != list.size.minus(1)) {
                     list[position.plus(1)].isSelected = true
                     viewModel.sequence = position.plus(1)
 
                     reshootAdapter?.notifyItemChanged(position.plus(1))
                     binding.rvImages.scrollToPosition(position)
 
-                }else {
+                } else {
                     val element = list.firstOrNull {
                         !it.isSelected
                     }
 
-                    if (element != null){
+                    if (element != null) {
                         element?.isSelected = true
                         //viewModel.sequence = element?.sequenceNumber!!
                         reshootAdapter?.notifyItemChanged(viewModel.sequence)
                         binding.rvImages.scrollToPosition(viewModel.sequence)
 
-                        Log.d(TAG, "onItemClick: "+viewModel.sequence)
+                        Log.d(TAG, "onItemClick: " + viewModel.sequence)
                     }
                 }
 
@@ -91,29 +115,78 @@ class ReshootFragment : BaseFragment<ShootViewModel,FragmentReshootBinding>(), O
             }
         })
 
+        viewModel.reShootNumber.value = 0
+
+        viewModel.reShootNumber.observe(viewLifecycleOwner,{
+            binding.tvShoot?.text =
+                "Angles ${it.plus(1)}/${SelectedImagesHelper.selectedImages.length()}"
+        })
+
         viewModel.isCameraButtonClickable = true
+
+    }
+
+    private fun getOverlayIds() {
+        Utilities.showProgressDialog(requireContext())
+
+        viewModel.getOverlayIds(SelectedImagesHelper.selectedImages)
+    }
+
+    private fun observerOverlayIds() {
+        viewModel.reshootOverlaysRes.observe(viewLifecycleOwner, {
+            when (it) {
+                is Resource.Success -> {
+                    Utilities.hideProgressDialog()
+                    val list = it.value.data
+                    list[0].isSelected = true
+
+                    //set recycler view
+                    reshootAdapter = ReshootAdapter(
+                        list,
+                        this,
+                        this
+                    )
+
+                    binding.rvImages.apply {
+                        layoutManager = LinearLayoutManager(
+                            requireContext(),
+                            LinearLayoutManager.VERTICAL,
+                            false
+                        )
+                        adapter = reshootAdapter
+                    }
+                }
+
+                is Resource.Failure -> {
+                    Utilities.hideProgressDialog()
+                    handleApiError(it) { getOverlayIds() }
+                }
+            }
+        })
     }
 
     private fun showImageConfirmDialog(shootData: ShootData) {
         viewModel.shootData.value = shootData
-        when(getString(R.string.app_name)){
+        when (getString(R.string.app_name)) {
             AppConstants.OLA_CABS -> {
                 ConfirmTagsDialog().show(
                     requireActivity().supportFragmentManager,
-                    "ConfirmTagsDialog")
-            }else -> {
-            ConfirmReshootDialog().show(
-                requireActivity().supportFragmentManager,
-                "ConfirmReshootDialog"
-            )
-        }
+                    "ConfirmTagsDialog"
+                )
+            }
+            else -> {
+                ConfirmReshootDialog().show(
+                    requireActivity().supportFragmentManager,
+                    "ConfirmReshootDialog"
+                )
+            }
         }
 
 
     }
 
     override fun onItemClick(view: View, position: Int, data: Any?) {
-        when(data){
+        when (data) {
             is ImagesOfSkuRes.Data -> {
                 viewModel.sequence = position
                 val list = reshootAdapter?.listItems as List<ImagesOfSkuRes.Data>
@@ -122,7 +195,7 @@ class ReshootFragment : BaseFragment<ShootViewModel,FragmentReshootBinding>(), O
                     it.isSelected
                 }
 
-                if (element != null && data != element){
+                if (element != null && data != element) {
                     //loadOverlay(data.angle_name,data.display_thumbnail)
                     //viewModel.selectedOverlay = data
 
@@ -136,12 +209,109 @@ class ReshootFragment : BaseFragment<ShootViewModel,FragmentReshootBinding>(), O
         }
     }
 
+    override fun onOverlaySelected(view: View, position: Int, data: Any?) {
+        when (data) {
+            is ReshootOverlaysRes.Data -> {
+                if (data.type == "Exterior"){
+                    binding.imgOverlay.visibility = View.VISIBLE
+                    loadOverlay(data.displayName,data.displayThumbnail)
+                }else {
+                    binding.imgOverlay.visibility = View.GONE
+                }
+                viewModel.categoryDetails.value?.imageType = data.type
+
+                viewModel.sequence = position
+                viewModel.overlayId = data.id
+            }
+
+        }
+    }
+
+    private fun loadOverlay(name : String,overlay : String) {
+
+        val requestOptions = RequestOptions()
+            .diskCacheStrategy(DiskCacheStrategy.ALL)
+            .signature(ObjectKey(overlay))
+
+        Glide.with(requireContext())
+            .load(overlay)
+            .addListener(object : RequestListener<Drawable> {
+                override fun onLoadFailed(
+                    e: GlideException?,
+                    model: Any?,
+                    target: Target<Drawable>?,
+                    isFirstResource: Boolean
+                ): Boolean {
+                    val properties =  Properties()
+                    properties["name"] = name
+                    properties["error"] = e?.localizedMessage
+                    properties["category"] = viewModel.categoryDetails.value?.categoryName
+
+                    requireContext().captureEvent(
+                        Events.OVERLAY_LOAD_FIALED,
+                        properties
+                    )
+
+                    snackbar = Snackbar.make(binding.root, "Overlay Failed to load", Snackbar.LENGTH_INDEFINITE)
+                        .setAction("Retry") {
+                            loadOverlay(name,overlay)
+                        }
+                        .setActionTextColor(ContextCompat.getColor(requireContext(), R.color.primary))
+
+                    snackbar?.show()
+                    return false
+                }
+
+                override fun onResourceReady(
+                    resource: Drawable?,
+                    model: Any?,
+                    target: Target<Drawable>?,
+                    dataSource: DataSource?,
+                    isFirstResource: Boolean
+                ): Boolean {
+
+                    if (snackbar != null)
+                        snackbar?.dismiss()
+
+                    val properties =  Properties()
+                    properties["name"] = name
+                    properties["category"] = viewModel.categoryDetails.value?.categoryName
+
+                    requireContext().captureEvent(
+                        Events.OVERLAY_LOADED,
+                        properties
+                    )
+
+                    getPreviewDimensions(binding.imgOverlay!!)
+                    return false
+                }
+
+            })
+            .apply(requestOptions)
+            .into(binding.imgOverlay!!)
+
+    }
+
+    private fun getPreviewDimensions(view: View) {
+        view.viewTreeObserver.addOnGlobalLayoutListener(object :
+            ViewTreeObserver.OnGlobalLayoutListener {
+            override fun onGlobalLayout() {
+                view.viewTreeObserver.removeOnGlobalLayoutListener(this)
+
+                val shootDimensions = viewModel.shootDimensions.value
+                shootDimensions?.overlayWidth = view.width
+                shootDimensions?.overlayHeight = view.height
+
+                viewModel.shootDimensions.value = shootDimensions
+            }
+        })
+    }
+
     override fun getViewModel() = ShootViewModel::class.java
 
     override fun getFragmentBinding(
         inflater: LayoutInflater,
         container: ViewGroup?
     ) = FragmentReshootBinding.inflate(inflater, container, false)
-
 
 }

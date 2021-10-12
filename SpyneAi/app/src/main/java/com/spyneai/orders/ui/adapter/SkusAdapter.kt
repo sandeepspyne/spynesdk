@@ -22,7 +22,8 @@ import com.spyneai.processedimages.ui.ProcessedImageActivity
 class SkusAdapter(
     val context: Context,
     val viewModel: MyOrdersViewModel,
-    val skuList: ArrayList<GetProjectsResponse.Sku>
+    val skuList: ArrayList<GetProjectsResponse.Sku>,
+    val projectId : String
 ) : RecyclerView.Adapter<SkusAdapter.ViewHolder>() {
 
     class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
@@ -45,13 +46,13 @@ class SkusAdapter(
     override fun onCreateViewHolder(
         parent: ViewGroup,
         viewType: Int
-    ): SkusAdapter.ViewHolder {
+    ): ViewHolder {
         val view = LayoutInflater.from(parent.context)
             .inflate(R.layout.item_completed_skus, parent, false)
-        return SkusAdapter.ViewHolder(view)
+        return ViewHolder(view)
     }
 
-    override fun onBindViewHolder(holder: SkusAdapter.ViewHolder, position: Int) {
+    override fun onBindViewHolder(holder: ViewHolder, position: Int) {
 
         if (skuList[position].paid)
             holder.tvPaid.visibility = View.VISIBLE
@@ -116,7 +117,7 @@ class SkusAdapter(
                     context,
                     ProcessedImageActivity::class.java
                 )
-                intent.putExtra(AppConstants.PROJECT_ID, skuList[position].sku_id)
+                intent.putExtra(AppConstants.PROJECT_ID, projectId)
                 intent.putExtra(AppConstants.SKU_ID, skuList[position].sku_id)
                 intent.putExtra(AppConstants.SKU_NAME, skuList[position].sku_name)
                 intent.putExtra(AppConstants.CATEGORY_ID, skuList[position].categoryId)

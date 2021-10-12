@@ -14,11 +14,13 @@ import com.spyneai.camera2.ShootDimensions
 import com.spyneai.dashboard.response.NewSubCatResponse
 import com.spyneai.needs.AppConstants
 import com.spyneai.needs.Utilities
+import com.spyneai.reshoot.data.ReshootOverlaysRes
 import com.spyneai.shoot.data.model.*
 import com.spyneai.shoot.response.SkuProcessStateResponse
 import com.spyneai.shoot.response.UpdateVideoSkuRes
 import com.spyneai.shoot.workmanager.OverlaysPreloadWorker
 import kotlinx.coroutines.launch
+import org.json.JSONArray
 import org.json.JSONObject
 
 class ShootViewModel : ViewModel() {
@@ -134,7 +136,9 @@ class ShootViewModel : ViewModel() {
     val subCategoryId: MutableLiveData<String> = MutableLiveData()
     val exterirorAngles: MutableLiveData<Int> = MutableLiveData()
     val shootNumber: MutableLiveData<Int> = MutableLiveData()
+    val reShootNumber: MutableLiveData<Int> = MutableLiveData()
     val shootData: MutableLiveData<ShootData> = MutableLiveData()
+    val reshootCompleted : MutableLiveData<Boolean> = MutableLiveData()
 
     val showConfirmReshootDialog: MutableLiveData<Boolean> = MutableLiveData()
 
@@ -174,6 +178,10 @@ class ShootViewModel : ViewModel() {
     val skuProcessStateWithShadowResponse: LiveData<Resource<SkuProcessStateResponse>>
         get() = _skuProcessStateWithShadowResponse
 
+    private val _reshootOverlaysRes: MutableLiveData<Resource<ReshootOverlaysRes>> =
+        MutableLiveData()
+    val reshootOverlaysRes: LiveData<Resource<ReshootOverlaysRes>>
+        get() = _reshootOverlaysRes
 
     fun getSubCategories(
         authKey: String, prodId: String
@@ -399,7 +407,7 @@ class ShootViewModel : ViewModel() {
         val filePrefix = FileNameManager().getFileName(
             fromDrafts,
             categoryDetails.value?.imageType!!,
-            shootNumber.value!!,
+            if (isReshoot) reShootNumber.value!! else shootNumber.value!!,
             sequence,
             shootList.value,
             interiorSize,
@@ -413,7 +421,7 @@ class ShootViewModel : ViewModel() {
         return SequeneNumberManager().getSequenceNumber(
             fromDrafts,
             categoryDetails.value?.imageType!!,
-            shootNumber.value!!,
+            if (isReshoot) reShootNumber.value!! else shootNumber.value!!,
             shootList.value?.size!!,
             exteriorSize,
             interiorSize,
@@ -612,6 +620,13 @@ class ShootViewModel : ViewModel() {
                 }
             }
         }
+    }
+
+    fun getOverlayIds(
+        ids : JSONArray
+    ) = viewModelScope.launch {
+        _reshootOverlaysRes.value = Resource.Loading
+        _reshootOverlaysRes.value = repository.getOverlayIds(ids)
     }
 
 }

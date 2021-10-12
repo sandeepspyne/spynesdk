@@ -70,8 +70,10 @@ class CompletedSkusFragment : BaseFragment<MyOrdersViewModel, FragmentCompletedS
                             binding.tvTotalSku.text = it.value.data.total_skus.toString()
 
                             skuList.clear()
+                            var projectId = ""
                             for (i in 0..it.value.data.project_data.size){
                                 if (i == viewModel.position.value){
+                                    projectId =   it.value.data.project_data[i].project_id
                                     skuList.addAll(it.value.data.project_data[i].sku)
                                     binding.tvProjectName.text = it.value.data.project_data[i].project_name
                                 }
@@ -79,7 +81,8 @@ class CompletedSkusFragment : BaseFragment<MyOrdersViewModel, FragmentCompletedS
                             }
 
                             skusAdapter = SkusAdapter(requireContext(),
-                                viewModel, skuList
+                                viewModel, skuList,
+                              projectId
                             )
 
                             val layoutManager: RecyclerView.LayoutManager = LinearLayoutManager(requireContext(), LinearLayoutManager.VERTICAL, false)

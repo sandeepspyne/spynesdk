@@ -22,7 +22,7 @@ object JavaViewHolderFactory {
             R.layout.item_interior -> InteriorHolder(view, listener,overlaySelectionListener)
             R.layout.item_miscellanous -> MiscHolder(view, listener,overlaySelectionListener)
             R.layout.item_select_image -> SelectImageHolder(view, listener)
-            R.layout.item_reshoot -> ReshootHolder(view,listener)
+            R.layout.item_reshoot -> ReshootHolder(view,listener,overlaySelectionListener)
 
             else -> GenericViewHolder(view)
         }

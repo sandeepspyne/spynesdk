@@ -15,6 +15,7 @@ import com.spyneai.orders.data.response.CompletedSKUsResponse
 import com.spyneai.orders.data.response.GetOngoingSkusResponse
 import com.spyneai.orders.data.response.GetProjectsResponse
 import com.spyneai.orders.data.response.ImagesOfSkuRes
+import com.spyneai.reshoot.data.ReshootOverlaysRes
 import com.spyneai.service.manual.FilesDataRes
 import com.spyneai.shoot.data.model.*
 import com.spyneai.shoot.response.SkuProcessStateResponse
@@ -27,6 +28,7 @@ import com.spyneai.threesixty.data.response.VideoUploadedRes
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
 import okhttp3.ResponseBody
+import org.json.JSONArray
 import org.json.JSONObject
 import retrofit2.Call
 import retrofit2.http.*
@@ -203,6 +205,11 @@ interface ClipperApi {
         @Field("sku_id") skuId : String
     ) : ImagesOfSkuRes
 
+    @GET("v2/overlays/fetch-ids")
+    suspend fun getOverlayIds(
+        @Query("overlay_ids") overlayId : JSONArray,
+        @Query("auth_key") authKey : String = Utilities.getPreference(BaseApplication.getContext(),AppConstants.AUTH_KEY).toString()
+    ) : ReshootOverlaysRes
 
     @GET("v2/project/getSkuPerProject")
     suspend fun getProjectDetail(

@@ -15,6 +15,7 @@ import com.spyneai.shoot.data.ShootViewModel
 import com.spyneai.shoot.data.model.CategoryDetails
 import com.spyneai.shoot.data.model.CreateProjectRes
 import com.spyneai.shoot.data.model.Sku
+import com.spyneai.shoot.ui.base.ImageProcessingStartedFragment
 
 class ReshootActivity : AppCompatActivity() {
 
@@ -32,6 +33,7 @@ class ReshootActivity : AppCompatActivity() {
         setLocale()
 
         shootViewModel = ViewModelProvider(this, ViewModelFactory()).get(ShootViewModel::class.java)
+        shootViewModel.isReshoot = true
 
         val categoryDetails = CategoryDetails()
 
@@ -49,6 +51,12 @@ class ReshootActivity : AppCompatActivity() {
             .add(R.id.flContainer, CameraFragment())
             .add(R.id.flContainer, ReshootFragment())
             .commit()
+
+        shootViewModel.reshootCompleted.observe(this,{
+            supportFragmentManager.beginTransaction()
+                .add(R.id.flContainer, ImageProcessingStartedFragment())
+                .commit()
+        })
     }
 
     private fun setUpVideoShoot() {
@@ -68,12 +76,12 @@ class ReshootActivity : AppCompatActivity() {
             )
         )
 
-        shootViewModel.getOverlays(
-            Utilities.getPreference(this,AppConstants.AUTH_KEY).toString(),
-            intent.getStringExtra(AppConstants.CATEGORY_ID)!!,
-            intent.getStringExtra(AppConstants.SUB_CAT_ID)!!,
-            intent.getIntExtra(AppConstants.EXTERIOR_ANGLES,0).toString(),
-        )
+//        shootViewModel.getOverlays(
+//            Utilities.getPreference(this,AppConstants.AUTH_KEY).toString(),
+//            intent.getStringExtra(AppConstants.CATEGORY_ID)!!,
+//            intent.getStringExtra(AppConstants.SUB_CAT_ID)!!,
+//            intent.getIntExtra(AppConstants.EXTERIOR_ANGLES,0).toString(),
+//        )
 
         val sku = Sku()
         sku?.projectId = intent.getStringExtra(AppConstants.PROJECT_ID)
@@ -85,7 +93,5 @@ class ReshootActivity : AppCompatActivity() {
        // sku?.exteriorAngles = viewModel.exterirorAngles.value
 
         shootViewModel.sku.value = sku
-
-
     }
 }

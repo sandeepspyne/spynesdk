@@ -36,7 +36,7 @@ class CompletedProjectsFragment : BaseFragment<MyOrdersViewModel, FragmentComple
         handler = Handler()
 
         binding.swiperefreshCompleted.setOnRefreshListener {
-            repeatRefreshData()
+           // repeatRefreshData()
             binding.swiperefreshCompleted.isRefreshing = false
         }
 

@@ -8,6 +8,7 @@ import android.os.Handler
 import android.util.Log
 import android.view.*
 import android.widget.ImageView
+import android.widget.Toast
 import androidx.annotation.Nullable
 import androidx.core.app.NotificationCompat
 import androidx.core.view.MotionEventCompat
@@ -110,7 +111,16 @@ class ProcessedImagesFragment : BaseFragment<ProcessedViewModel, FragmentProcess
         observeSkuData()
 
         binding.tvReshoot.setOnClickListener {
-            viewModel.reshoot.value = true
+            val imagesResponse = (viewModel.imagesOfSkuRes.value as Resource.Success).value
+
+            val element = imagesResponse.data.firstOrNull {
+                it.overlayId == null
+            }
+
+            if (element == null)
+                viewModel.reshoot.value = true
+            else
+                Toast.makeText(requireContext(),"Reshoot not applciable for old shoots",Toast.LENGTH_LONG).show()
         }
     }
 
@@ -391,16 +401,6 @@ class ProcessedImagesFragment : BaseFragment<ProcessedViewModel, FragmentProcess
         //Utilities.showProgressDialog(requireContext())
 
         shootId = Utilities.getPreference(requireContext(), AppConstants.SKU_ID)!!
-
-        val request = RetrofitClients.buildService(APiService::class.java)
-        val authKey = RequestBody.create(
-            MultipartBody.FORM,
-            Utilities.getPreference(requireContext(), AppConstants.AUTH_KEY)!!
-        )
-        val skuId = RequestBody.create(
-            MultipartBody.FORM,
-            shootId
-        )
 
         getSkuImages()
     }

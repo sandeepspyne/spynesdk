@@ -41,6 +41,9 @@ data class ReshootOverlaysRes(
         @SerializedName("type")
         val type: String,
         @SerializedName("updated_at")
-        val updatedAt: String
+        val updatedAt: String,
+        var isSelected : Boolean = false,
+        var imageClicked : Boolean = false,
+        var imagePath : String
     )
 }

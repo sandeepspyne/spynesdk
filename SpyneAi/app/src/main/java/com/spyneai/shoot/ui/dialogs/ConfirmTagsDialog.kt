@@ -29,6 +29,7 @@ import com.spyneai.databinding.ItemTagNotesBinding
 import com.spyneai.databinding.ItemTagsSpinnerBinding
 import com.spyneai.needs.AppConstants
 import com.spyneai.posthog.Events
+import com.spyneai.reshoot.data.SelectedImagesHelper
 import com.spyneai.service.Actions
 import com.spyneai.service.ImageUploadingService
 import com.spyneai.service.getServiceState
@@ -105,60 +106,75 @@ class ConfirmTagsDialog : BaseDialogFragment<ShootViewModel, DialogConfirmTagsBi
 
             viewModel.isCameraButtonClickable = true
 
-            when (viewModel.categoryDetails.value?.imageType) {
-                "Exterior" -> {
-                    if (tagsValid()) {
-                        uploadImages()
+            if (viewModel.isReshoot){
+                if (tagsValid()) {
+                    uploadImages()
+                    dismiss()
 
+                    if (viewModel.reShootNumber.value == SelectedImagesHelper.selectedImages.length().minus(1)) {
+                        viewModel.reshootCompleted.value = true
+                    } else {
+                        viewModel.reShootNumber.value = viewModel.shootList.value?.size
                         dismiss()
+                    }
+                }
+            }else{
+                when (viewModel.categoryDetails.value?.imageType) {
+                    "Exterior" -> {
+                        if (tagsValid()) {
+                            uploadImages()
 
-                        if (viewModel.shootNumber.value == viewModel.exterirorAngles.value?.minus(1)) {
-                            checkInteriorShootStatus()
-                            viewModel.isCameraButtonClickable = false
                             dismiss()
-                        } else {
-                            viewModel.shootNumber.value = viewModel.shootList.value?.size
-                            dismiss()
+
+                            if (viewModel.shootNumber.value == viewModel.exterirorAngles.value?.minus(1)) {
+                                checkInteriorShootStatus()
+                                viewModel.isCameraButtonClickable = false
+                                dismiss()
+                            } else {
+                                viewModel.shootNumber.value = viewModel.shootList.value?.size
+                                dismiss()
+                            }
+                        }
+
+                    }
+
+                    "Interior" -> {
+                        if (tagsValid()) {
+                            updateTotalImages()
+                            uploadImages()
+
+                            if (viewModel.interiorShootNumber.value == viewModel.interiorAngles.value?.minus(
+                                    1
+                                )
+                            ) {
+                                viewModel.isCameraButtonClickable = false
+                                viewModel.checkMiscShootStatus(getString(R.string.app_name))
+                                dismiss()
+                            } else {
+                                viewModel.interiorShootNumber.value =
+                                    viewModel.interiorShootNumber.value!! + 1
+                                dismiss()
+                            }
                         }
                     }
 
-                }
+                    "Focus Shoot" -> {
+                        if (tagsValid()) {
+                            updateTotalImages()
+                            uploadImages()
 
-                "Interior" -> {
-                    if (tagsValid()) {
-                        updateTotalImages()
-                        uploadImages()
-
-                        if (viewModel.interiorShootNumber.value == viewModel.interiorAngles.value?.minus(
-                                1
-                            )
-                        ) {
-                            viewModel.isCameraButtonClickable = false
-                            viewModel.checkMiscShootStatus(getString(R.string.app_name))
-                            dismiss()
-                        } else {
-                            viewModel.interiorShootNumber.value =
-                                viewModel.interiorShootNumber.value!! + 1
-                            dismiss()
-                        }
-                    }
-                }
-
-                "Focus Shoot" -> {
-                    if (tagsValid()) {
-                        updateTotalImages()
-                        uploadImages()
-
-                        if (viewModel.miscShootNumber.value == viewModel.miscAngles.value?.minus(1)) {
-                            viewModel.selectBackground(getString(R.string.app_name))
-                            dismiss()
-                        } else {
-                            viewModel.miscShootNumber.value = viewModel.miscShootNumber.value!! + 1
-                            dismiss()
+                            if (viewModel.miscShootNumber.value == viewModel.miscAngles.value?.minus(1)) {
+                                viewModel.selectBackground(getString(R.string.app_name))
+                                dismiss()
+                            } else {
+                                viewModel.miscShootNumber.value = viewModel.miscShootNumber.value!! + 1
+                                dismiss()
+                            }
                         }
                     }
                 }
             }
+
         }
 
         val uri = viewModel.shootData.value?.capturedImage

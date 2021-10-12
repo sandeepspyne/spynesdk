@@ -42,6 +42,7 @@
         <activity
             android:name=".reshoot.ui.SelectImagesActivity"
             android:exported="true" />
+
         <activity android:name=".onboarding.SelectLanguageActivity"></activity>
         <activity
             android:name=".draft.ui.DraftsActivity"

@@ -73,45 +73,48 @@ class ConfirmReshootDialog : BaseDialogFragment<ShootViewModel, DialogConfirmRes
 
             viewModel.isCameraButtonClickable = true
 
+            if (viewModel.isReshoot){
 
-            when(viewModel.categoryDetails.value?.imageType) {
-                "Exterior" -> {
-                    uploadImages()
+            }else {
+                when(viewModel.categoryDetails.value?.imageType) {
+                    "Exterior" -> {
+                        uploadImages()
 
-                    if (viewModel.shootNumber.value  == viewModel.exterirorAngles.value?.minus(1)){
-                        checkInteriorShootStatus()
-                        viewModel.isCameraButtonClickable = false
-                        dismiss()
-                    }else{
-                        viewModel.shootNumber.value = viewModel.shootNumber.value!! + 1
-                        dismiss()
+                        if (viewModel.shootNumber.value  == viewModel.exterirorAngles.value?.minus(1)){
+                            checkInteriorShootStatus()
+                            viewModel.isCameraButtonClickable = false
+                            dismiss()
+                        }else{
+                            viewModel.shootNumber.value = viewModel.shootNumber.value!! + 1
+                            dismiss()
+                        }
                     }
-                }
 
-                "Interior" -> {
-                    updateTotalImages()
-                    uploadImages()
+                    "Interior" -> {
+                        updateTotalImages()
+                        uploadImages()
 
-                    if (viewModel.interiorShootNumber.value  == viewModel.interiorAngles.value?.minus(1)){
-                        viewModel.isCameraButtonClickable = false
-                        viewModel.checkMiscShootStatus(getString(R.string.app_name))
-                        dismiss()
-                    }else{
-                        viewModel.interiorShootNumber.value = viewModel.interiorShootNumber.value!! + 1
-                        dismiss()
+                        if (viewModel.interiorShootNumber.value  == viewModel.interiorAngles.value?.minus(1)){
+                            viewModel.isCameraButtonClickable = false
+                            viewModel.checkMiscShootStatus(getString(R.string.app_name))
+                            dismiss()
+                        }else{
+                            viewModel.interiorShootNumber.value = viewModel.interiorShootNumber.value!! + 1
+                            dismiss()
+                        }
                     }
-                }
 
-                "Focus Shoot" -> {
-                    updateTotalImages()
-                    uploadImages()
+                    "Focus Shoot" -> {
+                        updateTotalImages()
+                        uploadImages()
 
-                    if (viewModel.miscShootNumber.value  == viewModel.miscAngles.value?.minus(1)){
-                        viewModel.selectBackground(getString(R.string.app_name))
-                        dismiss()
-                    }else{
-                        viewModel.miscShootNumber.value = viewModel.miscShootNumber.value!! + 1
-                        dismiss()
+                        if (viewModel.miscShootNumber.value  == viewModel.miscAngles.value?.minus(1)){
+                            viewModel.selectBackground(getString(R.string.app_name))
+                            dismiss()
+                        }else{
+                            viewModel.miscShootNumber.value = viewModel.miscShootNumber.value!! + 1
+                            dismiss()
+                        }
                     }
                 }
             }

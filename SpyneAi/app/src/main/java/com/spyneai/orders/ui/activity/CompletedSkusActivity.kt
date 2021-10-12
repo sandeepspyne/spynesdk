@@ -84,7 +84,8 @@ class CompletedSkusActivity : AppCompatActivity() {
 
                             skusAdapter = SkusAdapter(
                                 this,
-                                viewModel, skuList
+                                viewModel, skuList,
+                                it.value.data.project_data[position].project_id
                             )
 
                             val layoutManager: RecyclerView.LayoutManager =

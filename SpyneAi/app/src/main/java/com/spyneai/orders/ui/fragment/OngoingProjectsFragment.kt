@@ -35,7 +35,7 @@ class OngoingProjectsFragment : BaseFragment<MyOrdersViewModel, FragmentOngoingP
         handler = Handler()
 
         binding.swiperefreshOngoing.setOnRefreshListener {
-            repeatRefreshData()
+           // repeatRefreshData()
             binding.swiperefreshOngoing.isRefreshing = false
         }
 

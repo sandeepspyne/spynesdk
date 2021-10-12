@@ -17,6 +17,7 @@ import com.spyneai.orders.data.response.ImagesOfSkuRes
 import com.spyneai.processedimages.ui.data.ProcessedViewModel
 import com.spyneai.reshoot.SelectImageAdapter
 import com.spyneai.reshoot.data.SelectedImagesHelper
+import org.json.JSONArray
 
 class SelectImagesFragment : BaseFragment<ProcessedViewModel,FragmentSelectImagesBinding>(),OnItemClickListener{
 
@@ -31,15 +32,16 @@ class SelectImagesFragment : BaseFragment<ProcessedViewModel,FragmentSelectImage
             val list = selectImageAdapter?.listItems as ArrayList<ImagesOfSkuRes.Data>
 
             val selectedList = list.filter {
-                it.isSelected == true
+                it.isSelected
             }
+
+            val selectedIds = JSONArray()
 
             selectedList.forEachIndexed { index, data ->
-                if (index != 0)
-                    data.isSelected = false
+                selectedIds.put(data.overlayId)
             }
 
-            SelectedImagesHelper.selectedImages = selectedList as ArrayList<ImagesOfSkuRes.Data>
+            SelectedImagesHelper.selectedImages = selectedIds
 
             val reshootIntent = Intent(requireActivity(),ReshootActivity::class.java)
             reshootIntent.apply {
@@ -57,13 +59,17 @@ class SelectImagesFragment : BaseFragment<ProcessedViewModel,FragmentSelectImage
     }
 
     private fun getImages() {
-        val imagesResponse = (viewModel.imagesOfSkuRes.value as Resource.Success).value
+        try {
+            val imagesResponse = (viewModel.imagesOfSkuRes.value as Resource.Success).value
 
-        selectImageAdapter = SelectImageAdapter(imagesResponse.data,this)
+            selectImageAdapter = SelectImageAdapter(imagesResponse.data,this)
 
-        binding.rvSkuImages.apply {
-            layoutManager = LinearLayoutManager(requireContext(),LinearLayoutManager.VERTICAL,false)
-            adapter = selectImageAdapter
+            binding.rvSkuImages.apply {
+                layoutManager = LinearLayoutManager(requireContext(),LinearLayoutManager.VERTICAL,false)
+                adapter = selectImageAdapter
+            }
+        }catch (e : Exception){
+            val s = ""
         }
 
     }

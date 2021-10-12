@@ -3,14 +3,17 @@ package com.spyneai.shoot.data
 import com.spyneai.base.BaseRepository
 import com.spyneai.base.network.ClipperApiClient
 import com.spyneai.base.network.ClipperApiStagingClient
+import com.spyneai.base.network.Resource
 import com.spyneai.needs.AppConstants
 import com.spyneai.needs.Utilities
+import com.spyneai.reshoot.data.ReshootOverlaysRes
 import com.spyneai.shoot.data.model.Image
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
 import okhttp3.RequestBody.Companion.asRequestBody
 import okhttp3.RequestBody.Companion.toRequestBody
+import org.json.JSONArray
 import org.json.JSONObject
 import java.io.File
 
@@ -57,7 +60,6 @@ class ShootRepository : BaseRepository() {
     ) = safeApiCall {
         val meta = if (image.meta == null) JSONObject() else JSONObject(image.meta)
         val debugData = if (image.debugData == null) JSONObject() else JSONObject(image.debugData)
-
 
         clipperApi.getPreSignedUrl(
             image.projectId,
@@ -194,5 +196,9 @@ class ShootRepository : BaseRepository() {
         clipperApi.getProjectName(authKey)
     }
 
+    suspend fun getOverlayIds(ids: JSONArray
+    ) = safeApiCall {
+        clipperApi.getOverlayIds(ids)
+    }
 
 }
