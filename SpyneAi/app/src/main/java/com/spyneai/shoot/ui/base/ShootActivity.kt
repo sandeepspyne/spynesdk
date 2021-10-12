@@ -40,6 +40,7 @@ import java.io.File
 class ShootActivity : AppCompatActivity() {
 
     lateinit var cameraFragment: CameraFragment
+    lateinit var draftShootFragment: DraftShootFragment
     lateinit var overlaysFragment: FragmentOverlaysVTwo
     lateinit var gridEcomFragment: GridEcomFragment
     lateinit var overlayEcomFragment: OverlayEcomFragment
@@ -84,6 +85,7 @@ class ShootActivity : AppCompatActivity() {
 
         cameraFragment = CameraFragment()
         overlaysFragment = FragmentOverlaysVTwo()
+        draftShootFragment = DraftShootFragment()
 
         gridEcomFragment = GridEcomFragment()
         skuDetailFragment = SkuDetailFragment()
@@ -99,10 +101,12 @@ class ShootActivity : AppCompatActivity() {
                 if(savedInstanceState == null) { // initial transaction should be wrapped like this
                     val transaction = supportFragmentManager.beginTransaction()
                         .add(R.id.flCamerFragment, cameraFragment)
-                        .add(R.id.flCamerFragment, overlaysFragment)
 
-                    if (!intent.getBooleanExtra(AppConstants.FROM_DRAFTS,false))
+                    if (!intent.getBooleanExtra(AppConstants.FROM_DRAFTS,false)){
+                        transaction.add(R.id.flCamerFragment, overlaysFragment)
                         transaction.add(R.id.flCamerFragment,CreateProjectFragment())
+                    }else
+                        transaction.add(R.id.flCamerFragment, draftShootFragment)
 
                     transaction.commit()
                 }
