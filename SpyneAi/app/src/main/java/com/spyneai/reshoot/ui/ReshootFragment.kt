@@ -187,7 +187,7 @@ class ReshootFragment : BaseFragment<ShootViewModel, FragmentReshootBinding>(), 
 
     override fun onItemClick(view: View, position: Int, data: Any?) {
         when (data) {
-            is ImagesOfSkuRes.Data -> {
+            is ReshootOverlaysRes.Data -> {
                 viewModel.sequence = position
                 val list = reshootAdapter?.listItems as List<ImagesOfSkuRes.Data>
 
