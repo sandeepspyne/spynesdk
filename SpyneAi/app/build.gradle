@@ -89,8 +89,8 @@ android {
         trustedCars {
             dimension 'version'
             applicationId "com.spyneai.trustedCars"
-            versionCode 5
-            versionName "2.3"
+            versionCode 6
+            versionName "2.4"
         }
 
         karvi {
@@ -103,8 +103,8 @@ android {
         travophotos {
             dimension 'version'
             applicationId "com.spyneai.travophotos"
-            versionCode 6
-            versionName "2.4"
+            versionCode 7
+            versionName "2.5"
         }
 
         olacabs {
@@ -437,6 +437,9 @@ dependencies {
 
     //gson
     implementation 'com.google.code.gson:gson:2.8.8'
+
+    // location
+    implementation "com.google.android.gms:play-services-location:18.0.0"
 
     //leaks
     // debugImplementation 'com.squareup.leakcanary:leakcanary-android:2.7'

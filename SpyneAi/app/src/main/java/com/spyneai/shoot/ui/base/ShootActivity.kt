@@ -6,6 +6,8 @@ import android.Manifest
 import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
+import android.location.Location
+import android.location.LocationManager
 import android.os.Build
 import android.os.Bundle
 import android.util.Log
@@ -36,10 +38,13 @@ import com.spyneai.shoot.ui.ecomwithgrid.SkuDetailFragment
 import com.spyneai.shoot.ui.ecomwithoverlays.OverlayEcomFragment
 import com.spyneai.shoot.utils.shoot
 import java.io.File
+import java.util.*
+import kotlin.collections.ArrayList
 
 
-class ShootActivity : AppCompatActivity() {
+abstract class ShootActivity : AppCompatActivity() {
 
+    abstract val it: LocationManager
     lateinit var cameraFragment: CameraFragment
     lateinit var overlaysFragment: OverlaysFragment
     lateinit var gridEcomFragment: GridEcomFragment
@@ -253,6 +258,20 @@ class ShootActivity : AppCompatActivity() {
         })
     }
 
+
+
+
+    // Required functions
+    open fun onProviderDisabled(arg0: String?) {}
+    open fun onProviderEnabled(arg0: String?) {}
+    open fun onStatusChanged(arg0: String?, arg1: Int, arg2: Bundle?) {}
+
+
+
+
+
+
+
     private fun setUpVideoShoot() {
         shootViewModel.fromVideo = true
         shootViewModel.showVin.value = true
@@ -416,14 +435,34 @@ class ShootActivity : AppCompatActivity() {
     private val permissions = mutableListOf(
         Manifest.permission.CAMERA,
         Manifest.permission.READ_EXTERNAL_STORAGE,
-        Manifest.permission.WRITE_EXTERNAL_STORAGE
+        Manifest.permission.WRITE_EXTERNAL_STORAGE,
+        Manifest.permission.ACCESS_FINE_LOCATION,
+        Manifest.permission.ACCESS_COARSE_LOCATION
     ).apply {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
             add(Manifest.permission.ACCESS_MEDIA_LOCATION)
         }
     }
 
-    private val permissionRequest = registerForActivityResult(ActivityResultContracts.RequestMultiplePermissions()) { permissions ->
+    private val permissionRequest = registerForActivityResult(ActivityResultContracts.
+    RequestMultiplePermissions()) { permissions ->
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+            when {
+                permissions.getOrDefault(Manifest.permission.ACCESS_FINE_LOCATION, false) -> {
+
+
+                }
+
+
+
+                permissions.getOrDefault(Manifest.permission.ACCESS_COARSE_LOCATION, false) -> {
+                    // Only approximate location access granted.
+                }
+                else -> {
+                    // No location access granted.
+                }
+            }
+        }
         if (permissions.all { it.value }) {
             onPermissionGranted()
         } else {
@@ -431,6 +470,11 @@ class ShootActivity : AppCompatActivity() {
             finish()
         }
     }
+
+
+
+
+
 
     open fun onPermissionGranted() = Unit
 
