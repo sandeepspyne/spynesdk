@@ -217,6 +217,9 @@ class ConfirmReshootDialog : BaseDialogFragment<ShootViewModel, DialogConfirmRes
     }
 
     private fun uploadImages() {
+        viewModel.onImageConfirmed.value = viewModel.getOnImageConfirmed()
+        //viewModel.shootData.value?.meta = getMetaValue()
+
         viewLifecycleOwner.lifecycleScope.launch {
             viewModel.
             insertImage(viewModel.shootData.value!!)

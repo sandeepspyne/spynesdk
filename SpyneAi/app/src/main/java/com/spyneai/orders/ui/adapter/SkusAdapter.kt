@@ -98,8 +98,14 @@ class SkusAdapter(
                     AppConstants.SKU_ID,
                     skuList[position].sku_id
                 )
-                var intent = Intent(context, KarviShowImagesActivity::class.java)
+                var intent = Intent(context, ProcessedImageActivity::class.java)
+                intent.putExtra(AppConstants.PROJECT_ID, projectId)
                 intent.putExtra(AppConstants.SKU_ID, skuList[position].sku_id)
+                intent.putExtra(AppConstants.SKU_NAME, skuList[position].sku_name)
+                intent.putExtra(AppConstants.CATEGORY_ID, skuList[position].categoryId)
+                intent.putExtra(AppConstants.CATEGORY_NAME, skuList[position].category)
+                intent.putExtra(AppConstants.SUB_CAT_ID, skuList[position].subCategoryId)
+                intent.putExtra(AppConstants.EXTERIOR_ANGLES, skuList[position].exteriorClicks)
                 intent.putExtra("is_paid",skuList[position].paid)
                 intent.putExtra(AppConstants.IMAGE_TYPE,skuList[position].category)
                 intent.putExtra(AppConstants.IS_360,skuList[position].is360)

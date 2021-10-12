@@ -1,30 +1,26 @@
-package com.spyneai.orders.ui
+package com.spyneai.processedimages.ui
 
 import android.app.Dialog
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
-import android.view.View
-import android.view.Window
-import android.view.WindowManager
+import android.view.*
 import android.widget.ImageView
 import android.widget.Toast
-import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.core.app.NotificationCompat
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.bumptech.glide.Glide
 import com.spyneai.R
+import com.spyneai.base.BaseFragment
 import com.spyneai.base.network.Resource
 import com.spyneai.credits.model.ReviewHolder
 import com.spyneai.dashboard.ui.base.ViewModelFactory
 import com.spyneai.dashboard.ui.handleApiError
 import com.spyneai.databinding.ActivityKarviShowImagesBinding
-import com.spyneai.downloadsku.FetchBulkResponseV2
+import com.spyneai.databinding.FragmentProcessedImagesBinding
 import com.spyneai.gotoHome
-import com.spyneai.interfaces.APiService
-import com.spyneai.interfaces.RetrofitClients
 import com.spyneai.isMagnatoMeterAvailable
 import com.spyneai.needs.AppConstants
 import com.spyneai.needs.ScrollingLinearLayoutManager
@@ -34,17 +30,12 @@ import com.spyneai.orders.ui.adapter.KarviImagesAdapter
 import com.spyneai.processedimages.ui.data.ProcessedViewModel
 import com.spyneai.shoot.ui.base.ShootActivity
 import com.spyneai.shoot.ui.dialogs.NoMagnaotoMeterDialog
-import com.spyneai.shoot.utils.log
-import okhttp3.MultipartBody
-import okhttp3.RequestBody
-import retrofit2.Call
-import retrofit2.Callback
-import retrofit2.Response
 
-class KarviShowImagesActivity : AppCompatActivity() {
+class KarviProcessedImagesFragment : BaseFragment<ProcessedViewModel, ActivityKarviShowImagesBinding>() {
+
 
     var shootId = ""
-    private lateinit var binding: ActivityKarviShowImagesBinding
+
     lateinit var builder: NotificationCompat.Builder
     lateinit var imageList: List<String>
     lateinit var imageListAfter: List<String>
@@ -54,24 +45,24 @@ class KarviShowImagesActivity : AppCompatActivity() {
     lateinit var imageListWaterMark: ArrayList<String>
     lateinit var listHdQuality: ArrayList<String>
     var catName: String = ""
+    lateinit var intent : Intent
+
 
     private lateinit var showReplacedImagesAdapter: KarviImagesAdapter
     private lateinit var ShowReplacedImagesInteriorAdapter: KarviImagesAdapter
     private lateinit var ShowReplacedImagesFocusedAdapter: KarviImagesAdapter
 
     lateinit var Category: String
-    lateinit var viewModel : ProcessedViewModel
-    
-    
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
+   
 
-        binding = ActivityKarviShowImagesBinding.inflate(layoutInflater)
-        val view = binding.root
-        setContentView(view)
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
 
-        viewModel = ViewModelProvider(this, ViewModelFactory()).get(ProcessedViewModel::class.java)
-        viewModel.skuId = Utilities.getPreference(this, AppConstants.SKU_ID)!!
+        intent = requireActivity().intent
+
+        viewModel.projectId = intent.getStringExtra(AppConstants.PROJECT_ID)
+        viewModel.skuId = intent.getStringExtra(AppConstants.SKU_ID)
+        viewModel.skuName = intent.getStringExtra(AppConstants.SKU_NAME)
 
         AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
 
@@ -79,10 +70,10 @@ class KarviShowImagesActivity : AppCompatActivity() {
 
         setListeners()
 
-        if (intent.getStringExtra(AppConstants.CATEGORY_NAME) != null)
-            catName = intent.getStringExtra(AppConstants.CATEGORY_NAME)!!
+        if (requireActivity().intent.getStringExtra(AppConstants.CATEGORY_NAME) != null)
+            catName = requireActivity().intent.getStringExtra(AppConstants.CATEGORY_NAME)!!
         else
-            catName = Utilities.getPreference(this, AppConstants.CATEGORY_NAME)!!
+            catName = Utilities.getPreference(requireContext(), AppConstants.CATEGORY_NAME)!!
 
         observeSkuData()
 
@@ -96,14 +87,13 @@ class KarviShowImagesActivity : AppCompatActivity() {
             if (element == null)
                 viewModel.reshoot.value = true
             else
-                Toast.makeText(this,"Reshoot not allowed for old shoots",Toast.LENGTH_LONG).show()
+                Toast.makeText(requireContext(),"Reshoot not allowed for old shoots", Toast.LENGTH_LONG).show()
         }
-
     }
 
     private fun observeSkuData() {
 
-        viewModel.imagesOfSkuRes.observe(this,{
+        viewModel.imagesOfSkuRes.observe(viewLifecycleOwner,{
             when(it){
                 is Resource.Success -> {
                     Utilities.hideProgressDialog()
@@ -128,7 +118,7 @@ class KarviShowImagesActivity : AppCompatActivity() {
                             (listHdQuality as ArrayList).add(dataList!![i].output_image_hres_url)
 
                             Utilities.savePrefrence(
-                                this@KarviShowImagesActivity,
+                                requireContext(),
                                 AppConstants.NO_OF_IMAGES,
                                 imageListAfter.size.toString()
                             )
@@ -140,7 +130,7 @@ class KarviShowImagesActivity : AppCompatActivity() {
                             (listHdQuality as ArrayList).add(dataList!![i].output_image_hres_url)
 
                             Utilities.savePrefrence(
-                                this@KarviShowImagesActivity,
+                                requireContext(),
                                 AppConstants.NO_OF_IMAGES,
                                 imageListAfter.size.toString()
                             )
@@ -152,7 +142,7 @@ class KarviShowImagesActivity : AppCompatActivity() {
                             (listHdQuality as ArrayList).add(dataList!![i].output_image_hres_url)
 
                             Utilities.savePrefrence(
-                                this@KarviShowImagesActivity,
+                                requireContext(),
                                 AppConstants.NO_OF_IMAGES,
                                 imageListAfter.size.toString()
                             )
@@ -165,7 +155,7 @@ class KarviShowImagesActivity : AppCompatActivity() {
                             (imageListWaterMark as ArrayList).add(dataList!![i].output_image_lres_wm_url)
 
                             Utilities.savePrefrence(
-                                this@KarviShowImagesActivity,
+                                requireContext(),
                                 AppConstants.NO_OF_IMAGES,
                                 imageListAfter.size.toString()
                             )
@@ -204,33 +194,33 @@ class KarviShowImagesActivity : AppCompatActivity() {
     private fun setListeners() {
 
         binding.ivBackShowImages.setOnClickListener(View.OnClickListener {
-            onBackPressed()
+            requireActivity().onBackPressed()
         })
 
         binding.ivHomeShowImages.setOnClickListener(View.OnClickListener {
-            gotoHome()
+            requireContext().gotoHome()
         })
 
 
 
         binding.llStartNewShoot.setOnClickListener {
-            if (isMagnatoMeterAvailable()){
+            if (requireContext().isMagnatoMeterAvailable()){
                 startShoot()
             }else {
-                NoMagnaotoMeterDialog().show(supportFragmentManager,"NoMagnaotoMeterDialog")
+                NoMagnaotoMeterDialog().show(requireActivity().supportFragmentManager,"NoMagnaotoMeterDialog")
             }
         }
     }
 
     private fun startShoot() {
-        val intent = Intent(this, ShootActivity::class.java)
+        val intent = Intent(requireContext(), ShootActivity::class.java)
         intent.putExtra(AppConstants.CATEGORY_ID, AppConstants.CARS_CATEGORY_ID)
         intent.putExtra(AppConstants.CATEGORY_NAME,"Automobiles")
         startActivity(intent)
     }
 
     private fun setBulkImages() {
-        Utilities.showProgressDialog(this)
+        Utilities.showProgressDialog(requireContext())
         imageList = ArrayList<String>()
         imageListAfter = ArrayList<String>()
         imageListWaterMark = ArrayList<String>()
@@ -238,7 +228,7 @@ class KarviShowImagesActivity : AppCompatActivity() {
         imageListFocused = ArrayList<String>()
         listHdQuality = ArrayList<String>()
 
-        showReplacedImagesAdapter = KarviImagesAdapter(this,
+        showReplacedImagesAdapter = KarviImagesAdapter(requireContext(),
             listHdQuality as ArrayList<String>,
             object : KarviImagesAdapter.BtnClickListener {
                 override fun onBtnClick(position: Int) {
@@ -247,7 +237,7 @@ class KarviShowImagesActivity : AppCompatActivity() {
                 }
             })
 
-        ShowReplacedImagesInteriorAdapter = KarviImagesAdapter(this,
+        ShowReplacedImagesInteriorAdapter = KarviImagesAdapter(requireContext(),
             imageListInterior as ArrayList<String>,
             object : KarviImagesAdapter.BtnClickListener {
                 override fun onBtnClick(position: Int) {
@@ -257,7 +247,7 @@ class KarviShowImagesActivity : AppCompatActivity() {
             })
 
 
-        ShowReplacedImagesFocusedAdapter = KarviImagesAdapter(this,
+        ShowReplacedImagesFocusedAdapter = KarviImagesAdapter(requireContext(),
             imageListFocused as ArrayList<String>,
             object : KarviImagesAdapter.BtnClickListener {
                 override fun onBtnClick(position: Int) {
@@ -268,7 +258,7 @@ class KarviShowImagesActivity : AppCompatActivity() {
 
         binding.rvImagesBackgroundRemoved.setLayoutManager(
             ScrollingLinearLayoutManager(
-                this,
+                requireContext(),
                 LinearLayoutManager.VERTICAL,
                 false
             )
@@ -276,7 +266,7 @@ class KarviShowImagesActivity : AppCompatActivity() {
 
         binding.rvInteriors.setLayoutManager(
             ScrollingLinearLayoutManager(
-                this,
+                requireContext(),
                 LinearLayoutManager.VERTICAL,
                 false
             )
@@ -284,7 +274,7 @@ class KarviShowImagesActivity : AppCompatActivity() {
 
         binding.rvFocused.setLayoutManager(
             ScrollingLinearLayoutManager(
-                this,
+                requireContext(),
                 LinearLayoutManager.VERTICAL,
                 false
             )
@@ -299,7 +289,7 @@ class KarviShowImagesActivity : AppCompatActivity() {
     //Fetch bulk data
     private fun fetchBulkUpload() {
 
-        shootId = Utilities.getPreference(this, AppConstants.SKU_ID)!!
+        shootId = Utilities.getPreference(requireContext(), AppConstants.SKU_ID)!!
 
         getSkuImages()
 
@@ -309,13 +299,13 @@ class KarviShowImagesActivity : AppCompatActivity() {
         // Utilities.showProgressDialog(requireContext())
 
         viewModel.getImagesOfSku(
-            Utilities.getPreference(this,AppConstants.AUTH_KEY).toString(),
+            Utilities.getPreference(requireContext(), AppConstants.AUTH_KEY).toString(),
             viewModel.skuId!!
         )
     }
 
     fun showImagesDialog(url: String) {
-        val dialog = Dialog(this)
+        val dialog = Dialog(requireContext())
         dialog.requestWindowFeature(Window.FEATURE_NO_TITLE)
         dialog.setCancelable(true)
         dialog.setContentView(R.layout.dialog_show_processed_images)
@@ -334,11 +324,17 @@ class KarviShowImagesActivity : AppCompatActivity() {
             dialog.dismiss()
         })
 
-        Glide.with(this)
+        Glide.with(requireContext())
             .load(url)
             .into(carouselViewImages)
 
         dialog.show()
     }
+    
+    override fun getViewModel() = ProcessedViewModel::class.java
 
+    override fun getFragmentBinding(
+        inflater: LayoutInflater,
+        container: ViewGroup?
+    ) = ActivityKarviShowImagesBinding.inflate(inflater, container, false)
 }
