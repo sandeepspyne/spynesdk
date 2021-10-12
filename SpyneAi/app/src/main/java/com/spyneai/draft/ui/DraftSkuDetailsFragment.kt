@@ -380,7 +380,7 @@ class DraftSkuDetailsFragment : BaseFragment<DraftViewModel, FragmentDraftSkuDet
                         binding.tvTotalSku.text = list.size.toString()
 
                         exterior = when(requireActivity().intent.getStringExtra(AppConstants.CATEGORY_NAME)) {
-                            "E-Commerce","Footwear" -> {
+                            "E-Commerce","Footwear", "Food & Beverages", "Photo Box" -> {
                                 list as ArrayList
                             } else -> {
                                 list?.filter {
