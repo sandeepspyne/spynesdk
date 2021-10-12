@@ -128,7 +128,6 @@ class AngleSelectionDialog : BaseDialogFragment<ShootViewModel,DialogAngleSelect
                     viewModel.isSubCategoryConfirmed.value = true
                     viewModel.isSkuCreated.value = true
                     viewModel.showLeveler.value = true
-                    viewModel.fetchOverlays.value = true
 
                     //add sku to local database
                     viewModel.insertSku(sku!!)

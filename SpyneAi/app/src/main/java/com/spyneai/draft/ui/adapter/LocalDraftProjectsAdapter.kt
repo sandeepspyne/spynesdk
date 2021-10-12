@@ -46,6 +46,7 @@ val draftsList: List<Project>
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
 
+        val s = ""
         if (draftsList[position].subCategoryName == "360_exterior"
             || draftsList[position].subCategoryName.equals("360_interior")
         ){

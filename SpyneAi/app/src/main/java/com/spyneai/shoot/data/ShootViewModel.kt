@@ -456,7 +456,7 @@ class ShootViewModel : ViewModel() {
    // var selectedOverlay : OverlaysResponse.Data? = null
     val getSubCategories = MutableLiveData<Boolean>()
     val selectAngles = MutableLiveData<Boolean>()
-    val fetchOverlays = MutableLiveData<Boolean>()
+
     val onImageConfirmed = MutableLiveData<Boolean>()
 
 

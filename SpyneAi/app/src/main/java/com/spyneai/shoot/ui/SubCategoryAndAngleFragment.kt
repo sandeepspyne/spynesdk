@@ -40,24 +40,6 @@ class SubCategoryAndAngleFragment : BaseFragment<ShootViewModel,FragmentSelectSu
         observeSubcategories()
     }
 
-    private fun observeIsProjectCreated() {
-        viewModel.isProjectCreated.observe(viewLifecycleOwner, {
-            if (it) {
-                if (viewModel.isSubCategoryConfirmed.value == null) {
-                    shoot("init subCategory called")
-                    getSubcategories()
-                } else {
-//                    //set default angles on sub cat response
-//                    shoot("initangles, initProgressFrames, and and observe overlays called")
-//                    initAngles()
-////                    if (viewModel.startInteriorShots.value == null){
-//                    observeOverlays()
-////                    }
-                }
-            }
-        })
-    }
-
     private fun getSubcategories() {
 //        Utilities.showProgressDialog(requireContext())
 

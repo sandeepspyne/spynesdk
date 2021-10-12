@@ -119,12 +119,6 @@ class OverlaysFragment : BaseFragment<ShootViewModel, FragmentOverlaysBinding>()
         viewModel.isSkuCreated.observe(viewLifecycleOwner,{
             initAngles()
         })
-
-        viewModel.fetchOverlays.observe(viewLifecycleOwner,{
-
-        })
-
-
     }
 
     private fun observeShootDimesions() {

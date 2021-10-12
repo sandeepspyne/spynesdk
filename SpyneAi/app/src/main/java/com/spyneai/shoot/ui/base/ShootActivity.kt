@@ -318,23 +318,29 @@ class ShootActivity : AppCompatActivity() {
         if (intent.getBooleanExtra(AppConstants.SKU_CREATED,false)) {
             shootViewModel.exterirorAngles.value = intent.getIntExtra(AppConstants.EXTERIOR_ANGLES,0)
 
-            shootViewModel.getSubCategories(
-                Utilities.getPreference(this, AppConstants.AUTH_KEY).toString(),
-                intent.getStringExtra(AppConstants.CATEGORY_ID).toString()
-            )
+//            shootViewModel.getSubCategories(
+//                Utilities.getPreference(this, AppConstants.AUTH_KEY).toString(),
+//                intent.getStringExtra(AppConstants.CATEGORY_ID).toString()
+//            )
 
             shootViewModel.sku.value!!.skuId = intent.getStringExtra(AppConstants.SKU_ID)
 
             //fetch overlays
-            shootViewModel.isSubCategoryConfirmed.value = true
+           // shootViewModel.isSubCategoryConfirmed.value = true
             shootViewModel.subCategory.value = getSubcategoryResponse()
 
-            shootViewModel.getOverlays(
-                Utilities.getPreference(this,AppConstants.AUTH_KEY).toString(),
-                intent.getStringExtra(AppConstants.CATEGORY_ID)!!,
-                intent.getStringExtra(AppConstants.SUB_CAT_ID)!!,
-                intent.getIntExtra(AppConstants.EXTERIOR_ANGLES,0).toString(),
-            )
+            shootViewModel.isSubCategoryConfirmed.value = true
+            shootViewModel.isSkuCreated.value = true
+            shootViewModel.showLeveler.value = true
+
+//            shootViewModel.getOverlays(
+//                Utilities.getPreference(this,AppConstants.AUTH_KEY).toString(),
+//                intent.getStringExtra(AppConstants.CATEGORY_ID)!!,
+//                intent.getStringExtra(AppConstants.SUB_CAT_ID)!!,
+//                intent.getIntExtra(AppConstants.EXTERIOR_ANGLES,0).toString(),
+//            )
+        }else{
+            shootViewModel.getSubCategories.value = true
         }
 
     }
