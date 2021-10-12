@@ -50,10 +50,12 @@ class MiscHolder(
                 adapterPosition,
                 data)
         }
-        else
+        else{
             binding?.flOverlay?.background = ContextCompat.getDrawable(
                 BaseApplication.getContext(),
                 R.drawable.bg_overlay)
+        }
+
 
         if (data.imageClicked){
             Log.d(TAG, "bind: "+data.imagePath)

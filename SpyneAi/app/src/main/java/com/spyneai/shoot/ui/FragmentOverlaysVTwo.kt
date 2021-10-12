@@ -620,6 +620,7 @@ class FragmentOverlaysVTwo : BaseFragment<ShootViewModel, FragmentOverlaysV2Bind
                     }
 
                     viewModel.interiorAngles.value = interiorList.size
+                    binding.rvSubcategories.scrollToPosition(0)
 
                     val list = it.value.interior
                     list[0].isSelected = true
@@ -694,6 +695,8 @@ class FragmentOverlaysVTwo : BaseFragment<ShootViewModel, FragmentOverlaysV2Bind
                     var miscList = it.value.miscellaneous
 
                     viewModel.miscAngles.value =  it.value.miscellaneous.size
+                    binding.rvSubcategories.scrollToPosition(0)
+
 
                     if (viewModel.fromDrafts) {
                         viewModel.miscShootNumber.value = requireActivity().intent.getIntExtra(

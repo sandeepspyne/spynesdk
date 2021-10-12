@@ -407,7 +407,7 @@ class ShootViewModel : ViewModel() {
     ): String {
         val filePrefix = FileNameManager().getFileName(
             fromDrafts,
-            categoryDetails.value?.imageType!!,
+            if (categoryDetails.value?.imageType == "Misc") "Focus Shoot" else categoryDetails.value?.imageType!!,
             if (isReshoot) reShootNumber.value!! else shootNumber.value!!,
             sequence,
             shootList.value,
@@ -421,7 +421,7 @@ class ShootViewModel : ViewModel() {
     fun getSequenceNumber(exteriorSize : Int,interiorSize : Int,miscSize: Int): Int {
         return SequeneNumberManager().getSequenceNumber(
             fromDrafts,
-            categoryDetails.value?.imageType!!,
+            if (categoryDetails.value?.imageType == "Misc") "Focus Shoot" else categoryDetails.value?.imageType!!,
             if (isReshoot) reShootNumber.value!! else shootNumber.value!!,
             shootList.value?.size!!,
             exteriorSize,
