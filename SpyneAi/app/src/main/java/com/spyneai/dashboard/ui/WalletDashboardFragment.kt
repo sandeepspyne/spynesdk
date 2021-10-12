@@ -127,7 +127,7 @@ class WalletDashboardFragment : BaseFragment<DashboardViewModel, WalletDashboard
 
                     if (response.body()?.data?.credit_available.toString() == "0"){
                         binding.tvCredits.setTextColor(ContextCompat.getColor(requireContext(),R.color.zero_credits))
-                        binding.tvCredits.text = "00"
+                        binding.tvCredits.text = "00 "
                     }else{
                         binding.tvCredits.setTextColor(ContextCompat.getColor(requireContext(),R.color.available_credits))
                         binding.tvCredits.text = CreditUtils.getFormattedNumber(response.body()!!.data.credit_available)

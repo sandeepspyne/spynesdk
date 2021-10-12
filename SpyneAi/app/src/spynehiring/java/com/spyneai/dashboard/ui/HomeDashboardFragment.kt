@@ -67,7 +67,7 @@ class HomeDashboardFragment :
         }
         binding.llDrafts.setOnClickListener {
             val intent = Intent(requireContext(), MyOrdersActivity::class.java)
-            intent.putExtra("TAB_ID", 1)
+            intent.putExtra("TAB_ID", 0)
             startActivity(intent)
         }
     }

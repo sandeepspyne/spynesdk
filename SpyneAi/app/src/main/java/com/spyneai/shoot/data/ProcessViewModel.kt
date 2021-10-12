@@ -36,6 +36,11 @@ class ProcessViewModel : ViewModel() {
     var addRegularShootSummaryFragment: MutableLiveData<Boolean> = MutableLiveData()
     var backgroundSelect: String? = null
 
+    var numberPlateBlur = false
+    var windowCorrection = false
+
+
+
     val projectId: MutableLiveData<String> = MutableLiveData()
 
     var frontFramesList = ArrayList<String>()
@@ -87,14 +92,17 @@ class ProcessViewModel : ViewModel() {
                 _carGifRes.value = repository.getBackgroundGifCars(category, auth_key)
     }
 
-    fun processSku(authKey: String, skuId: String, backgroundId: String, is360: Boolean) =
+    fun processSku(authKey: String, skuId: String, backgroundId: String, is360: Boolean,
+                   numberPlateBlur: Boolean,
+                   windowCorrection: Boolean ) =
         viewModelScope.launch {
 
             //queue process request
             localRepository.queueProcessRequest(sku.value?.skuId!!, backgroundId, is360)
 
             _processSkuRes.value = Resource.Loading
-            _processSkuRes.value = repository.processSku(authKey, skuId, backgroundId, is360)
+            _processSkuRes.value = repository.processSku(authKey, skuId, backgroundId,
+                is360,numberPlateBlur,windowCorrection)
         }
 
     fun checkImagesUploadStatus(backgroundSelect: String) {

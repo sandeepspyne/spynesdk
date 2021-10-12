@@ -141,7 +141,7 @@
 
     <string name="images"><u>Immagini</u></string>
 
-    <string name="credits"><u>Credits</u></string>
+    <string name="credits"><u>Titoli di coda</u></string>
 
     <string name="increase_online_sale"><u>Aumenta le vendite online dei tuoi prodotti \n<br />caricando immagini visivamente sbalorditive su \n<br />Marketplaces
 
@@ -190,7 +190,7 @@
     <string name="logout_dialog_text">Sei sicuro di voler <b>disconnettersi.</b></string>
 
     <string name="login_here"><b>Accedi qui</b></string>
-    <string name="shoot_outdoor">Spara&#160; <font color='#FF7700'><b>All\'aperto</b></font>&#160;per evitare riflessi irregolari</string>
+    <string name="shoot_outdoor">Meglio di scattare &#160; <font color='#FF7700'><b>All\'esterno</b></font>&#160;per evitare i riflessi</string>
     <string name="forgot_password">Hai dimenticato la password?</string>
 
         <string name="forgot_password_mail">Inserisci l\'indirizzo email per reimpostare la password. \n<br /> Potrebbe essere necessario controllare la cartella spam.</string>
@@ -312,4 +312,28 @@
     <string name="profile">Profilo</string>
     <string name="turn_off_switch">Spegni quando hai una \n connessione Internet lenta.</string>
     <string name="rate_this_output">Valuta ora:</string>
+    <string name="slide_one_title">Spara</string>
+    <string name="slide_one_description">Modifica e vendi le tue auto\ntramite la fotocamera del negozio</string>
+    <string name="slide_two_title">Modifica</string>
+    <string name="slide_two_description">Hai accesso a tutto ciò di cui hai bisogno per scattare fantastiche
+         foto del prodotto.
+</string>
+    <string name="slide_three_tittle">Crediti gratuiti</string>
+    <string name="slide_three_description">Goditi i crediti gratuiti alla registrazione</string>
+    <string name="show_window_reflection">Mostra riflesso finestra</string>
+    <string name="blur_no_plate">Sfoca targa numero</string>
+    <string name="how_we_can_improve">Come possiamo migliorare?</string>
+    <string name="features">Caratteristiche</string>
+    <string name="embed_directly_to">Incorpora direttamente sul tuo sito web</string>
+    <string name="shoot_aywhere">Riprendi ovunque</string>
+    <string name="shoot_any_car">Riprendere qualsiasi auto</string>
+    <string name="video_shoot">Riprendi video</string>
+    <string name="create_high_fidelity">Crea un\'impressione sopra la \nmedia secondo il budget</string>
+    <string name="select_the_threesixty_fidelity">Selezionare la fedeltà esterna a 360</string>
+    <string name="higher_no_frame">"Un numero maggiore di fotogrammi produce \ntransizioni più fluide nella vista a 360"</string>
+    <string name="select_the_no_of_frame">Seleziona il numero di fotogrammi per pre-vedere il \nframe rate su un esempio preimpostato</string>
+    <string name="one_credit_one_frame">1 credito = 1 fotogramma</string>
+    <string name="three_sixty_preview">360 Anteprima</string>
+    <string name="frames">fotogrammi</string>
+    <string name="fidelity_selection">Selezione di fedeltà</string>
 </resources>

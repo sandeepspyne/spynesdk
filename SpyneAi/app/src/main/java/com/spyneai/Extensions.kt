@@ -44,6 +44,8 @@ import java.text.SimpleDateFormat
 import java.util.*
 import kotlin.collections.ArrayList
 
+private var TAG = "Locale_Check"
+
 fun Context.gotoHome(){
     val intent = Intent(this, MainDashboardActivity::class.java)
     intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
@@ -259,6 +261,7 @@ fun Context.getVideoDuration(videoPath: Uri?) : Long {
 
 fun Context.setLocale() {
     val locale = Locale(Utilities.getPreference(this,AppConstants.LOCALE))
+//    Log.d(TAG, "setLocale:"+locale)
     Locale.setDefault(locale)
     val config = Configuration()
     config.locale = locale

@@ -89,10 +89,10 @@
 
                         <TextView
                             android:layout_width="100dp"
-                            android:layout_height="wrap_content"
+                            android:layout_height="match_parent"
                             android:background="@color/shimmer_background"
                             android:fontFamily="@font/medium"
-                            android:textSize="26sp"/>
+                            android:textSize="26sp" />
 
                     </com.facebook.shimmer.ShimmerFrameLayout>
 

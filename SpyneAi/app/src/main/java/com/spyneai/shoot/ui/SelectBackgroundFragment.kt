@@ -51,6 +51,43 @@ class SelectBackgroundFragment : BaseFragment<ProcessViewModel, FragmentSelectBa
         }
 
 
+        binding.cbBlurNoPlate.setOnCheckedChangeListener { buttonView, isChecked ->
+            viewModel.numberPlateBlur = isChecked
+        }
+        binding.cbWindowCorrection.setOnCheckedChangeListener { buttonView, isChecked ->
+            viewModel.windowCorrection = isChecked
+        }
+
+
+      //   blur no plate & window correction
+            when (Utilities.getPreference(requireContext(), AppConstants.CATEGORY_NAME)) {
+                "Automobiles" -> {
+                    if (getString(R.string.app_name) == AppConstants.SPYNE_AI) {
+                        binding.cbBlurNoPlate.visibility = View.VISIBLE
+                        binding.tvBlurNoPlate.visibility = View.VISIBLE
+                        binding.cbWindowCorrection.visibility = View.VISIBLE
+                        binding.tvWindowReflection.visibility = View.VISIBLE
+                    } else  {
+                        binding.cbBlurNoPlate.visibility = View.GONE
+                        binding.tvBlurNoPlate.visibility = View.GONE
+                        binding.cbWindowCorrection.visibility = View.GONE
+                        binding.tvWindowReflection.visibility = View.GONE
+                    }
+
+                } else ->{
+                binding.cbBlurNoPlate.visibility = View.GONE
+                binding.tvBlurNoPlate.visibility = View.GONE
+                binding.cbWindowCorrection.visibility = View.GONE
+                binding.tvWindowReflection.visibility = View.GONE
+                }
+            }
+
+
+
+
+
+
+
         when (getString(R.string.app_name)) {
             AppConstants.KARVI,
             AppConstants.CARS24_INDIA,
@@ -131,7 +168,8 @@ class SelectBackgroundFragment : BaseFragment<ProcessViewModel, FragmentSelectBa
 
                     processFoodImage()
             Utilities.showProgressDialog(requireContext())
-                } AppConstants.SPYNE_AI -> {
+                }
+            AppConstants.SPYNE_AI -> {
             if (Utilities.getPreference(requireContext(), AppConstants.CATEGORY_NAME).equals("Food & Beverages")){
                 processFoodImage()
                 Utilities.showProgressDialog(requireContext())
@@ -211,8 +249,7 @@ class SelectBackgroundFragment : BaseFragment<ProcessViewModel, FragmentSelectBa
             AppConstants.SPYNE_AI -> {
                 if (Utilities.getPreference(requireContext(), AppConstants.CATEGORY_NAME).equals("Food & Beverages")){
                     val category = "Food".toRequestBody(MultipartBody.FORM)
-                    val authKey =
-                        Utilities.getPreference(requireContext(), AppConstants.AUTH_KEY)!!
+                    val authKey = Utilities.getPreference(requireContext(), AppConstants.AUTH_KEY)!!
                             .toRequestBody(MultipartBody.FORM)
 
                     viewModel.getBackgroundGifCars(category, authKey)
@@ -374,8 +411,7 @@ class SelectBackgroundFragment : BaseFragment<ProcessViewModel, FragmentSelectBa
             Utilities.getPreference(requireContext(), AppConstants.AUTH_KEY).toString(),
             viewModel.sku.value?.skuId!!,
             backgroundSelect,
-            false
-        )
+            false,binding.cbBlurNoPlate.isChecked,binding.cbWindowCorrection.isChecked)
 
         log("Process sku started")
         log(
