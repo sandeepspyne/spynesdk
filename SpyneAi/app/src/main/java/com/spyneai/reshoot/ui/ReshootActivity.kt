@@ -1,6 +1,7 @@
 package com.spyneai.reshoot.ui
 
 import CameraFragment
+import android.content.Intent
 import android.os.Bundle
 import android.view.WindowManager
 import androidx.appcompat.app.AppCompatActivity
@@ -53,9 +54,8 @@ class ReshootActivity : AppCompatActivity() {
             .commit()
 
         shootViewModel.reshootCompleted.observe(this,{
-            supportFragmentManager.beginTransaction()
-                .add(R.id.flContainer, ImageProcessingStartedFragment())
-                .commit()
+           Intent(this,ReshootDoneActivity::class.java)
+               .apply { startActivity(this) }
         })
     }
 

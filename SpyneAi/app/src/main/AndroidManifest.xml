@@ -40,10 +40,13 @@
         android:usesCleartextTraffic="true"
         tools:targetApi="m">
         <activity
+            android:name=".reshoot.ui.ReshootDoneActivity"
+            android:exported="true"
+            android:screenOrientation="portrait"/>
+        <activity
             android:name=".reshoot.ui.SelectImagesActivity"
             android:exported="true" />
-
-        <activity android:name=".onboarding.SelectLanguageActivity"></activity>
+        <activity android:name=".onboarding.SelectLanguageActivity" />
         <activity
             android:name=".draft.ui.DraftsActivity"
             android:exported="true" />
@@ -111,10 +114,9 @@
             android:name=".activity.OngoingOrdersActivity"
             android:launchMode="singleTask"
             android:screenOrientation="portrait" />
-
-
-        <activity android:name=".reshoot.ui.ReshootActivity"
-            android:screenOrientation="landscape"/>
+        <activity
+            android:name=".reshoot.ui.ReshootActivity"
+            android:screenOrientation="landscape" />
 
         <service
             android:name=".imagesdowloading.ImageDownloadingService"
