@@ -725,6 +725,8 @@ class CameraFragment : BaseFragment<ShootViewModel, FragmentCameraBinding>(), Pi
                 it.overlayId == viewModel.overlayId
         }
 
+        val s = ""
+
         if (item != null){
             item.capturedImage = capturedImage
             item.angle = cameraAngle

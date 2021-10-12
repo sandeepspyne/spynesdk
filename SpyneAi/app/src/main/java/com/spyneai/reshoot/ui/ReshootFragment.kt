@@ -40,6 +40,7 @@ import com.spyneai.shoot.data.ShootViewModel
 import com.spyneai.shoot.data.model.ShootData
 import com.spyneai.shoot.ui.dialogs.ConfirmReshootDialog
 import com.spyneai.shoot.ui.dialogs.ConfirmTagsDialog
+import com.spyneai.shoot.ui.dialogs.ReclickDialog
 import com.spyneai.shoot.utils.shoot
 
 class ReshootFragment : BaseFragment<ShootViewModel, FragmentReshootBinding>(), OnItemClickListener,
@@ -188,6 +189,11 @@ class ReshootFragment : BaseFragment<ShootViewModel, FragmentReshootBinding>(), 
     override fun onItemClick(view: View, position: Int, data: Any?) {
         when (data) {
             is ReshootOverlaysRes.Data -> {
+
+                if (data.imageClicked){
+                    ReclickDialog().show(requireActivity().supportFragmentManager,"ReclickDialog")
+                }
+
                 viewModel.sequence = position
                 val list = reshootAdapter?.listItems as List<ReshootOverlaysRes.Data>
 
@@ -218,6 +224,10 @@ class ReshootFragment : BaseFragment<ShootViewModel, FragmentReshootBinding>(), 
                 }else {
                     binding.imgOverlay.visibility = View.GONE
                 }
+
+                if (getString(R.string.app_name) == AppConstants.KARVI)
+                    binding.imgOverlay.visibility = View.GONE
+
                 viewModel.categoryDetails.value?.imageType = data.type
 
                 viewModel.sequence = position

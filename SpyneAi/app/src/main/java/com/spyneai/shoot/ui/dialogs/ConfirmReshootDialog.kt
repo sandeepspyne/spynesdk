@@ -20,6 +20,7 @@ import com.spyneai.captureEvent
 import com.spyneai.databinding.DialogConfirmReshootBinding
 import com.spyneai.needs.AppConstants
 import com.spyneai.posthog.Events
+import com.spyneai.reshoot.data.ReshootOverlaysRes
 import com.spyneai.reshoot.data.SelectedImagesHelper
 import com.spyneai.service.Actions
 import com.spyneai.service.ImageUploadingService
@@ -82,7 +83,8 @@ class ConfirmReshootDialog : BaseDialogFragment<ShootViewModel, DialogConfirmRes
                 if (viewModel.reShootNumber.value == SelectedImagesHelper.selectedImages.length().minus(1)) {
                     viewModel.reshootCompleted.value = true
                 } else {
-                    viewModel.reShootNumber.value = viewModel.shootList.value?.size
+                    viewModel.reShootNumber.value = viewModel.reShootNumber.value?.plus(1)
+
                     dismiss()
                 }
             }else {
