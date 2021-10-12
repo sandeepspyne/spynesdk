@@ -93,6 +93,8 @@ class FragmentOverlaysVTwo : BaseFragment<ShootViewModel, FragmentOverlaysV2Bind
 
         observeStartMiscShoots()
 
+        observeySubcategries()
+
         viewModel.show360InteriorDialog.observe(viewLifecycleOwner,{
             if (it)
                 if (viewModel.interior360Dialog.value == null)
@@ -119,6 +121,106 @@ class FragmentOverlaysVTwo : BaseFragment<ShootViewModel, FragmentOverlaysV2Bind
         viewModel.scrollView.observe(viewLifecycleOwner,{
             binding.rvSubcategories.scrollToPosition(it)
         })
+    }
+
+    private fun observeySubcategries() {
+        viewModel.subCategoriesResponse.observe(viewLifecycleOwner,{
+            when(it){
+                is Resource.Success -> {
+                    Utilities.hideProgressDialog()
+                    val subCategoriesResponse = it.value
+                   val intent = requireActivity().intent
+                    when {
+                        intent.getBooleanExtra(AppConstants.RESUME_EXTERIOR,false) -> {
+                            viewModel.shootNumber.value = requireActivity().intent.getIntExtra(AppConstants.EXTERIOR_SIZE,0)
+                            startExteriroShot()
+                        }
+                        intent.getBooleanExtra(AppConstants.RESUME_INTERIOR,false) -> {
+                            binding.tvShoot?.isClickable = false
+
+                            when (requireActivity().intent.getIntExtra(AppConstants.INTERIOR_SIZE,0)) {
+                                subCategoriesResponse.interior.size -> {
+                                    viewModel.showMiscDialog.value = true
+                                }
+                                0 -> {
+                                    viewModel.showInteriorDialog.value = true
+                                }
+                                else -> {
+                                    viewModel.startInteriorShots.value = true
+                                    viewModel.interiorAngles.value =  subCategoriesResponse.interior.size
+
+                                    val list = subCategoriesResponse.interior
+                                    list[0].isSelected = true
+
+                                    viewModel.displayName = list[0].display_name
+                                    viewModel.displayThumbanil = list[0].display_thumbnail
+
+                                    overlaysAdapter.listItems = list
+                                    overlaysAdapter.notifyDataSetChanged()
+
+                                    viewModel.interiorShootNumber.value = requireActivity().intent.getIntExtra(
+                                        AppConstants.INTERIOR_SIZE,0)
+                                }
+                            }
+                        }
+
+                        intent.getBooleanExtra(AppConstants.RESUME_MISC,false) -> {
+                            binding.tvShoot?.isClickable = false
+
+                            when {
+                                intent.getIntExtra(AppConstants.MISC_SIZE,0) ==
+                                        subCategoriesResponse.miscellaneous.size -> {
+                                    //select background
+                                    viewModel.selectBackground.value = true
+                                }
+                                intent.getIntExtra(AppConstants.MISC_SIZE,0) ==
+                                        0 -> {
+                                    viewModel.showMiscDialog.value = true
+                                }
+                                else -> {
+                                    viewModel.startMiscShots.value = true
+                                    if (viewModel.categoryDetails.value?.categoryName == "Bikes") {
+                                        val filteredList: List<NewSubCatResponse.Miscellaneous> = subCategoriesResponse.miscellaneous.filter {
+                                            it.prod_sub_cat_id ==   viewModel.subCategory.value?.prod_sub_cat_id
+                                        }
+
+                                        subCategoriesResponse.miscellaneous = filteredList
+                                    }
+
+                                    viewModel.miscAngles.value =  subCategoriesResponse.miscellaneous.size
+
+                                    val list = subCategoriesResponse.miscellaneous
+                                    list[0].isSelected = true
+
+                                    viewModel.displayName = list[0].display_name
+                                    viewModel.displayThumbanil = list[0].display_thumbnail
+
+                                    overlaysAdapter.listItems = list
+                                    overlaysAdapter.notifyDataSetChanged()
+
+                                    viewModel.miscShootNumber.value = requireActivity().intent.getIntExtra(
+                                        AppConstants.MISC_SIZE,0)
+                                }
+                            }
+                        }
+                    }
+                }
+
+                is Resource.Failure -> {
+                    Utilities.hideProgressDialog()
+                    handleApiError(it) {getSubcategories()}
+                }
+            }
+        })
+    }
+
+    private fun getSubcategories() {
+        Utilities.showProgressDialog(requireContext())
+
+        viewModel.getSubCategories(
+            Utilities.getPreference(requireContext(), AppConstants.AUTH_KEY).toString(),
+            requireActivity().intent.getStringExtra(AppConstants.CATEGORY_ID).toString()
+        )
     }
 
     private fun observeShootDimesions() {
@@ -178,9 +280,8 @@ class FragmentOverlaysVTwo : BaseFragment<ShootViewModel, FragmentOverlaysV2Bind
                 R.string.app_name))}"
         })
 
-        if (viewModel.shootList.value.isNullOrEmpty())
-            initProgressFrames()
-        else if (viewModel.shootList.value?.size!! < viewModel.getSelectedAngles(getString(R.string.app_name))!!)
+        if (viewModel.shootList.value.isNullOrEmpty()
+            || (viewModel.shootList.value?.size!! < viewModel.getSelectedAngles(getString(R.string.app_name))!!))
             initProgressFrames()
 
         if (viewModel.subCategory.value?.prod_cat_id != null)
@@ -191,99 +292,21 @@ class FragmentOverlaysVTwo : BaseFragment<ShootViewModel, FragmentOverlaysV2Bind
         //update this shoot number
         if (viewModel.fromDrafts){
             val intent = requireActivity().intent
+
             viewModel.shootNumber.value = requireActivity().intent.getIntExtra(AppConstants.EXTERIOR_SIZE,0)
-            val subCategoriesResponse = (viewModel.subCategoriesResponse.value as Resource.Success).value
 
-            when {
-                intent.getBooleanExtra(AppConstants.RESUME_EXTERIOR,false) -> {
-                    viewModel.shootNumber.value = requireActivity().intent.getIntExtra(AppConstants.EXTERIOR_SIZE,0)
-                    startExteriroShot()
-                }
-                intent.getBooleanExtra(AppConstants.RESUME_INTERIOR,false) -> {
-                    binding.tvShoot?.isClickable = false
-
-                    when (requireActivity().intent.getIntExtra(AppConstants.INTERIOR_SIZE,0)) {
-                        subCategoriesResponse.interior.size -> {
-                            viewModel.showMiscDialog.value = true
-                        }
-                        0 -> {
-                            viewModel.showInteriorDialog.value = true
-                        }
-                        else -> {
-                            viewModel.startInteriorShots.value = true
-                            viewModel.interiorAngles.value =  subCategoriesResponse.interior.size
-
-                            val list = subCategoriesResponse.interior
-                            list[0].isSelected = true
-
-                            viewModel.displayName = list[0].display_name
-                            viewModel.displayThumbanil = list[0].display_thumbnail
-
-                            overlaysAdapter.listItems = list
-                            overlaysAdapter.notifyDataSetChanged()
-
-                            viewModel.interiorShootNumber.value = requireActivity().intent.getIntExtra(
-                                AppConstants.INTERIOR_SIZE,0)
-                        }
-                    }
-
-                }
-
-                intent.getBooleanExtra(AppConstants.RESUME_MISC,false) -> {
-                    binding.tvShoot?.isClickable = false
-
-                    when {
-                        intent.getIntExtra(AppConstants.MISC_SIZE,0) ==
-                                subCategoriesResponse.miscellaneous.size -> {
-                            //select background
-                            viewModel.selectBackground.value = true
-                        }
-                        intent.getIntExtra(AppConstants.MISC_SIZE,0) ==
-                                0 -> {
-                            viewModel.showMiscDialog.value = true
-                        }
-                        else -> {
-                            viewModel.startMiscShots.value = true
-                            if (viewModel.categoryDetails.value?.categoryName == "Bikes") {
-                                val filteredList: List<NewSubCatResponse.Miscellaneous> = subCategoriesResponse.miscellaneous.filter {
-                                    it.prod_sub_cat_id ==   viewModel.subCategory.value?.prod_sub_cat_id
-                                }
-
-                                subCategoriesResponse.miscellaneous = filteredList
-                            }
-
-                            viewModel.miscAngles.value =  subCategoriesResponse.miscellaneous.size
-
-                            val list = subCategoriesResponse.miscellaneous
-                            list[0].isSelected = true
-
-                            viewModel.displayName = list[0].display_name
-                            viewModel.displayThumbanil = list[0].display_thumbnail
-
-                            overlaysAdapter.listItems = list
-                            overlaysAdapter.notifyDataSetChanged()
-
-                            viewModel.miscShootNumber.value = requireActivity().intent.getIntExtra(
-                                AppConstants.MISC_SIZE,0)
-                        }
-                    }
-                }
-            }
+            getSubcategories()
         }else {
-            if (viewModel.shootList.value.isNullOrEmpty()) {
+            if (viewModel.shootList.value.isNullOrEmpty())
                 viewModel.shootNumber.value = 0
-                shoot("shoot number is 0")
-            } else {
+            else
                 viewModel.shootNumber.value = viewModel.shootList.value!!.size
-                shoot("shoot number is- " + viewModel.shootList.value!!.size)
-            }
 
             startExteriroShot()
         }
     }
 
     private fun startExteriroShot() {
-
         viewModel.shootNumber.observe(viewLifecycleOwner, {
             binding.tvShoot?.text =
                 "Angles ${viewModel.sequence.plus(1)}/${viewModel.getSelectedAngles(getString(
@@ -501,67 +524,44 @@ class FragmentOverlaysVTwo : BaseFragment<ShootViewModel, FragmentOverlaysV2Bind
 
         viewModel.hideLeveler.value = true
 
-        viewModel.subCategoriesResponse.observe(viewLifecycleOwner, {
-            when (it) {
-                is Resource.Success -> {
-                    val interiorList = it.value.interior as ArrayList<NewSubCatResponse.Interior>
+       val subCatResponse = (viewModel.subCategoriesResponse.value  as Resource.Success).value
 
-                    if (viewModel.fromDrafts){
-                        viewModel.interiorShootNumber.value = requireActivity().intent.getIntExtra(
-                            AppConstants.INTERIOR_SIZE,0)
-                    }else {
-                        val myInteriorShootList = viewModel.shootList.value?.filter {
-                            it.image_category == "Interior"
-                        }
+        val interiorList = subCatResponse.interior as ArrayList<NewSubCatResponse.Interior>
 
-                        //set interior angles value
-                        if (!myInteriorShootList.isNullOrEmpty()) {
-                            viewModel.interiorShootNumber.value = myInteriorShootList.size - 1
-                            interiorList.get(myInteriorShootList.size - 1).isSelected = true
-                        } else
-                            viewModel.interiorShootNumber.value = 0
-                    }
-
-                    viewModel.interiorAngles.value = interiorList.size
-                    binding.rvSubcategories.scrollToPosition(0)
-
-                    val list = it.value.interior
-                    list[0].isSelected = true
-
-                    viewModel.displayName = list[0].display_name
-                    viewModel.displayThumbanil = list[0].display_thumbnail
-
-                    overlaysAdapter.listItems = list
-                    overlaysAdapter.notifyDataSetChanged()
-
-
-//                    interiorAdapter = InteriorAdapter(requireContext(), interiorList)
-//
-//                    binding.rvSubcategories.apply {
-//                        layoutManager = LinearLayoutManager(requireContext())
-//                        this?.adapter = interiorAdapter
-//                    }
-                    //change image type
-                    viewModel.categoryDetails.value?.imageType = "Interior"
-                }
-                else -> {
-                }
+        if (viewModel.fromDrafts){
+            viewModel.interiorShootNumber.value = requireActivity().intent.getIntExtra(
+                AppConstants.INTERIOR_SIZE,0)
+        }else {
+            val myInteriorShootList = viewModel.shootList.value?.filter {
+                it.image_category == "Interior"
             }
-        })
 
+            //set interior angles value
+            if (!myInteriorShootList.isNullOrEmpty()) {
+                viewModel.interiorShootNumber.value = myInteriorShootList.size - 1
+                interiorList.get(myInteriorShootList.size - 1).isSelected = true
+            } else
+                viewModel.interiorShootNumber.value = 0
+        }
+
+        viewModel.interiorAngles.value = interiorList.size
+        binding.rvSubcategories.scrollToPosition(0)
+
+        val list = subCatResponse.interior
+        list[0].isSelected = true
+
+        viewModel.displayName = list[0].display_name
+        viewModel.displayThumbanil = list[0].display_thumbnail
+
+        overlaysAdapter.listItems = list
+        overlaysAdapter.notifyDataSetChanged()
+
+        //change image type
+        viewModel.categoryDetails.value?.imageType = "Interior"
         viewModel.interiorShootNumber.observe(viewLifecycleOwner, {
-
 
             binding.tvShoot?.text =
                 "Angles ${viewModel.interiorShootNumber.value!! + 1}/${viewModel.interiorAngles.value}"
-
-//            if (viewModel.interiorShootNumber.value!! != 0)
-//                interiorAdapter!!.interiorList[viewModel.interiorShootNumber.value!! - 1].isSelected =
-//                    false
-//
-//            interiorAdapter!!.interiorList[viewModel.interiorShootNumber.value!!].isSelected = true
-//            interiorAdapter!!.notifyDataSetChanged()
-//            binding.rvSubcategories?.scrollToPosition(viewModel.interiorShootNumber.value!!)
 
         })
     }
@@ -591,83 +591,58 @@ class FragmentOverlaysVTwo : BaseFragment<ShootViewModel, FragmentOverlaysV2Bind
         binding.imgOverlay.visibility = View.INVISIBLE
         viewModel.hideLeveler.value = true
 
-        viewModel.subCategoriesResponse.observe(viewLifecycleOwner, {
-            when (it) {
-                is Resource.Success -> {
-                    var miscList = it.value.miscellaneous
+        val subCatResponse = (viewModel.subCategoriesResponse.value  as Resource.Success).value
 
-                    viewModel.miscAngles.value =  it.value.miscellaneous.size
-                    binding.rvSubcategories.scrollToPosition(0)
+        var miscList = subCatResponse.miscellaneous
+
+        viewModel.miscAngles.value =  subCatResponse.miscellaneous.size
+        binding.rvSubcategories.scrollToPosition(0)
 
 
-                    if (viewModel.fromDrafts) {
-                        viewModel.miscShootNumber.value = requireActivity().intent.getIntExtra(
-                            AppConstants.MISC_SIZE,0)
+        if (viewModel.fromDrafts) {
+            viewModel.miscShootNumber.value = requireActivity().intent.getIntExtra(
+                AppConstants.MISC_SIZE,0)
 
-                        if (viewModel.categoryDetails.value?.categoryName == "Bikes") {
-                            val filteredList: List<NewSubCatResponse.Miscellaneous> = it.value.miscellaneous.filter {
-                                it.prod_sub_cat_id ==   viewModel.subCategory.value?.prod_sub_cat_id
-                            }
-
-                            it.value.miscellaneous = filteredList
-                            viewModel.miscAngles.value =  it.value.miscellaneous.size
-//                            miscList = it.value.miscellaneous
-                        }
-
-                    }
-                    else {
-
-                        val myMiscShootList = viewModel.shootList.value?.filter {
-                            it.image_category == "Focus Shoot"
-                        }
-
-                        //set interior angles value
-                        if (!myMiscShootList.isNullOrEmpty()) {
-                            viewModel.miscShootNumber.value = myMiscShootList.size - 1
-                            miscList.get(myMiscShootList.size - 1).isSelected = true
-                        } else
-                            viewModel.miscShootNumber.value = 0
-                    }
-
-                    val list = it.value.miscellaneous
-                    list[0].isSelected = true
-
-                    viewModel.displayName = list[0].display_name
-                    viewModel.displayThumbanil = list[0].display_thumbnail
-
-                    overlaysAdapter.listItems = list
-                    overlaysAdapter.notifyDataSetChanged()
-
-//                    miscAdapter = MiscAdapter(
-//                        requireContext(),
-//                        miscList as ArrayList<NewSubCatResponse.Miscellaneous>
-//                    )
-//
-//                    binding.rvSubcategories.apply {
-//                        layoutManager = LinearLayoutManager(requireContext(),
-//                            LinearLayoutManager.VERTICAL,false)
-//                        this?.adapter = miscAdapter
-//                    }
-
-                    //change image type
-                    viewModel.categoryDetails.value?.imageType = "Focus Shoot"
+            if (viewModel.categoryDetails.value?.categoryName == "Bikes") {
+                val filteredList: List<NewSubCatResponse.Miscellaneous> = subCatResponse.miscellaneous.filter {
+                    it.prod_sub_cat_id ==   viewModel.subCategory.value?.prod_sub_cat_id
                 }
-                else -> {
-                }
+
+                subCatResponse.miscellaneous = filteredList
+                viewModel.miscAngles.value =  subCatResponse.miscellaneous.size
             }
-        })
+
+        }
+        else {
+
+            val myMiscShootList = viewModel.shootList.value?.filter {
+                it.image_category == "Focus Shoot"
+            }
+
+            //set interior angles value
+            if (!myMiscShootList.isNullOrEmpty()) {
+                viewModel.miscShootNumber.value = myMiscShootList.size - 1
+                miscList.get(myMiscShootList.size - 1).isSelected = true
+            } else
+                viewModel.miscShootNumber.value = 0
+        }
+
+        val list = subCatResponse.miscellaneous
+        list[0].isSelected = true
+
+        viewModel.displayName = list[0].display_name
+        viewModel.displayThumbanil = list[0].display_thumbnail
+
+        overlaysAdapter.listItems = list
+        overlaysAdapter.notifyDataSetChanged()
+
+        //change image type
+        viewModel.categoryDetails.value?.imageType = "Focus Shoot"
 
         viewModel.miscShootNumber.observe(viewLifecycleOwner, {
 
             binding.tvShoot?.text =
                 "Angles ${viewModel.miscShootNumber.value!! + 1}/${viewModel.miscAngles.value}"
-
-//            if (viewModel.miscShootNumber.value!! != 0)
-//                miscAdapter?.miscList!![viewModel.miscShootNumber.value!! - 1].isSelected = false
-//
-//            miscAdapter!!.miscList[viewModel.miscShootNumber.value!!].isSelected = true
-//            miscAdapter!!.notifyDataSetChanged()
-//            binding.rvSubcategories?.scrollToPosition(viewModel.miscShootNumber.value!!)
         })
     }
 
