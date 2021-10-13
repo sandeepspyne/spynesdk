@@ -6,15 +6,23 @@ import android.Manifest
 import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
+import android.location.Address
+import android.location.Geocoder
+import android.location.Location
 import android.os.Build
 import android.os.Bundle
+import android.util.Log
 import android.view.KeyEvent
 import android.view.WindowManager
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.ViewModelProvider
+import com.google.android.gms.common.ConnectionResult
+import com.google.android.gms.common.api.GoogleApiClient
+import com.google.android.gms.location.LocationServices
 import com.spyneai.R
 import com.spyneai.base.network.Resource
 import com.spyneai.dashboard.response.NewSubCatResponse
@@ -34,9 +42,14 @@ import com.spyneai.shoot.ui.ecomwithgrid.GridEcomFragment
 import com.spyneai.shoot.ui.ecomwithgrid.ProjectDetailFragment
 import com.spyneai.shoot.ui.ecomwithgrid.SkuDetailFragment
 import com.spyneai.shoot.ui.ecomwithoverlays.OverlayEcomFragment
+import com.spyneai.shoot.utils.shoot
+import org.json.JSONObject
 import java.io.File
+import java.util.*
+import kotlin.collections.ArrayList
 
-class ShootPortraitActivity : AppCompatActivity() {
+class ShootPortraitActivity : AppCompatActivity(), GoogleApiClient.ConnectionCallbacks,
+    GoogleApiClient.OnConnectionFailedListener {
 
     lateinit var cameraFragment: CameraFragment
     lateinit var overlaysFragment: OverlaysFragment
@@ -46,26 +59,53 @@ class ShootPortraitActivity : AppCompatActivity() {
     lateinit var projectDetailFragment: ProjectDetailFragment
     lateinit var selectBackgroundFragment: SelectBackgroundFragment
     lateinit var shootViewModel : ShootViewModel
-    val TAG = "ShootPortraitActivity"
+    val location_data = JSONObject()
+    val TAG = "ShootActivity"
+    private var googleApiClient: GoogleApiClient? = null
+    private val PERMISSION_ACCESS_COARSE_LOCATION = 1
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_shoot_portrait)
 
-        setLocale()
+        shoot("onCreate called(shoot activity)")
 
         window.setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
             WindowManager.LayoutParams.FLAG_FULLSCREEN)
 
-        shootViewModel = ViewModelProvider(this, ViewModelFactory()).get(ShootViewModel::class.java)
-        shootViewModel.skuNumber.value = 1
-        try {
-            shootViewModel.skuNumber.value = intent.getIntExtra("skuNumber", 1)
-        }catch (e: Exception){
+        setContentView(R.layout.activity_shoot)
+
+
+        googleApiClient =
+            GoogleApiClient.Builder(this, this, this).addApi(LocationServices.API).build()
+
+        setLocale()
+
+
+
+
+
+
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION)
+            != PackageManager.PERMISSION_GRANTED
+        ) {
+            ActivityCompat.requestPermissions(
+                this, arrayOf(Manifest.permission.ACCESS_COARSE_LOCATION),
+                PERMISSION_ACCESS_COARSE_LOCATION
+            )
         }
+
+
+
+
+
+        shootViewModel = ViewModelProvider(this, ViewModelFactory()).get(ShootViewModel::class.java)
 
         if (intent.getBooleanExtra(AppConstants.FROM_DRAFTS,false))
             setUpDraftsData()
+
+        if (intent.getBooleanExtra(AppConstants.FROM_VIDEO,false))
+            setUpVideoShoot()
 
         val categoryDetails = CategoryDetails()
 
@@ -75,14 +115,7 @@ class ShootPortraitActivity : AppCompatActivity() {
             gifList =  intent.getStringExtra(AppConstants.GIF_LIST)
         }
 
-        Utilities.savePrefrence(this,AppConstants.CATEGORY_ID,categoryDetails.categoryId)
-        Utilities.savePrefrence(this,AppConstants.CATEGORY_NAME,categoryDetails.categoryName)
-
         shootViewModel.categoryDetails.value = categoryDetails
-
-        when(shootViewModel.categoryDetails.value?.categoryName) {
-            "Footwear" -> shootViewModel.processSku = false
-        }
 
         cameraFragment = CameraFragment()
         overlaysFragment = OverlaysFragment()
@@ -92,108 +125,105 @@ class ShootPortraitActivity : AppCompatActivity() {
         overlayEcomFragment = OverlayEcomFragment()
         selectBackgroundFragment = SelectBackgroundFragment()
 
-        if (Utilities.getPreference(this, AppConstants.CATEGORY_NAME).equals("Automobiles")){
-            if(savedInstanceState == null) { // initial transaction should be wrapped like this
-                supportFragmentManager.beginTransaction()
-                    .add(R.id.flCamerFragment, cameraFragment)
-                    .add(R.id.flCamerFragment, overlaysFragment)
-                    .commitAllowingStateLoss()
+        when(shootViewModel.categoryDetails.value?.categoryName) {
+            "Automobiles" -> {
+                shootViewModel.processSku = true
+                if(savedInstanceState == null) { // initial transaction should be wrapped like this
+                    supportFragmentManager.beginTransaction()
+                        .add(R.id.flCamerFragment, cameraFragment)
+                        .add(R.id.flCamerFragment, overlaysFragment)
+                        .commitAllowingStateLoss()
+                }
             }
-        }else if (Utilities.getPreference(this, AppConstants.CATEGORY_NAME).equals("E-Commerce")){
-            if(savedInstanceState == null) { // initial transaction should be wrapped like this
-                supportFragmentManager.beginTransaction()
-                    .add(R.id.flCamerFragment, cameraFragment)
-                    .add(R.id.flCamerFragment, gridEcomFragment)
-                    .commitAllowingStateLoss()
-            }
-
-            try {
-                val intent = intent
-                shootViewModel.projectId.value = intent.getStringExtra("project_id")
-                val sku = Sku()
-                sku?.projectId = shootViewModel.projectId.value
-                shootViewModel.categoryDetails.value?.imageType = "Ecom"
-                sku.skuName = intent.getStringExtra(AppConstants.SKU_NAME)
-                sku.skuId = intent.getStringExtra(AppConstants.SKU_ID)
-                sku.categoryName = shootViewModel.categoryDetails.value?.categoryName
-
-                shootViewModel.sku.value = sku
-            } catch (e: Exception) {
-                e.printStackTrace()
+            "Bikes" -> {
+                shootViewModel.processSku = false
+                if(savedInstanceState == null) { // initial transaction should be wrapped like this
+                    supportFragmentManager.beginTransaction()
+                        .add(R.id.flCamerFragment, cameraFragment)
+                        .add(R.id.flCamerFragment, overlaysFragment)
+                        .commitAllowingStateLoss()
+                }
             }
 
-        }else if (Utilities.getPreference(this, AppConstants.CATEGORY_NAME).equals("Photo Box")){
-            if(savedInstanceState == null) { // initial transaction should be wrapped like this
-                supportFragmentManager.beginTransaction()
-                    .add(R.id.flCamerFragment, cameraFragment)
-                    .add(R.id.flCamerFragment, gridEcomFragment)
-                    .commitAllowingStateLoss()
+            "E-Commerce" -> {
+                shootViewModel.processSku = false
+                if(savedInstanceState == null) { // initial transaction should be wrapped like this
+                    supportFragmentManager.beginTransaction()
+                        .add(R.id.flCamerFragment, cameraFragment)
+                        .add(R.id.flCamerFragment, gridEcomFragment)
+                        .commitAllowingStateLoss()
+                }
+                try {
+                    val intent = intent
+                    shootViewModel.projectId.value = intent.getStringExtra("project_id")
+                    val sku = Sku()
+                    sku?.projectId = shootViewModel.projectId.value
+                    shootViewModel.categoryDetails.value?.imageType = "Ecom"
+                    shootViewModel.sku.value = sku
+                } catch (e: Exception) {
+                    e.printStackTrace()
+                }
+            }
+            "Photo Box" -> {
+                shootViewModel.processSku = false
+                if(savedInstanceState == null) { // initial transaction should be wrapped like this
+                    supportFragmentManager.beginTransaction()
+                        .add(R.id.flCamerFragment, cameraFragment)
+                        .add(R.id.flCamerFragment, gridEcomFragment)
+                        .commitAllowingStateLoss()
+                }
+                try {
+                    val intent = intent
+                    shootViewModel.projectId.value = intent.getStringExtra("project_id")
+                    val sku = Sku()
+                    sku?.projectId = shootViewModel.projectId.value
+                    shootViewModel.categoryDetails.value?.imageType = "Ecom"
+                    shootViewModel.sku.value = sku
+                } catch (e: Exception) {
+                    e.printStackTrace()
+                }
+            }
+            "Food & Beverages" ->{
+                shootViewModel.processSku = false
+                if(savedInstanceState == null) { // initial transaction should be wrapped like this
+                    supportFragmentManager.beginTransaction()
+                        .add(R.id.flCamerFragment, cameraFragment)
+                        .add(R.id.flCamerFragment, gridEcomFragment)
+                        .commitAllowingStateLoss()
+                }
+                try {
+                    val intent = intent
+                    shootViewModel.projectId.value = intent.getStringExtra("project_id")
+                    val sku = Sku()
+                    sku?.projectId = shootViewModel.projectId.value
+                    shootViewModel.categoryDetails.value?.imageType = "Food"
+                    shootViewModel.sku.value = sku
+                } catch (e: Exception) {
+                    e.printStackTrace()
+                }
             }
 
-            try {
-                val intent = intent
-                shootViewModel.projectId.value = intent.getStringExtra("project_id")
-                val sku = Sku()
-                sku?.projectId = shootViewModel.projectId.value
-                shootViewModel.categoryDetails.value?.imageType = "Ecom"
-                sku.skuName = intent.getStringExtra(AppConstants.SKU_NAME)
-                sku.skuId = intent.getStringExtra(AppConstants.SKU_ID)
-                sku.categoryName = shootViewModel.categoryDetails.value?.categoryName
-
-                shootViewModel.sku.value = sku
-            } catch (e: Exception) {
-                e.printStackTrace()
+            "Footwear" -> {
+                shootViewModel.processSku = false
+                if(savedInstanceState == null) { // initial transaction should be wrapped like this
+                    supportFragmentManager.beginTransaction()
+                        .add(R.id.flCamerFragment, cameraFragment)
+                        .add(R.id.flCamerFragment, overlayEcomFragment)
+                        .commitAllowingStateLoss()
+                }
+                try {
+                    val intent = intent
+                    shootViewModel.projectId.value = intent.getStringExtra("project_id")
+                    val sku = Sku()
+                    sku?.projectId = shootViewModel.projectId.value
+                    shootViewModel.categoryDetails.value?.imageType = "Footwear"
+                    shootViewModel.sku.value = sku
+                } catch (e: Exception) {
+                    e.printStackTrace()
+                }
             }
 
         }
-        else if (Utilities.getPreference(this, AppConstants.CATEGORY_NAME).equals("Food & Beverages")){
-            if(savedInstanceState == null) { // initial transaction should be wrapped like this
-                supportFragmentManager.beginTransaction()
-                    .add(R.id.flCamerFragment, cameraFragment)
-                    .add(R.id.flCamerFragment, gridEcomFragment)
-                    .commitAllowingStateLoss()
-            }
-
-            try {
-                val intent = intent
-                shootViewModel.projectId.value = intent.getStringExtra("project_id")
-                val sku = Sku()
-                sku?.projectId = shootViewModel.projectId.value
-                shootViewModel.categoryDetails.value?.imageType = "Food"
-                sku.skuName = intent.getStringExtra(AppConstants.SKU_NAME)
-                sku.skuId = intent.getStringExtra(AppConstants.SKU_ID)
-                sku.categoryName = shootViewModel.categoryDetails.value?.categoryName
-
-                shootViewModel.sku.value = sku
-            } catch (e: Exception) {
-                e.printStackTrace()
-            }
-
-        }
-        else if (Utilities.getPreference(this, AppConstants.CATEGORY_NAME).equals("Footwear")){
-            shootViewModel.processSku = false
-            if(savedInstanceState == null) { // initial transaction should be wrapped like this
-                supportFragmentManager.beginTransaction()
-                    .add(R.id.flCamerFragment, cameraFragment)
-                    .add(R.id.flCamerFragment, overlayEcomFragment)
-                    .commitAllowingStateLoss()
-            }
-            try {
-                val intent = intent
-                shootViewModel.projectId.value = intent.getStringExtra("project_id")
-                val sku = Sku()
-                sku?.projectId = shootViewModel.projectId.value
-                sku.skuName = intent.getStringExtra(AppConstants.SKU_NAME)
-                sku.skuId = intent.getStringExtra(AppConstants.SKU_ID)
-                sku.categoryName = shootViewModel.categoryDetails.value?.categoryName
-                shootViewModel.categoryDetails.value?.imageType = "Footwear"
-                shootViewModel.sku.value = sku
-            } catch (e: Exception) {
-                e.printStackTrace()
-            }
-        }
-
-
 
         if (allPermissionsGranted()) {
             onPermissionGranted()
@@ -224,9 +254,6 @@ class ShootPortraitActivity : AppCompatActivity() {
 
         shootViewModel.showFoodBackground.observe(this,{
             if(it){
-                val bundle = Bundle()
-                bundle.putString(AppConstants.PROJECT_ID,shootViewModel.sku.value?.projectId)
-                selectBackgroundFragment.arguments = bundle
                 window.clearFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN)
                 supportFragmentManager.beginTransaction().remove(skuDetailFragment).commit()
                 supportFragmentManager.beginTransaction().remove(projectDetailFragment).commit()
@@ -246,124 +273,178 @@ class ShootPortraitActivity : AppCompatActivity() {
         shootViewModel.selectBackground.observe(this, {
             if (it) {
                 // start process activity
-                val intent = Intent(this, ProcessActivity::class.java)
-
-                intent.apply {
+                val processIntent = Intent(this, ProcessActivity::class.java)
+                processIntent.apply {
+                    this.putExtra(AppConstants.CATEGORY_NAME, categoryDetails.categoryName)
                     this.putExtra("sku_id", shootViewModel.sku.value?.skuId)
                     this.putExtra("project_id", shootViewModel.sku.value?.projectId)
                     this.putExtra("exterior_angles", shootViewModel.exterirorAngles.value)
+                    this.putExtra("process_sku",shootViewModel.processSku)
+                    this.putExtra("interior_misc_count",getInteriorMiscCount())
+                    this.putStringArrayListExtra("exterior_images_list",getExteriorImagesList())
+                    this.putExtra(AppConstants.FROM_VIDEO,intent.getBooleanExtra(AppConstants.FROM_VIDEO,false))
                     startActivity(this)
                 }
             }
         })
     }
 
+
+    private fun setUpVideoShoot() {
+
+
+        shootViewModel.fromVideo = true
+        shootViewModel.showVin.value = true
+        shootViewModel.isProjectCreated.value = true
+        shootViewModel.projectId.value = intent.getStringExtra(AppConstants.PROJECT_ID)
+
+        shootViewModel._createProjectRes.value = Resource.Success(CreateProjectRes(
+            "",
+            intent.getStringExtra(AppConstants.PROJECT_ID)!!,
+            200
+        ))
+    }
+
     private fun setUpDraftsData() {
         shootViewModel.fromDrafts = true
         shootViewModel.showVin.value = true
         shootViewModel.isProjectCreated.value = true
-        shootViewModel.projectId.value =  intent.getStringExtra(AppConstants.PROJECT_ID)!!
+        shootViewModel.projectId.value = intent.getStringExtra(AppConstants.PROJECT_ID)
 
-        shootViewModel._createProjectRes.value = Resource.Success(
-            CreateProjectRes(
-                "",
-                intent.getStringExtra(AppConstants.PROJECT_ID)!!,
-                200)
-        )
+        shootViewModel._createProjectRes.value = Resource.Success(CreateProjectRes(
+            "",
+            intent.getStringExtra(AppConstants.PROJECT_ID)!!,
+            200
+        ))
 
         //set sku data
         val sku = Sku()
         sku.projectId = intent.getStringExtra(AppConstants.PROJECT_ID)
         sku.skuName = intent.getStringExtra(AppConstants.SKU_NAME)
-        sku.skuId = intent.getStringExtra(AppConstants.SKU_ID)
-        sku.categoryName = intent.getStringExtra(AppConstants.CATEGORY_NAME)
-        sku.categoryId = intent.getStringExtra(AppConstants.CATEGORY_ID)
+        sku.categoryName = shootViewModel.categoryDetails.value?.categoryName
 
         shootViewModel.sku.value = sku
 
-        if (intent.getStringExtra(AppConstants.CATEGORY_NAME) == "Footwear"){
-            if (intent.getIntExtra(AppConstants.EXTERIOR_ANGLES,0) != 0){
-                shootViewModel.isSkuCreated.value = true
-                //sub category selected
-                shootViewModel.subCatName.value = intent.getStringExtra(AppConstants.SUB_CAT_NAME)
+        if (intent.getBooleanExtra(AppConstants.SKU_CREATED,false)) {
+            shootViewModel.exterirorAngles.value = intent.getIntExtra(AppConstants.EXTERIOR_ANGLES,0)
 
-                shootViewModel.subCategory.value = NewSubCatResponse.Data(
-                    1,
-                    "",
-                    "",
-                    "",
-                    1,
-                    1,
-                    intent.getStringExtra(AppConstants.CATEGORY_ID)!!,
-                    intent.getStringExtra(AppConstants.SUB_CAT_ID)!!,
-                    intent.getStringExtra(AppConstants.SUB_CAT_NAME)!!,
-                    ""
-                )
+            shootViewModel.getSubCategories(
+                Utilities.getPreference(this, AppConstants.AUTH_KEY).toString(),
+                intent.getStringExtra(AppConstants.CATEGORY_ID).toString()
+            )
 
-                shootViewModel.isSubCategoryConfirmed.value = true
+            shootViewModel.sku.value!!.skuId = intent.getStringExtra(AppConstants.SKU_ID)
 
-                if (intent.getIntExtra(AppConstants.EXTERIOR_ANGLES,0) == intent.getIntExtra(AppConstants.EXTERIOR_SIZE,0)){
-                    shootViewModel.showDialog = false
-                    val list = shootViewModel.getImagesbySkuId(shootViewModel.sku.value?.skuId!!)
-
-                    shootViewModel.shootList.value = ArrayList()
-
-
-                    for(image in list){
-                        shootViewModel.shootList.value!!.add(
-                            ShootData(image.imagePath!!,
-                                image.projectId!!,
-                                image.skuId!!,
-                                "",
-                                Utilities.getPreference(this,AppConstants.AUTH_KEY).toString(),
-                                0)
-                        )
-                    }
-
-                    shootViewModel.stopShoot.value = true
-                }
-
-            }
-        }else {
-            shootViewModel.showDialog = false
+            //fetch overlays
             shootViewModel.isSubCategoryConfirmed.value = true
-            shootViewModel.isSkuCreated.value = true
+            shootViewModel.subCategory.value = getSubcategoryResponse()
 
-            shootViewModel.shootList.value = ArrayList()
-
-            //set total clicked images
-            val list = shootViewModel.getImagesbySkuId(shootViewModel.sku.value?.skuId!!)
-
-            if (intent.getBooleanExtra(AppConstants.FROM_LOCAL_DB,false)){
-                shootViewModel.shootNumber.value = list.size
-                for(image in list){
-                    shootViewModel.shootList.value!!.add(
-                        ShootData(image.imagePath!!,
-                            image.projectId!!,
-                            image.skuId!!,
-                            "",
-                            Utilities.getPreference(this,AppConstants.AUTH_KEY).toString(),
-                            0)
-                    )
-                }
-            }else {
-                val list = intent.getStringArrayListExtra(AppConstants.EXTERIOR_LIST)
-
-                shootViewModel.shootNumber.value = list?.size
-
-                for(image in list!!){
-                    shootViewModel.shootList.value!!.add(
-                        ShootData(image,
-                            intent.getStringExtra(AppConstants.PROJECT_ID)!!,
-                            intent.getStringExtra(AppConstants.SKU_ID)!!,
-                            "",
-                            Utilities.getPreference(this,AppConstants.AUTH_KEY).toString(),
-                            0)
-                    )
-                }
-            }
-
+            shootViewModel.getOverlays(
+                Utilities.getPreference(this,AppConstants.AUTH_KEY).toString(),
+                intent.getStringExtra(AppConstants.CATEGORY_ID)!!,
+                intent.getStringExtra(AppConstants.SUB_CAT_ID)!!,
+                intent.getIntExtra(AppConstants.EXTERIOR_ANGLES,0).toString(),
+            )
         }
+
+    }
+
+    private fun getSubcategoryResponse(): NewSubCatResponse.Data? {
+        return NewSubCatResponse.Data(
+            1,
+            "",
+            "",
+            "",
+            1,
+            1,
+            intent.getStringExtra(AppConstants.CATEGORY_ID)!!,
+            intent.getStringExtra(AppConstants.SUB_CAT_ID)!!,
+            intent.getStringExtra(AppConstants.SUB_CAT_NAME)!!,
+            ""
+        )
+    }
+
+    override fun onStart() {
+        super.onStart()
+        googleApiClient?.connect()
+        shoot("onStart called(shhot activity)")
+    }
+
+    override fun onResume() {
+        super.onResume()
+        shoot("onResume called(shoot activity)")
+    }
+
+    override fun onPause() {
+        super.onPause()
+        shoot("onPause called(shoot activity)")
+    }
+
+    override fun onStop() {
+        super.onStop()
+        googleApiClient?.disconnect()
+        shoot("onStop called(shoot activity)")
+    }
+
+    override fun onRestart() {
+        super.onRestart()
+        shoot("onRestart called(shoot activity)")
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        shoot("onDistroy called(shoot activity)")
+    }
+
+    private fun getInteriorMiscCount(): Int {
+        var total = 0
+
+        val list = shootViewModel.shootList.value
+
+        val interiorList = list?.filter {
+            it.image_category == "Interior"
+        }
+
+        val miscList = list?.filter {
+            it.image_category == "Focus Shoot"
+        }
+
+        if (interiorList != null)
+            total = interiorList.size
+
+
+        if (miscList != null)
+            total+= miscList.size
+
+        if (shootViewModel.fromDrafts){
+            total+= intent.getIntExtra(AppConstants.INTERIOR_SIZE,0)
+            total+= intent.getIntExtra(AppConstants.MISC_SIZE,0)
+        }
+
+        if (getString(R.string.app_name) == AppConstants.OLA_CABS
+            && shootViewModel.threeSixtyInteriorSelected) {
+            total+= 1
+        }
+
+        if (intent.getBooleanExtra(AppConstants.FROM_VIDEO,false)){
+            total+= intent.getIntExtra(AppConstants.TOTAL_FRAME,0)
+        }
+
+        Log.d(TAG, "getInteriorMiscCount: "+total)
+
+        return total
+    }
+
+    private fun getExteriorImagesList(): ArrayList<String> {
+        val exteriorList = shootViewModel.shootList.value?.filter {
+            it.image_category == "Exterior"
+        }
+
+        val s = exteriorList?.map {
+            it.capturedImage
+        }
+
+        return if (s == null) ArrayList() else s as ArrayList<String>
     }
 
     /**
@@ -392,6 +473,59 @@ class ShootPortraitActivity : AppCompatActivity() {
         }
     }
 
+    override fun onRequestPermissionsResult(
+        requestCode: Int,
+        vararg permissions: String?,
+        grantResults: IntArray
+    ) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+        when (requestCode) {
+            PERMISSION_ACCESS_COARSE_LOCATION -> if (grantResults.size > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                // All good!
+            } else {
+                Toast.makeText(this, "Need your location!", Toast.LENGTH_SHORT).show()
+            }
+        }
+    }
+
+    override fun onConnected(bundle: Bundle?) {
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION)
+            == PackageManager.PERMISSION_GRANTED
+        ) {
+            val lastLocation: Location =
+                LocationServices.FusedLocationApi.getLastLocation(googleApiClient)
+            val lat: Double = lastLocation.getLatitude()
+            val lon: Double = lastLocation.getLongitude()
+
+            val geocoder = Geocoder(this, Locale.getDefault())
+            val addresses: List<Address> = geocoder.getFromLocation(lat, lon, 1)
+            val postalCode = addresses[0].postalCode
+            val cityName = addresses[0].locality
+            val countryName = addresses[0].countryName
+
+            location_data.put("city", cityName)
+            location_data.put(  "country", countryName)
+            location_data.put( "latitude", lat)
+            location_data.put("longitude", lon)
+            location_data.put("postalCode", postalCode)
+
+            Log.d(TAG, "onConnected: $location_data")
+
+            shootViewModel.location_data.value = location_data
+
+
+
+
+
+        }
+
+    }
+
+    override fun onConnectionSuspended(p0: Int) {
+        TODO("Not yet implemented")
+    }
+
+
     open fun onPermissionGranted() = Unit
 
 
@@ -406,8 +540,16 @@ class ShootPortraitActivity : AppCompatActivity() {
         }
     }
 
+
+
+
+
+
     override fun onBackPressed() {
-        ShootExitDialog().show(supportFragmentManager,"ShootExitDialog")
+        if (intent.getBooleanExtra(AppConstants.FROM_DRAFTS,false))
+            ShootExitDialog().show(supportFragmentManager,"ShootExitDialog")
+        else
+            ShootExitDialog().show(supportFragmentManager,"ShootExitDialog")
     }
 
     // 1. onKeyDown is a boolean function, which returns the state of the KeyEvent.
@@ -430,4 +572,12 @@ class ShootPortraitActivity : AppCompatActivity() {
         }
         return true
     }
+
+    override fun onConnectionFailed(p0: ConnectionResult) {
+        TODO("Not yet implemented")
+    }
 }
+
+
+
+

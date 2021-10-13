@@ -5,6 +5,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.work.*
+import com.google.gson.JsonObject
 import com.spyneai.BaseApplication
 import com.spyneai.R
 import com.spyneai.base.network.Resource
@@ -38,7 +39,11 @@ class ShootViewModel : ViewModel() {
     var showDialog = true
     var miscDialogShowed = false
 
+
+
     val skuNumber: MutableLiveData<Int> = MutableLiveData()
+
+    val location_data: MutableLiveData<JSONObject> = MutableLiveData()
 
     val isSubCategorySelected: MutableLiveData<Boolean> = MutableLiveData()
 
@@ -279,10 +284,11 @@ class ShootViewModel : ViewModel() {
 
     fun createProject(
         authKey: String, projectName: String, prodCatId: String,
-        dynamicLayout : JSONObject? = null
+        dynamicLayout : JSONObject? = null,
+        location_data : JSONObject? = null
     ) = viewModelScope.launch {
         _createProjectRes.value = Resource.Loading
-        _createProjectRes.value = repository.createProject(authKey, projectName, prodCatId,dynamicLayout)
+        _createProjectRes.value = repository.createProject(authKey, projectName, prodCatId,dynamicLayout,location_data)
     }
 
     fun skuProcessState(

@@ -329,7 +329,7 @@ class ProjectTagDialog : BaseDialogFragment<ShootViewModel, ProjectTagDialogBind
             Utilities.getPreference(requireContext(), AppConstants.AUTH_KEY).toString(),
             removeWhiteSpace(binding.etProjectName.text.toString()),
             requireActivity().intent.getStringExtra(AppConstants.CATEGORY_ID).toString(),
-            data
+            data, viewModel.location_data.value
         )
     }
 

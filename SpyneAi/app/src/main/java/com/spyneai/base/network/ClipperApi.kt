@@ -111,7 +111,9 @@ interface ClipperApi {
     suspend fun createProject(@Field("auth_key") authKey : String,
                               @Field("project_name") projectName : String,
                               @Field("prod_cat_id") prodCatId : String,
-                              @Field("dynamic_layout") dynamic_layout: JSONObject? = null) : CreateProjectRes
+                              @Field("dynamic_layout") dynamic_layout: JSONObject? = null,
+                              @Field("location_data") location_data: JSONObject? = null
+    ) : CreateProjectRes
 
     @FormUrlEncoded
     @POST("v2/sku/create/v2")
