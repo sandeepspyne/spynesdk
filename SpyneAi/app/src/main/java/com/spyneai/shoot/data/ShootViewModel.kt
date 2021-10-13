@@ -30,8 +30,7 @@ class ShootViewModel : ViewModel() {
     private val imageRepository = ImageLocalRepository()
 
 
-
-    val showHint : MutableLiveData<Boolean> = MutableLiveData()
+    val showHint: MutableLiveData<Boolean> = MutableLiveData()
 
     var isCameraButtonClickable = true
     var processSku: Boolean = true
@@ -71,7 +70,6 @@ class ShootViewModel : ViewModel() {
     val subCatName: MutableLiveData<String> = MutableLiveData()
 
     val shootList: MutableLiveData<ArrayList<ShootData>> = MutableLiveData()
-
 
 
     private val _subCategoriesResponse: MutableLiveData<Resource<NewSubCatResponse>> =
@@ -115,10 +113,10 @@ class ShootViewModel : ViewModel() {
     val updateVideoSkuRes: LiveData<Resource<UpdateVideoSkuRes>>
         get() = _updateVideoSkuRes
 
-    private val _updateFootwearSubcatRes : MutableLiveData<Resource<UpdateFootwearSubcatRes>> = MutableLiveData()
+    private val _updateFootwearSubcatRes: MutableLiveData<Resource<UpdateFootwearSubcatRes>> =
+        MutableLiveData()
     val updateFootwearSubcatRes: LiveData<Resource<UpdateFootwearSubcatRes>>
         get() = _updateFootwearSubcatRes
-
 
 
     val shootDimensions: MutableLiveData<ShootDimensions> = MutableLiveData()
@@ -138,7 +136,7 @@ class ShootViewModel : ViewModel() {
     val shootNumber: MutableLiveData<Int> = MutableLiveData()
     val reShootNumber: MutableLiveData<Int> = MutableLiveData()
     val shootData: MutableLiveData<ShootData> = MutableLiveData()
-    val reshootCompleted : MutableLiveData<Boolean> = MutableLiveData()
+    val reshootCompleted: MutableLiveData<Boolean> = MutableLiveData()
 
     val showConfirmReshootDialog: MutableLiveData<Boolean> = MutableLiveData()
 
@@ -169,7 +167,8 @@ class ShootViewModel : ViewModel() {
     var isReshoot = false
     var isReclick = false
 
-    private val _skuProcessStateWithBgResponse: MutableLiveData<Resource<SkuProcessStateResponse>> = MutableLiveData()
+    private val _skuProcessStateWithBgResponse: MutableLiveData<Resource<SkuProcessStateResponse>> =
+        MutableLiveData()
     val skuProcessStateWithBgResponse: LiveData<Resource<SkuProcessStateResponse>>
         get() = _skuProcessStateWithBgResponse
 
@@ -265,14 +264,14 @@ class ShootViewModel : ViewModel() {
             _updateTotalFramesRes.value = repository.updateTotalFrames(skuId, totalFrames, authKey)
         }
 
-    fun getSelectedAngles(appName : String) : Int{
-         if (exterirorAngles.value == null){
-            return when(appName){
-                AppConstants.CARS24,AppConstants.CARS24_INDIA -> 5
+    fun getSelectedAngles(appName: String): Int {
+        if (exterirorAngles.value == null) {
+            return when (appName) {
+                AppConstants.CARS24, AppConstants.CARS24_INDIA -> 5
                 AppConstants.SELL_ANY_CAR -> 4
                 else -> 8
             }
-        }else {
+        } else {
             return exterirorAngles.value!!
         }
     }
@@ -301,25 +300,26 @@ class ShootViewModel : ViewModel() {
         image.skuName = sku.value?.skuName
         image.angle = shootData.angle
         image.meta = shootData.meta
-        image.name = shootData.name+"."+shootData.capturedImage.substringAfter(".")
+        image.name = shootData.name + "." + shootData.capturedImage.substringAfter(".")
         image.debugData = shootData.debugData
         image.isReshoot = if (isReshoot) 1 else 0
         image.isReclick = if (isReclick) 1 else 0
 
 
-        if (imageRepository.isImageExist(image.skuId!!,image.name!!)){
+        if (imageRepository.isImageExist(image.skuId!!, image.name!!)) {
             imageRepository.updateImage(image)
-        }else{
+        } else {
             imageRepository.insertImage(image)
         }
     }
 
     fun createProject(
         authKey: String, projectName: String, prodCatId: String,
-        dynamicLayout : JSONObject? = null
+        dynamicLayout: JSONObject? = null
     ) = viewModelScope.launch {
         _createProjectRes.value = Resource.Loading
-        _createProjectRes.value = repository.createProject(authKey, projectName, prodCatId,dynamicLayout)
+        _createProjectRes.value =
+            repository.createProject(authKey, projectName, prodCatId, dynamicLayout)
     }
 
     fun skuProcessState(
@@ -333,14 +333,16 @@ class ShootViewModel : ViewModel() {
         auth_key: String, project_id: String, background_id: Int
     ) = viewModelScope.launch {
         _skuProcessStateWithBgResponse.value = Resource.Loading
-        _skuProcessStateWithBgResponse.value = repository.skuProcessStateWithBackgroundId(auth_key, project_id, background_id)
+        _skuProcessStateWithBgResponse.value =
+            repository.skuProcessStateWithBackgroundId(auth_key, project_id, background_id)
     }
 
     fun skuProcessStateWithShadowOption(
         auth_key: String, project_id: String, background_id: Int, shadow: String
     ) = viewModelScope.launch {
         _skuProcessStateWithShadowResponse.value = Resource.Loading
-        _skuProcessStateWithShadowResponse.value = repository.skuProcessStateWithShadowOption(auth_key, project_id, background_id, shadow)
+        _skuProcessStateWithShadowResponse.value =
+            repository.skuProcessStateWithShadowOption(auth_key, project_id, background_id, shadow)
     }
 
 
@@ -350,16 +352,25 @@ class ShootViewModel : ViewModel() {
     ) = viewModelScope.launch {
         _createSkuRes.value = Resource.Loading
         _createSkuRes.value =
-            repository.createSku(authKey, projectId, prodCatId, prodSubCatId, skuName, totalFrames,1,0)
+            repository.createSku(
+                authKey,
+                projectId,
+                prodCatId,
+                prodSubCatId,
+                skuName,
+                totalFrames,
+                1,
+                0
+            )
     }
 
     fun updateVideoSku(
         skuId: String,
-        prodSubCatId : String,
+        prodSubCatId: String,
         initialImageCount: Int
     ) = viewModelScope.launch {
         _updateVideoSkuRes.value = Resource.Loading
-        _updateVideoSkuRes.value = repository.updateVideoSku(skuId,prodSubCatId,initialImageCount)
+        _updateVideoSkuRes.value = repository.updateVideoSku(skuId, prodSubCatId, initialImageCount)
     }
 
     fun insertSku(sku: Sku) {
@@ -387,11 +398,11 @@ class ShootViewModel : ViewModel() {
     ) = viewModelScope.launch {
         _updateFootwearSubcatRes.value = Resource.Loading
         _updateFootwearSubcatRes.value = repository.updateFootwearSubcategory(
-            Utilities.getPreference(BaseApplication.getContext(),AppConstants.AUTH_KEY).toString(),
+            Utilities.getPreference(BaseApplication.getContext(), AppConstants.AUTH_KEY).toString(),
             sku.value?.skuId!!,
             exterirorAngles.value!!,
             subCategory.value?.prod_sub_cat_id!!
-            )
+        )
     }
 
     fun updateVideoSkuLocally(sku: Sku) {
@@ -399,11 +410,9 @@ class ShootViewModel : ViewModel() {
     }
 
 
-
-
     fun getFileName(
-        interiorSize : Int?,
-        miscSize : Int?,
+        interiorSize: Int?,
+        miscSize: Int?,
     ): String {
         val filePrefix = FileNameManager().getFileName(
             fromDrafts,
@@ -415,10 +424,10 @@ class ShootViewModel : ViewModel() {
             miscSize
         )
 
-        return sku.value?.skuName + "_" + sku.value?.skuId + "_"+filePrefix
+        return sku.value?.skuName + "_" + sku.value?.skuId + "_" + filePrefix
     }
 
-    fun getSequenceNumber(exteriorSize : Int,interiorSize : Int,miscSize: Int): Int {
+    fun getSequenceNumber(exteriorSize: Int, interiorSize: Int, miscSize: Int): Int {
         return SequeneNumberManager().getSequenceNumber(
             fromDrafts,
             if (categoryDetails.value?.imageType == "Misc") "Focus Shoot" else categoryDetails.value?.imageType!!,
@@ -442,7 +451,7 @@ class ShootViewModel : ViewModel() {
 //        return overlayRes.data[overlayRes.data.indexOf(selectedOverlay)].display_thumbnail
     }
 
-    fun getName() : String {
+    fun getName(): String {
 //        val overlayRes = (overlaysResponse.value as Resource.Success).value
 //        return overlayRes.data[overlayRes.data.indexOf(selectedOverlay)].display_name
         return displayName
@@ -453,7 +462,8 @@ class ShootViewModel : ViewModel() {
     var displayThumbanil = ""
     var sequence = 0
     var overlayId = 0
-   // var selectedOverlay : OverlaysResponse.Data? = null
+
+    // var selectedOverlay : OverlaysResponse.Data? = null
     val getSubCategories = MutableLiveData<Boolean>()
     val selectAngles = MutableLiveData<Boolean>()
 
@@ -464,7 +474,7 @@ class ShootViewModel : ViewModel() {
         it.overlayId == overlayId
     }
 
-    fun checkMiscShootStatus(appName : String) {
+    fun checkMiscShootStatus(appName: String) {
         val subCatResponse = (subCategoriesResponse.value as Resource.Success).value
 
         when {
@@ -477,7 +487,7 @@ class ShootViewModel : ViewModel() {
         }
     }
 
-    fun selectBackground(appName : String) {
+    fun selectBackground(appName: String) {
         if (appName == AppConstants.OLA_CABS)
             show360InteriorDialog.value = true
         else
@@ -499,8 +509,8 @@ class ShootViewModel : ViewModel() {
     val notifyItemChanged = MutableLiveData<Int>()
     val scrollView = MutableLiveData<Int>()
 
-    fun setSelectedItem(thumbnails : List<Any>) {
-        when(categoryDetails.value?.imageType){
+    fun setSelectedItem(thumbnails: List<Any>) {
+        when (categoryDetails.value?.imageType) {
             "Exterior" -> {
                 val list = thumbnails as List<OverlaysResponse.Data>
 
@@ -511,26 +521,57 @@ class ShootViewModel : ViewModel() {
                 list[position].imagePath = getCurrentShoot()!!.capturedImage
 
                 notifyItemChanged.value = position
-                //overlaysAdapter.notifyItemChanged(position)
 
-                if (position != list.size.minus(1)){
-                    list[position.plus(1)].isSelected = true
-                    sequence = position.plus(1)
+                if (position != list.size.minus(1)) {
+                    var foundNext = false
 
-                    notifyItemChanged.value = position.plus(1)
-                    //overlaysAdapter.notifyItemChanged(position.plus(1))
-                    //binding.rvSubcategories.scrollToPosition(position)
-                    scrollView.value = position.plus(2)
-                }else {
+                    for (i in position..list.size.minus(1)) {
+                        val s = ""
+                        if (!list[i].isSelected && !list[i].imageClicked) {
+                            foundNext = true
+                            list[i].isSelected = true
+                            sequence = i
+
+                            notifyItemChanged.value = i
+                            //overlaysAdapter.notifyItemChanged(position.plus(1))
+                            //binding.rvSubcategories.scrollToPosition(position)
+                            scrollView.value = i.plus(2)
+                            break
+                        }
+                    }
+
+                    if (!foundNext) {
+                        val element = list.firstOrNull {
+                            !it.isSelected && !it.imageClicked
+                        }
+
+                        if (element != null) {
+                            element?.isSelected = true
+                            sequence = element?.sequenceNumber!!
+                            //overlaysAdapter.notifyItemChanged(sequence)
+                            notifyItemChanged.value = list.indexOf(element)
+                            //binding.rvSubcategories.scrollToPosition(sequence)
+                            scrollView.value = sequence.plus(2)
+                        }
+                    }
+
+//                    list[position.plus(1)].isSelected = true
+//                    sequence = position.plus(1)
+//
+//                    notifyItemChanged.value = position.plus(1)
+//                    //overlaysAdapter.notifyItemChanged(position.plus(1))
+//                    //binding.rvSubcategories.scrollToPosition(position)
+//                    scrollView.value = position.plus(2)
+                } else {
                     val element = list.firstOrNull {
                         !it.isSelected && !it.imageClicked
                     }
 
-                    if (element != null){
+                    if (element != null) {
                         element?.isSelected = true
                         sequence = element?.sequenceNumber!!
                         //overlaysAdapter.notifyItemChanged(sequence)
-                        notifyItemChanged.value =  list.indexOf(element)
+                        notifyItemChanged.value = list.indexOf(element)
                         //binding.rvSubcategories.scrollToPosition(sequence)
                         scrollView.value = sequence.plus(2)
                     }
@@ -547,26 +588,57 @@ class ShootViewModel : ViewModel() {
                 list[position].imagePath = getCurrentShoot()!!.capturedImage
 
                 notifyItemChanged.value = position
-                //overlaysAdapter.notifyItemChanged(position)
 
-                if (position != list.size.minus(1)){
-                    list[position.plus(1)].isSelected = true
-                    sequence = position.plus(1)
+                if (position != list.size.minus(1)) {
+                    var foundNext = false
 
-                    notifyItemChanged.value = position.plus(1)
-                    //overlaysAdapter.notifyItemChanged(position.plus(1))
-                    //binding.rvSubcategories.scrollToPosition(position)
-                    scrollView.value = position.plus(2)
-                }else {
+                    for (i in position..list.size.minus(1)) {
+                        val s = ""
+                        if (!list[i].isSelected && !list[i].imageClicked) {
+                            foundNext = true
+                            list[i].isSelected = true
+                            sequence = i
+
+                            notifyItemChanged.value = i
+                            //overlaysAdapter.notifyItemChanged(position.plus(1))
+                            //binding.rvSubcategories.scrollToPosition(position)
+                            scrollView.value = i.plus(2)
+                            break
+                        }
+                    }
+
+                    if (!foundNext) {
+                        val element = list.firstOrNull {
+                            !it.isSelected && !it.imageClicked
+                        }
+
+                        if (element != null) {
+                            element?.isSelected = true
+                            sequence = element?.sequenceNumber!!
+                            //overlaysAdapter.notifyItemChanged(sequence)
+                            notifyItemChanged.value = list.indexOf(element)
+                            //binding.rvSubcategories.scrollToPosition(sequence)
+                            scrollView.value = sequence.plus(2)
+                        }
+                    }
+
+//                    list[position.plus(1)].isSelected = true
+//                    sequence = position.plus(1)
+//
+//                    notifyItemChanged.value = position.plus(1)
+//                    //overlaysAdapter.notifyItemChanged(position.plus(1))
+//                    //binding.rvSubcategories.scrollToPosition(position)
+//                    scrollView.value = position.plus(2)
+                } else {
                     val element = list.firstOrNull {
                         !it.isSelected && !it.imageClicked
                     }
 
-                    if (element != null){
+                    if (element != null) {
                         element?.isSelected = true
                         sequence = element?.sequenceNumber!!
                         //overlaysAdapter.notifyItemChanged(sequence)
-                        notifyItemChanged.value =  list.indexOf(element)
+                        notifyItemChanged.value = list.indexOf(element)
                         //binding.rvSubcategories.scrollToPosition(sequence)
                         scrollView.value = sequence.plus(2)
                     }
@@ -583,26 +655,57 @@ class ShootViewModel : ViewModel() {
                 list[position].imagePath = getCurrentShoot()!!.capturedImage
 
                 notifyItemChanged.value = position
-                //overlaysAdapter.notifyItemChanged(position)
 
-                if (position != list.size.minus(1)){
-                    list[position.plus(1)].isSelected = true
-                    sequence = position.plus(1)
+                if (position != list.size.minus(1)) {
+                    var foundNext = false
 
-                    notifyItemChanged.value = position.plus(1)
-                    //overlaysAdapter.notifyItemChanged(position.plus(1))
-                    //binding.rvSubcategories.scrollToPosition(position)
-                    scrollView.value = position.plus(2)
-                }else {
+                    for (i in position..list.size.minus(1)) {
+                        val s = ""
+                        if (!list[i].isSelected && !list[i].imageClicked) {
+                            foundNext = true
+                            list[i].isSelected = true
+                            sequence = i
+
+                            notifyItemChanged.value = i
+                            //overlaysAdapter.notifyItemChanged(position.plus(1))
+                            //binding.rvSubcategories.scrollToPosition(position)
+                            scrollView.value = i.plus(2)
+                            break
+                        }
+                    }
+
+                    if (!foundNext) {
+                        val element = list.firstOrNull {
+                            !it.isSelected && !it.imageClicked
+                        }
+
+                        if (element != null) {
+                            element?.isSelected = true
+                            sequence = element?.sequenceNumber!!
+                            //overlaysAdapter.notifyItemChanged(sequence)
+                            notifyItemChanged.value = list.indexOf(element)
+                            //binding.rvSubcategories.scrollToPosition(sequence)
+                            scrollView.value = sequence.plus(2)
+                        }
+                    }
+
+//                    list[position.plus(1)].isSelected = true
+//                    sequence = position.plus(1)
+//
+//                    notifyItemChanged.value = position.plus(1)
+//                    //overlaysAdapter.notifyItemChanged(position.plus(1))
+//                    //binding.rvSubcategories.scrollToPosition(position)
+//                    scrollView.value = position.plus(2)
+                } else {
                     val element = list.firstOrNull {
                         !it.isSelected && !it.imageClicked
                     }
 
-                    if (element != null){
+                    if (element != null) {
                         element?.isSelected = true
                         sequence = element?.sequenceNumber!!
                         //overlaysAdapter.notifyItemChanged(sequence)
-                        notifyItemChanged.value =  list.indexOf(element)
+                        notifyItemChanged.value = list.indexOf(element)
                         //binding.rvSubcategories.scrollToPosition(sequence)
                         scrollView.value = sequence.plus(2)
                     }
@@ -611,8 +714,9 @@ class ShootViewModel : ViewModel() {
         }
     }
 
+
     fun getOverlayIds(
-        ids : JSONArray
+        ids: JSONArray
     ) = viewModelScope.launch {
         _reshootOverlaysRes.value = Resource.Loading
         _reshootOverlaysRes.value = repository.getOverlayIds(ids)

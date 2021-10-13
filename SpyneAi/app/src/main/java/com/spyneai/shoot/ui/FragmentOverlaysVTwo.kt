@@ -186,7 +186,6 @@ class FragmentOverlaysVTwo : BaseFragment<ShootViewModel, FragmentOverlaysV2Bind
                 "Angles ${viewModel.sequence.plus(1)}/${viewModel.getSelectedAngles(getString(
                     R.string.app_name))}"
 
-//            loadOverlay(viewModel.displayName,viewModel.displayName)
         })
     }
 
@@ -305,7 +304,7 @@ class FragmentOverlaysVTwo : BaseFragment<ShootViewModel, FragmentOverlaysV2Bind
             when (it) {
                 is Resource.Success -> {
                     Utilities.hideProgressDialog()
-                    Utilities.hideProgressDialog()
+
 
                     //pre load overlays
                     val overlaysList = it.value.data.map { it.display_thumbnail }
@@ -614,7 +613,8 @@ class FragmentOverlaysVTwo : BaseFragment<ShootViewModel, FragmentOverlaysV2Bind
     override fun onOverlaySelected(view: View, position: Int, data: Any?) {
         when(data){
             is OverlaysResponse.Data->{
-                loadOverlay(data.angle_name,data.display_thumbnail)
+                if(getString(R.string.app_name) != AppConstants.KARVI)
+                    loadOverlay(data.angle_name,data.display_thumbnail)
 
                 viewModel.sequence = position
                 viewModel.overlayId = data.id

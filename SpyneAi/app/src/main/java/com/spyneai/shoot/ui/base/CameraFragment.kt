@@ -265,15 +265,16 @@ class CameraFragment : BaseFragment<ShootViewModel, FragmentCameraBinding>(), Pi
 
 
     private fun onCaptureClick() {
-        if (binding.flLevelIndicator.visibility == View.VISIBLE){
-            if (binding.flLevelIndicator.isGyroOnCorrectAngle){
-                captureImage()
-        }else{
-            showGryroToast()
-        }
-        }else{
-            captureImage()
-        }
+        captureImage()
+//        if (binding.flLevelIndicator.visibility == View.VISIBLE){
+//            if (binding.flLevelIndicator.isGyroOnCorrectAngle){
+//                captureImage()
+//        }else{
+//            showGryroToast()
+//        }
+//        }else{
+//            captureImage()
+//        }
 
     }
 
@@ -332,7 +333,7 @@ class CameraFragment : BaseFragment<ShootViewModel, FragmentCameraBinding>(), Pi
             var height = 0
             var width = 0
             val displayMetrics = DisplayMetrics()
-            if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.R) {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
                 if (requireContext() != null) {
                     requireContext().display?.getRealMetrics(displayMetrics)
                     height = displayMetrics.heightPixels
@@ -349,7 +350,6 @@ class CameraFragment : BaseFragment<ShootViewModel, FragmentCameraBinding>(), Pi
             val aspectRatio = aspectRatio(width, height)
             // The display rotation
             //val rotation = binding.viewFinder.display.rotation
-
 
             val localCameraProvider = cameraProvider
                 ?: throw IllegalStateException("Camera initialization failed.")
@@ -451,6 +451,9 @@ class CameraFragment : BaseFragment<ShootViewModel, FragmentCameraBinding>(), Pi
 
 
                 cameraInfo = camera.cameraInfo
+
+
+                val s = ""
 
 //                val rotation = cameraInfo!!.sensorRotationDegrees
 //                Toast.makeText(requireContext(), "rotation- "+rotation, Toast.LENGTH_SHORT).show()

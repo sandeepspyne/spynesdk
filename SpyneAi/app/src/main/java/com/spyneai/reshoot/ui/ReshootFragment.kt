@@ -65,8 +65,6 @@ class ReshootFragment : BaseFragment<ShootViewModel, FragmentReshootBinding>(), 
         viewModel.shootList.observe(viewLifecycleOwner, {
             try {
                 if (viewModel.showConfirmReshootDialog.value == true && !it.isNullOrEmpty()) {
-                    shoot("confirm reshoot dialog called")
-                    shoot("shootList sine(no. of images)- " + it.size)
                     val element = viewModel.getCurrentShoot()
                     showImageConfirmDialog(element!!)
                 }
@@ -87,16 +85,32 @@ class ReshootFragment : BaseFragment<ShootViewModel, FragmentReshootBinding>(), 
                 list[position].imagePath = viewModel.getCurrentShoot()!!.capturedImage
                 reshootAdapter?.notifyItemChanged(position)
 
-                Log.d(TAG, "onViewCreated: " + position)
-                Log.d(TAG, "onViewCreated: " + list[position].imagePath)
-
                 if (position != list.size.minus(1)) {
-                    list[position.plus(1)].isSelected = true
-                    viewModel.sequence = position.plus(1)
+                    var foundNext = false
 
-                    reshootAdapter?.notifyItemChanged(position.plus(1))
-                    binding.rvImages.scrollToPosition(position)
+                    for (i in position..list.size.minus(1)) {
+                        if (!list[i].isSelected && !list[i].imageClicked) {
+                            foundNext = true
+                            list[i].isSelected = true
+                            viewModel.sequence = i
 
+                            reshootAdapter?.notifyItemChanged(i)
+                            binding.rvImages.scrollToPosition(i.plus(2))
+                            break
+                        }
+                    }
+
+                    if (!foundNext) {
+                        val element = list.firstOrNull {
+                            !it.isSelected && !it.imageClicked
+                        }
+
+                        if (element != null) {
+                            element?.isSelected = true
+                            reshootAdapter?.notifyItemChanged(list.indexOf(element))
+                            binding.rvImages.scrollToPosition(viewModel.sequence)
+                        }
+                    }
                 } else {
                     val element = list.firstOrNull {
                         !it.isSelected && !it.imageClicked
@@ -104,15 +118,10 @@ class ReshootFragment : BaseFragment<ShootViewModel, FragmentReshootBinding>(), 
 
                     if (element != null) {
                         element?.isSelected = true
-                        //viewModel.sequence = element?.sequenceNumber!!
                         reshootAdapter?.notifyItemChanged(list.indexOf(element))
                         binding.rvImages.scrollToPosition(viewModel.sequence)
-
-                        Log.d(TAG, "onItemClick: " + viewModel.sequence)
                     }
                 }
-
-
             }
         })
 

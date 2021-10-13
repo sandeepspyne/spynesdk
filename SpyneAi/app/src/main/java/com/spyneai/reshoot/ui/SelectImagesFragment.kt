@@ -1,10 +1,16 @@
 package com.spyneai.reshoot.ui
 
+import android.Manifest
 import android.content.Intent
+import android.content.pm.PackageManager
+import android.os.Build
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
+import androidx.activity.result.contract.ActivityResultContracts
+import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.spyneai.R
 import com.spyneai.base.BaseFragment
@@ -23,38 +29,67 @@ class SelectImagesFragment : BaseFragment<ProcessedViewModel,FragmentSelectImage
 
     private var selectImageAdapter : SelectImageAdapter? = null
 
+    private val permissions = mutableListOf(
+        Manifest.permission.CAMERA,
+        Manifest.permission.READ_EXTERNAL_STORAGE,
+        Manifest.permission.WRITE_EXTERNAL_STORAGE
+    ).apply {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+            add(Manifest.permission.ACCESS_MEDIA_LOCATION)
+        }
+    }
+
+    private val permissionRequest = registerForActivityResult(ActivityResultContracts.RequestMultiplePermissions()) { permissions ->
+        if (permissions.all { it.value }) {
+            onPermissionGranted()
+        } else {
+            Toast.makeText(requireContext(), R.string.message_no_permissions, Toast.LENGTH_SHORT).show()
+        }
+    }
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
         getImages()
 
         binding.btnReshoot.setOnClickListener {
-            val list = selectImageAdapter?.listItems as ArrayList<ImagesOfSkuRes.Data>
-
-            val selectedList = list.filter {
-                it.isSelected
+            if (allPermissionsGranted()) {
+                onPermissionGranted()
+            } else {
+                permissionRequest.launch(permissions.toTypedArray())
             }
+        }
+    }
 
-            val selectedIds = JSONArray()
+    protected fun allPermissionsGranted() = permissions.all {
+        ContextCompat.checkSelfPermission(requireContext(), it) == PackageManager.PERMISSION_GRANTED
+    }
 
-            selectedList.forEachIndexed { index, data ->
-                selectedIds.put(data.overlayId)
-            }
+    open fun onPermissionGranted() {
+        val list = selectImageAdapter?.listItems as ArrayList<ImagesOfSkuRes.Data>
 
-            SelectedImagesHelper.selectedImages = selectedIds
+        val selectedList = list.filter {
+            it.isSelected
+        }
 
-            val reshootIntent = Intent(requireActivity(),ReshootActivity::class.java)
-            reshootIntent.apply {
-                putExtra(AppConstants.PROJECT_ID,viewModel.projectId)
-                putExtra(AppConstants.SKU_ID,viewModel.skuId)
-                putExtra(AppConstants.SKU_NAME,viewModel.skuName)
-                putExtra(AppConstants.CATEGORY_ID,requireActivity().intent.getStringExtra(AppConstants.CATEGORY_ID))
-                putExtra(AppConstants.CATEGORY_NAME,requireActivity().intent.getStringExtra(AppConstants.CATEGORY_NAME))
-                putExtra(AppConstants.SUB_CAT_ID,requireActivity().intent.getStringExtra(AppConstants.SUB_CAT_ID))
-                putExtra(AppConstants.EXTERIOR_ANGLES,requireActivity().intent.getIntExtra(AppConstants.EXTERIOR_ANGLES,0))
-                startActivity(this)
-            }
+        val selectedIds = JSONArray()
 
+        selectedList.forEachIndexed { index, data ->
+            selectedIds.put(data.overlayId)
+        }
+
+        SelectedImagesHelper.selectedImages = selectedIds
+
+        val reshootIntent = Intent(requireActivity(),ReshootActivity::class.java)
+        reshootIntent.apply {
+            putExtra(AppConstants.PROJECT_ID,viewModel.projectId)
+            putExtra(AppConstants.SKU_ID,viewModel.skuId)
+            putExtra(AppConstants.SKU_NAME,viewModel.skuName)
+            putExtra(AppConstants.CATEGORY_ID,requireActivity().intent.getStringExtra(AppConstants.CATEGORY_ID))
+            putExtra(AppConstants.CATEGORY_NAME,requireActivity().intent.getStringExtra(AppConstants.CATEGORY_NAME))
+            putExtra(AppConstants.SUB_CAT_ID,requireActivity().intent.getStringExtra(AppConstants.SUB_CAT_ID))
+            putExtra(AppConstants.EXTERIOR_ANGLES,requireActivity().intent.getIntExtra(AppConstants.EXTERIOR_ANGLES,0))
+            startActivity(this)
         }
     }
 
