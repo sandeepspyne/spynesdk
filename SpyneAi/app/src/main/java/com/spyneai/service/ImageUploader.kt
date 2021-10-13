@@ -79,83 +79,43 @@ class ImageUploader(val context: Context,
                        return@launch
                    }
 
-                   if (image.isUploaded == 0 || image.isUploaded == -1){
-                       val uploadType = if (retryCount == 0) "Direct" else "Retry"
+                   if ((image.isUploaded == 0 && imageType == AppConstants.REGULAR)
+                       ||
+                       (image.isUploaded == -1 && imageType == AppConstants.SKIPPED)){
 
-                       var response = shootRepository.getPreSignedUrl(
-                           uploadType,
-                           image
-                       )
+                       if (!image.preSignedUrl.isNullOrEmpty()){
+                           uploadImageToGcp(image,imageType,retryCount)
+                       }else {
+                           val uploadType = if (retryCount == 0) "Direct" else "Retry"
 
-                       when(response){
-                           is Resource.Success -> {
-                               image.preSignedUrl = response.value.data.presignedUrl
-                               image.imageId = response.value.data.imageId
+                           var response = shootRepository.getPreSignedUrl(
+                               uploadType,
+                               image
+                           )
 
-                               //captureEvent(Events.GOT_PRESIGNED_VIDEO_URL,video,true,null)
+                           when(response){
+                               is Resource.Success -> {
+                                   image.preSignedUrl = response.value.data.presignedUrl
+                                   image.imageId = response.value.data.imageId
 
-                               localRepository.addPreSignedUrl(image)
+                                   //captureEvent(Events.GOT_PRESIGNED_VIDEO_URL,video,true,null)
 
-                               // create RequestBody instance from file
-                               val requestFile =
-                                   File(image.imagePath).asRequestBody("text/x-markdown; charset=utf-8".toMediaTypeOrNull())
+                                   localRepository.addPreSignedUrl(image)
 
-                               //upload video with presigned url
-                               val request = GcpClient.buildService(ClipperApi::class.java)
-
-                               val call = request.uploadVideo(
-                                   "application/octet-stream",
-                                   response.value.data.presignedUrl,
-                                   requestFile
-                               )
-
-                               call.enqueue(object : Callback<ResponseBody> {
-                                   override fun onResponse(call: Call<ResponseBody>, response: Response<ResponseBody>) {
-                                       Log.d("VideoUploader", "onResponse: "+response.code())
-                                       if (response.isSuccessful){
-                                           localRepository.markUploaded(image)
-                                           onVideoUploaded(
-                                               image,
-                                               imageType,
-                                               retryCount
-                                           )
-                                       }else {
-                                           onVideoUploadFailed(
-                                               imageType,
-                                               retryCount,
-                                               image,
-                                               response.errorBody().toString()
-                                           )
-                                       }
-                                   }
-
-                                   override fun onFailure(call: Call<ResponseBody>, t: Throwable) {
-                                       Log.d("VideoUploader", "onFailure: "+t.message)
-                                       onVideoUploadFailed(
-                                           imageType,
-                                           retryCount,
-                                           image,
-                                           t.message
-                                       )
-                                   }
-
-                               })
-
-//                               log("Image upload sucess. image angle: "+image.angle)
-//                               captureEvent(Events.UPLOADED_SERVICE,image,true,null)
-//                               startNextUpload(image.itemId!!,true,imageType)
-                           }
-
-                           is Resource.Failure -> {
-                               log("Image upload failed")
-                               logUpload("Upload error "+response.errorCode.toString()+" "+response.errorMessage)
-                               if(response.errorMessage == null){
-                                   captureEvent(Events.UPLOAD_FAILED_SERVICE,image,false,response.errorCode.toString()+": Http exception from server")
-                               }else {
-                                   captureEvent(Events.UPLOAD_FAILED_SERVICE,image,false,response.errorCode.toString()+": "+response.errorMessage)
+                                   uploadImageToGcp(image,imageType,retryCount)
                                }
 
-                               selectLastImageAndUpload(imageType,retryCount+1)
+                               is Resource.Failure -> {
+                                   log("Image upload failed")
+                                   logUpload("Upload error "+response.errorCode.toString()+" "+response.errorMessage)
+                                   if(response.errorMessage == null){
+                                       captureEvent(Events.UPLOAD_FAILED_SERVICE,image,false,response.errorCode.toString()+": Http exception from server")
+                                   }else {
+                                       captureEvent(Events.UPLOAD_FAILED_SERVICE,image,false,response.errorCode.toString()+": "+response.errorMessage)
+                                   }
+
+                                   selectLastImageAndUpload(imageType,retryCount+1)
+                               }
                            }
                        }
                    }else{
@@ -190,6 +150,53 @@ class ImageUploader(val context: Context,
        }else {
            listener.onConnectionLost()
        }
+    }
+
+    private fun uploadImageToGcp(image: Image,imageType : String,retryCount : Int) {
+        // create RequestBody instance from file
+        val requestFile =
+            File(image.imagePath).asRequestBody("text/x-markdown; charset=utf-8".toMediaTypeOrNull())
+
+        //upload video with presigned url
+        val request = GcpClient.buildService(ClipperApi::class.java)
+
+        val call = request.uploadVideo(
+            "application/octet-stream",
+            image.preSignedUrl!!,
+            requestFile
+        )
+
+        call.enqueue(object : Callback<ResponseBody> {
+            override fun onResponse(call: Call<ResponseBody>, response: Response<ResponseBody>) {
+                Log.d("VideoUploader", "onResponse: "+response.code())
+                if (response.isSuccessful){
+                    localRepository.markUploaded(image)
+                    onVideoUploaded(
+                        image,
+                        imageType,
+                        retryCount
+                    )
+                }else {
+                    onVideoUploadFailed(
+                        imageType,
+                        retryCount,
+                        image,
+                        response.errorBody().toString()
+                    )
+                }
+            }
+
+            override fun onFailure(call: Call<ResponseBody>, t: Throwable) {
+                Log.d("VideoUploader", "onFailure: "+t.message)
+                onVideoUploadFailed(
+                    imageType,
+                    retryCount,
+                    image,
+                    t.message
+                )
+            }
+
+        })
     }
 
     private fun onVideoUploaded(video: Image, imageType: String, retryCount : Int) {

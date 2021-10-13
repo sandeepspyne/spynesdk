@@ -457,9 +457,9 @@ class DraftShootFragment : BaseFragment<ShootViewModel, FragmentOverlaysV2Bindin
                     val notSelected = list.firstOrNull {
                         !it.isSelected && !it.imageClicked
                     }
-
+                    var index = -1
                     if (notSelected != null){
-                        val index = list.indexOf(notSelected)
+                        index = list.indexOf(notSelected)
 
                         list[index].isSelected = true
 
@@ -478,6 +478,11 @@ class DraftShootFragment : BaseFragment<ShootViewModel, FragmentOverlaysV2Bindin
                         layoutManager = LinearLayoutManager(requireContext(),
                             LinearLayoutManager.VERTICAL,false)
                         adapter = overlaysAdapter
+                    }
+
+                    if (index != -1){
+                        binding.rvSubcategories.scrollToPosition(index.plus(2))
+
                     }
 
                     requireContext().captureEvent(
@@ -576,15 +581,6 @@ class DraftShootFragment : BaseFragment<ShootViewModel, FragmentOverlaysV2Bindin
                 LinearLayoutManager.VERTICAL,false)
             adapter = overlaysAdapter
         }
-
-//        val list = subCatResponse.interior
-//        list[0].isSelected = true
-//
-//        viewModel.displayName = list[0].display_name
-//        viewModel.displayThumbanil = list[0].display_thumbnail
-//
-//        overlaysAdapter.listItems = list
-//        overlaysAdapter.notifyDataSetChanged()
 
         //change image type
         viewModel.categoryDetails.value?.imageType = "Interior"
