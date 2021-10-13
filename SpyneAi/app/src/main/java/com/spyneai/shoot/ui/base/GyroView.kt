@@ -234,7 +234,7 @@ class GyroView : FrameLayout {
 
             AppConstants.CARS24_INDIA,
             AppConstants.CARS24 -> {
-                if ((roll >= -100 && roll <= -80) && (pitch >= -3 && pitch <= 3)) {
+                if ((roll >= -95 && roll <= -85) && (pitch >= -2 && pitch <= 2)) {
                     gyroMeterOnLevel(true)
                 } else {
                     gyroMeterOffLevel()

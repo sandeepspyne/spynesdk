@@ -710,8 +710,8 @@ class CameraFragment : BaseFragment<ShootViewModel, FragmentCameraBinding>(), Pi
         )
 
         val debugData = JSONObject()
-        debugData.put("roll",roll)
-        debugData.put("pitch",pitch)
+        debugData.put("roll",roll.roundToInt().unaryPlus())
+        debugData.put("pitch",pitch.roundToInt().unaryPlus())
 
 
         val shootData = ShootData(
@@ -730,8 +730,6 @@ class CameraFragment : BaseFragment<ShootViewModel, FragmentCameraBinding>(), Pi
         val item = viewModel.shootList.value!!.firstOrNull {
                 it.overlayId == viewModel.overlayId
         }
-
-        val s = ""
 
         if (item != null){
             item.capturedImage = capturedImage

@@ -83,8 +83,11 @@ class ConfirmReshootDialog : BaseDialogFragment<ShootViewModel, DialogConfirmRes
                 if (viewModel.reShootNumber.value == SelectedImagesHelper.selectedImages.length().minus(1)) {
                     viewModel.reshootCompleted.value = true
                 } else {
-                    viewModel.reShootNumber.value = viewModel.reShootNumber.value?.plus(1)
-
+                    if (viewModel.isReclick){
+                        viewModel.reShootNumber.value = viewModel.reShootNumber.value
+                    }else{
+                        viewModel.reShootNumber.value = viewModel.reShootNumber.value?.plus(1)
+                    }
                     dismiss()
                 }
             }else {
@@ -97,7 +100,12 @@ class ConfirmReshootDialog : BaseDialogFragment<ShootViewModel, DialogConfirmRes
                             viewModel.isCameraButtonClickable = false
                             dismiss()
                         }else{
-                            viewModel.shootNumber.value = viewModel.shootNumber.value!! + 1
+                            if (viewModel.isReclick){
+                                viewModel.shootNumber.value = viewModel.shootNumber.value
+                            }else{
+                                viewModel.shootNumber.value = viewModel.shootNumber.value?.plus(1)
+                            }
+
                             dismiss()
                         }
                     }
@@ -111,7 +119,11 @@ class ConfirmReshootDialog : BaseDialogFragment<ShootViewModel, DialogConfirmRes
                             viewModel.checkMiscShootStatus(getString(R.string.app_name))
                             dismiss()
                         }else{
-                            viewModel.interiorShootNumber.value = viewModel.interiorShootNumber.value!! + 1
+                            if (viewModel.isReclick){
+                                viewModel.interiorShootNumber.value = viewModel.interiorShootNumber.value
+                            }else{
+                                viewModel.interiorShootNumber.value = viewModel.interiorShootNumber.value?.plus(1)
+                            }
                             dismiss()
                         }
                     }
@@ -124,7 +136,12 @@ class ConfirmReshootDialog : BaseDialogFragment<ShootViewModel, DialogConfirmRes
                             viewModel.selectBackground(getString(R.string.app_name))
                             dismiss()
                         }else{
-                            viewModel.miscShootNumber.value = viewModel.miscShootNumber.value!! + 1
+                            if (viewModel.isReclick){
+                                viewModel.miscShootNumber.value = viewModel.miscShootNumber.value
+                            }else{
+                                viewModel.miscShootNumber.value = viewModel.miscShootNumber.value?.plus(1)
+                            }
+
                             dismiss()
                         }
                     }
