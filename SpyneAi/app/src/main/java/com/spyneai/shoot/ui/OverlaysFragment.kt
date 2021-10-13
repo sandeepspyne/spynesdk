@@ -78,6 +78,7 @@ class OverlaysFragment : BaseFragment<ShootViewModel, FragmentOverlaysBinding>()
         shoot("onCreateView called(overlay fragment)")
 
         requireContext().setLocale()
+        Log.d(TAG, "localeSet:"+ requireContext().setLocale())
 
 
     }
@@ -252,6 +253,7 @@ class OverlaysFragment : BaseFragment<ShootViewModel, FragmentOverlaysBinding>()
 
         //update progress list
         viewModel.exterirorAngles.observe(viewLifecycleOwner, {
+            requireContext().setLocale()
             binding.tvShoot?.text = getString(R.string.angles)+" 1/${viewModel.getSelectedAngles()}"
             if (viewModel.shootList.value.isNullOrEmpty())
                 initProgressFrames()
@@ -407,6 +409,7 @@ class OverlaysFragment : BaseFragment<ShootViewModel, FragmentOverlaysBinding>()
         }
 
         viewModel.shootNumber.observe(viewLifecycleOwner, {
+            requireContext().setLocale()
             binding.tvShoot?.text =
                 getString(R.string.angles)+" ${viewModel.shootNumber.value!! + 1}/${viewModel.getSelectedAngles()}"
 
@@ -582,6 +585,7 @@ class OverlaysFragment : BaseFragment<ShootViewModel, FragmentOverlaysBinding>()
 //        })
 
         viewModel.shootNumber.observe(viewLifecycleOwner, {
+            requireContext().setLocale()
             val angles: String = getString(R.string.angles)
             binding.tvShoot?.text = angles +" $it/${viewModel.getSelectedAngles()}"
         })
@@ -753,6 +757,7 @@ class OverlaysFragment : BaseFragment<ShootViewModel, FragmentOverlaysBinding>()
         viewModel.interiorShootNumber.observe(viewLifecycleOwner, {
             binding.tvAngleName?.text =
                 interiorAdapter?.interiorList!![viewModel.interiorShootNumber.value!!].display_name
+            requireContext().setLocale()
             binding.tvShoot?.text =
                 getString(R.string.angles)+" ${viewModel.interiorShootNumber.value!! + 1}/${viewModel.interiorAngles.value}"
 
@@ -870,6 +875,7 @@ class OverlaysFragment : BaseFragment<ShootViewModel, FragmentOverlaysBinding>()
         viewModel.miscShootNumber.observe(viewLifecycleOwner, {
             binding.tvAngleName?.text =
                 miscAdapter?.miscList!![viewModel.miscShootNumber.value!!].display_name
+            requireContext().setLocale()
             binding.tvShoot?.text =
                 getString(R.string.angles)+" ${viewModel.miscShootNumber.value!! + 1}/${viewModel.miscAngles.value}"
 
