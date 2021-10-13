@@ -464,11 +464,12 @@ class ShootActivity : AppCompatActivity(), GoogleApiClient.ConnectionCallbacks,
         registerForActivityResult(ActivityResultContracts.RequestMultiplePermissions()) { permissions ->
 
             val requiredPermissions = if (getString(R.string.app_name) == AppConstants.OLA_CABS){
+                permissions
+            }else{
                 permissions.filter {
                     it.key != Manifest.permission.ACCESS_COARSE_LOCATION
                 }
-            }else
-                permissions
+            }
 
             if (requiredPermissions.all {
                     it.value

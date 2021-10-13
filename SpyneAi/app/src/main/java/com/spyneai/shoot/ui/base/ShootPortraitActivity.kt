@@ -48,7 +48,7 @@ import java.io.File
 import java.util.*
 import kotlin.collections.ArrayList
 
-class ShootPortraitActivity : AppCompatActivity(), GoogleApiClient.ConnectionCallbacks,
+class ShootPortraitActivity :AppCompatActivity(), GoogleApiClient.ConnectionCallbacks,
     GoogleApiClient.OnConnectionFailedListener {
 
     lateinit var cameraFragment: CameraFragment
@@ -58,11 +58,10 @@ class ShootPortraitActivity : AppCompatActivity(), GoogleApiClient.ConnectionCal
     lateinit var skuDetailFragment: SkuDetailFragment
     lateinit var projectDetailFragment: ProjectDetailFragment
     lateinit var selectBackgroundFragment: SelectBackgroundFragment
-    lateinit var shootViewModel : ShootViewModel
+    lateinit var shootViewModel: ShootViewModel
     val location_data = JSONObject()
-    val TAG = "ShootActivity"
+    val TAG = "ShootPortraitActivity"
     private var googleApiClient: GoogleApiClient? = null
-    private val PERMISSION_ACCESS_COARSE_LOCATION = 1
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -70,8 +69,10 @@ class ShootPortraitActivity : AppCompatActivity(), GoogleApiClient.ConnectionCal
 
         shoot("onCreate called(shoot activity)")
 
-        window.setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
-            WindowManager.LayoutParams.FLAG_FULLSCREEN)
+        window.setFlags(
+            WindowManager.LayoutParams.FLAG_FULLSCREEN,
+            WindowManager.LayoutParams.FLAG_FULLSCREEN
+        )
 
         setContentView(R.layout.activity_shoot)
 
@@ -82,29 +83,12 @@ class ShootPortraitActivity : AppCompatActivity(), GoogleApiClient.ConnectionCal
         setLocale()
 
 
-
-
-
-
-        if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION)
-            != PackageManager.PERMISSION_GRANTED
-        ) {
-            ActivityCompat.requestPermissions(
-                this, arrayOf(Manifest.permission.ACCESS_COARSE_LOCATION),
-                PERMISSION_ACCESS_COARSE_LOCATION
-            )
-        }
-
-
-
-
-
         shootViewModel = ViewModelProvider(this, ViewModelFactory()).get(ShootViewModel::class.java)
 
-        if (intent.getBooleanExtra(AppConstants.FROM_DRAFTS,false))
+        if (intent.getBooleanExtra(AppConstants.FROM_DRAFTS, false))
             setUpDraftsData()
 
-        if (intent.getBooleanExtra(AppConstants.FROM_VIDEO,false))
+        if (intent.getBooleanExtra(AppConstants.FROM_VIDEO, false))
             setUpVideoShoot()
 
         val categoryDetails = CategoryDetails()
@@ -112,7 +96,7 @@ class ShootPortraitActivity : AppCompatActivity(), GoogleApiClient.ConnectionCal
         categoryDetails.apply {
             categoryId = intent.getStringExtra(AppConstants.CATEGORY_ID)
             categoryName = intent.getStringExtra(AppConstants.CATEGORY_NAME)
-            gifList =  intent.getStringExtra(AppConstants.GIF_LIST)
+            gifList = intent.getStringExtra(AppConstants.GIF_LIST)
         }
 
         shootViewModel.categoryDetails.value = categoryDetails
@@ -125,10 +109,10 @@ class ShootPortraitActivity : AppCompatActivity(), GoogleApiClient.ConnectionCal
         overlayEcomFragment = OverlayEcomFragment()
         selectBackgroundFragment = SelectBackgroundFragment()
 
-        when(shootViewModel.categoryDetails.value?.categoryName) {
+        when (shootViewModel.categoryDetails.value?.categoryName) {
             "Automobiles" -> {
                 shootViewModel.processSku = true
-                if(savedInstanceState == null) { // initial transaction should be wrapped like this
+                if (savedInstanceState == null) { // initial transaction should be wrapped like this
                     supportFragmentManager.beginTransaction()
                         .add(R.id.flCamerFragment, cameraFragment)
                         .add(R.id.flCamerFragment, overlaysFragment)
@@ -137,7 +121,7 @@ class ShootPortraitActivity : AppCompatActivity(), GoogleApiClient.ConnectionCal
             }
             "Bikes" -> {
                 shootViewModel.processSku = false
-                if(savedInstanceState == null) { // initial transaction should be wrapped like this
+                if (savedInstanceState == null) { // initial transaction should be wrapped like this
                     supportFragmentManager.beginTransaction()
                         .add(R.id.flCamerFragment, cameraFragment)
                         .add(R.id.flCamerFragment, overlaysFragment)
@@ -147,7 +131,7 @@ class ShootPortraitActivity : AppCompatActivity(), GoogleApiClient.ConnectionCal
 
             "E-Commerce" -> {
                 shootViewModel.processSku = false
-                if(savedInstanceState == null) { // initial transaction should be wrapped like this
+                if (savedInstanceState == null) { // initial transaction should be wrapped like this
                     supportFragmentManager.beginTransaction()
                         .add(R.id.flCamerFragment, cameraFragment)
                         .add(R.id.flCamerFragment, gridEcomFragment)
@@ -166,7 +150,7 @@ class ShootPortraitActivity : AppCompatActivity(), GoogleApiClient.ConnectionCal
             }
             "Photo Box" -> {
                 shootViewModel.processSku = false
-                if(savedInstanceState == null) { // initial transaction should be wrapped like this
+                if (savedInstanceState == null) { // initial transaction should be wrapped like this
                     supportFragmentManager.beginTransaction()
                         .add(R.id.flCamerFragment, cameraFragment)
                         .add(R.id.flCamerFragment, gridEcomFragment)
@@ -183,9 +167,9 @@ class ShootPortraitActivity : AppCompatActivity(), GoogleApiClient.ConnectionCal
                     e.printStackTrace()
                 }
             }
-            "Food & Beverages" ->{
+            "Food & Beverages" -> {
                 shootViewModel.processSku = false
-                if(savedInstanceState == null) { // initial transaction should be wrapped like this
+                if (savedInstanceState == null) { // initial transaction should be wrapped like this
                     supportFragmentManager.beginTransaction()
                         .add(R.id.flCamerFragment, cameraFragment)
                         .add(R.id.flCamerFragment, gridEcomFragment)
@@ -205,7 +189,7 @@ class ShootPortraitActivity : AppCompatActivity(), GoogleApiClient.ConnectionCal
 
             "Footwear" -> {
                 shootViewModel.processSku = false
-                if(savedInstanceState == null) { // initial transaction should be wrapped like this
+                if (savedInstanceState == null) { // initial transaction should be wrapped like this
                     supportFragmentManager.beginTransaction()
                         .add(R.id.flCamerFragment, cameraFragment)
                         .add(R.id.flCamerFragment, overlayEcomFragment)
@@ -231,8 +215,8 @@ class ShootPortraitActivity : AppCompatActivity(), GoogleApiClient.ConnectionCal
             permissionRequest.launch(permissions.toTypedArray())
         }
 
-        shootViewModel.stopShoot.observe(this,{
-            if(it){
+        shootViewModel.stopShoot.observe(this, {
+            if (it) {
                 window.clearFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN)
                 supportFragmentManager.beginTransaction()
                     .add(R.id.flCamerFragment, skuDetailFragment)
@@ -240,8 +224,8 @@ class ShootPortraitActivity : AppCompatActivity(), GoogleApiClient.ConnectionCal
             }
         })
 
-        shootViewModel.showProjectDetail.observe(this,{
-            if(it){
+        shootViewModel.showProjectDetail.observe(this, {
+            if (it) {
                 window.clearFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN)
                 supportFragmentManager.beginTransaction().remove(skuDetailFragment).commit()
                 supportFragmentManager.beginTransaction().remove(cameraFragment).commit()
@@ -252,8 +236,8 @@ class ShootPortraitActivity : AppCompatActivity(), GoogleApiClient.ConnectionCal
             }
         })
 
-        shootViewModel.showFoodBackground.observe(this,{
-            if(it){
+        shootViewModel.showFoodBackground.observe(this, {
+            if (it) {
                 window.clearFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN)
                 supportFragmentManager.beginTransaction().remove(skuDetailFragment).commit()
                 supportFragmentManager.beginTransaction().remove(projectDetailFragment).commit()
@@ -279,10 +263,13 @@ class ShootPortraitActivity : AppCompatActivity(), GoogleApiClient.ConnectionCal
                     this.putExtra("sku_id", shootViewModel.sku.value?.skuId)
                     this.putExtra("project_id", shootViewModel.sku.value?.projectId)
                     this.putExtra("exterior_angles", shootViewModel.exterirorAngles.value)
-                    this.putExtra("process_sku",shootViewModel.processSku)
-                    this.putExtra("interior_misc_count",getInteriorMiscCount())
-                    this.putStringArrayListExtra("exterior_images_list",getExteriorImagesList())
-                    this.putExtra(AppConstants.FROM_VIDEO,intent.getBooleanExtra(AppConstants.FROM_VIDEO,false))
+                    this.putExtra("process_sku", shootViewModel.processSku)
+                    this.putExtra("interior_misc_count", getInteriorMiscCount())
+                    this.putStringArrayListExtra("exterior_images_list", getExteriorImagesList())
+                    this.putExtra(
+                        AppConstants.FROM_VIDEO,
+                        intent.getBooleanExtra(AppConstants.FROM_VIDEO, false)
+                    )
                     startActivity(this)
                 }
             }
@@ -298,11 +285,13 @@ class ShootPortraitActivity : AppCompatActivity(), GoogleApiClient.ConnectionCal
         shootViewModel.isProjectCreated.value = true
         shootViewModel.projectId.value = intent.getStringExtra(AppConstants.PROJECT_ID)
 
-        shootViewModel._createProjectRes.value = Resource.Success(CreateProjectRes(
-            "",
-            intent.getStringExtra(AppConstants.PROJECT_ID)!!,
-            200
-        ))
+        shootViewModel._createProjectRes.value = Resource.Success(
+            CreateProjectRes(
+                "",
+                intent.getStringExtra(AppConstants.PROJECT_ID)!!,
+                200
+            )
+        )
     }
 
     private fun setUpDraftsData() {
@@ -311,11 +300,13 @@ class ShootPortraitActivity : AppCompatActivity(), GoogleApiClient.ConnectionCal
         shootViewModel.isProjectCreated.value = true
         shootViewModel.projectId.value = intent.getStringExtra(AppConstants.PROJECT_ID)
 
-        shootViewModel._createProjectRes.value = Resource.Success(CreateProjectRes(
-            "",
-            intent.getStringExtra(AppConstants.PROJECT_ID)!!,
-            200
-        ))
+        shootViewModel._createProjectRes.value = Resource.Success(
+            CreateProjectRes(
+                "",
+                intent.getStringExtra(AppConstants.PROJECT_ID)!!,
+                200
+            )
+        )
 
         //set sku data
         val sku = Sku()
@@ -325,8 +316,9 @@ class ShootPortraitActivity : AppCompatActivity(), GoogleApiClient.ConnectionCal
 
         shootViewModel.sku.value = sku
 
-        if (intent.getBooleanExtra(AppConstants.SKU_CREATED,false)) {
-            shootViewModel.exterirorAngles.value = intent.getIntExtra(AppConstants.EXTERIOR_ANGLES,0)
+        if (intent.getBooleanExtra(AppConstants.SKU_CREATED, false)) {
+            shootViewModel.exterirorAngles.value =
+                intent.getIntExtra(AppConstants.EXTERIOR_ANGLES, 0)
 
             shootViewModel.getSubCategories(
                 Utilities.getPreference(this, AppConstants.AUTH_KEY).toString(),
@@ -340,10 +332,10 @@ class ShootPortraitActivity : AppCompatActivity(), GoogleApiClient.ConnectionCal
             shootViewModel.subCategory.value = getSubcategoryResponse()
 
             shootViewModel.getOverlays(
-                Utilities.getPreference(this,AppConstants.AUTH_KEY).toString(),
+                Utilities.getPreference(this, AppConstants.AUTH_KEY).toString(),
                 intent.getStringExtra(AppConstants.CATEGORY_ID)!!,
                 intent.getStringExtra(AppConstants.SUB_CAT_ID)!!,
-                intent.getIntExtra(AppConstants.EXTERIOR_ANGLES,0).toString(),
+                intent.getIntExtra(AppConstants.EXTERIOR_ANGLES, 0).toString(),
             )
         }
 
@@ -366,7 +358,7 @@ class ShootPortraitActivity : AppCompatActivity(), GoogleApiClient.ConnectionCal
 
     override fun onStart() {
         super.onStart()
-        googleApiClient?.connect()
+        googleApiClient?.isConnected()
         shoot("onStart called(shhot activity)")
     }
 
@@ -382,7 +374,9 @@ class ShootPortraitActivity : AppCompatActivity(), GoogleApiClient.ConnectionCal
 
     override fun onStop() {
         super.onStop()
-        googleApiClient?.disconnect()
+        if (googleApiClient?.isConnected() == true) {
+            googleApiClient?.disconnect()
+        }
         shoot("onStop called(shoot activity)")
     }
 
@@ -414,23 +408,24 @@ class ShootPortraitActivity : AppCompatActivity(), GoogleApiClient.ConnectionCal
 
 
         if (miscList != null)
-            total+= miscList.size
+            total += miscList.size
 
-        if (shootViewModel.fromDrafts){
-            total+= intent.getIntExtra(AppConstants.INTERIOR_SIZE,0)
-            total+= intent.getIntExtra(AppConstants.MISC_SIZE,0)
+        if (shootViewModel.fromDrafts) {
+            total += intent.getIntExtra(AppConstants.INTERIOR_SIZE, 0)
+            total += intent.getIntExtra(AppConstants.MISC_SIZE, 0)
         }
 
         if (getString(R.string.app_name) == AppConstants.OLA_CABS
-            && shootViewModel.threeSixtyInteriorSelected) {
-            total+= 1
+            && shootViewModel.threeSixtyInteriorSelected
+        ) {
+            total += 1
         }
 
-        if (intent.getBooleanExtra(AppConstants.FROM_VIDEO,false)){
-            total+= intent.getIntExtra(AppConstants.TOTAL_FRAME,0)
+        if (intent.getBooleanExtra(AppConstants.FROM_VIDEO, false)) {
+            total += intent.getIntExtra(AppConstants.TOTAL_FRAME, 0)
         }
 
-        Log.d(TAG, "getInteriorMiscCount: "+total)
+        Log.d(TAG, "getInteriorMiscCount: " + total)
 
         return total
     }
@@ -457,36 +452,36 @@ class ShootPortraitActivity : AppCompatActivity(), GoogleApiClient.ConnectionCal
     private val permissions = mutableListOf(
         Manifest.permission.CAMERA,
         Manifest.permission.READ_EXTERNAL_STORAGE,
-        Manifest.permission.WRITE_EXTERNAL_STORAGE
+        Manifest.permission.WRITE_EXTERNAL_STORAGE,
+        Manifest.permission.ACCESS_COARSE_LOCATION,
     ).apply {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
             add(Manifest.permission.ACCESS_MEDIA_LOCATION)
         }
     }
 
-    private val permissionRequest = registerForActivityResult(ActivityResultContracts.RequestMultiplePermissions()) { permissions ->
-        if (permissions.all { it.value }) {
-            onPermissionGranted()
-        } else {
-            Toast.makeText(this, R.string.message_no_permissions, Toast.LENGTH_SHORT).show()
-            finish()
-        }
-    }
+    private val permissionRequest =
+        registerForActivityResult(ActivityResultContracts.RequestMultiplePermissions()) { permissions ->
 
-    override fun onRequestPermissionsResult(
-        requestCode: Int,
-        vararg permissions: String?,
-        grantResults: IntArray
-    ) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
-        when (requestCode) {
-            PERMISSION_ACCESS_COARSE_LOCATION -> if (grantResults.size > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                // All good!
-            } else {
-                Toast.makeText(this, "Need your location!", Toast.LENGTH_SHORT).show()
+            val requiredPermissions = if (getString(R.string.app_name) == AppConstants.OLA_CABS){
+                permissions
+            }else{
+                permissions.filter {
+                    it.key != Manifest.permission.ACCESS_COARSE_LOCATION
+                }
             }
+
+            if (requiredPermissions.all {
+                    it.value
+                }) {
+                onPermissionGranted()
+            } else {
+                Toast.makeText(this, R.string.message_no_permissions, Toast.LENGTH_SHORT).show()
+                finish()
+            }
+
         }
-    }
+
 
     override fun onConnected(bundle: Bundle?) {
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION)
@@ -504,17 +499,14 @@ class ShootPortraitActivity : AppCompatActivity(), GoogleApiClient.ConnectionCal
             val countryName = addresses[0].countryName
 
             location_data.put("city", cityName)
-            location_data.put(  "country", countryName)
-            location_data.put( "latitude", lat)
+            location_data.put("country", countryName)
+            location_data.put("latitude", lat)
             location_data.put("longitude", lon)
             location_data.put("postalCode", postalCode)
 
             Log.d(TAG, "onConnected: $location_data")
 
             shootViewModel.location_data.value = location_data
-
-
-
 
 
         }
@@ -534,22 +526,19 @@ class ShootPortraitActivity : AppCompatActivity(), GoogleApiClient.ConnectionCal
         fun getOutputDirectory(context: Context): File {
             val appContext = context.applicationContext
             val mediaDir = context.externalMediaDirs.firstOrNull()?.let {
-                File(it, appContext.resources.getString(R.string.app_name)).apply { mkdirs() } }
+                File(it, appContext.resources.getString(R.string.app_name)).apply { mkdirs() }
+            }
             return if (mediaDir != null && mediaDir.exists())
                 mediaDir else appContext.filesDir
         }
     }
 
 
-
-
-
-
     override fun onBackPressed() {
-        if (intent.getBooleanExtra(AppConstants.FROM_DRAFTS,false))
-            ShootExitDialog().show(supportFragmentManager,"ShootExitDialog")
+        if (intent.getBooleanExtra(AppConstants.FROM_DRAFTS, false))
+            ShootExitDialog().show(supportFragmentManager, "ShootExitDialog")
         else
-            ShootExitDialog().show(supportFragmentManager,"ShootExitDialog")
+            ShootExitDialog().show(supportFragmentManager, "ShootExitDialog")
     }
 
     // 1. onKeyDown is a boolean function, which returns the state of the KeyEvent.
@@ -558,11 +547,12 @@ class ShootPortraitActivity : AppCompatActivity(), GoogleApiClient.ConnectionCal
 
         when (keyCode) {
             KeyEvent.KEYCODE_VOLUME_DOWN -> {
-                if (event?.repeatCount == 0){
+                if (event?.repeatCount == 0) {
                     if (shootViewModel.onVolumeKeyPressed.value == null)
                         shootViewModel.onVolumeKeyPressed.value = true
                     else
-                        shootViewModel.onVolumeKeyPressed.value = !shootViewModel.onVolumeKeyPressed.value!!
+                        shootViewModel.onVolumeKeyPressed.value =
+                            !shootViewModel.onVolumeKeyPressed.value!!
                 }
             }
 
