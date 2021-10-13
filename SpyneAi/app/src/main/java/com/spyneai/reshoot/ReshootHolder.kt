@@ -39,18 +39,24 @@ class ReshootHolder(
             this?.tvName?.text = data.displayName
         }
 
-        if (data.isSelected)
-        {
-            binding?.flOverlay?.background = ContextCompat.getDrawable(BaseApplication.getContext(),R.drawable.bg_overlay_selected)
-            overlaySelectionListener?.onOverlaySelected(
-                binding?.flOverlay!!,
-                adapterPosition,
-                data
-            )
-        }
-        else
-            binding?.flOverlay?.background = ContextCompat.getDrawable(BaseApplication.getContext(),R.drawable.bg_overlay)
+        when{
+            data.isSelected -> {
+                binding?.flOverlay?.background = ContextCompat.getDrawable(BaseApplication.getContext(),R.drawable.bg_overlay_selected)
+                overlaySelectionListener?.onOverlaySelected(
+                    binding?.flOverlay!!,
+                    adapterPosition,
+                    data
+                )
+            }
 
+            data.imageClicked -> {
+                binding?.flOverlay?.background = ContextCompat.getDrawable(BaseApplication.getContext(),R.drawable.bg_overlay_image_clicked)
+            }
+
+            else -> {
+                binding?.flOverlay?.background = ContextCompat.getDrawable(BaseApplication.getContext(),R.drawable.bg_overlay)
+            }
+        }
 
         if (data.imageClicked){
             Glide.with(itemView)

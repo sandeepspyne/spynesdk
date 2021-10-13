@@ -31,6 +31,10 @@ class MiscShotsDialog : BaseDialogFragment<ShootViewModel, DialogFocusedHintBind
             changePhotos()
         }
 
+        binding.ivClose.setOnClickListener {
+            dismiss()
+        }
+
         binding.tvSkipFocused.setOnClickListener {
             viewModel.selectBackground(getString(R.string.app_name))
             viewModel.startMiscShots.value = true

@@ -228,9 +228,11 @@ class ReshootFragment : BaseFragment<ShootViewModel, FragmentReshootBinding>(), 
         when (data) {
             is ReshootOverlaysRes.Data -> {
                 if (data.type == "Exterior"){
+                    viewModel.showLeveler.value = true
                     binding.imgOverlay.visibility = View.VISIBLE
                     loadOverlay(data.displayName,data.displayThumbnail)
                 }else {
+                    viewModel.hideLeveler.value = true
                     binding.imgOverlay.visibility = View.GONE
                 }
 

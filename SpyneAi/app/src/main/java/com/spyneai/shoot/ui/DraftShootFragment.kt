@@ -561,8 +561,9 @@ class DraftShootFragment : BaseFragment<ShootViewModel, FragmentOverlaysV2Bindin
             !it.isSelected && !it.imageClicked
         }
 
+        var index = -1
         if (notSelected != null){
-            val index = list.indexOf(notSelected)
+            index = list.indexOf(notSelected)
 
             list[index].isSelected = true
 
@@ -580,6 +581,10 @@ class DraftShootFragment : BaseFragment<ShootViewModel, FragmentOverlaysV2Bindin
             layoutManager = LinearLayoutManager(requireContext(),
                 LinearLayoutManager.VERTICAL,false)
             adapter = overlaysAdapter
+        }
+
+        if (index != -1){
+            binding.rvSubcategories.scrollToPosition(index.plus(2))
         }
 
         //change image type
@@ -667,8 +672,9 @@ class DraftShootFragment : BaseFragment<ShootViewModel, FragmentOverlaysV2Bindin
             !it.isSelected && !it.imageClicked
         }
 
+        var index = -1
         if (notSelected != null){
-            val index = list.indexOf(notSelected)
+            index = list.indexOf(notSelected)
 
             list[index].isSelected = true
 
@@ -687,6 +693,11 @@ class DraftShootFragment : BaseFragment<ShootViewModel, FragmentOverlaysV2Bindin
                 LinearLayoutManager.VERTICAL,false)
             adapter = overlaysAdapter
         }
+
+        if (index != -1){
+            binding.rvSubcategories.scrollToPosition(index.plus(2))
+        }
+
 //        list[0].isSelected = true
 //
 //        viewModel.displayName = list[0].display_name
