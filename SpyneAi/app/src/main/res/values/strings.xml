@@ -323,8 +323,8 @@
     <string name="rate_this_output">Rate this Output:</string>
 
     <string name="tv_instructions">(Keep dish above this line)</string>
-    <string name="miscshoots">Misc\nShoots</string>
-    <string name="three_sixty_int">360\nInterior</string>
+    <string name="miscshoots">Next</string>
+    <string name="three_sixty_int">Next</string>
     <string name="end_shoot_karvi">End\nShoot</string>
 
 </resources>

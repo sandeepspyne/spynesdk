@@ -416,7 +416,7 @@ class FragmentOverlaysVTwo : BaseFragment<ShootViewModel, FragmentOverlaysV2Bind
     private fun initMiscShots() {
         viewModel.hideLeveler.value = true
 
-        if (viewModel.startMiscShots.value == null && !viewModel.miscDialogShowed) {
+        if (!viewModel.miscDialogShowed) {
             MiscShotsDialog().show(requireActivity().supportFragmentManager, "MiscShotsDialog")
             viewModel.miscDialogShowed = true
         }

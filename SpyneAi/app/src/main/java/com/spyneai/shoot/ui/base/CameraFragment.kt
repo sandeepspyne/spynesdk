@@ -199,18 +199,7 @@ class CameraFragment : BaseFragment<ShootViewModel, FragmentCameraBinding>(), Pi
         }
 
         binding.tvSkipShoot?.setOnClickListener {
-            when (getString(R.string.app_name)) {
-                AppConstants.KARVI -> {
-                    viewModel.skipImage(getString(R.string.app_name))
-//                    SkipShootDialog().show(
-//                        requireActivity().supportFragmentManager,
-//                        "SkipShootDialog"
-//                    )
-                }
-                else -> {
-                   viewModel.skipImage(getString(R.string.app_name))
-                }
-            }
+            viewModel.skipImage(getString(R.string.app_name))
         }
 
         viewModel.onVolumeKeyPressed.observe(viewLifecycleOwner, {

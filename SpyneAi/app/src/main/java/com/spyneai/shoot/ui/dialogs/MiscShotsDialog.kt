@@ -32,6 +32,7 @@ class MiscShotsDialog : BaseDialogFragment<ShootViewModel, DialogFocusedHintBind
         }
 
         binding.ivClose.setOnClickListener {
+            viewModel.miscDialogShowed = false
             dismiss()
         }
 

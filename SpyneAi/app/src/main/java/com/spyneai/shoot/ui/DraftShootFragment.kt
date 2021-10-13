@@ -481,8 +481,8 @@ class DraftShootFragment : BaseFragment<ShootViewModel, FragmentOverlaysV2Bindin
                     }
 
                     if (index != -1){
-                        binding.rvSubcategories.scrollToPosition(index.plus(2))
-
+                        val position = if (index == 0) 0 else index.plus(2)
+                        binding.rvSubcategories.scrollToPosition(position)
                     }
 
                     requireContext().captureEvent(
@@ -584,7 +584,8 @@ class DraftShootFragment : BaseFragment<ShootViewModel, FragmentOverlaysV2Bindin
         }
 
         if (index != -1){
-            binding.rvSubcategories.scrollToPosition(index.plus(2))
+            val position = if (index == 0) 0 else index.plus(2)
+            binding.rvSubcategories.scrollToPosition(position)
         }
 
         //change image type
@@ -695,7 +696,8 @@ class DraftShootFragment : BaseFragment<ShootViewModel, FragmentOverlaysV2Bindin
         }
 
         if (index != -1){
-            binding.rvSubcategories.scrollToPosition(index.plus(2))
+            val position = if (index == 0) 0 else index.plus(2)
+            binding.rvSubcategories.scrollToPosition(position)
         }
 
 //        list[0].isSelected = true
