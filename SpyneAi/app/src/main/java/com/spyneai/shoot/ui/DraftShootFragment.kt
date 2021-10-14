@@ -286,18 +286,13 @@ class DraftShootFragment : BaseFragment<ShootViewModel, FragmentOverlaysV2Bindin
                 R.string.app_name))}"
         })
 
-        if (viewModel.shootList.value.isNullOrEmpty()
-            || (viewModel.shootList.value?.size!! < viewModel.getSelectedAngles(getString(R.string.app_name))!!))
-            initProgressFrames()
+        getSubcategories()
 
 //        if (viewModel.subCategory.value?.prod_cat_id != null && !viewModel.fromDrafts)
 //            getOverlays()
     }
 
-    private fun initProgressFrames() {
 
-        getSubcategories()
-    }
 
 
     private fun loadOverlay(name : String,overlay : String) {
@@ -440,7 +435,6 @@ class DraftShootFragment : BaseFragment<ShootViewModel, FragmentOverlaysV2Bindin
             when (it) {
                 is Resource.Success -> {
                     Utilities.hideProgressDialog()
-
 
                     //pre load overlays
                     val overlaysList = it.value.data.map { it.display_thumbnail }
@@ -685,6 +679,7 @@ class DraftShootFragment : BaseFragment<ShootViewModel, FragmentOverlaysV2Bindin
             subCategoriesAdapter.notifyDataSetChanged()
 
             getOverlays()
+            observeOverlays()
             shoot("get overlays called")
 
             viewModel.isSubCategorySelected.value = true
