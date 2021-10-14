@@ -141,8 +141,9 @@ class ShootViewModel : ViewModel() {
     var allExteriorClicked = false
     var allInteriorClicked = false
     var allMisc = false
+    var allReshootClicked = false
 
-    val reShootNumber: MutableLiveData<Int> = MutableLiveData()
+    //val reShootNumber: MutableLiveData<Int> = MutableLiveData()
     val shootData: MutableLiveData<ShootData> = MutableLiveData()
     val reshootCompleted: MutableLiveData<Boolean> = MutableLiveData()
 
@@ -160,9 +161,7 @@ class ShootViewModel : ViewModel() {
 
 
     val interiorAngles: MutableLiveData<Int> = MutableLiveData()
-    val interiorShootNumber: MutableLiveData<Int> = MutableLiveData()
     val miscAngles: MutableLiveData<Int> = MutableLiveData()
-    val miscShootNumber: MutableLiveData<Int> = MutableLiveData()
 
     var overlayRightMargin = 0
 

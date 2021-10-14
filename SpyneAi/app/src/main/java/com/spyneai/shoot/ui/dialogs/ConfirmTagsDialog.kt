@@ -109,68 +109,44 @@ class ConfirmTagsDialog : BaseDialogFragment<ShootViewModel, DialogConfirmTagsBi
             if (viewModel.isReshoot){
                 if (tagsValid()) {
                     uploadImages()
-                    dismiss()
 
-                    if (viewModel.reShootNumber.value == SelectedImagesHelper.selectedImages.length().minus(1)) {
+                    if (viewModel.allReshootClicked)
                         viewModel.reshootCompleted.value = true
-                    } else {
-                        viewModel.reShootNumber.value = viewModel.shootList.value?.size
-                        dismiss()
-                    }
+
+                    dismiss()
                 }
             }else{
-                when (viewModel.categoryDetails.value?.imageType) {
+                when(viewModel.categoryDetails.value?.imageType) {
                     "Exterior" -> {
-                        if (tagsValid()) {
-                            uploadImages()
-
-                            dismiss()
-
-//                            if (viewModel.shootNumber.value == viewModel.exterirorAngles.value?.minus(1)) {
-//                                checkInteriorShootStatus()
-//                                viewModel.isCameraButtonClickable = false
-//                                dismiss()
-//                            } else {
-//                                viewModel.shootNumber.value = viewModel.shootList.value?.size
-//                                dismiss()
-//                            }
+                        uploadImages()
+                        if (viewModel.allExteriorClicked){
+                            checkInteriorShootStatus()
+                            viewModel.isCameraButtonClickable = false
                         }
 
+                        dismiss()
                     }
 
                     "Interior" -> {
-                        if (tagsValid()) {
-                            updateTotalImages()
-                            uploadImages()
+                        updateTotalImages()
+                        uploadImages()
 
-                            if (viewModel.interiorShootNumber.value == viewModel.interiorAngles.value?.minus(
-                                    1
-                                )
-                            ) {
-                                viewModel.isCameraButtonClickable = false
-                                viewModel.checkMiscShootStatus(getString(R.string.app_name))
-                                dismiss()
-                            } else {
-                                viewModel.interiorShootNumber.value =
-                                    viewModel.interiorShootNumber.value!! + 1
-                                dismiss()
-                            }
+                        if (viewModel.allInteriorClicked){
+                            viewModel.isCameraButtonClickable = false
+                            viewModel.checkMiscShootStatus(getString(R.string.app_name))
                         }
+
+                        dismiss()
                     }
 
                     "Focus Shoot" -> {
-                        if (tagsValid()) {
-                            updateTotalImages()
-                            uploadImages()
+                        updateTotalImages()
+                        uploadImages()
 
-                            if (viewModel.miscShootNumber.value == viewModel.miscAngles.value?.minus(1)) {
-                                viewModel.selectBackground(getString(R.string.app_name))
-                                dismiss()
-                            } else {
-                                viewModel.miscShootNumber.value = viewModel.miscShootNumber.value!! + 1
-                                dismiss()
-                            }
-                        }
+                        if (viewModel.allMisc)
+                            viewModel.selectBackground(getString(R.string.app_name))
+
+                        dismiss()
                     }
                 }
             }
@@ -187,30 +163,16 @@ class ConfirmTagsDialog : BaseDialogFragment<ShootViewModel, DialogConfirmTagsBi
             .skipMemoryCache(true)
             .into(binding.ivClicked)
 
+        binding.tvName.text = viewModel.getName()
+
         when (viewModel.categoryDetails.value?.imageType) {
             "Exterior" -> {
-                binding.tvName.text = viewModel.getName()
+
 
                 if (getString(R.string.app_name) == AppConstants.KARVI)
                     binding.ivOverlay.visibility = View.GONE
                 else
                     setOverlay(binding.ivOverlay, viewModel.getOverlay())
-            }
-
-            "Interior" -> {
-                val subCatResponse =
-                    (viewModel.subCategoriesResponse.value as Resource.Success).value
-                val name =
-                    subCatResponse.interior[viewModel.interiorShootNumber.value!!].display_name
-                binding.tvName.text = name
-            }
-
-            "Focus Shoot" -> {
-                val subCatResponse =
-                    (viewModel.subCategoriesResponse.value as Resource.Success).value
-                val name =
-                    subCatResponse.miscellaneous[viewModel.miscShootNumber.value!!].display_name
-                binding.tvName.text = name
             }
         }
     }

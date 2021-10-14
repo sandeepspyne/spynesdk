@@ -78,18 +78,11 @@ class ConfirmReshootDialog : BaseDialogFragment<ShootViewModel, DialogConfirmRes
 
             if (viewModel.isReshoot){
                 uploadImages()
-                dismiss()
 
-                if (viewModel.reShootNumber.value == SelectedImagesHelper.selectedImages.length().minus(1)) {
+                if (viewModel.allReshootClicked)
                     viewModel.reshootCompleted.value = true
-                } else {
-                    if (viewModel.isReclick){
-                        viewModel.reShootNumber.value = viewModel.reShootNumber.value
-                    }else{
-                        viewModel.reShootNumber.value = viewModel.reShootNumber.value?.plus(1)
-                    }
-                    dismiss()
-                }
+
+                dismiss()
             }else {
                 when(viewModel.categoryDetails.value?.imageType) {
                     "Exterior" -> {
@@ -150,11 +143,6 @@ class ConfirmReshootDialog : BaseDialogFragment<ShootViewModel, DialogConfirmRes
                     binding.ivCapturedOverlay.visibility = View.GONE
                 else
                     setOverlay(binding.ivCaptured2,viewModel.getOverlay())
-
-//                if (getString(R.string.app_name) == AppConstants.KARVI)
-//                    binding.ivOverlay.visibility = View.GONE
-//                else
-//                    setOverlay(binding.ivOverlay, viewModel.getOverlay())
             }
 
             else -> {

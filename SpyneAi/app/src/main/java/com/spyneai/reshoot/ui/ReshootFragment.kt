@@ -122,14 +122,11 @@ class ReshootFragment : BaseFragment<ShootViewModel, FragmentReshootBinding>(), 
                         binding.rvImages.scrollToPosition(viewModel.sequence)
                     }
                 }
+
+                val reshootList = reshootAdapter?.listItems as List<ReshootOverlaysRes.Data>
+
+                viewModel.allReshootClicked = reshootList.all { it.imageClicked }
             }
-        })
-
-        viewModel.reShootNumber.value = 0
-
-        viewModel.reShootNumber.observe(viewLifecycleOwner,{
-//            binding.tvShoot?.text =
-//                "Angles ${it.plus(1)}/${SelectedImagesHelper.selectedImages.length()}"
         })
 
         viewModel.isCameraButtonClickable = true

@@ -23,27 +23,27 @@ class SkipShootDialog : BaseDialogFragment<ShootViewModel, DialogSkipBinding>() 
 
         binding.btnYes.setOnClickListener {
 
-            when (viewModel.categoryDetails.value?.imageType) {
-                "Interior" -> {
-                    if (viewModel.interiorShootNumber.value == viewModel.interiorAngles.value?.minus(
-                            1
-                        )
-                    ) {
-                        viewModel.checkMiscShootStatus(getString(R.string.app_name))
-                    } else {
-                        viewModel.interiorShootNumber.value =
-                            viewModel.interiorShootNumber.value!! + 1
-                    }
-                }
-
-                "Focus Shoot" -> {
-                    if (viewModel.miscShootNumber.value == viewModel.miscAngles.value?.minus(1)) {
-                        viewModel.selectBackground(getString(R.string.app_name))
-                    } else {
-                        viewModel.miscShootNumber.value = viewModel.miscShootNumber.value!! + 1
-                    }
-                }
-            }
+//            when (viewModel.categoryDetails.value?.imageType) {
+//                "Interior" -> {
+//                    if (viewModel.interiorShootNumber.value == viewModel.interiorAngles.value?.minus(
+//                            1
+//                        )
+//                    ) {
+//                        viewModel.checkMiscShootStatus(getString(R.string.app_name))
+//                    } else {
+//                        viewModel.interiorShootNumber.value =
+//                            viewModel.interiorShootNumber.value!! + 1
+//                    }
+//                }
+//
+//                "Focus Shoot" -> {
+//                    if (viewModel.miscShootNumber.value == viewModel.miscAngles.value?.minus(1)) {
+//                        viewModel.selectBackground(getString(R.string.app_name))
+//                    } else {
+//                        viewModel.miscShootNumber.value = viewModel.miscShootNumber.value!! + 1
+//                    }
+//                }
+//            }
 
             dismiss()
         }

@@ -369,12 +369,6 @@ class OverlaysFragment : BaseFragment<ShootViewModel, FragmentOverlaysV2Binding>
             it.image_category == "Interior"
         }
 
-        //set interior angles value
-        if (!myInteriorShootList.isNullOrEmpty()) {
-            viewModel.interiorShootNumber.value = myInteriorShootList.size - 1
-            interiorList.get(myInteriorShootList.size - 1).isSelected = true
-        } else
-            viewModel.interiorShootNumber.value = 0
 
         viewModel.interiorAngles.value = interiorList.size
         binding.rvSubcategories.scrollToPosition(0)
@@ -390,12 +384,7 @@ class OverlaysFragment : BaseFragment<ShootViewModel, FragmentOverlaysV2Binding>
 
         //change image type
         viewModel.categoryDetails.value?.imageType = "Interior"
-        viewModel.interiorShootNumber.observe(viewLifecycleOwner, {
 
-//            binding.tvShoot?.text =
-//                "Angles ${viewModel.interiorShootNumber.value!! + 1}/${viewModel.interiorAngles.value}"
-
-        })
     }
 
     private fun observerMiscShots() {
@@ -434,12 +423,6 @@ class OverlaysFragment : BaseFragment<ShootViewModel, FragmentOverlaysV2Binding>
             it.image_category == "Focus Shoot"
         }
 
-        //set interior angles value
-        if (!myMiscShootList.isNullOrEmpty()) {
-            viewModel.miscShootNumber.value = myMiscShootList.size - 1
-            miscList.get(myMiscShootList.size - 1).isSelected = true
-        } else
-            viewModel.miscShootNumber.value = 0
 
         val list = subCatResponse.miscellaneous
         list[0].isSelected = true
@@ -453,11 +436,6 @@ class OverlaysFragment : BaseFragment<ShootViewModel, FragmentOverlaysV2Binding>
         //change image type
         viewModel.categoryDetails.value?.imageType = "Focus Shoot"
 
-        viewModel.miscShootNumber.observe(viewLifecycleOwner, {
-
-//            binding.tvShoot?.text =
-//                "Angles ${viewModel.miscShootNumber.value!! + 1}/${viewModel.miscAngles.value}"
-        })
     }
 
     override fun onBtnClick(position: Int, data: NewSubCatResponse.Data) {
