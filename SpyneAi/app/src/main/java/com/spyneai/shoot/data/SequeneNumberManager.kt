@@ -5,7 +5,7 @@ class SequeneNumberManager {
     fun getSequenceNumber(
         fromDrafts : Boolean,
         imageType : String,
-        shootNumber : Int,
+        currentShoot : Int,
         shootListSize : Int,
         exteriorSize : Int,
         interiorSize : Int,
@@ -15,7 +15,7 @@ class SequeneNumberManager {
         if (fromDrafts) {
             return when (imageType) {
                 "Exterior" -> {
-                    shootNumber.plus(1)
+                    currentShoot
                 }
                 "Interior" -> {
                         exteriorSize.plus(interiorSize).plus(shootListSize.plus(1))
@@ -27,9 +27,9 @@ class SequeneNumberManager {
                             .plus(1))
                 }
                 "Footwear","Food & Beverages","E-Commerce" -> {
-                    shootNumber.plus(1)
+                    currentShoot
                 }
-                else -> shootNumber.plus(1)
+                else -> currentShoot
             }
         } else {
             return if (imageType == "Exterior")

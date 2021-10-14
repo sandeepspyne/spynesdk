@@ -827,16 +827,23 @@ class DraftShootFragment : BaseFragment<ShootViewModel, FragmentOverlaysV2Bindin
 
                 viewModel.sequence = position
                 viewModel.overlayId = data.id
+
+                binding.tvShoot?.text = "Angles ${position.plus(1)}/${viewModel.getSelectedAngles(getString(
+                    R.string.app_name))}"
             }
 
             is NewSubCatResponse.Interior ->{
                 viewModel.sequence = position
                 viewModel.overlayId = data.overlayId
+
+                binding.tvShoot?.text = "Angles ${position.plus(1)}/${viewModel.interiorAngles.value}"
             }
 
             is NewSubCatResponse.Miscellaneous ->{
                 viewModel.sequence = position
                 viewModel.overlayId = data.overlayId
+
+                binding.tvShoot?.text = "Angles ${position.plus(1)}/${viewModel.miscAngles.value}"
             }
         }
     }

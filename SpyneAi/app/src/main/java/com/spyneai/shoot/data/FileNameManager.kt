@@ -7,7 +7,7 @@ class FileNameManager {
     fun getFileName(
         fromDrafts : Boolean,
         imageType : String,
-        shootNumber : Int,
+        currentShoot : Int,
         sequence : Int,
         list : ArrayList<ShootData>?,
         interiorSize : Int?,
@@ -16,9 +16,7 @@ class FileNameManager {
         if (fromDrafts){
             return when (imageType) {
                 "Exterior" -> {
-                    imageType + "_" + shootNumber.plus(
-                        1
-                    )
+                    imageType + "_" + currentShoot
                 }
                 "Interior" -> {
                     val interiorList = list?.filter {
@@ -46,20 +44,8 @@ class FileNameManager {
                                 miscSize?.plus(miscList.size.plus(1))
                     }
                 }
-                "Footwear" -> {
-                    imageType + "_" + shootNumber.plus(
-                        1
-                    )
-                }
-                "Food & Beverages" -> {
-                    imageType + "_" + shootNumber.plus(
-                        1
-                    )
-                }
-                "Ecom" -> {
-                    imageType + "_" + shootNumber.plus(
-                        1
-                    )
+                "Footwear","Food & Beverages","Ecom","Food","Photo Box" -> {
+                    imageType + "_" + currentShoot
                 }
                 else -> {
                     System.currentTimeMillis().toString()
@@ -94,146 +80,13 @@ class FileNameManager {
                         "Miscellaneous_" + miscList.size.plus(1)
                     }
                 }
-                "Footwear" -> {
-                    imageType + "_" + shootNumber.plus(
-                        1
-                    )
-                }
-                "Food" -> {
-                    imageType + "_" + shootNumber.plus(
-                        1
-                    )
-                }
-                "Ecom" -> {
-                    imageType + "_" + shootNumber.plus(
-                        1
-                    )
+                "Footwear","Food","Ecom","Food & Beverages","Photo Box" -> {
+                    imageType + "_" + currentShoot
                 }
                 else -> {
                     System.currentTimeMillis().toString()
                 }
             }
         }
-
     }
-
-
-//    if (viewModel.fromDrafts) {
-//        filename += when (viewModel.categoryDetails.value?.imageType) {
-//            "Exterior" -> {
-//                viewModel.categoryDetails.value?.imageType!! + "_" + viewModel.shootNumber.value?.plus(
-//                    1
-//                )
-//            }
-//            "Interior" -> {
-//                val list = viewModel.shootList.value
-//
-//                val interiorList = list?.filter {
-//                    it.image_category == "Interior"
-//                }
-//
-//                if (interiorList == null) {
-//                    viewModel.categoryDetails.value?.imageType!! + "_" +
-//                            requireActivity().intent.getIntExtra(AppConstants.INTERIOR_SIZE, 0)
-//                                .plus(1)
-//                } else {
-//                    viewModel.categoryDetails.value?.imageType!! + "_" +
-//                            requireActivity().intent.getIntExtra(AppConstants.INTERIOR_SIZE, 0)
-//                                .plus(interiorList.size.plus(1))
-//                }
-//
-//            }
-//            "Focus Shoot" -> {
-//                val list = viewModel.shootList.value
-//
-//                val miscList = list?.filter {
-//                    it.image_category == "Focus Shoot"
-//                }
-//
-//                if (miscList == null) {
-//                    "Miscellaneous_" +
-//                            requireActivity().intent.getIntExtra(AppConstants.MISC_SIZE, 0)
-//                                .plus(1)
-//                } else {
-//                    "Miscellaneous_" +
-//                            requireActivity().intent.getIntExtra(AppConstants.MISC_SIZE, 0)
-//                                .plus(miscList.size.plus(1))
-//                }
-//            }
-//            "Footwear" -> {
-//                viewModel.categoryDetails.value?.imageType!! + "_" + viewModel.shootNumber.value?.plus(
-//                    1
-//                )
-//            }
-//            "Food & Beverages" -> {
-//                viewModel.categoryDetails.value?.imageType!! + "_" + viewModel.shootNumber.value?.plus(
-//                    1
-//                )
-//            }
-//            "Ecom" -> {
-//                viewModel.categoryDetails.value?.imageType!! + "_" + viewModel.shootNumber.value?.plus(
-//                    1
-//                )
-//            }
-//            else -> {
-//                System.currentTimeMillis().toString()
-//            }
-//        }
-//    } else {
-//        filename += if (viewModel.shootList.value == null)
-//            viewModel.categoryDetails.value?.imageType + "_1"
-//        else {
-//            val size = viewModel.shootList.value!!.size.plus(1)
-//            val list = viewModel.shootList.value
-//
-//            when (viewModel.categoryDetails.value?.imageType) {
-//                "Exterior" -> {
-//                    viewModel.categoryDetails.value?.imageType!! + "_" + size
-//                }
-//                "Interior" -> {
-//
-//                    val interiorList = list?.filter {
-//                        it.image_category == "Interior"
-//                    }
-//
-//                    if (interiorList == null) {
-//                        viewModel.categoryDetails.value?.imageType!! + "_1"
-//                    } else {
-//                        viewModel.categoryDetails.value?.imageType!! + "_" + interiorList.size.plus(
-//                            1
-//                        )
-//                    }
-//                }
-//                "Focus Shoot" -> {
-//                    val miscList = list?.filter {
-//                        it.image_category == "Focus Shoot"
-//                    }
-//
-//                    if (miscList == null) {
-//                        "Miscellaneous" + "_1"
-//                    } else {
-//                        "Miscellaneous_" + miscList.size.plus(1)
-//                    }
-//                }
-//                "Footwear" -> {
-//                    viewModel.categoryDetails.value?.imageType!! + "_" + viewModel.shootNumber.value?.plus(
-//                        1
-//                    )
-//                }
-//                "Food" -> {
-//                    viewModel.categoryDetails.value?.imageType!! + "_" + viewModel.shootNumber.value?.plus(
-//                        1
-//                    )
-//                }
-//                "Ecom" -> {
-//                    viewModel.categoryDetails.value?.imageType!! + "_" + viewModel.shootNumber.value?.plus(
-//                        1
-//                    )
-//                }
-//                else -> {
-//                    System.currentTimeMillis().toString()
-//                }
-//            }
-//        }
-//    }
 }
