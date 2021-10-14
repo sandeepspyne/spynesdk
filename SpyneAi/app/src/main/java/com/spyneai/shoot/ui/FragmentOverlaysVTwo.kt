@@ -157,10 +157,10 @@ class FragmentOverlaysVTwo : BaseFragment<ShootViewModel, FragmentOverlaysV2Bind
         }
 
         //update progress list
-        viewModel.exterirorAngles.observe(viewLifecycleOwner, {
-            binding.tvShoot?.text = getString(R.string.angles)+" 1/${viewModel.getSelectedAngles(getString(
-                R.string.app_name))}"
-        })
+//        viewModel.exterirorAngles.observe(viewLifecycleOwner, {
+//            binding.tvShoot?.text = getString(R.string.angles)+" 1/${viewModel.getSelectedAngles(getString(
+//                R.string.app_name))}"
+//        })
 
         if (viewModel.shootList.value.isNullOrEmpty()
             || (viewModel.shootList.value?.size!! < viewModel.getSelectedAngles(getString(R.string.app_name))!!))
@@ -182,9 +182,9 @@ class FragmentOverlaysVTwo : BaseFragment<ShootViewModel, FragmentOverlaysV2Bind
 
     private fun startExteriroShot() {
         viewModel.shootNumber.observe(viewLifecycleOwner, {
-            binding.tvShoot?.text =
-                "Angles ${viewModel.sequence.plus(1)}/${viewModel.getSelectedAngles(getString(
-                    R.string.app_name))}"
+//            binding.tvShoot?.text =
+//                "Angles ${viewModel.sequence.plus(1)}/${viewModel.getSelectedAngles(getString(
+//                    R.string.app_name))}"
 
         })
     }
@@ -398,8 +398,8 @@ class FragmentOverlaysVTwo : BaseFragment<ShootViewModel, FragmentOverlaysV2Bind
         viewModel.categoryDetails.value?.imageType = "Interior"
         viewModel.interiorShootNumber.observe(viewLifecycleOwner, {
 
-            binding.tvShoot?.text =
-                "Angles ${viewModel.interiorShootNumber.value!! + 1}/${viewModel.interiorAngles.value}"
+//            binding.tvShoot?.text =
+//                "Angles ${viewModel.interiorShootNumber.value!! + 1}/${viewModel.interiorAngles.value}"
 
         })
     }
@@ -461,8 +461,8 @@ class FragmentOverlaysVTwo : BaseFragment<ShootViewModel, FragmentOverlaysV2Bind
 
         viewModel.miscShootNumber.observe(viewLifecycleOwner, {
 
-            binding.tvShoot?.text =
-                "Angles ${viewModel.miscShootNumber.value!! + 1}/${viewModel.miscAngles.value}"
+//            binding.tvShoot?.text =
+//                "Angles ${viewModel.miscShootNumber.value!! + 1}/${viewModel.miscAngles.value}"
         })
     }
 
@@ -618,16 +618,23 @@ class FragmentOverlaysVTwo : BaseFragment<ShootViewModel, FragmentOverlaysV2Bind
 
                 viewModel.sequence = position
                 viewModel.overlayId = data.id
+
+                binding.tvShoot?.text = "Angles ${position.plus(1)}/${viewModel.getSelectedAngles(getString(
+                    R.string.app_name))}"
             }
 
             is NewSubCatResponse.Interior ->{
                 viewModel.sequence = position
                 viewModel.overlayId = data.overlayId
+
+                binding.tvShoot?.text = "Angles ${position.plus(1)}/${viewModel.interiorAngles.value}"
             }
 
             is NewSubCatResponse.Miscellaneous ->{
                 viewModel.sequence = position
                 viewModel.overlayId = data.overlayId
+
+                binding.tvShoot?.text = "Angles ${position.plus(1)}/${viewModel.miscAngles.value}"
             }
         }
     }

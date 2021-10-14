@@ -59,7 +59,7 @@ class ReshootFragment : BaseFragment<ShootViewModel, FragmentReshootBinding>(), 
         binding.apply {
             tvSkuName.text = viewModel.sku.value?.skuName
         }
-        binding.tvShoot?.text = "Angles 1/${SelectedImagesHelper.selectedImages.length()}"
+       // binding.tvShoot?.text = "Angles 1/${SelectedImagesHelper.selectedImages.length()}"
 
         //observe new image clicked
         viewModel.shootList.observe(viewLifecycleOwner, {
@@ -128,8 +128,8 @@ class ReshootFragment : BaseFragment<ShootViewModel, FragmentReshootBinding>(), 
         viewModel.reShootNumber.value = 0
 
         viewModel.reShootNumber.observe(viewLifecycleOwner,{
-            binding.tvShoot?.text =
-                "Angles ${it.plus(1)}/${SelectedImagesHelper.selectedImages.length()}"
+//            binding.tvShoot?.text =
+//                "Angles ${it.plus(1)}/${SelectedImagesHelper.selectedImages.length()}"
         })
 
         viewModel.isCameraButtonClickable = true
@@ -243,6 +243,8 @@ class ReshootFragment : BaseFragment<ShootViewModel, FragmentReshootBinding>(), 
 
                 viewModel.sequence = position
                 viewModel.overlayId = data.id
+
+                binding.tvShoot?.text = "Angles ${position.plus(1)}/${SelectedImagesHelper.selectedImages.length()}"
             }
 
         }
