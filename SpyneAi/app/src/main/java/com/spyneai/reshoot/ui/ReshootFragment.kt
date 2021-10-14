@@ -222,6 +222,8 @@ class ReshootFragment : BaseFragment<ShootViewModel, FragmentReshootBinding>(), 
     }
 
     override fun onOverlaySelected(view: View, position: Int, data: Any?) {
+        viewModel.currentShoot = position.plus(1)
+
         when (data) {
             is ReshootOverlaysRes.Data -> {
                 if (data.type == "Exterior"){

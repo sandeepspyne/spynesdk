@@ -486,8 +486,7 @@ class DraftShootFragment : BaseFragment<ShootViewModel, FragmentOverlaysV2Bindin
                     }
 
                     if (index != -1){
-                        val position = if (index == 0) 0 else index.plus(2)
-                        binding.rvSubcategories.scrollToPosition(position)
+                        binding.rvSubcategories.scrollToPosition(index)
                     }
 
                     requireContext().captureEvent(
@@ -573,8 +572,7 @@ class DraftShootFragment : BaseFragment<ShootViewModel, FragmentOverlaysV2Bindin
         }
 
         if (index != -1){
-            val position = if (index == 0) 0 else index.plus(2)
-            binding.rvSubcategories.scrollToPosition(position)
+            binding.rvSubcategories.scrollToPosition(index)
         }
 
         //change image type
@@ -670,8 +668,7 @@ class DraftShootFragment : BaseFragment<ShootViewModel, FragmentOverlaysV2Bindin
         }
 
         if (index != -1){
-            val position = if (index == 0) 0 else index.plus(2)
-            binding.rvSubcategories.scrollToPosition(position)
+            binding.rvSubcategories.scrollToPosition(index)
         }
 
         //change image type
@@ -822,6 +819,8 @@ class DraftShootFragment : BaseFragment<ShootViewModel, FragmentOverlaysV2Bindin
     }
 
     override fun onOverlaySelected(view: View, position: Int, data: Any?) {
+        viewModel.currentShoot = position.plus(1)
+
         when(data){
             is OverlaysResponse.Data->{
                 loadOverlay(data.angle_name,data.display_thumbnail)
