@@ -254,7 +254,6 @@ class CameraFragment : BaseFragment<ShootViewModel, FragmentCameraBinding>(), Pi
                     if (viewModel.subCategory.value?.prod_sub_cat_id != null)
                         onCaptureClick()
                     else {
-                        var s = ""
                     }
                 }
 

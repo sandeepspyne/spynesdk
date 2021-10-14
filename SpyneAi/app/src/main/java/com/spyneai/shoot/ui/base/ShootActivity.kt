@@ -9,8 +9,10 @@ import android.content.pm.PackageManager
 import android.location.Address
 import android.location.Geocoder
 import android.location.Location
+import android.net.Uri
 import android.os.Build
 import android.os.Bundle
+import android.provider.Settings
 import android.util.Log
 import android.view.KeyEvent
 import android.view.WindowManager
@@ -35,6 +37,7 @@ import com.spyneai.shoot.data.model.CreateProjectRes
 import com.spyneai.shoot.data.model.Sku
 import com.spyneai.shoot.ui.OverlaysFragment
 import com.spyneai.shoot.ui.SelectBackgroundFragment
+import com.spyneai.shoot.ui.dialogs.RequiredPermissionDialog
 import com.spyneai.shoot.ui.dialogs.ShootExitDialog
 import com.spyneai.shoot.ui.ecomwithgrid.GridEcomFragment
 import com.spyneai.shoot.ui.ecomwithgrid.ProjectDetailFragment
@@ -209,11 +212,11 @@ class ShootActivity : AppCompatActivity(), GoogleApiClient.ConnectionCallbacks,
 
         }
 
-        if (allPermissionsGranted()) {
-            onPermissionGranted()
-        } else {
-            permissionRequest.launch(permissions.toTypedArray())
-        }
+//        if (allPermissionsGranted()) {
+//            onPermissionGranted()
+//        } else {
+//            permissionRequest.launch(permissions.toTypedArray())
+//        }
 
         shootViewModel.stopShoot.observe(this, {
             if (it) {
@@ -445,42 +448,52 @@ class ShootActivity : AppCompatActivity(), GoogleApiClient.ConnectionCallbacks,
     /**
      * Check for the permissions
      */
-    protected fun allPermissionsGranted() = permissions.all {
-        ContextCompat.checkSelfPermission(this, it) == PackageManager.PERMISSION_GRANTED
-    }
+//    protected fun allPermissionsGranted() = permissions.all {
+//        ContextCompat.checkSelfPermission(this, it) == PackageManager.PERMISSION_GRANTED
+//    }
+//
+//    private val permissions = mutableListOf(
+//        Manifest.permission.CAMERA,
+//        Manifest.permission.READ_EXTERNAL_STORAGE,
+//        Manifest.permission.WRITE_EXTERNAL_STORAGE,
+//        Manifest.permission.ACCESS_COARSE_LOCATION,
+//    ).apply {
+//        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+//            add(Manifest.permission.ACCESS_MEDIA_LOCATION)
+//        }
+//    }
 
-    private val permissions = mutableListOf(
-        Manifest.permission.CAMERA,
-        Manifest.permission.READ_EXTERNAL_STORAGE,
-        Manifest.permission.WRITE_EXTERNAL_STORAGE,
-        Manifest.permission.ACCESS_COARSE_LOCATION,
-    ).apply {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-            add(Manifest.permission.ACCESS_MEDIA_LOCATION)
-        }
-    }
-
-    private val permissionRequest =
-        registerForActivityResult(ActivityResultContracts.RequestMultiplePermissions()) { permissions ->
-
-            val requiredPermissions = if (getString(R.string.app_name) == AppConstants.OLA_CABS){
-                permissions
-            }else{
-                permissions.filter {
-                    it.key != Manifest.permission.ACCESS_COARSE_LOCATION
-                }
-            }
-
-            if (requiredPermissions.all {
-                    it.value
-                }) {
-                onPermissionGranted()
-            } else {
-                Toast.makeText(this, R.string.message_no_permissions, Toast.LENGTH_SHORT).show()
-                finish()
-            }
-
-        }
+//    private val permissionRequest =
+//        registerForActivityResult(ActivityResultContracts.RequestMultiplePermissions()) { permissions ->
+//
+//            val requiredPermissions = if (getString(R.string.app_name) == AppConstants.OLA_CABS){
+//                permissions
+//            }else{
+//                permissions.filter {
+//                    it.key != Manifest.permission.ACCESS_COARSE_LOCATION
+//                }
+//            }
+//
+//            if (requiredPermissions.all {
+//                    it.value
+//                }) {
+//                onPermissionGranted()
+//            } else {
+//
+////                val intent = Intent(
+////                    Settings.ACTION_APPLICATION_DETAILS_SETTINGS,
+////                    Uri.fromParts("package",packageName, null))
+////                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+////                startActivity(intent)
+//
+//                RequiredPermissionDialog().show(supportFragmentManager, "RequiredPermissionDialog")
+//
+//
+//                Toast.makeText(this, R.string.message_no_permissions, Toast.LENGTH_SHORT).show()
+//
+//            }
+//
+//        }
 
 
     override fun onConnected(bundle: Bundle?) {
@@ -518,7 +531,7 @@ class ShootActivity : AppCompatActivity(), GoogleApiClient.ConnectionCallbacks,
     }
 
 
-    open fun onPermissionGranted() = Unit
+//    open fun onPermissionGranted() = Unit
 
 
     companion object {

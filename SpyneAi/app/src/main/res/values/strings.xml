@@ -336,5 +336,10 @@
     <string name="frames">frames</string>
     <string name="fidelity_selection">Fidelity Selection</string>
     <string name="angles_one_by_four">Angles 1/4</string>
+    <string name="give_permissions">These Premission Need to be Granted in Order to Continue..</string>
+    <string name="camera_access">Camera Access</string>
+    <string name="file_and_media">Files and Media Access</string>
+    <string name="location_access">Location Access</string>
+    <string name="go_to_permission_setting">Give Permissions</string>
 
 </resources>
