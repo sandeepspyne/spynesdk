@@ -175,5 +175,6 @@ object AppConstants {
     val VIDEO_PATH = "VIDEO_PATH"
 
     val MINIMUM_VIDEO_DURATION = 1
+    val DEFAULT_PRESIGNED_URL = "DEFAULT_PRESIGNED_URL"
 
 }

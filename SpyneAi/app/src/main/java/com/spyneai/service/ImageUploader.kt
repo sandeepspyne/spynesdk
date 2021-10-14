@@ -81,7 +81,7 @@ class ImageUploader(val context: Context,
 
                    if (image.isUploaded == 0 || image.isUploaded == -1){
 
-                       if (!image.preSignedUrl.isNullOrEmpty()){
+                       if (image.preSignedUrl != AppConstants.DEFAULT_PRESIGNED_URL){
                            uploadImageToGcp(image,imageType,retryCount)
                        }else {
                            val uploadType = if (retryCount == 0) "Direct" else "Retry"

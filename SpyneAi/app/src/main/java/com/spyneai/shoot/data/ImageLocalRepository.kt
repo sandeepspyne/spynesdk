@@ -5,6 +5,7 @@ import android.provider.BaseColumns
 import android.util.Log
 import com.spyneai.BaseApplication
 import com.spyneai.db.*
+import com.spyneai.needs.AppConstants
 import com.spyneai.shoot.data.model.Image
 import com.spyneai.shoot.utils.logUpload
 import com.spyneai.threesixty.data.model.VideoDetails
@@ -69,6 +70,7 @@ class ImageLocalRepository {
             put(Images.COLUMN_NAME_IS_STATUS_UPDATED, 0)
             put(Images.COLUMN_NAME_IS_RE_CLICK, 0)
             put(Images.COLUMN_NAME_IS_RESHOOT, image.isReshoot)
+            put(Images.COLUMN_NAME_IMAGE_PRE_SIGNED_URL,AppConstants.DEFAULT_PRESIGNED_URL)
         }
 
         val newRowId = dbWritable?.insert(Images.TABLE_NAME, null, values)
@@ -83,6 +85,7 @@ class ImageLocalRepository {
             put(Images.COLUMN_NAME_IS_STATUS_UPDATED,0)
             put(Images.COLUMN_NAME_IS_RE_CLICK,image.isReclick)
             put(Images.COLUMN_NAME_IS_RESHOOT,image.isReshoot)
+            put(Images.COLUMN_NAME_IMAGE_PRE_SIGNED_URL,AppConstants.DEFAULT_PRESIGNED_URL)
         }
 
         val selection = "${Images.COLUMN_NAME_SKU_ID} = ? AND ${Images.COLUMN_NAME_IMAGE_NAME} = ?"
