@@ -109,6 +109,29 @@ class OverlaysFragment : BaseFragment<ShootViewModel, FragmentOverlaysV2Binding>
             if (viewModel.shootList.value != null){
                 viewModel.setSelectedItem(overlaysAdapter.listItems)
             }
+
+            when(viewModel.categoryDetails.value?.imageType){
+                "Exterior" -> {
+                    val list = overlaysAdapter.listItems  as List<OverlaysResponse.Data>
+                    viewModel.allExteriorClicked = list.all {
+                        it.imageClicked
+                    }
+                }
+
+                "Interior" -> {
+                    val list = overlaysAdapter.listItems  as List<NewSubCatResponse.Interior>
+                    viewModel.allInteriorClicked = list.all {
+                        it.imageClicked
+                    }
+                }
+
+                "Focus Shoot" -> {
+                    val list = overlaysAdapter.listItems  as List<NewSubCatResponse.Miscellaneous>
+                    viewModel.allMisc = list.all {
+                        it.imageClicked
+                    }
+                }
+            }
         })
 
         viewModel.notifyItemChanged.observe(viewLifecycleOwner,{

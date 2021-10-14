@@ -138,6 +138,10 @@ class ShootViewModel : ViewModel() {
 
     //val shootNumber: MutableLiveData<Int> = MutableLiveData()
     var currentShoot = 0
+    var allExteriorClicked = false
+    var allInteriorClicked = false
+    var allMisc = false
+
     val reShootNumber: MutableLiveData<Int> = MutableLiveData()
     val shootData: MutableLiveData<ShootData> = MutableLiveData()
     val reshootCompleted: MutableLiveData<Boolean> = MutableLiveData()
