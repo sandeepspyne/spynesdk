@@ -42,11 +42,9 @@ import com.spyneai.shoot.ui.dialogs.*
 import com.spyneai.shoot.utils.shoot
 import kotlinx.coroutines.launch
 
-class OverlaysFragment : BaseFragment<ShootViewModel, FragmentOverlaysV2Binding>(),
-    NewSubCategoriesAdapter.BtnClickListener, OnItemClickListener, OnOverlaySelectionListener {
+class OverlaysFragment : BaseFragment<ShootViewModel, FragmentOverlaysV2Binding>(), OnItemClickListener, OnOverlaySelectionListener {
 
     val TAG = "FragmentOverlaysVTwo"
-    lateinit var subCategoriesAdapter: NewSubCategoriesAdapter
     private var showDialog = true
     var pos = 0
     var snackbar : Snackbar? = null
@@ -438,23 +436,6 @@ class OverlaysFragment : BaseFragment<ShootViewModel, FragmentOverlaysV2Binding>
 
     }
 
-    override fun onBtnClick(position: Int, data: NewSubCatResponse.Data) {
-        if (pos != position || !subCategoriesAdapter.selectionEnabled) {
-
-            viewModel.subCategory.value = data
-            pos = position
-
-            subCategoriesAdapter.selectionEnabled = true
-            subCategoriesAdapter.notifyDataSetChanged()
-
-            getOverlays()
-            shoot("get overlays called")
-
-            viewModel.isSubCategorySelected.value = true
-            viewModel.showLeveler.value = true
-
-        }
-    }
 
     private fun showImageConfirmDialog(shootData: ShootData) {
         viewModel.shootData.value = shootData

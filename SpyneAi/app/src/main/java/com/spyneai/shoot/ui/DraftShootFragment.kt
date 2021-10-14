@@ -43,11 +43,9 @@ import com.spyneai.shoot.ui.dialogs.*
 import com.spyneai.shoot.utils.shoot
 import kotlinx.coroutines.launch
 
-class DraftShootFragment : BaseFragment<ShootViewModel, FragmentOverlaysV2Binding>(),
-    NewSubCategoriesAdapter.BtnClickListener, OnItemClickListener, OnOverlaySelectionListener {
+class DraftShootFragment : BaseFragment<ShootViewModel, FragmentOverlaysV2Binding>(), OnItemClickListener, OnOverlaySelectionListener {
 
     val TAG = "FragmentOverlaysVTwo"
-    lateinit var subCategoriesAdapter: NewSubCategoriesAdapter
     private var showDialog = true
     var pos = 0
     var snackbar : Snackbar? = null
@@ -86,6 +84,8 @@ class DraftShootFragment : BaseFragment<ShootViewModel, FragmentOverlaysV2Bindin
             }
         })
 
+        getSubcategories()
+
         observerMiscShots()
 
         observeStartInteriorShoot()
@@ -101,6 +101,8 @@ class DraftShootFragment : BaseFragment<ShootViewModel, FragmentOverlaysV2Bindin
         })
 
         observeShootDimesions()
+
+        observeOverlays()
 
         viewModel.isSkuCreated.observe(viewLifecycleOwner,{
             initAngles()
@@ -155,7 +157,6 @@ class DraftShootFragment : BaseFragment<ShootViewModel, FragmentOverlaysV2Bindin
                     when {
                         intent.getBooleanExtra(AppConstants.RESUME_EXTERIOR,false) -> {
                             getOverlays()
-                            observeOverlays()
                         }
                         intent.getBooleanExtra(AppConstants.RESUME_INTERIOR,false) -> {
                             binding.tvShoot?.isClickable = false
@@ -274,21 +275,15 @@ class DraftShootFragment : BaseFragment<ShootViewModel, FragmentOverlaysV2Bindin
                         viewModel.exterirorAngles.value = 8
                     }
                 }
+
+                getOverlays()
             }else{
                 viewModel.exterirorAngles.value = requireActivity().intent.getIntExtra(
                     AppConstants.EXTERIOR_ANGLES,0)
             }
         }
 
-        //update progress list
-        viewModel.exterirorAngles.observe(viewLifecycleOwner, {
-            binding.tvShoot?.text = getString(R.string.angles)+" 1/${viewModel.getSelectedAngles(getString(
-                R.string.app_name))}"
-        })
-
-        getSubcategories()
-
-//        if (viewModel.subCategory.value?.prod_cat_id != null && !viewModel.fromDrafts)
+//        if (viewModel.subCategory.value?.prod_cat_id != null)
 //            getOverlays()
     }
 
@@ -669,23 +664,6 @@ class DraftShootFragment : BaseFragment<ShootViewModel, FragmentOverlaysV2Bindin
         viewModel.categoryDetails.value?.imageType = "Focus Shoot"
     }
 
-    override fun onBtnClick(position: Int, data: NewSubCatResponse.Data) {
-        if (pos != position || !subCategoriesAdapter.selectionEnabled) {
-
-            viewModel.subCategory.value = data
-            pos = position
-
-            subCategoriesAdapter.selectionEnabled = true
-            subCategoriesAdapter.notifyDataSetChanged()
-
-            getOverlays()
-            observeOverlays()
-            shoot("get overlays called")
-
-            viewModel.isSubCategorySelected.value = true
-            viewModel.showLeveler.value = true
-        }
-    }
 
     private fun showImageConfirmDialog(shootData: ShootData) {
         viewModel.shootData.value = shootData
