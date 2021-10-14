@@ -62,15 +62,15 @@ class ConfirmReshootPortraitDialog : BaseDialogFragment<ShootViewModel, ConfirmR
                 Events.CONFIRMED,
                 properties)
 
-            if (viewModel.categoryDetails.value?.categoryName == "Footwear"
-                && viewModel.shootNumber.value == 0) {
-                callUpdateSubcat()
-                observeupdateFootwarSubcat()
-                //update subcategory id
-                viewModel.updateSubcategoryId(viewModel.subCategory.value?.prod_sub_cat_id!!,viewModel.subCatName.value!!)
-            }else {
-                onImageConfirmed()
-            }
+//            if (viewModel.categoryDetails.value?.categoryName == "Footwear"
+//                && viewModel.shootNumber.value == 0) {
+//                callUpdateSubcat()
+//                observeupdateFootwarSubcat()
+//                //update subcategory id
+//                viewModel.updateSubcategoryId(viewModel.subCategory.value?.prod_sub_cat_id!!,viewModel.subCatName.value!!)
+//            }else {
+//                onImageConfirmed()
+//            }
         }
 
         viewModel.overlaysResponse.observe(viewLifecycleOwner,{
@@ -84,7 +84,7 @@ class ConfirmReshootPortraitDialog : BaseDialogFragment<ShootViewModel, ConfirmR
                         .load(uri)
                         .into(binding.ivCapturedImage)
 
-                        val overlay = it.value.data[viewModel.shootNumber.value!!].display_thumbnail
+                        //val overlay = it.value.data[viewModel.shootNumber.value!!].display_thumbnail
 
                     binding.ivCaptured2.setRotation(90F)
 
@@ -93,9 +93,9 @@ class ConfirmReshootPortraitDialog : BaseDialogFragment<ShootViewModel, ConfirmR
                             .into(binding.ivCaptured2)
 
 
-                    Glide.with(requireContext())
-                        .load(overlay)
-                        .into(binding.ivCapturedOverlay)
+//                    Glide.with(requireContext())
+//                        .load(overlay)
+//                        .into(binding.ivCapturedOverlay)
 
                 }
                 else -> {}
@@ -109,16 +109,16 @@ class ConfirmReshootPortraitDialog : BaseDialogFragment<ShootViewModel, ConfirmR
     }
 
     private fun onImageConfirmed() {
-        viewModel.isCameraButtonClickable = true
-        uploadImages()
-        if (viewModel.shootNumber.value == viewModel.exterirorAngles.value?.minus(1)) {
-            dismiss()
-            Log.d(TAG, "onViewCreated: "+"checkInteriorShootStatus")
-            viewModel.stopShoot.value = true
-        } else {
-            viewModel.shootNumber.value = viewModel.shootNumber.value!! + 1
-            dismiss()
-        }
+//        viewModel.isCameraButtonClickable = true
+//        uploadImages()
+//        if (viewModel.shootNumber.value == viewModel.exterirorAngles.value?.minus(1)) {
+//            dismiss()
+//            Log.d(TAG, "onViewCreated: "+"checkInteriorShootStatus")
+//            viewModel.stopShoot.value = true
+//        } else {
+//            viewModel.shootNumber.value = viewModel.shootNumber.value!! + 1
+//            dismiss()
+//        }
     }
 
     private fun observeupdateFootwarSubcat(){

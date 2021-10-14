@@ -276,20 +276,10 @@ class DraftShootFragment : BaseFragment<ShootViewModel, FragmentOverlaysV2Bindin
     }
 
     private fun initProgressFrames() {
-        //update this shoot number
-        viewModel.shootNumber.value = requireActivity().intent.getIntExtra(AppConstants.EXTERIOR_SIZE,0)
 
         getSubcategories()
     }
 
-    private fun startExteriroShot() {
-        viewModel.shootNumber.observe(viewLifecycleOwner, {
-            binding.tvShoot?.text =
-                "Angles ${viewModel.sequence.plus(1)}/${viewModel.getSelectedAngles(getString(
-                    R.string.app_name))}"
-
-        })
-    }
 
     private fun loadOverlay(name : String,overlay : String) {
 
@@ -383,12 +373,10 @@ class DraftShootFragment : BaseFragment<ShootViewModel, FragmentOverlaysV2Bindin
 
         viewModel.isSubCategorySelected.value = true
         //  viewModel.shootList.value = ArrayList()
-        viewModel.shootNumber.value = 0
 
         when{
             intent.getBooleanExtra(AppConstants.RESUME_EXTERIOR,false) -> {
                 viewModel.showLeveler.value = true
-                viewModel.shootNumber.value = intent.getIntExtra(AppConstants.EXTERIOR_SIZE,0)
 
                 if (getString(R.string.app_name) != AppConstants.KARVI)
                     binding.imgOverlay.visibility = View.VISIBLE
@@ -434,8 +422,6 @@ class DraftShootFragment : BaseFragment<ShootViewModel, FragmentOverlaysV2Bindin
                 is Resource.Success -> {
                     Utilities.hideProgressDialog()
 
-                    viewModel.shootNumber.value = requireActivity().intent.getIntExtra(AppConstants.EXTERIOR_SIZE,0)
-                    startExteriroShot()
 
                     //pre load overlays
                     val overlaysList = it.value.data.map { it.display_thumbnail }
@@ -732,10 +718,6 @@ class DraftShootFragment : BaseFragment<ShootViewModel, FragmentOverlaysV2Bindin
 
             viewModel.isSubCategorySelected.value = true
             viewModel.showLeveler.value = true
-
-            if (viewModel.fromDrafts)
-                startExteriroShot()
-            shoot("isSubCategorySelected is true")
         }
     }
 

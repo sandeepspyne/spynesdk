@@ -93,8 +93,8 @@ class GridEcomFragment : BaseFragment<ShootViewModel, FragmentGridEcomBinding>()
                 log("sku name set to text view: "+viewModel.sku.value?.skuName)
                 viewModel.isSkuCreated.value = false
 
-                if (!viewModel.fromDrafts)
-                    viewModel.shootNumber.value = 0
+//                if (!viewModel.fromDrafts)
+//                    viewModel.shootNumber.value = 0
             }
         })
 

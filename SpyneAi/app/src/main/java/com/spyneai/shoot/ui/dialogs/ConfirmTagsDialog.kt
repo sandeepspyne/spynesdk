@@ -126,14 +126,14 @@ class ConfirmTagsDialog : BaseDialogFragment<ShootViewModel, DialogConfirmTagsBi
 
                             dismiss()
 
-                            if (viewModel.shootNumber.value == viewModel.exterirorAngles.value?.minus(1)) {
-                                checkInteriorShootStatus()
-                                viewModel.isCameraButtonClickable = false
-                                dismiss()
-                            } else {
-                                viewModel.shootNumber.value = viewModel.shootList.value?.size
-                                dismiss()
-                            }
+//                            if (viewModel.shootNumber.value == viewModel.exterirorAngles.value?.minus(1)) {
+//                                checkInteriorShootStatus()
+//                                viewModel.isCameraButtonClickable = false
+//                                dismiss()
+//                            } else {
+//                                viewModel.shootNumber.value = viewModel.shootList.value?.size
+//                                dismiss()
+//                            }
                         }
 
                     }

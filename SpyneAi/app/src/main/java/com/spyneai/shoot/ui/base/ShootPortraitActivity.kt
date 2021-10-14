@@ -27,7 +27,6 @@ import com.spyneai.shoot.data.model.CategoryDetails
 import com.spyneai.shoot.data.model.CreateProjectRes
 import com.spyneai.shoot.data.model.ShootData
 import com.spyneai.shoot.data.model.Sku
-import com.spyneai.shoot.ui.OverlaysFragment
 import com.spyneai.shoot.ui.SelectBackgroundFragment
 import com.spyneai.shoot.ui.dialogs.ShootExitDialog
 import com.spyneai.shoot.ui.ecomwithgrid.GridEcomFragment
@@ -39,7 +38,6 @@ import java.io.File
 class ShootPortraitActivity : AppCompatActivity() {
 
     lateinit var cameraFragment: CameraFragment
-    lateinit var overlaysFragment: OverlaysFragment
     lateinit var gridEcomFragment: GridEcomFragment
     lateinit var overlayEcomFragment: OverlayEcomFragment
     lateinit var skuDetailFragment: SkuDetailFragment
@@ -85,21 +83,13 @@ class ShootPortraitActivity : AppCompatActivity() {
         }
 
         cameraFragment = CameraFragment()
-        overlaysFragment = OverlaysFragment()
         gridEcomFragment = GridEcomFragment()
         skuDetailFragment = SkuDetailFragment()
         projectDetailFragment = ProjectDetailFragment()
         overlayEcomFragment = OverlayEcomFragment()
         selectBackgroundFragment = SelectBackgroundFragment()
 
-        if (Utilities.getPreference(this, AppConstants.CATEGORY_NAME).equals("Automobiles")){
-            if(savedInstanceState == null) { // initial transaction should be wrapped like this
-                supportFragmentManager.beginTransaction()
-                    .add(R.id.flCamerFragment, cameraFragment)
-                    .add(R.id.flCamerFragment, overlaysFragment)
-                    .commitAllowingStateLoss()
-            }
-        }else if (Utilities.getPreference(this, AppConstants.CATEGORY_NAME).equals("E-Commerce")){
+         if (Utilities.getPreference(this, AppConstants.CATEGORY_NAME).equals("E-Commerce")){
             if(savedInstanceState == null) { // initial transaction should be wrapped like this
                 supportFragmentManager.beginTransaction()
                     .add(R.id.flCamerFragment, cameraFragment)
@@ -335,7 +325,6 @@ class ShootPortraitActivity : AppCompatActivity() {
             val list = shootViewModel.getImagesbySkuId(shootViewModel.sku.value?.skuId!!)
 
             if (intent.getBooleanExtra(AppConstants.FROM_LOCAL_DB,false)){
-                shootViewModel.shootNumber.value = list.size
                 for(image in list){
                     shootViewModel.shootList.value!!.add(
                         ShootData(image.imagePath!!,
@@ -349,7 +338,6 @@ class ShootPortraitActivity : AppCompatActivity() {
             }else {
                 val list = intent.getStringArrayListExtra(AppConstants.EXTERIOR_LIST)
 
-                shootViewModel.shootNumber.value = list?.size
 
                 for(image in list!!){
                     shootViewModel.shootList.value!!.add(

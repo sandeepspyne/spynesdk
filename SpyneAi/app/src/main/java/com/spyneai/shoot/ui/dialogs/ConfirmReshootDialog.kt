@@ -95,19 +95,20 @@ class ConfirmReshootDialog : BaseDialogFragment<ShootViewModel, DialogConfirmRes
                     "Exterior" -> {
                         uploadImages()
 
-                        if (viewModel.shootNumber.value  == viewModel.exterirorAngles.value?.minus(1)){
-                            checkInteriorShootStatus()
-                            viewModel.isCameraButtonClickable = false
-                            dismiss()
-                        }else{
-                            if (viewModel.isReclick){
-                                viewModel.shootNumber.value = viewModel.shootNumber.value
-                            }else{
-                                viewModel.shootNumber.value = viewModel.shootNumber.value?.plus(1)
-                            }
-
-                            dismiss()
-                        }
+                        dismiss()
+//
+//                        if (viewModel.shootNumber.value  == viewModel.exterirorAngles.value?.minus(1)){
+//                            checkInteriorShootStatus()
+//                            viewModel.isCameraButtonClickable = false
+//                            dismiss()
+//                        }else{
+//                            if (viewModel.isReclick){
+//                                viewModel.shootNumber.value = viewModel.shootNumber.value
+//                            }else{
+//                                viewModel.shootNumber.value = viewModel.shootNumber.value?.plus(1)
+//                            }
+//                            dismiss()
+//                        }
                     }
 
                     "Interior" -> {
@@ -197,9 +198,8 @@ class ConfirmReshootDialog : BaseDialogFragment<ShootViewModel, DialogConfirmRes
                 is Resource.Success -> {
                     val uri = viewModel.shootData.value?.capturedImage
 
-
                     if (viewModel.categoryDetails.value?.imageType == "Exterior"){
-                        val overlay = it.value.data[viewModel.shootNumber.value!!].display_thumbnail
+                        //val overlay = it.value.data[viewModel.shootNumber.value!!].display_thumbnail
 
                         Glide.with(requireContext())
                             .load(uri)
@@ -216,7 +216,7 @@ class ConfirmReshootDialog : BaseDialogFragment<ShootViewModel, DialogConfirmRes
                         if (getString(R.string.app_name) == AppConstants.KARVI)
                             binding.ivCapturedOverlay.visibility = View.GONE
                         else
-                            setOverlay(binding.ivCaptured2,overlay)
+                            setOverlay(binding.ivCaptured2,viewModel.getOverlay())
 
                     }else{
                         binding.llImperfactions.setBackgroundColor(ContextCompat.getColor(requireContext(),R.color.white))

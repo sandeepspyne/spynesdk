@@ -79,9 +79,7 @@ class ImageUploader(val context: Context,
                        return@launch
                    }
 
-                   if ((image.isUploaded == 0 && imageType == AppConstants.REGULAR)
-                       ||
-                       (image.isUploaded == -1 && imageType == AppConstants.SKIPPED)){
+                   if (image.isUploaded == 0 || image.isUploaded == -1){
 
                        if (!image.preSignedUrl.isNullOrEmpty()){
                            uploadImageToGcp(image,imageType,retryCount)

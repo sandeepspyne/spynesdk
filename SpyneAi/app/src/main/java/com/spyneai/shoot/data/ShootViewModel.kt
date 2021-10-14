@@ -133,7 +133,11 @@ class ShootViewModel : ViewModel() {
 
     val subCategoryId: MutableLiveData<String> = MutableLiveData()
     val exterirorAngles: MutableLiveData<Int> = MutableLiveData()
-    val shootNumber: MutableLiveData<Int> = MutableLiveData()
+
+    var currentShootNumber = 0
+
+    //val shootNumber: MutableLiveData<Int> = MutableLiveData()
+    var currentShoot = 0
     val reShootNumber: MutableLiveData<Int> = MutableLiveData()
     val shootData: MutableLiveData<ShootData> = MutableLiveData()
     val reshootCompleted: MutableLiveData<Boolean> = MutableLiveData()
@@ -417,7 +421,7 @@ class ShootViewModel : ViewModel() {
         val filePrefix = FileNameManager().getFileName(
             fromDrafts,
             if (categoryDetails.value?.imageType == "Misc") "Focus Shoot" else categoryDetails.value?.imageType!!,
-            if (isReshoot) reShootNumber.value!! else shootNumber.value!!,
+            currentShootNumber,
             sequence,
             shootList.value,
             interiorSize,
@@ -431,7 +435,7 @@ class ShootViewModel : ViewModel() {
         return SequeneNumberManager().getSequenceNumber(
             fromDrafts,
             if (categoryDetails.value?.imageType == "Misc") "Focus Shoot" else categoryDetails.value?.imageType!!,
-            if (isReshoot) reShootNumber.value!! else shootNumber.value!!,
+            currentShootNumber,
             shootList.value?.size!!,
             exteriorSize,
             interiorSize,

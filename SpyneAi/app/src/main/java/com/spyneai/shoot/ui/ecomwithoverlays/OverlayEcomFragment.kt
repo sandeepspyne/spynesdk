@@ -241,87 +241,87 @@ class     OverlayEcomFragment : BaseFragment<ShootViewModel, FragmentOverlayEcom
     private fun initProgressFrames(frames: Int) {
 
       //  update this shoot number
-        if (viewModel.fromDrafts)
-            viewModel.shootNumber.value = requireActivity().intent.getIntExtra(AppConstants.EXTERIOR_SIZE,0)
-        else
-            viewModel.shootNumber.value = 0
-
-        progressAdapter = ShootProgressAdapter(
-            requireContext(),
-            viewModel.getShootProgressList(frames, viewModel.shootNumber.value!!))
-
-        binding.rvProgress.apply {
-            this?.layoutManager =
-                LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
-            this?.adapter = progressAdapter
-        }
-
-        viewModel.shootNumber.observe(viewLifecycleOwner, {
-
-            binding.tvShoot?.text = "${1+ viewModel.shootNumber.value!!}/"+frames
-
-            viewModel.overlaysResponse.observe(viewLifecycleOwner,{
-                when(it){
-                    is Resource.Success -> {
-                        val name = it.value.data[viewModel.shootNumber.value!!].display_name
-                        val overlay = it.value.data[viewModel.shootNumber.value!!].display_thumbnail
-
-                        val requestOptions = RequestOptions()
-                            .diskCacheStrategy(DiskCacheStrategy.ALL)
-                            .signature(ObjectKey(overlay))
-
-                        Glide.with(requireContext())
-                            .load(overlay)
-                            .addListener(object : RequestListener<Drawable> {
-                                override fun onLoadFailed(
-                                    e: GlideException?,
-                                    model: Any?,
-                                    target: Target<Drawable>?,
-                                    isFirstResource: Boolean
-                                ): Boolean {
-                                    val properties =  Properties()
-                                    properties.put("category",viewModel.categoryDetails.value?.categoryName)
-                                    properties.put("error", e?.localizedMessage)
-
-                                    requireContext().captureEvent(
-                                        Events.OVERLAY_LOAD_FIALED,
-                                        properties
-                                    )
-
-                                    return false
-                                }
-
-                                override fun onResourceReady(
-                                    resource: Drawable?,
-                                    model: Any?,
-                                    target: Target<Drawable>?,
-                                    dataSource: DataSource?,
-                                    isFirstResource: Boolean
-                                ): Boolean {
-                                    val properties =  Properties()
-                                    properties.put("category",viewModel.categoryDetails.value?.categoryName)
-
-                                    requireContext().captureEvent(
-                                        Events.OVERLAY_LOADED,
-                                        properties
-                                    )
-
-                                    getPreviewDimensions(binding.imgOverlay!!)
-                                    return false
-                                }
-
-                            })
-                            .apply(requestOptions)
-                            .into(binding.imgOverlay!!)
-
-                    }
-                    else -> { }
-                }
-            })
-
-            progressAdapter.updateList(viewModel.shootNumber.value!!)
-
-        })
+//        if (viewModel.fromDrafts)
+//            viewModel.shootNumber.value = requireActivity().intent.getIntExtra(AppConstants.EXTERIOR_SIZE,0)
+//        else
+//            viewModel.shootNumber.value = 0
+//
+//        progressAdapter = ShootProgressAdapter(
+//            requireContext(),
+//            viewModel.getShootProgressList(frames, viewModel.shootNumber.value!!))
+//
+//        binding.rvProgress.apply {
+//            this?.layoutManager =
+//                LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
+//            this?.adapter = progressAdapter
+//        }
+//
+//        viewModel.shootNumber.observe(viewLifecycleOwner, {
+//
+//            binding.tvShoot?.text = "${1+ viewModel.shootNumber.value!!}/"+frames
+//
+//            viewModel.overlaysResponse.observe(viewLifecycleOwner,{
+//                when(it){
+//                    is Resource.Success -> {
+//                        val name = it.value.data[viewModel.shootNumber.value!!].display_name
+//                        val overlay = it.value.data[viewModel.shootNumber.value!!].display_thumbnail
+//
+//                        val requestOptions = RequestOptions()
+//                            .diskCacheStrategy(DiskCacheStrategy.ALL)
+//                            .signature(ObjectKey(overlay))
+//
+//                        Glide.with(requireContext())
+//                            .load(overlay)
+//                            .addListener(object : RequestListener<Drawable> {
+//                                override fun onLoadFailed(
+//                                    e: GlideException?,
+//                                    model: Any?,
+//                                    target: Target<Drawable>?,
+//                                    isFirstResource: Boolean
+//                                ): Boolean {
+//                                    val properties =  Properties()
+//                                    properties.put("category",viewModel.categoryDetails.value?.categoryName)
+//                                    properties.put("error", e?.localizedMessage)
+//
+//                                    requireContext().captureEvent(
+//                                        Events.OVERLAY_LOAD_FIALED,
+//                                        properties
+//                                    )
+//
+//                                    return false
+//                                }
+//
+//                                override fun onResourceReady(
+//                                    resource: Drawable?,
+//                                    model: Any?,
+//                                    target: Target<Drawable>?,
+//                                    dataSource: DataSource?,
+//                                    isFirstResource: Boolean
+//                                ): Boolean {
+//                                    val properties =  Properties()
+//                                    properties.put("category",viewModel.categoryDetails.value?.categoryName)
+//
+//                                    requireContext().captureEvent(
+//                                        Events.OVERLAY_LOADED,
+//                                        properties
+//                                    )
+//
+//                                    getPreviewDimensions(binding.imgOverlay!!)
+//                                    return false
+//                                }
+//
+//                            })
+//                            .apply(requestOptions)
+//                            .into(binding.imgOverlay!!)
+//
+//                    }
+//                    else -> { }
+//                }
+//            })
+//
+//            progressAdapter.updateList(viewModel.shootNumber.value!!)
+//
+//        })
 
     }
 

@@ -21,7 +21,6 @@ import com.spyneai.base.network.Resource
 import com.spyneai.dashboard.response.NewSubCatResponse
 import com.spyneai.dashboard.ui.base.ViewModelFactory
 import com.spyneai.needs.AppConstants
-import com.spyneai.needs.Utilities
 import com.spyneai.setLocale
 import com.spyneai.shoot.data.ShootViewModel
 import com.spyneai.shoot.data.model.CategoryDetails
@@ -41,7 +40,7 @@ class ShootActivity : AppCompatActivity() {
 
     lateinit var cameraFragment: CameraFragment
     lateinit var draftShootFragment: DraftShootFragment
-    lateinit var overlaysFragment: FragmentOverlaysVTwo
+    lateinit var overlays: OverlaysFragment
     lateinit var gridEcomFragment: GridEcomFragment
     lateinit var overlayEcomFragment: OverlayEcomFragment
     lateinit var skuDetailFragment: SkuDetailFragment
@@ -84,7 +83,7 @@ class ShootActivity : AppCompatActivity() {
         shootViewModel.categoryDetails.value = categoryDetails
 
         cameraFragment = CameraFragment()
-        overlaysFragment = FragmentOverlaysVTwo()
+        overlays = OverlaysFragment()
         draftShootFragment = DraftShootFragment()
 
         gridEcomFragment = GridEcomFragment()
@@ -103,7 +102,7 @@ class ShootActivity : AppCompatActivity() {
                         .add(R.id.flCamerFragment, cameraFragment)
 
                     if (!intent.getBooleanExtra(AppConstants.FROM_DRAFTS,false)){
-                        transaction.add(R.id.flCamerFragment, overlaysFragment)
+                        transaction.add(R.id.flCamerFragment, overlays)
                         transaction.add(R.id.flCamerFragment,CreateProjectFragment())
                     }else
                         transaction.add(R.id.flCamerFragment, draftShootFragment)
@@ -116,7 +115,7 @@ class ShootActivity : AppCompatActivity() {
                 if(savedInstanceState == null) { // initial transaction should be wrapped like this
                     supportFragmentManager.beginTransaction()
                         .add(R.id.flCamerFragment, cameraFragment)
-                        .add(R.id.flCamerFragment, overlaysFragment)
+                        .add(R.id.flCamerFragment, overlays)
                         .commitAllowingStateLoss()
                 }
             }
