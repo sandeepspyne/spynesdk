@@ -286,7 +286,7 @@ class ImageLocalRepository {
             Images.COLUMN_NAME_IS_RESHOOT)
 
         // Filter results WHERE "title" = 'My Title'
-        val selection = "${Images.COLUMN_NAME_IS_UPLOADED} = ? OR ${Images.COLUMN_NAME_IS_STATUS_UPDATED} = ?"
+        val selection = "${Images.COLUMN_NAME_IS_UPLOADED} = ? AND ${Images.COLUMN_NAME_IS_STATUS_UPDATED} = ?"
         val projectSelectionArgs = arrayOf(status,"0")
 
         // How you want the results sorted in the resulting Cursor
