@@ -540,9 +540,7 @@ class ShootViewModel : ViewModel() {
                             sequence = i
 
                             notifyItemChanged.value = i
-                            //overlaysAdapter.notifyItemChanged(position.plus(1))
-                            //binding.rvSubcategories.scrollToPosition(position)
-                            scrollView.value = i.plus(2)
+                            scrollView.value = i
                             break
                         }
                     }
@@ -555,20 +553,10 @@ class ShootViewModel : ViewModel() {
                         if (element != null) {
                             element?.isSelected = true
                             sequence = element?.sequenceNumber!!
-                            //overlaysAdapter.notifyItemChanged(sequence)
                             notifyItemChanged.value = list.indexOf(element)
-                            //binding.rvSubcategories.scrollToPosition(sequence)
-                            scrollView.value = sequence.plus(2)
+                            scrollView.value = sequence
                         }
                     }
-
-//                    list[position.plus(1)].isSelected = true
-//                    sequence = position.plus(1)
-//
-//                    notifyItemChanged.value = position.plus(1)
-//                    //overlaysAdapter.notifyItemChanged(position.plus(1))
-//                    //binding.rvSubcategories.scrollToPosition(position)
-//                    scrollView.value = position.plus(2)
                 } else {
                     val element = list.firstOrNull {
                         !it.isSelected && !it.imageClicked
@@ -577,10 +565,8 @@ class ShootViewModel : ViewModel() {
                     if (element != null) {
                         element?.isSelected = true
                         sequence = element?.sequenceNumber!!
-                        //overlaysAdapter.notifyItemChanged(sequence)
                         notifyItemChanged.value = list.indexOf(element)
-                        //binding.rvSubcategories.scrollToPosition(sequence)
-                        scrollView.value = sequence.plus(2)
+                        scrollView.value = sequence
                     }
                 }
             }
@@ -605,11 +591,8 @@ class ShootViewModel : ViewModel() {
                             foundNext = true
                             list[i].isSelected = true
                             sequence = i
-
                             notifyItemChanged.value = i
-                            //overlaysAdapter.notifyItemChanged(position.plus(1))
-                            //binding.rvSubcategories.scrollToPosition(position)
-                            scrollView.value = i.plus(2)
+                            scrollView.value = i
                             break
                         }
                     }
@@ -622,20 +605,10 @@ class ShootViewModel : ViewModel() {
                         if (element != null) {
                             element?.isSelected = true
                             sequence = element?.sequenceNumber!!
-                            //overlaysAdapter.notifyItemChanged(sequence)
                             notifyItemChanged.value = list.indexOf(element)
-                            //binding.rvSubcategories.scrollToPosition(sequence)
-                            scrollView.value = sequence.plus(2)
+                            scrollView.value = sequence
                         }
                     }
-
-//                    list[position.plus(1)].isSelected = true
-//                    sequence = position.plus(1)
-//
-//                    notifyItemChanged.value = position.plus(1)
-//                    //overlaysAdapter.notifyItemChanged(position.plus(1))
-//                    //binding.rvSubcategories.scrollToPosition(position)
-//                    scrollView.value = position.plus(2)
                 } else {
                     val element = list.firstOrNull {
                         !it.isSelected && !it.imageClicked
@@ -644,10 +617,8 @@ class ShootViewModel : ViewModel() {
                     if (element != null) {
                         element?.isSelected = true
                         sequence = element?.sequenceNumber!!
-                        //overlaysAdapter.notifyItemChanged(sequence)
                         notifyItemChanged.value = list.indexOf(element)
-                        //binding.rvSubcategories.scrollToPosition(sequence)
-                        scrollView.value = sequence.plus(2)
+                        scrollView.value = sequence
                     }
                 }
             }
@@ -674,9 +645,7 @@ class ShootViewModel : ViewModel() {
                             sequence = i
 
                             notifyItemChanged.value = i
-                            //overlaysAdapter.notifyItemChanged(position.plus(1))
-                            //binding.rvSubcategories.scrollToPosition(position)
-                            scrollView.value = i.plus(2)
+                            scrollView.value = i
                             break
                         }
                     }
@@ -689,20 +658,10 @@ class ShootViewModel : ViewModel() {
                         if (element != null) {
                             element?.isSelected = true
                             sequence = element?.sequenceNumber!!
-                            //overlaysAdapter.notifyItemChanged(sequence)
                             notifyItemChanged.value = list.indexOf(element)
-                            //binding.rvSubcategories.scrollToPosition(sequence)
-                            scrollView.value = sequence.plus(2)
+                            scrollView.value = sequence
                         }
                     }
-
-//                    list[position.plus(1)].isSelected = true
-//                    sequence = position.plus(1)
-//
-//                    notifyItemChanged.value = position.plus(1)
-//                    //overlaysAdapter.notifyItemChanged(position.plus(1))
-//                    //binding.rvSubcategories.scrollToPosition(position)
-//                    scrollView.value = position.plus(2)
                 } else {
                     val element = list.firstOrNull {
                         !it.isSelected && !it.imageClicked
@@ -711,10 +670,8 @@ class ShootViewModel : ViewModel() {
                     if (element != null) {
                         element?.isSelected = true
                         sequence = element?.sequenceNumber!!
-                        //overlaysAdapter.notifyItemChanged(sequence)
                         notifyItemChanged.value = list.indexOf(element)
-                        //binding.rvSubcategories.scrollToPosition(sequence)
-                        scrollView.value = sequence.plus(2)
+                        scrollView.value = sequence
                     }
                 }
             }
