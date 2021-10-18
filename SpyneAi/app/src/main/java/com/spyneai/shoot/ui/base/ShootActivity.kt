@@ -72,15 +72,17 @@ class ShootActivity : AppCompatActivity() {
         if (intent.getBooleanExtra(AppConstants.FROM_VIDEO,false))
             setUpVideoShoot()
 
-        val categoryDetails = CategoryDetails()
+        if (shootViewModel.categoryDetails.value == null){
+            val categoryDetails = CategoryDetails()
 
-        categoryDetails.apply {
-            categoryId = intent.getStringExtra(AppConstants.CATEGORY_ID)
-            categoryName = intent.getStringExtra(AppConstants.CATEGORY_NAME)
-            gifList =  intent.getStringExtra(AppConstants.GIF_LIST)
+            categoryDetails.apply {
+                categoryId = intent.getStringExtra(AppConstants.CATEGORY_ID)
+                categoryName = intent.getStringExtra(AppConstants.CATEGORY_NAME)
+                gifList =  intent.getStringExtra(AppConstants.GIF_LIST)
+            }
+
+            shootViewModel.categoryDetails.value = categoryDetails
         }
-
-        shootViewModel.categoryDetails.value = categoryDetails
 
         cameraFragment = CameraFragment()
         overlays = OverlaysFragment()
@@ -250,7 +252,7 @@ class ShootActivity : AppCompatActivity() {
                 // start process activity
                 val processIntent = Intent(this, ProcessActivity::class.java)
                 processIntent.apply {
-                    this.putExtra(AppConstants.CATEGORY_NAME, categoryDetails.categoryName)
+                    this.putExtra(AppConstants.CATEGORY_NAME, intent.getStringExtra(AppConstants.CATEGORY_NAME))
                     this.putExtra("sku_id", shootViewModel.sku.value?.skuId)
                     this.putExtra("project_id", shootViewModel.sku.value?.projectId)
                     this.putExtra("exterior_angles", shootViewModel.exterirorAngles.value)

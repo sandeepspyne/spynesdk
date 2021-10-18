@@ -84,25 +84,25 @@ class DraftShootFragment : BaseFragment<ShootViewModel, FragmentOverlaysV2Bindin
             }
         })
 
-        getSubcategories()
+        observeShootDimesions()
 
-        observerMiscShots()
+        getSubcategories()
+        observeSubcategries()
+
+        observeOverlays()
 
         observeStartInteriorShoot()
 
+        observerMiscShots()
+
         observeStartMiscShoots()
 
-        observeSubcategries()
 
         viewModel.show360InteriorDialog.observe(viewLifecycleOwner,{
             if (it)
                 if (viewModel.interior360Dialog.value == null)
                     ThreeSixtyInteriorHintDialog().show(requireActivity().supportFragmentManager, "ThreeSixtyInteriorHintDialog")
         })
-
-        observeShootDimesions()
-
-        observeOverlays()
 
         viewModel.isSkuCreated.observe(viewLifecycleOwner,{
             initAngles()

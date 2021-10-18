@@ -59,8 +59,6 @@ class ReshootFragment : BaseFragment<ShootViewModel, FragmentReshootBinding>(), 
         binding.apply {
             tvSkuName.text = viewModel.sku.value?.skuName
         }
-       // binding.tvShoot?.text = "Angles 1/${SelectedImagesHelper.selectedImages.length()}"
-
         //observe new image clicked
         viewModel.shootList.observe(viewLifecycleOwner, {
             try {
@@ -167,7 +165,6 @@ class ReshootFragment : BaseFragment<ShootViewModel, FragmentReshootBinding>(), 
                         //set overlays
                         list[index].isSelected = true
                     }
-
 
                     //set recycler view
                     reshootAdapter = ReshootAdapter(
