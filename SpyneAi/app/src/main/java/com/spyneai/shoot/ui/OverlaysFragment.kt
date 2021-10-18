@@ -87,7 +87,6 @@ class OverlaysFragment : BaseFragment<ShootViewModel, FragmentOverlaysV2Binding>
             initAngles()
         })
 
-
         observeShootDimesions()
 
         when(viewModel.categoryDetails.value?.imageType){
@@ -102,6 +101,8 @@ class OverlaysFragment : BaseFragment<ShootViewModel, FragmentOverlaysV2Binding>
             }
 
             "Interior" -> {
+                showViews()
+
                 observeStartInteriorShoot()
 
                 observeStartMiscShoots()
@@ -110,6 +111,8 @@ class OverlaysFragment : BaseFragment<ShootViewModel, FragmentOverlaysV2Binding>
             }
 
             "Focus Shoot" -> {
+                showViews()
+
                 observeStartMiscShoots()
 
                 observerMiscShots()
@@ -554,7 +557,8 @@ class OverlaysFragment : BaseFragment<ShootViewModel, FragmentOverlaysV2Binding>
             overlaysAdapter?.notifyDataSetChanged()
         }
 
-        binding.rvSubcategories.scrollToPosition(index)
+        if (index != 0)
+            binding.rvSubcategories.scrollToPosition(index)
 
         //change image type
         viewModel.categoryDetails.value?.imageType = "Focus Shoot"
