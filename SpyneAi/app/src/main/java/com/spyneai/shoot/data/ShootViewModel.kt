@@ -456,7 +456,7 @@ class ShootViewModel : ViewModel() {
     val onImageConfirmed = MutableLiveData<Boolean>()
 
 
-    fun getCurrentShoot() = shootList.value?.first {
+    fun getCurrentShoot() = shootList.value?.firstOrNull() {
         it.overlayId == overlayId
     }
 
@@ -496,35 +496,49 @@ class ShootViewModel : ViewModel() {
     val scrollView = MutableLiveData<Int>()
 
     fun setSelectedItem(thumbnails: List<Any>) {
-        when (categoryDetails.value?.imageType) {
-            "Exterior" -> {
-                val list = thumbnails as List<OverlaysResponse.Data>
+        if (getCurrentShoot() == null){
+            Log.d(TAG, "setSelectedItem: "+overlayId)
+        }else{
+            when (categoryDetails.value?.imageType) {
+                "Exterior" -> {
+                    val list = thumbnails as List<OverlaysResponse.Data>
 
-                val position = currentShoot
+                    val position = currentShoot
 
-                list[position].isSelected = false
-                list[position].imageClicked = true
-                list[position].imagePath = getCurrentShoot()!!.capturedImage
+                    list[position].isSelected = false
+                    list[position].imageClicked = true
+                    list[position].imagePath = getCurrentShoot()!!.capturedImage
 
-                notifyItemChanged.value = position
+                    notifyItemChanged.value = position
 
-                if (position != list.size.minus(1)) {
-                    var foundNext = false
+                    if (position != list.size.minus(1)) {
+                        var foundNext = false
 
-                    for (i in position..list.size.minus(1)) {
-                        val s = ""
-                        if (!list[i].isSelected && !list[i].imageClicked) {
-                            foundNext = true
-                            list[i].isSelected = true
-                            currentShoot = i
+                        for (i in position..list.size.minus(1)) {
+                            val s = ""
+                            if (!list[i].isSelected && !list[i].imageClicked) {
+                                foundNext = true
+                                list[i].isSelected = true
+                                currentShoot = i
 
-                            notifyItemChanged.value = i
-                            scrollView.value = i
-                            break
+                                notifyItemChanged.value = i
+                                scrollView.value = i
+                                break
+                            }
                         }
-                    }
 
-                    if (!foundNext) {
+                        if (!foundNext) {
+                            val element = list.firstOrNull {
+                                !it.isSelected && !it.imageClicked
+                            }
+
+                            if (element != null) {
+                                element?.isSelected = true
+                                notifyItemChanged.value = list.indexOf(element)
+                                scrollView.value = element?.sequenceNumber!!
+                            }
+                        }
+                    } else {
                         val element = list.firstOrNull {
                             !it.isSelected && !it.imageClicked
                         }
@@ -534,45 +548,45 @@ class ShootViewModel : ViewModel() {
                             notifyItemChanged.value = list.indexOf(element)
                             scrollView.value = element?.sequenceNumber!!
                         }
-                    }
-                } else {
-                    val element = list.firstOrNull {
-                        !it.isSelected && !it.imageClicked
-                    }
-
-                    if (element != null) {
-                        element?.isSelected = true
-                        notifyItemChanged.value = list.indexOf(element)
-                        scrollView.value = element?.sequenceNumber!!
                     }
                 }
-            }
 
-            "Interior" -> {
-                val list = thumbnails as List<NewSubCatResponse.Interior>
+                "Interior" -> {
+                    val list = thumbnails as List<NewSubCatResponse.Interior>
 
-                val position = currentShoot
+                    val position = currentShoot
 
-                list[position].isSelected = false
-                list[position].imageClicked = true
-                list[position].imagePath = getCurrentShoot()!!.capturedImage
+                    list[position].isSelected = false
+                    list[position].imageClicked = true
+                    list[position].imagePath = getCurrentShoot()!!.capturedImage
 
-                notifyItemChanged.value = position
+                    notifyItemChanged.value = position
 
-                if (position != list.size.minus(1)) {
-                    var foundNext = false
+                    if (position != list.size.minus(1)) {
+                        var foundNext = false
 
-                    for (i in position..list.size.minus(1)) {
-                        if (!list[i].isSelected && !list[i].imageClicked) {
-                            foundNext = true
-                            list[i].isSelected = true
-                            notifyItemChanged.value = i
-                            scrollView.value = i
-                            break
+                        for (i in position..list.size.minus(1)) {
+                            if (!list[i].isSelected && !list[i].imageClicked) {
+                                foundNext = true
+                                list[i].isSelected = true
+                                notifyItemChanged.value = i
+                                scrollView.value = i
+                                break
+                            }
                         }
-                    }
 
-                    if (!foundNext) {
+                        if (!foundNext) {
+                            val element = list.firstOrNull {
+                                !it.isSelected && !it.imageClicked
+                            }
+
+                            if (element != null) {
+                                element?.isSelected = true
+                                notifyItemChanged.value = list.indexOf(element)
+                                scrollView.value = element?.sequenceNumber!!
+                            }
+                        }
+                    } else {
                         val element = list.firstOrNull {
                             !it.isSelected && !it.imageClicked
                         }
@@ -582,46 +596,46 @@ class ShootViewModel : ViewModel() {
                             notifyItemChanged.value = list.indexOf(element)
                             scrollView.value = element?.sequenceNumber!!
                         }
-                    }
-                } else {
-                    val element = list.firstOrNull {
-                        !it.isSelected && !it.imageClicked
-                    }
-
-                    if (element != null) {
-                        element?.isSelected = true
-                        notifyItemChanged.value = list.indexOf(element)
-                        scrollView.value = element?.sequenceNumber!!
                     }
                 }
-            }
 
-            "Focus Shoot" -> {
-                val list = thumbnails as List<NewSubCatResponse.Miscellaneous>
+                "Focus Shoot" -> {
+                    val list = thumbnails as List<NewSubCatResponse.Miscellaneous>
 
-                val position = currentShoot
+                    val position = currentShoot
 
-                list[position].isSelected = false
-                list[position].imageClicked = true
-                list[position].imagePath = getCurrentShoot()!!.capturedImage
+                    list[position].isSelected = false
+                    list[position].imageClicked = true
+                    list[position].imagePath = getCurrentShoot()!!.capturedImage
 
-                notifyItemChanged.value = position
+                    notifyItemChanged.value = position
 
-                if (position != list.size.minus(1)) {
-                    var foundNext = false
+                    if (position != list.size.minus(1)) {
+                        var foundNext = false
 
-                    for (i in position..list.size.minus(1)) {
-                        val s = ""
-                        if (!list[i].isSelected && !list[i].imageClicked) {
-                            foundNext = true
-                            list[i].isSelected = true
-                            notifyItemChanged.value = i
-                            scrollView.value = i
-                            break
+                        for (i in position..list.size.minus(1)) {
+                            val s = ""
+                            if (!list[i].isSelected && !list[i].imageClicked) {
+                                foundNext = true
+                                list[i].isSelected = true
+                                notifyItemChanged.value = i
+                                scrollView.value = i
+                                break
+                            }
                         }
-                    }
 
-                    if (!foundNext) {
+                        if (!foundNext) {
+                            val element = list.firstOrNull {
+                                !it.isSelected && !it.imageClicked
+                            }
+
+                            if (element != null) {
+                                element?.isSelected = true
+                                notifyItemChanged.value = list.indexOf(element)
+                                scrollView.value = element?.sequenceNumber!!
+                            }
+                        }
+                    } else {
                         val element = list.firstOrNull {
                             !it.isSelected && !it.imageClicked
                         }
@@ -631,16 +645,6 @@ class ShootViewModel : ViewModel() {
                             notifyItemChanged.value = list.indexOf(element)
                             scrollView.value = element?.sequenceNumber!!
                         }
-                    }
-                } else {
-                    val element = list.firstOrNull {
-                        !it.isSelected && !it.imageClicked
-                    }
-
-                    if (element != null) {
-                        element?.isSelected = true
-                        notifyItemChanged.value = list.indexOf(element)
-                        scrollView.value = element?.sequenceNumber!!
                     }
                 }
             }
@@ -654,6 +658,7 @@ class ShootViewModel : ViewModel() {
         _reshootOverlaysRes.value = Resource.Loading
         _reshootOverlaysRes.value = repository.getOverlayIds(ids)
     }
+
 
     var gifDialogShown = false
     var createProjectDialogShown = false

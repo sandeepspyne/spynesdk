@@ -105,6 +105,7 @@ class OverlaysFragment : BaseFragment<ShootViewModel, FragmentOverlaysV2Binding>
 
         viewModel.onImageConfirmed.observe(viewLifecycleOwner,{
             if (viewModel.shootList.value != null){
+                Log.d(TAG, "onViewCreated: "+viewModel.overlayId)
                 viewModel.setSelectedItem(overlaysAdapter.listItems)
             }
 
@@ -297,19 +298,41 @@ class OverlaysFragment : BaseFragment<ShootViewModel, FragmentOverlaysV2Binding>
                 is Resource.Success -> {
                     Utilities.hideProgressDialog()
 
-
                     //pre load overlays
-                    val overlaysList = it.value.data.map { it.display_thumbnail }
+                    val thumbNailList = it.value.data.map { it.display_thumbnail }
 
                     viewLifecycleOwner.lifecycleScope.launch {
-                        viewModel.preloadOverlays(overlaysList)
+                        viewModel.preloadOverlays(thumbNailList)
                     }
 
-                    //set overlays
-                    it.value.data[0].isSelected = true
-                    overlaysAdapter = OverlaysAdapter(it.value.data,
+                    val overlaysList = it.value.data
+
+                    if (viewModel.shootList.value != null){
+                        overlaysList.forEach { overlay ->
+                            val element = viewModel.shootList.value!!.firstOrNull {
+                                it.overlayId == overlay.id
+                            }
+
+                            if (element != null){
+                                overlay.imageClicked = true
+                                overlay.imagePath = element.capturedImage
+                            }
+                        }
+
+                        overlaysList.first {
+                            !it.isSelected && !it.imageClicked
+                        }.isSelected = true
+
+                    }else{
+                        //set overlays
+                        overlaysList[0].isSelected = true
+                    }
+
+
+                    overlaysAdapter = OverlaysAdapter(overlaysList,
                         this@OverlaysFragment,
                         this@OverlaysFragment)
+
                     viewModel.displayName = it.value.data[0].display_name
                     viewModel.displayThumbanil = it.value.data[0].display_thumbnail
 
@@ -372,7 +395,28 @@ class OverlaysFragment : BaseFragment<ShootViewModel, FragmentOverlaysV2Binding>
         binding.rvSubcategories.scrollToPosition(0)
 
         val list = subCatResponse.interior
-        list[0].isSelected = true
+        if (viewModel.shootList.value != null){
+            list.forEach { overlay ->
+                val element = viewModel.shootList.value!!.firstOrNull {
+                    it.overlayId == overlay.overlayId
+                }
+
+                if (element != null){
+                    overlay.imageClicked = true
+                    overlay.imagePath = element.capturedImage
+                }
+            }
+
+            list.first {
+                !it.isSelected && !it.imageClicked
+            }.isSelected = true
+
+        }else{
+            //set overlays
+            list[0].isSelected = true
+        }
+
+
 
         viewModel.displayName = list[0].display_name
         viewModel.displayThumbanil = list[0].display_thumbnail
@@ -423,7 +467,27 @@ class OverlaysFragment : BaseFragment<ShootViewModel, FragmentOverlaysV2Binding>
 
 
         val list = subCatResponse.miscellaneous
-        list[0].isSelected = true
+
+        if (viewModel.shootList.value != null){
+            list.forEach { overlay ->
+                val element = viewModel.shootList.value!!.firstOrNull {
+                    it.overlayId == overlay.overlayId
+                }
+
+                if (element != null){
+                    overlay.imageClicked = true
+                    overlay.imagePath = element.capturedImage
+                }
+            }
+
+            list.first {
+                !it.isSelected && !it.imageClicked
+            }.isSelected = true
+
+        }else{
+            //set overlays
+            list[0].isSelected = true
+        }
 
         viewModel.displayName = list[0].display_name
         viewModel.displayThumbanil = list[0].display_thumbnail

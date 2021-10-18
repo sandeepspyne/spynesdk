@@ -448,9 +448,28 @@ class DraftShootFragment : BaseFragment<ShootViewModel, FragmentOverlaysV2Bindin
                         }
                     }
 
+                    if (viewModel.shootList.value != null){
+                        list.forEach { overlay ->
+                            val element = viewModel.shootList.value!!.firstOrNull {
+                                it.overlayId == overlay.id
+                            }
+
+                            if (element != null){
+                                overlay.imageClicked = true
+                                overlay.imagePath = element.capturedImage
+                            }
+                        }
+
+                        list.first {
+                            !it.isSelected && !it.imageClicked
+                        }.isSelected = true
+
+                    }
+
                     val notSelected = list.firstOrNull {
                         !it.isSelected && !it.imageClicked
                     }
+
                     var index = -1
                     if (notSelected != null){
                         index = list.indexOf(notSelected)
@@ -532,6 +551,24 @@ class DraftShootFragment : BaseFragment<ShootViewModel, FragmentOverlaysV2Bindin
                 list[index].imageClicked = true
                 list[index].imagePath = selctedDraftList.get(data.overlayId.toString())!!
             }
+        }
+
+        if (viewModel.shootList.value != null){
+            list.forEach { overlay ->
+                val element = viewModel.shootList.value!!.firstOrNull {
+                    it.overlayId == overlay.overlayId
+                }
+
+                if (element != null){
+                    overlay.imageClicked = true
+                    overlay.imagePath = element.capturedImage
+                }
+            }
+
+            list.first {
+                !it.isSelected && !it.imageClicked
+            }.isSelected = true
+
         }
 
         val notSelected = list.firstOrNull {
@@ -628,6 +665,24 @@ class DraftShootFragment : BaseFragment<ShootViewModel, FragmentOverlaysV2Bindin
                 list[index].imageClicked = true
                 list[index].imagePath = selctedDraftList.get(data.overlayId.toString())!!
             }
+        }
+
+        if (viewModel.shootList.value != null){
+            list.forEach { overlay ->
+                val element = viewModel.shootList.value!!.firstOrNull {
+                    it.overlayId == overlay.overlayId
+                }
+
+                if (element != null){
+                    overlay.imageClicked = true
+                    overlay.imagePath = element.capturedImage
+                }
+            }
+
+            list.first {
+                !it.isSelected && !it.imageClicked
+            }.isSelected = true
+
         }
 
         val notSelected = list.firstOrNull {

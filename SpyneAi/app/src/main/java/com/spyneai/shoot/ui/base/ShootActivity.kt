@@ -353,7 +353,9 @@ class ShootActivity : AppCompatActivity() {
 
     override fun onStart() {
         super.onStart()
-        shoot("onStart called(shhot activity)")
+        Log.d(TAG, "onStart: "+shootViewModel.overlayId)
+        Log.e(TAG, "onStart: "+shootViewModel.overlayId )
+        shoot("onStart called(shhot activity)"+shootViewModel.overlayId)
     }
 
     override fun onResume() {

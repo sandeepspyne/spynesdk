@@ -34,11 +34,16 @@ class SubCategoryAndAngleFragment : BaseFragment<ShootViewModel,FragmentSelectSu
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        viewModel.getSubCategories.observe(viewLifecycleOwner,{
-            getSubcategories()
-        })
+        if (viewModel.isSkuCreated.value == null){
+            viewModel.getSubCategories.observe(viewLifecycleOwner,{
+                getSubcategories()
+            })
 
-        observeSubcategories()
+            observeSubcategories()
+        }else {
+            hideViews()
+        }
+
     }
 
     override fun onResume() {
@@ -104,13 +109,8 @@ class SubCategoryAndAngleFragment : BaseFragment<ShootViewModel,FragmentSelectSu
     override fun onItemClick(view: View, position: Int, data: Any?) {
         when(data){
             is NewSubCatResponse.Data -> {
-                binding.clRoot.setBackgroundColor(ContextCompat.getColor(requireContext(),R.color.transparent))
 
-                binding.apply {
-                    ivArrow.visibility = View.GONE
-                    tvDescription.visibility = View.INVISIBLE
-                    rv.visibility = View.INVISIBLE
-                }
+               hideViews()
 
                 viewModel.subCategory.value = data
                 if (getString(R.string.app_name) == AppConstants.KARVI){
@@ -123,6 +123,19 @@ class SubCategoryAndAngleFragment : BaseFragment<ShootViewModel,FragmentSelectSu
                 }
             }
         }
+    }
+
+    private fun hideViews() {
+        binding.clRoot.setBackgroundColor(ContextCompat.getColor(requireContext(),R.color.transparent))
+
+        binding.apply {
+            shimmer.stopShimmer()
+            shimmer.visibility = View.INVISIBLE
+            ivArrow.visibility = View.GONE
+            tvDescription.visibility = View.INVISIBLE
+            rv.visibility = View.INVISIBLE
+        }
+
     }
 
     private fun selectAngles() {

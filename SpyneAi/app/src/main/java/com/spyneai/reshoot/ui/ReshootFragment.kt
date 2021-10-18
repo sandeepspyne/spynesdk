@@ -122,7 +122,6 @@ class ReshootFragment : BaseFragment<ShootViewModel, FragmentReshootBinding>(), 
                 }
 
                 val reshootList = reshootAdapter?.listItems as List<ReshootOverlaysRes.Data>
-
                 viewModel.allReshootClicked = reshootList.all { it.imageClicked }
             }
         })
@@ -143,7 +142,28 @@ class ReshootFragment : BaseFragment<ShootViewModel, FragmentReshootBinding>(), 
                 is Resource.Success -> {
                     Utilities.hideProgressDialog()
                     val list = it.value.data
-                    list[0].isSelected = true
+
+                    if (viewModel.shootList.value != null){
+                        list.forEach { overlay ->
+                            val element = viewModel.shootList.value!!.firstOrNull {
+                                it.overlayId == overlay.id
+                            }
+
+                            if (element != null){
+                                overlay.imageClicked = true
+                                overlay.imagePath = element.capturedImage
+                            }
+                        }
+
+                        list.first {
+                            !it.isSelected && !it.imageClicked
+                        }.isSelected = true
+
+                    }else{
+                        //set overlays
+                        list[0].isSelected = true
+                    }
+
 
                     //set recycler view
                     reshootAdapter = ReshootAdapter(
