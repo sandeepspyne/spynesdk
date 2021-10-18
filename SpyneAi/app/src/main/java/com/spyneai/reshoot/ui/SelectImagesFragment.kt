@@ -52,6 +52,10 @@ class SelectImagesFragment : BaseFragment<ProcessedViewModel,FragmentSelectImage
 
         getImages()
 
+        binding.ivBackShowImages.setOnClickListener {
+            requireActivity().onBackPressed()
+        }
+
         binding.btnReshoot.setOnClickListener {
             if (allPermissionsGranted()) {
                 onPermissionGranted()
