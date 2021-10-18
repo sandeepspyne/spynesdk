@@ -58,7 +58,7 @@
     <string name="footwear">Calzature</string>
     <string name="automobile">Autovetture:</string>
     <string name="home">Home</string>
-    <string name="logout">Logout</string>
+    <string name="logout">disconnettersi</string>
     <string name="dealership">Logo della nave del rivenditore</string>
     <string name="no_completed">Gli ordini completati\nappariranno qui</string>
     <string name="no_ongoing">Gli ordini in corso\nappariranno qui</string>
