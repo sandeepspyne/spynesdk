@@ -306,6 +306,7 @@ class OverlaysFragment : BaseFragment<ShootViewModel, FragmentOverlaysV2Binding>
                     }
 
                     val overlaysList = it.value.data
+                    var index = 0
 
                     if (viewModel.shootList.value != null){
                         overlaysList.forEach { overlay ->
@@ -319,13 +320,20 @@ class OverlaysFragment : BaseFragment<ShootViewModel, FragmentOverlaysV2Binding>
                             }
                         }
 
-                        overlaysList.first {
+                        val element = overlaysList.first {
                             !it.isSelected && !it.imageClicked
-                        }.isSelected = true
+                        }
 
+                        element.isSelected = true
+                        viewModel.displayName = element.display_name
+                        viewModel.displayThumbanil = element.display_thumbnail
+
+                        index = overlaysList.indexOf(element)
                     }else{
                         //set overlays
                         overlaysList[0].isSelected = true
+                        viewModel.displayName = it.value.data[0].display_name
+                        viewModel.displayThumbanil = it.value.data[0].display_thumbnail
                     }
 
 
@@ -333,14 +341,13 @@ class OverlaysFragment : BaseFragment<ShootViewModel, FragmentOverlaysV2Binding>
                         this@OverlaysFragment,
                         this@OverlaysFragment)
 
-                    viewModel.displayName = it.value.data[0].display_name
-                    viewModel.displayThumbanil = it.value.data[0].display_thumbnail
-
                     binding.rvSubcategories.apply {
                         visibility = View.VISIBLE
                         layoutManager = LinearLayoutManager(requireContext(),LinearLayoutManager.VERTICAL,false)
                         adapter = overlaysAdapter
                     }
+
+                    binding.rvSubcategories.scrollToPosition(index)
 
                     requireContext().captureEvent(
                         Events.GET_OVERLAYS,
@@ -386,15 +393,11 @@ class OverlaysFragment : BaseFragment<ShootViewModel, FragmentOverlaysV2Binding>
 
         val interiorList = subCatResponse.interior as ArrayList<NewSubCatResponse.Interior>
 
-        val myInteriorShootList = viewModel.shootList.value?.filter {
-            it.image_category == "Interior"
-        }
-
-
         viewModel.interiorAngles.value = interiorList.size
         binding.rvSubcategories.scrollToPosition(0)
 
         val list = subCatResponse.interior
+        var index = 0
         if (viewModel.shootList.value != null){
             list.forEach { overlay ->
                 val element = viewModel.shootList.value!!.firstOrNull {
@@ -407,22 +410,23 @@ class OverlaysFragment : BaseFragment<ShootViewModel, FragmentOverlaysV2Binding>
                 }
             }
 
-            list.first {
+            var element = list.first {
                 !it.isSelected && !it.imageClicked
-            }.isSelected = true
+            }
 
+            element.isSelected = true
+            index = list.indexOf(element)
         }else{
             //set overlays
-            list[0].isSelected = true
+            list[index].isSelected = true
         }
 
-
-
-        viewModel.displayName = list[0].display_name
-        viewModel.displayThumbanil = list[0].display_thumbnail
+        viewModel.displayName = list[index].display_name
+        viewModel.displayThumbanil = list[index].display_thumbnail
 
         overlaysAdapter.listItems = list
         overlaysAdapter.notifyDataSetChanged()
+        binding.rvSubcategories.scrollToPosition(index)
 
         //change image type
         viewModel.categoryDetails.value?.imageType = "Interior"
@@ -461,12 +465,9 @@ class OverlaysFragment : BaseFragment<ShootViewModel, FragmentOverlaysV2Binding>
         viewModel.miscAngles.value =  subCatResponse.miscellaneous.size
         binding.rvSubcategories.scrollToPosition(0)
 
-        val myMiscShootList = viewModel.shootList.value?.filter {
-            it.image_category == "Focus Shoot"
-        }
-
 
         val list = subCatResponse.miscellaneous
+        var index = 0
 
         if (viewModel.shootList.value != null){
             list.forEach { overlay ->
@@ -480,20 +481,24 @@ class OverlaysFragment : BaseFragment<ShootViewModel, FragmentOverlaysV2Binding>
                 }
             }
 
-            list.first {
+            val element = list.first {
                 !it.isSelected && !it.imageClicked
-            }.isSelected = true
+            }
+
+            element.isSelected = true
+            index = list.indexOf(element)
 
         }else{
             //set overlays
-            list[0].isSelected = true
+            list[index].isSelected = true
         }
 
-        viewModel.displayName = list[0].display_name
-        viewModel.displayThumbanil = list[0].display_thumbnail
+        viewModel.displayName = list[index].display_name
+        viewModel.displayThumbanil = list[index].display_thumbnail
 
         overlaysAdapter.listItems = list
         overlaysAdapter.notifyDataSetChanged()
+        binding.rvSubcategories.scrollToPosition(index)
 
         //change image type
         viewModel.categoryDetails.value?.imageType = "Focus Shoot"

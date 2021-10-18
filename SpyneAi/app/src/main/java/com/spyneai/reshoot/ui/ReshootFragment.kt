@@ -142,6 +142,7 @@ class ReshootFragment : BaseFragment<ShootViewModel, FragmentReshootBinding>(), 
                 is Resource.Success -> {
                     Utilities.hideProgressDialog()
                     val list = it.value.data
+                    var index = 0
 
                     if (viewModel.shootList.value != null){
                         list.forEach { overlay ->
@@ -155,13 +156,16 @@ class ReshootFragment : BaseFragment<ShootViewModel, FragmentReshootBinding>(), 
                             }
                         }
 
-                        list.first {
+                        val element = list.first {
                             !it.isSelected && !it.imageClicked
-                        }.isSelected = true
+                        }
+
+                        element.isSelected = true
+                        index = list.indexOf(element)
 
                     }else{
                         //set overlays
-                        list[0].isSelected = true
+                        list[index].isSelected = true
                     }
 
 
@@ -179,6 +183,7 @@ class ReshootFragment : BaseFragment<ShootViewModel, FragmentReshootBinding>(), 
                             false
                         )
                         adapter = reshootAdapter
+                        scrollToPosition(index)
                     }
                 }
 

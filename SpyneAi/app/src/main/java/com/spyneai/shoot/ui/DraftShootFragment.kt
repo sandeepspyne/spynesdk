@@ -439,6 +439,7 @@ class DraftShootFragment : BaseFragment<ShootViewModel, FragmentOverlaysV2Bindin
                     }
 
                     val selctedDraftList = DraftClickedImages.clickedImagesMap
+
                     val list = it.value.data
                     //set overlays
                     list.forEachIndexed { index, data ->
@@ -459,11 +460,6 @@ class DraftShootFragment : BaseFragment<ShootViewModel, FragmentOverlaysV2Bindin
                                 overlay.imagePath = element.capturedImage
                             }
                         }
-
-                        list.first {
-                            !it.isSelected && !it.imageClicked
-                        }.isSelected = true
-
                     }
 
                     val notSelected = list.firstOrNull {
@@ -564,11 +560,6 @@ class DraftShootFragment : BaseFragment<ShootViewModel, FragmentOverlaysV2Bindin
                     overlay.imagePath = element.capturedImage
                 }
             }
-
-            list.first {
-                !it.isSelected && !it.imageClicked
-            }.isSelected = true
-
         }
 
         val notSelected = list.firstOrNull {
@@ -678,11 +669,6 @@ class DraftShootFragment : BaseFragment<ShootViewModel, FragmentOverlaysV2Bindin
                     overlay.imagePath = element.capturedImage
                 }
             }
-
-            list.first {
-                !it.isSelected && !it.imageClicked
-            }.isSelected = true
-
         }
 
         val notSelected = list.firstOrNull {
