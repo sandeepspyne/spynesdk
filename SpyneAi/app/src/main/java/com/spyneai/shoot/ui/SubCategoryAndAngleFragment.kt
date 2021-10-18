@@ -41,33 +41,19 @@ class SubCategoryAndAngleFragment : BaseFragment<ShootViewModel,FragmentSelectSu
         observeSubcategories()
     }
 
-    private fun getSubcategories() {
-//        Utilities.showProgressDialog(requireContext())
+    override fun onResume() {
+        super.onResume()
 
+        viewModel.isSubcategoriesSelectionShown = true
+    }
+
+    private fun getSubcategories() {
         binding.shimmer.startShimmer()
 
         viewModel.getSubCategories(
             Utilities.getPreference(requireContext(), AppConstants.AUTH_KEY).toString(),
             requireActivity().intent.getStringExtra(AppConstants.CATEGORY_ID).toString()
         )
-
-
-//
-//        viewModel.isSubCategorySelected.observe(viewLifecycleOwner, {
-//            if (viewModel.isSubCategorySelected.value == true){
-//                //set default angles on sub cat response
-//                shoot("initangles, initProgressFrames, and and observe overlays called")
-//                initAngles()
-////                    if (viewModel.startInteriorShots.value == null){
-//                initProgressFrames()
-//                observeOverlays()
-////                    }
-//            }
-//        })
-
-//        viewModel.shootNumber.observe(viewLifecycleOwner, {
-//            binding.tvShoot?.text = "Angles $it/${viewModel.getSelectedAngles()}"
-//        })
     }
 
     fun observeSubcategories() {

@@ -19,10 +19,12 @@ class CreateProjectFragment : BaseFragment<ShootViewModel, FragmentCreateProject
         super.onViewCreated(view, savedInstanceState)
 
         viewModel.showHint.observe(viewLifecycleOwner,{
-                initShootHint()
+                if (!viewModel.gifDialogShown)
+                    initShootHint()
         })
 
         viewModel.showVin.observe(viewLifecycleOwner,{
+            if (!viewModel.createProjectDialogShown)
             initProjectDialog()
         })
     }

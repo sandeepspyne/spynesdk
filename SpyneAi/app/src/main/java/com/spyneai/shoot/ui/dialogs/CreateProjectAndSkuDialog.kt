@@ -47,6 +47,10 @@ class CreateProjectAndSkuDialog : BaseDialogFragment<ShootViewModel,DialogCreate
         observeProjectResponse()
     }
 
+    override fun onResume() {
+        super.onResume()
+        viewModel.createProjectDialogShown = true
+    }
 
 
     private fun createProject() {

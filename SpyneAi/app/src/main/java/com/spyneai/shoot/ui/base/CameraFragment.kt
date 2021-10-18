@@ -182,7 +182,7 @@ class CameraFragment : BaseFragment<ShootViewModel, FragmentCameraBinding>(), Pi
         })
 
         if (getString(R.string.app_name) == AppConstants.KARVI) {
-            binding.tvSkipShoot!!.setTextColor(
+            binding.tvSkipShoot?.setTextColor(
                 ContextCompat.getColor(
                     requireContext(),
                     R.color.secondary

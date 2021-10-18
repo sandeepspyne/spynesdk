@@ -30,6 +30,11 @@ class ShootHintDialog : BaseDialogFragment<ShootViewModel, DialogShootHintBindin
         }
     }
 
+    override fun onResume() {
+        super.onResume()
+        viewModel.gifDialogShown = true
+    }
+
 
     override fun onDismiss(dialog: DialogInterface) {
         super.onDismiss(dialog)

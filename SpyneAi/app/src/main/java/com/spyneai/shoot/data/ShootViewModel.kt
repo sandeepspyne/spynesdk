@@ -450,6 +450,7 @@ class ShootViewModel : ViewModel() {
 
     // var selectedOverlay : OverlaysResponse.Data? = null
     val getSubCategories = MutableLiveData<Boolean>()
+    var isSubcategoriesSelectionShown = false
     val selectAngles = MutableLiveData<Boolean>()
 
     val onImageConfirmed = MutableLiveData<Boolean>()
@@ -654,8 +655,12 @@ class ShootViewModel : ViewModel() {
         _reshootOverlaysRes.value = repository.getOverlayIds(ids)
     }
 
+    var gifDialogShown = false
+    var createProjectDialogShown = false
+
     init {
         if (showVin.value == null) {
+            Log.d(TAG, ": showvin null")
             showHint.value = true
         }
 
