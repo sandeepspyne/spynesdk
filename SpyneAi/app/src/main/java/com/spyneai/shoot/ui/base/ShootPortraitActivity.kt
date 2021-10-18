@@ -216,6 +216,10 @@ class ShootPortraitActivity :AppCompatActivity(), GoogleApiClient.ConnectionCall
             permissionRequest.launch(permissions.toTypedArray())
         }
 
+
+
+
+
         shootViewModel.stopShoot.observe(this, {
             if (it) {
                 window.clearFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN)
@@ -477,10 +481,6 @@ class ShootPortraitActivity :AppCompatActivity(), GoogleApiClient.ConnectionCall
                 }) {
                 onPermissionGranted()
             } else {
-
-
-
-
                 Toast.makeText(this, R.string.message_no_permissions, Toast.LENGTH_SHORT).show()
                 finish()
             }
