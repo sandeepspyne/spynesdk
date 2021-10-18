@@ -87,16 +87,38 @@ class DraftShootFragment : BaseFragment<ShootViewModel, FragmentOverlaysV2Bindin
         observeShootDimesions()
 
         getSubcategories()
+
         observeSubcategries()
 
-        observeOverlays()
+        when(viewModel.categoryDetails.value?.imageType){
+            "Exterior" -> {
+                observeOverlays()
 
-        observeStartInteriorShoot()
+                observeStartInteriorShoot()
 
-        observerMiscShots()
+                observeStartMiscShoots()
 
-        observeStartMiscShoots()
+                observerMiscShots()
+            }
 
+            "Interior" -> {
+                showViews()
+
+                observeStartInteriorShoot()
+
+                observeStartMiscShoots()
+
+                observerMiscShots()
+            }
+
+            "Focus Shoot" -> {
+                showViews()
+
+                observeStartMiscShoots()
+
+                observerMiscShots()
+            }
+        }
 
         viewModel.show360InteriorDialog.observe(viewLifecycleOwner,{
             if (it)
