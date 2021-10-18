@@ -44,6 +44,7 @@ data class ReshootOverlaysRes(
         val updatedAt: String,
         var isSelected : Boolean = false,
         var imageClicked : Boolean = false,
-        var imagePath : String
+        var imagePath : String,
+        var imageName : String
     )
 }

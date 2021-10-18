@@ -72,13 +72,13 @@ class SelectImagesFragment : BaseFragment<ProcessedViewModel,FragmentSelectImage
             it.isSelected
         }
 
-        val selectedIds = JSONArray()
+        val selectedIdsMap = HashMap<Int,String>()
 
         selectedList.forEachIndexed { index, data ->
-            selectedIds.put(data.overlayId)
+            selectedIdsMap.put(data.overlayId,data.image_name)
         }
 
-        SelectedImagesHelper.selectedImages = selectedIds
+        SelectedImagesHelper.selectedImages = selectedIdsMap
 
         val reshootIntent = Intent(requireActivity(),ReshootActivity::class.java)
         reshootIntent.apply {

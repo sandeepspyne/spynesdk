@@ -5,6 +5,6 @@ import org.json.JSONArray
 
 class SelectedImagesHelper {
     companion object {
-        var selectedImages = JSONArray()
+        var selectedImages = HashMap<Int,String>()
     }
 }

@@ -167,6 +167,7 @@ class ShootViewModel : ViewModel() {
     val addMoreAngle: MutableLiveData<Boolean> = MutableLiveData()
     var isReshoot = false
     var isReclick = false
+    var reshotImageName = ""
 
     private val _skuProcessStateWithBgResponse: MutableLiveData<Resource<SkuProcessStateResponse>> =
         MutableLiveData()
@@ -401,16 +402,21 @@ class ShootViewModel : ViewModel() {
         interiorSize: Int?,
         miscSize: Int?,
     ): String {
-        val filePrefix = FileNameManager().getFileName(
-            fromDrafts,
-            if (categoryDetails.value?.imageType == "Misc") "Focus Shoot" else categoryDetails.value?.imageType!!,
-            currentShoot,
-            shootList.value,
-            interiorSize,
-            miscSize
-        )
+        return if (isReshoot){
+            reshotImageName
+        }else{
+            val filePrefix = FileNameManager().getFileName(
+                fromDrafts,
+                if (categoryDetails.value?.imageType == "Misc") "Focus Shoot" else categoryDetails.value?.imageType!!,
+                currentShoot,
+                shootList.value,
+                interiorSize,
+                miscSize
+            )
 
-        return sku.value?.skuName + "_" + sku.value?.skuId + "_" + filePrefix
+            sku.value?.skuName + "_" + sku.value?.skuId + "_" + filePrefix
+        }
+
     }
 
     fun getSequenceNumber(exteriorSize: Int, interiorSize: Int, miscSize: Int): Int {

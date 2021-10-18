@@ -42,6 +42,7 @@ import com.spyneai.shoot.ui.dialogs.ConfirmReshootDialog
 import com.spyneai.shoot.ui.dialogs.ConfirmTagsDialog
 import com.spyneai.shoot.ui.dialogs.ReclickDialog
 import com.spyneai.shoot.utils.shoot
+import org.json.JSONArray
 
 class ReshootFragment : BaseFragment<ShootViewModel, FragmentReshootBinding>(), OnItemClickListener,
     OnOverlaySelectionListener {
@@ -131,7 +132,12 @@ class ReshootFragment : BaseFragment<ShootViewModel, FragmentReshootBinding>(), 
     private fun getOverlayIds() {
         Utilities.showProgressDialog(requireContext())
 
-        viewModel.getOverlayIds(SelectedImagesHelper.selectedImages)
+        val ids = JSONArray()
+
+        SelectedImagesHelper.selectedImages.keys.forEach {
+            ids.put(it)
+        }
+        viewModel.getOverlayIds(ids)
     }
 
     private fun observerOverlayIds() {
@@ -141,6 +147,10 @@ class ReshootFragment : BaseFragment<ShootViewModel, FragmentReshootBinding>(), 
                     Utilities.hideProgressDialog()
                     val list = it.value.data
                     var index = 0
+
+                    list.forEach {
+                        it.imageName = SelectedImagesHelper.selectedImages.get(it.id).toString()
+                    }
 
                     if (viewModel.shootList.value != null){
                         list.forEach { overlay ->
@@ -244,6 +254,8 @@ class ReshootFragment : BaseFragment<ShootViewModel, FragmentReshootBinding>(), 
 
         when (data) {
             is ReshootOverlaysRes.Data -> {
+                viewModel.reshotImageName = data.imageName
+
                 if (data.type == "Exterior"){
                     viewModel.showLeveler.value = true
                     binding.imgOverlay.visibility = View.VISIBLE
@@ -260,7 +272,7 @@ class ReshootFragment : BaseFragment<ShootViewModel, FragmentReshootBinding>(), 
 
                 viewModel.overlayId = data.id
 
-                binding.tvShoot?.text = "Angles ${position.plus(1)}/${SelectedImagesHelper.selectedImages.length()}"
+                binding.tvShoot?.text = "Angles ${position.plus(1)}/${SelectedImagesHelper.selectedImages.size}"
             }
 
         }
