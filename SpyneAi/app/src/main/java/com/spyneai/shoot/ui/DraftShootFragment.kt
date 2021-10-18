@@ -713,7 +713,6 @@ class DraftShootFragment : BaseFragment<ShootViewModel, FragmentOverlaysV2Bindin
                     ReclickDialog().show(requireActivity().supportFragmentManager,"ReclickDialog")
                 }
 
-                viewModel.sequence = position
                 viewModel.overlayId = data.id
 
                 val list = overlaysAdapter.listItems as List<OverlaysResponse.Data>
@@ -739,8 +738,6 @@ class DraftShootFragment : BaseFragment<ShootViewModel, FragmentOverlaysV2Bindin
                 if (data.imageClicked){
                     ReclickDialog().show(requireActivity().supportFragmentManager,"ReclickDialog")
                 }
-
-                viewModel.sequence = position
                 viewModel.overlayId = data.overlayId
 
                 val list = overlaysAdapter.listItems as List<NewSubCatResponse.Interior>
@@ -767,7 +764,6 @@ class DraftShootFragment : BaseFragment<ShootViewModel, FragmentOverlaysV2Bindin
                     ReclickDialog().show(requireActivity().supportFragmentManager,"ReclickDialog")
                 }
 
-                viewModel.sequence = position
                 viewModel.overlayId = data.overlayId
 
                 val list = overlaysAdapter.listItems as List<NewSubCatResponse.Miscellaneous>
@@ -792,13 +788,11 @@ class DraftShootFragment : BaseFragment<ShootViewModel, FragmentOverlaysV2Bindin
     }
 
     override fun onOverlaySelected(view: View, position: Int, data: Any?) {
-        viewModel.currentShoot = position.plus(1)
+        viewModel.currentShoot = position
 
         when(data){
             is OverlaysResponse.Data->{
                 loadOverlay(data.angle_name,data.display_thumbnail)
-
-                viewModel.sequence = position
                 viewModel.overlayId = data.id
 
                 binding.tvShoot?.text = "Angles ${position.plus(1)}/${viewModel.getSelectedAngles(getString(
@@ -806,14 +800,12 @@ class DraftShootFragment : BaseFragment<ShootViewModel, FragmentOverlaysV2Bindin
             }
 
             is NewSubCatResponse.Interior ->{
-                viewModel.sequence = position
                 viewModel.overlayId = data.overlayId
 
                 binding.tvShoot?.text = "Angles ${position.plus(1)}/${viewModel.interiorAngles.value}"
             }
 
             is NewSubCatResponse.Miscellaneous ->{
-                viewModel.sequence = position
                 viewModel.overlayId = data.overlayId
 
                 binding.tvShoot?.text = "Angles ${position.plus(1)}/${viewModel.miscAngles.value}"

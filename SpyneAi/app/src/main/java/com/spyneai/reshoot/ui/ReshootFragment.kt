@@ -78,7 +78,7 @@ class ReshootFragment : BaseFragment<ShootViewModel, FragmentReshootBinding>(), 
             if (viewModel.shootList.value != null) {
                 val list = reshootAdapter?.listItems as List<ReshootOverlaysRes.Data>
 
-                val position = viewModel.sequence
+                val position = viewModel.currentShoot
 
                 list[position].isSelected = false
                 list[position].imageClicked = true
@@ -92,8 +92,6 @@ class ReshootFragment : BaseFragment<ShootViewModel, FragmentReshootBinding>(), 
                         if (!list[i].isSelected && !list[i].imageClicked) {
                             foundNext = true
                             list[i].isSelected = true
-                            viewModel.sequence = i
-
                             reshootAdapter?.notifyItemChanged(i)
                             binding.rvImages.scrollToPosition(i.plus(2))
                             break
@@ -108,7 +106,7 @@ class ReshootFragment : BaseFragment<ShootViewModel, FragmentReshootBinding>(), 
                         if (element != null) {
                             element?.isSelected = true
                             reshootAdapter?.notifyItemChanged(list.indexOf(element))
-                            binding.rvImages.scrollToPosition(viewModel.sequence)
+                            binding.rvImages.scrollToPosition(viewModel.currentShoot)
                         }
                     }
                 } else {
@@ -119,7 +117,7 @@ class ReshootFragment : BaseFragment<ShootViewModel, FragmentReshootBinding>(), 
                     if (element != null) {
                         element?.isSelected = true
                         reshootAdapter?.notifyItemChanged(list.indexOf(element))
-                        binding.rvImages.scrollToPosition(viewModel.sequence)
+                        binding.rvImages.scrollToPosition(viewModel.currentShoot)
                     }
                 }
 
@@ -199,8 +197,6 @@ class ReshootFragment : BaseFragment<ShootViewModel, FragmentReshootBinding>(), 
                 if (data.imageClicked){
                     ReclickDialog().show(requireActivity().supportFragmentManager,"ReclickDialog")
                 }
-
-                viewModel.sequence = position
                 val list = reshootAdapter?.listItems as List<ReshootOverlaysRes.Data>
 
                 val element = list.firstOrNull {
@@ -222,7 +218,7 @@ class ReshootFragment : BaseFragment<ShootViewModel, FragmentReshootBinding>(), 
     }
 
     override fun onOverlaySelected(view: View, position: Int, data: Any?) {
-        viewModel.currentShoot = position.plus(1)
+        viewModel.currentShoot = position
 
         when (data) {
             is ReshootOverlaysRes.Data -> {
@@ -240,7 +236,6 @@ class ReshootFragment : BaseFragment<ShootViewModel, FragmentReshootBinding>(), 
 
                 viewModel.categoryDetails.value?.imageType = data.type
 
-                viewModel.sequence = position
                 viewModel.overlayId = data.id
 
                 binding.tvShoot?.text = "Angles ${position.plus(1)}/${SelectedImagesHelper.selectedImages.length()}"

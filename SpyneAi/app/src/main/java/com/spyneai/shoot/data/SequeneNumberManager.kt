@@ -9,13 +9,12 @@ class SequeneNumberManager {
         shootListSize : Int,
         exteriorSize : Int,
         interiorSize : Int,
-        miscSize : Int,
-        sequence: Int
+        miscSize : Int
     ) : Int {
         if (fromDrafts) {
             return when (imageType) {
                 "Exterior" -> {
-                    currentShoot
+                    currentShoot.plus(1)
                 }
                 "Interior" -> {
                         exteriorSize.plus(interiorSize).plus(shootListSize.plus(1))
@@ -29,11 +28,11 @@ class SequeneNumberManager {
                 "Footwear","Food & Beverages","E-Commerce" -> {
                     currentShoot
                 }
-                else -> currentShoot
+                else -> currentShoot.plus(1)
             }
         } else {
             return if (imageType == "Exterior")
-                sequence.plus(1)
+                currentShoot.plus(1)
             else
                 shootListSize.plus(1)
         }

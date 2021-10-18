@@ -45,7 +45,7 @@ class LoginActivity : AppCompatActivity() {
         when(getString(R.string.app_name)){
             AppConstants.KARVI -> {
                 binding.apply {
-                    rlSingup.visibility = View.GONE
+                    //rlSingup.visibility = View.GONE
                     llOr.visibility = View.GONE
                     btSignInUsingOtp.visibility = View.GONE
                 }

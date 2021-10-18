@@ -8,7 +8,6 @@ class FileNameManager {
         fromDrafts : Boolean,
         imageType : String,
         currentShoot : Int,
-        sequence : Int,
         list : ArrayList<ShootData>?,
         interiorSize : Int?,
         miscSize : Int?
@@ -16,7 +15,7 @@ class FileNameManager {
         if (fromDrafts){
             return when (imageType) {
                 "Exterior" -> {
-                    imageType + "_" + currentShoot
+                    imageType + "_" + currentShoot.plus(1)
                 }
                 "Interior" -> {
                     val interiorList = list?.filter {
@@ -45,7 +44,7 @@ class FileNameManager {
                     }
                 }
                 "Footwear","Food & Beverages","Ecom","Food","Photo Box" -> {
-                    imageType + "_" + currentShoot
+                    imageType + "_" + currentShoot.plus(1)
                 }
                 else -> {
                     System.currentTimeMillis().toString()
@@ -54,7 +53,7 @@ class FileNameManager {
         }else{
             return when (imageType) {
                 "Exterior" -> {
-                    imageType + "_" + sequence.plus(1)
+                    imageType + "_" + currentShoot.plus(1)
                 }
                 "Interior" -> {
                     val interiorList = list?.filter {
@@ -81,7 +80,7 @@ class FileNameManager {
                     }
                 }
                 "Footwear","Food","Ecom","Food & Beverages","Photo Box" -> {
-                    imageType + "_" + currentShoot
+                    imageType + "_" + currentShoot.plus(1)
                 }
                 else -> {
                     System.currentTimeMillis().toString()

@@ -134,16 +134,12 @@ class ShootViewModel : ViewModel() {
     val subCategoryId: MutableLiveData<String> = MutableLiveData()
     val exterirorAngles: MutableLiveData<Int> = MutableLiveData()
 
-    //var currentShootNumber = 0
-
-    //val shootNumber: MutableLiveData<Int> = MutableLiveData()
     var currentShoot = 0
     var allExteriorClicked = false
     var allInteriorClicked = false
     var allMisc = false
     var allReshootClicked = false
 
-    //val reShootNumber: MutableLiveData<Int> = MutableLiveData()
     val shootData: MutableLiveData<ShootData> = MutableLiveData()
     val reshootCompleted: MutableLiveData<Boolean> = MutableLiveData()
 
@@ -162,8 +158,6 @@ class ShootViewModel : ViewModel() {
 
     val interiorAngles: MutableLiveData<Int> = MutableLiveData()
     val miscAngles: MutableLiveData<Int> = MutableLiveData()
-
-    var overlayRightMargin = 0
 
     val reshootCapturedImage: MutableLiveData<Boolean> = MutableLiveData()
     val confirmCapturedImage: MutableLiveData<Boolean> = MutableLiveData()
@@ -211,7 +205,6 @@ class ShootViewModel : ViewModel() {
         _overlaysResponse.value = Resource.Loading
         _overlaysResponse.value = repository.getOverlays(authKey, prodId, prodSubcategoryId, frames)
     }
-
 
     suspend fun preloadOverlays(overlays: List<String>) {
         //check if preload worker is alive
@@ -272,28 +265,15 @@ class ShootViewModel : ViewModel() {
         }
 
     fun getSelectedAngles(appName: String): Int {
-        if (exterirorAngles.value == null) {
-            return when (appName) {
+        return if (exterirorAngles.value == null) {
+            when (appName) {
                 AppConstants.CARS24, AppConstants.CARS24_INDIA -> 5
                 AppConstants.SELL_ANY_CAR -> 4
                 else -> 8
             }
         } else {
-            return exterirorAngles.value!!
+            exterirorAngles.value!!
         }
-    }
-
-    fun getShootProgressList(angles: Int, selectedAngles: Int): ArrayList<ShootProgress> {
-        val shootProgressList = ArrayList<ShootProgress>()
-        shootProgressList.add(ShootProgress(true))
-
-        for (i in 1 until angles) {
-            if (i <= selectedAngles)
-                shootProgressList.add(ShootProgress(true))
-            else
-                shootProgressList.add(ShootProgress(false))
-        }
-        return shootProgressList
     }
 
     fun insertImage(shootData: ShootData) {
@@ -425,7 +405,6 @@ class ShootViewModel : ViewModel() {
             fromDrafts,
             if (categoryDetails.value?.imageType == "Misc") "Focus Shoot" else categoryDetails.value?.imageType!!,
             currentShoot,
-            sequence,
             shootList.value,
             interiorSize,
             miscSize
@@ -442,8 +421,7 @@ class ShootViewModel : ViewModel() {
             shootList.value?.size!!,
             exteriorSize,
             interiorSize,
-            miscSize,
-            sequence
+            miscSize
         )
     }
 
@@ -467,7 +445,7 @@ class ShootViewModel : ViewModel() {
 
     var displayName = ""
     var displayThumbanil = ""
-    var sequence = 0
+    //var sequence = 0
     var overlayId = 0
 
     // var selectedOverlay : OverlaysResponse.Data? = null
@@ -521,7 +499,7 @@ class ShootViewModel : ViewModel() {
             "Exterior" -> {
                 val list = thumbnails as List<OverlaysResponse.Data>
 
-                val position = sequence
+                val position = currentShoot
 
                 list[position].isSelected = false
                 list[position].imageClicked = true
@@ -537,7 +515,7 @@ class ShootViewModel : ViewModel() {
                         if (!list[i].isSelected && !list[i].imageClicked) {
                             foundNext = true
                             list[i].isSelected = true
-                            sequence = i
+                            currentShoot = i
 
                             notifyItemChanged.value = i
                             scrollView.value = i
@@ -552,9 +530,8 @@ class ShootViewModel : ViewModel() {
 
                         if (element != null) {
                             element?.isSelected = true
-                            sequence = element?.sequenceNumber!!
                             notifyItemChanged.value = list.indexOf(element)
-                            scrollView.value = sequence
+                            scrollView.value = element?.sequenceNumber!!
                         }
                     }
                 } else {
@@ -564,9 +541,8 @@ class ShootViewModel : ViewModel() {
 
                     if (element != null) {
                         element?.isSelected = true
-                        sequence = element?.sequenceNumber!!
                         notifyItemChanged.value = list.indexOf(element)
-                        scrollView.value = sequence
+                        scrollView.value = element?.sequenceNumber!!
                     }
                 }
             }
@@ -574,7 +550,7 @@ class ShootViewModel : ViewModel() {
             "Interior" -> {
                 val list = thumbnails as List<NewSubCatResponse.Interior>
 
-                val position = sequence
+                val position = currentShoot
 
                 list[position].isSelected = false
                 list[position].imageClicked = true
@@ -586,11 +562,9 @@ class ShootViewModel : ViewModel() {
                     var foundNext = false
 
                     for (i in position..list.size.minus(1)) {
-                        val s = ""
                         if (!list[i].isSelected && !list[i].imageClicked) {
                             foundNext = true
                             list[i].isSelected = true
-                            sequence = i
                             notifyItemChanged.value = i
                             scrollView.value = i
                             break
@@ -604,9 +578,8 @@ class ShootViewModel : ViewModel() {
 
                         if (element != null) {
                             element?.isSelected = true
-                            sequence = element?.sequenceNumber!!
                             notifyItemChanged.value = list.indexOf(element)
-                            scrollView.value = sequence
+                            scrollView.value = element?.sequenceNumber!!
                         }
                     }
                 } else {
@@ -616,9 +589,8 @@ class ShootViewModel : ViewModel() {
 
                     if (element != null) {
                         element?.isSelected = true
-                        sequence = element?.sequenceNumber!!
                         notifyItemChanged.value = list.indexOf(element)
-                        scrollView.value = sequence
+                        scrollView.value = element?.sequenceNumber!!
                     }
                 }
             }
@@ -626,7 +598,7 @@ class ShootViewModel : ViewModel() {
             "Focus Shoot" -> {
                 val list = thumbnails as List<NewSubCatResponse.Miscellaneous>
 
-                val position = sequence
+                val position = currentShoot
 
                 list[position].isSelected = false
                 list[position].imageClicked = true
@@ -642,8 +614,6 @@ class ShootViewModel : ViewModel() {
                         if (!list[i].isSelected && !list[i].imageClicked) {
                             foundNext = true
                             list[i].isSelected = true
-                            sequence = i
-
                             notifyItemChanged.value = i
                             scrollView.value = i
                             break
@@ -657,9 +627,8 @@ class ShootViewModel : ViewModel() {
 
                         if (element != null) {
                             element?.isSelected = true
-                            sequence = element?.sequenceNumber!!
                             notifyItemChanged.value = list.indexOf(element)
-                            scrollView.value = sequence
+                            scrollView.value = element?.sequenceNumber!!
                         }
                     }
                 } else {
@@ -669,9 +638,8 @@ class ShootViewModel : ViewModel() {
 
                     if (element != null) {
                         element?.isSelected = true
-                        sequence = element?.sequenceNumber!!
                         notifyItemChanged.value = list.indexOf(element)
-                        scrollView.value = sequence
+                        scrollView.value = element?.sequenceNumber!!
                     }
                 }
             }
