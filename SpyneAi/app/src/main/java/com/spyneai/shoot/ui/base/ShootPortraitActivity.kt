@@ -210,12 +210,6 @@ class ShootPortraitActivity :AppCompatActivity(), GoogleApiClient.ConnectionCall
 
         }
 
-        if (allPermissionsGranted()) {
-            onPermissionGranted()
-        } else {
-            permissionRequest.launch(permissions.toTypedArray())
-        }
-
 
 
 
@@ -447,47 +441,6 @@ class ShootPortraitActivity :AppCompatActivity(), GoogleApiClient.ConnectionCall
         return if (s == null) ArrayList() else s as ArrayList<String>
     }
 
-    /**
-     * Check for the permissions
-     */
-    protected fun allPermissionsGranted() = permissions.all {
-        ContextCompat.checkSelfPermission(this, it) == PackageManager.PERMISSION_GRANTED
-    }
-
-    private val permissions = mutableListOf(
-        Manifest.permission.CAMERA,
-        Manifest.permission.READ_EXTERNAL_STORAGE,
-        Manifest.permission.WRITE_EXTERNAL_STORAGE,
-        Manifest.permission.ACCESS_COARSE_LOCATION,
-    ).apply {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-            add(Manifest.permission.ACCESS_MEDIA_LOCATION)
-        }
-    }
-
-    private val permissionRequest =
-        registerForActivityResult(ActivityResultContracts.RequestMultiplePermissions()) { permissions ->
-
-            val requiredPermissions = if (getString(R.string.app_name) == AppConstants.OLA_CABS){
-                permissions
-            }else{
-                permissions.filter {
-                    it.key != Manifest.permission.ACCESS_COARSE_LOCATION
-                }
-            }
-
-            if (requiredPermissions.all {
-                    it.value
-                }) {
-                onPermissionGranted()
-            } else {
-                Toast.makeText(this, R.string.message_no_permissions, Toast.LENGTH_SHORT).show()
-                finish()
-            }
-
-        }
-
-
     override fun onConnected(bundle: Bundle?) {
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION)
             == PackageManager.PERMISSION_GRANTED
@@ -523,7 +476,6 @@ class ShootPortraitActivity :AppCompatActivity(), GoogleApiClient.ConnectionCall
     }
 
 
-    open fun onPermissionGranted() = Unit
 
 
     companion object {
