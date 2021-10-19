@@ -289,8 +289,6 @@ class DraftShootFragment : BaseFragment<ShootViewModel, FragmentOverlaysV2Bindin
         if (requireActivity().intent.getIntExtra(AppConstants.EXTERIOR_SIZE,0) == 0){
             if (requireActivity().intent.getIntExtra(AppConstants.EXTERIOR_ANGLES,0) == 0){
                 when(getString(R.string.app_name)){
-                    AppConstants.CARS24, AppConstants.CARS24_INDIA ->
-                        viewModel.exterirorAngles.value = 5
                     AppConstants.SELL_ANY_CAR ->
                         viewModel.exterirorAngles.value = 4
                     else ->  {
