@@ -15,7 +15,8 @@ import com.spyneai.shoot.data.model.Image
 
 class LocalDraftImagesAdapter(
     val context: Context,
-    val imageList: ArrayList<Image>
+    val imageList: ArrayList<Image>,
+    val categoryName : String
 ) : BaseAdapter() {
     override fun getCount(): Int {
         return imageList.size
@@ -34,6 +35,9 @@ class LocalDraftImagesAdapter(
         val ivRaw = view.findViewById<TextView>(R.id.ivRaw) as ImageView
 
         try {
+            if(categoryName != "Automobiles")
+                ivRaw.rotation = 90f
+
             Glide.with(context) // replace with 'this' if it's in activity
                 .load(imageList[position].imagePath)
                 .error(R.mipmap.defaults) // show error drawable if the image is not a gif

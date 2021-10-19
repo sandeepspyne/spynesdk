@@ -8,16 +8,10 @@ import android.content.Intent
 import android.content.pm.PackageManager
 import android.location.Address
 import android.location.Geocoder
-import android.location.Location
-import android.net.Uri
-import android.os.Build
 import android.os.Bundle
-import android.provider.Settings
 import android.util.Log
 import android.view.KeyEvent
 import android.view.WindowManager
-import android.widget.Toast
-import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.ViewModelProvider
@@ -34,6 +28,7 @@ import com.spyneai.setLocale
 import com.spyneai.shoot.data.ShootViewModel
 import com.spyneai.shoot.data.model.CategoryDetails
 import com.spyneai.shoot.data.model.CreateProjectRes
+import com.spyneai.shoot.data.model.ShootData
 import com.spyneai.shoot.data.model.Sku
 import com.spyneai.shoot.ui.OverlaysFragment
 import com.spyneai.shoot.ui.SelectBackgroundFragment
@@ -82,14 +77,17 @@ class ShootPortraitActivity :AppCompatActivity(), GoogleApiClient.ConnectionCall
 
         setLocale()
 
-
         shootViewModel = ViewModelProvider(this, ViewModelFactory()).get(ShootViewModel::class.java)
+        shootViewModel.skuNumber.value = 1
+        try {
+            shootViewModel.skuNumber.value = intent.getIntExtra("skuNumber", 1)
+        }catch (e: Exception){
+        }
+
 
         if (intent.getBooleanExtra(AppConstants.FROM_DRAFTS, false))
             setUpDraftsData()
 
-        if (intent.getBooleanExtra(AppConstants.FROM_VIDEO, false))
-            setUpVideoShoot()
 
         val categoryDetails = CategoryDetails()
 
@@ -97,6 +95,13 @@ class ShootPortraitActivity :AppCompatActivity(), GoogleApiClient.ConnectionCall
             categoryId = intent.getStringExtra(AppConstants.CATEGORY_ID)
             categoryName = intent.getStringExtra(AppConstants.CATEGORY_NAME)
             gifList = intent.getStringExtra(AppConstants.GIF_LIST)
+        }
+
+        Utilities.savePrefrence(this,AppConstants.CATEGORY_ID,categoryDetails.categoryId)
+        Utilities.savePrefrence(this,AppConstants.CATEGORY_NAME,categoryDetails.categoryName)
+
+        when(shootViewModel.categoryDetails.value?.categoryName) {
+            "Footwear" -> shootViewModel.processSku = false
         }
 
         shootViewModel.categoryDetails.value = categoryDetails
@@ -142,6 +147,7 @@ class ShootPortraitActivity :AppCompatActivity(), GoogleApiClient.ConnectionCall
                     shootViewModel.projectId.value = intent.getStringExtra("project_id")
                     val sku = Sku()
                     sku?.projectId = shootViewModel.projectId.value
+                    sku.skuId = intent.getStringExtra(AppConstants.SKU_ID)
                     shootViewModel.categoryDetails.value?.imageType = "Ecom"
                     shootViewModel.sku.value = sku
                 } catch (e: Exception) {
@@ -161,6 +167,7 @@ class ShootPortraitActivity :AppCompatActivity(), GoogleApiClient.ConnectionCall
                     shootViewModel.projectId.value = intent.getStringExtra("project_id")
                     val sku = Sku()
                     sku?.projectId = shootViewModel.projectId.value
+                    sku.skuId = intent.getStringExtra(AppConstants.SKU_ID)
                     shootViewModel.categoryDetails.value?.imageType = "Ecom"
                     shootViewModel.sku.value = sku
                 } catch (e: Exception) {
@@ -180,6 +187,7 @@ class ShootPortraitActivity :AppCompatActivity(), GoogleApiClient.ConnectionCall
                     shootViewModel.projectId.value = intent.getStringExtra("project_id")
                     val sku = Sku()
                     sku?.projectId = shootViewModel.projectId.value
+                    sku.skuId = intent.getStringExtra(AppConstants.SKU_ID)
                     shootViewModel.categoryDetails.value?.imageType = "Food"
                     shootViewModel.sku.value = sku
                 } catch (e: Exception) {
@@ -200,6 +208,7 @@ class ShootPortraitActivity :AppCompatActivity(), GoogleApiClient.ConnectionCall
                     shootViewModel.projectId.value = intent.getStringExtra("project_id")
                     val sku = Sku()
                     sku?.projectId = shootViewModel.projectId.value
+                    sku.skuId = intent.getStringExtra(AppConstants.SKU_ID)
                     shootViewModel.categoryDetails.value?.imageType = "Footwear"
                     shootViewModel.sku.value = sku
                 } catch (e: Exception) {
@@ -252,6 +261,8 @@ class ShootPortraitActivity :AppCompatActivity(), GoogleApiClient.ConnectionCall
                 supportFragmentManager.beginTransaction().remove(skuDetailFragment).commit()
         })
 
+
+
         shootViewModel.selectBackground.observe(this, {
             if (it) {
                 // start process activity
@@ -262,12 +273,7 @@ class ShootPortraitActivity :AppCompatActivity(), GoogleApiClient.ConnectionCall
                     this.putExtra("project_id", shootViewModel.sku.value?.projectId)
                     this.putExtra("exterior_angles", shootViewModel.exterirorAngles.value)
                     this.putExtra("process_sku", shootViewModel.processSku)
-                    this.putExtra("interior_misc_count", getInteriorMiscCount())
-                    this.putStringArrayListExtra("exterior_images_list", getExteriorImagesList())
-                    this.putExtra(
-                        AppConstants.FROM_VIDEO,
-                        intent.getBooleanExtra(AppConstants.FROM_VIDEO, false)
-                    )
+
                     startActivity(this)
                 }
             }
@@ -275,84 +281,109 @@ class ShootPortraitActivity :AppCompatActivity(), GoogleApiClient.ConnectionCall
     }
 
 
-    private fun setUpVideoShoot() {
-
-
-        shootViewModel.fromVideo = true
-        shootViewModel.showVin.value = true
-        shootViewModel.isProjectCreated.value = true
-        shootViewModel.projectId.value = intent.getStringExtra(AppConstants.PROJECT_ID)
-
-        shootViewModel._createProjectRes.value = Resource.Success(
-            CreateProjectRes(
-                "",
-                intent.getStringExtra(AppConstants.PROJECT_ID)!!,
-                200
-            )
-        )
-    }
-
     private fun setUpDraftsData() {
         shootViewModel.fromDrafts = true
         shootViewModel.showVin.value = true
         shootViewModel.isProjectCreated.value = true
-        shootViewModel.projectId.value = intent.getStringExtra(AppConstants.PROJECT_ID)
+        shootViewModel.projectId.value =  intent.getStringExtra(AppConstants.PROJECT_ID)!!
 
         shootViewModel._createProjectRes.value = Resource.Success(
             CreateProjectRes(
                 "",
                 intent.getStringExtra(AppConstants.PROJECT_ID)!!,
-                200
-            )
+                200)
         )
 
         //set sku data
         val sku = Sku()
         sku.projectId = intent.getStringExtra(AppConstants.PROJECT_ID)
         sku.skuName = intent.getStringExtra(AppConstants.SKU_NAME)
+        sku.skuId = intent.getStringExtra(AppConstants.SKU_ID)
         sku.categoryName = shootViewModel.categoryDetails.value?.categoryName
 
         shootViewModel.sku.value = sku
 
-        if (intent.getBooleanExtra(AppConstants.SKU_CREATED, false)) {
-            shootViewModel.exterirorAngles.value =
-                intent.getIntExtra(AppConstants.EXTERIOR_ANGLES, 0)
+        if (intent.getStringExtra(AppConstants.CATEGORY_NAME) == "Footwear"){
+            if (intent.getIntExtra(AppConstants.EXTERIOR_ANGLES,0) != 0){
+                shootViewModel.isSkuCreated.value = true
+                //sub category selected
+                shootViewModel.subCatName.value = intent.getStringExtra(AppConstants.SUB_CAT_NAME)
 
-            shootViewModel.getSubCategories(
-                Utilities.getPreference(this, AppConstants.AUTH_KEY).toString(),
-                intent.getStringExtra(AppConstants.CATEGORY_ID).toString()
-            )
+                shootViewModel.subCategory.value = NewSubCatResponse.Data(
+                    1,
+                    "",
+                    "",
+                    "",
+                    1,
+                    1,
+                    intent.getStringExtra(AppConstants.CATEGORY_ID)!!,
+                    intent.getStringExtra(AppConstants.SUB_CAT_ID)!!,
+                    intent.getStringExtra(AppConstants.SUB_CAT_NAME)!!,
+                    ""
+                )
 
-            shootViewModel.sku.value!!.skuId = intent.getStringExtra(AppConstants.SKU_ID)
+                shootViewModel.isSubCategoryConfirmed.value = true
 
-            //fetch overlays
+                if (intent.getIntExtra(AppConstants.EXTERIOR_ANGLES,0) == intent.getIntExtra(AppConstants.EXTERIOR_SIZE,0)){
+                    shootViewModel.showDialog = false
+                    val list = shootViewModel.getImagesbySkuId(shootViewModel.sku.value?.skuId!!)
+
+                    shootViewModel.shootList.value = ArrayList()
+
+
+                    for(image in list){
+                        shootViewModel.shootList.value!!.add(
+                            ShootData(image.imagePath!!,
+                                image.projectId!!,
+                                image.skuId!!,
+                                "",
+                                Utilities.getPreference(this,AppConstants.AUTH_KEY).toString(),
+                                0)
+                        )
+                    }
+
+                    shootViewModel.stopShoot.value = true
+                }
+
+            }
+        }else {
+            shootViewModel.showDialog = false
             shootViewModel.isSubCategoryConfirmed.value = true
-            shootViewModel.subCategory.value = getSubcategoryResponse()
 
-            shootViewModel.getOverlays(
-                Utilities.getPreference(this, AppConstants.AUTH_KEY).toString(),
-                intent.getStringExtra(AppConstants.CATEGORY_ID)!!,
-                intent.getStringExtra(AppConstants.SUB_CAT_ID)!!,
-                intent.getIntExtra(AppConstants.EXTERIOR_ANGLES, 0).toString(),
-            )
+            shootViewModel.shootList.value = ArrayList()
+
+            //set total clicked images
+            val list = shootViewModel.getImagesbySkuId(shootViewModel.sku.value?.skuId!!)
+
+            if (intent.getBooleanExtra(AppConstants.FROM_LOCAL_DB,false)){
+                for(image in list){
+                    shootViewModel.shootList.value!!.add(
+                        ShootData(image.imagePath!!,
+                            image.projectId!!,
+                            image.skuId!!,
+                            "",
+                            Utilities.getPreference(this,AppConstants.AUTH_KEY).toString(),
+                            0)
+                    )
+                }
+            }else {
+                val list = intent.getStringArrayListExtra(AppConstants.EXTERIOR_LIST)
+
+                for(image in list!!){
+                    shootViewModel.shootList.value!!.add(
+                        ShootData(image,
+                            intent.getStringExtra(AppConstants.PROJECT_ID)!!,
+                            intent.getStringExtra(AppConstants.SKU_ID)!!,
+                            "",
+                            Utilities.getPreference(this,AppConstants.AUTH_KEY).toString(),
+                            0)
+                    )
+                }
+            }
+
         }
-
     }
 
-    private fun getSubcategoryResponse(): NewSubCatResponse.Data? {
-        return NewSubCatResponse.Data(
-            1,
-            "",
-            "",
-            "",
-            1,
-            1,
-            intent.getStringExtra(AppConstants.CATEGORY_ID)!!,
-            intent.getStringExtra(AppConstants.SUB_CAT_ID)!!,
-            intent.getStringExtra(AppConstants.SUB_CAT_NAME)!!,
-            ""
-        )
-    }
 
     override fun onStart() {
         super.onStart()
@@ -386,81 +417,34 @@ class ShootPortraitActivity :AppCompatActivity(), GoogleApiClient.ConnectionCall
         shoot("onDistroy called(shoot activity)")
     }
 
-    private fun getInteriorMiscCount(): Int {
-        var total = 0
-
-        val list = shootViewModel.shootList.value
-
-        val interiorList = list?.filter {
-            it.image_category == "Interior"
-        }
-
-        val miscList = list?.filter {
-            it.image_category == "Focus Shoot"
-        }
-
-        if (interiorList != null)
-            total = interiorList.size
-
-
-        if (miscList != null)
-            total += miscList.size
-
-        if (shootViewModel.fromDrafts) {
-            total += intent.getIntExtra(AppConstants.INTERIOR_SIZE, 0)
-            total += intent.getIntExtra(AppConstants.MISC_SIZE, 0)
-        }
-
-        if (getString(R.string.app_name) == AppConstants.OLA_CABS
-            && shootViewModel.threeSixtyInteriorSelected
-        ) {
-            total += 1
-        }
-
-        if (intent.getBooleanExtra(AppConstants.FROM_VIDEO, false)) {
-            total += intent.getIntExtra(AppConstants.TOTAL_FRAME, 0)
-        }
-
-        Log.d(TAG, "getInteriorMiscCount: " + total)
-
-        return total
-    }
-
-    private fun getExteriorImagesList(): ArrayList<String> {
-        val exteriorList = shootViewModel.shootList.value?.filter {
-            it.image_category == "Exterior"
-        }
-
-        val s = exteriorList?.map {
-            it.capturedImage
-        }
-
-        return if (s == null) ArrayList() else s as ArrayList<String>
-    }
 
     override fun onConnected(bundle: Bundle?) {
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION)
             == PackageManager.PERMISSION_GRANTED
         ) {
-            val lastLocation = LocationServices.FusedLocationApi.getLastLocation(googleApiClient)
-            val lat: Double = lastLocation.latitude
-            val lon: Double = lastLocation.longitude
+            try {
+                val lastLocation = LocationServices.FusedLocationApi.getLastLocation(googleApiClient)
+                val lat: Double = lastLocation.latitude
+                val lon: Double = lastLocation.longitude
 
-            val geocoder = Geocoder(this, Locale.getDefault())
-            val addresses: List<Address> = geocoder.getFromLocation(lat, lon, 1)
-            val postalCode = addresses[0].postalCode
-            val cityName = addresses[0].locality
-            val countryName = addresses[0].countryName
+                val geocoder = Geocoder(this, Locale.getDefault())
+                val addresses: List<Address> = geocoder.getFromLocation(lat, lon, 1)
+                val postalCode = addresses[0].postalCode
+                val cityName = addresses[0].locality
+                val countryName = addresses[0].countryName
 
-            location_data.put("city", cityName)
-            location_data.put("country", countryName)
-            location_data.put("latitude", lat)
-            location_data.put("longitude", lon)
-            location_data.put("postalCode", postalCode)
+                location_data.put("city", cityName)
+                location_data.put("country", countryName)
+                location_data.put("latitude", lat)
+                location_data.put("longitude", lon)
+                location_data.put("postalCode", postalCode)
 
-            Log.d(TAG, "onConnected: $location_data")
+                Log.d(TAG, "onConnected: $location_data")
 
-            shootViewModel.location_data.value = location_data
+                shootViewModel.location_data.value = location_data
+            }catch (e : Exception){
+                e.printStackTrace()
+            }
 
 
         }
@@ -472,24 +456,11 @@ class ShootPortraitActivity :AppCompatActivity(), GoogleApiClient.ConnectionCall
     }
 
 
-    companion object {
-        /** Use external media if it is available, our app's file directory otherwise */
-        fun getOutputDirectory(context: Context): File {
-            val appContext = context.applicationContext
-            val mediaDir = context.externalMediaDirs.firstOrNull()?.let {
-                File(it, appContext.resources.getString(R.string.app_name)).apply { mkdirs() }
-            }
-            return if (mediaDir != null && mediaDir.exists())
-                mediaDir else appContext.filesDir
-        }
-    }
+
 
 
     override fun onBackPressed() {
-        if (intent.getBooleanExtra(AppConstants.FROM_DRAFTS, false))
-            ShootExitDialog().show(supportFragmentManager, "ShootExitDialog")
-        else
-            ShootExitDialog().show(supportFragmentManager, "ShootExitDialog")
+        ShootExitDialog().show(supportFragmentManager, "ShootExitDialog")
     }
 
     // 1. onKeyDown is a boolean function, which returns the state of the KeyEvent.

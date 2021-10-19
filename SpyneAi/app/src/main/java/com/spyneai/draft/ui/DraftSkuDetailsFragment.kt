@@ -81,7 +81,9 @@ class DraftSkuDetailsFragment : BaseFragment<DraftViewModel, FragmentDraftSkuDet
                     binding.rvExteriorImage.visibility = View.VISIBLE
 
                     binding.rvExteriorImage.apply {
-                          adapter = LocalDraftImagesAdapter(requireContext(),localExterior)
+                          adapter = LocalDraftImagesAdapter(requireContext(),
+                              localExterior,
+                              intent.getStringExtra(AppConstants.CATEGORY_NAME)!!)
                     }
                 }
 
@@ -93,7 +95,10 @@ class DraftSkuDetailsFragment : BaseFragment<DraftViewModel, FragmentDraftSkuDet
                     binding.tvInterior.visibility = View.VISIBLE
                     binding.rvInteriors.visibility = View.VISIBLE
                     binding.rvInteriors.apply {
-                         adapter = LocalDraftImagesAdapter(requireContext(),localInteriorList)
+                         adapter = LocalDraftImagesAdapter(requireContext(),
+                             localInteriorList,
+                             intent.getStringExtra(AppConstants.CATEGORY_NAME)!!
+                         )
                     }
                 }
 
@@ -105,7 +110,9 @@ class DraftSkuDetailsFragment : BaseFragment<DraftViewModel, FragmentDraftSkuDet
                     binding.tvFocused.visibility = View.VISIBLE
                     binding.rvFocused.visibility = View.VISIBLE
                     binding.rvFocused.apply {
-                        adapter = LocalDraftImagesAdapter(requireContext(),localMiscList)
+                        adapter = LocalDraftImagesAdapter(requireContext(),
+                            localMiscList,
+                            intent.getStringExtra(AppConstants.CATEGORY_NAME)!!)
                     }
                 }
 
@@ -396,7 +403,8 @@ class DraftSkuDetailsFragment : BaseFragment<DraftViewModel, FragmentDraftSkuDet
 
                             binding.rvExteriorImage.visibility = View.VISIBLE
                             binding.rvExteriorImage.apply {
-                                    adapter = DraftImagesAdapter(requireContext(),exterior)
+                                    adapter = DraftImagesAdapter(requireContext(),exterior,
+                                        intent.getStringExtra(AppConstants.CATEGORY_NAME)!!)
                             }
                         }
 
@@ -408,7 +416,8 @@ class DraftSkuDetailsFragment : BaseFragment<DraftViewModel, FragmentDraftSkuDet
                             binding.rvInteriors.visibility = View.VISIBLE
                             binding.tvInterior.visibility = View.VISIBLE
                             binding.rvInteriors.apply {
-                                adapter = DraftImagesAdapter(requireContext(),interiorList)
+                                adapter = DraftImagesAdapter(requireContext(),interiorList,
+                                    intent.getStringExtra(AppConstants.CATEGORY_NAME)!!)
                             }
                         }
 
@@ -420,7 +429,8 @@ class DraftSkuDetailsFragment : BaseFragment<DraftViewModel, FragmentDraftSkuDet
                             binding.rvFocused.visibility = View.VISIBLE
                             binding.tvFocused.visibility = View.VISIBLE
                             binding.rvFocused.apply {
-                                   adapter = DraftImagesAdapter(requireContext(),miscList)
+                                   adapter = DraftImagesAdapter(requireContext(),miscList,
+                                       intent.getStringExtra(AppConstants.CATEGORY_NAME)!!)
                             }
                         }
 

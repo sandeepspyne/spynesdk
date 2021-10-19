@@ -496,80 +496,84 @@ class HomeDashboardFragment :
 
     private fun setSliderRecycler() {
 
-        binding.ivBanner.setSliderThumb(
-            ContextCompat.getDrawable(
-                requireContext(),
-                R.drawable.ic_sliderline
-            )
-        )
-
-        tabLayout = binding.tbDashboard
-        tabLayout.addTab(tabLayout.newTab());
-        tabLayout.addTab(tabLayout.newTab());
-
-
-        binding.ivBanner.setBeforeImage(
-            ContextCompat.getDrawable(
-                requireContext(),
-                R.drawable.car_before
-            )
-        ).setAfterImage(ContextCompat.getDrawable(requireContext(), R.drawable.car_after))
-        binding.ivNext.setOnClickListener {
-            val tab: TabLayout.Tab = binding.tbDashboard.getTabAt(1)!!
-            tab.select()
-            binding.ivBanner.setBeforeImage(
+        try {
+            binding.ivBanner.setSliderThumb(
                 ContextCompat.getDrawable(
                     requireContext(),
-                    R.drawable.footwear_before
+                    R.drawable.ic_sliderline
                 )
-            ).setAfterImage(ContextCompat.getDrawable(requireContext(), R.drawable.footwear_after))
-        }
+            )
 
-        binding.ivPrevious.setOnClickListener {
-            val tab: TabLayout.Tab = binding.tbDashboard.getTabAt(0)!!
-            tab.select()
+            tabLayout = binding.tbDashboard
+            tabLayout.addTab(tabLayout.newTab());
+            tabLayout.addTab(tabLayout.newTab());
+
+
             binding.ivBanner.setBeforeImage(
                 ContextCompat.getDrawable(
                     requireContext(),
                     R.drawable.car_before
                 )
             ).setAfterImage(ContextCompat.getDrawable(requireContext(), R.drawable.car_after))
+            binding.ivNext.setOnClickListener {
+                val tab: TabLayout.Tab = binding.tbDashboard.getTabAt(1)!!
+                tab.select()
+                binding.ivBanner.setBeforeImage(
+                    ContextCompat.getDrawable(
+                        requireContext(),
+                        R.drawable.footwear_before
+                    )
+                ).setAfterImage(ContextCompat.getDrawable(requireContext(), R.drawable.footwear_after))
+            }
+
+            binding.ivPrevious.setOnClickListener {
+                val tab: TabLayout.Tab = binding.tbDashboard.getTabAt(0)!!
+                tab.select()
+                binding.ivBanner.setBeforeImage(
+                    ContextCompat.getDrawable(
+                        requireContext(),
+                        R.drawable.car_before
+                    )
+                ).setAfterImage(ContextCompat.getDrawable(requireContext(), R.drawable.car_after))
+            }
+
+            tabLayout.addOnTabSelectedListener(object : TabLayout.OnTabSelectedListener {
+                override fun onTabSelected(tab: TabLayout.Tab?) {
+                    if (tab?.position == 0)
+                        binding.ivBanner.setBeforeImage(
+                            ContextCompat.getDrawable(
+                                requireContext(),
+                                R.drawable.car_before
+                            )
+                        ).setAfterImage(
+                            ContextCompat.getDrawable(
+                                requireContext(),
+                                R.drawable.car_after
+                            )
+                        )
+                    else
+                        binding.ivBanner.setBeforeImage(
+                            ContextCompat.getDrawable(
+                                requireContext(),
+                                R.drawable.footwear_before
+                            )
+                        ).setAfterImage(
+                            ContextCompat.getDrawable(
+                                requireContext(),
+                                R.drawable.footwear_after
+                            )
+                        )
+                }
+
+                override fun onTabUnselected(tab: TabLayout.Tab?) {
+                }
+
+                override fun onTabReselected(tab: TabLayout.Tab?) {
+                }
+            })
+        }catch (e : Exception){
+            e.printStackTrace()
         }
-
-        tabLayout.addOnTabSelectedListener(object : TabLayout.OnTabSelectedListener {
-            override fun onTabSelected(tab: TabLayout.Tab?) {
-                if (tab?.position == 0)
-                    binding.ivBanner.setBeforeImage(
-                        ContextCompat.getDrawable(
-                            requireContext(),
-                            R.drawable.car_before
-                        )
-                    ).setAfterImage(
-                        ContextCompat.getDrawable(
-                            requireContext(),
-                            R.drawable.car_after
-                        )
-                    )
-                else
-                    binding.ivBanner.setBeforeImage(
-                        ContextCompat.getDrawable(
-                            requireContext(),
-                            R.drawable.footwear_before
-                        )
-                    ).setAfterImage(
-                        ContextCompat.getDrawable(
-                            requireContext(),
-                            R.drawable.footwear_after
-                        )
-                    )
-            }
-
-            override fun onTabUnselected(tab: TabLayout.Tab?) {
-            }
-
-            override fun onTabReselected(tab: TabLayout.Tab?) {
-            }
-        })
 
     }
 

@@ -69,6 +69,7 @@ class MainDashboardActivity : AppCompatActivity() {
 
         if (intent.getBooleanExtra("show_ongoing", false)) {
             val intent = Intent(this, MyOrdersActivity::class.java)
+            intent.putExtra("TAB_ID", 1)
             startActivity(intent)
         }
 

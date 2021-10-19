@@ -55,6 +55,9 @@ class DraftSkusAdapter (
         holder.tvCategory.text = skuList[position].subCategory
         holder.tvDate.text = skuList[position].created_on
 
+        if (skuList[position].categoryId != AppConstants.CARS_CATEGORY_ID)
+            holder.ivThumbnail.rotation = 90F
+
         try {
             if (Utilities.getPreference(context, AppConstants.CATEGORY_NAME).equals("Food & Beverages")) {
                 Glide.with(context)

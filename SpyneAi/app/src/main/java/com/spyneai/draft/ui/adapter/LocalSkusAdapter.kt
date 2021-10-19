@@ -54,6 +54,9 @@ class LocalSkusAdapter(
         if (skuList[position].categoryId == AppConstants.CARS_CATEGORY_ID && (skuList[position].categoryId == skuList[position].subcategoryId))
             holder.tvCategory.text = "Automobiles"
 
+        if (skuList[position].categoryId != AppConstants.CARS_CATEGORY_ID)
+            holder.ivThumbnail.rotation = 90F
+
         try {
 
             if (skuList[position].thumbnail != null) {

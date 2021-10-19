@@ -16,7 +16,8 @@ import com.spyneai.processedimages.ui.adapter.ProcessedImagesAdapter
 
 class DraftImagesAdapter(
     val context: Context,
-    val imageList: ArrayList<ImagesOfSkuRes.Data>
+    val imageList: ArrayList<ImagesOfSkuRes.Data>,
+    val categoryName : String
 ) : BaseAdapter() {
     override fun getCount(): Int {
         return imageList.size
@@ -35,6 +36,9 @@ class DraftImagesAdapter(
         val ivRaw = view.findViewById<TextView>(R.id.ivRaw) as ImageView
 
         try {
+            if(categoryName != "Automobiles")
+                ivRaw.rotation = 90f
+
             Glide.with(context) // replace with 'this' if it's in activity
                 .load(imageList[position].input_image_hres_url)
                 .error(R.mipmap.defaults) // show error drawable if the image is not a gif
