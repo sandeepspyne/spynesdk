@@ -79,11 +79,77 @@ class AngleSelectionDialog : BaseDialogFragment<ShootViewModel,DialogAngleSelect
             //create sku
             val createProjectRes = (viewModel.createProjectRes.value as Resource.Success).value
 
-            createSku(
-                createProjectRes.project_id,
-                viewModel.subCategory.value?.prod_sub_cat_id!!
-            )
+            if (viewModel.fromVideo){
+                updateSku()
+                observerUpdateSku()
+            }else{
+                createSku(
+                    createProjectRes.project_id,
+                    viewModel.subCategory.value?.prod_sub_cat_id!!
+                )
+            }
         }
+    }
+
+    private fun observerUpdateSku() {
+        val createProjectRes = (viewModel.createProjectRes.value as Resource.Success).value
+
+        viewModel.updateVideoSkuRes.observe(viewLifecycleOwner,{
+            when (it) {
+                is Resource.Success -> {
+                    Utilities.hideProgressDialog()
+
+                    BaseApplication.getContext().captureEvent(
+                        Events.CREATE_SKU,
+                        Properties().putValue("sku_name", viewModel.sku.value?.skuName.toString())
+                            .putValue("project_id", createProjectRes.project_id)
+                            .putValue("prod_sub_cat_id", viewModel.subCategory.value?.prod_sub_cat_id!!)
+                            .putValue("angles", viewModel.exterirorAngles.value!!)
+                    )
+
+                    val sku = viewModel.sku.value
+                    sku?.skuId =  viewModel.sku.value?.skuId!!
+                    sku?.projectId = createProjectRes.project_id
+                    sku?.createdOn = System.currentTimeMillis()
+                    sku?.totalImages = viewModel.exterirorAngles.value
+                    sku?.categoryName = viewModel.categoryDetails.value?.categoryName
+                    sku?.categoryId = viewModel.categoryDetails.value?.categoryId
+                    sku?.subcategoryName = viewModel.subCategory.value?.sub_cat_name
+                    sku?.subcategoryId = viewModel.subCategory.value?.prod_sub_cat_id!!
+                    sku?.exteriorAngles = viewModel.exterirorAngles.value
+
+                    viewModel.sku.value = sku
+                    viewModel.isSubCategoryConfirmed.value = true
+                    viewModel.isSkuCreated.value = true
+                    viewModel.showLeveler.value = true
+
+                    //add sku to local database
+                    viewModel.insertSku(sku!!)
+
+                }
+
+
+                is Resource.Failure -> {
+                    viewModel.isCameraButtonClickable = true
+                    BaseApplication.getContext().captureFailureEvent(
+                        Events.CREATE_SKU_FAILED, Properties(),
+                        it.errorMessage!!
+                    )
+                    Utilities.hideProgressDialog()
+                    handleApiError(it) { updateSku() }
+                }
+            }
+        })
+    }
+
+    private fun updateSku() {
+        Utilities.showProgressDialog(requireContext())
+
+        viewModel.updateVideoSku(
+            viewModel.sku.value?.skuId!!,
+            viewModel.subCategory.value?.prod_sub_cat_id!!,
+            viewModel.exterirorAngles.value!!
+        )
     }
 
     private fun createSku(projectId: String, prod_sub_cat_id: String) {

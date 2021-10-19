@@ -1,5 +1,5 @@
 {
-  "version": 3,
+  "version": 2,
   "artifactType": {
     "type": "APK",
     "kind": "Directory"
@@ -10,11 +10,9 @@
     {
       "type": "SINGLE",
       "filters": [],
-      "attributes": [],
-      "versionCode": 23,
-      "versionName": "4.9",
+      "versionCode": 25,
+      "versionName": "5.0",
       "outputFile": "app-karvi-release.apk"
     }
-  ],
-  "elementType": "File"
+  ]
 }

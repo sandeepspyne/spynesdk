@@ -97,7 +97,7 @@ android {
             dimension 'version'
             applicationId "com.spyneai.karvi"
             versionCode 25
-            versionName "5.1"
+            versionName "5.0"
         }
 
         travophotos {
@@ -139,7 +139,7 @@ android {
             dimension 'version'
             applicationId "com.spyneai.cars24india"
             versionCode 8
-            versionName "1.8"
+            versionName "1.7"
         }
 
         automoser {
