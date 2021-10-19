@@ -113,14 +113,16 @@ class SubCategoryAndAngleFragment : BaseFragment<ShootViewModel,FragmentSelectSu
                hideViews()
 
                 viewModel.subCategory.value = data
-                if (getString(R.string.app_name) == AppConstants.KARVI){
-                    viewModel.exterirorAngles.value = 8
-                    //create sku
-                    createSku()
-                    observerSku()
-                }else{
-                    selectAngles()
+
+                when(getString(R.string.app_name)){
+                    AppConstants.KARVI,AppConstants.CARS24,AppConstants.CARS24_INDIA -> {
+                        viewModel.exterirorAngles.value = 8
+                        //create sku
+                        createSku()
+                        observerSku()
+                    }else -> selectAngles()
                 }
+
             }
         }
     }
