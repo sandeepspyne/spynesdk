@@ -1,21 +1,39 @@
 package com.spyneai.orders.ui.adapter
 
+import android.annotation.SuppressLint
 import android.content.Context
+import android.graphics.drawable.Drawable
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
+import androidx.cardview.widget.CardView
 import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
+import com.bumptech.glide.load.DataSource
 import com.bumptech.glide.load.engine.DiskCacheStrategy
+import com.bumptech.glide.load.engine.GlideException
+import com.bumptech.glide.request.RequestListener
+import com.bumptech.glide.request.RequestOptions
+import com.bumptech.glide.request.target.Target
+import com.bumptech.glide.signature.ObjectKey
+import com.facebook.shimmer.Shimmer
+import com.facebook.shimmer.ShimmerDrawable
+import com.facebook.shimmer.ShimmerFrameLayout
+import com.google.android.material.snackbar.Snackbar
+import com.posthog.android.Properties
 import com.spyneai.R
+import com.spyneai.captureEvent
+import com.spyneai.orders.data.ProcessedImage
+import com.spyneai.posthog.Events
 
 
 class KarviImagesAdapter(
     val context: Context,
-    val imageListAfter: ArrayList<String>,
+    val imageListAfter: ArrayList<ProcessedImage>,
     val btnlistener: BtnClickListener,
 )
     : RecyclerView.Adapter<KarviImagesAdapter.ViewHolder>() {
@@ -45,13 +63,28 @@ class KarviImagesAdapter(
     }
 
     // Replace the contents of a view (invoked by the layout manager)
-    override fun onBindViewHolder(viewHolder: ViewHolder, position: Int) {
+    override fun onBindViewHolder(viewHolder: ViewHolder, @SuppressLint("RecyclerView") position: Int) {
+
+         val shimmer = Shimmer.AlphaHighlightBuilder()// The attributes for a ShimmerDrawable is set by this builder
+            .setDuration(1800) // how long the shimmering animation takes to do one full sweep
+            .setBaseAlpha(0.7f) //the alpha of the underlying children
+            .setHighlightAlpha(0.6f) // the shimmer alpha amount
+            .setDirection(Shimmer.Direction.LEFT_TO_RIGHT)
+            .setAutoStart(true)
+            .build()
+
+// This is the placeholder for the imageView
+        val shimmerDrawable = ShimmerDrawable().apply {
+            setShimmer(shimmer)
+        }
+
 
         Glide.with(context) // replace with 'this' if it's in activity
-            .load(imageListAfter[position])
+            .load(imageListAfter[position].imageUrl)
             .diskCacheStrategy(DiskCacheStrategy.RESOURCE)
-            .error(R.mipmap.defaults) // show error drawable if the image is not a gif
+            .placeholder(shimmerDrawable)
             .into(viewHolder.imgAfterReplaced)
+
 
         mClickListener = btnlistener
 
@@ -60,6 +93,10 @@ class KarviImagesAdapter(
             if (mClickListener != null)
                 mClickListener?.onBtnClick(position)
         })
+    }
+
+    private fun loadFailed(position: Int) {
+        notifyItemChanged(position)
     }
 
     // Return the size of your dataset (invoked by the layout manager)

@@ -29,6 +29,7 @@ import com.spyneai.isMagnatoMeterAvailable
 import com.spyneai.needs.AppConstants
 import com.spyneai.needs.ScrollingLinearLayoutManager
 import com.spyneai.needs.Utilities
+import com.spyneai.orders.data.ProcessedImage
 import com.spyneai.orders.data.response.ImagesOfSkuRes
 import com.spyneai.orders.ui.adapter.KarviImagesAdapter
 import com.spyneai.processedimages.ui.data.ProcessedViewModel
@@ -50,6 +51,9 @@ class KarviShowImagesActivity : AppCompatActivity() {
     lateinit var imageListAfter: List<String>
     lateinit var imageListInterior: List<String>
     lateinit var imageListFocused: List<String>
+    val processdImagesListInterior = ArrayList<ProcessedImage>()
+    val processdImagesListFocused = ArrayList<ProcessedImage>()
+    val processdImagesList = ArrayList<ProcessedImage>()
 
     lateinit var imageListWaterMark: ArrayList<String>
     lateinit var listHdQuality: ArrayList<String>
@@ -126,6 +130,7 @@ class KarviShowImagesActivity : AppCompatActivity() {
 
                             (imageListWaterMark as ArrayList).add(dataList!![i].output_image_lres_wm_url)
                             (listHdQuality as ArrayList).add(dataList!![i].output_image_hres_url)
+                            processdImagesList.add(ProcessedImage(dataList!![i].output_image_lres_url))
 
                             Utilities.savePrefrence(
                                 this@KarviShowImagesActivity,
@@ -138,6 +143,8 @@ class KarviShowImagesActivity : AppCompatActivity() {
                             (imageListInterior as ArrayList).add(dataList!![i].output_image_lres_url)
                             (imageListWaterMark as ArrayList).add(dataList!![i].output_image_lres_wm_url)
                             (listHdQuality as ArrayList).add(dataList!![i].output_image_hres_url)
+                            processdImagesListInterior.add(ProcessedImage(dataList!![i].output_image_lres_url))
+
 
                             Utilities.savePrefrence(
                                 this@KarviShowImagesActivity,
@@ -150,6 +157,7 @@ class KarviShowImagesActivity : AppCompatActivity() {
                             (imageListFocused as ArrayList).add(dataList!![i].output_image_lres_url)
                             (imageListWaterMark as ArrayList).add(dataList!![i].output_image_lres_wm_url)
                             (listHdQuality as ArrayList).add(dataList!![i].output_image_hres_url)
+                            processdImagesListFocused.add(ProcessedImage(dataList!![i].output_image_lres_url))
 
                             Utilities.savePrefrence(
                                 this@KarviShowImagesActivity,
@@ -163,6 +171,7 @@ class KarviShowImagesActivity : AppCompatActivity() {
                             (imageListAfter as ArrayList).add(dataList!![i].output_image_lres_wm_url)
                             (listHdQuality as ArrayList).add(dataList!![i].output_image_hres_url)
                             (imageListWaterMark as ArrayList).add(dataList!![i].output_image_lres_wm_url)
+                            processdImagesList.add(ProcessedImage(dataList!![i].output_image_lres_url))
 
                             Utilities.savePrefrence(
                                 this@KarviShowImagesActivity,
@@ -171,8 +180,6 @@ class KarviShowImagesActivity : AppCompatActivity() {
                             )
                             hideData(1)
                         }
-
-
                     }
 
                     showReplacedImagesAdapter.notifyDataSetChanged()
@@ -239,7 +246,7 @@ class KarviShowImagesActivity : AppCompatActivity() {
         listHdQuality = ArrayList<String>()
 
         showReplacedImagesAdapter = KarviImagesAdapter(this,
-            listHdQuality as ArrayList<String>,
+            processdImagesList,
             object : KarviImagesAdapter.BtnClickListener {
                 override fun onBtnClick(position: Int) {
                     showImagesDialog(listHdQuality[position])
@@ -248,7 +255,7 @@ class KarviShowImagesActivity : AppCompatActivity() {
             })
 
         ShowReplacedImagesInteriorAdapter = KarviImagesAdapter(this,
-            imageListInterior as ArrayList<String>,
+            processdImagesListInterior,
             object : KarviImagesAdapter.BtnClickListener {
                 override fun onBtnClick(position: Int) {
                     //   showImagesDialog(position)
@@ -258,7 +265,7 @@ class KarviShowImagesActivity : AppCompatActivity() {
 
 
         ShowReplacedImagesFocusedAdapter = KarviImagesAdapter(this,
-            imageListFocused as ArrayList<String>,
+            processdImagesListFocused,
             object : KarviImagesAdapter.BtnClickListener {
                 override fun onBtnClick(position: Int) {
                     //   showImagesDialog(position)
