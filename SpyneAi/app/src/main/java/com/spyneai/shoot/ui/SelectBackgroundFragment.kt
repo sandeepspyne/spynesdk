@@ -411,7 +411,8 @@ class SelectBackgroundFragment : BaseFragment<ProcessViewModel, FragmentSelectBa
             Utilities.getPreference(requireContext(), AppConstants.AUTH_KEY).toString(),
             viewModel.sku.value?.skuId!!,
             backgroundSelect,
-            false,binding.cbBlurNoPlate.isChecked,binding.cbWindowCorrection.isChecked)
+            viewModel.fromVideo,
+            binding.cbBlurNoPlate.isChecked,binding.cbWindowCorrection.isChecked)
 
         log("Process sku started")
         log(
