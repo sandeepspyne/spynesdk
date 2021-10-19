@@ -78,8 +78,7 @@ class ShootPortraitActivity :AppCompatActivity(), GoogleApiClient.ConnectionCall
         setContentView(R.layout.activity_shoot)
 
 
-        googleApiClient =
-            GoogleApiClient.Builder(this, this, this).addApi(LocationServices.API).build()
+        googleApiClient = GoogleApiClient.Builder(this, this, this).addApi(LocationServices.API).build()
 
         setLocale()
 
@@ -357,7 +356,7 @@ class ShootPortraitActivity :AppCompatActivity(), GoogleApiClient.ConnectionCall
 
     override fun onStart() {
         super.onStart()
-        googleApiClient?.isConnected()
+        googleApiClient?.connect()
         shoot("onStart called(shhot activity)")
     }
 
@@ -373,9 +372,7 @@ class ShootPortraitActivity :AppCompatActivity(), GoogleApiClient.ConnectionCall
 
     override fun onStop() {
         super.onStop()
-        if (googleApiClient?.isConnected() == true) {
-            googleApiClient?.disconnect()
-        }
+        googleApiClient?.disconnect()
         shoot("onStop called(shoot activity)")
     }
 
@@ -445,10 +442,9 @@ class ShootPortraitActivity :AppCompatActivity(), GoogleApiClient.ConnectionCall
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION)
             == PackageManager.PERMISSION_GRANTED
         ) {
-            val lastLocation: Location =
-                LocationServices.FusedLocationApi.getLastLocation(googleApiClient)
-            val lat: Double = lastLocation.getLatitude()
-            val lon: Double = lastLocation.getLongitude()
+            val lastLocation = LocationServices.FusedLocationApi.getLastLocation(googleApiClient)
+            val lat: Double = lastLocation.latitude
+            val lon: Double = lastLocation.longitude
 
             val geocoder = Geocoder(this, Locale.getDefault())
             val addresses: List<Address> = geocoder.getFromLocation(lat, lon, 1)
@@ -474,8 +470,6 @@ class ShootPortraitActivity :AppCompatActivity(), GoogleApiClient.ConnectionCall
     override fun onConnectionSuspended(p0: Int) {
         TODO("Not yet implemented")
     }
-
-
 
 
     companion object {

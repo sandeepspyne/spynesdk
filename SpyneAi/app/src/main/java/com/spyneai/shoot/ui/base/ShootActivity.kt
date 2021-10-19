@@ -9,15 +9,10 @@ import android.content.pm.PackageManager
 import android.location.Address
 import android.location.Geocoder
 import android.location.Location
-import android.net.Uri
-import android.os.Build
 import android.os.Bundle
-import android.provider.Settings
 import android.util.Log
 import android.view.KeyEvent
 import android.view.WindowManager
-import android.widget.Toast
-import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.ViewModelProvider
@@ -37,7 +32,6 @@ import com.spyneai.shoot.data.model.CreateProjectRes
 import com.spyneai.shoot.data.model.Sku
 import com.spyneai.shoot.ui.OverlaysFragment
 import com.spyneai.shoot.ui.SelectBackgroundFragment
-import com.spyneai.shoot.ui.dialogs.RequiredPermissionDialog
 import com.spyneai.shoot.ui.dialogs.ShootExitDialog
 import com.spyneai.shoot.ui.ecomwithgrid.GridEcomFragment
 import com.spyneai.shoot.ui.ecomwithgrid.ProjectDetailFragment
@@ -48,7 +42,6 @@ import org.json.JSONObject
 import java.io.File
 import java.util.*
 import kotlin.collections.ArrayList
-import kotlin.collections.HashMap
 
 
 class ShootActivity : AppCompatActivity(), GoogleApiClient.ConnectionCallbacks,
@@ -64,6 +57,7 @@ class ShootActivity : AppCompatActivity(), GoogleApiClient.ConnectionCallbacks,
     lateinit var shootViewModel: ShootViewModel
     val location_data = JSONObject()
     val TAG = "ShootActivity"
+
     private var googleApiClient: GoogleApiClient? = null
 
 
@@ -80,8 +74,11 @@ class ShootActivity : AppCompatActivity(), GoogleApiClient.ConnectionCallbacks,
         setContentView(R.layout.activity_shoot)
 
 
-        googleApiClient =
-            GoogleApiClient.Builder(this, this, this).addApi(LocationServices.API).build()
+
+
+        googleApiClient = GoogleApiClient.Builder(this, this, this).addApi(LocationServices.API).build()
+
+
 
         setLocale()
 
@@ -356,7 +353,7 @@ class ShootActivity : AppCompatActivity(), GoogleApiClient.ConnectionCallbacks,
 
     override fun onStart() {
         super.onStart()
-        googleApiClient?.isConnected()
+        googleApiClient?.connect()
         shoot("onStart called(shhot activity)")
     }
 
@@ -372,9 +369,7 @@ class ShootActivity : AppCompatActivity(), GoogleApiClient.ConnectionCallbacks,
 
     override fun onStop() {
         super.onStop()
-        if (googleApiClient?.isConnected() == true) {
-            googleApiClient?.disconnect()
-        }
+        googleApiClient?.disconnect()
         shoot("onStop called(shoot activity)")
     }
 
@@ -447,10 +442,9 @@ class ShootActivity : AppCompatActivity(), GoogleApiClient.ConnectionCallbacks,
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION)
             == PackageManager.PERMISSION_GRANTED
         ) {
-            val lastLocation: Location =
-                LocationServices.FusedLocationApi.getLastLocation(googleApiClient)
-            val lat: Double = lastLocation.getLatitude()
-            val lon: Double = lastLocation.getLongitude()
+            val lastLocation = LocationServices.FusedLocationApi.getLastLocation(googleApiClient)
+            val lat: Double = lastLocation.latitude
+            val lon: Double = lastLocation.longitude
 
             val geocoder = Geocoder(this, Locale.getDefault())
             val addresses: List<Address> = geocoder.getFromLocation(lat, lon, 1)
