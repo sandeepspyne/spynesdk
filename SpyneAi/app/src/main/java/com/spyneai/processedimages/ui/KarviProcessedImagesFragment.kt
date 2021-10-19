@@ -121,39 +121,38 @@ class KarviProcessedImagesFragment : BaseFragment<ProcessedViewModel, ActivityKa
                             (imageListWaterMark as ArrayList).add(dataList!![i].output_image_lres_wm_url)
                             (listHdQuality as ArrayList).add(dataList!![i].output_image_lres_url)
                             processdImagesList.add(ProcessedImage(dataList!![i].output_image_lres_url))
+                            binding.tvYourEmailIdReplaced.visibility = View.VISIBLE
+
 
                             Utilities.savePrefrence(
                                 requireContext(),
                                 AppConstants.NO_OF_IMAGES,
                                 imageListAfter.size.toString()
                             )
-                            hideData(0)
                         } else if (dataList!![i].image_category.equals("Interior")) {
                             Category = dataList!![i].image_category
                             (imageListInterior as ArrayList).add(dataList!![i].output_image_lres_url)
                             (imageListWaterMark as ArrayList).add(dataList!![i].output_image_lres_wm_url)
                             (listHdQuality as ArrayList).add(dataList!![i].output_image_lres_url)
                             processdImagesListInterior.add(ProcessedImage(dataList!![i].output_image_lres_url))
-
+                            binding.tvInterior.visibility = View.VISIBLE
                             Utilities.savePrefrence(
                                 requireContext(),
                                 AppConstants.NO_OF_IMAGES,
                                 imageListAfter.size.toString()
                             )
-                            hideData(0)
                         } else if (dataList!![i].image_category.equals("Focus Shoot")) {
                             Category = dataList!![i].image_category
                             (imageListFocused as ArrayList).add(dataList!![i].output_image_lres_url)
                             (imageListWaterMark as ArrayList).add(dataList!![i].output_image_lres_wm_url)
                             (listHdQuality as ArrayList).add(dataList!![i].output_image_lres_url)
                             processdImagesListFocused.add(ProcessedImage(dataList!![i].output_image_lres_url))
-
+                            binding.tvFocused.visibility = View.VISIBLE
                             Utilities.savePrefrence(
                                 requireContext(),
                                 AppConstants.NO_OF_IMAGES,
                                 imageListAfter.size.toString()
                             )
-                            hideData(0)
                         } else {
                             Category = dataList!![i].image_category
                             (imageList as ArrayList).add(dataList!![i].input_image_lres_url)
@@ -167,7 +166,6 @@ class KarviProcessedImagesFragment : BaseFragment<ProcessedViewModel, ActivityKa
                                 AppConstants.NO_OF_IMAGES,
                                 imageListAfter.size.toString()
                             )
-                            hideData(1)
                         }
 
 
@@ -186,18 +184,18 @@ class KarviProcessedImagesFragment : BaseFragment<ProcessedViewModel, ActivityKa
         })
     }
 
-    private fun hideData(i: Int) {
-
-        if (i == 0) {
-            binding.tvYourEmailIdReplaced.visibility = View.VISIBLE
-            binding.tvViewGif.visibility = View.GONE
-            binding.tvInterior.visibility = View.GONE
-        } else {
-            binding.tvYourEmailIdReplaced.visibility = View.GONE
-            binding.tvViewGif.visibility = View.GONE
-            binding.tvInterior.visibility = View.GONE
-        }
-    }
+//    private fun hideData(i: Int) {
+//
+//        if (i == 0) {
+//            binding.tvYourEmailIdReplaced.visibility = View.VISIBLE
+//            binding.tvViewGif.visibility = View.GONE
+//            binding.tvInterior.visibility = View.GONE
+//        } else {
+//            binding.tvYourEmailIdReplaced.visibility = View.GONE
+//            binding.tvViewGif.visibility = View.GONE
+//            binding.tvInterior.visibility = View.GONE
+//        }
+//    }
 
     private fun setListeners() {
 
