@@ -441,30 +441,98 @@
 
             </LinearLayout>
 
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:paddingHorizontal="@dimen/dp_20"
+                android:layout_marginTop="@dimen/dp_10"
+                android:orientation="horizontal">
+
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:gravity="center_vertical"
+                    android:id="@+id/tv360"
+                    android:fontFamily="@font/poppins_medium"
+                    android:text="@string/generate_three_sixty"
+                    android:textColor="@color/black"
+                    android:textSize="@dimen/sp_16" />
+
+                <CheckBox
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:checked="true"
+                    android:gravity="center_vertical"
+                    android:id="@+id/cb360"
+                    android:fontFamily="@font/poppins_medium"
+                    android:textSize="@dimen/sp_16"
+                    android:textColor="@color/black" />
+
+
+
+
+
+            </LinearLayout>
+
+
+
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:paddingHorizontal="@dimen/dp_20"
+                android:orientation="horizontal">
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="@dimen/dp_20"
-                android:layout_marginEnd="@dimen/dp_10"
-                android:layout_marginTop="@dimen/dp_10"
-                android:fontFamily="@font/bold"
-                android:id="@+id/tv360"
-
-                android:text="@string/generate_three_sixty"
+                android:fontFamily="@font/poppins_medium"
+                android:id="@+id/tvBlurNoPlate"
+                android:gravity="center_vertical"
+                android:layout_weight="1"
+                android:text="@string/blur_no_plate"
                 android:textColor="@color/black"
                 android:textSize="@dimen/sp_16" />
 
             <CheckBox
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="@dimen/dp_20"
-                android:text="@string/enable"
-                android:checked="true"
-                android:id="@+id/cb360"
+                android:id="@+id/cbBlurNoPlate"
+                android:gravity="center_vertical"
                 android:fontFamily="@font/poppins_medium"
                 android:textSize="@dimen/sp_16"
+                android:textColor="@color/black" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:paddingHorizontal="@dimen/dp_20"
+                android:orientation="horizontal">
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center_vertical"
+                android:fontFamily="@font/poppins_medium"
+                android:layout_weight="1"
+                android:id="@+id/tvWindowReflection"
+                android:text="@string/show_window_reflection"
                 android:textColor="@color/black"
-                android:paddingLeft="@dimen/dp_5"/>
+                android:textSize="@dimen/sp_16" />
+
+            <CheckBox
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="center_vertical"
+
+                android:id="@+id/cbWindowCorrection"
+                android:fontFamily="@font/poppins_medium"
+                android:textSize="@dimen/sp_16"
+                android:textColor="@color/black" />
+
+            </LinearLayout>
 
 
             <TextView

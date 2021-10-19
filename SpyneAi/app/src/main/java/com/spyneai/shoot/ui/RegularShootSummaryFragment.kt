@@ -362,7 +362,11 @@ class RegularShootSummaryFragment  : BaseFragment<ProcessViewModel, FragmentRegu
             Utilities.getPreference(requireContext(),AppConstants.AUTH_KEY).toString(),
             viewModel.sku.value?.skuId!!,
             viewModel.backgroundSelect!!,
-            true)
+            true,
+            viewModel.numberPlateBlur,
+            viewModel.windowCorrection
+
+        )
 
         log("Process sku started")
         log("Auth key: "+Utilities.getPreference(requireContext(),AppConstants.AUTH_KEY).toString())

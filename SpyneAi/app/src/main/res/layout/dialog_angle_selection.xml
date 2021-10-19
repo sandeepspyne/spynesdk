@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical"
     android:layout_width="@dimen/dp_200"
     android:layout_height="wrap_content"
@@ -8,42 +7,28 @@
     android:layout_margin="@dimen/dp_10"
     android:gravity="center">
 
-    <androidx.cardview.widget.CardView
-        android:layout_width="@dimen/dp_200"
-        android:layout_height="match_parent"
-        android:gravity="center"
-        app:cardCornerRadius="@dimen/dp_10"
-        android:elevation="@dimen/dp_10"
-        android:orientation="vertical">
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:gravity="center"
-            android:orientation="vertical">
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="0dp"
-                android:layout_weight="1"
-                android:gravity="center"
-                android:orientation="vertical"
-                android:background="@drawable/bg_channel">
                 <TextView
-                    android:id="@+id/tv"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:id="@+id/tvChooseShot"
                     android:textSize="@dimen/sp_16"
+                    android:gravity="center"
+                    android:layout_gravity="center"
                     android:fontFamily="@font/medium"
                     android:textColor="@color/black"
-                    android:text="@string/choose_shoots" />
+                    android:text="@string/choose_shoots"/>
+
                 <TextView
+                    android:id="@+id/tvMoreAngle"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:gravity="center"
+                    android:layout_gravity="center"
                     android:textSize="@dimen/sp_13"
                     android:fontFamily="@font/medium"
                     android:textColor="@color/black"
                     android:text="@string/more_angles" />
+
                 <NumberPicker
                     android:id="@+id/npShoots"
                     android:layout_width="match_parent"
@@ -51,7 +36,6 @@
                     style="@style/AppTheme.Picker"
                     android:descendantFocusability="blocksDescendants"
                     android:selectionDividerHeight="@dimen/dp_1" />
-            </LinearLayout>
             <TextView
                 android:id="@+id/tvProceed"
                 android:layout_width="match_parent"
@@ -67,6 +51,4 @@
                 android:layout_marginEnd="@dimen/dp_20"
                 android:background="@drawable/bg_rectangle_button_ripple"
                 android:textSize="16sp" />
-        </LinearLayout>
-    </androidx.cardview.widget.CardView>
 </LinearLayout>

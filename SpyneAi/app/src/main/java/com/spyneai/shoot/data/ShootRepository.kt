@@ -96,18 +96,20 @@ class ShootRepository : BaseRepository() {
         clipperApi.uploadImageWithAngle(project_id, sku_id, image_category, auth_key, upload_type,sequenceNo, angle, image)
     }
 
-    suspend fun createProject(authKey: String
-                              ,projectName : String,
+    suspend fun createProject(authKey: String,
+                              projectName : String,
                               prodCatId : String,
-                              dynamicLayout : JSONObject? = null
+                              dynamicLayout : JSONObject? = null,
+                              location_data : JSONObject? = null
     ) = safeApiCall {
-        clipperApi.createProject(authKey, projectName, prodCatId,dynamicLayout)
+        clipperApi.createProject(authKey, projectName, prodCatId,dynamicLayout,location_data)
     }
 
     suspend fun createSku(authKey: String,projectId : String
                           ,prodCatId : String,prodSubCatId : String,
                           skuName : String,total_frames : Int,
-                          images : Int, videos : Int
+                          images : Int, videos : Int,
+
     ) = safeApiCall {
         clipperApi.createSku(authKey, projectId, prodCatId, prodSubCatId, skuName.uppercase(),
             total_frames,

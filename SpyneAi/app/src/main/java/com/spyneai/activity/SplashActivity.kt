@@ -37,7 +37,7 @@ class SplashActivity : AppCompatActivity() {
 
         when (getString(R.string.app_name)) {
 
-            AppConstants.SPYNE_AI ->{
+            AppConstants.SPYNE_AI, AppConstants.AUTO_FOTO ->{
                 ivPowredBy.visibility = View.INVISIBLE
             } else -> {
             ivPowredBy.visibility = View.VISIBLE
@@ -102,4 +102,5 @@ class SplashActivity : AppCompatActivity() {
 
         }, 3000)
     }
+
 }

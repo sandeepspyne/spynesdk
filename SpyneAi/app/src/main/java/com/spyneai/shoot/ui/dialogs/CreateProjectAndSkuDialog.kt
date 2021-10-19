@@ -60,7 +60,7 @@ class CreateProjectAndSkuDialog : BaseDialogFragment<ShootViewModel,DialogCreate
         viewModel.createProject(
             Utilities.getPreference(requireContext(),AppConstants.AUTH_KEY).toString(),
             removeWhiteSpace(binding.etVinNumber.text.toString()),
-            requireActivity().intent.getStringExtra(AppConstants.CATEGORY_ID).toString())
+            requireActivity().intent.getStringExtra(AppConstants.CATEGORY_ID).toString(), null,viewModel.location_data.value)
     }
 
 

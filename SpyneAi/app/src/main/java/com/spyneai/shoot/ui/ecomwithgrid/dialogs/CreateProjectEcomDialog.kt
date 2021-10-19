@@ -73,7 +73,7 @@ class CreateProjectEcomDialog :
         viewModel.createProject(
             Utilities.getPreference(requireContext(), AppConstants.AUTH_KEY).toString(),
             removeWhiteSpace(binding.etProjectName.text.toString()),
-            requireActivity().intent.getStringExtra(AppConstants.CATEGORY_ID).toString()
+            requireActivity().intent.getStringExtra(AppConstants.CATEGORY_ID).toString(), viewModel.location_data.value
         )
     }
 

@@ -43,6 +43,7 @@ import com.spyneai.shoot.response.UploadFolderRes
 import com.spyneai.shoot.ui.StartShootActivity
 import com.spyneai.shoot.ui.base.ShootActivity
 import com.spyneai.shoot.ui.dialogs.NoMagnaotoMeterDialog
+import com.spyneai.shoot.ui.dialogs.RequiredPermissionDialog
 import com.spyneai.threesixty.data.VideoLocalRepository
 import com.spyneai.threesixty.data.VideoUploadService
 import kotlinx.coroutines.GlobalScope
@@ -98,7 +99,7 @@ class MainDashboardActivity : AppCompatActivity() {
 
         binding.bottomNavigation.setOnNavigationItemSelectedListener {
 
-            Log.d(TAG, "onCreate: "+getString(R.string.app_name))
+            Log.d(TAG, "onCreate: " + getString(R.string.app_name))
 
             when (it.itemId) {
                 R.id.homeDashboardFragment -> setCurrentFragment(firstFragment)
@@ -168,17 +169,16 @@ class MainDashboardActivity : AppCompatActivity() {
                 }
 
                 R.id.completedOrdersFragment -> {
-                    if (getString(R.string.app_name) == AppConstants.SPYNE_AI){
-                        intent.putExtra("TAB_ID",0)
+                    if (getString(R.string.app_name) == AppConstants.SPYNE_AI) {
+                        intent.putExtra("TAB_ID", 0)
                         setCurrentFragment(myOrdersFragment)
-                    }
-                    else {
+                    } else {
                         val intent = Intent(this, MyOrdersActivity::class.java)
-                        intent.putExtra("TAB_ID",0)
+                        intent.putExtra("TAB_ID", 0)
                         startActivity(intent)
                     }
                 }
-//                 R.id.wallet -> setCurrentFragment(SecondFragment)
+                //R.id.wallet -> setCurrentFragment(SecondFragment)
                 R.id.logoutDashBoardFragment -> setCurrentFragment(thirdFragment)
             }
             true
@@ -239,8 +239,15 @@ class MainDashboardActivity : AppCompatActivity() {
         })
     }
 
+    protected fun allPermissionsGranted() = permissions.all {
+        ContextCompat.checkSelfPermission(this, it) == PackageManager.PERMISSION_GRANTED
+    }
+
     private val permissions = mutableListOf(
-        Manifest.permission.READ_EXTERNAL_STORAGE
+        Manifest.permission.CAMERA,
+        Manifest.permission.READ_EXTERNAL_STORAGE,
+        Manifest.permission.WRITE_EXTERNAL_STORAGE,
+        Manifest.permission.ACCESS_COARSE_LOCATION,
     ).apply {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
             add(Manifest.permission.ACCESS_MEDIA_LOCATION)
@@ -249,22 +256,23 @@ class MainDashboardActivity : AppCompatActivity() {
 
     private val permissionRequest =
         registerForActivityResult(ActivityResultContracts.RequestMultiplePermissions()) { permissions ->
-            if (permissions.all { it.value }) {
-                onPermissionGranted()
-                capture(Events.PERMISSIONS_GRANTED)
+
+            val requiredPermissions = if (getString(R.string.app_name) == AppConstants.OLA_CABS) {
+                permissions
             } else {
-                capture(Events.PERMISSIONS_DENIED)
-                Snackbar.make(
-                    binding.root,
-                    "App cannot work without permission",
-                    Snackbar.LENGTH_INDEFINITE
-                )
-                    .setAction(getString(R.string.allow)) {
-                        requestPermi()
-                    }
-                    .setActionTextColor(ContextCompat.getColor(this, R.color.primary))
-                    .show()
+                permissions.filter {
+                    it.key != Manifest.permission.ACCESS_COARSE_LOCATION
+                }
             }
+
+            if (requiredPermissions.all {
+                    it.value
+                }) {
+                onPermissionGranted()
+            } else {
+                RequiredPermissionDialog().show(supportFragmentManager, "RequiredPermissionDialog")
+            }
+
         }
 
     private fun capture(eventName: String) {
@@ -281,23 +289,24 @@ class MainDashboardActivity : AppCompatActivity() {
         )
     }
 
-    private fun requestPermi() {
-        permissionRequest.launch(permissions.toTypedArray())
-    }
-
-    protected fun allPermissionsGranted() = permissions.all {
-        ContextCompat.checkSelfPermission(this, it) == PackageManager.PERMISSION_GRANTED
-    }
+//    private fun requestPermi() {
+//        permissionRequest.launch(permissions.toTypedArray())
+//    }
+//
+//    protected fun allPermissionsGranted() = permissions.all {
+//        ContextCompat.checkSelfPermission(this, it) == PackageManager.PERMISSION_GRANTED
+//    }
 
     open fun onPermissionGranted() {
         Log.d(
             TAG,
-            "onPermissionGranted: " + Utilities.getPreference(this, AppConstants.CANCEL_ALL_WROKERS)
+            "onPermissionGranted: " + Utilities.getPreference
+                (this, AppConstants.CANCEL_ALL_WROKERS)
         )
         cancelAllWorkers()
-      //  startUploadService()
-       // startVideoUploadService()
-      //  checkFolderUpload()
+        startUploadService()
+        startVideoUploadService()
+        checkFolderUpload()
     }
 
     private fun startVideoUploadService() {
@@ -550,3 +559,22 @@ class MainDashboardActivity : AppCompatActivity() {
             super.onBackPressed()
     }
 }
+
+//    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+//        super.onActivityResult(requestCode, resultCode, data)
+//
+//        Log.d(TAG, "onActivityResult: " + requestCode)
+//        Log.d(TAG, "onActivityResult: " + resultCode)
+//
+//
+//        if (requestCode == 1000) {
+//                if (allPermissionsGranted()) {
+//                    onPermissionGranted()
+//
+//                } else {
+//                    permissionRequest.launch(permissions.toTypedArray())
+//                }
+//
+//            }
+//        }
+//    }

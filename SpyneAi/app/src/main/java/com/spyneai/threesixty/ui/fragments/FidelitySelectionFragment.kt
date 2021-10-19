@@ -5,9 +5,11 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import com.spyneai.R
 import com.spyneai.base.BaseFragment
 import com.spyneai.databinding.FragmentFidelitySelectionBinding
 import com.spyneai.needs.AppConstants
+import com.spyneai.setLocale
 import com.spyneai.threesixty.data.ThreeSixtyViewModel
 import com.spyneai.threesixty.ui.ThreeSixtyActivity
 
@@ -17,6 +19,7 @@ class FidelitySelectionFragment : BaseFragment<ThreeSixtyViewModel, FragmentFide
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        requireContext().setLocale()
 
         binding.ivFidelity.getSettings().setJavaScriptEnabled(true)
 
@@ -25,8 +28,14 @@ class FidelitySelectionFragment : BaseFragment<ThreeSixtyViewModel, FragmentFide
         setUpFramesSelection()
     }
 
+
+
+
+
     private fun setUpFramesSelection() {
-        val npFrames =  arrayOf("8 Frames", "12 Frames", "16 Frames", "24 Frames", "36 Frames", "72 Frames")
+        var frame = getString(R.string.frames)
+        
+        val npFrames =  arrayOf("8 "+frame, "12 "+frame, "16 "+frame, "24 "+frame, "36 "+frame, "72 "+frame)
 
         var lastSelectedFrames = 24
         var newSelectedFrames = 24

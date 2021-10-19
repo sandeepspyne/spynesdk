@@ -145,7 +145,7 @@ class DraftSkuDetailsFragment : BaseFragment<DraftViewModel, FragmentDraftSkuDet
                 )
             }
 
-            "Footwear", "E-Commerce", "Food & Beverages" -> {
+            "Footwear", "E-Commerce", "Food & Beverages", "Photo Box" -> {
                 shootIntent = Intent(
                     context,
                     ShootPortraitActivity::class.java
@@ -453,7 +453,7 @@ class DraftSkuDetailsFragment : BaseFragment<DraftViewModel, FragmentDraftSkuDet
 
                         exterior =
                             when (requireActivity().intent.getStringExtra(AppConstants.CATEGORY_NAME)) {
-                                "E-Commerce", "Footwear" -> {
+                                "E-Commerce", "Footwear", "Food & Beverages", "Photo Box" -> {
                                     list as ArrayList
                                 }
                                 else -> {

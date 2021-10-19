@@ -83,7 +83,7 @@
             <TextView
                 android:id="@+id/tvShoot"
                 android:layout_width="wrap_content"
-                tools:text="Angles 1/4"
+                tools:text="@string/angles_one_by_four"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
                 android:fontFamily="@font/bold"

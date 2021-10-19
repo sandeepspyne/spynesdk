@@ -6,16 +6,19 @@ import android.Manifest
 import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
-import android.os.Build
+import android.location.Address
+import android.location.Geocoder
+import android.location.Location
 import android.os.Bundle
 import android.util.Log
 import android.view.KeyEvent
 import android.view.WindowManager
-import android.widget.Toast
-import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.ViewModelProvider
+import com.google.android.gms.common.ConnectionResult
+import com.google.android.gms.common.api.GoogleApiClient
+import com.google.android.gms.location.LocationServices
 import com.spyneai.R
 import com.spyneai.base.network.Resource
 import com.spyneai.dashboard.response.NewSubCatResponse
@@ -33,10 +36,14 @@ import com.spyneai.shoot.ui.ecomwithgrid.ProjectDetailFragment
 import com.spyneai.shoot.ui.ecomwithgrid.SkuDetailFragment
 import com.spyneai.shoot.ui.ecomwithoverlays.OverlayEcomFragment
 import com.spyneai.shoot.utils.shoot
+import org.json.JSONObject
 import java.io.File
+import java.util.*
+import kotlin.collections.ArrayList
 
 
-class ShootActivity : AppCompatActivity() {
+class ShootActivity : AppCompatActivity(), GoogleApiClient.ConnectionCallbacks,
+    GoogleApiClient.OnConnectionFailedListener {
 
     lateinit var cameraFragment: CameraFragment
     lateinit var draftShootFragment: DraftShootFragment
@@ -46,10 +53,13 @@ class ShootActivity : AppCompatActivity() {
     lateinit var skuDetailFragment: SkuDetailFragment
     lateinit var projectDetailFragment: ProjectDetailFragment
     lateinit var selectBackgroundFragment: SelectBackgroundFragment
+    val location_data = JSONObject()
     lateinit var shootViewModel : ShootViewModel
     lateinit var subCategoryAndAngleFragment: SubCategoryAndAngleFragment
     lateinit var angleSelectionFragment: AngleSelectionFragment
     val TAG = "ShootActivity"
+
+    private var googleApiClient: GoogleApiClient? = null
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -57,19 +67,29 @@ class ShootActivity : AppCompatActivity() {
 
         shoot("onCreate called(shoot activity)")
 
-        window.setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
-            WindowManager.LayoutParams.FLAG_FULLSCREEN)
+        window.setFlags(
+            WindowManager.LayoutParams.FLAG_FULLSCREEN,
+            WindowManager.LayoutParams.FLAG_FULLSCREEN
+        )
 
         setContentView(R.layout.activity_shoot)
 
+
+
+
+        googleApiClient = GoogleApiClient.Builder(this, this, this).addApi(LocationServices.API).build()
+
+
+
         setLocale()
+
 
         shootViewModel = ViewModelProvider(this, ViewModelFactory()).get(ShootViewModel::class.java)
 
-        if (intent.getBooleanExtra(AppConstants.FROM_DRAFTS,false))
+        if (intent.getBooleanExtra(AppConstants.FROM_DRAFTS, false))
             setUpDraftsData()
 
-        if (intent.getBooleanExtra(AppConstants.FROM_VIDEO,false))
+        if (intent.getBooleanExtra(AppConstants.FROM_VIDEO, false))
             setUpVideoShoot()
 
         if (shootViewModel.categoryDetails.value == null){
@@ -78,7 +98,7 @@ class ShootActivity : AppCompatActivity() {
             categoryDetails.apply {
                 categoryId = intent.getStringExtra(AppConstants.CATEGORY_ID)
                 categoryName = intent.getStringExtra(AppConstants.CATEGORY_NAME)
-                gifList =  intent.getStringExtra(AppConstants.GIF_LIST)
+                gifList = intent.getStringExtra(AppConstants.GIF_LIST)
             }
 
             shootViewModel.categoryDetails.value = categoryDetails
@@ -96,10 +116,10 @@ class ShootActivity : AppCompatActivity() {
         subCategoryAndAngleFragment = SubCategoryAndAngleFragment()
         angleSelectionFragment = AngleSelectionFragment()
 
-        when(shootViewModel.categoryDetails.value?.categoryName) {
+        when (shootViewModel.categoryDetails.value?.categoryName) {
             "Automobiles" -> {
                 shootViewModel.processSku = true
-                if(savedInstanceState == null) { // initial transaction should be wrapped like this
+                if (savedInstanceState == null) { // initial transaction should be wrapped like this
                     val transaction = supportFragmentManager.beginTransaction()
                         .add(R.id.flCamerFragment, cameraFragment)
 
@@ -114,7 +134,7 @@ class ShootActivity : AppCompatActivity() {
             }
             "Bikes" -> {
                 shootViewModel.processSku = false
-                if(savedInstanceState == null) { // initial transaction should be wrapped like this
+                if (savedInstanceState == null) { // initial transaction should be wrapped like this
                     supportFragmentManager.beginTransaction()
                         .add(R.id.flCamerFragment, cameraFragment)
                         .add(R.id.flCamerFragment, overlays)
@@ -124,7 +144,7 @@ class ShootActivity : AppCompatActivity() {
 
             "E-Commerce" -> {
                 shootViewModel.processSku = false
-                if(savedInstanceState == null) { // initial transaction should be wrapped like this
+                if (savedInstanceState == null) { // initial transaction should be wrapped like this
                     supportFragmentManager.beginTransaction()
                         .add(R.id.flCamerFragment, cameraFragment)
                         .add(R.id.flCamerFragment, gridEcomFragment)
@@ -143,7 +163,7 @@ class ShootActivity : AppCompatActivity() {
             }
             "Photo Box" -> {
                 shootViewModel.processSku = false
-                if(savedInstanceState == null) { // initial transaction should be wrapped like this
+                if (savedInstanceState == null) { // initial transaction should be wrapped like this
                     supportFragmentManager.beginTransaction()
                         .add(R.id.flCamerFragment, cameraFragment)
                         .add(R.id.flCamerFragment, gridEcomFragment)
@@ -160,9 +180,9 @@ class ShootActivity : AppCompatActivity() {
                     e.printStackTrace()
                 }
             }
-            "Food & Beverages" ->{
+            "Food & Beverages" -> {
                 shootViewModel.processSku = false
-                if(savedInstanceState == null) { // initial transaction should be wrapped like this
+                if (savedInstanceState == null) { // initial transaction should be wrapped like this
                     supportFragmentManager.beginTransaction()
                         .add(R.id.flCamerFragment, cameraFragment)
                         .add(R.id.flCamerFragment, gridEcomFragment)
@@ -182,7 +202,7 @@ class ShootActivity : AppCompatActivity() {
 
             "Footwear" -> {
                 shootViewModel.processSku = false
-                if(savedInstanceState == null) { // initial transaction should be wrapped like this
+                if (savedInstanceState == null) { // initial transaction should be wrapped like this
                     supportFragmentManager.beginTransaction()
                         .add(R.id.flCamerFragment, cameraFragment)
                         .add(R.id.flCamerFragment, overlayEcomFragment)
@@ -202,14 +222,9 @@ class ShootActivity : AppCompatActivity() {
 
         }
 
-        if (allPermissionsGranted()) {
-            onPermissionGranted()
-        } else {
-            permissionRequest.launch(permissions.toTypedArray())
-        }
 
-        shootViewModel.stopShoot.observe(this,{
-            if(it){
+        shootViewModel.stopShoot.observe(this, {
+            if (it) {
                 window.clearFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN)
                 supportFragmentManager.beginTransaction()
                     .add(R.id.flCamerFragment, skuDetailFragment)
@@ -217,8 +232,8 @@ class ShootActivity : AppCompatActivity() {
             }
         })
 
-        shootViewModel.showProjectDetail.observe(this,{
-            if(it){
+        shootViewModel.showProjectDetail.observe(this, {
+            if (it) {
                 window.clearFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN)
                 supportFragmentManager.beginTransaction().remove(skuDetailFragment).commit()
                 supportFragmentManager.beginTransaction().remove(cameraFragment).commit()
@@ -229,8 +244,8 @@ class ShootActivity : AppCompatActivity() {
             }
         })
 
-        shootViewModel.showFoodBackground.observe(this,{
-            if(it){
+        shootViewModel.showFoodBackground.observe(this, {
+            if (it) {
                 window.clearFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN)
                 supportFragmentManager.beginTransaction().remove(skuDetailFragment).commit()
                 supportFragmentManager.beginTransaction().remove(projectDetailFragment).commit()
@@ -256,10 +271,13 @@ class ShootActivity : AppCompatActivity() {
                     this.putExtra("sku_id", shootViewModel.sku.value?.skuId)
                     this.putExtra("project_id", shootViewModel.sku.value?.projectId)
                     this.putExtra("exterior_angles", shootViewModel.exterirorAngles.value)
-                    this.putExtra("process_sku",shootViewModel.processSku)
-                    this.putExtra("interior_misc_count",getInteriorMiscCount())
-                    this.putStringArrayListExtra("exterior_images_list",getExteriorImagesList())
-                    this.putExtra(AppConstants.FROM_VIDEO,intent.getBooleanExtra(AppConstants.FROM_VIDEO,false))
+                    this.putExtra("process_sku", shootViewModel.processSku)
+                    this.putExtra("interior_misc_count", getInteriorMiscCount())
+                    this.putStringArrayListExtra("exterior_images_list", getExteriorImagesList())
+                    this.putExtra(
+                        AppConstants.FROM_VIDEO,
+                        intent.getBooleanExtra(AppConstants.FROM_VIDEO, false)
+                    )
                     startActivity(this)
                 }
             }
@@ -288,17 +306,22 @@ class ShootActivity : AppCompatActivity() {
         )
     }
 
+
     private fun setUpVideoShoot() {
+
+
         shootViewModel.fromVideo = true
         shootViewModel.showVin.value = true
         shootViewModel.isProjectCreated.value = true
         shootViewModel.projectId.value = intent.getStringExtra(AppConstants.PROJECT_ID)
 
-        shootViewModel._createProjectRes.value = Resource.Success(CreateProjectRes(
-            "",
-            intent.getStringExtra(AppConstants.PROJECT_ID)!!,
-            200
-        ))
+        shootViewModel._createProjectRes.value = Resource.Success(
+            CreateProjectRes(
+                "",
+                intent.getStringExtra(AppConstants.PROJECT_ID)!!,
+                200
+            )
+        )
     }
 
     private fun setUpDraftsData() {
@@ -307,11 +330,13 @@ class ShootActivity : AppCompatActivity() {
         shootViewModel.isProjectCreated.value = true
         shootViewModel.projectId.value = intent.getStringExtra(AppConstants.PROJECT_ID)
 
-        shootViewModel._createProjectRes.value = Resource.Success(CreateProjectRes(
-            "",
-            intent.getStringExtra(AppConstants.PROJECT_ID)!!,
-            200
-        ))
+        shootViewModel._createProjectRes.value = Resource.Success(
+            CreateProjectRes(
+                "",
+                intent.getStringExtra(AppConstants.PROJECT_ID)!!,
+                200
+            )
+        )
 
         //set sku data
         val sku = Sku()
@@ -321,8 +346,9 @@ class ShootActivity : AppCompatActivity() {
 
         shootViewModel.sku.value = sku
 
-        if (intent.getBooleanExtra(AppConstants.SKU_CREATED,false)) {
-            shootViewModel.exterirorAngles.value = intent.getIntExtra(AppConstants.EXTERIOR_ANGLES,0)
+        if (intent.getBooleanExtra(AppConstants.SKU_CREATED, false)) {
+            shootViewModel.exterirorAngles.value =
+                intent.getIntExtra(AppConstants.EXTERIOR_ANGLES, 0)
 
 
             shootViewModel.sku.value!!.skuId = intent.getStringExtra(AppConstants.SKU_ID)
@@ -355,9 +381,8 @@ class ShootActivity : AppCompatActivity() {
 
     override fun onStart() {
         super.onStart()
-        Log.d(TAG, "onStart: "+shootViewModel.overlayId)
-        Log.e(TAG, "onStart: "+shootViewModel.overlayId )
-        shoot("onStart called(shhot activity)"+shootViewModel.overlayId)
+        googleApiClient?.connect()
+        shoot("onStart called(shhot activity)")
     }
 
     override fun onResume() {
@@ -372,6 +397,7 @@ class ShootActivity : AppCompatActivity() {
 
     override fun onStop() {
         super.onStop()
+        googleApiClient?.disconnect()
         shoot("onStop called(shoot activity)")
     }
 
@@ -403,23 +429,24 @@ class ShootActivity : AppCompatActivity() {
 
 
         if (miscList != null)
-            total+= miscList.size
+            total += miscList.size
 
-        if (shootViewModel.fromDrafts){
-            total+= intent.getIntExtra(AppConstants.INTERIOR_SIZE,0)
-            total+= intent.getIntExtra(AppConstants.MISC_SIZE,0)
+        if (shootViewModel.fromDrafts) {
+            total += intent.getIntExtra(AppConstants.INTERIOR_SIZE, 0)
+            total += intent.getIntExtra(AppConstants.MISC_SIZE, 0)
         }
 
         if (getString(R.string.app_name) == AppConstants.OLA_CABS
-            && shootViewModel.threeSixtyInteriorSelected) {
-            total+= 1
+            && shootViewModel.threeSixtyInteriorSelected
+        ) {
+            total += 1
         }
 
-        if (intent.getBooleanExtra(AppConstants.FROM_VIDEO,false)){
-            total+= intent.getIntExtra(AppConstants.TOTAL_FRAME,0)
+        if (intent.getBooleanExtra(AppConstants.FROM_VIDEO, false)) {
+            total += intent.getIntExtra(AppConstants.TOTAL_FRAME, 0)
         }
 
-        Log.d(TAG, "getInteriorMiscCount: "+total)
+        Log.d(TAG, "getInteriorMiscCount: " + total)
 
         return total
     }
@@ -436,33 +463,42 @@ class ShootActivity : AppCompatActivity() {
         return if (s == null) ArrayList() else s as ArrayList<String>
     }
 
-    /**
-     * Check for the permissions
-     */
-    protected fun allPermissionsGranted() = permissions.all {
-        ContextCompat.checkSelfPermission(this, it) == PackageManager.PERMISSION_GRANTED
-    }
 
-    private val permissions = mutableListOf(
-        Manifest.permission.CAMERA,
-        Manifest.permission.READ_EXTERNAL_STORAGE,
-        Manifest.permission.WRITE_EXTERNAL_STORAGE
-    ).apply {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-            add(Manifest.permission.ACCESS_MEDIA_LOCATION)
+
+
+    override fun onConnected(bundle: Bundle?) {
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION)
+            == PackageManager.PERMISSION_GRANTED
+        ) {
+            val lastLocation = LocationServices.FusedLocationApi.getLastLocation(googleApiClient)
+            val lat: Double = lastLocation.latitude
+            val lon: Double = lastLocation.longitude
+
+            val geocoder = Geocoder(this, Locale.getDefault())
+            val addresses: List<Address> = geocoder.getFromLocation(lat, lon, 1)
+            val postalCode = addresses[0].postalCode
+            val cityName = addresses[0].locality
+            val countryName = addresses[0].countryName
+
+            location_data.put("city", cityName)
+            location_data.put("country", countryName)
+            location_data.put("latitude", lat)
+            location_data.put("longitude", lon)
+            location_data.put("postalCode", postalCode)
+
+            Log.d(TAG, "onConnected: $location_data")
+
+            shootViewModel.location_data.value = location_data
+
+
         }
+
     }
 
-    private val permissionRequest = registerForActivityResult(ActivityResultContracts.RequestMultiplePermissions()) { permissions ->
-        if (permissions.all { it.value }) {
-            onPermissionGranted()
-        } else {
-            Toast.makeText(this, R.string.message_no_permissions, Toast.LENGTH_SHORT).show()
-            finish()
-        }
+    override fun onConnectionSuspended(p0: Int) {
+        TODO("Not yet implemented")
     }
 
-    open fun onPermissionGranted() = Unit
 
 
     companion object {
@@ -470,17 +506,16 @@ class ShootActivity : AppCompatActivity() {
         fun getOutputDirectory(context: Context): File {
             val appContext = context.applicationContext
             val mediaDir = context.externalMediaDirs.firstOrNull()?.let {
-                File(it, appContext.resources.getString(R.string.app_name)).apply { mkdirs() } }
+                File(it, appContext.resources.getString(R.string.app_name)).apply { mkdirs() }
+            }
             return if (mediaDir != null && mediaDir.exists())
                 mediaDir else appContext.filesDir
         }
     }
 
+
     override fun onBackPressed() {
-        if (intent.getBooleanExtra(AppConstants.FROM_DRAFTS,false))
-            ShootExitDialog().show(supportFragmentManager,"ShootExitDialog")
-        else
-            ShootExitDialog().show(supportFragmentManager,"ShootExitDialog")
+        ShootExitDialog().show(supportFragmentManager, "ShootExitDialog")
     }
 
     // 1. onKeyDown is a boolean function, which returns the state of the KeyEvent.
@@ -489,11 +524,12 @@ class ShootActivity : AppCompatActivity() {
 
         when (keyCode) {
             KeyEvent.KEYCODE_VOLUME_DOWN -> {
-                if (event?.repeatCount == 0){
+                if (event?.repeatCount == 0) {
                     if (shootViewModel.onVolumeKeyPressed.value == null)
                         shootViewModel.onVolumeKeyPressed.value = true
                     else
-                        shootViewModel.onVolumeKeyPressed.value = !shootViewModel.onVolumeKeyPressed.value!!
+                        shootViewModel.onVolumeKeyPressed.value =
+                            !shootViewModel.onVolumeKeyPressed.value!!
                 }
             }
 
@@ -503,4 +539,12 @@ class ShootActivity : AppCompatActivity() {
         }
         return true
     }
+
+    override fun onConnectionFailed(p0: ConnectionResult) {
+        TODO("Not yet implemented")
+    }
 }
+
+
+
+

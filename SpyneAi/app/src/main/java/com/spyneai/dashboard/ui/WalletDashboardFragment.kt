@@ -15,6 +15,7 @@ import com.spyneai.R
 import com.spyneai.base.BaseFragment
 import com.spyneai.captureEvent
 import com.spyneai.captureFailureEvent
+import com.spyneai.credits.CreditPlansActivity
 import com.spyneai.credits.CreditUtils
 import com.spyneai.dashboard.data.DashboardViewModel
 import com.spyneai.databinding.WalletDashboardFragmentBinding
@@ -84,6 +85,12 @@ class WalletDashboardFragment : BaseFragment<DashboardViewModel, WalletDashboard
                         )
                     )
                 }
+                else -> {
+                    var intent = Intent(requireContext(), CreditPlansActivity::class.java)
+                    intent.putExtra("from_wallet",true)
+                    intent.putExtra("credit_available",availableCredits)
+                    startActivity(intent)
+                }
             }
         }
 
@@ -118,7 +125,7 @@ class WalletDashboardFragment : BaseFragment<DashboardViewModel, WalletDashboard
 
                     if (response.body()?.data?.credit_available.toString() == "0"){
                         binding.tvCredits.setTextColor(ContextCompat.getColor(requireContext(),R.color.zero_credits))
-                        binding.tvCredits.text = "00"
+                        binding.tvCredits.text = "00 "
                     }else{
                         binding.tvCredits.setTextColor(ContextCompat.getColor(requireContext(),R.color.available_credits))
                         binding.tvCredits.text = CreditUtils.getFormattedNumber(response.body()!!.data.credit_available)

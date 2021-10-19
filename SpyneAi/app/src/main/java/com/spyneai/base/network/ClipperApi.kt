@@ -137,6 +137,7 @@ interface ClipperApi {
                               @Field("project_name") projectName : String,
                               @Field("prod_cat_id") prodCatId : String,
                               @Field("dynamic_layout") dynamic_layout: JSONObject? = null,
+                              @Field("location_data") location_data: JSONObject? = null,
                               @Field("source") source : String = "App_android") : CreateProjectRes
 
     @FormUrlEncoded
@@ -175,7 +176,9 @@ interface ClipperApi {
         @Field("auth_key") authKey : String,
         @Field("sku_id") skuId : String,
         @Field("background_id") backgroundId : String,
-        @Field("is_360") is360 : Boolean
+        @Field("is_360") is360 : Boolean,
+        @Field("number_plate_blur") numberPlateBlur : Boolean,
+        @Field("window_correction") windowCorrection : Boolean
     ) : ProcessSkuRes
 
 

@@ -70,7 +70,7 @@
     <androidx.constraintlayout.widget.Group
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:visibility="invisible"
+        android:visibility="gone"
         android:id="@+id/groupOverlay"
         app:constraint_referenced_ids="ivBowl, tvInstructions, viewInstructions, rlInstructions" />
 
@@ -88,6 +88,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/tv_instructions"
+        android:elevation="@dimen/dp_2"
         android:fontFamily="@font/poppins_medium"
         android:textColor="@color/white"
         android:textSize="@dimen/dp_20"

@@ -53,11 +53,7 @@ class ProjectDetailFragment : BaseFragment<ShootViewModel, FragmentProjectDetail
 
         when (getString(R.string.app_name)) {
 
-            AppConstants.EBAY, AppConstants.FLIPKART, AppConstants.AMAZON, AppConstants.UDAAN -> {
-                binding.groupShadow.visibility = View.VISIBLE
-                binding.btHome.text = "Submit and Process this Project"
-            }
-            AppConstants.FLIPKART, AppConstants.UDAAN, AppConstants.AMAZON, AppConstants.SWIGGY -> {
+            AppConstants.FLIPKART, AppConstants.UDAAN, AppConstants.AMAZON, AppConstants.SWIGGY, AppConstants.EBAY  -> {
                 when (viewModel.categoryDetails.value?.categoryName) {
                     "Photo Box" -> {
                         binding.groupShadow.visibility = View.VISIBLE
@@ -106,26 +102,6 @@ class ProjectDetailFragment : BaseFragment<ShootViewModel, FragmentProjectDetail
                 }
                 else -> {
                     when (getString(R.string.app_name)) {
-                        AppConstants.SWIGGYINSTAMART, AppConstants.FLIPKART_GROCERY -> {
-                            processWithBackgroundId()
-                        }
-                        AppConstants.EBAY -> {
-                            requireContext().captureEvent(Events.SHOW_SHADOW_DIALOG, Properties())
-                            processWithShadowOption()
-                        }
-                        AppConstants.FLIPKART, AppConstants.SPYNE_AI -> {
-                            when (viewModel.categoryDetails.value?.categoryName) {
-                                "Photo Box" -> {
-                                    processWithShadowOption()
-                                }
-                                "E-Commerce" -> {
-                                    processWithoutBackgroundId()
-                                }
-                                "Footwear" -> {
-                                    processWithoutBackgroundId()
-                                }
-                            }
-                        }
                         AppConstants.SPYNE_AI -> {
                             when (viewModel.categoryDetails.value?.categoryName) {
                                 "Photo Box" -> {
@@ -139,20 +115,9 @@ class ProjectDetailFragment : BaseFragment<ShootViewModel, FragmentProjectDetail
                                 }
                             }
                         }
-                        AppConstants.AMAZON -> {
-                            when (viewModel.categoryDetails.value?.categoryName) {
-                                "Photo Box" -> {
-                                    processWithShadowOption()
-                                }
-                                "E-Commerce" -> {
-                                    processWithoutBackgroundId()
-                                }
-                                "Footwear" -> {
-                                    processWithoutBackgroundId()
-                                }
-                            }
-                        }
-                        AppConstants.UDAAN -> {
+                        AppConstants.AMAZON, AppConstants.SWIGGYINSTAMART,
+                        AppConstants.FLIPKART_GROCERY, AppConstants.UDAAN,
+                        AppConstants.FLIPKART, AppConstants.EBAY -> {
                             when (viewModel.categoryDetails.value?.categoryName) {
                                 "Photo Box" -> {
                                     processWithShadowOption()

@@ -23,7 +23,7 @@
     <string name="did_not">Didn\'t receive the OTP?</string>
     <string name="resend">Erneut senden</string>
     <string name="submit_otp">OTP senden</string>
-    <string name="submit">Conferma</string>
+    <string name="submit">Bestätigen</string>
     <string name="continue_with_this_shoot">Weiter mit diesem Shooting</string>
     <string name="ok">OK</string>
     <string name="channels">Kanäle</string>
@@ -49,7 +49,7 @@
     <string name="total_images">Total Images Clicked</string>
     <string name="available_download">Available for download</string>
     <string name="select_marketplace">Select Marketplace</string>
-    <string name="confirm">Conferma Sie</string>
+    <string name="confirm">Bestätigen</string>
     <string name="no_reshoot">Erneut aufnehmen</string>
     <string name="start_shooting">Start Shooting</string>
     <string name="ongoing">In Bearbeitung</string>
@@ -85,7 +85,7 @@
     <string name="selected_backgrounds">Ausgewählte Hintergründe</string>
     <string name="dealership_logo">Händlerlogo</string>
     <string name="top_up"><u>Guthaben aufladen</u></string>
-    <string name="buy_credits">10 Credits kaufen</string>
+    <string name="buy_credits">10 Guthabean kaufen</string>
     <string name="request_on_whatsapp">Anfrage auf WhatsApp</string>
     <string name="your_gif">Dein GIF</string>
     <string name="choose_shoots">Schüsse auswählen</string>
@@ -134,15 +134,15 @@
 
     <string name="total_images_clicked"><u>Anzahl der Bilder</u></string>
 
-    <string name="credits_available"><u>Guthaben Credits</u></string>
+    <string name="credits_available"><u>Guthaben Guthaben</u></string>
     <string name="credits_remaining">Guthaben</string>
-    <string name="top_up_2"><u>(Credits aufladen</u></string>
+    <string name="top_up_2"><u>(Guthaben aufladen</u></string>
 
     <string name="sku_id"><u>SKU ID</u></string>
 
     <string name="images"><u>Bilder</u></string>
 
-    <string name="credits"><u>Credits</u></string>
+    <string name="credits"><u>Guthaben</u></string>
 
     <string name="increase_online_sale"><u>Steigern Sie den Online-Umsatz für Ihre Produkte um \n<br />Hochladen visuell beeindruckender Bilder auf \n<br />Marktplätze
 
@@ -154,7 +154,7 @@
     <string name="choose_background">Dann wähle die Hintergrundfarbe</string>
 
 
-    <string name="free_credits">10 Credits wurden \n<br />Ihrem Konto</string> hinzugefügt
+    <string name="free_credits">10 Guthaben wurden \n<br />Ihrem Konto</string> hinzugefügt
 
     <string name="forgot_password_dialog">Link erfolgreich gesendet.\n<br /> Bitte überprüfen Sie Ihre E-Mail.</string>
 
@@ -192,7 +192,7 @@
     <string name="logout_dialog_text">Bist du sicher, dass du das willst <b>Ausloggen.</b></string>
 
     <string name="login_here"><b>Login</b></string>
-    <string name="shoot_outdoor">Fotografiere im&#160; <font color='#FF7700'><b>Außenbereich</b></font>&#160;tum Spiegelungen zu vermeiden </string>
+    <string name="shoot_outdoor">Am besten &#160; <font color='#FF7700'><b>draußen</b></font>&#160;fotografieren um Spiegelungen zu vermeiden</string>
     <string name="forgot_password">Passwort vergessen?</string>
 
     <string name="forgot_password_mail">Geben Sie die E-Mail-Adresse ein, um Ihr Passwort zurückzusetzen. \n<br />Sie müssen möglicherweise Ihren Spam-Ordner überprüfen.</string>
@@ -234,14 +234,14 @@
     <string name="on_going_shoots">Laufende Shootings</string>
     <string name="view_all">Alle anzeigen</string>
     <string name="completed_shoots">Abgeschlossene Shootings</string>
-    <string name="explore_categories">Kategorien erkunden</string>
+    <string name="explore_categories">Kategorien Entdecken</string>
     <string name="tutorial_videos">Tutorial-Videos</string>
 
     <string name="create_password">Passwort erstellen</string>
     <string name="enter_business_name">Geben Sie Ihr Unternehmen/Ihren Namen ein</string>
 
     <string name="shoot">Foto</string>
-    <string name="request_to_add_credits">Credits aufladen</string>
+    <string name="request_to_add_credits">Guthaben aufladen</string>
     <string name="send_request">Anfrage versenden</string>
 
     <string name="try_new_feature">Teste unsere neue Funktion</string>
@@ -254,9 +254,9 @@
     <string name="already_a_user">Bereits ein %1$s Benutzer?</string>
     <string name="new_to">Neu bei %1$s</string>
     <string name="projects">Projekte</string>
-    <string name="shoot_all_angles">Schießen Sie alle Winkelbilder und ein 360°-Video Ihres Autos für einen besseren \nWiederverkauf auf führenden Marktplätzen</string>
+    <string name="shoot_all_angles">Die innovative Lösung für Ihre Fahrzeugfotografie. \nErziele einen Marktvorteil durch Qualitätsbilder.</string>
     <string name="image_shoot">Bildaufnahme</string>
-    <string name="explore">Erkunden</string>
+    <string name="explore">Entdecken</string>
     <string name="Germany">Deutschland</string>
     <string name="Italy">Italien</string>
     <string name="beta">Beta</string>
@@ -281,10 +281,10 @@
     <string name="do_you_have">Haben Sie einen Vorschlag oder haben Sie einen Fehler gefunden?\n Bitte teilen Sie uns dies im Feld unten mit.</string>
     <string name="total_images_label">Bilder insgesamt</string>
     <string name="resume_shoot">Aufnahme fortsetzen</string>
-    <string name="start_shoot">Shooting starten</string>
-    <string name="angles">Winkel</string>
+    <string name="start_shoot">Jetzt fotografieren</string>
+    <string name="angles">Winkel </string>
     <string name="contiune">Weiter</string>
-    <string name="request_to_add">Anfrage zum Hinzufügen von Credits</string>
+    <string name="request_to_add">Anfrage zum Hinzufügen von Guthaben</string>
     <string name="generate_output">Ausgabe generieren</string>
     <string name="sample_output">Beispielausgabe</string>
     <string name="enter_coupon_code">Haben Sie einen Empfehlungscode</string>
@@ -311,4 +311,30 @@
     <string name="profile">Profil</string>
     <string name="turn_off_switch">Schalten Sie es aus, \n während Sie eine langsame \n Internetverbindung haben.</string>
     <string name="rate_this_output">Deine Bewertung:</string>
+    <string name="slide_one_title">Schießen</string>
+    <string name="slide_one_description">Schnapp bearbeiten und verkaufen Sie Ihre Autos\nüber die Store-Kamera</string>
+    <string name="slide_two_title">Bearbeiten</string>
+    <string name="slide_two_description">Sie haben Zugriff auf alles, was Sie brauchen, um fantastisches zu nehmen
+         Produktfotos.
+</string>
+    <string name="slide_three_tittle">Kostenlose Guthabean</string>
+    <string name="slide_three_description">Genieße kostenlose Guthaben bei der Anmeldung</string>
+    <string name="show_window_reflection">Fensterreflexion anzeigen</string>
+    <string name="blur_no_plate">Nummernschild verwischen</string>
+    <string name="how_we_can_improve">Wie können wir uns verbessern?</string>
+    <string name="features">Funktionen</string>
+    <string name="embed_directly_to">Direktes einbetten auf der Website</string>
+    <string name="shoot_aywhere">Fotografiere überall</string>
+    <string name="shoot_any_car">Fotografiere jedes Auto</string>
+    <string name="video_shoot">Video aufnehmen</string>
+    <string name="create_high_fidelity">Qualitativ hochwertige Fotografie</string>
+    <string name="select_the_threesixty_fidelity">Wählen Sie das 360-Fidelity-Exterieur</string>
+    <string name="higher_no_frame">"Eine höhere Anzahl von Bildern erzeugt weichere\nÜbergänge in der 360°-Ansicht"</string>
+    <string name="select_the_no_of_frame">Wählen Sie die Anzahl der Frames aus, um die\nFramerate in einem voreingestellten Beispiel anzuzeigen</string>
+    <string name="one_credit_one_frame">1 Credit = 1 Rahmen</string>
+    <string name="three_sixty_preview">360-Vorschau</string>
+    <string name="frames">Rahmen</string>
+    <string name="fidelity_selection">Auswahl der Treue</string>
+    <string name="angles_one_by_four">Winkel 1/4</string>
+
 </resources>

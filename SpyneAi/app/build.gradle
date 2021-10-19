@@ -74,8 +74,8 @@ android {
         spyne {
             dimension 'version'
             applicationId "com.spyneai"
-            versionCode 55
-            versionName "2.65"
+            versionCode 58
+            versionName "2.64"
         }
 
 
@@ -89,8 +89,8 @@ android {
         trustedCars {
             dimension 'version'
             applicationId "com.spyneai.trustedCars"
-            versionCode 5
-            versionName "2.3"
+            versionCode 6
+            versionName "2.4"
         }
 
         karvi {
@@ -103,15 +103,15 @@ android {
         travophotos {
             dimension 'version'
             applicationId "com.spyneai.travophotos"
-            versionCode 6
-            versionName "2.4"
+            versionCode 7
+            versionName "2.5"
         }
 
         olacabs {
             dimension 'version'
             applicationId "com.spyneai.olacabs"
-            versionCode 16
-            versionName "2.7"
+            versionCode 17
+            versionName "2.8"
         }
 
         cars24 {
@@ -174,14 +174,14 @@ android {
         udaan {
             dimension 'version'
             applicationId "com.spyneai.udaan"
-            versionCode 5
-            versionName "1.4"
+            versionCode 6
+            versionName "1.5"
         }
         swiggy {
             dimension 'version'
             applicationId "com.spyneai.swiggy"
-            versionCode 18
-            versionName "2.8"
+            versionCode 21
+            versionName "3.1"
         }
 
         swiggyinstamart {
@@ -316,6 +316,7 @@ dependencies {
 
     //glide
     implementation 'com.github.bumptech.glide:glide:4.12.0'
+    implementation 'com.google.android.gms:play-services-location:18.0.0'
     annotationProcessor 'com.github.bumptech.glide:compiler:4.12.0'
 //    kapt 'com.github.bumptech.glide:compiler:4.12.0'
 
@@ -437,6 +438,10 @@ dependencies {
 
     //gson
     implementation 'com.google.code.gson:gson:2.8.8'
+
+    // location
+    implementation 'com.google.android.gms:play-services-location:18.0.0'
+
 
     //leaks
     // debugImplementation 'com.squareup.leakcanary:leakcanary-android:2.7'

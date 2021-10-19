@@ -17,6 +17,7 @@ import com.spyneai.shoot.data.model.CategoryDetails
 import com.spyneai.shoot.data.model.CreateProjectRes
 import com.spyneai.shoot.data.model.Sku
 import com.spyneai.shoot.ui.base.ImageProcessingStartedFragment
+import com.spyneai.shoot.ui.dialogs.ShootExitDialog
 
 class ReshootActivity : AppCompatActivity() {
 
@@ -93,5 +94,9 @@ class ReshootActivity : AppCompatActivity() {
        // sku?.exteriorAngles = viewModel.exterirorAngles.value
 
         shootViewModel.sku.value = sku
+    }
+
+    override fun onBackPressed() {
+        ShootExitDialog().show(supportFragmentManager, "ShootExitDialog")
     }
 }

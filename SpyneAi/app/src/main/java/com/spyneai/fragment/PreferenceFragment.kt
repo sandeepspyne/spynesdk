@@ -139,7 +139,7 @@ class PreferenceFragment : BaseFragment<DashboardViewModel, FragmentPreferenceBi
             tvProjectName.text = getString(R.string.project_name)
             tvPassword.text = getString(R.string.change_password)
             tvAppVersionLabel.text = getString(R.string.app_version)
-//            tvLogout.text = getString(R.string.logout)
+            tvLogout.text = getString(R.string.logout)
 //            tvLogin.text = getString(R.string.you_are_logged_in_as)
         }
     }

@@ -6,6 +6,7 @@ import androidx.lifecycle.ViewModelProvider
 import com.spyneai.dashboard.ui.base.ViewModelFactory
 import com.spyneai.databinding.ActivityThreeSixtyIntroBinding
 import com.spyneai.needs.AppConstants
+import com.spyneai.setLocale
 import com.spyneai.threesixty.data.ThreeSixtyViewModel
 
 class ThreeSixtyIntroActivity : AppCompatActivity() {
@@ -17,6 +18,8 @@ class ThreeSixtyIntroActivity : AppCompatActivity() {
 
         binding = ActivityThreeSixtyIntroBinding.inflate(layoutInflater)
         setContentView(binding.root)
+
+        setLocale()
 
         val threeSixtyViewModel = ViewModelProvider(this, ViewModelFactory()).get(
             ThreeSixtyViewModel::class.java)
