@@ -120,7 +120,7 @@ class ProcessedImagesFragment : BaseFragment<ProcessedViewModel, FragmentProcess
             if (element == null)
                 viewModel.reshoot.value = true
             else
-                Toast.makeText(requireContext(),"Reshoot not applciable for old shoots",Toast.LENGTH_LONG).show()
+                Toast.makeText(requireContext(),"Reshoot not applicable for old shoots",Toast.LENGTH_LONG).show()
         }
     }
 
