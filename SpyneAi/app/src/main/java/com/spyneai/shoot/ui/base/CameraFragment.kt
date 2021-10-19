@@ -24,6 +24,7 @@ import android.util.DisplayMetrics
 import android.util.Log
 import android.util.Size
 import android.view.*
+import android.view.Surface.ROTATION_90
 import android.view.animation.AccelerateInterpolator
 import android.widget.*
 import androidx.camera.core.*
@@ -701,7 +702,7 @@ class CameraFragment : BaseFragment<ShootViewModel, FragmentCameraBinding>(), Pi
                         .setCaptureMode(ImageCapture.CAPTURE_MODE_MAXIMIZE_QUALITY)
                         .setFlashMode(flashMode)
                         .setTargetAspectRatio(AspectRatio.RATIO_4_3)
-//                        .setTargetRotation(ROTATION_90)
+                        .setTargetRotation(ROTATION_90)
                         .build()
                 }
                 else -> {
@@ -709,7 +710,7 @@ class CameraFragment : BaseFragment<ShootViewModel, FragmentCameraBinding>(), Pi
                         .setCaptureMode(ImageCapture.CAPTURE_MODE_MAXIMIZE_QUALITY)
                         .setFlashMode(flashMode)
                         .setTargetAspectRatio(AspectRatio.RATIO_4_3)
-//                        .setTargetRotation(ROTATION_90)
+                        .setTargetRotation(ROTATION_90)
                         .build()
                 }
             }
@@ -1658,94 +1659,7 @@ class CameraFragment : BaseFragment<ShootViewModel, FragmentCameraBinding>(), Pi
         })
     }
 
-    @Throws(IOException::class)
-    fun modifyOrientation(bitmap: Bitmap, image_absolute_path: String?): Bitmap? {
-        val ei = ExifInterface(image_absolute_path!!)
-        val orientation =
-            ei.getAttributeInt(ExifInterface.TAG_ORIENTATION, ExifInterface.ORIENTATION_NORMAL)
-        return when (orientation) {
-            ExifInterface.ORIENTATION_ROTATE_90 -> rotate(bitmap, 90f)
-            ExifInterface.ORIENTATION_ROTATE_180 -> rotate(bitmap, 180f)
-            ExifInterface.ORIENTATION_ROTATE_270 -> rotate(bitmap, 270f)
-            ExifInterface.ORIENTATION_FLIP_HORIZONTAL -> flip(bitmap, true, false)
-            ExifInterface.ORIENTATION_FLIP_VERTICAL -> flip(bitmap, false, true)
-            else -> bitmap
-        }
-    }
-
-    fun rotate(bitmap: Bitmap, degrees: Float): Bitmap? {
-        val matrix = Matrix()
-        matrix.postRotate(degrees)
-        return Bitmap.createBitmap(bitmap, 0, 0, bitmap.width, bitmap.height, matrix, true)
-    }
-
-    fun flip(bitmap: Bitmap, horizontal: Boolean, vertical: Boolean): Bitmap? {
-        val matrix = Matrix()
-        matrix.preScale((if (horizontal) -1 else 1.toFloat()) as Float,
-            (if (vertical) -1 else 1.toFloat()) as Float
-        )
-        return Bitmap.createBitmap(bitmap, 0, 0, bitmap.width, bitmap.height, matrix, true)
-    }
-
-
     private fun addShootItem(capturedImage: String) {
-
-       val bitmap =  modifyOrientation( BitmapFactory.decodeFile(capturedImage) ,capturedImage)
-
-        val outputDirectory: String by lazy {
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-                "${Environment.DIRECTORY_DCIM}/Spyne/"
-            } else {
-                "${Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DCIM)}/Spyne/"
-            }
-        }
-
-    try {
-        val file = File("/storage/emulated/0/DCIM/Spyne/"+System.currentTimeMillis()+".jpg")
-        val isC = file.createNewFile()
-        val os: OutputStream = BufferedOutputStream(FileOutputStream(file))
-        bitmap!!.compress(Bitmap.CompressFormat.JPEG, 100, os)
-        os.close()
-    }catch (
-       e : java.lang.Exception
-    ){
-        val s = ""
-    }
-
-
-
-
-
-
-
-//        val file = File(capturedImage)
-//
-//        val exif = ExifInterface(
-//            file.getAbsolutePath()
-//        )
-//        val orientation: Int = exif.getAttributeInt(
-//            ExifInterface.TAG_ORIENTATION,
-//            ExifInterface.ORIENTATION_NORMAL
-//        )
-//
-//        when (orientation) {
-//            ExifInterface.ORIENTATION_ROTATE_270 -> rotate = 90
-//            ExifInterface.ORIENTATION_ROTATE_180 -> rotate = 90
-//            ExifInterface.ORIENTATION_ROTATE_90 -> rotate = 90
-//        }
-//
-//        Log.d(TAG, "addShootItem: "+orientation)
-//
-//
-//
-//
-//        /****** Image rotation  */
-//        val matrix = Matrix()
-//        matrix.postRotate(orientation.toFloat())
-
-
-
-
         end = System.currentTimeMillis()
         val difference = (end - begin) / 1000.toFloat()
         log("addShootIteamCalled- " + difference)
