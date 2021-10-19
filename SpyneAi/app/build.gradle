@@ -110,8 +110,8 @@ android {
         olacabs {
             dimension 'version'
             applicationId "com.spyneai.olacabs"
-            versionCode 17
-            versionName "2.8"
+            versionCode 18
+            versionName "2.9"
         }
 
         cars24 {

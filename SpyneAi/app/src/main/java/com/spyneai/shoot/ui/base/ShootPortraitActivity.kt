@@ -442,25 +442,30 @@ class ShootPortraitActivity :AppCompatActivity(), GoogleApiClient.ConnectionCall
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION)
             == PackageManager.PERMISSION_GRANTED
         ) {
-            val lastLocation = LocationServices.FusedLocationApi.getLastLocation(googleApiClient)
-            val lat: Double = lastLocation.latitude
-            val lon: Double = lastLocation.longitude
 
-            val geocoder = Geocoder(this, Locale.getDefault())
-            val addresses: List<Address> = geocoder.getFromLocation(lat, lon, 1)
-            val postalCode = addresses[0].postalCode
-            val cityName = addresses[0].locality
-            val countryName = addresses[0].countryName
+            try {
+                val lastLocation = LocationServices.FusedLocationApi.getLastLocation(googleApiClient)
+                val lat: Double = lastLocation.latitude
+                val lon: Double = lastLocation.longitude
 
-            location_data.put("city", cityName)
-            location_data.put("country", countryName)
-            location_data.put("latitude", lat)
-            location_data.put("longitude", lon)
-            location_data.put("postalCode", postalCode)
+                val geocoder = Geocoder(this, Locale.getDefault())
+                val addresses: List<Address> = geocoder.getFromLocation(lat, lon, 1)
+                val postalCode = addresses[0].postalCode
+                val cityName = addresses[0].locality
+                val countryName = addresses[0].countryName
 
-            Log.d(TAG, "onConnected: $location_data")
+                location_data.put("city", cityName)
+                location_data.put("country", countryName)
+                location_data.put("latitude", lat)
+                location_data.put("longitude", lon)
+                location_data.put("postalCode", postalCode)
 
-            shootViewModel.location_data.value = location_data
+                Log.d(TAG, "onConnected: $location_data")
+
+                shootViewModel.location_data.value = location_data
+            }catch (e : Exception){
+                e.printStackTrace()
+            }
 
 
         }
