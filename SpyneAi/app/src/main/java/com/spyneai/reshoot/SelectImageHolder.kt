@@ -28,12 +28,15 @@ class SelectImageHolder(
 
     override fun bind(data: ImagesOfSkuRes.Data) {
 
-        val color = Integer.toHexString(
+        var color = Integer.toHexString(
             ContextCompat.getColor(
                 itemView.context,
                 R.color.primary
             ) and 0x00ffffff
         )
+
+        if (color.length == 5)
+            color = "0"+color
 
         if (data.isSelected)
             binding?.clRoot?.setBackgroundColor(Color.parseColor("#36"+color))
