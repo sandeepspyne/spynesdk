@@ -43,11 +43,11 @@ class SelectImageHolder(
         binding?.cb?.isChecked= data.isSelected
 
         Glide.with(itemView)
-            .load(data.input_image_hres_url)
+            .load(data.input_image_lres_url)
             .into(binding?.ivBefore!!)
 
         Glide.with(itemView)
-            .load(data.output_image_hres_url)
+            .load(data.output_image_lres_url)
             .into(binding?.ivAfter!!)
 
         binding?.clRoot?.setOnClickListener {

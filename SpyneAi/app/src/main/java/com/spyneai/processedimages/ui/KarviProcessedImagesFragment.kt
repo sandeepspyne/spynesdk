@@ -115,7 +115,7 @@ class KarviProcessedImagesFragment : BaseFragment<ProcessedViewModel, ActivityKa
 
 
                             (imageListWaterMark as ArrayList).add(dataList!![i].output_image_lres_wm_url)
-                            (listHdQuality as ArrayList).add(dataList!![i].output_image_hres_url)
+                            (listHdQuality as ArrayList).add(dataList!![i].output_image_lres_url)
 
                             Utilities.savePrefrence(
                                 requireContext(),
@@ -127,7 +127,7 @@ class KarviProcessedImagesFragment : BaseFragment<ProcessedViewModel, ActivityKa
                             Category = dataList!![i].image_category
                             (imageListInterior as ArrayList).add(dataList!![i].output_image_lres_url)
                             (imageListWaterMark as ArrayList).add(dataList!![i].output_image_lres_wm_url)
-                            (listHdQuality as ArrayList).add(dataList!![i].output_image_hres_url)
+                            (listHdQuality as ArrayList).add(dataList!![i].output_image_lres_url)
 
                             Utilities.savePrefrence(
                                 requireContext(),
@@ -139,7 +139,7 @@ class KarviProcessedImagesFragment : BaseFragment<ProcessedViewModel, ActivityKa
                             Category = dataList!![i].image_category
                             (imageListFocused as ArrayList).add(dataList!![i].output_image_lres_url)
                             (imageListWaterMark as ArrayList).add(dataList!![i].output_image_lres_wm_url)
-                            (listHdQuality as ArrayList).add(dataList!![i].output_image_hres_url)
+                            (listHdQuality as ArrayList).add(dataList!![i].output_image_lres_url)
 
                             Utilities.savePrefrence(
                                 requireContext(),
@@ -151,7 +151,7 @@ class KarviProcessedImagesFragment : BaseFragment<ProcessedViewModel, ActivityKa
                             Category = dataList!![i].image_category
                             (imageList as ArrayList).add(dataList!![i].input_image_lres_url)
                             (imageListAfter as ArrayList).add(dataList!![i].output_image_lres_wm_url)
-                            (listHdQuality as ArrayList).add(dataList!![i].output_image_hres_url)
+                            (listHdQuality as ArrayList).add(dataList!![i].output_image_lres_url)
                             (imageListWaterMark as ArrayList).add(dataList!![i].output_image_lres_wm_url)
 
                             Utilities.savePrefrence(

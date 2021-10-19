@@ -252,7 +252,6 @@ class CameraFragment : BaseFragment<ShootViewModel, FragmentCameraBinding>(), Pi
         super.onDestroy()
     }
 
-
     private fun onCaptureClick() {
         if (binding.flLevelIndicator.visibility == View.VISIBLE){
             if (binding.flLevelIndicator.isGyroOnCorrectAngle){
@@ -279,7 +278,6 @@ class CameraFragment : BaseFragment<ShootViewModel, FragmentCameraBinding>(), Pi
 
     private fun captureImage() {
         //ThreeSixtyInteriorHintDialog().show(requireActivity().supportFragmentManager,"ThreeSixtyInteriorHintDialog")
-
         if (viewModel.isCameraButtonClickable) {
             takePhoto()
             log("shoot image button clicked")
