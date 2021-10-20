@@ -147,6 +147,7 @@ class ShootPortraitActivity :AppCompatActivity(), GoogleApiClient.ConnectionCall
                     shootViewModel.projectId.value = intent.getStringExtra("project_id")
                     val sku = Sku()
                     sku?.projectId = shootViewModel.projectId.value
+                    sku.skuName = intent.getStringExtra(AppConstants.SKU_NAME)
                     sku.skuId = intent.getStringExtra(AppConstants.SKU_ID)
                     shootViewModel.categoryDetails.value?.imageType = "Ecom"
                     shootViewModel.sku.value = sku
@@ -167,6 +168,7 @@ class ShootPortraitActivity :AppCompatActivity(), GoogleApiClient.ConnectionCall
                     shootViewModel.projectId.value = intent.getStringExtra("project_id")
                     val sku = Sku()
                     sku?.projectId = shootViewModel.projectId.value
+                    sku.skuName = intent.getStringExtra(AppConstants.SKU_NAME)
                     sku.skuId = intent.getStringExtra(AppConstants.SKU_ID)
                     shootViewModel.categoryDetails.value?.imageType = "Ecom"
                     shootViewModel.sku.value = sku
@@ -187,6 +189,7 @@ class ShootPortraitActivity :AppCompatActivity(), GoogleApiClient.ConnectionCall
                     shootViewModel.projectId.value = intent.getStringExtra("project_id")
                     val sku = Sku()
                     sku?.projectId = shootViewModel.projectId.value
+                    sku.skuName = intent.getStringExtra(AppConstants.SKU_NAME)
                     sku.skuId = intent.getStringExtra(AppConstants.SKU_ID)
                     shootViewModel.categoryDetails.value?.imageType = "Food"
                     shootViewModel.sku.value = sku
@@ -208,6 +211,7 @@ class ShootPortraitActivity :AppCompatActivity(), GoogleApiClient.ConnectionCall
                     shootViewModel.projectId.value = intent.getStringExtra("project_id")
                     val sku = Sku()
                     sku?.projectId = shootViewModel.projectId.value
+                    sku.skuName = intent.getStringExtra(AppConstants.SKU_NAME)
                     sku.skuId = intent.getStringExtra(AppConstants.SKU_ID)
                     shootViewModel.categoryDetails.value?.imageType = "Footwear"
                     shootViewModel.sku.value = sku
@@ -302,6 +306,7 @@ class ShootPortraitActivity :AppCompatActivity(), GoogleApiClient.ConnectionCall
         sku.categoryName = shootViewModel.categoryDetails.value?.categoryName
 
         shootViewModel.sku.value = sku
+        shootViewModel.shootNumber.value = intent.getIntExtra(AppConstants.EXTERIOR_SIZE,0)
 
         if (intent.getStringExtra(AppConstants.CATEGORY_NAME) == "Footwear"){
             if (intent.getIntExtra(AppConstants.EXTERIOR_ANGLES,0) != 0){

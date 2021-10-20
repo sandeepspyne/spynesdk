@@ -99,6 +99,8 @@ class GridEcomFragment : BaseFragment<ShootViewModel, FragmentGridEcomBinding>()
 
                 if (!viewModel.fromDrafts)
                     viewModel.shootNumber.value = 0
+
+                val s = ""
             }
         })
 

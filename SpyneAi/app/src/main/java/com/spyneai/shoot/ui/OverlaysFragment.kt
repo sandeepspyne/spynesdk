@@ -271,6 +271,7 @@ class OverlaysFragment : BaseFragment<ShootViewModel, FragmentOverlaysBinding>()
             val intent = requireActivity().intent
             viewModel.shootNumber.value = requireActivity().intent.getIntExtra(AppConstants.EXTERIOR_SIZE,0)
 
+            val s = ""
             when {
                 intent.getBooleanExtra(AppConstants.RESUME_EXTERIOR,false) -> {
                     viewModel.shootNumber.value = requireActivity().intent.getIntExtra(AppConstants.EXTERIOR_SIZE,0)
