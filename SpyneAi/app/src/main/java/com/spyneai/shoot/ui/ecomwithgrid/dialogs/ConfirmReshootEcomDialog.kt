@@ -10,6 +10,7 @@ import android.view.WindowManager
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.lifecycleScope
 import com.bumptech.glide.Glide
+import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.posthog.android.Properties
 import com.spyneai.base.BaseDialogFragment
 import com.spyneai.captureEvent
@@ -41,6 +42,8 @@ class ConfirmReshootEcomDialog :
 
         Glide.with(requireContext())
             .load(uri)
+            .diskCacheStrategy(DiskCacheStrategy.NONE)
+            .skipMemoryCache(true)
             .into(binding.ivCapturedImage)
 
         log("Image set to dialog: " + uri)

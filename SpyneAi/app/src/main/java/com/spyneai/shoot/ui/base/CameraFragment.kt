@@ -1360,8 +1360,8 @@ class CameraFragment : BaseFragment<ShootViewModel, FragmentCameraBinding>(), Pi
 
 
 
-                            if (((pitch.roundToInt() == 0 || (pitch.roundToInt() <= -0 && pitch.roundToInt() >= -3))
-                                        && (abs(roll.roundToInt()) <= 3 && abs(roll.roundToInt()) >= -3)) ||
+                            if (((pitch.roundToInt() == 0 || (pitch.roundToInt() <= 4 && pitch.roundToInt() >= -4))
+                                        && (abs(roll.roundToInt()) <= 4 && abs(roll.roundToInt()) >= -4)) ||
                                 (pitch.roundToInt() <= -82 && pitch.roundToInt() >= -88) ||
                                 (pitch.roundToInt() <= -40 && pitch.roundToInt() >= -45) ) {
                                 binding.lottieDownArrow!!.visibility = View.INVISIBLE
