@@ -130,11 +130,11 @@
             android:gravity="center">
 
             <com.mikhaellopez.circularimageview.CircularImageView
-                android:id="@+id/ivEndProject"
+                android:id="@+id/ivNext"
                 android:layout_width="@dimen/dp_50"
                 android:layout_height="@dimen/dp_50"
                 android:gravity="center"
-                android:src="@drawable/ic_end_project" />
+                android:src="@drawable/next_button" />
         </LinearLayout>
     </LinearLayout>
 

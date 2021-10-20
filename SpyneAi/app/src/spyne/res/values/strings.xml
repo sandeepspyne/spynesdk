@@ -194,7 +194,6 @@
     <string name="free_credits">10 Credits has been added to \n<br />your account</string>
 
 
-
     <string name="request_credits">Request credits on \n<br />Whatsapp</string>
     <string name="we_recommend_focused">(2/2) Miscellaneous Shots</string>
     <string name="focused">Miscellaneous</string>
@@ -309,12 +308,11 @@
 
     //login with password
     <string name="forgot_password">Forgot password?</string>
-    <string name="forgot_password_mail">Enter the email address to reset your password. <br/> You may need to check your spam folder.</string>
+    <string name="forgot_password_mail">Enter the email address to reset your password. <br /> You may need to check your spam folder.</string>
     <string name="forgot_password_dialog">Link sent successfully.<br /> Please check your email.</string>
 
 
     <string name="logout_dialog_text">Are you sure you want to <b>log out.</b></string>
-
 
 
     //vin number

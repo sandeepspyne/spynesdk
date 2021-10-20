@@ -211,6 +211,13 @@ class CameraFragment : BaseFragment<ShootViewModel, FragmentCameraBinding>(), Pi
                 PorterDuff.Mode.SRC_IN
             )
         }
+
+
+
+
+
+
+
         binding.tvSkipShoot?.setOnClickListener {
             when (getString(R.string.app_name)) {
                 AppConstants.KARVI -> {

@@ -6,6 +6,8 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.posthog.android.Properties
+import com.spyneai.InfoDialog
+import com.spyneai.R
 import com.spyneai.base.BaseFragment
 import com.spyneai.base.network.Resource
 import com.spyneai.captureEvent
@@ -59,13 +61,20 @@ class GridEcomFragment : BaseFragment<ShootViewModel, FragmentGridEcomBinding>()
             }
         }
 
-        binding.ivEndProject.setOnClickListener {
-            if (viewModel.fromDrafts){
-                viewModel.stopShoot.value = true
-            }else {
-                if (viewModel.isStopCaptureClickable)
-                    viewModel.stopShoot.value = true
-            }
+        binding.ivNext.setOnClickListener {
+                    InfoDialog().show(
+                        requireActivity().supportFragmentManager,
+                        "InfoDialog"
+                    )
+
+
+
+//            if (viewModel.fromDrafts){
+//                viewModel.stopShoot.value = true
+//            }else {
+//                if (viewModel.isStopCaptureClickable)
+//                    viewModel.stopShoot.value = true
+//            }
         }
 
 
