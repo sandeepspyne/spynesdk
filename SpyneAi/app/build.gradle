@@ -16,6 +16,7 @@ android {
         checkReleaseBuilds false
     }
 
+
     compileSdkVersion 30
     buildToolsVersion "30.0.3"
 
@@ -443,6 +444,9 @@ dependencies {
     implementation 'com.google.android.gms:play-services-location:18.0.0'
 
 
-    //leaks
+    //crop
+    api 'com.theartofdev.edmodo:android-image-cropper:2.8.+'
+
+
     // debugImplementation 'com.squareup.leakcanary:leakcanary-android:2.7'
 }

@@ -1,59 +1,87 @@
 package com.spyneai
 
+import android.app.Dialog
+import android.net.Uri
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import com.bumptech.glide.Glide
+import com.bumptech.glide.load.engine.DiskCacheStrategy
+import com.posthog.android.Properties
+import com.spyneai.base.BaseDialogFragment
+import com.spyneai.databinding.FragmentCropDialogBinding
+import com.spyneai.posthog.Events
+import com.spyneai.shoot.data.ShootViewModel
+import com.spyneai.shoot.utils.log
+import com.theartofdev.edmodo.cropper.CropImage
 
-// TODO: Rename parameter arguments, choose names that match
-// the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-private const val ARG_PARAM1 = "param1"
-private const val ARG_PARAM2 = "param2"
+class CropDialog : BaseDialogFragment<ShootViewModel, FragmentCropDialogBinding>() {
 
-/**
- * A simple [Fragment] subclass.
- * Use the [CropDialog.newInstance] factory method to
- * create an instance of this fragment.
- */
-class CropDialog : Fragment() {
-    // TODO: Rename and change types of parameters
-    private var param1: String? = null
-    private var param2: String? = null
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        arguments?.let {
-            param1 = it.getString(ARG_PARAM1)
-            param2 = it.getString(ARG_PARAM2)
+        val uri = viewModel.shootData.value?.capturedImage
+        binding.ivInfoImage.setRotation(90F)
+
+        viewModel.end.value = System.currentTimeMillis()
+        val difference = (viewModel.end.value!! - viewModel.begin.value!!)/1000.toFloat()
+        log("dialog- "+difference)
+
+        Glide.with(requireContext())
+            .load(uri)
+            .diskCacheStrategy(DiskCacheStrategy.NONE)
+            .skipMemoryCache(true)
+            .into(binding.ivInfoImage)
+
+        log("Image set to dialog: " + uri)
+
+        binding.llReshoot.setOnClickListener {
+            viewModel.reshootCapturedImage.value = true
+            viewModel.isCameraButtonClickable = true
+            val properties = Properties()
+            properties.apply {
+                this["sku_id"] = viewModel.shootData.value?.sku_id
+                this["project_id"] = viewModel.shootData.value?.project_id
+                this["image_type"] = viewModel.shootData.value?.image_category
+            }
+            requireContext().captureEvent(
+                Events.RESHOOT,
+                properties
+            )
+
+            //remove last item from shoot list
+            viewModel.shootList.value?.removeAt(viewModel.shootList.value!!.size - 1)
+
+            dismiss()
+        }
+
+
+        binding.llCrop.setOnClickListener {
+
+            CropImage.activity( Uri.parse(uri))
+                .start(requireActivity())
+
+
+
         }
     }
 
-    override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View? {
-        // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_crop_dialog, container, false)
+    override fun onResume() {
+        super.onResume()
+
+        val dialog: Dialog? = dialog
+        if (dialog != null) {
+            dialog.getWindow()?.setLayout(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT)
+        }
     }
 
-    companion object {
-        /**
-         * Use this factory method to create a new instance of
-         * this fragment using the provided parameters.
-         *
-         * @param param1 Parameter 1.
-         * @param param2 Parameter 2.
-         * @return A new instance of fragment CropDialog.
-         */
-        // TODO: Rename and change types and number of parameters
-        @JvmStatic
-        fun newInstance(param1: String, param2: String) =
-            CropDialog().apply {
-                arguments = Bundle().apply {
-                    putString(ARG_PARAM1, param1)
-                    putString(ARG_PARAM2, param2)
-                }
-            }
-    }
+
+    override fun getViewModel() = ShootViewModel::class.java
+
+    override fun getFragmentBinding(
+        inflater: LayoutInflater,
+        container: ViewGroup?
+    ) = FragmentCropDialogBinding.inflate(inflater, container, false)
 }

@@ -1,5 +1,6 @@
 package com.spyneai.shoot.ui
 
+import android.app.ProgressDialog.show
 import android.content.Context
 import android.content.res.Configuration
 import android.graphics.drawable.Drawable
@@ -22,11 +23,8 @@ import com.bumptech.glide.request.target.Target
 import com.bumptech.glide.signature.ObjectKey
 import com.google.android.material.snackbar.Snackbar
 import com.posthog.android.Properties
-import com.spyneai.R
 import com.spyneai.base.BaseFragment
 import com.spyneai.base.network.Resource
-import com.spyneai.captureEvent
-import com.spyneai.captureFailureEvent
 import com.spyneai.dashboard.response.NewSubCatResponse
 import com.spyneai.dashboard.ui.handleApiError
 import com.spyneai.databinding.FragmentOverlaysBinding
@@ -45,7 +43,7 @@ import kotlinx.coroutines.launch
 import java.util.*
 import kotlin.collections.ArrayList
 import com.iceteck.silicompressorr.videocompression.MediaController.mContext
-import com.spyneai.setLocale
+import com.spyneai.*
 import com.spyneai.shoot.utils.log
 import kotlinx.android.synthetic.main.fragment_overlays.*
 
@@ -60,7 +58,7 @@ class OverlaysFragment : BaseFragment<ShootViewModel, FragmentOverlaysBinding>()
     var miscAdapter: MiscAdapter? = null
     private var showDialog = true
     var pos = 0
-    var snackbar : Snackbar? = null
+    var snackbar: Snackbar? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
 
@@ -78,7 +76,7 @@ class OverlaysFragment : BaseFragment<ShootViewModel, FragmentOverlaysBinding>()
         shoot("onCreateView called(overlay fragment)")
 
         requireContext().setLocale()
-        Log.d(TAG, "localeSet:"+ requireContext().setLocale())
+        Log.d(TAG, "localeSet:" + requireContext().setLocale())
 
 
     }
@@ -89,7 +87,7 @@ class OverlaysFragment : BaseFragment<ShootViewModel, FragmentOverlaysBinding>()
 
         shoot("onViewCreated called(overlay fragment)")
 
-      if (viewModel.showVin.value == null) {
+        if (viewModel.showVin.value == null) {
             shoot("shoot hint called")
             initShootHint()
         }
@@ -106,6 +104,14 @@ class OverlaysFragment : BaseFragment<ShootViewModel, FragmentOverlaysBinding>()
                 e.printStackTrace()
             }
         })
+
+
+
+
+
+
+
+
 
         viewModel.showInteriorDialog.observe(viewLifecycleOwner, {
             if (it) {
@@ -133,17 +139,20 @@ class OverlaysFragment : BaseFragment<ShootViewModel, FragmentOverlaysBinding>()
 
         observeStartMiscShoots()
 
-        viewModel.show360InteriorDialog.observe(viewLifecycleOwner,{
+        viewModel.show360InteriorDialog.observe(viewLifecycleOwner, {
             if (it)
                 if (viewModel.interior360Dialog.value == null)
-                ThreeSixtyInteriorHintDialog().show(requireActivity().supportFragmentManager, "ThreeSixtyInteriorHintDialog")
+                    ThreeSixtyInteriorHintDialog().show(
+                        requireActivity().supportFragmentManager,
+                        "ThreeSixtyInteriorHintDialog"
+                    )
         })
 
         observeShootDimesions()
     }
 
     private fun observeShootDimesions() {
-        viewModel.shootDimensions.observe(viewLifecycleOwner,{
+        viewModel.shootDimensions.observe(viewLifecycleOwner, {
             getPreviewDimensions(binding.imgOverlay)
         })
     }
@@ -206,46 +215,50 @@ class OverlaysFragment : BaseFragment<ShootViewModel, FragmentOverlaysBinding>()
 
 
     private fun initAngles() {
-       if (viewModel.fromDrafts){
-           if (requireActivity().intent.getIntExtra(AppConstants.EXTERIOR_SIZE,0) == 0){
-               if (requireActivity().intent.getIntExtra(AppConstants.EXTERIOR_ANGLES,0) == 0){
-                   when(getString(R.string.app_name)){
-                       AppConstants.CARS24,AppConstants.CARS24_INDIA ->
-                           viewModel.exterirorAngles.value = 5
-                       AppConstants.SELL_ANY_CAR ->
-                           viewModel.exterirorAngles.value = 4
-                       else ->  {
-                           viewModel.exterirorAngles.value = 8
-                       }
-                   }
-               }else{
-                   viewModel.exterirorAngles.value = requireActivity().intent.getIntExtra(AppConstants.EXTERIOR_ANGLES,0)
-               }
-              }
-       }else{
-           if (!viewModel.fromDrafts){
-               when(getString(R.string.app_name)){
-                AppConstants.CARS24,AppConstants.CARS24_INDIA ->
-                    viewModel.exterirorAngles.value = 5
-                   AppConstants.SELL_ANY_CAR ->
-                       viewModel.exterirorAngles.value = 4
-                    else ->  {
+        if (viewModel.fromDrafts) {
+            if (requireActivity().intent.getIntExtra(AppConstants.EXTERIOR_SIZE, 0) == 0) {
+                if (requireActivity().intent.getIntExtra(AppConstants.EXTERIOR_ANGLES, 0) == 0) {
+                    when (getString(R.string.app_name)) {
+                        AppConstants.CARS24, AppConstants.CARS24_INDIA ->
+                            viewModel.exterirorAngles.value = 5
+                        AppConstants.SELL_ANY_CAR ->
+                            viewModel.exterirorAngles.value = 4
+                        else -> {
+                            viewModel.exterirorAngles.value = 8
+                        }
+                    }
+                } else {
+                    viewModel.exterirorAngles.value =
+                        requireActivity().intent.getIntExtra(AppConstants.EXTERIOR_ANGLES, 0)
+                }
+            }
+        } else {
+            if (!viewModel.fromDrafts) {
+                when (getString(R.string.app_name)) {
+                    AppConstants.CARS24, AppConstants.CARS24_INDIA ->
+                        viewModel.exterirorAngles.value = 5
+                    AppConstants.SELL_ANY_CAR ->
+                        viewModel.exterirorAngles.value = 4
+                    else -> {
                         viewModel.exterirorAngles.value = 8
                     }
                 }
-           }
-       }
+            }
+        }
 
-        when(getString(R.string.app_name)) {
-            AppConstants.KARVI,AppConstants.CARS24_INDIA,AppConstants.CARS24 -> {}
+        when (getString(R.string.app_name)) {
+            AppConstants.KARVI, AppConstants.CARS24_INDIA, AppConstants.CARS24 -> {
+            }
             else -> {
-                    binding.tvShoot?.setOnClickListener {
-                        if ((viewModel.startInteriorShots.value != true || viewModel.startMiscShots.value != true )
-                            &&
-                            viewModel.sku.value?.skuId == null)
-                        AngleSelectionDialog().show(requireActivity().supportFragmentManager, "AngleSelectionDialog"
+                binding.tvShoot?.setOnClickListener {
+                    if ((viewModel.startInteriorShots.value != true || viewModel.startMiscShots.value != true)
+                        &&
+                        viewModel.sku.value?.skuId == null
+                    )
+                        AngleSelectionDialog().show(
+                            requireActivity().supportFragmentManager, "AngleSelectionDialog"
                         )
-                    }
+                }
 
 
             }
@@ -254,7 +267,8 @@ class OverlaysFragment : BaseFragment<ShootViewModel, FragmentOverlaysBinding>()
         //update progress list
         viewModel.exterirorAngles.observe(viewLifecycleOwner, {
             requireContext().setLocale()
-            binding.tvShoot?.text = getString(R.string.angles)+" 1/${viewModel.getSelectedAngles()}"
+            binding.tvShoot?.text =
+                getString(R.string.angles) + " 1/${viewModel.getSelectedAngles()}"
             if (viewModel.shootList.value.isNullOrEmpty())
                 initProgressFrames()
             else if (viewModel.shootList.value?.size!! < viewModel.getSelectedAngles()!!)
@@ -267,23 +281,28 @@ class OverlaysFragment : BaseFragment<ShootViewModel, FragmentOverlaysBinding>()
 
     private fun initProgressFrames() {
         //update this shoot number
-        if (viewModel.fromDrafts){
+        if (viewModel.fromDrafts) {
             val intent = requireActivity().intent
-            viewModel.shootNumber.value = requireActivity().intent.getIntExtra(AppConstants.EXTERIOR_SIZE,0)
+            viewModel.shootNumber.value =
+                requireActivity().intent.getIntExtra(AppConstants.EXTERIOR_SIZE, 0)
 
             when {
-                intent.getBooleanExtra(AppConstants.RESUME_EXTERIOR,false) -> {
-                    viewModel.shootNumber.value = requireActivity().intent.getIntExtra(AppConstants.EXTERIOR_SIZE,0)
+                intent.getBooleanExtra(AppConstants.RESUME_EXTERIOR, false) -> {
+                    viewModel.shootNumber.value =
+                        requireActivity().intent.getIntExtra(AppConstants.EXTERIOR_SIZE, 0)
                     startExteriroShot()
                 }
-                intent.getBooleanExtra(AppConstants.RESUME_INTERIOR,false) -> {
+                intent.getBooleanExtra(AppConstants.RESUME_INTERIOR, false) -> {
                     binding.tvShoot?.isClickable = false
 
                     viewModel.subCategoriesResponse.observe(
-                        viewLifecycleOwner,{
-                            when(it) {
+                        viewLifecycleOwner, {
+                            when (it) {
                                 is Resource.Success -> {
-                                    when (requireActivity().intent.getIntExtra(AppConstants.INTERIOR_SIZE,0)
+                                    when (requireActivity().intent.getIntExtra(
+                                        AppConstants.INTERIOR_SIZE,
+                                        0
+                                    )
                                     ) {
                                         it.value.interior.size -> {
                                             viewModel.showMiscDialog.value = true
@@ -293,20 +312,26 @@ class OverlaysFragment : BaseFragment<ShootViewModel, FragmentOverlaysBinding>()
                                         }
                                         else -> {
                                             viewModel.startInteriorShots.value = true
-                                            viewModel.interiorAngles.value =  it.value.interior.size
+                                            viewModel.interiorAngles.value = it.value.interior.size
 
                                             if (interiorAdapter == null) {
-                                                    interiorAdapter = InteriorAdapter(requireContext(),
-                                                        it.value.interior as ArrayList<NewSubCatResponse.Interior>
-                                                    )
+                                                interiorAdapter = InteriorAdapter(
+                                                    requireContext(),
+                                                    it.value.interior as ArrayList<NewSubCatResponse.Interior>
+                                                )
 
-                                                    binding.rvSubcategories.apply {
-                                                        layoutManager = LinearLayoutManager(requireContext())
-                                                        this?.adapter = interiorAdapter
-                                                    }
+                                                binding.rvSubcategories.apply {
+                                                    layoutManager =
+                                                        LinearLayoutManager(requireContext())
+                                                    this?.adapter = interiorAdapter
                                                 }
+                                            }
 
-                                            viewModel.interiorShootNumber.value = requireActivity().intent.getIntExtra(AppConstants.INTERIOR_SIZE,0)
+                                            viewModel.interiorShootNumber.value =
+                                                requireActivity().intent.getIntExtra(
+                                                    AppConstants.INTERIOR_SIZE,
+                                                    0
+                                                )
                                         }
                                     }
                                 }
@@ -315,72 +340,87 @@ class OverlaysFragment : BaseFragment<ShootViewModel, FragmentOverlaysBinding>()
                     )
 
                 }
-                intent.getBooleanExtra(AppConstants.RESUME_MISC,false) -> {
+                intent.getBooleanExtra(AppConstants.RESUME_MISC, false) -> {
                     binding.tvShoot?.isClickable = false
 
                     viewModel.subCategoriesResponse.observe(
-                        viewLifecycleOwner,{
-                            when(it) {
+                        viewLifecycleOwner, {
+                            when (it) {
                                 is Resource.Success -> {
                                     when {
-                                        intent.getIntExtra(AppConstants.MISC_SIZE,0) ==
+                                        intent.getIntExtra(AppConstants.MISC_SIZE, 0) ==
                                                 it.value.miscellaneous.size -> {
                                             //select background
                                             viewModel.selectBackground.value = true
                                         }
-                                        intent.getIntExtra(AppConstants.MISC_SIZE,0) ==
+                                        intent.getIntExtra(AppConstants.MISC_SIZE, 0) ==
                                                 0 -> {
                                             viewModel.showMiscDialog.value = true
                                         }
                                         else -> {
                                             viewModel.startMiscShots.value = true
                                             if (viewModel.categoryDetails.value?.categoryName == "Bikes") {
-                                                val filteredList: List<NewSubCatResponse.Miscellaneous> = it.value.miscellaneous.filter {
-                                                    it.prod_sub_cat_id ==   viewModel.subCategory.value?.prod_sub_cat_id
-                                                }
+                                                val filteredList: List<NewSubCatResponse.Miscellaneous> =
+                                                    it.value.miscellaneous.filter {
+                                                        it.prod_sub_cat_id == viewModel.subCategory.value?.prod_sub_cat_id
+                                                    }
 
                                                 it.value.miscellaneous = filteredList
                                             }
 
-                                            viewModel.miscAngles.value =  it.value.miscellaneous.size
+                                            viewModel.miscAngles.value = it.value.miscellaneous.size
 
                                             if (progressAdapter == null) {
                                                 progressAdapter = ShootProgressAdapter(
                                                     requireContext(),
                                                     viewModel.getShootProgressList(
                                                         viewModel.miscAngles.value!!,
-                                                        intent.getIntExtra(AppConstants.MISC_SIZE,0)
+                                                        intent.getIntExtra(
+                                                            AppConstants.MISC_SIZE,
+                                                            0
+                                                        )
                                                     )
                                                 )
 
                                                 binding.rvProgress.apply {
-                                                    layoutManager = LinearLayoutManager(requireContext(),LinearLayoutManager.HORIZONTAL,false)
+                                                    layoutManager = LinearLayoutManager(
+                                                        requireContext(),
+                                                        LinearLayoutManager.HORIZONTAL,
+                                                        false
+                                                    )
                                                     this?.adapter = progressAdapter
                                                 }
                                             }
 
                                             if (miscAdapter == null) {
-                                                miscAdapter = MiscAdapter(requireContext(),
+                                                miscAdapter = MiscAdapter(
+                                                    requireContext(),
                                                     it.value.miscellaneous as ArrayList<NewSubCatResponse.Miscellaneous>
                                                 )
 
                                                 binding.rvSubcategories.apply {
-                                                    layoutManager = LinearLayoutManager(requireContext())
+                                                    layoutManager =
+                                                        LinearLayoutManager(requireContext())
                                                     this?.adapter = miscAdapter
                                                 }
                                             }
 
-                                            viewModel.miscShootNumber.value = requireActivity().intent.getIntExtra(AppConstants.MISC_SIZE,0)
+                                            viewModel.miscShootNumber.value =
+                                                requireActivity().intent.getIntExtra(
+                                                    AppConstants.MISC_SIZE,
+                                                    0
+                                                )
                                         }
                                     }
                                 }
-                                else -> {}
+                                else -> {
+                                }
                             }
                         }
                     )
                 }
             }
-           }else {
+        } else {
             if (viewModel.shootList.value.isNullOrEmpty()) {
                 viewModel.shootNumber.value = 0
                 shoot("shoot number is 0")
@@ -411,7 +451,7 @@ class OverlaysFragment : BaseFragment<ShootViewModel, FragmentOverlaysBinding>()
         viewModel.shootNumber.observe(viewLifecycleOwner, {
             requireContext().setLocale()
             binding.tvShoot?.text =
-                getString(R.string.angles)+" ${viewModel.shootNumber.value!! + 1}/${viewModel.getSelectedAngles()}"
+                getString(R.string.angles) + " ${viewModel.shootNumber.value!! + 1}/${viewModel.getSelectedAngles()}"
 
             viewModel.overlaysResponse.observe(viewLifecycleOwner, {
                 when (it) {
@@ -421,7 +461,7 @@ class OverlaysFragment : BaseFragment<ShootViewModel, FragmentOverlaysBinding>()
 
                         binding.tvAngleName?.text = name
 
-                        loadOverlay(name,overlay)
+                        loadOverlay(name, overlay)
                     }
                     else -> {
                     }
@@ -432,73 +472,82 @@ class OverlaysFragment : BaseFragment<ShootViewModel, FragmentOverlaysBinding>()
         })
     }
 
-    private fun loadOverlay(name : String,overlay : String) {
+    private fun loadOverlay(name: String, overlay: String) {
 
         val requestOptions = RequestOptions()
-                            .diskCacheStrategy(DiskCacheStrategy.ALL)
-                            .signature(ObjectKey(overlay))
+            .diskCacheStrategy(DiskCacheStrategy.ALL)
+            .signature(ObjectKey(overlay))
 
-                        Glide.with(requireContext())
-                            .load(overlay)
-                            .addListener(object : RequestListener<Drawable> {
-                                override fun onLoadFailed(
-                                    e: GlideException?,
-                                    model: Any?,
-                                    target: Target<Drawable>?,
-                                    isFirstResource: Boolean
-                                ): Boolean {
-                                    val properties =  Properties()
-                                    properties["name"] = name
-                                    properties["error"] = e?.localizedMessage
-                                    properties["category"] = viewModel.categoryDetails.value?.categoryName
+        Glide.with(requireContext())
+            .load(overlay)
+            .addListener(object : RequestListener<Drawable> {
+                override fun onLoadFailed(
+                    e: GlideException?,
+                    model: Any?,
+                    target: Target<Drawable>?,
+                    isFirstResource: Boolean
+                ): Boolean {
+                    val properties = Properties()
+                    properties["name"] = name
+                    properties["error"] = e?.localizedMessage
+                    properties["category"] = viewModel.categoryDetails.value?.categoryName
 
-                                    requireContext().captureEvent(
-                                        Events.OVERLAY_LOAD_FIALED,
-                                        properties
-                                    )
+                    requireContext().captureEvent(
+                        Events.OVERLAY_LOAD_FIALED,
+                        properties
+                    )
 
-                                    snackbar = Snackbar.make(binding.root, "Overlay Failed to load", Snackbar.LENGTH_INDEFINITE)
-                                        .setAction("Retry") {
-                                            loadOverlay(name,overlay)
-                                        }
-                                        .setActionTextColor(ContextCompat.getColor(requireContext(),R.color.primary))
+                    snackbar = Snackbar.make(
+                        binding.root,
+                        "Overlay Failed to load",
+                        Snackbar.LENGTH_INDEFINITE
+                    )
+                        .setAction("Retry") {
+                            loadOverlay(name, overlay)
+                        }
+                        .setActionTextColor(
+                            ContextCompat.getColor(
+                                requireContext(),
+                                R.color.primary
+                            )
+                        )
 
-                                    snackbar?.show()
-                                    return false
-                                }
+                    snackbar?.show()
+                    return false
+                }
 
-                                override fun onResourceReady(
-                                    resource: Drawable?,
-                                    model: Any?,
-                                    target: Target<Drawable>?,
-                                    dataSource: DataSource?,
-                                    isFirstResource: Boolean
-                                ): Boolean {
+                override fun onResourceReady(
+                    resource: Drawable?,
+                    model: Any?,
+                    target: Target<Drawable>?,
+                    dataSource: DataSource?,
+                    isFirstResource: Boolean
+                ): Boolean {
 
-                                   if (snackbar != null)
-                                       snackbar?.dismiss()
+                    if (snackbar != null)
+                        snackbar?.dismiss()
 
-                                    val properties =  Properties()
-                                    properties["name"] = name
-                                    properties["category"] = viewModel.categoryDetails.value?.categoryName
+                    val properties = Properties()
+                    properties["name"] = name
+                    properties["category"] = viewModel.categoryDetails.value?.categoryName
 
-                                    requireContext().captureEvent(
-                                        Events.OVERLAY_LOADED,
-                                        properties
-                                    )
+                    requireContext().captureEvent(
+                        Events.OVERLAY_LOADED,
+                        properties
+                    )
 
-                                    getPreviewDimensions(binding.imgOverlay!!)
-                                    return false
-                                }
+                    getPreviewDimensions(binding.imgOverlay!!)
+                    return false
+                }
 
-                            })
-                            .apply(requestOptions)
-                            .into(binding.imgOverlay!!)
+            })
+            .apply(requestOptions)
+            .into(binding.imgOverlay!!)
 
     }
 
     private fun intSubcategorySelection() {
-        if (requireActivity().intent.getBooleanExtra("from_drafts",false))
+        if (requireActivity().intent.getBooleanExtra("from_drafts", false))
             Utilities.showProgressDialog(requireContext())
 
         subCategoriesAdapter = NewSubCategoriesAdapter(
@@ -587,7 +636,7 @@ class OverlaysFragment : BaseFragment<ShootViewModel, FragmentOverlaysBinding>()
         viewModel.shootNumber.observe(viewLifecycleOwner, {
             requireContext().setLocale()
             val angles: String = getString(R.string.angles)
-            binding.tvShoot?.text = angles +" $it/${viewModel.getSelectedAngles()}"
+            binding.tvShoot?.text = angles + " $it/${viewModel.getSelectedAngles()}"
         })
     }
 
@@ -616,25 +665,25 @@ class OverlaysFragment : BaseFragment<ShootViewModel, FragmentOverlaysBinding>()
 
         val intent = requireActivity().intent
 
-        if (viewModel.fromDrafts){
+        if (viewModel.fromDrafts) {
             viewModel.isSubCategorySelected.value = true
-          //  viewModel.shootList.value = ArrayList()
+            //  viewModel.shootList.value = ArrayList()
             viewModel.shootNumber.value = 0
 
-            when{
-                intent.getBooleanExtra(AppConstants.RESUME_EXTERIOR,false) -> {
+            when {
+                intent.getBooleanExtra(AppConstants.RESUME_EXTERIOR, false) -> {
                     viewModel.showLeveler.value = true
-                    viewModel.shootNumber.value = intent.getIntExtra(AppConstants.EXTERIOR_SIZE,0)
+                    viewModel.shootNumber.value = intent.getIntExtra(AppConstants.EXTERIOR_SIZE, 0)
 
                     if (getString(R.string.app_name) != AppConstants.KARVI)
                         binding.imgOverlay.visibility = View.VISIBLE
                     if (viewModel.startInteriorShots.value == true || viewModel.startMiscShots.value == true)
                         binding.imgOverlay.visibility = View.INVISIBLE
                 }
-                intent.getBooleanExtra(AppConstants.RESUME_INTERIOR,false) -> {
+                intent.getBooleanExtra(AppConstants.RESUME_INTERIOR, false) -> {
                     binding.imgOverlay.visibility = View.GONE
                 }
-                intent.getBooleanExtra(AppConstants.RESUME_MISC,false) -> {
+                intent.getBooleanExtra(AppConstants.RESUME_MISC, false) -> {
                     binding.imgOverlay.visibility = View.GONE
                 }
                 else -> {
@@ -698,7 +747,7 @@ class OverlaysFragment : BaseFragment<ShootViewModel, FragmentOverlaysBinding>()
                     )
                     Utilities.hideProgressDialog()
                     shoot("show progress dialog(overlays response failure)")
-                    handleApiError(it) {getOverlays()}
+                    handleApiError(it) { getOverlays() }
                 }
             }
         })
@@ -723,9 +772,10 @@ class OverlaysFragment : BaseFragment<ShootViewModel, FragmentOverlaysBinding>()
                 is Resource.Success -> {
                     val interiorList = it.value.interior as ArrayList<NewSubCatResponse.Interior>
 
-                    if (viewModel.fromDrafts){
-                        viewModel.interiorShootNumber.value = requireActivity().intent.getIntExtra(AppConstants.INTERIOR_SIZE,0)
-                    }else {
+                    if (viewModel.fromDrafts) {
+                        viewModel.interiorShootNumber.value =
+                            requireActivity().intent.getIntExtra(AppConstants.INTERIOR_SIZE, 0)
+                    } else {
                         val myInteriorShootList = viewModel.shootList.value?.filter {
                             it.image_category == "Interior"
                         }
@@ -759,7 +809,7 @@ class OverlaysFragment : BaseFragment<ShootViewModel, FragmentOverlaysBinding>()
                 interiorAdapter?.interiorList!![viewModel.interiorShootNumber.value!!].display_name
             requireContext().setLocale()
             binding.tvShoot?.text =
-                getString(R.string.angles)+" ${viewModel.interiorShootNumber.value!! + 1}/${viewModel.interiorAngles.value}"
+                getString(R.string.angles) + " ${viewModel.interiorShootNumber.value!! + 1}/${viewModel.interiorAngles.value}"
 
             if (viewModel.interiorShootNumber.value!! != 0)
                 interiorAdapter!!.interiorList[viewModel.interiorShootNumber.value!! - 1].isSelected =
@@ -826,32 +876,33 @@ class OverlaysFragment : BaseFragment<ShootViewModel, FragmentOverlaysBinding>()
                 is Resource.Success -> {
                     var miscList = it.value.miscellaneous
 
-                   if (viewModel.fromDrafts) {
-                       viewModel.miscAngles.value =  it.value.miscellaneous.size
-                       viewModel.miscShootNumber.value = requireActivity().intent.getIntExtra(AppConstants.MISC_SIZE,0)
+                    if (viewModel.fromDrafts) {
+                        viewModel.miscAngles.value = it.value.miscellaneous.size
+                        viewModel.miscShootNumber.value =
+                            requireActivity().intent.getIntExtra(AppConstants.MISC_SIZE, 0)
 
-                       if (viewModel.categoryDetails.value?.categoryName == "Bikes") {
-                           val filteredList: List<NewSubCatResponse.Miscellaneous> = it.value.miscellaneous.filter {
-                               it.prod_sub_cat_id ==   viewModel.subCategory.value?.prod_sub_cat_id
-                           }
+                        if (viewModel.categoryDetails.value?.categoryName == "Bikes") {
+                            val filteredList: List<NewSubCatResponse.Miscellaneous> =
+                                it.value.miscellaneous.filter {
+                                    it.prod_sub_cat_id == viewModel.subCategory.value?.prod_sub_cat_id
+                                }
 
-                           it.value.miscellaneous = filteredList
-                           miscList = it.value.miscellaneous
-                       }
+                            it.value.miscellaneous = filteredList
+                            miscList = it.value.miscellaneous
+                        }
 
-                   }
-                   else {
-                       val myMiscShootList = viewModel.shootList.value?.filter {
-                           it.image_category == "Focus Shoot"
-                       }
+                    } else {
+                        val myMiscShootList = viewModel.shootList.value?.filter {
+                            it.image_category == "Focus Shoot"
+                        }
 
-                    //set interior angles value
-                    if (!myMiscShootList.isNullOrEmpty()) {
-                        viewModel.miscShootNumber.value = myMiscShootList.size - 1
-                        miscList.get(myMiscShootList.size - 1).isSelected = true
-                    } else
-                        viewModel.miscShootNumber.value = 0
-                   }
+                        //set interior angles value
+                        if (!myMiscShootList.isNullOrEmpty()) {
+                            viewModel.miscShootNumber.value = myMiscShootList.size - 1
+                            miscList.get(myMiscShootList.size - 1).isSelected = true
+                        } else
+                            viewModel.miscShootNumber.value = 0
+                    }
                     viewModel.miscAngles.value = miscList.size
 
                     miscAdapter = MiscAdapter(
@@ -860,7 +911,11 @@ class OverlaysFragment : BaseFragment<ShootViewModel, FragmentOverlaysBinding>()
                     )
 
                     binding.rvSubcategories.apply {
-                        layoutManager = LinearLayoutManager(requireContext(),LinearLayoutManager.VERTICAL,false)
+                        layoutManager = LinearLayoutManager(
+                            requireContext(),
+                            LinearLayoutManager.VERTICAL,
+                            false
+                        )
                         this?.adapter = miscAdapter
                     }
 
@@ -877,7 +932,7 @@ class OverlaysFragment : BaseFragment<ShootViewModel, FragmentOverlaysBinding>()
                 miscAdapter?.miscList!![viewModel.miscShootNumber.value!!].display_name
             requireContext().setLocale()
             binding.tvShoot?.text =
-                getString(R.string.angles)+" ${viewModel.miscShootNumber.value!! + 1}/${viewModel.miscAngles.value}"
+                getString(R.string.angles) + " ${viewModel.miscShootNumber.value!! + 1}/${viewModel.miscAngles.value}"
 
             if (viewModel.miscShootNumber.value!! != 0)
                 miscAdapter?.miscList!![viewModel.miscShootNumber.value!! - 1].isSelected = false
@@ -886,22 +941,26 @@ class OverlaysFragment : BaseFragment<ShootViewModel, FragmentOverlaysBinding>()
             miscAdapter!!.notifyDataSetChanged()
             binding.rvSubcategories?.scrollToPosition(viewModel.miscShootNumber.value!!)
 
-            if (viewModel.miscShootNumber.value!! == 0){
+            if (viewModel.miscShootNumber.value!! == 0) {
                 if (progressAdapter == null) {
                     progressAdapter = ShootProgressAdapter(
                         requireContext(),
                         viewModel.getShootProgressList(
                             viewModel.miscAngles.value!!,
-                            requireActivity().intent.getIntExtra(AppConstants.MISC_SIZE,0)
+                            requireActivity().intent.getIntExtra(AppConstants.MISC_SIZE, 0)
                         )
                     )
 
                     binding.rvProgress.apply {
-                        layoutManager = LinearLayoutManager(requireContext(),LinearLayoutManager.HORIZONTAL,false)
+                        layoutManager = LinearLayoutManager(
+                            requireContext(),
+                            LinearLayoutManager.HORIZONTAL,
+                            false
+                        )
                         this?.adapter = progressAdapter
                     }
 
-                }else {
+                } else {
                     progressAdapter!!.updateList(
                         viewModel.getShootProgressList(
                             viewModel.miscAngles.value!!,
@@ -910,21 +969,27 @@ class OverlaysFragment : BaseFragment<ShootViewModel, FragmentOverlaysBinding>()
                     )
                 }
             } else {
-                if (progressAdapter == null){
+                if (progressAdapter == null) {
                     progressAdapter = ShootProgressAdapter(
                         requireContext(),
                         viewModel.getShootProgressList(
                             viewModel.miscAngles.value!!,
-                            viewModel.miscShootNumber.value!!)
+                            viewModel.miscShootNumber.value!!
                         )
+                    )
                     binding.rvProgress.apply {
-                        layoutManager = LinearLayoutManager(requireContext(),LinearLayoutManager.HORIZONTAL,false)
+                        layoutManager = LinearLayoutManager(
+                            requireContext(),
+                            LinearLayoutManager.HORIZONTAL,
+                            false
+                        )
                         this?.adapter = progressAdapter
                     }
                 }
                 progressAdapter!!.updateList(viewModel.miscShootNumber.value!!)
                 shoot("updateList in progress adapter called- " + viewModel.miscShootNumber.value!!)
-            }})
+            }
+        })
     }
 
     override fun onBtnClick(position: Int, data: NewSubCatResponse.Data) {
@@ -950,21 +1015,33 @@ class OverlaysFragment : BaseFragment<ShootViewModel, FragmentOverlaysBinding>()
 
     private fun showImageConfirmDialog(shootData: ShootData) {
         viewModel.shootData.value = shootData
-        when(getString(R.string.app_name)){
+        when (getString(R.string.app_name)) {
             AppConstants.OLA_CABS -> {
                 ConfirmTagsDialog().show(
                     requireActivity().supportFragmentManager,
-                    "ConfirmTagsDialog")
-            }else -> {
-            ConfirmReshootDialog().show(
-                requireActivity().supportFragmentManager,
-            "ConfirmReshootDialog"
-        )
+                    "ConfirmTagsDialog"
+                )
             }
+            else ->
+                ConfirmReshootDialog().show(
+                    requireActivity().supportFragmentManager,
+                    "ConfirmReshootDialog"
+                )
+
         }
-
-
     }
+
+    override fun getViewModel(): Class<ShootViewModel> {
+        TODO("Not yet implemented")
+    }
+
+    override fun getFragmentBinding(
+        inflater: LayoutInflater,
+        container: ViewGroup?
+    ): FragmentOverlaysBinding {
+        TODO("Not yet implemented")
+    }
+
 
     private fun getPreviewDimensions(view: View) {
         view.viewTreeObserver.addOnGlobalLayoutListener(object :
@@ -976,10 +1053,10 @@ class OverlaysFragment : BaseFragment<ShootViewModel, FragmentOverlaysBinding>()
                 shootDimensions?.overlayWidth = view.width
                 shootDimensions?.overlayHeight = view.height
 
-                Log.d(TAG, "onGlobalLayout: "+view.width)
-                Log.d(TAG, "onGlobalLayout: "+view.height)
-                Log.d(TAG, "onGlobalLayout: "+shootDimensions?.overlayWidth)
-                Log.d(TAG, "onGlobalLayout: "+shootDimensions?.overlayWidth)
+                Log.d(TAG, "onGlobalLayout: " + view.width)
+                Log.d(TAG, "onGlobalLayout: " + view.height)
+                Log.d(TAG, "onGlobalLayout: " + shootDimensions?.overlayWidth)
+                Log.d(TAG, "onGlobalLayout: " + shootDimensions?.overlayWidth)
 
                 viewModel.shootDimensions.value = shootDimensions
             }
@@ -1029,10 +1106,5 @@ class OverlaysFragment : BaseFragment<ShootViewModel, FragmentOverlaysBinding>()
     }
 
 
-    override fun getViewModel() = ShootViewModel::class.java
-
-    override fun getFragmentBinding(
-        inflater: LayoutInflater,
-        container: ViewGroup?
-    ) = FragmentOverlaysBinding.inflate(inflater, container, false)
 }
+

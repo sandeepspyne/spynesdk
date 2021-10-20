@@ -411,6 +411,7 @@ class CameraFragment : BaseFragment<ShootViewModel, FragmentCameraBinding>(), Pi
                         captureImage()
                     }
                 }
+
             }
             else -> {
                 if (isGyroOnCorrectAngle){
@@ -917,6 +918,15 @@ class CameraFragment : BaseFragment<ShootViewModel, FragmentCameraBinding>(), Pi
                             )
                         }
                     }
+                    "infoImage"->{
+                        viewModel.categoryDetails.value?.imageType!! + "_" + viewModel.shootNumber.value?.plus(
+                            1
+                        )
+
+
+                    }
+
+
                     "Focus Shoot" -> {
                         val miscList = list?.filter {
                             it.image_category == "Focus Shoot"
@@ -1670,6 +1680,12 @@ class CameraFragment : BaseFragment<ShootViewModel, FragmentCameraBinding>(), Pi
         end = System.currentTimeMillis()
         val difference = (end - begin) / 1000.toFloat()
         log("addShootIteamCalled- " + difference)
+
+        when (viewModel.categoryDetails.value?.imageType) {
+            "InfoImage" -> {
+                viewModel.showCropDialog.value = true
+                }
+        }
         viewModel.showConfirmReshootDialog.value = true
 
         //play shutter sound

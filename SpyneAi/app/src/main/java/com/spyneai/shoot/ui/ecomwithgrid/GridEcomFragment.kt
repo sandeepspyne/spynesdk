@@ -6,12 +6,9 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.posthog.android.Properties
-import com.spyneai.InfoDialog
-import com.spyneai.R
+import com.spyneai.*
 import com.spyneai.base.BaseFragment
 import com.spyneai.base.network.Resource
-import com.spyneai.captureEvent
-import com.spyneai.captureFailureEvent
 import com.spyneai.dashboard.ui.handleApiError
 import com.spyneai.databinding.FragmentGridEcomBinding
 import com.spyneai.needs.AppConstants
@@ -199,7 +196,14 @@ class GridEcomFragment : BaseFragment<ShootViewModel, FragmentGridEcomBinding>()
 
     private fun showImageConfirmDialog(shootData: ShootData) {
         viewModel.shootData.value = shootData
-        ConfirmReshootEcomDialog().show(requireFragmentManager(), "ConfirmReshootDialog")
+
+        when (viewModel.categoryDetails.value?.imageType) {
+            "InfoImage" -> {
+                CropDialog().show(requireFragmentManager(), "CropDialog")
+            }
+            else ->
+                ConfirmReshootEcomDialog().show(requireFragmentManager(), "ConfirmReshootDialog")
+        }
     }
 
     override fun getViewModel() = ShootViewModel::class.java

@@ -344,5 +344,8 @@
     <string name="shoot_info">Shoot Info Image</string>
     <string name="no_end_shoot">No, End Shoot</string>
     <string name="want_to_capture_info_image">Want to capture info image ?</string>
+    <string name="crop_your_image">Crop your Image</string>
+    <string name="reshoot">Reshoot</string>
+    <string name="crop">Crop</string>
 
 </resources>
