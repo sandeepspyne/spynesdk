@@ -179,7 +179,7 @@ class MainDashboardActivity : AppCompatActivity() {
                         startActivity(intent)
                     }
                 }
-                R.id.wallet -> setCurrentFragment(SecondFragment)
+//                R.id.wallet -> setCurrentFragment(SecondFragment)
                 R.id.logoutDashBoardFragment -> setCurrentFragment(thirdFragment)
             }
             true
@@ -294,13 +294,6 @@ class MainDashboardActivity : AppCompatActivity() {
         )
     }
 
-//    private fun requestPermi() {
-//        permissionRequest.launch(permissions.toTypedArray())
-//    }
-//
-//    protected fun allPermissionsGranted() = permissions.all {
-//        ContextCompat.checkSelfPermission(this, it) == PackageManager.PERMISSION_GRANTED
-//    }
 
     open fun onPermissionGranted() {
         Log.d(
@@ -565,21 +558,3 @@ class MainDashboardActivity : AppCompatActivity() {
     }
 }
 
-//    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-//        super.onActivityResult(requestCode, resultCode, data)
-//
-//        Log.d(TAG, "onActivityResult: " + requestCode)
-//        Log.d(TAG, "onActivityResult: " + resultCode)
-//
-//
-//        if (requestCode == 1000) {
-//                if (allPermissionsGranted()) {
-//                    onPermissionGranted()
-//
-//                } else {
-//                    permissionRequest.launch(permissions.toTypedArray())
-//                }
-//
-//            }
-//        }
-//    }
