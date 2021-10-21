@@ -24,7 +24,7 @@ class InfoDialog :  BaseDialogFragment<ShootViewModel, FragmentInfoDialogBinding
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        binding.llEndShoot.setOnClickListener {
+        binding.tvEndProject.setOnClickListener {
             if (viewModel.fromDrafts){
                 viewModel.stopShoot.value = true
             }else {

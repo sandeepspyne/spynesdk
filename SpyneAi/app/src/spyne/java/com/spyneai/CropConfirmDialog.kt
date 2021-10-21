@@ -40,29 +40,20 @@ class CropConfirmDialog : BaseDialogFragment<ShootViewModel, FragmentCropConfirm
 
         log("Image set to dialog: " + uri)
 
-        binding.llReshoot.setOnClickListener {
-            viewModel.reshootCapturedImage.value = true
-            viewModel.isCameraButtonClickable = true
-            val properties = Properties()
-            properties.apply {
-                this["sku_id"] = viewModel.shootData.value?.sku_id
-                this["project_id"] = viewModel.shootData.value?.project_id
-                this["image_type"] = viewModel.shootData.value?.image_category
+        binding.tvEndProject.setOnClickListener {
+            if (viewModel.fromDrafts){
+                viewModel.stopShoot.value = true
+            }else {
+                if (viewModel.isStopCaptureClickable)
+                    viewModel.stopShoot.value = true
             }
-            requireContext().captureEvent(
-                Events.RESHOOT,
-                properties
-            )
-
-            //remove last item from shoot list
-            viewModel.shootList.value?.removeAt(viewModel.shootList.value!!.size - 1)
 
             dismiss()
         }
 
 
         binding.llConfirm.setOnClickListener {
-            viewModel.categoryDetails.value?.imageType = "InfoImage"
+            viewModel.categoryDetails.value?.imageType = "Info"
             dismiss()
         }
     }

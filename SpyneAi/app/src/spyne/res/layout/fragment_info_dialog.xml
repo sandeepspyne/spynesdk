@@ -91,16 +91,10 @@
 
         </LinearLayout>
 
-        <LinearLayout
-            android:id="@+id/llEndShoot"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:layout_marginTop="@dimen/dp_10"
-            android:background="@drawable/bg_rectangle_button_ripple"
-            android:gravity="center">
+
 
             <TextView
+                android:id="@+id/tvEndProject"
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
                 android:layout_gravity="center"
@@ -108,13 +102,15 @@
                 android:layout_marginEnd="@dimen/dp_30"
                 android:fontFamily="@font/medium"
                 android:padding="@dimen/dp_12"
+
+                android:layout_marginTop="@dimen/dp_10"
                 android:text="@string/no_end_shoot"
                 android:textAllCaps="false"
-                android:textColor="@color/white"
+                android:textColor="@color/black"
                 android:textSize="@dimen/sp_16" />
 
 
-        </LinearLayout>
+
 
     </LinearLayout>
 
