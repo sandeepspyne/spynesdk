@@ -204,6 +204,11 @@ class SignUpActivity : AppCompatActivity() {
                                 response.body()!!.auth_token
                             )
 
+                            Utilities.savePrefrence(
+                                this@SignUpActivity, AppConstants.ENTERPRISE_ID,
+                                response.body()!!.enterpriseId
+                            )
+
                             properties.apply {
                                 this["user_id"] = signUpResponse.userId
                             }

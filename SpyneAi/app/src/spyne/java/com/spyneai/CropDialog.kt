@@ -17,9 +17,7 @@ import com.spyneai.posthog.Events
 import com.spyneai.shoot.data.ShootViewModel
 import com.spyneai.shoot.data.model.ShootData
 import com.spyneai.shoot.utils.log
-import com.theartofdev.edmodo.cropper.CropImage
 import java.io.File
-
 
 class CropDialog : BaseDialogFragment<ShootViewModel, FragmentCropDialogBinding>() {
 
@@ -63,9 +61,9 @@ class CropDialog : BaseDialogFragment<ShootViewModel, FragmentCropDialogBinding>
 
 
         binding.llCrop.setOnClickListener {
-            CropImage.activity(Uri.fromFile(File(uri)))
-                .start(requireActivity())
-            dismiss()
+//            CropImage.activity(Uri.fromFile(File(uri)))
+//                .start(requireActivity())
+//            dismiss()
         }
     }
 

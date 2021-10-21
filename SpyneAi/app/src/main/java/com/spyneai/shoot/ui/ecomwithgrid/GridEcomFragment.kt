@@ -198,8 +198,9 @@ class GridEcomFragment : BaseFragment<ShootViewModel, FragmentGridEcomBinding>()
         viewModel.shootData.value = shootData
 
         when (viewModel.categoryDetails.value?.imageType) {
-            "InfoImage" -> {
-                CropDialog().show(requireFragmentManager(), "CropDialog")
+            "Info" -> {
+                //CropDialog().show(requireFragmentManager(), "CropDialog")
+                ConfirmReshootEcomDialog().show(requireFragmentManager(), "ConfirmReshootDialog")
             }
             else ->
                 ConfirmReshootEcomDialog().show(requireFragmentManager(), "ConfirmReshootDialog")

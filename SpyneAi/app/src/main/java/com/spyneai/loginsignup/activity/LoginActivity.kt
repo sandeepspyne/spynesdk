@@ -150,6 +150,11 @@ class LoginActivity : AppCompatActivity() {
                             .show()
 
                         Utilities.savePrefrence(this@LoginActivity,AppConstants.AUTH_KEY, response.body()!!.auth_token)
+                        Utilities.savePrefrence(
+                            this@LoginActivity, AppConstants.ENTERPRISE_ID,
+                            response.body()!!.enterpriseId
+                        )
+
                         log("User name(savePrefrence): "+response.body()!!.user_name)
                         log("User Email(savePrefrence): "+response.body()!!.email_id)
                         log("User Id(savePrefrence): "+response.body()!!.user_id)

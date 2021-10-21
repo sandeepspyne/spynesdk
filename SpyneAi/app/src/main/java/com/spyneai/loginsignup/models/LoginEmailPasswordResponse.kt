@@ -8,5 +8,6 @@ data class LoginEmailPasswordResponse (
     @SerializedName("user_id") val user_id : String,
     @SerializedName("status") val status : Int,
     @SerializedName("user_name") val user_name : String,
-    @SerializedName("email_id") val email_id : String
+    @SerializedName("email_id") val email_id : String,
+    @SerializedName("enterprise_id") val enterpriseId : String
         )

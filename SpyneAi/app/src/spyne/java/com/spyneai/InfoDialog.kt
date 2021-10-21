@@ -36,7 +36,7 @@ class InfoDialog :  BaseDialogFragment<ShootViewModel, FragmentInfoDialogBinding
         }
 
         binding.llShootInfo.setOnClickListener {
-            viewModel.categoryDetails.value?.imageType = "InfoImage"
+            viewModel.categoryDetails.value?.imageType = "Info"
             dismiss()
         }
     }

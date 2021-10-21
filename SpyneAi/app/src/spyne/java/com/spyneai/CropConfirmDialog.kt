@@ -16,7 +16,6 @@ import com.spyneai.databinding.FragmentCropDialogBinding
 import com.spyneai.posthog.Events
 import com.spyneai.shoot.data.ShootViewModel
 import com.spyneai.shoot.utils.log
-import com.theartofdev.edmodo.cropper.CropImage
 import java.io.File
 
 class CropConfirmDialog : BaseDialogFragment<ShootViewModel, FragmentCropConfirmDialogBinding>() {
