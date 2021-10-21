@@ -45,10 +45,10 @@
 
         <ImageView
             android:id="@+id/ivInfoCroppedImage"
-            android:layout_width="match_parent"
-            android:layout_height="@dimen/dp_300"
-            android:layout_alignParentRight="true"
-            android:scaleType="fitXY" />
+            android:layout_width="wrap_content"
+            android:layout_height="@dimen/dp_250"
+            android:adjustViewBounds="true"
+            />
 
 
 
@@ -64,7 +64,7 @@
             android:textSize="@dimen/sp_10"/>
 
         <LinearLayout
-            android:id="@+id/llConfirm"
+            android:id="@+id/llShootAnother"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="center"

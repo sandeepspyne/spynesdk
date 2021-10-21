@@ -1,12 +1,16 @@
 package com.spyneai
 
 import android.app.Dialog
+import android.content.Intent
 import android.net.Uri
+import android.os.Build
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.content.ContextCompat
+import androidx.lifecycle.lifecycleScope
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.posthog.android.Properties
@@ -14,8 +18,12 @@ import com.spyneai.base.BaseDialogFragment
 import com.spyneai.databinding.FragmentCropConfirmDialogBinding
 import com.spyneai.databinding.FragmentCropDialogBinding
 import com.spyneai.posthog.Events
+import com.spyneai.service.Actions
+import com.spyneai.service.ImageUploadingService
+import com.spyneai.service.getServiceState
 import com.spyneai.shoot.data.ShootViewModel
 import com.spyneai.shoot.utils.log
+import kotlinx.coroutines.launch
 import java.io.File
 
 class CropConfirmDialog : BaseDialogFragment<ShootViewModel, FragmentCropConfirmDialogBinding>() {
@@ -42,19 +50,100 @@ class CropConfirmDialog : BaseDialogFragment<ShootViewModel, FragmentCropConfirm
 
         binding.tvEndProject.setOnClickListener {
             if (viewModel.fromDrafts){
+
+                viewModel.confirmCapturedImage.value = true
+                viewModel.shootNumber.value = viewModel.shootNumber.value?.plus(1)
+
+                viewModel.isStopCaptureClickable = true
+
+                viewModel.isCameraButtonClickable = true
+                //viewModel.uploadImageWithWorkManager(viewModel.shootData.value!!)
+
+                viewLifecycleOwner.lifecycleScope.launch {
+                    viewModel.insertImage(viewModel.shootData.value!!)
+                }
+                startService()
+
                 viewModel.stopShoot.value = true
+
+                dismiss()
             }else {
                 if (viewModel.isStopCaptureClickable)
-                    viewModel.stopShoot.value = true
+
+                viewModel.confirmCapturedImage.value = true
+                viewModel.shootNumber.value = viewModel.shootNumber.value?.plus(1)
+
+                viewModel.isStopCaptureClickable = true
+
+                viewModel.isCameraButtonClickable = true
+                //viewModel.uploadImageWithWorkManager(viewModel.shootData.value!!)
+
+                viewLifecycleOwner.lifecycleScope.launch {
+                    viewModel.insertImage(viewModel.shootData.value!!)
+                }
+                startService()
+
+                viewModel.stopShoot.value = true
+
+                dismiss()
             }
 
-            dismiss()
         }
 
-
-        binding.llConfirm.setOnClickListener {
+        binding.llShootAnother.setOnClickListener {
             viewModel.categoryDetails.value?.imageType = "Info"
-            dismiss()
+            if (viewModel.fromDrafts){
+
+                viewModel.confirmCapturedImage.value = true
+                viewModel.shootNumber.value = viewModel.shootNumber.value?.plus(1)
+
+                viewModel.isStopCaptureClickable = true
+
+                viewModel.isCameraButtonClickable = true
+                //viewModel.uploadImageWithWorkManager(viewModel.shootData.value!!)
+
+                viewLifecycleOwner.lifecycleScope.launch {
+                    viewModel.insertImage(viewModel.shootData.value!!)
+                }
+                startService()
+
+                dismiss()
+            }else {
+                if (viewModel.isStopCaptureClickable)
+
+                    viewModel.confirmCapturedImage.value = true
+                viewModel.shootNumber.value = viewModel.shootNumber.value?.plus(1)
+
+                viewModel.isStopCaptureClickable = true
+
+                viewModel.isCameraButtonClickable = true
+                //viewModel.uploadImageWithWorkManager(viewModel.shootData.value!!)
+
+                viewLifecycleOwner.lifecycleScope.launch {
+                    viewModel.insertImage(viewModel.shootData.value!!)
+                }
+                startService()
+
+                dismiss()
+            }
+        }
+    }
+
+    private fun startService() {
+        var action = Actions.START
+        if (getServiceState(requireContext()) == com.spyneai.service.ServiceState.STOPPED && action == Actions.STOP)
+            return
+
+        val serviceIntent = Intent(requireContext(), ImageUploadingService::class.java)
+        serviceIntent.action = action.name
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            com.spyneai.service.log("Starting the service in >=26 Mode")
+            ContextCompat.startForegroundService(requireContext(), serviceIntent)
+            return
+        } else {
+            com.spyneai.service.log("Starting the service in < 26 Mode")
+            requireActivity().startService(serviceIntent)
         }
     }
 

@@ -210,6 +210,8 @@ class GridEcomFragment : BaseFragment<ShootViewModel, FragmentGridEcomBinding>()
 
         when (viewModel.categoryDetails.value?.imageType) {
             "Info" -> {
+
+
                 CropImage.activity(Uri.fromFile(File(shootData.capturedImage)))
                 .start(requireActivity())
             }
