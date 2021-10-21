@@ -1,10 +1,9 @@
 package com.spyneai
 
-import android.app.Activity.RESULT_OK
 import android.app.Dialog
-import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
+import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -12,22 +11,21 @@ import com.bumptech.glide.Glide
 import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.posthog.android.Properties
 import com.spyneai.base.BaseDialogFragment
+import com.spyneai.databinding.FragmentCropConfirmDialogBinding
 import com.spyneai.databinding.FragmentCropDialogBinding
 import com.spyneai.posthog.Events
 import com.spyneai.shoot.data.ShootViewModel
-import com.spyneai.shoot.data.model.ShootData
 import com.spyneai.shoot.utils.log
 import com.theartofdev.edmodo.cropper.CropImage
 import java.io.File
 
-
-class CropDialog : BaseDialogFragment<ShootViewModel, FragmentCropDialogBinding>() {
+class CropConfirmDialog : BaseDialogFragment<ShootViewModel, FragmentCropConfirmDialogBinding>() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
         val uri = viewModel.shootData.value?.capturedImage
-        binding.ivInfoImage.setRotation(90F)
+        binding.ivInfoCroppedImage.setRotation(90F)
 
         viewModel.end.value = System.currentTimeMillis()
         val difference = (viewModel.end.value!! - viewModel.begin.value!!)/1000.toFloat()
@@ -37,7 +35,7 @@ class CropDialog : BaseDialogFragment<ShootViewModel, FragmentCropDialogBinding>
             .load(uri)
             .diskCacheStrategy(DiskCacheStrategy.NONE)
             .skipMemoryCache(true)
-            .into(binding.ivInfoImage)
+            .into(binding.ivInfoCroppedImage)
 
         log("Image set to dialog: " + uri)
 
@@ -62,9 +60,8 @@ class CropDialog : BaseDialogFragment<ShootViewModel, FragmentCropDialogBinding>
         }
 
 
-        binding.llCrop.setOnClickListener {
-            CropImage.activity(Uri.fromFile(File(uri)))
-                .start(requireActivity())
+        binding.llConfirm.setOnClickListener {
+            viewModel.categoryDetails.value?.imageType = "InfoImage"
             dismiss()
         }
     }
@@ -84,9 +81,5 @@ class CropDialog : BaseDialogFragment<ShootViewModel, FragmentCropDialogBinding>
     override fun getFragmentBinding(
         inflater: LayoutInflater,
         container: ViewGroup?
-    ) = FragmentCropDialogBinding.inflate(inflater, container, false)
-
-
-
-
+    ) = FragmentCropConfirmDialogBinding.inflate(inflater, container, false)
 }

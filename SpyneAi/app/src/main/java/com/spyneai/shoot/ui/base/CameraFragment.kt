@@ -1358,7 +1358,7 @@ class CameraFragment : BaseFragment<ShootViewModel, FragmentCameraBinding>(), Pi
                                 90 -> {
                                     binding.tvAngleValue!!.visibility = View.VISIBLE
                                     binding.tvAngleValue!!.text = "90" + "\u00B0"
-                                    binding.groupOverlay!!.visibility = View.VISIBLE
+                                    binding.groupOverlay!!.visibility = View.GONE
                                 }
                                 else -> {
                                     binding.tvAngleValue!!.visibility = View.INVISIBLE
