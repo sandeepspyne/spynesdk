@@ -23,6 +23,8 @@ class CropConfirmDialog : BaseDialogFragment<ShootViewModel, FragmentCropConfirm
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        isCancelable = false
+
         val uri = viewModel.shootData.value?.capturedImage
         binding.ivInfoCroppedImage.setRotation(90F)
 

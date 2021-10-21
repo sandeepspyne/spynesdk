@@ -187,6 +187,7 @@ class CameraFragment : BaseFragment<ShootViewModel, FragmentCameraBinding>(), Pi
                 if (viewModel.categoryDetails.value?.categoryName != "Automobiles"
                     && viewModel.categoryDetails.value?.categoryName != "Bikes"){
                     binding.apply {
+                        tvAngleValue?.visibility = View.GONE
                         tvAngleRed?.visibility = View.GONE
                         lottieUpArrow?.visibility = View.GONE
                         lottieDownArrow?.visibility = View.GONE
@@ -1127,7 +1128,8 @@ class CameraFragment : BaseFragment<ShootViewModel, FragmentCameraBinding>(), Pi
                 if ((pitch.roundToInt() <= -40 && pitch.roundToInt() >= -45) && abs(roll.roundToInt()) < 100)
                     angle = 45
 
-                when (angle) {
+               if (binding.flLevelIndicator.visibility == View.VISIBLE){
+                    when (angle) {
                     0 -> {
                         binding.tvAngleValue!!.visibility = View.VISIBLE
                         binding.tvAngleValue!!.text = "0" + "\u00B0"
@@ -1148,6 +1150,7 @@ class CameraFragment : BaseFragment<ShootViewModel, FragmentCameraBinding>(), Pi
                         binding.groupOverlay!!.visibility = View.GONE
                     }
                 }
+               }
 
                 //hide moving line
 
@@ -1237,7 +1240,8 @@ class CameraFragment : BaseFragment<ShootViewModel, FragmentCameraBinding>(), Pi
                 if ((pitch.roundToInt() <= -40 && pitch.roundToInt() >= -45) && abs(roll.roundToInt()) < 100)
                     angle = 45
 
-                when (angle) {
+               if (binding.flLevelIndicator.visibility == View.VISIBLE){
+                    when (angle) {
                     0 -> {
                         binding.tvAngleValue!!.visibility = View.VISIBLE
                         binding.tvAngleValue!!.text = "0" + "\u00B0"
@@ -1254,6 +1258,7 @@ class CameraFragment : BaseFragment<ShootViewModel, FragmentCameraBinding>(), Pi
                         binding.tvAngleValue!!.visibility = View.INVISIBLE
                     }
                 }
+               }
 
                 //hide moving line
 
@@ -1298,12 +1303,14 @@ class CameraFragment : BaseFragment<ShootViewModel, FragmentCameraBinding>(), Pi
                     }
 
                 } else {
-                    binding.lottieDownArrow!!.visibility = View.VISIBLE
-                    binding.lottieUpArrow!!.visibility = View.VISIBLE
+                    if(binding.flLevelIndicator.visibility == View.VISIBLE){
+                        binding.lottieDownArrow!!.visibility = View.VISIBLE
+                        binding.lottieUpArrow!!.visibility = View.VISIBLE
+                        binding.tvAngleRed!!.visibility = View.VISIBLE
+                    }
                     binding.tvAngleValue!!.visibility = View.INVISIBLE
                     binding.tvAngleValue!!.visibility = View.INVISIBLE
                     isGyroOnCorrectAngle = false
-                    binding.tvAngleRed!!.visibility = View.VISIBLE
                     val gyroAngle = (-pitch.roundToInt())
 
                     binding.tvAngleRed!!.text = gyroAngle.toString() + "\u00B0"
@@ -1360,7 +1367,8 @@ class CameraFragment : BaseFragment<ShootViewModel, FragmentCameraBinding>(), Pi
                             if ((pitch.roundToInt() <= -40 && pitch.roundToInt() >= -45) && abs(roll.roundToInt()) < 100)
                                 angle = 45
 
-                            when (angle) {
+                          if (binding.flLevelIndicator.visibility == View.VISIBLE){
+                                when (angle) {
                                 0 -> {
                                     binding.tvAngleValue!!.visibility = View.VISIBLE
                                     binding.tvAngleValue!!.text = "0" + "\u00B0"
@@ -1381,6 +1389,7 @@ class CameraFragment : BaseFragment<ShootViewModel, FragmentCameraBinding>(), Pi
                                     binding.groupOverlay!!.visibility = View.GONE
                                 }
                             }
+                          }
 
                             //hide moving line
 

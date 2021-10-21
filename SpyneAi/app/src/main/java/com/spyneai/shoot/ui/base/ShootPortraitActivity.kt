@@ -42,6 +42,7 @@ import com.spyneai.shoot.utils.shoot
 import com.theartofdev.edmodo.cropper.CropImage
 import org.json.JSONObject
 import java.io.File
+import java.net.URI
 import java.util.*
 import kotlin.collections.ArrayList
 
@@ -497,10 +498,20 @@ class ShootPortraitActivity :AppCompatActivity(), GoogleApiClient.ConnectionCall
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+
+        shootViewModel.isCameraButtonClickable = true
+
         if (requestCode == CropImage.CROP_IMAGE_ACTIVITY_REQUEST_CODE) {
             val result = CropImage.getActivityResult(data)
             if (resultCode == RESULT_OK) {
                 val resultUri = result.uri
+
+               File(resultUri.path)
+                   .copyTo(File(shootViewModel.shootData.value?.capturedImage),
+                   true)
+
+                //shootViewModel.shootData.value?.capturedImage = file.path
 
                 CropConfirmDialog().show(supportFragmentManager, "CropConfirmDialog")
 

@@ -1,5 +1,6 @@
 package com.spyneai.shoot.ui.ecomwithgrid
 
+import android.net.Uri
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -24,6 +25,8 @@ import com.spyneai.shoot.ui.ecomwithgrid.dialogs.CreateProjectEcomDialog
 import com.spyneai.shoot.ui.ecomwithgrid.dialogs.CreateSkuEcomDialog
 import com.spyneai.shoot.ui.ecomwithgrid.dialogs.ProjectTagDialog
 import com.spyneai.shoot.utils.log
+import com.theartofdev.edmodo.cropper.CropImage
+import java.io.File
 import java.util.*
 
 class GridEcomFragment : BaseFragment<ShootViewModel, FragmentGridEcomBinding>() {
@@ -207,8 +210,8 @@ class GridEcomFragment : BaseFragment<ShootViewModel, FragmentGridEcomBinding>()
 
         when (viewModel.categoryDetails.value?.imageType) {
             "Info" -> {
-                //CropDialog().show(requireFragmentManager(), "CropDialog")
-                ConfirmReshootEcomDialog().show(requireFragmentManager(), "ConfirmReshootDialog")
+                CropImage.activity(Uri.fromFile(File(shootData.capturedImage)))
+                .start(requireActivity())
             }
             else ->
                 ConfirmReshootEcomDialog().show(requireFragmentManager(), "ConfirmReshootDialog")
