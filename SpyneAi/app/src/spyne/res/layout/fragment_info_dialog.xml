@@ -49,9 +49,7 @@
             android:layout_height="@dimen/dp_300"
             android:layout_alignParentRight="true"
             android:scaleType="fitXY"
-            app:lottie_autoPlay="true"
-            app:lottie_loop="true"
-            app:lottie_rawRes="@raw/logout" />
+            android:src="@drawable/info_image" />
 
 
 
@@ -66,29 +64,7 @@
             android:layout_marginTop="@dimen/dp_5"
             android:textSize="@dimen/sp_10"/>
 
-        <LinearLayout
-            android:id="@+id/llEndShoot"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:background="@drawable/bg_rectangle_button_ripple"
-            android:gravity="center">
 
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:layout_gravity="center"
-                android:layout_marginStart="@dimen/dp_30"
-                android:layout_marginEnd="@dimen/dp_30"
-                android:fontFamily="@font/medium"
-                android:padding="@dimen/dp_12"
-                android:text="@string/no_end_shoot"
-                android:textAllCaps="false"
-                android:textColor="@color/white"
-                android:textSize="@dimen/sp_16" />
-
-
-        </LinearLayout>
 
         <LinearLayout
             android:id="@+id/llShootInfo"
@@ -108,6 +84,31 @@
                 android:fontFamily="@font/medium"
                 android:padding="@dimen/dp_12"
                 android:text="@string/shoot_info"
+                android:textAllCaps="false"
+                android:textColor="@color/white"
+                android:textSize="@dimen/sp_16" />
+
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/llEndShoot"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginTop="@dimen/dp_10"
+            android:background="@drawable/bg_rectangle_button_ripple"
+            android:gravity="center">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_gravity="center"
+                android:layout_marginStart="@dimen/dp_30"
+                android:layout_marginEnd="@dimen/dp_30"
+                android:fontFamily="@font/medium"
+                android:padding="@dimen/dp_12"
+                android:text="@string/no_end_shoot"
                 android:textAllCaps="false"
                 android:textColor="@color/white"
                 android:textSize="@dimen/sp_16" />
