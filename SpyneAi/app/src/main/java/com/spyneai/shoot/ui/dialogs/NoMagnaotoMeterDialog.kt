@@ -7,31 +7,38 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.DialogFragment
+import com.spyneai.base.BaseDialogFragment
+import com.spyneai.dashboard.data.DashboardViewModel
 import com.spyneai.databinding.DialogNoMagnatoMeterBinding
+import com.spyneai.databinding.DialogSkipBinding
+import com.spyneai.shoot.data.ShootViewModel
 
-class NoMagnaotoMeterDialog : DialogFragment() {
+class NoMagnaotoMeterDialog : BaseDialogFragment<DashboardViewModel, DialogNoMagnatoMeterBinding>() {
 
-    private var _binding : DialogNoMagnatoMeterBinding? = null
-    private val binding get() = _binding
-
-
-    override fun onCreateView(
-        inflater: LayoutInflater,
-        container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View? {
-        // Inflate the layout for this fragment
-        _binding = DialogNoMagnatoMeterBinding.inflate(inflater, container, false)
-
-        isCancelable = false
-
-        return binding?.root
-    }
+//    private var _binding : DialogNoMagnatoMeterBinding? = null
+//    private val binding get() = _binding
+//
+//
+//    override fun onCreateView(
+//        inflater: LayoutInflater,
+//        container: ViewGroup?,
+//        savedInstanceState: Bundle?
+//    ): View? {
+//        // Inflate the layout for this fragment
+//        _binding = DialogNoMagnatoMeterBinding.inflate(inflater, container, false)
+//
+//
+//
+//        return binding?.root
+//    }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        isCancelable = false
+
         binding?.tvOKay?.setOnClickListener {
+            viewModel.continueAnyway.value = true
             dismiss()
         }
 
@@ -44,8 +51,15 @@ class NoMagnaotoMeterDialog : DialogFragment() {
         }
     }
 
-    override fun onDestroyView() {
-        super.onDestroyView()
-        _binding = null
-    }
+//    override fun onDestroyView() {
+//        super.onDestroyView()
+//        _binding = null
+//    }
+
+    override fun getViewModel() = DashboardViewModel::class.java
+
+    override fun getFragmentBinding(
+        inflater: LayoutInflater,
+        container: ViewGroup?
+    ) = DialogNoMagnatoMeterBinding.inflate(inflater, container, false)
 }

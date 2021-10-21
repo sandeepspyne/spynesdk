@@ -73,7 +73,9 @@ class MainDashboardActivity : AppCompatActivity() {
         }
 
         binding.bottomNavigation.background = null
+
         viewModel = ViewModelProvider(this, ViewModelFactory()).get(DashboardViewModel::class.java)
+
 
         val firstFragment = HomeDashboardFragment()
         val SecondFragment = WalletDashboardFragment()
@@ -106,60 +108,7 @@ class MainDashboardActivity : AppCompatActivity() {
 
                 R.id.shootActivity -> {
                     if (isMagnatoMeterAvailable()) {
-                        when (getString(R.string.app_name)) {
-                            "Ola Cabs",
-                            AppConstants.CARS24,
-                            AppConstants.CARS24_INDIA,
-                            AppConstants.SELL_ANY_CAR,
-                            "Trusted cars",
-                            "Travo Photos",
-                            "Yalla Motors",
-                            "Spyne Hiring",
-                            AppConstants.AUTO_FOTO -> {
-                                var intent = Intent(this, StartShootActivity::class.java)
-                                intent.putExtra(
-                                    AppConstants.CATEGORY_ID,
-                                    AppConstants.CARS_CATEGORY_ID
-                                )
-                                intent.putExtra(AppConstants.CATEGORY_NAME, "Automobiles")
-                                startActivity(intent)
-                            }
-
-                            AppConstants.KARVI -> {
-                                var intent = Intent(this, ShootActivity::class.java)
-                                intent.putExtra(
-                                    AppConstants.CATEGORY_ID,
-                                    AppConstants.CARS_CATEGORY_ID
-                                )
-                                intent.putExtra(AppConstants.CATEGORY_NAME, "Automobiles")
-                                startActivity(intent)
-                            }
-
-                            "Flipkart",
-                            "Udaan",
-                            "Lal10",
-                            "Amazon",
-                            "Swiggy",
-                            AppConstants.SWIGGYINSTAMART,
-                            AppConstants.BATA,
-                            AppConstants.FLIPKART_GROCERY, AppConstants.EBAY -> {
-                                val intent =
-                                    Intent(
-                                        this@MainDashboardActivity,
-                                        CategoriesActivity::class.java
-                                    )
-                                startActivity(intent)
-                            }
-                            else -> {
-                                var intent = Intent(this, ShootActivity::class.java)
-                                intent.putExtra(
-                                    AppConstants.CATEGORY_ID,
-                                    AppConstants.CARS_CATEGORY_ID
-                                )
-                                intent.putExtra(AppConstants.CATEGORY_NAME, "Automobiles")
-                                startActivity(intent)
-                            }
-                        }
+                       continueShoot()
                     } else {
                         NoMagnaotoMeterDialog().show(
                             supportFragmentManager,
@@ -191,6 +140,69 @@ class MainDashboardActivity : AppCompatActivity() {
 
         checkAppVersion()
         observeAppVersion()
+
+        viewModel?.continueAnyway?.observe(this,{
+            if (it){
+                continueShoot()
+            }
+        })
+    }
+
+    private fun continueShoot() {
+        when (getString(R.string.app_name)) {
+            "Ola Cabs",
+            AppConstants.CARS24,
+            AppConstants.CARS24_INDIA,
+            AppConstants.SELL_ANY_CAR,
+            "Trusted cars",
+            "Travo Photos",
+            "Yalla Motors",
+            "Spyne Hiring",
+            AppConstants.AUTO_FOTO -> {
+                var intent = Intent(this, StartShootActivity::class.java)
+                intent.putExtra(
+                    AppConstants.CATEGORY_ID,
+                    AppConstants.CARS_CATEGORY_ID
+                )
+                intent.putExtra(AppConstants.CATEGORY_NAME, "Automobiles")
+                startActivity(intent)
+            }
+
+            AppConstants.KARVI -> {
+                var intent = Intent(this, ShootActivity::class.java)
+                intent.putExtra(
+                    AppConstants.CATEGORY_ID,
+                    AppConstants.CARS_CATEGORY_ID
+                )
+                intent.putExtra(AppConstants.CATEGORY_NAME, "Automobiles")
+                startActivity(intent)
+            }
+
+            "Flipkart",
+            "Udaan",
+            "Lal10",
+            "Amazon",
+            "Swiggy",
+            AppConstants.SWIGGYINSTAMART,
+            AppConstants.BATA,
+            AppConstants.FLIPKART_GROCERY, AppConstants.EBAY -> {
+                val intent =
+                    Intent(
+                        this@MainDashboardActivity,
+                        CategoriesActivity::class.java
+                    )
+                startActivity(intent)
+            }
+            else -> {
+                var intent = Intent(this, ShootActivity::class.java)
+                intent.putExtra(
+                    AppConstants.CATEGORY_ID,
+                    AppConstants.CARS_CATEGORY_ID
+                )
+                intent.putExtra(AppConstants.CATEGORY_NAME, "Automobiles")
+                startActivity(intent)
+            }
+        }
     }
 
     private fun checkAppVersion() {
