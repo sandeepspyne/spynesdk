@@ -183,6 +183,17 @@ class CameraFragment : BaseFragment<ShootViewModel, FragmentCameraBinding>(), Pi
         viewModel.hideLeveler.observe(viewLifecycleOwner, {
             if (it) {
                 binding.flLevelIndicator.visibility = View.GONE
+
+                if (viewModel.categoryDetails.value?.categoryName != "Automobiles"
+                    && viewModel.categoryDetails.value?.categoryName != "Bikes"){
+                    binding.apply {
+                        tvAngleRed?.visibility = View.GONE
+                        lottieUpArrow?.visibility = View.GONE
+                        lottieDownArrow?.visibility = View.GONE
+                        tvUpcomingAngle1?.visibility = View.GONE
+                        tvUpcomingAngle2?.visibility = View.GONE
+                    }
+                }
             }
         })
 
@@ -1181,13 +1192,17 @@ class CameraFragment : BaseFragment<ShootViewModel, FragmentCameraBinding>(), Pi
                     }
 
                 } else {
-                    binding.lottieDownArrow!!.visibility = View.VISIBLE
-                    binding.lottieUpArrow!!.visibility = View.VISIBLE
+                    if (binding.flLevelIndicator.visibility == View.VISIBLE){
+                        binding.lottieDownArrow!!.visibility = View.VISIBLE
+                        binding.lottieUpArrow!!.visibility = View.VISIBLE
+                        binding.tvAngleRed!!.visibility = View.VISIBLE
+                    }
+
                     binding.tvAngleValue!!.visibility = View.INVISIBLE
                     binding.groupOverlay!!.visibility = View.GONE
                     binding.tvAngleValue!!.visibility = View.INVISIBLE
                     isGyroOnCorrectAngle = false
-                    binding.tvAngleRed!!.visibility = View.VISIBLE
+
                     val gyroAngle = (-pitch.roundToInt())
 
                     binding.tvAngleRed!!.text = gyroAngle.toString() + "\u00B0"
@@ -1410,13 +1425,16 @@ class CameraFragment : BaseFragment<ShootViewModel, FragmentCameraBinding>(), Pi
                                 }
 
                             } else {
-                                binding.lottieDownArrow!!.visibility = View.VISIBLE
-                                binding.lottieUpArrow!!.visibility = View.VISIBLE
+                                if (binding.flLevelIndicator.visibility == View.VISIBLE){
+                                    binding.lottieDownArrow!!.visibility = View.VISIBLE
+                                    binding.lottieUpArrow!!.visibility = View.VISIBLE
+                                    binding.tvAngleRed!!.visibility = View.VISIBLE
+                                }
+
                                 binding.tvAngleValue!!.visibility = View.INVISIBLE
                                 binding.groupOverlay!!.visibility = View.GONE
                                 binding.tvAngleValue!!.visibility = View.INVISIBLE
                                 isGyroOnCorrectAngle = false
-                                binding.tvAngleRed!!.visibility = View.VISIBLE
                                 val gyroAngle = (-pitch.roundToInt())
 
                                 binding.tvAngleRed!!.text = gyroAngle.toString() + "\u00B0"
