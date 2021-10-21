@@ -31,6 +31,8 @@ class InfoDialog :  BaseDialogFragment<ShootViewModel, FragmentInfoDialogBinding
                 if (viewModel.isStopCaptureClickable)
                     viewModel.stopShoot.value = true
             }
+
+            dismiss()
         }
 
         binding.llShootInfo.setOnClickListener {
