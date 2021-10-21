@@ -6,10 +6,9 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.posthog.android.Properties
+import com.spyneai.*
 import com.spyneai.base.BaseFragment
 import com.spyneai.base.network.Resource
-import com.spyneai.captureEvent
-import com.spyneai.captureFailureEvent
 import com.spyneai.dashboard.ui.handleApiError
 import com.spyneai.databinding.FragmentGridEcomBinding
 import com.spyneai.needs.AppConstants
@@ -39,8 +38,6 @@ class GridEcomFragment : BaseFragment<ShootViewModel, FragmentGridEcomBinding>()
         super.onViewCreated(view, savedInstanceState)
 
 
-
-
         if (viewModel.projectId.value == null){
             if(Utilities.getPreference(requireContext(), AppConstants.STATUS_PROJECT_NAME).toString() =="true")
                 getProjectName()
@@ -59,7 +56,14 @@ class GridEcomFragment : BaseFragment<ShootViewModel, FragmentGridEcomBinding>()
             }
         }
 
-        binding.ivEndProject.setOnClickListener {
+        binding.ivNext.setOnClickListener {
+                    InfoDialog().show(
+                        requireActivity().supportFragmentManager,
+                        "InfoDialog"
+                    )
+        }
+
+        binding.ivEnd.setOnClickListener {
             if (viewModel.fromDrafts){
                 viewModel.stopShoot.value = true
             }else {
@@ -67,7 +71,6 @@ class GridEcomFragment : BaseFragment<ShootViewModel, FragmentGridEcomBinding>()
                     viewModel.stopShoot.value = true
             }
         }
-
 
         //observe new image clicked
         viewModel.shootList.observe(viewLifecycleOwner, {
@@ -107,6 +110,15 @@ class GridEcomFragment : BaseFragment<ShootViewModel, FragmentGridEcomBinding>()
         viewModel.reshootCapturedImage.observe(viewLifecycleOwner,{
             if (it){
                 capturedImageAdapter.removeLastItem()
+            }
+        })
+
+        viewModel.hideLeveler.observe(viewLifecycleOwner,{
+            if (viewModel.categoryDetails.value?.imageType == "Info"){
+                binding.apply {
+                    ivNext.visibility = View.GONE
+                    ivEnd.visibility = View.VISIBLE
+                }
             }
         })
 
@@ -192,7 +204,15 @@ class GridEcomFragment : BaseFragment<ShootViewModel, FragmentGridEcomBinding>()
 
     private fun showImageConfirmDialog(shootData: ShootData) {
         viewModel.shootData.value = shootData
-        ConfirmReshootEcomDialog().show(requireFragmentManager(), "ConfirmReshootDialog")
+
+        when (viewModel.categoryDetails.value?.imageType) {
+            "Info" -> {
+                //CropDialog().show(requireFragmentManager(), "CropDialog")
+                ConfirmReshootEcomDialog().show(requireFragmentManager(), "ConfirmReshootDialog")
+            }
+            else ->
+                ConfirmReshootEcomDialog().show(requireFragmentManager(), "ConfirmReshootDialog")
+        }
     }
 
     override fun getViewModel() = ShootViewModel::class.java

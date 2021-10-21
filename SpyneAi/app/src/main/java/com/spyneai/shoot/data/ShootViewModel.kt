@@ -135,6 +135,7 @@ class ShootViewModel : ViewModel() {
     val shootData: MutableLiveData<ShootData> = MutableLiveData()
 
     val showConfirmReshootDialog: MutableLiveData<Boolean> = MutableLiveData()
+    val showCropDialog: MutableLiveData<Boolean> = MutableLiveData()
 
     //interior and misc shots
     val showInteriorDialog: MutableLiveData<Boolean> = MutableLiveData()

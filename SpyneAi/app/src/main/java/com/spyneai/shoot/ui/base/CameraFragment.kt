@@ -211,6 +211,13 @@ class CameraFragment : BaseFragment<ShootViewModel, FragmentCameraBinding>(), Pi
                 PorterDuff.Mode.SRC_IN
             )
         }
+
+
+
+
+
+
+
         binding.tvSkipShoot?.setOnClickListener {
             when (getString(R.string.app_name)) {
                 AppConstants.KARVI -> {
@@ -404,6 +411,7 @@ class CameraFragment : BaseFragment<ShootViewModel, FragmentCameraBinding>(), Pi
                         captureImage()
                     }
                 }
+
             }
             else -> {
                 if (isGyroOnCorrectAngle){
@@ -871,6 +879,11 @@ class CameraFragment : BaseFragment<ShootViewModel, FragmentCameraBinding>(), Pi
                         1
                     )
                 }
+                "Info"->{
+                    viewModel.categoryDetails.value?.imageType!! + "_" + viewModel.shootNumber.value?.plus(
+                        1
+                    )
+                }
                 "Food & Beverages" -> {
                     viewModel.categoryDetails.value?.imageType!! + "_" + viewModel.shootNumber.value?.plus(
                         1
@@ -909,6 +922,11 @@ class CameraFragment : BaseFragment<ShootViewModel, FragmentCameraBinding>(), Pi
                                 1
                             )
                         }
+                    }
+                    "Info"->{
+                        viewModel.categoryDetails.value?.imageType!! + "_" + viewModel.shootNumber.value?.plus(
+                            1
+                        )
                     }
                     "Focus Shoot" -> {
                         val miscList = list?.filter {
@@ -1663,6 +1681,8 @@ class CameraFragment : BaseFragment<ShootViewModel, FragmentCameraBinding>(), Pi
         end = System.currentTimeMillis()
         val difference = (end - begin) / 1000.toFloat()
         log("addShootIteamCalled- " + difference)
+
+
         viewModel.showConfirmReshootDialog.value = true
 
         //play shutter sound

@@ -9,5 +9,6 @@ data class SignupResponse (
     @SerializedName("user_id") val userId: String,
     @SerializedName("user_name") val userName : String,
     @SerializedName("email_id") val emailId : String,
-    @SerializedName("display_message") val displayMessage : String
+    @SerializedName("display_message") val displayMessage : String,
+    @SerializedName("enterprise_id") val enterpriseId : String
         )

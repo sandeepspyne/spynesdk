@@ -341,5 +341,11 @@
     <string name="file_and_media">Files and Media Access</string>
     <string name="location_access">Location Access</string>
     <string name="go_to_permission_setting">Give Permissions</string>
+    <string name="shoot_info">Shoot Info Image</string>
+    <string name="no_end_shoot">No, End Shoot</string>
+    <string name="want_to_capture_info_image">Want to capture info image ?</string>
+    <string name="crop_your_image">Crop your Image</string>
+    <string name="reshoot">Reshoot</string>
+    <string name="crop">Crop</string>
 
 </resources>

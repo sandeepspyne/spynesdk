@@ -18,6 +18,7 @@ import androidx.lifecycle.ViewModelProvider
 import com.google.android.gms.common.ConnectionResult
 import com.google.android.gms.common.api.GoogleApiClient
 import com.google.android.gms.location.LocationServices
+import com.spyneai.CropConfirmDialog
 import com.spyneai.R
 import com.spyneai.base.network.Resource
 import com.spyneai.dashboard.response.NewSubCatResponse
@@ -38,6 +39,7 @@ import com.spyneai.shoot.ui.ecomwithgrid.ProjectDetailFragment
 import com.spyneai.shoot.ui.ecomwithgrid.SkuDetailFragment
 import com.spyneai.shoot.ui.ecomwithoverlays.OverlayEcomFragment
 import com.spyneai.shoot.utils.shoot
+import com.theartofdev.edmodo.cropper.CropImage
 import org.json.JSONObject
 import java.io.File
 import java.util.*
@@ -492,6 +494,20 @@ class ShootPortraitActivity :AppCompatActivity(), GoogleApiClient.ConnectionCall
 
     override fun onConnectionFailed(p0: ConnectionResult) {
         TODO("Not yet implemented")
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        if (requestCode == CropImage.CROP_IMAGE_ACTIVITY_REQUEST_CODE) {
+            val result = CropImage.getActivityResult(data)
+            if (resultCode == RESULT_OK) {
+                val resultUri = result.uri
+
+                CropConfirmDialog().show(supportFragmentManager, "CropConfirmDialog")
+
+            } else if (resultCode == CropImage.CROP_IMAGE_ACTIVITY_RESULT_ERROR_CODE) {
+                val error = result.error
+            }
+        }
     }
 }
 
