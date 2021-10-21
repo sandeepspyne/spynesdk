@@ -47,6 +47,13 @@ class WalletDashboardFragment : BaseFragment<DashboardViewModel, WalletDashboard
                     binding.flAddCredits.visibility = View.GONE
                     binding.tvLine.visibility = View.GONE
                 }
+            else-> {
+                if (Utilities.getPreference(requireContext(),AppConstants.ENTERPRISE_ID)
+                == AppConstants.FLIPKART_ENTERPRISE_ID){
+                    binding.flAddCredits.visibility = View.GONE
+                    binding.tvLine.visibility = View.GONE
+                }
+            }
         }
 
         if (Utilities.getPreference(requireContext(), AppConstants.USER_EMAIL).toString() != ""){

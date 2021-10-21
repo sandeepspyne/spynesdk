@@ -10,6 +10,7 @@ import android.view.View
 import android.view.ViewGroup
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.engine.DiskCacheStrategy
+
 import com.posthog.android.Properties
 import com.spyneai.base.BaseDialogFragment
 import com.spyneai.databinding.FragmentCropDialogBinding
@@ -58,7 +59,6 @@ class CropDialog : BaseDialogFragment<ShootViewModel, FragmentCropDialogBinding>
 
             dismiss()
         }
-
 
         binding.llCrop.setOnClickListener {
 //            CropImage.activity(Uri.fromFile(File(uri)))

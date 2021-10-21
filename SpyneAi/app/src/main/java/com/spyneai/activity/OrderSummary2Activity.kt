@@ -133,9 +133,14 @@ class OrderSummary2Activity : AppCompatActivity() {
             else-> {
                 tvTopUp.setOnClickListener {
                     if (getString(R.string.app_name) == AppConstants.SPYNE_AI){
-                        var intent = Intent(this, CreditPlansActivity::class.java)
-                        intent.putExtra("credit_available",availableCredits)
-                        startActivity(intent)
+                        if (Utilities.getPreference(this,AppConstants.ENTERPRISE_ID)
+                            == AppConstants.FLIPKART_ENTERPRISE_ID){
+                            //TopUpFragment().show(supportFragmentManager,"TopUpFragment")
+                        }else {
+                            var intent = Intent(this, CreditPlansActivity::class.java)
+                            intent.putExtra("credit_available",availableCredits)
+                            startActivity(intent)
+                        }
                     }else {
                         TopUpFragment().show(supportFragmentManager,"TopUpFragment")
                     }
