@@ -25,18 +25,17 @@ class InfoDialog :  BaseDialogFragment<ShootViewModel, FragmentInfoDialogBinding
         super.onViewCreated(view, savedInstanceState)
 
         binding.llEndShoot.setOnClickListener {
-
             if (viewModel.fromDrafts){
                 viewModel.stopShoot.value = true
             }else {
                 if (viewModel.isStopCaptureClickable)
                     viewModel.stopShoot.value = true
             }
-
         }
 
         binding.llShootInfo.setOnClickListener {
             viewModel.categoryDetails.value?.imageType = "Info"
+            viewModel.hideLeveler.value = true
             dismiss()
         }
     }

@@ -879,6 +879,11 @@ class CameraFragment : BaseFragment<ShootViewModel, FragmentCameraBinding>(), Pi
                         1
                     )
                 }
+                "Info"->{
+                    viewModel.categoryDetails.value?.imageType!! + "_" + viewModel.shootNumber.value?.plus(
+                        1
+                    )
+                }
                 "Food & Beverages" -> {
                     viewModel.categoryDetails.value?.imageType!! + "_" + viewModel.shootNumber.value?.plus(
                         1
@@ -922,8 +927,6 @@ class CameraFragment : BaseFragment<ShootViewModel, FragmentCameraBinding>(), Pi
                         viewModel.categoryDetails.value?.imageType!! + "_" + viewModel.shootNumber.value?.plus(
                             1
                         )
-
-
                     }
                     "Focus Shoot" -> {
                         val miscList = list?.filter {

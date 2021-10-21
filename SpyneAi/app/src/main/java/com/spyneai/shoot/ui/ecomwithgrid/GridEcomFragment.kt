@@ -38,8 +38,6 @@ class GridEcomFragment : BaseFragment<ShootViewModel, FragmentGridEcomBinding>()
         super.onViewCreated(view, savedInstanceState)
 
 
-
-
         if (viewModel.projectId.value == null){
             if(Utilities.getPreference(requireContext(), AppConstants.STATUS_PROJECT_NAME).toString() =="true")
                 getProjectName()
@@ -63,17 +61,16 @@ class GridEcomFragment : BaseFragment<ShootViewModel, FragmentGridEcomBinding>()
                         requireActivity().supportFragmentManager,
                         "InfoDialog"
                     )
-
-
-
-//            if (viewModel.fromDrafts){
-//                viewModel.stopShoot.value = true
-//            }else {
-//                if (viewModel.isStopCaptureClickable)
-//                    viewModel.stopShoot.value = true
-//            }
         }
 
+        binding.ivEnd.setOnClickListener {
+            if (viewModel.fromDrafts){
+                viewModel.stopShoot.value = true
+            }else {
+                if (viewModel.isStopCaptureClickable)
+                    viewModel.stopShoot.value = true
+            }
+        }
 
         //observe new image clicked
         viewModel.shootList.observe(viewLifecycleOwner, {
@@ -111,6 +108,15 @@ class GridEcomFragment : BaseFragment<ShootViewModel, FragmentGridEcomBinding>()
         viewModel.reshootCapturedImage.observe(viewLifecycleOwner,{
             if (it){
                 capturedImageAdapter.removeLastItem()
+            }
+        })
+
+        viewModel.hideLeveler.observe(viewLifecycleOwner,{
+            if (viewModel.categoryDetails.value?.imageType == "Info"){
+                binding.apply {
+                    ivNext.visibility = View.GONE
+                    ivEnd.visibility = View.VISIBLE
+                }
             }
         })
 
