@@ -383,11 +383,17 @@ class     OverlayEcomFragment : BaseFragment<ShootViewModel, FragmentOverlayEcom
     }
 
     private fun getOverlays() {
-        var frames = 0
-        if (viewModel.subCatName.value.equals("Men Formal"))
-            frames = 6
-        else
-            frames = 5
+        var frames = when(viewModel.subCatName.value){
+            "Men Formal" -> 6
+            "Men Casual" -> 5
+            "Women Boots" -> 5
+            "Women Flats" -> 6
+            "Women Heels" -> 6
+            "Women Sandals" -> 4
+            "Women Slippers" -> 5
+            "Women Causal shoes" -> 6
+            else -> 6
+        }
 
         viewModel.exterirorAngles.value = frames
 

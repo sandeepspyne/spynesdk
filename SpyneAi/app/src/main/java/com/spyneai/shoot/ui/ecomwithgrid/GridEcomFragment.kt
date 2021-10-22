@@ -25,7 +25,6 @@ import com.spyneai.shoot.ui.ecomwithgrid.dialogs.CreateProjectEcomDialog
 import com.spyneai.shoot.ui.ecomwithgrid.dialogs.CreateSkuEcomDialog
 import com.spyneai.shoot.ui.ecomwithgrid.dialogs.ProjectTagDialog
 import com.spyneai.shoot.utils.log
-import com.theartofdev.edmodo.cropper.CropImage
 import java.io.File
 import java.util.*
 
@@ -212,8 +211,8 @@ class GridEcomFragment : BaseFragment<ShootViewModel, FragmentGridEcomBinding>()
             "Info" -> {
 
 
-                CropImage.activity(Uri.fromFile(File(shootData.capturedImage)))
-                .start(requireActivity())
+//                CropImage.activity(Uri.fromFile(File(shootData.capturedImage)))
+//                .start(requireActivity())
             }
             else ->
                 ConfirmReshootEcomDialog().show(requireFragmentManager(), "ConfirmReshootDialog")

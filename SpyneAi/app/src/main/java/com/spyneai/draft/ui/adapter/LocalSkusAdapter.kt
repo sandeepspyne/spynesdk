@@ -164,8 +164,13 @@ class LocalSkusAdapter(
                 }
 
                 when (skuList[position].subcategoryId) {
-                    "prod_4CW50lj2sNMCS" -> draftIntent.putExtra(AppConstants.EXTERIOR_ANGLES, 5)
-                    "prod_4CW50lj2sNMF" -> draftIntent.putExtra(AppConstants.EXTERIOR_ANGLES, 6)
+                    "prod_4CW50lj2sNMCS",
+                    "prod_4CW50lj2sCCx",
+                    "prod_4CW50lj2sABC"-> draftIntent.putExtra(AppConstants.EXTERIOR_ANGLES, 5)
+                    "prod_4CW50lj2sNMF",
+                    "prod_4CW50lj2sCBA",
+                    "prod_4CW50lj2sCAA"-> draftIntent.putExtra(AppConstants.EXTERIOR_ANGLES, 6)
+                    "prod_4CW50lj2sCBB" -> draftIntent.putExtra(AppConstants.EXTERIOR_ANGLES, 4)
                     else -> {
                         draftIntent.putExtra(
                             AppConstants.EXTERIOR_ANGLES,
