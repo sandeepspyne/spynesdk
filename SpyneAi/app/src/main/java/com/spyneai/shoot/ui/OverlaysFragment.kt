@@ -1032,16 +1032,12 @@ class OverlaysFragment : BaseFragment<ShootViewModel, FragmentOverlaysBinding>()
         }
     }
 
-    override fun getViewModel(): Class<ShootViewModel> {
-        TODO("Not yet implemented")
-    }
+    override fun getViewModel() = ShootViewModel::class.java
 
     override fun getFragmentBinding(
         inflater: LayoutInflater,
         container: ViewGroup?
-    ): FragmentOverlaysBinding {
-        TODO("Not yet implemented")
-    }
+    ) = FragmentOverlaysBinding.inflate(inflater, container, false)
 
 
     private fun getPreviewDimensions(view: View) {
