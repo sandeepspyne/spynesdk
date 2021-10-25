@@ -34,27 +34,6 @@ class GridEcomFragment : BaseFragment<ShootViewModel, FragmentGridEcomBinding>()
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-
-
-
-        if (viewModel.projectId.value == null){
-            if(Utilities.getPreference(requireContext(), AppConstants.STATUS_PROJECT_NAME).toString() =="true")
-                getProjectName()
-            else
-                initProjectDialog()
-        }
-        else {
-            if (viewModel.fromDrafts){
-                if (viewModel.isSkuCreated.value == null
-                    && viewModel.isSubCategoryConfirmed.value == null)
-                    initSkuDialog()
-            }else {
-                if (viewModel.isSkuCreated.value == null)
-                    initSkuDialog()
-
-            }
-        }
-
         binding.ivEndProject.setOnClickListener {
             if (viewModel.fromDrafts){
                 viewModel.stopShoot.value = true
@@ -63,7 +42,6 @@ class GridEcomFragment : BaseFragment<ShootViewModel, FragmentGridEcomBinding>()
                     viewModel.stopShoot.value = true
             }
         }
-
 
         //observe new image clicked
         viewModel.shootList.observe(viewLifecycleOwner, {
@@ -112,41 +90,7 @@ class GridEcomFragment : BaseFragment<ShootViewModel, FragmentGridEcomBinding>()
 
     }
 
-    private fun getProjectName(){
 
-        viewModel.getProjectName(Utilities.getPreference(requireContext(), AppConstants.AUTH_KEY).toString())
-
-        viewModel.getProjectNameResponse.observe(viewLifecycleOwner, {
-            when (it) {
-                is Resource.Success -> {
-
-                    Utilities.hideProgressDialog()
-
-                    viewModel.dafault_project.value = it.value.data.dafault_project
-                    viewModel.dafault_sku.value = it.value.data.dafault_sku
-                    initProjectDialog()
-                    log("project and SKU dialog shown")
-                }
-
-                is Resource.Loading -> {
-                    Utilities.showProgressDialog(requireContext())
-                }
-
-                is Resource.Failure -> {
-                    Utilities.hideProgressDialog()
-                    log("get project name failed")
-                    requireContext().captureFailureEvent(
-                        Events.CREATE_PROJECT_FAILED, Properties(),
-                        it.errorMessage!!
-                    )
-
-                    Utilities.hideProgressDialog()
-                    handleApiError(it) { getProjectName()}
-                }
-            }
-        })
-
-    }
 
 
     private fun initCapturedImages() {
@@ -174,14 +118,6 @@ class GridEcomFragment : BaseFragment<ShootViewModel, FragmentGridEcomBinding>()
             }
 
         }
-    }
-
-    private fun initSkuDialog() {
-        CreateSkuEcomDialog().show(requireFragmentManager(), "CreateSkuEcomDialog")
-    }
-
-    private fun initProjectDialog() {
-        ProjectTagDialog().show(requireFragmentManager(), "CreateProjectEcomDialog")
     }
 
     private fun showImageConfirmDialog(shootData: ShootData) {

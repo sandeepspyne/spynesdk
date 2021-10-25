@@ -35,6 +35,7 @@ import com.spyneai.shoot.data.ShootViewModel
 import com.spyneai.shoot.data.model.CategoryDetails
 import com.spyneai.shoot.data.model.CreateProjectRes
 import com.spyneai.shoot.data.model.Sku
+import com.spyneai.shoot.ui.CreateProjectFragment
 import com.spyneai.shoot.ui.OverlaysFragment
 import com.spyneai.shoot.ui.SelectBackgroundFragment
 import com.spyneai.shoot.ui.dialogs.ShootExitDialog
@@ -53,7 +54,6 @@ class ShootPortraitActivity :AppCompatActivity(), GoogleApiClient.ConnectionCall
     GoogleApiClient.OnConnectionFailedListener {
 
     lateinit var cameraFragment: CameraFragment
-    lateinit var overlaysFragment: OverlaysFragment
     lateinit var gridEcomFragment: GridEcomFragment
     lateinit var overlayEcomFragment: OverlayEcomFragment
     lateinit var skuDetailFragment: SkuDetailFragment
@@ -102,7 +102,6 @@ class ShootPortraitActivity :AppCompatActivity(), GoogleApiClient.ConnectionCall
         shootViewModel.categoryDetails.value = categoryDetails
 
         cameraFragment = CameraFragment()
-        overlaysFragment = OverlaysFragment()
         gridEcomFragment = GridEcomFragment()
         skuDetailFragment = SkuDetailFragment()
         projectDetailFragment = ProjectDetailFragment()
@@ -114,6 +113,7 @@ class ShootPortraitActivity :AppCompatActivity(), GoogleApiClient.ConnectionCall
             supportFragmentManager.beginTransaction()
                 .add(R.id.flCamerFragment, cameraFragment)
                 .add(R.id.flCamerFragment, gridEcomFragment)
+                .add(R.id.flCamerFragment, CreateProjectFragment())
                 .commitAllowingStateLoss()
         }
         val intent = intent
