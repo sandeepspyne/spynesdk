@@ -205,7 +205,9 @@ class ReshootFragment : BaseFragment<ShootViewModel, FragmentReshootBinding>(), 
     private fun showImageConfirmDialog(shootData: ShootData) {
         viewModel.shootData.value = shootData
         when (getString(R.string.app_name)) {
-            AppConstants.OLA_CABS -> {
+            AppConstants.OLA_CABS,
+            AppConstants.CARS24,
+            AppConstants.CARS24_INDIA -> {
                 ConfirmTagsDialog().show(
                     requireActivity().supportFragmentManager,
                     "ConfirmTagsDialog"
