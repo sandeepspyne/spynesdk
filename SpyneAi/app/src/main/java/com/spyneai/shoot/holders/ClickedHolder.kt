@@ -11,6 +11,7 @@ import com.spyneai.R
 import com.spyneai.base.GenericAdapter
 import com.spyneai.base.OnItemClickListener
 import com.spyneai.camera2.OverlaysResponse
+import com.spyneai.databinding.ItemClickedBinding
 import com.spyneai.databinding.ItemOverlaysBinding
 import com.spyneai.shoot.data.OnOverlaySelectionListener
 import com.spyneai.shoot.data.model.ShootData
@@ -23,12 +24,12 @@ class ClickedHolder(
 
     var listener: OnItemClickListener? = null
     var overlaySelectionListener: OnOverlaySelectionListener? = null
-    var binding: ItemOverlaysBinding? = null
+    var binding: ItemClickedBinding? = null
 
     val TAG = "OverlaysHolder"
 
     init {
-        binding = ItemOverlaysBinding.bind(itemView)
+        binding = ItemClickedBinding.bind(itemView)
         this.listener = listener
         this.overlaySelectionListener = overlaySelectionListener
     }
@@ -67,10 +68,10 @@ class ClickedHolder(
         if (data.imageClicked) {
             Log.d(TAG, "bind: " + data.imagePath)
             Glide.with(itemView)
-                .load(data.imagePath)
+                .load(data.capturedImage)
                 .diskCacheStrategy(DiskCacheStrategy.NONE)
                 .skipMemoryCache(true)
-                .into(binding?.ivOverlay!!)
+                .into(binding?.ivClicked!!)
         }
 
         binding?.flOverlay?.setOnClickListener {

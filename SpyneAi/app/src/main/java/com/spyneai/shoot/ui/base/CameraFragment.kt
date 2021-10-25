@@ -253,15 +253,16 @@ class CameraFragment : BaseFragment<ShootViewModel, FragmentCameraBinding>(), Pi
     }
 
     private fun onCaptureClick() {
-        if (binding.flLevelIndicator.visibility == View.VISIBLE){
-            if (binding.flLevelIndicator.isGyroOnCorrectAngle){
-                captureImage()
-        }else{
-            showGryroToast()
-        }
-        }else{
-            captureImage()
-        }
+        captureImage()
+//        if (binding.flLevelIndicator.visibility == View.VISIBLE){
+//            if (binding.flLevelIndicator.isGyroOnCorrectAngle){
+//                captureImage()
+//        }else{
+//            showGryroToast()
+//        }
+//        }else{
+//            captureImage()
+//        }
     }
 
     private fun showGryroToast(){
@@ -712,15 +713,17 @@ class CameraFragment : BaseFragment<ShootViewModel, FragmentCameraBinding>(), Pi
                 it.overlayId == viewModel.overlayId
         }
 
-        if (item != null){
-            item.capturedImage = capturedImage
-            item.angle = cameraAngle
-            viewModel.isReclick = true
-            }
-        else {
-            viewModel.isReclick = false
-            viewModel.shootList.value!!.add(shootData)
-        }
+        viewModel.shootList.value!!.add(shootData)
+
+//        if (item != null){
+//            item.capturedImage = capturedImage
+//            item.angle = cameraAngle
+//            viewModel.isReclick = true
+//            }
+//        else {
+//            viewModel.isReclick = false
+//            viewModel.shootList.value!!.add(shootData)
+//        }
 
         viewModel.shootList.value = viewModel.shootList.value
 

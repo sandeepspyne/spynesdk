@@ -9,6 +9,7 @@ import com.spyneai.base.OnItemClickListener
 import com.spyneai.camera2.OverlaysResponse
 import com.spyneai.dashboard.response.NewSubCatResponse
 import com.spyneai.shoot.data.OnOverlaySelectionListener
+import com.spyneai.shoot.data.model.ShootData
 
 class ClickedAdapter(
     list: List<Any>,
@@ -19,9 +20,7 @@ class ClickedAdapter(
     override fun getLayoutId(position: Int, obj: Any?): Int {
         return when (obj) {
 
-            is OverlaysResponse.Data -> R.layout.item_overlays
-            is NewSubCatResponse.Interior -> R.layout.item_interior
-            is NewSubCatResponse.Miscellaneous -> R.layout.item_miscellanous
+            is ShootData -> R.layout.item_clicked
             else -> error("Unknown type: for position: $position")
         }
     }
