@@ -7,6 +7,7 @@ import android.view.View
 import android.view.ViewTreeObserver
 import android.view.animation.AccelerateInterpolator
 import android.widget.FrameLayout
+import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.ContextCompat
 import com.spyneai.BaseApplication
 import com.spyneai.R
@@ -23,6 +24,8 @@ class GyroView : FrameLayout {
     private var bottomConstraint = 0
     var isGyroOnCorrectAngle = false
     var cameraAngle = 45
+    var angle = 0
+    var upcomingAngle = 0
     var cateoryName = ""
 
     constructor(context: Context) : this(context, null)
@@ -82,33 +85,98 @@ class GyroView : FrameLayout {
             }
 
             AppConstants.SWIGGY -> {
+
+                // angle name
+                if (pitch.roundToInt() == 0 || (pitch.roundToInt() <= -0 && pitch.roundToInt() >= -3))
+                    angle = 0
+
+                if (pitch.roundToInt() <= -82 && pitch.roundToInt() >= -88)
+                    angle = 90
+
+                if ((pitch.roundToInt() <= -40 && pitch.roundToInt() >= -45) && abs(roll.roundToInt()) < 100)
+                    angle = 45
+
+                if (binding.flLevelIndicator.visibility == View.VISIBLE){
+                    when (angle) {
+                        0 -> {
+                            binding.tvAngleValue!!.visibility = View.VISIBLE
+                            binding.tvAngleValue!!.text = "0" + "\u00B0"
+                            binding.groupOverlay!!.visibility = View.GONE
+                        }
+                        45 -> {
+                            binding.tvAngleValue!!.visibility = View.VISIBLE
+                            binding.tvAngleValue!!.text = "45" + "\u00B0"
+                            binding.groupOverlay!!.visibility = View.GONE
+                        }
+                        90 -> {
+                            binding.tvAngleValue!!.visibility = View.VISIBLE
+                            binding.tvAngleValue!!.text = "90" + "\u00B0"
+                            binding.groupOverlay!!.visibility = View.VISIBLE
+                        }
+                        else -> {
+                            binding.tvAngleValue!!.visibility = View.INVISIBLE
+                            binding.groupOverlay!!.visibility = View.GONE
+                        }
+                    }
+                }
+
                 //hide moving line
+
+
                 if (pitch.roundToInt() == 0 || (pitch.roundToInt() <= -0 && pitch.roundToInt() >= -3))
                     binding.tvLevelIndicator.visibility = View.GONE
                 else
                     binding.tvLevelIndicator.visibility = View.VISIBLE
 
-                if ((pitch.roundToInt() == 0 || (pitch.roundToInt() <= -0 && pitch.roundToInt() >= -3)) ||
-                    pitch.roundToInt() <= -82 && pitch.roundToInt() >= -88 ||
-                    (pitch.roundToInt() <= -40 && pitch.roundToInt() >= -45) && abs(roll.roundToInt()) < 100
-                ) {
+
+
+
+                if (((pitch.roundToInt() == 0 || (pitch.roundToInt() <= -0 && pitch.roundToInt() >= -3))
+                            && (abs(roll.roundToInt()) <= 3 && abs(roll.roundToInt()) >= -3)) ||
+                    (pitch.roundToInt() <= -82 && pitch.roundToInt() >= -88) ||
+                    (pitch.roundToInt() <= -40 && pitch.roundToInt() >= -45) ) {
+                    binding.lottieDownArrow!!.visibility = View.INVISIBLE
+                    binding.lottieUpArrow!!.visibility = View.INVISIBLE
+                    binding.tvUpcomingAngle1!!.visibility = View.INVISIBLE
+                    binding.tvUpcomingAngle2!!.visibility = View.INVISIBLE
+                    binding.tvAngleRed!!.visibility = View.INVISIBLE
                     isGyroOnCorrectAngle = true
+
+
+
                     //angle 90
                     if (pitch.roundToInt() == 0 || (pitch.roundToInt() <= -0 && pitch.roundToInt() >= -3)) {
-                        cameraAngle = 90
+                        cameraAngle = 0
                         gyroMeterOnLevel(false)
                     }
                     //angle 45
                     else if (pitch.roundToInt() <= -40 && pitch.roundToInt() >= -45) {
                         cameraAngle = 45
                         gyroMeterOnLevel(false)
-                        // angle 0
-                    } else {
-                        cameraAngle = 0
+                    }
+
+
+
+                    else {
+                        cameraAngle = 90
                         gyroMeterOnLevel(true)
                     }
+
                 } else {
+                    if (binding.flLevelIndicator.visibility == View.VISIBLE){
+                        binding.lottieDownArrow!!.visibility = View.VISIBLE
+                        binding.lottieUpArrow!!.visibility = View.VISIBLE
+                        binding.tvAngleRed!!.visibility = View.VISIBLE
+                    }
+
+                    binding.tvAngleValue!!.visibility = View.INVISIBLE
+                    binding.groupOverlay!!.visibility = View.GONE
+                    binding.tvAngleValue!!.visibility = View.INVISIBLE
                     isGyroOnCorrectAngle = false
+
+                    val gyroAngle = (-pitch.roundToInt())
+
+                    binding.tvAngleRed!!.text = gyroAngle.toString() + "\u00B0"
                     gyroMeterOffLevel()
 
                     if (movearrow) {
@@ -129,6 +197,111 @@ class GyroView : FrameLayout {
                 }
             }
 
+            AppConstants.EBAY, AppConstants.FLIPKART, AppConstants.UDAAN, AppConstants.AMAZON -> {
+
+                // angle name
+                if (pitch.roundToInt() == 0 || (pitch.roundToInt() <= -0 && pitch.roundToInt() >= -3))
+                    angle = 0
+
+                if (pitch.roundToInt() <= -82 && pitch.roundToInt() >= -88)
+                    angle = 90
+
+                if ((pitch.roundToInt() <= -40 && pitch.roundToInt() >= -45) && abs(roll.roundToInt()) < 100)
+                    angle = 45
+
+                if (binding.flLevelIndicator.visibility == View.VISIBLE){
+                    when (angle) {
+                        0 -> {
+                            binding.tvAngleValue!!.visibility = View.VISIBLE
+                            binding.tvAngleValue!!.text = "0" + "\u00B0"
+                        }
+                        45 -> {
+                            binding.tvAngleValue!!.visibility = View.VISIBLE
+                            binding.tvAngleValue!!.text = "45" + "\u00B0"
+                        }
+                        90 -> {
+                            binding.tvAngleValue!!.visibility = View.VISIBLE
+                            binding.tvAngleValue!!.text = "90" + "\u00B0"
+                        }
+                        else -> {
+                            binding.tvAngleValue!!.visibility = View.INVISIBLE
+                        }
+                    }
+                }
+
+                //hide moving line
+
+
+                if (pitch.roundToInt() == 0 || (pitch.roundToInt() <= -0 && pitch.roundToInt() >= -3))
+                    binding.tvLevelIndicator.visibility = View.GONE
+                else
+                    binding.tvLevelIndicator.visibility = View.VISIBLE
+
+
+
+
+                if (((pitch.roundToInt() == 0 || (pitch.roundToInt() <= -0 && pitch.roundToInt() >= -3))
+                            && (abs(roll.roundToInt()) <= 3 && abs(roll.roundToInt()) >= -3)) ||
+                    (pitch.roundToInt() <= -82 && pitch.roundToInt() >= -88) ||
+                    (pitch.roundToInt() <= -40 && pitch.roundToInt() >= -45) ) {
+                    binding.lottieDownArrow!!.visibility = View.INVISIBLE
+                    binding.lottieUpArrow!!.visibility = View.INVISIBLE
+                    binding.tvUpcomingAngle1!!.visibility = View.INVISIBLE
+                    binding.tvUpcomingAngle2!!.visibility = View.INVISIBLE
+                    binding.tvAngleRed!!.visibility = View.INVISIBLE
+                    isGyroOnCorrectAngle = true
+
+
+
+                    //angle 90
+                    if (pitch.roundToInt() == 0 || (pitch.roundToInt() <= -0 && pitch.roundToInt() >= -3)) {
+                        cameraAngle = 0
+                        gyroMeterOnLevel(false)
+                    }
+                    //angle 45
+                    else if (pitch.roundToInt() <= -40 && pitch.roundToInt() >= -45) {
+                        cameraAngle = 45
+                        gyroMeterOnLevel(false)
+                    }
+
+
+
+                    else {
+                        cameraAngle = 90
+                        gyroMeterOnLevel(true)
+                    }
+
+                } else {
+                    if(binding.flLevelIndicator.visibility == View.VISIBLE){
+                        binding.lottieDownArrow!!.visibility = View.VISIBLE
+                        binding.lottieUpArrow!!.visibility = View.VISIBLE
+                        binding.tvAngleRed!!.visibility = View.VISIBLE
+                    }
+                    binding.tvAngleValue!!.visibility = View.INVISIBLE
+                    binding.tvAngleValue!!.visibility = View.INVISIBLE
+                    isGyroOnCorrectAngle = false
+                    val gyroAngle = (-pitch.roundToInt())
+
+                    binding.tvAngleRed!!.text = gyroAngle.toString() + "\u00B0"
+                    gyroMeterOffLevel()
+
+                    if (movearrow) {
+                        if (abs(roll.roundToInt()) < 100) {
+                            moveArrow((pitch + 85).unaryMinus())
+                        } else {
+                            moveArrow(pitch + 85)
+                        }
+                    }
+
+                    if (roll.roundToInt() == 1 || roll.roundToInt() == -1) {
+                        if (roll.roundToInt() == 1) {
+                            rotateArrow((pitch + 85).unaryMinus().roundToInt())
+                        } else {
+                            rotateArrow((pitch + 85).roundToInt())
+                        }
+                    }
+                }
+            }
             AppConstants.SPYNE_AI, AppConstants.SELL_ANY_CAR -> {
                 when (cateoryName) {
                     "Automobiles", "Bikes" -> {
@@ -150,6 +323,117 @@ class GyroView : FrameLayout {
                         }
                     }
 
+                    "Food & Beverages", "E-Commerce", "Photo Box"  -> {
+
+                        // angle name
+                        if (pitch.roundToInt() == 0 || (pitch.roundToInt() <= -0 && pitch.roundToInt() >= -3))
+                            angle = 0
+
+                        if (pitch.roundToInt() <= -82 && pitch.roundToInt() >= -88)
+                            angle = 90
+
+                        if ((pitch.roundToInt() <= -40 && pitch.roundToInt() >= -45) && abs(roll.roundToInt()) < 100)
+                            angle = 45
+
+                        if (binding.flLevelIndicator.visibility == View.VISIBLE){
+                            when (angle) {
+                                0 -> {
+                                    binding.tvAngleValue!!.visibility = View.VISIBLE
+                                    binding.tvAngleValue!!.text = "0" + "\u00B0"
+                                    binding.groupOverlay!!.visibility = View.GONE
+                                }
+                                45 -> {
+                                    binding.tvAngleValue!!.visibility = View.VISIBLE
+                                    binding.tvAngleValue!!.text = "45" + "\u00B0"
+                                    binding.groupOverlay!!.visibility = View.GONE
+                                }
+                                90 -> {
+                                    binding.tvAngleValue!!.visibility = View.VISIBLE
+                                    binding.tvAngleValue!!.text = "90" + "\u00B0"
+                                    binding.groupOverlay!!.visibility = View.GONE
+                                }
+                                else -> {
+                                    binding.tvAngleValue!!.visibility = View.INVISIBLE
+                                    binding.groupOverlay!!.visibility = View.GONE
+                                }
+                            }
+                        }
+
+                        //hide moving line
+
+
+                        if (pitch.roundToInt() == 0 || (pitch.roundToInt() <= -0 && pitch.roundToInt() >= -3))
+                            binding.tvLevelIndicator.visibility = View.GONE
+                        else
+                            binding.tvLevelIndicator.visibility = View.VISIBLE
+
+
+
+
+                        if (((pitch.roundToInt() == 0 || (pitch.roundToInt() <= 4 && pitch.roundToInt() >= -4))
+                                    && (abs(roll.roundToInt()) <= 4 && abs(roll.roundToInt()) >= -4)) ||
+                            (pitch.roundToInt() <= -82 && pitch.roundToInt() >= -88) ||
+                            (pitch.roundToInt() <= -40 && pitch.roundToInt() >= -45) ) {
+                            binding.lottieDownArrow!!.visibility = View.INVISIBLE
+                            binding.lottieUpArrow!!.visibility = View.INVISIBLE
+                            binding.tvUpcomingAngle1!!.visibility = View.INVISIBLE
+                            binding.tvUpcomingAngle2!!.visibility = View.INVISIBLE
+                            binding.tvAngleRed!!.visibility = View.INVISIBLE
+                            isGyroOnCorrectAngle = true
+
+
+
+                            //angle 90
+                            if (pitch.roundToInt() == 0 || (pitch.roundToInt() <= -0 && pitch.roundToInt() >= -3)) {
+                                cameraAngle = 0
+                                gyroMeterOnLevel(false)
+                            }
+                            //angle 45
+                            else if (pitch.roundToInt() <= -40 && pitch.roundToInt() >= -45) {
+                                cameraAngle = 45
+                                gyroMeterOnLevel(false)
+                            }
+
+
+
+                            else {
+                                cameraAngle = 90
+                                gyroMeterOnLevel(true)
+                            }
+
+                        } else {
+                            if (binding.flLevelIndicator.visibility == View.VISIBLE){
+                                binding.lottieDownArrow!!.visibility = View.VISIBLE
+                                binding.lottieUpArrow!!.visibility = View.VISIBLE
+                                binding.tvAngleRed!!.visibility = View.VISIBLE
+                            }
+
+                            binding.tvAngleValue!!.visibility = View.INVISIBLE
+                            binding.groupOverlay!!.visibility = View.GONE
+                            binding.tvAngleValue!!.visibility = View.INVISIBLE
+                            isGyroOnCorrectAngle = false
+                            val gyroAngle = (-pitch.roundToInt())
+
+                            binding.tvAngleRed!!.text = gyroAngle.toString() + "\u00B0"
+                            gyroMeterOffLevel()
+
+                            if (movearrow) {
+                                if (abs(roll.roundToInt()) < 100) {
+                                    moveArrow((pitch + 85).unaryMinus())
+                                } else {
+                                    moveArrow(pitch + 85)
+                                }
+                            }
+
+                            if (roll.roundToInt() == 1 || roll.roundToInt() == -1) {
+                                if (roll.roundToInt() == 1) {
+                                    rotateArrow((pitch + 85).unaryMinus().roundToInt())
+                                } else {
+                                    rotateArrow((pitch + 85).roundToInt())
+                                }
+                            }
+                        }
+                    }
                     else -> {
                         //hide moving line
                         if (pitch.roundToInt() == 0 || (pitch.roundToInt() <= -0 && pitch.roundToInt() >= -3))
@@ -191,9 +475,6 @@ class GyroView : FrameLayout {
             }
 
             AppConstants.SWIGGYINSTAMART,
-            AppConstants.UDAAN,
-            AppConstants.FLIPKART,
-            AppConstants.AMAZON,
             AppConstants.LAL_10,
             AppConstants.BATA,
             AppConstants.FLIPKART_GROCERY -> {
@@ -203,7 +484,8 @@ class GyroView : FrameLayout {
                 else
                     binding.tvLevelIndicator.visibility = View.VISIBLE
 
-                if ((pitch.roundToInt() == 0 || (pitch.roundToInt() <= -0 && pitch.roundToInt() >= -3)) ||
+                if (((pitch.roundToInt() == 0 || (pitch.roundToInt() <= -0 && pitch.roundToInt() >= -3))
+                            && (abs(roll.roundToInt()) <= 3 && abs(roll.roundToInt()) >= -3)) ||
                     pitch.roundToInt() <= -82 && pitch.roundToInt() >= -88
                 ) {
 

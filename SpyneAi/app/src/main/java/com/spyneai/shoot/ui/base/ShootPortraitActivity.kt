@@ -192,8 +192,6 @@ class ShootPortraitActivity :AppCompatActivity(), GoogleApiClient.ConnectionCall
 
 
     private fun setUpVideoShoot() {
-
-
         shootViewModel.fromVideo = true
         shootViewModel.showVin.value = true
         shootViewModel.isProjectCreated.value = true

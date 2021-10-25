@@ -437,25 +437,8 @@ class CameraFragment : BaseFragment<ShootViewModel, FragmentCameraBinding>(), Pi
 
                 cameraInfo = camera.cameraInfo
 
-
-                val s = ""
-
-//                val rotation = cameraInfo!!.sensorRotationDegrees
-//                Toast.makeText(requireContext(), "rotation- "+rotation, Toast.LENGTH_SHORT).show()
-
                 var currentZoomRatio = cameraInfo?.zoomState?.value?.zoomRatio ?: 0F
                 cameraControl?.setZoomRatio(currentZoomRatio * 1.3F)
-//                when (viewModel.categoryDetails.value?.categoryName) {
-//                    "E-Commerce" -> {
-//                        if (currentZoomRatio == 1.0F)
-//                            cameraControl?.setZoomRatio(currentZoomRatio * 1.5F)
-//                    }
-//                    "Food & Beverages" -> {
-//                        if (currentZoomRatio == 1.0F)
-//                            cameraControl?.setZoomRatio(currentZoomRatio * 1.2F)
-//                    }
-//                }
-
                 if (viewModel.shootDimensions.value == null ||
                     viewModel.shootDimensions.value?.previewHeight == 0
                 ) {
