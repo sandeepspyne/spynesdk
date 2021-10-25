@@ -210,11 +210,7 @@ class KarviProcessedImagesFragment : BaseFragment<ProcessedViewModel, ActivityKa
 
 
         binding.llStartNewShoot.setOnClickListener {
-            if (requireContext().isMagnatoMeterAvailable()){
-                startShoot()
-            }else {
-                NoMagnaotoMeterDialog().show(requireActivity().supportFragmentManager,"NoMagnaotoMeterDialog")
-            }
+            startShoot()
         }
     }
 

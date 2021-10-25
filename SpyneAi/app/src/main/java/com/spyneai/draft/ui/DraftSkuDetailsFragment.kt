@@ -123,14 +123,7 @@ class DraftSkuDetailsFragment : BaseFragment<DraftViewModel, FragmentDraftSkuDet
         }
 
         binding.btnContinueShoot.setOnClickListener {
-            if (requireContext().isMagnatoMeterAvailable()) {
-                onResumeClick()
-            } else {
-                NoMagnaotoMeterDialog().show(
-                    requireActivity().supportFragmentManager,
-                    "NoMagnaotoMeterDialog"
-                )
-            }
+            onResumeClick()
         }
     }
 

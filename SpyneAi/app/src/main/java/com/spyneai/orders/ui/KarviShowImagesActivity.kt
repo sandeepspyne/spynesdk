@@ -221,11 +221,7 @@ class KarviShowImagesActivity : AppCompatActivity() {
 
 
         binding.llStartNewShoot.setOnClickListener {
-            if (isMagnatoMeterAvailable()){
-                startShoot()
-            }else {
-                NoMagnaotoMeterDialog().show(supportFragmentManager,"NoMagnaotoMeterDialog")
-            }
+            startShoot()
         }
     }
 
