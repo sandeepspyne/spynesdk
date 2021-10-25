@@ -109,108 +109,24 @@ class ShootPortraitActivity :AppCompatActivity(), GoogleApiClient.ConnectionCall
         overlayEcomFragment = OverlayEcomFragment()
         selectBackgroundFragment = SelectBackgroundFragment()
 
-        when (shootViewModel.categoryDetails.value?.categoryName) {
-            "Automobiles" -> {
-                shootViewModel.processSku = true
-                if (savedInstanceState == null) { // initial transaction should be wrapped like this
-                    supportFragmentManager.beginTransaction()
-                        .add(R.id.flCamerFragment, cameraFragment)
-                        .add(R.id.flCamerFragment, overlaysFragment)
-                        .commitAllowingStateLoss()
-                }
-            }
-            "Bikes" -> {
-                shootViewModel.processSku = false
-                if (savedInstanceState == null) { // initial transaction should be wrapped like this
-                    supportFragmentManager.beginTransaction()
-                        .add(R.id.flCamerFragment, cameraFragment)
-                        .add(R.id.flCamerFragment, overlaysFragment)
-                        .commitAllowingStateLoss()
-                }
-            }
-
-            "E-Commerce" -> {
-                shootViewModel.processSku = false
-                if (savedInstanceState == null) { // initial transaction should be wrapped like this
-                    supportFragmentManager.beginTransaction()
-                        .add(R.id.flCamerFragment, cameraFragment)
-                        .add(R.id.flCamerFragment, gridEcomFragment)
-                        .commitAllowingStateLoss()
-                }
-                try {
-                    val intent = intent
-                    shootViewModel.projectId.value = intent.getStringExtra("project_id")
-                    val sku = Sku()
-                    sku?.projectId = shootViewModel.projectId.value
-                    shootViewModel.categoryDetails.value?.imageType = "Ecom"
-                    shootViewModel.sku.value = sku
-                } catch (e: Exception) {
-                    e.printStackTrace()
-                }
-            }
-            "Photo Box" -> {
-                shootViewModel.processSku = false
-                if (savedInstanceState == null) { // initial transaction should be wrapped like this
-                    supportFragmentManager.beginTransaction()
-                        .add(R.id.flCamerFragment, cameraFragment)
-                        .add(R.id.flCamerFragment, gridEcomFragment)
-                        .commitAllowingStateLoss()
-                }
-                try {
-                    val intent = intent
-                    shootViewModel.projectId.value = intent.getStringExtra("project_id")
-                    val sku = Sku()
-                    sku?.projectId = shootViewModel.projectId.value
-                    shootViewModel.categoryDetails.value?.imageType = "Ecom"
-                    shootViewModel.sku.value = sku
-                } catch (e: Exception) {
-                    e.printStackTrace()
-                }
-            }
-            "Food & Beverages" -> {
-                shootViewModel.processSku = false
-                if (savedInstanceState == null) { // initial transaction should be wrapped like this
-                    supportFragmentManager.beginTransaction()
-                        .add(R.id.flCamerFragment, cameraFragment)
-                        .add(R.id.flCamerFragment, gridEcomFragment)
-                        .commitAllowingStateLoss()
-                }
-                try {
-                    val intent = intent
-                    shootViewModel.projectId.value = intent.getStringExtra("project_id")
-                    val sku = Sku()
-                    sku?.projectId = shootViewModel.projectId.value
-                    shootViewModel.categoryDetails.value?.imageType = "Food"
-                    shootViewModel.sku.value = sku
-                } catch (e: Exception) {
-                    e.printStackTrace()
-                }
-            }
-
-            "Footwear" -> {
-                shootViewModel.processSku = false
-                if (savedInstanceState == null) { // initial transaction should be wrapped like this
-                    supportFragmentManager.beginTransaction()
-                        .add(R.id.flCamerFragment, cameraFragment)
-                        .add(R.id.flCamerFragment, overlayEcomFragment)
-                        .commitAllowingStateLoss()
-                }
-                try {
-                    val intent = intent
-                    shootViewModel.projectId.value = intent.getStringExtra("project_id")
-                    val sku = Sku()
-                    sku?.projectId = shootViewModel.projectId.value
-                    shootViewModel.categoryDetails.value?.imageType = "Footwear"
-                    shootViewModel.sku.value = sku
-                } catch (e: Exception) {
-                    e.printStackTrace()
-                }
-            }
-
+        shootViewModel.processSku = false
+        if (savedInstanceState == null) { // initial transaction should be wrapped like this
+            supportFragmentManager.beginTransaction()
+                .add(R.id.flCamerFragment, cameraFragment)
+                .add(R.id.flCamerFragment, gridEcomFragment)
+                .commitAllowingStateLoss()
         }
+        val intent = intent
+        shootViewModel.projectId.value = intent.getStringExtra("project_id")
+        val sku = Sku()
+        sku?.projectId = shootViewModel.projectId.value
+        shootViewModel.sku.value = sku
 
-
-
+        when (shootViewModel.categoryDetails.value?.categoryName) {
+            "E-Commerce","Photo Box" -> shootViewModel.categoryDetails.value?.imageType = "Ecom"
+            "Food & Beverages" -> shootViewModel.categoryDetails.value?.imageType = "Food"
+            "Footwear" -> shootViewModel.categoryDetails.value?.imageType = "Footwear"
+        }
 
 
         shootViewModel.stopShoot.observe(this, {
