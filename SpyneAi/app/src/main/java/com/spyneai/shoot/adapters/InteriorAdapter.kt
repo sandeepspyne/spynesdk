@@ -40,7 +40,6 @@ class InteriorAdapter (val context: Context,
 
     // Replace the contents of a view (invoked by the layout manager)
     override fun onBindViewHolder(viewHolder: ViewHolder, position: Int) {
-
         // Get element from your dataset at this position and replace the
         // contents of the view with that element
         Glide.with(context).load(
@@ -53,9 +52,7 @@ class InteriorAdapter (val context: Context,
             viewHolder.cardIFrameImages.setBackgroundResource(R.drawable.bg_selected)
         else
             viewHolder.cardIFrameImages.setBackgroundResource(R.drawable.bg_channel)
-
     }
 
     override fun getItemCount() = interiorList.size
-
 }

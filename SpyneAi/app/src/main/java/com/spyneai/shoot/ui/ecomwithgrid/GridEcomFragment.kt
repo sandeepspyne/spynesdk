@@ -26,8 +26,6 @@ import java.util.*
 class GridEcomFragment : BaseFragment<ShootViewModel, FragmentGridEcomBinding>() {
 
 
-    lateinit var capturedImageAdapter: CapturedImageAdapter
-    lateinit var capturedImageList: ArrayList<String>
     var position = 1
 
 
@@ -47,13 +45,6 @@ class GridEcomFragment : BaseFragment<ShootViewModel, FragmentGridEcomBinding>()
         viewModel.shootList.observe(viewLifecycleOwner, {
             try {
                 if (!it.isNullOrEmpty()) {
-                    capturedImageList = ArrayList<String>()
-                    position = it.size - 1
-                    capturedImageList.clear()
-                    for (i in 0..(it.size - 1))
-                        (capturedImageList as ArrayList).add(it[i].capturedImage)
-                    initCapturedImages()
-
                     if (viewModel.showDialog)
                         showImageConfirmDialog(it.get(it.size - 1))
                     log("call showImageConfirmDialog")
@@ -68,17 +59,7 @@ class GridEcomFragment : BaseFragment<ShootViewModel, FragmentGridEcomBinding>()
             if (it) {
                 binding.tvSkuName?.text = viewModel.sku.value?.skuName
                 binding.tvSkuName.visibility = View.VISIBLE
-                log("sku name set to text view: "+viewModel.sku.value?.skuName)
                 viewModel.isSkuCreated.value = false
-
-//                if (!viewModel.fromDrafts)
-//                    viewModel.shootNumber.value = 0
-            }
-        })
-
-        viewModel.reshootCapturedImage.observe(viewLifecycleOwner,{
-            if (it){
-                capturedImageAdapter.removeLastItem()
             }
         })
 
@@ -87,26 +68,8 @@ class GridEcomFragment : BaseFragment<ShootViewModel, FragmentGridEcomBinding>()
                 binding.tvImageCount.text = viewModel.shootList.value!!.size.toString()
             }
         })
-
     }
 
-
-
-
-    private fun initCapturedImages() {
-        capturedImageAdapter = CapturedImageAdapter(
-            requireContext(),
-            capturedImageList
-        )
-
-        binding.rvCapturedImages.apply {
-            this?.layoutManager =
-                LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
-            this?.adapter = capturedImageAdapter
-        }
-
-
-    }
 
     override fun onResume() {
         super.onResume()
@@ -116,7 +79,6 @@ class GridEcomFragment : BaseFragment<ShootViewModel, FragmentGridEcomBinding>()
                 viewModel.showLeveler.value = true
                 viewModel.showDialog = true
             }
-
         }
     }
 
