@@ -4,6 +4,7 @@ import android.app.ActionBar
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -36,11 +37,15 @@ class WalletDashboardFragment : BaseFragment<DashboardViewModel, WalletDashboard
 
     private var call: Call<CreditDetailsResponse>? = null
     private var availableCredits = 0
+    private var TAG = "WalletDashboardFragment"
 
 
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+
+        Log.d(TAG, "onViewCreated: "+ Utilities.getPreference(requireContext(),AppConstants.ENTERPRISE_ID))
 
         when(getString(R.string.app_name)){
                 AppConstants.SWIGGY -> {

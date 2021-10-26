@@ -16,7 +16,6 @@ class MyDialogFragment : DialogFragment() {
 
     companion object {
 
-        val TAG = MyDialogFragment::TAG.toString()
 
         fun newInstance(layoutId: Int?): MyDialogFragment {
 

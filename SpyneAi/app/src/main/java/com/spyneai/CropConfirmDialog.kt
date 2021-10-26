@@ -2,10 +2,8 @@ package com.spyneai
 
 import android.app.Dialog
 import android.content.Intent
-import android.net.Uri
 import android.os.Build
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -13,18 +11,14 @@ import androidx.core.content.ContextCompat
 import androidx.lifecycle.lifecycleScope
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.engine.DiskCacheStrategy
-import com.posthog.android.Properties
 import com.spyneai.base.BaseDialogFragment
 import com.spyneai.databinding.FragmentCropConfirmDialogBinding
-import com.spyneai.databinding.FragmentCropDialogBinding
-import com.spyneai.posthog.Events
 import com.spyneai.service.Actions
 import com.spyneai.service.ImageUploadingService
 import com.spyneai.service.getServiceState
 import com.spyneai.shoot.data.ShootViewModel
 import com.spyneai.shoot.utils.log
 import kotlinx.coroutines.launch
-import java.io.File
 
 class CropConfirmDialog : BaseDialogFragment<ShootViewModel, FragmentCropConfirmDialogBinding>() {
 

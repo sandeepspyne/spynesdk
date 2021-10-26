@@ -81,8 +81,15 @@ class ProjectDetailFragment : BaseFragment<ShootViewModel, FragmentProjectDetail
                         binding.btHome.text = "Submit and Process this Project"
                     }
                     "E-Commerce" -> {
-                        binding.groupShadow.visibility = View.VISIBLE
                         binding.btHome.text = "Submit Project"
+                        if (Utilities.getPreference(requireContext(),AppConstants.ENTERPRISE_ID)
+                            == AppConstants.FLIPKART_ENTERPRISE_ID) {
+                            binding.groupShadow.visibility = View.GONE
+
+                        }else{
+                            binding.groupShadow.visibility = View.VISIBLE
+
+                        }
                     }
                     "Footwear" -> {
                         binding.groupShadow.visibility = View.GONE

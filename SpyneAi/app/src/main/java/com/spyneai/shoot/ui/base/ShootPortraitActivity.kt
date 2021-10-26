@@ -39,6 +39,7 @@ import com.spyneai.shoot.ui.ecomwithgrid.ProjectDetailFragment
 import com.spyneai.shoot.ui.ecomwithgrid.SkuDetailFragment
 import com.spyneai.shoot.ui.ecomwithoverlays.OverlayEcomFragment
 import com.spyneai.shoot.utils.shoot
+import com.theartofdev.edmodo.cropper.CropImage
 import org.json.JSONObject
 import java.io.File
 import java.net.URI
@@ -501,23 +502,23 @@ class ShootPortraitActivity :AppCompatActivity(), GoogleApiClient.ConnectionCall
 
         shootViewModel.isCameraButtonClickable = true
 
-//        if (requestCode == CropImage.CROP_IMAGE_ACTIVITY_REQUEST_CODE) {
-//            val result = CropImage.getActivityResult(data)
-//            if (resultCode == RESULT_OK) {
-//                val resultUri = result.uri
-//
-//               File(resultUri.path)
-//                   .copyTo(File(shootViewModel.shootData.value?.capturedImage),
-//                   true)
-//
-//                //shootViewModel.shootData.value?.capturedImage = file.path
-//
-//                CropConfirmDialog().show(supportFragmentManager, "CropConfirmDialog")
-//
-//            } else if (resultCode == CropImage.CROP_IMAGE_ACTIVITY_RESULT_ERROR_CODE) {
-//                val error = result.error
-//            }
-//        }
+        if (requestCode == CropImage.CROP_IMAGE_ACTIVITY_REQUEST_CODE) {
+            val result = CropImage.getActivityResult(data)
+            if (resultCode == RESULT_OK) {
+                val resultUri = result.uri
+
+               File(resultUri.path)
+                   .copyTo(File(shootViewModel.shootData.value?.capturedImage),
+                   true)
+
+                //shootViewModel.shootData.value?.capturedImage = file.path
+
+                CropConfirmDialog().show(supportFragmentManager, "CropConfirmDialog")
+
+            } else if (resultCode == CropImage.CROP_IMAGE_ACTIVITY_RESULT_ERROR_CODE) {
+                val error = result.error
+            }
+        }
     }
 }
 

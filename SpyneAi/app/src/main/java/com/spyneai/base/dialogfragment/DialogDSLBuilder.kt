@@ -6,6 +6,7 @@ import android.view.View
 import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentActivity
+import com.spyneai.shoot.utils.TAG
 
 data class DialogDSLBuilder(
     val alertContext: Context,

@@ -1,9 +1,6 @@
 package com.spyneai
 
-import android.app.Activity.RESULT_OK
 import android.app.Dialog
-import android.content.Intent
-import android.net.Uri
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -16,9 +13,7 @@ import com.spyneai.base.BaseDialogFragment
 import com.spyneai.databinding.FragmentCropDialogBinding
 import com.spyneai.posthog.Events
 import com.spyneai.shoot.data.ShootViewModel
-import com.spyneai.shoot.data.model.ShootData
 import com.spyneai.shoot.utils.log
-import java.io.File
 
 class CropDialog : BaseDialogFragment<ShootViewModel, FragmentCropDialogBinding>() {
 
