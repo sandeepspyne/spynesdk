@@ -38,6 +38,7 @@ import com.spyneai.shoot.data.model.Sku
 import com.spyneai.shoot.ui.CreateProjectFragment
 import com.spyneai.shoot.ui.OverlaysFragment
 import com.spyneai.shoot.ui.SelectBackgroundFragment
+import com.spyneai.shoot.ui.SubCategoryAndAngleFragment
 import com.spyneai.shoot.ui.dialogs.ShootExitDialog
 import com.spyneai.shoot.ui.ecomwithgrid.GridEcomFragment
 import com.spyneai.shoot.ui.ecomwithgrid.ProjectDetailFragment
@@ -110,11 +111,16 @@ class ShootPortraitActivity :AppCompatActivity(), GoogleApiClient.ConnectionCall
 
         shootViewModel.processSku = false
         if (savedInstanceState == null) { // initial transaction should be wrapped like this
-            supportFragmentManager.beginTransaction()
+            val transaction = supportFragmentManager.beginTransaction()
                 .add(R.id.flCamerFragment, cameraFragment)
-                .add(R.id.flCamerFragment, gridEcomFragment)
-                .add(R.id.flCamerFragment, CreateProjectFragment())
-                .commitAllowingStateLoss()
+
+            when (shootViewModel.categoryDetails.value?.categoryName) {
+                "Footwear" -> transaction.add(R.id.flCamerFragment, overlayEcomFragment)
+                else -> transaction.add(R.id.flCamerFragment, gridEcomFragment)
+            }
+                transaction
+                    .add(R.id.flCamerFragment, CreateProjectFragment())
+                    .commitAllowingStateLoss()
         }
         val intent = intent
         shootViewModel.projectId.value = intent.getStringExtra("project_id")
@@ -188,6 +194,21 @@ class ShootPortraitActivity :AppCompatActivity(), GoogleApiClient.ConnectionCall
                 }
             }
         })
+
+        observeProjectCreated()
+    }
+
+    private fun observeProjectCreated() {
+        //add subcat selection fragment
+        shootViewModel.getSubCategories.observe(
+            this,{
+                if (!shootViewModel.isSubcategoriesSelectionShown){
+                    supportFragmentManager.beginTransaction()
+                        .add(R.id.flCamerFragment, SubCategoryAndAngleFragment())
+                        .commit()
+                }
+            }
+        )
     }
 
 

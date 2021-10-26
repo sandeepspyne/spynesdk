@@ -25,6 +25,7 @@
         <entry key="app/src/main/res/layout-land/fragment_camera.xml" value="0.165" />
         <entry key="app/src/main/res/layout-land/fragment_overlays.xml" value="0.18125" />
         <entry key="app/src/main/res/layout-land/fragment_reshoot.xml" value="0.165" />
+        <entry key="app/src/main/res/layout-land/fragment_select_subcategory_and_angle.xml" value="0.18072916666666666" />
         <entry key="app/src/main/res/layout-land/gyro_view.xml" value="0.2421875" />
         <entry key="app/src/main/res/layout-land/layout_gyro_view.xml" value="0.11235955056179775" />
         <entry key="app/src/main/res/layout/activity_background_add.xml" value="0.30512820512820515" />

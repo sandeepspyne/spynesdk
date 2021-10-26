@@ -1,5 +1,6 @@
 package com.spyneai.shoot.ui
 
+import android.content.pm.ActivityInfo
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -25,24 +26,33 @@ import com.spyneai.shoot.data.ShootViewModel
 import com.spyneai.shoot.ui.dialogs.AngleSelectionDialog
 import com.spyneai.shoot.utils.shoot
 
-class SubCategoryAndAngleFragment : BaseFragment<ShootViewModel,FragmentSelectSubcategoryAndAngleBinding>(),
+class SubCategoryAndAngleFragment :
+    BaseFragment<ShootViewModel, FragmentSelectSubcategoryAndAngleBinding>(),
     OnItemClickListener {
 
 
-    var subcatAndAngleAdapter : SubcatAndAngleAdapter? = null
+    var subcatAndAngleAdapter: SubcatAndAngleAdapter? = null
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        if (viewModel.isSkuCreated.value == null){
-            viewModel.getSubCategories.observe(viewLifecycleOwner,{
-                getSubcategories()
-            })
 
-            observeSubcategories()
-        }else {
-            hideViews()
-        }
+        viewModel.getSubCategories.observe(viewLifecycleOwner, {
+            getSubcategories()
+        })
+
+        observeSubcategories()
+
+
+//        if (viewModel.isSkuCreated.value == null){
+//            viewModel.getSubCategories.observe(viewLifecycleOwner,{
+//                getSubcategories()
+//            })
+//
+//            observeSubcategories()
+//        }else {
+//            hideViews()
+//        }
 
     }
 
@@ -75,16 +85,26 @@ class SubCategoryAndAngleFragment : BaseFragment<ShootViewModel,FragmentSelectSu
                         shimmer.visibility = View.INVISIBLE
                     }
 
-                    subcatAndAngleAdapter = SubcatAndAngleAdapter(it.value.data,this)
+                    subcatAndAngleAdapter = SubcatAndAngleAdapter(it.value.data, this)
+
+                    val lyManager =
+                        if (requireActivity().requestedOrientation == ActivityInfo.SCREEN_ORIENTATION_PORTRAIT)
+                            LinearLayoutManager(
+                                requireContext(),
+                                LinearLayoutManager.HORIZONTAL,
+                                false
+                            )
+                        else
+                            LinearLayoutManager(
+                                requireContext(),
+                                LinearLayoutManager.VERTICAL,
+                                false
+                            )
 
                     binding.rv.apply {
-                        layoutManager = LinearLayoutManager(requireContext(),LinearLayoutManager.VERTICAL,false)
+                        layoutManager = lyManager
                         adapter = subcatAndAngleAdapter
                     }
-
-//                    initAngles()
-//                    observeOverlays()
-
                 }
                 is Resource.Failure -> {
                     requireContext().captureFailureEvent(
@@ -107,25 +127,38 @@ class SubCategoryAndAngleFragment : BaseFragment<ShootViewModel,FragmentSelectSu
     ) = FragmentSelectSubcategoryAndAngleBinding.inflate(inflater, container, false)
 
     override fun onItemClick(view: View, position: Int, data: Any?) {
-        when(data){
+        when (data) {
             is NewSubCatResponse.Data -> {
 
-               hideViews()
+                hideViews()
 
                 viewModel.subCategory.value = data
 
-                when(getString(R.string.app_name)){
-                    AppConstants.KARVI,AppConstants.CARS24,AppConstants.CARS24_INDIA -> {
+                when (getString(R.string.app_name)) {
+                    AppConstants.SPYNE_AI -> {
+                        when (viewModel.categoryDetails.value?.categoryName) {
+                            "Automobiles", "Bikes" -> {
+                                selectAngles()
+                            }
+                            else -> {
+                                viewModel.exterirorAngles.value = 5
+                                updateSku()
+                                observerUpdateSku()
+                            }
+                        }
+                    }
+                    AppConstants.KARVI, AppConstants.CARS24, AppConstants.CARS24_INDIA -> {
                         viewModel.exterirorAngles.value = 8
                         //create sku
-                        if (viewModel.fromVideo){
+                        if (viewModel.fromVideo) {
                             updateSku()
                             observerUpdateSku()
-                        }else{
+                        } else {
                             createSku()
                             observerSku()
                         }
-                    }else -> selectAngles()
+                    }
+                    else -> selectAngles()
                 }
 
             }
@@ -135,7 +168,7 @@ class SubCategoryAndAngleFragment : BaseFragment<ShootViewModel,FragmentSelectSu
     private fun observerUpdateSku() {
         val createProjectRes = (viewModel.createProjectRes.value as Resource.Success).value
 
-        viewModel.updateVideoSkuRes.observe(viewLifecycleOwner,{
+        viewModel.updateVideoSkuRes.observe(viewLifecycleOwner, {
             when (it) {
                 is Resource.Success -> {
                     Utilities.hideProgressDialog()
@@ -144,12 +177,15 @@ class SubCategoryAndAngleFragment : BaseFragment<ShootViewModel,FragmentSelectSu
                         Events.CREATE_SKU,
                         Properties().putValue("sku_name", viewModel.sku.value?.skuName.toString())
                             .putValue("project_id", createProjectRes.project_id)
-                            .putValue("prod_sub_cat_id", viewModel.subCategory.value?.prod_sub_cat_id!!)
+                            .putValue(
+                                "prod_sub_cat_id",
+                                viewModel.subCategory.value?.prod_sub_cat_id!!
+                            )
                             .putValue("angles", viewModel.exterirorAngles.value!!)
                     )
 
                     val sku = viewModel.sku.value
-                    sku?.skuId =  viewModel.sku.value?.skuId!!
+                    sku?.skuId = viewModel.sku.value?.skuId!!
                     sku?.projectId = createProjectRes.project_id
                     sku?.createdOn = System.currentTimeMillis()
                     sku?.totalImages = viewModel.exterirorAngles.value
@@ -194,12 +230,17 @@ class SubCategoryAndAngleFragment : BaseFragment<ShootViewModel,FragmentSelectSu
     }
 
     private fun hideViews() {
-        binding.clRoot.setBackgroundColor(ContextCompat.getColor(requireContext(),R.color.transparent))
+        binding.clRoot.setBackgroundColor(
+            ContextCompat.getColor(
+                requireContext(),
+                R.color.transparent
+            )
+        )
 
         binding.apply {
             shimmer.stopShimmer()
             shimmer.visibility = View.INVISIBLE
-            ivArrow.visibility = View.GONE
+            ivArrow?.visibility = View.GONE
             tvDescription.visibility = View.INVISIBLE
             rv.visibility = View.INVISIBLE
         }
@@ -208,7 +249,10 @@ class SubCategoryAndAngleFragment : BaseFragment<ShootViewModel,FragmentSelectSu
 
     private fun selectAngles() {
 
-        AngleSelectionDialog().show(requireActivity().supportFragmentManager, "AngleSelectionDialog")
+        AngleSelectionDialog().show(
+            requireActivity().supportFragmentManager,
+            "AngleSelectionDialog"
+        )
 
     }
 
@@ -227,10 +271,10 @@ class SubCategoryAndAngleFragment : BaseFragment<ShootViewModel,FragmentSelectSu
         )
     }
 
-    private fun observerSku(){
+    private fun observerSku() {
         val createProjectRes = (viewModel.createProjectRes.value as Resource.Success).value
         val projectId = createProjectRes.project_id
-        val prod_sub_cat_id =  viewModel.subCategory.value?.prod_sub_cat_id!!
+        val prod_sub_cat_id = viewModel.subCategory.value?.prod_sub_cat_id!!
 
         viewModel.createSkuRes.observe(viewLifecycleOwner, {
             when (it) {

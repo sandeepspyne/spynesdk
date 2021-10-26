@@ -63,7 +63,6 @@
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent" />
 
-
     <LinearLayout
         android:id="@+id/llProgress"
         android:layout_width="match_parent"

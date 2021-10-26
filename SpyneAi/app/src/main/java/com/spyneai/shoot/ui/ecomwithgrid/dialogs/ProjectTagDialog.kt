@@ -350,22 +350,16 @@ class ProjectTagDialog : BaseDialogFragment<ShootViewModel, ProjectTagDialogBind
                     project.projectId = it.value.project_id
                     viewModel.insertProject(project)
 
-                    //notify project created
-                    viewModel.isProjectCreated.value = true
+
                     val sku = Sku()
-                    log("project id created")
-                    log("project id: " + it.value.project_id)
                     sku.projectId = it.value.project_id
                     viewModel.projectId.value = it.value.project_id
-                    Utilities.savePrefrence(
-                        requireContext(),
-                        AppConstants.PROJECT_ID,
-                        it.value.project_id
-                    )
                     sku.skuName = removeWhiteSpace(binding.etSkuName.text.toString())
                     viewModel.sku.value = sku
 
-                    log("create sku started")
+                    //notify project created
+                    viewModel.isProjectCreated.value = true
+
                     createSku(
                         it.value.project_id,
                         removeWhiteSpace(binding.etSkuName.text.toString()),
@@ -425,13 +419,14 @@ class ProjectTagDialog : BaseDialogFragment<ShootViewModel, ProjectTagDialogBind
                     sku?.subcategoryId = viewModel.subCategory.value?.prod_sub_cat_id
                     sku?.exteriorAngles = viewModel.exterirorAngles.value
 
-                    log("sku id created")
-                    log("sku id: " + it.value.sku_id)
+
                     sku?.skuName = removeWhiteSpace(binding.etSkuName.text.toString())
                     viewModel.sku.value = sku
+
+                    viewModel.isSubCategoryConfirmed.value = true
                     viewModel.isSkuCreated.value = true
-                    //viewModel.isSubCategoryConfirmed.value = true
                     viewModel.showLeveler.value = true
+                    viewModel.getSubCategories.value = true
 
                     //add sku to local database
                     viewModel.insertSku(sku!!)
