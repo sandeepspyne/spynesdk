@@ -3,6 +3,7 @@ package com.spyneai.base
 import android.view.View
 import androidx.recyclerview.widget.RecyclerView
 import com.spyneai.R
+import com.spyneai.reshoot.ReshootEcomHolder
 import com.spyneai.reshoot.ReshootHolder
 import com.spyneai.reshoot.SelectImageHolder
 import com.spyneai.shoot.data.OnOverlaySelectionListener
@@ -20,11 +21,10 @@ object JavaViewHolderFactory {
             R.layout.item_miscellanous -> MiscHolder(view, listener,overlaySelectionListener)
             R.layout.item_select_image -> SelectImageHolder(view, listener)
             R.layout.item_reshoot -> ReshootHolder(view,listener,overlaySelectionListener)
+            R.layout.item_reshoot_ecom -> ReshootEcomHolder(view,listener,overlaySelectionListener)
             R.layout.item_clicked -> ClickedHolder(view,listener,overlaySelectionListener)
 
             else -> GenericViewHolder(view)
         }
     }
-
-
 }

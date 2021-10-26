@@ -5,6 +5,7 @@ import org.json.JSONArray
 
 class SelectedImagesHelper {
     companion object {
-        var selectedImages = HashMap<Int,String>()
+        var selectedOverlayIds = HashMap<Int,String>()
+        var selectedImages = ArrayList<ImagesOfSkuRes.Data>()
     }
 }

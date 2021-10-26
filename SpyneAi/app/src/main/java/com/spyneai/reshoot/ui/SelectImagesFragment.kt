@@ -23,7 +23,7 @@ import com.spyneai.orders.data.response.ImagesOfSkuRes
 import com.spyneai.processedimages.ui.data.ProcessedViewModel
 import com.spyneai.reshoot.SelectImageAdapter
 import com.spyneai.reshoot.data.SelectedImagesHelper
-import org.json.JSONArray
+import com.spyneai.shoot.ui.base.ShootPortraitActivity
 
 class SelectImagesFragment : BaseFragment<ProcessedViewModel,FragmentSelectImagesBinding>(),OnItemClickListener{
 
@@ -74,17 +74,31 @@ class SelectImagesFragment : BaseFragment<ProcessedViewModel,FragmentSelectImage
 
         val selectedList = list.filter {
             it.isSelected
+        } as ArrayList<ImagesOfSkuRes.Data>
+
+        var reshootIntent : Intent? = null
+
+        when(list[0].image_category){
+            "Ecom" -> {
+                reshootIntent = Intent(requireActivity(),ReshootActivity::class.java)
+                selectedList.forEach {
+                    it.isSelected = false
+                }
+
+                SelectedImagesHelper.selectedImages = selectedList
+            }
+            else -> {
+                val selectedIdsMap = HashMap<Int,String>()
+
+                selectedList.forEachIndexed { _, data ->
+                    selectedIdsMap[data.overlayId] = data.image_name
+                }
+
+                SelectedImagesHelper.selectedOverlayIds = selectedIdsMap
+                reshootIntent = Intent(requireActivity(),ReshootActivity::class.java)
+            }
         }
 
-        val selectedIdsMap = HashMap<Int,String>()
-
-        selectedList.forEachIndexed { index, data ->
-            selectedIdsMap.put(data.overlayId,data.image_name)
-        }
-
-        SelectedImagesHelper.selectedImages = selectedIdsMap
-
-        val reshootIntent = Intent(requireActivity(),ReshootActivity::class.java)
         reshootIntent.apply {
             putExtra(AppConstants.PROJECT_ID,viewModel.projectId)
             putExtra(AppConstants.SKU_ID,viewModel.skuId)
@@ -100,7 +114,6 @@ class SelectImagesFragment : BaseFragment<ProcessedViewModel,FragmentSelectImage
     private fun getImages() {
         try {
             val imagesResponse = (viewModel.imagesOfSkuRes.value as Resource.Success).value
-
             selectImageAdapter = SelectImageAdapter(imagesResponse.data,this)
 
             binding.rvSkuImages.apply {

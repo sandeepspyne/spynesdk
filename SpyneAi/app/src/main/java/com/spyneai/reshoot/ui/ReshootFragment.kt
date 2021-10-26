@@ -23,9 +23,7 @@ import com.spyneai.R
 import com.spyneai.base.BaseFragment
 import com.spyneai.base.OnItemClickListener
 import com.spyneai.base.network.Resource
-import com.spyneai.camera2.OverlaysResponse
 import com.spyneai.captureEvent
-import com.spyneai.dashboard.response.NewSubCatResponse
 import com.spyneai.dashboard.ui.handleApiError
 import com.spyneai.databinding.FragmentReshootBinding
 import com.spyneai.needs.AppConstants
@@ -41,21 +39,28 @@ import com.spyneai.shoot.data.model.ShootData
 import com.spyneai.shoot.ui.dialogs.ConfirmReshootDialog
 import com.spyneai.shoot.ui.dialogs.ConfirmTagsDialog
 import com.spyneai.shoot.ui.dialogs.ReclickDialog
-import com.spyneai.shoot.utils.shoot
 import org.json.JSONArray
 
 class ReshootFragment : BaseFragment<ShootViewModel, FragmentReshootBinding>(), OnItemClickListener,
     OnOverlaySelectionListener {
 
     var reshootAdapter: ReshootAdapter? = null
-    var snackbar : Snackbar? = null
+    var snackbar: Snackbar? = null
     val TAG = "ReshootFragment"
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        getOverlayIds()
-        observerOverlayIds()
+        when (viewModel.categoryDetails.value?.categoryName) {
+            "E-Commerce" -> {
+                setReshootData()
+            }
+            else -> {
+                getOverlayIds()
+                observerOverlayIds()
+            }
+        }
+
 
         binding.apply {
             tvSkuName.text = viewModel.sku.value?.skuName
@@ -75,53 +80,108 @@ class ReshootFragment : BaseFragment<ShootViewModel, FragmentReshootBinding>(), 
 
         viewModel.onImageConfirmed.observe(viewLifecycleOwner, {
             if (viewModel.shootList.value != null) {
-                val list = reshootAdapter?.listItems as List<ReshootOverlaysRes.Data>
 
-                val position = viewModel.currentShoot
 
-                list[position].isSelected = false
-                list[position].imageClicked = true
-                list[position].imagePath = viewModel.getCurrentShoot()!!.capturedImage
-                reshootAdapter?.notifyItemChanged(position)
+                when (viewModel.categoryDetails.value?.categoryName) {
+                    "E-Commerce" -> {
+                        var list = reshootAdapter?.listItems as List<ImagesOfSkuRes.Data>
 
-                if (position != list.size.minus(1)) {
-                    var foundNext = false
+                        val position = viewModel.currentShoot
 
-                    for (i in position..list.size.minus(1)) {
-                        if (!list[i].isSelected && !list[i].imageClicked) {
-                            foundNext = true
-                            list[i].isSelected = true
-                            reshootAdapter?.notifyItemChanged(i)
-                            binding.rvImages.scrollToPosition(i.plus(2))
-                            break
+                        list[position].isSelected = false
+                        list[position].imageClicked = true
+                        list[position].imagePath = viewModel.getCurrentShoot()!!.capturedImage
+                        reshootAdapter?.notifyItemChanged(position)
+
+                        if (position != list.size.minus(1)) {
+                            var foundNext = false
+
+                            for (i in position..list.size.minus(1)) {
+                                if (!list[i].isSelected && !list[i].imageClicked) {
+                                    foundNext = true
+                                    list[i].isSelected = true
+                                    reshootAdapter?.notifyItemChanged(i)
+                                    binding.rvImages.scrollToPosition(i.plus(2))
+                                    break
+                                }
+                            }
+
+                            if (!foundNext) {
+                                val element = list.firstOrNull {
+                                    !it.isSelected && !it.imageClicked
+                                }
+
+                                if (element != null) {
+                                    element?.isSelected = true
+                                    reshootAdapter?.notifyItemChanged(list.indexOf(element))
+                                    binding.rvImages.scrollToPosition(viewModel.currentShoot)
+                                }
+                            }
+                        } else {
+                            val element = list.firstOrNull {
+                                !it.isSelected && !it.imageClicked
+                            }
+
+                            if (element != null) {
+                                element?.isSelected = true
+                                reshootAdapter?.notifyItemChanged(list.indexOf(element))
+                                binding.rvImages.scrollToPosition(viewModel.currentShoot)
+                            }
                         }
-                    }
 
-                    if (!foundNext) {
-                        val element = list.firstOrNull {
-                            !it.isSelected && !it.imageClicked
+
+                        viewModel.allReshootClicked = list.all { it.imageClicked }
+                    }
+                    else -> {
+                        var list = reshootAdapter?.listItems as List<ReshootOverlaysRes.Data>
+
+                        val position = viewModel.currentShoot
+
+                        list[position].isSelected = false
+                        list[position].imageClicked = true
+                        list[position].imagePath = viewModel.getCurrentShoot()!!.capturedImage
+                        reshootAdapter?.notifyItemChanged(position)
+
+                        if (position != list.size.minus(1)) {
+                            var foundNext = false
+
+                            for (i in position..list.size.minus(1)) {
+                                if (!list[i].isSelected && !list[i].imageClicked) {
+                                    foundNext = true
+                                    list[i].isSelected = true
+                                    reshootAdapter?.notifyItemChanged(i)
+                                    binding.rvImages.scrollToPosition(i.plus(2))
+                                    break
+                                }
+                            }
+
+                            if (!foundNext) {
+                                val element = list.firstOrNull {
+                                    !it.isSelected && !it.imageClicked
+                                }
+
+                                if (element != null) {
+                                    element?.isSelected = true
+                                    reshootAdapter?.notifyItemChanged(list.indexOf(element))
+                                    binding.rvImages.scrollToPosition(viewModel.currentShoot)
+                                }
+                            }
+                        } else {
+                            val element = list.firstOrNull {
+                                !it.isSelected && !it.imageClicked
+                            }
+
+                            if (element != null) {
+                                element?.isSelected = true
+                                reshootAdapter?.notifyItemChanged(list.indexOf(element))
+                                binding.rvImages.scrollToPosition(viewModel.currentShoot)
+                            }
                         }
 
-                        if (element != null) {
-                            element?.isSelected = true
-                            reshootAdapter?.notifyItemChanged(list.indexOf(element))
-                            binding.rvImages.scrollToPosition(viewModel.currentShoot)
-                        }
-                    }
-                } else {
-                    val element = list.firstOrNull {
-                        !it.isSelected && !it.imageClicked
-                    }
 
-                    if (element != null) {
-                        element?.isSelected = true
-                        reshootAdapter?.notifyItemChanged(list.indexOf(element))
-                        binding.rvImages.scrollToPosition(viewModel.currentShoot)
+                        viewModel.allReshootClicked = list.all { it.imageClicked }
                     }
                 }
-
-                val reshootList = reshootAdapter?.listItems as List<ReshootOverlaysRes.Data>
-                viewModel.allReshootClicked = reshootList.all { it.imageClicked }
             }
         })
 
@@ -129,12 +189,61 @@ class ReshootFragment : BaseFragment<ShootViewModel, FragmentReshootBinding>(), 
 
     }
 
+    private fun setReshootData() {
+        val list = SelectedImagesHelper.selectedImages
+        var index = 0
+
+
+        if (viewModel.shootList.value != null) {
+            list.forEach { overlay ->
+                val element = viewModel.shootList.value!!.firstOrNull {
+                    it.overlayId == overlay.id
+                }
+
+                if (element != null) {
+                    overlay.imageClicked = true
+                    overlay.imagePath = element.capturedImage
+                }
+            }
+
+            val element = list.first {
+                !it.isSelected && !it.imageClicked
+            }
+
+            element.isSelected = true
+            index = list.indexOf(element)
+
+        } else {
+            //set overlays
+            list[index].isSelected = true
+        }
+
+        var s = ""
+
+        //set recycler view
+        reshootAdapter = ReshootAdapter(
+            list,
+            this,
+            this
+        )
+
+        binding.rvImages.apply {
+            layoutManager = LinearLayoutManager(
+                requireContext(),
+                LinearLayoutManager.HORIZONTAL,
+                false
+            )
+            adapter = reshootAdapter
+            scrollToPosition(index)
+        }
+    }
+
     private fun getOverlayIds() {
         Utilities.showProgressDialog(requireContext())
 
         val ids = JSONArray()
 
-        SelectedImagesHelper.selectedImages.keys.forEach {
+        SelectedImagesHelper.selectedOverlayIds.keys.forEach {
             ids.put(it)
         }
         viewModel.getOverlayIds(ids)
@@ -149,16 +258,16 @@ class ReshootFragment : BaseFragment<ShootViewModel, FragmentReshootBinding>(), 
                     var index = 0
 
                     list.forEach {
-                        it.imageName = SelectedImagesHelper.selectedImages.get(it.id).toString()
+                        it.imageName = SelectedImagesHelper.selectedOverlayIds.get(it.id).toString()
                     }
 
-                    if (viewModel.shootList.value != null){
+                    if (viewModel.shootList.value != null) {
                         list.forEach { overlay ->
                             val element = viewModel.shootList.value!!.firstOrNull {
                                 it.overlayId == overlay.id
                             }
 
-                            if (element != null){
+                            if (element != null) {
                                 overlay.imageClicked = true
                                 overlay.imagePath = element.capturedImage
                             }
@@ -171,7 +280,7 @@ class ReshootFragment : BaseFragment<ShootViewModel, FragmentReshootBinding>(), 
                         element.isSelected = true
                         index = list.indexOf(element)
 
-                    }else{
+                    } else {
                         //set overlays
                         list[index].isSelected = true
                     }
@@ -228,10 +337,32 @@ class ReshootFragment : BaseFragment<ShootViewModel, FragmentReshootBinding>(), 
         when (data) {
             is ReshootOverlaysRes.Data -> {
 
-                if (data.imageClicked){
-                    ReclickDialog().show(requireActivity().supportFragmentManager,"ReclickDialog")
+                if (data.imageClicked) {
+                    ReclickDialog().show(requireActivity().supportFragmentManager, "ReclickDialog")
                 }
                 val list = reshootAdapter?.listItems as List<ReshootOverlaysRes.Data>
+
+                val element = list.firstOrNull {
+                    it.isSelected
+                }
+
+                if (element != null && data != element) {
+                    //loadOverlay(data.angle_name,data.display_thumbnail)
+                    //viewModel.selectedOverlay = data
+
+                    data.isSelected = true
+                    element.isSelected = false
+                    reshootAdapter?.notifyItemChanged(position)
+                    reshootAdapter?.notifyItemChanged(list.indexOf(element))
+                    binding.rvImages.scrollToPosition(position)
+                }
+            }
+
+            is ImagesOfSkuRes.Data -> {
+                if (data.imageClicked) {
+                    ReclickDialog().show(requireActivity().supportFragmentManager, "ReclickDialog")
+                }
+                val list = reshootAdapter?.listItems as List<ImagesOfSkuRes.Data>
 
                 val element = list.firstOrNull {
                     it.isSelected
@@ -258,29 +389,41 @@ class ReshootFragment : BaseFragment<ShootViewModel, FragmentReshootBinding>(), 
             is ReshootOverlaysRes.Data -> {
                 viewModel.reshotImageName = data.imageName
 
-                if (data.type == "Exterior"){
+                if (data.type == "Exterior") {
                     viewModel.showLeveler.value = true
-                    binding.imgOverlay.visibility = View.VISIBLE
-                    loadOverlay(data.displayName,data.displayThumbnail)
-                }else {
+                    binding.imgOverlay?.visibility = View.VISIBLE
+                    loadOverlay(data.displayName, data.displayThumbnail)
+                } else {
                     viewModel.hideLeveler.value = true
-                    binding.imgOverlay.visibility = View.GONE
+                    binding.imgOverlay?.visibility = View.GONE
                 }
 
                 if (getString(R.string.app_name) == AppConstants.KARVI)
-                    binding.imgOverlay.visibility = View.GONE
+                    binding.imgOverlay?.visibility = View.GONE
 
                 viewModel.categoryDetails.value?.imageType = data.type
 
                 viewModel.overlayId = data.id
 
-                binding.tvShoot?.text = "Angles ${position.plus(1)}/${SelectedImagesHelper.selectedImages.size}"
+                binding.tvShoot?.text =
+                    "Angles ${position.plus(1)}/${SelectedImagesHelper.selectedOverlayIds.size}"
             }
+            is ImagesOfSkuRes.Data -> {
+                viewModel.reshotImageName = data.image_name
 
+                viewModel.showLeveler.value = true
+
+                viewModel.categoryDetails.value?.imageType = data.image_category
+
+                viewModel.overlayId = data.overlayId
+
+                binding.tvShoot?.text =
+                    "Angles ${position.plus(1)}/${SelectedImagesHelper.selectedImages.size}"
+            }
         }
     }
 
-    private fun loadOverlay(name : String,overlay : String) {
+    private fun loadOverlay(name: String, overlay: String) {
 
         val requestOptions = RequestOptions()
             .diskCacheStrategy(DiskCacheStrategy.ALL)
@@ -295,7 +438,7 @@ class ReshootFragment : BaseFragment<ShootViewModel, FragmentReshootBinding>(), 
                     target: Target<Drawable>?,
                     isFirstResource: Boolean
                 ): Boolean {
-                    val properties =  Properties()
+                    val properties = Properties()
                     properties["name"] = name
                     properties["error"] = e?.localizedMessage
                     properties["category"] = viewModel.categoryDetails.value?.categoryName
@@ -305,11 +448,20 @@ class ReshootFragment : BaseFragment<ShootViewModel, FragmentReshootBinding>(), 
                         properties
                     )
 
-                    snackbar = Snackbar.make(binding.root, "Overlay Failed to load", Snackbar.LENGTH_INDEFINITE)
+                    snackbar = Snackbar.make(
+                        binding.root,
+                        "Overlay Failed to load",
+                        Snackbar.LENGTH_INDEFINITE
+                    )
                         .setAction("Retry") {
-                            loadOverlay(name,overlay)
+                            loadOverlay(name, overlay)
                         }
-                        .setActionTextColor(ContextCompat.getColor(requireContext(), R.color.primary))
+                        .setActionTextColor(
+                            ContextCompat.getColor(
+                                requireContext(),
+                                R.color.primary
+                            )
+                        )
 
                     snackbar?.show()
                     return false
@@ -326,7 +478,7 @@ class ReshootFragment : BaseFragment<ShootViewModel, FragmentReshootBinding>(), 
                     if (snackbar != null)
                         snackbar?.dismiss()
 
-                    val properties =  Properties()
+                    val properties = Properties()
                     properties["name"] = name
                     properties["category"] = viewModel.categoryDetails.value?.categoryName
 

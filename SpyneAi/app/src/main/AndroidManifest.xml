@@ -120,8 +120,7 @@
             android:launchMode="singleTask"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".reshoot.ui.ReshootActivity"
-            android:screenOrientation="landscape" />
+            android:name=".reshoot.ui.ReshootActivity" />
 
         <service
             android:name=".imagesdowloading.ImageDownloadingService"

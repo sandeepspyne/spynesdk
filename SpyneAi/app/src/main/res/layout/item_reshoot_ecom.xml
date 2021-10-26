@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout android:id="@+id/llSubCategories"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="80dp"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:gravity="center">
+
+    <FrameLayout
+        android:layout_width="@dimen/dp_70"
+        android:layout_height="wrap_content"
+        android:layout_margin="@dimen/dp_5"
+        android:layout_gravity="center"
+        android:paddingTop="@dimen/dp_5"
+        android:paddingBottom="@dimen/dp_5"
+        android:id="@+id/flOverlay"
+        android:background="@drawable/bg_overlay">
+
+        <ImageView
+            android:id="@+id/ivClicked"
+            android:layout_width="65dp"
+            android:layout_height="45dp"
+            android:layout_gravity="center"
+            android:background="@color/white"/>
+
+    </FrameLayout>
+
+
+</LinearLayout>

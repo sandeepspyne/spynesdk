@@ -9,36 +9,33 @@ import com.spyneai.BaseApplication
 import com.spyneai.R
 import com.spyneai.base.GenericAdapter
 import com.spyneai.base.OnItemClickListener
-import com.spyneai.databinding.ItemReshootBinding
+import com.spyneai.databinding.ItemReshootEcomBinding
 import com.spyneai.orders.data.response.ImagesOfSkuRes
-import com.spyneai.reshoot.data.ReshootOverlaysRes
 import com.spyneai.shoot.data.OnOverlaySelectionListener
 
-class ReshootHolder(
+class ReshootEcomHolder(
     itemView: View,
     listener: OnItemClickListener?,
     overlaySelectionListener : OnOverlaySelectionListener?
-) : RecyclerView.ViewHolder(itemView), GenericAdapter.Binder<ReshootOverlaysRes.Data>{
+) : RecyclerView.ViewHolder(itemView), GenericAdapter.Binder<ImagesOfSkuRes.Data>{
 
     var listener: OnItemClickListener? = null
     var overlaySelectionListener: OnOverlaySelectionListener? = null
-    var binding : ItemReshootBinding? = null
-    val TAG = "OverlaysHolder"
+    var binding : ItemReshootEcomBinding? = null
+    val TAG = "ReshootEcomHolder"
 
     init {
-        binding = ItemReshootBinding.bind(itemView)
+        binding = ItemReshootEcomBinding.bind(itemView)
         this.listener = listener
         this.overlaySelectionListener = overlaySelectionListener
     }
 
-    override fun bind(data: ReshootOverlaysRes.Data) {
-        binding.apply {
-            this?.tvName?.text = data.displayName
-        }
-
+    override fun bind(data: ImagesOfSkuRes.Data) {
         when{
             data.isSelected -> {
-                binding?.flOverlay?.background = ContextCompat.getDrawable(BaseApplication.getContext(),R.drawable.bg_overlay_selected)
+                binding?.flOverlay?.background = ContextCompat.getDrawable(
+                    BaseApplication.getContext(),
+                    R.drawable.bg_overlay_selected)
                 overlaySelectionListener?.onOverlaySelected(
                     binding?.flOverlay!!,
                     adapterPosition,
@@ -47,11 +44,15 @@ class ReshootHolder(
             }
 
             data.imageClicked -> {
-                binding?.flOverlay?.background = ContextCompat.getDrawable(BaseApplication.getContext(),R.drawable.bg_overlay_image_clicked)
+                binding?.flOverlay?.background = ContextCompat.getDrawable(
+                    BaseApplication.getContext(),
+                    R.drawable.bg_overlay_image_clicked)
             }
 
             else -> {
-                binding?.flOverlay?.background = ContextCompat.getDrawable(BaseApplication.getContext(),R.drawable.bg_overlay)
+                binding?.flOverlay?.background = ContextCompat.getDrawable(
+                    BaseApplication.getContext(),
+                    R.drawable.bg_overlay)
             }
         }
 
@@ -60,13 +61,13 @@ class ReshootHolder(
                 .load(data.imagePath)
                 .diskCacheStrategy(DiskCacheStrategy.NONE)
                 .skipMemoryCache(true)
-                .into(binding?.ivOverlay!!)
-        }
-        else {
+                .into(binding?.ivClicked!!)
+        }else {
             Glide.with(itemView)
-                .load(data.displayThumbnail)
+                .load(data.output_image_lres_url)
                 .diskCacheStrategy(DiskCacheStrategy.NONE)
-                .into(binding?.ivOverlay!!)
+                .skipMemoryCache(true)
+                .into(binding?.ivClicked!!)
         }
 
         binding?.flOverlay?.setOnClickListener {

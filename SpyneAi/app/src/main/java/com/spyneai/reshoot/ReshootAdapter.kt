@@ -20,6 +20,7 @@ class ReshootAdapter(
         return when (obj) {
 
             is ReshootOverlaysRes.Data -> R.layout.item_reshoot
+            is ImagesOfSkuRes.Data -> R.layout.item_reshoot_ecom
             else -> error("Unknown type: for position: $position")
         }
     }

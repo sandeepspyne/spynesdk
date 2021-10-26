@@ -2,6 +2,7 @@ package com.spyneai.reshoot.ui
 
 import CameraFragment
 import android.content.Intent
+import android.content.pm.ActivityInfo
 import android.os.Bundle
 import android.view.WindowManager
 import androidx.appcompat.app.AppCompatActivity
@@ -16,7 +17,6 @@ import com.spyneai.shoot.data.ShootViewModel
 import com.spyneai.shoot.data.model.CategoryDetails
 import com.spyneai.shoot.data.model.CreateProjectRes
 import com.spyneai.shoot.data.model.Sku
-import com.spyneai.shoot.ui.base.ImageProcessingStartedFragment
 import com.spyneai.shoot.ui.dialogs.ShootExitDialog
 
 class ReshootActivity : AppCompatActivity() {
@@ -30,6 +30,8 @@ class ReshootActivity : AppCompatActivity() {
             WindowManager.LayoutParams.FLAG_FULLSCREEN,
             WindowManager.LayoutParams.FLAG_FULLSCREEN
         )
+
+        requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
 
         setContentView(R.layout.activity_reshoot)
         setLocale()
@@ -47,7 +49,7 @@ class ReshootActivity : AppCompatActivity() {
 
         shootViewModel.categoryDetails.value = categoryDetails
 
-        setUpVideoShoot()
+        setShoot()
 
         supportFragmentManager.beginTransaction()
             .add(R.id.flContainer, CameraFragment())
@@ -60,7 +62,7 @@ class ReshootActivity : AppCompatActivity() {
         })
     }
 
-    private fun setUpVideoShoot() {
+    private fun setShoot() {
         shootViewModel.getSubCategories(
             Utilities.getPreference(this, AppConstants.AUTH_KEY).toString(),
             intent.getStringExtra(AppConstants.CATEGORY_ID).toString()
@@ -77,21 +79,10 @@ class ReshootActivity : AppCompatActivity() {
             )
         )
 
-//        shootViewModel.getOverlays(
-//            Utilities.getPreference(this,AppConstants.AUTH_KEY).toString(),
-//            intent.getStringExtra(AppConstants.CATEGORY_ID)!!,
-//            intent.getStringExtra(AppConstants.SUB_CAT_ID)!!,
-//            intent.getIntExtra(AppConstants.EXTERIOR_ANGLES,0).toString(),
-//        )
-
         val sku = Sku()
-        sku?.projectId = intent.getStringExtra(AppConstants.PROJECT_ID)
-        sku?.skuId = intent.getStringExtra(AppConstants.SKU_ID)
-        sku?.skuName = intent.getStringExtra(AppConstants.SKU_NAME)
-        //sku?.totalImages = viewModel.exterirorAngles.value
-       // sku?.subcategoryName = viewModel.subCategory.value?.sub_cat_name
-        //sku?.subcategoryId = prod_sub_cat_id
-       // sku?.exteriorAngles = viewModel.exterirorAngles.value
+        sku.projectId = intent.getStringExtra(AppConstants.PROJECT_ID)
+        sku.skuId = intent.getStringExtra(AppConstants.SKU_ID)
+        sku.skuName = intent.getStringExtra(AppConstants.SKU_NAME)
 
         shootViewModel.sku.value = sku
     }
