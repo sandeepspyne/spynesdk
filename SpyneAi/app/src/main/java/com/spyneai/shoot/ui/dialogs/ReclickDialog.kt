@@ -18,6 +18,12 @@ class ReclickDialog : BaseDialogFragment<ShootViewModel, DialogReclickBinding>()
         }
 
         binding.btnYes.setOnClickListener {
+            arguments?.let {
+                viewModel.currentShoot = it.getInt("position")
+                viewModel.overlayId = it.getInt("overlay_id")
+                viewModel.updateSelectItem.value = true
+            }
+
             dismiss()
         }
     }

@@ -1,6 +1,7 @@
 package com.spyneai.shoot.ui.ecomwithgrid
 
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -9,7 +10,9 @@ import com.posthog.android.Properties
 import com.spyneai.base.BaseFragment
 import com.spyneai.base.OnItemClickListener
 import com.spyneai.base.network.Resource
+import com.spyneai.camera2.OverlaysResponse
 import com.spyneai.captureFailureEvent
+import com.spyneai.dashboard.response.NewSubCatResponse
 import com.spyneai.dashboard.ui.handleApiError
 import com.spyneai.databinding.FragmentGridEcomBinding
 import com.spyneai.needs.AppConstants
@@ -26,6 +29,7 @@ import com.spyneai.shoot.ui.ecomwithgrid.dialogs.CreateSkuEcomDialog
 import com.spyneai.shoot.ui.ecomwithgrid.dialogs.ProjectTagDialog
 import com.spyneai.shoot.utils.log
 import java.util.*
+import kotlin.collections.ArrayList
 
 class GridEcomFragment : BaseFragment<ShootViewModel, FragmentGridEcomBinding>(),
     OnItemClickListener, OnOverlaySelectionListener {
@@ -69,28 +73,52 @@ class GridEcomFragment : BaseFragment<ShootViewModel, FragmentGridEcomBinding>()
             }
         })
 
-        viewModel.confirmCapturedImage.observe(viewLifecycleOwner,{
-            if (it){
+        viewModel.onImageConfirmed.observe(viewLifecycleOwner,{
+            viewModel.shootList.value?.let {
                 binding.tvImageCount.text = viewModel.shootList.value!!.size.toString()
-                //udpate captured images
+                //update captured images
                 if (clickedAdapter == null){
-                    viewModel.shootList.value!![0].imageClicked = true
-                    clickedAdapter = ClickedAdapter(viewModel.shootList.value!!,this,this)
+                    it[0].imageClicked = true
+                    it[0].isSelected = false
+                    clickedAdapter = ClickedAdapter(it,this,this)
                     binding.rvClicked.apply {
                         layoutManager = LinearLayoutManager(requireContext(),LinearLayoutManager.HORIZONTAL,false)
                         adapter = clickedAdapter
                     }
                 }else{
                     try {
-                        viewModel.shootList.value!![viewModel.shootList.value!!.size - 1].imageClicked = true
-                       // clickedAdapter?.notifyDataSetChanged()
-                        clickedAdapter?.notifyItemInserted(viewModel.shootList.value!!.size - 1)
+                        it[it.size - 1].imageClicked = true
+                        it[it.size - 1].isSelected = false
+                        if (viewModel.isReclick){
+                            clickedAdapter?.notifyItemChanged(viewModel.currentShoot)
+                        }else{
+                            clickedAdapter?.notifyItemInserted(it.size - 1)
+                        }
                     }catch (e : Exception){
                         val s = ""
                     }
                 }
+                viewModel.overlayId = it.size
+                viewModel.currentShoot = it.size
+                binding.rvClicked.scrollToPosition(it.size)
+            }
+        })
 
-                binding.rvClicked.scrollToPosition(viewModel.shootList.value!!.size)
+        viewModel.updateSelectItem.observe(viewLifecycleOwner,{
+            if (it){
+                val list = clickedAdapter?.listItems as ArrayList<ShootData>
+                //update previous selected item if have any
+                list.firstOrNull {
+                    it.isSelected
+                }?.let {
+                    it.isSelected = false
+                    clickedAdapter?.notifyItemChanged(list.indexOf(it))
+                }
+
+                list[viewModel.currentShoot].isSelected = true
+                clickedAdapter?.notifyItemChanged(viewModel.currentShoot)
+                viewModel.updateSelectItem.value = false
+
             }
         })
     }
@@ -116,15 +144,19 @@ class GridEcomFragment : BaseFragment<ShootViewModel, FragmentGridEcomBinding>()
         when(data){
             is ShootData -> {
                 if (data.imageClicked){
-                    ReclickDialog().show(requireActivity().supportFragmentManager,"ReclickDialog")
+                    val bundle = Bundle()
+                    bundle.putInt("overlay_id",data.overlayId)
+                    bundle.putInt("position",position)
+                    val reclickDialog = ReclickDialog()
+                    reclickDialog.arguments = bundle
+                    reclickDialog.show(requireActivity().supportFragmentManager,"ReclickDialog")
                 }
             }
         }
-
     }
 
     override fun onOverlaySelected(view: View, position: Int, data: Any?) {
-
+        viewModel.overlayId = position
     }
 
     override fun getViewModel() = ShootViewModel::class.java

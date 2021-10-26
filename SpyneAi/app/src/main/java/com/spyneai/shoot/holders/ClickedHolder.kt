@@ -35,7 +35,8 @@ class ClickedHolder(
     }
 
     override fun bind(data: ShootData) {
-        //set sequence number as per adapter position
+        //set overlay id as per adapter position
+        data.overlayId = adapterPosition
 
         when {
             data.isSelected -> {

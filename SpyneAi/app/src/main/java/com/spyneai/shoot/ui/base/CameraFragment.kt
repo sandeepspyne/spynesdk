@@ -713,17 +713,15 @@ class CameraFragment : BaseFragment<ShootViewModel, FragmentCameraBinding>(), Pi
                 it.overlayId == viewModel.overlayId
         }
 
-        viewModel.shootList.value!!.add(shootData)
-
-//        if (item != null){
-//            item.capturedImage = capturedImage
-//            item.angle = cameraAngle
-//            viewModel.isReclick = true
-//            }
-//        else {
-//            viewModel.isReclick = false
-//            viewModel.shootList.value!!.add(shootData)
-//        }
+        if (item != null){
+            item.capturedImage = capturedImage
+            item.angle = cameraAngle
+            viewModel.isReclick = true
+            }
+        else {
+            viewModel.isReclick = false
+            viewModel.shootList.value!!.add(shootData)
+        }
 
         viewModel.shootList.value = viewModel.shootList.value
 

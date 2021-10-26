@@ -30,7 +30,6 @@ class ShootViewModel : ViewModel() {
     private val localRepository = ShootLocalRepository()
     private val imageRepository = ImageLocalRepository()
 
-
     val showHint: MutableLiveData<Boolean> = MutableLiveData()
 
     var isCameraButtonClickable = true
@@ -44,8 +43,6 @@ class ShootViewModel : ViewModel() {
     val isSensorAvailable: MutableLiveData<Boolean> = MutableLiveData()
     var showDialog = true
     var miscDialogShowed = false
-
-
 
     val skuNumber: MutableLiveData<Int> = MutableLiveData()
 
@@ -70,12 +67,9 @@ class ShootViewModel : ViewModel() {
     val interior360Dialog: MutableLiveData<Boolean> = MutableLiveData()
 
     val iniProgressFrame: MutableLiveData<Boolean> = MutableLiveData()
-
-
     val subCatName: MutableLiveData<String> = MutableLiveData()
 
     val shootList: MutableLiveData<ArrayList<ShootData>> = MutableLiveData()
-
 
     private val _subCategoriesResponse: MutableLiveData<Resource<NewSubCatResponse>> =
         MutableLiveData()
@@ -165,7 +159,7 @@ class ShootViewModel : ViewModel() {
     val miscAngles: MutableLiveData<Int> = MutableLiveData()
 
     val reshootCapturedImage: MutableLiveData<Boolean> = MutableLiveData()
-    val confirmCapturedImage: MutableLiveData<Boolean> = MutableLiveData()
+   // val confirmCapturedImage: MutableLiveData<Boolean> = MutableLiveData()
     val projectId: MutableLiveData<String> = MutableLiveData()
     val showFoodBackground: MutableLiveData<Boolean> = MutableLiveData()
 
@@ -173,6 +167,8 @@ class ShootViewModel : ViewModel() {
     var isReshoot = false
     var isReclick = false
     var reshotImageName = ""
+    var updateSelectItem : MutableLiveData<Boolean> = MutableLiveData()
+
 
     private val _skuProcessStateWithBgResponse: MutableLiveData<Resource<SkuProcessStateResponse>> =
         MutableLiveData()
@@ -412,7 +408,6 @@ class ShootViewModel : ViewModel() {
             reshotImageName
         }else{
             val filePrefix = FileNameManager().getFileName(
-                fromDrafts,
                 if (categoryDetails.value?.imageType == "Misc") "Focus Shoot" else categoryDetails.value?.imageType!!,
                 currentShoot,
                 shootList.value,
