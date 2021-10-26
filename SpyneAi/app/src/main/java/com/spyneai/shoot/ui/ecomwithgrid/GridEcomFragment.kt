@@ -76,10 +76,10 @@ class GridEcomFragment : BaseFragment<ShootViewModel, FragmentGridEcomBinding>()
         viewModel.onImageConfirmed.observe(viewLifecycleOwner,{
             viewModel.shootList.value?.let {
                 binding.tvImageCount.text = viewModel.shootList.value!!.size.toString()
+                it[viewModel.currentShoot].imageClicked = true
+                it[viewModel.currentShoot].isSelected = false
                 //update captured images
                 if (clickedAdapter == null){
-                    it[0].imageClicked = true
-                    it[0].isSelected = false
                     clickedAdapter = ClickedAdapter(it,this,this)
                     binding.rvClicked.apply {
                         layoutManager = LinearLayoutManager(requireContext(),LinearLayoutManager.HORIZONTAL,false)
@@ -87,8 +87,6 @@ class GridEcomFragment : BaseFragment<ShootViewModel, FragmentGridEcomBinding>()
                     }
                 }else{
                     try {
-                        it[it.size - 1].imageClicked = true
-                        it[it.size - 1].isSelected = false
                         if (viewModel.isReclick){
                             clickedAdapter?.notifyItemChanged(viewModel.currentShoot)
                         }else{
