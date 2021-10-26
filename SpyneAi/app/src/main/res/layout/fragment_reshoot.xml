@@ -165,7 +165,8 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:gravity="center"
-            android:padding="@dimen/dp_5">
+            android:padding="@dimen/dp_5"
+            android:visibility="invisible">
 
             <androidx.cardview.widget.CardView
                 android:id="@+id/cardOverlay"
@@ -197,7 +198,8 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:gravity="center">
+            android:gravity="center"
+            android:visibility="invisible">
 
             <com.mikhaellopez.circularimageview.CircularImageView
                 android:id="@+id/ivEndProject"

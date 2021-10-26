@@ -64,6 +64,7 @@ class ReshootFragment : BaseFragment<ShootViewModel, FragmentReshootBinding>(), 
 
         binding.apply {
             tvSkuName.text = viewModel.sku.value?.skuName
+
         }
         //observe new image clicked
         viewModel.shootList.observe(viewLifecycleOwner, {
