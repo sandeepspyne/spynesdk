@@ -219,8 +219,6 @@ class ReshootFragment : BaseFragment<ShootViewModel, FragmentReshootBinding>(), 
             list[index].isSelected = true
         }
 
-        var s = ""
-
         //set recycler view
         reshootAdapter = ReshootAdapter(
             list,

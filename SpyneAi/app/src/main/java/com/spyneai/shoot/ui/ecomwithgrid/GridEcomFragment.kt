@@ -98,7 +98,7 @@ class GridEcomFragment : BaseFragment<ShootViewModel, FragmentGridEcomBinding>()
                 }
                 viewModel.overlayId = it.size
                 viewModel.currentShoot = it.size
-                binding.rvClicked.scrollToPosition(it.size)
+                binding.rvClicked.scrollToPosition(it.size.minus(1))
             }
         })
 
