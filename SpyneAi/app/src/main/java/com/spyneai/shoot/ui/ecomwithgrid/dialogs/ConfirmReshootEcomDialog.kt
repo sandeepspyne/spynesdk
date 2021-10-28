@@ -34,7 +34,6 @@ class ConfirmReshootEcomDialog :
         dialog?.setCancelable(false)
 
         val uri = viewModel.shootData.value?.capturedImage
-        binding.ivCapturedImage.setRotation(90F)
 
         viewModel.end.value = System.currentTimeMillis()
         val difference = (viewModel.end.value!! - viewModel.begin.value!!)/1000.toFloat()

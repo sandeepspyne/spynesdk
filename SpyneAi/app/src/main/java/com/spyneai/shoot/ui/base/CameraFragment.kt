@@ -1751,8 +1751,7 @@ class CameraFragment : BaseFragment<ShootViewModel, FragmentCameraBinding>(), Pi
         }
 
         try {
-            val file = File("/storage/emulated/0/DCIM/Spyne/"+System.currentTimeMillis()+".jpg")
-            val isC = file.createNewFile()
+            val file = File(capturedImage)
             val os: OutputStream = BufferedOutputStream(FileOutputStream(file))
             bitmap!!.compress(Bitmap.CompressFormat.JPEG, 100, os)
             os.close()
