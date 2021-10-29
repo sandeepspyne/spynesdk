@@ -113,6 +113,13 @@ class GridEcomFragment : BaseFragment<ShootViewModel, FragmentGridEcomBinding>()
                 capturedImageAdapter.removeLastItem()
             }
         })
+        when(getString(R.string.app_name)) {
+            AppConstants.SWIGGY ->
+                binding.apply {
+                    ivNext.visibility = View.GONE
+                    ivEnd.visibility = View.VISIBLE
+                }
+        }
 
         viewModel.hideLeveler.observe(viewLifecycleOwner,{
             if (viewModel.categoryDetails.value?.imageType == "Info"){
@@ -122,6 +129,13 @@ class GridEcomFragment : BaseFragment<ShootViewModel, FragmentGridEcomBinding>()
                 }
             }
         })
+
+
+
+
+
+
+
 
         viewModel.confirmCapturedImage.observe(viewLifecycleOwner,{
             if (it){

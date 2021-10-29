@@ -38,6 +38,9 @@ class DraftProjectsAdapter(
         val tvPaid: TextView = view.findViewById(R.id.tvPaid)
         val ivThumbnail: ImageView = view.findViewById(R.id.ivThumbnail)
         val cvMain: CardView = view.findViewById(R.id.cvMain)
+
+
+
     }
 
     override fun onCreateViewHolder(
@@ -61,6 +64,7 @@ class DraftProjectsAdapter(
 
         try {
             if (draftsList[position].sku[0].images.isNullOrEmpty()) {
+                holder.ivThumbnail.rotation = 90F
                 if (draftsList[position].categoryId == AppConstants.CARS_CATEGORY_ID && (draftsList[position].categoryId == draftsList[position].subCategoryId)) {
                     Glide.with(context)
                         .load(R.drawable.three_sixty_thumbnail)
