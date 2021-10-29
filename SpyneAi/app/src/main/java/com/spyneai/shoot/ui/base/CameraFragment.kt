@@ -51,6 +51,9 @@ import com.spyneai.shoot.ui.dialogs.SkipShootDialog
 import com.spyneai.shoot.utils.log
 import com.spyneai.shoot.utils.shoot
 import kotlinx.android.synthetic.main.activity_credit_plans.*
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
 import java.io.*
 import java.util.*
 import java.util.concurrent.ExecutionException
@@ -1739,26 +1742,29 @@ class CameraFragment : BaseFragment<ShootViewModel, FragmentCameraBinding>(), Pi
 
 
     private fun addShootItem(capturedImage: String) {
+        viewModel.showConfirmReshootDialog.value = true
+        GlobalScope.launch(Dispatchers.Default) {
+            val bitmap = modifyOrientation(BitmapFactory.decodeFile(capturedImage), capturedImage)
 
-        val bitmap =  modifyOrientation( BitmapFactory.decodeFile(capturedImage) ,capturedImage)
-
-        val outputDirectory: String by lazy {
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-                "${Environment.DIRECTORY_DCIM}/Spyne/"
-            } else {
-                "${Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DCIM)}/Spyne/"
+            val outputDirectory: String by lazy {
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+                    "${Environment.DIRECTORY_DCIM}/Spyne/"
+                } else {
+                    "${Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DCIM)}/Spyne/"
+                }
             }
-        }
 
-        try {
-            val file = File(capturedImage)
-            val os: OutputStream = BufferedOutputStream(FileOutputStream(file))
-            bitmap!!.compress(Bitmap.CompressFormat.JPEG, 100, os)
-            os.close()
-        }catch (
-            e : java.lang.Exception
-        ){
-            val s = ""
+            try {
+                val file = File(capturedImage)
+                val os: OutputStream = BufferedOutputStream(FileOutputStream(file))
+                bitmap!!.compress(Bitmap.CompressFormat.JPEG, 100, os)
+                os.close()
+            } catch (
+                e: java.lang.Exception
+            ) {
+                val s = ""
+            }
+
         }
 
 
@@ -1767,7 +1773,7 @@ class CameraFragment : BaseFragment<ShootViewModel, FragmentCameraBinding>(), Pi
         log("addShootIteamCalled- " + difference)
 
 
-        viewModel.showConfirmReshootDialog.value = true
+
 
         //play shutter sound
         val sound = MediaActionSound()
