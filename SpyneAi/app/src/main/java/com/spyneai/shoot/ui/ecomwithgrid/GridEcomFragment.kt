@@ -39,6 +39,21 @@ class GridEcomFragment : BaseFragment<ShootViewModel, FragmentGridEcomBinding>()
         super.onViewCreated(view, savedInstanceState)
 
 
+        if (Utilities.getPreference(requireContext(),AppConstants.ENTERPRISE_ID)
+            == AppConstants.FLIPKART_ENTERPRISE_ID) {
+            binding.apply {
+                ivNext.visibility = View.VISIBLE
+                ivEnd.visibility = View.GONE
+            }
+        } else{
+            binding.apply {
+                ivNext.visibility = View.GONE
+                ivEnd.visibility = View.VISIBLE
+            }
+        }
+
+
+
         if (viewModel.projectId.value == null){
             if(Utilities.getPreference(requireContext(), AppConstants.STATUS_PROJECT_NAME).toString() =="true")
                 getProjectName()
@@ -113,13 +128,9 @@ class GridEcomFragment : BaseFragment<ShootViewModel, FragmentGridEcomBinding>()
                 capturedImageAdapter.removeLastItem()
             }
         })
-        when(getString(R.string.app_name)) {
-            AppConstants.SWIGGY ->
-                binding.apply {
-                    ivNext.visibility = View.GONE
-                    ivEnd.visibility = View.VISIBLE
-                }
-        }
+
+
+
 
         viewModel.hideLeveler.observe(viewLifecycleOwner,{
             if (viewModel.categoryDetails.value?.imageType == "Info"){

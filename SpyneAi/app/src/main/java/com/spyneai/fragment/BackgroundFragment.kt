@@ -47,7 +47,7 @@ class BackgroundFragment(context: Context,categoryId: String,
 
     private fun setRecycler(view: View) {
         backgroundList = ArrayList<BackgroundsResponse>()
-        backgroundsAdapter = BackgroundsAdapter(context!!,
+        backgroundsAdapter = BackgroundsAdapter(requireContext(),
             backgroundList as ArrayList<BackgroundsResponse>,
                 object : BackgroundsAdapter.BtnClickListener {
                     override fun onBtnClick(position: Int) {
