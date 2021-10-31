@@ -253,6 +253,11 @@ class ShootPortraitActivity :AppCompatActivity(), GoogleApiClient.ConnectionCall
 
         shootViewModel.showFoodBackground.observe(this, {
             if (it) {
+                val bundle = Bundle()
+                bundle.putString(AppConstants.PROJECT_ID,shootViewModel.sku.value?.projectId)
+
+                selectBackgroundFragment.arguments = bundle
+
                 window.clearFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN)
                 supportFragmentManager.beginTransaction().remove(skuDetailFragment).commit()
                 supportFragmentManager.beginTransaction().remove(projectDetailFragment).commit()
