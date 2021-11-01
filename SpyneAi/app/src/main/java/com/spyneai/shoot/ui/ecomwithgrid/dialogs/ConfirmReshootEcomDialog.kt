@@ -39,6 +39,7 @@ class ConfirmReshootEcomDialog :
         dialog?.setCancelable(false)
 
         val uri = viewModel.shootData.value?.capturedImage
+        binding.ivCapturedImage.setRotation(90F)
 
         viewModel.end.value = System.currentTimeMillis()
         val difference = (viewModel.end.value!! - viewModel.begin.value!!)/1000.toFloat()
@@ -92,17 +93,17 @@ class ConfirmReshootEcomDialog :
 
             viewModel.isCameraButtonClickable = true
             //viewModel.uploadImageWithWorkManager(viewModel.shootData.value!!)
-            val bitmap = modifyOrientation(BitmapFactory.decodeFile(viewModel.shootData.value?.capturedImage), viewModel.shootData.value?.capturedImage)
-            try {
-                val file = File(viewModel.shootData.value?.capturedImage)
-                val os: OutputStream = BufferedOutputStream(FileOutputStream(file))
-                bitmap!!.compress(Bitmap.CompressFormat.JPEG, 100, os)
-                os.close()
-            } catch (
-                e: java.lang.Exception
-            ) {
-                val s = ""
-            }
+//            val bitmap = modifyOrientation(BitmapFactory.decodeFile(viewModel.shootData.value?.capturedImage), viewModel.shootData.value?.capturedImage)
+//            try {
+//                val file = File(viewModel.shootData.value?.capturedImage)
+//                val os: OutputStream = BufferedOutputStream(FileOutputStream(file))
+//                bitmap!!.compress(Bitmap.CompressFormat.JPEG, 100, os)
+//                os.close()
+//            } catch (
+//                e: java.lang.Exception
+//            ) {
+//                val s = ""
+//            }
 
 
             viewLifecycleOwner.lifecycleScope.launch {
