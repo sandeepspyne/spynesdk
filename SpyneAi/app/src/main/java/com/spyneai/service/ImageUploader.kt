@@ -1,6 +1,12 @@
 package com.spyneai.service
 
 import android.content.Context
+import android.graphics.Bitmap
+import android.graphics.BitmapFactory
+import android.graphics.Matrix
+import android.media.ExifInterface
+import android.os.Build
+import android.os.Environment
 import android.util.Log
 import androidx.work.*
 import com.spyneai.*
@@ -22,7 +28,7 @@ import okhttp3.ResponseBody
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
-import java.io.File
+import java.io.*
 
 class ImageUploader(val context: Context,
                     val localRepository : ImageLocalRepository,
@@ -47,8 +53,6 @@ class ImageUploader(val context: Context,
                    skipFlag = -2
                    localRepository.getOldestImage("-1")
                }
-
-               val s = ""
 
                if (image.itemId != null){
                    //uploading enqueued
@@ -144,9 +148,40 @@ class ImageUploader(val context: Context,
     }
 
     private fun uploadImageToGcp(image: Image,imageType : String,retryCount : Int) {
+
+        var path = image.imagePath
+        if (image.categoryName != "Automobiles" && image.categoryName != "Bikes"){
+            //rotate image
+            val bitmap =  modifyOrientation( BitmapFactory.decodeFile(path) ,path)
+
+            val outputDirectory: String by lazy {
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+                    "${Environment.DIRECTORY_DCIM}/SpyneTemp/"
+                } else {
+                    "${Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DCIM)}/SpyneTemp/"
+                }
+            }
+
+            File(outputDirectory).mkdirs()
+
+            try {
+                val file = File(outputDirectory+System.currentTimeMillis()+".jpg")
+                val isC = file.createNewFile()
+                val os: OutputStream = BufferedOutputStream(FileOutputStream(file))
+                bitmap!!.compress(Bitmap.CompressFormat.JPEG, 100, os)
+                os.close()
+
+                path = file.path
+            }catch (
+                e : Exception
+            ){
+                val s = ""
+            }
+        }
+
         // create RequestBody instance from file
         val requestFile =
-            File(image.imagePath).asRequestBody("text/x-markdown; charset=utf-8".toMediaTypeOrNull())
+            File(path).asRequestBody("text/x-markdown; charset=utf-8".toMediaTypeOrNull())
 
         //upload video with presigned url
         val request = GcpClient.buildService(ClipperApi::class.java)
@@ -189,6 +224,36 @@ class ImageUploader(val context: Context,
 
         })
     }
+
+    @Throws(IOException::class)
+    fun modifyOrientation(bitmap: Bitmap, image_absolute_path: String?): Bitmap? {
+        val ei = ExifInterface(image_absolute_path!!)
+        val orientation =
+            ei.getAttributeInt(ExifInterface.TAG_ORIENTATION, ExifInterface.ORIENTATION_NORMAL)
+        return when (orientation) {
+            ExifInterface.ORIENTATION_ROTATE_90 -> rotate(bitmap, 90f)
+            ExifInterface.ORIENTATION_ROTATE_180 -> rotate(bitmap, 180f)
+            ExifInterface.ORIENTATION_ROTATE_270 -> rotate(bitmap, 270f)
+            ExifInterface.ORIENTATION_FLIP_HORIZONTAL -> flip(bitmap, true, false)
+            ExifInterface.ORIENTATION_FLIP_VERTICAL -> flip(bitmap, false, true)
+            else -> bitmap
+        }
+    }
+
+    fun rotate(bitmap: Bitmap, degrees: Float): Bitmap? {
+        val matrix = Matrix()
+        matrix.postRotate(degrees)
+        return Bitmap.createBitmap(bitmap, 0, 0, bitmap.width, bitmap.height, matrix, true)
+    }
+
+    fun flip(bitmap: Bitmap, horizontal: Boolean, vertical: Boolean): Bitmap? {
+        val matrix = Matrix()
+        matrix.preScale((if (horizontal) -1 else 1.toFloat()) as Float,
+            (if (vertical) -1 else 1.toFloat()) as Float
+        )
+        return Bitmap.createBitmap(bitmap, 0, 0, bitmap.width, bitmap.height, matrix, true)
+    }
+
 
     private fun onVideoUploaded(video: Image, imageType: String, retryCount : Int) {
         captureEvent(Events.VIDEO_UPLOADED_TO_GCP,video,true,null)
