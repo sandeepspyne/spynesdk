@@ -1,6 +1,5 @@
 package com.spyneai.base.network
 
-import com.posthog.android.Properties
 import com.spyneai.BaseApplication
 import com.spyneai.captureEvent
 import com.spyneai.posthog.Events

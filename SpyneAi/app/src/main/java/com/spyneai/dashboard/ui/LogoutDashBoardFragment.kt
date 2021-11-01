@@ -6,7 +6,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
-import com.posthog.android.Properties
 import com.spyneai.captureEvent
 import com.spyneai.databinding.LogoutDialogBinding
 import com.spyneai.loginsignup.activity.LoginActivity

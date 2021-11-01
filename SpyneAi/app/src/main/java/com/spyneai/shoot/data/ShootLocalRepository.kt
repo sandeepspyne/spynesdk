@@ -11,7 +11,6 @@ import com.spyneai.db.ShootContract
 import com.spyneai.shoot.data.model.Image
 import com.spyneai.shoot.data.model.Project
 import com.spyneai.shoot.data.model.Sku
-import com.spyneai.shoot.utils.logUpload
 
 class ShootLocalRepository {
 

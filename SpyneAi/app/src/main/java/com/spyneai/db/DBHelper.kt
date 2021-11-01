@@ -6,7 +6,6 @@ import android.database.sqlite.SQLiteDatabase
 import android.database.sqlite.SQLiteOpenHelper
 import android.provider.BaseColumns
 import android.util.Log
-import com.posthog.android.Properties
 import com.spyneai.BaseApplication
 import com.spyneai.captureEvent
 

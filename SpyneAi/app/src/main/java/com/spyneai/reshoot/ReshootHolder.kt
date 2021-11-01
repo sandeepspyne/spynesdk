@@ -10,7 +10,6 @@ import com.spyneai.R
 import com.spyneai.base.GenericAdapter
 import com.spyneai.base.OnItemClickListener
 import com.spyneai.databinding.ItemReshootBinding
-import com.spyneai.orders.data.response.ImagesOfSkuRes
 import com.spyneai.reshoot.data.ReshootOverlaysRes
 import com.spyneai.shoot.data.OnOverlaySelectionListener
 

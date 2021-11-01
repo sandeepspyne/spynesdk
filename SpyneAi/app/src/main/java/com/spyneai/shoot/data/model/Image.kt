@@ -1,7 +1,5 @@
 package com.spyneai.shoot.data.model
 
-import org.json.JSONObject
-
 class Image {
     var itemId : Long? = null
     var projectId : String? = null

@@ -23,7 +23,6 @@ import com.spyneai.orders.data.response.ImagesOfSkuRes
 import com.spyneai.processedimages.ui.data.ProcessedViewModel
 import com.spyneai.reshoot.SelectImageAdapter
 import com.spyneai.reshoot.data.SelectedImagesHelper
-import com.spyneai.shoot.ui.base.ShootPortraitActivity
 
 class SelectImagesFragment : BaseFragment<ProcessedViewModel,FragmentSelectImagesBinding>(),OnItemClickListener{
 

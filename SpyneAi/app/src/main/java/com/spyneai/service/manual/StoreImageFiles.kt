@@ -5,7 +5,6 @@ import android.content.Intent
 import android.os.Build
 import android.os.Environment
 import androidx.core.content.ContextCompat
-import com.posthog.android.Properties
 import com.spyneai.base.network.Resource
 import com.spyneai.captureEvent
 import com.spyneai.needs.AppConstants

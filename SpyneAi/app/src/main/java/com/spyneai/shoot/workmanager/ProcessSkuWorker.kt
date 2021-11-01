@@ -2,7 +2,6 @@ package com.spyneai.shoot.workmanager
 
 import android.content.Context
 import androidx.work.*
-import com.posthog.android.Properties
 import com.spyneai.BaseApplication
 import com.spyneai.captureEvent
 import com.spyneai.posthog.Events

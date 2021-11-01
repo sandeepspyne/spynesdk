@@ -4,11 +4,13 @@ import android.content.ContentValues
 import android.provider.BaseColumns
 import android.util.Log
 import com.spyneai.BaseApplication
-import com.spyneai.db.*
+import com.spyneai.db.DBHelper
+import com.spyneai.db.Images
+import com.spyneai.db.Projects
+import com.spyneai.db.ShootContract
 import com.spyneai.needs.AppConstants
 import com.spyneai.shoot.data.model.Image
 import com.spyneai.shoot.utils.logUpload
-import com.spyneai.threesixty.data.model.VideoDetails
 
 
 class ImageLocalRepository {

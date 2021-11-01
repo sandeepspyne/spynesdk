@@ -4,7 +4,6 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import com.posthog.android.Properties
 import com.spyneai.base.BaseFragment
 import com.spyneai.captureEvent
 import com.spyneai.databinding.FragmentSubcategoriesBinding

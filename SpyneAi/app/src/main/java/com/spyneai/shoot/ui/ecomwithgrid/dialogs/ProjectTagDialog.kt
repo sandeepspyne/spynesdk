@@ -17,7 +17,6 @@ import android.widget.LinearLayout
 import androidx.core.view.forEachIndexed
 import androidx.viewbinding.ViewBinding
 import com.google.android.material.chip.Chip
-import com.posthog.android.Properties
 import com.spyneai.R
 import com.spyneai.base.BaseDialogFragment
 import com.spyneai.base.network.Resource

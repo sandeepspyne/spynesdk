@@ -21,10 +21,7 @@ import com.spyneai.credits.model.ReviewHolder
 import com.spyneai.dashboard.ui.base.ViewModelFactory
 import com.spyneai.dashboard.ui.handleApiError
 import com.spyneai.databinding.ActivityKarviShowImagesBinding
-import com.spyneai.downloadsku.FetchBulkResponseV2
 import com.spyneai.gotoHome
-import com.spyneai.interfaces.APiService
-import com.spyneai.interfaces.RetrofitClients
 import com.spyneai.isMagnatoMeterAvailable
 import com.spyneai.needs.AppConstants
 import com.spyneai.needs.ScrollingLinearLayoutManager
@@ -35,12 +32,6 @@ import com.spyneai.orders.ui.adapter.KarviImagesAdapter
 import com.spyneai.processedimages.ui.data.ProcessedViewModel
 import com.spyneai.shoot.ui.base.ShootActivity
 import com.spyneai.shoot.ui.dialogs.NoMagnaotoMeterDialog
-import com.spyneai.shoot.utils.log
-import okhttp3.MultipartBody
-import okhttp3.RequestBody
-import retrofit2.Call
-import retrofit2.Callback
-import retrofit2.Response
 
 class KarviShowImagesActivity : AppCompatActivity() {
 

@@ -1,7 +1,7 @@
 package com.spyneai.reshoot.ui
 
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import androidx.appcompat.app.AppCompatActivity
 import com.spyneai.R
 import com.spyneai.shoot.ui.base.ImageProcessingStartedFragment
 

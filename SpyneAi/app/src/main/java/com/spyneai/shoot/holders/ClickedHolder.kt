@@ -10,9 +10,7 @@ import com.spyneai.BaseApplication
 import com.spyneai.R
 import com.spyneai.base.GenericAdapter
 import com.spyneai.base.OnItemClickListener
-import com.spyneai.camera2.OverlaysResponse
 import com.spyneai.databinding.ItemClickedBinding
-import com.spyneai.databinding.ItemOverlaysBinding
 import com.spyneai.shoot.data.OnOverlaySelectionListener
 import com.spyneai.shoot.data.model.ShootData
 

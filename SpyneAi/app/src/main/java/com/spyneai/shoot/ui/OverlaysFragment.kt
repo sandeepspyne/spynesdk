@@ -19,7 +19,6 @@ import com.bumptech.glide.request.RequestOptions
 import com.bumptech.glide.request.target.Target
 import com.bumptech.glide.signature.ObjectKey
 import com.google.android.material.snackbar.Snackbar
-import com.posthog.android.Properties
 import com.spyneai.R
 import com.spyneai.base.BaseFragment
 import com.spyneai.base.OnItemClickListener
@@ -33,7 +32,6 @@ import com.spyneai.databinding.FragmentOverlaysV2Binding
 import com.spyneai.needs.AppConstants
 import com.spyneai.needs.Utilities
 import com.spyneai.posthog.Events
-import com.spyneai.shoot.adapters.NewSubCategoriesAdapter
 import com.spyneai.shoot.adapters.OverlaysAdapter
 import com.spyneai.shoot.data.OnOverlaySelectionListener
 import com.spyneai.shoot.data.ShootViewModel
@@ -312,8 +310,12 @@ class OverlaysFragment : BaseFragment<ShootViewModel, FragmentOverlaysV2Binding>
 
             requireContext().captureEvent(
                 Events.GET_OVERLAYS_INTIATED,
-                HashMap<String,Any?>().put("angles", viewModel.exterirorAngles.value)
-                    .put("prod_sub_cat_id", it.prod_sub_cat_id!!)
+                HashMap<String,Any?>()
+                    .apply {
+                        this.put("angles", viewModel.exterirorAngles.value)
+                        this.put("prod_sub_cat_id", it.prod_sub_cat_id!!)
+                    }
+
             )
 
         }
@@ -380,7 +382,10 @@ class OverlaysFragment : BaseFragment<ShootViewModel, FragmentOverlaysV2Binding>
 
                     requireContext().captureEvent(
                         Events.GET_OVERLAYS,
-                        HashMap<String,Any?>().put("angles", it.value.data.size)
+                        HashMap<String,Any?>()
+                            .apply {
+                                this.put("angles", it.value.data.size)
+                            }
                     )
 
 

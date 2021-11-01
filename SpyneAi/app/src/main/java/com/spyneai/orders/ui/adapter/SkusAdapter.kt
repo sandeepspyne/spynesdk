@@ -16,7 +16,6 @@ import com.spyneai.needs.AppConstants
 import com.spyneai.needs.Utilities
 import com.spyneai.orders.data.response.GetProjectsResponse
 import com.spyneai.orders.data.viewmodel.MyOrdersViewModel
-import com.spyneai.orders.ui.KarviShowImagesActivity
 import com.spyneai.processedimages.ui.ProcessedImageActivity
 
 class SkusAdapter(

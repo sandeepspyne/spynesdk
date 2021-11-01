@@ -11,7 +11,6 @@ import android.os.IBinder
 import android.os.PowerManager
 import android.util.Log
 import android.webkit.MimeTypeMap
-import com.posthog.android.Properties
 import com.spyneai.BaseApplication
 import com.spyneai.R
 import com.spyneai.captureEvent

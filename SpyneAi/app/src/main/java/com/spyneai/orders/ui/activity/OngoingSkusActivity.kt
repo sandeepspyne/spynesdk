@@ -8,7 +8,6 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.posthog.android.Properties
 import com.spyneai.R
 import com.spyneai.base.network.Resource
 import com.spyneai.captureFailureEvent

@@ -8,7 +8,6 @@ import android.provider.Settings
 import android.view.View
 import android.view.WindowManager
 import androidx.appcompat.app.AppCompatActivity
-import com.posthog.android.Properties
 import com.spyneai.BuildConfig
 import com.spyneai.R
 import com.spyneai.captureEvent

@@ -6,8 +6,6 @@ import com.spyneai.R
 import com.spyneai.base.GenericAdapter
 import com.spyneai.base.JavaViewHolderFactory
 import com.spyneai.base.OnItemClickListener
-import com.spyneai.camera2.OverlaysResponse
-import com.spyneai.dashboard.response.NewSubCatResponse
 import com.spyneai.shoot.data.OnOverlaySelectionListener
 import com.spyneai.shoot.data.model.ShootData
 

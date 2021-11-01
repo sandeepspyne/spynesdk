@@ -11,7 +11,6 @@ import com.spyneai.R
 import com.spyneai.base.GenericAdapter
 import com.spyneai.base.OnItemClickListener
 import com.spyneai.dashboard.response.NewSubCatResponse
-import com.spyneai.databinding.ItemInteriorBinding
 import com.spyneai.databinding.ItemMiscellanousBinding
 import com.spyneai.shoot.data.OnOverlaySelectionListener
 

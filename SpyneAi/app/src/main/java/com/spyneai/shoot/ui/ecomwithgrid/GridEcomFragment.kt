@@ -1,35 +1,19 @@
 package com.spyneai.shoot.ui.ecomwithgrid
 
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.posthog.android.Properties
 import com.spyneai.base.BaseFragment
 import com.spyneai.base.OnItemClickListener
-import com.spyneai.base.network.Resource
-import com.spyneai.camera2.OverlaysResponse
-import com.spyneai.captureFailureEvent
-import com.spyneai.dashboard.response.NewSubCatResponse
-import com.spyneai.dashboard.ui.handleApiError
 import com.spyneai.databinding.FragmentGridEcomBinding
-import com.spyneai.needs.AppConstants
-import com.spyneai.needs.Utilities
-import com.spyneai.posthog.Events
-import com.spyneai.shoot.adapters.CapturedImageAdapter
 import com.spyneai.shoot.adapters.ClickedAdapter
 import com.spyneai.shoot.data.OnOverlaySelectionListener
 import com.spyneai.shoot.data.ShootViewModel
 import com.spyneai.shoot.data.model.ShootData
 import com.spyneai.shoot.ui.dialogs.ReclickDialog
 import com.spyneai.shoot.ui.ecomwithgrid.dialogs.ConfirmReshootEcomDialog
-import com.spyneai.shoot.ui.ecomwithgrid.dialogs.CreateSkuEcomDialog
-import com.spyneai.shoot.ui.ecomwithgrid.dialogs.ProjectTagDialog
-import com.spyneai.shoot.utils.log
-import java.util.*
-import kotlin.collections.ArrayList
 
 class GridEcomFragment : BaseFragment<ShootViewModel, FragmentGridEcomBinding>(),
     OnItemClickListener, OnOverlaySelectionListener {

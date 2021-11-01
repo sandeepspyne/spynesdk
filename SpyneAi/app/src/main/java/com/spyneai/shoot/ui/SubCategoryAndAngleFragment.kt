@@ -7,7 +7,6 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.posthog.android.Properties
 import com.spyneai.BaseApplication
 import com.spyneai.R
 import com.spyneai.base.BaseFragment
@@ -24,7 +23,6 @@ import com.spyneai.posthog.Events
 import com.spyneai.shoot.adapters.SubcatAndAngleAdapter
 import com.spyneai.shoot.data.ShootViewModel
 import com.spyneai.shoot.ui.dialogs.AngleSelectionDialog
-import com.spyneai.shoot.utils.shoot
 
 class SubCategoryAndAngleFragment :
     BaseFragment<ShootViewModel, FragmentSelectSubcategoryAndAngleBinding>(),

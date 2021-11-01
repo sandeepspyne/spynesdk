@@ -5,7 +5,6 @@ import android.content.Context
 import android.content.Intent
 import android.os.Build
 import androidx.core.content.ContextCompat
-import com.posthog.android.Properties
 import com.spyneai.captureEvent
 import com.spyneai.isMyServiceRunning
 import com.spyneai.needs.AppConstants

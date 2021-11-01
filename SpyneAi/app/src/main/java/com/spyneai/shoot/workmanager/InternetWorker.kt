@@ -6,7 +6,6 @@ import android.os.Build
 import androidx.core.content.ContextCompat
 import androidx.work.CoroutineWorker
 import androidx.work.WorkerParameters
-import com.posthog.android.Properties
 import com.spyneai.captureEvent
 import com.spyneai.isMyServiceRunning
 import com.spyneai.needs.AppConstants

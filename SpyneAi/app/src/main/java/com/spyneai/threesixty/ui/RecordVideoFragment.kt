@@ -19,11 +19,10 @@ import android.provider.MediaStore
 import android.util.DisplayMetrics
 import android.util.Log
 import android.util.Size
-import android.view.*
-import android.view.animation.AccelerateInterpolator
-import android.widget.FrameLayout
-import android.widget.ImageView
-import android.widget.SeekBar
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
+import android.view.ViewTreeObserver
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.camera.core.*

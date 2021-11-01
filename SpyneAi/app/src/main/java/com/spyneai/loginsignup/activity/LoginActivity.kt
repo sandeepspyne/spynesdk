@@ -8,7 +8,6 @@ import android.text.InputType
 import android.view.View
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
-import com.posthog.android.Properties
 import com.spyneai.R
 import com.spyneai.activity.SignInUsingOtpActivity
 import com.spyneai.captureEvent

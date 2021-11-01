@@ -33,8 +33,6 @@ import com.spyneai.dashboard.ui.handleApiError
 import com.spyneai.databinding.FragmentProcessedImagesBinding
 import com.spyneai.databinding.ViewImagesBinding
 import com.spyneai.gotoHome
-import com.spyneai.interfaces.APiService
-import com.spyneai.interfaces.RetrofitClients
 import com.spyneai.model.skumap.UpdateSkuResponse
 import com.spyneai.needs.AppConstants
 import com.spyneai.needs.ScrollingLinearLayoutManager
@@ -45,8 +43,6 @@ import com.spyneai.videorecording.fragments.DialogEmbedCode
 import com.spyneai.videorecording.model.TSVParams
 import com.synnapps.carouselview.CarouselView
 import com.synnapps.carouselview.ViewListener
-import okhttp3.MultipartBody
-import okhttp3.RequestBody
 
 class ProcessedImagesFragment : BaseFragment<ProcessedViewModel, FragmentProcessedImagesBinding>(),
     View.OnTouchListener,View.OnClickListener{

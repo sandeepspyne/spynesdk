@@ -2,7 +2,6 @@ package com.spyneai.threesixty.data
 
 import android.content.Context
 import android.util.Log
-import com.posthog.android.Properties
 import com.spyneai.*
 import com.spyneai.base.network.ClipperApi
 import com.spyneai.base.network.Resource

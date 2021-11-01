@@ -1,9 +1,7 @@
 package com.spyneai.shoot.ui.ecomwithoverlays
 
-import android.content.res.Configuration
 import android.graphics.drawable.Drawable
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -19,7 +17,6 @@ import com.bumptech.glide.request.RequestOptions
 import com.bumptech.glide.request.target.Target
 import com.bumptech.glide.signature.ObjectKey
 import com.google.android.material.snackbar.Snackbar
-import com.posthog.android.Properties
 import com.spyneai.R
 import com.spyneai.base.BaseFragment
 import com.spyneai.base.OnItemClickListener
@@ -27,22 +24,16 @@ import com.spyneai.base.network.Resource
 import com.spyneai.camera2.OverlaysResponse
 import com.spyneai.captureEvent
 import com.spyneai.captureFailureEvent
-import com.spyneai.dashboard.response.NewSubCatResponse
 import com.spyneai.dashboard.ui.handleApiError
 import com.spyneai.databinding.FragmentOverlayEcomBinding
 import com.spyneai.needs.AppConstants
 import com.spyneai.needs.Utilities
 import com.spyneai.posthog.Events
-import com.spyneai.shoot.adapter.ShootProgressAdapter
-import com.spyneai.shoot.adapters.NewSubCategoriesAdapter
 import com.spyneai.shoot.adapters.OverlaysAdapter
 import com.spyneai.shoot.data.OnOverlaySelectionListener
 import com.spyneai.shoot.data.ShootViewModel
 import com.spyneai.shoot.data.model.ShootData
 import com.spyneai.shoot.ui.dialogs.ReclickDialog
-import com.spyneai.shoot.ui.ecomwithgrid.dialogs.CreateSkuEcomDialog
-import com.spyneai.shoot.ui.ecomwithgrid.dialogs.ProjectTagDialog
-import com.spyneai.shoot.utils.log
 import kotlinx.android.synthetic.main.fragment_overlays.*
 import java.util.*
 
@@ -141,7 +132,11 @@ class OverlayEcomFragment : BaseFragment<ShootViewModel, FragmentOverlayEcomBind
 
                     requireContext().captureEvent(
                         Events.GET_OVERLAYS,
-                        HashMap<String,Any?>().put("angles",it.value.data.size))
+                        HashMap<String,Any?>()
+                            .apply {
+                                this.put("angles",it.value.data.size)
+                            }
+                           )
 
                     if (viewModel.fromDrafts){
                         binding.tvShoot?.text = "${requireActivity().intent.getIntExtra(AppConstants.EXTERIOR_SIZE,0).plus(1)}/${it.value.data.size}"
@@ -198,7 +193,11 @@ class OverlayEcomFragment : BaseFragment<ShootViewModel, FragmentOverlayEcomBind
 
                     requireContext().captureEvent(
                         Events.GET_OVERLAYS,
-                        HashMap<String,Any?>().put("angles", it.value.data.size)
+                        HashMap<String,Any?>()
+                            .apply {
+                                this.put("angles", it.value.data.size)
+                            }
+
                     )
 
 
@@ -253,9 +252,12 @@ class OverlayEcomFragment : BaseFragment<ShootViewModel, FragmentOverlayEcomBind
 
             requireContext().captureEvent(
                 Events.GET_OVERLAYS_INTIATED,
-                HashMap<String,Any?>().put("angles",viewModel.exterirorAngles.value.toString())
-                    .put("prod_sub_cat_id", it.prod_sub_cat_id!!))
-
+                HashMap<String,Any?>()
+                    .apply {
+                       this.put("angles",viewModel.exterirorAngles.value.toString())
+                        this.put("prod_sub_cat_id", it.prod_sub_cat_id!!)
+                    }
+            )
         }
     }
 

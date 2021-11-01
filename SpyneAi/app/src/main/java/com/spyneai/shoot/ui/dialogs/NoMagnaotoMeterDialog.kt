@@ -6,12 +6,9 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.fragment.app.DialogFragment
 import com.spyneai.base.BaseDialogFragment
 import com.spyneai.dashboard.data.DashboardViewModel
 import com.spyneai.databinding.DialogNoMagnatoMeterBinding
-import com.spyneai.databinding.DialogSkipBinding
-import com.spyneai.shoot.data.ShootViewModel
 
 class NoMagnaotoMeterDialog : BaseDialogFragment<DashboardViewModel, DialogNoMagnatoMeterBinding>() {
 
