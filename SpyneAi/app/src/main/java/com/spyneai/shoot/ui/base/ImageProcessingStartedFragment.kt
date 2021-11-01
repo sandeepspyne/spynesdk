@@ -65,7 +65,7 @@ class ImageProcessingStartedFragment : BaseFragment<ProcessViewModel, FragmentIm
         viewModel.updateTotalFramesRes.observe(viewLifecycleOwner,{
             when(it) {
                 is Resource.Success -> {
-                    val properties = Properties()
+                    val properties = HashMap<String,Any?>()
                     properties.apply {
                         this["sku_id"] = viewModel.sku.value?.skuId!!
                         this["total_frames"] = viewModel.exteriorAngles.value?.plus(viewModel.interiorMiscShootsCount)
@@ -79,7 +79,7 @@ class ImageProcessingStartedFragment : BaseFragment<ProcessViewModel, FragmentIm
                 is Resource.Failure -> {
                     Utilities.hideProgressDialog()
 
-                    val properties = Properties()
+                    val properties = HashMap<String,Any?>()
                     properties.apply {
                         this["sku_id"] = viewModel.sku.value?.skuId!!
                         this["total_frames"] = viewModel.exteriorAngles.value?.plus(viewModel.interiorMiscShootsCount)

@@ -41,7 +41,7 @@ class ConfirmReshootDialog : BaseDialogFragment<ShootViewModel, DialogConfirmRes
 
         binding.btReshootImage.setOnClickListener{
             viewModel.isCameraButtonClickable = true
-            val properties = Properties()
+            val properties = HashMap<String,Any?>()
             properties.apply {
                 this["sku_id"] = viewModel.shootData.value?.sku_id
                 this["project_id"] = viewModel.shootData.value?.project_id
@@ -65,7 +65,7 @@ class ConfirmReshootDialog : BaseDialogFragment<ShootViewModel, DialogConfirmRes
         }
 
         binding.btConfirmImage.setOnClickListener {
-            val properties = Properties()
+            val properties = HashMap<String,Any?>()
             properties.apply {
                 this["sku_id"] = viewModel.shootData.value?.sku_id
                 this["project_id"] = viewModel.shootData.value?.project_id

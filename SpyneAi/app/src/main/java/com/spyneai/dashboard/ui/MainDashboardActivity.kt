@@ -288,7 +288,7 @@ class MainDashboardActivity : AppCompatActivity() {
         }
 
     private fun capture(eventName: String) {
-        val properties = Properties()
+        val properties = HashMap<String,Any?>()
         properties.apply {
             this["email"] =
                 Utilities.getPreference(this@MainDashboardActivity, AppConstants.EMAIL_ID)
@@ -343,7 +343,7 @@ class MainDashboardActivity : AppCompatActivity() {
                 startService(serviceIntent)
             }
 
-            val properties = Properties()
+            val properties = HashMap<String,Any?>()
                 .apply {
                     put("service_state", "Started")
                     put(
@@ -380,7 +380,7 @@ class MainDashboardActivity : AppCompatActivity() {
                 startService(serviceIntent)
             }
 
-            val properties = Properties()
+            val properties = HashMap<String,Any?>()
                 .apply {
                     put("service_state", "Started")
                     put(
@@ -454,7 +454,7 @@ class MainDashboardActivity : AppCompatActivity() {
                             capture(Events.FILE_FOLDER_UPLOAD_FALSE)
                         }
                     } else {
-                        val properties = Properties()
+                        val properties = HashMap<String,Any?>()
                         properties.apply {
                             this["email"] = Utilities.getPreference(
                                 this@MainDashboardActivity,
@@ -469,7 +469,7 @@ class MainDashboardActivity : AppCompatActivity() {
                         )
                     }
                 } else {
-                    val properties = Properties()
+                    val properties = HashMap<String,Any?>()
                     properties.apply {
                         this["email"] = Utilities.getPreference(
                             this@MainDashboardActivity,
@@ -488,7 +488,7 @@ class MainDashboardActivity : AppCompatActivity() {
             override fun onFailure(call: Call<UploadFolderRes>, t: Throwable) {
                 Utilities.hideProgressDialog()
 
-                val properties = Properties()
+                val properties = HashMap<String,Any?>()
                 properties.apply {
                     this["email"] =
                         Utilities.getPreference(this@MainDashboardActivity, AppConstants.EMAIL_ID)
@@ -529,7 +529,7 @@ class MainDashboardActivity : AppCompatActivity() {
                 startService(serviceIntent)
             }
 
-            val properties = Properties()
+            val properties = HashMap<String,Any?>()
                 .apply {
                     put("service_state", "Started")
                     put(

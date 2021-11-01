@@ -99,12 +99,15 @@ class AngleSelectionDialog : BaseDialogFragment<ShootViewModel,DialogAngleSelect
                 is Resource.Success -> {
                     Utilities.hideProgressDialog()
 
+                    val items = HashMap<String,Any?>()
+                    items.put("sku_name", viewModel.sku.value?.skuName.toString())
+                    items.put("project_id", createProjectRes.project_id)
+                    items.put("prod_sub_cat_id", viewModel.subCategory.value?.prod_sub_cat_id!!)
+                    items.put("angles", viewModel.exterirorAngles.value!!)
+
                     BaseApplication.getContext().captureEvent(
                         Events.CREATE_SKU,
-                        Properties().putValue("sku_name", viewModel.sku.value?.skuName.toString())
-                            .putValue("project_id", createProjectRes.project_id)
-                            .putValue("prod_sub_cat_id", viewModel.subCategory.value?.prod_sub_cat_id!!)
-                            .putValue("angles", viewModel.exterirorAngles.value!!)
+                        items
                     )
 
                     val sku = viewModel.sku.value
@@ -132,7 +135,7 @@ class AngleSelectionDialog : BaseDialogFragment<ShootViewModel,DialogAngleSelect
                 is Resource.Failure -> {
                     viewModel.isCameraButtonClickable = true
                     BaseApplication.getContext().captureFailureEvent(
-                        Events.CREATE_SKU_FAILED, Properties(),
+                        Events.CREATE_SKU_FAILED, HashMap<String,Any?>(),
                         it.errorMessage!!
                     )
                     Utilities.hideProgressDialog()
@@ -171,12 +174,15 @@ class AngleSelectionDialog : BaseDialogFragment<ShootViewModel,DialogAngleSelect
                 is Resource.Success -> {
                     Utilities.hideProgressDialog()
 
+                    val items = HashMap<String,Any?>()
+                    items["sku_name"] = viewModel.sku.value?.skuName.toString()
+                    items.put("project_id", projectId)
+                    items.put("prod_sub_cat_id", prod_sub_cat_id)
+                    items.put("angles", viewModel.exterirorAngles.value!!)
+
                     BaseApplication.getContext().captureEvent(
                         Events.CREATE_SKU,
-                        Properties().putValue("sku_name", viewModel.sku.value?.skuName.toString())
-                            .putValue("project_id", projectId)
-                            .putValue("prod_sub_cat_id", prod_sub_cat_id)
-                            .putValue("angles", viewModel.exterirorAngles.value!!)
+                        items
                     )
 
                     val sku = viewModel.sku.value
@@ -206,7 +212,7 @@ class AngleSelectionDialog : BaseDialogFragment<ShootViewModel,DialogAngleSelect
                 is Resource.Failure -> {
                     viewModel.isCameraButtonClickable = true
                     BaseApplication.getContext().captureFailureEvent(
-                        Events.CREATE_SKU_FAILED, Properties(),
+                        Events.CREATE_SKU_FAILED, HashMap<String,Any?>(),
                         it.errorMessage!!
                     )
                     Utilities.hideProgressDialog()

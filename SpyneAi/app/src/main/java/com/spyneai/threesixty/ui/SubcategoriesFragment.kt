@@ -27,7 +27,7 @@ class SubcategoriesFragment : BaseFragment<ThreeSixtyViewModel,FragmentSubcatego
     }
 
     private fun initShootHint() {
-        requireContext().captureEvent(Events.SHOW_360_HINT, Properties())
+        requireContext().captureEvent(Events.SHOW_360_HINT, HashMap<String,Any?>())
         ThreeSixtyExteriorGifDialog().show(
             requireActivity().supportFragmentManager,
             "ThreeSixtyExteriorGifDialog")

@@ -246,7 +246,7 @@ class ImageUploader(val context: Context,
     }
 
     private fun captureEvent(eventName : String, image : Image, isSuccess : Boolean, error: String?) {
-        val properties = Properties()
+        val properties = HashMap<String,Any?>()
         properties.apply {
             this["sku_id"] = image.skuId
             this["project_id"] = image.projectId

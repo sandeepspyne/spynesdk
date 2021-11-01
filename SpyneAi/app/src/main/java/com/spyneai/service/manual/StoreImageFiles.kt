@@ -71,7 +71,7 @@ class StoreImageFiles(val appContext: Context,
                        }
                    }
                }catch (e : Exception){
-                   val properties = Properties()
+                   val properties = HashMap<String,Any?>()
                    properties.put("error",e.localizedMessage)
 
                    appContext.captureEvent("FileNameError",properties)
@@ -87,7 +87,7 @@ class StoreImageFiles(val appContext: Context,
 
 
     private suspend fun startManualUploadWorker(fileSize : Int, filesPathList : JSONArray) {
-        val properties = Properties()
+        val properties = HashMap<String,Any?>()
         properties.apply {
             this["email"] = Utilities.getPreference(appContext, AppConstants.EMAIL_ID).toString()
             this["files_count"] = fileSize
@@ -103,7 +103,7 @@ class StoreImageFiles(val appContext: Context,
         start()
     }
 
-    private suspend fun sendData(count : Int,data : String,properties: Properties) {
+    private suspend fun sendData(count : Int,data : String,properties: HashMap<String,Any?>) {
 
         //send all data to server
         var sendDataRes = ShootRepository().sendFilesData(
@@ -165,7 +165,7 @@ class StoreImageFiles(val appContext: Context,
     }
 
     private fun capture(eventName : String) {
-        val properties = Properties()
+        val properties = HashMap<String,Any?>()
         properties.apply {
             this["email"] = Utilities.getPreference(appContext, AppConstants.EMAIL_ID).toString()
         }

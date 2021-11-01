@@ -94,7 +94,7 @@ class ShowRawImagesActivity : AppCompatActivity() {
                             rvSkus.visibility = View.GONE
                         } else {
                             this.captureFailureEvent(
-                                Events.GET_COMPLETED_ORDERS_FAILED, Properties(),
+                                Events.GET_COMPLETED_ORDERS_FAILED, HashMap<String,Any?>(),
                                 it.errorMessage!!
                             )
 

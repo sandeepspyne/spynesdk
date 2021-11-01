@@ -53,7 +53,7 @@ class ShadowOptionDialog : BaseDialogFragment<ShootViewModel, DialogShadowOption
 //                is Resource.Failure -> {
 //                    log("create project id failed")
 //                    requireContext().captureFailureEvent(
-//                        Events.SKU_PROCESS_STATE_WITH_SHADOW_FAILED, Properties(),
+//                        Events.SKU_PROCESS_STATE_WITH_SHADOW_FAILED, HashMap<String,Any?>(),
 //                        it.errorMessage!!
 //                    )
 //

@@ -226,7 +226,7 @@ class SelectBackgroundFragment : BaseFragment<ProcessViewModel, FragmentSelectBa
                     Utilities.hideProgressDialog()
                     binding.shimmer.stopShimmer()
                     requireContext().captureFailureEvent(
-                        Events.GET_BACKGROUND_FAILED, Properties(),
+                        Events.GET_BACKGROUND_FAILED, HashMap<String,Any?>(),
                         it.errorMessage!!
                     )
                     handleApiError(it) { processFoodImage() }
@@ -284,7 +284,7 @@ class SelectBackgroundFragment : BaseFragment<ProcessViewModel, FragmentSelectBa
         viewModel.carGifRes.observe(viewLifecycleOwner, {
             when (it) {
                 is Resource.Success -> {
-                    requireContext().captureEvent(Events.GET_BACKGROUND, Properties())
+                    requireContext().captureEvent(Events.GET_BACKGROUND, HashMap<String,Any?>())
                     binding.shimmer.stopShimmer()
                     binding.shimmer.visibility = View.GONE
                     binding.rvBackgroundsCars.visibility = View.VISIBLE
@@ -309,7 +309,7 @@ class SelectBackgroundFragment : BaseFragment<ProcessViewModel, FragmentSelectBa
 
                 is Resource.Failure -> {
                     requireContext().captureFailureEvent(
-                        Events.GET_BACKGROUND_FAILED, Properties(),
+                        Events.GET_BACKGROUND_FAILED, HashMap<String,Any?>(),
                         it.errorMessage!!
                     )
                     handleApiError(it) { getBackground() }
@@ -368,7 +368,7 @@ class SelectBackgroundFragment : BaseFragment<ProcessViewModel, FragmentSelectBa
                 is Resource.Success -> {
                     Utilities.hideProgressDialog()
 
-                    val properties = Properties()
+                    val properties = HashMap<String,Any?>()
                     properties.apply {
                         this["sku_id"] = viewModel.sku.value?.skuId!!
                         this["total_frames"] = viewModel.exteriorAngles.value?.plus(viewModel.interiorMiscShootsCount)
@@ -381,7 +381,7 @@ class SelectBackgroundFragment : BaseFragment<ProcessViewModel, FragmentSelectBa
                 is Resource.Failure -> {
                     Utilities.hideProgressDialog()
 
-                    val properties = Properties()
+                    val properties = HashMap<String,Any?>()
                     properties.apply {
                         this["sku_id"] = viewModel.sku.value?.skuId!!
                         this["total_frames"] = viewModel.exteriorAngles.value?.plus(viewModel.interiorMiscShootsCount)
@@ -403,8 +403,13 @@ class SelectBackgroundFragment : BaseFragment<ProcessViewModel, FragmentSelectBa
 
         requireContext().captureEvent(
             Events.PROCESS_INITIATED,
-            Properties().putValue("sku_id", viewModel.sku.value?.skuId!!)
-                .putValue("background_id", backgroundSelect)
+            HashMap<String,Any?>()
+                .apply {
+                    this.put("sku_id", viewModel.sku.value?.skuId!!)
+                    this.put("background_id", backgroundSelect)
+                }
+
+
         )
 
         viewModel.processSku(
@@ -437,8 +442,13 @@ class SelectBackgroundFragment : BaseFragment<ProcessViewModel, FragmentSelectBa
 
                     requireContext().captureEvent(
                         Events.PROCESS,
-                        Properties().putValue("sku_id", viewModel.sku.value?.skuId!!)
-                            .putValue("background_id", backgroundSelect)
+                        HashMap<String,Any?>()
+                            .apply {
+                                this.put("sku_id", viewModel.sku.value?.skuId!!)
+                                this.put("background_id", backgroundSelect)
+                            }
+
+
                     )
                     viewModel.startTimer.value = true
                 }
@@ -447,7 +457,9 @@ class SelectBackgroundFragment : BaseFragment<ProcessViewModel, FragmentSelectBa
 
                     requireContext().captureFailureEvent(
                         Events.PROCESS_FAILED,
-                        Properties().putValue("sku_id", viewModel.sku.value?.skuId!!),
+                        HashMap<String,Any?>().apply {
+                            this.put("sku_id", viewModel.sku.value?.skuId!!)
+                        },
                         it.errorMessage!!
                     )
 

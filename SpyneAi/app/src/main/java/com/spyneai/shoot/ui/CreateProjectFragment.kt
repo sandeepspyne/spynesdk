@@ -59,7 +59,7 @@ class CreateProjectFragment : BaseFragment<ShootViewModel, FragmentCreateProject
     }
 
     private fun initShootHint() {
-        requireContext().captureEvent(Events.SHOW_HINT, Properties())
+        requireContext().captureEvent(Events.SHOW_HINT, HashMap<String,Any?>())
         ShootHintDialog().show(requireActivity().supportFragmentManager, "ShootHintDialog")
     }
 
@@ -103,7 +103,7 @@ class CreateProjectFragment : BaseFragment<ShootViewModel, FragmentCreateProject
                     Utilities.hideProgressDialog()
                     log("get project name failed")
                     requireContext().captureFailureEvent(
-                        Events.CREATE_PROJECT_FAILED, Properties(),
+                        Events.CREATE_PROJECT_FAILED, HashMap<String,Any?>(),
                         it.errorMessage!!
                     )
 

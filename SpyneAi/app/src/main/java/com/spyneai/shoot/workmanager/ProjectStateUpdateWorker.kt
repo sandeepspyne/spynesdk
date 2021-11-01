@@ -51,7 +51,7 @@ class ProjectStateUpdateWorker (private val appContext: Context, workerParams: W
 
 
     private fun captureEvent(eventName : String,isSuccess : Boolean, error: String?) {
-        val properties = Properties()
+        val properties = HashMap<String,Any?>()
         properties.apply {
             this["project_id"] = inputData.getString("project_id")
             this["state"] = "Draft to Ongoing"

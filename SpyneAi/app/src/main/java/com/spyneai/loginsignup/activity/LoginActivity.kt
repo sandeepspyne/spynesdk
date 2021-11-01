@@ -113,7 +113,11 @@ class LoginActivity : AppCompatActivity() {
     }
 
     private fun login(email: String, password: String) {
-        val properties = Properties().putValue("email",email)
+        val properties = HashMap<String,Any?>()
+            .apply {
+                this.put("email",email)
+            }
+
         captureEvent(Events.LOGIN_INTIATED,properties)
 
         Utilities.showProgressDialog(this)

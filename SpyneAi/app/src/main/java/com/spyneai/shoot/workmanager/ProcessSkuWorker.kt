@@ -27,16 +27,24 @@ class ProcessSkuWorker(private val appContext: Context, workerParams: WorkerPara
                     WorkInfo.State.BLOCKED -> {
                         BaseApplication.getContext().captureEvent(
                             Events.BLOCKED_WORKER_START_EXCEPTION,
-                            Properties().putValue
-                                ("name","Recursive Process Worker"))
+                            HashMap<String,Any?>()
+                                .apply {
+                                    this.put("name","Recursive Process Worker")
+                                }
+
+                        )
                         start()
                     }
 
                     WorkInfo.State.CANCELLED -> {
                         BaseApplication.getContext().captureEvent(
                             Events.CANCELLED_WORKER_START_EXCEPTION,
-                            Properties().putValue
-                                ("name","Recursive Process Worker"))
+                            HashMap<String,Any?>()
+                                .apply {
+                                    this.put("name","Recursive Process Worker")
+                                }
+
+                        )
                         start()
                     }
                 }

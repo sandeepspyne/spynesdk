@@ -77,7 +77,11 @@ class ThreeSixtyProjectAndSkuDialog : BaseDialogFragment<ThreeSixtyViewModel, Di
                 is Resource.Success -> {
                     requireContext().captureEvent(
                         Events.CREATE_360_PROJECT,
-                        Properties().putValue("project_name",removeWhiteSpace(binding.etVinNumber.text.toString())))
+                        HashMap<String,Any?>()
+                            .apply {
+                               this.put("project_name",removeWhiteSpace(binding.etVinNumber.text.toString()))
+                            }
+                            )
 
                     viewModel.videoDetails.apply {
                         projectId = it.value.project_id
@@ -98,7 +102,7 @@ class ThreeSixtyProjectAndSkuDialog : BaseDialogFragment<ThreeSixtyViewModel, Di
 
                 is Resource.Failure -> {
                     requireContext().captureFailureEvent(
-                        Events.CREATE_360_PROJECT_FAILED, Properties(),
+                        Events.CREATE_360_PROJECT_FAILED, HashMap<String,Any?>(),
                         it.errorMessage!!
                     )
                     Utilities.hideProgressDialog()
@@ -132,9 +136,13 @@ class ThreeSixtyProjectAndSkuDialog : BaseDialogFragment<ThreeSixtyViewModel, Di
                 is Resource.Success -> {
                     requireContext().captureEvent(
                         Events.CREATE_360_SKU,
-                        Properties().putValue("sku_name",viewModel.videoDetails.skuName.toString())
-                            .putValue("project_id",projectId)
-                            .putValue("prod_sub_cat_id",prod_sub_cat_id))
+                        HashMap<String,Any?>()
+                            .apply {
+                                this.put("sku_name",viewModel.videoDetails.skuName.toString())
+                                this.put("project_id",projectId)
+                                this.put("prod_sub_cat_id",prod_sub_cat_id)
+                            }
+                    )
 
                     Utilities.hideProgressDialog()
 
@@ -175,7 +183,7 @@ class ThreeSixtyProjectAndSkuDialog : BaseDialogFragment<ThreeSixtyViewModel, Di
                 }
 
                 is Resource.Failure -> {
-                    requireContext().captureFailureEvent(Events.CREATE_360_SKU_FAILED, Properties(),
+                    requireContext().captureFailureEvent(Events.CREATE_360_SKU_FAILED, HashMap<String,Any?>(),
                         it.errorMessage!!
                     )
                     Utilities.hideProgressDialog()

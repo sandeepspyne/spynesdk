@@ -141,7 +141,7 @@ class OverlayEcomFragment : BaseFragment<ShootViewModel, FragmentOverlayEcomBind
 
                     requireContext().captureEvent(
                         Events.GET_OVERLAYS,
-                        Properties().putValue("angles",it.value.data.size))
+                        HashMap<String,Any?>().put("angles",it.value.data.size))
 
                     if (viewModel.fromDrafts){
                         binding.tvShoot?.text = "${requireActivity().intent.getIntExtra(AppConstants.EXTERIOR_SIZE,0).plus(1)}/${it.value.data.size}"
@@ -198,7 +198,7 @@ class OverlayEcomFragment : BaseFragment<ShootViewModel, FragmentOverlayEcomBind
 
                     requireContext().captureEvent(
                         Events.GET_OVERLAYS,
-                        Properties().putValue("angles", it.value.data.size)
+                        HashMap<String,Any?>().put("angles", it.value.data.size)
                     )
 
 
@@ -208,7 +208,7 @@ class OverlayEcomFragment : BaseFragment<ShootViewModel, FragmentOverlayEcomBind
                 is Resource.Loading -> Utilities.showProgressDialog(requireContext())
 
                 is Resource.Failure -> {
-                    requireContext().captureFailureEvent(Events.GET_OVERLAYS_FAILED, Properties(),
+                    requireContext().captureFailureEvent(Events.GET_OVERLAYS_FAILED, HashMap<String,Any?>(),
                         it.errorMessage!!
                     )
                     Utilities.hideProgressDialog()
@@ -253,8 +253,8 @@ class OverlayEcomFragment : BaseFragment<ShootViewModel, FragmentOverlayEcomBind
 
             requireContext().captureEvent(
                 Events.GET_OVERLAYS_INTIATED,
-                Properties().putValue("angles",viewModel.exterirorAngles.value.toString())
-                    .putValue("prod_sub_cat_id", it.prod_sub_cat_id!!))
+                HashMap<String,Any?>().put("angles",viewModel.exterirorAngles.value.toString())
+                    .put("prod_sub_cat_id", it.prod_sub_cat_id!!))
 
         }
     }
@@ -341,7 +341,7 @@ class OverlayEcomFragment : BaseFragment<ShootViewModel, FragmentOverlayEcomBind
                     target: Target<Drawable>?,
                     isFirstResource: Boolean
                 ): Boolean {
-                    val properties =  Properties()
+                    val properties =  HashMap<String,Any?>()
                     properties["name"] = name
                     properties["error"] = e?.localizedMessage
                     properties["category"] = viewModel.categoryDetails.value?.categoryName
@@ -372,7 +372,7 @@ class OverlayEcomFragment : BaseFragment<ShootViewModel, FragmentOverlayEcomBind
                     if (snackbar != null)
                         snackbar?.dismiss()
 
-                    val properties =  Properties()
+                    val properties =  HashMap<String,Any?>()
                     properties["name"] = name
                     properties["category"] = viewModel.categoryDetails.value?.categoryName
 

@@ -68,7 +68,11 @@ class ForgotPasswordActivity : AppCompatActivity() {
     }
 
     private fun forgotPassword(){
-        var properties = Properties().putValue("email", et_forgotPasswordEmail.text.toString().trim())
+        var properties = HashMap<String,Any?>().
+            apply {
+               this.put("email", et_forgotPasswordEmail.text.toString().trim())
+            }
+
         captureEvent(Events.FORGOT_PASSWORD_INTIATED,properties)
 
         Utilities.showProgressDialog(this)

@@ -380,8 +380,13 @@ class RegularShootSummaryFragment  : BaseFragment<ProcessViewModel, FragmentRegu
                     Utilities.hideProgressDialog()
                     requireContext().captureEvent(
                         Events.PROCESS,
-                        Properties().putValue("sku_id", viewModel.sku.value?.skuId!!)
-                            .putValue("background_id",viewModel.backgroundSelect!!)
+                        HashMap<String,Any?>()
+                            .apply {
+                                this.put("sku_id", viewModel.sku.value?.skuId!!)
+                                this.put("background_id",viewModel.backgroundSelect!!)
+                            }
+
+
                     )
                     viewModel.startTimer.value = true
                 }
@@ -389,7 +394,10 @@ class RegularShootSummaryFragment  : BaseFragment<ProcessViewModel, FragmentRegu
                     Utilities.hideProgressDialog()
                     requireContext().captureFailureEvent(
                         Events.PROCESS_FAILED,
-                        Properties().putValue("sku_id",viewModel.sku.value?.skuId!!),
+                        HashMap<String,Any?>()
+                            .apply {
+                             this.put("sku_id",viewModel.sku.value?.skuId!!)
+                            },
                         it.errorMessage!!)
 
                     handleApiError(it) { processSku(true)}

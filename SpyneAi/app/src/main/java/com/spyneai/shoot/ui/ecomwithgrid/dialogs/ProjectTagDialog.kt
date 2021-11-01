@@ -123,8 +123,8 @@ class ProjectTagDialog : BaseDialogFragment<ShootViewModel, ProjectTagDialogBind
             if (data!![LayoutHolder.categoryPosition].dynamic_layout.project_dialog.isNullOrEmpty()) {
                 return
             }
-        }catch (e: Exception){
-          return
+        } catch (e: Exception) {
+            return
         }
 
         val layout = data!![LayoutHolder.categoryPosition].dynamic_layout.project_dialog
@@ -335,10 +335,13 @@ class ProjectTagDialog : BaseDialogFragment<ShootViewModel, ProjectTagDialogBind
                 is Resource.Success -> {
                     requireContext().captureEvent(
                         Events.CREATE_PROJECT,
-                        Properties().putValue(
-                            "project_name",
-                            removeWhiteSpace(binding.etProjectName.text.toString())
-                        )
+                        HashMap<String, Any?>()
+                            .apply {
+                                this.put(
+                                    "project_name",
+                                    removeWhiteSpace(binding.etProjectName.text.toString())
+                                )
+                            }
                     )
 
                     //save project to local db
@@ -370,7 +373,7 @@ class ProjectTagDialog : BaseDialogFragment<ShootViewModel, ProjectTagDialogBind
                 is Resource.Failure -> {
                     log("create project id failed")
                     requireContext().captureFailureEvent(
-                        Events.CREATE_PROJECT_FAILED, Properties(),
+                        Events.CREATE_PROJECT_FAILED, HashMap<String, Any?>(),
                         it.errorMessage!!
                     )
 
@@ -402,9 +405,13 @@ class ProjectTagDialog : BaseDialogFragment<ShootViewModel, ProjectTagDialogBind
                     Utilities.hideProgressDialog()
                     requireContext().captureEvent(
                         Events.CREATE_SKU,
-                        Properties().putValue("sku_name", viewModel.sku.value?.skuName.toString())
-                            .putValue("project_id", viewModel.sku.value?.projectId)
-                            .putValue("prod_sub_cat_id", "")
+                        HashMap<String, Any?>()
+                            .apply {
+                                this.put("sku_name", viewModel.sku.value?.skuName.toString())
+                                this.put("project_id", viewModel.sku.value?.projectId)
+                                this.put("prod_sub_cat_id", "")
+                            }
+
                     )
 
                     //notify project created
@@ -439,7 +446,7 @@ class ProjectTagDialog : BaseDialogFragment<ShootViewModel, ProjectTagDialogBind
                     log("create sku id failed")
                     Utilities.hideProgressDialog()
                     requireContext().captureFailureEvent(
-                        Events.CREATE_SKU_FAILED, Properties(),
+                        Events.CREATE_SKU_FAILED, HashMap<String, Any?>(),
                         it.errorMessage!!
                     )
 

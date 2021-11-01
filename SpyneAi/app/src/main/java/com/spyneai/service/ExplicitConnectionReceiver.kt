@@ -22,7 +22,7 @@ class ExplicitConnectionReceiver : BroadcastReceiver() {
             || shootLocalRepository.getOldestSkippedImage().itemId != null){
                 if (context != null){
 
-                    val prperties = Properties()
+                    val prperties = HashMap<String,Any?>()
                         .apply {
                             put("email", Utilities.getPreference(context, AppConstants.EMAIL_ID).toString())
                             put("medium","Explicit Broadcast")

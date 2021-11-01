@@ -85,7 +85,11 @@ class SignInUsingOtpActivity : AppCompatActivity() {
 
     //Sign in api
     private fun makeSignIn() {
-        val properties = Properties().putValue("email",binding.etEmail.text.toString().trim())
+        val properties = HashMap<String,Any?>()
+            .apply {
+               this.put("email",binding.etEmail.text.toString().trim())
+            }
+
         captureEvent(Events.OTP_LOGIN_INTIATED,properties)
 
         Utilities.showProgressDialog(this)

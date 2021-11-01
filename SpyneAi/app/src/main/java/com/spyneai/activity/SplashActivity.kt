@@ -45,11 +45,12 @@ class SplashActivity : AppCompatActivity() {
 
         val dbVersion = DBHelper(this).writableDatabase.version
 
+        val item = HashMap<String,Any?>()
+        item.put("new_version",dbVersion)
+
         captureEvent(
             "DB_VERSION",
-            Properties().putValue(
-                "new_version",dbVersion
-            )
+            item
         )
 
         val deviceId = Settings.Secure.getString(contentResolver, Settings.Secure.ANDROID_ID)

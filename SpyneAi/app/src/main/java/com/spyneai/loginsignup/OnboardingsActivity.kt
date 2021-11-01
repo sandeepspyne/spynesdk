@@ -67,7 +67,10 @@ class OnboardingsActivity : AppCompatActivity() {
 
                 captureEvent(
                     Events.SLIDE_CHANGE,
-                    Properties().putValue("position",tab.position))
+                    HashMap<String,Any?>()
+                        .apply {
+                            this.put("position",tab.position)
+                        })
 
                 when(tab.position) {
                     0,1 ->  tvGet.text = getString(R.string.get_started)

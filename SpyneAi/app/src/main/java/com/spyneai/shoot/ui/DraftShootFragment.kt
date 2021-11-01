@@ -325,7 +325,7 @@ class DraftShootFragment : BaseFragment<ShootViewModel, FragmentOverlaysV2Bindin
                     target: Target<Drawable>?,
                     isFirstResource: Boolean
                 ): Boolean {
-                    val properties =  Properties()
+                    val properties =  HashMap<String,Any?>()
                     properties["name"] = name
                     properties["error"] = e?.localizedMessage
                     properties["category"] = viewModel.categoryDetails.value?.categoryName
@@ -356,7 +356,7 @@ class DraftShootFragment : BaseFragment<ShootViewModel, FragmentOverlaysV2Bindin
                     if (snackbar != null)
                         snackbar?.dismiss()
 
-                    val properties =  Properties()
+                    val properties =  HashMap<String,Any?>()
                     properties["name"] = name
                     properties["category"] = viewModel.categoryDetails.value?.categoryName
 
@@ -438,8 +438,11 @@ class DraftShootFragment : BaseFragment<ShootViewModel, FragmentOverlaysV2Bindin
 
             requireContext().captureEvent(
                 Events.GET_OVERLAYS_INTIATED,
-                Properties().putValue("angles", viewModel.exterirorAngles.value)
-                    .putValue("prod_sub_cat_id", it.prod_sub_cat_id!!)
+                HashMap<String,Any?>()
+                    .apply {
+                        this.put("angles", viewModel.exterirorAngles.value)
+                        this.put("prod_sub_cat_id", it.prod_sub_cat_id!!)
+                    }
             )
 
         }
@@ -515,7 +518,11 @@ class DraftShootFragment : BaseFragment<ShootViewModel, FragmentOverlaysV2Bindin
 
                     requireContext().captureEvent(
                         Events.GET_OVERLAYS,
-                        Properties().putValue("angles", it.value.data.size)
+                        HashMap<String,Any?>()
+                            .apply {
+                               this.put("angles", it.value.data.size)
+                            }
+
                     )
 
                     showViews()
@@ -525,7 +532,7 @@ class DraftShootFragment : BaseFragment<ShootViewModel, FragmentOverlaysV2Bindin
                     Utilities.hideProgressDialog()
 
                     requireContext().captureFailureEvent(
-                        Events.GET_OVERLAYS_FAILED, Properties(),
+                        Events.GET_OVERLAYS_FAILED, HashMap<String,Any?>(),
                         it.errorMessage!!
                     )
                     shoot("show progress dialog(overlays response failure)")

@@ -227,7 +227,7 @@ class VideoUploader(val context: Context,
     }
 
     private fun captureEvent(eventName : String, video : VideoDetails, isSuccess : Boolean, error: String?) {
-        val properties = Properties()
+        val properties = HashMap<String,Any?>()
         properties.apply {
             this["sku_id"] = video.skuId
             this["sku_name"] = video.skuName

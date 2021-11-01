@@ -46,7 +46,7 @@ fun Context.gotoHome(){
 }
 
 fun Context.gotoLogin(){
-    this.captureEvent(Events.LOG_OUT, Properties())
+    this.captureEvent(Events.LOG_OUT, HashMap<String,Any?>())
 
     Utilities.savePrefrence(this, AppConstants.TOKEN_ID, "")
     Utilities.savePrefrence(this, AppConstants.AUTH_KEY, "")

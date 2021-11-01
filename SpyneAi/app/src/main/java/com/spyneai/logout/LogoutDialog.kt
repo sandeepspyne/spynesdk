@@ -23,7 +23,7 @@ class LogoutDialog : BaseDialogFragment<DashboardViewModel, DialogLogoutBinding>
 
         binding.llLogout.setOnClickListener {
 
-            requireContext().captureEvent(Events.LOG_OUT, Properties())
+            requireContext().captureEvent(Events.LOG_OUT, HashMap<String,Any?>())
 
             Utilities.savePrefrence(requireContext(), AppConstants.TOKEN_ID, "")
             Utilities.savePrefrence(requireContext(), AppConstants.AUTH_KEY, "")

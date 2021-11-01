@@ -117,7 +117,7 @@ class ImageDownloadingService : Service(),ImageDownloadManager.Listener {
     }
 
     private fun createCompletedNotification(hd: Boolean) {
-        captureEvent("Download Completed", Properties())
+        captureEvent("Download Completed", HashMap<String,Any?>())
 
         var notification = if (hd)
             createNotification("HD images downloaded! Check in your gallery", false)
@@ -127,7 +127,7 @@ class ImageDownloadingService : Service(),ImageDownloadManager.Listener {
     }
 
     private fun createFailureNotification(hd: Boolean) {
-        captureEvent("Download Failed", Properties())
+        captureEvent("Download Failed", HashMap<String,Any?>())
 
         var notification = if (hd) createNotification(
             "HD images downloading failed! please try again",

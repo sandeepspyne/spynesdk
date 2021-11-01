@@ -49,7 +49,7 @@ class ConfirmReshootEcomDialog :
         binding.btReshootImage.setOnClickListener {
             viewModel.reshootCapturedImage.value = true
             viewModel.isCameraButtonClickable = true
-            val properties = Properties()
+            val properties = HashMap<String,Any?>()
             properties.apply {
                 this["sku_id"] = viewModel.shootData.value?.sku_id
                 this["project_id"] = viewModel.shootData.value?.project_id
@@ -75,7 +75,7 @@ class ConfirmReshootEcomDialog :
             //viewModel.shootNumber.value = viewModel.shootNumber.value?.plus(1)
 
             viewModel.isStopCaptureClickable = true
-            val properties = Properties()
+            val properties = HashMap<String,Any?>()
             properties.apply {
                 this["sku_id"] = viewModel.shootData.value?.sku_id
                 this["project_id"] = viewModel.shootData.value?.project_id

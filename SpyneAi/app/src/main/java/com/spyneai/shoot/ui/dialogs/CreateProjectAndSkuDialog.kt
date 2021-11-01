@@ -74,7 +74,10 @@ class CreateProjectAndSkuDialog : BaseDialogFragment<ShootViewModel,DialogCreate
 
                     requireContext().captureEvent(
                         Events.CREATE_PROJECT,
-                        Properties().putValue("project_name",  removeWhiteSpace(binding.etVinNumber.text.toString()))
+                        HashMap<String,Any?>()
+                            .apply {
+                                this.put("project_name",  removeWhiteSpace(binding.etVinNumber.text.toString()))
+                            }
                     )
 
                     //save project to local db
@@ -100,7 +103,7 @@ class CreateProjectAndSkuDialog : BaseDialogFragment<ShootViewModel,DialogCreate
                 }
 
                 is Resource.Failure -> {
-                    requireContext().captureFailureEvent(Events.CREATE_SKU_FAILED, Properties(),
+                    requireContext().captureFailureEvent(Events.CREATE_SKU_FAILED, HashMap<String,Any?>(),
                         it.errorMessage!!
                     )
                     Utilities.hideProgressDialog()

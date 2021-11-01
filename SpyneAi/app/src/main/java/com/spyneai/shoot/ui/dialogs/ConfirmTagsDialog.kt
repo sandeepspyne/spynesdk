@@ -73,7 +73,7 @@ class ConfirmTagsDialog : BaseDialogFragment<ShootViewModel, DialogConfirmTagsBi
         binding.btReshootImage.setOnClickListener {
             viewModel.isCameraButtonClickable = true
 
-            val properties = Properties()
+            val properties = HashMap<String,Any?>()
             properties.apply {
                 this["sku_id"] = viewModel.shootData.value?.sku_id
                 this["project_id"] = viewModel.shootData.value?.project_id
@@ -93,7 +93,7 @@ class ConfirmTagsDialog : BaseDialogFragment<ShootViewModel, DialogConfirmTagsBi
         }
 
         binding.btConfirmImage.setOnClickListener {
-            val properties = Properties()
+            val properties = HashMap<String,Any?>()
 
             properties.apply {
                 this["sku_id"] = viewModel.shootData.value?.sku_id

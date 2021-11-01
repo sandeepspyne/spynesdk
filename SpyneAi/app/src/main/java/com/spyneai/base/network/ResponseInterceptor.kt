@@ -36,7 +36,7 @@ class ResponseInterceptor : Interceptor {
 
                 return finalResponse
             }catch (e : JSONException){
-                val properties = Properties()
+                val properties = HashMap<String,Any?>()
                     .apply {
                         put("api",response.request.url)
                         put("response",bodyString)

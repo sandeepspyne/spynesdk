@@ -51,7 +51,7 @@ class InternetWorker(private val appContext: Context, workerParams: WorkerParame
     }
 
     private fun capture(eventName : String,state : String) {
-        val prperties = Properties()
+        val prperties = HashMap<String,Any?>()
             .apply {
                 put("service_state",state)
                 put("email",Utilities.getPreference(appContext,AppConstants.EMAIL_ID).toString())

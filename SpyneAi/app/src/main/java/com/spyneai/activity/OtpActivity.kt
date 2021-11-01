@@ -373,7 +373,7 @@ public class OtpActivity : AppCompatActivity() {
     }
 
     private fun postOtp(otpEntered: String) {
-        captureEvent(Events.OTP_VERIFICATION_INITIATED, Properties())
+        captureEvent(Events.OTP_VERIFICATION_INITIATED, HashMap())
         Utilities.showProgressDialog(this)
 
         val request = RetrofitClients.buildService(MyAPIService::class.java)
@@ -392,7 +392,7 @@ public class OtpActivity : AppCompatActivity() {
                         Toast.makeText(this@OtpActivity, response.body()!!.message, Toast.LENGTH_SHORT).show()
 
                         Utilities.savePrefrence(this@OtpActivity,AppConstants.AUTH_KEY, response.body()!!.authToken)
-                        val properties = Properties()
+                        val properties = HashMap<String,Any?>()
                         properties.apply {
                             this["user_id"] = otpResponse.userId
                             this["name"] = otpResponse.userName
@@ -420,12 +420,12 @@ public class OtpActivity : AppCompatActivity() {
                         tvError.visibility = View.INVISIBLE
 
                     }else{
-                        captureFailureEvent(Events.OTP_VERIFICATION_FAILED,Properties(),"Server not responding")
+                        captureFailureEvent(Events.OTP_VERIFICATION_FAILED,HashMap<String,Any?>(),"Server not responding")
                         tvError.visibility = View.VISIBLE
                     }
                 }
                 else{
-                    captureFailureEvent(Events.OTP_VERIFICATION_FAILED,Properties(),"Server not responding")
+                    captureFailureEvent(Events.OTP_VERIFICATION_FAILED,HashMap<String,Any?>(),"Server not responding")
                     Toast.makeText(this@OtpActivity, "Server not responding!!!", Toast.LENGTH_SHORT).show()
                 }
 
@@ -433,7 +433,7 @@ public class OtpActivity : AppCompatActivity() {
             }
 
             override fun onFailure(call: Call<OtpResponse>, t: Throwable) {
-                captureFailureEvent(Events.OTP_VERIFICATION_FAILED,Properties(),t?.localizedMessage)
+                captureFailureEvent(Events.OTP_VERIFICATION_FAILED,HashMap<String,Any?>(),t?.localizedMessage)
                 Toast.makeText(this@OtpActivity, "Server not responding!!!", Toast.LENGTH_SHORT).show()
                 Utilities.hideProgressDialog()
                 //Toast.makeText(this@MainActivity, "${t.message}", Toast.LENGTH_SHORT).show()
@@ -441,7 +441,7 @@ public class OtpActivity : AppCompatActivity() {
         })
     }
     private fun resendOtp(phoneNumber: String) {
-        captureEvent(Events.OTP_RESEND_INITIATED, Properties())
+        captureEvent(Events.OTP_RESEND_INITIATED, HashMap<String,Any?>())
         Utilities.showProgressDialog(this)
         val loginRequest = LoginRequest(Utilities.getPreference(this, AppConstants.EMAIL_ID).toString());
 
@@ -468,10 +468,10 @@ public class OtpActivity : AppCompatActivity() {
                                 Utilities.savePrefrence(this@OtpActivity,
                                     AppConstants.TOKEN_ID, loginResponse?.userId)
 
-                            captureEvent(Events.OTP_RESENT, Properties())
+                            captureEvent(Events.OTP_RESENT, HashMap<String,Any?>())
 
                         }else{
-                            captureFailureEvent(Events.OTP_RESENT_FAILED,Properties(),"Server not responding")
+                            captureFailureEvent(Events.OTP_RESENT_FAILED,HashMap<String,Any?>(),"Server not responding")
                             Toast.makeText(
                                 applicationContext,
                                 "Server not responding!, Please try again later",
@@ -480,7 +480,7 @@ public class OtpActivity : AppCompatActivity() {
                         }
                     }
                 }else{
-                    captureFailureEvent(Events.OTP_RESENT_FAILED,Properties(),"Server not responding")
+                    captureFailureEvent(Events.OTP_RESENT_FAILED,HashMap<String,Any?>(),"Server not responding")
                     Toast.makeText(
                         applicationContext,
                         "Server not responding!, Please try again later",
@@ -489,7 +489,7 @@ public class OtpActivity : AppCompatActivity() {
                 }
             }
             override fun onFailure(call: Call<LoginResponse>, t: Throwable) {
-                captureFailureEvent(Events.OTP_RESENT_FAILED,Properties(),t?.localizedMessage)
+                captureFailureEvent(Events.OTP_RESENT_FAILED,HashMap<String,Any?>(),t?.localizedMessage)
                 Utilities.hideProgressDialog()
                 Toast.makeText(
                     this@OtpActivity,

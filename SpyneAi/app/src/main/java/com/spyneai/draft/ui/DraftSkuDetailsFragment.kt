@@ -517,7 +517,7 @@ class DraftSkuDetailsFragment : BaseFragment<DraftViewModel, FragmentDraftSkuDet
                     binding.shimmerCompletedSKU.visibility = View.GONE
 
                     requireContext().captureFailureEvent(
-                        Events.GET_COMPLETED_ORDERS_FAILED, Properties(),
+                        Events.GET_COMPLETED_ORDERS_FAILED, HashMap<String,Any?>(),
                         it.errorMessage!!
                     )
                     if (it.errorCode == 404) {

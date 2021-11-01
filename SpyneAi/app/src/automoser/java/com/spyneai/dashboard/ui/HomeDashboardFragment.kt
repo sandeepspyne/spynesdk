@@ -48,14 +48,14 @@ class HomeDashboardFragment :
 //        viewModel.categoriesResponse.observe(viewLifecycleOwner, Observer {
 //            when(it){
 //                is Resource.Success -> {
-//                    requireContext().captureEvent(Events.GOT_CATEGORIES, Properties())
+//                    requireContext().captureEvent(Events.GOT_CATEGORIES, HashMap<String,Any?>())
 //
 //                }
 //                is Resource.Loading -> {
 //
 //                }
 //                is Resource.Failure -> {
-//                    requireContext().captureFailureEvent(Events.GET_CATEGORIES_FAILED, Properties(),
+//                    requireContext().captureFailureEvent(Events.GET_CATEGORIES_FAILED, HashMap<String,Any?>(),
 //                        it.errorMessage!!)
 //
 //                    handleApiError(it)

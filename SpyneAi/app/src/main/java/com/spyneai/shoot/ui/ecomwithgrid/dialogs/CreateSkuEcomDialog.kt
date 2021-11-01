@@ -78,12 +78,15 @@ class CreateSkuEcomDialog : BaseDialogFragment<ShootViewModel, CreateSkuEcomDial
 
                         requireContext().captureEvent(
                             Events.CREATE_SKU,
-                            Properties().putValue(
-                                "sku_name",
-                                viewModel.sku.value?.skuName.toString()
-                            )
-                                .putValue("project_id", viewModel.sku.value?.projectId)
-                                .putValue("prod_sub_cat_id", "")
+                            HashMap<String,Any?>()
+                                .apply {
+                                    this.put(
+                                    "sku_name",
+                                    viewModel.sku.value?.skuName.toString()
+                                )
+                                    this.put("project_id", viewModel.sku.value?.projectId)
+                                    this.put("prod_sub_cat_id", "")
+                                }
                         )
 
                         //notify sku created
@@ -118,7 +121,7 @@ class CreateSkuEcomDialog : BaseDialogFragment<ShootViewModel, CreateSkuEcomDial
                     is Resource.Failure -> {
                         Utilities.hideProgressDialog()
                         requireContext().captureFailureEvent(
-                            Events.CREATE_SKU_FAILED, Properties(),
+                            Events.CREATE_SKU_FAILED, HashMap<String,Any?>(),
                             it.errorMessage!!
                         )
                         handleApiError(it) {

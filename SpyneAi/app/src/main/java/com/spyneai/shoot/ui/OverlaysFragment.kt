@@ -224,7 +224,7 @@ class OverlaysFragment : BaseFragment<ShootViewModel, FragmentOverlaysV2Binding>
                     target: Target<Drawable>?,
                     isFirstResource: Boolean
                 ): Boolean {
-                    val properties =  Properties()
+                    val properties =  HashMap<String,Any?>()
                     properties["name"] = name
                     properties["error"] = e?.localizedMessage
                     properties["category"] = viewModel.categoryDetails.value?.categoryName
@@ -255,7 +255,7 @@ class OverlaysFragment : BaseFragment<ShootViewModel, FragmentOverlaysV2Binding>
                     if (snackbar != null)
                         snackbar?.dismiss()
 
-                    val properties =  Properties()
+                    val properties =  HashMap<String,Any?>()
                     properties["name"] = name
                     properties["category"] = viewModel.categoryDetails.value?.categoryName
 
@@ -312,8 +312,8 @@ class OverlaysFragment : BaseFragment<ShootViewModel, FragmentOverlaysV2Binding>
 
             requireContext().captureEvent(
                 Events.GET_OVERLAYS_INTIATED,
-                Properties().putValue("angles", viewModel.exterirorAngles.value)
-                    .putValue("prod_sub_cat_id", it.prod_sub_cat_id!!)
+                HashMap<String,Any?>().put("angles", viewModel.exterirorAngles.value)
+                    .put("prod_sub_cat_id", it.prod_sub_cat_id!!)
             )
 
         }
@@ -380,7 +380,7 @@ class OverlaysFragment : BaseFragment<ShootViewModel, FragmentOverlaysV2Binding>
 
                     requireContext().captureEvent(
                         Events.GET_OVERLAYS,
-                        Properties().putValue("angles", it.value.data.size)
+                        HashMap<String,Any?>().put("angles", it.value.data.size)
                     )
 
 
@@ -391,7 +391,7 @@ class OverlaysFragment : BaseFragment<ShootViewModel, FragmentOverlaysV2Binding>
                     Utilities.hideProgressDialog()
 
                     requireContext().captureFailureEvent(
-                        Events.GET_OVERLAYS_FAILED, Properties(),
+                        Events.GET_OVERLAYS_FAILED, HashMap<String,Any?>(),
                         it.errorMessage!!
                     )
                     shoot("show progress dialog(overlays response failure)")

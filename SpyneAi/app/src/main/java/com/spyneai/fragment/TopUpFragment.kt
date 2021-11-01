@@ -123,7 +123,7 @@ class TopUpFragment: DialogFragment() {
                     }
 
                     try {
-                        requireContext().captureEvent(" Wallet Credits Fetched", Properties())
+                        requireContext().captureEvent(" Wallet Credits Fetched", HashMap<String,Any?>())
 
                         Utilities.savePrefrence(
                             requireContext(),
@@ -162,7 +162,7 @@ class TopUpFragment: DialogFragment() {
         try {
             requireContext().captureFailureEvent(
                 "Wallet Credits Fetch Failed",
-                Properties(),
+                HashMap<String,Any?>(),
                 "Server not responding"
             )
             Toast.makeText(

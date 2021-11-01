@@ -93,7 +93,7 @@ class CompletedProjectsFragment : BaseFragment<MyOrdersViewModel, FragmentComple
                             binding.rvMyCompletedProjects.visibility = View.GONE
                         }else{
                             requireContext().captureFailureEvent(
-                                Events.GET_COMPLETED_ORDERS_FAILED, Properties(),
+                                Events.GET_COMPLETED_ORDERS_FAILED, HashMap<String,Any?>(),
                                 it.errorMessage!!
                             )
                             handleApiError(it)

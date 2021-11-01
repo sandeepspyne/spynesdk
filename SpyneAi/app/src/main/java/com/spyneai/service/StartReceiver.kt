@@ -36,7 +36,7 @@ class StartReceiver : BroadcastReceiver() {
                     context.startService(serviceIntent)
                 }
 
-                val properties = Properties()
+                val properties = HashMap<String,Any?>()
                     .apply {
                         put("service_state","Started")
                         put("email",

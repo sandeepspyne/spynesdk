@@ -116,7 +116,7 @@ class WalletDashboardFragment : BaseFragment<DashboardViewModel, WalletDashboard
                 binding.shimmer.stopShimmer()
 
                 if (response.isSuccessful) {
-                    requireContext().captureEvent(Events.FETCH_CREDITS, Properties())
+                    requireContext().captureEvent(Events.FETCH_CREDITS, HashMap<String,Any?>())
 
                     binding.shimmer.visibility = View.GONE
                     binding.tvCredits.visibility = View.VISIBLE
@@ -149,7 +149,7 @@ class WalletDashboardFragment : BaseFragment<DashboardViewModel, WalletDashboard
 
 
                 } else {
-                    requireContext().captureFailureEvent(Events.FETCH_CREDITS_FAILED, Properties(),
+                    requireContext().captureFailureEvent(Events.FETCH_CREDITS_FAILED, HashMap<String,Any?>(),
                         "Server not responding"
                     )
                     Toast.makeText(

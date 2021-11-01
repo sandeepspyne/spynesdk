@@ -77,7 +77,7 @@ class SubCategoryAndAngleFragment :
                 is Resource.Success -> {
                     requireContext().captureEvent(
                         Events.GET_SUBCATEGORIES,
-                        Properties()
+                        HashMap<String,Any?>()
                     )
 
                     binding.apply {
@@ -108,7 +108,7 @@ class SubCategoryAndAngleFragment :
                 }
                 is Resource.Failure -> {
                     requireContext().captureFailureEvent(
-                        Events.GET_SUBCATRGORIES_FAILED, Properties(),
+                        Events.GET_SUBCATRGORIES_FAILED, HashMap<String,Any?>(),
                         it.errorMessage!!
                     )
                     binding.shimmer.stopShimmer()
@@ -180,13 +180,16 @@ class SubCategoryAndAngleFragment :
 
                     BaseApplication.getContext().captureEvent(
                         Events.CREATE_SKU,
-                        Properties().putValue("sku_name", viewModel.sku.value?.skuName.toString())
-                            .putValue("project_id", createProjectRes.project_id)
-                            .putValue(
-                                "prod_sub_cat_id",
-                                viewModel.subCategory.value?.prod_sub_cat_id!!
-                            )
-                            .putValue("angles", viewModel.exterirorAngles.value!!)
+                        HashMap<String,Any?>()
+                            .apply {
+                                this.put("sku_name", viewModel.sku.value?.skuName.toString())
+                                this.put("project_id", createProjectRes.project_id)
+                                this.put(
+                                    "prod_sub_cat_id",
+                                    viewModel.subCategory.value?.prod_sub_cat_id!!
+                                )
+                                this.put("angles", viewModel.exterirorAngles.value!!)
+                            }
                     )
 
                     val sku = viewModel.sku.value
@@ -214,7 +217,7 @@ class SubCategoryAndAngleFragment :
                 is Resource.Failure -> {
                     viewModel.isCameraButtonClickable = true
                     BaseApplication.getContext().captureFailureEvent(
-                        Events.CREATE_SKU_FAILED, Properties(),
+                        Events.CREATE_SKU_FAILED, HashMap<String,Any?>(),
                         it.errorMessage!!
                     )
                     Utilities.hideProgressDialog()
@@ -288,10 +291,13 @@ class SubCategoryAndAngleFragment :
 
                     BaseApplication.getContext().captureEvent(
                         Events.CREATE_SKU,
-                        Properties().putValue("sku_name", viewModel.sku.value?.skuName.toString())
-                            .putValue("project_id", projectId)
-                            .putValue("prod_sub_cat_id", prod_sub_cat_id)
-                            .putValue("angles", viewModel.exterirorAngles.value!!)
+                        HashMap<String,Any?>()
+                            .apply {
+                                this.put("sku_name", viewModel.sku.value?.skuName.toString())
+                                this.put("project_id", projectId)
+                                this.put("prod_sub_cat_id", prod_sub_cat_id)
+                                this.put("angles", viewModel.exterirorAngles.value!!)
+                            }
                     )
 
                     val sku = viewModel.sku.value
@@ -319,7 +325,7 @@ class SubCategoryAndAngleFragment :
                 is Resource.Failure -> {
                     viewModel.isCameraButtonClickable = true
                     BaseApplication.getContext().captureFailureEvent(
-                        Events.CREATE_SKU_FAILED, Properties(),
+                        Events.CREATE_SKU_FAILED, HashMap<String,Any?>(),
                         it.errorMessage!!
                     )
                     Utilities.hideProgressDialog()

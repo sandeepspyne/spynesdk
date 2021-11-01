@@ -447,7 +447,7 @@ class CameraFragment : BaseFragment<ShootViewModel, FragmentCameraBinding>(), Pi
                 }
             } catch (exc: Exception) {
                 Log.e(TAG, "Use case binding failed", exc)
-                val properties = Properties()
+                val properties = HashMap<String,Any?>()
                 properties["error"] = exc?.localizedMessage
                 properties["category"] = viewModel.categoryDetails.value?.categoryName
 
@@ -555,7 +555,7 @@ class CameraFragment : BaseFragment<ShootViewModel, FragmentCameraBinding>(), Pi
 
                     BaseApplication.getContext().captureFailureEvent(
                         Events.IMAGE_CAPRURE_FAILED,
-                        Properties(),
+                        HashMap<String,Any?>(),
                         exc.localizedMessage
                     )
                 }
@@ -725,7 +725,7 @@ class CameraFragment : BaseFragment<ShootViewModel, FragmentCameraBinding>(), Pi
 
         viewModel.shootList.value = viewModel.shootList.value
 
-        val properties = Properties()
+        val properties = HashMap<String,Any?>()
         properties.apply {
             this["project_id"] = viewModel.projectId.value!!
             this["sku_id"] = viewModel.sku.value?.skuId!!

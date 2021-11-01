@@ -19,10 +19,15 @@ class DBHelper(context: Context) :
         Log.d(TAG, "onCreate: ")
         BaseApplication.getContext().captureEvent(
             "DB_VERSION",
-            Properties()
-                .putValue("onCreate", true)
-                .putValue("new_version", db.version)
+            HashMap<String,Any?>()
+                .apply {
+                    this.put("onCreate", true)
+                    this.put("new_version", db.version)
+                }
         )
+
+
+
 
         try {
             db.execSQL(CREATE_PROJECTS_TABLE)
@@ -33,11 +38,13 @@ class DBHelper(context: Context) :
         }catch (e : SQLException){
             BaseApplication.getContext().captureEvent(
                 "DB_VERSION",
+                HashMap<String,Any?>()
+                    .apply {
+                        this.put("SQLException", true)
+                        e.message?.let { this.put("message", it) }
+                        this.put("localizedMessage", e.localizedMessage)
+                    }
 
-                Properties()
-                    .putValue("SQLException", true)
-                    .putValue("message", e.message)
-                    .putValue("localizedMessage", e.localizedMessage)
 
             )
         }
@@ -70,10 +77,12 @@ class DBHelper(context: Context) :
             else -> {
                 BaseApplication.getContext().captureEvent(
                     "DB_VERSION",
-                    Properties()
-                        .putValue("onUpgrade", true)
-                        .putValue("old_version", oldVersion)
-                        .putValue("new_version", newVersion)
+                    HashMap<String,Any?>()
+                        .apply {
+                            this.put("onUpgrade", true)
+                            this.put("old_version", oldVersion)
+                            this.put("new_version", newVersion)
+                        }
                 )
                 db.execSQL(SQL_DELETE_PROJECTS)
                 db.execSQL(SQL_DELETE_ENTRIES)

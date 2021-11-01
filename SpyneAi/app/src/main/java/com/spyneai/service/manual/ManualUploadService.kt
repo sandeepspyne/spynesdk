@@ -50,7 +50,7 @@ class ManualUploadService: Service(), ManualImageUploader.Listener {
         super.onCreate()
         setServiceState(this, ServiceState.STARTED)
 
-        val properties = Properties()
+        val properties = HashMap<String,Any?>()
             .apply {
                 put("service_state","Started")
                 put("email", Utilities.getPreference(BaseApplication.getContext(), AppConstants.EMAIL_ID).toString())

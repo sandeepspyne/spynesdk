@@ -64,10 +64,14 @@ class SubCategoryConfirmationDialog : BaseDialogFragment<ShootViewModel, DialogS
                 is Resource.Success -> {
                     requireContext().captureEvent(
                         Events.CREATE_SKU,
-                        Properties().putValue("sku_name",viewModel.sku.value?.skuName.toString())
-                            .putValue("project_id",projectId)
-                            .putValue("prod_sub_cat_id",prod_sub_cat_id)
-                            .putValue("angles",viewModel.exterirorAngles.value!!))
+                        HashMap<String,Any?>()
+                            .apply {
+                                this.put("sku_name",viewModel.sku.value?.skuName.toString())
+                                this.put("project_id",projectId)
+                                this.put("prod_sub_cat_id",prod_sub_cat_id)
+                                this.put("angles",viewModel.exterirorAngles.value!!)
+                            })
+
 
                     Utilities.hideProgressDialog()
                     val sku = viewModel.sku.value
@@ -85,7 +89,7 @@ class SubCategoryConfirmationDialog : BaseDialogFragment<ShootViewModel, DialogS
                 is Resource.Loading ->  Utilities.showProgressDialog(requireContext())
 
                 is Resource.Failure -> {
-                    requireContext().captureFailureEvent(Events.CREATE_SKU_FAILED, Properties(),
+                    requireContext().captureFailureEvent(Events.CREATE_SKU_FAILED, HashMap<String,Any?>(),
                         it.errorMessage!!
                     )
                     Utilities.hideProgressDialog()
