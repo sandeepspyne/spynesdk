@@ -262,6 +262,10 @@ class SkuDetailFragment : BaseFragment<ShootViewModel, FragmentSkuDetailBinding>
             binding.ivAddAngle.visibility = View.VISIBLE
             binding.tvAddAngle.visibility = View.VISIBLE
         }
+        if (viewModel.categoryDetails.value?.imageType.equals("Info")) {
+            binding.ivAddAngle.visibility = View.GONE
+            binding.tvAddAngle.visibility = View.GONE
+        }
     }
 
 

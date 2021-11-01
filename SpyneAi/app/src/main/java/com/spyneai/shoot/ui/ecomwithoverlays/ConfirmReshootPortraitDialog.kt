@@ -79,6 +79,7 @@ class ConfirmReshootPortraitDialog : BaseDialogFragment<ShootViewModel, ConfirmR
                 is Resource.Success -> {
                     val uri = viewModel.shootData.value?.capturedImage
 
+                    binding.ivCapturedImage.setRotation(90F)
 
                     Glide.with(requireContext())
                         .load(uri)
@@ -87,6 +88,9 @@ class ConfirmReshootPortraitDialog : BaseDialogFragment<ShootViewModel, ConfirmR
                         .into(binding.ivCapturedImage)
 
                         val overlay = it.value.data[viewModel.shootNumber.value!!].display_thumbnail
+
+                    binding.ivCaptured2.setRotation(90F)
+
 
                         Glide.with(requireContext())
                             .load(uri)

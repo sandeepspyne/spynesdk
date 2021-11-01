@@ -21,7 +21,7 @@ class CropDialog : BaseDialogFragment<ShootViewModel, FragmentCropDialogBinding>
         super.onViewCreated(view, savedInstanceState)
 
         val uri = viewModel.shootData.value?.capturedImage
-//        binding.ivInfoImage.setRotation(90F)
+        binding.ivInfoImage.setRotation(90F)
 
         viewModel.end.value = System.currentTimeMillis()
         val difference = (viewModel.end.value!! - viewModel.begin.value!!)/1000.toFloat()

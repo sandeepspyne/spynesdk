@@ -92,18 +92,18 @@ class ConfirmReshootEcomDialog :
             )
 
             viewModel.isCameraButtonClickable = true
-            //viewModel.uploadImageWithWorkManager(viewModel.shootData.value!!)
-//            val bitmap = modifyOrientation(BitmapFactory.decodeFile(viewModel.shootData.value?.capturedImage), viewModel.shootData.value?.capturedImage)
-//            try {
-//                val file = File(viewModel.shootData.value?.capturedImage)
-//                val os: OutputStream = BufferedOutputStream(FileOutputStream(file))
-//                bitmap!!.compress(Bitmap.CompressFormat.JPEG, 100, os)
-//                os.close()
-//            } catch (
-//                e: java.lang.Exception
-//            ) {
-//                val s = ""
-//            }
+//            viewModel.uploadImageWithWorkManager(viewModel.shootData.value!!)
+            val bitmap = modifyOrientation(BitmapFactory.decodeFile(uri), uri)
+            try {
+                val file = File(uri)
+                val os: OutputStream = BufferedOutputStream(FileOutputStream(file))
+                bitmap!!.compress(Bitmap.CompressFormat.JPEG, 100, os)
+                os.close()
+            } catch (
+                e: java.lang.Exception
+            ) {
+                val s = ""
+            }
 
 
             viewLifecycleOwner.lifecycleScope.launch {
