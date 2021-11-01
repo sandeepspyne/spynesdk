@@ -7,6 +7,7 @@ object AppConstants {
     val LOCALE = "LOCALE"
     val IS_360: String? = "IS_360"
     val IS_HD: String? = "IS_HD"
+    var BIKES_CATEGORY_ID = "cat_d8R14zUNx"
     val CARS_CATEGORY_ID = "cat_d8R14zUNE"
     val FOOTWEAR_CATEGORY_ID = "cat_Ujt0kuFxX"
     val ECOM_CATEGORY_ID = "cat_Ujt0kuFxY"

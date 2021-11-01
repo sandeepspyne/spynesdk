@@ -35,22 +35,27 @@ class SubCategoryAndAngleFragment :
         super.onViewCreated(view, savedInstanceState)
 
 
-        viewModel.getSubCategories.observe(viewLifecycleOwner, {
-            getSubcategories()
-        })
-
-        observeSubcategories()
-
-
-//        if (viewModel.isSkuCreated.value == null){
-//            viewModel.getSubCategories.observe(viewLifecycleOwner,{
-//                getSubcategories()
-//            })
+//        viewModel.getSubCategories.observe(viewLifecycleOwner, {
+//            getSubcategories()
+//        })
 //
-//            observeSubcategories()
-//        }else {
-//            hideViews()
-//        }
+//        observeSubcategories()
+
+        if (viewModel.categoryDetails.value?.categoryName == "Footwear")
+            binding.tvDescription.text = getString(R.string.footwear_subcategory)
+
+        if (viewModel.isSkuCreated.value == null
+            || (viewModel.categoryDetails.value?.categoryId != AppConstants.CARS_CATEGORY_ID
+                    &&
+                    viewModel.categoryDetails.value?.categoryId != AppConstants.BIKES_CATEGORY_ID)){
+            viewModel.getSubCategories.observe(viewLifecycleOwner,{
+                getSubcategories()
+            })
+
+            observeSubcategories()
+        }else {
+            hideViews()
+        }
 
     }
 
@@ -143,7 +148,7 @@ class SubCategoryAndAngleFragment :
                                 if (viewModel.subCatName.value == "Men Formal")
                                     viewModel.exterirorAngles.value = 6
                                 else
-                                    viewModel.exterirorAngles.value = 6
+                                    viewModel.exterirorAngles.value = 5
 
                                 updateSku()
                                 observerUpdateSku()

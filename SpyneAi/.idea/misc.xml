@@ -93,6 +93,7 @@
         <entry key="app/src/main/res/layout/fragment_sku_detail.xml" value="0.25277777777777777" />
         <entry key="app/src/main/res/layout/gyro_view.xml" value="0.3098958333333333" />
         <entry key="app/src/main/res/layout/home_dashboard_fragment.xml" value="0.2578125" />
+        <entry key="app/src/main/res/layout/item_clicked.xml" value="0.22037037037037038" />
         <entry key="app/src/main/res/layout/item_completed_projects.xml" value="0.25277777777777777" />
         <entry key="app/src/main/res/layout/item_completed_skus.xml" value="0.25277777777777777" />
         <entry key="app/src/main/res/layout/item_draft_sku.xml" value="0.25277777777777777" />

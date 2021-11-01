@@ -291,9 +291,12 @@ class OverlayEcomFragment : BaseFragment<ShootViewModel, FragmentOverlayEcomBind
                 viewModel.overlayId = data.id
 
                 binding.tvShoot?.text = position.plus(1).toString()+"/"+viewModel.exterirorAngles.value.toString()
+
             }
 
         }
+
+        val s = ""
     }
 
     override fun onItemClick(view: View, position: Int, data: Any?) {

@@ -11,7 +11,9 @@ import com.spyneai.R
 import com.spyneai.base.GenericAdapter
 import com.spyneai.base.OnItemClickListener
 import com.spyneai.camera2.OverlaysResponse
+import com.spyneai.dashboard.ui.WhiteLabelConstants
 import com.spyneai.databinding.ItemOverlaysBinding
+import com.spyneai.needs.AppConstants
 import com.spyneai.shoot.data.OnOverlaySelectionListener
 
 class OverlaysHolder(
@@ -60,7 +62,12 @@ class OverlaysHolder(
         }
 
         if (data.imageClicked){
-            Log.d(TAG, "bind: "+data.imagePath)
+            if (!data.imagePath.contains("http")
+                &&
+                (data.prod_cat_id != AppConstants.CARS_CATEGORY_ID &&
+                        data.prod_cat_id != AppConstants.BIKES_CATEGORY_ID))
+                binding?.ivOverlay?.rotation = 90f
+
             Glide.with(itemView)
                 .load(data.imagePath)
                 .diskCacheStrategy(DiskCacheStrategy.NONE)

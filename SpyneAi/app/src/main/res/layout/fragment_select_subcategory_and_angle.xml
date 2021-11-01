@@ -19,12 +19,12 @@
             android:id="@+id/ivArrow"
             android:layout_width="100dp"
             android:layout_height="70dp"
-            android:layout_marginLeft="@dimen/dp_40"
-           android:layout_marginBottom="@dimen/dp_10"
+            android:layout_marginLeft="@dimen/dp_30"
+           android:layout_marginBottom="200dp"
             android:adjustViewBounds="true"
             android:rotation="-90"
             android:src="@drawable/ic_subcat_selection"
-            app:layout_constraintBottom_toTopOf="@id/rv"
+            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintLeft_toLeftOf="parent" />
 
         <TextView
@@ -35,7 +35,7 @@
             android:fontFamily="@font/bold"
             android:id="@+id/tvDescription"
             android:text="@string/select_car_subcategory"
-            android:textSize="@dimen/sp_16"
+            android:textSize="@dimen/sp_14"
             android:textColor="@color/white"
             app:layout_constraintLeft_toRightOf="@+id/ivArrow"
             app:layout_constraintRight_toRightOf="parent"

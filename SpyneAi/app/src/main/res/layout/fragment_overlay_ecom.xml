@@ -68,17 +68,17 @@
 
         <LinearLayout
             android:id="@+id/ll_angles"
-            android:layout_width="wrap_content"
+            android:layout_width="@dimen/dp_50"
             android:layout_height="wrap_content"
             android:layout_marginLeft="@dimen/dp_10"
             android:background="@drawable/bg_shoot_anlges">
 
             <TextView
                 android:id="@+id/tvShoot"
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
-                android:fontFamily="@font/bold"
+                android:fontFamily="@font/poppins_bold"
                 android:gravity="center"
                 android:paddingLeft="@dimen/dp_10"
                 android:paddingTop="@dimen/dp_5"

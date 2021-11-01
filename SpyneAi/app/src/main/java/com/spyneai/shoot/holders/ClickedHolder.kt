@@ -65,7 +65,9 @@ class ClickedHolder(
         }
 
         if (data.imageClicked) {
-            Log.d(TAG, "bind: " + data.imagePath)
+            if (!data.imagePath.contains("http"))
+                binding?.ivClicked?.rotation = 90f
+
             Glide.with(itemView)
                 .load(data.capturedImage)
                 .diskCacheStrategy(DiskCacheStrategy.NONE)
