@@ -383,7 +383,7 @@ class OverlaysFragment : BaseFragment<ShootViewModel, FragmentOverlaysV2Binding>
                         Properties().putValue("angles", it.value.data.size)
                     )
 
-                    shoot("hide progress dialog(overlays response sucess)")
+
                     showViews()
                 }
 

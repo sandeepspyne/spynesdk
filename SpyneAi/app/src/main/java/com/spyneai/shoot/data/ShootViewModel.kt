@@ -135,6 +135,7 @@ class ShootViewModel : ViewModel() {
 
     var currentShoot = 0
     var allExteriorClicked = false
+    var allEcomOverlyasClicked = false
     var allInteriorClicked = false
     var allMisc = false
     var allReshootClicked = false
@@ -507,7 +508,7 @@ class ShootViewModel : ViewModel() {
             Log.d(TAG, "setSelectedItem: "+overlayId)
         }else{
             when (categoryDetails.value?.imageType) {
-                "Exterior" -> {
+                "Exterior","Footwear" -> {
                     val list = thumbnails as List<OverlaysResponse.Data>
 
                     val position = currentShoot

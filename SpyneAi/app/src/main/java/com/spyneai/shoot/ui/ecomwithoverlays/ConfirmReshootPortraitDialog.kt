@@ -8,7 +8,9 @@ import android.view.*
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.lifecycleScope
 import com.bumptech.glide.Glide
+import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.posthog.android.Properties
+import com.spyneai.R
 import com.spyneai.base.BaseDialogFragment
 import com.spyneai.base.network.Resource
 import com.spyneai.captureEvent
@@ -58,49 +60,47 @@ class ConfirmReshootPortraitDialog : BaseDialogFragment<ShootViewModel, ConfirmR
                 this["image_type"] = viewModel.shootData.value?.image_category
             }
 
-            requireContext().captureEvent(
-                Events.CONFIRMED,
-                properties)
+            viewModel.isCameraButtonClickable = true
 
-//            if (viewModel.categoryDetails.value?.categoryName == "Footwear"
-//                && viewModel.shootNumber.value == 0) {
-//                callUpdateSubcat()
-//                observeupdateFootwarSubcat()
-//                //update subcategory id
-//                viewModel.updateSubcategoryId(viewModel.subCategory.value?.prod_sub_cat_id!!,viewModel.subCatName.value!!)
-//            }else {
-//                onImageConfirmed()
-//            }
+            if (viewModel.isReshoot){
+                uploadImages()
+
+                if (viewModel.allReshootClicked)
+                    viewModel.reshootCompleted.value = true
+
+                dismiss()
+            }else {
+                uploadImages()
+                if (viewModel.allEcomOverlyasClicked){
+                    viewModel.isCameraButtonClickable = false
+                }
+
+                dismiss()
+            }
         }
 
-        viewModel.overlaysResponse.observe(viewLifecycleOwner,{
-            when(it){
-                is Resource.Success -> {
-                    val uri = viewModel.shootData.value?.capturedImage
+        val uri = viewModel.shootData.value?.capturedImage
 
-                    binding.ivCapturedImage.setRotation(90F)
+        Log.d(TAG, "onViewCreated: "+uri)
 
-                    Glide.with(requireContext())
-                        .load(uri)
-                        .into(binding.ivCapturedImage)
+        binding.ivCapturedImage.setRotation(90F)
+        binding.ivCaptured2.setRotation(90F)
 
-                        //val overlay = it.value.data[viewModel.shootNumber.value!!].display_thumbnail
+        Glide.with(requireContext())
+            .load(uri)
+            .diskCacheStrategy(DiskCacheStrategy.NONE)
+            .skipMemoryCache(true)
+            .into(binding.ivCapturedImage)
 
-                    binding.ivCaptured2.setRotation(90F)
+        Glide.with(requireContext())
+            .load(uri)
+            .diskCacheStrategy(DiskCacheStrategy.NONE)
+            .skipMemoryCache(true)
+            .into(binding.ivCaptured2)
 
-                        Glide.with(requireContext())
-                            .load(uri)
-                            .into(binding.ivCaptured2)
+        setOverlay(binding.ivCaptured2,viewModel.getOverlay())
 
 
-//                    Glide.with(requireContext())
-//                        .load(overlay)
-//                        .into(binding.ivCapturedOverlay)
-
-                }
-                else -> {}
-            }
-        })
     }
 
     private fun callUpdateSubcat() {
@@ -138,6 +138,8 @@ class ConfirmReshootPortraitDialog : BaseDialogFragment<ShootViewModel, ConfirmR
     }
 
     private fun uploadImages() {
+        viewModel.onImageConfirmed.value = viewModel.getOnImageConfirmed()
+
         viewLifecycleOwner.lifecycleScope.launch {
             viewModel.insertImage(viewModel.shootData.value!!)
         }

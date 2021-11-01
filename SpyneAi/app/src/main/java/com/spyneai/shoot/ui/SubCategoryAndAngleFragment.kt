@@ -145,7 +145,7 @@ class SubCategoryAndAngleFragment :
                                 if (viewModel.subCatName.value == "Men Formal")
                                     viewModel.exterirorAngles.value = 6
                                 else
-                                    viewModel.exterirorAngles.value = 5
+                                    viewModel.exterirorAngles.value = 6
 
                                 updateSku()
                                 observerUpdateSku()
