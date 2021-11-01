@@ -7,6 +7,7 @@ import android.graphics.Matrix
 import android.media.ExifInterface
 import android.os.Build
 import android.os.Bundle
+import android.os.Environment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -39,7 +40,7 @@ class ConfirmReshootEcomDialog :
         dialog?.setCancelable(false)
 
         val uri = viewModel.shootData.value?.capturedImage
-        binding.ivCapturedImage.setRotation(90F)
+//        binding.ivCapturedImage.setRotation(90F)
 
         viewModel.end.value = System.currentTimeMillis()
         val difference = (viewModel.end.value!! - viewModel.begin.value!!)/1000.toFloat()
@@ -93,17 +94,6 @@ class ConfirmReshootEcomDialog :
 
             viewModel.isCameraButtonClickable = true
 //            viewModel.uploadImageWithWorkManager(viewModel.shootData.value!!)
-            val bitmap = modifyOrientation(BitmapFactory.decodeFile(uri), uri)
-            try {
-                val file = File(uri)
-                val os: OutputStream = BufferedOutputStream(FileOutputStream(file))
-                bitmap!!.compress(Bitmap.CompressFormat.JPEG, 100, os)
-                os.close()
-            } catch (
-                e: java.lang.Exception
-            ) {
-                val s = ""
-            }
 
 
             viewLifecycleOwner.lifecycleScope.launch {
@@ -133,34 +123,6 @@ class ConfirmReshootEcomDialog :
         }
     }
 
-    @Throws(IOException::class)
-    fun modifyOrientation(bitmap: Bitmap, image_absolute_path: String?): Bitmap? {
-        val ei = ExifInterface(image_absolute_path!!)
-        val orientation =
-            ei.getAttributeInt(ExifInterface.TAG_ORIENTATION, ExifInterface.ORIENTATION_NORMAL)
-        return when (orientation) {
-            ExifInterface.ORIENTATION_ROTATE_90 -> rotate(bitmap, 90f)
-            ExifInterface.ORIENTATION_ROTATE_180 -> rotate(bitmap, 180f)
-            ExifInterface.ORIENTATION_ROTATE_270 -> rotate(bitmap, 270f)
-            ExifInterface.ORIENTATION_FLIP_HORIZONTAL -> flip(bitmap, true, false)
-            ExifInterface.ORIENTATION_FLIP_VERTICAL -> flip(bitmap, false, true)
-            else -> bitmap
-        }
-    }
-
-    fun rotate(bitmap: Bitmap, degrees: Float): Bitmap? {
-        val matrix = Matrix()
-        matrix.postRotate(degrees)
-        return Bitmap.createBitmap(bitmap, 0, 0, bitmap.width, bitmap.height, matrix, true)
-    }
-
-    fun flip(bitmap: Bitmap, horizontal: Boolean, vertical: Boolean): Bitmap? {
-        val matrix = Matrix()
-        matrix.preScale((if (horizontal) -1 else 1.toFloat()) as Float,
-            (if (vertical) -1 else 1.toFloat()) as Float
-        )
-        return Bitmap.createBitmap(bitmap, 0, 0, bitmap.width, bitmap.height, matrix, true)
-    }
 
     override fun onResume() {
         super.onResume()

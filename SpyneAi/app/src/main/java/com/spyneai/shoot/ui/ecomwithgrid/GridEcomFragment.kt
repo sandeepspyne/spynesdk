@@ -211,7 +211,7 @@ class GridEcomFragment : BaseFragment<ShootViewModel, FragmentGridEcomBinding>()
 
 
                 CropImage.activity(Uri.fromFile(File(shootData.capturedImage)))
-                 .setInitialRotation(90)
+//                 .setInitialRotation(90)
                 .start(requireActivity())
             }
             else ->
