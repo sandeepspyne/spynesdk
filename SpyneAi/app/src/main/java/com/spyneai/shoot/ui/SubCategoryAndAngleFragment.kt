@@ -133,6 +133,7 @@ class SubCategoryAndAngleFragment :
                 hideViews()
 
                 viewModel.subCategory.value = data
+                viewModel.subCatName.value = data.sub_cat_name
 
                 when (getString(R.string.app_name)) {
                     AppConstants.SPYNE_AI -> {
@@ -141,7 +142,11 @@ class SubCategoryAndAngleFragment :
                                 selectAngles()
                             }
                             else -> {
-                                viewModel.exterirorAngles.value = 5
+                                if (viewModel.subCatName.value == "Men Formal")
+                                    viewModel.exterirorAngles.value = 6
+                                else
+                                    viewModel.exterirorAngles.value = 5
+
                                 updateSku()
                                 observerUpdateSku()
                             }
