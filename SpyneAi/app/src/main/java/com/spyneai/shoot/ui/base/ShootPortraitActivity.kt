@@ -79,6 +79,12 @@ class ShootPortraitActivity :AppCompatActivity(), GoogleApiClient.ConnectionCall
 
         shootViewModel = ViewModelProvider(this, ViewModelFactory()).get(ShootViewModel::class.java)
 
+        shootViewModel.skuNumber.value = 1
+        try {
+            shootViewModel.skuNumber.value = intent.getIntExtra("skuNumber", 1)
+        }catch (e: Exception){
+        }
+
         if (intent.getBooleanExtra(AppConstants.FROM_DRAFTS, false))
             setUpDraftsData()
 

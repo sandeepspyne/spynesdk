@@ -119,9 +119,6 @@ class SkuDetailFragment : BaseFragment<ShootViewModel, FragmentSkuDetailBinding>
             updateTotalFrames()
         }
 
-        binding.ivAddAngle.setOnClickListener {
-            viewModel.addMoreAngle.value = true
-        }
 
         binding.tvEndProject.setOnClickListener {
             endProject = true
@@ -132,6 +129,16 @@ class SkuDetailFragment : BaseFragment<ShootViewModel, FragmentSkuDetailBinding>
 
         binding.ivBackGif.setOnClickListener {
             requireActivity().onBackPressed()
+        }
+
+        binding.ivAddAngle.setOnClickListener {
+            if (viewModel.categoryDetails.value?.categoryName != "Footwear")
+                viewModel.addMoreAngle.value = true
+        }
+
+        binding.tvAddAngle.setOnClickListener {
+            if (viewModel.categoryDetails.value?.categoryName != "Footwear")
+                viewModel.addMoreAngle.value = true
         }
     }
 
@@ -189,21 +196,6 @@ class SkuDetailFragment : BaseFragment<ShootViewModel, FragmentSkuDetailBinding>
 
         }
 
-
-        binding.ivAddAngle.setOnClickListener {
-            if (viewModel.categoryDetails.value?.categoryName.equals("E-Commerce") || viewModel.categoryDetails.value?.categoryName.equals(
-                    "Food & Beverages"
-                )
-            )
-                viewModel.addMoreAngle.value = true
-        }
-        binding.tvAddAngle.setOnClickListener {
-            if (viewModel.categoryDetails.value?.categoryName.equals("E-Commerce") || viewModel.categoryDetails.value?.categoryName.equals(
-                    "Food & Beverages"
-                )
-            )
-                viewModel.addMoreAngle.value = true
-        }
     }
 
     private fun observeUpdateTotalFrames() {
@@ -212,8 +204,8 @@ class SkuDetailFragment : BaseFragment<ShootViewModel, FragmentSkuDetailBinding>
                 is Resource.Success -> {
                     viewModel.shootList.value?.clear()
                     val intent = Intent(activity, ShootPortraitActivity::class.java)
-                    intent.putExtra("project_id", viewModel.projectId.value);
-                    intent.putExtra("skuNumber", viewModel.skuNumber.value?.plus(1)!!);
+                    intent.putExtra("project_id", viewModel.projectId.value)
+                   // intent.putExtra("skuNumber", viewModel.skuNumber.value?.plus(1)!!)
 
                     intent.putExtra(
                         AppConstants.CATEGORY_NAME,
@@ -235,6 +227,7 @@ class SkuDetailFragment : BaseFragment<ShootViewModel, FragmentSkuDetailBinding>
                         )
                     } else
                         intent.putExtra("skuNumber", viewModel.skuNumber.value?.plus(1)!!)
+
                     startActivity(intent)
                 }
 
@@ -256,7 +249,6 @@ class SkuDetailFragment : BaseFragment<ShootViewModel, FragmentSkuDetailBinding>
 
     override fun onResume() {
         super.onResume()
-
         if (viewModel.categoryDetails.value?.categoryName.equals("E-Commerce")) {
             binding.ivAddAngle.visibility = View.VISIBLE
             binding.tvAddAngle.visibility = View.VISIBLE
