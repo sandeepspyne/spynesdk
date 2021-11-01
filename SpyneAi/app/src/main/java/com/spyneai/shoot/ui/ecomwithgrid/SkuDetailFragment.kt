@@ -33,7 +33,7 @@ class SkuDetailFragment : BaseFragment<ShootViewModel, FragmentSkuDetailBinding>
 
         when (viewModel.categoryDetails.value?.categoryName) {
             "Footwear" -> {
-                binding.ivAddAngle.visibility = View.INVISIBLE
+                binding.ivAddAngle.visibility = View.GONE
                 binding.tvAddAngle.visibility = View.INVISIBLE
             }
         }

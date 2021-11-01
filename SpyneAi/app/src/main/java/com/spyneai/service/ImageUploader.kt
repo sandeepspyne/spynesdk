@@ -93,7 +93,7 @@ class ImageUploader(val context: Context,
                                    image.preSignedUrl = response.value.data.presignedUrl
                                    image.imageId = response.value.data.imageId
 
-                                   //captureEvent(Events.GOT_PRESIGNED_VIDEO_URL,video,true,null)
+                                   captureEvent(Events.GOT_PRESIGNED_IMAGE_URL,image,true,null)
 
                                    localRepository.addPreSignedUrl(image)
 
@@ -104,9 +104,9 @@ class ImageUploader(val context: Context,
                                    log("Image upload failed")
                                    logUpload("Upload error "+response.errorCode.toString()+" "+response.errorMessage)
                                    if(response.errorMessage == null){
-                                       captureEvent(Events.UPLOAD_FAILED_SERVICE,image,false,response.errorCode.toString()+": Http exception from server")
+                                       captureEvent(Events.PRESIGNED_IMAGE_URL_FAILED,image,false,response.errorCode.toString()+": Http exception from server")
                                    }else {
-                                       captureEvent(Events.UPLOAD_FAILED_SERVICE,image,false,response.errorCode.toString()+": "+response.errorMessage)
+                                       captureEvent(Events.PRESIGNED_IMAGE_URL_FAILED,image,false,response.errorCode.toString()+": "+response.errorMessage)
                                    }
 
                                    selectLastImageAndUpload(imageType,retryCount+1)
@@ -256,7 +256,7 @@ class ImageUploader(val context: Context,
 
 
     private fun onVideoUploaded(video: Image, imageType: String, retryCount : Int) {
-        captureEvent(Events.VIDEO_UPLOADED_TO_GCP,video,true,null)
+        captureEvent(Events.IMAGE_UPLOADED_TO_GCP,video,true,null)
 
         GlobalScope.launch(Dispatchers.Default) {
             setStatusUploaed(video,imageType,retryCount)
@@ -264,7 +264,7 @@ class ImageUploader(val context: Context,
     }
 
     private fun onVideoUploadFailed(imageType: String,retryCount: Int,video: Image,error: String?) {
-        captureEvent(Events.VIDEO_UPLOAD_TO_GCP_FAILED,video,false,error)
+        captureEvent(Events.IMAGE_UPLOAD_TO_GCP_FAILED,video,false,error)
 
         GlobalScope.launch(Dispatchers.Default) {
             selectLastImageAndUpload(imageType,retryCount+1)
@@ -276,16 +276,16 @@ class ImageUploader(val context: Context,
 
            when(response){
                is Resource.Success -> {
-                   captureEvent(Events.MARKED_VIDEO_UPLOADED,video,true,null)
+                   captureEvent(Events.MARKED_IMAGE_UPLOADED,video,true,null)
                    localRepository.markStatusUploaded(video)
                    selectLastImageAndUpload(imageType,0)
                }
 
                is Resource.Failure -> {
                    if(response.errorMessage == null){
-                       captureEvent(Events.MARK_VIDEO_UPLOADED_FAILED,video,false,response.errorCode.toString()+": Http exception from server")
+                       captureEvent(Events.MARK_IMAGE_UPLOADED_FAILED,video,false,response.errorCode.toString()+": Http exception from server")
                    }else {
-                       captureEvent(Events.MARK_VIDEO_UPLOADED_FAILED,video,false,response.errorCode.toString()+": "+response.errorMessage)
+                       captureEvent(Events.MARK_IMAGE_UPLOADED_FAILED,video,false,response.errorCode.toString()+": "+response.errorMessage)
                    }
 
                    selectLastImageAndUpload(imageType,retryCount+1)

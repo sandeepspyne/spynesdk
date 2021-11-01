@@ -73,6 +73,7 @@ class ConfirmReshootPortraitDialog : BaseDialogFragment<ShootViewModel, ConfirmR
                 uploadImages()
                 if (viewModel.allEcomOverlyasClicked){
                     viewModel.isCameraButtonClickable = false
+                    viewModel.stopShoot.value = true
                 }
 
                 dismiss()
