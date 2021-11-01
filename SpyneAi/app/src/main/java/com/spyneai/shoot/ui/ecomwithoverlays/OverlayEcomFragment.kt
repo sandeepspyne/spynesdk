@@ -90,10 +90,11 @@ class OverlayEcomFragment : BaseFragment<ShootViewModel, FragmentOverlayEcomBind
         //observe new image clicked
         viewModel.shootList.observe(viewLifecycleOwner, {
             try {
-                if (viewModel.showDialog && !it.isNullOrEmpty()){
-                    showImageConfirmDialog(it.get(it.size - 1))
+                if (viewModel.showConfirmReshootDialog.value == true && !it.isNullOrEmpty()) {
+                    val element = viewModel.getCurrentShoot()
+                    showImageConfirmDialog(element!!)
                 }
-            }catch (e : Exception){
+            } catch (e: Exception) {
                 e.printStackTrace()
             }
         })
@@ -103,12 +104,6 @@ class OverlayEcomFragment : BaseFragment<ShootViewModel, FragmentOverlayEcomBind
         })
 
         observeOverlays()
-
-        viewModel.isSubCategoryConfirmed.observe(viewLifecycleOwner,{
-            //disable angle selection click
-            binding.tvShoot?.isClickable = false
-            if (it) binding.rvSubcategories?.visibility = View.GONE
-        })
 
         viewModel.onImageConfirmed.observe(viewLifecycleOwner,{
             if (viewModel.shootList.value != null && overlaysAdapter != null){
@@ -124,6 +119,14 @@ class OverlayEcomFragment : BaseFragment<ShootViewModel, FragmentOverlayEcomBind
             }catch (e : Exception){
 
             }
+        })
+
+        viewModel.notifyItemChanged.observe(viewLifecycleOwner,{
+            overlaysAdapter?.notifyItemChanged(it)
+        })
+
+        viewModel.scrollView.observe(viewLifecycleOwner,{
+            binding.rvSubcategories.scrollToPosition(it)
         })
     }
 
@@ -285,13 +288,15 @@ class OverlayEcomFragment : BaseFragment<ShootViewModel, FragmentOverlayEcomBind
 
                 viewModel.overlayId = data.id
 
-                binding.tvShoot?.text = "${position.plus(1)}/${viewModel.getSelectedAngles(getString(R.string.app_name))}"
+                binding.tvShoot?.text = position.plus(1).toString()+"/"+viewModel.exterirorAngles.value.toString()
             }
 
         }
     }
 
     override fun onItemClick(view: View, position: Int, data: Any?) {
+        viewModel.currentShoot = position
+
         when(data){
             is OverlaysResponse.Data->{
                 if (data.imageClicked){
