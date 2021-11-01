@@ -52,12 +52,12 @@ class GridEcomFragment : BaseFragment<ShootViewModel, FragmentGridEcomBinding>()
         }
 
         //observe new image clicked
+        //observe new image clicked
         viewModel.shootList.observe(viewLifecycleOwner, {
             try {
-                if (!it.isNullOrEmpty()) {
-                    if (viewModel.showDialog)
-                        showImageConfirmDialog(it.get(it.size - 1))
-                    log("call showImageConfirmDialog")
+                if (viewModel.showConfirmReshootDialog.value == true && !it.isNullOrEmpty()) {
+                    val element = viewModel.getCurrentShoot()
+                    showImageConfirmDialog(element!!)
                 }
             } catch (e: Exception) {
                 e.printStackTrace()

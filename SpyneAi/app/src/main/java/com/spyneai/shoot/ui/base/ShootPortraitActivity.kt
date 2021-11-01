@@ -131,7 +131,10 @@ class ShootPortraitActivity :AppCompatActivity(), GoogleApiClient.ConnectionCall
         when (shootViewModel.categoryDetails.value?.categoryName) {
             "E-Commerce","Photo Box" -> shootViewModel.categoryDetails.value?.imageType = "Ecom"
             "Food & Beverages" -> shootViewModel.categoryDetails.value?.imageType = "Food"
-            "Footwear" -> shootViewModel.categoryDetails.value?.imageType = "Footwear"
+            "Footwear" -> {
+                shootViewModel.categoryDetails.value?.imageType = "Footwear"
+                observeProjectCreated()
+            }
         }
 
 
@@ -195,7 +198,7 @@ class ShootPortraitActivity :AppCompatActivity(), GoogleApiClient.ConnectionCall
             }
         })
 
-        observeProjectCreated()
+
     }
 
     private fun observeProjectCreated() {

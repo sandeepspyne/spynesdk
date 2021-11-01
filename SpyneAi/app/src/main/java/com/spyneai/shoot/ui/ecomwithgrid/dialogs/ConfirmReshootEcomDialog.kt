@@ -61,8 +61,12 @@ class ConfirmReshootEcomDialog :
             )
 
             //remove last item from shoot list
-            viewModel.shootList.value?.removeAt(viewModel.shootList.value!!.size - 1)
+            //viewModel.shootList.value?.removeAt(viewModel.shootList.value!!.size - 1)
 
+            if (!viewModel.isReclick)
+                viewModel.shootList.value?.removeAt(viewModel.currentShoot)
+
+            val s = ""
             dismiss()
         }
 

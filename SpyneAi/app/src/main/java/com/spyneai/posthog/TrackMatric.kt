@@ -7,6 +7,7 @@ import com.spyneai.needs.AppConstants
 import com.spyneai.needs.Utilities
 
 fun Context.captureEvent(eventName : String, properties: Properties) {
+
     properties.putValue("app_name",getString(R.string.app_name))
 
     PostHog.with(this)
@@ -32,5 +33,4 @@ fun Context.captureIdentity(userId : String,properties: Properties) {
     
     PostHog.with(this)
         .identify(userId,properties)
-
 }
