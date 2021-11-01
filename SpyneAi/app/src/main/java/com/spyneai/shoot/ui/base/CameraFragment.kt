@@ -392,7 +392,7 @@ class CameraFragment : BaseFragment<ShootViewModel, FragmentCameraBinding>(), Pi
                         .setCaptureMode(ImageCapture.CAPTURE_MODE_MAXIMIZE_QUALITY)
                         .setFlashMode(flashMode)
                         .setTargetAspectRatio(AspectRatio.RATIO_4_3)
-                        .setTargetRotation(ROTATION_90)
+                        //.setTargetRotation(ROTATION_90)
                         .build()
                 }
                 else -> {
@@ -400,7 +400,7 @@ class CameraFragment : BaseFragment<ShootViewModel, FragmentCameraBinding>(), Pi
                         .setCaptureMode(ImageCapture.CAPTURE_MODE_MAXIMIZE_QUALITY)
                         .setFlashMode(flashMode)
                         .setTargetAspectRatio(AspectRatio.RATIO_4_3)
-                        .setTargetRotation(ROTATION_90)
+                       // .setTargetRotation(ROTATION_90)
                         .build()
                 }
             }
@@ -426,8 +426,6 @@ class CameraFragment : BaseFragment<ShootViewModel, FragmentCameraBinding>(), Pi
                 )
 
                 cameraControl = camera.cameraControl
-
-
 
                 cameraInfo = camera.cameraInfo
 
