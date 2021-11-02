@@ -39,6 +39,13 @@ class GridEcomFragment : BaseFragment<ShootViewModel, FragmentGridEcomBinding>()
         super.onViewCreated(view, savedInstanceState)
 
 
+        if (viewModel.categoryDetails.value?.categoryId != AppConstants.FLIPKART_ENTERPRISE_ID){
+            binding.apply {
+                this.ivNext.visibility = View.GONE
+                this.ivEnd.visibility = View.VISIBLE
+            }
+        }
+
         if (viewModel.projectId.value == null){
             if(Utilities.getPreference(requireContext(), AppConstants.STATUS_PROJECT_NAME).toString() =="true")
                 getProjectName()
