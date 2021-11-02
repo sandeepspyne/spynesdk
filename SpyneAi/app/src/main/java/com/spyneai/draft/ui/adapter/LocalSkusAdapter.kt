@@ -159,17 +159,19 @@ class LocalSkusAdapter(
                     putExtra(AppConstants.IS_360, skuList[position].is360)
                 }
 
-                when (skuList[position].subcategoryId) {
-                    "prod_4CW50lj2sNMCS" -> draftIntent.putExtra(AppConstants.EXTERIOR_ANGLES, 5)
-                    "prod_4CW50lj2sNMF" -> draftIntent.putExtra(AppConstants.EXTERIOR_ANGLES, 6)
-                    else -> {
-                        draftIntent.putExtra(
-                            AppConstants.EXTERIOR_ANGLES,
-                            skuList[position].exteriorAngles
-                        )
-                    }
+                draftIntent.putExtra(
+                    AppConstants.EXTERIOR_ANGLES,
+                    skuList[position].exteriorAngles
+                )
 
-                }
+//                when (skuList[position].subcategoryId) {
+//                    "prod_4CW50lj2sNMCS" -> draftIntent.putExtra(AppConstants.EXTERIOR_ANGLES, 5)
+//                    "prod_4CW50lj2sNMF" -> draftIntent.putExtra(AppConstants.EXTERIOR_ANGLES, 6)
+//                    else -> {
+//
+//                    }
+//
+//                }
 
                 if (skuList[position].threeSixtyFrames != null){
                     draftIntent.apply {

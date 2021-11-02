@@ -127,6 +127,8 @@ class OverlayEcomFragment : BaseFragment<ShootViewModel, FragmentOverlayEcomBind
                 is Resource.Success -> {
                     Utilities.hideProgressDialog()
 
+                    //set exterior angle value
+                    viewModel.exterirorAngles.value = it.value.data.size
                     viewModel.displayName = it.value.data[0].display_name
                     viewModel.displayThumbanil = it.value.data[0].display_thumbnail
 

@@ -44,6 +44,10 @@
         android:theme="@style/Theme.Fab_Bottom_app_bar"
         android:usesCleartextTraffic="true"
         tools:targetApi="m">
+
+        <meta-data android:name="io.sentry.dsn" android:value="https://ff048ca03a204f1cbc34fd22d7c97abc@o1057935.ingest.sentry.io/6045072" />
+
+
         <activity
             android:name=".reshoot.ui.ReshootDoneActivity"
             android:exported="true"

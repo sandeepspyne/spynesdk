@@ -279,7 +279,7 @@ class ShootLocalRepository {
                 sku.subcategoryId = subCategoryId
                 sku.projectId = projectId
                 sku.skuId = skuId
-                sku.exteriorAngles = exteriroAngles
+                sku.exteriorAngles = if (exteriroAngles == null) 0 else exteriroAngles
                 sku.backgroundId = backgroundId
                 sku.is360 = is360
                 sku.isProcessed = isProcessed
