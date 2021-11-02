@@ -39,10 +39,16 @@ class GridEcomFragment : BaseFragment<ShootViewModel, FragmentGridEcomBinding>()
         super.onViewCreated(view, savedInstanceState)
 
 
-        if (viewModel.categoryDetails.value?.categoryId != AppConstants.FLIPKART_ENTERPRISE_ID){
+        if (Utilities.getPreference(requireContext(),AppConstants.ENTERPRISE_ID)
+            == AppConstants.FLIPKART_ENTERPRISE_ID){
             binding.apply {
-                this.ivNext.visibility = View.GONE
-                this.ivEnd.visibility = View.VISIBLE
+                ivNext.visibility = View.VISIBLE
+                ivEnd.visibility = View.GONE
+            }
+        }else{
+            binding.apply {
+            ivNext.visibility = View.GONE
+            ivEnd.visibility = View.VISIBLE
             }
         }
 
