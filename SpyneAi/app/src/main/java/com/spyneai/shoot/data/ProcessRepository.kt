@@ -20,10 +20,12 @@ class ProcessRepository : BaseRepository() {
 
 
 
-    suspend fun processSku(authKey : String,skuId : String, backgroundId : String,is360 : Boolean,
-                           numberPlateBlur: Boolean, windowCorrection: Boolean)
+    suspend fun processSku(
+        authKey: String, skuId: String, backgroundId: String, is360: Boolean,
+        numberPlateBlur: Boolean, windowCorrection: Boolean, tiltWindow: Boolean
+    )
             = safeApiCall {
-        clipperApi.processSku(authKey, skuId, backgroundId,is360, numberPlateBlur, windowCorrection)
+        clipperApi.processSku(authKey, skuId, backgroundId,is360, numberPlateBlur, windowCorrection,tiltWindow)
     }
 
     suspend fun updateTotalFrames(

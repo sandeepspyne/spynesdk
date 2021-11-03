@@ -58,6 +58,12 @@ class SelectBackgroundFragment : BaseFragment<ProcessViewModel, FragmentSelectBa
             viewModel.windowCorrection = isChecked
         }
 
+        binding.cbTiltWindow.setOnCheckedChangeListener { buttonView, isChecked ->
+            viewModel.tiltWindow = isChecked
+        }
+
+
+
 
       //   blur no plate & window correction
             when (Utilities.getPreference(requireContext(), AppConstants.CATEGORY_NAME)) {
@@ -67,11 +73,13 @@ class SelectBackgroundFragment : BaseFragment<ProcessViewModel, FragmentSelectBa
                         binding.tvBlurNoPlate.visibility = View.VISIBLE
                         binding.cbWindowCorrection.visibility = View.VISIBLE
                         binding.tvWindowReflection.visibility = View.VISIBLE
+                        binding.cbTiltWindow.visibility = View.VISIBLE
                     } else  {
                         binding.cbBlurNoPlate.visibility = View.GONE
                         binding.tvBlurNoPlate.visibility = View.GONE
                         binding.cbWindowCorrection.visibility = View.GONE
                         binding.tvWindowReflection.visibility = View.GONE
+                        binding.cbTiltWindow.visibility = View.VISIBLE
                     }
 
                 } else ->{
@@ -79,6 +87,7 @@ class SelectBackgroundFragment : BaseFragment<ProcessViewModel, FragmentSelectBa
                 binding.tvBlurNoPlate.visibility = View.GONE
                 binding.cbWindowCorrection.visibility = View.GONE
                 binding.tvWindowReflection.visibility = View.GONE
+                binding.cbTiltWindow.visibility = View.GONE
                 }
             }
 
@@ -412,7 +421,7 @@ class SelectBackgroundFragment : BaseFragment<ProcessViewModel, FragmentSelectBa
             viewModel.sku.value?.skuId!!,
             backgroundSelect,
             viewModel.fromVideo,
-            binding.cbBlurNoPlate.isChecked,binding.cbWindowCorrection.isChecked)
+            binding.cbBlurNoPlate.isChecked,binding.cbWindowCorrection.isChecked,binding.cbTiltWindow.isChecked)
 
         log("Process sku started")
         log(
