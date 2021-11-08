@@ -44,9 +44,10 @@ interface MyAPIService {
             Call<SignupResponse>?
 
 
-    @POST("v2/forgot-password")
+    @GET("v2/user/forgot-password")
     fun forgotPassword(
-        @Query("emailId") userId: String?,
+        @Query("email_id") userId: String?,
+        @Query("api_key") apiKey: String?
     ): Call<ForgotPasswordResponse>?
 
     @POST("user/phone")
