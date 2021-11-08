@@ -77,8 +77,7 @@ class ForgotPasswordActivity : AppCompatActivity() {
 
         val request = RetrofitClients.buildService(MyAPIService::class.java)
         val call = request.forgotPassword(
-            et_forgotPasswordEmail.text.toString().trim(),
-            WhiteLabelConstants.API_KEY
+            et_forgotPasswordEmail.text.toString().trim()
         )
 
         call?.enqueue(object : Callback<ForgotPasswordResponse> {
