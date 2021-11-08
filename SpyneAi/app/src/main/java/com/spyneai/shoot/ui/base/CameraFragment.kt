@@ -1134,7 +1134,7 @@ class CameraFragment : BaseFragment<ShootViewModel, FragmentCameraBinding>(), Pi
             AppConstants.SWIGGY -> {
 
                 // angle name
-                if (pitch.roundToInt() == 0 || (pitch.roundToInt() <= -0 && pitch.roundToInt() >= -3))
+                if (pitch.roundToInt() == 0 || (pitch.roundToInt() <= 3 && pitch.roundToInt() >= -3))
                     angle = 0
 
                 if (pitch.roundToInt() <= -82 && pitch.roundToInt() >= -88)

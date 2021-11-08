@@ -16,11 +16,19 @@ class SelectAnotherImagetypeDialog : BaseDialogFragment<ShootViewModel, Fragment
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+
+
+        binding?.ivClose?.setOnClickListener {
+            dismiss()
+        }
+
         binding.tvProductShoot.setOnClickListener {
+            viewModel.categoryDetails.value?.imageType = "Ecom"
             if (viewModel.categoryDetails.value?.categoryName.equals("E-Commerce") || viewModel.categoryDetails.value?.categoryName.equals(
                     "Food & Beverages"
                 )
             )
+                viewModel.showLeveler.value = true
                 viewModel.addMoreAngle.value = true
 
             dismiss()
@@ -29,19 +37,21 @@ class SelectAnotherImagetypeDialog : BaseDialogFragment<ShootViewModel, Fragment
         binding.tvInfoShoot.setOnClickListener {
             viewModel.categoryDetails.value?.imageType = "Info"
             viewModel.hideLeveler.value = true
+            viewModel.addMoreAngle.value = true
+
             dismiss()
         }
     }
 
 
-    override fun onResume() {
-        super.onResume()
-
-        val dialog: Dialog? = dialog
-        if (dialog != null) {
-            dialog.getWindow()?.setLayout(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT)
-        }
-    }
+//    override fun onResume() {
+//        super.onResume()
+//
+//        val dialog: Dialog? = dialog
+//        if (dialog != null) {
+//            dialog.getWindow()?.setLayout(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT)
+//        }
+//    }
 
     override fun getFragmentBinding(
         inflater: LayoutInflater,
