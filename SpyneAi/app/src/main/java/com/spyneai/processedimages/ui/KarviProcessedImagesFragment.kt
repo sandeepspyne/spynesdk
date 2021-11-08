@@ -21,7 +21,6 @@ import com.spyneai.dashboard.ui.handleApiError
 import com.spyneai.databinding.ActivityKarviShowImagesBinding
 import com.spyneai.databinding.FragmentProcessedImagesBinding
 import com.spyneai.gotoHome
-import com.spyneai.isMagnatoMeterAvailable
 import com.spyneai.needs.AppConstants
 import com.spyneai.needs.ScrollingLinearLayoutManager
 import com.spyneai.needs.Utilities
