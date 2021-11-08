@@ -192,16 +192,16 @@ class DraftShootFragment : BaseFragment<ShootViewModel, FragmentOverlaysV2Bindin
                                 }
                                 else -> {
                                     viewModel.startInteriorShots.value = true
-                                    viewModel.interiorAngles.value =  subCategoriesResponse.interior.size
-
-                                    val list = subCategoriesResponse.interior
-                                    list[0].isSelected = true
-
-                                    viewModel.displayName = list[0].display_name
-                                    viewModel.displayThumbanil = list[0].display_thumbnail
-
-                                    overlaysAdapter.listItems = list
-                                    overlaysAdapter.notifyDataSetChanged()
+//                                    viewModel.interiorAngles.value =  subCategoriesResponse.interior.size
+//
+//                                    val list = subCategoriesResponse.interior
+//                                    //list[0].isSelected = true
+//
+//                                    viewModel.displayName = list[0].display_name
+//                                    viewModel.displayThumbanil = list[0].display_thumbnail
+//
+//                                    overlaysAdapter.listItems = list
+//                                    overlaysAdapter.notifyDataSetChanged()
 
                                 }
                             }
@@ -221,7 +221,6 @@ class DraftShootFragment : BaseFragment<ShootViewModel, FragmentOverlaysV2Bindin
                                     viewModel.showMiscDialog.value = true
                                 }
                                 else -> {
-                                    viewModel.startMiscShots.value = true
                                     if (viewModel.categoryDetails.value?.categoryName == "Bikes") {
                                         val filteredList: List<NewSubCatResponse.Miscellaneous> = subCategoriesResponse.miscellaneous.filter {
                                             it.prod_sub_cat_id ==   viewModel.subCategory.value?.prod_sub_cat_id
@@ -230,16 +229,19 @@ class DraftShootFragment : BaseFragment<ShootViewModel, FragmentOverlaysV2Bindin
                                         subCategoriesResponse.miscellaneous = filteredList
                                     }
 
-                                    viewModel.miscAngles.value =  subCategoriesResponse.miscellaneous.size
+                                    viewModel.startMiscShots.value = true
 
-                                    val list = subCategoriesResponse.miscellaneous
-                                    list[0].isSelected = true
-
-                                    viewModel.displayName = list[0].display_name
-                                    viewModel.displayThumbanil = list[0].display_thumbnail
-
-                                    overlaysAdapter.listItems = list
-                                    overlaysAdapter.notifyDataSetChanged()
+//
+//                                    viewModel.miscAngles.value =  subCategoriesResponse.miscellaneous.size
+//
+//                                    val list = subCategoriesResponse.miscellaneous
+//                                   // list[0].isSelected = true
+//
+//                                    viewModel.displayName = list[0].display_name
+//                                    viewModel.displayThumbanil = list[0].display_thumbnail
+//
+//                                    overlaysAdapter.listItems = list
+//                                    overlaysAdapter.notifyDataSetChanged()
 
                                 }
                             }
@@ -554,18 +556,17 @@ class DraftShootFragment : BaseFragment<ShootViewModel, FragmentOverlaysV2Bindin
 
         val subCatResponse = (viewModel.subCategoriesResponse.value  as Resource.Success).value
 
-        val interiorList = subCatResponse.interior as ArrayList<NewSubCatResponse.Interior>
+        val list = subCatResponse.interior as ArrayList<NewSubCatResponse.Interior>
 
-        viewModel.interiorAngles.value = interiorList.size
-        binding.rvSubcategories.scrollToPosition(0)
+        viewModel.interiorAngles.value = list.size
 
         val selctedDraftList = DraftClickedImages.clickedImagesMap
-        val list = subCatResponse.interior
+
         //set overlays
         list.forEachIndexed { index, data ->
-            if (selctedDraftList.get(data.overlayId.toString()) != null){
+            if (selctedDraftList[data.overlayId.toString()] != null){
                 list[index].imageClicked = true
-                list[index].imagePath = selctedDraftList.get(data.overlayId.toString())!!
+                list[index].imagePath = selctedDraftList[data.overlayId.toString()]!!
             }
         }
 
@@ -596,6 +597,8 @@ class DraftShootFragment : BaseFragment<ShootViewModel, FragmentOverlaysV2Bindin
             viewModel.displayThumbanil = list[index].display_thumbnail
 
         }
+
+        val s = ""
 
         overlaysAdapter = OverlaysAdapter(list,
             this@DraftShootFragment,
@@ -643,8 +646,6 @@ class DraftShootFragment : BaseFragment<ShootViewModel, FragmentOverlaysV2Bindin
         viewModel.hideLeveler.value = true
 
         val subCatResponse = (viewModel.subCategoriesResponse.value  as Resource.Success).value
-
-        var miscList = subCatResponse.miscellaneous
 
         viewModel.miscAngles.value =  subCatResponse.miscellaneous.size
         binding.rvSubcategories.scrollToPosition(0)
@@ -785,10 +786,6 @@ class DraftShootFragment : BaseFragment<ShootViewModel, FragmentOverlaysV2Bindin
                 }
 
                 if (element != null && data != element){
-                    viewModel.displayName = data.display_name
-                    viewModel.displayThumbanil = data.display_thumbnail
-                    // viewModel.selectedOverlay = data
-
                     data.isSelected = true
                     element.isSelected = false
                     overlaysAdapter.notifyItemChanged(position)
@@ -810,10 +807,6 @@ class DraftShootFragment : BaseFragment<ShootViewModel, FragmentOverlaysV2Bindin
                 }
 
                 if (element != null && data != element){
-                    viewModel.displayName = data.display_name
-                    viewModel.displayThumbanil = data.display_thumbnail
-                    // viewModel.selectedOverlay = data
-
                     data.isSelected = true
                     element.isSelected = false
                     overlaysAdapter.notifyItemChanged(position)
@@ -836,10 +829,6 @@ class DraftShootFragment : BaseFragment<ShootViewModel, FragmentOverlaysV2Bindin
                 }
 
                 if (element != null && data != element){
-                    viewModel.displayName = data.display_name
-                    viewModel.displayThumbanil = data.display_thumbnail
-                    // viewModel.selectedOverlay = data
-
                     data.isSelected = true
                     element.isSelected = false
                     overlaysAdapter.notifyItemChanged(position)
@@ -855,6 +844,9 @@ class DraftShootFragment : BaseFragment<ShootViewModel, FragmentOverlaysV2Bindin
 
         when(data){
             is OverlaysResponse.Data->{
+                viewModel.displayName = data.display_name
+                viewModel.displayThumbanil = data.display_thumbnail
+
                 loadOverlay(data.angle_name,data.display_thumbnail)
                 viewModel.overlayId = data.id
 
@@ -863,12 +855,16 @@ class DraftShootFragment : BaseFragment<ShootViewModel, FragmentOverlaysV2Bindin
             }
 
             is NewSubCatResponse.Interior ->{
+                viewModel.displayName = data.display_name
+                viewModel.displayThumbanil = data.display_thumbnail
                 viewModel.overlayId = data.overlayId
 
                 binding.tvShoot?.text = "Angles ${position.plus(1)}/${viewModel.interiorAngles.value}"
             }
 
             is NewSubCatResponse.Miscellaneous ->{
+                viewModel.displayName = data.display_name
+                viewModel.displayThumbanil = data.display_thumbnail
                 viewModel.overlayId = data.overlayId
 
                 binding.tvShoot?.text = "Angles ${position.plus(1)}/${viewModel.miscAngles.value}"

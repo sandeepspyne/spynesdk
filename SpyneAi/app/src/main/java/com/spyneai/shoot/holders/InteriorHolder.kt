@@ -14,6 +14,7 @@ import com.spyneai.camera2.OverlaysResponse
 import com.spyneai.dashboard.response.NewSubCatResponse
 import com.spyneai.databinding.ItemInteriorBinding
 import com.spyneai.databinding.ItemOverlaysBinding
+import com.spyneai.service.log
 import com.spyneai.shoot.data.OnOverlaySelectionListener
 
 class InteriorHolder(
@@ -25,7 +26,7 @@ class InteriorHolder(
     var listener: OnItemClickListener? = null
     var overlaySelectionListener: OnOverlaySelectionListener? = null
     var binding : ItemInteriorBinding? = null
-    val TAG = "OverlaysHolder"
+    val TAG = "InteriorHolder"
 
     init {
         binding = ItemInteriorBinding.bind(itemView)
@@ -36,6 +37,10 @@ class InteriorHolder(
     override fun bind(data: NewSubCatResponse.Interior) {
         //set sequence number as per adapter position
        // data.sequenceNumber = adapterPosition
+        val s = ""
+        Log.d(TAG, "bind: "+adapterPosition)
+        Log.d(TAG, "bind: "+data.isSelected)
+        Log.d(TAG, "bind: "+data.overlayId)
 
         binding.apply {
             this?.tvName?.text = data.display_name

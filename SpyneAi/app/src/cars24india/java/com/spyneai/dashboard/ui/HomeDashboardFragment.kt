@@ -12,7 +12,6 @@ import android.view.Window
 import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.lifecycle.Observer
-import com.posthog.android.Properties
 import com.spyneai.R
 import com.spyneai.activity.CompletedProjectsActivity
 import com.spyneai.activity.OngoingOrdersActivity
