@@ -1,4 +1,4 @@
-package com.spyneai.shoot.ui.ecomwithgrid
+package com.spyneai.shoot.ui
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -15,24 +15,17 @@ import com.spyneai.shoot.data.model.ShootData
 import com.spyneai.shoot.ui.dialogs.ReclickDialog
 import com.spyneai.shoot.ui.ecomwithgrid.dialogs.ConfirmReshootEcomDialog
 
-class GridEcomFragment : BaseFragment<ShootViewModel, FragmentGridEcomBinding>(),
+class DraftGridFragment : BaseFragment<ShootViewModel, FragmentGridEcomBinding>(),
     OnItemClickListener, OnOverlaySelectionListener {
-
 
     var clickedAdapter : ClickedAdapter?=  null
     var position = 1
-
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
         binding.ivEndProject.setOnClickListener {
-            if (viewModel.fromDrafts){
-                viewModel.stopShoot.value = true
-            }else {
-                if (viewModel.isStopCaptureClickable)
-                    viewModel.stopShoot.value = true
-            }
+            viewModel.stopShoot.value = true
         }
 
         //observe new image clicked
@@ -56,33 +49,10 @@ class GridEcomFragment : BaseFragment<ShootViewModel, FragmentGridEcomBinding>()
             }
         })
 
+        setClickedImages()
+
         viewModel.onImageConfirmed.observe(viewLifecycleOwner,{
-            viewModel.shootList.value?.let {
-                binding.tvImageCount.text = viewModel.shootList.value!!.size.toString()
-                it[viewModel.currentShoot].imageClicked = true
-                it[viewModel.currentShoot].isSelected = false
-                //update captured images
-                if (clickedAdapter == null){
-                    clickedAdapter = ClickedAdapter(it,this,this)
-                    binding.rvClicked.apply {
-                        layoutManager = LinearLayoutManager(requireContext(),LinearLayoutManager.HORIZONTAL,false)
-                        adapter = clickedAdapter
-                    }
-                }else{
-                    try {
-                        if (viewModel.isReclick){
-                            clickedAdapter?.notifyItemChanged(viewModel.currentShoot)
-                        }else{
-                            clickedAdapter?.notifyItemInserted(it.size - 1)
-                        }
-                    }catch (e : Exception){
-                        val s = ""
-                    }
-                }
-                viewModel.overlayId = it.size
-                viewModel.currentShoot = it.size
-                binding.rvClicked.scrollToPosition(it.size.minus(1))
-            }
+            setClickedImages()
         })
 
         viewModel.updateSelectItem.observe(viewLifecycleOwner,{
@@ -103,6 +73,44 @@ class GridEcomFragment : BaseFragment<ShootViewModel, FragmentGridEcomBinding>()
         })
     }
 
+    private fun setClickedImages() {
+        viewModel.shootList.value?.let {
+            binding.tvImageCount.text = viewModel.shootList.value!!.size.toString()
+            it[viewModel.currentShoot].imageClicked = true
+            it[viewModel.currentShoot].isSelected = false
+            //update captured images
+            if (clickedAdapter == null){
+                clickedAdapter = ClickedAdapter(it,this,this)
+                binding.rvClicked.apply {
+                    layoutManager = LinearLayoutManager(requireContext(),
+                        LinearLayoutManager.HORIZONTAL,false)
+                    adapter = clickedAdapter
+                }
+            }else{
+                try {
+                    if (viewModel.isReclick){
+                        clickedAdapter?.notifyItemChanged(viewModel.currentShoot)
+                    }else{
+                        clickedAdapter?.notifyItemInserted(it.size - 1)
+                    }
+                }catch (e : Exception){
+                    val s = ""
+                }
+            }
+            viewModel.overlayId = it.size
+            viewModel.currentShoot = it.size
+            binding.rvClicked.scrollToPosition(it.size.minus(1))
+        }
+    }
+
+
+    override fun onResume() {
+        super.onResume()
+        if (viewModel.showLeveler.value == null || viewModel.showLeveler.value == false){
+            viewModel.showLeveler.value = true
+            viewModel.showDialog = true
+        }
+    }
 
     private fun showImageConfirmDialog(shootData: ShootData) {
         viewModel.shootData.value = shootData

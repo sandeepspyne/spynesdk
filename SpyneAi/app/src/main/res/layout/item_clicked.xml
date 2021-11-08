@@ -20,7 +20,6 @@
             android:id="@+id/ivClicked"
             android:layout_width="65dp"
             android:layout_height="45dp"
-            android:src="@drawable/app_logo"
             android:layout_gravity="center" />
 
     </FrameLayout>

@@ -293,7 +293,6 @@ class ShootViewModel : ViewModel() {
         image.isReshoot = if (isReshoot) 1 else 0
         image.isReclick = if (isReclick) 1 else 0
 
-
         if (imageRepository.isImageExist(image.skuId!!, image.name!!)) {
             imageRepository.updateImage(image)
         } else {
