@@ -118,7 +118,7 @@ class ShootPortraitActivity : AppCompatActivity(), GoogleApiClient.ConnectionCal
 
             if (shootViewModel.fromDrafts){
                 transaction
-                    .add(R.id.flCamerFragment, DraftGridFragment())
+                    .add(R.id.flCamerFragment, overlayEcomFragment)
                     .commitAllowingStateLoss()
             }else{
                 when (shootViewModel.categoryDetails.value?.categoryName) {
@@ -255,7 +255,8 @@ class ShootPortraitActivity : AppCompatActivity(), GoogleApiClient.ConnectionCal
       //  shootViewModel.shootNumber.value = intent.getIntExtra(AppConstants.EXTERIOR_SIZE,0)
 
         if (intent.getStringExtra(AppConstants.CATEGORY_NAME) == "Footwear"){
-            if (intent.getIntExtra(AppConstants.EXTERIOR_ANGLES,0) != 0){
+//            if (intent.getIntExtra(AppConstants.EXTERIOR_ANGLES,0) != 0){
+              shootViewModel.exterirorAngles.value = intent.getIntExtra(AppConstants.EXTERIOR_ANGLES,0)
                 shootViewModel.isSkuCreated.value = true
                 //sub category selected
                 shootViewModel.subCatName.value = intent.getStringExtra(AppConstants.SUB_CAT_NAME)
@@ -275,27 +276,32 @@ class ShootPortraitActivity : AppCompatActivity(), GoogleApiClient.ConnectionCal
 
                 shootViewModel.isSubCategoryConfirmed.value = true
 
-                if (intent.getIntExtra(AppConstants.EXTERIOR_ANGLES,0) == intent.getIntExtra(AppConstants.EXTERIOR_SIZE,0)){
+               // if (intent.getIntExtra(AppConstants.EXTERIOR_ANGLES,0) == intent.getIntExtra(AppConstants.EXTERIOR_SIZE,0)){
                     shootViewModel.showDialog = false
                     val list = shootViewModel.getImagesbySkuId(shootViewModel.sku.value?.skuId!!)
 
                     shootViewModel.shootList.value = ArrayList()
 
-                    for(image in list){
+                    list.forEachIndexed { index, image ->
+                        val shootData = ShootData(image.imagePath!!,
+                            image.projectId!!,
+                            image.skuId!!,
+                            "Footwear",
+                            Utilities.getPreference(this,AppConstants.AUTH_KEY).toString(),
+                            image.overlayId?.toInt()!!
+                        )
+
+                        shootData.imageClicked = true
+
                         shootViewModel.shootList.value!!.add(
-                            ShootData(image.imagePath!!,
-                                image.projectId!!,
-                                image.skuId!!,
-                                "Footwear",
-                                Utilities.getPreference(this,AppConstants.AUTH_KEY).toString(),
-                                0)
+                            shootData
                         )
                     }
 
-                    shootViewModel.stopShoot.value = true
-                }
 
-            }
+                   // shootViewModel.stopShoot.value = true
+               // }
+
         }else {
             shootViewModel.showDialog = false
             shootViewModel.isSubCategoryConfirmed.value = true

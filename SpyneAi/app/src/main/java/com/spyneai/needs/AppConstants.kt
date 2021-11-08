@@ -1,7 +1,7 @@
 package com.spyneai.needs
 
 object AppConstants {
-    val BASE_URL: String = "https://www.clippr.ai/api/"
+    val BASE_URL: String = "http://35.187.232.242:1000/api/"
     val STATUS_PROJECT_NAME: String="STATUS_PROJECT_NAME"
 
     val LOCALE = "LOCALE"
