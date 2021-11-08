@@ -117,8 +117,8 @@ android {
         cars24 {
             dimension 'version'
             applicationId "com.spyneai.cars24"
-            versionCode 3
-            versionName "1.2"
+            versionCode 4
+            versionName "1.3"
         }
 
         yallamotors {
@@ -145,8 +145,8 @@ android {
         automoser {
             dimension 'version'
             applicationId "com.spyneai.automoser"
-            versionCode 9
-            versionName "1.7"
+            versionCode 12
+            versionName "2.1"
         }
 
 

@@ -58,8 +58,8 @@ class SelectBackgroundFragment : BaseFragment<ProcessViewModel, FragmentSelectBa
             viewModel.windowCorrection = isChecked
         }
 
-        binding.cbTiltWindow.setOnCheckedChangeListener { buttonView, isChecked ->
-            viewModel.tiltWindow = isChecked
+        binding.cbTintWindow.setOnCheckedChangeListener { buttonView, isChecked ->
+            viewModel.tintWindow = isChecked
         }
 
 
@@ -73,13 +73,13 @@ class SelectBackgroundFragment : BaseFragment<ProcessViewModel, FragmentSelectBa
                         binding.tvBlurNoPlate.visibility = View.VISIBLE
                         binding.cbWindowCorrection.visibility = View.VISIBLE
                         binding.tvWindowReflection.visibility = View.VISIBLE
-                        binding.cbTiltWindow.visibility = View.VISIBLE
+                        binding.cbTintWindow.visibility = View.VISIBLE
                     } else  {
                         binding.cbBlurNoPlate.visibility = View.GONE
                         binding.tvBlurNoPlate.visibility = View.GONE
                         binding.cbWindowCorrection.visibility = View.GONE
                         binding.tvWindowReflection.visibility = View.GONE
-                        binding.cbTiltWindow.visibility = View.VISIBLE
+                        binding.cbTintWindow.visibility = View.VISIBLE
                     }
 
                 } else ->{
@@ -87,7 +87,7 @@ class SelectBackgroundFragment : BaseFragment<ProcessViewModel, FragmentSelectBa
                 binding.tvBlurNoPlate.visibility = View.GONE
                 binding.cbWindowCorrection.visibility = View.GONE
                 binding.tvWindowReflection.visibility = View.GONE
-                binding.cbTiltWindow.visibility = View.GONE
+                binding.cbTintWindow.visibility = View.GONE
                 }
             }
 
@@ -421,7 +421,7 @@ class SelectBackgroundFragment : BaseFragment<ProcessViewModel, FragmentSelectBa
             viewModel.sku.value?.skuId!!,
             backgroundSelect,
             viewModel.fromVideo,
-            binding.cbBlurNoPlate.isChecked,binding.cbWindowCorrection.isChecked,binding.cbTiltWindow.isChecked)
+            binding.cbBlurNoPlate.isChecked,binding.cbWindowCorrection.isChecked,binding.cbTintWindow.isChecked)
 
         log("Process sku started")
         log(

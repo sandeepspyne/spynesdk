@@ -179,7 +179,7 @@ interface ClipperApi {
         @Field("is_360") is360 : Boolean,
         @Field("number_plate_blur") numberPlateBlur : Boolean,
         @Field("window_correction") windowCorrection : Boolean,
-        @Field("tilt_window") tiltWindow : Boolean
+        @Field("tint_window") tintWindow : Boolean
     ) : ProcessSkuRes
 
 

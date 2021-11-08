@@ -544,8 +544,8 @@
                     android:gravity="center_vertical"
                     android:fontFamily="@font/poppins_medium"
                     android:layout_weight="1"
-                    android:id="@+id/tvTiltWindow"
-                    android:text="@string/tilt_window"
+                    android:id="@+id/tvTintWindow"
+                    android:text="@string/tint_window"
                     android:textColor="@color/black"
                     android:textSize="@dimen/sp_16" />
 
@@ -554,7 +554,7 @@
                     android:layout_height="wrap_content"
                     android:gravity="center_vertical"
 
-                    android:id="@+id/cbTiltWindow"
+                    android:id="@+id/cbTintWindow"
                     android:fontFamily="@font/poppins_medium"
                     android:textSize="@dimen/sp_16"
                     android:textColor="@color/black" />

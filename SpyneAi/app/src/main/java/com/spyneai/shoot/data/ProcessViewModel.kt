@@ -36,7 +36,7 @@ class ProcessViewModel : ViewModel() {
 
     var numberPlateBlur = false
     var windowCorrection = false
-    var tiltWindow = false
+    var tintWindow = false
 
 
 
@@ -94,7 +94,7 @@ class ProcessViewModel : ViewModel() {
     fun processSku(authKey: String, skuId: String, backgroundId: String, is360: Boolean,
                    numberPlateBlur: Boolean,
                    windowCorrection: Boolean,
-                   tiltWindow: Boolean) =
+                   tintWindow: Boolean) =
         viewModelScope.launch {
 
             //queue process request
@@ -102,7 +102,7 @@ class ProcessViewModel : ViewModel() {
 
             _processSkuRes.value = Resource.Loading
             _processSkuRes.value = repository.processSku(authKey, skuId, backgroundId,
-                is360,numberPlateBlur,windowCorrection,tiltWindow)
+                is360,numberPlateBlur,windowCorrection,tintWindow)
         }
 
     fun checkImagesUploadStatus(backgroundSelect: String) {
