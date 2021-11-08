@@ -44,14 +44,14 @@ class SelectAnotherImagetypeDialog : BaseDialogFragment<ShootViewModel, Fragment
     }
 
 
-//    override fun onResume() {
-//        super.onResume()
-//
-//        val dialog: Dialog? = dialog
-//        if (dialog != null) {
-//            dialog.getWindow()?.setLayout(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT)
-//        }
-//    }
+    override fun onResume() {
+        super.onResume()
+
+        val dialog: Dialog? = dialog
+        if (dialog != null) {
+            dialog.getWindow()?.setLayout(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT)
+        }
+    }
 
     override fun getFragmentBinding(
         inflater: LayoutInflater,
