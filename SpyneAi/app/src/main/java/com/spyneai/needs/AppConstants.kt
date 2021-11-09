@@ -1,5 +1,7 @@
 package com.spyneai.needs
 
+import com.spyneai.orders.data.response.ImagesOfSkuRes
+
 object AppConstants {
     val BASE_URL: String = "http://35.187.232.242:1000/api/"
     val STATUS_PROJECT_NAME: String="STATUS_PROJECT_NAME"
@@ -7,10 +9,17 @@ object AppConstants {
     val LOCALE = "LOCALE"
     val IS_360: String? = "IS_360"
     val IS_HD: String? = "IS_HD"
+
     var BIKES_CATEGORY_ID = "cat_d8R14zUNx"
     val CARS_CATEGORY_ID = "cat_d8R14zUNE"
     val FOOTWEAR_CATEGORY_ID = "cat_Ujt0kuFxX"
     val ECOM_CATEGORY_ID = "cat_Ujt0kuFxY"
+    val FOOD_AND_BEV_CATEGORY_ID = "cat_Ujt0kuFxY"
+    val HEALTH_AND_BEAUTY_CATEGORY_ID = "cat_P4t6BRVCxx"
+    val ACCESSORIES_CATEGORY_ID = "cat_P4t6BRVAyy"
+    val GENERIC_CATEGORY_ID = "cat_Zdb3iYQst"
+    val PHOTO_BOX_CATEGORY_ID = "cat_Ujt0kuFxA"
+
     val LIST_IMAGE_NAME = "LIST_IMAGE_NAME"
     val tokenId: String = "tokenId"
     val CREDITS_MESSAGE = "CREDITS_MESSAGE"
@@ -177,5 +186,13 @@ object AppConstants {
 
     val MINIMUM_VIDEO_DURATION = 1
     val DEFAULT_PRESIGNED_URL = "DEFAULT_PRESIGNED_URL"
+
+
+    val imageCatNameMap = HashMap<String,String>().apply {
+        put(ECOM_CATEGORY_ID,"Ecom")
+        put(FOOTWEAR_CATEGORY_ID,"Footwear")
+        put(FOOD_AND_BEV_CATEGORY_ID,"Food")
+        put(PHOTO_BOX_CATEGORY_ID,"Ecom")
+    }
 
 }

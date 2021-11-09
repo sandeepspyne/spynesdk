@@ -26,6 +26,7 @@ import com.spyneai.dashboard.ui.MainDashboardActivity
 import com.spyneai.loginsignup.activity.LoginActivity
 import com.spyneai.needs.AppConstants
 import com.spyneai.needs.Utilities
+import com.spyneai.orders.data.response.ImagesOfSkuRes
 import com.spyneai.posthog.Events
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
@@ -35,6 +36,7 @@ import org.json.JSONObject
 import java.text.SimpleDateFormat
 import java.util.*
 import kotlin.collections.ArrayList
+import kotlin.collections.HashMap
 
 private var TAG = "Locale_Check"
 
@@ -272,6 +274,10 @@ fun Context.isMagnatoMeterAvailable() : Boolean {
 
 fun Fragment.showToast(message : String){
     Toast.makeText(requireContext(),message,Toast.LENGTH_LONG).show()
+}
+
+fun getImageCategory(catId : String) : String {
+    return AppConstants.imageCatNameMap[catId]!!
 }
 
 

@@ -77,8 +77,12 @@ public class CategoriesDashboardAdapter(
 
        // viewHolder.imgCategory.setBackgroundColor(Color.parseColor(categoriesResponseList[position].colorCode))
 
-        if (position > 4)
+        if (categoriesResponseList[position].active == 1){
+            viewHolder.flCategories.alpha = 1.0F
+        }else{
             viewHolder.flCategories.alpha = 0.5F
+        }
+
         mClickListener = btnlistener
         viewHolder.flCategories.setOnClickListener(View.OnClickListener {
             Log.e("ok", "Ok way" + position)
