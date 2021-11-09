@@ -42,7 +42,7 @@ class OverlayEcomFragment : BaseFragment<ShootViewModel, FragmentOverlayEcomBind
 
 
     var overlaysAdapter: OverlaysAdapter? = null
-    var snackbar : Snackbar? = null
+    var snackbar: Snackbar? = null
     var position = 1
     var pos = 0
 
@@ -90,50 +90,52 @@ class OverlayEcomFragment : BaseFragment<ShootViewModel, FragmentOverlayEcomBind
             }
         })
 
-        viewModel.isSkuCreated.observe(viewLifecycleOwner,{
-           getOverlays()
+        viewModel.isSkuCreated.observe(viewLifecycleOwner, {
+            getOverlays()
         })
 
         observeOverlays()
 
-        viewModel.onImageConfirmed.observe(viewLifecycleOwner,{
-            if (viewModel.shootList.value != null && overlaysAdapter != null){
+        viewModel.onImageConfirmed.observe(viewLifecycleOwner, {
+            if (viewModel.shootList.value != null && overlaysAdapter != null) {
                 viewModel.setSelectedItem(overlaysAdapter?.listItems!!)
             }
 
             try {
-                val list = overlaysAdapter?.listItems  as List<OverlaysResponse.Data>
+                val list = overlaysAdapter?.listItems as List<OverlaysResponse.Data>
                 viewModel.allEcomOverlyasClicked = list.all {
                     it.imageClicked
                 }
 
-            }catch (e : Exception){
+            } catch (e: Exception) {
 
             }
         })
 
-        viewModel.notifyItemChanged.observe(viewLifecycleOwner,{
+        viewModel.notifyItemChanged.observe(viewLifecycleOwner, {
             overlaysAdapter?.notifyItemChanged(it)
         })
 
-        viewModel.scrollView.observe(viewLifecycleOwner,{
+        viewModel.scrollView.observe(viewLifecycleOwner, {
             binding.rvSubcategories.scrollToPosition(it)
         })
     }
 
     private fun observeOverlays() {
-        viewModel.overlaysResponse.observe(viewLifecycleOwner,{ it ->
-            when(it){
+        viewModel.overlaysResponse.observe(viewLifecycleOwner, { it ->
+            when (it) {
                 is Resource.Success -> {
                     Utilities.hideProgressDialog()
 
                     //set exterior angle value
                     viewModel.exterirorAngles.value = it.value.data.size
 
+
                     //update exterior angles in local DB
                     viewModel.updateSkuExteriorAngles(
                         viewModel.sku.value?.skuId!!,
-                        viewModel.exterirorAngles.value!!
+                        viewModel.exterirorAngles.value!!,
+                        viewModel.subCategory.value?.prod_sub_cat_id!!
                     )
 
                     viewModel.displayName = it.value.data[0].display_name
@@ -141,15 +143,18 @@ class OverlayEcomFragment : BaseFragment<ShootViewModel, FragmentOverlayEcomBind
 
                     requireContext().captureEvent(
                         Events.GET_OVERLAYS,
-                        HashMap<String,Any?>()
+                        HashMap<String, Any?>()
                             .apply {
                                 this["angles"] = it.value.data.size
                             }
-                           )
+                    )
 
-                    if (viewModel.fromDrafts){
-                        binding.tvShoot?.text = "${requireActivity().intent.getIntExtra(AppConstants.EXTERIOR_SIZE,0).plus(1)}/${it.value.data.size}"
-                    }else {
+                    if (viewModel.fromDrafts) {
+                        binding.tvShoot?.text = "${
+                            requireActivity().intent.getIntExtra(AppConstants.EXTERIOR_SIZE, 0)
+                                .plus(1)
+                        }/${it.value.data.size}"
+                    } else {
                         binding.tvShoot?.text = "1/${it.value.data.size}"
 
                     }
@@ -157,13 +162,13 @@ class OverlayEcomFragment : BaseFragment<ShootViewModel, FragmentOverlayEcomBind
                     val overlaysList = it.value.data
                     var index = 0
 
-                    if (viewModel.shootList.value != null){
+                    if (viewModel.shootList.value != null) {
                         overlaysList.forEach { overlay ->
                             val element = viewModel.shootList.value!!.firstOrNull {
                                 it.overlayId == overlay.id
                             }
 
-                            if (element != null){
+                            if (element != null) {
                                 overlay.imageClicked = true
                                 overlay.imagePath = element.capturedImage
                             }
@@ -173,14 +178,14 @@ class OverlayEcomFragment : BaseFragment<ShootViewModel, FragmentOverlayEcomBind
                             !it.isSelected && !it.imageClicked
                         }
 
-                        if (element != null){
+                        if (element != null) {
                             element.isSelected = true
                             viewModel.displayName = element.display_name
                             viewModel.displayThumbanil = element.display_thumbnail
 
                             index = overlaysList.indexOf(element)
                         }
-                    }else{
+                    } else {
                         //set overlays
                         overlaysList[0].isSelected = true
                         viewModel.displayName = it.value.data[0].display_name
@@ -188,13 +193,19 @@ class OverlayEcomFragment : BaseFragment<ShootViewModel, FragmentOverlayEcomBind
                     }
 
 
-                    overlaysAdapter = OverlaysAdapter(overlaysList,
+                    overlaysAdapter = OverlaysAdapter(
+                        overlaysList,
                         this@OverlayEcomFragment,
-                        this@OverlayEcomFragment)
+                        this@OverlayEcomFragment
+                    )
 
                     binding.rvSubcategories.apply {
                         visibility = View.VISIBLE
-                        layoutManager = LinearLayoutManager(requireContext(),LinearLayoutManager.HORIZONTAL,false)
+                        layoutManager = LinearLayoutManager(
+                            requireContext(),
+                            LinearLayoutManager.HORIZONTAL,
+                            false
+                        )
                         adapter = overlaysAdapter
                     }
 
@@ -202,7 +213,7 @@ class OverlayEcomFragment : BaseFragment<ShootViewModel, FragmentOverlayEcomBind
 
                     requireContext().captureEvent(
                         Events.GET_OVERLAYS,
-                        HashMap<String,Any?>()
+                        HashMap<String, Any?>()
                             .apply {
                                 this.put("angles", it.value.data.size)
                             }
@@ -216,18 +227,19 @@ class OverlayEcomFragment : BaseFragment<ShootViewModel, FragmentOverlayEcomBind
                 is Resource.Loading -> Utilities.showProgressDialog(requireContext())
 
                 is Resource.Failure -> {
-                    requireContext().captureFailureEvent(Events.GET_OVERLAYS_FAILED, HashMap<String,Any?>(),
+                    requireContext().captureFailureEvent(
+                        Events.GET_OVERLAYS_FAILED, HashMap<String, Any?>(),
                         it.errorMessage!!
                     )
                     Utilities.hideProgressDialog()
-                    handleApiError(it) {getOverlays()}
+                    handleApiError(it) { getOverlays() }
                 }
             }
         })
     }
 
 
-    private fun getPreviewDimensions(view : View) {
+    private fun getPreviewDimensions(view: View) {
         view.viewTreeObserver.addOnGlobalLayoutListener(object :
             ViewTreeObserver.OnGlobalLayoutListener {
             override fun onGlobalLayout() {
@@ -243,7 +255,6 @@ class OverlayEcomFragment : BaseFragment<ShootViewModel, FragmentOverlayEcomBind
     }
 
 
-
     private fun showImageConfirmDialog(shootData: ShootData) {
         viewModel.shootData.value = shootData
         ConfirmReshootPortraitDialog().show(requireFragmentManager(), "ConfirmReshootDialog")
@@ -253,23 +264,22 @@ class OverlayEcomFragment : BaseFragment<ShootViewModel, FragmentOverlayEcomBind
     private fun getOverlays() {
         viewModel.subCategory.value?.let {
             viewModel.getOverlays(
-                Utilities.getPreference(requireContext(),AppConstants.AUTH_KEY).toString(),
-               viewModel.categoryDetails.value?.categoryId!!,
+                Utilities.getPreference(requireContext(), AppConstants.AUTH_KEY).toString(),
+                viewModel.categoryDetails.value?.categoryId!!,
                 it.prod_sub_cat_id!!,
                 viewModel.exterirorAngles.value.toString()
             )
 
             requireContext().captureEvent(
                 Events.GET_OVERLAYS_INTIATED,
-                HashMap<String,Any?>()
+                HashMap<String, Any?>()
                     .apply {
-                       this.put("angles",viewModel.exterirorAngles.value.toString())
+                        this.put("angles", viewModel.exterirorAngles.value.toString())
                         this.put("prod_sub_cat_id", it.prod_sub_cat_id!!)
                     }
             )
         }
     }
-
 
 
     private fun showViews() {
@@ -292,14 +302,15 @@ class OverlayEcomFragment : BaseFragment<ShootViewModel, FragmentOverlayEcomBind
     override fun onOverlaySelected(view: View, position: Int, data: Any?) {
         viewModel.currentShoot = position
 
-        when(data){
-            is OverlaysResponse.Data->{
-                if(getString(R.string.app_name) != AppConstants.KARVI)
-                    loadOverlay(data.angle_name,data.display_thumbnail)
+        when (data) {
+            is OverlaysResponse.Data -> {
+                if (getString(R.string.app_name) != AppConstants.KARVI)
+                    loadOverlay(data.angle_name, data.display_thumbnail)
 
                 viewModel.overlayId = data.id
 
-                binding.tvShoot?.text = position.plus(1).toString()+"/"+viewModel.exterirorAngles.value.toString()
+                binding.tvShoot?.text =
+                    position.plus(1).toString() + "/" + viewModel.exterirorAngles.value.toString()
 
             }
 
@@ -311,10 +322,10 @@ class OverlayEcomFragment : BaseFragment<ShootViewModel, FragmentOverlayEcomBind
     override fun onItemClick(view: View, position: Int, data: Any?) {
         viewModel.currentShoot = position
 
-        when(data){
-            is OverlaysResponse.Data->{
-                if (data.imageClicked){
-                    ReclickDialog().show(requireActivity().supportFragmentManager,"ReclickDialog")
+        when (data) {
+            is OverlaysResponse.Data -> {
+                if (data.imageClicked) {
+                    ReclickDialog().show(requireActivity().supportFragmentManager, "ReclickDialog")
                 }
 
                 viewModel.overlayId = data.id
@@ -325,7 +336,7 @@ class OverlayEcomFragment : BaseFragment<ShootViewModel, FragmentOverlayEcomBind
                     it.isSelected
                 }
 
-                if (element != null && data != element){
+                if (element != null && data != element) {
                     viewModel.displayName = data.display_name
                     viewModel.displayThumbanil = data.display_thumbnail
                     // viewModel.selectedOverlay = data
@@ -340,7 +351,7 @@ class OverlayEcomFragment : BaseFragment<ShootViewModel, FragmentOverlayEcomBind
         }
     }
 
-    private fun loadOverlay(name : String,overlay : String) {
+    private fun loadOverlay(name: String, overlay: String) {
 
         val requestOptions = RequestOptions()
             .diskCacheStrategy(DiskCacheStrategy.ALL)
@@ -355,7 +366,7 @@ class OverlayEcomFragment : BaseFragment<ShootViewModel, FragmentOverlayEcomBind
                     target: Target<Drawable>?,
                     isFirstResource: Boolean
                 ): Boolean {
-                    val properties =  HashMap<String,Any?>()
+                    val properties = HashMap<String, Any?>()
                     properties["name"] = name
                     properties["error"] = e?.localizedMessage
                     properties["category"] = viewModel.categoryDetails.value?.categoryName
@@ -365,11 +376,20 @@ class OverlayEcomFragment : BaseFragment<ShootViewModel, FragmentOverlayEcomBind
                         properties
                     )
 
-                    snackbar = Snackbar.make(binding.root, "Overlay Failed to load", Snackbar.LENGTH_INDEFINITE)
+                    snackbar = Snackbar.make(
+                        binding.root,
+                        "Overlay Failed to load",
+                        Snackbar.LENGTH_INDEFINITE
+                    )
                         .setAction("Retry") {
-                            loadOverlay(name,overlay)
+                            loadOverlay(name, overlay)
                         }
-                        .setActionTextColor(ContextCompat.getColor(requireContext(), R.color.primary))
+                        .setActionTextColor(
+                            ContextCompat.getColor(
+                                requireContext(),
+                                R.color.primary
+                            )
+                        )
 
                     snackbar?.show()
                     return false
@@ -386,7 +406,7 @@ class OverlayEcomFragment : BaseFragment<ShootViewModel, FragmentOverlayEcomBind
                     if (snackbar != null)
                         snackbar?.dismiss()
 
-                    val properties =  HashMap<String,Any?>()
+                    val properties = HashMap<String, Any?>()
                     properties["name"] = name
                     properties["category"] = viewModel.categoryDetails.value?.categoryName
 

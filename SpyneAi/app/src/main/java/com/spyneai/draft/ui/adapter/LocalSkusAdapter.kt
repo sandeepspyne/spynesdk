@@ -77,7 +77,6 @@ class LocalSkusAdapter(
 
         }
 
-
         if (skuList[position].categoryId == AppConstants.CARS_CATEGORY_ID && (skuList[position].categoryId == skuList[position].subcategoryId)) {
             Glide.with(context)
                 .load(R.drawable.three_sixty_thumbnail)
