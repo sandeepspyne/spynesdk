@@ -15,7 +15,6 @@ import com.spyneai.orders.data.response.CompletedSKUsResponse
 import com.spyneai.orders.data.response.GetOngoingSkusResponse
 import com.spyneai.orders.data.response.GetProjectsResponse
 import com.spyneai.orders.data.response.ImagesOfSkuRes
-import com.spyneai.orders.data.response.*
 import com.spyneai.service.manual.FilesDataRes
 import com.spyneai.shoot.data.model.*
 import com.spyneai.shoot.response.SkuProcessStateResponse
@@ -30,8 +29,6 @@ import okhttp3.RequestBody
 import org.json.JSONObject
 import okhttp3.ResponseBody
 import retrofit2.Call
-import retrofit2.Callback
-import retrofit2.Response
 import retrofit2.http.*
 
 interface ClipperApi {
@@ -147,12 +144,13 @@ interface ClipperApi {
     @FormUrlEncoded
     @POST("v2/sku/processImages")
     suspend fun processSku(
-        @Field("auth_key") authKey : String,
-        @Field("sku_id") skuId : String,
-        @Field("background_id") backgroundId : String,
-        @Field("is_360") is360 : Boolean,
-        @Field("number_plate_blur") numberPlateBlur : Boolean,
-        @Field("window_correction") windowCorrection : Boolean
+        @Field("auth_key") authKey: String,
+        @Field("sku_id") skuId: String,
+        @Field("background_id") backgroundId: String,
+        @Field("is_360") is360: Boolean,
+        @Field("number_plate_blur") numberPlateBlur: Boolean,
+        @Field("window_correction") windowCorrection: Boolean,
+        @Field("tint_window") tintWindow: Boolean,
     ) : ProcessSkuRes
 
 

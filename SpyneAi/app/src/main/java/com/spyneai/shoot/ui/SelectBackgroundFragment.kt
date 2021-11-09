@@ -57,6 +57,9 @@ class SelectBackgroundFragment : BaseFragment<ProcessViewModel, FragmentSelectBa
         binding.cbWindowCorrection.setOnCheckedChangeListener { buttonView, isChecked ->
             viewModel.windowCorrection = isChecked
         }
+        binding.cbTintWindow.setOnCheckedChangeListener { buttonView, isChecked ->
+            viewModel.tintWindow = isChecked
+        }
 
 
       //   blur no plate & window correction
@@ -67,11 +70,15 @@ class SelectBackgroundFragment : BaseFragment<ProcessViewModel, FragmentSelectBa
                         binding.tvBlurNoPlate.visibility = View.VISIBLE
                         binding.cbWindowCorrection.visibility = View.VISIBLE
                         binding.tvWindowReflection.visibility = View.VISIBLE
+                        binding.tvTintWindow.visibility = View.VISIBLE
+                        binding.cbTintWindow.visibility = View.VISIBLE
                     } else  {
                         binding.cbBlurNoPlate.visibility = View.GONE
                         binding.tvBlurNoPlate.visibility = View.GONE
                         binding.cbWindowCorrection.visibility = View.GONE
                         binding.tvWindowReflection.visibility = View.GONE
+                        binding.tvTintWindow.visibility = View.VISIBLE
+                        binding.cbTintWindow.visibility = View.VISIBLE
                     }
 
                 } else ->{
@@ -79,6 +86,8 @@ class SelectBackgroundFragment : BaseFragment<ProcessViewModel, FragmentSelectBa
                 binding.tvBlurNoPlate.visibility = View.GONE
                 binding.cbWindowCorrection.visibility = View.GONE
                 binding.tvWindowReflection.visibility = View.GONE
+                binding.tvTintWindow.visibility = View.GONE
+                binding.cbTintWindow.visibility = View.GONE
                 }
             }
 
@@ -411,7 +420,7 @@ class SelectBackgroundFragment : BaseFragment<ProcessViewModel, FragmentSelectBa
             Utilities.getPreference(requireContext(), AppConstants.AUTH_KEY).toString(),
             viewModel.sku.value?.skuId!!,
             backgroundSelect,
-            false,binding.cbBlurNoPlate.isChecked,binding.cbWindowCorrection.isChecked)
+            false,binding.cbBlurNoPlate.isChecked,binding.cbWindowCorrection.isChecked,binding.cbTintWindow.isChecked)
 
         log("Process sku started")
         log(

@@ -533,6 +533,33 @@
                 android:textColor="@color/black" />
 
             </LinearLayout>
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:paddingHorizontal="@dimen/dp_20"
+                android:orientation="horizontal">
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center_vertical"
+                    android:fontFamily="@font/poppins_medium"
+                    android:layout_weight="1"
+                    android:id="@+id/tvTintWindow"
+                    android:text="@string/tint_window"
+                    android:textColor="@color/black"
+                    android:textSize="@dimen/sp_16" />
+
+                <CheckBox
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:gravity="center_vertical"
+
+                    android:id="@+id/cbTintWindow"
+                    android:fontFamily="@font/poppins_medium"
+                    android:textSize="@dimen/sp_16"
+                    android:textColor="@color/black" />
+
+            </LinearLayout>
 
 
             <TextView
