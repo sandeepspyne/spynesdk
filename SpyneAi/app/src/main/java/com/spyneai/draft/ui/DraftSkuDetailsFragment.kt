@@ -194,14 +194,19 @@ class DraftSkuDetailsFragment : BaseFragment<DraftViewModel, FragmentDraftSkuDet
             }
         } else {
 
-            val s = exterior?.map {
+            val extPathList = exterior?.map {
                 it.input_image_hres_url
+            } as ArrayList<String>
+
+            val imageNameList = exterior?.map {
+                it.image_name
             } as ArrayList<String>
 
             shootIntent?.apply {
                 putExtra(AppConstants.FROM_LOCAL_DB, false)
                 putExtra(AppConstants.EXTERIOR_SIZE, exterior.size)
-                putStringArrayListExtra(AppConstants.EXTERIOR_LIST, s)
+                putStringArrayListExtra(AppConstants.EXTERIOR_LIST, extPathList)
+                putStringArrayListExtra(AppConstants.SHOOT_IMAGE_NAME_LIST, imageNameList)
                 putExtra(AppConstants.INTERIOR_SIZE, interiorList.size)
                 putExtra(AppConstants.MISC_SIZE, miscList.size)
             }

@@ -46,6 +46,8 @@ class DraftGridFragment : BaseFragment<ShootViewModel, FragmentGridEcomBinding>(
                 binding.tvSkuName?.text = viewModel.sku.value?.skuName
                 binding.tvSkuName.visibility = View.VISIBLE
                 viewModel.isSkuCreated.value = false
+            }else {
+                val s = ""
             }
         })
 
@@ -75,31 +77,33 @@ class DraftGridFragment : BaseFragment<ShootViewModel, FragmentGridEcomBinding>(
 
     private fun setClickedImages() {
         viewModel.shootList.value?.let {
-            binding.tvImageCount.text = viewModel.shootList.value!!.size.toString()
-            it[viewModel.currentShoot].imageClicked = true
-            it[viewModel.currentShoot].isSelected = false
-            //update captured images
-            if (clickedAdapter == null){
-                clickedAdapter = ClickedAdapter(it,this,this)
-                binding.rvClicked.apply {
-                    layoutManager = LinearLayoutManager(requireContext(),
-                        LinearLayoutManager.HORIZONTAL,false)
-                    adapter = clickedAdapter
-                }
-            }else{
-                try {
-                    if (viewModel.isReclick){
-                        clickedAdapter?.notifyItemChanged(viewModel.currentShoot)
-                    }else{
-                        clickedAdapter?.notifyItemInserted(it.size - 1)
+            if (it.isNotEmpty()){
+                binding.tvImageCount.text = viewModel.shootList.value!!.size.toString()
+                it[viewModel.currentShoot].imageClicked = true
+                it[viewModel.currentShoot].isSelected = false
+                //update captured images
+                if (clickedAdapter == null){
+                    clickedAdapter = ClickedAdapter(it,this,this)
+                    binding.rvClicked.apply {
+                        layoutManager = LinearLayoutManager(requireContext(),
+                            LinearLayoutManager.HORIZONTAL,false)
+                        adapter = clickedAdapter
                     }
-                }catch (e : Exception){
-                    val s = ""
+                }else{
+                    try {
+                        if (viewModel.isReclick){
+                            clickedAdapter?.notifyItemChanged(viewModel.currentShoot)
+                        }else{
+                            clickedAdapter?.notifyItemInserted(it.size - 1)
+                        }
+                    }catch (e : Exception){
+                        val s = ""
+                    }
                 }
+                viewModel.overlayId = it.size
+                viewModel.currentShoot = it.size
+                binding.rvClicked.scrollToPosition(it.size.minus(1))
             }
-            viewModel.overlayId = it.size
-            viewModel.currentShoot = it.size
-            binding.rvClicked.scrollToPosition(it.size.minus(1))
         }
     }
 
@@ -133,7 +137,7 @@ class DraftGridFragment : BaseFragment<ShootViewModel, FragmentGridEcomBinding>(
     }
 
     override fun onOverlaySelected(view: View, position: Int, data: Any?) {
-        viewModel.overlayId = position
+       // viewModel.overlayId = position
     }
 
     override fun getViewModel() = ShootViewModel::class.java

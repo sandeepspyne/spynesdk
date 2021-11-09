@@ -15,6 +15,7 @@ class FileNameManager {
             "Exterior" -> {
                 imageType + "_" + currentShoot.plus(1)
             }
+
             "Interior" -> {
                 val interiorList = list?.filter {
                     it.image_category == "Interior"
@@ -26,8 +27,8 @@ class FileNameManager {
                     imageType + "_" +
                             interiorSize?.plus(interiorList.size.plus(1))
                 }
-
             }
+
             "Focus Shoot" -> {
                 val miscList = list?.filter {
                     it.image_category == "Focus Shoot"
@@ -41,9 +42,11 @@ class FileNameManager {
                             miscSize?.plus(miscList.size.plus(1))
                 }
             }
+
             "Footwear","Food & Beverages","Ecom","Food","Photo Box" -> {
                 imageType + "_" + currentShoot.plus(1)
             }
+
             else -> {
                 System.currentTimeMillis().toString()
             }

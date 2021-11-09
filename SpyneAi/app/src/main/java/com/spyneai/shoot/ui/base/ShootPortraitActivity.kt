@@ -261,11 +261,12 @@ class ShootPortraitActivity : AppCompatActivity(), GoogleApiClient.ConnectionCal
         sku.categoryName = shootViewModel.categoryDetails.value?.categoryName
 
         shootViewModel.sku.value = sku
+        shootViewModel.isSkuCreated.value = true
 
         if (intent.getStringExtra(AppConstants.CATEGORY_NAME) == "Footwear") {
             shootViewModel.exterirorAngles.value =
                 intent.getIntExtra(AppConstants.EXTERIOR_ANGLES, 0)
-            shootViewModel.isSkuCreated.value = true
+
             //sub category selected
             shootViewModel.subCatName.value = intent.getStringExtra(AppConstants.SUB_CAT_NAME)
 
@@ -297,7 +298,8 @@ class ShootPortraitActivity : AppCompatActivity(), GoogleApiClient.ConnectionCal
                     image.skuId!!,
                     getImageCategory(intent.getStringExtra(AppConstants.CATEGORY_ID)!!),
                     Utilities.getPreference(this, AppConstants.AUTH_KEY).toString(),
-                    image.overlayId?.toInt()!!
+                    image.overlayId?.toInt()!!,
+                    index.plus(1)
                 )
 
                 shootData.imageClicked = true
@@ -329,7 +331,10 @@ class ShootPortraitActivity : AppCompatActivity(), GoogleApiClient.ConnectionCal
                         image.skuId!!,
                         getImageCategory(intent.getStringExtra(AppConstants.CATEGORY_ID)!!),
                         Utilities.getPreference(this, AppConstants.AUTH_KEY).toString(),
-                        index.plus(1)
+                        image.overlayId?.toInt()!!,
+                        image.sequence!!,
+                        image.angle!!,
+                        image.name!!
                     )
 
                     shootData.imageClicked = true
@@ -337,8 +342,11 @@ class ShootPortraitActivity : AppCompatActivity(), GoogleApiClient.ConnectionCal
                         shootData
                     )
                 }
+
+                val s = ""
             } else {
                 val list = intent.getStringArrayListExtra(AppConstants.EXTERIOR_LIST)
+                val imageNameList = intent.getStringArrayListExtra(AppConstants.SHOOT_IMAGE_NAME_LIST)
 
                 list?.forEachIndexed { index, image ->
                     val shootData = ShootData(
@@ -347,7 +355,10 @@ class ShootPortraitActivity : AppCompatActivity(), GoogleApiClient.ConnectionCal
                         intent.getStringExtra(AppConstants.SKU_ID)!!,
                         getImageCategory(intent.getStringExtra(AppConstants.CATEGORY_ID)!!),
                         Utilities.getPreference(this, AppConstants.AUTH_KEY).toString(),
-                        index.plus(1)
+                        index,
+                        index.plus(1),
+                        0,
+                        imageNameList!![index]
                     )
 
                     shootData.imageClicked = true
@@ -356,6 +367,7 @@ class ShootPortraitActivity : AppCompatActivity(), GoogleApiClient.ConnectionCal
                     )
                 }
 
+                val s = ""
 
             }
 

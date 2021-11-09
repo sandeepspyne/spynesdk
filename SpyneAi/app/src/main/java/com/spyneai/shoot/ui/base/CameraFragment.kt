@@ -501,6 +501,8 @@ class CameraFragment : BaseFragment<ShootViewModel, FragmentCameraBinding>(), Pi
             requireActivity().intent.getIntExtra(AppConstants.MISC_SIZE, 0)
         )
 
+        val s = ""
+
         Log.d(TAG, "takePhoto: "+filename)
 
         // Options fot the output image file
@@ -683,6 +685,7 @@ class CameraFragment : BaseFragment<ShootViewModel, FragmentCameraBinding>(), Pi
             requireActivity().intent.getIntExtra(AppConstants.MISC_SIZE, 0)
         )
 
+        Log.d(TAG, "addShootItem: "+sequenceNumber)
         val debugData = JSONObject()
         debugData.put("roll",roll.roundToInt().unaryPlus())
         debugData.put("pitch",pitch.roundToInt().unaryPlus())

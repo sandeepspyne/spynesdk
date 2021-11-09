@@ -288,7 +288,7 @@ class ShootViewModel : ViewModel() {
         image.skuName = sku.value?.skuName
         image.angle = shootData.angle
         image.meta = shootData.meta
-        image.name = shootData.name + "." + shootData.capturedImage.substringAfter(".")
+        image.name = if (shootData.name.contains(".")) shootData.name else shootData.name + "." + shootData.capturedImage.substringAfter(".")
         image.debugData = shootData.debugData
         image.isReshoot = if (isReshoot) 1 else 0
         image.isReclick = if (isReclick) 1 else 0

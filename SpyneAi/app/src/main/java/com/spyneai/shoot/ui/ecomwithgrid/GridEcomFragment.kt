@@ -125,7 +125,7 @@ class GridEcomFragment : BaseFragment<ShootViewModel, FragmentGridEcomBinding>()
     }
 
     override fun onOverlaySelected(view: View, position: Int, data: Any?) {
-        viewModel.overlayId = position
+       // viewModel.overlayId = position
     }
 
     override fun getViewModel() = ShootViewModel::class.java
