@@ -510,6 +510,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:paddingHorizontal="@dimen/dp_20"
+                android:visibility="gone"
                 android:orientation="horizontal">
             <TextView
                 android:layout_width="match_parent"

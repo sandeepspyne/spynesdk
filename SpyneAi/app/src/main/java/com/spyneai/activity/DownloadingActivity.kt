@@ -208,7 +208,7 @@ class DownloadingActivity : AppCompatActivity() {
         EventBus.getDefault().unregister(this)
     }
 
-    val download_completed: String = getString(R.string.download_completed)
+//    val download_completed: String = getString(R.string.download_completed)
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     fun onMessageEvent(event: HDImagesDownloadedEvent?) {

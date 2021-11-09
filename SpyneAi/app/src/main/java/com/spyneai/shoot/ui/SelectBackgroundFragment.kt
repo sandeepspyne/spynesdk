@@ -68,8 +68,8 @@ class SelectBackgroundFragment : BaseFragment<ProcessViewModel, FragmentSelectBa
                     if (getString(R.string.app_name) == AppConstants.SPYNE_AI) {
                         binding.cbBlurNoPlate.visibility = View.VISIBLE
                         binding.tvBlurNoPlate.visibility = View.VISIBLE
-                        binding.cbWindowCorrection.visibility = View.VISIBLE
-                        binding.tvWindowReflection.visibility = View.VISIBLE
+                        binding.cbWindowCorrection.visibility = View.GONE
+                        binding.tvWindowReflection.visibility = View.GONE
                         binding.tvTintWindow.visibility = View.VISIBLE
                         binding.cbTintWindow.visibility = View.VISIBLE
                     } else  {
