@@ -44,21 +44,33 @@ class ReshootActivity : AppCompatActivity() {
         categoryDetails.apply {
             categoryId = intent.getStringExtra(AppConstants.CATEGORY_ID)
             categoryName = intent.getStringExtra(AppConstants.CATEGORY_NAME)
-            gifList =  intent.getStringExtra(AppConstants.GIF_LIST)
+            gifList = intent.getStringExtra(AppConstants.GIF_LIST)
         }
 
         shootViewModel.categoryDetails.value = categoryDetails
 
         setShoot()
 
-        supportFragmentManager.beginTransaction()
+        val transaction = supportFragmentManager.beginTransaction()
             .add(R.id.flContainer, CameraFragment())
-            .add(R.id.flContainer, ReshootFragment())
-            .commit()
 
-        shootViewModel.reshootCompleted.observe(this,{
-           Intent(this,ReshootDoneActivity::class.java)
-               .apply { startActivity(this) }
+        when (categoryDetails.categoryId) {
+            AppConstants.FOOTWEAR_CATEGORY_ID -> {
+                transaction.add(R.id.flContainer, EcomOverlayReshootFragment())
+                    .commit()
+            }
+            else -> {
+                transaction.add(R.id.flContainer, ReshootFragment())
+                    .commit()
+            }
+        }
+
+        shootViewModel.reshootCompleted.observe(this, {
+            Intent(this, ReshootDoneActivity::class.java)
+                .apply {
+                    putExtra(AppConstants.CATEGORY_ID,categoryDetails.categoryId)
+                    startActivity(this)
+                }
         })
     }
 

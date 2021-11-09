@@ -56,9 +56,15 @@ class ProcessActivity : AppCompatActivity() {
 
         processViewModel.startTimer.observe(this,{
             if (it) {
+                val bundle = Bundle()
+                bundle.putString(AppConstants.CATEGORY_ID,intent.getStringExtra(AppConstants.CATEGORY_ID))
+
+                val fragment = ImageProcessingStartedFragment()
+                fragment.arguments = bundle
+
                 // add select background fragment
                 supportFragmentManager.beginTransaction()
-                    .add(R.id.flContainer, ImageProcessingStartedFragment())
+                    .add(R.id.flContainer, fragment)
                     .commit()
             }
         })

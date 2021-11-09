@@ -356,6 +356,7 @@ class DraftSkuDetailsFragment : BaseFragment<DraftViewModel, FragmentDraftSkuDet
 
         processIntent.apply {
             putExtra(AppConstants.CATEGORY_NAME, intent.getStringExtra(AppConstants.CATEGORY_NAME))
+            putExtra(AppConstants.CATEGORY_ID, intent.getStringExtra(AppConstants.CATEGORY_ID))
             putExtra("sku_id", intent.getStringExtra(AppConstants.SKU_ID))
             putExtra("project_id", intent.getStringExtra(AppConstants.PROJECT_ID))
             putExtra("exterior_angles", intent.getIntExtra(AppConstants.EXTERIOR_ANGLES, 0))

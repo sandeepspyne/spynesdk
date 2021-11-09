@@ -26,14 +26,15 @@ class ImageProcessingStartedFragment : BaseFragment<ProcessViewModel, FragmentIm
         super.onViewCreated(view, savedInstanceState)
 
 
-        if (getString(R.string.app_name) == AppConstants.SPYNE_AI){
-            Glide.with(this).asGif().load(R.raw.image_processing_started)
-                .into(binding.ivProcessing)
-        }else {
-            Glide.with(this).load(R.drawable.app_logo)
-                .into(binding.ivProcessing)
+        arguments?.let {
+            if (it.getString(AppConstants.CATEGORY_ID) == AppConstants.CARS_CATEGORY_ID){
+                Glide.with(this).asGif().load(R.raw.image_processing_started)
+                    .into(binding.ivProcessing)
+            }else{
+                Glide.with(this).load(R.drawable.app_logo)
+                    .into(binding.ivProcessing)
+            }
         }
-
 
         binding.llHome.setOnClickListener {
             requireContext().gotoHome()

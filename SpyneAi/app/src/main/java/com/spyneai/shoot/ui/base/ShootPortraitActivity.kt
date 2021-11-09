@@ -193,6 +193,7 @@ class ShootPortraitActivity : AppCompatActivity(), GoogleApiClient.ConnectionCal
                 val processIntent = Intent(this, ProcessActivity::class.java)
                 processIntent.apply {
                     this.putExtra(AppConstants.CATEGORY_NAME, categoryDetails.categoryName)
+                    this.putExtra(AppConstants.CATEGORY_ID, categoryDetails.categoryId)
                     this.putExtra("sku_id", shootViewModel.sku.value?.skuId)
                     this.putExtra("project_id", shootViewModel.sku.value?.projectId)
                     this.putExtra("exterior_angles", shootViewModel.exterirorAngles.value)
