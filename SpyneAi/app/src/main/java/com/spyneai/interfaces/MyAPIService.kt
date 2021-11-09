@@ -7,6 +7,7 @@ import com.spyneai.aipack.FetchGifRequest
 import com.spyneai.aipack.FetchGifResponse
 import com.spyneai.dashboard.response.NewCategoriesResponse
 import com.spyneai.dashboard.response.NewSubCatResponse
+import com.spyneai.dashboard.ui.WhiteLabelConstants
 import com.spyneai.loginsignup.models.ForgotPasswordResponse
 import com.spyneai.loginsignup.models.GetCountriesResponse
 import com.spyneai.loginsignup.models.LoginEmailPasswordResponse
@@ -83,9 +84,10 @@ interface MyAPIService {
             Call<SignupResponse>?
 
 
-    @POST("v2/forgot-password")
+    @GET("v2/user/forgot-password")
     fun forgotPassword(
-        @Query("emailId") userId: String?,
+        @Query("email_id") userId: String?,
+        @Query("api_key") apiKey: String = WhiteLabelConstants.API_KEY
     ): Call<ForgotPasswordResponse>?
 
     @POST("user/phone")
