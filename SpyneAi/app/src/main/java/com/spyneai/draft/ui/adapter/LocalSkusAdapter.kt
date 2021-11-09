@@ -164,6 +164,8 @@ class LocalSkusAdapter(
                     skuList[position].exteriorAngles
                 )
 
+                val s = ""
+
 //                when (skuList[position].subcategoryId) {
 //                    "prod_4CW50lj2sNMCS" -> draftIntent.putExtra(AppConstants.EXTERIOR_ANGLES, 5)
 //                    "prod_4CW50lj2sNMF" -> draftIntent.putExtra(AppConstants.EXTERIOR_ANGLES, 6)

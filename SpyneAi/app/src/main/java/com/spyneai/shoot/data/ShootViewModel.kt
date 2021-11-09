@@ -664,6 +664,7 @@ class ShootViewModel : ViewModel() {
         _reshootOverlaysRes.value = repository.getOverlayIds(ids)
     }
 
+    fun updateSkuExteriorAngles(skuId: String,angles: Int) = localRepository.updateSkuExteriorAngles(skuId,angles)
 
     var gifDialogShown = false
     var createProjectDialogShown = false

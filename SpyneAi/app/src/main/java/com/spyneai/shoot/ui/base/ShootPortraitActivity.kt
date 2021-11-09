@@ -264,29 +264,7 @@ class ShootPortraitActivity : AppCompatActivity(), GoogleApiClient.ConnectionCal
         shootViewModel.isSkuCreated.value = true
 
         if (intent.getStringExtra(AppConstants.CATEGORY_NAME) == "Footwear") {
-            shootViewModel.exterirorAngles.value =
-                intent.getIntExtra(AppConstants.EXTERIOR_ANGLES, 0)
 
-            //sub category selected
-            shootViewModel.subCatName.value = intent.getStringExtra(AppConstants.SUB_CAT_NAME)
-
-            shootViewModel.subCategory.value = NewSubCatResponse.Data(
-                1,
-                "",
-                "",
-                "",
-                1,
-                1,
-                intent.getStringExtra(AppConstants.CATEGORY_ID)!!,
-                intent.getStringExtra(AppConstants.SUB_CAT_ID)!!,
-                intent.getStringExtra(AppConstants.SUB_CAT_NAME)!!,
-                ""
-            )
-
-            shootViewModel.isSubCategoryConfirmed.value = true
-
-            // if (intent.getIntExtra(AppConstants.EXTERIOR_ANGLES,0) == intent.getIntExtra(AppConstants.EXTERIOR_SIZE,0)){
-            shootViewModel.showDialog = false
             val list = shootViewModel.getImagesbySkuId(shootViewModel.sku.value?.skuId!!)
 
             shootViewModel.shootList.value = ArrayList()
@@ -307,6 +285,35 @@ class ShootPortraitActivity : AppCompatActivity(), GoogleApiClient.ConnectionCal
                 shootViewModel.shootList.value!!.add(
                     shootData
                 )
+            }
+
+            if (intent.getIntExtra(AppConstants.EXTERIOR_ANGLES, 0)
+                == intent.getIntExtra(AppConstants.EXTERIOR_SIZE, 0)){
+                 shootViewModel.stopShoot.value = true
+            }else {
+                shootViewModel.exterirorAngles.value =
+                    intent.getIntExtra(AppConstants.EXTERIOR_ANGLES, 0)
+
+                //sub category selected
+                shootViewModel.subCatName.value = intent.getStringExtra(AppConstants.SUB_CAT_NAME)
+
+                shootViewModel.subCategory.value = NewSubCatResponse.Data(
+                    1,
+                    "",
+                    "",
+                    "",
+                    1,
+                    1,
+                    intent.getStringExtra(AppConstants.CATEGORY_ID)!!,
+                    intent.getStringExtra(AppConstants.SUB_CAT_ID)!!,
+                    intent.getStringExtra(AppConstants.SUB_CAT_NAME)!!,
+                    ""
+                )
+
+                shootViewModel.isSubCategoryConfirmed.value = true
+
+                // if (intent.getIntExtra(AppConstants.EXTERIOR_ANGLES,0) == intent.getIntExtra(AppConstants.EXTERIOR_SIZE,0)){
+                shootViewModel.showDialog = false
             }
 
 

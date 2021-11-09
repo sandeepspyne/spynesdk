@@ -298,8 +298,6 @@ class ShootLocalRepository {
         return skuList
     }
 
-
-
     private fun getImagesByProjectId(projectId: String): Int {
         val projection = arrayOf(
             BaseColumns._ID,
@@ -552,7 +550,26 @@ class ShootLocalRepository {
             projectValues,
             projectSelection,
             projectSelectionArgs)
+    }
 
+    fun updateSkuExteriorAngles(skuId: String,angles : Int) {
+        val projectValues = ContentValues().apply {
+            put(
+                Projects.COLUMN_NAME_EXTERIOR_ANGLES,
+                angles
+            )
+        }
+
+        val projectSelection = "${ShootContract.ShootEntry.COLUMN_NAME_SKU_ID} LIKE ?"
+        // Which row to update, based on the title
+
+        val projectSelectionArgs = arrayOf(skuId)
+
+        val projectCount = dbWritable.update(
+            ShootContract.ShootEntry.TABLE_NAME,
+            projectValues,
+            projectSelection,
+            projectSelectionArgs)
     }
 
 

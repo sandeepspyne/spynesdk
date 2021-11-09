@@ -129,6 +129,13 @@ class OverlayEcomFragment : BaseFragment<ShootViewModel, FragmentOverlayEcomBind
 
                     //set exterior angle value
                     viewModel.exterirorAngles.value = it.value.data.size
+
+                    //update exterior angles in local DB
+                    viewModel.updateSkuExteriorAngles(
+                        viewModel.sku.value?.skuId!!,
+                        viewModel.exterirorAngles.value!!
+                    )
+
                     viewModel.displayName = it.value.data[0].display_name
                     viewModel.displayThumbanil = it.value.data[0].display_thumbnail
 
@@ -136,7 +143,7 @@ class OverlayEcomFragment : BaseFragment<ShootViewModel, FragmentOverlayEcomBind
                         Events.GET_OVERLAYS,
                         HashMap<String,Any?>()
                             .apply {
-                                this.put("angles",it.value.data.size)
+                                this["angles"] = it.value.data.size
                             }
                            )
 
