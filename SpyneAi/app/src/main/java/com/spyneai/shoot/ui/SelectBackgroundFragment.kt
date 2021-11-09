@@ -25,6 +25,7 @@ import com.spyneai.shoot.adapters.NewCarBackgroundAdapter
 import com.spyneai.shoot.data.ProcessViewModel
 import com.spyneai.shoot.data.model.CarsBackgroundRes
 import com.spyneai.shoot.utils.log
+import kotlinx.android.synthetic.main.fragment_select_background.*
 import okhttp3.MultipartBody
 import okhttp3.RequestBody.Companion.toRequestBody
 
@@ -74,13 +75,28 @@ class SelectBackgroundFragment : BaseFragment<ProcessViewModel, FragmentSelectBa
                         binding.cbWindowCorrection.visibility = View.VISIBLE
                         binding.tvWindowReflection.visibility = View.VISIBLE
                         binding.cbTintWindow.visibility = View.VISIBLE
+                        binding.tvTintWindow.visibility = View.VISIBLE
                     } else  {
                         binding.cbBlurNoPlate.visibility = View.GONE
                         binding.tvBlurNoPlate.visibility = View.GONE
                         binding.cbWindowCorrection.visibility = View.GONE
                         binding.tvWindowReflection.visibility = View.GONE
                         binding.cbTintWindow.visibility = View.VISIBLE
+                        binding.tvTintWindow.visibility = View.VISIBLE
                     }
+
+                    if (getString(R.string.app_name) == AppConstants.CARS24 ||
+                        getString(R.string.app_name) == AppConstants.CARS24_INDIA){
+
+                            cbTintWindow.isChecked
+
+                        binding.cbTintWindow.visibility = View.GONE
+                        binding.tvTintWindow.visibility = View.GONE
+
+
+
+                    }
+
 
                 } else ->{
                 binding.cbBlurNoPlate.visibility = View.GONE
@@ -88,6 +104,7 @@ class SelectBackgroundFragment : BaseFragment<ProcessViewModel, FragmentSelectBa
                 binding.cbWindowCorrection.visibility = View.GONE
                 binding.tvWindowReflection.visibility = View.GONE
                 binding.cbTintWindow.visibility = View.GONE
+                binding.tvTintWindow.visibility = View.GONE
                 }
             }
 
