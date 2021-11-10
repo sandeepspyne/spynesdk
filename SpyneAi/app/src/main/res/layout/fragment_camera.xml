@@ -82,6 +82,26 @@
         app:layout_constraintBottom_toTopOf="@+id/viewInstructions"
         android:src="@drawable/ic_bowl"/>
 
+    <ImageView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/ic_bottom_left"
+        android:visibility="gone"
+        app:tint="@color/green"
+        app:layout_constraintStart_toStartOf="@id/flLevelIndicator"
+        app:layout_constraintBottom_toTopOf="@+id/viewInstructions"
+        android:id="@+id/ivBottomLeftSwiggy"/>
+    <ImageView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/ic_bottom_right"
+        android:visibility="gone"
+        app:tint="@color/green"
+        app:layout_constraintRight_toRightOf="@id/flLevelIndicator"
+        app:layout_constraintBottom_toTopOf="@+id/viewInstructions"
+        android:id="@+id/ivBottomRightSwiggy"/>
+
+
     <TextView
         android:id="@+id/tvInstructions"
         android:layout_width="wrap_content"
@@ -95,6 +115,8 @@
         app:layout_constraintEnd_toEndOf="parent"
         android:layout_marginTop="@dimen/dp_5"
         app:layout_constraintTop_toBottomOf="@+id/viewInstructions" />
+
+
 
     <View
         android:id="@+id/viewInstructions"
