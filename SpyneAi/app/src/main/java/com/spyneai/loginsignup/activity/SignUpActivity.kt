@@ -95,6 +95,7 @@ class SignUpActivity : AppCompatActivity() {
     }
 
     private fun setData(countriesList: java.util.ArrayList<String>) {
+        countryProgressBar.visibility = View.GONE
         spinnerAdapter.addAll(countriesList)
     }
 
