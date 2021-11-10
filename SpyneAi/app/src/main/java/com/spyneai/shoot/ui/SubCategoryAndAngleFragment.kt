@@ -146,10 +146,6 @@ class SubCategoryAndAngleFragment :
                             }
                             else -> {
                                 viewModel.exterirorAngles.value = 0
-//                                if (viewModel.subCatName.value == "Men Formal")
-//                                    viewModel.exterirorAngles.value = 6
-//                                else
-//                                    viewModel.exterirorAngles.value = 5
 
                                 updateSku()
                                 observerUpdateSku()
@@ -212,8 +208,8 @@ class SubCategoryAndAngleFragment :
                     viewModel.isSkuCreated.value = true
                     viewModel.showLeveler.value = true
 
-                    //add sku to local database
-                    viewModel.insertSku(sku!!)
+                    //update sku locally
+                    viewModel.updateVideoSkuLocally(sku!!)
 
                 }
 
