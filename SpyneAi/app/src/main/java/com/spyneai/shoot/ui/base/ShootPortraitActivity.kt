@@ -291,8 +291,7 @@ class ShootPortraitActivity : AppCompatActivity(), GoogleApiClient.ConnectionCal
                 == intent.getIntExtra(AppConstants.EXTERIOR_SIZE, 0)){
                  shootViewModel.stopShoot.value = true
             }else {
-                shootViewModel.exterirorAngles.value =
-                    intent.getIntExtra(AppConstants.EXTERIOR_ANGLES, 0)
+                shootViewModel.exterirorAngles.value = 0
 
                 //sub category selected
                 shootViewModel.subCatName.value = intent.getStringExtra(AppConstants.SUB_CAT_NAME)
