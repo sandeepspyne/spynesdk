@@ -27,12 +27,8 @@ class GridEcomFragment : BaseFragment<ShootViewModel, FragmentGridEcomBinding>()
         super.onViewCreated(view, savedInstanceState)
 
         binding.ivEndProject.setOnClickListener {
-            if (viewModel.fromDrafts){
+            if (viewModel.isStopCaptureClickable)
                 viewModel.stopShoot.value = true
-            }else {
-                if (viewModel.isStopCaptureClickable)
-                    viewModel.stopShoot.value = true
-            }
         }
 
         //observe new image clicked

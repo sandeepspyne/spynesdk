@@ -49,35 +49,6 @@ class OverlayEcomFragment : BaseFragment<ShootViewModel, FragmentOverlayEcomBind
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-//        if (viewModel.projectId.value == null){
-//            if(Utilities.getPreference(requireContext(), AppConstants.STATUS_PROJECT_NAME).toString() =="true")
-//                getProjectName()
-//            else
-//                initProjectDialog()
-//        }
-//        else {
-//            if (viewModel.fromDrafts){
-//                when {
-//                    requireActivity().intent.getIntExtra(AppConstants.EXTERIOR_ANGLES,0) != 0 &&
-//                    requireActivity().intent.getIntExtra(AppConstants.EXTERIOR_ANGLES,0)
-//                            == requireActivity().intent.getIntExtra(AppConstants.EXTERIOR_SIZE,0) -> {
-//
-//                            }
-//                    viewModel.subCatName.value != null -> {
-//                        intSubcategorySelection(false)
-//                        getOverlays()
-//                        binding.llCapture.visibility = View.VISIBLE
-//                    }
-//                    else -> {
-//                        intSubcategorySelection(true)
-//                    }
-//                }
-//            }else {
-//                initSkuDialog()
-//            }
-//            log("SKU dialog shown")
-//        }
-
         //observe new image clicked
         viewModel.shootList.observe(viewLifecycleOwner, {
             try {
@@ -315,8 +286,6 @@ class OverlayEcomFragment : BaseFragment<ShootViewModel, FragmentOverlayEcomBind
             }
 
         }
-
-        val s = ""
     }
 
     override fun onItemClick(view: View, position: Int, data: Any?) {
