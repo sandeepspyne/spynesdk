@@ -86,14 +86,11 @@ class SelectBackgroundFragment : BaseFragment<ProcessViewModel, FragmentSelectBa
                     }
 
                     if (getString(R.string.app_name) == AppConstants.CARS24 ||
-                        getString(R.string.app_name) == AppConstants.CARS24_INDIA){
+                        getString(R.string.app_name) == AppConstants.CARS24_INDIA ||
+                        getString(R.string.app_name) == AppConstants.OLA_CABS){
 
-                            cbTintWindow.isChecked
-
-                        binding.cbTintWindow.visibility = View.GONE
-                        binding.tvTintWindow.visibility = View.GONE
-
-
+                            binding.cbTintWindow.visibility = View.GONE
+                            binding.tvTintWindow.visibility = View.GONE
 
                     }
 
@@ -433,12 +430,22 @@ class SelectBackgroundFragment : BaseFragment<ProcessViewModel, FragmentSelectBa
                 .putValue("background_id", backgroundSelect)
         )
 
+
+        val tintWindow = when(getString(R.string.app_name)){
+            AppConstants.CARS24,
+            AppConstants.CARS24,
+            AppConstants.OLA_CABS-> true
+            else -> binding.cbTintWindow.isChecked
+        }
+
         viewModel.processSku(
             Utilities.getPreference(requireContext(), AppConstants.AUTH_KEY).toString(),
             viewModel.sku.value?.skuId!!,
             backgroundSelect,
             viewModel.fromVideo,
-            binding.cbBlurNoPlate.isChecked,binding.cbWindowCorrection.isChecked,binding.cbTintWindow.isChecked)
+            binding.cbBlurNoPlate.isChecked,binding.cbWindowCorrection.isChecked,tintWindow)
+
+
 
         log("Process sku started")
         log(
