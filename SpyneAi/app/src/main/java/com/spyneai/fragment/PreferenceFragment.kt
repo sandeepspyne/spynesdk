@@ -174,12 +174,12 @@ class PreferenceFragment : BaseFragment<DashboardViewModel, FragmentPreferenceBi
         if (Utilities.getBool(requireContext(),AppConstants.CLOCKED_IN)){
             setCheckOut(Utilities.getPreference(requireContext(),AppConstants.SITE_IMAGE_PATH),false)
         }else {
-           setCheckIn()
+           setCheckIn(false)
         }
 
     }
 
-    private fun setCheckIn() {
+    private fun setCheckIn(hideClockOut : Boolean) {
         binding.llAttendance.setOnClickListener {
             when(binding.ivDropDown.rotation){
                 0f -> {
@@ -187,8 +187,14 @@ class PreferenceFragment : BaseFragment<DashboardViewModel, FragmentPreferenceBi
                     binding.apply {
                         cvClockIn.visibility = View.VISIBLE
                         cvClockOut.visibility = View.GONE
-                        tvSession.text = "Your last session was "+millisecondsToHours()
                     }
+
+                    val millis = Utilities.getLong(requireContext(),AppConstants.SHOOTS_SESSION)
+
+                    if (millis == 0L)
+                        binding.tvSession.visibility = View.GONE
+                    else
+                        binding.tvSession.text = "Your last session was "+millisecondsToHours(millis)
                 }
 
                 90f -> {
@@ -200,7 +206,12 @@ class PreferenceFragment : BaseFragment<DashboardViewModel, FragmentPreferenceBi
             }
         }
 
-
+        if (hideClockOut){
+            binding.apply {
+                cvClockIn.visibility = View.VISIBLE
+                cvClockOut.visibility = View.GONE
+            }
+        }
 
         viewModel.isStartAttendance.observe(viewLifecycleOwner, {
             if (it){
@@ -258,12 +269,13 @@ class PreferenceFragment : BaseFragment<DashboardViewModel, FragmentPreferenceBi
 
         isActive = true
         upDateTimer(time)
+
         binding.apply {
             cvClockIn.visibility = View.GONE
             cvClockOut.visibility = View.VISIBLE
             tvCityName.text = Utilities.getPreference(requireContext(),AppConstants.SITE_CITY_NAME)
-            tvClockedTime.text = getString(R.string.clocked_in_for)+" "+millisecondsToTime(time)
             ivDropDown.rotation = 90f
+            tvClockedTime.text = getString(R.string.clocked_in_for)+" "+millisecondsToTime(time)
         }
 
         imagePath?.let {
@@ -273,7 +285,7 @@ class PreferenceFragment : BaseFragment<DashboardViewModel, FragmentPreferenceBi
 
             if (clockIn){
                 getGcpUrl(it)
-                ObserveurlResponse(it)
+                observeUrlResponse(it)
             }
         }
     }
@@ -290,7 +302,7 @@ class PreferenceFragment : BaseFragment<DashboardViewModel, FragmentPreferenceBi
         }
     }
 
-    private fun ObserveurlResponse(imagePath: String) {
+    private fun observeUrlResponse(imagePath: String) {
         viewModel.gcpUrlResponse.observe(viewLifecycleOwner,{
             when(it){
                 is Resource.Success -> {
@@ -348,13 +360,13 @@ class PreferenceFragment : BaseFragment<DashboardViewModel, FragmentPreferenceBi
                 is Resource.Success -> {
                     Utilities.hideProgressDialog()
                     if (type == "checkin"){
-                        Toast.makeText(requireContext(),"Checked in successfully...",Toast.LENGTH_LONG).show()
+                        Toast.makeText(requireContext(),"Clocked in successfully...",Toast.LENGTH_LONG).show()
                         isActive = true
                         upDateTimer(
                             System.currentTimeMillis() - Utilities.getLong(requireContext(),AppConstants.CLOCKED_IN_TIME)
                         )
                     }else{
-                        Toast.makeText(requireContext(),"Checked on successfully...",Toast.LENGTH_LONG).show()
+                        Toast.makeText(requireContext(),"Clocked out successfully...",Toast.LENGTH_LONG).show()
                         //save session time
                         Utilities.apply {
                             saveLong(requireContext(),
@@ -363,7 +375,7 @@ class PreferenceFragment : BaseFragment<DashboardViewModel, FragmentPreferenceBi
                             saveBool(requireContext(),AppConstants.CLOCKED_IN,false)
                         }
 
-                        setCheckIn()
+                        setCheckIn(true)
                     }
                 }
 
@@ -544,8 +556,7 @@ class PreferenceFragment : BaseFragment<DashboardViewModel, FragmentPreferenceBi
 
     }
 
-    private fun millisecondsToHours(): String? {
-        val millis = Utilities.getLong(requireContext(),AppConstants.SHOOTS_SESSION)
+    private fun millisecondsToHours(millis : Long): String? {
         return String.format(
             "%02d hours %02d min", TimeUnit.MILLISECONDS.toHours(millis),
             TimeUnit.MILLISECONDS.toMinutes(millis) - TimeUnit.HOURS.toMinutes(
