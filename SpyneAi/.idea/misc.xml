@@ -8,8 +8,10 @@
         <entry key="app/src/automoser/res/mipmap-anydpi-v26/app_ic_round.xml" value="0.1" />
         <entry key="app/src/flipkartgrocery/res/drawable/ic_launcher_background.xml" value="0.24166666666666667" />
         <entry key="app/src/flipkartgrocery/res/layout/home_dashboard_fragment.xml" value="0.2578125" />
+        <entry key="app/src/main/res/drawable-anydpi/back.xml" value="0.20185185185185187" />
         <entry key="app/src/main/res/drawable/base_dialog_outline.xml" value="0.321025641025641" />
         <entry key="app/src/main/res/drawable/bg_channel.xml" value="0.30092592592592593" />
+        <entry key="app/src/main/res/drawable/bg_circle_number.xml" value="0.20185185185185187" />
         <entry key="app/src/main/res/drawable/bg_edit.xml" value="0.2175925925925926" />
         <entry key="app/src/main/res/drawable/bg_edit_black_bf.xml" value="0.3260416666666667" />
         <entry key="app/src/main/res/drawable/bg_edit_button.xml" value="0.2518518518518518" />
@@ -74,15 +76,17 @@
         <entry key="app/src/main/res/layout/fragment_create_project.xml" value="0.25833333333333336" />
         <entry key="app/src/main/res/layout/fragment_download_completed.xml" value="0.3098958333333333" />
         <entry key="app/src/main/res/layout/fragment_draft_sku_details.xml" value="0.25277777777777777" />
+        <entry key="app/src/main/res/layout/fragment_ecom_overlay_reshoot.xml" value="0.3098958333333333" />
         <entry key="app/src/main/res/layout/fragment_grid_ecom.xml" value="0.30512820512820515" />
         <entry key="app/src/main/res/layout/fragment_image_processing_started.xml" value="0.3098958333333333" />
         <entry key="app/src/main/res/layout/fragment_ongoing_orders.xml" value="0.3098958333333333" />
         <entry key="app/src/main/res/layout/fragment_ongoing_projects.xml" value="0.3098958333333333" />
         <entry key="app/src/main/res/layout/fragment_ongoing_skus.xml" value="0.3098958333333333" />
         <entry key="app/src/main/res/layout/fragment_orders.xml" value="0.3098958333333333" />
-        <entry key="app/src/main/res/layout/fragment_overlay_ecom.xml" value="0.19722222222222222" />
+        <entry key="app/src/main/res/layout/fragment_overlay_ecom.xml" value="0.1" />
         <entry key="app/src/main/res/layout/fragment_overlays.xml" value="0.25277777777777777" />
         <entry key="app/src/main/res/layout/fragment_overlays_v2.xml" value="0.125" />
+        <entry key="app/src/main/res/layout/fragment_preference.xml" value="0.33" />
         <entry key="app/src/main/res/layout/fragment_processed_images.xml" value="0.25" />
         <entry key="app/src/main/res/layout/fragment_record_video.xml" value="0.165" />
         <entry key="app/src/main/res/layout/fragment_regular_shoot_summary.xml" value="0.18055555555555555" />
@@ -93,6 +97,7 @@
         <entry key="app/src/main/res/layout/fragment_sku_detail.xml" value="0.25277777777777777" />
         <entry key="app/src/main/res/layout/gyro_view.xml" value="0.3098958333333333" />
         <entry key="app/src/main/res/layout/home_dashboard_fragment.xml" value="0.2578125" />
+        <entry key="app/src/main/res/layout/item_clicked.xml" value="0.22037037037037038" />
         <entry key="app/src/main/res/layout/item_completed_projects.xml" value="0.25277777777777777" />
         <entry key="app/src/main/res/layout/item_completed_skus.xml" value="0.25277777777777777" />
         <entry key="app/src/main/res/layout/item_draft_sku.xml" value="0.25277777777777777" />
@@ -121,6 +126,7 @@
         <entry key="app/src/main/res/layout/sub_frames.xml" value="0.18796296296296297" />
         <entry key="app/src/main/res/layout/view_trim.xml" value="0.1" />
         <entry key="app/src/main/res/menu/dashboard_bottom_menu.xml" value="0.25277777777777777" />
+        <entry key="app/src/main/res/xml/file_paths.xml" value="0.4036458333333333" />
         <entry key="app/src/sellanycar/res/drawable/app_ic_background.xml" value="0.24166666666666667" />
         <entry key="app/src/swiggy/res/menu/dashboard_bottom_menu.xml" value="0.25384615384615383" />
       </map>

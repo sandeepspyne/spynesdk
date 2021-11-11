@@ -1,6 +1,9 @@
 package com.spyneai.needs
 
 object AppConstants {
+    val CLOCKED_IN: String = "CLOCKED_IN"
+    val SITE_IMAGE_PATH = "SITE_IMAGE_PATH"
+
     val ENTERPRISE_ID: String = "ENTERPRISE_ID"
     val FLIPKART_ENTERPRISE_ID: String = "EVV1XVY4R"
     val BASE_URL: String = "https://www.clippr.ai/api/"

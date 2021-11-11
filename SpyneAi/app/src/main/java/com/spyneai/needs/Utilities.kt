@@ -71,17 +71,30 @@ object Utilities {
         return netInfo?.isConnected ?: false
     }
 
-    public fun savePrefrence(context: Context, key: String, value: String?) {
+     fun savePrefrence(context: Context, key: String, value: String?) {
         val preferences = PreferenceManager.getDefaultSharedPreferences(context)
         val editor = preferences.edit()
         editor.putString(key, value)
         editor.apply()
     }
 
-    public fun getPreference(context: Context?, key: String): String? {
+     fun getPreference(context: Context?, key: String): String? {
         val preferences = PreferenceManager.getDefaultSharedPreferences(context)
         return preferences.getString(key, "")
     }
+
+    fun saveBool(context: Context, key: String, value: Boolean){
+        val preferences = PreferenceManager.getDefaultSharedPreferences(context)
+        val editor = preferences.edit()
+        editor.putBoolean(key, value)
+        editor.apply()
+    }
+
+    fun getBool(context: Context?, key: String): Boolean {
+        val preferences = PreferenceManager.getDefaultSharedPreferences(context)
+        return preferences.getBoolean(key, false)
+    }
+
 
     fun showProgressDialog(context: Context) {
         log("show progress dialog")
