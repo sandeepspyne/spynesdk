@@ -7,6 +7,7 @@ object AppConstants {
     val STATUS_PROJECT_NAME: String="STATUS_PROJECT_NAME"
 
     val LOCALE = "LOCALE"
+
     val IS_360: String? = "IS_360"
     val IS_HD: String? = "IS_HD"
     val CARS_CATEGORY_ID = "cat_d8R14zUNE"
@@ -111,6 +112,7 @@ object AppConstants {
     val  VIDEO_URL: String = "videoUrl"
 
     val  IS_NEW_USER: String = "isNewUser"
+
 
 
 

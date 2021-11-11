@@ -1,7 +1,12 @@
 package com.spyneai.fragment
 
+import android.app.Activity.RESULT_OK
+import android.content.ActivityNotFoundException
+import android.content.Intent
 import android.content.res.Configuration
+import android.graphics.Bitmap
 import android.os.Bundle
+import android.provider.MediaStore
 import android.view.*
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
@@ -9,18 +14,22 @@ import android.widget.LinearLayout
 import android.widget.Toast
 import androidx.core.view.isVisible
 import com.spyneai.R
+import com.spyneai.Shoot_Site_Dialog
 import com.spyneai.base.BaseFragment
 import com.spyneai.dashboard.data.DashboardViewModel
 import com.spyneai.databinding.FragmentPreferenceBinding
 import com.spyneai.logout.LogoutDialog
 import com.spyneai.needs.AppConstants
 import com.spyneai.needs.Utilities
+import com.spyneai.shoot.ui.dialogs.ThreeSixtyInteriorHintDialog
 import kotlinx.android.synthetic.main.activity_sign_up.*
 import kotlinx.android.synthetic.main.fragment_preference.*
 import java.util.*
 
 
 class PreferenceFragment : BaseFragment<DashboardViewModel, FragmentPreferenceBinding>()  {
+
+    val REQUEST_IMAGE_CAPTURE = 1
 
 //    var languageList = arrayOf("English","Germany","Italy")
     var languageList= arrayListOf<String>()
@@ -85,6 +94,22 @@ class PreferenceFragment : BaseFragment<DashboardViewModel, FragmentPreferenceBi
                 binding.llProjectNameSwitch.visibility=View.GONE
         }
 
+        viewModel.isStartAttendance.observe(viewLifecycleOwner, {
+            if (it){
+                binding.btClockIn.visibility=View.GONE
+                binding.btClockOut.visibility=View.VISIBLE
+                viewModel.isStartAttendance.value=false
+                try {
+                    startActivityForResult(Intent(MediaStore.ACTION_IMAGE_CAPTURE), REQUEST_IMAGE_CAPTURE)
+                } catch (e: ActivityNotFoundException) {
+                    // display error state to the user
+                }
+
+            }
+        })
+
+
+
 
 
 
@@ -96,6 +121,16 @@ class PreferenceFragment : BaseFragment<DashboardViewModel, FragmentPreferenceBi
             binding.tvEmail.setText(Utilities.getPreference(requireContext(), AppConstants.USER_EMAIL))
             binding.tvAppVersion.setText(Utilities.getPreference(requireContext(), AppConstants.APP_VERSION))
         }
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -180,12 +215,28 @@ class PreferenceFragment : BaseFragment<DashboardViewModel, FragmentPreferenceBi
 
 
 
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        if (requestCode == REQUEST_IMAGE_CAPTURE && resultCode == RESULT_OK) {
+            val imageBitmap = data?.extras?.get("data") as Bitmap
+            binding.ivSiteImage.setImageBitmap(imageBitmap)
+        }
+    }
+
+
+
+
+
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
         binding.llLogout.setOnClickListener {
             LogoutDialog().show(requireActivity().supportFragmentManager,"LogoutDialog")
 
         }
+        binding.btClockIn.setOnClickListener {
+            Shoot_Site_Dialog().show(requireActivity().supportFragmentManager,"Shoot_site_dialog")
+
+        }
+
     }
 
 

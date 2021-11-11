@@ -37,6 +37,7 @@ class DashboardViewModel() : ViewModel() {
         get() = _versionResponse
 
     val isNewUser: MutableLiveData<Boolean> = MutableLiveData()
+    val isStartAttendance: MutableLiveData<Boolean> = MutableLiveData()
     val creditsMessage: MutableLiveData<String> = MutableLiveData()
 
     fun getCategories(
