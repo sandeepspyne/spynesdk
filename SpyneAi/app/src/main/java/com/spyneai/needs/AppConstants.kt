@@ -10,6 +10,7 @@ object AppConstants {
     val FLIPKART_ENTERPRISE_ID: String = "EVV1XVY4R"
     val BASE_URL: String = "https://www.clippr.ai/api/"
     val STATUS_PROJECT_NAME: String="STATUS_PROJECT_NAME"
+    val SHOOTS_SESSION = "SHOOTS_SESSION"
 
     val LOCALE = "LOCALE"
 

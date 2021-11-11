@@ -8,9 +8,7 @@ import android.content.res.Configuration
 import android.location.Address
 import android.location.Geocoder
 import android.net.Uri
-import android.os.Build
-import android.os.Bundle
-import android.os.Environment
+import android.os.*
 import android.provider.MediaStore
 import android.util.Log
 import android.view.*
@@ -39,8 +37,6 @@ import com.spyneai.logout.LogoutDialog
 import com.spyneai.needs.AppConstants
 import com.spyneai.needs.Utilities
 import com.spyneai.shoot.ui.dialogs.RequiredPermissionDialog
-import kotlinx.android.synthetic.main.fragment_preference.*
-
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.RequestBody.Companion.asRequestBody
 import okhttp3.ResponseBody
@@ -52,6 +48,7 @@ import java.io.File
 import java.io.IOException
 import java.text.SimpleDateFormat
 import java.util.*
+import java.util.concurrent.TimeUnit
 
 
 class PreferenceFragment : BaseFragment<DashboardViewModel, FragmentPreferenceBinding>(),
@@ -134,7 +131,7 @@ class PreferenceFragment : BaseFragment<DashboardViewModel, FragmentPreferenceBi
             binding.tvAppVersion.setText(Utilities.getPreference(requireContext(), AppConstants.APP_VERSION))
         }
 
-        spLanguage.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
+        binding.spLanguage.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
             override fun onItemSelected(
                 parent: AdapterView<*>,
                 view: View?,
@@ -171,6 +168,7 @@ class PreferenceFragment : BaseFragment<DashboardViewModel, FragmentPreferenceBi
 
         binding.btnClockOut.setOnClickListener {
             clockInOut("checkout","")
+            observeClockInOut("checkout","")
         }
 
         if (Utilities.getBool(requireContext(),AppConstants.CLOCKED_IN)){
@@ -182,10 +180,27 @@ class PreferenceFragment : BaseFragment<DashboardViewModel, FragmentPreferenceBi
     }
 
     private fun setCheckIn() {
-        binding.apply {
-            cvClockIn.visibility = View.VISIBLE
-            cvClockOut.visibility = View.GONE
+        binding.llAttendance.setOnClickListener {
+            when(binding.ivDropDown.rotation){
+                0f -> {
+                    binding.ivDropDown.rotation = 90f
+                    binding.apply {
+                        cvClockIn.visibility = View.VISIBLE
+                        cvClockOut.visibility = View.GONE
+                        tvSession.text = "Your last session was "+millisecondsToHours()
+                    }
+                }
+
+                90f -> {
+                    binding.ivDropDown.rotation = 0f
+                    binding.apply {
+                        cvClockIn.visibility = View.GONE
+                    }
+                }
+            }
         }
+
+
 
         viewModel.isStartAttendance.observe(viewLifecycleOwner, {
             if (it){
@@ -248,6 +263,7 @@ class PreferenceFragment : BaseFragment<DashboardViewModel, FragmentPreferenceBi
             cvClockOut.visibility = View.VISIBLE
             tvCityName.text = Utilities.getPreference(requireContext(),AppConstants.SITE_CITY_NAME)
             tvClockedTime.text = getString(R.string.clocked_in_for)+" "+millisecondsToTime(time)
+            ivDropDown.rotation = 90f
         }
 
         imagePath?.let {
@@ -264,7 +280,7 @@ class PreferenceFragment : BaseFragment<DashboardViewModel, FragmentPreferenceBi
 
     private fun upDateTimer(time: Long) {
         if (isActive){
-            tvClockedTime.text = getString(R.string.clocked_in_for)+" "+millisecondsToTime(time)
+            binding.tvClockedTime.text = getString(R.string.clocked_in_for)+" "+millisecondsToTime(time)
 
             Handler(Looper.getMainLooper()).postDelayed(object : Runnable {
                 override fun run() {
@@ -333,8 +349,20 @@ class PreferenceFragment : BaseFragment<DashboardViewModel, FragmentPreferenceBi
                     Utilities.hideProgressDialog()
                     if (type == "checkin"){
                         Toast.makeText(requireContext(),"Checked in successfully...",Toast.LENGTH_LONG).show()
+                        isActive = true
+                        upDateTimer(
+                            System.currentTimeMillis() - Utilities.getLong(requireContext(),AppConstants.CLOCKED_IN_TIME)
+                        )
                     }else{
                         Toast.makeText(requireContext(),"Checked on successfully...",Toast.LENGTH_LONG).show()
+                        //save session time
+                        Utilities.apply {
+                            saveLong(requireContext(),
+                                AppConstants.SHOOTS_SESSION,
+                                System.currentTimeMillis() - Utilities.getLong(requireContext(),AppConstants.CLOCKED_IN_TIME))
+                            saveBool(requireContext(),AppConstants.CLOCKED_IN,false)
+                        }
+
                         setCheckIn()
                     }
                 }
@@ -516,17 +544,40 @@ class PreferenceFragment : BaseFragment<DashboardViewModel, FragmentPreferenceBi
 
     }
 
+    private fun millisecondsToHours(): String? {
+        val millis = Utilities.getLong(requireContext(),AppConstants.SHOOTS_SESSION)
+        return String.format(
+            "%02d hours %02d min", TimeUnit.MILLISECONDS.toHours(millis),
+            TimeUnit.MILLISECONDS.toMinutes(millis) - TimeUnit.HOURS.toMinutes(
+                TimeUnit.MILLISECONDS.toHours(
+                    millis
+                )
+            )
+        )
+    }
+
     private fun millisecondsToTime(milliseconds: Long): String? {
-        val minutes = milliseconds / 1000 / 60
+        var hours = TimeUnit.MILLISECONDS.toHours(milliseconds)
+        var minutes = TimeUnit.MILLISECONDS.toMinutes(milliseconds) - TimeUnit.HOURS.toMinutes(
+            TimeUnit.MILLISECONDS.toHours(
+                milliseconds
+            )
+        )
+
+
         val seconds = milliseconds / 1000 % 60
-        val secondsStr = java.lang.Long.toString(seconds)
-        val secs: String
-        secs = if (secondsStr.length >= 2) {
-            secondsStr.substring(0, 2)
+        val secondsStr = seconds.toString()
+        val secs = getTwoDigit(secondsStr)
+
+        return if (hours > 0) "${getTwoDigit(hours.toString())}:${getTwoDigit(minutes.toString())}:$secs" else "${getTwoDigit(minutes.toString())}:$secs"
+    }
+
+    private fun getTwoDigit(value : String) : String {
+        return if (value.length >= 2) {
+            value.substring(0, 2)
         } else {
-            "0$secondsStr"
+            "0$value"
         }
-        return "$minutes:$secs"
     }
 }
 

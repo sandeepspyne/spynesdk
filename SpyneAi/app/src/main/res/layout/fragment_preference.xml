@@ -211,17 +211,24 @@
           android:backgroundTintMode="@color/tint"
           android:src="@drawable/app"></ImageView>
 
-      <TextView
+      <LinearLayout
           android:layout_width="wrap_content"
           android:layout_height="wrap_content"
-          android:text="@string/app_version"
-          android:id="@+id/tvAppVersionLabel"
-          android:textColor="@color/primary"
-          android:layout_marginHorizontal="@dimen/dp_10"
-          android:layout_weight="1"
-          android:fontFamily="@font/poppins_medium"
-          android:textSize="@dimen/sp_18"
-          ></TextView>
+          android:orientation="vertical">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/app_version"
+            android:id="@+id/tvAppVersionLabel"
+            android:textColor="@color/primary"
+            android:layout_marginHorizontal="@dimen/dp_10"
+            android:layout_weight="1"
+            android:fontFamily="@font/poppins_medium"
+            android:textSize="@dimen/sp_18"
+            ></TextView>
+
+      </LinearLayout>
 
     </LinearLayout>
 
@@ -241,7 +248,8 @@
         android:gravity="center_vertical"
         android:layout_marginHorizontal="@dimen/dp_12"
         android:layout_marginTop="@dimen/dp_30"
-        android:orientation="horizontal">
+        android:orientation="horizontal"
+        android:id="@+id/llAttendance">
       <ImageView
           android:layout_width="18dp"
           android:layout_height="20dp"
@@ -259,6 +267,13 @@
           android:fontFamily="@font/poppins_medium"
           android:textSize="@dimen/sp_18"></TextView>
 
+      <ImageView
+          android:layout_width="@dimen/dp_15"
+          android:layout_height="@dimen/dp_15"
+          android:id="@+id/ivDropDown"
+          android:src="@drawable/drop_arrow"
+          app:tint="@color/primary" />
+
     </LinearLayout>
 
 
@@ -269,6 +284,7 @@
         android:id="@+id/cvClockIn"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:visibility="gone"
         android:layout_marginHorizontal="20dp"
         android:layout_marginTop="@dimen/dp_20"
         android:layout_marginBottom="@dimen/dp_10"
@@ -319,6 +335,7 @@
             android:text="Your last session was 8 hrs 30 min"
             android:textColor="@color/black"
             android:textSize="12sp"
+            android:id="@+id/tvSession"
             android:fontFamily="@font/poppins_light"
             android:layout_gravity="center_horizontal"
             android:layout_marginTop="@dimen/dp_8" />
