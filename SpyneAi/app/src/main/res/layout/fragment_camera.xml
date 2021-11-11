@@ -87,7 +87,7 @@
         android:layout_height="wrap_content"
         android:src="@drawable/ic_bottom_left"
         android:visibility="gone"
-        app:tint="@color/green"
+        app:tint="@color/gyro_in_level"
         app:layout_constraintStart_toStartOf="@id/flLevelIndicator"
         app:layout_constraintBottom_toTopOf="@+id/viewInstructions"
         android:id="@+id/ivBottomLeftSwiggy"/>
@@ -96,7 +96,7 @@
         android:layout_height="wrap_content"
         android:src="@drawable/ic_bottom_right"
         android:visibility="gone"
-        app:tint="@color/green"
+        app:tint="@color/gyro_in_level"
         app:layout_constraintRight_toRightOf="@id/flLevelIndicator"
         app:layout_constraintBottom_toTopOf="@+id/viewInstructions"
         android:id="@+id/ivBottomRightSwiggy"/>

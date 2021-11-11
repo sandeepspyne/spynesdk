@@ -1220,6 +1220,10 @@ class CameraFragment : BaseFragment<ShootViewModel, FragmentCameraBinding>(), Pi
 
                     binding.tvAngleValue!!.visibility = View.INVISIBLE
                     binding.groupOverlay!!.visibility = View.GONE
+                    binding.ivBottomRightSwiggy!!.visibility = View.GONE
+                    binding.ivBottomLeftSwiggy!!.visibility = View.GONE
+                    binding.ivBottomRight.visibility = View.VISIBLE
+                    binding.ivBottomLeft.visibility = View.VISIBLE
                     binding.tvAngleValue!!.visibility = View.INVISIBLE
                     isGyroOnCorrectAngle = false
 

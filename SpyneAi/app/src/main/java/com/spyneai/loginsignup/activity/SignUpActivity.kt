@@ -64,7 +64,6 @@ class SignUpActivity : AppCompatActivity() {
     }
 
     private fun setSpinner() {
-
         val call = RetrofitClients.buildService(MyAPIService::class.java).getCountries()
 
         call?.enqueue(object : Callback<GetCountriesResponse> {
@@ -95,6 +94,7 @@ class SignUpActivity : AppCompatActivity() {
     }
 
     private fun setData(countriesList: java.util.ArrayList<String>) {
+        countryProgressBar.visibility = View.GONE
         spinnerAdapter.addAll(countriesList)
     }
 
