@@ -16,7 +16,7 @@ import com.spyneai.databinding.FragmentShootSiteDialogBinding
 import com.spyneai.needs.AppConstants
 import com.spyneai.shoot.data.ShootViewModel
 
-class Shoot_Site_Dialog : BaseDialogFragment<DashboardViewModel, FragmentShootSiteDialogBinding>() {
+class ShootSiteDialog : BaseDialogFragment<DashboardViewModel, FragmentShootSiteDialogBinding>() {
 
 
 

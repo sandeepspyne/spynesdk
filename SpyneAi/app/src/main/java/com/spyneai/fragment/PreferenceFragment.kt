@@ -1,35 +1,34 @@
 package com.spyneai.fragment
 
+import android.Manifest
 import android.app.Activity.RESULT_OK
-import android.content.ActivityNotFoundException
 import android.content.Intent
+import android.content.pm.PackageManager
 import android.content.res.Configuration
-import android.graphics.Bitmap
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import android.os.Environment
 import android.provider.MediaStore
+import android.util.Log
 import android.view.*
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
 import android.widget.LinearLayout
-import android.widget.Toast
+import androidx.activity.result.contract.ActivityResultContracts
+import androidx.core.content.ContextCompat
 import androidx.core.content.FileProvider
-import androidx.core.view.isVisible
 import com.bumptech.glide.Glide
-import com.hbisoft.pickit.PickiT
-import com.hbisoft.pickit.PickiTCallbacks
 import com.spyneai.R
-import com.spyneai.Shoot_Site_Dialog
+import com.spyneai.ShootSiteDialog
 import com.spyneai.base.BaseFragment
 import com.spyneai.dashboard.data.DashboardViewModel
 import com.spyneai.databinding.FragmentPreferenceBinding
+import com.spyneai.databinding.HomeDashboardFragmentBinding
 import com.spyneai.logout.LogoutDialog
 import com.spyneai.needs.AppConstants
 import com.spyneai.needs.Utilities
-import com.spyneai.shoot.ui.dialogs.ThreeSixtyInteriorHintDialog
-import kotlinx.android.synthetic.main.activity_sign_up.*
+import com.spyneai.shoot.ui.dialogs.RequiredPermissionDialog
 import kotlinx.android.synthetic.main.fragment_preference.*
 import java.io.File
 import java.io.IOException
@@ -37,15 +36,13 @@ import java.text.SimpleDateFormat
 import java.util.*
 
 
-class PreferenceFragment : BaseFragment<DashboardViewModel, FragmentPreferenceBinding>(),
-    PickiTCallbacks {
+class PreferenceFragment : BaseFragment<DashboardViewModel, FragmentPreferenceBinding>(){
 
     val REQUEST_IMAGE_CAPTURE = 1
 
 //    var languageList = arrayOf("English","Germany","Italy")
     var languageList= arrayListOf<String>()
     lateinit var spLanguageAdapter: ArrayAdapter<String>
-    var pickIt: PickiT? = null
     lateinit var currentPhotoPath: String
 
 
@@ -135,15 +132,22 @@ class PreferenceFragment : BaseFragment<DashboardViewModel, FragmentPreferenceBi
             }
         }
 
-        pickIt = PickiT(requireContext(), this, requireActivity())
+        binding.llLogout.setOnClickListener {
+            LogoutDialog().show(requireActivity().supportFragmentManager,"LogoutDialog")
+
+        }
+        binding.btClockIn.setOnClickListener {
+            if (allPermissionsGranted())
+                onPermissionGranted()
+            else
+                permissionRequest.launch(permissions.toTypedArray())
+        }
 
         if (Utilities.getBool(requireContext(),AppConstants.CLOCKED_IN)){
             setCheckOut(Utilities.getPreference(requireContext(),AppConstants.SITE_IMAGE_PATH))
         }else {
            setCheckIn()
         }
-
-
 
     }
 
@@ -158,12 +162,6 @@ class PreferenceFragment : BaseFragment<DashboardViewModel, FragmentPreferenceBi
                 binding.btClockOut.visibility=View.VISIBLE
                 viewModel.isStartAttendance.value=false
                 dispatchTakePictureIntent()
-//                try {
-//                    startActivityForResult(Intent(MediaStore.ACTION_IMAGE_CAPTURE), REQUEST_IMAGE_CAPTURE)
-//                } catch (e: ActivityNotFoundException) {
-//                    // display error state to the user
-//                }
-
             }
         })
     }
@@ -234,8 +232,6 @@ class PreferenceFragment : BaseFragment<DashboardViewModel, FragmentPreferenceBi
         }
     }
 
-
-
     private fun onLanguageSelected(locale: String) {
         Utilities.savePrefrence(requireContext(), AppConstants.LOCALE,locale)
 
@@ -244,19 +240,11 @@ class PreferenceFragment : BaseFragment<DashboardViewModel, FragmentPreferenceBi
         val config = Configuration()
         config.locale = locale
         resources.updateConfiguration(config, resources.displayMetrics)
-
-
     }
 
-
-
     private fun statusSwitch(){
-
-        if(Utilities.getPreference(requireContext(), AppConstants.STATUS_PROJECT_NAME).toString() =="true"){
-            binding.switchProjectName.isChecked=true
-
-        } else binding.switchProjectName.isChecked=false
-
+        binding.switchProjectName.isChecked =
+            Utilities.getPreference(requireContext(), AppConstants.STATUS_PROJECT_NAME).toString() =="true"
 
         binding.switchProjectName.setOnCheckedChangeListener { _, isChecked ->
             if (isChecked) {
@@ -266,47 +254,45 @@ class PreferenceFragment : BaseFragment<DashboardViewModel, FragmentPreferenceBi
         }
     }
 
-
-
-
-
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         if (requestCode == REQUEST_IMAGE_CAPTURE && resultCode == RESULT_OK) {
             setCheckOut(currentPhotoPath)
             Utilities.savePrefrence(requireContext(),AppConstants.SITE_IMAGE_PATH,currentPhotoPath)
             Utilities.saveBool(requireContext(),AppConstants.CLOCKED_IN,true)
-            //pickIt?.getPath(data?.data, Build.VERSION.SDK_INT)
-//            val imageBitmap = data?.extras?.get("data") as Bitmap
-//
-//            binding.apply {
-//                cvClockIn.visibility = View.GONE
-//                cvClockOut.visibility = View.VISIBLE
-//                ivSiteImage.setImageBitmap(imageBitmap)
-//            }
         }
     }
 
-
-
-
-    override fun onActivityCreated(savedInstanceState: Bundle?) {
-        super.onActivityCreated(savedInstanceState)
-        binding.llLogout.setOnClickListener {
-            LogoutDialog().show(requireActivity().supportFragmentManager,"LogoutDialog")
-
-        }
-        binding.btClockIn.setOnClickListener {
-            Shoot_Site_Dialog().show(requireActivity().supportFragmentManager,"Shoot_site_dialog")
-
-        }
-
+    protected fun allPermissionsGranted() = permissions.all {
+        ContextCompat.checkSelfPermission(requireContext(), it) == PackageManager.PERMISSION_GRANTED
     }
 
+    private val permissions = mutableListOf(
+        Manifest.permission.CAMERA,
+        Manifest.permission.READ_EXTERNAL_STORAGE,
+        Manifest.permission.WRITE_EXTERNAL_STORAGE,
+        Manifest.permission.ACCESS_COARSE_LOCATION,
+    ).apply {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+            add(Manifest.permission.ACCESS_MEDIA_LOCATION)
+        }
+    }
 
+    private val permissionRequest =
+        registerForActivityResult(ActivityResultContracts.RequestMultiplePermissions()) { permissions ->
 
+            if (permissions.all {
+                    it.value
+                }) {
+                onPermissionGranted()
+            } else {
+                RequiredPermissionDialog().show(requireActivity().supportFragmentManager, "RequiredPermissionDialog")
+            }
 
+        }
 
-
+    open fun onPermissionGranted() {
+        ShootSiteDialog().show(requireActivity().supportFragmentManager,"ShootSiteDialog")
+    }
 
     override fun getViewModel() = DashboardViewModel::class.java
 
@@ -314,28 +300,5 @@ class PreferenceFragment : BaseFragment<DashboardViewModel, FragmentPreferenceBi
         inflater: LayoutInflater,
         container: ViewGroup?
     ) = FragmentPreferenceBinding.inflate(inflater, container, false)
-
-    override fun PickiTonUriReturned() {
-
-    }
-
-    override fun PickiTonStartListener() {
-
-    }
-
-    override fun PickiTonProgressUpdate(progress: Int) {
-
-    }
-
-    override fun PickiTonCompleteListener(
-        path: String?,
-        wasDriveFile: Boolean,
-        wasUnknownProvider: Boolean,
-        wasSuccessful: Boolean,
-        Reason: String?
-    ) {
-        setCheckOut(path)
-        Utilities.savePrefrence(requireContext(),AppConstants.SITE_IMAGE_PATH,path)
-    }
 }
 
