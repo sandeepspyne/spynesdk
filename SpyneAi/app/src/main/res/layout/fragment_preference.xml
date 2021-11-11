@@ -376,10 +376,11 @@
               android:orientation="vertical"
               app:layout_constraintTop_toTopOf="parent"
               app:layout_constraintLeft_toRightOf="@id/ivSiteImage"
-              app:layout_constraintRight_toRightOf="parent">
+              app:layout_constraintRight_toRightOf="parent"
+              android:layout_marginLeft="@dimen/dp_5">
 
             <TextView
-                android:layout_width="150dp"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:id="@+id/tvCityName"
                 android:gravity="center"
@@ -391,9 +392,9 @@
                 android:hint="city Name"></TextView>
 
             <com.google.android.material.button.MaterialButton
-                android:layout_width="150dp"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:id="@+id/btClockOut"
+                android:id="@+id/btnClockOut"
                 android:text="Clock Out"
                 android:layout_gravity="right"
                 android:layout_marginTop="20dp"
@@ -413,7 +414,8 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Clocked in For 00:33"
+            android:text="00:33"
+            android:id="@+id/tvClockedTime"
             android:textColor="@color/primary"
             android:layout_marginTop="@dimen/dp_12"
             android:textSize="16sp"

@@ -344,12 +344,13 @@ interface ClipperApi {
         @Query("auth_key") authKey : String,
     ): GetProjectNameResponse
 
-    @GET("save_to_gcp_presigned/presigned-url")
+    @GET("algo/save_to_gcp_presigned/presigned-url")
     suspend fun getGCPUrl(
         @Query("img_name") imageName : String,
     ) : GetGCPUrlRes
 
-    @POST("attendence/checkin-out")
+    @FormUrlEncoded
+    @POST("algo/attendence/checkin-out")
     suspend fun captureCheckInOut(
         @Field("type") type : String,
         @Field("location") location : JSONObject,

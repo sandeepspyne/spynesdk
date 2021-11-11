@@ -66,6 +66,7 @@ class PreferenceFragment : BaseFragment<DashboardViewModel, FragmentPreferenceBi
     private var googleApiClient: GoogleApiClient? = null
     val location_data = JSONObject()
     var snackbar: Snackbar? = null
+    var isActive = false
 
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -168,6 +169,10 @@ class PreferenceFragment : BaseFragment<DashboardViewModel, FragmentPreferenceBi
                 permissionRequest.launch(permissions.toTypedArray())
         }
 
+        binding.btnClockOut.setOnClickListener {
+            clockInOut("checkout","")
+        }
+
         if (Utilities.getBool(requireContext(),AppConstants.CLOCKED_IN)){
             setCheckOut(Utilities.getPreference(requireContext(),AppConstants.SITE_IMAGE_PATH),false)
         }else {
@@ -185,7 +190,7 @@ class PreferenceFragment : BaseFragment<DashboardViewModel, FragmentPreferenceBi
         viewModel.isStartAttendance.observe(viewLifecycleOwner, {
             if (it){
                 binding.btClockIn.visibility=View.GONE
-                binding.btClockOut.visibility=View.VISIBLE
+                binding.btnClockOut.visibility=View.VISIBLE
                 viewModel.isStartAttendance.value=false
                 dispatchTakePictureIntent()
             }
@@ -234,10 +239,15 @@ class PreferenceFragment : BaseFragment<DashboardViewModel, FragmentPreferenceBi
     }
 
     private fun setCheckOut(imagePath : String?,clockIn : Boolean) {
+        val time = System.currentTimeMillis() - Utilities.getLong(requireContext(),AppConstants.CLOCKED_IN_TIME)
+
+        isActive = true
+        upDateTimer(time)
         binding.apply {
             cvClockIn.visibility = View.GONE
             cvClockOut.visibility = View.VISIBLE
             tvCityName.text = Utilities.getPreference(requireContext(),AppConstants.SITE_CITY_NAME)
+            tvClockedTime.text = getString(R.string.clocked_in_for)+" "+millisecondsToTime(time)
         }
 
         imagePath?.let {
@@ -250,7 +260,18 @@ class PreferenceFragment : BaseFragment<DashboardViewModel, FragmentPreferenceBi
                 ObserveurlResponse(it)
             }
         }
+    }
 
+    private fun upDateTimer(time: Long) {
+        if (isActive){
+            tvClockedTime.text = getString(R.string.clocked_in_for)+" "+millisecondsToTime(time)
+
+            Handler(Looper.getMainLooper()).postDelayed(object : Runnable {
+                override fun run() {
+                    upDateTimer(time.plus(1000))
+                }
+            },1000)
+        }
     }
 
     private fun ObserveurlResponse(imagePath: String) {
@@ -310,7 +331,12 @@ class PreferenceFragment : BaseFragment<DashboardViewModel, FragmentPreferenceBi
             when(it){
                 is Resource.Success -> {
                     Utilities.hideProgressDialog()
-                    Toast.makeText(requireContext(),"Checked in successfully...",Toast.LENGTH_LONG).show()
+                    if (type == "checkin"){
+                        Toast.makeText(requireContext(),"Checked in successfully...",Toast.LENGTH_LONG).show()
+                    }else{
+                        Toast.makeText(requireContext(),"Checked on successfully...",Toast.LENGTH_LONG).show()
+                        setCheckIn()
+                    }
                 }
 
                 is Resource.Failure -> {
@@ -360,8 +386,14 @@ class PreferenceFragment : BaseFragment<DashboardViewModel, FragmentPreferenceBi
         googleApiClient?.connect()
     }
 
+    override fun onResume() {
+        super.onResume()
+        isActive = true
+    }
+
     override fun onStop() {
         super.onStop()
+        isActive = false
         googleApiClient?.disconnect()
     }
 
@@ -403,7 +435,7 @@ class PreferenceFragment : BaseFragment<DashboardViewModel, FragmentPreferenceBi
                 savePrefrence(requireContext(),AppConstants.SITE_IMAGE_PATH,currentPhotoPath)
                 savePrefrence(requireContext(),AppConstants.SITE_CITY_NAME,location_data.getString("city"))
                 saveBool(requireContext(),AppConstants.CLOCKED_IN,true)
-                saveLong(requireContext(),AppConstants.CLOCKED_IN_TIME,System.currentTimeMillis()/1000)
+                saveLong(requireContext(),AppConstants.CLOCKED_IN_TIME,System.currentTimeMillis())
             }
 
             setCheckOut(currentPhotoPath,true)
@@ -482,6 +514,19 @@ class PreferenceFragment : BaseFragment<DashboardViewModel, FragmentPreferenceBi
 
     override fun onConnectionFailed(p0: ConnectionResult) {
 
+    }
+
+    private fun millisecondsToTime(milliseconds: Long): String? {
+        val minutes = milliseconds / 1000 / 60
+        val seconds = milliseconds / 1000 % 60
+        val secondsStr = java.lang.Long.toString(seconds)
+        val secs: String
+        secs = if (secondsStr.length >= 2) {
+            secondsStr.substring(0, 2)
+        } else {
+            "0$secondsStr"
+        }
+        return "$minutes:$secs"
     }
 }
 
