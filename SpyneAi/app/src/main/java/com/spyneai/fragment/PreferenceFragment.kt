@@ -189,12 +189,7 @@ class PreferenceFragment : BaseFragment<DashboardViewModel, FragmentPreferenceBi
                         cvClockOut.visibility = View.GONE
                     }
 
-                    val millis = Utilities.getLong(requireContext(),AppConstants.SHOOTS_SESSION)
-
-                    if (millis == 0L)
-                        binding.tvSession.visibility = View.GONE
-                    else
-                        binding.tvSession.text = "Your last session was "+millisecondsToHours(millis)
+                    setLastSession()
                 }
 
                 90f -> {
@@ -211,16 +206,25 @@ class PreferenceFragment : BaseFragment<DashboardViewModel, FragmentPreferenceBi
                 cvClockIn.visibility = View.VISIBLE
                 cvClockOut.visibility = View.GONE
             }
+
+            setLastSession()
         }
 
         viewModel.isStartAttendance.observe(viewLifecycleOwner, {
             if (it){
-                binding.btClockIn.visibility=View.GONE
-                binding.btnClockOut.visibility=View.VISIBLE
                 viewModel.isStartAttendance.value=false
                 dispatchTakePictureIntent()
             }
         })
+    }
+
+    private fun setLastSession() {
+        val millis = Utilities.getLong(requireContext(),AppConstants.SHOOTS_SESSION)
+
+        if (millis == 0L)
+            binding.tvSession.visibility = View.GONE
+        else
+            binding.tvSession.text = "Your last session was "+millisecondsToHours(millis)
     }
 
     private fun dispatchTakePictureIntent() {
@@ -276,6 +280,7 @@ class PreferenceFragment : BaseFragment<DashboardViewModel, FragmentPreferenceBi
             tvCityName.text = Utilities.getPreference(requireContext(),AppConstants.SITE_CITY_NAME)
             ivDropDown.rotation = 90f
             tvClockedTime.text = getString(R.string.clocked_in_for)+" "+millisecondsToTime(time)
+            llAttendance.setOnClickListener(null)
         }
 
         imagePath?.let {
@@ -428,7 +433,12 @@ class PreferenceFragment : BaseFragment<DashboardViewModel, FragmentPreferenceBi
 
     override fun onResume() {
         super.onResume()
-        isActive = true
+        if (Utilities.getBool(requireContext(),AppConstants.CLOCKED_IN)){
+            isActive = true
+            upDateTimer(
+                System.currentTimeMillis() - Utilities.getLong(requireContext(),AppConstants.CLOCKED_IN_TIME)
+            )
+        }
     }
 
     override fun onStop() {
