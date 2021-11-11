@@ -5,6 +5,8 @@ import android.app.Activity.RESULT_OK
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.content.res.Configuration
+import android.location.Address
+import android.location.Geocoder
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
@@ -15,28 +17,45 @@ import android.view.*
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
 import android.widget.LinearLayout
+import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.content.ContextCompat
 import androidx.core.content.FileProvider
 import com.bumptech.glide.Glide
+import com.google.android.gms.common.ConnectionResult
+import com.google.android.gms.common.api.GoogleApiClient
+import com.google.android.gms.location.LocationServices
+import com.google.android.material.snackbar.Snackbar
 import com.spyneai.R
 import com.spyneai.ShootSiteDialog
 import com.spyneai.base.BaseFragment
+import com.spyneai.base.network.ClipperApi
+import com.spyneai.base.network.Resource
 import com.spyneai.dashboard.data.DashboardViewModel
+import com.spyneai.dashboard.ui.handleApiError
 import com.spyneai.databinding.FragmentPreferenceBinding
-import com.spyneai.databinding.HomeDashboardFragmentBinding
+import com.spyneai.interfaces.GcpClient
 import com.spyneai.logout.LogoutDialog
 import com.spyneai.needs.AppConstants
 import com.spyneai.needs.Utilities
 import com.spyneai.shoot.ui.dialogs.RequiredPermissionDialog
 import kotlinx.android.synthetic.main.fragment_preference.*
+
+import okhttp3.MediaType.Companion.toMediaTypeOrNull
+import okhttp3.RequestBody.Companion.asRequestBody
+import okhttp3.ResponseBody
+import org.json.JSONObject
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
 import java.io.File
 import java.io.IOException
 import java.text.SimpleDateFormat
 import java.util.*
 
 
-class PreferenceFragment : BaseFragment<DashboardViewModel, FragmentPreferenceBinding>(){
+class PreferenceFragment : BaseFragment<DashboardViewModel, FragmentPreferenceBinding>(),
+    GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener {
 
     val REQUEST_IMAGE_CAPTURE = 1
 
@@ -44,12 +63,18 @@ class PreferenceFragment : BaseFragment<DashboardViewModel, FragmentPreferenceBi
     var languageList= arrayListOf<String>()
     lateinit var spLanguageAdapter: ArrayAdapter<String>
     lateinit var currentPhotoPath: String
+    private var googleApiClient: GoogleApiClient? = null
+    val location_data = JSONObject()
+    var snackbar: Snackbar? = null
 
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
         // set llLogout Button Margin only for sypne app
+
+        googleApiClient = GoogleApiClient.Builder(requireContext(), this, this).addApi(LocationServices.API).build()
+
 
         if (getString(R.string.app_name) == AppConstants.SPYNE_AI){
             val params: LinearLayout.LayoutParams = LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT)
@@ -144,7 +169,7 @@ class PreferenceFragment : BaseFragment<DashboardViewModel, FragmentPreferenceBi
         }
 
         if (Utilities.getBool(requireContext(),AppConstants.CLOCKED_IN)){
-            setCheckOut(Utilities.getPreference(requireContext(),AppConstants.SITE_IMAGE_PATH))
+            setCheckOut(Utilities.getPreference(requireContext(),AppConstants.SITE_IMAGE_PATH),false)
         }else {
            setCheckIn()
         }
@@ -156,6 +181,7 @@ class PreferenceFragment : BaseFragment<DashboardViewModel, FragmentPreferenceBi
             cvClockIn.visibility = View.VISIBLE
             cvClockOut.visibility = View.GONE
         }
+
         viewModel.isStartAttendance.observe(viewLifecycleOwner, {
             if (it){
                 binding.btClockIn.visibility=View.GONE
@@ -207,18 +233,136 @@ class PreferenceFragment : BaseFragment<DashboardViewModel, FragmentPreferenceBi
         }
     }
 
-    private fun setCheckOut(imagePath : String?) {
+    private fun setCheckOut(imagePath : String?,clockIn : Boolean) {
         binding.apply {
             cvClockIn.visibility = View.GONE
             cvClockOut.visibility = View.VISIBLE
+            tvCityName.text = Utilities.getPreference(requireContext(),AppConstants.SITE_CITY_NAME)
         }
 
         imagePath?.let {
             Glide.with(requireContext())
                 .load(it)
                 .into(binding.ivSiteImage)
+
+            if (clockIn){
+                getGcpUrl(it)
+                ObserveurlResponse(it)
+            }
         }
 
+    }
+
+    private fun ObserveurlResponse(imagePath: String) {
+        viewModel.gcpUrlResponse.observe(viewLifecycleOwner,{
+            when(it){
+                is Resource.Success -> {
+                    //upload to gcp
+                    uploadImageToGcpUrl(imagePath,it.value.data.presignedUrl,it.value.data.fileUrl)
+                }
+
+                is Resource.Failure -> {
+                    Utilities.hideProgressDialog()
+                    handleApiError(it){ getGcpUrl(imagePath) }
+                }
+            }
+        })
+    }
+
+    private fun uploadImageToGcpUrl(path : String,preSignedUrl: String, fileUrl: String) {
+        val requestFile =
+            File(path).asRequestBody("text/x-markdown; charset=utf-8".toMediaTypeOrNull())
+
+        //upload video with presigned url
+        val request = GcpClient.buildService(ClipperApi::class.java)
+
+        val call = request.uploadVideo(
+            "application/octet-stream",
+            preSignedUrl,
+            requestFile
+        )
+
+        call.enqueue(object : Callback<ResponseBody> {
+            override fun onResponse(call: Call<ResponseBody>, response: Response<ResponseBody>) {
+                Log.d("VideoUploader", "onResponse: "+response.code())
+                Utilities.hideProgressDialog()
+                if (response.isSuccessful){
+                    //set clock in
+                    clockInOut("checkin",fileUrl)
+                    observeClockInOut("checkin",fileUrl)
+                }else {
+                    //retry gcp upload
+                    showErrorSnackBar(path,preSignedUrl,fileUrl)
+                }
+            }
+
+            override fun onFailure(call: Call<ResponseBody>, t: Throwable) {
+                Utilities.hideProgressDialog()
+                //retry gcp upload
+                showErrorSnackBar(path,preSignedUrl,fileUrl)
+            }
+
+        })
+    }
+
+    private fun observeClockInOut(type: String, fileUrl: String) {
+        viewModel.checkInOutRes.observe(viewLifecycleOwner,{
+            when(it){
+                is Resource.Success -> {
+                    Utilities.hideProgressDialog()
+                    Toast.makeText(requireContext(),"Checked in successfully...",Toast.LENGTH_LONG).show()
+                }
+
+                is Resource.Failure -> {
+                    Utilities.hideProgressDialog()
+                    handleApiError(it){ clockInOut(type,fileUrl)}
+                }
+            }
+        })
+    }
+
+    private fun clockInOut(type : String, fileUrl: String) {
+        Utilities.showProgressDialog(requireContext())
+        viewModel.captureCheckInOut(
+            type,
+            location_data,
+            fileUrl
+        )
+    }
+
+    private fun showErrorSnackBar(path: String, preSignedUrl: String, fileUrl: String) {
+        snackbar = Snackbar.make(
+            binding.root,
+            "Failed to upload image",
+            Snackbar.LENGTH_INDEFINITE
+        )
+            .setAction("Retry") {
+                uploadImageToGcpUrl(path, preSignedUrl,fileUrl)
+            }
+            .setActionTextColor(
+                ContextCompat.getColor(
+                    requireContext(),
+                    R.color.primary
+                )
+            )
+
+        snackbar?.show()
+    }
+
+    private fun getGcpUrl(imagePath : String) {
+        Utilities.showProgressDialog(requireContext())
+        viewModel.getGCPUrl(File(imagePath).name)
+    }
+
+
+    override fun onStart() {
+        super.onStart()
+        googleApiClient?.connect()
+    }
+
+    override fun onStop() {
+        super.onStop()
+        googleApiClient?.disconnect()
     }
 
     private fun refreshTexts() {
@@ -228,7 +372,6 @@ class PreferenceFragment : BaseFragment<DashboardViewModel, FragmentPreferenceBi
             tvPassword.text = getString(R.string.change_password)
             tvAppVersionLabel.text = getString(R.string.app_version)
             tvLogout.text = getString(R.string.logout)
-//            tvLogin.text = getString(R.string.you_are_logged_in_as)
         }
     }
 
@@ -256,9 +399,14 @@ class PreferenceFragment : BaseFragment<DashboardViewModel, FragmentPreferenceBi
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         if (requestCode == REQUEST_IMAGE_CAPTURE && resultCode == RESULT_OK) {
-            setCheckOut(currentPhotoPath)
-            Utilities.savePrefrence(requireContext(),AppConstants.SITE_IMAGE_PATH,currentPhotoPath)
-            Utilities.saveBool(requireContext(),AppConstants.CLOCKED_IN,true)
+            Utilities.apply {
+                savePrefrence(requireContext(),AppConstants.SITE_IMAGE_PATH,currentPhotoPath)
+                savePrefrence(requireContext(),AppConstants.SITE_CITY_NAME,location_data.getString("city"))
+                saveBool(requireContext(),AppConstants.CLOCKED_IN,true)
+                saveLong(requireContext(),AppConstants.CLOCKED_IN_TIME,System.currentTimeMillis()/1000)
+            }
+
+            setCheckOut(currentPhotoPath,true)
         }
     }
 
@@ -300,5 +448,40 @@ class PreferenceFragment : BaseFragment<DashboardViewModel, FragmentPreferenceBi
         inflater: LayoutInflater,
         container: ViewGroup?
     ) = FragmentPreferenceBinding.inflate(inflater, container, false)
+
+    override fun onConnected(p0: Bundle?) {
+        if (ContextCompat.checkSelfPermission(requireContext(), Manifest.permission.ACCESS_COARSE_LOCATION)
+            == PackageManager.PERMISSION_GRANTED
+        ) {
+            try {
+                val lastLocation = LocationServices.FusedLocationApi.getLastLocation(googleApiClient)
+                val lat: Double = lastLocation.latitude
+                val lon: Double = lastLocation.longitude
+
+                val geocoder = Geocoder(requireContext(), Locale.getDefault())
+                val addresses: List<Address> = geocoder.getFromLocation(lat, lon, 1)
+                val postalCode = addresses[0].postalCode
+                val cityName = addresses[0].locality
+                val countryName = addresses[0].countryName
+
+                location_data.put("city", cityName)
+                location_data.put("country", countryName)
+                location_data.put("latitude", lat)
+                location_data.put("longitude", lon)
+                location_data.put("postalCode", postalCode)
+            }catch (e : Exception){
+                e.printStackTrace()
+            }
+
+        }
+    }
+
+    override fun onConnectionSuspended(p0: Int) {
+
+    }
+
+    override fun onConnectionFailed(p0: ConnectionResult) {
+
+    }
 }
 

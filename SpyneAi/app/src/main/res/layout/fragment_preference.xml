@@ -381,6 +381,7 @@
             <TextView
                 android:layout_width="150dp"
                 android:layout_height="wrap_content"
+                android:id="@+id/tvCityName"
                 android:gravity="center"
                 android:layout_gravity="right"
                 android:background="@drawable/bg_skip"

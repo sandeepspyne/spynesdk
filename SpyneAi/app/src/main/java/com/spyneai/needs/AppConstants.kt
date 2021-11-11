@@ -3,6 +3,8 @@ package com.spyneai.needs
 object AppConstants {
     val CLOCKED_IN: String = "CLOCKED_IN"
     val SITE_IMAGE_PATH = "SITE_IMAGE_PATH"
+    val CLOCKED_IN_TIME = "CLOCKED_IN_TIME"
+    val SITE_CITY_NAME = "SITE_CITY_NAME"
 
     val ENTERPRISE_ID: String = "ENTERPRISE_ID"
     val FLIPKART_ENTERPRISE_ID: String = "EVV1XVY4R"

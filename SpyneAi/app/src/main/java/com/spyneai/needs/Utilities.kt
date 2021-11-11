@@ -95,6 +95,18 @@ object Utilities {
         return preferences.getBoolean(key, false)
     }
 
+    fun saveLong(context: Context, key: String, value: Long){
+        val preferences = PreferenceManager.getDefaultSharedPreferences(context)
+        val editor = preferences.edit()
+        editor.putLong(key, value)
+        editor.apply()
+    }
+
+    fun getLong(context: Context?, key: String): Long {
+        val preferences = PreferenceManager.getDefaultSharedPreferences(context)
+        return preferences.getLong(key,0)
+    }
+
 
     fun showProgressDialog(context: Context) {
         log("show progress dialog")
