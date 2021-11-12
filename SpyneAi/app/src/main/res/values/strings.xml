@@ -347,5 +347,7 @@
     <string name="crop_your_image">Crop your Image</string>
     <string name="reshoot">Reshoot</string>
     <string name="crop">Crop</string>
+    <string name="tint_window">Tint Window</string>
+    <string name="clocked_in_for">Clocked in For </string>
 
 </resources>

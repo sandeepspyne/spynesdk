@@ -1,12 +1,19 @@
 package com.spyneai.needs
 
 object AppConstants {
+    val CLOCKED_IN: String = "CLOCKED_IN"
+    val SITE_IMAGE_PATH = "SITE_IMAGE_PATH"
+    val CLOCKED_IN_TIME = "CLOCKED_IN_TIME"
+    val SITE_CITY_NAME = "SITE_CITY_NAME"
+
     val ENTERPRISE_ID: String = "ENTERPRISE_ID"
     val FLIPKART_ENTERPRISE_ID: String = "EVV1XVY4R"
     val BASE_URL: String = "https://www.clippr.ai/api/"
     val STATUS_PROJECT_NAME: String="STATUS_PROJECT_NAME"
+    val SHOOTS_SESSION = "SHOOTS_SESSION"
 
     val LOCALE = "LOCALE"
+
     val IS_360: String? = "IS_360"
     val IS_HD: String? = "IS_HD"
     val CARS_CATEGORY_ID = "cat_d8R14zUNE"
@@ -111,6 +118,7 @@ object AppConstants {
     val  VIDEO_URL: String = "videoUrl"
 
     val  IS_NEW_USER: String = "isNewUser"
+
 
 
 

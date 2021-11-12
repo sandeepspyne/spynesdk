@@ -80,6 +80,14 @@ class TopUpFragment: DialogFragment() {
                     dismiss()
                 }
             }
+            AppConstants.SPYNE_AI->{
+                if (Utilities.getPreference(requireContext(),AppConstants.ENTERPRISE_ID)
+                    == AppConstants.FLIPKART_ENTERPRISE_ID){
+                    binding?.tvSendRequest?.visibility = View.GONE
+
+                }
+
+            }
         }
 
 

@@ -74,8 +74,6 @@ class ShootActivity : AppCompatActivity(), GoogleApiClient.ConnectionCallbacks,
         setContentView(R.layout.activity_shoot)
 
 
-
-
         googleApiClient = GoogleApiClient.Builder(this, this, this).addApi(LocationServices.API).build()
 
 

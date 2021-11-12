@@ -4,6 +4,7 @@ package com.spyneai.dashboard.data.repository
 import com.spyneai.base.BaseRepository
 import com.spyneai.base.network.ClipperApiClient
 import com.spyneai.base.network.SpyneAiApiClient
+import org.json.JSONObject
 
 class DashboardRepository() : BaseRepository() {
 
@@ -42,6 +43,20 @@ class DashboardRepository() : BaseRepository() {
         version : String
     )= safeApiCall {
         clipperApi.getVersionStatus(authKey,version)
+    }
+
+    suspend fun getGCPUrl(
+        imageName: String
+    )= safeApiCall {
+        clipperApi.getGCPUrl(imageName)
+    }
+
+    suspend fun captureCheckInOut(
+        type : String,
+        location : JSONObject,
+        imageUrl : String = ""
+    ) = safeApiCall {
+        clipperApi.captureCheckInOut(type,location,imageUrl)
     }
 
 }

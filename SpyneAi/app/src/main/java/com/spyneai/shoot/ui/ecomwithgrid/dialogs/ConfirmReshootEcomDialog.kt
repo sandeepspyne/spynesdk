@@ -1,8 +1,13 @@
 package com.spyneai.shoot.ui.ecomwithgrid.dialogs
 
 import android.content.Intent
+import android.graphics.Bitmap
+import android.graphics.BitmapFactory
+import android.graphics.Matrix
+import android.media.ExifInterface
 import android.os.Build
 import android.os.Bundle
+import android.os.Environment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -22,6 +27,7 @@ import com.spyneai.service.getServiceState
 import com.spyneai.shoot.data.ShootViewModel
 import com.spyneai.shoot.utils.log
 import kotlinx.coroutines.launch
+import java.io.*
 
 
 class ConfirmReshootEcomDialog :
@@ -34,7 +40,7 @@ class ConfirmReshootEcomDialog :
         dialog?.setCancelable(false)
 
         val uri = viewModel.shootData.value?.capturedImage
-        binding.ivCapturedImage.setRotation(90F)
+//        binding.ivCapturedImage.setRotation(90F)
 
         viewModel.end.value = System.currentTimeMillis()
         val difference = (viewModel.end.value!! - viewModel.begin.value!!)/1000.toFloat()
@@ -87,7 +93,8 @@ class ConfirmReshootEcomDialog :
             )
 
             viewModel.isCameraButtonClickable = true
-            //viewModel.uploadImageWithWorkManager(viewModel.shootData.value!!)
+//            viewModel.uploadImageWithWorkManager(viewModel.shootData.value!!)
+
 
             viewLifecycleOwner.lifecycleScope.launch {
                 viewModel.insertImage(viewModel.shootData.value!!)
@@ -115,6 +122,7 @@ class ConfirmReshootEcomDialog :
             requireActivity().startService(serviceIntent)
         }
     }
+
 
     override fun onResume() {
         super.onResume()

@@ -185,6 +185,8 @@ class MainDashboardActivity : AppCompatActivity() {
             true
         }
 
+        binding.bottomNavigation.selectedItemId = R.id.homeDashboardFragment
+
         if (intent.getBooleanExtra(AppConstants.IS_NEW_USER, false)) {
             viewModel!!.isNewUser.value = intent.getBooleanExtra(AppConstants.IS_NEW_USER, false)
             viewModel!!.creditsMessage.value = intent.getStringExtra(AppConstants.CREDITS_MESSAGE)
@@ -541,7 +543,7 @@ class MainDashboardActivity : AppCompatActivity() {
 
     override fun onResume() {
         super.onResume()
-        binding.bottomNavigation.selectedItemId = R.id.homeDashboardFragment
+        //binding.bottomNavigation.selectedItemId = R.id.homeDashboardFragment
     }
 
     private fun setCurrentFragment(fragment: Fragment) =

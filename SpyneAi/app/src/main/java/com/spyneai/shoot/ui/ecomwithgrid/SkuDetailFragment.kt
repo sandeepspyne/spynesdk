@@ -7,6 +7,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.GridLayoutManager
 import com.posthog.android.Properties
+import com.spyneai.SelectAnotherImagetypeDialog
 import com.spyneai.base.BaseFragment
 import com.spyneai.base.network.Resource
 import com.spyneai.captureEvent
@@ -120,9 +121,58 @@ class SkuDetailFragment : BaseFragment<ShootViewModel, FragmentSkuDetailBinding>
             updateTotalFrames()
         }
 
-        binding.ivAddAngle.setOnClickListener {
-            viewModel.addMoreAngle.value = true
+        if (Utilities.getPreference(requireContext(),AppConstants.ENTERPRISE_ID)
+            != AppConstants.FLIPKART_ENTERPRISE_ID){
+            binding.ivAddAngle.setOnClickListener {
+                if (viewModel.categoryDetails.value?.categoryName.equals("E-Commerce") || viewModel.categoryDetails.value?.categoryName.equals(
+                        "Food & Beverages"
+                    )
+                )
+                    viewModel.addMoreAngle.value = true
+            }
+
+            binding.tvAddAngle.setOnClickListener {
+                if (viewModel.categoryDetails.value?.categoryName.equals("E-Commerce") || viewModel.categoryDetails.value?.categoryName.equals(
+                        "Food & Beverages"
+                    )
+                )
+                    viewModel.addMoreAngle.value = true
+            }
+
+        }else {
+            binding.ivAddAngle.setOnClickListener {
+                SelectAnotherImagetypeDialog().show(
+                    requireActivity().supportFragmentManager,
+                    "Select_another_image_dialog"
+                )
+            }
+            binding.tvAddAngle.setOnClickListener {
+                SelectAnotherImagetypeDialog().show(
+                    requireActivity().supportFragmentManager,
+                    "Select_another_image_dialog"
+                )
+
+            }
         }
+//        binding.ivAddAngle.setOnClickListener {
+//            if (viewModel.categoryDetails.value?.categoryName.equals("E-Commerce") || viewModel.categoryDetails.value?.categoryName.equals(
+//                    "Food & Beverages"
+//                )
+//            )
+//                viewModel.addMoreAngle.value = true
+//        }
+//        binding.tvAddAngle.setOnClickListener {
+//            if (viewModel.categoryDetails.value?.categoryName.equals("E-Commerce") || viewModel.categoryDetails.value?.categoryName.equals(
+//                    "Food & Beverages"
+//                )
+//            )
+//                viewModel.addMoreAngle.value = true
+//        }
+
+
+//        binding.ivAddAngle.setOnClickListener {
+//            viewModel.addMoreAngle.value = true
+//        }
 
         binding.tvEndProject.setOnClickListener {
             endProject = true
@@ -180,6 +230,9 @@ class SkuDetailFragment : BaseFragment<ShootViewModel, FragmentSkuDetailBinding>
         })
     }
 
+
+
+
     private fun processRequest() {
         if (endProject) {
             log("end project dialog called")
@@ -188,22 +241,6 @@ class SkuDetailFragment : BaseFragment<ShootViewModel, FragmentSkuDetailBinding>
             observeUpdateTotalFrames()
 
 
-        }
-
-
-        binding.ivAddAngle.setOnClickListener {
-            if (viewModel.categoryDetails.value?.categoryName.equals("E-Commerce") || viewModel.categoryDetails.value?.categoryName.equals(
-                    "Food & Beverages"
-                )
-            )
-                viewModel.addMoreAngle.value = true
-        }
-        binding.tvAddAngle.setOnClickListener {
-            if (viewModel.categoryDetails.value?.categoryName.equals("E-Commerce") || viewModel.categoryDetails.value?.categoryName.equals(
-                    "Food & Beverages"
-                )
-            )
-                viewModel.addMoreAngle.value = true
         }
     }
 
@@ -262,6 +299,10 @@ class SkuDetailFragment : BaseFragment<ShootViewModel, FragmentSkuDetailBinding>
             binding.ivAddAngle.visibility = View.VISIBLE
             binding.tvAddAngle.visibility = View.VISIBLE
         }
+//        if (viewModel.categoryDetails.value?.imageType.equals("Info")) {
+//            binding.ivAddAngle.visibility = View.GONE
+//            binding.tvAddAngle.visibility = View.GONE
+//        }
     }
 
 

@@ -6,12 +6,10 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.work.*
 import com.spyneai.BaseApplication
-import com.spyneai.R
 import com.spyneai.base.network.Resource
 import com.spyneai.credits.model.DownloadHDRes
 import com.spyneai.credits.model.ReduceCreditResponse
 import com.spyneai.model.credit.CreditDetailsResponse
-import com.spyneai.needs.AppConstants
 import com.spyneai.shoot.data.model.CarsBackgroundRes
 import com.spyneai.shoot.data.model.ProcessSkuRes
 import com.spyneai.shoot.data.model.Sku
@@ -38,6 +36,7 @@ class ProcessViewModel : ViewModel() {
 
     var numberPlateBlur = false
     var windowCorrection = false
+    var tintWindow = false
 
 
 
@@ -94,7 +93,8 @@ class ProcessViewModel : ViewModel() {
 
     fun processSku(authKey: String, skuId: String, backgroundId: String, is360: Boolean,
                    numberPlateBlur: Boolean,
-                   windowCorrection: Boolean ) =
+                   windowCorrection: Boolean,
+                   tintWindow: Boolean) =
         viewModelScope.launch {
 
             //queue process request
@@ -102,7 +102,7 @@ class ProcessViewModel : ViewModel() {
 
             _processSkuRes.value = Resource.Loading
             _processSkuRes.value = repository.processSku(authKey, skuId, backgroundId,
-                is360,numberPlateBlur,windowCorrection)
+                is360,numberPlateBlur,windowCorrection,tintWindow)
         }
 
     fun checkImagesUploadStatus(backgroundSelect: String) {

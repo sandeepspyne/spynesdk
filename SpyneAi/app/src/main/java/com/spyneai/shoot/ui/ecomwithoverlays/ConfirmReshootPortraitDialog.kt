@@ -91,6 +91,7 @@ class ConfirmReshootPortraitDialog : BaseDialogFragment<ShootViewModel, ConfirmR
 
                     binding.ivCaptured2.setRotation(90F)
 
+
                         Glide.with(requireContext())
                             .load(uri)
                             .diskCacheStrategy(DiskCacheStrategy.NONE)

@@ -4,6 +4,8 @@ import com.spyneai.BaseApplication
 import com.spyneai.camera2.OverlaysResponse
 import com.spyneai.credits.model.DownloadHDRes
 import com.spyneai.credits.model.ReduceCreditResponse
+import com.spyneai.dashboard.data.model.CheckInOutRes
+import com.spyneai.dashboard.data.model.GetGCPUrlRes
 import com.spyneai.dashboard.data.model.VersionStatusRes
 import com.spyneai.dashboard.response.NewCategoriesResponse
 import com.spyneai.dashboard.response.NewSubCatResponse
@@ -15,7 +17,6 @@ import com.spyneai.orders.data.response.CompletedSKUsResponse
 import com.spyneai.orders.data.response.GetOngoingSkusResponse
 import com.spyneai.orders.data.response.GetProjectsResponse
 import com.spyneai.orders.data.response.ImagesOfSkuRes
-import com.spyneai.orders.data.response.*
 import com.spyneai.service.manual.FilesDataRes
 import com.spyneai.shoot.data.model.*
 import com.spyneai.shoot.response.SkuProcessStateResponse
@@ -30,8 +31,6 @@ import okhttp3.RequestBody
 import org.json.JSONObject
 import okhttp3.ResponseBody
 import retrofit2.Call
-import retrofit2.Callback
-import retrofit2.Response
 import retrofit2.http.*
 
 interface ClipperApi {
@@ -147,12 +146,13 @@ interface ClipperApi {
     @FormUrlEncoded
     @POST("v2/sku/processImages")
     suspend fun processSku(
-        @Field("auth_key") authKey : String,
-        @Field("sku_id") skuId : String,
-        @Field("background_id") backgroundId : String,
-        @Field("is_360") is360 : Boolean,
-        @Field("number_plate_blur") numberPlateBlur : Boolean,
-        @Field("window_correction") windowCorrection : Boolean
+        @Field("auth_key") authKey: String,
+        @Field("sku_id") skuId: String,
+        @Field("background_id") backgroundId: String,
+        @Field("is_360") is360: Boolean,
+        @Field("number_plate_blur") numberPlateBlur: Boolean,
+        @Field("window_correction") windowCorrection: Boolean,
+        @Field("tint_window") tintWindow: Boolean,
     ) : ProcessSkuRes
 
 
@@ -344,4 +344,17 @@ interface ClipperApi {
         @Query("auth_key") authKey : String,
     ): GetProjectNameResponse
 
+    @GET("algo/save_to_gcp_presigned/presigned-url")
+    suspend fun getGCPUrl(
+        @Query("img_name") imageName : String,
+    ) : GetGCPUrlRes
+
+    @FormUrlEncoded
+    @POST("algo/attendence/checkin-out")
+    suspend fun captureCheckInOut(
+        @Field("type") type : String,
+        @Field("location") location : JSONObject,
+        @Field("img_url") imageUrl : String = "",
+        @Field("auth_key") authKey : String = Utilities.getPreference(BaseApplication.getContext(),AppConstants.AUTH_KEY).toString()
+    ) : CheckInOutRes
 }

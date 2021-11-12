@@ -40,19 +40,17 @@ class GridEcomFragment : BaseFragment<ShootViewModel, FragmentGridEcomBinding>()
 
 
         if (Utilities.getPreference(requireContext(),AppConstants.ENTERPRISE_ID)
-            == AppConstants.FLIPKART_ENTERPRISE_ID) {
+            == AppConstants.FLIPKART_ENTERPRISE_ID){
             binding.apply {
                 ivNext.visibility = View.VISIBLE
                 ivEnd.visibility = View.GONE
             }
-        } else{
+        }else{
             binding.apply {
-                ivNext.visibility = View.GONE
-                ivEnd.visibility = View.VISIBLE
+            ivNext.visibility = View.GONE
+            ivEnd.visibility = View.VISIBLE
             }
         }
-
-
 
         if (viewModel.projectId.value == null){
             if(Utilities.getPreference(requireContext(), AppConstants.STATUS_PROJECT_NAME).toString() =="true")
@@ -236,6 +234,7 @@ class GridEcomFragment : BaseFragment<ShootViewModel, FragmentGridEcomBinding>()
 
 
                 CropImage.activity(Uri.fromFile(File(shootData.capturedImage)))
+//                 .setInitialRotation(90)
                 .start(requireActivity())
             }
             else ->
