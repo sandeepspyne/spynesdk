@@ -276,10 +276,6 @@
 
     </LinearLayout>
 
-
-
-
-
     <androidx.cardview.widget.CardView
         android:id="@+id/cvClockIn"
         android:layout_width="match_parent"

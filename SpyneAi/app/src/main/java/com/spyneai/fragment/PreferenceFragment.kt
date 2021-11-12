@@ -168,13 +168,13 @@ class PreferenceFragment : BaseFragment<DashboardViewModel, FragmentPreferenceBi
         }
 
         binding.btnClockOut.setOnClickListener {
+            viewModel.type = "checkout"
+            viewModel.fileUrl = ""
             clockInOut()
         }
 
         if (Utilities.getBool(requireContext(),AppConstants.CLOCKED_IN)){
             viewModel.siteImagePath = Utilities.getPreference(requireContext(),AppConstants.SITE_IMAGE_PATH).toString()
-            viewModel.type = "checkout"
-            viewModel.fileUrl = ""
             setCheckOut(false)
         }else {
            setCheckIn(false)
@@ -182,7 +182,6 @@ class PreferenceFragment : BaseFragment<DashboardViewModel, FragmentPreferenceBi
 
         observeUrlResponse()
         observeClockInOut()
-
     }
 
     private fun setCheckIn(hideClockOut : Boolean) {
@@ -251,7 +250,8 @@ class PreferenceFragment : BaseFragment<DashboardViewModel, FragmentPreferenceBi
                            it
                        )
                        takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, photoURI)
-                       resultLauncher.launch(takePictureIntent)
+                       startActivityForResult(takePictureIntent, REQUEST_IMAGE_CAPTURE)
+                       //resultLauncher.launch(takePictureIntent)
                    }
                }
            }
@@ -260,7 +260,26 @@ class PreferenceFragment : BaseFragment<DashboardViewModel, FragmentPreferenceBi
        }
     }
 
-    var resultLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        val s = ""
+        if (requestCode == REQUEST_IMAGE_CAPTURE && resultCode == RESULT_OK) {
+            Utilities.apply {
+                savePrefrence(requireContext(),AppConstants.SITE_IMAGE_PATH,currentPhotoPath)
+                savePrefrence(requireContext(),AppConstants.SITE_CITY_NAME,location_data.getString("city"))
+                saveBool(requireContext(),AppConstants.CLOCKED_IN,true)
+                saveLong(requireContext(),AppConstants.CLOCKED_IN_TIME,System.currentTimeMillis())
+            }
+
+            viewModel.siteImagePath = currentPhotoPath
+            setCheckOut(true)
+        }else{
+            val s = ""
+        }
+    }
+
+    val resultLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
+        val s = ""
         if (result.resultCode == RESULT_OK) {
             Utilities.apply {
                 savePrefrence(requireContext(),AppConstants.SITE_IMAGE_PATH,currentPhotoPath)
@@ -336,6 +355,7 @@ class PreferenceFragment : BaseFragment<DashboardViewModel, FragmentPreferenceBi
                     //upload to gcp
                     viewModel.fileUrl = it.value.data.fileUrl
                     uploadImageToGcpUrl(viewModel.siteImagePath,it.value.data.presignedUrl,it.value.data.fileUrl)
+                    viewModel._gcpUrlResponse.value = null
                 }
 
                 is Resource.Failure -> {
@@ -392,7 +412,6 @@ class PreferenceFragment : BaseFragment<DashboardViewModel, FragmentPreferenceBi
                         upDateTimer(
                             System.currentTimeMillis() - Utilities.getLong(requireContext(),AppConstants.CLOCKED_IN_TIME)
                         )
-                        viewModel.type = "checkout"
                     }else{
                         Toast.makeText(requireContext(),"Clocked out successfully...",Toast.LENGTH_LONG).show()
                         //save session time
@@ -405,6 +424,8 @@ class PreferenceFragment : BaseFragment<DashboardViewModel, FragmentPreferenceBi
 
                         setCheckIn(true)
                     }
+
+                    viewModel._checkInOutRes.value = null
                 }
 
                 is Resource.Failure -> {

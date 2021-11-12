@@ -39,11 +39,11 @@ class DashboardViewModel() : ViewModel() {
     val versionResponse: LiveData<Resource<VersionStatusRes>>
         get() = _versionResponse
 
-    private val _gcpUrlResponse: MutableLiveData<Resource<GetGCPUrlRes>> = MutableLiveData()
+    var _gcpUrlResponse: MutableLiveData<Resource<GetGCPUrlRes>> = MutableLiveData()
     val gcpUrlResponse: LiveData<Resource<GetGCPUrlRes>>
         get() = _gcpUrlResponse
 
-    private val _checkInOutRes: MutableLiveData<Resource<CheckInOutRes>> = MutableLiveData()
+    var _checkInOutRes: MutableLiveData<Resource<CheckInOutRes>> = MutableLiveData()
     val checkInOutRes: LiveData<Resource<CheckInOutRes>>
         get() = _checkInOutRes
 
