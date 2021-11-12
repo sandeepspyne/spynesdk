@@ -168,19 +168,25 @@ class PreferenceFragment : BaseFragment<DashboardViewModel, FragmentPreferenceBi
         }
 
         binding.btnClockOut.setOnClickListener {
-            clockInOut("checkout","")
-            observeClockInOut("checkout","")
+            clockInOut()
         }
 
         if (Utilities.getBool(requireContext(),AppConstants.CLOCKED_IN)){
-            setCheckOut(Utilities.getPreference(requireContext(),AppConstants.SITE_IMAGE_PATH),false)
+            viewModel.siteImagePath = Utilities.getPreference(requireContext(),AppConstants.SITE_IMAGE_PATH).toString()
+            viewModel.type = "checkout"
+            viewModel.fileUrl = ""
+            setCheckOut(false)
         }else {
            setCheckIn(false)
         }
 
+        observeUrlResponse()
+        observeClockInOut()
+
     }
 
     private fun setCheckIn(hideClockOut : Boolean) {
+        viewModel.type = "checkin"
         binding.llAttendance.setOnClickListener {
             when(binding.ivDropDown.rotation){
                 0f -> {
@@ -263,7 +269,8 @@ class PreferenceFragment : BaseFragment<DashboardViewModel, FragmentPreferenceBi
                 saveLong(requireContext(),AppConstants.CLOCKED_IN_TIME,System.currentTimeMillis())
             }
 
-            setCheckOut(currentPhotoPath,true)
+            viewModel.siteImagePath = currentPhotoPath
+            setCheckOut(true)
         }else{
             val s = ""
         }
@@ -286,7 +293,7 @@ class PreferenceFragment : BaseFragment<DashboardViewModel, FragmentPreferenceBi
         }
     }
 
-    private fun setCheckOut(imagePath : String?,clockIn : Boolean) {
+    private fun setCheckOut(clockIn : Boolean) {
         val time = System.currentTimeMillis() - Utilities.getLong(requireContext(),AppConstants.CLOCKED_IN_TIME)
 
         isActive = true
@@ -301,15 +308,12 @@ class PreferenceFragment : BaseFragment<DashboardViewModel, FragmentPreferenceBi
             llAttendance.setOnClickListener(null)
         }
 
-        imagePath?.let {
-            Glide.with(requireContext())
-                .load(it)
-                .into(binding.ivSiteImage)
+        Glide.with(requireContext())
+            .load(viewModel.siteImagePath)
+            .into(binding.ivSiteImage)
 
-            if (clockIn){
-                getGcpUrl(it)
-                observeUrlResponse(it)
-            }
+        if (clockIn){
+            getGcpUrl()
         }
     }
 
@@ -325,17 +329,18 @@ class PreferenceFragment : BaseFragment<DashboardViewModel, FragmentPreferenceBi
         }
     }
 
-    private fun observeUrlResponse(imagePath: String) {
+    private fun observeUrlResponse() {
         viewModel.gcpUrlResponse.observe(viewLifecycleOwner,{
             when(it){
                 is Resource.Success -> {
                     //upload to gcp
-                    uploadImageToGcpUrl(imagePath,it.value.data.presignedUrl,it.value.data.fileUrl)
+                    viewModel.fileUrl = it.value.data.fileUrl
+                    uploadImageToGcpUrl(viewModel.siteImagePath,it.value.data.presignedUrl,it.value.data.fileUrl)
                 }
 
                 is Resource.Failure -> {
                     Utilities.hideProgressDialog()
-                    handleApiError(it){ getGcpUrl(imagePath) }
+                    handleApiError(it){ getGcpUrl() }
                 }
             }
         })
@@ -360,8 +365,7 @@ class PreferenceFragment : BaseFragment<DashboardViewModel, FragmentPreferenceBi
                 Utilities.hideProgressDialog()
                 if (response.isSuccessful){
                     //set clock in
-                    clockInOut("checkin",fileUrl)
-                    observeClockInOut("checkin",fileUrl)
+                    clockInOut()
                 }else {
                     //retry gcp upload
                     showErrorSnackBar(path,preSignedUrl,fileUrl)
@@ -377,17 +381,18 @@ class PreferenceFragment : BaseFragment<DashboardViewModel, FragmentPreferenceBi
         })
     }
 
-    private fun observeClockInOut(type: String, fileUrl: String) {
+    private fun observeClockInOut() {
         viewModel.checkInOutRes.observe(viewLifecycleOwner,{
             when(it){
                 is Resource.Success -> {
                     Utilities.hideProgressDialog()
-                    if (type == "checkin"){
+                    if (viewModel.type == "checkin"){
                         Toast.makeText(requireContext(),"Clocked in successfully...",Toast.LENGTH_LONG).show()
                         isActive = true
                         upDateTimer(
                             System.currentTimeMillis() - Utilities.getLong(requireContext(),AppConstants.CLOCKED_IN_TIME)
                         )
+                        viewModel.type = "checkout"
                     }else{
                         Toast.makeText(requireContext(),"Clocked out successfully...",Toast.LENGTH_LONG).show()
                         //save session time
@@ -404,18 +409,18 @@ class PreferenceFragment : BaseFragment<DashboardViewModel, FragmentPreferenceBi
 
                 is Resource.Failure -> {
                     Utilities.hideProgressDialog()
-                    handleApiError(it){ clockInOut(type,fileUrl)}
+                    handleApiError(it){ clockInOut()}
                 }
             }
         })
     }
 
-    private fun clockInOut(type : String, fileUrl: String) {
+    private fun clockInOut() {
         Utilities.showProgressDialog(requireContext())
         viewModel.captureCheckInOut(
-            type,
+            viewModel.type,
             location_data,
-            fileUrl
+            viewModel.fileUrl
         )
     }
 
@@ -438,9 +443,9 @@ class PreferenceFragment : BaseFragment<DashboardViewModel, FragmentPreferenceBi
         snackbar?.show()
     }
 
-    private fun getGcpUrl(imagePath : String) {
+    private fun getGcpUrl() {
         Utilities.showProgressDialog(requireContext())
-        viewModel.getGCPUrl(File(imagePath).name)
+        viewModel.getGCPUrl(File(viewModel.siteImagePath).name)
     }
 
 

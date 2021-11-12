@@ -51,6 +51,8 @@ class DashboardViewModel() : ViewModel() {
     val isStartAttendance: MutableLiveData<Boolean> = MutableLiveData()
     val creditsMessage: MutableLiveData<String> = MutableLiveData()
     var type = "checkin"
+    var fileUrl = ""
+    var siteImagePath = ""
 
     fun getCategories(
         tokenId: String

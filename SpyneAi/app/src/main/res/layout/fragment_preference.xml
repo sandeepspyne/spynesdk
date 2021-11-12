@@ -401,6 +401,7 @@
                 android:layout_height="wrap_content"
                 android:id="@+id/tvCityName"
                 android:gravity="center"
+                android:fontFamily="@font/poppins_medium"
                 android:layout_gravity="right"
                 android:background="@drawable/bg_skip"
                 android:textSize="@dimen/sp_16"
@@ -458,7 +459,7 @@
       android:layout_height="wrap_content"
       android:layout_gravity="center"
       android:gravity="center"
-      android:layout_margin="@dimen/dp_30"
+      android:layout_marginBottom="@dimen/dp_40"
       android:background="@drawable/bg_rectangle_button_ripple">
 
     <TextView
