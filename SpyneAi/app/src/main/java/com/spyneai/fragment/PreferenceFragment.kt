@@ -38,6 +38,7 @@ import com.spyneai.logout.LogoutDialog
 import com.spyneai.needs.AppConstants
 import com.spyneai.needs.Utilities
 import com.spyneai.shoot.ui.dialogs.RequiredPermissionDialog
+import kotlinx.android.synthetic.main.activity_sign_up.*
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.RequestBody.Companion.asRequestBody
 import okhttp3.ResponseBody
@@ -250,6 +251,9 @@ class PreferenceFragment : BaseFragment<DashboardViewModel, FragmentPreferenceBi
                            it
                        )
                        takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, photoURI)
+                       takePictureIntent.putExtra("android.intent.extras.CAMERA_FACING", android.hardware.Camera.CameraInfo.CAMERA_FACING_FRONT)
+                       takePictureIntent.putExtra("android.intent.extras.LENS_FACING_FRONT", 1)
+                       takePictureIntent.putExtra("android.intent.extra.USE_FRONT_CAMERA", true)
                        startActivityForResult(takePictureIntent, REQUEST_IMAGE_CAPTURE)
                        //resultLauncher.launch(takePictureIntent)
                    }
@@ -359,7 +363,7 @@ class PreferenceFragment : BaseFragment<DashboardViewModel, FragmentPreferenceBi
                 }
 
                 is Resource.Failure -> {
-                    Utilities.hideProgressDialog()
+                    binding.progressBar.visibility = View.GONE
                     handleApiError(it){ getGcpUrl() }
                 }
             }
@@ -382,7 +386,7 @@ class PreferenceFragment : BaseFragment<DashboardViewModel, FragmentPreferenceBi
         call.enqueue(object : Callback<ResponseBody> {
             override fun onResponse(call: Call<ResponseBody>, response: Response<ResponseBody>) {
                 Log.d("VideoUploader", "onResponse: "+response.code())
-                Utilities.hideProgressDialog()
+                binding.progressBar.visibility = View.GONE
                 if (response.isSuccessful){
                     //set clock in
                     clockInOut()
@@ -393,7 +397,7 @@ class PreferenceFragment : BaseFragment<DashboardViewModel, FragmentPreferenceBi
             }
 
             override fun onFailure(call: Call<ResponseBody>, t: Throwable) {
-                Utilities.hideProgressDialog()
+                binding.progressBar.visibility= View.GONE
                 //retry gcp upload
                 showErrorSnackBar(path,preSignedUrl,fileUrl)
             }
@@ -405,7 +409,7 @@ class PreferenceFragment : BaseFragment<DashboardViewModel, FragmentPreferenceBi
         viewModel.checkInOutRes.observe(viewLifecycleOwner,{
             when(it){
                 is Resource.Success -> {
-                    Utilities.hideProgressDialog()
+                    binding.progressBar.visibility = View.GONE
                     if (viewModel.type == "checkin"){
                         Toast.makeText(requireContext(),"Clocked in successfully...",Toast.LENGTH_LONG).show()
                         isActive = true
@@ -429,7 +433,7 @@ class PreferenceFragment : BaseFragment<DashboardViewModel, FragmentPreferenceBi
                 }
 
                 is Resource.Failure -> {
-                    Utilities.hideProgressDialog()
+                    binding.progressBar.visibility = View.GONE
                     handleApiError(it){ clockInOut()}
                 }
             }
@@ -437,7 +441,7 @@ class PreferenceFragment : BaseFragment<DashboardViewModel, FragmentPreferenceBi
     }
 
     private fun clockInOut() {
-        Utilities.showProgressDialog(requireContext())
+        binding.progressBar.visibility = View.VISIBLE
         viewModel.captureCheckInOut(
             viewModel.type,
             location_data,
@@ -465,7 +469,7 @@ class PreferenceFragment : BaseFragment<DashboardViewModel, FragmentPreferenceBi
     }
 
     private fun getGcpUrl() {
-        Utilities.showProgressDialog(requireContext())
+        binding.progressBar.visibility = View.VISIBLE
         viewModel.getGCPUrl(File(viewModel.siteImagePath).name)
     }
 

@@ -38,22 +38,28 @@
             android:layout_height="wrap_content"
             android:fontFamily="@font/medium"
             android:gravity="center"
-            android:layout_marginBottom="@dimen/dp_20"
-            android:text="Shoot Your Site Location"
+            android:text="Take a Selfie with the Site Location"
             android:textColor="@color/black"
             android:textSize="@dimen/sp_16" />
 
 
+        <ImageView
+            android:layout_width="250dp"
+            android:layout_height="200dp"
+            android:src="@drawable/selfie_demo"
+            android:layout_marginVertical="@dimen/dp_20"
+            android:scaleType="fitCenter"></ImageView>
+
+
 
         <androidx.appcompat.widget.AppCompatButton
-            android:layout_width="200dp"
+            android:layout_width="250dp"
             android:layout_height="@dimen/dp_50"
             android:id="@+id/btCamera"
             android:text="Start"
             android:textAllCaps="false"
             android:layout_gravity="center_horizontal"
             android:fontFamily="@font/poppins_medium"
-            android:layout_marginTop="@dimen/dp_15"
             android:background="@drawable/bg_rectangle_button_ripple"
             android:textColor="@color/white"/>
 
