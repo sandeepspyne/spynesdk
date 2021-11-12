@@ -1,6 +1,7 @@
 package com.spyneai.fragment
 
 import android.Manifest
+import android.app.Activity
 import android.app.Activity.RESULT_OK
 import android.content.Intent
 import android.content.pm.PackageManager
@@ -228,27 +229,45 @@ class PreferenceFragment : BaseFragment<DashboardViewModel, FragmentPreferenceBi
     }
 
     private fun dispatchTakePictureIntent() {
-        Intent(MediaStore.ACTION_IMAGE_CAPTURE).also { takePictureIntent ->
-            // Ensure that there's a camera activity to handle the intent
-            takePictureIntent.resolveActivity(requireActivity().packageManager)?.also {
-                // Create the File where the photo should go
-                val photoFile: File? = try {
-                    createImageFile()
-                } catch (ex: IOException) {
-                    // Error occurred while creating the File
-                    null
-                }
-                // Continue only if the File was successfully created
-                photoFile?.also {
-                    val photoURI: Uri = FileProvider.getUriForFile(
-                        requireContext(),
-                        "com.spyneai.fileprovider",
-                        it
-                    )
-                    takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, photoURI)
-                    startActivityForResult(takePictureIntent, REQUEST_IMAGE_CAPTURE)
-                }
+       try {
+           Intent(MediaStore.ACTION_IMAGE_CAPTURE).also { takePictureIntent ->
+               // Ensure that there's a camera activity to handle the intent
+               takePictureIntent.resolveActivity(requireActivity().packageManager)?.also {
+                   // Create the File where the photo should go
+                   val photoFile: File? = try {
+                       createImageFile()
+                   } catch (ex: IOException) {
+                       // Error occurred while creating the File
+                       null
+                   }
+                   // Continue only if the File was successfully created
+                   photoFile?.also {
+                       val photoURI: Uri = FileProvider.getUriForFile(
+                           requireContext(),
+                           "com.spyneai.fileprovider",
+                           it
+                       )
+                       takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, photoURI)
+                       resultLauncher.launch(takePictureIntent)
+                       //startActivityForResult(takePictureIntent, REQUEST_IMAGE_CAPTURE)
+                   }
+               }
+           }
+       }catch (e : Exception){
+           val s = ""
+       }
+    }
+
+    var resultLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
+        if (result.resultCode == RESULT_OK) {
+            Utilities.apply {
+                savePrefrence(requireContext(),AppConstants.SITE_IMAGE_PATH,currentPhotoPath)
+                savePrefrence(requireContext(),AppConstants.SITE_CITY_NAME,location_data.getString("city"))
+                saveBool(requireContext(),AppConstants.CLOCKED_IN,true)
+                saveLong(requireContext(),AppConstants.CLOCKED_IN_TIME,System.currentTimeMillis())
             }
+
+            setCheckOut(currentPhotoPath,true)
         }
     }
 
@@ -479,18 +498,6 @@ class PreferenceFragment : BaseFragment<DashboardViewModel, FragmentPreferenceBi
         }
     }
 
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        if (requestCode == REQUEST_IMAGE_CAPTURE && resultCode == RESULT_OK) {
-            Utilities.apply {
-                savePrefrence(requireContext(),AppConstants.SITE_IMAGE_PATH,currentPhotoPath)
-                savePrefrence(requireContext(),AppConstants.SITE_CITY_NAME,location_data.getString("city"))
-                saveBool(requireContext(),AppConstants.CLOCKED_IN,true)
-                saveLong(requireContext(),AppConstants.CLOCKED_IN_TIME,System.currentTimeMillis())
-            }
-
-            setCheckOut(currentPhotoPath,true)
-        }
-    }
 
     protected fun allPermissionsGranted() = permissions.all {
         ContextCompat.checkSelfPermission(requireContext(), it) == PackageManager.PERMISSION_GRANTED
