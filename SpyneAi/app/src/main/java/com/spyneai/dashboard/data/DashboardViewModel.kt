@@ -50,6 +50,7 @@ class DashboardViewModel() : ViewModel() {
     val isNewUser: MutableLiveData<Boolean> = MutableLiveData()
     val isStartAttendance: MutableLiveData<Boolean> = MutableLiveData()
     val creditsMessage: MutableLiveData<String> = MutableLiveData()
+    var type = "checkin"
 
     fun getCategories(
         tokenId: String

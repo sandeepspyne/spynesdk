@@ -222,10 +222,7 @@ class PreferenceFragment : BaseFragment<DashboardViewModel, FragmentPreferenceBi
     private fun setLastSession() {
         val millis = Utilities.getLong(requireContext(),AppConstants.SHOOTS_SESSION)
 
-        if (millis == 0L)
-            binding.tvSession.visibility = View.GONE
-        else
-            binding.tvSession.text = "Your last session was "+millisecondsToHours(millis)
+        binding.tvSession.text = "Your last session was "+millisecondsToHours(millis)
     }
 
     private fun dispatchTakePictureIntent() {
@@ -249,7 +246,6 @@ class PreferenceFragment : BaseFragment<DashboardViewModel, FragmentPreferenceBi
                        )
                        takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, photoURI)
                        resultLauncher.launch(takePictureIntent)
-                       //startActivityForResult(takePictureIntent, REQUEST_IMAGE_CAPTURE)
                    }
                }
            }
@@ -268,7 +264,10 @@ class PreferenceFragment : BaseFragment<DashboardViewModel, FragmentPreferenceBi
             }
 
             setCheckOut(currentPhotoPath,true)
+        }else{
+            val s = ""
         }
+
     }
 
     @Throws(IOException::class)
