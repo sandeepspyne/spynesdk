@@ -628,10 +628,6 @@ class OverlaysFragment : BaseFragment<ShootViewModel, FragmentOverlaysV2Binding>
                 }
 
                 if (element != null && data != element){
-                    viewModel.displayName = data.display_name
-                    viewModel.displayThumbanil = data.display_thumbnail
-                    // viewModel.selectedOverlay = data
-
                     data.isSelected = true
                     element.isSelected = false
                     overlaysAdapter?.notifyItemChanged(position)
@@ -654,10 +650,6 @@ class OverlaysFragment : BaseFragment<ShootViewModel, FragmentOverlaysV2Binding>
                 }
 
                 if (element != null && data != element){
-                    viewModel.displayName = data.display_name
-                    viewModel.displayThumbanil = data.display_thumbnail
-                    // viewModel.selectedOverlay = data
-
                     data.isSelected = true
                     element.isSelected = false
                     overlaysAdapter?.notifyItemChanged(position)
@@ -680,10 +672,6 @@ class OverlaysFragment : BaseFragment<ShootViewModel, FragmentOverlaysV2Binding>
                 }
 
                 if (element != null && data != element){
-                    viewModel.displayName = data.display_name
-                    viewModel.displayThumbanil = data.display_thumbnail
-                    // viewModel.selectedOverlay = data
-
                     data.isSelected = true
                     element.isSelected = false
                     overlaysAdapter?.notifyItemChanged(position)
@@ -699,22 +687,29 @@ class OverlaysFragment : BaseFragment<ShootViewModel, FragmentOverlaysV2Binding>
 
         when(data){
             is OverlaysResponse.Data->{
+                viewModel.displayName = data.display_name
+                viewModel.displayThumbanil = data.display_thumbnail
+                viewModel.overlayId = data.id
                 if(getString(R.string.app_name) != AppConstants.KARVI)
                     loadOverlay(data.angle_name,data.display_thumbnail)
 
-                viewModel.overlayId = data.id
+
 
                 binding.tvShoot?.text = "Angles ${position.plus(1)}/${viewModel.getSelectedAngles(getString(
                     R.string.app_name))}"
             }
 
             is NewSubCatResponse.Interior ->{
+                viewModel.displayName = data.display_name
+                viewModel.displayThumbanil = data.display_thumbnail
                 viewModel.overlayId = data.overlayId
 
                 binding.tvShoot?.text = "Angles ${position.plus(1)}/${viewModel.interiorAngles.value}"
             }
 
             is NewSubCatResponse.Miscellaneous ->{
+                viewModel.displayName = data.display_name
+                viewModel.displayThumbanil = data.display_thumbnail
                 viewModel.overlayId = data.overlayId
 
                 binding.tvShoot?.text = "Angles ${position.plus(1)}/${viewModel.miscAngles.value}"
