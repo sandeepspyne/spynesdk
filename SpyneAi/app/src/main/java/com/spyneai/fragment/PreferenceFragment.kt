@@ -266,6 +266,7 @@ class PreferenceFragment : BaseFragment<DashboardViewModel, FragmentPreferenceBi
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
+        viewModel.resultCode = resultCode
         val s = ""
         if (requestCode == REQUEST_IMAGE_CAPTURE && resultCode == RESULT_OK) {
             Utilities.apply {
@@ -274,6 +275,8 @@ class PreferenceFragment : BaseFragment<DashboardViewModel, FragmentPreferenceBi
                 saveBool(requireContext(),AppConstants.CLOCKED_IN,true)
                 saveLong(requireContext(),AppConstants.CLOCKED_IN_TIME,System.currentTimeMillis())
             }
+
+
 
             viewModel.siteImagePath = currentPhotoPath
             setCheckOut(true)

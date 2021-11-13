@@ -53,6 +53,8 @@ class DashboardViewModel() : ViewModel() {
     var type = "checkin"
     var fileUrl = ""
     var siteImagePath = ""
+    var resultCode: Int? = null
+
 
     fun getCategories(
         tokenId: String
