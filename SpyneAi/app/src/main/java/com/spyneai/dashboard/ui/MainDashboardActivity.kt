@@ -543,7 +543,10 @@ class MainDashboardActivity : AppCompatActivity() {
 
     override fun onResume() {
         super.onResume()
-        //binding.bottomNavigation.selectedItemId = R.id.homeDashboardFragment
+        if(viewModel?.resultCode !=0 && viewModel?.resultCode !=-1) {
+            binding.bottomNavigation.selectedItemId = R.id.homeDashboardFragment
+        }
+        viewModel?.resultCode = null
     }
 
     private fun setCurrentFragment(fragment: Fragment) =
