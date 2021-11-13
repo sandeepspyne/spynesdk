@@ -349,5 +349,6 @@
     <string name="three_sixty_int">Next</string>
     <string name="end_shoot_karvi">End\nShoot</string>
     <string name="tint_window">Tint Window</string>
+    <string name="clocked_in_for">Clocked in For </string>
 
 </resources>

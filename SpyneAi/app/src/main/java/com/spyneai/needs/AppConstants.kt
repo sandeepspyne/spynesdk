@@ -4,6 +4,12 @@ object AppConstants {
     val BASE_URL: String = "https://www.clippr.ai/api/"
     val STATUS_PROJECT_NAME: String="STATUS_PROJECT_NAME"
 
+    val CLOCKED_IN: String = "CLOCKED_IN"
+    val SITE_IMAGE_PATH = "SITE_IMAGE_PATH"
+    val CLOCKED_IN_TIME = "CLOCKED_IN_TIME"
+    val SITE_CITY_NAME = "SITE_CITY_NAME"
+    val SHOOTS_SESSION = "SHOOTS_SESSION"
+
     val LOCALE = "LOCALE"
     val IS_360: String? = "IS_360"
     val IS_HD: String? = "IS_HD"

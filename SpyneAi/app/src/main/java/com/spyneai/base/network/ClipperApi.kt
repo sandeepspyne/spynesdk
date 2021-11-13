@@ -4,6 +4,8 @@ import com.spyneai.BaseApplication
 import com.spyneai.camera2.OverlaysResponse
 import com.spyneai.credits.model.DownloadHDRes
 import com.spyneai.credits.model.ReduceCreditResponse
+import com.spyneai.dashboard.data.model.CheckInOutRes
+import com.spyneai.dashboard.data.model.GetGCPUrlRes
 import com.spyneai.dashboard.data.model.VersionStatusRes
 import com.spyneai.dashboard.response.NewCategoriesResponse
 import com.spyneai.dashboard.response.NewSubCatResponse
@@ -375,5 +377,20 @@ interface ClipperApi {
     suspend fun getProjectName(
         @Query("auth_key") authKey : String,
     ): GetProjectNameResponse
+
+
+    @GET("algo/save_to_gcp_presigned/presigned-url")
+    suspend fun getGCPUrl(
+        @Query("img_name") imageName : String,
+    ) : GetGCPUrlRes
+
+    @FormUrlEncoded
+    @POST("algo/attendence/checkin-out")
+    suspend fun captureCheckInOut(
+        @Field("type") type : String,
+        @Field("location") location : JSONObject,
+        @Field("img_url") imageUrl : String = "",
+        @Field("auth_key") authKey : String = Utilities.getPreference(BaseApplication.getContext(),AppConstants.AUTH_KEY).toString()
+    ) : CheckInOutRes
 
 }

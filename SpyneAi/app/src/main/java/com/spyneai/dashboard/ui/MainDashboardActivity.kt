@@ -69,13 +69,12 @@ class MainDashboardActivity : AppCompatActivity() {
 
         if (intent.getBooleanExtra("show_ongoing", false)) {
             val intent = Intent(this, MyOrdersActivity::class.java)
+            intent.putExtra("TAB_ID", 1)
             startActivity(intent)
         }
 
         binding.bottomNavigation.background = null
-
         viewModel = ViewModelProvider(this, ViewModelFactory()).get(DashboardViewModel::class.java)
-
 
         val firstFragment = HomeDashboardFragment()
         val SecondFragment = WalletDashboardFragment()
@@ -106,16 +105,69 @@ class MainDashboardActivity : AppCompatActivity() {
             when (it.itemId) {
                 R.id.homeDashboardFragment -> setCurrentFragment(firstFragment)
 
-//                R.id.shootActivity -> {
-//                    if (isMagnatoMeterAvailable()) {
-//                       continueShoot()
-//                    } else {
-//                        NoMagnaotoMeterDialog().show(
-//                            supportFragmentManager,
-//                            "NoMagnaotoMeterDialog"
-//                        )
-//                    }
-//                }
+                R.id.shootActivity -> {
+                    if (isMagnatoMeterAvailable()) {
+                        when (getString(R.string.app_name)) {
+                            "Ola Cabs",
+                            AppConstants.CARS24,
+                            AppConstants.CARS24_INDIA,
+                            AppConstants.SELL_ANY_CAR,
+                            "Trusted cars",
+                            "Travo Photos",
+                            "Yalla Motors",
+                            "Spyne Hiring",
+                            AppConstants.AUTO_FOTO -> {
+                                var intent = Intent(this, StartShootActivity::class.java)
+                                intent.putExtra(
+                                    AppConstants.CATEGORY_ID,
+                                    AppConstants.CARS_CATEGORY_ID
+                                )
+                                intent.putExtra(AppConstants.CATEGORY_NAME, "Automobiles")
+                                startActivity(intent)
+                            }
+
+                            AppConstants.KARVI -> {
+                                var intent = Intent(this, ShootActivity::class.java)
+                                intent.putExtra(
+                                    AppConstants.CATEGORY_ID,
+                                    AppConstants.CARS_CATEGORY_ID
+                                )
+                                intent.putExtra(AppConstants.CATEGORY_NAME, "Automobiles")
+                                startActivity(intent)
+                            }
+
+                            "Flipkart",
+                            "Udaan",
+                            "Lal10",
+                            "Amazon",
+                            "Swiggy",
+                            AppConstants.SWIGGYINSTAMART,
+                            AppConstants.BATA,
+                            AppConstants.FLIPKART_GROCERY, AppConstants.EBAY -> {
+                                val intent =
+                                    Intent(
+                                        this@MainDashboardActivity,
+                                        CategoriesActivity::class.java
+                                    )
+                                startActivity(intent)
+                            }
+                            else -> {
+                                var intent = Intent(this, ShootActivity::class.java)
+                                intent.putExtra(
+                                    AppConstants.CATEGORY_ID,
+                                    AppConstants.CARS_CATEGORY_ID
+                                )
+                                intent.putExtra(AppConstants.CATEGORY_NAME, "Automobiles")
+                                startActivity(intent)
+                            }
+                        }
+                    } else {
+                        NoMagnaotoMeterDialog().show(
+                            supportFragmentManager,
+                            "NoMagnaotoMeterDialog"
+                        )
+                    }
+                }
 
                 R.id.completedOrdersFragment -> {
                     if (getString(R.string.app_name) == AppConstants.SPYNE_AI) {
@@ -133,6 +185,8 @@ class MainDashboardActivity : AppCompatActivity() {
             true
         }
 
+        binding.bottomNavigation.selectedItemId = R.id.homeDashboardFragment
+
         if (intent.getBooleanExtra(AppConstants.IS_NEW_USER, false)) {
             viewModel!!.isNewUser.value = intent.getBooleanExtra(AppConstants.IS_NEW_USER, false)
             viewModel!!.creditsMessage.value = intent.getStringExtra(AppConstants.CREDITS_MESSAGE)
@@ -140,69 +194,6 @@ class MainDashboardActivity : AppCompatActivity() {
 
         checkAppVersion()
         observeAppVersion()
-
-        viewModel?.continueAnyway?.observe(this,{
-            if (it){
-                continueShoot()
-            }
-        })
-    }
-
-    private fun continueShoot() {
-        when (getString(R.string.app_name)) {
-            "Ola Cabs",
-            AppConstants.CARS24,
-            AppConstants.CARS24_INDIA,
-            AppConstants.SELL_ANY_CAR,
-            "Trusted cars",
-            "Travo Photos",
-            "Yalla Motors",
-            "Spyne Hiring",
-            AppConstants.AUTO_FOTO -> {
-                var intent = Intent(this, StartShootActivity::class.java)
-                intent.putExtra(
-                    AppConstants.CATEGORY_ID,
-                    AppConstants.CARS_CATEGORY_ID
-                )
-                intent.putExtra(AppConstants.CATEGORY_NAME, "Automobiles")
-                startActivity(intent)
-            }
-
-            AppConstants.KARVI -> {
-                var intent = Intent(this, ShootActivity::class.java)
-                intent.putExtra(
-                    AppConstants.CATEGORY_ID,
-                    AppConstants.CARS_CATEGORY_ID
-                )
-                intent.putExtra(AppConstants.CATEGORY_NAME, "Automobiles")
-                startActivity(intent)
-            }
-
-            "Flipkart",
-            "Udaan",
-            "Lal10",
-            "Amazon",
-            "Swiggy",
-            AppConstants.SWIGGYINSTAMART,
-            AppConstants.BATA,
-            AppConstants.FLIPKART_GROCERY, AppConstants.EBAY -> {
-                val intent =
-                    Intent(
-                        this@MainDashboardActivity,
-                        CategoriesActivity::class.java
-                    )
-                startActivity(intent)
-            }
-            else -> {
-                var intent = Intent(this, ShootActivity::class.java)
-                intent.putExtra(
-                    AppConstants.CATEGORY_ID,
-                    AppConstants.CARS_CATEGORY_ID
-                )
-                intent.putExtra(AppConstants.CATEGORY_NAME, "Automobiles")
-                startActivity(intent)
-            }
-        }
     }
 
     private fun checkAppVersion() {
@@ -282,7 +273,11 @@ class MainDashboardActivity : AppCompatActivity() {
                 }) {
                 onPermissionGranted()
             } else {
+
+
                 RequiredPermissionDialog().show(supportFragmentManager, "RequiredPermissionDialog")
+
+
             }
 
         }
@@ -301,13 +296,6 @@ class MainDashboardActivity : AppCompatActivity() {
         )
     }
 
-//    private fun requestPermi() {
-//        permissionRequest.launch(permissions.toTypedArray())
-//    }
-//
-//    protected fun allPermissionsGranted() = permissions.all {
-//        ContextCompat.checkSelfPermission(this, it) == PackageManager.PERMISSION_GRANTED
-//    }
 
     open fun onPermissionGranted() {
         Log.d(
@@ -555,7 +543,7 @@ class MainDashboardActivity : AppCompatActivity() {
 
     override fun onResume() {
         super.onResume()
-        binding.bottomNavigation.selectedItemId = R.id.homeDashboardFragment
+        //binding.bottomNavigation.selectedItemId = R.id.homeDashboardFragment
     }
 
     private fun setCurrentFragment(fragment: Fragment) =
