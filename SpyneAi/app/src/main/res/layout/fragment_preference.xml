@@ -341,9 +341,7 @@
 
     </androidx.cardview.widget.CardView>
 
-    <FrameLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+
 
     <androidx.cardview.widget.CardView
         android:id="@+id/cvClockOut"
@@ -441,32 +439,40 @@
           </LinearLayout>
         </androidx.constraintlayout.widget.ConstraintLayout>
 
-        <TextView
+
+
+          <TextView
+              android:layout_width="wrap_content"
+              android:layout_height="wrap_content"
+              android:text="00:33"
+              android:id="@+id/tvClockedTime"
+              android:textColor="@color/primary"
+              android:layout_marginTop="@dimen/dp_12"
+              android:textSize="16sp"
+              android:fontFamily="@font/poppins_medium"
+              android:layout_gravity="center_horizontal" />
+
+
+
+        <ProgressBar
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="00:33"
-            android:id="@+id/tvClockedTime"
-            android:textColor="@color/primary"
-            android:layout_marginTop="@dimen/dp_12"
-            android:textSize="16sp"
-            android:fontFamily="@font/poppins_medium"
-            android:layout_gravity="center_horizontal" />
+            android:visibility="gone"
+            android:layout_gravity="center_horizontal"
+            android:id="@+id/progressBar" />
 
       </LinearLayout>
 
 
 
-      <ProgressBar
-          android:layout_width="wrap_content"
-          android:layout_height="wrap_content"
-          android:layout_gravity="center"
-          android:id="@+id/progressBar" />
+
+
 
 
 
     </androidx.cardview.widget.CardView>
 
-    </FrameLayout>
+
 
 
 
