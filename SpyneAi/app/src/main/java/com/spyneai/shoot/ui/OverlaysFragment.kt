@@ -197,14 +197,6 @@ class OverlaysFragment : BaseFragment<ShootViewModel, FragmentOverlaysV2Binding>
     }
 
     private fun initAngles() {
-        when(getString(R.string.app_name)){
-            AppConstants.SELL_ANY_CAR ->
-                viewModel.exterirorAngles.value = 4
-            else ->  {
-                viewModel.exterirorAngles.value = 8
-            }
-        }
-
         if (viewModel.subCategory.value?.prod_cat_id != null
             && viewModel.categoryDetails.value?.imageType == "Exterior")
             getOverlays()
@@ -320,6 +312,8 @@ class OverlaysFragment : BaseFragment<ShootViewModel, FragmentOverlaysV2Binding>
             )
 
         }
+
+        val s = ""
     }
 
     private fun observeOverlays() {

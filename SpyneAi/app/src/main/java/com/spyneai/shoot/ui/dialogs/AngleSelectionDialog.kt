@@ -73,6 +73,7 @@ class AngleSelectionDialog : BaseDialogFragment<ShootViewModel,DialogAngleSelect
         }
         binding.tvProceed.setOnClickListener {
             viewModel.exterirorAngles.value = newSelectedAngles
+            val s = ""
 
             //create sku
             val createProjectRes = (viewModel.createProjectRes.value as Resource.Success).value
