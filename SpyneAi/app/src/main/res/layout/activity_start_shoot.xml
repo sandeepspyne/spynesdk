@@ -48,6 +48,7 @@
                android:layout_height="wrap_content"
                app:layout_constraintTop_toTopOf="parent"
                android:id="@+id/rl_automobiles"
+               android:paddingVertical="@dimen/dp_10"
                android:visibility="visible"
                android:background="@drawable/bg_automobile_gradient">
 
@@ -57,7 +58,6 @@
                    android:layout_width="wrap_content"
                    android:layout_height="wrap_content"
                    android:layout_marginLeft="20dp"
-                   android:layout_marginTop="27dp"
                    android:fontFamily="@font/poppins_medium"
                    android:text="@string/automobile"
                    android:textColor="#343434"
@@ -77,13 +77,12 @@
 
 
                <ImageView
+                   android:id="@+id/ivAutomobile"
                    android:layout_width="150dp"
                    android:layout_height="90dp"
                    android:src="@drawable/mercedes"
                    android:layout_alignParentRight="true"
                    android:layout_centerVertical="true"
-                   android:layout_marginTop="27dp"
-                   android:layout_marginBottom="18dp"
                    android:layout_marginRight="7dp"/>
 
            </RelativeLayout>

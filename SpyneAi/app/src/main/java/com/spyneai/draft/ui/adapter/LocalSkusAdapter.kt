@@ -171,7 +171,7 @@ class LocalSkusAdapter(
 
                 }
 
-                if (skuList[position].threeSixtyFrames != null){
+                if (skuList[position].threeSixtyFrames != null && skuList[position].threeSixtyFrames != 0){
                     draftIntent.apply {
                         putExtra(AppConstants.FROM_VIDEO, true)
                         putExtra(AppConstants.TOTAL_FRAME, skuList[position].threeSixtyFrames)
