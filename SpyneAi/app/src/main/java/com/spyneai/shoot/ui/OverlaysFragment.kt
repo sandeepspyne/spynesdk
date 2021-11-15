@@ -33,6 +33,7 @@ import com.spyneai.databinding.FragmentOverlaysV2Binding
 import com.spyneai.needs.AppConstants
 import com.spyneai.needs.Utilities
 import com.spyneai.posthog.Events
+import com.spyneai.setLocale
 import com.spyneai.shoot.adapters.NewSubCategoriesAdapter
 import com.spyneai.shoot.adapters.OverlaysAdapter
 import com.spyneai.shoot.data.OnOverlaySelectionListener
@@ -53,6 +54,8 @@ class OverlaysFragment : BaseFragment<ShootViewModel, FragmentOverlaysV2Binding>
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        requireContext().setLocale()
 
         //observe new image clicked
         viewModel.shootList.observe(viewLifecycleOwner, {
@@ -690,24 +693,20 @@ class OverlaysFragment : BaseFragment<ShootViewModel, FragmentOverlaysV2Binding>
 
                 viewModel.overlayId = data.id
 
-                binding.tvShoot?.text = "Angles ${position.plus(1)}/${viewModel.getSelectedAngles(getString(
+                binding.tvShoot?.text = getString(R.string.angles)+" ${position.plus(1)}/${viewModel.getSelectedAngles(getString(
                     R.string.app_name))}"
             }
 
             is NewSubCatResponse.Interior ->{
-                viewModel.displayName = data.display_name
-                viewModel.displayThumbanil = data.display_thumbnail
                 viewModel.overlayId = data.overlayId
 
-                binding.tvShoot?.text = "Angles ${position.plus(1)}/${viewModel.interiorAngles.value}"
+                binding.tvShoot?.text = getString(R.string.angles)+" ${position.plus(1)}/${viewModel.interiorAngles.value}"
             }
 
             is NewSubCatResponse.Miscellaneous ->{
-                viewModel.displayName = data.display_name
-                viewModel.displayThumbanil = data.display_thumbnail
                 viewModel.overlayId = data.overlayId
 
-                binding.tvShoot?.text = "Angles ${position.plus(1)}/${viewModel.miscAngles.value}"
+                binding.tvShoot?.text = getString(R.string.angles)+" ${position.plus(1)}/${viewModel.miscAngles.value}"
             }
         }
     }

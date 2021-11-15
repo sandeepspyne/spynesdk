@@ -28,6 +28,7 @@ import com.spyneai.fragment.TopUpFragment
 import com.spyneai.needs.AppConstants
 import com.spyneai.needs.Utilities
 import com.spyneai.posthog.Events
+import com.spyneai.setLocale
 import com.spyneai.shoot.data.ProcessViewModel
 import com.spyneai.shoot.utils.log
 import com.spyneai.videorecording.model.TSVParams
@@ -42,6 +43,9 @@ class RegularShootSummaryFragment  : BaseFragment<ProcessViewModel, FragmentRegu
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        requireContext().setLocale()
+        refreshText()
 
         //setup360View()
 
@@ -129,6 +133,22 @@ class RegularShootSummaryFragment  : BaseFragment<ProcessViewModel, FragmentRegu
 
             })
             .into(binding.ivFront)
+    }
+
+    fun refreshText(){
+        requireContext().setLocale()
+        binding.tvCategoryName.text = getString(R.string.automobile)
+        binding.tvCat.text = getString(R.string.category)
+        binding.tvNoOfImg.text = getString(R.string.images)
+        binding.tvTotalExteriorImages.text = getString(R.string.total_exterior_clicked)
+        binding.tvTotalExteriorUnit.text = getString(R.string.images)
+        binding.tvCreditsUnit.text = getString(R.string.credits)
+        binding.tvCredits.text = getString(R.string.credits)
+        binding.tvCreditAvailable.text=getString(R.string.credits_available)
+        binding.tvCost.text=getString(R.string.total_cost)
+        binding.tvTopUp.text=getString(R.string.top_up_2)
+        binding.tvShootSummary.text=getString(R.string.shoot_summary)
+
     }
 
     private fun preLoadFront(tsvParams: TSVParams) {

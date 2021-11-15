@@ -89,8 +89,8 @@ class PreferenceFragment : BaseFragment<DashboardViewModel, FragmentPreferenceBi
         when(getString(R.string.app_name)) {
             AppConstants.AUTO_FOTO -> {
                 languageList.add("English")
-                languageList.add("German")
-                languageList.add("Italy")
+                languageList.add("Deutsch")
+                languageList.add("Italiano")
             }
             else ->languageList.add("English")
         }
