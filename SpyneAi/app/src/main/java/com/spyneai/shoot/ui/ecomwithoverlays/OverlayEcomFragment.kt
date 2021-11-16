@@ -275,10 +275,14 @@ class OverlayEcomFragment : BaseFragment<ShootViewModel, FragmentOverlayEcomBind
 
         when (data) {
             is OverlaysResponse.Data -> {
+                viewModel.displayName = data.display_name
+                viewModel.displayThumbanil = data.display_thumbnail
+                viewModel.overlayId = data.id
+
                 if (getString(R.string.app_name) != AppConstants.KARVI)
                     loadOverlay(data.angle_name, data.display_thumbnail)
 
-                viewModel.overlayId = data.id
+
 
                 binding.tvShoot?.text =
                     position.plus(1).toString() + "/" + viewModel.exterirorAngles.value.toString()
@@ -297,7 +301,6 @@ class OverlayEcomFragment : BaseFragment<ShootViewModel, FragmentOverlayEcomBind
                     ReclickDialog().show(requireActivity().supportFragmentManager, "ReclickDialog")
                 }
 
-                viewModel.overlayId = data.id
 
                 val list = overlaysAdapter?.listItems as List<OverlaysResponse.Data>
 
@@ -306,10 +309,6 @@ class OverlayEcomFragment : BaseFragment<ShootViewModel, FragmentOverlayEcomBind
                 }
 
                 if (element != null && data != element) {
-                    viewModel.displayName = data.display_name
-                    viewModel.displayThumbanil = data.display_thumbnail
-                    // viewModel.selectedOverlay = data
-
                     data.isSelected = true
                     element.isSelected = false
                     overlaysAdapter?.notifyItemChanged(position)

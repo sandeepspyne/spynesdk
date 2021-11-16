@@ -191,16 +191,6 @@ class DraftShootFragment : BaseFragment<ShootViewModel, FragmentOverlaysV2Bindin
                                 else -> {
                                     viewModel.startInteriorShots.value = true
                                     viewModel.interiorAngles.value =  subCategoriesResponse.interior.size
-
-                                    val list = subCategoriesResponse.interior
-                                    list[0].isSelected = true
-
-                                    viewModel.displayName = list[0].display_name
-                                    viewModel.displayThumbanil = list[0].display_thumbnail
-
-                                    overlaysAdapter.listItems = list
-                                    overlaysAdapter.notifyDataSetChanged()
-
                                 }
                             }
                         }
@@ -229,16 +219,6 @@ class DraftShootFragment : BaseFragment<ShootViewModel, FragmentOverlaysV2Bindin
                                     }
 
                                     viewModel.miscAngles.value =  subCategoriesResponse.miscellaneous.size
-
-                                    val list = subCategoriesResponse.miscellaneous
-                                    list[0].isSelected = true
-
-                                    viewModel.displayName = list[0].display_name
-                                    viewModel.displayThumbanil = list[0].display_thumbnail
-
-                                    overlaysAdapter.listItems = list
-                                    overlaysAdapter.notifyDataSetChanged()
-
                                 }
                             }
                         }
@@ -300,9 +280,6 @@ class DraftShootFragment : BaseFragment<ShootViewModel, FragmentOverlaysV2Bindin
                     AppConstants.EXTERIOR_ANGLES,0)
             }
         }
-
-//        if (viewModel.subCategory.value?.prod_cat_id != null)
-//            getOverlays()
     }
 
 
