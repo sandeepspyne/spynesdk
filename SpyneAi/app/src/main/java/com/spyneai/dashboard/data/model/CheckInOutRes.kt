@@ -1,8 +1,9 @@
-package com.spyneai.loginsignup.models
+package com.spyneai.dashboard.data.model
+
 
 import com.google.gson.annotations.SerializedName
 
-data class ForgotPasswordResponse (
+data class CheckInOutRes(
     @SerializedName("data")
     val `data`: Data,
     @SerializedName("message")
@@ -10,5 +11,8 @@ data class ForgotPasswordResponse (
     @SerializedName("status")
     val status: Int
 ) {
-    class Data
+    data class Data(
+        @SerializedName("checkin_time")
+        val checkinTime: String
+    )
 }

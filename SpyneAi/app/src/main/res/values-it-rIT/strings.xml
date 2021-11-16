@@ -88,8 +88,8 @@
     <string name="buy_credits">Acquista 10 crediti</string>
     <string name="request_on_whatsapp">Richiesta su WhatsApp</string>
     <string name="your_gif">La tua GIF</string>
-    <string name="choose_shoots">Scegli scatti</string>
-    <string name="proceed">Prossimo</string>
+    <string name="choose_shoots">Scegli il numero degli scatti</string>
+    <string name="proceed">avanti</string>
     <string name="select_backgrounds">Seleziona lo sfondo</string>
     <string name="select_output">Esempio di output a 360°</string>
     <string name="create_shoots">Genera output</string>
@@ -114,7 +114,7 @@
     <string name="your_360_shots">Le tue immagini sono quasi pronte</string>
     <string name="no_internet">Server non risponde</string>
     <string name="retry">Riprova</string>
-    <string name="more_angles">(Altri angoli in arrivo)</string>
+    <string name="more_angles">(ulteriori in arrivo)</string>
     <string name="we_recommend">(1/2) Scatti interni</string>
     <string name="skip">Salta</string>
     <string name="apply_reflection">Applica esposizione automatica</string>
@@ -134,7 +134,7 @@
 
     <string name="total_images_clicked"><u>Totale immagini cliccate</u></string>
 
-    <string name="credits_available"><u>Crediti disponibili</u></string>
+    <string name="credits_available"><u>Crediti \ndisponibili</u></string>
     <string name="top_up_2"><u>(Ricarica)</u></string>
 
     <string name="sku_id"><u>ID SKU</u></string>
@@ -285,7 +285,7 @@
     <string name="total_images_label">Immagini totali</string>
     <string name="resume_shoot">Riprendi riprese</string>
     <string name="start_shoot">Inizia a sparare</string>
-    <string name="angles">Angoli </string>
+    <string name="angles">angoli </string>
     <string name="contiune">Continua</string>
     <string name="request_to_add">Richiesta di aggiungere crediti</string>
     <string name="generate_output">Genera output</string>
@@ -337,4 +337,10 @@
     <string name="frames">fotogrammi</string>
     <string name="fidelity_selection">Selezione di fedeltà</string>
     <string name="angles_one_by_four">Angoli 1/4</string>
+    <string name="tint_window">Finestra Tinta</string>
+    <string name="give_permissions">Queste autorizzazioni devono essere concesse per continuare...</string>
+    <string name="camera_access">Accesso alla telecamera</string>
+    <string name="file_and_media">Accesso a file e file multimediali</string>
+    <string name="location_access">Accesso alla posizione</string>
+    <string name="go_to_permission_setting">Concedi permessi</string>
 </resources>

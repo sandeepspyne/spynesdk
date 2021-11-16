@@ -18,7 +18,6 @@ import com.spyneai.credits.model.ReviewHolder
 import com.spyneai.dashboard.ui.handleApiError
 import com.spyneai.databinding.ActivityKarviShowImagesBinding
 import com.spyneai.gotoHome
-import com.spyneai.isMagnatoMeterAvailable
 import com.spyneai.needs.AppConstants
 import com.spyneai.needs.ScrollingLinearLayoutManager
 import com.spyneai.needs.Utilities
@@ -207,11 +206,7 @@ class KarviProcessedImagesFragment : BaseFragment<ProcessedViewModel, ActivityKa
 
 
         binding.llStartNewShoot.setOnClickListener {
-            if (requireContext().isMagnatoMeterAvailable()){
-                startShoot()
-            }else {
-                NoMagnaotoMeterDialog().show(requireActivity().supportFragmentManager,"NoMagnaotoMeterDialog")
-            }
+            startShoot()
         }
     }
 

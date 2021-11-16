@@ -460,7 +460,6 @@ class ShootViewModel : ViewModel() {
 
     val onImageConfirmed = MutableLiveData<Boolean>()
 
-
     fun getCurrentShoot() = shootList.value?.firstOrNull() {
         it.overlayId == overlayId
     }

@@ -41,6 +41,28 @@ object Utilities {
         return preferences.getString(key, "")
     }
 
+    fun saveBool(context: Context, key: String, value: Boolean){
+        val preferences = PreferenceManager.getDefaultSharedPreferences(context)
+        val editor = preferences.edit()
+        editor.putBoolean(key, value)
+        editor.apply()
+    }
+
+    fun getBool(context: Context?, key: String): Boolean {
+        val preferences = PreferenceManager.getDefaultSharedPreferences(context)
+        return preferences.getBoolean(key, false)
+    }
+    fun getLong(context: Context?, key: String): Long {
+        val preferences = PreferenceManager.getDefaultSharedPreferences(context)
+        return preferences.getLong(key,0)
+    }
+    fun saveLong(context: Context, key: String, value: Long){
+        val preferences = PreferenceManager.getDefaultSharedPreferences(context)
+        val editor = preferences.edit()
+        editor.putLong(key, value)
+        editor.apply()
+    }
+
     fun showProgressDialog(context: Context) {
         log("show progress dialog")
         if (context.isValidGlideContext()) {

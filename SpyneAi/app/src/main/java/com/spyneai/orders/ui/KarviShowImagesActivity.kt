@@ -22,6 +22,8 @@ import com.spyneai.dashboard.ui.base.ViewModelFactory
 import com.spyneai.dashboard.ui.handleApiError
 import com.spyneai.databinding.ActivityKarviShowImagesBinding
 import com.spyneai.gotoHome
+import com.spyneai.interfaces.APiService
+import com.spyneai.interfaces.RetrofitClients
 import com.spyneai.isMagnatoMeterAvailable
 import com.spyneai.needs.AppConstants
 import com.spyneai.needs.ScrollingLinearLayoutManager
@@ -212,11 +214,7 @@ class KarviShowImagesActivity : AppCompatActivity() {
 
 
         binding.llStartNewShoot.setOnClickListener {
-            if (isMagnatoMeterAvailable()){
-                startShoot()
-            }else {
-                NoMagnaotoMeterDialog().show(supportFragmentManager,"NoMagnaotoMeterDialog")
-            }
+            startShoot()
         }
     }
 

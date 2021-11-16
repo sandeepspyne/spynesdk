@@ -5,6 +5,8 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.spyneai.base.network.Resource
+import com.spyneai.dashboard.data.model.CheckInOutRes
+import com.spyneai.dashboard.data.model.GetGCPUrlRes
 import com.spyneai.dashboard.data.model.VersionStatusRes
 import com.spyneai.dashboard.data.repository.DashboardRepository
 import com.spyneai.dashboard.response.NewCategoriesResponse
@@ -12,6 +14,7 @@ import com.spyneai.orders.data.response.CompletedSKUsResponse
 import com.spyneai.orders.data.response.GetOngoingSkusResponse
 import com.spyneai.orders.data.response.GetProjectsResponse
 import kotlinx.coroutines.launch
+import org.json.JSONObject
 
 class DashboardViewModel() : ViewModel() {
 
@@ -34,9 +37,22 @@ class DashboardViewModel() : ViewModel() {
     val versionResponse: LiveData<Resource<VersionStatusRes>>
         get() = _versionResponse
 
+    var _gcpUrlResponse: MutableLiveData<Resource<GetGCPUrlRes>> = MutableLiveData()
+    val gcpUrlResponse: LiveData<Resource<GetGCPUrlRes>>
+        get() = _gcpUrlResponse
+
+    var _checkInOutRes: MutableLiveData<Resource<CheckInOutRes>> = MutableLiveData()
+    val checkInOutRes: LiveData<Resource<CheckInOutRes>>
+        get() = _checkInOutRes
+
     val isNewUser: MutableLiveData<Boolean> = MutableLiveData()
+    val isStartAttendance: MutableLiveData<Boolean> = MutableLiveData()
     val creditsMessage: MutableLiveData<String> = MutableLiveData()
     val continueAnyway: MutableLiveData<Boolean> = MutableLiveData()
+    var type = "checkin"
+    var fileUrl = ""
+    var siteImagePath = ""
+    var resultCode: Int? = null
 
     fun getCategories(
         tokenId: String
@@ -91,6 +107,23 @@ class DashboardViewModel() : ViewModel() {
     ) = viewModelScope.launch {
         _versionResponse.value = Resource.Loading
         _versionResponse.value = repository.getVersionStatus(authKey, appVersion)
+    }
+
+
+    fun getGCPUrl(
+        imageName: String,
+    )= viewModelScope.launch {
+        _gcpUrlResponse.value = Resource.Loading
+        _gcpUrlResponse.value = repository.getGCPUrl(imageName)
+    }
+
+    fun captureCheckInOut(
+        type : String,
+        location : JSONObject,
+        imageUrl : String = ""
+    )= viewModelScope.launch {
+        _checkInOutRes.value = Resource.Loading
+        _checkInOutRes.value = repository.captureCheckInOut(type,location,imageUrl)
     }
 
 

@@ -20,7 +20,10 @@ class OverlaysAdapter (
         return when (obj) {
 
             is OverlaysResponse.Data -> R.layout.item_overlays
-            is NewSubCatResponse.Interior -> R.layout.item_interior
+            is NewSubCatResponse.Interior -> {
+                val s = ""
+                R.layout.item_interior
+            }
             is NewSubCatResponse.Miscellaneous -> R.layout.item_miscellanous
             else -> error("Unknown type: for position: $position")
         }

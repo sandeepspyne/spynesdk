@@ -2,6 +2,12 @@ package com.spyneai.shoot.ui
 
 import android.content.Intent
 import android.os.Bundle
+import android.view.View
+import android.widget.Toast
+import androidx.activity.result.contract.ActivityResultContracts
+import androidx.core.content.ContextCompat
+import com.google.android.gms.common.api.GoogleApiClient
+import com.spyneai.R
 import androidx.appcompat.app.AppCompatActivity
 import com.spyneai.databinding.ActivityStartShootBinding
 import com.spyneai.needs.AppConstants
@@ -18,8 +24,22 @@ class StartShootActivity : AppCompatActivity(){
 
         setLocale()
 
+
+
         binding = ActivityStartShootBinding.inflate(layoutInflater)
         setContentView(binding.root)
+
+        //Automoser
+        if(getString(R.string.app_name) == AppConstants.AUTO_FOTO){
+            binding.ivAutomobile.visibility=View.GONE
+            binding.ivStartShoot.setImageResource(R.drawable.start_shoot_image_autofoto)
+            binding.ivExploreThreeSixty.setImageResource(R.drawable.explore_three_sixty_autofoto)
+        }else{
+            binding.ivAutomobile.visibility=View.VISIBLE
+            binding.ivStartShoot.setImageResource(R.drawable.start_shoot_image)
+            binding.ivExploreThreeSixty.setImageResource(R.drawable.explore_three_sixty)
+        }
+
 
         binding.ivBack.setOnClickListener {
             onBackPressed()

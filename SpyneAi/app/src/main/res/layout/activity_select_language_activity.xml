@@ -75,7 +75,7 @@
         android:layout_weight="1"
         android:fontFamily="@font/poppins_medium"
         android:textColor="@color/primary"
-        android:text="@string/Germany">
+        android:text="Deutsch">
     </TextView>
 
     <ImageView
@@ -104,7 +104,7 @@
         android:layout_height="wrap_content"
         android:textSize="@dimen/sp_16"
         android:layout_weight="1"
-        android:text="@string/Italy"
+        android:text="Italiano"
         android:fontFamily="@font/poppins_medium"
         android:textColor="@color/primary">
     </TextView>

@@ -41,6 +41,7 @@ import com.spyneai.shoot.data.ShootRepository
 import com.spyneai.shoot.response.UploadFolderRes
 import com.spyneai.shoot.ui.StartShootActivity
 import com.spyneai.shoot.ui.base.ShootActivity
+import com.spyneai.shoot.ui.dialogs.NoMagnaotoMeterDialog
 import com.spyneai.shoot.ui.dialogs.RequiredPermissionDialog
 import com.spyneai.threesixty.data.VideoLocalRepository
 import com.spyneai.threesixty.data.VideoUploadService
@@ -67,13 +68,12 @@ class MainDashboardActivity : AppCompatActivity() {
 
         if (intent.getBooleanExtra("show_ongoing", false)) {
             val intent = Intent(this, MyOrdersActivity::class.java)
+            intent.putExtra("TAB_ID", 1)
             startActivity(intent)
         }
 
         binding.bottomNavigation.background = null
-
         viewModel = ViewModelProvider(this, ViewModelFactory()).get(DashboardViewModel::class.java)
-
 
         val firstFragment = HomeDashboardFragment()
         val SecondFragment = WalletDashboardFragment()
@@ -104,16 +104,16 @@ class MainDashboardActivity : AppCompatActivity() {
             when (it.itemId) {
                 R.id.homeDashboardFragment -> setCurrentFragment(firstFragment)
 
-//                R.id.shootActivity -> {
-//                    if (isMagnatoMeterAvailable()) {
-//                       continueShoot()
-//                    } else {
-//                        NoMagnaotoMeterDialog().show(
-//                            supportFragmentManager,
-//                            "NoMagnaotoMeterDialog"
-//                        )
-//                    }
-//                }
+                R.id.shootActivity -> {
+                    if (isMagnatoMeterAvailable()) {
+                        continueShoot()
+                    } else {
+                        NoMagnaotoMeterDialog().show(
+                            supportFragmentManager,
+                            "NoMagnaotoMeterDialog"
+                        )
+                    }
+                }
 
                 R.id.completedOrdersFragment -> {
                     if (getString(R.string.app_name) == AppConstants.SPYNE_AI) {
@@ -125,11 +125,13 @@ class MainDashboardActivity : AppCompatActivity() {
                         startActivity(intent)
                     }
                 }
-                //R.id.wallet -> setCurrentFragment(SecondFragment)
+                R.id.wallet -> setCurrentFragment(SecondFragment)
                 R.id.logoutDashBoardFragment -> setCurrentFragment(thirdFragment)
             }
             true
         }
+
+        binding.bottomNavigation.selectedItemId = R.id.homeDashboardFragment
 
         if (intent.getBooleanExtra(AppConstants.IS_NEW_USER, false)) {
             viewModel!!.isNewUser.value = intent.getBooleanExtra(AppConstants.IS_NEW_USER, false)
@@ -138,12 +140,6 @@ class MainDashboardActivity : AppCompatActivity() {
 
         checkAppVersion()
         observeAppVersion()
-
-        viewModel?.continueAnyway?.observe(this,{
-            if (it){
-                continueShoot()
-            }
-        })
     }
 
     private fun continueShoot() {
@@ -280,7 +276,11 @@ class MainDashboardActivity : AppCompatActivity() {
                 }) {
                 onPermissionGranted()
             } else {
+
+
                 RequiredPermissionDialog().show(supportFragmentManager, "RequiredPermissionDialog")
+
+
             }
 
         }
@@ -299,13 +299,6 @@ class MainDashboardActivity : AppCompatActivity() {
         )
     }
 
-//    private fun requestPermi() {
-//        permissionRequest.launch(permissions.toTypedArray())
-//    }
-//
-//    protected fun allPermissionsGranted() = permissions.all {
-//        ContextCompat.checkSelfPermission(this, it) == PackageManager.PERMISSION_GRANTED
-//    }
 
     open fun onPermissionGranted() {
         Log.d(
@@ -392,6 +385,7 @@ class MainDashboardActivity : AppCompatActivity() {
             captureEvent(Events.SERVICE_STARTED, properties)
         }
     }
+
 
     private fun cancelAllWorkers() {
         //cancel all workers
@@ -542,6 +536,7 @@ class MainDashboardActivity : AppCompatActivity() {
         }
     }
 
+
     private fun folderCheckError(error: String) {
         Snackbar.make(binding.root, error, Snackbar.LENGTH_INDEFINITE)
             .setAction("Retry") {
@@ -553,7 +548,10 @@ class MainDashboardActivity : AppCompatActivity() {
 
     override fun onResume() {
         super.onResume()
-        binding.bottomNavigation.selectedItemId = R.id.homeDashboardFragment
+        if (viewModel?.resultCode != 0 && viewModel?.resultCode != -1) {
+            binding.bottomNavigation.selectedItemId = R.id.homeDashboardFragment
+        }
+        viewModel?.resultCode = null
     }
 
     private fun setCurrentFragment(fragment: Fragment) =
@@ -569,22 +567,3 @@ class MainDashboardActivity : AppCompatActivity() {
             super.onBackPressed()
     }
 }
-
-//    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-//        super.onActivityResult(requestCode, resultCode, data)
-//
-//        Log.d(TAG, "onActivityResult: " + requestCode)
-//        Log.d(TAG, "onActivityResult: " + resultCode)
-//
-//
-//        if (requestCode == 1000) {
-//                if (allPermissionsGranted()) {
-//                    onPermissionGranted()
-//
-//                } else {
-//                    permissionRequest.launch(permissions.toTypedArray())
-//                }
-//
-//            }
-//        }
-//    }

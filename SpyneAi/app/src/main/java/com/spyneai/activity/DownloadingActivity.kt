@@ -204,12 +204,10 @@ class DownloadingActivity : AppCompatActivity() {
         EventBus.getDefault().unregister(this)
     }
 
-    val download_completed: String = getString(R.string.download_completed)
-
     @Subscribe(threadMode = ThreadMode.MAIN)
     fun onMessageEvent(event: HDImagesDownloadedEvent?) {
         event?.getSkuId()?.let {
-            Toast.makeText(this@DownloadingActivity, download_completed, Toast.LENGTH_SHORT).show()
+            Toast.makeText(this@DownloadingActivity, "Download Completed", Toast.LENGTH_SHORT).show()
 
             //add download complete fragment
             var downloadCompletedFragment = DownloadCompletedFragment()
@@ -226,7 +224,6 @@ class DownloadingActivity : AppCompatActivity() {
     }
 
     fun addFeedbackFragment() {
-
         iv_home.visibility = View.VISIBLE
 
         supportFragmentManager.beginTransaction()

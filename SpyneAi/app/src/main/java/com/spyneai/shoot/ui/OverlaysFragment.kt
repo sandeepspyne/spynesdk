@@ -32,6 +32,8 @@ import com.spyneai.databinding.FragmentOverlaysV2Binding
 import com.spyneai.needs.AppConstants
 import com.spyneai.needs.Utilities
 import com.spyneai.posthog.Events
+import com.spyneai.setLocale
+import com.spyneai.shoot.adapters.NewSubCategoriesAdapter
 import com.spyneai.shoot.adapters.OverlaysAdapter
 import com.spyneai.shoot.data.OnOverlaySelectionListener
 import com.spyneai.shoot.data.ShootViewModel
@@ -51,6 +53,8 @@ class OverlaysFragment : BaseFragment<ShootViewModel, FragmentOverlaysV2Binding>
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        requireContext().setLocale()
 
         //observe new image clicked
         viewModel.shootList.observe(viewLifecycleOwner, {
@@ -192,14 +196,6 @@ class OverlaysFragment : BaseFragment<ShootViewModel, FragmentOverlaysV2Binding>
     }
 
     private fun initAngles() {
-        when(getString(R.string.app_name)){
-            AppConstants.SELL_ANY_CAR ->
-                viewModel.exterirorAngles.value = 4
-            else ->  {
-                viewModel.exterirorAngles.value = 8
-            }
-        }
-
         if (viewModel.subCategory.value?.prod_cat_id != null
             && viewModel.categoryDetails.value?.imageType == "Exterior")
             getOverlays()
@@ -319,6 +315,8 @@ class OverlaysFragment : BaseFragment<ShootViewModel, FragmentOverlaysV2Binding>
             )
 
         }
+
+        val s = ""
     }
 
     private fun observeOverlays() {
@@ -695,7 +693,7 @@ class OverlaysFragment : BaseFragment<ShootViewModel, FragmentOverlaysV2Binding>
 
 
 
-                binding.tvShoot?.text = "Angles ${position.plus(1)}/${viewModel.getSelectedAngles(getString(
+                binding.tvShoot?.text = getString(R.string.angles)+" ${position.plus(1)}/${viewModel.getSelectedAngles(getString(
                     R.string.app_name))}"
             }
 
@@ -704,7 +702,7 @@ class OverlaysFragment : BaseFragment<ShootViewModel, FragmentOverlaysV2Binding>
                 viewModel.displayThumbanil = data.display_thumbnail
                 viewModel.overlayId = data.overlayId
 
-                binding.tvShoot?.text = "Angles ${position.plus(1)}/${viewModel.interiorAngles.value}"
+                binding.tvShoot?.text = getString(R.string.angles)+" ${position.plus(1)}/${viewModel.interiorAngles.value}"
             }
 
             is NewSubCatResponse.Miscellaneous ->{
@@ -712,7 +710,7 @@ class OverlaysFragment : BaseFragment<ShootViewModel, FragmentOverlaysV2Binding>
                 viewModel.displayThumbanil = data.display_thumbnail
                 viewModel.overlayId = data.overlayId
 
-                binding.tvShoot?.text = "Angles ${position.plus(1)}/${viewModel.miscAngles.value}"
+                binding.tvShoot?.text = getString(R.string.angles)+" ${position.plus(1)}/${viewModel.miscAngles.value}"
             }
         }
     }
