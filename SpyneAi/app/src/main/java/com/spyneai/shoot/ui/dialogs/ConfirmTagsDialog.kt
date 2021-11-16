@@ -86,7 +86,17 @@ class ConfirmTagsDialog : BaseDialogFragment<ShootViewModel, DialogConfirmTagsBi
             )
 
             //remove last item from shoot list
-            viewModel.shootList.value?.removeAt(viewModel.shootList.value!!.size - 1)
+            if (!viewModel.isReclick){
+                viewModel.shootList.value?.let { list ->
+                    val currentElement = list.firstOrNull {
+                        it.overlayId == viewModel.overlayId
+                    }
+
+                    currentElement?.let {
+                        list.remove(it)
+                    }
+                }
+            }
             dismiss()
         }
 
