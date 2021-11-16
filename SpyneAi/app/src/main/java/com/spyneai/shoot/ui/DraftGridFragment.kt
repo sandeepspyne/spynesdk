@@ -24,7 +24,7 @@ class DraftGridFragment : BaseFragment<ShootViewModel, FragmentGridEcomBinding>(
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        binding.ivEndProject.setOnClickListener {
+        binding.ivEnd.setOnClickListener {
             viewModel.stopShoot.value = true
         }
 
