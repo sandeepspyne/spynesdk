@@ -5,6 +5,10 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.WindowManager
+import android.widget.Toast
+import com.journeyapps.barcodescanner.ScanContract
+import com.journeyapps.barcodescanner.ScanIntentResult
+import com.journeyapps.barcodescanner.ScanOptions
 import com.posthog.android.Properties
 import com.spyneai.base.BaseDialogFragment
 import com.spyneai.base.network.Resource
@@ -25,6 +29,17 @@ class CreateSkuEcomDialog : BaseDialogFragment<ShootViewModel, CreateSkuEcomDial
 
         dialog?.setCancelable(false)
         binding.etSkuName.setText("sku"+viewModel.skuNumber.value)
+
+
+        binding.ivBarCode.setOnClickListener {
+            val options = ScanOptions()
+            options.setDesiredBarcodeFormats(ScanOptions.ONE_D_CODE_TYPES)
+            options.setPrompt("Scan a barcode")
+            options.setCameraId(0) // Use a specific camera of the device
+            options.setBeepEnabled(true)
+            options.setOrientationLocked(false)
+            barcodeLauncher.launch(options)
+        }
 
         binding.ivClose.setOnClickListener {
             requireActivity().onBackPressed()
@@ -128,6 +143,25 @@ class CreateSkuEcomDialog : BaseDialogFragment<ShootViewModel, CreateSkuEcomDial
                 }
             }
         })
+    }
+
+
+    private val barcodeLauncher = registerForActivityResult(
+        ScanContract()
+    ) { result: ScanIntentResult ->
+        if (result.contents == null) {
+            Toast.makeText(requireContext(), "Cancelled", Toast.LENGTH_LONG).show()
+        } else {
+
+            binding.etSkuName.setText(result.contents)
+
+//            Toast.makeText(
+//                requireContext(),
+//                "Scanned: " + result.contents,
+//                Toast.LENGTH_LONG
+//            ).show()
+
+        }
     }
 
 

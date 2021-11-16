@@ -65,20 +65,28 @@
 
     </com.google.android.material.textfield.TextInputLayout>
 
+
+        <FrameLayout
+            android:id="@+id/llCity"
+            android:layout_width="0dp"
+            android:layout_height="50dp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/llProjectName"
+            android:layout_marginTop="@dimen/dp_10"
+            android:layout_marginLeft="@dimen/dp_25"
+            android:layout_marginRight="@dimen/dp_25"
+            app:layout_constraintEnd_toEndOf="parent"
+            tools:ignore="MissingConstraints">
+
     <com.google.android.material.textfield.TextInputLayout
-        android:id="@+id/llCity"
-        android:layout_width="0dp"
+
+        android:layout_width="match_parent"
         android:layout_height="50dp"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/llProjectName"
-        android:layout_marginTop="@dimen/dp_10"
-        android:layout_marginLeft="@dimen/dp_25"
-        android:layout_marginRight="@dimen/dp_25"
-        app:layout_constraintEnd_toEndOf="parent"
         tools:ignore="MissingConstraints"
         android:background="@drawable/bg_edit_text"
         app:boxStrokeWidth="0dp"
         app:boxStrokeWidthFocused="0dp">
+
 
         <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/etSkuName"
@@ -89,9 +97,20 @@
             android:textColor="@color/black_varient"
             android:maxLines="1"
             android:textSize="@dimen/sp_12"
-            android:hint="Enter SKU name" />
+            android:hint="Enter SKU name"
+            />
 
     </com.google.android.material.textfield.TextInputLayout>
+            <ImageView
+                android:id="@+id/ivBarCode"
+                android:layout_width="@dimen/dp_40"
+                android:layout_height="@dimen/dp_30"
+                android:src="@drawable/barcode"
+                android:layout_marginEnd="@dimen/dp_10"
+                android:layout_gravity="end|center_vertical"
+                app:tint="@color/primary">
+        </ImageView>
+        </FrameLayout>
 
 
     <LinearLayout

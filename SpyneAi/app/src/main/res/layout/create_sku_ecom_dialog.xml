@@ -30,6 +30,10 @@
         android:layout_marginLeft="45dp"
         android:layout_marginTop="@dimen/dp_30"/>
 
+
+
+
+
     <LinearLayout
         android:id="@+id/llCity"
         android:layout_width="match_parent"
@@ -42,6 +46,9 @@
         app:layout_constraintRight_toRightOf="parent"
         android:gravity="center"
         android:background="@drawable/bg_edit">
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
 
         <EditText
             android:id="@+id/etSkuName"
@@ -54,7 +61,23 @@
             android:textColor="@color/black_varient"
             android:layout_marginLeft="@dimen/dp_20"/>
 
+            <ImageView
+                android:id="@+id/ivBarCode"
+                android:layout_width="@dimen/dp_40"
+                android:layout_height="@dimen/dp_30"
+                android:src="@drawable/barcode"
+                android:layout_marginEnd="@dimen/dp_10"
+                android:layout_gravity="end|center_vertical"
+                app:tint="@color/primary">
+            </ImageView>
+
+
+
+
+        </FrameLayout>
+
     </LinearLayout>
+
 
     <com.google.android.material.button.MaterialButton
         android:layout_width="wrap_content"

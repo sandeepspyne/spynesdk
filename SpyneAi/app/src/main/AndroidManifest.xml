@@ -50,9 +50,14 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.Fab_Bottom_app_bar"
         android:usesCleartextTraffic="true"
-        tools:targetApi="m" >
+        tools:targetApi="m"
+        android:hardwareAccelerated="true">
         <activity android:name=".onboarding.SelectLanguageActivity" >
         </activity>
+        <activity
+            android:name="com.journeyapps.barcodescanner.CaptureActivity"
+            android:screenOrientation="fullSensor"
+            tools:replace="screenOrientation"></activity>
         <activity
             android:name=".draft.ui.DraftsActivity"
             android:exported="true" />

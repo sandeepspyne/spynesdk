@@ -447,6 +447,10 @@ dependencies {
     //crop
     api 'com.theartofdev.edmodo:android-image-cropper:2.8.+'
 
+    //Barcode
+    implementation('com.journeyapps:zxing-android-embedded:4.3.0') { transitive = false }
+    implementation 'com.google.zxing:core:3.3.0'
+
 
     // debugImplementation 'com.squareup.leakcanary:leakcanary-android:2.7'
 }

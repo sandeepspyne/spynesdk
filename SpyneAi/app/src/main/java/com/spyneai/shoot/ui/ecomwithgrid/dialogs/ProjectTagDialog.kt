@@ -8,15 +8,19 @@ import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
 import android.util.TypedValue
-import android.view.*
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
+import android.view.WindowManager
 import android.widget.EditText
 import android.widget.LinearLayout
-import androidx.core.view.children
-import androidx.core.view.forEach
+import android.widget.Toast
 import androidx.core.view.forEachIndexed
-import androidx.core.widget.addTextChangedListener
 import androidx.viewbinding.ViewBinding
 import com.google.android.material.chip.Chip
+import com.journeyapps.barcodescanner.ScanContract
+import com.journeyapps.barcodescanner.ScanIntentResult
+import com.journeyapps.barcodescanner.ScanOptions
 import com.posthog.android.Properties
 import com.spyneai.R
 import com.spyneai.base.BaseDialogFragment
@@ -35,12 +39,8 @@ import com.spyneai.shoot.data.ShootViewModel
 import com.spyneai.shoot.data.model.Project
 import com.spyneai.shoot.data.model.Sku
 import com.spyneai.shoot.utils.log
-import kotlinx.android.synthetic.main.item_project_chipedittext.view.*
 import org.json.JSONArray
 import org.json.JSONObject
-import android.widget.Toast
-
-
 
 
 class ProjectTagDialog : BaseDialogFragment<ShootViewModel, ProjectTagDialogBinding>() {
@@ -88,6 +88,16 @@ class ProjectTagDialog : BaseDialogFragment<ShootViewModel, ProjectTagDialogBind
 
 
         setTagsData()
+
+        binding.ivBarCode.setOnClickListener {
+            val options = ScanOptions()
+            options.setDesiredBarcodeFormats(ScanOptions.ONE_D_CODE_TYPES)
+            options.setPrompt("Scan a barcode")
+            options.setCameraId(0) // Use a specific camera of the device
+            options.setBeepEnabled(true)
+            options.setOrientationLocked(false)
+            barcodeLauncher.launch(options)
+        }
 
         binding.btnProceed.setOnClickListener {
             when {
@@ -463,6 +473,26 @@ class ProjectTagDialog : BaseDialogFragment<ShootViewModel, ProjectTagDialogBind
             }
         })
     }
+
+
+    private val barcodeLauncher = registerForActivityResult(
+        ScanContract()
+    ) { result: ScanIntentResult ->
+        if (result.contents == null) {
+            Toast.makeText(requireContext(), "Cancelled", Toast.LENGTH_LONG).show()
+        } else {
+
+            binding.etSkuName.setText(result.contents)
+
+//            Toast.makeText(
+//                requireContext(),
+//                "Scanned: " + result.contents,
+//                Toast.LENGTH_LONG
+//            ).show()
+
+        }
+    }
+
 
 
     private fun requiredError(editText: EditText, fieldName: String) {
