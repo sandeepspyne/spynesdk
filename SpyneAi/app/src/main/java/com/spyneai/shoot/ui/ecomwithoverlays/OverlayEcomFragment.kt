@@ -261,6 +261,9 @@ class OverlayEcomFragment : BaseFragment<ShootViewModel, FragmentOverlayEcomBind
             imgOverlay?.visibility = View.VISIBLE
             tvSkuName?.text = viewModel.sku.value?.skuName
         }
+
+        if (viewModel.fromDrafts)
+            viewModel.showLeveler.value = true
     }
 
     override fun getViewModel() = ShootViewModel::class.java

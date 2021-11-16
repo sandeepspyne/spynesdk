@@ -15,7 +15,10 @@ import com.spyneai.needs.AppConstants
 import com.spyneai.needs.Utilities
 import com.spyneai.posthog.Events
 import com.spyneai.shoot.data.ShootViewModel
+import com.spyneai.shoot.data.model.CreateProjectRes
+import com.spyneai.shoot.data.model.Sku
 import com.spyneai.shoot.utils.log
+import io.sentry.protocol.App
 
 class CreateSkuEcomDialog : BaseDialogFragment<ShootViewModel, CreateSkuEcomDialogBinding>() {
 
@@ -23,11 +26,24 @@ class CreateSkuEcomDialog : BaseDialogFragment<ShootViewModel, CreateSkuEcomDial
         super.onViewCreated(view, savedInstanceState)
 
         dialog?.setCancelable(false)
-        binding.etSkuName.setText("sku" + viewModel.skuNumber.value)
+
+        val sku = Sku()
+        sku.projectId = viewModel.projectId.value
+        viewModel.sku.value = sku
+
+       viewModel._createProjectRes.value = Resource.Success(
+            CreateProjectRes(
+                "",
+                sku.projectId!!,
+                200
+            )
+        )
 
         binding.ivClose.setOnClickListener {
             requireActivity().onBackPressed()
         }
+
+        getProjectName()
 
         binding.btnProceed.setOnClickListener {
             when {
@@ -39,9 +55,6 @@ class CreateSkuEcomDialog : BaseDialogFragment<ShootViewModel, CreateSkuEcomDial
                     binding.etSkuName.error = "Special characters not allowed"
                 }
                 else -> {
-                    log("create sku started")
-                    log("project id: " + viewModel.projectId.value.toString())
-                    log("sku name: " + binding.etSkuName.text.toString())
                     createSku(
                         viewModel.projectId.value.toString(),
                         removeWhiteSpace(binding.etSkuName.text.toString())
@@ -53,7 +66,42 @@ class CreateSkuEcomDialog : BaseDialogFragment<ShootViewModel, CreateSkuEcomDial
         observCreateSku()
     }
 
-        private fun removeWhiteSpace(toString: String) = toString.replace("\\s".toRegex(), "")
+    private fun getProjectName(){
+        viewModel.getProjectName(Utilities.getPreference(requireContext(), AppConstants.AUTH_KEY).toString())
+
+        viewModel.getProjectNameResponse.observe(viewLifecycleOwner, {
+            when (it) {
+                is Resource.Success -> {
+
+                    Utilities.hideProgressDialog()
+
+                    viewModel.dafault_project.value = viewModel.projectId.value
+                    viewModel.dafault_sku.value = it.value.data.dafault_sku
+                    binding.etSkuName.setText(it.value.data.dafault_sku)
+                }
+
+                is Resource.Loading -> {
+                    Utilities.showProgressDialog(requireContext())
+                }
+
+                is Resource.Failure -> {
+                    Utilities.hideProgressDialog()
+                    log("get project name failed")
+                    requireContext().captureFailureEvent(
+                        Events.CREATE_PROJECT_FAILED, HashMap<String,Any?>(),
+                        it.errorMessage!!
+                    )
+
+                    Utilities.hideProgressDialog()
+                    handleApiError(it) { getProjectName()}
+                }
+            }
+        })
+
+    }
+
+
+    private fun removeWhiteSpace(toString: String) = toString.replace("\\s".toRegex(), "")
 
 
         private fun createSku(projectId: String, skuName: String) {
@@ -103,17 +151,22 @@ class CreateSkuEcomDialog : BaseDialogFragment<ShootViewModel, CreateSkuEcomDial
                         sku?.exteriorAngles = viewModel.exterirorAngles.value
 
                         viewModel.sku.value = sku
+
+                        //notify project created
+                        viewModel.isProjectCreated.value = true
                         viewModel.isSkuCreated.value = true
-                        viewModel.showLeveler.value = true
+
+                        when(viewModel.categoryDetails.value?.categoryId){
+                            AppConstants.FOOTWEAR_CATEGORY_ID -> {
+                                viewModel.getSubCategories.value = true
+                            }
+                            else -> {
+                                viewModel.showLeveler.value = true
+                            }
+                        }
 
                         //add sku to local database
                         viewModel.insertSku(sku!!)
-
-                        //viewModel.isSubCategoryConfirmed.value = true
-
-
-                        //add sku to local database
-//                    viewModel.insertSku(sku!!)
                         dismiss()
                     }
 

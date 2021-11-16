@@ -82,6 +82,7 @@ class ShootPortraitActivity : AppCompatActivity(), GoogleApiClient.ConnectionCal
         shootViewModel.skuNumber.value = 1
         try {
             shootViewModel.skuNumber.value = intent.getIntExtra("skuNumber", 1)
+            shootViewModel.projectId.value = intent.getStringExtra("project_id")
         } catch (e: Exception) {
         }
 
@@ -206,8 +207,6 @@ class ShootPortraitActivity : AppCompatActivity(), GoogleApiClient.ConnectionCal
                 }
             }
         })
-
-
     }
 
     private fun observeProjectCreated() {
@@ -222,7 +221,6 @@ class ShootPortraitActivity : AppCompatActivity(), GoogleApiClient.ConnectionCal
             }
         )
     }
-
 
     private fun setUpVideoShoot() {
         shootViewModel.fromVideo = true

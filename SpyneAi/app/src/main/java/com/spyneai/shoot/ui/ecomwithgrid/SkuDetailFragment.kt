@@ -108,13 +108,6 @@ class SkuDetailFragment : BaseFragment<ShootViewModel, FragmentSkuDetailBinding>
         })
 
         binding.btNextSku.setOnClickListener {
-            log("update total frames")
-            log("skuId: " + viewModel.sku.value?.skuId.toString())
-            log("totalFrames: " + viewModel.shootList.value?.size.toString())
-            log(
-                "authKey: " + Utilities.getPreference(requireContext(), AppConstants.AUTH_KEY)
-                    .toString()
-            )
             endProject = false
             updateTotalFrames()
         }
@@ -192,8 +185,6 @@ class SkuDetailFragment : BaseFragment<ShootViewModel, FragmentSkuDetailBinding>
             EndProjectDialog().show(requireFragmentManager(), "EndProjectDialog")
         } else {
             observeUpdateTotalFrames()
-
-
         }
 
     }

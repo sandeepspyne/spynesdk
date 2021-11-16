@@ -50,23 +50,6 @@ class DraftEcomFragment : BaseFragment<ShootViewModel, FragmentOverlayEcomBindin
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-
-//        when {
-//            requireActivity().intent.getIntExtra(AppConstants.EXTERIOR_ANGLES,0) != 0 &&
-//                    requireActivity().intent.getIntExtra(AppConstants.EXTERIOR_ANGLES,0)
-//                    == requireActivity().intent.getIntExtra(AppConstants.EXTERIOR_SIZE,0) -> {
-//
-//            }
-//            viewModel.subCatName.value != null -> {
-//                intSubcategorySelection(false)
-//                getOverlays()
-//                binding.llCapture.visibility = View.VISIBLE
-//            }
-//            else -> {
-//                intSubcategorySelection(true)
-//            }
-//        }
-
         //observe new image clicked
         viewModel.shootList.observe(viewLifecycleOwner, {
             try {
@@ -189,7 +172,6 @@ class DraftEcomFragment : BaseFragment<ShootViewModel, FragmentOverlayEcomBindin
                             .apply {
                                 this.put("angles", it.value.data.size)
                             }
-
                     )
 
 
@@ -264,6 +246,8 @@ class DraftEcomFragment : BaseFragment<ShootViewModel, FragmentOverlayEcomBindin
             imgOverlay?.visibility = View.VISIBLE
             tvSkuName?.text = viewModel.sku.value?.skuName
         }
+
+        viewModel.showLeveler.value = true
     }
 
     override fun getViewModel() = ShootViewModel::class.java
@@ -284,12 +268,9 @@ class DraftEcomFragment : BaseFragment<ShootViewModel, FragmentOverlayEcomBindin
                 viewModel.overlayId = data.id
 
                 binding.tvShoot?.text = position.plus(1).toString()+"/"+viewModel.exterirorAngles.value.toString()
-
             }
 
         }
-
-        val s = ""
     }
 
     override fun onItemClick(view: View, position: Int, data: Any?) {
