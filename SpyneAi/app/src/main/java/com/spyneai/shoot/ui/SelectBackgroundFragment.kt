@@ -203,12 +203,6 @@ class SelectBackgroundFragment : BaseFragment<ProcessViewModel, FragmentSelectBa
             Utilities.getPreference(requireContext(), AppConstants.AUTH_KEY).toString(),
             arguments?.getString(AppConstants.PROJECT_ID)!!, backgroundSelect.toInt()
         )
-        log(
-            "auth key- " + Utilities.getPreference(requireContext(), AppConstants.AUTH_KEY)
-                .toString()
-        )
-        log("project id- " + viewModel.projectId.value)
-        log("skuProcessState called")
     }
 
     private fun observeFoodProcess() {
