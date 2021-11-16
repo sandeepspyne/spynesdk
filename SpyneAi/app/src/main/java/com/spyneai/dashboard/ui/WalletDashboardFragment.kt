@@ -11,7 +11,6 @@ import android.view.ViewGroup
 import android.widget.LinearLayout
 import android.widget.Toast
 import androidx.core.content.ContextCompat
-import com.posthog.android.Properties
 import com.spyneai.R
 import com.spyneai.base.BaseFragment
 import com.spyneai.captureEvent
@@ -21,8 +20,6 @@ import com.spyneai.credits.CreditUtils
 import com.spyneai.dashboard.data.DashboardViewModel
 import com.spyneai.databinding.WalletDashboardFragmentBinding
 import com.spyneai.interfaces.APiService
-import com.spyneai.interfaces.RetrofitClient
-import com.spyneai.interfaces.RetrofitClientSpyneAi
 import com.spyneai.interfaces.RetrofitClients
 import com.spyneai.model.credit.CreditDetailsResponse
 import com.spyneai.needs.AppConstants
@@ -130,7 +127,7 @@ class WalletDashboardFragment : BaseFragment<DashboardViewModel, WalletDashboard
                 binding.shimmer.stopShimmer()
 
                 if (response.isSuccessful) {
-                    requireContext().captureEvent(Events.FETCH_CREDITS, Properties())
+                    requireContext().captureEvent(Events.FETCH_CREDITS, HashMap<String,Any?>())
 
                     binding.shimmer.visibility = View.GONE
                     binding.tvCredits.visibility = View.VISIBLE
@@ -163,7 +160,7 @@ class WalletDashboardFragment : BaseFragment<DashboardViewModel, WalletDashboard
 
 
                 } else {
-                    requireContext().captureFailureEvent(Events.FETCH_CREDITS_FAILED, Properties(),
+                    requireContext().captureFailureEvent(Events.FETCH_CREDITS_FAILED, HashMap<String,Any?>(),
                         "Server not responding"
                     )
                     Toast.makeText(

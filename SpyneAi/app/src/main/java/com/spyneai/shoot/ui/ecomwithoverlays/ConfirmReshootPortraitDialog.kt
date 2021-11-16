@@ -9,7 +9,7 @@ import androidx.core.content.ContextCompat
 import androidx.lifecycle.lifecycleScope
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.engine.DiskCacheStrategy
-import com.posthog.android.Properties
+
 import com.spyneai.base.BaseDialogFragment
 import com.spyneai.base.network.Resource
 import com.spyneai.captureEvent
@@ -34,7 +34,7 @@ class ConfirmReshootPortraitDialog : BaseDialogFragment<ShootViewModel, ConfirmR
 
         binding.btReshootImage.setOnClickListener{
             viewModel.isCameraButtonClickable = true
-            val properties = Properties()
+            val properties = HashMap<String,Any?>()
             properties.apply {
                 this["sku_id"] = viewModel.shootData.value?.sku_id
                 this["project_id"] = viewModel.shootData.value?.project_id
@@ -44,7 +44,9 @@ class ConfirmReshootPortraitDialog : BaseDialogFragment<ShootViewModel, ConfirmR
                 Events.RESHOOT,
                 properties)
             //remove last item from shoot list
-            viewModel.shootList.value?.removeAt(viewModel.shootList.value!!.size - 1)
+            if (!viewModel.isReclick)
+                viewModel.shootList.value?.removeAt(viewModel.currentShoot)
+
             dismiss()
         }
 
@@ -52,61 +54,58 @@ class ConfirmReshootPortraitDialog : BaseDialogFragment<ShootViewModel, ConfirmR
 
             viewModel.isSubCategoryConfirmed.value = true
 
-            val properties = Properties()
+            val properties = HashMap<String,Any?>()
             properties.apply {
                 this["sku_id"] = viewModel.shootData.value?.sku_id
                 this["project_id"] = viewModel.shootData.value?.project_id
                 this["image_type"] = viewModel.shootData.value?.image_category
             }
 
-            requireContext().captureEvent(
-                Events.CONFIRMED,
-                properties)
+            viewModel.isCameraButtonClickable = true
 
-            if (viewModel.categoryDetails.value?.categoryName == "Footwear"
-                && viewModel.shootNumber.value == 0) {
-                callUpdateSubcat()
-                observeupdateFootwarSubcat()
-                //update subcategory id
-                viewModel.updateSubcategoryId(viewModel.subCategory.value?.prod_sub_cat_id!!,viewModel.subCatName.value!!)
+            if (viewModel.isReshoot){
+                uploadImages()
+
+                if (viewModel.allReshootClicked)
+                    viewModel.reshootCompleted.value = true
+
+                dismiss()
             }else {
-                onImageConfirmed()
+                uploadImages()
+                if (viewModel.allEcomOverlyasClicked){
+                    viewModel.isCameraButtonClickable = false
+                    viewModel.stopShoot.value = true
+                }
+
+                dismiss()
             }
         }
 
-        viewModel.overlaysResponse.observe(viewLifecycleOwner,{
-            when(it){
-                is Resource.Success -> {
-                    val uri = viewModel.shootData.value?.capturedImage
+        val uri = viewModel.shootData.value?.capturedImage
 
-                    binding.ivCapturedImage.setRotation(90F)
+        Log.d(TAG, "onViewCreated: "+uri)
 
-                    Glide.with(requireContext())
-                        .load(uri)
-                        .diskCacheStrategy(DiskCacheStrategy.NONE)
+        binding.ivCapturedImage.setRotation(90F)
+        binding.ivCaptured2.setRotation(90F)
+
+        Glide.with(requireContext())
+            .load(uri)
+            .diskCacheStrategy(DiskCacheStrategy.NONE)
                         .skipMemoryCache(true)
                         .into(binding.ivCapturedImage)
 
-                        val overlay = it.value.data[viewModel.shootNumber.value!!].display_thumbnail
 
-                    binding.ivCaptured2.setRotation(90F)
 
 
                         Glide.with(requireContext())
                             .load(uri)
                             .diskCacheStrategy(DiskCacheStrategy.NONE)
                             .skipMemoryCache(true)
-                            .into(binding.ivCaptured2)
+            .into(binding.ivCaptured2)
+
+        setOverlay(binding.ivCaptured2,viewModel.getOverlay())
 
 
-                    Glide.with(requireContext())
-                        .load(overlay)
-                        .into(binding.ivCapturedOverlay)
-
-                }
-                else -> {}
-            }
-        })
     }
 
     private fun callUpdateSubcat() {
@@ -115,16 +114,16 @@ class ConfirmReshootPortraitDialog : BaseDialogFragment<ShootViewModel, ConfirmR
     }
 
     private fun onImageConfirmed() {
-        viewModel.isCameraButtonClickable = true
-        uploadImages()
-        if (viewModel.shootNumber.value == viewModel.exterirorAngles.value?.minus(1)) {
-            dismiss()
-            Log.d(TAG, "onViewCreated: "+"checkInteriorShootStatus")
-            viewModel.stopShoot.value = true
-        } else {
-            viewModel.shootNumber.value = viewModel.shootNumber.value!! + 1
-            dismiss()
-        }
+//        viewModel.isCameraButtonClickable = true
+//        uploadImages()
+//        if (viewModel.shootNumber.value == viewModel.exterirorAngles.value?.minus(1)) {
+//            dismiss()
+//            Log.d(TAG, "onViewCreated: "+"checkInteriorShootStatus")
+//            viewModel.stopShoot.value = true
+//        } else {
+//            viewModel.shootNumber.value = viewModel.shootNumber.value!! + 1
+//            dismiss()
+//        }
     }
 
     private fun observeupdateFootwarSubcat(){
@@ -144,6 +143,8 @@ class ConfirmReshootPortraitDialog : BaseDialogFragment<ShootViewModel, ConfirmR
     }
 
     private fun uploadImages() {
+        viewModel.onImageConfirmed.value = viewModel.getOnImageConfirmed()
+
         viewLifecycleOwner.lifecycleScope.launch {
             viewModel.insertImage(viewModel.shootData.value!!)
         }

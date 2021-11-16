@@ -7,10 +7,7 @@ import android.content.pm.PackageManager
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
-import android.os.Parcel
-import android.os.Parcelable
 import android.provider.Settings
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -18,9 +15,7 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.content.ContextCompat
 import com.spyneai.R
 import com.spyneai.base.BaseDialogFragment
-import com.spyneai.databinding.DialogExitBinding
 import com.spyneai.databinding.RequiredPermissionDialogBinding
-import com.spyneai.gotoHome
 import com.spyneai.needs.AppConstants
 import com.spyneai.shoot.data.ShootViewModel
 

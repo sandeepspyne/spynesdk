@@ -3,22 +3,29 @@ package com.spyneai.shoot.ui.dialogs
 import android.app.Dialog
 import android.content.Intent
 import android.graphics.Color
+import android.graphics.drawable.ColorDrawable
 import android.os.Build
 import android.os.Bundle
-import android.view.*
-import android.widget.FrameLayout
-import androidx.constraintlayout.widget.ConstraintLayout
+import android.util.Log
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
+import android.view.ViewTreeObserver
+import android.widget.ArrayAdapter
+import android.widget.EditText
+import android.widget.Toast
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.lifecycleScope
+import androidx.viewbinding.ViewBinding
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.engine.DiskCacheStrategy
-import com.posthog.android.Properties
 import com.spyneai.R
 import com.spyneai.base.BaseDialogFragment
 import com.spyneai.base.network.Resource
 import com.spyneai.captureEvent
-import com.spyneai.databinding.DialogConfirmReshootBinding
 import com.spyneai.databinding.DialogConfirmTagsBinding
+import com.spyneai.databinding.ItemTagNotesBinding
+import com.spyneai.databinding.ItemTagsSpinnerBinding
 import com.spyneai.needs.AppConstants
 import com.spyneai.posthog.Events
 import com.spyneai.service.Actions
@@ -27,19 +34,6 @@ import com.spyneai.service.getServiceState
 import com.spyneai.service.log
 import com.spyneai.shoot.data.ShootViewModel
 import kotlinx.coroutines.launch
-import android.graphics.drawable.ColorDrawable
-import android.util.Log
-
-import android.view.ViewGroup
-import android.widget.ArrayAdapter
-import android.widget.EditText
-import android.widget.Toast
-import androidx.constraintlayout.widget.ConstraintSet
-import androidx.viewbinding.ViewBinding
-import com.spyneai.dashboard.response.NewSubCatResponse
-import com.spyneai.databinding.ItemTagNotesBinding
-import com.spyneai.databinding.ItemTagsSpinnerBinding
-import kotlinx.android.synthetic.main.activity_sign_up.*
 import org.json.JSONObject
 
 
@@ -47,17 +41,21 @@ class ConfirmTagsDialog : BaseDialogFragment<ShootViewModel, DialogConfirmTagsBi
 
     val TAG = "ConfirmTagsDialog"
     private val bindingMap = HashMap<String, ArrayList<ViewBinding>>()
-    private lateinit var inflator : LayoutInflater
+    private lateinit var inflator: LayoutInflater
 
     override fun onStart() {
         super.onStart()
         val dialog: Dialog? = dialog
         if (dialog != null) {
             dialog.getWindow()
-                ?.setLayout(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT)
+                ?.setLayout(
+                    ViewGroup.LayoutParams.MATCH_PARENT,
+                    ViewGroup.LayoutParams.MATCH_PARENT
+                )
             dialog.getWindow()?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
         }
     }
+
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -70,10 +68,10 @@ class ConfirmTagsDialog : BaseDialogFragment<ShootViewModel, DialogConfirmTagsBi
 
         setTagsData()
 
-        binding.btReshootImage.setOnClickListener{
+        binding.btReshootImage.setOnClickListener {
             viewModel.isCameraButtonClickable = true
 
-            val properties = Properties()
+            val properties = HashMap<String,Any?>()
             properties.apply {
                 this["sku_id"] = viewModel.shootData.value?.sku_id
                 this["project_id"] = viewModel.shootData.value?.project_id
@@ -82,15 +80,18 @@ class ConfirmTagsDialog : BaseDialogFragment<ShootViewModel, DialogConfirmTagsBi
 
             requireContext().captureEvent(
                 Events.RESHOOT,
-                properties)
+                properties
+            )
 
             //remove last item from shoot list
-            viewModel.shootList.value?.removeAt(viewModel.shootList.value!!.size - 1)
+            if (!viewModel.isReclick)
+                viewModel.shootList.value?.removeAt(viewModel.currentShoot)
+
             dismiss()
         }
 
         binding.btConfirmImage.setOnClickListener {
-            val properties = Properties()
+            val properties = HashMap<String,Any?>()
 
             properties.apply {
                 this["sku_id"] = viewModel.shootData.value?.sku_id
@@ -100,63 +101,61 @@ class ConfirmTagsDialog : BaseDialogFragment<ShootViewModel, DialogConfirmTagsBi
 
             requireContext().captureEvent(
                 Events.CONFIRMED,
-                properties)
+                properties
+            )
 
             viewModel.isCameraButtonClickable = true
 
-            when(viewModel.categoryDetails.value?.imageType) {
-                "Exterior" -> {
-                    if (tagsValid()){
-                        uploadImages()
+            if (viewModel.isReshoot){
+                if (tagsValid()) {
+                    uploadImages()
 
-                        if (viewModel.shootNumber.value  == viewModel.exterirorAngles.value?.minus(1)){
+                    if (viewModel.allReshootClicked)
+                        viewModel.reshootCompleted.value = true
+
+                    dismiss()
+                }
+            }else{
+                when(viewModel.categoryDetails.value?.imageType) {
+                    "Exterior" -> {
+                        uploadImages()
+                        if (viewModel.allExteriorClicked){
                             checkInteriorShootStatus()
                             viewModel.isCameraButtonClickable = false
-                            dismiss()
-                        }else{
-                            viewModel.shootNumber.value = viewModel.shootNumber.value!! + 1
-                            dismiss()
                         }
+
+                        dismiss()
                     }
 
-                }
-
-                "Interior" -> {
-                    if (tagsValid()){
+                    "Interior" -> {
                         updateTotalImages()
                         uploadImages()
 
-                        if (viewModel.interiorShootNumber.value  == viewModel.interiorAngles.value?.minus(1)){
+                        if (viewModel.allInteriorClicked){
                             viewModel.isCameraButtonClickable = false
                             viewModel.checkMiscShootStatus(getString(R.string.app_name))
-                            dismiss()
-                        }else{
-                            viewModel.interiorShootNumber.value = viewModel.interiorShootNumber.value!! + 1
-                            dismiss()
                         }
-                    }
-                }
 
-                "Focus Shoot" -> {
-                    if (tagsValid()){
+                        dismiss()
+                    }
+
+                    "Focus Shoot" -> {
                         updateTotalImages()
                         uploadImages()
 
-                        if (viewModel.miscShootNumber.value  == viewModel.miscAngles.value?.minus(1)){
+                        if (viewModel.allMisc)
                             viewModel.selectBackground(getString(R.string.app_name))
-                            dismiss()
-                        }else{
-                            viewModel.miscShootNumber.value = viewModel.miscShootNumber.value!! + 1
-                            dismiss()
-                        }
+
+                        dismiss()
                     }
                 }
             }
+
         }
 
-        val overlayRes = (viewModel.overlaysResponse.value as Resource.Success).value
-
         val uri = viewModel.shootData.value?.capturedImage
+
+        Log.d(TAG, "onViewCreated: "+uri)
 
         Glide.with(requireContext())
             .load(uri)
@@ -164,44 +163,32 @@ class ConfirmTagsDialog : BaseDialogFragment<ShootViewModel, DialogConfirmTagsBi
             .skipMemoryCache(true)
             .into(binding.ivClicked)
 
-        when(viewModel.categoryDetails.value?.imageType) {
+        binding.tvName.text = viewModel.getName()
+
+        when (viewModel.categoryDetails.value?.imageType) {
             "Exterior" -> {
-                val overlay = overlayRes.data[viewModel.shootNumber.value!!].display_thumbnail
-                val name = overlayRes.data[viewModel.shootNumber.value!!].display_name
-                binding.tvName.text = name
+
 
                 if (getString(R.string.app_name) == AppConstants.KARVI)
                     binding.ivOverlay.visibility = View.GONE
                 else
-                    setOverlay(binding.ivOverlay,overlay)
-            }
-
-            "Interior" -> {
-                val subCatResponse = (viewModel.subCategoriesResponse.value as Resource.Success).value
-                val name = subCatResponse.interior[viewModel.interiorShootNumber.value!!].display_name
-                binding.tvName.text = name
-            }
-
-            "Focus Shoot" -> {
-                val subCatResponse = (viewModel.subCategoriesResponse.value as Resource.Success).value
-                val name = subCatResponse.miscellaneous[viewModel.miscShootNumber.value!!].display_name
-                binding.tvName.text = name
+                    setOverlay(binding.ivOverlay, viewModel.getOverlay())
             }
         }
     }
 
     private fun setTagsData() {
-        val response =  (viewModel.subCategoriesResponse.value as Resource.Success).value
+        val response = (viewModel.subCategoriesResponse.value as Resource.Success).value
 
-        when(viewModel.categoryDetails.value?.imageType){
+        when (viewModel.categoryDetails.value?.imageType) {
             "Exterior" -> {
-               val tags = response.tags.exterior
+                val tags = response.tags.exterior
 
                 tags?.forEach {
                     addBinding(
                         viewModel.categoryDetails.value!!.imageType!!,
                         it.fieldType,
-                        getItemBinding(it.fieldType,it.fieldName,it.enumValues)
+                        getItemBinding(it.fieldType, it.fieldName, it.enumValues)
                     )
                 }
             }
@@ -213,7 +200,7 @@ class ConfirmTagsDialog : BaseDialogFragment<ShootViewModel, DialogConfirmTagsBi
                     addBinding(
                         viewModel.categoryDetails.value!!.imageType!!,
                         it.fieldType,
-                        getItemBinding(it.fieldType,it.fieldName,it.enumValues)
+                        getItemBinding(it.fieldType, it.fieldName, it.enumValues)
                     )
                 }
             }
@@ -226,7 +213,7 @@ class ConfirmTagsDialog : BaseDialogFragment<ShootViewModel, DialogConfirmTagsBi
                     addBinding(
                         viewModel.categoryDetails.value!!.imageType!!,
                         it.fieldType,
-                        getItemBinding(it.fieldType,it.fieldName,it.enumValues)
+                        getItemBinding(it.fieldType, it.fieldName, it.enumValues)
                     )
                 }
             }
@@ -234,12 +221,16 @@ class ConfirmTagsDialog : BaseDialogFragment<ShootViewModel, DialogConfirmTagsBi
 
     }
 
-    private fun getItemBinding(fieldType: String,fieldName : String,list : List<String>): ViewBinding {
-        var tempBinding : ViewBinding? = null
+    private fun getItemBinding(
+        fieldType: String,
+        fieldName: String,
+        list: List<String>
+    ): ViewBinding {
+        var tempBinding: ViewBinding? = null
 
-        when(fieldType){
+        when (fieldType) {
             "dropdown" -> {
-                val layout = inflator.inflate(R.layout.item_tags_spinner,null)
+                val layout = inflator.inflate(R.layout.item_tags_spinner, null)
                 val itemBinding = ItemTagsSpinnerBinding.bind(layout)
 
                 itemBinding.tvTitle.text = fieldName
@@ -264,7 +255,7 @@ class ConfirmTagsDialog : BaseDialogFragment<ShootViewModel, DialogConfirmTagsBi
             }
 
             "multiText" -> {
-                val layout = inflator.inflate(R.layout.item_tag_notes,null)
+                val layout = inflator.inflate(R.layout.item_tag_notes, null)
                 val itemBinding = ItemTagNotesBinding.bind(layout)
 
                 tempBinding = itemBinding
@@ -275,8 +266,8 @@ class ConfirmTagsDialog : BaseDialogFragment<ShootViewModel, DialogConfirmTagsBi
         return tempBinding!!
     }
 
-    private fun addBinding(category: String,filedType : String,binding : ViewBinding) {
-        if (bindingMap[category] == null){
+    private fun addBinding(category: String, filedType: String, binding: ViewBinding) {
+        if (bindingMap[category] == null) {
             bindingMap[category] = ArrayList()
         }
 
@@ -286,11 +277,11 @@ class ConfirmTagsDialog : BaseDialogFragment<ShootViewModel, DialogConfirmTagsBi
     }
 
     private fun uploadImages() {
+        viewModel.onImageConfirmed.value = viewModel.getOnImageConfirmed()
         viewModel.shootData.value?.meta = getMetaValue()
 
         viewLifecycleOwner.lifecycleScope.launch {
-            viewModel.
-            insertImage(viewModel.shootData.value!!)
+            viewModel.insertImage(viewModel.shootData.value!!)
         }
 
         startService()
@@ -302,19 +293,21 @@ class ConfirmTagsDialog : BaseDialogFragment<ShootViewModel, DialogConfirmTagsBi
         val bindingList = bindingMap[viewModel.categoryDetails.value?.imageType]
 
         bindingList?.forEachIndexed { index, viewBinding ->
-            when(viewBinding){
+            when (viewBinding) {
                 is ItemTagsSpinnerBinding -> {
                     if (viewBinding.spinner.selectedItemPosition != 0)
                         json.put(
                             getTagKey(index),
-                            viewBinding.spinner.selectedItem.toString())
+                            viewBinding.spinner.selectedItem.toString()
+                        )
                 }
 
                 is ItemTagNotesBinding -> {
                     if (viewBinding.tvNotes.text.toString().isNotEmpty())
                         json.put(
                             getTagKey(index),
-                            viewBinding.etNotes.text.toString())
+                            viewBinding.etNotes.text.toString()
+                        )
                 }
             }
         }
@@ -324,9 +317,9 @@ class ConfirmTagsDialog : BaseDialogFragment<ShootViewModel, DialogConfirmTagsBi
 
     private fun getTagKey(index: Int): String {
 
-        val response =  (viewModel.subCategoriesResponse.value as Resource.Success).value
+        val response = (viewModel.subCategoriesResponse.value as Resource.Success).value
 
-        when(viewModel.categoryDetails.value?.imageType) {
+        when (viewModel.categoryDetails.value?.imageType) {
             "Exterior" -> {
                 return response.tags.exterior[index].fieldId
             }
@@ -336,7 +329,8 @@ class ConfirmTagsDialog : BaseDialogFragment<ShootViewModel, DialogConfirmTagsBi
             "Focus Shoot" -> {
                 return response.tags.focusShoot[index].fieldId
             }
-            else -> {}
+            else -> {
+            }
         }
 
         return ""
@@ -364,7 +358,7 @@ class ConfirmTagsDialog : BaseDialogFragment<ShootViewModel, DialogConfirmTagsBi
         viewModel.updateTotalImages(viewModel.sku.value?.skuId!!)
     }
 
-    private fun setOverlay(view: View, overlay : String) {
+    private fun setOverlay(view: View, overlay: String) {
         view.viewTreeObserver.addOnGlobalLayoutListener(object :
             ViewTreeObserver.OnGlobalLayoutListener {
             override fun onGlobalLayout() {
@@ -428,7 +422,8 @@ class ConfirmTagsDialog : BaseDialogFragment<ShootViewModel, DialogConfirmTagsBi
                         }
                     }
                 }
-                else -> { }
+                else -> {
+                }
             }
         })
     }
@@ -436,20 +431,18 @@ class ConfirmTagsDialog : BaseDialogFragment<ShootViewModel, DialogConfirmTagsBi
 
 
 
-
-
-    private fun tagsValid() : Boolean {
-        val response =  (viewModel.subCategoriesResponse.value as Resource.Success).value
+    private fun tagsValid(): Boolean {
+        val response = (viewModel.subCategoriesResponse.value as Resource.Success).value
         var isValidTag = true
-        when(viewModel.categoryDetails.value?.imageType) {
+        when (viewModel.categoryDetails.value?.imageType) {
             "Exterior" -> {
                 val bindingList = bindingMap[viewModel.categoryDetails.value?.imageType]
 
                 bindingList?.forEachIndexed { index, viewBinding ->
-                    when(viewBinding){
+                    when (viewBinding) {
                         is ItemTagsSpinnerBinding -> {
-                            if (response.tags.exterior[index].isRequired){
-                                if (viewBinding.spinner.selectedItemPosition == 0){
+                            if (response.tags.exterior[index].isRequired) {
+                                if (viewBinding.spinner.selectedItemPosition == 0) {
                                     showErrorToast(response.tags.exterior.get(index).fieldName)
                                     isValidTag = false
                                     return isValidTag
@@ -458,8 +451,8 @@ class ConfirmTagsDialog : BaseDialogFragment<ShootViewModel, DialogConfirmTagsBi
                         }
 
                         is ItemTagNotesBinding -> {
-                            if (response.tags.exterior[index].isRequired){
-                                if (viewBinding.etNotes.text.toString().isEmpty()){
+                            if (response.tags.exterior[index].isRequired) {
+                                if (viewBinding.etNotes.text.toString().isEmpty()) {
                                     notesError(viewBinding.etNotes)
                                     isValidTag = false
                                 }
@@ -474,10 +467,10 @@ class ConfirmTagsDialog : BaseDialogFragment<ShootViewModel, DialogConfirmTagsBi
                 val bindingList = bindingMap[viewModel.categoryDetails.value?.imageType]
 
                 bindingList?.forEachIndexed { index, viewBinding ->
-                    when(viewBinding){
+                    when (viewBinding) {
                         is ItemTagsSpinnerBinding -> {
-                            if (response.tags.interior[index].isRequired){
-                                if (viewBinding.spinner.selectedItemPosition == 0){
+                            if (response.tags.interior[index].isRequired) {
+                                if (viewBinding.spinner.selectedItemPosition == 0) {
                                     showErrorToast(response.tags.exterior.get(index).fieldName)
                                     isValidTag = false
                                     return isValidTag
@@ -486,8 +479,8 @@ class ConfirmTagsDialog : BaseDialogFragment<ShootViewModel, DialogConfirmTagsBi
                         }
 
                         is ItemTagNotesBinding -> {
-                            if (response.tags.interior[index].isRequired){
-                                if (viewBinding.etNotes.text.toString().isEmpty()){
+                            if (response.tags.interior[index].isRequired) {
+                                if (viewBinding.etNotes.text.toString().isEmpty()) {
                                     notesError(viewBinding.etNotes)
                                     isValidTag = false
                                 }
@@ -503,11 +496,11 @@ class ConfirmTagsDialog : BaseDialogFragment<ShootViewModel, DialogConfirmTagsBi
                 val s = ""
 
                 bindingList?.forEachIndexed { index, viewBinding ->
-                    when(viewBinding){
+                    when (viewBinding) {
                         is ItemTagsSpinnerBinding -> {
                             val s = ""
-                            if (response.tags.focusShoot[index].isRequired){
-                                if (viewBinding.spinner.selectedItemPosition == 0){
+                            if (response.tags.focusShoot[index].isRequired) {
+                                if (viewBinding.spinner.selectedItemPosition == 0) {
                                     showErrorToast(response.tags.focusShoot.get(index).fieldName)
                                     isValidTag = false
                                     return isValidTag
@@ -516,9 +509,9 @@ class ConfirmTagsDialog : BaseDialogFragment<ShootViewModel, DialogConfirmTagsBi
                         }
 
                         is ItemTagNotesBinding -> {
-                            val s =  ""
-                            if (response.tags.focusShoot[index].isRequired){
-                                if (viewBinding.etNotes.text.toString().isEmpty()){
+                            val s = ""
+                            if (response.tags.focusShoot[index].isRequired) {
+                                if (viewBinding.etNotes.text.toString().isEmpty()) {
                                     notesError(viewBinding.etNotes)
                                     isValidTag = false
                                 }
@@ -533,20 +526,20 @@ class ConfirmTagsDialog : BaseDialogFragment<ShootViewModel, DialogConfirmTagsBi
         return isValidTag
     }
 
-    private fun notesError(editText : EditText){
+    private fun notesError(editText: EditText) {
         editText.error = "Please enter notes"
-        Toast.makeText(requireContext(),"Please enter notes",Toast.LENGTH_LONG).show()
+        Toast.makeText(requireContext(), "Please enter notes", Toast.LENGTH_LONG).show()
     }
 
     private fun showErrorToast(fieldName: String) {
-        val text = when(fieldName) {
+        val text = when (fieldName) {
             "Imperfection Location" -> "Please select imperfection location"
             "Imperfection Type" -> "Please select imperfection type"
             "Imperfection Severity" -> "Please select imperfection severity"
             else -> "notes"
         }
 
-        Toast.makeText(requireContext(),text,Toast.LENGTH_LONG).show()
+        Toast.makeText(requireContext(), text, Toast.LENGTH_LONG).show()
     }
 
     override fun getViewModel() = ShootViewModel::class.java

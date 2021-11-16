@@ -14,7 +14,6 @@ import com.spyneai.R
 import com.spyneai.draft.ui.DraftSkuDetailsActivity
 import com.spyneai.needs.AppConstants
 import com.spyneai.needs.Utilities
-import com.spyneai.orders.data.response.GetProjectsResponse
 import com.spyneai.shoot.data.model.Sku
 import com.spyneai.shoot.ui.base.ShootActivity
 import com.spyneai.threesixty.data.VideoLocalRepository
@@ -54,9 +53,6 @@ class LocalSkusAdapter(
         if (skuList[position].categoryId == AppConstants.CARS_CATEGORY_ID && (skuList[position].categoryId == skuList[position].subcategoryId))
             holder.tvCategory.text = "Automobiles"
 
-        if (skuList[position].categoryId != AppConstants.CARS_CATEGORY_ID)
-            holder.ivThumbnail.rotation = 90F
-
         try {
 
             if (skuList[position].thumbnail != null) {
@@ -80,7 +76,6 @@ class LocalSkusAdapter(
         } catch (e: Exception) {
 
         }
-
 
         if (skuList[position].categoryId == AppConstants.CARS_CATEGORY_ID && (skuList[position].categoryId == skuList[position].subcategoryId)) {
             Glide.with(context)
@@ -163,25 +158,23 @@ class LocalSkusAdapter(
                     putExtra(AppConstants.IS_360, skuList[position].is360)
                 }
 
-                when (skuList[position].subcategoryId) {
-                    "prod_4CW50lj2sNMCS",
-                    "prod_4CW50lj2sCCx",
-                    "prod_4CW50lj2sABC"-> draftIntent.putExtra(AppConstants.EXTERIOR_ANGLES, 5)
-                    "prod_4CW50lj2sNMF",
-                    "prod_4CW50lj2sCBA",
-                    "prod_4CW50lj2sCAA"-> draftIntent.putExtra(AppConstants.EXTERIOR_ANGLES, 6)
-                    "prod_4CW50lj2sCBB" -> draftIntent.putExtra(AppConstants.EXTERIOR_ANGLES, 4)
-                    else -> {
-                        draftIntent.putExtra(
-                            AppConstants.EXTERIOR_ANGLES,
-                            skuList[position].exteriorAngles
-                        )
-                    }
+                draftIntent.putExtra(
+                    AppConstants.EXTERIOR_ANGLES,
+                    skuList[position].exteriorAngles
+                )
 
-                }
+                val s = ""
 
-                if (skuList[position].threeSixtyFrames != null &&
-                    skuList[position].threeSixtyFrames != 0   ){
+//                when (skuList[position].subcategoryId) {
+//                    "prod_4CW50lj2sNMCS" -> draftIntent.putExtra(AppConstants.EXTERIOR_ANGLES, 5)
+//                    "prod_4CW50lj2sNMF" -> draftIntent.putExtra(AppConstants.EXTERIOR_ANGLES, 6)
+//                    else -> {
+//
+//                    }
+//
+//                }
+
+                if (skuList[position].threeSixtyFrames != null && skuList[position].threeSixtyFrames != 0){
                     draftIntent.apply {
                         putExtra(AppConstants.FROM_VIDEO, true)
                         putExtra(AppConstants.TOTAL_FRAME, skuList[position].threeSixtyFrames)

@@ -12,7 +12,6 @@ import android.view.Window
 import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.lifecycle.Observer
-import com.posthog.android.Properties
 import com.spyneai.R
 import com.spyneai.activity.CompletedProjectsActivity
 import com.spyneai.activity.OngoingOrdersActivity
@@ -59,14 +58,14 @@ class HomeDashboardFragment :
 //        viewModel.categoriesResponse.observe(viewLifecycleOwner, Observer {
 //            when(it){
 //                is Resource.Success -> {
-//                    requireContext().captureEvent(Events.GOT_CATEGORIES, Properties())
+//                    requireContext().captureEvent(Events.GOT_CATEGORIES, HashMap<String,Any?>())
 //
 //                }
 //                is Resource.Loading -> {
 //
 //                }
 //                is Resource.Failure -> {
-//                    requireContext().captureFailureEvent(Events.GET_CATEGORIES_FAILED, Properties(),
+//                    requireContext().captureFailureEvent(Events.GET_CATEGORIES_FAILED, HashMap<String,Any?>(),
 //                        it.errorMessage!!)
 //
 //                    handleApiError(it)

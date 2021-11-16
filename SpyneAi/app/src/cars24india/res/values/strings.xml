@@ -36,5 +36,5 @@
 <!--    <string name="sign_up_here">New to Cars24?&#160; <font color='#0a73b8'><b>Sign up here</b></font></string>-->
 <!--    <string name="login_here">Already a Cars24 User?&#160; <font color='#0a73b8'><b>Login here</b></font></string>-->
 
-    <string name="capture_upto">Capture upto 5 Exterior Images</string>
+    <string name="capture_upto">Capture upto 8 Exterior Images</string>
 </resources>

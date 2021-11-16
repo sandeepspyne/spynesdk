@@ -7,10 +7,10 @@ import androidx.lifecycle.viewModelScope
 import com.spyneai.base.network.Resource
 import com.spyneai.dashboard.response.NewSubCatResponse
 import com.spyneai.orders.data.repository.MyOrdersRepository
-import com.spyneai.orders.data.response.GetOngoingSkusResponse
 import com.spyneai.orders.data.response.GetProjectsResponse
 import com.spyneai.orders.data.response.ImagesOfSkuRes
 import com.spyneai.processedimages.ui.data.ProcessedRepository
+import com.spyneai.shoot.data.ImageLocalRepository
 import com.spyneai.shoot.data.ShootLocalRepository
 import com.spyneai.shoot.data.ShootRepository
 import kotlinx.coroutines.launch
@@ -20,6 +20,7 @@ class DraftViewModel : ViewModel() {
     private val shootRepository = ShootRepository()
     private val processedRepository = ProcessedRepository()
     private val localRepository = ShootLocalRepository()
+    private val imagesLocalRepository = ImageLocalRepository()
 
     private val _draftResponse: MutableLiveData<Resource<GetProjectsResponse>> = MutableLiveData()
     val draftResponse: LiveData<Resource<GetProjectsResponse>>
@@ -38,7 +39,7 @@ class DraftViewModel : ViewModel() {
 
     fun getDraftsFromLocal() = localRepository.getDraftProjects()
     fun getSkusByProjectId(projectId : String) = localRepository.getSkusByProjectId(projectId)
-    fun getImagesbySkuId(skuId: String) = localRepository.getImagesBySkuId(skuId)
+    fun getImagesbySkuId(skuId: String) = imagesLocalRepository.getImagesBySkuId(skuId)
 
     fun getImagesOfSku(
         authKey: String,

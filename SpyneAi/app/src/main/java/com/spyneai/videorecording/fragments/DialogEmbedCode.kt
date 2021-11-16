@@ -2,17 +2,13 @@ package com.spyneai.videorecording.fragments
 
 import android.content.ClipData
 import android.content.ClipboardManager
-import android.content.Context
 import android.content.Context.CLIPBOARD_SERVICE
-import android.os.Build
 import android.os.Bundle
-import android.text.Html
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.fragment.app.DialogFragment
-import com.spyneai.R
 import com.spyneai.databinding.DialogCopyEmbeddedCodeBinding
 
 class DialogEmbedCode : DialogFragment() {

@@ -1,8 +1,6 @@
 package com.spyneai.model.otp
 
 import com.google.gson.annotations.SerializedName
-import com.spyneai.model.login.Header
-import com.spyneai.model.login.MsgInfo
 
 data class OtpResponse (
         @SerializedName("auth_token")

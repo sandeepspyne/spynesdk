@@ -8,7 +8,6 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
-import com.posthog.android.Properties
 import com.spyneai.R
 import com.spyneai.base.BaseFragment
 import com.spyneai.base.network.Resource
@@ -25,6 +24,7 @@ import com.spyneai.shoot.adapters.NewCarBackgroundAdapter
 import com.spyneai.shoot.data.ProcessViewModel
 import com.spyneai.shoot.data.model.CarsBackgroundRes
 import com.spyneai.shoot.utils.log
+import kotlinx.android.synthetic.main.fragment_select_background.*
 import okhttp3.MultipartBody
 import okhttp3.RequestBody.Companion.toRequestBody
 
@@ -61,6 +61,12 @@ class SelectBackgroundFragment : BaseFragment<ProcessViewModel, FragmentSelectBa
             viewModel.tintWindow = isChecked
         }
 
+        binding.cbTintWindow.setOnCheckedChangeListener { buttonView, isChecked ->
+            viewModel.tintWindow = isChecked
+        }
+
+
+
 
       //   blur no plate & window correction
             when (Utilities.getPreference(requireContext(), AppConstants.CATEGORY_NAME)) {
@@ -72,22 +78,34 @@ class SelectBackgroundFragment : BaseFragment<ProcessViewModel, FragmentSelectBa
                         binding.tvWindowReflection.visibility = View.GONE
                         binding.tvTintWindow.visibility = View.VISIBLE
                         binding.cbTintWindow.visibility = View.VISIBLE
+                        binding.cbTintWindow.visibility = View.VISIBLE
+                        binding.tvTintWindow.visibility = View.VISIBLE
                     } else  {
                         binding.cbBlurNoPlate.visibility = View.GONE
                         binding.tvBlurNoPlate.visibility = View.GONE
                         binding.cbWindowCorrection.visibility = View.GONE
                         binding.tvWindowReflection.visibility = View.GONE
-                        binding.tvTintWindow.visibility = View.VISIBLE
                         binding.cbTintWindow.visibility = View.VISIBLE
+                        binding.tvTintWindow.visibility = View.VISIBLE
                     }
+
+                    if (getString(R.string.app_name) == AppConstants.CARS24 ||
+                        getString(R.string.app_name) == AppConstants.CARS24_INDIA ||
+                        getString(R.string.app_name) == AppConstants.OLA_CABS){
+
+                            binding.cbTintWindow.visibility = View.GONE
+                            binding.tvTintWindow.visibility = View.GONE
+
+                    }
+
 
                 } else ->{
                 binding.cbBlurNoPlate.visibility = View.GONE
                 binding.tvBlurNoPlate.visibility = View.GONE
                 binding.cbWindowCorrection.visibility = View.GONE
                 binding.tvWindowReflection.visibility = View.GONE
-                binding.tvTintWindow.visibility = View.GONE
                 binding.cbTintWindow.visibility = View.GONE
+                binding.tvTintWindow.visibility = View.GONE
                 }
             }
 
@@ -213,12 +231,6 @@ class SelectBackgroundFragment : BaseFragment<ProcessViewModel, FragmentSelectBa
             Utilities.getPreference(requireContext(), AppConstants.AUTH_KEY).toString(),
             arguments?.getString(AppConstants.PROJECT_ID)!!, backgroundSelect.toInt()
         )
-        log(
-            "auth key- " + Utilities.getPreference(requireContext(), AppConstants.AUTH_KEY)
-                .toString()
-        )
-        log("project id- " + viewModel.projectId.value)
-        log("skuProcessState called")
     }
 
     private fun observeFoodProcess() {
@@ -235,7 +247,7 @@ class SelectBackgroundFragment : BaseFragment<ProcessViewModel, FragmentSelectBa
                     Utilities.hideProgressDialog()
                     binding.shimmer.stopShimmer()
                     requireContext().captureFailureEvent(
-                        Events.GET_BACKGROUND_FAILED, Properties(),
+                        Events.GET_BACKGROUND_FAILED, HashMap<String,Any?>(),
                         it.errorMessage!!
                     )
                     handleApiError(it) { processFoodImage() }
@@ -293,7 +305,7 @@ class SelectBackgroundFragment : BaseFragment<ProcessViewModel, FragmentSelectBa
         viewModel.carGifRes.observe(viewLifecycleOwner, {
             when (it) {
                 is Resource.Success -> {
-                    requireContext().captureEvent(Events.GET_BACKGROUND, Properties())
+                    requireContext().captureEvent(Events.GET_BACKGROUND, HashMap<String,Any?>())
                     binding.shimmer.stopShimmer()
                     binding.shimmer.visibility = View.GONE
                     binding.rvBackgroundsCars.visibility = View.VISIBLE
@@ -318,7 +330,7 @@ class SelectBackgroundFragment : BaseFragment<ProcessViewModel, FragmentSelectBa
 
                 is Resource.Failure -> {
                     requireContext().captureFailureEvent(
-                        Events.GET_BACKGROUND_FAILED, Properties(),
+                        Events.GET_BACKGROUND_FAILED, HashMap<String,Any?>(),
                         it.errorMessage!!
                     )
                     handleApiError(it) { getBackground() }
@@ -377,7 +389,7 @@ class SelectBackgroundFragment : BaseFragment<ProcessViewModel, FragmentSelectBa
                 is Resource.Success -> {
                     Utilities.hideProgressDialog()
 
-                    val properties = Properties()
+                    val properties = HashMap<String,Any?>()
                     properties.apply {
                         this["sku_id"] = viewModel.sku.value?.skuId!!
                         this["total_frames"] = viewModel.exteriorAngles.value?.plus(viewModel.interiorMiscShootsCount)
@@ -390,7 +402,7 @@ class SelectBackgroundFragment : BaseFragment<ProcessViewModel, FragmentSelectBa
                 is Resource.Failure -> {
                     Utilities.hideProgressDialog()
 
-                    val properties = Properties()
+                    val properties = HashMap<String,Any?>()
                     properties.apply {
                         this["sku_id"] = viewModel.sku.value?.skuId!!
                         this["total_frames"] = viewModel.exteriorAngles.value?.plus(viewModel.interiorMiscShootsCount)
@@ -412,8 +424,13 @@ class SelectBackgroundFragment : BaseFragment<ProcessViewModel, FragmentSelectBa
 
         requireContext().captureEvent(
             Events.PROCESS_INITIATED,
-            Properties().putValue("sku_id", viewModel.sku.value?.skuId!!)
-                .putValue("background_id", backgroundSelect)
+            HashMap<String,Any?>()
+                .apply {
+                    this.put("sku_id", viewModel.sku.value?.skuId!!)
+                    this.put("background_id", backgroundSelect)
+                }
+
+
         )
 
         viewModel.processSku(
@@ -431,6 +448,8 @@ class SelectBackgroundFragment : BaseFragment<ProcessViewModel, FragmentSelectBa
         log("Background Id: : " + backgroundSelect)
     }
 
+
+
     private fun observeProcessSku() {
         viewModel.processSkuRes.observe(viewLifecycleOwner, {
             when (it) {
@@ -445,8 +464,13 @@ class SelectBackgroundFragment : BaseFragment<ProcessViewModel, FragmentSelectBa
 
                     requireContext().captureEvent(
                         Events.PROCESS,
-                        Properties().putValue("sku_id", viewModel.sku.value?.skuId!!)
-                            .putValue("background_id", backgroundSelect)
+                        HashMap<String,Any?>()
+                            .apply {
+                                this.put("sku_id", viewModel.sku.value?.skuId!!)
+                                this.put("background_id", backgroundSelect)
+                            }
+
+
                     )
                     viewModel.startTimer.value = true
                 }
@@ -455,7 +479,9 @@ class SelectBackgroundFragment : BaseFragment<ProcessViewModel, FragmentSelectBa
 
                     requireContext().captureFailureEvent(
                         Events.PROCESS_FAILED,
-                        Properties().putValue("sku_id", viewModel.sku.value?.skuId!!),
+                        HashMap<String,Any?>().apply {
+                            this.put("sku_id", viewModel.sku.value?.skuId!!)
+                        },
                         it.errorMessage!!
                     )
 

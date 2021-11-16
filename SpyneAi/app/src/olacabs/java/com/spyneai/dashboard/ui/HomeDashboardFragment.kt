@@ -1,24 +1,13 @@
 package com.spyneai.dashboard.ui
 
-import android.app.Dialog
 import android.content.Intent
-import android.graphics.Color
-import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
 import android.view.LayoutInflater
-import android.view.View
 import android.view.ViewGroup
-import android.view.Window
-import android.widget.LinearLayout
-import android.widget.TextView
-import com.spyneai.R
-import com.spyneai.activity.CompletedProjectsActivity
-import com.spyneai.activity.OngoingOrdersActivity
 import com.spyneai.adapter.CategoriesDashboardAdapter
 import com.spyneai.base.BaseFragment
 import com.spyneai.dashboard.data.DashboardViewModel
 import com.spyneai.databinding.HomeDashboardFragmentBinding
-import com.spyneai.draft.ui.DraftsActivity
 import com.spyneai.fragment.TopUpFragment
 import com.spyneai.needs.AppConstants
 import com.spyneai.needs.Utilities

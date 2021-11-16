@@ -1,7 +1,7 @@
 package com.spyneai.shoot.ui.ecomwithgrid
 
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import androidx.appcompat.app.AppCompatActivity
 import com.spyneai.R
 
 class ShowSkuProjectActivity : AppCompatActivity() {

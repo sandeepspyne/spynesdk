@@ -5,8 +5,6 @@ import android.content.Context
 import android.content.Intent
 import android.os.Build
 import androidx.core.content.ContextCompat
-import androidx.work.ListenableWorker
-import com.posthog.android.Properties
 import com.spyneai.captureEvent
 import com.spyneai.isMyServiceRunning
 import com.spyneai.needs.AppConstants
@@ -23,7 +21,7 @@ class ExplicitConnectionReceiver : BroadcastReceiver() {
             || shootLocalRepository.getOldestSkippedImage().itemId != null){
                 if (context != null){
 
-                    val prperties = Properties()
+                    val prperties = HashMap<String,Any?>()
                         .apply {
                             put("email", Utilities.getPreference(context, AppConstants.EMAIL_ID).toString())
                             put("medium","Explicit Broadcast")

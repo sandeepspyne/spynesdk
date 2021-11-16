@@ -14,9 +14,9 @@ object GcpClient {
     private const val STAGING_URL = "http://34.87.119.10/api/"
 
     private val client = OkHttpClient.Builder()
-        .readTimeout(10, TimeUnit.MINUTES)
-        .writeTimeout(10, TimeUnit.MINUTES)
-        .connectTimeout(10, TimeUnit.MINUTES)
+        .readTimeout(4, TimeUnit.MINUTES)
+        .writeTimeout(4, TimeUnit.MINUTES)
+        .connectTimeout(4, TimeUnit.MINUTES)
         .retryOnConnectionFailure(true)
         .also { client ->
             if (BuildConfig.DEBUG) {

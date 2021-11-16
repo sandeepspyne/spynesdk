@@ -1,105 +1,42 @@
 package com.spyneai.shoot.ui.ecomwithgrid
 
-import android.net.Uri
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.spyneai.InfoDialog
-import com.posthog.android.Properties
-import com.spyneai.*
 import com.spyneai.base.BaseFragment
-import com.spyneai.base.network.Resource
-import com.spyneai.dashboard.ui.handleApiError
+import com.spyneai.base.OnItemClickListener
 import com.spyneai.databinding.FragmentGridEcomBinding
-import com.spyneai.needs.AppConstants
-import com.spyneai.needs.Utilities
-import com.spyneai.posthog.Events
-import com.spyneai.shoot.adapters.CapturedImageAdapter
+import com.spyneai.shoot.adapters.ClickedAdapter
+import com.spyneai.shoot.data.OnOverlaySelectionListener
 import com.spyneai.shoot.data.ShootViewModel
 import com.spyneai.shoot.data.model.ShootData
+import com.spyneai.shoot.ui.dialogs.ReclickDialog
 import com.spyneai.shoot.ui.ecomwithgrid.dialogs.ConfirmReshootEcomDialog
-import com.spyneai.shoot.ui.ecomwithgrid.dialogs.CreateSkuEcomDialog
-import com.spyneai.shoot.ui.ecomwithgrid.dialogs.ProjectTagDialog
-import com.spyneai.shoot.utils.log
-import com.theartofdev.edmodo.cropper.CropImage
-import java.io.File
-import java.util.*
 
-class GridEcomFragment : BaseFragment<ShootViewModel, FragmentGridEcomBinding>() {
+class GridEcomFragment : BaseFragment<ShootViewModel, FragmentGridEcomBinding>(),
+    OnItemClickListener, OnOverlaySelectionListener {
 
 
-    lateinit var capturedImageAdapter: CapturedImageAdapter
-    lateinit var capturedImageList: ArrayList<String>
+    var clickedAdapter : ClickedAdapter?=  null
     var position = 1
 
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-
-        if (Utilities.getPreference(requireContext(),AppConstants.ENTERPRISE_ID)
-            == AppConstants.FLIPKART_ENTERPRISE_ID){
-            binding.apply {
-                ivNext.visibility = View.VISIBLE
-                ivEnd.visibility = View.GONE
-            }
-        }else{
-            binding.apply {
-            ivNext.visibility = View.GONE
-            ivEnd.visibility = View.VISIBLE
-            }
-        }
-
-        if (viewModel.projectId.value == null){
-            if(Utilities.getPreference(requireContext(), AppConstants.STATUS_PROJECT_NAME).toString() =="true")
-                getProjectName()
-            else
-                initProjectDialog()
-        }
-        else {
-            if (viewModel.fromDrafts){
-                if (viewModel.isSkuCreated.value == null
-                    && viewModel.isSubCategoryConfirmed.value == null)
-                    initSkuDialog()
-            }else {
-                if (viewModel.isSkuCreated.value == null)
-                    initSkuDialog()
-
-            }
-        }
-
-        binding.ivNext.setOnClickListener {
-                    InfoDialog().show(
-                        requireActivity().supportFragmentManager,
-                        "InfoDialog"
-                    )
-        }
-
-        binding.ivEnd.setOnClickListener {
-            if (viewModel.fromDrafts){
+        binding.ivEndProject.setOnClickListener {
+            if (viewModel.isStopCaptureClickable)
                 viewModel.stopShoot.value = true
-            }else {
-                if (viewModel.isStopCaptureClickable)
-                    viewModel.stopShoot.value = true
-            }
         }
 
         //observe new image clicked
         viewModel.shootList.observe(viewLifecycleOwner, {
             try {
-                if (!it.isNullOrEmpty()) {
-                    capturedImageList = ArrayList<String>()
-                    position = it.size - 1
-                    capturedImageList.clear()
-                    for (i in 0..(it.size - 1))
-                        (capturedImageList as ArrayList).add(it[i].capturedImage)
-                    initCapturedImages()
-
-                    if (viewModel.showDialog)
-                        showImageConfirmDialog(it.get(it.size - 1))
-                    log("call showImageConfirmDialog")
+                if (viewModel.showConfirmReshootDialog.value == true && !it.isNullOrEmpty()) {
+                    val element = viewModel.getCurrentShoot()
+                    showImageConfirmDialog(element!!)
                 }
             } catch (e: Exception) {
                 e.printStackTrace()
@@ -111,135 +48,80 @@ class GridEcomFragment : BaseFragment<ShootViewModel, FragmentGridEcomBinding>()
             if (it) {
                 binding.tvSkuName?.text = viewModel.sku.value?.skuName
                 binding.tvSkuName.visibility = View.VISIBLE
-                log("sku name set to text view: "+viewModel.sku.value?.skuName)
                 viewModel.isSkuCreated.value = false
-
-                if (!viewModel.fromDrafts)
-                    viewModel.shootNumber.value = 0
-
-                val s = ""
             }
         })
 
-        viewModel.reshootCapturedImage.observe(viewLifecycleOwner,{
-            if (it){
-                capturedImageAdapter.removeLastItem()
-            }
-        })
-
-
-
-
-        viewModel.hideLeveler.observe(viewLifecycleOwner,{
-            if (viewModel.categoryDetails.value?.imageType == "Info"){
-                binding.apply {
-                    ivNext.visibility = View.GONE
-                    ivEnd.visibility = View.VISIBLE
-                }
-            }
-        })
-
-
-
-
-
-
-
-
-        viewModel.confirmCapturedImage.observe(viewLifecycleOwner,{
-            if (it){
+        viewModel.onImageConfirmed.observe(viewLifecycleOwner,{
+            viewModel.shootList.value?.let {
                 binding.tvImageCount.text = viewModel.shootList.value!!.size.toString()
+                it[viewModel.currentShoot].imageClicked = true
+                it[viewModel.currentShoot].isSelected = false
+                //update captured images
+                if (clickedAdapter == null){
+                    clickedAdapter = ClickedAdapter(it,this,this)
+                    binding.rvClicked.apply {
+                        layoutManager = LinearLayoutManager(requireContext(),LinearLayoutManager.HORIZONTAL,false)
+                        adapter = clickedAdapter
+                    }
+                }else{
+                    try {
+                        if (viewModel.isReclick){
+                            clickedAdapter?.notifyItemChanged(viewModel.currentShoot)
+                        }else{
+                            clickedAdapter?.notifyItemInserted(it.size - 1)
+                        }
+                    }catch (e : Exception){
+                        val s = ""
+                    }
+                }
+                viewModel.overlayId = it.size
+                viewModel.currentShoot = it.size
+                binding.rvClicked.scrollToPosition(it.size.minus(1))
             }
         })
 
-    }
-
-    private fun getProjectName(){
-
-        viewModel.getProjectName(Utilities.getPreference(requireContext(), AppConstants.AUTH_KEY).toString())
-
-        viewModel.getProjectNameResponse.observe(viewLifecycleOwner, {
-            when (it) {
-                is Resource.Success -> {
-
-                    Utilities.hideProgressDialog()
-
-                    viewModel.dafault_project.value = it.value.data.dafault_project
-                    viewModel.dafault_sku.value = it.value.data.dafault_sku
-                    initProjectDialog()
-                    log("project and SKU dialog shown")
+        viewModel.updateSelectItem.observe(viewLifecycleOwner,{
+            if (it){
+                val list = clickedAdapter?.listItems as ArrayList<ShootData>
+                //update previous selected item if have any
+                list.firstOrNull {
+                    it.isSelected
+                }?.let {
+                    it.isSelected = false
+                    clickedAdapter?.notifyItemChanged(list.indexOf(it))
                 }
 
-                is Resource.Loading -> {
-                    Utilities.showProgressDialog(requireContext())
-                }
-
-                is Resource.Failure -> {
-                    Utilities.hideProgressDialog()
-                    log("get project name failed")
-                    requireContext().captureFailureEvent(
-                        Events.CREATE_PROJECT_FAILED, Properties(),
-                        it.errorMessage!!
-                    )
-
-                    Utilities.hideProgressDialog()
-                    handleApiError(it) { getProjectName()}
-                }
+                list[viewModel.currentShoot].isSelected = true
+                clickedAdapter?.notifyItemChanged(viewModel.currentShoot)
+                viewModel.updateSelectItem.value = false
             }
         })
-
     }
 
-
-    private fun initCapturedImages() {
-        capturedImageAdapter = CapturedImageAdapter(
-            requireContext(),
-            capturedImageList
-        )
-
-        binding.rvCapturedImages.apply {
-            this?.layoutManager =
-                LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
-            this?.adapter = capturedImageAdapter
-        }
-
-
-    }
-
-    override fun onResume() {
-        super.onResume()
-
-        if (viewModel.fromDrafts){
-            if (viewModel.showLeveler.value == null || viewModel.showLeveler.value == false){
-                viewModel.showLeveler.value = true
-                viewModel.showDialog = true
-            }
-
-        }
-    }
-
-    private fun initSkuDialog() {
-        CreateSkuEcomDialog().show(requireFragmentManager(), "CreateSkuEcomDialog")
-    }
-
-    private fun initProjectDialog() {
-        ProjectTagDialog().show(requireFragmentManager(), "CreateProjectEcomDialog")
-    }
 
     private fun showImageConfirmDialog(shootData: ShootData) {
         viewModel.shootData.value = shootData
+        ConfirmReshootEcomDialog().show(requireFragmentManager(), "ConfirmReshootDialog")
+    }
 
-        when (viewModel.categoryDetails.value?.imageType) {
-            "Info" -> {
-
-
-                CropImage.activity(Uri.fromFile(File(shootData.capturedImage)))
-//                 .setInitialRotation(90)
-                .start(requireActivity())
+    override fun onItemClick(view: View, position: Int, data: Any?) {
+        when(data){
+            is ShootData -> {
+                if (data.imageClicked){
+                    val bundle = Bundle()
+                    bundle.putInt("overlay_id",data.overlayId)
+                    bundle.putInt("position",position)
+                    val reclickDialog = ReclickDialog()
+                    reclickDialog.arguments = bundle
+                    reclickDialog.show(requireActivity().supportFragmentManager,"ReclickDialog")
+                }
             }
-            else ->
-                ConfirmReshootEcomDialog().show(requireFragmentManager(), "ConfirmReshootDialog")
         }
+    }
+
+    override fun onOverlaySelected(view: View, position: Int, data: Any?) {
+        // viewModel.overlayId = position
     }
 
     override fun getViewModel() = ShootViewModel::class.java
@@ -248,5 +130,6 @@ class GridEcomFragment : BaseFragment<ShootViewModel, FragmentGridEcomBinding>()
         inflater: LayoutInflater,
         container: ViewGroup?
     ) = FragmentGridEcomBinding.inflate(inflater, container, false)
+
 
 }

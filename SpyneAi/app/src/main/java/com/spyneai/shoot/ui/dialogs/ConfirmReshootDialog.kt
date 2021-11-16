@@ -3,6 +3,7 @@ package com.spyneai.shoot.ui.dialogs
 import android.content.Intent
 import android.os.Build
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -11,7 +12,6 @@ import androidx.core.content.ContextCompat
 import androidx.lifecycle.lifecycleScope
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.engine.DiskCacheStrategy
-import com.posthog.android.Properties
 import com.spyneai.R
 import com.spyneai.base.BaseDialogFragment
 import com.spyneai.base.network.Resource
@@ -38,7 +38,7 @@ class ConfirmReshootDialog : BaseDialogFragment<ShootViewModel, DialogConfirmRes
 
         binding.btReshootImage.setOnClickListener{
             viewModel.isCameraButtonClickable = true
-            val properties = Properties()
+            val properties = HashMap<String,Any?>()
             properties.apply {
                 this["sku_id"] = viewModel.shootData.value?.sku_id
                 this["project_id"] = viewModel.shootData.value?.project_id
@@ -55,12 +55,14 @@ class ConfirmReshootDialog : BaseDialogFragment<ShootViewModel, DialogConfirmRes
 //                file.delete()
 
             //remove last item from shoot list
-            viewModel.shootList.value?.removeAt(viewModel.shootList.value!!.size - 1)
+            if (!viewModel.isReclick)
+                viewModel.shootList.value?.removeAt(viewModel.currentShoot)
+
             dismiss()
         }
 
         binding.btConfirmImage.setOnClickListener {
-            val properties = Properties()
+            val properties = HashMap<String,Any?>()
             properties.apply {
                 this["sku_id"] = viewModel.shootData.value?.sku_id
                 this["project_id"] = viewModel.shootData.value?.project_id
@@ -73,46 +75,85 @@ class ConfirmReshootDialog : BaseDialogFragment<ShootViewModel, DialogConfirmRes
 
             viewModel.isCameraButtonClickable = true
 
-            when(viewModel.categoryDetails.value?.imageType) {
-                "Exterior" -> {
-                    uploadImages()
+            if (viewModel.isReshoot){
+                uploadImages()
 
-                    if (viewModel.shootNumber.value  == viewModel.exterirorAngles.value?.minus(1)){
-                        checkInteriorShootStatus()
-                        viewModel.isCameraButtonClickable = false
+                if (viewModel.allReshootClicked)
+                    viewModel.reshootCompleted.value = true
+
+                dismiss()
+            }else {
+                when(viewModel.categoryDetails.value?.imageType) {
+                    "Exterior" -> {
+                        uploadImages()
+                        if (viewModel.allExteriorClicked){
+                            checkInteriorShootStatus()
+                            viewModel.isCameraButtonClickable = false
+                        }
+
                         dismiss()
-                    }else{
-                        viewModel.shootNumber.value = viewModel.shootNumber.value!! + 1
+                    }
+
+                    "Interior" -> {
+                        updateTotalImages()
+                        uploadImages()
+
+                        if (viewModel.allInteriorClicked){
+                            viewModel.isCameraButtonClickable = false
+                            viewModel.checkMiscShootStatus(getString(R.string.app_name))
+                        }
+
+                        dismiss()
+                    }
+
+                    "Focus Shoot" -> {
+                        updateTotalImages()
+                        uploadImages()
+
+                        if (viewModel.allMisc)
+                            viewModel.selectBackground(getString(R.string.app_name))
+
                         dismiss()
                     }
                 }
+            }
+        }
 
-                "Interior" -> {
-                    updateTotalImages()
-                    uploadImages()
+        val uri = viewModel.shootData.value?.capturedImage
 
-                    if (viewModel.interiorShootNumber.value  == viewModel.interiorAngles.value?.minus(1)){
-                        viewModel.isCameraButtonClickable = false
-                        viewModel.checkMiscShootStatus(getString(R.string.app_name))
-                        dismiss()
-                    }else{
-                        viewModel.interiorShootNumber.value = viewModel.interiorShootNumber.value!! + 1
-                        dismiss()
-                    }
-                }
+        Log.d(TAG, "onViewCreated: "+uri)
 
-                "Focus Shoot" -> {
-                    updateTotalImages()
-                    uploadImages()
+        Glide.with(requireContext())
+            .load(uri)
+            .diskCacheStrategy(DiskCacheStrategy.NONE)
+            .skipMemoryCache(true)
+            .into(binding.ivCapturedImage)
 
-                    if (viewModel.miscShootNumber.value  == viewModel.miscAngles.value?.minus(1)){
-                        viewModel.selectBackground(getString(R.string.app_name))
-                        dismiss()
-                    }else{
-                        viewModel.miscShootNumber.value = viewModel.miscShootNumber.value!! + 1
-                        dismiss()
-                    }
-                }
+
+        when (viewModel.categoryDetails.value?.imageType) {
+            "Exterior" -> {
+                Glide.with(requireContext())
+                    .load(uri)
+                    .diskCacheStrategy(DiskCacheStrategy.NONE)
+                    .skipMemoryCache(true)
+                    .into(binding.ivCaptured2)
+
+                if (getString(R.string.app_name) == AppConstants.KARVI)
+                    binding.ivCapturedOverlay.visibility = View.GONE
+                else
+                    setOverlay(binding.ivCaptured2,viewModel.getOverlay())
+            }
+
+            else -> {
+                binding.llImperfactions.setBackgroundColor(ContextCompat.getColor(requireContext(),R.color.white))
+
+                Glide.with(requireContext())
+                    .load(uri)
+                    .diskCacheStrategy(DiskCacheStrategy.NONE)
+                    .skipMemoryCache(true)
+                    .into(binding.iv)
+
+                binding.llBeforeAfter.visibility = View.INVISIBLE
             }
         }
 
@@ -121,9 +162,8 @@ class ConfirmReshootDialog : BaseDialogFragment<ShootViewModel, DialogConfirmRes
                 is Resource.Success -> {
                     val uri = viewModel.shootData.value?.capturedImage
 
-
                     if (viewModel.categoryDetails.value?.imageType == "Exterior"){
-                        val overlay = it.value.data[viewModel.shootNumber.value!!].display_thumbnail
+                        //val overlay = it.value.data[viewModel.shootNumber.value!!].display_thumbnail
 
                         Glide.with(requireContext())
                             .load(uri)
@@ -140,7 +180,7 @@ class ConfirmReshootDialog : BaseDialogFragment<ShootViewModel, DialogConfirmRes
                         if (getString(R.string.app_name) == AppConstants.KARVI)
                             binding.ivCapturedOverlay.visibility = View.GONE
                         else
-                            setOverlay(binding.ivCaptured2,overlay)
+                            setOverlay(binding.ivCaptured2,viewModel.getOverlay())
 
                     }else{
                         binding.llImperfactions.setBackgroundColor(ContextCompat.getColor(requireContext(),R.color.white))
@@ -160,6 +200,9 @@ class ConfirmReshootDialog : BaseDialogFragment<ShootViewModel, DialogConfirmRes
     }
 
     private fun uploadImages() {
+        viewModel.onImageConfirmed.value = viewModel.getOnImageConfirmed()
+        //viewModel.shootData.value?.meta = getMetaValue()
+
         viewLifecycleOwner.lifecycleScope.launch {
             viewModel.
             insertImage(viewModel.shootData.value!!)

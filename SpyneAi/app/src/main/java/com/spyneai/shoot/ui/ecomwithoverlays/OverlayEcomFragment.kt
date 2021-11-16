@@ -1,12 +1,12 @@
 package com.spyneai.shoot.ui.ecomwithoverlays
 
-import android.content.res.Configuration
 import android.graphics.drawable.Drawable
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.ViewTreeObserver
+import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.DataSource
@@ -16,317 +16,201 @@ import com.bumptech.glide.request.RequestListener
 import com.bumptech.glide.request.RequestOptions
 import com.bumptech.glide.request.target.Target
 import com.bumptech.glide.signature.ObjectKey
-import com.posthog.android.Properties
+import com.google.android.material.snackbar.Snackbar
 import com.spyneai.R
 import com.spyneai.base.BaseFragment
+import com.spyneai.base.OnItemClickListener
 import com.spyneai.base.network.Resource
+import com.spyneai.camera2.OverlaysResponse
 import com.spyneai.captureEvent
 import com.spyneai.captureFailureEvent
-import com.spyneai.dashboard.response.NewSubCatResponse
 import com.spyneai.dashboard.ui.handleApiError
 import com.spyneai.databinding.FragmentOverlayEcomBinding
 import com.spyneai.needs.AppConstants
 import com.spyneai.needs.Utilities
 import com.spyneai.posthog.Events
-import com.spyneai.shoot.adapter.ShootProgressAdapter
-import com.spyneai.shoot.adapters.NewSubCategoriesAdapter
+import com.spyneai.shoot.adapters.OverlaysAdapter
+import com.spyneai.shoot.data.OnOverlaySelectionListener
 import com.spyneai.shoot.data.ShootViewModel
 import com.spyneai.shoot.data.model.ShootData
-import com.spyneai.shoot.ui.ecomwithgrid.dialogs.CreateProjectEcomDialog
-import com.spyneai.shoot.ui.ecomwithgrid.dialogs.CreateSkuEcomDialog
-import com.spyneai.shoot.ui.ecomwithgrid.dialogs.ProjectTagDialog
-import com.spyneai.shoot.utils.log
+import com.spyneai.shoot.ui.dialogs.ReclickDialog
 import kotlinx.android.synthetic.main.fragment_overlays.*
 import java.util.*
 
-class     OverlayEcomFragment : BaseFragment<ShootViewModel, FragmentOverlayEcomBinding>(),
-    NewSubCategoriesAdapter.BtnClickListener {
+class OverlayEcomFragment : BaseFragment<ShootViewModel, FragmentOverlayEcomBinding>(),
+    OnOverlaySelectionListener, OnItemClickListener {
 
 
-    lateinit var capturedImageList: ArrayList<String>
+    var overlaysAdapter: OverlaysAdapter? = null
+    var snackbar: Snackbar? = null
     var position = 1
-    lateinit var subCategoriesAdapter: NewSubCategoriesAdapter
-    lateinit var progressAdapter: ShootProgressAdapter
     var pos = 0
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        if (viewModel.projectId.value == null){
-            if(Utilities.getPreference(requireContext(), AppConstants.STATUS_PROJECT_NAME).toString() =="true")
-                getProjectName()
-            else
-                initProjectDialog()
-        }
-        else {
-            if (viewModel.fromDrafts){
-                when {
-                    requireActivity().intent.getIntExtra(AppConstants.EXTERIOR_ANGLES,0) != 0 &&
-                    requireActivity().intent.getIntExtra(AppConstants.EXTERIOR_ANGLES,0)
-                            == requireActivity().intent.getIntExtra(AppConstants.EXTERIOR_SIZE,0) -> {
-
-                            }
-                    viewModel.subCatName.value != null -> {
-                        intSubcategorySelection(false)
-                        getOverlays()
-                        binding.llCapture.visibility = View.VISIBLE
-                    }
-                    else -> {
-                        intSubcategorySelection(true)
-                    }
-                }
-            }else {
-                initSkuDialog()
-            }
-            log("SKU dialog shown")
-        }
-
         //observe new image clicked
         viewModel.shootList.observe(viewLifecycleOwner, {
             try {
-                if (viewModel.showDialog && !it.isNullOrEmpty()){
-                    showImageConfirmDialog(it.get(it.size - 1))
+                if (viewModel.showConfirmReshootDialog.value == true && !it.isNullOrEmpty()) {
+                    val element = viewModel.getCurrentShoot()
+                    showImageConfirmDialog(element!!)
                 }
-            }catch (e : Exception){
+            } catch (e: Exception) {
                 e.printStackTrace()
             }
         })
 
-        viewModel.overlaysResponse.observe(viewLifecycleOwner,{ it ->
-            when(it){
+        viewModel.isSkuCreated.observe(viewLifecycleOwner, {
+            getOverlays()
+        })
+
+        observeOverlays()
+
+        viewModel.onImageConfirmed.observe(viewLifecycleOwner, {
+            if (viewModel.shootList.value != null && overlaysAdapter != null) {
+                viewModel.setSelectedItem(overlaysAdapter?.listItems!!)
+            }
+
+            try {
+                val list = overlaysAdapter?.listItems as List<OverlaysResponse.Data>
+                viewModel.allEcomOverlyasClicked = list.all {
+                    it.imageClicked
+                }
+
+            } catch (e: Exception) {
+
+            }
+        })
+
+        viewModel.notifyItemChanged.observe(viewLifecycleOwner, {
+            overlaysAdapter?.notifyItemChanged(it)
+        })
+
+        viewModel.scrollView.observe(viewLifecycleOwner, {
+            binding.rvSubcategories.scrollToPosition(it)
+        })
+    }
+
+    private fun observeOverlays() {
+        viewModel.overlaysResponse.observe(viewLifecycleOwner, { it ->
+            when (it) {
                 is Resource.Success -> {
+                    Utilities.hideProgressDialog()
+
+                    //set exterior angle value
+                    viewModel.exterirorAngles.value = it.value.data.size
+
+
+                    //update exterior angles in local DB
+                    viewModel.updateSkuExteriorAngles(
+                        viewModel.sku.value?.skuId!!,
+                        viewModel.exterirorAngles.value!!,
+                        viewModel.subCategory.value?.prod_sub_cat_id!!
+                    )
+
+                    viewModel.displayName = it.value.data[0].display_name
+                    viewModel.displayThumbanil = it.value.data[0].display_thumbnail
+
                     requireContext().captureEvent(
                         Events.GET_OVERLAYS,
-                        Properties().putValue("angles",it.value.data.size))
+                        HashMap<String, Any?>()
+                            .apply {
+                                this["angles"] = it.value.data.size
+                            }
+                    )
 
-                    if (viewModel.fromDrafts){
-                        binding.tvShoot?.text = "${requireActivity().intent.getIntExtra(AppConstants.EXTERIOR_SIZE,0).plus(1)}/${it.value.data.size}"
-                    }else {
+                    if (viewModel.fromDrafts) {
+                        binding.tvShoot?.text = "${
+                            requireActivity().intent.getIntExtra(AppConstants.EXTERIOR_SIZE, 0)
+                                .plus(1)
+                        }/${it.value.data.size}"
+                    } else {
                         binding.tvShoot?.text = "1/${it.value.data.size}"
 
                     }
 
-                    Utilities.hideProgressDialog()
-                    binding.clSubcatSelectionOverlay?.visibility = View.GONE
+                    val overlaysList = it.value.data
+                    var index = 0
+
+                    if (viewModel.shootList.value != null) {
+                        overlaysList.forEach { overlay ->
+                            val element = viewModel.shootList.value!!.firstOrNull {
+                                it.overlayId == overlay.id
+                            }
+
+                            if (element != null) {
+                                overlay.imageClicked = true
+                                overlay.imagePath = element.capturedImage
+                            }
+                        }
+
+                        val element = overlaysList.firstOrNull {
+                            !it.isSelected && !it.imageClicked
+                        }
+
+                        if (element != null) {
+                            element.isSelected = true
+                            viewModel.displayName = element.display_name
+                            viewModel.displayThumbanil = element.display_thumbnail
+
+                            index = overlaysList.indexOf(element)
+                        }
+                    } else {
+                        //set overlays
+                        overlaysList[0].isSelected = true
+                        viewModel.displayName = it.value.data[0].display_name
+                        viewModel.displayThumbanil = it.value.data[0].display_thumbnail
+                    }
+
+
+                    overlaysAdapter = OverlaysAdapter(
+                        overlaysList,
+                        this@OverlayEcomFragment,
+                        this@OverlayEcomFragment
+                    )
+
+                    binding.rvSubcategories.apply {
+                        visibility = View.VISIBLE
+                        layoutManager = LinearLayoutManager(
+                            requireContext(),
+                            LinearLayoutManager.HORIZONTAL,
+                            false
+                        )
+                        adapter = overlaysAdapter
+                    }
+
+                    binding.rvSubcategories.scrollToPosition(index)
+
+                    requireContext().captureEvent(
+                        Events.GET_OVERLAYS,
+                        HashMap<String, Any?>()
+                            .apply {
+                                this.put("angles", it.value.data.size)
+                            }
+
+                    )
+
+
                     showViews()
                 }
 
                 is Resource.Loading -> Utilities.showProgressDialog(requireContext())
 
                 is Resource.Failure -> {
-                    requireContext().captureFailureEvent(Events.GET_OVERLAYS_FAILED, Properties(),
-                        it.errorMessage!!
-                    )
-                    Utilities.hideProgressDialog()
-                    handleApiError(it) {getOverlays()}
-                }
-            }
-        })
-
-        viewModel.isSubCategoryConfirmed.observe(viewLifecycleOwner,{
-            //disable angle selection click
-            binding.tvShoot?.isClickable = false
-            if (it) binding.rvSubcategories?.visibility = View.GONE
-        })
-    }
-
-    private fun intSubcategorySelection(showDialog : Boolean) {
-        if (showDialog)
-            Utilities.showProgressDialog(requireContext())
-
-        subCategoriesAdapter = NewSubCategoriesAdapter(
-            requireContext(),
-            null,
-            pos,
-            this
-        )
-
-        if (getResources().getConfiguration().orientation === Configuration.ORIENTATION_LANDSCAPE) {
-            binding.rvSubcategories.apply {
-                this?.layoutManager = LinearLayoutManager(requireContext())
-                this?.adapter = subCategoriesAdapter
-            }
-
-        } else if (getResources().getConfiguration().orientation === Configuration.ORIENTATION_PORTRAIT) {
-            binding.rvSubcategories.apply {
-                this?.layoutManager = LinearLayoutManager(requireContext(),
-                    LinearLayoutManager.HORIZONTAL,
-                    false)
-                this?.adapter = subCategoriesAdapter
-            }
-
-        }
-
-
-        viewModel.getSubCategories(
-            Utilities.getPreference(requireContext(), AppConstants.AUTH_KEY).toString(),
-            viewModel.categoryDetails.value?.categoryId!!
-        )
-
-        viewModel.subCategoriesResponse.observe(viewLifecycleOwner, {
-            when (it) {
-                is Resource.Success -> {
-                    requireContext().captureEvent(
-                        Events.GET_SUBCATEGORIES,
-                        Properties()
-                    )
-                    Utilities.hideProgressDialog()
-                    subCategoriesAdapter.subCategoriesList =
-                        it.value.data as ArrayList<NewSubCatResponse.Data>
-                    subCategoriesAdapter.notifyDataSetChanged()
-
-                    //set default angles on sub cat response
-//                    initProgressFrames()
-
-                    if (viewModel.fromDrafts && viewModel.subCatName.value != null){
-                        binding.rvSubcategories.visibility = View.GONE
-                        viewModel.showLeveler.value = true
-                    }else {
-                        binding.clSubcatSelectionOverlay?.visibility = View.VISIBLE
-                    }
-
-                    when(viewModel.categoryDetails.value?.categoryName){
-                        "Footwear" -> binding.tvSubCategory?.text = getString(R.string.footwear_subcategory)
-                    }
-                }
-
-                is Resource.Failure -> {
                     requireContext().captureFailureEvent(
-                        Events.GET_SUBCATRGORIES_FAILED, Properties(),
+                        Events.GET_OVERLAYS_FAILED, HashMap<String, Any?>(),
                         it.errorMessage!!
                     )
                     Utilities.hideProgressDialog()
-                    handleApiError(it)
+                    handleApiError(it) { getOverlays() }
                 }
             }
         })
     }
 
-    private fun getProjectName(){
 
-        viewModel.getProjectName(Utilities.getPreference(requireContext(), AppConstants.AUTH_KEY).toString())
-
-        viewModel.getProjectNameResponse.observe(viewLifecycleOwner, {
-            when (it) {
-                is Resource.Success -> {
-
-                    Utilities.hideProgressDialog()
-
-                    viewModel.dafault_project.value = it.value.data.dafault_project
-                    viewModel.dafault_sku.value = it.value.data.dafault_sku
-                    initProjectDialog()
-                    log("project and SKU dialog shown")
-                }
-
-                is Resource.Loading -> {
-                    Utilities.showProgressDialog(requireContext())
-                }
-
-                is Resource.Failure -> {
-                    Utilities.hideProgressDialog()
-                    log("get project name failed")
-                    requireContext().captureFailureEvent(
-                        Events.CREATE_PROJECT_FAILED, Properties(),
-                        it.errorMessage!!
-                    )
-
-                    Utilities.hideProgressDialog()
-                    handleApiError(it) { getProjectName()}
-                }
-            }
-        })
-
-    }
-
-
-    private fun initProgressFrames(frames: Int) {
-
-      //  update this shoot number
-        if (viewModel.fromDrafts)
-            viewModel.shootNumber.value = requireActivity().intent.getIntExtra(AppConstants.EXTERIOR_SIZE,0)
-        else
-            viewModel.shootNumber.value = 0
-
-        progressAdapter = ShootProgressAdapter(
-            requireContext(),
-            viewModel.getShootProgressList(frames, viewModel.shootNumber.value!!))
-
-        binding.rvProgress.apply {
-            this?.layoutManager =
-                LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
-            this?.adapter = progressAdapter
-        }
-
-        viewModel.shootNumber.observe(viewLifecycleOwner, {
-
-            binding.tvShoot?.text = "${1+ viewModel.shootNumber.value!!}/"+frames
-
-            viewModel.overlaysResponse.observe(viewLifecycleOwner,{
-                when(it){
-                    is Resource.Success -> {
-                        val name = it.value.data[viewModel.shootNumber.value!!].display_name
-                        val overlay = it.value.data[viewModel.shootNumber.value!!].display_thumbnail
-
-                        val requestOptions = RequestOptions()
-                            .diskCacheStrategy(DiskCacheStrategy.ALL)
-                            .signature(ObjectKey(overlay))
-
-                        Glide.with(requireContext())
-                            .load(overlay)
-                            .addListener(object : RequestListener<Drawable> {
-                                override fun onLoadFailed(
-                                    e: GlideException?,
-                                    model: Any?,
-                                    target: Target<Drawable>?,
-                                    isFirstResource: Boolean
-                                ): Boolean {
-                                    val properties =  Properties()
-                                    properties.put("category",viewModel.categoryDetails.value?.categoryName)
-                                    properties.put("error", e?.localizedMessage)
-
-                                    requireContext().captureEvent(
-                                        Events.OVERLAY_LOAD_FIALED,
-                                        properties
-                                    )
-
-                                    return false
-                                }
-
-                                override fun onResourceReady(
-                                    resource: Drawable?,
-                                    model: Any?,
-                                    target: Target<Drawable>?,
-                                    dataSource: DataSource?,
-                                    isFirstResource: Boolean
-                                ): Boolean {
-                                    val properties =  Properties()
-                                    properties.put("category",viewModel.categoryDetails.value?.categoryName)
-
-                                    requireContext().captureEvent(
-                                        Events.OVERLAY_LOADED,
-                                        properties
-                                    )
-
-                                    getPreviewDimensions(binding.imgOverlay!!)
-                                    return false
-                                }
-
-                            })
-                            .apply(requestOptions)
-                            .into(binding.imgOverlay!!)
-
-                    }
-                    else -> { }
-                }
-            })
-
-            progressAdapter.updateList(viewModel.shootNumber.value!!)
-
-        })
-
-    }
-
-    private fun getPreviewDimensions(view : View) {
+    private fun getPreviewDimensions(view: View) {
         view.viewTreeObserver.addOnGlobalLayoutListener(object :
             ViewTreeObserver.OnGlobalLayoutListener {
             override fun onGlobalLayout() {
@@ -342,79 +226,31 @@ class     OverlayEcomFragment : BaseFragment<ShootViewModel, FragmentOverlayEcom
     }
 
 
-    private fun initSkuDialog() {
-        CreateSkuEcomDialog().show(requireFragmentManager(), "CreateSkuEcomDialog")
-        viewModel.isSkuCreated.observe(viewLifecycleOwner,{
-            if (it) {
-                intSubcategorySelection(true)
-            }
-        })
-    }
-
-    private fun initProjectDialog() {
-        ProjectTagDialog().show(requireFragmentManager(), "ProjectTagDialog")
-        viewModel.isSkuCreated.observe(viewLifecycleOwner,{
-            if (it) {
-                intSubcategorySelection(true)
-            }
-        })
-    }
-
     private fun showImageConfirmDialog(shootData: ShootData) {
         viewModel.shootData.value = shootData
         ConfirmReshootPortraitDialog().show(requireFragmentManager(), "ConfirmReshootDialog")
     }
 
-    override fun onBtnClick(position: Int, data: NewSubCatResponse.Data) {
-        if (pos != position || !subCategoriesAdapter.selectionEnabled){
-            binding.llCapture.visibility = View.VISIBLE
-            viewModel.subCategory.value = data
-            pos = position
-
-            subCategoriesAdapter.selectionEnabled = true
-            subCategoriesAdapter.notifyDataSetChanged()
-
-            viewModel.subCatName.value = data.sub_cat_name
-            viewModel.showLeveler.value = true
-
-            getOverlays()
-
-        }
-    }
 
     private fun getOverlays() {
-        var frames = when(viewModel.subCatName.value){
-            "Men Formal" -> 6
-            "Men Casual" -> 5
-            "Women Boots" -> 5
-            "Women Flats" -> 6
-            "Women Heels" -> 6
-            "Women Sandals" -> 4
-            "Women Slippers" -> 5
-            "Women Causal shoes" -> 6
-            else -> 6
-        }
-
-        viewModel.exterirorAngles.value = frames
-
-        initProgressFrames(frames)
-
         viewModel.subCategory.value?.let {
             viewModel.getOverlays(
-                Utilities.getPreference(requireContext(),AppConstants.AUTH_KEY).toString(),
-               viewModel.categoryDetails.value?.categoryId!!,
+                Utilities.getPreference(requireContext(), AppConstants.AUTH_KEY).toString(),
+                viewModel.categoryDetails.value?.categoryId!!,
                 it.prod_sub_cat_id!!,
-                frames.toString()
+                viewModel.exterirorAngles.value.toString()
             )
 
             requireContext().captureEvent(
                 Events.GET_OVERLAYS_INTIATED,
-                Properties().putValue("angles",frames)
-                    .putValue("prod_sub_cat_id", it.prod_sub_cat_id!!))
-
+                HashMap<String, Any?>()
+                    .apply {
+                        this.put("angles", viewModel.exterirorAngles.value.toString())
+                        this.put("prod_sub_cat_id", it.prod_sub_cat_id!!)
+                    }
+            )
         }
     }
-
 
 
     private fun showViews() {
@@ -425,6 +261,9 @@ class     OverlayEcomFragment : BaseFragment<ShootViewModel, FragmentOverlayEcom
             imgOverlay?.visibility = View.VISIBLE
             tvSkuName?.text = viewModel.sku.value?.skuName
         }
+
+        if (viewModel.fromDrafts)
+            viewModel.showLeveler.value = true
     }
 
     override fun getViewModel() = ShootViewModel::class.java
@@ -433,5 +272,128 @@ class     OverlayEcomFragment : BaseFragment<ShootViewModel, FragmentOverlayEcom
         inflater: LayoutInflater,
         container: ViewGroup?
     ) = FragmentOverlayEcomBinding.inflate(inflater, container, false)
+
+    override fun onOverlaySelected(view: View, position: Int, data: Any?) {
+        viewModel.currentShoot = position
+
+        when (data) {
+            is OverlaysResponse.Data -> {
+                viewModel.displayName = data.display_name
+                viewModel.displayThumbanil = data.display_thumbnail
+                viewModel.overlayId = data.id
+
+                if (getString(R.string.app_name) != AppConstants.KARVI)
+                    loadOverlay(data.angle_name, data.display_thumbnail)
+
+
+
+                binding.tvShoot?.text =
+                    position.plus(1).toString() + "/" + viewModel.exterirorAngles.value.toString()
+
+            }
+
+        }
+    }
+
+    override fun onItemClick(view: View, position: Int, data: Any?) {
+        viewModel.currentShoot = position
+
+        when (data) {
+            is OverlaysResponse.Data -> {
+                if (data.imageClicked) {
+                    ReclickDialog().show(requireActivity().supportFragmentManager, "ReclickDialog")
+                }
+
+
+                val list = overlaysAdapter?.listItems as List<OverlaysResponse.Data>
+
+                val element = list.firstOrNull {
+                    it.isSelected
+                }
+
+                if (element != null && data != element) {
+                    data.isSelected = true
+                    element.isSelected = false
+                    overlaysAdapter?.notifyItemChanged(position)
+                    overlaysAdapter?.notifyItemChanged(list.indexOf(element))
+                    binding.rvSubcategories.scrollToPosition(position)
+                }
+            }
+        }
+    }
+
+    private fun loadOverlay(name: String, overlay: String) {
+
+        val requestOptions = RequestOptions()
+            .diskCacheStrategy(DiskCacheStrategy.ALL)
+            .signature(ObjectKey(overlay))
+
+        Glide.with(requireContext())
+            .load(overlay)
+            .addListener(object : RequestListener<Drawable> {
+                override fun onLoadFailed(
+                    e: GlideException?,
+                    model: Any?,
+                    target: Target<Drawable>?,
+                    isFirstResource: Boolean
+                ): Boolean {
+                    val properties = HashMap<String, Any?>()
+                    properties["name"] = name
+                    properties["error"] = e?.localizedMessage
+                    properties["category"] = viewModel.categoryDetails.value?.categoryName
+
+                    requireContext().captureEvent(
+                        Events.OVERLAY_LOAD_FIALED,
+                        properties
+                    )
+
+                    snackbar = Snackbar.make(
+                        binding.root,
+                        "Overlay Failed to load",
+                        Snackbar.LENGTH_INDEFINITE
+                    )
+                        .setAction("Retry") {
+                            loadOverlay(name, overlay)
+                        }
+                        .setActionTextColor(
+                            ContextCompat.getColor(
+                                requireContext(),
+                                R.color.primary
+                            )
+                        )
+
+                    snackbar?.show()
+                    return false
+                }
+
+                override fun onResourceReady(
+                    resource: Drawable?,
+                    model: Any?,
+                    target: Target<Drawable>?,
+                    dataSource: DataSource?,
+                    isFirstResource: Boolean
+                ): Boolean {
+
+                    if (snackbar != null)
+                        snackbar?.dismiss()
+
+                    val properties = HashMap<String, Any?>()
+                    properties["name"] = name
+                    properties["category"] = viewModel.categoryDetails.value?.categoryName
+
+                    requireContext().captureEvent(
+                        Events.OVERLAY_LOADED,
+                        properties
+                    )
+
+                    getPreviewDimensions(binding.imgOverlay!!)
+                    return false
+                }
+
+            })
+            .apply(requestOptions)
+            .into(binding.imgOverlay!!)
+
+    }
 
 }

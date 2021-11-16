@@ -16,7 +16,7 @@ import androidx.core.content.ContextCompat
 import androidx.lifecycle.lifecycleScope
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.engine.DiskCacheStrategy
-import com.posthog.android.Properties
+
 import com.spyneai.base.BaseDialogFragment
 import com.spyneai.captureEvent
 import com.spyneai.databinding.ConfirmReshootEcomDialogBinding
@@ -52,12 +52,10 @@ class ConfirmReshootEcomDialog :
             .skipMemoryCache(true)
             .into(binding.ivCapturedImage)
 
-        log("Image set to dialog: " + uri)
-
         binding.btReshootImage.setOnClickListener {
             viewModel.reshootCapturedImage.value = true
             viewModel.isCameraButtonClickable = true
-            val properties = Properties()
+            val properties = HashMap<String,Any?>()
             properties.apply {
                 this["sku_id"] = viewModel.shootData.value?.sku_id
                 this["project_id"] = viewModel.shootData.value?.project_id
@@ -69,17 +67,21 @@ class ConfirmReshootEcomDialog :
             )
 
             //remove last item from shoot list
-            viewModel.shootList.value?.removeAt(viewModel.shootList.value!!.size - 1)
+            //viewModel.shootList.value?.removeAt(viewModel.shootList.value!!.size - 1)
 
+            if (!viewModel.isReclick)
+                viewModel.shootList.value?.removeAt(viewModel.currentShoot)
+
+            val s = ""
             dismiss()
         }
 
         binding.btConfirmImage.setOnClickListener {
-            viewModel.confirmCapturedImage.value = true
-            viewModel.shootNumber.value = viewModel.shootNumber.value?.plus(1)
+            viewModel.onImageConfirmed.value = true
+            //viewModel.shootNumber.value = viewModel.shootNumber.value?.plus(1)
 
             viewModel.isStopCaptureClickable = true
-            val properties = Properties()
+            val properties = HashMap<String,Any?>()
             properties.apply {
                 this["sku_id"] = viewModel.shootData.value?.sku_id
                 this["project_id"] = viewModel.shootData.value?.project_id

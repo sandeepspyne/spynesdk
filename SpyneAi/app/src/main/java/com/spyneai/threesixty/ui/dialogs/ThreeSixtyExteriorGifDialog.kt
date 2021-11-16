@@ -1,28 +1,13 @@
 package com.spyneai.threesixty.ui.dialogs
 
-import android.net.Uri
-import android.os.Build
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.databinding.DataBindingUtil
-import androidx.fragment.app.DialogFragment
 import com.bumptech.glide.Glide
-import com.google.android.exoplayer2.C
-import com.google.android.exoplayer2.MediaItem
-import com.google.android.exoplayer2.Player
-import com.google.android.exoplayer2.SimpleExoPlayer
-import com.google.android.exoplayer2.audio.AudioAttributes
-import com.google.android.exoplayer2.ui.AspectRatioFrameLayout
-import com.google.android.exoplayer2.ui.PlayerView
-import com.google.android.exoplayer2.upstream.RawResourceDataSource
 import com.spyneai.R
 import com.spyneai.base.BaseDialogFragment
-import com.spyneai.databinding.DialogAngleSelectionBinding
 import com.spyneai.databinding.DialogThreeSixtyExteriorGifBinding
-import com.spyneai.shoot.data.ShootViewModel
 import com.spyneai.threesixty.data.ThreeSixtyViewModel
 
 

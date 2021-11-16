@@ -3,12 +3,10 @@ package com.spyneai.shoot.workmanager
 import android.content.Context
 import androidx.work.CoroutineWorker
 import androidx.work.WorkerParameters
-import com.posthog.android.Properties
 import com.spyneai.base.network.Resource
 import com.spyneai.captureEvent
 import com.spyneai.captureFailureEvent
 import com.spyneai.posthog.Events
-import com.spyneai.shoot.data.ProcessRepository
 import com.spyneai.shoot.data.ShootRepository
 
 class ProjectStateUpdateWorker (private val appContext: Context, workerParams: WorkerParameters) :
@@ -52,7 +50,7 @@ class ProjectStateUpdateWorker (private val appContext: Context, workerParams: W
 
 
     private fun captureEvent(eventName : String,isSuccess : Boolean, error: String?) {
-        val properties = Properties()
+        val properties = HashMap<String,Any?>()
         properties.apply {
             this["project_id"] = inputData.getString("project_id")
             this["state"] = "Draft to Ongoing"

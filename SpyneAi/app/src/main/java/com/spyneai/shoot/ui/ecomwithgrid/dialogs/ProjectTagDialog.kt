@@ -21,7 +21,6 @@ import com.google.android.material.chip.Chip
 import com.journeyapps.barcodescanner.ScanContract
 import com.journeyapps.barcodescanner.ScanIntentResult
 import com.journeyapps.barcodescanner.ScanOptions
-import com.posthog.android.Properties
 import com.spyneai.R
 import com.spyneai.base.BaseDialogFragment
 import com.spyneai.base.network.Resource
@@ -137,8 +136,8 @@ class ProjectTagDialog : BaseDialogFragment<ShootViewModel, ProjectTagDialogBind
             if (data!![LayoutHolder.categoryPosition].dynamic_layout.project_dialog.isNullOrEmpty()) {
                 return
             }
-        }catch (e: Exception){
-          return
+        } catch (e: Exception) {
+            return
         }
 
         val layout = data!![LayoutHolder.categoryPosition].dynamic_layout.project_dialog
@@ -349,10 +348,13 @@ class ProjectTagDialog : BaseDialogFragment<ShootViewModel, ProjectTagDialogBind
                 is Resource.Success -> {
                     requireContext().captureEvent(
                         Events.CREATE_PROJECT,
-                        Properties().putValue(
-                            "project_name",
-                            removeWhiteSpace(binding.etProjectName.text.toString())
-                        )
+                        HashMap<String, Any?>()
+                            .apply {
+                                this.put(
+                                    "project_name",
+                                    removeWhiteSpace(binding.etProjectName.text.toString())
+                                )
+                            }
                     )
 
                     //save project to local db
@@ -364,22 +366,16 @@ class ProjectTagDialog : BaseDialogFragment<ShootViewModel, ProjectTagDialogBind
                     project.projectId = it.value.project_id
                     viewModel.insertProject(project)
 
-                    //notify project created
-                    viewModel.isProjectCreated.value = true
+
                     val sku = Sku()
-                    log("project id created")
-                    log("project id: " + it.value.project_id)
                     sku.projectId = it.value.project_id
                     viewModel.projectId.value = it.value.project_id
-                    Utilities.savePrefrence(
-                        requireContext(),
-                        AppConstants.PROJECT_ID,
-                        it.value.project_id
-                    )
                     sku.skuName = removeWhiteSpace(binding.etSkuName.text.toString())
                     viewModel.sku.value = sku
 
-                    log("create sku started")
+                    //notify project created
+                    viewModel.isProjectCreated.value = true
+
                     createSku(
                         it.value.project_id,
                         removeWhiteSpace(binding.etSkuName.text.toString()),
@@ -390,7 +386,7 @@ class ProjectTagDialog : BaseDialogFragment<ShootViewModel, ProjectTagDialogBind
                 is Resource.Failure -> {
                     log("create project id failed")
                     requireContext().captureFailureEvent(
-                        Events.CREATE_PROJECT_FAILED, Properties(),
+                        Events.CREATE_PROJECT_FAILED, HashMap<String, Any?>(),
                         it.errorMessage!!
                     )
 
@@ -422,9 +418,13 @@ class ProjectTagDialog : BaseDialogFragment<ShootViewModel, ProjectTagDialogBind
                     Utilities.hideProgressDialog()
                     requireContext().captureEvent(
                         Events.CREATE_SKU,
-                        Properties().putValue("sku_name", viewModel.sku.value?.skuName.toString())
-                            .putValue("project_id", viewModel.sku.value?.projectId)
-                            .putValue("prod_sub_cat_id", "")
+                        HashMap<String, Any?>()
+                            .apply {
+                                this.put("sku_name", viewModel.sku.value?.skuName.toString())
+                                this.put("project_id", viewModel.sku.value?.projectId)
+                                this.put("prod_sub_cat_id", "")
+                            }
+
                     )
 
                     //notify project created
@@ -439,13 +439,14 @@ class ProjectTagDialog : BaseDialogFragment<ShootViewModel, ProjectTagDialogBind
                     sku?.subcategoryId = viewModel.subCategory.value?.prod_sub_cat_id
                     sku?.exteriorAngles = viewModel.exterirorAngles.value
 
-                    log("sku id created")
-                    log("sku id: " + it.value.sku_id)
+
                     sku?.skuName = removeWhiteSpace(binding.etSkuName.text.toString())
                     viewModel.sku.value = sku
+
+                    viewModel.isSubCategoryConfirmed.value = true
                     viewModel.isSkuCreated.value = true
-                    //viewModel.isSubCategoryConfirmed.value = true
                     viewModel.showLeveler.value = true
+                    viewModel.getSubCategories.value = true
 
                     //add sku to local database
                     viewModel.insertSku(sku!!)
@@ -458,7 +459,7 @@ class ProjectTagDialog : BaseDialogFragment<ShootViewModel, ProjectTagDialogBind
                     log("create sku id failed")
                     Utilities.hideProgressDialog()
                     requireContext().captureFailureEvent(
-                        Events.CREATE_SKU_FAILED, Properties(),
+                        Events.CREATE_SKU_FAILED, HashMap<String, Any?>(),
                         it.errorMessage!!
                     )
 
@@ -481,26 +482,15 @@ class ProjectTagDialog : BaseDialogFragment<ShootViewModel, ProjectTagDialogBind
         if (result.contents == null) {
             Toast.makeText(requireContext(), "Cancelled", Toast.LENGTH_LONG).show()
         } else {
-
             binding.etSkuName.setText(result.contents)
-
-//            Toast.makeText(
-//                requireContext(),
-//                "Scanned: " + result.contents,
-//                Toast.LENGTH_LONG
-//            ).show()
-
         }
     }
-
-
 
     private fun requiredError(editText: EditText, fieldName: String) {
         editText.error = "please enter " + fieldName
     }
 
     private fun removeWhiteSpace(toString: String) = toString.replace("\\s".toRegex(), "")
-
 
     override fun onResume() {
         super.onResume()

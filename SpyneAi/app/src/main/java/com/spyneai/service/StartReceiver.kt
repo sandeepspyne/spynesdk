@@ -5,13 +5,11 @@ import android.content.Context
 import android.content.Intent
 import android.os.Build
 import androidx.core.content.ContextCompat
-import com.posthog.android.Properties
 import com.spyneai.captureEvent
 import com.spyneai.needs.AppConstants
 import com.spyneai.needs.Utilities
 import com.spyneai.posthog.Events
 import com.spyneai.shoot.data.ShootLocalRepository
-import com.spyneai.shoot.data.model.UploadImageResponse
 
 class StartReceiver : BroadcastReceiver() {
 
@@ -37,7 +35,7 @@ class StartReceiver : BroadcastReceiver() {
                     context.startService(serviceIntent)
                 }
 
-                val properties = Properties()
+                val properties = HashMap<String,Any?>()
                     .apply {
                         put("service_state","Started")
                         put("email",

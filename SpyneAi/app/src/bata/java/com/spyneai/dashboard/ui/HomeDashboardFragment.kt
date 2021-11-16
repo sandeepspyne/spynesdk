@@ -185,7 +185,7 @@ class HomeDashboardFragment :
                             refreshData = false
                         } else {
                             requireContext().captureFailureEvent(
-                                Events.GET_ONGOING_ORDERS_FAILED, Properties(),
+                                Events.GET_ONGOING_ORDERS_FAILED, HashMap<String,Any?>(),
                                 it.errorMessage!!
                             )
                             handleApiError(it)
@@ -214,7 +214,7 @@ class HomeDashboardFragment :
                 when (it) {
                     is Resource.Success -> {
 
-                        requireContext().captureEvent(Events.GET_COMPLETED_ORDERS, Properties())
+                        requireContext().captureEvent(Events.GET_COMPLETED_ORDERS, HashMap<String,Any?>())
                         completedProjectList = ArrayList()
                         if (it.value.data.project_data.isNullOrEmpty()) {
                             binding.rlCompletedShoots.visibility = View.GONE
@@ -255,7 +255,7 @@ class HomeDashboardFragment :
                             refreshData = false
                         } else {
                             requireContext().captureFailureEvent(
-                                Events.GET_COMPLETED_ORDERS_FAILED, Properties(),
+                                Events.GET_COMPLETED_ORDERS_FAILED, HashMap<String,Any?>(),
                                 it.errorMessage!!
                             )
                             handleApiError(it)
@@ -275,7 +275,7 @@ class HomeDashboardFragment :
         viewModel.categoriesResponse.observe(viewLifecycleOwner, Observer {
             when (it) {
                 is Resource.Success -> {
-                    requireContext().captureEvent(Events.GOT_CATEGORIES, Properties())
+                    requireContext().captureEvent(Events.GOT_CATEGORIES, HashMap<String,Any?>())
 
                     binding.shimmerCategories.stopShimmer()
                     binding.shimmerCategories.visibility = View.GONE
@@ -386,7 +386,7 @@ class HomeDashboardFragment :
                 }
                 is Resource.Failure -> {
                     requireContext().captureFailureEvent(
-                        Events.GET_CATEGORIES_FAILED, Properties(),
+                        Events.GET_CATEGORIES_FAILED, HashMap<String,Any?>(),
                         it.errorMessage!!
                     )
                     handleApiError(it)

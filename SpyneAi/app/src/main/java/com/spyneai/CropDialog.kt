@@ -8,7 +8,6 @@ import android.view.ViewGroup
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.engine.DiskCacheStrategy
 
-import com.posthog.android.Properties
 import com.spyneai.base.BaseDialogFragment
 import com.spyneai.databinding.FragmentCropDialogBinding
 import com.spyneai.posthog.Events
@@ -38,16 +37,16 @@ class CropDialog : BaseDialogFragment<ShootViewModel, FragmentCropDialogBinding>
         binding.llReshoot.setOnClickListener {
             viewModel.reshootCapturedImage.value = true
             viewModel.isCameraButtonClickable = true
-            val properties = Properties()
-            properties.apply {
-                this["sku_id"] = viewModel.shootData.value?.sku_id
-                this["project_id"] = viewModel.shootData.value?.project_id
-                this["image_type"] = viewModel.shootData.value?.image_category
-            }
-            requireContext().captureEvent(
-                Events.RESHOOT,
-                properties
-            )
+//            val properties = Properties()
+//            properties.apply {
+//                this["sku_id"] = viewModel.shootData.value?.sku_id
+//                this["project_id"] = viewModel.shootData.value?.project_id
+//                this["image_type"] = viewModel.shootData.value?.image_category
+//            }
+//            requireContext().captureEvent(
+//                Events.RESHOOT,
+//                properties
+//            )
 
             //remove last item from shoot list
             viewModel.shootList.value?.removeAt(viewModel.shootList.value!!.size - 1)

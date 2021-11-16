@@ -4,14 +4,12 @@ import android.content.Context
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.ImageView
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.github.developer__.BeforeAfterSlider
 import com.spyneai.R
 import com.spyneai.adapter.CategoriesDashboardAdapter
 import com.spyneai.dashboard.data.model.SliderModel
-import org.aspectj.lang.annotation.Before
 
 class SliderAdapter(
     val context: Context,

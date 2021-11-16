@@ -8,7 +8,13 @@ data class ShootData(
     @SerializedName("sku_id") val sku_id: String,
     @SerializedName("image_category") val image_category: String,
     @SerializedName("auth_key") val auth_key: String,
+    var overlayId : Int = 1,
     val sequence: Int = 0,
-    val angle: Int = 0,
-    var meta: String = ""
-    )
+    var angle: Int = 0,
+    var name : String = "",
+    var debugData : String = "",
+    var meta: String = "",
+    var isSelected : Boolean = false,
+    var imageClicked : Boolean = false,
+    var imagePath : String = ""
+)

@@ -7,8 +7,6 @@ import android.content.Intent
 import android.content.IntentFilter
 import android.graphics.Color
 import android.os.*
-import android.widget.Toast
-import com.posthog.android.Properties
 import com.spyneai.BaseApplication
 import com.spyneai.R
 import com.spyneai.captureEvent
@@ -17,7 +15,10 @@ import com.spyneai.isInternetActive
 import com.spyneai.needs.AppConstants
 import com.spyneai.needs.Utilities
 import com.spyneai.posthog.Events
-import com.spyneai.service.*
+import com.spyneai.service.Actions
+import com.spyneai.service.ServiceState
+import com.spyneai.service.log
+import com.spyneai.service.setServiceState
 import com.spyneai.shoot.data.FilesRepository
 import com.spyneai.shoot.data.ShootRepository
 import com.spyneai.shoot.data.model.ImageFile
@@ -48,7 +49,7 @@ class ManualUploadService: Service(), ManualImageUploader.Listener {
         super.onCreate()
         setServiceState(this, ServiceState.STARTED)
 
-        val properties = Properties()
+        val properties = HashMap<String,Any?>()
             .apply {
                 put("service_state","Started")
                 put("email", Utilities.getPreference(BaseApplication.getContext(), AppConstants.EMAIL_ID).toString())

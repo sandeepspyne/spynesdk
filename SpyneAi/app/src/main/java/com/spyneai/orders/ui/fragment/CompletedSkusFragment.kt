@@ -8,7 +8,6 @@ import android.view.ViewGroup
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.posthog.android.Properties
 import com.spyneai.base.BaseFragment
 import com.spyneai.base.network.Resource
 import com.spyneai.captureFailureEvent
@@ -70,8 +69,10 @@ class CompletedSkusFragment : BaseFragment<MyOrdersViewModel, FragmentCompletedS
                             binding.tvTotalSku.text = it.value.data.total_skus.toString()
 
                             skuList.clear()
+                            var projectId = ""
                             for (i in 0..it.value.data.project_data.size){
                                 if (i == viewModel.position.value){
+                                    projectId =   it.value.data.project_data[i].project_id
                                     skuList.addAll(it.value.data.project_data[i].sku)
                                     binding.tvProjectName.text = it.value.data.project_data[i].project_name
                                 }
@@ -79,7 +80,8 @@ class CompletedSkusFragment : BaseFragment<MyOrdersViewModel, FragmentCompletedS
                             }
 
                             skusAdapter = SkusAdapter(requireContext(),
-                                viewModel, skuList
+                                viewModel, skuList,
+                              projectId
                             )
 
                             val layoutManager: RecyclerView.LayoutManager = LinearLayoutManager(requireContext(), LinearLayoutManager.VERTICAL, false)
@@ -99,7 +101,7 @@ class CompletedSkusFragment : BaseFragment<MyOrdersViewModel, FragmentCompletedS
                             binding.rvSkus.visibility = View.GONE
                         }else{
                             requireContext().captureFailureEvent(
-                                Events.GET_COMPLETED_ORDERS_FAILED, Properties(),
+                                Events.GET_COMPLETED_ORDERS_FAILED, HashMap<String,Any?>(),
                                 it.errorMessage!!
                             )
                             handleApiError(it)

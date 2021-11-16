@@ -3,7 +3,6 @@ package com.spyneai.processedimages.ui
 import android.view.View
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
-import com.spyneai.OngoingTest
 import com.spyneai.R
 import com.spyneai.base.GenericAdapter
 import com.spyneai.base.OnItemClickListener

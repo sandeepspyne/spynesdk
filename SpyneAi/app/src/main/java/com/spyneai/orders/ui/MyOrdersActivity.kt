@@ -1,10 +1,9 @@
 package com.spyneai.orders.ui
 
 import android.os.Bundle
-import android.util.Log
-import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.spyneai.R
+import com.spyneai.orders.ui.fragment.MyOrdersFragment
 
 
 class MyOrdersActivity : AppCompatActivity() {
@@ -17,7 +16,7 @@ class MyOrdersActivity : AppCompatActivity() {
 
 
             supportFragmentManager.beginTransaction()
-            .add(R.id.flContainer,MyOrdersFragment())
+            .add(R.id.flContainer, MyOrdersFragment())
             .commit()
 
     }

@@ -1,23 +1,16 @@
 package com.spyneai.adapter
 
 import android.content.Context
-import android.graphics.Color
-import android.graphics.drawable.GradientDrawable
-import android.media.Image
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.LinearLayout
-import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.spyneai.R
-import com.spyneai.model.beforeafter.Data
-import com.spyneai.needs.AppConstants
-import kotlinx.android.synthetic.main.activity_show_gif.*
 
 public class ShowReplacedImagesInteriorAdapter(
         val context: Context,

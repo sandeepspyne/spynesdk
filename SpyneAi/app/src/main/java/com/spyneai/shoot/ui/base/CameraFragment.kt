@@ -1,18 +1,12 @@
 import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.ContentValues
-import android.content.ContentValues.TAG
 import android.content.Context
 import android.content.pm.ActivityInfo
-import android.graphics.Bitmap
-import android.graphics.BitmapFactory
-import android.graphics.Matrix
-import android.graphics.PorterDuff
 import android.hardware.Sensor
 import android.hardware.SensorEvent
 import android.hardware.SensorEventListener
 import android.hardware.SensorManager
-import android.media.ExifInterface
 import android.media.MediaActionSound
 import android.os.*
 import android.provider.MediaStore
@@ -25,7 +19,6 @@ import android.util.Log
 import android.util.Size
 import android.view.*
 import android.view.Surface.ROTATION_90
-import android.view.animation.AccelerateInterpolator
 import android.widget.*
 import androidx.camera.core.*
 import androidx.camera.lifecycle.ProcessCameraProvider
@@ -33,28 +26,21 @@ import androidx.core.content.ContextCompat
 import androidx.core.net.toFile
 import com.hbisoft.pickit.PickiT
 import com.hbisoft.pickit.PickiTCallbacks
-import com.posthog.android.Properties
 import com.spyneai.*
 import com.spyneai.R
 import com.spyneai.base.BaseFragment
-import com.spyneai.base.network.Resource
 import com.spyneai.camera2.ShootDimensions
-import com.spyneai.dashboard.ui.handleApiError
 import com.spyneai.databinding.FragmentCameraBinding
 import com.spyneai.needs.AppConstants
 import com.spyneai.needs.Utilities
 import com.spyneai.posthog.Events
 import com.spyneai.shoot.data.ShootViewModel
 import com.spyneai.shoot.data.model.ShootData
-import com.spyneai.shoot.data.model.Sku
-import com.spyneai.shoot.ui.dialogs.SkipShootDialog
 import com.spyneai.shoot.utils.log
 import com.spyneai.shoot.utils.shoot
 import kotlinx.android.synthetic.main.activity_credit_plans.*
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.launch
-import java.io.*
+import org.json.JSONObject
+import java.io.File
 import java.util.*
 import java.util.concurrent.ExecutionException
 import java.util.concurrent.ExecutorService
@@ -69,8 +55,6 @@ import kotlin.math.roundToInt
 class CameraFragment : BaseFragment<ShootViewModel, FragmentCameraBinding>(), PickiTCallbacks,
     SensorEventListener {
     private var imageCapture: ImageCapture? = null
-
-    var rotate: Int = 0
 
     private var imageAnalyzer: ImageAnalysis? = null
 
@@ -99,9 +83,9 @@ class CameraFragment : BaseFragment<ShootViewModel, FragmentCameraBinding>(), Pi
     private var pitch = 0.0
     var roll = 0.0
     var azimuth = 0.0
-    private var centerPosition = 0
-    private var topConstraint = 0
-    private var bottomConstraint = 0
+//    private var centerPosition = 0
+//    private var topConstraint = 0
+//    private var bottomConstraint = 0
 
     private var tiltUpperBound = -100
     private var tiltLowerBound = -80
@@ -119,13 +103,13 @@ class CameraFragment : BaseFragment<ShootViewModel, FragmentCameraBinding>(), Pi
     private var cameraControl: CameraControl? = null
     private var cameraInfo: CameraInfo? = null
     private var handler: Handler? = null
-    private var isGyroOnCorrectAngle = false
 
     private var filename = ""
 
     private var cameraAngle = 45
 
     var gravity = FloatArray(3)
+    val TAG = "Camera Fragment"
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -160,50 +144,38 @@ class CameraFragment : BaseFragment<ShootViewModel, FragmentCameraBinding>(), Pi
         pickIt = PickiT(requireContext(), this, requireActivity())
 
         viewModel.startInteriorShots.observe(viewLifecycleOwner, {
-
-            if (it) binding.llSkip?.visibility = View.VISIBLE
+            if (it){
+                binding.tvSkipShoot?.text = getString(R.string.miscshoots)
+                binding.llSkip?.visibility = View.VISIBLE
+            }
         })
 
         viewModel.startMiscShots.observe(viewLifecycleOwner, {
-            if (it) binding.llSkip?.visibility = View.VISIBLE
+            if (it) {
+                if (getString(R.string.app_name) == AppConstants.OLA_CABS){
+                    binding.tvSkipShoot?.text = getString(R.string.three_sixty_int)
+                }else{
+                    binding.tvSkipShoot?.text = getString(R.string.end_shoot_karvi)
+                }
+                binding.llSkip?.visibility = View.VISIBLE
+            }
+
         })
 
         viewModel.showLeveler.observe(viewLifecycleOwner, {
             if (it && isSensorAvaliable) {
-                if (viewModel.categoryDetails.value?.categoryName == "Footwear" ||
-                    viewModel.categoryDetails.value?.categoryName == "E-Commerce" ||
-                    viewModel.categoryDetails.value?.categoryName == "Photo Box"
-                )
-                    binding.tvLevelIndicator.visibility = View.GONE
-
-                binding.flLevelIndicator.visibility = View.VISIBLE
-
-                getPreviewDimensions(binding.ivGryroRing!!, 1)
-                getPreviewDimensions(binding.tvCenter!!, 2)
+                binding.flLevelIndicator.start(viewModel.categoryDetails.value?.categoryName!!)
             }
         })
 
         viewModel.hideLeveler.observe(viewLifecycleOwner, {
             if (it) {
                 binding.flLevelIndicator.visibility = View.GONE
-
-                if (viewModel.categoryDetails.value?.categoryName != "Automobiles"
-                    && viewModel.categoryDetails.value?.categoryName != "Bikes"
-                ) {
-                    binding.apply {
-                        tvAngleValue?.visibility = View.GONE
-                        tvAngleRed?.visibility = View.GONE
-                        lottieUpArrow?.visibility = View.GONE
-                        lottieDownArrow?.visibility = View.GONE
-                        tvUpcomingAngle1?.visibility = View.GONE
-                        tvUpcomingAngle2?.visibility = View.GONE
-                    }
-                }
             }
         })
 
         if (getString(R.string.app_name) == AppConstants.KARVI) {
-            binding.tvSkipShoot!!.setTextColor(
+            binding.tvSkipShoot?.setTextColor(
                 ContextCompat.getColor(
                     requireContext(),
                     R.color.secondary
@@ -215,61 +187,12 @@ class CameraFragment : BaseFragment<ShootViewModel, FragmentCameraBinding>(), Pi
             );
         }
 
-        if (getString(R.string.app_name) == AppConstants.KARVI) {
-            binding.tvSkipShoot!!.setTextColor(
-                ContextCompat.getColor(
-                    requireContext(),
-                    R.color.secondary
-                )
-            )
-            binding.ivSkip?.setColorFilter(
-                ContextCompat.getColor(requireContext(), R.color.secondary),
-                PorterDuff.Mode.SRC_IN
-            )
+        binding.cameraCaptureButton.setOnClickListener {
+            onCaptureClick()
         }
 
-
-
-
-
-
-
         binding.tvSkipShoot?.setOnClickListener {
-            when (getString(R.string.app_name)) {
-                AppConstants.KARVI -> {
-                    SkipShootDialog().show(
-                        requireActivity().supportFragmentManager,
-                        "SkipShootDialog"
-                    )
-                }
-                else -> {
-                    when (viewModel.categoryDetails.value?.imageType) {
-                        "Interior" -> {
-                            if (viewModel.interiorShootNumber.value == viewModel.interiorAngles.value?.minus(
-                                    1
-                                )
-                            ) {
-                                viewModel.checkMiscShootStatus(getString(R.string.app_name))
-                            } else {
-                                viewModel.interiorShootNumber.value =
-                                    viewModel.interiorShootNumber.value!! + 1
-                            }
-                        }
-
-                        "Focus Shoot" -> {
-                            if (viewModel.miscShootNumber.value == viewModel.miscAngles.value?.minus(
-                                    1
-                                )
-                            ) {
-                                viewModel.selectBackground(getString(R.string.app_name))
-                            } else {
-                                viewModel.miscShootNumber.value =
-                                    viewModel.miscShootNumber.value!! + 1
-                            }
-                        }
-                    }
-                }
-            }
+            viewModel.skipImage(getString(R.string.app_name))
         }
 
         viewModel.onVolumeKeyPressed.observe(viewLifecycleOwner, {
@@ -277,8 +200,6 @@ class CameraFragment : BaseFragment<ShootViewModel, FragmentCameraBinding>(), Pi
                 "Automobiles", "Footwear" -> {
                     if (viewModel.subCategory.value?.prod_sub_cat_id != null)
                         onCaptureClick()
-                    else {
-                    }
                 }
 
                 "E-Commerce", "Photo Box" -> {
@@ -324,131 +245,20 @@ class CameraFragment : BaseFragment<ShootViewModel, FragmentCameraBinding>(), Pi
         super.onDestroy()
     }
 
-    override fun onActivityCreated(savedInstanceState: Bundle?) {
-        super.onActivityCreated(savedInstanceState)
-
-        shoot("onActivityCreated called(overlay fragment)")
-        binding.cameraCaptureButton.setOnClickListener {
-            onCaptureClick()
-        }
-    }
-
     private fun onCaptureClick() {
-        when (getString(R.string.app_name)) {
-            AppConstants.KARVI,
-            AppConstants.OLA_CABS,
-            AppConstants.CARS24,
-            AppConstants.CARS24_INDIA,
-            AppConstants.SWEEP,
-            AppConstants.TRUSTED_CARS,
-            AppConstants.TRAVO_PHOTOS,
-            AppConstants.SELL_ANY_CAR,
-            AppConstants.YALLA_MOTOS,
-            AppConstants.AUTO_FOTO -> {
-                if (viewModel.shootList.value == null
-                    && !requireActivity().intent.getBooleanExtra(AppConstants.SKU_CREATED, false)
-                ) {
-                    if (binding.flLevelIndicator.visibility == View.VISIBLE) {
-                        if (isGyroOnCorrectAngle) {
-                            getProjectDetails()
-                        } else {
-                            showGryroToast()
-                        }
-                    } else {
-                        getProjectDetails()
-                    }
-                } else {
-                    if (binding.flLevelIndicator.visibility == View.VISIBLE) {
-                        if (isGyroOnCorrectAngle) {
-                            captureImage()
-                        } else {
-                            showGryroToast()
-                        }
-                    } else {
-                        captureImage()
-                    }
-                }
-            }
-            AppConstants.FLIPKART,
-            AppConstants.UDAAN,
-            AppConstants.LAL_10,
-            AppConstants.AMAZON,
-            AppConstants.SWIGGY,
-            AppConstants.SWIGGYINSTAMART,
-            AppConstants.BATA,
-            AppConstants.EBAY,
-            AppConstants.FLIPKART_GROCERY -> {
-                if (binding.flLevelIndicator.visibility == View.VISIBLE) {
-                    if (isGyroOnCorrectAngle) {
-                        captureImage()
-                    } else {
-                        showGryroToast()
-                    }
-                } else {
-                    captureImage()
-                }
-            }
-            AppConstants.SPYNE_AI -> {
-                if (viewModel.shootList.value == null
-                    && !requireActivity().intent.getBooleanExtra(AppConstants.SKU_CREATED, false)
-                ) {
-                    if (viewModel.categoryDetails.value?.categoryName == "Automobiles" ||
-                        viewModel.categoryDetails.value?.categoryName == "Bikes"
-                    ) {
-                        if (binding.flLevelIndicator.visibility == View.VISIBLE) {
-                            if (isGyroOnCorrectAngle) {
-                                getProjectDetails()
-                            } else {
-                                showGryroToast()
-                            }
-                        } else {
-                            getProjectDetails()
-                        }
-                    } else {
-                        if (binding.flLevelIndicator.visibility == View.VISIBLE) {
-                            if (isGyroOnCorrectAngle) {
-                                captureImage()
-                            } else {
-                                showGryroToast()
-                            }
-                        } else {
-                            captureImage()
-                        }
-                    }
-
-                } else {
-                    if (binding.flLevelIndicator.visibility == View.VISIBLE) {
-                        if (isGyroOnCorrectAngle) {
-                            captureImage()
-                        } else {
-                            showGryroToast()
-                        }
-                    } else {
-                        captureImage()
-                    }
-                }
-
-            }
-            else -> {
-                if (isGyroOnCorrectAngle) {
-                    if (viewModel.shootList.value == null
-                        && !requireActivity().intent.getBooleanExtra(
-                            AppConstants.SKU_CREATED,
-                            false
-                        )
-                    ) {
-                        getProjectDetails()
-                    } else {
-                        captureImage()
-                    }
-                } else {
-                    showGryroToast()
-                }
-            }
-        }
+        captureImage()
+//        if (binding.flLevelIndicator.visibility == View.VISIBLE){
+//            if (binding.flLevelIndicator.isGyroOnCorrectAngle){
+//                captureImage()
+//        }else{
+//            showGryroToast()
+//        }
+//        }else{
+//            captureImage()
+//        }
     }
 
-    private fun showGryroToast() {
+    private fun showGryroToast(){
         val text = getString(R.string.level_gryometer)
         val centeredText: Spannable = SpannableString(text)
         centeredText.setSpan(
@@ -460,154 +270,8 @@ class CameraFragment : BaseFragment<ShootViewModel, FragmentCameraBinding>(), Pi
         Toast.makeText(requireContext(), centeredText, Toast.LENGTH_LONG).show()
     }
 
-
-    private fun getProjectDetails() {
-        val createProjectRes = (viewModel.createProjectRes.value as Resource.Success).value
-
-        if (viewModel.fromVideo) {
-            updateSku(
-                createProjectRes.project_id,
-                requireActivity().intent.getStringExtra(AppConstants.SKU_ID)!!,
-                requireActivity().intent.getStringExtra(AppConstants.SKU_NAME)!!,
-                viewModel.subCategory.value?.prod_sub_cat_id!!
-            )
-        } else {
-            createSku(
-                createProjectRes.project_id,
-                viewModel.subCategory.value?.prod_sub_cat_id!!
-            )
-        }
-    }
-
-    private fun updateSku(
-        projectId: String,
-        skuId: String,
-        skuName: String,
-        prod_sub_cat_id: String
-    ) {
-        Utilities.showProgressDialog(requireContext())
-
-        viewModel.isCameraButtonClickable = false
-
-        viewModel.updateVideoSku(
-            requireActivity().intent.getStringExtra(AppConstants.SKU_ID)!!,
-            viewModel.subCategory.value?.prod_sub_cat_id!!,
-            viewModel.exterirorAngles.value!!
-        )
-
-        viewModel.updateVideoSkuRes.observe(viewLifecycleOwner, {
-            when (it) {
-                is Resource.Success -> {
-                    BaseApplication.getContext().captureEvent(
-                        Events.VIDEO_SKU_UPDATED,
-                        Properties().putValue("sku_name", viewModel.sku.value?.skuName.toString())
-                            .putValue("project_id", projectId)
-                            .putValue("prod_sub_cat_id", prod_sub_cat_id)
-                            .putValue("angles", viewModel.exterirorAngles.value!!)
-                    )
-
-                    val sku = Sku()
-                    sku?.projectId = projectId
-                    sku?.skuId = skuId
-                    sku?.skuName = skuName
-                    sku?.totalImages = viewModel.exterirorAngles.value
-                    sku?.subcategoryName = viewModel.subCategory.value?.sub_cat_name
-                    sku?.subcategoryId = prod_sub_cat_id
-                    sku?.exteriorAngles = viewModel.exterirorAngles.value
-
-                    viewModel.sku.value = sku
-                    viewModel.isSubCategoryConfirmed.value = true
-
-                    //add sku to local database
-                    viewModel.updateVideoSkuLocally(sku!!)
-
-                    viewModel.isCameraButtonClickable = true
-                    captureImage()
-                }
-
-
-                is Resource.Failure -> {
-                    viewModel.isCameraButtonClickable = true
-                    BaseApplication.getContext().captureFailureEvent(
-                        Events.VIDEO_SKU_UPDATE_FAILED, Properties(),
-                        it.errorMessage!!
-                    )
-                    Utilities.hideProgressDialog()
-                    handleApiError(it) {
-                        updateSku(
-                            projectId,
-                            skuId,
-                            skuName,
-                            prod_sub_cat_id
-                        )
-                    }
-                }
-            }
-        })
-    }
-
-    private fun createSku(projectId: String, prod_sub_cat_id: String) {
-        Utilities.showProgressDialog(requireContext())
-        viewModel.isCameraButtonClickable = false
-
-        viewModel.createSku(
-            Utilities.getPreference(BaseApplication.getContext(), AppConstants.AUTH_KEY).toString(),
-            projectId,
-            requireActivity().intent.getStringExtra(AppConstants.CATEGORY_ID).toString(),
-            prod_sub_cat_id!!,
-            viewModel.sku.value?.skuName.toString(),
-            viewModel.exterirorAngles.value!!
-        )
-
-        viewModel.createSkuRes.observe(viewLifecycleOwner, {
-            when (it) {
-                is Resource.Success -> {
-                    BaseApplication.getContext().captureEvent(
-                        Events.CREATE_SKU,
-                        Properties().putValue("sku_name", viewModel.sku.value?.skuName.toString())
-                            .putValue("project_id", projectId)
-                            .putValue("prod_sub_cat_id", prod_sub_cat_id)
-                            .putValue("angles", viewModel.exterirorAngles.value!!)
-                    )
-
-                    val sku = viewModel.sku.value
-                    sku?.skuId = it.value.sku_id
-                    sku?.projectId = projectId
-                    sku?.createdOn = System.currentTimeMillis()
-                    sku?.totalImages = viewModel.exterirorAngles.value
-                    sku?.categoryName = viewModel.categoryDetails.value?.categoryName
-                    sku?.categoryId = viewModel.categoryDetails.value?.categoryId
-                    sku?.subcategoryName = viewModel.subCategory.value?.sub_cat_name
-                    sku?.subcategoryId = prod_sub_cat_id
-                    sku?.exteriorAngles = viewModel.exterirorAngles.value
-
-                    viewModel.sku.value = sku
-                    viewModel.isSubCategoryConfirmed.value = true
-
-                    //add sku to local database
-                    viewModel.insertSku(sku!!)
-
-                    viewModel.isCameraButtonClickable = true
-                    captureImage()
-                }
-
-
-                is Resource.Failure -> {
-                    viewModel.isCameraButtonClickable = true
-                    BaseApplication.getContext().captureFailureEvent(
-                        Events.CREATE_SKU_FAILED, Properties(),
-                        it.errorMessage!!
-                    )
-                    Utilities.hideProgressDialog()
-                    handleApiError(it) { createSku(projectId, prod_sub_cat_id) }
-                }
-            }
-        })
-    }
-
     private fun captureImage() {
         //ThreeSixtyInteriorHintDialog().show(requireActivity().supportFragmentManager,"ThreeSixtyInteriorHintDialog")
-
         if (viewModel.isCameraButtonClickable) {
             takePhoto()
             log("shoot image button clicked")
@@ -633,9 +297,11 @@ class CameraFragment : BaseFragment<ShootViewModel, FragmentCameraBinding>(), Pi
             try {
                 cameraProvider = cameraProviderFuture.get()
             } catch (e: InterruptedException) {
+                Log.d(TAG, "startCamera: "+e.message)
                 Toast.makeText(requireContext(), "Error starting camera", Toast.LENGTH_SHORT).show()
                 return@addListener
             } catch (e: ExecutionException) {
+                Log.d(TAG, "startCamera: "+e.message)
                 Toast.makeText(requireContext(), "Error starting camera", Toast.LENGTH_SHORT).show()
                 return@addListener
             }
@@ -646,7 +312,7 @@ class CameraFragment : BaseFragment<ShootViewModel, FragmentCameraBinding>(), Pi
             var height = 0
             var width = 0
             val displayMetrics = DisplayMetrics()
-            if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.R) {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
                 if (requireContext() != null) {
                     requireContext().display?.getRealMetrics(displayMetrics)
                     height = displayMetrics.heightPixels
@@ -663,7 +329,6 @@ class CameraFragment : BaseFragment<ShootViewModel, FragmentCameraBinding>(), Pi
             val aspectRatio = aspectRatio(width, height)
             // The display rotation
             //val rotation = binding.viewFinder.display.rotation
-
 
             val localCameraProvider = cameraProvider
                 ?: throw IllegalStateException("Camera initialization failed.")
@@ -706,8 +371,6 @@ class CameraFragment : BaseFragment<ShootViewModel, FragmentCameraBinding>(), Pi
                 }
             }
 
-
-
             imageCapture = when (viewModel.categoryDetails.value?.categoryName) {
                 "Automobiles", "Bikes" -> {
                     if (getString(R.string.app_name) == AppConstants.KARVI) {
@@ -725,23 +388,12 @@ class CameraFragment : BaseFragment<ShootViewModel, FragmentCameraBinding>(), Pi
                     }
                 }
                 "E-Commerce", "Food & Beverages", "Footwear", "Photo Box" -> {
-
-                    if (viewModel.categoryDetails.value?.imageType == "Info") {
-                        ImageCapture.Builder()
-                            .setCaptureMode(ImageCapture.CAPTURE_MODE_MAXIMIZE_QUALITY)
-                            .setFlashMode(flashMode)
-                            .setTargetAspectRatio(AspectRatio.RATIO_4_3)
-                            .setTargetRotation(ROTATION_90)
-                            .build()
-
-                    } else {
-                        ImageCapture.Builder()
-                            .setCaptureMode(ImageCapture.CAPTURE_MODE_MAXIMIZE_QUALITY)
-                            .setFlashMode(flashMode)
-                            .setTargetAspectRatio(AspectRatio.RATIO_4_3)
-//                            .setTargetRotation(ROTATION_90)
-                            .build()
-                    }
+                    ImageCapture.Builder()
+                        .setCaptureMode(ImageCapture.CAPTURE_MODE_MAXIMIZE_QUALITY)
+                        .setFlashMode(flashMode)
+                        .setTargetAspectRatio(AspectRatio.RATIO_4_3)
+                        .setTargetRotation(ROTATION_90)
+                        .build()
                 }
                 else -> {
                     ImageCapture.Builder()
@@ -775,35 +427,18 @@ class CameraFragment : BaseFragment<ShootViewModel, FragmentCameraBinding>(), Pi
 
                 cameraControl = camera.cameraControl
 
-
-
                 cameraInfo = camera.cameraInfo
-
-//                val rotation = cameraInfo!!.sensorRotationDegrees
-//                Toast.makeText(requireContext(), "rotation- "+rotation, Toast.LENGTH_SHORT).show()
 
                 var currentZoomRatio = cameraInfo?.zoomState?.value?.zoomRatio ?: 0F
                 cameraControl?.setZoomRatio(currentZoomRatio * 1.3F)
-//                when (viewModel.categoryDetails.value?.categoryName) {
-//                    "E-Commerce" -> {
-//                        if (currentZoomRatio == 1.0F)
-//                            cameraControl?.setZoomRatio(currentZoomRatio * 1.5F)
-//                    }
-//                    "Food & Beverages" -> {
-//                        if (currentZoomRatio == 1.0F)
-//                            cameraControl?.setZoomRatio(currentZoomRatio * 1.2F)
-//                    }
-//                }
-
                 if (viewModel.shootDimensions.value == null ||
                     viewModel.shootDimensions.value?.previewHeight == 0
                 ) {
                     getPreviewDimensions(binding.viewFinder!!, 0)
-                    getPreviewDimensions(binding.llCapture!!, 3)
                 }
             } catch (exc: Exception) {
                 Log.e(TAG, "Use case binding failed", exc)
-                val properties = Properties()
+                val properties = HashMap<String,Any?>()
                 properties["error"] = exc?.localizedMessage
                 properties["category"] = viewModel.categoryDetails.value?.categoryName
 
@@ -860,136 +495,15 @@ class CameraFragment : BaseFragment<ShootViewModel, FragmentCameraBinding>(), Pi
                 "${Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DCIM)}/Spyne/"
             }
         }
-        filename = viewModel.sku.value?.skuName + "_" + viewModel.sku.value?.skuId + "_"
 
-        if (viewModel.fromDrafts) {
-            filename += when (viewModel.categoryDetails.value?.imageType) {
-                "Exterior" -> {
-                    viewModel.categoryDetails.value?.imageType!! + "_" + viewModel.shootNumber.value?.plus(
-                        1
-                    )
-                }
-                "Interior" -> {
-                    val list = viewModel.shootList.value
+        filename = viewModel.getFileName(
+            requireActivity().intent.getIntExtra(AppConstants.INTERIOR_SIZE, 0),
+            requireActivity().intent.getIntExtra(AppConstants.MISC_SIZE, 0)
+        )
 
-                    val interiorList = list?.filter {
-                        it.image_category == "Interior"
-                    }
+        val s = ""
 
-                    if (interiorList == null) {
-                        viewModel.categoryDetails.value?.imageType!! + "_" +
-                                requireActivity().intent.getIntExtra(AppConstants.INTERIOR_SIZE, 0)
-                                    .plus(1)
-                    } else {
-                        viewModel.categoryDetails.value?.imageType!! + "_" +
-                                requireActivity().intent.getIntExtra(AppConstants.INTERIOR_SIZE, 0)
-                                    .plus(interiorList.size.plus(1))
-                    }
-
-                }
-                "Focus Shoot" -> {
-                    val list = viewModel.shootList.value
-
-                    val miscList = list?.filter {
-                        it.image_category == "Focus Shoot"
-                    }
-
-                    if (miscList == null) {
-                        "Miscellaneous_" +
-                                requireActivity().intent.getIntExtra(AppConstants.MISC_SIZE, 0)
-                                    .plus(1)
-                    } else {
-                        "Miscellaneous_" +
-                                requireActivity().intent.getIntExtra(AppConstants.MISC_SIZE, 0)
-                                    .plus(miscList.size.plus(1))
-                    }
-                }
-                "Footwear" -> {
-                    viewModel.categoryDetails.value?.imageType!! + "_" + viewModel.shootNumber.value?.plus(
-                        1
-                    )
-                }
-                "Info" -> {
-                    viewModel.categoryDetails.value?.imageType!! + "_" + viewModel.shootNumber.value?.plus(
-                        1
-                    )
-                }
-                "Food & Beverages" -> {
-                    viewModel.categoryDetails.value?.imageType!! + "_" + viewModel.shootNumber.value?.plus(
-                        1
-                    )
-                }
-                "Ecom" -> {
-                    viewModel.categoryDetails.value?.imageType!! + "_" + viewModel.shootNumber.value?.plus(
-                        1
-                    )
-                }
-                else -> {
-                    System.currentTimeMillis().toString()
-                }
-            }
-        } else {
-            filename += if (viewModel.shootList.value == null)
-                viewModel.categoryDetails.value?.imageType + "_1"
-            else {
-                val size = viewModel.shootList.value!!.size.plus(1)
-                val list = viewModel.shootList.value
-
-                when (viewModel.categoryDetails.value?.imageType) {
-                    "Exterior" -> {
-                        viewModel.categoryDetails.value?.imageType!! + "_" + size
-                    }
-                    "Interior" -> {
-
-                        val interiorList = list?.filter {
-                            it.image_category == "Interior"
-                        }
-
-                        if (interiorList == null) {
-                            viewModel.categoryDetails.value?.imageType!! + "_1"
-                        } else {
-                            viewModel.categoryDetails.value?.imageType!! + "_" + interiorList.size.plus(
-                                1
-                            )
-                        }
-                    }
-                    "Info" -> {
-                        viewModel.categoryDetails.value?.imageType!! + "_" + viewModel.shootNumber.value?.plus(
-                            1
-                        )
-                    }
-                    "Focus Shoot" -> {
-                        val miscList = list?.filter {
-                            it.image_category == "Focus Shoot"
-                        }
-
-                        if (miscList == null) {
-                            "Miscellaneous" + "_1"
-                        } else {
-                            "Miscellaneous_" + miscList.size.plus(1)
-                        }
-                    }
-                    "Footwear" -> {
-                        viewModel.categoryDetails.value?.imageType!! + "_" + viewModel.shootNumber.value?.plus(
-                            1
-                        )
-                    }
-                    "Food" -> {
-                        viewModel.categoryDetails.value?.imageType!! + "_" + viewModel.shootNumber.value?.plus(
-                            1
-                        )
-                    }
-                    "Ecom" -> {
-                        viewModel.categoryDetails.value?.imageType!! + "_" + viewModel.shootNumber.value?.plus(
-                            1
-                        )
-                    }
-                    else -> {
-                        System.currentTimeMillis().toString()
-                    }
-                }
-            }
-        }
+        Log.d(TAG, "takePhoto: "+filename)
 
         // Options fot the output image file
         val outputOptions = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
@@ -1034,7 +548,7 @@ class CameraFragment : BaseFragment<ShootViewModel, FragmentCameraBinding>(), Pi
 
                     BaseApplication.getContext().captureFailureEvent(
                         Events.IMAGE_CAPRURE_FAILED,
-                        Properties(),
+                        HashMap<String,Any?>(),
                         exc.localizedMessage
                     )
                 }
@@ -1107,588 +621,19 @@ class CameraFragment : BaseFragment<ShootViewModel, FragmentCameraBinding>(), Pi
         roll = Math.toDegrees(orientationAngles[2].toDouble())
         azimuth = (orientationAngles[0] * 180 / Math.PI.toFloat()).toDouble()
 
-
-//        binding.tvPitchRoll!!.text = pitch.roundToInt().toString()+ ","+ roll.roundToInt().toString()
-
-
-        when (getString(R.string.app_name)) {
-            AppConstants.KARVI -> {
-                if ((roll >= -95 && roll <= -85) && (pitch >= -5 && pitch <= 5)) {
-                    gyroMeterOnLevel(true)
-
-                } else {
-                    gyroMeterOffLevel()
-
-                    if (movearrow)
-                        moveArrow(roll + 90)
-
-                    if (rotatedarrow) {
-                        if (pitch > 0) {
-                            rotateArrow(pitch.minus(0).roundToInt())
-                        } else {
-                            rotateArrow(pitch.plus(0).roundToInt())
-                        }
-                    }
-                }
-            }
-            AppConstants.SWIGGY -> {
-
-                // angle name
-                if (pitch.roundToInt() == 0 || (pitch.roundToInt() <= 3 && pitch.roundToInt() >= -3))
-                    angle = 0
-
-                if (pitch.roundToInt() <= -82 && pitch.roundToInt() >= -88)
-                    angle = 90
-
-                if ((pitch.roundToInt() <= -40 && pitch.roundToInt() >= -45) && abs(roll.roundToInt()) < 100)
-                    angle = 45
-
-                if (binding.flLevelIndicator.visibility == View.VISIBLE) {
-                    when (angle) {
-                    0 -> {
-                        binding.tvAngleValue!!.visibility = View.VISIBLE
-                        binding.tvAngleValue!!.text = "0" + "\u00B0"
-                        binding.groupOverlay!!.visibility = View.GONE
-                        binding.ivBottomRight.visibility = View.VISIBLE
-                        binding.ivBottomLeft.visibility = View.VISIBLE
-                        binding.ivBottomRightSwiggy!!.visibility = View.GONE
-                        binding.ivBottomLeftSwiggy!!.visibility = View.GONE
-                    }
-                    45 -> {
-                        binding.tvAngleValue!!.visibility = View.VISIBLE
-                        binding.tvAngleValue!!.text = "45" + "\u00B0"
-                        binding.groupOverlay!!.visibility = View.GONE
-                        binding.ivBottomRight.visibility = View.VISIBLE
-                        binding.ivBottomLeft.visibility = View.VISIBLE
-                        binding.ivBottomRightSwiggy!!.visibility = View.GONE
-                        binding.ivBottomLeftSwiggy!!.visibility = View.GONE
-                    }
-                    90 -> {
-                        binding.tvAngleValue!!.visibility = View.VISIBLE
-                        binding.tvAngleValue!!.text = "90" + "\u00B0"
-                        binding.groupOverlay!!.visibility = View.VISIBLE
-                        binding.ivBottomRightSwiggy!!.visibility = View.VISIBLE
-                        binding.ivBottomLeftSwiggy!!.visibility = View.VISIBLE
-                        binding.ivBottomRight.visibility = View.GONE
-                        binding.ivBottomLeft.visibility = View.GONE
-
-                    }
-                    else -> {
-                        binding.tvAngleValue!!.visibility = View.INVISIBLE
-                        binding.groupOverlay!!.visibility = View.GONE
-                        binding.ivBottomRight.visibility = View.VISIBLE
-                        binding.ivBottomLeft.visibility = View.VISIBLE
-                        binding.ivBottomRightSwiggy!!.visibility = View.GONE
-                        binding.ivBottomLeftSwiggy!!.visibility = View.GONE
-                    }
-                }
-               }
-
-                //hide moving line
-
-
-                if (pitch.roundToInt() == 0 || (pitch.roundToInt() <= -0 && pitch.roundToInt() >= -3))
-                    binding.tvLevelIndicator.visibility = View.GONE
-                else
-                    binding.tvLevelIndicator.visibility = View.VISIBLE
-
-
-
-
-                if (((pitch.roundToInt() == 0 || (pitch.roundToInt() <= -0 && pitch.roundToInt() >= -3))
-                            && (abs(roll.roundToInt()) <= 3 && abs(roll.roundToInt()) >= -3)) ||
-                    (pitch.roundToInt() <= -82 && pitch.roundToInt() >= -88) ||
-                    (pitch.roundToInt() <= -40 && pitch.roundToInt() >= -45)
-                ) {
-                    binding.lottieDownArrow!!.visibility = View.INVISIBLE
-                    binding.lottieUpArrow!!.visibility = View.INVISIBLE
-                    binding.tvUpcomingAngle1!!.visibility = View.INVISIBLE
-                    binding.tvUpcomingAngle2!!.visibility = View.INVISIBLE
-                    binding.tvAngleRed!!.visibility = View.INVISIBLE
-                    isGyroOnCorrectAngle = true
-
-
-                    //angle 90
-                    if (pitch.roundToInt() == 0 || (pitch.roundToInt() <= -0 && pitch.roundToInt() >= -3)) {
-                        cameraAngle = 0
-                        gyroMeterOnLevel(false)
-                    }
-                    //angle 45
-                    else if (pitch.roundToInt() <= -40 && pitch.roundToInt() >= -45) {
-                        cameraAngle = 45
-                        gyroMeterOnLevel(false)
-                    } else {
-                        cameraAngle = 90
-                        gyroMeterOnLevel(true)
-                    }
-
-                } else {
-                    if (binding.flLevelIndicator.visibility == View.VISIBLE) {
-                        binding.lottieDownArrow!!.visibility = View.VISIBLE
-                        binding.lottieUpArrow!!.visibility = View.VISIBLE
-                        binding.tvAngleRed!!.visibility = View.VISIBLE
-                    }
-
-                    binding.tvAngleValue!!.visibility = View.INVISIBLE
-                    binding.groupOverlay!!.visibility = View.GONE
-                    binding.ivBottomRightSwiggy!!.visibility = View.GONE
-                    binding.ivBottomLeftSwiggy!!.visibility = View.GONE
-                    binding.ivBottomRight.visibility = View.VISIBLE
-                    binding.ivBottomLeft.visibility = View.VISIBLE
-                    binding.tvAngleValue!!.visibility = View.INVISIBLE
-                    isGyroOnCorrectAngle = false
-
-                    val gyroAngle = (-pitch.roundToInt())
-
-                    binding.tvAngleRed!!.text = gyroAngle.toString() + "\u00B0"
-                    gyroMeterOffLevel()
-
-                    if (movearrow) {
-                        if (abs(roll.roundToInt()) < 100) {
-                            moveArrow((pitch + 85).unaryMinus())
-                        } else {
-                            moveArrow(pitch + 85)
-                        }
-                    }
-
-                    if (orientationAngles[2].roundToInt() == 1 || orientationAngles[2].roundToInt() == -1) {
-                        if (orientationAngles[2].roundToInt() == 1) {
-                            rotateArrow((pitch + 85).unaryMinus().roundToInt())
-                        } else {
-                            rotateArrow((pitch + 85).roundToInt())
-                        }
-                    }
-                }
-            }
-            AppConstants.EBAY, AppConstants.FLIPKART, AppConstants.UDAAN, AppConstants.AMAZON -> {
-
-                // angle name
-                if (pitch.roundToInt() == 0 || (pitch.roundToInt() <= -0 && pitch.roundToInt() >= -3))
-                    angle = 0
-
-                if (pitch.roundToInt() <= -82 && pitch.roundToInt() >= -88)
-                    angle = 90
-
-                if ((pitch.roundToInt() <= -40 && pitch.roundToInt() >= -45) && abs(roll.roundToInt()) < 100)
-                    angle = 45
-
-                if (binding.flLevelIndicator.visibility == View.VISIBLE) {
-                    when (angle) {
-                        0 -> {
-                            binding.tvAngleValue!!.visibility = View.VISIBLE
-                            binding.tvAngleValue!!.text = "0" + "\u00B0"
-                        }
-                        45 -> {
-                            binding.tvAngleValue!!.visibility = View.VISIBLE
-                            binding.tvAngleValue!!.text = "45" + "\u00B0"
-                        }
-                        90 -> {
-                            binding.tvAngleValue!!.visibility = View.VISIBLE
-                            binding.tvAngleValue!!.text = "90" + "\u00B0"
-                        }
-                        else -> {
-                            binding.tvAngleValue!!.visibility = View.INVISIBLE
-                        }
-                    }
-                }
-
-                //hide moving line
-
-
-                if (pitch.roundToInt() == 0 || (pitch.roundToInt() <= -0 && pitch.roundToInt() >= -3))
-                    binding.tvLevelIndicator.visibility = View.GONE
-                else
-                    binding.tvLevelIndicator.visibility = View.VISIBLE
-
-
-
-
-                if (((pitch.roundToInt() == 0 || (pitch.roundToInt() <= -0 && pitch.roundToInt() >= -3))
-                            && (abs(roll.roundToInt()) <= 3 && abs(roll.roundToInt()) >= -3)) ||
-                    (pitch.roundToInt() <= -82 && pitch.roundToInt() >= -88) ||
-                    (pitch.roundToInt() <= -40 && pitch.roundToInt() >= -45)
-                ) {
-                    binding.lottieDownArrow!!.visibility = View.INVISIBLE
-                    binding.lottieUpArrow!!.visibility = View.INVISIBLE
-                    binding.tvUpcomingAngle1!!.visibility = View.INVISIBLE
-                    binding.tvUpcomingAngle2!!.visibility = View.INVISIBLE
-                    binding.tvAngleRed!!.visibility = View.INVISIBLE
-                    isGyroOnCorrectAngle = true
-
-
-                    //angle 90
-                    if (pitch.roundToInt() == 0 || (pitch.roundToInt() <= -0 && pitch.roundToInt() >= -3)) {
-                        cameraAngle = 0
-                        gyroMeterOnLevel(false)
-                    }
-                    //angle 45
-                    else if (pitch.roundToInt() <= -40 && pitch.roundToInt() >= -45) {
-                        cameraAngle = 45
-                        gyroMeterOnLevel(false)
-                    } else {
-                        cameraAngle = 90
-                        gyroMeterOnLevel(true)
-                    }
-
-                } else {
-                    if (binding.flLevelIndicator.visibility == View.VISIBLE) {
-                        binding.lottieDownArrow!!.visibility = View.VISIBLE
-                        binding.lottieUpArrow!!.visibility = View.VISIBLE
-                        binding.tvAngleRed!!.visibility = View.VISIBLE
-                    }
-                    binding.tvAngleValue!!.visibility = View.INVISIBLE
-                    binding.tvAngleValue!!.visibility = View.INVISIBLE
-                    isGyroOnCorrectAngle = false
-                    val gyroAngle = (-pitch.roundToInt())
-
-                    binding.tvAngleRed!!.text = gyroAngle.toString() + "\u00B0"
-                    gyroMeterOffLevel()
-
-                    if (movearrow) {
-                        if (abs(roll.roundToInt()) < 100) {
-                            moveArrow((pitch + 85).unaryMinus())
-                        } else {
-                            moveArrow(pitch + 85)
-                        }
-                    }
-
-                    if (orientationAngles[2].roundToInt() == 1 || orientationAngles[2].roundToInt() == -1) {
-                        if (orientationAngles[2].roundToInt() == 1) {
-                            rotateArrow((pitch + 85).unaryMinus().roundToInt())
-                        } else {
-                            rotateArrow((pitch + 85).roundToInt())
-                        }
-                    }
-                }
-            }
-            AppConstants.SPYNE_AI, AppConstants.SELL_ANY_CAR -> {
-                when (viewModel.categoryDetails.value?.categoryName) {
-                    "Automobiles", "Bikes" -> {
-                        if ((roll >= -100 && roll <= -80) && (pitch >= -5 && pitch <= 5)) {
-                            gyroMeterOnLevel(true)
-                        } else {
-                            gyroMeterOffLevel()
-
-                            if (movearrow)
-                                moveArrow(roll + 90)
-
-                            if (rotatedarrow) {
-                                if (pitch > 0) {
-                                    rotateArrow(pitch.minus(0).roundToInt())
-                                } else {
-                                    rotateArrow(pitch.plus(0).roundToInt())
-                                }
-                            }
-                        }
-
-
-                    }
-                    "Food & Beverages", "E-Commerce", "Photo Box" -> {
-
-                        // angle name
-                        if (pitch.roundToInt() == 0 || (pitch.roundToInt() <= -0 && pitch.roundToInt() >= -3))
-                            angle = 0
-
-                        if (pitch.roundToInt() <= -82 && pitch.roundToInt() >= -88)
-                            angle = 90
-
-                        if ((pitch.roundToInt() <= -40 && pitch.roundToInt() >= -45) && abs(roll.roundToInt()) < 100)
-                            angle = 45
-
-                        if (binding.flLevelIndicator.visibility == View.VISIBLE) {
-                            when (angle) {
-                                0 -> {
-                                    binding.tvAngleValue!!.visibility = View.VISIBLE
-                                    binding.tvAngleValue!!.text = "0" + "\u00B0"
-                                    binding.groupOverlay!!.visibility = View.GONE
-                                }
-                                45 -> {
-                                    binding.tvAngleValue!!.visibility = View.VISIBLE
-                                    binding.tvAngleValue!!.text = "45" + "\u00B0"
-                                    binding.groupOverlay!!.visibility = View.GONE
-                                }
-                                90 -> {
-                                    binding.tvAngleValue!!.visibility = View.VISIBLE
-                                    binding.tvAngleValue!!.text = "90" + "\u00B0"
-                                    binding.groupOverlay!!.visibility = View.GONE
-                                }
-                                else -> {
-                                    binding.tvAngleValue!!.visibility = View.INVISIBLE
-                                    binding.groupOverlay!!.visibility = View.GONE
-                                }
-                            }
-                        }
-
-                        //hide moving line
-
-
-                        if (pitch.roundToInt() == 0 || (pitch.roundToInt() <= -0 && pitch.roundToInt() >= -3))
-                            binding.tvLevelIndicator.visibility = View.GONE
-                        else
-                            binding.tvLevelIndicator.visibility = View.VISIBLE
-
-
-
-
-                        if (((pitch.roundToInt() == 0 || (pitch.roundToInt() <= 4 && pitch.roundToInt() >= -4))
-                                    && (abs(roll.roundToInt()) <= 4 && abs(roll.roundToInt()) >= -4)) ||
-                            (pitch.roundToInt() <= -82 && pitch.roundToInt() >= -88) ||
-                            (pitch.roundToInt() <= -40 && pitch.roundToInt() >= -45)
-                        ) {
-                            binding.lottieDownArrow!!.visibility = View.INVISIBLE
-                            binding.lottieUpArrow!!.visibility = View.INVISIBLE
-                            binding.tvUpcomingAngle1!!.visibility = View.INVISIBLE
-                            binding.tvUpcomingAngle2!!.visibility = View.INVISIBLE
-                            binding.tvAngleRed!!.visibility = View.INVISIBLE
-                            isGyroOnCorrectAngle = true
-
-
-                            //angle 90
-                            if (pitch.roundToInt() == 0 || (pitch.roundToInt() <= -0 && pitch.roundToInt() >= -3)) {
-                                cameraAngle = 0
-                                gyroMeterOnLevel(false)
-                            }
-                            //angle 45
-                            else if (pitch.roundToInt() <= -40 && pitch.roundToInt() >= -45) {
-                                cameraAngle = 45
-                                gyroMeterOnLevel(false)
-                            } else {
-                                cameraAngle = 90
-                                gyroMeterOnLevel(true)
-                            }
-
-                        } else {
-                            if (binding.flLevelIndicator.visibility == View.VISIBLE) {
-                                binding.lottieDownArrow!!.visibility = View.VISIBLE
-                                binding.lottieUpArrow!!.visibility = View.VISIBLE
-                                binding.tvAngleRed!!.visibility = View.VISIBLE
-                            }
-
-                            binding.tvAngleValue!!.visibility = View.INVISIBLE
-                            binding.groupOverlay!!.visibility = View.GONE
-                            binding.tvAngleValue!!.visibility = View.INVISIBLE
-                            isGyroOnCorrectAngle = false
-                            val gyroAngle = (-pitch.roundToInt())
-
-                            binding.tvAngleRed!!.text = gyroAngle.toString() + "\u00B0"
-                            gyroMeterOffLevel()
-
-                            if (movearrow) {
-                                if (abs(roll.roundToInt()) < 100) {
-                                    moveArrow((pitch + 85).unaryMinus())
-                                } else {
-                                    moveArrow(pitch + 85)
-                                }
-                            }
-
-                            if (orientationAngles[2].roundToInt() == 1 || orientationAngles[2].roundToInt() == -1) {
-                                if (orientationAngles[2].roundToInt() == 1) {
-                                    rotateArrow((pitch + 85).unaryMinus().roundToInt())
-                                } else {
-                                    rotateArrow((pitch + 85).roundToInt())
-                                }
-                            }
-                        }
-                    }
-
-                    else -> {
-                        //hide moving line
-                        if (pitch.roundToInt() == 0 || (pitch.roundToInt() <= -0 && pitch.roundToInt() >= -3))
-                            binding.tvLevelIndicator.visibility = View.GONE
-                        else
-                            binding.tvLevelIndicator.visibility = View.VISIBLE
-
-                        if (((pitch.roundToInt() == 0 || (pitch.roundToInt() <= -0 && pitch.roundToInt() >= -3))
-                                    && (abs(roll.roundToInt()) <= 3 && abs(roll.roundToInt()) >= -3)) ||
-                            (pitch.roundToInt() <= -82 && pitch.roundToInt() >= -88) ||
-                            (pitch.roundToInt() <= -40 && pitch.roundToInt() >= -45)
-                        ) {
-                            if (pitch.roundToInt() == 0 || (pitch.roundToInt() <= -0 && pitch.roundToInt() >= -3))
-                                gyroMeterOnLevel(false)
-                            else if (pitch.roundToInt() <= -40 && pitch.roundToInt() >= -45)
-                                gyroMeterOnLevel(false)
-                            else
-                                gyroMeterOnLevel(true)
-                        } else {
-                            gyroMeterOffLevel()
-
-                            if (movearrow) {
-                                if (abs(roll.roundToInt()) < 100) {
-                                    moveArrow((pitch + 85).unaryMinus())
-                                } else {
-                                    moveArrow(pitch + 85)
-                                }
-                            }
-
-                            if (orientationAngles[2].roundToInt() == 1 || orientationAngles[2].roundToInt() == -1) {
-                                if (orientationAngles[2].roundToInt() == 1) {
-                                    rotateArrow((pitch + 85).unaryMinus().roundToInt())
-                                } else {
-                                    rotateArrow((pitch + 85).roundToInt())
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-            AppConstants.SWIGGYINSTAMART,
-            AppConstants.LAL_10,
-            AppConstants.BATA,
-            AppConstants.FLIPKART_GROCERY -> {
-                //hide moving line
-                if (pitch.roundToInt() == 0 || (pitch.roundToInt() <= -0 && pitch.roundToInt() >= -3))
-                    binding.tvLevelIndicator.visibility = View.GONE
-                else
-                    binding.tvLevelIndicator.visibility = View.VISIBLE
-
-                if (((pitch.roundToInt() == 0 || (pitch.roundToInt() <= -0 && pitch.roundToInt() >= -3))
-                            && (abs(roll.roundToInt()) <= 3 && abs(roll.roundToInt()) >= -3)) ||
-                    pitch.roundToInt() <= -82 && pitch.roundToInt() >= -88
-                ) {
-
-                    if (pitch.roundToInt() == 0 || (pitch.roundToInt() <= -0 && pitch.roundToInt() >= -3))
-                        gyroMeterOnLevel(false)
-                    else
-                        gyroMeterOnLevel(true)
-                } else {
-                    gyroMeterOffLevel()
-
-                    if (movearrow) {
-                        if (abs(roll.roundToInt()) < 100) {
-                            moveArrow((pitch + 85).unaryMinus())
-                        } else {
-                            moveArrow(pitch + 85)
-                        }
-                    }
-
-                    if (orientationAngles[2].roundToInt() == 1 || orientationAngles[2].roundToInt() == -1) {
-                        if (orientationAngles[2].roundToInt() == 1) {
-                            rotateArrow((pitch + 85).unaryMinus().roundToInt())
-                        } else {
-                            rotateArrow((pitch + 85).roundToInt())
-                        }
-                    }
-                }
-            }
-            AppConstants.CARS24_INDIA,
-            AppConstants.CARS24 -> {
-                if ((roll >= -100 && roll <= -80) && (pitch >= -3 && pitch <= 3)) {
-                    gyroMeterOnLevel(true)
-                } else {
-                    gyroMeterOffLevel()
-
-                    if (movearrow)
-                        moveArrow(roll + 90)
-
-                    if (rotatedarrow) {
-                        if (pitch > 0) {
-                            rotateArrow(pitch.minus(0).roundToInt())
-                        } else {
-                            rotateArrow(pitch.plus(0).roundToInt())
-                        }
-                    }
-                }
-            }
-            else -> {
-                if ((roll >= -100 && roll <= -80) && (pitch >= -5 && pitch <= 5)) {
-                    gyroMeterOnLevel(true)
-                } else {
-                    gyroMeterOffLevel()
-
-                    if (movearrow)
-                        moveArrow(roll + 90)
-
-                    if (rotatedarrow) {
-                        if (pitch > 0) {
-                            rotateArrow(pitch.minus(0).roundToInt())
-                        } else {
-                            rotateArrow(pitch.plus(0).roundToInt())
-                        }
-                    }
-                }
-            }
-        }
-    }
-
-
-    private fun gyroMeterOffLevel() {
-        isGyroOnCorrectAngle = false
-
-        val color = ContextCompat.getColor(
-            BaseApplication.getContext(),
-            R.color.gyro_error_level
+        binding.flLevelIndicator.updateGryoView(
+            getString(R.string.app_name),
+            roll,
+            pitch,
+            movearrow,
+            rotatedarrow
         )
-        binding.apply {
-            ivTopLeft?.setColorFilter(color)
-            ivBottomLeft?.setColorFilter(color)
-            ivGryroRing?.setColorFilter(color)
-
-            tvLevelIndicator?.background = ContextCompat.getDrawable(
-                BaseApplication.getContext(),
-                R.drawable.bg_gyro_error
-            )
-
-            ivTopRight?.setColorFilter(color)
-            ivBottomRight?.setColorFilter(color)
-        }
     }
 
-    private fun gyroMeterOnLevel(removeAnimation: Boolean) {
-        isGyroOnCorrectAngle = true
-        if (removeAnimation) {
-            binding
-                .tvLevelIndicator
-                ?.animate()
-                ?.translationY(0f)
-                ?.setInterpolator(AccelerateInterpolator())?.duration = 0
-        }
-
-        val color = ContextCompat.getColor(
-            BaseApplication.getContext(),
-            R.color.gyro_in_level
-        )
-
-        binding.apply {
-            tvLevelIndicator?.rotation = 0f
-
-            ivTopLeft?.setColorFilter(color)
-            ivBottomLeft?.setColorFilter(color)
-            ivGryroRing?.setColorFilter(color)
-
-            tvLevelIndicator?.background = ContextCompat.getDrawable(
-                BaseApplication.getContext(),
-                R.drawable.bg_gyro_level
-            )
-
-            ivTopRight?.setColorFilter(color)
-            ivBottomRight?.setColorFilter(color)
-        }
-    }
-
-    private fun rotateArrow(roundToInt: Int) {
-        binding.tvLevelIndicator?.rotation = roundToInt.toFloat()
-    }
 
     override fun onAccuracyChanged(sensor: Sensor?, accuracy: Int) {
     }
 
-    private fun moveArrow(newRoll: Double) {
-        if (newRoll > 0 && (centerPosition + newRoll) < bottomConstraint) {
-            binding
-                .tvLevelIndicator
-                ?.animate()
-                ?.translationY(newRoll.toFloat())
-                ?.setInterpolator(AccelerateInterpolator())?.duration = 0
-        }
-
-        if (newRoll < 0 && (centerPosition - newRoll) > topConstraint) {
-            binding
-                .tvLevelIndicator
-                ?.animate()
-                ?.translationY(newRoll.toFloat())
-                ?.setInterpolator(AccelerateInterpolator())?.duration = 0
-        }
-    }
 
     private fun getPreviewDimensions(view: View, type: Int) {
         view.viewTreeObserver.addOnGlobalLayoutListener(object :
@@ -1710,18 +655,6 @@ class CameraFragment : BaseFragment<ShootViewModel, FragmentCameraBinding>(), Pi
                             cameraInfo!!,
                             shootDimensions
                         )
-
-                        binding.rlInstructions?.layoutParams?.height = (view.height / 100) * 45
-
-                    }
-
-                    1 -> {
-                        topConstraint = view.top
-                        bottomConstraint = topConstraint + view.height
-                    }
-
-                    2 -> {
-                        centerPosition = view.top
                     }
                 }
 
@@ -1729,70 +662,12 @@ class CameraFragment : BaseFragment<ShootViewModel, FragmentCameraBinding>(), Pi
         })
     }
 
-
-    @Throws(IOException::class)
-    fun modifyOrientation(bitmap: Bitmap, image_absolute_path: String?): Bitmap? {
-        val ei = ExifInterface(image_absolute_path!!)
-        val orientation =
-            ei.getAttributeInt(ExifInterface.TAG_ORIENTATION, ExifInterface.ORIENTATION_NORMAL)
-        return when (orientation) {
-            ExifInterface.ORIENTATION_ROTATE_90 -> rotate(bitmap, 90f)
-            ExifInterface.ORIENTATION_ROTATE_180 -> rotate(bitmap, 180f)
-            ExifInterface.ORIENTATION_ROTATE_270 -> rotate(bitmap, 270f)
-            ExifInterface.ORIENTATION_FLIP_HORIZONTAL -> flip(bitmap, true, false)
-            ExifInterface.ORIENTATION_FLIP_VERTICAL -> flip(bitmap, false, true)
-            else -> bitmap
-        }
-    }
-
-    fun rotate(bitmap: Bitmap, degrees: Float): Bitmap? {
-        val matrix = Matrix()
-        matrix.postRotate(degrees)
-        return Bitmap.createBitmap(bitmap, 0, 0, bitmap.width, bitmap.height, matrix, true)
-    }
-
-    fun flip(bitmap: Bitmap, horizontal: Boolean, vertical: Boolean): Bitmap? {
-        val matrix = Matrix()
-        matrix.preScale(
-            (if (horizontal) -1 else 1.toFloat()) as Float,
-            (if (vertical) -1 else 1.toFloat()) as Float
-        )
-        return Bitmap.createBitmap(bitmap, 0, 0, bitmap.width, bitmap.height, matrix, true)
-    }
-
-
     private fun addShootItem(capturedImage: String) {
-        viewModel.showConfirmReshootDialog.value = true
-
-        if (viewModel.categoryDetails.value?.categoryName != "Automobiles"
-            && viewModel.categoryDetails.value?.categoryName != "Bikes"
-        ) {
-            if (viewModel.categoryDetails.value?.imageType != "Info") {
-                GlobalScope.launch(Dispatchers.Default) {
-                    val bitmap =
-                        modifyOrientation(BitmapFactory.decodeFile(capturedImage), capturedImage)
-
-                    try {
-                        val file = File(capturedImage)
-                        val os: OutputStream = BufferedOutputStream(FileOutputStream(file))
-                        bitmap!!.compress(Bitmap.CompressFormat.JPEG, 100, os)
-                        os.close()
-                    } catch (
-                        e: java.lang.Exception
-                    ) {
-                        val s = ""
-                    }
-
-                }
-            }
-        }
-
-
-
+        Log.d(TAG, "addShootItem: "+filename)
         end = System.currentTimeMillis()
         val difference = (end - begin) / 1000.toFloat()
         log("addShootIteamCalled- " + difference)
-
+        viewModel.showConfirmReshootDialog.value = true
 
         //play shutter sound
         val sound = MediaActionSound()
@@ -1804,85 +679,48 @@ class CameraFragment : BaseFragment<ShootViewModel, FragmentCameraBinding>(), Pi
             viewModel.shootList.value = ArrayList()
         }
 
-        var sequenceNumber: Int = 0
-        if (viewModel.fromDrafts) {
-            when (viewModel.categoryDetails.value?.imageType) {
-                "Exterior" -> {
-                    sequenceNumber = viewModel.shootNumber.value?.plus(1)!!
-                }
-                "Interior" -> {
-                    sequenceNumber =
-                        requireActivity().intent.getIntExtra(AppConstants.EXTERIOR_SIZE, 0)
-                            .plus(
-                                requireActivity().intent.getIntExtra(
-                                    AppConstants.INTERIOR_SIZE,
-                                    0
-                                )
-                            )
-                            .plus(viewModel.shootList.value!!.size.plus(1))
+        var sequenceNumber = viewModel.getSequenceNumber(
+            requireActivity().intent.getIntExtra(AppConstants.EXTERIOR_SIZE, 0),
+            requireActivity().intent.getIntExtra(AppConstants.INTERIOR_SIZE, 0),
+            requireActivity().intent.getIntExtra(AppConstants.MISC_SIZE, 0)
+        )
 
-                    Log.d(
-                        TAG,
-                        "addShootItem: " + requireActivity().intent.getIntExtra(
-                            AppConstants.EXTERIOR_SIZE,
-                            0
-                        )
-                    )
-                    Log.d(
-                        TAG,
-                        "addShootItem: " + requireActivity().intent.getIntExtra(
-                            AppConstants.INTERIOR_SIZE,
-                            0
-                        )
-                    )
-                    Log.d(TAG, "addShootItem: " + viewModel.shootList.value!!.size.plus(1))
-                    Log.d(TAG, "addShootItem: " + sequenceNumber)
-                }
-                "Focus Shoot" -> {
-                    sequenceNumber =
-                        requireActivity().intent.getIntExtra(AppConstants.EXTERIOR_SIZE, 0)
-                            .plus(
-                                requireActivity().intent.getIntExtra(
-                                    AppConstants.INTERIOR_SIZE,
-                                    0
-                                )
-                            )
-                            .plus(requireActivity().intent.getIntExtra(AppConstants.MISC_SIZE, 0))
-                            .plus(viewModel.shootList.value!!.size.plus(1))
+        Log.d(TAG, "addShootItem: "+sequenceNumber)
+        val debugData = JSONObject()
+        debugData.put("roll",roll.roundToInt().unaryPlus())
+        debugData.put("pitch",pitch.roundToInt().unaryPlus())
 
-                    Log.d(TAG, "addShootItem: " + sequenceNumber)
-                }
-                "Footwear" -> {
-                    sequenceNumber = viewModel.shootNumber.value?.plus(1)!!
-                }
-                "Food & Beverages" -> {
-                    sequenceNumber = viewModel.shootNumber.value?.plus(1)!!
-                }
-                "E-Commerce" -> {
-                    sequenceNumber = viewModel.shootNumber.value?.plus(1)!!
-                }
-            }
-        } else {
-            sequenceNumber = viewModel.shootList.value!!.size.plus(1)
+
+        val shootData = ShootData(
+            capturedImage,
+            viewModel.projectId.value!!,
+            viewModel.sku.value?.skuId!!,
+            viewModel.categoryDetails.value?.imageType!!,
+            Utilities.getPreference(BaseApplication.getContext(), AppConstants.AUTH_KEY).toString(),
+            viewModel.overlayId,
+            sequenceNumber,
+            cameraAngle,
+            filename,
+            debugData.toString()
+        )
+
+        val item = viewModel.shootList.value!!.firstOrNull {
+            it.overlayId == viewModel.overlayId
         }
 
-
-        viewModel.shootList.value!!.add(
-            ShootData(
-                capturedImage,
-                viewModel.projectId.value!!,
-                viewModel.sku.value?.skuId!!,
-                viewModel.categoryDetails.value?.imageType!!,
-                Utilities.getPreference(BaseApplication.getContext(), AppConstants.AUTH_KEY)
-                    .toString(),
-                sequenceNumber,
-                cameraAngle
-            )
-        )
+        if (item != null){
+            item.capturedImage = capturedImage
+            item.angle = cameraAngle
+            viewModel.isReclick = true
+        }
+        else {
+            viewModel.isReclick = false
+            viewModel.shootList.value!!.add(shootData)
+        }
 
         viewModel.shootList.value = viewModel.shootList.value
 
-        val properties = Properties()
+        val properties = HashMap<String,Any?>()
         properties.apply {
             this["project_id"] = viewModel.projectId.value!!
             this["sku_id"] = viewModel.sku.value?.skuId!!
@@ -1942,7 +780,6 @@ class CameraFragment : BaseFragment<ShootViewModel, FragmentCameraBinding>(), Pi
         shoot("onSaveInstanceState called(camera fragment)")
     }
 }
-
 
 
 

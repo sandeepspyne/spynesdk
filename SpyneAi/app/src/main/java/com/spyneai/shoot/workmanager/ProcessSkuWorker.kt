@@ -1,9 +1,7 @@
 package com.spyneai.shoot.workmanager
 
 import android.content.Context
-import android.util.Log
 import androidx.work.*
-import com.posthog.android.Properties
 import com.spyneai.BaseApplication
 import com.spyneai.captureEvent
 import com.spyneai.posthog.Events
@@ -28,16 +26,24 @@ class ProcessSkuWorker(private val appContext: Context, workerParams: WorkerPara
                     WorkInfo.State.BLOCKED -> {
                         BaseApplication.getContext().captureEvent(
                             Events.BLOCKED_WORKER_START_EXCEPTION,
-                            Properties().putValue
-                                ("name","Recursive Process Worker"))
+                            HashMap<String,Any?>()
+                                .apply {
+                                    this.put("name","Recursive Process Worker")
+                                }
+
+                        )
                         start()
                     }
 
                     WorkInfo.State.CANCELLED -> {
                         BaseApplication.getContext().captureEvent(
                             Events.CANCELLED_WORKER_START_EXCEPTION,
-                            Properties().putValue
-                                ("name","Recursive Process Worker"))
+                            HashMap<String,Any?>()
+                                .apply {
+                                    this.put("name","Recursive Process Worker")
+                                }
+
+                        )
                         start()
                     }
                 }

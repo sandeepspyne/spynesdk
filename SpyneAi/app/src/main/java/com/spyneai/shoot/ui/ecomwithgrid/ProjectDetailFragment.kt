@@ -6,11 +6,9 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.posthog.android.Properties
 import com.spyneai.R
 import com.spyneai.base.BaseFragment
 import com.spyneai.base.network.Resource
-import com.spyneai.captureEvent
 import com.spyneai.captureFailureEvent
 import com.spyneai.dashboard.ui.handleApiError
 import com.spyneai.databinding.FragmentProjectDetailBinding
@@ -20,7 +18,6 @@ import com.spyneai.needs.Utilities
 import com.spyneai.posthog.Events
 import com.spyneai.shoot.adapters.ProjectDetailAdapter
 import com.spyneai.shoot.data.ShootViewModel
-import com.spyneai.shoot.ui.ecomwithgrid.dialogs.ShadowOptionDialog
 import com.spyneai.shoot.utils.log
 
 class ProjectDetailFragment : BaseFragment<ShootViewModel, FragmentProjectDetailBinding>() {
@@ -228,7 +225,7 @@ class ProjectDetailFragment : BaseFragment<ShootViewModel, FragmentProjectDetail
                 is Resource.Failure -> {
                     log("create project id failed")
                     requireContext().captureFailureEvent(
-                        Events.SKU_PROCESS_STATE_WITH_SHADOW_FAILED, Properties(),
+                        Events.SKU_PROCESS_STATE_WITH_SHADOW_FAILED, HashMap<String,Any?>(),
                         it.errorMessage!!
                     )
 

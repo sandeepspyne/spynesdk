@@ -3,20 +3,17 @@ package com.spyneai.logout
 import android.app.Dialog
 import android.content.Intent
 import android.os.Bundle
-import android.view.*
-import com.posthog.android.Properties
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
 import com.spyneai.base.BaseDialogFragment
 import com.spyneai.captureEvent
 import com.spyneai.dashboard.data.DashboardViewModel
-import com.spyneai.databinding.DialogExitBinding
 import com.spyneai.databinding.DialogLogoutBinding
-import com.spyneai.databinding.FragmentPreferenceBinding
-import com.spyneai.gotoHome
 import com.spyneai.loginsignup.activity.LoginActivity
 import com.spyneai.needs.AppConstants
 import com.spyneai.needs.Utilities
 import com.spyneai.posthog.Events
-import com.spyneai.shoot.data.ShootViewModel
 
 class LogoutDialog : BaseDialogFragment<DashboardViewModel, DialogLogoutBinding>() {
 
@@ -25,7 +22,7 @@ class LogoutDialog : BaseDialogFragment<DashboardViewModel, DialogLogoutBinding>
 
         binding.llLogout.setOnClickListener {
 
-            requireContext().captureEvent(Events.LOG_OUT, Properties())
+            requireContext().captureEvent(Events.LOG_OUT, HashMap<String,Any?>())
 
             Utilities.savePrefrence(requireContext(), AppConstants.TOKEN_ID, "")
             Utilities.savePrefrence(requireContext(), AppConstants.AUTH_KEY, "")

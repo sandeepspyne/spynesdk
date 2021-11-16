@@ -12,18 +12,17 @@ import androidx.cardview.widget.CardView
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.spyneai.R
-import com.spyneai.dashboard.ui.WhiteLabelConstants
 import com.spyneai.needs.AppConstants
 import com.spyneai.needs.Utilities
 import com.spyneai.orders.data.response.GetProjectsResponse
 import com.spyneai.orders.data.viewmodel.MyOrdersViewModel
-import com.spyneai.orders.ui.KarviShowImagesActivity
-import com.spyneai.processedimages.ui.ShowImagesActivity
+import com.spyneai.processedimages.ui.ProcessedImageActivity
 
 class SkusAdapter(
     val context: Context,
     val viewModel: MyOrdersViewModel,
-    val skuList: ArrayList<GetProjectsResponse.Sku>
+    val skuList: ArrayList<GetProjectsResponse.Sku>,
+    val projectId : String
 ) : RecyclerView.Adapter<SkusAdapter.ViewHolder>() {
 
     class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
@@ -46,13 +45,13 @@ class SkusAdapter(
     override fun onCreateViewHolder(
         parent: ViewGroup,
         viewType: Int
-    ): SkusAdapter.ViewHolder {
+    ): ViewHolder {
         val view = LayoutInflater.from(parent.context)
             .inflate(R.layout.item_completed_skus, parent, false)
-        return SkusAdapter.ViewHolder(view)
+        return ViewHolder(view)
     }
 
-    override fun onBindViewHolder(holder: SkusAdapter.ViewHolder, position: Int) {
+    override fun onBindViewHolder(holder: ViewHolder, position: Int) {
 
         if (skuList[position].paid)
             holder.tvPaid.visibility = View.VISIBLE
@@ -98,8 +97,14 @@ class SkusAdapter(
                     AppConstants.SKU_ID,
                     skuList[position].sku_id
                 )
-                var intent = Intent(context, KarviShowImagesActivity::class.java)
+                var intent = Intent(context, ProcessedImageActivity::class.java)
+                intent.putExtra(AppConstants.PROJECT_ID, projectId)
                 intent.putExtra(AppConstants.SKU_ID, skuList[position].sku_id)
+                intent.putExtra(AppConstants.SKU_NAME, skuList[position].sku_name)
+                intent.putExtra(AppConstants.CATEGORY_ID, skuList[position].categoryId)
+                intent.putExtra(AppConstants.CATEGORY_NAME, skuList[position].category)
+                intent.putExtra(AppConstants.SUB_CAT_ID, skuList[position].subCategoryId)
+                intent.putExtra(AppConstants.EXTERIOR_ANGLES, skuList[position].exteriorClicks)
                 intent.putExtra("is_paid",skuList[position].paid)
                 intent.putExtra(AppConstants.IMAGE_TYPE,skuList[position].category)
                 intent.putExtra(AppConstants.IS_360,skuList[position].is360)
@@ -115,9 +120,15 @@ class SkusAdapter(
 
                 val intent = Intent(
                     context,
-                    ShowImagesActivity::class.java
+                    ProcessedImageActivity::class.java
                 )
+                intent.putExtra(AppConstants.PROJECT_ID, projectId)
                 intent.putExtra(AppConstants.SKU_ID, skuList[position].sku_id)
+                intent.putExtra(AppConstants.SKU_NAME, skuList[position].sku_name)
+                intent.putExtra(AppConstants.CATEGORY_ID, skuList[position].categoryId)
+                intent.putExtra(AppConstants.CATEGORY_NAME, skuList[position].category)
+                intent.putExtra(AppConstants.SUB_CAT_ID, skuList[position].subCategoryId)
+                intent.putExtra(AppConstants.EXTERIOR_ANGLES, skuList[position].exteriorClicks)
                 intent.putExtra("is_paid",skuList[position].paid)
                 intent.putExtra(AppConstants.IMAGE_TYPE,skuList[position].category)
                 intent.putExtra(AppConstants.IS_360,skuList[position].is360)

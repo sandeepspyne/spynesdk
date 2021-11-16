@@ -11,7 +11,6 @@ import com.spyneai.db.ShootContract
 import com.spyneai.shoot.data.model.Image
 import com.spyneai.shoot.data.model.Project
 import com.spyneai.shoot.data.model.Sku
-import com.spyneai.shoot.utils.logUpload
 
 class ShootLocalRepository {
 
@@ -280,7 +279,7 @@ class ShootLocalRepository {
                 sku.subcategoryId = subCategoryId
                 sku.projectId = projectId
                 sku.skuId = skuId
-                sku.exteriorAngles = exteriroAngles
+                sku.exteriorAngles = if (exteriroAngles == null) 0 else exteriroAngles
                 sku.backgroundId = backgroundId
                 sku.is360 = is360
                 sku.isProcessed = isProcessed
@@ -288,7 +287,7 @@ class ShootLocalRepository {
 
                 if (skuId != null) {
                     sku.thumbnail = getSkuThumbnail(skuId)
-                    sku.totalImages = getImagesBySkuId(skuId).size
+                    sku.totalImages = ImageLocalRepository().getImagesBySkuId(skuId).size
                 }
 
 
@@ -297,60 +296,6 @@ class ShootLocalRepository {
         }
 
         return skuList
-    }
-
-    fun getImagesBySkuId(skuId: String?):  ArrayList<Image> {
-        val projection = arrayOf(
-            BaseColumns._ID,
-            Images.COLUMN_NAME_PROJECT_ID,
-            Images.COLUMN_NAME_SKU_ID,
-            Images.COLUMN_NAME_CATEGORY_NAME,
-            Images.COLUMN_NAME_IMAGE_PATH,
-            Images.COLUMN_NAME_IMAGE_SEQUENCE)
-
-        // Filter results WHERE "title" = 'My Title'
-        val selection = "${Images.COLUMN_NAME_SKU_ID} = ?"
-        val selectionArgs = arrayOf(skuId)
-
-
-        // How you want the results sorted in the resulting Cursor
-        val sortOrder = "${BaseColumns._ID} ASC"
-
-        val cursor = dbReadable.query(
-            Images.TABLE_NAME,   // The table to query
-            projection,             // The array of columns to return (pass null to get all)
-            selection,              // The columns for the WHERE clause
-            selectionArgs,          // The values for the WHERE clause
-            null,                   // don't group the rows
-            null,                   // don't filter by row groups
-            sortOrder                       // The sort order
-        )
-
-
-        val imagesList = ArrayList<Image>()
-
-        with(cursor) {
-            while (moveToNext()) {
-                val itemId = getLong(getColumnIndexOrThrow(BaseColumns._ID))
-                val projectId = getString(getColumnIndexOrThrow(Images.COLUMN_NAME_PROJECT_ID))
-                val skuId = getString(getColumnIndexOrThrow(Images.COLUMN_NAME_SKU_ID))
-                val categoryName = getString(getColumnIndexOrThrow(Images.COLUMN_NAME_CATEGORY_NAME))
-                val imagePath = getString(getColumnIndexOrThrow(Images.COLUMN_NAME_IMAGE_PATH))
-                val sequence = getInt(getColumnIndexOrThrow(Images.COLUMN_NAME_IMAGE_SEQUENCE))
-
-                val image = Image()
-                image.itemId = itemId
-                image.projectId = projectId
-                image.skuId = skuId
-                image.categoryName = categoryName
-                image.imagePath = imagePath
-                image.sequence = sequence
-
-                imagesList.add(image)
-            }
-        }
-
-        return imagesList
     }
 
     private fun getImagesByProjectId(projectId: String): Int {
@@ -383,23 +328,6 @@ class ShootLocalRepository {
         return cursor.count
     }
 
-    fun insertImage(image : Image) {
-        val values = ContentValues().apply {
-            put(Images.COLUMN_NAME_PROJECT_ID, image.projectId)
-            put(Images.COLUMN_NAME_SKU_NAME, image.skuName?.uppercase())
-            put(Images.COLUMN_NAME_SKU_ID, image.skuId)
-            put(Images.COLUMN_NAME_CATEGORY_NAME, image.categoryName)
-            put(Images.COLUMN_NAME_IMAGE_PATH, image.imagePath)
-            put(Images.COLUMN_NAME_IMAGE_SEQUENCE, image.sequence)
-            put(Images.COLUMN_NAME_IS_UPLOADED, 0)
-            put(Images.COLUMN_NAME_IMAGE_ANGLE, image.angle)
-            put(Images.COLUMN_NAME_IMAGE_META, image.meta)
-        }
-
-        val newRowId = dbWritable?.insert(Images.TABLE_NAME, null, values)
-
-        com.spyneai.shoot.utils.log("insertImage: "+newRowId)
-    }
 
     fun getOldestImage() : Image {
         val projection = arrayOf(
@@ -622,53 +550,30 @@ class ShootLocalRepository {
             projectValues,
             projectSelection,
             projectSelectionArgs)
-
     }
 
-    fun deleteImage(itemId: Long) {
+    fun updateSkuExteriorAngles(skuId: String,angles : Int) {
         val projectValues = ContentValues().apply {
             put(
-                Images.COLUMN_NAME_IS_UPLOADED,
-                1
+                Projects.COLUMN_NAME_EXTERIOR_ANGLES,
+                angles
             )
         }
 
+        val projectSelection = "${ShootContract.ShootEntry.COLUMN_NAME_SKU_ID} LIKE ?"
         // Which row to update, based on the title
-        val selection = "${BaseColumns._ID} LIKE ?"
 
-        val selectionArgs = arrayOf(itemId.toString())
+        val projectSelectionArgs = arrayOf(skuId)
 
-        val count = dbWritable.update(
-            Images.TABLE_NAME,
+        val projectCount = dbWritable.update(
+            ShootContract.ShootEntry.TABLE_NAME,
             projectValues,
-            selection,
-            selectionArgs)
-
-        com.spyneai.shoot.utils.log("deleteImage : "+count)
+            projectSelection,
+            projectSelectionArgs)
     }
 
-    fun skipImage(itemId: Long,skip : Int) {
-        val projectValues = ContentValues().apply {
-            put(
-                Images.COLUMN_NAME_IS_UPLOADED,
-                skip
-            )
-        }
 
-        // Which row to update, based on the title
-        val selection = "${BaseColumns._ID} LIKE ?"
 
-        val selectionArgs = arrayOf(itemId.toString())
-
-        val count = dbWritable.update(
-            Images.TABLE_NAME,
-            projectValues,
-            selection,
-            selectionArgs)
-
-        logUpload("Image Skipped "+skip+" "+count)
-        com.spyneai.shoot.utils.log("deleteImage : "+count)
-    }
 
     fun getLastSku() : Sku {
         // Define a projection that specifies which columns from the database
@@ -859,28 +764,6 @@ class ShootLocalRepository {
         com.spyneai.shoot.utils.log("Upload count(update): "+projectId+" "+skuId)
     }
 
-    fun updateSkipedImages() : Int {
-        val values = ContentValues().apply {
-            put(
-                Images.COLUMN_NAME_IS_UPLOADED,
-                -1
-            )
-        }
-
-        // Which row to update, based on the title
-        val selection = "${Images.COLUMN_NAME_IS_UPLOADED} LIKE ?"
-
-        val selectionArgs = arrayOf("-2")
-
-        val count = dbWritable.update(
-            Images.TABLE_NAME,
-            values,
-            selection,
-            selectionArgs)
-
-
-       return count
-    }
 
     fun updateProjectStatus(projectId : String) {
         val projectValues = ContentValues().apply {

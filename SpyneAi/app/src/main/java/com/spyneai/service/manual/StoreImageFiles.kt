@@ -4,10 +4,7 @@ import android.content.Context
 import android.content.Intent
 import android.os.Build
 import android.os.Environment
-import android.widget.Toast
 import androidx.core.content.ContextCompat
-import androidx.work.ListenableWorker
-import com.posthog.android.Properties
 import com.spyneai.base.network.Resource
 import com.spyneai.captureEvent
 import com.spyneai.needs.AppConstants
@@ -17,7 +14,6 @@ import com.spyneai.service.Actions
 import com.spyneai.service.getServiceState
 import com.spyneai.service.log
 import com.spyneai.shoot.data.FilesRepository
-import com.spyneai.shoot.data.ShootLocalRepository
 import com.spyneai.shoot.data.ShootRepository
 import com.spyneai.shoot.data.model.ImageFile
 import com.spyneai.shoot.utils.logManualUpload
@@ -74,7 +70,7 @@ class StoreImageFiles(val appContext: Context,
                        }
                    }
                }catch (e : Exception){
-                   val properties = Properties()
+                   val properties = HashMap<String,Any?>()
                    properties.put("error",e.localizedMessage)
 
                    appContext.captureEvent("FileNameError",properties)
@@ -90,7 +86,7 @@ class StoreImageFiles(val appContext: Context,
 
 
     private suspend fun startManualUploadWorker(fileSize : Int, filesPathList : JSONArray) {
-        val properties = Properties()
+        val properties = HashMap<String,Any?>()
         properties.apply {
             this["email"] = Utilities.getPreference(appContext, AppConstants.EMAIL_ID).toString()
             this["files_count"] = fileSize
@@ -106,7 +102,7 @@ class StoreImageFiles(val appContext: Context,
         start()
     }
 
-    private suspend fun sendData(count : Int,data : String,properties: Properties) {
+    private suspend fun sendData(count : Int,data : String,properties: HashMap<String,Any?>) {
 
         //send all data to server
         var sendDataRes = ShootRepository().sendFilesData(
@@ -168,7 +164,7 @@ class StoreImageFiles(val appContext: Context,
     }
 
     private fun capture(eventName : String) {
-        val properties = Properties()
+        val properties = HashMap<String,Any?>()
         properties.apply {
             this["email"] = Utilities.getPreference(appContext, AppConstants.EMAIL_ID).toString()
         }

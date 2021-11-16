@@ -7,7 +7,6 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import com.bumptech.glide.Glide
-import com.spyneai.R
 import com.spyneai.activity.DownloadingActivity
 import com.spyneai.credits.FeedbackActivity
 import com.spyneai.databinding.FragmentDownloadCompletedBinding

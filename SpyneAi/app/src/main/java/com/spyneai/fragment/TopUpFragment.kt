@@ -10,12 +10,10 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.fragment.app.DialogFragment
-import com.posthog.android.Properties
 import com.spyneai.R
 import com.spyneai.captureEvent
 import com.spyneai.captureFailureEvent
 import com.spyneai.credits.CreditUtils
-import com.spyneai.dashboard.ui.WhiteLabelConstants
 import com.spyneai.databinding.DialogTopUpBinding
 import com.spyneai.interfaces.APiService
 import com.spyneai.interfaces.RetrofitClients
@@ -132,7 +130,7 @@ class TopUpFragment: DialogFragment() {
                     }
 
                     try {
-                        requireContext().captureEvent(" Wallet Credits Fetched", Properties())
+                        requireContext().captureEvent(" Wallet Credits Fetched", HashMap<String,Any?>())
 
                         Utilities.savePrefrence(
                             requireContext(),
@@ -171,7 +169,7 @@ class TopUpFragment: DialogFragment() {
         try {
             requireContext().captureFailureEvent(
                 "Wallet Credits Fetch Failed",
-                Properties(),
+                HashMap<String,Any?>(),
                 "Server not responding"
             )
             Toast.makeText(

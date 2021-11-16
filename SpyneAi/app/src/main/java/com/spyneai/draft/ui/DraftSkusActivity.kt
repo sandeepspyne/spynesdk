@@ -1,13 +1,11 @@
 package com.spyneai.draft.ui
 
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.os.Handler
 import android.view.View
+import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.posthog.android.Properties
 import com.spyneai.R
 import com.spyneai.base.network.Resource
 import com.spyneai.captureFailureEvent
@@ -18,8 +16,6 @@ import com.spyneai.draft.ui.adapter.LocalSkusAdapter
 import com.spyneai.needs.AppConstants
 import com.spyneai.needs.Utilities
 import com.spyneai.orders.data.response.GetProjectsResponse
-import com.spyneai.orders.data.viewmodel.MyOrdersViewModel
-import com.spyneai.orders.ui.adapter.SkusAdapter
 import com.spyneai.posthog.Events
 import com.spyneai.shoot.utils.log
 import kotlinx.android.synthetic.main.activity_completed_skus.*
@@ -123,7 +119,7 @@ class DraftSkusActivity : AppCompatActivity() {
                                 rvSkus.visibility = View.GONE
                             } else {
                                 this.captureFailureEvent(
-                                    Events.GET_COMPLETED_ORDERS_FAILED, Properties(),
+                                    Events.GET_COMPLETED_ORDERS_FAILED, HashMap<String,Any?>(),
                                     it.errorMessage!!
                                 )
 

@@ -18,11 +18,11 @@ import androidx.lifecycle.ViewModelProvider
 import com.google.android.gms.common.ConnectionResult
 import com.google.android.gms.common.api.GoogleApiClient
 import com.google.android.gms.location.LocationServices
-import com.spyneai.CropConfirmDialog
 import com.spyneai.R
 import com.spyneai.base.network.Resource
 import com.spyneai.dashboard.response.NewSubCatResponse
 import com.spyneai.dashboard.ui.base.ViewModelFactory
+import com.spyneai.getImageCategory
 import com.spyneai.needs.AppConstants
 import com.spyneai.needs.Utilities
 import com.spyneai.setLocale
@@ -31,28 +31,26 @@ import com.spyneai.shoot.data.model.CategoryDetails
 import com.spyneai.shoot.data.model.CreateProjectRes
 import com.spyneai.shoot.data.model.ShootData
 import com.spyneai.shoot.data.model.Sku
-import com.spyneai.shoot.ui.OverlaysFragment
+import com.spyneai.shoot.ui.CreateProjectFragment
+import com.spyneai.shoot.ui.DraftGridFragment
 import com.spyneai.shoot.ui.SelectBackgroundFragment
+import com.spyneai.shoot.ui.SubCategoryAndAngleFragment
 import com.spyneai.shoot.ui.dialogs.ShootExitDialog
 import com.spyneai.shoot.ui.ecomwithgrid.GridEcomFragment
 import com.spyneai.shoot.ui.ecomwithgrid.ProjectDetailFragment
 import com.spyneai.shoot.ui.ecomwithgrid.SkuDetailFragment
 import com.spyneai.shoot.ui.ecomwithoverlays.OverlayEcomFragment
-import com.spyneai.shoot.utils.log
 import com.spyneai.shoot.utils.shoot
-import com.theartofdev.edmodo.cropper.CropImage
 import org.json.JSONObject
 import java.io.File
-import java.net.URI
 import java.util.*
 import kotlin.collections.ArrayList
 
 
-class ShootPortraitActivity :AppCompatActivity(), GoogleApiClient.ConnectionCallbacks,
+class ShootPortraitActivity : AppCompatActivity(), GoogleApiClient.ConnectionCallbacks,
     GoogleApiClient.OnConnectionFailedListener {
 
     lateinit var cameraFragment: CameraFragment
-    lateinit var overlaysFragment: OverlaysFragment
     lateinit var gridEcomFragment: GridEcomFragment
     lateinit var overlayEcomFragment: OverlayEcomFragment
     lateinit var skuDetailFragment: SkuDetailFragment
@@ -67,8 +65,6 @@ class ShootPortraitActivity :AppCompatActivity(), GoogleApiClient.ConnectionCall
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        shoot("onCreate called(shoot activity)")
-
         window.setFlags(
             WindowManager.LayoutParams.FLAG_FULLSCREEN,
             WindowManager.LayoutParams.FLAG_FULLSCREEN
@@ -76,22 +72,25 @@ class ShootPortraitActivity :AppCompatActivity(), GoogleApiClient.ConnectionCall
 
         setContentView(R.layout.activity_shoot)
 
-
-        googleApiClient = GoogleApiClient.Builder(this, this, this).addApi(LocationServices.API).build()
+        googleApiClient =
+            GoogleApiClient.Builder(this, this, this).addApi(LocationServices.API).build()
 
         setLocale()
 
         shootViewModel = ViewModelProvider(this, ViewModelFactory()).get(ShootViewModel::class.java)
+
         shootViewModel.skuNumber.value = 1
         try {
             shootViewModel.skuNumber.value = intent.getIntExtra("skuNumber", 1)
-        }catch (e: Exception){
+            shootViewModel.projectId.value = intent.getStringExtra("project_id")
+        } catch (e: Exception) {
         }
-
 
         if (intent.getBooleanExtra(AppConstants.FROM_DRAFTS, false))
             setUpDraftsData()
 
+        if (intent.getBooleanExtra(AppConstants.FROM_VIDEO, false))
+            setUpVideoShoot()
 
         val categoryDetails = CategoryDetails()
 
@@ -101,133 +100,53 @@ class ShootPortraitActivity :AppCompatActivity(), GoogleApiClient.ConnectionCall
             gifList = intent.getStringExtra(AppConstants.GIF_LIST)
         }
 
-        Utilities.savePrefrence(this,AppConstants.CATEGORY_ID,categoryDetails.categoryId)
-        Utilities.savePrefrence(this,AppConstants.CATEGORY_NAME,categoryDetails.categoryName)
-
-        when(shootViewModel.categoryDetails.value?.categoryName) {
-            "Footwear" -> shootViewModel.processSku = false
-        }
-
         shootViewModel.categoryDetails.value = categoryDetails
 
         cameraFragment = CameraFragment()
-        overlaysFragment = OverlaysFragment()
         gridEcomFragment = GridEcomFragment()
         skuDetailFragment = SkuDetailFragment()
         projectDetailFragment = ProjectDetailFragment()
         overlayEcomFragment = OverlayEcomFragment()
         selectBackgroundFragment = SelectBackgroundFragment()
 
-        when (shootViewModel.categoryDetails.value?.categoryName) {
-            "Automobiles" -> {
-                shootViewModel.processSku = true
-                if (savedInstanceState == null) { // initial transaction should be wrapped like this
-                    supportFragmentManager.beginTransaction()
-                        .add(R.id.flCamerFragment, cameraFragment)
-                        .add(R.id.flCamerFragment, overlaysFragment)
-                        .commitAllowingStateLoss()
-                }
-            }
-            "Bikes" -> {
-                shootViewModel.processSku = false
-                if (savedInstanceState == null) { // initial transaction should be wrapped like this
-                    supportFragmentManager.beginTransaction()
-                        .add(R.id.flCamerFragment, cameraFragment)
-                        .add(R.id.flCamerFragment, overlaysFragment)
-                        .commitAllowingStateLoss()
-                }
-            }
+        shootViewModel.processSku = false
+        if (savedInstanceState == null) { // initial transaction should be wrapped like this
+            val transaction = supportFragmentManager.beginTransaction()
+                .add(R.id.flCamerFragment, cameraFragment)
 
-            "E-Commerce" -> {
-                shootViewModel.processSku = false
-                if (savedInstanceState == null) { // initial transaction should be wrapped like this
-                    supportFragmentManager.beginTransaction()
-                        .add(R.id.flCamerFragment, cameraFragment)
-                        .add(R.id.flCamerFragment, gridEcomFragment)
-                        .commitAllowingStateLoss()
+            if (shootViewModel.fromDrafts) {
+                when (categoryDetails.categoryId) {
+                    AppConstants.FOOTWEAR_CATEGORY_ID -> {
+                        transaction
+                            .add(R.id.flCamerFragment, overlayEcomFragment)
+                            .commitAllowingStateLoss()
+                    }
+                    else -> {
+                        transaction
+                            .add(R.id.flCamerFragment, DraftGridFragment())
+                            .commitAllowingStateLoss()
+                    }
                 }
-                try {
-                    val intent = intent
-                    shootViewModel.projectId.value = intent.getStringExtra("project_id")
-                    val sku = Sku()
-                    sku?.projectId = shootViewModel.projectId.value
-                    sku.skuName = intent.getStringExtra(AppConstants.SKU_NAME)
-                    sku.skuId = intent.getStringExtra(AppConstants.SKU_ID)
-                    shootViewModel.categoryDetails.value?.imageType = "Ecom"
-                    shootViewModel.sku.value = sku
-                } catch (e: Exception) {
-                    e.printStackTrace()
-                }
-            }
-            "Photo Box" -> {
-                shootViewModel.processSku = false
-                if (savedInstanceState == null) { // initial transaction should be wrapped like this
-                    supportFragmentManager.beginTransaction()
-                        .add(R.id.flCamerFragment, cameraFragment)
-                        .add(R.id.flCamerFragment, gridEcomFragment)
-                        .commitAllowingStateLoss()
-                }
-                try {
-                    val intent = intent
-                    shootViewModel.projectId.value = intent.getStringExtra("project_id")
-                    val sku = Sku()
-                    sku?.projectId = shootViewModel.projectId.value
-                    sku.skuName = intent.getStringExtra(AppConstants.SKU_NAME)
-                    sku.skuId = intent.getStringExtra(AppConstants.SKU_ID)
-                    shootViewModel.categoryDetails.value?.imageType = "Ecom"
-                    shootViewModel.sku.value = sku
-                } catch (e: Exception) {
-                    e.printStackTrace()
-                }
-            }
-            "Food & Beverages" -> {
-                shootViewModel.processSku = false
-                if (savedInstanceState == null) { // initial transaction should be wrapped like this
-                    supportFragmentManager.beginTransaction()
-                        .add(R.id.flCamerFragment, cameraFragment)
-                        .add(R.id.flCamerFragment, gridEcomFragment)
-                        .commitAllowingStateLoss()
-                }
-                try {
-                    val intent = intent
-                    shootViewModel.projectId.value = intent.getStringExtra("project_id")
-                    val sku = Sku()
-                    sku?.projectId = shootViewModel.projectId.value
-                    sku.skuName = intent.getStringExtra(AppConstants.SKU_NAME)
-                    sku.skuId = intent.getStringExtra(AppConstants.SKU_ID)
-                    shootViewModel.categoryDetails.value?.imageType = "Food"
-                    shootViewModel.sku.value = sku
-                } catch (e: Exception) {
-                    e.printStackTrace()
-                }
-            }
+            } else {
+                when (categoryDetails.categoryId) {
+                    AppConstants.FOOTWEAR_CATEGORY_ID -> {
+                        transaction.add(
+                            R.id.flCamerFragment,
+                            overlayEcomFragment
+                        )
 
-            "Footwear" -> {
-                shootViewModel.processSku = false
-                if (savedInstanceState == null) { // initial transaction should be wrapped like this
-                    supportFragmentManager.beginTransaction()
-                        .add(R.id.flCamerFragment, cameraFragment)
-                        .add(R.id.flCamerFragment, overlayEcomFragment)
-                        .commitAllowingStateLoss()
+                        observeProjectCreated()
+                    }
+                    else -> transaction.add(R.id.flCamerFragment, gridEcomFragment)
                 }
-                try {
-                    val intent = intent
-                    shootViewModel.projectId.value = intent.getStringExtra("project_id")
-                    val sku = Sku()
-                    sku?.projectId = shootViewModel.projectId.value
-                    sku.skuName = intent.getStringExtra(AppConstants.SKU_NAME)
-                    sku.skuId = intent.getStringExtra(AppConstants.SKU_ID)
-                    shootViewModel.categoryDetails.value?.imageType = "Footwear"
-                    shootViewModel.sku.value = sku
-                } catch (e: Exception) {
-                    e.printStackTrace()
-                }
+                transaction
+                    .add(R.id.flCamerFragment, CreateProjectFragment())
+                    .commitAllowingStateLoss()
             }
-
         }
 
-
-
+        shootViewModel.categoryDetails.value?.imageType =
+            getImageCategory(shootViewModel.categoryDetails.value!!.categoryId!!)
 
 
         shootViewModel.stopShoot.observe(this, {
@@ -255,7 +174,6 @@ class ShootPortraitActivity :AppCompatActivity(), GoogleApiClient.ConnectionCall
             if (it) {
                 val bundle = Bundle()
                 bundle.putString(AppConstants.PROJECT_ID,shootViewModel.sku.value?.projectId)
-
                 selectBackgroundFragment.arguments = bundle
 
                 window.clearFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN)
@@ -274,37 +192,67 @@ class ShootPortraitActivity :AppCompatActivity(), GoogleApiClient.ConnectionCall
                 supportFragmentManager.beginTransaction().remove(skuDetailFragment).commit()
         })
 
-
-
         shootViewModel.selectBackground.observe(this, {
             if (it) {
                 // start process activity
                 val processIntent = Intent(this, ProcessActivity::class.java)
                 processIntent.apply {
                     this.putExtra(AppConstants.CATEGORY_NAME, categoryDetails.categoryName)
+                    this.putExtra(AppConstants.CATEGORY_ID, categoryDetails.categoryId)
                     this.putExtra("sku_id", shootViewModel.sku.value?.skuId)
                     this.putExtra("project_id", shootViewModel.sku.value?.projectId)
                     this.putExtra("exterior_angles", shootViewModel.exterirorAngles.value)
                     this.putExtra("process_sku", shootViewModel.processSku)
-
+                    this.putExtra(
+                        AppConstants.FROM_VIDEO,
+                        intent.getBooleanExtra(AppConstants.FROM_VIDEO, false)
+                    )
                     startActivity(this)
                 }
             }
         })
     }
 
+    private fun observeProjectCreated() {
+        //add subcat selection fragment
+        shootViewModel.getSubCategories.observe(
+            this, {
+                if (!shootViewModel.isSubcategoriesSelectionShown) {
+                    supportFragmentManager.beginTransaction()
+                        .add(R.id.flCamerFragment, SubCategoryAndAngleFragment())
+                        .commit()
+                }
+            }
+        )
+    }
 
-    private fun setUpDraftsData() {
-        shootViewModel.fromDrafts = true
+    private fun setUpVideoShoot() {
+        shootViewModel.fromVideo = true
         shootViewModel.showVin.value = true
         shootViewModel.isProjectCreated.value = true
-        shootViewModel.projectId.value =  intent.getStringExtra(AppConstants.PROJECT_ID)!!
+        shootViewModel.projectId.value = intent.getStringExtra(AppConstants.PROJECT_ID)
 
         shootViewModel._createProjectRes.value = Resource.Success(
             CreateProjectRes(
                 "",
                 intent.getStringExtra(AppConstants.PROJECT_ID)!!,
-                200)
+                200
+            )
+        )
+    }
+
+    private fun setUpDraftsData() {
+        shootViewModel.fromDrafts = true
+        shootViewModel.showVin.value = true
+        shootViewModel.isProjectCreated.value = true
+        shootViewModel.projectId.value = intent.getStringExtra(AppConstants.PROJECT_ID)!!
+
+        shootViewModel._createProjectRes.value = Resource.Success(
+            CreateProjectRes(
+                "",
+                intent.getStringExtra(AppConstants.PROJECT_ID)!!,
+                200
+            )
         )
 
         //set sku data
@@ -315,11 +263,38 @@ class ShootPortraitActivity :AppCompatActivity(), GoogleApiClient.ConnectionCall
         sku.categoryName = shootViewModel.categoryDetails.value?.categoryName
 
         shootViewModel.sku.value = sku
-        shootViewModel.shootNumber.value = intent.getIntExtra(AppConstants.EXTERIOR_SIZE,0)
+        shootViewModel.isSkuCreated.value = true
 
-        if (intent.getStringExtra(AppConstants.CATEGORY_NAME) == "Footwear"){
-            if (intent.getIntExtra(AppConstants.EXTERIOR_ANGLES,0) != 0){
-                shootViewModel.isSkuCreated.value = true
+        if (intent.getStringExtra(AppConstants.CATEGORY_NAME) == "Footwear") {
+
+            val list = shootViewModel.getImagesbySkuId(shootViewModel.sku.value?.skuId!!)
+
+            shootViewModel.shootList.value = ArrayList()
+
+            list.forEachIndexed { index, image ->
+                val shootData = ShootData(
+                    image.imagePath!!,
+                    image.projectId!!,
+                    image.skuId!!,
+                    getImageCategory(intent.getStringExtra(AppConstants.CATEGORY_ID)!!),
+                    Utilities.getPreference(this, AppConstants.AUTH_KEY).toString(),
+                    image.overlayId?.toInt()!!,
+                    index.plus(1)
+                )
+
+                shootData.imageClicked = true
+
+                shootViewModel.shootList.value!!.add(
+                    shootData
+                )
+            }
+
+            if (intent.getIntExtra(AppConstants.EXTERIOR_ANGLES, 0)
+                == intent.getIntExtra(AppConstants.EXTERIOR_SIZE, 0)){
+                 shootViewModel.stopShoot.value = true
+            }else {
+                shootViewModel.exterirorAngles.value = 0
+
                 //sub category selected
                 shootViewModel.subCatName.value = intent.getStringExtra(AppConstants.SUB_CAT_NAME)
 
@@ -338,29 +313,15 @@ class ShootPortraitActivity :AppCompatActivity(), GoogleApiClient.ConnectionCall
 
                 shootViewModel.isSubCategoryConfirmed.value = true
 
-                if (intent.getIntExtra(AppConstants.EXTERIOR_ANGLES,0) == intent.getIntExtra(AppConstants.EXTERIOR_SIZE,0)){
-                    shootViewModel.showDialog = false
-                    val list = shootViewModel.getImagesbySkuId(shootViewModel.sku.value?.skuId!!)
-
-                    shootViewModel.shootList.value = ArrayList()
-
-
-                    for(image in list){
-                        shootViewModel.shootList.value!!.add(
-                            ShootData(image.imagePath!!,
-                                image.projectId!!,
-                                image.skuId!!,
-                                "",
-                                Utilities.getPreference(this,AppConstants.AUTH_KEY).toString(),
-                                0)
-                        )
-                    }
-
-                    shootViewModel.stopShoot.value = true
-                }
-
+                // if (intent.getIntExtra(AppConstants.EXTERIOR_ANGLES,0) == intent.getIntExtra(AppConstants.EXTERIOR_SIZE,0)){
+                shootViewModel.showDialog = false
             }
-        }else {
+
+
+            // shootViewModel.stopShoot.value = true
+            // }
+
+        } else {
             shootViewModel.showDialog = false
             shootViewModel.isSubCategoryConfirmed.value = true
 
@@ -369,50 +330,62 @@ class ShootPortraitActivity :AppCompatActivity(), GoogleApiClient.ConnectionCall
             //set total clicked images
             val list = shootViewModel.getImagesbySkuId(shootViewModel.sku.value?.skuId!!)
 
-            if (intent.getBooleanExtra(AppConstants.FROM_LOCAL_DB,false)){
-                for(image in list){
-                    shootViewModel.shootList.value!!.add(
-                        ShootData(image.imagePath!!,
-                            image.projectId!!,
-                            image.skuId!!,
-                            "",
-                            Utilities.getPreference(this,AppConstants.AUTH_KEY).toString(),
-                            0)
-                    )
-                }
-            }else {
-                val list = intent.getStringArrayListExtra(AppConstants.EXTERIOR_LIST)
+            if (intent.getBooleanExtra(AppConstants.FROM_LOCAL_DB, false)) {
 
-                for(image in list!!){
+                list.forEachIndexed { index, image ->
+                    val shootData = ShootData(
+                        image.imagePath!!,
+                        image.projectId!!,
+                        image.skuId!!,
+                        getImageCategory(intent.getStringExtra(AppConstants.CATEGORY_ID)!!),
+                        Utilities.getPreference(this, AppConstants.AUTH_KEY).toString(),
+                        image.overlayId?.toInt()!!,
+                        image.sequence!!,
+                        image.angle!!,
+                        image.name!!
+                    )
+
+                    shootData.imageClicked = true
                     shootViewModel.shootList.value!!.add(
-                        ShootData(image,
-                            intent.getStringExtra(AppConstants.PROJECT_ID)!!,
-                            intent.getStringExtra(AppConstants.SKU_ID)!!,
-                            "",
-                            Utilities.getPreference(this,AppConstants.AUTH_KEY).toString(),
-                            0)
+                        shootData
                     )
                 }
+
+                val s = ""
+            } else {
+                val list = intent.getStringArrayListExtra(AppConstants.EXTERIOR_LIST)
+                val imageNameList = intent.getStringArrayListExtra(AppConstants.SHOOT_IMAGE_NAME_LIST)
+
+                list?.forEachIndexed { index, image ->
+                    val shootData = ShootData(
+                        image,
+                        intent.getStringExtra(AppConstants.PROJECT_ID)!!,
+                        intent.getStringExtra(AppConstants.SKU_ID)!!,
+                        getImageCategory(intent.getStringExtra(AppConstants.CATEGORY_ID)!!),
+                        Utilities.getPreference(this, AppConstants.AUTH_KEY).toString(),
+                        index,
+                        index.plus(1),
+                        0,
+                        imageNameList!![index]
+                    )
+
+                    shootData.imageClicked = true
+                    shootViewModel.shootList.value!!.add(
+                        shootData
+                    )
+                }
+
+                val s = ""
+
             }
 
         }
     }
 
-
     override fun onStart() {
         super.onStart()
         googleApiClient?.connect()
         shoot("onStart called(shhot activity)")
-    }
-
-    override fun onResume() {
-        super.onResume()
-        shoot("onResume called(shoot activity)")
-    }
-
-    override fun onPause() {
-        super.onPause()
-        shoot("onPause called(shoot activity)")
     }
 
     override fun onStop() {
@@ -421,23 +394,14 @@ class ShootPortraitActivity :AppCompatActivity(), GoogleApiClient.ConnectionCall
         shoot("onStop called(shoot activity)")
     }
 
-    override fun onRestart() {
-        super.onRestart()
-        shoot("onRestart called(shoot activity)")
-    }
-
-    override fun onDestroy() {
-        super.onDestroy()
-        shoot("onDistroy called(shoot activity)")
-    }
-
-
     override fun onConnected(bundle: Bundle?) {
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION)
             == PackageManager.PERMISSION_GRANTED
         ) {
+
             try {
-                val lastLocation = LocationServices.FusedLocationApi.getLastLocation(googleApiClient)
+                val lastLocation =
+                    LocationServices.FusedLocationApi.getLastLocation(googleApiClient)
                 val lat: Double = lastLocation.latitude
                 val lon: Double = lastLocation.longitude
 
@@ -456,7 +420,7 @@ class ShootPortraitActivity :AppCompatActivity(), GoogleApiClient.ConnectionCall
                 Log.d(TAG, "onConnected: $location_data")
 
                 shootViewModel.location_data.value = location_data
-            }catch (e : Exception){
+            } catch (e: Exception) {
                 e.printStackTrace()
             }
 
@@ -468,9 +432,6 @@ class ShootPortraitActivity :AppCompatActivity(), GoogleApiClient.ConnectionCall
     override fun onConnectionSuspended(p0: Int) {
         TODO("Not yet implemented")
     }
-
-
-
 
 
     override fun onBackPressed() {
@@ -502,42 +463,7 @@ class ShootPortraitActivity :AppCompatActivity(), GoogleApiClient.ConnectionCall
     override fun onConnectionFailed(p0: ConnectionResult) {
         TODO("Not yet implemented")
     }
-
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        super.onActivityResult(requestCode, resultCode, data)
-
-        shootViewModel.isCameraButtonClickable = true
-
-        log("requestCode- "+requestCode )
-        log("resultCode- "+resultCode )
-        log("data- "+data )
-
-        if (data == null || resultCode == 0){
-            shootViewModel.shootList.value?.removeAt(shootViewModel.shootList.value!!.size - 1)
-        }
-
-        if (requestCode == CropImage.CROP_IMAGE_ACTIVITY_REQUEST_CODE) {
-            val result = CropImage.getActivityResult(data)
-            if (resultCode == RESULT_OK) {
-                val resultUri = result.uri
-
-                log("image uri- "+result.uri )
-
-               File(resultUri.path)
-                   .copyTo(File(shootViewModel.shootData.value?.capturedImage),
-                   true)
-
-                //shootViewModel.shootData.value?.capturedImage = file.path
-
-                CropConfirmDialog().show(supportFragmentManager, "CropConfirmDialog")
-
-            } else if (resultCode == CropImage.CROP_IMAGE_ACTIVITY_RESULT_ERROR_CODE) {
-                val error = result.error
-            }
-        }
-    }
 }
-
 
 
 

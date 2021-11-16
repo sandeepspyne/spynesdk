@@ -14,7 +14,6 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.work.*
 import com.google.android.material.snackbar.Snackbar
-import com.posthog.android.Properties
 import com.spyneai.*
 import com.spyneai.R
 import com.spyneai.activity.CategoriesActivity
@@ -28,7 +27,7 @@ import com.spyneai.interfaces.RetrofitClients
 import com.spyneai.needs.AppConstants
 import com.spyneai.needs.Utilities
 import com.spyneai.orders.ui.MyOrdersActivity
-import com.spyneai.orders.ui.MyOrdersFragment
+import com.spyneai.orders.ui.fragment.MyOrdersFragment
 import com.spyneai.posthog.Events
 import com.spyneai.service.Actions
 import com.spyneai.service.ImageUploadingService
@@ -107,60 +106,7 @@ class MainDashboardActivity : AppCompatActivity() {
 
 //                R.id.shootActivity -> {
 //                    if (isMagnatoMeterAvailable()) {
-//                        when (getString(R.string.app_name)) {
-//                            "Ola Cabs",
-//                            AppConstants.CARS24,
-//                            AppConstants.CARS24_INDIA,
-//                            AppConstants.SELL_ANY_CAR,
-//                            "Trusted cars",
-//                            "Travo Photos",
-//                            "Yalla Motors",
-//                            "Spyne Hiring",
-//                            AppConstants.AUTO_FOTO -> {
-//                                var intent = Intent(this, StartShootActivity::class.java)
-//                                intent.putExtra(
-//                                    AppConstants.CATEGORY_ID,
-//                                    AppConstants.CARS_CATEGORY_ID
-//                                )
-//                                intent.putExtra(AppConstants.CATEGORY_NAME, "Automobiles")
-//                                startActivity(intent)
-//                            }
-//
-//                            AppConstants.KARVI -> {
-//                                var intent = Intent(this, ShootActivity::class.java)
-//                                intent.putExtra(
-//                                    AppConstants.CATEGORY_ID,
-//                                    AppConstants.CARS_CATEGORY_ID
-//                                )
-//                                intent.putExtra(AppConstants.CATEGORY_NAME, "Automobiles")
-//                                startActivity(intent)
-//                            }
-//
-//                            "Flipkart",
-//                            "Udaan",
-//                            "Lal10",
-//                            "Amazon",
-//                            "Swiggy",
-//                            AppConstants.SWIGGYINSTAMART,
-//                            AppConstants.BATA,
-//                            AppConstants.FLIPKART_GROCERY, AppConstants.EBAY -> {
-//                                val intent =
-//                                    Intent(
-//                                        this@MainDashboardActivity,
-//                                        CategoriesActivity::class.java
-//                                    )
-//                                startActivity(intent)
-//                            }
-//                            else -> {
-//                                var intent = Intent(this, ShootActivity::class.java)
-//                                intent.putExtra(
-//                                    AppConstants.CATEGORY_ID,
-//                                    AppConstants.CARS_CATEGORY_ID
-//                                )
-//                                intent.putExtra(AppConstants.CATEGORY_NAME, "Automobiles")
-//                                startActivity(intent)
-//                            }
-//                        }
+//                        continueShoot()
 //                    } else {
 //                        NoMagnaotoMeterDialog().show(
 //                            supportFragmentManager,
@@ -194,6 +140,69 @@ class MainDashboardActivity : AppCompatActivity() {
 
         checkAppVersion()
         observeAppVersion()
+
+        viewModel?.continueAnyway?.observe(this,{
+            if (it){
+                continueShoot()
+            }
+        })
+    }
+
+    private fun continueShoot() {
+        when (getString(R.string.app_name)) {
+            "Ola Cabs",
+            AppConstants.CARS24,
+            AppConstants.CARS24_INDIA,
+            AppConstants.SELL_ANY_CAR,
+            "Trusted cars",
+            "Travo Photos",
+            "Yalla Motors",
+            "Spyne Hiring",
+            AppConstants.AUTO_FOTO -> {
+                var intent = Intent(this, StartShootActivity::class.java)
+                intent.putExtra(
+                    AppConstants.CATEGORY_ID,
+                    AppConstants.CARS_CATEGORY_ID
+                )
+                intent.putExtra(AppConstants.CATEGORY_NAME, "Automobiles")
+                startActivity(intent)
+            }
+
+            AppConstants.KARVI -> {
+                var intent = Intent(this, ShootActivity::class.java)
+                intent.putExtra(
+                    AppConstants.CATEGORY_ID,
+                    AppConstants.CARS_CATEGORY_ID
+                )
+                intent.putExtra(AppConstants.CATEGORY_NAME, "Automobiles")
+                startActivity(intent)
+            }
+
+            "Flipkart",
+            "Udaan",
+            "Lal10",
+            "Amazon",
+            "Swiggy",
+            AppConstants.SWIGGYINSTAMART,
+            AppConstants.BATA,
+            AppConstants.FLIPKART_GROCERY, AppConstants.EBAY -> {
+                val intent =
+                    Intent(
+                        this@MainDashboardActivity,
+                        CategoriesActivity::class.java
+                    )
+                startActivity(intent)
+            }
+            else -> {
+                var intent = Intent(this, ShootActivity::class.java)
+                intent.putExtra(
+                    AppConstants.CATEGORY_ID,
+                    AppConstants.CARS_CATEGORY_ID
+                )
+                intent.putExtra(AppConstants.CATEGORY_NAME, "Automobiles")
+                startActivity(intent)
+            }
+        }
     }
 
     private fun checkAppVersion() {
@@ -283,7 +292,7 @@ class MainDashboardActivity : AppCompatActivity() {
         }
 
     private fun capture(eventName: String) {
-        val properties = Properties()
+        val properties = HashMap<String,Any?>()
         properties.apply {
             this["email"] =
                 Utilities.getPreference(this@MainDashboardActivity, AppConstants.EMAIL_ID)
@@ -331,7 +340,7 @@ class MainDashboardActivity : AppCompatActivity() {
                 startService(serviceIntent)
             }
 
-            val properties = Properties()
+            val properties = HashMap<String,Any?>()
                 .apply {
                     put("service_state", "Started")
                     put(
@@ -368,7 +377,7 @@ class MainDashboardActivity : AppCompatActivity() {
                 startService(serviceIntent)
             }
 
-            val properties = Properties()
+            val properties = HashMap<String,Any?>()
                 .apply {
                     put("service_state", "Started")
                     put(
@@ -382,6 +391,7 @@ class MainDashboardActivity : AppCompatActivity() {
             captureEvent(Events.SERVICE_STARTED, properties)
         }
     }
+
 
     private fun cancelAllWorkers() {
         //cancel all workers
@@ -442,7 +452,7 @@ class MainDashboardActivity : AppCompatActivity() {
                             capture(Events.FILE_FOLDER_UPLOAD_FALSE)
                         }
                     } else {
-                        val properties = Properties()
+                        val properties = HashMap<String,Any?>()
                         properties.apply {
                             this["email"] = Utilities.getPreference(
                                 this@MainDashboardActivity,
@@ -457,7 +467,7 @@ class MainDashboardActivity : AppCompatActivity() {
                         )
                     }
                 } else {
-                    val properties = Properties()
+                    val properties = HashMap<String,Any?>()
                     properties.apply {
                         this["email"] = Utilities.getPreference(
                             this@MainDashboardActivity,
@@ -476,7 +486,7 @@ class MainDashboardActivity : AppCompatActivity() {
             override fun onFailure(call: Call<UploadFolderRes>, t: Throwable) {
                 Utilities.hideProgressDialog()
 
-                val properties = Properties()
+                val properties = HashMap<String,Any?>()
                 properties.apply {
                     this["email"] =
                         Utilities.getPreference(this@MainDashboardActivity, AppConstants.EMAIL_ID)
@@ -517,7 +527,7 @@ class MainDashboardActivity : AppCompatActivity() {
                 startService(serviceIntent)
             }
 
-            val properties = Properties()
+            val properties = HashMap<String,Any?>()
                 .apply {
                     put("service_state", "Started")
                     put(
@@ -532,6 +542,7 @@ class MainDashboardActivity : AppCompatActivity() {
         }
     }
 
+
     private fun folderCheckError(error: String) {
         Snackbar.make(binding.root, error, Snackbar.LENGTH_INDEFINITE)
             .setAction("Retry") {
@@ -543,7 +554,7 @@ class MainDashboardActivity : AppCompatActivity() {
 
     override fun onResume() {
         super.onResume()
-        if(viewModel?.resultCode !=0 && viewModel?.resultCode !=-1) {
+        if (viewModel?.resultCode != 0 && viewModel?.resultCode != -1) {
             binding.bottomNavigation.selectedItemId = R.id.homeDashboardFragment
         }
         viewModel?.resultCode = null
@@ -562,4 +573,3 @@ class MainDashboardActivity : AppCompatActivity() {
             super.onBackPressed()
     }
 }
-

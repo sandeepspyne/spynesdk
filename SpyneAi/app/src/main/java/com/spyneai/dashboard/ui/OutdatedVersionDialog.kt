@@ -8,7 +8,6 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.DialogFragment
 import com.spyneai.databinding.DialogOutdatedAppVersionBinding
-import com.spyneai.databinding.DialogResolutionNotSupportedBinding
 
 class OutdatedVersionDialog : DialogFragment() {
 

@@ -1,8 +1,6 @@
 package com.spyneai.credits
 
 import com.spyneai.credits.model.*
-import okhttp3.MultipartBody
-import okhttp3.RequestBody
 import retrofit2.Call
 import retrofit2.http.*
 
@@ -22,7 +20,7 @@ interface CreditApiService {
         @Field("auth_key") authKey : String,
         @Field("credit_reduce") creditReduce:String,
         @Field("sku_id") skuId : String,
-        @Field("source") source : String = "App",
+        @Field("source") source : String = "App_android",
         @Field("image_id") imageId : String = ""
     ): Call<ReduceCreditResponse>?
 

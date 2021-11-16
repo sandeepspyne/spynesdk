@@ -11,17 +11,16 @@ import android.os.IBinder
 import android.os.PowerManager
 import android.util.Log
 import android.webkit.MimeTypeMap
-import com.posthog.android.Properties
 import com.spyneai.BaseApplication
 import com.spyneai.R
 import com.spyneai.captureEvent
+import com.spyneai.credits.CreditManager
+import com.spyneai.dashboard.ui.MainDashboardActivity
 import com.spyneai.extras.events.ProcessingImagesEvent
 import com.spyneai.needs.AppConstants
 import com.spyneai.service.ServiceState
 import com.spyneai.service.log
 import com.spyneai.service.setServiceState
-import com.spyneai.credits.CreditManager
-import com.spyneai.dashboard.ui.MainDashboardActivity
 import org.greenrobot.eventbus.EventBus
 import java.io.File
 
@@ -117,7 +116,7 @@ class ImageDownloadingService : Service(),ImageDownloadManager.Listener {
     }
 
     private fun createCompletedNotification(hd: Boolean) {
-        captureEvent("Download Completed", Properties())
+        captureEvent("Download Completed", HashMap<String,Any?>())
 
         var notification = if (hd)
             createNotification("HD images downloaded! Check in your gallery", false)
@@ -127,7 +126,7 @@ class ImageDownloadingService : Service(),ImageDownloadManager.Listener {
     }
 
     private fun createFailureNotification(hd: Boolean) {
-        captureEvent("Download Failed", Properties())
+        captureEvent("Download Failed", HashMap<String,Any?>())
 
         var notification = if (hd) createNotification(
             "HD images downloading failed! please try again",

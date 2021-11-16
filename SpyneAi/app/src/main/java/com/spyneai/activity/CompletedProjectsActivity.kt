@@ -1,10 +1,9 @@
 package com.spyneai.activity
 
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.View
+import androidx.appcompat.app.AppCompatActivity
 import com.spyneai.databinding.ActivityCompletedProjectsBinding
-import com.spyneai.orders.ui.MyCompletedOrdersFragment
 import com.spyneai.orders.ui.fragment.CompletedProjectsFragment
 
 class CompletedProjectsActivity : AppCompatActivity() {

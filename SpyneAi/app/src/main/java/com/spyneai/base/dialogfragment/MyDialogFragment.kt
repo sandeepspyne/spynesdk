@@ -6,7 +6,6 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.DialogFragment
 import com.spyneai.shoot.utils.TAG
-import java.lang.Exception
 
 class MyDialogFragment : DialogFragment() {
 

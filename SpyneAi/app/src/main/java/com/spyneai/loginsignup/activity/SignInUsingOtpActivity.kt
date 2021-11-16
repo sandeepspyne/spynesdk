@@ -4,19 +4,13 @@ import android.content.ActivityNotFoundException
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
-import android.text.Editable
-import android.text.TextWatcher
-import android.util.Log
-import android.view.View
 import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AppCompatDelegate
-import com.posthog.android.Properties
 import com.spyneai.R
 import com.spyneai.captureEvent
 import com.spyneai.captureFailureEvent
 import com.spyneai.dashboard.ui.WhiteLabelConstants
-import com.spyneai.databinding.ActivityLoginBinding
 import com.spyneai.databinding.ActivitySignInUsingOtpBinding
 import com.spyneai.interfaces.MyAPIService
 import com.spyneai.interfaces.RetrofitClients
@@ -90,7 +84,11 @@ class SignInUsingOtpActivity : AppCompatActivity() {
 
     //Sign in api
     private fun makeSignIn() {
-        val properties = Properties().putValue("email",binding.etEmail.text.toString().trim())
+        val properties = HashMap<String,Any?>()
+            .apply {
+               this.put("email",binding.etEmail.text.toString().trim())
+            }
+
         captureEvent(Events.OTP_LOGIN_INTIATED,properties)
 
         Utilities.showProgressDialog(this)

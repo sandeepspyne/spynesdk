@@ -1,8 +1,6 @@
 package com.spyneai.service.manual
 
 import android.content.Context
-import androidx.work.ListenableWorker
-import com.posthog.android.Properties
 import com.spyneai.base.network.Resource
 import com.spyneai.captureEvent
 import com.spyneai.captureFailureEvent
@@ -21,7 +19,6 @@ import kotlinx.coroutines.launch
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.MultipartBody
 import okhttp3.RequestBody.Companion.asRequestBody
-import okhttp3.RequestBody.Companion.toRequestBody
 import java.io.File
 
 class ManualImageUploader(val context: Context,
@@ -112,32 +109,32 @@ class ManualImageUploader(val context: Context,
                                         requestFile
                                     )
 
-                                var response = shootRepository.uploadImage(
-                                    uploadStatuRes.value.data.projectId.toRequestBody(MultipartBody.FORM),
-                                    uploadStatuRes.value.data.skuId.toRequestBody(MultipartBody.FORM),
-                                    uploadStatuRes.value.data.imageCategory.toRequestBody(MultipartBody.FORM),
-                                    authKey.toRequestBody(MultipartBody.FORM),
-                                    "Retry".toRequestBody(MultipartBody.FORM),
-                                    uploadStatuRes.value.data.sequence,
-                                    "".toRequestBody(MultipartBody.FORM),
-                                    imageFile)
-
-                                when(response){
-                                    is Resource.Success -> {
-                                        logManualUpload("Manual upload success")
-                                        captureEvent(Events.MANUALLY_UPLOADED,image,true,null)
-                                        startNextUpload(image.itemId!!,true,imageType)
-                                    }
-
-                                    is Resource.Failure -> {
-                                        logManualUpload("Manual upload failed")
-                                        if(response.errorMessage == null){
-                                            captureEvent(Events.MANUAL_UPLOAD_FAILED,image,false,response.errorCode.toString()+": Http exception from server")
-                                        }else {
-                                            captureEvent(Events.MANUAL_UPLOAD_FAILED,image,false,response.errorCode.toString()+": "+response.errorMessage)
-                                        }
-                                    }
-                                }
+//                                var response = shootRepository.uploadImage(
+//                                    uploadStatuRes.value.data.projectId.toRequestBody(MultipartBody.FORM),
+//                                    uploadStatuRes.value.data.skuId.toRequestBody(MultipartBody.FORM),
+//                                    uploadStatuRes.value.data.imageCategory.toRequestBody(MultipartBody.FORM),
+//                                    authKey.toRequestBody(MultipartBody.FORM),
+//                                    "Retry".toRequestBody(MultipartBody.FORM),
+//                                    uploadStatuRes.value.data.sequence,
+//                                    "".toRequestBody(MultipartBody.FORM),
+//                                    imageFile)
+//
+//                                when(response){
+//                                    is Resource.Success -> {
+//                                        logManualUpload("Manual upload success")
+//                                        captureEvent(Events.MANUALLY_UPLOADED,image,true,null)
+//                                        startNextUpload(image.itemId!!,true,imageType)
+//                                    }
+//
+//                                    is Resource.Failure -> {
+//                                        logManualUpload("Manual upload failed")
+//                                        if(response.errorMessage == null){
+//                                            captureEvent(Events.MANUAL_UPLOAD_FAILED,image,false,response.errorCode.toString()+": Http exception from server")
+//                                        }else {
+//                                            captureEvent(Events.MANUAL_UPLOAD_FAILED,image,false,response.errorCode.toString()+": "+response.errorMessage)
+//                                        }
+//                                    }
+//                                }
                             }
                         }
 
@@ -193,7 +190,7 @@ class ManualImageUploader(val context: Context,
     }
 
     private fun captureEvent(eventName : String, image : ImageFile, isSuccess : Boolean, error: String?) {
-        val properties = Properties()
+        val properties = HashMap<String,Any?>()
         properties.apply {
             this["sku_id"] = image.skuId
             this["project_id"] = image.projectId

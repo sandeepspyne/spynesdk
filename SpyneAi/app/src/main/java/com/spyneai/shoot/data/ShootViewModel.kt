@@ -1,31 +1,34 @@
 package com.spyneai.shoot.data
 
+import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.work.*
-import com.google.gson.JsonObject
 import com.spyneai.BaseApplication
-import com.spyneai.R
 import com.spyneai.base.network.Resource
 import com.spyneai.camera2.OverlaysResponse
 import com.spyneai.camera2.ShootDimensions
 import com.spyneai.dashboard.response.NewSubCatResponse
 import com.spyneai.needs.AppConstants
 import com.spyneai.needs.Utilities
+import com.spyneai.reshoot.data.ReshootOverlaysRes
 import com.spyneai.shoot.data.model.*
 import com.spyneai.shoot.response.SkuProcessStateResponse
 import com.spyneai.shoot.response.UpdateVideoSkuRes
 import com.spyneai.shoot.workmanager.OverlaysPreloadWorker
 import kotlinx.coroutines.launch
+import org.json.JSONArray
 import org.json.JSONObject
-import java.util.concurrent.TimeUnit
 
 class ShootViewModel : ViewModel() {
     private val TAG = "ShootViewModel"
     private val repository = ShootRepository()
     private val localRepository = ShootLocalRepository()
+    private val imageRepository = ImageLocalRepository()
+
+    val showHint: MutableLiveData<Boolean> = MutableLiveData()
 
     var isCameraButtonClickable = true
     var processSku: Boolean = true
@@ -38,8 +41,6 @@ class ShootViewModel : ViewModel() {
     val isSensorAvailable: MutableLiveData<Boolean> = MutableLiveData()
     var showDialog = true
     var miscDialogShowed = false
-
-
 
     val skuNumber: MutableLiveData<Int> = MutableLiveData()
 
@@ -64,8 +65,6 @@ class ShootViewModel : ViewModel() {
     val interior360Dialog: MutableLiveData<Boolean> = MutableLiveData()
 
     val iniProgressFrame: MutableLiveData<Boolean> = MutableLiveData()
-
-
     val subCatName: MutableLiveData<String> = MutableLiveData()
 
     val shootList: MutableLiveData<ArrayList<ShootData>> = MutableLiveData()
@@ -111,10 +110,10 @@ class ShootViewModel : ViewModel() {
     val updateVideoSkuRes: LiveData<Resource<UpdateVideoSkuRes>>
         get() = _updateVideoSkuRes
 
-    private val _updateFootwearSubcatRes : MutableLiveData<Resource<UpdateFootwearSubcatRes>> = MutableLiveData()
+    private val _updateFootwearSubcatRes: MutableLiveData<Resource<UpdateFootwearSubcatRes>> =
+        MutableLiveData()
     val updateFootwearSubcatRes: LiveData<Resource<UpdateFootwearSubcatRes>>
         get() = _updateFootwearSubcatRes
-
 
 
     val shootDimensions: MutableLiveData<ShootDimensions> = MutableLiveData()
@@ -131,8 +130,16 @@ class ShootViewModel : ViewModel() {
 
     val subCategoryId: MutableLiveData<String> = MutableLiveData()
     val exterirorAngles: MutableLiveData<Int> = MutableLiveData()
-    val shootNumber: MutableLiveData<Int> = MutableLiveData()
+
+    var currentShoot = 0
+    var allExteriorClicked = false
+    var allEcomOverlyasClicked = false
+    var allInteriorClicked = false
+    var allMisc = false
+    var allReshootClicked = false
+
     val shootData: MutableLiveData<ShootData> = MutableLiveData()
+    val reshootCompleted: MutableLiveData<Boolean> = MutableLiveData()
 
     val showConfirmReshootDialog: MutableLiveData<Boolean> = MutableLiveData()
     val showCropDialog: MutableLiveData<Boolean> = MutableLiveData()
@@ -149,20 +156,22 @@ class ShootViewModel : ViewModel() {
 
 
     val interiorAngles: MutableLiveData<Int> = MutableLiveData()
-    val interiorShootNumber: MutableLiveData<Int> = MutableLiveData()
     val miscAngles: MutableLiveData<Int> = MutableLiveData()
-    val miscShootNumber: MutableLiveData<Int> = MutableLiveData()
-
-    var overlayRightMargin = 0
 
     val reshootCapturedImage: MutableLiveData<Boolean> = MutableLiveData()
-    val confirmCapturedImage: MutableLiveData<Boolean> = MutableLiveData()
+   // val confirmCapturedImage: MutableLiveData<Boolean> = MutableLiveData()
     val projectId: MutableLiveData<String> = MutableLiveData()
     val showFoodBackground: MutableLiveData<Boolean> = MutableLiveData()
 
     val addMoreAngle: MutableLiveData<Boolean> = MutableLiveData()
+    var isReshoot = false
+    var isReclick = false
+    var reshotImageName = ""
+    var updateSelectItem : MutableLiveData<Boolean> = MutableLiveData()
 
-    private val _skuProcessStateWithBgResponse: MutableLiveData<Resource<SkuProcessStateResponse>> = MutableLiveData()
+
+    private val _skuProcessStateWithBgResponse: MutableLiveData<Resource<SkuProcessStateResponse>> =
+        MutableLiveData()
     val skuProcessStateWithBgResponse: LiveData<Resource<SkuProcessStateResponse>>
         get() = _skuProcessStateWithBgResponse
 
@@ -172,6 +181,10 @@ class ShootViewModel : ViewModel() {
     val skuProcessStateWithShadowResponse: LiveData<Resource<SkuProcessStateResponse>>
         get() = _skuProcessStateWithShadowResponse
 
+    private val _reshootOverlaysRes: MutableLiveData<Resource<ReshootOverlaysRes>> =
+        MutableLiveData()
+    val reshootOverlaysRes: LiveData<Resource<ReshootOverlaysRes>>
+        get() = _reshootOverlaysRes
 
     fun getSubCategories(
         authKey: String, prodId: String
@@ -194,7 +207,6 @@ class ShootViewModel : ViewModel() {
         _overlaysResponse.value = Resource.Loading
         _overlaysResponse.value = repository.getOverlays(authKey, prodId, prodSubcategoryId, frames)
     }
-
 
     suspend fun preloadOverlays(overlays: List<String>) {
         //check if preload worker is alive
@@ -254,19 +266,16 @@ class ShootViewModel : ViewModel() {
             _updateTotalFramesRes.value = repository.updateTotalFrames(skuId, totalFrames, authKey)
         }
 
-    fun getSelectedAngles() = exterirorAngles.value
-
-    fun getShootProgressList(angles: Int, selectedAngles: Int): ArrayList<ShootProgress> {
-        val shootProgressList = ArrayList<ShootProgress>()
-        shootProgressList.add(ShootProgress(true))
-
-        for (i in 1 until angles) {
-            if (i <= selectedAngles)
-                shootProgressList.add(ShootProgress(true))
-            else
-                shootProgressList.add(ShootProgress(false))
+    fun getSelectedAngles(appName: String): Int {
+        return if (exterirorAngles.value == null) {
+            when (appName) {
+                AppConstants.CARS24, AppConstants.CARS24_INDIA -> 5
+                AppConstants.SELL_ANY_CAR -> 4
+                else -> 8
+            }
+        } else {
+            exterirorAngles.value!!
         }
-        return shootProgressList
     }
 
     fun insertImage(shootData: ShootData) {
@@ -276,20 +285,30 @@ class ShootViewModel : ViewModel() {
         image.categoryName = shootData.image_category
         image.imagePath = shootData.capturedImage
         image.sequence = shootData.sequence
+        image.overlayId = overlayId.toString()
         image.skuName = sku.value?.skuName
         image.angle = shootData.angle
         image.meta = shootData.meta
+        image.name = if (shootData.name.contains(".")) shootData.name else shootData.name + "." + shootData.capturedImage.substringAfter(".")
+        image.debugData = shootData.debugData
+        image.isReshoot = if (isReshoot) 1 else 0
+        image.isReclick = if (isReclick) 1 else 0
 
-        localRepository.insertImage(image)
+        if (imageRepository.isImageExist(image.skuId!!, image.name!!)) {
+            imageRepository.updateImage(image)
+        } else {
+            imageRepository.insertImage(image)
+        }
     }
 
     fun createProject(
         authKey: String, projectName: String, prodCatId: String,
-        dynamicLayout : JSONObject? = null,
+        dynamicLayout: JSONObject? = null,
         location_data : JSONObject? = null
     ) = viewModelScope.launch {
         _createProjectRes.value = Resource.Loading
-        _createProjectRes.value = repository.createProject(authKey, projectName, prodCatId,dynamicLayout,location_data)
+        _createProjectRes.value =
+            repository.createProject(authKey, projectName, prodCatId, dynamicLayout,location_data)
     }
 
     fun skuProcessState(
@@ -303,14 +322,16 @@ class ShootViewModel : ViewModel() {
         auth_key: String, project_id: String, background_id: Int
     ) = viewModelScope.launch {
         _skuProcessStateWithBgResponse.value = Resource.Loading
-        _skuProcessStateWithBgResponse.value = repository.skuProcessStateWithBackgroundId(auth_key, project_id, background_id)
+        _skuProcessStateWithBgResponse.value =
+            repository.skuProcessStateWithBackgroundId(auth_key, project_id, background_id)
     }
 
     fun skuProcessStateWithShadowOption(
         auth_key: String, project_id: String, background_id: Int, shadow: String
     ) = viewModelScope.launch {
         _skuProcessStateWithShadowResponse.value = Resource.Loading
-        _skuProcessStateWithShadowResponse.value = repository.skuProcessStateWithShadowOption(auth_key, project_id, background_id, shadow)
+        _skuProcessStateWithShadowResponse.value =
+            repository.skuProcessStateWithShadowOption(auth_key, project_id, background_id, shadow)
     }
 
 
@@ -320,16 +341,25 @@ class ShootViewModel : ViewModel() {
     ) = viewModelScope.launch {
         _createSkuRes.value = Resource.Loading
         _createSkuRes.value =
-            repository.createSku(authKey, projectId, prodCatId, prodSubCatId, skuName, totalFrames,1,0)
+            repository.createSku(
+                authKey,
+                projectId,
+                prodCatId,
+                prodSubCatId,
+                skuName,
+                totalFrames,
+                1,
+                0
+            )
     }
 
     fun updateVideoSku(
         skuId: String,
-        prodSubCatId : String,
+        prodSubCatId: String,
         initialImageCount: Int
     ) = viewModelScope.launch {
         _updateVideoSkuRes.value = Resource.Loading
-        _updateVideoSkuRes.value = repository.updateVideoSku(skuId,prodSubCatId,initialImageCount)
+        _updateVideoSkuRes.value = repository.updateVideoSku(skuId, prodSubCatId, initialImageCount)
     }
 
     fun insertSku(sku: Sku) {
@@ -348,7 +378,7 @@ class ShootViewModel : ViewModel() {
         localRepository.updateSubcategoryId(sku.value?.skuId!!, subcategoryId, subcategoryName)
     }
 
-    fun getImagesbySkuId(skuId: String) = localRepository.getImagesBySkuId(skuId)
+    fun getImagesbySkuId(skuId: String) = imageRepository.getImagesBySkuId(skuId)
 
     fun updateProjectStatus(projectId: String) = localRepository.updateProjectStatus(projectId)
 
@@ -357,18 +387,85 @@ class ShootViewModel : ViewModel() {
     ) = viewModelScope.launch {
         _updateFootwearSubcatRes.value = Resource.Loading
         _updateFootwearSubcatRes.value = repository.updateFootwearSubcategory(
-            Utilities.getPreference(BaseApplication.getContext(),AppConstants.AUTH_KEY).toString(),
+            Utilities.getPreference(BaseApplication.getContext(), AppConstants.AUTH_KEY).toString(),
             sku.value?.skuId!!,
             exterirorAngles.value!!,
             subCategory.value?.prod_sub_cat_id!!
-            )
+        )
     }
 
     fun updateVideoSkuLocally(sku: Sku) {
         localRepository.updateVideoSkuLocally(sku)
     }
 
-    fun checkMiscShootStatus(appName : String) {
+
+    fun getFileName(
+        interiorSize: Int?,
+        miscSize: Int?,
+    ): String {
+        return if (isReshoot){
+            reshotImageName
+        }else{
+            val filePrefix = FileNameManager().getFileName(
+                if (categoryDetails.value?.imageType == "Misc") "Focus Shoot" else categoryDetails.value?.imageType!!,
+                currentShoot,
+                shootList.value,
+                interiorSize,
+                miscSize
+            )
+
+            sku.value?.skuName + "_" + sku.value?.skuId + "_" + filePrefix
+        }
+
+    }
+
+    fun getSequenceNumber(exteriorSize: Int, interiorSize: Int, miscSize: Int): Int {
+        return SequeneNumberManager().getSequenceNumber(
+            fromDrafts,
+            if (categoryDetails.value?.imageType == "Misc") "Focus Shoot" else categoryDetails.value?.imageType!!,
+            currentShoot,
+            shootList.value?.size!!,
+            exteriorSize,
+            interiorSize,
+            miscSize
+        )
+    }
+
+    fun getOnImageConfirmed(): Boolean {
+        return if (onImageConfirmed.value == null) true
+        else !onImageConfirmed.value!!
+    }
+
+    fun getOverlay(): String {
+        return displayThumbanil
+//        val overlayRes = (overlaysResponse.value as Resource.Success).value
+//        return overlayRes.data[overlayRes.data.indexOf(selectedOverlay)].display_thumbnail
+    }
+
+    fun getName(): String {
+//        val overlayRes = (overlaysResponse.value as Resource.Success).value
+//        return overlayRes.data[overlayRes.data.indexOf(selectedOverlay)].display_name
+        return displayName
+    }
+
+
+    var displayName = ""
+    var displayThumbanil = ""
+    //var sequence = 0
+    var overlayId = 0
+
+    // var selectedOverlay : OverlaysResponse.Data? = null
+    val getSubCategories = MutableLiveData<Boolean>()
+    var isSubcategoriesSelectionShown = false
+    val selectAngles = MutableLiveData<Boolean>()
+
+    val onImageConfirmed = MutableLiveData<Boolean>()
+
+    fun getCurrentShoot() = shootList.value?.firstOrNull() {
+        it.overlayId == overlayId
+    }
+
+    fun checkMiscShootStatus(appName: String) {
         val subCatResponse = (subCategoriesResponse.value as Resource.Success).value
 
         when {
@@ -381,12 +478,211 @@ class ShootViewModel : ViewModel() {
         }
     }
 
-    fun selectBackground(appName : String) {
+    fun selectBackground(appName: String) {
         if (appName == AppConstants.OLA_CABS)
             show360InteriorDialog.value = true
         else
             selectBackground.value = true
     }
 
+    fun skipImage(appName: String) {
+        when (categoryDetails.value?.imageType) {
+            "Interior" -> {
+                checkMiscShootStatus(appName)
+            }
 
+            "Focus Shoot" -> {
+                selectBackground(appName)
+            }
+        }
+    }
+
+    val notifyItemChanged = MutableLiveData<Int>()
+    val scrollView = MutableLiveData<Int>()
+
+    fun setSelectedItem(thumbnails: List<Any>) {
+        if (getCurrentShoot() == null){
+            Log.d(TAG, "setSelectedItem: "+overlayId)
+        }else{
+            when (categoryDetails.value?.imageType) {
+                "Exterior","Footwear" -> {
+                    val list = thumbnails as List<OverlaysResponse.Data>
+
+                    val position = currentShoot
+
+                    list[position].isSelected = false
+                    list[position].imageClicked = true
+                    list[position].imagePath = getCurrentShoot()!!.capturedImage
+
+                    notifyItemChanged.value = position
+
+                    if (position != list.size.minus(1)) {
+                        var foundNext = false
+
+                        for (i in position..list.size.minus(1)) {
+                            val s = ""
+                            if (!list[i].isSelected && !list[i].imageClicked) {
+                                foundNext = true
+                                list[i].isSelected = true
+                                currentShoot = i
+
+                                notifyItemChanged.value = i
+                                scrollView.value = i
+                                break
+                            }
+                        }
+
+                        if (!foundNext) {
+                            val element = list.firstOrNull {
+                                !it.isSelected && !it.imageClicked
+                            }
+
+                            if (element != null) {
+                                element?.isSelected = true
+                                notifyItemChanged.value = list.indexOf(element)
+                                scrollView.value = element?.sequenceNumber!!
+                            }
+                        }
+                    } else {
+                        val element = list.firstOrNull {
+                            !it.isSelected && !it.imageClicked
+                        }
+
+                        if (element != null) {
+                            element?.isSelected = true
+                            notifyItemChanged.value = list.indexOf(element)
+                            scrollView.value = element?.sequenceNumber!!
+                        }
+                    }
+                }
+
+                "Interior" -> {
+                    val list = thumbnails as List<NewSubCatResponse.Interior>
+
+                    val position = currentShoot
+
+                    list[position].isSelected = false
+                    list[position].imageClicked = true
+                    list[position].imagePath = getCurrentShoot()!!.capturedImage
+
+                    notifyItemChanged.value = position
+
+                    if (position != list.size.minus(1)) {
+                        var foundNext = false
+
+                        for (i in position..list.size.minus(1)) {
+                            if (!list[i].isSelected && !list[i].imageClicked) {
+                                foundNext = true
+                                list[i].isSelected = true
+                                notifyItemChanged.value = i
+                                scrollView.value = i
+                                break
+                            }
+                        }
+
+                        if (!foundNext) {
+                            val element = list.firstOrNull {
+                                !it.isSelected && !it.imageClicked
+                            }
+
+                            if (element != null) {
+                                element?.isSelected = true
+                                notifyItemChanged.value = list.indexOf(element)
+                                scrollView.value = element?.sequenceNumber!!
+                            }
+                        }
+                    } else {
+                        val element = list.firstOrNull {
+                            !it.isSelected && !it.imageClicked
+                        }
+
+                        if (element != null) {
+                            element?.isSelected = true
+                            notifyItemChanged.value = list.indexOf(element)
+                            scrollView.value = element?.sequenceNumber!!
+                        }
+                    }
+                }
+
+                "Focus Shoot" -> {
+                    val list = thumbnails as List<NewSubCatResponse.Miscellaneous>
+
+                    val position = currentShoot
+
+                    list[position].isSelected = false
+                    list[position].imageClicked = true
+                    list[position].imagePath = getCurrentShoot()!!.capturedImage
+
+                    notifyItemChanged.value = position
+
+                    if (position != list.size.minus(1)) {
+                        var foundNext = false
+
+                        for (i in position..list.size.minus(1)) {
+                            val s = ""
+                            if (!list[i].isSelected && !list[i].imageClicked) {
+                                foundNext = true
+                                list[i].isSelected = true
+                                notifyItemChanged.value = i
+                                scrollView.value = i
+                                break
+                            }
+                        }
+
+                        if (!foundNext) {
+                            val element = list.firstOrNull {
+                                !it.isSelected && !it.imageClicked
+                            }
+
+                            if (element != null) {
+                                element?.isSelected = true
+                                notifyItemChanged.value = list.indexOf(element)
+                                scrollView.value = element?.sequenceNumber!!
+                            }
+                        }
+                    } else {
+                        val element = list.firstOrNull {
+                            !it.isSelected && !it.imageClicked
+                        }
+
+                        if (element != null) {
+                            element?.isSelected = true
+                            notifyItemChanged.value = list.indexOf(element)
+                            scrollView.value = element?.sequenceNumber!!
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+
+    fun getOverlayIds(
+        ids: JSONArray
+    ) = viewModelScope.launch {
+        _reshootOverlaysRes.value = Resource.Loading
+        _reshootOverlaysRes.value = repository.getOverlayIds(ids)
+    }
+
+    fun updateSkuExteriorAngles(skuId: String,angles: Int,subcatId : String) {
+        UpdateExteriorAngles(skuId,angles,subcatId).update()
+        localRepository.updateSkuExteriorAngles(skuId,angles)
+    }
+
+    var gifDialogShown = false
+    var createProjectDialogShown = false
+
+    init {
+        if (showVin.value == null) {
+            Log.d(TAG, ": showvin null")
+            showHint.value = true
+        }
+
+        if (showVin.value != null && isProjectCreated.value == null)
+            showVin.value = true
+
+        if (isProjectCreated.value == true)
+            getSubCategories.value = true
+
+    }
 }

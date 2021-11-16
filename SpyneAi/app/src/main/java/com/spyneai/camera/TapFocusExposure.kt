@@ -1,10 +1,8 @@
 package com.spyneai.camera
 
 import android.annotation.SuppressLint
-import android.content.ContentResolver
 import android.content.Context
 import android.util.AttributeSet
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.MotionEvent
 import android.view.View
@@ -16,8 +14,6 @@ import androidx.camera.core.CameraControl
 import androidx.camera.core.CameraInfo
 import androidx.camera.core.FocusMeteringAction
 import androidx.camera.view.PreviewView
-import androidx.constraintlayout.widget.ConstraintLayout
-import androidx.databinding.DataBindingUtil
 import com.spyneai.R
 import com.spyneai.camera2.ShootDimensions
 import kotlin.math.roundToInt

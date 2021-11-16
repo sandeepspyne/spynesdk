@@ -45,8 +45,8 @@ class CropConfirmDialog : BaseDialogFragment<ShootViewModel, FragmentCropConfirm
         binding.tvEndProject.setOnClickListener {
             if (viewModel.fromDrafts){
 
-                viewModel.confirmCapturedImage.value = true
-                viewModel.shootNumber.value = viewModel.shootNumber.value?.plus(1)
+//                viewModel.confirmCapturedImage.value = true
+//                viewModel.shootNumber.value = viewModel.shootNumber.value?.plus(1)
 
                 viewModel.isStopCaptureClickable = true
 
@@ -64,8 +64,8 @@ class CropConfirmDialog : BaseDialogFragment<ShootViewModel, FragmentCropConfirm
             }else {
                 if (viewModel.isStopCaptureClickable)
 
-                viewModel.confirmCapturedImage.value = true
-                viewModel.shootNumber.value = viewModel.shootNumber.value?.plus(1)
+//                viewModel.confirmCapturedImage.value = true
+//                viewModel.shootNumber.value = viewModel.shootNumber.value?.plus(1)
 
                 viewModel.isStopCaptureClickable = true
 
@@ -88,8 +88,8 @@ class CropConfirmDialog : BaseDialogFragment<ShootViewModel, FragmentCropConfirm
             viewModel.categoryDetails.value?.imageType = "Info"
             if (viewModel.fromDrafts){
 
-                viewModel.confirmCapturedImage.value = true
-                viewModel.shootNumber.value = viewModel.shootNumber.value?.plus(1)
+//                viewModel.confirmCapturedImage.value = true
+//                viewModel.shootNumber.value = viewModel.shootNumber.value?.plus(1)
 
                 viewModel.isStopCaptureClickable = true
 
@@ -105,8 +105,8 @@ class CropConfirmDialog : BaseDialogFragment<ShootViewModel, FragmentCropConfirm
             }else {
                 if (viewModel.isStopCaptureClickable)
 
-                    viewModel.confirmCapturedImage.value = true
-                viewModel.shootNumber.value = viewModel.shootNumber.value?.plus(1)
+//                    viewModel.confirmCapturedImage.value = true
+//                viewModel.shootNumber.value = viewModel.shootNumber.value?.plus(1)
 
                 viewModel.isStopCaptureClickable = true
 

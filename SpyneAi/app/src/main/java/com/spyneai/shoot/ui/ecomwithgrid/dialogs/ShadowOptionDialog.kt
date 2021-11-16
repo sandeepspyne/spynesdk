@@ -1,32 +1,13 @@
 package com.spyneai.shoot.ui.ecomwithgrid.dialogs
 
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.WindowManager
-import androidx.lifecycle.lifecycleScope
-import androidx.recyclerview.widget.LinearLayoutManager
-import com.bumptech.glide.Glide
-import com.posthog.android.Properties
-import com.spyneai.R
 import com.spyneai.base.BaseDialogFragment
-import com.spyneai.base.BaseFragment
-import com.spyneai.base.network.Resource
-import com.spyneai.captureEvent
-import com.spyneai.captureFailureEvent
-import com.spyneai.dashboard.ui.handleApiError
-import com.spyneai.databinding.ConfirmReshootEcomDialogBinding
 import com.spyneai.databinding.DialogShadowOptionBinding
-import com.spyneai.gotoHome
-import com.spyneai.needs.AppConstants
-import com.spyneai.needs.Utilities
-import com.spyneai.posthog.Events
-import com.spyneai.shoot.adapters.ProjectDetailAdapter
 import com.spyneai.shoot.data.ShootViewModel
-import com.spyneai.shoot.utils.log
-import kotlinx.coroutines.launch
 
 class ShadowOptionDialog : BaseDialogFragment<ShootViewModel, DialogShadowOptionBinding>() {
 
@@ -72,7 +53,7 @@ class ShadowOptionDialog : BaseDialogFragment<ShootViewModel, DialogShadowOption
 //                is Resource.Failure -> {
 //                    log("create project id failed")
 //                    requireContext().captureFailureEvent(
-//                        Events.SKU_PROCESS_STATE_WITH_SHADOW_FAILED, Properties(),
+//                        Events.SKU_PROCESS_STATE_WITH_SHADOW_FAILED, HashMap<String,Any?>(),
 //                        it.errorMessage!!
 //                    )
 //

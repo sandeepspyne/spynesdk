@@ -17,6 +17,7 @@ import com.spyneai.orders.data.response.CompletedSKUsResponse
 import com.spyneai.orders.data.response.GetOngoingSkusResponse
 import com.spyneai.orders.data.response.GetProjectsResponse
 import com.spyneai.orders.data.response.ImagesOfSkuRes
+import com.spyneai.reshoot.data.ReshootOverlaysRes
 import com.spyneai.service.manual.FilesDataRes
 import com.spyneai.shoot.data.model.*
 import com.spyneai.shoot.response.SkuProcessStateResponse
@@ -28,8 +29,9 @@ import com.spyneai.threesixty.data.response.ProcessThreeSixtyRes
 import com.spyneai.threesixty.data.response.VideoUploadedRes
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
-import org.json.JSONObject
 import okhttp3.ResponseBody
+import org.json.JSONArray
+import org.json.JSONObject
 import retrofit2.Call
 import retrofit2.http.*
 
@@ -47,6 +49,32 @@ interface ClipperApi {
         @Part("tags") tags: RequestBody,
         @Part file: MultipartBody.Part
     ): UploadImageResponse
+
+    @FormUrlEncoded
+    @POST("v4/image/upload")
+    suspend fun getPreSignedUrl(
+        @Field("project_id") project_id: String?,
+        @Field("sku_id") sku_id: String?,
+        @Field("image_category") image_category: String?,
+        @Field("image_name") image_name: String?,
+        @Field("overlay_id") overlay_id: Int?,
+        @Field("upload_type") upload_type: String?,
+        @Field("frame_seq_no") frame_seq_no: Int?,
+        @Field("is_reclick") is_reclick: Boolean?,
+        @Field("is_reshoot") isReshoot: Boolean?,
+        @Field("tags") tags: String?,
+        @Field("debug_data") debugData: String?,
+        @Field("angle") angle: Int,
+        @Field("source") source : String = "App_android",
+        @Field("auth_key") authKey : String = Utilities.getPreference(BaseApplication.getContext(),AppConstants.AUTH_KEY).toString()
+    ): ImagePreSignedRes
+
+    @FormUrlEncoded
+    @POST("v4/image/mark-done")
+    suspend fun markUploaded(
+        @Field("image_id") imageId: String,
+        @Field("auth_key") authKey : String = Utilities.getPreference(BaseApplication.getContext(),AppConstants.AUTH_KEY).toString()
+    ) : ImagePreSignedRes
 
     @Multipart
     @POST("v2/image/upload")
@@ -111,8 +139,8 @@ interface ClipperApi {
                               @Field("project_name") projectName : String,
                               @Field("prod_cat_id") prodCatId : String,
                               @Field("dynamic_layout") dynamic_layout: JSONObject? = null,
-                              @Field("location_data") location_data: JSONObject? = null
-    ) : CreateProjectRes
+                              @Field("location_data") location_data: JSONObject? = null,
+                              @Field("source") source : String = "App_android") : CreateProjectRes
 
     @FormUrlEncoded
     @POST("v2/sku/create/v2")
@@ -123,7 +151,8 @@ interface ClipperApi {
                           @Field("sku_name") skuName : String,
                           @Field("total_frames") totalFrames : Int,
                           @Field("images") images : Int,
-                          @Field("videos") videos : Int
+                          @Field("videos") videos : Int,
+                          @Field("source") source : String = "App_android"
     ) : CreateSkuRes
 
     @FormUrlEncoded
@@ -146,13 +175,13 @@ interface ClipperApi {
     @FormUrlEncoded
     @POST("v2/sku/processImages")
     suspend fun processSku(
-        @Field("auth_key") authKey: String,
-        @Field("sku_id") skuId: String,
-        @Field("background_id") backgroundId: String,
-        @Field("is_360") is360: Boolean,
-        @Field("number_plate_blur") numberPlateBlur: Boolean,
-        @Field("window_correction") windowCorrection: Boolean,
-        @Field("tint_window") tintWindow: Boolean,
+        @Field("auth_key") authKey : String,
+        @Field("sku_id") skuId : String,
+        @Field("background_id") backgroundId : String,
+        @Field("is_360") is360 : Boolean,
+        @Field("number_plate_blur") numberPlateBlur : Boolean,
+        @Field("window_correction") windowCorrection : Boolean,
+        @Field("tint_window") tintWindow : Boolean
     ) : ProcessSkuRes
 
 
@@ -182,6 +211,11 @@ interface ClipperApi {
         @Field("sku_id") skuId : String
     ) : ImagesOfSkuRes
 
+    @GET("v2/overlays/fetch-ids")
+    suspend fun getOverlayIds(
+        @Query("overlay_ids") overlayId : JSONArray,
+        @Query("auth_key") authKey : String = Utilities.getPreference(BaseApplication.getContext(),AppConstants.AUTH_KEY).toString()
+    ) : ReshootOverlaysRes
 
     @GET("v2/project/getSkuPerProject")
     suspend fun getProjectDetail(
@@ -266,7 +300,7 @@ interface ClipperApi {
         @Field("auth_key") authKey : String,
         @Field("credit_reduce") creditReduce:String,
         @Field("sku_id") skuId : String,
-        @Field("source") source : String = "App",
+        @Field("source") source : String = "App_android",
         @Field("image_id") imageId : String = ""
     ): ReduceCreditResponse
 
@@ -344,6 +378,7 @@ interface ClipperApi {
         @Query("auth_key") authKey : String,
     ): GetProjectNameResponse
 
+
     @GET("algo/save_to_gcp_presigned/presigned-url")
     suspend fun getGCPUrl(
         @Query("img_name") imageName : String,
@@ -357,4 +392,5 @@ interface ClipperApi {
         @Field("img_url") imageUrl : String = "",
         @Field("auth_key") authKey : String = Utilities.getPreference(BaseApplication.getContext(),AppConstants.AUTH_KEY).toString()
     ) : CheckInOutRes
+
 }

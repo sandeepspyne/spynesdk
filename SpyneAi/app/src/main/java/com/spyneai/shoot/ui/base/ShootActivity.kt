@@ -8,7 +8,6 @@ import android.content.Intent
 import android.content.pm.PackageManager
 import android.location.Address
 import android.location.Geocoder
-import android.location.Location
 import android.os.Bundle
 import android.util.Log
 import android.view.KeyEvent
@@ -24,14 +23,12 @@ import com.spyneai.base.network.Resource
 import com.spyneai.dashboard.response.NewSubCatResponse
 import com.spyneai.dashboard.ui.base.ViewModelFactory
 import com.spyneai.needs.AppConstants
-import com.spyneai.needs.Utilities
 import com.spyneai.setLocale
 import com.spyneai.shoot.data.ShootViewModel
 import com.spyneai.shoot.data.model.CategoryDetails
 import com.spyneai.shoot.data.model.CreateProjectRes
 import com.spyneai.shoot.data.model.Sku
-import com.spyneai.shoot.ui.OverlaysFragment
-import com.spyneai.shoot.ui.SelectBackgroundFragment
+import com.spyneai.shoot.ui.*
 import com.spyneai.shoot.ui.dialogs.ShootExitDialog
 import com.spyneai.shoot.ui.ecomwithgrid.GridEcomFragment
 import com.spyneai.shoot.ui.ecomwithgrid.ProjectDetailFragment
@@ -48,14 +45,17 @@ class ShootActivity : AppCompatActivity(), GoogleApiClient.ConnectionCallbacks,
     GoogleApiClient.OnConnectionFailedListener {
 
     lateinit var cameraFragment: CameraFragment
-    lateinit var overlaysFragment: OverlaysFragment
+    lateinit var draftShootFragment: DraftShootFragment
+    lateinit var overlays: OverlaysFragment
     lateinit var gridEcomFragment: GridEcomFragment
     lateinit var overlayEcomFragment: OverlayEcomFragment
     lateinit var skuDetailFragment: SkuDetailFragment
     lateinit var projectDetailFragment: ProjectDetailFragment
     lateinit var selectBackgroundFragment: SelectBackgroundFragment
-    lateinit var shootViewModel: ShootViewModel
     val location_data = JSONObject()
+    lateinit var shootViewModel : ShootViewModel
+    lateinit var subCategoryAndAngleFragment: SubCategoryAndAngleFragment
+    lateinit var angleSelectionFragment: AngleSelectionFragment
     val TAG = "ShootActivity"
 
     private var googleApiClient: GoogleApiClient? = null
@@ -89,32 +89,44 @@ class ShootActivity : AppCompatActivity(), GoogleApiClient.ConnectionCallbacks,
         if (intent.getBooleanExtra(AppConstants.FROM_VIDEO, false))
             setUpVideoShoot()
 
-        val categoryDetails = CategoryDetails()
+        if (shootViewModel.categoryDetails.value == null){
+            val categoryDetails = CategoryDetails()
 
-        categoryDetails.apply {
-            categoryId = intent.getStringExtra(AppConstants.CATEGORY_ID)
-            categoryName = intent.getStringExtra(AppConstants.CATEGORY_NAME)
-            gifList = intent.getStringExtra(AppConstants.GIF_LIST)
+            categoryDetails.apply {
+                categoryId = intent.getStringExtra(AppConstants.CATEGORY_ID)
+                categoryName = intent.getStringExtra(AppConstants.CATEGORY_NAME)
+                gifList = intent.getStringExtra(AppConstants.GIF_LIST)
+            }
+
+            shootViewModel.categoryDetails.value = categoryDetails
         }
 
-        shootViewModel.categoryDetails.value = categoryDetails
-
         cameraFragment = CameraFragment()
-        overlaysFragment = OverlaysFragment()
+        overlays = OverlaysFragment()
+        draftShootFragment = DraftShootFragment()
+
         gridEcomFragment = GridEcomFragment()
         skuDetailFragment = SkuDetailFragment()
         projectDetailFragment = ProjectDetailFragment()
         overlayEcomFragment = OverlayEcomFragment()
         selectBackgroundFragment = SelectBackgroundFragment()
+        subCategoryAndAngleFragment = SubCategoryAndAngleFragment()
+        angleSelectionFragment = AngleSelectionFragment()
 
         when (shootViewModel.categoryDetails.value?.categoryName) {
             "Automobiles" -> {
                 shootViewModel.processSku = true
                 if (savedInstanceState == null) { // initial transaction should be wrapped like this
-                    supportFragmentManager.beginTransaction()
+                    val transaction = supportFragmentManager.beginTransaction()
                         .add(R.id.flCamerFragment, cameraFragment)
-                        .add(R.id.flCamerFragment, overlaysFragment)
-                        .commitAllowingStateLoss()
+
+                    if (!intent.getBooleanExtra(AppConstants.FROM_DRAFTS,false)){
+                        transaction.add(R.id.flCamerFragment, overlays)
+                        transaction.add(R.id.flCamerFragment,CreateProjectFragment())
+                    }else
+                        transaction.add(R.id.flCamerFragment, draftShootFragment)
+
+                    transaction.commit()
                 }
             }
             "Bikes" -> {
@@ -122,7 +134,7 @@ class ShootActivity : AppCompatActivity(), GoogleApiClient.ConnectionCallbacks,
                 if (savedInstanceState == null) { // initial transaction should be wrapped like this
                     supportFragmentManager.beginTransaction()
                         .add(R.id.flCamerFragment, cameraFragment)
-                        .add(R.id.flCamerFragment, overlaysFragment)
+                        .add(R.id.flCamerFragment, overlays)
                         .commitAllowingStateLoss()
                 }
             }
@@ -252,7 +264,8 @@ class ShootActivity : AppCompatActivity(), GoogleApiClient.ConnectionCallbacks,
                 // start process activity
                 val processIntent = Intent(this, ProcessActivity::class.java)
                 processIntent.apply {
-                    this.putExtra(AppConstants.CATEGORY_NAME, categoryDetails.categoryName)
+                    this.putExtra(AppConstants.CATEGORY_NAME, intent.getStringExtra(AppConstants.CATEGORY_NAME))
+                    this.putExtra(AppConstants.CATEGORY_ID, intent.getStringExtra(AppConstants.CATEGORY_ID))
                     this.putExtra("sku_id", shootViewModel.sku.value?.skuId)
                     this.putExtra("project_id", shootViewModel.sku.value?.projectId)
                     this.putExtra("exterior_angles", shootViewModel.exterirorAngles.value)
@@ -267,12 +280,32 @@ class ShootActivity : AppCompatActivity(), GoogleApiClient.ConnectionCallbacks,
                 }
             }
         })
+
+        observeProjectCreated()
+
+        shootViewModel.selectAngles.observe(this,{
+            supportFragmentManager.beginTransaction()
+                .remove(subCategoryAndAngleFragment)
+                .add(R.id.flCamerFragment,AngleSelectionFragment())
+                .commit()
+        })
+    }
+
+    private fun observeProjectCreated() {
+        //add subcat selection fragment
+        shootViewModel.getSubCategories.observe(
+            this,{
+                if (!shootViewModel.isSubcategoriesSelectionShown && shootViewModel.isSkuCreated.value == null){
+                    supportFragmentManager.beginTransaction()
+                        .add(R.id.flCamerFragment,SubCategoryAndAngleFragment())
+                        .commit()
+                }
+            }
+        )
     }
 
 
     private fun setUpVideoShoot() {
-
-
         shootViewModel.fromVideo = true
         shootViewModel.showVin.value = true
         shootViewModel.isProjectCreated.value = true
@@ -313,23 +346,16 @@ class ShootActivity : AppCompatActivity(), GoogleApiClient.ConnectionCallbacks,
             shootViewModel.exterirorAngles.value =
                 intent.getIntExtra(AppConstants.EXTERIOR_ANGLES, 0)
 
-            shootViewModel.getSubCategories(
-                Utilities.getPreference(this, AppConstants.AUTH_KEY).toString(),
-                intent.getStringExtra(AppConstants.CATEGORY_ID).toString()
-            )
 
             shootViewModel.sku.value!!.skuId = intent.getStringExtra(AppConstants.SKU_ID)
 
-            //fetch overlays
-            shootViewModel.isSubCategoryConfirmed.value = true
             shootViewModel.subCategory.value = getSubcategoryResponse()
 
-            shootViewModel.getOverlays(
-                Utilities.getPreference(this, AppConstants.AUTH_KEY).toString(),
-                intent.getStringExtra(AppConstants.CATEGORY_ID)!!,
-                intent.getStringExtra(AppConstants.SUB_CAT_ID)!!,
-                intent.getIntExtra(AppConstants.EXTERIOR_ANGLES, 0).toString(),
-            )
+            shootViewModel.isSubCategoryConfirmed.value = true
+            shootViewModel.isSkuCreated.value = true
+            shootViewModel.showLeveler.value = true
+        }else{
+            shootViewModel.getSubCategories.value = true
         }
 
     }
@@ -487,10 +513,7 @@ class ShootActivity : AppCompatActivity(), GoogleApiClient.ConnectionCallbacks,
 
 
     override fun onBackPressed() {
-        if (intent.getBooleanExtra(AppConstants.FROM_DRAFTS, false))
-            ShootExitDialog().show(supportFragmentManager, "ShootExitDialog")
-        else
-            ShootExitDialog().show(supportFragmentManager, "ShootExitDialog")
+        ShootExitDialog().show(supportFragmentManager, "ShootExitDialog")
     }
 
     // 1. onKeyDown is a boolean function, which returns the state of the KeyEvent.

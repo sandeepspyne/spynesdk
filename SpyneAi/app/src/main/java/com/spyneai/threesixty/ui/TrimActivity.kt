@@ -1,14 +1,12 @@
 package com.spyneai.threesixty.ui
 
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.View
+import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModelProvider
-import com.spyneai.R
 import com.spyneai.dashboard.ui.base.ViewModelFactory
 import com.spyneai.databinding.ActivityTrimBinding
 import com.spyneai.needs.AppConstants
-import com.spyneai.shoot.data.ShootViewModel
 import com.spyneai.shoot.ui.dialogs.ShootExitDialog
 import com.spyneai.threesixty.data.ThreeSixtyViewModel
 

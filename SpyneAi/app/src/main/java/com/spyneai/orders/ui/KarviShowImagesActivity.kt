@@ -2,10 +2,6 @@ package com.spyneai.orders.ui
 
 import android.app.Dialog
 import android.content.Intent
-import android.graphics.ImageFormat
-import android.hardware.camera2.CameraCharacteristics
-import android.hardware.camera2.CameraManager
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
 import android.view.View
@@ -13,41 +9,44 @@ import android.view.Window
 import android.view.WindowManager
 import android.widget.ImageView
 import android.widget.Toast
+import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.core.app.NotificationCompat
+import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.bumptech.glide.Glide
 import com.spyneai.R
+import com.spyneai.base.network.Resource
 import com.spyneai.credits.model.ReviewHolder
+import com.spyneai.dashboard.ui.base.ViewModelFactory
+import com.spyneai.dashboard.ui.handleApiError
 import com.spyneai.databinding.ActivityKarviShowImagesBinding
-import com.spyneai.downloadsku.FetchBulkResponseV2
 import com.spyneai.gotoHome
 import com.spyneai.interfaces.APiService
 import com.spyneai.interfaces.RetrofitClients
 import com.spyneai.isMagnatoMeterAvailable
-import com.spyneai.isResolutionSupported
 import com.spyneai.needs.AppConstants
 import com.spyneai.needs.ScrollingLinearLayoutManager
 import com.spyneai.needs.Utilities
+import com.spyneai.orders.data.ProcessedImage
+import com.spyneai.orders.data.response.ImagesOfSkuRes
 import com.spyneai.orders.ui.adapter.KarviImagesAdapter
+import com.spyneai.processedimages.ui.data.ProcessedViewModel
 import com.spyneai.shoot.ui.base.ShootActivity
 import com.spyneai.shoot.ui.dialogs.NoMagnaotoMeterDialog
-import com.spyneai.shoot.ui.dialogs.ResolutionNotSupportedFragment
-import com.spyneai.shoot.utils.log
-import okhttp3.MultipartBody
-import okhttp3.RequestBody
-import retrofit2.Call
-import retrofit2.Callback
-import retrofit2.Response
 
 class KarviShowImagesActivity : AppCompatActivity() {
 
+    var shootId = ""
     private lateinit var binding: ActivityKarviShowImagesBinding
     lateinit var builder: NotificationCompat.Builder
     lateinit var imageList: List<String>
     lateinit var imageListAfter: List<String>
     lateinit var imageListInterior: List<String>
     lateinit var imageListFocused: List<String>
+    val processdImagesListInterior = ArrayList<ProcessedImage>()
+    val processdImagesListFocused = ArrayList<ProcessedImage>()
+    val processdImagesList = ArrayList<ProcessedImage>()
 
     lateinit var imageListWaterMark: ArrayList<String>
     lateinit var listHdQuality: ArrayList<String>
@@ -58,6 +57,7 @@ class KarviShowImagesActivity : AppCompatActivity() {
     private lateinit var ShowReplacedImagesFocusedAdapter: KarviImagesAdapter
 
     lateinit var Category: String
+    lateinit var viewModel : ProcessedViewModel
     
     
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -67,6 +67,8 @@ class KarviShowImagesActivity : AppCompatActivity() {
         val view = binding.root
         setContentView(view)
 
+        viewModel = ViewModelProvider(this, ViewModelFactory()).get(ProcessedViewModel::class.java)
+        viewModel.skuId = Utilities.getPreference(this, AppConstants.SKU_ID)!!
 
         AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
 
@@ -79,8 +81,111 @@ class KarviShowImagesActivity : AppCompatActivity() {
         else
             catName = Utilities.getPreference(this, AppConstants.CATEGORY_NAME)!!
 
+        observeSkuData()
+
+        binding.tvReshoot.setOnClickListener {
+            val imagesResponse = (viewModel.imagesOfSkuRes.value as Resource.Success).value
+
+            val element = imagesResponse.data.firstOrNull {
+                it.overlayId == null
+            }
+
+            if (element == null)
+                viewModel.reshoot.value = true
+            else
+                Toast.makeText(this,"Reshoot not allowed for old shoots",Toast.LENGTH_LONG).show()
+        }
+
+    }
+
+    private fun observeSkuData() {
+
+        viewModel.imagesOfSkuRes.observe(this,{
+            when(it){
+                is Resource.Success -> {
+                    Utilities.hideProgressDialog()
+
+                    var dataList: List<ImagesOfSkuRes.Data> = it.value.data
+
+                    for (i in 0..(dataList.size) -1) {
+                        if (dataList!![i].image_category.equals("Exterior")) {
+                            Category = dataList!![i].image_category
+                            (imageList as ArrayList).add(dataList!![i].input_image_lres_url)
+                            (imageListAfter as ArrayList).add(dataList!![i].output_image_lres_wm_url)
+
+                            //save for in case of user review
+                            if (imageListAfter != null && imageList.size > 0)
+                                ReviewHolder.orgUrl = imageList.get(0)
+
+                            if (imageListAfter != null && imageListAfter.size > 0)
+                                ReviewHolder.editedUrl = imageListAfter.get(0)
 
 
+                            (imageListWaterMark as ArrayList).add(dataList!![i].output_image_lres_wm_url)
+                            (listHdQuality as ArrayList).add(dataList!![i].output_image_hres_url)
+                            processdImagesList.add(ProcessedImage(dataList!![i].output_image_lres_url))
+
+                            Utilities.savePrefrence(
+                                this@KarviShowImagesActivity,
+                                AppConstants.NO_OF_IMAGES,
+                                imageListAfter.size.toString()
+                            )
+                            hideData(0)
+                        } else if (dataList!![i].image_category.equals("Interior")) {
+                            Category = dataList!![i].image_category
+                            (imageListInterior as ArrayList).add(dataList!![i].output_image_lres_url)
+                            (imageListWaterMark as ArrayList).add(dataList!![i].output_image_lres_wm_url)
+                            (listHdQuality as ArrayList).add(dataList!![i].output_image_hres_url)
+                            processdImagesListInterior.add(ProcessedImage(dataList!![i].output_image_lres_url))
+
+
+                            Utilities.savePrefrence(
+                                this@KarviShowImagesActivity,
+                                AppConstants.NO_OF_IMAGES,
+                                imageListAfter.size.toString()
+                            )
+                            hideData(0)
+                        } else if (dataList!![i].image_category.equals("Focus Shoot")) {
+                            Category = dataList!![i].image_category
+                            (imageListFocused as ArrayList).add(dataList!![i].output_image_lres_url)
+                            (imageListWaterMark as ArrayList).add(dataList!![i].output_image_lres_wm_url)
+                            (listHdQuality as ArrayList).add(dataList!![i].output_image_hres_url)
+                            processdImagesListFocused.add(ProcessedImage(dataList!![i].output_image_lres_url))
+
+                            Utilities.savePrefrence(
+                                this@KarviShowImagesActivity,
+                                AppConstants.NO_OF_IMAGES,
+                                imageListAfter.size.toString()
+                            )
+                            hideData(0)
+                        } else {
+                            Category = dataList!![i].image_category
+                            (imageList as ArrayList).add(dataList!![i].input_image_lres_url)
+                            (imageListAfter as ArrayList).add(dataList!![i].output_image_lres_wm_url)
+                            (listHdQuality as ArrayList).add(dataList!![i].output_image_hres_url)
+                            (imageListWaterMark as ArrayList).add(dataList!![i].output_image_lres_wm_url)
+                            processdImagesList.add(ProcessedImage(dataList!![i].output_image_lres_url))
+
+                            Utilities.savePrefrence(
+                                this@KarviShowImagesActivity,
+                                AppConstants.NO_OF_IMAGES,
+                                imageListAfter.size.toString()
+                            )
+                            hideData(1)
+                        }
+                    }
+
+                    showReplacedImagesAdapter.notifyDataSetChanged()
+                    ShowReplacedImagesInteriorAdapter.notifyDataSetChanged()
+                    ShowReplacedImagesFocusedAdapter.notifyDataSetChanged()
+                }
+
+                is Resource.Failure -> {
+                    Utilities.hideProgressDialog()
+                    handleApiError(it){fetchBulkUpload()}
+                }
+            }
+        })
     }
 
     private fun hideData(i: Int) {
@@ -109,11 +214,7 @@ class KarviShowImagesActivity : AppCompatActivity() {
 
 
         binding.llStartNewShoot.setOnClickListener {
-            if (isMagnatoMeterAvailable()){
-                startShoot()
-            }else {
-                NoMagnaotoMeterDialog().show(supportFragmentManager,"NoMagnaotoMeterDialog")
-            }
+            startShoot()
         }
     }
 
@@ -134,7 +235,7 @@ class KarviShowImagesActivity : AppCompatActivity() {
         listHdQuality = ArrayList<String>()
 
         showReplacedImagesAdapter = KarviImagesAdapter(this,
-            listHdQuality as ArrayList<String>,
+            processdImagesList,
             object : KarviImagesAdapter.BtnClickListener {
                 override fun onBtnClick(position: Int) {
                     showImagesDialog(listHdQuality[position])
@@ -143,7 +244,7 @@ class KarviShowImagesActivity : AppCompatActivity() {
             })
 
         ShowReplacedImagesInteriorAdapter = KarviImagesAdapter(this,
-            imageListInterior as ArrayList<String>,
+            processdImagesListInterior,
             object : KarviImagesAdapter.BtnClickListener {
                 override fun onBtnClick(position: Int) {
                     //   showImagesDialog(position)
@@ -153,7 +254,7 @@ class KarviShowImagesActivity : AppCompatActivity() {
 
 
         ShowReplacedImagesFocusedAdapter = KarviImagesAdapter(this,
-            imageListFocused as ArrayList<String>,
+            processdImagesListFocused,
             object : KarviImagesAdapter.BtnClickListener {
                 override fun onBtnClick(position: Int) {
                     //   showImagesDialog(position)
@@ -193,106 +294,20 @@ class KarviShowImagesActivity : AppCompatActivity() {
 
     //Fetch bulk data
     private fun fetchBulkUpload() {
-        val request = RetrofitClients.buildService(APiService::class.java)
-        val authKey = RequestBody.create(
-            MultipartBody.FORM,
-            Utilities.getPreference(this, AppConstants.AUTH_KEY)!!
+
+        shootId = Utilities.getPreference(this, AppConstants.SKU_ID)!!
+
+        getSkuImages()
+
+    }
+
+    private fun getSkuImages() {
+        // Utilities.showProgressDialog(requireContext())
+
+        viewModel.getImagesOfSku(
+            Utilities.getPreference(this,AppConstants.AUTH_KEY).toString(),
+            viewModel.skuId!!
         )
-        val skuId = RequestBody.create(
-            MultipartBody.FORM,
-            Utilities.getPreference(this, AppConstants.SKU_ID)!!
-        )
-
-        val call = request.fetchBulkImageV2(skuId, authKey)
-
-        call?.enqueue(object : Callback<FetchBulkResponseV2> {
-            override fun onResponse(
-                call: Call<FetchBulkResponseV2>,
-                response: Response<FetchBulkResponseV2>
-            ) {
-                Utilities.hideProgressDialog()
-                if (response.isSuccessful) {
-                    var dataList: List<FetchBulkResponseV2.Data> = response.body()!!.data
-                    for (i in 0..(dataList.size) -1) {
-                        if (dataList!![i].image_category.equals("Exterior")) {
-                            Category = dataList!![i].image_category
-                            (imageList as ArrayList).add(dataList!![i].input_image_lres_url)
-                            (imageListAfter as ArrayList).add(dataList!![i].output_image_lres_wm_url)
-
-                            //save for in case of user review
-                            if (imageListAfter != null && imageList.size > 0)
-                                ReviewHolder.orgUrl = imageList.get(0)
-
-                            if (imageListAfter != null && imageListAfter.size > 0)
-                                ReviewHolder.editedUrl = imageListAfter.get(0)
-
-
-                            (imageListWaterMark as ArrayList).add(dataList!![i].output_image_lres_wm_url)
-                            (listHdQuality as ArrayList).add(dataList!![i].output_image_hres_url)
-
-                            Utilities.savePrefrence(
-                                this@KarviShowImagesActivity,
-                                AppConstants.NO_OF_IMAGES,
-                                imageListAfter.size.toString()
-                            )
-                            hideData(0)
-                        } else if (dataList!![i].image_category.equals("Interior")) {
-                            Category = dataList!![i].image_category
-                            (imageListInterior as ArrayList).add(dataList!![i].output_image_lres_url)
-                            (imageListWaterMark as ArrayList).add(dataList!![i].output_image_lres_wm_url)
-                            (listHdQuality as ArrayList).add(dataList!![i].output_image_hres_url)
-
-                            Utilities.savePrefrence(
-                                this@KarviShowImagesActivity,
-                                AppConstants.NO_OF_IMAGES,
-                                imageListAfter.size.toString()
-                            )
-                            hideData(0)
-                        } else if (dataList!![i].image_category.equals("Focus Shoot")) {
-                            Category = dataList!![i].image_category
-                            (imageListFocused as ArrayList).add(dataList!![i].output_image_lres_url)
-                            (imageListWaterMark as ArrayList).add(dataList!![i].output_image_lres_wm_url)
-                            (listHdQuality as ArrayList).add(dataList!![i].output_image_hres_url)
-
-                            Utilities.savePrefrence(
-                                this@KarviShowImagesActivity,
-                                AppConstants.NO_OF_IMAGES,
-                                imageListAfter.size.toString()
-                            )
-                            hideData(0)
-                        } else {
-                            Category = dataList!![i].image_category
-                            (imageList as ArrayList).add(dataList!![i].input_image_lres_url)
-                            (imageListAfter as ArrayList).add(dataList!![i].output_image_lres_wm_url)
-                            (listHdQuality as ArrayList).add(dataList!![i].output_image_hres_url)
-                            (imageListWaterMark as ArrayList).add(dataList!![i].output_image_lres_wm_url)
-
-                            Utilities.savePrefrence(
-                                this@KarviShowImagesActivity,
-                                AppConstants.NO_OF_IMAGES,
-                                imageListAfter.size.toString()
-                            )
-                            hideData(1)
-                        }
-
-
-                    }
-
-                }
-                showReplacedImagesAdapter.notifyDataSetChanged()
-                ShowReplacedImagesInteriorAdapter.notifyDataSetChanged()
-                ShowReplacedImagesFocusedAdapter.notifyDataSetChanged()
-            }
-
-            override fun onFailure(call: Call<FetchBulkResponseV2>, t: Throwable) {
-                Utilities.hideProgressDialog()
-                log("Error: "+t.localizedMessage)
-                Toast.makeText(
-                    this@KarviShowImagesActivity,
-                    "Server not responding!!!", Toast.LENGTH_SHORT
-                ).show()
-            }
-        })
     }
 
     fun showImagesDialog(url: String) {

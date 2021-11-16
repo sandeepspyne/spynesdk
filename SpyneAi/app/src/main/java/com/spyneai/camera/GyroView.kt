@@ -2,17 +2,14 @@ package com.spyneai.camera
 
 import android.content.Context
 import android.util.AttributeSet
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.animation.AccelerateInterpolator
 import android.widget.FrameLayout
 import androidx.core.content.ContextCompat
-import androidx.databinding.DataBindingUtil
 import com.spyneai.BaseApplication
 import com.spyneai.R
 import com.spyneai.databinding.LayoutGyroViewBinding
-import com.spyneai.databinding.ViewTrimBinding
 
 class GyroView : FrameLayout {
 

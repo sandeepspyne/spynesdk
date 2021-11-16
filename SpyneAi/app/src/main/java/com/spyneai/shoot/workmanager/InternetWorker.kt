@@ -6,7 +6,6 @@ import android.os.Build
 import androidx.core.content.ContextCompat
 import androidx.work.CoroutineWorker
 import androidx.work.WorkerParameters
-import com.posthog.android.Properties
 import com.spyneai.captureEvent
 import com.spyneai.isMyServiceRunning
 import com.spyneai.needs.AppConstants
@@ -51,7 +50,7 @@ class InternetWorker(private val appContext: Context, workerParams: WorkerParame
     }
 
     private fun capture(eventName : String,state : String) {
-        val prperties = Properties()
+        val prperties = HashMap<String,Any?>()
             .apply {
                 put("service_state",state)
                 put("email",Utilities.getPreference(appContext,AppConstants.EMAIL_ID).toString())

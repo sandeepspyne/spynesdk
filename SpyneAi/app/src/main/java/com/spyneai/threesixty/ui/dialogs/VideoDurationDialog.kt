@@ -5,10 +5,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import com.spyneai.base.BaseDialogFragment
-import com.spyneai.databinding.DialogExitBinding
 import com.spyneai.databinding.DialogVideoDurationBinding
-import com.spyneai.gotoHome
-import com.spyneai.shoot.data.ShootViewModel
 import com.spyneai.threesixty.data.ThreeSixtyViewModel
 
 class VideoDurationDialog : BaseDialogFragment<ThreeSixtyViewModel, DialogVideoDurationBinding>() {

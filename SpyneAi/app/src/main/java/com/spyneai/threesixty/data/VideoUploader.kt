@@ -2,37 +2,25 @@ package com.spyneai.threesixty.data
 
 import android.content.Context
 import android.util.Log
-import androidx.core.net.toUri
-import com.posthog.android.Properties
 import com.spyneai.*
 import com.spyneai.base.network.ClipperApi
 import com.spyneai.base.network.Resource
-import com.spyneai.dashboard.ui.WhiteLabelConstants
-import com.spyneai.interfaces.APiService
 import com.spyneai.interfaces.GcpClient
-import com.spyneai.interfaces.RetrofitClients
 import com.spyneai.needs.AppConstants
 import com.spyneai.needs.Utilities
 import com.spyneai.posthog.Events
-import com.spyneai.service.log
 import com.spyneai.threesixty.data.model.PreSignedVideoBody
 import com.spyneai.threesixty.data.model.VideoDetails
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
-import okhttp3.MediaType
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
-import okhttp3.MultipartBody
-import java.io.File
-import okhttp3.MultipartBody.Part.Companion.create
-
 import okhttp3.RequestBody.Companion.asRequestBody
 import okhttp3.ResponseBody
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
-import retrofit2.Retrofit
-import java.io.InputStream
+import java.io.File
 
 
 class VideoUploader(val context: Context,
@@ -238,7 +226,7 @@ class VideoUploader(val context: Context,
     }
 
     private fun captureEvent(eventName : String, video : VideoDetails, isSuccess : Boolean, error: String?) {
-        val properties = Properties()
+        val properties = HashMap<String,Any?>()
         properties.apply {
             this["sku_id"] = video.skuId
             this["sku_name"] = video.skuName

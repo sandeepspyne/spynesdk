@@ -1,9 +1,6 @@
 package com.spyneai.adapter
 
 import android.content.Context
-import android.graphics.Color
-import android.graphics.drawable.GradientDrawable
-import android.media.Image
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
@@ -14,14 +11,10 @@ import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
-import com.facebook.shimmer.Shimmer
-import com.facebook.shimmer.ShimmerFrameLayout
 import com.spyneai.R
-import com.spyneai.dashboard.response.Data
 import com.spyneai.dashboard.response.NewCategoriesResponse
 import com.spyneai.needs.AppConstants
 import com.spyneai.needs.Utilities
-import kotlinx.android.synthetic.main.row_categories_dashboard.view.*
 
 
 public class CategoriesDashboardAdapter(
@@ -84,8 +77,12 @@ public class CategoriesDashboardAdapter(
 
        // viewHolder.imgCategory.setBackgroundColor(Color.parseColor(categoriesResponseList[position].colorCode))
 
-        if (position > 4)
+        if (categoriesResponseList[position].active == 1){
+            viewHolder.flCategories.alpha = 1.0F
+        }else{
             viewHolder.flCategories.alpha = 0.5F
+        }
+
         mClickListener = btnlistener
         viewHolder.flCategories.setOnClickListener(View.OnClickListener {
             Log.e("ok", "Ok way" + position)

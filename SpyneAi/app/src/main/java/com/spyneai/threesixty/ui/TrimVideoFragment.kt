@@ -1,8 +1,6 @@
 package com.spyneai.threesixty.ui
 
 import android.annotation.TargetApi
-import android.app.Activity
-import android.content.Intent
 import android.media.*
 import android.net.Uri
 import android.os.Build
@@ -15,7 +13,6 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toast
-import androidx.fragment.app.Fragment
 import androidx.navigation.Navigation
 import com.google.android.exoplayer2.C
 import com.google.android.exoplayer2.MediaItem
@@ -30,8 +27,8 @@ import com.google.android.exoplayer2.upstream.DataSource
 import com.google.android.exoplayer2.upstream.DefaultDataSourceFactory
 import com.spyneai.R
 import com.spyneai.base.BaseFragment
-import com.spyneai.databinding.FragmentRecordVideoBinding
 import com.spyneai.databinding.FragmentTrimVideoBinding
+import com.spyneai.getVideoDuration
 import com.spyneai.needs.AppConstants
 import com.spyneai.threesixty.data.ThreeSixtyViewModel
 import com.spyneai.videorecording.TrimmerUtils
@@ -40,7 +37,6 @@ import java.io.File
 import java.io.IOException
 import java.nio.ByteBuffer
 import java.util.*
-import com.spyneai.getVideoDuration
 
 class TrimVideoFragment : BaseFragment<ThreeSixtyViewModel,FragmentTrimVideoBinding>(),SeekListener {
 

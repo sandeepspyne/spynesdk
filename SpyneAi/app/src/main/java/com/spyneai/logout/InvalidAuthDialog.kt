@@ -1,13 +1,10 @@
 package com.spyneai.logout
 
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.WindowManager
-import androidx.fragment.app.DialogFragment
-import com.spyneai.R
 import com.spyneai.base.BaseDialogFragment
 import com.spyneai.databinding.FragmentInvalidAuthDialogBinding
 import com.spyneai.gotoLogin

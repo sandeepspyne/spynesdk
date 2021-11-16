@@ -1,12 +1,10 @@
 package com.spyneai.shoot.ui.base
 
-import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import com.bumptech.glide.Glide
-import com.posthog.android.Properties
 import com.spyneai.R
 import com.spyneai.base.BaseFragment
 import com.spyneai.base.network.Resource
@@ -28,14 +26,15 @@ class ImageProcessingStartedFragment : BaseFragment<ProcessViewModel, FragmentIm
         super.onViewCreated(view, savedInstanceState)
 
 
-        if (getString(R.string.app_name) == AppConstants.SPYNE_AI){
-            Glide.with(this).asGif().load(R.raw.image_processing_started)
-                .into(binding.ivProcessing)
-        }else {
-            Glide.with(this).load(R.drawable.app_logo)
-                .into(binding.ivProcessing)
+        arguments?.let {
+            if (it.getString(AppConstants.CATEGORY_ID) == AppConstants.CARS_CATEGORY_ID){
+                Glide.with(this).asGif().load(R.raw.image_processing_started)
+                    .into(binding.ivProcessing)
+            }else{
+                Glide.with(this).load(R.drawable.app_logo)
+                    .into(binding.ivProcessing)
+            }
         }
-
 
         binding.llHome.setOnClickListener {
             requireContext().gotoHome()
@@ -66,7 +65,7 @@ class ImageProcessingStartedFragment : BaseFragment<ProcessViewModel, FragmentIm
         viewModel.updateTotalFramesRes.observe(viewLifecycleOwner,{
             when(it) {
                 is Resource.Success -> {
-                    val properties = Properties()
+                    val properties = HashMap<String,Any?>()
                     properties.apply {
                         this["sku_id"] = viewModel.sku.value?.skuId!!
                         this["total_frames"] = viewModel.exteriorAngles.value?.plus(viewModel.interiorMiscShootsCount)
@@ -80,7 +79,7 @@ class ImageProcessingStartedFragment : BaseFragment<ProcessViewModel, FragmentIm
                 is Resource.Failure -> {
                     Utilities.hideProgressDialog()
 
-                    val properties = Properties()
+                    val properties = HashMap<String,Any?>()
                     properties.apply {
                         this["sku_id"] = viewModel.sku.value?.skuId!!
                         this["total_frames"] = viewModel.exteriorAngles.value?.plus(viewModel.interiorMiscShootsCount)

@@ -15,7 +15,6 @@ import com.bumptech.glide.load.DataSource
 import com.bumptech.glide.load.engine.GlideException
 import com.bumptech.glide.request.RequestListener
 import com.bumptech.glide.request.target.Target
-import com.posthog.android.Properties
 import com.spyneai.R
 import com.spyneai.base.BaseFragment
 import com.spyneai.base.network.Resource
@@ -28,6 +27,7 @@ import com.spyneai.fragment.TopUpFragment
 import com.spyneai.needs.AppConstants
 import com.spyneai.needs.Utilities
 import com.spyneai.posthog.Events
+import com.spyneai.setLocale
 import com.spyneai.shoot.data.ProcessViewModel
 import com.spyneai.shoot.utils.log
 import com.spyneai.videorecording.model.TSVParams
@@ -42,6 +42,9 @@ class RegularShootSummaryFragment  : BaseFragment<ProcessViewModel, FragmentRegu
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        requireContext().setLocale()
+        refreshText()
 
         //setup360View()
 
@@ -129,6 +132,22 @@ class RegularShootSummaryFragment  : BaseFragment<ProcessViewModel, FragmentRegu
 
             })
             .into(binding.ivFront)
+    }
+
+    fun refreshText(){
+        requireContext().setLocale()
+        binding.tvCategoryName.text = getString(R.string.automobile)
+        binding.tvCat.text = getString(R.string.category)
+        binding.tvNoOfImg.text = getString(R.string.images)
+        binding.tvTotalExteriorImages.text = getString(R.string.total_exterior_clicked)
+        binding.tvTotalExteriorUnit.text = getString(R.string.images)
+        binding.tvCreditsUnit.text = getString(R.string.credits)
+        binding.tvCredits.text = getString(R.string.credits)
+        binding.tvCreditAvailable.text=getString(R.string.credits_available)
+        binding.tvCost.text=getString(R.string.total_cost)
+        binding.tvTopUp.text=getString(R.string.top_up_2)
+        binding.tvShootSummary.text=getString(R.string.shoot_summary)
+
     }
 
     private fun preLoadFront(tsvParams: TSVParams) {
@@ -381,8 +400,13 @@ class RegularShootSummaryFragment  : BaseFragment<ProcessViewModel, FragmentRegu
                     Utilities.hideProgressDialog()
                     requireContext().captureEvent(
                         Events.PROCESS,
-                        Properties().putValue("sku_id", viewModel.sku.value?.skuId!!)
-                            .putValue("background_id",viewModel.backgroundSelect!!)
+                        HashMap<String,Any?>()
+                            .apply {
+                                this.put("sku_id", viewModel.sku.value?.skuId!!)
+                                this.put("background_id",viewModel.backgroundSelect!!)
+                            }
+
+
                     )
                     viewModel.startTimer.value = true
                 }
@@ -390,7 +414,10 @@ class RegularShootSummaryFragment  : BaseFragment<ProcessViewModel, FragmentRegu
                     Utilities.hideProgressDialog()
                     requireContext().captureFailureEvent(
                         Events.PROCESS_FAILED,
-                        Properties().putValue("sku_id",viewModel.sku.value?.skuId!!),
+                        HashMap<String,Any?>()
+                            .apply {
+                             this.put("sku_id",viewModel.sku.value?.skuId!!)
+                            },
                         it.errorMessage!!)
 
                     handleApiError(it) { processSku(true)}

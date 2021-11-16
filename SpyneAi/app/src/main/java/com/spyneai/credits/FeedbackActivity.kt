@@ -1,16 +1,14 @@
 package com.spyneai.credits
 
 import android.content.Context
-import android.content.Intent
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
 import android.view.View
 import android.view.inputmethod.InputMethodManager
+import androidx.appcompat.app.AppCompatActivity
 import com.spyneai.credits.fragments.FeedbackSubmittedFragment
 import com.spyneai.credits.model.InsertReviewResponse
 import com.spyneai.credits.model.ReviewHolder
-import com.spyneai.dashboard.ui.MainDashboardActivity
 import com.spyneai.databinding.ActivityFeedbackBinding
 import com.spyneai.gotoHome
 import com.spyneai.needs.AppConstants

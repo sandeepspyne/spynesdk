@@ -6,7 +6,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.GridLayoutManager
-import com.posthog.android.Properties
 import com.spyneai.SelectAnotherImagetypeDialog
 import com.spyneai.base.BaseFragment
 import com.spyneai.base.network.Resource
@@ -35,7 +34,7 @@ class SkuDetailFragment : BaseFragment<ShootViewModel, FragmentSkuDetailBinding>
 
         when (viewModel.categoryDetails.value?.categoryName) {
             "Footwear" -> {
-                binding.ivAddAngle.visibility = View.INVISIBLE
+                binding.ivAddAngle.visibility = View.GONE
                 binding.tvAddAngle.visibility = View.INVISIBLE
             }
         }
@@ -110,13 +109,6 @@ class SkuDetailFragment : BaseFragment<ShootViewModel, FragmentSkuDetailBinding>
         })
 
         binding.btNextSku.setOnClickListener {
-            log("update total frames")
-            log("skuId: " + viewModel.sku.value?.skuId.toString())
-            log("totalFrames: " + viewModel.shootList.value?.size.toString())
-            log(
-                "authKey: " + Utilities.getPreference(requireContext(), AppConstants.AUTH_KEY)
-                    .toString()
-            )
             endProject = false
             updateTotalFrames()
         }
@@ -184,6 +176,16 @@ class SkuDetailFragment : BaseFragment<ShootViewModel, FragmentSkuDetailBinding>
         binding.ivBackGif.setOnClickListener {
             requireActivity().onBackPressed()
         }
+
+        binding.ivAddAngle.setOnClickListener {
+            if (viewModel.categoryDetails.value?.categoryName != "Footwear")
+                viewModel.addMoreAngle.value = true
+        }
+
+        binding.tvAddAngle.setOnClickListener {
+            if (viewModel.categoryDetails.value?.categoryName != "Footwear")
+                viewModel.addMoreAngle.value = true
+        }
     }
 
     private fun updateTotalFrames() {
@@ -198,7 +200,7 @@ class SkuDetailFragment : BaseFragment<ShootViewModel, FragmentSkuDetailBinding>
         viewModel.updateTotalFramesRes.observe(viewLifecycleOwner, {
             when (it) {
                 is Resource.Success -> {
-                    val properties = Properties()
+                    val properties = HashMap<String,Any?>()
                     properties.apply {
                         this["sku_id"] = viewModel.sku.value?.skuId!!
                         this["total_frames"] = totalSkuImages.toString()
@@ -213,7 +215,7 @@ class SkuDetailFragment : BaseFragment<ShootViewModel, FragmentSkuDetailBinding>
                 is Resource.Failure -> {
                     Utilities.hideProgressDialog()
 
-                    val properties = Properties()
+                    val properties = HashMap<String,Any?>()
                     properties.apply {
                         this["sku_id"] = viewModel.sku.value?.skuId!!
                         this["total_frames"] = totalSkuImages.toString()
@@ -242,6 +244,8 @@ class SkuDetailFragment : BaseFragment<ShootViewModel, FragmentSkuDetailBinding>
 
 
         }
+
+
     }
 
     private fun observeUpdateTotalFrames() {
@@ -250,8 +254,8 @@ class SkuDetailFragment : BaseFragment<ShootViewModel, FragmentSkuDetailBinding>
                 is Resource.Success -> {
                     viewModel.shootList.value?.clear()
                     val intent = Intent(activity, ShootPortraitActivity::class.java)
-                    intent.putExtra("project_id", viewModel.projectId.value);
-                    intent.putExtra("skuNumber", viewModel.skuNumber.value?.plus(1)!!);
+                    intent.putExtra("project_id", viewModel.projectId.value)
+                   // intent.putExtra("skuNumber", viewModel.skuNumber.value?.plus(1)!!)
 
                     intent.putExtra(
                         AppConstants.CATEGORY_NAME,
@@ -273,12 +277,13 @@ class SkuDetailFragment : BaseFragment<ShootViewModel, FragmentSkuDetailBinding>
                         )
                     } else
                         intent.putExtra("skuNumber", viewModel.skuNumber.value?.plus(1)!!)
+
                     startActivity(intent)
                 }
 
                 is Resource.Failure -> {
                     requireContext().captureFailureEvent(
-                        Events.GET_BACKGROUND_FAILED, Properties(),
+                        Events.GET_BACKGROUND_FAILED, HashMap<String,Any?>(),
                         it.errorMessage!!
                     )
                     handleApiError(it) {}
@@ -294,7 +299,6 @@ class SkuDetailFragment : BaseFragment<ShootViewModel, FragmentSkuDetailBinding>
 
     override fun onResume() {
         super.onResume()
-
         if (viewModel.categoryDetails.value?.categoryName.equals("E-Commerce")) {
             binding.ivAddAngle.visibility = View.VISIBLE
             binding.tvAddAngle.visibility = View.VISIBLE

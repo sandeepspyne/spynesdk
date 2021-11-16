@@ -1,8 +1,8 @@
 package com.spyneai.shoot.ui.base
 
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
+import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModelProvider
 import com.spyneai.R
 import com.spyneai.dashboard.ui.base.ViewModelFactory
@@ -10,8 +10,8 @@ import com.spyneai.needs.AppConstants
 import com.spyneai.setLocale
 import com.spyneai.shoot.data.ProcessViewModel
 import com.spyneai.shoot.data.model.Sku
-import com.spyneai.shoot.ui.SelectBackgroundFragment
 import com.spyneai.shoot.ui.RegularShootSummaryFragment
+import com.spyneai.shoot.ui.SelectBackgroundFragment
 import com.spyneai.shoot.ui.dialogs.ShootExitDialog
 
 class ProcessActivity : AppCompatActivity() {
@@ -56,9 +56,15 @@ class ProcessActivity : AppCompatActivity() {
 
         processViewModel.startTimer.observe(this,{
             if (it) {
+                val bundle = Bundle()
+                bundle.putString(AppConstants.CATEGORY_ID,intent.getStringExtra(AppConstants.CATEGORY_ID))
+
+                val fragment = ImageProcessingStartedFragment()
+                fragment.arguments = bundle
+
                 // add select background fragment
                 supportFragmentManager.beginTransaction()
-                    .add(R.id.flContainer, ImageProcessingStartedFragment())
+                    .add(R.id.flContainer, fragment)
                     .commit()
             }
         })

@@ -6,14 +6,11 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.view.Window
 import com.bumptech.glide.Glide
 import com.spyneai.R
 import com.spyneai.base.BaseDialogFragment
-import com.spyneai.databinding.DialogAngleSelectionBinding
 import com.spyneai.databinding.DialogProcessedImageBinding
 import com.spyneai.processedimages.ui.data.ProcessedViewModel
-import com.spyneai.shoot.data.ShootViewModel
 
 class ProcessedImageDialog : BaseDialogFragment<ProcessedViewModel, DialogProcessedImageBinding>() {
 

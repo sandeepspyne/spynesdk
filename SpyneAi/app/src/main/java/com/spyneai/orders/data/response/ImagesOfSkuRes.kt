@@ -1,5 +1,7 @@
 package com.spyneai.orders.data.response
 
+import com.google.gson.annotations.SerializedName
+
 data class ImagesOfSkuRes(
     val `data`: List<Data>,
     val message: String,
@@ -21,11 +23,16 @@ data class ImagesOfSkuRes(
         val output_image_hres_url: String,
         val output_image_lres_url: String,
         val output_image_lres_wm_url: String,
+        @SerializedName("overlay_id")
+        val overlayId: Int,
         val project_id: String,
         val sku_id: String,
         val source: String,
         val status: String,
         val updated_on: String,
-        val user_id: String
+        val user_id: String,
+        var isSelected : Boolean = false,
+        var imageClicked : Boolean = false,
+        var imagePath : String
     )
 }

@@ -8,7 +8,6 @@ import android.text.InputType
 import android.view.View
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
-import com.posthog.android.Properties
 import com.spyneai.R
 import com.spyneai.activity.SignInUsingOtpActivity
 import com.spyneai.captureEvent
@@ -113,7 +112,11 @@ class LoginActivity : AppCompatActivity() {
     }
 
     private fun login(email: String, password: String) {
-        val properties = Properties().putValue("email",email)
+        val properties = HashMap<String,Any?>()
+            .apply {
+                this.put("email",email)
+            }
+
         captureEvent(Events.LOGIN_INTIATED,properties)
 
         Utilities.showProgressDialog(this)

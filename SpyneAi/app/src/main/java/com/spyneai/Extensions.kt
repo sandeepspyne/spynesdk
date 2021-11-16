@@ -6,7 +6,6 @@ import android.app.Activity
 import android.app.ActivityManager
 import android.content.Context
 import android.content.Intent
-import android.content.res.ColorStateList
 import android.content.res.Configuration
 import android.graphics.ImageFormat
 import android.hardware.Sensor
@@ -19,30 +18,25 @@ import android.net.NetworkInfo
 import android.net.Uri
 import android.util.Log
 import android.util.Size
-import com.posthog.android.Properties
 import android.widget.ImageButton
-import android.widget.ImageView
-import androidx.annotation.ColorRes
+import android.widget.Toast
 import androidx.annotation.DrawableRes
-import androidx.core.content.ContextCompat
-import androidx.core.content.ContextCompat.getSystemService
-import androidx.core.widget.ImageViewCompat
+import androidx.fragment.app.Fragment
 import com.spyneai.dashboard.ui.MainDashboardActivity
 import com.spyneai.loginsignup.activity.LoginActivity
 import com.spyneai.needs.AppConstants
 import com.spyneai.needs.Utilities
+import com.spyneai.orders.data.response.ImagesOfSkuRes
 import com.spyneai.posthog.Events
-import com.spyneai.shoot.ui.base.ShootActivity
-import com.spyneai.shoot.ui.dialogs.ResolutionNotSupportedFragment
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
-import okhttp3.internal.filterList
 import org.json.JSONObject
 import java.text.SimpleDateFormat
 import java.util.*
 import kotlin.collections.ArrayList
+import kotlin.collections.HashMap
 
 private var TAG = "Locale_Check"
 
@@ -53,7 +47,7 @@ fun Context.gotoHome(){
 }
 
 fun Context.gotoLogin(){
-    this.captureEvent(Events.LOG_OUT, Properties())
+    this.captureEvent(Events.LOG_OUT, HashMap<String,Any?>())
 
     Utilities.savePrefrence(this, AppConstants.TOKEN_ID, "")
     Utilities.savePrefrence(this, AppConstants.AUTH_KEY, "")
@@ -276,6 +270,14 @@ fun Context.isMagnatoMeterAvailable() : Boolean {
     val magneticField = mSensorManager.getDefaultSensor(Sensor.TYPE_MAGNETIC_FIELD)
 
     return mAccelerometer != null && magneticField != null
+}
+
+fun Fragment.showToast(message : String){
+    Toast.makeText(requireContext(),message,Toast.LENGTH_LONG).show()
+}
+
+fun getImageCategory(catId : String) : String {
+    return AppConstants.imageCatNameMap[catId]!!
 }
 
 

@@ -15,10 +15,10 @@ import android.widget.LinearLayout
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.airbnb.lottie.LottieAnimationView
-import com.posthog.android.Properties
 import com.spyneai.R
 import com.spyneai.captureEvent
 import com.spyneai.captureFailureEvent
+import com.spyneai.dashboard.ui.WhiteLabelConstants
 import com.spyneai.interfaces.MyAPIService
 import com.spyneai.interfaces.RetrofitClientSpyneAi
 import com.spyneai.interfaces.RetrofitClients
@@ -69,7 +69,11 @@ class ForgotPasswordActivity : AppCompatActivity() {
     }
 
     private fun forgotPassword(){
-        var properties = Properties().putValue("email", et_forgotPasswordEmail.text.toString().trim())
+        var properties = HashMap<String,Any?>().
+            apply {
+               this.put("email", et_forgotPasswordEmail.text.toString().trim())
+            }
+
         captureEvent(Events.FORGOT_PASSWORD_INTIATED,properties)
 
         Utilities.showProgressDialog(this)

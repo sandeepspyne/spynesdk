@@ -1,26 +1,13 @@
 package com.spyneai.dashboard.ui
 
-import android.app.Dialog
 import android.content.Intent
-import android.graphics.Color
-import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
 import android.view.LayoutInflater
-import android.view.View
 import android.view.ViewGroup
-import android.view.Window
-import android.widget.LinearLayout
-import android.widget.TextView
-import androidx.lifecycle.Observer
-import com.posthog.android.Properties
-import com.spyneai.R
 import com.spyneai.activity.CompletedProjectsActivity
 import com.spyneai.activity.OngoingOrdersActivity
 import com.spyneai.adapter.CategoriesDashboardAdapter
 import com.spyneai.base.BaseFragment
-import com.spyneai.base.network.Resource
-import com.spyneai.captureEvent
-import com.spyneai.captureFailureEvent
 import com.spyneai.dashboard.data.DashboardViewModel
 import com.spyneai.databinding.HomeDashboardFragmentBinding
 import com.spyneai.draft.ui.DraftsActivity
@@ -61,14 +48,14 @@ class HomeDashboardFragment :
 //        viewModel.categoriesResponse.observe(viewLifecycleOwner, Observer {
 //            when(it){
 //                is Resource.Success -> {
-//                    requireContext().captureEvent(Events.GOT_CATEGORIES, Properties())
+//                    requireContext().captureEvent(Events.GOT_CATEGORIES, HashMap<String,Any?>())
 //
 //                }
 //                is Resource.Loading -> {
 //
 //                }
 //                is Resource.Failure -> {
-//                    requireContext().captureFailureEvent(Events.GET_CATEGORIES_FAILED, Properties(),
+//                    requireContext().captureFailureEvent(Events.GET_CATEGORIES_FAILED, HashMap<String,Any?>(),
 //                        it.errorMessage!!)
 //
 //                    handleApiError(it)

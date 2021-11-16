@@ -1,0 +1,18 @@
+{
+  "version": 2,
+  "artifactType": {
+    "type": "APK",
+    "kind": "Directory"
+  },
+  "applicationId": "com.spyneai.cars24india",
+  "variantName": "cars24indiaRelease",
+  "elements": [
+    {
+      "type": "SINGLE",
+      "filters": [],
+      "versionCode": 8,
+      "versionName": "1.7",
+      "outputFile": "app-cars24india-release.apk"
+    }
+  ]
+}

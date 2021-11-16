@@ -10,7 +10,6 @@ import okhttp3.MultipartBody
 import okhttp3.RequestBody
 import okhttp3.RequestBody.Companion.asRequestBody
 import okhttp3.RequestBody.Companion.toRequestBody
-import retrofit2.http.Field
 import java.io.File
 
 class ThreeSixtyRepository : BaseRepository() {

@@ -1,7 +1,6 @@
 package com.spyneai.credits.holder
 
 import android.view.View
-import android.widget.ImageView
 import android.widget.RadioButton
 import android.widget.TextView
 import androidx.constraintlayout.widget.ConstraintLayout

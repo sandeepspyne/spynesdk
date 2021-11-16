@@ -2,7 +2,6 @@ package com.spyneai.needs
 
 import android.content.Context
 import android.graphics.PointF
-import android.util.AttributeSet
 import android.view.View
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.LinearSmoothScroller

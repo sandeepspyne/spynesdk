@@ -6,7 +6,6 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.posthog.android.Properties
 import com.spyneai.base.BaseFragment
 import com.spyneai.base.network.Resource
 import com.spyneai.captureFailureEvent
@@ -83,7 +82,7 @@ class DraftProjectsFragment : BaseFragment<DraftViewModel, FragmentDraftProjects
                             binding.rvDraftProjects.visibility = View.GONE
                         }else{
                             requireContext().captureFailureEvent(
-                                Events.GET_COMPLETED_ORDERS_FAILED, Properties(),
+                                Events.GET_COMPLETED_ORDERS_FAILED, HashMap<String,Any?>(),
                                 it.errorMessage!!
                             )
                             handleApiError(it)

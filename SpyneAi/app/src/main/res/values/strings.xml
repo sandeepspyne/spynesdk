@@ -256,7 +256,7 @@
     <string name="already_a_user">Already a %1$s user?</string>
     <string name="new_to">New to %1$s</string>
     <string name="projects">Projects</string>
-    <string name="shoot_all_angles">Shoot all angle images and 360 \nvideo of your car for better \nreselling on leading marketplaces</string>
+    <string name="shoot_all_angles">Shoot all angle images and 360 video of your car for better reselling on leading marketplaces</string>
     <string name="image_shoot">Image Shoot</string>
     <string name="explore">Explore</string>
     <string name="Germany">Germany</string>
@@ -287,7 +287,7 @@
     <string name="total_images_label">Total Images</string>
     <string name="resume_shoot">Resume Shoot</string>
     <string name="start_shoot">Start Shoot</string>
-    <string name="angles">Angles </string>
+    <string name="angles">angles </string>
     <string name="contiune">Continue</string>
     <string name="request_to_add">Request to add credits</string>
     <string name="generate_output">Generate Output</string>
@@ -307,6 +307,10 @@
     <string name="allow">Allow</string>
     <string name="select_car_subcategory">Select your car\'s sub-category</string>
     <string name="no_magnato_meter">Your device does not have a Magnetometer!\n\nPlease use another Mobile Device</string>
+    <string name="reclick">Are you sure you want to reshoot this angle?</string>
+    <string name="select_to_reshoot">Select Shots to Reshoot</string>
+    <string name="reshoot_specific">Reshoot Specific Angles</string>
+
     <string name="language">Select Language</string>
     <string name="change_password">Change Password</string>
     <string name="app_version">App Version</string>
@@ -335,7 +339,7 @@
     <string name="one_credit_one_frame">1 Credit = 1 Frame</string>
     <string name="frames">frames</string>
     <string name="fidelity_selection">Fidelity Selection</string>
-    <string name="angles_one_by_four">Angles 1/4</string>
+    <string name="angles_one_by_four">angles 1/4</string>
     <string name="give_permissions">These Premission Need to be Granted in Order to Continue..</string>
     <string name="camera_access">Camera Access</string>
     <string name="file_and_media">Files and Media Access</string>
@@ -347,7 +351,11 @@
     <string name="crop_your_image">Crop your Image</string>
     <string name="reshoot">Reshoot</string>
     <string name="crop">Crop</string>
-    <string name="tint_window">Tint Window</string>
     <string name="clocked_in_for">Clocked in For </string>
+    <string name="miscshoots">Next</string>
+    <string name="three_sixty_int">Next</string>
+    <string name="end_shoot_karvi">End\nShoot</string>
+    <string name="tint_window">Tint Window</string>
+
 
 </resources>

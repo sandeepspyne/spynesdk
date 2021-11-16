@@ -7,7 +7,6 @@ import android.view.ViewGroup
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.posthog.android.Properties
 import com.spyneai.base.BaseFragment
 import com.spyneai.base.network.Resource
 import com.spyneai.captureFailureEvent
@@ -36,7 +35,7 @@ class CompletedProjectsFragment : BaseFragment<MyOrdersViewModel, FragmentComple
         handler = Handler()
 
         binding.swiperefreshCompleted.setOnRefreshListener {
-            repeatRefreshData()
+           // repeatRefreshData()
             binding.swiperefreshCompleted.isRefreshing = false
         }
 
@@ -93,7 +92,7 @@ class CompletedProjectsFragment : BaseFragment<MyOrdersViewModel, FragmentComple
                             binding.rvMyCompletedProjects.visibility = View.GONE
                         }else{
                             requireContext().captureFailureEvent(
-                                Events.GET_COMPLETED_ORDERS_FAILED, Properties(),
+                                Events.GET_COMPLETED_ORDERS_FAILED, HashMap<String,Any?>(),
                                 it.errorMessage!!
                             )
                             handleApiError(it)

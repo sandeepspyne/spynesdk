@@ -3,8 +3,10 @@ package com.spyneai.shoot.data
 import com.spyneai.base.BaseRepository
 import com.spyneai.base.network.ClipperApiClient
 import com.spyneai.base.network.ClipperApiStagingClient
+import com.spyneai.shoot.data.model.Image
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
+import org.json.JSONArray
 import org.json.JSONObject
 
 
@@ -34,7 +36,43 @@ class ShootRepository : BaseRepository() {
         tags: RequestBody,
         image: MultipartBody.Part,
     ) = safeApiCall {
-        clipperApi.uploadImage(project_id, sku_id, image_category, auth_key, upload_type,sequenceNo,tags,image)
+        clipperApi.uploadImage(
+            project_id,
+            sku_id,
+            image_category,
+            auth_key, upload_type,
+            sequenceNo,
+            tags,
+            image)
+    }
+
+    suspend fun getPreSignedUrl(
+        uploadType : String,
+        image : Image
+    ) = safeApiCall {
+        val meta = if (image.meta.isNullOrEmpty()) JSONObject() else JSONObject(image.meta)
+        val debugData = if (image.debugData.isNullOrEmpty()) JSONObject() else JSONObject(image.debugData)
+
+        clipperApi.getPreSignedUrl(
+            image.projectId,
+            image.skuId,
+            image.categoryName,
+            image.name,
+            image.overlayId?.toInt(),
+            uploadType,
+            image.sequence!!,
+            image.isReclick != 0,
+            image.isReshoot != 0,
+            meta.toString(),
+            debugData.toString(),
+            image.angle!!
+        )
+    }
+
+    suspend fun markUploaded(
+        imageId : String
+    ) = safeApiCall {
+        clipperApi.markUploaded(imageId)
     }
 
     suspend fun uploadImageWithAngle(
@@ -152,5 +190,9 @@ class ShootRepository : BaseRepository() {
         clipperApi.getProjectName(authKey)
     }
 
+    suspend fun getOverlayIds(ids: JSONArray
+    ) = safeApiCall {
+        clipperApi.getOverlayIds(ids)
+    }
 
 }

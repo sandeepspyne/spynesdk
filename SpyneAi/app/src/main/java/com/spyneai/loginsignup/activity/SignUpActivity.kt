@@ -8,7 +8,6 @@ import android.view.View
 import android.widget.ArrayAdapter
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
-import com.posthog.android.Properties
 import com.spyneai.R
 import com.spyneai.activity.SignInUsingOtpActivity
 import com.spyneai.captureEvent
@@ -162,7 +161,7 @@ class SignUpActivity : AppCompatActivity() {
     }
 
     private fun signUp(email: String, password: String, name: String, country: String,coupon: String) {
-        val properties = Properties()
+        val properties = HashMap<String,Any?>()
         properties.apply {
             this["email"] = email
             this["name"] = name

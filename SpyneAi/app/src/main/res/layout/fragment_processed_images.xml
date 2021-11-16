@@ -66,6 +66,97 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:layout_marginTop="@dimen/dp_20"
+                    android:visibility="gone"
+                    android:id="@+id/llThreeSixtyView">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:gravity="center"
+                        android:textColor="@color/primary"
+                        android:fontFamily="@font/medium"
+                        android:textSize="@dimen/sp_16"
+                        android:layout_gravity="center_horizontal"
+                        android:text="Exterior 360 view"/>
+
+                    <androidx.constraintlayout.widget.ConstraintLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content">
+
+                        <com.makeramen.roundedimageview.RoundedImageView
+                            android:id="@+id/iv_front"
+                            android:scaleType="fitXY"
+                            app:riv_corner_radius="6dp"
+                            app:riv_mutate_background="true"
+                            app:layout_constraintLeft_toLeftOf="parent"
+                            app:layout_constraintRight_toRightOf="parent"
+                            app:layout_constraintTop_toTopOf="parent"
+                            android:layout_height="200dp"
+                            android:visibility="invisible"
+                            android:layout_width="match_parent"
+                            android:layout_marginRight="25dp"
+                            android:layout_marginLeft="25dp"
+                            android:layout_marginTop="@dimen/dp_10" />
+
+                        <androidx.constraintlayout.widget.ConstraintLayout
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            app:layout_constraintTop_toTopOf="@id/iv_front"
+                            app:layout_constraintRight_toRightOf="@id/iv_front"
+                            android:id="@+id/cl_front"
+                            android:elevation="3dp"
+                            android:visibility="invisible"
+                            android:paddingLeft="@dimen/dp_5"
+                            android:paddingRight="@dimen/dp_5"
+                            android:background="@drawable/bg_exterior_share">
+
+                            <ImageView
+                                android:layout_width="@dimen/dp_30"
+                                android:layout_height="@dimen/dp_30"
+                                android:src="@drawable/ic_noun_share"
+                                android:padding="@dimen/dp_5"
+                                app:layout_constraintTop_toTopOf="parent"
+                                app:layout_constraintRight_toRightOf="parent"
+                                app:layout_constraintBottom_toBottomOf="parent"
+                                android:id="@+id/ivShare"/>
+
+                            <ImageView
+                                android:layout_width="@dimen/dp_30"
+                                android:layout_height="@dimen/dp_30"
+                                android:id="@+id/ivEmbed"
+                                android:src="@drawable/ic_noun_embed"
+                                app:layout_constraintRight_toLeftOf="@id/ivShare"
+                                app:layout_constraintTop_toTopOf="parent"
+                                android:layout_marginRight="5dp"
+                                app:layout_constraintBottom_toBottomOf="parent"/>
+
+                        </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+                        <com.facebook.shimmer.ShimmerFrameLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="200dp"
+                            app:layout_constraintLeft_toLeftOf="parent"
+                            app:layout_constraintRight_toRightOf="parent"
+                            app:layout_constraintTop_toTopOf="parent"
+                            android:layout_marginLeft="@dimen/dp_25"
+                            android:layout_marginRight="@dimen/dp_25"
+                            android:layout_marginTop="@dimen/dp_10"
+                            android:id="@+id/sv_front"
+                            android:visibility="visible"
+                            android:background="@drawable/bg_three_sixty_shimmer"/>
+
+
+                    </androidx.constraintlayout.widget.ConstraintLayout>
+
+                </LinearLayout>
+
                 <TextView
                     android:id="@+id/tvYourEmailIdReplaced"
                     android:layout_width="match_parent"
@@ -187,7 +278,6 @@
             </LinearLayout>
         </androidx.core.widget.NestedScrollView>
 
-
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -195,58 +285,94 @@
             android:orientation="vertical"
             android:layout_marginTop="@dimen/dp_10">
 
-            <LinearLayout
-                android:id="@+id/llDownloadHdImages"
+
+           <androidx.constraintlayout.widget.ConstraintLayout
+               android:layout_width="match_parent"
+               android:layout_height="wrap_content"
+               android:orientation="horizontal"
+               android:layout_margin="@dimen/dp_10">
+
+               <LinearLayout
+                   android:layout_width="0dp"
+                   android:layout_height="wrap_content"
+                   android:layout_gravity="center"
+                   android:layout_weight="1"
+                   android:gravity="center"
+                   android:id="@+id/llWatermark"
+                   app:layout_constraintTop_toTopOf="parent"
+                   app:layout_constraintLeft_toLeftOf="parent"
+                   app:layout_constraintBottom_toBottomOf="parent"
+                   android:background="@drawable/bg_border_ripple"
+                   android:layout_marginRight="@dimen/dp_3"
+                   app:layout_constraintRight_toLeftOf="@id/llDownloadHdImages">
+
+                   <TextView
+                       android:id="@+id/tvDownloadFree"
+                       android:layout_width="wrap_content"
+                       android:layout_height="match_parent"
+                       android:layout_gravity="center"
+                       android:fontFamily="@font/medium"
+                       android:padding="@dimen/dp_5"
+                       android:gravity="center"
+                       android:text="@string/download_free"
+                       android:textAllCaps="false"
+                       android:textColor="@color/primary"
+                       android:textSize="@dimen/sp_16" />
+
+
+               </LinearLayout>
+
+               <LinearLayout
+                   android:id="@+id/llDownloadHdImages"
+                   android:layout_width="0dp"
+                   android:layout_height="0dp"
+                   android:layout_gravity="center"
+                   android:layout_weight="1"
+                   android:background="@drawable/bg_downloadall"
+                   android:gravity="center"
+                   android:layout_marginLeft="@dimen/dp_3"
+                   app:layout_constraintTop_toTopOf="@+id/llWatermark"
+                   app:layout_constraintBottom_toBottomOf="@+id/llWatermark"
+                   app:layout_constraintRight_toRightOf="parent"
+                   app:layout_constraintLeft_toRightOf="@+id/llWatermark">
+
+                   <TextView
+                       android:layout_width="wrap_content"
+                       android:layout_height="wrap_content"
+                       android:fontFamily="@font/medium"
+                       android:text="@string/download_hd_images"
+                       android:textAllCaps="false"
+                       android:textColor="@color/white"
+                       android:textSize="@dimen/sp_16" />
+
+
+               </LinearLayout>
+
+
+           </androidx.constraintlayout.widget.ConstraintLayout>
+
+            <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:id="@+id/tvReshoot"
+                android:text="@string/reshoot_specific"
                 android:layout_gravity="center"
-                android:padding="@dimen/dp_10"
-                android:layout_marginBottom="@dimen/dp_10"
-                android:background="@drawable/bg_downloadall"
-                android:gravity="center">
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="match_parent"
-                    android:layout_gravity="center"
-                    android:layout_marginStart="@dimen/dp_30"
-                    android:layout_marginEnd="@dimen/dp_30"
-                    android:fontFamily="@font/medium"
-                    android:padding="@dimen/dp_5"
-                    android:text="@string/download_hd_images"
-                    android:textAllCaps="false"
-                    android:textColor="@color/white"
-                    android:textSize="@dimen/sp_16" />
-
-
-            </LinearLayout>
-
-            <LinearLayout
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:padding="@dimen/dp_10"
-                android:layout_marginBottom="@dimen/dp_10"
-                android:gravity="center">
-
-                <TextView
-                    android:id="@+id/tvDownloadFree"
-                    android:layout_width="wrap_content"
-                    android:layout_height="match_parent"
-                    android:layout_gravity="center"
-                    android:layout_marginStart="@dimen/dp_30"
-                    android:layout_marginEnd="@dimen/dp_30"
-                    android:fontFamily="@font/medium"
-                    android:padding="@dimen/dp_5"
-                    android:text="@string/download_free"
-                    android:textAllCaps="false"
-                    android:textColor="@color/primary"
-                    android:textSize="@dimen/sp_16" />
-
-
-            </LinearLayout>
+                android:fontFamily="@font/poppins_medium"
+                android:textColor="@color/primary"
+                android:paddingTop="@dimen/dp_10"
+                android:paddingBottom="@dimen/dp_10"
+                android:paddingLeft="@dimen/dp_50"
+                android:paddingRight="@dimen/dp_50"
+                android:background="@drawable/bg_border_ripple"
+                android:layout_marginBottom="@dimen/dp_15"
+                android:layout_marginTop="@dimen/dp_5"/>
 
         </LinearLayout>
-    </LinearLayout>
-</LinearLayout>
 
+
+    </LinearLayout>
+
+
+
+
+</LinearLayout>

@@ -1,26 +1,26 @@
 package com.spyneai.activity
 
 import android.content.Intent
+import android.os.Build
 import android.os.Bundle
 import android.os.Handler
 import android.provider.Settings
+import android.view.View
 import android.view.WindowManager
 import androidx.appcompat.app.AppCompatActivity
-import com.spyneai.R
-import com.spyneai.dashboard.ui.MainDashboardActivity
-import com.spyneai.loginsignup.activity.LoginActivity
-import android.os.Build
-import android.util.Log
-import android.view.View
-import com.posthog.android.Properties
 import com.spyneai.BuildConfig
+import com.spyneai.R
 import com.spyneai.captureEvent
+import com.spyneai.dashboard.ui.MainDashboardActivity
 import com.spyneai.db.DBHelper
 import com.spyneai.getNetworkName
+import com.spyneai.loginsignup.OnboardingsActivity
+import com.spyneai.loginsignup.activity.LoginActivity
 import com.spyneai.needs.AppConstants
 import com.spyneai.needs.Utilities
 import com.spyneai.onboarding.SelectLanguageActivity
-import com.spyneai.shoot.data.ShootLocalRepository
+import io.sentry.Sentry
+import kotlinx.android.synthetic.main.activity_login.*
 import kotlinx.android.synthetic.main.activity_splash.*
 
 
@@ -46,11 +46,12 @@ class SplashActivity : AppCompatActivity() {
 
         val dbVersion = DBHelper(this).writableDatabase.version
 
+        val item = HashMap<String,Any?>()
+        item.put("new_version",dbVersion)
+
         captureEvent(
             "DB_VERSION",
-            Properties().putValue(
-                "new_version",dbVersion
-            )
+            item
         )
 
         val deviceId = Settings.Secure.getString(contentResolver, Settings.Secure.ANDROID_ID)

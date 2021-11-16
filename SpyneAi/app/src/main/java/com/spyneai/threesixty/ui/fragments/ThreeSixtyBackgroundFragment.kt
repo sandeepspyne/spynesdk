@@ -7,13 +7,11 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
 import androidx.core.content.ContextCompat
 import androidx.navigation.Navigation
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
-import com.posthog.android.Properties
 import com.spyneai.R
 import com.spyneai.base.BaseFragment
 import com.spyneai.base.network.Resource
@@ -112,7 +110,7 @@ class ThreeSixtyBackgroundFragment : BaseFragment<ThreeSixtyViewModel, Fragment3
         viewModel.carGifRes.observe(viewLifecycleOwner,{
             when(it) {
                 is Resource.Success -> {
-                    requireContext().captureEvent(Events.GET_BACKGROUND, Properties())
+                    requireContext().captureEvent(Events.GET_BACKGROUND, HashMap<String,Any?>())
                     binding.shimmer.stopShimmer()
                     binding.shimmer.visibility = View.GONE
                     binding.rvBackgroundsCars.visibility = View.VISIBLE
@@ -138,7 +136,7 @@ class ThreeSixtyBackgroundFragment : BaseFragment<ThreeSixtyViewModel, Fragment3
 
                 is Resource.Failure -> {
                     requireContext().captureFailureEvent(
-                        Events.GET_BACKGROUND_FAILED, Properties(),
+                        Events.GET_BACKGROUND_FAILED, HashMap<String,Any?>(),
                         it.errorMessage!!
                     )
                     handleApiError(it) { getBackgorund() }

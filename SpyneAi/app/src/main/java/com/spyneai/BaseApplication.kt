@@ -3,12 +3,11 @@ package com.spyneai
 import android.annotation.SuppressLint
 import android.app.Application
 import android.content.Context
-import android.content.res.Configuration
 import androidx.appcompat.app.AppCompatDelegate
-import androidx.work.*
+import androidx.work.Constraints
+import androidx.work.NetworkType
 import com.google.firebase.crashlytics.FirebaseCrashlytics
-import com.posthog.android.PostHog
-import java.util.*
+
 
 @SuppressLint("StaticFieldLeak")
 class BaseApplication : Application() {
@@ -36,14 +35,14 @@ class BaseApplication : Application() {
         AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
 
         // Create a PostHog client with the given context, API key and host.
-        val posthog : PostHog = PostHog.Builder(this, POSTHOG_API_KEY, POSTHOG_HOST)
-            .captureApplicationLifecycleEvents() // Record certain application events automatically!
-            // .recordScreenViews() // Record screen views automatically!
-            .build()
-
-
-        // Set the initialized instance as a globally accessible instance.
-        PostHog.setSingletonInstance(posthog)
+//        val posthog : PostHog = PostHog.Builder(this, POSTHOG_API_KEY, POSTHOG_HOST)
+//            .captureApplicationLifecycleEvents() // Record certain application events automatically!
+//            // .recordScreenViews() // Record screen views automatically!
+//            .build()
+//
+//
+//        // Set the initialized instance as a globally accessible instance.
+//        PostHog.setSingletonInstance(posthog)
 
 
         //process periodic worker
