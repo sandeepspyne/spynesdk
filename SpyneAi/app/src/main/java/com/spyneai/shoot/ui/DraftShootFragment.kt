@@ -362,9 +362,6 @@ class DraftShootFragment : BaseFragment<ShootViewModel, FragmentOverlaysV2Bindin
             if (viewModel.startInteriorShots.value == true || viewModel.startMiscShots.value == true)
                 binding.imgOverlay.visibility = View.INVISIBLE
 
-//            if (viewModel.sku.value?.skuId != null && viewModel.categoryDetails.value?.imageType == "Exterior")
-//                viewModel.showLeveler.value = true
-
             if (viewModel.categoryDetails.value?.imageType == "Exterior")
                 viewModel.showLeveler.value = true
 
@@ -527,6 +524,7 @@ class DraftShootFragment : BaseFragment<ShootViewModel, FragmentOverlaysV2Bindin
         viewModel.isCameraButtonClickable = true
 
         binding.apply {
+            binding.llAngles.visibility = View.VISIBLE
             rvSubcategories?.visibility = View.VISIBLE
             tvShoot.isClickable = false
             imgOverlay.visibility = View.INVISIBLE
@@ -620,9 +618,12 @@ class DraftShootFragment : BaseFragment<ShootViewModel, FragmentOverlaysV2Bindin
     private fun startMiscShots() {
         viewModel.isCameraButtonClickable = true
 
-        binding.rvSubcategories?.visibility = View.VISIBLE
-        binding.imgOverlay.visibility = View.INVISIBLE
-        viewModel.hideLeveler.value = true
+        binding.apply {
+            binding.llAngles.visibility = View.VISIBLE
+            rvSubcategories?.visibility = View.VISIBLE
+            imgOverlay.visibility = View.INVISIBLE
+        }
+
 
         val subCatResponse = (viewModel.subCategoriesResponse.value  as Resource.Success).value
 
