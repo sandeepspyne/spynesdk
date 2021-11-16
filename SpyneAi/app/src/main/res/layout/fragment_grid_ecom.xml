@@ -200,10 +200,18 @@
             android:gravity="center">
 
             <com.mikhaellopez.circularimageview.CircularImageView
-                android:id="@+id/ivEndProject"
+                android:id="@+id/ivNext"
                 android:layout_width="@dimen/dp_50"
                 android:layout_height="@dimen/dp_50"
                 android:gravity="center"
+                android:src="@drawable/next_button" />
+
+            <com.mikhaellopez.circularimageview.CircularImageView
+                android:id="@+id/ivEnd"
+                android:layout_width="@dimen/dp_50"
+                android:layout_height="@dimen/dp_50"
+                android:gravity="center"
+                android:visibility="gone"
                 android:src="@drawable/ic_end_project" />
         </LinearLayout>
     </LinearLayout>

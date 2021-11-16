@@ -1,19 +1,25 @@
 package com.spyneai.shoot.ui.ecomwithgrid
 
+import android.net.Uri
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.spyneai.InfoDialog
 import com.spyneai.base.BaseFragment
 import com.spyneai.base.OnItemClickListener
 import com.spyneai.databinding.FragmentGridEcomBinding
+import com.spyneai.needs.AppConstants
+import com.spyneai.needs.Utilities
 import com.spyneai.shoot.adapters.ClickedAdapter
 import com.spyneai.shoot.data.OnOverlaySelectionListener
 import com.spyneai.shoot.data.ShootViewModel
 import com.spyneai.shoot.data.model.ShootData
 import com.spyneai.shoot.ui.dialogs.ReclickDialog
 import com.spyneai.shoot.ui.ecomwithgrid.dialogs.ConfirmReshootEcomDialog
+import com.theartofdev.edmodo.cropper.CropImage
+import java.io.File
 
 class GridEcomFragment : BaseFragment<ShootViewModel, FragmentGridEcomBinding>(),
     OnItemClickListener, OnOverlaySelectionListener {
@@ -26,9 +32,29 @@ class GridEcomFragment : BaseFragment<ShootViewModel, FragmentGridEcomBinding>()
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        binding.ivEndProject.setOnClickListener {
+        if (Utilities.getPreference(requireContext(), AppConstants.ENTERPRISE_ID)
+            == AppConstants.FLIPKART_ENTERPRISE_ID){
+            binding.apply {
+                ivNext.visibility = View.VISIBLE
+                ivEnd.visibility = View.GONE
+            }
+        }else{
+            binding.apply {
+                ivNext.visibility = View.GONE
+                ivEnd.visibility = View.VISIBLE
+            }
+        }
+
+        binding.ivEnd.setOnClickListener {
             if (viewModel.isStopCaptureClickable)
                 viewModel.stopShoot.value = true
+        }
+
+        binding.ivNext.setOnClickListener {
+            InfoDialog().show(
+                requireActivity().supportFragmentManager,
+                "InfoDialog"
+            )
         }
 
         //observe new image clicked
@@ -102,7 +128,14 @@ class GridEcomFragment : BaseFragment<ShootViewModel, FragmentGridEcomBinding>()
 
     private fun showImageConfirmDialog(shootData: ShootData) {
         viewModel.shootData.value = shootData
-        ConfirmReshootEcomDialog().show(requireFragmentManager(), "ConfirmReshootDialog")
+        when (viewModel.categoryDetails.value?.imageType) {
+            "Info" -> {
+                CropImage.activity(Uri.fromFile(File(shootData.capturedImage)))
+                    .start(requireActivity())
+            }
+            else ->
+                ConfirmReshootEcomDialog().show(requireFragmentManager(), "ConfirmReshootDialog")
+        }
     }
 
     override fun onItemClick(view: View, position: Int, data: Any?) {

@@ -13,6 +13,7 @@ import com.bumptech.glide.Glide
 import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.spyneai.base.BaseDialogFragment
 import com.spyneai.databinding.FragmentCropConfirmDialogBinding
+import com.spyneai.posthog.Events
 import com.spyneai.service.Actions
 import com.spyneai.service.ImageUploadingService
 import com.spyneai.service.getServiceState
@@ -43,83 +44,59 @@ class CropConfirmDialog : BaseDialogFragment<ShootViewModel, FragmentCropConfirm
         log("Image set to dialog: " + uri)
 
         binding.tvEndProject.setOnClickListener {
-            if (viewModel.fromDrafts){
-
-//                viewModel.confirmCapturedImage.value = true
-//                viewModel.shootNumber.value = viewModel.shootNumber.value?.plus(1)
-
-                viewModel.isStopCaptureClickable = true
-
-                viewModel.isCameraButtonClickable = true
-                //viewModel.uploadImageWithWorkManager(viewModel.shootData.value!!)
-
-                viewLifecycleOwner.lifecycleScope.launch {
-                    viewModel.insertImage(viewModel.shootData.value!!)
-                }
-                startService()
-
-                viewModel.stopShoot.value = true
-
-                dismiss()
-            }else {
-                if (viewModel.isStopCaptureClickable)
-
-//                viewModel.confirmCapturedImage.value = true
-//                viewModel.shootNumber.value = viewModel.shootNumber.value?.plus(1)
-
-                viewModel.isStopCaptureClickable = true
-
-                viewModel.isCameraButtonClickable = true
-                //viewModel.uploadImageWithWorkManager(viewModel.shootData.value!!)
-
-                viewLifecycleOwner.lifecycleScope.launch {
-                    viewModel.insertImage(viewModel.shootData.value!!)
-                }
-                startService()
-
-                viewModel.stopShoot.value = true
-
-                dismiss()
+            viewModel.isStopCaptureClickable = true
+            val properties = HashMap<String,Any?>()
+            properties.apply {
+                this["sku_id"] = viewModel.shootData.value?.sku_id
+                this["project_id"] = viewModel.shootData.value?.project_id
+                this["image_type"] = viewModel.shootData.value?.image_category
             }
 
+
+            requireContext().captureEvent(
+                Events.CONFIRMED,
+                properties
+            )
+
+            viewModel.isCameraButtonClickable = true
+
+
+            viewLifecycleOwner.lifecycleScope.launch {
+                viewModel.insertImage(viewModel.shootData.value!!)
+            }
+
+            startService()
+            viewModel.stopShoot.value = true
+            dismiss()
         }
 
         binding.llShootAnother.setOnClickListener {
-            viewModel.categoryDetails.value?.imageType = "Info"
-            if (viewModel.fromDrafts){
+            viewModel.onImageConfirmed.value = true
+            //viewModel.shootNumber.value = viewModel.shootNumber.value?.plus(1)
 
-//                viewModel.confirmCapturedImage.value = true
-//                viewModel.shootNumber.value = viewModel.shootNumber.value?.plus(1)
-
-                viewModel.isStopCaptureClickable = true
-
-                viewModel.isCameraButtonClickable = true
-                //viewModel.uploadImageWithWorkManager(viewModel.shootData.value!!)
-
-                viewLifecycleOwner.lifecycleScope.launch {
-                    viewModel.insertImage(viewModel.shootData.value!!)
-                }
-                startService()
-
-                dismiss()
-            }else {
-                if (viewModel.isStopCaptureClickable)
-
-//                    viewModel.confirmCapturedImage.value = true
-//                viewModel.shootNumber.value = viewModel.shootNumber.value?.plus(1)
-
-                viewModel.isStopCaptureClickable = true
-
-                viewModel.isCameraButtonClickable = true
-                //viewModel.uploadImageWithWorkManager(viewModel.shootData.value!!)
-
-                viewLifecycleOwner.lifecycleScope.launch {
-                    viewModel.insertImage(viewModel.shootData.value!!)
-                }
-                startService()
-
-                dismiss()
+            viewModel.isStopCaptureClickable = true
+            val properties = HashMap<String,Any?>()
+            properties.apply {
+                this["sku_id"] = viewModel.shootData.value?.sku_id
+                this["project_id"] = viewModel.shootData.value?.project_id
+                this["image_type"] = viewModel.shootData.value?.image_category
             }
+
+
+            requireContext().captureEvent(
+                Events.CONFIRMED,
+                properties
+            )
+
+            viewModel.isCameraButtonClickable = true
+
+
+            viewLifecycleOwner.lifecycleScope.launch {
+                viewModel.insertImage(viewModel.shootData.value!!)
+            }
+
+            startService()
+            dismiss()
         }
     }
 
