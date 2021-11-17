@@ -505,7 +505,7 @@ class ShootViewModel : ViewModel() {
             Log.d(TAG, "setSelectedItem: "+overlayId)
         }else{
             when (categoryDetails.value?.imageType) {
-                "Exterior","Footwear" -> {
+                "Exterior","Footwear","Ecom" -> {
                     val list = thumbnails as List<OverlaysResponse.Data>
 
                     val position = currentShoot

@@ -33,7 +33,7 @@ class LocalDraftImagesAdapter(
 
         try {
             if(categoryName != "Automobiles")
-                ivRaw.rotation = 90f
+//                ivRaw.rotation = 90f
 
             Glide.with(context) // replace with 'this' if it's in activity
                 .load(imageList[position].imagePath)

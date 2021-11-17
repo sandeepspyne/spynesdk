@@ -135,15 +135,23 @@ class DraftSkuDetailsFragment : BaseFragment<DraftViewModel, FragmentDraftSkuDet
     private fun onResumeClick() {
         var shootIntent: Intent? = null
 
-        when (intent.getStringExtra(AppConstants.CATEGORY_NAME)) {
-            "Automobiles", "Bikes" -> {
+        when (intent.getStringExtra(AppConstants.CATEGORY_ID)) {
+            "Automobiles", "cat_d8R14zUNx" -> {
                 shootIntent = Intent(
                     context,
                     ShootActivity::class.java
                 )
             }
 
-            "Footwear", "E-Commerce", "Food & Beverages", "Photo Box" -> {
+            "cat_Ujt0kuFxX",
+            "cat_Ujt0kuFxY",
+            "cat_Ujt0kuFxF",
+            "cat_Ujt0kuFxA",
+            "cat_P4t6BRVCxx",
+            "cat_P4t6BRVCAP",
+            "cat_P4t6BRVAyy",
+            "cat_P4t6BRVART",
+            "cat_P4t6BRVAMN"-> {
                 shootIntent = Intent(
                     context,
                     ShootPortraitActivity::class.java

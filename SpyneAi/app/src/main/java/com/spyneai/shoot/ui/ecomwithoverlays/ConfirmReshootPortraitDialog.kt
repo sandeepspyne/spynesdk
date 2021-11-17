@@ -85,8 +85,8 @@ class ConfirmReshootPortraitDialog : BaseDialogFragment<ShootViewModel, ConfirmR
 
         Log.d(TAG, "onViewCreated: "+uri)
 
-        binding.ivCapturedImage.setRotation(90F)
-        binding.ivCaptured2.setRotation(90F)
+//        binding.ivCapturedImage.setRotation(90F)
+//        binding.ivCaptured2.setRotation(90F)
 
         Glide.with(requireContext())
             .load(uri)

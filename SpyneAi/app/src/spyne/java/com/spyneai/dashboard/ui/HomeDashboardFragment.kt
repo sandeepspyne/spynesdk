@@ -389,7 +389,14 @@ class HomeDashboardFragment :
                                         intent.putExtra(AppConstants.COLOR, colorCode)
                                         startActivity(intent)
                                     }
-                                    "cat_Ujt0kuFxY","cat_Ujt0kuFxX", "cat_Ujt0kuFxF" -> {
+                                    "cat_Ujt0kuFxY",
+                                    "cat_Ujt0kuFxX",
+                                    "cat_Ujt0kuFxF",
+                                    "cat_P4t6BRVCxx",
+                                    "cat_P4t6BRVAyy",
+                                    "cat_P4t6BRVART",
+                                    "cat_P4t6BRVAMN",
+                                    "cat_P4t6BRVCAP"-> {
                                         val intent = Intent(requireContext(), ShootPortraitActivity::class.java)
                                         intent.putExtra(
                                             AppConstants.CATEGORY_NAME,

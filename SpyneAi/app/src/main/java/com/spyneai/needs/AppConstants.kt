@@ -24,13 +24,17 @@ object AppConstants {
 
     var BIKES_CATEGORY_ID = "cat_d8R14zUNx"
     val CARS_CATEGORY_ID = "cat_d8R14zUNE"
-    val FOOTWEAR_CATEGORY_ID = "cat_Ujt0kuFxX"
     val ECOM_CATEGORY_ID = "cat_Ujt0kuFxY"
     val FOOD_AND_BEV_CATEGORY_ID = "cat_Ujt0kuFxF"
-    val HEALTH_AND_BEAUTY_CATEGORY_ID = "cat_P4t6BRVCxx"
-    val ACCESSORIES_CATEGORY_ID = "cat_P4t6BRVAyy"
     val GENERIC_CATEGORY_ID = "cat_Zdb3iYQst"
     val PHOTO_BOX_CATEGORY_ID = "cat_Ujt0kuFxA"
+    val HEALTH_AND_BEAUTY_CATEGORY_ID = "cat_P4t6BRVCxx"
+    val ACCESSORIES_CATEGORY_ID = "cat_P4t6BRVAyy"
+    val WOMENS_FASHION_CATEGORY_ID = "cat_P4t6BRVART"
+    val MENS_FASHION_CATEGORY_ID = "cat_P4t6BRVAMN"
+    val FOOTWEAR_CATEGORY_ID = "cat_Ujt0kuFxX"
+    val CAPS_CATEGORY_ID = "cat_P4t6BRVCAP"
+
 
     val SHOOT_IMAGE_NAME_LIST = "SHOOT_IMAGE_NAME_LIST"
     val LIST_IMAGE_NAME = "LIST_IMAGE_NAME"
@@ -207,6 +211,11 @@ object AppConstants {
         put(FOOTWEAR_CATEGORY_ID,"Footwear")
         put(FOOD_AND_BEV_CATEGORY_ID,"Food")
         put(PHOTO_BOX_CATEGORY_ID,"Ecom")
+        put(HEALTH_AND_BEAUTY_CATEGORY_ID,"Ecom")
+        put(ACCESSORIES_CATEGORY_ID,"Ecom")
+        put(WOMENS_FASHION_CATEGORY_ID,"Ecom")
+        put(MENS_FASHION_CATEGORY_ID,"Ecom")
+        put(CAPS_CATEGORY_ID,"Ecom")
     }
 
 }
