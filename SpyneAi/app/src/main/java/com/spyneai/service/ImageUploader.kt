@@ -60,6 +60,7 @@ class ImageUploader(val context: Context,
 
                if (image.itemId != null){
                    //uploading enqueued
+                       lastIdentifier = image.name+"_"+image.skuId
 
                    Log.d(TAG, "selectLastImageAndUpload: "+retryCount)
                    Log.d(TAG, "selectLastImageAndUpload: id "+image.itemId)
@@ -135,19 +136,25 @@ class ImageUploader(val context: Context,
                                    val count = localRepository.addPreSignedUrl(image)
                                    val updatedImage = localRepository.getImage(image.itemId!!)
 
-                                   context.captureEvent(
+                                   captureEvent(
                                        AppConstants.IS_PRESIGNED_URL_UPDATED,
-                                       Properties()
-                                           .apply {
-                                               put("iteration_id",lastIdentifier)
-                                               put("retry_count",retryCount)
-                                               put("image_id",image.itemId)
-                                               put("upload_status",image.isUploaded)
-                                               put("make_done_status",image.isStatusUpdated)
-                                               put("pre_url",updatedImage.preSignedUrl)
-                                               put("is_updated",count != 0)
-                                           }
+                                       updatedImage,
+                                       true,
+                                       null
                                    )
+//                                   captureEvent(
+//                                       AppConstants.IS_PRESIGNED_URL_UPDATED,
+//                                       Properties()
+//                                           .apply {
+//                                               put("iteration_id",lastIdentifier)
+//                                               put("retry_count",retryCount)
+//                                               put("image_id",image.itemId)
+//                                               put("upload_status",image.isUploaded)
+//                                               put("make_done_status",image.isStatusUpdated)
+//                                               put("pre_url",updatedImage.preSignedUrl)
+//                                               put("is_updated",count != 0)
+//                                           }
+//                                   )
 
                                    uploadImageToGcp(image,imageType,retryCount)
                                }
@@ -231,19 +238,26 @@ class ImageUploader(val context: Context,
                     val count = localRepository.markUploaded(image)
                     val updatedImage = localRepository.getImage(image.itemId!!)
 
-                    context.captureEvent(
+
+                    captureEvent(
                         AppConstants.IS_MARK_GCP_UPLOADED_UPDATED,
-                        Properties()
-                            .apply {
-                                put("iteration_id",lastIdentifier)
-                                put("retry_count",retryCount)
-                                put("image_id",image.itemId)
-                                put("pre_url",updatedImage.preSignedUrl)
-                                put("is_updated",count != 0)
-                                put("make_done_status",updatedImage.isStatusUpdated)
-                                put("make_done_status",updatedImage.isStatusUpdated)
-                            }
+                        updatedImage,
+                        true,
+                        null
                     )
+//                    captureEvent(
+//                        AppConstants.IS_MARK_GCP_UPLOADED_UPDATED,
+//                        Properties()
+//                            .apply {
+//                                put("iteration_id",lastIdentifier)
+//                                put("retry_count",retryCount)
+//                                put("image_id",image.itemId)
+//                                put("pre_url",updatedImage.preSignedUrl)
+//                                put("is_updated",count != 0)
+//                                put("upload_status",updatedImage.isStatusUpdated)
+//                                put("make_done_status",updatedImage.isStatusUpdated)
+//                            }
+//                    )
 
                     onImageUploaded(
                         image,
@@ -299,19 +313,25 @@ class ImageUploader(val context: Context,
                    val count = localRepository.markStatusUploaded(image)
                    val updatedImage = localRepository.getImage(image.itemId!!)
 
-                   context.captureEvent(
+                   captureEvent(
                        AppConstants.IS_MARK_DONE_STATUS_UPDATED,
-                       Properties()
-                           .apply {
-                               put("iteration_id",lastIdentifier)
-                               put("retry_count",retryCount)
-                               put("image_id",image.itemId)
-                               put("pre_url",updatedImage.preSignedUrl)
-                               put("is_updated",count != 0)
-                               put("upload_status",updatedImage.isUploaded)
-                               put("is_uploaded",updatedImage.isStatusUpdated)
-                           }
+                       updatedImage,
+                       true,
+                       null
                    )
+//                   captureEvent(
+//                       AppConstants.IS_MARK_DONE_STATUS_UPDATED,
+//                       Properties()
+//                           .apply {
+//                               put("iteration_id",lastIdentifier)
+//                               put("retry_count",retryCount)
+//                               put("image_id",image.itemId)
+//                               put("pre_url",updatedImage.preSignedUrl)
+//                               put("is_updated",count != 0)
+//                               put("upload_status",updatedImage.isStatusUpdated)
+//                               put("make_done_status",updatedImage.isStatusUpdated)
+//                           }
+//                   )
 
                    selectLastImageAndUpload(imageType,0)
                }
@@ -340,16 +360,25 @@ class ImageUploader(val context: Context,
 
     private fun captureEvent(eventName : String, image : Image, isSuccess : Boolean, error: String?) {
         val properties = Properties()
-        properties.apply {
-            this["sku_id"] = image.skuId
-            this["project_id"] = image.projectId
-            this["image_type"] = image.categoryName
-            this["sequence"] = image.sequence
-            this["image_name"] = image.name
-            this["is_reclick"] = image.isReclick
-            this["is_reshoot"] = image.isReshoot
-           // this["retry_count"] = runAttemptCount
-        }
+            .apply {
+                put("iteration_id",lastIdentifier)
+                //put("retry_count",retryCount)
+                put("image_id",image.itemId)
+                put("project_id",image.projectId)
+                put("sku_id",image.skuId)
+                put("sku_name",image.skuName)
+                put("upload_status",image.isUploaded)
+                put("make_done_status",image.isStatusUpdated)
+                put("image_name",image.name)
+                put("overlay_id",image.overlayId)
+                put("sequence",image.sequence)
+                put("pre_url",image.preSignedUrl)
+                put("is_reclick",image.isReclick)
+                put("is_reshoot",image.isReshoot)
+                put("image_path",image.imagePath)
+                this["image_type"] = image.categoryName
+               // put("upload_type",imageType)
+            }
 
         if (isSuccess) {
             context.captureEvent(
@@ -361,6 +390,12 @@ class ImageUploader(val context: Context,
                 properties, error!!
             )
         }
+    }
+
+    private fun captureEvent(eventName : String, properties : Properties) {
+        context.captureEvent(
+            eventName,
+            properties)
     }
 
 
