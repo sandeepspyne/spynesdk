@@ -275,7 +275,7 @@ class ShootPortraitActivity : AppCompatActivity(), GoogleApiClient.ConnectionCal
         shootViewModel.sku.value = sku
         shootViewModel.isSkuCreated.value = true
 
-        when (CategoryDetails().categoryId) {
+        when (intent.getStringExtra(AppConstants.CATEGORY_ID)) {
             AppConstants.FOOTWEAR_CATEGORY_ID,
             AppConstants.MENS_FASHION_CATEGORY_ID,
             AppConstants.WOMENS_FASHION_CATEGORY_ID,

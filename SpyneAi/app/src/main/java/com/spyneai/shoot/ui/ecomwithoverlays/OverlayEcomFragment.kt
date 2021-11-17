@@ -191,7 +191,6 @@ class OverlayEcomFragment : BaseFragment<ShootViewModel, FragmentOverlayEcomBind
 
                     )
 
-
                     showViews()
                 }
 
@@ -262,8 +261,10 @@ class OverlayEcomFragment : BaseFragment<ShootViewModel, FragmentOverlayEcomBind
             tvSkuName?.text = viewModel.sku.value?.skuName
         }
 
-        if (viewModel.fromDrafts)
+        if (viewModel.fromDrafts && viewModel.categoryDetails.value?.categoryId == AppConstants.FOOTWEAR_CATEGORY_ID){
             viewModel.showLeveler.value = true
+        }
+
     }
 
     override fun getViewModel() = ShootViewModel::class.java

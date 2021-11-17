@@ -628,6 +628,9 @@ class CameraFragment : BaseFragment<ShootViewModel, FragmentCameraBinding>(), Pi
         roll = Math.toDegrees(orientationAngles[2].toDouble())
         azimuth = (orientationAngles[0] * 180 / Math.PI.toFloat()).toDouble()
 
+        binding.tvPitch?.text="Pitch : "+ pitch.roundToInt().toString()
+        binding.tvRoll?.text="Roll : "+roll.roundToInt().toString()
+
         binding.flLevelIndicator.updateGryoView(
             getString(R.string.app_name),
             roll,
