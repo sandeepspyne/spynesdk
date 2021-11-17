@@ -23,6 +23,7 @@ import com.spyneai.base.network.Resource
 import com.spyneai.dashboard.data.DashboardViewModel
 import com.spyneai.dashboard.ui.base.ViewModelFactory
 import com.spyneai.databinding.ActivityDashboardMainBinding
+import com.spyneai.debug.SendSkusData
 import com.spyneai.fragment.PreferenceFragment
 import com.spyneai.interfaces.RetrofitClients
 import com.spyneai.needs.AppConstants
@@ -37,6 +38,7 @@ import com.spyneai.service.log
 import com.spyneai.service.manual.ManualUploadService
 import com.spyneai.service.manual.StoreImageFiles
 import com.spyneai.shoot.data.FilesRepository
+import com.spyneai.shoot.data.ImageLocalRepository
 import com.spyneai.shoot.data.ShootLocalRepository
 import com.spyneai.shoot.data.ShootRepository
 import com.spyneai.shoot.response.UploadFolderRes
@@ -106,67 +108,67 @@ class MainDashboardActivity : AppCompatActivity() {
                 R.id.homeDashboardFragment -> setCurrentFragment(firstFragment)
 
                 R.id.shootActivity -> {
-                    if (isMagnatoMeterAvailable()) {
-                        when (getString(R.string.app_name)) {
-                            "Ola Cabs",
-                            AppConstants.CARS24,
-                            AppConstants.CARS24_INDIA,
-                            AppConstants.SELL_ANY_CAR,
-                            "Trusted cars",
-                            "Travo Photos",
-                            "Yalla Motors",
-                            "Spyne Hiring",
-                            AppConstants.AUTO_FOTO -> {
-                                var intent = Intent(this, StartShootActivity::class.java)
-                                intent.putExtra(
-                                    AppConstants.CATEGORY_ID,
-                                    AppConstants.CARS_CATEGORY_ID
-                                )
-                                intent.putExtra(AppConstants.CATEGORY_NAME, "Automobiles")
-                                startActivity(intent)
-                            }
-
-                            AppConstants.KARVI -> {
-                                var intent = Intent(this, ShootActivity::class.java)
-                                intent.putExtra(
-                                    AppConstants.CATEGORY_ID,
-                                    AppConstants.CARS_CATEGORY_ID
-                                )
-                                intent.putExtra(AppConstants.CATEGORY_NAME, "Automobiles")
-                                startActivity(intent)
-                            }
-
-                            "Flipkart",
-                            "Udaan",
-                            "Lal10",
-                            "Amazon",
-                            "Swiggy",
-                            AppConstants.SWIGGYINSTAMART,
-                            AppConstants.BATA,
-                            AppConstants.FLIPKART_GROCERY, AppConstants.EBAY -> {
-                                val intent =
-                                    Intent(
-                                        this@MainDashboardActivity,
-                                        CategoriesActivity::class.java
-                                    )
-                                startActivity(intent)
-                            }
-                            else -> {
-                                var intent = Intent(this, ShootActivity::class.java)
-                                intent.putExtra(
-                                    AppConstants.CATEGORY_ID,
-                                    AppConstants.CARS_CATEGORY_ID
-                                )
-                                intent.putExtra(AppConstants.CATEGORY_NAME, "Automobiles")
-                                startActivity(intent)
-                            }
+                    //if (isMagnatoMeterAvailable()) {
+                    when (getString(R.string.app_name)) {
+                        "Ola Cabs",
+                        AppConstants.CARS24,
+                        AppConstants.CARS24_INDIA,
+                        AppConstants.SELL_ANY_CAR,
+                        "Trusted cars",
+                        "Travo Photos",
+                        "Yalla Motors",
+                        "Spyne Hiring",
+                        AppConstants.AUTO_FOTO -> {
+                            var intent = Intent(this, StartShootActivity::class.java)
+                            intent.putExtra(
+                                AppConstants.CATEGORY_ID,
+                                AppConstants.CARS_CATEGORY_ID
+                            )
+                            intent.putExtra(AppConstants.CATEGORY_NAME, "Automobiles")
+                            startActivity(intent)
                         }
-                    } else {
-                        NoMagnaotoMeterDialog().show(
-                            supportFragmentManager,
-                            "NoMagnaotoMeterDialog"
-                        )
+
+                        AppConstants.KARVI -> {
+                            var intent = Intent(this, ShootActivity::class.java)
+                            intent.putExtra(
+                                AppConstants.CATEGORY_ID,
+                                AppConstants.CARS_CATEGORY_ID
+                            )
+                            intent.putExtra(AppConstants.CATEGORY_NAME, "Automobiles")
+                            startActivity(intent)
+                        }
+
+                        "Flipkart",
+                        "Udaan",
+                        "Lal10",
+                        "Amazon",
+                        "Swiggy",
+                        AppConstants.SWIGGYINSTAMART,
+                        AppConstants.BATA,
+                        AppConstants.FLIPKART_GROCERY, AppConstants.EBAY -> {
+                            val intent =
+                                Intent(
+                                    this@MainDashboardActivity,
+                                    CategoriesActivity::class.java
+                                )
+                            startActivity(intent)
+                        }
+                        else -> {
+                            var intent = Intent(this, ShootActivity::class.java)
+                            intent.putExtra(
+                                AppConstants.CATEGORY_ID,
+                                AppConstants.CARS_CATEGORY_ID
+                            )
+                            intent.putExtra(AppConstants.CATEGORY_NAME, "Automobiles")
+                            startActivity(intent)
+                        }
                     }
+//                    } else {
+//                        NoMagnaotoMeterDialog().show(
+//                            supportFragmentManager,
+//                            "NoMagnaotoMeterDialog"
+//                        )
+//                    }
                 }
 
                 R.id.completedOrdersFragment -> {
@@ -543,7 +545,7 @@ class MainDashboardActivity : AppCompatActivity() {
 
     override fun onResume() {
         super.onResume()
-        if(viewModel?.resultCode !=0 && viewModel?.resultCode !=-1) {
+        if (viewModel?.resultCode != 0 && viewModel?.resultCode != -1) {
             binding.bottomNavigation.selectedItemId = R.id.homeDashboardFragment
         }
         viewModel?.resultCode = null

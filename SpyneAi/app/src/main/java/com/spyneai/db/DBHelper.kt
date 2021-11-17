@@ -9,6 +9,11 @@ import android.util.Log
 import com.posthog.android.Properties
 import com.spyneai.BaseApplication
 import com.spyneai.captureEvent
+import com.spyneai.debug.SendSkusData
+import com.spyneai.shoot.data.ImageLocalRepository
+import com.spyneai.shoot.data.ShootRepository
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
 
 class DBHelper(context: Context) :
     SQLiteOpenHelper(context, DATABASE_NAME, null, DATABASE_VERSION) {
@@ -68,6 +73,14 @@ class DBHelper(context: Context) :
                 //db.execSQL(DATABASE_ALTER_IMAGE_TABLE_FOR_GCP)
             }
             else -> {
+                //send sku's data to sever
+                GlobalScope.launch {
+                    SendSkusData(
+                        ShootRepository(),
+                        ImageLocalRepository()
+                    ).startWork()
+                }
+
                 BaseApplication.getContext().captureEvent(
                     "DB_VERSION",
                     Properties()

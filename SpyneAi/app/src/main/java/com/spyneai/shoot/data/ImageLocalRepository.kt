@@ -102,79 +102,92 @@ class ImageLocalRepository {
         //getImage(image.skuId!!, image.name!!)
     }
 
-//    fun getImage(skuId: String,imageName: String) : Image{
-//        val projection = arrayOf(
-//            BaseColumns._ID,
-//            Images.COLUMN_NAME_PROJECT_ID,
-//            Images.COLUMN_NAME_SKU_NAME,
-//            Images.COLUMN_NAME_SKU_ID,
-//            Images.COLUMN_NAME_CATEGORY_NAME,
-//            Images.COLUMN_NAME_IMAGE_PATH,
-//            Images.COLUMN_NAME_IMAGE_SEQUENCE,
-//            Images.COLUMN_NAME_IMAGE_ANGLE,
-//            Images.COLUMN_NAME_IMAGE_META,
-//            Images.COLUMN_NAME_IMAGE_NAME,
-//            Images.COLUMN_NAME_IMAGE_ID,
-//            Images.COLUMN_NAME_IS_UPLOADED,
-//            Images.COLUMN_NAME_IS_STATUS_UPDATED,
-//            Images.COLUMN_NAME_IS_RESHOOT,
-//            Images.COLUMN_NAME_IMAGE_PRE_SIGNED_URL,
-//            Images.COLUMN_NAME_IMAGE_DEBUG_DATA
-//        )
-//
-//
-//        val selection = "${Images.COLUMN_NAME_SKU_ID} = ? AND ${Images.COLUMN_NAME_IMAGE_NAME} = ?"
-//        val selectionArgs = arrayOf(skuId,imageName)
-//
-//        // How you want the results sorted in the resulting Cursor
-//        val sortOrder = "${BaseColumns._ID} ASC"
-//
-//        val cursor = dbReadable.query(
-//            Images.TABLE_NAME,   // The table to query
-//            projection,             // The array of columns to return (pass null to get all)
-//            selection,              // The columns for the WHERE clause
-//            selectionArgs,          // The values for the WHERE clause
-//            null,                   // don't group the rows
-//            null,                   // don't filter by row groups
-//            sortOrder,               // The sort order
-//            "1"
-//        )
-//
-//        val image = Image()
-//
-//        with(cursor) {
-//            while (moveToNext()) {
-//                val itemId = getLong(getColumnIndexOrThrow(BaseColumns._ID))
-//                val projectId = getString(getColumnIndexOrThrow(Images.COLUMN_NAME_PROJECT_ID))
-//                val skuName = getString(getColumnIndexOrThrow(Images.COLUMN_NAME_SKU_NAME))
-//                val skuId = getString(getColumnIndexOrThrow(Images.COLUMN_NAME_SKU_ID))
-//                val categoryName = getString(getColumnIndexOrThrow(Images.COLUMN_NAME_CATEGORY_NAME))
-//                val imagePath = getString(getColumnIndexOrThrow(Images.COLUMN_NAME_IMAGE_PATH))
-//                val sequence = getInt(getColumnIndexOrThrow(Images.COLUMN_NAME_IMAGE_SEQUENCE))
-//                val angle = getInt(getColumnIndexOrThrow(Images.COLUMN_NAME_IMAGE_ANGLE))
-//                val meta = getString(getColumnIndexOrThrow(Images.COLUMN_NAME_IMAGE_META))
-//                val name = getString(getColumnIndexOrThrow(Images.COLUMN_NAME_IMAGE_NAME))
-//                val isReclick = getInt(getColumnIndexOrThrow(Images.COLUMN_NAME_IS_RE_CLICK))
-//
-//                image.itemId = itemId
-//                image.projectId = projectId
-//                image.skuName = skuName
-//                image.skuId = skuId
-//                image.categoryName = categoryName
-//                image.imagePath = imagePath
-//                image.sequence = sequence
-//                image.angle = angle
-//                image.meta = meta
-//                image.name = name
-//                image.isReclick = isReclick
-//
-//            }
-//        }
-//
-//        val s = ""
-//
-//        return image
-//    }
+    fun getImage(itemId: Long) : Image{
+        val projection = arrayOf(
+            BaseColumns._ID,
+            Images.COLUMN_NAME_PROJECT_ID,
+            Images.COLUMN_NAME_SKU_NAME,
+            Images.COLUMN_NAME_SKU_ID,
+            Images.COLUMN_NAME_CATEGORY_NAME,
+            Images.COLUMN_NAME_IMAGE_PATH,
+            Images.COLUMN_NAME_IMAGE_SEQUENCE,
+            Images.COLUMN_NAME_IMAGE_ANGLE,
+            Images.COLUMN_NAME_IMAGE_META,
+            Images.COLUMN_NAME_IMAGE_NAME,
+            Images.COLUMN_NAME_IMAGE_PRE_SIGNED_URL,
+            Images.COLUMN_NAME_OVERLAY_ID,
+            Images.COLUMN_NAME_IMAGE_ID,
+            Images.COLUMN_NAME_IMAGE_DEBUG_DATA,
+            Images.COLUMN_NAME_IS_UPLOADED,
+            Images.COLUMN_NAME_IS_STATUS_UPDATED,
+            Images.COLUMN_NAME_IS_RE_CLICK,
+            Images.COLUMN_NAME_IS_RESHOOT)
+
+
+        val selection = "${BaseColumns._ID} LIKE ?"
+
+        val selectionArgs = arrayOf(itemId.toString())
+
+
+
+        val cursor = dbReadable.query(
+            Images.TABLE_NAME,   // The table to query
+            projection,             // The array of columns to return (pass null to get all)
+            selection,              // The columns for the WHERE clause
+            selectionArgs,          // The values for the WHERE clause
+            null,                   // don't group the rows
+            null,                   // don't filter by row groups
+            null,               // The sort order
+            "1"
+        )
+
+        val image = Image()
+
+        with(cursor) {
+            while (moveToNext()) {
+                val itemId = getLong(getColumnIndexOrThrow(BaseColumns._ID))
+                val projectId = getString(getColumnIndexOrThrow(Images.COLUMN_NAME_PROJECT_ID))
+                val skuName = getString(getColumnIndexOrThrow(Images.COLUMN_NAME_SKU_NAME))
+                val skuId = getString(getColumnIndexOrThrow(Images.COLUMN_NAME_SKU_ID))
+                val categoryName = getString(getColumnIndexOrThrow(Images.COLUMN_NAME_CATEGORY_NAME))
+                val imagePath = getString(getColumnIndexOrThrow(Images.COLUMN_NAME_IMAGE_PATH))
+                val sequence = getInt(getColumnIndexOrThrow(Images.COLUMN_NAME_IMAGE_SEQUENCE))
+                val angle = getInt(getColumnIndexOrThrow(Images.COLUMN_NAME_IMAGE_ANGLE))
+                val meta = getString(getColumnIndexOrThrow(Images.COLUMN_NAME_IMAGE_META))
+
+                val name = getString(getColumnIndexOrThrow(Images.COLUMN_NAME_IMAGE_NAME))
+                val preSignedUrl = getString(getColumnIndexOrThrow(Images.COLUMN_NAME_IMAGE_PRE_SIGNED_URL))
+                val overlayId = getString(getColumnIndexOrThrow(Images.COLUMN_NAME_OVERLAY_ID))
+                val imageId = getString(getColumnIndexOrThrow(Images.COLUMN_NAME_IMAGE_ID))
+                val debugData = getString(getColumnIndexOrThrow(Images.COLUMN_NAME_IMAGE_DEBUG_DATA))
+                val isUploaded = getInt(getColumnIndexOrThrow(Images.COLUMN_NAME_IS_UPLOADED))
+                val isStatusUpdated = getInt(getColumnIndexOrThrow(Images.COLUMN_NAME_IS_STATUS_UPDATED))
+                val isReclick = getInt(getColumnIndexOrThrow(Images.COLUMN_NAME_IS_RE_CLICK))
+                val isReshoot = getInt(getColumnIndexOrThrow(Images.COLUMN_NAME_IS_RESHOOT))
+
+                image.itemId = itemId
+                image.projectId = projectId
+                image.skuName = skuName
+                image.skuId = skuId
+                image.categoryName = categoryName
+                image.imagePath = imagePath
+                image.sequence = sequence
+                image.angle = angle
+                image.meta = meta
+                image.name = name
+                image.preSignedUrl = preSignedUrl
+                image.overlayId = overlayId
+                image.imageId = imageId
+                image.debugData = debugData
+                image.isUploaded = isUploaded
+                image.isStatusUpdated = isStatusUpdated
+                image.isReclick = isReclick
+                image.isReshoot = isReshoot
+            }
+        }
+
+        return image
+    }
 
     fun getImagesBySkuId(skuId: String?):  ArrayList<Image> {
         val projection = arrayOf(
@@ -210,6 +223,92 @@ class ImageLocalRepository {
             projection,             // The array of columns to return (pass null to get all)
             selection,              // The columns for the WHERE clause
             selectionArgs,          // The values for the WHERE clause
+            null,                   // don't group the rows
+            null,                   // don't filter by row groups
+            sortOrder                       // The sort order
+        )
+
+
+        val imagesList = ArrayList<Image>()
+
+        with(cursor) {
+            while (moveToNext()) {
+                val itemId = getLong(getColumnIndexOrThrow(BaseColumns._ID))
+                val projectId = getString(getColumnIndexOrThrow(Images.COLUMN_NAME_PROJECT_ID))
+                val skuName = getString(getColumnIndexOrThrow(Images.COLUMN_NAME_SKU_NAME))
+                val skuId = getString(getColumnIndexOrThrow(Images.COLUMN_NAME_SKU_ID))
+                val categoryName = getString(getColumnIndexOrThrow(Images.COLUMN_NAME_CATEGORY_NAME))
+                val imagePath = getString(getColumnIndexOrThrow(Images.COLUMN_NAME_IMAGE_PATH))
+                val sequence = getInt(getColumnIndexOrThrow(Images.COLUMN_NAME_IMAGE_SEQUENCE))
+                val angle = getInt(getColumnIndexOrThrow(Images.COLUMN_NAME_IMAGE_ANGLE))
+                val meta = getString(getColumnIndexOrThrow(Images.COLUMN_NAME_IMAGE_META))
+
+                val name = getString(getColumnIndexOrThrow(Images.COLUMN_NAME_IMAGE_NAME))
+                val preSignedUrl = getString(getColumnIndexOrThrow(Images.COLUMN_NAME_IMAGE_PRE_SIGNED_URL))
+                val overlayId = getString(getColumnIndexOrThrow(Images.COLUMN_NAME_OVERLAY_ID))
+                val imageId = getString(getColumnIndexOrThrow(Images.COLUMN_NAME_IMAGE_ID))
+                val debugData = getString(getColumnIndexOrThrow(Images.COLUMN_NAME_IMAGE_DEBUG_DATA))
+                val isUploaded = getInt(getColumnIndexOrThrow(Images.COLUMN_NAME_IS_UPLOADED))
+                val isStatusUpdated = getInt(getColumnIndexOrThrow(Images.COLUMN_NAME_IS_STATUS_UPDATED))
+                val isReclick = getInt(getColumnIndexOrThrow(Images.COLUMN_NAME_IS_RE_CLICK))
+                val isReshoot = getInt(getColumnIndexOrThrow(Images.COLUMN_NAME_IS_RESHOOT))
+
+                val image = Image()
+                image.itemId = itemId
+                image.projectId = projectId
+                image.skuName = skuName
+                image.skuId = skuId
+                image.categoryName = categoryName
+                image.imagePath = imagePath
+                image.sequence = sequence
+                image.angle = angle
+                image.meta = meta
+                image.name = name
+                image.preSignedUrl = preSignedUrl
+                image.overlayId = overlayId
+                image.imageId = imageId
+                image.debugData = debugData
+                image.isUploaded = isUploaded
+                image.isStatusUpdated = isStatusUpdated
+                image.isReclick = isReclick
+                image.isReshoot = isReshoot
+
+                imagesList.add(image)
+            }
+        }
+
+        return imagesList
+    }
+
+    fun getAllImages():  ArrayList<Image> {
+        val projection = arrayOf(
+            BaseColumns._ID,
+            Images.COLUMN_NAME_PROJECT_ID,
+            Images.COLUMN_NAME_SKU_NAME,
+            Images.COLUMN_NAME_SKU_ID,
+            Images.COLUMN_NAME_CATEGORY_NAME,
+            Images.COLUMN_NAME_IMAGE_PATH,
+            Images.COLUMN_NAME_IMAGE_SEQUENCE,
+            Images.COLUMN_NAME_IMAGE_ANGLE,
+            Images.COLUMN_NAME_IMAGE_META,
+            Images.COLUMN_NAME_IMAGE_NAME,
+            Images.COLUMN_NAME_IMAGE_PRE_SIGNED_URL,
+            Images.COLUMN_NAME_OVERLAY_ID,
+            Images.COLUMN_NAME_IMAGE_ID,
+            Images.COLUMN_NAME_IMAGE_DEBUG_DATA,
+            Images.COLUMN_NAME_IS_UPLOADED,
+            Images.COLUMN_NAME_IS_STATUS_UPDATED,
+            Images.COLUMN_NAME_IS_RE_CLICK,
+            Images.COLUMN_NAME_IS_RESHOOT)
+
+        // How you want the results sorted in the resulting Cursor
+        val sortOrder = "${BaseColumns._ID} ASC"
+
+        val cursor = dbReadable.query(
+            Images.TABLE_NAME,   // The table to query
+            projection,             // The array of columns to return (pass null to get all)
+            null,              // The columns for the WHERE clause
+            null,          // The values for the WHERE clause
             null,                   // don't group the rows
             null,                   // don't filter by row groups
             sortOrder                       // The sort order
@@ -422,7 +521,7 @@ class ImageLocalRepository {
         com.spyneai.shoot.utils.log("deleteImage : "+count)
     }
 
-    fun addPreSignedUrl(image: Image) {
+    fun addPreSignedUrl(image: Image) : Int{
         val projectValues = ContentValues().apply {
             put(Images.COLUMN_NAME_IMAGE_PRE_SIGNED_URL, image.preSignedUrl)
             put(Images.COLUMN_NAME_IMAGE_ID, image.imageId)
@@ -433,16 +532,15 @@ class ImageLocalRepository {
 
         val selectionArgs = arrayOf(image.itemId.toString())
 
-        val count = dbWritable.update(
+        return dbWritable.update(
             Images.TABLE_NAME,
             projectValues,
             selection,
             selectionArgs)
 
-        Log.d(TAG, "addPreSignedUrl: "+count)
     }
 
-    fun markUploaded(image: Image) {
+    fun markUploaded(image: Image) : Int {
         //update project status to ongoing
         updateProjectStatus(image.projectId!!)
 
@@ -458,16 +556,14 @@ class ImageLocalRepository {
 
         val selectionArgs = arrayOf(image.itemId.toString())
 
-        val count = dbWritable.update(
+        return dbWritable.update(
             Images.TABLE_NAME,
             projectValues,
             selection,
             selectionArgs)
-
-        Log.d(TAG, "markUploaded: "+count)
     }
 
-    fun markStatusUploaded(videoDetails: Image) {
+    fun markStatusUploaded(videoDetails: Image) : Int {
         //update project status to ongoing
         updateProjectStatus(videoDetails.projectId!!)
 
@@ -483,13 +579,11 @@ class ImageLocalRepository {
 
         val selectionArgs = arrayOf(videoDetails.itemId.toString())
 
-        val count = dbWritable.update(
+        return dbWritable.update(
             Images.TABLE_NAME,
             projectValues,
             selection,
             selectionArgs)
-
-        Log.d(TAG, "markUploaded: "+count)
     }
 
     fun updateProjectStatus(projectId : String) {

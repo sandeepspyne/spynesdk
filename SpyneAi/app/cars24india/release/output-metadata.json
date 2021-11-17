@@ -10,8 +10,8 @@
     {
       "type": "SINGLE",
       "filters": [],
-      "versionCode": 8,
-      "versionName": "1.7",
+      "versionCode": 12,
+      "versionName": "2.2",
       "outputFile": "app-cars24india-release.apk"
     }
   ]

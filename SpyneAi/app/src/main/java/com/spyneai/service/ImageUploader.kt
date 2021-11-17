@@ -17,7 +17,6 @@ import com.spyneai.shoot.data.ShootLocalRepository
 import com.spyneai.shoot.data.ShootRepository
 import com.spyneai.shoot.data.model.Image
 import com.spyneai.shoot.utils.logUpload
-import com.spyneai.threesixty.data.model.VideoDetails
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
@@ -30,11 +29,13 @@ import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 import java.io.File
+import java.util.*
 
 class ImageUploader(val context: Context,
                     val localRepository : ImageLocalRepository,
                     val shootRepository: ShootRepository,
-                    var listener: Listener) {
+                    var listener: Listener,
+                    var lastIdentifier : String = "0") {
 
     val TAG = "ImageUploader"
 
@@ -47,6 +48,8 @@ class ImageUploader(val context: Context,
        if (context.isInternetActive()){
            GlobalScope.launch(Dispatchers.Default) {
 
+               lastIdentifier = if (retryCount == 0) getUniqueIdentifier() else lastIdentifier
+
                var skipFlag = -1
                val image = if (imageType == AppConstants.REGULAR){
                    localRepository.getOldestImage("0")
@@ -54,8 +57,6 @@ class ImageUploader(val context: Context,
                    skipFlag = -2
                    localRepository.getOldestImage("-1")
                }
-
-               val s = ""
 
                if (image.itemId != null){
                    //uploading enqueued
@@ -66,25 +67,58 @@ class ImageUploader(val context: Context,
                    Log.d(TAG, "selectLastImageAndUpload: path "+image.imagePath)
                    Log.d(TAG, "selectLastImageAndUpload: uploaded "+image.isUploaded)
                    Log.d(TAG, "selectLastImageAndUpload: status updated "+image.isStatusUpdated)
+
+                   val imageProperties = Properties()
+                       .apply {
+                           put("iteration_id",lastIdentifier)
+                           put("retry_count",retryCount)
+                           put("image_id",image.itemId)
+                           put("project_id",image.projectId)
+                           put("sku_id",image.skuId)
+                           put("sku_name",image.skuName)
+                           put("upload_status",image.isUploaded)
+                           put("make_done_status",image.isStatusUpdated)
+                           put("image_name",image.name)
+                           put("overlay_id",image.overlayId)
+                           put("sequence",image.sequence)
+                           put("pre_url",image.preSignedUrl)
+                           put("is_reclick",image.isReclick)
+                           put("is_reshoot",image.isReshoot)
+                           put("image_path",image.imagePath)
+                           put("upload_type",imageType)
+                       }
+
+                   context.captureEvent(
+                       AppConstants.IMAGE_SELECTED,
+                       imageProperties)
+
+
                    listener.inProgress(image)
 
                    if (retryCount > 4) {
-                       if (image.itemId != null){
+                       localRepository.skipImage(image.itemId!!,skipFlag)
+                       startNextUpload(image.itemId!!,false,imageType)
 
-                           localRepository.skipImage(image.itemId!!,skipFlag)
-                           startNextUpload(image.itemId!!,false,imageType)
-                       }
-                       captureEvent(Events.UPLOAD_FAILED_SERVICE,image,false,"Image upload limit reached")
-                       logUpload("Upload Skipped Retry Limit Reached")
+                       captureEvent(Events.MAX_RETRY,image,false,"Image upload limit reached")
                        return@launch
                    }
 
                    if (image.isUploaded == 0 || image.isUploaded == -1){
+                        logUpload("presignerd url "+image.preSignedUrl)
+                        context.captureEvent(
+                            AppConstants.IMAGE_NOT_UPLOADED,
+                            imageProperties
+                        )
 
                        if (image.preSignedUrl != AppConstants.DEFAULT_PRESIGNED_URL){
+                           context.captureEvent(
+                               AppConstants.UPLOADING_TO_GCP_INITIATED,
+                               imageProperties
+                           )
                            uploadImageToGcp(image,imageType,retryCount)
                        }else {
                            val uploadType = if (retryCount == 0) "Direct" else "Retry"
+                           //val uploadType = "Retry"
 
                            var response = shootRepository.getPreSignedUrl(
                                uploadType,
@@ -96,9 +130,24 @@ class ImageUploader(val context: Context,
                                    image.preSignedUrl = response.value.data.presignedUrl
                                    image.imageId = response.value.data.imageId
 
-                                   //captureEvent(Events.GOT_PRESIGNED_VIDEO_URL,video,true,null)
+                                   captureEvent(Events.GOT_PRESIGNED_IMAGE_URL,image,true,null)
 
-                                   localRepository.addPreSignedUrl(image)
+                                   val count = localRepository.addPreSignedUrl(image)
+                                   val updatedImage = localRepository.getImage(image.itemId!!)
+
+                                   context.captureEvent(
+                                       AppConstants.IS_PRESIGNED_URL_UPDATED,
+                                       Properties()
+                                           .apply {
+                                               put("iteration_id",lastIdentifier)
+                                               put("retry_count",retryCount)
+                                               put("image_id",image.itemId)
+                                               put("upload_status",image.isUploaded)
+                                               put("make_done_status",image.isStatusUpdated)
+                                               put("pre_url",updatedImage.preSignedUrl)
+                                               put("is_updated",count != 0)
+                                           }
+                                   )
 
                                    uploadImageToGcp(image,imageType,retryCount)
                                }
@@ -107,11 +156,11 @@ class ImageUploader(val context: Context,
                                    log("Image upload failed")
                                    logUpload("Upload error "+response.errorCode.toString()+" "+response.errorMessage)
                                    if(response.errorMessage == null){
-                                       captureEvent(Events.UPLOAD_FAILED_SERVICE,image,false,response.errorCode.toString()+": Http exception from server")
+                                       captureEvent(Events.GET_PRESIGNED_FAILED,image,false,response.errorCode.toString()+": Http exception from server")
                                    }else {
-                                       captureEvent(Events.UPLOAD_FAILED_SERVICE,image,false,response.errorCode.toString()+": "+response.errorMessage)
+                                       captureEvent(Events.GET_PRESIGNED_FAILED,image,false,response.errorCode.toString()+": "+response.errorMessage)
                                    }
-
+                                   // if duplicated entry error change status
                                    selectLastImageAndUpload(imageType,retryCount+1)
                                }
                            }
@@ -119,7 +168,6 @@ class ImageUploader(val context: Context,
                    }else{
                        setStatusUploaed(image,imageType,retryCount)
                    }
-
                }else{
                    logUpload("All Images uploaded")
                    if (imageType == AppConstants.REGULAR){
@@ -150,12 +198,24 @@ class ImageUploader(val context: Context,
        }
     }
 
+    private fun getUniqueIdentifier(): String {
+        val SALTCHARS = "abcdefghijklmnopqrstuvwxyz1234567890"
+        val salt = StringBuilder()
+        val rnd = Random()
+        while (salt.length < 7) { // length of the random string.
+            //val index = (rnd.nextFloat() * SALTCHARS.length) as Int
+            val index = rnd.nextInt(SALTCHARS.length)
+            salt.append(SALTCHARS[index])
+        }
+        return salt.toString()
+    }
+
     private fun uploadImageToGcp(image: Image,imageType : String,retryCount : Int) {
         // create RequestBody instance from file
         val requestFile =
             File(image.imagePath).asRequestBody("text/x-markdown; charset=utf-8".toMediaTypeOrNull())
 
-        //upload video with presigned url
+        //upload image with presigned url
         val request = GcpClient.buildService(ClipperApi::class.java)
 
         val call = request.uploadVideo(
@@ -166,16 +226,32 @@ class ImageUploader(val context: Context,
 
         call.enqueue(object : Callback<ResponseBody> {
             override fun onResponse(call: Call<ResponseBody>, response: Response<ResponseBody>) {
-                Log.d("VideoUploader", "onResponse: "+response.code())
+                Log.d(TAG, "onResponse: "+response.code())
                 if (response.isSuccessful){
-                    localRepository.markUploaded(image)
-                    onVideoUploaded(
+                    val count = localRepository.markUploaded(image)
+                    val updatedImage = localRepository.getImage(image.itemId!!)
+
+                    context.captureEvent(
+                        AppConstants.IS_MARK_GCP_UPLOADED_UPDATED,
+                        Properties()
+                            .apply {
+                                put("iteration_id",lastIdentifier)
+                                put("retry_count",retryCount)
+                                put("image_id",image.itemId)
+                                put("pre_url",updatedImage.preSignedUrl)
+                                put("is_updated",count != 0)
+                                put("make_done_status",updatedImage.isStatusUpdated)
+                                put("make_done_status",updatedImage.isStatusUpdated)
+                            }
+                    )
+
+                    onImageUploaded(
                         image,
                         imageType,
                         retryCount
                     )
                 }else {
-                    onVideoUploadFailed(
+                    onImageUploadFailed(
                         imageType,
                         retryCount,
                         image,
@@ -185,8 +261,8 @@ class ImageUploader(val context: Context,
             }
 
             override fun onFailure(call: Call<ResponseBody>, t: Throwable) {
-                Log.d("VideoUploader", "onFailure: "+t.message)
-                onVideoUploadFailed(
+                Log.d(TAG, "onFailure: "+t.message)
+                onImageUploadFailed(
                     imageType,
                     retryCount,
                     image,
@@ -197,37 +273,54 @@ class ImageUploader(val context: Context,
         })
     }
 
-    private fun onVideoUploaded(video: Image, imageType: String, retryCount : Int) {
-        captureEvent(Events.VIDEO_UPLOADED_TO_GCP,video,true,null)
+    private fun onImageUploaded(image: Image, imageType: String, retryCount : Int) {
+        captureEvent(Events.IMAGE_UPLOADED_TO_GCP,image,true,null)
 
         GlobalScope.launch(Dispatchers.Default) {
-            setStatusUploaed(video,imageType,retryCount)
+            setStatusUploaed(image,imageType,retryCount)
         }
     }
 
-    private fun onVideoUploadFailed(imageType: String,retryCount: Int,video: Image,error: String?) {
-        captureEvent(Events.VIDEO_UPLOAD_TO_GCP_FAILED,video,false,error)
+    private fun onImageUploadFailed(imageType: String,retryCount: Int,image: Image,error: String?) {
+        captureEvent(Events.IMAGE_UPLOAD_TO_GCP_FAILED,image,false,error)
 
         GlobalScope.launch(Dispatchers.Default) {
             selectLastImageAndUpload(imageType,retryCount+1)
         }
     }
 
-    private suspend fun setStatusUploaed(video: Image,imageType: String,retryCount : Int) {
-           val response = shootRepository.markUploaded(video.imageId!!)
+    private suspend fun setStatusUploaed(image: Image,imageType: String,retryCount : Int) {
+           val response = shootRepository.markUploaded(image.imageId!!)
 
            when(response){
                is Resource.Success -> {
-                   captureEvent(Events.MARKED_VIDEO_UPLOADED,video,true,null)
-                   localRepository.markStatusUploaded(video)
+                   captureEvent(Events.MARKED_IMAGE_UPLOADED,image,true,null)
+
+                   val count = localRepository.markStatusUploaded(image)
+                   val updatedImage = localRepository.getImage(image.itemId!!)
+
+                   context.captureEvent(
+                       AppConstants.IS_MARK_DONE_STATUS_UPDATED,
+                       Properties()
+                           .apply {
+                               put("iteration_id",lastIdentifier)
+                               put("retry_count",retryCount)
+                               put("image_id",image.itemId)
+                               put("pre_url",updatedImage.preSignedUrl)
+                               put("is_updated",count != 0)
+                               put("upload_status",updatedImage.isUploaded)
+                               put("is_uploaded",updatedImage.isStatusUpdated)
+                           }
+                   )
+
                    selectLastImageAndUpload(imageType,0)
                }
 
                is Resource.Failure -> {
                    if(response.errorMessage == null){
-                       captureEvent(Events.MARK_VIDEO_UPLOADED_FAILED,video,false,response.errorCode.toString()+": Http exception from server")
+                       captureEvent(Events.MARK_IMAGE_UPLOADED_FAILED,image,false,response.errorCode.toString()+": Http exception from server")
                    }else {
-                       captureEvent(Events.MARK_VIDEO_UPLOADED_FAILED,video,false,response.errorCode.toString()+": "+response.errorMessage)
+                       captureEvent(Events.MARK_IMAGE_UPLOADED_FAILED,image,false,response.errorCode.toString()+": "+response.errorMessage)
                    }
 
                    selectLastImageAndUpload(imageType,retryCount+1)
@@ -252,6 +345,9 @@ class ImageUploader(val context: Context,
             this["project_id"] = image.projectId
             this["image_type"] = image.categoryName
             this["sequence"] = image.sequence
+            this["image_name"] = image.name
+            this["is_reclick"] = image.isReclick
+            this["is_reshoot"] = image.isReshoot
            // this["retry_count"] = runAttemptCount
         }
 
