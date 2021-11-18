@@ -28,7 +28,6 @@ import com.google.android.play.core.install.model.AppUpdateType
 import com.google.android.play.core.install.model.UpdateAvailability
 import com.google.android.play.core.ktx.startUpdateFlowForResult
 import com.google.gson.Gson
-import com.posthog.android.Properties
 import com.spyneai.R
 import com.spyneai.activity.CategoriesActivity
 import com.spyneai.activity.CompletedProjectsActivity
