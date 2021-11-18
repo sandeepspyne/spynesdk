@@ -73,13 +73,6 @@ class DBHelper(context: Context) :
                 //db.execSQL(DATABASE_ALTER_IMAGE_TABLE_FOR_GCP)
             }
             else -> {
-                //send sku's data to sever
-                GlobalScope.launch {
-                    SendSkusData(
-                        ShootRepository(),
-                        ImageLocalRepository()
-                    ).startWork()
-                }
 
                 BaseApplication.getContext().captureEvent(
                     "DB_VERSION",

@@ -196,6 +196,15 @@ class MainDashboardActivity : AppCompatActivity() {
 
         checkAppVersion()
         observeAppVersion()
+
+        //send sku's data to sever
+        GlobalScope.launch {
+            SendSkusData(
+                ShootRepository(),
+                ImageLocalRepository()
+            ).startWork()
+        }
+
     }
 
     private fun checkAppVersion() {
