@@ -83,7 +83,11 @@ class SendSkusData(
                     Events.SKU_DATA_SENT,
                     properties
                 )
+
+                Utilities.saveBool(BaseApplication.getContext(),AppConstants.IS_SKU_DATA_SENT,true)
+
             }
+
 
             is Resource.Failure -> {
 

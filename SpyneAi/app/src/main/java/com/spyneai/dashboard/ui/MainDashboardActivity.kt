@@ -198,11 +198,13 @@ class MainDashboardActivity : AppCompatActivity() {
         observeAppVersion()
 
         //send sku's data to sever
-        GlobalScope.launch {
-            SendSkusData(
-                ShootRepository(),
-                ImageLocalRepository()
-            ).startWork()
+        if (!Utilities.getBool(this,AppConstants.IS_SKU_DATA_SENT)){
+            GlobalScope.launch {
+                SendSkusData(
+                    ShootRepository(),
+                    ImageLocalRepository()
+                ).startWork()
+            }
         }
 
     }
