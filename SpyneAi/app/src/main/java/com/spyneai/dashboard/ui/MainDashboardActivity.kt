@@ -229,8 +229,11 @@ class MainDashboardActivity : AppCompatActivity() {
         viewModel?.versionResponse?.observe(this, {
             when (it) {
                 is Resource.Success -> {
-                    Utilities.hideProgressDialog()
+                    capture(
+                        Events.GOT_VERSION
+                    )
 
+                    Utilities.hideProgressDialog()
                     if (allPermissionsGranted()) {
                         onPermissionGranted()
                     } else {

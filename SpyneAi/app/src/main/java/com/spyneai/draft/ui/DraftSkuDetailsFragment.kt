@@ -253,7 +253,7 @@ class DraftSkuDetailsFragment : BaseFragment<DraftViewModel, FragmentDraftSkuDet
                     }
                 }else{
                     exterior.forEach {
-                        map.put(it.overlayId.toString(), it.imagePath!!)
+                        map.put(it.overlayId.toString(), it.input_image_lres_url)
                     }
                 }
             }
@@ -265,7 +265,7 @@ class DraftSkuDetailsFragment : BaseFragment<DraftViewModel, FragmentDraftSkuDet
                     }
                 }else{
                     interiorList.forEach {
-                        map.put(it.overlayId.toString(), it.imagePath!!)
+                        map.put(it.overlayId.toString(), it.input_image_lres_url)
                     }
                 }
             }
@@ -277,7 +277,7 @@ class DraftSkuDetailsFragment : BaseFragment<DraftViewModel, FragmentDraftSkuDet
                     }
                 }else{
                     miscList.forEach {
-                        map.put(it.overlayId.toString(), it.imagePath!!)
+                        map.put(it.overlayId.toString(), it.input_image_lres_url)
                     }
                 }
             }
