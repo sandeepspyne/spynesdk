@@ -78,6 +78,16 @@ class GridEcomFragment : BaseFragment<ShootViewModel, FragmentGridEcomBinding>()
             }
         })
 
+
+        viewModel.hideLeveler.observe(viewLifecycleOwner,{
+            if (viewModel.categoryDetails.value?.imageType == "Info"){
+                binding.apply {
+                    ivNext.visibility = View.GONE
+                    ivEnd.visibility = View.VISIBLE
+                }
+            }
+        })
+
         viewModel.onImageConfirmed.observe(viewLifecycleOwner,{
             viewModel.shootList.value?.let {
                 binding.tvImageCount.text = viewModel.shootList.value!!.size.toString()
@@ -124,6 +134,9 @@ class GridEcomFragment : BaseFragment<ShootViewModel, FragmentGridEcomBinding>()
             }
         })
     }
+
+
+
 
 
     private fun showImageConfirmDialog(shootData: ShootData) {

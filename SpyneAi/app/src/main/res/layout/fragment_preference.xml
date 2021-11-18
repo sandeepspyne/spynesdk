@@ -1,115 +1,208 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:fillViewport="true"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:orientation="vertical"
     tools:context=".fragment.PreferenceFragment">
 
 
   <LinearLayout
       android:layout_width="match_parent"
-      android:layout_height="wrap_content"
-      android:layout_weight="1"
+      android:layout_height="match_parent"
       android:orientation="vertical">
 
-    <TextView
-        android:id="@+id/tvUserName"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Name"
-        android:layout_marginTop="@dimen/dp_30"
-        android:textColor="@color/primary"
-        android:paddingHorizontal="@dimen/dp_12"
-        android:layout_gravity="center_vertical"
-        android:fontFamily="@font/poppins_medium"
-        android:textSize="@dimen/sp_18">
-    </TextView>
-
-    <LinearLayout
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/dp_5"
-        android:paddingHorizontal="@dimen/dp_12"
-        android:orientation="horizontal">
-      <ImageView
-          android:layout_width="18dp"
-          android:layout_height="20dp"
-          app:tint="@color/primary"
-          android:backgroundTintMode="@color/tint"
-          android:src="@drawable/mail"></ImageView>
-
-      <TextView
-          android:id="@+id/tvEmail"
-          android:layout_width="wrap_content"
-          android:layout_height="wrap_content"
-          android:layout_marginHorizontal="@dimen/dp_10"
-          android:textSize="@dimen/sp_15"
-          android:text="test_spyne@gmail.com"></TextView>
-
-    </LinearLayout>
-
-
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="7dp"
-        android:layout_marginTop="@dimen/dp_30"
-        android:background="@color/light_grey"
-
-        ></TextView>
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginHorizontal="@dimen/dp_12"
-        android:gravity="center_vertical"
-        android:layout_marginTop="@dimen/dp_30"
-        android:orientation="horizontal">
-      <ImageView
-          android:layout_width="18dp"
-          android:layout_height="20dp"
-          android:backgroundTintMode="@color/tint"
-          app:tint="@color/primary"
-          android:src="@drawable/language"></ImageView>
+        android:layout_weight="1"
+        android:orientation="vertical">
 
       <TextView
+          android:id="@+id/tvUserName"
           android:layout_width="wrap_content"
           android:layout_height="wrap_content"
-          android:text="@string/language"
-          android:id="@+id/tvLang"
+          android:text="Name"
+          android:layout_marginTop="@dimen/dp_30"
           android:textColor="@color/primary"
-          android:layout_marginHorizontal="@dimen/dp_10"
-          android:layout_weight="1"
+          android:paddingHorizontal="@dimen/dp_12"
+          android:layout_gravity="center_vertical"
           android:fontFamily="@font/poppins_medium"
-          android:textSize="@dimen/sp_18"
+          android:textSize="@dimen/sp_18">
+      </TextView>
+
+      <LinearLayout
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:layout_marginTop="@dimen/dp_5"
+          android:paddingHorizontal="@dimen/dp_12"
+          android:orientation="horizontal">
+        <ImageView
+            android:layout_width="18dp"
+            android:layout_height="20dp"
+            app:tint="@color/primary"
+            android:backgroundTintMode="@color/tint"
+            android:src="@drawable/mail"></ImageView>
+
+        <TextView
+            android:id="@+id/tvEmail"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="@dimen/dp_10"
+            android:textSize="@dimen/sp_15"
+            android:text="test_spyne@gmail.com"></TextView>
+
+      </LinearLayout>
+
+
+      <TextView
+          android:layout_width="match_parent"
+          android:layout_height="7dp"
+          android:layout_marginTop="@dimen/dp_30"
+          android:background="@color/light_grey"
+
           ></TextView>
 
-
-      <Spinner android:id="@+id/spLanguage"
-          android:layout_width="wrap_content"
-          android:layout_height="wrap_content"
-          android:drawSelectorOnTop="true"
-          android:textSize="@dimen/sp_18"
-          android:backgroundTint="@color/primary"/>
-
-
-
-
-    </LinearLayout>
-    <LinearLayout
-        android:id="@+id/llProjectNameSwitch"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:gravity="center_vertical"
-        android:layout_marginTop="@dimen/dp_30"
-        android:layout_marginHorizontal="@dimen/dp_12"
-        android:orientation="horizontal">
       <LinearLayout
           android:layout_width="match_parent"
           android:layout_height="wrap_content"
-          android:layout_weight="1"
+          android:layout_marginHorizontal="@dimen/dp_12"
           android:gravity="center_vertical"
+          android:layout_marginTop="@dimen/dp_30"
+          android:orientation="horizontal">
+        <ImageView
+            android:layout_width="18dp"
+            android:layout_height="20dp"
+            android:backgroundTintMode="@color/tint"
+            app:tint="@color/primary"
+            android:src="@drawable/language"></ImageView>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/language"
+            android:id="@+id/tvLang"
+            android:textColor="@color/primary"
+            android:layout_marginHorizontal="@dimen/dp_10"
+            android:layout_weight="1"
+            android:fontFamily="@font/poppins_medium"
+            android:textSize="@dimen/sp_18"
+            ></TextView>
+
+
+        <Spinner android:id="@+id/spLanguage"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:drawSelectorOnTop="true"
+            android:textSize="@dimen/sp_18"
+            android:backgroundTint="@color/primary"/>
+
+
+
+
+      </LinearLayout>
+      <LinearLayout
+          android:id="@+id/llProjectNameSwitch"
+          android:layout_width="match_parent"
+          android:layout_height="wrap_content"
+          android:gravity="center_vertical"
+          android:layout_marginTop="@dimen/dp_30"
+          android:layout_marginHorizontal="@dimen/dp_12"
+          android:orientation="horizontal">
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:gravity="center_vertical"
+            android:orientation="vertical">
+
+          <LinearLayout
+              android:layout_width="wrap_content"
+              android:layout_height="wrap_content"
+              android:gravity="center_vertical"
+              android:orientation="horizontal">
+            <ImageView
+                android:layout_width="18dp"
+                android:layout_height="20dp"
+                android:backgroundTintMode="@color/tint"
+                app:tint="@color/primary"
+                android:src="@drawable/project"></ImageView>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/project_name"
+                android:id="@+id/tvProjectName"
+                android:layout_marginHorizontal="@dimen/dp_10"
+                android:layout_weight="1"
+                android:textColor="@color/primary"
+                android:fontFamily="@font/poppins_medium"
+                android:textSize="@dimen/sp_18"
+                ></TextView>
+
+
+          </LinearLayout>
+
+          <TextView
+              android:layout_width="wrap_content"
+              android:layout_height="wrap_content"
+              android:textSize="@dimen/sp_15"
+              android:text="@string/turn_off_switch"></TextView>
+
+
+
+        </LinearLayout>
+
+        <Switch
+            android:id="@+id/switchProjectName"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:textStyle="bold"
+
+            ></Switch>
+
+      </LinearLayout>
+
+      <LinearLayout
+          android:id="@+id/llChange_password"
+          android:layout_width="match_parent"
+          android:layout_height="wrap_content"
+          android:layout_marginHorizontal="@dimen/dp_20"
+          android:gravity="center_vertical"
+          android:visibility="gone"
+          android:layout_marginTop="@dimen/dp_30"
+          android:orientation="horizontal">
+
+        <ImageView
+            android:layout_width="18dp"
+            android:layout_height="20dp"
+            android:backgroundTintMode="@color/tint"
+            android:src="@drawable/password"
+            app:tint="@color/primary"></ImageView>
+
+        <TextView
+            android:id="@+id/tvPassword"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/change_password"
+            android:textColor="@color/primary"
+            android:layout_marginHorizontal="@dimen/dp_10"
+            android:fontFamily="@font/poppins_medium"
+            android:textSize="@dimen/sp_18"
+            ></TextView>
+
+
+
+      </LinearLayout>
+      <LinearLayout
+          android:layout_width="match_parent"
+          android:layout_height="wrap_content"
+          android:layout_marginHorizontal="@dimen/dp_12"
+          android:gravity="center_vertical"
+          android:layout_marginTop="@dimen/dp_30"
           android:orientation="vertical">
 
         <LinearLayout
@@ -120,392 +213,307 @@
           <ImageView
               android:layout_width="18dp"
               android:layout_height="20dp"
-              android:backgroundTintMode="@color/tint"
               app:tint="@color/primary"
-              android:src="@drawable/project"></ImageView>
+              android:backgroundTintMode="@color/tint"
+              android:src="@drawable/app"></ImageView>
 
-          <TextView
+          <LinearLayout
               android:layout_width="wrap_content"
               android:layout_height="wrap_content"
-              android:text="@string/project_name"
-              android:id="@+id/tvProjectName"
-              android:layout_marginHorizontal="@dimen/dp_10"
-              android:layout_weight="1"
-              android:textColor="@color/primary"
-              android:fontFamily="@font/poppins_medium"
-              android:textSize="@dimen/sp_18"
-              ></TextView>
+              android:orientation="vertical">
 
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/app_version"
+                android:id="@+id/tvAppVersionLabel"
+                android:textColor="@color/primary"
+                android:layout_marginHorizontal="@dimen/dp_10"
+                android:layout_weight="1"
+                android:fontFamily="@font/poppins_medium"
+                android:textSize="@dimen/sp_18"
+                ></TextView>
+
+          </LinearLayout>
 
         </LinearLayout>
 
         <TextView
+            android:id="@+id/tvAppVersion"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textSize="@dimen/sp_15"
-            android:text="@string/turn_off_switch"></TextView>
+            android:text="version 1.2.3"></TextView>
 
 
 
       </LinearLayout>
-
-      <Switch
-          android:id="@+id/switchProjectName"
-          android:layout_width="wrap_content"
-          android:layout_height="wrap_content"
-          android:layout_gravity="center_vertical"
-          android:textStyle="bold"
-
-          ></Switch>
-
-    </LinearLayout>
-
-    <LinearLayout
-        android:id="@+id/llChange_password"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginHorizontal="@dimen/dp_20"
-        android:gravity="center_vertical"
-        android:visibility="gone"
-        android:layout_marginTop="@dimen/dp_30"
-        android:orientation="horizontal">
-
-      <ImageView
-          android:layout_width="18dp"
-          android:layout_height="20dp"
-          android:backgroundTintMode="@color/tint"
-          android:src="@drawable/password"
-          app:tint="@color/primary"></ImageView>
-
-      <TextView
-          android:id="@+id/tvPassword"
-          android:layout_width="wrap_content"
-          android:layout_height="wrap_content"
-          android:text="@string/change_password"
-          android:textColor="@color/primary"
-          android:layout_marginHorizontal="@dimen/dp_10"
-          android:fontFamily="@font/poppins_medium"
-          android:textSize="@dimen/sp_18"
-          ></TextView>
-
-
-
-    </LinearLayout>
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginHorizontal="@dimen/dp_12"
-        android:gravity="center_vertical"
-        android:layout_marginTop="@dimen/dp_30"
-        android:orientation="vertical">
-
       <LinearLayout
           android:layout_width="wrap_content"
           android:layout_height="wrap_content"
           android:gravity="center_vertical"
-          android:orientation="horizontal">
+          android:layout_marginHorizontal="@dimen/dp_12"
+          android:layout_marginTop="@dimen/dp_30"
+          android:orientation="horizontal"
+          android:id="@+id/llAttendance">
         <ImageView
             android:layout_width="18dp"
             android:layout_height="20dp"
             app:tint="@color/primary"
             android:backgroundTintMode="@color/tint"
-            android:src="@drawable/app"></ImageView>
+            android:src="@drawable/attendance"></ImageView>
 
-        <LinearLayout
+        <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:text="Attendance"
+            android:id="@+id/tvAttendance"
+            android:textColor="@color/primary"
+            android:layout_marginHorizontal="@dimen/dp_10"
+            android:fontFamily="@font/poppins_medium"
+            android:textSize="@dimen/sp_18"></TextView>
+
+        <ImageView
+            android:layout_width="@dimen/dp_15"
+            android:layout_height="@dimen/dp_15"
+            android:id="@+id/ivDropDown"
+            android:src="@drawable/drop_arrow"
+            app:tint="@color/primary" />
+
+      </LinearLayout>
+
+      <androidx.cardview.widget.CardView
+          android:id="@+id/cvClockIn"
+          android:layout_width="match_parent"
+          android:layout_height="wrap_content"
+          android:visibility="gone"
+          android:layout_marginHorizontal="20dp"
+          android:layout_marginTop="@dimen/dp_20"
+          android:layout_marginBottom="@dimen/dp_10"
+          app:cardElevation="@dimen/dp_3"
+          app:cardCornerRadius="@dimen/dp_5">
+
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_margin="@dimen/dp_10"
             android:orientation="vertical">
 
           <TextView
               android:layout_width="wrap_content"
               android:layout_height="wrap_content"
-              android:text="@string/app_version"
-              android:id="@+id/tvAppVersionLabel"
-              android:textColor="@color/primary"
-              android:layout_marginHorizontal="@dimen/dp_10"
-              android:layout_weight="1"
+              android:text="Let's get to Work"
+              android:textColor="@color/black"
+              android:textSize="14sp"
               android:fontFamily="@font/poppins_medium"
-              android:textSize="@dimen/sp_18"
-              ></TextView>
+              android:layout_gravity="center_horizontal" />
+
+
+          <androidx.appcompat.widget.AppCompatButton
+              android:layout_width="200dp"
+              android:layout_height="@dimen/dp_50"
+              android:id="@+id/btClockIn"
+              android:text="Clock in"
+              android:textAllCaps="false"
+              android:layout_gravity="center_horizontal"
+              android:fontFamily="@font/poppins_medium"
+              android:layout_marginTop="@dimen/dp_15"
+              android:background="@drawable/bg_rectangle_button_ripple"
+              android:textColor="@color/white"/>
+          <TextView
+              android:layout_width="wrap_content"
+              android:layout_height="wrap_content"
+              android:text="Your hour’s will be calculated here."
+              android:textColor="@color/black"
+              android:textSize="14sp"
+              android:fontFamily="@font/poppins_medium"
+              android:layout_gravity="center_horizontal"
+              android:layout_marginTop="@dimen/dp_8" />
+
+          <TextView
+              android:layout_width="wrap_content"
+              android:layout_height="wrap_content"
+              android:text="Your last session was 8 hrs 30 min"
+              android:textColor="@color/black"
+              android:textSize="12sp"
+              android:id="@+id/tvSession"
+              android:fontFamily="@font/poppins_light"
+              android:layout_gravity="center_horizontal"
+              android:layout_marginTop="@dimen/dp_8" />
 
         </LinearLayout>
 
-      </LinearLayout>
 
-      <TextView
-          android:id="@+id/tvAppVersion"
-          android:layout_width="wrap_content"
-          android:layout_height="wrap_content"
-          android:textSize="@dimen/sp_15"
-          android:text="version 1.2.3"></TextView>
+      </androidx.cardview.widget.CardView>
 
 
 
-    </LinearLayout>
-    <LinearLayout
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:gravity="center_vertical"
-        android:layout_marginHorizontal="@dimen/dp_12"
-        android:layout_marginTop="@dimen/dp_30"
-        android:orientation="horizontal"
-        android:id="@+id/llAttendance">
-      <ImageView
-          android:layout_width="18dp"
-          android:layout_height="20dp"
-          app:tint="@color/primary"
-          android:backgroundTintMode="@color/tint"
-          android:src="@drawable/attendance"></ImageView>
-
-      <TextView
-          android:layout_width="wrap_content"
-          android:layout_height="wrap_content"
-          android:text="Attendance"
-          android:id="@+id/tvAttendance"
-          android:textColor="@color/primary"
-          android:layout_marginHorizontal="@dimen/dp_10"
-          android:fontFamily="@font/poppins_medium"
-          android:textSize="@dimen/sp_18"></TextView>
-
-      <ImageView
-          android:layout_width="@dimen/dp_15"
-          android:layout_height="@dimen/dp_15"
-          android:id="@+id/ivDropDown"
-          android:src="@drawable/drop_arrow"
-          app:tint="@color/primary" />
-
-    </LinearLayout>
-
-    <androidx.cardview.widget.CardView
-        android:id="@+id/cvClockIn"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:visibility="gone"
-        android:layout_marginHorizontal="20dp"
-        android:layout_marginTop="@dimen/dp_20"
-        android:layout_marginBottom="@dimen/dp_10"
-        app:cardElevation="@dimen/dp_3"
-        app:cardCornerRadius="@dimen/dp_5">
-
-
-      <LinearLayout
+      <androidx.cardview.widget.CardView
+          android:id="@+id/cvClockOut"
+          android:visibility="gone"
           android:layout_width="match_parent"
-          android:layout_height="match_parent"
-          android:layout_margin="@dimen/dp_10"
-          android:orientation="vertical">
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Let's get to Work"
-            android:textColor="@color/black"
-            android:textSize="14sp"
-            android:fontFamily="@font/poppins_medium"
-            android:layout_gravity="center_horizontal" />
+          android:layout_height="wrap_content"
+          android:layout_marginHorizontal="20dp"
+          android:layout_marginTop="@dimen/dp_20"
+          android:layout_marginBottom="@dimen/dp_10"
+          app:cardElevation="@dimen/dp_3"
+          app:cardCornerRadius="@dimen/dp_5">
 
 
-        <androidx.appcompat.widget.AppCompatButton
-            android:layout_width="200dp"
-            android:layout_height="@dimen/dp_50"
-            android:id="@+id/btClockIn"
-            android:text="Clock in"
-            android:textAllCaps="false"
-            android:layout_gravity="center_horizontal"
-            android:fontFamily="@font/poppins_medium"
-            android:layout_marginTop="@dimen/dp_15"
-            android:background="@drawable/bg_rectangle_button_ripple"
-            android:textColor="@color/white"/>
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Your hour’s will be calculated here."
-            android:textColor="@color/black"
-            android:textSize="14sp"
-            android:fontFamily="@font/poppins_medium"
-            android:layout_gravity="center_horizontal"
-            android:layout_marginTop="@dimen/dp_8" />
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Your last session was 8 hrs 30 min"
-            android:textColor="@color/black"
-            android:textSize="12sp"
-            android:id="@+id/tvSession"
-            android:fontFamily="@font/poppins_light"
-            android:layout_gravity="center_horizontal"
-            android:layout_marginTop="@dimen/dp_8" />
-
-      </LinearLayout>
-
-
-    </androidx.cardview.widget.CardView>
-
-
-
-    <androidx.cardview.widget.CardView
-        android:id="@+id/cvClockOut"
-        android:visibility="gone"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginHorizontal="20dp"
-        android:layout_marginTop="@dimen/dp_20"
-        android:layout_marginBottom="@dimen/dp_10"
-        app:cardElevation="@dimen/dp_3"
-        app:cardCornerRadius="@dimen/dp_5">
-
-
-      <LinearLayout
-          android:layout_width="match_parent"
-          android:layout_height="match_parent"
-          android:layout_margin="@dimen/dp_10"
-          android:orientation="vertical">
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Today Shoot"
-            android:textColor="@color/black"
-            android:textSize="16sp"
-            android:fontFamily="@font/poppins_medium"
-            android:layout_gravity="center_horizontal" />
-
-        <androidx.constraintlayout.widget.ConstraintLayout
+        <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/dp_10"
-            android:gravity="center_vertical"
-            android:orientation="horizontal">
+            android:layout_height="match_parent"
+            android:layout_margin="@dimen/dp_10"
+            android:orientation="vertical">
 
-          <androidx.cardview.widget.CardView
-              android:id="@+id/cvSiteImage"
-              android:layout_width="150dp"
-              android:layout_height="120dp"
-              app:cardCornerRadius="6dp"
-              app:layout_constraintTop_toTopOf="parent"
-              app:layout_constraintLeft_toLeftOf="parent"
-              >
-
-            <ImageView
-                android:id="@+id/ivSiteImage"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:scaleType="centerCrop"
-                />
-
-          </androidx.cardview.widget.CardView>
-
-
-
-
-          <LinearLayout
-              android:layout_width="0dp"
+          <TextView
+              android:layout_width="wrap_content"
               android:layout_height="wrap_content"
-              android:orientation="vertical"
-              app:layout_constraintTop_toTopOf="parent"
-              app:layout_constraintLeft_toRightOf="@id/cvSiteImage"
-              app:layout_constraintRight_toRightOf="parent"
-              android:layout_marginLeft="@dimen/dp_5">
+              android:text="Today Shoot"
+              android:textColor="@color/black"
+              android:textSize="16sp"
+              android:fontFamily="@font/poppins_medium"
+              android:layout_gravity="center_horizontal" />
 
-            <TextView
-                android:layout_width="match_parent"
+          <androidx.constraintlayout.widget.ConstraintLayout
+              android:layout_width="match_parent"
+              android:layout_height="wrap_content"
+              android:layout_marginTop="@dimen/dp_10"
+              android:gravity="center_vertical"
+              android:orientation="horizontal">
+
+            <androidx.cardview.widget.CardView
+                android:id="@+id/cvSiteImage"
+                android:layout_width="150dp"
+                android:layout_height="120dp"
+                app:cardCornerRadius="6dp"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintLeft_toLeftOf="parent"
+                >
+
+              <ImageView
+                  android:id="@+id/ivSiteImage"
+                  android:layout_width="match_parent"
+                  android:layout_height="match_parent"
+                  android:scaleType="centerCrop"
+                  />
+
+            </androidx.cardview.widget.CardView>
+
+
+
+
+            <LinearLayout
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:id="@+id/tvCityName"
-                android:gravity="center"
-                android:fontFamily="@font/poppins_medium"
-                android:layout_gravity="right"
-                android:textSize="@dimen/sp_16"
-                android:paddingTop="@dimen/dp_12"
-                android:paddingBottom="@dimen/dp_12"
-                android:hint="city Name"></TextView>
+                android:orientation="vertical"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintLeft_toRightOf="@id/cvSiteImage"
+                app:layout_constraintRight_toRightOf="parent"
+                android:layout_marginLeft="@dimen/dp_5">
 
-            <com.google.android.material.button.MaterialButton
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:id="@+id/btnClockOut"
-                android:text="Clock Out"
-                android:layout_gravity="right"
-                android:layout_marginTop="20dp"
-                android:textAllCaps="false"
-                app:strokeColor="@color/primary"
-                app:strokeWidth="@dimen/dp_2"
-                app:cornerRadius="@dimen/dp_5"
-                android:textColor="@color/white"
-                android:insetTop="0dp"
-                android:insetBottom="0dp"
-                android:fontFamily="@font/poppins_medium" />
+              <TextView
+                  android:layout_width="match_parent"
+                  android:layout_height="wrap_content"
+                  android:id="@+id/tvCityName"
+                  android:gravity="center"
+                  android:fontFamily="@font/poppins_medium"
+                  android:layout_gravity="right"
+                  android:textSize="@dimen/sp_16"
+                  android:paddingTop="@dimen/dp_12"
+                  android:paddingBottom="@dimen/dp_12"
+                  android:hint="city Name"></TextView>
+
+              <com.google.android.material.button.MaterialButton
+                  android:layout_width="match_parent"
+                  android:layout_height="wrap_content"
+                  android:id="@+id/btnClockOut"
+                  android:text="Clock Out"
+                  android:layout_gravity="right"
+                  android:layout_marginTop="20dp"
+                  android:textAllCaps="false"
+                  app:strokeColor="@color/primary"
+                  app:strokeWidth="@dimen/dp_2"
+                  app:cornerRadius="@dimen/dp_5"
+                  android:textColor="@color/white"
+                  android:insetTop="0dp"
+                  android:insetBottom="0dp"
+                  android:fontFamily="@font/poppins_medium" />
 
 
-          </LinearLayout>
-        </androidx.constraintlayout.widget.ConstraintLayout>
-
-
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="00:33"
-            android:id="@+id/tvClockedTime"
-            android:textColor="@color/primary"
-            android:layout_marginTop="@dimen/dp_12"
-            android:textSize="16sp"
-            android:fontFamily="@font/poppins_medium"
-            android:layout_gravity="center_horizontal" />
+            </LinearLayout>
+          </androidx.constraintlayout.widget.ConstraintLayout>
 
 
 
-        <ProgressBar
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:visibility="gone"
-            android:layout_gravity="center_horizontal"
-            android:id="@+id/progressBar" />
-
-      </LinearLayout>
-
-
-
-
+          <TextView
+              android:layout_width="wrap_content"
+              android:layout_height="wrap_content"
+              android:text="00:33"
+              android:id="@+id/tvClockedTime"
+              android:textColor="@color/primary"
+              android:layout_marginTop="@dimen/dp_12"
+              android:textSize="16sp"
+              android:fontFamily="@font/poppins_medium"
+              android:layout_gravity="center_horizontal" />
 
 
 
+          <ProgressBar
+              android:layout_width="wrap_content"
+              android:layout_height="wrap_content"
+              android:visibility="gone"
+              android:layout_gravity="center_horizontal"
+              android:id="@+id/progressBar" />
 
-    </androidx.cardview.widget.CardView>
+        </LinearLayout>
 
 
 
 
 
-  </LinearLayout>
 
-  <LinearLayout
-      android:id="@+id/llLogout"
-      android:layout_width="wrap_content"
-      android:layout_height="wrap_content"
-      android:layout_gravity="center"
-      android:gravity="center"
-      android:layout_marginBottom="@dimen/dp_40"
-      android:background="@drawable/bg_rectangle_button_ripple">
 
-    <TextView
-        android:id="@+id/tvLogout"
+
+      </androidx.cardview.widget.CardView>
+
+
+
+
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/llLogout"
         android:layout_width="wrap_content"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
         android:layout_gravity="center"
-        android:layout_marginStart="@dimen/dp_30"
-        android:layout_marginEnd="@dimen/dp_30"
-        android:fontFamily="@font/medium"
-        android:padding="@dimen/dp_12"
-        android:text="@string/logout"
-        android:textAllCaps="false"
-        android:textColor="@color/white"
-        android:textSize="@dimen/sp_16" />
+        android:gravity="center"
+        android:layout_marginTop="@dimen/dp_30"
+        android:layout_marginBottom="@dimen/dp_40"
+        android:background="@drawable/bg_rectangle_button_ripple">
+
+      <TextView
+          android:id="@+id/tvLogout"
+          android:layout_width="wrap_content"
+          android:layout_height="match_parent"
+          android:layout_gravity="center"
+          android:layout_marginStart="@dimen/dp_30"
+          android:layout_marginEnd="@dimen/dp_30"
+          android:fontFamily="@font/medium"
+          android:padding="@dimen/dp_12"
+          android:text="@string/logout"
+          android:textAllCaps="false"
+          android:textColor="@color/white"
+          android:textSize="@dimen/sp_16" />
+
+
+    </LinearLayout>
+
+
+
 
 
   </LinearLayout>
-
-
-
-
-
-</LinearLayout>
+</ScrollView>

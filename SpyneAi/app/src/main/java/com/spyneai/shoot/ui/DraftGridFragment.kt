@@ -5,9 +5,12 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.spyneai.InfoDialog
 import com.spyneai.base.BaseFragment
 import com.spyneai.base.OnItemClickListener
 import com.spyneai.databinding.FragmentGridEcomBinding
+import com.spyneai.needs.AppConstants
+import com.spyneai.needs.Utilities
 import com.spyneai.shoot.adapters.ClickedAdapter
 import com.spyneai.shoot.data.OnOverlaySelectionListener
 import com.spyneai.shoot.data.ShootViewModel
@@ -24,9 +27,40 @@ class DraftGridFragment : BaseFragment<ShootViewModel, FragmentGridEcomBinding>(
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        binding.ivEnd.setOnClickListener {
-            viewModel.stopShoot.value = true
+        if (Utilities.getPreference(requireContext(), AppConstants.ENTERPRISE_ID)
+            == AppConstants.FLIPKART_ENTERPRISE_ID){
+            binding.apply {
+                ivNext.visibility = View.VISIBLE
+                ivEnd.visibility = View.GONE
+            }
+        }else{
+            binding.apply {
+                ivNext.visibility = View.GONE
+                ivEnd.visibility = View.VISIBLE
+            }
         }
+
+        binding.ivEnd.setOnClickListener {
+            if (viewModel.isStopCaptureClickable)
+                viewModel.stopShoot.value = true
+        }
+
+        binding.ivNext.setOnClickListener {
+            InfoDialog().show(
+                requireActivity().supportFragmentManager,
+                "InfoDialog"
+            )
+        }
+
+
+        viewModel.hideLeveler.observe(viewLifecycleOwner,{
+            if (viewModel.categoryDetails.value?.imageType == "Info"){
+                binding.apply {
+                    ivNext.visibility = View.GONE
+                    ivEnd.visibility = View.VISIBLE
+                }
+            }
+        })
 
         //observe new image clicked
         viewModel.shootList.observe(viewLifecycleOwner, {
