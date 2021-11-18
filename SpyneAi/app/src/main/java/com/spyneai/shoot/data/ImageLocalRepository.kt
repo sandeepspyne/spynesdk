@@ -563,6 +563,33 @@ class ImageLocalRepository {
             selectionArgs)
     }
 
+    fun markDone(image: Image) : Int {
+        //update project status to ongoing
+        updateProjectStatus(image.projectId!!)
+
+        val projectValues = ContentValues().apply {
+            put(
+                Images.COLUMN_NAME_IS_UPLOADED,
+                1
+            )
+            put(
+                Images.COLUMN_NAME_IS_STATUS_UPDATED,
+                1
+            )
+        }
+
+        // Which row to update, based on the title
+        val selection = "${BaseColumns._ID} LIKE ?"
+
+        val selectionArgs = arrayOf(image.itemId.toString())
+
+        return dbWritable.update(
+            Images.TABLE_NAME,
+            projectValues,
+            selection,
+            selectionArgs)
+    }
+
     fun markStatusUploaded(videoDetails: Image) : Int {
         //update project status to ongoing
         updateProjectStatus(videoDetails.projectId!!)

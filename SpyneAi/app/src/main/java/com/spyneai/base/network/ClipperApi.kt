@@ -393,4 +393,11 @@ interface ClipperApi {
         @Field("auth_key") authKey : String = Utilities.getPreference(BaseApplication.getContext(),AppConstants.AUTH_KEY).toString()
     ) : CheckInOutRes
 
+    @FormUrlEncoded
+    @POST("v2/image/get")
+    suspend fun getImageData(
+        @Field("image_id") imageId: String,
+        @Field("auth_key") authKey: String = Utilities.getPreference(BaseApplication.getContext(),AppConstants.AUTH_KEY).toString()
+    ) : GetImageRes
+
 }

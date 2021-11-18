@@ -67,6 +67,7 @@ class ConfirmReshootPortraitDialog : BaseDialogFragment<ShootViewModel, ConfirmR
                 this["sku_id"] = viewModel.shootData.value?.sku_id
                 this["project_id"] = viewModel.shootData.value?.project_id
                 this["image_type"] = viewModel.shootData.value?.image_category
+                this["sequence"] = viewModel.shootData.value?.sequence
             }
 
             requireContext().captureEvent(

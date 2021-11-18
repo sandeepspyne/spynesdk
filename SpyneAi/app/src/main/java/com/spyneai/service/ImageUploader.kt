@@ -102,13 +102,13 @@ class ImageUploader(val context: Context,
                    if (image.isUploaded == 0 || image.isUploaded == -1){
                         logUpload("presignerd url "+image.preSignedUrl)
                         context.captureEvent(
-                            AppConstants.IMAGE_NOT_UPLOADED,
+                            Events.IMAGE_NOT_UPLOADED,
                             imageProperties
                         )
 
                        if (image.preSignedUrl != AppConstants.DEFAULT_PRESIGNED_URL){
                            context.captureEvent(
-                               AppConstants.UPLOADING_TO_GCP_INITIATED,
+                               Events.UPLOADING_TO_GCP_INITIATED,
                                imageProperties
                            )
                            uploadImageToGcp(image,imageType,retryCount)
@@ -132,10 +132,11 @@ class ImageUploader(val context: Context,
                                    val updatedImage = localRepository.getImage(image.itemId!!)
 
                                    captureEvent(
-                                       AppConstants.IS_PRESIGNED_URL_UPDATED,
+                                       Events.IS_PRESIGNED_URL_UPDATED,
                                        updatedImage,
                                        true,
-                                       null
+                                       null,
+                                       count
                                    )
 //                                   captureEvent(
 //                                       AppConstants.IS_PRESIGNED_URL_UPDATED,
@@ -159,11 +160,20 @@ class ImageUploader(val context: Context,
                                    logUpload("Upload error "+response.errorCode.toString()+" "+response.errorMessage)
                                    if(response.errorMessage == null){
                                        captureEvent(Events.GET_PRESIGNED_FAILED,image,false,response.errorCode.toString()+": Http exception from server")
+                                       selectLastImageAndUpload(imageType,retryCount+1)
                                    }else {
-                                       captureEvent(Events.GET_PRESIGNED_FAILED,image,false,response.errorCode.toString()+": "+response.errorMessage)
+                                       // if duplicated entry error change status
+                                           if (response.errorCode == 500
+                                               && (response.errorMessage.toString().contains("Duplicate entry")
+                                                       && response.errorMessage.toString().contains("image_name_sku_id"))){
+
+                                               checkImageStatusOnServer(image,imageType,retryCount)
+                                           }else{
+                                               captureEvent(Events.GET_PRESIGNED_FAILED,image,false,response.errorCode.toString()+": "+response.errorMessage)
+                                               selectLastImageAndUpload(imageType,retryCount+1)
+                                           }
+
                                    }
-                                   // if duplicated entry error change status
-                                   selectLastImageAndUpload(imageType,retryCount+1)
                                }
                            }
                        }
@@ -198,6 +208,38 @@ class ImageUploader(val context: Context,
        }else {
            listener.onConnectionLost()
        }
+    }
+
+    private suspend fun checkImageStatusOnServer(image: Image, imageType: String, retryCount: Int) {
+        val response = shootRepository.getImageData(image.imageId!!)
+
+        when(response){
+            is Resource.Success -> {
+                //send success event
+                captureEvent(Events.GOT_IMAGE_DATA,image,true,null)
+
+                if (response.value.data.status != "Yet to Upload"){
+                    //mark image status uploaded in DB
+                    val isUpdated = localRepository.markDone(image)
+                    //send db update event
+                    captureEvent(Events.IMAGE_DATA_UPDATED_LOCALLY,image,true,null,isUpdated)
+
+                    //upload next image
+                    selectLastImageAndUpload(imageType,retryCount+1)
+                }
+            }
+
+            is Resource.Failure -> {
+                if(response.errorMessage == null){
+                    captureEvent(Events.GET_IMAGE_DATA_FAILED,image,false,response.errorCode.toString()+": Http exception from server")
+                }else {
+                    captureEvent(Events.GET_IMAGE_DATA_FAILED,image,false,response.errorCode.toString()+": "+response.errorMessage)
+                }
+
+                //send failure event and upload next
+                selectLastImageAndUpload(imageType,retryCount+1)
+            }
+        }
     }
 
     private fun getUniqueIdentifier(): String {
@@ -235,10 +277,11 @@ class ImageUploader(val context: Context,
 
 
                     captureEvent(
-                        AppConstants.IS_MARK_GCP_UPLOADED_UPDATED,
+                        Events.IS_MARK_GCP_UPLOADED_UPDATED,
                         updatedImage,
                         true,
-                        null
+                        null,
+                        count
                     )
 //                    captureEvent(
 //                        AppConstants.IS_MARK_GCP_UPLOADED_UPDATED,
@@ -309,10 +352,11 @@ class ImageUploader(val context: Context,
                    val updatedImage = localRepository.getImage(image.itemId!!)
 
                    captureEvent(
-                       AppConstants.IS_MARK_DONE_STATUS_UPDATED,
+                       Events.IS_MARK_DONE_STATUS_UPDATED,
                        updatedImage,
                        true,
-                       null
+                       null,
+                       count
                    )
 //                   captureEvent(
 //                       AppConstants.IS_MARK_DONE_STATUS_UPDATED,
@@ -353,7 +397,7 @@ class ImageUploader(val context: Context,
         selectLastImageAndUpload(imageType,0)
     }
 
-    private fun captureEvent(eventName : String, image : Image, isSuccess : Boolean, error: String?) {
+    private fun captureEvent(eventName : String, image : Image, isSuccess : Boolean, error: String?,dbUpdateStatus: Int = 0) {
         val properties = Properties()
             .apply {
                 put("iteration_id",lastIdentifier)
@@ -371,7 +415,8 @@ class ImageUploader(val context: Context,
                 put("is_reclick",image.isReclick)
                 put("is_reshoot",image.isReshoot)
                 put("image_path",image.imagePath)
-                this["image_type"] = image.categoryName
+                put("image_type",image.categoryName)
+                put("db_update_status",dbUpdateStatus)
                // put("upload_type",imageType)
             }
 

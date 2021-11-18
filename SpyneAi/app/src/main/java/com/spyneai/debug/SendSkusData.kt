@@ -84,7 +84,7 @@ class SendSkusData(
                     properties
                 )
 
-                Utilities.saveBool(BaseApplication.getContext(),AppConstants.IS_SKU_DATA_SENT,true)
+                Utilities.saveBool(BaseApplication.getContext(),Events.IS_SKU_DATA_SENT,true)
 
             }
 
