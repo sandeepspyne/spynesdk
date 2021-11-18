@@ -672,6 +672,7 @@ class CameraFragment : BaseFragment<ShootViewModel, FragmentCameraBinding>(), Pi
         })
     }
 
+
     private fun addShootItem(capturedImage: String) {
         Log.d(TAG, "addShootItem: "+filename)
         end = System.currentTimeMillis()
