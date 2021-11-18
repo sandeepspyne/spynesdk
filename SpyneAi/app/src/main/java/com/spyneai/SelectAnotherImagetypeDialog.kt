@@ -29,7 +29,7 @@ class SelectAnotherImagetypeDialog : BaseDialogFragment<ShootViewModel, Fragment
                 )
             )
                 viewModel.showLeveler.value = true
-                viewModel.addMoreAngle.value = true
+            viewModel.addMoreAngle.value = true
 
             dismiss()
         }

@@ -342,8 +342,9 @@ class CameraFragment : BaseFragment<ShootViewModel, FragmentCameraBinding>(), Pi
             var size = Size(1024, 768)
 
             // Preview
-            val preview = when (viewModel.categoryDetails.value?.categoryName) {
-                "Automobiles", "Bikes" -> {
+            val preview = when (viewModel.categoryDetails.value?.categoryId) {
+                AppConstants.CARS_CATEGORY_ID,
+                AppConstants.BIKES_CATEGORY_ID -> {
                     if (getString(R.string.app_name) == AppConstants.KARVI) {
                         Preview.Builder()
                             .setTargetResolution(size)
@@ -360,7 +361,14 @@ class CameraFragment : BaseFragment<ShootViewModel, FragmentCameraBinding>(), Pi
                             }
                     }
                 }
-                "E-Commerce", "Food & Beverages", "Photo Box", "Footwear" -> {
+                AppConstants.FOOTWEAR_CATEGORY_ID,
+                AppConstants.MENS_FASHION_CATEGORY_ID,
+                AppConstants.WOMENS_FASHION_CATEGORY_ID,
+                AppConstants.CAPS_CATEGORY_ID,
+                AppConstants.ACCESSORIES_CATEGORY_ID,
+                AppConstants.HEALTH_AND_BEAUTY_CATEGORY_ID,
+                AppConstants.ECOM_CATEGORY_ID,
+                AppConstants.PHOTO_BOX_CATEGORY_ID->{
                     Preview.Builder()
                         .setTargetAspectRatio(AspectRatio.RATIO_4_3)
                         .build()
@@ -378,8 +386,9 @@ class CameraFragment : BaseFragment<ShootViewModel, FragmentCameraBinding>(), Pi
                 }
             }
 
-            imageCapture = when (viewModel.categoryDetails.value?.categoryName) {
-                "Automobiles", "Bikes" -> {
+            imageCapture = when (viewModel.categoryDetails.value?.categoryId) {
+                AppConstants.CARS_CATEGORY_ID,
+                AppConstants.BIKES_CATEGORY_ID-> {
                     if (getString(R.string.app_name) == AppConstants.KARVI) {
                         ImageCapture.Builder()
                             .setCaptureMode(ImageCapture.CAPTURE_MODE_MAXIMIZE_QUALITY)
@@ -394,13 +403,31 @@ class CameraFragment : BaseFragment<ShootViewModel, FragmentCameraBinding>(), Pi
                             .build()
                     }
                 }
-                "E-Commerce", "Food & Beverages", "Footwear", "Photo Box" -> {
-                    ImageCapture.Builder()
-                        .setCaptureMode(ImageCapture.CAPTURE_MODE_MAXIMIZE_QUALITY)
-                        .setFlashMode(flashMode)
-                        .setTargetAspectRatio(AspectRatio.RATIO_4_3)
-                        .setTargetRotation(ROTATION_90)
-                        .build()
+                AppConstants.FOOTWEAR_CATEGORY_ID,
+                AppConstants.MENS_FASHION_CATEGORY_ID,
+                AppConstants.WOMENS_FASHION_CATEGORY_ID,
+                AppConstants.CAPS_CATEGORY_ID,
+                AppConstants.ACCESSORIES_CATEGORY_ID,
+                AppConstants.HEALTH_AND_BEAUTY_CATEGORY_ID,
+                AppConstants.PHOTO_BOX_CATEGORY_ID,
+                AppConstants.ECOM_CATEGORY_ID-> {
+
+                    if (viewModel.categoryDetails.value?.imageType == "Info") {
+                        ImageCapture.Builder()
+                            .setCaptureMode(ImageCapture.CAPTURE_MODE_MAXIMIZE_QUALITY)
+                            .setFlashMode(flashMode)
+                            .setTargetAspectRatio(AspectRatio.RATIO_4_3)
+                            .setTargetRotation(ROTATION_90)
+                            .build()
+
+                    } else {
+                        ImageCapture.Builder()
+                            .setCaptureMode(ImageCapture.CAPTURE_MODE_MAXIMIZE_QUALITY)
+                            .setFlashMode(flashMode)
+                            .setTargetAspectRatio(AspectRatio.RATIO_4_3)
+//                            .setTargetRotation(ROTATION_90)
+                            .build()
+                    }
                 }
                 else -> {
                     ImageCapture.Builder()

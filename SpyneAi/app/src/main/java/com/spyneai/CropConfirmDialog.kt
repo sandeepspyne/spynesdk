@@ -100,6 +100,7 @@ class CropConfirmDialog : BaseDialogFragment<ShootViewModel, FragmentCropConfirm
         }
     }
 
+
     private fun startService() {
         var action = Actions.START
         if (getServiceState(requireContext()) == com.spyneai.service.ServiceState.STOPPED && action == Actions.STOP)

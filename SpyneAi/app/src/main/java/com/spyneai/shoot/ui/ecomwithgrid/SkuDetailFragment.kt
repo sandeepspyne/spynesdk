@@ -32,8 +32,13 @@ class SkuDetailFragment : BaseFragment<ShootViewModel, FragmentSkuDetailBinding>
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        when (viewModel.categoryDetails.value?.categoryName) {
-            "Footwear" -> {
+        when (viewModel.categoryDetails.value?.categoryId) {
+            AppConstants.FOOTWEAR_CATEGORY_ID,
+            AppConstants.MENS_FASHION_CATEGORY_ID,
+            AppConstants.WOMENS_FASHION_CATEGORY_ID,
+            AppConstants.CAPS_CATEGORY_ID,
+            AppConstants.ACCESSORIES_CATEGORY_ID,
+            AppConstants.HEALTH_AND_BEAUTY_CATEGORY_ID -> {
                 binding.ivAddAngle.visibility = View.GONE
                 binding.tvAddAngle.visibility = View.INVISIBLE
             }
@@ -177,15 +182,15 @@ class SkuDetailFragment : BaseFragment<ShootViewModel, FragmentSkuDetailBinding>
             requireActivity().onBackPressed()
         }
 
-        binding.ivAddAngle.setOnClickListener {
-            if (viewModel.categoryDetails.value?.categoryName != "Footwear")
-                viewModel.addMoreAngle.value = true
-        }
-
-        binding.tvAddAngle.setOnClickListener {
-            if (viewModel.categoryDetails.value?.categoryName != "Footwear")
-                viewModel.addMoreAngle.value = true
-        }
+//        binding.ivAddAngle.setOnClickListener {
+//            if (viewModel.categoryDetails.value?.categoryName != "Footwear")
+//                viewModel.addMoreAngle.value = true
+//        }
+//
+//        binding.tvAddAngle.setOnClickListener {
+//            if (viewModel.categoryDetails.value?.categoryName != "Footwear")
+//                viewModel.addMoreAngle.value = true
+//        }
     }
 
     private fun updateTotalFrames() {
