@@ -18,12 +18,24 @@ class ReclickDialog : BaseDialogFragment<ShootViewModel, DialogReclickBinding>()
         }
 
         binding.btnYes.setOnClickListener {
-            arguments?.let {
-                viewModel.currentShoot = it.getInt("position")
-                viewModel.overlayId = it.getInt("overlay_id")
-                viewModel.updateSelectItem.value = true
-            }
 
+            arguments?.let {
+                if (it.getString("image_type").toString().contains("Info")) {
+                    viewModel.categoryDetails.value?.imageType = it.getString("image_type").toString()
+                    viewModel.currentShoot = it.getInt("position")
+                    viewModel.hideLeveler.value = true
+                    viewModel.overlayId = it.getInt("overlay_id")
+                    viewModel.updateSelectItem.value = true
+
+                } else {
+                    viewModel.showLeveler.value = true
+                    viewModel.categoryDetails.value?.imageType = it.getString("image_type").toString()
+                    viewModel.currentShoot = it.getInt("position")
+                    viewModel.overlayId = it.getInt("overlay_id")
+                    viewModel.updateSelectItem.value = true
+                }
+
+            }
             dismiss()
         }
     }

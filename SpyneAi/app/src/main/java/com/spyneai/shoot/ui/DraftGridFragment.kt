@@ -1,5 +1,6 @@
 package com.spyneai.shoot.ui
 
+import android.net.Uri
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -17,6 +18,8 @@ import com.spyneai.shoot.data.ShootViewModel
 import com.spyneai.shoot.data.model.ShootData
 import com.spyneai.shoot.ui.dialogs.ReclickDialog
 import com.spyneai.shoot.ui.ecomwithgrid.dialogs.ConfirmReshootEcomDialog
+import com.theartofdev.edmodo.cropper.CropImage
+import java.io.File
 
 class DraftGridFragment : BaseFragment<ShootViewModel, FragmentGridEcomBinding>(),
     OnItemClickListener, OnOverlaySelectionListener {
@@ -152,6 +155,10 @@ class DraftGridFragment : BaseFragment<ShootViewModel, FragmentGridEcomBinding>(
 
     private fun showImageConfirmDialog(shootData: ShootData) {
         viewModel.shootData.value = shootData
+        if(viewModel.categoryDetails.value?.imageType=="Info"){
+            CropImage.activity(Uri.fromFile(File(shootData.capturedImage)))
+                .start(requireActivity())
+        }else
         ConfirmReshootEcomDialog().show(requireFragmentManager(), "ConfirmReshootDialog")
     }
 
