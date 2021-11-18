@@ -206,7 +206,6 @@ class MainDashboardActivity : AppCompatActivity() {
                 ).startWork()
             }
         }
-
     }
 
     private fun checkAppVersion() {
@@ -286,11 +285,7 @@ class MainDashboardActivity : AppCompatActivity() {
                 }) {
                 onPermissionGranted()
             } else {
-
-
                 RequiredPermissionDialog().show(supportFragmentManager, "RequiredPermissionDialog")
-
-
             }
 
         }

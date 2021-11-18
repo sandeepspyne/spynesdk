@@ -62,13 +62,6 @@ class ImageUploader(val context: Context,
                    //uploading enqueued
                        lastIdentifier = image.name+"_"+image.skuId
 
-                   Log.d(TAG, "selectLastImageAndUpload: "+retryCount)
-                   Log.d(TAG, "selectLastImageAndUpload: id "+image.itemId)
-                   Log.d(TAG, "selectLastImageAndUpload: reclick "+image.isReclick)
-                   Log.d(TAG, "selectLastImageAndUpload: path "+image.imagePath)
-                   Log.d(TAG, "selectLastImageAndUpload: uploaded "+image.isUploaded)
-                   Log.d(TAG, "selectLastImageAndUpload: status updated "+image.isStatusUpdated)
-
                    val imageProperties = Properties()
                        .apply {
                            put("iteration_id",lastIdentifier)
@@ -97,7 +90,9 @@ class ImageUploader(val context: Context,
                    listener.inProgress(image)
 
                    if (retryCount > 4) {
-                       localRepository.skipImage(image.itemId!!,skipFlag)
+                       if (image.isUploaded != 1)
+                           localRepository.skipImage(image.itemId!!,skipFlag)
+
                        startNextUpload(image.itemId!!,false,imageType)
 
                        captureEvent(Events.MAX_RETRY,image,false,"Image upload limit reached")
