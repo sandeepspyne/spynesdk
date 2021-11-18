@@ -198,14 +198,14 @@ class MainDashboardActivity : AppCompatActivity() {
         observeAppVersion()
 
         //send sku's data to sever
-        if (!Utilities.getBool(this,AppConstants.IS_SKU_DATA_SENT)){
-            GlobalScope.launch {
-                SendSkusData(
-                    ShootRepository(),
-                    ImageLocalRepository()
-                ).startWork()
-            }
-        }
+//        if (!Utilities.getBool(this,Events.IS_SKU_DATA_SENT)){
+//            GlobalScope.launch {
+//                SendSkusData(
+//                    ShootRepository(),
+//                    ImageLocalRepository()
+//                ).startWork()
+//            }
+//        }
     }
 
     private fun checkAppVersion() {
@@ -314,7 +314,7 @@ class MainDashboardActivity : AppCompatActivity() {
         cancelAllWorkers()
         startUploadService()
         startVideoUploadService()
-        checkFolderUpload()
+       // checkFolderUpload()
     }
 
     private fun startVideoUploadService() {
@@ -498,7 +498,7 @@ class MainDashboardActivity : AppCompatActivity() {
                 )
 
 
-                folderCheckError(t.localizedMessage)
+                //folderCheckError(t.localizedMessage)
             }
         })
     }
@@ -543,7 +543,7 @@ class MainDashboardActivity : AppCompatActivity() {
     private fun folderCheckError(error: String) {
         Snackbar.make(binding.root, error, Snackbar.LENGTH_INDEFINITE)
             .setAction("Retry") {
-                checkFolderUpload()
+                //checkFolderUpload()
             }
             .setActionTextColor(ContextCompat.getColor(this, R.color.primary))
             .show()

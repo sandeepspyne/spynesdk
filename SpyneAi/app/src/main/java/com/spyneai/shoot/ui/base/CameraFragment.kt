@@ -248,21 +248,19 @@ class CameraFragment : BaseFragment<ShootViewModel, FragmentCameraBinding>(), Pi
 
     override fun onDestroy() {
         mSensorManager.unregisterListener(this)
-        shoot("onDistroy called(overlay fragment)")
         super.onDestroy()
     }
 
     private fun onCaptureClick() {
-        captureImage()
-//        if (binding.flLevelIndicator.visibility == View.VISIBLE){
-//            if (binding.flLevelIndicator.isGyroOnCorrectAngle){
-//                captureImage()
-//        }else{
-//            showGryroToast()
-//        }
-//        }else{
-//            captureImage()
-//        }
+        if (binding.flLevelIndicator.visibility == View.VISIBLE){
+            if (binding.flLevelIndicator.isGyroOnCorrectAngle){
+                captureImage()
+        }else{
+            showGryroToast()
+        }
+        }else{
+            captureImage()
+        }
     }
 
     private fun showGryroToast(){
