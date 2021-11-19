@@ -166,7 +166,18 @@ class ConfirmTagsDialog : BaseDialogFragment<ShootViewModel, DialogConfirmTagsBi
 
         val uri = viewModel.shootData.value?.capturedImage
 
-        Log.d(TAG, "onViewCreated: "+uri)
+
+        requireContext().captureEvent(
+            "SHOW_CLICKED_IMAGE",
+            Properties()
+                .apply {
+                    put("sku_id",viewModel.shootData.value?.sku_id)
+                    put("type",viewModel.shootData.value?.image_category)
+                    put("sequence",viewModel.shootData.value?.sequence)
+                    put("overlay_id",viewModel.shootData.value?.overlayId)
+                    put("path",uri)
+                }
+        )
 
         Glide.with(requireContext())
             .load(uri)

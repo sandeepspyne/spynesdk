@@ -211,34 +211,39 @@ class ImageUploader(val context: Context,
     }
 
     private suspend fun checkImageStatusOnServer(image: Image, imageType: String, retryCount: Int) {
-        val response = shootRepository.getImageData(image.imageId!!)
+        if (image.imageId != null){
+            val response = shootRepository.getImageData(image.imageId!!)
 
-        when(response){
-            is Resource.Success -> {
-                //send success event
-                captureEvent(Events.GOT_IMAGE_DATA,image,true,null)
+            when(response){
+                is Resource.Success -> {
+                    //send success event
+                    captureEvent(Events.GOT_IMAGE_DATA,image,true,null)
 
-                if (response.value.data.status != "Yet to Upload"){
-                    //mark image status uploaded in DB
-                    val isUpdated = localRepository.markDone(image)
-                    //send db update event
-                    captureEvent(Events.IMAGE_DATA_UPDATED_LOCALLY,image,true,null,isUpdated)
+                    if (response.value.data.status != "Yet to Upload"){
+                        //mark image status uploaded in DB
+                        val isUpdated = localRepository.markDone(image)
+                        //send db update event
+                        captureEvent(Events.IMAGE_DATA_UPDATED_LOCALLY,image,true,null,isUpdated)
 
-                    //upload next image
+                        //upload next image
+                        selectLastImageAndUpload(imageType,retryCount+1)
+                    }
+                }
+
+                is Resource.Failure -> {
+                    if(response.errorMessage == null){
+                        captureEvent(Events.GET_IMAGE_DATA_FAILED,image,false,response.errorCode.toString()+": Http exception from server")
+                    }else {
+                        captureEvent(Events.GET_IMAGE_DATA_FAILED,image,false,response.errorCode.toString()+": "+response.errorMessage)
+                    }
+
+                    //send failure event and upload next
                     selectLastImageAndUpload(imageType,retryCount+1)
                 }
             }
-
-            is Resource.Failure -> {
-                if(response.errorMessage == null){
-                    captureEvent(Events.GET_IMAGE_DATA_FAILED,image,false,response.errorCode.toString()+": Http exception from server")
-                }else {
-                    captureEvent(Events.GET_IMAGE_DATA_FAILED,image,false,response.errorCode.toString()+": "+response.errorMessage)
-                }
-
-                //send failure event and upload next
-                selectLastImageAndUpload(imageType,retryCount+1)
-            }
+        }else {
+            //upload next image
+            selectLastImageAndUpload(imageType,retryCount+1)
         }
     }
 
@@ -401,8 +406,8 @@ class ImageUploader(val context: Context,
         val properties = Properties()
             .apply {
                 put("iteration_id",lastIdentifier)
-                //put("retry_count",retryCount)
-                put("image_id",image.itemId)
+                put("image_id",image.imageId)
+                put("image_local_id",image.itemId)
                 put("project_id",image.projectId)
                 put("sku_id",image.skuId)
                 put("sku_name",image.skuName)
