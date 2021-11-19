@@ -35,7 +35,7 @@ class OngoingProjectsFragment : BaseFragment<MyOrdersViewModel, FragmentOngoingP
         handler = Handler()
 
         binding.swiperefreshOngoing.setOnRefreshListener {
-           // repeatRefreshData()
+            getProjects()
             binding.swiperefreshOngoing.isRefreshing = false
         }
 
@@ -46,15 +46,11 @@ class OngoingProjectsFragment : BaseFragment<MyOrdersViewModel, FragmentOngoingP
                     false
                 )
         }
+
+        observeOrders()
     }
 
-    override fun onActivityCreated(savedInstanceState: Bundle?) {
-        super.onActivityCreated(savedInstanceState)
-
-        binding.shimmerCompletedSKU.startShimmer()
-        repeatRefreshData()
-
-        log("Completed SKUs(auth key): "+ Utilities.getPreference(requireContext(), AppConstants.AUTH_KEY))
+    private fun observeOrders() {
         viewModel.getProjectsResponse.observe(
             viewLifecycleOwner, Observer {
                 when (it) {
@@ -100,9 +96,20 @@ class OngoingProjectsFragment : BaseFragment<MyOrdersViewModel, FragmentOngoingP
         )
     }
 
+    override fun onActivityCreated(savedInstanceState: Bundle?) {
+        super.onActivityCreated(savedInstanceState)
+
+        binding.shimmerCompletedSKU.startShimmer()
+        repeatRefreshData()
+    }
+
+    fun getProjects(){
+        viewModel.getProjects(Utilities.getPreference(requireContext(), AppConstants.AUTH_KEY).toString(), status)
+    }
+
     fun repeatRefreshData(){
         try {
-            viewModel.getProjects(Utilities.getPreference(requireContext(), AppConstants.AUTH_KEY).toString(), status)
+            getProjects()
             runnable = Runnable {
                 if (refreshData)
                     repeatRefreshData()
