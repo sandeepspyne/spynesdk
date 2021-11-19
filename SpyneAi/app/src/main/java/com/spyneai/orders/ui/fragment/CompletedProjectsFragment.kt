@@ -36,7 +36,7 @@ class CompletedProjectsFragment : BaseFragment<MyOrdersViewModel, FragmentComple
         handler = Handler()
 
         binding.swiperefreshCompleted.setOnRefreshListener {
-           // repeatRefreshData()
+            getProjects()
             binding.swiperefreshCompleted.isRefreshing = false
         }
 
@@ -47,17 +47,11 @@ class CompletedProjectsFragment : BaseFragment<MyOrdersViewModel, FragmentComple
                     false
                 )
         }
+
+        observeProjects()
     }
 
-    override fun onActivityCreated(savedInstanceState: Bundle?) {
-        super.onActivityCreated(savedInstanceState)
-
-        binding.shimmerCompletedSKU.startShimmer()
-
-        completedProjectList = ArrayList()
-
-        repeatRefreshData()
-        log("Completed SKUs(auth key): "+ Utilities.getPreference(requireContext(), AppConstants.AUTH_KEY))
+    private fun observeProjects() {
         viewModel.getCompletedProjectsResponse.observe(
             viewLifecycleOwner, Observer {
                 when (it) {
@@ -104,9 +98,21 @@ class CompletedProjectsFragment : BaseFragment<MyOrdersViewModel, FragmentComple
         )
     }
 
+    override fun onActivityCreated(savedInstanceState: Bundle?) {
+        super.onActivityCreated(savedInstanceState)
+
+        binding.shimmerCompletedSKU.startShimmer()
+
+        completedProjectList = ArrayList()
+
+        repeatRefreshData()
+        log("Completed SKUs(auth key): "+ Utilities.getPreference(requireContext(), AppConstants.AUTH_KEY))
+
+    }
+
     fun repeatRefreshData(){
         try {
-            viewModel.getCompletedProjects(Utilities.getPreference(requireContext(), AppConstants.AUTH_KEY).toString(), status)
+            getProjects()
             runnable = Runnable {
                 if (refreshData)
                     repeatRefreshData()  }
@@ -117,6 +123,10 @@ class CompletedProjectsFragment : BaseFragment<MyOrdersViewModel, FragmentComple
         }catch (e : Exception){
             e.printStackTrace()
         }
+    }
+
+    private fun getProjects() {
+        viewModel.getCompletedProjects(Utilities.getPreference(requireContext(), AppConstants.AUTH_KEY).toString(), status)
     }
 
     override fun onPause() {
