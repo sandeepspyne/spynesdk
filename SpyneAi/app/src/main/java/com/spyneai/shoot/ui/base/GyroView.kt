@@ -101,20 +101,36 @@ class GyroView : FrameLayout {
                             binding.tvAngleValue!!.visibility = View.VISIBLE
                             binding.tvAngleValue!!.text = "0" + "\u00B0"
                             binding.groupOverlay!!.visibility = View.GONE
+                            binding.ivBottomRight.visibility = View.VISIBLE
+                            binding.ivBottomLeft.visibility = View.VISIBLE
+                            binding.ivBottomRightSwiggy!!.visibility = View.GONE
+                            binding.ivBottomLeftSwiggy!!.visibility = View.GONE
                         }
                         45 -> {
                             binding.tvAngleValue!!.visibility = View.VISIBLE
                             binding.tvAngleValue!!.text = "45" + "\u00B0"
                             binding.groupOverlay!!.visibility = View.GONE
+                            binding.ivBottomRight.visibility = View.VISIBLE
+                            binding.ivBottomLeft.visibility = View.VISIBLE
+                            binding.ivBottomRightSwiggy!!.visibility = View.GONE
+                            binding.ivBottomLeftSwiggy!!.visibility = View.GONE
                         }
                         90 -> {
                             binding.tvAngleValue!!.visibility = View.VISIBLE
                             binding.tvAngleValue!!.text = "90" + "\u00B0"
                             binding.groupOverlay!!.visibility = View.VISIBLE
+                            binding.ivBottomRightSwiggy!!.visibility = View.VISIBLE
+                            binding.ivBottomLeftSwiggy!!.visibility = View.VISIBLE
+                            binding.ivBottomRight.visibility = View.GONE
+                            binding.ivBottomLeft.visibility = View.GONE
                         }
                         else -> {
                             binding.tvAngleValue!!.visibility = View.INVISIBLE
                             binding.groupOverlay!!.visibility = View.GONE
+                            binding.ivBottomRight.visibility = View.VISIBLE
+                            binding.ivBottomLeft.visibility = View.VISIBLE
+                            binding.ivBottomRightSwiggy!!.visibility = View.GONE
+                            binding.ivBottomLeftSwiggy!!.visibility = View.GONE
                         }
                     }
                 }
@@ -127,9 +143,6 @@ class GyroView : FrameLayout {
                 else
                     binding.tvLevelIndicator.visibility = View.VISIBLE
 
-
-
-
                 if (((pitch.roundToInt() == 0 || (pitch.roundToInt() <= -0 && pitch.roundToInt() >= -3))
                             && (abs(roll.roundToInt()) <= 3 && abs(roll.roundToInt()) >= -3)) ||
                     (pitch.roundToInt() <= -82 && pitch.roundToInt() >= -88) ||
@@ -140,8 +153,6 @@ class GyroView : FrameLayout {
                     binding.tvUpcomingAngle2!!.visibility = View.INVISIBLE
                     binding.tvAngleRed!!.visibility = View.INVISIBLE
                     isGyroOnCorrectAngle = true
-
-
 
                     //angle 90
                     if (pitch.roundToInt() == 0 || (pitch.roundToInt() <= -0 && pitch.roundToInt() >= -3)) {
@@ -170,6 +181,10 @@ class GyroView : FrameLayout {
 
                     binding.tvAngleValue!!.visibility = View.INVISIBLE
                     binding.groupOverlay!!.visibility = View.GONE
+                    binding.ivBottomRightSwiggy!!.visibility = View.GONE
+                    binding.ivBottomLeftSwiggy!!.visibility = View.GONE
+                    binding.ivBottomRight.visibility = View.VISIBLE
+                    binding.ivBottomLeft.visibility = View.VISIBLE
                     binding.tvAngleValue!!.visibility = View.INVISIBLE
                     isGyroOnCorrectAngle = false
 
@@ -229,15 +244,10 @@ class GyroView : FrameLayout {
                 }
 
                 //hide moving line
-
-
                 if (pitch.roundToInt() == 0 || (pitch.roundToInt() <= -0 && pitch.roundToInt() >= -3))
                     binding.tvLevelIndicator.visibility = View.GONE
                 else
                     binding.tvLevelIndicator.visibility = View.VISIBLE
-
-
-
 
                 if (((pitch.roundToInt() == 0 || (pitch.roundToInt() <= -0 && pitch.roundToInt() >= -3))
                             && (abs(roll.roundToInt()) <= 3 && abs(roll.roundToInt()) >= -3)) ||
@@ -250,8 +260,6 @@ class GyroView : FrameLayout {
                     binding.tvAngleRed!!.visibility = View.INVISIBLE
                     isGyroOnCorrectAngle = true
 
-
-
                     //angle 90
                     if (pitch.roundToInt() == 0 || (pitch.roundToInt() <= -0 && pitch.roundToInt() >= -3)) {
                         cameraAngle = 0
@@ -262,9 +270,6 @@ class GyroView : FrameLayout {
                         cameraAngle = 45
                         gyroMeterOnLevel(false)
                     }
-
-
-
                     else {
                         cameraAngle = 90
                         gyroMeterOnLevel(true)
@@ -359,14 +364,10 @@ class GyroView : FrameLayout {
                         }
 
                         //hide moving line
-
-
                         if (pitch.roundToInt() == 0 || (pitch.roundToInt() <= -0 && pitch.roundToInt() >= -3))
                             binding.tvLevelIndicator.visibility = View.GONE
                         else
                             binding.tvLevelIndicator.visibility = View.VISIBLE
-
-
 
 
                         if (((pitch.roundToInt() == 0 || (pitch.roundToInt() <= 4 && pitch.roundToInt() >= -4))

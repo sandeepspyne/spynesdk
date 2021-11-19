@@ -8,8 +8,8 @@
     <color name="primary_light">#1AF69C4C</color>
     <color name="light">#7694ff</color>
     <color name="white">#FFFFFFFF</color>
-    <color name="transparent">#83FFFFFF</color>
-    <color name="transparents">#90000000</color>
+    <color name="transparent">#6FFFFFFF</color>
+    <color name="transparents">#26000000</color>
     <color name="camera_transparent">#25000000</color>
     <color name="grey">#979797</color>
     <color name="lightgrey">#DDD8D8</color>

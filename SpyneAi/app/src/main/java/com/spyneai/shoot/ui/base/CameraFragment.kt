@@ -407,6 +407,7 @@ class CameraFragment : BaseFragment<ShootViewModel, FragmentCameraBinding>(), Pi
                 AppConstants.MENS_FASHION_CATEGORY_ID,
                 AppConstants.WOMENS_FASHION_CATEGORY_ID,
                 AppConstants.CAPS_CATEGORY_ID,
+                AppConstants.FOOD_AND_BEV_CATEGORY_ID,
                 AppConstants.ACCESSORIES_CATEGORY_ID,
                 AppConstants.HEALTH_AND_BEAUTY_CATEGORY_ID,
                 AppConstants.PHOTO_BOX_CATEGORY_ID,
