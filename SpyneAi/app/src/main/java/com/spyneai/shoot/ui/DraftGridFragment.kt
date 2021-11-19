@@ -169,6 +169,7 @@ class DraftGridFragment : BaseFragment<ShootViewModel, FragmentGridEcomBinding>(
                     val bundle = Bundle()
                     bundle.putInt("overlay_id",data.overlayId)
                     bundle.putInt("position",position)
+                    bundle.putString("image_category",data.image_category)
                     val reclickDialog = ReclickDialog()
                     reclickDialog.arguments = bundle
                     reclickDialog.show(requireActivity().supportFragmentManager,"ReclickDialog")
