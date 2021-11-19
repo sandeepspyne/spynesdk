@@ -55,8 +55,17 @@ class ConfirmReshootDialog : BaseDialogFragment<ShootViewModel, DialogConfirmRes
 //                file.delete()
 
             //remove last item from shoot list
-            if (!viewModel.isReclick)
-                viewModel.shootList.value?.removeAt(viewModel.currentShoot)
+            if (!viewModel.isReclick){
+                viewModel.shootList.value?.let { list ->
+                    val currentElement = list.firstOrNull {
+                        it.overlayId == viewModel.overlayId
+                    }
+
+                    currentElement?.let {
+                        list.remove(it)
+                    }
+                }
+            }
 
             dismiss()
         }
