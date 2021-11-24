@@ -101,14 +101,25 @@ class ConfirmReshootEcomDialog :
             )
 
             viewModel.isCameraButtonClickable = true
-//            viewModel.uploadImageWithWorkManager(viewModel.shootData.value!!)
 
+            if (viewModel.isReshoot){
+                viewLifecycleOwner.lifecycleScope.launch {
+                    viewModel.insertImage(viewModel.shootData.value!!)
+                }
 
-            viewLifecycleOwner.lifecycleScope.launch {
-                viewModel.insertImage(viewModel.shootData.value!!)
+                startService()
+
+                if (viewModel.allReshootClicked)
+                    viewModel.reshootCompleted.value = true
+
+            }else {
+                viewLifecycleOwner.lifecycleScope.launch {
+                    viewModel.insertImage(viewModel.shootData.value!!)
+                }
+
+                startService()
             }
 
-            startService()
             dismiss()
         }
     }

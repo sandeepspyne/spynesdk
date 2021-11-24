@@ -183,8 +183,8 @@ android {
         swiggy {
             dimension 'version'
             applicationId "com.spyneai.swiggy"
-            versionCode 25
-            versionName "3.5"
+            versionCode 26
+            versionName "3.6"
         }
 
         swiggyinstamart {

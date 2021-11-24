@@ -253,16 +253,16 @@ class CameraFragment : BaseFragment<ShootViewModel, FragmentCameraBinding>(), Pi
     }
 
     private fun onCaptureClick() {
-        captureImage()
-//        if (binding.flLevelIndicator.visibility == View.VISIBLE){
-//            if (binding.flLevelIndicator.isGyroOnCorrectAngle){
-//                captureImage()
-//        }else{
-//            showGryroToast()
-//        }
-//        }else{
-//            captureImage()
-//        }
+//        captureImage()
+        if (binding.flLevelIndicator.visibility == View.VISIBLE){
+            if (binding.flLevelIndicator.isGyroOnCorrectAngle){
+                captureImage()
+        }else{
+            showGryroToast()
+        }
+        }else{
+            captureImage()
+        }
     }
 
     private fun showGryroToast(){

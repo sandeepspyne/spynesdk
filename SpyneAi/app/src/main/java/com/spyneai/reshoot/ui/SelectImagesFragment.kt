@@ -78,7 +78,7 @@ class SelectImagesFragment : BaseFragment<ProcessedViewModel,FragmentSelectImage
         var reshootIntent : Intent? = null
 
         when(list[0].image_category){
-            "Ecom" -> {
+            "Ecom","Food" -> {
                 reshootIntent = Intent(requireActivity(),ReshootActivity::class.java)
                 selectedList.forEach {
                     it.isSelected = false
