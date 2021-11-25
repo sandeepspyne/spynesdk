@@ -107,69 +107,69 @@ class MainDashboardActivity : AppCompatActivity() {
             when (it.itemId) {
                 R.id.homeDashboardFragment -> setCurrentFragment(firstFragment)
 
-                R.id.shootActivity -> {
-                    //if (isMagnatoMeterAvailable()) {
-                    when (getString(R.string.app_name)) {
-                        "Ola Cabs",
-                        AppConstants.CARS24,
-                        AppConstants.CARS24_INDIA,
-                        AppConstants.SELL_ANY_CAR,
-                        "Trusted cars",
-                        "Travo Photos",
-                        "Yalla Motors",
-                        "Spyne Hiring",
-                        AppConstants.AUTO_FOTO -> {
-                            var intent = Intent(this, StartShootActivity::class.java)
-                            intent.putExtra(
-                                AppConstants.CATEGORY_ID,
-                                AppConstants.CARS_CATEGORY_ID
-                            )
-                            intent.putExtra(AppConstants.CATEGORY_NAME, "Automobiles")
-                            startActivity(intent)
-                        }
-
-                        AppConstants.KARVI -> {
-                            var intent = Intent(this, ShootActivity::class.java)
-                            intent.putExtra(
-                                AppConstants.CATEGORY_ID,
-                                AppConstants.CARS_CATEGORY_ID
-                            )
-                            intent.putExtra(AppConstants.CATEGORY_NAME, "Automobiles")
-                            startActivity(intent)
-                        }
-
-                        "Flipkart",
-                        "Udaan",
-                        "Lal10",
-                        "Amazon",
-                        "Swiggy",
-                        AppConstants.SWIGGYINSTAMART,
-                        AppConstants.BATA,
-                        AppConstants.FLIPKART_GROCERY, AppConstants.EBAY -> {
-                            val intent =
-                                Intent(
-                                    this@MainDashboardActivity,
-                                    CategoriesActivity::class.java
-                                )
-                            startActivity(intent)
-                        }
-                        else -> {
-                            var intent = Intent(this, ShootActivity::class.java)
-                            intent.putExtra(
-                                AppConstants.CATEGORY_ID,
-                                AppConstants.CARS_CATEGORY_ID
-                            )
-                            intent.putExtra(AppConstants.CATEGORY_NAME, "Automobiles")
-                            startActivity(intent)
-                        }
-                    }
-//                    } else {
-//                        NoMagnaotoMeterDialog().show(
-//                            supportFragmentManager,
-//                            "NoMagnaotoMeterDialog"
-//                        )
+//                R.id.shootActivity -> {
+//                    //if (isMagnatoMeterAvailable()) {
+//                    when (getString(R.string.app_name)) {
+//                        "Ola Cabs",
+//                        AppConstants.CARS24,
+//                        AppConstants.CARS24_INDIA,
+//                        AppConstants.SELL_ANY_CAR,
+//                        "Trusted cars",
+//                        "Travo Photos",
+//                        "Yalla Motors",
+//                        "Spyne Hiring",
+//                        AppConstants.AUTO_FOTO -> {
+//                            var intent = Intent(this, StartShootActivity::class.java)
+//                            intent.putExtra(
+//                                AppConstants.CATEGORY_ID,
+//                                AppConstants.CARS_CATEGORY_ID
+//                            )
+//                            intent.putExtra(AppConstants.CATEGORY_NAME, "Automobiles")
+//                            startActivity(intent)
+//                        }
+//
+//                        AppConstants.KARVI -> {
+//                            var intent = Intent(this, ShootActivity::class.java)
+//                            intent.putExtra(
+//                                AppConstants.CATEGORY_ID,
+//                                AppConstants.CARS_CATEGORY_ID
+//                            )
+//                            intent.putExtra(AppConstants.CATEGORY_NAME, "Automobiles")
+//                            startActivity(intent)
+//                        }
+//
+//                        "Flipkart",
+//                        "Udaan",
+//                        "Lal10",
+//                        "Amazon",
+//                        "Swiggy",
+//                        AppConstants.SWIGGYINSTAMART,
+//                        AppConstants.BATA,
+//                        AppConstants.FLIPKART_GROCERY, AppConstants.EBAY -> {
+//                            val intent =
+//                                Intent(
+//                                    this@MainDashboardActivity,
+//                                    CategoriesActivity::class.java
+//                                )
+//                            startActivity(intent)
+//                        }
+//                        else -> {
+//                            var intent = Intent(this, ShootActivity::class.java)
+//                            intent.putExtra(
+//                                AppConstants.CATEGORY_ID,
+//                                AppConstants.CARS_CATEGORY_ID
+//                            )
+//                            intent.putExtra(AppConstants.CATEGORY_NAME, "Automobiles")
+//                            startActivity(intent)
+//                        }
 //                    }
-                }
+////                    } else {
+////                        NoMagnaotoMeterDialog().show(
+////                            supportFragmentManager,
+////                            "NoMagnaotoMeterDialog"
+////                        )
+////                    }
+//                }
 
                 R.id.completedOrdersFragment -> {
                     if (getString(R.string.app_name) == AppConstants.SPYNE_AI) {

@@ -133,11 +133,12 @@ class ShootActivity : AppCompatActivity(), GoogleApiClient.ConnectionCallbacks,
                 }
             }
             "Bikes" -> {
-                shootViewModel.processSku = false
+                shootViewModel.processSku = true
                 if (savedInstanceState == null) { // initial transaction should be wrapped like this
                     supportFragmentManager.beginTransaction()
                         .add(R.id.flCamerFragment, cameraFragment)
                         .add(R.id.flCamerFragment, overlays)
+                        .add(R.id.flCamerFragment,CreateProjectFragment())
                         .commitAllowingStateLoss()
                 }
             }
