@@ -195,4 +195,10 @@ class ShootRepository : BaseRepository() {
         clipperApi.getOverlayIds(ids)
     }
 
+    suspend fun getImageData(
+        imageId : String
+    ) = safeApiCall {
+        clipperApi.getImageData(imageId)
+    }
+
 }

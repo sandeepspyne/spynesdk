@@ -248,7 +248,6 @@ class CameraFragment : BaseFragment<ShootViewModel, FragmentCameraBinding>(), Pi
 
     override fun onDestroy() {
         mSensorManager.unregisterListener(this)
-        shoot("onDistroy called(overlay fragment)")
         super.onDestroy()
     }
 

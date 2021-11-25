@@ -179,7 +179,7 @@ class SignUpActivity : AppCompatActivity() {
                 "PASSWORD",
                 name,
                 country,
-                "Android",
+                "App_android",
                 coupon)
 
         call?.enqueue(object : Callback<SignupResponse> {

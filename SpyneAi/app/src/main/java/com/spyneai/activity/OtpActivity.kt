@@ -378,7 +378,7 @@ public class OtpActivity : AppCompatActivity() {
         val request = RetrofitClients.buildService(MyAPIService::class.java)
         val call = request.postOtp(Utilities.getPreference(this, AppConstants.EMAIL_ID).toString(),
             WhiteLabelConstants.API_KEY,
-            otpEntered,"Android")
+            otpEntered,"App_android")
 
         call?.enqueue(object : Callback<OtpResponse> {
             override fun onResponse(call: Call<OtpResponse>, response: Response<OtpResponse>) {

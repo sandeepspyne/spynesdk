@@ -64,6 +64,7 @@
         <entry key="app/src/main/res/layout/dialog_focused_hint.xml" value="0.25416666666666665" />
         <entry key="app/src/main/res/layout/dialog_interior_hint.xml" value="0.25277777777777777" />
         <entry key="app/src/main/res/layout/dialog_no_magnato_meter.xml" value="0.3098958333333333" />
+        <entry key="app/src/main/res/layout/dialog_outdated_app_version.xml" value="0.3974358974358974" />
         <entry key="app/src/main/res/layout/dialog_reclick.xml" value="0.3098958333333333" />
         <entry key="app/src/main/res/layout/dialog_resolution_not_supported.xml" value="0.25277777777777777" />
         <entry key="app/src/main/res/layout/dialog_skip.xml" value="0.165" />
@@ -95,6 +96,7 @@
         <entry key="app/src/main/res/layout/fragment_select_background.xml" value="0.25277777777777777" />
         <entry key="app/src/main/res/layout/fragment_select_images.xml" value="0.25" />
         <entry key="app/src/main/res/layout/fragment_select_subcategory_and_angle.xml" value="0.25" />
+        <entry key="app/src/main/res/layout/fragment_shoot_site_dialog.xml" value="0.23020833333333332" />
         <entry key="app/src/main/res/layout/fragment_sku_detail.xml" value="0.25277777777777777" />
         <entry key="app/src/main/res/layout/gyro_view.xml" value="0.3098958333333333" />
         <entry key="app/src/main/res/layout/home_dashboard_fragment.xml" value="0.2578125" />

@@ -22,7 +22,6 @@ class MyOrdersFragment : BaseFragment<DashboardViewModel, FragmentMyOrdersBindin
 
 
         tabId = requireActivity().intent.extras?.get("TAB_ID") as Int
-        Log.d(TAG, "position_id   "+tabId)
 
         binding.ivBack.setOnClickListener {
             requireActivity().onBackPressed()

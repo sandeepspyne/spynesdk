@@ -54,7 +54,7 @@ class ManualImageUploader(val context: Context,
                             filesRepository.skipImage(image.itemId!!,skipFlag)
                             startNextUpload(image.itemId!!,false,imageType)
                         }
-                        captureEvent(Events.UPLOAD_FAILED_SERVICE,image,false,"Image upload limit reached")
+                        //captureEvent(Events.UPLOAD_FAILED_SERVICE,image,false,"Image upload limit reached")
                         logUpload("Upload Skipped Retry Limit Reached")
                         return@launch
                     }

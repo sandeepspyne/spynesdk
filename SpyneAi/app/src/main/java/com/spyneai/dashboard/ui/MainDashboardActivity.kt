@@ -22,6 +22,7 @@ import com.spyneai.base.network.Resource
 import com.spyneai.dashboard.data.DashboardViewModel
 import com.spyneai.dashboard.ui.base.ViewModelFactory
 import com.spyneai.databinding.ActivityDashboardMainBinding
+import com.spyneai.debug.SendSkusData
 import com.spyneai.fragment.PreferenceFragment
 import com.spyneai.interfaces.RetrofitClients
 import com.spyneai.needs.AppConstants
@@ -36,6 +37,7 @@ import com.spyneai.service.log
 import com.spyneai.service.manual.ManualUploadService
 import com.spyneai.service.manual.StoreImageFiles
 import com.spyneai.shoot.data.FilesRepository
+import com.spyneai.shoot.data.ImageLocalRepository
 import com.spyneai.shoot.data.ShootLocalRepository
 import com.spyneai.shoot.data.ShootRepository
 import com.spyneai.shoot.response.UploadFolderRes
@@ -226,8 +228,11 @@ class MainDashboardActivity : AppCompatActivity() {
         viewModel?.versionResponse?.observe(this, {
             when (it) {
                 is Resource.Success -> {
-                    Utilities.hideProgressDialog()
+                    capture(
+                        Events.GOT_VERSION
+                    )
 
+                    Utilities.hideProgressDialog()
                     if (allPermissionsGranted()) {
                         onPermissionGranted()
                     } else {
@@ -282,11 +287,7 @@ class MainDashboardActivity : AppCompatActivity() {
                 }) {
                 onPermissionGranted()
             } else {
-
-
                 RequiredPermissionDialog().show(supportFragmentManager, "RequiredPermissionDialog")
-
-
             }
 
         }
@@ -315,7 +316,7 @@ class MainDashboardActivity : AppCompatActivity() {
         cancelAllWorkers()
         startUploadService()
         startVideoUploadService()
-        checkFolderUpload()
+       // checkFolderUpload()
     }
 
     private fun startVideoUploadService() {
@@ -500,7 +501,7 @@ class MainDashboardActivity : AppCompatActivity() {
                 )
 
 
-                folderCheckError(t.localizedMessage)
+                //folderCheckError(t.localizedMessage)
             }
         })
     }
@@ -546,7 +547,7 @@ class MainDashboardActivity : AppCompatActivity() {
     private fun folderCheckError(error: String) {
         Snackbar.make(binding.root, error, Snackbar.LENGTH_INDEFINITE)
             .setAction("Retry") {
-                checkFolderUpload()
+                //checkFolderUpload()
             }
             .setActionTextColor(ContextCompat.getColor(this, R.color.primary))
             .show()

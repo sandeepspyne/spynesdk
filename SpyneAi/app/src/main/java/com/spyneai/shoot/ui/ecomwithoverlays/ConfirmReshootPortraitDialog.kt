@@ -44,8 +44,17 @@ class ConfirmReshootPortraitDialog : BaseDialogFragment<ShootViewModel, ConfirmR
                 Events.RESHOOT,
                 properties)
             //remove last item from shoot list
-            if (!viewModel.isReclick)
-                viewModel.shootList.value?.removeAt(viewModel.currentShoot)
+            if (!viewModel.isReclick){
+                viewModel.shootList.value?.let { list ->
+                    val currentElement = list.firstOrNull {
+                        it.overlayId == viewModel.overlayId
+                    }
+
+                    currentElement?.let {
+                        list.remove(it)
+                    }
+                }
+            }
 
             dismiss()
         }
@@ -59,6 +68,7 @@ class ConfirmReshootPortraitDialog : BaseDialogFragment<ShootViewModel, ConfirmR
                 this["sku_id"] = viewModel.shootData.value?.sku_id
                 this["project_id"] = viewModel.shootData.value?.project_id
                 this["image_type"] = viewModel.shootData.value?.image_category
+                this["sequence"] = viewModel.shootData.value?.sequence
             }
 
             viewModel.isCameraButtonClickable = true

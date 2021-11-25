@@ -16,6 +16,7 @@ object AppConstants {
     val CLOCKED_IN_TIME = "CLOCKED_IN_TIME"
     val SITE_CITY_NAME = "SITE_CITY_NAME"
     val SHOOTS_SESSION = "SHOOTS_SESSION"
+    val IMAGE_SELECTED = "SELECTED_IMAGE"
 
     val LOCALE = "LOCALE"
 

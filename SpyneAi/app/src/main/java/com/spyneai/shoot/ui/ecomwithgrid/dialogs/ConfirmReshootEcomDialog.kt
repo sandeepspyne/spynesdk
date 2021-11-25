@@ -67,7 +67,17 @@ class ConfirmReshootEcomDialog :
             )
 
             //remove last item from shoot list
-            //viewModel.shootList.value?.removeAt(viewModel.shootList.value!!.size - 1)
+            if (!viewModel.isReclick){
+                viewModel.shootList.value?.let { list ->
+                    val currentElement = list.firstOrNull {
+                        it.overlayId == viewModel.overlayId
+                    }
+
+                    currentElement?.let {
+                        list.remove(it)
+                    }
+                }
+            }
 
             if (!viewModel.isReclick)
                 viewModel.shootList.value?.removeAt(viewModel.currentShoot)
@@ -86,6 +96,7 @@ class ConfirmReshootEcomDialog :
                 this["sku_id"] = viewModel.shootData.value?.sku_id
                 this["project_id"] = viewModel.shootData.value?.project_id
                 this["image_type"] = viewModel.shootData.value?.image_category
+                this["sequence"] = viewModel.shootData.value?.sequence
             }
 
 

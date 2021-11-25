@@ -13,15 +13,9 @@ import android.view.ViewGroup
 import com.spyneai.base.BaseDialogFragment
 import com.spyneai.dashboard.data.DashboardViewModel
 import com.spyneai.databinding.FragmentShootSiteDialogBinding
-import com.spyneai.needs.AppConstants
-import com.spyneai.shoot.data.ShootViewModel
+
 
 class ShootSiteDialog : BaseDialogFragment<DashboardViewModel, FragmentShootSiteDialogBinding>() {
-
-
-
-
-
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -30,19 +24,8 @@ class ShootSiteDialog : BaseDialogFragment<DashboardViewModel, FragmentShootSite
         binding.btCamera.setOnClickListener {
 
             viewModel.isStartAttendance.value = true
-
-
-            val s= ""
-
             dismiss()
-
         }
-
-
-
-
-
-
     }
 
 
