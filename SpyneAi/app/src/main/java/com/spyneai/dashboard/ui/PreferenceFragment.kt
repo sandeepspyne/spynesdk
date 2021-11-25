@@ -1,7 +1,6 @@
-package com.spyneai.fragment
+package com.spyneai.dashboard.ui
 
 import android.Manifest
-import android.R.string
 import android.app.Activity.RESULT_OK
 import android.content.Intent
 import android.content.pm.PackageManager
@@ -35,16 +34,16 @@ import com.spyneai.ShootSiteDialog
 import com.spyneai.base.BaseFragment
 import com.spyneai.base.network.ClipperApi
 import com.spyneai.base.network.Resource
+import com.spyneai.captureFailureEvent
 import com.spyneai.dashboard.data.DashboardViewModel
-import com.spyneai.dashboard.ui.enable
-import com.spyneai.dashboard.ui.handleApiError
 import com.spyneai.databinding.FragmentPreferenceBinding
 import com.spyneai.interfaces.GcpClient
 import com.spyneai.logout.LogoutDialog
 import com.spyneai.needs.AppConstants
 import com.spyneai.needs.Utilities
+import com.spyneai.posthog.Events
 import com.spyneai.shoot.ui.dialogs.RequiredPermissionDialog
-import kotlinx.android.synthetic.main.fragment_preference.*
+import com.spyneai.shoot.utils.log
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.RequestBody.Companion.asRequestBody
 import okhttp3.ResponseBody
@@ -78,8 +77,10 @@ class PreferenceFragment : BaseFragment<DashboardViewModel, FragmentPreferenceBi
     val location_data = JSONObject()
     var snackbar: Snackbar? = null
     var isActive = false
-    val lat2: Double? = null
-    val lon2: Double? = null
+    var lat2: Double? = 28.428823
+    var lon2: Double? = 77.037030
+    var lat1: Double? = 0.0
+    var lon1: Double? = 0.0
 
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -99,14 +100,8 @@ class PreferenceFragment : BaseFragment<DashboardViewModel, FragmentPreferenceBi
         }
 
         //
-        locationList.add("Select Location")
-        locationList.add("Goa")
-        locationList.add("Manipur")
-        locationList.add("Gurgaon")
-        locationList.add("Jaipur")
-        locationList.add("Udaypur")
+        getLocations()
 
-        binding.spSelectLocation.prompt = "Select Location"
 
         spLocationAdapter = ArrayAdapter<String>(
             requireContext(),
@@ -117,55 +112,56 @@ class PreferenceFragment : BaseFragment<DashboardViewModel, FragmentPreferenceBi
         binding.spSelectLocation.adapter = spLocationAdapter
         binding.spSelectLocation.setTitle("Select Location")
 
-        binding.spSelectLocation.setOnItemSelectedListener(object : OnItemSelectedListener {
-            override fun onItemSelected(
-                parent: AdapterView<*>,
-                view: View,
-                position: Int,
-                id: Long
-            ) {
+           binding.spSelectLocation.setOnItemSelectedListener(object : OnItemSelectedListener {
+               override fun onItemSelected(
+                   parent: AdapterView<*>,
+                   view: View?,
+                   position: Int,
+                   id: Long
+               ) {
 
-                val locationName: String = parent.getItemAtPosition(position).toString()
-                if(locationList[0]=="Select Location"){
-                    binding.btClockIn.enable(false)
-                }else {
-                    binding.btClockIn.enable(true)
-                }
-                Toast.makeText(parent.context, "Selected: $locationName", Toast.LENGTH_LONG).show()
-                locationList[0]="Delhi"
-            }
+                   val locationName: String = parent.getItemAtPosition(position).toString()
+                   if(locationList[0]=="Select Location"){
+                       binding.btClockIn.enable(false)
+                   }else {
+                       binding.btClockIn.enable(true)
+                   }
+                   Toast.makeText(parent.context, "Selected: $locationName", Toast.LENGTH_LONG).show()
+                   locationList[0]="Delhi"
+               }
 
-            override fun onNothingSelected(parent: AdapterView<*>?) {
-                binding.btClockIn.enable(false)
-                locationList[0]="Select Location"
-            }
-        })
+               override fun onNothingSelected(parent: AdapterView<*>?) {
+                   binding.btClockIn.enable(false)
+                   locationList[0]="Select Location"
+               }
+           })
 
         //clockout Adapter
         binding.spLocationOut.adapter = spLocationAdapter
         binding.spLocationOut.setTitle("Select Location")
 
-        binding.spLocationOut.setOnItemSelectedListener(object : OnItemSelectedListener {
-            override fun onItemSelected(
-                parent: AdapterView<*>,
-                view: View,
-                position: Int,
-                id: Long
-            ) {
-                val locationName: String = parent.getItemAtPosition(position).toString()
-                if(locationList[0]=="Select Location"){
-                    binding.btnClockOut.enable(false)
-                }else {
-                    binding.btnClockOut.enable(true)
+            binding.spLocationOut.setOnItemSelectedListener(object : OnItemSelectedListener {
+                override fun onItemSelected(
+                    parent: AdapterView<*>,
+                    view: View?,
+                    position: Int,
+                    id: Long
+                ) {
+                    val locationName: String = parent.getItemAtPosition(position).toString()
+                    if(locationList[0]=="Select Location"){
+                        binding.btnClockOut.enable(false)
+                    }else {
+                        binding.btnClockOut.enable(true)
+                    }
+                    Toast.makeText(parent.context, "Selected: $locationName", Toast.LENGTH_LONG).show()
+                    locationList[0]="Delhi"
                 }
-                Toast.makeText(parent.context, "Selected: $locationName", Toast.LENGTH_LONG).show()
-                locationList[0]="Delhi"
-            }
 
-            override fun onNothingSelected(parent: AdapterView<*>?) {
-                binding.btClockIn.enable(false  )
-            }
-        })
+                override fun onNothingSelected(parent: AdapterView<*>?) {
+                    binding.btClockIn.enable(false  )
+                }
+            })
+
 
 
 
@@ -257,7 +253,7 @@ class PreferenceFragment : BaseFragment<DashboardViewModel, FragmentPreferenceBi
         }
 
         binding.btnClockOut.setOnClickListener {
-            getDistanceFromLatLon(1.1,1.2,1.2,1.4,"checkout")
+            getDistanceFromLatLon(lat1!!,lon1!!,lat2!!,lon2!!,"checkout")
             locationList[0]="Select Location"
         }
 
@@ -280,10 +276,9 @@ class PreferenceFragment : BaseFragment<DashboardViewModel, FragmentPreferenceBi
         var a = sin(dLat/2) * sin(dLat/2) +
                     cos(deg2rad(lat1)) * cos(deg2rad(lat2)) *
                     sin(dLon/2) * sin(dLon/2)
-        ;
         var c = 2 * atan2(sqrt(a), sqrt(1-a));
         var d = R * c * 1000 // Distance in m
-        var threshold : Double = 500.0
+        var threshold = 2000.0
         if(d>threshold){
             InvalidLocationDialog().show(requireActivity().supportFragmentManager, "invalidLocationDialog")
         }else{
@@ -595,6 +590,41 @@ class PreferenceFragment : BaseFragment<DashboardViewModel, FragmentPreferenceBi
         viewModel.getGCPUrl(File(viewModel.siteImagePath).name)
     }
 
+    private fun getLocations() {
+        //binding.progressBar.visibility = View.VISIBLE
+        viewModel.getLocations()
+        viewModel.locationsResponse.observe(viewLifecycleOwner, {
+            when (it) {
+                is Resource.Success -> {
+                    Utilities.hideProgressDialog()
+
+                    val locationNameList = it.value.data.map { it.locationName }
+                    locationList.addAll(locationNameList)
+
+                    log("project and SKU dialog shown")
+                }
+
+                is Resource.Loading -> {
+                    Utilities.showProgressDialog(requireContext())
+                }
+
+                is Resource.Failure -> {
+                    Utilities.hideProgressDialog()
+                    log("get Manual Location fail")
+                    requireContext().captureFailureEvent(
+                        Events.CREATE_PROJECT_FAILED, HashMap<String,Any?>(),
+                        it.errorMessage!!
+                    )
+
+                    Utilities.hideProgressDialog()
+                    handleApiError(it) { getLocations()}
+                }
+            }
+        })
+
+        val s=""
+    }
+
 
     override fun onStart() {
         super.onStart()
@@ -679,7 +709,7 @@ class PreferenceFragment : BaseFragment<DashboardViewModel, FragmentPreferenceBi
         }
 
     open fun onPermissionGranted() {
-        getDistanceFromLatLon(1.1,1.2,2.2,2.2,"checkin")
+        getDistanceFromLatLon(lat1!!,lon1!!,lat2!!,lon2!!,"checkin")
     }
 
     override fun getViewModel() = DashboardViewModel::class.java
@@ -695,11 +725,11 @@ class PreferenceFragment : BaseFragment<DashboardViewModel, FragmentPreferenceBi
         ) {
             try {
                 val lastLocation = LocationServices.FusedLocationApi.getLastLocation(googleApiClient)
-                val lat1: Double = lastLocation.latitude
-                val lon1: Double = lastLocation.longitude
+                 lat1 = lastLocation.latitude
+                 lon1 = lastLocation.longitude
 
                 val geocoder = Geocoder(requireContext(), Locale.getDefault())
-                val addresses: List<Address> = geocoder.getFromLocation(lat1, lon1, 1)
+                val addresses: List<Address> = geocoder.getFromLocation(lat1!!, lon1!!, 1)
                 val postalCode = addresses[0].postalCode
                 val cityName = addresses[0].locality
                 val countryName = addresses[0].countryName
