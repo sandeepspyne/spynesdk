@@ -1,7 +1,6 @@
 package com.spyneai.debug
 
 import android.content.Context
-import com.posthog.android.Properties
 import com.spyneai.BaseApplication
 import com.spyneai.base.network.Resource
 import com.spyneai.captureEvent
@@ -10,7 +9,6 @@ import com.spyneai.needs.Utilities
 import com.spyneai.posthog.Events
 import com.spyneai.shoot.data.FilesRepository
 import com.spyneai.shoot.data.ImageLocalRepository
-import com.spyneai.shoot.data.ShootLocalRepository
 import com.spyneai.shoot.data.ShootRepository
 import org.json.JSONArray
 import org.json.JSONObject
@@ -25,7 +23,7 @@ class SendSkusData(
         //get all sku from local DB
         val images = imageLocalRepository.getAllImages()
 
-        val properties = Properties()
+        val properties = HashMap<String,Any?>()
         properties.apply {
             this["size"] = images.size
         }
@@ -55,7 +53,7 @@ class SendSkusData(
     }
 
     private suspend fun startManualUploadWorker(filesPathList : JSONArray) {
-        val properties = Properties()
+        val properties = HashMap<String,Any?>()
         properties.apply {
             this["email"] = Utilities.getPreference(BaseApplication.getContext(), AppConstants.EMAIL_ID).toString()
         }
@@ -69,7 +67,7 @@ class SendSkusData(
 
     }
 
-    private suspend fun sendData(count : Int,data : String,properties: Properties) {
+    private suspend fun sendData(count : Int,data : String,properties: HashMap<String,Any?>) {
 
         //send all data to server
         var sendDataRes = ShootRepository().sendFilesData(

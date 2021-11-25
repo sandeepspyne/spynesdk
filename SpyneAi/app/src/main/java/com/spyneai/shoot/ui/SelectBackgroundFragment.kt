@@ -97,8 +97,6 @@ class SelectBackgroundFragment : BaseFragment<ProcessViewModel, FragmentSelectBa
                             binding.tvTintWindow.visibility = View.GONE
 
                     }
-
-
                 } else ->{
                 binding.cbBlurNoPlate.visibility = View.GONE
                 binding.tvBlurNoPlate.visibility = View.GONE
@@ -108,12 +106,6 @@ class SelectBackgroundFragment : BaseFragment<ProcessViewModel, FragmentSelectBa
                 binding.tvTintWindow.visibility = View.GONE
                 }
             }
-
-
-
-
-
-
 
         when (getString(R.string.app_name)) {
             AppConstants.KARVI,

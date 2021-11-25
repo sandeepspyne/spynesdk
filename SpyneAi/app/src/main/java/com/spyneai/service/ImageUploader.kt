@@ -3,7 +3,6 @@ package com.spyneai.service
 import android.content.Context
 import android.util.Log
 import androidx.work.*
-import com.posthog.android.Properties
 import com.spyneai.*
 import com.spyneai.R
 import com.spyneai.base.network.ClipperApi
@@ -30,6 +29,7 @@ import retrofit2.Callback
 import retrofit2.Response
 import java.io.File
 import java.util.*
+import kotlin.collections.HashMap
 
 class ImageUploader(val context: Context,
                     val localRepository : ImageLocalRepository,
@@ -62,7 +62,7 @@ class ImageUploader(val context: Context,
                    //uploading enqueued
                        lastIdentifier = image.name+"_"+image.skuId
 
-                   val imageProperties = Properties()
+                   val imageProperties = HashMap<String,Any?>()
                        .apply {
                            put("iteration_id",lastIdentifier)
                            put("retry_count",retryCount)
@@ -403,7 +403,7 @@ class ImageUploader(val context: Context,
     }
 
     private fun captureEvent(eventName : String, image : Image, isSuccess : Boolean, error: String?,dbUpdateStatus: Int = 0) {
-        val properties = Properties()
+        val properties = HashMap<String,Any?>()
             .apply {
                 put("iteration_id",lastIdentifier)
                 put("image_id",image.imageId)
@@ -437,11 +437,6 @@ class ImageUploader(val context: Context,
         }
     }
 
-    private fun captureEvent(eventName : String, properties : Properties) {
-        context.captureEvent(
-            eventName,
-            properties)
-    }
 
 
     interface Listener {

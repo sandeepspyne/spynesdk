@@ -167,7 +167,7 @@ class ConfirmTagsDialog : BaseDialogFragment<ShootViewModel, DialogConfirmTagsBi
 
         requireContext().captureEvent(
             "SHOW_CLICKED_IMAGE",
-            Properties()
+            HashMap<String,Any?>()
                 .apply {
                     put("sku_id",viewModel.shootData.value?.sku_id)
                     put("type",viewModel.shootData.value?.image_category)
