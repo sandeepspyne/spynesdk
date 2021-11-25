@@ -59,6 +59,8 @@ class DashboardViewModel() : ViewModel() {
     var siteImagePath = ""
     var resultCode: Int? = null
     val continueAnyway: MutableLiveData<Boolean> = MutableLiveData()
+    var firstLocationName = ""
+    var selectedLocation: LocationsRes.Data? = null
 
 
     fun getCategories(
@@ -126,10 +128,11 @@ class DashboardViewModel() : ViewModel() {
     fun captureCheckInOut(
         type : String,
         location : JSONObject,
+        location_id : String,
         imageUrl : String = ""
     )= viewModelScope.launch {
         _checkInOutRes.value = Resource.Loading
-        _checkInOutRes.value = repository.captureCheckInOut(type,location,imageUrl)
+        _checkInOutRes.value = repository.captureCheckInOut(type,location,location_id,imageUrl)
     }
 
 

@@ -77,17 +77,16 @@ class PreferenceFragment : BaseFragment<DashboardViewModel, FragmentPreferenceBi
     val location_data = JSONObject()
     var snackbar: Snackbar? = null
     var isActive = false
-    var lat2: Double? = 28.428823
-    var lon2: Double? = 77.037030
-    var lat1: Double? = 0.0
-    var lon1: Double? = 0.0
+    var selectedLat: Double? = 0.0
+    var selectdLong: Double? = 0.0
+    var currentLat: Double? = 0.0
+    var currentLong: Double? = 0.0
 
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
         // set llLogout Button Margin only for sypne app
-
         googleApiClient = GoogleApiClient.Builder(requireContext(), this, this).addApi(LocationServices.API).build()
 
 
@@ -100,8 +99,6 @@ class PreferenceFragment : BaseFragment<DashboardViewModel, FragmentPreferenceBi
         }
 
         //
-        getLocations()
-
 
         spLocationAdapter = ArrayAdapter<String>(
             requireContext(),
@@ -120,14 +117,18 @@ class PreferenceFragment : BaseFragment<DashboardViewModel, FragmentPreferenceBi
                    id: Long
                ) {
 
-                   val locationName: String = parent.getItemAtPosition(position).toString()
                    if(locationList[0]=="Select Location"){
                        binding.btClockIn.enable(false)
+                       viewModel.selectedLocation = null
                    }else {
                        binding.btClockIn.enable(true)
+                       val locations = (viewModel.locationsResponse.value as Resource.Success).value.data
+
+                       viewModel.selectedLocation = locations.firstOrNull {
+                           it.locationName == parent.getItemAtPosition(position).toString()
+                       }
                    }
-                   Toast.makeText(parent.context, "Selected: $locationName", Toast.LENGTH_LONG).show()
-                   locationList[0]="Delhi"
+                   locationList[0]= viewModel.firstLocationName
                }
 
                override fun onNothingSelected(parent: AdapterView<*>?) {
@@ -140,32 +141,31 @@ class PreferenceFragment : BaseFragment<DashboardViewModel, FragmentPreferenceBi
         binding.spLocationOut.adapter = spLocationAdapter
         binding.spLocationOut.setTitle("Select Location")
 
-            binding.spLocationOut.setOnItemSelectedListener(object : OnItemSelectedListener {
+        binding.spLocationOut.setOnItemSelectedListener(object : OnItemSelectedListener {
                 override fun onItemSelected(
                     parent: AdapterView<*>,
                     view: View?,
                     position: Int,
                     id: Long
                 ) {
-                    val locationName: String = parent.getItemAtPosition(position).toString()
                     if(locationList[0]=="Select Location"){
                         binding.btnClockOut.enable(false)
+                        viewModel.selectedLocation = null
                     }else {
                         binding.btnClockOut.enable(true)
+                        val locations = (viewModel.locationsResponse.value as Resource.Success).value.data
+
+                        viewModel.selectedLocation = locations.firstOrNull {
+                            it.locationName == parent.getItemAtPosition(position).toString()
+                        }
                     }
-                    Toast.makeText(parent.context, "Selected: $locationName", Toast.LENGTH_LONG).show()
-                    locationList[0]="Delhi"
+                    locationList[0]= viewModel.firstLocationName
                 }
 
                 override fun onNothingSelected(parent: AdapterView<*>?) {
                     binding.btClockIn.enable(false  )
                 }
             })
-
-
-
-
-
 
         languageList.clear()
 
@@ -244,6 +244,7 @@ class PreferenceFragment : BaseFragment<DashboardViewModel, FragmentPreferenceBi
             LogoutDialog().show(requireActivity().supportFragmentManager,"LogoutDialog")
 
         }
+
         binding.btClockIn.setOnClickListener {
             if (allPermissionsGranted())
                 onPermissionGranted()
@@ -253,7 +254,7 @@ class PreferenceFragment : BaseFragment<DashboardViewModel, FragmentPreferenceBi
         }
 
         binding.btnClockOut.setOnClickListener {
-            getDistanceFromLatLon(lat1!!,lon1!!,lat2!!,lon2!!,"checkout")
+            getDistanceFromLatLon(currentLat!!,currentLong!!,"checkout")
             locationList[0]="Select Location"
         }
 
@@ -266,24 +267,58 @@ class PreferenceFragment : BaseFragment<DashboardViewModel, FragmentPreferenceBi
 
         observeUrlResponse()
         observeClockInOut()
+
+        getLocations()
+        observeLocation()
+    }
+
+    private fun observeLocation() {
+        viewModel.locationsResponse.observe(viewLifecycleOwner, {
+            when (it) {
+                is Resource.Success -> {
+                    Utilities.hideProgressDialog()
+                    val locationNameList = it.value.data.map { it -> it.locationName }.toMutableList()
+
+                    viewModel.firstLocationName = locationNameList[0]
+                    locationNameList[0] = "Select Location"
+
+                    locationList.apply {
+                        clear()
+                        addAll(locationNameList)
+                    }
+                }
+
+                is Resource.Failure -> {
+                    Utilities.hideProgressDialog()
+                    log("get Manual Location fail")
+                    requireContext().captureFailureEvent(
+                        Events.GET_LOCATIONS_FAILED, HashMap<String,Any?>(),
+                        it.errorMessage!!
+                    )
+
+                    Utilities.hideProgressDialog()
+                    handleApiError(it) { getLocations()}
+                }
+            }
+        })
     }
 
     // calculate distance bw lat lon
-    fun getDistanceFromLatLon(lat1:Double,lon1:Double,lat2:Double,lon2:Double,type: String) {
+    fun getDistanceFromLatLon(lat1:Double,lon1:Double,type: String) {
+        val selected = viewModel.selectedLocation?.coordinates
         var R = 6371 // Radius of the earth in km
-        var dLat = deg2rad(lat2-lat1);  // deg2rad below
-        var dLon = deg2rad(lon2-lon1);
+        var dLat = deg2rad(selected?.latitude!!?.minus(lat1))  // deg2rad below
+        var dLon = deg2rad(selected.longitude-lon1);
         var a = sin(dLat/2) * sin(dLat/2) +
-                    cos(deg2rad(lat1)) * cos(deg2rad(lat2)) *
+                    cos(deg2rad(lat1)) * cos(deg2rad(selected?.latitude)) *
                     sin(dLon/2) * sin(dLon/2)
         var c = 2 * atan2(sqrt(a), sqrt(1-a));
         var d = R * c * 1000 // Distance in m
-        var threshold = 2000.0
-        if(d>threshold){
+        if(d> viewModel.selectedLocation!!?.thresholdDistanceInMeters){
             InvalidLocationDialog().show(requireActivity().supportFragmentManager, "invalidLocationDialog")
         }else{
             if(type=="checkin")
-            ShootSiteDialog().show(requireActivity().supportFragmentManager,"ShootSiteDialog")
+                ShootSiteDialog().show(requireActivity().supportFragmentManager,"ShootSiteDialog")
             else{
                 viewModel.type = "checkout"
                 viewModel.fileUrl = ""
@@ -384,13 +419,11 @@ class PreferenceFragment : BaseFragment<DashboardViewModel, FragmentPreferenceBi
         if (requestCode == REQUEST_IMAGE_CAPTURE && resultCode == RESULT_OK) {
             Utilities.apply {
                 savePrefrence(requireContext(),AppConstants.SITE_IMAGE_PATH,currentPhotoPath)
-                savePrefrence(requireContext(),AppConstants.SITE_CITY_NAME,location_data.getString("city"))
+                savePrefrence(requireContext(),AppConstants.SITE_CITY_NAME,viewModel.selectedLocation?.locationName)
                 saveBool(requireContext(),AppConstants.CLOCKED_IN,true)
                 saveLong(requireContext(),AppConstants.CLOCKED_IN_TIME,System.currentTimeMillis())
                 locationList[0]="Select Location"
             }
-
-
 
             viewModel.siteImagePath = currentPhotoPath
             setCheckOut(true)
@@ -562,6 +595,7 @@ class PreferenceFragment : BaseFragment<DashboardViewModel, FragmentPreferenceBi
         viewModel.captureCheckInOut(
             viewModel.type,
             location_data,
+            viewModel.selectedLocation!!.locationId,
             viewModel.fileUrl
         )
     }
@@ -591,38 +625,8 @@ class PreferenceFragment : BaseFragment<DashboardViewModel, FragmentPreferenceBi
     }
 
     private fun getLocations() {
-        //binding.progressBar.visibility = View.VISIBLE
+        Utilities.showProgressDialog(requireContext())
         viewModel.getLocations()
-        viewModel.locationsResponse.observe(viewLifecycleOwner, {
-            when (it) {
-                is Resource.Success -> {
-                    Utilities.hideProgressDialog()
-
-                    val locationNameList = it.value.data.map { it.locationName }
-                    locationList.addAll(locationNameList)
-
-                    log("project and SKU dialog shown")
-                }
-
-                is Resource.Loading -> {
-                    Utilities.showProgressDialog(requireContext())
-                }
-
-                is Resource.Failure -> {
-                    Utilities.hideProgressDialog()
-                    log("get Manual Location fail")
-                    requireContext().captureFailureEvent(
-                        Events.CREATE_PROJECT_FAILED, HashMap<String,Any?>(),
-                        it.errorMessage!!
-                    )
-
-                    Utilities.hideProgressDialog()
-                    handleApiError(it) { getLocations()}
-                }
-            }
-        })
-
-        val s=""
     }
 
 
@@ -709,7 +713,11 @@ class PreferenceFragment : BaseFragment<DashboardViewModel, FragmentPreferenceBi
         }
 
     open fun onPermissionGranted() {
-        getDistanceFromLatLon(lat1!!,lon1!!,lat2!!,lon2!!,"checkin")
+        if (viewModel.selectedLocation == null){
+            Toast.makeText(requireContext(),"Please Select Location",Toast.LENGTH_LONG).show()
+        }else{
+            getDistanceFromLatLon(currentLat!!,currentLong!!,"checkin")
+        }
     }
 
     override fun getViewModel() = DashboardViewModel::class.java
@@ -725,19 +733,19 @@ class PreferenceFragment : BaseFragment<DashboardViewModel, FragmentPreferenceBi
         ) {
             try {
                 val lastLocation = LocationServices.FusedLocationApi.getLastLocation(googleApiClient)
-                 lat1 = lastLocation.latitude
-                 lon1 = lastLocation.longitude
+                 currentLat = lastLocation.latitude
+                 currentLong = lastLocation.longitude
 
                 val geocoder = Geocoder(requireContext(), Locale.getDefault())
-                val addresses: List<Address> = geocoder.getFromLocation(lat1!!, lon1!!, 1)
+                val addresses: List<Address> = geocoder.getFromLocation(currentLat!!, currentLong!!, 1)
                 val postalCode = addresses[0].postalCode
                 val cityName = addresses[0].locality
                 val countryName = addresses[0].countryName
 
                 location_data.put("city", cityName)
                 location_data.put("country", countryName)
-                location_data.put("latitude", lat1)
-                location_data.put("longitude", lon1)
+                location_data.put("latitude", currentLat)
+                location_data.put("longitude", currentLong)
                 location_data.put("postalCode", postalCode)
             }catch (e : Exception){
                 e.printStackTrace()

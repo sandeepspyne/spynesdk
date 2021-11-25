@@ -54,9 +54,10 @@ class DashboardRepository() : BaseRepository() {
     suspend fun captureCheckInOut(
         type : String,
         location : JSONObject,
+        location_id : String,
         imageUrl : String = ""
     ) = safeApiCall {
-        clipperApi.captureCheckInOut(type,location,imageUrl)
+        clipperApi.captureCheckInOut(type,location,location_id,imageUrl)
     }
 
     suspend fun getLocations(

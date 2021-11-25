@@ -390,6 +390,7 @@ interface ClipperApi {
     suspend fun captureCheckInOut(
         @Field("type") type : String,
         @Field("location") location : JSONObject,
+        @Field("location_id") locationId: String,
         @Field("img_url") imageUrl : String = "",
         @Field("auth_key") authKey : String = Utilities.getPreference(BaseApplication.getContext(),AppConstants.AUTH_KEY).toString()
     ) : CheckInOutRes

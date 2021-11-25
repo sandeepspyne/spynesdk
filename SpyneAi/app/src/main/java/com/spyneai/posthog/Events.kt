@@ -55,6 +55,7 @@ object Events {
     val SHOW_SHADOW_DIALOG = "Android Show Choose Shadow Dialog"
     val CREATE_PROJECT = "Android Create Project"
     val CREATE_PROJECT_FAILED = "Android Create Project Failed"
+    val GET_LOCATIONS_FAILED = "Android Get Locations Failed"
     val SKU_PROCESS_STATE_WITH_SHADOW_FAILED = "Android SkuProcessStateWithShadow failed"
     val GET_SUBCATEGORIES = "Android Got Subcategories"
     val GET_SUBCATRGORIES_FAILED = "Android Get Subcategories Failed"
