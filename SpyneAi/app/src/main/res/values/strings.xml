@@ -356,6 +356,7 @@
     <string name="three_sixty_int">Next</string>
     <string name="end_shoot_karvi">End\nShoot</string>
     <string name="tint_window">Tint Window</string>
+    <string name="near_location">It seems you are not near the location. Please check the location you have selected.</string>
 
 
 </resources>

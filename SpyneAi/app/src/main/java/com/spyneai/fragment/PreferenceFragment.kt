@@ -1,7 +1,7 @@
 package com.spyneai.fragment
 
 import android.Manifest
-import android.app.Activity
+import android.R.string
 import android.app.Activity.RESULT_OK
 import android.content.Intent
 import android.content.pm.PackageManager
@@ -12,8 +12,12 @@ import android.net.Uri
 import android.os.*
 import android.provider.MediaStore
 import android.util.Log
-import android.view.*
+import android.view.Gravity
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
 import android.widget.AdapterView
+import android.widget.AdapterView.OnItemSelectedListener
 import android.widget.ArrayAdapter
 import android.widget.LinearLayout
 import android.widget.Toast
@@ -25,12 +29,14 @@ import com.google.android.gms.common.ConnectionResult
 import com.google.android.gms.common.api.GoogleApiClient
 import com.google.android.gms.location.LocationServices
 import com.google.android.material.snackbar.Snackbar
+import com.spyneai.InvalidLocationDialog
 import com.spyneai.R
 import com.spyneai.ShootSiteDialog
 import com.spyneai.base.BaseFragment
 import com.spyneai.base.network.ClipperApi
 import com.spyneai.base.network.Resource
 import com.spyneai.dashboard.data.DashboardViewModel
+import com.spyneai.dashboard.ui.enable
 import com.spyneai.dashboard.ui.handleApiError
 import com.spyneai.databinding.FragmentPreferenceBinding
 import com.spyneai.interfaces.GcpClient
@@ -38,7 +44,7 @@ import com.spyneai.logout.LogoutDialog
 import com.spyneai.needs.AppConstants
 import com.spyneai.needs.Utilities
 import com.spyneai.shoot.ui.dialogs.RequiredPermissionDialog
-import kotlinx.android.synthetic.main.activity_sign_up.*
+import kotlinx.android.synthetic.main.fragment_preference.*
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.RequestBody.Companion.asRequestBody
 import okhttp3.ResponseBody
@@ -51,6 +57,10 @@ import java.io.IOException
 import java.text.SimpleDateFormat
 import java.util.*
 import java.util.concurrent.TimeUnit
+import kotlin.math.atan2
+import kotlin.math.cos
+import kotlin.math.sin
+import kotlin.math.sqrt
 
 
 class PreferenceFragment : BaseFragment<DashboardViewModel, FragmentPreferenceBinding>(),
@@ -60,12 +70,16 @@ class PreferenceFragment : BaseFragment<DashboardViewModel, FragmentPreferenceBi
 
 //    var languageList = arrayOf("English","Germany","Italy")
     var languageList= arrayListOf<String>()
+    var locationList: ArrayList<String> = ArrayList()
     lateinit var spLanguageAdapter: ArrayAdapter<String>
+    lateinit var spLocationAdapter: ArrayAdapter<String>
     lateinit var currentPhotoPath: String
     private var googleApiClient: GoogleApiClient? = null
     val location_data = JSONObject()
     var snackbar: Snackbar? = null
     var isActive = false
+    val lat2: Double? = null
+    val lon2: Double? = null
 
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -83,6 +97,79 @@ class PreferenceFragment : BaseFragment<DashboardViewModel, FragmentPreferenceBi
             binding.llLogout.setLayoutParams(params)
 //            Toast.makeText(requireContext(), "running", Toast.LENGTH_SHORT).show()
         }
+
+        //
+        locationList.add("Select Location")
+        locationList.add("Goa")
+        locationList.add("Manipur")
+        locationList.add("Gurgaon")
+        locationList.add("Jaipur")
+        locationList.add("Udaypur")
+
+        binding.spSelectLocation.prompt = "Select Location"
+
+        spLocationAdapter = ArrayAdapter<String>(
+            requireContext(),
+            android.R.layout.simple_spinner_dropdown_item,
+            locationList)
+
+        //clockin Adapter
+        binding.spSelectLocation.adapter = spLocationAdapter
+        binding.spSelectLocation.setTitle("Select Location")
+
+        binding.spSelectLocation.setOnItemSelectedListener(object : OnItemSelectedListener {
+            override fun onItemSelected(
+                parent: AdapterView<*>,
+                view: View,
+                position: Int,
+                id: Long
+            ) {
+
+                val locationName: String = parent.getItemAtPosition(position).toString()
+                if(locationList[0]=="Select Location"){
+                    binding.btClockIn.enable(false)
+                }else {
+                    binding.btClockIn.enable(true)
+                }
+                Toast.makeText(parent.context, "Selected: $locationName", Toast.LENGTH_LONG).show()
+                locationList[0]="Delhi"
+            }
+
+            override fun onNothingSelected(parent: AdapterView<*>?) {
+                binding.btClockIn.enable(false)
+                locationList[0]="Select Location"
+            }
+        })
+
+        //clockout Adapter
+        binding.spLocationOut.adapter = spLocationAdapter
+        binding.spLocationOut.setTitle("Select Location")
+
+        binding.spLocationOut.setOnItemSelectedListener(object : OnItemSelectedListener {
+            override fun onItemSelected(
+                parent: AdapterView<*>,
+                view: View,
+                position: Int,
+                id: Long
+            ) {
+                val locationName: String = parent.getItemAtPosition(position).toString()
+                if(locationList[0]=="Select Location"){
+                    binding.btnClockOut.enable(false)
+                }else {
+                    binding.btnClockOut.enable(true)
+                }
+                Toast.makeText(parent.context, "Selected: $locationName", Toast.LENGTH_LONG).show()
+                locationList[0]="Delhi"
+            }
+
+            override fun onNothingSelected(parent: AdapterView<*>?) {
+                binding.btClockIn.enable(false  )
+            }
+        })
+
+
+
+
 
         languageList.clear()
 
@@ -166,12 +253,12 @@ class PreferenceFragment : BaseFragment<DashboardViewModel, FragmentPreferenceBi
                 onPermissionGranted()
             else
                 permissionRequest.launch(permissions.toTypedArray())
+
         }
 
         binding.btnClockOut.setOnClickListener {
-            viewModel.type = "checkout"
-            viewModel.fileUrl = ""
-            clockInOut()
+            getDistanceFromLatLon(1.1,1.2,1.2,1.4,"checkout")
+            locationList[0]="Select Location"
         }
 
         if (Utilities.getBool(requireContext(),AppConstants.CLOCKED_IN)){
@@ -184,6 +271,37 @@ class PreferenceFragment : BaseFragment<DashboardViewModel, FragmentPreferenceBi
         observeUrlResponse()
         observeClockInOut()
     }
+
+    // calculate distance bw lat lon
+    fun getDistanceFromLatLon(lat1:Double,lon1:Double,lat2:Double,lon2:Double,type: String) {
+        var R = 6371 // Radius of the earth in km
+        var dLat = deg2rad(lat2-lat1);  // deg2rad below
+        var dLon = deg2rad(lon2-lon1);
+        var a = sin(dLat/2) * sin(dLat/2) +
+                    cos(deg2rad(lat1)) * cos(deg2rad(lat2)) *
+                    sin(dLon/2) * sin(dLon/2)
+        ;
+        var c = 2 * atan2(sqrt(a), sqrt(1-a));
+        var d = R * c * 1000 // Distance in m
+        var threshold : Double = 500.0
+        if(d>threshold){
+            InvalidLocationDialog().show(requireActivity().supportFragmentManager, "invalidLocationDialog")
+        }else{
+            if(type=="checkin")
+            ShootSiteDialog().show(requireActivity().supportFragmentManager,"ShootSiteDialog")
+            else{
+                viewModel.type = "checkout"
+                viewModel.fileUrl = ""
+                clockInOut()
+            }
+
+        }
+    }
+    fun deg2rad(deg:Double): Double {
+        return deg * (Math.PI/180)
+    }
+
+
 
     private fun setCheckIn(hideClockOut : Boolean) {
         viewModel.type = "checkin"
@@ -274,6 +392,7 @@ class PreferenceFragment : BaseFragment<DashboardViewModel, FragmentPreferenceBi
                 savePrefrence(requireContext(),AppConstants.SITE_CITY_NAME,location_data.getString("city"))
                 saveBool(requireContext(),AppConstants.CLOCKED_IN,true)
                 saveLong(requireContext(),AppConstants.CLOCKED_IN_TIME,System.currentTimeMillis())
+                locationList[0]="Select Location"
             }
 
 
@@ -328,7 +447,7 @@ class PreferenceFragment : BaseFragment<DashboardViewModel, FragmentPreferenceBi
         binding.apply {
             cvClockIn.visibility = View.GONE
             cvClockOut.visibility = View.VISIBLE
-            tvCityName.text = Utilities.getPreference(requireContext(),AppConstants.SITE_CITY_NAME)
+            tvCityName.text = " at "+Utilities.getPreference(requireContext(),AppConstants.SITE_CITY_NAME)
             ivDropDown.rotation = 90f
             tvClockedTime.text = getString(R.string.clocked_in_for)+" "+millisecondsToTime(time)
             llAttendance.setOnClickListener(null)
@@ -560,7 +679,7 @@ class PreferenceFragment : BaseFragment<DashboardViewModel, FragmentPreferenceBi
         }
 
     open fun onPermissionGranted() {
-        ShootSiteDialog().show(requireActivity().supportFragmentManager,"ShootSiteDialog")
+        getDistanceFromLatLon(1.1,1.2,2.2,2.2,"checkin")
     }
 
     override fun getViewModel() = DashboardViewModel::class.java
@@ -576,19 +695,19 @@ class PreferenceFragment : BaseFragment<DashboardViewModel, FragmentPreferenceBi
         ) {
             try {
                 val lastLocation = LocationServices.FusedLocationApi.getLastLocation(googleApiClient)
-                val lat: Double = lastLocation.latitude
-                val lon: Double = lastLocation.longitude
+                val lat1: Double = lastLocation.latitude
+                val lon1: Double = lastLocation.longitude
 
                 val geocoder = Geocoder(requireContext(), Locale.getDefault())
-                val addresses: List<Address> = geocoder.getFromLocation(lat, lon, 1)
+                val addresses: List<Address> = geocoder.getFromLocation(lat1, lon1, 1)
                 val postalCode = addresses[0].postalCode
                 val cityName = addresses[0].locality
                 val countryName = addresses[0].countryName
 
                 location_data.put("city", cityName)
                 location_data.put("country", countryName)
-                location_data.put("latitude", lat)
-                location_data.put("longitude", lon)
+                location_data.put("latitude", lat1)
+                location_data.put("longitude", lon1)
                 location_data.put("postalCode", postalCode)
             }catch (e : Exception){
                 e.printStackTrace()
