@@ -95,6 +95,7 @@ class ConfirmTagsDialog : BaseDialogFragment<ShootViewModel, DialogConfirmTagsBi
                     }
                 }
             }
+
             dismiss()
         }
 
@@ -105,7 +106,6 @@ class ConfirmTagsDialog : BaseDialogFragment<ShootViewModel, DialogConfirmTagsBi
                 this["sku_id"] = viewModel.shootData.value?.sku_id
                 this["project_id"] = viewModel.shootData.value?.project_id
                 this["image_type"] = viewModel.shootData.value?.image_category
-                this["sequence"] = viewModel.shootData.value?.sequence
             }
 
             requireContext().captureEvent(
@@ -164,18 +164,7 @@ class ConfirmTagsDialog : BaseDialogFragment<ShootViewModel, DialogConfirmTagsBi
 
         val uri = viewModel.shootData.value?.capturedImage
 
-
-        requireContext().captureEvent(
-            "SHOW_CLICKED_IMAGE",
-            HashMap<String,Any?>()
-                .apply {
-                    put("sku_id",viewModel.shootData.value?.sku_id)
-                    put("type",viewModel.shootData.value?.image_category)
-                    put("sequence",viewModel.shootData.value?.sequence)
-                    put("overlay_id",viewModel.shootData.value?.overlayId)
-                    put("path",uri)
-                }
-        )
+        Log.d(TAG, "onViewCreated: "+uri)
 
         Glide.with(requireContext())
             .load(uri)

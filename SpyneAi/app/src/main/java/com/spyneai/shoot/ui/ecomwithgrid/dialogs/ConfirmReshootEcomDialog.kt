@@ -79,10 +79,6 @@ class ConfirmReshootEcomDialog :
                 }
             }
 
-            if (!viewModel.isReclick)
-                viewModel.shootList.value?.removeAt(viewModel.currentShoot)
-
-            val s = ""
             dismiss()
         }
 
@@ -96,7 +92,6 @@ class ConfirmReshootEcomDialog :
                 this["sku_id"] = viewModel.shootData.value?.sku_id
                 this["project_id"] = viewModel.shootData.value?.project_id
                 this["image_type"] = viewModel.shootData.value?.image_category
-                this["sequence"] = viewModel.shootData.value?.sequence
             }
 
 
@@ -106,14 +101,25 @@ class ConfirmReshootEcomDialog :
             )
 
             viewModel.isCameraButtonClickable = true
-//            viewModel.uploadImageWithWorkManager(viewModel.shootData.value!!)
 
+            if (viewModel.isReshoot){
+                viewLifecycleOwner.lifecycleScope.launch {
+                    viewModel.insertImage(viewModel.shootData.value!!)
+                }
 
-            viewLifecycleOwner.lifecycleScope.launch {
-                viewModel.insertImage(viewModel.shootData.value!!)
+                startService()
+
+                if (viewModel.allReshootClicked)
+                    viewModel.reshootCompleted.value = true
+
+            }else {
+                viewLifecycleOwner.lifecycleScope.launch {
+                    viewModel.insertImage(viewModel.shootData.value!!)
+                }
+
+                startService()
             }
 
-            startService()
             dismiss()
         }
     }

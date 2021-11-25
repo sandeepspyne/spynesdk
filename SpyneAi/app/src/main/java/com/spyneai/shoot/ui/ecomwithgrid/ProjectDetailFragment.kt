@@ -108,11 +108,15 @@ class ProjectDetailFragment : BaseFragment<ShootViewModel, FragmentProjectDetail
                 else -> {
                     when (getString(R.string.app_name)) {
                         AppConstants.SPYNE_AI -> {
-                            when (viewModel.categoryDetails.value?.categoryName) {
-                                "Photo Box" -> {
-                                    processWithShadowOption()
-                                }
-                                "E-Commerce" -> {
+                            when (viewModel.categoryDetails.value?.categoryId) {
+                                AppConstants.PHOTO_BOX_CATEGORY_ID,
+                                AppConstants.ECOM_CATEGORY_ID,
+                                AppConstants.CAPS_CATEGORY_ID,
+                                AppConstants.FOOD_AND_BEV_CATEGORY_ID,
+                                AppConstants.HEALTH_AND_BEAUTY_CATEGORY_ID,
+                                AppConstants.ACCESSORIES_CATEGORY_ID,
+                                AppConstants.WOMENS_FASHION_CATEGORY_ID,
+                                AppConstants.MENS_FASHION_CATEGORY_ID-> {
                                     processWithShadowOption()
                                 }
                                 "Footwear" -> {

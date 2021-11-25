@@ -61,8 +61,8 @@
         <androidx.constraintlayout.widget.Group
             android:layout_width="match_parent"
             android:layout_height="0dp"
-            android:id="@+id/groupOverlay"
             android:visibility="gone"
+            android:id="@+id/groupOverlay"
             app:constraint_referenced_ids="ivBowl, tvInstructions, viewInstructions, rlInstructions" />
 
         <ImageView
@@ -73,6 +73,26 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintBottom_toTopOf="@+id/viewInstructions"
             android:src="@drawable/ic_bowl"/>
+
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/ic_bottom_left"
+            app:tint="@color/gyro_in_level"
+            android:visibility="gone"
+            app:layout_constraintStart_toStartOf="@id/flLevelIndicator"
+            app:layout_constraintBottom_toTopOf="@+id/viewInstructions"
+            android:id="@+id/ivBottomLeftSwiggy"/>
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/ic_bottom_right"
+            app:tint="@color/gyro_in_level"
+            android:visibility="gone"
+            app:layout_constraintRight_toRightOf="@id/flLevelIndicator"
+            app:layout_constraintBottom_toTopOf="@+id/viewInstructions"
+            android:id="@+id/ivBottomRightSwiggy"/>
 
         <TextView
             android:id="@+id/tvInstructions"
@@ -93,17 +113,19 @@
             android:layout_width="match_parent"
             android:layout_height="2dp"
             android:background="@color/primary"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintBottom_toTopOf="@+id/rlInstructions"/>
+            android:layout_marginTop="@dimen/dp_30"
+            app:layout_constraintTop_toTopOf="@id/flLevelIndicator"
+            app:layout_constraintBottom_toBottomOf="@id/flLevelIndicator"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent" />
 
 
         <RelativeLayout
             android:id="@+id/rlInstructions"
             android:layout_width="0dp"
-            android:layout_height="wrap_content"
+            android:layout_height="0dp"
             android:background="@color/camera_transparent"
-            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/viewInstructions"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toRightOf="parent"/>
@@ -117,7 +139,7 @@
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toRightOf="parent"
             android:background="@color/transparent"
-            app:layout_constraintBottom_toBottomOf="parent"/>
+            app:layout_constraintBottom_toBottomOf="@+id/viewInstructions"/>
 
         <com.airbnb.lottie.LottieAnimationView
             android:id="@+id/lottieUpArrow"
@@ -179,7 +201,7 @@
             android:layout_width="0dp"
             android:layout_height="0dp"
             android:id="@+id/flLevelIndicator"
-            app:layout_constraintBottom_toTopOf="@+id/rlCapturedImage"
+            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toRightOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/viewCamera"
@@ -215,12 +237,13 @@
                 android:id="@+id/tvCenter"
                 android:background="@color/white"/>
 
-            <ImageView
+
+            <TextView
+                android:id="@+id/tvLevelIndicator"
                 android:layout_width="@dimen/dp_30"
                 android:layout_height="3dp"
-                android:background="@drawable/bg_gyro_error"
-                android:id="@+id/tvLevelIndicator"
-                android:layout_gravity="center"/>
+                android:layout_gravity="center"
+                android:background="@drawable/bg_gyro_error" />
 
 
             <ImageView

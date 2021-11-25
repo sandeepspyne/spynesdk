@@ -38,6 +38,7 @@ import com.spyneai.shoot.data.model.ShootData
 import com.spyneai.shoot.ui.dialogs.ConfirmReshootDialog
 import com.spyneai.shoot.ui.dialogs.ConfirmTagsDialog
 import com.spyneai.shoot.ui.dialogs.ReclickDialog
+import com.spyneai.shoot.ui.ecomwithgrid.dialogs.ConfirmReshootEcomDialog
 import io.sentry.protocol.App
 import org.json.JSONArray
 
@@ -52,7 +53,9 @@ class ReshootFragment : BaseFragment<ShootViewModel, FragmentReshootBinding>(), 
         super.onViewCreated(view, savedInstanceState)
 
         when (viewModel.categoryDetails.value?.categoryId) {
-            AppConstants.ECOM_CATEGORY_ID,AppConstants.PHOTO_BOX_CATEGORY_ID -> {
+            AppConstants.ECOM_CATEGORY_ID,
+            AppConstants.PHOTO_BOX_CATEGORY_ID,
+            AppConstants.FOOD_AND_BEV_CATEGORY_ID-> {
                 setReshootData()
             }
             else -> {
@@ -83,8 +86,9 @@ class ReshootFragment : BaseFragment<ShootViewModel, FragmentReshootBinding>(), 
             if (viewModel.shootList.value != null) {
 
 
-                when (viewModel.categoryDetails.value?.categoryName) {
-                    "E-Commerce" -> {
+                when (viewModel.categoryDetails.value?.categoryId) {
+                    AppConstants.ECOM_CATEGORY_ID,
+                    AppConstants.FOOD_AND_BEV_CATEGORY_ID-> {
                         var list = reshootAdapter?.listItems as List<ImagesOfSkuRes.Data>
 
                         val position = viewModel.currentShoot
@@ -320,6 +324,27 @@ class ReshootFragment : BaseFragment<ShootViewModel, FragmentReshootBinding>(), 
                     requireActivity().supportFragmentManager,
                     "ConfirmTagsDialog"
                 )
+            }
+            AppConstants.SWIGGY->{
+                ConfirmReshootEcomDialog().show(
+                    requireActivity().supportFragmentManager,
+                    "ConfirmReshootEcomDialog"
+                )
+            }
+            AppConstants.SPYNE_AI->{
+                when(viewModel.categoryDetails.value?.categoryId){
+                    AppConstants.FOOD_AND_BEV_CATEGORY_ID->{
+                        ConfirmReshootEcomDialog().show(
+                            requireActivity().supportFragmentManager,
+                            "ConfirmReshootEcomDialog"
+                        )
+                    }else->{
+                    ConfirmReshootDialog().show(
+                        requireActivity().supportFragmentManager,
+                        "ConfirmReshootDialog"
+                    )
+                    }
+                }
             }
             else -> {
                 ConfirmReshootDialog().show(

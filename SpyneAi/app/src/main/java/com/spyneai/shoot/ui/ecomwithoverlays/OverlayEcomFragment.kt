@@ -83,6 +83,26 @@ class OverlayEcomFragment : BaseFragment<ShootViewModel, FragmentOverlayEcomBind
             }
         })
 
+        viewModel.updateSelectItem.observe(viewLifecycleOwner,{
+            if (it){
+                val list = overlaysAdapter?.listItems as List<OverlaysResponse.Data>
+
+                val element = list.firstOrNull {
+                    it.isSelected
+                }
+
+                val data = list[viewModel.currentShoot]
+
+                if (element != null && data != element) {
+                    data.isSelected = true
+                    element.isSelected = false
+                    overlaysAdapter?.notifyItemChanged(position)
+                    overlaysAdapter?.notifyItemChanged(list.indexOf(element))
+                    binding.rvSubcategories.scrollToPosition(position)
+                }
+            }
+        })
+
         viewModel.notifyItemChanged.observe(viewLifecycleOwner, {
             overlaysAdapter?.notifyItemChanged(it)
         })
@@ -301,24 +321,16 @@ class OverlayEcomFragment : BaseFragment<ShootViewModel, FragmentOverlayEcomBind
 
         when (data) {
             is OverlaysResponse.Data -> {
-                if (data.imageClicked) {
-                    ReclickDialog().show(requireActivity().supportFragmentManager, "ReclickDialog")
+                if (data.imageClicked){
+                    val bundle = Bundle()
+                    bundle.putInt("overlay_id",data.id)
+                    bundle.putInt("position",position)
+                    bundle.putString("image_type",data.type)
+                    val reclickDialog = ReclickDialog()
+                    reclickDialog.arguments = bundle
+                    reclickDialog.show(requireActivity().supportFragmentManager,"ReclickDialog")
                 }
 
-
-                val list = overlaysAdapter?.listItems as List<OverlaysResponse.Data>
-
-                val element = list.firstOrNull {
-                    it.isSelected
-                }
-
-                if (element != null && data != element) {
-                    data.isSelected = true
-                    element.isSelected = false
-                    overlaysAdapter?.notifyItemChanged(position)
-                    overlaysAdapter?.notifyItemChanged(list.indexOf(element))
-                    binding.rvSubcategories.scrollToPosition(position)
-                }
             }
         }
     }

@@ -43,6 +43,7 @@ class ConfirmReshootPortraitDialog : BaseDialogFragment<ShootViewModel, ConfirmR
             requireContext().captureEvent(
                 Events.RESHOOT,
                 properties)
+
             //remove last item from shoot list
             if (!viewModel.isReclick){
                 viewModel.shootList.value?.let { list ->
