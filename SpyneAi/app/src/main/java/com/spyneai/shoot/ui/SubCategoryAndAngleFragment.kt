@@ -41,8 +41,12 @@ class SubCategoryAndAngleFragment :
 //
 //        observeSubcategories()
 
+        when(viewModel.categoryDetails.value?.categoryId){
+            AppConstants.FOOTWEAR_CATEGORY_ID -> binding.tvDescription.text = getString(R.string.footwear_subcategory)
+            AppConstants.BIKES_CATEGORY_ID -> binding.tvDescription.text = getString(R.string.bikes_subcategory)
+        }
         if (viewModel.categoryDetails.value?.categoryName == "Footwear")
-            binding.tvDescription.text = getString(R.string.footwear_subcategory)
+
 
         if (viewModel.isSkuCreated.value == null
             || (viewModel.categoryDetails.value?.categoryId != AppConstants.CARS_CATEGORY_ID
