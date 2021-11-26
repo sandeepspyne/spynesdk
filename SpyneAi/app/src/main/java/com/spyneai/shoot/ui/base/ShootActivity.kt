@@ -319,6 +319,15 @@ class ShootActivity : AppCompatActivity(), GoogleApiClient.ConnectionCallbacks,
                 200
             )
         )
+
+        //set sku data
+        val sku = Sku()
+        sku.projectId = intent.getStringExtra(AppConstants.PROJECT_ID)
+        sku.skuName = intent.getStringExtra(AppConstants.SKU_NAME)
+        sku.skuId = intent.getStringExtra(AppConstants.SKU_ID)
+        sku.categoryName = shootViewModel.categoryDetails.value?.categoryName
+
+        shootViewModel.sku.value = sku
     }
 
     private fun setUpDraftsData() {

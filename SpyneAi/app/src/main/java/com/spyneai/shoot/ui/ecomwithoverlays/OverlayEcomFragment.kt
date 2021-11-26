@@ -307,7 +307,6 @@ class OverlayEcomFragment : BaseFragment<ShootViewModel, FragmentOverlayEcomBind
                     loadOverlay(data.angle_name, data.display_thumbnail)
 
 
-
                 binding.tvShoot?.text =
                     position.plus(1).toString() + "/" + viewModel.exterirorAngles.value.toString()
 
@@ -329,6 +328,22 @@ class OverlayEcomFragment : BaseFragment<ShootViewModel, FragmentOverlayEcomBind
                     val reclickDialog = ReclickDialog()
                     reclickDialog.arguments = bundle
                     reclickDialog.show(requireActivity().supportFragmentManager,"ReclickDialog")
+                }else{
+                    viewModel.overlayId = data.id
+
+                    val list = overlaysAdapter?.listItems as List<OverlaysResponse.Data>
+
+                    val element = list.firstOrNull {
+                        it.isSelected
+                    }
+
+                    if (element != null && data != element){
+                        data.isSelected = true
+                        element.isSelected = false
+                        overlaysAdapter?.notifyItemChanged(position)
+                        overlaysAdapter?.notifyItemChanged(list.indexOf(element))
+                        binding.rvSubcategories.scrollToPosition(position)
+                    }
                 }
 
             }
