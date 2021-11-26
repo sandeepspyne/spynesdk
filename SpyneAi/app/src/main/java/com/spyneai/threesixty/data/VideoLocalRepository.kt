@@ -4,10 +4,9 @@ import android.content.ContentValues
 import android.provider.BaseColumns
 import android.util.Log
 import com.spyneai.BaseApplication
-import com.spyneai.db.DBHelper
-import com.spyneai.db.Projects
-import com.spyneai.db.ShootContract
-import com.spyneai.db.Videos
+import com.spyneai.db.*
+import com.spyneai.needs.AppConstants
+
 
 import com.spyneai.threesixty.data.model.VideoDetails
 
@@ -28,6 +27,7 @@ class VideoLocalRepository {
             put(Videos.COLUMN_NAME_VIDEO_PATH, "")
             put(Videos.COLUMN_NAME_FRAMES, video.frames)
             put(Videos.COLUMN_NAME_BACKGROUND_ID, "")
+            put(Videos.COLUMN_NAME_PRE_SIGNED_URL, AppConstants.DEFAULT_PRESIGNED_URL)
             put(Videos.COLUMN_NAME_IS_UPLOADED, 0)
             put(Videos.COLUMN_NAME_IS_STATUS_UPDATED, 0)
         }
@@ -82,7 +82,7 @@ class VideoLocalRepository {
         Log.d(TAG, "addBackgroundId: "+videoCount)
     }
 
-    fun getOldestVideo() : VideoDetails {
+    fun getOldestVideo(status : String) : VideoDetails {
         val projection = arrayOf(
             BaseColumns._ID,
             Videos.COLUMN_NAME_PROJECT_ID,
@@ -100,7 +100,8 @@ class VideoLocalRepository {
             Videos.COLUMN_NAME_VIDEO_ID)
 
         // Filter results WHERE "title" = 'My Title'
-        val selection = "${Videos.COLUMN_NAME_IS_UPLOADED} = ? OR ${Videos.COLUMN_NAME_IS_STATUS_UPDATED} = ?"
+        //val selection = "${Videos.COLUMN_NAME_IS_UPLOADED} = ? OR ${Videos.COLUMN_NAME_IS_STATUS_UPDATED} = ?"
+        val selection = "${Videos.COLUMN_NAME_IS_UPLOADED} IN (${status}, '1') AND ${Videos.COLUMN_NAME_IS_STATUS_UPDATED} = 0"
         val projectSelectionArgs = arrayOf("0","0")
 
         // How you want the results sorted in the resulting Cursor
@@ -283,7 +284,7 @@ class VideoLocalRepository {
         return count
     }
 
-    fun addPreSignedUrl(videoDetails: VideoDetails) {
+    fun addPreSignedUrl(videoDetails: VideoDetails) : Int{
         val projectValues = ContentValues().apply {
             put(
                 Videos.COLUMN_NAME_PRE_SIGNED_URL,
@@ -300,16 +301,15 @@ class VideoLocalRepository {
 
         val selectionArgs = arrayOf(videoDetails.itemId.toString())
 
-        val count = dbWritable.update(
+        return dbWritable.update(
             Videos.TABLE_NAME,
             projectValues,
             selection,
             selectionArgs)
 
-        Log.d(TAG, "addPreSignedUrl: "+count)
     }
 
-    fun markUploaded(videoDetails: VideoDetails) {
+    fun markUploaded(videoDetails: VideoDetails) : Int {
         //update project status to ongoing
         updateProjectStatus(videoDetails.projectId!!)
 
@@ -325,16 +325,14 @@ class VideoLocalRepository {
 
         val selectionArgs = arrayOf(videoDetails.itemId.toString())
 
-        val count = dbWritable.update(
+        return dbWritable.update(
             Videos.TABLE_NAME,
             projectValues,
             selection,
             selectionArgs)
-
-        Log.d(TAG, "markUploaded: "+count)
     }
 
-    fun markStatusUploaded(videoDetails: VideoDetails) {
+    fun markStatusUploaded(videoDetails: VideoDetails) : Int {
         //update project status to ongoing
         updateProjectStatus(videoDetails.projectId!!)
 
@@ -350,13 +348,11 @@ class VideoLocalRepository {
 
         val selectionArgs = arrayOf(videoDetails.itemId.toString())
 
-        val count = dbWritable.update(
+        return dbWritable.update(
             Videos.TABLE_NAME,
             projectValues,
             selection,
             selectionArgs)
-
-        Log.d(TAG, "markUploaded: "+count)
     }
 
     fun updateProjectStatus(projectId : String) {
@@ -442,5 +438,81 @@ class VideoLocalRepository {
         }
 
         return videoId
+    }
+
+    fun getVideo(itemId: Long) : VideoDetails {
+        val projection = arrayOf(
+            BaseColumns._ID,
+            Videos.COLUMN_NAME_PROJECT_ID,
+            Videos.COLUMN_NAME_SKU_NAME,
+            Videos.COLUMN_NAME_SKU_ID,
+            Videos.COLUMN_NAME_TYPE,
+            Videos.COLUMN_NAME_CATEGORY_NAME,
+            Videos.COLUMN_NAME_CATEGORY_SUBCATEGORY_NAME,
+            Videos.COLUMN_NAME_VIDEO_PATH,
+            Videos.COLUMN_NAME_FRAMES,
+            Videos.COLUMN_NAME_BACKGROUND_ID,
+            Videos.COLUMN_NAME_IS_UPLOADED,
+            Videos.COLUMN_NAME_IS_STATUS_UPDATED,
+            Videos.COLUMN_NAME_PRE_SIGNED_URL,
+            Videos.COLUMN_NAME_VIDEO_ID)
+
+
+        val selection = "${BaseColumns._ID} LIKE ?"
+
+        val selectionArgs = arrayOf(itemId.toString())
+
+
+        val cursor = dbReadable.query(
+            Videos.TABLE_NAME,   // The table to query
+            projection,             // The array of columns to return (pass null to get all)
+            selection,              // The columns for the WHERE clause
+            selectionArgs,          // The values for the WHERE clause
+            null,                   // don't group the rows
+            null,                   // don't filter by row groups
+            null,               // The sort order
+            "1"
+        )
+
+        val video = VideoDetails()
+
+        with(cursor) {
+            while (moveToNext()) {
+                val itemId = getLong(getColumnIndexOrThrow(BaseColumns._ID))
+                val projectId = getString(getColumnIndexOrThrow(Videos.COLUMN_NAME_PROJECT_ID))
+                val skuName = getString(getColumnIndexOrThrow(Videos.COLUMN_NAME_SKU_NAME))
+                val skuId = getString(getColumnIndexOrThrow(Videos.COLUMN_NAME_SKU_ID))
+                val type = getString(getColumnIndexOrThrow(Videos.COLUMN_NAME_TYPE))
+                val category = getString(getColumnIndexOrThrow(Videos.COLUMN_NAME_CATEGORY_NAME))
+                val subcategory = getString(getColumnIndexOrThrow(Videos.COLUMN_NAME_CATEGORY_SUBCATEGORY_NAME))
+                val videoPath = getString(getColumnIndexOrThrow(Videos.COLUMN_NAME_VIDEO_PATH))
+                val frames = getInt(getColumnIndexOrThrow(Videos.COLUMN_NAME_FRAMES))
+                val backgroundId = getString(getColumnIndexOrThrow(Videos.COLUMN_NAME_BACKGROUND_ID))
+                val isUploaded = getInt(getColumnIndexOrThrow(Videos.COLUMN_NAME_IS_UPLOADED))
+                val isStatusUpdated = getInt(getColumnIndexOrThrow(Videos.COLUMN_NAME_IS_STATUS_UPDATED))
+                val preSignedUrl = getString(getColumnIndexOrThrow(Videos.COLUMN_NAME_PRE_SIGNED_URL))
+                val videoId = getString(getColumnIndexOrThrow(Videos.COLUMN_NAME_VIDEO_ID))
+
+                video.itemId = itemId
+                video.projectId = projectId
+                video.skuName = skuName
+                video.skuId = skuId
+                video.type = type
+                video.categoryName = category
+                video.subCategory = subcategory
+                video.videoPath = videoPath
+                video.frames = frames
+                video.backgroundId = backgroundId
+                video.isUploaded = isUploaded
+                video.isStatusUpdate = isStatusUpdated
+                video.preSignedUrl = preSignedUrl
+                video.videoId = videoId
+
+                if (videoPath == "")
+                    video.itemId = null
+            }
+        }
+
+        return video
     }
 }

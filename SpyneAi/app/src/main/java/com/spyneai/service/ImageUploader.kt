@@ -66,7 +66,8 @@ class ImageUploader(val context: Context,
                        .apply {
                            put("iteration_id",lastIdentifier)
                            put("retry_count",retryCount)
-                           put("image_id",image.itemId)
+                           put("image_id",image.imageId)
+                           put("image_local_id",image.itemId)
                            put("project_id",image.projectId)
                            put("sku_id",image.skuId)
                            put("sku_name",image.skuName)
