@@ -116,8 +116,6 @@ class PreferenceFragment : BaseFragment<DashboardViewModel, FragmentPreferenceBi
                    position: Int,
                    id: Long
                ) {
-
-
                    val s = ""
                    if(locationList[0]=="Select Location"){
                        binding.btClockIn.enable(false)
@@ -153,16 +151,22 @@ class PreferenceFragment : BaseFragment<DashboardViewModel, FragmentPreferenceBi
                 ) {
                     if(locationList[0]=="Select Location"){
                         binding.btnClockOut.enable(false)
-                        viewModel.selectedLocation = null
+                        locationList[0]= viewModel.firstLocationName
+                       // viewModel.selectedLocation = null
                     }else {
                         binding.btnClockOut.enable(true)
-                        val locations = (viewModel.locationsResponse.value as Resource.Success).value.data
 
-                        viewModel.selectedLocation = locations.firstOrNull {
-                            it.locationName == parent.getItemAtPosition(position).toString()
+                        try {
+                            val locations = (viewModel.locationsResponse.value as Resource.Success).value.data
+
+                            viewModel.selectedLocation = locations.firstOrNull {
+                                it.locationName == parent.getItemAtPosition(position).toString()
+                            }
+                        }catch (e : Exception){
+
                         }
                     }
-                    locationList[0]= viewModel.firstLocationName
+
                 }
 
                 override fun onNothingSelected(parent: AdapterView<*>?) {
@@ -258,7 +262,6 @@ class PreferenceFragment : BaseFragment<DashboardViewModel, FragmentPreferenceBi
 
         binding.btnClockOut.setOnClickListener {
             getDistanceFromLatLon(currentLat!!,currentLong!!,"checkout")
-            locationList[0]="Select Location"
         }
 
         if (Utilities.getBool(requireContext(),AppConstants.CLOCKED_IN)){
@@ -350,7 +353,6 @@ class PreferenceFragment : BaseFragment<DashboardViewModel, FragmentPreferenceBi
                         cvClockIn.visibility = View.VISIBLE
                         cvClockOut.visibility = View.GONE
                     }
-
                     setLastSession()
                 }
 
@@ -575,6 +577,7 @@ class PreferenceFragment : BaseFragment<DashboardViewModel, FragmentPreferenceBi
                         )
                     }else{
                         Toast.makeText(requireContext(),"Clocked out successfully...",Toast.LENGTH_LONG).show()
+                        locationList[0]="Select Location"
                         //save session time
                         Utilities.apply {
                             saveLong(requireContext(),
