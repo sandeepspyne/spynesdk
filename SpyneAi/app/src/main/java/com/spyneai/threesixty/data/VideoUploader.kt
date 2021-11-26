@@ -60,7 +60,7 @@ class VideoUploader(val context: Context,
 
 
                 if (video.itemId != null){
-                    lastIdentifier = video.videoId+"_"+video.skuId
+                    lastIdentifier = video.projectId+"_"+video.skuId
 
                     val imageProperties = HashMap<String,Any?>()
                         .apply {
@@ -324,7 +324,6 @@ class VideoUploader(val context: Context,
             put("sku_name",video.skuName)
             put("upload_status",video.isUploaded)
             put("make_done_status",video.isStatusUpdate)
-            put("pre_url",video.preSignedUrl)
             put("video_path",video.videoPath)
             put("image_type",video.categoryName)
             put("db_update_status",dbUpdateStatus)

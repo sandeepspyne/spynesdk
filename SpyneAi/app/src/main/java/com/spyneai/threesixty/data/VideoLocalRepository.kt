@@ -102,7 +102,7 @@ class VideoLocalRepository {
         // Filter results WHERE "title" = 'My Title'
         //val selection = "${Videos.COLUMN_NAME_IS_UPLOADED} = ? OR ${Videos.COLUMN_NAME_IS_STATUS_UPDATED} = ?"
         val selection = "${Videos.COLUMN_NAME_IS_UPLOADED} IN (${status}, '1') AND ${Videos.COLUMN_NAME_IS_STATUS_UPDATED} = 0"
-        val projectSelectionArgs = arrayOf("0","0")
+        //val projectSelectionArgs = arrayOf("0","0")
 
         // How you want the results sorted in the resulting Cursor
         val sortOrder = "${BaseColumns._ID} ASC"
@@ -111,7 +111,7 @@ class VideoLocalRepository {
             Videos.TABLE_NAME,   // The table to query
             projection,             // The array of columns to return (pass null to get all)
             selection,              // The columns for the WHERE clause
-            projectSelectionArgs,          // The values for the WHERE clause
+            null,          // The values for the WHERE clause
             null,                   // don't group the rows
             null,                   // don't filter by row groups
             sortOrder,               // The sort order

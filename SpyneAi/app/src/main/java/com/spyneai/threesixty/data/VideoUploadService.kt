@@ -228,7 +228,7 @@ class VideoUploadService : Service(), VideoUploader.Listener {
 
             if (isConnected == true){
                 //if any image pending in upload
-                val image = VideoLocalRepository().getOldestVideo()
+                val image = VideoLocalRepository().getOldestVideo("0")
 
                 if (image.itemId != null && !uploadRunning){
                     uploadRunning = true
