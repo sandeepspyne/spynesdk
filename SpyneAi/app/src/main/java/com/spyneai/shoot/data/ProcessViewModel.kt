@@ -47,8 +47,8 @@ class ProcessViewModel : ViewModel() {
 
     var interiorMiscShootsCount = 0
 
-    var categoryName: String? = null
-
+   // var categoryName: String? = null
+    var categoryId : String? = null
 
     val _carGifRes: MutableLiveData<Resource<CarsBackgroundRes>> = MutableLiveData()
     val carGifRes: LiveData<Resource<CarsBackgroundRes>>

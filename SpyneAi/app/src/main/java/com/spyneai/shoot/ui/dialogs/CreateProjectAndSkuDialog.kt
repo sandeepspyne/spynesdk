@@ -5,6 +5,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.content.ContextCompat
 import com.spyneai.R
 import com.spyneai.base.BaseDialogFragment
 import com.spyneai.base.network.Resource
@@ -27,6 +28,13 @@ class CreateProjectAndSkuDialog : BaseDialogFragment<ShootViewModel,DialogCreate
         super.onViewCreated(view, savedInstanceState)
 
         dialog?.setCancelable(false)
+
+
+        when(viewModel.categoryDetails.value?.categoryId){
+            AppConstants.BIKES_CATEGORY_ID -> {
+                binding.iv.setImageDrawable(ContextCompat.getDrawable(requireContext(),R.drawable.bikes_vin))
+            }
+        }
 
         binding.btnSubmit.setOnClickListener {
             if (binding.etVinNumber.text.toString().isEmpty()) {

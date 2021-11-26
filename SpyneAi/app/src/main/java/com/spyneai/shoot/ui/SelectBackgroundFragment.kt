@@ -130,17 +130,27 @@ class SelectBackgroundFragment : BaseFragment<ProcessViewModel, FragmentSelectBa
                 binding.tvSample.text = getString(R.string.sample_output)
             }
             AppConstants.SPYNE_AI -> {
-                if (Utilities.getPreference(requireContext(), AppConstants.CATEGORY_NAME).equals("Food & Beverages")){
-                    binding.cb360.visibility = View.GONE
-                    binding.tv360.visibility = View.GONE
-                    binding.tvGenerateGif.text = getString(R.string.generate_output)
-                    binding.tvSample.text = getString(R.string.sample_output)
-                }else{
-                    binding.cb360.setOnCheckedChangeListener { buttonView, isChecked ->
-                        if (isChecked)
-                            binding.tvGenerateGif.text = getString(R.string.contiune)
-                        else
-                            binding.tvGenerateGif.text = getString(R.string.generate_output)
+                when(viewModel.categoryId){
+                    AppConstants.FOOD_AND_BEV_CATEGORY_ID -> {
+                        binding.cb360.visibility = View.GONE
+                        binding.tv360.visibility = View.GONE
+                        binding.tvGenerateGif.text = getString(R.string.generate_output)
+                        binding.tvSample.text = getString(R.string.sample_output)
+                    }
+
+                    AppConstants.BIKES_CATEGORY_ID -> {
+                        binding.cb360.visibility = View.GONE
+                        binding.tv360.visibility = View.GONE
+                        binding.tvGenerateGif.text = getString(R.string.generate_output)
+                    }
+
+                    else -> {
+                        binding.cb360.setOnCheckedChangeListener { buttonView, isChecked ->
+                            if (isChecked)
+                                binding.tvGenerateGif.text = getString(R.string.contiune)
+                            else
+                                binding.tvGenerateGif.text = getString(R.string.generate_output)
+                        }
                     }
                 }
             }

@@ -15,7 +15,7 @@ import com.spyneai.posthog.Events
 import com.spyneai.shoot.data.ShootViewModel
 import com.spyneai.shoot.utils.shoot
 
-class AngleSelectionDialog : BaseDialogFragment<ShootViewModel,DialogAngleSelectionBinding>() {
+class AngleSelectionDialog : BaseDialogFragment<ShootViewModel, DialogAngleSelectionBinding>() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -28,31 +28,68 @@ class AngleSelectionDialog : BaseDialogFragment<ShootViewModel,DialogAngleSelect
 
     private fun showOptions() {
         val angles: String = getString(R.string.angles)
-        val valuesShoots = when(getString(R.string.app_name)){
-            AppConstants.CARS24_INDIA,AppConstants.CARS24 -> arrayOf("5 "+angles)
-            AppConstants.SELL_ANY_CAR -> arrayOf("4 "+angles, "36 "+angles)
-            else -> arrayOf("8 "+angles, "12 "+angles,"16 "+angles,"24 "+angles,"36 "+angles)
+        val valuesShoots = when (getString(R.string.app_name)) {
+            AppConstants.CARS24_INDIA, AppConstants.CARS24 -> arrayOf("5 " + angles)
+            AppConstants.SELL_ANY_CAR -> arrayOf("4 " + angles, "36 " + angles)
+            AppConstants.SPYNE_AI -> {
+                if (viewModel.categoryDetails.value?.categoryId == AppConstants.CARS_CATEGORY_ID) {
+                    arrayOf(
+                        "8 " + angles,
+                        "12 " + angles,
+                        "16 " + angles,
+                        "24 " + angles,
+                        "36 " + angles
+                    )
+                } else {
+                    arrayOf("4 " + angles, "8 " + angles, "12 " + angles)
+                }
+            }
+            else -> arrayOf(
+                "8 " + angles,
+                "12 " + angles,
+                "16 " + angles,
+                "24 " + angles,
+                "36 " + angles
+            )
         }
 
         val lastSelectedAngles = viewModel.getSelectedAngles(getString(R.string.app_name))
         var newSelectedAngles = viewModel.getSelectedAngles(getString(R.string.app_name))
 
 
-        when(getString(R.string.app_name)){
-            AppConstants.SELL_ANY_CAR->{
-                when(viewModel.getSelectedAngles(getString(R.string.app_name))){
+        when (getString(R.string.app_name)) {
+            AppConstants.SELL_ANY_CAR -> {
+                when (viewModel.getSelectedAngles(getString(R.string.app_name))) {
                     4 -> binding.npShoots.minValue = 0
                     36 -> binding.npShoots.minValue = 1
                 }
-            } else -> {
-            when(viewModel.getSelectedAngles(getString(R.string.app_name))){
-                8,5 -> binding.npShoots.minValue = 0
-                12 -> binding.npShoots.minValue = 1
-                16 -> binding.npShoots.minValue = 2
-                24 -> binding.npShoots.minValue = 3
-                36 -> binding.npShoots.minValue = 4
             }
-        }
+            AppConstants.SPYNE_AI -> {
+                if (viewModel.categoryDetails.value?.categoryId == AppConstants.BIKES_CATEGORY_ID){
+                    when (viewModel.getSelectedAngles(getString(R.string.app_name))) {
+                        4 -> binding.npShoots.minValue = 0
+                        8 -> binding.npShoots.minValue = 1
+                        12 -> binding.npShoots.minValue = 2
+                    }
+                }else {
+                    when (viewModel.getSelectedAngles(getString(R.string.app_name))) {
+                        8, 5 -> binding.npShoots.minValue = 0
+                        12 -> binding.npShoots.minValue = 1
+                        16 -> binding.npShoots.minValue = 2
+                        24 -> binding.npShoots.minValue = 3
+                        36 -> binding.npShoots.minValue = 4
+                    }
+                }
+            }
+            else -> {
+                when (viewModel.getSelectedAngles(getString(R.string.app_name))) {
+                    8, 5 -> binding.npShoots.minValue = 0
+                    12 -> binding.npShoots.minValue = 1
+                    16 -> binding.npShoots.minValue = 2
+                    24 -> binding.npShoots.minValue = 3
+                    36 -> binding.npShoots.minValue = 4
+                }
+            }
         }
 
         binding.npShoots.minValue = 0
@@ -60,14 +97,14 @@ class AngleSelectionDialog : BaseDialogFragment<ShootViewModel,DialogAngleSelect
         binding.npShoots.displayedValues = valuesShoots
 
         binding.npShoots.setOnValueChangedListener { _, _, newVal ->
-            when(valuesShoots[newVal]) {
-                "4 "+angles -> newSelectedAngles = 4
-                "5 "+angles -> newSelectedAngles = 5
-                "8 "+angles -> newSelectedAngles = 8
-                "12 "+angles -> newSelectedAngles = 12
-                "16 "+angles -> newSelectedAngles = 16
-                "24 "+angles -> newSelectedAngles = 24
-                "36 "+angles -> newSelectedAngles = 36
+            when (valuesShoots[newVal]) {
+                "4 " + angles -> newSelectedAngles = 4
+                "5 " + angles -> newSelectedAngles = 5
+                "8 " + angles -> newSelectedAngles = 8
+                "12 " + angles -> newSelectedAngles = 12
+                "16 " + angles -> newSelectedAngles = 16
+                "24 " + angles -> newSelectedAngles = 24
+                "36 " + angles -> newSelectedAngles = 36
             }
         }
         binding.tvProceed.setOnClickListener {
@@ -77,10 +114,10 @@ class AngleSelectionDialog : BaseDialogFragment<ShootViewModel,DialogAngleSelect
             //create sku
             val createProjectRes = (viewModel.createProjectRes.value as Resource.Success).value
 
-            if (viewModel.fromVideo){
+            if (viewModel.fromVideo) {
                 updateSku()
                 observerUpdateSku()
-            }else{
+            } else {
                 createSku(
                     createProjectRes.project_id,
                     viewModel.subCategory.value?.prod_sub_cat_id!!
@@ -100,12 +137,12 @@ class AngleSelectionDialog : BaseDialogFragment<ShootViewModel,DialogAngleSelect
     private fun observerUpdateSku() {
         val createProjectRes = (viewModel.createProjectRes.value as Resource.Success).value
 
-        viewModel.updateVideoSkuRes.observe(viewLifecycleOwner,{
+        viewModel.updateVideoSkuRes.observe(viewLifecycleOwner, {
             when (it) {
                 is Resource.Success -> {
                     Utilities.hideProgressDialog()
 
-                    val items = HashMap<String,Any?>()
+                    val items = HashMap<String, Any?>()
                     items.put("sku_name", viewModel.sku.value?.skuName.toString())
                     items.put("project_id", createProjectRes.project_id)
                     items.put("prod_sub_cat_id", viewModel.subCategory.value?.prod_sub_cat_id!!)
@@ -117,7 +154,7 @@ class AngleSelectionDialog : BaseDialogFragment<ShootViewModel,DialogAngleSelect
                     )
 
                     val sku = viewModel.sku.value
-                    sku?.skuId =  viewModel.sku.value?.skuId!!
+                    sku?.skuId = viewModel.sku.value?.skuId!!
                     sku?.projectId = createProjectRes.project_id
                     sku?.createdOn = System.currentTimeMillis()
                     sku?.totalImages = viewModel.exterirorAngles.value
@@ -141,7 +178,7 @@ class AngleSelectionDialog : BaseDialogFragment<ShootViewModel,DialogAngleSelect
                 is Resource.Failure -> {
                     viewModel.isCameraButtonClickable = true
                     BaseApplication.getContext().captureFailureEvent(
-                        Events.CREATE_SKU_FAILED, HashMap<String,Any?>(),
+                        Events.CREATE_SKU_FAILED, HashMap<String, Any?>(),
                         it.errorMessage!!
                     )
                     Utilities.hideProgressDialog()
@@ -180,7 +217,7 @@ class AngleSelectionDialog : BaseDialogFragment<ShootViewModel,DialogAngleSelect
                 is Resource.Success -> {
                     Utilities.hideProgressDialog()
 
-                    val items = HashMap<String,Any?>()
+                    val items = HashMap<String, Any?>()
                     items["sku_name"] = viewModel.sku.value?.skuName.toString()
                     items.put("project_id", projectId)
                     items.put("prod_sub_cat_id", prod_sub_cat_id)
@@ -218,7 +255,7 @@ class AngleSelectionDialog : BaseDialogFragment<ShootViewModel,DialogAngleSelect
                 is Resource.Failure -> {
                     viewModel.isCameraButtonClickable = true
                     BaseApplication.getContext().captureFailureEvent(
-                        Events.CREATE_SKU_FAILED, HashMap<String,Any?>(),
+                        Events.CREATE_SKU_FAILED, HashMap<String, Any?>(),
                         it.errorMessage!!
                     )
                     Utilities.hideProgressDialog()

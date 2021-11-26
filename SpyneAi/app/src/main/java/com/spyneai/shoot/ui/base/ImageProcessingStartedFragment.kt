@@ -47,7 +47,7 @@ class ImageProcessingStartedFragment : BaseFragment<ProcessViewModel, FragmentIm
     override fun onResume() {
         super.onResume()
 
-        if (viewModel.categoryName == "Bikes"){
+        if (viewModel.categoryId == AppConstants.BIKES_CATEGORY_ID){
             if (viewModel.interiorMiscShootsCount > 0){
                 observeTotalFrameUpdate()
                 updateTotalFrames()

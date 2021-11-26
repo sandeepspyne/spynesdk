@@ -37,7 +37,7 @@ class ProcessActivity : AppCompatActivity() {
         processViewModel.exteriorAngles.value =  intent.getIntExtra("exterior_angles",0)
         processViewModel.interiorMiscShootsCount = intent.getIntExtra("interior_misc_count",0)
         processViewModel.frontFramesList = intent.getStringArrayListExtra("exterior_images_list")!!
-        processViewModel.categoryName = intent.getStringExtra(AppConstants.CATEGORY_NAME)
+        processViewModel.categoryId = intent.getStringExtra(AppConstants.CATEGORY_ID)
 
         Log.d(TAG, "onCreate: "+processViewModel.exteriorAngles.value)
         Log.d(TAG, "onCreate: "+processViewModel.interiorMiscShootsCount)

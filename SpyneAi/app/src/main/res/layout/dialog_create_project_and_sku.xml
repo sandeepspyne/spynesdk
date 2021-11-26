@@ -54,7 +54,6 @@
         android:id="@+id/iv"
         android:src="@drawable/ic_vin"
         android:scaleType="fitXY"
-
         android:paddingRight="@dimen/dp_40"
         android:paddingLeft="@dimen/dp_40"
         app:layout_constraintTop_toTopOf="parent"

@@ -45,11 +45,8 @@ class SubCategoryAndAngleFragment :
             AppConstants.FOOTWEAR_CATEGORY_ID -> binding.tvDescription.text = getString(R.string.footwear_subcategory)
             AppConstants.BIKES_CATEGORY_ID -> binding.tvDescription.text = getString(R.string.bikes_subcategory)
         }
-        if (viewModel.categoryDetails.value?.categoryName == "Footwear")
 
-
-        if (viewModel.isSkuCreated.value == null
-            || (viewModel.categoryDetails.value?.categoryId != AppConstants.CARS_CATEGORY_ID
+        if (viewModel.isSkuCreated.value == null || (viewModel.categoryDetails.value?.categoryId != AppConstants.CARS_CATEGORY_ID
                     &&
                     viewModel.categoryDetails.value?.categoryId != AppConstants.BIKES_CATEGORY_ID)){
             viewModel.getSubCategories.observe(viewLifecycleOwner,{
@@ -60,7 +57,6 @@ class SubCategoryAndAngleFragment :
         }else {
             hideViews()
         }
-
     }
 
     override fun onResume() {
