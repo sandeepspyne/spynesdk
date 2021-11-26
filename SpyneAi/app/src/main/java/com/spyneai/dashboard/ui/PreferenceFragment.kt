@@ -117,9 +117,12 @@ class PreferenceFragment : BaseFragment<DashboardViewModel, FragmentPreferenceBi
                    id: Long
                ) {
 
+
+                   val s = ""
                    if(locationList[0]=="Select Location"){
                        binding.btClockIn.enable(false)
                        viewModel.selectedLocation = null
+                       locationList[0]= viewModel.firstLocationName
                    }else {
                        binding.btClockIn.enable(true)
                        val locations = (viewModel.locationsResponse.value as Resource.Success).value.data
@@ -128,7 +131,7 @@ class PreferenceFragment : BaseFragment<DashboardViewModel, FragmentPreferenceBi
                            it.locationName == parent.getItemAtPosition(position).toString()
                        }
                    }
-                   locationList[0]= viewModel.firstLocationName
+
                }
 
                override fun onNothingSelected(parent: AdapterView<*>?) {
@@ -286,6 +289,9 @@ class PreferenceFragment : BaseFragment<DashboardViewModel, FragmentPreferenceBi
                         clear()
                         addAll(locationNameList)
                     }
+
+                    //refresh adapter
+                    spLocationAdapter.notifyDataSetChanged()
                 }
 
                 is Resource.Failure -> {
@@ -314,6 +320,7 @@ class PreferenceFragment : BaseFragment<DashboardViewModel, FragmentPreferenceBi
                     sin(dLon/2) * sin(dLon/2)
         var c = 2 * atan2(sqrt(a), sqrt(1-a));
         var d = R * c * 1000 // Distance in m
+        val s = ""
         if(d> viewModel.selectedLocation!!?.thresholdDistanceInMeters){
             InvalidLocationDialog().show(requireActivity().supportFragmentManager, "invalidLocationDialog")
         }else{
