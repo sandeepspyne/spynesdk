@@ -56,6 +56,7 @@ import java.io.IOException
 import java.text.SimpleDateFormat
 import java.util.*
 import java.util.concurrent.TimeUnit
+import kotlin.collections.ArrayList
 import kotlin.math.atan2
 import kotlin.math.cos
 import kotlin.math.sin
@@ -67,8 +68,8 @@ class PreferenceFragment : BaseFragment<DashboardViewModel, FragmentPreferenceBi
 
     val REQUEST_IMAGE_CAPTURE = 1
 
-//    var languageList = arrayOf("English","Germany","Italy")
-    var languageList= arrayListOf<String>()
+    //    var languageList = arrayOf("English","Germany","Italy")
+    var languageList = arrayListOf<String>()
     var locationList: ArrayList<String> = ArrayList()
     lateinit var spLanguageAdapter: ArrayAdapter<String>
     lateinit var spLocationAdapter: ArrayAdapter<String>
@@ -87,113 +88,127 @@ class PreferenceFragment : BaseFragment<DashboardViewModel, FragmentPreferenceBi
         super.onViewCreated(view, savedInstanceState)
 
         // set llLogout Button Margin only for sypne app
-        googleApiClient = GoogleApiClient.Builder(requireContext(), this, this).addApi(LocationServices.API).build()
+        googleApiClient =
+            GoogleApiClient.Builder(requireContext(), this, this).addApi(LocationServices.API)
+                .build()
 
 
-        if (getString(R.string.app_name) == AppConstants.SPYNE_AI){
-            val params: LinearLayout.LayoutParams = LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT)
+        if (getString(R.string.app_name) == AppConstants.SPYNE_AI) {
+            val params: LinearLayout.LayoutParams = LinearLayout.LayoutParams(
+                ViewGroup.LayoutParams.WRAP_CONTENT,
+                ViewGroup.LayoutParams.WRAP_CONTENT
+            )
             params.setMargins(30, 30, 30, 260)
-            params.gravity= Gravity.CENTER_HORIZONTAL;
+            params.gravity = Gravity.CENTER_HORIZONTAL;
             binding.llLogout.setLayoutParams(params)
 //            Toast.makeText(requireContext(), "running", Toast.LENGTH_SHORT).show()
         }
 
         //
 
+        locationList.add("Select Location")
         spLocationAdapter = ArrayAdapter<String>(
             requireContext(),
             android.R.layout.simple_spinner_dropdown_item,
-            locationList)
+            locationList
+        )
 
         //clockin Adapter
         binding.spSelectLocation.adapter = spLocationAdapter
         binding.spSelectLocation.setTitle("Select Location")
 
-           binding.spSelectLocation.setOnItemSelectedListener(object : OnItemSelectedListener {
-               override fun onItemSelected(
-                   parent: AdapterView<*>,
-                   view: View?,
-                   position: Int,
-                   id: Long
-               ) {
-                   val s = ""
-                   if(locationList[0]=="Select Location"){
-                       binding.btClockIn.enable(false)
-                       viewModel.selectedLocation = null
-                       locationList[0]= viewModel.firstLocationName
-                   }else {
-                       binding.btClockIn.enable(true)
-                       val locations = (viewModel.locationsResponse.value as Resource.Success).value.data
+        binding.spSelectLocation.onItemSelectedListener = object : OnItemSelectedListener {
+            override fun onItemSelected(
+                parent: AdapterView<*>,
+                view: View?,
+                position: Int,
+                id: Long
+            ) {
+                val ss =""
+                if (locationList[0] != "Select Location"){
+                   // binding.btClockIn.enable(true)
+                    val locations = (viewModel.locationsResponse.value as Resource.Success).value.data
+                viewModel.selectedLocation = locations.firstOrNull {
+                    it.locationName == parent.getItemAtPosition(position).toString()
+                }
+                }
 
-                       viewModel.selectedLocation = locations.firstOrNull {
-                           it.locationName == parent.getItemAtPosition(position).toString()
-                       }
-                   }
+                viewModel.locationNameList?.let {
+                    locationList.clear()
+                    locationList.addAll(it)
+                }
 
-               }
 
-               override fun onNothingSelected(parent: AdapterView<*>?) {
-                   binding.btClockIn.enable(false)
-                   locationList[0]="Select Location"
-               }
-           })
+
+                val s = ""
+            }
+
+            override fun onNothingSelected(parent: AdapterView<*>?) {
+                val s = ""
+                if (viewModel.selectedLocation == null){
+                   // binding.btClockIn.enable(false)
+                    locationList.apply {
+                        clear()
+                        add("Select Location")
+                    }
+                }else {
+                    val s = ""
+                }
+            }
+        }
 
         //clockout Adapter
         binding.spLocationOut.adapter = spLocationAdapter
         binding.spLocationOut.setTitle("Select Location")
 
         binding.spLocationOut.setOnItemSelectedListener(object : OnItemSelectedListener {
-                override fun onItemSelected(
-                    parent: AdapterView<*>,
-                    view: View?,
-                    position: Int,
-                    id: Long
-                ) {
-                    if(locationList[0]=="Select Location"){
-                        binding.btnClockOut.enable(false)
-                        locationList[0]= viewModel.firstLocationName
-                       // viewModel.selectedLocation = null
-                    }else {
-                        binding.btnClockOut.enable(true)
+            override fun onItemSelected(
+                parent: AdapterView<*>,
+                view: View?,
+                position: Int,
+                id: Long
+            ) {
 
-                        try {
-                            val locations = (viewModel.locationsResponse.value as Resource.Success).value.data
+                //binding.btnClockOut.enable(true)
 
-                            viewModel.selectedLocation = locations.firstOrNull {
-                                it.locationName == parent.getItemAtPosition(position).toString()
-                            }
-                        }catch (e : Exception){
+                try {
+                    val locations =
+                        (viewModel.locationsResponse.value as Resource.Success).value.data
 
-                        }
+                    viewModel.selectedLocation = locations.firstOrNull {
+                        it.locationName == parent.getItemAtPosition(position).toString()
                     }
+                } catch (e: Exception) {
 
                 }
+            }
 
-                override fun onNothingSelected(parent: AdapterView<*>?) {
-                    binding.btClockIn.enable(false  )
-                }
-            })
+            override fun onNothingSelected(parent: AdapterView<*>?) {
+
+            }
+        })
 
         languageList.clear()
 
-        when(getString(R.string.app_name)) {
-                AppConstants.AUTO_FOTO -> {
-                    languageList.add("English")
-                    languageList.add("German")
-                    languageList.add("Italy")
-                }
-            else ->languageList.add("English")
-          }
+        when (getString(R.string.app_name)) {
+            AppConstants.AUTO_FOTO -> {
+                languageList.add("English")
+                languageList.add("German")
+                languageList.add("Italy")
+            }
+            else -> languageList.add("English")
+        }
 
         spLanguageAdapter = ArrayAdapter<String>(
             requireContext(),
             android.R.layout.simple_spinner_dropdown_item,
-            languageList)
+            languageList
+        )
         binding.spLanguage.adapter = spLanguageAdapter
 
 
-        if (getString(R.string.app_name) == AppConstants.AUTO_FOTO){
-            when(Utilities.getPreference(requireContext(),AppConstants.LOCALE)){
+        if (getString(R.string.app_name) == AppConstants.AUTO_FOTO) {
+            when (Utilities.getPreference(requireContext(), AppConstants.LOCALE)) {
                 "en" -> binding.spLanguage.setSelection(0)
                 "de" -> binding.spLanguage.setSelection(1)
                 "IT" -> binding.spLanguage.setSelection(2)
@@ -202,25 +217,40 @@ class PreferenceFragment : BaseFragment<DashboardViewModel, FragmentPreferenceBi
 
         //Project Name Switch Visibility According to App Name
 
-        when(getString(R.string.app_name)) {
+        when (getString(R.string.app_name)) {
             AppConstants.FLIPKART,
             AppConstants.UDAAN,
             AppConstants.LAL_10,
             AppConstants.AMAZON,
             AppConstants.SWIGGY -> {
-                binding.llProjectNameSwitch.visibility=View.VISIBLE
+                binding.llProjectNameSwitch.visibility = View.VISIBLE
                 statusSwitch()
             }
             else ->
-                binding.llProjectNameSwitch.visibility=View.GONE
+                binding.llProjectNameSwitch.visibility = View.GONE
         }
 
-        if (Utilities.getPreference(requireContext(), AppConstants.USER_EMAIL).toString() != ""){
+        if (Utilities.getPreference(requireContext(), AppConstants.USER_EMAIL).toString() != "") {
 
-            binding.tvUserName.setText(Utilities.getPreference(requireContext(), AppConstants.USER_NAME))
+            binding.tvUserName.setText(
+                Utilities.getPreference(
+                    requireContext(),
+                    AppConstants.USER_NAME
+                )
+            )
 //            binding.tvLoginAs.setTextText(Utilities.getPreference(requireContext(), AppConstants.USER_NAME))
-            binding.tvEmail.setText(Utilities.getPreference(requireContext(), AppConstants.USER_EMAIL))
-            binding.tvAppVersion.setText(Utilities.getPreference(requireContext(), AppConstants.APP_VERSION))
+            binding.tvEmail.setText(
+                Utilities.getPreference(
+                    requireContext(),
+                    AppConstants.USER_EMAIL
+                )
+            )
+            binding.tvAppVersion.setText(
+                Utilities.getPreference(
+                    requireContext(),
+                    AppConstants.APP_VERSION
+                )
+            )
         }
 
         binding.spLanguage.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
@@ -230,12 +260,12 @@ class PreferenceFragment : BaseFragment<DashboardViewModel, FragmentPreferenceBi
                 position: Int,
                 id: Long
             ) {
-                if (position==0){
+                if (position == 0) {
                     //if (Utilities.getPreference(requireContext(),AppConstants.LOCALE) == "en")
-                        onLanguageSelected("en")
-                }else if(position==1){
-                    onLanguageSelected( "de")
-                }else {
+                    onLanguageSelected("en")
+                } else if (position == 1) {
+                    onLanguageSelected("de")
+                } else {
                     onLanguageSelected("IT")
                 }
 
@@ -248,7 +278,7 @@ class PreferenceFragment : BaseFragment<DashboardViewModel, FragmentPreferenceBi
         }
 
         binding.llLogout.setOnClickListener {
-            LogoutDialog().show(requireActivity().supportFragmentManager,"LogoutDialog")
+            LogoutDialog().show(requireActivity().supportFragmentManager, "LogoutDialog")
 
         }
 
@@ -261,14 +291,15 @@ class PreferenceFragment : BaseFragment<DashboardViewModel, FragmentPreferenceBi
         }
 
         binding.btnClockOut.setOnClickListener {
-            getDistanceFromLatLon(currentLat!!,currentLong!!,"checkout")
+            getDistanceFromLatLon(currentLat!!, currentLong!!, "checkout")
         }
 
-        if (Utilities.getBool(requireContext(),AppConstants.CLOCKED_IN)){
-            viewModel.siteImagePath = Utilities.getPreference(requireContext(),AppConstants.SITE_IMAGE_PATH).toString()
+        if (Utilities.getBool(requireContext(), AppConstants.CLOCKED_IN)) {
+            viewModel.siteImagePath =
+                Utilities.getPreference(requireContext(), AppConstants.SITE_IMAGE_PATH).toString()
             setCheckOut(false)
-        }else {
-           setCheckIn(false)
+        } else {
+            setCheckIn(false)
         }
 
         observeUrlResponse()
@@ -283,53 +314,46 @@ class PreferenceFragment : BaseFragment<DashboardViewModel, FragmentPreferenceBi
             when (it) {
                 is Resource.Success -> {
                     Utilities.hideProgressDialog()
-                    val locationNameList = it.value.data.map { it -> it.locationName }.toMutableList()
-
-                    viewModel.firstLocationName = locationNameList[0]
-                    locationNameList[0] = "Select Location"
-
-                    locationList.apply {
-                        clear()
-                        addAll(locationNameList)
-                    }
-
-                    //refresh adapter
-                    spLocationAdapter.notifyDataSetChanged()
+                    viewModel.locationNameList = it.value.data.map { it -> it.locationName }
+                        .toMutableList() as ArrayList<String>
                 }
 
                 is Resource.Failure -> {
                     Utilities.hideProgressDialog()
                     log("get Manual Location fail")
                     requireContext().captureFailureEvent(
-                        Events.GET_LOCATIONS_FAILED, HashMap<String,Any?>(),
+                        Events.GET_LOCATIONS_FAILED, HashMap<String, Any?>(),
                         it.errorMessage!!
                     )
 
                     Utilities.hideProgressDialog()
-                    handleApiError(it) { getLocations()}
+                    handleApiError(it) { getLocations() }
                 }
             }
         })
     }
 
     // calculate distance bw lat lon
-    fun getDistanceFromLatLon(lat1:Double,lon1:Double,type: String) {
+    fun getDistanceFromLatLon(lat1: Double, lon1: Double, type: String) {
         val selected = viewModel.selectedLocation?.coordinates
         var R = 6371 // Radius of the earth in km
         var dLat = deg2rad(selected?.latitude!!?.minus(lat1))  // deg2rad below
-        var dLon = deg2rad(selected.longitude-lon1);
-        var a = sin(dLat/2) * sin(dLat/2) +
-                    cos(deg2rad(lat1)) * cos(deg2rad(selected?.latitude)) *
-                    sin(dLon/2) * sin(dLon/2)
-        var c = 2 * atan2(sqrt(a), sqrt(1-a));
+        var dLon = deg2rad(selected.longitude - lon1);
+        var a = sin(dLat / 2) * sin(dLat / 2) +
+                cos(deg2rad(lat1)) * cos(deg2rad(selected?.latitude)) *
+                sin(dLon / 2) * sin(dLon / 2)
+        var c = 2 * atan2(sqrt(a), sqrt(1 - a));
         var d = R * c * 1000 // Distance in m
         val s = ""
-        if(d> viewModel.selectedLocation!!?.thresholdDistanceInMeters){
-            InvalidLocationDialog().show(requireActivity().supportFragmentManager, "invalidLocationDialog")
-        }else{
-            if(type=="checkin")
-                ShootSiteDialog().show(requireActivity().supportFragmentManager,"ShootSiteDialog")
-            else{
+        if (d > viewModel.selectedLocation!!?.thresholdDistanceInMeters) {
+            InvalidLocationDialog().show(
+                requireActivity().supportFragmentManager,
+                "invalidLocationDialog"
+            )
+        } else {
+            if (type == "checkin")
+                ShootSiteDialog().show(requireActivity().supportFragmentManager, "ShootSiteDialog")
+            else {
                 viewModel.type = "checkout"
                 viewModel.fileUrl = ""
                 clockInOut()
@@ -337,16 +361,16 @@ class PreferenceFragment : BaseFragment<DashboardViewModel, FragmentPreferenceBi
 
         }
     }
-    fun deg2rad(deg:Double): Double {
-        return deg * (Math.PI/180)
+
+    fun deg2rad(deg: Double): Double {
+        return deg * (Math.PI / 180)
     }
 
 
-
-    private fun setCheckIn(hideClockOut : Boolean) {
+    private fun setCheckIn(hideClockOut: Boolean) {
         viewModel.type = "checkin"
         binding.llAttendance.setOnClickListener {
-            when(binding.ivDropDown.rotation){
+            when (binding.ivDropDown.rotation) {
                 0f -> {
                     binding.ivDropDown.rotation = 90f
                     binding.apply {
@@ -365,7 +389,7 @@ class PreferenceFragment : BaseFragment<DashboardViewModel, FragmentPreferenceBi
             }
         }
 
-        if (hideClockOut){
+        if (hideClockOut) {
             binding.apply {
                 cvClockIn.visibility = View.VISIBLE
                 cvClockOut.visibility = View.GONE
@@ -375,50 +399,53 @@ class PreferenceFragment : BaseFragment<DashboardViewModel, FragmentPreferenceBi
         }
 
         viewModel.isStartAttendance.observe(viewLifecycleOwner, {
-            if (it){
-                viewModel.isStartAttendance.value=false
+            if (it) {
+                viewModel.isStartAttendance.value = false
                 dispatchTakePictureIntent()
             }
         })
     }
 
     private fun setLastSession() {
-        val millis = Utilities.getLong(requireContext(),AppConstants.SHOOTS_SESSION)
+        val millis = Utilities.getLong(requireContext(), AppConstants.SHOOTS_SESSION)
 
-        binding.tvSession.text = "Your last session was "+millisecondsToHours(millis)
+        binding.tvSession.text = "Your last session was " + millisecondsToHours(millis)
     }
 
     private fun dispatchTakePictureIntent() {
-       try {
-           Intent(MediaStore.ACTION_IMAGE_CAPTURE).also { takePictureIntent ->
-               // Ensure that there's a camera activity to handle the intent
-               takePictureIntent.resolveActivity(requireActivity().packageManager)?.also {
-                   // Create the File where the photo should go
-                   val photoFile: File? = try {
-                       createImageFile()
-                   } catch (ex: IOException) {
-                       // Error occurred while creating the File
-                       null
-                   }
-                   // Continue only if the File was successfully created
-                   photoFile?.also {
-                       val photoURI: Uri = FileProvider.getUriForFile(
-                           requireContext(),
-                           "com.spyneai.fileprovider",
-                           it
-                       )
-                       takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, photoURI)
-                       takePictureIntent.putExtra("android.intent.extras.CAMERA_FACING", android.hardware.Camera.CameraInfo.CAMERA_FACING_FRONT)
-                       takePictureIntent.putExtra("android.intent.extras.LENS_FACING_FRONT", 1)
-                       takePictureIntent.putExtra("android.intent.extra.USE_FRONT_CAMERA", true)
-                       startActivityForResult(takePictureIntent, REQUEST_IMAGE_CAPTURE)
-                       //resultLauncher.launch(takePictureIntent)
-                   }
-               }
-           }
-       }catch (e : Exception){
-           val s = ""
-       }
+        try {
+            Intent(MediaStore.ACTION_IMAGE_CAPTURE).also { takePictureIntent ->
+                // Ensure that there's a camera activity to handle the intent
+                takePictureIntent.resolveActivity(requireActivity().packageManager)?.also {
+                    // Create the File where the photo should go
+                    val photoFile: File? = try {
+                        createImageFile()
+                    } catch (ex: IOException) {
+                        // Error occurred while creating the File
+                        null
+                    }
+                    // Continue only if the File was successfully created
+                    photoFile?.also {
+                        val photoURI: Uri = FileProvider.getUriForFile(
+                            requireContext(),
+                            "com.spyneai.fileprovider",
+                            it
+                        )
+                        takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, photoURI)
+                        takePictureIntent.putExtra(
+                            "android.intent.extras.CAMERA_FACING",
+                            android.hardware.Camera.CameraInfo.CAMERA_FACING_FRONT
+                        )
+                        takePictureIntent.putExtra("android.intent.extras.LENS_FACING_FRONT", 1)
+                        takePictureIntent.putExtra("android.intent.extra.USE_FRONT_CAMERA", true)
+                        startActivityForResult(takePictureIntent, REQUEST_IMAGE_CAPTURE)
+                        //resultLauncher.launch(takePictureIntent)
+                    }
+                }
+            }
+        } catch (e: Exception) {
+            val s = ""
+        }
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -427,46 +454,62 @@ class PreferenceFragment : BaseFragment<DashboardViewModel, FragmentPreferenceBi
         val s = ""
         if (requestCode == REQUEST_IMAGE_CAPTURE && resultCode == RESULT_OK) {
             Utilities.apply {
-                savePrefrence(requireContext(),AppConstants.SITE_IMAGE_PATH,currentPhotoPath)
-                savePrefrence(requireContext(),AppConstants.SITE_CITY_NAME,viewModel.selectedLocation?.locationName)
-                saveBool(requireContext(),AppConstants.CLOCKED_IN,true)
-                saveLong(requireContext(),AppConstants.CLOCKED_IN_TIME,System.currentTimeMillis())
-                locationList[0]="Select Location"
+                savePrefrence(requireContext(), AppConstants.SITE_IMAGE_PATH, currentPhotoPath)
+                savePrefrence(
+                    requireContext(),
+                    AppConstants.SITE_CITY_NAME,
+                    viewModel.selectedLocation?.locationName
+                )
+                saveBool(requireContext(), AppConstants.CLOCKED_IN, true)
+                saveLong(requireContext(), AppConstants.CLOCKED_IN_TIME, System.currentTimeMillis())
             }
 
             viewModel.siteImagePath = currentPhotoPath
             setCheckOut(true)
-        }else{
+        } else {
             val s = ""
         }
     }
 
-    val resultLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
-        val s = ""
-        if (result.resultCode == RESULT_OK) {
-            Utilities.apply {
-                savePrefrence(requireContext(),AppConstants.SITE_IMAGE_PATH,currentPhotoPath)
-                savePrefrence(requireContext(),AppConstants.SITE_CITY_NAME,location_data.getString("city"))
-                saveBool(requireContext(),AppConstants.CLOCKED_IN,true)
-                saveLong(requireContext(),AppConstants.CLOCKED_IN_TIME,System.currentTimeMillis())
+    val resultLauncher =
+        registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
+            val s = ""
+            if (result.resultCode == RESULT_OK) {
+                Utilities.apply {
+                    savePrefrence(requireContext(), AppConstants.SITE_IMAGE_PATH, currentPhotoPath)
+                    savePrefrence(
+                        requireContext(),
+                        AppConstants.SITE_CITY_NAME,
+                        location_data.getString("city")
+                    )
+                    saveBool(requireContext(), AppConstants.CLOCKED_IN, true)
+                    saveLong(
+                        requireContext(),
+                        AppConstants.CLOCKED_IN_TIME,
+                        System.currentTimeMillis()
+                    )
+                }
+
+                viewModel.siteImagePath = currentPhotoPath
+                setCheckOut(true)
+            } else {
+                val s = ""
             }
 
-            viewModel.siteImagePath = currentPhotoPath
-            setCheckOut(true)
-        }else{
-            val s = ""
         }
-
-    }
 
     @Throws(IOException::class)
     private fun createImageFile(): File {
         // Create an image file name
         val timeStamp: String = SimpleDateFormat("yyyyMMdd_HHmmss").format(Date())
-        val storageDir: File = requireActivity().getExternalFilesDir(Environment.DIRECTORY_PICTURES)!!
+        val storageDir: File =
+            requireActivity().getExternalFilesDir(Environment.DIRECTORY_PICTURES)!!
 
         return File.createTempFile(
-            Utilities.getPreference(requireContext(),AppConstants.TOKEN_ID)+"_${timeStamp}_", /* prefix */
+            Utilities.getPreference(
+                requireContext(),
+                AppConstants.TOKEN_ID
+            ) + "_${timeStamp}_", /* prefix */
             ".jpg", /* suffix */
             storageDir /* directory */
         ).apply {
@@ -475,8 +518,11 @@ class PreferenceFragment : BaseFragment<DashboardViewModel, FragmentPreferenceBi
         }
     }
 
-    private fun setCheckOut(clockIn : Boolean) {
-        val time = System.currentTimeMillis() - Utilities.getLong(requireContext(),AppConstants.CLOCKED_IN_TIME)
+    private fun setCheckOut(clockIn: Boolean) {
+        val time = System.currentTimeMillis() - Utilities.getLong(
+            requireContext(),
+            AppConstants.CLOCKED_IN_TIME
+        )
 
         isActive = true
         upDateTimer(time)
@@ -484,9 +530,10 @@ class PreferenceFragment : BaseFragment<DashboardViewModel, FragmentPreferenceBi
         binding.apply {
             cvClockIn.visibility = View.GONE
             cvClockOut.visibility = View.VISIBLE
-            tvCityName.text = " at "+Utilities.getPreference(requireContext(),AppConstants.SITE_CITY_NAME)
+            tvCityName.text =
+                " at " + Utilities.getPreference(requireContext(), AppConstants.SITE_CITY_NAME)
             ivDropDown.rotation = 90f
-            tvClockedTime.text = getString(R.string.clocked_in_for)+" "+millisecondsToTime(time)
+            tvClockedTime.text = getString(R.string.clocked_in_for) + " " + millisecondsToTime(time)
             llAttendance.setOnClickListener(null)
         }
 
@@ -494,42 +541,47 @@ class PreferenceFragment : BaseFragment<DashboardViewModel, FragmentPreferenceBi
             .load(viewModel.siteImagePath)
             .into(binding.ivSiteImage)
 
-        if (clockIn){
+        if (clockIn) {
             getGcpUrl()
         }
     }
 
     private fun upDateTimer(time: Long) {
-        if (isActive){
-            binding.tvClockedTime.text = getString(R.string.clocked_in_for)+" "+millisecondsToTime(time)
+        if (isActive) {
+            binding.tvClockedTime.text =
+                getString(R.string.clocked_in_for) + " " + millisecondsToTime(time)
 
             Handler(Looper.getMainLooper()).postDelayed(object : Runnable {
                 override fun run() {
                     upDateTimer(time.plus(1000))
                 }
-            },1000)
+            }, 1000)
         }
     }
 
     private fun observeUrlResponse() {
-        viewModel.gcpUrlResponse.observe(viewLifecycleOwner,{
-            when(it){
+        viewModel.gcpUrlResponse.observe(viewLifecycleOwner, {
+            when (it) {
                 is Resource.Success -> {
                     //upload to gcp
                     viewModel.fileUrl = it.value.data.fileUrl
-                    uploadImageToGcpUrl(viewModel.siteImagePath,it.value.data.presignedUrl,it.value.data.fileUrl)
+                    uploadImageToGcpUrl(
+                        viewModel.siteImagePath,
+                        it.value.data.presignedUrl,
+                        it.value.data.fileUrl
+                    )
                     viewModel._gcpUrlResponse.value = null
                 }
 
                 is Resource.Failure -> {
                     binding.progressBar.visibility = View.GONE
-                    handleApiError(it){ getGcpUrl() }
+                    handleApiError(it) { getGcpUrl() }
                 }
             }
         })
     }
 
-    private fun uploadImageToGcpUrl(path : String,preSignedUrl: String, fileUrl: String) {
+    private fun uploadImageToGcpUrl(path: String, preSignedUrl: String, fileUrl: String) {
         val requestFile =
             File(path).asRequestBody("text/x-markdown; charset=utf-8".toMediaTypeOrNull())
 
@@ -544,46 +596,61 @@ class PreferenceFragment : BaseFragment<DashboardViewModel, FragmentPreferenceBi
 
         call.enqueue(object : Callback<ResponseBody> {
             override fun onResponse(call: Call<ResponseBody>, response: Response<ResponseBody>) {
-                Log.d("VideoUploader", "onResponse: "+response.code())
+                Log.d("VideoUploader", "onResponse: " + response.code())
                 binding.progressBar.visibility = View.GONE
-                if (response.isSuccessful){
+                if (response.isSuccessful) {
                     //set clock in
                     clockInOut()
-                }else {
+                } else {
                     //retry gcp upload
-                    showErrorSnackBar(path,preSignedUrl,fileUrl)
+                    showErrorSnackBar(path, preSignedUrl, fileUrl)
                 }
             }
 
             override fun onFailure(call: Call<ResponseBody>, t: Throwable) {
-                binding.progressBar.visibility= View.GONE
+                binding.progressBar.visibility = View.GONE
                 //retry gcp upload
-                showErrorSnackBar(path,preSignedUrl,fileUrl)
+                showErrorSnackBar(path, preSignedUrl, fileUrl)
             }
 
         })
     }
 
     private fun observeClockInOut() {
-        viewModel.checkInOutRes.observe(viewLifecycleOwner,{
-            when(it){
+        viewModel.checkInOutRes.observe(viewLifecycleOwner, {
+            when (it) {
                 is Resource.Success -> {
                     binding.progressBar.visibility = View.GONE
-                    if (viewModel.type == "checkin"){
-                        Toast.makeText(requireContext(),"Clocked in successfully...",Toast.LENGTH_LONG).show()
+                    if (viewModel.type == "checkin") {
+                        Toast.makeText(
+                            requireContext(),
+                            "Clocked in successfully...",
+                            Toast.LENGTH_LONG
+                        ).show()
                         isActive = true
                         upDateTimer(
-                            System.currentTimeMillis() - Utilities.getLong(requireContext(),AppConstants.CLOCKED_IN_TIME)
+                            System.currentTimeMillis() - Utilities.getLong(
+                                requireContext(),
+                                AppConstants.CLOCKED_IN_TIME
+                            )
                         )
-                    }else{
-                        Toast.makeText(requireContext(),"Clocked out successfully...",Toast.LENGTH_LONG).show()
-                        locationList[0]="Select Location"
+                    } else {
+                        Toast.makeText(
+                            requireContext(),
+                            "Clocked out successfully...",
+                            Toast.LENGTH_LONG
+                        ).show()
                         //save session time
                         Utilities.apply {
-                            saveLong(requireContext(),
+                            saveLong(
+                                requireContext(),
                                 AppConstants.SHOOTS_SESSION,
-                                System.currentTimeMillis() - Utilities.getLong(requireContext(),AppConstants.CLOCKED_IN_TIME))
-                            saveBool(requireContext(),AppConstants.CLOCKED_IN,false)
+                                System.currentTimeMillis() - Utilities.getLong(
+                                    requireContext(),
+                                    AppConstants.CLOCKED_IN_TIME
+                                )
+                            )
+                            saveBool(requireContext(), AppConstants.CLOCKED_IN, false)
                         }
 
                         setCheckIn(true)
@@ -594,7 +661,7 @@ class PreferenceFragment : BaseFragment<DashboardViewModel, FragmentPreferenceBi
 
                 is Resource.Failure -> {
                     binding.progressBar.visibility = View.GONE
-                    handleApiError(it){ clockInOut()}
+                    handleApiError(it) { clockInOut() }
                 }
             }
         })
@@ -617,7 +684,7 @@ class PreferenceFragment : BaseFragment<DashboardViewModel, FragmentPreferenceBi
             Snackbar.LENGTH_INDEFINITE
         )
             .setAction("Retry") {
-                uploadImageToGcpUrl(path, preSignedUrl,fileUrl)
+                uploadImageToGcpUrl(path, preSignedUrl, fileUrl)
             }
             .setActionTextColor(
                 ContextCompat.getColor(
@@ -647,10 +714,13 @@ class PreferenceFragment : BaseFragment<DashboardViewModel, FragmentPreferenceBi
 
     override fun onResume() {
         super.onResume()
-        if (Utilities.getBool(requireContext(),AppConstants.CLOCKED_IN)){
+        if (Utilities.getBool(requireContext(), AppConstants.CLOCKED_IN)) {
             isActive = true
             upDateTimer(
-                System.currentTimeMillis() - Utilities.getLong(requireContext(),AppConstants.CLOCKED_IN_TIME)
+                System.currentTimeMillis() - Utilities.getLong(
+                    requireContext(),
+                    AppConstants.CLOCKED_IN_TIME
+                )
             )
         }
     }
@@ -672,7 +742,7 @@ class PreferenceFragment : BaseFragment<DashboardViewModel, FragmentPreferenceBi
     }
 
     private fun onLanguageSelected(locale: String) {
-        Utilities.savePrefrence(requireContext(), AppConstants.LOCALE,locale)
+        Utilities.savePrefrence(requireContext(), AppConstants.LOCALE, locale)
 
         val locale = Locale(locale)
         Locale.setDefault(locale)
@@ -681,15 +751,19 @@ class PreferenceFragment : BaseFragment<DashboardViewModel, FragmentPreferenceBi
         resources.updateConfiguration(config, resources.displayMetrics)
     }
 
-    private fun statusSwitch(){
+    private fun statusSwitch() {
         binding.switchProjectName.isChecked =
-            Utilities.getPreference(requireContext(), AppConstants.STATUS_PROJECT_NAME).toString() =="true"
+            Utilities.getPreference(requireContext(), AppConstants.STATUS_PROJECT_NAME)
+                .toString() == "true"
 
         binding.switchProjectName.setOnCheckedChangeListener { _, isChecked ->
             if (isChecked) {
                 Utilities.savePrefrence(requireContext(), AppConstants.STATUS_PROJECT_NAME, "true")
-            }
-            else Utilities.savePrefrence(requireContext(), AppConstants.STATUS_PROJECT_NAME, "false")
+            } else Utilities.savePrefrence(
+                requireContext(),
+                AppConstants.STATUS_PROJECT_NAME,
+                "false"
+            )
         }
     }
 
@@ -717,16 +791,19 @@ class PreferenceFragment : BaseFragment<DashboardViewModel, FragmentPreferenceBi
                 }) {
                 onPermissionGranted()
             } else {
-                RequiredPermissionDialog().show(requireActivity().supportFragmentManager, "RequiredPermissionDialog")
+                RequiredPermissionDialog().show(
+                    requireActivity().supportFragmentManager,
+                    "RequiredPermissionDialog"
+                )
             }
 
         }
 
     open fun onPermissionGranted() {
-        if (viewModel.selectedLocation == null){
-            Toast.makeText(requireContext(),"Please Select Location",Toast.LENGTH_LONG).show()
-        }else{
-            getDistanceFromLatLon(currentLat!!,currentLong!!,"checkin")
+        if (viewModel.selectedLocation == null) {
+            Toast.makeText(requireContext(), "Please Select Location", Toast.LENGTH_LONG).show()
+        } else {
+            getDistanceFromLatLon(currentLat!!, currentLong!!, "checkin")
         }
     }
 
@@ -738,16 +815,21 @@ class PreferenceFragment : BaseFragment<DashboardViewModel, FragmentPreferenceBi
     ) = FragmentPreferenceBinding.inflate(inflater, container, false)
 
     override fun onConnected(p0: Bundle?) {
-        if (ContextCompat.checkSelfPermission(requireContext(), Manifest.permission.ACCESS_COARSE_LOCATION)
+        if (ContextCompat.checkSelfPermission(
+                requireContext(),
+                Manifest.permission.ACCESS_COARSE_LOCATION
+            )
             == PackageManager.PERMISSION_GRANTED
         ) {
             try {
-                val lastLocation = LocationServices.FusedLocationApi.getLastLocation(googleApiClient)
-                 currentLat = lastLocation.latitude
-                 currentLong = lastLocation.longitude
+                val lastLocation =
+                    LocationServices.FusedLocationApi.getLastLocation(googleApiClient)
+                currentLat = lastLocation.latitude
+                currentLong = lastLocation.longitude
 
                 val geocoder = Geocoder(requireContext(), Locale.getDefault())
-                val addresses: List<Address> = geocoder.getFromLocation(currentLat!!, currentLong!!, 1)
+                val addresses: List<Address> =
+                    geocoder.getFromLocation(currentLat!!, currentLong!!, 1)
                 val postalCode = addresses[0].postalCode
                 val cityName = addresses[0].locality
                 val countryName = addresses[0].countryName
@@ -757,7 +839,7 @@ class PreferenceFragment : BaseFragment<DashboardViewModel, FragmentPreferenceBi
                 location_data.put("latitude", currentLat)
                 location_data.put("longitude", currentLong)
                 location_data.put("postalCode", postalCode)
-            }catch (e : Exception){
+            } catch (e: Exception) {
                 e.printStackTrace()
             }
 
@@ -772,7 +854,7 @@ class PreferenceFragment : BaseFragment<DashboardViewModel, FragmentPreferenceBi
 
     }
 
-    private fun millisecondsToHours(millis : Long): String? {
+    private fun millisecondsToHours(millis: Long): String? {
         return String.format(
             "%02d hours %02d min", TimeUnit.MILLISECONDS.toHours(millis),
             TimeUnit.MILLISECONDS.toMinutes(millis) - TimeUnit.HOURS.toMinutes(
@@ -796,10 +878,14 @@ class PreferenceFragment : BaseFragment<DashboardViewModel, FragmentPreferenceBi
         val secondsStr = seconds.toString()
         val secs = getTwoDigit(secondsStr)
 
-        return if (hours > 0) "${getTwoDigit(hours.toString())}:${getTwoDigit(minutes.toString())}:$secs" else "${getTwoDigit(minutes.toString())}:$secs"
+        return if (hours > 0) "${getTwoDigit(hours.toString())}:${getTwoDigit(minutes.toString())}:$secs" else "${
+            getTwoDigit(
+                minutes.toString()
+            )
+        }:$secs"
     }
 
-    private fun getTwoDigit(value : String) : String {
+    private fun getTwoDigit(value: String): String {
         return if (value.length >= 2) {
             value.substring(0, 2)
         } else {
