@@ -66,6 +66,7 @@ class CategoriesActivity : AppCompatActivity(){
         setPreferences()
     }
 
+
     //Set Recycler
     private fun setRecycler() {
         rv_categories = findViewById(R.id.rv_categories)
@@ -73,94 +74,96 @@ class CategoriesActivity : AppCompatActivity(){
         categoriesAdapter = CategoriesAdapter(this, categoriesResponseList,
                 object : CategoriesAdapter.BtnClickListener {
                     override fun onBtnClick(position: Int) {
-                        Log.e("position cat", position.toString())
-                        LayoutHolder.categoryPosition = position
-                        when(position) {
-                            0-> {
-                                var intent : Intent
-                                if (getString(R.string.app_name) == AppConstants.SWIGGY){
-                                    intent = Intent(this@CategoriesActivity, ShootPortraitActivity::class.java)
-                                }else{
-                                    intent = Intent(this@CategoriesActivity, StartShootActivity::class.java)
-                                }
-                                Utilities.savePrefrence(
-                                    this@CategoriesActivity,
+
+                        val catId = categoriesResponseList[position].prod_cat_id
+                        val displayName = categoriesResponseList[position].prod_cat_name
+                        val displayThumbnail = categoriesResponseList[position].display_thumbnail
+                        val description = categoriesResponseList[position].description
+                        val colorCode = categoriesResponseList[position].color_code
+
+                        Utilities.savePrefrence(this@CategoriesActivity, AppConstants.CATEGORY_ID, catId)
+
+                        when(catId){
+                            "cat_d8R14zUNE" -> {
+                                val intent = Intent(this@CategoriesActivity, StartShootActivity::class.java)
+                                intent.putExtra(
                                     AppConstants.CATEGORY_NAME,
-                                    categoriesResponseList[position].prod_cat_name
+                                    displayName
                                 )
-                                Utilities.savePrefrence(this@CategoriesActivity, AppConstants.CATEGORY_ID, categoriesResponseList[position].prod_cat_id)
-                                Utilities.savePrefrence(this@CategoriesActivity, AppConstants.CATEGORY_NAME, categoriesResponseList[position].prod_cat_name)
-
-                                intent = when (categoriesResponseList[position].prod_cat_name) {
-                                    "Automobiles" -> {
-                                        Intent(this@CategoriesActivity, StartShootActivity::class.java)
-                                    }
-                                    "E-Commerce","Footwear", "Food & Beverages", "Photo Box" -> {
-                                        Intent(this@CategoriesActivity, ShootPortraitActivity::class.java)
-                                    }
-                                    else -> {
-                                        Intent(this@CategoriesActivity, ShootActivity::class.java)
-                                    }
-                                }
-
-                                intent.putExtra(AppConstants.CATEGORY_ID,categoriesResponseList[position].prod_cat_id)
-                                intent.putExtra(AppConstants.CATEGORY_NAME,categoriesResponseList[position].prod_cat_name)
-                                intent.putExtra(AppConstants.IMAGE_URL,categoriesResponseList[position].display_thumbnail)
-                                intent.putExtra(AppConstants.DESCRIPTION,categoriesResponseList[position].description)
-                                intent.putExtra(AppConstants.COLOR,categoriesResponseList[position].color_code)
+                                intent.putExtra(
+                                    AppConstants.CATEGORY_ID,
+                                    catId
+                                )
+                                intent.putExtra(
+                                    AppConstants.IMAGE_URL,
+                                    displayThumbnail
+                                )
+                                intent.putExtra(
+                                    AppConstants.DESCRIPTION,
+                                    description
+                                )
+                                intent.putExtra(AppConstants.COLOR, colorCode)
                                 startActivity(intent)
                             }
-                            1 -> {
-                                Utilities.savePrefrence(
-                                    this@CategoriesActivity,
+                            "cat_d8R14zUNx" -> {
+                                val intent = Intent(this@CategoriesActivity, ShootActivity::class.java)
+                                intent.putExtra(
                                     AppConstants.CATEGORY_NAME,
-                                    categoriesResponseList[position].prod_cat_name
+                                    displayName
                                 )
-
-                                Utilities.savePrefrence(this@CategoriesActivity, AppConstants.CATEGORY_ID, categoriesResponseList[position].prod_cat_id)
-                                Utilities.savePrefrence(this@CategoriesActivity, AppConstants.CATEGORY_NAME, categoriesResponseList[position].prod_cat_name)
-
-                                val intent = when (categoriesResponseList[position].prod_cat_name) {
-                                    "Automobiles" -> {
-                                        Intent(this@CategoriesActivity, StartShootActivity::class.java)
-                                    }
-                                    "E-Commerce","Footwear", "Food & Beverages", "Photo Box"  -> {
-                                        Intent(this@CategoriesActivity, ShootPortraitActivity::class.java)
-                                    }
-                                    else -> {
-                                        Intent(this@CategoriesActivity, ShootActivity::class.java)
-                                    }
-                                }
-
-                                intent.putExtra(AppConstants.CATEGORY_ID,categoriesResponseList[position].prod_cat_id)
-                                intent.putExtra(AppConstants.CATEGORY_NAME,categoriesResponseList[position].prod_cat_name)
-                                intent.putExtra(AppConstants.IMAGE_URL,categoriesResponseList[position].display_thumbnail)
-                                intent.putExtra(AppConstants.DESCRIPTION,categoriesResponseList[position].description)
-                                intent.putExtra(AppConstants.COLOR,categoriesResponseList[position].color_code)
+                                intent.putExtra(
+                                    AppConstants.CATEGORY_ID,
+                                    catId
+                                )
+                                intent.putExtra(
+                                    AppConstants.IMAGE_URL,
+                                    displayThumbnail
+                                )
+                                intent.putExtra(
+                                    AppConstants.DESCRIPTION,
+                                    description
+                                )
+                                intent.putExtra(AppConstants.COLOR, colorCode)
                                 startActivity(intent)
                             }
-                            2,3,4 -> {
-                                Utilities.savePrefrence(
-                                    this@CategoriesActivity,
-                                    AppConstants.CATEGORY_NAME,
-                                    categoriesResponseList[position].prod_cat_name
-                                )
-
+                            "cat_Ujt0kuFxY",
+                            "cat_Ujt0kuFxX",
+                            "cat_Ujt0kuFxF",
+                            "cat_P4t6BRVCxx",
+                            "cat_P4t6BRVAyy",
+                            "cat_P4t6BRVART",
+                            "cat_P4t6BRVAMN",
+                            "cat_P4t6BRVCAP"-> {
                                 val intent = Intent(this@CategoriesActivity, ShootPortraitActivity::class.java)
-
-                                intent.putExtra(AppConstants.CATEGORY_ID,categoriesResponseList[position].prod_cat_id)
-                                intent.putExtra(AppConstants.CATEGORY_NAME,categoriesResponseList[position].prod_cat_name)
-                                intent.putExtra(AppConstants.IMAGE_URL,categoriesResponseList[position].display_thumbnail)
-                                intent.putExtra(AppConstants.DESCRIPTION,categoriesResponseList[position].description)
-                                intent.putExtra(AppConstants.COLOR,categoriesResponseList[position].color_code)
+                                intent.putExtra(
+                                    AppConstants.CATEGORY_NAME,
+                                    displayName
+                                )
+                                intent.putExtra(
+                                    AppConstants.CATEGORY_ID,
+                                    catId
+                                )
+                                intent.putExtra(
+                                    AppConstants.IMAGE_URL,
+                                    displayThumbnail
+                                )
+                                intent.putExtra(
+                                    AppConstants.DESCRIPTION,
+                                    description
+                                )
+                                intent.putExtra(AppConstants.COLOR, colorCode)
                                 startActivity(intent)
                             }
-                            else ->{
-                                Toast.makeText(this@CategoriesActivity,
+
+                            else -> {
+                                Toast.makeText(
+                                    this@CategoriesActivity,
                                     "Coming Soon !",
-                                    Toast.LENGTH_SHORT).show()
+                                    Toast.LENGTH_SHORT
+                                ).show()
                             }
                         }
+
                     }
                 },before,after)
 
