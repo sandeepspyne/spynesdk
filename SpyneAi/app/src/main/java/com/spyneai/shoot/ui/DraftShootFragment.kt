@@ -854,7 +854,7 @@ class DraftShootFragment : BaseFragment<ShootViewModel, FragmentOverlaysV2Bindin
                     showReclickDialog(
                         data.id,
                         position,
-                        data.type)
+                        "Exterior")
                 }else {
                     viewModel.overlayId = data.id
 

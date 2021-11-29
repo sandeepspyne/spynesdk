@@ -43,7 +43,7 @@ class OverlayEcomFragment : BaseFragment<ShootViewModel, FragmentOverlayEcomBind
 
     var overlaysAdapter: OverlaysAdapter? = null
     var snackbar: Snackbar? = null
-    var position = 1
+    //var position = 1
     var pos = 0
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -99,6 +99,8 @@ class OverlayEcomFragment : BaseFragment<ShootViewModel, FragmentOverlayEcomBind
                     overlaysAdapter?.notifyItemChanged(viewModel.currentShoot)
                     overlaysAdapter?.notifyItemChanged(list.indexOf(element))
                     binding.rvSubcategories.scrollToPosition(viewModel.currentShoot)
+
+                    val s = ""
                 }
             }
         })
@@ -324,7 +326,8 @@ class OverlayEcomFragment : BaseFragment<ShootViewModel, FragmentOverlayEcomBind
                     val bundle = Bundle()
                     bundle.putInt("overlay_id",data.id)
                     bundle.putInt("position",position)
-                    bundle.putString("image_type",data.type)
+                    bundle.putString("image_type",
+                        viewModel.categoryDetails.value?.imageType)
                     val reclickDialog = ReclickDialog()
                     reclickDialog.arguments = bundle
                     reclickDialog.show(requireActivity().supportFragmentManager,"ReclickDialog")
