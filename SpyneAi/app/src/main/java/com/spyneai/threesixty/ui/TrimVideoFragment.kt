@@ -27,6 +27,7 @@ import com.google.android.exoplayer2.upstream.DataSource
 import com.google.android.exoplayer2.upstream.DefaultDataSourceFactory
 import com.spyneai.R
 import com.spyneai.base.BaseFragment
+import com.spyneai.captureEvent
 import com.spyneai.databinding.FragmentTrimVideoBinding
 import com.spyneai.getVideoDuration
 import com.spyneai.needs.AppConstants
@@ -37,6 +38,7 @@ import java.io.File
 import java.io.IOException
 import java.nio.ByteBuffer
 import java.util.*
+import kotlin.collections.HashMap
 
 class TrimVideoFragment : BaseFragment<ThreeSixtyViewModel,FragmentTrimVideoBinding>(),SeekListener {
 
@@ -236,7 +238,17 @@ class TrimVideoFragment : BaseFragment<ThreeSixtyViewModel,FragmentTrimVideoBind
     }
 
     fun stopRepeatingTask() {
-        seekHandler!!.removeCallbacks(updateSeekbar)
+        try {
+            seekHandler!!.removeCallbacks(updateSeekbar)
+        }catch (e : Exception){
+            requireContext().captureEvent(
+                "Trim Exception",
+                HashMap<String,Any?>()
+                    .apply {
+                        put("message",e.localizedMessage)
+                    }
+            )
+        }
     }
 
     private fun trimVideo() {

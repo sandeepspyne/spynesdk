@@ -122,7 +122,8 @@ class ThreeSixtyProjectAndSkuDialog : BaseDialogFragment<ThreeSixtyViewModel, Di
         this.prod_sub_cat_id = prod_sub_cat_id
 
         viewModel.createSku(
-            Utilities.getPreference(requireContext(),AppConstants.AUTH_KEY).toString(),projectId,
+            Utilities.getPreference(requireContext(),AppConstants.AUTH_KEY).toString(),
+            projectId,
             requireActivity().intent.getStringExtra(AppConstants.CATEGORY_ID).toString(),
             requireActivity().intent.getStringExtra(AppConstants.CATEGORY_ID).toString(),
             viewModel.videoDetails.skuName.toString()

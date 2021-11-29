@@ -439,15 +439,10 @@ class SelectBackgroundFragment : BaseFragment<ProcessViewModel, FragmentSelectBa
             Utilities.getPreference(requireContext(), AppConstants.AUTH_KEY).toString(),
             viewModel.sku.value?.skuId!!,
             backgroundSelect,
-            false,binding.cbBlurNoPlate.isChecked,binding.cbWindowCorrection.isChecked,binding.cbTintWindow.isChecked)
-
-        log("Process sku started")
-        log(
-            "Auth key: " + Utilities.getPreference(requireContext(), AppConstants.AUTH_KEY)
-                .toString()
-        )
-        log("Sku Id: : " + viewModel.sku.value?.skuId!!)
-        log("Background Id: : " + backgroundSelect)
+            false,
+            binding.cbBlurNoPlate.isChecked,
+            binding.cbWindowCorrection.isChecked,
+            binding.cbTintWindow.isChecked)
     }
 
 

@@ -73,6 +73,8 @@ class FidelitySelectionFragment : BaseFragment<ThreeSixtyViewModel, FragmentFide
         binding.btnProceed.setOnClickListener {
             viewModel.videoDetails.frames = newSelectedFrames
 
+            val s = ""
+
             if (updateFidelity) {
                viewModel.isFramesUpdated.value = true
                requireActivity().onBackPressed()
