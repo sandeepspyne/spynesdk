@@ -59,8 +59,7 @@ class DashboardViewModel() : ViewModel() {
     var siteImagePath = ""
     var resultCode: Int? = null
     val continueAnyway: MutableLiveData<Boolean> = MutableLiveData()
-    var selectedLocation: LocationsRes.Data? = null
-    var locationNameList: ArrayList<String>? = null
+   // var selectedLocation: LocationsRes.Data? = null
 
 
     fun getCategories(

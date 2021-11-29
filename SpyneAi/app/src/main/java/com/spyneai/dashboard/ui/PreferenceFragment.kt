@@ -36,6 +36,7 @@ import com.spyneai.base.network.ClipperApi
 import com.spyneai.base.network.Resource
 import com.spyneai.captureFailureEvent
 import com.spyneai.dashboard.data.DashboardViewModel
+import com.spyneai.dashboard.data.model.LocationsRes
 import com.spyneai.databinding.FragmentPreferenceBinding
 import com.spyneai.interfaces.GcpClient
 import com.spyneai.logout.LogoutDialog
@@ -115,7 +116,7 @@ class PreferenceFragment : BaseFragment<DashboardViewModel, FragmentPreferenceBi
 
         //clockin Adapter
         binding.spSelectLocation.adapter = spLocationAdapter
-        binding.spSelectLocation.setTitle("Select Location")
+        binding.spSelectLocation.setTitle("")
 
         binding.spSelectLocation.onItemSelectedListener = object : OnItemSelectedListener {
             override fun onItemSelected(
@@ -124,42 +125,20 @@ class PreferenceFragment : BaseFragment<DashboardViewModel, FragmentPreferenceBi
                 position: Int,
                 id: Long
             ) {
-                val ss =""
-                if (locationList[0] != "Select Location"){
-                   // binding.btClockIn.enable(true)
-                    val locations = (viewModel.locationsResponse.value as Resource.Success).value.data
-                viewModel.selectedLocation = locations.firstOrNull {
-                    it.locationName == parent.getItemAtPosition(position).toString()
+                if (position == 0) {
+                    binding.btClockIn.enable(false)
+                } else {
+                    binding.btClockIn.enable(true)
                 }
-                }
-
-                viewModel.locationNameList?.let {
-                    locationList.clear()
-                    locationList.addAll(it)
-                }
-
-
-
-                val s = ""
             }
 
             override fun onNothingSelected(parent: AdapterView<*>?) {
-                val s = ""
-                if (viewModel.selectedLocation == null){
-                   // binding.btClockIn.enable(false)
-                    locationList.apply {
-                        clear()
-                        add("Select Location")
-                    }
-                }else {
-                    val s = ""
-                }
             }
         }
 
         //clockout Adapter
         binding.spLocationOut.adapter = spLocationAdapter
-        binding.spLocationOut.setTitle("Select Location")
+        binding.spLocationOut.setTitle("")
 
         binding.spLocationOut.setOnItemSelectedListener(object : OnItemSelectedListener {
             override fun onItemSelected(
@@ -169,17 +148,10 @@ class PreferenceFragment : BaseFragment<DashboardViewModel, FragmentPreferenceBi
                 id: Long
             ) {
 
-                //binding.btnClockOut.enable(true)
-
-                try {
-                    val locations =
-                        (viewModel.locationsResponse.value as Resource.Success).value.data
-
-                    viewModel.selectedLocation = locations.firstOrNull {
-                        it.locationName == parent.getItemAtPosition(position).toString()
-                    }
-                } catch (e: Exception) {
-
+                if (position == 0) {
+                    binding.btnClockOut.enable(false)
+                } else {
+                    binding.btnClockOut.enable(true)
                 }
             }
 
@@ -291,6 +263,7 @@ class PreferenceFragment : BaseFragment<DashboardViewModel, FragmentPreferenceBi
         }
 
         binding.btnClockOut.setOnClickListener {
+            viewModel.type = "checkout"
             getDistanceFromLatLon(currentLat!!, currentLong!!, "checkout")
         }
 
@@ -314,8 +287,14 @@ class PreferenceFragment : BaseFragment<DashboardViewModel, FragmentPreferenceBi
             when (it) {
                 is Resource.Success -> {
                     Utilities.hideProgressDialog()
-                    viewModel.locationNameList = it.value.data.map { it -> it.locationName }
+                    val locationNameList = it.value.data.map { it -> it.locationName }
                         .toMutableList() as ArrayList<String>
+
+                    locationList.apply {
+                        locationList.clear()
+                        locationList.add("Select Location")
+                        locationList.addAll(locationNameList)
+                    }
                 }
 
                 is Resource.Failure -> {
@@ -335,7 +314,7 @@ class PreferenceFragment : BaseFragment<DashboardViewModel, FragmentPreferenceBi
 
     // calculate distance bw lat lon
     fun getDistanceFromLatLon(lat1: Double, lon1: Double, type: String) {
-        val selected = viewModel.selectedLocation?.coordinates
+        val selected = getSelectedItem()?.coordinates
         var R = 6371 // Radius of the earth in km
         var dLat = deg2rad(selected?.latitude!!?.minus(lat1))  // deg2rad below
         var dLon = deg2rad(selected.longitude - lon1);
@@ -345,7 +324,7 @@ class PreferenceFragment : BaseFragment<DashboardViewModel, FragmentPreferenceBi
         var c = 2 * atan2(sqrt(a), sqrt(1 - a));
         var d = R * c * 1000 // Distance in m
         val s = ""
-        if (d > viewModel.selectedLocation!!?.thresholdDistanceInMeters) {
+        if (d > getSelectedItem()?.thresholdDistanceInMeters!!) {
             InvalidLocationDialog().show(
                 requireActivity().supportFragmentManager,
                 "invalidLocationDialog"
@@ -458,7 +437,7 @@ class PreferenceFragment : BaseFragment<DashboardViewModel, FragmentPreferenceBi
                 savePrefrence(
                     requireContext(),
                     AppConstants.SITE_CITY_NAME,
-                    viewModel.selectedLocation?.locationName
+                    getSelectedItem()?.locationName
                 )
                 saveBool(requireContext(), AppConstants.CLOCKED_IN, true)
                 saveLong(requireContext(), AppConstants.CLOCKED_IN_TIME, System.currentTimeMillis())
@@ -468,6 +447,23 @@ class PreferenceFragment : BaseFragment<DashboardViewModel, FragmentPreferenceBi
             setCheckOut(true)
         } else {
             val s = ""
+        }
+    }
+
+
+
+    fun getSelectedItem(): LocationsRes.Data?
+    {
+        val locations = (viewModel.locationsResponse.value as Resource.Success).value.data
+
+        return if (viewModel.type == "checkin"){
+            locations.firstOrNull {
+            it.locationName == binding.spSelectLocation.selectedItem.toString()
+        }
+        }else{
+            locations.firstOrNull {
+            it.locationName == binding.spLocationOut.selectedItem.toString()
+        }
         }
     }
 
@@ -635,6 +631,16 @@ class PreferenceFragment : BaseFragment<DashboardViewModel, FragmentPreferenceBi
                             )
                         )
                     } else {
+
+                        val tempList = ArrayList<String>()
+                        tempList.addAll(locationList)
+
+                        locationList.apply {
+                            clear()
+                            addAll(tempList)
+                        }
+                        spLocationAdapter.notifyDataSetChanged()
+
                         Toast.makeText(
                             requireContext(),
                             "Clocked out successfully...",
@@ -668,11 +674,13 @@ class PreferenceFragment : BaseFragment<DashboardViewModel, FragmentPreferenceBi
     }
 
     private fun clockInOut() {
+        val locationId = if (viewModel.type == "checkin") null else
+            null
+
         binding.progressBar.visibility = View.VISIBLE
         viewModel.captureCheckInOut(
             viewModel.type,
             location_data,
-            viewModel.selectedLocation!!.locationId,
             viewModel.fileUrl
         )
     }
@@ -800,7 +808,7 @@ class PreferenceFragment : BaseFragment<DashboardViewModel, FragmentPreferenceBi
         }
 
     open fun onPermissionGranted() {
-        if (viewModel.selectedLocation == null) {
+        if (getSelectedItem() == null) {
             Toast.makeText(requireContext(), "Please Select Location", Toast.LENGTH_LONG).show()
         } else {
             getDistanceFromLatLon(currentLat!!, currentLong!!, "checkin")
