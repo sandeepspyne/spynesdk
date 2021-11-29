@@ -41,20 +41,23 @@ class SubCategoryAndAngleFragment :
 //
 //        observeSubcategories()
 
-        when(viewModel.categoryDetails.value?.categoryId){
-            AppConstants.FOOTWEAR_CATEGORY_ID -> binding.tvDescription.text = getString(R.string.footwear_subcategory)
-            AppConstants.BIKES_CATEGORY_ID -> binding.tvDescription.text = getString(R.string.bikes_subcategory)
+        when (viewModel.categoryDetails.value?.categoryId) {
+            AppConstants.FOOTWEAR_CATEGORY_ID -> binding.tvDescription.text =
+                getString(R.string.footwear_subcategory)
+            AppConstants.BIKES_CATEGORY_ID -> binding.tvDescription.text =
+                getString(R.string.bikes_subcategory)
         }
 
         if (viewModel.isSkuCreated.value == null || (viewModel.categoryDetails.value?.categoryId != AppConstants.CARS_CATEGORY_ID
                     &&
-                    viewModel.categoryDetails.value?.categoryId != AppConstants.BIKES_CATEGORY_ID)){
-            viewModel.getSubCategories.observe(viewLifecycleOwner,{
+                    viewModel.categoryDetails.value?.categoryId != AppConstants.BIKES_CATEGORY_ID)
+        ) {
+            viewModel.getSubCategories.observe(viewLifecycleOwner, {
                 getSubcategories()
             })
 
             observeSubcategories()
-        }else {
+        } else {
             hideViews()
         }
     }
@@ -80,7 +83,7 @@ class SubCategoryAndAngleFragment :
                 is Resource.Success -> {
                     requireContext().captureEvent(
                         Events.GET_SUBCATEGORIES,
-                        HashMap<String,Any?>()
+                        HashMap<String, Any?>()
                     )
 
                     binding.apply {
@@ -111,7 +114,7 @@ class SubCategoryAndAngleFragment :
                 }
                 is Resource.Failure -> {
                     requireContext().captureFailureEvent(
-                        Events.GET_SUBCATRGORIES_FAILED, HashMap<String,Any?>(),
+                        Events.GET_SUBCATRGORIES_FAILED, HashMap<String, Any?>(),
                         it.errorMessage!!
                     )
                     binding.shimmer.stopShimmer()
@@ -180,7 +183,7 @@ class SubCategoryAndAngleFragment :
 
                     BaseApplication.getContext().captureEvent(
                         Events.CREATE_SKU,
-                        HashMap<String,Any?>()
+                        HashMap<String, Any?>()
                             .apply {
                                 this.put("sku_name", viewModel.sku.value?.skuName.toString())
                                 this.put("project_id", createProjectRes.project_id)
@@ -206,7 +209,18 @@ class SubCategoryAndAngleFragment :
                     viewModel.sku.value = sku
                     viewModel.isSubCategoryConfirmed.value = true
                     viewModel.isSkuCreated.value = true
-                    viewModel.showLeveler.value = true
+
+                    when (viewModel.categoryDetails.value?.categoryId) {
+                        AppConstants.BIKES_CATEGORY_ID,
+                        AppConstants.CARS_CATEGORY_ID,
+                        AppConstants.FOOTWEAR_CATEGORY_ID,
+                        AppConstants.FOOD_AND_BEV_CATEGORY_ID-> {
+                            viewModel.showLeveler.value = true
+                        }
+                        else -> {
+                            viewModel.hideLeveler.value = true
+                        }
+                    }
 
                     //update sku locally
                     viewModel.updateVideoSkuLocally(sku!!)
@@ -217,7 +231,7 @@ class SubCategoryAndAngleFragment :
                 is Resource.Failure -> {
                     viewModel.isCameraButtonClickable = true
                     BaseApplication.getContext().captureFailureEvent(
-                        Events.CREATE_SKU_FAILED, HashMap<String,Any?>(),
+                        Events.CREATE_SKU_FAILED, HashMap<String, Any?>(),
                         it.errorMessage!!
                     )
                     Utilities.hideProgressDialog()
@@ -291,7 +305,7 @@ class SubCategoryAndAngleFragment :
 
                     BaseApplication.getContext().captureEvent(
                         Events.CREATE_SKU,
-                        HashMap<String,Any?>()
+                        HashMap<String, Any?>()
                             .apply {
                                 this.put("sku_name", viewModel.sku.value?.skuName.toString())
                                 this.put("project_id", projectId)
@@ -325,7 +339,7 @@ class SubCategoryAndAngleFragment :
                 is Resource.Failure -> {
                     viewModel.isCameraButtonClickable = true
                     BaseApplication.getContext().captureFailureEvent(
-                        Events.CREATE_SKU_FAILED, HashMap<String,Any?>(),
+                        Events.CREATE_SKU_FAILED, HashMap<String, Any?>(),
                         it.errorMessage!!
                     )
                     Utilities.hideProgressDialog()

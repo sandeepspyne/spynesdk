@@ -6,6 +6,7 @@ import android.view.View
 import android.view.ViewGroup
 import com.spyneai.base.BaseDialogFragment
 import com.spyneai.databinding.DialogReclickBinding
+import com.spyneai.needs.AppConstants
 import com.spyneai.shoot.data.ShootViewModel
 
 class ReclickDialog : BaseDialogFragment<ShootViewModel, DialogReclickBinding>() {
@@ -28,7 +29,15 @@ class ReclickDialog : BaseDialogFragment<ShootViewModel, DialogReclickBinding>()
                     viewModel.updateSelectItem.value = true
 
                 } else {
-                    viewModel.showLeveler.value = true
+                    when (viewModel.categoryDetails.value?.categoryId) {
+                        AppConstants.BIKES_CATEGORY_ID,
+                        AppConstants.CARS_CATEGORY_ID,
+                        AppConstants.FOOTWEAR_CATEGORY_ID,
+                        AppConstants.FOOD_AND_BEV_CATEGORY_ID-> {
+                            viewModel.showLeveler.value = true
+                        }
+                    }
+
                     viewModel.categoryDetails.value?.imageType = it.getString("image_type").toString()
                     viewModel.currentShoot = it.getInt("position")
                     viewModel.overlayId = it.getInt("overlay_id")

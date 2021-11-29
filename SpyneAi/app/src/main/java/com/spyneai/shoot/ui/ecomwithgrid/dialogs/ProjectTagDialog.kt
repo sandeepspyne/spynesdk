@@ -445,7 +445,7 @@ class ProjectTagDialog : BaseDialogFragment<ShootViewModel, ProjectTagDialogBind
 
                     viewModel.isSubCategoryConfirmed.value = true
                     viewModel.isSkuCreated.value = true
-                    viewModel.showLeveler.value = true
+                    //viewModel.showLeveler.value = true
                     viewModel.getSubCategories.value = true
 
                     //add sku to local database
