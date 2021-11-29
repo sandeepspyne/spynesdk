@@ -171,6 +171,7 @@ class AngleSelectionDialog : BaseDialogFragment<ShootViewModel, DialogAngleSelec
 
                     //update sku locally
                     viewModel.updateVideoSkuLocally(sku!!)
+                    dismiss()
                 }
 
 
