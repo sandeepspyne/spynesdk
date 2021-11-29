@@ -96,9 +96,9 @@ class OverlayEcomFragment : BaseFragment<ShootViewModel, FragmentOverlayEcomBind
                 if (element != null && data != element) {
                     data.isSelected = true
                     element.isSelected = false
-                    overlaysAdapter?.notifyItemChanged(position)
+                    overlaysAdapter?.notifyItemChanged(viewModel.currentShoot)
                     overlaysAdapter?.notifyItemChanged(list.indexOf(element))
-                    binding.rvSubcategories.scrollToPosition(position)
+                    binding.rvSubcategories.scrollToPosition(viewModel.currentShoot)
                 }
             }
         })

@@ -163,6 +163,71 @@ class OverlaysFragment : BaseFragment<ShootViewModel, FragmentOverlaysV2Binding>
             }
         })
 
+        viewModel.updateSelectItem.observe(viewLifecycleOwner,{
+            if (it){
+                when(viewModel.categoryDetails.value?.imageType){
+                    "Exterior" -> {
+                        val list = overlaysAdapter?.listItems as List<OverlaysResponse.Data>
+
+                        val element = list.firstOrNull {
+                            it.isSelected
+                        }
+
+                        val data = list[viewModel.currentShoot]
+
+                        viewModel.overlayId = data.id
+
+                        if (element != null && data != element){
+                            data.isSelected = true
+                            element.isSelected = false
+                            overlaysAdapter?.notifyItemChanged(viewModel.currentShoot)
+                            overlaysAdapter?.notifyItemChanged(list.indexOf(element))
+                            binding.rvSubcategories.scrollToPosition(viewModel.currentShoot)
+                        }
+                    }
+
+                    "Interior" -> {
+                        val list = overlaysAdapter?.listItems as List<NewSubCatResponse.Interior>
+
+                        val element = list.firstOrNull {
+                            it.isSelected
+                        }
+
+                        val data = list[viewModel.currentShoot]
+                        viewModel.overlayId = data.overlayId
+
+                        if (element != null && data != element){
+                            data.isSelected = true
+                            element.isSelected = false
+                            overlaysAdapter?.notifyItemChanged(viewModel.currentShoot)
+                            overlaysAdapter?.notifyItemChanged(list.indexOf(element))
+                            binding.rvSubcategories.scrollToPosition(viewModel.currentShoot)
+                        }
+                    }
+
+                    "Focus Shoot" -> {
+                        val list = overlaysAdapter?.listItems as List<NewSubCatResponse.Miscellaneous>
+
+                        val element = list.firstOrNull {
+                            it.isSelected
+                        }
+
+                        val data = list[viewModel.currentShoot]
+                        viewModel.overlayId = data.overlayId
+
+                        if (element != null && data != element){
+                            data.isSelected = true
+                            element.isSelected = false
+                            overlaysAdapter?.notifyItemChanged(viewModel.currentShoot)
+                            overlaysAdapter?.notifyItemChanged(list.indexOf(element))
+                            binding.rvSubcategories.scrollToPosition(viewModel.currentShoot)
+                        }
+                    }
+                }
+
+            }
+        })
+
         viewModel.notifyItemChanged.observe(viewLifecycleOwner,{
             overlaysAdapter?.notifyItemChanged(it)
         })
@@ -614,70 +679,91 @@ class OverlaysFragment : BaseFragment<ShootViewModel, FragmentOverlaysV2Binding>
         when(data){
             is OverlaysResponse.Data->{
                 if (data.imageClicked){
-                    ReclickDialog().show(requireActivity().supportFragmentManager,"ReclickDialog")
-                }
+                    showReclickDialog(
+                        data.id,
+                        position,
+                        data.type)
+                }else {
+                    viewModel.overlayId = data.id
 
-                viewModel.overlayId = data.id
+                    val list = overlaysAdapter?.listItems as List<OverlaysResponse.Data>
 
-                val list = overlaysAdapter?.listItems as List<OverlaysResponse.Data>
+                    val element = list.firstOrNull {
+                        it.isSelected
+                    }
 
-                val element = list.firstOrNull {
-                    it.isSelected
-                }
-
-                if (element != null && data != element){
-                    data.isSelected = true
-                    element.isSelected = false
-                    overlaysAdapter?.notifyItemChanged(position)
-                    overlaysAdapter?.notifyItemChanged(list.indexOf(element))
-                    binding.rvSubcategories.scrollToPosition(position)
+                    if (element != null && data != element){
+                        data.isSelected = true
+                        element.isSelected = false
+                        overlaysAdapter?.notifyItemChanged(position)
+                        overlaysAdapter?.notifyItemChanged(list.indexOf(element))
+                        binding.rvSubcategories.scrollToPosition(position)
+                    }
                 }
             }
 
             is NewSubCatResponse.Interior ->{
                 if (data.imageClicked){
-                    ReclickDialog().show(requireActivity().supportFragmentManager,"ReclickDialog")
-                }
+                    showReclickDialog(
+                        data.overlayId,
+                        position,
+                        "Interior")
+                }else {
+                    viewModel.overlayId = data.overlayId
 
-                viewModel.overlayId = data.overlayId
+                    val list = overlaysAdapter?.listItems as List<NewSubCatResponse.Interior>
 
-                val list = overlaysAdapter?.listItems as List<NewSubCatResponse.Interior>
+                    val element = list.firstOrNull {
+                        it.isSelected
+                    }
 
-                val element = list.firstOrNull {
-                    it.isSelected
-                }
-
-                if (element != null && data != element){
-                    data.isSelected = true
-                    element.isSelected = false
-                    overlaysAdapter?.notifyItemChanged(position)
-                    overlaysAdapter?.notifyItemChanged(list.indexOf(element))
-                    binding.rvSubcategories.scrollToPosition(position)
+                    if (element != null && data != element){
+                        data.isSelected = true
+                        element.isSelected = false
+                        overlaysAdapter?.notifyItemChanged(position)
+                        overlaysAdapter?.notifyItemChanged(list.indexOf(element))
+                        binding.rvSubcategories.scrollToPosition(position)
+                    }
                 }
             }
 
             is NewSubCatResponse.Miscellaneous ->{
                 if (data.imageClicked){
-                    ReclickDialog().show(requireActivity().supportFragmentManager,"ReclickDialog")
+                    showReclickDialog(
+                        data.overlayId,
+                        position,
+                        "Focus Shoot")
+                }else {
+                    viewModel.overlayId = data.overlayId
+
+                    val list = overlaysAdapter?.listItems as List<NewSubCatResponse.Miscellaneous>
+
+                    val element = list.firstOrNull {
+                        it.isSelected
+                    }
+
+                    if (element != null && data != element){
+                        data.isSelected = true
+                        element.isSelected = false
+                        overlaysAdapter?.notifyItemChanged(position)
+                        overlaysAdapter?.notifyItemChanged(list.indexOf(element))
+                        binding.rvSubcategories.scrollToPosition(position)
+                    }
                 }
 
-                viewModel.overlayId = data.overlayId
 
-                val list = overlaysAdapter?.listItems as List<NewSubCatResponse.Miscellaneous>
-
-                val element = list.firstOrNull {
-                    it.isSelected
-                }
-
-                if (element != null && data != element){
-                    data.isSelected = true
-                    element.isSelected = false
-                    overlaysAdapter?.notifyItemChanged(position)
-                    overlaysAdapter?.notifyItemChanged(list.indexOf(element))
-                    binding.rvSubcategories.scrollToPosition(position)
-                }
             }
         }
+    }
+
+    private fun showReclickDialog(overlayId: Int,position: Int,type: String) {
+        val bundle = Bundle()
+        bundle.putInt("overlay_id",overlayId)
+        bundle.putInt("position",position)
+        bundle.putString("image_type",type)
+        val reclickDialog = ReclickDialog()
+        reclickDialog.arguments = bundle
+        reclickDialog.show(requireActivity().supportFragmentManager,"ReclickDialog")
     }
 
     override fun onOverlaySelected(view: View, position: Int, data: Any?) {

@@ -62,10 +62,10 @@ class OverlaysHolder(
         }
 
         if (data.imageClicked){
-            if (!data.imagePath.contains("http")
-                &&
-                (data.prod_cat_id != AppConstants.CARS_CATEGORY_ID &&
-                        data.prod_cat_id != AppConstants.BIKES_CATEGORY_ID))
+//            if (!data.imagePath.contains("http")
+//                &&
+//                (data.prod_cat_id != AppConstants.CARS_CATEGORY_ID &&
+//                        data.prod_cat_id != AppConstants.BIKES_CATEGORY_ID))
 //                binding?.ivOverlay?.rotation = 90f
 
             Glide.with(itemView)
