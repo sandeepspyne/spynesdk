@@ -356,7 +356,6 @@ class ShootActivity : AppCompatActivity(), GoogleApiClient.ConnectionCallbacks,
             shootViewModel.exterirorAngles.value =
                 intent.getIntExtra(AppConstants.EXTERIOR_ANGLES, 0)
 
-
             shootViewModel.sku.value!!.skuId = intent.getStringExtra(AppConstants.SKU_ID)
 
             shootViewModel.subCategory.value = getSubcategoryResponse()

@@ -96,9 +96,9 @@ class CreateProjectAndSkuDialog : BaseDialogFragment<ShootViewModel,DialogCreate
                     project.projectId = it.value.project_id
                     viewModel.insertProject(project)
 
-                    val sku = Sku()
-                    sku.projectId = it.value.project_id
-                    sku.skuName = removeWhiteSpace(binding.etVinNumber.text.toString()).uppercase()
+                    val sku = if (viewModel.sku.value == null) Sku() else viewModel.sku.value
+                    sku?.projectId = it.value.project_id
+                    sku?.skuName = removeWhiteSpace(binding.etVinNumber.text.toString()).uppercase()
                     viewModel.sku.value = sku
 
                     viewModel.projectId.value = it.value.project_id

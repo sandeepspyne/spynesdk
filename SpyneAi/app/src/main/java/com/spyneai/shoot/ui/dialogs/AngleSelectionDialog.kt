@@ -169,9 +169,8 @@ class AngleSelectionDialog : BaseDialogFragment<ShootViewModel, DialogAngleSelec
                     viewModel.isSkuCreated.value = true
                     viewModel.showLeveler.value = true
 
-                    //add sku to local database
-                    viewModel.insertSku(sku!!)
-
+                    //update sku locally
+                    viewModel.updateVideoSkuLocally(sku!!)
                 }
 
 
