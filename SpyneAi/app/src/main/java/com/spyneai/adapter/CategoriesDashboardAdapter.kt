@@ -67,7 +67,22 @@ public class CategoriesDashboardAdapter(
         /*  if (categoriesResponseList[position].displayName.equals("Footwear")
                   || categoriesResponseList[position].displayName.equals("Automobiles") ) {*/
 
-        viewHolder.tvCategoryName.text = categoriesResponseList[position].prod_cat_name
+        val splittedName = categoriesResponseList[position].prod_cat_name.split(" ")
+
+        when{
+            splittedName.isNullOrEmpty() ||
+            splittedName.size == 1
+            -> viewHolder.tvCategoryName.text = categoriesResponseList[position].prod_cat_name
+
+            splittedName.size == 2 -> {
+                viewHolder.tvCategoryName.text = splittedName[0]+"\n"+splittedName[1]
+            }
+
+            splittedName.size == 3 -> {
+                splittedName[0]+"\n"+splittedName[1]+"\n"+splittedName[2]
+            }
+        }
+
 
 
         Glide.with(context).load(
