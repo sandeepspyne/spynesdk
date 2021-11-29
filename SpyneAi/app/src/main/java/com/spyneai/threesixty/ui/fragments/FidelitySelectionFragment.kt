@@ -61,12 +61,12 @@ class FidelitySelectionFragment : BaseFragment<ThreeSixtyViewModel, FragmentFide
 
         binding.npFrames.setOnValueChangedListener { _, _, newVal ->
             when(npFrames[newVal]) {
-                "8 Frames" -> newSelectedFrames = 8
-                "12 Frames" -> newSelectedFrames = 12
-                "16 Frames" -> newSelectedFrames = 16
-                "24 Frames" -> newSelectedFrames = 24
-                "36 Frames" -> newSelectedFrames = 36
-                "72 Frames" -> newSelectedFrames = 72
+                "8 $frame" -> newSelectedFrames = 8
+                "12 $frame" -> newSelectedFrames = 12
+                "16 $frame" -> newSelectedFrames = 16
+                "24 $frame" -> newSelectedFrames = 24
+                "36 $frame" -> newSelectedFrames = 36
+                "72 $frame" -> newSelectedFrames = 72
             }
         }
 
