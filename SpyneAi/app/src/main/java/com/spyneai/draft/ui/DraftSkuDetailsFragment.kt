@@ -136,13 +136,12 @@ class DraftSkuDetailsFragment : BaseFragment<DraftViewModel, FragmentDraftSkuDet
         var shootIntent: Intent? = null
 
         when (intent.getStringExtra(AppConstants.CATEGORY_ID)) {
-            "Automobiles", "cat_d8R14zUNx" -> {
+            AppConstants.CARS_CATEGORY_ID, "cat_d8R14zUNx" -> {
                 shootIntent = Intent(
                     context,
                     ShootActivity::class.java
                 )
             }
-
             "cat_Ujt0kuFxX",
             "cat_Ujt0kuFxY",
             "cat_Ujt0kuFxF",
