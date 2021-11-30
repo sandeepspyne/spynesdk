@@ -7,6 +7,7 @@ import androidx.lifecycle.viewModelScope
 import com.spyneai.base.network.Resource
 import com.spyneai.dashboard.data.model.CheckInOutRes
 import com.spyneai.dashboard.data.model.GetGCPUrlRes
+import com.spyneai.dashboard.data.model.LocationsRes
 import com.spyneai.dashboard.data.model.VersionStatusRes
 import com.spyneai.dashboard.data.repository.DashboardRepository
 import com.spyneai.dashboard.response.NewCategoriesResponse
@@ -42,6 +43,10 @@ class DashboardViewModel() : ViewModel() {
     val gcpUrlResponse: LiveData<Resource<GetGCPUrlRes>>
         get() = _gcpUrlResponse
 
+    var _locationResponse: MutableLiveData<Resource<LocationsRes>> = MutableLiveData()
+    val locationsResponse: LiveData<Resource<LocationsRes>>
+        get() = _locationResponse
+
     var _checkInOutRes: MutableLiveData<Resource<CheckInOutRes>> = MutableLiveData()
     val checkInOutRes: LiveData<Resource<CheckInOutRes>>
         get() = _checkInOutRes
@@ -54,6 +59,7 @@ class DashboardViewModel() : ViewModel() {
     var siteImagePath = ""
     var resultCode: Int? = null
     val continueAnyway: MutableLiveData<Boolean> = MutableLiveData()
+   // var selectedLocation: LocationsRes.Data? = null
 
 
     fun getCategories(
@@ -121,10 +127,18 @@ class DashboardViewModel() : ViewModel() {
     fun captureCheckInOut(
         type : String,
         location : JSONObject,
+        location_id : String,
         imageUrl : String = ""
     )= viewModelScope.launch {
         _checkInOutRes.value = Resource.Loading
-        _checkInOutRes.value = repository.captureCheckInOut(type,location,imageUrl)
+        _checkInOutRes.value = repository.captureCheckInOut(type,location,location_id,imageUrl)
+    }
+
+
+    fun getLocations(
+    )= viewModelScope.launch {
+        _locationResponse.value = Resource.Loading
+        _locationResponse.value = repository.getLocations()
     }
 
 

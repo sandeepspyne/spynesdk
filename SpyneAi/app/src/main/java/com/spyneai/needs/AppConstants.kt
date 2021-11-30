@@ -6,7 +6,7 @@ object AppConstants {
 
     val ENTERPRISE_ID: String = "ENTERPRISE_ID"
     val FLIPKART_ENTERPRISE_ID: String = "EVV1XVY4R"
-    val BASE_URL: String = "https://www.clippr.ai/api/"
+    val BASE_URL: String = "http://35.240.170.119/api/"
     val STATUS_PROJECT_NAME: String="STATUS_PROJECT_NAME"
 
 

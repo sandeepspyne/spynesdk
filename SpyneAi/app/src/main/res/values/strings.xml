@@ -357,6 +357,7 @@
     <string name="end_shoot_karvi">End\nShoot</string>
     <string name="tint_window">Tint Window</string>
     <string name="bikes_subcategory">Select your Bikes\'s sub-category</string>
+    <string name="near_location">It seems you are not near the location. Please check the location you have selected.</string>
 
 
 </resources>

@@ -6,6 +6,7 @@ import com.spyneai.credits.model.DownloadHDRes
 import com.spyneai.credits.model.ReduceCreditResponse
 import com.spyneai.dashboard.data.model.CheckInOutRes
 import com.spyneai.dashboard.data.model.GetGCPUrlRes
+import com.spyneai.dashboard.data.model.LocationsRes
 import com.spyneai.dashboard.data.model.VersionStatusRes
 import com.spyneai.dashboard.response.NewCategoriesResponse
 import com.spyneai.dashboard.response.NewSubCatResponse
@@ -389,6 +390,7 @@ interface ClipperApi {
     suspend fun captureCheckInOut(
         @Field("type") type : String,
         @Field("location") location : JSONObject,
+        @Field("location_id") locationId: String,
         @Field("img_url") imageUrl : String = "",
         @Field("auth_key") authKey : String = Utilities.getPreference(BaseApplication.getContext(),AppConstants.AUTH_KEY).toString()
     ) : CheckInOutRes
@@ -399,5 +401,12 @@ interface ClipperApi {
         @Field("image_id") imageId: String,
         @Field("auth_key") authKey: String = Utilities.getPreference(BaseApplication.getContext(),AppConstants.AUTH_KEY).toString()
     ) : GetImageRes
+
+    @GET("algo/manual_location_data/get-data")
+    suspend fun getLocations(
+        @Query("auth_key") authKey : String = Utilities.getPreference(BaseApplication.getContext(),AppConstants.AUTH_KEY).toString()
+    ) : LocationsRes
+
+
 
 }
