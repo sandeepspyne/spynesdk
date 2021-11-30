@@ -286,7 +286,7 @@ class ShootViewModel : ViewModel() {
         image.imagePath = shootData.capturedImage
         image.sequence = shootData.sequence
         image.overlayId = overlayId.toString()
-        image.skuName = sku.value?.skuName
+        image.skuName = sku.value?.skuName?.uppercase()
         image.angle = shootData.angle
         image.meta = shootData.meta
         image.name = if (shootData.name.contains(".")) shootData.name else shootData.name + "." + shootData.capturedImage.substringAfter(".")
@@ -415,7 +415,7 @@ class ShootViewModel : ViewModel() {
                 miscSize
             )
 
-            sku.value?.skuName + "_" + sku.value?.skuId + "_" + filePrefix
+            sku.value?.skuName?.uppercase() + "_" + sku.value?.skuId + "_" + filePrefix
         }
 
     }

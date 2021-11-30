@@ -7,6 +7,7 @@ import android.widget.BaseAdapter
 import android.widget.ImageView
 import android.widget.TextView
 import com.bumptech.glide.Glide
+import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.spyneai.R
 import com.spyneai.orders.data.response.ImagesOfSkuRes
 
@@ -37,6 +38,8 @@ class DraftImagesAdapter(
 
             Glide.with(context) // replace with 'this' if it's in activity
                 .load(imageList[position].input_image_hres_url)
+                .diskCacheStrategy(DiskCacheStrategy.NONE)
+                .skipMemoryCache(true)
                 .error(R.mipmap.defaults) // show error drawable if the image is not a gif
                 .into(ivRaw)
 

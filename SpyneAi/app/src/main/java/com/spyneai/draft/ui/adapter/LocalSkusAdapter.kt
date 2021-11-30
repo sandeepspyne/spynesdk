@@ -10,6 +10,7 @@ import android.widget.TextView
 import androidx.cardview.widget.CardView
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
+import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.spyneai.R
 import com.spyneai.draft.ui.DraftSkuDetailsActivity
 import com.spyneai.needs.AppConstants
@@ -58,6 +59,8 @@ class LocalSkusAdapter(
             if (skuList[position].thumbnail != null) {
                 Glide.with(context) // replace with 'this' if it's in activity
                     .load(skuList[position].thumbnail)
+                    .diskCacheStrategy(DiskCacheStrategy.NONE)
+                    .skipMemoryCache(true)
                     .error(R.mipmap.defaults) // show error drawable if the image is not a gif
                     .into(holder.ivThumbnail)
             } else {

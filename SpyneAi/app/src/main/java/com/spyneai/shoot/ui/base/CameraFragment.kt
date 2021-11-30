@@ -769,6 +769,7 @@ class CameraFragment : BaseFragment<ShootViewModel, FragmentCameraBinding>(), Pi
         if (item != null){
             item.capturedImage = capturedImage
             item.angle = cameraAngle
+            item.name = filename
             viewModel.isReclick = true
         }
         else {
