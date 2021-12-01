@@ -37,6 +37,7 @@ class ReclickDialog : BaseDialogFragment<ShootViewModel, DialogReclickBinding>()
                             else
                                 viewModel.hideLeveler.value = true
                         }
+                        AppConstants.ECOM_CATEGORY_ID,
                         AppConstants.FOOTWEAR_CATEGORY_ID,
                         AppConstants.FOOD_AND_BEV_CATEGORY_ID-> {
                             viewModel.showLeveler.value = true

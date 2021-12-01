@@ -149,8 +149,11 @@ class DraftGridFragment : BaseFragment<ShootViewModel, FragmentGridEcomBinding>(
     override fun onResume() {
         super.onResume()
         if (viewModel.showLeveler.value == null || viewModel.showLeveler.value == false){
-            if (getString(R.string.app_name) == AppConstants.SWIGGY){
-                viewModel.showLeveler.value = true
+            when(viewModel.categoryDetails.value?.categoryId){
+                AppConstants.ECOM_CATEGORY_ID,
+                AppConstants.FOOD_AND_BEV_CATEGORY_ID -> {
+                    viewModel.showLeveler.value = true
+                }
             }
             viewModel.showDialog = true
         }
