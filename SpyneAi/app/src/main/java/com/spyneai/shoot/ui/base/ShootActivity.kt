@@ -114,7 +114,7 @@ class ShootActivity : AppCompatActivity(), GoogleApiClient.ConnectionCallbacks,
         angleSelectionFragment = AngleSelectionFragment()
 
         when (shootViewModel.categoryDetails.value?.categoryName) {
-            "Automobiles" -> {
+            "Automobiles","Bikes" -> {
                 shootViewModel.processSku = true
                 if (savedInstanceState == null) { // initial transaction should be wrapped like this
                     val transaction = supportFragmentManager.beginTransaction()
@@ -129,17 +129,6 @@ class ShootActivity : AppCompatActivity(), GoogleApiClient.ConnectionCallbacks,
                     transaction.commit()
                 }
             }
-            "Bikes" -> {
-                shootViewModel.processSku = true
-                if (savedInstanceState == null) { // initial transaction should be wrapped like this
-                    supportFragmentManager.beginTransaction()
-                        .add(R.id.flCamerFragment, cameraFragment)
-                        .add(R.id.flCamerFragment, overlays)
-                        .add(R.id.flCamerFragment,CreateProjectFragment())
-                        .commitAllowingStateLoss()
-                }
-            }
-
             "E-Commerce" -> {
                 shootViewModel.processSku = false
                 if (savedInstanceState == null) { // initial transaction should be wrapped like this

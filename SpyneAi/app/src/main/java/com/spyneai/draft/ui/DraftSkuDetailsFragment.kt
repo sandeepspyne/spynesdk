@@ -67,7 +67,8 @@ class DraftSkuDetailsFragment : BaseFragment<DraftViewModel, FragmentDraftSkuDet
 
 
             if (!list.isNullOrEmpty()) {
-                if (intent.getStringExtra(AppConstants.CATEGORY_NAME) == "Automobiles") {
+                if (intent.getStringExtra(AppConstants.CATEGORY_ID) == AppConstants.CATEGORY_ID
+                    || intent.getStringExtra(AppConstants.CATEGORY_ID) == AppConstants.BIKES_CATEGORY_ID) {
                     localExterior = list?.filter {
                         it.categoryName == "Exterior"
                     } as ArrayList
@@ -76,7 +77,8 @@ class DraftSkuDetailsFragment : BaseFragment<DraftViewModel, FragmentDraftSkuDet
                 }
 
                 if (localExterior.size > 0) {
-                    if (intent.getStringExtra(AppConstants.CATEGORY_NAME) == "Automobiles")
+                    if (intent.getStringExtra(AppConstants.CATEGORY_ID) == AppConstants.CATEGORY_ID
+                        || intent.getStringExtra(AppConstants.CATEGORY_ID) == AppConstants.BIKES_CATEGORY_ID)
                         binding.tvExterior.visibility = View.VISIBLE
 
                     binding.rvExteriorImage.visibility = View.VISIBLE
@@ -140,7 +142,7 @@ class DraftSkuDetailsFragment : BaseFragment<DraftViewModel, FragmentDraftSkuDet
         var shootIntent: Intent? = null
 
         when (intent.getStringExtra(AppConstants.CATEGORY_ID)) {
-            AppConstants.CARS_CATEGORY_ID, "cat_d8R14zUNx" -> {
+            AppConstants.CARS_CATEGORY_ID, AppConstants.BIKES_CATEGORY_ID -> {
                 shootIntent = Intent(
                     context,
                     ShootActivity::class.java
@@ -306,6 +308,7 @@ class DraftSkuDetailsFragment : BaseFragment<DraftViewModel, FragmentDraftSkuDet
         }
 
         DraftClickedImages.clickedImagesMap = map
+        val s = ""
     }
 
     private fun checkMiscSize(intent: Intent) {
@@ -487,7 +490,8 @@ class DraftSkuDetailsFragment : BaseFragment<DraftViewModel, FragmentDraftSkuDet
                             }
 
                         if (exterior.size > 0) {
-                            if (requireActivity().intent.getStringExtra(AppConstants.CATEGORY_NAME) == "Automobiles")
+                            if (requireActivity().intent.getStringExtra(AppConstants.CATEGORY_ID) == AppConstants.CARS_CATEGORY_ID
+                                || requireActivity().intent.getStringExtra(AppConstants.CATEGORY_ID) == AppConstants.BIKES_CATEGORY_ID)
                                 binding.tvExterior.visibility = View.VISIBLE
 
                             binding.rvExteriorImage.visibility = View.VISIBLE
