@@ -11,6 +11,7 @@ import com.spyneai.base.BaseFragment
 import com.spyneai.dashboard.data.DashboardViewModel
 import com.spyneai.databinding.FragmentMyOrdersBinding
 import com.spyneai.orders.ui.adapter.OrdersSlideAdapter
+import com.spyneai.setLocale
 
 class MyOrdersFragment : BaseFragment<DashboardViewModel, FragmentMyOrdersBinding>() {
 
@@ -19,6 +20,7 @@ class MyOrdersFragment : BaseFragment<DashboardViewModel, FragmentMyOrdersBindin
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        requireContext().setLocale()
 
 
         tabId = requireActivity().intent.extras?.get("TAB_ID") as Int
@@ -35,6 +37,7 @@ class MyOrdersFragment : BaseFragment<DashboardViewModel, FragmentMyOrdersBindin
         binding.viewPager.apply {
             adapter = OrdersSlideAdapter(requireActivity())
         }
+
 
         TabLayoutMediator(binding.tabLayout, binding.viewPager) { tab, position ->
             when (position) {

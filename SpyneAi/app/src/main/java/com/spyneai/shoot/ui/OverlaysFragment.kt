@@ -756,6 +756,8 @@ class OverlaysFragment : BaseFragment<ShootViewModel, FragmentOverlaysV2Binding>
         }
     }
 
+
+
     private fun showReclickDialog(overlayId: Int,position: Int,type: String) {
         val bundle = Bundle()
         bundle.putInt("overlay_id",overlayId)

@@ -12,12 +12,16 @@ import com.spyneai.base.network.Resource
 import com.spyneai.dashboard.response.NewSubCatResponse
 import com.spyneai.databinding.DialogFocusedHintBinding
 import com.spyneai.needs.AppConstants
+import com.spyneai.setLocale
 import com.spyneai.shoot.data.ShootViewModel
 
 class MiscShotsDialog : BaseDialogFragment<ShootViewModel, DialogFocusedHintBinding>() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        requireContext().setLocale()
+        refreshText()
 
         viewModel.startInteriorShoot.value = false
 
@@ -92,6 +96,12 @@ class MiscShotsDialog : BaseDialogFragment<ShootViewModel, DialogFocusedHintBind
                 else -> {}
             }
         })
+    }
+    fun refreshText(){
+        requireContext().setLocale()
+        binding.tvSkuNameDialog.text = getString(R.string.we_recommend_focused)
+        binding.tvSkipFocused.text = getString(R.string.skip)
+        binding.tvShootNowFocused.text = getString(R.string.shoot_now)
     }
 
     private fun loadImage(url: String, imageView: ImageView) {

@@ -342,5 +342,10 @@
     <string name="file_and_media">Zugriff auf Dateien und Medien</string>
     <string name="location_access">Standortzugriff</string>
     <string name="go_to_permission_setting">Berechtigungen erteilen</string>
+    <string name="three_sixty_int">Weiter</string>
+    <string name="end_shoot_karvi">Ende\nAufnahme</string>
+    <string name="reshoot">Reshoot</string>
+    <string name="miscshoots">Weiter</string>
+    <string name="no_end_shoot">Nein, Shoot beenden</string>
 
 </resources>

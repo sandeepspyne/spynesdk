@@ -11,14 +11,17 @@ import com.spyneai.base.BaseDialogFragment
 import com.spyneai.base.network.Resource
 import com.spyneai.databinding.DialogInteriorHintBinding
 import com.spyneai.needs.AppConstants
+import com.spyneai.setLocale
 import com.spyneai.shoot.data.ShootViewModel
 
 class InteriorHintDialog : BaseDialogFragment<ShootViewModel, DialogInteriorHintBinding>() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        requireContext().setLocale()
 
         dialog?.setCancelable(false)
+        refreshText()
 
         changePhotos()
 
@@ -68,6 +71,12 @@ class InteriorHintDialog : BaseDialogFragment<ShootViewModel, DialogInteriorHint
         Glide.with(requireContext())
             .load(interior)
             .into(ivOne)
+    }
+    fun refreshText(){
+        requireContext().setLocale()
+        binding.tvSkuNameDialog.text = getString(R.string.we_recommend_focused)
+        binding.tvSkip.text = getString(R.string.skip)
+        binding.tvShootNowInterior.text = getString(R.string.shoot_now)
     }
 
     private fun checkMiscShootStatus() {

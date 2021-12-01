@@ -343,4 +343,9 @@
     <string name="file_and_media">Accesso a file e file multimediali</string>
     <string name="location_access">Accesso alla posizione</string>
     <string name="go_to_permission_setting">Concedi permessi</string>
+    <string name="three_sixty_int">Avanti</string>
+    <string name="end_shoot_karvi">Fine\nSpara</string>
+    <string name="reshoot">Riprendere</string>
+    <string name="miscshoots">Avanti</string>
+    <string name="no_end_shoot">No, termina lo scatto</string>
 </resources>

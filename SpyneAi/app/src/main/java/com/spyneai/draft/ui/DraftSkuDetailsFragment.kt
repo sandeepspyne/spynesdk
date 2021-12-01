@@ -20,6 +20,7 @@ import com.spyneai.needs.AppConstants
 import com.spyneai.needs.Utilities
 import com.spyneai.orders.data.response.ImagesOfSkuRes
 import com.spyneai.posthog.Events
+import com.spyneai.setLocale
 import com.spyneai.shoot.data.DraftClickedImages
 import com.spyneai.shoot.data.model.Image
 import com.spyneai.shoot.ui.base.ProcessActivity
@@ -44,6 +45,9 @@ class DraftSkuDetailsFragment : BaseFragment<DraftViewModel, FragmentDraftSkuDet
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        requireContext().setLocale()
+        refreshText()
 
         binding.ivBack.setOnClickListener {
             requireActivity().onBackPressed()
@@ -444,6 +448,13 @@ class DraftSkuDetailsFragment : BaseFragment<DraftViewModel, FragmentDraftSkuDet
             Utilities.getPreference(requireContext(), AppConstants.AUTH_KEY).toString(),
             requireActivity().intent.getStringExtra(AppConstants.SKU_ID)!!
         )
+    }
+
+    fun refreshText(){
+        binding.tvExterior.text = getString(R.string.exterior)
+        binding.tvInterior.text = getString(R.string.interior)
+        binding.tvFocused.text = getString(R.string.focused)
+        binding.btnContinueShoot.text = getString(R.string.resume_shoot)
     }
 
     private fun observeSkuDeatils() {
