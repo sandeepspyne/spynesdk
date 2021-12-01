@@ -445,8 +445,11 @@ class ProjectTagDialog : BaseDialogFragment<ShootViewModel, ProjectTagDialogBind
 
                     viewModel.isSubCategoryConfirmed.value = true
                     viewModel.isSkuCreated.value = true
-                    if (getString(R.string.app_name) == AppConstants.SWIGGY){
-                        viewModel.showLeveler.value = true
+                    when(viewModel.categoryDetails.value?.categoryId){
+                        AppConstants.ECOM_CATEGORY_ID,
+                        AppConstants.FOOD_AND_BEV_CATEGORY_ID -> {
+                            viewModel.showLeveler.value = true
+                        }
                     }
                     viewModel.getSubCategories.value = true
 
