@@ -1,5 +1,5 @@
 {
-  "version": 3,
+  "version": 2,
   "artifactType": {
     "type": "APK",
     "kind": "Directory"
@@ -10,11 +10,9 @@
     {
       "type": "SINGLE",
       "filters": [],
-      "attributes": [],
-      "versionCode": 5,
-      "versionName": "2.3",
+      "versionCode": 7,
+      "versionName": "2.6",
       "outputFile": "app-trustedCars-release.apk"
     }
-  ],
-  "elementType": "File"
+  ]
 }
