@@ -46,6 +46,9 @@ class SubCategoryAndAngleFragment :
                 getString(R.string.footwear_subcategory)
             AppConstants.BIKES_CATEGORY_ID -> binding.tvDescription.text =
                 getString(R.string.bikes_subcategory)
+            else -> {
+                binding.tvDescription.text = "Select your ${viewModel.categoryDetails.value?.categoryName}'s Sub-categories"
+            }
         }
 
         if (viewModel.isSkuCreated.value == null || (viewModel.categoryDetails.value?.categoryId != AppConstants.CARS_CATEGORY_ID
@@ -165,6 +168,13 @@ class SubCategoryAndAngleFragment :
                             createSku()
                             observerSku()
                         }
+                    }
+
+                    AppConstants.AMAZON -> {
+                        viewModel.exterirorAngles.value = 0
+
+                        updateSku()
+                        observerUpdateSku()
                     }
                     else -> selectAngles()
                 }

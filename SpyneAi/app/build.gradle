@@ -104,7 +104,7 @@ android {
             dimension 'version'
             applicationId "com.spyneai.travophotos"
             versionCode 8
-            versionName "2.6"
+            versionName "2.7"
         }
 
         olacabs {
@@ -164,7 +164,7 @@ android {
             dimension 'version'
             applicationId "com.spyneai.amazon"
             versionCode 6
-            versionName "1.5"
+            versionName "1.7"
         }
         lal10 {
             dimension 'version'
@@ -183,7 +183,7 @@ android {
             dimension 'version'
             applicationId "com.spyneai.swiggy"
             versionCode 26
-            versionName "3.6"
+            versionName "3.7"
         }
 
         swiggyinstamart {

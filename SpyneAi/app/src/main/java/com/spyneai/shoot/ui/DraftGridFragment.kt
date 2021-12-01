@@ -7,6 +7,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.spyneai.InfoDialog
+import com.spyneai.R
 import com.spyneai.base.BaseFragment
 import com.spyneai.base.OnItemClickListener
 import com.spyneai.databinding.FragmentGridEcomBinding
@@ -148,7 +149,9 @@ class DraftGridFragment : BaseFragment<ShootViewModel, FragmentGridEcomBinding>(
     override fun onResume() {
         super.onResume()
         if (viewModel.showLeveler.value == null || viewModel.showLeveler.value == false){
-            viewModel.showLeveler.value = true
+            if (getString(R.string.app_name) == AppConstants.SWIGGY){
+                viewModel.showLeveler.value = true
+            }
             viewModel.showDialog = true
         }
     }

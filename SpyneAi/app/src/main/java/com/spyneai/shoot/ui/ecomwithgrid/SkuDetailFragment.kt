@@ -39,7 +39,7 @@ class SkuDetailFragment : BaseFragment<ShootViewModel, FragmentSkuDetailBinding>
             AppConstants.CAPS_CATEGORY_ID,
             AppConstants.ACCESSORIES_CATEGORY_ID,
             AppConstants.HEALTH_AND_BEAUTY_CATEGORY_ID -> {
-                binding.ivAddAngle.visibility = View.GONE
+                binding.ivAddAngle.visibility = View.INVISIBLE
                 binding.tvAddAngle.visibility = View.INVISIBLE
             }
         }
