@@ -22,7 +22,9 @@ import com.spyneai.R
 import com.spyneai.base.BaseFragment
 import com.spyneai.base.OnItemClickListener
 import com.spyneai.base.network.Resource
+import com.spyneai.camera2.OverlaysResponse
 import com.spyneai.captureEvent
+import com.spyneai.dashboard.response.NewSubCatResponse
 import com.spyneai.dashboard.ui.handleApiError
 import com.spyneai.databinding.FragmentReshootBinding
 import com.spyneai.needs.AppConstants
@@ -190,7 +192,80 @@ class ReshootFragment : BaseFragment<ShootViewModel, FragmentReshootBinding>(), 
             }
         })
 
+        viewModel.updateSelectItem.observe(viewLifecycleOwner,{
+            if (it){
+                when(viewModel.categoryDetails.value?.imageType){
+                    "Exterior" -> {
+                        val list = reshootAdapter?.listItems as List<OverlaysResponse.Data>
+
+                        val element = list.firstOrNull {
+                            it.isSelected
+                        }
+
+                        val data = list[viewModel.currentShoot]
+
+                        viewModel.overlayId = data.id
+
+                        if (element != null && data != element){
+                            data.isSelected = true
+                            element.isSelected = false
+                            reshootAdapter?.notifyItemChanged(viewModel.currentShoot)
+                            reshootAdapter?.notifyItemChanged(list.indexOf(element))
+                            binding.rvImages.scrollToPosition(viewModel.currentShoot)
+                        }
+                    }
+
+                    "Interior" -> {
+                        val list = reshootAdapter?.listItems as List<NewSubCatResponse.Interior>
+
+                        val element = list.firstOrNull {
+                            it.isSelected
+                        }
+
+                        val data = list[viewModel.currentShoot]
+                        viewModel.overlayId = data.overlayId
+
+                        if (element != null && data != element){
+                            data.isSelected = true
+                            element.isSelected = false
+                            reshootAdapter?.notifyItemChanged(viewModel.currentShoot)
+                            reshootAdapter?.notifyItemChanged(list.indexOf(element))
+                            binding.rvImages.scrollToPosition(viewModel.currentShoot)
+                        }
+                    }
+
+                    "Focus Shoot" -> {
+                        val list = reshootAdapter?.listItems as List<NewSubCatResponse.Miscellaneous>
+
+                        val element = list.firstOrNull {
+                            it.isSelected
+                        }
+
+                        val data = list[viewModel.currentShoot]
+                        viewModel.overlayId = data.overlayId
+
+                        if (element != null && data != element){
+                            data.isSelected = true
+                            element.isSelected = false
+                            reshootAdapter?.notifyItemChanged(viewModel.currentShoot)
+                            reshootAdapter?.notifyItemChanged(list.indexOf(element))
+                            binding.rvImages.scrollToPosition(viewModel.currentShoot)
+                        }
+                    }
+                }
+
+            }
+        })
+
         viewModel.isCameraButtonClickable = true
+
+        viewModel.notifyItemChanged.observe(viewLifecycleOwner,{
+            reshootAdapter?.notifyItemChanged(it)
+        })
+
+        viewModel.scrollView.observe(viewLifecycleOwner,{
+            binding.rvImages.scrollToPosition(it)
+        })
 
     }
 
@@ -358,50 +433,82 @@ class ReshootFragment : BaseFragment<ShootViewModel, FragmentReshootBinding>(), 
     }
 
     override fun onItemClick(view: View, position: Int, data: Any?) {
-        when (data) {
-            is ReshootOverlaysRes.Data -> {
+        when(data){
+            is OverlaysResponse.Data->{
+                if (data.imageClicked){
+                    showReclickDialog(
+                        data.id,
+                        position,
+                        "Exterior")
+                }else {
+                    viewModel.overlayId = data.id
 
-                if (data.imageClicked) {
-                    ReclickDialog().show(requireActivity().supportFragmentManager, "ReclickDialog")
-                }
-                val list = reshootAdapter?.listItems as List<ReshootOverlaysRes.Data>
+                    val list = reshootAdapter?.listItems as List<OverlaysResponse.Data>
 
-                val element = list.firstOrNull {
-                    it.isSelected
-                }
+                    val element = list.firstOrNull {
+                        it.isSelected
+                    }
 
-                if (element != null && data != element) {
-                    //loadOverlay(data.angle_name,data.display_thumbnail)
-                    //viewModel.selectedOverlay = data
-
-                    data.isSelected = true
-                    element.isSelected = false
-                    reshootAdapter?.notifyItemChanged(position)
-                    reshootAdapter?.notifyItemChanged(list.indexOf(element))
-                    binding.rvImages.scrollToPosition(position)
+                    if (element != null && data != element){
+                        data.isSelected = true
+                        element.isSelected = false
+                        reshootAdapter?.notifyItemChanged(position)
+                        reshootAdapter?.notifyItemChanged(list.indexOf(element))
+                        binding.rvImages.scrollToPosition(position)
+                    }
                 }
             }
 
-            is ImagesOfSkuRes.Data -> {
-                if (data.imageClicked) {
-                    ReclickDialog().show(requireActivity().supportFragmentManager, "ReclickDialog")
-                }
-                val list = reshootAdapter?.listItems as List<ImagesOfSkuRes.Data>
+            is NewSubCatResponse.Interior ->{
+                if (data.imageClicked){
+                    showReclickDialog(
+                        data.overlayId,
+                        position,
+                        "Interior")
+                }else {
+                    viewModel.overlayId = data.overlayId
 
-                val element = list.firstOrNull {
-                    it.isSelected
+                    val list = reshootAdapter?.listItems as List<NewSubCatResponse.Interior>
+
+                    val element = list.firstOrNull {
+                        it.isSelected
+                    }
+
+                    if (element != null && data != element){
+                        data.isSelected = true
+                        element.isSelected = false
+                        reshootAdapter?.notifyItemChanged(position)
+                        reshootAdapter?.notifyItemChanged(list.indexOf(element))
+                        binding.rvImages.scrollToPosition(position)
+                    }
+                }
+            }
+
+            is NewSubCatResponse.Miscellaneous ->{
+                if (data.imageClicked){
+                    showReclickDialog(
+                        data.overlayId,
+                        position,
+                        "Focus Shoot")
+                }else {
+                    viewModel.overlayId = data.overlayId
+
+                    val list = reshootAdapter?.listItems as List<NewSubCatResponse.Miscellaneous>
+
+                    val element = list.firstOrNull {
+                        it.isSelected
+                    }
+
+                    if (element != null && data != element){
+                        data.isSelected = true
+                        element.isSelected = false
+                        reshootAdapter?.notifyItemChanged(position)
+                        reshootAdapter?.notifyItemChanged(list.indexOf(element))
+                        binding.rvImages.scrollToPosition(position)
+                    }
                 }
 
-                if (element != null && data != element) {
-                    //loadOverlay(data.angle_name,data.display_thumbnail)
-                    //viewModel.selectedOverlay = data
 
-                    data.isSelected = true
-                    element.isSelected = false
-                    reshootAdapter?.notifyItemChanged(position)
-                    reshootAdapter?.notifyItemChanged(list.indexOf(element))
-                    binding.rvImages.scrollToPosition(position)
-                }
             }
         }
     }
@@ -412,6 +519,7 @@ class ReshootFragment : BaseFragment<ShootViewModel, FragmentReshootBinding>(), 
         when (data) {
             is ReshootOverlaysRes.Data -> {
                 viewModel.reshotImageName = data.imageName
+                viewModel.overlayId = data.id
 
                 if (data.type == "Exterior") {
                     viewModel.showLeveler.value = true
@@ -426,8 +534,6 @@ class ReshootFragment : BaseFragment<ShootViewModel, FragmentReshootBinding>(), 
                     binding.imgOverlay?.visibility = View.GONE
 
                 viewModel.categoryDetails.value?.imageType = data.type
-
-                viewModel.overlayId = data.id
 
                 binding.tvShoot?.text =
                     "Angles ${position.plus(1)}/${SelectedImagesHelper.selectedOverlayIds.size}"
@@ -535,6 +641,17 @@ class ReshootFragment : BaseFragment<ShootViewModel, FragmentReshootBinding>(), 
             }
         })
     }
+
+    private fun showReclickDialog(overlayId: Int,position: Int,type: String) {
+        val bundle = Bundle()
+        bundle.putInt("overlay_id",overlayId)
+        bundle.putInt("position",position)
+        bundle.putString("image_type",type)
+        val reclickDialog = ReclickDialog()
+        reclickDialog.arguments = bundle
+        reclickDialog.show(requireActivity().supportFragmentManager,"ReclickDialog")
+    }
+
 
     override fun getViewModel() = ShootViewModel::class.java
 

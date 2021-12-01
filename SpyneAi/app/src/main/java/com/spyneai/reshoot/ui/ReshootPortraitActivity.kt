@@ -2,10 +2,8 @@ package com.spyneai.reshoot.ui
 
 import CameraFragment
 import android.content.Intent
-import android.content.pm.ActivityInfo
-import android.os.Bundle
-import android.view.WindowManager
 import androidx.appcompat.app.AppCompatActivity
+import android.os.Bundle
 import androidx.lifecycle.ViewModelProvider
 import com.spyneai.R
 import com.spyneai.base.network.Resource
@@ -19,19 +17,13 @@ import com.spyneai.shoot.data.model.CreateProjectRes
 import com.spyneai.shoot.data.model.Sku
 import com.spyneai.shoot.ui.dialogs.ShootExitDialog
 
-class ReshootActivity : AppCompatActivity() {
+class ReshootPortraitActivity : AppCompatActivity() {
 
     lateinit var shootViewModel: ShootViewModel
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
-        window.setFlags(
-            WindowManager.LayoutParams.FLAG_FULLSCREEN,
-            WindowManager.LayoutParams.FLAG_FULLSCREEN
-        )
-
-        setContentView(R.layout.activity_reshoot)
+        setContentView(R.layout.activity_reshoot_portrait)
         setLocale()
 
         shootViewModel = ViewModelProvider(this, ViewModelFactory()).get(ShootViewModel::class.java)
@@ -49,16 +41,17 @@ class ReshootActivity : AppCompatActivity() {
 
         setShoot()
 
-      supportFragmentManager.beginTransaction()
+       supportFragmentManager.beginTransaction()
             .add(R.id.flContainer, CameraFragment())
-            .add(R.id.flContainer, ReshootFragment())
+            .add(R.id.flContainer, EcomOverlayReshootFragment())
             .commit()
+
 
 
         shootViewModel.reshootCompleted.observe(this, {
             Intent(this, ReshootDoneActivity::class.java)
                 .apply {
-                    putExtra(AppConstants.CATEGORY_ID,categoryDetails.categoryId)
+                    putExtra(AppConstants.CATEGORY_ID, categoryDetails.categoryId)
                     startActivity(this)
                 }
         })
