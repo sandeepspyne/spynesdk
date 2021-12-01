@@ -120,56 +120,42 @@ class SkuDetailFragment : BaseFragment<ShootViewModel, FragmentSkuDetailBinding>
 
         if (Utilities.getPreference(requireContext(),AppConstants.ENTERPRISE_ID)
             != AppConstants.FLIPKART_ENTERPRISE_ID){
-            binding.ivAddAngle.setOnClickListener {
-                if (viewModel.categoryDetails.value?.categoryName.equals("E-Commerce") || viewModel.categoryDetails.value?.categoryName.equals(
-                        "Food & Beverages"
+            if (binding.tvAddAngle.visibility == View.VISIBLE){
+                binding.ivAddAngle.setOnClickListener {
+                    if (viewModel.categoryDetails.value?.categoryName.equals("E-Commerce") || viewModel.categoryDetails.value?.categoryName.equals(
+                            "Food & Beverages"
+                        )
                     )
-                )
-                    viewModel.addMoreAngle.value = true
-            }
+                        viewModel.addMoreAngle.value = true
+                }
 
-            binding.tvAddAngle.setOnClickListener {
-                if (viewModel.categoryDetails.value?.categoryName.equals("E-Commerce") || viewModel.categoryDetails.value?.categoryName.equals(
-                        "Food & Beverages"
+                binding.tvAddAngle.setOnClickListener {
+                    if (viewModel.categoryDetails.value?.categoryName.equals("E-Commerce") || viewModel.categoryDetails.value?.categoryName.equals(
+                            "Food & Beverages"
+                        )
                     )
-                )
-                    viewModel.addMoreAngle.value = true
+                        viewModel.addMoreAngle.value = true
+                }
             }
 
         }else {
-            binding.ivAddAngle.setOnClickListener {
-                SelectAnotherImagetypeDialog().show(
-                    requireActivity().supportFragmentManager,
-                    "Select_another_image_dialog"
-                )
-            }
-            binding.tvAddAngle.setOnClickListener {
-                SelectAnotherImagetypeDialog().show(
-                    requireActivity().supportFragmentManager,
-                    "Select_another_image_dialog"
-                )
+            if (binding.tvAddAngle.visibility == View.VISIBLE){
+                binding.ivAddAngle.setOnClickListener {
+                    SelectAnotherImagetypeDialog().show(
+                        requireActivity().supportFragmentManager,
+                        "Select_another_image_dialog"
+                    )
+                }
+                binding.tvAddAngle.setOnClickListener {
+                    SelectAnotherImagetypeDialog().show(
+                        requireActivity().supportFragmentManager,
+                        "Select_another_image_dialog"
+                    )
 
+                }
             }
         }
-//        binding.ivAddAngle.setOnClickListener {
-//            if (viewModel.categoryDetails.value?.categoryName.equals("E-Commerce") || viewModel.categoryDetails.value?.categoryName.equals(
-//                    "Food & Beverages"
-//                )
-//            )
-//                viewModel.addMoreAngle.value = true
-//        }
-//        binding.tvAddAngle.setOnClickListener {
-//            if (viewModel.categoryDetails.value?.categoryName.equals("E-Commerce") || viewModel.categoryDetails.value?.categoryName.equals(
-//                    "Food & Beverages"
-//                )
-//            )
-//                viewModel.addMoreAngle.value = true
-//        }
 
-
-//        binding.ivAddAngle.setOnClickListener {
-//            viewModel.addMoreAngle.value = true
-//        }
 
         binding.tvEndProject.setOnClickListener {
             endProject = true
@@ -182,15 +168,6 @@ class SkuDetailFragment : BaseFragment<ShootViewModel, FragmentSkuDetailBinding>
             requireActivity().onBackPressed()
         }
 
-//        binding.ivAddAngle.setOnClickListener {
-//            if (viewModel.categoryDetails.value?.categoryName != "Footwear")
-//                viewModel.addMoreAngle.value = true
-//        }
-//
-//        binding.tvAddAngle.setOnClickListener {
-//            if (viewModel.categoryDetails.value?.categoryName != "Footwear")
-//                viewModel.addMoreAngle.value = true
-//        }
     }
 
     private fun updateTotalFrames() {

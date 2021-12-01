@@ -119,7 +119,7 @@ class ProjectDetailFragment : BaseFragment<ShootViewModel, FragmentProjectDetail
                                 AppConstants.MENS_FASHION_CATEGORY_ID-> {
                                     processWithShadowOption()
                                 }
-                                "Footwear" -> {
+                                AppConstants.FOOTWEAR_CATEGORY_ID -> {
                                     processWithoutBackgroundId()
                                 }
                             }
@@ -127,16 +127,15 @@ class ProjectDetailFragment : BaseFragment<ShootViewModel, FragmentProjectDetail
                         AppConstants.AMAZON, AppConstants.SWIGGYINSTAMART,
                         AppConstants.FLIPKART_GROCERY, AppConstants.UDAAN,
                         AppConstants.FLIPKART, AppConstants.EBAY -> {
-                            when (viewModel.categoryDetails.value?.categoryName) {
-                                "Photo Box" -> {
+                            when (viewModel.categoryDetails.value?.categoryId) {
+                                AppConstants.PHOTO_BOX_CATEGORY_ID, -> {
                                     processWithShadowOption()
                                 }
-                                "E-Commerce" -> {
+                                AppConstants.ECOM_CATEGORY_ID,
+                                AppConstants.FOOTWEAR_CATEGORY_ID-> {
                                     processWithoutBackgroundId()
                                 }
-                                "Footwear" -> {
-                                    processWithoutBackgroundId()
-                                }
+
                             }
                         }
                         else -> {
