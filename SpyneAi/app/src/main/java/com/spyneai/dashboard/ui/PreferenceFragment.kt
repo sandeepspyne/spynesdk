@@ -674,13 +674,11 @@ class PreferenceFragment : BaseFragment<DashboardViewModel, FragmentPreferenceBi
     }
 
     private fun clockInOut() {
-        val locationId = if (viewModel.type == "checkin") null else
-            null
-
         binding.progressBar.visibility = View.VISIBLE
         viewModel.captureCheckInOut(
             viewModel.type,
             location_data,
+            getSelectedItem()!!?.locationId,
             viewModel.fileUrl
         )
     }

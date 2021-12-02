@@ -45,7 +45,7 @@ class DraftGridFragment : BaseFragment<ShootViewModel, FragmentGridEcomBinding>(
         }
 
         binding.ivEnd.setOnClickListener {
-            if (viewModel.isStopCaptureClickable)
+            if (viewModel.isStopCaptureClickable || (viewModel.fromDrafts && !viewModel.shootList.value.isNullOrEmpty()))
                 viewModel.stopShoot.value = true
         }
 

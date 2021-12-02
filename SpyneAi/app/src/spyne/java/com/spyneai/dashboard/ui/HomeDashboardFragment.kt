@@ -313,11 +313,9 @@ class HomeDashboardFragment :
                     binding.rvDashboardCategories.visibility = View.VISIBLE
 
                     categoriesList = it.value.data as ArrayList<NewCategoriesResponse.Data>
-//                    categoriesList!!.addAll(it.value.data)
-//                    categoriesList!!.addAll(it.value.data)
 
-//                    var filteredList = ArrayList<NewCategoriesResponse.Data>()
 
+                    filteredList.clear()
                         if (categoriesList!!.size > 9){
                             for (i in 0..7){
                                 filteredList.add(categoriesList!![i])
