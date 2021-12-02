@@ -41,9 +41,20 @@ class ReshootPortraitActivity : AppCompatActivity() {
 
         setShoot()
 
-       supportFragmentManager.beginTransaction()
+        val transaction = supportFragmentManager.beginTransaction()
             .add(R.id.flContainer, CameraFragment())
-            .add(R.id.flContainer, EcomOverlayReshootFragment())
+
+        when (categoryDetails.categoryId) {
+            AppConstants.ECOM_CATEGORY_ID,
+            AppConstants.FOOD_AND_BEV_CATEGORY_ID,
+            AppConstants.PHOTO_BOX_CATEGORY_ID -> {
+                transaction.add(R.id.flContainer, EcomGridReshootFragment())
+            }
+            else -> {
+                transaction.add(R.id.flContainer, EcomOverlayReshootFragment())
+            }
+        }
+        transaction
             .commit()
 
 
