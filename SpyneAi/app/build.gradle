@@ -218,6 +218,7 @@ android {
             versionCode 3
             versionName "1.2"
         }
+
     }
     sourceSets {
         sweepCars {
