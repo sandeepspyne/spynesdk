@@ -69,19 +69,15 @@ public class CategoriesDashboardAdapter(
 
         val splittedName = categoriesResponseList[position].prod_cat_name.split(" ")
 
-        when{
+        viewHolder.tvCategoryName.text =    when{
             splittedName.isNullOrEmpty() ||
-            splittedName.size == 1
-            -> viewHolder.tvCategoryName.text = categoriesResponseList[position].prod_cat_name
-
-            splittedName.size == 2 -> {
-                viewHolder.tvCategoryName.text = splittedName[0]+"\n"+splittedName[1]
-            }
-
-            splittedName.size == 3 -> {
-                splittedName[0]+"\n"+splittedName[1]+"\n"+splittedName[2]
-            }
+                    splittedName.size == 1
+            -> categoriesResponseList[position].prod_cat_name
+            splittedName.size == 2 -> splittedName[0]+"\n"+splittedName[1]
+            splittedName.size == 3 -> splittedName[0]+"\n"+splittedName[1]+" "+splittedName[2]
+            else -> categoriesResponseList[position].prod_cat_name
         }
+
 
 
 
