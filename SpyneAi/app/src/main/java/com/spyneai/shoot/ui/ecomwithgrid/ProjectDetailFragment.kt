@@ -112,6 +112,7 @@ class ProjectDetailFragment : BaseFragment<ShootViewModel, FragmentProjectDetail
                                 AppConstants.PHOTO_BOX_CATEGORY_ID,
                                 AppConstants.ECOM_CATEGORY_ID,
                                 AppConstants.CAPS_CATEGORY_ID,
+                                AppConstants.FASHION_CATEGORY_ID,
                                 AppConstants.FOOD_AND_BEV_CATEGORY_ID,
                                 AppConstants.HEALTH_AND_BEAUTY_CATEGORY_ID,
                                 AppConstants.ACCESSORIES_CATEGORY_ID,

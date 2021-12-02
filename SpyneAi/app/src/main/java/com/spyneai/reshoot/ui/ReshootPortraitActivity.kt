@@ -8,6 +8,7 @@ import androidx.lifecycle.ViewModelProvider
 import com.spyneai.R
 import com.spyneai.base.network.Resource
 import com.spyneai.dashboard.ui.base.ViewModelFactory
+import com.spyneai.getImageCategory
 import com.spyneai.needs.AppConstants
 import com.spyneai.needs.Utilities
 import com.spyneai.setLocale
@@ -35,6 +36,7 @@ class ReshootPortraitActivity : AppCompatActivity() {
             categoryId = intent.getStringExtra(AppConstants.CATEGORY_ID)
             categoryName = intent.getStringExtra(AppConstants.CATEGORY_NAME)
             gifList = intent.getStringExtra(AppConstants.GIF_LIST)
+            imageType = getImageCategory(intent.getStringExtra(AppConstants.CATEGORY_ID)!!)
         }
 
         shootViewModel.categoryDetails.value = categoryDetails

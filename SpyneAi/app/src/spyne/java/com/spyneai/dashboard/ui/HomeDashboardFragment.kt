@@ -394,7 +394,8 @@ class HomeDashboardFragment :
                                     "cat_P4t6BRVAyy",
                                     "cat_P4t6BRVART",
                                     "cat_P4t6BRVAMN",
-                                    "cat_P4t6BRVCAP"-> {
+                                    "cat_P4t6BRVCAP",
+                                    AppConstants.FASHION_CATEGORY_ID-> {
                                         val intent = Intent(requireContext(), ShootPortraitActivity::class.java)
                                         intent.putExtra(
                                             AppConstants.CATEGORY_NAME,

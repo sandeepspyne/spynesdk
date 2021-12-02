@@ -34,6 +34,7 @@ object AppConstants {
     val MENS_FASHION_CATEGORY_ID = "cat_P4t6BRVAMN"
     val FOOTWEAR_CATEGORY_ID = "cat_Ujt0kuFxX"
     val CAPS_CATEGORY_ID = "cat_P4t6BRVCAP"
+    val FASHION_CATEGORY_ID = "cat_skJ7HIvnc"
 
 
     val SHOOT_IMAGE_NAME_LIST = "SHOOT_IMAGE_NAME_LIST"
@@ -216,6 +217,7 @@ object AppConstants {
         put(WOMENS_FASHION_CATEGORY_ID,"Ecom")
         put(MENS_FASHION_CATEGORY_ID,"Ecom")
         put(CAPS_CATEGORY_ID,"Ecom")
+        put(FASHION_CATEGORY_ID,"Ecom")
     }
 
 }
