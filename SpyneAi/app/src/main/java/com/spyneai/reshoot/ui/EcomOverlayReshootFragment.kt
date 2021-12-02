@@ -62,6 +62,10 @@ class EcomOverlayReshootFragment : BaseFragment<ShootViewModel, FragmentEcomOver
             ivBackCompleted.visibility = View.VISIBLE
             tvSkuName.text = viewModel.sku.value?.skuName
         }
+
+        binding.ivBackCompleted.setOnClickListener {
+            requireActivity().onBackPressed()
+        }
         //observe new image clicked
         viewModel.shootList.observe(viewLifecycleOwner, {
             try {
@@ -219,6 +223,11 @@ class EcomOverlayReshootFragment : BaseFragment<ShootViewModel, FragmentEcomOver
                     }
 
                     //show leveler
+                    when(viewModel.categoryDetails.value?.categoryId){
+                        AppConstants.FOOTWEAR_CATEGORY_ID ->{
+                            viewModel.showLeveler.value = true
+                        }
+                    }
                 }
 
                 is Resource.Failure -> {
