@@ -77,16 +77,9 @@ class SelectImagesFragment : BaseFragment<ProcessedViewModel,FragmentSelectImage
 
         var reshootIntent : Intent? = null
 
-        when(list[0].image_category){
-            "Ecom","Food","Footwear" -> {
-                reshootIntent = Intent(requireActivity(),ReshootPortraitActivity::class.java)
-                selectedList.forEach {
-                    it.isSelected = false
-                }
-
-                SelectedImagesHelper.selectedImages = selectedList
-            }
-            else -> {
+        when(viewModel.categoryId){
+            AppConstants.CARS_CATEGORY_ID,
+            AppConstants.BIKES_CATEGORY_ID-> {
                 val selectedIdsMap = HashMap<Int,String>()
 
                 selectedList.forEachIndexed { _, data ->
@@ -96,7 +89,31 @@ class SelectImagesFragment : BaseFragment<ProcessedViewModel,FragmentSelectImage
                 SelectedImagesHelper.selectedOverlayIds = selectedIdsMap
                 reshootIntent = Intent(requireActivity(),ReshootActivity::class.java)
             }
+
+            AppConstants.ECOM_CATEGORY_ID,
+            AppConstants.PHOTO_BOX_CATEGORY_ID,
+            AppConstants.FOOD_AND_BEV_CATEGORY_ID-> {
+                selectedList.forEach {
+                    it.isSelected = false
+                }
+
+                SelectedImagesHelper.selectedImages = selectedList
+
+                reshootIntent = Intent(requireActivity(),ReshootPortraitActivity::class.java)
+            }
+            else -> {
+                val selectedIdsMap = HashMap<Int,String>()
+
+                selectedList.forEachIndexed { _, data ->
+                    selectedIdsMap[data.overlayId] = data.image_name
+                }
+
+                SelectedImagesHelper.selectedOverlayIds = selectedIdsMap
+                reshootIntent = Intent(requireActivity(),ReshootPortraitActivity::class.java)
+            }
         }
+
+
 
         reshootIntent.apply {
             putExtra(AppConstants.PROJECT_ID,viewModel.projectId)

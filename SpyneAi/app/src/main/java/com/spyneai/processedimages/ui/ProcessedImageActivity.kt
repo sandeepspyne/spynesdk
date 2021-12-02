@@ -9,6 +9,7 @@ import com.spyneai.databinding.ActivityProcessedImageBinding
 import com.spyneai.needs.AppConstants
 import com.spyneai.processedimages.ui.data.ProcessedViewModel
 import com.spyneai.reshoot.ui.SelectImagesFragment
+import io.sentry.protocol.App
 
 class ProcessedImageActivity : AppCompatActivity() {
 
@@ -29,6 +30,8 @@ class ProcessedImageActivity : AppCompatActivity() {
             .commit()
 
         val processViewModel = ViewModelProvider(this, ViewModelFactory()).get(ProcessedViewModel::class.java)
+
+        processViewModel.categoryId = intent.getStringExtra(AppConstants.CATEGORY_ID)
 
         processViewModel.reshoot.observe(this,{
             supportFragmentManager

@@ -22,6 +22,7 @@ import com.spyneai.R
 import com.spyneai.base.BaseFragment
 import com.spyneai.base.OnItemClickListener
 import com.spyneai.base.network.Resource
+import com.spyneai.camera2.OverlaysResponse
 import com.spyneai.captureEvent
 import com.spyneai.dashboard.ui.handleApiError
 import com.spyneai.databinding.FragmentEcomOverlayReshootBinding
@@ -57,8 +58,9 @@ class EcomOverlayReshootFragment : BaseFragment<ShootViewModel, FragmentEcomOver
         observerOverlayIds()
 
         binding.apply {
+            tvSkuName.visibility = View.VISIBLE
+            ivBackCompleted.visibility = View.VISIBLE
             tvSkuName.text = viewModel.sku.value?.skuName
-
         }
         //observe new image clicked
         viewModel.shootList.observe(viewLifecycleOwner, {
@@ -68,7 +70,6 @@ class EcomOverlayReshootFragment : BaseFragment<ShootViewModel, FragmentEcomOver
                     showImageConfirmDialog(element!!)
                 }
             } catch (e: Exception) {
-                Log.d(TAG, "onViewCreated: " + e.localizedMessage)
                 e.printStackTrace()
             }
         })
@@ -124,6 +125,32 @@ class EcomOverlayReshootFragment : BaseFragment<ShootViewModel, FragmentEcomOver
             }
         })
 
+        viewModel.updateSelectItem.observe(viewLifecycleOwner,{ it ->
+            if (it){
+                val list = reshootAdapter?.listItems as List<ReshootOverlaysRes.Data>
+
+                val element = list.firstOrNull {
+                    it.isSelected
+                }
+                val data = list[viewModel.currentShoot]
+
+                if (element != null && data != element) {
+                    data.isSelected = true
+                    element.isSelected = false
+                    reshootAdapter?.notifyItemChanged(viewModel.currentShoot)
+                    reshootAdapter?.notifyItemChanged(list.indexOf(element))
+                    binding.rvImages.scrollToPosition(viewModel.currentShoot)
+                }
+            }
+        })
+
+        viewModel.notifyItemChanged.observe(viewLifecycleOwner, {
+            reshootAdapter?.notifyItemChanged(it)
+        })
+
+        viewModel.scrollView.observe(viewLifecycleOwner, {
+            binding.rvImages.scrollToPosition(it)
+        })
         viewModel.isCameraButtonClickable = true
     }
 
@@ -190,6 +217,8 @@ class EcomOverlayReshootFragment : BaseFragment<ShootViewModel, FragmentEcomOver
                         adapter = reshootAdapter
                         scrollToPosition(index)
                     }
+
+                    //show leveler
                 }
 
                 is Resource.Failure -> {
@@ -209,25 +238,33 @@ class EcomOverlayReshootFragment : BaseFragment<ShootViewModel, FragmentEcomOver
         when (data) {
             is ReshootOverlaysRes.Data -> {
 
-                if (data.imageClicked) {
-                    ReclickDialog().show(requireActivity().supportFragmentManager, "ReclickDialog")
-                }
-                val list = reshootAdapter?.listItems as List<ReshootOverlaysRes.Data>
+                if (data.imageClicked){
+                    val bundle = Bundle()
+                    bundle.putInt("overlay_id",data.id)
+                    bundle.putInt("position",position)
+                    bundle.putString("image_type",
+                        viewModel.categoryDetails.value?.imageType)
+                    val reclickDialog = ReclickDialog()
+                    reclickDialog.arguments = bundle
+                    reclickDialog.show(requireActivity().supportFragmentManager,"ReclickDialog")
+                }else{
+                    viewModel.overlayId = data.id
 
-                val element = list.firstOrNull {
-                    it.isSelected
+                    val list = reshootAdapter?.listItems as List<ReshootOverlaysRes.Data>
+
+                    val element = list.firstOrNull {
+                        it.isSelected
+                    }
+
+                    if (element != null && data != element){
+                        data.isSelected = true
+                        element.isSelected = false
+                        reshootAdapter?.notifyItemChanged(position)
+                        reshootAdapter?.notifyItemChanged(list.indexOf(element))
+                        binding.rvImages.scrollToPosition(position)
+                    }
                 }
 
-                if (element != null && data != element) {
-                    //loadOverlay(data.angle_name,data.display_thumbnail)
-                    //viewModel.selectedOverlay = data
-
-                    data.isSelected = true
-                    element.isSelected = false
-                    reshootAdapter?.notifyItemChanged(position)
-                    reshootAdapter?.notifyItemChanged(list.indexOf(element))
-                    binding.rvImages.scrollToPosition(position)
-                }
             }
 
             is ImagesOfSkuRes.Data -> {
@@ -261,17 +298,16 @@ class EcomOverlayReshootFragment : BaseFragment<ShootViewModel, FragmentEcomOver
             is ReshootOverlaysRes.Data -> {
                 viewModel.reshotImageName = data.imageName
 
-                if (data.type == "Exterior") {
-                    viewModel.showLeveler.value = true
-                    binding.imgOverlay?.visibility = View.VISIBLE
-                    loadOverlay(data.displayName, data.displayThumbnail)
-                } else {
-                    viewModel.hideLeveler.value = true
-                    binding.imgOverlay?.visibility = View.GONE
-                }
+                viewModel.displayName = data.displayName
+                viewModel.displayThumbanil = data.displayThumbnail
+                viewModel.overlayId = data.id
 
-                if (getString(R.string.app_name) == AppConstants.KARVI)
-                    binding.imgOverlay?.visibility = View.GONE
+                binding.imgOverlay.visibility = View.VISIBLE
+
+                loadOverlay(data.displayName, data.displayThumbnail)
+
+                binding.tvShoot?.text =
+                    position.plus(1).toString() + "/" + viewModel.exterirorAngles.value.toString()
 
                 viewModel.categoryDetails.value?.imageType = data.type
 

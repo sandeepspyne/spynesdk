@@ -20,6 +20,7 @@ class ProcessedViewModel : ViewModel() {
     var skuId : String? = null
     var skuName : String? = null
     var selectedImageUrl : String? = null
+    var categoryId: String? = null
 
     val reshoot = MutableLiveData<Boolean>()
 

@@ -30,8 +30,7 @@
                 android:layout_height="match_parent"
                 android:layout_alignParentLeft="true"
                 android:src="@drawable/back"
-                android:visibility="invisible"
-                app:tint="@color/black" />
+                android:visibility="invisible" />
 
             <TextView
                 android:id="@+id/tvSkuName"
