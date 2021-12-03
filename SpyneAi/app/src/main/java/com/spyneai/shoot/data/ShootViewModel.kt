@@ -289,10 +289,14 @@ class ShootViewModel : ViewModel() {
         image.skuName = sku.value?.skuName?.uppercase()
         image.angle = shootData.angle
         image.meta = shootData.meta
-        image.name = if (shootData.name.contains(".")) shootData.name else shootData.name + "." + shootData.capturedImage.substringAfter(".")
         image.debugData = shootData.debugData
         image.isReshoot = if (isReshoot) 1 else 0
         image.isReclick = if (isReclick) 1 else 0
+
+        if (image.categoryName == "360int")
+            image.name = image.skuName + "_" + image.skuId + "_360int_"+image.sequence+".jpg"
+        else
+            image.name = if (shootData.name.contains(".")) shootData.name else shootData.name + "." + shootData.capturedImage.substringAfter(".")
 
 
         if (imageRepository.isImageExist(image.skuId!!, image.name!!)) {
