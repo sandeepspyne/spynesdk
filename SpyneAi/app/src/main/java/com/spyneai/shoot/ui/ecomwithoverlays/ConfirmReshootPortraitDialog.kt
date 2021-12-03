@@ -15,6 +15,7 @@ import com.spyneai.base.network.Resource
 import com.spyneai.captureEvent
 import com.spyneai.dashboard.ui.handleApiError
 import com.spyneai.databinding.ConfirmReshootPortraitDialogBinding
+import com.spyneai.loadSmartly
 import com.spyneai.needs.Utilities
 import com.spyneai.posthog.Events
 import com.spyneai.service.Actions
@@ -96,23 +97,28 @@ class ConfirmReshootPortraitDialog : BaseDialogFragment<ShootViewModel, ConfirmR
 
         Log.d(TAG, "onViewCreated: "+uri)
 
-        binding.ivCapturedImage.setRotation(90F)
-        binding.ivCaptured2.setRotation(90F)
+//        binding.ivCapturedImage.setRotation(90F)
+//        binding.ivCaptured2.setRotation(90F)
 
-        Glide.with(requireContext())
-            .load(uri)
-            .diskCacheStrategy(DiskCacheStrategy.NONE)
-                        .skipMemoryCache(true)
-                        .into(binding.ivCapturedImage)
+        if (uri != null) {
+            context?.loadSmartly(uri,binding.ivCapturedImage)
+            context?.loadSmartly(uri,binding.ivCaptured2)
+        }
 
-
-
-
-                        Glide.with(requireContext())
-                            .load(uri)
-                            .diskCacheStrategy(DiskCacheStrategy.NONE)
-                            .skipMemoryCache(true)
-            .into(binding.ivCaptured2)
+//        Glide.with(requireContext())
+//            .load(uri)
+//            .diskCacheStrategy(DiskCacheStrategy.NONE)
+//                        .skipMemoryCache(true)
+//                        .into(binding.ivCapturedImage)
+//
+//
+//
+//
+//                        Glide.with(requireContext())
+//                            .load(uri)
+//                            .diskCacheStrategy(DiskCacheStrategy.NONE)
+//                            .skipMemoryCache(true)
+//            .into(binding.ivCaptured2)
 
         setOverlay(binding.ivCaptured2,viewModel.getOverlay())
 

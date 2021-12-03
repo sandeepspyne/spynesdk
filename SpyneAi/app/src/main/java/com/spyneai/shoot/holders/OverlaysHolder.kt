@@ -13,6 +13,7 @@ import com.spyneai.base.OnItemClickListener
 import com.spyneai.camera2.OverlaysResponse
 import com.spyneai.dashboard.ui.WhiteLabelConstants
 import com.spyneai.databinding.ItemOverlaysBinding
+import com.spyneai.loadSmartly
 import com.spyneai.needs.AppConstants
 import com.spyneai.shoot.data.OnOverlaySelectionListener
 
@@ -66,14 +67,14 @@ class OverlaysHolder(
                 &&
                 (data.prod_cat_id != AppConstants.CARS_CATEGORY_ID &&
                         data.prod_cat_id != AppConstants.BIKES_CATEGORY_ID)){
-                binding?.ivOverlay?.rotation = 90f
+                itemView.loadSmartly(data.display_thumbnail,binding?.ivOverlay!!)
+            }else{
+                Glide.with(itemView)
+                    .load(data.imagePath)
+                    .diskCacheStrategy(DiskCacheStrategy.NONE)
+                    .skipMemoryCache(true)
+                    .into(binding?.ivOverlay!!)
             }
-
-            Glide.with(itemView)
-                .load(data.imagePath)
-                .diskCacheStrategy(DiskCacheStrategy.NONE)
-                .skipMemoryCache(true)
-                .into(binding?.ivOverlay!!)
         }else {
             Glide.with(itemView)
                 .load(data.display_thumbnail)

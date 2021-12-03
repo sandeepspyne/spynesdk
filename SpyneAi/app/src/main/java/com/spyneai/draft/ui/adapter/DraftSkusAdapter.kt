@@ -13,6 +13,7 @@ import com.bumptech.glide.Glide
 import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.spyneai.R
 import com.spyneai.draft.ui.DraftSkuDetailsActivity
+import com.spyneai.loadSmartly
 import com.spyneai.needs.AppConstants
 import com.spyneai.needs.Utilities
 import com.spyneai.orders.data.response.GetProjectsResponse
@@ -52,20 +53,20 @@ class DraftSkusAdapter (
         holder.tvDate.text = skuList[position].created_on
 
         if (skuList[position].categoryId != AppConstants.CARS_CATEGORY_ID)
-            holder.ivThumbnail.rotation = 90F
-
-        try {
+            try {
             if (Utilities.getPreference(context, AppConstants.CATEGORY_NAME).equals("Food & Beverages")) {
                 Glide.with(context)
                     .load(R.drawable.ic_food_thumbnail_draft)
                     .into(holder.ivThumbnail)
             } else{
-                Glide.with(context) // replace with 'this' if it's in activity
-                    .load(skuList[position].images[0].input_lres)
-                    .diskCacheStrategy(DiskCacheStrategy.NONE)
-                    .skipMemoryCache(true)
-                    .error(R.mipmap.defaults) // show error drawable if the image is not a gif
-                    .into(holder.ivThumbnail)
+                context.loadSmartly(skuList[position].images[0].input_lres,
+                    holder.ivThumbnail)
+//                Glide.with(context) // replace with 'this' if it's in activity
+//                    .load(skuList[position].images[0].input_lres)
+//                    .diskCacheStrategy(DiskCacheStrategy.NONE)
+//                    .skipMemoryCache(true)
+//                    .error(R.mipmap.defaults) // show error drawable if the image is not a gif
+//                    .into(holder.ivThumbnail)
             }
 
 

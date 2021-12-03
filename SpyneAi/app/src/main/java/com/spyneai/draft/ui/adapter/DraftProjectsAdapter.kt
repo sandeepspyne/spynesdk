@@ -13,6 +13,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.spyneai.R
 import com.spyneai.draft.ui.DraftSkusActivity
+import com.spyneai.loadSmartly
 import com.spyneai.needs.AppConstants
 import com.spyneai.needs.Utilities
 import com.spyneai.orders.data.response.GetProjectsResponse
@@ -60,7 +61,6 @@ class DraftProjectsAdapter(
 
         try {
             if (draftsList[position].sku[0].images.isNullOrEmpty()) {
-                holder.ivThumbnail.rotation = 90F
                 if (draftsList[position].categoryId == AppConstants.CARS_CATEGORY_ID && (draftsList[position].categoryId == draftsList[position].subCategoryId)) {
                     Glide.with(context)
                         .load(R.drawable.three_sixty_thumbnail)
@@ -90,9 +90,11 @@ class DraftProjectsAdapter(
                             .into(holder.ivThumbnail)
                     }
                 }else{
-                    Glide.with(context) // replace with 'this' if it's in activity
-                        .load(draftsList[position].sku[0].images[0].input_lres)
-                        .into(holder.ivThumbnail)
+                    context.loadSmartly(draftsList[position].sku[0].images[0].input_lres,
+                        holder.ivThumbnail)
+//                    Glide.with(context) // replace with 'this' if it's in activity
+//                        .load(draftsList[position].sku[0].images[0].input_lres)
+//                        .into(holder.ivThumbnail)
                 }
             }
         }catch (e : Exception){

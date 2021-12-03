@@ -570,11 +570,15 @@ class CameraFragment : BaseFragment<ShootViewModel, FragmentCameraBinding>(), Pi
                     viewModel.isCameraButtonClickable = true
                     log("Photo capture failed: " + exc.message)
 
-                    Toast.makeText(
-                        requireContext(),
-                        "Photo capture failed: " + exc.message,
-                        Toast.LENGTH_LONG
-                    ).show()
+                    try {
+                        Toast.makeText(
+                            requireContext(),
+                            "Photo capture failed: " + exc.message,
+                            Toast.LENGTH_LONG
+                        ).show()
+                    }catch (e : Exception){
+
+                    }
 
                     Utilities.hideProgressDialog()
 

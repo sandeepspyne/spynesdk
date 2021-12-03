@@ -7,6 +7,8 @@ import android.os.Build
 import android.os.Bundle
 import android.util.Log
 import android.view.View
+import android.view.ViewGroup
+import android.widget.Button
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
@@ -66,6 +68,7 @@ class MainDashboardActivity : AppCompatActivity() {
         val view = binding.root
         setContentView(view)
         setLocale()
+
 
         if (intent.getBooleanExtra("show_ongoing", false)) {
             val intent = Intent(this, MyOrdersActivity::class.java)

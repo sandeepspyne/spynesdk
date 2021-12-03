@@ -11,6 +11,7 @@ import com.spyneai.R
 import com.spyneai.base.GenericAdapter
 import com.spyneai.base.OnItemClickListener
 import com.spyneai.databinding.ItemClickedBinding
+import com.spyneai.loadSmartly
 import com.spyneai.shoot.data.OnOverlaySelectionListener
 import com.spyneai.shoot.data.model.ShootData
 
@@ -66,13 +67,15 @@ class ClickedHolder(
 
         if (data.imageClicked) {
             if (!data.imagePath.contains("http"))
-                binding?.ivClicked?.rotation = 90f
+//                binding?.ivClicked?.rotation = 90f
 
-            Glide.with(itemView)
-                .load(data.capturedImage)
-                .diskCacheStrategy(DiskCacheStrategy.NONE)
-                .skipMemoryCache(true)
-                .into(binding?.ivClicked!!)
+            itemView.loadSmartly(data.capturedImage,binding?.ivClicked!!)
+
+//            Glide.with(itemView)
+//                .load(data.capturedImage)
+//                .diskCacheStrategy(DiskCacheStrategy.NONE)
+//                .skipMemoryCache(true)
+//                .into(binding?.ivClicked!!)
         }
 
         binding?.flOverlay?.setOnClickListener {

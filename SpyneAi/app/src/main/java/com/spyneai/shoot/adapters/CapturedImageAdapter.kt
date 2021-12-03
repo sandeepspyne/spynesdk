@@ -10,6 +10,7 @@ import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.spyneai.R
+import com.spyneai.loadSmartly
 import com.spyneai.shoot.data.ShootViewModel
 import java.util.*
 
@@ -38,10 +39,11 @@ class CapturedImageAdapter(
 
     override fun onBindViewHolder(viewHolder: ViewHolder, position: Int) {
         viewHolder.tvImageCount.text = (position + 1).toString()
-        viewHolder.ivCapturedImage.setRotation(90F)
-        Glide.with(context).load(
-                    shootList[position])
-            .into(viewHolder.ivCapturedImage)
+//        viewHolder.ivCapturedImage.setRotation(90F)
+        context.loadSmartly(shootList[position],viewHolder.ivCapturedImage)
+//        Glide.with(context).load(
+//                    shootList[position])
+//            .into(viewHolder.ivCapturedImage)
     }
 
 

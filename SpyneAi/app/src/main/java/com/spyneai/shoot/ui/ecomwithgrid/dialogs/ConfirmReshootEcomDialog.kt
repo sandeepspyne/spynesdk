@@ -20,6 +20,7 @@ import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.spyneai.base.BaseDialogFragment
 import com.spyneai.captureEvent
 import com.spyneai.databinding.ConfirmReshootEcomDialogBinding
+import com.spyneai.loadSmartly
 import com.spyneai.posthog.Events
 import com.spyneai.service.Actions
 import com.spyneai.service.ImageUploadingService
@@ -40,17 +41,22 @@ class ConfirmReshootEcomDialog :
         dialog?.setCancelable(false)
 
         val uri = viewModel.shootData.value?.capturedImage
-        binding.ivCapturedImage.setRotation(90F)
+//        binding.ivCapturedImage.setRotation(90F)
 
         viewModel.end.value = System.currentTimeMillis()
         val difference = (viewModel.end.value!! - viewModel.begin.value!!)/1000.toFloat()
         log("dialog- "+difference)
 
-        Glide.with(requireContext())
-            .load(uri)
-            .diskCacheStrategy(DiskCacheStrategy.NONE)
-            .skipMemoryCache(true)
-            .into(binding.ivCapturedImage)
+
+        if (uri != null) {
+            context?.loadSmartly(uri,binding.ivCapturedImage)
+        }
+
+//        Glide.with(requireContext())
+//            .load(uri)
+//            .diskCacheStrategy(DiskCacheStrategy.NONE)
+//            .skipMemoryCache(true)
+//            .into(binding.ivCapturedImage)
 
         binding.btReshootImage.setOnClickListener {
             viewModel.reshootCapturedImage.value = true

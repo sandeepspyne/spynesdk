@@ -5,18 +5,17 @@ import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.graphics.Matrix
 import android.media.ExifInterface
+import android.os.Build
+import android.os.Environment
 import android.util.Log
 import androidx.work.*
 import com.spyneai.*
-import com.spyneai.R
 import com.spyneai.base.network.ClipperApi
 import com.spyneai.base.network.Resource
 import com.spyneai.interfaces.GcpClient
 import com.spyneai.needs.AppConstants
-import com.spyneai.needs.Utilities
 import com.spyneai.posthog.Events
 import com.spyneai.shoot.data.ImageLocalRepository
-import com.spyneai.shoot.data.ShootLocalRepository
 import com.spyneai.shoot.data.ShootRepository
 import com.spyneai.shoot.data.model.Image
 import com.spyneai.shoot.utils.logUpload
@@ -24,9 +23,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
-import okhttp3.MultipartBody
 import okhttp3.RequestBody.Companion.asRequestBody
-import okhttp3.RequestBody.Companion.toRequestBody
 import okhttp3.ResponseBody
 import retrofit2.Call
 import retrofit2.Callback
@@ -136,16 +133,27 @@ class ImageUploader(
                                         )
 
                                     try {
-                                        val file = File(image.imagePath)
+                                        val s = File(outputDirectory).mkdir()
+
+//                                        val outputDir =
+//                                            context.cacheDir // context being the Activity pointer
+
+                                        // val file = File(image.imagePath)
+                                        val outputFile = File.createTempFile(
+                                            System.currentTimeMillis().toString(),
+                                            ".jpg",
+                                            File(outputDirectory)
+                                        )
                                         val os: OutputStream = BufferedOutputStream(
-                                            FileOutputStream(file)
+                                            FileOutputStream(outputFile)
                                         )
                                         bitmap!!.compress(Bitmap.CompressFormat.JPEG, 100, os)
                                         os.close()
 
+                                        image.imagePath = outputFile.path
                                         uploadImageToGcp(image, imageType, retryCount)
                                     } catch (
-                                        e: java.lang.Exception
+                                        e: Exception
                                     ) {
                                         val s = ""
                                     }
@@ -194,13 +202,23 @@ class ImageUploader(
                                                 )
 
                                             try {
-                                                val file = File(image.imagePath)
+                                                val s = File(outputDirectory).mkdir()
+//                                                val outputDir = context.cacheDir // context being the Activity pointer
+
+                                                val outputFile = File.createTempFile(
+                                                    System.currentTimeMillis().toString(),
+                                                    ".jpg",
+                                                    File(outputDirectory)
+                                                )
+
+                                                //val file = File(image.imagePath)
                                                 val os: OutputStream = BufferedOutputStream(
-                                                    FileOutputStream(file)
+                                                    FileOutputStream(outputFile)
                                                 )
                                                 bitmap!!.compress(Bitmap.CompressFormat.JPEG, 100, os)
                                                 os.close()
 
+                                                image.imagePath = outputFile.path
                                                 uploadImageToGcp(image, imageType, retryCount)
                                             } catch (
                                                 e: java.lang.Exception
@@ -264,8 +282,12 @@ class ImageUploader(
                             if (count > 0) {
                                 //upload double skipped images if we don't have any new image
                                 selectLastImageAndUpload(AppConstants.SKIPPED, 0)
-                            } else
+                            } else{
+                                //delete temp files
+                                deleteTempFiles(File(outputDirectory))
                                 listener.onUploaded(image)
+                            }
+
                         } else {
                             //upload images clicked while service uploading skipped images
                             selectLastImageAndUpload(AppConstants.REGULAR, 0)
@@ -485,19 +507,6 @@ class ImageUploader(
                     null,
                     count
                 )
-//                   captureEvent(
-//                       AppConstants.IS_MARK_DONE_STATUS_UPDATED,
-//                       Properties()
-//                           .apply {
-//                               put("iteration_id",lastIdentifier)
-//                               put("retry_count",retryCount)
-//                               put("image_id",image.itemId)
-//                               put("pre_url",updatedImage.preSignedUrl)
-//                               put("is_updated",count != 0)
-//                               put("upload_status",updatedImage.isStatusUpdated)
-//                               put("make_done_status",updatedImage.isStatusUpdated)
-//                           }
-//                   )
 
                 selectLastImageAndUpload(imageType, 0)
             }
@@ -573,6 +582,30 @@ class ImageUploader(
                 eventName,
                 properties, error!!
             )
+        }
+    }
+
+    private fun deleteTempFiles(file: File): Boolean {
+        if (file.isDirectory) {
+            val files = file.listFiles()
+            if (files != null) {
+                for (f in files) {
+                    if (f.isDirectory) {
+                        deleteTempFiles(f)
+                    } else {
+                        f.delete()
+                    }
+                }
+            }
+        }
+        return file.delete()
+    }
+
+    val outputDirectory: String by lazy {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+            "${Environment.DIRECTORY_DCIM}/SpyneTemp/"
+        } else {
+            "${Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DCIM)}/SpyneTemp/"
         }
     }
 

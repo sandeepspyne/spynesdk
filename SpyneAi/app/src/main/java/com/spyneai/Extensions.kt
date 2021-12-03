@@ -18,6 +18,7 @@ import android.net.NetworkInfo
 import android.net.Uri
 import android.util.Log
 import android.util.Size
+import android.view.View
 import android.widget.ImageButton
 import android.widget.ImageView
 import android.widget.Toast
@@ -284,6 +285,21 @@ fun getImageCategory(catId : String) : String {
 }
 
 fun Context.loadSmartly(path : String,imageView : ImageView){
+    if (path.contains("http") || path.contains("https")){
+        imageView.rotation = 0F
+    }
+    else{
+        imageView.rotation = 90F
+    }
+
+    Glide.with(this)
+        .load(path)
+        .diskCacheStrategy(DiskCacheStrategy.NONE)
+        .skipMemoryCache(true)
+        .into(imageView)
+}
+
+fun View.loadSmartly(path : String,imageView : ImageView){
     if (path.contains("http") || path.contains("https")){
         imageView.rotation = 0F
     }
