@@ -255,7 +255,7 @@
             tools:replace="android:authorities" />
         <provider
             android:name="androidx.core.content.FileProvider"
-            android:authorities="com.spyneai.fileprovider"
+            android:authorities="${applicationId}.fileprovider"
             android:exported="false"
             android:grantUriPermissions="true">
             <meta-data

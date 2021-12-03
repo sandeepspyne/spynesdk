@@ -74,7 +74,7 @@ class InteriorHintDialog : BaseDialogFragment<ShootViewModel, DialogInteriorHint
     }
     fun refreshText(){
         requireContext().setLocale()
-        binding.tvSkuNameDialog.text = getString(R.string.we_recommend_focused)
+        binding.tvSkuNameDialog.text = getString(R.string.we_recommend)
         binding.tvSkip.text = getString(R.string.skip)
         binding.tvShootNowInterior.text = getString(R.string.shoot_now)
     }

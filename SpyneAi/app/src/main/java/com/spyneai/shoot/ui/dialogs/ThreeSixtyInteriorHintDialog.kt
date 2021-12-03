@@ -126,6 +126,7 @@ class ThreeSixtyInteriorHintDialog : BaseDialogFragment<ShootViewModel, Dialog36
                         viewModel.sku.value?.skuId!!,
                         "360int",
                         Utilities.getPreference(requireContext(),AppConstants.AUTH_KEY).toString(),
+                        0,
                         sequenceNumber!!
                     ))
                 }
