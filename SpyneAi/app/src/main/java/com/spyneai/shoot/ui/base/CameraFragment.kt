@@ -90,14 +90,6 @@ class CameraFragment : BaseFragment<ShootViewModel, FragmentCameraBinding>(), Pi
     private var pitch = 0.0
     var roll = 0.0
     var azimuth = 0.0
-//    private var centerPosition = 0
-//    private var topConstraint = 0
-//    private var bottomConstraint = 0
-
-    private var tiltUpperBound = -100
-    private var tiltLowerBound = -80
-    private var sideRotationMax = -5
-    private var sideRotationMin = 5
 
     private lateinit var mSensorManager: SensorManager
     private var mAccelerometer: Sensor? = null
@@ -112,8 +104,6 @@ class CameraFragment : BaseFragment<ShootViewModel, FragmentCameraBinding>(), Pi
     private var handler: Handler? = null
 
     private var filename = ""
-
-    private var cameraAngle = 45
 
     var gravity = FloatArray(3)
     val TAG = "Camera Fragment"
@@ -709,30 +699,6 @@ class CameraFragment : BaseFragment<ShootViewModel, FragmentCameraBinding>(), Pi
         log("addShootIteamCalled- " + difference)
         viewModel.showConfirmReshootDialog.value = true
 
-        if (viewModel.categoryDetails.value?.categoryName != "Automobiles"
-            && viewModel.categoryDetails.value?.categoryName != "Bikes"
-        ) {
-            if (viewModel.categoryDetails.value?.imageType != "Info") {
-                GlobalScope.launch(Dispatchers.Default) {
-                    val bitmap =
-                        modifyOrientation(BitmapFactory.decodeFile(capturedImage), capturedImage)
-
-                    try {
-                        val file = File(capturedImage)
-                        val os: OutputStream = BufferedOutputStream(FileOutputStream(file))
-                        bitmap!!.compress(Bitmap.CompressFormat.JPEG, 100, os)
-                        os.close()
-                    } catch (
-                        e: java.lang.Exception
-                    ) {
-                        val s = ""
-                    }
-
-                }
-            }
-        }
-
-
         if (viewModel.shootList.value == null) {
             Utilities.hideProgressDialog()
             Utilities.hideProgressDialog()
@@ -759,7 +725,7 @@ class CameraFragment : BaseFragment<ShootViewModel, FragmentCameraBinding>(), Pi
             Utilities.getPreference(BaseApplication.getContext(), AppConstants.AUTH_KEY).toString(),
             viewModel.overlayId,
             sequenceNumber,
-            cameraAngle,
+            binding.flLevelIndicator.cameraAngle,
             filename,
             debugData.toString()
         )
@@ -770,7 +736,7 @@ class CameraFragment : BaseFragment<ShootViewModel, FragmentCameraBinding>(), Pi
 
         if (item != null){
             item.capturedImage = capturedImage
-            item.angle = cameraAngle
+            item.angle = binding.flLevelIndicator.cameraAngle
             item.name = filename
             viewModel.isReclick = true
         }
@@ -789,36 +755,6 @@ class CameraFragment : BaseFragment<ShootViewModel, FragmentCameraBinding>(), Pi
         }
 
         BaseApplication.getContext().captureEvent(Events.IMAGE_CAPTURED, properties)
-    }
-
-    @Throws(IOException::class)
-    fun modifyOrientation(bitmap: Bitmap, image_absolute_path: String?): Bitmap? {
-        val ei = ExifInterface(image_absolute_path!!)
-        val orientation =
-            ei.getAttributeInt(ExifInterface.TAG_ORIENTATION, ExifInterface.ORIENTATION_NORMAL)
-        return when (orientation) {
-            ExifInterface.ORIENTATION_ROTATE_90 -> rotate(bitmap, 90f)
-            ExifInterface.ORIENTATION_ROTATE_180 -> rotate(bitmap, 180f)
-            ExifInterface.ORIENTATION_ROTATE_270 -> rotate(bitmap, 270f)
-            ExifInterface.ORIENTATION_FLIP_HORIZONTAL -> flip(bitmap, true, false)
-            ExifInterface.ORIENTATION_FLIP_VERTICAL -> flip(bitmap, false, true)
-            else -> bitmap
-        }
-    }
-
-    fun rotate(bitmap: Bitmap, degrees: Float): Bitmap? {
-        val matrix = Matrix()
-        matrix.postRotate(degrees)
-        return Bitmap.createBitmap(bitmap, 0, 0, bitmap.width, bitmap.height, matrix, true)
-    }
-
-    fun flip(bitmap: Bitmap, horizontal: Boolean, vertical: Boolean): Bitmap? {
-        val matrix = Matrix()
-        matrix.preScale(
-            (if (horizontal) -1 else 1.toFloat()) as Float,
-            (if (vertical) -1 else 1.toFloat()) as Float
-        )
-        return Bitmap.createBitmap(bitmap, 0, 0, bitmap.width, bitmap.height, matrix, true)
     }
 
     override fun getViewModel() = ShootViewModel::class.java
