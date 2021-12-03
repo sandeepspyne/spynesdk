@@ -455,8 +455,14 @@ class CameraFragment : BaseFragment<ShootViewModel, FragmentCameraBinding>(), Pi
 
                 cameraInfo = camera.cameraInfo
 
-                var currentZoomRatio = cameraInfo?.zoomState?.value?.zoomRatio ?: 0F
-                cameraControl?.setZoomRatio(currentZoomRatio * 1.3F)
+                when(viewModel.categoryDetails.value?.categoryId){
+                    AppConstants.CARS_CATEGORY_ID,
+                    AppConstants.BIKES_CATEGORY_ID ->{}
+                    else ->{
+                        var currentZoomRatio = cameraInfo?.zoomState?.value?.zoomRatio ?: 0F
+                        cameraControl?.setZoomRatio(currentZoomRatio * 1.3F)
+                    }
+                }
                 if (viewModel.shootDimensions.value == null ||
                     viewModel.shootDimensions.value?.previewHeight == 0
                 ) {
