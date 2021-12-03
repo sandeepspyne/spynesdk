@@ -10,15 +10,16 @@ import com.spyneai.isMyServiceRunning
 import com.spyneai.needs.AppConstants
 import com.spyneai.needs.Utilities
 import com.spyneai.posthog.Events
+import com.spyneai.shoot.data.ImageLocalRepository
 import com.spyneai.shoot.data.ShootLocalRepository
 
 class ExplicitConnectionReceiver : BroadcastReceiver() {
     override fun onReceive(context: Context?, intent: Intent?) {
 
 
-        val shootLocalRepository = ShootLocalRepository()
-        if (shootLocalRepository.getOldestImage().itemId != null
-            || shootLocalRepository.getOldestSkippedImage().itemId != null){
+        val shootLocalRepository = ImageLocalRepository()
+        if (shootLocalRepository.getOldestImage("0").itemId != null
+            || shootLocalRepository.getOldestImage("-1").itemId != null){
                 if (context != null){
 
                     val prperties = HashMap<String,Any?>()

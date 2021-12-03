@@ -15,15 +15,16 @@ import com.spyneai.service.Actions
 import com.spyneai.service.ImageUploadingService
 import com.spyneai.service.getServiceState
 import com.spyneai.service.log
+import com.spyneai.shoot.data.ImageLocalRepository
 import com.spyneai.shoot.data.ShootLocalRepository
 
 class InternetWorker(private val appContext: Context, workerParams: WorkerParameters) :
     CoroutineWorker(appContext, workerParams) {
 
     override suspend fun doWork(): Result {
-        val shootLocalRepository = ShootLocalRepository()
-        if (shootLocalRepository.getOldestImage().itemId != null
-            || shootLocalRepository.getOldestSkippedImage().itemId != null){
+        val shootLocalRepository = ImageLocalRepository()
+        if (shootLocalRepository.getOldestImage("0").itemId != null
+            || shootLocalRepository.getOldestImage("-1").itemId != null){
             if (!appContext.isMyServiceRunning(ImageUploadingService::class.java)){
                 capture(Events.SERVICE_STARTED,"Started")
                 var action = Actions.START

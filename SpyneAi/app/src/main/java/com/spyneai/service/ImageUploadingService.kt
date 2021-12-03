@@ -234,11 +234,12 @@ class ImageUploadingService : Service(), ImageUploader.Listener {
 
             if (isConnected == true){
                 //if any image pending in upload
-                val image = ShootLocalRepository().getOldestImage()
-
-                if (image.itemId != null && !uploadRunning){
+                val shootLocalRepository = ImageLocalRepository()
+                if ((shootLocalRepository.getOldestImage("0").itemId != null
+                            || shootLocalRepository.getOldestImage("-1").itemId != null)
+                    && !uploadRunning){
                     uploadRunning = true
-                    logUpload(image.itemId.toString()+" "+uploadRunning)
+
                     // we have pending images, resume upload
                     resumeUpload("onReceive")
                 }

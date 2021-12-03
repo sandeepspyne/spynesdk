@@ -363,9 +363,9 @@ class MainDashboardActivity : AppCompatActivity() {
     }
 
     private fun startUploadService() {
-        val shootLocalRepository = ShootLocalRepository()
-        if (shootLocalRepository.getOldestImage().itemId != null
-            || shootLocalRepository.getOldestSkippedImage().itemId != null
+        val shootLocalRepository = ImageLocalRepository()
+        if (shootLocalRepository.getOldestImage("0").itemId != null
+            || shootLocalRepository.getOldestImage("-1").itemId != null
         ) {
 
             var action = Actions.START
