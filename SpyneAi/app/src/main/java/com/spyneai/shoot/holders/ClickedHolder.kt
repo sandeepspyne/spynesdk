@@ -66,7 +66,7 @@ class ClickedHolder(
 
         if (data.imageClicked) {
             if (!data.imagePath.contains("http"))
-//                binding?.ivClicked?.rotation = 90f
+                binding?.ivClicked?.rotation = 90f
 
             Glide.with(itemView)
                 .load(data.capturedImage)

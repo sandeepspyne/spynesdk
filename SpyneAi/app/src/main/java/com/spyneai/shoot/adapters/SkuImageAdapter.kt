@@ -35,7 +35,7 @@ class SkuImageAdapter(
     }
 
     override fun onBindViewHolder(viewHolder: ViewHolder, position: Int) {
-//        viewHolder.ivCapturedImage.setRotation(90F)
+        viewHolder.ivCapturedImage.setRotation(90F)
 
         Glide.with(context).load(
             shootList[position].capturedImage)
