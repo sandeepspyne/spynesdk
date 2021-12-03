@@ -31,7 +31,6 @@ class DraftImagesAdapter(
     override fun getView(position: Int, convertView: View?, parent: ViewGroup?): View {
         val view: View = View.inflate(context, R.layout.item_raw_images,null)
         val ivRaw = view.findViewById<TextView>(R.id.ivRaw) as ImageView
-
         try {
             Glide.with(context) // replace with 'this' if it's in activity
                 .load(imageList[position].input_image_hres_url)

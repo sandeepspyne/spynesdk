@@ -33,7 +33,7 @@ class LocalDraftImagesAdapter(
         val ivRaw = view.findViewById<TextView>(R.id.ivRaw) as ImageView
 
         try {
-                ivRaw.rotation = 90f
+            ivRaw.rotation=90F
 
             Glide.with(context) // replace with 'this' if it's in activity
                 .load(imageList[position].imagePath)

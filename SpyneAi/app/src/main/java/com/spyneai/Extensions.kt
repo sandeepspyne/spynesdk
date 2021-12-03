@@ -19,9 +19,12 @@ import android.net.Uri
 import android.util.Log
 import android.util.Size
 import android.widget.ImageButton
+import android.widget.ImageView
 import android.widget.Toast
 import androidx.annotation.DrawableRes
 import androidx.fragment.app.Fragment
+import com.bumptech.glide.Glide
+import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.spyneai.dashboard.ui.MainDashboardActivity
 import com.spyneai.loginsignup.activity.LoginActivity
 import com.spyneai.needs.AppConstants
@@ -278,6 +281,21 @@ fun Fragment.showToast(message : String){
 
 fun getImageCategory(catId : String) : String {
     return AppConstants.imageCatNameMap[catId]!!
+}
+
+fun Context.loadSmartly(path : String,imageView : ImageView){
+    if (path.contains("http") || path.contains("https")){
+        imageView.rotation = 0F
+    }
+    else{
+        imageView.rotation = 90F
+    }
+
+    Glide.with(this)
+        .load(path)
+        .diskCacheStrategy(DiskCacheStrategy.NONE)
+        .skipMemoryCache(true)
+        .into(imageView)
 }
 
 
