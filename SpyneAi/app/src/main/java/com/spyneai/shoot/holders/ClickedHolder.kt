@@ -66,16 +66,7 @@ class ClickedHolder(
         }
 
         if (data.imageClicked) {
-            if (!data.imagePath.contains("http"))
-//                binding?.ivClicked?.rotation = 90f
-
             itemView.loadSmartly(data.capturedImage,binding?.ivClicked!!)
-
-//            Glide.with(itemView)
-//                .load(data.capturedImage)
-//                .diskCacheStrategy(DiskCacheStrategy.NONE)
-//                .skipMemoryCache(true)
-//                .into(binding?.ivClicked!!)
         }
 
         binding?.flOverlay?.setOnClickListener {

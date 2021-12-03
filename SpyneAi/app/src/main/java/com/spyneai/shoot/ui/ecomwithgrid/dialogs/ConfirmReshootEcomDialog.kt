@@ -47,10 +47,7 @@ class ConfirmReshootEcomDialog :
         val difference = (viewModel.end.value!! - viewModel.begin.value!!)/1000.toFloat()
         log("dialog- "+difference)
 
-
-        if (uri != null) {
-            context?.loadSmartly(uri,binding.ivCapturedImage)
-        }
+        requireContext().loadSmartly(uri,binding.ivCapturedImage)
 
 //        Glide.with(requireContext())
 //            .load(uri)

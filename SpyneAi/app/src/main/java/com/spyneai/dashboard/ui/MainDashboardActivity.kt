@@ -5,6 +5,7 @@ import android.content.Intent
 import android.content.pm.PackageManager
 import android.os.Build
 import android.os.Bundle
+import android.os.Environment
 import android.util.Log
 import android.view.View
 import android.view.ViewGroup
@@ -53,6 +54,7 @@ import kotlinx.coroutines.launch
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
+import java.io.File
 import java.util.*
 
 
@@ -151,6 +153,8 @@ class MainDashboardActivity : AppCompatActivity() {
             }
         })
     }
+
+
 
     private fun continueShoot() {
         when (getString(R.string.app_name)) {

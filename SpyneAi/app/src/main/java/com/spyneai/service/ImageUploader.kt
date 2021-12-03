@@ -133,17 +133,23 @@ class ImageUploader(
                                         )
 
                                     try {
-                                        val s = File(outputDirectory).mkdir()
+                                        val s = File(outputDirectory).mkdirs()
+                                        Log.d(TAG, "selectLastImageAndUpload: dir"+s)
+                                        val outputFile = File(outputDirectory+System.currentTimeMillis().toString()+".jpg")
+                                        val ss = outputFile.createNewFile()
+                                        Log.d(TAG, "selectLastImageAndUpload: file"+ss)
+                                        Log.d(TAG, "selectLastImageAndUpload: file"+outputFile.path)
+
 
 //                                        val outputDir =
 //                                            context.cacheDir // context being the Activity pointer
 
                                         // val file = File(image.imagePath)
-                                        val outputFile = File.createTempFile(
-                                            System.currentTimeMillis().toString(),
-                                            ".jpg",
-                                            File(outputDirectory)
-                                        )
+//                                        val outputFile = File.createTempFile(
+//                                            System.currentTimeMillis().toString(),
+//                                            ".jpg",
+//                                            File(outputDirectory)
+//                                        )
                                         val os: OutputStream = BufferedOutputStream(
                                             FileOutputStream(outputFile)
                                         )
@@ -155,6 +161,8 @@ class ImageUploader(
                                     } catch (
                                         e: Exception
                                     ) {
+                                        Log.d(TAG, "selectLastImageAndUpload: "+e.localizedMessage)
+                                        Log.d(TAG, "selectLastImageAndUpload: "+e.localizedMessage)
                                         val s = ""
                                     }
                                 }
@@ -202,16 +210,13 @@ class ImageUploader(
                                                 )
 
                                             try {
-                                                val s = File(outputDirectory).mkdir()
-//                                                val outputDir = context.cacheDir // context being the Activity pointer
+                                                val s = File(outputDirectory).mkdirs()
+                                                Log.d(TAG, "selectLastImageAndUpload: dir"+s)
+                                                val outputFile = File(outputDirectory+System.currentTimeMillis().toString()+".jpg")
+                                                val ss = outputFile.createNewFile()
+                                                Log.d(TAG, "selectLastImageAndUpload: file"+ss)
+                                                Log.d(TAG, "selectLastImageAndUpload: file"+outputFile.path)
 
-                                                val outputFile = File.createTempFile(
-                                                    System.currentTimeMillis().toString(),
-                                                    ".jpg",
-                                                    File(outputDirectory)
-                                                )
-
-                                                //val file = File(image.imagePath)
                                                 val os: OutputStream = BufferedOutputStream(
                                                     FileOutputStream(outputFile)
                                                 )
@@ -223,7 +228,6 @@ class ImageUploader(
                                             } catch (
                                                 e: java.lang.Exception
                                             ) {
-                                                val s = ""
                                             }
                                         }
                                     }
@@ -427,19 +431,6 @@ class ImageUploader(
                         null,
                         count
                     )
-//                    captureEvent(
-//                        AppConstants.IS_MARK_GCP_UPLOADED_UPDATED,
-//                        Properties()
-//                            .apply {
-//                                put("iteration_id",lastIdentifier)
-//                                put("retry_count",retryCount)
-//                                put("image_id",image.itemId)
-//                                put("pre_url",updatedImage.preSignedUrl)
-//                                put("is_updated",count != 0)
-//                                put("upload_status",updatedImage.isStatusUpdated)
-//                                put("make_done_status",updatedImage.isStatusUpdated)
-//                            }
-//                    )
 
                     onImageUploaded(
                         image,
@@ -601,13 +592,8 @@ class ImageUploader(
         return file.delete()
     }
 
-    val outputDirectory: String by lazy {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-            "${Environment.DIRECTORY_DCIM}/SpyneTemp/"
-        } else {
-            "${Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DCIM)}/SpyneTemp/"
-        }
-    }
+    val outputDirectory = "/storage/emulated/0/DCIM/Spynetemp/"
+
 
 
     interface Listener {

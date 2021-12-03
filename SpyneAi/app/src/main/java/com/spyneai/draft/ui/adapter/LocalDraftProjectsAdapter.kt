@@ -13,6 +13,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.spyneai.R
 import com.spyneai.draft.ui.DraftSkusActivity
+import com.spyneai.loadSmartly
 import com.spyneai.needs.AppConstants
 import com.spyneai.shoot.data.model.Project
 import com.spyneai.shoot.ui.base.ShootActivity
@@ -61,9 +62,7 @@ val draftsList: List<Project>
             holder.llThreeSixty.visibility = View.GONE
 
             if (draftsList[position].thumbnail != null){
-                Glide.with(context)
-                    .load(draftsList[position].thumbnail)
-                    .into(holder.ivThumbnail)
+                context.loadSmartly(draftsList[position].thumbnail,holder.ivThumbnail)
             }
         }
 

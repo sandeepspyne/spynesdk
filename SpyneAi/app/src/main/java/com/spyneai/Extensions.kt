@@ -284,34 +284,38 @@ fun getImageCategory(catId : String) : String {
     return AppConstants.imageCatNameMap[catId]!!
 }
 
-fun Context.loadSmartly(path : String,imageView : ImageView){
-    if (path.contains("http") || path.contains("https")){
-        imageView.rotation = 0F
-    }
-    else{
-        imageView.rotation = 90F
-    }
+fun Context.loadSmartly(path : String?,imageView : ImageView){
+    path?.let {
+        if (path.contains("http") || path.contains("https")){
+            imageView.rotation = 0F
+        }
+        else{
+            imageView.rotation = 90F
+        }
 
-    Glide.with(this)
-        .load(path)
-        .diskCacheStrategy(DiskCacheStrategy.NONE)
-        .skipMemoryCache(true)
-        .into(imageView)
+        Glide.with(this)
+            .load(path)
+            .diskCacheStrategy(DiskCacheStrategy.NONE)
+            .skipMemoryCache(true)
+            .into(imageView)
+    }
 }
 
 fun View.loadSmartly(path : String,imageView : ImageView){
-    if (path.contains("http") || path.contains("https")){
-        imageView.rotation = 0F
-    }
-    else{
-        imageView.rotation = 90F
-    }
+    path?.let {
+        if (path.contains("http") || path.contains("https")){
+            imageView.rotation = 0F
+        }
+        else{
+            imageView.rotation = 90F
+        }
 
-    Glide.with(this)
-        .load(path)
-        .diskCacheStrategy(DiskCacheStrategy.NONE)
-        .skipMemoryCache(true)
-        .into(imageView)
+        Glide.with(this)
+            .load(path)
+            .diskCacheStrategy(DiskCacheStrategy.NONE)
+            .skipMemoryCache(true)
+            .into(imageView)
+    }
 }
 
 
