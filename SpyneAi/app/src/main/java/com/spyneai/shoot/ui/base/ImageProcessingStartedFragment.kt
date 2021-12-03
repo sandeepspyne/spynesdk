@@ -28,8 +28,13 @@ class ImageProcessingStartedFragment : BaseFragment<ProcessViewModel, FragmentIm
 
         arguments?.let {
             if (it.getString(AppConstants.CATEGORY_ID) == AppConstants.CARS_CATEGORY_ID){
-                Glide.with(this).asGif().load(R.raw.image_processing_started)
-                    .into(binding.ivProcessing)
+                if (getString(R.string.app_name) == AppConstants.SPYNE_AI){
+                    Glide.with(this).asGif().load(R.raw.image_processing_started)
+                        .into(binding.ivProcessing)
+                }else {
+                    Glide.with(this).load(R.drawable.app_logo)
+                        .into(binding.ivProcessing)
+                }
             }else{
                 Glide.with(this).load(R.drawable.app_logo)
                     .into(binding.ivProcessing)
@@ -39,9 +44,6 @@ class ImageProcessingStartedFragment : BaseFragment<ProcessViewModel, FragmentIm
         binding.llHome.setOnClickListener {
             requireContext().gotoHome()
         }
-
-
-
     }
 
     override fun onResume() {
