@@ -134,22 +134,9 @@ class ImageUploader(
 
                                     try {
                                         val s = File(outputDirectory).mkdirs()
-                                        Log.d(TAG, "selectLastImageAndUpload: dir"+s)
                                         val outputFile = File(outputDirectory+System.currentTimeMillis().toString()+".jpg")
                                         val ss = outputFile.createNewFile()
-                                        Log.d(TAG, "selectLastImageAndUpload: file"+ss)
-                                        Log.d(TAG, "selectLastImageAndUpload: file"+outputFile.path)
 
-
-//                                        val outputDir =
-//                                            context.cacheDir // context being the Activity pointer
-
-                                        // val file = File(image.imagePath)
-//                                        val outputFile = File.createTempFile(
-//                                            System.currentTimeMillis().toString(),
-//                                            ".jpg",
-//                                            File(outputDirectory)
-//                                        )
                                         val os: OutputStream = BufferedOutputStream(
                                             FileOutputStream(outputFile)
                                         )
@@ -161,9 +148,12 @@ class ImageUploader(
                                     } catch (
                                         e: Exception
                                     ) {
-                                        Log.d(TAG, "selectLastImageAndUpload: "+e.localizedMessage)
-                                        Log.d(TAG, "selectLastImageAndUpload: "+e.localizedMessage)
-                                        val s = ""
+                                        captureEvent(Events.IMAGE_ROTATION_EXCEPTION,
+                                            image,
+                                            false,
+                                            e.localizedMessage)
+
+                                        selectLastImageAndUpload(imageType, retryCount + 1)
                                     }
                                 }
                             }
@@ -211,11 +201,8 @@ class ImageUploader(
 
                                             try {
                                                 val s = File(outputDirectory).mkdirs()
-                                                Log.d(TAG, "selectLastImageAndUpload: dir"+s)
                                                 val outputFile = File(outputDirectory+System.currentTimeMillis().toString()+".jpg")
                                                 val ss = outputFile.createNewFile()
-                                                Log.d(TAG, "selectLastImageAndUpload: file"+ss)
-                                                Log.d(TAG, "selectLastImageAndUpload: file"+outputFile.path)
 
                                                 val os: OutputStream = BufferedOutputStream(
                                                     FileOutputStream(outputFile)
@@ -226,8 +213,14 @@ class ImageUploader(
                                                 image.imagePath = outputFile.path
                                                 uploadImageToGcp(image, imageType, retryCount)
                                             } catch (
-                                                e: java.lang.Exception
+                                                e: Exception
                                             ) {
+                                                captureEvent(Events.IMAGE_ROTATION_EXCEPTION,
+                                                    image,
+                                                    false,
+                                                    e.localizedMessage)
+
+                                                selectLastImageAndUpload(imageType, retryCount + 1)
                                             }
                                         }
                                     }

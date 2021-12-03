@@ -18,7 +18,6 @@ abstract class BaseRepository {
             try {
                 Resource.Success(apiCall.invoke())
             }catch (throwable: Throwable){
-                val s = ""
                 when(throwable){
 
                     is ServerException -> {
