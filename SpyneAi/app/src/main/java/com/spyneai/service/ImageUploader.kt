@@ -177,21 +177,38 @@ class ImageUploader(
                                         null,
                                         count
                                     )
-//                                   captureEvent(
-//                                       AppConstants.IS_PRESIGNED_URL_UPDATED,
-//                                       Properties()
-//                                           .apply {
-//                                               put("iteration_id",lastIdentifier)
-//                                               put("retry_count",retryCount)
-//                                               put("image_id",image.itemId)
-//                                               put("upload_status",image.isUploaded)
-//                                               put("make_done_status",image.isStatusUpdated)
-//                                               put("pre_url",updatedImage.preSignedUrl)
-//                                               put("is_updated",count != 0)
-//                                           }
-//                                   )
 
-                                    uploadImageToGcp(image, imageType, retryCount)
+                                    when (image.categoryName) {
+                                        "Exterior",
+                                        "Interior",
+                                        "Focus Shoot",
+                                        "360int",
+                                        "Info" -> {
+                                            uploadImageToGcp(image, imageType, retryCount)
+                                        }
+                                        else -> {
+                                            val bitmap =
+                                                modifyOrientation(
+                                                    BitmapFactory.decodeFile(image.imagePath),
+                                                    image.imagePath
+                                                )
+
+                                            try {
+                                                val file = File(image.imagePath)
+                                                val os: OutputStream = BufferedOutputStream(
+                                                    FileOutputStream(file)
+                                                )
+                                                bitmap!!.compress(Bitmap.CompressFormat.JPEG, 100, os)
+                                                os.close()
+
+                                                uploadImageToGcp(image, imageType, retryCount)
+                                            } catch (
+                                                e: java.lang.Exception
+                                            ) {
+                                                val s = ""
+                                            }
+                                        }
+                                    }
                                 }
 
                                 is Resource.Failure -> {
@@ -268,6 +285,7 @@ class ImageUploader(
         val orientation =
             ei.getAttributeInt(ExifInterface.TAG_ORIENTATION, ExifInterface.ORIENTATION_NORMAL)
         return when (orientation) {
+            ExifInterface.ORIENTATION_NORMAL,
             ExifInterface.ORIENTATION_ROTATE_90 -> rotate(bitmap, 90f)
             ExifInterface.ORIENTATION_ROTATE_180 -> rotate(bitmap, 180f)
             ExifInterface.ORIENTATION_ROTATE_270 -> rotate(bitmap, 270f)
