@@ -219,6 +219,14 @@ android {
             versionName "1.2"
         }
 
+
+        carro {
+            dimension 'version'
+            applicationId "com.spyneai.carro"
+            versionCode 1
+            versionName "1.0"
+        }
+
     }
     sourceSets {
         sweepCars {
@@ -281,6 +289,11 @@ android {
         automoser {
             java {
                 srcDirs 'src/automoser/java'
+            }
+        }
+        carro {
+            java {
+                srcDirs 'src/carro/java'
             }
         }
     }
