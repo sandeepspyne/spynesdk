@@ -23,7 +23,11 @@ class MyOrdersFragment : BaseFragment<DashboardViewModel, FragmentMyOrdersBindin
         requireContext().setLocale()
 
 
-        tabId = requireActivity().intent.extras?.get("TAB_ID") as Int
+        try {
+            tabId = requireActivity().intent.extras?.get("TAB_ID") as Int
+        }catch (e : Exception){
+
+        }
 
         binding.ivBack.setOnClickListener {
             requireActivity().onBackPressed()
