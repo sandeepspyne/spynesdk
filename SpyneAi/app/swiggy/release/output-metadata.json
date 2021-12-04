@@ -10,8 +10,8 @@
     {
       "type": "SINGLE",
       "filters": [],
-      "versionCode": 26,
-      "versionName": "3.7",
+      "versionCode": 27,
+      "versionName": "3.8",
       "outputFile": "app-swiggy-release.apk"
     }
   ]
