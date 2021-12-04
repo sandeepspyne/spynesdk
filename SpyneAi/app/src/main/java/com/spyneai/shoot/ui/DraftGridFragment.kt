@@ -151,7 +151,8 @@ class DraftGridFragment : BaseFragment<ShootViewModel, FragmentGridEcomBinding>(
         if (viewModel.showLeveler.value == null || viewModel.showLeveler.value == false){
             when(viewModel.categoryDetails.value?.categoryId){
                 AppConstants.ECOM_CATEGORY_ID,
-                AppConstants.FOOD_AND_BEV_CATEGORY_ID -> {
+                AppConstants.FOOD_AND_BEV_CATEGORY_ID,
+                AppConstants.PHOTO_BOX_CATEGORY_ID-> {
                     viewModel.showLeveler.value = true
                 }
             }
