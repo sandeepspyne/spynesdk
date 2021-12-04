@@ -39,6 +39,7 @@ class ReclickDialog : BaseDialogFragment<ShootViewModel, DialogReclickBinding>()
                         }
                         AppConstants.ECOM_CATEGORY_ID,
                         AppConstants.FOOTWEAR_CATEGORY_ID,
+                        AppConstants.PHOTO_BOX_CATEGORY_ID,
                         AppConstants.FOOD_AND_BEV_CATEGORY_ID-> {
                             viewModel.showLeveler.value = true
                         }

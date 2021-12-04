@@ -90,6 +90,7 @@ class ReshootFragment : BaseFragment<ShootViewModel, FragmentReshootBinding>(), 
 
                 when (viewModel.categoryDetails.value?.categoryId) {
                     AppConstants.ECOM_CATEGORY_ID,
+                    AppConstants.PHOTO_BOX_CATEGORY_ID,
                     AppConstants.FOOD_AND_BEV_CATEGORY_ID-> {
                         var list = reshootAdapter?.listItems as List<ImagesOfSkuRes.Data>
 
