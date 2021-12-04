@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Adloid</string>
+
+    //On Boarding
+    <string name="slide_one_title">Shoot</string>
+    <string name="slide_one_description">Snap edit and sell your cars\nthrough Store Camera</string>
+    <string name="slide_two_title">Edit</string>
+    <string name="slide_two_description">You have access to everything you need for taking fantastic
+        product photos.
+</string>
+    <string name="slide_three_tittle">Free Credits</string>
+    <string name="slide_three_description">Enjoy Free Credits on Signup</string>
+
+
+    //Sign In
+    <string name="greetings">Greetings!</string>
+    <string name="signin_description">Please login to continue</string>
+    <string name="signin_hint">Your Email Id</string>
+    <string name="sign_in_button_text">Sign in with OTP</string>
+    <string name="continuation"><![CDATA[By continuing you agree to our ]]></string>
+    <string name="terms">Terms &amp; Policies</string>
+    <string name="terms_and_conditions_url">s.faiz@adloid.in</string>
+
+
+    //Enter OTP
+    <string name="enter_otp_hint">Enter the 6-digit \none time password just sent to</string>
+    <string name="submit_otp">Submit OTP</string>
+    <string name="did_not_received_otp">Didn\'t receive the OTP?</string>
+    <string name="otp_error">The OTP is incorrect. Please try again.</string>
+
+    //dashboard
+    <string name="ongoing">On-Going</string>
+    <string name="completed">Completed</string>
+    <string name="our_work">Examples</string>
+
+    //bottom navigation
+    <string name="home">Home</string>
+    <string name="pricing">Pricing</string>
+    <string name="shoot">Shoot</string>
+    <string name="order_now">Orders</string>
+    <string name="profile">Profile</string>
+
+    <string name="shoot_location">lighting</string>
+
+    //login with password
+    <string name="forgot_password">Forgot password?</string>
+    <string name="forgot_password_mail">Enter the email address to reset your password. <br/> You may need to check your spam folder.</string>
+    <string name="forgot_password_dialog">Link sent successfully.<br /> Please check your email.</string>
+    <string name="send_link">Send Link</string>
+    <string name="sign_in">Sign in with OTP</string>
+    <string name="sign_up">Sign up </string>
+
+    <string name="logout_dialog_text">Are you sure you want to <b>log out.</b></string>
+    <string name="logout">Logout</string>
+
+    <string name="login">Login</string>
+    <string name="login_with_password">Login with Password</string>
+    <string name="hello">Greetings!</string>
+
+    <string name="please">Please sign in to continue</string>
+    <string name="please_signup">Please sign up to continue</string>
+    <string name="please_enter_mobile">Please enter 10 digit mobile number</string>
+    <string name="please_enter_email_password">Please enter a valid Email Id OR Password</string>
+
+    //vin number
+    <string name="enter_vin">Enter Number Plate</string>
+    <string name="vin_number">VIN</string>
+    <string name="vin_hint">Enter Number</string>
+
+    <string name="sign_up_here"><b>Sign up here</b></string>
+    <string name="login_here"><b>Login here</b></string>
+
+    <string name="submit">Submit</string>
+</resources>

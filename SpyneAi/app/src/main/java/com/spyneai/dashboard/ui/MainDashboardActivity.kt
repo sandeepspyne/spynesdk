@@ -71,6 +71,7 @@ class MainDashboardActivity : AppCompatActivity() {
         setContentView(view)
         setLocale()
 
+
         if (intent.getBooleanExtra("show_ongoing", false)) {
             val intent = Intent(this, MyOrdersActivity::class.java)
             intent.putExtra("TAB_ID", 1)

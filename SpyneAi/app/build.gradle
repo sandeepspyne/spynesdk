@@ -226,6 +226,12 @@ android {
             versionCode 1
             versionName "1.0"
         }
+        adloid {
+            dimension 'version'
+            applicationId "com.spyneai.adloid"
+            versionCode 1
+            versionName "1.0"
+        }
 
     }
     sourceSets {

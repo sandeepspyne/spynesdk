@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "14192552589",
+    "project_id": "adloid",
+    "storage_bucket": "adloid.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:14192552589:android:03634b63957c410200d0c4",
+        "android_client_info": {
+          "package_name": "com.spyneai.adloid.debug"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "14192552589-slp72teu5v6t8nd17nqcf15tr7cdb33a.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyC8_prOmz8qqqbkMNj8hEui-NH8hGr_-jA"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "14192552589-slp72teu5v6t8nd17nqcf15tr7cdb33a.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
