@@ -10,8 +10,8 @@
     {
       "type": "SINGLE",
       "filters": [],
-      "versionCode": 68,
-      "versionName": "2.77",
+      "versionCode": 69,
+      "versionName": "2.78",
       "outputFile": "app-spyne-release.apk"
     }
   ]
