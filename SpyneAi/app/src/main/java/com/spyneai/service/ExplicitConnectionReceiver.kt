@@ -16,7 +16,6 @@ import com.spyneai.shoot.data.ShootLocalRepository
 class ExplicitConnectionReceiver : BroadcastReceiver() {
     override fun onReceive(context: Context?, intent: Intent?) {
 
-
         val shootLocalRepository = ImageLocalRepository()
         if (shootLocalRepository.getOldestImage("0").itemId != null
             || shootLocalRepository.getOldestImage("-1").itemId != null){
@@ -30,7 +29,7 @@ class ExplicitConnectionReceiver : BroadcastReceiver() {
 
                     if (!context?.isMyServiceRunning(ImageUploadingService::class.java)){
                         var action = Actions.START
-                        if (getServiceState(context) == com.spyneai.service.ServiceState.STOPPED && action == Actions.STOP)
+                        if (getServiceState(context) == ServiceState.STOPPED && action == Actions.STOP)
                             return
 
                         val serviceIntent = Intent(context, ImageUploadingService::class.java)

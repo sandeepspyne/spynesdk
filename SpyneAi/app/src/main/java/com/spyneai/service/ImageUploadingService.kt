@@ -7,9 +7,14 @@ import android.content.Intent
 import android.content.IntentFilter
 import android.graphics.Color
 import android.os.*
+import android.provider.CalendarContract
 import com.spyneai.R
+import com.spyneai.captureEvent
 import com.spyneai.dashboard.ui.MainDashboardActivity
 import com.spyneai.isInternetActive
+import com.spyneai.needs.AppConstants
+import com.spyneai.needs.Utilities
+import com.spyneai.posthog.Events
 import com.spyneai.shoot.data.ImageLocalRepository
 import com.spyneai.shoot.data.ShootLocalRepository
 import com.spyneai.shoot.data.ShootRepository
@@ -75,6 +80,14 @@ class ImageUploadingService : Service(), ImageUploader.Listener {
             Actions.START.name -> {
                 if (!uploadRunning)
                     resumeUpload("onStartCommand")
+
+                val properties = java.util.HashMap<String, Any?>()
+                    .apply {
+                        put("service_state", "Started")
+                        put("medium", "Image Uploading Service")
+                    }
+
+                captureEvent(Events.SERVICE_STARTED, properties)
             }
             Actions.STOP.name -> stopService()
             else -> error("No action in the received intent")
@@ -157,7 +170,7 @@ class ImageUploadingService : Service(), ImageUploader.Listener {
             log("Service stopped without being started: ${e.message}")
         }
 //        isServiceStarted = false
-        setServiceState(this, com.spyneai.service.ServiceState.STOPPED)
+        setServiceState(this, ServiceState.STOPPED)
     }
 
     override fun inProgress(task: Image) {
@@ -209,7 +222,10 @@ class ImageUploadingService : Service(), ImageUploader.Listener {
     }
 
     override fun onConnectionLost() {
-        logUpload("onConnectionLost")
+        captureEvent(Events.INTERNET_DISCONNECTED,
+            HashMap<String,Any?>().apply {
+                put("medium","Service")
+            })
         uploadRunning = false
 
         val title = if (currentImage == null) getString(R.string.uploading_paused)
@@ -229,10 +245,13 @@ class ImageUploadingService : Service(), ImageUploader.Listener {
 
             val isConnected = context?.isInternetActive()
 
-            logUpload("Connection changed "+isConnected)
-
-
             if (isConnected == true){
+                //push event of internet connected
+                    captureEvent(
+                        Events.INTERNET_CONNECTED,
+                    HashMap<String,Any?>().apply {
+                        put("medium","Service")
+                    })
                 //if any image pending in upload
                 val shootLocalRepository = ImageLocalRepository()
                 if ((shootLocalRepository.getOldestImage("0").itemId != null
@@ -243,6 +262,12 @@ class ImageUploadingService : Service(), ImageUploader.Listener {
                     // we have pending images, resume upload
                     resumeUpload("onReceive")
                 }
+            }else {
+                //push event of internet not connected
+                captureEvent(Events.INTERNET_DISCONNECTED,
+                    HashMap<String,Any?>().apply {
+                        put("medium","Service")
+                    })
             }
         }
     }
