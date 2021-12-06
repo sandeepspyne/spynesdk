@@ -131,7 +131,7 @@ class MainDashboardActivity : AppCompatActivity() {
                         startActivity(intent)
                     }
                 }
-                R.id.wallet -> setCurrentFragment(SecondFragment)
+                //R.id.wallet -> setCurrentFragment(SecondFragment)
                 R.id.logoutDashBoardFragment -> setCurrentFragment(thirdFragment)
             }
             true
@@ -153,7 +153,6 @@ class MainDashboardActivity : AppCompatActivity() {
             }
         })
     }
-
 
 
     private fun continueShoot() {

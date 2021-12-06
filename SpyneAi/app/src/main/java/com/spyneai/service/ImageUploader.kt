@@ -91,179 +91,189 @@ class ImageUploader(
                         imageProperties
                     )
 
-
                     listener.inProgress(image)
 
                     if (retryCount > 4) {
-                        if (image.isUploaded != 1)
+                        val dbStatus = if (image.isUploaded != 1)
                             localRepository.skipImage(image.itemId!!, skipFlag)
+                        else
+                            localRepository.skipMarkDoneFailedImage(image.itemId!!)
 
                         startNextUpload(image.itemId!!, false, imageType)
 
-                        captureEvent(Events.MAX_RETRY, image, false, "Image upload limit reached")
+                        captureEvent(Events.MAX_RETRY,
+                            image,
+                            false,
+                            "Image upload limit reached",
+                        dbStatus)
                         return@launch
                     }
 
-                    if (image.isUploaded == 0 || image.isUploaded == -1) {
-                        logUpload("presignerd url " + image.preSignedUrl)
-                        context.captureEvent(
-                            Events.IMAGE_NOT_UPLOADED,
-                            imageProperties
-                        )
-
-                        if (image.preSignedUrl != AppConstants.DEFAULT_PRESIGNED_URL) {
+                    if (image.isStatusUpdated == -1){
+                        setStatusUploaed(image, imageType, retryCount)
+                    }else {
+                        if (image.isUploaded == 0 || image.isUploaded == -1) {
+                            logUpload("presignerd url " + image.preSignedUrl)
                             context.captureEvent(
-                                Events.UPLOADING_TO_GCP_INITIATED,
+                                Events.IMAGE_NOT_UPLOADED,
                                 imageProperties
                             )
 
-                            when (image.categoryName) {
-                                "Exterior",
-                                "Interior",
-                                "Focus Shoot",
-                                "360int",
-                                "Info" -> {
-                                    uploadImageToGcp(image, imageType, retryCount)
-                                }
-                                else -> {
-                                    val bitmap =
-                                        modifyOrientation(
-                                            BitmapFactory.decodeFile(image.imagePath),
-                                            image.imagePath
-                                        )
+                            if (image.preSignedUrl != AppConstants.DEFAULT_PRESIGNED_URL) {
+                                context.captureEvent(
+                                    Events.UPLOADING_TO_GCP_INITIATED,
+                                    imageProperties
+                                )
 
-                                    try {
-                                        val s = File(outputDirectory).mkdirs()
-                                        val outputFile = File(outputDirectory+System.currentTimeMillis().toString()+".jpg")
-                                        val ss = outputFile.createNewFile()
-
-                                        val os: OutputStream = BufferedOutputStream(
-                                            FileOutputStream(outputFile)
-                                        )
-                                        bitmap!!.compress(Bitmap.CompressFormat.JPEG, 100, os)
-                                        os.close()
-
-                                        image.imagePath = outputFile.path
+                                when (image.categoryName) {
+                                    "Exterior",
+                                    "Interior",
+                                    "Focus Shoot",
+                                    "360int",
+                                    "Info" -> {
                                         uploadImageToGcp(image, imageType, retryCount)
-                                    } catch (
-                                        e: Exception
-                                    ) {
-                                        captureEvent(Events.IMAGE_ROTATION_EXCEPTION,
-                                            image,
-                                            false,
-                                            e.localizedMessage)
+                                    }
+                                    else -> {
+                                        val bitmap =
+                                            modifyOrientation(
+                                                BitmapFactory.decodeFile(image.imagePath),
+                                                image.imagePath
+                                            )
 
-                                        selectLastImageAndUpload(imageType, retryCount + 1)
+                                        try {
+                                            val s = File(outputDirectory).mkdirs()
+                                            val outputFile = File(outputDirectory+System.currentTimeMillis().toString()+".jpg")
+                                            val ss = outputFile.createNewFile()
+
+                                            val os: OutputStream = BufferedOutputStream(
+                                                FileOutputStream(outputFile)
+                                            )
+                                            bitmap!!.compress(Bitmap.CompressFormat.JPEG, 100, os)
+                                            os.close()
+
+                                            image.imagePath = outputFile.path
+                                            uploadImageToGcp(image, imageType, retryCount)
+                                        } catch (
+                                            e: Exception
+                                        ) {
+                                            captureEvent(Events.IMAGE_ROTATION_EXCEPTION,
+                                                image,
+                                                false,
+                                                e.localizedMessage)
+
+                                            selectLastImageAndUpload(imageType, retryCount + 1)
+                                        }
                                     }
                                 }
-                            }
-                        } else {
-                            val uploadType = if (retryCount == 0) "Direct" else "Retry"
-                            //val uploadType = "Retry"
+                            } else {
+                                val uploadType = if (retryCount == 0) "Direct" else "Retry"
+                                //val uploadType = "Retry"
 
-                            var response = shootRepository.getPreSignedUrl(
-                                uploadType,
-                                image
-                            )
+                                var response = shootRepository.getPreSignedUrl(
+                                    uploadType,
+                                    image
+                                )
 
-                            when (response) {
-                                is Resource.Success -> {
-                                    image.preSignedUrl = response.value.data.presignedUrl
-                                    image.imageId = response.value.data.imageId
+                                when (response) {
+                                    is Resource.Success -> {
+                                        image.preSignedUrl = response.value.data.presignedUrl
+                                        image.imageId = response.value.data.imageId
 
-                                    captureEvent(Events.GOT_PRESIGNED_IMAGE_URL, image, true, null)
+                                        captureEvent(Events.GOT_PRESIGNED_IMAGE_URL, image, true, null)
 
-                                    val count = localRepository.addPreSignedUrl(image)
-                                    val updatedImage = localRepository.getImage(image.itemId!!)
+                                        val count = localRepository.addPreSignedUrl(image)
+                                        val updatedImage = localRepository.getImage(image.itemId!!)
 
-                                    captureEvent(
-                                        Events.IS_PRESIGNED_URL_UPDATED,
-                                        updatedImage,
-                                        true,
-                                        null,
-                                        count
-                                    )
+                                        captureEvent(
+                                            Events.IS_PRESIGNED_URL_UPDATED,
+                                            updatedImage,
+                                            true,
+                                            null,
+                                            count
+                                        )
 
-                                    when (image.categoryName) {
-                                        "Exterior",
-                                        "Interior",
-                                        "Focus Shoot",
-                                        "360int",
-                                        "Info" -> {
-                                            uploadImageToGcp(image, imageType, retryCount)
-                                        }
-                                        else -> {
-                                            val bitmap =
-                                                modifyOrientation(
-                                                    BitmapFactory.decodeFile(image.imagePath),
-                                                    image.imagePath
-                                                )
-
-                                            try {
-                                                val s = File(outputDirectory).mkdirs()
-                                                val outputFile = File(outputDirectory+System.currentTimeMillis().toString()+".jpg")
-                                                val ss = outputFile.createNewFile()
-
-                                                val os: OutputStream = BufferedOutputStream(
-                                                    FileOutputStream(outputFile)
-                                                )
-                                                bitmap!!.compress(Bitmap.CompressFormat.JPEG, 100, os)
-                                                os.close()
-
-                                                image.imagePath = outputFile.path
+                                        when (image.categoryName) {
+                                            "Exterior",
+                                            "Interior",
+                                            "Focus Shoot",
+                                            "360int",
+                                            "Info" -> {
                                                 uploadImageToGcp(image, imageType, retryCount)
-                                            } catch (
-                                                e: Exception
-                                            ) {
-                                                captureEvent(Events.IMAGE_ROTATION_EXCEPTION,
-                                                    image,
-                                                    false,
-                                                    e.localizedMessage)
+                                            }
+                                            else -> {
+                                                val bitmap =
+                                                    modifyOrientation(
+                                                        BitmapFactory.decodeFile(image.imagePath),
+                                                        image.imagePath
+                                                    )
 
-                                                selectLastImageAndUpload(imageType, retryCount + 1)
+                                                try {
+                                                    val s = File(outputDirectory).mkdirs()
+                                                    val outputFile = File(outputDirectory+System.currentTimeMillis().toString()+".jpg")
+                                                    val ss = outputFile.createNewFile()
+
+                                                    val os: OutputStream = BufferedOutputStream(
+                                                        FileOutputStream(outputFile)
+                                                    )
+                                                    bitmap!!.compress(Bitmap.CompressFormat.JPEG, 100, os)
+                                                    os.close()
+
+                                                    image.imagePath = outputFile.path
+                                                    uploadImageToGcp(image, imageType, retryCount)
+                                                } catch (
+                                                    e: Exception
+                                                ) {
+                                                    captureEvent(Events.IMAGE_ROTATION_EXCEPTION,
+                                                        image,
+                                                        false,
+                                                        e.localizedMessage)
+
+                                                    selectLastImageAndUpload(imageType, retryCount + 1)
+                                                }
                                             }
                                         }
                                     }
-                                }
 
-                                is Resource.Failure -> {
-                                    log("Image upload failed")
-                                    logUpload("Upload error " + response.errorCode.toString() + " " + response.errorMessage)
-                                    if (response.errorMessage == null) {
-                                        captureEvent(
-                                            Events.GET_PRESIGNED_FAILED,
-                                            image,
-                                            false,
-                                            response.errorCode.toString() + ": Http exception from server"
-                                        )
-                                        selectLastImageAndUpload(imageType, retryCount + 1)
-                                    } else {
-                                        // if duplicated entry error change status
-                                        if (response.errorCode == 500
-                                            && (response.errorMessage.toString()
-                                                .contains("Duplicate entry")
-                                                    && response.errorMessage.toString()
-                                                .contains("image_name_sku_id"))
-                                        ) {
-
-                                            checkImageStatusOnServer(image, imageType, retryCount)
-                                        } else {
+                                    is Resource.Failure -> {
+                                        log("Image upload failed")
+                                        logUpload("Upload error " + response.errorCode.toString() + " " + response.errorMessage)
+                                        if (response.errorMessage == null) {
                                             captureEvent(
                                                 Events.GET_PRESIGNED_FAILED,
                                                 image,
                                                 false,
-                                                response.errorCode.toString() + ": " + response.errorMessage
+                                                response.errorCode.toString() + ": Http exception from server"
                                             )
                                             selectLastImageAndUpload(imageType, retryCount + 1)
-                                        }
+                                        } else {
+                                            // if duplicated entry error change status
+                                            if (response.errorCode == 500
+                                                && (response.errorMessage.toString()
+                                                    .contains("Duplicate entry")
+                                                        && response.errorMessage.toString()
+                                                    .contains("image_name_sku_id"))
+                                            ) {
 
+                                                checkImageStatusOnServer(image, imageType, retryCount)
+                                            } else {
+                                                captureEvent(
+                                                    Events.GET_PRESIGNED_FAILED,
+                                                    image,
+                                                    false,
+                                                    response.errorCode.toString() + ": " + response.errorMessage
+                                                )
+                                                selectLastImageAndUpload(imageType, retryCount + 1)
+                                            }
+
+                                        }
                                     }
                                 }
                             }
+                        } else {
+                            setStatusUploaed(image, imageType, retryCount)
                         }
-                    } else {
-                        setStatusUploaed(image, imageType, retryCount)
                     }
+
                 } else {
                     logUpload("All Images uploaded")
                     if (imageType == AppConstants.REGULAR) {
@@ -415,7 +425,6 @@ class ImageUploader(
                 if (response.isSuccessful) {
                     val count = localRepository.markUploaded(image)
                     val updatedImage = localRepository.getImage(image.itemId!!)
-
 
                     captureEvent(
                         Events.IS_MARK_GCP_UPLOADED_UPDATED,

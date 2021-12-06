@@ -11,7 +11,6 @@ import java.util.concurrent.TimeUnit
 object GcpClient {
 
     private const val BASE_URL = "https://storage.googleapis.com"
-    private const val STAGING_URL = "http://34.87.119.10/api/"
 
     private val client = OkHttpClient.Builder()
         .readTimeout(4, TimeUnit.MINUTES)
