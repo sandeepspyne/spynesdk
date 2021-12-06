@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "730175876146",
+    "project_id": "kobe-56c96",
+    "storage_bucket": "kobe-56c96.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:730175876146:android:576ed4212f56c2d207202b",
+        "android_client_info": {
+          "package_name": "com.spyneai.kobe.debug"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "730175876146-pv9pf82c3nmpm6ab4kr0834j9bgi7p3d.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCh_dGCX1rh9wJ0k7cVNUdbkDboYSrStq8"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "730175876146-pv9pf82c3nmpm6ab4kr0834j9bgi7p3d.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

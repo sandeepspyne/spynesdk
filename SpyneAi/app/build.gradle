@@ -232,6 +232,12 @@ android {
             versionCode 1
             versionName "1.0"
         }
+        kobe {
+            dimension 'version'
+            applicationId "com.spyneai.kobe"
+            versionCode 1
+            versionName "1.0"
+        }
 
     }
     sourceSets {
