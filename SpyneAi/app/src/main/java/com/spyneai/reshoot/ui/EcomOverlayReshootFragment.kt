@@ -178,7 +178,8 @@ class EcomOverlayReshootFragment : BaseFragment<ShootViewModel, FragmentEcomOver
                     var index = 0
 
                     list.forEach {
-                        it.imageName = SelectedImagesHelper.selectedOverlayIds.get(it.id).toString()
+                        it.imageName = SelectedImagesHelper.selectedOverlayIds[it.id]?.imageName!!
+                        it.sequenceNumber = SelectedImagesHelper.selectedOverlayIds[it.id]?.sequenceNumber!!
                     }
 
                     if (viewModel.shootList.value != null) {

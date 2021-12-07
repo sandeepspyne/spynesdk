@@ -167,6 +167,7 @@ class ShootViewModel : ViewModel() {
     var isReshoot = false
     var isReclick = false
     var reshotImageName = ""
+    var reshootSequence = 0
     var updateSelectItem : MutableLiveData<Boolean> = MutableLiveData()
 
 
@@ -425,7 +426,9 @@ class ShootViewModel : ViewModel() {
     }
 
     fun getSequenceNumber(exteriorSize: Int, interiorSize: Int, miscSize: Int): Int {
-        return SequeneNumberManager().getSequenceNumber(
+        return if (isReshoot)
+                    reshootSequence
+        else SequeneNumberManager().getSequenceNumber(
             fromDrafts,
             if (categoryDetails.value?.imageType == "Misc") "Focus Shoot" else categoryDetails.value?.imageType!!,
             currentShoot,

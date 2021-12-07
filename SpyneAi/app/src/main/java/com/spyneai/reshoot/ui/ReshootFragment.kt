@@ -329,7 +329,7 @@ class ReshootFragment : BaseFragment<ShootViewModel, FragmentReshootBinding>(), 
     }
 
     private fun observerOverlayIds() {
-        viewModel.reshootOverlaysRes.observe(viewLifecycleOwner, {
+        viewModel.reshootOverlaysRes.observe(viewLifecycleOwner, { it ->
             when (it) {
                 is Resource.Success -> {
                     Utilities.hideProgressDialog()
@@ -337,7 +337,8 @@ class ReshootFragment : BaseFragment<ShootViewModel, FragmentReshootBinding>(), 
                     var index = 0
 
                     list.forEach {
-                        it.imageName = SelectedImagesHelper.selectedOverlayIds.get(it.id).toString()
+                        it.imageName = SelectedImagesHelper.selectedOverlayIds[it.id]!!.imageName
+                        it.sequenceNumber = SelectedImagesHelper.selectedOverlayIds[it.id]!!.sequenceNumber
                     }
 
                     if (viewModel.shootList.value != null) {
@@ -520,6 +521,7 @@ class ReshootFragment : BaseFragment<ShootViewModel, FragmentReshootBinding>(), 
         when (data) {
             is ReshootOverlaysRes.Data -> {
                 viewModel.reshotImageName = data.imageName
+                viewModel.reshootSequence = data.sequenceNumber
                 viewModel.overlayId = data.id
 
                 if (data.type == "Exterior") {

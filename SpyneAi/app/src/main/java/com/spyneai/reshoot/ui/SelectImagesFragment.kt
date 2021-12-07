@@ -22,6 +22,7 @@ import com.spyneai.needs.AppConstants
 import com.spyneai.orders.data.response.ImagesOfSkuRes
 import com.spyneai.processedimages.ui.data.ProcessedViewModel
 import com.spyneai.reshoot.SelectImageAdapter
+import com.spyneai.reshoot.data.ReshootImage
 import com.spyneai.reshoot.data.SelectedImagesHelper
 
 class SelectImagesFragment : BaseFragment<ProcessedViewModel,FragmentSelectImagesBinding>(),OnItemClickListener{
@@ -80,10 +81,10 @@ class SelectImagesFragment : BaseFragment<ProcessedViewModel,FragmentSelectImage
         when(viewModel.categoryId){
             AppConstants.CARS_CATEGORY_ID,
             AppConstants.BIKES_CATEGORY_ID-> {
-                val selectedIdsMap = HashMap<Int,String>()
+                val selectedIdsMap = HashMap<Int,ReshootImage>()
 
                 selectedList.forEachIndexed { _, data ->
-                    selectedIdsMap[data.overlayId] = data.image_name
+                    selectedIdsMap[data.overlayId] = ReshootImage(data.image_name,data.frame_seq_no.toInt())
                 }
 
                 SelectedImagesHelper.selectedOverlayIds = selectedIdsMap
@@ -102,10 +103,10 @@ class SelectImagesFragment : BaseFragment<ProcessedViewModel,FragmentSelectImage
                 reshootIntent = Intent(requireActivity(),ReshootPortraitActivity::class.java)
             }
             else -> {
-                val selectedIdsMap = HashMap<Int,String>()
+                val selectedIdsMap = HashMap<Int, ReshootImage>()
 
                 selectedList.forEachIndexed { _, data ->
-                    selectedIdsMap[data.overlayId] = data.image_name
+                    selectedIdsMap[data.overlayId] = ReshootImage(data.image_name,data.frame_seq_no.toInt())
                 }
 
                 SelectedImagesHelper.selectedOverlayIds = selectedIdsMap

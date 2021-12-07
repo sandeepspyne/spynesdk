@@ -45,6 +45,7 @@ data class ReshootOverlaysRes(
         var isSelected : Boolean = false,
         var imageClicked : Boolean = false,
         var imagePath : String,
-        var imageName : String
+        var imageName : String,
+        var sequenceNumber: Int = 0
     )
 }
