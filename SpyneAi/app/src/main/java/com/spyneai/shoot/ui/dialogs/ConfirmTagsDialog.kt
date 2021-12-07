@@ -187,43 +187,45 @@ class ConfirmTagsDialog : BaseDialogFragment<ShootViewModel, DialogConfirmTagsBi
     }
 
     private fun setTagsData() {
-        val response = (viewModel.subCategoriesResponse.value as Resource.Success).value
+        if(viewModel.subCategoriesResponse.value is Resource.Success){
+            val response = (viewModel.subCategoriesResponse.value as Resource.Success).value
 
-        when (viewModel.categoryDetails.value?.imageType) {
-            "Exterior" -> {
-                val tags = response.tags.exterior
+            when (viewModel.categoryDetails.value?.imageType) {
+                "Exterior" -> {
+                    val tags = response.tags.exterior
 
-                tags?.forEach {
-                    addBinding(
-                        viewModel.categoryDetails.value!!.imageType!!,
-                        it.fieldType,
-                        getItemBinding(it.fieldType, it.fieldName, it.enumValues)
-                    )
+                    tags?.forEach {
+                        addBinding(
+                            viewModel.categoryDetails.value!!.imageType!!,
+                            it.fieldType,
+                            getItemBinding(it.fieldType, it.fieldName, it.enumValues)
+                        )
+                    }
                 }
-            }
 
-            "Interior" -> {
-                val tags = response.tags.exterior
+                "Interior" -> {
+                    val tags = response.tags.exterior
 
-                tags?.forEach {
-                    addBinding(
-                        viewModel.categoryDetails.value!!.imageType!!,
-                        it.fieldType,
-                        getItemBinding(it.fieldType, it.fieldName, it.enumValues)
-                    )
+                    tags?.forEach {
+                        addBinding(
+                            viewModel.categoryDetails.value!!.imageType!!,
+                            it.fieldType,
+                            getItemBinding(it.fieldType, it.fieldName, it.enumValues)
+                        )
+                    }
                 }
-            }
 
 
-            "Focus Shoot" -> {
-                val tags = response.tags.focusShoot
+                "Focus Shoot" -> {
+                    val tags = response.tags.focusShoot
 
-                tags?.forEach {
-                    addBinding(
-                        viewModel.categoryDetails.value!!.imageType!!,
-                        it.fieldType,
-                        getItemBinding(it.fieldType, it.fieldName, it.enumValues)
-                    )
+                    tags?.forEach {
+                        addBinding(
+                            viewModel.categoryDetails.value!!.imageType!!,
+                            it.fieldType,
+                            getItemBinding(it.fieldType, it.fieldName, it.enumValues)
+                        )
+                    }
                 }
             }
         }

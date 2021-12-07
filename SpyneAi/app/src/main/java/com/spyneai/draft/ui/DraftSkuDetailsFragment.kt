@@ -67,7 +67,7 @@ class DraftSkuDetailsFragment : BaseFragment<DraftViewModel, FragmentDraftSkuDet
 
 
             if (!list.isNullOrEmpty()) {
-                if (intent.getStringExtra(AppConstants.CATEGORY_ID) == AppConstants.CATEGORY_ID
+                if (intent.getStringExtra(AppConstants.CATEGORY_ID) == AppConstants.CARS_CATEGORY_ID
                     || intent.getStringExtra(AppConstants.CATEGORY_ID) == AppConstants.BIKES_CATEGORY_ID) {
                     localExterior = list?.filter {
                         it.categoryName == "Exterior"

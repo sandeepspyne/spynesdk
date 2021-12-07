@@ -295,7 +295,7 @@ class ShootViewModel : ViewModel() {
         image.isReclick = if (isReclick) 1 else 0
 
         if (image.categoryName == "360int")
-            image.name = image.skuName + "_" + image.skuId + "_360int_"+image.sequence+".jpg"
+            image.name = image.skuName + "_" + image.skuId + "_360int_1.JPG"
         else
             image.name = if (shootData.name.contains(".")) shootData.name else shootData.name + "." + shootData.capturedImage.substringAfter(".")
 

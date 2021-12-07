@@ -617,7 +617,8 @@ class DraftShootFragment : BaseFragment<ShootViewModel, FragmentOverlaysV2Bindin
     private fun startInteriorShots() {
         viewModel.isCameraButtonClickable = true
 
-        binding.apply {
+        if (viewModel.subCategoriesResponse.value is Resource.Success){
+            binding.apply {
             binding.llAngles.visibility = View.VISIBLE
             rvSubcategories?.visibility = View.VISIBLE
             tvShoot.isClickable = false
@@ -693,6 +694,7 @@ class DraftShootFragment : BaseFragment<ShootViewModel, FragmentOverlaysV2Bindin
 
         //change image type
         viewModel.categoryDetails.value?.imageType = "Interior"
+        }
 
     }
 
@@ -717,95 +719,97 @@ class DraftShootFragment : BaseFragment<ShootViewModel, FragmentOverlaysV2Bindin
     private fun startMiscShots() {
         viewModel.isCameraButtonClickable = true
 
-        binding.apply {
-            binding.llAngles.visibility = View.VISIBLE
-            rvSubcategories?.visibility = View.VISIBLE
-            imgOverlay.visibility = View.INVISIBLE
-        }
+       if (viewModel.subCategoriesResponse.value is Resource.Success){
+           binding.apply {
+               binding.llAngles.visibility = View.VISIBLE
+               rvSubcategories?.visibility = View.VISIBLE
+               imgOverlay.visibility = View.INVISIBLE
+           }
 
 
-        val subCatResponse = (viewModel.subCategoriesResponse.value as Resource.Success).value
+           val subCatResponse = (viewModel.subCategoriesResponse.value as Resource.Success).value
 
-        viewModel.miscAngles.value = subCatResponse.miscellaneous.size
-        binding.rvSubcategories.scrollToPosition(0)
+           viewModel.miscAngles.value = subCatResponse.miscellaneous.size
+           binding.rvSubcategories.scrollToPosition(0)
 
 
-        if (viewModel.fromDrafts) {
-            if (viewModel.categoryDetails.value?.categoryName == "Bikes") {
-                val filteredList: List<NewSubCatResponse.Miscellaneous> =
-                    subCatResponse.miscellaneous.filter {
-                        it.prod_sub_cat_id == viewModel.subCategory.value?.prod_sub_cat_id
-                    }
+           if (viewModel.fromDrafts) {
+               if (viewModel.categoryDetails.value?.categoryName == "Bikes") {
+                   val filteredList: List<NewSubCatResponse.Miscellaneous> =
+                       subCatResponse.miscellaneous.filter {
+                           it.prod_sub_cat_id == viewModel.subCategory.value?.prod_sub_cat_id
+                       }
 
-                subCatResponse.miscellaneous = filteredList
-                viewModel.miscAngles.value = subCatResponse.miscellaneous.size
-            }
+                   subCatResponse.miscellaneous = filteredList
+                   viewModel.miscAngles.value = subCatResponse.miscellaneous.size
+               }
 
-        } else {
-            val myMiscShootList = viewModel.shootList.value?.filter {
-                it.image_category == "Focus Shoot"
-            }
-        }
+           } else {
+               val myMiscShootList = viewModel.shootList.value?.filter {
+                   it.image_category == "Focus Shoot"
+               }
+           }
 
-        val selctedDraftList = DraftClickedImages.clickedImagesMap
-        val list = subCatResponse.miscellaneous
-        //set overlays
-        list.forEachIndexed { index, data ->
-            if (selctedDraftList.get(data.overlayId.toString()) != null) {
-                list[index].imageClicked = true
-                list[index].imagePath = selctedDraftList.get(data.overlayId.toString())!!
-            }
-        }
+           val selctedDraftList = DraftClickedImages.clickedImagesMap
+           val list = subCatResponse.miscellaneous
+           //set overlays
+           list.forEachIndexed { index, data ->
+               if (selctedDraftList.get(data.overlayId.toString()) != null) {
+                   list[index].imageClicked = true
+                   list[index].imagePath = selctedDraftList.get(data.overlayId.toString())!!
+               }
+           }
 
-        if (viewModel.shootList.value != null) {
-            list.forEach { overlay ->
-                val element = viewModel.shootList.value!!.firstOrNull {
-                    it.overlayId == overlay.overlayId
-                }
+           if (viewModel.shootList.value != null) {
+               list.forEach { overlay ->
+                   val element = viewModel.shootList.value!!.firstOrNull {
+                       it.overlayId == overlay.overlayId
+                   }
 
-                if (element != null) {
-                    overlay.imageClicked = true
-                    overlay.imagePath = element.capturedImage
-                }
-            }
-        }
+                   if (element != null) {
+                       overlay.imageClicked = true
+                       overlay.imagePath = element.capturedImage
+                   }
+               }
+           }
 
-        val notSelected = list.firstOrNull {
-            !it.isSelected && !it.imageClicked
-        }
+           val notSelected = list.firstOrNull {
+               !it.isSelected && !it.imageClicked
+           }
 
-        var index = -1
-        if (notSelected != null) {
-            index = list.indexOf(notSelected)
+           var index = -1
+           if (notSelected != null) {
+               index = list.indexOf(notSelected)
 
-            list[index].isSelected = true
+               list[index].isSelected = true
 
-            viewModel.displayName = list[index].display_name
-            viewModel.displayThumbanil = list[index].display_thumbnail
+               viewModel.displayName = list[index].display_name
+               viewModel.displayThumbanil = list[index].display_thumbnail
 
-        }
+           }
 
-        overlaysAdapter = OverlaysAdapter(
-            list,
-            this@DraftShootFragment,
-            this@DraftShootFragment
-        )
+           overlaysAdapter = OverlaysAdapter(
+               list,
+               this@DraftShootFragment,
+               this@DraftShootFragment
+           )
 
-        binding.rvSubcategories.apply {
-            visibility = View.VISIBLE
-            layoutManager = LinearLayoutManager(
-                requireContext(),
-                LinearLayoutManager.VERTICAL, false
-            )
-            adapter = overlaysAdapter
-        }
+           binding.rvSubcategories.apply {
+               visibility = View.VISIBLE
+               layoutManager = LinearLayoutManager(
+                   requireContext(),
+                   LinearLayoutManager.VERTICAL, false
+               )
+               adapter = overlaysAdapter
+           }
 
-        if (index != -1) {
-            binding.rvSubcategories.scrollToPosition(index)
-        }
+           if (index != -1) {
+               binding.rvSubcategories.scrollToPosition(index)
+           }
 
-        //change image type
-        viewModel.categoryDetails.value?.imageType = "Focus Shoot"
+           //change image type
+           viewModel.categoryDetails.value?.imageType = "Focus Shoot"
+       }
     }
 
 
