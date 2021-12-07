@@ -652,4 +652,27 @@ class ImageLocalRepository {
             selection,
             selectionArgs)
     }
+
+    fun updateMiscImages() : Int {
+        val values = ContentValues().apply {
+            put(
+                Images.COLUMN_NAME_CATEGORY_NAME,
+                "Focus Shoot"
+            )
+        }
+
+        // Which row to update, based on the title
+        val selection = "${Images.COLUMN_NAME_CATEGORY_NAME} LIKE ?"
+
+        val selectionArgs = arrayOf("Misc")
+
+        val count = dbWritable.update(
+            Images.TABLE_NAME,
+            values,
+            selection,
+            selectionArgs)
+
+
+        return count
+    }
 }

@@ -13,9 +13,9 @@ object GcpClient {
     private const val BASE_URL = "https://storage.googleapis.com"
 
     private val client = OkHttpClient.Builder()
-        .readTimeout(4, TimeUnit.MINUTES)
-        .writeTimeout(4, TimeUnit.MINUTES)
-        .connectTimeout(4, TimeUnit.MINUTES)
+        .readTimeout(12, TimeUnit.MINUTES)
+        .writeTimeout(12, TimeUnit.MINUTES)
+        .connectTimeout(12, TimeUnit.MINUTES)
         .retryOnConnectionFailure(true)
         .also { client ->
             if (BuildConfig.DEBUG) {

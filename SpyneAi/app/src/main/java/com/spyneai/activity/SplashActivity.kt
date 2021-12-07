@@ -5,6 +5,7 @@ import android.os.Build
 import android.os.Bundle
 import android.os.Handler
 import android.provider.Settings
+import android.util.Log
 import android.view.View
 import android.view.WindowManager
 import androidx.appcompat.app.AppCompatActivity
@@ -19,6 +20,7 @@ import com.spyneai.loginsignup.activity.LoginActivity
 import com.spyneai.needs.AppConstants
 import com.spyneai.needs.Utilities
 import com.spyneai.onboarding.SelectLanguageActivity
+import com.spyneai.shoot.data.ImageLocalRepository
 import io.sentry.Sentry
 import kotlinx.android.synthetic.main.activity_login.*
 import kotlinx.android.synthetic.main.activity_splash.*
@@ -74,6 +76,10 @@ class SplashActivity : AppCompatActivity() {
         if(Utilities.getPreference(this, AppConstants.STATUS_PROJECT_NAME).isNullOrEmpty()){
             Utilities.savePrefrence(this,AppConstants.STATUS_PROJECT_NAME,"true")
         }
+
+        val count = ImageLocalRepository().updateMiscImages()
+
+        Log.d(TAG, "onCreate: "+count)
 
         setSplash()
     }
