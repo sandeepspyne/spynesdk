@@ -44,7 +44,6 @@ class ReshootActivity : AppCompatActivity() {
             categoryId = intent.getStringExtra(AppConstants.CATEGORY_ID)
             categoryName = intent.getStringExtra(AppConstants.CATEGORY_NAME)
             gifList = intent.getStringExtra(AppConstants.GIF_LIST)
-            imageType = getImageCategory(intent.getStringExtra(AppConstants.CATEGORY_ID)!!)
         }
 
         shootViewModel.categoryDetails.value = categoryDetails

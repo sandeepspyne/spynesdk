@@ -534,7 +534,8 @@ class ReshootFragment : BaseFragment<ShootViewModel, FragmentReshootBinding>(), 
                 if (getString(R.string.app_name) == AppConstants.KARVI)
                     binding.imgOverlay?.visibility = View.GONE
 
-                viewModel.categoryDetails.value?.imageType = data.type
+
+                viewModel.categoryDetails.value?.imageType = if (data.type == "Misc") "Focus Shoot" else data.type
 
                 binding.tvShoot?.text =
                     "Angles ${position.plus(1)}/${SelectedImagesHelper.selectedOverlayIds.size}"
