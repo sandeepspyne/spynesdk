@@ -54,18 +54,8 @@ class ReshootFragment : BaseFragment<ShootViewModel, FragmentReshootBinding>(), 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        when (viewModel.categoryDetails.value?.categoryId) {
-            AppConstants.ECOM_CATEGORY_ID,
-            AppConstants.PHOTO_BOX_CATEGORY_ID,
-            AppConstants.FOOD_AND_BEV_CATEGORY_ID-> {
-                setReshootData()
-            }
-            else -> {
-                getOverlayIds()
-                observerOverlayIds()
-            }
-        }
-
+        getOverlayIds()
+        observerOverlayIds()
 
         binding.apply {
             tvSkuName.text = viewModel.sku.value?.skuName
@@ -270,52 +260,6 @@ class ReshootFragment : BaseFragment<ShootViewModel, FragmentReshootBinding>(), 
 
     }
 
-    private fun setReshootData() {
-        val list = SelectedImagesHelper.selectedImages
-        var index = 0
-
-
-        if (viewModel.shootList.value != null) {
-            list.forEach { overlay ->
-                val element = viewModel.shootList.value!!.firstOrNull {
-                    it.overlayId == overlay.id
-                }
-
-                if (element != null) {
-                    overlay.imageClicked = true
-                    overlay.imagePath = element.capturedImage
-                }
-            }
-
-            val element = list.first {
-                !it.isSelected && !it.imageClicked
-            }
-
-            element.isSelected = true
-            index = list.indexOf(element)
-
-        } else {
-            //set overlays
-            list[index].isSelected = true
-        }
-
-        //set recycler view
-        reshootAdapter = ReshootAdapter(
-            list,
-            this,
-            this
-        )
-
-        binding.rvImages.apply {
-            layoutManager = LinearLayoutManager(
-                requireContext(),
-                LinearLayoutManager.HORIZONTAL,
-                false
-            )
-            adapter = reshootAdapter
-            scrollToPosition(index)
-        }
-    }
 
     private fun getOverlayIds() {
         Utilities.showProgressDialog(requireContext())
@@ -541,18 +485,6 @@ class ReshootFragment : BaseFragment<ShootViewModel, FragmentReshootBinding>(), 
 
                 binding.tvShoot?.text =
                     "Angles ${position.plus(1)}/${SelectedImagesHelper.selectedOverlayIds.size}"
-            }
-            is ImagesOfSkuRes.Data -> {
-                viewModel.reshotImageName = data.image_name
-
-                viewModel.showLeveler.value = true
-
-                viewModel.categoryDetails.value?.imageType = data.image_category
-
-                viewModel.overlayId = data.overlayId
-
-                binding.tvShoot?.text =
-                    "Angles ${position.plus(1)}/${SelectedImagesHelper.selectedImages.size}"
             }
         }
     }

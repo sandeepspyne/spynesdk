@@ -276,28 +276,6 @@ class EcomOverlayReshootFragment : BaseFragment<ShootViewModel, FragmentEcomOver
                 }
 
             }
-
-            is ImagesOfSkuRes.Data -> {
-                if (data.imageClicked) {
-                    ReclickDialog().show(requireActivity().supportFragmentManager, "ReclickDialog")
-                }
-                val list = reshootAdapter?.listItems as List<ImagesOfSkuRes.Data>
-
-                val element = list.firstOrNull {
-                    it.isSelected
-                }
-
-                if (element != null && data != element) {
-                    //loadOverlay(data.angle_name,data.display_thumbnail)
-                    //viewModel.selectedOverlay = data
-
-                    data.isSelected = true
-                    element.isSelected = false
-                    reshootAdapter?.notifyItemChanged(position)
-                    reshootAdapter?.notifyItemChanged(list.indexOf(element))
-                    binding.rvImages.scrollToPosition(position)
-                }
-            }
         }
     }
 
@@ -307,6 +285,7 @@ class EcomOverlayReshootFragment : BaseFragment<ShootViewModel, FragmentEcomOver
         when (data) {
             is ReshootOverlaysRes.Data -> {
                 viewModel.reshotImageName = data.imageName
+                viewModel.reshootSequence = data.sequenceNumber
 
                 viewModel.displayName = data.displayName
                 viewModel.displayThumbanil = data.displayThumbnail
@@ -325,18 +304,6 @@ class EcomOverlayReshootFragment : BaseFragment<ShootViewModel, FragmentEcomOver
 
                 binding.tvShoot?.text =
                     "Angles ${position.plus(1)}/${SelectedImagesHelper.selectedOverlayIds.size}"
-            }
-            is ImagesOfSkuRes.Data -> {
-                viewModel.reshotImageName = data.image_name
-
-                viewModel.showLeveler.value = true
-
-                viewModel.categoryDetails.value?.imageType = data.image_category
-
-                viewModel.overlayId = data.overlayId
-
-                binding.tvShoot?.text =
-                    "Angles ${position.plus(1)}/${SelectedImagesHelper.selectedImages.size}"
             }
         }
     }

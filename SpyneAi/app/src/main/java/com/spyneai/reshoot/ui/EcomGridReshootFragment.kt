@@ -209,7 +209,6 @@ class EcomGridReshootFragment : BaseFragment<ShootViewModel, FragmentEcomGridRes
         val list = SelectedImagesHelper.selectedImages
         var index = 0
 
-
         if (viewModel.shootList.value != null) {
             list.forEach { overlay ->
                 val element = viewModel.shootList.value!!.firstOrNull {
@@ -298,6 +297,7 @@ class EcomGridReshootFragment : BaseFragment<ShootViewModel, FragmentEcomGridRes
        when(data){
            is ImagesOfSkuRes.Data -> {
                viewModel.reshotImageName = data.image_name
+               viewModel.reshootSequence = data.frame_seq_no.toInt()
                viewModel.categoryDetails.value?.imageType = data.image_category
                viewModel.overlayId = data.overlayId
            }
