@@ -85,8 +85,11 @@ public class CategoriesAdapter(
         val colors = intArrayOf(Color.parseColor(categoriesResponseList[position].color_code),
                 Color.parseColor("#FFFFFF"))
 
-        if (position > 4)
+        if (categoriesResponseList[position].active == 1){
+            viewHolder.llCategories.alpha = 1.0F
+        }else{
             viewHolder.llCategories.alpha = 0.5F
+        }
 
         val gd = GradientDrawable(GradientDrawable.Orientation.LEFT_RIGHT, colors)
         gd.cornerRadius = 0f

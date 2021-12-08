@@ -84,7 +84,7 @@ class CategoriesActivity : AppCompatActivity(){
                         Utilities.savePrefrence(this@CategoriesActivity, AppConstants.CATEGORY_ID, catId)
 
                         when(catId){
-                            "cat_d8R14zUNE" -> {
+                            AppConstants.CARS_CATEGORY_ID -> {
                                 val intent = Intent(this@CategoriesActivity, StartShootActivity::class.java)
                                 intent.putExtra(
                                     AppConstants.CATEGORY_NAME,
@@ -105,7 +105,7 @@ class CategoriesActivity : AppCompatActivity(){
                                 intent.putExtra(AppConstants.COLOR, colorCode)
                                 startActivity(intent)
                             }
-                            "cat_d8R14zUNx" -> {
+                            AppConstants.BIKES_CATEGORY_ID -> {
                                 val intent = Intent(this@CategoriesActivity, ShootActivity::class.java)
                                 intent.putExtra(
                                     AppConstants.CATEGORY_NAME,
@@ -126,14 +126,16 @@ class CategoriesActivity : AppCompatActivity(){
                                 intent.putExtra(AppConstants.COLOR, colorCode)
                                 startActivity(intent)
                             }
-                            "cat_Ujt0kuFxY",
-                            "cat_Ujt0kuFxX",
-                            "cat_Ujt0kuFxF",
-                            "cat_P4t6BRVCxx",
-                            "cat_P4t6BRVAyy",
-                            "cat_P4t6BRVART",
-                            "cat_P4t6BRVAMN",
-                            "cat_P4t6BRVCAP"-> {
+                            AppConstants.ECOM_CATEGORY_ID,
+                            AppConstants.FOOTWEAR_CATEGORY_ID,
+                            AppConstants.FOOD_AND_BEV_CATEGORY_ID,
+                            AppConstants.HEALTH_AND_BEAUTY_CATEGORY_ID,
+                            AppConstants.ACCESSORIES_CATEGORY_ID,
+                            AppConstants.WOMENS_FASHION_CATEGORY_ID,
+                            AppConstants.MENS_FASHION_CATEGORY_ID,
+                            AppConstants.CAPS_CATEGORY_ID,
+                            AppConstants.FASHION_CATEGORY_ID,
+                            AppConstants.PHOTO_BOX_CATEGORY_ID-> {
                                 val intent = Intent(this@CategoriesActivity, ShootPortraitActivity::class.java)
                                 intent.putExtra(
                                     AppConstants.CATEGORY_NAME,
