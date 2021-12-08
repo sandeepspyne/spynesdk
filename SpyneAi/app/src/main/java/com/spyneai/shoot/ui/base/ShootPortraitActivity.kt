@@ -163,7 +163,6 @@ class ShootPortraitActivity : AppCompatActivity(), GoogleApiClient.ConnectionCal
         shootViewModel.categoryDetails.value?.imageType =
             getImageCategory(shootViewModel.categoryDetails.value!!.categoryId!!)
 
-
         shootViewModel.stopShoot.observe(this, {
             if (it) {
                 window.clearFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN)
@@ -189,6 +188,7 @@ class ShootPortraitActivity : AppCompatActivity(), GoogleApiClient.ConnectionCal
             if (it) {
                 val bundle = Bundle()
                 bundle.putString(AppConstants.PROJECT_ID,shootViewModel.sku.value?.projectId)
+                bundle.putString(AppConstants.CATEGORY_ID, shootViewModel.categoryDetails?.value!!.categoryId)
                 selectBackgroundFragment.arguments = bundle
 
                 window.clearFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN)

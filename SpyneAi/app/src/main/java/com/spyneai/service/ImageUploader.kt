@@ -96,8 +96,11 @@ class ImageUploader(
                     if (retryCount > 4) {
                         val dbStatus = if (image.isUploaded != 1)
                             localRepository.skipImage(image.itemId!!, skipFlag)
-                        else
+                        else{
                             localRepository.skipMarkDoneFailedImage(image.itemId!!)
+                            localRepository.markDone(image)
+                        }
+
 
                         startNextUpload(image.itemId!!, false, imageType)
 
@@ -314,8 +317,9 @@ class ImageUploader(
         val orientation =
             ei.getAttributeInt(ExifInterface.TAG_ORIENTATION, ExifInterface.ORIENTATION_NORMAL)
         return when (orientation) {
+            ExifInterface.ORIENTATION_UNDEFINED,
             ExifInterface.ORIENTATION_NORMAL,
-            ExifInterface.ORIENTATION_ROTATE_90 -> rotate(bitmap, 90f)
+                    ExifInterface.ORIENTATION_ROTATE_90 -> rotate(bitmap, 90f)
             ExifInterface.ORIENTATION_ROTATE_180 -> rotate(bitmap, 180f)
             ExifInterface.ORIENTATION_ROTATE_270 -> rotate(bitmap, 270f)
             ExifInterface.ORIENTATION_FLIP_HORIZONTAL -> flip(bitmap, true, false)

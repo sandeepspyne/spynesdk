@@ -38,8 +38,6 @@ class ProcessViewModel : ViewModel() {
     var windowCorrection = false
     var tintWindow = false
 
-
-
     val projectId: MutableLiveData<String> = MutableLiveData()
 
     var frontFramesList = ArrayList<String>()

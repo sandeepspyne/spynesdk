@@ -45,11 +45,15 @@ class SelectBackgroundFragment : BaseFragment<ProcessViewModel, FragmentSelectBa
 
         initSelectBackground()
 
+        if (viewModel.categoryId == null){
+            arguments?.let {
+                viewModel.categoryId = it.getString(AppConstants.CATEGORY_ID)
+            }
+        }
 
         binding.ivBackGif.setOnClickListener {
             requireActivity().onBackPressed()
         }
-
 
         binding.cbBlurNoPlate.setOnCheckedChangeListener { buttonView, isChecked ->
             viewModel.numberPlateBlur = isChecked
@@ -92,10 +96,8 @@ class SelectBackgroundFragment : BaseFragment<ProcessViewModel, FragmentSelectBa
                     if (getString(R.string.app_name) == AppConstants.CARS24 ||
                         getString(R.string.app_name) == AppConstants.CARS24_INDIA ||
                         getString(R.string.app_name) == AppConstants.OLA_CABS){
-
                             binding.cbTintWindow.visibility = View.GONE
                             binding.tvTintWindow.visibility = View.GONE
-
                     }
                 } else ->{
                 binding.cbBlurNoPlate.visibility = View.GONE
