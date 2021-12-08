@@ -82,6 +82,7 @@ class CategoriesActivity : AppCompatActivity(){
                         val colorCode = categoriesResponseList[position].color_code
 
                         Utilities.savePrefrence(this@CategoriesActivity, AppConstants.CATEGORY_ID, catId)
+                        Utilities.savePrefrence(this@CategoriesActivity, AppConstants.CATEGORY_NAME, displayName)
 
                         when(catId){
                             AppConstants.CARS_CATEGORY_ID -> {
