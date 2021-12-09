@@ -10,7 +10,7 @@
     {
       "type": "SINGLE",
       "filters": [],
-      "versionCode": 20,
+      "versionCode": 21,
       "versionName": "3.5",
       "outputFile": "app-olacabs-release.apk"
     }

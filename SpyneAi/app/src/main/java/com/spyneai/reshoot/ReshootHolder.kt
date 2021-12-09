@@ -64,7 +64,7 @@ class ReshootHolder(
         else {
             Glide.with(itemView)
                 .load(data.displayThumbnail)
-                .diskCacheStrategy(DiskCacheStrategy.NONE)
+                .diskCacheStrategy(DiskCacheStrategy.ALL)
                 .into(binding?.ivOverlay!!)
         }
 
