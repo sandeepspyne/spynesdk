@@ -100,7 +100,6 @@ class ImageUploader(
                             localRepository.skipMarkDoneFailedImage(image.itemId!!)
                         }
 
-
                         startNextUpload(image.itemId!!, false, imageType)
 
                         captureEvent(Events.MAX_RETRY,
@@ -119,11 +118,6 @@ class ImageUploader(
                         )
 
                         if (image.preSignedUrl != AppConstants.DEFAULT_PRESIGNED_URL) {
-                            context.captureEvent(
-                                Events.UPLOADING_TO_GCP_INITIATED,
-                                imageProperties
-                            )
-
                             when (image.categoryName) {
                                 "Exterior",
                                 "Interior",
@@ -417,6 +411,33 @@ class ImageUploader(
             "application/octet-stream",
             image.preSignedUrl!!,
             requestFile
+        )
+
+        val imageProperties = HashMap<String, Any?>()
+            .apply {
+                put("iteration_id", lastIdentifier)
+                put("retry_count", retryCount)
+                put("image_id", image.imageId)
+                put("image_local_id", image.itemId)
+                put("project_id", image.projectId)
+                put("sku_id", image.skuId)
+                put("sku_name", image.skuName)
+                put("upload_status", image.isUploaded)
+                put("make_done_status", image.isStatusUpdated)
+                put("image_name", image.name)
+                put("overlay_id", image.overlayId)
+                put("sequence", image.sequence)
+                put("pre_url", image.preSignedUrl)
+                put("is_reclick", image.isReclick)
+                put("is_reshoot", image.isReshoot)
+                put("image_path", image.imagePath)
+                put("upload_type", imageType)
+            }
+
+
+        context.captureEvent(
+            Events.UPLOADING_TO_GCP_INITIATED,
+            imageProperties
         )
 
         call.enqueue(object : Callback<ResponseBody> {
