@@ -423,28 +423,30 @@ class SelectBackgroundFragment : BaseFragment<ProcessViewModel, FragmentSelectBa
     }
 
     private fun processSku(showDialog : Boolean) {
-        if (showDialog)
-            Utilities.showProgressDialog(requireContext())
+        if (!viewModel.backgroundSelect.isNullOrEmpty()){
+            if (showDialog)
+                Utilities.showProgressDialog(requireContext())
 
-        requireContext().captureEvent(
-            Events.PROCESS_INITIATED,
-            HashMap<String,Any?>()
-                .apply {
-                    this.put("sku_id", viewModel.sku.value?.skuId!!)
-                    this.put("background_id", backgroundSelect)
-                }
+            requireContext().captureEvent(
+                Events.PROCESS_INITIATED,
+                HashMap<String,Any?>()
+                    .apply {
+                        this.put("sku_id", viewModel.sku.value?.skuId!!)
+                        this.put("background_id", backgroundSelect)
+                    }
 
 
-        )
+            )
 
-        viewModel.processSku(
-            Utilities.getPreference(requireContext(), AppConstants.AUTH_KEY).toString(),
-            viewModel.sku.value?.skuId!!,
-            backgroundSelect,
-            false,
-            binding.cbBlurNoPlate.isChecked,
-            binding.cbWindowCorrection.isChecked,
-            binding.cbTintWindow.isChecked)
+            viewModel.processSku(
+                Utilities.getPreference(requireContext(), AppConstants.AUTH_KEY).toString(),
+                viewModel.sku.value?.skuId!!,
+                backgroundSelect,
+                false,
+                binding.cbBlurNoPlate.isChecked,
+                binding.cbWindowCorrection.isChecked,
+                binding.cbTintWindow.isChecked)
+        }
     }
 
 
