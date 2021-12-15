@@ -99,12 +99,14 @@ class PreferenceFragment : BaseFragment<DashboardViewModel, FragmentPreferenceBi
             params.setMargins(30, 30, 30, 260)
             params.gravity = Gravity.CENTER_HORIZONTAL;
             binding.llLogout.setLayoutParams(params)
-//            Toast.makeText(requireContext(), "running", Toast.LENGTH_SHORT).show()
         }
 
         //
 
-        locationList.add("Select Location")
+        if (Utilities.getPreference(requireContext(),AppConstants.ENTERPRISE_ID) == AppConstants.SPYNE_ENTERPRISE_ID){
+            binding.llAttendance.visibility = View.GONE
+        }else {
+            locationList.add("Select Location")
         spLocationAdapter = ArrayAdapter<String>(
             requireContext(),
             android.R.layout.simple_spinner_dropdown_item,
@@ -156,6 +158,34 @@ class PreferenceFragment : BaseFragment<DashboardViewModel, FragmentPreferenceBi
 
             }
         })
+
+        binding.btClockIn.setOnClickListener {
+            if (allPermissionsGranted())
+                onPermissionGranted()
+            else
+                permissionRequest.launch(permissions.toTypedArray())
+
+        }
+
+        binding.btnClockOut.setOnClickListener {
+            viewModel.type = "checkout"
+            getDistanceFromLatLon(currentLat!!, currentLong!!, "checkout")
+        }
+
+        if (Utilities.getBool(requireContext(), AppConstants.CLOCKED_IN)) {
+            viewModel.siteImagePath =
+                Utilities.getPreference(requireContext(), AppConstants.SITE_IMAGE_PATH).toString()
+            setCheckOut(false)
+        } else {
+            setCheckIn(false)
+        }
+
+        observeUrlResponse()
+        observeClockInOut()
+
+        getLocations()
+        observeLocation()
+        }
 
         languageList.clear()
 
@@ -251,32 +281,7 @@ class PreferenceFragment : BaseFragment<DashboardViewModel, FragmentPreferenceBi
 
         }
 
-        binding.btClockIn.setOnClickListener {
-            if (allPermissionsGranted())
-                onPermissionGranted()
-            else
-                permissionRequest.launch(permissions.toTypedArray())
 
-        }
-
-        binding.btnClockOut.setOnClickListener {
-            viewModel.type = "checkout"
-            getDistanceFromLatLon(currentLat!!, currentLong!!, "checkout")
-        }
-
-        if (Utilities.getBool(requireContext(), AppConstants.CLOCKED_IN)) {
-            viewModel.siteImagePath =
-                Utilities.getPreference(requireContext(), AppConstants.SITE_IMAGE_PATH).toString()
-            setCheckOut(false)
-        } else {
-            setCheckIn(false)
-        }
-
-        observeUrlResponse()
-        observeClockInOut()
-
-        getLocations()
-        observeLocation()
     }
 
     private fun observeLocation() {

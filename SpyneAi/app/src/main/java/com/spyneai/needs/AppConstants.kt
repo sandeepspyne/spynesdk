@@ -5,6 +5,7 @@ package com.spyneai.needs
 object AppConstants {
 
     val ENTERPRISE_ID: String = "ENTERPRISE_ID"
+    val SPYNE_ENTERPRISE_ID: String = "TaD1VC1Ko"
     val FLIPKART_ENTERPRISE_ID: String = "EVV1XVY4R"
     val BASE_URL: String = "https://www.clippr.ai/api/"
     val STATUS_PROJECT_NAME: String="STATUS_PROJECT_NAME"
