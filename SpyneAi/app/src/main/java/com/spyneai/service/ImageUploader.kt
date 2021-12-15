@@ -505,47 +505,51 @@ class ImageUploader(
     }
 
     private suspend fun setStatusUploaed(image: Image, imageType: String, retryCount: Int) {
-        val response = shootRepository.markUploaded(image.imageId!!)
+        if (image.imageId == null){
+            localRepository.markDone(image)
+            selectLastImageAndUpload(imageType, 0)
+        }else{
+            val response = shootRepository.markUploaded(image.imageId!!)
 
-        when (response) {
-            is Resource.Success -> {
-                captureEvent(Events.MARKED_IMAGE_UPLOADED, image, true, null)
+            when (response) {
+                is Resource.Success -> {
+                    captureEvent(Events.MARKED_IMAGE_UPLOADED, image, true, null)
 
-                val count = localRepository.markStatusUploaded(image)
-                val updatedImage = localRepository.getImage(image.itemId!!)
+                    val count = localRepository.markStatusUploaded(image)
+                    val updatedImage = localRepository.getImage(image.itemId!!)
 
-                captureEvent(
-                    Events.IS_MARK_DONE_STATUS_UPDATED,
-                    updatedImage,
-                    true,
-                    null,
-                    count
-                )
-
-                selectLastImageAndUpload(imageType, 0)
-            }
-
-            is Resource.Failure -> {
-                if (response.errorMessage == null) {
                     captureEvent(
-                        Events.MARK_IMAGE_UPLOADED_FAILED,
-                        image,
-                        false,
-                        response.errorCode.toString() + ": Http exception from server"
+                        Events.IS_MARK_DONE_STATUS_UPDATED,
+                        updatedImage,
+                        true,
+                        null,
+                        count
                     )
-                } else {
-                    captureEvent(
-                        Events.MARK_IMAGE_UPLOADED_FAILED,
-                        image,
-                        false,
-                        response.errorCode.toString() + ": " + response.errorMessage
-                    )
+
+                    selectLastImageAndUpload(imageType, 0)
                 }
 
-                selectLastImageAndUpload(imageType, retryCount + 1)
+                is Resource.Failure -> {
+                    if (response.errorMessage == null) {
+                        captureEvent(
+                            Events.MARK_IMAGE_UPLOADED_FAILED,
+                            image,
+                            false,
+                            response.errorCode.toString() + ": Http exception from server"
+                        )
+                    } else {
+                        captureEvent(
+                            Events.MARK_IMAGE_UPLOADED_FAILED,
+                            image,
+                            false,
+                            response.errorCode.toString() + ": " + response.errorMessage
+                        )
+                    }
+
+                    selectLastImageAndUpload(imageType, retryCount + 1)
+                }
             }
         }
-
     }
 
     private fun startNextUpload(itemId: Long, uploaded: Boolean, imageType: String) {
