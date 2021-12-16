@@ -167,7 +167,7 @@ class ImageUploader(
                                 image
                             )
 
-                            captureEvent(Events.GET_PRESIGNED_CALL_INITIATED,image,false,null)
+                            captureEvent(Events.GET_PRESIGNED_CALL_INITIATED,image,true,null)
 
                             when (response) {
                                 is Resource.Success -> {
