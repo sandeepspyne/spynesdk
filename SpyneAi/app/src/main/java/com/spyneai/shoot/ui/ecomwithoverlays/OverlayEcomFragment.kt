@@ -49,6 +49,19 @@ class OverlayEcomFragment : BaseFragment<ShootViewModel, FragmentOverlayEcomBind
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+
+        viewModel.showOverlay.observe(viewLifecycleOwner, {
+            if (it) {
+                binding.imgOverlay.visibility = View.VISIBLE
+            }else binding.imgOverlay.visibility = View.INVISIBLE
+        })
+
+        viewModel.showGrid.observe(viewLifecycleOwner, {
+            if (it) {
+                binding.groupGridLines?.visibility= View.VISIBLE
+            }else binding.groupGridLines?.visibility = View.INVISIBLE
+        })
+
         //observe new image clicked
         viewModel.shootList.observe(viewLifecycleOwner, {
             try {
@@ -279,12 +292,18 @@ class OverlayEcomFragment : BaseFragment<ShootViewModel, FragmentOverlayEcomBind
             tvSkuName?.visibility = View.VISIBLE
             tvAngleName?.visibility = View.VISIBLE
             llProgress?.visibility = View.VISIBLE
-            imgOverlay?.visibility = View.VISIBLE
+//            imgOverlay?.visibility = View.VISIBLE
             tvSkuName?.text = viewModel.sku.value?.skuName
         }
+        viewModel.showGrid.value = viewModel.getCameraSetting().isGridActive
+        viewModel.showLeveler.value = viewModel.getCameraSetting().isGryroActive
+        viewModel.showOverlay.value = viewModel.getCameraSetting().isOverlayActive
 
         if (viewModel.fromDrafts && viewModel.categoryDetails.value?.categoryId == AppConstants.FOOTWEAR_CATEGORY_ID){
-            viewModel.showLeveler.value = true
+//            viewModel.showLeveler.value = true
+            viewModel.showGrid.value = viewModel.getCameraSetting().isGridActive
+            viewModel.showLeveler.value = viewModel.getCameraSetting().isGryroActive
+            viewModel.showOverlay.value = viewModel.getCameraSetting().isOverlayActive
         }
 
     }

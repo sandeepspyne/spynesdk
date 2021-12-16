@@ -24,7 +24,10 @@ class ReclickDialog : BaseDialogFragment<ShootViewModel, DialogReclickBinding>()
                 if (it.getString("image_type").toString().contains("Info")) {
                     viewModel.categoryDetails.value?.imageType = it.getString("image_type").toString()
                     viewModel.currentShoot = it.getInt("position")
-                    viewModel.hideLeveler.value = true
+//                    viewModel.hideLeveler.value = true
+                    viewModel.showGrid.value = viewModel.getCameraSetting().isGridActive
+                    viewModel.showLeveler.value = viewModel.getCameraSetting().isGryroActive
+                    viewModel.showOverlay.value = viewModel.getCameraSetting().isOverlayActive
                     viewModel.overlayId = it.getInt("overlay_id")
                     viewModel.updateSelectItem.value = true
 
@@ -32,16 +35,25 @@ class ReclickDialog : BaseDialogFragment<ShootViewModel, DialogReclickBinding>()
                     when (viewModel.categoryDetails.value?.categoryId) {
                         AppConstants.CARS_CATEGORY_ID,
                         AppConstants.BIKES_CATEGORY_ID-> {
-                            if (it.getString("image_type").toString() == "Exterior")
-                                viewModel.showLeveler.value = true
-                            else
-                                viewModel.hideLeveler.value = true
+                            if (it.getString("image_type").toString() == "Exterior") {
+                                viewModel.showGrid.value = viewModel.getCameraSetting().isGridActive
+                                viewModel.showLeveler.value = viewModel.getCameraSetting().isGryroActive
+                                viewModel.showOverlay.value = viewModel.getCameraSetting().isOverlayActive
+                            } else{
+                                viewModel.showLeveler.value = viewModel.getCameraSetting().isGryroActive
+                                viewModel.showOverlay.value = viewModel.getCameraSetting().isOverlayActive
+                                viewModel.showGrid.value = viewModel.getCameraSetting().isGridActive
+                                }
+
                         }
                         AppConstants.ECOM_CATEGORY_ID,
                         AppConstants.FOOTWEAR_CATEGORY_ID,
                         AppConstants.PHOTO_BOX_CATEGORY_ID,
                         AppConstants.FOOD_AND_BEV_CATEGORY_ID-> {
-                            viewModel.showLeveler.value = true
+//                            viewModel.showLeveler.value = true
+                            viewModel.showGrid.value = viewModel.getCameraSetting().isGridActive
+                            viewModel.showLeveler.value = viewModel.getCameraSetting().isGryroActive
+                            viewModel.showOverlay.value = viewModel.getCameraSetting().isOverlayActive
                         }
                     }
 

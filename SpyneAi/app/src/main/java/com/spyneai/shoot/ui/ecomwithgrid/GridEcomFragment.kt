@@ -32,6 +32,14 @@ class GridEcomFragment : BaseFragment<ShootViewModel, FragmentGridEcomBinding>()
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        viewModel.showOverlay.value=false
+
+        viewModel.showGrid.observe(viewLifecycleOwner, {
+            if (it) {
+                binding.groupGridLines?.visibility= View.VISIBLE
+            }else binding.groupGridLines?.visibility = View.INVISIBLE
+        })
+
         if (Utilities.getPreference(requireContext(), AppConstants.ENTERPRISE_ID)
             == AppConstants.FLIPKART_ENTERPRISE_ID){
             binding.apply {

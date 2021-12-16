@@ -30,6 +30,12 @@ class DraftGridFragment : BaseFragment<ShootViewModel, FragmentGridEcomBinding>(
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        viewModel.showOverlay.value=false
+        viewModel.showGrid.observe(viewLifecycleOwner, {
+            if (it) {
+                binding.groupGridLines?.visibility= View.VISIBLE
+            }else binding.groupGridLines?.visibility = View.INVISIBLE
+        })
 
         if (Utilities.getPreference(requireContext(), AppConstants.ENTERPRISE_ID)
             == AppConstants.FLIPKART_ENTERPRISE_ID){
@@ -153,7 +159,10 @@ class DraftGridFragment : BaseFragment<ShootViewModel, FragmentGridEcomBinding>(
                 AppConstants.ECOM_CATEGORY_ID,
                 AppConstants.FOOD_AND_BEV_CATEGORY_ID,
                 AppConstants.PHOTO_BOX_CATEGORY_ID-> {
-                    viewModel.showLeveler.value = true
+//                    viewModel.showLeveler.value = true
+                    viewModel.showGrid.value = viewModel.getCameraSetting().isGridActive
+                    viewModel.showLeveler.value = viewModel.getCameraSetting().isGryroActive
+                    viewModel.showOverlay.value = viewModel.getCameraSetting().isOverlayActive
                 }
             }
             viewModel.showDialog = true

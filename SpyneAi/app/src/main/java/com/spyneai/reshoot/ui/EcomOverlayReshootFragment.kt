@@ -54,6 +54,12 @@ class EcomOverlayReshootFragment : BaseFragment<ShootViewModel, FragmentEcomOver
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        viewModel.showOverlay.observe(viewLifecycleOwner, {
+            if (it) {
+                binding.imgOverlay.visibility = View.VISIBLE
+            }else binding.imgOverlay.visibility = View.INVISIBLE
+        })
+
         getOverlayIds()
         observerOverlayIds()
 
@@ -226,7 +232,10 @@ class EcomOverlayReshootFragment : BaseFragment<ShootViewModel, FragmentEcomOver
                     //show leveler
                     when(viewModel.categoryDetails.value?.categoryId){
                         AppConstants.FOOTWEAR_CATEGORY_ID ->{
-                            viewModel.showLeveler.value = true
+//                            viewModel.showLeveler.value = true
+                            viewModel.showGrid.value = viewModel.getCameraSetting().isGridActive
+                            viewModel.showLeveler.value = viewModel.getCameraSetting().isGryroActive
+                            viewModel.showOverlay.value = viewModel.getCameraSetting().isOverlayActive
                         }
                     }
                 }
@@ -291,7 +300,9 @@ class EcomOverlayReshootFragment : BaseFragment<ShootViewModel, FragmentEcomOver
                 viewModel.displayThumbanil = data.displayThumbnail
                 viewModel.overlayId = data.id
 
-                binding.imgOverlay.visibility = View.VISIBLE
+                viewModel.showGrid.value = viewModel.getCameraSetting().isGridActive
+                viewModel.showLeveler.value = viewModel.getCameraSetting().isGryroActive
+                viewModel.showOverlay.value = viewModel.getCameraSetting().isOverlayActive
 
                 loadOverlay(data.displayName, data.displayThumbnail)
 

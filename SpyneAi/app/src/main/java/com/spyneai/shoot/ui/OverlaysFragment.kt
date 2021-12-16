@@ -56,6 +56,14 @@ class OverlaysFragment : BaseFragment<ShootViewModel, FragmentOverlaysV2Binding>
 
         requireContext().setLocale()
 
+
+
+        viewModel.showOverlay.observe(viewLifecycleOwner, {
+            if (it) {
+                binding.imgOverlay.visibility = View.VISIBLE
+            }else binding.imgOverlay.visibility = View.INVISIBLE
+        })
+
         //observe new image clicked
         viewModel.shootList.observe(viewLifecycleOwner, {
             try {
@@ -71,7 +79,7 @@ class OverlaysFragment : BaseFragment<ShootViewModel, FragmentOverlaysV2Binding>
 
         viewModel.showInteriorDialog.observe(viewLifecycleOwner, {
             if (it) {
-                binding.imgOverlay?.visibility = View.GONE
+
                 if (viewModel.startInteriorShots.value == null)
                     initInteriorShots()
             }
@@ -295,7 +303,9 @@ class OverlaysFragment : BaseFragment<ShootViewModel, FragmentOverlaysV2Binding>
 
                     snackbar = Snackbar.make(binding.root, "Overlay Failed to load", Snackbar.LENGTH_INDEFINITE)
                         .setAction("Retry") {
-                            loadOverlay(name,overlay)
+                            if(viewModel.showOverlay.value==true) {
+                                loadOverlay(name,overlay)
+                            }
                         }
                         .setActionTextColor(ContextCompat.getColor(requireContext(), R.color.primary))
 
@@ -339,23 +349,29 @@ class OverlaysFragment : BaseFragment<ShootViewModel, FragmentOverlaysV2Binding>
         binding.apply {
             binding.llAngles.visibility = View.VISIBLE
             tvSkuName?.visibility = View.VISIBLE
-            imgOverlay?.visibility = View.VISIBLE
             tvSkuName?.text = viewModel.sku.value?.skuName
-            binding.imgOverlay.visibility = View.VISIBLE
-            if (viewModel.startInteriorShots.value == true || viewModel.startMiscShots.value == true)
-                binding.imgOverlay.visibility = View.INVISIBLE
+
+            if (viewModel.startInteriorShots.value == true || viewModel.startMiscShots.value == true){
+                viewModel.showOverlay.value = viewModel.getCameraSetting().isOverlayActive
+                viewModel.showGrid.value = viewModel.getCameraSetting().isGridActive
+                viewModel.showLeveler.value = viewModel.getCameraSetting().isGryroActive
+            }
+
 
 //            if (viewModel.sku.value?.skuId != null && viewModel.categoryDetails.value?.imageType == "Exterior")
 //                viewModel.showLeveler.value = true
 
             if (viewModel.categoryDetails.value?.imageType == "Exterior")
-                viewModel.showLeveler.value = true
+                viewModel.showOverlay.value = viewModel.getCameraSetting().isOverlayActive
+            viewModel.showGrid.value = viewModel.getCameraSetting().isGridActive
+            viewModel.showLeveler.value = viewModel.getCameraSetting().isGryroActive
 
         }
 
         if (getString(R.string.app_name) == AppConstants.KARVI)
-            binding.imgOverlay.visibility = View.GONE
-
+                viewModel.showOverlay.value = viewModel.getCameraSetting().isOverlayActive
+                viewModel.showGrid.value = viewModel.getCameraSetting().isGridActive
+                 viewModel.showLeveler.value = viewModel.getCameraSetting().isGryroActive
     }
 
     private fun getOverlays() {
@@ -470,7 +486,8 @@ class OverlaysFragment : BaseFragment<ShootViewModel, FragmentOverlaysV2Binding>
     }
 
     private fun initInteriorShots() {
-        viewModel.hideLeveler.value = true
+//        viewModel.hideLeveler.value = true
+
 
         InteriorHintDialog().show(requireActivity().supportFragmentManager, "InteriorHintDialog")
     }
@@ -481,10 +498,9 @@ class OverlaysFragment : BaseFragment<ShootViewModel, FragmentOverlaysV2Binding>
         binding.apply {
             rvSubcategories?.visibility = View.VISIBLE
             tvShoot.isClickable = false
-            imgOverlay.visibility = View.INVISIBLE
         }
 
-        viewModel.hideLeveler.value = true
+//        viewModel.hideLeveler.value = true
 
        val subCatResponse = (viewModel.subCategoriesResponse.value  as Resource.Success).value
 
@@ -542,6 +558,9 @@ class OverlaysFragment : BaseFragment<ShootViewModel, FragmentOverlaysV2Binding>
         binding.rvSubcategories.scrollToPosition(index)
 
         //change image type
+        viewModel.showOverlay.value = viewModel.getCameraSetting().isOverlayActive
+        viewModel.showLeveler.value=viewModel.getCameraSetting().isGryroActive
+        viewModel.showGrid.value = viewModel.getCameraSetting().isGridActive
         viewModel.categoryDetails.value?.imageType = "Interior"
 
     }
@@ -549,14 +568,13 @@ class OverlaysFragment : BaseFragment<ShootViewModel, FragmentOverlaysV2Binding>
     private fun observerMiscShots() {
         viewModel.showMiscDialog.observe(viewLifecycleOwner, {
             if (it) {
-                binding.imgOverlay?.visibility = View.GONE
                 initMiscShots()
             }
         })
     }
 
     private fun initMiscShots() {
-        viewModel.hideLeveler.value = true
+//        viewModel.hideLeveler.value = true
 
         if (!viewModel.miscDialogShowed) {
             MiscShotsDialog().show(requireActivity().supportFragmentManager, "MiscShotsDialog")
@@ -568,8 +586,7 @@ class OverlaysFragment : BaseFragment<ShootViewModel, FragmentOverlaysV2Binding>
         viewModel.isCameraButtonClickable = true
 
         binding.rvSubcategories?.visibility = View.VISIBLE
-        binding.imgOverlay.visibility = View.INVISIBLE
-        viewModel.hideLeveler.value = true
+//        viewModel.hideLeveler.value = true
 
         val subCatResponse = (viewModel.subCategoriesResponse.value  as Resource.Success).value
 
@@ -627,6 +644,11 @@ class OverlaysFragment : BaseFragment<ShootViewModel, FragmentOverlaysV2Binding>
             binding.rvSubcategories.scrollToPosition(index)
 
         //change image type
+//        viewModel.hideLeveler.value = true
+//        viewModel.showOverlay.value = false
+        viewModel.showOverlay.value = viewModel.getCameraSetting().isOverlayActive
+        viewModel.showLeveler.value=viewModel.getCameraSetting().isGryroActive
+        viewModel.showGrid.value = viewModel.getCameraSetting().isGridActive
         viewModel.categoryDetails.value?.imageType = "Focus Shoot"
 
     }
@@ -776,7 +798,6 @@ class OverlaysFragment : BaseFragment<ShootViewModel, FragmentOverlaysV2Binding>
                 viewModel.displayName = data.display_name
                 viewModel.displayThumbanil = data.display_thumbnail
                 viewModel.overlayId = data.id
-                if(getString(R.string.app_name) != AppConstants.KARVI)
                     loadOverlay(data.angle_name,data.display_thumbnail)
 
 

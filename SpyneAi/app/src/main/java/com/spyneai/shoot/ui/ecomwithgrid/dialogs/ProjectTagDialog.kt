@@ -449,7 +449,9 @@ class ProjectTagDialog : BaseDialogFragment<ShootViewModel, ProjectTagDialogBind
                         AppConstants.ECOM_CATEGORY_ID,
                         AppConstants.FOOD_AND_BEV_CATEGORY_ID,
                         AppConstants.PHOTO_BOX_CATEGORY_ID-> {
-                            viewModel.showLeveler.value = true
+//                            viewModel.showLeveler.value = true
+                            viewModel.showGrid.value = viewModel.getCameraSetting().isGridActive
+                            viewModel.showLeveler.value = viewModel.getCameraSetting().isGryroActive
                         }
                     }
                     viewModel.getSubCategories.value = true

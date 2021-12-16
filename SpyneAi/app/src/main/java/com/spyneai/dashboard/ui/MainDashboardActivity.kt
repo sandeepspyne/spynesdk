@@ -5,28 +5,21 @@ import android.content.Intent
 import android.content.pm.PackageManager
 import android.os.Build
 import android.os.Bundle
-import android.os.Environment
 import android.util.Log
 import android.view.View
-import android.view.ViewGroup
-import android.widget.Button
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.work.*
-import com.google.android.material.snackbar.Snackbar
 import com.spyneai.*
 import com.spyneai.R
 import com.spyneai.activity.CategoriesActivity
-import com.spyneai.base.network.ClipperApi
 import com.spyneai.base.network.Resource
 import com.spyneai.dashboard.data.DashboardViewModel
 import com.spyneai.dashboard.ui.base.ViewModelFactory
 import com.spyneai.databinding.ActivityDashboardMainBinding
-import com.spyneai.debug.SendSkusData
-import com.spyneai.interfaces.RetrofitClients
 import com.spyneai.needs.AppConstants
 import com.spyneai.needs.Utilities
 import com.spyneai.orders.ui.MyOrdersActivity
@@ -36,30 +29,17 @@ import com.spyneai.service.Actions
 import com.spyneai.service.ImageUploadingService
 import com.spyneai.service.getServiceState
 import com.spyneai.service.log
-import com.spyneai.service.manual.ManualUploadService
-import com.spyneai.service.manual.StoreImageFiles
-import com.spyneai.shoot.data.FilesRepository
 import com.spyneai.shoot.data.ImageLocalRepository
-import com.spyneai.shoot.data.ShootLocalRepository
-import com.spyneai.shoot.data.ShootRepository
-import com.spyneai.shoot.response.UploadFolderRes
 import com.spyneai.shoot.ui.StartShootActivity
 import com.spyneai.shoot.ui.base.ShootActivity
 import com.spyneai.shoot.ui.dialogs.NoMagnaotoMeterDialog
 import com.spyneai.shoot.ui.dialogs.RequiredPermissionDialog
 import com.spyneai.threesixty.data.VideoLocalRepository
 import com.spyneai.threesixty.data.VideoUploadService
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.launch
-import retrofit2.Call
-import retrofit2.Callback
-import retrofit2.Response
-import java.io.File
 import java.util.*
 
 
 class MainDashboardActivity : AppCompatActivity() {
-
     private lateinit var binding: ActivityDashboardMainBinding
     private var viewModel: DashboardViewModel? = null
     private var TAG = "MainDashboardActivity"
@@ -110,16 +90,16 @@ class MainDashboardActivity : AppCompatActivity() {
             when (it.itemId) {
                 R.id.homeDashboardFragment -> setCurrentFragment(firstFragment)
 
-//                R.id.shootActivity -> {
-//                    if (isMagnatoMeterAvailable()) {
-//                        continueShoot()
-//                    } else {
-//                        NoMagnaotoMeterDialog().show(
-//                            supportFragmentManager,
-//                            "NoMagnaotoMeterDialog"
-//                        )
-//                    }
-//                }
+                R.id.shootActivity -> {
+                    if (isMagnatoMeterAvailable()) {
+                        continueShoot()
+                    } else {
+                        NoMagnaotoMeterDialog().show(
+                            supportFragmentManager,
+                            "NoMagnaotoMeterDialog"
+                        )
+                    }
+                }
 
                 R.id.completedOrdersFragment -> {
                     if (getString(R.string.app_name) == AppConstants.SPYNE_AI) {
@@ -405,8 +385,7 @@ class MainDashboardActivity : AppCompatActivity() {
 
         WorkManager.getInstance(this).cancelAllWorkByTag("StoreImageFiles  Worker")
         WorkManager.getInstance(this).cancelAllWorkByTag("Manual Long Running Worker")
-        WorkManager.getInstance(this)
-            .cancelAllWorkByTag("Manual Skipped Images Long Running Worker")
+        WorkManager.getInstance(this).cancelAllWorkByTag("Manual Skipped Images Long Running Worker")
         WorkManager.getInstance(this).cancelAllWorkByTag("Long Running Worker")
         WorkManager.getInstance(this).cancelAllWorkByTag("Skipped Images Long Running Worker")
         WorkManager.getInstance(this).cancelAllWorkByTag("Periodic Processing Worker")

@@ -250,7 +250,10 @@ class EcomGridReshootFragment : BaseFragment<ShootViewModel, FragmentEcomGridRes
             scrollToPosition(index)
         }
 
-        viewModel.showLeveler.value = true
+//        viewModel.showLeveler.value = true
+        viewModel.showGrid.value = viewModel.getCameraSetting().isGridActive
+        viewModel.showLeveler.value = viewModel.getCameraSetting().isGryroActive
+        viewModel.showOverlay.value = viewModel.getCameraSetting().isOverlayActive
     }
 
     override fun getViewModel() = ShootViewModel::class.java

@@ -20,6 +20,8 @@ class AngleSelectionDialog : BaseDialogFragment<ShootViewModel, DialogAngleSelec
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+
+
         isCancelable = false
         refreshTexts()
 
@@ -167,7 +169,10 @@ class AngleSelectionDialog : BaseDialogFragment<ShootViewModel, DialogAngleSelec
                     viewModel.sku.value = sku
                     viewModel.isSubCategoryConfirmed.value = true
                     viewModel.isSkuCreated.value = true
-                    viewModel.showLeveler.value = true
+//                    viewModel.showLeveler.value = true
+                    viewModel.showGrid.value = viewModel.getCameraSetting().isGridActive
+                    viewModel.showLeveler.value = viewModel.getCameraSetting().isGryroActive
+                    viewModel.showOverlay.value = viewModel.getCameraSetting().isOverlayActive
 
                     //update sku locally
                     viewModel.updateVideoSkuLocally(sku!!)
@@ -210,8 +215,6 @@ class AngleSelectionDialog : BaseDialogFragment<ShootViewModel, DialogAngleSelec
             viewModel.exterirorAngles.value!!
         )
 
-        val s = ""
-
         viewModel.createSkuRes.observe(viewLifecycleOwner, {
             when (it) {
                 is Resource.Success -> {
@@ -242,7 +245,9 @@ class AngleSelectionDialog : BaseDialogFragment<ShootViewModel, DialogAngleSelec
                     viewModel.sku.value = sku
                     viewModel.isSubCategoryConfirmed.value = true
                     viewModel.isSkuCreated.value = true
-                    viewModel.showLeveler.value = true
+                    viewModel.showGrid.value = viewModel.getCameraSetting().isGridActive
+                    viewModel.showLeveler.value = viewModel.getCameraSetting().isGryroActive
+                    viewModel.showOverlay.value = viewModel.getCameraSetting().isOverlayActive
 
                     //add sku to local database
                     viewModel.insertSku(sku!!)

@@ -57,6 +57,12 @@ class ReshootFragment : BaseFragment<ShootViewModel, FragmentReshootBinding>(), 
         getOverlayIds()
         observerOverlayIds()
 
+        viewModel.showOverlay.observe(viewLifecycleOwner, {
+            if (it) {
+                binding.imgOverlay?.visibility= View.VISIBLE
+            }else binding.imgOverlay?.visibility = View.INVISIBLE
+        })
+
         binding.apply {
             tvSkuName.text = viewModel.sku.value?.skuName
 
@@ -469,16 +475,25 @@ class ReshootFragment : BaseFragment<ShootViewModel, FragmentReshootBinding>(), 
                 viewModel.overlayId = data.id
 
                 if (data.type == "Exterior") {
-                    viewModel.showLeveler.value = true
-                    binding.imgOverlay?.visibility = View.VISIBLE
+//                    viewModel.showLeveler.value = true
+//                    binding.imgOverlay?.visibility = View.VISIBLE
+                    viewModel.showGrid.value = viewModel.getCameraSetting().isGridActive
+                    viewModel.showLeveler.value = viewModel.getCameraSetting().isGryroActive
+                    viewModel.showOverlay.value = viewModel.getCameraSetting().isOverlayActive
                     loadOverlay(data.displayName, data.displayThumbnail)
                 } else {
-                    viewModel.hideLeveler.value = true
-                    binding.imgOverlay?.visibility = View.GONE
+//                    viewModel.hideLeveler.value = true
+//                    binding.imgOverlay?.visibility = View.GONE
+                    viewModel.showGrid.value = viewModel.getCameraSetting().isGridActive
+                    viewModel.showLeveler.value = viewModel.getCameraSetting().isGryroActive
+                    viewModel.showOverlay.value = viewModel.getCameraSetting().isOverlayActive
                 }
 
                 if (getString(R.string.app_name) == AppConstants.KARVI)
-                    binding.imgOverlay?.visibility = View.GONE
+//                    binding.imgOverlay?.visibility = View.GONE
+                    viewModel.showGrid.value = viewModel.getCameraSetting().isGridActive
+                viewModel.showLeveler.value = viewModel.getCameraSetting().isGryroActive
+                viewModel.showOverlay.value = viewModel.getCameraSetting().isOverlayActive
 
 
                 viewModel.categoryDetails.value?.imageType = if (data.type == "Misc") "Focus Shoot" else data.type

@@ -28,6 +28,7 @@ class CreateProjectEcomDialog :
 
         dialog?.setCancelable(false)
 
+
         binding.ivClose.setOnClickListener {
             requireActivity().finish()
         }
@@ -173,7 +174,10 @@ class CreateProjectEcomDialog :
                     viewModel.sku.value = sku
                     viewModel.isSkuCreated.value = true
                     //viewModel.isSubCategoryConfirmed.value = true
-                    viewModel.showLeveler.value = true
+//                    viewModel.showLeveler.value = true
+                    viewModel.showGrid.value = viewModel.getCameraSetting().isGridActive
+                    viewModel.showLeveler.value = viewModel.getCameraSetting().isGryroActive
+                    viewModel.showOverlay.value = viewModel.getCameraSetting().isOverlayActive
 
                     //add sku to local database
                     viewModel.insertSku(sku!!)
