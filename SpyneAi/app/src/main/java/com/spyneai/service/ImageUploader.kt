@@ -290,18 +290,11 @@ class ImageUploader(
 
                         //check if we don"t have any new image clicked while uploading skipped images
                         if (count > 0 || markDoneSkippedCount > 0) {
-                            if (count > 0) {
-                                //upload double skipped images if we don't have any new image
-                                selectLastImageAndUpload(AppConstants.SKIPPED, 0)
-                            } else{
-                                //delete temp files
-                                deleteTempFiles(File(outputDirectory))
-                                listener.onUploaded(image)
-                            }
-
+                            selectLastImageAndUpload(AppConstants.SKIPPED, 0)
                         } else {
                             //upload images clicked while service uploading skipped images
-                            selectLastImageAndUpload(AppConstants.REGULAR, 0)
+                            deleteTempFiles(File(outputDirectory))
+                            listener.onUploaded(image)
                         }
                     }
                 }
