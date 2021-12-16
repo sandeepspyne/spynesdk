@@ -50,9 +50,6 @@ class ShootRepository : BaseRepository() {
         uploadType : String,
         image : Image
     ) = safeApiCall {
-        val meta = if (image.meta.isNullOrEmpty()) JSONObject() else JSONObject(image.meta)
-        val debugData = if (image.debugData.isNullOrEmpty()) JSONObject() else JSONObject(image.debugData)
-
         clipperApi.getPreSignedUrl(
             image.projectId,
             image.skuId,
@@ -63,8 +60,8 @@ class ShootRepository : BaseRepository() {
             image.sequence!!,
             image.isReclick != 0,
             image.isReshoot != 0,
-            meta.toString(),
-            debugData.toString(),
+            image.meta,
+            image.debugData,
             image.angle!!
         )
     }
