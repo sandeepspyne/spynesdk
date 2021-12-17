@@ -86,7 +86,7 @@ class DraftSkuDetailsFragment : BaseFragment<DraftViewModel, FragmentDraftSkuDet
                     binding.rvExteriorImage.apply {
                           adapter = LocalDraftImagesAdapter(requireContext(),
                               localExterior,
-                              intent.getStringExtra(AppConstants.CATEGORY_NAME)!!)
+                              intent.getStringExtra(AppConstants.CATEGORY_ID)!!)
                     }
                 }
 
@@ -100,7 +100,7 @@ class DraftSkuDetailsFragment : BaseFragment<DraftViewModel, FragmentDraftSkuDet
                     binding.rvInteriors.apply {
                          adapter = LocalDraftImagesAdapter(requireContext(),
                              localInteriorList,
-                             intent.getStringExtra(AppConstants.CATEGORY_NAME)!!
+                             intent.getStringExtra(AppConstants.CATEGORY_ID)!!
                          )
                     }
                 }
@@ -115,7 +115,7 @@ class DraftSkuDetailsFragment : BaseFragment<DraftViewModel, FragmentDraftSkuDet
                     binding.rvFocused.apply {
                         adapter = LocalDraftImagesAdapter(requireContext(),
                             localMiscList,
-                            intent.getStringExtra(AppConstants.CATEGORY_NAME)!!)
+                            intent.getStringExtra(AppConstants.CATEGORY_ID)!!)
                     }
                 }
 
