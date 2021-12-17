@@ -75,8 +75,8 @@ android {
         spyne {
             dimension 'version'
             applicationId "com.spyneai"
-            versionCode 70
-            versionName "2.79"
+            versionCode 73
+            versionName "2.82"
         }
 
         sweepCars {
@@ -96,8 +96,8 @@ android {
         karvi {
             dimension 'version'
             applicationId "com.spyneai.karvi"
-            versionCode 27
-            versionName "5.3"
+            versionCode 28
+            versionName "5.4"
         }
 
         travophotos {

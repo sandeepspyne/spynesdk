@@ -152,6 +152,12 @@ class CameraFragment : BaseFragment<ShootViewModel, FragmentCameraBinding>(), Pi
                   binding.switchShowOverlay?.isChecked= false
                   binding.switchShowOverlay?.isClickable = false
               }
+            if(getString(R.string.app_name) ==AppConstants.SPYNE_AI && viewModel.categoryDetails.value?.imageType == "Info"){
+                binding.switchShowOverlay?.isChecked= false
+                binding.switchShowOverlay?.isClickable = false
+                binding.switchShowGyro?.isChecked = false
+                binding.switchShowGyro?.isClickable = false
+            }
             if (binding.ivCross?.visibility == GONE) {
                 binding.ivCross?.visibility = VISIBLE
                 binding.llShowOverlay?.visibility = VISIBLE
@@ -367,6 +373,7 @@ class CameraFragment : BaseFragment<ShootViewModel, FragmentCameraBinding>(), Pi
 
         @SuppressLint("UnsafeOptInUsageError")
         private fun startCamera() {
+
             val cameraProviderFuture = ProcessCameraProvider.getInstance(requireContext())
             var cameraProvider: ProcessCameraProvider
             cameraProviderFuture.addListener({
