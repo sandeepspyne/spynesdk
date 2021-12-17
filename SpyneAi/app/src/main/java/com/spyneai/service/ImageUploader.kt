@@ -45,6 +45,7 @@ class ImageUploader(
     val TAG = "ImageUploader"
 
     fun start() {
+        Log.d(TAG, "start: ")
         selectLastImageAndUpload(AppConstants.REGULAR, 0)
     }
 
@@ -461,7 +462,6 @@ class ImageUploader(
 
         call.enqueue(object : Callback<ResponseBody> {
             override fun onResponse(call: Call<ResponseBody>, response: Response<ResponseBody>) {
-                Log.d(TAG, "onResponse: " + response.code())
                 if (response.isSuccessful) {
                     onImageUploaded(
                         image,
@@ -492,7 +492,6 @@ class ImageUploader(
             }
 
             override fun onFailure(call: Call<ResponseBody>, t: Throwable) {
-                Log.d(TAG, "onFailure: " + t.message)
                 onImageUploadFailed(
                     imageType,
                     retryCount,

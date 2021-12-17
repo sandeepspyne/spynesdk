@@ -8,6 +8,7 @@ import android.content.IntentFilter
 import android.graphics.Color
 import android.os.*
 import android.provider.CalendarContract
+import android.util.Log
 import com.spyneai.R
 import com.spyneai.captureEvent
 import com.spyneai.dashboard.ui.MainDashboardActivity
@@ -19,7 +20,6 @@ import com.spyneai.shoot.data.ImageLocalRepository
 import com.spyneai.shoot.data.ShootLocalRepository
 import com.spyneai.shoot.data.ShootRepository
 import com.spyneai.shoot.data.model.Image
-import com.spyneai.shoot.utils.logUpload
 
 
 class ImageUploadingService : Service(), ImageUploader.Listener {
@@ -30,11 +30,11 @@ class ImageUploadingService : Service(), ImageUploader.Listener {
     lateinit var builder: Notification.Builder
     private var receiver: InternetConnectionReceiver? = null
     var uploadRunning = false
-    var isConnected = false
     private var imageUploader : ImageUploader? = null
     private var notificationId = 0
     val notificationChannelId = "PROCESSING SERVICE CHANNEL"
     var currentImage : Image? = null
+    val TAG = "ImageUploader"
 
     override fun onDestroy() {
         super.onDestroy()
@@ -74,7 +74,6 @@ class ImageUploadingService : Service(), ImageUploader.Listener {
             return START_STICKY
 
         val action = intent.action
-        log("using an intent with action $action")
 
         when (action) {
             Actions.START.name -> {
@@ -97,7 +96,6 @@ class ImageUploadingService : Service(), ImageUploader.Listener {
     }
 
     private fun fetchDataAndStartService() {
-        logUpload("Service Started")
         createOngoingNotificaiton()
     }
 
@@ -107,7 +105,6 @@ class ImageUploadingService : Service(), ImageUploader.Listener {
         val text = getString(R.string.image_uploading_in_progess)
         var notification = createNotification(title,text, true)
 
-        logUpload("createOngoingNotificaiton "+notificationId)
         notificationManager.notify(notificationId, notification)
         startForeground(notificationId, notification)
     }
@@ -155,7 +152,6 @@ class ImageUploadingService : Service(), ImageUploader.Listener {
     }
 
     private fun stopService() {
-        log("Stopping the foreground service")
         try {
             wakeLock?.let {
                 if (it.isHeld) {
@@ -167,22 +163,19 @@ class ImageUploadingService : Service(), ImageUploader.Listener {
             stopSelf()
 
         } catch (e: Exception) {
-            log("Service stopped without being started: ${e.message}")
         }
-//        isServiceStarted = false
+
         setServiceState(this, ServiceState.STOPPED)
     }
 
     override fun inProgress(task: Image) {
         currentImage = task
-        logUpload("in progress "+task.imagePath)
         val category = if (task.categoryName == "Focus Shoot") getString(R.string.miscellanous) else task.categoryName
         val title = getString(R.string.upload)+task.skuName+"("+category+"-"+task.sequence+")"
         val internet = if (isInternetActive()) getString(R.string.active) else getString(R.string.disconnected)
         val content = getString(R.string.innter_connection_label)+internet
         var notification = createNotification(title,content, true)
 
-        logUpload("inProgress "+notificationId)
         notificationManager.notify(notificationId, notification)
        uploadRunning = true
     }
@@ -194,14 +187,12 @@ class ImageUploadingService : Service(), ImageUploader.Listener {
         if (currentImage != null){
             val category = if (currentImage?.categoryName == "Focus Shoot") getString(R.string.miscellanous) else currentImage?.categoryName
             title = getString(R.string.last_uploaded)+currentImage?.skuName+"("+category+"-"+currentImage?.sequence+")"
-            logUpload("uploaded "+currentImage?.imagePath)
         }
 
         val internet = if (isInternetActive()) getString(R.string.active) else getString(R.string.disconnected)
         val content = getString(R.string.innter_connection_label)+internet
         var notification = createNotification(title,content, true)
 
-        logUpload("onUploaded last "+notificationId)
         notificationManager.notify(notificationId, notification)
 
         //update notification after five minutes
@@ -211,7 +202,6 @@ class ImageUploadingService : Service(), ImageUploader.Listener {
             val content = getString(R.string.innter_connection_label)+internet
             var notification = createNotification(title,content, false)
 
-            logUpload("onUploaded all "+notificationId)
             notificationManager.notify(notificationId, notification)
             stopService()
         },180000)
@@ -236,7 +226,6 @@ class ImageUploadingService : Service(), ImageUploader.Listener {
         val content = getString(R.string.internet_connection)
         var notification = createNotification(title,content, true)
 
-        logUpload("onConnectionLost "+notificationId)
         notificationManager.notify(notificationId, notification)
     }
 
@@ -273,8 +262,7 @@ class ImageUploadingService : Service(), ImageUploader.Listener {
     }
 
     private fun resumeUpload(type : String) {
-        logUpload("RESUME UPLOAD "+type)
-
+        Log.d(TAG, "resumeUpload: "+type)
         uploadRunning = true
 
         if (imageUploader == null)

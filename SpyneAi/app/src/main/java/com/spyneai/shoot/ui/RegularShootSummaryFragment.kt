@@ -99,6 +99,7 @@ class RegularShootSummaryFragment  : BaseFragment<ProcessViewModel, FragmentRegu
 
 
                     )
+                    Log.d(TAG, "observeProcessSku: ")
                     viewModel.startTimer.value = true
                 }
                 is Resource.Failure -> {

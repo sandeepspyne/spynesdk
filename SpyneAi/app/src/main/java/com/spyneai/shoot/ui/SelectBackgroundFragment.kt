@@ -202,7 +202,7 @@ class SelectBackgroundFragment : BaseFragment<ProcessViewModel, FragmentSelectBa
                 }
             AppConstants.SPYNE_AI -> {
             if (Utilities.getPreference(requireContext(), AppConstants.CATEGORY_NAME).equals("Food & Beverages")){
-                processFoodImage()
+                   processFoodImage()
                 Utilities.showProgressDialog(requireContext())
             } else{
                 if (binding.cb360.isChecked){
@@ -322,6 +322,7 @@ class SelectBackgroundFragment : BaseFragment<ProcessViewModel, FragmentSelectBa
                         .into(binding.imageViewGif)
 
                     backgroundSelect = response.data[0].imageId
+                    viewModel.backgroundSelect = backgroundSelect
 
                     carBackgroundGifList.clear()
                     for (element in response.data){
@@ -352,6 +353,7 @@ class SelectBackgroundFragment : BaseFragment<ProcessViewModel, FragmentSelectBa
                 override fun onBtnClick(position: Int) {
                     //if (position<carBackgroundList.size)
                     backgroundSelect = carBackgroundGifList[position].imageId
+                    viewModel.backgroundSelect = backgroundSelect
                     carbackgroundsAdapter.notifyDataSetChanged()
 
                     Glide.with(requireContext()) // replace with 'this' if it's in activity
@@ -473,6 +475,8 @@ class SelectBackgroundFragment : BaseFragment<ProcessViewModel, FragmentSelectBa
 
 
                     )
+
+                    Log.d(TAG, "observeProcessSku: ")
                     viewModel.startTimer.value = true
                 }
                 is Resource.Failure -> {
