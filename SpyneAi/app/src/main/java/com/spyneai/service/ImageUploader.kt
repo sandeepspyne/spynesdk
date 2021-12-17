@@ -486,7 +486,7 @@ class ImageUploader(
                         imageType,
                         retryCount,
                         image,
-                        response.errorBody().toString()
+                        response.errorBody()?.string()
                     )
                 }
             }
