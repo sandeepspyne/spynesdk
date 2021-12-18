@@ -319,6 +319,7 @@ class SelectBackgroundFragment : BaseFragment<ProcessViewModel, FragmentSelectBa
                         .error(R.mipmap.defaults) // show error drawable if the image is not a gif
                         .into(binding.imageViewGif)
 
+                    viewModel.backgroundSelect = response.data[0].imageId
                     backgroundSelect = response.data[0].imageId
 
                     carBackgroundGifList.clear()
@@ -349,6 +350,7 @@ class SelectBackgroundFragment : BaseFragment<ProcessViewModel, FragmentSelectBa
             object : NewCarBackgroundAdapter.BtnClickListener {
                 override fun onBtnClick(position: Int) {
                     //if (position<carBackgroundList.size)
+                    viewModel.backgroundSelect = backgroundSelect
                     backgroundSelect = carBackgroundGifList[position].imageId
                     carbackgroundsAdapter.notifyDataSetChanged()
 
@@ -421,28 +423,30 @@ class SelectBackgroundFragment : BaseFragment<ProcessViewModel, FragmentSelectBa
     }
 
     private fun processSku(showDialog : Boolean) {
-        if (showDialog)
-            Utilities.showProgressDialog(requireContext())
+        if (!backgroundSelect.isNullOrEmpty()){
+            if (showDialog)
+                Utilities.showProgressDialog(requireContext())
 
-        requireContext().captureEvent(
-            Events.PROCESS_INITIATED,
-            HashMap<String,Any?>()
-                .apply {
-                    this.put("sku_id", viewModel.sku.value?.skuId!!)
-                    this.put("background_id", backgroundSelect)
-                }
+            requireContext().captureEvent(
+                Events.PROCESS_INITIATED,
+                HashMap<String,Any?>()
+                    .apply {
+                        this.put("sku_id", viewModel.sku.value?.skuId!!)
+                        this.put("background_id", backgroundSelect)
+                    }
 
 
-        )
+            )
 
-        viewModel.processSku(
-            Utilities.getPreference(requireContext(), AppConstants.AUTH_KEY).toString(),
-            viewModel.sku.value?.skuId!!,
-            backgroundSelect,
-            false,
-            binding.cbBlurNoPlate.isChecked,
-            binding.cbWindowCorrection.isChecked,
-            binding.cbTintWindow.isChecked)
+            viewModel.processSku(
+                Utilities.getPreference(requireContext(), AppConstants.AUTH_KEY).toString(),
+                viewModel.sku.value?.skuId!!,
+                backgroundSelect,
+                false,
+                binding.cbBlurNoPlate.isChecked,
+                binding.cbWindowCorrection.isChecked,
+                binding.cbTintWindow.isChecked)
+        }
     }
 
 

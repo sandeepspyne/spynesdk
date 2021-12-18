@@ -390,7 +390,7 @@ class ImageLocalRepository {
             Images.COLUMN_NAME_IS_RESHOOT)
 
         // Filter results WHERE "title" = 'My Title'
-        val selection = "${Images.COLUMN_NAME_IS_UPLOADED} IN (${status}, '1') AND ${Images.COLUMN_NAME_IS_STATUS_UPDATED} IN ('0', '-1')"
+        val selection = "${Images.COLUMN_NAME_IS_UPLOADED} IN (${status}, '1') AND ${Images.COLUMN_NAME_IS_STATUS_UPDATED} = 0"
         //val projectSelectionArgs = arrayOf("0")
 
         // How you want the results sorted in the resulting Cursor
@@ -675,4 +675,28 @@ class ImageLocalRepository {
 
         return count
     }
+
+    fun updateMarkDoneSkipedImages() : Int {
+        val values = ContentValues().apply {
+            put(
+                Images.COLUMN_NAME_IS_STATUS_UPDATED,
+                0
+            )
+        }
+
+        // Which row to update, based on the title
+        val selection = "${Images.COLUMN_NAME_IS_STATUS_UPDATED} LIKE ?"
+
+        val selectionArgs = arrayOf("-1")
+
+        val count = dbWritable.update(
+            Images.TABLE_NAME,
+            values,
+            selection,
+            selectionArgs)
+
+
+        return count
+    }
+
 }
