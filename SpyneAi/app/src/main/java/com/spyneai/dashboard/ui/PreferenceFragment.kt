@@ -2,11 +2,13 @@ package com.spyneai.dashboard.ui
 
 import android.Manifest
 import android.app.Activity.RESULT_OK
+import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.content.res.Configuration
 import android.location.Address
 import android.location.Geocoder
+import android.location.Location
 import android.net.Uri
 import android.os.*
 import android.provider.MediaStore
@@ -59,6 +61,32 @@ import kotlin.math.atan2
 import kotlin.math.cos
 import kotlin.math.sin
 import kotlin.math.sqrt
+import android.location.LocationManager
+
+import androidx.core.app.ActivityCompat
+
+import com.spyneai.extras.MainActivity
+import android.content.Context.LOCATION_SERVICE
+import android.content.Context.LOCATION_SERVICE
+import android.location.Criteria
+import android.content.Context.LOCATION_SERVICE
+
+import com.iceteck.silicompressorr.videocompression.MediaController.mContext
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 class PreferenceFragment : BaseFragment<DashboardViewModel, FragmentPreferenceBinding>(),
@@ -785,6 +813,7 @@ class PreferenceFragment : BaseFragment<DashboardViewModel, FragmentPreferenceBi
         Manifest.permission.READ_EXTERNAL_STORAGE,
         Manifest.permission.WRITE_EXTERNAL_STORAGE,
         Manifest.permission.ACCESS_COARSE_LOCATION,
+        Manifest.permission.ACCESS_FINE_LOCATION
     ).apply {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
             add(Manifest.permission.ACCESS_MEDIA_LOCATION)
@@ -822,18 +851,60 @@ class PreferenceFragment : BaseFragment<DashboardViewModel, FragmentPreferenceBi
         container: ViewGroup?
     ) = FragmentPreferenceBinding.inflate(inflater, container, false)
 
+
+
+
+//    private fun getLatLong(){
+//        if (ContextCompat.checkSelfPermission(
+//                requireContext(), Manifest.permission.ACCESS_FINE_LOCATION
+//            ) == PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(
+//                requireContext(), Manifest.permission.ACCESS_COARSE_LOCATION
+//            ) == PackageManager.PERMISSION_GRANTED
+//        ) {
+//            val locationGPS: Location = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER)
+//            if (locationGPS != null) {
+//                val lat: Double = locationGPS.getLatitude()
+//                val longi: Double = locationGPS.getLongitude()
+//                latitude = lat.toString()
+//                longitude = longi.toString()
+//                showLocation.setText("Your Location: \nLatitude: $latitude\nLongitude: $longitude")
+//            } else {
+//                Toast.makeText(this, "Unable to find location.", Toast.LENGTH_SHORT).show()
+//            }
+//        }
+//    }
+
+
+//
+
+
+
+
+
+
+
+
     override fun onConnected(p0: Bundle?) {
-        if (ContextCompat.checkSelfPermission(
-                requireContext(),
-                Manifest.permission.ACCESS_COARSE_LOCATION
-            )
-            == PackageManager.PERMISSION_GRANTED
-        ) {
+        if (ContextCompat.checkSelfPermission(requireContext(),
+                Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED && ContextCompat.checkSelfPermission(
+                requireContext(), Manifest.permission.ACCESS_COARSE_LOCATION
+            ) == PackageManager.PERMISSION_GRANTED) {
             try {
-                val lastLocation =
-                    LocationServices.FusedLocationApi.getLastLocation(googleApiClient)
-                currentLat = lastLocation.latitude
-                currentLong = lastLocation.longitude
+
+               val locationManager = mContext.getSystemService(LOCATION_SERVICE) as LocationManager
+
+
+
+                val location = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER)
+                if(locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)){
+
+                }
+
+                if (location != null) {
+                    currentLat = location.latitude
+                    currentLong = location.longitude
+                }
+
 
                 val geocoder = Geocoder(requireContext(), Locale.getDefault())
                 val addresses: List<Address> =
