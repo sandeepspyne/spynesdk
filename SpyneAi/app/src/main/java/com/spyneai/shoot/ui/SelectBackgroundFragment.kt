@@ -93,6 +93,15 @@ class SelectBackgroundFragment : BaseFragment<ProcessViewModel, FragmentSelectBa
                         binding.tvTintWindow.visibility = View.VISIBLE
                     }
 
+                    if (getString(R.string.app_name) == AppConstants.ADLOID){
+                        binding.cbBlurNoPlate.visibility = View.VISIBLE
+                        binding.tvBlurNoPlate.visibility = View.VISIBLE
+                        binding.cbWindowCorrection.visibility = View.GONE
+                        binding.tvWindowReflection.visibility = View.GONE
+                        binding.cbTintWindow.visibility = View.GONE
+                        binding.tvTintWindow.visibility = View.GONE
+                    }
+
                     if (getString(R.string.app_name) == AppConstants.CARS24 ||
                         getString(R.string.app_name) == AppConstants.CARS24_INDIA ||
                         getString(R.string.app_name) == AppConstants.OLA_CABS){
@@ -100,12 +109,12 @@ class SelectBackgroundFragment : BaseFragment<ProcessViewModel, FragmentSelectBa
                             binding.tvTintWindow.visibility = View.GONE
                     }
                 } else ->{
-                binding.cbBlurNoPlate.visibility = View.GONE
-                binding.tvBlurNoPlate.visibility = View.GONE
-                binding.cbWindowCorrection.visibility = View.GONE
-                binding.tvWindowReflection.visibility = View.GONE
-                binding.cbTintWindow.visibility = View.GONE
-                binding.tvTintWindow.visibility = View.GONE
+                    binding.cbBlurNoPlate.visibility = View.GONE
+                    binding.tvBlurNoPlate.visibility = View.GONE
+                    binding.cbWindowCorrection.visibility = View.GONE
+                    binding.tvWindowReflection.visibility = View.GONE
+                    binding.cbTintWindow.visibility = View.GONE
+                    binding.tvTintWindow.visibility = View.GONE
                 }
             }
 

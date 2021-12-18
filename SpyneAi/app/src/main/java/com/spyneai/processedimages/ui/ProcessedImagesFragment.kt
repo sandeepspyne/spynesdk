@@ -134,7 +134,7 @@ class ProcessedImagesFragment : BaseFragment<ProcessedViewModel, FragmentProcess
                         if (dataList!![i].image_category.equals("Exterior")) {
                             Category = dataList!![i].image_category
                             (imageList as ArrayList).add(dataList!![i].input_image_lres_url)
-                            (imageListAfter as ArrayList).add(dataList!![i].output_image_lres_wm_url)
+                            (imageListAfter as ArrayList).add(dataList!![i].output_image_lres_url)
 
                             //save for in case of user review
 //                            if (imageListAfter != null && imageList.size > 0)

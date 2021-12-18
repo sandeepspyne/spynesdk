@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "1035716667490",
+    "project_id": "carro-a0879",
+    "storage_bucket": "carro-a0879.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1035716667490:android:52d48ae15905445dd9893b",
+        "android_client_info": {
+          "package_name": "com.spyneai.carro.debug"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "1035716667490-3t4iru2onh05nm5ss2o9j0jktsnl4lvk.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDCyzy7NQFO9Je4w11UsITGgf2UdKuk5DU"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "1035716667490-3t4iru2onh05nm5ss2o9j0jktsnl4lvk.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
