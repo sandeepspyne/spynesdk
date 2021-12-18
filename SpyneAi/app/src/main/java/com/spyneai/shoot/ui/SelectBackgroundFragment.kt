@@ -45,11 +45,15 @@ class SelectBackgroundFragment : BaseFragment<ProcessViewModel, FragmentSelectBa
 
         initSelectBackground()
 
+        if (viewModel.categoryId == null){
+            arguments?.let {
+                viewModel.categoryId = it.getString(AppConstants.CATEGORY_ID)
+            }
+        }
 
         binding.ivBackGif.setOnClickListener {
             requireActivity().onBackPressed()
         }
-
 
         binding.cbBlurNoPlate.setOnCheckedChangeListener { buttonView, isChecked ->
             viewModel.numberPlateBlur = isChecked
@@ -92,10 +96,8 @@ class SelectBackgroundFragment : BaseFragment<ProcessViewModel, FragmentSelectBa
                     if (getString(R.string.app_name) == AppConstants.CARS24 ||
                         getString(R.string.app_name) == AppConstants.CARS24_INDIA ||
                         getString(R.string.app_name) == AppConstants.OLA_CABS){
-
                             binding.cbTintWindow.visibility = View.GONE
                             binding.tvTintWindow.visibility = View.GONE
-
                     }
                 } else ->{
                 binding.cbBlurNoPlate.visibility = View.GONE
@@ -421,28 +423,30 @@ class SelectBackgroundFragment : BaseFragment<ProcessViewModel, FragmentSelectBa
     }
 
     private fun processSku(showDialog : Boolean) {
-        if (showDialog)
-            Utilities.showProgressDialog(requireContext())
+        if (!viewModel.backgroundSelect.isNullOrEmpty()){
+            if (showDialog)
+                Utilities.showProgressDialog(requireContext())
 
-        requireContext().captureEvent(
-            Events.PROCESS_INITIATED,
-            HashMap<String,Any?>()
-                .apply {
-                    this.put("sku_id", viewModel.sku.value?.skuId!!)
-                    this.put("background_id", backgroundSelect)
-                }
+            requireContext().captureEvent(
+                Events.PROCESS_INITIATED,
+                HashMap<String,Any?>()
+                    .apply {
+                        this.put("sku_id", viewModel.sku.value?.skuId!!)
+                        this.put("background_id", backgroundSelect)
+                    }
 
 
-        )
+            )
 
-        viewModel.processSku(
-            Utilities.getPreference(requireContext(), AppConstants.AUTH_KEY).toString(),
-            viewModel.sku.value?.skuId!!,
-            backgroundSelect,
-            false,
-            binding.cbBlurNoPlate.isChecked,
-            binding.cbWindowCorrection.isChecked,
-            binding.cbTintWindow.isChecked)
+            viewModel.processSku(
+                Utilities.getPreference(requireContext(), AppConstants.AUTH_KEY).toString(),
+                viewModel.sku.value?.skuId!!,
+                backgroundSelect,
+                false,
+                binding.cbBlurNoPlate.isChecked,
+                binding.cbWindowCorrection.isChecked,
+                binding.cbTintWindow.isChecked)
+        }
     }
 
 

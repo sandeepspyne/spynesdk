@@ -75,7 +75,7 @@ class InteriorHolder(
         }else {
             Glide.with(itemView)
                 .load(data.display_thumbnail)
-                .diskCacheStrategy(DiskCacheStrategy.NONE)
+                .diskCacheStrategy(DiskCacheStrategy.ALL)
                 .into(binding?.ivOverlay!!)
         }
 

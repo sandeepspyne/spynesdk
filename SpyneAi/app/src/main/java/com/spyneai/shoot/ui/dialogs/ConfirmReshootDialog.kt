@@ -1,6 +1,7 @@
 package com.spyneai.shoot.ui.dialogs
 
 import android.content.Intent
+import android.graphics.drawable.Drawable
 import android.os.Build
 import android.os.Bundle
 import android.util.Log
@@ -11,7 +12,12 @@ import android.view.ViewTreeObserver
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.lifecycleScope
 import com.bumptech.glide.Glide
+import com.bumptech.glide.load.DataSource
 import com.bumptech.glide.load.engine.DiskCacheStrategy
+import com.bumptech.glide.load.engine.GlideException
+import com.bumptech.glide.request.RequestListener
+import com.bumptech.glide.request.target.Target
+import com.google.android.material.snackbar.Snackbar
 import com.spyneai.R
 import com.spyneai.base.BaseDialogFragment
 import com.spyneai.base.network.Resource
@@ -129,13 +135,36 @@ class ConfirmReshootDialog : BaseDialogFragment<ShootViewModel, DialogConfirmRes
         }
 
         val uri = viewModel.shootData.value?.capturedImage
-
-        Log.d(TAG, "onViewCreated: "+uri)
-
+        
         Glide.with(requireContext())
             .load(uri)
+            .addListener(object : RequestListener<Drawable> {
+                override fun onLoadFailed(
+                    e: GlideException?,
+                    model: Any?,
+                    target: Target<Drawable>?,
+                    isFirstResource: Boolean
+                ): Boolean {
+                    Log.d(TAG, "onLoadFailed: "+e?.localizedMessage)
+                    Log.d(TAG, "onLoadFailed: "+e?.stackTrace)
+                    return false
+                }
+
+                override fun onResourceReady(
+                    resource: Drawable?,
+                    model: Any?,
+                    target: Target<Drawable>?,
+                    dataSource: DataSource?,
+                    isFirstResource: Boolean
+                ): Boolean {
+                    Log.d(TAG, "onResourceReady: ")
+                    return false
+                }
+
+            })
             .diskCacheStrategy(DiskCacheStrategy.NONE)
             .skipMemoryCache(true)
+            .dontAnimate()
             .into(binding.ivCapturedImage)
 
 
@@ -145,6 +174,7 @@ class ConfirmReshootDialog : BaseDialogFragment<ShootViewModel, DialogConfirmRes
                     .load(uri)
                     .diskCacheStrategy(DiskCacheStrategy.NONE)
                     .skipMemoryCache(true)
+                    .dontAnimate()
                     .into(binding.ivCaptured2)
 
                 if (getString(R.string.app_name) == AppConstants.KARVI)
@@ -160,52 +190,12 @@ class ConfirmReshootDialog : BaseDialogFragment<ShootViewModel, DialogConfirmRes
                     .load(uri)
                     .diskCacheStrategy(DiskCacheStrategy.NONE)
                     .skipMemoryCache(true)
+                    .dontAnimate()
                     .into(binding.iv)
 
                 binding.llBeforeAfter.visibility = View.INVISIBLE
             }
         }
-
-       viewModel.overlaysResponse.observe(viewLifecycleOwner,{
-           when(it){
-                is Resource.Success -> {
-                    val uri = viewModel.shootData.value?.capturedImage
-
-                    if (viewModel.categoryDetails.value?.imageType == "Exterior"){
-                        //val overlay = it.value.data[viewModel.shootNumber.value!!].display_thumbnail
-
-                        Glide.with(requireContext())
-                            .load(uri)
-                            .diskCacheStrategy(DiskCacheStrategy.NONE)
-                            .skipMemoryCache(true)
-                            .into(binding.ivCapturedImage)
-
-                        Glide.with(requireContext())
-                            .load(uri)
-                            .diskCacheStrategy(DiskCacheStrategy.NONE)
-                            .skipMemoryCache(true)
-                            .into(binding.ivCaptured2)
-
-                        if (getString(R.string.app_name) == AppConstants.KARVI)
-                            binding.ivCapturedOverlay.visibility = View.GONE
-                        else
-                            setOverlay(binding.ivCaptured2,viewModel.getOverlay())
-
-                    }else{
-                        binding.llImperfactions.setBackgroundColor(ContextCompat.getColor(requireContext(),R.color.white))
-
-                        Glide.with(requireContext())
-                            .load(uri)
-                            .diskCacheStrategy(DiskCacheStrategy.NONE)
-                            .skipMemoryCache(true)
-                            .into(binding.iv)
-
-                       binding.llBeforeAfter.visibility = View.INVISIBLE
-                    }
-               }
-               else -> {}
-           }
-       })
     }
 
     private fun uploadImages() {
@@ -243,39 +233,11 @@ class ConfirmReshootDialog : BaseDialogFragment<ShootViewModel, DialogConfirmRes
     }
 
     private fun setOverlay(view: View, overlay : String) {
-        view.viewTreeObserver.addOnGlobalLayoutListener(object :
-            ViewTreeObserver.OnGlobalLayoutListener {
-            override fun onGlobalLayout() {
-                view.viewTreeObserver.removeOnGlobalLayoutListener(this)
-
-                Glide.with(requireContext())
-                    .load(overlay)
-                    .into(binding.ivCapturedOverlay)
-
-                viewModel.shootDimensions.value.let {
-//                    var prw = it?.previewWidth
-//                    var prh = it?.previewHeight
-//
-//                    var ow = it?.overlayWidth
-//                    var oh = it?.overlayHeight
-//
-//                    var newW =
-//                        ow!!.toFloat().div(prw!!.toFloat()).times(view.width)
-//                    var newH =
-//                        oh!!.toFloat().div(prh!!.toFloat()).times(view.height)
-//
-//                    var equlizerOverlayMargin = (9.5 * resources.displayMetrics.density).toInt()
-//
-//                    var params = FrameLayout.LayoutParams(newW.toInt(), newH.toInt())
-//                    params.gravity = Gravity.CENTER
-//                    params.topMargin = equlizerOverlayMargin
-//
-//                    binding.ivCapturedOverlay.layoutParams = params
-
-
-                }
-            }
-        })
+        Glide.with(requireContext())
+            .load(overlay)
+            .diskCacheStrategy(DiskCacheStrategy.ALL)
+            .dontAnimate()
+            .into(binding.ivCapturedOverlay)
     }
 
     private fun checkInteriorShootStatus() {

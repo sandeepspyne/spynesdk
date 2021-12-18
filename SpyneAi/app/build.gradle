@@ -75,8 +75,8 @@ android {
         spyne {
             dimension 'version'
             applicationId "com.spyneai"
-            versionCode 70
-            versionName "2.79"
+            versionCode 72
+            versionName "2.81"
         }
 
         sweepCars {
@@ -110,8 +110,8 @@ android {
         olacabs {
             dimension 'version'
             applicationId "com.spyneai.olacabs"
-            versionCode 20
-            versionName "3.4"
+            versionCode 22
+            versionName "3.6"
         }
 
         cars24 {
@@ -145,8 +145,8 @@ android {
         automoser {
             dimension 'version'
             applicationId "com.spyneai.automoser"
-            versionCode 14
-            versionName "2.3"
+            versionCode 15
+            versionName "2.4"
         }
 
 

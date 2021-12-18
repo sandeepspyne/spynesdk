@@ -80,6 +80,41 @@ class RegularShootSummaryFragment  : BaseFragment<ProcessViewModel, FragmentRegu
                 }
             }
         }
+
+        observeProcessSku()
+    }
+
+    private fun observeProcessSku() {
+        viewModel.processSkuRes.observe(viewLifecycleOwner,{
+            when(it) {
+                is Resource.Success -> {
+                    Utilities.hideProgressDialog()
+                    requireContext().captureEvent(
+                        Events.PROCESS,
+                        HashMap<String,Any?>()
+                            .apply {
+                                this.put("sku_id", viewModel.sku.value?.skuId!!)
+                                this.put("background_id",viewModel.backgroundSelect!!)
+                            }
+
+
+                    )
+                    viewModel.startTimer.value = true
+                }
+                is Resource.Failure -> {
+                    Utilities.hideProgressDialog()
+                    requireContext().captureFailureEvent(
+                        Events.PROCESS_FAILED,
+                        HashMap<String,Any?>()
+                            .apply {
+                                this.put("sku_id",viewModel.sku.value?.skuId!!)
+                            },
+                        it.errorMessage!!)
+
+                    handleApiError(it) { processSku(true)}
+                }
+            }
+        })
     }
 
     override fun onResume() {
@@ -372,60 +407,22 @@ class RegularShootSummaryFragment  : BaseFragment<ProcessViewModel, FragmentRegu
     }
 
     private fun processSku(showLoader : Boolean) {
-        Log.d(TAG, "processSku: "+ viewModel.backgroundSelect!!)
+        if (!viewModel.backgroundSelect.isNullOrEmpty()){
+            if (showLoader)
+                Utilities.showProgressDialog(requireContext())
 
-        if (showLoader)
-            Utilities.showProgressDialog(requireContext())
+            viewModel.processSku(
+                Utilities.getPreference(requireContext(),AppConstants.AUTH_KEY).toString(),
+                viewModel.sku.value?.skuId!!,
+                viewModel.backgroundSelect!!,
+                true,
+                viewModel.numberPlateBlur,
+                viewModel.windowCorrection,
+                viewModel.tintWindow
 
-        viewModel.processSku(
-            Utilities.getPreference(requireContext(),AppConstants.AUTH_KEY).toString(),
-            viewModel.sku.value?.skuId!!,
-            viewModel.backgroundSelect!!,
-            true,
-            viewModel.numberPlateBlur,
-            viewModel.windowCorrection,
-            viewModel.tintWindow
-
-        )
-
-        log("Process sku started")
-        log("Auth key: "+Utilities.getPreference(requireContext(),AppConstants.AUTH_KEY).toString())
-        log("Sku Id: : "+viewModel.sku.value?.skuId!!)
-        log("Background Id: : "+viewModel.backgroundSelect!!)
-
-
-        viewModel.processSkuRes.observe(viewLifecycleOwner,{
-            when(it) {
-                is Resource.Success -> {
-                    Utilities.hideProgressDialog()
-                    requireContext().captureEvent(
-                        Events.PROCESS,
-                        HashMap<String,Any?>()
-                            .apply {
-                                this.put("sku_id", viewModel.sku.value?.skuId!!)
-                                this.put("background_id",viewModel.backgroundSelect!!)
-                            }
-
-
-                    )
-                    viewModel.startTimer.value = true
-                }
-                is Resource.Failure -> {
-                    Utilities.hideProgressDialog()
-                    requireContext().captureFailureEvent(
-                        Events.PROCESS_FAILED,
-                        HashMap<String,Any?>()
-                            .apply {
-                             this.put("sku_id",viewModel.sku.value?.skuId!!)
-                            },
-                        it.errorMessage!!)
-
-                    handleApiError(it) { processSku(true)}
-                }
-            }
-        })
+            )
+        }
     }
-
 
     override fun getViewModel() = ProcessViewModel::class.java
 

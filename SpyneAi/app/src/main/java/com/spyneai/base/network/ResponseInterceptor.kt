@@ -30,7 +30,9 @@ class ResponseInterceptor : Interceptor {
                  val finalResponse = response.newBuilder().body(bodyString.toResponseBody(contentType)).build()
 
                 if (json.has("status") && json.getInt("status") != 200) {
-                    throw ServerException(json.getInt("status"),json.getString("message"))
+                    throw ServerException(json.getInt("status"),
+                        json.getString("message"),
+                    json.toString())
                 }
 
                 return finalResponse
