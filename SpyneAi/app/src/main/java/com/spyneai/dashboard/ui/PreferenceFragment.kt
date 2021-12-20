@@ -26,8 +26,6 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.content.ContextCompat
 import androidx.core.content.FileProvider
 import com.bumptech.glide.Glide
-import com.google.android.gms.common.ConnectionResult
-import com.google.android.gms.common.api.GoogleApiClient
 import com.google.android.gms.location.LocationServices
 import com.google.android.material.snackbar.Snackbar
 import com.spyneai.*
@@ -74,14 +72,17 @@ import android.content.Context.LOCATION_SERVICE
 import com.iceteck.silicompressorr.videocompression.MediaController.mContext
 import android.content.Context.LOCATION_SERVICE
 import android.content.DialogInterface
+import android.location.LocationListener
 import android.provider.Settings
 import android.widget.Toast as Toast
+import android.widget.TextView
+import com.google.android.gms.location.FusedLocationProviderClient
 
 
-class PreferenceFragment : BaseFragment<DashboardViewModel, FragmentPreferenceBinding>(),
-    GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener {
+class PreferenceFragment : BaseFragment<DashboardViewModel, FragmentPreferenceBinding>() {
 
     val REQUEST_IMAGE_CAPTURE = 1
+    private lateinit var fusedLocationClient: FusedLocationProviderClient
 
     //    var languageList = arrayOf("English","Germany","Italy")
     var languageList = arrayListOf<String>()
@@ -89,7 +90,6 @@ class PreferenceFragment : BaseFragment<DashboardViewModel, FragmentPreferenceBi
     lateinit var spLanguageAdapter: ArrayAdapter<String>
     lateinit var spLocationAdapter: ArrayAdapter<String>
     lateinit var currentPhotoPath: String
-    private var googleApiClient: GoogleApiClient? = null
     val location_data = JSONObject()
     var snackbar: Snackbar? = null
     var isActive = false
@@ -100,13 +100,19 @@ class PreferenceFragment : BaseFragment<DashboardViewModel, FragmentPreferenceBi
     var location_accessed_from: String? =""
 
 
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        fusedLocationClient = LocationServices.getFusedLocationProviderClient(requireContext())
+        val locationManager = requireContext().getSystemService(LOCATION_SERVICE) as LocationManager
+        if (!locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
+            OnGPS()
+        } else {
+            getLocationData()
+        }
+    }
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
-        // set llLogout Button Margin only for sypne app
-        googleApiClient =
-            GoogleApiClient.Builder(requireContext(), this, this).addApi(LocationServices.API)
-                .build()
 
 
         if (getString(R.string.app_name) == AppConstants.SPYNE_AI) {
@@ -125,84 +131,86 @@ class PreferenceFragment : BaseFragment<DashboardViewModel, FragmentPreferenceBi
             binding.llAttendance.visibility = View.GONE
         }else {
             locationList.add("Select Location")
-        spLocationAdapter = ArrayAdapter<String>(
-            requireContext(),
-            android.R.layout.simple_spinner_dropdown_item,
-            locationList
-        )
+            spLocationAdapter = ArrayAdapter<String>(
+                requireContext(),
+                android.R.layout.simple_spinner_dropdown_item,
+                locationList
+            )
 
-        //clockin Adapter
-        binding.spSelectLocation.adapter = spLocationAdapter
-        binding.spSelectLocation.setTitle("")
+            //clockin Adapter
+            binding.spSelectLocation.adapter = spLocationAdapter
+            binding.spSelectLocation.setTitle("")
 
-        binding.spSelectLocation.onItemSelectedListener = object : OnItemSelectedListener {
-            override fun onItemSelected(
-                parent: AdapterView<*>,
-                view: View?,
-                position: Int,
-                id: Long
-            ) {
-                if (position == 0) {
-                    binding.btClockIn.enable(false)
-                } else {
-                    binding.btClockIn.enable(true)
+            binding.spSelectLocation.onItemSelectedListener = object : OnItemSelectedListener {
+                override fun onItemSelected(
+                    parent: AdapterView<*>,
+                    view: View?,
+                    position: Int,
+                    id: Long
+                ) {
+                    if (position == 0) {
+                        binding.btClockIn.enable(false)
+                    } else {
+                        binding.btClockIn.enable(true)
+                    }
+                }
+
+                override fun onNothingSelected(parent: AdapterView<*>?) {
                 }
             }
 
-            override fun onNothingSelected(parent: AdapterView<*>?) {
-            }
-        }
+            //clockout Adapter
+            binding.spLocationOut.adapter = spLocationAdapter
+            binding.spLocationOut.setTitle("")
 
-        //clockout Adapter
-        binding.spLocationOut.adapter = spLocationAdapter
-        binding.spLocationOut.setTitle("")
+            binding.spLocationOut.setOnItemSelectedListener(object : OnItemSelectedListener {
+                override fun onItemSelected(
+                    parent: AdapterView<*>,
+                    view: View?,
+                    position: Int,
+                    id: Long
+                ) {
 
-        binding.spLocationOut.setOnItemSelectedListener(object : OnItemSelectedListener {
-            override fun onItemSelected(
-                parent: AdapterView<*>,
-                view: View?,
-                position: Int,
-                id: Long
-            ) {
-
-                if (position == 0) {
-                    binding.btnClockOut.enable(false)
-                } else {
-                    binding.btnClockOut.enable(true)
+                    if (position == 0) {
+                        binding.btnClockOut.enable(false)
+                    } else {
+                        binding.btnClockOut.enable(true)
+                    }
                 }
+
+                override fun onNothingSelected(parent: AdapterView<*>?) {
+
+                }
+            })
+
+            binding.btClockIn.setOnClickListener {
+                if (allPermissionsGranted())
+                    onPermissionGranted()
+                else
+                    permissionRequest.launch(permissions.toTypedArray())
+
             }
 
-            override fun onNothingSelected(parent: AdapterView<*>?) {
 
+
+            binding.btnClockOut.setOnClickListener {
+                viewModel.type = "checkout"
+                getLocationData()
+                getDistanceFromLatLon(currentLat!!, currentLong!!, "checkout")
             }
-        })
+            if (Utilities.getBool(requireContext(), AppConstants.CLOCKED_IN)) {
+                viewModel.siteImagePath =
+                    Utilities.getPreference(requireContext(), AppConstants.SITE_IMAGE_PATH).toString()
+                setCheckOut(false)
+            } else {
+                setCheckIn(false)
+            }
 
-        binding.btClockIn.setOnClickListener {
-            if (allPermissionsGranted())
-                onPermissionGranted()
-            else
-                permissionRequest.launch(permissions.toTypedArray())
+            observeUrlResponse()
+            observeClockInOut()
 
-        }
-
-        binding.btnClockOut.setOnClickListener {
-            viewModel.type = "checkout"
-            getDistanceFromLatLon(currentLat!!, currentLong!!, "checkout")
-        }
-
-        if (Utilities.getBool(requireContext(), AppConstants.CLOCKED_IN)) {
-            viewModel.siteImagePath =
-                Utilities.getPreference(requireContext(), AppConstants.SITE_IMAGE_PATH).toString()
-            setCheckOut(false)
-        } else {
-            setCheckIn(false)
-        }
-
-        observeUrlResponse()
-        observeClockInOut()
-
-        getLocations()
-        observeLocation()
+            getLocations()
+            observeLocation()
         }
 
         languageList.clear()
@@ -302,6 +310,16 @@ class PreferenceFragment : BaseFragment<DashboardViewModel, FragmentPreferenceBi
 
     }
 
+    private fun OnGPS() {
+        val builder: AlertDialog.Builder = AlertDialog.Builder(requireContext())
+        builder.setMessage("Enable GPS").setCancelable(false).setPositiveButton("Yes",
+            DialogInterface.OnClickListener { dialog, which -> startActivity(Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS)) })
+            .setNegativeButton("No",
+                DialogInterface.OnClickListener { dialog, which -> dialog.cancel() })
+        val alertDialog: AlertDialog = builder.create()
+        alertDialog.show()
+    }
+
     private fun observeLocation() {
         viewModel.locationsResponse.observe(viewLifecycleOwner, {
             when (it) {
@@ -332,6 +350,41 @@ class PreferenceFragment : BaseFragment<DashboardViewModel, FragmentPreferenceBi
         })
     }
 
+    fun getLocationData(){
+        if (ContextCompat.checkSelfPermission(
+                requireContext(),
+                Manifest.permission.ACCESS_FINE_LOCATION
+            ) == PackageManager.PERMISSION_GRANTED && ContextCompat.checkSelfPermission(
+                requireContext(), Manifest.permission.ACCESS_COARSE_LOCATION
+            ) == PackageManager.PERMISSION_GRANTED) {
+            try {
+                fusedLocationClient.lastLocation
+                    .addOnSuccessListener { location: Location? ->
+                        if (location != null) {
+                            currentLat = location.latitude
+                            currentLong = location.longitude
+                        }
+                    }
+                val geocoder = Geocoder(requireContext(), Locale.getDefault())
+                val addresses: List<Address> =
+                    geocoder.getFromLocation(currentLat!!, currentLong!!, 1)
+                val postalCode = addresses[0].postalCode
+                val cityName = addresses[0].locality
+                val countryName = addresses[0].countryName
+                location_data.put("city", cityName)
+                location_data.put("country", countryName)
+                location_data.put("latitude", currentLat)
+                location_data.put("longitude", currentLong)
+                location_data.put("postalCode", postalCode)
+            } catch (e: Exception) {
+                e.printStackTrace()
+            }
+
+        }
+    }
+
+
+
     // calculate distance bw lat lon
     fun getDistanceFromLatLon(lat1: Double, lon1: Double, type: String) {
         val selected = getSelectedItem()?.coordinates
@@ -344,7 +397,7 @@ class PreferenceFragment : BaseFragment<DashboardViewModel, FragmentPreferenceBi
         var c = 2 * atan2(sqrt(a), sqrt(1 - a));
         var d = R * c * 1000 // Distance in m
         val s = ""
-        Toast.makeText(requireContext(), "$lat1   $lon1  $d   $location_accessed_from",Toast.LENGTH_SHORT).show()
+        Toast.makeText(requireContext(), "$lat1   $lon1  $d",Toast.LENGTH_SHORT).show()
         if (d > getSelectedItem()?.thresholdDistanceInMeters!!) {
             InvalidLocationDialog().show(
                 requireActivity().supportFragmentManager,
@@ -479,12 +532,12 @@ class PreferenceFragment : BaseFragment<DashboardViewModel, FragmentPreferenceBi
 
         return if (viewModel.type == "checkin"){
             locations.firstOrNull {
-            it.locationName == binding.spSelectLocation.selectedItem.toString()
-        }
+                it.locationName == binding.spSelectLocation.selectedItem.toString()
+            }
         }else{
             locations.firstOrNull {
-            it.locationName == binding.spLocationOut.selectedItem.toString()
-        }
+                it.locationName == binding.spLocationOut.selectedItem.toString()
+            }
         }
     }
 
@@ -696,6 +749,7 @@ class PreferenceFragment : BaseFragment<DashboardViewModel, FragmentPreferenceBi
 
     private fun clockInOut() {
         binding.progressBar.visibility = View.VISIBLE
+
         viewModel.captureCheckInOut(
             viewModel.type,
             location_data,
@@ -734,13 +788,10 @@ class PreferenceFragment : BaseFragment<DashboardViewModel, FragmentPreferenceBi
     }
 
 
-    override fun onStart() {
-        super.onStart()
-        googleApiClient?.connect()
-    }
 
     override fun onResume() {
         super.onResume()
+
         if (Utilities.getBool(requireContext(), AppConstants.CLOCKED_IN)) {
             isActive = true
             upDateTimer(
@@ -755,7 +806,6 @@ class PreferenceFragment : BaseFragment<DashboardViewModel, FragmentPreferenceBi
     override fun onStop() {
         super.onStop()
         isActive = false
-        googleApiClient?.disconnect()
     }
 
     private fun refreshTexts() {
@@ -831,6 +881,7 @@ class PreferenceFragment : BaseFragment<DashboardViewModel, FragmentPreferenceBi
         if (getSelectedItem() == null) {
             Toast.makeText(requireContext(), "Please Select Location", Toast.LENGTH_LONG).show()
         } else {
+            getLocationData()
             getDistanceFromLatLon(currentLat!!, currentLong!!, "checkin")
         }
     }
@@ -841,113 +892,6 @@ class PreferenceFragment : BaseFragment<DashboardViewModel, FragmentPreferenceBi
         inflater: LayoutInflater,
         container: ViewGroup?
     ) = FragmentPreferenceBinding.inflate(inflater, container, false)
-
-
-
-
-//    private fun getLatLong(){
-//        if (ContextCompat.checkSelfPermission(
-//                requireContext(), Manifest.permission.ACCESS_FINE_LOCATION
-//            ) == PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(
-//                requireContext(), Manifest.permission.ACCESS_COARSE_LOCATION
-//            ) == PackageManager.PERMISSION_GRANTED
-//        ) {
-//            val locationGPS: Location = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER)
-//            if (locationGPS != null) {
-//                val lat: Double = locationGPS.getLatitude()
-//                val longi: Double = locationGPS.getLongitude()
-//                latitude = lat.toString()
-//                longitude = longi.toString()
-//                showLocation.setText("Your Location: \nLatitude: $latitude\nLongitude: $longitude")
-//            } else {
-//                Toast.makeText(this, "Unable to find location.", Toast.LENGTH_SHORT).show()
-//            }
-//        }
-//    }
-
-
-//
-
-
-    private fun OnGPS() {
-        val builder: AlertDialog.Builder = AlertDialog.Builder(requireContext())
-        builder.setMessage("Enable GPS").setCancelable(false).setPositiveButton("Yes",
-            DialogInterface.OnClickListener { dialog, which -> startActivity(Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS)) })
-            .setNegativeButton("No",
-                DialogInterface.OnClickListener { dialog, which -> dialog.cancel() })
-        val alertDialog: AlertDialog = builder.create()
-        alertDialog.show()
-    }
-
-    override fun onConnected(p0: Bundle?){
-        val locationManager = requireContext().getSystemService(LOCATION_SERVICE) as LocationManager
-        if (ContextCompat.checkSelfPermission(requireContext(),
-                Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED && ContextCompat.checkSelfPermission(
-                requireContext(), Manifest.permission.ACCESS_COARSE_LOCATION
-            ) == PackageManager.PERMISSION_GRANTED) {
-
-            try {
-
-                if (!locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
-                    OnGPS()
-                } else {
-                    val crit = Criteria()
-                    crit.accuracy = Criteria.ACCURACY_FINE
-                    val provider = locationManager.getBestProvider(crit, true)
-                    var loc = locationManager.getLastKnownLocation(provider!!)
-                    if (loc != null) {
-                        location_accessed_from = provider
-                        currentLat = loc.latitude
-                        currentLong = loc.longitude
-                    }
-                    if (loc == null) {
-                        loc = locationManager.getLastKnownLocation(LocationManager.NETWORK_PROVIDER)
-                        if (loc != null) {
-                            location_accessed_from = LocationManager.NETWORK_PROVIDER
-                            currentLat = loc.latitude
-                            currentLong = loc.longitude
-                        }
-                    }
-                    if (loc == null) {
-                        loc = locationManager.getLastKnownLocation(LocationManager.PASSIVE_PROVIDER)
-                        if (loc != null) {
-                            location_accessed_from = LocationManager.NETWORK_PROVIDER
-                            currentLat = loc.latitude
-                            currentLong = loc.longitude
-                        }
-                    }
-                }
-
-
-
-                    val geocoder = Geocoder(requireContext(), Locale.getDefault())
-                    val addresses: List<Address> =
-                        geocoder.getFromLocation(currentLat!!, currentLong!!, 1)
-                    val postalCode = addresses[0].postalCode
-                    val cityName = addresses[0].locality
-                    val countryName = addresses[0].countryName
-
-                    location_data.put("city", cityName)
-                    location_data.put("country", countryName)
-                    location_data.put("latitude", currentLat)
-                    location_data.put("longitude", currentLong)
-                    location_data.put("postalCode", postalCode)
-            }catch (e: Exception) {
-                    e.printStackTrace()
-                }
-
-
-        }
-    }
-
-
-override fun onConnectionSuspended(p0: Int) {
-
-    }
-
-    override fun onConnectionFailed(p0: ConnectionResult) {
-
-    }
 
     private fun millisecondsToHours(millis: Long): String? {
         return String.format(
