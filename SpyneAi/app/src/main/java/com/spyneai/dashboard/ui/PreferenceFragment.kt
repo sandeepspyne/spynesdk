@@ -2,6 +2,7 @@ package com.spyneai.dashboard.ui
 
 import android.Manifest
 import android.app.Activity.RESULT_OK
+import android.app.AlertDialog
 import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
@@ -21,7 +22,6 @@ import android.widget.AdapterView
 import android.widget.AdapterView.OnItemSelectedListener
 import android.widget.ArrayAdapter
 import android.widget.LinearLayout
-import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.content.ContextCompat
 import androidx.core.content.FileProvider
@@ -72,21 +72,10 @@ import android.location.Criteria
 import android.content.Context.LOCATION_SERVICE
 
 import com.iceteck.silicompressorr.videocompression.MediaController.mContext
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+import android.content.Context.LOCATION_SERVICE
+import android.content.DialogInterface
+import android.provider.Settings
+import android.widget.Toast as Toast
 
 
 class PreferenceFragment : BaseFragment<DashboardViewModel, FragmentPreferenceBinding>(),
@@ -108,6 +97,7 @@ class PreferenceFragment : BaseFragment<DashboardViewModel, FragmentPreferenceBi
     var selectdLong: Double? = 0.0
     var currentLat: Double? = 0.0
     var currentLong: Double? = 0.0
+    var location_accessed_from: String? =""
 
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -354,6 +344,7 @@ class PreferenceFragment : BaseFragment<DashboardViewModel, FragmentPreferenceBi
         var c = 2 * atan2(sqrt(a), sqrt(1 - a));
         var d = R * c * 1000 // Distance in m
         val s = ""
+        Toast.makeText(requireContext(), "$lat1   $lon1  $d   $location_accessed_from",Toast.LENGTH_SHORT).show()
         if (d > getSelectedItem()?.thresholdDistanceInMeters!!) {
             InvalidLocationDialog().show(
                 requireActivity().supportFragmentManager,
@@ -878,54 +869,79 @@ class PreferenceFragment : BaseFragment<DashboardViewModel, FragmentPreferenceBi
 //
 
 
+    private fun OnGPS() {
+        val builder: AlertDialog.Builder = AlertDialog.Builder(requireContext())
+        builder.setMessage("Enable GPS").setCancelable(false).setPositiveButton("Yes",
+            DialogInterface.OnClickListener { dialog, which -> startActivity(Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS)) })
+            .setNegativeButton("No",
+                DialogInterface.OnClickListener { dialog, which -> dialog.cancel() })
+        val alertDialog: AlertDialog = builder.create()
+        alertDialog.show()
+    }
 
-
-
-
-
-
-    override fun onConnected(p0: Bundle?) {
+    override fun onConnected(p0: Bundle?){
+        val locationManager = requireContext().getSystemService(LOCATION_SERVICE) as LocationManager
         if (ContextCompat.checkSelfPermission(requireContext(),
                 Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED && ContextCompat.checkSelfPermission(
                 requireContext(), Manifest.permission.ACCESS_COARSE_LOCATION
             ) == PackageManager.PERMISSION_GRANTED) {
+
             try {
 
-               val locationManager = mContext.getSystemService(LOCATION_SERVICE) as LocationManager
-
-
-
-                val location = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER)
-                if(locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)){
-
+                if (!locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
+                    OnGPS()
+                } else {
+                    val crit = Criteria()
+                    crit.accuracy = Criteria.ACCURACY_FINE
+                    val provider = locationManager.getBestProvider(crit, true)
+                    var loc = locationManager.getLastKnownLocation(provider!!)
+                    if (loc != null) {
+                        location_accessed_from = provider
+                        currentLat = loc.latitude
+                        currentLong = loc.longitude
+                    }
+                    if (loc == null) {
+                        loc = locationManager.getLastKnownLocation(LocationManager.NETWORK_PROVIDER)
+                        if (loc != null) {
+                            location_accessed_from = LocationManager.NETWORK_PROVIDER
+                            currentLat = loc.latitude
+                            currentLong = loc.longitude
+                        }
+                    }
+                    if (loc == null) {
+                        loc = locationManager.getLastKnownLocation(LocationManager.PASSIVE_PROVIDER)
+                        if (loc != null) {
+                            location_accessed_from = LocationManager.NETWORK_PROVIDER
+                            currentLat = loc.latitude
+                            currentLong = loc.longitude
+                        }
+                    }
                 }
 
-                if (location != null) {
-                    currentLat = location.latitude
-                    currentLong = location.longitude
+
+
+                    val geocoder = Geocoder(requireContext(), Locale.getDefault())
+                    val addresses: List<Address> =
+                        geocoder.getFromLocation(currentLat!!, currentLong!!, 1)
+                    val postalCode = addresses[0].postalCode
+                    val cityName = addresses[0].locality
+                    val countryName = addresses[0].countryName
+
+                    location_data.put("city", cityName)
+                    location_data.put("country", countryName)
+                    location_data.put("latitude", currentLat)
+                    location_data.put("longitude", currentLong)
+                    location_data.put("postalCode", postalCode)
+            }catch (e: Exception) {
+                    e.printStackTrace()
                 }
 
-
-                val geocoder = Geocoder(requireContext(), Locale.getDefault())
-                val addresses: List<Address> =
-                    geocoder.getFromLocation(currentLat!!, currentLong!!, 1)
-                val postalCode = addresses[0].postalCode
-                val cityName = addresses[0].locality
-                val countryName = addresses[0].countryName
-
-                location_data.put("city", cityName)
-                location_data.put("country", countryName)
-                location_data.put("latitude", currentLat)
-                location_data.put("longitude", currentLong)
-                location_data.put("postalCode", postalCode)
-            } catch (e: Exception) {
-                e.printStackTrace()
-            }
 
         }
     }
 
-    override fun onConnectionSuspended(p0: Int) {
+
+override fun onConnectionSuspended(p0: Int) {
 
     }
 
