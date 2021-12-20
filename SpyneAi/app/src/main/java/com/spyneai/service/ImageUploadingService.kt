@@ -20,6 +20,9 @@ import com.spyneai.shoot.data.ImageLocalRepository
 import com.spyneai.shoot.data.ShootLocalRepository
 import com.spyneai.shoot.data.ShootRepository
 import com.spyneai.shoot.data.model.Image
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
 
 
 class ImageUploadingService : Service(), ImageUploader.Listener {
@@ -180,7 +183,7 @@ class ImageUploadingService : Service(), ImageUploader.Listener {
        uploadRunning = true
     }
 
-    override fun onUploaded(task: Image) {
+    override fun onUploaded() {
         uploadRunning = false
 
         var title = getString(R.string.image_uploaded)
@@ -272,7 +275,10 @@ class ImageUploadingService : Service(), ImageUploader.Listener {
                 this
             )
 
-        imageUploader!!.start()
+        GlobalScope.launch(Dispatchers.Default) {
+            imageUploader!!.start()
+        }
+
     }
 
 }

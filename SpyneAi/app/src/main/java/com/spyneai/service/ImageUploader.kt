@@ -39,14 +39,690 @@ class ImageUploader(
     val localRepository: ImageLocalRepository,
     val shootRepository: ShootRepository,
     var listener: Listener,
-    var lastIdentifier: String = "0"
+    var lastIdentifier: String = "0",
+    var imageType: String = AppConstants.REGULAR
 ) {
 
     val TAG = "ImageUploader"
 
-    fun start() {
-        Log.d(TAG, "start: ")
-        selectLastImageAndUpload(AppConstants.REGULAR, 0)
+    suspend fun start() {
+        do {
+            var skipFlag = -1
+            var retryCount = 0
+            val image = if (imageType == AppConstants.REGULAR) {
+                localRepository.getOldestImage("0")
+            } else {
+                skipFlag = -2
+                localRepository.getOldestImage("-1")
+            }
+
+            if (image.itemId == null)
+                break
+            else{
+                lastIdentifier = image.name + "_" + image.skuId
+
+                val imageProperties = HashMap<String, Any?>()
+                    .apply {
+                        put("iteration_id", lastIdentifier)
+                        put("retry_count", retryCount)
+                        put("image_id", image.imageId)
+                        put("image_local_id", image.itemId)
+                        put("project_id", image.projectId)
+                        put("sku_id", image.skuId)
+                        put("sku_name", image.skuName)
+                        put("upload_status", image.isUploaded)
+                        put("make_done_status", image.isStatusUpdated)
+                        put("image_name", image.name)
+                        put("overlay_id", image.overlayId)
+                        put("sequence", image.sequence)
+                        put("pre_url", image.preSignedUrl)
+                        put("is_reclick", image.isReclick)
+                        put("is_reshoot", image.isReshoot)
+                        put("image_path", image.imagePath)
+                        put("upload_type", imageType)
+                        put("data", Gson().toJson(image))
+                    }
+
+                context.captureEvent(
+                    AppConstants.IMAGE_SELECTED,
+                    imageProperties
+                )
+
+                listener.inProgress(image)
+
+                if (retryCount > 4) {
+                    val dbStatus = if (image.isUploaded != 1)
+                        localRepository.skipImage(image.itemId!!, skipFlag)
+                    else{
+                        localRepository.skipMarkDoneFailedImage(image.itemId!!)
+                        localRepository.markDone(image)
+                    }
+
+                    captureEvent(Events.MAX_RETRY,
+                        image,
+                        false,
+                        "Image upload limit reached",
+                        dbStatus)
+
+                    break
+                }
+
+                if (image.isUploaded == 0 || image.isUploaded == -1) {
+                    if (image.preSignedUrl != AppConstants.DEFAULT_PRESIGNED_URL) {
+                        when (image.categoryName) {
+                            "Exterior",
+                            "Interior",
+                            "Focus Shoot",
+                            "360int",
+                            "Info" -> {
+                                val requestFile =
+                                    File(image.imagePath).asRequestBody("text/x-markdown; charset=utf-8".toMediaTypeOrNull())
+
+                                val uploadResponse = shootRepository.uploadImageToGcp(
+                                    image.preSignedUrl!!,
+                                    requestFile
+                                )
+
+                                when (uploadResponse){
+                                    is Resource.Failure -> {
+                                        if (uploadResponse.errorMessage == null) {
+                                            captureEvent(
+                                                Events.IMAGE_UPLOAD_TO_GCP_FAILED,
+                                                image,
+                                                false,
+                                                uploadResponse.errorCode.toString() + ": Http exception from server",
+                                                response = Gson().toJson(uploadResponse).toString(),
+                                                retryCount = retryCount
+                                            )
+                                        } else {
+                                            captureEvent(
+                                                Events.IMAGE_UPLOAD_TO_GCP_FAILED,
+                                                image,
+                                                false,
+                                                uploadResponse.toString() + ": " + uploadResponse.errorMessage,
+                                                response = Gson().toJson(uploadResponse).toString(),
+                                                retryCount = retryCount
+                                            )
+                                        }
+
+                                        continue
+                                    }
+                                }
+
+                                captureEvent(Events.IMAGE_UPLOADED_TO_GCP, image,
+                                    true,
+                                    null,
+                                    response = Gson().toJson(uploadResponse).toString(),
+                                    retryCount = retryCount)
+
+                                val markUploadCount = localRepository.markUploaded(image)
+
+                                captureEvent(
+                                    Events.IS_MARK_GCP_UPLOADED_UPDATED,
+                                    localRepository.getImage(image.itemId!!),
+                                    true,
+                                    null,
+                                    markUploadCount,
+                                    retryCount = retryCount
+                                )
+
+                                val markUploadResponse = shootRepository.markUploaded(image.imageId!!)
+
+                                captureEvent(Events.MARK_DONE_CALL_INITIATED,image,true,null,
+                                    retryCount = retryCount)
+
+                                when (markUploadResponse) {
+                                    is Resource.Failure -> {
+                                        if (markUploadResponse.errorMessage == null) {
+                                            captureEvent(
+                                                Events.MARK_IMAGE_UPLOADED_FAILED,
+                                                image,
+                                                false,
+                                                markUploadResponse.errorCode.toString() + ": Http exception from server",
+                                                response = Gson().toJson(markUploadResponse).toString(),
+                                                retryCount = retryCount
+                                            )
+                                        } else {
+                                            captureEvent(
+                                                Events.MARK_IMAGE_UPLOADED_FAILED,
+                                                image,
+                                                false,
+                                                markUploadResponse.toString() + ": " + markUploadResponse.errorMessage,
+                                                response = Gson().toJson(markUploadResponse).toString(),
+                                                retryCount = retryCount
+                                            )
+                                        }
+
+                                        continue
+                                    }
+                                }
+
+                                captureEvent(Events.MARKED_IMAGE_UPLOADED, image, true,
+                                    null,
+                                    response = Gson().toJson(markUploadResponse).toString())
+
+                                val count = localRepository.markStatusUploaded(image)
+
+                                captureEvent(
+                                    Events.IS_MARK_DONE_STATUS_UPDATED,
+                                    localRepository.getImage(image.itemId!!),
+                                    true,
+                                    null,
+                                    count,
+                                    retryCount = retryCount
+                                )
+
+                                continue
+                            }
+                            else -> {
+                                val bitmap =
+                                    modifyOrientation(
+                                        BitmapFactory.decodeFile(image.imagePath),
+                                        image.imagePath
+                                    )
+
+                                try {
+                                    val s = File(outputDirectory).mkdirs()
+                                    val outputFile = File(outputDirectory+System.currentTimeMillis().toString()+".jpg")
+                                    val ss = outputFile.createNewFile()
+
+                                    val os: OutputStream = BufferedOutputStream(
+                                        FileOutputStream(outputFile)
+                                    )
+                                    bitmap!!.compress(Bitmap.CompressFormat.JPEG, 100, os)
+                                    os.close()
+
+                                    image.imagePath = outputFile.path
+                                    val requestFile =
+                                        File(image.imagePath).asRequestBody("text/x-markdown; charset=utf-8".toMediaTypeOrNull())
+
+                                    val uploadResponse = shootRepository.uploadImageToGcp(
+                                        image.preSignedUrl!!,
+                                        requestFile
+                                    )
+
+                                    when (uploadResponse){
+                                        is Resource.Failure -> {
+                                            if (uploadResponse.errorMessage == null) {
+                                                captureEvent(
+                                                    Events.IMAGE_UPLOAD_TO_GCP_FAILED,
+                                                    image,
+                                                    false,
+                                                    uploadResponse.errorCode.toString() + ": Http exception from server",
+                                                    response = Gson().toJson(uploadResponse).toString(),
+                                                    retryCount = retryCount
+                                                )
+                                            } else {
+                                                captureEvent(
+                                                    Events.IMAGE_UPLOAD_TO_GCP_FAILED,
+                                                    image,
+                                                    false,
+                                                    uploadResponse.toString() + ": " + uploadResponse.errorMessage,
+                                                    response = Gson().toJson(uploadResponse).toString(),
+                                                    retryCount = retryCount
+                                                )
+                                            }
+
+                                            continue
+                                        }
+                                    }
+
+                                    captureEvent(Events.IMAGE_UPLOADED_TO_GCP, image,
+                                        true,
+                                        null,
+                                        response = Gson().toJson(uploadResponse).toString(),
+                                        retryCount = retryCount)
+
+                                    val markUploadCount = localRepository.markUploaded(image)
+
+                                    captureEvent(
+                                        Events.IS_MARK_GCP_UPLOADED_UPDATED,
+                                        localRepository.getImage(image.itemId!!),
+                                        true,
+                                        null,
+                                        markUploadCount,
+                                        retryCount = retryCount
+                                    )
+
+                                    val markUploadResponse = shootRepository.markUploaded(image.imageId!!)
+
+                                    captureEvent(Events.MARK_DONE_CALL_INITIATED,image,true,null,
+                                        retryCount = retryCount)
+
+                                    when (markUploadResponse) {
+                                        is Resource.Failure -> {
+                                            if (markUploadResponse.errorMessage == null) {
+                                                captureEvent(
+                                                    Events.MARK_IMAGE_UPLOADED_FAILED,
+                                                    image,
+                                                    false,
+                                                    markUploadResponse.errorCode.toString() + ": Http exception from server",
+                                                    response = Gson().toJson(markUploadResponse).toString(),
+                                                    retryCount = retryCount
+                                                )
+                                            } else {
+                                                captureEvent(
+                                                    Events.MARK_IMAGE_UPLOADED_FAILED,
+                                                    image,
+                                                    false,
+                                                    markUploadResponse.toString() + ": " + markUploadResponse.errorMessage,
+                                                    response = Gson().toJson(markUploadResponse).toString(),
+                                                    retryCount = retryCount
+                                                )
+                                            }
+
+                                            continue
+                                        }
+                                    }
+
+                                    captureEvent(Events.MARKED_IMAGE_UPLOADED, image, true,
+                                        null,
+                                        response = Gson().toJson(markUploadResponse).toString())
+
+                                    val count = localRepository.markStatusUploaded(image)
+
+                                    captureEvent(
+                                        Events.IS_MARK_DONE_STATUS_UPDATED,
+                                        localRepository.getImage(image.itemId!!),
+                                        true,
+                                        null,
+                                        count,
+                                        retryCount = retryCount
+                                    )
+
+                                    continue
+                                } catch (
+                                    e: Exception
+                                ) {
+                                    captureEvent(Events.IMAGE_ROTATION_EXCEPTION,
+                                        image,
+                                        false,
+                                        e.localizedMessage)
+
+                                    continue
+                                }
+                            }
+                        }
+                    } else {
+                        val uploadType = if (retryCount == 1) "Direct" else "Retry"
+                        image.meta = if (image.meta.isNullOrEmpty()) JSONObject().toString() else JSONObject(image.meta).toString()
+                        image.debugData = if (image.debugData.isNullOrEmpty()) JSONObject().toString() else JSONObject(image.debugData).toString()
+
+                        var response = shootRepository.getPreSignedUrl(
+                            uploadType,
+                            image
+                        )
+
+                        captureEvent(Events.GET_PRESIGNED_CALL_INITIATED,image,true,null,
+                            retryCount = retryCount)
+
+                        when (response) {
+                            is Resource.Failure -> {
+                                if (response.errorMessage == null) {
+                                    captureEvent(
+                                        Events.GET_PRESIGNED_FAILED,
+                                        image,
+                                        false,
+                                        response.errorCode.toString() + ": Http exception from server",
+                                        response = Gson().toJson(response).toString(),
+                                        retryCount = retryCount
+                                    )
+                                } else {
+                                        captureEvent(
+                                            Events.GET_PRESIGNED_FAILED,
+                                            image,
+                                            false,
+                                            response.errorCode.toString() + ": " + response.errorMessage,
+                                            response = Gson().toJson(response).toString(),
+                                            retryCount = retryCount
+                                        )
+                                }
+
+                                continue
+                            }
+                        }
+
+                        val imagePreSignedRes = (response as Resource.Success).value
+
+                        image.preSignedUrl = imagePreSignedRes.data.presignedUrl
+                        image.imageId = imagePreSignedRes.data.imageId
+
+                        captureEvent(Events.GOT_PRESIGNED_IMAGE_URL, image,
+                            true,
+                            null,
+                            response = Gson().toJson(response.value).toString(),
+                            retryCount = retryCount)
+
+                        val count = localRepository.addPreSignedUrl(image)
+
+                        captureEvent(
+                            Events.IS_PRESIGNED_URL_UPDATED,
+                            localRepository.getImage(image.itemId!!),
+                            true,
+                            null,
+                            count,
+                            retryCount = retryCount
+                        )
+
+                        when (image.categoryName) {
+                            "Exterior",
+                            "Interior",
+                            "Focus Shoot",
+                            "360int",
+                            "Info" -> {
+                                val requestFile =
+                                    File(image.imagePath).asRequestBody("text/x-markdown; charset=utf-8".toMediaTypeOrNull())
+
+                                val uploadResponse = shootRepository.uploadImageToGcp(
+                                    image.preSignedUrl!!,
+                                    requestFile
+                                )
+
+                                when (uploadResponse){
+                                    is Resource.Failure -> {
+                                        if (uploadResponse.errorMessage == null) {
+                                            captureEvent(
+                                                Events.IMAGE_UPLOAD_TO_GCP_FAILED,
+                                                image,
+                                                false,
+                                                uploadResponse.errorCode.toString() + ": Http exception from server",
+                                                response = Gson().toJson(uploadResponse).toString(),
+                                                retryCount = retryCount
+                                            )
+                                        } else {
+                                            captureEvent(
+                                                Events.IMAGE_UPLOAD_TO_GCP_FAILED,
+                                                image,
+                                                false,
+                                                uploadResponse.toString() + ": " + uploadResponse.errorMessage,
+                                                response = Gson().toJson(uploadResponse).toString(),
+                                                retryCount = retryCount
+                                            )
+                                        }
+
+                                        continue
+                                    }
+                                }
+
+                                captureEvent(Events.IMAGE_UPLOADED_TO_GCP, image,
+                                    true,
+                                    null,
+                                    response = Gson().toJson(uploadResponse).toString(),
+                                    retryCount = retryCount)
+
+                                val markUploadCount = localRepository.markUploaded(image)
+
+                                captureEvent(
+                                    Events.IS_MARK_GCP_UPLOADED_UPDATED,
+                                    localRepository.getImage(image.itemId!!),
+                                    true,
+                                    null,
+                                    markUploadCount,
+                                    retryCount = retryCount
+                                )
+
+                                val markUploadResponse = shootRepository.markUploaded(image.imageId!!)
+
+                                captureEvent(Events.MARK_DONE_CALL_INITIATED,image,true,null,
+                                    retryCount = retryCount)
+
+                                when (markUploadResponse) {
+                                    is Resource.Failure -> {
+                                        if (markUploadResponse.errorMessage == null) {
+                                            captureEvent(
+                                                Events.MARK_IMAGE_UPLOADED_FAILED,
+                                                image,
+                                                false,
+                                                markUploadResponse.errorCode.toString() + ": Http exception from server",
+                                                response = Gson().toJson(markUploadResponse).toString(),
+                                                retryCount = retryCount
+                                            )
+                                        } else {
+                                            captureEvent(
+                                                Events.MARK_IMAGE_UPLOADED_FAILED,
+                                                image,
+                                                false,
+                                                markUploadResponse.toString() + ": " + markUploadResponse.errorMessage,
+                                                response = Gson().toJson(markUploadResponse).toString(),
+                                                retryCount = retryCount
+                                            )
+                                        }
+
+                                        continue
+                                    }
+                                }
+
+                                captureEvent(Events.MARKED_IMAGE_UPLOADED, image, true,
+                                    null,
+                                    response = Gson().toJson(markUploadResponse).toString())
+
+                                val count = localRepository.markStatusUploaded(image)
+
+                                captureEvent(
+                                    Events.IS_MARK_DONE_STATUS_UPDATED,
+                                    localRepository.getImage(image.itemId!!),
+                                    true,
+                                    null,
+                                    count,
+                                    retryCount = retryCount
+                                )
+
+                                continue
+                            }
+                            else -> {
+                                val bitmap =
+                                    modifyOrientation(
+                                        BitmapFactory.decodeFile(image.imagePath),
+                                        image.imagePath
+                                    )
+
+                                try {
+                                    val s = File(outputDirectory).mkdirs()
+                                    val outputFile = File(outputDirectory+System.currentTimeMillis().toString()+".jpg")
+                                    val ss = outputFile.createNewFile()
+
+                                    val os: OutputStream = BufferedOutputStream(
+                                        FileOutputStream(outputFile)
+                                    )
+                                    bitmap!!.compress(Bitmap.CompressFormat.JPEG, 100, os)
+                                    os.close()
+
+                                    image.imagePath = outputFile.path
+
+                                    val requestFile =
+                                        File(image.imagePath).asRequestBody("text/x-markdown; charset=utf-8".toMediaTypeOrNull())
+
+                                    val uploadResponse = shootRepository.uploadImageToGcp(
+                                        image.preSignedUrl!!,
+                                        requestFile
+                                    )
+
+                                    when (uploadResponse){
+                                        is Resource.Failure -> {
+                                            if (uploadResponse.errorMessage == null) {
+                                                captureEvent(
+                                                    Events.IMAGE_UPLOAD_TO_GCP_FAILED,
+                                                    image,
+                                                    false,
+                                                    uploadResponse.errorCode.toString() + ": Http exception from server",
+                                                    response = Gson().toJson(uploadResponse).toString(),
+                                                    retryCount = retryCount
+                                                )
+                                            } else {
+                                                captureEvent(
+                                                    Events.IMAGE_UPLOAD_TO_GCP_FAILED,
+                                                    image,
+                                                    false,
+                                                    uploadResponse.toString() + ": " + uploadResponse.errorMessage,
+                                                    response = Gson().toJson(uploadResponse).toString(),
+                                                    retryCount = retryCount
+                                                )
+                                            }
+
+                                            continue
+                                        }
+                                    }
+
+                                    captureEvent(Events.IMAGE_UPLOADED_TO_GCP, image,
+                                        true,
+                                        null,
+                                        response = Gson().toJson(uploadResponse).toString(),
+                                        retryCount = retryCount)
+
+                                    val markUploadCount = localRepository.markUploaded(image)
+
+                                    captureEvent(
+                                        Events.IS_MARK_GCP_UPLOADED_UPDATED,
+                                        localRepository.getImage(image.itemId!!),
+                                        true,
+                                        null,
+                                        markUploadCount,
+                                        retryCount = retryCount
+                                    )
+
+                                    val markUploadResponse = shootRepository.markUploaded(image.imageId!!)
+
+                                    captureEvent(Events.MARK_DONE_CALL_INITIATED,image,true,null,
+                                        retryCount = retryCount)
+
+                                    when (markUploadResponse) {
+                                        is Resource.Failure -> {
+                                            if (markUploadResponse.errorMessage == null) {
+                                                captureEvent(
+                                                    Events.MARK_IMAGE_UPLOADED_FAILED,
+                                                    image,
+                                                    false,
+                                                    markUploadResponse.errorCode.toString() + ": Http exception from server",
+                                                    response = Gson().toJson(markUploadResponse).toString(),
+                                                    retryCount = retryCount
+                                                )
+                                            } else {
+                                                captureEvent(
+                                                    Events.MARK_IMAGE_UPLOADED_FAILED,
+                                                    image,
+                                                    false,
+                                                    markUploadResponse.toString() + ": " + markUploadResponse.errorMessage,
+                                                    response = Gson().toJson(markUploadResponse).toString(),
+                                                    retryCount = retryCount
+                                                )
+                                            }
+
+                                            continue
+                                        }
+                                    }
+
+                                    captureEvent(Events.MARKED_IMAGE_UPLOADED, image, true,
+                                        null,
+                                        response = Gson().toJson(markUploadResponse).toString())
+
+                                    val count = localRepository.markStatusUploaded(image)
+
+                                    captureEvent(
+                                        Events.IS_MARK_DONE_STATUS_UPDATED,
+                                        localRepository.getImage(image.itemId!!),
+                                        true,
+                                        null,
+                                        count,
+                                        retryCount = retryCount
+                                    )
+
+                                    continue
+
+                                } catch (
+                                    e: Exception
+                                ) {
+                                    captureEvent(Events.IMAGE_ROTATION_EXCEPTION,
+                                        image,
+                                        false,
+                                        e.localizedMessage)
+
+                                    continue
+                                }
+                            }
+                        }
+                    }
+                } else {
+                    if (image.imageId == null){
+                        localRepository.markDone(image)
+                       continue
+                    }else
+                    {
+                        val markUploadResponse = shootRepository.markUploaded(image.imageId!!)
+
+                        captureEvent(Events.MARK_DONE_CALL_INITIATED,image,true,null,
+                            retryCount = retryCount)
+
+                        when (markUploadResponse) {
+                            is Resource.Failure -> {
+                                if (markUploadResponse.errorMessage == null) {
+                                    captureEvent(
+                                        Events.MARK_IMAGE_UPLOADED_FAILED,
+                                        image,
+                                        false,
+                                        markUploadResponse.errorCode.toString() + ": Http exception from server",
+                                        response = Gson().toJson(markUploadResponse).toString(),
+                                        retryCount = retryCount
+                                    )
+                                } else {
+                                    captureEvent(
+                                        Events.MARK_IMAGE_UPLOADED_FAILED,
+                                        image,
+                                        false,
+                                        markUploadResponse.toString() + ": " + markUploadResponse.errorMessage,
+                                        response = Gson().toJson(markUploadResponse).toString(),
+                                        retryCount = retryCount
+                                    )
+                                }
+
+                                continue
+                            }
+                        }
+
+                        captureEvent(Events.MARKED_IMAGE_UPLOADED, image, true,
+                            null,
+                            response = Gson().toJson(markUploadResponse).toString())
+
+                        val count = localRepository.markStatusUploaded(image)
+
+                        captureEvent(
+                            Events.IS_MARK_DONE_STATUS_UPDATED,
+                            localRepository.getImage(image.itemId!!),
+                            true,
+                            null,
+                            count,
+                            retryCount = retryCount
+                        )
+
+                        continue
+                    }
+                }
+            }
+        }while (image != null)
+
+        Log.d(TAG, "start: out of while loop")
+        if (imageType == AppConstants.REGULAR) {
+            //start skipped images worker
+            logUpload("Start Skipped Images uploaded")
+            imageType = AppConstants.SKIPPED
+            start()
+            return
+        } else {
+            //make second time skipped images elligible for upload
+            val count = localRepository.updateSkipedImages()
+            val markDoneSkippedCount = localRepository.updateMarkDoneSkipedImages()
+
+            //check if we don"t have any new image clicked while uploading skipped images
+            if (count > 0 || markDoneSkippedCount > 0) {
+                imageType = AppConstants.SKIPPED
+                start()
+                return
+            } else {
+                //upload images clicked while service uploading skipped images
+                deleteTempFiles(File(outputDirectory))
+                listener.onUploaded()
+            }
+        }
+
     }
 
     private fun selectLastImageAndUpload(imageType: String, retryCount: Int) {
@@ -301,7 +977,7 @@ class ImageUploader(
                         } else {
                             //upload images clicked while service uploading skipped images
                             deleteTempFiles(File(outputDirectory))
-                            listener.onUploaded(image)
+                            listener.onUploaded()
                         }
                     }
                 }
@@ -538,7 +1214,8 @@ class ImageUploader(
         if (image.imageId == null){
             localRepository.markDone(image)
             selectLastImageAndUpload(imageType, 0)
-        }else{
+        }else
+        {
             val response = shootRepository.markUploaded(image.imageId!!)
 
             captureEvent(Events.MARK_DONE_CALL_INITIATED,image,true,null,
@@ -669,7 +1346,7 @@ class ImageUploader(
 
     interface Listener {
         fun inProgress(task: Image)
-        fun onUploaded(task: Image)
+        fun onUploaded()
         fun onUploadFail(task: Image)
         fun onConnectionLost()
     }

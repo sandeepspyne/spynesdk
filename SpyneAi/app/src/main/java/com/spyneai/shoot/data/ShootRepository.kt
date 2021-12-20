@@ -3,6 +3,8 @@ package com.spyneai.shoot.data
 import com.spyneai.base.BaseRepository
 import com.spyneai.base.network.ClipperApiClient
 import com.spyneai.base.network.ClipperApiStagingClient
+import com.spyneai.base.network.GCPApiClient
+import com.spyneai.interfaces.GcpClient
 import com.spyneai.shoot.data.model.Image
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
@@ -189,6 +191,13 @@ class ShootRepository : BaseRepository() {
         imageId : String
     ) = safeApiCall {
         clipperApi.getImageData(imageId)
+    }
+
+    suspend fun uploadImageToGcp(
+        fileUrl : String,
+        file : RequestBody
+    ) = safeApiCall {
+        GCPApiClient().getClient().uploadFileToGcp(fileUrl,file)
     }
 
 }
