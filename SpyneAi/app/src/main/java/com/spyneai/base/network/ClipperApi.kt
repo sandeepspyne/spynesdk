@@ -19,7 +19,6 @@ import com.spyneai.orders.data.response.GetOngoingSkusResponse
 import com.spyneai.orders.data.response.GetProjectsResponse
 import com.spyneai.orders.data.response.ImagesOfSkuRes
 import com.spyneai.reshoot.data.ReshootOverlaysRes
-import com.spyneai.service.manual.FilesDataRes
 import com.spyneai.shoot.data.model.*
 import com.spyneai.shoot.response.SkuProcessStateResponse
 import com.spyneai.shoot.response.UpdateVideoSkuRes
@@ -360,12 +359,6 @@ interface ClipperApi {
     fun uploadFolder(@Query(
         "auth_key") authKey : String) : Call<UploadFolderRes>
 
-    @FormUrlEncoded
-    @POST("v2/image/user-data")
-    suspend fun sendFilesData(
-        @Field("auth_key") authKey: String,
-        @Field("data") skuId: String
-    ) : FilesDataRes
 
     @GET("v2/enterprise/compareAppVersion")
     suspend fun getVersionStatus(

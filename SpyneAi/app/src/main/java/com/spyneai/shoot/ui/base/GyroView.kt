@@ -115,15 +115,15 @@ class GyroView : FrameLayout {
                             binding.ivBottomRightSwiggy!!.visibility = View.GONE
                             binding.ivBottomLeftSwiggy!!.visibility = View.GONE
                         }
-                        90 -> {
-                            binding.tvAngleValue!!.visibility = View.VISIBLE
-                            binding.tvAngleValue!!.text = "90" + "\u00B0"
-                            binding.groupOverlay!!.visibility = View.VISIBLE
-                            binding.ivBottomRightSwiggy!!.visibility = View.VISIBLE
-                            binding.ivBottomLeftSwiggy!!.visibility = View.VISIBLE
-                            binding.ivBottomRight.visibility = View.GONE
-                            binding.ivBottomLeft.visibility = View.GONE
-                        }
+//                        90 -> {
+//                            binding.tvAngleValue!!.visibility = View.VISIBLE
+//                            binding.tvAngleValue!!.text = "90" + "\u00B0"
+//                            binding.groupOverlay!!.visibility = View.VISIBLE
+//                            binding.ivBottomRightSwiggy!!.visibility = View.VISIBLE
+//                            binding.ivBottomLeftSwiggy!!.visibility = View.VISIBLE
+//                            binding.ivBottomRight.visibility = View.GONE
+//                            binding.ivBottomLeft.visibility = View.GONE
+//                        }
                         else -> {
                             binding.tvAngleValue!!.visibility = View.INVISIBLE
                             binding.groupOverlay!!.visibility = View.GONE
@@ -145,7 +145,6 @@ class GyroView : FrameLayout {
 
                 if (((pitch.roundToInt() == 0 || (pitch.roundToInt() <= -0 && pitch.roundToInt() >= -3))
                             && (abs(roll.roundToInt()) <= 3 && abs(roll.roundToInt()) >= -3)) ||
-                    (pitch.roundToInt() <= -82 && pitch.roundToInt() >= -88) ||
                     (pitch.roundToInt() <= -40 && pitch.roundToInt() >= -45) ) {
                     binding.lottieDownArrow!!.visibility = View.INVISIBLE
                     binding.lottieUpArrow!!.visibility = View.INVISIBLE
@@ -166,10 +165,9 @@ class GyroView : FrameLayout {
                     }
 
 
-
                     else {
-                        cameraAngle = 90
-                        gyroMeterOnLevel(true)
+                        //cameraAngle = 90
+                       // gyroMeterOnLevel(true)
                     }
 
                 } else {

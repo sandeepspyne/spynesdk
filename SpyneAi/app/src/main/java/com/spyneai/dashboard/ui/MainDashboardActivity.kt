@@ -36,7 +36,6 @@ import com.spyneai.service.Actions
 import com.spyneai.service.ImageUploadingService
 import com.spyneai.service.getServiceState
 import com.spyneai.service.log
-import com.spyneai.service.manual.ManualUploadService
 import com.spyneai.service.manual.StoreImageFiles
 import com.spyneai.shoot.data.FilesRepository
 import com.spyneai.shoot.data.ImageLocalRepository
@@ -131,7 +130,7 @@ class MainDashboardActivity : AppCompatActivity() {
                         startActivity(intent)
                     }
                 }
-//                R.id.wallet -> setCurrentFragment(SecondFragment)
+                R.id.wallet -> setCurrentFragment(SecondFragment)
                 R.id.logoutDashBoardFragment -> setCurrentFragment(thirdFragment)
             }
             true
