@@ -362,6 +362,9 @@ class MainDashboardActivity : AppCompatActivity() {
             || shootLocalRepository.getOldestImage("-1").itemId != null
         ) {
 
+            if (!isMyServiceRunning(ImageUploadingService::class.java))
+                Utilities.saveBool(this, AppConstants.UPLOADING_RUNNING, false)
+
             var action = Actions.START
             if (getServiceState(this) == com.spyneai.service.ServiceState.STOPPED && action == Actions.STOP)
                 return

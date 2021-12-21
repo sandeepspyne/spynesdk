@@ -48,7 +48,11 @@ class ImageUploader(
 ) {
     val TAG = "ImageUploader"
 
-    fun uploadParent() {
+    fun uploadParent(type : String) {
+        context.captureEvent("Upload Parent Triggered",HashMap<String,Any?>().apply {
+            put("type",type)
+        })
+
         //update triggered value
         Utilities.saveBool(context, AppConstants.UPLOAD_TRIGGERED, true)
 
@@ -61,6 +65,7 @@ class ImageUploader(
             ) {
                 if (context.isInternetActive())
                     GlobalScope.launch(Dispatchers.Default) {
+                        context.captureEvent("Start Uploading Called",HashMap())
                         startUploading()
                     }
                 else {
@@ -73,38 +78,35 @@ class ImageUploader(
 
     suspend fun startUploading() {
         do {
+            Log.d(TAG, "startUploading: "+retryCount)
+
             Utilities.saveBool(context, AppConstants.UPLOADING_RUNNING, true)
             var skipFlag = -1
 
             var image = localRepository.getOldestImage("0")
+            Log.d(TAG, "name: 0"+image.name)
 
-            when {
-                image == null -> {
-                    imageType = AppConstants.SKIPPED
-                    image = localRepository.getOldestImage("-1")
-                    skipFlag = -2
-                }
-
-                imageType == AppConstants.SKIPPED && image == null -> {
-
-                }
-            }
-
-            if (image == null) {
+            if (image.itemId == null) {
                 imageType = AppConstants.SKIPPED
                 image = localRepository.getOldestImage("-1")
                 skipFlag = -2
             }
 
-            if (image == null && imageType == AppConstants.SKIPPED) {
+            Log.d(TAG, "name: -1"+image.name)
+
+            if (image.itemId == null && imageType == AppConstants.SKIPPED) {
                 //make second time skipped images elligible for upload
                 val count = localRepository.updateSkipedImages()
                 val markDoneSkippedCount = localRepository.updateMarkDoneSkipedImages()
+
+                Log.d(TAG, "name: count"+count+" "+markDoneSkippedCount)
 
                 //check if we don"t have any new image clicked while uploading skipped images
                 if (count > 0 || markDoneSkippedCount > 0)
                     image = localRepository.getOldestImage("-1")
             }
+
+            Log.d(TAG, "name: last"+image.name)
 
             if (image.itemId == null)
                 break
@@ -145,7 +147,7 @@ class ImageUploader(
                         localRepository.skipImage(image.itemId!!, skipFlag)
                     else {
                         localRepository.skipMarkDoneFailedImage(image.itemId!!)
-                        localRepository.markDone(image)
+                        //localRepository.markDone(image)
                     }
 
                     captureEvent(
@@ -155,7 +157,7 @@ class ImageUploader(
                         "Image upload limit reached",
                         dbStatus
                     )
-
+                    retryCount = 0
                     continue
                 }
 

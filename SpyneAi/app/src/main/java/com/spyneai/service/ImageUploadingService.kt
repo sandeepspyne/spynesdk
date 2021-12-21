@@ -165,6 +165,8 @@ class ImageUploadingService : Service(), ImageUploader.Listener {
             stopForeground(false)
             stopSelf()
 
+            Utilities.saveBool(this, AppConstants.UPLOADING_RUNNING, false)
+
         } catch (e: Exception) {
         }
 
@@ -275,7 +277,7 @@ class ImageUploadingService : Service(), ImageUploader.Listener {
                 this
             )
 
-        imageUploader!!.uploadParent()
+        imageUploader!!.uploadParent(type)
     }
 
 }
