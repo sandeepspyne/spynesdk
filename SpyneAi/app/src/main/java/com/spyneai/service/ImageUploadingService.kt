@@ -219,6 +219,8 @@ class ImageUploadingService : Service(), ImageUploader.Listener {
     }
 
     override fun onConnectionLost() {
+        Utilities.saveBool(this,AppConstants.UPLOADING_RUNNING,false)
+
         captureEvent(Events.INTERNET_DISCONNECTED,
             HashMap<String,Any?>().apply {
                 put("medium","Service")
@@ -253,8 +255,6 @@ class ImageUploadingService : Service(), ImageUploader.Listener {
                 if ((shootLocalRepository.getOldestImage("0").itemId != null
                             || shootLocalRepository.getOldestImage("-1").itemId != null)
                     && !uploadRunning){
-                    uploadRunning = true
-
                     // we have pending images, resume upload
                     resumeUpload("onReceive")
                 }
@@ -264,6 +264,8 @@ class ImageUploadingService : Service(), ImageUploader.Listener {
                     HashMap<String,Any?>().apply {
                         put("medium","Service")
                     })
+
+               // imageUploader?.connectionLost = true
             }
         }
     }

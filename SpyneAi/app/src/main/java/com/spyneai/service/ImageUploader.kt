@@ -44,12 +44,13 @@ class ImageUploader(
     var listener: Listener,
     var lastIdentifier: String = "0",
     var imageType: String = AppConstants.REGULAR,
-    var retryCount: Int = 0
+    var retryCount: Int = 0,
+    var connectionLost: Boolean = false
 ) {
     val TAG = "ImageUploader"
 
-    fun uploadParent(type : String,startedBy : String) {
-        context.captureEvent("Upload Parent Triggered",HashMap<String,Any?>().apply {
+    fun uploadParent(type : String,startedBy : String?) {
+        context.captureEvent("UPLOAD PARENT TRIGGERED",HashMap<String,Any?>().apply {
             put("type",type)
             put("service_started_by",startedBy)
             put("upload_running",Utilities.getBool(context, AppConstants.UPLOADING_RUNNING, false))
@@ -67,12 +68,12 @@ class ImageUploader(
             ) {
                 if (context.isInternetActive())
                     GlobalScope.launch(Dispatchers.Default) {
-                        context.captureEvent("Start Uploading Called",HashMap())
+                        context.captureEvent("START UPLOADING CALLED",HashMap())
                         startUploading()
                     }
                 else {
                     listener.onConnectionLost()
-                    Utilities.saveBool(context, AppConstants.UPLOADING_RUNNING, false)
+                    //Utilities.saveBool(context, AppConstants.UPLOADING_RUNNING, false)
                 }
             }
         }, getRandomNumberInRange().toLong())
@@ -80,6 +81,11 @@ class ImageUploader(
 
     suspend fun startUploading() {
         do {
+            if (connectionLost){
+                listener.onConnectionLost()
+                break
+            }
+
             Log.d(TAG, "startUploading: "+retryCount)
 
             Utilities.saveBool(context, AppConstants.UPLOADING_RUNNING, true)
@@ -332,9 +338,11 @@ class ImageUploader(
         } while (image != null)
 
         //upload images clicked while service uploading skipped images
-        deleteTempFiles(File(outputDirectory))
-        listener.onUploaded()
-        Utilities.saveBool(context, AppConstants.UPLOADING_RUNNING, false)
+        if (!connectionLost){
+            deleteTempFiles(File(outputDirectory))
+            listener.onUploaded()
+            Utilities.saveBool(context, AppConstants.UPLOADING_RUNNING, false)
+        }
     }
 
     private suspend fun getPresigned(image: Image, uploadType: String): Boolean {
