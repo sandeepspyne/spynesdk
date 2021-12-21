@@ -5,6 +5,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.graphics.rotationMatrix
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.spyneai.InfoDialog
 import com.spyneai.R
@@ -132,7 +133,7 @@ class DraftGridFragment : BaseFragment<ShootViewModel, FragmentGridEcomBinding>(
                         if (viewModel.isReclick){
                             clickedAdapter?.notifyItemChanged(viewModel.currentShoot)
                         }else{
-                            clickedAdapter?.notifyItemInserted(it.size - 1)
+                            clickedAdapter?.notifyDataSetChanged()
                         }
                     }catch (e : Exception){
                         val s = ""

@@ -19,7 +19,6 @@ class SkuImageAdapter(
 )
     : RecyclerView.Adapter<SkuImageAdapter.ViewHolder>() {
 
-    private val viewModel = ShootViewModel()
     private var hideButton = false
 
     class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
@@ -37,14 +36,16 @@ class SkuImageAdapter(
 
     override fun onBindViewHolder(viewHolder: ViewHolder, position: Int) {
 
-        context.loadSmartly(shootList[position].capturedImage,viewHolder.ivCapturedImage)
-//        viewHolder.ivCapturedImage.rotation = 90F
-//
-//        Glide.with(context).load(
-//            shootList[position].capturedImage)
-//            .diskCacheStrategy(DiskCacheStrategy.NONE)
-//            .skipMemoryCache(true)
-//            .into(viewHolder.ivCapturedImage)
+
+        if(shootList[position].capturedImage.contains("Info")){
+            Glide.with(context).load(
+                shootList[position].capturedImage)
+                .diskCacheStrategy(DiskCacheStrategy.NONE)
+                .skipMemoryCache(true)
+                .into(viewHolder.ivCapturedImage)
+        }else{
+            context.loadSmartly(shootList[position].capturedImage,viewHolder.ivCapturedImage)
+        }
     }
 
 

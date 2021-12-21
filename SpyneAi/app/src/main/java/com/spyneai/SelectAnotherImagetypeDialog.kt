@@ -36,6 +36,7 @@ class SelectAnotherImagetypeDialog : BaseDialogFragment<ShootViewModel, Fragment
 
         binding.tvInfoShoot.setOnClickListener {
             viewModel.categoryDetails.value?.imageType = "Info"
+            viewModel.imageTypeInfo.value=true
             viewModel.hideLeveler.value = true
             viewModel.addMoreAngle.value = true
 

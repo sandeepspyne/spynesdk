@@ -13,6 +13,7 @@ import com.bumptech.glide.Glide
 import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.spyneai.R
 import com.spyneai.draft.ui.DraftSkuDetailsActivity
+import com.spyneai.loadSmartly
 import com.spyneai.needs.AppConstants
 import com.spyneai.needs.Utilities
 import com.spyneai.shoot.data.model.Sku
@@ -57,12 +58,14 @@ class LocalSkusAdapter(
         try {
 
             if (skuList[position].thumbnail != null) {
-                Glide.with(context) // replace with 'this' if it's in activity
-                    .load(skuList[position].thumbnail)
-                    .diskCacheStrategy(DiskCacheStrategy.NONE)
-                    .skipMemoryCache(true)
-                    .error(R.mipmap.defaults) // show error drawable if the image is not a gif
-                    .into(holder.ivThumbnail)
+                context.loadSmartly(skuList[position].thumbnail,
+                    holder.ivThumbnail)
+//                Glide.with(context) // replace with 'this' if it's in activity
+//                    .load(skuList[position].thumbnail)
+//                    .diskCacheStrategy(DiskCacheStrategy.NONE)
+//                    .skipMemoryCache(true)
+//                    .error(R.mipmap.defaults) // show error drawable if the image is not a gif
+//                    .into(holder.ivThumbnail)
             } else {
                 if (Utilities.getPreference(context, AppConstants.CATEGORY_NAME)
                         .equals("Food & Beverages")

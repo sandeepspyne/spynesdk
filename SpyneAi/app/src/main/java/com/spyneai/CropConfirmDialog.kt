@@ -44,6 +44,7 @@ class CropConfirmDialog : BaseDialogFragment<ShootViewModel, FragmentCropConfirm
         log("Image set to dialog: " + uri)
 
         binding.tvEndProject.setOnClickListener {
+            viewModel.imageTypeInfo.value=false
             viewModel.onImageConfirmed.value = true
             viewModel.isStopCaptureClickable = true
             val properties = HashMap<String,Any?>()

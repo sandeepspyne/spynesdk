@@ -137,7 +137,7 @@ class CameraFragment : BaseFragment<ShootViewModel, FragmentCameraBinding>(), Pi
         }, 300)
 
         cameraExecutor = Executors.newSingleThreadExecutor()
-        // Determine the output directory
+        // Determine the output direcrotory
         pickIt = PickiT(requireContext(), this, requireActivity())
 
         viewModel.startInteriorShots.observe(viewLifecycleOwner, {
@@ -146,6 +146,14 @@ class CameraFragment : BaseFragment<ShootViewModel, FragmentCameraBinding>(), Pi
                 binding.llSkip?.visibility = View.VISIBLE
             }
         })
+
+         viewModel.imageTypeInfo.observe(viewLifecycleOwner, {
+            if (it) {
+                startCamera()
+                }
+            })
+
+
 
         viewModel.startMiscShots.observe(viewLifecycleOwner, {
             if (it) {
@@ -283,6 +291,8 @@ class CameraFragment : BaseFragment<ShootViewModel, FragmentCameraBinding>(), Pi
         }
     }
 
+
+
     @SuppressLint("UnsafeOptInUsageError")
     private fun startCamera() {
         val cameraProviderFuture = ProcessCameraProvider.getInstance(requireContext())
@@ -409,7 +419,7 @@ class CameraFragment : BaseFragment<ShootViewModel, FragmentCameraBinding>(), Pi
                             .setCaptureMode(ImageCapture.CAPTURE_MODE_MAXIMIZE_QUALITY)
                             .setFlashMode(flashMode)
                             .setTargetAspectRatio(AspectRatio.RATIO_4_3)
-                            .setTargetRotation(ROTATION_90)
+//                            .setTargetRotation(ROTATION_90)
                             .build()
 
                     } else {
@@ -483,6 +493,8 @@ class CameraFragment : BaseFragment<ShootViewModel, FragmentCameraBinding>(), Pi
         }, ContextCompat.getMainExecutor(requireContext()))
 
     }
+
+
 
     override fun onDestroyView() {
         super.onDestroyView()

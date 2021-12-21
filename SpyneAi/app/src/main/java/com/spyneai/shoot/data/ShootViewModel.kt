@@ -154,6 +154,7 @@ class ShootViewModel : ViewModel() {
     val stopShoot: MutableLiveData<Boolean> = MutableLiveData()
     val showProjectDetail: MutableLiveData<Boolean> = MutableLiveData()
 
+    val imageTypeInfo:MutableLiveData<Boolean> = MutableLiveData()
 
     val interiorAngles: MutableLiveData<Int> = MutableLiveData()
     val miscAngles: MutableLiveData<Int> = MutableLiveData()

@@ -105,7 +105,7 @@ class GridEcomFragment : BaseFragment<ShootViewModel, FragmentGridEcomBinding>()
                         if (viewModel.isReclick){
                             clickedAdapter?.notifyItemChanged(viewModel.currentShoot)
                         }else{
-                            clickedAdapter?.notifyItemInserted(it.size - 1)
+                            clickedAdapter?.notifyDataSetChanged()
                         }
                     }catch (e : Exception){
                         val s = ""
