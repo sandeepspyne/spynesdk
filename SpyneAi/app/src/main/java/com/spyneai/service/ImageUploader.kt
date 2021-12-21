@@ -403,6 +403,33 @@ class ImageUploader(
             requestFile
         )
 
+        val imageProperties = HashMap<String, Any?>()
+            .apply {
+                put("iteration_id", lastIdentifier)
+                put("image_id", image.imageId)
+                put("image_local_id", image.itemId)
+                put("project_id", image.projectId)
+                put("sku_id", image.skuId)
+                put("sku_name", image.skuName)
+                put("upload_status", image.isUploaded)
+                put("make_done_status", image.isStatusUpdated)
+                put("image_name", image.name)
+                put("overlay_id", image.overlayId)
+                put("sequence", image.sequence)
+                put("pre_url", image.preSignedUrl)
+                put("is_reclick", image.isReclick)
+                put("is_reshoot", image.isReshoot)
+                put("image_path", image.imagePath)
+                put("upload_type", imageType)
+                put("retry_count", retryCount)
+                put("data", Gson().toJson(image))
+            }
+
+        context.captureEvent(
+            Events.UPLOADING_TO_GCP_INITIATED,
+            imageProperties
+        )
+
         when (uploadResponse) {
             is Resource.Failure -> {
                 captureEvent(
