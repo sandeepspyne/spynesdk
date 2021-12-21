@@ -8,11 +8,7 @@ import android.provider.BaseColumns
 import android.util.Log
 import com.spyneai.BaseApplication
 import com.spyneai.captureEvent
-import com.spyneai.debug.SendSkusData
-import com.spyneai.shoot.data.ImageLocalRepository
-import com.spyneai.shoot.data.ShootRepository
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.launch
+
 
 class DBHelper(context: Context) :
     SQLiteOpenHelper(context, DATABASE_NAME, null, DATABASE_VERSION) {
