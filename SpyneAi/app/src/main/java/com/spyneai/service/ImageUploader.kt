@@ -156,7 +156,7 @@ class ImageUploader(
                         dbStatus
                     )
 
-                    break
+                    continue
                 }
 
                 if (image.isUploaded == 0 || image.isUploaded == -1) {
@@ -177,25 +177,14 @@ class ImageUploader(
 
                                 when (uploadResponse) {
                                     is Resource.Failure -> {
-                                        if (uploadResponse.errorMessage == null) {
-                                            captureEvent(
-                                                Events.IMAGE_UPLOAD_TO_GCP_FAILED,
-                                                image,
-                                                false,
-                                                uploadResponse.errorCode.toString() + ": Http exception from server",
-                                                response = Gson().toJson(uploadResponse).toString(),
-                                                retryCount = retryCount
-                                            )
-                                        } else {
-                                            captureEvent(
-                                                Events.IMAGE_UPLOAD_TO_GCP_FAILED,
-                                                image,
-                                                false,
-                                                uploadResponse.toString() + ": " + uploadResponse.errorMessage,
-                                                response = Gson().toJson(uploadResponse).toString(),
-                                                retryCount = retryCount
-                                            )
-                                        }
+                                        captureEvent(
+                                            Events.IMAGE_UPLOAD_TO_GCP_FAILED,
+                                            image,
+                                            false,
+                                            getErrorMessage(uploadResponse),
+                                            response = Gson().toJson(uploadResponse).toString(),
+                                            retryCount = retryCount
+                                        )
                                         retryCount++
                                         continue
                                     }
@@ -230,27 +219,14 @@ class ImageUploader(
 
                                 when (markUploadResponse) {
                                     is Resource.Failure -> {
-                                        if (markUploadResponse.errorMessage == null) {
-                                            captureEvent(
-                                                Events.MARK_IMAGE_UPLOADED_FAILED,
-                                                image,
-                                                false,
-                                                markUploadResponse.errorCode.toString() + ": Http exception from server",
-                                                response = Gson().toJson(markUploadResponse)
-                                                    .toString(),
-                                                retryCount = retryCount
-                                            )
-                                        } else {
-                                            captureEvent(
-                                                Events.MARK_IMAGE_UPLOADED_FAILED,
-                                                image,
-                                                false,
-                                                markUploadResponse.toString() + ": " + markUploadResponse.errorMessage,
-                                                response = Gson().toJson(markUploadResponse)
-                                                    .toString(),
-                                                retryCount = retryCount
-                                            )
-                                        }
+                                        captureEvent(
+                                            Events.MARK_IMAGE_UPLOADED_FAILED,
+                                            image,
+                                            false,
+                                            getErrorMessage(markUploadResponse),
+                                            response = Gson().toJson(markUploadResponse).toString(),
+                                            retryCount = retryCount
+                                        )
                                         retryCount++
                                         continue
                                     }
@@ -307,27 +283,14 @@ class ImageUploader(
 
                                     when (uploadResponse) {
                                         is Resource.Failure -> {
-                                            if (uploadResponse.errorMessage == null) {
-                                                captureEvent(
-                                                    Events.IMAGE_UPLOAD_TO_GCP_FAILED,
-                                                    image,
-                                                    false,
-                                                    uploadResponse.errorCode.toString() + ": Http exception from server",
-                                                    response = Gson().toJson(uploadResponse)
-                                                        .toString(),
-                                                    retryCount = retryCount
-                                                )
-                                            } else {
-                                                captureEvent(
-                                                    Events.IMAGE_UPLOAD_TO_GCP_FAILED,
-                                                    image,
-                                                    false,
-                                                    uploadResponse.toString() + ": " + uploadResponse.errorMessage,
-                                                    response = Gson().toJson(uploadResponse)
-                                                        .toString(),
-                                                    retryCount = retryCount
-                                                )
-                                            }
+                                            captureEvent(
+                                                Events.IMAGE_UPLOAD_TO_GCP_FAILED,
+                                                image,
+                                                false,
+                                                getErrorMessage(uploadResponse),
+                                                response = Gson().toJson(uploadResponse).toString(),
+                                                retryCount = retryCount
+                                            )
                                             retryCount++
                                             continue
                                         }
@@ -362,27 +325,15 @@ class ImageUploader(
 
                                     when (markUploadResponse) {
                                         is Resource.Failure -> {
-                                            if (markUploadResponse.errorMessage == null) {
-                                                captureEvent(
-                                                    Events.MARK_IMAGE_UPLOADED_FAILED,
-                                                    image,
-                                                    false,
-                                                    markUploadResponse.errorCode.toString() + ": Http exception from server",
-                                                    response = Gson().toJson(markUploadResponse)
-                                                        .toString(),
-                                                    retryCount = retryCount
-                                                )
-                                            } else {
-                                                captureEvent(
-                                                    Events.MARK_IMAGE_UPLOADED_FAILED,
-                                                    image,
-                                                    false,
-                                                    markUploadResponse.toString() + ": " + markUploadResponse.errorMessage,
-                                                    response = Gson().toJson(markUploadResponse)
-                                                        .toString(),
-                                                    retryCount = retryCount
-                                                )
-                                            }
+                                            captureEvent(
+                                                Events.MARK_IMAGE_UPLOADED_FAILED,
+                                                image,
+                                                false,
+                                                getErrorMessage(markUploadResponse),
+                                                response = Gson().toJson(markUploadResponse).toString(),
+                                                retryCount = retryCount
+                                            )
+
                                             retryCount++
                                             continue
                                         }
@@ -443,25 +394,15 @@ class ImageUploader(
 
                         when (response) {
                             is Resource.Failure -> {
-                                if (response.errorMessage == null) {
-                                    captureEvent(
-                                        Events.GET_PRESIGNED_FAILED,
-                                        image,
-                                        false,
-                                        response.errorCode.toString() + ": Http exception from server",
-                                        response = Gson().toJson(response).toString(),
-                                        retryCount = retryCount
-                                    )
-                                } else {
-                                    captureEvent(
-                                        Events.GET_PRESIGNED_FAILED,
-                                        image,
-                                        false,
-                                        response.errorCode.toString() + ": " + response.errorMessage,
-                                        response = Gson().toJson(response).toString(),
-                                        retryCount = retryCount
-                                    )
-                                }
+                                captureEvent(
+                                    Events.GET_PRESIGNED_FAILED,
+                                    image,
+                                    false,
+                                    getErrorMessage(response),
+                                    response = Gson().toJson(response).toString(),
+                                    retryCount = retryCount
+                                )
+
                                 retryCount++
                                 continue
                             }
@@ -507,25 +448,14 @@ class ImageUploader(
 
                                 when (uploadResponse) {
                                     is Resource.Failure -> {
-                                        if (uploadResponse.errorMessage == null) {
-                                            captureEvent(
-                                                Events.IMAGE_UPLOAD_TO_GCP_FAILED,
-                                                image,
-                                                false,
-                                                uploadResponse.errorCode.toString() + ": Http exception from server",
-                                                response = Gson().toJson(uploadResponse).toString(),
-                                                retryCount = retryCount
-                                            )
-                                        } else {
-                                            captureEvent(
-                                                Events.IMAGE_UPLOAD_TO_GCP_FAILED,
-                                                image,
-                                                false,
-                                                uploadResponse.toString() + ": " + uploadResponse.errorMessage,
-                                                response = Gson().toJson(uploadResponse).toString(),
-                                                retryCount = retryCount
-                                            )
-                                        }
+                                        captureEvent(
+                                            Events.IMAGE_UPLOAD_TO_GCP_FAILED,
+                                            image,
+                                            false,
+                                            getErrorMessage(uploadResponse),
+                                            response = Gson().toJson(uploadResponse).toString(),
+                                            retryCount = retryCount
+                                        )
                                         retryCount++
                                         continue
                                     }
@@ -560,27 +490,14 @@ class ImageUploader(
 
                                 when (markUploadResponse) {
                                     is Resource.Failure -> {
-                                        if (markUploadResponse.errorMessage == null) {
-                                            captureEvent(
-                                                Events.MARK_IMAGE_UPLOADED_FAILED,
-                                                image,
-                                                false,
-                                                markUploadResponse.errorCode.toString() + ": Http exception from server",
-                                                response = Gson().toJson(markUploadResponse)
-                                                    .toString(),
-                                                retryCount = retryCount
-                                            )
-                                        } else {
-                                            captureEvent(
-                                                Events.MARK_IMAGE_UPLOADED_FAILED,
-                                                image,
-                                                false,
-                                                markUploadResponse.toString() + ": " + markUploadResponse.errorMessage,
-                                                response = Gson().toJson(markUploadResponse)
-                                                    .toString(),
-                                                retryCount = retryCount
-                                            )
-                                        }
+                                        captureEvent(
+                                            Events.MARK_IMAGE_UPLOADED_FAILED,
+                                            image,
+                                            false,
+                                            getErrorMessage(markUploadResponse),
+                                            response = Gson().toJson(markUploadResponse).toString(),
+                                            retryCount = retryCount
+                                        )
                                         retryCount++
                                         continue
                                     }
@@ -638,27 +555,14 @@ class ImageUploader(
 
                                     when (uploadResponse) {
                                         is Resource.Failure -> {
-                                            if (uploadResponse.errorMessage == null) {
-                                                captureEvent(
-                                                    Events.IMAGE_UPLOAD_TO_GCP_FAILED,
-                                                    image,
-                                                    false,
-                                                    uploadResponse.errorCode.toString() + ": Http exception from server",
-                                                    response = Gson().toJson(uploadResponse)
-                                                        .toString(),
-                                                    retryCount = retryCount
-                                                )
-                                            } else {
-                                                captureEvent(
-                                                    Events.IMAGE_UPLOAD_TO_GCP_FAILED,
-                                                    image,
-                                                    false,
-                                                    uploadResponse.toString() + ": " + uploadResponse.errorMessage,
-                                                    response = Gson().toJson(uploadResponse)
-                                                        .toString(),
-                                                    retryCount = retryCount
-                                                )
-                                            }
+                                            captureEvent(
+                                                Events.IMAGE_UPLOAD_TO_GCP_FAILED,
+                                                image,
+                                                false,
+                                                getErrorMessage(uploadResponse),
+                                                response = Gson().toJson(uploadResponse).toString(),
+                                                retryCount = retryCount
+                                            )
                                             retryCount++
                                             continue
                                         }
@@ -693,27 +597,14 @@ class ImageUploader(
 
                                     when (markUploadResponse) {
                                         is Resource.Failure -> {
-                                            if (markUploadResponse.errorMessage == null) {
-                                                captureEvent(
-                                                    Events.MARK_IMAGE_UPLOADED_FAILED,
-                                                    image,
-                                                    false,
-                                                    markUploadResponse.errorCode.toString() + ": Http exception from server",
-                                                    response = Gson().toJson(markUploadResponse)
-                                                        .toString(),
-                                                    retryCount = retryCount
-                                                )
-                                            } else {
-                                                captureEvent(
-                                                    Events.MARK_IMAGE_UPLOADED_FAILED,
-                                                    image,
-                                                    false,
-                                                    markUploadResponse.toString() + ": " + markUploadResponse.errorMessage,
-                                                    response = Gson().toJson(markUploadResponse)
-                                                        .toString(),
-                                                    retryCount = retryCount
-                                                )
-                                            }
+                                            captureEvent(
+                                                Events.MARK_IMAGE_UPLOADED_FAILED,
+                                                image,
+                                                false,
+                                                getErrorMessage(markUploadResponse),
+                                                response = Gson().toJson(markUploadResponse).toString(),
+                                                retryCount = retryCount
+                                            )
                                             retryCount++
                                             continue
                                         }
@@ -819,6 +710,10 @@ class ImageUploader(
         deleteTempFiles(File(outputDirectory))
         listener.onUploaded()
         Utilities.saveBool(context, AppConstants.UPLOADING_RUNNING, false)
+    }
+
+    private fun getErrorMessage(response: Resource.Failure): String {
+        return if (response.errorMessage == null) response.errorCode.toString() + ": Http exception from server" else response.errorCode.toString() + ": " + response.errorMessage
     }
 
 
