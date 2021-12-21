@@ -48,9 +48,9 @@ object Utilities {
         editor.apply()
     }
 
-    fun getBool(context: Context?, key: String): Boolean {
+    fun getBool(context: Context?, key: String, default: Boolean = false): Boolean {
         val preferences = PreferenceManager.getDefaultSharedPreferences(context)
-        return preferences.getBoolean(key, false)
+        return preferences.getBoolean(key, default)
     }
     fun getLong(context: Context?, key: String): Long {
         val preferences = PreferenceManager.getDefaultSharedPreferences(context)

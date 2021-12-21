@@ -209,6 +209,9 @@ object AppConstants {
     val MINIMUM_VIDEO_DURATION = 30
     val DEFAULT_PRESIGNED_URL = "DEFAULT_PRESIGNED_URL"
 
+    val UPLOAD_TRIGGERED = "UPLOAD_TRIGGERED"
+    val UPLOADING_RUNNING = "UPLOADING_RUNNING"
+
 
     val imageCatNameMap = HashMap<String,String>().apply {
         put(ECOM_CATEGORY_ID,"Ecom")

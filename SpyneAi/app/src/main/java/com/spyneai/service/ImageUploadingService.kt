@@ -275,10 +275,7 @@ class ImageUploadingService : Service(), ImageUploader.Listener {
                 this
             )
 
-        GlobalScope.launch(Dispatchers.Default) {
-            imageUploader!!.start()
-        }
-
+        imageUploader!!.uploadParent()
     }
 
 }
