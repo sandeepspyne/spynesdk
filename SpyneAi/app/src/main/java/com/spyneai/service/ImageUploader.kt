@@ -57,13 +57,13 @@ class ImageUploader(
         handler.postDelayed({
             if (Utilities.getBool(context, AppConstants.UPLOAD_TRIGGERED, true)
                 &&
-                !Utilities.getBool(context, AppConstants.UPLOADING_RUNNING, false)){
+                !Utilities.getBool(context, AppConstants.UPLOADING_RUNNING, false)
+            ) {
                 if (context.isInternetActive())
                     GlobalScope.launch(Dispatchers.Default) {
                         startUploading()
                     }
-                else
-                {
+                else {
                     listener.onConnectionLost()
                     Utilities.saveBool(context, AppConstants.UPLOADING_RUNNING, false)
                 }
@@ -167,88 +167,15 @@ class ImageUploader(
                             "Focus Shoot",
                             "360int",
                             "Info" -> {
-                                val requestFile =
-                                    File(image.imagePath).asRequestBody("text/x-markdown; charset=utf-8".toMediaTypeOrNull())
+                                val imageUploaded = uploadImage(image)
 
-                                val uploadResponse = shootRepository.uploadImageToGcp(
-                                    image.preSignedUrl!!,
-                                    requestFile
+                                if (!imageUploaded)
+                                    continue
+
+                                val imageMarkedDone = markDoneImage(image)
+                                Log.d(
+                                    TAG, "startUploading: imageMarkedDone " + imageMarkedDone
                                 )
-
-                                when (uploadResponse) {
-                                    is Resource.Failure -> {
-                                        captureEvent(
-                                            Events.IMAGE_UPLOAD_TO_GCP_FAILED,
-                                            image,
-                                            false,
-                                            getErrorMessage(uploadResponse),
-                                            response = Gson().toJson(uploadResponse).toString(),
-                                            retryCount = retryCount
-                                        )
-                                        retryCount++
-                                        continue
-                                    }
-                                }
-
-                                captureEvent(
-                                    Events.IMAGE_UPLOADED_TO_GCP, image,
-                                    true,
-                                    null,
-                                    response = Gson().toJson(uploadResponse).toString(),
-                                    retryCount = retryCount
-                                )
-
-                                val markUploadCount = localRepository.markUploaded(image)
-
-                                captureEvent(
-                                    Events.IS_MARK_GCP_UPLOADED_UPDATED,
-                                    localRepository.getImage(image.itemId!!),
-                                    true,
-                                    null,
-                                    markUploadCount,
-                                    retryCount = retryCount
-                                )
-
-                                val markUploadResponse =
-                                    shootRepository.markUploaded(image.imageId!!)
-
-                                captureEvent(
-                                    Events.MARK_DONE_CALL_INITIATED, image, true, null,
-                                    retryCount = retryCount
-                                )
-
-                                when (markUploadResponse) {
-                                    is Resource.Failure -> {
-                                        captureEvent(
-                                            Events.MARK_IMAGE_UPLOADED_FAILED,
-                                            image,
-                                            false,
-                                            getErrorMessage(markUploadResponse),
-                                            response = Gson().toJson(markUploadResponse).toString(),
-                                            retryCount = retryCount
-                                        )
-                                        retryCount++
-                                        continue
-                                    }
-                                }
-
-                                captureEvent(
-                                    Events.MARKED_IMAGE_UPLOADED, image, true,
-                                    null,
-                                    response = Gson().toJson(markUploadResponse).toString()
-                                )
-
-                                val count = localRepository.markStatusUploaded(image)
-
-                                captureEvent(
-                                    Events.IS_MARK_DONE_STATUS_UPDATED,
-                                    localRepository.getImage(image.itemId!!),
-                                    true,
-                                    null,
-                                    count,
-                                    retryCount = retryCount
-                                )
-                                retryCount++
                                 continue
                             }
                             else -> {
@@ -259,12 +186,12 @@ class ImageUploader(
                                     )
 
                                 try {
-                                    val s = File(outputDirectory).mkdirs()
+                                    File(outputDirectory).mkdirs()
                                     val outputFile = File(
                                         outputDirectory + System.currentTimeMillis()
                                             .toString() + ".jpg"
                                     )
-                                    val ss = outputFile.createNewFile()
+                                    outputFile.createNewFile()
 
                                     val os: OutputStream = BufferedOutputStream(
                                         FileOutputStream(outputFile)
@@ -273,89 +200,15 @@ class ImageUploader(
                                     os.close()
 
                                     image.imagePath = outputFile.path
-                                    val requestFile =
-                                        File(image.imagePath).asRequestBody("text/x-markdown; charset=utf-8".toMediaTypeOrNull())
+                                    val imageUploaded = uploadImage(image)
 
-                                    val uploadResponse = shootRepository.uploadImageToGcp(
-                                        image.preSignedUrl!!,
-                                        requestFile
+                                    if (!imageUploaded)
+                                        continue
+
+                                    val imageMarkedDone = markDoneImage(image)
+                                    Log.d(
+                                        TAG, "startUploading: imageMarkedDone " + imageMarkedDone
                                     )
-
-                                    when (uploadResponse) {
-                                        is Resource.Failure -> {
-                                            captureEvent(
-                                                Events.IMAGE_UPLOAD_TO_GCP_FAILED,
-                                                image,
-                                                false,
-                                                getErrorMessage(uploadResponse),
-                                                response = Gson().toJson(uploadResponse).toString(),
-                                                retryCount = retryCount
-                                            )
-                                            retryCount++
-                                            continue
-                                        }
-                                    }
-
-                                    captureEvent(
-                                        Events.IMAGE_UPLOADED_TO_GCP, image,
-                                        true,
-                                        null,
-                                        response = Gson().toJson(uploadResponse).toString(),
-                                        retryCount = retryCount
-                                    )
-
-                                    val markUploadCount = localRepository.markUploaded(image)
-
-                                    captureEvent(
-                                        Events.IS_MARK_GCP_UPLOADED_UPDATED,
-                                        localRepository.getImage(image.itemId!!),
-                                        true,
-                                        null,
-                                        markUploadCount,
-                                        retryCount = retryCount
-                                    )
-
-                                    val markUploadResponse =
-                                        shootRepository.markUploaded(image.imageId!!)
-
-                                    captureEvent(
-                                        Events.MARK_DONE_CALL_INITIATED, image, true, null,
-                                        retryCount = retryCount
-                                    )
-
-                                    when (markUploadResponse) {
-                                        is Resource.Failure -> {
-                                            captureEvent(
-                                                Events.MARK_IMAGE_UPLOADED_FAILED,
-                                                image,
-                                                false,
-                                                getErrorMessage(markUploadResponse),
-                                                response = Gson().toJson(markUploadResponse).toString(),
-                                                retryCount = retryCount
-                                            )
-
-                                            retryCount++
-                                            continue
-                                        }
-                                    }
-
-                                    captureEvent(
-                                        Events.MARKED_IMAGE_UPLOADED, image, true,
-                                        null,
-                                        response = Gson().toJson(markUploadResponse).toString()
-                                    )
-
-                                    val count = localRepository.markStatusUploaded(image)
-
-                                    captureEvent(
-                                        Events.IS_MARK_DONE_STATUS_UPDATED,
-                                        localRepository.getImage(image.itemId!!),
-                                        true,
-                                        null,
-                                        count,
-                                        retryCount = retryCount
-                                    )
-                                    retryCount++
                                     continue
                                 } catch (
                                     e: Exception
@@ -382,55 +235,10 @@ class ImageUploader(
                                 image.debugData
                             ).toString()
 
-                        var response = shootRepository.getPreSignedUrl(
-                            uploadType,
-                            image
-                        )
+                        val gotPresigned = getPresigned(image, uploadType)
 
-                        captureEvent(
-                            Events.GET_PRESIGNED_CALL_INITIATED, image, true, null,
-                            retryCount = retryCount
-                        )
-
-                        when (response) {
-                            is Resource.Failure -> {
-                                captureEvent(
-                                    Events.GET_PRESIGNED_FAILED,
-                                    image,
-                                    false,
-                                    getErrorMessage(response),
-                                    response = Gson().toJson(response).toString(),
-                                    retryCount = retryCount
-                                )
-
-                                retryCount++
-                                continue
-                            }
-                        }
-
-                        val imagePreSignedRes = (response as Resource.Success).value
-
-                        image.preSignedUrl = imagePreSignedRes.data.presignedUrl
-                        image.imageId = imagePreSignedRes.data.imageId
-
-                        captureEvent(
-                            Events.GOT_PRESIGNED_IMAGE_URL, image,
-                            true,
-                            null,
-                            response = Gson().toJson(response.value).toString(),
-                            retryCount = retryCount
-                        )
-
-                        val count = localRepository.addPreSignedUrl(image)
-
-                        captureEvent(
-                            Events.IS_PRESIGNED_URL_UPDATED,
-                            localRepository.getImage(image.itemId!!),
-                            true,
-                            null,
-                            count,
-                            retryCount = retryCount
-                        )
+                        if (!gotPresigned)
+                            continue
 
                         when (image.categoryName) {
                             "Exterior",
@@ -438,88 +246,15 @@ class ImageUploader(
                             "Focus Shoot",
                             "360int",
                             "Info" -> {
-                                val requestFile =
-                                    File(image.imagePath).asRequestBody("text/x-markdown; charset=utf-8".toMediaTypeOrNull())
+                                val imageUploaded = uploadImage(image)
 
-                                val uploadResponse = shootRepository.uploadImageToGcp(
-                                    image.preSignedUrl!!,
-                                    requestFile
+                                if (!imageUploaded)
+                                    continue
+
+                                val imageMarkedDone = markDoneImage(image)
+                                Log.d(
+                                    TAG, "startUploading: imageMarkedDone " + imageMarkedDone
                                 )
-
-                                when (uploadResponse) {
-                                    is Resource.Failure -> {
-                                        captureEvent(
-                                            Events.IMAGE_UPLOAD_TO_GCP_FAILED,
-                                            image,
-                                            false,
-                                            getErrorMessage(uploadResponse),
-                                            response = Gson().toJson(uploadResponse).toString(),
-                                            retryCount = retryCount
-                                        )
-                                        retryCount++
-                                        continue
-                                    }
-                                }
-
-                                captureEvent(
-                                    Events.IMAGE_UPLOADED_TO_GCP, image,
-                                    true,
-                                    null,
-                                    response = Gson().toJson(uploadResponse).toString(),
-                                    retryCount = retryCount
-                                )
-
-                                val markUploadCount = localRepository.markUploaded(image)
-
-                                captureEvent(
-                                    Events.IS_MARK_GCP_UPLOADED_UPDATED,
-                                    localRepository.getImage(image.itemId!!),
-                                    true,
-                                    null,
-                                    markUploadCount,
-                                    retryCount = retryCount
-                                )
-
-                                val markUploadResponse =
-                                    shootRepository.markUploaded(image.imageId!!)
-
-                                captureEvent(
-                                    Events.MARK_DONE_CALL_INITIATED, image, true, null,
-                                    retryCount = retryCount
-                                )
-
-                                when (markUploadResponse) {
-                                    is Resource.Failure -> {
-                                        captureEvent(
-                                            Events.MARK_IMAGE_UPLOADED_FAILED,
-                                            image,
-                                            false,
-                                            getErrorMessage(markUploadResponse),
-                                            response = Gson().toJson(markUploadResponse).toString(),
-                                            retryCount = retryCount
-                                        )
-                                        retryCount++
-                                        continue
-                                    }
-                                }
-
-                                captureEvent(
-                                    Events.MARKED_IMAGE_UPLOADED, image, true,
-                                    null,
-                                    response = Gson().toJson(markUploadResponse).toString()
-                                )
-
-                                val count = localRepository.markStatusUploaded(image)
-
-                                captureEvent(
-                                    Events.IS_MARK_DONE_STATUS_UPDATED,
-                                    localRepository.getImage(image.itemId!!),
-                                    true,
-                                    null,
-                                    count,
-                                    retryCount = retryCount
-                                )
-                                retryCount = 0
                                 continue
                             }
                             else -> {
@@ -530,12 +265,12 @@ class ImageUploader(
                                     )
 
                                 try {
-                                    val s = File(outputDirectory).mkdirs()
+                                    File(outputDirectory).mkdirs()
                                     val outputFile = File(
                                         outputDirectory + System.currentTimeMillis()
                                             .toString() + ".jpg"
                                     )
-                                    val ss = outputFile.createNewFile()
+                                    outputFile.createNewFile()
 
                                     val os: OutputStream = BufferedOutputStream(
                                         FileOutputStream(outputFile)
@@ -545,88 +280,15 @@ class ImageUploader(
 
                                     image.imagePath = outputFile.path
 
-                                    val requestFile =
-                                        File(image.imagePath).asRequestBody("text/x-markdown; charset=utf-8".toMediaTypeOrNull())
+                                    val imageUploaded = uploadImage(image)
 
-                                    val uploadResponse = shootRepository.uploadImageToGcp(
-                                        image.preSignedUrl!!,
-                                        requestFile
+                                    if (!imageUploaded)
+                                        continue
+
+                                    val imageMarkedDone = markDoneImage(image)
+                                    Log.d(
+                                        TAG, "startUploading: imageMarkedDone " + imageMarkedDone
                                     )
-
-                                    when (uploadResponse) {
-                                        is Resource.Failure -> {
-                                            captureEvent(
-                                                Events.IMAGE_UPLOAD_TO_GCP_FAILED,
-                                                image,
-                                                false,
-                                                getErrorMessage(uploadResponse),
-                                                response = Gson().toJson(uploadResponse).toString(),
-                                                retryCount = retryCount
-                                            )
-                                            retryCount++
-                                            continue
-                                        }
-                                    }
-
-                                    captureEvent(
-                                        Events.IMAGE_UPLOADED_TO_GCP, image,
-                                        true,
-                                        null,
-                                        response = Gson().toJson(uploadResponse).toString(),
-                                        retryCount = retryCount
-                                    )
-
-                                    val markUploadCount = localRepository.markUploaded(image)
-
-                                    captureEvent(
-                                        Events.IS_MARK_GCP_UPLOADED_UPDATED,
-                                        localRepository.getImage(image.itemId!!),
-                                        true,
-                                        null,
-                                        markUploadCount,
-                                        retryCount = retryCount
-                                    )
-
-                                    val markUploadResponse =
-                                        shootRepository.markUploaded(image.imageId!!)
-
-                                    captureEvent(
-                                        Events.MARK_DONE_CALL_INITIATED, image, true, null,
-                                        retryCount = retryCount
-                                    )
-
-                                    when (markUploadResponse) {
-                                        is Resource.Failure -> {
-                                            captureEvent(
-                                                Events.MARK_IMAGE_UPLOADED_FAILED,
-                                                image,
-                                                false,
-                                                getErrorMessage(markUploadResponse),
-                                                response = Gson().toJson(markUploadResponse).toString(),
-                                                retryCount = retryCount
-                                            )
-                                            retryCount++
-                                            continue
-                                        }
-                                    }
-
-                                    captureEvent(
-                                        Events.MARKED_IMAGE_UPLOADED, image, true,
-                                        null,
-                                        response = Gson().toJson(markUploadResponse).toString()
-                                    )
-
-                                    val count = localRepository.markStatusUploaded(image)
-
-                                    captureEvent(
-                                        Events.IS_MARK_DONE_STATUS_UPDATED,
-                                        localRepository.getImage(image.itemId!!),
-                                        true,
-                                        null,
-                                        count,
-                                        retryCount = retryCount
-                                    )
-                                    retryCount++
                                     continue
 
                                 } catch (
@@ -650,57 +312,16 @@ class ImageUploader(
                         retryCount = 0
                         continue
                     } else {
-                        val markUploadResponse = shootRepository.markUploaded(image.imageId!!)
-
-                        captureEvent(
-                            Events.MARK_DONE_CALL_INITIATED, image, true, null,
-                            retryCount = retryCount
+                        val imageMarkedDone = markDoneImage(image)
+                        Log.d(
+                            TAG, "startUploading: imageMarkedDone " + imageMarkedDone
                         )
 
-                        when (markUploadResponse) {
-                            is Resource.Failure -> {
-                                if (markUploadResponse.errorMessage == null) {
-                                    captureEvent(
-                                        Events.MARK_IMAGE_UPLOADED_FAILED,
-                                        image,
-                                        false,
-                                        markUploadResponse.errorCode.toString() + ": Http exception from server",
-                                        response = Gson().toJson(markUploadResponse).toString(),
-                                        retryCount = retryCount
-                                    )
-                                } else {
-                                    captureEvent(
-                                        Events.MARK_IMAGE_UPLOADED_FAILED,
-                                        image,
-                                        false,
-                                        markUploadResponse.toString() + ": " + markUploadResponse.errorMessage,
-                                        response = Gson().toJson(markUploadResponse).toString(),
-                                        retryCount = retryCount
-                                    )
-                                }
-                                retryCount++
-                                continue
-                            }
-                        }
+                        if (imageMarkedDone)
+                            retryCount = 0
 
-                        captureEvent(
-                            Events.MARKED_IMAGE_UPLOADED, image, true,
-                            null,
-                            response = Gson().toJson(markUploadResponse).toString()
-                        )
-
-                        val count = localRepository.markStatusUploaded(image)
-
-                        captureEvent(
-                            Events.IS_MARK_DONE_STATUS_UPDATED,
-                            localRepository.getImage(image.itemId!!),
-                            true,
-                            null,
-                            count,
-                            retryCount = retryCount
-                        )
-                        retryCount = 0
                         continue
+
                     }
                 }
             }
@@ -710,6 +331,150 @@ class ImageUploader(
         deleteTempFiles(File(outputDirectory))
         listener.onUploaded()
         Utilities.saveBool(context, AppConstants.UPLOADING_RUNNING, false)
+    }
+
+    private suspend fun getPresigned(image: Image, uploadType: String): Boolean {
+        var response = shootRepository.getPreSignedUrl(
+            uploadType,
+            image
+        )
+
+        captureEvent(
+            Events.GET_PRESIGNED_CALL_INITIATED, image, true, null,
+            retryCount = retryCount
+        )
+
+        when (response) {
+            is Resource.Failure -> {
+                captureEvent(
+                    Events.GET_PRESIGNED_FAILED,
+                    image,
+                    false,
+                    getErrorMessage(response),
+                    response = Gson().toJson(response).toString(),
+                    retryCount = retryCount
+                )
+
+                retryCount++
+                return false
+            }
+        }
+
+        val imagePreSignedRes = (response as Resource.Success).value
+
+        image.preSignedUrl = imagePreSignedRes.data.presignedUrl
+        image.imageId = imagePreSignedRes.data.imageId
+
+        captureEvent(
+            Events.GOT_PRESIGNED_IMAGE_URL, image,
+            true,
+            null,
+            response = Gson().toJson(response.value).toString(),
+            retryCount = retryCount
+        )
+
+        val count = localRepository.addPreSignedUrl(image)
+
+        captureEvent(
+            Events.IS_PRESIGNED_URL_UPDATED,
+            localRepository.getImage(image.itemId!!),
+            true,
+            null,
+            count,
+            retryCount = retryCount
+        )
+
+        return true
+    }
+
+    private suspend fun uploadImage(image: Image): Boolean {
+        val requestFile =
+            File(image.imagePath).asRequestBody("text/x-markdown; charset=utf-8".toMediaTypeOrNull())
+
+        val uploadResponse = shootRepository.uploadImageToGcp(
+            image.preSignedUrl!!,
+            requestFile
+        )
+
+        when (uploadResponse) {
+            is Resource.Failure -> {
+                captureEvent(
+                    Events.IMAGE_UPLOAD_TO_GCP_FAILED,
+                    image,
+                    false,
+                    getErrorMessage(uploadResponse),
+                    response = Gson().toJson(uploadResponse).toString(),
+                    retryCount = retryCount
+                )
+                retryCount++
+                return false
+            }
+        }
+
+        captureEvent(
+            Events.IMAGE_UPLOADED_TO_GCP, image,
+            true,
+            null,
+            response = Gson().toJson(uploadResponse).toString(),
+            retryCount = retryCount
+        )
+
+        val markUploadCount = localRepository.markUploaded(image)
+
+        captureEvent(
+            Events.IS_MARK_GCP_UPLOADED_UPDATED,
+            localRepository.getImage(image.itemId!!),
+            true,
+            null,
+            markUploadCount,
+            retryCount = retryCount
+        )
+
+        return true
+    }
+
+    private suspend fun markDoneImage(image: Image): Boolean {
+        val markUploadResponse =
+            shootRepository.markUploaded(image.imageId!!)
+
+        captureEvent(
+            Events.MARK_DONE_CALL_INITIATED, image, true, null,
+            retryCount = retryCount
+        )
+
+        when (markUploadResponse) {
+            is Resource.Failure -> {
+                captureEvent(
+                    Events.MARK_IMAGE_UPLOADED_FAILED,
+                    image,
+                    false,
+                    getErrorMessage(markUploadResponse),
+                    response = Gson().toJson(markUploadResponse).toString(),
+                    retryCount = retryCount
+                )
+                retryCount++
+                return false
+            }
+        }
+
+        captureEvent(
+            Events.MARKED_IMAGE_UPLOADED, image, true,
+            null,
+            response = Gson().toJson(markUploadResponse).toString()
+        )
+
+        val count = localRepository.markStatusUploaded(image)
+
+        captureEvent(
+            Events.IS_MARK_DONE_STATUS_UPDATED,
+            localRepository.getImage(image.itemId!!),
+            true,
+            null,
+            count,
+            retryCount = retryCount
+        )
+        retryCount = 0
+        return true
     }
 
     private fun getErrorMessage(response: Resource.Failure): String {
@@ -809,10 +574,6 @@ class ImageUploader(
             }
         }
         return file.delete()
-    }
-
-    private fun getRandomTime() {
-
     }
 
     val outputDirectory = "/storage/emulated/0/DCIM/Spynetemp/"
