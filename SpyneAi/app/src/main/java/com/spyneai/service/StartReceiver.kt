@@ -6,6 +6,7 @@ import android.content.Intent
 import android.os.Build
 import androidx.core.content.ContextCompat
 import com.spyneai.captureEvent
+import com.spyneai.dashboard.ui.MainDashboardActivity
 import com.spyneai.needs.AppConstants
 import com.spyneai.needs.Utilities
 import com.spyneai.posthog.Events
@@ -25,6 +26,7 @@ class StartReceiver : BroadcastReceiver() {
                     return
 
                 val serviceIntent = Intent(context, ImageUploadingService::class.java)
+                serviceIntent.putExtra(AppConstants.SERVICE_STARTED_BY, StartReceiver::class.simpleName)
                 serviceIntent.action = action.name
 
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {

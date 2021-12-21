@@ -370,6 +370,7 @@ class MainDashboardActivity : AppCompatActivity() {
                 return
 
             val serviceIntent = Intent(this, ImageUploadingService::class.java)
+            serviceIntent.putExtra(AppConstants.SERVICE_STARTED_BY,MainDashboardActivity::class.simpleName)
             serviceIntent.action = action.name
 
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {

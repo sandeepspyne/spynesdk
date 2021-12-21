@@ -38,6 +38,7 @@ class ImageUploadingService : Service(), ImageUploader.Listener {
     val notificationChannelId = "PROCESSING SERVICE CHANNEL"
     var currentImage : Image? = null
     val TAG = "ImageUploader"
+    var serviceStartedBy : String? = null
 
     override fun onDestroy() {
         super.onDestroy()
@@ -80,6 +81,7 @@ class ImageUploadingService : Service(), ImageUploader.Listener {
 
         when (action) {
             Actions.START.name -> {
+                this.serviceStartedBy = intent.getStringExtra(AppConstants.SERVICE_STARTED_BY)
                 if (!uploadRunning)
                     resumeUpload("onStartCommand")
 
@@ -277,7 +279,7 @@ class ImageUploadingService : Service(), ImageUploader.Listener {
                 this
             )
 
-        imageUploader!!.uploadParent(type)
+        imageUploader!!.uploadParent(type,serviceStartedBy)
     }
 
 }

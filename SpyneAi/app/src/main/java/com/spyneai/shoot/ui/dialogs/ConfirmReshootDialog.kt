@@ -22,6 +22,7 @@ import com.spyneai.R
 import com.spyneai.base.BaseDialogFragment
 import com.spyneai.base.network.Resource
 import com.spyneai.captureEvent
+import com.spyneai.dashboard.ui.MainDashboardActivity
 import com.spyneai.databinding.DialogConfirmReshootBinding
 import com.spyneai.needs.AppConstants
 import com.spyneai.posthog.Events
@@ -216,6 +217,7 @@ class ConfirmReshootDialog : BaseDialogFragment<ShootViewModel, DialogConfirmRes
             return
 
         val serviceIntent = Intent(requireContext(), ImageUploadingService::class.java)
+        serviceIntent.putExtra(AppConstants.SERVICE_STARTED_BY, ConfirmReshootDialog::class.simpleName)
         serviceIntent.action = action.name
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {

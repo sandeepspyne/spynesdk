@@ -16,6 +16,7 @@ import com.bumptech.glide.Glide
 import com.hbisoft.pickit.PickiT
 import com.hbisoft.pickit.PickiTCallbacks
 import com.spyneai.base.BaseDialogFragment
+import com.spyneai.dashboard.ui.MainDashboardActivity
 import com.spyneai.databinding.Dialog360InteriorBinding
 import com.spyneai.needs.AppConstants
 import com.spyneai.needs.Utilities
@@ -146,6 +147,7 @@ class ThreeSixtyInteriorHintDialog : BaseDialogFragment<ShootViewModel, Dialog36
             return
 
         val serviceIntent = Intent(requireContext(), ImageUploadingService::class.java)
+        serviceIntent.putExtra(AppConstants.SERVICE_STARTED_BY, ThreeSixtyInteriorHintDialog::class.simpleName)
         serviceIntent.action = action.name
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {

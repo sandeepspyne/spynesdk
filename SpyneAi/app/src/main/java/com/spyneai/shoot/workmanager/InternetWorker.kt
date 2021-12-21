@@ -7,6 +7,7 @@ import androidx.core.content.ContextCompat
 import androidx.work.CoroutineWorker
 import androidx.work.WorkerParameters
 import com.spyneai.captureEvent
+import com.spyneai.dashboard.ui.MainDashboardActivity
 import com.spyneai.isMyServiceRunning
 import com.spyneai.needs.AppConstants
 import com.spyneai.needs.Utilities
@@ -34,6 +35,7 @@ class InternetWorker(private val appContext: Context, workerParams: WorkerParame
                     return Result.success()
 
                 val serviceIntent = Intent(appContext, ImageUploadingService::class.java)
+                serviceIntent.putExtra(AppConstants.SERVICE_STARTED_BY, InternetWorker::class.simpleName)
                 serviceIntent.action = action.name
 
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {

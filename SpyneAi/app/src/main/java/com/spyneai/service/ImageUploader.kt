@@ -48,9 +48,11 @@ class ImageUploader(
 ) {
     val TAG = "ImageUploader"
 
-    fun uploadParent(type : String) {
+    fun uploadParent(type : String,startedBy : String) {
         context.captureEvent("Upload Parent Triggered",HashMap<String,Any?>().apply {
             put("type",type)
+            put("service_started_by",startedBy)
+            put("upload_running",Utilities.getBool(context, AppConstants.UPLOADING_RUNNING, false))
         })
 
         //update triggered value

@@ -13,9 +13,11 @@ import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.spyneai.base.BaseDialogFragment
 import com.spyneai.base.network.Resource
 import com.spyneai.captureEvent
+import com.spyneai.dashboard.ui.MainDashboardActivity
 import com.spyneai.dashboard.ui.handleApiError
 import com.spyneai.databinding.ConfirmReshootPortraitDialogBinding
 import com.spyneai.loadSmartly
+import com.spyneai.needs.AppConstants
 import com.spyneai.needs.Utilities
 import com.spyneai.posthog.Events
 import com.spyneai.service.Actions
@@ -153,6 +155,7 @@ class ConfirmReshootPortraitDialog : BaseDialogFragment<ShootViewModel, ConfirmR
             return
 
         val serviceIntent = Intent(requireContext(), ImageUploadingService::class.java)
+        serviceIntent.putExtra(AppConstants.SERVICE_STARTED_BY, ConfirmReshootPortraitDialog::class.simpleName)
         serviceIntent.action = action.name
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {

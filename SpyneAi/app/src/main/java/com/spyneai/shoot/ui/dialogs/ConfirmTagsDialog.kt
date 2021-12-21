@@ -23,6 +23,7 @@ import com.spyneai.R
 import com.spyneai.base.BaseDialogFragment
 import com.spyneai.base.network.Resource
 import com.spyneai.captureEvent
+import com.spyneai.dashboard.ui.MainDashboardActivity
 import com.spyneai.databinding.DialogConfirmTagsBinding
 import com.spyneai.databinding.ItemTagNotesBinding
 import com.spyneai.databinding.ItemTagsSpinnerBinding
@@ -353,6 +354,7 @@ class ConfirmTagsDialog : BaseDialogFragment<ShootViewModel, DialogConfirmTagsBi
             return
 
         val serviceIntent = Intent(requireContext(), ImageUploadingService::class.java)
+        serviceIntent.putExtra(AppConstants.SERVICE_STARTED_BY, ConfirmTagsDialog::class.simpleName)
         serviceIntent.action = action.name
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
