@@ -50,7 +50,6 @@ class ImageUploader(
     val TAG = "ImageUploader"
 
     fun uploadParent(type : String,startedBy : String?) {
-        Log.d(TAG, "uploadParent: ")
         context.captureEvent("UPLOAD PARENT TRIGGERED",HashMap<String,Any?>().apply {
             put("type",type)
             put("service_started_by",startedBy)
@@ -69,13 +68,14 @@ class ImageUploader(
             ) {
                 if (context.isInternetActive())
                     GlobalScope.launch(Dispatchers.Default) {
-                        Log.d(TAG, "uploadParent: ")
+                        Log.d(TAG, "uploadParent: start")
                         context.captureEvent("START UPLOADING CALLED",HashMap())
                         startUploading()
                     }
                 else {
                     listener.onConnectionLost()
                     Utilities.saveBool(context, AppConstants.UPLOADING_RUNNING, false)
+                    Log.d(TAG, "uploadParent: connection lost")
                 }
             }
         }, getRandomNumberInRange().toLong())
@@ -84,6 +84,7 @@ class ImageUploader(
     suspend fun startUploading() {
         do {
             if (connectionLost){
+                Log.d(TAG, "startUploading: conneciton lost")
                 listener.onConnectionLost()
                 break
             }

@@ -48,7 +48,7 @@ class ImageUploadingService : Service(), ImageUploader.Listener {
 
     override fun onCreate() {
         super.onCreate()
-        setServiceState(this, com.spyneai.service.ServiceState.STARTED)
+        setServiceState(this, ServiceState.STARTED)
 
         //register internet connection receiver
         this.receiver = InternetConnectionReceiver()
@@ -242,6 +242,7 @@ class ImageUploadingService : Service(), ImageUploader.Listener {
         override fun onReceive(context: Context?, intent: Intent?) {
 
             val isConnected = context?.isInternetActive()
+            Log.d(TAG, "onReceive: "+isConnected)
 
             if (isConnected == true){
                 //push event of internet connected
@@ -281,7 +282,8 @@ class ImageUploadingService : Service(), ImageUploader.Listener {
                 this
             )
 
-        imageUploader!!.uploadParent(type,serviceStartedBy)
+        imageUploader?.connectionLost = false
+        imageUploader?.uploadParent(type,serviceStartedBy)
     }
 
 }

@@ -17,15 +17,6 @@ class ResponseInterceptor : Interceptor {
         val request: Request = chain.request()
         val response = chain.proceed(request)
 
-        val properties = HashMap<String, Any?>()
-            .apply {
-                put("api", response.request.url)
-                put("body", request.body.toString())
-                put("response", response.toString())
-            }
-        BaseApplication.getContext()
-            .captureEvent(Events.API_RESPONSE, properties)
-
         if (response.body != null) {
             val body = response.body
             val bodyString = body!!.string()
