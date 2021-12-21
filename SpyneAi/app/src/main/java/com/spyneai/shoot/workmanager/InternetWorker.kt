@@ -26,6 +26,8 @@ class InternetWorker(private val appContext: Context, workerParams: WorkerParame
         if (shootLocalRepository.getOldestImage("0").itemId != null
             || shootLocalRepository.getOldestImage("-1").itemId != null){
             if (!appContext.isMyServiceRunning(ImageUploadingService::class.java)){
+                Utilities.saveBool(appContext, AppConstants.UPLOADING_RUNNING, false)
+
                 capture(Events.SERVICE_STARTED,"Started")
                 var action = Actions.START
                 if (getServiceState(appContext) == com.spyneai.service.ServiceState.STOPPED && action == Actions.STOP)
