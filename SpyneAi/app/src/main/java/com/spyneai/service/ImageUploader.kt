@@ -52,14 +52,12 @@ class ImageUploader(
         //update triggered value
         Utilities.saveBool(context, AppConstants.UPLOAD_TRIGGERED, true)
 
-        val isTriggered = Utilities.getBool(context, AppConstants.UPLOAD_TRIGGERED, true)
-        val isRunning = Utilities.getBool(context, AppConstants.UPLOADING_RUNNING, false)
-
-
         val handler = Handler(Looper.getMainLooper())
 
         handler.postDelayed({
-            if (isTriggered && !isRunning){
+            if (Utilities.getBool(context, AppConstants.UPLOAD_TRIGGERED, true)
+                &&
+                !Utilities.getBool(context, AppConstants.UPLOADING_RUNNING, false)){
                 if (context.isInternetActive())
                     GlobalScope.launch(Dispatchers.Default) {
                         startUploading()
@@ -71,8 +69,6 @@ class ImageUploader(
                 }
             }
         }, getRandomNumberInRange().toLong())
-
-
     }
 
     suspend fun startUploading() {

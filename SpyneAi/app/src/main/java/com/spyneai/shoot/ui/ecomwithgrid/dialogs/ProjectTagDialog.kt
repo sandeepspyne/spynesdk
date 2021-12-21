@@ -366,6 +366,7 @@ class ProjectTagDialog : BaseDialogFragment<ShootViewModel, ProjectTagDialogBind
                     project.projectId = it.value.project_id
                     viewModel.insertProject(project)
 
+                    Utilities.savePrefrence(requireContext(),AppConstants.SESSION_ID,project.projectId)
 
                     val sku = Sku()
                     sku.projectId = it.value.project_id

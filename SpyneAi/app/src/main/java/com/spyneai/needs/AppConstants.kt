@@ -4,6 +4,7 @@ package com.spyneai.needs
 
 object AppConstants {
 
+    val SESSION_ID: String = "SESSION_ID"
     val ADLOID: String = "Adloid"
     val ENTERPRISE_ID: String = "ENTERPRISE_ID"
     val SPYNE_ENTERPRISE_ID: String = "TaD1VC1Ko"
