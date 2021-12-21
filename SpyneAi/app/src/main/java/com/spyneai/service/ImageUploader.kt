@@ -50,6 +50,7 @@ class ImageUploader(
     val TAG = "ImageUploader"
 
     fun uploadParent(type : String,startedBy : String?) {
+        Log.d(TAG, "uploadParent: ")
         context.captureEvent("UPLOAD PARENT TRIGGERED",HashMap<String,Any?>().apply {
             put("type",type)
             put("service_started_by",startedBy)
@@ -68,12 +69,13 @@ class ImageUploader(
             ) {
                 if (context.isInternetActive())
                     GlobalScope.launch(Dispatchers.Default) {
+                        Log.d(TAG, "uploadParent: ")
                         context.captureEvent("START UPLOADING CALLED",HashMap())
                         startUploading()
                     }
                 else {
                     listener.onConnectionLost()
-                    //Utilities.saveBool(context, AppConstants.UPLOADING_RUNNING, false)
+                    Utilities.saveBool(context, AppConstants.UPLOADING_RUNNING, false)
                 }
             }
         }, getRandomNumberInRange().toLong())
@@ -85,22 +87,18 @@ class ImageUploader(
                 listener.onConnectionLost()
                 break
             }
-
-            Log.d(TAG, "startUploading: "+retryCount)
-
+            
             Utilities.saveBool(context, AppConstants.UPLOADING_RUNNING, true)
             var skipFlag = -1
 
             var image = localRepository.getOldestImage("0")
-            Log.d(TAG, "name: 0"+image.name)
 
             if (image.itemId == null) {
                 imageType = AppConstants.SKIPPED
                 image = localRepository.getOldestImage("-1")
                 skipFlag = -2
             }
-
-            Log.d(TAG, "name: -1"+image.name)
+            
 
             if (image.itemId == null && imageType == AppConstants.SKIPPED) {
                 //make second time skipped images elligible for upload
@@ -113,8 +111,7 @@ class ImageUploader(
                 if (count > 0 || markDoneSkippedCount > 0)
                     image = localRepository.getOldestImage("-1")
             }
-
-            Log.d(TAG, "name: last"+image.name)
+            
 
             if (image.itemId == null)
                 break
@@ -323,10 +320,6 @@ class ImageUploader(
                         continue
                     } else {
                         val imageMarkedDone = markDoneImage(image)
-                        Log.d(
-                            TAG, "startUploading: imageMarkedDone " + imageMarkedDone
-                        )
-
                         if (imageMarkedDone)
                             retryCount = 0
 
@@ -364,7 +357,8 @@ class ImageUploader(
                     false,
                     getErrorMessage(response),
                     response = Gson().toJson(response).toString(),
-                    retryCount = retryCount
+                    retryCount = retryCount,
+                    throwable = response.throwable
                 )
 
                 retryCount++
@@ -416,7 +410,8 @@ class ImageUploader(
                     false,
                     getErrorMessage(uploadResponse),
                     response = Gson().toJson(uploadResponse).toString(),
-                    retryCount = retryCount
+                    retryCount = retryCount,
+                    throwable = uploadResponse.throwable
                 )
                 retryCount++
                 return false
@@ -462,7 +457,8 @@ class ImageUploader(
                     false,
                     getErrorMessage(markUploadResponse),
                     response = Gson().toJson(markUploadResponse).toString(),
-                    retryCount = retryCount
+                    retryCount = retryCount,
+                    throwable = markUploadResponse.throwable
                 )
                 retryCount++
                 return false
@@ -533,7 +529,8 @@ class ImageUploader(
         error: String?,
         dbUpdateStatus: Int = 0,
         response: String? = null,
-        retryCount: Int = 0
+        retryCount: Int = 0,
+        throwable: String? = null
     ) {
         val properties = HashMap<String, Any?>()
             .apply {
@@ -557,6 +554,7 @@ class ImageUploader(
                 put("data", Gson().toJson(image))
                 put("response", response)
                 put("retry_count", retryCount)
+                put("throwable", throwable)
             }
 
         if (isSuccess) {

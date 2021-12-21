@@ -219,13 +219,13 @@ class ImageUploadingService : Service(), ImageUploader.Listener {
     }
 
     override fun onConnectionLost() {
+        uploadRunning = false
         Utilities.saveBool(this,AppConstants.UPLOADING_RUNNING,false)
 
         captureEvent(Events.INTERNET_DISCONNECTED,
             HashMap<String,Any?>().apply {
                 put("medium","Service")
             })
-        uploadRunning = false
 
         val title = if (currentImage == null) getString(R.string.uploading_paused)
         else {
@@ -265,7 +265,7 @@ class ImageUploadingService : Service(), ImageUploader.Listener {
                         put("medium","Service")
                     })
 
-               // imageUploader?.connectionLost = true
+                imageUploader?.connectionLost = true
             }
         }
     }
