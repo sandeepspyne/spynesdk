@@ -5,6 +5,7 @@ import android.animation.AnimatorListenerAdapter
 import android.app.Activity
 import android.app.ActivityManager
 import android.content.Context
+import android.content.Context.BATTERY_SERVICE
 import android.content.Intent
 import android.content.res.Configuration
 import android.graphics.ImageFormat
@@ -16,6 +17,7 @@ import android.media.MediaMetadataRetriever
 import android.net.ConnectivityManager
 import android.net.NetworkInfo
 import android.net.Uri
+import android.os.BatteryManager
 import android.util.Log
 import android.util.Size
 import android.view.View
@@ -122,6 +124,12 @@ fun Context.isInternetActive() : Boolean {
     val cm = getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
     val activeNetwork: NetworkInfo? = cm.activeNetworkInfo
     return activeNetwork?.isConnectedOrConnecting == true
+}
+
+fun Context.getBatteryLevel() : String {
+    val bm = applicationContext.getSystemService(BATTERY_SERVICE) as BatteryManager
+    val batLevel:Int = bm.getIntProperty(BatteryManager.BATTERY_PROPERTY_CAPACITY)
+    return "$batLevel%"
 }
 
 fun Context.getNetworkName() : String {

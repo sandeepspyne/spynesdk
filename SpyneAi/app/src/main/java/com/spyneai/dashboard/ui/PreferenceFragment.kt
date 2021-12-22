@@ -95,17 +95,17 @@ class PreferenceFragment : BaseFragment<DashboardViewModel, FragmentPreferenceBi
     val location_data = JSONObject()
     var snackbar: Snackbar? = null
     var isActive = false
-    var selectedLat: Double? = 0.0
-    var selectdLong: Double? = 0.0
     var currentLat: Double? = 0.0
     var currentLong: Double? = 0.0
-    var location_accessed_from: String? =""
+
+    var locationManager : LocationManager? =null
+
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        val locationManager = requireContext().getSystemService(LOCATION_SERVICE) as LocationManager
-        if (!locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
+        locationManager = requireContext().getSystemService(LOCATION_SERVICE) as LocationManager
+        if (!locationManager!!.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
             OnGPS()
         } else {
             getLocationData()
@@ -753,11 +753,26 @@ class PreferenceFragment : BaseFragment<DashboardViewModel, FragmentPreferenceBi
                     }
 
                     viewModel._checkInOutRes.value = null
+                    val eventName = if (viewModel.type == "checkin") Events.CHECKIN_SUCCESS else Events.CHECKOUT_SUCCESS
+                    requireContext()
+                        .captureEvent(
+                            eventName,
+                            HashMap<String,Any?>().apply {
+                                put("response",it.value)
+                            })
                 }
 
                 is Resource.Failure -> {
                     binding.progressBar.visibility = View.GONE
-                    handleApiError(it) { clockInOut() }
+                    handleApiError(it) { clockInOut()
+                        val eventName = if (viewModel.type == "checkin") Events.CHECKIN_FAILURE else Events.CHECKOUT_FAILURE
+                        requireContext()
+                            .captureEvent(
+                                eventName,
+                                HashMap<String,Any?>().apply {
+                                    put("response",it.errorCode)
+                                })
+                    }
                 }
             }
         })
@@ -772,6 +787,24 @@ class PreferenceFragment : BaseFragment<DashboardViewModel, FragmentPreferenceBi
             getSelectedItem()!!?.locationId,
             viewModel.fileUrl
         )
+        val eventName = if (viewModel.type == "checkin") Events.CHECKIN_CALL_INTIATED else Events.CHECKOUT_CALL_INTIATED
+
+        requireContext()
+            .captureEvent(
+                eventName,
+                HashMap<String,Any?>().apply {
+                    put("type",viewModel.type)
+                    put("email_id",Utilities.getPreference(requireContext(),AppConstants.EMAIL_ID))
+                    put("user_id",Utilities.getPreference(requireContext(),AppConstants.TOKEN_ID))
+                    put("location_data",location_data.toString())
+                    put("location_id",getSelectedItem()!!?.locationId)
+                    put("image_url",viewModel.fileUrl)
+                    put("internet_connection",requireContext().isInternetActive())
+                    put("gps",locationManager?.isProviderEnabled(LocationManager.GPS_PROVIDER))
+                    put("battery_level",requireContext().getBatteryLevel())
+                    put("last_reboot_since",SystemClock.elapsedRealtime())
+                }
+            )
     }
 
     private fun showErrorSnackBar(path: String, preSignedUrl: String, fileUrl: String) {
