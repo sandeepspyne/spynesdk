@@ -43,6 +43,10 @@ import java.text.SimpleDateFormat
 import java.util.*
 import kotlin.collections.ArrayList
 import kotlin.collections.HashMap
+import android.os.PowerManager
+
+
+
 
 var TAG = "Locale_Check"
 
@@ -130,6 +134,12 @@ fun Context.getBatteryLevel() : String {
     val bm = applicationContext.getSystemService(BATTERY_SERVICE) as BatteryManager
     val batLevel:Int = bm.getIntProperty(BatteryManager.BATTERY_PROPERTY_CAPACITY)
     return "$batLevel%"
+}
+
+fun Context.getPowerSaveMode() : Boolean {
+    val powerManager = getSystemService(Context.POWER_SERVICE) as PowerManager
+    val powerSaveMode = powerManager.isPowerSaveMode
+    return powerSaveMode
 }
 
 fun Context.getNetworkName() : String {

@@ -77,6 +77,8 @@ import android.widget.Toast as Toast
 import android.widget.TextView
 import com.google.android.gms.location.*
 import com.spyneai.R
+import kotlin.time.ExperimentalTime
+import kotlin.time.minutes
 
 
 class PreferenceFragment : BaseFragment<DashboardViewModel, FragmentPreferenceBinding>() {
@@ -104,6 +106,7 @@ class PreferenceFragment : BaseFragment<DashboardViewModel, FragmentPreferenceBi
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        fusedLocationClient = LocationServices.getFusedLocationProviderClient(requireContext())
         locationManager = requireContext().getSystemService(LOCATION_SERVICE) as LocationManager
         if (!locationManager!!.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
             OnGPS()
@@ -358,7 +361,7 @@ class PreferenceFragment : BaseFragment<DashboardViewModel, FragmentPreferenceBi
             == PackageManager.PERMISSION_GRANTED) {
             try {
                 locationRequest = LocationRequest().apply {
-                    interval = TimeUnit.SECONDS.toMillis(0)
+                    interval = TimeUnit.SECONDS.toMillis(1)
                     fastestInterval = TimeUnit.SECONDS.toMillis(0)
                     maxWaitTime = TimeUnit.MINUTES.toMillis(1)
                     priority = LocationRequest.PRIORITY_HIGH_ACCURACY
@@ -706,8 +709,11 @@ class PreferenceFragment : BaseFragment<DashboardViewModel, FragmentPreferenceBi
         viewModel.checkInOutRes.observe(viewLifecycleOwner, {
             when (it) {
                 is Resource.Success -> {
+                    var eventName =   ""
+
                     binding.progressBar.visibility = View.GONE
                     if (viewModel.type == "checkin") {
+                        eventName = Events.CHECKIN_SUCCESS
                         Toast.makeText(
                             requireContext(),
                             "Clocked in successfully...",
@@ -721,7 +727,7 @@ class PreferenceFragment : BaseFragment<DashboardViewModel, FragmentPreferenceBi
                             )
                         )
                     } else {
-
+                        eventName = Events.CHECKOUT_SUCCESS
                         val tempList = ArrayList<String>()
                         tempList.addAll(locationList)
 
@@ -753,26 +759,28 @@ class PreferenceFragment : BaseFragment<DashboardViewModel, FragmentPreferenceBi
                     }
 
                     viewModel._checkInOutRes.value = null
-                    val eventName = if (viewModel.type == "checkin") Events.CHECKIN_SUCCESS else Events.CHECKOUT_SUCCESS
                     requireContext()
                         .captureEvent(
                             eventName,
                             HashMap<String,Any?>().apply {
+                                put("email_id",Utilities.getPreference(requireContext(),AppConstants.EMAIL_ID))
+                                put("user_id",Utilities.getPreference(requireContext(),AppConstants.TOKEN_ID))
                                 put("response",it.value)
                             })
                 }
 
                 is Resource.Failure -> {
                     binding.progressBar.visibility = View.GONE
-                    handleApiError(it) { clockInOut()
-                        val eventName = if (viewModel.type == "checkin") Events.CHECKIN_FAILURE else Events.CHECKOUT_FAILURE
-                        requireContext()
-                            .captureEvent(
-                                eventName,
-                                HashMap<String,Any?>().apply {
-                                    put("response",it.errorCode)
-                                })
-                    }
+                    val eventName = if (viewModel.type == "checkin") Events.CHECKIN_FAILURE else Events.CHECKOUT_FAILURE
+                    requireContext()
+                        .captureEvent(
+                            eventName,
+                            HashMap<String,Any?>().apply {
+                                put("email_id",Utilities.getPreference(requireContext(),AppConstants.EMAIL_ID))
+                                put("user_id",Utilities.getPreference(requireContext(),AppConstants.TOKEN_ID))
+                                put("response",it.errorMessage)
+                            })
+                    handleApiError(it) { clockInOut() }
                 }
             }
         })
@@ -802,7 +810,8 @@ class PreferenceFragment : BaseFragment<DashboardViewModel, FragmentPreferenceBi
                     put("internet_connection",requireContext().isInternetActive())
                     put("gps",locationManager?.isProviderEnabled(LocationManager.GPS_PROVIDER))
                     put("battery_level",requireContext().getBatteryLevel())
-                    put("last_reboot_since",SystemClock.elapsedRealtime())
+                    put("last_reboot_since",SystemClock.elapsedRealtime()/60000)
+                    put("is_power_save_mode",requireContext().getPowerSaveMode())
                 }
             )
     }
