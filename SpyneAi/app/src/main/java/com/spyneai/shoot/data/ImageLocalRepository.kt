@@ -699,11 +699,30 @@ class ImageLocalRepository {
         return count
     }
 
-    fun getRemainingImagesCount() : Int {
+
+    fun totalRemainingUpload(): Int {
         val projection = arrayOf(
             BaseColumns._ID)
 
-        val selection = "${Images.COLUMN_NAME_IS_UPLOADED} IN ('0','-1', '1') AND ${Images.COLUMN_NAME_IS_STATUS_UPDATED} = 0"
+        val selection = "${Images.COLUMN_NAME_IS_UPLOADED} IN ('0','-1', '-2') AND ${Images.COLUMN_NAME_IS_STATUS_UPDATED} = 0"
+
+        val cursor = dbReadable.query(
+            Images.TABLE_NAME,   // The table to query
+            projection,             // The array of columns to return (pass null to get all)
+            selection,              // The columns for the WHERE clause
+            null,          // The values for the WHERE clause
+            null,                   // don't group the rows
+            null,                   // don't filter by row groups
+            null              // The sort order
+        )
+
+        return cursor.count
+    }
+
+    fun totalRemainingMarkDone(): Int{
+        val projection = arrayOf(
+            BaseColumns._ID)
+        val selection = "${Images.COLUMN_NAME_IS_UPLOADED} = 1 AND ${Images.COLUMN_NAME_IS_STATUS_UPDATED} = 0"
 
         val cursor = dbReadable.query(
             Images.TABLE_NAME,   // The table to query
@@ -722,7 +741,26 @@ class ImageLocalRepository {
         val projection = arrayOf(
             BaseColumns._ID)
 
-        val selection = "${Images.COLUMN_NAME_IS_UPLOADED} IN ('0','-1', '1') AND ${Images.COLUMN_NAME_IS_STATUS_UPDATED} = 0 AND ${BaseColumns._ID} > $itemId"
+        val selection = "${Images.COLUMN_NAME_IS_UPLOADED} = 0 AND ${Images.COLUMN_NAME_IS_STATUS_UPDATED} = 0 AND ${BaseColumns._ID} > $itemId"
+
+        val cursor = dbReadable.query(
+            Images.TABLE_NAME,   // The table to query
+            projection,             // The array of columns to return (pass null to get all)
+            selection,              // The columns for the WHERE clause
+            null,          // The values for the WHERE clause
+            null,                   // don't group the rows
+            null,                   // don't filter by row groups
+            null              // The sort order
+        )
+
+        return cursor.count
+    }
+
+    fun getRemainingAboveSkipped(itemId: Long) : Int{
+        val projection = arrayOf(
+            BaseColumns._ID)
+
+        val selection = "${Images.COLUMN_NAME_IS_UPLOADED} IN ('-1', '-2') AND ${Images.COLUMN_NAME_IS_STATUS_UPDATED} = 0 AND ${BaseColumns._ID} > $itemId"
 
         val cursor = dbReadable.query(
             Images.TABLE_NAME,   // The table to query
@@ -741,7 +779,26 @@ class ImageLocalRepository {
         val projection = arrayOf(
             BaseColumns._ID)
 
-        val selection = "${Images.COLUMN_NAME_IS_UPLOADED} IN ('0','-1', '1') AND ${Images.COLUMN_NAME_IS_STATUS_UPDATED} = 0 AND ${BaseColumns._ID} < $itemId"
+        val selection = "${Images.COLUMN_NAME_IS_UPLOADED} = 0 AND ${Images.COLUMN_NAME_IS_STATUS_UPDATED} = 0 AND ${BaseColumns._ID} < $itemId"
+
+        val cursor = dbReadable.query(
+            Images.TABLE_NAME,   // The table to query
+            projection,             // The array of columns to return (pass null to get all)
+            selection,              // The columns for the WHERE clause
+            null,          // The values for the WHERE clause
+            null,                   // don't group the rows
+            null,                   // don't filter by row groups
+            null              // The sort order
+        )
+
+        return cursor.count
+    }
+
+    fun getRemainingBelowSkipped(itemId: Long) : Int{
+        val projection = arrayOf(
+            BaseColumns._ID)
+
+        val selection = "${Images.COLUMN_NAME_IS_UPLOADED} IN ('-1', '-2') AND ${Images.COLUMN_NAME_IS_STATUS_UPDATED} = 0 AND ${BaseColumns._ID} < $itemId"
 
         val cursor = dbReadable.query(
             Images.TABLE_NAME,   // The table to query

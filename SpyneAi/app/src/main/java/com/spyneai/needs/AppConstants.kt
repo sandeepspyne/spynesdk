@@ -218,6 +218,7 @@ object AppConstants {
     val ALL_UPLOADED_BREAK = "ALL UPLOADED BREAK"
 
 
+
     val imageCatNameMap = HashMap<String,String>().apply {
         put(ECOM_CATEGORY_ID,"Ecom")
         put(FOOTWEAR_CATEGORY_ID,"Footwear")

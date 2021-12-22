@@ -83,7 +83,8 @@ class ImageUploader(
                     AppConstants.CONNECTION_BREAK,
                     HashMap<String,Any?>()
                         .apply {
-                            put("images_remaining",localRepository.getRemainingImagesCount())
+                            put("upload_remaining",localRepository.totalRemainingUpload())
+                            put("mark_done_remaining",localRepository.totalRemainingMarkDone())
                         }
                 )
                 break
@@ -118,7 +119,8 @@ class ImageUploader(
                     AppConstants.ALL_UPLOADED_BREAK,
                     HashMap<String,Any?>()
                         .apply {
-                            put("images_remaining",localRepository.getRemainingImagesCount())
+                            put("upload_remaining",localRepository.totalRemainingUpload())
+                            put("mark_done_remaining",localRepository.totalRemainingMarkDone())
                         }
                 )
                 break
@@ -146,9 +148,12 @@ class ImageUploader(
                         put("image_path", image.imagePath)
                         put("upload_type", imageType)
                         put("data", Gson().toJson(image))
-                        put("total_remaining", localRepository.getRemainingImagesCount())
+                        put("upload_remaining",localRepository.totalRemainingUpload())
+                        put("mark_done_remaining",localRepository.totalRemainingMarkDone())
                         put("remaining_above", localRepository.getRemainingAbove(image.itemId!!))
+                        put("remaining_above_skipped", localRepository.getRemainingAboveSkipped(image.itemId!!))
                         put("remaining_below", localRepository.getRemainingBelow(image.itemId!!))
+                        put("remaining_below_skipped", localRepository.getRemainingBelowSkipped(image.itemId!!))
                     }
 
                 context.captureEvent(
