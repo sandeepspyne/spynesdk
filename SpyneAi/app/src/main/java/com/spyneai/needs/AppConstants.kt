@@ -213,6 +213,9 @@ object AppConstants {
 
     val UPLOAD_TRIGGERED = "UPLOAD_TRIGGERED"
     val UPLOADING_RUNNING = "UPLOADING_RUNNING"
+    val IMAGE_ID_NULL = "IMAGE ID NULL"
+    val CONNECTION_BREAK = "CONNECTION BREAK"
+    val ALL_UPLOADED_BREAK = "ALL UPLOADED BREAK"
 
 
     val imageCatNameMap = HashMap<String,String>().apply {

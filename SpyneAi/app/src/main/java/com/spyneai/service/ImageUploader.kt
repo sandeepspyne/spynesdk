@@ -5,34 +5,25 @@ import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.graphics.Matrix
 import android.media.ExifInterface
-import android.os.Build
-import android.os.Environment
 import android.os.Handler
 import android.os.Looper
 import android.util.Log
 import androidx.work.*
 import com.google.gson.Gson
 import com.spyneai.*
-import com.spyneai.base.network.ClipperApi
 import com.spyneai.base.network.Resource
-import com.spyneai.interfaces.GcpClient
 import com.spyneai.needs.AppConstants
 import com.spyneai.needs.Utilities
 import com.spyneai.posthog.Events
 import com.spyneai.shoot.data.ImageLocalRepository
 import com.spyneai.shoot.data.ShootRepository
 import com.spyneai.shoot.data.model.Image
-import com.spyneai.shoot.utils.logUpload
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.RequestBody.Companion.asRequestBody
-import okhttp3.ResponseBody
 import org.json.JSONObject
-import retrofit2.Call
-import retrofit2.Callback
-import retrofit2.Response
 import java.io.*
 import java.util.*
 import kotlin.collections.HashMap
@@ -83,9 +74,18 @@ class ImageUploader(
 
     suspend fun startUploading() {
         do {
+            lastIdentifier = getUniqueIdentifier()
+
             if (connectionLost){
                 Log.d(TAG, "startUploading: conneciton lost")
                 listener.onConnectionLost()
+                context.captureEvent(
+                    AppConstants.CONNECTION_BREAK,
+                    HashMap<String,Any?>()
+                        .apply {
+                            put("images_remaining",localRepository.getRemainingImagesCount())
+                        }
+                )
                 break
             }
             
@@ -112,10 +112,17 @@ class ImageUploader(
                 if (count > 0 || markDoneSkippedCount > 0)
                     image = localRepository.getOldestImage("-1")
             }
-            
 
-            if (image.itemId == null)
+            if (image.itemId == null){
+                context.captureEvent(
+                    AppConstants.ALL_UPLOADED_BREAK,
+                    HashMap<String,Any?>()
+                        .apply {
+                            put("images_remaining",localRepository.getRemainingImagesCount())
+                        }
+                )
                 break
+            }
             else {
                 lastIdentifier = image.name + "_" + image.skuId
 
@@ -139,6 +146,9 @@ class ImageUploader(
                         put("image_path", image.imagePath)
                         put("upload_type", imageType)
                         put("data", Gson().toJson(image))
+                        put("total_remaining", localRepository.getRemainingImagesCount())
+                        put("remaining_above", localRepository.getRemainingAbove(image.itemId!!))
+                        put("remaining_below", localRepository.getRemainingBelow(image.itemId!!))
                     }
 
                 context.captureEvent(
@@ -316,6 +326,12 @@ class ImageUploader(
                     }
                 } else {
                     if (image.imageId == null) {
+                        captureEvent(
+                            AppConstants.IMAGE_ID_NULL,
+                            image,
+                            true,
+                            null
+                        )
                         localRepository.markDone(image)
                         retryCount = 0
                         continue
@@ -613,6 +629,19 @@ class ImageUploader(
         }
         return file.delete()
     }
+
+    private fun getUniqueIdentifier(): String {
+        val SALTCHARS = "abcdefghijklmnopqrstuvwxyz1234567890"
+        val salt = StringBuilder()
+        val rnd = Random()
+        while (salt.length < 7) { // length of the random string.
+            //val index = (rnd.nextFloat() * SALTCHARS.length) as Int
+            val index = rnd.nextInt(SALTCHARS.length)
+            salt.append(SALTCHARS[index])
+        }
+        return salt.toString()
+    }
+
 
     val outputDirectory = "/storage/emulated/0/DCIM/Spynetemp/"
 
