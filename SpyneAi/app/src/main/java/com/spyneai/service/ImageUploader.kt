@@ -77,16 +77,17 @@ class ImageUploader(
             lastIdentifier = getUniqueIdentifier()
 
             if (connectionLost){
-                Log.d(TAG, "startUploading: conneciton lost")
-                listener.onConnectionLost()
                 context.captureEvent(
                     AppConstants.CONNECTION_BREAK,
                     HashMap<String,Any?>()
                         .apply {
-                            put("upload_remaining",localRepository.totalRemainingUpload())
-                            put("mark_done_remaining",localRepository.totalRemainingMarkDone())
+                            put("remaining_images",JSONObject().apply {
+                                put("upload_remaining",localRepository.totalRemainingUpload())
+                                put("mark_done_remaining",localRepository.totalRemainingMarkDone())
+                            }.toString())
                         }
                 )
+                listener.onConnectionLost()
                 break
             }
             
@@ -119,8 +120,10 @@ class ImageUploader(
                     AppConstants.ALL_UPLOADED_BREAK,
                     HashMap<String,Any?>()
                         .apply {
-                            put("upload_remaining",localRepository.totalRemainingUpload())
-                            put("mark_done_remaining",localRepository.totalRemainingMarkDone())
+                            put("remaining_images",JSONObject().apply {
+                                put("upload_remaining",localRepository.totalRemainingUpload())
+                                put("mark_done_remaining",localRepository.totalRemainingMarkDone())
+                            }.toString())
                         }
                 )
                 break
@@ -148,12 +151,15 @@ class ImageUploader(
                         put("image_path", image.imagePath)
                         put("upload_type", imageType)
                         put("data", Gson().toJson(image))
-                        put("upload_remaining",localRepository.totalRemainingUpload())
-                        put("mark_done_remaining",localRepository.totalRemainingMarkDone())
-                        put("remaining_above", localRepository.getRemainingAbove(image.itemId!!))
-                        put("remaining_above_skipped", localRepository.getRemainingAboveSkipped(image.itemId!!))
-                        put("remaining_below", localRepository.getRemainingBelow(image.itemId!!))
-                        put("remaining_below_skipped", localRepository.getRemainingBelowSkipped(image.itemId!!))
+                        put("remaining_images",JSONObject().apply {
+                            put("upload_remaining",localRepository.totalRemainingUpload())
+                            put("mark_done_remaining",localRepository.totalRemainingMarkDone())
+                            put("remaining_above", localRepository.getRemainingAbove(image.itemId!!))
+                            put("remaining_above_skipped", localRepository.getRemainingAboveSkipped(image.itemId!!))
+                            put("remaining_below", localRepository.getRemainingBelow(image.itemId!!))
+                            put("remaining_below_skipped", localRepository.getRemainingBelowSkipped(image.itemId!!))
+                        }.toString())
+
                     }
 
                 context.captureEvent(
@@ -168,7 +174,6 @@ class ImageUploader(
                         localRepository.skipImage(image.itemId!!, skipFlag)
                     else {
                         localRepository.skipMarkDoneFailedImage(image.itemId!!)
-                        //localRepository.markDone(image)
                     }
 
                     captureEvent(

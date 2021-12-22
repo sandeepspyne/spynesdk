@@ -126,7 +126,7 @@ class HomeDashboardFragment :
 
         if (PACKAGE_NAME.equals("com.spyneai.debug")) {
             newUserCreditDialog()
-          //  repeatRefreshData()
+            repeatRefreshData()
            setSliderRecycler()
             showTutorialVideos()
             lisners()
