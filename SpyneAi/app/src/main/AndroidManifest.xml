@@ -171,6 +171,7 @@
             android:name=".orders.ui.KarviShowImagesActivity"
             android:screenOrientation="portrait" />
 
+
         <service
             android:name=".service.ImageUploadingService"
             android:enabled="true"

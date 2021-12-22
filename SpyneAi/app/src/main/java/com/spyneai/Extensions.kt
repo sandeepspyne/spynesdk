@@ -42,7 +42,7 @@ import java.util.*
 import kotlin.collections.ArrayList
 import kotlin.collections.HashMap
 
-private var TAG = "Locale_Check"
+var TAG = "Locale_Check"
 
 fun Context.gotoHome(){
     val intent = Intent(this, MainDashboardActivity::class.java)

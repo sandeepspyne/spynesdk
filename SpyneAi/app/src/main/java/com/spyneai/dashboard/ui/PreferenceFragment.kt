@@ -26,7 +26,6 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.content.ContextCompat
 import androidx.core.content.FileProvider
 import com.bumptech.glide.Glide
-import com.google.android.gms.location.LocationServices
 import com.google.android.material.snackbar.Snackbar
 import com.spyneai.*
 import com.spyneai.base.BaseFragment
@@ -76,13 +75,16 @@ import android.location.LocationListener
 import android.provider.Settings
 import android.widget.Toast as Toast
 import android.widget.TextView
-import com.google.android.gms.location.FusedLocationProviderClient
+import com.google.android.gms.location.*
+import com.spyneai.R
 
 
 class PreferenceFragment : BaseFragment<DashboardViewModel, FragmentPreferenceBinding>() {
 
     val REQUEST_IMAGE_CAPTURE = 1
     private lateinit var fusedLocationClient: FusedLocationProviderClient
+    private lateinit var locationRequest: LocationRequest
+    private lateinit var locationCallback: LocationCallback
 
     //    var languageList = arrayOf("English","Germany","Italy")
     var languageList = arrayListOf<String>()
@@ -102,7 +104,6 @@ class PreferenceFragment : BaseFragment<DashboardViewModel, FragmentPreferenceBi
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        fusedLocationClient = LocationServices.getFusedLocationProviderClient(requireContext())
         val locationManager = requireContext().getSystemService(LOCATION_SERVICE) as LocationManager
         if (!locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
             OnGPS()
@@ -351,13 +352,28 @@ class PreferenceFragment : BaseFragment<DashboardViewModel, FragmentPreferenceBi
     }
 
     fun getLocationData(){
-        if (ContextCompat.checkSelfPermission(
-                requireContext(),
-                Manifest.permission.ACCESS_FINE_LOCATION
-            ) == PackageManager.PERMISSION_GRANTED && ContextCompat.checkSelfPermission(
-                requireContext(), Manifest.permission.ACCESS_COARSE_LOCATION
-            ) == PackageManager.PERMISSION_GRANTED) {
+        if (ContextCompat.checkSelfPermission(requireContext(), Manifest.permission.ACCESS_FINE_LOCATION)
+            == PackageManager.PERMISSION_GRANTED &&
+            ContextCompat.checkSelfPermission(requireContext(), Manifest.permission.ACCESS_COARSE_LOCATION)
+            == PackageManager.PERMISSION_GRANTED) {
             try {
+                locationRequest = LocationRequest().apply {
+                    interval = TimeUnit.SECONDS.toMillis(0)
+                    fastestInterval = TimeUnit.SECONDS.toMillis(0)
+                    maxWaitTime = TimeUnit.MINUTES.toMillis(1)
+                    priority = LocationRequest.PRIORITY_HIGH_ACCURACY
+                }
+                locationCallback = object : LocationCallback() {
+                    override fun onLocationResult(locationResult: LocationResult?) {
+                        super.onLocationResult(locationResult)
+                        locationResult?.lastLocation?.let {
+                           // currentLocation = locationByGps
+                            currentLat = it?.latitude
+                            currentLat = it?.longitude
+                        }
+                    }
+                }
+
                 fusedLocationClient.lastLocation
                     .addOnSuccessListener { location: Location? ->
                         if (location != null) {
@@ -785,6 +801,20 @@ class PreferenceFragment : BaseFragment<DashboardViewModel, FragmentPreferenceBi
     private fun getLocations() {
         Utilities.showProgressDialog(requireContext())
         viewModel.getLocations()
+    }
+
+
+    override fun onPause() {
+        Log.e("DEBUG", "OnPause of loginFragment")
+        super.onPause()
+        val removeTask = fusedLocationClient.removeLocationUpdates(locationCallback)
+        removeTask.addOnCompleteListener { task ->
+            if (task.isSuccessful) {
+                Log.d(TAG, "Location Callback removed.")
+            } else {
+                Log.d(TAG, "Failed to remove Location Callback.")
+            }
+        }
     }
 
 

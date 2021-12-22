@@ -3,6 +3,7 @@ package com.spyneai.imagesdowloading
 import android.os.Build
 import android.os.Environment
 import android.util.Log
+import com.downloader.Error
 import com.downloader.OnDownloadListener
 import com.downloader.PRDownloader
 import com.spyneai.BaseApplication
@@ -43,8 +44,6 @@ class ImageDownloadManager(var task : DownloadTask, var listener : Listener) {
 
 
 
-
-
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R){
             path_save_photos = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS).toString() + File.separator + R.string.app_name;
         }else{
@@ -75,7 +74,7 @@ class ImageDownloadManager(var task : DownloadTask, var listener : Listener) {
                     }
                 }
 
-                override fun onError(error: com.downloader.Error?) {
+                override fun onError(error: Error?) {
                     Log.d("ImageDownloadManager", "onError: "+error.toString())
                     if (error?.connectionException != null && error.connectionException.message == "Rename Failed"){
                         task.downloadCount++
