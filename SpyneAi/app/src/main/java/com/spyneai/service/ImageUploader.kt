@@ -60,12 +60,13 @@ class ImageUploader(
                 if (context.isInternetActive())
                     GlobalScope.launch(Dispatchers.Default) {
                         Log.d(TAG, "uploadParent: start")
+                        Utilities.saveBool(context, AppConstants.UPLOADING_RUNNING, true)
                         context.captureEvent("START UPLOADING CALLED",HashMap())
                         startUploading()
                     }
                 else {
-                    listener.onConnectionLost()
                     Utilities.saveBool(context, AppConstants.UPLOADING_RUNNING, false)
+                    listener.onConnectionLost()
                     Log.d(TAG, "uploadParent: connection lost")
                 }
             }
@@ -87,11 +88,11 @@ class ImageUploader(
                             }.toString())
                         }
                 )
+                Utilities.saveBool(context,AppConstants.UPLOADING_RUNNING,false)
                 listener.onConnectionLost()
                 break
             }
-            
-            Utilities.saveBool(context, AppConstants.UPLOADING_RUNNING, true)
+
             var skipFlag = -1
 
             var image = localRepository.getOldestImage("0")

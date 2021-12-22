@@ -82,16 +82,18 @@ class ImageUploadingService : Service(), ImageUploader.Listener {
         when (action) {
             Actions.START.name -> {
                 this.serviceStartedBy = intent.getStringExtra(AppConstants.SERVICE_STARTED_BY)
-                if (!uploadRunning)
+                if (!uploadRunning){
+                    val properties = java.util.HashMap<String, Any?>()
+                        .apply {
+                            put("service_state", "Started")
+                            put("medium", "Image Uploading Service")
+                        }
+
+                    captureEvent(Events.SERVICE_STARTED, properties)
+
                     resumeUpload("onStartCommand")
+                }
 
-                val properties = java.util.HashMap<String, Any?>()
-                    .apply {
-                        put("service_state", "Started")
-                        put("medium", "Image Uploading Service")
-                    }
-
-                captureEvent(Events.SERVICE_STARTED, properties)
             }
             Actions.STOP.name -> stopService()
             else -> error("No action in the received intent")
@@ -220,7 +222,6 @@ class ImageUploadingService : Service(), ImageUploader.Listener {
 
     override fun onConnectionLost() {
         uploadRunning = false
-        Utilities.saveBool(this,AppConstants.UPLOADING_RUNNING,false)
 
         captureEvent(Events.INTERNET_DISCONNECTED,
             HashMap<String,Any?>().apply {
