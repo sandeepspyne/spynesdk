@@ -32,6 +32,7 @@ import com.spyneai.service.getServiceState
 import com.spyneai.service.log
 import com.spyneai.shoot.data.ShootViewModel
 import kotlinx.coroutines.launch
+import org.json.JSONObject
 
 
 class ConfirmReshootDialog : BaseDialogFragment<ShootViewModel, DialogConfirmReshootBinding>() {
@@ -79,10 +80,23 @@ class ConfirmReshootDialog : BaseDialogFragment<ShootViewModel, DialogConfirmRes
 
         binding.btConfirmImage.setOnClickListener {
             val properties = HashMap<String,Any?>()
+            val cameraSetting = viewModel.getCameraSetting()
             properties.apply {
-                this["sku_id"] = viewModel.shootData.value?.sku_id
-                this["project_id"] = viewModel.shootData.value?.project_id
-                this["image_type"] = viewModel.shootData.value?.image_category
+                put("image_data", JSONObject().apply {
+                    put("sku_id",viewModel.shootData.value?.sku_id)
+                    put("project_id",viewModel.shootData.value?.project_id)
+                    put("image_type",viewModel.shootData.value?.image_category)
+                    put("sequence",viewModel.shootData.value?.sequence)
+                    put("name",viewModel.shootData.value?.name)
+                    put("angle",viewModel.shootData.value?.angle)
+                    put("overlay_id",viewModel.shootData.value?.overlayId)
+                    put("debug_data",viewModel.shootData.value?.debugData)
+                }.toString())
+                put("camera_setting", JSONObject().apply {
+                    put("is_overlay_active",cameraSetting.isOverlayActive)
+                    put("is_grid_active",cameraSetting.isGridActive)
+                    put("is_gyro_active",cameraSetting.isGryroActive)
+                })
             }
 
             requireContext().captureEvent(
