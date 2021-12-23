@@ -3,7 +3,6 @@ package com.spyneai.dashboard.ui
 import android.Manifest
 import android.app.Activity.RESULT_OK
 import android.app.AlertDialog
-import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.content.res.Configuration
@@ -60,25 +59,13 @@ import kotlin.math.sin
 import kotlin.math.sqrt
 import android.location.LocationManager
 
-import androidx.core.app.ActivityCompat
-
-import com.spyneai.extras.MainActivity
-import android.content.Context.LOCATION_SERVICE
-import android.content.Context.LOCATION_SERVICE
-import android.location.Criteria
 import android.content.Context.LOCATION_SERVICE
 
-import com.iceteck.silicompressorr.videocompression.MediaController.mContext
-import android.content.Context.LOCATION_SERVICE
 import android.content.DialogInterface
-import android.location.LocationListener
 import android.provider.Settings
 import android.widget.Toast as Toast
-import android.widget.TextView
 import com.google.android.gms.location.*
 import com.spyneai.R
-import kotlin.time.ExperimentalTime
-import kotlin.time.minutes
 
 
 class PreferenceFragment : BaseFragment<DashboardViewModel, FragmentPreferenceBinding>() {
@@ -415,20 +402,23 @@ class PreferenceFragment : BaseFragment<DashboardViewModel, FragmentPreferenceBi
                 sin(dLon / 2) * sin(dLon / 2)
         var c = 2 * atan2(sqrt(a), sqrt(1 - a));
         var d = R * c * 1000 // Distance in m
-        val s = ""
-        Toast.makeText(requireContext(), "$lat1   $lon1  $d",Toast.LENGTH_SHORT).show()
+
         if (d > getSelectedItem()?.thresholdDistanceInMeters!!) {
-            InvalidLocationDialog().show(
-                requireActivity().supportFragmentManager,
-                "invalidLocationDialog"
-            )
+            if (lat1 == 0.0 || lon1 == 0.0){
+                Toast.makeText(requireContext(),"Unable to detect your location, please try again!",Toast.LENGTH_LONG).show()
+            }else {
+                InvalidLocationDialog().show(
+                    requireActivity().supportFragmentManager,
+                    "invalidLocationDialog"
+                )
+            }
         } else {
             if (type == "checkin")
                 ShootSiteDialog().show(requireActivity().supportFragmentManager, "ShootSiteDialog")
             else {
                 viewModel.type = "checkout"
                 viewModel.fileUrl = ""
-                clockInOut()
+                checkInOut()
             }
 
         }
@@ -689,7 +679,7 @@ class PreferenceFragment : BaseFragment<DashboardViewModel, FragmentPreferenceBi
                 binding.progressBar.visibility = View.GONE
                 if (response.isSuccessful) {
                     //set clock in
-                    clockInOut()
+                    checkInOut()
                 } else {
                     //retry gcp upload
                     showErrorSnackBar(path, preSignedUrl, fileUrl)
@@ -780,13 +770,13 @@ class PreferenceFragment : BaseFragment<DashboardViewModel, FragmentPreferenceBi
                                 put("user_id",Utilities.getPreference(requireContext(),AppConstants.TOKEN_ID))
                                 put("response",it.errorMessage)
                             })
-                    handleApiError(it) { clockInOut() }
+                    handleApiError(it) { checkInOut() }
                 }
             }
         })
     }
 
-    private fun clockInOut() {
+    private fun checkInOut() {
         binding.progressBar.visibility = View.VISIBLE
 
         viewModel.captureCheckInOut(
