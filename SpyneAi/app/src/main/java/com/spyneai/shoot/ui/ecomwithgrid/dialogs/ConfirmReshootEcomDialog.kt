@@ -114,7 +114,6 @@ class ConfirmReshootEcomDialog :
                 })
             }
 
-
             requireContext().captureEvent(
                 Events.CONFIRMED,
                 properties
