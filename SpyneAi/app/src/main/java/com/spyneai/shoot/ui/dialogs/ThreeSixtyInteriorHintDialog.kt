@@ -29,6 +29,7 @@ import com.spyneai.service.getServiceState
 import com.spyneai.service.log
 import com.spyneai.shoot.data.ShootViewModel
 import com.spyneai.shoot.data.model.ShootData
+import com.theta360.sample.v2.ImageListActivity
 import kotlinx.coroutines.launch
 
 class ThreeSixtyInteriorHintDialog : BaseDialogFragment<ShootViewModel, Dialog360InteriorBinding>(),
@@ -49,7 +50,6 @@ class ThreeSixtyInteriorHintDialog : BaseDialogFragment<ShootViewModel, Dialog36
             } catch (ex: IllegalArgumentException) {
                 pickIt?.getPath(data, Build.VERSION.SDK_INT)
             }
-
         }
     }
 
@@ -59,7 +59,7 @@ class ThreeSixtyInteriorHintDialog : BaseDialogFragment<ShootViewModel, Dialog36
             ivSelectedImage.visibility = View.VISIBLE
             tvSkipShoot.visibility = View.VISIBLE
 
-            tvSkip.text = "Reselect"
+            tvShoot.text = "Reselect"
             tvUpload.text = "Confirm"
         }
 
@@ -81,28 +81,32 @@ class ThreeSixtyInteriorHintDialog : BaseDialogFragment<ShootViewModel, Dialog36
             viewModel.selectBackground.value = true
         }
 
-//        binding.tvSkip.setOnClickListener {
-//            if (binding.tvSkip.text.toString() == "Skip") {
+//        binding.tvSkipShoot.setOnClickListener {
+//            if (binding.tvShoot.text.toString() == "Shoot 360") {
 //               // viewModel.interior360Dialog.value = true
 //                dismiss()
 //                viewModel.selectBackground.value = true
 //            }else {
-//                val intent = Intent(Intent.ACTION_GET_CONTENT)
-//                intent.type = "image/*"
-//                startForResult.launch(intent)
+//
 //            }
 //        }
 
 
         binding.tvShoot.setOnClickListener {
+            if (binding.tvShoot.text.toString() == "Shoot 360") {
             val wm = requireContext().applicationContext.getSystemService(WIFI_SERVICE) as WifiManager
             val ip: String = Formatter.formatIpAddress(wm.connectionInfo.ipAddress)
             val gatewayInfo: String = Formatter.formatIpAddress(wm.dhcpInfo.gateway)
 
-            if(ip=="192.168.1.5" && gatewayInfo=="192.168.1.1"){
+            if(ip=="192.168.1.5" && gatewayInfo=="192.168.1.1") {
                 Toast.makeText(requireContext(), "Connected With Camera", Toast.LENGTH_SHORT).show()
-//                var intent = Intent(this, ImageListActivity::class.java)
-//                startActivity(intent)
+                var intent = Intent(requireContext(), ImageListActivity::class.java)
+                startActivity(intent)
+            }else{
+                val intent = Intent(Intent.ACTION_GET_CONTENT)
+                intent.type = "image/*"
+                startForResult.launch(intent)
+            }
             }
         }
 
