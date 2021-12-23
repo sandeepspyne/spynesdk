@@ -1,12 +1,16 @@
 package com.spyneai.shoot.ui.dialogs
 
 import android.app.Activity
+import android.content.Context.WIFI_SERVICE
 import android.content.Intent
+import android.net.wifi.WifiManager
 import android.os.Build
 import android.os.Bundle
+import android.text.format.Formatter
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.activity.result.ActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.content.ContextCompat
@@ -77,15 +81,28 @@ class ThreeSixtyInteriorHintDialog : BaseDialogFragment<ShootViewModel, Dialog36
             viewModel.selectBackground.value = true
         }
 
-        binding.tvSkip.setOnClickListener {
-            if (binding.tvSkip.text.toString() == "Skip") {
-               // viewModel.interior360Dialog.value = true
-                dismiss()
-                viewModel.selectBackground.value = true
-            }else {
-                val intent = Intent(Intent.ACTION_GET_CONTENT)
-                intent.type = "image/*"
-                startForResult.launch(intent)
+//        binding.tvSkip.setOnClickListener {
+//            if (binding.tvSkip.text.toString() == "Skip") {
+//               // viewModel.interior360Dialog.value = true
+//                dismiss()
+//                viewModel.selectBackground.value = true
+//            }else {
+//                val intent = Intent(Intent.ACTION_GET_CONTENT)
+//                intent.type = "image/*"
+//                startForResult.launch(intent)
+//            }
+//        }
+
+
+        binding.tvShoot.setOnClickListener {
+            val wm = requireContext().applicationContext.getSystemService(WIFI_SERVICE) as WifiManager
+            val ip: String = Formatter.formatIpAddress(wm.connectionInfo.ipAddress)
+            val gatewayInfo: String = Formatter.formatIpAddress(wm.dhcpInfo.gateway)
+
+            if(ip=="192.168.1.5" && gatewayInfo=="192.168.1.1"){
+                Toast.makeText(requireContext(), "Connected With Camera", Toast.LENGTH_SHORT).show()
+//                var intent = Intent(this, ImageListActivity::class.java)
+//                startActivity(intent)
             }
         }
 
