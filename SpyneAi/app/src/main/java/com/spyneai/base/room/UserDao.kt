@@ -1,4 +1,4 @@
-package com.spyneai.room
+package com.spyneai.base.room
 
 import androidx.room.Dao
 import androidx.room.Delete
@@ -6,7 +6,7 @@ import androidx.room.Insert
 import androidx.room.Query
 
 @Dao
-interface UserDao {
+interface UserDao : BaseDao<User>{
     @Query("SELECT * FROM user")
     fun getAll(): List<User>
 
@@ -17,9 +17,4 @@ interface UserDao {
             "last_name LIKE :last LIMIT 1")
     fun findByName(first: String, last: String): User
 
-    @Insert
-    fun insertAll(vararg users: User)
-
-    @Delete
-    fun delete(user: User)
 }

@@ -3,10 +3,9 @@ package com.spyneai
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
-import androidx.lifecycle.lifecycleScope
 import androidx.room.Room
-import com.spyneai.room.AppDatabase
-import com.spyneai.room.User
+import com.spyneai.base.room.AppDatabase
+import com.spyneai.base.room.User
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
@@ -28,7 +27,7 @@ class RoomTestActivity : AppCompatActivity() {
 
 
             val userDao = db.userDao()
-            userDao.insertAll(
+            userDao.insert(
                 User(0,
                     "sandeep",
                     "singh"

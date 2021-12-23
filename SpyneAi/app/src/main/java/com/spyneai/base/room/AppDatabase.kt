@@ -1,4 +1,4 @@
-package com.spyneai.room
+package com.spyneai.base.room
 
 import androidx.room.Database
 import androidx.room.RoomDatabase
