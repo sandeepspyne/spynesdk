@@ -22,8 +22,10 @@
         <entry key="app/src/main/res/drawable/bg_rectangle_button_ripple.xml" value="0.2935185185185185" />
         <entry key="app/src/main/res/drawable/bg_select_lang.xml" value="0.2935185185185185" />
         <entry key="app/src/main/res/drawable/bg_select_lang_ripple.xml" value="0.2935185185185185" />
+        <entry key="app/src/main/res/drawable/bg_skip.xml" value="0.29907407407407405" />
         <entry key="app/src/main/res/drawable/bg_skip_dialog.xml" value="0.321025641025641" />
         <entry key="app/src/main/res/drawable/bg_three_sixty_shimmer.xml" value="0.321025641025641" />
+        <entry key="app/src/main/res/drawable/click_effect.xml" value="0.29907407407407405" />
         <entry key="app/src/main/res/drawable/exposure_thumb.xml" value="0.2064814814814815" />
         <entry key="app/src/main/res/drawable/ic_shoot_any_car_feature.xml" value="0.19444444444444445" />
         <entry key="app/src/main/res/layout-land/fragment_camera.xml" value="0.165" />
