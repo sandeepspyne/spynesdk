@@ -11,6 +11,7 @@ import android.location.Geocoder
 import android.os.Bundle
 import android.util.Log
 import android.view.KeyEvent
+import android.view.View
 import android.view.WindowManager
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
@@ -79,6 +80,7 @@ class ShootActivity : AppCompatActivity(), GoogleApiClient.ConnectionCallbacks,
 
 
         setLocale()
+
 
 
         shootViewModel = ViewModelProvider(this, ViewModelFactory()).get(ShootViewModel::class.java)
@@ -279,6 +281,7 @@ class ShootActivity : AppCompatActivity(), GoogleApiClient.ConnectionCallbacks,
                 .add(R.id.flCamerFragment,AngleSelectionFragment())
                 .commit()
         })
+
     }
 
     private fun observeProjectCreated() {
@@ -351,7 +354,9 @@ class ShootActivity : AppCompatActivity(), GoogleApiClient.ConnectionCallbacks,
 
             shootViewModel.isSubCategoryConfirmed.value = true
             shootViewModel.isSkuCreated.value = true
-            shootViewModel.showLeveler.value = true
+            shootViewModel.showGrid.value = shootViewModel.getCameraSetting().isGridActive
+            shootViewModel.showLeveler.value = shootViewModel.getCameraSetting().isGryroActive
+            shootViewModel.showOverlay.value = shootViewModel.getCameraSetting().isOverlayActive
         }else{
             shootViewModel.getSubCategories.value = true
         }

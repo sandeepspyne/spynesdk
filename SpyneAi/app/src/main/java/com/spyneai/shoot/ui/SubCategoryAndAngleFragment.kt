@@ -41,6 +41,7 @@ class SubCategoryAndAngleFragment :
 //
 //        observeSubcategories()
 
+
         when (viewModel.categoryDetails.value?.categoryId) {
             AppConstants.FOOTWEAR_CATEGORY_ID -> binding.tvDescription.text =
                 getString(R.string.footwear_subcategory)
@@ -225,10 +226,14 @@ class SubCategoryAndAngleFragment :
                         AppConstants.CARS_CATEGORY_ID,
                         AppConstants.FOOTWEAR_CATEGORY_ID,
                         AppConstants.FOOD_AND_BEV_CATEGORY_ID-> {
-                            viewModel.showLeveler.value = true
+                            viewModel.showGrid.value = viewModel.getCameraSetting().isGridActive
+                            viewModel.showLeveler.value = viewModel.getCameraSetting().isGryroActive
+                            viewModel.showOverlay.value = viewModel.getCameraSetting().isOverlayActive
                         }
                         else -> {
-                            viewModel.hideLeveler.value = true
+                            viewModel.showGrid.value = viewModel.getCameraSetting().isGridActive
+                            viewModel.showLeveler.value = viewModel.getCameraSetting().isGryroActive
+                            viewModel.showOverlay.value = viewModel.getCameraSetting().isOverlayActive
                         }
                     }
 
@@ -338,7 +343,10 @@ class SubCategoryAndAngleFragment :
                     viewModel.sku.value = sku
                     viewModel.isSubCategoryConfirmed.value = true
                     viewModel.isSkuCreated.value = true
-                    viewModel.showLeveler.value = true
+//                    viewModel.showLeveler.value = true
+                    viewModel.showGrid.value = viewModel.getCameraSetting().isGridActive
+                    viewModel.showLeveler.value = viewModel.getCameraSetting().isGryroActive
+                    viewModel.showOverlay.value = viewModel.getCameraSetting().isOverlayActive
 
                     //add sku to local database
                     viewModel.insertSku(sku!!)

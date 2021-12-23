@@ -323,6 +323,7 @@ class SelectBackgroundFragment : BaseFragment<ProcessViewModel, FragmentSelectBa
                         .error(R.mipmap.defaults) // show error drawable if the image is not a gif
                         .into(binding.imageViewGif)
 
+                    viewModel.backgroundSelect = response.data[0].imageId
                     backgroundSelect = response.data[0].imageId
                     viewModel.backgroundSelect = backgroundSelect
 
@@ -354,6 +355,7 @@ class SelectBackgroundFragment : BaseFragment<ProcessViewModel, FragmentSelectBa
             object : NewCarBackgroundAdapter.BtnClickListener {
                 override fun onBtnClick(position: Int) {
                     //if (position<carBackgroundList.size)
+                    viewModel.backgroundSelect = backgroundSelect
                     backgroundSelect = carBackgroundGifList[position].imageId
                     viewModel.backgroundSelect = backgroundSelect
                     carbackgroundsAdapter.notifyDataSetChanged()

@@ -11,12 +11,11 @@
         android:background="@android:color/transparent">
 
 
-        <RelativeLayout
+        <FrameLayout
             android:id="@+id/viewCamera"
-            android:layout_width="match_parent"
+            android:layout_width="wrap_content"
             android:layout_height="?attr/actionBarSize"
             android:background="@color/black"
-            app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toRightOf="parent"
             app:layout_constraintTop_toTopOf="parent">
 
@@ -33,9 +32,9 @@
                 android:maxLength="5"
                 android:maxLines="1"
                 android:padding="@dimen/dp_8"
+                android:visibility="invisible"
                 android:textColor="@color/white"
                 android:textSize="@dimen/sp_13"
-                android:visibility="invisible"
                 tools:text="Angle" />
 
             <TextView
@@ -49,14 +48,14 @@
                 android:fontFamily="@font/poppins_bold"
                 android:maxLength="5"
                 android:maxLines="1"
+                android:visibility="invisible"
                 android:padding="@dimen/dp_8"
                 android:textColor="@color/white"
                 android:textSize="@dimen/sp_13"
-                android:visibility="invisible"
                 tools:text="45" />
 
 
-        </RelativeLayout>
+        </FrameLayout>
 
         <androidx.constraintlayout.widget.Group
             android:layout_width="match_parent"

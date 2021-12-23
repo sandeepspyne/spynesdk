@@ -126,6 +126,8 @@ class ShootViewModel : ViewModel() {
     val isProjectCreatedEcom: MutableLiveData<Boolean> = MutableLiveData()
     val isSkuCreated: MutableLiveData<Boolean> = MutableLiveData()
     val showLeveler: MutableLiveData<Boolean> = MutableLiveData()
+    val showOverlay: MutableLiveData<Boolean> = MutableLiveData()
+    val showGrid: MutableLiveData<Boolean> = MutableLiveData()
     var isHintShowen: MutableLiveData<Boolean> = MutableLiveData()
 
     val subCategoryId: MutableLiveData<String> = MutableLiveData()
@@ -676,6 +678,40 @@ class ShootViewModel : ViewModel() {
     fun updateSkuExteriorAngles(skuId: String,angles: Int,subcatId : String) {
         UpdateExteriorAngles(skuId,angles,subcatId).update()
         localRepository.updateSkuExteriorAngles(skuId,angles)
+    }
+
+    fun getCameraSetting() : CameraSettings {
+        return if (Utilities.getPreference(BaseApplication.getContext(),AppConstants.ENTERPRISE_ID) == AppConstants.KARVI_ENTERPRISE_ID){
+            CameraSettings().apply {
+                isGryroActive = Utilities.getBool(
+                    BaseApplication.getContext(),
+                    categoryDetails.value?.categoryId+AppConstants.SETTING_STATUS_GYRO
+                    ,true)
+                isOverlayActive = Utilities.getBool(
+                    BaseApplication.getContext(),
+                    categoryDetails.value?.categoryId+AppConstants.SETTING_STATUS_OVERLAY
+                    ,false)
+                isGridActive = Utilities.getBool(
+                    BaseApplication.getContext(),
+                    categoryDetails.value?.categoryId+AppConstants.SETTING_STATUS_GRID
+                    ,true)
+            }
+        }else {
+            CameraSettings().apply {
+                isGryroActive = Utilities.getBool(
+                    BaseApplication.getContext(),
+                    categoryDetails.value?.categoryId+AppConstants.SETTING_STATUS_GYRO
+                    ,true)
+                isOverlayActive = Utilities.getBool(
+                    BaseApplication.getContext(),
+                    categoryDetails.value?.categoryId+AppConstants.SETTING_STATUS_OVERLAY
+                    ,true)
+                isGridActive = Utilities.getBool(
+                    BaseApplication.getContext(),
+                    categoryDetails.value?.categoryId+AppConstants.SETTING_STATUS_GRID
+                    ,false)
+            }
+        }
     }
 
     var gifDialogShown = false

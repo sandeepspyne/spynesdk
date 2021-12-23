@@ -22,12 +22,12 @@
         <entry key="app/src/main/res/drawable/bg_rectangle_button_ripple.xml" value="0.2935185185185185" />
         <entry key="app/src/main/res/drawable/bg_select_lang.xml" value="0.2935185185185185" />
         <entry key="app/src/main/res/drawable/bg_select_lang_ripple.xml" value="0.2935185185185185" />
-        <entry key="app/src/main/res/drawable/bg_shoot_anlges.xml" value="0.2677083333333333" />
         <entry key="app/src/main/res/drawable/bg_skip_dialog.xml" value="0.321025641025641" />
         <entry key="app/src/main/res/drawable/bg_three_sixty_shimmer.xml" value="0.321025641025641" />
         <entry key="app/src/main/res/drawable/exposure_thumb.xml" value="0.2064814814814815" />
         <entry key="app/src/main/res/drawable/ic_shoot_any_car_feature.xml" value="0.19444444444444445" />
-        <entry key="app/src/main/res/layout-land/fragment_camera.xml" value="0.21" />
+        <entry key="app/src/main/res/drawable/setting_bg.xml" value="0.4197916666666667" />
+        <entry key="app/src/main/res/layout-land/fragment_camera.xml" value="0.165" />
         <entry key="app/src/main/res/layout-land/fragment_overlays.xml" value="0.18125" />
         <entry key="app/src/main/res/layout-land/gyro_view.xml" value="0.2421875" />
         <entry key="app/src/main/res/layout-land/layout_gyro_view.xml" value="0.11235955056179775" />
@@ -49,7 +49,7 @@
         <entry key="app/src/main/res/layout/activity_reshoot_portrait.xml" value="0.4036458333333333" />
         <entry key="app/src/main/res/layout/activity_select_images.xml" value="0.3098958333333333" />
         <entry key="app/src/main/res/layout/activity_select_language_activity.xml" value="0.3098958333333333" />
-        <entry key="app/src/main/res/layout/activity_shoot.xml" value="0.18350669049729929" />
+        <entry key="app/src/main/res/layout/activity_shoot.xml" value="0.3098958333333333" />
         <entry key="app/src/main/res/layout/activity_shoot_selection.xml" value="0.3098958333333333" />
         <entry key="app/src/main/res/layout/activity_show_images.xml" value="0.18796296296296297" />
         <entry key="app/src/main/res/layout/activity_sign_in_using_otp.xml" value="0.2578125" />
@@ -88,27 +88,25 @@
         <entry key="app/src/main/res/layout/fragment_create_project.xml" value="0.25833333333333336" />
         <entry key="app/src/main/res/layout/fragment_crop_confirm_dialog.xml" value="0.4036458333333333" />
         <entry key="app/src/main/res/layout/fragment_download_completed.xml" value="0.3098958333333333" />
-        <entry key="app/src/main/res/layout/fragment_draft_projects.xml" value="0.16197916666666667" />
         <entry key="app/src/main/res/layout/fragment_draft_sku_details.xml" value="0.25277777777777777" />
         <entry key="app/src/main/res/layout/fragment_ecom_grid_reshoot.xml" value="0.4036458333333333" />
         <entry key="app/src/main/res/layout/fragment_ecom_overlay_reshoot.xml" value="0.3098958333333333" />
         <entry key="app/src/main/res/layout/fragment_grid_ecom.xml" value="0.30512820512820515" />
         <entry key="app/src/main/res/layout/fragment_image_processing_started.xml" value="0.3098958333333333" />
-        <entry key="app/src/main/res/layout/fragment_my_orders.xml" value="0.29259259259259257" />
+        <entry key="app/src/main/res/layout/fragment_invalid_location_dialog.xml" value="0.4036458333333333" />
         <entry key="app/src/main/res/layout/fragment_ongoing_orders.xml" value="0.3098958333333333" />
         <entry key="app/src/main/res/layout/fragment_ongoing_projects.xml" value="0.3098958333333333" />
         <entry key="app/src/main/res/layout/fragment_ongoing_skus.xml" value="0.3098958333333333" />
         <entry key="app/src/main/res/layout/fragment_orders.xml" value="0.3098958333333333" />
         <entry key="app/src/main/res/layout/fragment_overlay_ecom.xml" value="0.1" />
         <entry key="app/src/main/res/layout/fragment_overlays.xml" value="0.25277777777777777" />
-        <entry key="app/src/main/res/layout/fragment_overlays_v2.xml" value="0.21064814814814814" />
+        <entry key="app/src/main/res/layout/fragment_overlays_v2.xml" value="0.125" />
         <entry key="app/src/main/res/layout/fragment_preference.xml" value="0.23020833333333332" />
         <entry key="app/src/main/res/layout/fragment_processed_images.xml" value="0.25" />
         <entry key="app/src/main/res/layout/fragment_project_detail.xml" value="0.4036458333333333" />
         <entry key="app/src/main/res/layout/fragment_record_video.xml" value="0.165" />
         <entry key="app/src/main/res/layout/fragment_regular_shoot_summary.xml" value="0.18055555555555555" />
         <entry key="app/src/main/res/layout/fragment_reshoot.xml" value="0.165" />
-        <entry key="app/src/main/res/layout/fragment_select_another_imagetype.xml" value="0.29259259259259257" />
         <entry key="app/src/main/res/layout/fragment_select_background.xml" value="0.25277777777777777" />
         <entry key="app/src/main/res/layout/fragment_select_images.xml" value="0.25" />
         <entry key="app/src/main/res/layout/fragment_select_subcategory_and_angle.xml" value="0.25" />
